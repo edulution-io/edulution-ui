@@ -13,7 +13,6 @@ import { PiEyeFill, PiKey } from 'react-icons/pi';
 import { useParams } from 'react-router-dom';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
-import UserPasswordDialog from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/UserPasswordDialog';
 import CLASSMGMT_OPTIONS from '@libs/classManagement/constants/classmgmtOptions';
 import ClassmgmtOptionsType from '@libs/classManagement/types/classmgmtOptionsType';
 
@@ -43,7 +42,7 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
   } = useLessonStore();
   const { internet, printing, examMode, webfilter, wifi, cn: commonName } = user;
   const { groupType, groupName } = useParams();
-  const { setCurrentUser, currentUser } = useLmnApiPasswordStore();
+  const { setCurrentUser } = useLmnApiPasswordStore();
 
   const onButtonClick = async (event: React.MouseEvent<HTMLElement>, button: UserCardButton) => {
     event.stopPropagation();
@@ -125,7 +124,6 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
           {t(`classmanagement.${button.title}`)} {t(getButtonDescription(button.value))}
         </div>
       </button>
-      {currentUser?.dn === user.dn && <UserPasswordDialog />}
     </div>
   ));
 };
