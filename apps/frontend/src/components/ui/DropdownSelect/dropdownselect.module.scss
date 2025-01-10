@@ -129,13 +129,13 @@
 }
 
 .dropdown.dark .selected-value input {
-  background-color: #2d3748;
+  background-color: (var(--bg-muted));
   color: #d1d5db;
   border: 1px solid #555;
 }
 
 .dropdown.dark .options {
-  background-color: #2d3748;
+  background-color: (var(--bg-muted));
   color: rgba(255, 255, 255, 0.8);
   border: 1px solid #555;
 }
@@ -146,6 +146,6 @@
 
 .dropdown.dark .option.selected,
 .dropdown.dark .option:hover {
-  background-color: #2d3748;
+  background-color: (var(--bg-muted));
   color: rgba(255, 255, 255, 0.8);
 }
