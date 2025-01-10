@@ -6,10 +6,10 @@ import APPS from '@libs/appconfig/constants/apps';
 import useLanguage from '@/hooks/useLanguage';
 
 const Whiteboard = () => {
-  const { activeFrame } = useFrameStore();
+  const { activeEmbeddedFrame } = useFrameStore();
   const { language: lang } = useLanguage();
 
-  const getStyle = () => (activeFrame === APPS.WHITEBOARD ? 'block' : 'hidden');
+  const getStyle = () => (activeEmbeddedFrame === APPS.WHITEBOARD ? 'block' : 'hidden');
   return (
     <div
       className={cn(

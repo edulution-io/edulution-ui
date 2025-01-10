@@ -264,6 +264,7 @@
     "sidebar": "Filesharing",
     "previewTitle": "Dateivorschau",
     "saveFile": "Datei speichern",
+    "fileEditor": "Datei Editor",
     "closeEditor": "Editor schließen",
     "loadingDocument": "Dokument wird geladen...",
     "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt",
@@ -366,12 +367,15 @@
     "exam": "Klassenarbeit",
     "printPasswordsPageDescription": "Erstelle Dateien um die Passwörter einzelner Klassen auszudrucken oder selektiere Klassen um gleichzeitig mehrere auszudrucken.",
     "userPasswordDialogTitle": "Passwort von {{displayName}}",
-    "firstPassword": "Standard Passwort",
+    "firstPassword": "Initiales Passwort",
+    "firstPasswordNotSet": "Initiales Passwort ist nicht gesetzt",
     "currentPassword": "Aktuelles Passwort",
-    "restoreFirstPassword": "Standard Passwort wiederherstellen",
+    "restoreFirstPassword": "Initiales Passwort wiederherstellen",
     "setRandom": "Zufälliges setzen",
     "currentPasswordChangedSuccessfully": "Aktuelles Passwort erfolgreich geändert",
-    "firstPasswordChangedSuccessfully": "Standard Passwort erfolgreich geändert",
+    "firstPasswordChangedSuccessfully": "Initiales Passwort erfolgreich geändert",
+    "firstPasswordIsCurrentlySet": "Das initiale Passwort ist als aktuelles Passwort gesetzt.",
+    "firstPasswordIsCurrentlyNotSet": "Das initiale Passwort ist nicht als aktuelles Passwort gesetzt.",
     "passwordRequirements": "Verwenden Sie Großbuchstaben, Kleinbuchstaben und Sonderzeichen oder Zahlen.",
     "projectsPageDescription": "Hier findest du eine Übersicht über alle Projekte in denen du Admin bist.",
     "typeToFilter": "Tippen um zu filtern...",
@@ -625,6 +629,10 @@
       "sections": {
         "onlyOffice": {
           "title": "Only Office Integration",
+          "description": ""
+        },
+        "imapMailFeed": {
+          "title": "IMAP Integration",
           "description": ""
         },
         "bulletinBoard": {
@@ -1027,6 +1035,7 @@
   },
   "mails": {
     "errors": {
+      "NotAbleToGetImapOption": "Auslesen der 'IMAP-Konfiguration' ist nicht möglich",
       "NotAbleToConnectClientError": "Verbindung zum IMAP-Server nicht möglich",
       "NotAbleToLockMailboxError": "Die Mailbox konnte nicht aufgerufen werden",
       "NotAbleToFetchMailsError": "Mails konnten nicht abgerufen werden",
@@ -1045,10 +1054,18 @@
   },
   "appExtendedOptions": {
     "title": "Erweiterungen",
-    "onlyOfficeUrl": "Bitte gib die OnlyOffice-URL an",
+    "onlyOfficeUrl": "Gib hier die OnlyOffice-URL an",
     "onlyOfficeUrlTitle": "OnlyOffice-URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
-    "onlyOfficeJwtSecretDescription": "Bitte gib den OnlyOffice JWT Secret Key an"
+    "onlyOfficeJwtSecretDescription": "Gib hier den OnlyOffice JWT Secret Key an",
+    "mailImapUrlTitle": "URL",
+    "mailImapUrlDescription": "Gib hier den FQDN (z.B. 'imap.example.com') des IMAP-Servers an.",
+    "mailImapPortTitle": "Port",
+    "mailImapPortDescription": "Gib hier die Port Nummer des IMAP-Servers an (z.B. 993)",
+    "mailImapSecureTitle": "Sichere Verbindung",
+    "mailImapSecureDescription": "Gib 'true' ein, wenn die Verbindung über TLS aufgebaut werden soll, ansonsten wird 'false' (STARTTLS) verwendet.",
+    "mailImapRejectUnauthorizedTitle": "Nicht zertifizierte Verbindungen ablehnen",
+    "mailImapRejectUnauthorizedDescription": "Gib 'true' ein, wenn eine Zertifikatsprüfung für die Verbindungen gemacht werden soll. Ansonsten muss hier 'false' gesetzt werden."
   },
   "preview": {
     "failedToLoadImage": "Bild konnte nicht geladen werden"
