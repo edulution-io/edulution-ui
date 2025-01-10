@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import formSchema from '@/pages/Settings/AppConfig/appConfigSchema';
-import { FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
+import { FormControl, FormDescription, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Switch from '@/components/ui/Switch';
 
 type AppConfigSwitchProps<T extends FieldValues> = {
@@ -31,6 +31,7 @@ const AppConfigSwitch = <T extends FieldValues>({ fieldPath, control, option }: 
               disabled={field.disabled}
             />
           </FormControl>
+          <FormDescription>{t(option.description)}</FormDescription>
           <FormMessage className="text-p" />
         </FormItem>
       )}

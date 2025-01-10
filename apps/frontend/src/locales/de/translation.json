@@ -1060,9 +1060,9 @@
     "mailImapPortTitle": "Port",
     "mailImapPortDescription": "Bitte gib den gültigen Port an über den die Verbindung aufgebaut werden soll (z.B. 'sicher': 993, 'unsicher': 143)",
     "mailImapSecureTitle": "Sichere Verbindung",
-    "mailImapSecureDescription": "Bitte gib 'true' ein, wenn die Verbindung über TLS ('sicher') aufgebaut werden soll, ansonsten wird 'false' (STARTTLS ('unsicher')) vorrausgesetzt",
+    "mailImapSecureDescription": "Soll die Verbindung über 'TLS' ('sicher') oder 'STARTTLS' aufgebaut werden.",
     "mailImapRejectUnauthorizedTitle": "Nicht zertifizierte Verbindungen ablehnen",
-    "mailImapRejectUnauthorizedDescription": "Bitte gib 'true' ein, wenn nur zertifizierte Verbindungen erlaubt sind, ansonsten wird 'false' ('unsicher') vorrausgesetzt"
+    "mailImapRejectUnauthorizedDescription": "Sollen selbst zertifizierte Verbindungen abgewiesen werden?"
   },
   "preview": {
     "failedToLoadImage": "Bild konnte nicht geladen werden"
