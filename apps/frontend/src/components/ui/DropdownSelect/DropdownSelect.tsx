@@ -79,8 +79,8 @@ const DropdownSelect: React.FC<DropdownProps> = ({
             onClickCapture={() => setIsOpen((prevVal) => !prevVal)}
             disabled={options.length === 0}
             className={clsx({
-              'bg-white text-foreground': variant === 'light',
-              'bg-accent text-secondary': variant === 'dark',
+              'bg-background text-foreground': variant === 'light',
+              'bg-muted text-secondary': variant === 'dark',
             })}
           />
         </div>
@@ -91,7 +91,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
           [styles.open]: isOpen,
           [styles.up]: openToTop,
           'bg-background text-foreground': variant === 'light',
-          'bg-accent text-secondary': variant === 'dark',
+          'bg-muted text-secondary': variant === 'dark',
         })}
       >
         {filter(options).map((option) => (
@@ -101,7 +101,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
             className={clsx(styles.option, {
               [styles.selected]: t(option.name) === selectedVal,
               'hover:bg-gray-200': variant === 'light',
-              'bg-accent hover:bg-white': variant === 'dark',
+              'bg-muted hover:bg-white': variant === 'dark',
             })}
           >
             {t(option.name)}

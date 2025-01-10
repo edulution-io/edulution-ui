@@ -354,18 +354,14 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
           handleKeyDown(e);
           commandProps?.onKeyDown?.(e);
         }}
-        className={cn(
-          'overflow-visible',
-          variant === 'dark' ? 'bg-accent text-secondary' : '',
-          commandProps?.className,
-        )}
+        className={cn('overflow-visible', variant === 'dark' ? 'bg-muted text-secondary' : '', commandProps?.className)}
         shouldFilter={commandProps?.shouldFilter !== undefined ? commandProps.shouldFilter : !onSearch} // When onSearch is provided, we don't want to filter the options. You can still override it.
         filter={commandFilter()}
       >
         <div
           className={cn(
             'group rounded-md p-[8px] px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
-            variant === 'dark' ? 'bg-accent text-secondary' : '',
+            variant === 'dark' ? 'bg-muted text-secondary' : '',
             variant === 'light' ? 'border border-input' : '',
             className,
           )}
@@ -433,7 +429,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
               placeholder={hidePlaceholderWhenSelected && selected.length !== 0 ? '' : placeholder}
               className={cn(
                 'ml-2 flex-1 outline-none placeholder:text-muted-foreground',
-                variant === 'dark' ? 'bg-accent text-secondary placeholder:text-secondary' : '',
+                variant === 'dark' ? 'bg-muted text-secondary placeholder:text-secondary' : '',
                 inputProps?.className,
               )}
             />
@@ -444,7 +440,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
             <CommandList
               className={cn(
                 'absolute top-0 z-50 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in',
-                variant === 'dark' ? 'bg-accent text-secondary' : 'bg-white',
+                variant === 'dark' ? 'bg-muted text-secondary' : 'bg-muted',
               )}
             >
               {isLoading ? (
@@ -487,7 +483,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                             }}
                             className={cn(
                               'cursor-pointer',
-                              variant === 'dark' ? 'bg-accent text-secondary' : 'bg-background text-foreground',
+                              variant === 'dark' ? 'bg-muted text-secondary' : 'bg-background text-foreground',
                               option.disable &&
                                 (variant === 'dark'
                                   ? 'cursor-default text-muted-foreground'
