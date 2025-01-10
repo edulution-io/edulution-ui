@@ -12,11 +12,7 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import { Form } from '@/components/ui/Form';
 
-interface UserPasswordDialogProps {
-  trigger?: React.ReactNode;
-}
-
-const UserPasswordDialog = ({ trigger }: UserPasswordDialogProps) => {
+const UserPasswordDialog = () => {
   const { t } = useTranslation();
 
   const { isLoading, setCurrentUser, currentUser } = UseLmnApiPasswordStore();
@@ -45,46 +41,40 @@ const UserPasswordDialog = ({ trigger }: UserPasswordDialogProps) => {
     defaultValues: initialFormValues,
   });
 
-  useEffect(() => {
-    const getUser = async () => {
-      if (currentUser?.cn) {
-        const result = await fetchUser(currentUser?.cn, true);
+  const updateUser = async () => {
+    if (currentUser?.cn) {
+      const result = await fetchUser(currentUser?.cn, true);
+      if (result) {
         setUser(result);
       }
-    };
+    }
+  };
 
-    void getUser();
+  useEffect(() => {
+    void updateUser();
   }, [currentUser]);
 
   useEffect(() => {
     if (user?.sophomorixFirstPassword) {
       form.setValue('firstPassword', user.sophomorixFirstPassword);
-    } else {
-      setUser(null);
     }
   }, [user]);
 
   const onClose = () => {
     setCurrentUser(null);
+    setUser(null);
     form.reset();
   };
 
   const getDialogBody = () => {
     if (!user || isLoading || isFetchUserLoading) return <CircleLoader className="mx-auto" />;
     return (
-      <Form
-        {...form}
-        data-testid="test-id-login-page-form"
-      >
-        <form
-          className="space-y-4"
-          data-testid="test-id-login-page-form"
-        >
-          <UserPasswordDialogBody
-            user={user}
-            form={form}
-          />
-        </form>
+      <Form {...form}>
+        <UserPasswordDialogBody
+          user={user}
+          form={form}
+          updateUser={updateUser}
+        />
       </Form>
     );
   };
@@ -93,8 +83,7 @@ const UserPasswordDialog = ({ trigger }: UserPasswordDialogProps) => {
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
     <div onClick={(e) => e.stopPropagation()}>
       <AdaptiveDialog
-        isOpen={!!user || isFetchUserLoading}
-        trigger={trigger}
+        isOpen
         handleOpenChange={onClose}
         title={t('classmanagement.userPasswordDialogTitle', { displayName: user?.displayName })}
         desktopContentClassName="max-w-4xl"

@@ -88,7 +88,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
           const response = await eduApi.get<UserLmnInfo>(
-            `${USER}/${username}?check_first_pw=${!!checkIfFirstPasswordIsSet}`,
+            `${USER}/${username}?checkFirstPassword=${!!checkIfFirstPasswordIsSet}`,
             {
               headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
             },

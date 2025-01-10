@@ -7,15 +7,19 @@ import UserPasswordDialogForm from '@libs/classManagement/types/userPasswordDial
 import UseLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
 import generateRandomString from '@libs/common/utils/generateRandomString';
 import FormField from '@/components/shared/FormField';
-import useLmnApiStore from '@/store/useLmnApiStore';
 import { toast } from 'sonner';
 
 interface UserPasswordDialogBodyProps {
   user: UserLmnInfo;
   form: UseFormReturn<UserPasswordDialogForm>;
+  updateUser: () => Promise<void>;
 }
 
-const UserPasswordDialogBody = ({ user: { cn: username }, form }: UserPasswordDialogBodyProps) => {
+const UserPasswordDialogBody = ({
+  user: { cn: username, FirstPasswordSet: isFirstPasswordSet, sophomorixFirstPassword },
+  form,
+  updateUser,
+}: UserPasswordDialogBodyProps) => {
   const {
     formState: { errors },
     getValues,
@@ -24,16 +28,17 @@ const UserPasswordDialogBody = ({ user: { cn: username }, form }: UserPasswordDi
   } = form;
   const { t } = useTranslation();
 
-  const { fetchUser } = useLmnApiStore();
   const { setFirstPassword, setCurrentPassword } = UseLmnApiPasswordStore();
 
   const onSaveCurrentPasswordClick = async () => {
     await setCurrentPassword(username, getValues('currentPassword'));
+    await updateUser();
   };
 
   const onSaveFirstPasswordClick = async () => {
     setValue('currentPassword', '');
     await setFirstPassword(username, getValues('firstPassword'));
+    await updateUser();
   };
 
   const onGenerateFirstPasswordClick = async () => {
@@ -41,16 +46,18 @@ const UserPasswordDialogBody = ({ user: { cn: username }, form }: UserPasswordDi
     const randomPassword = generateRandomString(8);
     setValue('firstPassword', randomPassword);
     await setFirstPassword(username, randomPassword);
+    await updateUser();
   };
 
   const onRestoreFirstPasswordClick = async () => {
+    await updateUser();
     setValue('currentPassword', '');
-    const user = await fetchUser(username, true);
-    if (user?.sophomorixFirstPassword) {
-      await setCurrentPassword(username, user.sophomorixFirstPassword);
+    if (sophomorixFirstPassword) {
+      await setCurrentPassword(username, sophomorixFirstPassword);
     } else {
       toast.success(t('classmanagement.firstPasswordNotSet'));
     }
+    await updateUser();
   };
 
   return (
@@ -70,9 +77,10 @@ const UserPasswordDialogBody = ({ user: { cn: username }, form }: UserPasswordDi
                     name="firstPassword"
                     form={form}
                     variant="default"
-                    defaultValue={form.getValues('firstPassword')}
                     type="password"
                     className="w-full flex-grow"
+                    value={form.watch('firstPassword')}
+                    onChange={(e) => form.setValue('firstPassword', e.target.value)}
                   />
                 </div>
                 <Button
@@ -103,10 +111,8 @@ const UserPasswordDialogBody = ({ user: { cn: username }, form }: UserPasswordDi
                   <FormField
                     name="currentPassword"
                     form={form}
-                    defaultValue={form.getValues('currentPassword')}
                     variant="default"
                     type="password"
-                    className="w-full flex-grow"
                   />
                 </div>
                 <Button
@@ -123,10 +129,16 @@ const UserPasswordDialogBody = ({ user: { cn: username }, form }: UserPasswordDi
                 variant="btn-collaboration"
                 className="mt-2 whitespace-normal md:mt-0 md:w-auto"
                 onClick={onRestoreFirstPasswordClick}
+                disabled={isFirstPasswordSet}
                 size="lg"
               >
                 {t('classmanagement.restoreFirstPassword')}
               </Button>
+              <div>
+                {t(
+                  `classmanagement.${isFirstPasswordSet ? 'firstPasswordIsCurrentlySet' : 'firstPasswordIsCurrentlyNotSet'}`,
+                )}
+              </div>
             </td>
           </tr>
         </tbody>

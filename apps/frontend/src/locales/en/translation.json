@@ -374,6 +374,8 @@
     "setRandom": "Set random",
     "currentPasswordChangedSuccessfully": "Current password changed successfully",
     "firstPasswordChangedSuccessfully": "Initial password changed successfully",
+    "firstPasswordIsCurrentlySet": "The initial password is set as current password.",
+    "firstPasswordIsCurrentlyNotSet": "The initial password is not set as current password.",
     "passwordRequirements": "Use upper case letters, lower case letters and special characters or numbers.",
     "projectsPageDescription": "Here you will find an overview of all projects in which you are an admin.",
     "typeToFilter": "Type to filter...",

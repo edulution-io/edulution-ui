@@ -311,10 +311,11 @@ class LmnApiService {
     }
   }
 
-  public async getUser(lmnApiToken: string, username: string): Promise<UserLmnInfo> {
+  public async getUser(lmnApiToken: string, username: string, checkFirstPassword?: boolean): Promise<UserLmnInfo> {
     try {
+      const query = checkFirstPassword ? `?check_first_pw=${checkFirstPassword}` : '';
       const response = await this.enqueue<UserLmnInfo>(() =>
-        this.lmnApi.get<UserLmnInfo>(`${USERS_LMN_API_ENDPOINT}/${username}`, {
+        this.lmnApi.get<UserLmnInfo>(`${USERS_LMN_API_ENDPOINT}/${username}${query}`, {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
