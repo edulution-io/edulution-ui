@@ -1,11 +1,11 @@
 import React from 'react';
-import { FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
-import Input from '@/components/shared/Input';
+import { z } from 'zod';
+import { useTranslation } from 'react-i18next';
 import { Control, FieldValues, Path } from 'react-hook-form';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
-import { useTranslation } from 'react-i18next';
-import { z } from 'zod';
 import formSchema from '@/pages/Settings/AppConfig/appConfigSchema';
+import { FormDescription, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
+import Input from '@/components/shared/Input';
 
 type AppConfigFormFieldProps<T extends FieldValues> = {
   fieldPath: Path<T>;
@@ -36,6 +36,7 @@ const AppConfigFormField = <T extends FieldValues>({
               type={type}
             />
           </FormControl>
+          <FormDescription>{t(option.description)}</FormDescription>
           <FormMessage className="text-p" />
         </FormItem>
       )}

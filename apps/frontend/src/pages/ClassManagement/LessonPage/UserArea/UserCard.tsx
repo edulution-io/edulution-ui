@@ -6,6 +6,8 @@ import UserCardButtonBar from '@/pages/ClassManagement/LessonPage/UserArea/UserC
 import Checkbox from '@/components/ui/Checkbox';
 import { SOPHOMORIX_STUDENT } from '@libs/lmnApi/constants/sophomorixRoles';
 import { useTranslation } from 'react-i18next';
+import UserPasswordDialog from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/UserPasswordDialog';
+import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
 
 interface UserCardProps {
   user: UserLmnInfo;
@@ -23,6 +25,7 @@ const UserCard = ({
   isTeacherInSameSchool,
 }: UserCardProps) => {
   const { t } = useTranslation();
+  const { currentUser } = useLmnApiPasswordStore();
   const { displayName, name, sophomorixAdminClass, school, givenName, sn: surname } = user;
 
   const [isHovered, setIsHovered] = useState<boolean>(false);
@@ -105,6 +108,7 @@ const UserCard = ({
           </div>
         ) : null}
       </CardContent>
+      {currentUser?.dn === user.dn && <UserPasswordDialog />}
     </Card>
   );
 };
