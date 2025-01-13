@@ -69,7 +69,7 @@ const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
 
   return (
     <div className="space-y-4">
-      <h4>{t(`mail.importer.title`)}</h4>
+      <h4 className="text-background">{t(`mail.importer.title`)}</h4>
       <div className="flex gap-4">
         <DropdownSelect
           options={mailProviderDropdownOptions}

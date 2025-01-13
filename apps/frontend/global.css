@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .gradient-box {
+    border-width: 4px !important;
+    background:
+      var(--background-image) padding-box,
+      linear-gradient(to right top, #88d840, #0081c6) border-box;
+    border-radius: 4px;
+    border-style: solid;
+    border-color: transparent;
+  }
+}
+
 @layer base {
   :root {
     --floating-buttons-height: 150px;
@@ -9,7 +21,15 @@
     --radius: 0.25rem;
   }
 
+  .bg-global {
+    background-image: var(--background-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
   .light {
+    --background-image: url("src/assets/backgroundLightMode.jpg");
     --background: #000000;
     --foreground: #ffffff;
     --muted-foreground: #505050;
@@ -17,10 +37,10 @@
     --primary-foreground: #ffffff;
     --secondary: #2e2a24;
     --secondary-foreground: #f2f2f2;
-    --muted: #7b7b6c;
+    --muted: #b1b1ac;
     --accent: #d2d2cf;
     --input: #1d170f;
-    --card: transparent; /* bleibt transparent */
+    --card: #00000000; /* bleibt transparent */
     --card-foreground: #000000; /* Invertiert von #FFFFFF */
     --popover: #000000; /* Invertiert von #FFFFFF */
     --popover-foreground: #f0e8d5; /* Invertiert von #0F172A */
@@ -28,10 +48,11 @@
     --destructive: #00ffff;
     --destructive-foreground: #130800;
     --ring: #735b49;
-    --overlay: #333333;
+    --overlay: #ffffff;
     --overlay-foreground: #ffffff;
   }
   .dark {
+    --background-image: url("src/assets/backgroundDarkMode.jpg");
     --background: #ffffff;
     --foreground: #000000;
     --muted-foreground: #bbbbbb;
@@ -42,7 +63,7 @@
     --muted: #2d3748; /* früher ciGrey       */
     --accent: #2d2d30; /* früher ciDarkGrey   */
     --input: #e2e8f0;
-    --card: transparent;
+    --card: #00000000;
     --card-foreground: #ffffff;
     --popover: #ffffff;
     --popover-foreground: #0f172a;

@@ -73,7 +73,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
     <AccordionSH type="multiple">
       <AccordionItem value={item.id}>
         <AccordionTrigger className="flex text-h4">
-          <h4>{t(`form.proxyConfig`)}</h4>
+          <h4 className="text-background">{t(`form.proxyConfig`)}</h4>
         </AccordionTrigger>
         <AccordionContent className="space-y-10 px-1 pt-4">
           <div className="flex flex-row items-center space-x-6">
@@ -84,7 +84,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
               defaultValue=""
               render={({ field }) => (
                 <FormItem>
-                  <p className="font-bold">{t(`form.proxyPath`)}</p>
+                  <p className="font-bold text-background">{t(`form.proxyPath`)}</p>
                   <FormControl>
                     <Input
                       {...field}
@@ -105,7 +105,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
               defaultValue=""
               render={({ field }) => (
                 <FormItem>
-                  <p className="font-bold">{t(`form.proxyDestination`)}</p>
+                  <p className="font-bold text-background">{t(`form.proxyDestination`)}</p>
                   <FormControl>
                     <Input
                       {...field}
@@ -126,7 +126,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
               defaultValue={false}
               render={({ field }) => (
                 <FormItem>
-                  <p className="font-bold">{t('form.stripPrefix')}</p>
+                  <p className="font-bold text-background">{t('form.stripPrefix')}</p>
                   <FormControl>
                     <Switch
                       {...field}
@@ -157,7 +157,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
               checked={expertModeEnabled}
               onCheckedChange={setExpertModeEnabled}
             />
-            <p>{t('form.expertMode')}</p>
+            <p className="text-background">{t('form.expertMode')}</p>
           </div>
 
           <FormFieldSH
@@ -167,7 +167,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
             defaultValue={defaultYaml}
             render={({ field }) => (
               <FormItem>
-                <p className="font-bold">{t(`form.proxyConfig`)}</p>
+                <p className="font-bold text-background">{t(`form.proxyConfig`)}</p>
                 <FormControl>
                   <YamlEditor
                     value={field.value}
@@ -177,7 +177,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
                     disabled={!expertModeEnabled}
                   />
                 </FormControl>
-                <p>{t(`form.proxyConfigDescription`)}</p>
+                <p className="text-background">{t(`form.proxyConfigDescription`)}</p>
                 <FormMessage className="text-p" />
               </FormItem>
             )}

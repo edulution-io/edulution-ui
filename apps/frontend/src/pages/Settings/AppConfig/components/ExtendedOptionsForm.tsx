@@ -69,11 +69,13 @@ const ExtendedOptionsForm = <T extends FieldValues>({
           >
             <AccordionItem value={section}>
               <AccordionTrigger className="flex text-xl font-bold">
-                <h4>{t(`settings.appconfig.sections.${section}.title`)}</h4>
+                <h4 className="text-background">{t(`settings.appconfig.sections.${section}.title`)}</h4>
               </AccordionTrigger>
               <AccordionContent>
-                <div className="text-base">{t(`settings.appconfig.sections.${section}.description`)}</div>
-                <div className="flex flex-col gap-4">
+                <div className="text-base text-background">
+                  {t(`settings.appconfig.sections.${section}.description`)}
+                </div>
+                <div className="flex flex-col gap-4 text-background">
                   {options?.map((option: AppConfigExtendedOption) => renderComponent(option))}
                 </div>
               </AccordionContent>

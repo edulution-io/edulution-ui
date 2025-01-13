@@ -47,7 +47,6 @@ const AccountInformation = () => {
               value={field.value}
               labelTranslationId={field.label}
               readOnly={field.readOnly}
-              variant="lightGrayDisabled"
             />
           ))}
           <Button

@@ -53,7 +53,7 @@ const BadgeField = (props: BadgeFieldProps) => {
         </Label>
       )}
       <div className="flex flex-row flex-wrap gap-2">
-        {isEmpty && <BadgeSH className={cn('bg-ciDarkGreyDisabled px-4', className)}>{t('common.none')}</BadgeSH>}
+        {isEmpty && <BadgeSH className={cn('bg-secondary px-4', className)}>{t('common.none')}</BadgeSH>}
         {!isEmpty &&
           badges.map((listItem, index) => (
             <BadgeSH
@@ -61,7 +61,7 @@ const BadgeField = (props: BadgeFieldProps) => {
               key={`badge${index}_-_${listItem}`}
               className={cn(
                 'h-[36px] py-0',
-                { 'bg-ciDarkGreyDisabled text-muted': readOnly },
+                { 'bg-secondary text-muted': readOnly },
                 { 'color-background text-background': !readOnly },
                 className,
               )}

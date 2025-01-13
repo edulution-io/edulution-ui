@@ -49,7 +49,7 @@ const FormField = <T extends FieldValues>({
         <FormItem>
           {labelTranslationId && (
             <FormLabel>
-              <p className="font-bold">{t(labelTranslationId)}</p>
+              <p className="font-bold text-background">{t(labelTranslationId)}</p>
             </FormLabel>
           )}
           <FormControl>

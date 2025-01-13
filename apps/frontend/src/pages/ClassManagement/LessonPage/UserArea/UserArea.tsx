@@ -74,10 +74,10 @@ const UserArea = () => {
             checked={areAllChecked}
             aria-label={t('select')}
           />
-          <p className="ml-2">{t('selectAll')}</p>
+          <p className="ml-2 text-background">{t('selectAll')}</p>
         </div>
 
-        <h3 className="mb-2 flex flex-grow justify-center text-center text-lg md:text-xl">
+        <h3 className="mb-2 flex flex-grow justify-center text-center text-lg text-background md:text-xl">
           {member.length} {t('classmanagement.usersInThisSession')}{' '}
           {isMemberSelected ? `(${isMemberSelected} ${t('common.selected')})` : null}
         </h3>

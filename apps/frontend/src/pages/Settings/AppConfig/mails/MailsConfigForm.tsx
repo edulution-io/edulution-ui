@@ -27,7 +27,7 @@ const MailsConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
         defaultValue=""
         render={({ field }) => (
           <FormItem>
-            <p>{t(`mail.importer.${field.name}`)}</p>
+            <p className="text-background">{t(`mail.importer.${field.name}`)}</p>
             <FormControl>
               <Input
                 placeholder=""
@@ -44,7 +44,7 @@ const MailsConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
         defaultValue=""
         render={({ field }) => (
           <FormItem>
-            <p>{t(`mail.importer.${field.name}`)}</p>
+            <p className="text-background">{t(`mail.importer.${field.name}`)}</p>
             <FormControl>
               <Input
                 placeholder="https://"
@@ -62,7 +62,7 @@ const MailsConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
           defaultValue=""
           render={({ field }) => (
             <FormItem>
-              <p>{t(`mail.importer.${field.name}`)}</p>
+              <p className="text-background">{t(`mail.importer.${field.name}`)}</p>
               <FormControl>
                 <Input
                   placeholder={field.name}
@@ -79,7 +79,7 @@ const MailsConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
           defaultValue=""
           render={({ field }) => (
             <FormItem>
-              <p>{t(`mail.importer.${field.name}`)}</p>
+              <p className="text-background">{t(`mail.importer.${field.name}`)}</p>
               <FormControl>
                 <DropdownSelect
                   options={encOptions}
