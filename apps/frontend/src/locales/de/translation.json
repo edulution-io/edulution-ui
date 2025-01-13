@@ -708,6 +708,10 @@
     "mails": {
       "title": "E-Mail"
     },
+    "mobileAccess": {
+      "title": "App-Zugriff",
+      "description": "Du kannst von vielen mobilen Geräten aus auf den Schulserver zugreifen. Drücke auf Anleitung um zu starten."
+    },
     "faq": "FAQ",
     "externalIntegration": "Externe Anbindung",
     "config": {

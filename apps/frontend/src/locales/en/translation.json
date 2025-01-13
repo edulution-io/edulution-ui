@@ -707,6 +707,10 @@
     "mails": {
       "title": "Email"
     },
+    "mobileAccess": {
+      "title": "Mobile Access",
+      "description": "You can access the school server from many mobile devices. Click on Manual to start."
+    },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
     "config": {
