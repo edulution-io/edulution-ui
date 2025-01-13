@@ -88,13 +88,11 @@ const UserCard = ({
               <div>{school}</div>
             </div>
           </div>
-          <button
-            type="button"
+          <div
             className={cn(
               'm-2 flex max-h-36 w-64 flex-grow items-center justify-center rounded-xl text-2xl',
               isActive ? 'bg-ciGrey' : 'bg-ciDarkGrey',
             )}
-            onClick={(event) => event.stopPropagation()}
           >
             {user.sophomorixIntrinsic3.length > 0 ? (
               <FrameBufferImage user={user} />
@@ -104,7 +102,7 @@ const UserCard = ({
                 {surname.slice(0, 1)}
               </>
             )}
-          </button>
+          </div>
         </div>
         {isSelectable ? (
           <div className="mt-0.5 flex w-1/6 flex-col items-center justify-around">
