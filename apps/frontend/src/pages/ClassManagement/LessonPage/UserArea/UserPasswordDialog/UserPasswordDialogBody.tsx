@@ -76,7 +76,6 @@ const UserPasswordDialogBody = ({
                   <FormField
                     name="firstPassword"
                     form={form}
-                    variant="default"
                     type="password"
                     className="w-full flex-grow"
                     value={form.watch('firstPassword')}
@@ -111,7 +110,6 @@ const UserPasswordDialogBody = ({
                   <FormField
                     name="currentPassword"
                     form={form}
-                    variant="default"
                     type="password"
                   />
                 </div>
