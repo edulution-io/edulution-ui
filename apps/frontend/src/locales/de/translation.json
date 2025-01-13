@@ -631,6 +631,10 @@
           "title": "Only Office Integration",
           "description": ""
         },
+        "imapMailFeed": {
+          "title": "IMAP Integration",
+          "description": ""
+        },
         "bulletinBoard": {
           "title": "Kategorien",
           "description": "Füge neue Kategorien hinzu oder bearbeite existierende um zu steuern für welche Nutzer und Gruppen das Schwarze Brett statt dem klassischen Dashboard angezeigt werden soll."
@@ -1031,6 +1035,7 @@
   },
   "mails": {
     "errors": {
+      "NotAbleToGetImapOption": "Auslesen der 'IMAP-Konfiguration' ist nicht möglich",
       "NotAbleToConnectClientError": "Verbindung zum IMAP-Server nicht möglich",
       "NotAbleToLockMailboxError": "Die Mailbox konnte nicht aufgerufen werden",
       "NotAbleToFetchMailsError": "Mails konnten nicht abgerufen werden",
@@ -1049,10 +1054,18 @@
   },
   "appExtendedOptions": {
     "title": "Erweiterungen",
-    "onlyOfficeUrl": "Bitte gib die OnlyOffice-URL an",
+    "onlyOfficeUrl": "Gib hier die OnlyOffice-URL an",
     "onlyOfficeUrlTitle": "OnlyOffice-URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
-    "onlyOfficeJwtSecretDescription": "Bitte gib den OnlyOffice JWT Secret Key an"
+    "onlyOfficeJwtSecretDescription": "Gib hier den OnlyOffice JWT Secret Key an",
+    "mailImapUrlTitle": "URL",
+    "mailImapUrlDescription": "Gib hier den FQDN (z.B. 'imap.example.com') des IMAP-Servers an.",
+    "mailImapPortTitle": "Port",
+    "mailImapPortDescription": "Gib hier die Port Nummer des IMAP-Servers an (z.B. 993)",
+    "mailImapSecureTitle": "Sichere Verbindung",
+    "mailImapSecureDescription": "Gib 'true' ein, wenn die Verbindung über TLS aufgebaut werden soll, ansonsten wird 'false' (STARTTLS) verwendet.",
+    "mailImapRejectUnauthorizedTitle": "Nicht zertifizierte Verbindungen ablehnen",
+    "mailImapRejectUnauthorizedDescription": "Gib 'true' ein, wenn eine Zertifikatsprüfung für die Verbindungen gemacht werden soll. Ansonsten muss hier 'false' gesetzt werden."
   },
   "preview": {
     "image": "Bildvorschau",

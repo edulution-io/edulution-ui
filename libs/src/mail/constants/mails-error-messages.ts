@@ -1,4 +1,5 @@
 enum MailsErrorMessages {
+  NotAbleToGetImapOption = 'mails.errors.NotAbleToGetImapOption',
   NotAbleToConnectClientError = 'mails.errors.NotAbleToConnectClientError',
   NotAbleToFetchMailsError = 'mails.errors.NotAbleToFetchMailsError',
   NotAbleToLockMailboxError = 'mails.errors.NotAbleToLockMailboxError',
