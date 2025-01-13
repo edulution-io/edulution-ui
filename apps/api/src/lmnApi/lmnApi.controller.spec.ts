@@ -75,7 +75,7 @@ describe('LmnApiController', () => {
   describe('getUser', () => {
     it('should call getUser', async () => {
       await controller.getUser('mockToken', { username: 'testUser' });
-      expect(service.getUser).toHaveBeenCalledWith('mockToken', 'testUser');
+      expect(service.getUser).toHaveBeenCalledWith('mockToken', 'testUser', undefined);
     });
   });
 

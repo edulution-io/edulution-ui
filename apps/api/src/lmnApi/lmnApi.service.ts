@@ -311,10 +311,11 @@ class LmnApiService {
     }
   }
 
-  public async getUser(lmnApiToken: string, username: string): Promise<UserLmnInfo> {
+  public async getUser(lmnApiToken: string, username: string, checkFirstPassword?: boolean): Promise<UserLmnInfo> {
     try {
+      const query = checkFirstPassword ? `?check_first_pw=${checkFirstPassword}` : '';
       const response = await this.enqueue<UserLmnInfo>(() =>
-        this.lmnApi.get<UserLmnInfo>(`${USERS_LMN_API_ENDPOINT}/${username}`, {
+        this.lmnApi.get<UserLmnInfo>(`${USERS_LMN_API_ENDPOINT}/${username}${query}`, {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
@@ -534,10 +535,12 @@ class LmnApiService {
     newPassword: string,
     bypassSecurityCheck: boolean = false,
   ): Promise<null> {
-    const password = await this.userService.getPassword(username);
+    if (!bypassSecurityCheck) {
+      const currentPassword = await this.userService.getPassword(username);
 
-    if (!bypassSecurityCheck && oldPassword !== password) {
-      throw new CustomHttpException(LmnApiErrorMessage.PasswordMismatch, HttpStatus.UNAUTHORIZED, LmnApiService.name);
+      if (oldPassword !== currentPassword) {
+        throw new CustomHttpException(LmnApiErrorMessage.PasswordMismatch, HttpStatus.UNAUTHORIZED, LmnApiService.name);
+      }
     }
 
     try {

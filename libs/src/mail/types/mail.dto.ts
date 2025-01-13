@@ -1,6 +1,6 @@
 import { ParsedMail } from 'mailparser';
 
-interface MailDto extends ParsedMail {
+interface MailDto extends Partial<ParsedMail> {
   id: number;
   flags?: Set<string>;
   labels?: Set<string>;
