@@ -26,8 +26,7 @@ const getCompressedImage = (file: File, maxSizeKB: number): Promise<string> =>
           return;
         }
 
-        let { width } = img;
-        let { height } = img;
+        let { width, height } = img;
         const maxWidth = 500;
         const maxHeight = 500;
 

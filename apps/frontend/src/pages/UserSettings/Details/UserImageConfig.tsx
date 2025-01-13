@@ -20,7 +20,7 @@ const UserImageConfig: React.FC = () => {
       try {
         compressedBase64 = await getCompressedImage(file, 100);
       } catch (error) {
-        toast.error(t(error instanceof Error ? error.message : ''));
+        toast.error(t(error instanceof Error ? error.message : 'usersettings.errors.notAbleToCompress'));
         compressedBase64 = '';
       }
       setBase64Image(compressedBase64);
