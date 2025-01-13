@@ -367,12 +367,15 @@
     "exam": "Exam",
     "printPasswordsPageDescription": "Create files to print the passwords of individual classes or select classes to print several at the same time.",
     "userPasswordDialogTitle": "Password of {{displayName}}",
-    "firstPassword": "Standard password",
+    "firstPassword": "Initial password",
+    "firstPasswordNotSet": "Initial password is not set",
     "currentPassword": "Current password",
-    "restoreFirstPassword": "Restore standard password",
+    "restoreFirstPassword": "Restore initial password",
     "setRandom": "Set random",
     "currentPasswordChangedSuccessfully": "Current password changed successfully",
-    "firstPasswordChangedSuccessfully": "First password changed successfully",
+    "firstPasswordChangedSuccessfully": "Initial password changed successfully",
+    "firstPasswordIsCurrentlySet": "The initial password is set as current password.",
+    "firstPasswordIsCurrentlyNotSet": "The initial password is not set as current password.",
     "passwordRequirements": "Use upper case letters, lower case letters and special characters or numbers.",
     "projectsPageDescription": "Here you will find an overview of all projects in which you are an admin.",
     "typeToFilter": "Type to filter...",
@@ -636,6 +639,10 @@
       "sections": {
         "onlyOffice": {
           "title": "Only Office Integration",
+          "description": ""
+        },
+        "imapMailFeed": {
+          "title": "IMAP Integration",
           "description": ""
         },
         "bulletinBoard": {
@@ -1044,13 +1051,22 @@
   },
   "appExtendedOptions": {
     "title": "Extensions",
-    "onlyOfficeUrl": "Please enter the OnlyOffice URL",
+    "onlyOfficeUrl": "Enter the OnlyOffice URL",
     "onlyOfficeUrlTitle": "OnlyOffice URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
-    "onlyOfficeJwtSecretDescription": "Please enter the OnlyOffice JWT Secret"
+    "onlyOfficeJwtSecretDescription": "Enter the OnlyOffice JWT Secret",
+    "mailImapUrlTitle": "URL",
+    "mailImapUrlDescription": "Enter the FQDN (i.e. 'imap.example.com') of the IMAP-server",
+    "mailImapPortTitle": "Port",
+    "mailImapPortDescription": "Enter the port number of the IMAP-server (i.e. 993)",
+    "mailImapSecureTitle": "Secure Connection",
+    "mailImapSecureDescription": "Enter 'true' if the connection should be established via TLS (more secure), otherwise it's set to 'false' and will use STARTTLS",
+    "mailImapRejectUnauthorizedTitle": "Reject Unauthorized",
+    "mailImapRejectUnauthorizedDescription": "Enter 'true' if the connection should reject self-signed certificates, otherwise it's set to 'false' to accept them"
   },
   "mails": {
     "errors": {
+      "NotAbleToGetImapOption": "Could not read the configuration for imap",
       "NotAbleToConnectClientError": "Could not connect to the imap server",
       "NotAbleToLockMailboxError": "Could not lock on to the mailbox",
       "NotAbleToFetchMailsError": "Could not fetch mails",
@@ -1068,6 +1084,7 @@
     }
   },
   "preview": {
+    "image": "Image preview",
     "failedToLoadImage": "Failed to load image"
   }
 }

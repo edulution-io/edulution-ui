@@ -150,6 +150,7 @@ interface UserLmnInfo {
   school: string;
   webfilter: boolean;
   wifi: boolean;
+  FirstPasswordSet?: boolean;
 }
 
 export default UserLmnInfo;

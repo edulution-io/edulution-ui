@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useInterval } from 'usehooks-ts';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
-import CircleLoader from '@/components/ui/CircleLoader';
 import { MdBlock, MdCropFree } from 'react-icons/md';
+import { useTranslation } from 'react-i18next';
+import CircleLoader from '@/components/ui/CircleLoader';
+import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
+import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import { VEYON_REFRESH_INTERVAL, VEYON_REFRESH_INTERVAL_HIGH } from '@libs/veyon/constants/refreshInterval';
-import ImageModal from '@/components/shared/ImageModal';
 import useVeyonApiStore from '../../useVeyonApiStore';
 
 type FrameBufferImageProps = {
@@ -12,6 +13,7 @@ type FrameBufferImageProps = {
 };
 
 const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
+  const { t } = useTranslation();
   const [imageSrc, setImageSrc] = useState<string>('');
   const { authenticateVeyonClients, getFrameBufferStream } = useVeyonApiStore();
   const [connUid, setConnUid] = useState<string>('');
@@ -83,11 +85,20 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
           </div>
 
           {isImagePreviewModalOpen && (
-            <ImageModal
-              isOpen={isImagePreviewModalOpen}
-              imageUrl={imageSrc}
-              onClose={closeImagePreviewModal}
-            />
+            <ResizableWindow
+              disableMinimizeWindow
+              disableToggleMaximizeWindow
+              titleTranslationId={t('preview.image')}
+              handleClose={closeImagePreviewModal}
+            >
+              <div className="flex h-full w-full items-center justify-center bg-foreground">
+                <img
+                  src={imageSrc}
+                  alt="Preview"
+                  className="max-h-screen max-w-full rounded-md"
+                />
+              </div>
+            </ResizableWindow>
           )}
         </div>
       );
