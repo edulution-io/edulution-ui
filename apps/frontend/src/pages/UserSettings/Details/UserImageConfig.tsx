@@ -9,9 +9,7 @@ import { toast } from 'sonner';
 const UserImageConfig: React.FC = () => {
   const { t } = useTranslation();
   const { user, patchUserDetails } = useLmnApiStore();
-  const [base64Image, setBase64Image] = useState<string>(
-    user?.thumbnailPhoto && user?.thumbnailPhoto !== 'undefined' ? user?.thumbnailPhoto : '',
-  );
+  const [base64Image, setBase64Image] = useState<string>(user?.thumbnailPhoto ?? '');
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -34,7 +32,7 @@ const UserImageConfig: React.FC = () => {
   const handleImageDelete = async () => {
     setBase64Image('');
 
-    await patchUserDetails({ thumbnailPhoto: 'undefined' });
+    await patchUserDetails({ thumbnailPhoto: '' });
   };
 
   return (
