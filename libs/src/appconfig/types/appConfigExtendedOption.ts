@@ -7,6 +7,6 @@ export interface AppConfigExtendedOption {
   title: string;
   description: string;
   type: ExtendedOptionFieldType;
-  value: TAppFieldType;
+  value?: TAppFieldType;
   width?: TAppFieldWidth;
 }

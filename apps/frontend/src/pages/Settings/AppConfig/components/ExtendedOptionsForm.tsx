@@ -67,7 +67,7 @@ const ExtendedOptionsForm = <T extends FieldValues>({
             applicationName={settingLocation || ''}
           />
         );
-      case ExtendedOptionField.boolean:
+      case ExtendedOptionField.switch:
         return (
           <AppConfigSwitch
             fieldPath={fieldPath}

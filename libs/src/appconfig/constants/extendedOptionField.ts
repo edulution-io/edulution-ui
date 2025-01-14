@@ -3,7 +3,7 @@ const ExtendedOptionField = {
   password: 'password',
   table: 'table',
   number: 'number',
-  boolean: 'boolean',
+  switch: 'switch',
 } as const;
 
 export default ExtendedOptionField;

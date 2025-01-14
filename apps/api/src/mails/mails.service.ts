@@ -56,6 +56,7 @@ class MailsService implements OnModuleInit {
     if (!appConfig || typeof appConfig.extendedOptions !== 'object') {
       throw new CustomHttpException(MailsErrorMessages.NotAbleToGetImapOption, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
     try {
       this.imapUrl = String(appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_URL]);
       this.imapPort = Number(appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_PORT]);

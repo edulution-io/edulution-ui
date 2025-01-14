@@ -1060,9 +1060,9 @@
     "mailImapPortTitle": "Port",
     "mailImapPortDescription": "Gib hier die Port Nummer des IMAP-Servers an (z.B. 993)",
     "mailImapSecureTitle": "Sichere Verbindung",
-    "mailImapSecureDescription": "Soll die Verbindung über 'TLS' ('sicher') oder 'STARTTLS' aufgebaut werden.",
+    "mailImapSecureDescription": "Soll die Verbindung über 'TLS' oder 'STARTTLS' aufgebaut werden.",
     "mailImapRejectUnauthorizedTitle": "Nicht zertifizierte Verbindungen ablehnen",
-    "mailImapRejectUnauthorizedDescription": "Sollen selbst zertifizierte Verbindungen abgewiesen werden?"
+    "mailImapRejectUnauthorizedDescription": "Soll eine Zertifikatsprüfung für diese Verbindung durchgeführt werden?"
   },
   "preview": {
     "failedToLoadImage": "Bild konnte nicht geladen werden"

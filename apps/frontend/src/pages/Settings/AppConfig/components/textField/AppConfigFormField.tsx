@@ -11,7 +11,7 @@ type AppConfigFormFieldProps<T extends FieldValues> = {
   fieldPath: Path<T>;
   control: Control<z.infer<typeof formSchema>, T>;
   option: AppConfigExtendedOption;
-  type?: HTMLInputTypeAttribute | undefined;
+  type?: HTMLInputTypeAttribute;
 };
 
 const AppConfigFormField = <T extends FieldValues>({

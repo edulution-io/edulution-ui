@@ -1,3 +1,3 @@
-type TAppFieldType = string | number | boolean | undefined;
+type TAppFieldType = string | number | boolean;
 
 export default TAppFieldType;
