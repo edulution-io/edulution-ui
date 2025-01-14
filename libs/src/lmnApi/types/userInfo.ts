@@ -132,6 +132,7 @@ interface UserLmnInfo {
   sophomorixWebuiDashboard: string[];
   sophomorixWebuiPermissionsCalculated: string[];
   sophomorixIntrinsicMulti1?: string[];
+  thumbnailPhoto: string;
   unixHomeDirectory: string;
   dn: string;
   examMode: boolean;

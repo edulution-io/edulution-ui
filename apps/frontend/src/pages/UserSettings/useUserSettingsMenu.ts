@@ -1,4 +1,4 @@
-import { LanguageIcon, MailIcon, SecurityIcon, UserDetailsSettingsIcon, UserIcon } from '@/assets/icons';
+import { LanguageIcon, MailIcon, SecurityIcon, UserDetailsSettingsIcon, SettingsIcon } from '@/assets/icons';
 import { useNavigate } from 'react-router-dom';
 import {
   USER_SETTINGS_LANGUAGE_PATH,
@@ -15,7 +15,7 @@ const useUserSettingsMenu = () => {
   const USERSETTINGS_MENUBAR_CONFIG: MenuBarEntry = {
     appName: APPS.USER_SETTINGS,
     title: 'usersettings.title',
-    icon: UserIcon,
+    icon: SettingsIcon,
     color: 'hover:bg-ciGreenToBlue',
     menuItems: [
       {

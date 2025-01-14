@@ -689,7 +689,8 @@
       "badgeAlreadyExists": "This entry exists already",
       "sophomorixCustom1_teacher": "Schoolsubject 1",
       "sophomorixCustom2_teacher": "Schoolsubject 2",
-      "sophomorixCustomMulti1_teacher": "Coffee-brands"
+      "sophomorixCustomMulti1_teacher": "Coffee-brands",
+      "userimageconfig": "Profile picture"
     },
     "security": {
       "title": "Security",
@@ -733,7 +734,9 @@
       "newPasswordRequired": "New password is required",
       "confirmPasswordRequired": "Repeat the new password for the confirmation",
       "passwordsDoNotMatch": "Passwords do not match",
-      "passwordLength": "Password must be at least 8 characters long"
+      "passwordLength": "Password must be at least 8 characters long",
+      "notSupportedFileFormat": "Not supported file format",
+      "notAbleToCompressImage": "Not able to compress the image"
     }
   },
   "forwardingpage": {
