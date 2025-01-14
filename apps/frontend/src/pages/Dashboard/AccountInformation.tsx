@@ -39,8 +39,8 @@ const AccountInformation = () => {
       className="min-h-[100%]"
     >
       <CardContent>
-        <div className="flex flex-col gap-3">
-          <h4 className="font-bold">{t('accountData.account_info')}</h4>
+        <div className="flex flex-col gap-2">
+          <h4 className="mb-4 font-bold">{t('accountData.account_info')}</h4>
           {userInfoFields.map((field) => (
             <Field
               key={`userInfoField-${field.name}`}
@@ -51,6 +51,7 @@ const AccountInformation = () => {
             />
           ))}
           <Button
+            className="mt-4"
             variant="btn-collaboration"
             size="sm"
             onClick={() => navigate(USER_SETTINGS_SECURITY_PATH)}

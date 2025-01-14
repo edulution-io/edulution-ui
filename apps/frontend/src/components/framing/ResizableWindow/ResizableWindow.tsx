@@ -49,11 +49,14 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
 
   const [prevSize, setPrevSize] = useState(currentWindowedFrameSizes[titleTranslationId]);
 
+  const documentWidth = document.documentElement.clientWidth;
+  const documentHeight = document.documentElement.clientHeight;
+
   const setMaxWidth = () => {
-    const width = isMobileView ? window.innerWidth : window.innerWidth - SIDEBAR_WIDTH;
+    const width = isMobileView ? documentWidth : documentWidth - SIDEBAR_WIDTH;
     setCurrentWindowedFrameSize(titleTranslationId, {
       width,
-      height: window.innerHeight,
+      height: documentHeight,
     });
   };
 
@@ -63,11 +66,11 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
     }
   }, [windowSize, isMaximized, isMinimized, isMobileView]);
 
-  const minimizedWidth = Math.min(300, window.innerWidth * 0.333);
+  const minimizedWidth = Math.min(300, documentWidth * 0.333);
 
   function adjustPositionAndSizeForMinimizedState() {
-    const maxVisibleY = window.innerHeight - DEFAULT_MINIMIZED_BAR_HEIGHT;
-    const maxVisibleX = window.innerWidth - minimizedWidth;
+    const maxVisibleY = documentHeight - DEFAULT_MINIMIZED_BAR_HEIGHT;
+    const maxVisibleX = documentWidth - minimizedWidth;
 
     const adjustedX = Math.min(currentPosition.x, maxVisibleX);
     const adjustedY = Math.min(currentPosition.y, maxVisibleY);
@@ -87,7 +90,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
       const minimizedPositionIndex = minimizedWindowedFrames.indexOf(titleTranslationId);
       const calculatedPosition = minimizedPositionIndex * 300;
 
-      setCurrentPosition({ x: calculatedPosition, y: window.innerHeight - DEFAULT_MINIMIZED_BAR_HEIGHT });
+      setCurrentPosition({ x: calculatedPosition, y: documentHeight - DEFAULT_MINIMIZED_BAR_HEIGHT });
     }
   }, [minimizedWindowedFrames, isMinimized, titleTranslationId]);
 
