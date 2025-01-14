@@ -23,15 +23,17 @@ const AppConfigSwitch = <T extends FieldValues>({ fieldPath, control, option }: 
       render={({ field }) => (
         <FormItem>
           <div>{t(option.title)}</div>
-          <FormControl>
-            <Switch
-              {...field}
-              checked={field.value as boolean}
-              onCheckedChange={() => field.onChange(!(field.value as boolean))}
-              disabled={field.disabled}
-            />
-          </FormControl>
-          <FormDescription>{t(option.description)}</FormDescription>
+          <div className="flex flex-row">
+            <FormControl className="flex-0 mx-4">
+              <Switch
+                {...field}
+                checked={field.value as boolean}
+                onCheckedChange={() => field.onChange(!(field.value as boolean))}
+                disabled={field.disabled}
+              />
+            </FormControl>
+            <FormDescription className="flex-1">{t(option.description)}</FormDescription>
+          </div>
           <FormMessage className="text-p" />
         </FormItem>
       )}
