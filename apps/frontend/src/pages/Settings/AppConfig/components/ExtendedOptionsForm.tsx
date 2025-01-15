@@ -65,7 +65,6 @@ const ExtendedOptionsForm = <T extends FieldValues>({
           <AccordionSH
             type="multiple"
             key={section}
-            defaultValue={[section]}
           >
             <AccordionItem value={section}>
               <AccordionTrigger className="flex text-xl font-bold">

@@ -1073,5 +1073,8 @@
   "preview": {
     "image": "Image preview",
     "failedToLoadImage": "Failed to load image"
+  },
+  "dockerApplication": {
+    "title": "Docker Application"
   }
 }

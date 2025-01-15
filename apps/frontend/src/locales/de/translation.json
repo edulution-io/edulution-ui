@@ -1073,5 +1073,8 @@
   "preview": {
     "image": "Bildvorschau",
     "failedToLoadImage": "Bild konnte nicht geladen werden"
+  },
+  "dockerApplication": {
+    "title": "Docker-Anwendung"
   }
 }

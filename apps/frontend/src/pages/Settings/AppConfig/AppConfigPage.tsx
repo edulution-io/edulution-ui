@@ -29,6 +29,7 @@ import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailsConfig from './mails/MailsConfig';
 import formSchema from './appConfigSchema';
 import ProxyConfigForm from './components/ProxyConfigForm';
+import DockerApplicationHandler from './DockerIntegration/DockerApplicationHandler';
 
 const AppConfigPage: React.FC = () => {
   const { settingLocation = '' } = useParams<{ settingLocation: string }>();
@@ -165,6 +166,7 @@ const AppConfigPage: React.FC = () => {
                       appConfig={appConfigs}
                       isNativeApp={item.isNativeApp}
                     />
+                    {settingLocation === 'mail' && <DockerApplicationHandler />}
                     <FormFieldSH
                       key={`${item.id}.accessGroups`}
                       control={control}
@@ -218,7 +220,7 @@ const AppConfigPage: React.FC = () => {
                       control={control}
                       settingLocation={settingLocation}
                     />
-                    <div>{settingLocation === 'mail' && <MailsConfig form={form} />}</div>
+                    {settingLocation === 'mail' && <MailsConfig form={form} />}
                   </div>
                 ) : null}
               </div>
