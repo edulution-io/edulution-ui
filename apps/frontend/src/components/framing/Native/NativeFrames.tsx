@@ -3,12 +3,11 @@ import MailPage from '@/pages/Mail/MailPage';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useFrameStore from '@/components/framing/FrameStore';
 import LinuxmusterPage from '@/pages/LinuxmusterPage/LinuxmusterPage';
+import Whiteboard from '@/pages/Whiteboard/Whiteboard';
 import { AppConfigDto } from '@libs/appconfig/types';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import TApps from '@libs/appconfig/types/appsType';
 import APPS from '@libs/appconfig/constants/apps';
-
-const Whiteboard = React.lazy(() => import('@/pages/Whiteboard/Whiteboard'));
 
 const isActiveNativeFrame = (appConfig: AppConfigDto, loadedFrames: string[]) => {
   const { appType } = appConfig;

@@ -11,7 +11,7 @@ import ResultVisualizationDialog from '@/pages/Surveys/Tables/dialogs/ResultVisu
 import ParticipateDialog from '@/pages/Surveys/Tables/dialogs/ParticipateDialog';
 import SubmittedAnswersDialog from '@/pages/Surveys/Tables/dialogs/SubmittedAnswersDialog';
 
-const SurveysPage: React.FC = () => {
+const SurveysPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const page = searchParams.get('page');
 

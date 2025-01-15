@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import APPS from '@libs/appconfig/constants/apps';
 import FramePlaceholder from '@/components/framing/FramePlaceholder';
@@ -7,8 +7,9 @@ import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPa
 import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
 import type TApps from '@libs/appconfig/types/appsType';
 import BulletinBoardEditorialPage from '@/pages/BulletinBoardEditorial/BulletinBoardEditorialPage';
+import CircleLoader from '@/components/ui/CircleLoader';
 
-const SurveysPage = React.lazy(() => import('@/pages/Surveys/SurveysPage'));
+const SurveysPage = lazy(() => import('@/pages/Surveys/SurveysPage'));
 
 const pages: Partial<Record<TApps, JSX.Element>> = {
   [APPS.CONFERENCES]: <ConferencePage />,
@@ -16,7 +17,11 @@ const pages: Partial<Record<TApps, JSX.Element>> = {
   [APPS.MAIL]: <FramePlaceholder />,
   [APPS.LINUXMUSTER]: <FramePlaceholder />,
   [APPS.WHITEBOARD]: <FramePlaceholder />,
-  [APPS.SURVEYS]: <SurveysPage />,
+  [APPS.SURVEYS]: (
+    <Suspense fallback={<CircleLoader />}>
+      <SurveysPage />
+    </Suspense>
+  ),
   [APPS.DESKTOP_DEPLOYMENT]: <DesktopDeploymentPage />,
   [APPS.CLASS_MANAGEMENT]: <Outlet />,
   [APPS.BULLETIN_BOARD]: <BulletinBoardEditorialPage />,
