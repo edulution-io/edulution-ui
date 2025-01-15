@@ -6,6 +6,7 @@ import { ConferencePage } from '@/pages/ConferencePage';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
 import type TApps from '@libs/appconfig/types/appsType';
+import BulletinBoardEditorialPage from '@/pages/BulletinBoardEditorial/BulletinBoardEditorialPage';
 
 const SurveysPage = React.lazy(() => import('@/pages/Surveys/SurveysPage'));
 
@@ -18,6 +19,7 @@ const pages: Partial<Record<TApps, JSX.Element>> = {
   [APPS.SURVEYS]: <SurveysPage />,
   [APPS.DESKTOP_DEPLOYMENT]: <DesktopDeploymentPage />,
   [APPS.CLASS_MANAGEMENT]: <Outlet />,
+  [APPS.BULLETIN_BOARD]: <BulletinBoardEditorialPage />,
 };
 
 type NativeAppPageProps = {

@@ -1,23 +1,24 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { DropdownMenu } from '@/components';
+import { DropdownSelect } from '@/components';
 import { Button } from '@/components/shared/Button';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import { AppConfigDto } from '@libs/appconfig/types';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import { useNavigate } from 'react-router-dom';
 import useIsMobileView from '@/hooks/useIsMobileView';
+import CircleLoader from '@/components/ui/CircleLoader';
+import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 
 interface AddAppConfigDialogProps {
   option: string;
   setOption: (option: string) => void;
-  filteredAppOptions: () => { id: string; name: string }[];
+  getFilteredAppOptions: () => { id: string; name: string }[];
 }
 
-const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOption, filteredAppOptions }) => {
+const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOption, getFilteredAppOptions }) => {
   const { t } = useTranslation();
   const isMobileView = useIsMobileView();
   const navigate = useNavigate();
@@ -26,12 +27,12 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
   const selectedOption = option.toLowerCase().split('.')[0];
 
   const getDialogBody = () => {
-    if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
+    if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
     return (
       <div className="my-12 text-foreground">
         <p>{t('settings.addApp.description')}</p>
-        <DropdownMenu
-          options={filteredAppOptions()}
+        <DropdownSelect
+          options={getFilteredAppOptions()}
           selectedVal={t(option)}
           handleChange={setOption}
           openToTop={isMobileView}
@@ -54,22 +55,23 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
         appType: APP_INTEGRATION_VARIANT.FORWARDED,
         options: {},
         accessGroups: [],
-        extendedOptions: [],
+        extendedOptions: {},
       };
       const updatedConfig = [...appConfigs, newConfig];
 
       await updateAppConfig(updatedConfig);
       if (!error) {
+        setOption('');
         setIsAddAppConfigDialogOpen(false);
       }
     }
   };
 
   useEffect(() => {
-    if (!isAddAppConfigDialogOpen) {
-      navigate(selectedOption ? `/settings/${selectedOption}` : '/settings', { replace: true });
+    if (selectedOption && !isAddAppConfigDialogOpen) {
+      navigate(`/${SETTINGS_PATH}/${selectedOption}`);
     }
-  }, [isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen]);
+  }, [isAddAppConfigDialogOpen, selectedOption]);
 
   const dialogFooter = (
     <div className="mt-4 flex justify-end">

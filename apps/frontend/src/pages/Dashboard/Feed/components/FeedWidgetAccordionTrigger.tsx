@@ -17,7 +17,7 @@ const FeedWidgetAccordionTrigger = (props: FeedWidgetAccordionTriggerProps) => {
   const { t } = useTranslation();
 
   return (
-    <AccordionTrigger className="flex py-2 text-xl font-bold">
+    <AccordionTrigger className="flex pb-2 pt-0 text-xl font-bold">
       {t(labelTranslationId)}
       <img
         src={src}

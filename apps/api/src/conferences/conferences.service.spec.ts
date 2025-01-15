@@ -19,6 +19,7 @@ import cacheManagerMock from '../common/mocks/cacheManagerMock';
 
 const mockConference: CreateConferenceDto = {
   name: 'Testconference',
+  isPublic: false,
   invitedAttendees: [],
   invitedGroups: [],
 };

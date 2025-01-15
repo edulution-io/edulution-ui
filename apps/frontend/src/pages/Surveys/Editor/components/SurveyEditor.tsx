@@ -1,5 +1,4 @@
 import React from 'react';
-import i18next from 'i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { editorLocalization, localization } from 'survey-creator-core';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
@@ -8,28 +7,28 @@ import 'survey-creator-core/i18n/german';
 import 'survey-creator-core/i18n/french';
 import 'survey-creator-core/i18n/spanish';
 import 'survey-creator-core/i18n/italian';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
+import convertJSONToSurveyFormula from '@libs/survey/utils/convertJSONToSurveyFormula';
+import useLanguage from '@/hooks/useLanguage';
+import useElementHeight from '@/hooks/useElementHeight';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
 import '@/pages/Surveys/theme/custom.survey.css';
 import '@/pages/Surveys/theme/custom.creator.css';
-import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
-import convertJSONToSurveyFormula from '@libs/survey/utils/convertJSONToSurveyFormula';
-import useElementHeight from '@/hooks/useElementHeight';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 
 interface SurveyEditorProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: UseFormReturn<any>;
-  saveNumber: number;
-  formula?: TSurveyFormula;
+  form: UseFormReturn<SurveyDto>;
 }
 
-editorLocalization.defaultLocale = i18next.options.lng || 'en';
-localization.currentLocale = i18next.options.lng || 'en';
-
 const SurveyEditor = (props: SurveyEditorProps) => {
-  const { form, saveNumber, formula } = props;
+  const { form } = props;
+
+  const { language } = useLanguage();
+
+  editorLocalization.defaultLocale = language;
+  localization.currentLocale = language;
 
   const creatorOptions = {
     generateValidJSON: true,
@@ -66,10 +65,8 @@ const SurveyEditor = (props: SurveyEditorProps) => {
 
   creator.theme = surveyTheme;
 
-  creator.saveNo = saveNumber;
-  if (formula) {
-    creator.JSON = formula;
-  }
+  creator.saveNo = form.getValues('saveNo');
+  creator.JSON = form.getValues('formula');
 
   // TOOLBAR (HEADER)
   const settingsActionHeader = creator.toolbar.actions.findIndex((action) => action.id === 'svd-settings');
@@ -112,7 +109,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   });
 
   creator.saveSurveyFunc = (saveNo: number, callback: (saveNo: number, isSuccess: boolean) => void) => {
-    form.setValue('formula', convertJSONToSurveyFormula(creator.toJSON() as JSON));
+    form.setValue('formula', convertJSONToSurveyFormula(creator.JSON as JSON));
     form.setValue('saveNo', saveNo);
     callback(saveNo, true);
   };
@@ -121,7 +118,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
 
   return (
     <div
-      className="survey-editor w-full overflow-y-auto overflow-x-hidden scrollbar-thin md:w-auto md:max-w-7xl xl:max-w-full"
+      className="survey-editor"
       style={{ height: `calc(100% - ${pageBarsHeight}px)` }}
     >
       <SurveyCreatorComponent

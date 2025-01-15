@@ -48,6 +48,7 @@ export { default as SurveysViewAnsweredIcon } from '@/assets/icons/survey-view-a
 export { default as SurveysViewOpenIcon } from '@/assets/icons/survey-view-open-surveys.svg';
 export { default as AiChatIcon } from '@/assets/icons/chat_ai.svg';
 export { default as LinuxmusterIcon } from '@/assets/icons/linuxmuster.svg';
+export { default as BulletinBoardIcon } from '@/assets/icons/kanban.svg';
 export { default as SecurityIcon } from '@/assets/icons/security.svg';
 export { default as WhiteBoardIcon } from '@/assets/icons/whiteboard.svg';
 export { default as EnrolIcon } from '@/assets/icons/enrol.svg';

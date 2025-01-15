@@ -1,6 +1,6 @@
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { LockClosedIcon, LockOpen1Icon } from '@radix-ui/react-icons';
+import { LockClosedIcon } from '@radix-ui/react-icons';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
@@ -10,6 +10,9 @@ import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import i18next from 'i18next';
 import useUserStore from '@/store/UserStore/UserStore';
+import { PiEyeLight, PiEyeSlash } from 'react-icons/pi';
+import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
+import copyToClipboard from '@/utils/copyToClipboard';
 import { toast } from 'sonner';
 import delay from '@libs/common/utils/delay';
 
@@ -41,35 +44,42 @@ function getRowAction(isRunning: boolean, isLoading: boolean, isUserTheCreator: 
   return { icon: undefined, text: '' };
 }
 
-const hideOnMobileClassName = 'hidden lg:flex';
+const hideOnMobileClassName = 'hidden lg:flex min-w-24';
 
 const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
   {
     id: 'conference-name',
     header: ({ table, column }) => (
       <SortableHeader<ConferenceDto, unknown>
-        titleTranslationId="conferences.conference"
+        className="min-w-32"
         table={table}
         column={column}
       />
     ),
+
+    meta: {
+      translationId: 'conferences.conference',
+    },
+
     accessorFn: (row) => row.name,
     cell: ({ row }) => {
+      const { t } = useTranslation();
       const { user } = useUserStore();
-      const { joinConference, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
-      const onClick = async () => {
-        if (row.original.isRunning) {
-          await joinConference(row.original.meetingID);
-        } else {
-          setJoinConferenceUrl('');
-        }
-      };
+      const { joinConference } = useConferenceDetailsDialogStore();
+      const { isRunning, creator, name, meetingID } = row.original;
+      const onClick = isRunning
+        ? async () => {
+            await joinConference(meetingID);
+          }
+        : undefined;
       return (
         <SelectableTextCell
           onClick={onClick}
-          icon={row.original.isRunning ? <MdLogin /> : undefined}
-          text={row.original.name}
-          row={user?.username === row.original.creator?.username ? row : undefined}
+          icon={isRunning ? <MdLogin /> : undefined}
+          text={name}
+          textOnHover={isRunning ? t('common.join') : ''}
+          row={user?.username === creator?.username ? row : undefined}
+          className="min-w-32"
           isFirstColumn
         />
       );
@@ -80,62 +90,72 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     header: ({ column }) => (
       <SortableHeader<ConferenceDto, unknown>
         className={hideOnMobileClassName}
-        titleTranslationId="conferences.creator"
         column={column}
       />
     ),
+    meta: {
+      translationId: 'conferences.creator',
+    },
     accessorFn: (row) => row.creator,
     cell: ({ row }) => {
+      const { t } = useTranslation();
       const { user } = useUserStore();
+      const { firstName, username, lastName } = row.original.creator;
+      const isUserTheCreator = user?.username === username;
       const { setSelectedConference } = useConferenceDetailsDialogStore();
       return (
         <SelectableTextCell
           className={hideOnMobileClassName}
           onClick={
-            user?.username === row.original.creator?.username
+            isUserTheCreator
               ? () => {
                   setSelectedConference(row.original);
                 }
               : undefined
           }
-          text={`${row.original.creator.firstName} ${row.original.creator.lastName}`}
+          text={`${firstName} ${lastName}`}
+          textOnHover={isUserTheCreator ? t('common.details') : ''}
         />
       );
     },
   },
   {
-    id: 'conference-password',
+    id: 'conference-isPublic',
     header: ({ column }) => (
       <SortableHeader<ConferenceDto, unknown>
         className={hideOnMobileClassName}
-        titleTranslationId="conferences.password"
         column={column}
       />
     ),
-    accessorFn: (row) => row.creator,
+    meta: {
+      translationId: 'conferences.isPublic',
+    },
+    accessorFn: (row) => row.isPublic,
     cell: ({ row }) => {
+      const { t } = useTranslation();
       const iconSize = 16;
-      const { user } = useUserStore();
-      const { setSelectedConference } = useConferenceDetailsDialogStore();
+      const { isPublic } = row.original;
+      const url = `${window.location.origin}/${CONFERENCES_PUBLIC_EDU_API_ENDPOINT}/${row.original.meetingID}`;
       return (
         <SelectableTextCell
           className={hideOnMobileClassName}
           onClick={
-            user?.username === row.original.creator?.username
+            isPublic
               ? () => {
-                  setSelectedConference(row.original);
+                  copyToClipboard(url);
                 }
               : undefined
           }
-          text={'*'.repeat(row.original.password?.length || 0)}
+          text={t(`conferences.${isPublic ? 'isPublicTrue' : 'isPublicFalse'}`)}
+          textOnHover={isPublic ? t('common.copy.link') : ''}
           icon={
-            row.original.password ? (
-              <LockClosedIcon
+            isPublic ? (
+              <PiEyeLight
                 width={iconSize}
                 height={iconSize}
               />
             ) : (
-              <LockOpen1Icon
+              <PiEyeSlash
                 width={iconSize}
                 height={iconSize}
               />
@@ -146,20 +166,67 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     },
   },
   {
+    id: 'conference-password',
+    header: ({ column }) => (
+      <SortableHeader<ConferenceDto, unknown>
+        className={hideOnMobileClassName}
+        column={column}
+      />
+    ),
+    meta: {
+      translationId: 'conferences.password',
+    },
+    accessorFn: (row) => !!row.password,
+    cell: ({ row }) => {
+      const { t } = useTranslation();
+      const iconSize = 16;
+      const { user } = useUserStore();
+      const { setSelectedConference } = useConferenceDetailsDialogStore();
+      const { username } = row.original.creator;
+      const isUserTheCreator = user?.username === username;
+      return (
+        <SelectableTextCell
+          className={hideOnMobileClassName}
+          onClick={
+            isUserTheCreator
+              ? () => {
+                  setSelectedConference(row.original);
+                }
+              : undefined
+          }
+          text={'*'.repeat(row.original.password?.length || 0)}
+          textOnHover={isUserTheCreator ? t('common.details') : ''}
+          icon={
+            row.original.password ? (
+              <LockClosedIcon
+                width={iconSize}
+                height={iconSize}
+              />
+            ) : undefined
+          }
+        />
+      );
+    },
+  },
+  {
     id: 'conference-invited-attendees',
     header: ({ column }) => (
       <SortableHeader<ConferenceDto, unknown>
         className={hideOnMobileClassName}
-        titleTranslationId="conferences.invitedAttendees"
         column={column}
       />
     ),
+    meta: {
+      translationId: 'conferences.invitedAttendees',
+    },
     accessorFn: (row) => row.invitedAttendees.length,
     cell: ({ row }) => {
       const { t } = useTranslation();
       const { user } = useUserStore();
       const { setSelectedConference } = useConferenceDetailsDialogStore();
-      const attendeeCount = row.original.invitedAttendees.length;
+      const isUserTheCreator = user?.username === row.original.creator.username;
+      const { length } = row.original.invitedAttendees;
+      const attendeeCount = length;
       const attendeeText = `${attendeeCount} ${t(attendeeCount === 1 ? 'conferences.attendee' : 'conferences.attendees')}`;
       const groupsCount = row.original.invitedGroups?.length;
       const groupsText = `${groupsCount ? `, ${groupsCount} ${t(groupsCount === 1 ? 'common.group' : 'common.groups')}` : ''}`;
@@ -167,13 +234,14 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
         <SelectableTextCell
           className={hideOnMobileClassName}
           onClick={
-            user?.username === row.original.creator?.username
+            isUserTheCreator
               ? () => {
                   setSelectedConference(row.original);
                 }
               : undefined
           }
           text={`${attendeeText} ${groupsText}`}
+          textOnHover={isUserTheCreator ? t('common.details') : ''}
         />
       );
     },
@@ -183,10 +251,12 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     header: ({ column }) => (
       <SortableHeader<ConferenceDto, unknown>
         className={hideOnMobileClassName}
-        titleTranslationId="conferences.joinedAttendees"
         column={column}
       />
     ),
+    meta: {
+      translationId: 'conferences.joinedAttendees',
+    },
     accessorFn: (row) => row.joinedAttendees.length,
     cell: ({ row }) => (
       <SelectableTextCell
@@ -197,17 +267,15 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
   },
   {
     id: 'conference-action-button',
-    header: ({ column }) => (
-      <SortableHeader<ConferenceDto, unknown>
-        titleTranslationId="conferences.action"
-        column={column}
-      />
-    ),
+    header: ({ column }) => <SortableHeader<ConferenceDto, unknown> column={column} />,
+    meta: {
+      translationId: 'conferences.action',
+    },
     accessorFn: (row) => row.isRunning,
     cell: ({ row }) => {
       const { creator, isRunning, meetingID } = row.original;
       const { user } = useUserStore();
-      const { joinConference, setJoinConferenceUrl, joinConferenceUrl } = useConferenceDetailsDialogStore();
+      const { joinConference, joinConferenceUrl, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
       const { toggleConferenceRunningState, getConferences, loadingMeetingId } = useConferenceStore();
       const isUserTheCreator = user?.username === creator?.username;
       const isRowLoading = row.original.meetingID === loadingMeetingId;
@@ -228,13 +296,13 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
               } else if (isRunning) {
                 await joinConference(meetingID);
               }
-              toast.info(i18next.t(`conferences.${isRunning ? 'stopped' : 'started'}`));
               await delay(5000);
               await getConferences();
+              toast.info(i18next.t(`conferences.${isRunning ? 'stopped' : 'started'}`));
             };
       return (
         <SelectableTextCell
-          onClick={onClick}
+          onClick={isUserTheCreator || isRunning ? onClick : undefined}
           icon={icon}
           text={text}
         />

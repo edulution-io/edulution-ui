@@ -17,7 +17,7 @@ import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
-import FilesystemService from './filesystem.service';
+import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
 
 @Injectable()
@@ -81,11 +81,10 @@ class FilesharingService {
       data?: string | Record<string, any> | Buffer;
       headers?: Record<string, string | number>;
     },
-    // TODO make showDebugMessage optional
-    showDebugMessage: boolean,
     fileSharingErrorMessage: ErrorMessage,
     // eslint-disable-next-line
     transformer?: (data: any) => T,
+    showDebugMessage?: boolean,
   ): Promise<T | WebdavStatusReplay> {
     try {
       const response = await client(config);
@@ -126,7 +125,6 @@ class FilesharingService {
         url: this.baseurl + getPathWithoutWebdav(path),
         data: this.webdavXML,
       },
-      true,
       FileSharingErrorMessage.FileNotFound,
       mapToDirectoryFiles,
     )) as DirectoryFileDTO[];
@@ -142,7 +140,6 @@ class FilesharingService {
         data: this.webdavXML,
         headers: { 'Content-Type': RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
       },
-      true,
       FileSharingErrorMessage.FolderNotFound,
       mapToDirectories,
     )) as DirectoryFileDTO[];
@@ -158,7 +155,6 @@ class FilesharingService {
         method: HttpMethodsWebDav.MKCOL,
         url: fullPath,
       },
-      true,
       FileSharingErrorMessage.FolderCreationFailed,
       (response: WebdavStatusReplay) =>
         ({
@@ -185,7 +181,6 @@ class FilesharingService {
         headers: { 'Content-Type': RequestResponseContentType.TEXT_PLAIN },
         data: content,
       },
-      true,
       FileSharingErrorMessage.CreationFailed,
       (response: WebdavStatusReplay) =>
         ({
@@ -206,7 +201,6 @@ class FilesharingService {
         headers: { 'Content-Type': file.mimetype },
         data: file.buffer,
       },
-      false,
       FileSharingErrorMessage.UploadFailed,
       (response: WebdavStatusReplay) =>
         ({
@@ -228,7 +222,6 @@ class FilesharingService {
         url: fullPath,
         headers: { 'Content-Type': RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
       },
-      true,
       FileSharingErrorMessage.DeletionFailed,
       (response: WebdavStatusReplay) =>
         ({
@@ -253,7 +246,6 @@ class FilesharingService {
           'Content-Type': RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
         },
       },
-      true,
       FileSharingErrorMessage.RenameFailed,
       (response: WebdavStatusReplay) => ({
         success: response.status >= 200 && response.status < 300,
@@ -273,14 +265,14 @@ class FilesharingService {
       try {
         await this.createFolder(username, pathWithoutFilename, FILE_PATHS.COLLECT);
       } catch (error) {
-        Logger.log(error);
+        Logger.error(error);
       }
 
       try {
         const sanitizedDestinationPath = destinationPath.replace(/\u202F/g, ' ');
         await FilesharingService.copyFileViaWebDAV(client, encodeURI(fullOriginPath), sanitizedDestinationPath);
       } catch (error) {
-        Logger.log(error);
+        Logger.error(error);
       }
     });
 
@@ -301,7 +293,11 @@ class FilesharingService {
       }
       return resp.data;
     } catch (error) {
-      throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      throw new CustomHttpException(
+        FileSharingErrorMessage.DownloadFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        `${username} ${filePath}`,
+      );
     }
   }
 
@@ -333,20 +329,20 @@ class FilesharingService {
     try {
       await this.createFolder(username, initFolderName, collectFileRequestDTO[0].newFolderName);
     } catch (error) {
-      Logger.log(error);
+      Logger.error(error);
     }
 
     const operations = collectFileRequestDTO.map(async (item) => {
       try {
         await this.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName);
       } catch (error) {
-        Logger.log(error);
+        Logger.error(error);
       }
 
       try {
         await this.moveOrRenameResource(username, item.originPath, item.destinationPath);
       } catch (error) {
-        Logger.log(error);
+        Logger.error(error);
       }
     });
 
@@ -371,7 +367,6 @@ class FilesharingService {
           Destination: destinationPath,
         },
       },
-      true,
       FileSharingErrorMessage.DuplicateFailed,
       (response: WebdavStatusReplay) => ({
         success: response.status >= 200 && response.status < 300,

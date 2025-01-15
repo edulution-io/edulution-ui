@@ -7,9 +7,10 @@ import type { RedisClientOptions } from 'redis';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { resolve } from 'path';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import LoggingInterceptor from '../logging/logging.interceptor';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
@@ -22,11 +23,13 @@ import FilesharingModule from '../filesharing/filesharing.module';
 import LicenseModule from '../license/license.module';
 import SurveysModule from '../surveys/surveys.module';
 import AuthModule from '../auth/auth.module';
+import BulletinCategoryModule from '../bulletin-category/bulletin-category.module';
+import BulletinBoardModule from '../bulletinboard/bulletinboard.module';
 
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: resolve(__dirname, '..', 'public', 'downloads'),
+      rootPath: PUBLIC_DOWNLOADS_PATH,
       serveRoot: `/${EDU_API_ROOT}/downloads`,
     }),
     AuthModule,
@@ -40,6 +43,8 @@ import AuthModule from '../auth/auth.module';
     VdiModule,
     LicenseModule,
     SurveysModule,
+    BulletinCategoryModule,
+    BulletinBoardModule,
     JwtModule.register({
       global: true,
     }),
@@ -59,6 +64,7 @@ import AuthModule from '../auth/auth.module';
         port: parseInt(process.env.REDIS_PORT ?? '6379', 10),
       },
     }),
+    EventEmitterModule.forRoot(),
   ],
   providers: [
     {

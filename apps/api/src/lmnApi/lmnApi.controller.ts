@@ -133,11 +133,15 @@ export class LmnApiController {
   }
 
   @Get('user/:username')
-  async getUser(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @Param() params: { username: string }) {
-    return this.lmnApiService.getUser(lmnApiToken, params.username);
+  async getUser(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Param() params: { username: string },
+    @Query('checkFirstPassword') checkFirstPassword?: boolean,
+  ) {
+    return this.lmnApiService.getUser(lmnApiToken, params.username, checkFirstPassword);
   }
 
-  @Post('user')
+  @Patch('user')
   async updateCurrentUserDetails(
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
     @Body() body: { userDetails: Partial<UpdateUserDetailsDto> },

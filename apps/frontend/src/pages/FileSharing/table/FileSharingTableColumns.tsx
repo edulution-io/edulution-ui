@@ -7,7 +7,6 @@ import {
   getFileCategorie,
   parseDate,
 } from '@/pages/FileSharing/utilities/filesharingUtilities';
-import { translateKey } from '@/utils/common';
 import { useSearchParams } from 'react-router-dom';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
@@ -18,6 +17,7 @@ import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import i18n from '@/i18n';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
@@ -30,13 +30,14 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
 
     header: ({ table, column }) => (
       <SortableHeader<DirectoryFileDTO, unknown>
-        titleTranslationId="fileSharingTable.filename"
         table={table}
         column={column}
       />
     ),
+    meta: {
+      translationId: 'fileSharingTable.filename',
+    },
     accessorFn: (row) => row.type + row.filename,
-
     cell: ({ row }) => {
       const [searchParams, setSearchParams] = useSearchParams();
       const { setCurrentlyEditingFile, currentlyEditingFile } = useFileSharingStore();
@@ -88,12 +89,10 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
   {
     accessorKey: 'lastmod',
     header: function Header({ column }) {
-      return (
-        <SortableHeader<DirectoryFileDTO, unknown>
-          titleTranslationId="fileSharingTable.lastModified"
-          column={column}
-        />
-      );
+      return <SortableHeader<DirectoryFileDTO, unknown> column={column} />;
+    },
+    meta: {
+      translationId: 'fileSharingTable.lastModified',
     },
     accessorFn: (row) => row.lastmod,
     cell: ({ row }) => {
@@ -126,10 +125,12 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
       return (
         <SortableHeader<DirectoryFileDTO, unknown>
           className={hideOnMobileClassName}
-          titleTranslationId="fileSharingTable.size"
           column={column}
         />
       );
+    },
+    meta: {
+      translationId: 'fileSharingTable.size',
     },
     cell: ({ row }) => {
       let fileSize = 0;
@@ -150,17 +151,19 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
       return (
         <SortableHeader<DirectoryFileDTO, unknown>
           className={hideOnMobileClassName}
-          titleTranslationId="fileSharingTable.type"
           column={column}
         />
       );
     },
+    meta: {
+      translationId: 'fileSharingTable.type',
+    },
     cell: function Cell({ row }) {
       const renderFileCategorize = (item: DirectoryFileDTO) => {
         if (row.original.type === ContentType.FILE) {
-          return translateKey(`fileCategory.${getFileCategorie(item.filename)}`);
+          return i18n.t(`fileCategory.${getFileCategorie(item.filename)}`);
         }
-        return translateKey('fileCategory.folder');
+        return i18n.t('fileCategory.folder');
       };
 
       return (

@@ -1,43 +1,41 @@
 import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
-import { Model, Connection } from 'mongoose';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Connection, Model } from 'mongoose';
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
 import { AppConfigDto } from '@libs/appconfig/types';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
-import defaultAppConfig from '@libs/appconfig/constants/defaultAppConfig';
+import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import { AppConfig } from './appconfig.schema';
+import initializeCollection from './initializeCollection';
+import MigrationService from '../migration/migration.service';
+import appConfigMigrationsList from './migrations/appConfigMigrationsList';
 
 @Injectable()
 class AppConfigService implements OnModuleInit {
   constructor(
     @InjectConnection() private readonly connection: Connection,
     @InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async onModuleInit() {
-    const collections = await this.connection.db?.listCollections({ name: 'appconfigs' }).toArray();
+    await initializeCollection(this.connection, this.appConfigModel);
 
-    if (collections?.length === 0) {
-      await this.connection.db?.createCollection('appconfigs');
-    }
-
-    const count = await this.appConfigModel.countDocuments();
-
-    if (count === 0) {
-      await this.appConfigModel.insertMany(defaultAppConfig);
-    }
+    await MigrationService.runMigrations(this.appConfigModel, appConfigMigrationsList);
   }
 
   async insertConfig(appConfigDto: AppConfigDto[]) {
     try {
       await this.appConfigModel.insertMany(appConfigDto);
-    } catch (e) {
+    } catch (error) {
       throw new CustomHttpException(
         AppConfigErrorMessages.WriteAppConfigFailed,
         HttpStatus.SERVICE_UNAVAILABLE,
+        undefined,
         AppConfigService.name,
       );
     }
@@ -81,10 +79,12 @@ class AppConfigService implements OnModuleInit {
       });
 
       await this.appConfigModel.bulkWrite(bulkOperations);
+      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
     } catch (e) {
       throw new CustomHttpException(
         AppConfigErrorMessages.WriteAppConfigFailed,
         HttpStatus.SERVICE_UNAVAILABLE,
+        undefined,
         AppConfigService.name,
       );
     }
@@ -94,14 +94,18 @@ class AppConfigService implements OnModuleInit {
     try {
       let appConfigDto: AppConfigDto[];
       if (ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
-        appConfigDto = await this.appConfigModel.find({}, 'name icon appType options accessGroups extendedOptions');
+        appConfigDto = await this.appConfigModel
+          .find({}, 'name icon appType options accessGroups extendedOptions')
+          .lean();
       } else {
-        const appConfigObjects = await this.appConfigModel.find(
-          {
-            'accessGroups.path': { $in: ldapGroups },
-          },
-          'name icon appType options extendedOptions',
-        );
+        const appConfigObjects = await this.appConfigModel
+          .find(
+            {
+              'accessGroups.path': { $in: ldapGroups },
+            },
+            'name icon appType options extendedOptions',
+          )
+          .lean();
 
         appConfigDto = appConfigObjects.map((config) => ({
           name: config.name,
@@ -109,34 +113,27 @@ class AppConfigService implements OnModuleInit {
           appType: config.appType,
           options: { url: config.options.url ?? '' },
           accessGroups: [],
-          extendedOptions: config.extendedOptions ?? [],
+          extendedOptions: config.extendedOptions,
         }));
       }
 
       return appConfigDto;
-    } catch (e) {
+    } catch (error) {
       throw new CustomHttpException(
         AppConfigErrorMessages.ReadAppConfigFailed,
         HttpStatus.SERVICE_UNAVAILABLE,
+        undefined,
         AppConfigService.name,
       );
     }
   }
 
-  async getAppConfigByName(name: string): Promise<AppConfig | null> {
-    try {
-      const appConfig = await this.appConfigModel.findOne({ name });
-      if (!appConfig) {
-        throw new HttpException(`AppConfig with name ${name} not found`, HttpStatus.NOT_FOUND);
-      }
-      return appConfig;
-    } catch (e) {
-      throw new CustomHttpException(
-        AppConfigErrorMessages.ReadAppConfigFailed,
-        HttpStatus.SERVICE_UNAVAILABLE,
-        AppConfigService.name,
-      );
+  async getAppConfigByName(name: string): Promise<AppConfigDto> {
+    const appConfig = await this.appConfigModel.findOne({ name }).lean();
+    if (!appConfig) {
+      throw new HttpException(`AppConfig with name ${name} not found`, HttpStatus.NOT_FOUND);
     }
+    return appConfig;
   }
 
   async deleteConfig(configName: string) {
@@ -146,6 +143,7 @@ class AppConfigService implements OnModuleInit {
       throw new CustomHttpException(
         AppConfigErrorMessages.DisableAppConfigFailed,
         HttpStatus.SERVICE_UNAVAILABLE,
+        undefined,
         AppConfigService.name,
       );
     }
@@ -161,6 +159,7 @@ class AppConfigService implements OnModuleInit {
       throw new CustomHttpException(
         AppConfigErrorMessages.WriteTraefikConfigFailed,
         HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
         AppConfigService.name,
       );
     }
@@ -175,6 +174,7 @@ class AppConfigService implements OnModuleInit {
       throw new CustomHttpException(
         AppConfigErrorMessages.ReadTraefikConfigFailed,
         HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
         AppConfigService.name,
       );
     }
