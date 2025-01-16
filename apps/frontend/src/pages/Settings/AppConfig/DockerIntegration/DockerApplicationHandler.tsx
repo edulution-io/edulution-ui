@@ -10,6 +10,7 @@ import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
 import useUserStore from '@/store/UserStore/UserStore';
+import APPS from '@libs/appconfig/constants/apps';
 import useDockerApplicationStore from './useDockerApplicationStore';
 
 const DockerApplicationHandler: React.FC = () => {
@@ -40,19 +41,29 @@ const DockerApplicationHandler: React.FC = () => {
   }, [eduApiToken]);
 
   const handleCreateContainer = async () => {
-    setIsDialogOpen(true);
     await createAndRunContainer('nginx', 'latest');
   };
 
   const getDialogBody = () => <ProgressTextArea text={dockerProgress} />;
   const getDialogFooter = () => (
-    <Button
-      variant="btn-collaboration"
-      type="button"
-      onClick={() => setIsDialogOpen(false)}
-    >
-      {t('common.close')}
-    </Button>
+    <div className="flex justify-end gap-2">
+      <Button
+        variant="btn-attention"
+        size="lg"
+        type="button"
+        onClick={() => setIsDialogOpen(false)}
+      >
+        {t('common.close')}
+      </Button>
+      <Button
+        variant="btn-infrastructure"
+        size="lg"
+        type="button"
+        onClick={handleCreateContainer}
+      >
+        {t('common.install')}
+      </Button>
+    </div>
   );
 
   return (
@@ -82,7 +93,7 @@ const DockerApplicationHandler: React.FC = () => {
                 variant="btn-outline"
                 type="button"
                 className="flex items-center justify-center border-2"
-                onClick={handleCreateContainer}
+                onClick={() => setIsDialogOpen(true)}
               >
                 <PlusIcon />
               </Button>
@@ -91,7 +102,7 @@ const DockerApplicationHandler: React.FC = () => {
         </AccordionItem>
       </AccordionSH>
       <AdaptiveDialog
-        title="Create Container"
+        title={t(`dockerApplication.dialogTitle`, { applicationName: APPS.MAIL.toUpperCase() })}
         isOpen={isDialogOpen}
         body={getDialogBody()}
         footer={getDialogFooter()}

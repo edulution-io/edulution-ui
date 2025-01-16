@@ -34,7 +34,8 @@ const useDockerApplicationStore = create<DockerApplicationStore>((set) => ({
   createAndRunContainer: async (image: string, tag: string) => {
     set({ isLoading: true, error: null });
     try {
-      await eduApi.post('docker/containers', { image, tag });
+      const { data } = await eduApi.post<ContainerInfo[]>('docker/containers', { image, tag });
+      set({ containers: data });
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -45,7 +46,8 @@ const useDockerApplicationStore = create<DockerApplicationStore>((set) => ({
   runDockerCommand: async (id: string, operation: string) => {
     set({ isLoading: true, error: null });
     try {
-      await eduApi.put(`docker/containers/${id}/${operation}`);
+      const { data } = await eduApi.put<ContainerInfo[]>(`docker/containers/${id}/${operation}`);
+      set({ containers: data });
     } catch (error) {
       handleApiError(error, set);
     } finally {

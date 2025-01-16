@@ -843,7 +843,8 @@
     "time": "Time",
     "revert": "Revert",
     "restart": "Restart",
-    "kill": "Kill"
+    "kill": "Kill",
+    "install": "Install"
   },
   "form": {
     "path": "Path",
@@ -1077,7 +1078,8 @@
     "failedToLoadImage": "Failed to load image"
   },
   "dockerApplication": {
-    "title": "Docker Application"
+    "title": "Docker Application",
+    "dialogTitle": "{{applicationName}}-Container Installer"
   },
   "dockerOverview": {
     "title": "Container Overview",

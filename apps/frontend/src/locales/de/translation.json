@@ -843,7 +843,8 @@
     "time": "Uhrzeit",
     "revert": "Zurücksetzen",
     "restart": "Erneut starten",
-    "kill": "Beenden"
+    "kill": "Beenden",
+    "install": "Installieren"
   },
   "form": {
     "path": "Link",
@@ -1077,7 +1078,8 @@
     "failedToLoadImage": "Bild konnte nicht geladen werden"
   },
   "dockerApplication": {
-    "title": "Docker-Anwendung"
+    "title": "Docker-Anwendung",
+    "dialogTitle": "{{applicationName}}-Container Installer"
   },
   "dockerOverview": {
     "title": "Container-Übersicht",

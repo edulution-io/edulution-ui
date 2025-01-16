@@ -9,6 +9,7 @@ import type TDockerCommands from '@libs/docker/types/TDockerCommands';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import DockerErrorMessages from '@libs/docker/constants/dockerErrorMessages';
 import DOCKER_COMMANDS from '@libs/docker/constants/dockerCommands';
+import delay from '@libs/common/utils/delay';
 import SseService from '../sse/sse.service';
 import type UserConnections from '../types/userConnections';
 
@@ -157,6 +158,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
           break;
         case DOCKER_COMMANDS.STOP:
           await this.docker.getContainer(id).stop();
+          await delay(2000);
           break;
         case DOCKER_COMMANDS.RESTART:
           await this.docker.getContainer(id).restart();
