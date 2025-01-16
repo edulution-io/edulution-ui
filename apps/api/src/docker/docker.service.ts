@@ -1,5 +1,4 @@
 import { Injectable, Logger, OnModuleDestroy, OnModuleInit, MessageEvent, HttpStatus } from '@nestjs/common';
-import axios from 'axios';
 import Docker from 'dockerode';
 import { fromEvent, Observable, Subscription } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
@@ -13,12 +12,8 @@ import DOCKER_COMMANDS from '@libs/docker/constants/dockerCommands';
 import SseService from '../sse/sse.service';
 import type UserConnections from '../types/userConnections';
 
-type CreateContainerResponse = { Id: string; Warnings: string[] };
-
 @Injectable()
 class DockerService implements OnModuleInit, OnModuleDestroy {
-  private readonly dockerApiUrl = 'http://localhost:2375';
-
   private readonly dockerSocketPath = '/var/run/docker.sock';
 
   private readonly docker = new Docker({ socketPath: this.dockerSocketPath });
@@ -156,7 +151,28 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
   async executeContainerCommand(params: { id: string; operation: TDockerCommands }) {
     const { id, operation } = params;
     try {
-      await axios.post<CreateContainerResponse>(`${this.dockerApiUrl}/containers/${id}/${operation}`);
+      switch (operation) {
+        case DOCKER_COMMANDS.START:
+          await this.docker.getContainer(id).start();
+          break;
+        case DOCKER_COMMANDS.STOP:
+          await this.docker.getContainer(id).stop();
+          break;
+        case DOCKER_COMMANDS.RESTART:
+          await this.docker.getContainer(id).restart();
+          break;
+        case DOCKER_COMMANDS.KILL:
+          await this.docker.getContainer(id).kill();
+          break;
+        default:
+          throw new CustomHttpException(
+            DockerErrorMessages.DOCKER_COMMAND_EXECUTION_ERROR,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            undefined,
+            DockerService.name,
+          );
+      }
+
       const containers = await this.getContainers();
       return containers;
     } catch (error) {

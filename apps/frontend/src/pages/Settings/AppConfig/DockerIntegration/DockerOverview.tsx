@@ -19,30 +19,33 @@ const DockerOverview: React.FC = () => {
     void fetchContainers();
   }, []);
 
-  const dockerSettingsDropdownList = useMemo(() => {
-    const items: DropdownMenuItemType[] = [];
-    Object.entries(DOCKER_COMMANDS).forEach((item) => {
-      items.push({
-        label: t(`common.${item[1]}`),
-        onClick: () => {
-          void runDockerCommand('edulution-mail', item[1]);
-          return undefined;
-        },
+  const dockerSettingsDropdownList = useMemo(
+    () => (containerName: string) => {
+      const items: DropdownMenuItemType[] = [];
+      Object.entries(DOCKER_COMMANDS).forEach((item) => {
+        items.push({
+          label: t(`common.${item[1]}`),
+          onClick: () => {
+            void runDockerCommand(containerName, item[1]);
+            return undefined;
+          },
+        });
       });
-    });
 
-    items.push(
-      { label: 'categorySeparator', isSeparator: true },
-      {
-        label: t('common.delete'),
-        onClick: () => {
-          void deleteDockerContainer('edulution-mail');
-          return undefined;
+      items.push(
+        { label: 'categorySeparator', isSeparator: true },
+        {
+          label: t('common.delete'),
+          onClick: () => {
+            void deleteDockerContainer(containerName);
+            return undefined;
+          },
         },
-      },
-    );
-    return items;
-  }, []);
+      );
+      return items;
+    },
+    [t, runDockerCommand, deleteDockerContainer],
+  );
 
   return (
     <>
@@ -71,7 +74,7 @@ const DockerOverview: React.FC = () => {
                       <PiDotsThreeVerticalBold className="h-6 w-6" />
                     </Button>
                   }
-                  items={dockerSettingsDropdownList}
+                  items={dockerSettingsDropdownList(item.Names[0].split('/')[1])}
                 />
               </div>
               <Field
