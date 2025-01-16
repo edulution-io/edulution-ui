@@ -58,7 +58,7 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
         groups={watch('invitedGroups') as MultipleSelectorGroup[]}
         onGroupSearch={searchGroups}
         onGroupsChange={handleGroupsChange}
-        variant="dark"
+        variant="dialog"
       />
       <p className="text-m font-bold text-background">{t('survey.expirationDate')}</p>
       <div className="flex items-center">

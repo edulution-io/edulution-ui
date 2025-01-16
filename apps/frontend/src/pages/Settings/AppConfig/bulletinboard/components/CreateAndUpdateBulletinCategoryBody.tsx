@@ -75,6 +75,7 @@ const CreateAndUpdateBulletinCategoryBody = ({
           groups={watch('visibleForGroups') as MultipleSelectorGroup[]}
           onGroupSearch={searchGroups}
           onGroupsChange={(groups) => setValue('visibleForGroups', groups, { shouldValidate: true })}
+          variant="dialog"
         />
         <p className="pt-4 text-lg font-bold text-background">
           {t('bulletinboard.categories.editableByUsersAndGroupsTitle')}
@@ -87,6 +88,7 @@ const CreateAndUpdateBulletinCategoryBody = ({
           groups={watch('editableByGroups') as MultipleSelectorGroup[]}
           onGroupSearch={searchGroups}
           onGroupsChange={(groups) => setValue('editableByGroups', groups, { shouldValidate: true })}
+          variant="dialog"
         />
       </form>
     </Form>

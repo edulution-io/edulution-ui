@@ -131,6 +131,7 @@ const PublicConferenceJoinForm = ({
                       message: t('common.min_chars', { count: 3 }),
                     },
                   }}
+                  variant="dialog"
                 />
               </div>
             )}
@@ -148,6 +149,7 @@ const PublicConferenceJoinForm = ({
                   rules={{
                     required: t('common.min_chars', { count: 1 }),
                   }}
+                  variant="dialog"
                 />
               </div>
             )}

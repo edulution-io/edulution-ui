@@ -88,6 +88,7 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
           form={form}
           labelTranslationId={t('classmanagement.name')}
           isLoading={searchGroupsIsLoading}
+          variant="dialog"
         />
 
         <AccordionSH type="multiple">
@@ -120,6 +121,7 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
                   onGroupSearch={searchGroups}
                   onGroupsChange={handleAdminGroupsChange}
                   disabled={disabled}
+                  variant="dialog"
                 />
                 <div className="h-16 w-16" />
               </AccordionContent>
@@ -140,6 +142,7 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
                 onGroupsChange={handleGroupsChange}
                 disabled={disabled}
                 hideGroupSearch={type === UserGroups.Sessions}
+                variant="dialog"
               />
               <div className="h-16 w-16" />
             </AccordionContent>

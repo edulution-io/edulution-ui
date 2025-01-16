@@ -15,7 +15,7 @@ interface SearchUsersOrGroupsProps {
   onGroupsChange: (options: MultipleSelectorGroup[]) => void;
   disabled?: boolean;
   hideGroupSearch?: boolean;
-  variant?: 'light' | 'dark';
+  variant?: 'default' | 'dialog';
 }
 
 const SearchUsersOrGroups = ({

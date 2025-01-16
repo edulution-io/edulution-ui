@@ -112,6 +112,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
           defaultValue={form.getValues('title')}
           form={form}
           labelTranslationId={t('bulletinboard.title')}
+          variant="dialog"
         />
         <div>
           <div className="mb-1 font-bold">{t('bulletinboard.content')}</div>

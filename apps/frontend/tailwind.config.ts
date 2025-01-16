@@ -39,6 +39,9 @@ module.exports = {
         border: 'var(--border)',
         input: 'var(--input)',
         ring: 'var(--ring)',
+        'accent-light': 'var(--accent-light)',
+        'muted-light': 'var(--muted-light)',
+        'muted-dialog': 'var(--muted-dialog)',
         primary: {
           DEFAULT: 'var(--primary)',
           foreground: 'var(--primary-foreground)',

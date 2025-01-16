@@ -80,6 +80,7 @@ const UserPasswordDialogBody = ({
                     className="w-full flex-grow"
                     value={form.watch('firstPassword')}
                     onChange={(e) => form.setValue('firstPassword', e.target.value)}
+                    variant="dialog"
                   />
                 </div>
                 <Button
@@ -111,6 +112,7 @@ const UserPasswordDialogBody = ({
                     name="currentPassword"
                     form={form}
                     type="password"
+                    variant="dialog"
                   />
                 </div>
                 <Button

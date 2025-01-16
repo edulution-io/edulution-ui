@@ -55,6 +55,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           form={form}
           labelTranslationId={t('conferences.name')}
           disabled={searchGroupsIsLoading}
+          variant="dialog"
         />
         <SearchUsersOrGroups
           users={watch('invitedAttendees') as AttendeeDto[]}
@@ -63,7 +64,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           groups={watch('invitedGroups') as MultipleSelectorGroup[]}
           onGroupSearch={searchGroups}
           onGroupsChange={handleGroupsChange}
-          variant="dark"
+          variant="dialog"
         />
         <FormField
           name="password"
@@ -72,6 +73,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           labelTranslationId={t('conferences.password')}
           type="password"
           disabled={searchGroupsIsLoading}
+          variant="dialog"
         />
 
         <RadioGroupFormField

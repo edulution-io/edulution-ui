@@ -19,6 +19,7 @@ type FormFieldProps<T extends FieldValues> = {
   placeholder?: string;
   rules?: Omit<RegisterOptions<T, Path<T>>, 'disabled' | 'valueAsNumber' | 'valueAsDate' | 'setValueAs'>;
   className?: string;
+  variant?: 'dialog' | 'default';
 };
 
 const FormField = <T extends FieldValues>({
@@ -35,6 +36,7 @@ const FormField = <T extends FieldValues>({
   placeholder,
   rules,
   className,
+  variant = 'default',
 }: FormFieldProps<T>) => {
   const { t } = useTranslation();
 
@@ -67,6 +69,7 @@ const FormField = <T extends FieldValues>({
                 if (onChange) onChange(e);
               }}
               className={className}
+              variant={variant}
             />
           </FormControl>
           <FormMessage className={cn('text-p')} />

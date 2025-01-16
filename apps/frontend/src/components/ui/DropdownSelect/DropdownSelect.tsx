@@ -101,7 +101,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
             className={clsx(styles.option, {
               [styles.selected]: t(option.name) === selectedVal,
               'hover:bg-gray-200': variant === 'light',
-              'bg-muted hover:bg-white': variant === 'dark',
+              'bg-muted hover:bg-secondary': variant === 'dark',
             })}
           >
             {t(option.name)}

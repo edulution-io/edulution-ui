@@ -49,6 +49,7 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
               disabled={false}
               value={filename}
               onChange={(e) => setFilename(e.target.value)}
+              variant="dialog"
             />
           </div>
           {isRenaming && extension && selectedItems[0].type === ContentType.FILE && (

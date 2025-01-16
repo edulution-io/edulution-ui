@@ -61,7 +61,7 @@ const BadgeField = (props: BadgeFieldProps) => {
               key={`badge${index}_-_${listItem}`}
               className={cn(
                 'h-[36px] py-0',
-                { 'bg-secondary text-muted': readOnly },
+                { 'bg-ciDarkGreyDisabled text-ciGrey': readOnly },
                 { 'color-background text-background': !readOnly },
                 className,
               )}
