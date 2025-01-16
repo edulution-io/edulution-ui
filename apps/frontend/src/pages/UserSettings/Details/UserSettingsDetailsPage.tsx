@@ -11,6 +11,7 @@ import Separator from '@/components/ui/Separator';
 import Field from '@/components/shared/Field';
 import Label from '@/components/ui/Label';
 import BadgeField from '@/components/shared/BadgeField';
+import UserImageConfig from './UserImageConfig';
 
 const UserSettingsDetailsPage: React.FC = () => {
   const { t } = useTranslation();
@@ -44,6 +45,9 @@ const UserSettingsDetailsPage: React.FC = () => {
         className="w-full flex-1 overflow-auto pl-3 pr-3.5 scrollbar-thin"
         style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
       >
+        <UserImageConfig />
+        <Separator className="my-4 bg-ciGrey" />
+
         <div className="md:max-w-[75%]">
           <h3 className="text-background">{t('usersettings.details.userInformation')}</h3>
           <div className="py-4 text-background">
@@ -77,7 +81,7 @@ const UserSettingsDetailsPage: React.FC = () => {
 
         <div className="md:max-w-[75%]">
           <h3 className="text-background">{t('usersettings.details.quotas')}</h3>
-          <div className="space-y-4 py-4 text-muted">
+          <div className="py-4 text-muted">
             <Quota />
           </div>
 

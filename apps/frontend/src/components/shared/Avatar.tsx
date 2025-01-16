@@ -1,10 +1,17 @@
 import React from 'react';
-import { AvatarFallback, AvatarSH } from '@/components/ui/AvatarSH';
-import useUserStore from '@/store/UserStore/UserStore';
+import { AvatarFallback, AvatarSH, AvatarImage } from '@/components/ui/AvatarSH';
 
-const Avatar: React.FC = () => {
-  const { user } = useUserStore();
+type AvatarProps = {
+  user?: {
+    username: string;
+    firstName?: string;
+    lastName?: string;
+  };
+  imageSrc?: string;
+  className?: string;
+};
 
+const Avatar: React.FC<AvatarProps> = ({ user, imageSrc, className }) => {
   const getAvatarFallbackText = () => {
     if (!user) return '-';
     const { username, firstName = '', lastName = '' } = user;
@@ -13,7 +20,11 @@ const Avatar: React.FC = () => {
   };
 
   return (
-    <AvatarSH>
+    <AvatarSH className={className}>
+      <AvatarImage
+        src={imageSrc}
+        alt={user?.firstName}
+      />
       <AvatarFallback className="bg-muted text-foreground">{getAvatarFallbackText()}</AvatarFallback>
     </AvatarSH>
   );
