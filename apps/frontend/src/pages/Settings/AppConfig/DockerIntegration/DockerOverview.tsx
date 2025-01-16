@@ -1,20 +1,55 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { PiDotsThreeVerticalBold } from 'react-icons/pi';
 import { Card, CardContent } from '@/components/shared/Card';
 import Field from '@/components/shared/Field';
+import DropdownMenu from '@/components/shared/DropdownMenu';
+import { Button } from '@/components/shared/Button';
+import CircleLoader from '@/components/ui/CircleLoader';
+import { type DropdownMenuItemType } from '@libs/ui/types/dropdownMenuItemType';
+import DOCKER_COMMANDS from '@libs/docker/constants/dockerCommands';
 import useDockerApplicationStore from './useDockerApplicationStore';
 
 const DockerOverview: React.FC = () => {
   const { t } = useTranslation();
-  const { containers, fetchContainers } = useDockerApplicationStore();
+  const { isLoading, containers, fetchContainers, runDockerCommand, deleteDockerContainer } =
+    useDockerApplicationStore();
 
   useEffect(() => {
     void fetchContainers();
   }, []);
 
+  const dockerSettingsDropdownList = useMemo(() => {
+    const items: DropdownMenuItemType[] = [];
+    Object.entries(DOCKER_COMMANDS).forEach((item) => {
+      items.push({
+        label: t(`common.${item[1]}`),
+        onClick: () => {
+          void runDockerCommand('edulution-mail', item[1]);
+          return undefined;
+        },
+      });
+    });
+
+    items.push(
+      { label: 'categorySeparator', isSeparator: true },
+      {
+        label: t('common.delete'),
+        onClick: () => {
+          void deleteDockerContainer('edulution-mail');
+          return undefined;
+        },
+      },
+    );
+    return items;
+  }, []);
+
   return (
     <>
-      <h4>{t(`dockerOverview.title`)}</h4>
+      <div className="flex items-center justify-between">
+        <h4>{t(`dockerOverview.title`)}</h4>
+        {isLoading ? <CircleLoader /> : null}
+      </div>
       <div className="flex flex-wrap">
         {containers.map((item) => (
           <Card
@@ -24,7 +59,21 @@ const DockerOverview: React.FC = () => {
             aria-label={item.Id}
           >
             <CardContent className="flex flex-col gap-2">
-              <h4 className="mb-4 font-bold">{item.Names[0]}</h4>
+              <div className="mb-4 flex items-center justify-between ">
+                <h4 className="font-bold">{item.Names[0].split('/')[1]}</h4>
+                <DropdownMenu
+                  trigger={
+                    <Button
+                      type="button"
+                      className="text-white-500 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full p-0 hover:bg-blue-600 hover:text-white"
+                      title={t('common.options')}
+                    >
+                      <PiDotsThreeVerticalBold className="h-6 w-6" />
+                    </Button>
+                  }
+                  items={dockerSettingsDropdownList}
+                />
+              </div>
               <Field
                 key="dockerOverview-container"
                 value={item.Image}
