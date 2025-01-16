@@ -15,7 +15,7 @@ import ConferenceDto from '@libs/conferences/types/conference.dto';
 import { CONFERENCES_SSE_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 
 const useNotifications = () => {
-  const { isSuperAdmin } = useLdapGroups();
+  const { isSuperAdmin, authReady } = useLdapGroups();
   const { eduApiToken } = useUserStore();
   const isMailsAppActivated = useIsMailsActive();
   const { getMails } = useMailsStore();
@@ -30,21 +30,23 @@ const useNotifications = () => {
   }, [conferences]);
 
   useEffect(() => {
-    if (isMailsAppActivated && !isSuperAdmin) {
-      void getMails();
-    }
+    if (authReady) {
+      if (isMailsAppActivated && !isSuperAdmin) {
+        void getMails();
+      }
 
-    if (isSurveysAppActivated) {
-      void updateOpenSurveys();
-    }
+      if (isSurveysAppActivated) {
+        void updateOpenSurveys();
+      }
 
-    if (isConferenceAppActivated) {
-      void getConferences();
+      if (isConferenceAppActivated) {
+        void getConferences();
+      }
     }
-  }, [isMailsAppActivated, isSuperAdmin, isSurveysAppActivated, isConferenceAppActivated]);
+  }, [authReady, isMailsAppActivated, isSuperAdmin, isSurveysAppActivated, isConferenceAppActivated]);
 
   useInterval(() => {
-    if (isMailsAppActivated && !isSuperAdmin) {
+    if (authReady && isMailsAppActivated && !isSuperAdmin) {
       void getMails();
     }
   }, FEED_PULL_TIME_INTERVAL_SLOW);

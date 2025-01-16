@@ -193,6 +193,7 @@ const AppConfigPage: React.FC = () => {
                           key={`${item.id}.options.${itemOption}`}
                           control={control}
                           name={`${item.id}.options.${itemOption}`}
+                          defaultValue=""
                           render={({ field }) => (
                             <FormItem>
                               <h4>{t(`form.${itemOption}`)}</h4>
