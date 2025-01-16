@@ -47,8 +47,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             ...event,
             target: {
               ...event.target,
-              // @ts-expect-error - number type
-              value: newValue,
+              value: newValue as unknown as string,
             },
           });
         }

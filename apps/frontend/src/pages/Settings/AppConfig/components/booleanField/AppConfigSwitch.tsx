@@ -24,7 +24,7 @@ const AppConfigSwitch = <T extends FieldValues>({ fieldPath, control, option }: 
         <FormItem>
           <div>{t(option.title)}</div>
           <FormControl>
-            <div className="flex h-[36px] items-center">
+            <div className="flex h-9 items-center">
               <Switch
                 {...field}
                 checked={field.value as boolean}

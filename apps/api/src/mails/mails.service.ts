@@ -57,16 +57,11 @@ class MailsService implements OnModuleInit {
       throw new CustomHttpException(MailsErrorMessages.NotAbleToGetImapOption, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    try {
-      this.imapUrl = String(appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_URL]);
-      this.imapPort = Number(appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_PORT]);
-      this.imapSecure = Boolean(appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_SECURE] || true);
-      this.imapRejectUnauthorized = Boolean(
-        appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED] || false,
-      );
-    } catch (error) {
-      throw new CustomHttpException(MailsErrorMessages.NotAbleToGetImapOption, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    this.imapUrl = (appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_URL] as string) || '';
+    this.imapPort = (appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_PORT] as number) || 0;
+    this.imapSecure = appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_SECURE] === 'true' || false;
+    this.imapRejectUnauthorized =
+      appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED] === 'true' || false;
   }
 
   async getMails(username: string, password: string): Promise<MailDto[]> {
