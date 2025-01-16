@@ -1076,5 +1076,11 @@
   },
   "dockerApplication": {
     "title": "Docker-Anwendung"
+  },
+  "dockerOverview": {
+    "title": "Container-Übersicht",
+    "containerName": "Container-Name",
+    "state": "Betriebszustand",
+    "status": "Status"
   }
 }
