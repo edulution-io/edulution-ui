@@ -44,6 +44,7 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
   }
 
   const handleDeleteSurvey = () => {
+    // TODO: Add confirmation dialog for the deletion ( Issue #368 (https://github.com/edulution-io/edulution-ui/issues/368) )
     const ids = Object.keys(selectedRows);
     if (ids) {
       void deleteSurveys(ids);
@@ -52,8 +53,8 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
   };
 
   const isSingleSurveySelected = isExactlyOneSurveySelected();
-  const canShowResultsTable = canShowResults && (selectedSurvey?.canShowResultsTable || false);
-  const canShowResultsChart = canShowResults && (selectedSurvey?.canShowResultsChart || false);
+  const canShowResultsTable = selectedSurvey?.canShowResultsTable && canShowResults;
+  const canShowResultsChart = selectedSurvey?.canShowResultsChart && canShowResults;
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
