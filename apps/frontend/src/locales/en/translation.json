@@ -95,7 +95,7 @@
       "nextStepPreview": "In the next step you can transfer the access data.",
       "copyCredentials": "Or enter manually:",
       "downloadDirect": "Or download the app directly:",
-      "downloadApp": "Download the edulution-io app here:"
+      "downloadApp": "Download the edulution.io app here:"
     },
     "quota": {
       "title": "Quotas",
@@ -689,7 +689,8 @@
       "badgeAlreadyExists": "This entry exists already",
       "sophomorixCustom1_teacher": "Schoolsubject 1",
       "sophomorixCustom2_teacher": "Schoolsubject 2",
-      "sophomorixCustomMulti1_teacher": "Coffee-brands"
+      "sophomorixCustomMulti1_teacher": "Coffee-brands",
+      "userimageconfig": "Profile picture"
     },
     "security": {
       "title": "Security",
@@ -706,6 +707,10 @@
     },
     "mails": {
       "title": "Email"
+    },
+    "mobileAccess": {
+      "title": "Mobile Access",
+      "description": "Here you can set up the edulution.io app for mobile access to your files. Currently only available for Apple iOS."
     },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
@@ -733,7 +738,9 @@
       "newPasswordRequired": "New password is required",
       "confirmPasswordRequired": "Repeat the new password for the confirmation",
       "passwordsDoNotMatch": "Passwords do not match",
-      "passwordLength": "Password must be at least 8 characters long"
+      "passwordLength": "Password must be at least 8 characters long",
+      "notSupportedFileFormat": "Not supported file format",
+      "notAbleToCompressImage": "Not able to compress the image"
     }
   },
   "forwardingpage": {

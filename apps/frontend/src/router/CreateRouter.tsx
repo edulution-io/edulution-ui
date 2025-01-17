@@ -6,6 +6,7 @@ import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVar
 import {
   LANGUAGE_PATH,
   MAILS_PATH,
+  MOBILE_ACCESS_PATH,
   SECURITY_PATH,
   USER_DETAILS_PATH,
   USER_SETTINGS_PATH,
@@ -21,6 +22,7 @@ import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettings
 import ONLY_OFFICE_ROUTE from '@libs/filesharing/constants/routes';
 import LanguageSettingsPage from '@/pages/UserSettings/Language/LanguageSettingsPage';
 import FileViewer from '@/pages/FileSharing/previews/FileViewer';
+import UserSettingsMobileAccess from '@/pages/UserSettings/MobileAccess/UserSettingsMobileAccess';
 import EmptyLayout from '@/components/layout/EmptyLayout';
 import MainLayout from '@/components/layout/MainLayout';
 import getPublicRoutes from '@/router/routes/PublicRoutes';
@@ -75,6 +77,10 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
                 <Route
                   path={LANGUAGE_PATH}
                   element={<LanguageSettingsPage />}
+                />
+                <Route
+                  path={MOBILE_ACCESS_PATH}
+                  element={<UserSettingsMobileAccess />}
                 />
               </Route>
               {appConfigs.map((item) =>
