@@ -95,6 +95,7 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
       case 'checkbox':
         return (
           <Checkbox
+            className="ml-1"
             checked={!!watch(groupProperty.name)}
             disabled={groupProperty.disabled}
             onCheckedChange={(checked) => setValue(groupProperty.name, !!checked)}
@@ -102,14 +103,18 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
           />
         );
       case 'date':
-        return watch(groupProperty.name)
-          ? dayjs(watch(groupProperty.name) as string, 'YYYYMMDDHHmmss.S[Z]')
-              .toDate()
-              .toLocaleString()
-          : '-';
+        return (
+          <div className="ml-2">
+            {watch(groupProperty.name)
+              ? dayjs(watch(groupProperty.name) as string, 'YYYYMMDDHHmmss.S[Z]')
+                  .toDate()
+                  .toLocaleString()
+              : '-'}
+          </div>
+        );
       case 'number':
         if (groupProperty.disabled) {
-          return <>{watch(groupProperty.name)}</>;
+          return <div className="ml-2">{watch(groupProperty.name)}</div>;
         }
         return (
           <Input
@@ -123,12 +128,13 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
       case 'text':
       default:
         if (groupProperty.disabled) {
-          return <>{watch(groupProperty.name)}</>;
+          return <div className="ml-2">{watch(groupProperty.name)}</div>;
         }
         return (
           <Input
             {...register(groupProperty.name)}
             variant="light"
+            placeholder={t(`classmanagement.${groupProperty.name}Placeholder`)}
           />
         );
     }

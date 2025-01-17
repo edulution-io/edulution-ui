@@ -12,7 +12,7 @@ const parseSophomorixQuota = (quotaString?: string[]): string => {
 
   const result = quotaString
     .map((entry) => {
-      const [share, quotaStr, , comment] = entry.split(':');
+      const [share, quotaStr, comment] = entry.split(':');
       const quota = quotaStr !== '---' ? parseInt(quotaStr, 10) : undefined;
 
       if (quota !== undefined) {

@@ -7,7 +7,7 @@ interface GroupForm {
   displayName: string;
   description: string;
   quota: string;
-  mailquota: number;
+  mailquota: string;
   maillist: boolean;
   mailalias: boolean;
   join: boolean;

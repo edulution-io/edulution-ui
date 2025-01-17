@@ -38,6 +38,8 @@ const LessonPage = () => {
   const { t } = useTranslation();
   const [isPageLoading, setIsPageLoading] = useState(false);
 
+  const isAlreadySavedSession = userSessions.find((session) => session.name === groupName);
+
   useEffect(() => {
     void getOwnUser();
   }, []);
@@ -56,7 +58,7 @@ const LessonPage = () => {
         break;
       }
       case UserGroups.Sessions:
-        setMember(userSessions.find((session) => session.name === groupName)?.members || []);
+        setMember(isAlreadySavedSession?.members || []);
         break;
       case UserGroups.Classes: {
         const schoolClass = await fetchSchoolClass(groupName);
@@ -91,7 +93,7 @@ const LessonPage = () => {
   const onSaveSessionsButtonClick = () => {
     setIsDialogOpen(true);
     setOpenDialogType(UserGroups.Sessions);
-    setUserGroupToEdit(userSessions.find((session) => session.name === groupName) || null);
+    setUserGroupToEdit(isAlreadySavedSession || null);
   };
 
   const sessionOptions = userSessions.map((s) => ({ id: s.sid, name: s.name }));
@@ -141,7 +143,9 @@ const LessonPage = () => {
               onClick={onSaveSessionsButtonClick}
               className="flex h-[42px] cursor-pointer items-center rounded-md bg-ciDarkGrey text-ciLightGrey hover:opacity-90"
             >
-              <span className="text-nowrap px-4">{t('classmanagement.saveSession')}</span>
+              <span className="text-nowrap px-4">
+                {t(`classmanagement.${isAlreadySavedSession ? 'editSession' : 'saveSession'}`)}
+              </span>
               <MdSave className="ml-auto inline-block h-8 w-8 pr-2" />
             </button>
             <button

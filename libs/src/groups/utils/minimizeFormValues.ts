@@ -9,7 +9,7 @@ const minimizeFormValues = (formValues: GroupForm): MinimizedGroupForm => ({
   members: formValues.members.map((m) => m.value),
   membergroups: formValues.membergroups.map((m) => m.name),
   proxyAddresses: formValues.proxyAddresses.split(',').filter(Boolean),
-  quota: JSON.parse(formValues.quota) as LmnApiProjectQuota[],
+  quota: JSON.parse(formValues.quota || '[]') as LmnApiProjectQuota[],
 });
 
 export default minimizeFormValues;
