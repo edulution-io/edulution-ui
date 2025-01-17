@@ -114,13 +114,13 @@ describe('LmnApiService', () => {
   });
 
   describe('changePassword', () => {
-    it('should change password when old password matches', async () => {
+    it('should change password when old base64 encoded password matches', async () => {
       const oldPass = 'oldPass';
       const newPass = 'newPass';
       jest.spyOn(usersService, 'getPassword').mockResolvedValue(oldPass);
       mockedAxios.post.mockResolvedValue({ data: null });
 
-      const result = await service.changePassword(mockToken, 'username', oldPass, newPass);
+      const result = await service.changePassword(mockToken, 'username', btoa(oldPass), btoa(newPass));
 
       expect(result).toBeNull();
       expect(mockedAxios.post).toHaveBeenCalledWith(

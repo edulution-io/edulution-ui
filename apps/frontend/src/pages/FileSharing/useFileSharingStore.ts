@@ -48,6 +48,8 @@ type UseFileSharingStore = {
   downloadFile: (filePath: string) => Promise<string | undefined>;
   getDownloadLinkURL: (filePath: string, filename: string) => Promise<string | undefined>;
   fetchDownloadLinks: (file: DirectoryFileDTO | null) => Promise<void>;
+  isFullScreenEditingEnabled: boolean;
+  setIsFullScreenEditingEnabled: (isFullScreenEditingEnabled: boolean) => void;
 };
 
 const initialState = {
@@ -66,6 +68,7 @@ const initialState = {
   isError: false,
   publicDownloadLink: null,
   isEditorLoading: false,
+  isFullScreenEditingEnabled: false,
 };
 
 type PersistedFileManagerStore = (
@@ -77,6 +80,7 @@ const useFileSharingStore = create<UseFileSharingStore>(
   (persist as PersistedFileManagerStore)(
     (set, get) => ({
       ...initialState,
+      setIsFullScreenEditingEnabled: (isFullScreenEditingEnabled) => set({ isFullScreenEditingEnabled }),
       setCurrentPath: (path: string) => {
         set({ currentPath: path });
       },

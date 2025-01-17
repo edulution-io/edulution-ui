@@ -16,6 +16,7 @@ import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/com
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
 import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
+import GROUPS_TOKEN_INTERVAL from '@libs/groups/constants/schedulerRegistry';
 
 const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API, KEYCLOAK_EDU_API_CLIENT_ID, KEYCLOAK_EDU_API_CLIENT_SECRET } =
   process.env as {
@@ -51,7 +52,7 @@ class GroupsService implements OnModuleInit {
     };
 
     const interval = setInterval(callback, this.accessTokenRefreshInterval);
-    this.schedulerRegistry.addInterval('accessTokenRefresh', interval);
+    this.schedulerRegistry.addInterval(GROUPS_TOKEN_INTERVAL, interval);
   }
 
   async obtainAccessToken() {
@@ -88,7 +89,7 @@ class GroupsService implements OnModuleInit {
   }
 
   updateTokenRefreshInterval() {
-    this.schedulerRegistry.deleteInterval('accessTokenRefresh');
+    this.schedulerRegistry.deleteInterval(GROUPS_TOKEN_INTERVAL);
     this.scheduleTokenRefresh();
   }
 
@@ -118,7 +119,7 @@ class GroupsService implements OnModuleInit {
     try {
       return await GroupsService.makeAuthorizedRequest<LDAPUser[]>(HttpMethods.GET, 'users', token);
     } catch (e) {
-      throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY);
     }
   }
 
@@ -135,7 +136,7 @@ class GroupsService implements OnModuleInit {
 
       return response.data;
     } catch (e) {
-      throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY);
     }
   }
 
@@ -206,7 +207,7 @@ class GroupsService implements OnModuleInit {
       const groups = await GroupsService.makeAuthorizedRequest<Group[]>(HttpMethods.GET, 'groups', token, 'search');
       return GroupsService.flattenGroups(groups);
     } catch (e) {
-      throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY);
     }
   }
 
@@ -219,7 +220,7 @@ class GroupsService implements OnModuleInit {
         'briefRepresentation=true',
       );
     } catch (e) {
-      throw new CustomHttpException(GroupsErrorMessage.CouldNotFetchGroupMembers, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(GroupsErrorMessage.CouldNotFetchGroupMembers, HttpStatus.BAD_GATEWAY);
     }
   }
 
@@ -236,7 +237,7 @@ class GroupsService implements OnModuleInit {
 
       return groups.filter((group) => group.path.includes(searchKeyWord));
     } catch (e) {
-      throw new CustomHttpException(GroupsErrorMessage.CouldNotSearchGroups, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(GroupsErrorMessage.CouldNotSearchGroups, HttpStatus.BAD_GATEWAY, searchKeyWord);
     }
   }
 }

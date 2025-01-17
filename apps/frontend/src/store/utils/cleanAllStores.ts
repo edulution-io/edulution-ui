@@ -21,16 +21,23 @@ import useSurveyEditorFormStore from '@/pages/Surveys/Editor/useSurveyEditorForm
 import useDeleteSurveyStore from '@/pages/Surveys/Tables/components/useDeleteSurveyStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
-import useCommitedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useCommitedAnswersDialogStore';
+import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import useParticipatePublicSurveyStore from '@/pages/Surveys/Public/useParticipatePublicSurveyStore';
+import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/PublicConferenceStore';
+import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetQrCodeSlice();
   UserStore.getState().resetTotpSlice();
   UserStore.getState().resetUserSlice();
   useAppConfigsStore.getState().reset();
+  useBulletinCategoryTableStore.getState().reset();
+  useBulletinBoardEditorialStore.getState().reset();
+  useBulletinBoardStore.getState().reset();
   useClassManagementStore.getState().reset();
-  useCommitedAnswersDialogStore.getState().reset();
+  useSubmittedAnswersDialogStore.getState().reset();
   useCommunityLicenseStore.getState().reset();
   useConferenceDetailsDialogStore.getState().reset();
   useConferenceStore.getState().reset();
@@ -48,6 +55,7 @@ const cleanAllStores = () => {
   useParticipateDialogStore.getState().reset();
   useParticipatePublicSurveyStore.getState().reset();
   usePrintPasswordsStore.getState().reset();
+  usePublicConferenceStore.getState().reset();
   useResultDialogStore.getState().reset();
   useSidebarStore.getState().reset();
   useSurveyEditorFormStore.getState().reset();

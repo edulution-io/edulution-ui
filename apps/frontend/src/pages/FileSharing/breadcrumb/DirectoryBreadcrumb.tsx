@@ -7,16 +7,12 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/Breadcrumb';
 import { useTranslation } from 'react-i18next';
-import {
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSH,
-  DropdownMenuTrigger,
-} from '@/components/ui/DropdownMenuSH';
-import useIsMobileView from '@/hooks/useIsMobileView';
 import { HiChevronDown } from 'react-icons/hi';
+import DropdownMenu from '@/components/shared/DropdownMenu';
+import useIsMobileView from '@/hooks/useIsMobileView';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import { BREADCRUMB_ID } from '@libs/ui/constants/defaultIds';
 import useUserPath from '../hooks/useUserPath';
 
 interface DirectoryBreadcrumbProps {
@@ -65,7 +61,10 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
   const shouldShowDropdown = clearSegments.length > displaySegments;
 
   return (
-    <Breadcrumb style={style}>
+    <Breadcrumb
+      style={style}
+      id={BREADCRUMB_ID}
+    >
       {showTitle && <p className="mr-2 text-background">{t('currentDirectory')}</p>}
       <BreadcrumbList>
         {showHome && (
@@ -83,28 +82,21 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
           <>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <DropdownMenuSH>
-                <DropdownMenuTrigger className="flex items-center gap-1">
-                  ...
-                  <HiChevronDown />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="start"
-                  className="z-50 bg-background text-foreground"
-                >
-                  {segments.slice(0, -1).map(
-                    (segment, index) =>
-                      clearSegments.includes(segment) && (
-                        <DropdownMenuItem
-                          key={getSegmentKey(index)}
-                          onClick={() => handleSegmentClick(index)}
-                        >
-                          {segment}
-                        </DropdownMenuItem>
-                      ),
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenuSH>
+              <DropdownMenu
+                trigger={
+                  <span className="flex cursor-pointer items-center gap-1">
+                    ...
+                    <HiChevronDown />
+                  </span>
+                }
+                items={segments
+                  .slice(0, -1)
+                  .filter((segment) => clearSegments.includes(segment))
+                  .map((segment, index) => ({
+                    label: segment,
+                    onClick: () => handleSegmentClick(index),
+                  }))}
+              />
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>

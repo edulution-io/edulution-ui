@@ -9,7 +9,7 @@ const FileSharingFloatingButtonsBar = () => {
   const { openDialog } = useFileSharingDialogStore();
   const { selectedItems } = useFileSharingStore();
   return (
-    <div className="fixed bottom-8 flex flex-row bg-opacity-90">
+    <div className="fixed bottom-8 flex flex-row">
       {selectedItems.length === 0 && <FileActionNonSelect openDialog={openDialog} />}
 
       {selectedItems.length === 1 && (

@@ -2,7 +2,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import APPS from '@libs/appconfig/constants/apps';
 import { SettingsIcon } from '@/assets/icons';
-import { findAppConfigByName } from '@/utils/common';
 import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import useLdapGroups from '@/hooks/useLdapGroups';
@@ -10,6 +9,8 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import type TApps from '@libs/appconfig/types/appsType';
+import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
+import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import DesktopSidebar from './DesktopSidebar';
 import MobileSidebar from './MobileSidebar';
 
@@ -45,7 +46,7 @@ const Sidebar: React.FC = () => {
       ? [
           {
             title: t('settings.sidebar'),
-            link: '/settings',
+            link: SETTINGS_PATH,
             icon: SettingsIcon,
             color: 'bg-ciGreenToBlue',
           },

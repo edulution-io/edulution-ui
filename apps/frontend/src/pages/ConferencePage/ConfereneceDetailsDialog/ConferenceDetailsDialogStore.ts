@@ -18,11 +18,9 @@ interface ConferenceDetailsDialogStore {
   error: AxiosError | null;
   setError: (error: AxiosError) => void;
   reset: () => void;
-  joinConference: (meetingID: string) => Promise<void>;
+  joinConference: (meetingID: string, password?: string) => Promise<void>;
   joinConferenceUrl: string;
   setJoinConferenceUrl: (url: string) => void;
-  isJoinedConferenceMinimized: boolean;
-  toggleIsJoinedConferenceMinimized: () => void;
   updateConference: (conference: Partial<ConferenceDto>) => Promise<void>;
 }
 
@@ -31,7 +29,6 @@ const initialState = {
   isLoading: false,
   error: null,
   joinConferenceUrl: '',
-  isJoinedConferenceMinimized: false,
 };
 
 const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((set, get) => ({
@@ -41,7 +38,9 @@ const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((se
   setError: (error: AxiosError) => set({ error }),
   reset: () => set(initialState),
 
-  joinConference: async (meetingID) => {
+  joinConference: async (meetingID, password) => {
+    if (get().isLoading) return;
+
     set({ isLoading: true, error: null });
     try {
       if (get().joinConferenceUrl) {
@@ -49,7 +48,9 @@ const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((se
         return;
       }
 
-      const response = await eduApi.get<string>(`${CONFERENCES_JOIN_EDU_API_ENDPOINT}/${meetingID}`);
+      const response = await eduApi.get<string>(
+        `${CONFERENCES_JOIN_EDU_API_ENDPOINT}/${meetingID}?password=${password}`,
+      );
       set({ joinConferenceUrl: response.data, isLoading: false });
     } catch (error) {
       handleApiError(error, set);
@@ -57,14 +58,15 @@ const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((se
       set({ isLoading: false });
     }
   },
-  setJoinConferenceUrl: (url) => set({ joinConferenceUrl: url, isJoinedConferenceMinimized: false }),
-  toggleIsJoinedConferenceMinimized: () =>
-    set((state) => ({ isJoinedConferenceMinimized: !state.isJoinedConferenceMinimized })),
+
+  setJoinConferenceUrl: (url) => set({ joinConferenceUrl: url }),
+
   updateConference: async (conference) => {
     set({ isLoading: true });
     try {
       await eduApi.patch<ConferenceDto[]>(CONFERENCES_EDU_API_ENDPOINT, conference);
       set({ selectedConference: null });
+      toast.success(i18n.t('conferences.conferenceUpdatedSuccessfully'));
     } catch (error) {
       handleApiError(error, set);
     } finally {

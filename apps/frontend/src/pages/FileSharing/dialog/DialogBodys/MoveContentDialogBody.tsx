@@ -103,8 +103,6 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
         <ScrollableTable
           columns={columns}
           data={files}
-          sorting={[]}
-          setSorting={() => {}}
           selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filename]: true } : {}}
           onRowSelectionChange={handleRowSelectionChange}
           applicationName={APPS.FILE_SHARING}
@@ -113,6 +111,8 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
           textColorClass="text-black"
           showSelectedCount={false}
           footer={footer}
+          filterKey="select-filename"
+          filterPlaceHolderText="filesharing.filterPlaceHolderText"
         />
       )}
     </div>

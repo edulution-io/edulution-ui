@@ -4,7 +4,7 @@ import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import cn from '@libs/common/utils/className';
-import { translateKey } from '@/utils/common';
+import i18n from '@/i18n';
 import { LAYOUT_OPTIONS, LayoutOption } from '@libs/ui/constants/layout';
 
 const Dialog = DialogPrimitive.Root;
@@ -24,7 +24,7 @@ const DialogOverlay = React.forwardRef<
     className={cn(
       'fixed inset-0 z-50 bg-black/80  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
       className,
-      'bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0',
+      'data-[state=open]:animate-overlayShow fixed inset-0 bg-black/50',
     )}
     {...props}
   />
@@ -57,7 +57,7 @@ const DialogContent = React.forwardRef<
       {showCloseButton && (
         <DialogPrimitive.Close className="absolute right-5 top-5">
           <Cross2Icon className="h-4 w-4 text-black" />
-          <span className="sr-only">${translateKey('dialog.close')}</span>
+          <span className="sr-only">${i18n.t('dialog.close')}</span>
         </DialogPrimitive.Close>
       )}
     </DialogPrimitive.Content>

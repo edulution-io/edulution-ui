@@ -11,6 +11,8 @@ import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
 import useGroupStore from '@/store/GroupStore';
+import RadioGroupFormField from '@/components/shared/RadioGroupFormField';
+import CONFERENCES_IS_PUBLIC_FORM_VALUES from '@libs/conferences/constants/isPublicFormValues';
 
 interface CreateConferenceDialogBodyProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,6 +51,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
       >
         <FormField
           name="name"
+          defaultValue={form.getValues('name') as string}
           form={form}
           labelTranslationId={t('conferences.name')}
           disabled={searchGroupsIsLoading}
@@ -65,11 +68,22 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
         />
         <FormField
           name="password"
+          defaultValue={form.getValues('password') as string}
           form={form}
           labelTranslationId={t('conferences.password')}
           type="password"
           disabled={searchGroupsIsLoading}
           variant="default"
+        />
+
+        <RadioGroupFormField
+          control={form.control}
+          name="isPublic"
+          labelClassname="text-base font-bold text-foreground"
+          titleTranslationId={t('conferences.isPublic')}
+          defaultValue={CONFERENCES_IS_PUBLIC_FORM_VALUES[0].value}
+          items={CONFERENCES_IS_PUBLIC_FORM_VALUES}
+          disabled={searchGroupsIsLoading}
         />
       </form>
     </Form>

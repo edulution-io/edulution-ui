@@ -1,14 +1,17 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UserDetailsSettingsIcon } from '@/assets/icons';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import NativeAppHeader from '@/components/layout/NativeAppHeader';
+import useElementHeight from '@/hooks/useElementHeight';
+import { UserDetailsSettingsIcon } from '@/assets/icons';
 import UserSettingsDetailsForm from '@/pages/UserSettings/Details/UserSettingsDetailsForm';
 import Quota from '@/pages/Dashboard/Quota';
+import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import Separator from '@/components/ui/Separator';
 import Field from '@/components/shared/Field';
 import Label from '@/components/ui/Label';
 import BadgeField from '@/components/shared/BadgeField';
+import UserImageConfig from './UserImageConfig';
 
 const UserSettingsDetailsPage: React.FC = () => {
   const { t } = useTranslation();
@@ -27,14 +30,24 @@ const UserSettingsDetailsPage: React.FC = () => {
     [user, t],
   );
 
+  const pageBarsHeight = useElementHeight([NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 10;
+
   return (
-    <div className="bottom-[32px] left-4 right-[0px] top-3 h-screen md:left-[256px] md:right-[--sidebar-width]">
-      <NativeAppHeader
-        title={user?.displayName || t('common.not-available')}
-        description={t('usersettings.details.description')}
-        iconSrc={UserDetailsSettingsIcon}
-      />
-      <div className="p-4">
+    <div className="h-screen overflow-y-hidden">
+      <div className="flex flex-row justify-between">
+        <NativeAppHeader
+          title={user?.displayName || t('common.not-available')}
+          description={t('usersettings.details.description')}
+          iconSrc={UserDetailsSettingsIcon}
+        />
+      </div>
+      <div
+        className="w-full flex-1 overflow-auto pl-3 pr-3.5 scrollbar-thin"
+        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
+      >
+        <UserImageConfig />
+        <Separator className="my-4 bg-ciGrey" />
+
         <div className="md:max-w-[75%]">
           <h3>{t('usersettings.details.userInformation')}</h3>
           <div className="py-4 text-ciGrey">
@@ -69,7 +82,7 @@ const UserSettingsDetailsPage: React.FC = () => {
 
         <div className="md:max-w-[75%]">
           <h3>{t('usersettings.details.quotas')}</h3>
-          <div className="space-y-4 py-4 text-ciGrey">
+          <div className="py-4 text-ciGrey">
             <Quota />
           </div>
 

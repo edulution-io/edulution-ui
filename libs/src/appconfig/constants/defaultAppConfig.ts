@@ -1,18 +1,19 @@
-import { FilesharingIcon, SurveysIcon, ClassManagementIcon, WhiteboardIcon } from '@libs/assets';
+import { ClassManagementIcon, FilesharingIcon, SurveysIcon, WhiteboardIcon } from '@libs/assets';
+import { AppConfigDto } from '@libs/appconfig/types';
 import APPS from './apps';
 import APP_INTEGRATION_VARIANT from './appIntegrationVariants';
 
 const { FILE_SHARING, SURVEYS, CLASS_MANAGEMENT, WHITEBOARD } = APPS;
 const { NATIVE } = APP_INTEGRATION_VARIANT;
 
-const defaultAppConfig = [
+const defaultAppConfig: AppConfigDto[] = [
   {
     name: FILE_SHARING,
     icon: FilesharingIcon,
     appType: NATIVE,
     options: {},
     accessGroups: [],
-    extendedOptions: [],
+    extendedOptions: {},
   },
   {
     name: SURVEYS,
@@ -20,7 +21,7 @@ const defaultAppConfig = [
     appType: NATIVE,
     options: {},
     accessGroups: [],
-    extendedOptions: [],
+    extendedOptions: {},
   },
   {
     name: CLASS_MANAGEMENT,
@@ -28,7 +29,7 @@ const defaultAppConfig = [
     appType: NATIVE,
     options: {},
     accessGroups: [],
-    extendedOptions: [],
+    extendedOptions: {},
   },
   {
     name: WHITEBOARD,
@@ -36,7 +37,7 @@ const defaultAppConfig = [
     appType: NATIVE,
     options: {},
     accessGroups: [],
-    extendedOptions: [],
+    extendedOptions: {},
   },
 ];
 

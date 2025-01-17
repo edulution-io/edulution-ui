@@ -1,32 +1,42 @@
 import { Model } from 'mongoose';
 import { FetchMessageObject, ImapFlow, MailboxLockObject } from 'imapflow';
-import { ParsedMail, simpleParser } from 'mailparser';
-import { ArgumentMetadata, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { ArgumentMetadata, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { OnEvent } from '@nestjs/event-emitter';
+import axios, { AxiosInstance } from 'axios';
+import { CreateSyncJobDto, MailDto, MailProviderConfigDto, SyncJobDto, SyncJobResponseDto } from '@libs/mail/types';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
-import { InjectModel } from '@nestjs/mongoose';
-import axios, { AxiosInstance } from 'axios';
-import { MailDto, MailProviderConfigDto, CreateSyncJobDto, SyncJobResponseDto, SyncJobDto } from '@libs/mail/types';
+import APPS from '@libs/appconfig/constants/apps';
+import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import GroupRoles from '@libs/groups/types/group-roles.enum';
+import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import { MailProvider, MailProviderDocument } from './mail-provider.schema';
 import FilterUserPipe from '../common/pipes/filterUser.pipe';
+import AppConfigService from '../appconfig/appconfig.service';
 
-const {
-  MAIL_IMAP_URL,
-  MAIL_API_URL,
-  MAIL_IMAP_PORT,
-  MAIL_IMAP_SECURE,
-  MAIL_IMAP_TLS_REJECT_UNAUTHORIZED,
-  MAIL_API_KEY,
-} = process.env;
+const { MAIL_API_URL, MAIL_API_KEY } = process.env;
 
 @Injectable()
-class MailsService {
+class MailsService implements OnModuleInit {
   private mailcowApi: AxiosInstance;
 
   private imapClient: ImapFlow;
 
-  constructor(@InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>) {
+  private imapUrl: string;
+
+  private imapPort: number;
+
+  private imapSecure: boolean;
+
+  private imapRejectUnauthorized: boolean;
+
+  constructor(
+    @InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>,
+    private readonly appConfigService: AppConfigService,
+  ) {
     this.mailcowApi = axios.create({
       baseURL: `${MAIL_API_URL}/api/v1`,
       headers: {
@@ -36,21 +46,35 @@ class MailsService {
     });
   }
 
-  async getMails(username: string, password: string): Promise<MailDto[]> {
-    // TODO: NIEDUUI-348: Migrate this settings to AppConfigPage (set imap settings in mails app config)
-    if (!MAIL_IMAP_URL || !MAIL_IMAP_PORT || !MAIL_IMAP_SECURE || !MAIL_IMAP_TLS_REJECT_UNAUTHORIZED) {
-      return [];
+  onModuleInit() {
+    void this.updateImapConfig();
+  }
+
+  @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
+  async updateImapConfig() {
+    try {
+      const appConfigs = await this.appConfigService.getAppConfigs([GroupRoles.SUPER_ADMIN]);
+      this.imapUrl = getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_URL);
+      this.imapPort = Number(getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_PORT));
+      this.imapSecure = getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_SECURE) === 'true';
+      this.imapRejectUnauthorized =
+        getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED) === 'true';
+    } catch (error) {
+      throw new CustomHttpException(MailsErrorMessages.NotAbleToGetImapOption, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    if (Number.isNaN(Number(MAIL_IMAP_PORT))) {
-      throw new CustomHttpException(MailsErrorMessages.NotValidPortTypeError, HttpStatus.BAD_REQUEST);
+  }
+
+  async getMails(username: string, password: string): Promise<MailDto[]> {
+    if (!this.imapUrl || !this.imapPort) {
+      return [];
     }
 
     this.imapClient = new ImapFlow({
-      host: MAIL_IMAP_URL,
-      port: Number(MAIL_IMAP_PORT),
-      secure: MAIL_IMAP_SECURE === 'true',
+      host: this.imapUrl,
+      port: this.imapPort,
+      secure: this.imapSecure,
       tls: {
-        rejectUnauthorized: MAIL_IMAP_TLS_REJECT_UNAUTHORIZED === 'true',
+        rejectUnauthorized: this.imapRejectUnauthorized,
       },
       auth: {
         user: username,
@@ -80,29 +104,25 @@ class MailsService {
       mailboxLock = await this.imapClient.getMailboxLock('INBOX');
 
       const fetchMail: AsyncGenerator<FetchMessageObject> = this.imapClient.fetch(
-        { or: [{ new: true }, { seen: false }, { recent: true }] },
-        {
-          source: true,
-          envelope: true,
-          bodyStructure: true,
-          flags: true,
-          labels: true,
-        },
+        { seen: false },
+        { envelope: true, labels: true },
       );
 
       // eslint-disable-next-line no-restricted-syntax
-      for await (const mail of fetchMail || []) {
-        const parsedMail: ParsedMail = await simpleParser(mail.source);
+      for await (const mail of fetchMail) {
         const mailDto: MailDto = {
-          ...parsedMail,
           id: mail.uid,
-          flags: mail.flags,
+          subject: mail.envelope.subject,
           labels: mail.labels,
         };
         mails.push(mailDto);
       }
     } catch (err) {
-      throw new CustomHttpException(MailsErrorMessages.NotAbleToFetchMailsError, HttpStatus.INTERNAL_SERVER_ERROR, err);
+      throw new CustomHttpException(
+        MailsErrorMessages.NotAbleToFetchMailsError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        username,
+      );
     } finally {
       if (mailboxLock) {
         mailboxLock.release();
@@ -195,7 +215,11 @@ class MailsService {
     throw new CustomHttpException(MailsErrorMessages.MailProviderNotFound, HttpStatus.NOT_FOUND, '', MailsService.name);
   }
 
-  async getSyncJobs(username: string) {
+  async getSyncJobs(username: string): Promise<SyncJobDto[]> {
+    if (!MAIL_API_URL || !MAIL_API_KEY) {
+      return [];
+    }
+
     try {
       const syncJobs = await this.mailcowApi.get<SyncJobDto[]>('/get/syncjobs/all/no_log');
 
@@ -203,7 +227,7 @@ class MailsService {
 
       return filteredSyncJobs;
     } catch (e) {
-      throw new CustomHttpException(MailsErrorMessages.MailcowApiGetSyncJobsFailed, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(MailsErrorMessages.MailcowApiGetSyncJobsFailed, HttpStatus.BAD_GATEWAY);
     }
   }
 
@@ -216,7 +240,7 @@ class MailsService {
       }
       throw new CustomHttpException(MailsErrorMessages.MailcowApiCreateSyncJobFailed, HttpStatus.BAD_GATEWAY);
     } catch (e) {
-      throw new CustomHttpException(MailsErrorMessages.MailcowApiCreateSyncJobFailed, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(MailsErrorMessages.MailcowApiCreateSyncJobFailed, HttpStatus.BAD_GATEWAY);
     }
   }
 
@@ -230,7 +254,7 @@ class MailsService {
       }
       throw new CustomHttpException(MailsErrorMessages.MailcowApiDeleteSyncJobsFailed, HttpStatus.BAD_GATEWAY);
     } catch (e) {
-      throw new CustomHttpException(MailsErrorMessages.MailcowApiDeleteSyncJobsFailed, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(MailsErrorMessages.MailcowApiDeleteSyncJobsFailed, HttpStatus.BAD_GATEWAY);
     }
   }
 }

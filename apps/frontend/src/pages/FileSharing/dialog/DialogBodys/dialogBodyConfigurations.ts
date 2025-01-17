@@ -12,7 +12,6 @@ import { t } from 'i18next';
 
 import { FilesharingDialogProps, FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
 import FileActionType from '@libs/filesharing/types/fileActionType';
-import EmptyDialogProps from '@libs/filesharing/types/filesharingEmptyProps';
 import ContentType from '@libs/filesharing/types/contentType';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
@@ -56,11 +55,11 @@ interface RenameDialogBodyConfiguration extends DialogBodyConfigurationBase {
 }
 
 interface DeleteDialogBodyConfiguration extends DialogBodyConfigurationBase {
-  Component: React.ComponentType<EmptyDialogProps>;
+  Component: React.ComponentType;
 }
 
 interface UploadFileDialogBodyConfiguration extends DialogBodyConfigurationBase {
-  Component: React.ComponentType<EmptyDialogProps>;
+  Component: React.ComponentType;
 }
 
 interface MoveDialogBodyConfiguration extends DialogBodyConfigurationBase {
