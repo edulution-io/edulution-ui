@@ -332,10 +332,11 @@ class LmnApiService {
     }
   }
 
-  public async getUser(lmnApiToken: string, username: string): Promise<UserLmnInfo> {
+  public async getUser(lmnApiToken: string, username: string, checkFirstPassword?: boolean): Promise<UserLmnInfo> {
     try {
+      const query = checkFirstPassword ? `?check_first_pw=${checkFirstPassword}` : '';
       const response = await this.enqueue<UserLmnInfo>(() =>
-        this.lmnApi.get<UserLmnInfo>(`${USERS_LMN_API_ENDPOINT}/${username}`, {
+        this.lmnApi.get<UserLmnInfo>(`${USERS_LMN_API_ENDPOINT}/${username}${query}`, {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
@@ -354,20 +355,16 @@ class LmnApiService {
     lmnApiToken: string,
     userDetails: Partial<UpdateUserDetailsDto>,
     username: string,
-  ): Promise<null> {
+  ): Promise<UserLmnInfo> {
     try {
-      const response = await this.enqueue<null>(() =>
-        this.lmnApi.post<null>(
-          `${USERS_LMN_API_ENDPOINT}/${username}`,
-          { ...userDetails },
-          {
-            headers: {
-              [HTTP_HEADERS.XApiKey]: lmnApiToken,
-            },
+      await this.enqueue<null>(() =>
+        this.lmnApi.post<null>(`${USERS_LMN_API_ENDPOINT}/${username}`, userDetails, {
+          headers: {
+            [HTTP_HEADERS.XApiKey]: lmnApiToken,
           },
-        ),
+        }),
       );
-      return response.data;
+      return await this.getUser(lmnApiToken, username);
     } catch (error) {
       throw new CustomHttpException(
         LmnApiErrorMessage.UpdateUserFailed,
@@ -605,21 +602,25 @@ class LmnApiService {
   public async changePassword(
     lmnApiToken: string,
     username: string,
-    oldPassword: string,
-    newPassword: string,
+    oldPasswordEncoded: string,
+    newPasswordEncoded: string,
     bypassSecurityCheck: boolean = false,
   ): Promise<null> {
-    const password = await this.userService.getPassword(username);
+    if (!bypassSecurityCheck) {
+      const oldPassword = atob(oldPasswordEncoded);
+      const currentPassword = await this.userService.getPassword(username);
 
-    if (!bypassSecurityCheck && oldPassword !== password) {
-      throw new CustomHttpException(
-        LmnApiErrorMessage.PasswordMismatch,
-        HttpStatus.UNAUTHORIZED,
-        undefined,
-        LmnApiService.name,
-      );
+      if (oldPassword !== currentPassword) {
+        throw new CustomHttpException(
+          LmnApiErrorMessage.PasswordMismatch,
+          HttpStatus.UNAUTHORIZED,
+          undefined,
+          LmnApiService.name,
+        );
+      }
     }
 
+    const newPassword = atob(newPasswordEncoded);
     try {
       const response = await this.enqueue<null>(() =>
         this.lmnApi.post<null>(
@@ -644,7 +645,8 @@ class LmnApiService {
     }
   }
 
-  public async setFirstPassword(lmnApiToken: string, username: string, password: string): Promise<null> {
+  public async setFirstPassword(lmnApiToken: string, username: string, passwordEncoded: string): Promise<null> {
+    const password = atob(passwordEncoded);
     try {
       const response = await this.enqueue<null>(() =>
         this.lmnApi.post<null>(
