@@ -8,7 +8,6 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 interface SurveysTablePageProps {
   title: string;
   description: string;
-  selectedSurvey?: SurveyDto | undefined;
   surveys?: SurveyDto[];
   isLoading?: boolean;
 
@@ -24,7 +23,6 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
   const {
     title,
     description,
-    selectedSurvey,
     surveys,
     isLoading = false,
 
@@ -49,16 +47,14 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
           isLoading={isLoading}
         />
       </ScrollArea>
-      {selectedSurvey ? (
-        <SurveysTablesFloatingButtons
-          canEdit={canEdit}
-          editSurvey={editSurvey}
-          canDelete={canDelete}
-          canShowSubmittedAnswers={canShowSubmittedAnswers}
-          canParticipate={canParticipate}
-          canShowResults={canShowResults}
-        />
-      ) : null}
+      <SurveysTablesFloatingButtons
+        canEdit={canEdit}
+        editSurvey={editSurvey}
+        canDelete={canDelete}
+        canShowSubmittedAnswers={canShowSubmittedAnswers}
+        canParticipate={canParticipate}
+        canShowResults={canShowResults}
+      />
     </>
   );
 };
