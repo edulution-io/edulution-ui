@@ -95,7 +95,7 @@
       "nextStepPreview": "In the next step you can transfer the access data.",
       "copyCredentials": "Or enter manually:",
       "downloadDirect": "Or download the app directly:",
-      "downloadApp": "Download the edulution-io app here:"
+      "downloadApp": "Download the edulution.io app here:"
     },
     "quota": {
       "title": "Quotas",
@@ -707,6 +707,10 @@
     },
     "mails": {
       "title": "Email"
+    },
+    "mobileAccess": {
+      "title": "Mobile Access",
+      "description": "Here you can set up the edulution.io app for mobile access to your files. Currently only available for Apple iOS."
     },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
