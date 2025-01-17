@@ -19,5 +19,4 @@ USER node
 
 EXPOSE 3000
 
-ENTRYPOINT ["/start.sh"]
 CMD ["node", "./main.js"]
