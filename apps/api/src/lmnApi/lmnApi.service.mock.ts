@@ -14,6 +14,7 @@ const mockLmnApiService = {
   removeUserSession: jest.fn(),
   updateUserSession: jest.fn(),
   getUser: jest.fn(),
+  updateUser: jest.fn(),
   getUsersQuota: jest.fn(),
   searchUsersOrGroups: jest.fn(),
   createProject: jest.fn(),

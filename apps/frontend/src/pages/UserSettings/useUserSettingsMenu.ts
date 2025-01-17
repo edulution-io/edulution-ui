@@ -4,7 +4,7 @@ import {
   MobileDevicesIcon,
   SecurityIcon,
   UserDetailsSettingsIcon,
-  UserIcon,
+  SettingsIcon,
 } from '@/assets/icons';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -23,7 +23,7 @@ const useUserSettingsMenu = () => {
   const USERSETTINGS_MENUBAR_CONFIG: MenuBarEntry = {
     appName: APPS.USER_SETTINGS,
     title: 'usersettings.title',
-    icon: UserIcon,
+    icon: SettingsIcon,
     color: 'hover:bg-ciGreenToBlue',
     menuItems: [
       {
