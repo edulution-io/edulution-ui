@@ -48,12 +48,12 @@ const DockerOverview: React.FC = () => {
   );
 
   return (
-    <>
+    <div className="m-5">
       <div className="flex items-center justify-between">
         <h4>{t(`dockerOverview.title`)}</h4>
-        {isLoading ? <CircleLoader /> : null}
+        <div className="absolute right-20 top-10">{isLoading ? <CircleLoader /> : null}</div>
       </div>
-      <div className="flex flex-wrap">
+      <div className="m-4 flex flex-wrap">
         {containers.map((item) => (
           <Card
             key={item.Id}
@@ -102,7 +102,7 @@ const DockerOverview: React.FC = () => {
           </Card>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

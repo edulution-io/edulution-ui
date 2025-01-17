@@ -257,8 +257,7 @@ const AppConfigPage: React.FC = () => {
           description={!isMobileView && settingLocation ? t(`settings.description.${settingLocation}`) : null}
           iconSrc={APP_CONFIG_OPTIONS.find((item) => item.id === settingLocation)?.icon || SettingsIcon}
         />
-        {!isAnAppConfigSelected ? <DockerOverview /> : null}
-        {settingsForm()}
+        {isAnAppConfigSelected ? settingsForm() : <DockerOverview />}
       </div>
       {isAnAppConfigSelected ? (
         <AppConfigFloatingButtons
