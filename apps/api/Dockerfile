@@ -11,8 +11,6 @@ RUN npm ci
 
 COPY ./dist/apps/api/ ./
 
-VOLUME /var/run/docker.sock:/var/run/docker.sock
-
 RUN chown -R node:node /opt/edulution/api/
 
 USER node
