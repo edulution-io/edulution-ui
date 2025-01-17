@@ -57,7 +57,7 @@ const DockerOverview: React.FC = () => {
         {containers.map((item) => (
           <Card
             key={item.Id}
-            variant={item.State === 'running' ? 'infrastructure' : 'collaboration'}
+            variant="text"
             className="my-2 ml-1 mr-4 flex h-80 w-64 min-w-64 cursor-pointer"
             aria-label={item.Id}
           >
@@ -90,6 +90,7 @@ const DockerOverview: React.FC = () => {
                 labelTranslationId="dockerOverview.state"
                 readOnly
                 variant="lightGrayDisabled"
+                className={item.State === 'running' ? 'text-green-500' : 'text-red-500'}
               />
               <Field
                 key="dockerOverview-status"
