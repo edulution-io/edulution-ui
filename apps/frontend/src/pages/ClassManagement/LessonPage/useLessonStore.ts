@@ -14,9 +14,10 @@ import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
-import { LMN_API_COLLECT_OPERATIONS, LmnApiCollectOperations } from '@libs/lmnApi/types/lmnApiCollectOperations';
+import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import { toast } from 'sonner';
 import { t } from 'i18next';
+import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 
 const { PROJECT, SCHOOL_CLASSES, EXAM_MODE, MANAGEMENT_GROUPS, PRINTERS } = LMN_API_EDU_API_ENDPOINTS;
 
@@ -44,7 +45,7 @@ const useLessonStore = create<LessonStore>(
       setMember: (member) => set({ member }),
       setOpenDialogType: (type) => set({ openDialogType: type }),
       setUserGroupToEdit: (group) => set({ userGroupToEdit: group }),
-      setCollectionType: (collectionType: LmnApiCollectOperations) => set({ collectionType }),
+      setCollectionType: (collectionType: LmnApiCollectOperationsType) => set({ collectionType }),
 
       addManagementGroup: async (group: string, users: string[]) => {
         set({ error: null, isLoading: true });
@@ -87,7 +88,7 @@ const useLessonStore = create<LessonStore>(
       collectFiles: async (
         collectFileRequestDTO: CollectFileRequestDTO[],
         userRole: string,
-        type: LmnApiCollectOperations,
+        type: LmnApiCollectOperationsType,
       ) => {
         set({ error: null, isLoading: true });
         const queryParamString = `?type=${type}&userRole=${userRole}`;

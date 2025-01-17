@@ -26,7 +26,7 @@ import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackDa
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
-import { LmnApiCollectOperations } from '@libs/lmnApi/types/lmnApiCollectOperations';
+import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import FilesharingService from './filesharing.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 
@@ -138,7 +138,7 @@ class FilesharingController {
   @Post(FileSharingApiEndpoints.COLLECT)
   async collectFiles(
     @Body() body: { collectFileRequestDTO: CollectFileRequestDTO[] },
-    @Query('type') type: LmnApiCollectOperations,
+    @Query('type') type: LmnApiCollectOperationsType,
     @Query('userRole') userRole: string,
     @GetCurrentUsername() username: string,
   ) {

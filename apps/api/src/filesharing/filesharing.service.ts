@@ -15,7 +15,8 @@ import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileReques
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import getCurrentTimestamp from '@libs/filesharing/utils/getCurrentTimestamp';
-import { LMN_API_COLLECT_OPERATIONS, LmnApiCollectOperations } from '@libs/lmnApi/types/lmnApiCollectOperations';
+import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
+import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
@@ -376,7 +377,7 @@ class FilesharingService {
     username: string,
     collectFileRequestDTO: CollectFileRequestDTO[],
     userRole: string,
-    type: LmnApiCollectOperations,
+    type: LmnApiCollectOperationsType,
   ) {
     if (!collectFileRequestDTO || collectFileRequestDTO.length === 0) {
       throw new Error('collectFileRequestDTO is empty or undefined');

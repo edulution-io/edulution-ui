@@ -5,17 +5,18 @@ import ShareCollectDialogProps from '@libs/classManagement/types/shareCollectDia
 import { Button } from '@/components/shared/Button';
 import { FaCopy, FaCut } from 'react-icons/fa';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
-import { LMN_API_COLLECT_OPERATIONS, LmnApiCollectOperations } from '@libs/lmnApi/types/lmnApiCollectOperations';
+import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import { LAYOUT_OPTIONS } from '@libs/ui/constants/layout';
 import { RadioGroupItemSH, RadioGroupSH } from '@/components/ui/RadioGroupSH';
+import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 
 const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
   const { collectionType, setCollectionType } = useLessonStore();
 
   const options: Record<
-    LmnApiCollectOperations,
+    LmnApiCollectOperationsType,
     {
-      id: LmnApiCollectOperations;
+      id: LmnApiCollectOperationsType;
       label: string;
       icon: JSX.Element;
     }
@@ -41,7 +42,7 @@ const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, 
         <RadioGroupSH
           className="flex flex-col gap-4"
           value={selectedOption?.id}
-          onValueChange={(value: LmnApiCollectOperations) => {
+          onValueChange={(value: LmnApiCollectOperationsType) => {
             if (options[value]) {
               setCollectionType(value);
             }

@@ -5,7 +5,7 @@ import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
-import { LmnApiCollectOperations } from '@libs/lmnApi/types/lmnApiCollectOperations';
+import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 
 interface LessonState {
   isLoading: boolean;
@@ -15,7 +15,7 @@ interface LessonState {
   member: UserLmnInfo[];
   currentGroupType: string | undefined;
   currentGroupName: string | undefined;
-  collectionType: LmnApiCollectOperations;
+  collectionType: LmnApiCollectOperationsType;
 }
 
 interface LessonActions {
@@ -24,7 +24,7 @@ interface LessonActions {
   collectFiles: (
     collectFileRequestDTO: CollectFileRequestDTO[],
     userRole: string,
-    type: LmnApiCollectOperations,
+    type: LmnApiCollectOperationsType,
   ) => Promise<void>;
   addManagementGroup: (group: string, users: string[]) => Promise<void>;
   removeManagementGroup: (group: string, users: string[]) => Promise<void>;
@@ -38,7 +38,7 @@ interface LessonActions {
   setMember: (member: UserLmnInfo[]) => void;
   setCurrentGroupType: (groupType?: string) => void;
   setCurrentGroupName: (groupName?: string) => void;
-  setCollectionType: (collectionType: LmnApiCollectOperations) => void;
+  setCollectionType: (collectionType: LmnApiCollectOperationsType) => void;
 }
 
 type LessonStore = LessonState & LessonActions;
