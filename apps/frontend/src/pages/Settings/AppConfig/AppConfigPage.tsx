@@ -23,6 +23,8 @@ import { AppConfigDto } from '@libs/appconfig/types/appConfigDto';
 import ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
+import DOCKER_APPLICATIONS from '@libs/docker/constants/dockerApplicationList';
+import type TApps from '@libs/appconfig/types/appsType';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
@@ -33,7 +35,7 @@ import DockerApplicationHandler from './DockerIntegration/DockerApplicationHandl
 import DockerOverview from './DockerIntegration/DockerOverview';
 
 const AppConfigPage: React.FC = () => {
-  const { settingLocation = '' } = useParams<{ settingLocation: string }>();
+  const { settingLocation = '' } = useParams<{ settingLocation: TApps }>();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -152,7 +154,7 @@ const AppConfigPage: React.FC = () => {
         <Form {...form}>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="column space-y-6 2xl:w-[1200px]"
+            className="column max-w-screen-2xl space-y-6"
           >
             {APP_CONFIG_OPTIONS.map((item) => (
               <div
@@ -167,7 +169,9 @@ const AppConfigPage: React.FC = () => {
                       appConfig={appConfigs}
                       isNativeApp={item.isNativeApp}
                     />
-                    {settingLocation === 'mail' && <DockerApplicationHandler />}
+                    {Object.keys(DOCKER_APPLICATIONS).includes(settingLocation) && item.isNativeApp ? (
+                      <DockerApplicationHandler settingLocation={settingLocation} />
+                    ) : null}
                     <FormFieldSH
                       key={`${item.id}.accessGroups`}
                       control={control}

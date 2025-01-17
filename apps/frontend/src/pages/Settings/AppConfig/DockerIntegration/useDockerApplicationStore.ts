@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
-import { type ContainerInfo } from 'dockerode';
+import type { ContainerInfo, ContainerCreateOptions } from 'dockerode';
 import TDockerCommands from '@libs/docker/types/TDockerCommands';
 
 type DockerApplicationStore = {
@@ -9,7 +9,7 @@ type DockerApplicationStore = {
   isLoading: boolean;
   error: string | null;
   fetchContainers: () => Promise<void>;
-  createAndRunContainer: (image: string, tag: string) => Promise<void>;
+  createAndRunContainer: (createContainerDto: ContainerCreateOptions) => Promise<void>;
   runDockerCommand: (id: string, operation: TDockerCommands) => Promise<void>;
   deleteDockerContainer: (id: string) => Promise<void>;
 };
@@ -31,10 +31,10 @@ const useDockerApplicationStore = create<DockerApplicationStore>((set) => ({
     }
   },
 
-  createAndRunContainer: async (image: string, tag: string) => {
+  createAndRunContainer: async (createContainerDto: ContainerCreateOptions) => {
     set({ isLoading: true, error: null });
     try {
-      const { data } = await eduApi.post<ContainerInfo[]>('docker/containers', { image, tag });
+      const { data } = await eduApi.post<ContainerInfo[]>('docker/containers', createContainerDto);
       set({ containers: data });
     } catch (error) {
       handleApiError(error, set);

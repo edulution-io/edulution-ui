@@ -844,7 +844,9 @@
     "revert": "Zurücksetzen",
     "restart": "Erneut starten",
     "kill": "Beenden",
-    "install": "Installieren"
+    "install": "Installieren",
+    "update": "Update",
+    "cancel": "Abbrechen"
   },
   "form": {
     "path": "Link",
@@ -1079,7 +1081,9 @@
   },
   "dockerApplication": {
     "title": "Docker-Anwendung",
-    "dialogTitle": "{{applicationName}}-Container Installer"
+    "dialogTitle": "{{applicationName}}-Container Installer",
+    "mailDescription": "Falls ein eigener Mailserver betrieben werden soll, kann hier das Setup für Mailcow durchgeführt werden.",
+    "classmanagementDescription": "Falls Veyon im Schulnetz eingesetzt wird, kann hier das Setup für den Veyon-WebAPI-Proxy durchgeführt werden."
   },
   "dockerOverview": {
     "title": "Container-Übersicht",

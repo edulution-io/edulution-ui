@@ -62,7 +62,7 @@ const DockerOverview: React.FC = () => {
             aria-label={item.Id}
           >
             <CardContent className="flex flex-col gap-2">
-              <div className="mb-4 flex items-center justify-between ">
+              <div className="mb-4 flex items-center justify-between">
                 <h4 className="font-bold">{item.Names[0].split('/')[1]}</h4>
                 <DropdownMenu
                   trigger={

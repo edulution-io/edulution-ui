@@ -85,9 +85,9 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  private async pullImage(image: string, tag: string) {
+  private async pullImage(image: string) {
     try {
-      const stream = await this.docker.pull(image, tag);
+      const stream = await this.docker.pull(image);
       await new Promise<void>((resolve, reject) => {
         this.docker.modem.followProgress(
           stream,
@@ -109,34 +109,21 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  async createContainer(createContainerDto: { image: string; tag: string }) {
-    const { image, tag } = createContainerDto;
+  async createContainer(createContainerDto: Docker.ContainerCreateOptions) {
+    const { Image } = createContainerDto;
+    if (!Image) {
+      return [];
+    }
     try {
       const images = await this.docker.listImages();
-      const imageExists = images.some((img) => img.RepoTags?.includes(image));
-      if (!imageExists) {
-        await this.pullImage(image, tag);
-      }
-      const container = await this.docker.createContainer({
-        Image: image,
-        name: 'edulution-mail',
-        ExposedPorts: {
-          '80/tcp': {},
-        },
-        HostConfig: {
-          PortBindings: {
-            '80/tcp': [
-              {
-                HostPort: '8888',
-              },
-            ],
-          },
-        },
-      });
+      const imageExists = images.some((img) => img.RepoTags?.includes(Image));
 
-      if (container) {
-        await this.pullImage(image, tag);
+      if (!imageExists) {
+        await this.pullImage(Image);
       }
+
+      const container = await this.docker.createContainer(createContainerDto);
+
       const containers = await this.executeContainerCommand({ id: container.id, operation: DOCKER_COMMANDS.START });
       return containers;
     } catch (error) {
@@ -190,6 +177,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
   async deleteContainer(id: string) {
     try {
       await this.docker.getContainer(id).remove();
+      await delay(2000);
       const containers = await this.getContainers();
       return containers;
     } catch (error) {

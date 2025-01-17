@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Post, Put, Res, Sse, UseGuards, MessageEvent, Delete } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Response } from 'express';
+import { type ContainerCreateOptions } from 'dockerode';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
 import DockerService from './docker.service';
 import AppConfigGuard from '../appconfig/appconfig.guard';
@@ -18,7 +19,7 @@ class DockerController {
 
   @Post('containers')
   @UseGuards(AppConfigGuard)
-  async createContainer(@Body() createContainerDto: { image: string; tag: string }) {
+  async createContainer(@Body() createContainerDto: ContainerCreateOptions) {
     return this.dockerService.createContainer(createContainerDto);
   }
 
