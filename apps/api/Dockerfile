@@ -11,9 +11,9 @@ RUN npm ci
 
 COPY ./dist/apps/api/ ./
 
-RUN chown -R node:node /opt/edulution/api/
+# RUN chown -R node:node /opt/edulution/api/
 
-USER node
+# USER node
 
 EXPOSE 3000
 
