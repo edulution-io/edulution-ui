@@ -11,10 +11,6 @@ RUN npm ci
 
 COPY ./dist/apps/api/ ./
 
-# RUN chown -R node:node /opt/edulution/api/
-
-# USER node
-
 EXPOSE 3000
 
 CMD ["node", "./main.js"]

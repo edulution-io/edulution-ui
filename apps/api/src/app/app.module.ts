@@ -65,7 +65,7 @@ import DockerModule from '../docker/docker.module';
             host: process.env.REDIS_HOST ?? 'localhost',
             port: parseInt(process.env.REDIS_PORT ?? '6379', 10),
             reconnectStrategy: (retries) => {
-              Logger.warn(`redis.reconnect.attempt.${retries}`, AppModule.name);
+              Logger.warn(`Trying to reconnect to redis: ${retries}`, AppModule.name);
               return 3000;
             },
           },
@@ -80,10 +80,10 @@ import DockerModule from '../docker/docker.module';
           await redisClient.connect();
         };
 
-        redisClient.on('connect', () => Logger.log('redis.connection.connected', AppModule.name));
-        redisClient.on('ready', () => Logger.log('redis.connection.ready', AppModule.name));
+        redisClient.on('connect', () => Logger.log('Connected to redis', AppModule.name));
+        redisClient.on('ready', () => Logger.log('Redis is ready', AppModule.name));
         redisClient.on('error', (error: Error & { code?: string }) => {
-          Logger.error('redis.connection.error', AppModule.name);
+          Logger.error(`Redis connection error: ${error.code}`, AppModule.name);
 
           if (!error.code) {
             setTimeout(() => restartRedisService, 3000);

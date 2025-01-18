@@ -177,7 +177,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
   async deleteContainer(id: string) {
     try {
       await this.docker.getContainer(id).remove();
-      await delay(2000);
+      await delay(5000);
       const containers = await this.getContainers();
       return containers;
     } catch (error) {
