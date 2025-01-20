@@ -211,7 +211,7 @@ describe(SurveysController.name, () => {
 
       expect(surveysService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01], mockSseConnections);
       expect(surveyAnswerService.onSurveyRemoval).toHaveBeenCalledWith([idOfAnsweredSurvey01]);
-      expect(surveyModel.deleteMany).toHaveBeenCalledWith({ _id: { $in: [idOfAnsweredSurvey01] } });
+      expect(surveyModel.deleteMany).toHaveBeenCalledWith({ id: { $in: [idOfAnsweredSurvey01] } });
       expect(surveyAnswerModel.deleteMany).toHaveBeenCalledWith(
         { surveyId: { $in: [idOfAnsweredSurvey01] } },
         { ordered: false },
