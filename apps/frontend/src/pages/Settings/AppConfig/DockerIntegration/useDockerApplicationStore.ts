@@ -5,8 +5,11 @@ import type { ContainerInfo, ContainerCreateOptions } from 'dockerode';
 import TDockerCommands from '@libs/docker/types/TDockerCommands';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import useUserStore from '@/store/UserStore/UserStore';
+import { RowSelectionState } from '@tanstack/react-table';
 
 type DockerApplicationStore = {
+  selectedRows: RowSelectionState;
+  setSelectedRows: (selectedRows: RowSelectionState) => void;
   containers: ContainerInfo[];
   isLoading: boolean;
   error: string | null;
@@ -23,6 +26,9 @@ const useDockerApplicationStore = create<DockerApplicationStore>((set) => ({
   isLoading: true,
   error: null,
   eventSource: null,
+  selectedRows: {},
+
+  setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
 
   setEventSource: () =>
     set({ eventSource: new EventSource(`/${EDU_API_ROOT}/docker/sse?token=${useUserStore.getState().eduApiToken}`) }),

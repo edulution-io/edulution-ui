@@ -32,7 +32,7 @@ import MailsConfig from './mails/MailsConfig';
 import formSchema from './appConfigSchema';
 import ProxyConfigForm from './components/ProxyConfigForm';
 import DockerApplicationHandler from './DockerIntegration/DockerApplicationHandler';
-import DockerOverview from './DockerIntegration/DockerOverview';
+import DockerContainerTable from './DockerIntegration/DockerContainerTable';
 
 const AppConfigPage: React.FC = () => {
   const { settingLocation = '' } = useParams<{ settingLocation: TApps }>();
@@ -261,7 +261,7 @@ const AppConfigPage: React.FC = () => {
           description={!isMobileView && settingLocation ? t(`settings.description.${settingLocation}`) : null}
           iconSrc={APP_CONFIG_OPTIONS.find((item) => item.id === settingLocation)?.icon || SettingsIcon}
         />
-        {isAnAppConfigSelected ? settingsForm() : <DockerOverview />}
+        {isAnAppConfigSelected ? settingsForm() : <DockerContainerTable />}
       </div>
       {isAnAppConfigSelected ? (
         <AppConfigFloatingButtons

@@ -1094,7 +1094,10 @@
     "title": "Container-Übersicht",
     "containerName": "Container-Name",
     "state": "Betriebszustand",
-    "status": "Status"
+    "status": "Status",
+    "imageName": "Image",
+    "filterPlaceHolderText": "Suche nach Container-Name",
+    "created": "Erstellt am"
   },
   "docker": {
     "error": {
