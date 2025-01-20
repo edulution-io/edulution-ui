@@ -4,6 +4,7 @@ import Input from '@/components/shared/Input';
 import cn from '@libs/common/utils/className';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import './timeInput.css';
 
 interface TimeInputProps<T extends FieldValues> {
   form: UseFormReturn<T>;

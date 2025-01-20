@@ -1,0 +1,24 @@
+.input [type="time"] {
+  background: blue;
+  color: green;
+
+  width: 100%;
+  padding: 0.4rem;
+  border: 1px solid #ccc;
+  border-radius: 0.4rem;
+  font:
+    1rem "Fira Sans",
+    sans-serif;
+
+  label {
+    display: block;
+    font:
+      1rem "Fira Sans",
+      sans-serif;
+  }
+
+  input,
+  label {
+    margin: 0.4rem 0;
+  }
+}
