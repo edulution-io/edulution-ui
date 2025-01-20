@@ -1,3 +1,4 @@
 export const DEFAULT_CACHE_TTL_MS = 3600000;
 export const KEYCLOACK_SYNC_MS = Number(process.env['KEYCLOACK_SYNC_MS']) || 60000;
 export const GROUPS_CACHE_TTL_MS = KEYCLOACK_SYNC_MS <= 60000 ? 120000 : KEYCLOACK_SYNC_MS * 2;
+export const AUTH_CACHE_TTL_MS = 3600000;
