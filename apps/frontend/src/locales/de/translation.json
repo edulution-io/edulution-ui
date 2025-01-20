@@ -850,7 +850,8 @@
     "kill": "Beenden",
     "install": "Installieren",
     "update": "Update",
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "progress": "Fortschritt..."
   },
   "form": {
     "path": "Link",

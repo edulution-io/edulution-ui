@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Textarea } from '../ui/Textarea';
 
 type ProgressTextAreaProps = {
@@ -7,6 +8,7 @@ type ProgressTextAreaProps = {
 
 const ProgressTextArea: React.FC<ProgressTextAreaProps> = ({ text }) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const { t } = useTranslation();
   const progressText = text.join('\n');
 
   useEffect(() => {
@@ -21,21 +23,8 @@ const ProgressTextArea: React.FC<ProgressTextAreaProps> = ({ text }) => {
         ref={textAreaRef}
         value={progressText}
         readOnly
-        placeholder="Docker Progress wird hier angezeigt..."
-        style={{
-          whiteSpace: 'pre-wrap',
-          fontFamily: 'monospace',
-          fontSize: '12pt',
-          width: '100%',
-          height: '300px',
-          overflowY: 'auto',
-          backgroundColor: '#2d2d2d',
-          color: '#f5f5f5',
-          padding: '10px',
-          borderRadius: '5px',
-          border: '1px solid #444',
-        }}
-        className="scrollbar-thin"
+        placeholder={t('common.progress')}
+        className="w-full overflow-y-auto whitespace-pre-wrap rounded-md border bg-foreground p-2 text-p text-background scrollbar-thin placeholder:text-p focus:outline-none"
       />
     </div>
   );

@@ -850,7 +850,8 @@
     "kill": "Kill",
     "install": "Install",
     "update": "Update",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "progress": "Progress..."
   },
   "form": {
     "path": "Path",

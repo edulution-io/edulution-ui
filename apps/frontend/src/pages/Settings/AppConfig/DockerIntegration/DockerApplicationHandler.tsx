@@ -125,8 +125,9 @@ const DockerApplicationHandler: React.FC<DockerApplicationHandlerProps> = ({ set
                 size="lg"
                 className="mt-5 w-24"
                 onClick={() => setIsDialogOpen(true)}
+                disabled={container.length > 0}
               >
-                {container.length === 0 ? t('common.install') : t('common.update')}
+                {t('common.install')}
               </Button>
             </div>
 
