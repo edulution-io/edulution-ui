@@ -1,22 +1,41 @@
-import mongoose from 'mongoose';
 import { create } from 'zustand';
 import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import DeleteSurveyStore from '@libs/survey/types/tables/deleteSurveyStore';
-import DeleteSurveyStoreInitialState from '@libs/survey/types/tables/deleteSurveyStoreInitialState';
 
-const useDeleteSurveyStore = create<DeleteSurveyStore>((set) => ({
+interface DeleteSurveyStore {
+  isDeleteSurveysDialogOpen: boolean;
+  selectedSurveyIds: string[];
+  openDeleteSurveyDialog: (surveyIds: string[]) => void;
+  abortDeleteSurvey: () => void;
+  confirmDeleteSurvey: () => Promise<void>;
+
+  isLoading: boolean;
+
+  reset: () => void;
+}
+
+const DeleteSurveyStoreInitialState: Partial<DeleteSurveyStore> = {
+  isDeleteSurveysDialogOpen: false,
+  selectedSurveyIds: [],
+  isLoading: false,
+};
+
+const useDeleteSurveyStore = create<DeleteSurveyStore>((set, get) => ({
   ...(DeleteSurveyStoreInitialState as DeleteSurveyStore),
   reset: () => set(DeleteSurveyStoreInitialState),
 
-  selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
+  openDeleteSurveyDialog: (surveyIds: string[]) => {
+    set({ isDeleteSurveysDialogOpen: true, selectedSurveyIds: surveyIds });
+  },
+  abortDeleteSurvey: () => set({ isDeleteSurveysDialogOpen: false }),
 
-  deleteSurvey: async (surveyIds: mongoose.Types.ObjectId[]): Promise<void> => {
+  confirmDeleteSurvey: async () => {
+    const { selectedSurveyIds } = get();
     set({ isLoading: true });
     try {
-      await eduApi.delete(SURVEYS_ENDPOINT, { data: { surveyIds } });
+      await eduApi.delete(SURVEYS_ENDPOINT, { data: { selectedSurveyIds } });
+      set({ isDeleteSurveysDialogOpen: false });
     } catch (error) {
       handleApiError(error, set);
     } finally {

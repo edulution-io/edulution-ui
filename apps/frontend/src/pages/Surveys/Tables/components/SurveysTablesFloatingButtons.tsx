@@ -25,7 +25,7 @@ interface SurveysTablesFloatingButtonsProps {
 const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) => {
   const { canEdit, editSurvey, canDelete, canShowSubmittedAnswers, canParticipate, canShowResults } = props;
 
-  const { selectedSurvey: survey, updateUsersSurveys } = useSurveyTablesPageStore();
+  const { selectedRows, selectedSurvey: survey, updateUsersSurveys } = useSurveyTablesPageStore();
 
   const canShowResultsTable = canShowResults && (survey?.canShowResultsTable || true);
   const canShowResultsChart = canShowResults && (survey?.canShowResultsChart || true);
@@ -36,7 +36,7 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
 
   const { setIsOpenSubmittedAnswersDialog } = useSubmittedAnswersDialogStore();
 
-  const { deleteSurvey } = useDeleteSurveyStore();
+  const { openDeleteSurveyDialog } = useDeleteSurveyStore();
 
   const { t } = useTranslation();
 
@@ -45,8 +45,10 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
   }
 
   const handleDeleteSurvey = () => {
-    if (survey) {
-      void deleteSurvey([survey.id]);
+    const surveyIds = Object.keys(selectedRows);
+
+    if (surveyIds.length > 0) {
+      void openDeleteSurveyDialog(surveyIds);
       void updateUsersSurveys();
     }
   };
