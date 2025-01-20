@@ -87,6 +87,12 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
   private async pullImage(image: string) {
     try {
+      SseService.sendEventToUsers(
+        ['global-admin'],
+        this.dockerSseConnection,
+        { status: '', progress: 'Pulling image...' } as DockerEvent,
+        SSE_MESSAGE_TYPE.MESSAGE,
+      );
       const stream = await this.docker.pull(image);
       await new Promise<void>((resolve, reject) => {
         this.docker.modem.followProgress(
@@ -94,7 +100,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
           (error) => (error ? reject(error) : resolve()),
           (event: DockerEvent) => {
             if (event) {
-              SseService.sendEventToUsers(['global-admin'], this.dockerSseConnection, event, SSE_MESSAGE_TYPE.CREATED);
+              SseService.sendEventToUsers(['global-admin'], this.dockerSseConnection, event, SSE_MESSAGE_TYPE.MESSAGE);
             }
           },
         );
@@ -115,12 +121,24 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       return [];
     }
     try {
+      SseService.sendEventToUsers(
+        ['global-admin'],
+        this.dockerSseConnection,
+        { status: '', progress: 'Check if image already exists...' } as DockerEvent,
+        SSE_MESSAGE_TYPE.MESSAGE,
+      );
       const images = await this.docker.listImages();
       const imageExists = images.some((img) => img.RepoTags?.includes(Image));
 
       if (!imageExists) {
         await this.pullImage(Image);
       }
+      SseService.sendEventToUsers(
+        ['global-admin'],
+        this.dockerSseConnection,
+        { status: '', progress: 'Create container...' } as DockerEvent,
+        SSE_MESSAGE_TYPE.MESSAGE,
+      );
 
       const container = await this.docker.createContainer(createContainerDto);
 
@@ -132,6 +150,13 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
         DockerService.name,
+      );
+    } finally {
+      SseService.sendEventToUsers(
+        ['global-admin'],
+        this.dockerSseConnection,
+        { status: '', progress: 'Done' } as DockerEvent,
+        SSE_MESSAGE_TYPE.MESSAGE,
       );
     }
   }
@@ -171,6 +196,13 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         undefined,
         DockerService.name,
       );
+    } finally {
+      SseService.sendEventToUsers(
+        ['global-admin'],
+        this.dockerSseConnection,
+        { status: '', progress: `${operation} container ...` } as DockerEvent,
+        SSE_MESSAGE_TYPE.MESSAGE,
+      );
     }
   }
 
@@ -186,6 +218,13 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
         DockerService.name,
+      );
+    } finally {
+      SseService.sendEventToUsers(
+        ['global-admin'],
+        this.dockerSseConnection,
+        { status: '', progress: `Container ${id} deleted` } as DockerEvent,
+        SSE_MESSAGE_TYPE.MESSAGE,
       );
     }
   }

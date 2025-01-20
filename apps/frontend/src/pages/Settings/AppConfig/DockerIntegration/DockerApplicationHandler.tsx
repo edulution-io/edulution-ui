@@ -7,11 +7,9 @@ import { Button } from '@/components/shared/Button';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import ProgressTextArea from '@/components/shared/ProgressTextArea';
 import Field from '@/components/shared/Field';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
 import type TApps from '@libs/appconfig/types/appsType';
-import useUserStore from '@/store/UserStore/UserStore';
 import APPS from '@libs/appconfig/constants/apps';
 import DOCKER_APPLICATIONS from '@libs/docker/constants/dockerApplicationList';
 import useDockerApplicationStore from './useDockerApplicationStore';
@@ -22,8 +20,7 @@ type DockerApplicationHandlerProps = {
 
 const DockerApplicationHandler: React.FC<DockerApplicationHandlerProps> = ({ settingLocation }) => {
   const { t } = useTranslation();
-  const { eduApiToken } = useUserStore();
-  const { containers, fetchContainers, createAndRunContainer } = useDockerApplicationStore();
+  const { containers, eventSource, fetchContainers, createAndRunContainer } = useDockerApplicationStore();
   const [dockerProgress, setDockerProgress] = useState(['']);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const containerName = `/${DOCKER_APPLICATIONS[settingLocation]?.name}`;
@@ -34,20 +31,22 @@ const DockerApplicationHandler: React.FC<DockerApplicationHandlerProps> = ({ set
   }, []);
 
   useEffect(() => {
-    const eventSource = new EventSource(`/${EDU_API_ROOT}/docker/sse?token=${eduApiToken}`);
+    if (eventSource) {
+      const dockerProgressHandler = (e: MessageEvent<string>) => {
+        const { status, progress } = JSON.parse(e.data) as DockerEvent;
+        if (!progress) return;
+        setDockerProgress((prevDockerProgress) => [...prevDockerProgress, `${status} ${progress ?? ''}`]);
+      };
 
-    const dockerProgressHandler = (e: MessageEvent<string>) => {
-      const { status, progress } = JSON.parse(e.data) as DockerEvent;
-      setDockerProgress((prevDockerProgress) => [...prevDockerProgress, `${status} ${progress ?? ''}`]);
-    };
+      eventSource.addEventListener(SSE_MESSAGE_TYPE.MESSAGE, dockerProgressHandler);
 
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.CREATED, dockerProgressHandler);
-
-    return () => {
-      eventSource.removeEventListener(SSE_MESSAGE_TYPE.CREATED, dockerProgressHandler);
-      eventSource.close();
-    };
-  }, [eduApiToken]);
+      return () => {
+        eventSource.removeEventListener(SSE_MESSAGE_TYPE.MESSAGE, dockerProgressHandler);
+        eventSource.close();
+      };
+    }
+    return undefined;
+  }, []);
 
   const handleCreateContainer = async () => {
     const createContainerConfig = DOCKER_APPLICATIONS[settingLocation];

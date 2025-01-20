@@ -3,11 +3,15 @@ import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
 import type { ContainerInfo, ContainerCreateOptions } from 'dockerode';
 import TDockerCommands from '@libs/docker/types/TDockerCommands';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import useUserStore from '@/store/UserStore/UserStore';
 
 type DockerApplicationStore = {
   containers: ContainerInfo[];
   isLoading: boolean;
   error: string | null;
+  eventSource: EventSource | null;
+  setEventSource: () => void;
   fetchContainers: () => Promise<void>;
   createAndRunContainer: (createContainerDto: ContainerCreateOptions) => Promise<void>;
   runDockerCommand: (id: string, operation: TDockerCommands) => Promise<void>;
@@ -18,6 +22,10 @@ const useDockerApplicationStore = create<DockerApplicationStore>((set) => ({
   containers: [],
   isLoading: true,
   error: null,
+  eventSource: null,
+
+  setEventSource: () =>
+    set({ eventSource: new EventSource(`/${EDU_API_ROOT}/docker/sse?token=${useUserStore.getState().eduApiToken}`) }),
 
   fetchContainers: async () => {
     set({ isLoading: true, error: null });
