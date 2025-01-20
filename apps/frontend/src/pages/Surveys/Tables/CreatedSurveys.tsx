@@ -15,7 +15,6 @@ const CreatedSurveys = (props: CreatedSurveysProps) => {
   const {
     selectedPageView,
     updateSelectedPageView,
-    selectedSurvey,
     selectSurvey,
     setSelectedRows,
     createdSurveys,
@@ -42,7 +41,6 @@ const CreatedSurveys = (props: CreatedSurveysProps) => {
       <SurveyTablePage
         title={t('surveys.view.created.title')}
         description={t('surveys.view.created.description')}
-        selectedSurvey={selectedSurvey}
         surveys={createdSurveys}
         isLoading={isFetchingCreatedSurveys}
         canDelete

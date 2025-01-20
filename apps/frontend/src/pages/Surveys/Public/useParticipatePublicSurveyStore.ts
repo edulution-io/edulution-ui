@@ -19,10 +19,10 @@ const useParticipatePublicSurveyStore = create<ParticipatePublicSurveyStore>((se
     set({ isFetching: true });
     try {
       const response = await eduApi.get<SurveyDto>(`${PUBLIC_SURVEYS_ENDPOINT}/`, { params: { surveyId } });
-      const survey = response.data;
-      set({ survey });
+      const publicSurvey = response.data;
+      set({ publicSurvey });
     } catch (error) {
-      set({ survey: undefined });
+      set({ publicSurvey: undefined });
       handleApiError(error, set);
     } finally {
       set({ isFetching: false });
