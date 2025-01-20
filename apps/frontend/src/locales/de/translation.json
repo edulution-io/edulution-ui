@@ -465,6 +465,10 @@
   "surveys": {
     "rowsSelected": "{{selected}} von {{total}} Umfragen ausgewählt",
     "rowSelected": "{{selected}} von {{total}} Umfrage ausgewählt",
+    "confirmMultiDelete": "Sollen diese Umfragen wirklich gelöscht werden?",
+    "confirmSingleDelete": "Soll die Umfrage wirklich gelöscht werden?",
+    "deleteSurveys": "Lösche {count}} Umfragen",
+    "deleteSurvey": "Umfrage Löschen",
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
     "view": {
@@ -766,6 +770,7 @@
     "remember_me": "Merken"
   },
   "common": {
+    "error": "Fehler",
     "errors": {
       "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
@@ -773,6 +778,7 @@
     },
     "options": "Optionen",
     "checking": "Prüfen",
+    "cancel": "Abbrechen",
     "columns": "Spalten",
     "copy": {
       "success": "Erfolgreich in Zwischenablage kopiert",

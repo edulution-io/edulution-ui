@@ -4,6 +4,7 @@ import SurveyTable from '@/pages/Surveys/Tables/components/SurveyTable';
 import SurveyTableColumns from '@/pages/Surveys/Tables/components/SurveyTableColumns';
 import SurveysTablesFloatingButtons from '@/pages/Surveys/Tables/components/SurveysTablesFloatingButtons';
 import { ScrollArea } from '@/components/ui/ScrollArea';
+import DeleteSurveysDialog from '@/pages/Surveys/Tables/dialogs/DeleteSurveysDialog';
 
 interface SurveysTablePageProps {
   title: string;
@@ -55,6 +56,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
         canParticipate={canParticipate}
         canShowResults={canShowResults}
       />
+      <DeleteSurveysDialog surveys={surveys || []} />
     </>
   );
 };

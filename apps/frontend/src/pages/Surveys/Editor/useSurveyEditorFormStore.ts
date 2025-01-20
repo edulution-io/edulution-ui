@@ -20,7 +20,7 @@ const useSurveyEditorFormStore = create<SurveyEditorFormStore>((set) => ({
       if (resultingSurvey && survey.isPublic) {
         set({
           isOpenSharePublicSurveyDialog: true,
-          publicSurveyId: resultingSurvey.id.toString('hex'),
+          publicSurveyId: resultingSurvey.id.toString('base64'),
         });
       } else {
         set({ isOpenSharePublicSurveyDialog: false, publicSurveyId: '' });

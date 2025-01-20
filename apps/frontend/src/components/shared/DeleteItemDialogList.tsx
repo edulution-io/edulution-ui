@@ -1,6 +1,6 @@
 import React from 'react';
-import { ScrollArea } from '@/components/ui/ScrollArea';
 import { useTranslation } from 'react-i18next';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 
 const DeleteItemDialogList = ({
   deleteWarningTranslationId,
@@ -14,11 +14,11 @@ const DeleteItemDialogList = ({
   return (
     <div className="text-foreground">
       <p>{t(deleteWarningTranslationId)}</p>
-      <ScrollArea className="mt-2 h-64 w-96 max-w-full overflow-y-auto rounded border p-2">
+      <ScrollArea className="mt-2 h-64 w-[calc(100-3rem)] max-w-full overflow-y-auto rounded border p-2">
         {items.map((item) => (
           <div
             key={item.id}
-            className="truncate"
+            className="w-[calc(100%-1rem)] truncate"
           >
             {item.name}
           </div>

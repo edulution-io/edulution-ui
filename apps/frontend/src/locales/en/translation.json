@@ -464,6 +464,10 @@
   "surveys": {
     "rowsSelected": "{{selected}} of {{total}} surveys selected",
     "rowSelected": "{{selected}} of {{total}} survey selected",
+    "confirmMultiDelete": "Should these surveys really be deleted?",
+    "confirmSingleDelete": "Should this survey really be deleted?",
+    "deleteSurveys": "Delete {count}} surveys",
+    "deleteSurvey": "Delete survey",
     "title": "SURVEYS",
     "sidebar": "Surveys",
     "view": {
@@ -766,6 +770,7 @@
   },
   "edit": "Edit",
   "common": {
+    "error": "Error",
     "errors": {
       "startDateBeforeEndDate": "The start date must be before the end date",
       "dbAccessFailed": "Database access failed",
@@ -773,6 +778,7 @@
     },
     "checking": "Checking",
     "options": "Options",
+    "cancel": "Cancel",
     "columns": "Columns",
     "copy": {
       "success": "Successfully copied to clipboard",
