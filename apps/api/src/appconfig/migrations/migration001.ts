@@ -1,13 +1,14 @@
 /* eslint-disable no-underscore-dangle */
 import { Logger } from '@nestjs/common';
-import { Migration, MigrationModels } from '../../migration/migration.type';
+import { Migration } from '../../migration/migration.type';
+import { AppConfig } from '../appconfig.schema';
 
 type ExtendedOption = {
   name: string;
   value: string;
 };
 
-const migration001: Migration<MigrationModels> = {
+const migration001: Migration<AppConfig> = {
   name: '001-transform-extended-options',
   version: 2,
   execute: async (model) => {

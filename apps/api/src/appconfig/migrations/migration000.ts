@@ -1,7 +1,8 @@
 import { Logger } from '@nestjs/common';
-import { Migration, MigrationModels } from '../../migration/migration.type';
+import { Migration } from '../../migration/migration.type';
+import { AppConfig } from '../appconfig.schema';
 
-const migration000: Migration<MigrationModels> = {
+const migration000: Migration<AppConfig> = {
   name: '000-add-db-version-number',
   version: 1,
   execute: async (model) => {

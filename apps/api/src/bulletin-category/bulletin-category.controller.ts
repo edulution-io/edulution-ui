@@ -22,7 +22,7 @@ class BulletinCategoryController {
     return this.bulletinBoardService.create(currentUser, bulletinCategory);
   }
 
-  @Post(':name')
+  @Get(':name')
   async checkName(@Param('name') name: string): Promise<{ exists: boolean }> {
     return this.bulletinBoardService.checkIfNameExists(name);
   }
@@ -39,6 +39,14 @@ class BulletinCategoryController {
   @Delete(':id')
   remove(@GetCurrentUser() currentUser: JWTUser, @Param('id') id: string) {
     return this.bulletinBoardService.remove(currentUser, id);
+  }
+
+  @Post('position')
+  setPosition(
+    @GetCurrentUser() currentUser: JWTUser,
+    @Body() { categoryId, position }: { categoryId: string; position: number },
+  ) {
+    return this.bulletinBoardService.setPosition(currentUser, categoryId, position);
   }
 }
 

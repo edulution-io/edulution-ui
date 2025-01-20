@@ -1,4 +1,4 @@
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
@@ -15,13 +15,22 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 import { BulletinCategoryPermissionType } from '@libs/appconfig/types/bulletinCategoryPermissionType';
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 import { BulletinCategory, BulletinCategoryDocument } from './bulletin-category.schema';
+import MigrationService from '../migration/migration.service';
+import bulletinCategoryMigrationsList from './migrations/bulletinCategoryMigrationsList';
 
 @Injectable()
-class BulletinCategoryService {
+class BulletinCategoryService implements OnModuleInit {
   constructor(
     @InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
+
+  async onModuleInit() {
+    await MigrationService.runMigrations<BulletinCategoryDocument>(
+      this.bulletinCategoryModel,
+      bulletinCategoryMigrationsList,
+    );
+  }
 
   async getUsersWithPermissionCached(
     bulletinCategoryId: string,
@@ -123,6 +132,7 @@ class BulletinCategoryService {
         lastName: currentUser.family_name,
         username: currentUser.preferred_username,
       },
+      position: dto.position,
     })) as unknown as BulletinCategoryResponseDto;
 
     await this.getUsersWithPermissionCached(category.id, BulletinCategoryPermission.VIEW);
@@ -156,10 +166,21 @@ class BulletinCategoryService {
     if (!currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
       throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_DELETE_CATEGORY, HttpStatus.FORBIDDEN);
     }
-    try {
-      const objectId = new Types.ObjectId(id);
 
+    const objectId = new Types.ObjectId(id);
+
+    const categoryToRemove = await this.bulletinCategoryModel.findById(objectId).exec();
+    if (!categoryToRemove) {
+      throw new CustomHttpException(BulletinBoardErrorMessage.CATEGORY_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+
+    try {
       await this.bulletinCategoryModel.findByIdAndDelete(objectId).exec();
+
+      await this.bulletinCategoryModel.updateMany(
+        { position: { $gt: categoryToRemove.position } },
+        { $inc: { position: -1 } },
+      );
     } catch (error) {
       throw new CustomHttpException(BulletinBoardErrorMessage.CATEGORY_DELETE_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -169,6 +190,32 @@ class BulletinCategoryService {
     const result = await this.bulletinCategoryModel.exists({ name: new RegExp(`^${name}$`, 'i') }).exec();
     const exists = !!result;
     return { exists };
+  }
+
+  async setPosition(currentUser: JWTUser, categoryId: string, newPosition: number): Promise<boolean> {
+    if (!currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
+      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_CATEGORY, HttpStatus.FORBIDDEN);
+    }
+
+    const category = await this.bulletinCategoryModel.findById(categoryId).exec();
+    if (!category) {
+      throw new CustomHttpException(BulletinBoardErrorMessage.CATEGORY_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+
+    const categoryWithSamePosition = await this.bulletinCategoryModel.findOne({ position: newPosition }).exec();
+
+    if (categoryWithSamePosition) {
+      const oldPosition = category.position;
+      category.position = newPosition;
+      categoryWithSamePosition.position = oldPosition;
+      await category.save();
+      await categoryWithSamePosition.save();
+    } else {
+      category.position = newPosition;
+      await category.save();
+    }
+
+    return true;
   }
 }
 

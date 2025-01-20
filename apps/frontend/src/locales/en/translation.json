@@ -23,6 +23,7 @@
     "sidebar": "Bulletin Board",
     "newCategorie": "New category",
     "category": "Category",
+    "categoryPositionChanged": "Position of the category changed",
     "name": "Name",
     "visibleFor": "Visible for",
     "visibleForUsers": "Visible for users",
@@ -771,6 +772,7 @@
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },
+    "sortOrder": "Sort order",
     "checking": "Checking",
     "options": "Options",
     "columns": "Columns",
