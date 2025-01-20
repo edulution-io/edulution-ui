@@ -1,8 +1,10 @@
-import { Body, Controller, Get, Param, Post, Put, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Req, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import { Request } from 'express';
 import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
 import AuthRequestArgs from '@libs/auth/types/auth-request';
+import { AUTH_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import { Public } from '../common/decorators/public.decorator';
 import AuthService from './auth.service';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
@@ -13,6 +15,8 @@ class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(AUTH_CACHE_TTL_MS)
   @Get(AUTH_PATHS.AUTH_OIDC_CONFIG_PATH)
   authconfig(@Req() req: Request) {
     return this.authService.authconfig(req);

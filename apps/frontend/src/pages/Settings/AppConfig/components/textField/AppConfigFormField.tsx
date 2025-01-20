@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { HTMLInputTypeAttribute } from 'react';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
 import { Control, FieldValues, Path } from 'react-hook-form';
@@ -11,7 +11,7 @@ type AppConfigFormFieldProps<T extends FieldValues> = {
   fieldPath: Path<T>;
   control: Control<z.infer<typeof formSchema>, T>;
   option: AppConfigExtendedOption;
-  type?: 'password' | 'text';
+  type?: HTMLInputTypeAttribute;
 };
 
 const AppConfigFormField = <T extends FieldValues>({

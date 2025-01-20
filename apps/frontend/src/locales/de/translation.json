@@ -91,11 +91,11 @@
       "accessData": "Zugangsdaten",
       "content": "Du kannst von vielen mobilen Geräten aus auf den Schulserver zugreifen. Drücke auf Anleitung um zu starten.",
       "scanAccessInfo": "Um die Zugangsdaten zu übertragen, bitte folgenden QR-Code mit der edulution.io App scannen.",
-      "scanAppStoreLink": "Scanne den QR-Code mit deinem mobilen Gerät um die edultion-io App im AppStore herunterzuladen.",
+      "scanAppStoreLink": "Scanne den QR-Code mit deinem mobilen Gerät um die edulution.io App im AppStore herunterzuladen.",
       "nextStepPreview": "Im nächsten Schritt kannst du die Zugangsdaten übertragen.",
       "copyCredentials": "Oder manuell eintragen:",
       "downloadDirect": "Oder lade die App direkt herunter:",
-      "downloadApp": "Lade hier die edulution-io App herunter:"
+      "downloadApp": "Lade hier die edulution.io App herunter:"
     },
     "quota": {
       "title": "Quotas",
@@ -709,6 +709,10 @@
     "mails": {
       "title": "E-Mail"
     },
+    "mobileAccess": {
+      "title": "App-Zugriff",
+      "description": "Hier kannst du für den mobilen Zugriff auf deine Dateien die edulution.io App einrichten. Aktuell nur für Apple iOS verfügbar."
+    },
     "faq": "FAQ",
     "externalIntegration": "Externe Anbindung",
     "config": {
@@ -1066,9 +1070,9 @@
     "mailImapPortTitle": "Port",
     "mailImapPortDescription": "Gib hier die Port Nummer des IMAP-Servers an (z.B. 993)",
     "mailImapSecureTitle": "Sichere Verbindung",
-    "mailImapSecureDescription": "Gib 'true' ein, wenn die Verbindung über TLS aufgebaut werden soll, ansonsten wird 'false' (STARTTLS) verwendet.",
+    "mailImapSecureDescription": "Soll die Verbindung über 'TLS' oder 'STARTTLS' aufgebaut werden.",
     "mailImapRejectUnauthorizedTitle": "Nicht zertifizierte Verbindungen ablehnen",
-    "mailImapRejectUnauthorizedDescription": "Gib 'true' ein, wenn eine Zertifikatsprüfung für die Verbindungen gemacht werden soll. Ansonsten muss hier 'false' gesetzt werden."
+    "mailImapRejectUnauthorizedDescription": "Soll eine Zertifikatsprüfung für diese Verbindung durchgeführt werden?"
   },
   "preview": {
     "image": "Bildvorschau",

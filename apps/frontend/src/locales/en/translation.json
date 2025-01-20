@@ -95,7 +95,7 @@
       "nextStepPreview": "In the next step you can transfer the access data.",
       "copyCredentials": "Or enter manually:",
       "downloadDirect": "Or download the app directly:",
-      "downloadApp": "Download the edulution-io app here:"
+      "downloadApp": "Download the edulution.io app here:"
     },
     "quota": {
       "title": "Quotas",
@@ -708,6 +708,10 @@
     "mails": {
       "title": "Email"
     },
+    "mobileAccess": {
+      "title": "Mobile Access",
+      "description": "Here you can set up the edulution.io app for mobile access to your files. Currently only available for Apple iOS."
+    },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
     "config": {
@@ -1047,9 +1051,9 @@
     "mailImapPortTitle": "Port",
     "mailImapPortDescription": "Enter the port number of the IMAP-server (i.e. 993)",
     "mailImapSecureTitle": "Secure Connection",
-    "mailImapSecureDescription": "Enter 'true' if the connection should be established via TLS (more secure), otherwise it's set to 'false' and will use STARTTLS",
+    "mailImapSecureDescription": "Should the connection be established via TLS or STARTTLS",
     "mailImapRejectUnauthorizedTitle": "Reject Unauthorized",
-    "mailImapRejectUnauthorizedDescription": "Enter 'true' if the connection should reject self-signed certificates, otherwise it's set to 'false' to accept them"
+    "mailImapRejectUnauthorizedDescription": "Should a certificate check be carried out for this connection?"
   },
   "mails": {
     "errors": {

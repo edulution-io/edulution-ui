@@ -180,7 +180,7 @@ const LoginPage: React.FC = () => {
             />
           ) : (
             <>
-              {renderFormField('username', t('common.username'), undefined, true)}
+              {renderFormField('username', t('common.username'), 'text', true)}
               {renderFormField('password', t('common.password'), 'password')}
             </>
           )}
