@@ -329,20 +329,16 @@ class LmnApiService {
     lmnApiToken: string,
     userDetails: Partial<UpdateUserDetailsDto>,
     username: string,
-  ): Promise<null> {
+  ): Promise<UserLmnInfo> {
     try {
-      const response = await this.enqueue<null>(() =>
-        this.lmnApi.post<null>(
-          `${USERS_LMN_API_ENDPOINT}/${username}`,
-          { ...userDetails },
-          {
-            headers: {
-              [HTTP_HEADERS.XApiKey]: lmnApiToken,
-            },
+      await this.enqueue<null>(() =>
+        this.lmnApi.post<null>(`${USERS_LMN_API_ENDPOINT}/${username}`, userDetails, {
+          headers: {
+            [HTTP_HEADERS.XApiKey]: lmnApiToken,
           },
-        ),
+        }),
       );
-      return response.data;
+      return await this.getUser(lmnApiToken, username);
     } catch (error) {
       throw new CustomHttpException(LmnApiErrorMessage.UpdateUserFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
     }
@@ -535,10 +531,11 @@ class LmnApiService {
   public async changePassword(
     lmnApiToken: string,
     username: string,
-    oldPassword: string,
-    newPassword: string,
+    oldPasswordEncoded: string,
+    newPasswordEncoded: string,
     bypassSecurityCheck: boolean = false,
   ): Promise<null> {
+    const oldPassword = atob(oldPasswordEncoded);
     if (!bypassSecurityCheck) {
       const currentPassword = await this.userService.getPassword(username);
 
@@ -547,6 +544,7 @@ class LmnApiService {
       }
     }
 
+    const newPassword = atob(newPasswordEncoded);
     try {
       const response = await this.enqueue<null>(() =>
         this.lmnApi.post<null>(
@@ -570,7 +568,8 @@ class LmnApiService {
     }
   }
 
-  public async setFirstPassword(lmnApiToken: string, username: string, password: string): Promise<null> {
+  public async setFirstPassword(lmnApiToken: string, username: string, passwordEncoded: string): Promise<null> {
+    const password = atob(passwordEncoded);
     try {
       const response = await this.enqueue<null>(() =>
         this.lmnApi.post<null>(

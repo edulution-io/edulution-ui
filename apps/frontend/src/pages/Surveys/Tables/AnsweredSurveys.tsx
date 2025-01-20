@@ -10,7 +10,6 @@ const AnsweredSurveys = () => {
   const {
     selectedPageView,
     updateSelectedPageView,
-    selectedSurvey,
     selectSurvey,
     setSelectedRows,
     answeredSurveys,
@@ -37,7 +36,6 @@ const AnsweredSurveys = () => {
       <SurveyTablePage
         title={t('surveys.view.answered.title')}
         description={t('surveys.view.answered.description')}
-        selectedSurvey={selectedSurvey}
         surveys={answeredSurveys}
         isLoading={isFetchingAnsweredSurveys}
         canShowResults

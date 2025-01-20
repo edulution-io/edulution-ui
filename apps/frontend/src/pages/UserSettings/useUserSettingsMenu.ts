@@ -1,8 +1,16 @@
-import { LanguageIcon, MailIcon, SecurityIcon, UserDetailsSettingsIcon, UserIcon } from '@/assets/icons';
+import {
+  LanguageIcon,
+  MailIcon,
+  MobileDevicesIcon,
+  SecurityIcon,
+  UserDetailsSettingsIcon,
+  SettingsIcon,
+} from '@/assets/icons';
 import { useNavigate } from 'react-router-dom';
 import {
   USER_SETTINGS_LANGUAGE_PATH,
   USER_SETTINGS_MAILS_PATH,
+  USER_SETTINGS_MOBILE_ACCESS_PATH,
   USER_SETTINGS_SECURITY_PATH,
   USER_SETTINGS_USER_DETAILS_PATH,
 } from '@libs/userSettings/constants/user-settings-endpoints';
@@ -15,7 +23,7 @@ const useUserSettingsMenu = () => {
   const USERSETTINGS_MENUBAR_CONFIG: MenuBarEntry = {
     appName: APPS.USER_SETTINGS,
     title: 'usersettings.title',
-    icon: UserIcon,
+    icon: SettingsIcon,
     color: 'hover:bg-ciGreenToBlue',
     menuItems: [
       {
@@ -41,6 +49,12 @@ const useUserSettingsMenu = () => {
         label: 'usersettings.language.title',
         icon: LanguageIcon,
         action: () => navigate(USER_SETTINGS_LANGUAGE_PATH),
+      },
+      {
+        id: 'mobileAccess',
+        label: 'usersettings.mobileAccess.title',
+        icon: MobileDevicesIcon,
+        action: () => navigate(USER_SETTINGS_MOBILE_ACCESS_PATH),
       },
     ],
   };

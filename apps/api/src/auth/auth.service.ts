@@ -1,9 +1,8 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 import { Request } from 'express';
-import { from, Observable, of, throwError } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
-import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
+import { from, Observable } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Secret, TOTP } from 'otpauth';
@@ -13,7 +12,6 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
-import AUTH_CACHE from '@libs/auth/constants/auth-cache';
 import AUTH_TOTP_CONFIG from '@libs/auth/constants/totp-config';
 import type AuthRequestArgs from '@libs/auth/types/auth-request';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
@@ -26,10 +24,7 @@ const { KEYCLOAK_EDU_UI_SECRET, KEYCLOAK_EDU_UI_CLIENT_ID, KEYCLOAK_EDU_UI_REALM
 class AuthService {
   private keycloakApi: AxiosInstance;
 
-  constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
-  ) {
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
     this.keycloakApi = axios.create({
       baseURL: `${KEYCLOAK_API}/realms/${KEYCLOAK_EDU_UI_REALM}`,
       timeout: 5000,
@@ -37,26 +32,18 @@ class AuthService {
   }
 
   authconfig(req: Request): Observable<OidcMetadata> {
-    return from(this.cacheManager.get<OidcMetadata>(AUTH_CACHE.CACHE_KEY)).pipe(
-      switchMap((cachedData: OidcMetadata | undefined) => {
-        if (cachedData) {
-          return of(cachedData);
-        }
+    return from(this.keycloakApi.get<OidcMetadata>(AUTH_PATHS.AUTH_OIDC_CONFIG_PATH)).pipe(
+      map((response: AxiosResponse<OidcMetadata>) => {
+        const oidcConfig = response.data;
+        const apiAuthUrl = `${req.protocol}://${req.get('host')}${req.baseUrl}/${EDU_API_ROOT}/${AUTH_PATHS.AUTH_ENDPOINT}`;
 
-        return from(this.keycloakApi.get<OidcMetadata>(AUTH_PATHS.AUTH_OIDC_CONFIG_PATH)).pipe(
-          map((response: AxiosResponse<OidcMetadata>) => {
-            const oidcConfig = response.data;
-            const apiAuthUrl = `${req.protocol}://${req.get('host')}${req.baseUrl}/${EDU_API_ROOT}/${AUTH_PATHS.AUTH_ENDPOINT}`;
-
-            oidcConfig.authorization_endpoint = apiAuthUrl;
-            oidcConfig.token_endpoint = apiAuthUrl;
-
-            void this.cacheManager.set(AUTH_CACHE.CACHE_KEY, oidcConfig, AUTH_CACHE.CACHE_TTL);
-            return oidcConfig;
-          }),
-        );
+        oidcConfig.authorization_endpoint = apiAuthUrl;
+        oidcConfig.token_endpoint = apiAuthUrl;
+        return oidcConfig;
       }),
-      catchError(() => throwError(() => new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.UNAUTHORIZED))),
+      catchError(() => {
+        throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.UNAUTHORIZED);
+      }),
     );
   }
 

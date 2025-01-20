@@ -141,7 +141,7 @@ export class LmnApiController {
     return this.lmnApiService.getUser(lmnApiToken, params.username, checkFirstPassword);
   }
 
-  @Post('user')
+  @Patch('user')
   async updateCurrentUserDetails(
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
     @Body() body: { userDetails: Partial<UpdateUserDetailsDto> },
