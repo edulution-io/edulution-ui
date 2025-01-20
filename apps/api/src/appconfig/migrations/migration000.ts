@@ -10,15 +10,15 @@ const migration000: Migration<MigrationModels> = {
 
     const unprocessedDocuments = await model.find({ schemaVersion: previousSchemaVersion });
     if (unprocessedDocuments.length === 0) {
-      Logger.log('No documents to update');
       return;
     }
+    Logger.log(`${unprocessedDocuments?.length} documents to update...`);
 
     // eslint-disable-next-line no-underscore-dangle
     const ids = unprocessedDocuments.map((doc) => doc._id);
 
-    await model.updateMany({ _id: { $in: ids } }, { $set: { schemaVersion: newSchemaVersion } });
-    Logger.log(`Migration completed: ${unprocessedDocuments.length} documents updated`);
+    const result = await model.updateMany({ _id: { $in: ids } }, { $set: { schemaVersion: newSchemaVersion } });
+    Logger.log(`Migration completed: ${result.modifiedCount} documents updated`);
   },
 };
 
