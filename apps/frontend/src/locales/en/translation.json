@@ -1053,9 +1053,9 @@
     "mailImapPortTitle": "Port",
     "mailImapPortDescription": "Enter the port number of the IMAP-server (i.e. 993)",
     "mailImapSecureTitle": "Secure Connection",
-    "mailImapSecureDescription": "Enter 'true' if the connection should be established via TLS (more secure), otherwise it's set to 'false' and will use STARTTLS",
+    "mailImapSecureDescription": "Should the connection be established via TLS or STARTTLS",
     "mailImapRejectUnauthorizedTitle": "Reject Unauthorized",
-    "mailImapRejectUnauthorizedDescription": "Enter 'true' if the connection should reject self-signed certificates, otherwise it's set to 'false' to accept them"
+    "mailImapRejectUnauthorizedDescription": "Should a certificate check be carried out for this connection?"
   },
   "mails": {
     "errors": {
