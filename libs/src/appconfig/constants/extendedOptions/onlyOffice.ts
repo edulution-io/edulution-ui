@@ -9,6 +9,7 @@ const ONLY_OFFICE_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
     title: 'appExtendedOptions.onlyOfficeUrlTitle',
     type: ExtendedOptionField.input,
     value: '',
+    width: 'full',
   },
   {
     name: ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET,
@@ -16,6 +17,7 @@ const ONLY_OFFICE_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
     description: 'appExtendedOptions.onlyOfficeJwtSecretDescription',
     type: ExtendedOptionField.password,
     value: '',
+    width: 'full',
   },
 ];
 
