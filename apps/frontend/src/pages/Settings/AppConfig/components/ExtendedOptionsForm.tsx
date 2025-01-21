@@ -1,22 +1,23 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Control, FieldValues, Path } from 'react-hook-form';
-import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
-import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
-import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
-import AppConfigFormField from '@/pages/Settings/AppConfig/components/textField/AppConfigFormField';
 import { z } from 'zod';
+import AppConfigFormField from '@/pages/Settings/AppConfig/components/textField/AppConfigFormField';
 import formSchema from '@/pages/Settings/AppConfig/appConfigSchema';
-import AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
+import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import AppConfigTable from '@/pages/Settings/AppConfig/components/table/AppConfigTable';
+import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
+import { type AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+import type AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
+import type TApps from '@libs/appconfig/types/appsType';
 
 type ExtendedOptionsFormProps<T extends FieldValues> = {
   extendedOptions: AppConfigExtendedOptionsBySections | undefined;
   control: Control<z.infer<typeof formSchema>, T>;
-  settingLocation?: string;
+  settingLocation: TApps;
 };
 
-const ExtendedOptionsForm = <T extends FieldValues>({
+const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T extends FieldValues>({
   extendedOptions,
   control,
   settingLocation,

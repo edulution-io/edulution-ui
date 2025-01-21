@@ -642,6 +642,14 @@
         "general": {
           "title": "Allgemein",
           "description": ""
+        },
+        "veyon": {
+          "title": "Veyon Proxy",
+          "description": ""
+        },
+        "docker": {
+          "title": "Docker Anwendungen",
+          "description": "Um die erweiterten Dienste nutzen zu können hier die benötigten Docker Container gestartet werden."
         }
       },
       "update": {

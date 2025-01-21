@@ -11,6 +11,7 @@ interface AppConfigTableEntry<DataType, StoreType extends AppConfigTable<DataTyp
   showAddButton: boolean;
   filterKey: string;
   filterPlaceHolderText: string;
+  type: 'bulletin' | 'veyon' | 'docker';
 }
 
 export default AppConfigTableEntry;

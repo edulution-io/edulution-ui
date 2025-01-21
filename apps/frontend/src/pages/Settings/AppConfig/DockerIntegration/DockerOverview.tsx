@@ -12,8 +12,13 @@ import useDockerApplicationStore from './useDockerApplicationStore';
 
 const DockerOverview: React.FC = () => {
   const { t } = useTranslation();
-  const { isLoading, containers, fetchContainers, runDockerCommand, deleteDockerContainer } =
-    useDockerApplicationStore();
+  const {
+    isLoading,
+    tableContentData: containers,
+    fetchContainers,
+    runDockerCommand,
+    deleteDockerContainer,
+  } = useDockerApplicationStore();
 
   useEffect(() => {
     void fetchContainers();

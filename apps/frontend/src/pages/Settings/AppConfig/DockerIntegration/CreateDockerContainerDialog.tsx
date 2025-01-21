@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { type ContainerInfo } from 'dockerode';
 import { Button } from '@/components/shared/Button';
 import ProgressTextArea from '@/components/shared/ProgressTextArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
@@ -9,23 +8,20 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
 import type TApps from '@libs/appconfig/types/appsType';
 import useDockerApplicationStore from './useDockerApplicationStore';
+import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 
 interface CreateDockerContainerDialogProps {
-  isDialogOpen: boolean;
-  setIsDialogOpen: (isOpen: boolean) => void;
-  container: ContainerInfo[];
   settingLocation: TApps;
 }
 
-const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = ({
-  isDialogOpen,
-  setIsDialogOpen,
-  container,
-  settingLocation,
-}) => {
+const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = ({ settingLocation }) => {
   const { t } = useTranslation();
-  const { eventSource, createAndRunContainer } = useDockerApplicationStore();
   const [dockerProgress, setDockerProgress] = useState(['']);
+  const { eventSource, tableContentData: containers, createAndRunContainer } = useDockerApplicationStore();
+  const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
+
+  const containerName = `/${DOCKER_APPLICATIONS[settingLocation]?.name}`;
+  const container = containers.filter((item) => item.Names[0] === containerName);
 
   useEffect(() => {
     if (!eventSource) return undefined;
@@ -57,7 +53,7 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
         size="lg"
         type="button"
         className="w-24 border-2"
-        onClick={() => setIsDialogOpen(false)}
+        onClick={() => setDialogOpen(false)}
       >
         {container.length === 0 ? t('common.cancel') : t('common.close')}{' '}
       </Button>
@@ -80,7 +76,7 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
       isOpen={isDialogOpen}
       body={getDialogBody()}
       footer={getDialogFooter()}
-      handleOpenChange={() => setIsDialogOpen(false)}
+      handleOpenChange={() => setDialogOpen(false)}
     />
   );
 };

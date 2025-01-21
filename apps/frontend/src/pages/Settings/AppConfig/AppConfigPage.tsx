@@ -23,7 +23,6 @@ import { AppConfigDto } from '@libs/appconfig/types/appConfigDto';
 import ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
-import DOCKER_APPLICATIONS from '@libs/docker/constants/dockerApplicationList';
 import type TApps from '@libs/appconfig/types/appsType';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
@@ -31,7 +30,6 @@ import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailsConfig from './mails/MailsConfig';
 import formSchema from './appConfigSchema';
 import ProxyConfigForm from './components/ProxyConfigForm';
-import DockerApplicationHandler from './DockerIntegration/DockerApplicationHandler';
 import DockerContainerTable from './DockerIntegration/DockerContainerTable';
 
 const AppConfigPage: React.FC = () => {
@@ -169,9 +167,6 @@ const AppConfigPage: React.FC = () => {
                       appConfig={appConfigs}
                       isNativeApp={item.isNativeApp}
                     />
-                    {Object.keys(DOCKER_APPLICATIONS).includes(settingLocation) && item.isNativeApp ? (
-                      <DockerApplicationHandler settingLocation={settingLocation} />
-                    ) : null}
                     <FormFieldSH
                       key={`${item.id}.accessGroups`}
                       control={control}
@@ -191,6 +186,11 @@ const AppConfigPage: React.FC = () => {
                           <FormMessage className="text-p" />
                         </FormItem>
                       )}
+                    />
+                    <ExtendedOptionsForm
+                      extendedOptions={item.extendedOptions}
+                      control={control}
+                      settingLocation={settingLocation}
                     />
                     {item.options?.map((itemOption) =>
                       itemOption !== 'proxyConfig' ? (
@@ -221,11 +221,6 @@ const AppConfigPage: React.FC = () => {
                         />
                       ),
                     )}
-                    <ExtendedOptionsForm
-                      extendedOptions={item.extendedOptions}
-                      control={control}
-                      settingLocation={settingLocation}
-                    />
                     {settingLocation === 'mail' && <MailsConfig form={form} />}
                   </div>
                 ) : null}

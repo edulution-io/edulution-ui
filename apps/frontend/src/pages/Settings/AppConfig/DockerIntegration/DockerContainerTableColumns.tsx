@@ -28,7 +28,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
     },
   },
   {
-    id: 'container-name',
+    id: 'name',
     header: ({ column }) => (
       <SortableHeader<ContainerInfo, unknown>
         className="min-w-32"

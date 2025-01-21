@@ -8,7 +8,7 @@ import useDockerApplicationStore from './useDockerApplicationStore';
 import DockerContainerTableColumns from './DockerContainerTableColumns';
 import DockerContainerFloatingButtons from './DockerContainerFloatingButtons';
 
-const DockerContainerTable = () => {
+const DockerContainerTable: React.FC = () => {
   const { isLoading, containers, selectedRows, setSelectedRows, fetchContainers } = useDockerApplicationStore();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
@@ -26,7 +26,7 @@ const DockerContainerTable = () => {
       <ScrollableTable
         columns={DockerContainerTableColumns}
         data={containers}
-        filterKey="container-name"
+        filterKey="name"
         filterPlaceHolderText="dockerOverview.filterPlaceHolderText"
         onRowSelectionChange={handleRowSelectionChange}
         selectedRows={selectedRows}

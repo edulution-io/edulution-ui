@@ -32,6 +32,7 @@ import AppConfigSectionsKeys from '@libs/appconfig/constants/appConfigSectionsKe
 import ONLY_OFFICE_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/onlyOffice';
 import MAIL_IMAP_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/imapMailFeed';
 import BULLETIN_BOARD_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/bulletinBoard';
+import DOCKER_CONTAINER_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/dockerInstaller';
 
 export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -49,6 +50,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     isNativeApp: true,
     extendedOptions: {
       [AppConfigSectionsKeys.imapMailFeed]: MAIL_IMAP_EXTENDED_OPTIONS,
+      [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
     },
   },
   { id: APPS.CHAT, icon: ChatIcon, color: 'bg-ciDarkBlue', options: ['url', 'proxyConfig'], isNativeApp: false },
@@ -108,8 +110,11 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     id: APPS.CLASS_MANAGEMENT,
     icon: ClassManagementIcon,
     color: 'bg-ciLightBlue',
-    options: ['url', 'proxyConfig'],
+    options: ['proxyConfig'],
     isNativeApp: true,
+    extendedOptions: {
+      [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
+    },
   },
   { id: APPS.PRINTER, icon: PrinterIcon, color: 'bg-ciLightGreen', options: ['url'], isNativeApp: false },
   { id: APPS.NETWORK, icon: NetworkIcon, color: 'bg-ciLightGreen', options: ['url'], isNativeApp: false },
@@ -126,6 +131,9 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciLightGreen',
     options: ['url', 'proxyConfig'],
     isNativeApp: true,
+    extendedOptions: {
+      [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
+    },
   },
   { id: APPS.WLAN, icon: WlanIcon, color: 'bg-ciLightGreen', options: ['url'], isNativeApp: false },
   {

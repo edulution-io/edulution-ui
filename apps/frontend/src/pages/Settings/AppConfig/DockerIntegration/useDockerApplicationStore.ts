@@ -2,39 +2,40 @@ import { create } from 'zustand';
 import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
 import type { ContainerInfo, ContainerCreateOptions } from 'dockerode';
-import TDockerCommands from '@libs/docker/types/TDockerCommands';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import useUserStore from '@/store/UserStore/UserStore';
 import { RowSelectionState } from '@tanstack/react-table';
+import { DockerContainerTableStore } from '@libs/appconfig/types/dockerContainerTableStore';
+import DOCKER_APPLICATIONS from '@libs/docker/constants/dockerApplicationList';
 
-type DockerApplicationStore = {
-  selectedRows: RowSelectionState;
-  setSelectedRows: (selectedRows: RowSelectionState) => void;
-  containers: ContainerInfo[];
-  isLoading: boolean;
-  error: string | null;
-  eventSource: EventSource | null;
-  setEventSource: () => void;
-  updateContainers: (containers: ContainerInfo[]) => void;
-  fetchContainers: () => Promise<void>;
-  createAndRunContainer: (createContainerDto: ContainerCreateOptions) => Promise<void>;
-  runDockerCommand: (id: string, operation: TDockerCommands) => Promise<void>;
-  deleteDockerContainer: (id: string) => Promise<void>;
-};
-
-const useDockerApplicationStore = create<DockerApplicationStore>((set) => ({
+const initialValues = {
   containers: [],
+  tableContentData: [],
   isLoading: true,
   error: null,
   eventSource: null,
   selectedRows: {},
+};
+
+const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) => ({
+  ...initialValues,
 
   setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
+
+  setIsLoading: (isLoading: boolean) => set({ isLoading }),
 
   setEventSource: () =>
     set({ eventSource: new EventSource(`/${EDU_API_ROOT}/docker/sse?token=${useUserStore.getState().eduApiToken}`) }),
 
   updateContainers: (containers: ContainerInfo[]) => set({ containers }),
+
+  fetchTableContent: (applicationName) => {
+    if (applicationName) {
+      const containerName = `/${DOCKER_APPLICATIONS[applicationName]?.name}`;
+      const container = get().containers.filter((item) => item.Names[0] === containerName);
+      set({ tableContentData: container });
+    }
+  },
 
   fetchContainers: async () => {
     set({ isLoading: true, error: null });
@@ -80,6 +81,8 @@ const useDockerApplicationStore = create<DockerApplicationStore>((set) => ({
       set({ isLoading: false });
     }
   },
+
+  reset: () => set(initialValues),
 }));
 
 export default useDockerApplicationStore;
