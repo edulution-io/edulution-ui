@@ -58,7 +58,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
         <div>
           <div className="mb-1 font-bold">{t('bulletinboard.category')}</div>
           <DropdownSelect
-            options={categories?.sort((a, b) => a.position - b.position)}
+            options={categories}
             selectedVal={isGetCategoriesLoading ? t('common.loading') : watch('category')?.name}
             handleChange={handleCategoryChange}
             variant="light"

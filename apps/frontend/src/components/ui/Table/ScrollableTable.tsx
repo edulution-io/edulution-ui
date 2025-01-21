@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   ColumnDef,
   flexRender,
@@ -60,11 +60,9 @@ const ScrollableTable = <TData, TValue>({
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
 
-  const hasPositionCol = React.useMemo(() => columns.some((c) => c.id === 'position'), [columns]);
+  const hasPositionCol = useMemo(() => columns.some((c) => c.id === 'position'), [columns]);
 
-  const [sorting, setSorting] = React.useState(
-    hasPositionCol ? [{ id: DEFAULT_TABLE_SORT_PROPERTY_KEY, desc: false }] : [],
-  );
+  const [sorting, setSorting] = useState(hasPositionCol ? [{ id: DEFAULT_TABLE_SORT_PROPERTY_KEY, desc: false }] : []);
 
   const selectedRowsMessageId = scrollContainerOffsetElementIds.selectedRowsMessageId || SELECTED_ROW_MESSAGE_ID;
   const tableHeaderId = scrollContainerOffsetElementIds.tableHeaderId || TABLE_HEADER_ID;

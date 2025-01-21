@@ -13,8 +13,6 @@ class MigrationService {
       await migration.execute(model);
       Logger.log(`Migration "${migration.name}" completed`, MigrationService.name);
     }, Promise.resolve());
-
-    Logger.log('All migrations successfully executed', MigrationService.name);
   }
 }
 

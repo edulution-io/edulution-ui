@@ -116,10 +116,6 @@ class BulletinCategoryService implements OnModuleInit {
   }
 
   async create(currentUser: JWTUser, dto: CreateBulletinCategoryDto) {
-    if (!currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_CREATE_CATEGORY, HttpStatus.FORBIDDEN);
-    }
-
     const category = (await this.bulletinCategoryModel.create({
       name: dto.name,
       isActive: dto.isActive ?? true,
@@ -141,7 +137,7 @@ class BulletinCategoryService implements OnModuleInit {
     return category;
   }
 
-  async update(currentUser: JWTUser, id: string, dto: CreateBulletinCategoryDto): Promise<void> {
+  async update(id: string, dto: CreateBulletinCategoryDto): Promise<void> {
     const category: BulletinCategoryDocument | null = await this.bulletinCategoryModel.findById(id).exec();
     if (!category) {
       throw new CustomHttpException(
@@ -151,10 +147,6 @@ class BulletinCategoryService implements OnModuleInit {
       );
     }
 
-    if (!currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_CATEGORY, HttpStatus.FORBIDDEN);
-    }
-
     Object.assign(category, dto);
     await category.save();
 
@@ -162,11 +154,7 @@ class BulletinCategoryService implements OnModuleInit {
     await this.getUsersWithPermissionCached(String(category.id), BulletinCategoryPermission.EDIT);
   }
 
-  async remove(currentUser: JWTUser, id: string): Promise<void> {
-    if (!currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_DELETE_CATEGORY, HttpStatus.FORBIDDEN);
-    }
-
+  async remove(id: string): Promise<void> {
     const objectId = new Types.ObjectId(id);
 
     const categoryToRemove = await this.bulletinCategoryModel.findById(objectId).exec();
@@ -192,11 +180,7 @@ class BulletinCategoryService implements OnModuleInit {
     return { exists };
   }
 
-  async setPosition(currentUser: JWTUser, categoryId: string, newPosition: number): Promise<boolean> {
-    if (!currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_CATEGORY, HttpStatus.FORBIDDEN);
-    }
-
+  async setPosition(categoryId: string, newPosition: number): Promise<boolean> {
     const category = await this.bulletinCategoryModel.findById(categoryId).exec();
     if (!category) {
       throw new CustomHttpException(BulletinBoardErrorMessage.CATEGORY_NOT_FOUND, HttpStatus.NOT_FOUND);
@@ -204,16 +188,17 @@ class BulletinCategoryService implements OnModuleInit {
 
     const categoryWithSamePosition = await this.bulletinCategoryModel.findOne({ position: newPosition }).exec();
 
-    if (categoryWithSamePosition) {
-      const oldPosition = category.position;
-      category.position = newPosition;
-      categoryWithSamePosition.position = oldPosition;
-      await category.save();
-      await categoryWithSamePosition.save();
-    } else {
+    if (!categoryWithSamePosition) {
       category.position = newPosition;
       await category.save();
+      return true;
     }
+
+    const oldPosition = category.position;
+    category.position = newPosition;
+    categoryWithSamePosition.position = oldPosition;
+    await category.save();
+    await categoryWithSamePosition.save();
 
     return true;
   }

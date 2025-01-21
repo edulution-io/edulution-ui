@@ -1,10 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import { BulletinCategoryPermissionType } from '@libs/appconfig/types/bulletinCategoryPermissionType';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
 import BulletinCategoryService from './bulletin-category.service';
+import AppConfigGuard from '../appconfig/appconfig.guard';
 
 @ApiTags('bulletin-category')
 @ApiBearerAuth()
@@ -18,35 +19,33 @@ class BulletinCategoryController {
   }
 
   @Post()
+  @UseGuards(AppConfigGuard)
   create(@GetCurrentUser() currentUser: JWTUser, @Body() bulletinCategory: CreateBulletinCategoryDto) {
     return this.bulletinBoardService.create(currentUser, bulletinCategory);
   }
 
   @Get(':name')
+  @UseGuards(AppConfigGuard)
   async checkName(@Param('name') name: string): Promise<{ exists: boolean }> {
     return this.bulletinBoardService.checkIfNameExists(name);
   }
 
   @Patch(':id')
-  update(
-    @GetCurrentUser() currentUser: JWTUser,
-    @Param('id') id: string,
-    @Body() bulletinCategory: CreateBulletinCategoryDto,
-  ) {
-    return this.bulletinBoardService.update(currentUser, id, bulletinCategory);
+  @UseGuards(AppConfigGuard)
+  update(@Param('id') id: string, @Body() bulletinCategory: CreateBulletinCategoryDto) {
+    return this.bulletinBoardService.update(id, bulletinCategory);
   }
 
   @Delete(':id')
-  remove(@GetCurrentUser() currentUser: JWTUser, @Param('id') id: string) {
-    return this.bulletinBoardService.remove(currentUser, id);
+  @UseGuards(AppConfigGuard)
+  remove(@Param('id') id: string) {
+    return this.bulletinBoardService.remove(id);
   }
 
   @Post('position')
-  setPosition(
-    @GetCurrentUser() currentUser: JWTUser,
-    @Body() { categoryId, position }: { categoryId: string; position: number },
-  ) {
-    return this.bulletinBoardService.setPosition(currentUser, categoryId, position);
+  @UseGuards(AppConfigGuard)
+  setPosition(@Body() { categoryId, position }: { categoryId: string; position: number }) {
+    return this.bulletinBoardService.setPosition(categoryId, position);
   }
 }
 

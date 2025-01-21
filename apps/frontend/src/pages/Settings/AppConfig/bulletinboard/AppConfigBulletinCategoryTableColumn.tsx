@@ -13,7 +13,12 @@ import useAppConfigTableDialogStore from '../components/table/useAppConfigTableD
 const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
   {
     id: DEFAULT_TABLE_SORT_PROPERTY_KEY,
-    header: ({ column }) => <SortableHeader<BulletinCategoryResponseDto, unknown> column={column} />,
+    header: ({ column }) => (
+      <SortableHeader<BulletinCategoryResponseDto, unknown>
+        column={column}
+        className="max-w-32"
+      />
+    ),
     meta: {
       translationId: 'common.sortOrder',
     },
