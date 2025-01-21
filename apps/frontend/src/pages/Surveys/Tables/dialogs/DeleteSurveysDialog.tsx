@@ -24,8 +24,8 @@ const DeleteSurveysDialog = ({ surveys, trigger }: DeleteSurveysDialogProps) => 
 
   const isMultiDelete = selectedSurveyIds.length > 1;
 
-  const onSubmit = () => {
-    deleteSurveys(selectedSurveys);
+  const onSubmit = async () => {
+    await deleteSurveys(selectedSurveys);
     setSelectedRows({});
     setIsDeleteSurveysDialogOpen(false);
   };
@@ -42,13 +42,10 @@ const DeleteSurveysDialog = ({ surveys, trigger }: DeleteSurveysDialogProps) => 
         ) : (
           <DeleteItemDialogList
             deleteWarningTranslationId={isMultiDelete ? 'surveys.confirmMultiDelete' : 'surveys.confirmSingleDelete'}
-            items={selectedSurveys.map((survey) => {
-              const surveyId = survey.id.toString('base64');
-              return {
-                name: `${survey.formula.title} (id: ${surveyId})`,
-                id: surveyId,
-              };
-            })}
+            items={selectedSurveys.map((survey) => ({
+              name: `${survey.formula.title}`,
+              id: survey.id.toString('base64'),
+            }))}
           />
         )}
       </div>

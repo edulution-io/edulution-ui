@@ -7,7 +7,7 @@ import handleApiError from '@/utils/handleApiError';
 interface DeleteSurveyStore {
   isDeleteSurveysDialogOpen: boolean;
   setIsDeleteSurveysDialogOpen: (isOpen: boolean) => void;
-  deleteSurveys: (surveys: SurveyDto[]) => void;
+  deleteSurveys: (surveys: SurveyDto[]) => Promise<void>;
   isLoading: boolean;
   reset: () => void;
   error?: Error;
@@ -24,10 +24,10 @@ const useDeleteSurveyStore = create<DeleteSurveyStore>((set) => ({
   reset: () => set(DeleteSurveyStoreInitialState),
 
   setIsDeleteSurveysDialogOpen: (isOpen) => set({ isDeleteSurveysDialogOpen: isOpen }),
-  deleteSurveys: (surveys: SurveyDto[]) => {
+  deleteSurveys: async (surveys: SurveyDto[]) => {
     set({ isLoading: true });
     try {
-      void eduApi.delete(SURVEYS_ENDPOINT, {
+      await eduApi.delete(SURVEYS_ENDPOINT, {
         data: { surveyIds: surveys.map((survey) => survey.id) },
       });
     } catch (error) {

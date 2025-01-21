@@ -466,7 +466,7 @@
     "rowSelected": "{{selected}} of {{total}} survey selected",
     "confirmMultiDelete": "Should these surveys really be deleted?",
     "confirmSingleDelete": "Should this survey really be deleted?",
-    "deleteSurveys": "Delete {count}} surveys",
+    "deleteSurveys": "Delete {{count}} surveys",
     "deleteSurvey": "Delete survey",
     "title": "SURVEYS",
     "sidebar": "Surveys",
