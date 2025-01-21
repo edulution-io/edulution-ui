@@ -666,7 +666,9 @@
     "yamleditor": {
       "invalidYaml": "Wrong YAML syntax",
       "placeholder": "Enter your Traefik config here"
-    }
+    },
+    "rowsSelected": "{{selected}} of {{total}} Container selected",
+    "rowSelected": "{{selected}} of {{total}} Container selected"
   },
   "usersettings": {
     "title": "MY PROFILE",
@@ -1086,7 +1088,7 @@
   },
   "dockerApplication": {
     "title": "Docker Application",
-    "dialogTitle": "{{applicationName}}-Container Installer",
+    "dialogTitle": "{{applicationName}}-Plugins Installer",
     "mailDescription": "If you want to operate your own mail server, you can carry out the setup for Mailcow here.",
     "classmanagementDescription": "If you use Veyon in your school network, you can carry out the setup for the Veyon-WebAPI-Proxy here."
   },
@@ -1106,6 +1108,16 @@
       "dockerCreationError": "Docker Container konnte nicht erstellt werden",
       "dockerCommandExecutionError": "Docker Befehl konnte nicht ausgeführt werden",
       "dockerContainerDeletionError": "Docker Container konnte nicht gelöscht werden"
+    },
+    "events": {
+      "pullingImage": "Pulling docker image...",
+      "checkingImage": "Checking if image already exists...",
+      "creatingContainer": "Creating docker container...",
+      "containerCreated": "Container created.",
+      "startContainer": "Container started.",
+      "stopContainer": "Container stopped.",
+      "restartContainer": "Restart Container.",
+      "killContainer": "Container killed."
     }
   }
 }

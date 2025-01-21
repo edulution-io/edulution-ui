@@ -9,7 +9,6 @@ import type TDockerCommands from '@libs/docker/types/TDockerCommands';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import DockerErrorMessages from '@libs/docker/constants/dockerErrorMessages';
 import DOCKER_COMMANDS from '@libs/docker/constants/dockerCommands';
-import delay from '@libs/common/utils/delay';
 import SseService from '../sse/sse.service';
 import type UserConnections from '../types/userConnections';
 
@@ -57,6 +56,16 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       this.eventSubscription = dockerEvents$.subscribe({
         next: (event) => {
           SseService.sendEventToUsers(['global-admin'], this.dockerSseConnection, event, SSE_MESSAGE_TYPE.MESSAGE);
+          this.getContainers()
+            .then((containers) =>
+              SseService.sendEventToUsers(
+                ['global-admin'],
+                this.dockerSseConnection,
+                containers,
+                SSE_MESSAGE_TYPE.UPDATED,
+              ),
+            )
+            .catch((e) => Logger.error(e instanceof Error ? e.message : 'Get containers failed', DockerService.name));
         },
         error: () => Logger.error('Docker stream error', DockerService.name),
         complete: () => Logger.log('Close docker event stream', DockerService.name),
@@ -90,7 +99,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       SseService.sendEventToUsers(
         ['global-admin'],
         this.dockerSseConnection,
-        { status: '', progress: 'Pulling image...' } as DockerEvent,
+        { status: '', progress: 'docker.events.pullingImage' } as DockerEvent,
         SSE_MESSAGE_TYPE.MESSAGE,
       );
       const stream = await this.docker.pull(image);
@@ -118,13 +127,13 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
   async createContainer(createContainerDto: Docker.ContainerCreateOptions) {
     const { Image } = createContainerDto;
     if (!Image) {
-      return [];
+      return;
     }
     try {
       SseService.sendEventToUsers(
         ['global-admin'],
         this.dockerSseConnection,
-        { status: '', progress: 'Check if image already exists...' } as DockerEvent,
+        { status: '', progress: 'docker.events.checkingImage' } as DockerEvent,
         SSE_MESSAGE_TYPE.MESSAGE,
       );
       const images = await this.docker.listImages();
@@ -133,17 +142,17 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       if (!imageExists) {
         await this.pullImage(Image);
       }
+
       SseService.sendEventToUsers(
         ['global-admin'],
         this.dockerSseConnection,
-        { status: '', progress: 'Create container...' } as DockerEvent,
+        { status: '', progress: 'docker.events.creatingContainer' } as DockerEvent,
         SSE_MESSAGE_TYPE.MESSAGE,
       );
 
       const container = await this.docker.createContainer(createContainerDto);
 
-      const containers = await this.executeContainerCommand({ id: container.id, operation: DOCKER_COMMANDS.START });
-      return containers;
+      await this.executeContainerCommand({ id: container.id, operation: DOCKER_COMMANDS.START });
     } catch (error) {
       throw new CustomHttpException(
         DockerErrorMessages.DOCKER_CREATION_ERROR,
@@ -155,7 +164,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       SseService.sendEventToUsers(
         ['global-admin'],
         this.dockerSseConnection,
-        { status: '', progress: 'Done' } as DockerEvent,
+        { status: '', progress: 'docker.events.containerCreated' } as DockerEvent,
         SSE_MESSAGE_TYPE.MESSAGE,
       );
     }
@@ -164,13 +173,18 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
   async executeContainerCommand(params: { id: string; operation: TDockerCommands }) {
     const { id, operation } = params;
     try {
+      SseService.sendEventToUsers(
+        ['global-admin'],
+        this.dockerSseConnection,
+        { status: '', progress: `docker.events.${operation}Container` } as DockerEvent,
+        SSE_MESSAGE_TYPE.MESSAGE,
+      );
       switch (operation) {
         case DOCKER_COMMANDS.START:
           await this.docker.getContainer(id).start();
           break;
         case DOCKER_COMMANDS.STOP:
           await this.docker.getContainer(id).stop();
-          await delay(2000);
           break;
         case DOCKER_COMMANDS.RESTART:
           await this.docker.getContainer(id).restart();
@@ -186,9 +200,6 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
             DockerService.name,
           );
       }
-
-      const containers = await this.getContainers();
-      return containers;
     } catch (error) {
       throw new CustomHttpException(
         DockerErrorMessages.DOCKER_COMMAND_EXECUTION_ERROR,
@@ -196,35 +207,18 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         undefined,
         DockerService.name,
       );
-    } finally {
-      SseService.sendEventToUsers(
-        ['global-admin'],
-        this.dockerSseConnection,
-        { status: '', progress: `${operation} container ...` } as DockerEvent,
-        SSE_MESSAGE_TYPE.MESSAGE,
-      );
     }
   }
 
   async deleteContainer(id: string) {
     try {
       await this.docker.getContainer(id).remove();
-      await delay(5000);
-      const containers = await this.getContainers();
-      return containers;
     } catch (error) {
       throw new CustomHttpException(
         DockerErrorMessages.DOCKER_CONTAINER_DELETION_ERROR,
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
         DockerService.name,
-      );
-    } finally {
-      SseService.sendEventToUsers(
-        ['global-admin'],
-        this.dockerSseConnection,
-        { status: '', progress: `Container ${id} deleted` } as DockerEvent,
-        SSE_MESSAGE_TYPE.MESSAGE,
       );
     }
   }

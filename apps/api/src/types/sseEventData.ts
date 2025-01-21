@@ -1,3 +1,4 @@
+import { type ContainerInfo } from 'dockerode';
 import type CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import type SurveyDto from '@libs/survey/types/api/survey.dto';
 import type ConferenceDto from '@libs/conferences/types/conference.dto';
@@ -13,6 +14,7 @@ type SseEventData =
   | SurveyDto
   | Survey
   | Conference
-  | DockerEvent;
+  | DockerEvent
+  | ContainerInfo[];
 
 export default SseEventData;

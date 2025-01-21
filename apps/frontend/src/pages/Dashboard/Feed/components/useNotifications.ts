@@ -13,7 +13,7 @@ import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import APPS from '@libs/appconfig/constants/apps';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
 import { CONFERENCES_SSE_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
-import useDockerApplicationStore from '@/pages/Settings/AppConfig/DockerIntegration/useDockerApplicationStore';
+import useDockerContainerEvents from '@/hooks/useDockerContainerEvents';
 
 const useNotifications = () => {
   const { isSuperAdmin, authReady } = useLdapGroups();
@@ -25,7 +25,8 @@ const useNotifications = () => {
   const conferencesRef = useRef(conferences);
   const isSurveysAppActivated = useIsSurveysActive();
   const { updateOpenSurveys } = useSurveyTablesPageStore();
-  const { setEventSource } = useDockerApplicationStore();
+
+  useDockerContainerEvents();
 
   useEffect(() => {
     conferencesRef.current = conferences;
@@ -101,12 +102,6 @@ const useNotifications = () => {
 
     return undefined;
   }, [isConferenceAppActivated, eduApiToken]);
-
-  useEffect(() => {
-    if (isSuperAdmin) {
-      setEventSource();
-    }
-  }, [isSuperAdmin]);
 
   useEffect(() => {
     if (isSurveysAppActivated) {

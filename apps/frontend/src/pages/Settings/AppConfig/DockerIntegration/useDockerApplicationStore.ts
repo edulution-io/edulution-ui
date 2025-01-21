@@ -15,6 +15,7 @@ type DockerApplicationStore = {
   error: string | null;
   eventSource: EventSource | null;
   setEventSource: () => void;
+  updateContainers: (containers: ContainerInfo[]) => void;
   fetchContainers: () => Promise<void>;
   createAndRunContainer: (createContainerDto: ContainerCreateOptions) => Promise<void>;
   runDockerCommand: (id: string, operation: TDockerCommands) => Promise<void>;
@@ -33,6 +34,8 @@ const useDockerApplicationStore = create<DockerApplicationStore>((set) => ({
   setEventSource: () =>
     set({ eventSource: new EventSource(`/${EDU_API_ROOT}/docker/sse?token=${useUserStore.getState().eduApiToken}`) }),
 
+  updateContainers: (containers: ContainerInfo[]) => set({ containers }),
+
   fetchContainers: async () => {
     set({ isLoading: true, error: null });
     try {
@@ -48,8 +51,7 @@ const useDockerApplicationStore = create<DockerApplicationStore>((set) => ({
   createAndRunContainer: async (createContainerDto: ContainerCreateOptions) => {
     set({ isLoading: true, error: null });
     try {
-      const { data } = await eduApi.post<ContainerInfo[]>('docker/containers', createContainerDto);
-      set({ containers: data });
+      await eduApi.post<ContainerInfo[]>('docker/containers', createContainerDto);
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -60,8 +62,7 @@ const useDockerApplicationStore = create<DockerApplicationStore>((set) => ({
   runDockerCommand: async (id: string, operation: string) => {
     set({ isLoading: true, error: null });
     try {
-      const { data } = await eduApi.put<ContainerInfo[]>(`docker/containers/${id}/${operation}`);
-      set({ containers: data });
+      await eduApi.put<ContainerInfo[]>(`docker/containers/${id}/${operation}`);
     } catch (error) {
       handleApiError(error, set);
     } finally {

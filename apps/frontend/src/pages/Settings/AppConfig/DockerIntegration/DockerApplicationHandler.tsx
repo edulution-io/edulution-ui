@@ -4,15 +4,11 @@ import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '
 import { type ContainerInfo } from 'dockerode';
 import { Card, CardContent } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import ProgressTextArea from '@/components/shared/ProgressTextArea';
 import Field from '@/components/shared/Field';
-import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import type DockerEvent from '@libs/docker/types/dockerEvents';
 import type TApps from '@libs/appconfig/types/appsType';
-import APPS from '@libs/appconfig/constants/apps';
 import DOCKER_APPLICATIONS from '@libs/docker/constants/dockerApplicationList';
 import useDockerApplicationStore from './useDockerApplicationStore';
+import CreateDockerContainerDialog from './CreateDockerContainerDialog';
 
 type DockerApplicationHandlerProps = {
   settingLocation: TApps;
@@ -20,8 +16,7 @@ type DockerApplicationHandlerProps = {
 
 const DockerApplicationHandler: React.FC<DockerApplicationHandlerProps> = ({ settingLocation }) => {
   const { t } = useTranslation();
-  const { containers, eventSource, fetchContainers, createAndRunContainer } = useDockerApplicationStore();
-  const [dockerProgress, setDockerProgress] = useState(['']);
+  const { containers, fetchContainers } = useDockerApplicationStore();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const containerName = `/${DOCKER_APPLICATIONS[settingLocation]?.name}`;
   const container = containers.filter((item) => item.Names[0] === containerName);
@@ -29,54 +24,6 @@ const DockerApplicationHandler: React.FC<DockerApplicationHandlerProps> = ({ set
   useEffect(() => {
     void fetchContainers();
   }, []);
-
-  useEffect(() => {
-    if (eventSource) {
-      const dockerProgressHandler = (e: MessageEvent<string>) => {
-        const { status, progress } = JSON.parse(e.data) as DockerEvent;
-        if (!progress) return;
-        setDockerProgress((prevDockerProgress) => [...prevDockerProgress, `${status} ${progress ?? ''}`]);
-      };
-
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.MESSAGE, dockerProgressHandler);
-
-      return () => {
-        eventSource.removeEventListener(SSE_MESSAGE_TYPE.MESSAGE, dockerProgressHandler);
-        eventSource.close();
-      };
-    }
-    return undefined;
-  }, []);
-
-  const handleCreateContainer = async () => {
-    const createContainerConfig = DOCKER_APPLICATIONS[settingLocation];
-    if (!createContainerConfig) return;
-    await createAndRunContainer(createContainerConfig);
-  };
-
-  const getDialogBody = () => <ProgressTextArea text={dockerProgress} />;
-  const getDialogFooter = () => (
-    <div className="flex justify-end gap-2">
-      <Button
-        variant="btn-outline"
-        size="lg"
-        type="button"
-        className="w-24 border-2"
-        onClick={() => setIsDialogOpen(false)}
-      >
-        {t('common.cancel')}
-      </Button>
-      <Button
-        variant="btn-collaboration"
-        size="lg"
-        type="button"
-        className="w-24"
-        onClick={handleCreateContainer}
-      >
-        {container.length === 0 ? t('common.install') : t('common.update')}
-      </Button>
-    </div>
-  );
 
   const containerToShow = () => {
     const imageName = DOCKER_APPLICATIONS[settingLocation]?.Image || '';
@@ -168,12 +115,11 @@ const DockerApplicationHandler: React.FC<DockerApplicationHandlerProps> = ({ set
           </AccordionContent>
         </AccordionItem>
       </AccordionSH>
-      <AdaptiveDialog
-        title={t(`dockerApplication.dialogTitle`, { applicationName: APPS.MAIL.toUpperCase() })}
-        isOpen={isDialogOpen}
-        body={getDialogBody()}
-        footer={getDialogFooter()}
-        handleOpenChange={() => setIsDialogOpen(false)}
+      <CreateDockerContainerDialog
+        isDialogOpen={isDialogOpen}
+        setIsDialogOpen={setIsDialogOpen}
+        container={container}
+        settingLocation={settingLocation}
       />
     </>
   );
