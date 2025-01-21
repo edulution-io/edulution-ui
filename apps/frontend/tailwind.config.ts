@@ -132,6 +132,7 @@ module.exports = {
           '--destructive-foreground': '210 40% 98%',
           '--ring': '215 20.2% 65.1%',
           '--sidebar-width': '56px',
+          '--menubar-max-width': '300px',
           '--floating-buttons-height': '150px',
         },
         h1: { fontSize: theme('fontSize.h1'), fontWeight: '700' },
