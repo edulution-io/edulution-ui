@@ -14,9 +14,7 @@ import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPag
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { ButtonSH } from '@/components/ui/ButtonSH';
-import useUserStore from '@/store/UserStore/UserStore';
 import copyToClipboard from '@/utils/copyToClipboard';
-import { GearLight } from '@/assets/icons';
 
 const hideOnMobileClassName = 'hidden lg:flex min-w-24';
 
@@ -153,8 +151,6 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     accessorFn: (row) => row.invitedAttendees.length,
     cell: ({ row }) => {
       const { t } = useTranslation();
-      const { user } = useUserStore();
-      const isUserTheCreator = user?.username === row.original.creator.username;
       const { length } = row.original.invitedAttendees;
       const attendeeCount = length;
       const attendeeText = `${attendeeCount} ${t(attendeeCount === 1 ? 'survey.attendee' : 'survey.attendees')}`;
@@ -164,8 +160,6 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
         <SelectableTextCell
           className={hideOnMobileClassName}
           text={`${attendeeText} ${groupsText}`}
-          textOnHover={isUserTheCreator ? t('common.details') : ''}
-          iconOnHover={isUserTheCreator ? GearLight : undefined}
         />
       );
     },

@@ -25,8 +25,6 @@ export { default as ReloadIcon } from '@/assets/icons/edulution/Neu_Laden.svg';
 export { default as LernmanagementIcon } from '@/assets/icons/edulution/Lernmanagement.svg';
 export { default as AppleLogo } from '@/assets/icons/apple.png';
 export { default as IsoIcon } from '@/assets/icons/iso.svg';
-export { default as GearLight } from '@/assets/icons/gear-light.svg';
-export { default as GearDark } from '@/assets/icons/gear-dark.svg';
 export { default as ProgrammIcon } from '@/assets/icons/programm.svg';
 export { default as ProjectIcon } from '@/assets/icons/project.svg';
 export { default as ShareIcon } from '@/assets/icons/share.svg';
