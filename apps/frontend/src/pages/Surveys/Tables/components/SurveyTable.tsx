@@ -44,8 +44,6 @@ const SurveyTable = <TData extends MongoId, TValue>({
         tableHeaderId: SURVEYS_PAGE_TABLE_HEADER_ID,
         others: [NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID],
       }}
-      // TODO: Allow multi row selection (307 - Allow multi selection in survey tables (https://github.com/edulution-io/edulution-ui/issues/307))
-      enableMultiRowSelection={false}
     />
   );
 };

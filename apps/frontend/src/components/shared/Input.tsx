@@ -25,22 +25,32 @@ type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
   };
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, variant, shouldTrim = false, onChange, ...props }, ref) => {
+  ({ className, type = 'text', variant, shouldTrim = false, onChange, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
 
-      const newValue = shouldTrim ? value.trim() : value;
-
       if (onChange) {
-        onChange({
-          ...event,
-          target: {
-            ...event.target,
-            value: newValue,
-          },
-        });
+        if (type === 'text' || type === 'password') {
+          const newValue = shouldTrim ? value.trim() : value;
+          onChange({
+            ...event,
+            target: {
+              ...event.target,
+              value: newValue,
+            },
+          });
+        } else if (type === 'number') {
+          const newValue = Number(value);
+          onChange({
+            ...event,
+            target: {
+              ...event.target,
+              value: newValue as unknown as string,
+            },
+          });
+        }
       }
     };
 
