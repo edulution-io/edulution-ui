@@ -245,7 +245,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
 
   return (
     <AdaptiveDialog
-      isOpen={openDialogType === item.name}
+      isOpen
       trigger={trigger}
       handleOpenChange={onClose}
       title={t(getTitle())}

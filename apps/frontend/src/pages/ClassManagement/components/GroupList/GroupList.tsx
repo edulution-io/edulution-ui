@@ -5,6 +5,7 @@ import GroupDialog from '@/pages/ClassManagement/components/GroupDialog/GroupDia
 import GroupColumn from '@libs/groups/types/groupColumn';
 import GroupListCard from '@/pages/ClassManagement/components/GroupList/GroupListCard';
 import { useTranslation } from 'react-i18next';
+import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 
 interface GroupListProps {
   row: GroupColumn;
@@ -13,6 +14,7 @@ interface GroupListProps {
 
 const GroupList = ({ row, isEnrolEnabled }: GroupListProps) => {
   const { t } = useTranslation();
+  const { openDialogType } = useLessonStore();
 
   return (
     <div className="flex flex-row flex-wrap">
@@ -29,7 +31,7 @@ const GroupList = ({ row, isEnrolEnabled }: GroupListProps) => {
       ) : (
         <div className="mt-3">{t('classmanagement.noGroupsToShow')}</div>
       )}
-      <GroupDialog item={row} />
+      {openDialogType === row.name && <GroupDialog item={row} />}
     </div>
   );
 };
