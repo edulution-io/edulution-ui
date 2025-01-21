@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
-import { Group } from '@libs/groups/types/group';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 
@@ -14,7 +14,7 @@ interface SurveyDto {
   saveNo: number;
   creator: AttendeeDto;
   invitedAttendees: AttendeeDto[];
-  invitedGroups: Group[];
+  invitedGroups: MultipleSelectorGroup[];
   participatedAttendees: AttendeeDto[];
   answers: mongoose.Types.ObjectId[];
   created?: Date;

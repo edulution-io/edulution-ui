@@ -59,35 +59,34 @@ class SurveyAnswersService {
     return createdSurveys || [];
   }
 
-  async getOpenSurveys(username: string): Promise<Survey[]> {
+  async getOpenSurveys(user: JWTUser): Promise<Survey[]> {
     const currentDate = new Date();
-    const openSurveys = await this.surveyModel.find<Survey>({
-      $or: [
+
+    return this.surveyModel.find<Survey>({
+      $and: [
         {
-          $and: [
-            { isPublic: true },
-            {
-              $or: [{ expires: { $eq: null } }, { expires: { $gt: currentDate } }],
-            },
-          ],
+          $or: [{ expires: { $eq: null } }, { expires: { $gt: currentDate } }],
         },
         {
-          $and: [
-            { 'invitedAttendees.username': username },
+          $or: [
+            { isPublic: true },
             {
-              $or: [
-                { $nor: [{ participatedAttendees: { $elemMatch: { username } } }] },
-                { canSubmitMultipleAnswers: true },
+              $and: [
+                {
+                  $or: [{ 'invitedAttendees.username': user.name }, { 'invitedGroups.path': { $in: user.ldapGroups } }],
+                },
+                {
+                  $or: [
+                    { $nor: [{ participatedAttendees: { $elemMatch: { username: user.name } } }] },
+                    { canSubmitMultipleAnswers: true },
+                  ],
+                },
               ],
-            },
-            {
-              $or: [{ expires: { $eq: null } }, { expires: { $gt: currentDate } }],
             },
           ],
         },
       ],
     });
-    return openSurveys;
   }
 
   async getAnswers(username: string): Promise<SurveyAnswer[]> {
@@ -102,14 +101,14 @@ class SurveyAnswersService {
     return answeredSurveys || [];
   }
 
-  async findUserSurveys(status: SurveyStatus, username: string): Promise<Survey[] | null> {
+  async findUserSurveys(status: SurveyStatus, user: JWTUser): Promise<Survey[] | null> {
     switch (status) {
       case SurveyStatus.OPEN:
-        return this.getOpenSurveys(username);
+        return this.getOpenSurveys(user);
       case SurveyStatus.ANSWERED:
-        return this.getAnsweredSurveys(username);
+        return this.getAnsweredSurveys(user.name);
       case SurveyStatus.CREATED:
-        return this.getCreatedSurveys(username);
+        return this.getCreatedSurveys(user.name);
       default:
         return [];
     }

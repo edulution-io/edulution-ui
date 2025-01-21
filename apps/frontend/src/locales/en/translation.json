@@ -421,16 +421,11 @@
   "downloadFile": "Download file",
   "cancel": "Cancel",
   "survey": {
-    "filterPlaceHolderText": "Search for surveyname",
-    "newTitle": "New survey",
+    "attendee": "Attendee",
+    "attendees": "Attendees",
+    "canSubmitMultiple": "Allow multiple submission",
     "created": "Created",
     "creationDate": "Creation date",
-    "expires": "Expires",
-    "expirationDate": "Expiration date",
-    "notFound": "Survey not found",
-    "noFormula": "The formula of the survey is not readable",
-    "noAnswer": "No answer available",
-    "canSubmitMultiple": "Allow multiple submission",
     "editor": {
       "new": "New (blank)",
       "abort": "Revert all changes",
@@ -450,7 +445,18 @@
       "participationErrorSurveyExpired": "Survey has already expired",
       "idTypeError": "Missing survey id",
       "missingAnswerError": "Please, provide an answer for the submission"
-    }
+    },
+    "expires": "Expires",
+    "expirationDate": "Expiration date",
+    "filterPlaceHolderText": "Search for surveyname",
+    "invitedAttendees": "Invited",
+    "isPublic": "Publicly displayed (?)",
+    "isPublicTrue": "Public",
+    "isPublicFalse": "Private",
+    "newTitle": "New survey",
+    "noAnswer": "No answer available",
+    "noFormula": "The formula of the survey is not readable",
+    "notFound": "Survey not found"
   },
   "survey-answer": {
     "errors": {

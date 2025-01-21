@@ -422,16 +422,11 @@
   "downloadFile": "Datei herunterladen",
   "cancel": "Abbrechen",
   "survey": {
-    "newTitle": "Neue Umfrage",
-    "filterPlaceHolderText": "Suche nach Umfragename",
+    "attendee": "Teilnehmer",
+    "attendees": "Teilnehmer",
+    "canSubmitMultiple": "Erlaube Mehrfachantworten",
     "created": "Erstellt",
     "creationDate": "Erstellungsdatum",
-    "expires": "Läuft ab",
-    "expirationDate": "Ablaufdatum",
-    "notFound": "Umfrage nicht gefunden",
-    "noFormula": "Das Formular ist nicht lesbar",
-    "noAnswer": "Keine Antwort verfügbar",
-    "canSubmitMultiple": "Erlaube Mehrfachantworten",
     "editor": {
       "new": "Neu (Leer)",
       "abort": "Alle Änderungen verwerfen",
@@ -451,7 +446,18 @@
       "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",
       "idTypeError": "Ungültige Umfrage-ID",
       "missingAnswerError": "Bitte fülle die Umfrage aus bevor du deine Antwort abschickst."
-    }
+    },
+    "expires": "Läuft ab",
+    "expirationDate": "Ablaufdatum",
+    "filterPlaceHolderText": "Suche nach Umfragename",
+    "invitedAttendees": "Eingeladen",
+    "isPublic": "Öffentlich (?)",
+    "isPublicTrue": "Publik",
+    "isPublicFalse": "Privat",
+    "newTitle": "Neue Umfrage",
+    "noAnswer": "Keine Antwort verfügbar",
+    "noFormula": "Das Formular ist nicht lesbar",
+    "notFound": "Umfrage nicht gefunden"
   },
   "survey-answer": {
     "errors": {

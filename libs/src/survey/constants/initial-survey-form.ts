@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import i18next from 'i18next';
-import { Group } from '@libs/groups/types/group';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import AttendeeDto from '@libs/user/types/attendee.dto';
@@ -17,7 +17,7 @@ class InitialSurveyForm implements SurveyDto {
 
   invitedAttendees: AttendeeDto[];
 
-  invitedGroups: Group[];
+  invitedGroups: MultipleSelectorGroup[];
 
   participatedAttendees: AttendeeDto[];
 

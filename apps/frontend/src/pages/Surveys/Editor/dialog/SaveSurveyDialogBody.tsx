@@ -37,7 +37,7 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
   };
 
   const handleGroupsChange = (groups: MultipleSelectorOptionSH[]) => {
-    setValue('invitedGroups', groups /* , { shouldValidate: true } */);
+    setValue('invitedGroups', groups, { shouldValidate: true });
   };
 
   const expiresWatched = watch('expires') as Date;

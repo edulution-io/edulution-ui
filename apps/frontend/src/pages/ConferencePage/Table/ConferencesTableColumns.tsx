@@ -15,6 +15,7 @@ import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants
 import copyToClipboard from '@/utils/copyToClipboard';
 import { toast } from 'sonner';
 import delay from '@libs/common/utils/delay';
+import { GearLight } from '@/assets/icons';
 
 function getRowAction(isRunning: boolean, isLoading: boolean, isUserTheCreator: boolean) {
   if (isLoading) {
@@ -115,6 +116,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
           }
           text={`${firstName} ${lastName}`}
           textOnHover={isUserTheCreator ? t('common.details') : ''}
+          iconOnHover={isUserTheCreator ? GearLight : undefined}
         />
       );
     },
@@ -196,6 +198,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
           }
           text={'*'.repeat(row.original.password?.length || 0)}
           textOnHover={isUserTheCreator ? t('common.details') : ''}
+          iconOnHover={isUserTheCreator ? GearLight : undefined}
           icon={
             row.original.password ? (
               <LockClosedIcon
@@ -242,6 +245,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
           }
           text={`${attendeeText} ${groupsText}`}
           textOnHover={isUserTheCreator ? t('common.details') : ''}
+          iconOnHover={isUserTheCreator ? GearLight : undefined}
         />
       );
     },

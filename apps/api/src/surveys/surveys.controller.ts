@@ -10,7 +10,6 @@ import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
-import { Survey } from './survey.schema';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
@@ -29,8 +28,8 @@ class SurveysController {
   ) {}
 
   @Get()
-  async find(@Query('status') status: SurveyStatus, @GetCurrentUsername() username: string) {
-    return this.surveyAnswerService.findUserSurveys(status, username);
+  async find(@Query('status') status: SurveyStatus, @GetCurrentUser() user: JWTUser) {
+    return this.surveyAnswerService.findUserSurveys(status, user);
   }
 
   @Get(`${RESULT_ENDPOINT}:surveyId`)
@@ -45,16 +44,8 @@ class SurveysController {
   }
 
   @Post()
-  async updateOrCreateSurvey(@Body() surveyDto: SurveyDto) {
-    const { id, created = new Date() } = surveyDto;
-
-    const survey: Survey = {
-      ...surveyDto,
-      _id: id,
-      created,
-    };
-
-    return this.surveyService.updateOrCreateSurvey(survey, this.surveysSseConnections);
+  async updateOrCreateSurvey(@Body() surveyDto: SurveyDto, @GetCurrentUser() user: JWTUser) {
+    return this.surveyService.updateOrCreateSurvey(surveyDto, user, this.surveysSseConnections);
   }
 
   @Delete()
