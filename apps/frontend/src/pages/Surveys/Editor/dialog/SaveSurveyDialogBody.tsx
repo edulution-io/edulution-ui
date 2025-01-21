@@ -3,13 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import useUserStore from '@/store/UserStore/UserStore';
-import DatePicker from '@/components/shared/DatePicker';
-import Checkbox from '@/components/ui/Checkbox';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
-import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
+import useUserStore from '@/store/UserStore/UserStore';
 import useGroupStore from '@/store/GroupStore';
-import TimeInput from '@/components/shared/TimeInput';
+import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
+// import DatePicker from '@/components/shared/DatePicker';
+import Checkbox from '@/components/ui/Checkbox';
+// import TimeInput from '@/components/shared/TimeInput';
+import DateTimeInput, { TimeInputType } from '@/components/shared/DateTimePicker/DateTimeInput';
 
 interface SaveSurveyDialogBodyProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,7 +19,7 @@ interface SaveSurveyDialogBodyProps {
 
 const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
   const { form } = props;
-  const { setValue, watch, getValues } = form;
+  const { setValue, watch /* , getValues */ } = form;
   const { user } = useUserStore();
   const { searchAttendees } = useUserStore();
   const { searchGroups } = useGroupStore();
@@ -40,12 +41,12 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
     setValue('invitedGroups', groups /* , { shouldValidate: true } */);
   };
 
-  const expiresWatched = watch('expires') as Date;
+  const expiresWatched = watch('expires') as TimeInputType;
   const isAnonymousWatched = watch('isAnonymous') as boolean;
   const isPublicWatched = watch('isPublic') as boolean;
   const canSubmitMultipleAnswersWatched = watch('canSubmitMultipleAnswers') as boolean;
 
-  const handleExpirationDateChange = (value: Date | undefined) => {
+  const handleExpirationDateChange = (value: TimeInputType /* Date | undefined */) => {
     setValue('expires', value);
   };
 
@@ -61,22 +62,26 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
         variant="dialog"
       />
       <p className="text-m font-bold text-background">{t('survey.expirationDate')}</p>
-      <div className="flex items-center">
-        {t('common.date')}
-        <div className="ml-2">
-          <DatePicker
-            selected={expiresWatched}
-            onSelect={handleExpirationDateChange}
-          />
-        </div>
-      </div>
-      <div className="flex items-center text-background">
-        <TimeInput
-          form={form}
-          disabled={!getValues('expires')}
-          fieldName="expires"
-        />
-      </div>
+      {/* <div className="flex items-center"> */}
+      {/*  {t('common.date')} */}
+      {/*  <div className="ml-2"> */}
+      {/*    <DatePicker */}
+      {/*      selected={expiresWatched} */}
+      {/*      onSelect={handleExpirationDateChange} */}
+      {/*    /> */}
+      {/*  </div> */}
+      {/* </div> */}
+      {/* <div className="flex items-center text-background"> */}
+      {/*  <TimeInput */}
+      {/*    form={form} */}
+      {/*    disabled={!getValues('expires')} */}
+      {/*    fieldName="expires" */}
+      {/*  /> */}
+      {/* </div> */}
+      <DateTimeInput
+        value={expiresWatched}
+        onChange={handleExpirationDateChange}
+      />
       <p className="text-m font-bold text-background">{t('surveys.saveDialog.settingsFlags')}</p>
       <div className="ttext-background flex items-center">
         <Checkbox
