@@ -62,8 +62,8 @@ const SelectableTextCell = forwardRef<HTMLDivElement, SelectableTextCellProps<an
         {isHovered && iconOnHover && (
           <img
             src={iconOnHover}
-            width={'24px'}
-            className={'h-[24px] w-[24px]'}
+            width="24px"
+            className="h-[24px] w-[24px]"
             aria-label={text || 'details'}
             alt={textOnHover || 'details'}
           />
