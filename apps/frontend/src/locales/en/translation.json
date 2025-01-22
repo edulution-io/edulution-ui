@@ -641,6 +641,10 @@
         "general": {
           "title": "General",
           "description": ""
+        },
+        "fileSharing": {
+          "title": "General settings",
+          "description": ""
         }
       },
       "update": {
@@ -1046,6 +1050,8 @@
     "onlyOfficeUrlTitle": "OnlyOffice URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Enter the OnlyOffice JWT Secret",
+    "overrideDocumentVendorMSWithOOTitle": "Use OpenDocument as the standard document format",
+    "overrideDocumentVendorMSWithOODescription": "Should the format used by OpenOffice (odt, ods, odp) be used instead of Microsoft Office (docx, pptx, xlsx) formats?",
     "mailImapUrlTitle": "URL",
     "mailImapUrlDescription": "Enter the FQDN (i.e. 'imap.example.com') of the IMAP-server",
     "mailImapPortTitle": "Port",
