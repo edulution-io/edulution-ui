@@ -124,24 +124,32 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  async createContainer(createContainerDto: Docker.ContainerCreateOptions) {
-    const { Image } = createContainerDto;
-    if (!Image) {
-      return;
-    }
-    try {
-      SseService.sendEventToUsers(
-        ['global-admin'],
-        this.dockerSseConnection,
-        { status: '', progress: 'docker.events.checkingImage' } as DockerEvent,
-        SSE_MESSAGE_TYPE.MESSAGE,
-      );
-      const images = await this.docker.listImages();
-      const imageExists = images.some((img) => img.RepoTags?.includes(Image));
+  private async imageExists(imageName: string): Promise<boolean> {
+    const images = await this.docker.listImages();
 
-      if (!imageExists) {
-        await this.pullImage(Image);
-      }
+    SseService.sendEventToUsers(
+      ['global-admin'],
+      this.dockerSseConnection,
+      { status: '', progress: 'docker.events.checkingImage' } as DockerEvent,
+      SSE_MESSAGE_TYPE.MESSAGE,
+    );
+
+    return images.some((img) => img.RepoTags?.includes(imageName));
+  }
+
+  async createContainer(createContainerDto: Docker.ContainerCreateOptions[]) {
+    try {
+      await Promise.all(
+        createContainerDto.map(async (containerDto) => {
+          const { Image } = containerDto;
+          if (Image) {
+            const imageExists = await this.imageExists(Image);
+            if (!imageExists) {
+              await this.pullImage(Image);
+            }
+          }
+        }),
+      );
 
       SseService.sendEventToUsers(
         ['global-admin'],
@@ -150,14 +158,18 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         SSE_MESSAGE_TYPE.MESSAGE,
       );
 
-      const container = await this.docker.createContainer(createContainerDto);
-
-      await this.executeContainerCommand({ id: container.id, operation: DOCKER_COMMANDS.START });
+      await Promise.all(
+        createContainerDto.map(async (containerDto) => {
+          const container = await this.docker.createContainer(containerDto);
+          await container.start();
+          Logger.log(`Container ${containerDto.name} created and started.`);
+        }),
+      );
     } catch (error) {
       throw new CustomHttpException(
         DockerErrorMessages.DOCKER_CREATION_ERROR,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        undefined,
+        error,
         DockerService.name,
       );
     } finally {

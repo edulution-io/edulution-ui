@@ -3,11 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import ProgressTextArea from '@/components/shared/ProgressTextArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import DOCKER_APPLICATIONS from '@libs/docker/constants/dockerApplicationList';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
 import type TApps from '@libs/appconfig/types/appsType';
-import type DockerCompose from '@libs/docker/types/dockerCompose';
 import convertComposeToDockerode from '@libs/docker/utils/convertComposeToDockerode';
 import useDockerApplicationStore from './useDockerApplicationStore';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
@@ -19,16 +17,8 @@ interface CreateDockerContainerDialogProps {
 const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = ({ settingLocation }) => {
   const { t } = useTranslation();
   const [dockerProgress, setDockerProgress] = useState(['']);
-  const [dockerConfig, setDockerConfig] = useState<DockerCompose>({ services: {} });
-  const {
-    eventSource,
-    tableContentData: containers,
-    createAndRunContainer,
-    getDockerContainerConfig,
-  } = useDockerApplicationStore();
+  const { eventSource, tableContentData, dockerContainerConfig, createAndRunContainer } = useDockerApplicationStore();
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
-
-  const container = containers.filter((item) => item.Names[0] === `/${DOCKER_APPLICATIONS[settingLocation]}`);
 
   useEffect(() => {
     if (!eventSource) return undefined;
@@ -45,20 +35,11 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
     };
   }, []);
 
-  useEffect(() => {
-    if (Object.keys(DOCKER_APPLICATIONS).includes(settingLocation)) {
-      const containeName = DOCKER_APPLICATIONS[settingLocation] || '';
-      const getDockerConfig = async () => {
-        const config = await getDockerContainerConfig(settingLocation, containeName);
-        setDockerConfig(config);
-      };
-      void getDockerConfig();
-    }
-  }, [settingLocation]);
-
   const handleCreateContainer = async () => {
-    const createContainerConfig = convertComposeToDockerode(dockerConfig);
-    await createAndRunContainer(createContainerConfig[0]);
+    if (dockerContainerConfig) {
+      const createContainerConfig = convertComposeToDockerode(dockerContainerConfig);
+      await createAndRunContainer(createContainerConfig);
+    }
   };
 
   const getDialogBody = () => <ProgressTextArea text={dockerProgress} />;
@@ -72,7 +53,7 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
         className="w-24 border-2"
         onClick={() => setDialogOpen(false)}
       >
-        {container.length === 0 ? t('common.cancel') : t('common.close')}{' '}
+        {tableContentData.length === 0 ? t('common.cancel') : t('common.close')}{' '}
       </Button>
       <Button
         variant="btn-collaboration"
@@ -80,7 +61,7 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
         type="button"
         className="w-24"
         onClick={handleCreateContainer}
-        disabled={container.length !== 0}
+        disabled={tableContentData.length !== 0}
       >
         {t('common.install')}
       </Button>

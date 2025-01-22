@@ -19,7 +19,7 @@ class DockerController {
 
   @Post('containers')
   @UseGuards(AppConfigGuard)
-  async createContainer(@Body() createContainerDto: ContainerCreateOptions) {
+  async createContainer(@Body() createContainerDto: ContainerCreateOptions[]) {
     return this.dockerService.createContainer(createContainerDto);
   }
 

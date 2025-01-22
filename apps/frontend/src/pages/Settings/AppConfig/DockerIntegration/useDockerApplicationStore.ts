@@ -8,10 +8,10 @@ import handleApiError from '@/utils/handleApiError';
 import useUserStore from '@/store/UserStore/UserStore';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import { type DockerContainerTableStore } from '@libs/appconfig/types/dockerContainerTableStore';
-import DOCKER_APPLICATIONS from '@libs/docker/constants/dockerApplicationList';
 import type TApps from '@libs/appconfig/types/appsType';
 import type DockerCompose from '@libs/docker/types/dockerCompose';
 import { EDU_PLUGINS_GITHUB_URL } from '@libs/common/constants';
+import DOCKER_APPLICATIONS from '@libs/docker/constants/dockerApplicationList';
 
 const initialValues = {
   containers: [],
@@ -20,6 +20,7 @@ const initialValues = {
   error: null,
   eventSource: null,
   selectedRows: {},
+  dockerContainerConfig: null,
 };
 
 const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) => ({
@@ -37,8 +38,17 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
   fetchTableContent: async (applicationName) => {
     if (applicationName) {
       await get().fetchContainers();
-      const container = get().containers.filter((item) => item.Names[0] === `/${DOCKER_APPLICATIONS[applicationName]}`);
-      set({ tableContentData: container });
+
+      if (Object.keys(DOCKER_APPLICATIONS).includes(applicationName)) {
+        const containerName = DOCKER_APPLICATIONS[applicationName] || '';
+
+        const dockerContainerConfig = await get().getDockerContainerConfig(applicationName, containerName);
+
+        const container = get().containers.filter((item) =>
+          Object.keys(dockerContainerConfig.services).includes(item.Names[0].split('/')[1]),
+        );
+        set({ tableContentData: container });
+      }
     }
   },
 
@@ -54,10 +64,10 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
     }
   },
 
-  createAndRunContainer: async (createContainerDto: ContainerCreateOptions) => {
+  createAndRunContainer: async (createContainerDto: ContainerCreateOptions[]) => {
     set({ isLoading: true, error: null });
     try {
-      await eduApi.post<ContainerInfo[]>('docker/containers', createContainerDto);
+      await eduApi.post('docker/containers', createContainerDto);
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -68,7 +78,7 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
   runDockerCommand: async (id: string, operation: string) => {
     set({ isLoading: true, error: null });
     try {
-      await eduApi.put<ContainerInfo[]>(`docker/containers/${id}/${operation}`);
+      await eduApi.put(`docker/containers/${id}/${operation}`);
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -98,7 +108,9 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
           },
         },
       );
-      return parse(data) as DockerCompose;
+      const dockerContainerConfig = parse(data) as DockerCompose;
+      set({ dockerContainerConfig });
+      return dockerContainerConfig;
     } catch (error) {
       handleApiError(error, set);
       return { services: {} };

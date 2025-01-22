@@ -12,10 +12,11 @@ export interface DockerContainerTableStore extends AppConfigTable<ContainerInfo>
   isLoading: boolean;
   error: string | null;
   eventSource: EventSource | null;
+  dockerContainerConfig: DockerCompose | null;
   setEventSource: () => void;
   fetchContainers: () => Promise<void>;
   updateContainers: (containers: ContainerInfo[]) => void;
-  createAndRunContainer: (createContainerDto: ContainerCreateOptions) => Promise<void>;
+  createAndRunContainer: (createContainerDto: ContainerCreateOptions[]) => Promise<void>;
   runDockerCommand: (id: string, operation: TDockerCommands) => Promise<void>;
   deleteDockerContainer: (id: string) => Promise<void>;
   getDockerContainerConfig: (applicationName: TApps, containerName: string) => Promise<DockerCompose>;
