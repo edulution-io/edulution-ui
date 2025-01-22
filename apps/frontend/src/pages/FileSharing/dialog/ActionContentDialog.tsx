@@ -10,8 +10,6 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileActionType from '@libs/filesharing/types/fileActionType';
-import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
-import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
 import CircleLoader from '@/components/ui/CircleLoader';
 import getFileSharingFormSchema from '../formSchema';
 
@@ -51,7 +49,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
 
   const clearAllSelectedItems = () => {
     setMoveOrCopyItemToPath({} as DirectoryFileDTO);
-    setSelectedFileType({} as (typeof AVAILABLE_FILE_TYPES)[FileTypeKey]);
+    setSelectedFileType('');
     setFilesToUpload([]);
   };
 
@@ -95,8 +93,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     }
   };
 
-  const title =
-    action === FileActionType.CREATE_FILE ? t(`fileCreateNewContent.${selectedFileType.type}`) : t(titleKey);
+  const title = action === FileActionType.CREATE_FILE ? t(`fileCreateNewContent.${selectedFileType}`) : t(titleKey);
   const handleFormSubmit = form.handleSubmit(onSubmit);
 
   const handleDialogKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {

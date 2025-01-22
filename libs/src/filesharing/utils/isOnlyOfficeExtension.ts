@@ -1,6 +1,13 @@
-import OnlyOfficeDocumentTypes from '@libs/filesharing/types/OnlyOfficeDocumentTypes';
+import OnlyOfficeDocumentTypes from '@libs/filesharing/constants/OnlyOfficeDocumentTypes';
 
-const isOnlyOfficeDocument = (filePath: string) =>
-  Object.values(OnlyOfficeDocumentTypes).some((type) => filePath.includes(type));
+const isOnlyOfficeDocument = (filePath: string): boolean => {
+  const fileExtension = filePath.split('.').pop()?.toLowerCase();
+
+  return fileExtension
+    ? Object.values(OnlyOfficeDocumentTypes)
+        .map((t) => t.toString())
+        .includes(fileExtension)
+    : false;
+};
 
 export default isOnlyOfficeDocument;

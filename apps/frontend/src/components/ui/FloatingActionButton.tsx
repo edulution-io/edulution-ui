@@ -3,8 +3,7 @@ import { Button } from '@/components/shared/Button';
 import { IconContext, IconType } from 'react-icons';
 import { DropdownOption } from '@libs/filesharing/types/fileCreationDropDownOptions';
 import { useTranslation } from 'react-i18next';
-import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
-import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
+import { AvailableFileTypesType } from '@libs/filesharing/types/availableFileTypesType';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 
 interface FloatingActionButtonProps {
@@ -14,7 +13,7 @@ interface FloatingActionButtonProps {
   type?: 'button' | 'submit' | 'reset';
   variant?: 'button' | 'dropdown';
   options?: DropdownOption[];
-  onSelectFileSelect?: (fileType: (typeof AVAILABLE_FILE_TYPES)[FileTypeKey]) => void;
+  onSelectFileSelect?: (fileType: AvailableFileTypesType) => void;
 }
 
 const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({

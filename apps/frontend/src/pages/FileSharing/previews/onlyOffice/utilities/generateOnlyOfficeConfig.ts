@@ -1,3 +1,5 @@
+import OnlyOfficeDocumentTypes from '@libs/filesharing/constants/OnlyOfficeDocumentTypes';
+
 interface OnlyOfficeConfigProps {
   fileType: string;
   type: 'desktop' | 'mobile';
@@ -11,9 +13,9 @@ interface OnlyOfficeConfigProps {
 
 const getDocumentType = (editorConfigKey: string): string => {
   switch (true) {
-    case editorConfigKey.includes('docx'):
+    case editorConfigKey.includes(OnlyOfficeDocumentTypes.DOCX):
       return 'word';
-    case editorConfigKey.includes('xlsx'):
+    case editorConfigKey.includes(OnlyOfficeDocumentTypes.XLSX):
       return 'cell';
     default:
       return 'slide';
