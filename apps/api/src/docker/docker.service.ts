@@ -162,14 +162,14 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         createContainerDto.map(async (containerDto) => {
           const container = await this.docker.createContainer(containerDto);
           await container.start();
-          Logger.log(`Container ${containerDto.name} created and started.`);
+          Logger.log(`Container ${containerDto.name} created and started.`, DockerService.name);
         }),
       );
     } catch (error) {
       throw new CustomHttpException(
         DockerErrorMessages.DOCKER_CREATION_ERROR,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
+        undefined,
         DockerService.name,
       );
     } finally {

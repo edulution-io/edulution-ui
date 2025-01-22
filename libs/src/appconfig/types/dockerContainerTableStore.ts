@@ -17,8 +17,8 @@ export interface DockerContainerTableStore extends AppConfigTable<ContainerInfo>
   fetchContainers: () => Promise<void>;
   updateContainers: (containers: ContainerInfo[]) => void;
   createAndRunContainer: (createContainerDto: ContainerCreateOptions[]) => Promise<void>;
-  runDockerCommand: (id: string, operation: TDockerCommands) => Promise<void>;
-  deleteDockerContainer: (id: string) => Promise<void>;
+  runDockerCommand: (containerNames: string[], operation: TDockerCommands) => Promise<void>;
+  deleteDockerContainer: (containerNames: string[]) => Promise<void>;
   getDockerContainerConfig: (applicationName: TApps, containerName: string) => Promise<DockerCompose>;
   reset: () => void;
 }

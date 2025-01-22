@@ -37,6 +37,7 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
 
   fetchTableContent: async (applicationName) => {
     if (applicationName) {
+      set({ isLoading: true, error: null, tableContentData: [] });
       await get().fetchContainers();
 
       if (Object.keys(DOCKER_APPLICATIONS).includes(applicationName)) {
@@ -75,10 +76,12 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
     }
   },
 
-  runDockerCommand: async (id: string, operation: string) => {
+  runDockerCommand: async (containerNames: string[], operation: string) => {
     set({ isLoading: true, error: null });
     try {
-      await eduApi.put(`docker/containers/${id}/${operation}`);
+      await Promise.all(
+        containerNames.map((containerName) => eduApi.put(`docker/containers/${containerName}/${operation}`)),
+      );
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -86,10 +89,10 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
     }
   },
 
-  deleteDockerContainer: async (id: string) => {
+  deleteDockerContainer: async (containerNames: string[]) => {
     set({ isLoading: true, error: null });
     try {
-      await eduApi.delete(`docker/containers/${id}`);
+      await Promise.all(containerNames.map((containerName) => eduApi.delete(`docker/containers/${containerName}`)));
     } catch (error) {
       handleApiError(error, set);
     } finally {

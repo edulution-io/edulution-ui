@@ -18,15 +18,15 @@ const DockerContainerFloatingButtons: React.FC = () => {
     useDockerApplicationStore();
   const selectedContainerId = Object.keys(selectedRows);
   const isButtonVisible = selectedContainerId.length > 0;
-  const selectedContainer = containers.find((container) => container.Id === selectedContainerId[0]);
-  const containerName = selectedContainer?.Names[0] || '';
+  const selectedContainer = containers.filter((container) => selectedContainerId.includes(container.Id));
+  const containerNames = selectedContainer.map((container) => container.Names[0]) || [''];
 
   const handleActionClick = (action: TDockerCommands) => {
-    void runDockerCommand(containerName, action);
+    void runDockerCommand(containerNames, action);
   };
 
   const handleDeleteClick = () => {
-    void deleteDockerContainer(containerName);
+    void deleteDockerContainer(containerNames);
     setSelectedRows({});
   };
 
