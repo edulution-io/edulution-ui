@@ -19,7 +19,7 @@ import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateP
 import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
 import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
 import { AvailableFileTypesType } from '@libs/filesharing/types/availableFileTypesType';
-import DocumentVendors from '@libs/filesharing/constants/documentVendors';
+import DocumentVendorsType from '@libs/filesharing/types/documentVendorsType';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
@@ -38,6 +38,7 @@ interface DialogBodyConfigurationBase {
       moveOrCopyItemToPath?: DirectoryFileDTO;
       selectedFileType: AvailableFileTypesType | '';
       filesToUpload?: File[];
+      documentVendor: DocumentVendorsType;
     },
   ) => Promise<PathChangeOrCreateProps | PathChangeOrCreateProps[] | FileUploadProps[] | DeleteFileProps[]>;
   requiresForm?: boolean;
@@ -114,10 +115,10 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     httpMethod: HttpMethods.PUT,
     type: ContentType.FILE,
     requiresForm: true,
-    getData: async (form, currentPath, inputValues) => {
+    getData: async (form, currentPath, { documentVendor, selectedFileType }) => {
       const filename = form.getValues('filename');
 
-      const { file, extension } = await generateFile(inputValues.selectedFileType, filename, DocumentVendors.ODF);
+      const { file, extension } = await generateFile(selectedFileType, filename, documentVendor);
 
       return [
         {

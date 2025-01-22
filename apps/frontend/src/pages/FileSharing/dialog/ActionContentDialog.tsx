@@ -12,6 +12,11 @@ import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import CircleLoader from '@/components/ui/CircleLoader';
 import getFileSharingFormSchema from '../formSchema';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import APPS from '@libs/appconfig/constants/apps';
+import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import DocumentVendors from '@libs/filesharing/constants/documentVendors';
 
 interface CreateContentDialogProps {
   trigger?: React.ReactNode;
@@ -37,6 +42,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     setSubmitButtonIsInActive,
   } = useFileSharingDialogStore();
   const { currentPath, selectedItems } = useFileSharingStore();
+  const { appConfigs } = useAppConfigsStore();
 
   const { Component, schema, titleKey, submitKey, initialValues, endpoint, httpMethod, type, getData } =
     getDialogBodySetup(action);
@@ -54,12 +60,21 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   };
 
   const onSubmit = async () => {
+    const isOpenDocumentFormatEnabled = !!getExtendedOptionValue(
+      appConfigs,
+      APPS.FILE_SHARING,
+      ExtendedOptionKeys.OVERRIDE_FILE_SHARING_DOCUMENT_VENDOR_MS_WITH_OO,
+    );
+    const documentVendor = isOpenDocumentFormatEnabled ? DocumentVendors.ODF : DocumentVendors.MSO;
+
     const data = await getData(form, currentPath, {
       selectedItems,
       moveOrCopyItemToPath,
       selectedFileType,
       filesToUpload,
+      documentVendor,
     });
+
     if (Array.isArray(data) && data.some((item) => 'file' in item && item.file instanceof File)) {
       const uploadPromises = data.map((item) => {
         if ('file' in item && item.file instanceof File) {

@@ -35,7 +35,8 @@ const AppConfigPage: React.FC = () => {
 
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { appConfigs, setIsDeleteAppConfigDialogOpen, updateAppConfig, deleteAppConfigEntry } = useAppConfigsStore();
+  const { appConfigs, getAppConfigs, setIsDeleteAppConfigDialogOpen, updateAppConfig, deleteAppConfigEntry } =
+    useAppConfigsStore();
   const { searchGroups } = useGroupStore();
   const [option, setOption] = useState('');
   const isMobileView = useIsMobileView();
@@ -49,6 +50,10 @@ const AppConfigPage: React.FC = () => {
   const { control, handleSubmit, setValue, getValues } = form;
 
   const isAnAppConfigSelected = settingLocation !== '';
+
+  useEffect(() => {
+    void getAppConfigs();
+  }, []);
 
   const updateSettings = () => {
     const currentConfig = findAppConfigByName(appConfigs, settingLocation);
@@ -142,6 +147,8 @@ const AppConfigPage: React.FC = () => {
       };
       void postExternalMailProviderConfig(mailProviderConfig);
     }
+
+    await getAppConfigs();
   };
 
   const settingsForm = () => {
