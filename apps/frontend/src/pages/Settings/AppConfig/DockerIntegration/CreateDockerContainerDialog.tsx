@@ -7,6 +7,8 @@ import DOCKER_APPLICATIONS from '@libs/docker/constants/dockerApplicationList';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
 import type TApps from '@libs/appconfig/types/appsType';
+import type DockerCompose from '@libs/docker/types/dockerCompose';
+import convertComposeToDockerode from '@libs/docker/utils/convertComposeToDockerode';
 import useDockerApplicationStore from './useDockerApplicationStore';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 
@@ -17,11 +19,16 @@ interface CreateDockerContainerDialogProps {
 const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = ({ settingLocation }) => {
   const { t } = useTranslation();
   const [dockerProgress, setDockerProgress] = useState(['']);
-  const { eventSource, tableContentData: containers, createAndRunContainer } = useDockerApplicationStore();
+  const [dockerConfig, setDockerConfig] = useState<DockerCompose>({ services: {} });
+  const {
+    eventSource,
+    tableContentData: containers,
+    createAndRunContainer,
+    getDockerContainerConfig,
+  } = useDockerApplicationStore();
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
 
-  const containerName = `/${DOCKER_APPLICATIONS[settingLocation]?.name}`;
-  const container = containers.filter((item) => item.Names[0] === containerName);
+  const container = containers.filter((item) => item.Names[0] === `/${DOCKER_APPLICATIONS[settingLocation]}`);
 
   useEffect(() => {
     if (!eventSource) return undefined;
@@ -38,10 +45,20 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
     };
   }, []);
 
+  useEffect(() => {
+    if (Object.keys(DOCKER_APPLICATIONS).includes(settingLocation)) {
+      const containeName = DOCKER_APPLICATIONS[settingLocation] || '';
+      const getDockerConfig = async () => {
+        const config = await getDockerContainerConfig(settingLocation, containeName);
+        setDockerConfig(config);
+      };
+      void getDockerConfig();
+    }
+  }, [settingLocation]);
+
   const handleCreateContainer = async () => {
-    const createContainerConfig = DOCKER_APPLICATIONS[settingLocation];
-    if (!createContainerConfig) return;
-    await createAndRunContainer(createContainerConfig);
+    const createContainerConfig = convertComposeToDockerode(dockerConfig);
+    await createAndRunContainer(createContainerConfig[0]);
   };
 
   const getDialogBody = () => <ProgressTextArea text={dockerProgress} />;

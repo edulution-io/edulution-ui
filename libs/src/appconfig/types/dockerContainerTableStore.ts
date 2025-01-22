@@ -1,7 +1,9 @@
-import { RowSelectionState } from '@tanstack/react-table';
+import { type RowSelectionState } from '@tanstack/react-table';
 import { type ContainerCreateOptions, type ContainerInfo } from 'dockerode';
 import type AppConfigTable from '@libs/bulletinBoard/types/appConfigTable';
-import TDockerCommands from '@libs/docker/types/TDockerCommands';
+import type TDockerCommands from '@libs/docker/types/TDockerCommands';
+import type DockerCompose from '@libs/docker/types/dockerCompose';
+import type TApps from './appsType';
 
 export interface DockerContainerTableStore extends AppConfigTable<ContainerInfo> {
   containers: ContainerInfo[];
@@ -16,5 +18,6 @@ export interface DockerContainerTableStore extends AppConfigTable<ContainerInfo>
   createAndRunContainer: (createContainerDto: ContainerCreateOptions) => Promise<void>;
   runDockerCommand: (id: string, operation: TDockerCommands) => Promise<void>;
   deleteDockerContainer: (id: string) => Promise<void>;
+  getDockerContainerConfig: (applicationName: TApps, containerName: string) => Promise<DockerCompose>;
   reset: () => void;
 }
