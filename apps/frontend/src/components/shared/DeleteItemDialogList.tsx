@@ -14,7 +14,7 @@ const DeleteItemDialogList = ({
   return (
     <div className="text-foreground">
       <p>{t(deleteWarningTranslationId)}</p>
-      <ScrollArea className="mt-2 h-64 w-96 overflow-y-auto rounded border p-2">
+      <ScrollArea className="mt-2 h-64 w-96 max-w-full overflow-y-auto rounded border p-2">
         {items.map((item) => (
           <div
             key={item.id}

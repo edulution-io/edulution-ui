@@ -20,6 +20,7 @@ const useSurveyEditorFormStore = create<SurveyEditorFormStore>((set) => ({
       if (resultingSurvey && survey.isPublic) {
         set({
           isOpenSharePublicSurveyDialog: true,
+          // TODO: Issue 388: [REPORT] Survey - rework ids to only use the timestamps in the frontend
           publicSurveyId: resultingSurvey.id.toString('base64'),
         });
       } else {
