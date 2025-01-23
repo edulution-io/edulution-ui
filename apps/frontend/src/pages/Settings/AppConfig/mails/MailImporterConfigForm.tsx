@@ -26,7 +26,7 @@ const MailImporterConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
         defaultValue=""
         render={({ field }) => (
           <FormItem>
-            <p>{t(`mail.importer.${field.name}`)}</p>
+            <p>{t(field.name)}</p>
             <FormControl>
               <Input
                 placeholder=""
@@ -44,7 +44,7 @@ const MailImporterConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
         defaultValue=""
         render={({ field }) => (
           <FormItem>
-            <p>{t(`mail.importer.${field.name}`)}</p>
+            <p>{t(field.name)}</p>
             <FormControl>
               <Input
                 placeholder="https://"
@@ -63,10 +63,10 @@ const MailImporterConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
           defaultValue=""
           render={({ field }) => (
             <FormItem>
-              <p>{t(`mail.importer.${field.name}`)}</p>
+              <p>{t(field.name)}</p>
               <FormControl>
                 <Input
-                  placeholder={field.name}
+                  placeholder="993"
                   {...field}
                   variant="lightGray"
                 />
@@ -81,7 +81,7 @@ const MailImporterConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
           defaultValue={MailEncryption.TLS}
           render={({ field }) => (
             <FormItem>
-              <p>{t(`mail.importer.${field.name}`)}</p>
+              <p>{t(field.name)}</p>
               <FormControl>
                 <DropdownSelect
                   options={encOptions}

@@ -153,14 +153,14 @@
   "mail": {
     "title": "MAIL",
     "sidebar": "Mail",
+    "configName": "Name der Konfiguration",
+    "hostname": "Hostname",
+    "port": "Port",
+    "encryption": "Verschlüsselung",
     "importer": {
       "filterPlaceHolderText": "Suche nach E-Mail-Importername",
       "title": "E-Mail-Importer",
       "provider": "E-Mail-Provider",
-      "configName": "Name der Konfiguration",
-      "hostname": "Hostname",
-      "port": "Port",
-      "encryption": "Verschlüsselung",
       "interval": "Sync-Intervall",
       "isActive": "Aktiv",
       "syncJobsTable": "Importer Jobs",
