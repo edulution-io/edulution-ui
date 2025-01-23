@@ -6,10 +6,12 @@ import AppConfigFormField from '@/pages/Settings/AppConfig/components/textField/
 import formSchema from '@/pages/Settings/AppConfig/appConfigSchema';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import AppConfigTable from '@/pages/Settings/AppConfig/components/table/AppConfigTable';
+import cn from '@libs/common/utils/className';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { type AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import type AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
 import type TApps from '@libs/appconfig/types/appsType';
+import AppConfigSwitch from './booleanField/AppConfigSwitch';
 
 type ExtendedOptionsFormProps<T extends FieldValues> = {
   extendedOptions: AppConfigExtendedOptionsBySections | undefined;
@@ -35,6 +37,7 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
             fieldPath={fieldPath}
             control={control}
             option={option}
+            type="text"
           />
         );
       case ExtendedOptionField.password:
@@ -47,11 +50,30 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
             type="password"
           />
         );
+
+      case ExtendedOptionField.number:
+        return (
+          <AppConfigFormField
+            key={fieldPath}
+            fieldPath={fieldPath}
+            control={control}
+            option={option}
+            type="number"
+          />
+        );
       case ExtendedOptionField.table:
         return (
           <AppConfigTable
             key={fieldPath}
             applicationName={settingLocation || ''}
+          />
+        );
+      case ExtendedOptionField.switch:
+        return (
+          <AppConfigSwitch
+            fieldPath={fieldPath}
+            control={control}
+            option={option}
           />
         );
       default:
@@ -71,11 +93,21 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
               <AccordionTrigger className="flex text-xl font-bold">
                 <h4>{t(`settings.appconfig.sections.${section}.title`)}</h4>
               </AccordionTrigger>
-              <AccordionContent>
+              <AccordionContent className="mx-1 flex flex-wrap justify-between gap-4 text-p">
                 <div className="text-base">{t(`settings.appconfig.sections.${section}.description`)}</div>
-                <div className="flex flex-col gap-4">
-                  {options?.map((option: AppConfigExtendedOption) => renderComponent(option))}
-                </div>
+                {options?.map((option: AppConfigExtendedOption) => (
+                  <div
+                    key={`key_${section}_${option.name}`}
+                    className={cn(
+                      { 'w-full': option.width === 'full' },
+                      { 'w-[calc(50%-0.75rem)]': option.width === 'half' },
+                      { 'w-[calc(33%-1.5rem)]': option.width === 'third' },
+                      { 'w-[calc(25%-2.25rem)]': option.width === 'quarter' },
+                    )}
+                  >
+                    {renderComponent(option)}
+                  </div>
+                ))}
               </AccordionContent>
             </AccordionItem>
           </AccordionSH>

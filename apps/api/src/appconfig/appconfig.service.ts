@@ -25,7 +25,7 @@ class AppConfigService implements OnModuleInit {
   async onModuleInit() {
     await initializeCollection(this.connection, this.appConfigModel);
 
-    await MigrationService.runMigrations(this.appConfigModel, appConfigMigrationsList);
+    await MigrationService.runMigrations<AppConfig>(this.appConfigModel, appConfigMigrationsList);
   }
 
   async insertConfig(appConfigDto: AppConfigDto[]) {

@@ -24,6 +24,7 @@
     "sidebar": "Schwarzes Brett",
     "newCategorie": "Neue Kategorie",
     "category": "Kategorie",
+    "categoryPositionChanged": "Position der Kategorie geändert",
     "name": "Name",
     "editCategorie": "Kategorie bearbeiten",
     "isActive": "Aktiv",
@@ -781,6 +782,7 @@
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
+    "sortOrder": "Sortierung",
     "options": "Optionen",
     "checking": "Prüfen",
     "columns": "Spalten",
@@ -1086,9 +1088,9 @@
     "mailImapPortTitle": "Port",
     "mailImapPortDescription": "Gib hier die Port Nummer des IMAP-Servers an (z.B. 993)",
     "mailImapSecureTitle": "Sichere Verbindung",
-    "mailImapSecureDescription": "Gib 'true' ein, wenn die Verbindung über TLS aufgebaut werden soll, ansonsten wird 'false' (STARTTLS) verwendet.",
+    "mailImapSecureDescription": "Soll die Verbindung über 'TLS' oder 'STARTTLS' aufgebaut werden.",
     "mailImapRejectUnauthorizedTitle": "Nicht zertifizierte Verbindungen ablehnen",
-    "mailImapRejectUnauthorizedDescription": "Gib 'true' ein, wenn eine Zertifikatsprüfung für die Verbindungen gemacht werden soll. Ansonsten muss hier 'false' gesetzt werden."
+    "mailImapRejectUnauthorizedDescription": "Soll eine Zertifikatsprüfung für diese Verbindung durchgeführt werden?"
   },
   "preview": {
     "image": "Bildvorschau",

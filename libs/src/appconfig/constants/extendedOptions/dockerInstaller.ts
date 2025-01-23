@@ -9,6 +9,7 @@ const DOCKER_CONTAINER_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
     title: 'dockerApplication.title',
     type: ExtendedOptionField.table,
     value: '',
+    width: 'full',
   },
 ];
 

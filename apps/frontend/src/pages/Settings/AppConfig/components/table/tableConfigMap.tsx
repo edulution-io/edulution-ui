@@ -1,6 +1,6 @@
 import React from 'react';
 import { type ContainerInfo } from 'dockerode';
-import BulletinTableColumn from '@/pages/Settings/AppConfig/bulletinboard/BulletinTableColumn';
+import AppConfigBulletinCategoryTableColumn from '@/pages/Settings/AppConfig/bulletinboard/AppConfigBulletinCategoryTableColumn';
 import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
 import CreateAndUpdateBulletinCategoryDialog from '@/pages/Settings/AppConfig/bulletinboard/CreateAndUpdateBulletinCategoryDialog';
 import type AppConfigTableConfigsByAppName from '@/pages/Settings/AppConfig/components/table/types/appConfigTableConfigsByAppName';
@@ -17,7 +17,7 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
   [APPS.BULLETIN_BOARD]: [
     createAppConfigTableEntry<BulletinCategoryResponseDto, BulletinCategoryTableStore>({
       key: APPS.BULLETIN_BOARD,
-      columns: BulletinTableColumn,
+      columns: AppConfigBulletinCategoryTableColumn,
       useStore: useBulletinCategoryTableStore,
       dialogBody: <CreateAndUpdateBulletinCategoryDialog />,
       showAddButton: true,
