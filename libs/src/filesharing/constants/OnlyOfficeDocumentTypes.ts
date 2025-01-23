@@ -1,16 +1,33 @@
 const OnlyOfficeDocumentTypes = {
+  PDF: 'pdf',
+  // Presentation
+  PPTX: 'pptx',
+  PPSX: 'ppsx',
+  POTX: 'potx',
+  PPT: 'ppt',
+  PPS: 'pps',
+  POT: 'pot',
+  OTP: 'otp',
+  ODP: 'odp',
+  // Text
   DOCX: 'docx',
   DOC: 'doc',
+  DOT: 'dot',
+  DOTX: 'dotx',
+  ODT: 'odt',
+  OTT: 'ott',
+  RTF: 'rtf',
+  TXT: 'txt',
+  XML: 'xml',
+  HTML: 'html',
+  // Spreadsheet
   XLSX: 'xlsx',
   XLS: 'xls',
-  PPTX: 'pptx',
-  PPT: 'ppt',
-  ODT: 'odt',
+  XLT: 'xlt',
+  XLTX: 'xltx',
   ODS: 'ods',
-  ODP: 'odp',
-  TXT: 'txt',
+  OTS: 'ots',
   CSV: 'csv',
-  PDF: 'pdf',
 } as const;
 
 export default OnlyOfficeDocumentTypes;

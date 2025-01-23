@@ -21,16 +21,22 @@ async function generateFile(
     case AVAILABLE_FILE_TYPES.documentFile: {
       if (format === DocumentVendors.MSO) {
         extension = OnlyOfficeDocumentTypes.DOCX;
+
         const doc = new Document({ title: basename, description: '', sections: [] });
+
         const blob = await Packer.toBlob(doc);
+
         file = new File([blob], `${basename}.${extension}`, { type: blob.type });
       } else {
         extension = OnlyOfficeDocumentTypes.ODT;
-        const doc = new Document({ title: basename, description: '', sections: [] });
-        const blob = await Packer.toBlob(doc);
-        file = new File([blob], `${basename}.${extension}`, {
-          type: 'application/vnd.oasis.opendocument.text',
-        });
+
+        const response = await fetch('/openDocumentTemplates/odtTemplate.odt');
+
+        const arrayBuffer = await response.arrayBuffer();
+
+        const fileBlob = new Blob([arrayBuffer], { type: 'application/vnd.oasis.opendocument.text' });
+
+        file = new File([fileBlob], `${basename}.${extension}`, { type: fileBlob.type });
       }
       break;
     }
@@ -48,13 +54,9 @@ async function generateFile(
         file = new File([fileBlob], `${basename}.${extension}`, { type: fileBlob.type });
       } else {
         extension = OnlyOfficeDocumentTypes.ODS;
-        const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet(basename);
-        worksheet.name = basename;
-        const buffer = await workbook.xlsx.writeBuffer();
-        const fileBlob = new Blob([buffer], {
-          type: 'application/vnd.oasis.opendocument.spreadsheet',
-        });
+        const response = await fetch('/openDocumentTemplates/odsTemplate.ods');
+        const arrayBuffer = await response.arrayBuffer();
+        const fileBlob = new Blob([arrayBuffer], { type: 'application/vnd.oasis.opendocument.spreadsheet' });
         file = new File([fileBlob], `${basename}.${extension}`, { type: fileBlob.type });
       }
       break;
@@ -72,12 +74,9 @@ async function generateFile(
         file = new File([fileBlob], `${basename}.${extension}`, { type: fileBlob.type });
       } else {
         extension = OnlyOfficeDocumentTypes.ODP;
-        const pptx = new PptxGenJS();
-        pptx.title = basename;
-        const pptxBlob = await pptx.write();
-        const fileBlob = new Blob([pptxBlob], {
-          type: 'application/vnd.oasis.opendocument.presentation',
-        });
+        const response = await fetch('/openDocumentTemplates/odpTemplate.odp');
+        const arrayBuffer = await response.arrayBuffer();
+        const fileBlob = new Blob([arrayBuffer], { type: 'application/vnd.oasis.opendocument.presentation' });
         file = new File([fileBlob], `${basename}.${extension}`, { type: fileBlob.type });
       }
       break;

@@ -41,7 +41,7 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
       const onlyOfficeConfig = generateOnlyOfficeConfig({
         fileType: fileExtension,
         type,
-        editorConfigKey: editorType.key,
+        editorType,
         documentTitle: fileName,
         documentUrl: url,
         callbackUrl,

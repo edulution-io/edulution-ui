@@ -1,9 +1,9 @@
-import OnlyOfficeDocumentTypes from '@libs/filesharing/constants/OnlyOfficeDocumentTypes';
+import OnlyOfficeConfig from '@libs/filesharing/types/OnlyOfficeConfig';
 
 interface OnlyOfficeConfigProps {
   fileType: string;
   type: 'desktop' | 'mobile';
-  editorConfigKey: string;
+  editorType: OnlyOfficeConfig;
   documentTitle: string;
   documentUrl: string;
   callbackUrl: string;
@@ -11,21 +11,10 @@ interface OnlyOfficeConfigProps {
   username: string;
 }
 
-const getDocumentType = (editorConfigKey: string): string => {
-  switch (true) {
-    case editorConfigKey.includes(OnlyOfficeDocumentTypes.DOCX):
-      return 'word';
-    case editorConfigKey.includes(OnlyOfficeDocumentTypes.XLSX):
-      return 'cell';
-    default:
-      return 'slide';
-  }
-};
-
 const generateOnlyOfficeConfig = ({
   fileType,
   type,
-  editorConfigKey,
+  editorType: { documentType, key },
   documentTitle,
   documentUrl,
   callbackUrl,
@@ -34,13 +23,13 @@ const generateOnlyOfficeConfig = ({
   document: {
     fileType,
     type,
-    key: editorConfigKey,
+    key,
     title: documentTitle,
     url: documentUrl,
     height: '100%',
     width: '100%',
   },
-  documentType: getDocumentType(editorConfigKey),
+  documentType,
   token: '',
   editorConfig: {
     callbackUrl,
