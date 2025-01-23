@@ -1,7 +1,7 @@
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import getNewSurveyId from '@libs/survey/getNewSurveyId';
-import { firstUsername, secondUsername } from '../user/usernames';
-import { firstMockUser, secondMockUser } from '../user/users';
+import { firstUsername } from '../user/usernames';
+import { firstMockUser } from '../user/users';
 import { mockedParticipants } from '../user/participants';
 import { Survey } from '../../survey.schema';
 
@@ -22,7 +22,7 @@ export const surveyUpdateInitialSurvey: Survey = {
       },
     ],
   },
-  invitedAttendees: [],
+  invitedAttendees: mockedParticipants,
   invitedGroups: [],
   participatedAttendees: [],
   answers: [],
@@ -31,6 +31,20 @@ export const surveyUpdateInitialSurvey: Survey = {
   expires: new Date('2025-04-22T14:30:00.000Z'),
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
+  isPublic: false,
+};
+export const surveyUpdateInitialSurveyDto: SurveyDto = {
+  ...surveyUpdateInitialSurvey,
+  creator: {
+    ...firstMockUser,
+    label: 'pupil1-name1',
+    value: firstUsername,
+  },
+  formula: surveyUpdateInitialSurvey.formula,
+  invitedAttendees: mockedParticipants,
+  invitedGroups: [],
+  participatedAttendees: [],
+  saveNo: 1,
   isPublic: false,
 };
 
@@ -50,7 +64,7 @@ export const surveyUpdateUpdatedSurvey: Survey = {
     ],
   },
   participatedAttendees: [],
-  invitedAttendees: [firstMockUser, secondMockUser],
+  invitedAttendees: mockedParticipants,
   invitedGroups: [],
   answers: [],
   saveNo: 2,
@@ -70,10 +84,7 @@ export const surveyUpdateUpdatedSurveyDto: SurveyDto = {
   },
   invitedAttendees: mockedParticipants,
   invitedGroups: [],
-  participatedAttendees: [
-    { ...firstMockUser, label: 'pupil1-name1', value: firstUsername },
-    { ...secondMockUser, label: 'pupil2-name2', value: secondUsername },
-  ],
-  saveNo: 1,
+  participatedAttendees: [],
+  saveNo: 2,
   isPublic: false,
 };

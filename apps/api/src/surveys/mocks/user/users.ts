@@ -7,6 +7,8 @@ export const firstMockUser = {
   roles: ['user'],
   mfaEnabled: false,
   isTotpSet: false,
+  firstName: 'given_name',
+  lastName: 'family_name',
 };
 
 export const secondMockUser = {
@@ -15,4 +17,6 @@ export const secondMockUser = {
   roles: ['user'],
   mfaEnabled: false,
   isTotpSet: false,
+  firstName: 'given_name',
+  lastName: 'family_name',
 };

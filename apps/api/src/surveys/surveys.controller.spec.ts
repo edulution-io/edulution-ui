@@ -94,11 +94,11 @@ describe(SurveysController.name, () => {
 
       surveyModel.find = jest.fn().mockReturnValue([openSurvey01, openSurvey02]);
 
-      const result = await controller.find(SurveyStatus.OPEN, firstUsername);
+      const result = await controller.find(SurveyStatus.OPEN, firstMockJWTUser);
       expect(result).toEqual([openSurvey01, openSurvey02]);
 
-      expect(surveyAnswerService.findUserSurveys).toHaveBeenCalledWith(SurveyStatus.OPEN, firstUsername);
-      expect(surveyAnswerService.getOpenSurveys).toHaveBeenCalledWith(firstUsername);
+      expect(surveyAnswerService.findUserSurveys).toHaveBeenCalledWith(SurveyStatus.OPEN, firstMockJWTUser);
+      expect(surveyAnswerService.getOpenSurveys).toHaveBeenCalledWith(firstMockJWTUser);
     });
 
     it('[CREATED] should return a list of surveys for the requesting user filtered for the survey status (eq. CREATED)', async () => {
@@ -107,11 +107,11 @@ describe(SurveysController.name, () => {
 
       surveyModel.find = jest.fn().mockReturnValue([surveyUpdateInitialSurvey, createdSurvey01]);
 
-      const result = await controller.find(SurveyStatus.CREATED, firstUsername);
+      const result = await controller.find(SurveyStatus.CREATED, firstMockJWTUser);
       expect(result).toEqual([surveyUpdateInitialSurvey, createdSurvey01]);
 
-      expect(surveyAnswerService.findUserSurveys).toHaveBeenCalledWith(SurveyStatus.CREATED, firstUsername);
-      expect(surveyAnswerService.getCreatedSurveys).toHaveBeenCalledWith(firstUsername);
+      expect(surveyAnswerService.findUserSurveys).toHaveBeenCalledWith(SurveyStatus.CREATED, firstMockJWTUser);
+      expect(surveyAnswerService.getCreatedSurveys).toHaveBeenCalledWith(firstMockJWTUser.name);
     });
 
     it('[ANSWERED] should return a list of surveys for the requesting user filtered for the survey status (eq. ANSWERED)', async () => {
@@ -124,11 +124,11 @@ describe(SurveysController.name, () => {
 
       surveyModel.find = jest.fn().mockReturnValue([answeredSurvey01, answeredSurvey02]);
 
-      const result = await controller.find(SurveyStatus.ANSWERED, firstUsername);
+      const result = await controller.find(SurveyStatus.ANSWERED, firstMockJWTUser);
       expect(result).toEqual([answeredSurvey01, answeredSurvey02]);
 
-      expect(surveyAnswerService.findUserSurveys).toHaveBeenCalledWith(SurveyStatus.ANSWERED, firstUsername);
-      expect(surveyAnswerService.getAnsweredSurveys).toHaveBeenCalledWith(firstUsername);
+      expect(surveyAnswerService.findUserSurveys).toHaveBeenCalledWith(SurveyStatus.ANSWERED, firstMockJWTUser);
+      expect(surveyAnswerService.getAnsweredSurveys).toHaveBeenCalledWith(firstMockJWTUser.name);
     });
   });
 
@@ -183,19 +183,19 @@ describe(SurveysController.name, () => {
   describe('updateOrCreateSurvey', () => {
     it('should call the updateOrCreateSurvey() function of the surveyService', async () => {
       jest.spyOn(surveysService, 'updateOrCreateSurvey');
-      surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue({
-        exec: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
+      surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
+        lean: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
+      });
+      surveyModel.findOne = jest.fn().mockReturnValue({
+        lean: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
       });
 
-      const { id, created = new Date() } = surveyUpdateUpdatedSurveyDto;
-      const createSurvey: Survey = {
-        ...surveyUpdateUpdatedSurveyDto,
-        _id: id,
-        created,
-      };
-
-      await controller.updateOrCreateSurvey(surveyUpdateUpdatedSurveyDto);
-      expect(surveysService.updateOrCreateSurvey).toHaveBeenCalledWith(createSurvey, mockSseConnections);
+      await controller.updateOrCreateSurvey(surveyUpdateUpdatedSurveyDto, firstMockJWTUser);
+      expect(surveysService.updateOrCreateSurvey).toHaveBeenCalledWith(
+        surveyUpdateUpdatedSurveyDto,
+        firstMockJWTUser,
+        mockSseConnections,
+      );
     });
   });
 

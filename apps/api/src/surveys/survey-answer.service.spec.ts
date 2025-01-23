@@ -277,11 +277,11 @@ describe('SurveyAnswerService', () => {
 
       surveyModel.find = jest.fn().mockReturnValue([openSurvey01, openSurvey02]);
 
-      const result = await service.findUserSurveys(SurveyStatus.OPEN, firstUsername);
+      const result = await service.findUserSurveys(SurveyStatus.OPEN, firstMockJWTUser);
       expect(result).toEqual([openSurvey01, openSurvey02]);
 
-      expect(service.findUserSurveys).toHaveBeenCalledWith(SurveyStatus.OPEN, firstUsername);
-      expect(service.getOpenSurveys).toHaveBeenCalledWith(firstUsername);
+      expect(service.findUserSurveys).toHaveBeenCalledWith(SurveyStatus.OPEN, firstMockJWTUser);
+      expect(service.getOpenSurveys).toHaveBeenCalledWith(firstMockJWTUser);
     });
 
     it('return surveys with status CREATED', async () => {
@@ -290,11 +290,11 @@ describe('SurveyAnswerService', () => {
 
       surveyModel.find = jest.fn().mockReturnValue([surveyUpdateInitialSurvey, createdSurvey01]);
 
-      const result = await service.findUserSurveys(SurveyStatus.CREATED, firstUsername);
+      const result = await service.findUserSurveys(SurveyStatus.CREATED, firstMockJWTUser);
       expect(result).toEqual([surveyUpdateInitialSurvey, createdSurvey01]);
 
-      expect(service.findUserSurveys).toHaveBeenCalledWith(SurveyStatus.CREATED, firstUsername);
-      expect(service.getCreatedSurveys).toHaveBeenCalledWith(firstUsername);
+      expect(service.findUserSurveys).toHaveBeenCalledWith(SurveyStatus.CREATED, firstMockJWTUser);
+      expect(service.getCreatedSurveys).toHaveBeenCalledWith(firstMockJWTUser.name);
     });
 
     it('return surveys with status ANSWERED', async () => {
@@ -304,11 +304,11 @@ describe('SurveyAnswerService', () => {
       model.find = jest.fn().mockReturnValue([firstUsersSurveyAnswerAnsweredSurvey01, surveyAnswerAnsweredSurvey02]);
       surveyModel.find = jest.fn().mockReturnValue([openSurvey01, answeredSurvey01, answeredSurvey02]);
 
-      const result = await service.findUserSurveys(SurveyStatus.ANSWERED, firstUsername);
+      const result = await service.findUserSurveys(SurveyStatus.ANSWERED, firstMockJWTUser);
       expect(result).toEqual([openSurvey01, answeredSurvey01, answeredSurvey02]);
 
-      expect(service.findUserSurveys).toHaveBeenCalledWith(SurveyStatus.ANSWERED, firstUsername);
-      expect(service.getAnsweredSurveys).toHaveBeenCalledWith(firstUsername);
+      expect(service.findUserSurveys).toHaveBeenCalledWith(SurveyStatus.ANSWERED, firstMockJWTUser);
+      expect(service.getAnsweredSurveys).toHaveBeenCalledWith(firstMockJWTUser.name);
     });
   });
 

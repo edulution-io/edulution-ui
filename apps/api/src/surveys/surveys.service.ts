@@ -11,6 +11,7 @@ import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import GroupWithMembers from '@libs/groups/types/groupWithMembers';
 import { GROUPS_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import { Group } from '@libs/groups/types/group';
 import { Survey, SurveyDocument } from './survey.schema';
 import type UserConnections from '../types/userConnections';
 import SseService from '../sse/sse.service';
@@ -57,69 +58,37 @@ class SurveysService {
     }
   }
 
-  async updateSurvey(surveyDto: SurveyDto, surveysSseConnections: UserConnections): Promise<Survey | null> {
+  async updateSurvey(survey: Survey, surveysSseConnections: UserConnections): Promise<Survey | null> {
     try {
-      return await this.surveyModel
-        .findOneAndUpdate<Survey>(
-          // eslint-disable-next-line no-underscore-dangle
-          { id: { $eq: surveyDto.id } },
-          { ...surveyDto },
-        )
-        .exec();
+      return await this.surveyModel.findOneAndUpdate<Survey>({ id: { $eq: survey.id } }, { ...survey }).lean();
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {
-      if (!surveyDto.isPublic) {
-        const invitedMembersList = await this.getInvitedMembers(surveyDto);
-        SseService.sendEventToUsers(invitedMembersList, surveysSseConnections, surveyDto, SSE_MESSAGE_TYPE.UPDATED);
-      } else {
-        SseService.informAllUsers(surveysSseConnections, surveyDto, SSE_MESSAGE_TYPE.UPDATED);
+      const updatedSurvey = await this.surveyModel.findOne({ id: survey.id }).lean();
+      if (updatedSurvey != null) {
+        if (!updatedSurvey.isPublic) {
+          const invitedMembersList = await this.getInvitedMembers(survey);
+          SseService.sendEventToUsers(invitedMembersList, surveysSseConnections, survey, SSE_MESSAGE_TYPE.UPDATED);
+        } else {
+          SseService.informAllUsers(surveysSseConnections, survey, SSE_MESSAGE_TYPE.UPDATED);
+        }
       }
     }
   }
 
-  async createSurvey(
-    surveyDto: SurveyDto,
-    currentUser: JWTUser,
-    surveysSseConnections: UserConnections,
-  ): Promise<Survey | null> {
-    const creator = {
-      firstName: currentUser.given_name,
-      lastName: currentUser.family_name,
-      username: currentUser.preferred_username,
-    };
-
-    const newSurvey = {
-      id: surveyDto.id,
-      formula: surveyDto.formula,
-      backendLimiters: surveyDto.backendLimiters,
-      saveNo: surveyDto.saveNo || 0,
-      creator,
-      invitedAttendees: [...surveyDto.invitedAttendees, creator],
-      invitedGroups: surveyDto.invitedGroups,
-      participatedAttendees: [],
-      answers: [],
-      created: new Date(),
-      expires: surveyDto.expires,
-      isAnonymous: surveyDto.isAnonymous,
-      isPublic: surveyDto.isPublic,
-      canShowResultsTable: surveyDto.canShowResultsTable,
-      canShowResultsChart: surveyDto.canShowResultsChart,
-      canSubmitMultipleAnswers: surveyDto.canSubmitMultipleAnswers,
-    };
-
+  async createSurvey(survey: Survey, surveysSseConnections: UserConnections): Promise<Survey | null> {
     try {
-      return await this.surveyModel.create(newSurvey);
+      return await this.surveyModel.create(survey);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {
-      const survey = await this.surveyModel.findOne({ id: newSurvey.id }).lean();
-      if (survey) {
+      const newSurvey = await this.surveyModel.findOne({ id: survey.id }).lean();
+      if (newSurvey != null) {
         if (!survey.isPublic) {
-          const invitedMembersList = await this.getInvitedMembers(surveyDto);
-          SseService.sendEventToUsers(invitedMembersList, surveysSseConnections, surveyDto, SSE_MESSAGE_TYPE.CREATED);
+          const invitedMembersList = await this.getInvitedMembers(survey);
+          SseService.sendEventToUsers(invitedMembersList, surveysSseConnections, survey, SSE_MESSAGE_TYPE.CREATED);
         } else {
-          SseService.informAllUsers(surveysSseConnections, surveyDto, SSE_MESSAGE_TYPE.CREATED);
+          SseService.informAllUsers(surveysSseConnections, survey, SSE_MESSAGE_TYPE.CREATED);
         }
       }
     }
@@ -130,11 +99,36 @@ class SurveysService {
     currentUser: JWTUser,
     surveysSseConnections: UserConnections,
   ): Promise<Survey | null> {
-    const updatedSurvey = await this.updateSurvey(surveyDto, surveysSseConnections);
+    const { id, invitedGroups, creator, created = new Date(), saveNo = 0 } = surveyDto;
+
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { label: _label, value: _value, ...creatorWithoutLabelValue } = creator;
+    const updatingSurvey: Survey = {
+      ...surveyDto,
+      _id: id,
+      created,
+      saveNo,
+      creator: creatorWithoutLabelValue,
+      invitedGroups: invitedGroups as unknown as Group[],
+    };
+
+    const updatedSurvey = await this.updateSurvey(updatingSurvey, surveysSseConnections);
     if (updatedSurvey != null) {
       return updatedSurvey;
     }
-    const createdSurvey = await this.createSurvey(surveyDto, currentUser, surveysSseConnections);
+
+    const newCreator = {
+      ...creatorWithoutLabelValue,
+      firstName: currentUser.given_name,
+      lastName: currentUser.family_name,
+      username: currentUser.preferred_username,
+    };
+    const creatingSurvey: Survey = {
+      ...updatingSurvey,
+      creator: newCreator,
+    };
+
+    const createdSurvey = await this.createSurvey(creatingSurvey, surveysSseConnections);
     if (createdSurvey != null) {
       return createdSurvey;
     }
