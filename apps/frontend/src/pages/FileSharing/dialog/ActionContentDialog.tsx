@@ -11,12 +11,12 @@ import { FileSharingFormValues } from '@libs/filesharing/types/filesharingDialog
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import CircleLoader from '@/components/ui/CircleLoader';
-import getFileSharingFormSchema from '../formSchema';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import APPS from '@libs/appconfig/constants/apps';
 import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import DocumentVendors from '@libs/filesharing/constants/documentVendors';
+import getFileSharingFormSchema from '../formSchema';
 
 interface CreateContentDialogProps {
   trigger?: React.ReactNode;
