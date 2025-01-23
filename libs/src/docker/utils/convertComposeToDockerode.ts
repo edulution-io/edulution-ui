@@ -1,8 +1,8 @@
 import { type ContainerCreateOptions } from 'dockerode';
 import type DockerCompose from '../types/dockerCompose';
 
-function convertComposeToDockerode(compose: DockerCompose): ContainerCreateOptions[] {
-  return Object.entries(compose.services).map(([serviceName, service]) => {
+const convertComposeToDockerode = (compose: DockerCompose): ContainerCreateOptions[] =>
+  Object.entries(compose.services).map(([serviceName, service]) => {
     const volumes = service.volumes?.reduce(
       (acc, volume) => {
         const [, containerPath] = volume.split(':');
@@ -59,6 +59,5 @@ function convertComposeToDockerode(compose: DockerCompose): ContainerCreateOptio
 
     return containerOptions;
   });
-}
 
 export default convertComposeToDockerode;
