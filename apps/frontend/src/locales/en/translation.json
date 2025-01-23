@@ -176,7 +176,8 @@
   "errors": {
     "automaticLoginFailed": "Automatic login failed",
     "unexpectedError": "An unexpected error occurred",
-    "uploadOrFetchAttachmentFailed": "Error uploading or fetching attachment"
+    "uploadOrFetchAttachmentFailed": "Error uploading or fetching attachment",
+    "fileGenerationFailed": "File generation failed"
   },
   "conferences": {
     "errors": {

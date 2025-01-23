@@ -176,7 +176,8 @@
   "errors": {
     "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten",
     "automaticLoginFailed": "Automatischer Login fehlgeschlagen",
-    "uploadOrFetchAttachmentFailed": "Fehler beim Hochladen des Anhangs"
+    "uploadOrFetchAttachmentFailed": "Fehler beim Hochladen des Anhangs",
+    "fileGenerationFailed": "Datei konnte nicht generiert werden"
   },
   "conferences": {
     "errors": {

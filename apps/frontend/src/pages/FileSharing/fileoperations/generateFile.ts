@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Document, Packer } from 'docx';
 import PptxGenJS from 'pptxgenjs';
 import ExcelJS from 'exceljs';
@@ -8,6 +9,9 @@ import OnlyOfficeDocumentTypes from '@libs/filesharing/constants/OnlyOfficeDocum
 import DocumentVendors from '@libs/filesharing/constants/documentVendors';
 import DocumentVendorsType from '@libs/filesharing/types/documentVendorsType';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/constants/availableFileTypes';
+import OPEN_DOCUMENT_TEMPLATE_PATH from '@libs/filesharing/constants/openDocumentTemplatePath';
+import { toast } from 'sonner';
+import i18n from '@/i18n';
 
 async function generateFile(
   fileType: AvailableFileTypesType | '',
@@ -21,21 +25,15 @@ async function generateFile(
     case AVAILABLE_FILE_TYPES.documentFile: {
       if (format === DocumentVendors.MSO) {
         extension = OnlyOfficeDocumentTypes.DOCX;
-
         const doc = new Document({ title: basename, description: '', sections: [] });
-
         const blob = await Packer.toBlob(doc);
-
         file = new File([blob], `${basename}.${extension}`, { type: blob.type });
       } else {
         extension = OnlyOfficeDocumentTypes.ODT;
-
-        const response = await fetch('/openDocumentTemplates/odtTemplate.odt');
-
-        const arrayBuffer = await response.arrayBuffer();
-
-        const fileBlob = new Blob([arrayBuffer], { type: 'application/vnd.oasis.opendocument.text' });
-
+        const response = await axios.get(`${OPEN_DOCUMENT_TEMPLATE_PATH}/odtTemplate.odt`, {
+          responseType: 'arraybuffer',
+        });
+        const fileBlob = new Blob([response.data], { type: 'application/vnd.oasis.opendocument.text' });
         file = new File([fileBlob], `${basename}.${extension}`, { type: fileBlob.type });
       }
       break;
@@ -54,9 +52,10 @@ async function generateFile(
         file = new File([fileBlob], `${basename}.${extension}`, { type: fileBlob.type });
       } else {
         extension = OnlyOfficeDocumentTypes.ODS;
-        const response = await fetch('/openDocumentTemplates/odsTemplate.ods');
-        const arrayBuffer = await response.arrayBuffer();
-        const fileBlob = new Blob([arrayBuffer], { type: 'application/vnd.oasis.opendocument.spreadsheet' });
+        const response = await axios.get(`${OPEN_DOCUMENT_TEMPLATE_PATH}/odsTemplate.ods`, {
+          responseType: 'arraybuffer',
+        });
+        const fileBlob = new Blob([response.data], { type: 'application/vnd.oasis.opendocument.spreadsheet' });
         file = new File([fileBlob], `${basename}.${extension}`, { type: fileBlob.type });
       }
       break;
@@ -74,9 +73,10 @@ async function generateFile(
         file = new File([fileBlob], `${basename}.${extension}`, { type: fileBlob.type });
       } else {
         extension = OnlyOfficeDocumentTypes.ODP;
-        const response = await fetch('/openDocumentTemplates/odpTemplate.odp');
-        const arrayBuffer = await response.arrayBuffer();
-        const fileBlob = new Blob([arrayBuffer], { type: 'application/vnd.oasis.opendocument.presentation' });
+        const response = await axios.get(`${OPEN_DOCUMENT_TEMPLATE_PATH}/odpTemplate.odp`, {
+          responseType: 'arraybuffer',
+        });
+        const fileBlob = new Blob([response.data], { type: 'application/vnd.oasis.opendocument.presentation' });
         file = new File([fileBlob], `${basename}.${extension}`, { type: fileBlob.type });
       }
       break;
@@ -131,6 +131,7 @@ async function generateFile(
     }
 
     default:
+      toast.error(i18n.t('errors.fileGenerationFailed'));
       throw new Error(`Unsupported file type: ${fileType}`);
   }
 
