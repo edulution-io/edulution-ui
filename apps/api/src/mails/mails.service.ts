@@ -105,7 +105,7 @@ class MailsService implements OnModuleInit {
 
       const fetchMail: AsyncGenerator<FetchMessageObject> = this.imapClient.fetch(
         { seen: false, since: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
-        { envelope: true, labels: true },
+        { limit: 10, envelope: true, labels: true },
       );
 
       // eslint-disable-next-line no-restricted-syntax
