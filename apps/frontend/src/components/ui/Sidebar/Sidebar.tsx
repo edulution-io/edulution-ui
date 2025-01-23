@@ -40,7 +40,7 @@ const Sidebar: React.FC = () => {
       link: `/${item.id}`,
       icon: item.icon,
       color: 'bg-ciGreenToBlue',
-      notificationCounter: getNotificationCounter(item.id as TApps),
+      notificationCounter: getNotificationCounter(item.id),
     })),
     ...(isSuperAdmin
       ? [
