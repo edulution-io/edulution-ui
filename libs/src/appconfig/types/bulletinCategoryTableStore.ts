@@ -20,5 +20,7 @@ export interface BulletinCategoryTableStore extends AppConfigTable<BulletinCateg
   isDeleteDialogOpen: boolean;
   isDeleteDialogLoading: boolean;
   setIsDeleteDialogOpen: (isOpen: boolean) => void;
+  setCategoryPosition: (categoryId: string, position: number) => Promise<void>;
+  isCategoryPositionLoading: boolean;
   error: null | Error;
 }
