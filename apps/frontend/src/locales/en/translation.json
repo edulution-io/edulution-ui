@@ -662,7 +662,8 @@
       "ReadAppConfigFailed": "Read app failed",
       "DisableAppConfigFailed": "Disable app failed",
       "WriteTraefikConfigFailed": "Write traefik config failed",
-      "ReadTraefikConfigFailed": "Read traefik config failed"
+      "ReadTraefikConfigFailed": "Read traefik config failed",
+      "forbiddenProxyPath": "Forbidden proxy path"
     },
     "yamleditor": {
       "invalidYaml": "Wrong YAML syntax",

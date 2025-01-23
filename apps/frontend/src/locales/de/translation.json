@@ -663,7 +663,8 @@
       "ReadAppConfigFailed": "App lesen fehlgeschlagen",
       "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen",
       "WriteTraefikConfigFailed": "Traefik-Konfiguration speichern fehlgeschlagen",
-      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen"
+      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen",
+      "forbiddenProxyPath": "Dieser Proxy-Pfad ist nicht erlaubt."
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",

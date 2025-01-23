@@ -5,7 +5,7 @@ const getDefaultYaml = (settingLocation: string) =>
     http: {
       routers: {
         [settingLocation]: {
-          rule: `PathPrefix(\`/${settingLocation}\`)`,
+          rule: `PathPrefix(\`/${settingLocation}1\`)`,
           service: settingLocation,
           tls: {},
           middlewares: ['strip-prefix'],
@@ -14,7 +14,7 @@ const getDefaultYaml = (settingLocation: string) =>
       middlewares: {
         'strip-prefix': {
           stripPrefix: {
-            prefixes: ['/api'],
+            prefixes: [`/${settingLocation}1`],
           },
         },
       },

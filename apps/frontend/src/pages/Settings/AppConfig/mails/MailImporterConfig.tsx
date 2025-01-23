@@ -6,14 +6,14 @@ import { MailProviderConfigDto } from '@libs/mail/types';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import MailEncryption from '@libs/mail/constants/mailEncryption';
-import MailsConfigForm from './MailsConfigForm';
+import type MailProviderConfig from '@libs/appconfig/types/mailProviderConfig';
+import MailImporterConfigForm from './MailImporterConfigForm';
 
 type MailsConfigProps = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: UseFormReturn<any>;
+  form: UseFormReturn<MailProviderConfig>;
 };
 
-const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
+const MailImporterConfig: React.FC<MailsConfigProps> = ({ form }) => {
   const { t } = useTranslation();
   const { externalMailProviderConfig, getExternalMailProviderConfig, deleteExternalMailProviderConfig } =
     useMailsStore();
@@ -42,21 +42,17 @@ const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
   useEffect(() => {
     if (option && option !== t('common.custom')) {
       const mailProvider = mailProviderDropdownOptions.filter((itm) => itm.name === option)[0];
-      form.setValue('mailProviderId', mailProvider.id);
-      form.setValue('configName', mailProvider.name);
-      form.setValue('hostname', mailProvider.host);
-      form.setValue('port', mailProvider.port);
-      form.setValue('encryption', mailProvider.encryption);
+      form.setValue('mail.mailProviderId', mailProvider.id);
+      form.setValue('mail.configName', mailProvider.name);
+      form.setValue('mail.hostname', mailProvider.host);
+      form.setValue('mail.port', mailProvider.port);
+      form.setValue('mail.encryption', mailProvider.encryption);
     }
 
     if (option === t('common.custom')) {
       form.reset({
         ...form.getValues(),
-        mailProviderId: '',
-        configName: '',
-        hostname: '',
-        port: '',
-        encryption: MailEncryption.SSL,
+        mail: { mailProviderId: '', configName: '', hostname: '', port: '', encryption: MailEncryption.SSL },
       });
     }
   }, [option]);
@@ -82,15 +78,15 @@ const MailsConfig: React.FC<MailsConfigProps> = ({ form }) => {
             variant="btn-collaboration"
             size="lg"
             type="button"
-            onClick={() => handleDeleteMailProviderConfig(form.getValues('mailProviderId') as string)}
+            onClick={() => handleDeleteMailProviderConfig(form.getValues('mail.mailProviderId'))}
           >
             {t('common.delete')}
           </Button>
         ) : null}
       </div>
-      <MailsConfigForm form={form} />
+      <MailImporterConfigForm form={form} />
     </div>
   );
 };
 
-export default MailsConfig;
+export default MailImporterConfig;
