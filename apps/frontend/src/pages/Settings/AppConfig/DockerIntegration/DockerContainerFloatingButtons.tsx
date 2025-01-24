@@ -17,8 +17,10 @@ const DockerContainerFloatingButtons: React.FC = () => {
   const { containers, selectedRows, setSelectedRows, fetchContainers, runDockerCommand, deleteDockerContainer } =
     useDockerApplicationStore();
   const selectedContainerId = Object.keys(selectedRows);
-  const isButtonVisible = selectedContainerId.length > 0;
   const selectedContainer = containers.filter((container) => selectedContainerId.includes(container.Id));
+  const areSelectedContainerRunning = selectedContainer.some((container) => container.State === 'running');
+  const areSelectedContainerNotRunning = selectedContainer.every((container) => container.State === 'running');
+  const isButtonVisible = selectedContainerId.length > 0;
   const containerNames = selectedContainer.map((container) => container.Names[0]) || [''];
 
   const handleActionClick = (action: TDockerCommands) => {
@@ -32,8 +34,8 @@ const DockerContainerFloatingButtons: React.FC = () => {
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
-      StartButton(() => handleActionClick(DOCKER_COMMANDS.START), isButtonVisible),
-      StopButton(() => handleActionClick(DOCKER_COMMANDS.STOP), isButtonVisible),
+      StartButton(() => handleActionClick(DOCKER_COMMANDS.START), isButtonVisible && !areSelectedContainerRunning),
+      StopButton(() => handleActionClick(DOCKER_COMMANDS.STOP), isButtonVisible && areSelectedContainerNotRunning),
       {
         icon: MdOutlineRestartAlt,
         text: t(`common.${DOCKER_COMMANDS.RESTART}`),
@@ -44,9 +46,9 @@ const DockerContainerFloatingButtons: React.FC = () => {
         icon: AiOutlineStop,
         text: t(`common.${DOCKER_COMMANDS.KILL}`),
         onClick: () => handleActionClick(DOCKER_COMMANDS.KILL),
-        isVisible: isButtonVisible,
+        isVisible: isButtonVisible && areSelectedContainerNotRunning,
       },
-      DeleteButton(() => handleDeleteClick(), isButtonVisible),
+      DeleteButton(() => handleDeleteClick(), isButtonVisible && !areSelectedContainerRunning),
       ReloadButton(() => {
         void fetchContainers();
       }),

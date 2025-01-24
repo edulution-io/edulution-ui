@@ -143,7 +143,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
       return (
         <SelectableTextCell
           onClick={onClick}
-          text={String(row.original.Ports[0].PublicPort || '')}
+          text={String(row.original.Ports[0]?.PublicPort || '')}
         />
       );
     },
