@@ -9,6 +9,8 @@ import type TDockerCommands from '@libs/docker/types/TDockerCommands';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import DockerErrorMessages from '@libs/docker/constants/dockerErrorMessages';
 import DOCKER_COMMANDS from '@libs/docker/constants/dockerCommands';
+import DOCKER_PROTECTED_CONTAINER from '@libs/docker/constants/dockerProtectedContainer';
+import type TDockerProtectedContainer from '@libs/docker/types/TDockerProtectedContainer';
 import SseService from '../sse/sse.service';
 import type UserConnections from '../types/userConnections';
 
@@ -195,8 +197,25 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  static checkProtectedContainer(id: string) {
+    const isSelectedContainerProtected = Object.values(DOCKER_PROTECTED_CONTAINER).includes(
+      id as TDockerProtectedContainer,
+    );
+    if (isSelectedContainerProtected) {
+      throw new CustomHttpException(
+        DockerErrorMessages.DOCKER_COMMAND_EXECUTION_ERROR,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        DockerService.name,
+      );
+    }
+  }
+
   async executeContainerCommand(params: { id: string; operation: TDockerCommands }) {
     const { id, operation } = params;
+
+    DockerService.checkProtectedContainer(id);
+
     try {
       SseService.sendEventToUsers(
         ['global-admin'],
@@ -236,6 +255,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
   }
 
   async deleteContainer(id: string) {
+    DockerService.checkProtectedContainer(id);
     try {
       await this.docker.getContainer(id).remove();
     } catch (error) {
