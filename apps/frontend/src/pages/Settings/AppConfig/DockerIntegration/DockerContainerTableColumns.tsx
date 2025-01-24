@@ -4,6 +4,9 @@ import { ContainerInfo } from 'dockerode';
 import cn from '@libs/common/utils/className';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import { TooltipProvider } from '@radix-ui/react-tooltip';
+import ActionTooltip from '@/components/shared/ActionTooltip';
+import i18n from '@/i18n';
 
 const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
   {
@@ -44,11 +47,18 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
     cell: ({ row }) => {
       const onClick = () => {};
       return (
-        <SelectableTextCell
-          onClick={onClick}
-          text={row.original.Names[0].split('/')[1]}
-          className="min-w-32"
-        />
+        <TooltipProvider>
+          <ActionTooltip
+            tooltipText={row.original.Image}
+            trigger={
+              <SelectableTextCell
+                onClick={onClick}
+                text={row.original.Names[0].split('/')[1]}
+                className="min-w-32 max-w-64 overflow-hidden text-ellipsis"
+              />
+            }
+          />
+        </TooltipProvider>
       );
     },
   },
@@ -69,10 +79,18 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
     cell: ({ row }) => {
       const onClick = () => {};
       return (
-        <SelectableTextCell
-          onClick={onClick}
-          text={row.original.Image}
-        />
+        <TooltipProvider>
+          <ActionTooltip
+            tooltipText={row.original.Image}
+            trigger={
+              <SelectableTextCell
+                onClick={onClick}
+                text={row.original.Image}
+                className="max-w-64 overflow-hidden text-ellipsis"
+              />
+            }
+          />
+        </TooltipProvider>
       );
     },
   },
@@ -95,7 +113,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
       return (
         <SelectableTextCell
           onClick={onClick}
-          text={row.original.State}
+          text={i18n.t(`docker.status.${row.original.State}`)}
         />
       );
     },

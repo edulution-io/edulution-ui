@@ -1129,6 +1129,10 @@
       "stopContainer": "Container stopped.",
       "restartContainer": "Restart Container.",
       "killContainer": "Container killed."
+    },
+    "status": {
+      "running": "läuft",
+      "exited": "gestoppt"
     }
   }
 }
