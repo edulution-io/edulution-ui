@@ -1109,6 +1109,7 @@
     "status": "Status",
     "imageName": "Image",
     "filterPlaceHolderText": "Search for container name",
+    "port": "Port",
     "created": "Created at"
   },
   "docker": {

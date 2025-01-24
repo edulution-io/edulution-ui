@@ -125,6 +125,30 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
     },
   },
   {
+    id: 'container-port',
+    header: ({ column }) => (
+      <SortableHeader<ContainerInfo, unknown>
+        className="min-w-32"
+        column={column}
+      />
+    ),
+
+    meta: {
+      translationId: 'dockerOverview.port',
+    },
+
+    accessorFn: (row) => row.Ports,
+    cell: ({ row }) => {
+      const onClick = () => {};
+      return (
+        <SelectableTextCell
+          onClick={onClick}
+          text={String(row.original.Ports[0].PublicPort || '')}
+        />
+      );
+    },
+  },
+  {
     id: 'container-creation-date',
     header: ({ column }) => (
       <SortableHeader<ContainerInfo, unknown>
