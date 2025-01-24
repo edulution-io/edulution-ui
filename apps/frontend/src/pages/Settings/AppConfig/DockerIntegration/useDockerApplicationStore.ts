@@ -37,7 +37,7 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
 
   fetchTableContent: async (applicationName) => {
     if (applicationName) {
-      set({ isLoading: true, error: null, tableContentData: [] });
+      set({ isLoading: true, error: null });
       await get().fetchContainers();
 
       if (Object.keys(DOCKER_APPLICATIONS).includes(applicationName)) {

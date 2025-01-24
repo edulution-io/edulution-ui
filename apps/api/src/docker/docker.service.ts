@@ -137,10 +137,23 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     return images.some((img) => img.RepoTags?.includes(imageName));
   }
 
+  static replaceEnvVariables(createContainerDto: Docker.ContainerCreateOptions[]) {
+    let newCreateContainerDto: Docker.ContainerCreateOptions[] = [];
+    newCreateContainerDto = createContainerDto.map((service) => ({
+      ...service,
+      Env: service.Env?.map((env) =>
+        env.replace(/\${([^}]+)}/g, (match, varName: string) => process.env[varName] || match),
+      ),
+    }));
+
+    return newCreateContainerDto;
+  }
+
   async createContainer(createContainerDto: Docker.ContainerCreateOptions[]) {
+    const newCreateContainerDto = DockerService.replaceEnvVariables(createContainerDto);
     try {
       await Promise.all(
-        createContainerDto.map(async (containerDto) => {
+        newCreateContainerDto.map(async (containerDto) => {
           const { Image } = containerDto;
           if (Image) {
             const imageExists = await this.imageExists(Image);
@@ -159,7 +172,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       );
 
       await Promise.all(
-        createContainerDto.map(async (containerDto) => {
+        newCreateContainerDto.map(async (containerDto) => {
           const container = await this.docker.createContainer(containerDto);
           await container.start();
           Logger.log(`Container ${containerDto.name} created and started.`, DockerService.name);

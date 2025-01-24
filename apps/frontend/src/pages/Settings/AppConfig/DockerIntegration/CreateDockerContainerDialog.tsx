@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import ProgressTextArea from '@/components/shared/ProgressTextArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import CircleLoader from '@/components/ui/CircleLoader';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
 import type TApps from '@libs/appconfig/types/appsType';
@@ -17,7 +18,8 @@ interface CreateDockerContainerDialogProps {
 const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = ({ settingLocation }) => {
   const { t } = useTranslation();
   const [dockerProgress, setDockerProgress] = useState(['']);
-  const { eventSource, tableContentData, dockerContainerConfig, createAndRunContainer } = useDockerApplicationStore();
+  const { isLoading, eventSource, tableContentData, dockerContainerConfig, createAndRunContainer, fetchTableContent } =
+    useDockerApplicationStore();
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
 
   useEffect(() => {
@@ -39,6 +41,7 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
     if (dockerContainerConfig) {
       const createContainerConfig = convertComposeToDockerode(dockerContainerConfig);
       await createAndRunContainer(createContainerConfig);
+      await fetchTableContent(settingLocation);
     }
   };
 
@@ -52,6 +55,7 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
         type="button"
         className="w-24 border-2"
         onClick={() => setDialogOpen(false)}
+        disabled={!(tableContentData.length === 0) && isLoading}
       >
         {tableContentData.length === 0 ? t('common.cancel') : t('common.close')}{' '}
       </Button>
@@ -61,7 +65,7 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
         type="button"
         className="w-24"
         onClick={handleCreateContainer}
-        disabled={tableContentData.length !== 0}
+        disabled={tableContentData.length !== 0 || isLoading}
       >
         {t('common.install')}
       </Button>
@@ -69,13 +73,16 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
   );
 
   return (
-    <AdaptiveDialog
-      title={t(`dockerApplication.dialogTitle`, { applicationName: t(`${settingLocation}.sidebar`) })}
-      isOpen={isDialogOpen}
-      body={getDialogBody()}
-      footer={getDialogFooter()}
-      handleOpenChange={() => setDialogOpen(false)}
-    />
+    <>
+      <div className="absolute right-10 top-12 md:right-20 md:top-10">{isLoading ? <CircleLoader /> : null}</div>
+      <AdaptiveDialog
+        title={t(`dockerApplication.dialogTitle`, { applicationName: t(`${settingLocation}.sidebar`) })}
+        isOpen={isDialogOpen}
+        body={getDialogBody()}
+        footer={getDialogFooter()}
+        handleOpenChange={() => setDialogOpen(false)}
+      />
+    </>
   );
 };
 
