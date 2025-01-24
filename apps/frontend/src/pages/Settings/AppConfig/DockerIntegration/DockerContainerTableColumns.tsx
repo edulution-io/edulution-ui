@@ -1,12 +1,12 @@
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
+import { TooltipProvider } from '@radix-ui/react-tooltip';
 import { ContainerInfo } from 'dockerode';
+import i18n from '@/i18n';
 import cn from '@libs/common/utils/className';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
-import { TooltipProvider } from '@radix-ui/react-tooltip';
 import ActionTooltip from '@/components/shared/ActionTooltip';
-import i18n from '@/i18n';
 
 const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
   {
