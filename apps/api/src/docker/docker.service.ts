@@ -10,6 +10,7 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import DockerErrorMessages from '@libs/docker/constants/dockerErrorMessages';
 import DOCKER_COMMANDS from '@libs/docker/constants/dockerCommands';
 import DOCKER_PROTECTED_CONTAINER from '@libs/docker/constants/dockerProtectedContainer';
+import SPECIAL_USERS from '@libs/common/constants/specialUsers';
 import type TDockerProtectedContainer from '@libs/docker/types/TDockerProtectedContainer';
 import SseService from '../sse/sse.service';
 import type UserConnections from '../types/userConnections';
@@ -57,11 +58,16 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
       this.eventSubscription = dockerEvents$.subscribe({
         next: (event) => {
-          SseService.sendEventToUsers(['global-admin'], this.dockerSseConnection, event, SSE_MESSAGE_TYPE.MESSAGE);
+          SseService.sendEventToUsers(
+            [SPECIAL_USERS.GLOBAL_ADMIN],
+            this.dockerSseConnection,
+            event,
+            SSE_MESSAGE_TYPE.MESSAGE,
+          );
           this.getContainers()
             .then((containers) =>
               SseService.sendEventToUsers(
-                ['global-admin'],
+                [SPECIAL_USERS.GLOBAL_ADMIN],
                 this.dockerSseConnection,
                 containers,
                 SSE_MESSAGE_TYPE.UPDATED,
@@ -99,7 +105,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
   private async pullImage(image: string) {
     try {
       SseService.sendEventToUsers(
-        ['global-admin'],
+        [SPECIAL_USERS.GLOBAL_ADMIN],
         this.dockerSseConnection,
         { status: '', progress: 'docker.events.pullingImage' } as DockerEvent,
         SSE_MESSAGE_TYPE.MESSAGE,
@@ -111,7 +117,12 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
           (error) => (error ? reject(error) : resolve()),
           (event: DockerEvent) => {
             if (event) {
-              SseService.sendEventToUsers(['global-admin'], this.dockerSseConnection, event, SSE_MESSAGE_TYPE.MESSAGE);
+              SseService.sendEventToUsers(
+                [SPECIAL_USERS.GLOBAL_ADMIN],
+                this.dockerSseConnection,
+                event,
+                SSE_MESSAGE_TYPE.MESSAGE,
+              );
             }
           },
         );
@@ -130,7 +141,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     const images = await this.docker.listImages();
 
     SseService.sendEventToUsers(
-      ['global-admin'],
+      [SPECIAL_USERS.GLOBAL_ADMIN],
       this.dockerSseConnection,
       { status: '', progress: 'docker.events.checkingImage' } as DockerEvent,
       SSE_MESSAGE_TYPE.MESSAGE,
@@ -167,7 +178,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       );
 
       SseService.sendEventToUsers(
-        ['global-admin'],
+        [SPECIAL_USERS.GLOBAL_ADMIN],
         this.dockerSseConnection,
         { status: '', progress: 'docker.events.creatingContainer' } as DockerEvent,
         SSE_MESSAGE_TYPE.MESSAGE,
@@ -189,7 +200,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       );
     } finally {
       SseService.sendEventToUsers(
-        ['global-admin'],
+        [SPECIAL_USERS.GLOBAL_ADMIN],
         this.dockerSseConnection,
         { status: '', progress: 'docker.events.containerCreated' } as DockerEvent,
         SSE_MESSAGE_TYPE.MESSAGE,
@@ -218,7 +229,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
     try {
       SseService.sendEventToUsers(
-        ['global-admin'],
+        [SPECIAL_USERS.GLOBAL_ADMIN],
         this.dockerSseConnection,
         { status: '', progress: `docker.events.${operation}Container` } as DockerEvent,
         SSE_MESSAGE_TYPE.MESSAGE,
