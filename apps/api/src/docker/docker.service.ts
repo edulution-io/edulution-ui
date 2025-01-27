@@ -17,6 +17,7 @@ import type UserConnections from '../types/userConnections';
 
 @Injectable()
 class DockerService implements OnModuleInit, OnModuleDestroy {
+  // TODO: Add possiblity to use docker api as well https://github.com/edulution-io/edulution-ui/issues/396
   private readonly dockerSocketPath = '/var/run/docker.sock';
 
   private readonly docker = new Docker({ socketPath: this.dockerSocketPath });
