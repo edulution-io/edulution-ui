@@ -50,13 +50,8 @@ class SurveysService {
   }
 
   async findPublicSurvey(surveyId: string): Promise<Survey | null> {
-    const mongoId = new mongoose.Types.ObjectId(surveyId);
-    if (!mongoose.isValidObjectId(mongoId)) {
-      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
-    }
-
     try {
-      return await this.surveyModel.findOne<Survey>({ _id: mongoId, isPublic: true }).lean();
+      return await this.surveyModel.findOne<Survey>({ id: surveyId, isPublic: true }).exec();
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     }
