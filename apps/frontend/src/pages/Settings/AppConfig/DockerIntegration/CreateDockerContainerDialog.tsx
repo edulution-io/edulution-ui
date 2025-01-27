@@ -25,9 +25,9 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
   useEffect(() => {
     if (!eventSource) return undefined;
     const dockerProgressHandler = (e: MessageEvent<string>) => {
-      const { status, progress } = JSON.parse(e.data) as DockerEvent;
+      const { progress, from } = JSON.parse(e.data) as DockerEvent;
       if (!progress) return;
-      setDockerProgress((prevDockerProgress) => [...prevDockerProgress, `${status} ${t(progress) ?? ''}`]);
+      setDockerProgress((prevDockerProgress) => [...prevDockerProgress, `${from}: ${t(progress) ?? ''}`]);
     };
 
     eventSource.addEventListener(SSE_MESSAGE_TYPE.MESSAGE, dockerProgressHandler);

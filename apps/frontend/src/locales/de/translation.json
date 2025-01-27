@@ -1129,7 +1129,9 @@
       "startContainer": "Container gestartet.",
       "stopContainer": "Container gestoppt.",
       "restartContainer": "Container neu gestartet.",
-      "killContainer": "Container erzwungen gestoppt."
+      "killContainer": "Container erzwungen gestoppt.",
+      "containerCreationSuccessful": "Container erfolgreich erstellt.",
+      "containerCreationFailed": "Container konnte nicht erstellt werden."
     },
     "status": {
       "running": "läuft",
