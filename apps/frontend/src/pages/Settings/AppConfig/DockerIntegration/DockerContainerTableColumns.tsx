@@ -3,10 +3,11 @@ import { ColumnDef } from '@tanstack/react-table';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
 import { ContainerInfo } from 'dockerode';
 import i18n from '@/i18n';
-import cn from '@libs/common/utils/className';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import ActionTooltip from '@/components/shared/ActionTooltip';
+import cn from '@libs/common/utils/className';
+import DOCKER_STATES from '@libs/docker/constants/dockerStates';
 
 const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
   {
@@ -20,7 +21,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
     ),
     accessorFn: (row) => row.State,
     cell: ({ row }) => {
-      const badgeClass = row.original.State === 'running' ? 'bg-green-500' : 'bg-red-500';
+      const badgeClass = row.original.State === DOCKER_STATES.RUNNING ? 'bg-green-500' : 'bg-red-500';
 
       return (
         <SelectableTextCell

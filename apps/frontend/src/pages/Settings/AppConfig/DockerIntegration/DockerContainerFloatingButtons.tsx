@@ -10,6 +10,7 @@ import StartButton from '@/components/shared/FloatingsButtonsBar/CommonButtonCon
 import StopButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/stopButton';
 import DOCKER_COMMANDS from '@libs/docker/constants/dockerCommands';
 import DOCKER_PROTECTED_CONTAINER from '@libs/docker/constants/dockerProtectedContainer';
+import DOCKER_STATES from '@libs/docker/constants/dockerStates';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
 import type TDockerProtectedContainer from '@libs/docker/types/TDockerProtectedContainer';
 import useDockerApplicationStore from './useDockerApplicationStore';
@@ -22,8 +23,10 @@ const DockerContainerFloatingButtons: React.FC = () => {
   const selectedContainer = containers.filter((container) => selectedContainerId.includes(container.Id));
   const containerNames = selectedContainer.map((container) => container.Names[0]) || [''];
 
-  const areSelectedContainerRunning = selectedContainer.some((container) => container.State === 'running');
-  const areSelectedContainerNotRunning = selectedContainer.every((container) => container.State === 'running');
+  const areSelectedContainerRunning = selectedContainer.some((container) => container.State === DOCKER_STATES.RUNNING);
+  const areSelectedContainerNotRunning = selectedContainer.every(
+    (container) => container.State === DOCKER_STATES.RUNNING,
+  );
   const areSelectedContainersProtected = selectedContainer.some((container) =>
     Object.values(DOCKER_PROTECTED_CONTAINER).includes(container.Names?.[0].split('/')[1] as TDockerProtectedContainer),
   );
