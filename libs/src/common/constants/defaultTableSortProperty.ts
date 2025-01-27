@@ -1,0 +1,3 @@
+const DEFAULT_TABLE_SORT_PROPERTY_KEY = 'position';
+
+export default DEFAULT_TABLE_SORT_PROPERTY_KEY;

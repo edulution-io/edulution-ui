@@ -24,6 +24,7 @@
     "sidebar": "Schwarzes Brett",
     "newCategorie": "Neue Kategorie",
     "category": "Kategorie",
+    "categoryPositionChanged": "Position der Kategorie geändert",
     "name": "Name",
     "editCategorie": "Kategorie bearbeiten",
     "isActive": "Aktiv",
@@ -781,6 +782,7 @@
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
+    "sortOrder": "Sortierung",
     "options": "Optionen",
     "checking": "Prüfen",
     "columns": "Spalten",
