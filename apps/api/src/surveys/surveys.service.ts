@@ -49,7 +49,7 @@ class SurveysService {
     return survey;
   }
 
-  async findPublicSurvey(surveyId: string): Promise<Survey | null> {
+  async findPublicSurvey(surveyId: string | mongoose.Types.ObjectId): Promise<Survey | null> {
     try {
       return await this.surveyModel.findOne<Survey>({ id: surveyId, isPublic: true }).exec();
     } catch (error) {

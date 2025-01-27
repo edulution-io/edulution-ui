@@ -76,7 +76,7 @@ describe(PublicSurveysController.name, () => {
   describe('find', () => {
     it('return a public survey with the given surveyId if it exists ', async () => {
       surveyModel.findOne = jest.fn().mockResolvedValueOnce({
-        lean: jest.fn().mockReturnValue(publicSurvey01),
+        exec: jest.fn().mockReturnValue(publicSurvey01),
       });
       surveysService.findPublicSurvey = jest.fn().mockReturnValue(publicSurvey01);
 
