@@ -23,7 +23,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName }) => {
     return <div>{t('common.error')}</div>;
   }
 
-  const renderConfig = (config: AppConfigTableConfig, index: number) => {
+  const renderConfig = (config: AppConfigTableConfig) => {
     const { columns, useStore, showAddButton, dialogBody, filterPlaceHolderText, filterKey, type } = config;
     const { tableContentData, fetchTableContent } = useStore();
     const { setDialogOpen, isDialogOpen } = useAppConfigTableDialogStore();
@@ -77,7 +77,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName }) => {
 
     return (
       <div
-        key={config.key || index}
+        key={config.type}
         className="mb-8"
       >
         {getScrollableTable()}
@@ -97,7 +97,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName }) => {
     );
   };
 
-  return <div>{configs.map((config, index) => renderConfig(config, index))}</div>;
+  return <div>{configs.map((config) => renderConfig(config))}</div>;
 };
 
 export default AppConfigTable;

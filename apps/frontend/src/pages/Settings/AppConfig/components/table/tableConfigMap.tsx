@@ -16,7 +16,6 @@ import useDockerApplicationStore from '../../DockerIntegration/useDockerApplicat
 const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
   [APPS.BULLETIN_BOARD]: [
     createAppConfigTableEntry<BulletinCategoryResponseDto, BulletinCategoryTableStore>({
-      key: APPS.BULLETIN_BOARD,
       columns: AppConfigBulletinCategoryTableColumn,
       useStore: useBulletinCategoryTableStore,
       dialogBody: <CreateAndUpdateBulletinCategoryDialog />,
@@ -28,7 +27,6 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
   ],
   [APPS.CLASS_MANAGEMENT]: [
     createAppConfigTableEntry<ContainerInfo, DockerContainerTableStore>({
-      key: 'docker',
       columns: DockerContainerTableColumns,
       useStore: useDockerApplicationStore,
       dialogBody: <CreateDockerContainerDialog settingLocation={APPS.CLASS_MANAGEMENT} />,
@@ -40,7 +38,6 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
   ],
   [APPS.MAIL]: [
     createAppConfigTableEntry<ContainerInfo, DockerContainerTableStore>({
-      key: APPS.MAIL,
       columns: DockerContainerTableColumns,
       useStore: useDockerApplicationStore,
       dialogBody: <CreateDockerContainerDialog settingLocation={APPS.MAIL} />,
@@ -52,7 +49,6 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
   ],
   [APPS.DESKTOP_DEPLOYMENT]: [
     createAppConfigTableEntry<ContainerInfo, DockerContainerTableStore>({
-      key: APPS.DESKTOP_DEPLOYMENT,
       columns: DockerContainerTableColumns,
       useStore: useDockerApplicationStore,
       dialogBody: <CreateDockerContainerDialog settingLocation={APPS.DESKTOP_DEPLOYMENT} />,

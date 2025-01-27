@@ -1,5 +1,5 @@
-import DOCKER_PROTECTED_CONTAINER from '../constants/dockerProtectedContainer';
+import DOCKER_PROTECTED_CONTAINERS from '../constants/dockerProtectedContainer';
 
-type TDockerProtectedContainer = (typeof DOCKER_PROTECTED_CONTAINER)[keyof typeof DOCKER_PROTECTED_CONTAINER];
+type TDockerProtectedContainer = (typeof DOCKER_PROTECTED_CONTAINERS)[keyof typeof DOCKER_PROTECTED_CONTAINERS];
 
 export default TDockerProtectedContainer;

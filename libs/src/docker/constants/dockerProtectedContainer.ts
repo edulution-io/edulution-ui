@@ -1,4 +1,4 @@
-const DOCKER_PROTECTED_CONTAINER = {
+const DOCKER_PROTECTED_CONTAINERS = {
   API: 'edulution-api',
   UI: 'edulution-ui',
   REDIS: 'edulution-redis',
@@ -10,4 +10,4 @@ const DOCKER_PROTECTED_CONTAINER = {
   DEV_MONGODB: 'mongoEdu',
 } as const;
 
-export default DOCKER_PROTECTED_CONTAINER;
+export default DOCKER_PROTECTED_CONTAINERS;

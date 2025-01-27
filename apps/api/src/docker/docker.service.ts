@@ -9,7 +9,7 @@ import type TDockerCommands from '@libs/docker/types/TDockerCommands';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import DockerErrorMessages from '@libs/docker/constants/dockerErrorMessages';
 import DOCKER_COMMANDS from '@libs/docker/constants/dockerCommands';
-import DOCKER_PROTECTED_CONTAINER from '@libs/docker/constants/dockerProtectedContainer';
+import DOCKER_PROTECTED_CONTAINERS from '@libs/docker/constants/dockerProtectedContainer';
 import SPECIAL_USERS from '@libs/common/constants/specialUsers';
 import type TDockerProtectedContainer from '@libs/docker/types/TDockerProtectedContainer';
 import SseService from '../sse/sse.service';
@@ -210,7 +210,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
   }
 
   static checkProtectedContainer(id: string) {
-    const isSelectedContainerProtected = Object.values(DOCKER_PROTECTED_CONTAINER).includes(
+    const isSelectedContainerProtected = Object.values(DOCKER_PROTECTED_CONTAINERS).includes(
       id as TDockerProtectedContainer,
     );
     if (isSelectedContainerProtected) {

@@ -8,24 +8,33 @@ import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import ActionTooltip from '@/components/shared/ActionTooltip';
 import cn from '@libs/common/utils/className';
 import DOCKER_STATES from '@libs/docker/constants/dockerStates';
+import { useLocation } from 'react-router-dom';
+import APPS from '@libs/appconfig/constants/apps';
 
 const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
   {
     id: 'state-badge',
-    header: ({ table, column }) => (
-      <SortableHeader<ContainerInfo, unknown>
-        table={table}
-        column={column}
-        hidden
-      />
-    ),
+    header: ({ table, column }) => {
+      const { pathname } = useLocation();
+      const isDockerOverview = pathname === `/${APPS.SETTINGS}`;
+
+      return (
+        <SortableHeader<ContainerInfo, unknown>
+          table={isDockerOverview ? table : undefined}
+          column={column}
+          hidden
+        />
+      );
+    },
     accessorFn: (row) => row.State,
     cell: ({ row }) => {
       const badgeClass = row.original.State === DOCKER_STATES.RUNNING ? 'bg-green-500' : 'bg-red-500';
+      const { pathname } = useLocation();
+      const isDockerOverview = pathname === `/${APPS.SETTINGS}`;
 
       return (
         <SelectableTextCell
-          row={row}
+          row={isDockerOverview ? row : undefined}
           icon={<div className={cn('h-2 w-2 rounded-full', badgeClass)} />}
         />
       );
@@ -55,7 +64,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
               <SelectableTextCell
                 onClick={onClick}
                 text={row.original.Names[0].split('/')[1]}
-                className="min-w-32 max-w-64 overflow-hidden text-ellipsis"
+                className="min-w-32 max-w-64 cursor-auto overflow-hidden text-ellipsis"
               />
             }
           />
@@ -87,7 +96,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
               <SelectableTextCell
                 onClick={onClick}
                 text={row.original.Image}
-                className="max-w-64 overflow-hidden text-ellipsis"
+                className="max-w-64 cursor-auto overflow-hidden text-ellipsis"
               />
             }
           />
@@ -115,6 +124,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
         <SelectableTextCell
           onClick={onClick}
           text={i18n.t(`docker.status.${row.original.State}`)}
+          className="cursor-auto"
         />
       );
     },
@@ -139,6 +149,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
         <SelectableTextCell
           onClick={onClick}
           text={row.original.Status}
+          className="cursor-auto"
         />
       );
     },
@@ -166,6 +177,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
         <SelectableTextCell
           onClick={onClick}
           text={portArry.join(', ')}
+          className="cursor-auto"
         />
       );
     },
@@ -192,6 +204,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
         <SelectableTextCell
           onClick={onClick}
           text={date.toLocaleString()}
+          className="cursor-auto"
         />
       );
     },
