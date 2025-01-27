@@ -3,21 +3,18 @@ import Checkbox from '@/components/ui/Checkbox';
 import { Row } from '@tanstack/react-table';
 import cn from '@libs/common/utils/className';
 
-interface SelectableTextCellProps<TData> {
-  icon?: React.ReactElement;
+interface SelectableCellProps<TData> {
   row?: Row<TData>;
-  text?: string;
-  textOnHover?: string;
   onClick?: () => void;
   className?: string;
   isFirstColumn?: boolean;
+  children: React.ReactNode;
 }
 
-const SelectableTextCellInner = <TData,>(
-  { icon, row, text, textOnHover, onClick, className, isFirstColumn = false }: SelectableTextCellProps<TData>,
+const SelectableCellInner = <TData,>(
+  { row, onClick, className, isFirstColumn = false, children }: SelectableCellProps<TData>,
   ref: React.Ref<HTMLDivElement>,
 ) => {
-  const [isHovered, setIsHovered] = useState(false);
   const isChecked = row?.getIsSelected();
   const checkboxRef = useRef<HTMLButtonElement>(null);
   const [checkboxWidth, setCheckboxWidth] = useState(0);
@@ -41,8 +38,6 @@ const SelectableTextCellInner = <TData,>(
         onClick ? 'cursor-pointer' : 'cursor-default',
         className,
       )}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       {row ? (
         <Checkbox
@@ -57,21 +52,20 @@ const SelectableTextCellInner = <TData,>(
       ) : (
         <div className="my-5" />
       )}
-      {icon ? <div className="mb-3 ml-2 mr-2 mt-3 flex items-center justify-center">{icon}</div> : null}
       <span
         className="text-md truncate font-medium"
         style={{
           marginLeft: isFirstColumn && !row ? `${checkboxWidth + 30}px` : undefined,
         }}
       >
-        {isHovered && textOnHover ? textOnHover : text}
+        {children}
       </span>
     </div>
   );
 };
 
-const SelectableTextCell = forwardRef(SelectableTextCellInner) as <TData>(
-  props: SelectableTextCellProps<TData> & React.RefAttributes<HTMLDivElement>,
+const SelectableCell = forwardRef(SelectableCellInner) as <TData>(
+  props: SelectableCellProps<TData> & React.RefAttributes<HTMLDivElement>,
 ) => JSX.Element;
 
-export default SelectableTextCell;
+export default SelectableCell;

@@ -54,7 +54,7 @@ const MenuBar: React.FC = () => {
 
   const renderMenuBarContent = () => (
     <div
-      className="max-w-[300px]"
+      className="max-w-[var(--menubar-max-width)]"
       ref={menubarRef}
     >
       <div className="bg flex flex-col items-center justify-center py-6">
