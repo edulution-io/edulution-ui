@@ -43,31 +43,30 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
 
   fetchTableContent: async (applicationName) => {
     if (applicationName) {
-      set({ isLoading: true, error: null });
-      await get().getContainers();
-
       if (Object.keys(DOCKER_APPLICATIONS).includes(applicationName)) {
+        set({ isLoading: true, error: null });
         const containerName = DOCKER_APPLICATIONS[applicationName] || '';
-
         const dockerContainerConfig = await get().getDockerContainerConfig(applicationName, containerName);
+        const applicationNames = Object.keys(dockerContainerConfig.services);
+        const containers = await get().getContainers(applicationNames);
 
-        const container = get().containers.filter((item) =>
-          Object.keys(dockerContainerConfig.services).includes(item.Names[0].split('/')[1]),
-        );
-        set({ tableContentData: container });
+        set({ tableContentData: containers });
       }
     }
   },
 
-  getContainers: async () => {
+  getContainers: async (applicationNames?: string[]) => {
     set({ isLoading: true, error: null });
     try {
       const { data } = await eduApi.get<ContainerInfo[]>(
         `${EDU_API_DOCKER_ENDPOINT}/${EDU_API_DOCKER_CONTAINER_ENDPOINT}`,
+        { params: { applicationNames } },
       );
       set({ containers: data });
+      return data;
     } catch (error) {
       handleApiError(error, set);
+      return [];
     } finally {
       set({ isLoading: false });
     }

@@ -1,4 +1,17 @@
-import { Body, Controller, Get, Param, Post, Put, Res, Sse, UseGuards, MessageEvent, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Res,
+  Sse,
+  UseGuards,
+  MessageEvent,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Response } from 'express';
 import { type ContainerCreateOptions } from 'dockerode';
@@ -14,8 +27,8 @@ class DockerController {
   constructor(private readonly dockerService: DockerService) {}
 
   @Get(EDU_API_DOCKER_CONTAINER_ENDPOINT)
-  async getContainers() {
-    return this.dockerService.getContainers();
+  async getContainers(@Query('applicationNames') applicationNames?: string[] | undefined) {
+    return this.dockerService.getContainers(applicationNames);
   }
 
   @Post(EDU_API_DOCKER_CONTAINER_ENDPOINT)
