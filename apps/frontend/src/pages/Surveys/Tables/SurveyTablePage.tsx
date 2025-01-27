@@ -12,7 +12,6 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 interface SurveysTablePageProps {
   title: string;
   description: string;
-  selectedSurvey?: SurveyDto | undefined;
   surveys?: SurveyDto[];
   isLoading?: boolean;
 
@@ -27,7 +26,6 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
   const {
     title,
     description,
-    selectedSurvey,
     surveys,
     isLoading = false,
 
@@ -51,15 +49,13 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
           isLoading={isLoading}
         />
       </ScrollArea>
-      {selectedSurvey ? (
-        <SurveysTablesFloatingButtons
-          canEdit={canEdit}
-          canDelete={canDelete}
-          canShowSubmittedAnswers={canShowSubmittedAnswers}
-          canParticipate={canParticipate}
-          canShowResults={canShowResults}
-        />
-      ) : null}
+      <SurveysTablesFloatingButtons
+        canEdit={canEdit}
+        canDelete={canDelete}
+        canShowSubmittedAnswers={canShowSubmittedAnswers}
+        canParticipate={canParticipate}
+        canShowResults={canShowResults}
+      />
       <TooltipProvider>
         <div className="absolute bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
           <ResultTableDialog />

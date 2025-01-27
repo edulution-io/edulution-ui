@@ -4,9 +4,10 @@ import CreateOrUpdateBulletinDialog from '@/pages/BulletinBoardEditorial/CreateO
 import DeleteBulletinsDialog from '@/pages/BulletinBoardEditorial/DeleteBulletinsDialog';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
-import ImageModal from '@/components/shared/ImageModal';
 import BulletinBoardColumnHeader from '@/pages/BulletinBoard/components/BulletinBoardColumnHeader';
 import BulletinBoardColumnItem from '@/pages/BulletinBoard/components/BulletinBoardColumnItem';
+import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
+import { useTranslation } from 'react-i18next';
 
 const BulletinBoardPageColumn = ({
   bulletins,
@@ -21,6 +22,7 @@ const BulletinBoardPageColumn = ({
   canEditCategory: boolean;
   canManageBulletins: boolean;
 }) => {
+  const { t } = useTranslation();
   const { getBulletinsByCategories } = useBulletinBoardStore();
   const [isImagePreviewModalOpen, setIsImagePreviewModalOpen] = useState(false);
   const [selectedImageForPreview, setSelectedImageForPreview] = useState<string | null>(null);
@@ -46,7 +48,7 @@ const BulletinBoardPageColumn = ({
         category={category}
         canEditCategory={canEditCategory}
       />
-      <div className="flex flex-col gap-4 overflow-y-auto pb-20 text-white">
+      <div className="flex flex-col gap-4 overflow-y-auto pb-20 text-white scrollbar-thin">
         {bulletins.map((bulletin) => (
           <BulletinBoardColumnItem
             key={bulletin.id}
@@ -57,12 +59,21 @@ const BulletinBoardPageColumn = ({
         ))}
       </div>
 
-      {selectedImageForPreview && (
-        <ImageModal
-          isOpen={isImagePreviewModalOpen}
-          imageUrl={selectedImageForPreview}
-          onClose={closeImagePreviewModal}
-        />
+      {selectedImageForPreview && isImagePreviewModalOpen && (
+        <ResizableWindow
+          disableMinimizeWindow
+          disableToggleMaximizeWindow
+          titleTranslationId={t('preview.image')}
+          handleClose={closeImagePreviewModal}
+        >
+          <div className="flex h-full w-full items-center justify-center bg-foreground">
+            <img
+              src={selectedImageForPreview}
+              alt="Preview"
+              className="max-h-screen max-w-full rounded-md"
+            />
+          </div>
+        </ResizableWindow>
       )}
 
       <CreateOrUpdateBulletinDialog onSubmit={getBulletinsByCategories} />

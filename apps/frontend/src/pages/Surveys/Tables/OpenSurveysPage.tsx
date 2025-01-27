@@ -8,7 +8,6 @@ import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
 const OpenSurveysPage = () => {
   const {
-    selectedSurvey,
     selectSurvey,
     setSelectedRows,
     openSurveys,
@@ -43,7 +42,6 @@ const OpenSurveysPage = () => {
         title={t('surveys.view.open.title')}
         description={t('surveys.view.open.description')}
         surveys={openSurveys || []}
-        selectedSurvey={selectedSurvey}
         isLoading={isFetchingOpenSurveys}
         canShowResults={hasAnswers}
         canParticipate={canParticipate}

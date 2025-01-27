@@ -4,7 +4,7 @@ import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsReq
 import GroupForm from '@libs/groups/types/groupForm';
 import { LmnApiController } from './lmnApi.controller';
 import LmnApiService from './lmnApi.service';
-import mockLmnApiService from './lmnApi.serice.mock';
+import mockLmnApiService from './lmnApi.service.mock';
 
 describe('LmnApiController', () => {
   let controller: LmnApiController;
@@ -75,7 +75,7 @@ describe('LmnApiController', () => {
   describe('getUser', () => {
     it('should call getUser', async () => {
       await controller.getUser('mockToken', { username: 'testUser' });
-      expect(service.getUser).toHaveBeenCalledWith('mockToken', 'testUser');
+      expect(service.getUser).toHaveBeenCalledWith('mockToken', 'testUser', undefined);
     });
   });
 

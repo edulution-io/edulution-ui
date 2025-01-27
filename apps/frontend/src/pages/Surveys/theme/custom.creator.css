@@ -3,6 +3,95 @@
 @tailwind utilities;
 
 .survey-editor {
+  .svc-page__content-actions {
+    .sv-svg-icon {
+      max-width: 24px;
+      max-height: 24px;
+    }
+  }
+
+  .svc-question__drag-area {
+    .sv-svg-icon {
+      height: 30px;
+      width: 30px;
+    }
+  }
+  .sd-file__drag-area-placeholder {
+    .sv-string-viewer {
+      color: #bcbcbc;
+    }
+  }
+
+  .svc-list__filter-icon {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    display: inline-flex;
+    align-items: center;
+
+    .svc-list__input {
+      display: flex;
+      top: 2px;
+      bottom: 2px;
+      left: 2px;
+      right: 2px;
+    }
+
+    .sv-svg-icon {
+      height: 30px;
+      width: 30px;
+    }
+  }
+  .sv-popup__content {
+    color: #bcbcbc;
+
+    .svc-list {
+      justify-items: start;
+
+      .svc-list__item-body {
+        margin-top: 2px;
+        margin-bottom: 2px;
+        display: inline-flex;
+        align-items: center;
+
+        .sv-string-viewer {
+          display: inline-block;
+          margin-left: 8px;
+          margin-right: 8px;
+        }
+
+        .sv-svg-icon {
+          height: 24px;
+          width: 24px;
+        }
+      }
+
+      .svc-list-item__marker-icon {
+        justify-self: end;
+      }
+    }
+  }
+
+  .svc-context-button,
+  .svc-context-button--danger {
+    .sv-svg-icon {
+      max-width: 36px;
+      max-height: 36px;
+    }
+  }
+  .svc-image-item-value-controls__add {
+    .sv-svg-icon {
+      max-width: 24px;
+      max-height: 24px;
+    }
+  }
+
+  .svc-item-value-controls__button {
+    .sv-svg-icon {
+      height: 20px;
+      width: 20px;
+    }
+  }
+
   .sd-completedpage h3 {
     color: theme("colors.ciLightGrey") !important;
   }
@@ -108,6 +197,20 @@
 
   /* Sturctured */
   .svc-creator {
+    .sd-container-modern,
+    .sd-container-modern--static,
+    .svc-designer__placeholder-container {
+      width: calc(100vw - var(--sidebar-width) - var(--menubar-max-width));
+
+      @media only screen and (max-width: 767px) {
+        width: 100vw;
+      }
+    }
+
+    .svc-designer__placeholder-container {
+      height: 800px;
+    }
+
     .svc-top-bar {
       max-height: 40px;
       height: 40px;

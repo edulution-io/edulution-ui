@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineUpSquare } from 'react-icons/ai';
 import { HiOutlineArrowDownOnSquare, HiOutlineArrowDownOnSquareStack } from 'react-icons/hi2';
+import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import { EDIT_SURVEY_PAGE, PARTICIPATE_SURVEY_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
@@ -11,7 +12,6 @@ import { TooltipProvider } from '@/components/ui/Tooltip';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import EditButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/editButton';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
-import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import useDeleteSurveyStore from './useDeleteSurveyStore';
 
 interface SurveysTablesFloatingButtonsProps {
@@ -30,64 +30,69 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
     canParticipate = false,
     canShowResults = false,
   } = props;
-
-  const { selectedSurvey: survey, updateUsersSurveys } = useSurveyTablesPageStore();
-
-  const canShowResultsTable = canShowResults && (survey?.canShowResultsTable || true);
-  const canShowResultsChart = canShowResults && (survey?.canShowResultsChart || true);
+  const { selectedSurvey, isNoSurveySelected, isExactlyOneSurveySelected, updateUsersSurveys, selectedRows } =
+    useSurveyTablesPageStore();
 
   const { setIsOpenPublicResultsTableDialog, setIsOpenPublicResultsVisualisationDialog } = useResultDialogStore();
 
   const { setIsOpenSubmittedAnswersDialog } = useSubmittedAnswersDialogStore();
 
-  const { deleteSurvey } = useDeleteSurveyStore();
+  const { deleteSurveys } = useDeleteSurveyStore();
+
+  const { t } = useTranslation();
+
+  const navigate = useNavigate();
+
+  const noSurveyIsSelected = isNoSurveySelected();
+  if (noSurveyIsSelected) {
+    return null;
+  }
+
   const handleDeleteSurvey = () => {
-    if (survey) {
-      void deleteSurvey([survey.id]);
+    // TODO: Add confirmation dialog for the deletion ( Issue #368 (https://github.com/edulution-io/edulution-ui/issues/368) )
+    const ids = Object.keys(selectedRows);
+    if (ids) {
+      void deleteSurveys(ids);
       void updateUsersSurveys();
     }
   };
 
-  const navigate = useNavigate();
-
-  const { t } = useTranslation();
-
-  if (!survey) {
-    return null;
-  }
+  const isSingleSurveySelected = isExactlyOneSurveySelected();
+  const canShowResultsTable = selectedSurvey?.canShowResultsTable && canShowResults;
+  const canShowResultsChart = selectedSurvey?.canShowResultsChart && canShowResults;
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
       EditButton(() => {
-        navigate(`/${EDIT_SURVEY_PAGE}/${survey.id.toString()}`);
-      }, canEdit),
+        navigate(`/${EDIT_SURVEY_PAGE}/${selectedSurvey?.id.toString()}`);
+      }, isSingleSurveySelected && canEdit),
 
       DeleteButton(handleDeleteSurvey, canDelete),
       {
         icon: HiOutlineArrowDownOnSquare,
         text: t('surveys.actions.showSubmittedAnswers'),
         onClick: () => setIsOpenSubmittedAnswersDialog(true),
-        isVisible: canShowSubmittedAnswers,
+        isVisible: isSingleSurveySelected && canShowSubmittedAnswers,
       },
       {
         icon: HiOutlineArrowDownOnSquareStack,
         text: t('surveys.actions.showResultsTable'),
         onClick: () => setIsOpenPublicResultsTableDialog(true),
-        isVisible: canShowResultsTable,
+        isVisible: isSingleSurveySelected && canShowResultsTable,
       },
       {
         icon: HiOutlineArrowDownOnSquareStack,
         text: t('surveys.actions.showResultsChart'),
         onClick: () => setIsOpenPublicResultsVisualisationDialog(true),
-        isVisible: canShowResultsChart,
+        isVisible: isSingleSurveySelected && canShowResultsChart,
       },
       {
         icon: AiOutlineUpSquare,
         text: t('common.participate'),
         onClick: () => {
-          navigate(`/${PARTICIPATE_SURVEY_PAGE}/${survey.id.toString()}`);
+          navigate(`/${PARTICIPATE_SURVEY_PAGE}/${selectedSurvey?.id.toString()}`);
         },
-        isVisible: canParticipate,
+        isVisible: isSingleSurveySelected && canParticipate,
       },
     ],
     keyPrefix: 'surveys-page-floating-button_',

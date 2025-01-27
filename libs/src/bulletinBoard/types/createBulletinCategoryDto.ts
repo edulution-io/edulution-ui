@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsNumber, IsString } from 'class-validator';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 
 class CreateBulletinCategoryDto {
@@ -19,6 +19,9 @@ class CreateBulletinCategoryDto {
 
   @IsArray()
   editableByGroups: MultipleSelectorOptionSH[] = [];
+
+  @IsNumber()
+  position: number;
 }
 
 export default CreateBulletinCategoryDto;

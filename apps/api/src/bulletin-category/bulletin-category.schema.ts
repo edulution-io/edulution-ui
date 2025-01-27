@@ -27,6 +27,12 @@ export class BulletinCategory {
 
   @Prop({ type: Object, required: true })
   creator: Attendee;
+
+  @Prop({ type: Number, required: true })
+  position: number;
+
+  @Prop({ default: 1 })
+  schemaVersion: number;
 }
 
 export const BulletinCategorySchema = SchemaFactory.createForClass(BulletinCategory);

@@ -9,9 +9,14 @@ type ConnectionErrorProps = {
 };
 const ConnectionErrorDialog: React.FC<ConnectionErrorProps> = ({ handleReload }) => {
   const { t } = useTranslation();
-  const { error, setError } = useDesktopDeploymentStore();
+  const { error, setError, setIsVdiConnectionOpen } = useDesktopDeploymentStore();
 
   const getDialogBody = () => <p className="text-foreground">{t('desktopdeployment.error.description')}</p>;
+
+  const handleClose = () => {
+    setError(null);
+    setIsVdiConnectionOpen(false);
+  };
 
   const getFooter = () => (
     <div className="mt-4 flex justify-between gap-5">
@@ -27,7 +32,7 @@ const ConnectionErrorDialog: React.FC<ConnectionErrorProps> = ({ handleReload })
         variant="btn-collaboration"
         size="lg"
         type="button"
-        onClick={() => setError(null)}
+        onClick={handleClose}
       >
         {t('common.close')}
       </Button>
@@ -37,7 +42,7 @@ const ConnectionErrorDialog: React.FC<ConnectionErrorProps> = ({ handleReload })
   return (
     <AdaptiveDialog
       isOpen={!!error}
-      handleOpenChange={() => setError(null)}
+      handleOpenChange={handleClose}
       title={t('desktopdeployment.error.title')}
       body={getDialogBody()}
       desktopContentClassName="w-1/3"

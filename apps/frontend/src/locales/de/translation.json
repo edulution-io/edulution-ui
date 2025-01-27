@@ -24,6 +24,7 @@
     "sidebar": "Schwarzes Brett",
     "newCategorie": "Neue Kategorie",
     "category": "Kategorie",
+    "categoryPositionChanged": "Position der Kategorie geändert",
     "name": "Name",
     "editCategorie": "Kategorie bearbeiten",
     "isActive": "Aktiv",
@@ -91,11 +92,11 @@
       "accessData": "Zugangsdaten",
       "content": "Du kannst von vielen mobilen Geräten aus auf den Schulserver zugreifen. Drücke auf Anleitung um zu starten.",
       "scanAccessInfo": "Um die Zugangsdaten zu übertragen, bitte folgenden QR-Code mit der edulution.io App scannen.",
-      "scanAppStoreLink": "Scanne den QR-Code mit deinem mobilen Gerät um die edultion-io App im AppStore herunterzuladen.",
+      "scanAppStoreLink": "Scanne den QR-Code mit deinem mobilen Gerät um die edulution.io App im AppStore herunterzuladen.",
       "nextStepPreview": "Im nächsten Schritt kannst du die Zugangsdaten übertragen.",
       "copyCredentials": "Oder manuell eintragen:",
       "downloadDirect": "Oder lade die App direkt herunter:",
-      "downloadApp": "Lade hier die edulution-io App herunter:"
+      "downloadApp": "Lade hier die edulution.io App herunter:"
     },
     "quota": {
       "title": "Quotas",
@@ -264,6 +265,7 @@
     "sidebar": "Filesharing",
     "previewTitle": "Dateivorschau",
     "saveFile": "Datei speichern",
+    "fileEditor": "Datei Editor",
     "closeEditor": "Editor schließen",
     "loadingDocument": "Dokument wird geladen...",
     "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt",
@@ -366,12 +368,15 @@
     "exam": "Klassenarbeit",
     "printPasswordsPageDescription": "Erstelle Dateien um die Passwörter einzelner Klassen auszudrucken oder selektiere Klassen um gleichzeitig mehrere auszudrucken.",
     "userPasswordDialogTitle": "Passwort von {{displayName}}",
-    "firstPassword": "Standard Passwort",
+    "firstPassword": "Initiales Passwort",
+    "firstPasswordNotSet": "Initiales Passwort ist nicht gesetzt",
     "currentPassword": "Aktuelles Passwort",
-    "restoreFirstPassword": "Standard Passwort wiederherstellen",
+    "restoreFirstPassword": "Initiales Passwort wiederherstellen",
     "setRandom": "Zufälliges setzen",
     "currentPasswordChangedSuccessfully": "Aktuelles Passwort erfolgreich geändert",
-    "firstPasswordChangedSuccessfully": "Standard Passwort erfolgreich geändert",
+    "firstPasswordChangedSuccessfully": "Initiales Passwort erfolgreich geändert",
+    "firstPasswordIsCurrentlySet": "Das initiale Passwort ist als aktuelles Passwort gesetzt.",
+    "firstPasswordIsCurrentlyNotSet": "Das initiale Passwort ist nicht als aktuelles Passwort gesetzt.",
     "passwordRequirements": "Verwenden Sie Großbuchstaben, Kleinbuchstaben und Sonderzeichen oder Zahlen.",
     "projectsPageDescription": "Hier findest du eine Übersicht über alle Projekte in denen du Admin bist.",
     "typeToFilter": "Tippen um zu filtern...",
@@ -629,6 +634,10 @@
           "title": "Only Office Integration",
           "description": ""
         },
+        "imapMailFeed": {
+          "title": "IMAP Integration",
+          "description": ""
+        },
         "bulletinBoard": {
           "title": "Kategorien",
           "description": "Füge neue Kategorien hinzu oder bearbeite existierende um zu steuern für welche Nutzer und Gruppen das Schwarze Brett statt dem klassischen Dashboard angezeigt werden soll."
@@ -684,7 +693,8 @@
       "badgeAlreadyExists": "Der Eintrag existiert bereits",
       "sophomorixCustom1_teacher": "Schulfach 1",
       "sophomorixCustom2_teacher": "Schulfach 2",
-      "sophomorixCustomMulti1_teacher": "Kaffeesorten"
+      "sophomorixCustomMulti1_teacher": "Kaffeesorten",
+      "userimageconfig": "Profilbild"
     },
     "security": {
       "title": "Sicherheit",
@@ -701,6 +711,10 @@
     },
     "mails": {
       "title": "E-Mail"
+    },
+    "mobileAccess": {
+      "title": "App-Zugriff",
+      "description": "Hier kannst du für den mobilen Zugriff auf deine Dateien die edulution.io App einrichten. Aktuell nur für Apple iOS verfügbar."
     },
     "faq": "FAQ",
     "externalIntegration": "Externe Anbindung",
@@ -728,7 +742,9 @@
       "newPasswordRequired": "Neues Passwort ist erforderlich",
       "confirmPasswordRequired": "Erneute Eingabe des Passwortes ist erforderlich zur Bestätigung",
       "passwordsDoNotMatch": "Passwörter stimmen nicht überein",
-      "passwordLength": "Das Passwort muss mindestens 8 Zeichen lang sein"
+      "passwordLength": "Das Passwort muss mindestens 8 Zeichen lang sein",
+      "notSupportedFileFormat": "Nicht unterstütztes Dateiformat.",
+      "notAbleToCompressImage": "Bild konnte nicht komprimiert werden."
     }
   },
   "forwardingpage": {
@@ -758,6 +774,7 @@
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
+    "sortOrder": "Sortierung",
     "options": "Optionen",
     "checking": "Prüfen",
     "columns": "Spalten",
@@ -1029,6 +1046,7 @@
   },
   "mails": {
     "errors": {
+      "NotAbleToGetImapOption": "Auslesen der 'IMAP-Konfiguration' ist nicht möglich",
       "NotAbleToConnectClientError": "Verbindung zum IMAP-Server nicht möglich",
       "NotAbleToLockMailboxError": "Die Mailbox konnte nicht aufgerufen werden",
       "NotAbleToFetchMailsError": "Mails konnten nicht abgerufen werden",
@@ -1047,12 +1065,21 @@
   },
   "appExtendedOptions": {
     "title": "Erweiterungen",
-    "onlyOfficeUrl": "Bitte gib die OnlyOffice-URL an",
+    "onlyOfficeUrl": "Gib hier die OnlyOffice-URL an",
     "onlyOfficeUrlTitle": "OnlyOffice-URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
-    "onlyOfficeJwtSecretDescription": "Bitte gib den OnlyOffice JWT Secret Key an"
+    "onlyOfficeJwtSecretDescription": "Gib hier den OnlyOffice JWT Secret Key an",
+    "mailImapUrlTitle": "URL",
+    "mailImapUrlDescription": "Gib hier den FQDN (z.B. 'imap.example.com') des IMAP-Servers an.",
+    "mailImapPortTitle": "Port",
+    "mailImapPortDescription": "Gib hier die Port Nummer des IMAP-Servers an (z.B. 993)",
+    "mailImapSecureTitle": "Sichere Verbindung",
+    "mailImapSecureDescription": "Soll die Verbindung über 'TLS' oder 'STARTTLS' aufgebaut werden.",
+    "mailImapRejectUnauthorizedTitle": "Nicht zertifizierte Verbindungen ablehnen",
+    "mailImapRejectUnauthorizedDescription": "Soll eine Zertifikatsprüfung für diese Verbindung durchgeführt werden?"
   },
   "preview": {
+    "image": "Bildvorschau",
     "failedToLoadImage": "Bild konnte nicht geladen werden"
   }
 }

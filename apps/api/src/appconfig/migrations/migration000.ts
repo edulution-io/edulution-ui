@@ -1,7 +1,8 @@
 import { Logger } from '@nestjs/common';
-import { Migration, MigrationModels } from '../../migration/migration.type';
+import { Migration } from '../../migration/migration.type';
+import { AppConfig } from '../appconfig.schema';
 
-const migration000: Migration<MigrationModels> = {
+const migration000: Migration<AppConfig> = {
   name: '000-add-db-version-number',
   version: 1,
   execute: async (model) => {
@@ -10,15 +11,15 @@ const migration000: Migration<MigrationModels> = {
 
     const unprocessedDocuments = await model.find({ schemaVersion: previousSchemaVersion });
     if (unprocessedDocuments.length === 0) {
-      Logger.log('No documents to update');
       return;
     }
+    Logger.log(`${unprocessedDocuments?.length} documents to update...`);
 
     // eslint-disable-next-line no-underscore-dangle
     const ids = unprocessedDocuments.map((doc) => doc._id);
 
-    await model.updateMany({ _id: { $in: ids } }, { $set: { schemaVersion: newSchemaVersion } });
-    Logger.log(`Migration completed: ${unprocessedDocuments.length} documents updated`);
+    const result = await model.updateMany({ _id: { $in: ids } }, { $set: { schemaVersion: newSchemaVersion } });
+    Logger.log(`Migration completed: ${result.modifiedCount} documents updated`);
   },
 };
 

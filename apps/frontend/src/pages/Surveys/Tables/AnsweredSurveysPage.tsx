@@ -8,7 +8,6 @@ import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
 const AnsweredSurveysPage = () => {
   const {
-    selectedSurvey,
     selectSurvey,
     setSelectedRows,
     answeredSurveys,
@@ -42,7 +41,6 @@ const AnsweredSurveysPage = () => {
       <SurveyTablePage
         title={t('surveys.view.answered.title')}
         description={t('surveys.view.answered.description')}
-        selectedSurvey={selectedSurvey}
         surveys={answeredSurveys}
         isLoading={isFetchingAnsweredSurveys}
         canShowResults={hasAnswers}

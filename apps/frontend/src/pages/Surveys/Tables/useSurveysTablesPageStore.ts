@@ -43,6 +43,8 @@ interface SurveysTablesPageStore {
   selectedRows: RowSelectionState;
   setSelectedRows: (rows: RowSelectionState) => void;
 
+  isNoSurveySelected: () => boolean;
+  isExactlyOneSurveySelected: () => boolean;
   onClickSurveysTableCell: (row: Row<SurveyDto>) => void;
 
   reset: () => void;
@@ -182,9 +184,10 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
 
   setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
 
+  isNoSurveySelected: (): boolean => Object.entries(get().selectedRows).length === 0,
+  isExactlyOneSurveySelected: (): boolean => Object.entries(get().selectedRows).length === 1,
   onClickSurveysTableCell: (row: Row<SurveyDto>) => {
-    const wasSelectedPreviously = row.getIsSelected();
-    if (!wasSelectedPreviously) {
+    if (get().isNoSurveySelected()) {
       const { canParticipateSelectedSurvey, hasAnswersSelectedSurvey } = get();
       set({ selectedSurvey: row.original });
       void canParticipateSelectedSurvey(row.original.id.toString());
