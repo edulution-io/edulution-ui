@@ -14,27 +14,25 @@ interface DateTimeInputProps {
   onChange: (value: TimeInputType) => void;
 }
 
-const DateTimeInput = ({ value = new Date(), onChange }: DateTimeInputProps) => {
-  return (
-    <DateTimePicker
-      value={value}
-      onChange={onChange}
-      calendarIcon={
-        <img
-          src={CalendarLight}
-          alt={'calendar'}
-          width={24}
-        />
-      }
-      clearIcon={
-        <img
-          src={TrashIcon}
-          alt={'clear'}
-          width={14}
-        />
-      }
-    />
-  );
-};
+const DateTimeInput = ({ value = new Date(), onChange }: DateTimeInputProps) => (
+  <DateTimePicker
+    value={value}
+    onChange={onChange}
+    calendarIcon={
+      <img
+        src={CalendarLight}
+        alt="calendar"
+        width={24}
+      />
+    }
+    clearIcon={
+      <img
+        src={TrashIcon}
+        alt="clear"
+        width={14}
+      />
+    }
+  />
+);
 
 export default DateTimeInput;
