@@ -6,10 +6,10 @@ import useLdapGroups from './useLdapGroups';
 
 const useDockerContainerEvents = () => {
   const { eventSource, setEventSource, updateContainers } = useDockerApplicationStore();
-  const { isSuperAdmin, authReady } = useLdapGroups();
+  const { isSuperAdmin, isAuthReady } = useLdapGroups();
 
   useEffect(() => {
-    if (isSuperAdmin && authReady) {
+    if (isSuperAdmin && isAuthReady) {
       setEventSource();
     }
   }, [isSuperAdmin]);

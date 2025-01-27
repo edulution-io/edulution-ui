@@ -159,10 +159,13 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
     accessorFn: (row) => row.Ports,
     cell: ({ row }) => {
       const onClick = () => {};
+      const portArry = row.original.Ports?.map((port) =>
+        port.IP === '0.0.0.0' ? `${port.PublicPort}/${port.Type}` : null,
+      ).filter((item): item is string => item !== null);
       return (
         <SelectableTextCell
           onClick={onClick}
-          text={String(row.original.Ports[0]?.PublicPort || '')}
+          text={portArry.join(', ')}
         />
       );
     },

@@ -858,12 +858,13 @@
     "date": "Datum",
     "time": "Uhrzeit",
     "revert": "Zurücksetzen",
-    "restart": "Erneut starten",
+    "restart": "Neu starten",
     "kill": "Beenden",
     "install": "Installieren",
     "update": "Update",
     "cancel": "Abbrechen",
-    "progress": "Fortschritt..."
+    "progress": "Fortschritt...",
+    "pressInstall": "Drücke Installieren um zu Starten."
   },
   "form": {
     "path": "Link",
@@ -1132,7 +1133,11 @@
     },
     "status": {
       "running": "läuft",
-      "exited": "gestoppt"
+      "created": "erstellt",
+      "restarting": "neu gestartet",
+      "paused": "pausiert",
+      "exited": "gestoppt",
+      "dead": "tot"
     }
   }
 }

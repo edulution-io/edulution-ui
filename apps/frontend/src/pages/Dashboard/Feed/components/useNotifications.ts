@@ -16,7 +16,7 @@ import { CONFERENCES_SSE_EDU_API_ENDPOINT } from '@libs/conferences/constants/ap
 import useDockerContainerEvents from '@/hooks/useDockerContainerEvents';
 
 const useNotifications = () => {
-  const { isSuperAdmin, authReady } = useLdapGroups();
+  const { isSuperAdmin, isAuthReady } = useLdapGroups();
   const { eduApiToken } = useUserStore();
   const isMailsAppActivated = useIsMailsActive();
   const { getMails } = useMailsStore();
@@ -33,7 +33,7 @@ const useNotifications = () => {
   }, [conferences]);
 
   useEffect(() => {
-    if (authReady) {
+    if (isAuthReady) {
       if (isMailsAppActivated && !isSuperAdmin) {
         void getMails();
       }
@@ -46,10 +46,10 @@ const useNotifications = () => {
         void getConferences();
       }
     }
-  }, [authReady, isMailsAppActivated, isSuperAdmin, isSurveysAppActivated, isConferenceAppActivated]);
+  }, [isAuthReady, isMailsAppActivated, isSuperAdmin, isSurveysAppActivated, isConferenceAppActivated]);
 
   useInterval(() => {
-    if (authReady && isMailsAppActivated && !isSuperAdmin) {
+    if (isAuthReady && isMailsAppActivated && !isSuperAdmin) {
       void getMails();
     }
   }, FEED_PULL_TIME_INTERVAL_SLOW);

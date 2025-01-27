@@ -55,7 +55,7 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
         type="button"
         className="w-24 border-2"
         onClick={() => setDialogOpen(false)}
-        disabled={!(tableContentData.length === 0) && isLoading}
+        disabled={tableContentData.length !== 0 && isLoading}
       >
         {tableContentData.length === 0 ? t('common.cancel') : t('common.close')}{' '}
       </Button>

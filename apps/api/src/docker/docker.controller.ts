@@ -19,8 +19,8 @@ class DockerController {
   }
 
   @Post(EDU_API_DOCKER_CONTAINER_ENDPOINT)
-  async createContainer(@Body() createContainerDto: ContainerCreateOptions[]) {
-    return this.dockerService.createContainer(createContainerDto);
+  async createContainer(@Body() createContainersDto: ContainerCreateOptions[]) {
+    return this.dockerService.createContainer(createContainersDto);
   }
 
   @Put(`${EDU_API_DOCKER_CONTAINER_ENDPOINT}/:id/:operation`)

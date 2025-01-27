@@ -151,23 +151,23 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     return images.some((img) => img.RepoTags?.includes(imageName));
   }
 
-  static replaceEnvVariables(createContainerDto: Docker.ContainerCreateOptions[]) {
-    let newCreateContainerDto: Docker.ContainerCreateOptions[] = [];
-    newCreateContainerDto = createContainerDto.map((service) => ({
+  static replaceEnvVariables(createContainersDto: Docker.ContainerCreateOptions[]) {
+    let newCreateContainersDto: Docker.ContainerCreateOptions[] = [];
+    newCreateContainersDto = createContainersDto.map((service) => ({
       ...service,
       Env: service.Env?.map((env) =>
         env.replace(/\${([^}]+)}/g, (match, varName: string) => process.env[varName] || match),
       ),
     }));
 
-    return newCreateContainerDto;
+    return newCreateContainersDto;
   }
 
-  async createContainer(createContainerDto: Docker.ContainerCreateOptions[]) {
-    const newCreateContainerDto = DockerService.replaceEnvVariables(createContainerDto);
+  async createContainer(createContainersDto: Docker.ContainerCreateOptions[]) {
+    const newCreateContainersDto = DockerService.replaceEnvVariables(createContainersDto);
     try {
       await Promise.all(
-        newCreateContainerDto.map(async (containerDto) => {
+        newCreateContainersDto.map(async (containerDto) => {
           const { Image } = containerDto;
           if (Image) {
             const imageExists = await this.imageExists(Image);
@@ -186,7 +186,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       );
 
       await Promise.all(
-        newCreateContainerDto.map(async (containerDto) => {
+        newCreateContainersDto.map(async (containerDto) => {
           const container = await this.docker.createContainer(containerDto);
           await container.start();
           Logger.log(`Container ${containerDto.name} created and started.`, DockerService.name);
