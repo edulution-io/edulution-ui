@@ -27,23 +27,21 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
   };
 
   const getFooter = () => (
-    <div className="mt-4 flex justify-end">
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          submitSurvey();
-        }}
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        submitSurvey();
+      }}
+    >
+      <Button
+        type="submit"
+        variant="btn-collaboration"
+        disabled={isSubmitting}
+        size="lg"
       >
-        <Button
-          type="submit"
-          variant="btn-collaboration"
-          disabled={isSubmitting}
-          size="lg"
-        >
-          {t('common.save')}
-        </Button>
-      </form>
-    </div>
+        {t('common.save')}
+      </Button>
+    </form>
   );
 
   return (
@@ -54,7 +52,7 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
       title={t('surveys.saveDialog.title')}
       body={getDialogBody()}
       footer={getFooter()}
-      desktopContentClassName="max-w-[50%] max-h-[90%] overflow-auto"
+      desktopContentClassName="max-w-[50%] min-h-[700px] max-h-[90%] overflow-auto"
     />
   );
 };

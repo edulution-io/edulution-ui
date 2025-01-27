@@ -7,9 +7,7 @@ import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import useUserStore from '@/store/UserStore/UserStore';
 import useGroupStore from '@/store/GroupStore';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
-// import DatePicker from '@/components/shared/DatePicker';
 import Checkbox from '@/components/ui/Checkbox';
-// import TimeInput from '@/components/shared/TimeInput';
 import DateTimeInput, { TimeInputType } from '@/components/shared/DateTimePicker/DateTimeInput';
 
 interface SaveSurveyDialogBodyProps {
@@ -51,7 +49,7 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-4">
       <SearchUsersOrGroups
         users={watch('invitedAttendees') as AttendeeDto[]}
         onSearch={onAttendeesSearch}
@@ -61,29 +59,15 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
         onGroupsChange={handleGroupsChange}
         variant="dialog"
       />
-      <p className="text-m font-bold text-background">{t('survey.expirationDate')}</p>
-      {/* <div className="flex items-center"> */}
-      {/*  {t('common.date')} */}
-      {/*  <div className="ml-2"> */}
-      {/*    <DatePicker */}
-      {/*      selected={expiresWatched} */}
-      {/*      onSelect={handleExpirationDateChange} */}
-      {/*    /> */}
-      {/*  </div> */}
-      {/* </div> */}
-      {/* <div className="flex items-center text-background"> */}
-      {/*  <TimeInput */}
-      {/*    form={form} */}
-      {/*    disabled={!getValues('expires')} */}
-      {/*    fieldName="expires" */}
-      {/*  /> */}
-      {/* </div> */}
-      <DateTimeInput
-        value={expiresWatched}
-        onChange={handleExpirationDateChange}
-      />
+      <div>
+        <p className="text-m font-bold text-background">{t('survey.expirationDate')}</p>
+        <DateTimeInput
+          value={expiresWatched}
+          onChange={handleExpirationDateChange}
+        />
+      </div>
       <p className="text-m font-bold text-background">{t('surveys.saveDialog.settingsFlags')}</p>
-      <div className="ttext-background flex items-center">
+      <div className="flex items-center text-background">
         <Checkbox
           checked={isAnonymousWatched}
           onCheckedChange={(value: boolean) => setValue('isAnonymous', value, { shouldValidate: true })}
@@ -110,7 +94,7 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
         />
         {t('surveys.saveDialog.canSubmitMultipleAnswers')}
       </div>
-    </>
+    </div>
   );
 };
 

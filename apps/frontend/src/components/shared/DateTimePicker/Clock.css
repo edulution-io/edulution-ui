@@ -1,6 +1,7 @@
 .react-clock {
   display: block;
   position: relative;
+  z-index: 9999;
 }
 
 .react-clock,
@@ -18,7 +19,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  border: 1px solid black;
+  border: 1px solid var(--background);
   border-radius: 50%;
 }
 
@@ -32,7 +33,7 @@
 
 .react-clock__hand__body {
   position: absolute;
-  background-color: black;
+  background-color: var(--background);
   transform: translateX(-50%);
 }
 
@@ -46,7 +47,7 @@
 
 .react-clock__mark__body {
   position: absolute;
-  background-color: black;
+  background-color: var(--background);
   transform: translateX(-50%);
 }
 

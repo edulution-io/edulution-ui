@@ -3,6 +3,7 @@ import DateTimePicker from 'react-datetime-picker';
 import './DateTimePicker.css';
 import './Calender.css';
 import './Clock.css';
+import { CalendarLight, TrashIcon } from '@/assets/icons';
 
 type ValuePiece = Date | null;
 
@@ -13,13 +14,27 @@ interface DateTimeInputProps {
   onChange: (value: TimeInputType) => void;
 }
 
-const DateTimeInput = ({ value = new Date(), onChange }: DateTimeInputProps) => (
-  <div>
+const DateTimeInput = ({ value = new Date(), onChange }: DateTimeInputProps) => {
+  return (
     <DateTimePicker
       value={value}
       onChange={onChange}
+      calendarIcon={
+        <img
+          src={CalendarLight}
+          alt={'calendar'}
+          width={24}
+        />
+      }
+      clearIcon={
+        <img
+          src={TrashIcon}
+          alt={'clear'}
+          width={14}
+        />
+      }
     />
-  </div>
-);
+  );
+};
 
 export default DateTimeInput;

@@ -13,8 +13,6 @@
 }
 
 .react-datetime-picker--disabled {
-  /*background-color: #f0f0f0;*/
-  /*color: #6d6d6d;*/
   background-color: var(--muted-light);
   color: var(--background);
 }
@@ -31,8 +29,9 @@
   min-width: calc(4px + (4px * 3) + 0.54em * 6 + 0.217em * 2);
   flex-grow: 1;
   padding: 0 8px;
-  border: thin solid var(--border);
-  border-radius: 3px;
+  background-color: var(--muted);
+  margin-left: 4px;
+  margin-right: 4px;
 }
 
 .react-datetime-picker__inputGroup__divider {
@@ -71,7 +70,7 @@
 }
 
 .react-datetime-picker__inputGroup__input:invalid {
-  background: rgba(255, 0, 0, 0.1);
+  background-color: var(--muted-light);
 }
 
 .react-datetime-picker__inputGroup__input--hasLeadingZero {
@@ -87,11 +86,8 @@
 }
 
 .react-datetime-picker__button {
-  /*background: transparent;*/
-  background: var(--muted-light);
+  background: transparent;
   padding: 4px 6px;
-  border: thin solid var(--border);
-  border-radius: 3px;
 }
 
 .react-datetime-picker__button:enabled {
