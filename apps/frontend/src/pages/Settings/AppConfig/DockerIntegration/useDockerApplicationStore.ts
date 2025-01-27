@@ -13,6 +13,7 @@ import { EDU_PLUGINS_GITHUB_URL } from '@libs/common/constants';
 import { type DockerContainerTableStore } from '@libs/appconfig/types/dockerContainerTableStore';
 import type TApps from '@libs/appconfig/types/appsType';
 import type DockerCompose from '@libs/docker/types/dockerCompose';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
 
 const initialValues = {
   containers: [],
@@ -120,7 +121,7 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
         `${EDU_PLUGINS_GITHUB_URL}/${applicationName}/${containerName}/docker-compose.yml`,
         {
           headers: {
-            Accept: 'application/vnd.github.v3.raw',
+            Accept: RequestResponseContentType.APPLICATION_GITHUB_RAW,
           },
         },
       );
