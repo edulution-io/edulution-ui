@@ -91,10 +91,19 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
   async getContainers(applicationNames?: string[]) {
     try {
-      let containers = await this.docker.listContainers({ all: true });
+      let filters = {};
       if (applicationNames) {
-        containers = containers.filter((item) => applicationNames.includes(item.Names[0].split('/')[1]));
+        const formattedNames = applicationNames.map((name) => `/${name}`);
+        filters = {
+          name: formattedNames,
+        };
       }
+
+      const containers = await this.docker.listContainers({
+        all: true,
+        filters,
+      });
+
       return containers;
     } catch (error) {
       throw new CustomHttpException(
