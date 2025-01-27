@@ -9,7 +9,7 @@ import DockerContainerTableColumns from './DockerContainerTableColumns';
 import DockerContainerFloatingButtons from './DockerContainerFloatingButtons';
 
 const DockerContainerTable: React.FC = () => {
-  const { isLoading, containers, selectedRows, setSelectedRows, fetchContainers } = useDockerApplicationStore();
+  const { isLoading, containers, selectedRows, setSelectedRows, getContainers } = useDockerApplicationStore();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedRows) : updaterOrValue;
@@ -17,7 +17,7 @@ const DockerContainerTable: React.FC = () => {
   };
 
   useEffect(() => {
-    void fetchContainers();
+    void getContainers();
   }, []);
 
   return (

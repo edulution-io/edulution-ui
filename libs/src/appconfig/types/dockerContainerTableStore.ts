@@ -14,7 +14,7 @@ export interface DockerContainerTableStore extends AppConfigTable<ContainerInfo>
   eventSource: EventSource | null;
   dockerContainerConfig: DockerCompose | null;
   setEventSource: () => void;
-  fetchContainers: () => Promise<void>;
+  getContainers: () => Promise<void>;
   updateContainers: (containers: ContainerInfo[]) => void;
   createAndRunContainer: (createContainerDto: ContainerCreateOptions[]) => Promise<void>;
   runDockerCommand: (containerNames: string[], operation: TDockerCommands) => Promise<void>;

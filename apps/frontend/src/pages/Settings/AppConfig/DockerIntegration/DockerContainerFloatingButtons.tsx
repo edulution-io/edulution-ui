@@ -17,7 +17,7 @@ import useDockerApplicationStore from './useDockerApplicationStore';
 
 const DockerContainerFloatingButtons: React.FC = () => {
   const { t } = useTranslation();
-  const { containers, selectedRows, setSelectedRows, fetchContainers, runDockerCommand, deleteDockerContainer } =
+  const { containers, selectedRows, setSelectedRows, getContainers, runDockerCommand, deleteDockerContainer } =
     useDockerApplicationStore();
   const selectedContainerId = Object.keys(selectedRows);
   const selectedContainer = containers.filter((container) => selectedContainerId.includes(container.Id));
@@ -59,7 +59,7 @@ const DockerContainerFloatingButtons: React.FC = () => {
       },
       DeleteButton(() => handleDeleteClick(), isButtonVisible && !areSelectedContainerRunning),
       ReloadButton(() => {
-        void fetchContainers();
+        void getContainers();
       }),
     ],
     keyPrefix: 'docker-table-floating-button_',

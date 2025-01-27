@@ -3,26 +3,27 @@ import { Observable } from 'rxjs';
 import { Response } from 'express';
 import { type ContainerCreateOptions } from 'dockerode';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
+import { EDU_API_DOCKER_ENDPOINT, EDU_API_DOCKER_CONTAINER_ENDPOINT } from '@libs/docker/constants/dockerEndpoints';
 import DockerService from './docker.service';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 
-@Controller('docker')
+@Controller(EDU_API_DOCKER_ENDPOINT)
 @UseGuards(AppConfigGuard)
 class DockerController {
   constructor(private readonly dockerService: DockerService) {}
 
-  @Get('containers')
+  @Get(EDU_API_DOCKER_CONTAINER_ENDPOINT)
   async getContainers() {
     return this.dockerService.getContainers();
   }
 
-  @Post('containers')
+  @Post(EDU_API_DOCKER_CONTAINER_ENDPOINT)
   async createContainer(@Body() createContainerDto: ContainerCreateOptions[]) {
     return this.dockerService.createContainer(createContainerDto);
   }
 
-  @Put('containers/:id/:operation')
+  @Put(`${EDU_API_DOCKER_CONTAINER_ENDPOINT}/:id/:operation`)
   async executeContainerCommand(@Param() params: { id: string; operation: TDockerCommands }) {
     return this.dockerService.executeContainerCommand(params);
   }
@@ -32,7 +33,7 @@ class DockerController {
     return this.dockerService.subscribe(username, res);
   }
 
-  @Delete('containers/:id')
+  @Delete(`${EDU_API_DOCKER_CONTAINER_ENDPOINT}/:id`)
   async deleteContainer(@Param('id') id: string) {
     return this.dockerService.deleteContainer(id);
   }

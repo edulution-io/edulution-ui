@@ -7,11 +7,12 @@ import { type RowSelectionState } from '@tanstack/react-table';
 import handleApiError from '@/utils/handleApiError';
 import useUserStore from '@/store/UserStore/UserStore';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import DOCKER_APPLICATIONS from '@libs/docker/constants/dockerApplicationList';
+import { EDU_API_DOCKER_CONTAINER_ENDPOINT, EDU_API_DOCKER_ENDPOINT } from '@libs/docker/constants/dockerEndpoints';
+import { EDU_PLUGINS_GITHUB_URL } from '@libs/common/constants';
 import { type DockerContainerTableStore } from '@libs/appconfig/types/dockerContainerTableStore';
 import type TApps from '@libs/appconfig/types/appsType';
 import type DockerCompose from '@libs/docker/types/dockerCompose';
-import { EDU_PLUGINS_GITHUB_URL } from '@libs/common/constants';
-import DOCKER_APPLICATIONS from '@libs/docker/constants/dockerApplicationList';
 
 const initialValues = {
   containers: [],
@@ -31,14 +32,18 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
   setIsLoading: (isLoading: boolean) => set({ isLoading }),
 
   setEventSource: () =>
-    set({ eventSource: new EventSource(`/${EDU_API_ROOT}/docker/sse?token=${useUserStore.getState().eduApiToken}`) }),
+    set({
+      eventSource: new EventSource(
+        `/${EDU_API_ROOT}/${EDU_API_DOCKER_ENDPOINT}/sse?token=${useUserStore.getState().eduApiToken}`,
+      ),
+    }),
 
   updateContainers: (containers: ContainerInfo[]) => set({ containers }),
 
   fetchTableContent: async (applicationName) => {
     if (applicationName) {
       set({ isLoading: true, error: null });
-      await get().fetchContainers();
+      await get().getContainers();
 
       if (Object.keys(DOCKER_APPLICATIONS).includes(applicationName)) {
         const containerName = DOCKER_APPLICATIONS[applicationName] || '';
@@ -53,10 +58,12 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
     }
   },
 
-  fetchContainers: async () => {
+  getContainers: async () => {
     set({ isLoading: true, error: null });
     try {
-      const { data } = await eduApi.get<ContainerInfo[]>('docker/containers');
+      const { data } = await eduApi.get<ContainerInfo[]>(
+        `${EDU_API_DOCKER_ENDPOINT}/${EDU_API_DOCKER_CONTAINER_ENDPOINT}`,
+      );
       set({ containers: data });
     } catch (error) {
       handleApiError(error, set);
@@ -68,7 +75,7 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
   createAndRunContainer: async (createContainerDto: ContainerCreateOptions[]) => {
     set({ isLoading: true, error: null });
     try {
-      await eduApi.post('docker/containers', createContainerDto);
+      await eduApi.post(`${EDU_API_DOCKER_ENDPOINT}/${EDU_API_DOCKER_CONTAINER_ENDPOINT}`, createContainerDto);
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -80,7 +87,9 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
     set({ isLoading: true, error: null });
     try {
       await Promise.all(
-        containerNames.map((containerName) => eduApi.put(`docker/containers/${containerName}/${operation}`)),
+        containerNames.map((containerName) =>
+          eduApi.put(`${EDU_API_DOCKER_ENDPOINT}/${EDU_API_DOCKER_CONTAINER_ENDPOINT}/${containerName}/${operation}`),
+        ),
       );
     } catch (error) {
       handleApiError(error, set);
@@ -92,7 +101,11 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
   deleteDockerContainer: async (containerNames: string[]) => {
     set({ isLoading: true, error: null });
     try {
-      await Promise.all(containerNames.map((containerName) => eduApi.delete(`docker/containers/${containerName}`)));
+      await Promise.all(
+        containerNames.map((containerName) =>
+          eduApi.delete(`${EDU_API_DOCKER_ENDPOINT}/${EDU_API_DOCKER_CONTAINER_ENDPOINT}/${containerName}`),
+        ),
+      );
     } catch (error) {
       handleApiError(error, set);
     } finally {
