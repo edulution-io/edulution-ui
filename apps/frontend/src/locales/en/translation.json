@@ -5,6 +5,8 @@
   "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
   "preparing": "preparing...",
   "closeEditingWindow": "Close editing window",
+  "framebufferImage": "Framebuffer image",
+  "previewImage": "Image preview",
   "bulletinboard": {
     "settings": "Settings",
     "categoryIsRequired": "Selecting a category is required",

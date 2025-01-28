@@ -5,6 +5,8 @@
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
   "preparing": "Vorbereiten...",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
+  "framebufferImage": "Framebuffer-Bild",
+  "previewImage": "Bildvorschau",
   "bulletinboard": {
     "settings": "Einstellungen",
     "categoryIsRequired": "Es muss eine Kategorie ausgewählt werden",

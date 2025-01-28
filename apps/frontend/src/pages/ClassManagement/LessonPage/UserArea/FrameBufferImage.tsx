@@ -71,7 +71,7 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
           <img
             className="h-36 w-64 rounded-xl"
             src={imageSrc}
-            alt="framebuffer"
+            alt={t('framebufferImage')}
           />
 
           <div className="group absolute bottom-3 right-3 rounded-full bg-ciGrey/40 p-3 hover:bg-ciDarkGrey">
@@ -94,7 +94,7 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
               <div className="flex h-full w-full items-center justify-center bg-foreground">
                 <img
                   src={imageSrc}
-                  alt="Preview"
+                  alt={t('previewImage')}
                   className="max-h-screen max-w-full rounded-md"
                 />
               </div>
