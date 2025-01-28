@@ -133,7 +133,7 @@ const MenuBar: React.FC = () => {
         )}
         onClickCapture={toggle}
       >
-        <p className="text-xl text-white">{!isOpen ? '≡' : '×'}</p>
+        <p className="text-xl text-background">{!isOpen ? '≡' : '×'}</p>
       </div>
     </>
   ) : (

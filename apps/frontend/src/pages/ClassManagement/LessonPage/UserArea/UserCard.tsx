@@ -92,7 +92,7 @@ const UserCard = ({
           <div
             className={cn(
               'm-2 flex max-h-36 w-64 flex-grow items-center justify-center rounded-xl text-2xl',
-              isActive ? 'bg-ciGrey' : 'bg-ciDarkGrey',
+              isActive ? 'bg-muted' : 'bg-accent',
             )}
           >
             {user.sophomorixIntrinsic3.length > 0 ? (

@@ -21,7 +21,7 @@ const QRCodeDisplay: FC<QRCodeDisplayProps> = ({ value, size }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="m-14 flex flex-col items-center justify-center rounded-xl bg-background p-2">
       <QRCodeSVG
         value={value}
         size={getPixelSize()}

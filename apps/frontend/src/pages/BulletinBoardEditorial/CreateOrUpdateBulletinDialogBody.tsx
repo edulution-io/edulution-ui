@@ -61,11 +61,10 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
             options={categories}
             selectedVal={isGetCategoriesLoading ? t('common.loading') : watch('category')?.name}
             handleChange={handleCategoryChange}
-            variant="light"
           />
           <div>
             {formState.errors.category && (
-              <FormMessage className="text-[0.8rem] font-medium text-foreground">
+              <FormMessage className="text-[0.8rem] font-medium text-background">
                 {formState.errors.category.message?.toString()}
               </FormMessage>
             )}
@@ -113,7 +112,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
           defaultValue={form.getValues('title')}
           form={form}
           labelTranslationId={t('bulletinboard.title')}
-          variant="default"
+          variant="dialog"
         />
         <div>
           <div className="mb-1 font-bold">{t('bulletinboard.content')}</div>
@@ -124,7 +123,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
           />
           <div>
             {formState.errors.content && (
-              <FormMessage className="text-[0.8rem] font-medium text-foreground">
+              <FormMessage className="text-[0.8rem] font-medium text-background">
                 {formState.errors.content.message?.toString()}
               </FormMessage>
             )}
