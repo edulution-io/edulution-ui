@@ -20,6 +20,7 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
     nameExistsAlready,
     isNameCheckingLoading,
     setIsDeleteDialogOpen,
+    tableContentData,
   } = useBulletinCategoryTableStore();
 
   const { t } = useTranslation();
@@ -33,6 +34,7 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
     visibleForGroups: [],
     editableByUsers: [],
     editableByGroups: [],
+    position: 1,
   };
 
   const form = useForm<CreateBulletinCategoryDto>({
@@ -59,15 +61,16 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
     if (selectedCategory) {
       const { name, isActive, visibleForUsers, visibleForGroups, editableByUsers, editableByGroups } = getValues();
       await updateCategory(selectedCategory?.id || '', {
-        name: name && name.trim() !== '' ? name : selectedCategory.name,
+        name: name?.trim() !== '' ? name : selectedCategory.name,
         isActive,
         visibleForUsers,
         visibleForGroups,
         editableByUsers,
         editableByGroups,
+        position: selectedCategory.position,
       });
     } else {
-      await addNewCategory(getValues());
+      await addNewCategory({ ...getValues(), position: tableContentData.length + 1 });
     }
     closeDialog();
   };

@@ -24,6 +24,7 @@
     "sidebar": "Schwarzes Brett",
     "newCategorie": "Neue Kategorie",
     "category": "Kategorie",
+    "categoryPositionChanged": "Position der Kategorie geändert",
     "name": "Name",
     "editCategorie": "Kategorie bearbeiten",
     "isActive": "Aktiv",
@@ -645,6 +646,14 @@
         "general": {
           "title": "Allgemein",
           "description": ""
+        },
+        "veyon": {
+          "title": "Veyon Proxy",
+          "description": ""
+        },
+        "docker": {
+          "title": "Docker Anwendungen",
+          "description": "Um die erweiterten Dienste nutzen zu können hier die benötigten Docker Container gestartet werden."
         }
       },
       "update": {
@@ -670,7 +679,9 @@
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",
       "placeholder": "Hier ihre Traefik-Konfiguration eintragen"
-    }
+    },
+    "rowsSelected": "{{selected}} von {{total}} Container ausgewählt",
+    "rowSelected": "{{selected}} von {{total}} Container ausgewählt"
   },
   "usersettings": {
     "title": "MEIN PROFIL",
@@ -774,6 +785,7 @@
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
+    "sortOrder": "Sortierung",
     "options": "Optionen",
     "checking": "Prüfen",
     "columns": "Spalten",
@@ -849,7 +861,14 @@
     "not-available": "Nicht verfügbar",
     "date": "Datum",
     "time": "Uhrzeit",
-    "revert": "Zurücksetzen"
+    "revert": "Zurücksetzen",
+    "restart": "Neu starten",
+    "kill": "Beenden",
+    "install": "Installieren",
+    "update": "Update",
+    "cancel": "Abbrechen",
+    "progress": "Fortschritt...",
+    "pressInstall": "Drücke Installieren um zu Starten."
   },
   "form": {
     "path": "Link",
@@ -1081,5 +1100,50 @@
   "preview": {
     "image": "Bildvorschau",
     "failedToLoadImage": "Bild konnte nicht geladen werden"
+  },
+  "dockerApplication": {
+    "title": "Docker-Anwendung",
+    "dialogTitle": "{{applicationName}}-Plugins installieren",
+    "mailDescription": "Falls ein eigener Mailserver betrieben werden soll, kann hier das Setup für Mailcow durchgeführt werden.",
+    "classmanagementDescription": "Falls Veyon im Schulnetz eingesetzt wird, kann hier das Setup für den Veyon-WebAPI-Proxy durchgeführt werden."
+  },
+  "dockerOverview": {
+    "title": "Container-Übersicht",
+    "containerName": "Container-Name",
+    "state": "Betriebszustand",
+    "status": "Status",
+    "imageName": "Image",
+    "filterPlaceHolderText": "Suche nach Container-Name",
+    "port": "Port",
+    "created": "Erstellt am"
+  },
+  "docker": {
+    "error": {
+      "dockerConnectionError": "Docker-Verbindung fehlgeschlagen",
+      "dockerImageNotFound": "Docker Image konnte nicht gefunden werden",
+      "dockerCreationError": "Docker Container konnte nicht erstellt werden",
+      "dockerCommandExecutionError": "Docker Befehl konnte nicht ausgeführt werden",
+      "dockerContainerDeletionError": "Docker Container konnte nicht gelöscht werden"
+    },
+    "events": {
+      "pullingImage": "Docker Image wird abgerufen...",
+      "checkingImage": "Check, ob Image schon vorhande ist...",
+      "creatingContainer": "Docker Container wird erstellt...",
+      "containerCreated": "Container erstellt.",
+      "startContainer": "Container gestartet.",
+      "stopContainer": "Container gestoppt.",
+      "restartContainer": "Container neu gestartet.",
+      "killContainer": "Container erzwungen gestoppt.",
+      "containerCreationSuccessful": "Container erfolgreich erstellt.",
+      "containerCreationFailed": "Container konnte nicht erstellt werden."
+    },
+    "status": {
+      "running": "läuft",
+      "created": "erstellt",
+      "restarting": "neu gestartet",
+      "paused": "pausiert",
+      "exited": "gestoppt",
+      "dead": "tot"
+    }
   }
 }

@@ -38,34 +38,32 @@ const AccountInformation = () => {
       variant="collaboration"
       className="min-h-[100%]"
     >
-      <CardContent>
-        <div className="flex flex-col gap-2">
-          <h4 className="mb-4 font-bold">{t('accountData.account_info')}</h4>
-          {userInfoFields.map((field) => (
-            <Field
-              key={`userInfoField-${field.name}`}
-              value={field.value}
-              labelTranslationId={field.label}
-              readOnly={field.readOnly}
-              variant="lightGrayDisabled"
-            />
-          ))}
-          <Button
-            className="mt-4"
-            variant="btn-collaboration"
-            size="sm"
-            onClick={() => navigate(USER_SETTINGS_SECURITY_PATH)}
-          >
-            {t('accountData.change_password')}
-          </Button>
-          <Button
-            variant="btn-collaboration"
-            size="sm"
-            onClick={() => navigate(USER_SETTINGS_USER_DETAILS_PATH)}
-          >
-            {t('accountData.change_my_data')}
-          </Button>
-        </div>
+      <CardContent className="flex flex-col gap-2">
+        <h4 className="mb-4 font-bold">{t('accountData.account_info')}</h4>
+        {userInfoFields.map((field) => (
+          <Field
+            key={`userInfoField-${field.name}`}
+            value={field.value}
+            labelTranslationId={field.label}
+            readOnly={field.readOnly}
+            variant="lightGrayDisabled"
+          />
+        ))}
+        <Button
+          className="mt-4"
+          variant="btn-collaboration"
+          size="sm"
+          onClick={() => navigate(USER_SETTINGS_SECURITY_PATH)}
+        >
+          {t('accountData.change_password')}
+        </Button>
+        <Button
+          variant="btn-collaboration"
+          size="sm"
+          onClick={() => navigate(USER_SETTINGS_USER_DETAILS_PATH)}
+        >
+          {t('accountData.change_my_data')}
+        </Button>
       </CardContent>
     </Card>
   );
