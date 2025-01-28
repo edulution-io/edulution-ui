@@ -68,7 +68,7 @@ const AppConfigPage: React.FC = () => {
     if (currentConfig.options) {
       Object.keys(currentConfig.options).forEach((key) => {
         if (key === APP_CONFIG_OPTION_KEYS.PROXYCONFIG) {
-          const proxyConfig = JSON.parse(currentConfig?.options[key] || '') as string;
+          const proxyConfig = JSON.parse(currentConfig?.options[key] || JSON.stringify({})) as string;
           setValue(`${settingLocation}.proxyConfig`, proxyConfig);
         } else {
           setValue(
@@ -167,8 +167,8 @@ const AppConfigPage: React.FC = () => {
                     <AppConfigTypeSelect
                       control={control}
                       settingLocation={settingLocation}
-                      appConfig={appConfigs}
                       isNativeApp={item.isNativeApp}
+                      defaultValue={form.watch(`${item.id}.appType`)}
                     />
                     <FormFieldSH
                       key={`${item.id}.accessGroups`}
@@ -223,11 +223,9 @@ const AppConfigPage: React.FC = () => {
                       control={control}
                       settingLocation={settingLocation}
                     />
-                    <div>
-                      {settingLocation === APPS.MAIL && (
-                        <MailImporterConfig form={form as UseFormReturn<MailProviderConfig>} />
-                      )}
-                    </div>
+                    {settingLocation === APPS.MAIL && (
+                      <MailImporterConfig form={form as UseFormReturn<MailProviderConfig>} />
+                    )}
                   </div>
                 ) : null}
               </div>

@@ -10,22 +10,25 @@ const forbiddenRouts = [...Object.values(APPS), 'auth', 'edu-api'];
 
 const appConfigFormSchema = z.record(
   z.object({
-    appType: appIntegrationEnum.optional(),
+    appType: appIntegrationEnum,
     accessGroups: z.array(z.object({})).optional(),
     options: z.object({
       url: z.string().optional(),
       apiKey: z.string().optional(),
     }),
     proxyConfig: z.string().optional(),
-    proxyPath: z.string().refine((val) => !forbiddenRouts.includes(val as TApps), {
-      message: i18n.t('settings.errors.forbiddenProxyPath'),
-    }),
+    proxyPath: z
+      .string()
+      .refine((val) => !forbiddenRouts.includes(val as TApps), {
+        message: i18n.t('settings.errors.forbiddenProxyPath'),
+      })
+      .optional(),
     proxyDestination: z.string().optional(),
     stripPrefix: z.boolean().optional(),
     extendedOptions: z
       .object({
         [ExtendedOptionKeys.MAIL_IMAP_URL]: z.string().optional(),
-        [ExtendedOptionKeys.MAIL_IMAP_PORT]: z.number().optional(),
+        [ExtendedOptionKeys.MAIL_IMAP_PORT]: z.string().optional(),
       })
       .optional(),
     mailProviderId: z.string().optional(),

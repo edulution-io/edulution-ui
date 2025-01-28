@@ -50,10 +50,11 @@ const MailImporterConfig: React.FC<MailsConfigProps> = ({ form }) => {
     }
 
     if (option === t('common.custom')) {
-      form.reset({
-        ...form.getValues(),
-        mail: { mailProviderId: '', configName: '', hostname: '', port: '', encryption: MailEncryption.SSL },
-      });
+      form.setValue('mail.mailProviderId', '');
+      form.setValue('mail.configName', '');
+      form.setValue('mail.hostname', '');
+      form.setValue('mail.port', '');
+      form.setValue('mail.encryption', MailEncryption.SSL);
     }
   }, [option]);
 

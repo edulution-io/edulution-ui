@@ -55,7 +55,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
   };
 
   useEffect(() => {
-    if (!expertModeEnabled) {
+    if (!expertModeEnabled && form.watch(`${item.id}.proxyPath`) !== '') {
       updateYaml();
     }
   }, [
@@ -165,7 +165,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
             key={`${item.id}.proxyConfig`}
             control={form.control}
             name={`${item.id}.proxyConfig`}
-            defaultValue={defaultYaml}
+            defaultValue=""
             render={({ field }) => (
               <FormItem>
                 <p className="font-bold">{t(`form.proxyConfig`)}</p>
