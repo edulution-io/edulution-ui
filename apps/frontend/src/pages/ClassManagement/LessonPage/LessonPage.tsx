@@ -16,6 +16,9 @@ import { FaAddressCard } from 'react-icons/fa';
 import getUniqueValues from '@libs/lmnApi/utils/getUniqueValues';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import { FILTER_BAR_ID } from '@libs/classManagement/constants/pageElementIds';
+import { UseFormReturn } from 'react-hook-form';
+import GroupForm from '@libs/groups/types/groupForm';
+import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 
 const LessonPage = () => {
   const { userSessions, fetchProject, updateSession, createSession, removeSession, fetchSchoolClass } =
@@ -24,6 +27,7 @@ const LessonPage = () => {
   const { groupType, groupName } = useParams();
   const {
     isLoading,
+    openDialogType,
     setOpenDialogType,
     setUserGroupToEdit,
     member,
@@ -33,12 +37,12 @@ const LessonPage = () => {
     currentGroupName,
     currentGroupType,
   } = useLessonStore();
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [isPageLoading, setIsPageLoading] = useState(false);
 
-  const isAlreadySavedSession = userSessions.find((session) => session.name === groupName);
+  const [currentSelectedSession, setCurrentSelectedSession] = useState<LmnApiSession | undefined>();
+  console.log(`isAlreadySavedSession ${JSON.stringify(currentSelectedSession, null, 2)}`);
 
   useEffect(() => {
     void getOwnUser();
@@ -58,7 +62,7 @@ const LessonPage = () => {
         break;
       }
       case UserGroups.Sessions:
-        setMember(isAlreadySavedSession?.members || []);
+        setMember(currentSelectedSession?.members || []);
         break;
       case UserGroups.Classes: {
         const schoolClass = await fetchSchoolClass(groupName);
@@ -74,9 +78,10 @@ const LessonPage = () => {
 
   useEffect(() => {
     const restoreTemporarySession = currentGroupType && currentGroupName && !groupType && !groupName;
+    console.log(`restoreTemporarySession ${JSON.stringify(restoreTemporarySession, null, 2)}`);
     const fetchInitialData =
       (groupType && groupType !== currentGroupType) || (groupName && groupName !== currentGroupName);
-
+    console.log(`fetchInitialData ${JSON.stringify(fetchInitialData, null, 2)}`);
     if (restoreTemporarySession) {
       navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}/${currentGroupType}/${currentGroupName}`, { replace: true });
     } else if (fetchInitialData) {
@@ -86,14 +91,19 @@ const LessonPage = () => {
     }
   }, [groupType, groupName]);
 
+  useEffect(() => {
+    const currentSession = userSessions.find((session) => session.name === groupName);
+    setCurrentSelectedSession(currentSession);
+    setMember(currentSession?.members || []);
+  }, [userSessions]);
+
   const handleSessionSelect = (sessionName: string) => {
     navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}/sessions/${sessionName}`);
   };
 
   const onSaveSessionsButtonClick = () => {
-    setIsDialogOpen(true);
     setOpenDialogType(UserGroups.Sessions);
-    setUserGroupToEdit(isAlreadySavedSession || null);
+    setUserGroupToEdit(currentSelectedSession || null);
   };
 
   const sessionOptions = userSessions.map((s) => ({ id: s.sid, name: s.name }));
@@ -105,12 +115,18 @@ const LessonPage = () => {
     navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}`);
   };
 
+  const createSessionAndNavigate = async (form: UseFormReturn<GroupForm>): Promise<void> => {
+    await createSession(form);
+    navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}/sessions/${form.getValues().name}`);
+  };
+
   const sessionToSave = {
     name: UserGroups.Sessions,
     translationId: 'mySessions',
-    createFunction: createSession,
+    createFunction: createSessionAndNavigate,
     updateFunction: updateSession,
     removeFunction: async (id: string) => {
+      console.log('remove session');
       await removeSession(id);
       setOpenDialogType(null);
       navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}`);
@@ -144,7 +160,7 @@ const LessonPage = () => {
               className="flex h-[42px] cursor-pointer items-center rounded-md bg-ciDarkGrey text-ciLightGrey hover:opacity-90"
             >
               <span className="text-nowrap px-4">
-                {t(`classmanagement.${isAlreadySavedSession ? 'editSession' : 'saveSession'}`)}
+                {t(`classmanagement.${currentSelectedSession ? 'editSession' : 'saveSession'}`)}
               </span>
               <MdSave className="ml-auto inline-block h-8 w-8 pr-2" />
             </button>
@@ -160,7 +176,7 @@ const LessonPage = () => {
         ) : null}
       </div>
       <div>{groupName || member.length ? <UserArea /> : <QuickAccess />}</div>
-      {isDialogOpen && <GroupDialog item={sessionToSave} />}
+      {openDialogType === UserGroups.Sessions && <GroupDialog item={sessionToSave} />}
     </>
   );
 };
