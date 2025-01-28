@@ -5,6 +5,7 @@ import cn from '@libs/common/utils/className';
 import UserCardButtonBar from '@/pages/ClassManagement/LessonPage/UserArea/UserCardButtonBar';
 import Checkbox from '@/components/ui/Checkbox';
 import { SOPHOMORIX_STUDENT } from '@libs/lmnApi/constants/sophomorixRoles';
+import Avatar from '@/components/shared/Avatar';
 import { useTranslation } from 'react-i18next';
 import UserPasswordDialog from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/UserPasswordDialog';
 import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
@@ -27,7 +28,7 @@ const UserCard = ({
 }: UserCardProps) => {
   const { t } = useTranslation();
   const { currentUser } = useLmnApiPasswordStore();
-  const { displayName, name, sophomorixAdminClass, school, givenName, sn: surname } = user;
+  const { displayName, name, sophomorixAdminClass, school, givenName, sn: surname, thumbnailPhoto } = user;
 
   const [isHovered, setIsHovered] = useState<boolean>(false);
 
@@ -97,10 +98,11 @@ const UserCard = ({
             {user.sophomorixIntrinsic3.length > 0 ? (
               <FrameBufferImage user={user} />
             ) : (
-              <>
-                {givenName.slice(0, 1)}
-                {surname.slice(0, 1)}
-              </>
+              <Avatar
+                user={{ username: name, firstName: givenName, lastName: surname }}
+                imageSrc={thumbnailPhoto}
+                className={thumbnailPhoto && 'h-24 w-24 p-2'}
+              />
             )}
           </div>
         </div>

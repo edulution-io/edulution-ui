@@ -3,6 +3,7 @@ import eduApi from '@/api/eduApi';
 import {
   BULLETIN_BOARD_EDU_API_ENDPOINT,
   BULLETIN_CATEGORY_EDU_API_ENDPOINT,
+  BULLETIN_CATEGORY_POSITION_EDU_API_ENDPOINT,
   BULLETIN_CATEGORY_WITH_PERMISSION_EDU_API_ENDPOINT,
 } from '@libs/bulletinBoard/constants/apiEndpoints';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
@@ -21,6 +22,7 @@ const initialValues = {
   nameExistsAlready: false,
   isDeleteDialogOpen: false,
   isDeleteDialogLoading: false,
+  isCategoryPositionLoading: false,
   error: null,
 };
 
@@ -30,6 +32,21 @@ const useBulletinCategoryTableStore: UseBoundStore<StoreApi<BulletinCategoryTabl
     setIsLoading: (isLoading) => set({ isLoading }),
     setIsDialogOpen: (isOpen) => set({ isDialogOpen: isOpen }),
     setIsDeleteDialogOpen: (isOpen) => set({ isDeleteDialogOpen: isOpen }),
+
+    setCategoryPosition: async (categoryId, position) => {
+      set({ error: null, isCategoryPositionLoading: true });
+      try {
+        await eduApi.post<BulletinCategoryResponseDto[]>(BULLETIN_CATEGORY_POSITION_EDU_API_ENDPOINT, {
+          categoryId,
+          position,
+        });
+        toast.success(i18n.t('bulletinboard.categoryPositionChanged'));
+      } catch (error) {
+        handleApiError(error, set);
+      } finally {
+        set({ isCategoryPositionLoading: false });
+      }
+    },
 
     addNewCategory: async (category) => {
       set({ error: null, isLoading: true });
@@ -66,7 +83,7 @@ const useBulletinCategoryTableStore: UseBoundStore<StoreApi<BulletinCategoryTabl
     checkIfNameAllReadyExists: async (name): Promise<void> => {
       try {
         set({ isNameCheckingLoading: true });
-        const response = await eduApi.post<{ exists: boolean }>(`${BULLETIN_CATEGORY_EDU_API_ENDPOINT}/${name}`);
+        const response = await eduApi.get<{ exists: boolean }>(`${BULLETIN_CATEGORY_EDU_API_ENDPOINT}/${name}`);
         set({ nameExistsAlready: response.data.exists });
       } catch (error) {
         set({ nameExistsAlready: true });

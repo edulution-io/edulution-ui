@@ -1,15 +1,21 @@
 import React, { useEffect } from 'react';
-import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import { useTranslation } from 'react-i18next';
+import { IoAdd } from 'react-icons/io5';
+import { type ContainerInfo } from 'dockerode';
 import { AppConfigTableConfig } from '@/pages/Settings/AppConfig/components/table/types/appConfigTableConfig';
 import getAppConfigTableConfig from '@/pages/Settings/AppConfig/components/table/getAppConfigTableConfig';
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
-import { IoAdd } from 'react-icons/io5';
+import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import { Button } from '@/components/shared/Button';
+import type BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
+import type TApps from '@libs/appconfig/types/appsType';
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
-import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 
-const AppConfigTable = ({ applicationName }: { applicationName: string }) => {
+interface AppConfigTableProps {
+  applicationName: TApps;
+}
+
+const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName }) => {
   const { t } = useTranslation();
 
   const configs = getAppConfigTableConfig(applicationName) as AppConfigTableConfig[];
@@ -18,7 +24,7 @@ const AppConfigTable = ({ applicationName }: { applicationName: string }) => {
     return <div>{t('common.error')}</div>;
   }
 
-  const renderConfig = (config: AppConfigTableConfig, index: number) => {
+  const renderConfig = (config: AppConfigTableConfig) => {
     const { columns, useStore, showAddButton, dialogBody, filterPlaceHolderText, filterKey, type } = config;
     const { tableContentData, fetchTableContent } = useStore();
     const { setDialogOpen, isDialogOpen } = useAppConfigTableDialogStore();
@@ -26,7 +32,7 @@ const AppConfigTable = ({ applicationName }: { applicationName: string }) => {
     useEffect(() => {
       const fetchDataAsync = async () => {
         if (fetchTableContent) {
-          await fetchTableContent();
+          await fetchTableContent(applicationName);
         }
       };
 
@@ -70,9 +76,55 @@ const AppConfigTable = ({ applicationName }: { applicationName: string }) => {
       }
     };
 
+    const getScrollableTable = () => {
+      switch (type) {
+        case 'bulletin': {
+          return (
+            <ScrollableTable
+              columns={columns}
+              data={tableContentData as BulletinCategoryResponseDto[]}
+              filterKey={filterKey}
+              filterPlaceHolderText={filterPlaceHolderText}
+              applicationName={applicationName}
+              enableRowSelection={false}
+              tableIsUsedOnAppConfigPage
+            />
+          );
+        }
+        case 'docker': {
+          return (
+            <ScrollableTable
+              columns={columns}
+              data={tableContentData as ContainerInfo[]}
+              filterKey={filterKey}
+              filterPlaceHolderText={filterPlaceHolderText}
+              applicationName={applicationName}
+              enableRowSelection={false}
+              tableIsUsedOnAppConfigPage
+            />
+          );
+        }
+        case 'veyon': {
+          return (
+            <ScrollableTable
+              columns={columns}
+              data={tableContentData as VeyonProxyItem[]}
+              filterKey={filterKey}
+              filterPlaceHolderText={filterPlaceHolderText}
+              applicationName={applicationName}
+              enableRowSelection={false}
+              tableIsUsedOnAppConfigPage
+            />
+          );
+        }
+        default:
+          return null;
+      }
+    };
+
     return (
       <div
-        key={config.key || index}
+        key={config.type}
         className="mb-8"
       >
         {getScrollableTable()}
@@ -92,7 +144,7 @@ const AppConfigTable = ({ applicationName }: { applicationName: string }) => {
     );
   };
 
-  return <div>{configs.map((config, index) => renderConfig(config, index))}</div>;
+  return <div>{configs.map((config) => renderConfig(config))}</div>;
 };
 
 export default AppConfigTable;

@@ -4,6 +4,7 @@ const AppConfigSectionsKeys = {
   imapMailFeed: 'imapMailFeed',
   bulletinBoard: 'bulletinBoard',
   veyon: 'veyon',
+  docker: 'docker',
 } as const;
 
 export default AppConfigSectionsKeys;

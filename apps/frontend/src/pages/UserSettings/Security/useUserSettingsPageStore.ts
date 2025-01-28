@@ -24,8 +24,8 @@ const useUserSettingsPageStore = create<UserSettingsPageStore>((set) => ({
       await eduApi.put<LmnApiSession>(
         LMN_API_EDU_API_ENDPOINTS.CHANGE_PASSWORD,
         {
-          oldPassword,
-          newPassword,
+          oldPassword: btoa(oldPassword),
+          newPassword: btoa(newPassword),
         },
         {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },

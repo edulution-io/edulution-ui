@@ -121,7 +121,12 @@ const useLmnApiStore = create<UseLmnApiStore>(
         set({ isPatchingUserLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          await eduApi.post<null>(`${USER}`, { userDetails }, { headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken } });
+          const { data } = await eduApi.patch<UserLmnInfo>(
+            `${USER}`,
+            { userDetails },
+            { headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken } },
+          );
+          set({ user: data });
         } catch (error) {
           handleApiError(error, set);
         } finally {

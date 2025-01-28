@@ -11,6 +11,7 @@ import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
+import DockerErrorMessages from '@libs/docker/constants/dockerErrorMessages';
 import VeyonErrorMessages from '@libs/veyon/types/veyonErrorMessages';
 
 type ErrorMessage =
@@ -27,6 +28,7 @@ type ErrorMessage =
   | SurveyErrorMessages
   | BulletinBoardErrorMessage
   | SurveyAnswerErrorMessages
+  | DockerErrorMessages
   | VeyonErrorMessages;
 
 export default ErrorMessage;
