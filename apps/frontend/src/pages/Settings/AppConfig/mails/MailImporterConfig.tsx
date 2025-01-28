@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { DropdownSelect } from '@/components';
 import { Button } from '@/components/shared/Button';
+import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import { MailProviderConfigDto } from '@libs/mail/types';
 import { UseFormReturn } from 'react-hook-form';
@@ -65,28 +66,34 @@ const MailImporterConfig: React.FC<MailsConfigProps> = ({ form }) => {
   };
 
   return (
-    <div className="space-y-4">
-      <h4>{t(`mail.importer.title`)}</h4>
-      <div className="flex gap-4">
-        <DropdownSelect
-          options={mailProviderDropdownOptions}
-          selectedVal={t(option)}
-          handleChange={setOption}
-          classname="md:w-1/3"
-        />
-        {option !== t('common.custom') ? (
-          <Button
-            variant="btn-collaboration"
-            size="lg"
-            type="button"
-            onClick={() => handleDeleteMailProviderConfig(form.getValues('mail.mailProviderId'))}
-          >
-            {t('common.delete')}
-          </Button>
-        ) : null}
-      </div>
-      <MailImporterConfigForm form={form} />
-    </div>
+    <AccordionSH type="multiple">
+      <AccordionItem value="mails">
+        <AccordionTrigger className="flex text-h4">
+          <h4>{t(`mail.importer.title`)}</h4>
+        </AccordionTrigger>
+        <AccordionContent className="space-y-2 px-1">
+          <div className="flex gap-4">
+            <DropdownSelect
+              options={mailProviderDropdownOptions}
+              selectedVal={t(option)}
+              handleChange={setOption}
+              classname="md:w-1/3"
+            />
+            {option !== t('common.custom') ? (
+              <Button
+                variant="btn-collaboration"
+                size="lg"
+                type="button"
+                onClick={() => handleDeleteMailProviderConfig(form.getValues('mail.mailProviderId'))}
+              >
+                {t('common.delete')}
+              </Button>
+            ) : null}
+          </div>
+          <MailImporterConfigForm form={form} />
+        </AccordionContent>
+      </AccordionItem>
+    </AccordionSH>
   );
 };
 

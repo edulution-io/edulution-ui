@@ -32,6 +32,7 @@ import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailImporterConfig from './mails/MailImporterConfig';
 import appConfigFormSchema from './appConfigSchema';
 import ProxyConfigForm from './components/ProxyConfigForm';
+import DockerContainerTable from './DockerIntegration/DockerContainerTable';
 
 const AppConfigPage: React.FC = () => {
   const { settingLocation = '' } = useParams<{ settingLocation: TApps }>();
@@ -157,7 +158,7 @@ const AppConfigPage: React.FC = () => {
         <Form {...form}>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="column space-y-6 2xl:w-[1200px]"
+            className="column max-w-screen-2xl space-y-6"
           >
             {APP_CONFIG_OPTIONS.map((item) => (
               <div
@@ -191,6 +192,11 @@ const AppConfigPage: React.FC = () => {
                           <FormMessage className="text-p" />
                         </FormItem>
                       )}
+                    />
+                    <ExtendedOptionsForm
+                      extendedOptions={item.extendedOptions}
+                      control={control}
+                      settingLocation={settingLocation}
                     />
                     {item.options?.map((itemOption) =>
                       itemOption !== 'proxyConfig' ? (
@@ -262,7 +268,7 @@ const AppConfigPage: React.FC = () => {
           description={!isMobileView && settingLocation ? t(`settings.description.${settingLocation}`) : null}
           iconSrc={APP_CONFIG_OPTIONS.find((item) => item.id === settingLocation)?.icon || SettingsIcon}
         />
-        {settingsForm()}
+        {isAnAppConfigSelected ? settingsForm() : <DockerContainerTable />}
       </div>
       {isAnAppConfigSelected ? (
         <AppConfigFloatingButtons
