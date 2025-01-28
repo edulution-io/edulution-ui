@@ -3,6 +3,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 import useVeyonConfigTableStore from './useVeyonTableStore';
 
@@ -20,7 +21,7 @@ const VeyonConfigTableColumns: ColumnDef<VeyonProxyItem>[] = [
 
       const handleRowClick = () => {
         setSelectedConfig(row.original);
-        setDialogOpen(true);
+        setDialogOpen(ExtendedOptionKeys.VEYON_PROXYS);
       };
 
       return (
@@ -44,7 +45,7 @@ const VeyonConfigTableColumns: ColumnDef<VeyonProxyItem>[] = [
       const { setSelectedConfig } = useVeyonConfigTableStore();
       const handleRowClick = () => {
         setSelectedConfig(row.original);
-        setDialogOpen(true);
+        setDialogOpen(ExtendedOptionKeys.VEYON_PROXYS);
       };
 
       return (
@@ -67,7 +68,7 @@ const VeyonConfigTableColumns: ColumnDef<VeyonProxyItem>[] = [
       const { setSelectedConfig } = useVeyonConfigTableStore();
       const handleRowClick = () => {
         setSelectedConfig(row.original);
-        setDialogOpen(true);
+        setDialogOpen(ExtendedOptionKeys.VEYON_PROXYS);
       };
       return (
         <SelectableTextCell

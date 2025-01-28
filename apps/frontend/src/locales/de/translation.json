@@ -1126,6 +1126,7 @@
     "title": "Container-Übersicht",
     "containerName": "Container-Name",
     "state": "Betriebszustand",
+    "state-badge": "Badge",
     "status": "Status",
     "imageName": "Image",
     "filterPlaceHolderText": "Suche nach Container-Name",
