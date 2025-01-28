@@ -63,6 +63,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     id: APPS.SURVEYS,
     icon: SurveysMenuIcon,
     color: 'bg-ciDarkBlue',
+    options: ['url', 'proxyConfig'],
     isNativeApp: true,
   },
   {
@@ -159,7 +160,13 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     options: ['url', 'proxyConfig'],
     isNativeApp: true,
   },
-  { id: APPS.WHITEBOARD, icon: WhiteBoardIcon, color: 'bg-ciDarkBlue', isNativeApp: true },
+  {
+    id: APPS.WHITEBOARD,
+    icon: WhiteBoardIcon,
+    color: 'bg-ciDarkBlue',
+    options: ['url', 'proxyConfig'],
+    isNativeApp: true,
+  },
   {
     id: APPS.BULLETIN_BOARD,
     icon: BulletinBoardIcon,

@@ -51,7 +51,7 @@ const AppConfigPage: React.FC = () => {
     },
   );
 
-  const { control, handleSubmit, setValue, getValues } = form;
+  const { control, handleSubmit, setValue, getValues, clearErrors } = form;
 
   const isAnAppConfigSelected = settingLocation !== '';
 
@@ -60,6 +60,8 @@ const AppConfigPage: React.FC = () => {
     if (!currentConfig) {
       return;
     }
+
+    clearErrors();
 
     setValue(`${settingLocation}.appType`, currentConfig.appType);
     setValue(`${settingLocation}.accessGroups`, currentConfig.accessGroups || []);

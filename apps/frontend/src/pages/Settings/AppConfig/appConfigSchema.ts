@@ -28,7 +28,7 @@ const appConfigFormSchema = z.record(
     extendedOptions: z
       .object({
         [ExtendedOptionKeys.MAIL_IMAP_URL]: z.string().optional(),
-        [ExtendedOptionKeys.MAIL_IMAP_PORT]: z.string().optional(),
+        [ExtendedOptionKeys.MAIL_IMAP_PORT]: z.number().optional(),
       })
       .optional(),
     mailProviderId: z.string().optional(),
