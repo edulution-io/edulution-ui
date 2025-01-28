@@ -16,19 +16,21 @@ import { SettingsIcon } from '@/assets/icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useMailsStore from '@/pages/Mail/useMailsStore';
-import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
+import { MailProviderConfigDto } from '@libs/mail/types';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
 import ExtendedOptionsForm from '@/pages/Settings/AppConfig/components/ExtendedOptionsForm';
 import { AppConfigDto } from '@libs/appconfig/types/appConfigDto';
-import ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
+import type ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import type TApps from '@libs/appconfig/types/appsType';
+import type MailProviderConfig from '@libs/appconfig/types/mailProviderConfig';
+import APPS from '@libs/appconfig/constants/apps';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
-import MailsConfig from './mails/MailsConfig';
-import formSchema from './appConfigSchema';
+import MailImporterConfig from './mails/MailImporterConfig';
+import appConfigFormSchema from './appConfigSchema';
 import ProxyConfigForm from './components/ProxyConfigForm';
 import DockerContainerTable from './DockerIntegration/DockerContainerTable';
 
@@ -43,12 +45,14 @@ const AppConfigPage: React.FC = () => {
   const isMobileView = useIsMobileView();
   const { postExternalMailProviderConfig } = useMailsStore();
 
-  const form = useForm<{ [settingLocation: string]: AppConfigDto | string } | ProxyConfigFormType>({
-    mode: 'onChange',
-    resolver: zodResolver(formSchema),
-  });
+  const form = useForm<{ [settingLocation: string]: AppConfigDto | string } | ProxyConfigFormType | MailProviderConfig>(
+    {
+      mode: 'onChange',
+      resolver: zodResolver(appConfigFormSchema),
+    },
+  );
 
-  const { control, handleSubmit, setValue, getValues } = form;
+  const { control, handleSubmit, setValue, getValues, clearErrors } = form;
 
   const isAnAppConfigSelected = settingLocation !== '';
 
@@ -58,6 +62,8 @@ const AppConfigPage: React.FC = () => {
       return;
     }
 
+    clearErrors();
+
     setValue(`${settingLocation}.appType`, currentConfig.appType);
     setValue(`${settingLocation}.accessGroups`, currentConfig.accessGroups || []);
     setValue(`${settingLocation}.extendedOptions`, currentConfig.extendedOptions || {});
@@ -65,7 +71,7 @@ const AppConfigPage: React.FC = () => {
     if (currentConfig.options) {
       Object.keys(currentConfig.options).forEach((key) => {
         if (key === APP_CONFIG_OPTION_KEYS.PROXYCONFIG) {
-          const proxyConfig = JSON.parse(currentConfig?.options[key] || '') as string;
+          const proxyConfig = JSON.parse(currentConfig?.options[key] || JSON.stringify({})) as string;
           setValue(`${settingLocation}.proxyConfig`, proxyConfig);
         } else {
           setValue(
@@ -133,14 +139,14 @@ const AppConfigPage: React.FC = () => {
 
     await updateAppConfig(updatedConfig);
 
-    if (settingLocation === 'mail' && getValues('configName')) {
+    if (settingLocation === APPS.MAIL && getValues('mail.configName')) {
       const mailProviderConfig: MailProviderConfigDto = {
-        id: (getValues('mailProviderId') || '') as string,
-        name: getValues('configName') as string,
-        label: getValues('configName') as string,
-        host: getValues('hostname') as string,
-        port: getValues('port') as string,
-        encryption: getValues('encryption') as TMailEncryption,
+        id: getValues('mail.mailProviderId') || '',
+        name: getValues('mail.configName'),
+        label: getValues('mail.configName'),
+        host: getValues('mail.hostname'),
+        port: getValues('mail.port'),
+        encryption: getValues('mail.encryption'),
       };
       void postExternalMailProviderConfig(mailProviderConfig);
     }
@@ -164,8 +170,8 @@ const AppConfigPage: React.FC = () => {
                     <AppConfigTypeSelect
                       control={control}
                       settingLocation={settingLocation}
-                      appConfig={appConfigs}
                       isNativeApp={item.isNativeApp}
+                      defaultValue={form.watch(`${item.id}.appType`)}
                     />
                     <FormFieldSH
                       key={`${item.id}.accessGroups`}
@@ -215,13 +221,19 @@ const AppConfigPage: React.FC = () => {
                       ) : (
                         <ProxyConfigForm
                           key={`${item.id}.options.${itemOption}`}
-                          settingLocation={settingLocation}
                           item={item}
                           form={form as UseFormReturn<ProxyConfigFormType>}
                         />
                       ),
                     )}
-                    {settingLocation === 'mail' && <MailsConfig form={form} />}
+                    <ExtendedOptionsForm
+                      extendedOptions={item.extendedOptions}
+                      control={control}
+                      settingLocation={settingLocation}
+                    />
+                    {settingLocation === APPS.MAIL && (
+                      <MailImporterConfig form={form as UseFormReturn<MailProviderConfig>} />
+                    )}
                   </div>
                 ) : null}
               </div>

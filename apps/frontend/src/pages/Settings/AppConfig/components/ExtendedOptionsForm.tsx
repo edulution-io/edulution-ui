@@ -1,9 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Control, FieldValues, Path } from 'react-hook-form';
-import { z } from 'zod';
 import AppConfigFormField from '@/pages/Settings/AppConfig/components/textField/AppConfigFormField';
-import formSchema from '@/pages/Settings/AppConfig/appConfigSchema';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import AppConfigTable from '@/pages/Settings/AppConfig/components/table/AppConfigTable';
 import cn from '@libs/common/utils/className';
@@ -15,7 +13,7 @@ import AppConfigSwitch from './booleanField/AppConfigSwitch';
 
 type ExtendedOptionsFormProps<T extends FieldValues> = {
   extendedOptions: AppConfigExtendedOptionsBySections | undefined;
-  control: Control<z.infer<typeof formSchema>, T>;
+  control: Control<T>;
   settingLocation: TApps;
 };
 

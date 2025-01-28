@@ -153,14 +153,14 @@
   "mail": {
     "title": "MAIL",
     "sidebar": "Mail",
+    "configName": "Name der Konfiguration",
+    "hostname": "Hostname",
+    "port": "Port",
+    "encryption": "Verschlüsselung",
     "importer": {
       "filterPlaceHolderText": "Suche nach E-Mail-Importername",
       "title": "E-Mail-Importer",
       "provider": "E-Mail-Provider",
-      "configName": "Name der Konfiguration",
-      "hostname": "Hostname",
-      "port": "Port",
-      "encryption": "Verschlüsselung",
       "interval": "Sync-Intervall",
       "isActive": "Aktiv",
       "syncJobsTable": "Importer Jobs",
@@ -674,7 +674,8 @@
       "ReadAppConfigFailed": "App lesen fehlgeschlagen",
       "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen",
       "WriteTraefikConfigFailed": "Traefik-Konfiguration speichern fehlgeschlagen",
-      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen"
+      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen",
+      "forbiddenProxyPath": "Dieser Proxy-Pfad ist nicht erlaubt."
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",
