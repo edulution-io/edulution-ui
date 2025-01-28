@@ -223,11 +223,6 @@ const AppConfigPage: React.FC = () => {
                         />
                       ),
                     )}
-                    <ExtendedOptionsForm
-                      extendedOptions={item.extendedOptions}
-                      control={control}
-                      settingLocation={settingLocation}
-                    />
                     {settingLocation === APPS.MAIL && (
                       <MailImporterConfig form={form as UseFormReturn<MailProviderConfig>} />
                     )}

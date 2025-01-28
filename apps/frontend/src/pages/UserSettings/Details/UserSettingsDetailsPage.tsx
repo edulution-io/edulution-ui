@@ -57,6 +57,7 @@ const UserSettingsDetailsPage: React.FC = () => {
                 value={field.value}
                 labelTranslationId={field.label}
                 className="mb-4 mt-2"
+                disabled
               />
             ))}
 
