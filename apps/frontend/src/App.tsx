@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import AppRouter from '@/router/AppRouter';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
 import eduApi from '@/api/eduApi';
-import BBBFrame from '@/pages/ConferencePage/BBBFrame';
+import BBBFrame from '@/pages/ConferencePage/BBBIFrame';
 import EmbeddedIframes from '@/components/framing/EmbeddedIframes';
 import NativeFrames from '@/components/framing/Native/NativeFrames';
 import useLmnApiStore from '@/store/useLmnApiStore';
