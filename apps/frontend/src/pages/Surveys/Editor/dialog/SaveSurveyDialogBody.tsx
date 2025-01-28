@@ -78,7 +78,7 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
         />
       </div>
       <p className="text-m font-bold text-background">{t('surveys.saveDialog.settingsFlags')}</p>
-      <div className="ttext-background flex items-center">
+      <div className="flex items-center text-background">
         <Checkbox
           checked={isAnonymousWatched}
           onCheckedChange={(value: boolean) => setValue('isAnonymous', value, { shouldValidate: true })}
