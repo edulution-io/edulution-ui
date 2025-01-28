@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   ColumnDef,
   flexRender,
@@ -20,6 +20,7 @@ import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { ChevronDown } from 'lucide-react';
 import DropdownMenu from '@/components/shared/DropdownMenu';
+import DEFAULT_TABLE_SORT_PROPERTY_KEY from '@libs/common/constants/defaultTableSortProperty';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -40,7 +41,6 @@ interface DataTableProps<TData, TValue> {
   };
   tableIsUsedOnAppConfigPage?: boolean;
   enableRowSelection?: boolean | ((row: Row<TData>) => boolean) | undefined;
-  enableMultiRowSelection?: boolean;
 }
 
 const ScrollableTable = <TData, TValue>({
@@ -56,10 +56,13 @@ const ScrollableTable = <TData, TValue>({
   additionalScrollContainerOffset = 0,
   scrollContainerOffsetElementIds = {},
   enableRowSelection,
-  enableMultiRowSelection,
   tableIsUsedOnAppConfigPage = false,
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
+
+  const hasPositionCol = useMemo(() => columns.some((c) => c.id === 'position'), [columns]);
+
+  const [sorting, setSorting] = useState(hasPositionCol ? [{ id: DEFAULT_TABLE_SORT_PROPERTY_KEY, desc: false }] : []);
 
   const selectedRowsMessageId = scrollContainerOffsetElementIds.selectedRowsMessageId || SELECTED_ROW_MESSAGE_ID;
   const tableHeaderId = scrollContainerOffsetElementIds.tableHeaderId || TABLE_HEADER_ID;
@@ -78,13 +81,14 @@ const ScrollableTable = <TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
     getFilteredRowModel: getFilteredRowModel(),
     getRowId: getRowId || ((originalRow: TData) => (originalRow as { id: string }).id),
     onRowSelectionChange,
     enableRowSelection,
-    enableMultiRowSelection,
     state: {
       rowSelection: selectedRows,
+      sorting,
     },
   });
 

@@ -3,7 +3,7 @@ import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import { MenubarMenu, MenubarTrigger, VerticalMenubar } from '@/components/ui/MenubarSH';
 
 import cn from '@libs/common/utils/className';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useOnClickOutside, useToggle } from 'usehooks-ts';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import { getFromPathName } from '@libs/common/utils';
@@ -17,6 +17,8 @@ const MenuBar: React.FC = () => {
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
   const isMobileView = useIsMobileView();
+
+  const navigate = useNavigate();
 
   useOnClickOutside(menubarRef, !isOpen ? toggle : () => {});
 
@@ -54,15 +56,23 @@ const MenuBar: React.FC = () => {
 
   const renderMenuBarContent = () => (
     <div
-      className="max-w-[300px]"
+      className="max-w-[var(--menubar-max-width)]"
       ref={menubarRef}
     >
       <div className="bg flex flex-col items-center justify-center py-6">
-        <img
-          src={menuBarEntries.icon}
-          alt={menuBarEntries.title}
-          className="h-20 w-20 object-contain"
-        />
+        <button
+          type="button"
+          onClick={() => {
+            navigate(pathParts[0]);
+            setIsSelected(pathParts[0] === APPS.SETTINGS ? '' : firstMenuBarItem);
+          }}
+        >
+          <img
+            src={menuBarEntries.icon}
+            alt={menuBarEntries.title}
+            className="h-20 w-20 object-contain"
+          />
+        </button>
         <h3 className="mb-4 mt-4 text-center font-bold">{menuBarEntries.title}</h3>
       </div>
       <MenubarMenu>

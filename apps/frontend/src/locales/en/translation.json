@@ -23,6 +23,7 @@
     "sidebar": "Bulletin Board",
     "newCategorie": "New category",
     "category": "Category",
+    "categoryPositionChanged": "Position of the category changed",
     "name": "Name",
     "visibleFor": "Visible for",
     "visibleForUsers": "Visible for users",
@@ -95,7 +96,7 @@
       "nextStepPreview": "In the next step you can transfer the access data.",
       "copyCredentials": "Or enter manually:",
       "downloadDirect": "Or download the app directly:",
-      "downloadApp": "Download the edulution-io app here:"
+      "downloadApp": "Download the edulution.io app here:"
     },
     "quota": {
       "title": "Quotas",
@@ -152,14 +153,14 @@
   "mail": {
     "title": "MAIL",
     "sidebar": "Mail",
+    "configName": "Configuration name",
+    "hostname": "Hostname",
+    "port": "Port",
+    "encryption": "Encryption",
     "importer": {
       "filterPlaceHolderText": "Search for importername",
       "title": "Email Importer",
       "provider": "Email Provider",
-      "configName": "Configuration name",
-      "hostname": "Hostname",
-      "port": "Port",
-      "encryption": "Encryption",
       "interval": "Sync Interval",
       "isActive": "Active",
       "syncJobsTable": "Importer Jobs",
@@ -193,9 +194,12 @@
       "ConferenceIsNotRunning": "Conference is not running",
       "MissingMandatoryParameters": "Request failed because of missing parameters"
     },
+    "joinThisConference": "Join this conference",
     "filterPlaceHolderText": "Search for conference name",
     "started": "Conference started",
     "stopped": "Conference stopped",
+    "isStarting": "Conference is starting",
+    "isStopping": "Conference is stopping",
     "conferenceFetchedSuccessfully": "Conferences successfully fetched",
     "tryManually": "Join manually",
     "changeUser": "Change user",
@@ -641,6 +645,14 @@
         "general": {
           "title": "General",
           "description": ""
+        },
+        "veyon": {
+          "title": "Veyon Proxy",
+          "description": ""
+        },
+        "docker": {
+          "title": "Docker Applications",
+          "description": "To be able to use the extended services, the required Docker containers must be started here."
         }
       },
       "update": {
@@ -661,12 +673,15 @@
       "ReadAppConfigFailed": "Read app failed",
       "DisableAppConfigFailed": "Disable app failed",
       "WriteTraefikConfigFailed": "Write traefik config failed",
-      "ReadTraefikConfigFailed": "Read traefik config failed"
+      "ReadTraefikConfigFailed": "Read traefik config failed",
+      "forbiddenProxyPath": "Forbidden proxy path"
     },
     "yamleditor": {
       "invalidYaml": "Wrong YAML syntax",
       "placeholder": "Enter your Traefik config here"
-    }
+    },
+    "rowsSelected": "{{selected}} of {{total}} Container selected",
+    "rowSelected": "{{selected}} of {{total}} Container selected"
   },
   "usersettings": {
     "title": "MY PROFILE",
@@ -707,6 +722,10 @@
     },
     "mails": {
       "title": "Email"
+    },
+    "mobileAccess": {
+      "title": "Mobile Access",
+      "description": "Here you can set up the edulution.io app for mobile access to your files. Currently only available for Apple iOS."
     },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
@@ -767,6 +786,7 @@
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },
+    "sortOrder": "Sort order",
     "checking": "Checking",
     "options": "Options",
     "columns": "Columns",
@@ -776,6 +796,7 @@
       "doCopy": "Copy",
       "link": "Copy link"
     },
+    "openInNewTab": "Open in new tab",
     "from": "from",
     "youAreCurrentlyNotLoggedIn": "You are currently not logged in",
     "toLogin": "To login",
@@ -841,7 +862,14 @@
     "not-available": "Not available",
     "date": "Date",
     "time": "Time",
-    "revert": "Revert"
+    "revert": "Revert",
+    "restart": "Restart",
+    "kill": "Kill",
+    "install": "Install",
+    "update": "Update",
+    "cancel": "Cancel",
+    "progress": "Progress...",
+    "pressInstall": "Press Install to start"
   },
   "form": {
     "path": "Path",
@@ -1047,9 +1075,9 @@
     "mailImapPortTitle": "Port",
     "mailImapPortDescription": "Enter the port number of the IMAP-server (i.e. 993)",
     "mailImapSecureTitle": "Secure Connection",
-    "mailImapSecureDescription": "Enter 'true' if the connection should be established via TLS (more secure), otherwise it's set to 'false' and will use STARTTLS",
+    "mailImapSecureDescription": "Should the connection be established via TLS or STARTTLS",
     "mailImapRejectUnauthorizedTitle": "Reject Unauthorized",
-    "mailImapRejectUnauthorizedDescription": "Enter 'true' if the connection should reject self-signed certificates, otherwise it's set to 'false' to accept them"
+    "mailImapRejectUnauthorizedDescription": "Should a certificate check be carried out for this connection?"
   },
   "mails": {
     "errors": {
@@ -1073,5 +1101,50 @@
   "preview": {
     "image": "Image preview",
     "failedToLoadImage": "Failed to load image"
+  },
+  "dockerApplication": {
+    "title": "Docker Application",
+    "dialogTitle": "{{applicationName}}-Plugins Installer",
+    "mailDescription": "If you want to operate your own mail server, you can carry out the setup for Mailcow here.",
+    "classmanagementDescription": "If you use Veyon in your school network, you can carry out the setup for the Veyon-WebAPI-Proxy here."
+  },
+  "dockerOverview": {
+    "title": "Container Overview",
+    "containerName": "Container Name",
+    "state": "State",
+    "status": "Status",
+    "imageName": "Image",
+    "filterPlaceHolderText": "Search for container name",
+    "port": "Port",
+    "created": "Created at"
+  },
+  "docker": {
+    "error": {
+      "dockerConnectionError": "Docker connection failed",
+      "dockerImageNotFound": "Docker Image could not be found",
+      "dockerCreationError": "Docker Container could not be created",
+      "dockerCommandExecutionError": "Docker command could not be executed",
+      "dockerContainerDeletionError": "Docker Container could not be deleted"
+    },
+    "events": {
+      "pullingImage": "Pulling docker image...",
+      "checkingImage": "Checking if image already exists...",
+      "creatingContainer": "Creating docker container...",
+      "containerCreated": "Container created.",
+      "startContainer": "Container started.",
+      "stopContainer": "Container stopped.",
+      "restartContainer": "Restart Container.",
+      "killContainer": "Container killed.",
+      "containerCreationSuccessful": "Container successfully created.",
+      "containerCreationFailed": "Container could not be created."
+    },
+    "status": {
+      "running": "running",
+      "created": "created",
+      "restarting": "restarting",
+      "paused": "paused",
+      "exited": "exited",
+      "dead": "dead"
+    }
   }
 }

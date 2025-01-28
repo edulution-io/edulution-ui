@@ -48,7 +48,7 @@ const PasswordChangeForm: FC = () => {
             id="currentPassword"
             type="password"
             {...register('currentPassword', { required: t('usersettings.errors.currentPasswordRequired') })}
-            className={`mb-4 mt-1 mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
+            className={`mb-4 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
               errors.currentPassword ? 'border-red-500' : ''
             }`}
           />
@@ -66,7 +66,7 @@ const PasswordChangeForm: FC = () => {
               required: t('usersettings.errors.newPasswordRequired'),
               minLength: { value: 8, message: t('usersettings.errors.passwordLength') },
             })}
-            className={`mb-4 mt-1 mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
+            className={`mb-4 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
               errors.newPassword ? 'border-red-500' : ''
             }`}
           />
@@ -84,7 +84,7 @@ const PasswordChangeForm: FC = () => {
               required: t('usersettings.errors.confirmPasswordRequired'),
               validate: (value) => value === watch('newPassword') || t('usersettings.errors.passwordsDoNotMatch'),
             })}
-            className={`mb-4 mt-1 mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
+            className={`mb-4 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
               errors.confirmPassword ? 'border-red-500' : ''
             }`}
           />

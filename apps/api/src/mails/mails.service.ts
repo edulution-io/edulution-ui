@@ -8,7 +8,6 @@ import { CreateSyncJobDto, MailDto, MailProviderConfigDto, SyncJobDto, SyncJobRe
 import CustomHttpException from '@libs/error/CustomHttpException';
 import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 import APPS from '@libs/appconfig/constants/apps';
-import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
@@ -52,16 +51,17 @@ class MailsService implements OnModuleInit {
 
   @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
   async updateImapConfig() {
-    try {
-      const appConfigs = await this.appConfigService.getAppConfigs([GroupRoles.SUPER_ADMIN]);
-      this.imapUrl = getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_URL);
-      this.imapPort = Number(getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_PORT));
-      this.imapSecure = getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_SECURE) === 'true';
-      this.imapRejectUnauthorized =
-        getExtendedOptionValue(appConfigs, APPS.MAIL, ExtendedOptionKeys.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED) === 'true';
-    } catch (error) {
-      throw new CustomHttpException(MailsErrorMessages.NotAbleToGetImapOption, HttpStatus.INTERNAL_SERVER_ERROR);
+    const appConfigs = await this.appConfigService.getAppConfigs([GroupRoles.SUPER_ADMIN]);
+    const appConfig = appConfigs.find((config) => config.name === APPS.MAIL);
+    if (!appConfig || typeof appConfig.extendedOptions !== 'object') {
+      return;
     }
+
+    this.imapUrl = (appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_URL] as string) || '';
+    this.imapPort = (appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_PORT] as number) || 0;
+    this.imapSecure = appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_SECURE] === 'true' || false;
+    this.imapRejectUnauthorized =
+      appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED] === 'true' || false;
   }
 
   async getMails(username: string, password: string): Promise<MailDto[]> {

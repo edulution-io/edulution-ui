@@ -1,30 +1,29 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { AppConfigOption } from '@libs/appconfig/types';
+import { UseFormReturn } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { parse, stringify } from 'yaml';
 import { FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Switch from '@/components/ui/Switch';
 import YamlEditor from '@/components/shared/YamlEditor';
-import { UseFormReturn } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import Input from '@/components/shared/Input';
-import { parse, stringify } from 'yaml';
-import YamlDokument from '@libs/appconfig/types/yamlDokument';
 import { Button } from '@/components/shared/Button';
-import ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
+import { type AppConfigOption } from '@libs/appconfig/types';
+import type YamlDokument from '@libs/appconfig/types/yamlDokument';
+import type ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
 import getDefaultYaml from '@libs/appconfig/utils/getDefaultYaml';
 
 type ProxyConfigFormProps = {
-  settingLocation: string;
   item: AppConfigOption;
   form: UseFormReturn<ProxyConfigFormType>;
 };
 
-const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item, form }) => {
+const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
   const { t } = useTranslation();
   const [expertModeEnabled, setExpertModeEnabled] = useState(false);
   const isYamlConfigured = form.watch(`${item.id}.proxyConfig`) !== '';
 
-  const defaultYaml = useMemo(() => getDefaultYaml(settingLocation), [settingLocation]);
+  const defaultYaml = useMemo(() => getDefaultYaml(item.id), [item.id]);
 
   const updateYaml = () => {
     const proxyPath = form.getValues(`${item.id}.proxyPath`);
@@ -33,22 +32,22 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
 
     const jsonData = parse(form.getValues(`${item.id}.proxyConfig`) || defaultYaml) as YamlDokument;
     if (proxyPath) {
-      jsonData.http.routers[settingLocation].rule = `PathPrefix(\`/${proxyPath}\`)`;
+      jsonData.http.routers[item.id].rule = `PathPrefix(\`/${proxyPath}\`)`;
       if (stripPrefix) {
         jsonData.http.middlewares['strip-prefix'] = {
           stripPrefix: {
             prefixes: [`/${proxyPath}`],
           },
         };
-        jsonData.http.routers[settingLocation].middlewares = ['strip-prefix'];
+        jsonData.http.routers[item.id].middlewares = ['strip-prefix'];
       } else {
         delete jsonData.http.middlewares['strip-prefix'];
-        jsonData.http.routers[settingLocation].middlewares = [];
+        jsonData.http.routers[item.id].middlewares = [];
       }
     }
 
     if (proxyDestination) {
-      jsonData.http.services[settingLocation].loadBalancer.servers[0].url = proxyDestination;
+      jsonData.http.services[item.id].loadBalancer.servers[0].url = proxyDestination;
     }
 
     const updatedYaml = stringify(jsonData);
@@ -56,7 +55,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
   };
 
   useEffect(() => {
-    if (!expertModeEnabled) {
+    if (!expertModeEnabled && form.watch(`${item.id}.proxyPath`) !== '') {
       updateYaml();
     }
   }, [
@@ -164,7 +163,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
             key={`${item.id}.proxyConfig`}
             control={form.control}
             name={`${item.id}.proxyConfig`}
-            defaultValue={defaultYaml}
+            defaultValue=""
             render={({ field }) => (
               <FormItem>
                 <p className="font-bold text-background">{t(`form.proxyConfig`)}</p>
