@@ -23,15 +23,17 @@ import { AppConfigDto } from '@libs/appconfig/types/appConfigDto';
 import ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
+import type TApps from '@libs/appconfig/types/appsType';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailsConfig from './mails/MailsConfig';
 import formSchema from './appConfigSchema';
 import ProxyConfigForm from './components/ProxyConfigForm';
+import DockerContainerTable from './DockerIntegration/DockerContainerTable';
 
 const AppConfigPage: React.FC = () => {
-  const { settingLocation = '' } = useParams<{ settingLocation: string }>();
+  const { settingLocation = '' } = useParams<{ settingLocation: TApps }>();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -150,7 +152,7 @@ const AppConfigPage: React.FC = () => {
         <Form {...form}>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="column space-y-6 2xl:w-[1200px]"
+            className="column max-w-screen-2xl space-y-6"
           >
             {APP_CONFIG_OPTIONS.map((item) => (
               <div
@@ -185,12 +187,18 @@ const AppConfigPage: React.FC = () => {
                         </FormItem>
                       )}
                     />
+                    <ExtendedOptionsForm
+                      extendedOptions={item.extendedOptions}
+                      control={control}
+                      settingLocation={settingLocation}
+                    />
                     {item.options?.map((itemOption) =>
                       itemOption !== 'proxyConfig' ? (
                         <FormFieldSH
                           key={`${item.id}.options.${itemOption}`}
                           control={control}
                           name={`${item.id}.options.${itemOption}`}
+                          defaultValue=""
                           render={({ field }) => (
                             <FormItem>
                               <h4>{t(`form.${itemOption}`)}</h4>
@@ -213,12 +221,7 @@ const AppConfigPage: React.FC = () => {
                         />
                       ),
                     )}
-                    <ExtendedOptionsForm
-                      extendedOptions={item.extendedOptions}
-                      control={control}
-                      settingLocation={settingLocation}
-                    />
-                    <div>{settingLocation === 'mail' && <MailsConfig form={form} />}</div>
+                    {settingLocation === 'mail' && <MailsConfig form={form} />}
                   </div>
                 ) : null}
               </div>
@@ -253,7 +256,7 @@ const AppConfigPage: React.FC = () => {
           description={!isMobileView && settingLocation ? t(`settings.description.${settingLocation}`) : null}
           iconSrc={APP_CONFIG_OPTIONS.find((item) => item.id === settingLocation)?.icon || SettingsIcon}
         />
-        {settingsForm()}
+        {isAnAppConfigSelected ? settingsForm() : <DockerContainerTable />}
       </div>
       {isAnAppConfigSelected ? (
         <AppConfigFloatingButtons

@@ -13,9 +13,10 @@ import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import APPS from '@libs/appconfig/constants/apps';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
 import { CONFERENCES_SSE_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
+import useDockerContainerEvents from '@/hooks/useDockerContainerEvents';
 
 const useNotifications = () => {
-  const { isSuperAdmin } = useLdapGroups();
+  const { isSuperAdmin, isAuthReady } = useLdapGroups();
   const { eduApiToken } = useUserStore();
   const isMailsAppActivated = useIsMailsActive();
   const { getMails } = useMailsStore();
@@ -25,26 +26,30 @@ const useNotifications = () => {
   const isSurveysAppActivated = useIsSurveysActive();
   const { updateOpenSurveys } = useSurveyTablesPageStore();
 
+  useDockerContainerEvents();
+
   useEffect(() => {
     conferencesRef.current = conferences;
   }, [conferences]);
 
   useEffect(() => {
-    if (isMailsAppActivated && !isSuperAdmin) {
-      void getMails();
-    }
+    if (isAuthReady) {
+      if (isMailsAppActivated && !isSuperAdmin) {
+        void getMails();
+      }
 
-    if (isSurveysAppActivated) {
-      void updateOpenSurveys();
-    }
+      if (isSurveysAppActivated) {
+        void updateOpenSurveys();
+      }
 
-    if (isConferenceAppActivated) {
-      void getConferences();
+      if (isConferenceAppActivated) {
+        void getConferences();
+      }
     }
-  }, [isMailsAppActivated, isSuperAdmin, isSurveysAppActivated, isConferenceAppActivated]);
+  }, [isAuthReady, isMailsAppActivated, isSuperAdmin, isSurveysAppActivated, isConferenceAppActivated]);
 
   useInterval(() => {
-    if (isMailsAppActivated && !isSuperAdmin) {
+    if (isAuthReady && isMailsAppActivated && !isSuperAdmin) {
       void getMails();
     }
   }, FEED_PULL_TIME_INTERVAL_SLOW);

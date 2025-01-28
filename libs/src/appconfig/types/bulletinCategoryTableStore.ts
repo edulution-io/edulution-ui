@@ -4,7 +4,6 @@ import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinC
 
 export interface BulletinCategoryTableStore extends AppConfigTable<BulletinCategoryResponseDto> {
   isDialogOpen: boolean;
-  fetchTableContent: () => Promise<void>;
   setIsDialogOpen: (isOpen: boolean) => void;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
@@ -20,5 +19,7 @@ export interface BulletinCategoryTableStore extends AppConfigTable<BulletinCateg
   isDeleteDialogOpen: boolean;
   isDeleteDialogLoading: boolean;
   setIsDeleteDialogOpen: (isOpen: boolean) => void;
+  setCategoryPosition: (categoryId: string, position: number) => Promise<void>;
+  isCategoryPositionLoading: boolean;
   error: null | Error;
 }
