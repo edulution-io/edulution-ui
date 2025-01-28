@@ -191,35 +191,44 @@ describe('SurveyAnswerService', () => {
     });
   });
 
-  // TODO: FIX
-  // describe('getOpenSurveys', () => {
-  //   it('should return a list with surveys that the user should/could participate', async () => {
-  //     jest.spyOn(service, 'getOpenSurveys');
-  //
-  //     surveyModel.find = jest.fn().mockReturnValue([openSurvey01, openSurvey02]);
-  //
-  //     const result = await service.getOpenSurveys(firstUsername);
-  //     expect(result).toEqual([openSurvey01, openSurvey02]);
-  //
-  //     expect(service.getOpenSurveys).toHaveBeenCalledWith(firstUsername);
-  //     expect(surveyModel.find).toHaveBeenCalledWith({
-  //       $or: [
-  //         { isPublic: true },
-  //         {
-  //           $and: [
-  //             { 'invitedAttendees.username': firstUsername },
-  //             {
-  //               $or: [
-  //                 { $nor: [{ participatedAttendees: { $elemMatch: { username: firstUsername } } }] },
-  //                 { canSubmitMultipleAnswers: true },
-  //               ],
-  //             },
-  //           ],
-  //         },
-  //       ],
-  //     });
-  //   });
-  // });
+  describe('getOpenSurveys', () => {
+    it('should return a list with surveys that the user should/could participate', async () => {
+      jest.spyOn(service, 'getOpenSurveys');
+      surveyModel.find = jest.fn().mockReturnValue([openSurvey01, openSurvey02]);
+
+      const currentDate = new Date();
+      const result = await service.getOpenSurveys(firstUsername, currentDate);
+      expect(result).toEqual([openSurvey01, openSurvey02]);
+      expect(service.getOpenSurveys).toHaveBeenCalledWith(firstUsername, currentDate);
+
+      expect(surveyModel.find).toHaveBeenCalledWith({
+        $or: [
+          {
+            $and: [
+              { isPublic: true },
+              {
+                $or: [{ expires: { $eq: null } }, { expires: { $gt: currentDate } }],
+              },
+            ],
+          },
+          {
+            $and: [
+              { 'invitedAttendees.username': firstUsername },
+              {
+                $or: [
+                  { $nor: [{ participatedAttendees: { $elemMatch: { username: firstUsername } } }] },
+                  { canSubmitMultipleAnswers: true },
+                ],
+              },
+              {
+                $or: [{ expires: { $eq: null } }, { expires: { $gt: currentDate } }],
+              },
+            ],
+          },
+        ],
+      });
+    });
+  });
 
   describe('getAnswers', () => {
     it('should return a list with the answers the user has submitted', async () => {
@@ -269,7 +278,7 @@ describe('SurveyAnswerService', () => {
       expect(service.getAnsweredSurveys).toHaveBeenCalledWith(firstUsername);
       expect(model.find).toHaveBeenCalledWith({ 'attendee.username': firstUsername });
       expect(surveyModel.find).toHaveBeenCalledWith({
-        _id: {
+        id: {
           $in: [idOfAnsweredSurvey01, idOfAnsweredSurvey02, idOfAnsweredSurvey05, idOfAnsweredSurvey04],
         },
       });

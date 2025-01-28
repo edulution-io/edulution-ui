@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/unbound-method */
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { HttpStatus } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -94,10 +94,10 @@ describe(SurveysController.name, () => {
       jest.spyOn(surveyService, 'findSurvey');
 
       surveyModel.findOne = jest.fn().mockReturnValue({
-        lean: jest.fn().mockReturnValue(publicSurvey01),
+        exec: jest.fn().mockReturnValue(publicSurvey01),
       });
 
-      const result = await controller.findOne({ surveyId: idOfPublicSurvey01.toString() }, firstUsername);
+      const result = await controller.findOne({ surveyId: idOfPublicSurvey01 as unknown as string }, firstUsername);
       expect(result).toEqual(publicSurvey01);
 
       expect(surveyModel.findOne).toHaveBeenCalledWith({
@@ -109,7 +109,7 @@ describe(SurveysController.name, () => {
               { invitedAttendees: { $elemMatch: { username: firstUsername } } },
             ],
           },
-          { _id: idOfPublicSurvey01 },
+          { id: idOfPublicSurvey01 },
         ],
       });
     });
@@ -211,14 +211,14 @@ describe(SurveysController.name, () => {
   describe('updateOrCreateSurvey', () => {
     it('should call the updateOrCreateSurvey() function of the surveyService', async () => {
       jest.spyOn(surveyService, 'updateOrCreateSurvey');
-      surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue({
-        lean: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
+      surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
+        exec: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
       });
 
       const { id, created = new Date() } = surveyUpdateUpdatedSurveyDto;
       const createSurvey: Survey = {
         ...surveyUpdateUpdatedSurveyDto,
-        _id: id,
+        _id: new mongoose.Types.ObjectId(id),
         created,
       };
 

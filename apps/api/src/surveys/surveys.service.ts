@@ -22,11 +22,6 @@ class SurveysService {
   ) {}
 
   async findSurvey(surveyId: string, username: string): Promise<Survey | null> {
-    const mongoId = new mongoose.Types.ObjectId(surveyId);
-    if (!mongoose.isValidObjectId(mongoId)) {
-      throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
-    }
-
     const survey = await this.surveyModel
       .findOne({
         $and: [
@@ -37,10 +32,10 @@ class SurveysService {
               { invitedAttendees: { $elemMatch: { username } } },
             ],
           },
-          { _id: mongoId },
+          { id: surveyId },
         ],
       })
-      .lean();
+      .exec();
 
     if (!survey) {
       throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
@@ -70,13 +65,7 @@ class SurveysService {
 
   async updateSurvey(survey: Survey, surveysSseConnections: UserConnections): Promise<Survey | null> {
     try {
-      return await this.surveyModel
-        .findByIdAndUpdate<Survey>(
-          // eslint-disable-next-line no-underscore-dangle
-          survey._id,
-          { ...survey },
-        )
-        .lean();
+      return await this.surveyModel.findOneAndUpdate<Survey>({ id: survey.id }, { ...survey }).exec();
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {
