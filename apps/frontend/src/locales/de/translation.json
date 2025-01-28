@@ -660,14 +660,14 @@
           "title": "Allgemein",
           "description": ""
         },
+        "docker": {
+          "title": "Docker Anwendungen",
+          "description": "Um die erweiterten Dienste nutzen zu können hier die benötigten Docker Container gestartet werden."
+        },
         "veyon": {
           "title": "Veyon Proxy",
           "description": "",
           "filterPlaceHolderText": "Suche nach Proxy-Name"
-        },
-        "docker": {
-          "title": "Docker Anwendungen",
-          "description": "Um die erweiterten Dienste nutzen zu können hier die benötigten Docker Container gestartet werden."
         }
       },
       "update": {

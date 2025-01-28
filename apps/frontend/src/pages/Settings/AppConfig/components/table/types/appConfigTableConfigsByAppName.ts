@@ -9,9 +9,10 @@ import type AppConfigTableEntry from './appConfigTableEntry';
 
 type AppConfigTableConfigsByAppName = {
   [APPS.BULLETIN_BOARD]: AppConfigTableEntry<BulletinCategoryResponseDto, BulletinCategoryTableStore>[];
-  [APPS.CLASS_MANAGEMENT]:
-    | AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>[]
-    | AppConfigTableEntry<VeyonProxyItem, VeyonConfigTableStore>[];
+  [APPS.CLASS_MANAGEMENT]: (
+    | AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>
+    | AppConfigTableEntry<VeyonProxyItem, VeyonConfigTableStore>
+  )[];
   [APPS.MAIL]: AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>[];
   [APPS.DESKTOP_DEPLOYMENT]: AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>[];
 };

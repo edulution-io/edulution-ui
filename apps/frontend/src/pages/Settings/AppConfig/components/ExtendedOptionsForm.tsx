@@ -64,6 +64,7 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
           <AppConfigTable
             key={fieldPath}
             applicationName={settingLocation || ''}
+            tableId={option.name}
           />
         );
       case ExtendedOptionField.switch:

@@ -13,14 +13,20 @@ import type VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import APPS from '@libs/appconfig/constants/apps';
 import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
+import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 import useVeyonConfigTableStore from './useVeyonTableStore';
 import useAppConfigsStore from '../appConfigsStore';
 
-const AddVeyonProxyDialog = () => {
+interface AddVeyonProxyDialogProps {
+  tableId: ExtendedOptionKeysType;
+}
+
+const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) => {
   const { t } = useTranslation();
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
   const { appConfigs, patchAppConfig } = useAppConfigsStore();
   const { selectedConfig, setSelectedConfig } = useVeyonConfigTableStore();
+  const isOpen = isDialogOpen === tableId;
 
   const veyonProxyConfig = getExtendedOptionValue(
     appConfigs,
@@ -46,7 +52,7 @@ const AddVeyonProxyDialog = () => {
   }, [selectedConfig, reset]);
 
   const closeDialog = () => {
-    setDialogOpen(false);
+    setDialogOpen('');
     setSelectedConfig(null);
     reset();
   };
@@ -153,9 +159,9 @@ const AddVeyonProxyDialog = () => {
 
   return (
     <AdaptiveDialog
-      isOpen={isDialogOpen}
+      isOpen={isOpen}
       handleOpenChange={() => {
-        setDialogOpen(false);
+        setDialogOpen('');
         setSelectedConfig(null);
       }}
       title={

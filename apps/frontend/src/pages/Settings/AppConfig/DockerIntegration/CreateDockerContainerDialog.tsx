@@ -8,19 +8,22 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
 import type TApps from '@libs/appconfig/types/appsType';
 import convertComposeToDockerode from '@libs/docker/utils/convertComposeToDockerode';
+import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 import useDockerApplicationStore from './useDockerApplicationStore';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 
 interface CreateDockerContainerDialogProps {
   settingLocation: TApps;
+  tableId: ExtendedOptionKeysType;
 }
 
-const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = ({ settingLocation }) => {
+const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = ({ settingLocation, tableId }) => {
   const { t } = useTranslation();
   const [dockerProgress, setDockerProgress] = useState(['']);
   const { isLoading, eventSource, tableContentData, dockerContainerConfig, createAndRunContainer, fetchTableContent } =
     useDockerApplicationStore();
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
+  const isOpen = isDialogOpen === tableId;
 
   useEffect(() => {
     if (!eventSource) return undefined;
@@ -54,7 +57,7 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
         size="lg"
         type="button"
         className="w-24 border-2"
-        onClick={() => setDialogOpen(false)}
+        onClick={() => setDialogOpen('')}
         disabled={tableContentData.length !== 0 && isLoading}
       >
         {tableContentData.length === 0 ? t('common.cancel') : t('common.close')}{' '}
@@ -77,10 +80,10 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
       <div className="absolute right-10 top-12 md:right-20 md:top-10">{isLoading ? <CircleLoader /> : null}</div>
       <AdaptiveDialog
         title={t(`dockerApplication.dialogTitle`, { applicationName: t(`${settingLocation}.sidebar`) })}
-        isOpen={isDialogOpen}
+        isOpen={isOpen}
         body={getDialogBody()}
         footer={getDialogFooter()}
-        handleOpenChange={() => setDialogOpen(false)}
+        handleOpenChange={() => setDialogOpen('')}
       />
     </>
   );

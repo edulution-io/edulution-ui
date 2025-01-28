@@ -4,15 +4,16 @@ import { BulletinCategoryTableStore } from '@libs/appconfig/types/bulletinCatego
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import { VeyonConfigTableStore } from '@libs/appconfig/types/veyonConfigTableStore';
 import { DockerContainerTableStore } from '@libs/appconfig/types/dockerContainerTableStore';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import AppConfigTableEntry from './appConfigTableEntry';
 
 export type AppConfigTableConfig =
   | (AppConfigTableEntry<BulletinCategoryResponseDto, BulletinCategoryTableStore> & {
-      type: 'bulletin';
+      type: typeof ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE;
     })
   | (AppConfigTableEntry<ContainerInfo, DockerContainerTableStore> & {
-      type: 'docker';
+      type: typeof ExtendedOptionKeys.DOCKER_CONTAINER_TABLE;
     })
   | (AppConfigTableEntry<VeyonProxyItem, VeyonConfigTableStore> & {
-      type: 'veyon';
+      type: typeof ExtendedOptionKeys.VEYON_PROXYS;
     });
