@@ -73,7 +73,6 @@ const EnrolPage: React.FC = () => {
         name="filter"
         onChange={(e) => setFilterKeyWord(e.target.value)}
         placeholder={t('classmanagement.typeToFilter')}
-        variant="lightGray"
         id={FILTER_BAR_ID}
         className="mb-2"
       />
@@ -81,13 +80,13 @@ const EnrolPage: React.FC = () => {
         className="flex max-w-full flex-row flex-wrap overflow-y-auto overflow-x-visible scrollbar-thin"
         style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
       >
-        <div className="mt-2 min-w-full text-lg">{t('classmanagement.enrolPageDescription')}</div>
+        <div className="mt-2 min-w-full text-lg text-background">{t('classmanagement.enrolPageDescription')}</div>
         {groupRows.map((row) => (
           <div
             key={row.name}
-            className="mt-4 min-w-full"
+            className="mt-4 min-w-full text-background"
           >
-            <h4>{t(`classmanagement.${row.name}`)}</h4>
+            <h4 className="text-background">{t(`classmanagement.${row.name}`)}</h4>
             <GroupList
               row={row}
               isEnrolEnabled

@@ -55,7 +55,7 @@ const PrintPasswordsDialog: React.FC<PrintPasswordsDialogProps> = ({ selectedCla
     }
 
     return (
-      <div className="text-foreground">
+      <div className="text-background">
         <p>{t(`classmanagement.${title}Description`)}:</p>
         <p className="ml-2 mt-2">{selectedClasses.map((m) => m.displayName || m.cn).join(', ')}</p>
         {title === PrintPasswordsFormat.PDF ? (
@@ -95,13 +95,13 @@ const PrintPasswordsDialog: React.FC<PrintPasswordsDialogProps> = ({ selectedCla
         <button
           type="button"
           onClick={onClose}
-          className="rounded-md bg-ciLightRed px-4 py-2 text-white hover:bg-ciRed"
+          className="rounded-md bg-ciLightRed px-4 py-2 text-background hover:bg-ciRed"
         >
           {t('cancel')}
         </button>
         <button
           type="button"
-          className="rounded-md bg-ciLightGreen px-4 py-2 text-white hover:bg-ciGreen"
+          className="rounded-md bg-ciLightGreen px-4 py-2 text-background hover:bg-ciGreen"
           onClick={handelConfirm}
         >
           {t('downloadFile')}

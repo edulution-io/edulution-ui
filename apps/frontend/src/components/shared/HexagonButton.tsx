@@ -10,7 +10,7 @@ const HexagonButton = forwardRef<HTMLButtonElement, HexagonButtonProps>(({ child
     <button
       ref={ref}
       onClick={onClick}
-      className="border-1 group relative flex h-8 w-8 items-center justify-center overflow-hidden border-ciGreen border-opacity-0 bg-ciGreen text-white transition-colors hover:border-opacity-100"
+      className="border-1 group relative flex h-8 w-8 items-center justify-center overflow-hidden border-ciGreen border-opacity-0 bg-ciGreen text-background transition-colors hover:border-opacity-100"
       style={{
         clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
       }}

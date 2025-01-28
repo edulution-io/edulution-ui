@@ -42,14 +42,14 @@ const TimeInput = <T extends FieldValues>({ form, disabled, fieldName, date }: T
   }, [date]);
 
   return (
+    // TODO change the background color to bg-foreground @Dominik
     <>
       {t('common.time')}
       <Input
         type="time"
         value={expirationTime}
         onChange={handleExpirationTimeChange}
-        variant="default"
-        className={cn('ml-2', { 'text-gray-300': !expirationTime }, { 'text-foreground': expirationTime })}
+        className={cn('ml-2', { 'text-gray-300': !expirationTime }, { 'text-background': expirationTime })}
         disabled={disabled}
       />
     </>

@@ -30,7 +30,6 @@ const MailImporterConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
             <FormControl>
               <Input
                 placeholder=""
-                variant="lightGray"
                 {...field}
               />
             </FormControl>
@@ -49,7 +48,6 @@ const MailImporterConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
               <Input
                 placeholder="https://"
                 {...field}
-                variant="lightGray"
               />
             </FormControl>
             <FormMessage className="text-p" />
@@ -68,7 +66,6 @@ const MailImporterConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
                 <Input
                   placeholder="993"
                   {...field}
-                  variant="lightGray"
                 />
               </FormControl>
               <FormMessage className="text-p" />

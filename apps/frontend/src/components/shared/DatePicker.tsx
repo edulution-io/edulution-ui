@@ -5,12 +5,12 @@ import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import cn from '@libs/common/utils/className';
-import { ButtonSH } from '@/components/ui/ButtonSH';
 import { Calendar } from '@/components/ui/Calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 import useUserStore from '@/store/UserStore/UserStore';
 import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
 import UserLanguage from '@libs/user/constants/userLanguage';
+import { Button } from '@/components/shared/Button';
 
 interface DatePickerProps {
   selected: Date | undefined;
@@ -25,28 +25,27 @@ const DatePicker = (props: DatePickerProps) => {
   const locale = getLocaleDateFormat(user?.language === UserLanguage.SYSTEM ? navigator.language : user?.language);
 
   return (
-    <span className="min-w-[150px] max-w-[150px] flex-shrink-0 flex-grow-0 overflow-auto text-gray-900">
+    <span className="min-w-[150px] max-w-[150px] flex-shrink-0 flex-grow-0 overflow-auto text-background">
       <Popover>
         <PopoverTrigger asChild>
-          <ButtonSH
-            variant="outline"
+          <Button
             className={cn(
-              'h-9 justify-start rounded py-0 text-left font-normal text-foreground',
-              !selected && 'text-muted-foreground',
+              'h-9 justify-start rounded bg-accent py-0 text-left font-normal text-background',
+              !selected && 'opacity-80',
             )}
           >
-            <CalendarIcon className="mr-2 h-6 w-6" />
+            <CalendarIcon className="mr-2 h-6 w-6 text-background" />
             {selected ? format(selected, 'PPP', { locale }) : t(`common.select`)}
-          </ButtonSH>
+          </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto bg-gray-100 p-0">
+        <PopoverContent className="w-auto bg-accent p-0 font-normal text-background shadow-lg">
           <Calendar
             mode="single"
             selected={selected}
             onSelect={onSelect}
             locale={locale}
             classNames={{
-              day_selected: 'border border-gray-200 text-gray-400',
+              day_selected: 'text-secondary',
             }}
             initialFocus
           />

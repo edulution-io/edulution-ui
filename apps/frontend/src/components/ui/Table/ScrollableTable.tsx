@@ -103,7 +103,7 @@ const ScrollableTable = <TData, TValue>({
       {selectedRowsCount > 0 ? (
         <div
           id={selectedRowsMessageId}
-          className="flex-1 text-sm text-muted-foreground text-white"
+          className="flex-1 text-sm text-muted-foreground"
         >
           {selectedRowsCount > 0 ? (
             t(`${applicationName}.${filteredRowCount === 1 ? 'rowSelected' : 'rowsSelected'}`, {
@@ -119,7 +119,7 @@ const ScrollableTable = <TData, TValue>({
           {!tableIsUsedOnAppConfigPage && (
             <div
               id={selectedRowsMessageId}
-              className="flex-1 text-sm text-muted-foreground text-white"
+              className="flex-1 text-sm text-muted-foreground"
             >
               &nbsp;
             </div>
@@ -139,13 +139,13 @@ const ScrollableTable = <TData, TValue>({
                 placeholder={t(filterPlaceHolderText)}
                 value={filterValue}
                 onChange={(event) => table.getColumn(filterKey)?.setFilterValue(event.target.value)}
-                className="max-w-xl bg-ciDarkGrey text-ciLightGrey"
+                className="max-w-xl bg-accent text-secondary"
               />
               <DropdownMenu
                 trigger={
                   <Button
                     variant="btn-small"
-                    className="ml-auto bg-ciDarkGrey text-ciLightGrey"
+                    className="ml-auto bg-accent text-secondary"
                   >
                     {t('common.columns')} <ChevronDown />
                   </Button>
@@ -164,7 +164,7 @@ const ScrollableTable = <TData, TValue>({
           )}
           <Table>
             <TableHeader
-              className="text-foreground scrollbar-thin"
+              className="text-background scrollbar-thin"
               id={tableHeaderId}
             >
               {table.getHeaderGroups().map((headerGroup) => (
@@ -187,7 +187,7 @@ const ScrollableTable = <TData, TValue>({
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={`${row.id}-${cell.column.id}`}
-                        className="text-white"
+                        className="text-background"
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
@@ -198,7 +198,7 @@ const ScrollableTable = <TData, TValue>({
                 <TableRow>
                   <TableCell
                     colSpan={columns?.length}
-                    className="h-24 text-center text-white"
+                    className="h-24 text-center text-background"
                   >
                     {t('table.noDataAvailable')}
                   </TableCell>

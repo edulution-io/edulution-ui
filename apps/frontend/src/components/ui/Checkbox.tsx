@@ -32,7 +32,7 @@ const Checkbox = React.forwardRef<
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
     <label htmlFor={label}>
-      {label && <span className="cursor-pointer select-none text-foreground">{label}</span>}
+      {label && <span className="cursor-pointer select-none text-background">{label}</span>}
     </label>
   </div>
 ));

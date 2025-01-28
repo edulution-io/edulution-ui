@@ -186,7 +186,7 @@ const AppConfigPage: React.FC = () => {
                       name={`${item.id}.accessGroups`}
                       render={() => (
                         <FormItem>
-                          <h4>{t(`permission.groups`)}</h4>
+                          <h4 className="text-background">{t(`permission.groups`)}</h4>
                           <FormControl>
                             <AsyncMultiSelect<MultipleSelectorGroup>
                               value={getValues(`${item.id}.accessGroups`)}
@@ -195,7 +195,7 @@ const AppConfigPage: React.FC = () => {
                               placeholder={t('search.type-to-search')}
                             />
                           </FormControl>
-                          <p>{t(`permission.selectGroupsDescription`)}</p>
+                          <p className="text-background">{t(`permission.selectGroupsDescription`)}</p>
                           <FormMessage className="text-p" />
                         </FormItem>
                       )}
@@ -214,12 +214,9 @@ const AppConfigPage: React.FC = () => {
                           defaultValue=""
                           render={({ field }) => (
                             <FormItem>
-                              <h4>{t(`form.${itemOption}`)}</h4>
+                              <h4 className="text-background">{t(`form.${itemOption}`)}</h4>
                               <FormControl>
-                                <Input
-                                  {...field}
-                                  variant="lightGray"
-                                />
+                                <Input {...field} />
                               </FormControl>
                               <FormMessage className="text-p" />
                             </FormItem>
@@ -233,11 +230,6 @@ const AppConfigPage: React.FC = () => {
                         />
                       ),
                     )}
-                    <ExtendedOptionsForm
-                      extendedOptions={item.extendedOptions}
-                      control={control}
-                      settingLocation={settingLocation}
-                    />
                     {settingLocation === APPS.MAIL && (
                       <MailImporterConfig form={form as UseFormReturn<MailProviderConfig>} />
                     )}

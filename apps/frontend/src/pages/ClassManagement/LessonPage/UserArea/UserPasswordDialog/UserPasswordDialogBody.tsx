@@ -61,7 +61,7 @@ const UserPasswordDialogBody = ({
   };
 
   return (
-    <div className="flex flex-col text-base text-foreground">
+    <div className="flex flex-col text-base text-background">
       <table className="w-full table-fixed">
         <tbody>
           <tr>
@@ -76,11 +76,11 @@ const UserPasswordDialogBody = ({
                   <FormField
                     name="firstPassword"
                     form={form}
-                    variant="default"
                     type="password"
                     className="w-full flex-grow"
                     value={form.watch('firstPassword')}
                     onChange={(e) => form.setValue('firstPassword', e.target.value)}
+                    variant="dialog"
                   />
                 </div>
                 <Button
@@ -111,8 +111,8 @@ const UserPasswordDialogBody = ({
                   <FormField
                     name="currentPassword"
                     form={form}
-                    variant="default"
                     type="password"
+                    variant="dialog"
                   />
                 </div>
                 <Button

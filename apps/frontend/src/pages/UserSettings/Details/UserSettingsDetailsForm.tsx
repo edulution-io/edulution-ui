@@ -73,7 +73,6 @@ const UserSettingsDetailsForm = () => {
               name={field.name}
               labelTranslationId={field.label}
               defaultValue={field.value}
-              variant="lightGray"
             />
           ))}
           {userDataMultiFields.map((field: InputProp<string[]>) => (
