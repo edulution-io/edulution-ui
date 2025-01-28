@@ -11,6 +11,7 @@ import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
+import DockerErrorMessages from '@libs/docker/constants/dockerErrorMessages';
 
 type ErrorMessage =
   | CommonErrorMessages
@@ -25,6 +26,7 @@ type ErrorMessage =
   | MailsErrorMessages
   | SurveyErrorMessages
   | BulletinBoardErrorMessage
-  | SurveyAnswerErrorMessages;
+  | SurveyAnswerErrorMessages
+  | DockerErrorMessages;
 
 export default ErrorMessage;

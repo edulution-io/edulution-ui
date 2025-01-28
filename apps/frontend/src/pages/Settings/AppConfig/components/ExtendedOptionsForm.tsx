@@ -2,23 +2,24 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Control, FieldValues, Path } from 'react-hook-form';
 import { z } from 'zod';
-import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
-import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
-import cn from '@libs/common/utils/className';
-import AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
-import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import AppConfigFormField from '@/pages/Settings/AppConfig/components/textField/AppConfigFormField';
 import formSchema from '@/pages/Settings/AppConfig/appConfigSchema';
+import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import AppConfigTable from '@/pages/Settings/AppConfig/components/table/AppConfigTable';
-import AppConfigSwitch from '@/pages/Settings/AppConfig/components/booleanField/AppConfigSwitch';
+import cn from '@libs/common/utils/className';
+import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
+import { type AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+import type AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
+import type TApps from '@libs/appconfig/types/appsType';
+import AppConfigSwitch from './booleanField/AppConfigSwitch';
 
 type ExtendedOptionsFormProps<T extends FieldValues> = {
   extendedOptions: AppConfigExtendedOptionsBySections | undefined;
   control: Control<z.infer<typeof formSchema>, T>;
-  settingLocation?: string;
+  settingLocation: TApps;
 };
 
-const ExtendedOptionsForm = <T extends FieldValues>({
+const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T extends FieldValues>({
   extendedOptions,
   control,
   settingLocation,
@@ -87,7 +88,6 @@ const ExtendedOptionsForm = <T extends FieldValues>({
           <AccordionSH
             type="multiple"
             key={section}
-            defaultValue={[section]}
           >
             <AccordionItem value={section}>
               <AccordionTrigger className="flex text-xl font-bold">
