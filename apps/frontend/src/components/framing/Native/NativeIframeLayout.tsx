@@ -16,7 +16,7 @@ const NativeIframeLayout: React.FC<NativeIframeLayoutProps> = ({ scriptOnStartUp
   const { t } = useTranslation();
   const { appConfigs } = useAppConfigsStore();
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const { isAuthenticated, isPreparingLogout } = useUserStore();
+  const { isAuthenticated, isPreparingLogout, eduApiToken } = useUserStore();
   const { loadedEmbeddedFrames, activeEmbeddedFrame } = useFrameStore();
 
   const getStyle = () => (activeEmbeddedFrame === appName ? { display: 'block' } : { display: 'none' });
@@ -61,13 +61,19 @@ const NativeIframeLayout: React.FC<NativeIframeLayoutProps> = ({ scriptOnStartUp
   const currentAppConfig = findAppConfigByName(appConfigs, appName);
   if (!currentAppConfig) return null;
 
+  let { url } = currentAppConfig.options;
+
+  if (url) {
+    url = url.replace(/token=[^&]+/, `token=${eduApiToken}`);
+  }
+
   return (
     <iframe
       ref={iframeRef}
       title={appName}
       className="absolute inset-y-0 left-0 ml-0 mr-14 w-full md:w-[calc(100%-var(--sidebar-width))]"
       height="100%"
-      src={loadedEmbeddedFrames.includes(currentAppConfig.name) ? currentAppConfig.options.url : undefined}
+      src={loadedEmbeddedFrames.includes(currentAppConfig.name) ? url : undefined}
       style={getStyle()}
     />
   );
