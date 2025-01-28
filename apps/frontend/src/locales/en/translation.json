@@ -194,9 +194,12 @@
       "ConferenceIsNotRunning": "Conference is not running",
       "MissingMandatoryParameters": "Request failed because of missing parameters"
     },
+    "joinThisConference": "Join this conference",
     "filterPlaceHolderText": "Search for conference name",
     "started": "Conference started",
     "stopped": "Conference stopped",
+    "isStarting": "Conference is starting",
+    "isStopping": "Conference is stopping",
     "conferenceFetchedSuccessfully": "Conferences successfully fetched",
     "tryManually": "Join manually",
     "changeUser": "Change user",
@@ -792,6 +795,7 @@
       "doCopy": "Copy",
       "link": "Copy link"
     },
+    "openInNewTab": "Open in new tab",
     "from": "from",
     "youAreCurrentlyNotLoggedIn": "You are currently not logged in",
     "toLogin": "To login",
