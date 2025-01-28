@@ -1,21 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { AppConfigDto } from '@libs/appconfig/types';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import AppConfigController from './appconfig.controller';
 import AppConfigService from './appconfig.service';
 import { AppConfig } from './appconfig.schema';
-import mockAppConfigService from './appconfig.service.mock';
+import { mockAppConfig, mockAppConfigModel, mockAppConfigService, mockLdapGroup } from './appconfig.mock';
 
 jest.mock('./appconfig.service');
-
-const mockAppConfigModel = {
-  insertMany: jest.fn(),
-  bulkWrite: jest.fn(),
-  find: jest.fn(),
-  deleteOne: jest.fn(),
-};
 
 describe('AppConfigController', () => {
   let controller: AppConfigController;
@@ -47,67 +37,27 @@ describe('AppConfigController', () => {
 
   describe('createConfig', () => {
     it('should call insertConfig method of appConfigService with correct arguments', () => {
-      const appConfigDto: AppConfigDto[] = [
-        {
-          name: 'TestConfig',
-          icon: 'test-icon',
-          appType: APP_INTEGRATION_VARIANT.NATIVE,
-          options: {
-            url: 'https://example.com/api/',
-            apiKey: 'secret-key',
-          },
-          extendedOptions: {
-            [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/api/',
-            [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
-          },
-          accessGroups: [
-            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
-            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
-          ],
-        },
-      ];
-      controller.createConfig(appConfigDto);
-      expect(service.insertConfig).toHaveBeenCalledWith(appConfigDto);
+      void controller.createConfig(mockLdapGroup, mockAppConfig);
+      expect(service.insertConfig).toHaveBeenCalledWith(mockAppConfig, mockLdapGroup);
     });
 
     it('should call updateConfig method of appConfigService with correct arguments', () => {
-      const appConfigDto: AppConfigDto[] = [
-        {
-          name: 'TestConfig',
-          icon: 'test-icon',
-          appType: APP_INTEGRATION_VARIANT.NATIVE,
-          options: {
-            url: 'https://example.com/api/',
-            apiKey: 'secret-key',
-          },
-          extendedOptions: {
-            [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/api/',
-            [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
-          },
-          accessGroups: [
-            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
-            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
-          ],
-        },
-      ];
-      controller.updateConfig(appConfigDto);
-      expect(service.updateConfig).toHaveBeenCalledWith(appConfigDto);
+      void controller.updateConfig(mockAppConfig.name, mockAppConfig, mockLdapGroup);
+      expect(service.updateConfig).toHaveBeenCalledWith(mockAppConfig.name, mockAppConfig, mockLdapGroup);
     });
   });
 
   describe('getAppConfigs', () => {
-    const ldapGroups = ['group1', 'group2'];
     it('should call getAppConfigs method of appConfigService', async () => {
-      await controller.getAppConfigs(ldapGroups);
+      await controller.getAppConfigs(mockLdapGroup);
       expect(service.getAppConfigs).toHaveBeenCalled();
     });
   });
 
   describe('deleteConfig', () => {
     it('should call deleteConfig method of appConfigService with correct arguments', () => {
-      const name = 'TestConfig';
-      controller.deleteConfig(name);
-      expect(service.deleteConfig).toHaveBeenCalledWith(name);
+      void controller.deleteConfig(mockAppConfig.name, mockLdapGroup);
+      expect(service.deleteConfig).toHaveBeenCalledWith(mockAppConfig.name, mockLdapGroup);
     });
   });
 

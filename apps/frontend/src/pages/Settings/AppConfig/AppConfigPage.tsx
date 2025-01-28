@@ -126,7 +126,7 @@ const AppConfigPage: React.FC = () => {
 
     const extendedOptions = form.getValues(`${settingLocation}.extendedOptions`) || {};
 
-    const newConfig = {
+    const newConfig: AppConfigDto = {
       name: settingLocation,
       icon: selectedOption.icon,
       appType: getValues(`${settingLocation}.appType`),
@@ -135,14 +135,7 @@ const AppConfigPage: React.FC = () => {
       accessGroups: getValues(`${settingLocation}.accessGroups`) || [],
     };
 
-    const updatedConfig = appConfigs.map((entry): AppConfigDto => {
-      if (entry.name === settingLocation) {
-        return newConfig;
-      }
-      return entry;
-    });
-
-    await updateAppConfig(updatedConfig);
+    await updateAppConfig(newConfig);
 
     if (settingLocation === APPS.MAIL && getValues('mail.configName')) {
       const mailProviderConfig: MailProviderConfigDto = {

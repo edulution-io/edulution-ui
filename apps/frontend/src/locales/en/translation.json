@@ -5,6 +5,8 @@
   "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
   "preparing": "preparing...",
   "closeEditingWindow": "Close editing window",
+  "framebufferImage": "Framebuffer image",
+  "previewImage": "Image preview",
   "bulletinboard": {
     "settings": "Settings",
     "categoryIsRequired": "Selecting a category is required",
@@ -415,7 +417,18 @@
     "saveSession": "Save session",
     "myRoom": "My room",
     "sharedMailBox": "Shared mailbox",
-    "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes."
+    "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes.",
+    "veyonConfigTable": {
+      "id": "ID",
+      "subnet": "Subnet",
+      "subnetDescription": "Subnet in CIDR notation (10.0.0.0/24)",
+      "subnetPlaceholder": "10.0.0.0/24",
+      "proxyAdress": "Proxy Adress",
+      "proxyAdressDescription": "URL of the Veyon-WebAPI-Proxy",
+      "proxyAdressPlaceholder": "http://localhost:11080",
+      "createConfig": "Create config",
+      "editConfig": "Edit config"
+    }
   },
   "select": "Select",
   "selectAll": "Select all",
@@ -646,13 +659,14 @@
           "title": "General",
           "description": ""
         },
-        "veyon": {
-          "title": "Veyon Proxy",
-          "description": ""
-        },
         "docker": {
           "title": "Docker Applications",
           "description": "To be able to use the extended services, the required Docker containers must be started here."
+        },
+        "veyon": {
+          "title": "Veyon Proxy",
+          "description": "",
+          "filterPlaceHolderText": "Search for proxy"
         }
       },
       "update": {
@@ -1113,6 +1127,7 @@
     "containerName": "Container Name",
     "state": "State",
     "status": "Status",
+    "state-badge": "Badge",
     "imageName": "Image",
     "filterPlaceHolderText": "Search for container name",
     "port": "Port",

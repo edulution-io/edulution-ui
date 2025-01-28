@@ -5,6 +5,8 @@
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
   "preparing": "Vorbereiten...",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
+  "framebufferImage": "Framebuffer-Bild",
+  "previewImage": "Bildvorschau",
   "bulletinboard": {
     "settings": "Einstellungen",
     "categoryIsRequired": "Es muss eine Kategorie ausgewählt werden",
@@ -415,7 +417,18 @@
     "saveSession": "Sitzung speichern",
     "myRoom": "Mein Raum",
     "sharedMailBox": "Geteiltes Postfach",
-    "enrolPageDescription": "Wählen Sie die Klassen und Projekte aus, für die Sie sich einschreiben möchten, indem Sie die Checkboxen aktivieren."
+    "enrolPageDescription": "Wählen Sie die Klassen und Projekte aus, für die Sie sich einschreiben möchten, indem Sie die Checkboxen aktivieren.",
+    "veyonConfigTable": {
+      "id": "ID",
+      "subnet": "Subnet",
+      "subnetDescription": "Subnet in CIDR-Notation (10.0.0.0/24)",
+      "subnetPlaceholder": "10.0.0.0/24",
+      "proxyAdress": "Proxy Addresse",
+      "proxyAdressDescription": "URL des Veyon-WebAPI-Proxy",
+      "proxyAdressPlaceholder": "http://localhost:11080",
+      "createConfig": "Konfiguration erstellen",
+      "editConfig": "Konfiguration bearbeiten"
+    }
   },
   "select": "Auswählen",
   "selectAll": "Alle auswählen",
@@ -647,13 +660,14 @@
           "title": "Allgemein",
           "description": ""
         },
-        "veyon": {
-          "title": "Veyon Proxy",
-          "description": ""
-        },
         "docker": {
           "title": "Docker Anwendungen",
           "description": "Um die erweiterten Dienste nutzen zu können hier die benötigten Docker Container gestartet werden."
+        },
+        "veyon": {
+          "title": "Veyon Proxy",
+          "description": "",
+          "filterPlaceHolderText": "Suche nach Proxy-Name"
         }
       },
       "update": {
@@ -1112,6 +1126,7 @@
     "title": "Container-Übersicht",
     "containerName": "Container-Name",
     "state": "Betriebszustand",
+    "state-badge": "Badge",
     "status": "Status",
     "imageName": "Image",
     "filterPlaceHolderText": "Suche nach Container-Name",

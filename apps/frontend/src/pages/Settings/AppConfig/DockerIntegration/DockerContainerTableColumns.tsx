@@ -26,6 +26,11 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
         />
       );
     },
+
+    meta: {
+      translationId: 'dockerOverview.state-badge',
+    },
+
     accessorFn: (row) => row.State,
     cell: ({ row }) => {
       const badgeClass = row.original.State === DOCKER_STATES.RUNNING ? 'bg-green-500' : 'bg-red-500';

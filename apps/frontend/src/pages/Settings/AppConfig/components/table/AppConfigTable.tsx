@@ -9,17 +9,20 @@ import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import { Button } from '@/components/shared/Button';
 import type BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import type TApps from '@libs/appconfig/types/appsType';
+import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 
 interface AppConfigTableProps {
   applicationName: TApps;
+  tableId: string;
 }
 
-const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName }) => {
+const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableId }) => {
   const { t } = useTranslation();
 
-  const configs = getAppConfigTableConfig(applicationName) as AppConfigTableConfig[];
+  const appConfigTableConfig = getAppConfigTableConfig(applicationName, tableId) as AppConfigTableConfig;
 
-  if (!configs) {
+  if (!appConfigTableConfig) {
     return <div>{t('common.error')}</div>;
   }
 
@@ -39,12 +42,12 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName }) => {
     }, [fetchTableContent, isDialogOpen]);
 
     const handleAddClick = () => {
-      setDialogOpen(true);
+      setDialogOpen(tableId);
     };
 
     const getScrollableTable = () => {
       switch (type) {
-        case 'bulletin': {
+        case ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE: {
           return (
             <ScrollableTable
               columns={columns}
@@ -57,11 +60,24 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName }) => {
             />
           );
         }
-        case 'docker': {
+        case ExtendedOptionKeys.DOCKER_CONTAINER_TABLE: {
           return (
             <ScrollableTable
               columns={columns}
               data={tableContentData as ContainerInfo[]}
+              filterKey={filterKey}
+              filterPlaceHolderText={filterPlaceHolderText}
+              applicationName={applicationName}
+              enableRowSelection={false}
+              tableIsUsedOnAppConfigPage
+            />
+          );
+        }
+        case ExtendedOptionKeys.VEYON_PROXYS: {
+          return (
+            <ScrollableTable
+              columns={columns}
+              data={tableContentData as VeyonProxyItem[]}
               filterKey={filterKey}
               filterPlaceHolderText={filterPlaceHolderText}
               applicationName={applicationName}
@@ -76,10 +92,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName }) => {
     };
 
     return (
-      <div
-        key={config.type}
-        className="mb-8"
-      >
+      <div className="mb-8">
         {getScrollableTable()}
         {showAddButton && (
           <div className="flex w-full">
@@ -97,7 +110,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName }) => {
     );
   };
 
-  return <div>{configs.map((config) => renderConfig(config))}</div>;
+  return <div>{renderConfig(appConfigTableConfig)}</div>;
 };
 
 export default AppConfigTable;

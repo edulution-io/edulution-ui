@@ -7,6 +7,7 @@ import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVar
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import { AppConfigDto } from '@libs/appconfig/types/appConfigDto';
+import PatchConfigDto from '@libs/common/types/patchConfigDto';
 
 type AppConfigsStore = {
   appConfigs: AppConfigDto[];
@@ -18,8 +19,10 @@ type AppConfigsStore = {
   setIsAddAppConfigDialogOpen: (isAddAppConfigDialogOpen: boolean) => void;
   setIsDeleteAppConfigDialogOpen: (isDeleteAppConfigDialogOpen: boolean) => void;
   reset: () => void;
+  createAppConfig: (appConfig: AppConfigDto) => Promise<void>;
   getAppConfigs: () => Promise<boolean>;
-  updateAppConfig: (appConfigs: AppConfigDto[]) => Promise<void>;
+  updateAppConfig: (appConfigs: AppConfigDto) => Promise<void>;
+  patchAppConfig: (name: string, patchConfigDto: PatchConfigDto) => Promise<void>;
   deleteAppConfigEntry: (name: string) => Promise<void>;
   getConfigFile: (filePath: string) => Promise<string>;
 };
@@ -61,6 +64,19 @@ const useAppConfigsStore = create<AppConfigsStore>(
         set({ isDeleteAppConfigDialogOpen });
       },
 
+      createAppConfig: async (appConfig) => {
+        set({ isLoading: true, error: null });
+        try {
+          const { data } = await eduApi.post<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINTS.ROOT, appConfig);
+          set({ appConfigs: data });
+          toast.success(i18n.t('settings.appconfig.update.success'));
+        } catch (e) {
+          handleApiError(e, set);
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
       getAppConfigs: async () => {
         const { isLoading } = get();
         if (isLoading) {
@@ -79,11 +95,30 @@ const useAppConfigsStore = create<AppConfigsStore>(
         }
       },
 
-      updateAppConfig: async (appConfigs) => {
+      updateAppConfig: async (appConfig: AppConfigDto) => {
         set({ isLoading: true, error: null });
         try {
-          await eduApi.put(EDU_API_CONFIG_ENDPOINTS.ROOT, appConfigs);
-          set({ appConfigs });
+          const { data } = await eduApi.put<AppConfigDto[]>(
+            `${EDU_API_CONFIG_ENDPOINTS.ROOT}/${appConfig.name}`,
+            appConfig,
+          );
+          set({ appConfigs: data });
+          toast.success(i18n.t('settings.appconfig.update.success'));
+        } catch (e) {
+          handleApiError(e, set);
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      patchAppConfig: async (name: string, patchConfigDto: PatchConfigDto) => {
+        set({ isLoading: true, error: null });
+        try {
+          const { data } = await eduApi.patch<AppConfigDto[]>(
+            `${EDU_API_CONFIG_ENDPOINTS.ROOT}/${name}`,
+            patchConfigDto,
+          );
+          set({ appConfigs: data });
           toast.success(i18n.t('settings.appconfig.update.success'));
         } catch (e) {
           handleApiError(e, set);
@@ -95,9 +130,8 @@ const useAppConfigsStore = create<AppConfigsStore>(
       deleteAppConfigEntry: async (name) => {
         set({ isLoading: true, error: null });
         try {
-          await eduApi.delete(`${EDU_API_CONFIG_ENDPOINTS.ROOT}/${name}`);
-          const newAppConfigs = get().appConfigs.filter((item) => item.name !== name);
-          set({ appConfigs: newAppConfigs });
+          const { data } = await eduApi.delete<AppConfigDto[]>(`${EDU_API_CONFIG_ENDPOINTS.ROOT}/${name}`);
+          set({ appConfigs: data });
           toast.success(`${i18n.t(`${name}.sidebar`)} - ${i18n.t('settings.appconfig.delete.success')}`);
         } catch (e) {
           handleApiError(e, set);
