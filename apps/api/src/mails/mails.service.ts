@@ -54,7 +54,7 @@ class MailsService implements OnModuleInit {
     const appConfigs = await this.appConfigService.getAppConfigs([GroupRoles.SUPER_ADMIN]);
     const appConfig = appConfigs.find((config) => config.name === APPS.MAIL);
     if (!appConfig || typeof appConfig.extendedOptions !== 'object') {
-      throw new CustomHttpException(MailsErrorMessages.NotAbleToGetImapOption, HttpStatus.INTERNAL_SERVER_ERROR);
+      return;
     }
 
     this.imapUrl = (appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_URL] as string) || '';
