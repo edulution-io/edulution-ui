@@ -39,7 +39,8 @@ const AppConfigPage: React.FC = () => {
 
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { appConfigs, setIsDeleteAppConfigDialogOpen, updateAppConfig, deleteAppConfigEntry } = useAppConfigsStore();
+  const { appConfigs, getAppConfigs, setIsDeleteAppConfigDialogOpen, updateAppConfig, deleteAppConfigEntry } =
+    useAppConfigsStore();
   const { searchGroups } = useGroupStore();
   const [option, setOption] = useState('');
   const isMobileView = useIsMobileView();
@@ -51,6 +52,10 @@ const AppConfigPage: React.FC = () => {
       resolver: zodResolver(appConfigFormSchema),
     },
   );
+
+  useEffect(() => {
+    void getAppConfigs();
+  }, []);
 
   const { control, handleSubmit, setValue, getValues, clearErrors } = form;
 
@@ -143,6 +148,8 @@ const AppConfigPage: React.FC = () => {
       };
       void postExternalMailProviderConfig(mailProviderConfig);
     }
+
+    await getAppConfigs();
   };
 
   const settingsForm = () => {
