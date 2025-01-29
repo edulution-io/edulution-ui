@@ -52,7 +52,7 @@ const initialState = {
 
 const useAppConfigsStore = create<AppConfigsStore>(
   (persist as PersistedAppConfigsStore)(
-    (set, get) => ({
+    (set) => ({
       ...initialState,
       reset: () => set(initialState),
 
@@ -78,10 +78,6 @@ const useAppConfigsStore = create<AppConfigsStore>(
       },
 
       getAppConfigs: async () => {
-        const { isLoading } = get();
-        if (isLoading) {
-          return false;
-        }
         set({ isLoading: true, error: null });
         try {
           const response = await eduApi.get<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINTS.ROOT);
