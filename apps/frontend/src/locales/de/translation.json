@@ -667,7 +667,9 @@
         "veyon": {
           "title": "Veyon Proxy",
           "description": "",
-          "filterPlaceHolderText": "Suche nach Proxy-Name"
+          "filterPlaceHolderText": "Suche nach Proxy-Name",
+          "invalidCidrFormat": "Ungültige CIDR-Notation",
+          "invalidUrlFormat": "Ungültige URL"
         }
       },
       "update": {

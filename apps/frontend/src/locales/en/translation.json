@@ -666,7 +666,9 @@
         "veyon": {
           "title": "Veyon Proxy",
           "description": "",
-          "filterPlaceHolderText": "Search for proxy"
+          "filterPlaceHolderText": "Search for proxy",
+          "invalidCidrFormat": "Invalid CIDR notation",
+          "invalidUrlFormat": "Invalid URL"
         }
       },
       "update": {

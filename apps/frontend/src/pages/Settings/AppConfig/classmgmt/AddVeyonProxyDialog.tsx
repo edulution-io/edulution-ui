@@ -5,9 +5,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { v4 as uuidv4 } from 'uuid';
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
-import Input from '@/components/shared/Input';
+import { Form } from '@/components/ui/Form';
 import { Button } from '@/components/shared/Button';
+import FormField from '@/components/shared/FormField';
 import createVeyonProxyConfigSchema from '@libs/classManagement/constants/createVeyonProxyConfigSchema';
 import type VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
@@ -35,6 +35,7 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
   ) as VeyonProxyItem[];
 
   const initialFormValues = selectedConfig || {
+    veyonProxyId: '',
     subnet: '',
     proxyAdress: '',
   };
@@ -45,7 +46,7 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
     defaultValues: initialFormValues,
   });
 
-  const { reset, control, getValues, formState } = form;
+  const { reset } = form;
 
   useEffect(() => {
     reset(initialFormValues);
@@ -57,11 +58,8 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
     reset();
   };
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const { subnet, proxyAdress } = getValues();
+  const handleFormSubmit = async (data: VeyonProxyItem) => {
+    const { subnet, proxyAdress } = data;
 
     let newConfig: VeyonProxyItem[];
     if (selectedConfig) {
@@ -96,15 +94,22 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
 
   const getFooter = () => (
     <form
-      onSubmit={handleFormSubmit}
+      onSubmit={form.handleSubmit(handleFormSubmit)}
       className="space-y-4"
     >
       <div className="mt-4 flex justify-end space-x-2">
         <Button
+          variant="btn-outline"
+          size="lg"
+          type="button"
+          onClick={() => setDialogOpen('')}
+        >
+          {t('common.cancel')}
+        </Button>
+        <Button
           variant="btn-collaboration"
           size="lg"
           type="submit"
-          disabled={!formState.isValid}
         >
           {t('common.save')}
         </Button>
@@ -123,37 +128,19 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
 
   const renderFormFields = (fields: Array<keyof VeyonProxyItem>) =>
     fields.map((name) => (
-      <FormFieldSH
+      <FormField
         key={name}
-        control={control}
         name={name}
-        defaultValue=""
-        render={({ field }) => (
-          <FormItem>
-            <h4>{t(`classmanagement.veyonConfigTable.${name}`)}</h4>
-            <FormControl>
-              <Input
-                {...field}
-                shouldTrim
-                placeholder={t(`classmanagement.veyonConfigTable.${name}Placeholder`)}
-                variant="login"
-              />
-            </FormControl>
-            <p>{t(`classmanagement.veyonConfigTable.${name}Description`)}</p>
-            <FormMessage className="text-p" />
-          </FormItem>
-        )}
+        defaultValue={initialFormValues[name]}
+        form={form}
+        labelTranslationId={t(`classmanagement.veyonConfigTable.${name}`)}
+        variant="dialog"
       />
     ));
 
   const getDialogBody = () => (
     <Form {...form}>
-      <form
-        onSubmit={handleFormSubmit}
-        className="space-y-4"
-      >
-        {renderFormFields(['subnet', 'proxyAdress'])}
-      </form>
+      <form className="space-y-4">{renderFormFields(['subnet', 'proxyAdress'])}</form>
     </Form>
   );
 
