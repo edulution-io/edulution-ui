@@ -11,8 +11,8 @@ import CustomAxiosError from '@libs/error/CustomAxiosError';
  * By default it will try to set the variable `error` in your store,
  * if it differs you have to pass the variable name as string.
  */
-const handleApiError = (error: any, set: (params: any) => void, errorName = 'error') => {
-  if (axios.isAxiosError(error)) {
+const handleApiError = (error: any, set: (params: any) => void, errorName = 'error', hidden = false) => {
+  if (axios.isAxiosError(error) && !hidden) {
     const axiosError = error as CustomAxiosError;
 
     const errorMessage = i18n.t(axiosError.response?.data?.message) || axiosError.response?.statusText;

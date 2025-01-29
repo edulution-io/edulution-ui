@@ -15,24 +15,20 @@ type FrameBufferImageProps = {
 const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
   const { t } = useTranslation();
   const [imageSrc, setImageSrc] = useState<string>('');
-  const { authenticateVeyonClients, getFrameBufferStream } = useVeyonApiStore();
-  const [connUid, setConnUid] = useState<string>('');
+  const { userConnectionUids, authenticateVeyonClients, getFrameBufferStream } = useVeyonApiStore();
   const [isImagePreviewModalOpen, setIsImagePreviewModalOpen] = useState(false);
+
+  const connectionUid = userConnectionUids.find((conn) => conn.veyonUsername === user.name)?.connectionUid || '';
 
   useEffect(() => {
     if (user.sophomorixIntrinsic3.length > 0) {
       const connIp = user.sophomorixIntrinsic3[0];
 
-      const getConnUid = async () => {
-        const connectionUid = await authenticateVeyonClients(connIp, user.name);
-        setConnUid(connectionUid);
-      };
-
-      void getConnUid();
+      void authenticateVeyonClients(connIp, user.name);
     }
   }, [user]);
 
-  const fetchImage = async (connectionUid: string) => {
+  const fetchImage = async () => {
     const image = await getFrameBufferStream(connectionUid, isImagePreviewModalOpen);
     if (!image.size) return null;
 
@@ -42,15 +38,15 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
   };
 
   useEffect(() => {
-    if (connUid !== '') {
-      void fetchImage(connUid);
+    if (connectionUid !== '') {
+      void fetchImage();
     }
-  }, [connUid]);
+  }, [connectionUid]);
 
   useInterval(
     () => {
-      if (connUid !== '') {
-        void fetchImage(connUid);
+      if (connectionUid !== '') {
+        void fetchImage();
       }
     },
     isImagePreviewModalOpen ? VEYON_REFRESH_INTERVAL_HIGH : VEYON_REFRESH_INTERVAL,
@@ -104,7 +100,7 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
       );
     }
 
-    if (connUid !== '') {
+    if (connectionUid !== '') {
       return <CircleLoader />;
     }
 

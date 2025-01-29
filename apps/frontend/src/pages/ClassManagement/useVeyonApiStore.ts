@@ -1,16 +1,22 @@
 import { create } from 'zustand';
+import { AxiosError } from 'axios';
 import eduApi from '@/api/eduApi';
 import type SuccessfullVeyonAuthResponse from '@libs/veyon/types/connectionUidResponse';
 import { framebufferConfigHigh, framebufferConfigLow } from '@libs/veyon/constants/framebufferConfig';
+import handleApiError from '@/utils/handleApiError';
 
 type VeyonApiStore = {
+  error: AxiosError | null;
+  userConnectionUids: SuccessfullVeyonAuthResponse[];
   isLoading: boolean;
-  authenticateVeyonClients: (ip: string, veyonUser: string) => Promise<string>;
+  authenticateVeyonClients: (ip: string, veyonUser: string) => Promise<void>;
   getFrameBufferStream: (connectionUid: string, highQuality?: boolean) => Promise<Blob>;
 };
 
-const useVeyonApiStore = create<VeyonApiStore>((set) => ({
+const useVeyonApiStore = create<VeyonApiStore>((set, get) => ({
+  error: null,
   isLoading: false,
+  userConnectionUids: [],
 
   authenticateVeyonClients: async (ip: string, veyonUser: string) => {
     try {
@@ -19,9 +25,19 @@ const useVeyonApiStore = create<VeyonApiStore>((set) => ({
         { veyonUser },
         { timeout: 10000 },
       );
-      return data.connectionUid || '';
+      set({
+        userConnectionUids: [
+          ...get().userConnectionUids,
+          {
+            ip: data.ip,
+            veyonUsername: data.veyonUsername,
+            connectionUid: data.connectionUid,
+            validUntil: data.validUntil,
+          },
+        ],
+      });
     } catch (error) {
-      return '';
+      handleApiError(error, set, 'veyonAuthError', true);
     }
   },
 
