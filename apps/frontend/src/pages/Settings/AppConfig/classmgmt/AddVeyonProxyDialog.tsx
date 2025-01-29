@@ -83,9 +83,10 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
 
     if (selectedConfig) {
       const newConfig = veyonProxyConfig.filter((item) => item.veyonProxyId !== selectedConfig.veyonProxyId);
+
       await patchSingleFieldInConfig(APPS.CLASS_MANAGEMENT, {
         field: 'extendedOptions',
-        value: { [ExtendedOptionKeys.VEYON_PROXYS]: newConfig },
+        value: newConfig.length === 0 ? { [ExtendedOptionKeys.VEYON_PROXYS]: newConfig } : {},
       });
 
       closeDialog();
