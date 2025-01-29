@@ -12,6 +12,7 @@ import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePat
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeExtension';
 import getFrontEndUrl from '@libs/common/utils/getFrontEndUrl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import { ResponseType } from '@libs/common/types/http-methods';
 
 type UseFileSharingStore = {
   files: DirectoryFileDTO[];
@@ -156,7 +157,7 @@ const useFileSharingStore = create<UseFileSharingStore>(
             `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_STREAM}`,
             {
               params: { filePath },
-              responseType: 'blob',
+              responseType: ResponseType.BLOB,
             },
           );
 

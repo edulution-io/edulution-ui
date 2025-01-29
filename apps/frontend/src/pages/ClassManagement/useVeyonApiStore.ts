@@ -1,9 +1,11 @@
 import { create } from 'zustand';
 import { AxiosError } from 'axios';
 import eduApi from '@/api/eduApi';
+import handleApiError from '@/utils/handleApiError';
 import type SuccessfullVeyonAuthResponse from '@libs/veyon/types/connectionUidResponse';
 import { framebufferConfigHigh, framebufferConfigLow } from '@libs/veyon/constants/framebufferConfig';
-import handleApiError from '@/utils/handleApiError';
+import { VEYON_API_ENDPOINT, VEYON_API_FRAMEBUFFER_ENDPOINT } from '@libs/veyon/constants/veyonApiEndpoints';
+import { RequestResponseContentType, ResponseType } from '@libs/common/types/http-methods';
 
 type VeyonApiStore = {
   error: AxiosError | null;
@@ -57,7 +59,7 @@ const useVeyonApiStore = create<VeyonApiStore>((set, get) => ({
   authenticateVeyonClient: async (ip: string, veyonUser: string) => {
     try {
       const { data } = await eduApi.post<SuccessfullVeyonAuthResponse | Record<string, never>>(
-        `veyon/${ip}`,
+        `${VEYON_API_ENDPOINT}/${ip}`,
         { veyonUser },
         { timeout: 60000 },
       );
@@ -72,13 +74,16 @@ const useVeyonApiStore = create<VeyonApiStore>((set, get) => ({
     set({ isLoading: true });
     const framebufferConfig = highQuality ? framebufferConfigHigh : framebufferConfigLow;
     try {
-      const { data } = await eduApi.get<Blob>(`veyon/framebuffer/${connectionUid}`, {
-        responseType: 'blob',
-        params: framebufferConfig,
-      });
+      const { data } = await eduApi.get<Blob>(
+        `${VEYON_API_ENDPOINT}/${VEYON_API_FRAMEBUFFER_ENDPOINT}/${connectionUid}`,
+        {
+          responseType: ResponseType.BLOB,
+          params: framebufferConfig,
+        },
+      );
       return data;
     } catch (error) {
-      return new Blob([], { type: 'application/octet-stream' });
+      return new Blob([], { type: RequestResponseContentType.APPLICATION_OCTET_STREAM });
     } finally {
       set({ isLoading: false });
     }
