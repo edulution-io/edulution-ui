@@ -97,7 +97,10 @@ const UserArea = () => {
           />
         ))}
       </div>
-      {isMemberSelected ? <LessonFloatingButtonsBar students={getSelectedStudents()} /> : null}
+      <LessonFloatingButtonsBar
+        students={getSelectedStudents()}
+        isMemberSelected={!!isMemberSelected}
+      />
     </>
   );
 };

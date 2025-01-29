@@ -13,7 +13,7 @@ type VeyonApiStore = {
   getFrameBufferStream: (connectionUid: string, highQuality?: boolean) => Promise<Blob>;
 };
 
-const useVeyonApiStore = create<VeyonApiStore>((set, get) => ({
+const useVeyonApiStore = create<VeyonApiStore>((set) => ({
   error: null,
   isLoading: false,
   userConnectionUids: [],
@@ -25,16 +25,37 @@ const useVeyonApiStore = create<VeyonApiStore>((set, get) => ({
         { veyonUser },
         { timeout: 10000 },
       );
-      set({
-        userConnectionUids: [
-          ...get().userConnectionUids,
-          {
+      set((state) => {
+        if (Object.keys(data).length === 0) {
+          return {
+            userConnectionUids: state.userConnectionUids.filter((entry) => entry.ip !== ip),
+          };
+        }
+
+        const existingIndex = state.userConnectionUids.findIndex((entry) => entry.ip === data.ip);
+
+        if (existingIndex !== -1) {
+          const updatedConnections = [...state.userConnectionUids];
+          updatedConnections[existingIndex] = {
             ip: data.ip,
             veyonUsername: data.veyonUsername,
             connectionUid: data.connectionUid,
             validUntil: data.validUntil,
-          },
-        ],
+          };
+          return { userConnectionUids: updatedConnections };
+        }
+
+        return {
+          userConnectionUids: [
+            ...state.userConnectionUids,
+            {
+              ip: data.ip,
+              veyonUsername: data.veyonUsername,
+              connectionUid: data.connectionUid,
+              validUntil: data.validUntil,
+            },
+          ],
+        };
       });
     } catch (error) {
       handleApiError(error, set, 'veyonAuthError', true);

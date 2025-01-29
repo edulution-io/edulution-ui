@@ -38,14 +38,16 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
   };
 
   useEffect(() => {
-    if (connectionUid !== '') {
+    if (connectionUid) {
       void fetchImage();
+    } else {
+      setImageSrc('');
     }
   }, [connectionUid]);
 
   useInterval(
     () => {
-      if (connectionUid !== '') {
+      if (connectionUid) {
         void fetchImage();
       }
     },
@@ -100,7 +102,7 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
       );
     }
 
-    if (connectionUid !== '') {
+    if (connectionUid) {
       return <CircleLoader />;
     }
 
