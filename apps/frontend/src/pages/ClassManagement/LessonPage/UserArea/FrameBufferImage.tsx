@@ -4,6 +4,7 @@ import { MdBlock, MdCropFree } from 'react-icons/md';
 import { useTranslation } from 'react-i18next';
 import CircleLoader from '@/components/ui/CircleLoader';
 import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
+import FullScreenImage from '@/components/ui/FullScreenImage';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import { VEYON_REFRESH_INTERVAL, VEYON_REFRESH_INTERVAL_HIGH } from '@libs/veyon/constants/refreshInterval';
 import useVeyonApiStore from '../../useVeyonApiStore';
@@ -89,13 +90,7 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
               titleTranslationId={t('preview.image')}
               handleClose={closeImagePreviewModal}
             >
-              <div className="flex h-full w-full items-center justify-center bg-foreground">
-                <img
-                  src={imageSrc}
-                  alt={t('previewImage')}
-                  className="max-h-screen max-w-full rounded-md"
-                />
-              </div>
+              <FullScreenImage imageSrc={imageSrc} />
             </ResizableWindow>
           )}
         </div>

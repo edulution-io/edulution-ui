@@ -7,6 +7,7 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 import BulletinBoardColumnHeader from '@/pages/BulletinBoard/components/BulletinBoardColumnHeader';
 import BulletinBoardColumnItem from '@/pages/BulletinBoard/components/BulletinBoardColumnItem';
 import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
+import FullScreenImage from '@/components/ui/FullScreenImage';
 import { useTranslation } from 'react-i18next';
 
 const BulletinBoardPageColumn = ({
@@ -66,13 +67,7 @@ const BulletinBoardPageColumn = ({
           titleTranslationId={t('preview.image')}
           handleClose={closeImagePreviewModal}
         >
-          <div className="flex h-full w-full items-center justify-center bg-foreground">
-            <img
-              src={selectedImageForPreview}
-              alt="Preview"
-              className="max-h-screen max-w-full rounded-md"
-            />
-          </div>
+          <FullScreenImage imageSrc={selectedImageForPreview} />
         </ResizableWindow>
       )}
 

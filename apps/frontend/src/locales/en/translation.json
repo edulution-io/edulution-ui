@@ -665,7 +665,7 @@
         },
         "veyon": {
           "title": "Veyon Proxy",
-          "description": "",
+          "description": "Here you can configure the Veyon WebAPI proxies.",
           "filterPlaceHolderText": "Search for proxy",
           "invalidCidrFormat": "Invalid CIDR notation",
           "invalidUrlFormat": "Invalid URL"
