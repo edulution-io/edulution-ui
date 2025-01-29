@@ -16,7 +16,7 @@ type FrameBufferImageProps = {
 const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
   const { t } = useTranslation();
   const [imageSrc, setImageSrc] = useState<string>('');
-  const { userConnectionUids, authenticateVeyonClients, getFrameBufferStream } = useVeyonApiStore();
+  const { userConnectionUids, authenticateVeyonClient, getFrameBufferStream } = useVeyonApiStore();
   const [isImagePreviewModalOpen, setIsImagePreviewModalOpen] = useState(false);
 
   const connectionUid = userConnectionUids.find((conn) => conn.veyonUsername === user.name)?.connectionUid || '';
@@ -25,7 +25,7 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
     if (user.sophomorixIntrinsic3.length > 0) {
       const connIp = user.sophomorixIntrinsic3[0];
 
-      void authenticateVeyonClients(connIp, user.name);
+      void authenticateVeyonClient(connIp, user.name);
     }
   }, [user]);
 

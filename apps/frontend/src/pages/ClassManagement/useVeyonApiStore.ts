@@ -10,7 +10,7 @@ type VeyonApiStore = {
   userConnectionUids: SuccessfullVeyonAuthResponse[];
   isLoading: boolean;
   updateConnectionUids: (ip: string, userConnectionUid: SuccessfullVeyonAuthResponse | Record<string, never>) => void;
-  authenticateVeyonClients: (ip: string, veyonUser: string) => Promise<void>;
+  authenticateVeyonClient: (ip: string, veyonUser: string) => Promise<void>;
   getFrameBufferStream: (connectionUid: string, highQuality?: boolean) => Promise<Blob>;
 };
 
@@ -54,7 +54,7 @@ const useVeyonApiStore = create<VeyonApiStore>((set, get) => ({
     });
   },
 
-  authenticateVeyonClients: async (ip: string, veyonUser: string) => {
+  authenticateVeyonClient: async (ip: string, veyonUser: string) => {
     try {
       const { data } = await eduApi.post<SuccessfullVeyonAuthResponse | Record<string, never>>(
         `veyon/${ip}`,
