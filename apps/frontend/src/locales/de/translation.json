@@ -1163,5 +1163,13 @@
       "exited": "gestoppt",
       "dead": "tot"
     }
+  },
+  "veyon": {
+    "errors": {
+      "AppNotProperlyConfigured": "Veyon ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
+      "VeyonAuthFailed": "Veyon-Authentifizierung fehlgeschlagen",
+      "GetUserFailed": "Benutzer konnte nicht abgerufen werden",
+      "VeyonApiNotReachable": "Der externen Veyon-Server ist nicht erreichbar"
+    }
   }
 }

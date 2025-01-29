@@ -1,5 +1,5 @@
-import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
-import axios, { AxiosInstance, AxiosError } from 'axios';
+import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import axios, { AxiosInstance } from 'axios';
 import { Readable } from 'stream';
 import { OnEvent } from '@nestjs/event-emitter';
 import type VeyonApiAuthResponse from '@libs/veyon/types/veyonApiAuthResponse';
@@ -8,6 +8,7 @@ import type VeyonUserResponse from '@libs/veyon/types/veyonUserResponse';
 import type VeyonFeatureRequest from '@libs/veyon/types/veyonFeatureRequest';
 import type VeyonFeatureUid from '@libs/veyon/types/veyonFeatureUid';
 import type VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
+import type SuccessfullVeyonAuthResponse from '@libs/veyon/types/connectionUidResponse';
 import VEYON_AUTH_METHODS from '@libs/veyon/constants/veyonAuthMethods';
 import APPS from '@libs/appconfig/constants/apps';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -47,11 +48,20 @@ class VeyonService implements OnModuleInit {
         baseURL: `${veyonApiUrl}/api/v1`,
       });
     } catch (error) {
-      throw new CustomHttpException(VeyonErrorMessages.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(
+        VeyonErrorMessages.AppNotProperlyConfigured,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        VeyonService.name,
+      );
     }
   }
 
-  async authenticate(ip: string, username: string, veyonUser: string) {
+  async authenticate(
+    ip: string,
+    username: string,
+    veyonUser: string,
+  ): Promise<SuccessfullVeyonAuthResponse | Record<string, never>> {
     const password = await this.usersService.getPassword(username);
     try {
       const { data } = await this.veyonApi.post<VeyonApiAuthResponse>(
@@ -81,14 +91,12 @@ class VeyonService implements OnModuleInit {
         validUntil: data.validUntil,
       };
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new HttpException(
-          error instanceof AxiosError ? error.message : 'Unknown error',
-          error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      } else {
-        throw new HttpException('An unexpected error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-      }
+      throw new CustomHttpException(
+        VeyonErrorMessages.VeyonAuthFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        VeyonService.name,
+      );
     }
   }
 
@@ -120,14 +128,12 @@ class VeyonService implements OnModuleInit {
       });
       return data;
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new HttpException(
-          error instanceof AxiosError ? error.message : 'Unknown error',
-          error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      } else {
-        throw new HttpException('An unexpected error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-      }
+      throw new CustomHttpException(
+        VeyonErrorMessages.GetUserFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        VeyonService.name,
+      );
     }
   }
 
@@ -142,14 +148,12 @@ class VeyonService implements OnModuleInit {
       });
       return data;
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new HttpException(
-          error instanceof AxiosError ? error.message : 'Unknown error',
-          error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      } else {
-        throw new HttpException('An unexpected error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-      }
+      throw new CustomHttpException(
+        VeyonErrorMessages.VeyonApiNotReachable,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        VeyonService.name,
+      );
     }
   }
 }
