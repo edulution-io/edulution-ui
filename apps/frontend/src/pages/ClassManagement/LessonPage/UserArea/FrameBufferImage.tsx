@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useInterval } from 'usehooks-ts';
-import { MdBlock, MdCropFree } from 'react-icons/md';
+import { MdCropFree } from 'react-icons/md';
 import { useTranslation } from 'react-i18next';
 import CircleLoader from '@/components/ui/CircleLoader';
 import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
 import FullScreenImage from '@/components/ui/FullScreenImage';
+import Avatar from '@/components/shared/Avatar';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import { VEYON_REFRESH_INTERVAL, VEYON_REFRESH_INTERVAL_HIGH } from '@libs/veyon/constants/refreshInterval';
 import useVeyonApiStore from '../../useVeyonApiStore';
@@ -101,7 +102,13 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
       return <CircleLoader />;
     }
 
-    return <MdBlock />;
+    return (
+      <Avatar
+        user={{ username: user.name, firstName: user.givenName, lastName: user.sn }}
+        imageSrc={user.thumbnailPhoto}
+        className={user.thumbnailPhoto && 'h-24 w-24 p-2'}
+      />
+    );
   };
 
   return renderContent();
