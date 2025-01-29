@@ -24,7 +24,7 @@ interface AddVeyonProxyDialogProps {
 const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) => {
   const { t } = useTranslation();
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
-  const { appConfigs, patchAppConfig } = useAppConfigsStore();
+  const { appConfigs, patchSingleFieldInConfig } = useAppConfigsStore();
   const { selectedConfig, setSelectedConfig } = useVeyonConfigTableStore();
   const isOpen = isDialogOpen === tableId;
 
@@ -69,7 +69,7 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
       newConfig = [...veyonProxyConfig, { veyonProxyId: uuidv4(), subnet, proxyAdress }];
     }
 
-    await patchAppConfig(APPS.CLASS_MANAGEMENT, {
+    await patchSingleFieldInConfig(APPS.CLASS_MANAGEMENT, {
       field: 'extendedOptions',
       value: { [ExtendedOptionKeys.VEYON_PROXYS]: newConfig },
     });
@@ -83,7 +83,7 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
 
     if (selectedConfig) {
       const newConfig = veyonProxyConfig.filter((item) => item.veyonProxyId !== selectedConfig.veyonProxyId);
-      await patchAppConfig(APPS.CLASS_MANAGEMENT, {
+      await patchSingleFieldInConfig(APPS.CLASS_MANAGEMENT, {
         field: 'extendedOptions',
         value: { [ExtendedOptionKeys.VEYON_PROXYS]: newConfig },
       });

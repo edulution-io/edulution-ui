@@ -75,7 +75,7 @@ class AppConfigService implements OnModuleInit {
     }
   }
 
-  async patchConfig(name: string, patchConfigDto: PatchConfigDto, ldapGroups: string[]) {
+  async patchSingleFieldInConfig(name: string, patchConfigDto: PatchConfigDto, ldapGroups: string[]) {
     try {
       await this.appConfigModel.updateOne({ name }, { $set: { [patchConfigDto.field]: patchConfigDto.value } });
       return await this.getAppConfigs(ldapGroups);

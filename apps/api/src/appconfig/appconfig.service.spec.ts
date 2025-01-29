@@ -78,7 +78,7 @@ describe('AppConfigService', () => {
     });
   });
 
-  describe('patchconfig', () => {
+  describe('patchSingleFieldInConfig', () => {
     it('should update the configuration and return updated configs', async () => {
       const name = 'testConfig';
       const patchConfigDto: PatchConfigDto = { field: 'testField', value: 'newValue' };
@@ -86,7 +86,7 @@ describe('AppConfigService', () => {
       mockAppConfigModel.updateOne.mockResolvedValue({});
       jest.spyOn(service, 'getAppConfigs').mockResolvedValue([mockAppConfig]);
 
-      const result = await service.patchConfig(name, patchConfigDto, mockLdapGroup);
+      const result = await service.patchSingleFieldInConfig(name, patchConfigDto, mockLdapGroup);
 
       expect(mockAppConfigModel.updateOne).toHaveBeenCalledWith(
         { name },
@@ -102,7 +102,7 @@ describe('AppConfigService', () => {
 
       mockAppConfigModel.updateOne.mockRejectedValue(new Error('Database error'));
 
-      await expect(service.patchConfig(name, patchConfigDto, mockLdapGroup)).rejects.toThrow(
+      await expect(service.patchSingleFieldInConfig(name, patchConfigDto, mockLdapGroup)).rejects.toThrow(
         new CustomHttpException(
           AppConfigErrorMessages.WriteAppConfigFailed,
           HttpStatus.SERVICE_UNAVAILABLE,

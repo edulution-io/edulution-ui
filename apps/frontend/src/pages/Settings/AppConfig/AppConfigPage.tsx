@@ -148,8 +148,6 @@ const AppConfigPage: React.FC = () => {
       };
       void postExternalMailProviderConfig(mailProviderConfig);
     }
-
-    await getAppConfigs();
   };
 
   const settingsForm = () => {
