@@ -36,6 +36,7 @@ class VeyonService implements OnModuleInit {
   async updateVeyonProxyConfig() {
     try {
       const appConfig = await this.appConfigService.getAppConfigByName(APPS.CLASS_MANAGEMENT);
+
       if (!appConfig.extendedOptions || Object.keys(appConfig.extendedOptions).length === 0) {
         return;
       }
@@ -43,10 +44,11 @@ class VeyonService implements OnModuleInit {
       // ToDo: Add support for more proxies https://github.com/edulution-io/edulution-ui/issues/352
       const veyonProxies = appConfig.extendedOptions.VEYON_PROXYS as VeyonProxyItem[];
 
-      if (Object.keys(veyonProxies).length === 0) {
+      if (!Array.isArray(veyonProxies) || veyonProxies.length === 0) {
         return;
       }
-      const veyonApiUrl = veyonProxies[0].proxyAdress;
+
+      const veyonApiUrl = veyonProxies[0]?.proxyAdress ?? '';
 
       this.veyonApi = axios.create({
         baseURL: `${veyonApiUrl}/api/v1`,

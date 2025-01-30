@@ -12,7 +12,7 @@ import createVeyonProxyConfigSchema from '@libs/classManagement/constants/create
 import type VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import APPS from '@libs/appconfig/constants/apps';
-import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
+import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
 import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 import useVeyonConfigTableStore from './useVeyonTableStore';
 import useAppConfigsStore from '../appConfigsStore';
@@ -28,7 +28,7 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
   const { selectedConfig, setSelectedConfig } = useVeyonConfigTableStore();
   const isOpen = isDialogOpen === tableId;
 
-  const veyonProxyConfig = getExtendedOptionValue(
+  const veyonProxyConfig = getExtendedOptionsValue(
     appConfigs,
     APPS.CLASS_MANAGEMENT,
     ExtendedOptionKeys.VEYON_PROXYS,
@@ -86,7 +86,7 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
 
       await patchSingleFieldInConfig(APPS.CLASS_MANAGEMENT, {
         field: 'extendedOptions',
-        value: newConfig.length === 0 ? { [ExtendedOptionKeys.VEYON_PROXYS]: newConfig } : {},
+        value: newConfig.length !== 0 ? { [ExtendedOptionKeys.VEYON_PROXYS]: newConfig } : {},
       });
 
       closeDialog();

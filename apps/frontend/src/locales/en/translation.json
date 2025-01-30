@@ -1166,10 +1166,10 @@
   },
   "veyon": {
     "errors": {
-      "AppNotProperlyConfigured": "Veyon ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
-      "VeyonAuthFailed": "Veyon-Authentifizierung fehlgeschlagen",
-      "GetUserFailed": "Benutzer konnte nicht abgerufen werden",
-      "VeyonApiNotReachable": "Der externen Veyon-Server ist nicht erreichbar"
+      "AppNotProperlyConfigured": "Veyon is not properly configured, contact the system administrator.",
+      "VeyonAuthFailed": "Veyon authentication failed.",
+      "GetUserFailed": "User could not be retrieved.",
+      "VeyonApiNotReachable": "The external Veyon server is not reachable."
     }
   }
 }
