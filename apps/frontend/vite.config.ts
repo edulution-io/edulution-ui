@@ -11,7 +11,9 @@ export default defineConfig(({ mode }) => {
   return {
     // Exception needed for excalidraw
     define: {
-      'process.env': {},
+      'process.env': {
+        NODE_ENV: mode,
+      },
       APP_VERSION: JSON.stringify(pkg.version),
     },
     test: {
@@ -37,6 +39,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
+      allowedHosts: ['host.docker.internal'],
       port: 5173,
       host: 'localhost',
       fs: { strict: false },
