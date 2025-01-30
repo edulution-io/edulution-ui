@@ -25,6 +25,8 @@ import SurveysModule from '../surveys/surveys.module';
 import AuthModule from '../auth/auth.module';
 import BulletinCategoryModule from '../bulletin-category/bulletin-category.module';
 import BulletinBoardModule from '../bulletinboard/bulletinboard.module';
+import DockerModule from '../docker/docker.module';
+import VeyonModule from '../veyon/veyon.module';
 
 @Module({
   imports: [
@@ -45,6 +47,8 @@ import BulletinBoardModule from '../bulletinboard/bulletinboard.module';
     SurveysModule,
     BulletinCategoryModule,
     BulletinBoardModule,
+    DockerModule,
+    VeyonModule,
     JwtModule.register({
       global: true,
     }),

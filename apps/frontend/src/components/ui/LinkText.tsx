@@ -12,7 +12,7 @@ const LinkText: React.FC<LinkTextProps> = ({ to, title, children }) => (
     target="_blank"
     title={title || ''}
     rel="noopener noreferrer"
-    className="hover:text-ciDarkBlue"
+    className="hover:text-primary"
   >
     {children}
   </a>

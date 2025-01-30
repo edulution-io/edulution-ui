@@ -44,7 +44,7 @@ const ResultTable = (props: ResultTableDialogBodyProps) => {
   }, [visuTable]);
 
   return (
-    <div className="max-h-[75vh] rounded bg-ciLightGrey px-4 pb-4 text-foreground">
+    <div className="max-h-[75vh] rounded bg-secondary px-4 pb-4 text-background">
       <div id="surveyDashboardContainer" />
     </div>
   );

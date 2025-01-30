@@ -2,13 +2,50 @@ import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
-import { IoEyeSharp } from 'react-icons/io5';
 import { FaEyeSlash } from 'react-icons/fa';
+import { IoEyeSharp } from 'react-icons/io5';
 import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
+import SortTableCell from '@/components/ui/Table/SortTableCell';
+import DEFAULT_TABLE_SORT_PROPERTY_KEY from '@libs/common/constants/defaultTableSortProperty';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 
-const BulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
+const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
+  {
+    id: DEFAULT_TABLE_SORT_PROPERTY_KEY,
+    header: ({ column }) => (
+      <SortableHeader<BulletinCategoryResponseDto, unknown>
+        column={column}
+        className="max-w-32"
+      />
+    ),
+    meta: {
+      translationId: 'common.sortOrder',
+    },
+    accessorFn: (row) => row.position,
+    cell: ({ row }) => {
+      const { setCategoryPosition, fetchTableContent, tableContentData } = useBulletinCategoryTableStore();
+      const { id, position } = row.original;
+      const moveUp = async () => {
+        await setCategoryPosition(id, position - 1);
+        await fetchTableContent();
+      };
+      const moveDown = async () => {
+        await setCategoryPosition(id, position + 1);
+        await fetchTableContent();
+      };
+
+      return (
+        <SortTableCell
+          moveUp={moveUp}
+          moveDown={moveDown}
+          lastPosition={tableContentData.length}
+          position={position}
+        />
+      );
+    },
+  },
   {
     id: 'name',
     header: ({ column }) => <SortableHeader<BulletinCategoryResponseDto, unknown> column={column} />,
@@ -22,7 +59,7 @@ const BulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
       const { setDialogOpen } = useAppConfigTableDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
-        setDialogOpen(true);
+        setDialogOpen(ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE);
       };
 
       return (
@@ -45,7 +82,7 @@ const BulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
       const { setDialogOpen } = useAppConfigTableDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
-        setDialogOpen(true);
+        setDialogOpen(ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE);
       };
       return (
         <SelectableTextCell
@@ -69,7 +106,7 @@ const BulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
       const { setDialogOpen } = useAppConfigTableDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
-        setDialogOpen(true);
+        setDialogOpen(ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE);
       };
       return (
         <SelectableTextCell
@@ -81,4 +118,4 @@ const BulletinTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
   },
 ];
 
-export default BulletinTableColumn;
+export default AppConfigBulletinCategoryTableColumn;

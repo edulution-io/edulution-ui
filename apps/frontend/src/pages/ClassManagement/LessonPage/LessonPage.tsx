@@ -139,17 +139,17 @@ const LessonPage = () => {
             <button
               type="button"
               onClick={onSaveSessionsButtonClick}
-              className="flex h-[42px] cursor-pointer items-center rounded-md bg-ciDarkGrey text-ciLightGrey hover:opacity-90"
+              className="flex h-[42px] cursor-pointer items-center rounded-md bg-accent text-secondary hover:opacity-90"
             >
-              <span className="text-nowrap px-4">{t('classmanagement.saveSession')}</span>
+              <span className="text-nowrap px-4 text-background">{t('classmanagement.saveSession')}</span>
               <MdSave className="ml-auto inline-block h-8 w-8 pr-2" />
             </button>
             <button
               type="button"
               onClick={closeSession}
-              className="flex h-[42px] cursor-pointer items-center rounded-md bg-ciDarkGrey text-ciLightGrey hover:opacity-90"
+              className="flex h-[42px] cursor-pointer items-center rounded-md bg-accent text-secondary hover:opacity-90"
             >
-              <span className="text-nowrap pl-4">{t('classmanagement.closeSession')}</span>
+              <span className="text-nowrap pl-4 text-background">{t('classmanagement.closeSession')}</span>
               <MdClose className="ml-auto inline-block h-8 w-8 px-2" />
             </button>
           </div>

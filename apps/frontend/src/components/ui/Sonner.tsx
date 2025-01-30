@@ -18,7 +18,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       toastOptions={{
         duration: 4000,
         classNames: {
-          toast: 'group toast group-[.toaster]:bg-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg',
+          toast: 'group toast group-[.toaster]:bg-overlay group-[.toaster]:border-border group-[.toaster]:shadow-lg',
           content: 'group-[.toaster]:text-background',
         },
       }}

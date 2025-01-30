@@ -85,7 +85,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
       <TableCell
         className={`${
           moveOrCopyItemToPath.basename === row.basename ? 'bg-ciLightBlue' : ''
-        } max-w-[150px] overflow-hidden truncate whitespace-nowrap text-foreground`}
+        } max-w-[150px] overflow-hidden truncate whitespace-nowrap text-background`}
       >
         <div className="flex w-full items-center justify-between text-ellipsis">
           <div>{row.basename}</div>
@@ -102,7 +102,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="text-foreground">{t('moveItemDialog.folderName')}</TableHead>
+            <TableHead className="text-background">{t('moveItemDialog.folderName')}</TableHead>
           </TableRow>
         </TableHeader>
         {showAllFiles ? (
@@ -124,7 +124,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
       />
       <ScrollArea className="h-[200px]">{renderTable()}</ScrollArea>
       {moveOrCopyItemToPath && showSelectedFile && (
-        <p className="pt-10 text-foreground">
+        <p className="pt-10 text-background">
           {t('moveItemDialog.selectedItem')}: {decodeURIComponent(moveOrCopyItemToPath.filename)}
         </p>
       )}

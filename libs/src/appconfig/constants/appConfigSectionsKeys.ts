@@ -3,6 +3,8 @@ const AppConfigSectionsKeys = {
   onlyOffice: 'onlyOffice',
   imapMailFeed: 'imapMailFeed',
   bulletinBoard: 'bulletinBoard',
+  veyon: 'veyon',
+  docker: 'docker',
 } as const;
 
 export default AppConfigSectionsKeys;

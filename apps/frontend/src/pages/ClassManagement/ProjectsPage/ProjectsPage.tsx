@@ -63,7 +63,6 @@ const ProjectsPage = () => {
         name="filter"
         onChange={(e) => setFilterKeyWord(e.target.value)}
         placeholder={t('classmanagement.typeToFilter')}
-        variant="lightGray"
         id={FILTER_BAR_ID}
         className="my-2"
       />
@@ -71,13 +70,13 @@ const ProjectsPage = () => {
         className="flex max-w-full flex-row flex-wrap overflow-y-auto overflow-x-visible scrollbar-thin"
         style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
       >
-        <div className="mt-2 min-w-full text-lg">{t('classmanagement.projectsPageDescription')}</div>
+        <div className="mt-2 min-w-full text-lg text-background">{t('classmanagement.projectsPageDescription')}</div>
         {groupRows.map((row) => (
           <div
             key={row.name}
             className="mt-4 min-w-full"
           >
-            <h4>{t(`classmanagement.${row.name}`)}</h4>
+            <h4 className="text-background">{t(`classmanagement.${row.name}`)}</h4>
             <GroupList row={row} />
           </div>
         ))}

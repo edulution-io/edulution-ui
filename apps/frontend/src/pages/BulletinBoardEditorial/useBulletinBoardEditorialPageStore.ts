@@ -149,7 +149,7 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
       const response = await eduApi.get<BulletinCategoryResponseDto[]>(
         `${BULLETIN_CATEGORY_WITH_PERMISSION_EDU_API_ENDPOINT}${BulletinCategoryPermission.EDIT}`,
       );
-      set({ categories: response.data });
+      set({ categories: response.data?.sort((a, b) => a.position - b.position) });
     } catch (error) {
       handleApiError(error, set);
     } finally {

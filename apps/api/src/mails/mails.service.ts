@@ -4,6 +4,7 @@ import { ArgumentMetadata, HttpStatus, Injectable, Logger, OnModuleInit } from '
 import { InjectModel } from '@nestjs/mongoose';
 import { OnEvent } from '@nestjs/event-emitter';
 import axios, { AxiosInstance } from 'axios';
+import https from 'https';
 import { CreateSyncJobDto, MailDto, MailProviderConfigDto, SyncJobDto, SyncJobResponseDto } from '@libs/mail/types';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
@@ -16,7 +17,7 @@ import { MailProvider, MailProviderDocument } from './mail-provider.schema';
 import FilterUserPipe from '../common/pipes/filterUser.pipe';
 import AppConfigService from '../appconfig/appconfig.service';
 
-const { MAIL_API_URL, MAIL_API_KEY } = process.env;
+const { MAILCOW_API_URL, MAILCOW_API_TOKEN } = process.env;
 
 @Injectable()
 class MailsService implements OnModuleInit {
@@ -36,12 +37,16 @@ class MailsService implements OnModuleInit {
     @InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>,
     private readonly appConfigService: AppConfigService,
   ) {
+    const httpsAgent = new https.Agent({
+      rejectUnauthorized: false,
+    });
     this.mailcowApi = axios.create({
-      baseURL: `${MAIL_API_URL}/api/v1`,
+      baseURL: `${MAILCOW_API_URL}/api/v1`,
       headers: {
-        [HTTP_HEADERS.XApiKey]: MAIL_API_KEY,
+        [HTTP_HEADERS.XApiKey]: MAILCOW_API_TOKEN,
         [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_JSON,
       },
+      httpsAgent,
     });
   }
 
@@ -54,7 +59,7 @@ class MailsService implements OnModuleInit {
     const appConfigs = await this.appConfigService.getAppConfigs([GroupRoles.SUPER_ADMIN]);
     const appConfig = appConfigs.find((config) => config.name === APPS.MAIL);
     if (!appConfig || typeof appConfig.extendedOptions !== 'object') {
-      throw new CustomHttpException(MailsErrorMessages.NotAbleToGetImapOption, HttpStatus.INTERNAL_SERVER_ERROR);
+      return;
     }
 
     this.imapUrl = (appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_URL] as string) || '';
@@ -216,7 +221,7 @@ class MailsService implements OnModuleInit {
   }
 
   async getSyncJobs(username: string): Promise<SyncJobDto[]> {
-    if (!MAIL_API_URL || !MAIL_API_KEY) {
+    if (!MAILCOW_API_URL || !MAILCOW_API_TOKEN) {
       return [];
     }
 
