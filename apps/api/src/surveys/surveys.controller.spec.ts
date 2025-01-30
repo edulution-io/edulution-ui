@@ -17,24 +17,24 @@ import SurveyAnswersService from './survey-answer.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
 import {
-  firstUsername,
-  secondUsername,
-  idOfAnsweredSurvey01,
   answeredSurvey01,
   answeredSurvey02,
-  firstUsersSurveyAnswerAnsweredSurvey01,
-  surveyAnswerAnsweredSurvey02,
-  secondUsersSurveyAnswerAnsweredSurvey01,
-  saveNoAnsweredSurvey01,
-  firstUsersMockedAnswerForAnsweredSurveys01,
-  openSurvey01,
-  firstMockJWTUser,
-  openSurvey02,
-  createdSurvey01,
-  surveyUpdateUpdatedSurvey,
-  surveyUpdateInitialSurvey,
   answeredSurvey03,
+  createdSurvey01,
+  firstMockJWTUser,
+  firstUsername,
+  firstUsersMockedAnswerForAnsweredSurveys01,
+  firstUsersSurveyAnswerAnsweredSurvey01,
+  idOfAnsweredSurvey01,
+  openSurvey01,
+  openSurvey02,
+  saveNoAnsweredSurvey01,
+  secondUsername,
+  secondUsersSurveyAnswerAnsweredSurvey01,
+  surveyAnswerAnsweredSurvey02,
   surveyAnswerAnsweredSurvey03,
+  surveyUpdateInitialSurvey,
+  surveyUpdateUpdatedSurvey,
   updatedSurveyAnswerAnsweredSurvey03,
 } from './mocks';
 import { surveyUpdateUpdatedSurveyDto } from './mocks/surveys/updated-survey';
@@ -211,7 +211,7 @@ describe(SurveysController.name, () => {
 
       expect(surveysService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01], mockSseConnections);
       expect(surveyAnswerService.onSurveyRemoval).toHaveBeenCalledWith([idOfAnsweredSurvey01]);
-      expect(surveyModel.deleteMany).toHaveBeenCalledWith({ id: { $in: [idOfAnsweredSurvey01] } });
+      expect(surveyModel.deleteMany).toHaveBeenCalledWith({ _id: { $in: [idOfAnsweredSurvey01] } });
       expect(surveyAnswerModel.deleteMany).toHaveBeenCalledWith(
         { surveyId: { $in: [idOfAnsweredSurvey01] } },
         { ordered: false },

@@ -14,7 +14,7 @@ interface DeleteSurveysDialogProps {
 }
 
 const DeleteSurveysDialog = ({ surveys, trigger }: DeleteSurveysDialogProps) => {
-  const { selectedRows, setSelectedRows } = useSurveyTablesPageStore();
+  const { selectedRows, setSelectedRows, updateUsersSurveys } = useSurveyTablesPageStore();
   const { isLoading, error, reset, isDeleteSurveysDialogOpen, setIsDeleteSurveysDialogOpen, deleteSurveys } =
     useDeleteSurveyStore();
   const { t } = useTranslation();
@@ -27,6 +27,7 @@ const DeleteSurveysDialog = ({ surveys, trigger }: DeleteSurveysDialogProps) => 
 
   const onSubmit = async () => {
     await deleteSurveys(selectedSurveys);
+    await updateUsersSurveys();
     setSelectedRows({});
     setIsDeleteSurveysDialogOpen(false);
   };

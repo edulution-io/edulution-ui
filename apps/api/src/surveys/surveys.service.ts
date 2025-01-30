@@ -31,7 +31,7 @@ class SurveysService {
 
   async deleteSurveys(surveyIds: mongoose.Types.ObjectId[], surveysSseConnections: UserConnections): Promise<void> {
     try {
-      await this.surveyModel.deleteMany({ id: { $in: surveyIds } });
+      await this.surveyModel.deleteMany({ _id: { $in: surveyIds } });
       Logger.log(`Deleted the surveys ${JSON.stringify(surveyIds)}`, SurveysService.name);
     } catch (error) {
       throw new CustomHttpException(SurveyErrorMessages.DeleteError, HttpStatus.NOT_MODIFIED, error);

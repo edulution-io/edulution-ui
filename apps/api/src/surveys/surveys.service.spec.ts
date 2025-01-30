@@ -91,7 +91,7 @@ describe('SurveyService', () => {
 
       const surveyIds = [surveyUpdateSurveyId];
       await service.deleteSurveys(surveyIds, mockSseConnections);
-      expect(surveyModel.deleteMany).toHaveBeenCalledWith({ id: { $in: surveyIds } });
+      expect(surveyModel.deleteMany).toHaveBeenCalledWith({ _id: { $in: surveyIds } });
     });
 
     it('should throw an error if the survey deletion fails', async () => {
@@ -106,7 +106,7 @@ describe('SurveyService', () => {
         const error = e as Error;
         expect(error.message).toEqual(SurveyErrorMessages.DeleteError);
       }
-      expect(surveyModel.deleteMany).toHaveBeenCalledWith({ id: { $in: surveyIds } });
+      expect(surveyModel.deleteMany).toHaveBeenCalledWith({ _id: { $in: surveyIds } });
     });
   });
 
