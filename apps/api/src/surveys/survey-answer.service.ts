@@ -110,9 +110,9 @@ class SurveyAnswersService {
       case SurveyStatus.OPEN:
         return this.getOpenSurveys(user);
       case SurveyStatus.ANSWERED:
-        return this.getAnsweredSurveys(user.name);
+        return this.getAnsweredSurveys(user.preferred_username);
       case SurveyStatus.CREATED:
-        return this.getCreatedSurveys(user.name);
+        return this.getCreatedSurveys(user.preferred_username);
       default:
         return [];
     }
