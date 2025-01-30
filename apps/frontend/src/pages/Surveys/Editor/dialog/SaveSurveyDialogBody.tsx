@@ -46,7 +46,7 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
   const canSubmitMultipleAnswersWatched = watch('canSubmitMultipleAnswers') as boolean;
 
   const handleExpirationDateChange = (value: Date | undefined) => {
-    setValue('expires', value);
+    setValue('expires', value && value > new Date() ? value : undefined);
   };
 
   return (
