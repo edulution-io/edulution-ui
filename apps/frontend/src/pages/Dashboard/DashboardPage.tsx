@@ -57,7 +57,7 @@ const DashboardPage: React.FC = () => {
             })}
           </h2>
         ) : null}
-        <p className="mt-4">{t('content')}</p>
+        <p className="mt-4 text-background">{t('content')}</p>
       </div>
 
       <div className="md:my-17 my-10 flex flex-col-reverse gap-8 md:flex-row">

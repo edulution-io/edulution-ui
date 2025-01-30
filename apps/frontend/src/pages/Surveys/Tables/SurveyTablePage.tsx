@@ -8,6 +8,7 @@ import ResultVisualizationDialog from '@/pages/Surveys/Tables/dialogs/ResultVisu
 import SubmittedAnswersDialog from '@/pages/Surveys/Tables/dialogs/SubmittedAnswersDialog';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
+import DeleteSurveysDialog from '@/pages/Surveys/Tables/dialogs/DeleteSurveysDialog';
 
 interface SurveysTablePageProps {
   title: string;
@@ -40,7 +41,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
     <>
       <div className="py-2">
         <p className="text-background">{title}</p>
-        <p className="text-sm font-normal text-ciGrey">{description}</p>
+        <p className="text-sm font-normal text-background">{description}</p>
       </div>
       <ScrollArea className="overflow-y-auto overflow-x-hidden scrollbar-thin">
         <SurveyTable
@@ -58,6 +59,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
       />
       <TooltipProvider>
         <div className="absolute bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
+          <DeleteSurveysDialog surveys={surveys || []} />
           <ResultTableDialog />
           <ResultVisualizationDialog />
           <SubmittedAnswersDialog />

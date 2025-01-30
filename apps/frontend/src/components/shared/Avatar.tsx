@@ -25,7 +25,7 @@ const Avatar: React.FC<AvatarProps> = ({ user, imageSrc, className }) => {
         src={imageSrc}
         alt={user?.firstName}
       />
-      <AvatarFallback className="bg-ciGrey text-black">{getAvatarFallbackText()}</AvatarFallback>
+      <AvatarFallback className="bg-ciGrey text-foreground">{getAvatarFallbackText()}</AvatarFallback>
     </AvatarSH>
   );
 };

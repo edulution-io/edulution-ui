@@ -33,6 +33,7 @@ import ONLY_OFFICE_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOpti
 import MAIL_IMAP_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/imapMailFeed';
 import BULLETIN_BOARD_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/bulletinBoard';
 import DOCKER_CONTAINER_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/dockerContainer';
+import CLASS_MANAGEMENT_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/classMgmt';
 
 export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -65,6 +66,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     id: APPS.SURVEYS,
     icon: SurveysMenuIcon,
     color: 'bg-ciDarkBlue',
+    options: ['url', 'proxyConfig'],
     isNativeApp: true,
   },
   {
@@ -114,6 +116,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     isNativeApp: true,
     extendedOptions: {
       [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
+      [AppConfigSectionsKeys.veyon]: CLASS_MANAGEMENT_EXTENDED_OPTIONS,
     },
   },
   { id: APPS.PRINTER, icon: PrinterIcon, color: 'bg-ciLightGreen', options: ['url'], isNativeApp: false },
@@ -167,7 +170,13 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     options: ['url', 'proxyConfig'],
     isNativeApp: true,
   },
-  { id: APPS.WHITEBOARD, icon: WhiteBoardIcon, color: 'bg-ciDarkBlue', isNativeApp: true },
+  {
+    id: APPS.WHITEBOARD,
+    icon: WhiteBoardIcon,
+    color: 'bg-ciDarkBlue',
+    options: ['url', 'proxyConfig'],
+    isNativeApp: true,
+  },
   {
     id: APPS.BULLETIN_BOARD,
     icon: BulletinBoardIcon,

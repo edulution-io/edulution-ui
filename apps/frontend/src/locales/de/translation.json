@@ -5,6 +5,8 @@
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
   "preparing": "Vorbereiten...",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
+  "framebufferImage": "Framebuffer-Bild",
+  "previewImage": "Bildvorschau",
   "bulletinboard": {
     "settings": "Einstellungen",
     "categoryIsRequired": "Es muss eine Kategorie ausgewählt werden",
@@ -153,14 +155,14 @@
   "mail": {
     "title": "MAIL",
     "sidebar": "Mail",
+    "configName": "Name der Konfiguration",
+    "hostname": "Hostname",
+    "port": "Port",
+    "encryption": "Verschlüsselung",
     "importer": {
       "filterPlaceHolderText": "Suche nach E-Mail-Importername",
       "title": "E-Mail-Importer",
       "provider": "E-Mail-Provider",
-      "configName": "Name der Konfiguration",
-      "hostname": "Hostname",
-      "port": "Port",
-      "encryption": "Verschlüsselung",
       "interval": "Sync-Intervall",
       "isActive": "Aktiv",
       "syncJobsTable": "Importer Jobs",
@@ -415,7 +417,18 @@
     "saveSession": "Sitzung speichern",
     "myRoom": "Mein Raum",
     "sharedMailBox": "Geteiltes Postfach",
-    "enrolPageDescription": "Wählen Sie die Klassen und Projekte aus, für die Sie sich einschreiben möchten, indem Sie die Checkboxen aktivieren."
+    "enrolPageDescription": "Wählen Sie die Klassen und Projekte aus, für die Sie sich einschreiben möchten, indem Sie die Checkboxen aktivieren.",
+    "veyonConfigTable": {
+      "id": "ID",
+      "subnet": "Subnet",
+      "subnetDescription": "Subnet in CIDR-Notation (10.0.0.0/24)",
+      "subnetPlaceholder": "10.0.0.0/24",
+      "proxyAdress": "Proxy Addresse",
+      "proxyAdressDescription": "URL des Veyon-WebAPI-Proxy",
+      "proxyAdressPlaceholder": "http://localhost:11080",
+      "createConfig": "Konfiguration erstellen",
+      "editConfig": "Konfiguration bearbeiten"
+    }
   },
   "select": "Auswählen",
   "selectAll": "Alle auswählen",
@@ -471,6 +484,10 @@
   "surveys": {
     "rowsSelected": "{{selected}} von {{total}} Umfragen ausgewählt",
     "rowSelected": "{{selected}} von {{total}} Umfrage ausgewählt",
+    "confirmMultiDelete": "Sollen diese Umfragen wirklich gelöscht werden?",
+    "confirmSingleDelete": "Soll die Umfrage wirklich gelöscht werden?",
+    "deleteSurveys": "Lösche {{count}} Umfragen",
+    "deleteSurvey": "Umfrage Löschen",
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
     "view": {
@@ -649,13 +666,14 @@
           "title": "Allgemein",
           "description": ""
         },
-        "veyon": {
-          "title": "Veyon Proxy",
-          "description": ""
-        },
         "docker": {
           "title": "Docker Anwendungen",
           "description": "Um die erweiterten Dienste nutzen zu können hier die benötigten Docker Container gestartet werden."
+        },
+        "veyon": {
+          "title": "Veyon Proxy",
+          "description": "",
+          "filterPlaceHolderText": "Suche nach Proxy-Name"
         }
       },
       "update": {
@@ -676,7 +694,8 @@
       "ReadAppConfigFailed": "App lesen fehlgeschlagen",
       "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen",
       "WriteTraefikConfigFailed": "Traefik-Konfiguration speichern fehlgeschlagen",
-      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen"
+      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen",
+      "forbiddenProxyPath": "Dieser Proxy-Pfad ist nicht erlaubt."
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",
@@ -782,6 +801,7 @@
     "remember_me": "Merken"
   },
   "common": {
+    "error": "Fehler",
     "errors": {
       "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
@@ -790,6 +810,7 @@
     "sortOrder": "Sortierung",
     "options": "Optionen",
     "checking": "Prüfen",
+    "cancel": "Abbrechen",
     "columns": "Spalten",
     "copy": {
       "success": "Erfolgreich in Zwischenablage kopiert",
@@ -868,7 +889,6 @@
     "kill": "Beenden",
     "install": "Installieren",
     "update": "Update",
-    "cancel": "Abbrechen",
     "progress": "Fortschritt...",
     "pressInstall": "Drücke Installieren um zu Starten."
   },
@@ -1113,6 +1133,7 @@
     "title": "Container-Übersicht",
     "containerName": "Container-Name",
     "state": "Betriebszustand",
+    "state-badge": "Badge",
     "status": "Status",
     "imageName": "Image",
     "filterPlaceHolderText": "Suche nach Container-Name",

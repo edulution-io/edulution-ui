@@ -91,17 +91,12 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
         if (groupProperty.disabled) {
           return <>{watch(groupProperty.name)}</>;
         }
-        return (
-          <Input
-            {...register(groupProperty.name)}
-            variant="light"
-          />
-        );
+        return <Input {...register(groupProperty.name)} />;
     }
   };
 
   return (
-    <div className="flex flex-col text-base text-foreground">
+    <div className="flex flex-col text-base text-background">
       <table className="w-full table-fixed">
         <tbody>
           <tr>

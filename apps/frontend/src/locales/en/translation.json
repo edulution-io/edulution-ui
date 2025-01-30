@@ -5,6 +5,8 @@
   "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
   "preparing": "preparing...",
   "closeEditingWindow": "Close editing window",
+  "framebufferImage": "Framebuffer image",
+  "previewImage": "Image preview",
   "bulletinboard": {
     "settings": "Settings",
     "categoryIsRequired": "Selecting a category is required",
@@ -153,14 +155,14 @@
   "mail": {
     "title": "MAIL",
     "sidebar": "Mail",
+    "configName": "Configuration name",
+    "hostname": "Hostname",
+    "port": "Port",
+    "encryption": "Encryption",
     "importer": {
       "filterPlaceHolderText": "Search for importername",
       "title": "Email Importer",
       "provider": "Email Provider",
-      "configName": "Configuration name",
-      "hostname": "Hostname",
-      "port": "Port",
-      "encryption": "Encryption",
       "interval": "Sync Interval",
       "isActive": "Active",
       "syncJobsTable": "Importer Jobs",
@@ -415,7 +417,18 @@
     "saveSession": "Save session",
     "myRoom": "My room",
     "sharedMailBox": "Shared mailbox",
-    "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes."
+    "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes.",
+    "veyonConfigTable": {
+      "id": "ID",
+      "subnet": "Subnet",
+      "subnetDescription": "Subnet in CIDR notation (10.0.0.0/24)",
+      "subnetPlaceholder": "10.0.0.0/24",
+      "proxyAdress": "Proxy Adress",
+      "proxyAdressDescription": "URL of the Veyon-WebAPI-Proxy",
+      "proxyAdressPlaceholder": "http://localhost:11080",
+      "createConfig": "Create config",
+      "editConfig": "Edit config"
+    }
   },
   "select": "Select",
   "selectAll": "Select all",
@@ -470,6 +483,10 @@
   "surveys": {
     "rowsSelected": "{{selected}} of {{total}} surveys selected",
     "rowSelected": "{{selected}} of {{total}} survey selected",
+    "confirmMultiDelete": "Should these surveys really be deleted?",
+    "confirmSingleDelete": "Should this survey really be deleted?",
+    "deleteSurveys": "Delete {{count}} surveys",
+    "deleteSurvey": "Delete survey",
     "title": "SURVEYS",
     "sidebar": "Surveys",
     "view": {
@@ -648,13 +665,14 @@
           "title": "General",
           "description": ""
         },
-        "veyon": {
-          "title": "Veyon Proxy",
-          "description": ""
-        },
         "docker": {
           "title": "Docker Applications",
           "description": "To be able to use the extended services, the required Docker containers must be started here."
+        },
+        "veyon": {
+          "title": "Veyon Proxy",
+          "description": "",
+          "filterPlaceHolderText": "Search for proxy"
         }
       },
       "update": {
@@ -675,7 +693,8 @@
       "ReadAppConfigFailed": "Read app failed",
       "DisableAppConfigFailed": "Disable app failed",
       "WriteTraefikConfigFailed": "Write traefik config failed",
-      "ReadTraefikConfigFailed": "Read traefik config failed"
+      "ReadTraefikConfigFailed": "Read traefik config failed",
+      "forbiddenProxyPath": "Forbidden proxy path"
     },
     "yamleditor": {
       "invalidYaml": "Wrong YAML syntax",
@@ -782,6 +801,7 @@
   },
   "edit": "Edit",
   "common": {
+    "error": "Error",
     "errors": {
       "startDateBeforeEndDate": "The start date must be before the end date",
       "dbAccessFailed": "Database access failed",
@@ -790,6 +810,7 @@
     "sortOrder": "Sort order",
     "checking": "Checking",
     "options": "Options",
+    "cancel": "Cancel",
     "columns": "Columns",
     "copy": {
       "success": "Successfully copied to clipboard",
@@ -868,7 +889,6 @@
     "kill": "Kill",
     "install": "Install",
     "update": "Update",
-    "cancel": "Cancel",
     "progress": "Progress...",
     "pressInstall": "Press Install to start"
   },
@@ -1114,6 +1134,7 @@
     "containerName": "Container Name",
     "state": "State",
     "status": "Status",
+    "state-badge": "Badge",
     "imageName": "Image",
     "filterPlaceHolderText": "Search for container name",
     "port": "Port",

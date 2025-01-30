@@ -46,7 +46,7 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
   const dropzoneStyle = `border-2 border-dashed border-gray-300 rounded-md p-10 ${
-    isDragActive ? 'bg-ciLightGrey' : 'bg-gray-100'
+    isDragActive ? 'bg-secondary' : 'bg-gray-100'
   }`;
 
   return (
@@ -55,10 +55,10 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
         <input {...getInputProps()} />
         {files.length < 5 && fileUploadSize < MAX_FILE_UPLOAD_SIZE ? (
           <div className="flex flex-col items-center justify-center space-y-2">
-            <p className="font-semibold text-ciLightGrey">
+            <p className="font-semibold text-secondary">
               {isDragActive ? t('filesharingUpload.dropHere') : t('filesharingUpload.dragDropClick')}
             </p>
-            <MdOutlineCloudUpload className="h-12 w-12 text-ciGrey" />
+            <MdOutlineCloudUpload className="h-12 w-12 text-muted" />
           </div>
         ) : (
           <p className="font-bold text-ciRed">
@@ -70,7 +70,7 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
       </div>
       <div>
         <Progress value={(fileUploadSize / MAX_FILE_UPLOAD_SIZE) * 100} />
-        <div className="flex flex-row justify-between text-foreground">
+        <div className="flex flex-row justify-between text-background">
           <p>{t('filesharingUpload.fileSize')}</p>
           <p>
             {fileUploadSize.toFixed(2)} / {MAX_FILE_UPLOAD_SIZE}MB
@@ -93,7 +93,7 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
               />
             ) : (
               <div className="flex h-20 items-center justify-center">
-                <HiDocument className="h-8 w-8 text-ciGrey" />
+                <HiDocument className="h-8 w-8 text-muted" />
               </div>
             )}
             <Button
@@ -106,11 +106,11 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
           </li>
         ))}
       </ul>
-      <p className="pt-4 text-foreground underline">{t('filesharingUpload.filesToUpload')}</p>
+      <p className="pt-4 text-background underline">{t('filesharingUpload.filesToUpload')}</p>
       <ScrollArea className="max-h-[30vh]">
         <ol
           type="1"
-          className="text-foreground"
+          className="text-background"
         >
           {files.map((file, i) => (
             <li

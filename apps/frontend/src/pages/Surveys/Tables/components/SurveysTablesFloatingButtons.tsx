@@ -12,7 +12,7 @@ import { TooltipProvider } from '@/components/ui/Tooltip';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import EditButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/editButton';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
-import useDeleteSurveyStore from './useDeleteSurveyStore';
+import useDeleteSurveyStore from '../dialogs/useDeleteSurveyStore';
 
 interface SurveysTablesFloatingButtonsProps {
   canEdit: boolean;
@@ -37,7 +37,7 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
 
   const { setIsOpenSubmittedAnswersDialog } = useSubmittedAnswersDialogStore();
 
-  const { deleteSurveys } = useDeleteSurveyStore();
+  const { setIsDeleteSurveysDialogOpen } = useDeleteSurveyStore();
 
   const { t } = useTranslation();
 
@@ -48,18 +48,16 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
     return null;
   }
 
-  const handleDeleteSurvey = () => {
-    // TODO: Add confirmation dialog for the deletion ( Issue #368 (https://github.com/edulution-io/edulution-ui/issues/368) )
-    const ids = Object.keys(selectedRows);
-    if (ids) {
-      void deleteSurveys(ids);
-      void updateUsersSurveys();
-    }
-  };
-
   const isSingleSurveySelected = isExactlyOneSurveySelected();
   const canShowResultsTable = selectedSurvey?.canShowResultsTable && canShowResults;
   const canShowResultsChart = selectedSurvey?.canShowResultsChart && canShowResults;
+
+  const handleDeleteSurvey = () => {
+    if (Object.keys(selectedRows).length > 0) {
+      void setIsDeleteSurveysDialogOpen(true);
+      void updateUsersSurveys();
+    }
+  };
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
@@ -100,7 +98,7 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
 
   return (
     <TooltipProvider>
-      <div className="absolute bottom-8 flex flex-row items-center space-x-8 bg-ciDarkGrey">
+      <div className="absolute bottom-8 flex flex-row items-center space-x-8 bg-accent">
         <FloatingButtonsBar config={config} />
       </div>
     </TooltipProvider>
