@@ -9,6 +9,7 @@ import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
+import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import { AppConfig } from './appconfig.schema';
 import initializeCollection from './initializeCollection';
 import MigrationService from '../migration/migration.service';
@@ -28,9 +29,10 @@ class AppConfigService implements OnModuleInit {
     await MigrationService.runMigrations<AppConfig>(this.appConfigModel, appConfigMigrationsList);
   }
 
-  async insertConfig(appConfigDto: AppConfigDto[]) {
+  async insertConfig(appConfigDto: AppConfigDto, ldapGroups: string[]) {
     try {
-      await this.appConfigModel.insertMany(appConfigDto);
+      await this.appConfigModel.create(appConfigDto);
+      return await this.getAppConfigs(ldapGroups);
     } catch (error) {
       throw new CustomHttpException(
         AppConfigErrorMessages.WriteAppConfigFailed,
@@ -38,55 +40,73 @@ class AppConfigService implements OnModuleInit {
         undefined,
         AppConfigService.name,
       );
+    } finally {
+      AppConfigService.writeProxyConfigFile(appConfigDto);
+      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
     }
   }
 
-  async updateConfig(appConfigDto: AppConfigDto[]) {
+  async updateConfig(name: string, appConfigDto: AppConfigDto, ldapGroups: string[]) {
     try {
-      const bulkOperations = appConfigDto.map((appConfig) => {
-        if (appConfig?.options?.proxyConfig) {
-          const { proxyConfig } = appConfig.options;
-          if (proxyConfig !== '' && proxyConfig !== '""') {
-            writeFileSync(
-              `${TRAEFIK_CONFIG_FILES_PATH}/${appConfig?.name}.yml`,
-              JSON.parse(appConfig?.options?.proxyConfig) as string,
-            );
-          } else {
-            const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appConfig?.name}.yml`;
-
-            if (existsSync(filePath)) {
-              unlinkSync(filePath);
-              Logger.log(`${filePath} deleted.`, AppConfigService.name);
-            }
-          }
-        }
-
-        return {
-          updateOne: {
-            filter: { name: appConfig.name },
-            update: {
-              $set: {
-                icon: appConfig.icon,
-                appType: appConfig.appType,
-                options: appConfig.options,
-                accessGroups: appConfig.accessGroups,
-                extendedOptions: appConfig.extendedOptions,
-              },
-            },
-            upsert: true,
+      await this.appConfigModel.updateOne(
+        { name },
+        {
+          $set: {
+            icon: appConfigDto.icon,
+            appType: appConfigDto.appType,
+            options: appConfigDto.options,
+            accessGroups: appConfigDto.accessGroups,
+            extendedOptions: appConfigDto.extendedOptions,
           },
-        };
-      });
-
-      await this.appConfigModel.bulkWrite(bulkOperations);
-      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
-    } catch (e) {
+        },
+        { upsert: true },
+      );
+      return await this.getAppConfigs(ldapGroups);
+    } catch (error) {
       throw new CustomHttpException(
         AppConfigErrorMessages.WriteAppConfigFailed,
         HttpStatus.SERVICE_UNAVAILABLE,
         undefined,
         AppConfigService.name,
       );
+    } finally {
+      AppConfigService.writeProxyConfigFile(appConfigDto);
+      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
+    }
+  }
+
+  async patchConfig(name: string, patchConfigDto: PatchConfigDto, ldapGroups: string[]) {
+    try {
+      await this.appConfigModel.updateOne({ name }, { $set: { [patchConfigDto.field]: patchConfigDto.value } });
+      return await this.getAppConfigs(ldapGroups);
+    } catch (error) {
+      throw new CustomHttpException(
+        AppConfigErrorMessages.WriteAppConfigFailed,
+        HttpStatus.SERVICE_UNAVAILABLE,
+        undefined,
+        AppConfigService.name,
+      );
+    } finally {
+      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
+    }
+  }
+
+  static writeProxyConfigFile(appConfigDto: AppConfigDto) {
+    if (appConfigDto?.options?.proxyConfig) {
+      const { proxyConfig } = appConfigDto.options;
+      if (proxyConfig !== '' && proxyConfig !== '""') {
+        writeFileSync(
+          `${TRAEFIK_CONFIG_FILES_PATH}/${appConfigDto?.name}.yml`,
+          JSON.parse(appConfigDto?.options?.proxyConfig) as string,
+        );
+      } else {
+        const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appConfigDto?.name}.yml`;
+
+        if (existsSync(filePath)) {
+          unlinkSync(filePath);
+          Logger.log(`${filePath} deleted.`, AppConfigService.name);
+        }
+      }
     }
   }
 
@@ -136,16 +156,25 @@ class AppConfigService implements OnModuleInit {
     return appConfig;
   }
 
-  async deleteConfig(configName: string) {
+  async deleteConfig(configName: string, ldapGroups: string[]) {
     try {
       await this.appConfigModel.deleteOne({ name: configName });
-    } catch (e) {
+      return await this.getAppConfigs(ldapGroups);
+    } catch (error) {
       throw new CustomHttpException(
         AppConfigErrorMessages.DisableAppConfigFailed,
         HttpStatus.SERVICE_UNAVAILABLE,
         undefined,
         AppConfigService.name,
       );
+    } finally {
+      const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${configName}.yml`;
+
+      if (existsSync(filePath)) {
+        unlinkSync(filePath);
+        Logger.log(`${filePath} deleted.`, AppConfigService.name);
+      }
+      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
     }
   }
 
@@ -155,7 +184,7 @@ class AppConfigService implements OnModuleInit {
       const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appName}.yml`;
 
       writeFileSync(filePath, JSON.parse(content) as string);
-    } catch (e) {
+    } catch (error) {
       throw new CustomHttpException(
         AppConfigErrorMessages.WriteTraefikConfigFailed,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -170,7 +199,7 @@ class AppConfigService implements OnModuleInit {
     try {
       const fileBuffer = readFileSync(filePath);
       return fileBuffer.toString('base64');
-    } catch (e) {
+    } catch (error) {
       throw new CustomHttpException(
         AppConfigErrorMessages.ReadTraefikConfigFailed,
         HttpStatus.INTERNAL_SERVER_ERROR,

@@ -10,8 +10,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import getCreateNewCategorieSchema from '@libs/bulletinBoard/constants/createNewCategorieSchema';
 import CreateAndUpdateBulletinCategoryBody from '@/pages/Settings/AppConfig/bulletinboard/components/CreateAndUpdateBulletinCategoryBody';
 import DeleteBulletinsCategoriesDialog from '@/pages/Settings/AppConfig/bulletinboard/components/DeleteBulletinCategoriesDialog';
+import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 
-const CreateAndUpdateBulletinCategoryDialog = () => {
+interface CreateAndUpdateBulletinCategoryDialogProps {
+  tableId: ExtendedOptionKeysType;
+}
+
+const CreateAndUpdateBulletinCategoryDialog: React.FC<CreateAndUpdateBulletinCategoryDialogProps> = ({ tableId }) => {
   const {
     selectedCategory,
     setSelectedCategory,
@@ -26,6 +31,7 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
   const { t } = useTranslation();
 
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
+  const isOpen = isDialogOpen === tableId;
 
   const initialFormValues = selectedCategory || {
     name: '',
@@ -50,7 +56,7 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
   }, [selectedCategory, reset]);
 
   const closeDialog = () => {
-    setDialogOpen(false);
+    setDialogOpen('');
     setSelectedCategory(null);
     reset();
   };
@@ -88,7 +94,7 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
       isCurrentNameEqualToSelected={isCurrentNameEqualToSelected}
       isSaveButtonDisabled={isSaveButtonDisabled}
       handleDeleteCategory={() => {
-        setDialogOpen(false);
+        setDialogOpen('');
         setIsDeleteDialogOpen(true);
       }}
     />
@@ -105,9 +111,9 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
   return (
     <>
       <AdaptiveDialog
-        isOpen={isDialogOpen}
+        isOpen={isOpen}
         handleOpenChange={() => {
-          setDialogOpen(false);
+          setDialogOpen('');
           setSelectedCategory(null);
         }}
         title={selectedCategory ? t('bulletinboard.editCategory') : t('bulletinboard.createNewCategory')}

@@ -1,15 +1,13 @@
 import React, { HTMLInputTypeAttribute } from 'react';
-import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
-import { Control, FieldValues, Path } from 'react-hook-form';
+import { Control, FieldValues, Path, PathValue } from 'react-hook-form';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
-import formSchema from '@/pages/Settings/AppConfig/appConfigSchema';
 import { FormDescription, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
 
 type AppConfigFormFieldProps<T extends FieldValues> = {
   fieldPath: Path<T>;
-  control: Control<z.infer<typeof formSchema>, T>;
+  control: Control<T>;
   option: AppConfigExtendedOption;
   type?: HTMLInputTypeAttribute;
 };
@@ -26,6 +24,7 @@ const AppConfigFormField = <T extends FieldValues>({
     <FormFieldSH
       control={control}
       name={fieldPath}
+      defaultValue={'' as PathValue<T, Path<T>>}
       render={({ field }) => (
         <FormItem>
           <div>{t(option.title)}</div>

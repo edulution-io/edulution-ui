@@ -9,9 +9,10 @@ interface SortableHeaderProps<TData, TValue> {
   table?: Table<TData>;
   column: Column<TData, TValue>;
   className?: string;
+  hidden?: boolean;
 }
 
-const SortableHeader = <TData, TValue>({ table, column, className }: SortableHeaderProps<TData, TValue>) => (
+const SortableHeader = <TData, TValue>({ table, column, className, hidden }: SortableHeaderProps<TData, TValue>) => (
   <div className={cn('flex items-center space-x-2', className)}>
     {table ? (
       <Checkbox
@@ -20,15 +21,17 @@ const SortableHeader = <TData, TValue>({ table, column, className }: SortableHea
         aria-label="Select all"
       />
     ) : null}
-    <button
-      type="button"
-      onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-    >
-      <div className="flex items-center">
-        {i18n.t(String(column.columnDef.meta?.translationId || column.id))}
-        {column.getIsSorted() && <ArrowUpDown className="ml-2 h-4 w-4" />}
-      </div>
-    </button>
+    {!hidden ? (
+      <button
+        type="button"
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      >
+        <div className="flex items-center">
+          {i18n.t(String(column.columnDef.meta?.translationId || column.id))}
+          {column.getIsSorted() && <ArrowUpDown className="ml-2 h-4 w-4" />}
+        </div>
+      </button>
+    ) : null}
   </div>
 );
 

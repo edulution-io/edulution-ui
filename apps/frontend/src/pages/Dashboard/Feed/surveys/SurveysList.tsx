@@ -56,6 +56,7 @@ const SurveysList = (props: SurveysListProps) => {
           <NavLink
             to={APPS.SURVEYS}
             onClick={() => updateSurveyStores(item)}
+            // TODO: Issue 388: [REPORT] Survey - rework ids to only use the timestamps in the frontend
             key={item.id.toString('base64')}
             className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border p-2 text-left transition-all hover:bg-accent"
           >

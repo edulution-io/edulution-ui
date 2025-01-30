@@ -22,7 +22,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
   const { t } = useTranslation();
   const isMobileView = useIsMobileView();
   const navigate = useNavigate();
-  const { appConfigs, isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen, updateAppConfig, isLoading, error } =
+  const { isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen, createAppConfig, isLoading, error } =
     useAppConfigsStore();
   const selectedOption = option.toLowerCase().split('.')[0];
 
@@ -56,9 +56,8 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
         accessGroups: [],
         extendedOptions: {},
       };
-      const updatedConfig = [...appConfigs, newConfig];
 
-      await updateAppConfig(updatedConfig);
+      await createAppConfig(newConfig);
       if (!error) {
         setOption('');
         setIsAddAppConfigDialogOpen(false);

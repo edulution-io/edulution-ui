@@ -1,6 +1,6 @@
 import React from 'react';
-import { ScrollArea } from '@/components/ui/ScrollArea';
 import { useTranslation } from 'react-i18next';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 
 const DeleteItemDialogList = ({
   deleteWarningTranslationId,

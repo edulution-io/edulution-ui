@@ -1,15 +1,14 @@
 import React from 'react';
+import { UseFormReturn } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import Input from '@/components/shared/Input';
 import DropdownSelect from '@/components/ui/DropdownSelect/DropdownSelect';
 import { FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import MailEncryption from '@libs/mail/constants/mailEncryption';
-import { TMailEncryption } from '@libs/mail/types';
-import { UseFormReturn } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
+import type MailProviderConfig from '@libs/appconfig/types/mailProviderConfig';
 
 type MailsConfigProps = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: UseFormReturn<any>;
+  form: UseFormReturn<MailProviderConfig>;
 };
 
 const encOptions = Object.entries(MailEncryption).map(([value], index) => ({
@@ -17,17 +16,17 @@ const encOptions = Object.entries(MailEncryption).map(([value], index) => ({
   name: value,
 }));
 
-const MailsConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
+const MailImporterConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
   const { t } = useTranslation();
   return (
     <>
       <FormFieldSH
         control={form.control}
-        name="configName"
+        name="mail.configName"
         defaultValue=""
         render={({ field }) => (
           <FormItem>
-            <p className="text-background">{t(`mail.importer.${field.name}`)}</p>
+            <p>{t(field.name)}</p>
             <FormControl>
               <Input
                 placeholder=""
@@ -40,11 +39,11 @@ const MailsConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
       />
       <FormFieldSH
         control={form.control}
-        name="hostname"
+        name="mail.hostname"
         defaultValue=""
         render={({ field }) => (
           <FormItem>
-            <p className="text-background">{t(`mail.importer.${field.name}`)}</p>
+            <p>{t(field.name)}</p>
             <FormControl>
               <Input
                 placeholder="https://"
@@ -58,14 +57,14 @@ const MailsConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
       <div className="flex flex-row justify-between gap-4">
         <FormFieldSH
           control={form.control}
-          name="port"
+          name="mail.port"
           defaultValue=""
           render={({ field }) => (
             <FormItem>
-              <p className="text-background">{t(`mail.importer.${field.name}`)}</p>
+              <p>{t(field.name)}</p>
               <FormControl>
                 <Input
-                  placeholder={field.name}
+                  placeholder="993"
                   {...field}
                 />
               </FormControl>
@@ -75,15 +74,15 @@ const MailsConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
         />
         <FormFieldSH
           control={form.control}
-          name="encryption"
-          defaultValue=""
+          name="mail.encryption"
+          defaultValue={MailEncryption.TLS}
           render={({ field }) => (
             <FormItem>
-              <p className="text-background">{t(`mail.importer.${field.name}`)}</p>
+              <p>{t(field.name)}</p>
               <FormControl>
                 <DropdownSelect
                   options={encOptions}
-                  selectedVal={field.value as TMailEncryption}
+                  selectedVal={field.value}
                   handleChange={field.onChange}
                   classname="z-50"
                   openToTop
@@ -98,4 +97,4 @@ const MailsConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
   );
 };
 
-export default MailsConfigForm;
+export default MailImporterConfigForm;

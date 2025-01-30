@@ -5,6 +5,8 @@
   "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
   "preparing": "preparing...",
   "closeEditingWindow": "Close editing window",
+  "framebufferImage": "Framebuffer image",
+  "previewImage": "Image preview",
   "bulletinboard": {
     "settings": "Settings",
     "categoryIsRequired": "Selecting a category is required",
@@ -153,14 +155,14 @@
   "mail": {
     "title": "MAIL",
     "sidebar": "Mail",
+    "configName": "Configuration name",
+    "hostname": "Hostname",
+    "port": "Port",
+    "encryption": "Encryption",
     "importer": {
       "filterPlaceHolderText": "Search for importername",
       "title": "Email Importer",
       "provider": "Email Provider",
-      "configName": "Configuration name",
-      "hostname": "Hostname",
-      "port": "Port",
-      "encryption": "Encryption",
       "interval": "Sync Interval",
       "isActive": "Active",
       "syncJobsTable": "Importer Jobs",
@@ -194,9 +196,12 @@
       "ConferenceIsNotRunning": "Conference is not running",
       "MissingMandatoryParameters": "Request failed because of missing parameters"
     },
+    "joinThisConference": "Join this conference",
     "filterPlaceHolderText": "Search for conference name",
     "started": "Conference started",
     "stopped": "Conference stopped",
+    "isStarting": "Conference is starting",
+    "isStopping": "Conference is stopping",
     "conferenceFetchedSuccessfully": "Conferences successfully fetched",
     "tryManually": "Join manually",
     "changeUser": "Change user",
@@ -412,7 +417,18 @@
     "saveSession": "Save session",
     "myRoom": "My room",
     "sharedMailBox": "Shared mailbox",
-    "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes."
+    "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes.",
+    "veyonConfigTable": {
+      "id": "ID",
+      "subnet": "Subnet",
+      "subnetDescription": "Subnet in CIDR notation (10.0.0.0/24)",
+      "subnetPlaceholder": "10.0.0.0/24",
+      "proxyAdress": "Proxy Adress",
+      "proxyAdressDescription": "URL of the Veyon-WebAPI-Proxy",
+      "proxyAdressPlaceholder": "http://localhost:11080",
+      "createConfig": "Create config",
+      "editConfig": "Edit config"
+    }
   },
   "select": "Select",
   "selectAll": "Select all",
@@ -465,6 +481,10 @@
   "surveys": {
     "rowsSelected": "{{selected}} of {{total}} surveys selected",
     "rowSelected": "{{selected}} of {{total}} survey selected",
+    "confirmMultiDelete": "Should these surveys really be deleted?",
+    "confirmSingleDelete": "Should this survey really be deleted?",
+    "deleteSurveys": "Delete {{count}} surveys",
+    "deleteSurvey": "Delete survey",
     "title": "SURVEYS",
     "sidebar": "Surveys",
     "view": {
@@ -642,6 +662,15 @@
         "general": {
           "title": "General",
           "description": ""
+        },
+        "docker": {
+          "title": "Docker Applications",
+          "description": "To be able to use the extended services, the required Docker containers must be started here."
+        },
+        "veyon": {
+          "title": "Veyon Proxy",
+          "description": "",
+          "filterPlaceHolderText": "Search for proxy"
         }
       },
       "update": {
@@ -662,12 +691,15 @@
       "ReadAppConfigFailed": "Read app failed",
       "DisableAppConfigFailed": "Disable app failed",
       "WriteTraefikConfigFailed": "Write traefik config failed",
-      "ReadTraefikConfigFailed": "Read traefik config failed"
+      "ReadTraefikConfigFailed": "Read traefik config failed",
+      "forbiddenProxyPath": "Forbidden proxy path"
     },
     "yamleditor": {
       "invalidYaml": "Wrong YAML syntax",
       "placeholder": "Enter your Traefik config here"
-    }
+    },
+    "rowsSelected": "{{selected}} of {{total}} Container selected",
+    "rowSelected": "{{selected}} of {{total}} Container selected"
   },
   "usersettings": {
     "title": "MY PROFILE",
@@ -767,6 +799,7 @@
   },
   "edit": "Edit",
   "common": {
+    "error": "Error",
     "errors": {
       "startDateBeforeEndDate": "The start date must be before the end date",
       "dbAccessFailed": "Database access failed",
@@ -775,6 +808,7 @@
     "sortOrder": "Sort order",
     "checking": "Checking",
     "options": "Options",
+    "cancel": "Cancel",
     "columns": "Columns",
     "copy": {
       "success": "Successfully copied to clipboard",
@@ -782,6 +816,7 @@
       "doCopy": "Copy",
       "link": "Copy link"
     },
+    "openInNewTab": "Open in new tab",
     "from": "from",
     "youAreCurrentlyNotLoggedIn": "You are currently not logged in",
     "toLogin": "To login",
@@ -847,7 +882,13 @@
     "not-available": "Not available",
     "date": "Date",
     "time": "Time",
-    "revert": "Revert"
+    "revert": "Revert",
+    "restart": "Restart",
+    "kill": "Kill",
+    "install": "Install",
+    "update": "Update",
+    "progress": "Progress...",
+    "pressInstall": "Press Install to start"
   },
   "form": {
     "path": "Path",
@@ -1079,5 +1120,51 @@
   "preview": {
     "image": "Image preview",
     "failedToLoadImage": "Failed to load image"
+  },
+  "dockerApplication": {
+    "title": "Docker Application",
+    "dialogTitle": "{{applicationName}}-Plugins Installer",
+    "mailDescription": "If you want to operate your own mail server, you can carry out the setup for Mailcow here.",
+    "classmanagementDescription": "If you use Veyon in your school network, you can carry out the setup for the Veyon-WebAPI-Proxy here."
+  },
+  "dockerOverview": {
+    "title": "Container Overview",
+    "containerName": "Container Name",
+    "state": "State",
+    "status": "Status",
+    "state-badge": "Badge",
+    "imageName": "Image",
+    "filterPlaceHolderText": "Search for container name",
+    "port": "Port",
+    "created": "Created at"
+  },
+  "docker": {
+    "error": {
+      "dockerConnectionError": "Docker connection failed",
+      "dockerImageNotFound": "Docker Image could not be found",
+      "dockerCreationError": "Docker Container could not be created",
+      "dockerCommandExecutionError": "Docker command could not be executed",
+      "dockerContainerDeletionError": "Docker Container could not be deleted"
+    },
+    "events": {
+      "pullingImage": "Pulling docker image...",
+      "checkingImage": "Checking if image already exists...",
+      "creatingContainer": "Creating docker container...",
+      "containerCreated": "Container created.",
+      "startContainer": "Container started.",
+      "stopContainer": "Container stopped.",
+      "restartContainer": "Restart Container.",
+      "killContainer": "Container killed.",
+      "containerCreationSuccessful": "Container successfully created.",
+      "containerCreationFailed": "Container could not be created."
+    },
+    "status": {
+      "running": "running",
+      "created": "created",
+      "restarting": "restarting",
+      "paused": "paused",
+      "exited": "exited",
+      "dead": "dead"
+    }
   }
 }

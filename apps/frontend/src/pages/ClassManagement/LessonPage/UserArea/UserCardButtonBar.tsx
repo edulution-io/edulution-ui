@@ -112,7 +112,7 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
       <button
         type="button"
         className={cn(
-          'relative z-10 rounded-full p-1.5',
+          'relative rounded-full p-1.5',
           'group-hover:bg-accent group-hover:text-background',
           button.defaultColor || (button.value ? 'bg-ciGreen text-background' : 'bg-ciRed'),
         )}

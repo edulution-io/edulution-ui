@@ -1,30 +1,40 @@
 import React, { useEffect } from 'react';
-import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import { useTranslation } from 'react-i18next';
+import { IoAdd } from 'react-icons/io5';
+import { type ContainerInfo } from 'dockerode';
 import { AppConfigTableConfig } from '@/pages/Settings/AppConfig/components/table/types/appConfigTableConfig';
 import getAppConfigTableConfig from '@/pages/Settings/AppConfig/components/table/getAppConfigTableConfig';
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
-import { IoAdd } from 'react-icons/io5';
+import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import { Button } from '@/components/shared/Button';
+import type BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
+import type TApps from '@libs/appconfig/types/appsType';
+import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 
-const AppConfigTable = ({ applicationName }: { applicationName: string }) => {
+interface AppConfigTableProps {
+  applicationName: TApps;
+  tableId: string;
+}
+
+const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableId }) => {
   const { t } = useTranslation();
 
-  const configs = getAppConfigTableConfig(applicationName);
+  const appConfigTableConfig = getAppConfigTableConfig(applicationName, tableId) as AppConfigTableConfig;
 
-  if (!configs) {
+  if (!appConfigTableConfig) {
     return <div>{t('common.error')}</div>;
   }
 
-  const renderConfig = (config: AppConfigTableConfig, index: number) => {
-    const { columns, useStore, showAddButton, dialogBody, filterPlaceHolderText, filterKey } = config;
+  const renderConfig = (config: AppConfigTableConfig) => {
+    const { columns, useStore, showAddButton, dialogBody, filterPlaceHolderText, filterKey, type } = config;
     const { tableContentData, fetchTableContent } = useStore();
     const { setDialogOpen, isDialogOpen } = useAppConfigTableDialogStore();
 
     useEffect(() => {
       const fetchDataAsync = async () => {
         if (fetchTableContent) {
-          await fetchTableContent();
+          await fetchTableContent(applicationName);
         }
       };
 
@@ -32,23 +42,58 @@ const AppConfigTable = ({ applicationName }: { applicationName: string }) => {
     }, [fetchTableContent, isDialogOpen]);
 
     const handleAddClick = () => {
-      setDialogOpen(true);
+      setDialogOpen(tableId);
+    };
+
+    const getScrollableTable = () => {
+      switch (type) {
+        case ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE: {
+          return (
+            <ScrollableTable
+              columns={columns}
+              data={tableContentData as BulletinCategoryResponseDto[]}
+              filterKey={filterKey}
+              filterPlaceHolderText={filterPlaceHolderText}
+              applicationName={applicationName}
+              enableRowSelection={false}
+              tableIsUsedOnAppConfigPage
+            />
+          );
+        }
+        case ExtendedOptionKeys.DOCKER_CONTAINER_TABLE: {
+          return (
+            <ScrollableTable
+              columns={columns}
+              data={tableContentData as ContainerInfo[]}
+              filterKey={filterKey}
+              filterPlaceHolderText={filterPlaceHolderText}
+              applicationName={applicationName}
+              enableRowSelection={false}
+              tableIsUsedOnAppConfigPage
+            />
+          );
+        }
+        case ExtendedOptionKeys.VEYON_PROXYS: {
+          return (
+            <ScrollableTable
+              columns={columns}
+              data={tableContentData as VeyonProxyItem[]}
+              filterKey={filterKey}
+              filterPlaceHolderText={filterPlaceHolderText}
+              applicationName={applicationName}
+              enableRowSelection={false}
+              tableIsUsedOnAppConfigPage
+            />
+          );
+        }
+        default:
+          return null;
+      }
     };
 
     return (
-      <div
-        key={config.key || index}
-        className="mb-8"
-      >
-        <ScrollableTable
-          columns={columns}
-          filterKey={filterKey}
-          filterPlaceHolderText={filterPlaceHolderText}
-          data={tableContentData}
-          applicationName={applicationName}
-          enableRowSelection={false}
-          tableIsUsedOnAppConfigPage
-        />
+      <div className="mb-8">
+        {getScrollableTable()}
         {showAddButton && (
           <div className="flex w-full">
             <Button
@@ -65,7 +110,7 @@ const AppConfigTable = ({ applicationName }: { applicationName: string }) => {
     );
   };
 
-  return <div>{configs.map((config, index) => renderConfig(config, index))}</div>;
+  return <div>{renderConfig(appConfigTableConfig)}</div>;
 };
 
 export default AppConfigTable;
