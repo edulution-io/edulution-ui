@@ -49,7 +49,7 @@ const AppConfigPage: React.FC = () => {
   const form = useForm<{ [settingLocation: string]: AppConfigDto | string } | ProxyConfigFormType | MailProviderConfig>(
     {
       mode: 'onChange',
-      resolver: zodResolver(appConfigFormSchema),
+      resolver: zodResolver(appConfigFormSchema(t)),
     },
   );
 

@@ -903,7 +903,9 @@
     "proxyConfigDescription": "YAML Editor for the Traefik proxy configuration",
     "expertMode": "Expert mode",
     "proxyPath": "Proxy path",
+    "proxyPathPlaceholder": "e.g. SOGo",
     "proxyDestination": "Proxy destination",
+    "proxyDestinationPlaceholder": "e.g. http://localhost:1234/",
     "stripPrefix": "Strip prefix"
   },
   "fileOperationSuccessful": "File operation successful",
