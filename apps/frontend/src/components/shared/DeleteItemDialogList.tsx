@@ -12,7 +12,7 @@ const DeleteItemDialogList = ({
   const { t } = useTranslation();
 
   return (
-    <div className="text-foreground">
+    <div className="text-background">
       <p>{t(deleteWarningTranslationId)}</p>
       <ScrollArea className="mt-2 h-64 w-96 max-w-full overflow-y-auto rounded border p-2">
         {items.map((item) => (

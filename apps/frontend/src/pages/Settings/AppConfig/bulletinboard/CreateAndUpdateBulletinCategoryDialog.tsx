@@ -10,8 +10,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import getCreateNewCategorieSchema from '@libs/bulletinBoard/constants/createNewCategorieSchema';
 import CreateAndUpdateBulletinCategoryBody from '@/pages/Settings/AppConfig/bulletinboard/components/CreateAndUpdateBulletinCategoryBody';
 import DeleteBulletinsCategoriesDialog from '@/pages/Settings/AppConfig/bulletinboard/components/DeleteBulletinCategoriesDialog';
+import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 
-const CreateAndUpdateBulletinCategoryDialog = () => {
+interface CreateAndUpdateBulletinCategoryDialogProps {
+  tableId: ExtendedOptionKeysType;
+}
+
+const CreateAndUpdateBulletinCategoryDialog: React.FC<CreateAndUpdateBulletinCategoryDialogProps> = ({ tableId }) => {
   const {
     selectedCategory,
     setSelectedCategory,
@@ -20,11 +25,13 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
     nameExistsAlready,
     isNameCheckingLoading,
     setIsDeleteDialogOpen,
+    tableContentData,
   } = useBulletinCategoryTableStore();
 
   const { t } = useTranslation();
 
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
+  const isOpen = isDialogOpen === tableId;
 
   const initialFormValues = selectedCategory || {
     name: '',
@@ -33,6 +40,7 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
     visibleForGroups: [],
     editableByUsers: [],
     editableByGroups: [],
+    position: 1,
   };
 
   const form = useForm<CreateBulletinCategoryDto>({
@@ -48,7 +56,7 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
   }, [selectedCategory, reset]);
 
   const closeDialog = () => {
-    setDialogOpen(false);
+    setDialogOpen('');
     setSelectedCategory(null);
     reset();
   };
@@ -59,15 +67,16 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
     if (selectedCategory) {
       const { name, isActive, visibleForUsers, visibleForGroups, editableByUsers, editableByGroups } = getValues();
       await updateCategory(selectedCategory?.id || '', {
-        name: name && name.trim() !== '' ? name : selectedCategory.name,
+        name: name?.trim() !== '' ? name : selectedCategory.name,
         isActive,
         visibleForUsers,
         visibleForGroups,
         editableByUsers,
         editableByGroups,
+        position: selectedCategory.position,
       });
     } else {
-      await addNewCategory(getValues());
+      await addNewCategory({ ...getValues(), position: tableContentData.length + 1 });
     }
     closeDialog();
   };
@@ -85,7 +94,7 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
       isCurrentNameEqualToSelected={isCurrentNameEqualToSelected}
       isSaveButtonDisabled={isSaveButtonDisabled}
       handleDeleteCategory={() => {
-        setDialogOpen(false);
+        setDialogOpen('');
         setIsDeleteDialogOpen(true);
       }}
     />
@@ -102,9 +111,9 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
   return (
     <>
       <AdaptiveDialog
-        isOpen={isDialogOpen}
+        isOpen={isOpen}
         handleOpenChange={() => {
-          setDialogOpen(false);
+          setDialogOpen('');
           setSelectedCategory(null);
         }}
         title={selectedCategory ? t('bulletinboard.editCategory') : t('bulletinboard.createNewCategory')}

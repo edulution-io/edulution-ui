@@ -19,16 +19,18 @@ const BulletinBoardPage = () => {
       style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
       className="flex h-full w-full flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin"
     >
-      {bulletinsByCategories?.map(({ bulletins, category, canEditCategory }) => (
-        <BulletinBoardPageColumn
-          key={category.id}
-          categoryCount={bulletinsByCategories.length}
-          canEditCategory={canEditCategory}
-          category={category}
-          bulletins={bulletins}
-          canManageBulletins={!!bulletinBoardConfig}
-        />
-      ))}
+      {bulletinsByCategories
+        ?.sort((a, b) => a.category.position - b.category.position)
+        .map(({ bulletins, category, canEditCategory }) => (
+          <BulletinBoardPageColumn
+            key={category.id}
+            categoryCount={bulletinsByCategories.length}
+            canEditCategory={canEditCategory}
+            category={category}
+            bulletins={bulletins}
+            canManageBulletins={!!bulletinBoardConfig}
+          />
+        ))}
     </div>
   );
 };

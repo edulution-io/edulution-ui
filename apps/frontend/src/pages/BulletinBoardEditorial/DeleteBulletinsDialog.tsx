@@ -40,7 +40,7 @@ const DeleteBulletinsDialog = ({ trigger, onSubmit }: DeleteBulletinsDialogProps
     if (isDialogLoading) return <CircleLoader className="mx-auto" />;
 
     return (
-      <div className="text-foreground">
+      <div className="text-background">
         {error ? (
           <>
             {t('bulletinboard.error')}: {error.message}

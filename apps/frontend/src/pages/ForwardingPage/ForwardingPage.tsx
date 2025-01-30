@@ -41,7 +41,7 @@ const ForwardingPage: React.FC = () => {
 
   return (
     <div className="grid h-[80%] items-center justify-center">
-      <h2 className="text-center">{t('forwardingpage.action')}</h2>
+      <h2 className="text-center text-background">{t('forwardingpage.action')}</h2>
       <div className="mt-20 flex justify-center">
         <img
           className="hidden md:flex"

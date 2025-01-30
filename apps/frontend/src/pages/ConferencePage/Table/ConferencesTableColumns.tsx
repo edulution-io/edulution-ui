@@ -286,8 +286,9 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
         isRowLoading || !isUserTheCreator
           ? undefined
           : async () => {
+              let wasConferenceStateToggled;
               if (isUserTheCreator) {
-                await toggleConferenceRunningState(meetingID, isRunning);
+                wasConferenceStateToggled = await toggleConferenceRunningState(meetingID, isRunning);
                 if (!isRunning) {
                   await joinConference(meetingID);
                 } else if (joinConferenceUrl.includes(meetingID)) {
@@ -296,9 +297,14 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
               } else if (isRunning) {
                 await joinConference(meetingID);
               }
-              await delay(5000);
+
+              if (wasConferenceStateToggled) {
+                await delay(5000);
+                toast.info(i18next.t(`conferences.${isRunning ? 'stopped' : 'started'}`));
+              } else {
+                setJoinConferenceUrl('');
+              }
               await getConferences();
-              toast.info(i18next.t(`conferences.${isRunning ? 'stopped' : 'started'}`));
             };
       return (
         <SelectableTextCell

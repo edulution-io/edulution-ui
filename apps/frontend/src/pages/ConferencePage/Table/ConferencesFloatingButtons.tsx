@@ -18,7 +18,8 @@ import { useTranslation } from 'react-i18next';
 const ConferencesFloatingButtons: React.FC = () => {
   const { t } = useTranslation();
   const { openCreateConferenceDialog } = useCreateConferenceDialogStore();
-  const { joinConference, setSelectedConference, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
+  const { joinConference, joinConferenceUrl, setSelectedConference, setJoinConferenceUrl } =
+    useConferenceDetailsDialogStore();
   const { selectedRows, toggleConferenceRunningState, getConferences, setIsDeleteConferencesDialogOpen, conferences } =
     useConferenceStore();
   const selectedConferenceIds = Object.keys(selectedRows);
@@ -29,15 +30,20 @@ const ConferencesFloatingButtons: React.FC = () => {
   const startOrStopConference = async () => {
     if (firstSelectedConference) {
       const { meetingID, isRunning } = firstSelectedConference;
-      void toggleConferenceRunningState(meetingID, isRunning);
+      const wasConferenceStateToggled = await toggleConferenceRunningState(meetingID, isRunning);
       if (isRunning) {
         void joinConference(meetingID);
+      } else if (joinConferenceUrl.includes(meetingID)) {
+        setJoinConferenceUrl('');
+      }
+
+      if (wasConferenceStateToggled) {
+        await delay(5000);
+        toast.info(t(`conferences.${isRunning ? 'stopped' : 'started'}`));
       } else {
         setJoinConferenceUrl('');
       }
-      await delay(5000);
       await getConferences();
-      toast.info(t(`conferences.${isRunning ? 'stopped' : 'started'}`));
     }
   };
 

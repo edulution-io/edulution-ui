@@ -30,6 +30,7 @@ export enum RequestResponseContentType {
   TEXT_PLAIN = 'text/plain',
   MULTIPART_FORM_DATA = 'multipart/form-data',
   APPLICATION_OCTET_STREAM = 'application/octet-stream',
+  APPLICATION_GITHUB_RAW = 'application/vnd.github.v3.raw',
 }
 
 export const HTTP_HEADERS = {

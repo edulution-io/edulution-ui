@@ -16,7 +16,6 @@ const InputWithActionIcons = React.forwardRef<HTMLInputElement, InputProps>(
         {...props}
         className={cn(originInputVariants({ variant, className }))}
         ref={ref}
-        variant="lightGray"
         readOnly={readOnly}
       />
       <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5 text-background">
@@ -28,7 +27,7 @@ const InputWithActionIcons = React.forwardRef<HTMLInputElement, InputProps>(
             onClickCapture={onClick}
             disabled={disabled}
           >
-            <ButtonIcon className={cn({ 'text-ciGrey': disabled }, 'h-[24px] w-[24px]')} />
+            <ButtonIcon className={cn({ 'text-muted': disabled }, 'h-[24px] w-[24px]')} />
           </button>
         ))}
       </div>

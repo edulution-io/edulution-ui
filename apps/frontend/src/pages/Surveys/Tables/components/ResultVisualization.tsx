@@ -52,7 +52,7 @@ const ResultVisualization = (props: ResultVisualizationDialogBodyProps) => {
   }, [visuPanel]);
 
   return (
-    <div className="rounded bg-ciLightGrey">
+    <div className="rounded bg-secondary">
       <div id="surveyVisuPanel" />
     </div>
   );

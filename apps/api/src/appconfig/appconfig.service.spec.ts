@@ -5,22 +5,15 @@ import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVar
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { AppConfigDto } from '@libs/appconfig/types';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import type PatchConfigDto from '@libs/common/types/patchConfigDto';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
+import { HttpStatus } from '@nestjs/common';
 import AppConfigService from './appconfig.service';
 import { AppConfig } from './appconfig.schema';
+import { mockAppConfig, mockAppConfigModel, mockLdapGroup } from './appconfig.mock';
 
 jest.mock('fs');
-
-const mockAppConfigModel = {
-  insertMany: jest.fn(),
-  bulkWrite: jest.fn(),
-  find: jest.fn().mockReturnValue({
-    lean: jest.fn(),
-  }),
-  findOne: jest.fn().mockReturnValue({
-    lean: jest.fn(),
-  }),
-  deleteOne: jest.fn(),
-};
 
 const mockConnection = {
   db: {
@@ -55,75 +48,74 @@ describe('AppConfigService', () => {
 
   describe('insertConfig', () => {
     it('should successfully insert configs', async () => {
-      const appConfigs: AppConfigDto[] = [
-        {
-          name: 'Test',
-          icon: 'icon-path',
-          appType: APP_INTEGRATION_VARIANT.EMBEDDED,
-          options: {
-            url: 'test/path',
-            apiKey: '123456789',
-          },
-          accessGroups: [
-            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
-            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
-          ],
-          extendedOptions: {
-            [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/2/',
-            [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
-          },
-        },
-      ];
-      await service.insertConfig(appConfigs);
-      expect(mockAppConfigModel.insertMany).toHaveBeenCalledWith(appConfigs);
+      await service.insertConfig(mockAppConfig, mockLdapGroup);
+      expect(mockAppConfigModel.create).toHaveBeenCalledWith(mockAppConfig);
     });
   });
 
   describe('updateConfig', () => {
     it('should successfully update configs', async () => {
-      const appConfigs: AppConfigDto[] = [
+      mockAppConfigModel.updateOne.mockResolvedValue({});
+      jest.spyOn(service, 'getAppConfigs').mockResolvedValue([mockAppConfig]);
+
+      const result = await service.updateConfig(mockAppConfig.name, mockAppConfig, mockLdapGroup);
+
+      expect(mockAppConfigModel.updateOne).toHaveBeenCalledWith(
+        { name: mockAppConfig.name },
         {
-          name: 'Test',
-          icon: 'icon-path',
-          appType: APP_INTEGRATION_VARIANT.EMBEDDED,
-          options: {
-            url: 'test/path',
-            apiKey: '123456789',
-          },
-          accessGroups: [
-            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
-            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
-          ],
-          extendedOptions: {
-            [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/2/',
-            [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
+          $set: {
+            icon: mockAppConfig.icon,
+            appType: mockAppConfig.appType,
+            options: mockAppConfig.options,
+            accessGroups: mockAppConfig.accessGroups,
+            extendedOptions: mockAppConfig.extendedOptions,
           },
         },
-      ];
+        { upsert: true },
+      );
+      expect(service.getAppConfigs).toHaveBeenCalledWith(mockLdapGroup);
+      expect(result).toEqual([mockAppConfig]);
+    });
+  });
 
-      await service.updateConfig(appConfigs);
-      expect(mockAppConfigModel.bulkWrite).toHaveBeenCalledWith(expect.any(Array)); // Oder detailliertere Prüfung
+  describe('patchconfig', () => {
+    it('should update the configuration and return updated configs', async () => {
+      const name = 'testConfig';
+      const patchConfigDto: PatchConfigDto = { field: 'testField', value: 'newValue' };
+
+      mockAppConfigModel.updateOne.mockResolvedValue({});
+      jest.spyOn(service, 'getAppConfigs').mockResolvedValue([mockAppConfig]);
+
+      const result = await service.patchConfig(name, patchConfigDto, mockLdapGroup);
+
+      expect(mockAppConfigModel.updateOne).toHaveBeenCalledWith(
+        { name },
+        { $set: { [patchConfigDto.field]: patchConfigDto.value } },
+      );
+      expect(service.getAppConfigs).toHaveBeenCalledWith(mockLdapGroup);
+      expect(result).toEqual([mockAppConfig]);
+    });
+
+    it('should throw CustomHttpException if updateOne fails', async () => {
+      const name = 'testConfig';
+      const patchConfigDto: PatchConfigDto = { field: 'testField', value: 'newValue' };
+
+      mockAppConfigModel.updateOne.mockRejectedValue(new Error('Database error'));
+
+      await expect(service.patchConfig(name, patchConfigDto, mockLdapGroup)).rejects.toThrow(
+        new CustomHttpException(
+          AppConfigErrorMessages.WriteAppConfigFailed,
+          HttpStatus.SERVICE_UNAVAILABLE,
+          undefined,
+          AppConfigService.name,
+        ),
+      );
     });
   });
 
   describe('getAppConfigs', () => {
     it('should return app configs', async () => {
-      const appConfigs: AppConfigDto[] = [
-        {
-          name: 'Test',
-          icon: 'icon-path',
-          appType: APP_INTEGRATION_VARIANT.EMBEDDED,
-          options: { url: 'test/path' },
-          accessGroups: [
-            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
-            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
-          ],
-          extendedOptions: {
-            [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/2/',
-            [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
-          },
-        },
-      ];
+      const appConfigs: AppConfigDto[] = [mockAppConfig];
 
       const expectedConfigs = appConfigs.map((config) => ({
         name: config.name,
@@ -180,11 +172,14 @@ describe('AppConfigService', () => {
 
   describe('deleteConfig', () => {
     it('should delete a config', async () => {
+      mockAppConfigModel.updateOne.mockResolvedValue({});
       const configName = 'Test';
+      jest.spyOn(service, 'getAppConfigs').mockResolvedValue([mockAppConfig]);
 
-      await service.deleteConfig(configName);
+      const result = await service.deleteConfig(configName, mockLdapGroup);
 
       expect(mockAppConfigModel.deleteOne).toHaveBeenCalledWith({ name: configName });
+      expect(result).toEqual([mockAppConfig]);
     });
   });
 

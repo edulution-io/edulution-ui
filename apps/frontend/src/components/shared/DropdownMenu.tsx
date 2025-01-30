@@ -25,7 +25,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ trigger, items }) => {
       <DropdownMenuPortal>
         <DropdownMenuContent
           className={cn(
-            'z-50 min-w-[8rem] overflow-hidden rounded-lg border border-gray-700 bg-gray-800 p-1 text-white shadow-md',
+            'z-50 min-w-[8rem] overflow-hidden rounded-lg border border-gray-700 bg-gray-800 p-1 text-background shadow-md',
           )}
         >
           {items.map((item) => {
