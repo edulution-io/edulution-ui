@@ -73,7 +73,10 @@ class SurveyAnswersService {
             {
               $and: [
                 {
-                  $or: [{ 'invitedAttendees.username': user.name }, { 'invitedGroups.path': { $in: user.ldapGroups } }],
+                  $or: [
+                    { 'invitedAttendees.username': user.preferred_username },
+                    { 'invitedGroups.path': { $in: user.ldapGroups } },
+                  ],
                 },
                 {
                   $or: [
