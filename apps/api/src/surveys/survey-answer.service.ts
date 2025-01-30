@@ -1,4 +1,5 @@
 import mongoose, { Model } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -212,16 +213,14 @@ class SurveyAnswersService {
     }
 
     const { expires, isPublic } = survey;
-
     if (expires && expires < new Date()) {
       throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorSurveyExpired, HttpStatus.UNAUTHORIZED);
     }
-
     if (!isPublic) {
       throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorUserNotAssigned, HttpStatus.UNAUTHORIZED);
     }
 
-    const pseudoAttendee: Attendee = { username: `public-${surveyId.toString()}` };
+    const pseudoAttendee: Attendee = { username: `public-${surveyId.toString()}-${uuidv4()}` };
 
     const id = getNewSurveyId();
     const newSurveyAnswer = await this.surveyAnswerModel.create({
@@ -240,6 +239,7 @@ class SurveyAnswersService {
     }
 
     const updateSurvey = await this.surveyModel.findByIdAndUpdate<Survey>(surveyId, {
+      participatedAttendees: [...survey.participatedAttendees, pseudoAttendee],
       answers: [...survey.answers, newSurveyAnswer.id],
     });
     if (updateSurvey == null) {
