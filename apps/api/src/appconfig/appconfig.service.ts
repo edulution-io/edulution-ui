@@ -91,6 +91,13 @@ class AppConfigService implements OnModuleInit {
     }
   }
 
+  static checkIfFileExistAndDelete(filePath: string) {
+    if (existsSync(filePath)) {
+      unlinkSync(filePath);
+      Logger.log(`${filePath} deleted.`, AppConfigService.name);
+    }
+  }
+
   static writeProxyConfigFile(appConfigDto: AppConfigDto) {
     if (appConfigDto?.options?.proxyConfig) {
       const { proxyConfig } = appConfigDto.options;
@@ -102,10 +109,7 @@ class AppConfigService implements OnModuleInit {
       } else {
         const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appConfigDto?.name}.yml`;
 
-        if (existsSync(filePath)) {
-          unlinkSync(filePath);
-          Logger.log(`${filePath} deleted.`, AppConfigService.name);
-        }
+        AppConfigService.checkIfFileExistAndDelete(filePath);
       }
     }
   }
@@ -170,10 +174,8 @@ class AppConfigService implements OnModuleInit {
     } finally {
       const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${configName}.yml`;
 
-      if (existsSync(filePath)) {
-        unlinkSync(filePath);
-        Logger.log(`${filePath} deleted.`, AppConfigService.name);
-      }
+      AppConfigService.checkIfFileExistAndDelete(filePath);
+
       this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
     }
   }
