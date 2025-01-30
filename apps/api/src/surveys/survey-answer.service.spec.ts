@@ -263,7 +263,7 @@ describe('SurveyAnswerService', () => {
       expect(service.getAnsweredSurveys).toHaveBeenCalledWith(firstUsername);
       expect(model.find).toHaveBeenCalledWith({ 'attendee.username': firstUsername });
       expect(surveyModel.find).toHaveBeenCalledWith({
-        id: {
+        _id: {
           $in: [idOfAnsweredSurvey01, idOfAnsweredSurvey02, idOfAnsweredSurvey05, idOfAnsweredSurvey04],
         },
       });
