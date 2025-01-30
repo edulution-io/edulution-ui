@@ -41,7 +41,7 @@ class SurveysService {
 
   async findPublicSurvey(surveyId: mongoose.Types.ObjectId): Promise<Survey | null> {
     try {
-      return await this.surveyModel.findOne<Survey>({ _id: surveyId, isPublic: true }).lean();
+      return await this.surveyModel.findOne<Survey>({ id: surveyId, isPublic: true }).lean();
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     }

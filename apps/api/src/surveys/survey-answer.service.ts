@@ -101,7 +101,7 @@ class SurveyAnswersService {
   async getAnsweredSurveys(username: string): Promise<Survey[]> {
     const surveyAnswers = await this.getAnswers(username);
     const answeredSurveyIds = surveyAnswers.map((answer: SurveyAnswer) => answer.surveyId);
-    const answeredSurveys = await this.surveyModel.find<Survey>({ _id: { $in: answeredSurveyIds } });
+    const answeredSurveys = await this.surveyModel.find<Survey>({ id: { $in: answeredSurveyIds } });
     return answeredSurveys || [];
   }
 

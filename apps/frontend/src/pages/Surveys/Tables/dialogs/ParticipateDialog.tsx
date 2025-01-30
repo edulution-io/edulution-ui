@@ -19,6 +19,7 @@ const ParticipateDialog = () => {
     setPageNo,
     answerSurvey,
     isLoading,
+    reset,
   } = useParticipateDialogStore();
 
   const { t } = useTranslation();
@@ -42,6 +43,7 @@ const ParticipateDialog = () => {
           updateAnsweredSurveys={updateAnsweredSurveys}
           setIsOpenParticipateSurveyDialog={setIsOpenParticipateSurveyDialog}
           className="max-h-[75vh] overflow-y-auto rounded bg-gray-600 p-4"
+          reset={reset}
         />
       </ScrollArea>
     );

@@ -31,6 +31,7 @@ interface ParticipateDialogBodyProps {
   updateAnsweredSurveys: () => void;
   setIsOpenParticipateSurveyDialog: (state: boolean) => void;
   className?: string;
+  reset?: () => void;
 }
 
 const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
@@ -47,6 +48,7 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
     updateAnsweredSurveys,
     setIsOpenParticipateSurveyDialog,
     className,
+    reset,
   } = props;
 
   const { language } = useLanguage();
@@ -78,6 +80,7 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
     updateOpenSurveys();
     updateAnsweredSurveys();
     setIsOpenParticipateSurveyDialog(false);
+    reset?.();
   });
   return (
     <div className={className}>

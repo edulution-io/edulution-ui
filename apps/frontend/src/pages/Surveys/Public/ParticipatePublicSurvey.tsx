@@ -10,7 +10,7 @@ const ParticipatePublicSurvey = (): React.ReactNode => {
   const [searchParams] = useSearchParams();
   const surveyId = searchParams.get('surveyId');
 
-  const { getPublicSurvey, publicSurvey, answer, setAnswer, pageNo, setPageNo, answerPublicSurvey, isFetching } =
+  const { getPublicSurvey, publicSurvey, answer, setAnswer, pageNo, setPageNo, answerPublicSurvey, isFetching, reset } =
     useParticipatePublicSurveyStore();
 
   const { t } = useTranslation();
@@ -40,6 +40,7 @@ const ParticipatePublicSurvey = (): React.ReactNode => {
           updateAnsweredSurveys={() => {}}
           setIsOpenParticipateSurveyDialog={() => {}}
           className="survey-participation"
+          reset={reset}
         />
       </ScrollArea>
     );
