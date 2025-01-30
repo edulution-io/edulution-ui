@@ -17,7 +17,7 @@ interface SurveyDto {
   invitedGroups: MultipleSelectorGroup[];
   participatedAttendees: AttendeeDto[];
   answers: mongoose.Types.ObjectId[];
-  created?: Date;
+  created: Date;
   expires?: Date;
   isAnonymous?: boolean;
   isPublic?: boolean;

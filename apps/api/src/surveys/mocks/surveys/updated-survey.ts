@@ -1,11 +1,16 @@
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import getNewSurveyId from '@libs/survey/getNewSurveyId';
+import getNewSurveyId from '@libs/survey/utils/getNewSurveyId';
 import { firstUsername } from '../user/usernames';
 import { firstMockUser } from '../user/users';
 import { mockedParticipants } from '../user/participants';
 import { Survey } from '../../survey.schema';
 
 export const surveyUpdateSurveyId = getNewSurveyId();
+
+export const initialSaveNo = 0;
+export const surveyUpdateInitialSaveNo = 1;
+const surveyUpdateUpdatedSaveNo = 2;
+export const surveyUpdateNoTMatchingSaveNo = 5;
 
 export const surveyUpdateInitialSurvey: Survey = {
   _id: surveyUpdateSurveyId,
@@ -26,7 +31,7 @@ export const surveyUpdateInitialSurvey: Survey = {
   invitedGroups: [],
   participatedAttendees: [],
   answers: [],
-  saveNo: 1,
+  saveNo: surveyUpdateInitialSaveNo,
   created: new Date('2020-11-29T00:00:00.000Z'),
   expires: new Date('2025-04-22T14:30:00.000Z'),
   isAnonymous: false,
@@ -44,7 +49,8 @@ export const surveyUpdateInitialSurveyDto: SurveyDto = {
   invitedAttendees: mockedParticipants,
   invitedGroups: [],
   participatedAttendees: [],
-  saveNo: 1,
+  saveNo: initialSaveNo,
+  created: new Date('2020-11-29T00:00:00.000Z'),
   isPublic: false,
 };
 
@@ -67,7 +73,7 @@ export const surveyUpdateUpdatedSurvey: Survey = {
   invitedAttendees: mockedParticipants,
   invitedGroups: [],
   answers: [],
-  saveNo: 2,
+  saveNo: surveyUpdateUpdatedSaveNo,
   created: new Date('2020-11-29T00:00:00.000Z'),
   expires: new Date('2025-04-22T14:30:00.000Z'),
   isAnonymous: false,
@@ -85,6 +91,7 @@ export const surveyUpdateUpdatedSurveyDto: SurveyDto = {
   invitedAttendees: mockedParticipants,
   invitedGroups: [],
   participatedAttendees: [],
-  saveNo: 2,
+  saveNo: surveyUpdateInitialSaveNo,
+  created: new Date('2020-11-29T00:00:00.000Z'),
   isPublic: false,
 };

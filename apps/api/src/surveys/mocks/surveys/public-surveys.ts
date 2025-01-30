@@ -1,4 +1,4 @@
-import getNewSurveyId from '@libs/survey/getNewSurveyId';
+import getNewSurveyId from '@libs/survey/utils/getNewSurveyId';
 import { Survey } from '../../survey.schema';
 import { SurveyAnswer } from '../../survey-answer.schema';
 import { firstMockUser, secondMockUser } from '../user';

@@ -4,7 +4,7 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import ParticipateDialogBody from '@/pages/Surveys/Tables/dialogs/ParticipateDialogBody';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
+import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticipateDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 
 const ParticipateDialog = () => {
@@ -19,7 +19,6 @@ const ParticipateDialog = () => {
     setPageNo,
     answerSurvey,
     isLoading,
-    reset,
   } = useParticipateDialogStore();
 
   const { t } = useTranslation();
@@ -43,7 +42,6 @@ const ParticipateDialog = () => {
           updateAnsweredSurveys={updateAnsweredSurveys}
           setIsOpenParticipateSurveyDialog={setIsOpenParticipateSurveyDialog}
           className="max-h-[75vh] overflow-y-auto rounded bg-gray-600 p-4"
-          reset={reset}
         />
       </ScrollArea>
     );

@@ -185,35 +185,43 @@ describe('SurveyAnswerService', () => {
     });
   });
 
-  // TODO: FIX
-  // describe('getOpenSurveys', () => {
-  //   it('should return a list with surveys that the user should/could participate', async () => {
-  //     jest.spyOn(service, 'getOpenSurveys');
-  //
-  //     surveyModel.find = jest.fn().mockReturnValue([openSurvey01, openSurvey02]);
-  //
-  //     const result = await service.getOpenSurveys(firstUsername);
-  //     expect(result).toEqual([openSurvey01, openSurvey02]);
-  //
-  //     expect(service.getOpenSurveys).toHaveBeenCalledWith(firstUsername);
-  //     expect(surveyModel.find).toHaveBeenCalledWith({
-  //       $or: [
-  //         { isPublic: true },
-  //         {
-  //           $and: [
-  //             { 'invitedAttendees.username': firstUsername },
-  //             {
-  //               $or: [
-  //                 { $nor: [{ participatedAttendees: { $elemMatch: { username: firstUsername } } }] },
-  //                 { canSubmitMultipleAnswers: true },
-  //               ],
-  //             },
-  //           ],
-  //         },
-  //       ],
-  //     });
-  //   });
-  // });
+  describe('getOpenSurveys', () => {
+    it('should return a list with surveys that the user should/could participate', async () => {
+      jest.spyOn(service, 'getOpenSurveys');
+
+      surveyModel.find = jest.fn().mockReturnValue([openSurvey01, openSurvey02]);
+
+      const result = await service.getOpenSurveys(firstMockJWTUser);
+      expect(result).toEqual([openSurvey01, openSurvey02]);
+
+      expect(service.getOpenSurveys).toHaveBeenCalledWith(firstMockJWTUser);
+      expect(surveyModel.find).toHaveBeenCalledWith({
+        $or: [
+          { isPublic: true },
+          {
+            $and: [
+              {
+                $or: [
+                  { 'invitedAttendees.username': firstMockJWTUser.preferred_username },
+                  { 'invitedGroups.path': { $in: firstMockJWTUser.ldapGroups } },
+                ],
+              },
+              {
+                $or: [
+                  {
+                    $nor: [
+                      { participatedAttendees: { $elemMatch: { username: firstMockJWTUser.preferred_username } } },
+                    ],
+                  },
+                  { canSubmitMultipleAnswers: true },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+    });
+  });
 
   describe('getAnswers', () => {
     it('should return a list with the answers the user has submitted', async () => {

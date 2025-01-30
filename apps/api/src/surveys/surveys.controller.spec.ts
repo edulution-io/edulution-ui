@@ -183,11 +183,16 @@ describe(SurveysController.name, () => {
   describe('updateOrCreateSurvey', () => {
     it('should call the updateOrCreateSurvey() function of the surveyService', async () => {
       jest.spyOn(surveysService, 'updateOrCreateSurvey');
+      surveyModel.findOne = jest
+        .fn()
+        .mockReturnValue({
+          exec: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
+        })
+        .mockReturnValueOnce({
+          exec: jest.fn().mockReturnValue(surveyUpdateInitialSurvey),
+        });
       surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
-        lean: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
-      });
-      surveyModel.findOne = jest.fn().mockReturnValue({
-        lean: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
+        exec: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
       });
 
       await controller.updateOrCreateSurvey(surveyUpdateUpdatedSurveyDto, firstMockJWTUser);

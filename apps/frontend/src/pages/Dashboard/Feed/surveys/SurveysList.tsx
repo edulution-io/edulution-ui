@@ -9,7 +9,7 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveysPageView from '@libs/survey/types/api/page-view';
 import cn from '@libs/common/utils/className';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
+import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticipateDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FallbackText from '@/components/shared/FallbackText';
 

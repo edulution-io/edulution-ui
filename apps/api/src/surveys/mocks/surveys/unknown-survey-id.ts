@@ -1,4 +1,4 @@
-import getNewSurveyId from '@libs/survey/getNewSurveyId';
+import getNewSurveyId from '@libs/survey/utils/getNewSurveyId';
 
 const unknownSurveyId = getNewSurveyId();
 

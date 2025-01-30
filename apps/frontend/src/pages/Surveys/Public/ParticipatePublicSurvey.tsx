@@ -16,6 +16,12 @@ const ParticipatePublicSurvey = (): React.ReactNode => {
   const { t } = useTranslation();
 
   useEffect(() => {
+    window.onbeforeunload = function () {
+      reset();
+    };
+  }, []);
+
+  useEffect(() => {
     if (surveyId) {
       void getPublicSurvey(surveyId);
     }

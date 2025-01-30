@@ -9,7 +9,7 @@ import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-erro
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
-import getNewSurveyId from '@libs/survey/getNewSurveyId';
+import getNewSurveyId from '@libs/survey/utils/getNewSurveyId';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
 import Attendee from '../conferences/attendee.schema';
@@ -61,35 +61,35 @@ class SurveyAnswersService {
   }
 
   async getOpenSurveys(user: JWTUser): Promise<Survey[]> {
-    const currentDate = new Date();
+    // const currentDate = new Date();
 
     return this.surveyModel.find<Survey>({
-      $and: [
+      // $and: [
+      //   {
+      //     $or: [{ expires: { $eq: null } }, { expires: { $gt: currentDate } }],
+      //   },
+      //   {
+      $or: [
+        { isPublic: true },
         {
-          $or: [{ expires: { $eq: null } }, { expires: { $gt: currentDate } }],
-        },
-        {
-          $or: [
-            { isPublic: true },
+          $and: [
             {
-              $and: [
-                {
-                  $or: [
-                    { 'invitedAttendees.username': user.preferred_username },
-                    { 'invitedGroups.path': { $in: user.ldapGroups } },
-                  ],
-                },
-                {
-                  $or: [
-                    { $nor: [{ participatedAttendees: { $elemMatch: { username: user.name } } }] },
-                    { canSubmitMultipleAnswers: true },
-                  ],
-                },
+              $or: [
+                { 'invitedAttendees.username': user.preferred_username },
+                { 'invitedGroups.path': { $in: user.ldapGroups } },
+              ],
+            },
+            {
+              $or: [
+                { $nor: [{ participatedAttendees: { $elemMatch: { username: user.preferred_username } } }] },
+                { canSubmitMultipleAnswers: true },
               ],
             },
           ],
         },
       ],
+      //   },
+      // ],
     });
   }
 

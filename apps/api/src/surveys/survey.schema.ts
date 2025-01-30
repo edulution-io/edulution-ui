@@ -43,7 +43,7 @@ export class Survey {
   answers: mongoose.Types.ObjectId[];
 
   @Prop({ type: Date, required: true })
-  created?: Date;
+  created: Date;
 
   @Prop({ type: Date, required: false })
   expires?: Date;

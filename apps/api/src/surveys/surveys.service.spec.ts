@@ -1,6 +1,6 @@
 import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpStatus, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
@@ -9,7 +9,9 @@ import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveysService from './surveys.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import {
+  firstUsername,
   firstMockJWTUser,
+  secondMockJWTUser,
   idOfPublicSurvey01,
   publicSurvey01,
   surveyUpdateInitialSurvey,
@@ -19,7 +21,12 @@ import {
 } from './mocks';
 import UserConnections from '../types/userConnections';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';
-import { surveyUpdateInitialSurveyDto, surveyUpdateUpdatedSurveyDto } from './mocks/surveys/updated-survey';
+import {
+  surveyUpdateInitialSaveNo,
+  surveyUpdateInitialSurveyDto,
+  surveyUpdateUpdatedSurveyDto,
+  surveyUpdateNoTMatchingSaveNo,
+} from './mocks/surveys/updated-survey';
 
 const mockSseConnections: UserConnections = new Map();
 
@@ -65,7 +72,7 @@ describe('SurveyService', () => {
       const result = await service.findPublicSurvey(idOfPublicSurvey01);
       expect(result).toEqual(publicSurvey01);
 
-      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: idOfPublicSurvey01, isPublic: true });
+      expect(surveyModel.findOne).toHaveBeenCalledWith({ id: idOfPublicSurvey01, isPublic: true });
     });
 
     it('should throw an error if the database access fails', async () => {
@@ -83,7 +90,7 @@ describe('SurveyService', () => {
         const error = e as Error;
         expect(error.message).toEqual(CommonErrorMessages.DBAccessFailed);
       }
-      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: idOfPublicSurvey01, isPublic: true });
+      expect(surveyModel.findOne).toHaveBeenCalledWith({ id: idOfPublicSurvey01, isPublic: true });
     });
   });
 
@@ -114,21 +121,29 @@ describe('SurveyService', () => {
 
   describe('createSurvey', () => {
     it('should create a survey', async () => {
-      surveyModel.create = jest.fn().mockReturnValueOnce(surveyUpdateInitialSurvey);
+      surveyModel.create = jest.fn().mockReturnValue(surveyUpdateInitialSurvey);
+      surveyModel.findOne = jest.fn().mockReturnValue({
+        exec: jest.fn().mockReturnValue(surveyUpdateInitialSurvey),
+      });
 
       await service
-        .createSurvey(surveyUpdateInitialSurvey, mockSseConnections)
+        .createSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser, mockSseConnections)
         .then((data) => expect(data).toStrictEqual(surveyUpdateInitialSurvey))
         .catch(() => {});
 
       expect(surveyModel.create).toHaveBeenCalledWith(surveyUpdateInitialSurvey);
+      expect(surveyModel.findOne).toHaveBeenCalledWith({ id: surveyUpdateSurveyId });
     });
 
     it('should throw an error if the survey creation fails', async () => {
-      surveyModel.findOneAndUpdate = jest.fn().mockResolvedValue(null);
-      surveyModel.findOne = jest.fn().mockReturnValue({
-        lean: jest.fn().mockReturnValue(surveyUpdateInitialSurvey),
-      });
+      surveyModel.findOne = jest
+        .fn()
+        .mockReturnValue({
+          exec: jest.fn().mockReturnValue(surveyUpdateInitialSurvey),
+        })
+        .mockReturnValueOnce({
+          exec: jest.fn().mockReturnValue(null),
+        });
 
       surveyModel.create = jest
         .fn()
@@ -137,7 +152,7 @@ describe('SurveyService', () => {
         );
 
       try {
-        await service.createSurvey(surveyUpdateInitialSurvey, mockSseConnections);
+        await service.createSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser, mockSseConnections);
       } catch (e) {
         const error = e as Error;
         expect(error.message).toEqual(CommonErrorMessages.DBAccessFailed);
@@ -148,41 +163,88 @@ describe('SurveyService', () => {
 
   describe('updateSurvey', () => {
     it('should update a survey', async () => {
-      surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
-        lean: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
-      });
-      surveyModel.findOne = jest.fn().mockReturnValue({
-        lean: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
+      surveyModel.findOne = jest
+        .fn()
+        .mockReturnValue({
+          exec: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
+        })
+        .mockReturnValueOnce({
+          exec: jest.fn().mockReturnValue(surveyUpdateInitialSurvey),
+        });
+      surveyModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
+        exec: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
       });
 
-      const result = await service.updateSurvey(surveyUpdateUpdatedSurvey, mockSseConnections);
-
+      const result = await service.updateSurvey(surveyUpdateUpdatedSurveyDto, firstMockJWTUser, mockSseConnections);
       expect(result).toStrictEqual(surveyUpdateUpdatedSurvey);
 
-      const query = { id: { $eq: surveyUpdateSurveyId } };
+      expect(surveyModel.findOne).toHaveBeenNthCalledWith(1, { id: surveyUpdateSurveyId });
+      const query = {
+        $and: [
+          { id: { $eq: surveyUpdateSurveyId } },
+          { 'creator.username': { $eq: firstUsername } },
+          { saveNo: { $eq: surveyUpdateInitialSaveNo } },
+        ],
+      };
       expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith(query, surveyUpdateUpdatedSurvey);
+      expect(surveyModel.findOne).toHaveBeenNthCalledWith(2, { id: surveyUpdateSurveyId });
     });
 
     it('should throw an error if the survey update fails', async () => {
+      surveyModel.findOne = jest
+        .fn()
+        .mockReturnValue({
+          exec: jest.fn().mockReturnValue(surveyUpdateInitialSurvey),
+        })
+        .mockReturnValueOnce({
+          exec: jest.fn().mockReturnValue(surveyUpdateInitialSurvey),
+        });
       surveyModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
-        lean: jest
+        exec: jest
           .fn()
           .mockRejectedValue(
             new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR),
           ),
       });
-      surveyModel.findOne = jest.fn().mockReturnValueOnce({
-        lean: jest
-          .fn()
-          .mockRejectedValue(
-            new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR),
-          ),
-      });
+
       try {
-        await service.updateSurvey(surveyUpdateUpdatedSurvey, mockSseConnections);
+        await service.updateSurvey(surveyUpdateUpdatedSurveyDto, firstMockJWTUser, mockSseConnections);
       } catch (e) {
-        const error = e as Error;
+        const error = e as HttpException;
         expect(error.message).toBe(CommonErrorMessages.DBAccessFailed);
+        expect(error.getStatus()).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    });
+
+    it('should throw an error someone wants to update a survey and is not the creator', async () => {
+      surveyModel.findOne = jest.fn().mockReturnValueOnce({
+        exec: jest.fn().mockReturnValue(surveyUpdateInitialSurvey),
+      });
+
+      try {
+        await service.updateSurvey(surveyUpdateUpdatedSurveyDto, secondMockJWTUser, mockSseConnections);
+      } catch (e) {
+        const error = e as HttpException;
+        expect(error.message).toBe(SurveyErrorMessages.UpdateOrCreateError);
+        expect(error.getStatus()).toBe(HttpStatus.UNAUTHORIZED);
+      }
+    });
+
+    it('should throw an error if someone wants to update an old version of a survey', async () => {
+      surveyModel.findOne = jest.fn().mockReturnValueOnce({
+        exec: jest.fn().mockReturnValue(surveyUpdateInitialSurvey),
+      });
+
+      try {
+        await service.updateSurvey(
+          { ...surveyUpdateUpdatedSurveyDto, saveNo: surveyUpdateNoTMatchingSaveNo },
+          firstMockJWTUser,
+          mockSseConnections,
+        );
+      } catch (e) {
+        const error = e as HttpException;
+        expect(error.message).toBe(SurveyErrorMessages.UpdateOrCreateError);
+        expect(error.getStatus()).toBe(HttpStatus.CONFLICT);
       }
     });
 
@@ -191,13 +253,14 @@ describe('SurveyService', () => {
 
   describe('updateOrCreateSurvey', () => {
     it('should create a survey if it does not exist', async () => {
-      surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
-        lean: jest.fn().mockReturnValue(null),
-      });
-      surveyModel.findOne = jest.fn().mockReturnValue({
-        lean: jest.fn().mockReturnValue(surveyUpdateInitialSurvey),
-      });
-
+      surveyModel.findOne = jest
+        .fn()
+        .mockReturnValue({
+          exec: jest.fn().mockReturnValue(surveyUpdateInitialSurvey),
+        })
+        .mockReturnValueOnce({
+          exec: jest.fn().mockReturnValue(null),
+        });
       surveyModel.create = jest.fn().mockReturnValue(surveyUpdateInitialSurvey);
 
       const result = await service.updateOrCreateSurvey(
@@ -207,29 +270,37 @@ describe('SurveyService', () => {
       );
       expect(result).toStrictEqual(surveyUpdateInitialSurvey);
 
-      const query = { id: { $eq: surveyUpdateSurveyId } };
-      expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith(query, surveyUpdateInitialSurvey);
-
+      expect(surveyModel.findOne).toHaveBeenNthCalledWith(1, { id: surveyUpdateSurveyId });
       expect(surveyModel.create).toHaveBeenCalledWith(surveyUpdateInitialSurvey);
+      expect(surveyModel.findOne).toHaveBeenNthCalledWith(2, { id: surveyUpdateSurveyId });
     });
 
-    it('should update a survey', async () => {
-      surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
-        lean: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
-      });
-      surveyModel.findOne = jest.fn().mockReturnValue({
-        lean: jest.fn().mockReturnValue(surveyUpdateInitialSurvey),
+    it('should update a survey if it does exist', async () => {
+      surveyModel.findOne = jest
+        .fn()
+        .mockReturnValue({
+          exec: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
+        })
+        .mockReturnValueOnce({
+          exec: jest.fn().mockReturnValue(surveyUpdateInitialSurvey),
+        });
+      surveyModel.findOneAndUpdate = jest.fn().mockReturnValueOnce({
+        exec: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
       });
 
-      const result = await service.updateOrCreateSurvey(
-        surveyUpdateUpdatedSurveyDto,
-        firstMockJWTUser,
-        mockSseConnections,
-      );
+      const result = await service.updateSurvey(surveyUpdateUpdatedSurveyDto, firstMockJWTUser, mockSseConnections);
       expect(result).toStrictEqual(surveyUpdateUpdatedSurvey);
 
-      const query = { id: { $eq: surveyUpdateSurveyId } };
+      expect(surveyModel.findOne).toHaveBeenNthCalledWith(1, { id: surveyUpdateSurveyId });
+      const query = {
+        $and: [
+          { id: { $eq: surveyUpdateSurveyId } },
+          { 'creator.username': { $eq: firstUsername } },
+          { saveNo: { $eq: surveyUpdateInitialSaveNo } },
+        ],
+      };
       expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith(query, surveyUpdateUpdatedSurvey);
+      expect(surveyModel.findOne).toHaveBeenNthCalledWith(2, { id: surveyUpdateSurveyId });
     });
 
     it('should throw an error if the survey update and the creation of the survey failed', async () => {
