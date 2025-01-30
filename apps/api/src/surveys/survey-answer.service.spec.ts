@@ -324,7 +324,7 @@ describe('SurveyAnswerService', () => {
     it('should return an error if the survey was not found', async () => {
       jest.spyOn(service, 'addAnswer');
 
-      surveyModel.findById = jest.fn().mockReturnValue(null);
+      surveyModel.findOne = jest.fn().mockReturnValue(null);
 
       try {
         await service.addAnswer(unknownSurveyId, 1, firstMockJWTUser, {} as JSON);
@@ -339,11 +339,11 @@ describe('SurveyAnswerService', () => {
     it('should return an error if the survey has already expired', async () => {
       jest.spyOn(service, 'addAnswer');
 
-      surveyModel.findById = jest.fn().mockReturnValue(answeredSurvey01);
+      surveyModel.findOne = jest.fn().mockReturnValue(answeredSurvey01);
       model.findOne = jest.fn().mockReturnValue(null);
       model.create = jest.fn().mockReturnValue(firstUsersSurveyAnswerAnsweredSurvey01);
-      model.findByIdAndUpdate = jest.fn().mockReturnValue(firstUsersSurveyAnswerAnsweredSurvey01);
-      surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue(answeredSurvey01);
+      model.findOneAndUpdate = jest.fn().mockReturnValue(firstUsersSurveyAnswerAnsweredSurvey01);
+      surveyModel.findOneAndUpdate = jest.fn().mockReturnValue(answeredSurvey01);
 
       try {
         await service.addAnswer(
@@ -368,7 +368,7 @@ describe('SurveyAnswerService', () => {
     it('should return an error if the user is no participant (or creator)', async () => {
       jest.spyOn(service, 'addAnswer');
 
-      surveyModel.findById = jest.fn().mockReturnValue(answeredSurvey02);
+      surveyModel.findOne = jest.fn().mockReturnValue(answeredSurvey02);
 
       try {
         await service.addAnswer(
@@ -396,7 +396,7 @@ describe('SurveyAnswerService', () => {
       async () => {
         jest.spyOn(service, 'addAnswer');
 
-        surveyModel.findById = jest.fn().mockReturnValue(answeredSurvey02);
+        surveyModel.findOne = jest.fn().mockReturnValue(answeredSurvey02);
 
         try {
           await service.addAnswer(
@@ -422,9 +422,9 @@ describe('SurveyAnswerService', () => {
     it('should update the former answer of the user', async () => {
       jest.spyOn(service, 'addAnswer');
 
-      surveyModel.findById = jest.fn().mockReturnValue(answeredSurvey03);
+      surveyModel.findOne = jest.fn().mockReturnValue(answeredSurvey03);
       model.findOne = jest.fn().mockReturnValue(surveyAnswerAnsweredSurvey03);
-      model.findByIdAndUpdate = jest.fn().mockReturnValue(updatedSurveyAnswerAnsweredSurvey03);
+      model.findOneAndUpdate = jest.fn().mockReturnValue(updatedSurveyAnswerAnsweredSurvey03);
 
       const result = await service.addAnswer(
         idOfAnsweredSurvey03,
@@ -445,10 +445,10 @@ describe('SurveyAnswerService', () => {
     it('should create an answer object if there is none for the survey submitted by the given user', async () => {
       jest.spyOn(service, 'addAnswer');
 
-      surveyModel.findById = jest.fn().mockReturnValue(answeredSurvey04);
+      surveyModel.findOne = jest.fn().mockReturnValue(answeredSurvey04);
       model.findOne = jest.fn().mockReturnValue(null);
       model.create = jest.fn().mockReturnValue(surveyAnswerAnsweredSurvey04);
-      surveyModel.findByIdAndUpdate = jest.fn().mockResolvedValue({
+      surveyModel.findOneAndUpdate = jest.fn().mockResolvedValue({
         ...answeredSurvey04,
         participatedAttendees: [firstMockUser],
         answers: [idOfTheSurveyAnswerForTheAnsweredSurvey04],
@@ -473,10 +473,10 @@ describe('SurveyAnswerService', () => {
     it('should also create an answer object if the users can submit multiple answers', async () => {
       jest.spyOn(service, 'addAnswer');
 
-      surveyModel.findById = jest.fn().mockReturnValue(answeredSurvey05);
+      surveyModel.findOne = jest.fn().mockReturnValue(answeredSurvey05);
       model.findOne = jest.fn().mockReturnValue(surveyAnswerAnsweredSurvey05);
       model.create = jest.fn().mockReturnValue(newSurveyAnswerAnsweredSurvey05);
-      surveyModel.findByIdAndUpdate = jest.fn().mockResolvedValue({
+      surveyModel.findOneAndUpdate = jest.fn().mockResolvedValue({
         ...answeredSurvey05,
         participatedAttendees: [firstMockUser],
         answers: [idOfTheSurveyAnswerForTheAnsweredSurvey05],

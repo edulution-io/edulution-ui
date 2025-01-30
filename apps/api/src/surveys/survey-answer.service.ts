@@ -1,7 +1,9 @@
 import mongoose, { Model } from 'mongoose';
+import { Cache } from 'cache-manager';
 import { v4 as uuidv4 } from 'uuid';
 import { InjectModel } from '@nestjs/mongoose';
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
@@ -13,12 +15,14 @@ import getNewSurveyId from '@libs/survey/utils/getNewSurveyId';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
 import Attendee from '../conferences/attendee.schema';
+import getInvitedMembers from './util/getInvitedMembers';
 
 @Injectable()
 class SurveyAnswersService {
   constructor(
     @InjectModel(SurveyAnswer.name) private surveyAnswerModel: Model<SurveyAnswerDocument>,
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   public getSelectableChoices = async (surveyId: mongoose.Types.ObjectId, questionId: string): Promise<ChoiceDto[]> => {
@@ -131,7 +135,7 @@ class SurveyAnswersService {
     const username = user.preferred_username;
     const attendee = { firstName: user.given_name, lastName: user.family_name, username };
 
-    const survey = await this.surveyModel.findById<Survey>(surveyId);
+    const survey = await this.surveyModel.findOne<Survey>({ id: surveyId });
     if (!survey) {
       throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
     }
@@ -149,14 +153,16 @@ class SurveyAnswersService {
     }
 
     const isCreator = survey.creator.username === username;
-    const isAttendee = survey.invitedAttendees.find((participant: Attendee) => participant.username === username);
-    const canParticipate = isCreator || !!isAttendee;
+
+    const invitedMembers = await getInvitedMembers(survey, this.cacheManager);
+    const isAttendee = invitedMembers.includes(username);
+    const canParticipate = isCreator || isAttendee;
     if (!canParticipate) {
       throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorUserNotAssigned, HttpStatus.UNAUTHORIZED);
     }
 
     const idExistingUsersAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({
-      $and: [{ 'attendee.username': username }, { surveyId }],
+      $and: [{ 'attendee.username': username }, { id: surveyId }],
     });
 
     if (!idExistingUsersAnswer || canSubmitMultipleAnswers) {
@@ -176,10 +182,13 @@ class SurveyAnswersService {
         );
       }
 
-      const updateSurvey = await this.surveyModel.findByIdAndUpdate<Survey>(surveyId, {
-        participatedAttendees: [...survey.participatedAttendees, attendee],
-        answers: [...survey.answers, newSurveyAnswer.id],
-      });
+      const updateSurvey = await this.surveyModel.findOneAndUpdate<Survey>(
+        { id: surveyId },
+        {
+          participatedAttendees: [...survey.participatedAttendees, attendee],
+          answers: [...survey.answers, newSurveyAnswer.id],
+        },
+      );
       if (updateSurvey == null) {
         throw new CustomHttpException(UserErrorMessages.UpdateError, HttpStatus.INTERNAL_SERVER_ERROR);
       }
@@ -187,7 +196,7 @@ class SurveyAnswersService {
       return newSurveyAnswer;
     }
 
-    const updatedSurveyAnswer = await this.surveyAnswerModel.findByIdAndUpdate<SurveyAnswer>(idExistingUsersAnswer, {
+    const updatedSurveyAnswer = await this.surveyAnswerModel.findOneAndUpdate<SurveyAnswer>(idExistingUsersAnswer, {
       answer,
       saveNo,
     });
@@ -207,7 +216,7 @@ class SurveyAnswersService {
       throw new CustomHttpException(SurveyErrorMessages.IdTypeError, HttpStatus.NOT_ACCEPTABLE);
     }
 
-    const survey = await this.surveyModel.findById<Survey>(surveyId);
+    const survey = await this.surveyModel.findOne<Survey>({ id: surveyId });
     if (!survey) {
       throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
     }
@@ -238,10 +247,13 @@ class SurveyAnswersService {
       );
     }
 
-    const updateSurvey = await this.surveyModel.findByIdAndUpdate<Survey>(surveyId, {
-      participatedAttendees: [...survey.participatedAttendees, pseudoAttendee],
-      answers: [...survey.answers, newSurveyAnswer.id],
-    });
+    const updateSurvey = await this.surveyModel.findOneAndUpdate<Survey>(
+      { id: surveyId },
+      {
+        participatedAttendees: [...survey.participatedAttendees, pseudoAttendee],
+        answers: [...survey.answers, newSurveyAnswer.id],
+      },
+    );
     if (updateSurvey == null) {
       throw new CustomHttpException(UserErrorMessages.UpdateError, HttpStatus.INTERNAL_SERVER_ERROR);
     }

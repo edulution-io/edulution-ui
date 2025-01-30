@@ -44,6 +44,7 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
   const isAnonymousWatched = watch('isAnonymous') as boolean;
   const isPublicWatched = watch('isPublic') as boolean;
   const canSubmitMultipleAnswersWatched = watch('canSubmitMultipleAnswers') as boolean;
+  const canUpdateFormerAnswerWatched = watch('canUpdateFormerAnswer') as boolean;
 
   const handleExpirationDateChange = (value: Date | undefined) => {
     setValue('expires', value && value > new Date() ? value : undefined);
@@ -78,33 +79,34 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
         />
       </div>
       <p className="text-m font-bold text-background">{t('surveys.saveDialog.settingsFlags')}</p>
-      <div className="flex items-center text-background">
-        <Checkbox
-          checked={isAnonymousWatched}
-          onCheckedChange={(value: boolean) => setValue('isAnonymous', value, { shouldValidate: true })}
-          aria-label={`${t('survey.isAnonymous')}`}
-          className="mr-2"
-        />
-        {t('surveys.saveDialog.isAnonymous')}
-      </div>
-      <div className="flex items-center text-background">
-        <Checkbox
-          checked={isPublicWatched}
-          onCheckedChange={(value: boolean) => setValue('isPublic', value, { shouldValidate: true })}
-          aria-label={`${t('survey.isPublic')}`}
-          className="mr-2"
-        />
-        {t('surveys.saveDialog.isPublic')}
-      </div>
-      <div className="flex items-center text-background">
-        <Checkbox
-          checked={canSubmitMultipleAnswersWatched}
-          onCheckedChange={(value: boolean) => setValue('canSubmitMultipleAnswers', value, { shouldValidate: true })}
-          aria-label={`${t('survey.canSubmitMultipleAnswers')}`}
-          className="mr-2"
-        />
-        {t('surveys.saveDialog.canSubmitMultipleAnswers')}
-      </div>
+      <Checkbox
+        label={t('surveys.saveDialog.isAnonymous')}
+        checked={isAnonymousWatched}
+        onCheckedChange={(value: boolean) => setValue('isAnonymous', value, { shouldValidate: true })}
+        aria-label={`${t('survey.isAnonymous')}`}
+        className="text-background"
+      />
+      <Checkbox
+        label={t('surveys.saveDialog.isPublic')}
+        checked={isPublicWatched}
+        onCheckedChange={(value: boolean) => setValue('isPublic', value, { shouldValidate: true })}
+        aria-label={`${t('survey.isPublic')}`}
+        className="text-background"
+      />
+      <Checkbox
+        label={t('surveys.saveDialog.canSubmitMultipleAnswers')}
+        checked={canSubmitMultipleAnswersWatched}
+        onCheckedChange={(value: boolean) => setValue('canSubmitMultipleAnswers', value, { shouldValidate: true })}
+        aria-label={`${t('survey.canSubmitMultipleAnswers')}`}
+        className="text-background"
+      />
+      <Checkbox
+        label={t('surveys.saveDialog.canUpdateFormerAnswer')}
+        checked={canUpdateFormerAnswerWatched}
+        onCheckedChange={(value: boolean) => setValue('canUpdateFormerAnswer', value, { shouldValidate: true })}
+        aria-label={`${t('survey.canUpdateFormerAnswer')}`}
+        className="text-background"
+      />
     </>
   );
 };

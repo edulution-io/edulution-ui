@@ -13,19 +13,43 @@ const ParticipatePublicSurvey = (): React.ReactNode => {
   const { getPublicSurvey, publicSurvey, answer, setAnswer, pageNo, setPageNo, answerPublicSurvey, isFetching, reset } =
     useParticipatePublicSurveyStore();
 
-  const { t } = useTranslation();
-
   useEffect(() => {
-    window.onbeforeunload = function () {
+    window.onbeforeunload = function Unload() {
       reset();
     };
+    window.onreset = function Reload() {
+      reset();
+      if (surveyId) {
+        void getPublicSurvey(surveyId);
+      }
+    };
   }, []);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (surveyId) {
       void getPublicSurvey(surveyId);
     }
   }, [surveyId]);
+
+  const handleSubmission = async (submission: JSON) => {
+    if (publicSurvey) {
+      try {
+        await answerPublicSurvey(publicSurvey.id, publicSurvey.saveNo, submission);
+      } catch (error) {
+        console.error(error);
+        return;
+      }
+
+      setTimeout(() => {
+        reset();
+        if (surveyId) {
+          void getPublicSurvey(surveyId);
+        }
+      }, 4500);
+    }
+  };
 
   const content = useMemo(() => {
     if (!surveyId || !publicSurvey) {
@@ -34,19 +58,13 @@ const ParticipatePublicSurvey = (): React.ReactNode => {
     return (
       <ScrollArea>
         <ParticipateDialogBody
-          surveyId={publicSurvey.id}
-          saveNo={publicSurvey.saveNo}
           formula={publicSurvey.formula}
           answer={answer}
           setAnswer={setAnswer}
           pageNo={pageNo}
           setPageNo={setPageNo}
-          submitAnswer={answerPublicSurvey}
-          updateOpenSurveys={() => {}}
-          updateAnsweredSurveys={() => {}}
-          setIsOpenParticipateSurveyDialog={() => {}}
+          submitAnswer={handleSubmission}
           className="survey-participation"
-          reset={reset}
         />
       </ScrollArea>
     );

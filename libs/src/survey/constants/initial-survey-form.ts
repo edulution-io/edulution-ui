@@ -41,7 +41,7 @@ class InitialSurveyForm implements SurveyDto {
     this.saveNo = selectedSurvey?.saveNo || 0;
     this.creator = creator;
     this.invitedAttendees = selectedSurvey?.invitedAttendees || [];
-    this.invitedGroups = [];
+    this.invitedGroups = selectedSurvey?.invitedGroups || [];
     this.participatedAttendees = selectedSurvey?.participatedAttendees || [];
     this.answers = selectedSurvey?.answers || [];
     this.created = selectedSurvey?.created || new Date();

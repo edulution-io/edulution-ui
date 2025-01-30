@@ -16,8 +16,7 @@ const useParticipateDialogStore = create<ParticipateDialogStore>((set) => ({
   setAnswer: (answer: JSON) => set({ answer }),
   setPageNo: (pageNo: number) => set({ pageNo }),
 
-  setIsOpenParticipateSurveyDialog: (state: boolean) =>
-    !state ? set(ParticipateDialogStoreInitialState) : set({ isOpenParticipateSurveyDialog: state }),
+  setIsOpenParticipateSurveyDialog: (state: boolean) => set({ isOpenParticipateSurveyDialog: state }),
 
   answerSurvey: async (
     surveyId: mongoose.Types.ObjectId,

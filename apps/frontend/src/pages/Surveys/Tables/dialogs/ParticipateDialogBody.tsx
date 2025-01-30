@@ -1,5 +1,4 @@
 import React from 'react';
-import mongoose from 'mongoose';
 import { Survey } from 'survey-react-ui';
 import { CompleteEvent, Model } from 'survey-core';
 import 'survey-core/i18n/english';
@@ -14,42 +13,17 @@ import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/custom.participation.css';
 
 interface ParticipateDialogBodyProps {
-  surveyId: mongoose.Types.ObjectId;
-  saveNo: number;
   formula: TSurveyFormula;
   answer: JSON;
   setAnswer: (answer: JSON) => void;
   pageNo: number;
   setPageNo: (pageNo: number) => void;
-  submitAnswer: (
-    surveyId: mongoose.Types.ObjectId,
-    saveNo: number,
-    answer: JSON,
-    options?: CompleteEvent,
-  ) => Promise<void>;
-  updateOpenSurveys: () => void;
-  updateAnsweredSurveys: () => void;
-  setIsOpenParticipateSurveyDialog: (state: boolean) => void;
+  submitAnswer: (answer: JSON, options?: CompleteEvent) => Promise<void>;
   className?: string;
-  reset?: () => void;
 }
 
 const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
-  const {
-    surveyId,
-    saveNo,
-    formula,
-    answer,
-    setAnswer,
-    pageNo,
-    setPageNo,
-    submitAnswer,
-    updateOpenSurveys,
-    updateAnsweredSurveys,
-    setIsOpenParticipateSurveyDialog,
-    className,
-    reset,
-  } = props;
+  const { formula, answer, setAnswer, pageNo, setPageNo, submitAnswer, className } = props;
 
   const { language } = useLanguage();
 
@@ -76,11 +50,7 @@ const ParticipateDialogBody = (props: ParticipateDialogBodyProps) => {
   surveyModel.onCurrentPageChanged.add(saveSurvey);
 
   surveyModel.onComplete.add(async (_sender, _options) => {
-    await submitAnswer(surveyId, saveNo, answer /* , _options */);
-    updateOpenSurveys();
-    updateAnsweredSurveys();
-    setIsOpenParticipateSurveyDialog(false);
-    reset?.();
+    await submitAnswer(answer /* , _options */);
   });
   return (
     <div className={className}>

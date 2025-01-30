@@ -8,8 +8,6 @@ import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
-import GroupWithMembers from '@libs/groups/types/groupWithMembers';
-import { GROUPS_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { Group } from '@libs/groups/types/group';
 import getDefaultSurveyFormula from '@libs/survey/utils/getDefaultSurveyFormula';
@@ -17,6 +15,7 @@ import getNewSurveyId from '@libs/survey/utils/getNewSurveyId';
 import { Survey, SurveyDocument } from './survey.schema';
 import type UserConnections from '../types/userConnections';
 import SseService from '../sse/sse.service';
+import getInvitedMembers from './util/getInvitedMembers';
 
 @Injectable()
 class SurveysService {
@@ -24,22 +23,6 @@ class SurveysService {
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
-
-  async getInvitedMembers(survey: SurveyDto | Survey): Promise<string[]> {
-    const usersInGroups = await Promise.all(
-      survey.invitedGroups.map(async (group) => {
-        const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
-          `${GROUPS_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
-        );
-
-        return groupWithMembers?.members?.map((member) => member.username) || [];
-      }),
-    );
-
-    return Array.from(
-      new Set([...survey.invitedAttendees.map((attendee) => attendee.username), ...usersInGroups.flat()]),
-    );
-  }
 
   async findPublicSurvey(surveyId: mongoose.Types.ObjectId): Promise<Survey | null> {
     try {
@@ -110,7 +93,7 @@ class SurveysService {
       const updatedSurvey = await this.surveyModel.findOne({ id: survey.id }).exec();
       if (updatedSurvey != null) {
         if (!updatedSurvey.isPublic) {
-          const invitedMembersList = await this.getInvitedMembers(updatedSurvey);
+          const invitedMembersList = await getInvitedMembers(updatedSurvey, this.cacheManager);
           SseService.sendEventToUsers(
             invitedMembersList,
             surveysSseConnections,
@@ -169,7 +152,7 @@ class SurveysService {
       const newSurvey = await this.surveyModel.findOne({ id: survey.id }).exec();
       if (newSurvey != null) {
         if (!survey.isPublic) {
-          const invitedMembersList = await this.getInvitedMembers(newSurvey);
+          const invitedMembersList = await getInvitedMembers(newSurvey, this.cacheManager);
           SseService.sendEventToUsers(invitedMembersList, surveysSseConnections, newSurvey, SSE_MESSAGE_TYPE.CREATED);
         } else {
           SseService.informAllUsers(surveysSseConnections, newSurvey, SSE_MESSAGE_TYPE.CREATED);

@@ -104,10 +104,10 @@ describe(PublicSurveysController.name, () => {
     it('should call the addAnswerToPublicSurvey() function of the surveyAnswerService', async () => {
       jest.spyOn(surveyAnswerService, 'addAnswerToPublicSurvey');
 
-      surveyModel.findById = jest.fn().mockResolvedValueOnce(publicSurvey02);
+      surveyModel.findOne = jest.fn().mockResolvedValueOnce(publicSurvey02);
 
       surveyAnswerModel.create = jest.fn().mockResolvedValueOnce(surveyValidAnswerPublicSurvey02);
-      surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue(publicSurvey02AfterAddingValidAnswer);
+      surveyModel.findOneAndUpdate = jest.fn().mockReturnValue(publicSurvey02AfterAddingValidAnswer);
 
       await controller.answerSurvey({
         surveyId: idOfPublicSurvey02,

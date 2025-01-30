@@ -30,7 +30,7 @@ const useParticipatePublicSurveyStore = create<ParticipatePublicSurveyStore>((se
   },
 
   answerPublicSurvey: async (
-    surveyId: mongoose.Types.ObjectId,
+    surveyId: string | mongoose.Types.ObjectId,
     saveNo: number,
     answer: JSON,
     surveyEditorCallbackOnSave?: CompleteEvent,

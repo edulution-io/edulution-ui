@@ -23,6 +23,25 @@ const ParticipateDialog = () => {
 
   const { t } = useTranslation();
 
+  const handleSubmission = async (submission: JSON) => {
+    if (selectedSurvey) {
+      try {
+        await answerSurvey(selectedSurvey.id, selectedSurvey.saveNo, submission);
+
+        setTimeout(() => {
+          void updateOpenSurveys();
+          void updateAnsweredSurveys();
+
+          setAnswer({} as JSON);
+          setPageNo(0);
+          setIsOpenParticipateSurveyDialog(false);
+        }, 3000);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
   const content = useMemo(() => {
     if (!selectedSurvey) {
       return <h4 className="transform(-50%,-50%) absolute right-1/2 top-1/2">{t('survey.notFound')}</h4>;
@@ -30,17 +49,12 @@ const ParticipateDialog = () => {
     return (
       <ScrollArea>
         <ParticipateDialogBody
-          surveyId={selectedSurvey.id}
-          saveNo={selectedSurvey.saveNo}
           formula={selectedSurvey.formula}
           answer={answer}
           setAnswer={setAnswer}
           pageNo={pageNo}
           setPageNo={setPageNo}
-          submitAnswer={answerSurvey}
-          updateOpenSurveys={updateOpenSurveys}
-          updateAnsweredSurveys={updateAnsweredSurveys}
-          setIsOpenParticipateSurveyDialog={setIsOpenParticipateSurveyDialog}
+          submitAnswer={handleSubmission}
           className="max-h-[75vh] overflow-y-auto rounded bg-gray-600 p-4"
         />
       </ScrollArea>
