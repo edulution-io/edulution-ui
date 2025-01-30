@@ -34,9 +34,6 @@ import VeyonModule from '../veyon/veyon.module';
     ServeStaticModule.forRoot({
       rootPath: resolve(__dirname, '../../../', PUBLIC_DOWNLOADS_PATH),
       serveRoot: `/${EDU_API_ROOT}/downloads`,
-      serveStaticOptions: {
-        index: false,
-      },
     }),
     AuthModule,
     AppConfigModule,
