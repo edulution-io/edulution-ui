@@ -65,7 +65,7 @@ describe('SurveyService', () => {
       const result = await service.findPublicSurvey(idOfPublicSurvey01);
       expect(result).toEqual(publicSurvey01);
 
-      expect(surveyModel.findOne).toHaveBeenCalledWith({ id: idOfPublicSurvey01, isPublic: true });
+      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: idOfPublicSurvey01, isPublic: true });
     });
 
     it('should throw an error if the database access fails', async () => {
@@ -83,7 +83,7 @@ describe('SurveyService', () => {
         const error = e as Error;
         expect(error.message).toEqual(CommonErrorMessages.DBAccessFailed);
       }
-      expect(surveyModel.findOne).toHaveBeenCalledWith({ id: idOfPublicSurvey01, isPublic: true });
+      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: idOfPublicSurvey01, isPublic: true });
     });
   });
 
