@@ -38,9 +38,9 @@ class AuthenticationGuard implements CanActivate {
     }
 
     const request: Request = context.switchToHttp().getRequest();
-    this.token = AuthenticationGuard.extractTokenFromHeader(request);
+    this.token = AuthenticationGuard.extractTokenFromQuery(request);
     if (!this.token) {
-      this.token = AuthenticationGuard.extractTokenFromQuery(request);
+      this.token = AuthenticationGuard.extractTokenFromHeader(request);
     }
 
     try {
