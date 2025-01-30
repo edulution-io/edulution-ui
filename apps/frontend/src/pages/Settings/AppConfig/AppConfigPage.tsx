@@ -16,22 +16,26 @@ import { SettingsIcon } from '@/assets/icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useMailsStore from '@/pages/Mail/useMailsStore';
-import { MailProviderConfigDto, TMailEncryption } from '@libs/mail/types';
+import { MailProviderConfigDto } from '@libs/mail/types';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
 import ExtendedOptionsForm from '@/pages/Settings/AppConfig/components/ExtendedOptionsForm';
 import { AppConfigDto } from '@libs/appconfig/types/appConfigDto';
-import ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
+import type ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
+import type TApps from '@libs/appconfig/types/appsType';
+import type MailProviderConfig from '@libs/appconfig/types/mailProviderConfig';
+import APPS from '@libs/appconfig/constants/apps';
 import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
-import MailsConfig from './mails/MailsConfig';
-import formSchema from './appConfigSchema';
+import MailImporterConfig from './mails/MailImporterConfig';
+import appConfigFormSchema from './appConfigSchema';
 import ProxyConfigForm from './components/ProxyConfigForm';
+import DockerContainerTable from './DockerIntegration/DockerContainerTable';
 
 const AppConfigPage: React.FC = () => {
-  const { settingLocation = '' } = useParams<{ settingLocation: string }>();
+  const { settingLocation = '' } = useParams<{ settingLocation: TApps }>();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -42,12 +46,18 @@ const AppConfigPage: React.FC = () => {
   const isMobileView = useIsMobileView();
   const { postExternalMailProviderConfig } = useMailsStore();
 
-  const form = useForm<{ [settingLocation: string]: AppConfigDto | string } | ProxyConfigFormType>({
-    mode: 'onChange',
-    resolver: zodResolver(formSchema),
-  });
+  const form = useForm<{ [settingLocation: string]: AppConfigDto | string } | ProxyConfigFormType | MailProviderConfig>(
+    {
+      mode: 'onChange',
+      resolver: zodResolver(appConfigFormSchema),
+    },
+  );
 
-  const { control, handleSubmit, setValue, getValues } = form;
+  useEffect(() => {
+    void getAppConfigs();
+  }, []);
+
+  const { control, handleSubmit, setValue, getValues, clearErrors } = form;
 
   const isAnAppConfigSelected = settingLocation !== '';
 
@@ -61,6 +71,8 @@ const AppConfigPage: React.FC = () => {
       return;
     }
 
+    clearErrors();
+
     setValue(`${settingLocation}.appType`, currentConfig.appType);
     setValue(`${settingLocation}.accessGroups`, currentConfig.accessGroups || []);
     setValue(`${settingLocation}.extendedOptions`, currentConfig.extendedOptions || {});
@@ -68,7 +80,7 @@ const AppConfigPage: React.FC = () => {
     if (currentConfig.options) {
       Object.keys(currentConfig.options).forEach((key) => {
         if (key === APP_CONFIG_OPTION_KEYS.PROXYCONFIG) {
-          const proxyConfig = JSON.parse(currentConfig?.options[key] || '') as string;
+          const proxyConfig = JSON.parse(currentConfig?.options[key] || JSON.stringify({})) as string;
           setValue(`${settingLocation}.proxyConfig`, proxyConfig);
         } else {
           setValue(
@@ -118,7 +130,7 @@ const AppConfigPage: React.FC = () => {
 
     const extendedOptions = form.getValues(`${settingLocation}.extendedOptions`) || {};
 
-    const newConfig = {
+    const newConfig: AppConfigDto = {
       name: settingLocation,
       icon: selectedOption.icon,
       appType: getValues(`${settingLocation}.appType`),
@@ -127,23 +139,16 @@ const AppConfigPage: React.FC = () => {
       accessGroups: getValues(`${settingLocation}.accessGroups`) || [],
     };
 
-    const updatedConfig = appConfigs.map((entry): AppConfigDto => {
-      if (entry.name === settingLocation) {
-        return newConfig;
-      }
-      return entry;
-    });
+    await updateAppConfig(newConfig);
 
-    await updateAppConfig(updatedConfig);
-
-    if (settingLocation === 'mail' && getValues('configName')) {
+    if (settingLocation === APPS.MAIL && getValues('mail.configName')) {
       const mailProviderConfig: MailProviderConfigDto = {
-        id: (getValues('mailProviderId') || '') as string,
-        name: getValues('configName') as string,
-        label: getValues('configName') as string,
-        host: getValues('hostname') as string,
-        port: getValues('port') as string,
-        encryption: getValues('encryption') as TMailEncryption,
+        id: getValues('mail.mailProviderId') || '',
+        name: getValues('mail.configName'),
+        label: getValues('mail.configName'),
+        host: getValues('mail.hostname'),
+        port: getValues('mail.port'),
+        encryption: getValues('mail.encryption'),
       };
       void postExternalMailProviderConfig(mailProviderConfig);
     }
@@ -157,7 +162,7 @@ const AppConfigPage: React.FC = () => {
         <Form {...form}>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="column space-y-6 2xl:w-[1200px]"
+            className="column max-w-screen-2xl space-y-6"
           >
             {APP_CONFIG_OPTIONS.map((item) => (
               <div
@@ -169,8 +174,8 @@ const AppConfigPage: React.FC = () => {
                     <AppConfigTypeSelect
                       control={control}
                       settingLocation={settingLocation}
-                      appConfig={appConfigs}
                       isNativeApp={item.isNativeApp}
+                      defaultValue={form.watch(`${item.id}.appType`)}
                     />
                     <FormFieldSH
                       key={`${item.id}.accessGroups`}
@@ -178,7 +183,7 @@ const AppConfigPage: React.FC = () => {
                       name={`${item.id}.accessGroups`}
                       render={() => (
                         <FormItem>
-                          <h4>{t(`permission.groups`)}</h4>
+                          <h4 className="text-background">{t(`permission.groups`)}</h4>
                           <FormControl>
                             <AsyncMultiSelect<MultipleSelectorGroup>
                               value={getValues(`${item.id}.accessGroups`)}
@@ -187,10 +192,15 @@ const AppConfigPage: React.FC = () => {
                               placeholder={t('search.type-to-search')}
                             />
                           </FormControl>
-                          <p>{t(`permission.selectGroupsDescription`)}</p>
+                          <p className="text-background">{t(`permission.selectGroupsDescription`)}</p>
                           <FormMessage className="text-p" />
                         </FormItem>
                       )}
+                    />
+                    <ExtendedOptionsForm
+                      extendedOptions={item.extendedOptions}
+                      control={control}
+                      settingLocation={settingLocation}
                     />
                     {item.options?.map((itemOption) =>
                       itemOption !== 'proxyConfig' ? (
@@ -198,14 +208,12 @@ const AppConfigPage: React.FC = () => {
                           key={`${item.id}.options.${itemOption}`}
                           control={control}
                           name={`${item.id}.options.${itemOption}`}
+                          defaultValue=""
                           render={({ field }) => (
                             <FormItem>
-                              <h4>{t(`form.${itemOption}`)}</h4>
+                              <h4 className="text-background">{t(`form.${itemOption}`)}</h4>
                               <FormControl>
-                                <Input
-                                  {...field}
-                                  variant="lightGray"
-                                />
+                                <Input {...field} />
                               </FormControl>
                               <FormMessage className="text-p" />
                             </FormItem>
@@ -214,18 +222,14 @@ const AppConfigPage: React.FC = () => {
                       ) : (
                         <ProxyConfigForm
                           key={`${item.id}.options.${itemOption}`}
-                          settingLocation={settingLocation}
                           item={item}
                           form={form as UseFormReturn<ProxyConfigFormType>}
                         />
                       ),
                     )}
-                    <ExtendedOptionsForm
-                      extendedOptions={item.extendedOptions}
-                      control={control}
-                      settingLocation={settingLocation}
-                    />
-                    <div>{settingLocation === 'mail' && <MailsConfig form={form} />}</div>
+                    {settingLocation === APPS.MAIL && (
+                      <MailImporterConfig form={form as UseFormReturn<MailProviderConfig>} />
+                    )}
                   </div>
                 ) : null}
               </div>
@@ -260,7 +264,7 @@ const AppConfigPage: React.FC = () => {
           description={!isMobileView && settingLocation ? t(`settings.description.${settingLocation}`) : null}
           iconSrc={APP_CONFIG_OPTIONS.find((item) => item.id === settingLocation)?.icon || SettingsIcon}
         />
-        {settingsForm()}
+        {isAnAppConfigSelected ? settingsForm() : <DockerContainerTable />}
       </div>
       {isAnAppConfigSelected ? (
         <AppConfigFloatingButtons

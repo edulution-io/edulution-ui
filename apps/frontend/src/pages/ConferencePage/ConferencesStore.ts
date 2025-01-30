@@ -19,7 +19,7 @@ interface ConferencesStore {
   deleteConferences: (conferences: ConferenceDto[]) => Promise<void>;
   isDeleteConferencesDialogOpen: boolean;
   setIsDeleteConferencesDialogOpen: (isOpen: boolean) => void;
-  toggleConferenceRunningState: (meetingId: string, isRunning: boolean) => Promise<void>;
+  toggleConferenceRunningState: (meetingId: string, isRunning: boolean) => Promise<boolean>;
   loadingMeetingId: string | null;
   toggleConferenceRunningStateError: Error | null;
   reset: () => void;
@@ -79,10 +79,14 @@ const useConferenceStore = create<ConferencesStore>((set, get) => ({
   },
   toggleConferenceRunningState: async (meetingID, isRunning) => {
     set({ loadingMeetingId: meetingID });
+    toast.info(i18n.t(`conferences.is${isRunning ? 'Stopping' : 'Starting'}`));
+
     try {
       await eduApi.put<ConferenceDto>(CONFERENCES_EDU_API_ENDPOINT, { meetingID, isRunning });
+      return true;
     } catch (error) {
       handleApiError(error, set, 'toggleConferenceRunningStateError');
+      return false;
     } finally {
       setTimeout(() => {
         set({ loadingMeetingId: null });

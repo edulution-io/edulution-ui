@@ -12,7 +12,7 @@ import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMes
 import ConferencesService from './conferences.service';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
-import mockAppConfigService from '../appconfig/appconfig.service.mock';
+import { mockAppConfigService } from '../appconfig/appconfig.mock';
 import Attendee from './attendee.schema';
 import type UserConnections from '../types/userConnections';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';

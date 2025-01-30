@@ -11,7 +11,6 @@ import {
   USER_DETAILS_PATH,
   USER_SETTINGS_PATH,
 } from '@libs/userSettings/constants/user-settings-endpoints';
-import useLdapGroups from '@/hooks/useLdapGroups';
 import getAuthRoutes from '@/router/routes/AuthRoutes';
 import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
 import { HomePage } from '@/pages/Home';
@@ -30,10 +29,8 @@ import getSettingsRoutes from './routes/SettingsRoutes';
 import getForwardedRoutes from './routes/ForwardedRoutes';
 import getEmbeddedRoutes from './routes/EmbeddedRoutes';
 
-const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
-  const { isSuperAdmin } = useLdapGroups();
-
-  return createBrowserRouter(
+const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
+  createBrowserRouter(
     createRoutesFromElements(
       <>
         {getPublicRoutes()}
@@ -93,13 +90,12 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
                 ) : null,
               )}
               {getClassManagementRoutes()}
-              {isSuperAdmin && getSettingsRoutes()}
+              {getSettingsRoutes()}
             </Route>
           </>
         ) : null}
       </>,
     ),
   );
-};
 
 export default createRouter;

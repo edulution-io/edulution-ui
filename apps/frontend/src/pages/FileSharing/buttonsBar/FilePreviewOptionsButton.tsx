@@ -9,10 +9,10 @@ interface FilePreviewButtonsProps {
 const FilePreviewOptionsButton: FC<FilePreviewButtonsProps> = ({ onClick, icon }) => (
   <Button
     variant="btn-small"
-    className="hover:bg-grey-700 rounded bg-ciLightGrey p-1 text-white"
+    className="hover:bg-grey-700 rounded bg-secondary p-1 text-background"
     onClick={onClick}
   >
-    {icon && <span className="inline text-black">{icon}</span>}
+    {icon && <span className="inline text-foreground">{icon}</span>}
   </Button>
 );
 

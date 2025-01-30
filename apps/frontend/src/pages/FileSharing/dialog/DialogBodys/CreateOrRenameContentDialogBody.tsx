@@ -51,9 +51,9 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
               form={form}
               labelTranslationId=""
               disabled={false}
-              variant="default"
               value={filename}
               onChange={(e) => setFilename(e.target.value)}
+              variant="dialog"
             />
           </div>
           {showExtensionInput && (
@@ -61,7 +61,6 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
               <Input
                 type="text"
                 value={extension}
-                variant="default"
                 onChange={(e) => e.preventDefault()}
               />
             </div>

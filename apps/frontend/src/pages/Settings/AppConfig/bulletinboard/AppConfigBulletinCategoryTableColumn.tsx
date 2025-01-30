@@ -8,6 +8,7 @@ import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinbo
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import SortTableCell from '@/components/ui/Table/SortTableCell';
 import DEFAULT_TABLE_SORT_PROPERTY_KEY from '@libs/common/constants/defaultTableSortProperty';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 
 const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
@@ -58,7 +59,7 @@ const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDt
       const { setDialogOpen } = useAppConfigTableDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
-        setDialogOpen(true);
+        setDialogOpen(ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE);
       };
 
       return (
@@ -81,7 +82,7 @@ const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDt
       const { setDialogOpen } = useAppConfigTableDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
-        setDialogOpen(true);
+        setDialogOpen(ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE);
       };
       return (
         <SelectableTextCell
@@ -105,7 +106,7 @@ const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDt
       const { setDialogOpen } = useAppConfigTableDialogStore();
       const handleRowClick = () => {
         setSelectedCategory(row.original);
-        setDialogOpen(true);
+        setDialogOpen(ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE);
       };
       return (
         <SelectableTextCell

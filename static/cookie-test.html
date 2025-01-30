@@ -1,0 +1,65 @@
+<!-- This file is served by GH pages and allows testing for browser support of different cookie attributes. -->
+<!-- Result type is located here: libs/src/common/types/cookieTestResult.ts -->
+<!-- Testing logic is located here: libs/src/common/utils/testCookieAccess.ts -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Extended Cookie Test</title>
+  </head>
+  <body>
+    <script>
+      const testCookies = [
+        {
+          name: "CookieNoSameSiteNoSecure",
+          attributes: "",
+          description: "No SameSite, not Secure",
+        },
+        {
+          name: "CookieSameSiteStrict",
+          attributes: "SameSite=Strict",
+          description: "SameSite=Strict, no Secure",
+        },
+        {
+          name: "CookieSameSiteLax",
+          attributes: "SameSite=Lax",
+          description: "SameSite=Lax, no Secure",
+        },
+        {
+          name: "CookieSameSiteNone",
+          attributes: "SameSite=None",
+          description: "SameSite=None, no Secure",
+        },
+        {
+          name: "CookieSameSiteNoneSecure",
+          attributes: "SameSite=None; Secure",
+          description: "SameSite=None; Secure (recommended for cross-site)",
+        },
+      ];
+
+      testCookies.forEach(({ name, attributes }) => {
+        document.cookie = `${name}=1; path=/; ${attributes}`;
+      });
+
+      const rawCookies = document.cookie || "";
+
+      const results = {};
+      testCookies.forEach(({ name, description }) => {
+        const wasSet = rawCookies.includes(`${name}=1`);
+        results[name] = {
+          description,
+          wasSet,
+        };
+      });
+
+      window.parent.postMessage(
+        {
+          cookieTest: "complete",
+          rawCookies: rawCookies,
+          results: results,
+        },
+        "*",
+      );
+    </script>
+  </body>
+</html>

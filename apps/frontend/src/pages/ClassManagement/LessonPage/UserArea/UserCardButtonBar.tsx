@@ -112,15 +112,15 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
       <button
         type="button"
         className={cn(
-          'relative z-10 rounded-full p-1.5',
-          'group-hover:bg-ciDarkGrey group-hover:text-foreground',
-          button.defaultColor || (button.value ? 'bg-ciGreen text-foreground' : 'bg-ciRed'),
+          'relative rounded-full p-1.5',
+          'group-hover:bg-accent group-hover:text-background',
+          button.defaultColor || (button.value ? 'bg-ciGreen text-background' : 'bg-ciRed'),
         )}
         title={t(button.title)}
         onClick={(e) => onButtonClick(e, button)}
       >
         <button.icon className="text-lg" />
-        <div className="absolute right-0 top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-xl bg-ciDarkGrey px-2 text-background group-hover:flex">
+        <div className="absolute right-0 top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-xl bg-accent px-2 text-background group-hover:flex">
           {t(`classmanagement.${button.title}`)} {t(getButtonDescription(button.value))}
         </div>
       </button>

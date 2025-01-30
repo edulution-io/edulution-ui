@@ -5,6 +5,8 @@
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
   "preparing": "Vorbereiten...",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
+  "framebufferImage": "Framebuffer-Bild",
+  "previewImage": "Bildvorschau",
   "bulletinboard": {
     "settings": "Einstellungen",
     "categoryIsRequired": "Es muss eine Kategorie ausgewählt werden",
@@ -153,14 +155,14 @@
   "mail": {
     "title": "MAIL",
     "sidebar": "Mail",
+    "configName": "Name der Konfiguration",
+    "hostname": "Hostname",
+    "port": "Port",
+    "encryption": "Verschlüsselung",
     "importer": {
       "filterPlaceHolderText": "Suche nach E-Mail-Importername",
       "title": "E-Mail-Importer",
       "provider": "E-Mail-Provider",
-      "configName": "Name der Konfiguration",
-      "hostname": "Hostname",
-      "port": "Port",
-      "encryption": "Verschlüsselung",
       "interval": "Sync-Intervall",
       "isActive": "Aktiv",
       "syncJobsTable": "Importer Jobs",
@@ -195,9 +197,12 @@
       "ConferenceIsNotRunning": "Die Konferenz wurde nicht gestartet",
       "MissingMandatoryParameters": "Anfrage aufgrund fehlender Parameter fehlgeschlagen"
     },
+    "joinThisConference": "An dieser Konferenz teilnehmen",
     "filterPlaceHolderText": "Suche nach Konferenzname",
     "started": "Konferenz gestartet",
-    "stopped": "Konferenz gestoppt",
+    "stopped": "Konferenz beendet",
+    "isStarting": "Konferenz wird gestartet",
+    "isStopping": "Konferenz wird beendet",
     "tryManually": "Manuell verbinden",
     "changeUser": "Benutzer wechseln",
     "joinAgain": "Erneut teilnehmen",
@@ -413,7 +418,18 @@
     "saveSession": "Sitzung speichern",
     "myRoom": "Mein Raum",
     "sharedMailBox": "Geteiltes Postfach",
-    "enrolPageDescription": "Wählen Sie die Klassen und Projekte aus, für die Sie sich einschreiben möchten, indem Sie die Checkboxen aktivieren."
+    "enrolPageDescription": "Wählen Sie die Klassen und Projekte aus, für die Sie sich einschreiben möchten, indem Sie die Checkboxen aktivieren.",
+    "veyonConfigTable": {
+      "id": "ID",
+      "subnet": "Subnet",
+      "subnetDescription": "Subnet in CIDR-Notation (10.0.0.0/24)",
+      "subnetPlaceholder": "10.0.0.0/24",
+      "proxyAdress": "Proxy Addresse",
+      "proxyAdressDescription": "URL des Veyon-WebAPI-Proxy",
+      "proxyAdressPlaceholder": "http://localhost:11080",
+      "createConfig": "Konfiguration erstellen",
+      "editConfig": "Konfiguration bearbeiten"
+    }
   },
   "select": "Auswählen",
   "selectAll": "Alle auswählen",
@@ -467,6 +483,10 @@
   "surveys": {
     "rowsSelected": "{{selected}} von {{total}} Umfragen ausgewählt",
     "rowSelected": "{{selected}} von {{total}} Umfrage ausgewählt",
+    "confirmMultiDelete": "Sollen diese Umfragen wirklich gelöscht werden?",
+    "confirmSingleDelete": "Soll die Umfrage wirklich gelöscht werden?",
+    "deleteSurveys": "Lösche {{count}} Umfragen",
+    "deleteSurvey": "Umfrage Löschen",
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
     "view": {
@@ -648,6 +668,15 @@
         "fileSharing": {
           "title": "Allgemeine Einstellungen",
           "description": ""
+        },
+        "docker": {
+          "title": "Docker Anwendungen",
+          "description": "Um die erweiterten Dienste nutzen zu können hier die benötigten Docker Container gestartet werden."
+        },
+        "veyon": {
+          "title": "Veyon Proxy",
+          "description": "",
+          "filterPlaceHolderText": "Suche nach Proxy-Name"
         }
       },
       "update": {
@@ -668,12 +697,15 @@
       "ReadAppConfigFailed": "App lesen fehlgeschlagen",
       "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen",
       "WriteTraefikConfigFailed": "Traefik-Konfiguration speichern fehlgeschlagen",
-      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen"
+      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen",
+      "forbiddenProxyPath": "Dieser Proxy-Pfad ist nicht erlaubt."
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",
       "placeholder": "Hier ihre Traefik-Konfiguration eintragen"
-    }
+    },
+    "rowsSelected": "{{selected}} von {{total}} Container ausgewählt",
+    "rowSelected": "{{selected}} von {{total}} Container ausgewählt"
   },
   "usersettings": {
     "title": "MEIN PROFIL",
@@ -772,6 +804,7 @@
     "remember_me": "Merken"
   },
   "common": {
+    "error": "Fehler",
     "errors": {
       "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
@@ -780,6 +813,7 @@
     "sortOrder": "Sortierung",
     "options": "Optionen",
     "checking": "Prüfen",
+    "cancel": "Abbrechen",
     "columns": "Spalten",
     "copy": {
       "success": "Erfolgreich in Zwischenablage kopiert",
@@ -787,6 +821,7 @@
       "doCopy": "Kopieren",
       "link": "Link kopieren"
     },
+    "openInNewTab": "In neuem Tab öffnen",
     "from": "von",
     "youAreCurrentlyNotLoggedIn": "Du bist momentan nicht angemeldet",
     "toLogin": "Zum Login",
@@ -852,7 +887,13 @@
     "not-available": "Nicht verfügbar",
     "date": "Datum",
     "time": "Uhrzeit",
-    "revert": "Zurücksetzen"
+    "revert": "Zurücksetzen",
+    "restart": "Neu starten",
+    "kill": "Beenden",
+    "install": "Installieren",
+    "update": "Update",
+    "progress": "Fortschritt...",
+    "pressInstall": "Drücke Installieren um zu Starten."
   },
   "form": {
     "path": "Link",
@@ -1086,5 +1127,51 @@
   "preview": {
     "image": "Bildvorschau",
     "failedToLoadImage": "Bild konnte nicht geladen werden"
+  },
+  "dockerApplication": {
+    "title": "Docker-Anwendung",
+    "dialogTitle": "{{applicationName}}-Plugins installieren",
+    "mailDescription": "Falls ein eigener Mailserver betrieben werden soll, kann hier das Setup für Mailcow durchgeführt werden.",
+    "classmanagementDescription": "Falls Veyon im Schulnetz eingesetzt wird, kann hier das Setup für den Veyon-WebAPI-Proxy durchgeführt werden."
+  },
+  "dockerOverview": {
+    "title": "Container-Übersicht",
+    "containerName": "Container-Name",
+    "state": "Betriebszustand",
+    "state-badge": "Badge",
+    "status": "Status",
+    "imageName": "Image",
+    "filterPlaceHolderText": "Suche nach Container-Name",
+    "port": "Port",
+    "created": "Erstellt am"
+  },
+  "docker": {
+    "error": {
+      "dockerConnectionError": "Docker-Verbindung fehlgeschlagen",
+      "dockerImageNotFound": "Docker Image konnte nicht gefunden werden",
+      "dockerCreationError": "Docker Container konnte nicht erstellt werden",
+      "dockerCommandExecutionError": "Docker Befehl konnte nicht ausgeführt werden",
+      "dockerContainerDeletionError": "Docker Container konnte nicht gelöscht werden"
+    },
+    "events": {
+      "pullingImage": "Docker Image wird abgerufen...",
+      "checkingImage": "Check, ob Image schon vorhande ist...",
+      "creatingContainer": "Docker Container wird erstellt...",
+      "containerCreated": "Container erstellt.",
+      "startContainer": "Container gestartet.",
+      "stopContainer": "Container gestoppt.",
+      "restartContainer": "Container neu gestartet.",
+      "killContainer": "Container erzwungen gestoppt.",
+      "containerCreationSuccessful": "Container erfolgreich erstellt.",
+      "containerCreationFailed": "Container konnte nicht erstellt werden."
+    },
+    "status": {
+      "running": "läuft",
+      "created": "erstellt",
+      "restarting": "neu gestartet",
+      "paused": "pausiert",
+      "exited": "gestoppt",
+      "dead": "tot"
+    }
   }
 }

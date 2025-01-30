@@ -126,8 +126,8 @@ const BulletinBoardColumnItem = ({
       key={bulletin.id}
       className="relative flex items-center justify-between break-all rounded-lg bg-white bg-opacity-5 p-4"
     >
-      <div className="w-full flex-1">
-        <h4 className="w-[calc(100%-20px)] overflow-x-hidden text-ellipsis break-normal text-lg font-bold text-white">
+      <div className="flex-1">
+        <h4 className="w-[calc(100%-20px)] overflow-x-hidden text-ellipsis break-normal text-lg font-bold text-background">
           {bulletin.title}
         </h4>
         <div className="mt-2 text-gray-100">

@@ -22,9 +22,9 @@ const LessonConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   const noMembers = member.length < 1;
 
   const getDialogBody = () => {
-    if (noMembers) return <div className="text-foreground">{t('classmanagement.noStudentsForAction')}</div>;
+    if (noMembers) return <div className="text-background">{t('classmanagement.noStudentsForAction')}</div>;
     return (
-      <div className="text-foreground">
+      <div className="text-background">
         <p className="mb-3">{t(`classmanagement.${title}Description`, { count: member.length })}:</p>
         <p className="p-2">{member.map((m) => m.displayName).join(', ')}</p>
       </div>

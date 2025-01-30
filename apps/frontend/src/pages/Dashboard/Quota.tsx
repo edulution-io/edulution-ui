@@ -33,7 +33,7 @@ const Quota: React.FC = () => {
 
   return (
     <>
-      <p>{lmnUser?.school}</p>
+      <p className="text-background">{lmnUser?.school}</p>
       <div className="relative my-1 h-1 w-full bg-gray-300">
         <div
           className={`absolute left-0 top-0 h-1 ${getSeparatorColor()}`}
@@ -41,15 +41,15 @@ const Quota: React.FC = () => {
         />
       </div>
       <div color="white">
-        <p>
+        <p className="text-background">
           {quotaUsed} / {quotaHardLimit} {t('dashboard.quota.mibibyte')}
         </p>
       </div>
-      <div color="white">
-        <p className="font-bold">
+      <div color="background">
+        <p className=" font-bold text-background">
           {t('dashboard.quota.globalQuota')}: {quotaHardLimit} {t('dashboard.quota.mibibyte')}
         </p>
-        <p className="font-bold">
+        <p className="font-bold text-background">
           {t('dashboard.quota.mailQuota')}: {mailQuota} {t('dashboard.quota.mibibyte')}
         </p>
       </div>
