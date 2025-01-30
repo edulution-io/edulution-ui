@@ -1,4 +1,4 @@
-const isDevelopment = process.env['NODE_ENV'] === 'development';
+const isDevelopment = VITE_ENV === 'development';
 
 const getFrontEndUrl = (): string => {
   if (isDevelopment) {

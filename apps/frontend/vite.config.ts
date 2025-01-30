@@ -11,10 +11,9 @@ export default defineConfig(({ mode }) => {
   return {
     // Exception needed for excalidraw
     define: {
-      'process.env': {
-        NODE_ENV: mode,
-      },
+      'process.env': {},
       APP_VERSION: JSON.stringify(pkg.version),
+      VITE_ENV: JSON.stringify(mode),
     },
     test: {
       globals: true,
