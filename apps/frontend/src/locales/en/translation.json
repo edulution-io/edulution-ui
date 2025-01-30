@@ -887,7 +887,6 @@
     "kill": "Kill",
     "install": "Install",
     "update": "Update",
-    "cancel": "Cancel",
     "progress": "Progress...",
     "pressInstall": "Press Install to start"
   },
