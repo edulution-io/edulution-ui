@@ -122,7 +122,7 @@ class MailsService implements OnModuleInit {
         };
         mails.push(mailDto);
       }
-    } catch (err) {
+    } catch (error) {
       throw new CustomHttpException(
         MailsErrorMessages.NotAbleToFetchMailsError,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -231,7 +231,7 @@ class MailsService implements OnModuleInit {
       const filteredSyncJobs = new FilterUserPipe(emailAddress).transform(syncJobs.data, {} as ArgumentMetadata);
 
       return filteredSyncJobs;
-    } catch (e) {
+    } catch (error) {
       throw new CustomHttpException(MailsErrorMessages.MailcowApiGetSyncJobsFailed, HttpStatus.BAD_GATEWAY);
     }
   }
@@ -244,7 +244,7 @@ class MailsService implements OnModuleInit {
         return syncJobs;
       }
       throw new CustomHttpException(MailsErrorMessages.MailcowApiCreateSyncJobFailed, HttpStatus.BAD_GATEWAY);
-    } catch (e) {
+    } catch (error) {
       throw new CustomHttpException(MailsErrorMessages.MailcowApiCreateSyncJobFailed, HttpStatus.BAD_GATEWAY);
     }
   }
