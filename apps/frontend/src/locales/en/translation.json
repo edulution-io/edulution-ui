@@ -931,6 +931,7 @@
     "selectFile": "Select up to 5 files at a time",
     "uploadItems": "Upload: {{count}} items",
     "dragDropClick": "Drag files here or click to select files",
+    "dropHere": "Drop here",
     "filesToUpload": "Files to upload",
     "limitExceeded": "Reached the limit of 5 files"
   },

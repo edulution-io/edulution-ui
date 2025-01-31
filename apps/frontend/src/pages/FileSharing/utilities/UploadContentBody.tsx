@@ -1,24 +1,22 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { MdOutlineCloudUpload } from 'react-icons/md';
-import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
-import { HiDocument, HiXMark } from 'react-icons/hi2';
+import { HiExclamationTriangle, HiTrash } from 'react-icons/hi2';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import Progress from '@/components/ui/Progress';
 import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
+import { ScrollArea } from '@/components/ui/ScrollArea';
+import { TooltipProvider } from '@radix-ui/react-tooltip';
+import ActionTooltip from '@/components/shared/ActionTooltip';
+import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 
-interface DropZoneProps {
-  files: File[];
-  setFiles: React.Dispatch<React.SetStateAction<File[]>>;
-}
-
-const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
+const UploadContentBody = () => {
   const { t } = useTranslation();
   const [fileUploadSize, setFileUploadSize] = useState(0);
-  const { setSubmitButtonIsInActive } = useFileSharingDialogStore();
+  const { filesToUpload: files, setFilesToUpload: setFiles, setSubmitButtonIsInActive } = useFileSharingDialogStore();
 
   const removeFile = (name: string) => {
     setFiles((prevFiles) => prevFiles.filter((file) => file.name !== name));
@@ -45,8 +43,8 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-  const dropzoneStyle = `border-2 border-dashed border-gray-300 rounded-md p-10 ${
-    isDragActive ? 'bg-secondary' : 'bg-gray-100'
+  const dropzoneStyle = `border-2 border-dashed border-gray-300 rounded-md p-10 mb-4 ${
+    isDragActive ? 'bg-foreground' : 'bg-popover-foreground'
   }`;
 
   return (
@@ -61,7 +59,8 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
             <MdOutlineCloudUpload className="h-12 w-12 text-muted" />
           </div>
         ) : (
-          <p className="font-bold text-ciRed">
+          <p className="inline-flex items-center font-bold text-ciRed">
+            <HiExclamationTriangle className="mr-2 h-6 w-6" />
             {fileUploadSize > MAX_FILE_UPLOAD_SIZE
               ? t('filesharingUpload.dataLimitExceeded')
               : t('filesharingUpload.limitExceeded')}
@@ -78,52 +77,47 @@ const DropZone: FC<DropZoneProps> = ({ files, setFiles }) => {
         </div>
       </div>
 
-      <ul className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-6">
-        {files.map((file) => (
-          <li
-            key={file.name}
-            className="relative overflow-hidden rounded-md border p-2 shadow-lg"
-          >
-            {file.type.startsWith('image/') ? (
-              <img
-                src={URL.createObjectURL(file)}
-                alt={t('filesharingUpload.previewAlt', { filename: file.name })}
-                className="mb-2 h-auto w-full object-cover"
-                onLoad={() => URL.revokeObjectURL(file.name)}
-              />
-            ) : (
-              <div className="flex h-20 items-center justify-center">
-                <HiDocument className="h-8 w-8 text-muted" />
-              </div>
-            )}
-            <Button
-              onClick={() => removeFile(file.name)}
-              className="absolute right-0 top-0 rounded-full bg-white bg-opacity-70 p-1"
-            >
-              <HiXMark className="text-text-ciRed h-5 w-5 hover:text-red-700" />
-            </Button>
-            <div className="truncate text-center text-xs text-neutral-500 underline">{file.name}</div>
-          </li>
-        ))}
-      </ul>
-      <p className="pt-4 text-background underline">{t('filesharingUpload.filesToUpload')}</p>
-      <ScrollArea className="max-h-[30vh]">
-        <ol
-          type="1"
-          className="text-background"
-        >
-          {files.map((file, i) => (
+      <ScrollArea className="mt-2 max-h-[50vh] overflow-y-auto overflow-x-hidden rounded-xl border border-gray-600 px-2 scrollbar-thin">
+        <ul className="my-3 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {files.map((file) => (
             <li
               key={file.name}
-              className="flex w-full items-center justify-between overflow-hidden rounded bg-white p-2 shadow"
+              className="relative overflow-hidden rounded-xl border border-gray-700 p-2 shadow-lg"
             >
-              <span className="w-full overflow-hidden truncate whitespace-nowrap">{`${i + 1}. ${file.name}`}</span>
+              {file.type.startsWith('image/') ? (
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt={t('filesharingUpload.previewAlt', { filename: file.name })}
+                  className="mb-2 h-auto w-full object-cover"
+                  onLoad={() => URL.revokeObjectURL(file.name)}
+                />
+              ) : (
+                <div className="flex h-20 items-center justify-center">
+                  <FileIconComponent
+                    size={60}
+                    filename={file.name}
+                  />
+                </div>
+              )}
+              <Button
+                onClick={() => removeFile(file.name)}
+                className="absolute right-1 top-1 h-8 rounded-full bg-red-500 bg-opacity-70 p-2"
+              >
+                <HiTrash className="text-text-ciRed h-4 w-4 hover:text-red-700" />
+              </Button>
+
+              <TooltipProvider>
+                <ActionTooltip
+                  tooltipText={file.name}
+                  trigger={<div className="truncate text-center text-xs text-neutral-500 underline">{file.name}</div>}
+                />
+              </TooltipProvider>
             </li>
           ))}
-        </ol>
+        </ul>
       </ScrollArea>
     </form>
   );
 };
 
-export default DropZone;
+export default UploadContentBody;
