@@ -888,7 +888,8 @@
     "install": "Install",
     "update": "Update",
     "progress": "Progress...",
-    "pressInstall": "Press Install to start"
+    "pressInstall": "Press Install to start",
+    "disabled": "Disabled"
   },
   "form": {
     "path": "Path",
