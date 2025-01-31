@@ -55,7 +55,7 @@ const UserSettingsMailsPage: React.FC = () => {
       setOption(externalMailProviderConfig[0].name);
       void getSyncJob();
     }
-  }, [externalMailProviderConfig]);
+  }, [externalMailProviderConfig.length]);
 
   const handleDeleteSyncJob = () => {
     if (Object.keys(selectedSyncJob).length > 0) {

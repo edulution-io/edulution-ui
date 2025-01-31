@@ -122,7 +122,7 @@ class MailsService implements OnModuleInit {
         };
         mails.push(mailDto);
       }
-    } catch (err) {
+    } catch (error) {
       throw new CustomHttpException(
         MailsErrorMessages.NotAbleToFetchMailsError,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -220,7 +220,7 @@ class MailsService implements OnModuleInit {
     throw new CustomHttpException(MailsErrorMessages.MailProviderNotFound, HttpStatus.NOT_FOUND, '', MailsService.name);
   }
 
-  async getSyncJobs(username: string): Promise<SyncJobDto[]> {
+  async getSyncJobs(emailAddress: string): Promise<SyncJobDto[]> {
     if (!MAILCOW_API_URL || !MAILCOW_API_TOKEN) {
       return [];
     }
@@ -228,37 +228,37 @@ class MailsService implements OnModuleInit {
     try {
       const syncJobs = await this.mailcowApi.get<SyncJobDto[]>('/get/syncjobs/all/no_log');
 
-      const filteredSyncJobs = new FilterUserPipe(username).transform(syncJobs.data, {} as ArgumentMetadata);
+      const filteredSyncJobs = new FilterUserPipe(emailAddress).transform(syncJobs.data, {} as ArgumentMetadata);
 
       return filteredSyncJobs;
-    } catch (e) {
+    } catch (error) {
       throw new CustomHttpException(MailsErrorMessages.MailcowApiGetSyncJobsFailed, HttpStatus.BAD_GATEWAY);
     }
   }
 
-  async createSyncJob(createSyncJobDto: CreateSyncJobDto, username: string) {
+  async createSyncJob(createSyncJobDto: CreateSyncJobDto, emailAddress: string) {
     try {
       const response = await this.mailcowApi.post<SyncJobResponseDto>('/add/syncjob', createSyncJobDto);
       if (response) {
-        const syncJobs = await this.getSyncJobs(username);
+        const syncJobs = await this.getSyncJobs(emailAddress);
         return syncJobs;
       }
       throw new CustomHttpException(MailsErrorMessages.MailcowApiCreateSyncJobFailed, HttpStatus.BAD_GATEWAY);
-    } catch (e) {
+    } catch (error) {
       throw new CustomHttpException(MailsErrorMessages.MailcowApiCreateSyncJobFailed, HttpStatus.BAD_GATEWAY);
     }
   }
 
-  async deleteSyncJobs(syncJobIds: string[], username: string) {
+  async deleteSyncJobs(syncJobIds: string[], emailAddress: string) {
     // NIEDUUI-374: Check if user has permission to delete
     try {
       const response = await this.mailcowApi.post<SyncJobResponseDto>('/delete/syncjob', syncJobIds);
       if (response) {
-        const syncJobs = await this.getSyncJobs(username);
+        const syncJobs = await this.getSyncJobs(emailAddress);
         return syncJobs;
       }
       throw new CustomHttpException(MailsErrorMessages.MailcowApiDeleteSyncJobsFailed, HttpStatus.BAD_GATEWAY);
-    } catch (e) {
+    } catch (error) {
       throw new CustomHttpException(MailsErrorMessages.MailcowApiDeleteSyncJobsFailed, HttpStatus.BAD_GATEWAY);
     }
   }
