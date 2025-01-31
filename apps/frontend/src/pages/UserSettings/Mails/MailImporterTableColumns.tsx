@@ -91,16 +91,18 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
     },
     accessorFn: (row) => row.is_running,
     cell: ({ row }) => {
-      const isJobRunning = row.original.is_running === 1;
+      const isJobRunning = row.original.exit_status === 'EX_OK';
       const isJobActive = row.original.active === 1;
 
       return (
         <TooltipProvider>
           <ActionTooltip
-            tooltipText={isJobActive && !isJobRunning ? row.original.exit_status : i18n.t('common.disabled')}
+            tooltipText={isJobActive ? row.original.exit_status : i18n.t('common.disabled')}
             trigger={
               <div className="flex justify-center">
-                <span className={`flex h-2 w-2 rounded-full ${isJobRunning ? 'bg-ciLightGreen' : 'bg-ciRed'}`} />
+                <span
+                  className={`flex h-2 w-2 rounded-full ${isJobRunning && isJobActive ? 'bg-ciLightGreen' : 'bg-ciRed'}`}
+                />
               </div>
             }
           />
