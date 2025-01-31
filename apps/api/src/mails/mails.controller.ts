@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/c
 import MAIL_ENDPOINT from '@libs/mail/constants/mail-endpoint';
 import { CreateSyncJobDto, MailDto, MailProviderConfigDto, SyncJobDto } from '@libs/mail/types';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import { GetCurrentUsername, GetUsersEmailAddress } from '../common/decorators/getUser.decorator';
 import MailsService from './mails.service';
 import UsersService from '../users/users.service';
 import AppConfigGuard from '../appconfig/appconfig.guard';
@@ -42,21 +42,24 @@ class MailsController {
   }
 
   @Get('sync-job')
-  async getSyncJob(@GetCurrentUsername() username: string): Promise<SyncJobDto[]> {
-    return this.mailsService.getSyncJobs(username);
+  async getSyncJob(@GetUsersEmailAddress() emailAddress: string): Promise<SyncJobDto[]> {
+    return this.mailsService.getSyncJobs(emailAddress);
   }
 
   @Post('sync-job')
   async postSyncJob(
     @Body() createSyncJobDto: CreateSyncJobDto,
-    @GetCurrentUsername() username: string,
+    @GetUsersEmailAddress() emailAddress: string,
   ): Promise<SyncJobDto[]> {
-    return this.mailsService.createSyncJob(createSyncJobDto, username);
+    return this.mailsService.createSyncJob(createSyncJobDto, emailAddress);
   }
 
   @Delete('sync-job')
-  async deleteSyncJobs(@Body() syncJobIds: string[], @GetCurrentUsername() username: string): Promise<SyncJobDto[]> {
-    return this.mailsService.deleteSyncJobs(syncJobIds, username);
+  async deleteSyncJobs(
+    @Body() syncJobIds: string[],
+    @GetUsersEmailAddress() emailAddress: string,
+  ): Promise<SyncJobDto[]> {
+    return this.mailsService.deleteSyncJobs(syncJobIds, emailAddress);
   }
 }
 

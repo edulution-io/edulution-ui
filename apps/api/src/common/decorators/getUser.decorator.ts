@@ -19,4 +19,12 @@ export const GetCurrentUsername = createParamDecorator((_data: unknown, ctx: Exe
   return request.user.preferred_username;
 });
 
+export const GetUsersEmailAddress = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
+  const request: Request = ctx.switchToHttp().getRequest();
+  if (!request.user?.email) {
+    throw new UnauthorizedException('Email in JWT is missing');
+  }
+  return request.user.email;
+});
+
 export default GetCurrentUser;
