@@ -11,7 +11,7 @@ import { TooltipProvider } from '@/components/ui/Tooltip';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import EditButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/editButton';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
-import useDeleteSurveyStore from './useDeleteSurveyStore';
+import useDeleteSurveyStore from '../dialogs/useDeleteSurveyStore';
 
 interface SurveysTablesFloatingButtonsProps {
   canEdit: boolean;
@@ -22,9 +22,14 @@ interface SurveysTablesFloatingButtonsProps {
   canShowResults: boolean;
 }
 
-const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) => {
-  const { canEdit, editSurvey, canDelete, canShowSubmittedAnswers, canParticipate, canShowResults } = props;
-
+const SurveysTablesFloatingButtons = ({
+  canEdit,
+  editSurvey,
+  canDelete,
+  canParticipate,
+  canShowSubmittedAnswers,
+  canShowResults,
+}: SurveysTablesFloatingButtonsProps) => {
   const { selectedSurvey, isNoSurveySelected, isExactlyOneSurveySelected, updateUsersSurveys, selectedRows } =
     useSurveyTablesPageStore();
 
@@ -34,7 +39,7 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
 
   const { setIsOpenSubmittedAnswersDialog } = useSubmittedAnswersDialogStore();
 
-  const { deleteSurveys } = useDeleteSurveyStore();
+  const { setIsDeleteSurveysDialogOpen } = useDeleteSurveyStore();
 
   const { t } = useTranslation();
 
@@ -43,18 +48,16 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
     return null;
   }
 
-  const handleDeleteSurvey = () => {
-    // TODO: Add confirmation dialog for the deletion ( Issue #368 (https://github.com/edulution-io/edulution-ui/issues/368) )
-    const ids = Object.keys(selectedRows);
-    if (ids) {
-      void deleteSurveys(ids);
-      void updateUsersSurveys();
-    }
-  };
-
   const isSingleSurveySelected = isExactlyOneSurveySelected();
   const canShowResultsTable = selectedSurvey?.canShowResultsTable && canShowResults;
   const canShowResultsChart = selectedSurvey?.canShowResultsChart && canShowResults;
+
+  const handleDeleteSurvey = () => {
+    if (Object.keys(selectedRows).length > 0) {
+      void setIsDeleteSurveysDialogOpen(true);
+      void updateUsersSurveys();
+    }
+  };
 
   const config: FloatingButtonsBarConfig = {
     buttons: [

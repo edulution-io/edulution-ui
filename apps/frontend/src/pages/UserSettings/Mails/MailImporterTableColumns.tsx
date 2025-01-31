@@ -14,7 +14,7 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
       />
     ),
     meta: {
-      translationId: 'mail.importer.hostname',
+      translationId: 'mail.hostname',
     },
     accessorFn: (row) => row.host1,
     cell: ({ row }) => (
@@ -28,7 +28,7 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
     id: 'port',
     header: ({ column }) => <SortableHeader<SyncJobDto, unknown> column={column} />,
     meta: {
-      translationId: 'mail.importer.port',
+      translationId: 'mail.port',
     },
     accessorFn: (row) => row.port1,
     cell: ({ row }) => (
@@ -42,7 +42,7 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
     id: 'encryption',
     header: ({ column }) => <SortableHeader<SyncJobDto, unknown> column={column} />,
     meta: {
-      translationId: 'mail.importer.encryption',
+      translationId: 'mail.encryption',
     },
     accessorFn: (row) => row.enc1,
     cell: ({ row }) => (
