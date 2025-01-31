@@ -32,7 +32,7 @@ const FileViewer: FC<FileViewerProps> = ({ editMode }) => {
           titleTranslationId={t('filesharing.fileEditor')}
           handleClose={() => setIsFullScreenEditingEnabled(false)}
         >
-          <FileRenderer editMode={editMode} />
+          <FileRenderer editMode />
         </ResizableWindow>
       ) : (
         <FileRenderer editMode={editMode} />
