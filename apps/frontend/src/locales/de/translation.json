@@ -159,6 +159,8 @@
     "hostname": "Hostname",
     "port": "Port",
     "encryption": "Verschlüsselung",
+    "rowSelected": "{{selected}} von {{total}} Job ausgewählt",
+    "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
     "importer": {
       "filterPlaceHolderText": "Suche nach E-Mail-Importername",
       "title": "E-Mail-Importer",
@@ -166,8 +168,6 @@
       "interval": "Sync-Intervall",
       "isActive": "Aktiv",
       "syncJobsTable": "Importer Jobs",
-      "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
-      "rowSelected": "{{selected}} von {{total}} Job ausgewählt",
       "mailAddress": "E-Mail-Adresse",
       "noMailConfigured": "Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator."
     }
@@ -888,7 +888,8 @@
     "install": "Installieren",
     "update": "Update",
     "progress": "Fortschritt...",
-    "pressInstall": "Drücke Installieren um zu Starten."
+    "pressInstall": "Drücke Installieren um zu Starten.",
+    "disabled": "Deaktiviert"
   },
   "form": {
     "path": "Link",
