@@ -1,4 +1,5 @@
 import OnlyOfficeConfig from '@libs/filesharing/types/OnlyOfficeConfig';
+import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
 
 interface OnlyOfficeConfigProps {
   fileType: string;
@@ -9,6 +10,7 @@ interface OnlyOfficeConfigProps {
   callbackUrl: string;
   mode: 'view' | 'edit';
   username: string;
+  lang: string;
 }
 
 const generateOnlyOfficeConfig = ({
@@ -19,7 +21,8 @@ const generateOnlyOfficeConfig = ({
   documentUrl,
   callbackUrl,
   mode,
-}: OnlyOfficeConfigProps) => ({
+  lang,
+}: OnlyOfficeConfigProps): OnlyOfficeEditorConfig => ({
   document: {
     fileType,
     type,
@@ -32,6 +35,7 @@ const generateOnlyOfficeConfig = ({
   documentType,
   token: '',
   editorConfig: {
+    lang,
     callbackUrl,
     mode,
     customization: {
