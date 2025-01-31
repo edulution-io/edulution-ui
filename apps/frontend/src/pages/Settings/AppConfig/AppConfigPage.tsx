@@ -61,10 +61,6 @@ const AppConfigPage: React.FC = () => {
 
   const isAnAppConfigSelected = settingLocation !== '';
 
-  useEffect(() => {
-    void getAppConfigs();
-  }, []);
-
   const updateSettings = () => {
     const currentConfig = findAppConfigByName(appConfigs, settingLocation);
     if (!currentConfig) {
@@ -152,8 +148,6 @@ const AppConfigPage: React.FC = () => {
       };
       void postExternalMailProviderConfig(mailProviderConfig);
     }
-
-    await getAppConfigs();
   };
 
   const settingsForm = () => {
