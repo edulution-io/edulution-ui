@@ -2,7 +2,8 @@ import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/c
 import MAIL_ENDPOINT from '@libs/mail/constants/mail-endpoint';
 import { CreateSyncJobDto, MailDto, MailProviderConfigDto, SyncJobDto } from '@libs/mail/types';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { GetCurrentUsername, GetUsersEmailAddress } from '../common/decorators/getUser.decorator';
+import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import GetUsersEmailAddress from '../common/decorators/getUsersEmailAddress.decorator';
 import MailsService from './mails.service';
 import UsersService from '../users/users.service';
 import AppConfigGuard from '../appconfig/appconfig.guard';
