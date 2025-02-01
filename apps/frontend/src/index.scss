@@ -52,7 +52,7 @@
     --muted-dialog: #eaeaea;
   }
   .dark {
-    --background-image: url('assets/backgroundDarkMode.jpg');
+    --background-image: url('assets/backgroundDarkMode.webp');
     --background: #ffffff;
     --foreground: #000000;
     --muted-foreground: #bbbbbb;
@@ -122,7 +122,7 @@
 
 iframe {
   @apply bg-cover bg-center bg-no-repeat;
-  background-image: url('./assets/backgroundDarkMode.jpg');
+  background-image: url('./assets/backgroundDarkMode.webp');
 }
 
 .ql-editor,
