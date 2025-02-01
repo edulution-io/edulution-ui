@@ -32,7 +32,7 @@ const DateAndTimeInput = <T extends FieldValues>({ form, name, translationId }: 
 
   return (
     <>
-      <div className="flex items-center text-foreground">
+      <div className="flex items-center text-background">
         {t(translationId)}
         <div className="ml-2">
           <DatePicker
@@ -52,7 +52,7 @@ const DateAndTimeInput = <T extends FieldValues>({ form, name, translationId }: 
             <Button
               variant="btn-attention"
               size="md"
-              className="ml-4 rounded-md text-white"
+              className="ml-4 rounded-md text-background"
               onClick={handleResetButton}
             >
               <FaTrash />

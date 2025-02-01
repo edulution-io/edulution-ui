@@ -27,7 +27,7 @@ const UserSettingsSecurityPage: React.FC = () => {
         style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
       >
         <PasswordChangeForm />
-        <Separator className="my-1 bg-ciGrey" />
+        <Separator className="my-1 bg-muted" />
         <AddMfaForm />
       </div>
     </div>

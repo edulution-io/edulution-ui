@@ -13,63 +13,65 @@ interface SelectableTextCellProps<TData> {
   isFirstColumn?: boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const SelectableTextCell = forwardRef<HTMLDivElement, SelectableTextCellProps<any>>(
-  ({ icon, row, text, textOnHover, onClick, className, isFirstColumn = false }, ref) => {
-    const [isHovered, setIsHovered] = useState(false);
-    const isChecked = row?.getIsSelected();
-    const checkboxRef = useRef<HTMLButtonElement>(null);
-    const [checkboxWidth, setCheckboxWidth] = useState(0);
+const SelectableTextCellInner = <TData,>(
+  { icon, row, text, textOnHover, onClick, className, isFirstColumn = false }: SelectableTextCellProps<TData>,
+  ref: React.Ref<HTMLDivElement>,
+) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const isChecked = row?.getIsSelected();
+  const checkboxRef = useRef<HTMLButtonElement>(null);
+  const [checkboxWidth, setCheckboxWidth] = useState(0);
 
-    useEffect(() => {
-      if (checkboxRef.current) {
-        const width = checkboxRef.current.offsetWidth;
-        setCheckboxWidth(width);
-      }
-    }, []);
+  useEffect(() => {
+    if (checkboxRef.current) {
+      const width = checkboxRef.current.offsetWidth;
+      setCheckboxWidth(width);
+    }
+  }, []);
 
-    return (
-      <div
-        ref={ref}
-        onClick={onClick}
-        onKeyDown={onClick}
-        tabIndex={0}
-        role="button"
-        className={cn(
-          `flex items-center justify-start ${isFirstColumn ? 'space-x-2' : ''} py-0`,
-          onClick ? 'cursor-pointer' : 'cursor-default',
-          className,
-        )}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        {row ? (
-          <Checkbox
-            ref={checkboxRef}
-            checked={isChecked}
-            onClick={(e) => e.stopPropagation()}
-            onCheckedChange={(checked) => {
-              row.toggleSelected(!!checked);
-            }}
-            aria-label="Select row"
-          />
-        ) : (
-          <div className="my-5" />
-        )}
-        {icon ? <div className="mb-3 ml-2 mr-2 mt-3 flex items-center justify-center">{icon}</div> : null}
-        <span
-          className="text-md truncate font-medium"
-          style={{
-            marginLeft: isFirstColumn && !row ? `${checkboxWidth + 30}px` : undefined,
+  return (
+    <div
+      ref={ref}
+      onClick={onClick}
+      onKeyDown={onClick}
+      tabIndex={0}
+      role="button"
+      className={cn(
+        `flex items-center justify-start ${isFirstColumn ? 'space-x-2' : ''} py-0`,
+        onClick ? 'cursor-pointer' : 'cursor-default',
+        className,
+      )}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {row ? (
+        <Checkbox
+          ref={checkboxRef}
+          checked={isChecked}
+          onClick={(e) => e.stopPropagation()}
+          onCheckedChange={(checked) => {
+            row.toggleSelected(!!checked);
           }}
-        >
-          {isHovered && textOnHover ? textOnHover : text}
-        </span>
-      </div>
-    );
-  },
-);
+          aria-label="Select row"
+        />
+      ) : (
+        <div className="my-5" />
+      )}
+      {icon ? <div className="mb-3 ml-2 mr-2 mt-3 flex items-center justify-center">{icon}</div> : null}
+      <span
+        className="text-md truncate font-medium"
+        style={{
+          marginLeft: isFirstColumn && !row ? `${checkboxWidth + 30}px` : undefined,
+        }}
+      >
+        {isHovered && textOnHover ? textOnHover : text}
+      </span>
+    </div>
+  );
+};
 
-SelectableTextCell.displayName = 'SelectableTextCell';
+const SelectableTextCell = forwardRef(SelectableTextCellInner) as <TData>(
+  props: SelectableTextCellProps<TData> & React.RefAttributes<HTMLDivElement>,
+) => JSX.Element;
 
 export default SelectableTextCell;

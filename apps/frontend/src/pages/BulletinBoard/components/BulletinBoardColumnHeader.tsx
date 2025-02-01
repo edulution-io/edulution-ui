@@ -52,7 +52,7 @@ const BulletinBoardColumnHeader = ({
       variant="security"
       className="sticky mx-0 mb-4 flex min-h-[44px] items-center justify-between overflow-hidden rounded-lg py-1 pl-3 pr-2 opacity-90"
     >
-      <h4 className="flex-1 truncate text-white">{category.name}</h4>
+      <h4 className="flex-1 truncate text-background">{category.name}</h4>
       <DropdownMenu
         trigger={
           <Button

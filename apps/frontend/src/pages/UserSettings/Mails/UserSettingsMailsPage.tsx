@@ -55,7 +55,7 @@ const UserSettingsMailsPage: React.FC = () => {
       setOption(externalMailProviderConfig[0].name);
       void getSyncJob();
     }
-  }, [externalMailProviderConfig]);
+  }, [externalMailProviderConfig.length]);
 
   const handleDeleteSyncJob = () => {
     if (Object.keys(selectedSyncJob).length > 0) {
@@ -101,8 +101,7 @@ const UserSettingsMailsPage: React.FC = () => {
       labelTranslationId={label}
       type={type}
       defaultValue=""
-      className="mb-4 mt-2"
-      variant="lightGray"
+      className="mb-4 mt-2 "
     />
   );
 
@@ -121,7 +120,7 @@ const UserSettingsMailsPage: React.FC = () => {
           className="w-full flex-1 overflow-auto pl-3 pr-3.5 scrollbar-thin"
           style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
         >
-          <h3>{t('mail.importer.title')}</h3>
+          <h3 className="text-background">{t('mail.importer.title')}</h3>
           <div className="space-y-4">
             <DropdownSelect
               options={externalMailProviderConfig}
@@ -140,7 +139,7 @@ const UserSettingsMailsPage: React.FC = () => {
             </Form>
 
             <div className="px-4">
-              <h3 className="pt-5">{t('mail.importer.syncJobsTable')}</h3>
+              <h3 className="pt-5 text-background">{t('mail.importer.syncJobsTable')}</h3>
               <MailImporterTable />
             </div>
           </div>

@@ -12,7 +12,7 @@ export interface AsyncMultiSelectProps<T> {
   onChange: (options: (T & MultipleSelectorOptionSH)[]) => void;
   showRemoveIconInBadge?: boolean;
   badgeClassName?: string;
-  variant?: 'light' | 'dark';
+  variant?: 'default' | 'dialog';
 }
 
 const AsyncMultiSelect = <T extends MultipleSelectorOptionSH>({
@@ -22,20 +22,20 @@ const AsyncMultiSelect = <T extends MultipleSelectorOptionSH>({
   delay = 700,
   onSearch,
   onChange,
-  variant = 'dark',
+  variant = 'default',
   showRemoveIconInBadge,
   badgeClassName,
 }: AsyncMultiSelectProps<T>) => {
   const { t } = useTranslation();
 
   const loadingIndicator = (
-    <p className={`leading-1 py-2 text-center ${variant === 'dark' ? 'text-ciLightGrey' : 'text-muted'}`}>
+    <p className={`leading-1 py-2 text-center ${variant === 'default' ? 'text-secondary' : 'text-muted'}`}>
       {t('search.loading')}...
     </p>
   );
 
   const emptyIndicator = (
-    <p className={`leading-1 w-full py-2 text-center ${variant === 'dark' ? 'text-ciLightGrey' : 'text-muted'}`}>
+    <p className={`leading-1 w-full py-2 text-center ${variant === 'default' ? 'text-secondary' : 'text-muted'}`}>
       {t('search.no-results')}
     </p>
   );
@@ -53,7 +53,7 @@ const AsyncMultiSelect = <T extends MultipleSelectorOptionSH>({
       emptyIndicator={emptyIndicator}
       delay={delay}
       badgeClassName={badgeClassName || 'text-base font-normal '}
-      className={`rounded-lg p-[8px] ${variant === 'dark' ? 'bg-ciDarkGrey' : ''}`}
+      className={`rounded-lg p-[8px] ${variant === 'default' ? 'bg-accent' : 'bg-muted'}`}
       onChange={handleChange}
       onSearch={onSearch}
       inputProps={{ className: 'text-base m-0' }}

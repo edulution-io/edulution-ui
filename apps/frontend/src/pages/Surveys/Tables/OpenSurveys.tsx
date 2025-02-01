@@ -10,7 +10,6 @@ const OpenSurveys = () => {
   const {
     selectedPageView,
     updateSelectedPageView,
-    selectedSurvey,
     selectSurvey,
     setSelectedRows,
     openSurveys,
@@ -38,7 +37,6 @@ const OpenSurveys = () => {
         title={t('surveys.view.open.title')}
         description={t('surveys.view.open.description')}
         surveys={openSurveys || []}
-        selectedSurvey={selectedSurvey}
         isLoading={isFetchingOpenSurveys}
         canShowResults
         canParticipate
