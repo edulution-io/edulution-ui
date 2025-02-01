@@ -22,21 +22,20 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
   const { t } = useTranslation();
   const isMobileView = useIsMobileView();
   const navigate = useNavigate();
-  const { appConfigs, isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen, updateAppConfig, isLoading, error } =
+  const { isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen, createAppConfig, isLoading, error } =
     useAppConfigsStore();
   const selectedOption = option.toLowerCase().split('.')[0];
 
   const getDialogBody = () => {
     if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
     return (
-      <div className="my-12 text-foreground">
+      <div className="my-12 text-background">
         <p>{t('settings.addApp.description')}</p>
         <DropdownSelect
           options={getFilteredAppOptions()}
           selectedVal={t(option)}
           handleChange={setOption}
           openToTop={isMobileView}
-          variant="light"
         />
       </div>
     );
@@ -57,9 +56,8 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
         accessGroups: [],
         extendedOptions: {},
       };
-      const updatedConfig = [...appConfigs, newConfig];
 
-      await updateAppConfig(updatedConfig);
+      await createAppConfig(newConfig);
       if (!error) {
         setOption('');
         setIsAddAppConfigDialogOpen(false);

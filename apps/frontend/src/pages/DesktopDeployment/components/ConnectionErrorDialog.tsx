@@ -11,7 +11,7 @@ const ConnectionErrorDialog: React.FC<ConnectionErrorProps> = ({ handleReload })
   const { t } = useTranslation();
   const { error, setError, setIsVdiConnectionOpen } = useDesktopDeploymentStore();
 
-  const getDialogBody = () => <p className="text-foreground">{t('desktopdeployment.error.description')}</p>;
+  const getDialogBody = () => <p className="text-background">{t('desktopdeployment.error.description')}</p>;
 
   const handleClose = () => {
     setError(null);

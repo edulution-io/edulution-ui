@@ -3,6 +3,9 @@ import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import { SyncJobDto } from '@libs/mail/types';
 import { ColumnDef } from '@tanstack/react-table';
+import { TooltipProvider } from '@/components/ui/Tooltip';
+import ActionTooltip from '@/components/shared/ActionTooltip';
+import i18n from '@/i18n';
 
 const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
   {
@@ -14,7 +17,7 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
       />
     ),
     meta: {
-      translationId: 'mail.importer.hostname',
+      translationId: 'mail.hostname',
     },
     accessorFn: (row) => row.host1,
     cell: ({ row }) => (
@@ -28,7 +31,7 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
     id: 'port',
     header: ({ column }) => <SortableHeader<SyncJobDto, unknown> column={column} />,
     meta: {
-      translationId: 'mail.importer.port',
+      translationId: 'mail.port',
     },
     accessorFn: (row) => row.port1,
     cell: ({ row }) => (
@@ -42,7 +45,7 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
     id: 'encryption',
     header: ({ column }) => <SortableHeader<SyncJobDto, unknown> column={column} />,
     meta: {
-      translationId: 'mail.importer.encryption',
+      translationId: 'mail.encryption',
     },
     accessorFn: (row) => row.enc1,
     cell: ({ row }) => (
@@ -86,12 +89,26 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
     meta: {
       translationId: 'mail.importer.isActive',
     },
-    accessorFn: (row) => row.active,
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <span className={`flex h-2 w-2 rounded-full ${row.original.active === 1 ? 'bg-ciLightGreen' : 'bg-ciRed'}`} />
-      </div>
-    ),
+    accessorFn: (row) => row.is_running,
+    cell: ({ row }) => {
+      const isJobRunning = row.original.exit_status === 'EX_OK';
+      const isJobActive = row.original.active === 1;
+
+      return (
+        <TooltipProvider>
+          <ActionTooltip
+            tooltipText={isJobActive ? row.original.exit_status : i18n.t('common.disabled')}
+            trigger={
+              <div className="flex justify-center">
+                <span
+                  className={`flex h-2 w-2 rounded-full ${isJobRunning && isJobActive ? 'bg-ciLightGreen' : 'bg-ciRed'}`}
+                />
+              </div>
+            }
+          />
+        </TooltipProvider>
+      );
+    },
   },
 ];
 

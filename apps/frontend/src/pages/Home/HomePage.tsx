@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
-import { DashboardPage } from '@/pages/Dashboard';
-import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
+import React, { useEffect, lazy, Suspense } from 'react';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
+
+const BulletinBoardPage = lazy(() => import('@/pages/BulletinBoard/BulletinBoardPage'));
+const DashboardPage = lazy(() => import('@/pages/Dashboard/DashboardPage'));
 
 const HomePage: React.FC = () => {
   const { bulletinsByCategories, getBulletinsByCategories, isLoading } = useBulletinBoardStore();
@@ -15,9 +16,11 @@ const HomePage: React.FC = () => {
     return <LoadingIndicator isOpen />;
   }
 
-  if (bulletinsByCategories && Object.keys(bulletinsByCategories).length) return <BulletinBoardPage />;
-
-  return <DashboardPage />;
+  return (
+    <Suspense fallback={<LoadingIndicator isOpen />}>
+      {bulletinsByCategories && Object.keys(bulletinsByCategories).length ? <BulletinBoardPage /> : <DashboardPage />}
+    </Suspense>
+  );
 };
 
 export default HomePage;

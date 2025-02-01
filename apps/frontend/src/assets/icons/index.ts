@@ -23,7 +23,7 @@ export { default as EducationIcon } from '@/assets/icons/edulution/Education.svg
 export { default as DesktopIcon } from '@/assets/icons/edulution/Desktop.svg';
 export { default as ReloadIcon } from '@/assets/icons/edulution/Neu_Laden.svg';
 export { default as LernmanagementIcon } from '@/assets/icons/edulution/Lernmanagement.svg';
-export { default as AppleLogo } from '@/assets/icons/apple.png';
+export { default as AppleLogo } from '@/assets/icons/apple.svg';
 export { default as IsoIcon } from '@/assets/icons/iso.svg';
 export { default as ProgrammIcon } from '@/assets/icons/programm.svg';
 export { default as ProjectIcon } from '@/assets/icons/project.svg';
@@ -37,7 +37,6 @@ export { default as LocationServicesIcon } from '@/assets/icons/edulution/Stando
 export { default as MobileDevicesIcon } from '@/assets/icons/edulution/Mobile_Endger„te.svg';
 export { default as AntiMalwareIcon } from '@/assets/icons/edulution/Anti_Malware.svg';
 export { default as BackupIcon } from '@/assets/icons/edulution/Backup.svg';
-export { default as TrashIcon } from '@/assets/icons/trash.png';
 export { default as EyeLightIcon } from '@/assets/icons/eye.png';
 export { default as EyeDarkIcon } from '@/assets/icons/eye-dark.png';
 export { default as EyeLightSlashIcon } from '@/assets/icons/eye-slash-light.svg';

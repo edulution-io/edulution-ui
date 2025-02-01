@@ -135,7 +135,7 @@ const LoginPage: React.FC = () => {
       defaultValue=""
       render={({ field }) => (
         <FormItem>
-          <p className="font-bold">{label}</p>
+          <p className="font-bold text-foreground">{label}</p>
           <FormControl>
             <Input
               {...field}
@@ -147,14 +147,17 @@ const LoginPage: React.FC = () => {
               data-testid={`test-id-login-page-${fieldName}-input`}
             />
           </FormControl>
-          <FormMessage className="text-p" />
+          <FormMessage className="text-p text-foreground" />
         </FormItem>
       )}
     />
   );
 
   return (
-    <Card variant="modal">
+    <Card
+      variant="modal"
+      className="bg-background"
+    >
       <img
         src={DesktopLogo}
         alt="edulution"
@@ -177,7 +180,7 @@ const LoginPage: React.FC = () => {
             />
           ) : (
             <>
-              {renderFormField('username', t('common.username'), undefined, true)}
+              {renderFormField('username', t('common.username'), 'text', true)}
               {renderFormField('password', t('common.password'), 'password')}
             </>
           )}

@@ -1,5 +1,5 @@
 const ParticipatePublicSurveyStoreInitialState = {
-  survey: undefined,
+  publicSurvey: undefined,
   answer: {} as JSON,
   pageNo: 0,
   isFetching: false,

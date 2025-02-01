@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { createWriteStream, existsSync, mkdirSync, promises as fsPromises, readFileSync, writeFileSync } from 'fs';
-import { dirname, extname, join, resolve } from 'path';
+import { dirname, extname, join } from 'path';
 import { createHash } from 'crypto';
 import { pipeline, Readable } from 'stream';
 import { promisify } from 'util';
@@ -68,7 +68,7 @@ class FilesystemService {
 
     try {
       const response = await axios.get<ArrayBuffer>(body.url, { responseType: 'arraybuffer' });
-      const filePath = join(`${PUBLIC_DOWNLOADS_PATH}/${filename}`);
+      const filePath = join(PUBLIC_DOWNLOADS_PATH, filename);
       mkdirSync(dirname(filePath), { recursive: true });
       writeFileSync(filePath, new Uint8Array(response.data));
       const fileBuffer = readFileSync(filePath);
@@ -83,12 +83,17 @@ class FilesystemService {
         size: fileBuffer.length,
       } as CustomFile;
     } catch (error) {
-      throw new CustomHttpException(FileSharingErrorMessage.SaveFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(
+        FileSharingErrorMessage.SaveFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        filename,
+        FilesystemService.name,
+      );
     }
   }
 
   static async deleteFile(fileName: string): Promise<void> {
-    const filePath = resolve(PUBLIC_DOWNLOADS_PATH, fileName);
+    const filePath = join(PUBLIC_DOWNLOADS_PATH, fileName);
     try {
       await fsPromises.unlink(filePath);
       Logger.log(`File deleted at ${filePath}`);

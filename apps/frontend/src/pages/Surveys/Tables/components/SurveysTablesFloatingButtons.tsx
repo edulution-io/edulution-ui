@@ -2,16 +2,16 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineUpSquare } from 'react-icons/ai';
 import { HiOutlineArrowDownOnSquare, HiOutlineArrowDownOnSquareStack } from 'react-icons/hi2';
+import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
 import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import EditButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/editButton';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
-import useDeleteSurveyStore from './useDeleteSurveyStore';
+import useDeleteSurveyStore from '../dialogs/useDeleteSurveyStore';
 
 interface SurveysTablesFloatingButtonsProps {
   canEdit: boolean;
@@ -22,13 +22,16 @@ interface SurveysTablesFloatingButtonsProps {
   canShowResults: boolean;
 }
 
-const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) => {
-  const { canEdit, editSurvey, canDelete, canShowSubmittedAnswers, canParticipate, canShowResults } = props;
-
-  const { selectedSurvey: survey, updateUsersSurveys } = useSurveyTablesPageStore();
-
-  const canShowResultsTable = canShowResults && (survey?.canShowResultsTable || true);
-  const canShowResultsChart = canShowResults && (survey?.canShowResultsChart || true);
+const SurveysTablesFloatingButtons = ({
+  canEdit,
+  editSurvey,
+  canDelete,
+  canParticipate,
+  canShowSubmittedAnswers,
+  canShowResults,
+}: SurveysTablesFloatingButtonsProps) => {
+  const { selectedSurvey, isNoSurveySelected, isExactlyOneSurveySelected, updateUsersSurveys, selectedRows } =
+    useSurveyTablesPageStore();
 
   const { setIsOpenPublicResultsTableDialog, setIsOpenPublicResultsVisualisationDialog } = useResultDialogStore();
 
@@ -36,48 +39,53 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
 
   const { setIsOpenSubmittedAnswersDialog } = useSubmittedAnswersDialogStore();
 
-  const { deleteSurvey } = useDeleteSurveyStore();
+  const { setIsDeleteSurveysDialogOpen } = useDeleteSurveyStore();
 
   const { t } = useTranslation();
 
-  if (!survey) {
+  const noSurveyIsSelected = isNoSurveySelected();
+  if (noSurveyIsSelected) {
     return null;
   }
 
+  const isSingleSurveySelected = isExactlyOneSurveySelected();
+  const canShowResultsTable = selectedSurvey?.canShowResultsTable && canShowResults;
+  const canShowResultsChart = selectedSurvey?.canShowResultsChart && canShowResults;
+
   const handleDeleteSurvey = () => {
-    if (survey) {
-      void deleteSurvey([survey.id]);
+    if (Object.keys(selectedRows).length > 0) {
+      void setIsDeleteSurveysDialogOpen(true);
       void updateUsersSurveys();
     }
   };
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
-      EditButton(editSurvey ? () => editSurvey() : () => {}, canEdit),
+      EditButton(editSurvey ? () => editSurvey() : () => {}, isSingleSurveySelected && canEdit),
       DeleteButton(handleDeleteSurvey, canDelete),
       {
         icon: HiOutlineArrowDownOnSquare,
         text: t('surveys.actions.showSubmittedAnswers'),
         onClick: () => setIsOpenSubmittedAnswersDialog(true),
-        isVisible: canShowSubmittedAnswers,
+        isVisible: isSingleSurveySelected && canShowSubmittedAnswers,
       },
       {
         icon: HiOutlineArrowDownOnSquareStack,
         text: t('surveys.actions.showResultsTable'),
         onClick: () => setIsOpenPublicResultsTableDialog(true),
-        isVisible: canShowResultsTable,
+        isVisible: isSingleSurveySelected && canShowResultsTable,
       },
       {
         icon: HiOutlineArrowDownOnSquareStack,
         text: t('surveys.actions.showResultsChart'),
         onClick: () => setIsOpenPublicResultsVisualisationDialog(true),
-        isVisible: canShowResultsChart,
+        isVisible: isSingleSurveySelected && canShowResultsChart,
       },
       {
         icon: AiOutlineUpSquare,
         text: t('common.participate'),
         onClick: () => setIsOpenParticipateSurveyDialog(true),
-        isVisible: canParticipate,
+        isVisible: isSingleSurveySelected && canParticipate,
       },
     ],
     keyPrefix: 'surveys-page-floating-button_',
@@ -85,7 +93,7 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
 
   return (
     <TooltipProvider>
-      <div className="absolute bottom-8 flex flex-row items-center space-x-8 bg-ciDarkGrey">
+      <div className="absolute bottom-8 flex flex-row items-center space-x-8 bg-accent">
         <FloatingButtonsBar config={config} />
       </div>
     </TooltipProvider>

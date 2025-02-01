@@ -116,6 +116,7 @@ interface UserLmnInfo {
   sophomorixFirstnameInitial: string;
   sophomorixFirstPassword: string;
   sophomorixIntrinsic2: string[];
+  sophomorixIntrinsic3: string[];
   sophomorixMailQuotaCalculated: string[];
   sophomorixMailQuotaUsed: string[];
   sophomorixQuota: string[];
@@ -132,6 +133,7 @@ interface UserLmnInfo {
   sophomorixWebuiDashboard: string[];
   sophomorixWebuiPermissionsCalculated: string[];
   sophomorixIntrinsicMulti1?: string[];
+  thumbnailPhoto: string;
   unixHomeDirectory: string;
   dn: string;
   examMode: boolean;

@@ -3,7 +3,7 @@ import { CompleteEvent } from 'survey-core';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 
 interface ParticipatePublicSurveyStore {
-  survey: SurveyDto | undefined;
+  publicSurvey: SurveyDto | undefined;
 
   answer: JSON;
   setAnswer: (answer: JSON) => void;

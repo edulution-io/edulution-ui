@@ -31,7 +31,7 @@ const useLmnApiPasswordStore = create<LmnApiStore>((set) => ({
         FIRST_PASSWORD,
         {
           username,
-          password,
+          password: btoa(password),
         },
         {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
@@ -53,7 +53,7 @@ const useLmnApiPasswordStore = create<LmnApiStore>((set) => ({
         CHANGE_PASSWORD,
         {
           username,
-          password,
+          password: btoa(password),
         },
         {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
