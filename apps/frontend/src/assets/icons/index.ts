@@ -37,8 +37,8 @@ export { default as LocationServicesIcon } from '@/assets/icons/edulution/Stando
 export { default as MobileDevicesIcon } from '@/assets/icons/edulution/Mobile_Endger„te.svg';
 export { default as AntiMalwareIcon } from '@/assets/icons/edulution/Anti_Malware.svg';
 export { default as BackupIcon } from '@/assets/icons/edulution/Backup.svg';
-export { default as EyeLightIcon } from '@/assets/icons/eye.png';
-export { default as EyeDarkIcon } from '@/assets/icons/eye-dark.png';
+export { default as EyeLightIcon } from '@/assets/icons/eye.svg';
+export { default as EyeDarkIcon } from '@/assets/icons/eye-dark.svg';
 export { default as EyeLightSlashIcon } from '@/assets/icons/eye-slash-light.svg';
 export { default as EyeDarkSlashIcon } from '@/assets/icons/eye-slash-dark.svg';
 export { default as SurveysMenuIcon } from '@/assets/icons/survey-menu.svg';
@@ -59,3 +59,5 @@ export { default as NativeIcon } from '@/assets/icons/edulution/Icon_Nativ.svg';
 export { default as LanguageIcon } from '@/assets/icons/language.svg';
 export { default as GermanIcon } from '@/assets/icons/german.svg';
 export { default as EnglishIcon } from '@/assets/icons/english.svg';
+export { default as WindowsLogo } from '@/assets/icons/windows.svg';
+export { default as LinuxLogo } from '@/assets/icons/ubuntu.svg';
