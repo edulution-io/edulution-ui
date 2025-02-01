@@ -3,9 +3,11 @@ import { Excalidraw, THEME } from '@excalidraw/excalidraw';
 import cn from '@libs/common/utils/className';
 import useFrameStore from '@/components/framing/FrameStore';
 import APPS from '@libs/appconfig/constants/apps';
+import useLanguage from '@/hooks/useLanguage';
 
 const Whiteboard = () => {
   const { activeEmbeddedFrame } = useFrameStore();
+  const { language: lang } = useLanguage();
 
   const getStyle = () => (activeEmbeddedFrame === APPS.WHITEBOARD ? 'block' : 'hidden');
 
@@ -17,7 +19,10 @@ const Whiteboard = () => {
       )}
     >
       <div className="h-full w-full flex-grow">
-        <Excalidraw theme={THEME.DARK} />
+        <Excalidraw
+          theme={THEME.DARK}
+          langCode={`${lang}-${lang.toUpperCase()}`}
+        />
       </div>
     </div>
   );
