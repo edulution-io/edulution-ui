@@ -30,6 +30,7 @@ const createTotpSlice: StateCreator<UserStore, [], [], TotpSlice> = (set) => ({
   },
 
   getTotpStatus: async (username) => {
+    if (!username) return false;
     set({ totpIsLoading: true });
     try {
       const { data } = await eduApi.get<boolean>(
