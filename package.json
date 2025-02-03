@@ -27,7 +27,8 @@
     "check-circular-deps": "./scripts/checkCircDeps.sh",
     "format": "pretty-quick --staged",
     "check-translations": "tsx ./scripts/checkTranslations.ts",
-    "check-error-message-translations": "tsx scripts/checkErrorMessages.ts"
+    "check-error-message-translations": "tsx scripts/checkErrorMessages.ts",
+    "addLicenseHeader": "tsx ./scripts/addLicenseHeader.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
