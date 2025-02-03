@@ -159,6 +159,8 @@
     "hostname": "Hostname",
     "port": "Port",
     "encryption": "Verschlüsselung",
+    "rowSelected": "{{selected}} von {{total}} Job ausgewählt",
+    "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
     "importer": {
       "filterPlaceHolderText": "Suche nach E-Mail-Importername",
       "title": "E-Mail-Importer",
@@ -166,8 +168,6 @@
       "interval": "Sync-Intervall",
       "isActive": "Aktiv",
       "syncJobsTable": "Importer Jobs",
-      "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
-      "rowSelected": "{{selected}} von {{total}} Job ausgewählt",
       "mailAddress": "E-Mail-Adresse",
       "noMailConfigured": "Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator."
     }
@@ -893,7 +893,8 @@
     "install": "Installieren",
     "update": "Update",
     "progress": "Fortschritt...",
-    "pressInstall": "Drücke Installieren um zu Starten."
+    "pressInstall": "Drücke Installieren um zu Starten.",
+    "disabled": "Deaktiviert"
   },
   "form": {
     "path": "Link",
@@ -1114,7 +1115,7 @@
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Gib hier den OnlyOffice JWT Secret Key an",
     "overrideDocumentVendorMSWithOOTitle": "OpenDocument als Standard-Dokumentenformat verwenden",
-    "overrideDocumentVendorMSWithOODescription": "Soll anstatt von Microsoft Office Formaten (docx, pptx, xlsx) das von OpenOffice genutzte Format (odt, ods, odp) verwendet werden?",
+    "overrideDocumentVendorMSWithOODescription": "Soll anstatt der Microsoft Office Formate (docx, pptx, xlsx) das OpenDocument Format (odt, ods, odp) verwendet werden?",
     "mailImapUrlTitle": "URL",
     "mailImapUrlDescription": "Gib hier den FQDN (z.B. 'imap.example.com') des IMAP-Servers an.",
     "mailImapPortTitle": "Port",
