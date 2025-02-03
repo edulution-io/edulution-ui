@@ -4,6 +4,7 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import { useTranslation } from 'react-i18next';
 import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
+import { useSearchParams } from 'react-router-dom';
 
 interface OnlyOfficeEditorProps {
   editorType: {
@@ -28,6 +29,7 @@ const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
 }) => {
   const { isFullScreenEditingEnabled } = useFileSharingStore();
   const { deleteFileAfterEdit } = useFileEditorStore();
+  const [searchParams] = useSearchParams();
   const { t } = useTranslation();
 
   const handleDocumentReady = useCallback(() => {
@@ -44,8 +46,17 @@ const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
     }
   };
 
+  const isOpenedInNewTab = Boolean(searchParams.get('tab'));
+
+  let className = 'h-[75vh]';
+  if (isFullScreenEditingEnabled) {
+    className = 'h-full';
+  } else if (isOpenedInNewTab) {
+    className = 'h-screen';
+  }
+
   return (
-    <div className={isFullScreenEditingEnabled ? 'relative h-full' : 'relative h-[75vh]'}>
+    <div className={`relative ${className}`}>
       {editorType && validateConfig(editorConfig) ? (
         <DocumentEditor
           key={editorType.key}

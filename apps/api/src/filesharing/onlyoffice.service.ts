@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
@@ -39,21 +39,19 @@ class OnlyofficeService {
     const callbackData = req.body as OnlyOfficeCallbackData;
     const cleanedPath = getPathWithoutWebdav(path);
 
-    try {
-      if (callbackData.status === 2 || callbackData.status === 4) {
-        const file = await FilesystemService.retrieveAndSaveFile(filename, callbackData);
-        if (file) {
-          await uploadFile(username, cleanedPath, file, '');
-          return res.status(HttpStatus.OK).json({ error: 0 });
-        }
-        throw new CustomHttpException(FileSharingErrorMessage.FileNotFound, HttpStatus.NOT_FOUND);
-      } else {
-        return res.status(HttpStatus.OK).json({ error: 0 });
-      }
-    } catch (error) {
-      Logger.error('Error handling OnlyOffice callback', OnlyofficeService.name);
+    if (callbackData.status !== 2 && callbackData.status !== 4) {
+      return res.status(HttpStatus.OK).json({ error: 0 });
+    }
+
+    const file = await FilesystemService.retrieveAndSaveFile(filename, callbackData.url);
+
+    if (!file) {
       return res.status(HttpStatus.NOT_FOUND).json({ error: 1 });
     }
+
+    await uploadFile(username, cleanedPath, file, '');
+
+    return res.status(HttpStatus.OK).json({ error: 0 });
   }
 }
 

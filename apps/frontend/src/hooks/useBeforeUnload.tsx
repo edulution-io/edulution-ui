@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 
-const useBeforeUnload = (message: string, onUnload: (fileToPreview: DirectoryFileDTO | null) => void) => {
+const useBeforeUnload = (message: string, onUnload?: (fileToPreview: DirectoryFileDTO | null) => void) => {
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       const e = event || window.event;
@@ -12,7 +12,9 @@ const useBeforeUnload = (message: string, onUnload: (fileToPreview: DirectoryFil
       return message;
     };
     const handleUnload = () => {
-      onUnload(null);
+      if (onUnload) {
+        onUnload(null);
+      }
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);

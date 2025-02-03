@@ -12,9 +12,13 @@ interface FileViewerProps {
 
 const FileViewer: FC<FileViewerProps> = ({ editMode }) => {
   const { t } = useTranslation();
-  const { currentlyEditingFile, isFullScreenEditingEnabled, setIsFullScreenEditingEnabled, fetchDownloadLinks } =
-    useFileSharingStore();
-  const { isEditorLoading } = useFileSharingStore();
+  const {
+    currentlyEditingFile,
+    isEditorLoading,
+    isFullScreenEditingEnabled,
+    setIsFullScreenEditingEnabled,
+    fetchDownloadLinks,
+  } = useFileSharingStore();
   const [searchParams] = useSearchParams();
 
   useEffect(() => {

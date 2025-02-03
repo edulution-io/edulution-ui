@@ -156,7 +156,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
         });
         setCurrentPosition(position);
       }}
-      className={cn('overflow-hidden rounded-lg rounded-t-none shadow-lg', {
+      className={cn('bg-global overflow-hidden rounded-lg rounded-t-none shadow-lg', {
         'rounded-t-lg border border-slate-500 bg-gray-800': !isMaximized && !isMinimized,
         'rounded-none transition-transform active:transition-none': isMinimized,
       })}

@@ -18,7 +18,7 @@ import NativeAppPage from '@/pages/NativeAppPage/NativeAppPage';
 import UserSettingsMailsPage from '@/pages/UserSettings/Mails/UserSettingsMailsPage';
 import UserSettingsDetailsPage from '@/pages/UserSettings/Details/UserSettingsDetailsPage';
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
-import ONLY_OFFICE_ROUTE from '@libs/filesharing/constants/routes';
+import FILE_PREVIEW_ROUTE from '@libs/filesharing/constants/routes';
 import LanguageSettingsPage from '@/pages/UserSettings/Language/LanguageSettingsPage';
 import FileViewer from '@/pages/FileSharing/previews/FileViewer';
 import UserSettingsMobileAccess from '@/pages/UserSettings/MobileAccess/UserSettingsMobileAccess';
@@ -39,7 +39,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
           <>
             <Route element={<EmptyLayout />}>
               <Route
-                path={ONLY_OFFICE_ROUTE}
+                path={FILE_PREVIEW_ROUTE}
                 element={<FileViewer editMode />}
               />
             </Route>
