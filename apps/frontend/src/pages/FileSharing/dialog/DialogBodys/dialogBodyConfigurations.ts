@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import CreateOrRenameContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/CreateOrRenameContentDialogBody';
 import DeleteContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/DeleteContentDialogBody';
-import UploadContentBody from '@/pages/FileSharing/dialog/DialogBodys/UploadContentBody';
 import MoveContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/MoveContentDialogBody';
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
@@ -20,6 +19,7 @@ import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
 import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
 import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
 import DocumentVendorsType from '@libs/filesharing/types/documentVendorsType';
+import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
