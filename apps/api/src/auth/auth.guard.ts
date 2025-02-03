@@ -13,10 +13,14 @@ import { PUBLIC_ROUTE_KEY } from '../common/decorators/public.decorator';
 class AuthenticationGuard implements CanActivate {
   private token: string;
 
+  private pubKey: string;
+
   constructor(
     private jwtService: JwtService,
     private reflector: Reflector,
-  ) {}
+  ) {
+    this.pubKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
+  }
 
   private static extractTokenFromHeader(request: Request): string {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
@@ -44,10 +48,8 @@ class AuthenticationGuard implements CanActivate {
     }
 
     try {
-      const pubKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
-
       request.user = await this.jwtService.verifyAsync<JWTUser>(this.token, {
-        publicKey: pubKey,
+        publicKey: this.pubKey,
         algorithms: ['RS256'],
       });
       request.token = this.token;

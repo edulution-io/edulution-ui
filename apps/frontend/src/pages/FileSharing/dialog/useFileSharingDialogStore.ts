@@ -7,7 +7,7 @@ import { WebDavActionResult } from '@libs/filesharing/types/fileActionStatus';
 import { t } from 'i18next';
 import { HttpMethods } from '@libs/common/types/http-methods';
 import FileActionType from '@libs/filesharing/types/fileActionType';
-import { AvailableFileTypesType } from '@libs/filesharing/types/availableFileTypesType';
+import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
 import ContentType from '@libs/filesharing/types/contentType';
 import handleFileOrCreateFile from '@/pages/FileSharing/dialog/handleFileAction/handleFileOrCreateFile';
 import handleArrayData from '@/pages/FileSharing/dialog/handleFileAction/handleArrayData';
@@ -24,7 +24,7 @@ interface FileSharingDialogStore {
   userInput: string;
   filesToUpload: File[];
   moveOrCopyItemToPath: DirectoryFileDTO;
-  selectedFileType: AvailableFileTypesType | '';
+  selectedFileType: TAvailableFileTypes | '';
   setMoveOrCopyItemToPath: (item: DirectoryFileDTO) => void;
   setIsLoading: (isLoading: boolean) => void;
   error: AxiosError | null;
@@ -32,7 +32,7 @@ interface FileSharingDialogStore {
   isSubmitButtonInActive: boolean;
   setError: (error: AxiosError) => void;
   reset: () => void;
-  setSelectedFileType: (fileType: AvailableFileTypesType | '') => void;
+  setSelectedFileType: (fileType: TAvailableFileTypes | '') => void;
   handleItemAction: (
     action: FileActionType,
     endpoint: string,

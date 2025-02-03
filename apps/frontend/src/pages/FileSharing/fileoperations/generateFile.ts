@@ -4,7 +4,7 @@ import PptxGenJS from 'pptxgenjs';
 import ExcelJS from 'exceljs';
 import { create } from 'xmlbuilder2';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
-import { AvailableFileTypesType } from '@libs/filesharing/types/availableFileTypesType';
+import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
 import OnlyOfficeDocumentTypes from '@libs/filesharing/constants/OnlyOfficeDocumentTypes';
 import DocumentVendors from '@libs/filesharing/constants/documentVendors';
 import DocumentVendorsType from '@libs/filesharing/types/documentVendorsType';
@@ -13,11 +13,11 @@ import OPEN_DOCUMENT_TEMPLATE_PATH from '@libs/filesharing/constants/openDocumen
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 
-async function generateFile(
-  fileType: AvailableFileTypesType | '',
+const generateFile = async (
+  fileType: TAvailableFileTypes | '',
   basename: string,
   format: DocumentVendorsType,
-): Promise<{ file: File; extension: string }> {
+): Promise<{ file: File; extension: string }> => {
   let file: File;
   let extension: string;
 
@@ -136,6 +136,6 @@ async function generateFile(
   }
 
   return { file, extension };
-}
+};
 
 export default generateFile;
