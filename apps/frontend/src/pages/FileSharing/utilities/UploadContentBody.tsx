@@ -9,37 +9,35 @@ import Progress from '@/components/ui/Progress';
 import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
-import { TooltipProvider } from '@radix-ui/react-tooltip';
-import ActionTooltip from '@/components/shared/ActionTooltip';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 
 const UploadContentBody = () => {
   const { t } = useTranslation();
   const [fileUploadSize, setFileUploadSize] = useState(0);
-  const { filesToUpload: files, setFilesToUpload: setFiles, setSubmitButtonIsInActive } = useFileSharingDialogStore();
+  const { filesToUpload, setFilesToUpload, setSubmitButtonIsInActive } = useFileSharingDialogStore();
 
   const removeFile = (name: string) => {
-    setFiles((prevFiles) => prevFiles.filter((file) => file.name !== name));
+    setFilesToUpload((prevFiles) => prevFiles.filter((file) => file.name !== name));
   };
 
   useEffect(() => {
-    const totalSize = files.reduce((total, file) => total + bytesToMegabytes(file.size), 0);
+    const totalSize = filesToUpload.reduce((total, file) => total + bytesToMegabytes(file.size), 0);
     setFileUploadSize(totalSize);
     if (totalSize > MAX_FILE_UPLOAD_SIZE || totalSize === 0) {
       setSubmitButtonIsInActive(true);
     } else {
       setSubmitButtonIsInActive(false);
     }
-  }, [files]);
+  }, [filesToUpload]);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      setFiles((prevFiles) => {
+      setFilesToUpload((prevFiles) => {
         const newFiles = acceptedFiles.filter((file) => !prevFiles.some((f) => f.name === file.name));
         return [...prevFiles, ...newFiles];
       });
     },
-    [setFiles],
+    [setFilesToUpload],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
@@ -51,9 +49,9 @@ const UploadContentBody = () => {
     <form className="overflow-auto">
       <div {...getRootProps({ className: dropzoneStyle })}>
         <input {...getInputProps()} />
-        {files.length < 5 && fileUploadSize < MAX_FILE_UPLOAD_SIZE ? (
-          <div className="flex flex-col items-center justify-center space-y-2">
-            <p className="font-semibold text-secondary">
+        {filesToUpload.length < 5 && fileUploadSize < MAX_FILE_UPLOAD_SIZE ? (
+          <div className="flex min-h-48 flex-col items-center justify-center space-y-2">
+            <p className="text-center font-semibold text-secondary">
               {isDragActive ? t('filesharingUpload.dropHere') : t('filesharingUpload.dragDropClick')}
             </p>
             <MdOutlineCloudUpload className="h-12 w-12 text-muted" />
@@ -79,10 +77,11 @@ const UploadContentBody = () => {
 
       <ScrollArea className="mt-2 max-h-[50vh] overflow-y-auto overflow-x-hidden rounded-xl border border-gray-600 px-2 scrollbar-thin">
         <ul className="my-3 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {files.map((file) => (
+          {filesToUpload.map((file) => (
             <li
               key={file.name}
-              className="relative overflow-hidden rounded-xl border border-gray-700 p-2 shadow-lg"
+              className="group relative overflow-hidden rounded-xl border border-gray-700 p-2 shadow-lg transition-all duration-200
+                 hover:min-h-[80px] hover:overflow-visible"
             >
               {file.type.startsWith('image/') ? (
                 <img
@@ -101,17 +100,20 @@ const UploadContentBody = () => {
               )}
               <Button
                 onClick={() => removeFile(file.name)}
-                className="absolute right-1 top-1 h-8 rounded-full bg-red-500 bg-opacity-70 p-2"
+                className="absolute right-1 top-1 h-8 rounded-full bg-red-500 bg-opacity-70 p-2 hover:bg-red-600"
               >
-                <HiTrash className="text-text-ciRed h-4 w-4 hover:text-red-700" />
+                <HiTrash className="text-text-ciRed h-4 w-4" />
               </Button>
 
-              <TooltipProvider>
-                <ActionTooltip
-                  tooltipText={file.name}
-                  trigger={<div className="truncate text-center text-xs text-neutral-500 underline">{file.name}</div>}
-                />
-              </TooltipProvider>
+              <div className="flex items-center justify-center">
+                <div
+                  className="truncate text-center text-xs text-neutral-500 underline transition-all duration-200
+                     group-hover:min-w-full group-hover:overflow-visible group-hover:whitespace-normal
+                     group-hover:break-words group-hover:p-1"
+                >
+                  {file.name}
+                </div>
+              </div>
             </li>
           ))}
         </ul>
