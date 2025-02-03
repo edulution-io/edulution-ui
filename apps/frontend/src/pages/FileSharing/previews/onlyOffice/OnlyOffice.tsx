@@ -11,7 +11,7 @@ interface OnlyOfficeProps {
 }
 
 const OnlyOffice: FC<OnlyOfficeProps> = ({ url, filePath, fileName, mode, type }) => {
-  const { documentServerURL, editorType, editorsConfig } = useOnlyOffice({
+  const { documentServerURL, editorType, editorConfig } = useOnlyOffice({
     filePath,
     fileName,
     url,
@@ -20,12 +20,12 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ url, filePath, fileName, mode, type }
   });
 
   return (
-    editorsConfig && (
+    editorConfig && (
       <OnlyOfficeEditor
         documentServerURL={documentServerURL || ''}
         editorType={editorType}
         mode={mode}
-        editorConfig={editorsConfig}
+        editorConfig={editorConfig}
         filePath={filePath}
         fileName={fileName}
       />

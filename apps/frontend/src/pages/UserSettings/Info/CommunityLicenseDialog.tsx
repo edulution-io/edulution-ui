@@ -60,6 +60,7 @@ const CommunityLicenseDialog: React.FC = () => {
 
   return (
     <AdaptiveDialog
+      desktopContentClassName="z-[100]"
       title={t('licensing.communityLicenseDialog.title')}
       isOpen={isOpen}
       handleOpenChange={() => close()}

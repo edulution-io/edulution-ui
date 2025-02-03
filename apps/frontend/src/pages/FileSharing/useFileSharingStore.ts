@@ -36,6 +36,7 @@ type UseFileSharingStore = {
   isEditorLoading: boolean;
   downloadLinkURL: string;
   publicDownloadLink: string | null;
+  setPublicDownloadLink: (publicDownloadLink: string) => void;
   isError: boolean;
   setIsLoading: (isLoading: boolean) => void;
   setCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => void;
@@ -77,6 +78,8 @@ const useFileSharingStore = create<UseFileSharingStore>(
       setCurrentPath: (path: string) => {
         set({ currentPath: path });
       },
+
+      setPublicDownloadLink: (publicDownloadLink) => set({ publicDownloadLink }),
 
       fetchDownloadLinks: async (file: DirectoryFileDTO | null) => {
         try {

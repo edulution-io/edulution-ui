@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
 import findDocumentsEditorType from '@/pages/FileSharing/previews/onlyOffice/utilities/documentsEditorType';
-import callbackBaseUrl from '@/pages/FileSharing/previews/onlyOffice/utilities/callbackBaseUrl';
+import getCallbackBaseUrl from '@/pages/FileSharing/previews/onlyOffice/utilities/callbackBaseUrl';
 import generateOnlyOfficeConfig from '@/pages/FileSharing/previews/onlyOffice/utilities/generateOnlyOfficeConfig';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
@@ -20,8 +20,7 @@ interface UseOnlyOfficeProps {
 }
 
 const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficeProps) => {
-  const [editorsConfig, setEditorsConfig] = useState<OnlyOfficeEditorConfig | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [editorConfig, setEditorConfig] = useState<OnlyOfficeEditorConfig | null>(null);
   const { eduApiToken, user } = useUserStore();
   const { getOnlyOfficeJwtToken } = useFileEditorStore();
 
@@ -34,7 +33,7 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
     ExtendedOptionKeys.ONLY_OFFICE_URL,
   ) as string;
 
-  const callbackUrl = callbackBaseUrl({
+  const callbackUrl = getCallbackBaseUrl({
     fileName,
     filePath,
     token: eduApiToken,
@@ -53,30 +52,16 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
         username: user?.username || '',
       });
       onlyOfficeConfig.token = await getOnlyOfficeJwtToken(onlyOfficeConfig);
-      setEditorsConfig(onlyOfficeConfig);
-      setIsLoading(false);
+      setEditorConfig(onlyOfficeConfig);
     };
 
     void fetchFileUrlAndToken();
-  }, [
-    fileName,
-    filePath,
-    documentServerURL,
-    url,
-    callbackUrl,
-    getOnlyOfficeJwtToken,
-    fileExtension,
-    editorType.key,
-    type,
-    mode,
-    user,
-  ]);
+  }, [fileName, filePath, documentServerURL, url, callbackUrl, fileExtension, editorType.key, type, mode, user]);
 
   return {
     documentServerURL,
     editorType,
-    isLoading,
-    editorsConfig,
+    editorConfig,
   };
 };
 

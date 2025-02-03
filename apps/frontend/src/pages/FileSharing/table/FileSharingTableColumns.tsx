@@ -40,9 +40,10 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
     accessorFn: (row) => row.type + row.filename,
     cell: ({ row }) => {
       const [searchParams, setSearchParams] = useSearchParams();
-      const { setCurrentlyEditingFile, currentlyEditingFile } = useFileSharingStore();
+      const { setCurrentlyEditingFile, currentlyEditingFile, setPublicDownloadLink } = useFileSharingStore();
       const { setShowEditor } = useFileEditorStore();
       const handleFilenameClick = (filenamePath: string) => {
+        setPublicDownloadLink('');
         setShowEditor(false);
         if (row.original.type === ContentType.DIRECTORY) {
           searchParams.set('path', filenamePath);

@@ -1,8 +1,7 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import FileViewerLayout from '@/pages/FileSharing/previews/utilities/FileViewerLayout';
 import FileRenderer from '@/pages/FileSharing/previews/utilities/FileRenderer';
-import useDownloadLinks from '@/pages/FileSharing/hooks/useDownloadLinks';
 import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
@@ -13,10 +12,16 @@ interface FileViewerProps {
 
 const FileViewer: FC<FileViewerProps> = ({ editMode }) => {
   const { t } = useTranslation();
-  const { currentlyEditingFile, isFullScreenEditingEnabled, setIsFullScreenEditingEnabled } = useFileSharingStore();
+  const { currentlyEditingFile, isFullScreenEditingEnabled, setIsFullScreenEditingEnabled, fetchDownloadLinks } =
+    useFileSharingStore();
   const { isEditorLoading } = useFileSharingStore();
   const [searchParams] = useSearchParams();
-  useDownloadLinks(currentlyEditingFile);
+
+  useEffect(() => {
+    if (currentlyEditingFile) {
+      void fetchDownloadLinks(currentlyEditingFile);
+    }
+  }, [currentlyEditingFile, isFullScreenEditingEnabled]);
 
   const isOpenedInNewTab = Boolean(searchParams.get('tab'));
 
