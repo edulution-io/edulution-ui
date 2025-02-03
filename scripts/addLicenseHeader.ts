@@ -14,16 +14,20 @@ const licenseText = `/*
 */
 `;
 
-const targetDirectories = ['apps', 'libs'];
+const targetDirectories = ['apps', 'libs', 'scripts'];
 const excludedPatterns = [/\.config\.ts$/, /\.config\.js$/];
 const fileExtensions = ['.js', '.jsx', '.ts', '.tsx'];
 
+const hasLicenseHeader = (fileContent: string) => {
+  return fileContent.includes('GNU Affero General Public License');
+};
+
 const addLicenseHeader = (filePath: string) => {
   const fileContent = readFileSync(filePath, 'utf8');
-  if (!fileContent.startsWith('/*\n * LICENSE')) {
+  if (!hasLicenseHeader(fileContent)) {
     const newContent = licenseText + '\n' + fileContent;
     writeFileSync(filePath, newContent, 'utf8');
-    console.log(`Lizenzheader hinzugefügt zu: ${filePath}`);
+    console.log(`License header added: ${filePath}`);
   }
 };
 
@@ -31,7 +35,7 @@ const isExcluded = (filePath: string) => {
   return excludedPatterns.some((pattern) => pattern.test(filePath));
 };
 
-const processDirectory = (directory) => {
+const processDirectory = (directory: string) => {
   readdirSync(directory).forEach((file) => {
     const fullPath = join(directory, file);
     if (lstatSync(fullPath).isDirectory()) {
@@ -49,6 +53,6 @@ targetDirectories.forEach((dir) => {
   if (existsSync(fullPath)) {
     processDirectory(fullPath);
   } else {
-    console.warn(`Verzeichnis nicht gefunden: ${fullPath}`);
+    console.warn(`Directory not found: ${fullPath}`);
   }
 });
