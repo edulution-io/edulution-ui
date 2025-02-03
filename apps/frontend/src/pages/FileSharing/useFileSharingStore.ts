@@ -9,7 +9,7 @@ import ContentType from '@libs/filesharing/types/contentType';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
 import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
-import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeExtension';
+import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import getFrontEndUrl from '@libs/common/utils/getFrontEndUrl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 
