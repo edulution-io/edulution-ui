@@ -4,6 +4,7 @@ about: Create a report to help us improve
 title: ''
 labels: ''
 assignees: michidold, TomlDev
+type: Task
 
 ---
 
