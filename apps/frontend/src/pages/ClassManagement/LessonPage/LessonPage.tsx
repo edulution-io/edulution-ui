@@ -18,6 +18,7 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import { FILTER_BAR_ID } from '@libs/classManagement/constants/pageElementIds';
 import { UseFormReturn } from 'react-hook-form';
 import GroupForm from '@libs/groups/types/groupForm';
+import GroupColumn from '@libs/groups/types/groupColumn';
 
 const LessonPage = () => {
   const { userSessions, fetchProject, updateSession, createSession, removeSession, fetchSchoolClass } =
@@ -129,7 +130,7 @@ const LessonPage = () => {
     await updateSession(form);
   };
 
-  const sessionToSave = {
+  const sessionToSave: GroupColumn = {
     name: UserGroups.Sessions,
     translationId: 'mySessions',
     createFunction: createSessionAndNavigate,
@@ -137,7 +138,7 @@ const LessonPage = () => {
     removeFunction: async (id: string) => {
       await removeSession(id);
       setOpenDialogType(null);
-      navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}`);
+      closeSession();
     },
     icon: <FaAddressCard className="h-6 w-6" />,
     groups: userSessions,
