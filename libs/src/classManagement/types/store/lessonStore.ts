@@ -12,8 +12,8 @@ interface LessonState {
   openDialogType: UserGroups | null;
   userGroupToEdit: LmnApiSession | LmnApiProject | LmnApiSchoolClass | null;
   member: UserLmnInfo[];
-  currentGroupType: string | undefined;
-  currentGroupName: string | undefined;
+  groupTypeFromStore: string | undefined;
+  groupNameFromStore: string | undefined;
 }
 
 interface LessonActions {
@@ -30,8 +30,8 @@ interface LessonActions {
   setOpenDialogType: (type: UserGroups | null) => void;
   setUserGroupToEdit: (group: LmnApiSession | LmnApiProject | LmnApiSchoolClass | null) => void;
   setMember: (member: UserLmnInfo[]) => void;
-  setCurrentGroupType: (groupType?: string) => void;
-  setCurrentGroupName: (groupName?: string) => void;
+  setGroupTypeInStore: (groupType?: string) => void;
+  setGroupNameInStore: (groupName?: string) => void;
 }
 
 type LessonStore = LessonState & LessonActions;

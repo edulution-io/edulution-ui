@@ -153,7 +153,7 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
                 hideGroupSearch={type === UserGroups.Sessions}
                 variant="dialog"
               />
-              <div className="h-16 w-16" />
+              <div className="h-24 w-16" />
             </AccordionContent>
           </AccordionItem>
         </AccordionSH>
