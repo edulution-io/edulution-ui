@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import LICENSE_ENDPOINT from '@libs/license/constants/license-endpoints';
@@ -18,13 +18,6 @@ class LicenseController {
   @CacheTTL(DEFAULT_CACHE_TTL_MS)
   async getLicense() {
     return this.licenseService.getLicenseDetails();
-  }
-
-  @Put()
-  @UseGuards(AppConfigGuard)
-  async updateLicense(@Body() body: { licenseKey: string }) {
-    const { licenseKey } = body;
-    return this.licenseService.updateLicense(licenseKey);
   }
 
   @Post()

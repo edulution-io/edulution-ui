@@ -1,8 +1,9 @@
 import { Connection, Model } from 'mongoose';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
-import { HttpStatus, Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cron } from '@nestjs/schedule';
 import { Cache } from 'cache-manager';
 import axios, { AxiosInstance } from 'axios';
 import type LicenseInfoDto from '@libs/license/types/license-info.dto';
@@ -58,6 +59,12 @@ class LicenseService implements OnModuleInit {
     }
   }
 
+  @Cron('*/5 * * * * *')
+  async checkLicenseValidity() {
+    Logger.log('Checking license validity...', LicenseService.name);
+    await this.verifyToken();
+  }
+
   async invalidateCache(key: string): Promise<void> {
     await this.cacheManager.del(key);
   }
@@ -72,14 +79,10 @@ class LicenseService implements OnModuleInit {
     }
   }
 
-  async updateLicense(licenseKey: string) {
+  async updateLicense(isLicenseActive: boolean) {
     try {
-      await this.licenseModel.updateOne<LicenseInfoDto>({}, { $set: { licenseKey, isLicenseActive: true } }).lean();
-
+      await this.licenseModel.updateOne<LicenseInfoDto>({}, { $set: { isLicenseActive } }).lean();
       await this.invalidateCache(`/${EDU_API_ROOT}/${LICENSE_ENDPOINT}`);
-
-      const licenseInfo = await this.getLicenseDetails();
-      return licenseInfo;
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -155,8 +158,23 @@ class LicenseService implements OnModuleInit {
 
       const { token } = license;
 
-      const { data: licenseInfo } = await this.licenseServerApi.post<LicenseInfoDto>('verify', { token });
-      return licenseInfo;
+      const response = await this.licenseServerApi.post<LicenseJwt>(
+        'verify',
+        { token },
+        {
+          validateStatus: (status) => status < 500,
+        },
+      );
+      let isLicenseActive: boolean;
+
+      if (response.status >= 400 && response.status <= 404) {
+        isLicenseActive = false;
+      }
+
+      isLicenseActive = true;
+      Logger.log(isLicenseActive, LicenseService.name);
+
+      await this.updateLicense(isLicenseActive);
     } catch (error) {
       throw new CustomHttpException(
         LicenseErrorMessages.LICENSE_VERIFICATION_FAILED,
