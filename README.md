@@ -15,9 +15,9 @@
     <a href="https://nx.dev/">
         <img src="https://img.shields.io/badge/nx-monorepo-blue" alt="NX Monorepo" />
     </a>
-    <!-- <a href="https://github.com/edulution-io/edulution-ui/tree/master/LICENSE"> 
-        <img src="https://img.shields.io/github/license/edulution-io/edulution-io/edulution-ui?label=License" alt="Badge License" />
-    </a> -->
+    <a href="https://github.com/edulution-io/edulution-ui/tree/master/LICENSE"> 
+        <img src="https://img.shields.io/badge/License-AGPL_v3-blue.svg" alt="Badge License" />
+    </a>
     <a href="https://ask.linuxmuster.net">
         <img src="https://img.shields.io/discourse/users?logo=discourse&logoColor=white&server=https%3A%2F%2Fask.linuxmuster.net" alt="Community Forum"/>
     </a>
