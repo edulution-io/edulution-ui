@@ -6,7 +6,19 @@ export type LicenseDocument = License & Document;
 @Schema({ strict: true })
 export class License {
   @Prop({ default: '' })
+  customerId: string;
+
+  @Prop({ default: '' })
+  hostname: string;
+
+  @Prop({ default: 0 })
+  numberOfUsers: number;
+
+  @Prop({ default: '' })
   licenseKey: string;
+
+  @Prop({ default: '' })
+  token: string;
 
   @Prop({ type: Date, default: new Date() })
   validFromUtc: Date;
