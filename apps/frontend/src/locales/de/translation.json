@@ -159,6 +159,8 @@
     "hostname": "Hostname",
     "port": "Port",
     "encryption": "Verschlüsselung",
+    "rowSelected": "{{selected}} von {{total}} Job ausgewählt",
+    "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
     "importer": {
       "filterPlaceHolderText": "Suche nach E-Mail-Importername",
       "title": "E-Mail-Importer",
@@ -166,8 +168,6 @@
       "interval": "Sync-Intervall",
       "isActive": "Aktiv",
       "syncJobsTable": "Importer Jobs",
-      "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
-      "rowSelected": "{{selected}} von {{total}} Job ausgewählt",
       "mailAddress": "E-Mail-Adresse",
       "noMailConfigured": "Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator."
     }
@@ -179,7 +179,8 @@
   "errors": {
     "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten",
     "automaticLoginFailed": "Automatischer Login fehlgeschlagen",
-    "uploadOrFetchAttachmentFailed": "Fehler beim Hochladen des Anhangs"
+    "uploadOrFetchAttachmentFailed": "Fehler beim Hochladen des Anhangs",
+    "fileGenerationFailed": "Datei konnte nicht generiert werden"
   },
   "conferences": {
     "errors": {
@@ -482,6 +483,10 @@
   "surveys": {
     "rowsSelected": "{{selected}} von {{total}} Umfragen ausgewählt",
     "rowSelected": "{{selected}} von {{total}} Umfrage ausgewählt",
+    "confirmMultiDelete": "Sollen diese Umfragen wirklich gelöscht werden?",
+    "confirmSingleDelete": "Soll die Umfrage wirklich gelöscht werden?",
+    "deleteSurveys": "Lösche {{count}} Umfragen",
+    "deleteSurvey": "Umfrage Löschen",
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
     "view": {
@@ -660,6 +665,10 @@
           "title": "Allgemein",
           "description": ""
         },
+        "fileSharing": {
+          "title": "Allgemeine Einstellungen",
+          "description": ""
+        },
         "docker": {
           "title": "Docker Anwendungen",
           "description": "Um die erweiterten Dienste nutzen zu können hier die benötigten Docker Container gestartet werden."
@@ -797,6 +806,7 @@
     "remember_me": "Merken"
   },
   "common": {
+    "error": "Fehler",
     "errors": {
       "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
@@ -805,6 +815,7 @@
     "sortOrder": "Sortierung",
     "options": "Optionen",
     "checking": "Prüfen",
+    "cancel": "Abbrechen",
     "columns": "Spalten",
     "copy": {
       "success": "Erfolgreich in Zwischenablage kopiert",
@@ -883,9 +894,9 @@
     "kill": "Beenden",
     "install": "Installieren",
     "update": "Update",
-    "cancel": "Abbrechen",
     "progress": "Fortschritt...",
-    "pressInstall": "Drücke Installieren um zu Starten."
+    "pressInstall": "Drücke Installieren um zu Starten.",
+    "disabled": "Deaktiviert"
   },
   "form": {
     "path": "Link",
@@ -926,6 +937,7 @@
     "selectFile": "Wählen Sie bis zu 5 Dateien gleichzeitig",
     "uploadItems": "Hochladen: {{count}} Datei/en",
     "dragDropClick": "Ziehen Sie Dateien hierher oder klicken Sie, um Dateien auszuwählen",
+    "dropHere": "Hier loslassen",
     "filesToUpload": "Dateien zum Hochladen",
     "limitExceeded": "Dateilimit von 5 Dateien erreicht"
   },
@@ -1107,6 +1119,8 @@
     "onlyOfficeUrlTitle": "OnlyOffice-URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Gib hier den OnlyOffice JWT Secret Key an",
+    "overrideDocumentVendorMSWithOOTitle": "OpenDocument als Standard-Dokumentenformat verwenden",
+    "overrideDocumentVendorMSWithOODescription": "Soll anstatt der Microsoft Office Formate (docx, pptx, xlsx) das OpenDocument Format (odt, ods, odp) verwendet werden?",
     "mailImapUrlTitle": "URL",
     "mailImapUrlDescription": "Gib hier den FQDN (z.B. 'imap.example.com') des IMAP-Servers an.",
     "mailImapPortTitle": "Port",

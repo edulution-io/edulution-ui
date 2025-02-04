@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { DocumentEditor } from '@onlyoffice/document-editor-react';
 import React, { FC, useCallback } from 'react';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
@@ -26,11 +38,13 @@ const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
   documentServerURL,
   editorConfig,
 }) => {
-  const { setCurrentlyEditingFile } = useFileSharingStore();
+  const { setCurrentlyEditingFile, isFullScreenEditingEnabled } = useFileSharingStore();
   const { deleteFileAfterEdit } = useFileEditorStore();
   const { t } = useTranslation();
+
   const handleDocumentReady = useCallback(() => {
-    void deleteFileAfterEdit(editorConfig.document.url);
+    // TODO: https://github.com/edulution-io/edulution-ui/issues/411
+    // void deleteFileAfterEdit(editorConfig.document.url);
   }, [mode, fileName, filePath, setCurrentlyEditingFile]);
 
   const validateConfig = (config: OnlyOfficeEditorConfig) =>
@@ -44,7 +58,7 @@ const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
   };
 
   return (
-    <div className={mode === 'view' ? 'relative h-[75vh]' : 'relative h-[95vh]'}>
+    <div className={isFullScreenEditingEnabled ? 'relative h-full' : 'relative h-[75vh]'}>
       {editorType && validateConfig(editorConfig) ? (
         <DocumentEditor
           key={editorType.key}

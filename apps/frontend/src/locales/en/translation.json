@@ -159,6 +159,8 @@
     "hostname": "Hostname",
     "port": "Port",
     "encryption": "Encryption",
+    "rowsSelected": "{{selected}} of {{total}} jobs selected",
+    "rowSelected": "{{selected}} of {{total}} job selected",
     "importer": {
       "filterPlaceHolderText": "Search for importername",
       "title": "Email Importer",
@@ -166,8 +168,6 @@
       "interval": "Sync Interval",
       "isActive": "Active",
       "syncJobsTable": "Importer Jobs",
-      "rowsSelected": "{{selected}} of {{total}} jobs selected",
-      "rowSelected": "{{selected}} of {{total}} job selected",
       "mailAddress": "Email address",
       "noMailConfigured": "Mail app is not active. Please contact your system administrator."
     }
@@ -179,7 +179,8 @@
   "errors": {
     "automaticLoginFailed": "Automatic login failed",
     "unexpectedError": "An unexpected error occurred",
-    "uploadOrFetchAttachmentFailed": "Error uploading or fetching attachment"
+    "uploadOrFetchAttachmentFailed": "Error uploading or fetching attachment",
+    "fileGenerationFailed": "File generation failed"
   },
   "conferences": {
     "errors": {
@@ -481,6 +482,10 @@
   "surveys": {
     "rowsSelected": "{{selected}} of {{total}} surveys selected",
     "rowSelected": "{{selected}} of {{total}} survey selected",
+    "confirmMultiDelete": "Should these surveys really be deleted?",
+    "confirmSingleDelete": "Should this survey really be deleted?",
+    "deleteSurveys": "Delete {{count}} surveys",
+    "deleteSurvey": "Delete survey",
     "title": "SURVEYS",
     "sidebar": "Surveys",
     "view": {
@@ -659,6 +664,10 @@
           "title": "General",
           "description": ""
         },
+        "fileSharing": {
+          "title": "General settings",
+          "description": ""
+        },
         "docker": {
           "title": "Docker Applications",
           "description": "To be able to use the extended services, the required Docker containers must be started here."
@@ -797,6 +806,7 @@
   },
   "edit": "Edit",
   "common": {
+    "error": "Error",
     "errors": {
       "startDateBeforeEndDate": "The start date must be before the end date",
       "dbAccessFailed": "Database access failed",
@@ -805,6 +815,7 @@
     "sortOrder": "Sort order",
     "checking": "Checking",
     "options": "Options",
+    "cancel": "Cancel",
     "columns": "Columns",
     "copy": {
       "success": "Successfully copied to clipboard",
@@ -883,9 +894,9 @@
     "kill": "Kill",
     "install": "Install",
     "update": "Update",
-    "cancel": "Cancel",
     "progress": "Progress...",
-    "pressInstall": "Press Install to start"
+    "pressInstall": "Press Install to start",
+    "disabled": "Disabled"
   },
   "form": {
     "path": "Path",
@@ -925,6 +936,7 @@
     "selectFile": "Select up to 5 files at a time",
     "uploadItems": "Upload: {{count}} items",
     "dragDropClick": "Drag files here or click to select files",
+    "dropHere": "Drop here",
     "filesToUpload": "Files to upload",
     "limitExceeded": "Reached the limit of 5 files"
   },
@@ -1088,6 +1100,8 @@
     "onlyOfficeUrlTitle": "OnlyOffice URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Enter the OnlyOffice JWT Secret",
+    "overrideDocumentVendorMSWithOOTitle": "Use OpenDocument as the standard document format",
+    "overrideDocumentVendorMSWithOODescription": "Should the format used by OpenOffice (odt, ods, odp) be used instead of Microsoft Office (docx, pptx, xlsx) formats?",
     "mailImapUrlTitle": "URL",
     "mailImapUrlDescription": "Enter the FQDN (i.e. 'imap.example.com') of the IMAP-server",
     "mailImapPortTitle": "Port",
