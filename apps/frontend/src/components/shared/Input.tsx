@@ -14,7 +14,7 @@ import React, { useState } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import cn from '@libs/common/utils/className';
 import { Input as SHInput } from '@/components/ui/Input';
-import { EyeLightIcon, EyeLightSlashIcon } from '@/assets/icons';
+import { EyeDarkIcon, EyeDarkSlashIcon, EyeLightIcon, EyeLightSlashIcon } from '@/assets/icons';
 
 export const originInputVariants = cva(['rounded'], {
   variants: {
@@ -66,8 +66,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       }
     };
 
-    const closedIcon = EyeLightIcon;
-    const openedIcon = EyeLightSlashIcon;
+    const closedIcon = variant === 'login' ? EyeDarkIcon : EyeLightIcon;
+    const openedIcon = variant === 'login' ? EyeDarkSlashIcon : EyeLightSlashIcon;
     return (
       <div className="relative">
         <SHInput

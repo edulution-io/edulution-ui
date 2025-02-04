@@ -101,7 +101,7 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
       case 'text':
       default:
         if (groupProperty.disabled) {
-          return <>{watch(groupProperty.name)}</>;
+          return watch(groupProperty.name);
         }
         return <Input {...register(groupProperty.name)} />;
     }

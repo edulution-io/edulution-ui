@@ -13,7 +13,7 @@
 import React, { FC } from 'react';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
-import { LinuxLogo, WindowsLogo } from '@/assets/logos';
+import { LinuxLogo, WindowsLogo } from '@/assets/icons';
 import { Card } from '@/components/shared/Card';
 import VirtualMachineOs from '@libs/desktopdeployment/types/virtual-machines.enum';
 

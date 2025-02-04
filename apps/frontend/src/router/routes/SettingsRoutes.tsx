@@ -10,20 +10,28 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Route } from 'react-router-dom';
-import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
+import CircleLoader from '@/components/ui/CircleLoader';
+
+const AppConfigPage = lazy(() => import('@/pages/Settings/AppConfig/AppConfigPage'));
+
+const getLazyAppConfigPage = () => (
+  <Suspense fallback={<CircleLoader />}>
+    <AppConfigPage />
+  </Suspense>
+);
 
 const getSettingsRoutes = () => [
   <Route
     key={SETTINGS_PATH}
     path={SETTINGS_PATH}
-    element={<AppConfigPage />}
+    element={getLazyAppConfigPage()}
   >
     <Route
       path=":settingLocation"
-      element={<AppConfigPage />}
+      element={getLazyAppConfigPage()}
     />
   </Route>,
 ];
