@@ -10,6 +10,7 @@ import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import useUserStore from '@/store/UserStore/UserStore';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import APPS from '@libs/appconfig/constants/apps';
+import useLanguage from '@/hooks/useLanguage';
 
 interface UseOnlyOfficeProps {
   filePath: string;
@@ -24,6 +25,7 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { eduApiToken, user } = useUserStore();
   const { getOnlyOfficeJwtToken } = useFileEditorStore();
+  const { language } = useLanguage();
 
   const fileExtension = getFileExtension(fileName);
   const editorType = useMemo(() => findDocumentsEditorType(fileExtension), [fileExtension]);
@@ -45,12 +47,13 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
       const onlyOfficeConfig = generateOnlyOfficeConfig({
         fileType: fileExtension,
         type,
-        editorConfigKey: editorType.key,
+        editorType,
         documentTitle: fileName,
         documentUrl: url,
         callbackUrl,
         mode,
         username: user?.username || '',
+        lang: language,
       });
       onlyOfficeConfig.token = await getOnlyOfficeJwtToken(onlyOfficeConfig);
       setEditorsConfig(onlyOfficeConfig);

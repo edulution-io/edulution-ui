@@ -5,12 +5,12 @@ import OnlyOffice from '@/pages/FileSharing/previews/onlyOffice/OnlyOffice';
 import FileContentLoadingIndicator from '@/components/shared/FileContentLoadingIndicator';
 import { t } from 'i18next';
 import isImageExtension from '@libs/filesharing/utils/isImageExtension';
-import isDocumentExtension from '@libs/filesharing/utils/isDocumentExtension';
 import isVideoExtension from '@libs/filesharing/utils/isVideoExtension';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
+import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 
 interface FileRendererProps {
   editMode: boolean;
@@ -23,7 +23,7 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode }) => {
   const { currentlyEditingFile } = useFileSharingStore();
 
   if (!currentlyEditingFile) return null;
-  const fileExtension = getFileExtension(currentlyEditingFile?.filename);
+  const fileExtension = getFileExtension(currentlyEditingFile.filename);
 
   if (isEditorLoading || isError || !fileUrl) {
     return (
@@ -43,8 +43,9 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode }) => {
     );
   }
 
-  if (isDocumentExtension(fileExtension)) {
-    return publicDownloadLink && currentlyEditingFile && (showEditor || editMode) ? (
+  const isDocumentReady = publicDownloadLink && currentlyEditingFile && (showEditor || editMode);
+  if (isOnlyOfficeDocument(currentlyEditingFile.filename)) {
+    return isDocumentReady ? (
       <OnlyOffice
         url={publicDownloadLink}
         fileName={currentlyEditingFile.basename}

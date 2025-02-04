@@ -1,11 +1,9 @@
 import React from 'react';
-import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
-import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
+import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
 
 export interface DropdownOption {
-  extension: string;
   name: string;
-  type: (typeof AVAILABLE_FILE_TYPES)[FileTypeKey];
+  type: TAvailableFileTypes;
   title: string;
   icon: React.ElementType;
   iconColor?: string;

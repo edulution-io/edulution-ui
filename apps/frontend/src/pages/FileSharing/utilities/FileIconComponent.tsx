@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileIcon } from 'react-file-icon';
+import { DefaultExtensionType, defaultStyles, FileIcon } from 'react-file-icon';
 import { getFileCategorie, getFileNameFromPath } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import fileIconColors from '@/theme/fileIconColor';
 
@@ -19,6 +19,7 @@ const FileIconComponent: React.FC<FileIconComponentProps> = ({ filename, size })
         extension={extension}
         type={fileType || 'document'}
         labelColor={labelColor}
+        {...defaultStyles[extension as DefaultExtensionType]}
       />
     </div>
   );

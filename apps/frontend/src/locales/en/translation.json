@@ -179,7 +179,8 @@
   "errors": {
     "automaticLoginFailed": "Automatic login failed",
     "unexpectedError": "An unexpected error occurred",
-    "uploadOrFetchAttachmentFailed": "Error uploading or fetching attachment"
+    "uploadOrFetchAttachmentFailed": "Error uploading or fetching attachment",
+    "fileGenerationFailed": "File generation failed"
   },
   "conferences": {
     "errors": {
@@ -663,6 +664,10 @@
           "title": "General",
           "description": ""
         },
+        "fileSharing": {
+          "title": "General settings",
+          "description": ""
+        },
         "docker": {
           "title": "Docker Applications",
           "description": "To be able to use the extended services, the required Docker containers must be started here."
@@ -927,6 +932,7 @@
     "selectFile": "Select up to 5 files at a time",
     "uploadItems": "Upload: {{count}} items",
     "dragDropClick": "Drag files here or click to select files",
+    "dropHere": "Drop here",
     "filesToUpload": "Files to upload",
     "limitExceeded": "Reached the limit of 5 files"
   },
@@ -1090,6 +1096,8 @@
     "onlyOfficeUrlTitle": "OnlyOffice URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Enter the OnlyOffice JWT Secret",
+    "overrideDocumentVendorMSWithOOTitle": "Use OpenDocument as the standard document format",
+    "overrideDocumentVendorMSWithOODescription": "Should the format used by OpenOffice (odt, ods, odp) be used instead of Microsoft Office (docx, pptx, xlsx) formats?",
     "mailImapUrlTitle": "URL",
     "mailImapUrlDescription": "Enter the FQDN (i.e. 'imap.example.com') of the IMAP-server",
     "mailImapPortTitle": "Port",

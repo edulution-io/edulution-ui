@@ -179,7 +179,8 @@
   "errors": {
     "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten",
     "automaticLoginFailed": "Automatischer Login fehlgeschlagen",
-    "uploadOrFetchAttachmentFailed": "Fehler beim Hochladen des Anhangs"
+    "uploadOrFetchAttachmentFailed": "Fehler beim Hochladen des Anhangs",
+    "fileGenerationFailed": "Datei konnte nicht generiert werden"
   },
   "conferences": {
     "errors": {
@@ -664,6 +665,10 @@
           "title": "Allgemein",
           "description": ""
         },
+        "fileSharing": {
+          "title": "Allgemeine Einstellungen",
+          "description": ""
+        },
         "docker": {
           "title": "Docker Anwendungen",
           "description": "Um die erweiterten Dienste nutzen zu können hier die benötigten Docker Container gestartet werden."
@@ -928,6 +933,7 @@
     "selectFile": "Wählen Sie bis zu 5 Dateien gleichzeitig",
     "uploadItems": "Hochladen: {{count}} Datei/en",
     "dragDropClick": "Ziehen Sie Dateien hierher oder klicken Sie, um Dateien auszuwählen",
+    "dropHere": "Hier loslassen",
     "filesToUpload": "Dateien zum Hochladen",
     "limitExceeded": "Dateilimit von 5 Dateien erreicht"
   },
@@ -1109,6 +1115,8 @@
     "onlyOfficeUrlTitle": "OnlyOffice-URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Gib hier den OnlyOffice JWT Secret Key an",
+    "overrideDocumentVendorMSWithOOTitle": "OpenDocument als Standard-Dokumentenformat verwenden",
+    "overrideDocumentVendorMSWithOODescription": "Soll anstatt der Microsoft Office Formate (docx, pptx, xlsx) das OpenDocument Format (odt, ods, odp) verwendet werden?",
     "mailImapUrlTitle": "URL",
     "mailImapUrlDescription": "Gib hier den FQDN (z.B. 'imap.example.com') des IMAP-Servers an.",
     "mailImapPortTitle": "Port",
