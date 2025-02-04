@@ -5,7 +5,7 @@ import { Button } from '@/components/shared/Button';
 import ShareCollectDialogProps from '@libs/classManagement/types/shareCollectDialogProps';
 
 const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
-  const getDialogBody = () => <div className="text-foreground">{t('classmanagement.CollectFilesDescription')}</div>;
+  const getDialogBody = () => <div className="text-background">{t('classmanagement.CollectFilesDescription')}</div>;
 
   const getFooter = () => (
     <div className="mt-4 flex justify-between space-x-4">

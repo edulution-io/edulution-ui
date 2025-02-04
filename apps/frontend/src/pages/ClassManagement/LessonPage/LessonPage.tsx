@@ -42,7 +42,6 @@ const LessonPage = () => {
   const [isPageLoading, setIsPageLoading] = useState(false);
 
   const [currentSelectedSession, setCurrentSelectedSession] = useState<LmnApiSession | undefined>();
-  console.log(`isAlreadySavedSession ${JSON.stringify(currentSelectedSession, null, 2)}`);
 
   useEffect(() => {
     void getOwnUser();
@@ -78,10 +77,10 @@ const LessonPage = () => {
 
   useEffect(() => {
     const restoreTemporarySession = currentGroupType && currentGroupName && !groupType && !groupName;
-    console.log(`restoreTemporarySession ${JSON.stringify(restoreTemporarySession, null, 2)}`);
+
     const fetchInitialData =
       (groupType && groupType !== currentGroupType) || (groupName && groupName !== currentGroupName);
-    console.log(`fetchInitialData ${JSON.stringify(fetchInitialData, null, 2)}`);
+
     if (restoreTemporarySession) {
       navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}/${currentGroupType}/${currentGroupName}`, { replace: true });
     } else if (fetchInitialData) {
@@ -126,7 +125,6 @@ const LessonPage = () => {
     createFunction: createSessionAndNavigate,
     updateFunction: updateSession,
     removeFunction: async (id: string) => {
-      console.log('remove session');
       await removeSession(id);
       setOpenDialogType(null);
       navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}`);
@@ -157,9 +155,9 @@ const LessonPage = () => {
             <button
               type="button"
               onClick={onSaveSessionsButtonClick}
-              className="flex h-[42px] cursor-pointer items-center rounded-md bg-ciDarkGrey text-ciLightGrey hover:opacity-90"
+              className="flex h-[42px] cursor-pointer items-center rounded-md bg-accent text-secondary hover:opacity-90"
             >
-              <span className="text-nowrap px-4">
+              <span className="text-nowrap px-4 text-background">
                 {t(`classmanagement.${currentSelectedSession ? 'editSession' : 'saveSession'}`)}
               </span>
               <MdSave className="ml-auto inline-block h-8 w-8 pr-2" />
@@ -167,9 +165,9 @@ const LessonPage = () => {
             <button
               type="button"
               onClick={closeSession}
-              className="flex h-[42px] cursor-pointer items-center rounded-md bg-ciDarkGrey text-ciLightGrey hover:opacity-90"
+              className="flex h-[42px] cursor-pointer items-center rounded-md bg-accent text-secondary hover:opacity-90"
             >
-              <span className="text-nowrap pl-4">{t('classmanagement.closeSession')}</span>
+              <span className="text-nowrap pl-4 text-background">{t('classmanagement.closeSession')}</span>
               <MdClose className="ml-auto inline-block h-8 w-8 px-2" />
             </button>
           </div>

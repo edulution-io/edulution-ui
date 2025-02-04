@@ -10,9 +10,12 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileActionType from '@libs/filesharing/types/fileActionType';
-import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
-import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
 import CircleLoader from '@/components/ui/CircleLoader';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import APPS from '@libs/appconfig/constants/apps';
+import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import DocumentVendors from '@libs/filesharing/constants/documentVendors';
 import getFileSharingFormSchema from '../formSchema';
 
 interface CreateContentDialogProps {
@@ -39,6 +42,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     setSubmitButtonIsInActive,
   } = useFileSharingDialogStore();
   const { currentPath, selectedItems } = useFileSharingStore();
+  const { appConfigs } = useAppConfigsStore();
 
   const { Component, schema, titleKey, submitKey, initialValues, endpoint, httpMethod, type, getData } =
     getDialogBodySetup(action);
@@ -51,17 +55,26 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
 
   const clearAllSelectedItems = () => {
     setMoveOrCopyItemToPath({} as DirectoryFileDTO);
-    setSelectedFileType({} as (typeof AVAILABLE_FILE_TYPES)[FileTypeKey]);
+    setSelectedFileType('');
     setFilesToUpload([]);
   };
 
   const onSubmit = async () => {
+    const isOpenDocumentFormatEnabled = !!getExtendedOptionValue(
+      appConfigs,
+      APPS.FILE_SHARING,
+      ExtendedOptionKeys.OVERRIDE_FILE_SHARING_DOCUMENT_VENDOR_MS_WITH_OO,
+    );
+    const documentVendor = isOpenDocumentFormatEnabled ? DocumentVendors.ODF : DocumentVendors.MSO;
+
     const data = await getData(form, currentPath, {
       selectedItems,
       moveOrCopyItemToPath,
       selectedFileType,
       filesToUpload,
+      documentVendor,
     });
+
     if (Array.isArray(data) && data.some((item) => 'file' in item && item.file instanceof File)) {
       const uploadPromises = data.map((item) => {
         if ('file' in item && item.file instanceof File) {
@@ -95,8 +108,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     }
   };
 
-  const title =
-    action === FileActionType.CREATE_FILE ? t(`fileCreateNewContent.${selectedFileType.type}`) : t(titleKey);
+  const title = action === FileActionType.CREATE_FILE ? t(`fileCreateNewContent.${selectedFileType}`) : t(titleKey);
   const handleFormSubmit = form.handleSubmit(onSubmit);
 
   const handleDialogKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -125,7 +137,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       }
       footer={
         error ? (
-          <div className="rounded-xl bg-ciLightRed py-3 text-center text-foreground">{error.message}</div>
+          <div className="rounded-xl bg-ciLightRed py-3 text-center text-background">{error.message}</div>
         ) : (
           <div className="mt-4 flex justify-end">
             <form onSubmit={handleFormSubmit}>

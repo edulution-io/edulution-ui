@@ -2,20 +2,20 @@ import React, { useState } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import cn from '@libs/common/utils/className';
 import { Input as SHInput } from '@/components/ui/Input';
-import { EyeDarkIcon, EyeDarkSlashIcon, EyeLightIcon, EyeLightSlashIcon } from '@/assets/icons';
+import { EyeLightIcon, EyeLightSlashIcon } from '@/assets/icons';
 
 export const originInputVariants = cva(['rounded'], {
   variants: {
     variant: {
-      light:
-        'placeholder:color:ciLightGrey border border-input placeholder:text-p placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-ciGrey focus:outline-none',
-      default:
-        'placeholder:color:ciLightGrey placeholder:text-p border border-input placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-ciGrey focus:outline-none',
       login:
-        'block w-full border-2 border-gray-300 bg-white px-3 py-2 shadow-md placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-ciGrey focus:outline-none',
-      lightGray: 'bg-ciDarkGrey text-ciLightGrey placeholder:text-p focus:outline-none',
-      lightGrayDisabled: 'bg-ciDarkGreyDisabled text-ciLGrey placeholder:text-p focus:outline-none',
+        'block w-full border-2 border-gray-300 bg-background px-3 py-2 shadow-md placeholder:text-p focus:border-gray-600 focus:bg-background focus:placeholder-muted focus:outline-none text-foreground',
+      lightGrayDisabled: 'bg-ciDarkGreyDisabled text-secondary placeholder:text-p focus:outline-none',
+      default: 'bg-accent text-secondary placeholder:text-p focus:outline-none',
+      dialog: 'bg-muted text-foreground placeholder:text-p focus:outline-none text-background',
     },
+  },
+  defaultVariants: {
+    variant: 'default',
   },
 });
 
@@ -54,9 +54,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       }
     };
 
-    const isVariantSchemeDark = variant ? ['lightGray', 'lightGrayDisabled'].includes(variant) : false;
-    const closedIcon = isVariantSchemeDark ? EyeLightIcon : EyeDarkIcon;
-    const openedIcon = isVariantSchemeDark ? EyeLightSlashIcon : EyeDarkSlashIcon;
+    const closedIcon = EyeLightIcon;
+    const openedIcon = EyeLightSlashIcon;
     return (
       <div className="relative">
         <SHInput

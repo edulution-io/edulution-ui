@@ -119,7 +119,6 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
         return (
           <Input
             {...register(groupProperty.name)}
-            variant="light"
             min="0"
             step="1"
             type="number"
@@ -133,7 +132,6 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
         return (
           <Input
             {...register(groupProperty.name)}
-            variant="light"
             placeholder={t(`classmanagement.${groupProperty.name}Placeholder`)}
           />
         );
@@ -141,7 +139,7 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
   };
 
   return (
-    <div className="flex flex-col text-base text-foreground">
+    <div className="flex flex-col text-base text-background">
       <table className="w-full table-fixed">
         <tbody>
           <tr>

@@ -26,11 +26,13 @@ const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
   documentServerURL,
   editorConfig,
 }) => {
-  const { setCurrentlyEditingFile } = useFileSharingStore();
+  const { setCurrentlyEditingFile, isFullScreenEditingEnabled } = useFileSharingStore();
   const { deleteFileAfterEdit } = useFileEditorStore();
   const { t } = useTranslation();
+
   const handleDocumentReady = useCallback(() => {
-    void deleteFileAfterEdit(editorConfig.document.url);
+    // TODO: https://github.com/edulution-io/edulution-ui/issues/411
+    // void deleteFileAfterEdit(editorConfig.document.url);
   }, [mode, fileName, filePath, setCurrentlyEditingFile]);
 
   const validateConfig = (config: OnlyOfficeEditorConfig) =>
@@ -44,7 +46,7 @@ const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
   };
 
   return (
-    <div className={mode === 'view' ? 'relative h-[75vh]' : 'relative h-[95vh]'}>
+    <div className={isFullScreenEditingEnabled ? 'relative h-full' : 'relative h-[75vh]'}>
       {editorType && validateConfig(editorConfig) ? (
         <DocumentEditor
           key={editorType.key}

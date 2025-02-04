@@ -51,7 +51,7 @@ const SetupMfaDialog: React.FC<SetupMfaDialogProps> = ({ isOpen, setIsOpen }) =>
         void handleSetMfaEnabled();
       }}
     >
-      <div className="flex justify-center">
+      <div className="flex justify-center rounded-xl bg-background p-2">
         {qrCodeIsLoading ? (
           <div className="flex h-[200px] w-[200px] items-center justify-center">
             <CircleLoader />

@@ -56,7 +56,7 @@ const PrintPasswordsDialog: React.FC<PrintPasswordsDialogProps> = ({ selectedCla
     }
 
     return (
-      <div className="text-foreground">
+      <div className="text-background">
         <p>{t(`classmanagement.${title}Description`)}:</p>
         <p className="ml-2 mt-2">{selectedClasses.map((m) => m.displayName || m.cn).join(', ')}</p>
         {title === PrintPasswordsFormat.PDF ? (

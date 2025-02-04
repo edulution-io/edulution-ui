@@ -7,8 +7,7 @@ import { WebDavActionResult } from '@libs/filesharing/types/fileActionStatus';
 import { t } from 'i18next';
 import { HttpMethods } from '@libs/common/types/http-methods';
 import FileActionType from '@libs/filesharing/types/fileActionType';
-import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
-import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
+import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
 import ContentType from '@libs/filesharing/types/contentType';
 import handleFileOrCreateFile from '@/pages/FileSharing/dialog/handleFileAction/handleFileOrCreateFile';
 import handleArrayData from '@/pages/FileSharing/dialog/handleFileAction/handleArrayData';
@@ -25,7 +24,7 @@ interface FileSharingDialogStore {
   userInput: string;
   filesToUpload: File[];
   moveOrCopyItemToPath: DirectoryFileDTO;
-  selectedFileType: (typeof AVAILABLE_FILE_TYPES)[FileTypeKey];
+  selectedFileType: TAvailableFileTypes | '';
   setMoveOrCopyItemToPath: (item: DirectoryFileDTO) => void;
   setIsLoading: (isLoading: boolean) => void;
   error: AxiosError | null;
@@ -33,7 +32,7 @@ interface FileSharingDialogStore {
   isSubmitButtonInActive: boolean;
   setError: (error: AxiosError) => void;
   reset: () => void;
-  setSelectedFileType: (fileType: (typeof AVAILABLE_FILE_TYPES)[FileTypeKey]) => void;
+  setSelectedFileType: (fileType: TAvailableFileTypes | '') => void;
   handleItemAction: (
     action: FileActionType,
     endpoint: string,
@@ -55,7 +54,7 @@ const initialState: Partial<FileSharingDialogStore> = {
   error: null,
   userInput: '',
   moveOrCopyItemToPath: {} as DirectoryFileDTO,
-  selectedFileType: {} as (typeof AVAILABLE_FILE_TYPES)[FileTypeKey],
+  selectedFileType: '',
   filesToUpload: [],
   isSubmitButtonInActive: false,
 };

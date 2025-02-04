@@ -40,7 +40,7 @@ const RadioGroupFormField: React.FC<RadioGroupProps> = ({
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className={cn('space-y-3', formClassname)}>
+        <FormItem className={cn('space-y-3 text-background', formClassname)}>
           <h4 className={labelClassname}>{titleTranslationId && t(titleTranslationId)}</h4>
           <FormControl>
             <RadioGroupSH
@@ -53,7 +53,7 @@ const RadioGroupFormField: React.FC<RadioGroupProps> = ({
                   <FormLabel
                     htmlFor={`${name}-${titleTranslationId}-${item.value}`}
                     className={cn(
-                      'flex flex-col items-center space-x-3 space-y-0 text-base',
+                      'flex flex-col items-center space-x-3 space-y-0 text-base text-background',
                       disabled || item.disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
                     )}
                   >

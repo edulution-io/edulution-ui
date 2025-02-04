@@ -14,6 +14,7 @@ interface OnlyOfficeEditorConfig {
   documentType: string;
   token: string;
   editorConfig: {
+    lang: string;
     mode: 'view' | 'edit';
     callbackUrl: string;
     customization: {

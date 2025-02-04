@@ -23,9 +23,9 @@ const LessonConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   const noMembers = member.length < 1;
 
   const getDialogBody = () => {
-    if (noMembers) return <div className="text-foreground">{t('classmanagement.noStudentsForAction')}</div>;
+    if (noMembers) return <div className="text-background">{t('classmanagement.noStudentsForAction')}</div>;
     return (
-      <div className="text-foreground">
+      <div className="text-background">
         <ItemDialogList
           deleteWarningTranslationId={t(`classmanagement.${title}Description`, { count: member.length })}
           items={member.map((i) => ({ name: i.displayName, id: i.cn }))}

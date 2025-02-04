@@ -36,7 +36,7 @@ const DeleteConferencesDialog = ({ trigger }: DeleteConferencesDialogProps) => {
     if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
 
     return (
-      <div className="text-foreground">
+      <div className="text-background">
         {error ? (
           <>
             {t('conferences.error')}: {error.message}

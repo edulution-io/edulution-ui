@@ -1,46 +1,41 @@
+import OnlyOfficeConfig from '@libs/filesharing/types/OnlyOfficeConfig';
+import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
+
 interface OnlyOfficeConfigProps {
   fileType: string;
   type: 'desktop' | 'mobile';
-  editorConfigKey: string;
+  editorType: OnlyOfficeConfig;
   documentTitle: string;
   documentUrl: string;
   callbackUrl: string;
   mode: 'view' | 'edit';
   username: string;
+  lang: string;
 }
-
-const getDocumentType = (editorConfigKey: string): string => {
-  switch (true) {
-    case editorConfigKey.includes('docx'):
-      return 'word';
-    case editorConfigKey.includes('xlsx'):
-      return 'cell';
-    default:
-      return 'slide';
-  }
-};
 
 const generateOnlyOfficeConfig = ({
   fileType,
   type,
-  editorConfigKey,
+  editorType: { documentType, key },
   documentTitle,
   documentUrl,
   callbackUrl,
   mode,
-}: OnlyOfficeConfigProps) => ({
+  lang,
+}: OnlyOfficeConfigProps): OnlyOfficeEditorConfig => ({
   document: {
     fileType,
     type,
-    key: editorConfigKey,
+    key,
     title: documentTitle,
     url: documentUrl,
     height: '100%',
     width: '100%',
   },
-  documentType: getDocumentType(editorConfigKey),
+  documentType,
   token: '',
   editorConfig: {
+    lang,
     callbackUrl,
     mode,
     customization: {

@@ -7,7 +7,7 @@ import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import isValidFile from '@libs/filesharing/utils/isValidFile';
+import isFileValid from '@libs/filesharing/utils/isFileValid';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import APPS from '@libs/appconfig/constants/apps';
@@ -27,12 +27,12 @@ const FileSharingLayout: React.FC<FileSharingLayoutProps> = () => {
     [appConfigs],
   );
 
-  const validFile = useMemo(
-    () => currentlyEditingFile && currentlyEditingFile.type === ContentType.FILE && isValidFile(currentlyEditingFile),
+  const isValidFile = useMemo(
+    () => currentlyEditingFile && currentlyEditingFile.type === ContentType.FILE && isFileValid(currentlyEditingFile),
     [currentlyEditingFile],
   );
 
-  const shouldShowEditor = showEditor && validFile && documentServerURL !== '' && !isMobileView;
+  const shouldShowEditor = showEditor && isValidFile && documentServerURL !== '' && !isMobileView;
 
   useEffect(() => {
     if (currentlyEditingFile) {

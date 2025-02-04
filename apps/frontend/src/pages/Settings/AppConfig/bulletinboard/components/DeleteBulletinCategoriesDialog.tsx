@@ -43,7 +43,7 @@ const DeleteBulletinsCategoriesDialog = ({ trigger }: DeleteBulletinsCategoriesD
     if (isDeleteDialogLoading) return <CircleLoader />;
 
     return (
-      <div className="text-foreground">
+      <div className="text-background">
         {error ? (
           <>
             {t('bulletinboard.error')}: {error.message}

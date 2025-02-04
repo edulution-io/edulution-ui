@@ -95,12 +95,12 @@ const QuickAccess = () => {
 
   return (
     <div className="max-h-[calc(100vh-70px)] overflow-y-auto scrollbar-thin ">
-      <h3 className="mt-2 text-center">{t('quickAccess')}</h3>
+      <h3 className="mt-2 text-center text-background">{t('quickAccess')}</h3>
       <div className="my-4 flex flex-wrap">
         {groupColumns.map((item) => (
           <div
             key={item.name}
-            className="mb-8 w-full px-5 md:w-1/3"
+            className="mb-8 w-full px-5 text-background md:w-1/3"
           >
             <GroupsColumn column={item} />
           </div>

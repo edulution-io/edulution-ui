@@ -43,12 +43,16 @@ const useFileSharingPage = () => {
   }, [path, pathToRestoreSession, homePath, setPathToRestoreSession, fetchFiles]);
 
   useEffect(() => {
-    if (fileOperationResult && !isLoading) {
-      if (fileOperationResult.success) {
-        toast.success(fileOperationResult.message);
-        void fetchFiles(currentPath);
+    const updateFilesAfterSuccess = async () => {
+      if (fileOperationResult && !isLoading) {
+        if (fileOperationResult.success) {
+          await fetchFiles(currentPath);
+          toast.success(fileOperationResult.message);
+        }
       }
-    }
+    };
+
+    void updateFilesAfterSuccess();
   }, [fileOperationResult, isLoading, fetchFiles, currentPath]);
 
   return { isFileProcessing, isLoading, currentPath, searchParams, setSearchParams };
