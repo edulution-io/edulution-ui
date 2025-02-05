@@ -42,7 +42,7 @@ import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailImporterConfig from './mails/MailImporterConfig';
-import appConfigFormSchema from './appConfigSchema';
+import getAppConfigFormSchema from './getAppConfigFormSchema';
 import ProxyConfigForm from './components/ProxyConfigForm';
 import DockerContainerTable from './DockerIntegration/DockerContainerTable';
 
@@ -61,7 +61,7 @@ const AppConfigPage: React.FC = () => {
   const form = useForm<{ [settingLocation: string]: AppConfigDto | string } | ProxyConfigFormType | MailProviderConfig>(
     {
       mode: 'onChange',
-      resolver: zodResolver(appConfigFormSchema(t)),
+      resolver: zodResolver(getAppConfigFormSchema(t)),
     },
   );
 

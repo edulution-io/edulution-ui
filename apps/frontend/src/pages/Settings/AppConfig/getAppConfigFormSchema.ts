@@ -20,7 +20,7 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 const appIntegrationEnum = z.enum(Object.values(APP_INTEGRATION_VARIANT) as [string, ...string[]]);
 const forbiddenRouts = [...Object.values(APPS), 'auth', 'edu-api'];
 
-const appConfigFormSchema = (t: TFunction<'translation', undefined>) =>
+const getAppConfigFormSchema = (t: TFunction<'translation', undefined>) =>
   z.record(
     z.object({
       appType: appIntegrationEnum,
@@ -57,4 +57,4 @@ const appConfigFormSchema = (t: TFunction<'translation', undefined>) =>
     }),
   );
 
-export default appConfigFormSchema;
+export default getAppConfigFormSchema;
