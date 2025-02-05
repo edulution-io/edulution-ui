@@ -32,7 +32,7 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
   const { userConnectionUids, authenticateVeyonClient, getFrameBufferStream } = useVeyonApiStore();
   const [isImagePreviewModalOpen, setIsImagePreviewModalOpen] = useState(false);
 
-  const connectionUid = userConnectionUids.find((conn) => conn.veyonUsername === user.name)?.connectionUid || '';
+  const connectionUid = userConnectionUids.find((conn) => conn.veyonUsername === user.cn)?.connectionUid || '';
 
   useEffect(() => {
     if (user.sophomorixIntrinsic3.length > 0) {
