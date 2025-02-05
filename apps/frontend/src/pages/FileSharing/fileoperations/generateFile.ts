@@ -17,19 +17,20 @@ const generateFile = async (
   fileType: TAvailableFileTypes | '',
   basename: string,
   format: DocumentVendorsType,
-): Promise<{ file: File; extension: string }> => {
+  onlyReturnExtension: boolean = false,
+): Promise<{ file?: File; extension: string }> => {
   let file: File;
   let extension: string;
 
   switch (fileType) {
     case AVAILABLE_FILE_TYPES.documentFile: {
+      extension = format === DocumentVendors.MSO ? OnlyOfficeDocumentTypes.DOCX : OnlyOfficeDocumentTypes.ODT;
+      if (onlyReturnExtension) return { extension };
       if (format === DocumentVendors.MSO) {
-        extension = OnlyOfficeDocumentTypes.DOCX;
         const doc = new Document({ title: basename, description: '', sections: [] });
         const blob = await Packer.toBlob(doc);
         file = new File([blob], `${basename}.${extension}`, { type: blob.type });
       } else {
-        extension = OnlyOfficeDocumentTypes.ODT;
         const response = await axios.get(`${OPEN_DOCUMENT_TEMPLATE_PATH}/odtTemplate.odt`, {
           responseType: 'arraybuffer',
         });
@@ -40,8 +41,9 @@ const generateFile = async (
     }
 
     case AVAILABLE_FILE_TYPES.spreadsheetFile: {
+      extension = format === DocumentVendors.MSO ? OnlyOfficeDocumentTypes.XLSX : OnlyOfficeDocumentTypes.ODS;
+      if (onlyReturnExtension) return { extension };
       if (format === DocumentVendors.MSO) {
-        extension = OnlyOfficeDocumentTypes.XLSX;
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet(basename);
         worksheet.name = basename;
@@ -51,7 +53,6 @@ const generateFile = async (
         });
         file = new File([fileBlob], `${basename}.${extension}`, { type: fileBlob.type });
       } else {
-        extension = OnlyOfficeDocumentTypes.ODS;
         const response = await axios.get(`${OPEN_DOCUMENT_TEMPLATE_PATH}/odsTemplate.ods`, {
           responseType: 'arraybuffer',
         });
@@ -62,8 +63,9 @@ const generateFile = async (
     }
 
     case AVAILABLE_FILE_TYPES.presentationFile: {
+      extension = format === DocumentVendors.MSO ? OnlyOfficeDocumentTypes.PPTX : OnlyOfficeDocumentTypes.ODP;
+      if (onlyReturnExtension) return { extension };
       if (format === DocumentVendors.MSO) {
-        extension = OnlyOfficeDocumentTypes.PPTX;
         const pptx = new PptxGenJS();
         pptx.title = basename;
         const pptxBlob = await pptx.write();
@@ -72,7 +74,6 @@ const generateFile = async (
         });
         file = new File([fileBlob], `${basename}.${extension}`, { type: fileBlob.type });
       } else {
-        extension = OnlyOfficeDocumentTypes.ODP;
         const response = await axios.get(`${OPEN_DOCUMENT_TEMPLATE_PATH}/odpTemplate.odp`, {
           responseType: 'arraybuffer',
         });
@@ -84,6 +85,7 @@ const generateFile = async (
 
     case AVAILABLE_FILE_TYPES.textFile: {
       extension = OnlyOfficeDocumentTypes.TXT;
+      if (onlyReturnExtension) return { extension };
       const textBlob = new Blob([''], { type: RequestResponseContentType.TEXT_PLAIN });
       file = new File([textBlob], `${basename}.${extension}`, { type: textBlob.type });
       break;
@@ -91,6 +93,7 @@ const generateFile = async (
 
     case AVAILABLE_FILE_TYPES.drawIoFile: {
       extension = 'drawio';
+      if (onlyReturnExtension) return { extension };
       const xml = create({ version: '1.0', encoding: 'UTF-8' })
         .ele('mxfile', { host: 'app.diagrams.net' })
         .ele('diagram', { name: basename })
@@ -123,9 +126,7 @@ const generateFile = async (
 
       const encoder = new TextEncoder();
       const uint8Array = encoder.encode(xml);
-      const fileBlob = new Blob([uint8Array], {
-        type: 'application/vnd.jgraph.mxfile',
-      });
+      const fileBlob = new Blob([uint8Array], { type: 'application/vnd.jgraph.mxfile' });
       file = new File([fileBlob], `${basename}.${extension}`, { type: fileBlob.type });
       break;
     }
