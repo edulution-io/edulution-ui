@@ -25,10 +25,12 @@ const getAppConfigFormSchema = (t: TFunction<'translation', undefined>) =>
     z.object({
       appType: appIntegrationEnum,
       accessGroups: z.array(z.object({})).optional(),
-      options: z.object({
-        url: z.string().optional(),
-        apiKey: z.string().optional(),
-      }),
+      options: z
+        .object({
+          url: z.string().optional(),
+          apiKey: z.string().optional(),
+        })
+        .optional(),
       proxyConfig: z.string().optional(),
       proxyPath: z
         .string()
@@ -38,10 +40,10 @@ const getAppConfigFormSchema = (t: TFunction<'translation', undefined>) =>
         .optional(),
       proxyDestination: z
         .string()
-        .optional()
         .refine((value) => !value || z.string().url().safeParse(value).success, {
           message: t('settings.appconfig.sections.veyon.invalidUrlFormat'),
-        }),
+        })
+        .optional(),
       stripPrefix: z.boolean().optional(),
       extendedOptions: z
         .object({
