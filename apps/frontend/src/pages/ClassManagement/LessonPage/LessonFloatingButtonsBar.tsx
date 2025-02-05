@@ -44,7 +44,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
     shareFiles,
     collectFiles,
     member,
-    currentGroupName,
+    groupNameFromStore,
   } = useLessonStore();
   const { fetchUser, user, schoolPrefix } = useLmnApiStore();
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();
@@ -80,7 +80,12 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
       icon: FaArrowRightToBracket,
       text: CLASSMGMT_OPTIONS.COLLECT,
       enableAction: async () => {
-        const collectDTO = buildCollectDTO(students, user, currentGroupName || '', user?.sophomorixIntrinsic2[0] || '');
+        const collectDTO = buildCollectDTO(
+          students,
+          user,
+          groupNameFromStore || '',
+          user?.sophomorixIntrinsic2[0] || '',
+        );
         if (!collectDTO) return;
         await collectFiles(collectDTO, user?.sophomorixRole || '');
       },

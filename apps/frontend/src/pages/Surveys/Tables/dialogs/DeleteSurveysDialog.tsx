@@ -15,10 +15,10 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { Button } from '@/components/shared/Button';
-import DeleteItemDialogList from '@/components/shared/DeleteItemDialogList';
 import CircleLoader from '@/components/ui/CircleLoader';
 import useDeleteSurveyStore from '@/pages/Surveys/Tables/dialogs/useDeleteSurveyStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import ItemDialogList from '@/components/shared/ItemDialogList';
 
 interface DeleteSurveysDialogProps {
   surveys: SurveyDto[];
@@ -54,7 +54,7 @@ const DeleteSurveysDialog = ({ surveys, trigger }: DeleteSurveysDialogProps) => 
             {t('common.error')}: {error.message}
           </>
         ) : (
-          <DeleteItemDialogList
+          <ItemDialogList
             deleteWarningTranslationId={isMultiDelete ? 'surveys.confirmMultiDelete' : 'surveys.confirmSingleDelete'}
             items={selectedSurveys.map((survey) => ({
               // TODO: Issue 388: [REPORT] Survey - rework ids to only use the timestamps in the frontend
