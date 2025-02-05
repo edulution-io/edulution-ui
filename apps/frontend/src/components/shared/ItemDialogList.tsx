@@ -14,7 +14,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 
-const DeleteItemDialogList = ({
+const ItemDialogList = ({
   deleteWarningTranslationId,
   items,
 }: {
@@ -40,4 +40,4 @@ const DeleteItemDialogList = ({
   );
 };
 
-export default DeleteItemDialogList;
+export default ItemDialogList;

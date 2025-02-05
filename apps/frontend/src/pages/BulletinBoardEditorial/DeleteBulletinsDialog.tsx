@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import CircleLoader from '@/components/ui/CircleLoader';
-import DeleteItemDialogList from '@/components/shared/DeleteItemDialogList';
+import ItemDialogList from '@/components/shared/ItemDialogList';
 
 interface DeleteBulletinsDialogProps {
   trigger?: React.ReactNode;
@@ -58,7 +58,7 @@ const DeleteBulletinsDialog = ({ trigger, onSubmit }: DeleteBulletinsDialogProps
             {t('bulletinboard.error')}: {error.message}
           </>
         ) : (
-          <DeleteItemDialogList
+          <ItemDialogList
             deleteWarningTranslationId={
               isMultiDelete ? 'bulletinboard.confirmMultiDelete' : 'bulletinboard.confirmSingleDelete'
             }

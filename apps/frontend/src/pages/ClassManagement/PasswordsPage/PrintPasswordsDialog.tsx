@@ -20,6 +20,7 @@ import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import usePrintPasswordsStore from '@/pages/ClassManagement/PasswordsPage/usePrintPasswordsStore';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import CircleLoader from '@/components/ui/CircleLoader';
+import { Button } from '@/components/shared/Button';
 
 interface PrintPasswordsDialogProps {
   title: PrintPasswordsFormat;
@@ -104,20 +105,20 @@ const PrintPasswordsDialog: React.FC<PrintPasswordsDialogProps> = ({ selectedCla
 
     return (
       <div className="mt-4 flex justify-between space-x-4">
-        <button
-          type="button"
+        <Button
+          variant="btn-attention"
+          size="lg"
           onClick={onClose}
-          className="rounded-md bg-ciLightRed px-4 py-2 text-background hover:bg-ciRed"
         >
           {t('cancel')}
-        </button>
-        <button
-          type="button"
-          className="rounded-md bg-ciLightGreen px-4 py-2 text-background hover:bg-ciGreen"
+        </Button>
+        <Button
+          variant="btn-collaboration"
+          size="lg"
           onClick={handelConfirm}
         >
           {t('downloadFile')}
-        </button>
+        </Button>
       </div>
     );
   };

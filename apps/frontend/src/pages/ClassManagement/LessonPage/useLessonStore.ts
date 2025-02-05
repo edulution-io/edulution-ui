@@ -35,8 +35,8 @@ const initialState = {
   openDialogType: null,
   userGroupToEdit: null,
   member: [],
-  currentGroupType: undefined,
-  currentGroupName: undefined,
+  groupTypeFromStore: undefined,
+  groupNameFromStore: undefined,
 };
 
 type PersistentLessonStore = (
@@ -209,11 +209,11 @@ const useLessonStore = create<LessonStore>(
         }
       },
 
-      setCurrentGroupType(groupType?: string) {
-        set({ currentGroupType: groupType });
+      setGroupTypeInStore(groupType?: string) {
+        set({ groupTypeFromStore: groupType });
       },
-      setCurrentGroupName(groupName?: string) {
-        set({ currentGroupName: groupName });
+      setGroupNameInStore(groupName?: string) {
+        set({ groupNameFromStore: groupName });
       },
 
       reset: () => set({ ...initialState }),
@@ -222,8 +222,8 @@ const useLessonStore = create<LessonStore>(
       name: 'class-management-lesson',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
-        currentGroupName: state.currentGroupName,
-        currentGroupType: state.currentGroupType,
+        groupNameFromStore: state.groupNameFromStore,
+        groupTypeFromStore: state.groupTypeFromStore,
         member: state.member,
       }),
     } as PersistOptions<LessonStore>,
