@@ -81,7 +81,8 @@
       src="./src/main.tsx"
     ></script>
     <script>
-      window.EXCALIDRAW_ASSET_PATH = "/assets/";
+      const isDev = window.location.hostname === "localhost";
+      window.EXCALIDRAW_ASSET_PATH = !isDev ? "/assets/" : undefined;
     </script>
   </body>
 </html>
