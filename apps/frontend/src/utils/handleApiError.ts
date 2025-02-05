@@ -16,6 +16,7 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import CustomAxiosError from '@libs/error/CustomAxiosError';
+import { SHOW_TOASTER_DURATION } from '@libs/ui/constants/durations';
 
 /*
  * Use this function to handle errors in your store functions that do requests to the API.
@@ -37,7 +38,7 @@ const handleApiError = (error: any, set: (params: any) => void, errorName = 'err
 
       setTimeout(() => {
         displayedErrors.delete(errorMessage);
-      }, 5000);
+      }, SHOW_TOASTER_DURATION);
     }
 
     set({ [errorName]: errorMessage });
