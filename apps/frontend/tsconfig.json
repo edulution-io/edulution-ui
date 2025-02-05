@@ -15,5 +15,5 @@
       "path": "./tsconfig.spec.json"
     }
   ],
-  "exclude": ["postcss.config.js", "tailwind.config.ts"]
+  "exclude": ["postcss.config.js", "tailwind.config.ts", "public/*"]
 }
