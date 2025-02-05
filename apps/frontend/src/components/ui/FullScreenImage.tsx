@@ -20,7 +20,7 @@ const FullScreenImage = ({ imageSrc }: { imageSrc: string }) => {
       <img
         src={imageSrc}
         alt={t('preview.image')}
-        className="max-h-screen max-w-full rounded-md"
+        className="max-h-full max-w-full rounded-md"
       />
     </div>
   );

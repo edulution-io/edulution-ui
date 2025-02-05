@@ -10,11 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Connection, Model } from 'mongoose';
-import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { AppConfigDto } from '@libs/appconfig/types';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
@@ -26,6 +26,7 @@ import { AppConfig } from './appconfig.schema';
 import initializeCollection from './initializeCollection';
 import MigrationService from '../migration/migration.service';
 import appConfigMigrationsList from './migrations/appConfigMigrationsList';
+import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
 class AppConfigService implements OnModuleInit {
@@ -103,13 +104,6 @@ class AppConfigService implements OnModuleInit {
     }
   }
 
-  static checkIfFileExistAndDelete(filePath: string) {
-    if (existsSync(filePath)) {
-      unlinkSync(filePath);
-      Logger.log(`${filePath} deleted.`, AppConfigService.name);
-    }
-  }
-
   static writeProxyConfigFile(appConfigDto: AppConfigDto) {
     if (appConfigDto?.options?.proxyConfig) {
       const { proxyConfig } = appConfigDto.options;
@@ -121,7 +115,7 @@ class AppConfigService implements OnModuleInit {
       } else {
         const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appConfigDto?.name}.yml`;
 
-        AppConfigService.checkIfFileExistAndDelete(filePath);
+        FilesystemService.checkIfFileExistAndDelete(filePath);
       }
     }
   }
@@ -186,7 +180,7 @@ class AppConfigService implements OnModuleInit {
     } finally {
       const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${configName}.yml`;
 
-      AppConfigService.checkIfFileExistAndDelete(filePath);
+      FilesystemService.checkIfFileExistAndDelete(filePath);
 
       this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
     }

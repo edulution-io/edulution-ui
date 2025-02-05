@@ -11,7 +11,15 @@
  */
 
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { createWriteStream, existsSync, mkdirSync, promises as fsPromises, readFileSync, writeFileSync } from 'fs';
+import {
+  createWriteStream,
+  existsSync,
+  mkdirSync,
+  promises as fsPromises,
+  readFileSync,
+  writeFileSync,
+  unlinkSync,
+} from 'fs';
 import { dirname, extname, join } from 'path';
 import { createHash } from 'crypto';
 import { pipeline, Readable } from 'stream';
@@ -144,6 +152,13 @@ class FilesystemService {
       } as WebdavStatusReplay;
     } catch (error) {
       throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+    }
+  }
+
+  static checkIfFileExistAndDelete(filePath: string) {
+    if (existsSync(filePath)) {
+      unlinkSync(filePath);
+      Logger.log(`${filePath} deleted.`, FilesystemService.name);
     }
   }
 }
