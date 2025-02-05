@@ -276,6 +276,8 @@
     "loadingDocument": "Dokument wird geladen...",
     "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt",
     "rowSelected": "{{selected}} von {{total}} Datei ausgewählt",
+    "fileWithSameNameAlreadyExists": "Eine Datei mit diesem Namen existiert bereits.",
+    "folderWithSameNameAlreadyExists": "Ein Ordner mit diesem Namen existiert bereits.",
     "errors": {
       "FileNotFound": "Datei nicht gefunden",
       "MountPointsNotFound": "Laufwerke nicht gefunden",
