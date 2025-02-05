@@ -30,6 +30,7 @@ interface GroupForm {
   membergroups: MultipleSelectorGroup[];
   school: string;
   creationDate?: string;
+  proxyAddresses: string;
 }
 
 export default GroupForm;

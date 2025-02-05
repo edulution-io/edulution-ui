@@ -15,7 +15,7 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import { Button } from '@/components/shared/Button';
-import DeleteItemDialogList from '@/components/shared/DeleteItemDialogList';
+import ItemDialogList from '@/components/shared/ItemDialogList';
 import CircleLoader from '@/components/ui/CircleLoader';
 
 interface DeleteConferencesDialogProps {
@@ -54,7 +54,7 @@ const DeleteConferencesDialog = ({ trigger }: DeleteConferencesDialogProps) => {
             {t('conferences.error')}: {error.message}
           </>
         ) : (
-          <DeleteItemDialogList
+          <ItemDialogList
             deleteWarningTranslationId={
               isMultiDelete ? 'conferences.confirmMultiDelete' : 'conferences.confirmSingleDelete'
             }

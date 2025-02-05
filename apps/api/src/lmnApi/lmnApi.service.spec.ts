@@ -449,11 +449,24 @@ describe('LmnApiService', () => {
 
   describe('getProject', () => {
     it('should call getProject endpoint and return data', async () => {
-      const mockResponse = { data: { projectName: 'Project1' } };
+      const mockResponse = {
+        data: {
+          projectName: 'Project1',
+          members: [{ cn: 'member1' }, { cn: 'member2' }],
+          sophomorixMembers: ['member1'],
+        },
+      };
+
       mockedAxios.get.mockResolvedValue(mockResponse);
 
       const result = await service.getProject(mockToken, 'projectName');
-      expect(result).toEqual(mockResponse.data);
+
+      const expectedResult = {
+        ...mockResponse.data,
+        members: [{ cn: 'member1' }],
+      };
+
+      expect(result).toEqual(expectedResult);
     });
 
     it('should throw CustomHttpException on failure', async () => {
@@ -536,7 +549,7 @@ describe('LmnApiService', () => {
         `${PROJECTS_LMN_API_ENDPOINT}/p_testproject`,
         expect.objectContaining({
           admins: formValuesMock.admins,
-          members: [...formValuesMock.members, 'username'],
+          members: [...formValuesMock.members],
           displayName: formValuesMock.displayName,
         }),
         expect.any(Object),
