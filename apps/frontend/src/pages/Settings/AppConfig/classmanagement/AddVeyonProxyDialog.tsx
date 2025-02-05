@@ -58,7 +58,7 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
     defaultValues: initialFormValues,
   });
 
-  const { reset } = form;
+  const { reset, getValues, formState } = form;
 
   useEffect(() => {
     reset(initialFormValues);
@@ -70,8 +70,11 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
     reset();
   };
 
-  const handleFormSubmit = async (data: VeyonProxyItem) => {
-    const { subnet, proxyAdress } = data;
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const { subnet, proxyAdress } = getValues();
 
     let newConfig: VeyonProxyItem[];
     if (selectedConfig) {
@@ -95,7 +98,6 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
 
     if (selectedConfig) {
       const newConfig = veyonProxyConfig.filter((item) => item.veyonProxyId !== selectedConfig.veyonProxyId);
-
       await patchSingleFieldInConfig(APPS.CLASS_MANAGEMENT, {
         field: 'extendedOptions',
         value: newConfig.length !== 0 ? { [ExtendedOptionKeys.VEYON_PROXYS]: newConfig } : {},
@@ -107,7 +109,7 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
 
   const getFooter = () => (
     <form
-      onSubmit={form.handleSubmit(handleFormSubmit)}
+      onSubmit={handleFormSubmit}
       className="space-y-4"
     >
       <div className="mt-4 flex justify-end space-x-2">
@@ -123,6 +125,7 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
           variant="btn-collaboration"
           size="lg"
           type="submit"
+          disabled={!formState.isValid}
         >
           {t('common.save')}
         </Button>
