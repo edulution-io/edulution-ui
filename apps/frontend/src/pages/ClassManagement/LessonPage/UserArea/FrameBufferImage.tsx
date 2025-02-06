@@ -38,7 +38,7 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
     if (user.sophomorixIntrinsic3.length > 0) {
       const connIp = user.sophomorixIntrinsic3[0];
 
-      void authenticateVeyonClient(connIp, user.name);
+      void authenticateVeyonClient(connIp, user.cn);
     }
   }, [user]);
 
@@ -116,7 +116,7 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
 
     return (
       <Avatar
-        user={{ username: user.name, firstName: user.givenName, lastName: user.sn }}
+        user={{ username: user.cn, firstName: user.givenName, lastName: user.sn }}
         imageSrc={user.thumbnailPhoto}
         className={user.thumbnailPhoto && 'h-24 w-24 p-2'}
       />
