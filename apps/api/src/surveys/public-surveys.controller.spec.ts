@@ -128,7 +128,7 @@ describe(PublicSurveysController.name, () => {
       });
 
       expect(surveyAnswerService.addAnswer).toHaveBeenCalledWith(
-        idOfPublicSurvey02,
+        idOfPublicSurvey02.toString(),
         saveNoPublicSurvey02,
         mockedValidAnswerForPublicSurveys02,
       );

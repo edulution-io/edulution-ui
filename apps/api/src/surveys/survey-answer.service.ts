@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-/* eslint-disable no-underscore-dangle */
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable } from '@nestjs/common';
@@ -248,7 +247,7 @@ class SurveyAnswersService {
     const updateSurvey = await this.surveyModel.findByIdAndUpdate<Survey>(surveyId, {
       participatedAttendees:
         attendee && !isPublic ? [...survey.participatedAttendees, attendee] : survey.participatedAttendees,
-      answers: [...survey.answers, newSurveyAnswer._id],
+      answers: [...survey.answers, new Types.ObjectId(String(newSurveyAnswer.id))],
     });
     if (updateSurvey == null) {
       throw new CustomHttpException(UserErrorMessages.UpdateError, HttpStatus.INTERNAL_SERVER_ERROR);
