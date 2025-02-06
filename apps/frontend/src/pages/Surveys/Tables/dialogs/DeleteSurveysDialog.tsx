@@ -32,8 +32,7 @@ const DeleteSurveysDialog = ({ surveys, trigger }: DeleteSurveysDialogProps) => 
   const { t } = useTranslation();
 
   const selectedSurveyIds = Object.keys(selectedRows);
-  // TODO: Issue 388: [REPORT] Survey - rework ids to only use the timestamps in the frontend
-  const selectedSurveys = surveys?.filter((survey) => selectedSurveyIds.includes(survey.id.toString('base64')));
+  const selectedSurveys = surveys?.filter((survey) => selectedSurveyIds.includes(survey.id!));
 
   const isMultiDelete = selectedSurveyIds.length > 1;
 
@@ -57,9 +56,8 @@ const DeleteSurveysDialog = ({ surveys, trigger }: DeleteSurveysDialogProps) => 
           <ItemDialogList
             deleteWarningTranslationId={isMultiDelete ? 'surveys.confirmMultiDelete' : 'surveys.confirmSingleDelete'}
             items={selectedSurveys.map((survey) => ({
-              // TODO: Issue 388: [REPORT] Survey - rework ids to only use the timestamps in the frontend
               name: `${survey.formula.title}`,
-              id: survey.id.toString('base64'),
+              id: survey.id!,
             }))}
           />
         )}

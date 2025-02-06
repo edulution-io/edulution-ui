@@ -56,7 +56,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
     return (
       <ScrollArea>
         <ParticipateSurvey
-          surveyId={selectedSurvey.id}
+          surveyId={selectedSurvey.id!}
           saveNo={selectedSurvey.saveNo}
           formula={selectedSurvey.formula}
           answer={answer}

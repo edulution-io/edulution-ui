@@ -58,7 +58,7 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>((set) => ({
       if (resultingSurvey && survey.isPublic) {
         set({
           isOpenSharePublicSurveyDialog: true,
-          publicSurveyId: resultingSurvey.id.toString(),
+          publicSurveyId: resultingSurvey.id,
         });
       } else {
         set({ isOpenSharePublicSurveyDialog: false, publicSurveyId: undefined });

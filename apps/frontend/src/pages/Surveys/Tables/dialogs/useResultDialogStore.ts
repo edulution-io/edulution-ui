@@ -30,8 +30,7 @@ const useResultDialogStore = create<ResultDialogStore>((set) => ({
   getSurveyResult: async (surveyId: string): Promise<void> => {
     set({ isLoading: true });
     try {
-      // TODO: Issue 388: [REPORT] Survey - rework ids to only use the timestamps in the frontend
-      const response = await eduApi.get<JSON[]>(`${SURVEY_RESULT_ENDPOINT}/${surveyId.toString()}`);
+      const response = await eduApi.get<JSON[]>(`${SURVEY_RESULT_ENDPOINT}/${surveyId}`);
       const result = response.data;
       set({ result });
     } catch (error) {
