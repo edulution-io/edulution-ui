@@ -19,7 +19,6 @@ import sortDate from '@libs/common/utils/sortDate';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import sortSurveyByTitle from '@libs/survey/utils/sortSurveyByTitle';
 import sortSurveyByInvitesAndParticipation from '@libs/survey/utils/sortSurveyByInvitesAndParticipation';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { ButtonSH } from '@/components/ui/ButtonSH';
@@ -39,17 +38,13 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     meta: {
       translationId: 'common.title',
     },
-    cell: ({ row }) => {
-      const { onClickSurveysTableCell } = useSurveyTablesPageStore();
-      return (
+    cell: ({ row }) => (
         <SelectableTextCell
           row={row}
           text={row.original.formula.title || i18next.t('common.not-available')}
-          onClick={() => onClickSurveysTableCell(row)}
           className="h-full w-full"
         />
-      );
-    },
+      ),
     sortingFn: (rowA, rowB) => sortSurveyByTitle(rowA.original, rowB.original),
   },
   {
@@ -60,11 +55,10 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       translationId: 'survey.creationDate',
     },
     cell: ({ row }) => {
-      const { onClickSurveysTableCell } = useSurveyTablesPageStore();
       const localDateFormat = getLocaleDateFormat();
       return (
         <ButtonSH
-          onClick={() => onClickSurveysTableCell(row)}
+          onClick={() => row.toggleSelected()}
           className="h-full w-full"
         >
           <span className="overflow-hidden text-ellipsis font-medium">
@@ -85,11 +79,10 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       translationId: 'survey.expirationDate',
     },
     cell: ({ row }) => {
-      const { onClickSurveysTableCell } = useSurveyTablesPageStore();
       const localDateFormat = getLocaleDateFormat();
       return (
         <ButtonSH
-          onClick={() => onClickSurveysTableCell(row)}
+          onClick={() => row.toggleSelected()}
           className="h-full w-full"
         >
           <span className="overflow-hidden text-ellipsis font-medium">
@@ -164,17 +157,14 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     meta: {
       translationId: 'common.answers',
     },
-    cell: ({ row }) => {
-      const { onClickSurveysTableCell } = useSurveyTablesPageStore();
-      return (
+    cell: ({ row }) => (
         <ButtonSH
-          onClick={() => onClickSurveysTableCell(row)}
+          onClick={() => row.toggleSelected()}
           className="hidden h-full w-full lg:flex"
         >
           <span className="flex justify-center font-medium">{row.original?.answers.length || 0}</span>
         </ButtonSH>
-      );
-    },
+      ),
     sortingFn: (rowA, rowB) => sortSurveyByInvitesAndParticipation(rowA.original, rowB.original),
   },
 ];

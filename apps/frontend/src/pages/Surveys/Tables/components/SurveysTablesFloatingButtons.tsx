@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineUpSquare } from 'react-icons/ai';
@@ -45,30 +45,36 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
   } = props;
   const {
     selectedSurvey,
-    isNoSurveySelected,
-    isExactlyOneSurveySelected,
+    selectSurvey,
     updateUsersSurveys,
     selectedRows,
     hasAnswers,
+    canParticipateSelectedSurvey,
+    hasAnswersSelectedSurvey,
+    answeredSurveys,
+    openSurveys,
+    createdSurveys,
   } = useSurveyTablesPageStore();
   const { user } = useUserStore();
-
   const { setIsOpenPublicResultsTableDialog, setIsOpenPublicResultsVisualisationDialog } = useResultDialogStore();
-
   const { setIsOpenSubmittedAnswersDialog } = useSubmittedAnswersDialogStore();
-
   const { setIsDeleteSurveysDialogOpen } = useDeleteSurveyStore();
-
   const { t } = useTranslation();
-
   const navigate = useNavigate();
 
-  const noSurveyIsSelected = isNoSurveySelected();
-  if (noSurveyIsSelected) {
+  const selectedSurveysIds = Object.keys(selectedRows);
+  const selectedSurveysCount = selectedSurveysIds.length;
+
+  useEffect(() => {
+    const survey = [...answeredSurveys, ...openSurveys, ...createdSurveys].find((s) => s.id === selectedSurveysIds[0]);
+    selectSurvey(survey);
+    void canParticipateSelectedSurvey(survey?.id);
+    void hasAnswersSelectedSurvey(survey?.id);
+  }, [selectedRows]);
+
+  if (!selectedSurveysCount) {
     return null;
   }
-
-  const isSingleSurveySelected = isExactlyOneSurveySelected();
 
   const handleDeleteSurvey = () => {
     if (Object.keys(selectedRows).length > 0) {
@@ -77,21 +83,23 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
     }
   };
 
-  const shouldShowResults = isSingleSurveySelected && canShowResults && hasAnswers;
+  const isOnlyOneSurveySelected = selectedSurveysCount === 1;
+
+  const shouldShowResults = isOnlyOneSurveySelected && canShowResults && hasAnswers;
   const hasCurrentUserAnsweredSurvey = selectedSurvey?.participatedAttendees.some((a) => a.username === user?.username);
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
       EditButton(() => {
-        navigate(`/${EDIT_SURVEY_PAGE}/${selectedSurvey?.id?.toString()}`);
-      }, isSingleSurveySelected && canEdit),
+        navigate(`/${EDIT_SURVEY_PAGE}/${selectedSurvey?.id}`);
+      }, isOnlyOneSurveySelected && canEdit),
 
       DeleteButton(handleDeleteSurvey, canDelete),
       {
         icon: HiOutlineArrowDownOnSquare,
         text: t('surveys.actions.showSubmittedAnswers'),
         onClick: () => setIsOpenSubmittedAnswersDialog(true),
-        isVisible: isSingleSurveySelected && canShowSubmittedAnswers && hasCurrentUserAnsweredSurvey,
+        isVisible: isOnlyOneSurveySelected && canShowSubmittedAnswers && hasCurrentUserAnsweredSurvey,
       },
       {
         icon: HiOutlineArrowDownOnSquareStack,
@@ -109,9 +117,9 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
         icon: AiOutlineUpSquare,
         text: t('common.participate'),
         onClick: () => {
-          navigate(`/${PARTICIPATE_SURVEY_PAGE}/${selectedSurvey?.id?.toString()}`);
+          navigate(`/${PARTICIPATE_SURVEY_PAGE}/${selectedSurvey?.id}`);
         },
-        isVisible: isSingleSurveySelected && canParticipate,
+        isVisible: isOnlyOneSurveySelected && canParticipate,
       },
     ],
     keyPrefix: 'surveys-page-floating-button_',

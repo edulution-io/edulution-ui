@@ -11,7 +11,7 @@
  */
 
 import { create } from 'zustand';
-import { Row, RowSelectionState } from '@tanstack/react-table';
+import { RowSelectionState } from '@tanstack/react-table';
 import {
   PUBLIC_SURVEYS,
   SURVEY_CAN_PARTICIPATE_ENDPOINT,
@@ -54,10 +54,6 @@ interface SurveysTablesPageStore {
 
   selectedRows: RowSelectionState;
   setSelectedRows: (rows: RowSelectionState) => void;
-
-  isNoSurveySelected: () => boolean;
-  isExactlyOneSurveySelected: () => boolean;
-  onClickSurveysTableCell: (row: Row<SurveyDto>) => void;
 
   reset: () => void;
 }
@@ -195,20 +191,6 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
   },
 
   setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
-
-  isNoSurveySelected: (): boolean => Object.entries(get().selectedRows).length === 0,
-  isExactlyOneSurveySelected: (): boolean => Object.entries(get().selectedRows).length === 1,
-  onClickSurveysTableCell: (row: Row<SurveyDto>) => {
-    if (get().isNoSurveySelected()) {
-      const { canParticipateSelectedSurvey, hasAnswersSelectedSurvey } = get();
-      set({ selectedSurvey: row.original });
-      void canParticipateSelectedSurvey(row.original.id!.toString());
-      void hasAnswersSelectedSurvey(row.original.id!.toString());
-    } else {
-      set({ selectedSurvey: undefined, canParticipate: false, hasAnswers: false });
-    }
-    row.toggleSelected();
-  },
 }));
 
 export default useSurveyTablesPageStore;

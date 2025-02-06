@@ -46,7 +46,7 @@ const SurveyTable = <TData extends SurveyDto, TValue>({
       onRowSelectionChange={handleRowSelectionChange}
       selectedRows={selectedRows}
       isLoading={isLoading}
-      getRowId={(originalRow: TData) => originalRow.id!.toString()}
+      getRowId={(originalRow: TData) => originalRow.id!}
       applicationName={APPS.SURVEYS}
       scrollContainerOffsetElementIds={{
         tableHeaderId: SURVEYS_PAGE_TABLE_HEADER_ID,
