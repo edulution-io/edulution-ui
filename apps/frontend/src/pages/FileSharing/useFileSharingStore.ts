@@ -24,6 +24,7 @@ import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePat
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import getFrontEndUrl from '@libs/common/utils/getFrontEndUrl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import delay from '@libs/common/utils/delay';
 
 type UseFileSharingStore = {
   files: DirectoryFileDTO[];
@@ -52,6 +53,7 @@ type UseFileSharingStore = {
   isError: boolean;
   setIsLoading: (isLoading: boolean) => void;
   setCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => void;
+  resetCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => Promise<void>;
   setMountPoints: (mountPoints: DirectoryFileDTO[]) => void;
   downloadFile: (filePath: string) => Promise<string | undefined>;
   getDownloadLinkURL: (filePath: string, filename: string) => Promise<string | undefined>;
@@ -118,12 +120,13 @@ const useFileSharingStore = create<UseFileSharingStore>(
       },
 
       setCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => {
-        const { currentlyEditingFile } = get();
-        if (currentlyEditingFile?.etag !== fileToPreview?.etag) {
-          set({ currentlyEditingFile: fileToPreview });
-        } else {
-          set({ currentlyEditingFile });
-        }
+        set({ currentlyEditingFile: fileToPreview });
+      },
+
+      resetCurrentlyEditingFile: async (fileToPreview: DirectoryFileDTO | null) => {
+        set({ currentlyEditingFile: null });
+        await delay(1);
+        set({ currentlyEditingFile: fileToPreview });
       },
 
       setPathToRestoreSession: (path: string) => {
