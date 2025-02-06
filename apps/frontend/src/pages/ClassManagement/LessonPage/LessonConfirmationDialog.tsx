@@ -16,6 +16,7 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { Button } from '@/components/shared/Button';
 import type UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import type ClassmanagementButtonConfigProps from '@libs/classManagement/types/classmanagementButtonConfigProps';
+import ItemDialogList from '@/components/shared/ItemDialogList';
 
 type ConfirmationDialogProps = ClassmanagementButtonConfigProps & {
   member: UserLmnInfo[];
@@ -37,8 +38,10 @@ const LessonConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
     if (noMembers) return <div className="text-background">{t('classmanagement.noStudentsForAction')}</div>;
     return (
       <div className="text-background">
-        <p className="mb-3">{t(`classmanagement.${title}Description`, { count: member.length })}:</p>
-        <p className="p-2">{member.map((m) => m.displayName).join(', ')}</p>
+        <ItemDialogList
+          deleteWarningTranslationId={t(`classmanagement.${title}Description`, { count: member.length })}
+          items={member.map((i) => ({ name: i.displayName, id: i.cn }))}
+        />
       </div>
     );
   };
@@ -47,12 +50,14 @@ const LessonConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
     <div className="mt-4 flex justify-between space-x-4">
       <Button
         variant="btn-attention"
+        size="lg"
         onClick={disableAction}
       >
         {t(disableText || 'classmanagement.deactivate')}
       </Button>
       <Button
-        variant="btn-infrastructure"
+        variant="btn-collaboration"
+        size="lg"
         onClick={enableAction}
       >
         {t(enableText || 'classmanagement.activate')}

@@ -10,27 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
+const EmailRegexPattern =
+  /^([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,},)*[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-interface GroupForm {
-  id: string;
-  name: string;
-  displayName: string;
-  description: string;
-  quota: string;
-  mailquota: string;
-  maillist: boolean;
-  mailalias: boolean;
-  join: boolean;
-  hide: boolean;
-  admins: MultipleSelectorOptionSH[];
-  admingroups: MultipleSelectorGroup[];
-  members: MultipleSelectorOptionSH[];
-  membergroups: MultipleSelectorGroup[];
-  school: string;
-  creationDate?: string;
-  proxyAddresses: string;
-}
-
-export default GroupForm;
+export default EmailRegexPattern;

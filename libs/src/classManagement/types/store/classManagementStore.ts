@@ -29,9 +29,13 @@ interface ClassManagementState {
   isLoading: boolean;
   isRoomLoading: boolean;
   isPrinterLoading: boolean;
+  arePrintersLoading: boolean;
   isSessionLoading: boolean;
+  areSessionsLoading: boolean;
   isProjectLoading: boolean;
+  areProjectsLoading: boolean;
   isSchoolClassLoading: boolean;
+  areSchoolClassesLoading: boolean;
   userProjects: LmnApiProject[];
   userSchoolClasses: LmnApiSchoolClass[];
   searchGroupsError: Error | null;

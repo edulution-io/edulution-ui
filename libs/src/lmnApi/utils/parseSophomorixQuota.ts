@@ -10,17 +10,31 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import GroupForm from '@libs/groups/types/groupForm';
 import LmnApiProjectQuota from '@libs/lmnApi/types/lmnApiProjectQuota';
 
-interface MinimizedGroupForm
-  extends Omit<GroupForm, 'quota' | 'proxyAddresses' | 'members' | 'admins' | 'admingroups' | 'membergroups'> {
-  members: string[];
-  membergroups: string[];
-  admins: string[];
-  admingroups: string[];
-  proxyAddresses: string[];
-  quota: LmnApiProjectQuota[];
-}
+/**
+ * Input example: [
+ *     "agy:500:---:",
+ *     "brs:---:---:",
+ *     "linuxmuster-global:300:---:"
+ *   ]
+ */
+const parseSophomorixQuota = (quotaString?: string[]): string => {
+  if (!quotaString?.length || (quotaString.length === 1 && quotaString[0] === '---')) return '[]';
 
-export default MinimizedGroupForm;
+  const result = quotaString
+    .map((entry) => {
+      const [share, quotaStr, comment] = entry.split(':');
+      const quota = quotaStr !== '---' ? parseInt(quotaStr, 10) : undefined;
+
+      if (quota !== undefined) {
+        return comment ? { share, quota, comment } : { share, quota };
+      }
+      return null;
+    })
+    .filter(Boolean) as LmnApiProjectQuota[];
+
+  return JSON.stringify(result);
+};
+
+export default parseSophomorixQuota;

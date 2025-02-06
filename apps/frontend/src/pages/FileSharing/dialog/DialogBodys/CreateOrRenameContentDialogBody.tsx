@@ -16,9 +16,18 @@ import FormField from '@/components/shared/FormField';
 import { FilesharingDialogProps } from '@libs/filesharing/types/filesharingDialogProps';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import ContentType from '@libs/filesharing/types/contentType';
+import { useTranslation } from 'react-i18next';
+import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
+import generateFile from '@/pages/FileSharing/fileoperations/generateFile';
+import getDocumentVendor from '@libs/filesharing/utils/getDocumentVendor';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 
 const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ form, isRenaming }) => {
-  const { selectedItems } = useFileSharingStore();
+  const { selectedItems, files } = useFileSharingStore();
+  const { selectedFileType, setSubmitButtonIsInActive } = useFileSharingDialogStore();
+  const { appConfigs } = useAppConfigsStore();
+  const documentVendor = getDocumentVendor(appConfigs);
+  const { t } = useTranslation();
   const filename = form.watch('filename');
   const extension = form.watch('extension');
 
@@ -42,6 +51,26 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
 
   const showExtensionInput =
     isRenaming && extension && selectedItems.length === 1 && selectedItems[0].type === ContentType.FILE;
+
+  const [filenameAlreadyExists, setFilenameAlreadyExists] = React.useState(false);
+
+  useEffect(() => {
+    const checkIfFilenameAlreadyExists = async () => {
+      let alreadyExists: boolean;
+
+      if (selectedFileType) {
+        const generatedFilename = await generateFile(selectedFileType, filename, documentVendor, true);
+        alreadyExists = files.some((file) => file.basename === `${filename}.${generatedFilename.extension}`);
+      } else {
+        alreadyExists = files.some((file) => file.basename === filename + (extension || ''));
+      }
+
+      setFilenameAlreadyExists(alreadyExists);
+      setSubmitButtonIsInActive(alreadyExists);
+    };
+
+    void checkIfFilenameAlreadyExists();
+  }, [files, selectedFileType, filename, documentVendor, extension]);
 
   return (
     <Form {...form}>
@@ -73,6 +102,9 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
             </div>
           )}
         </div>
+        {filenameAlreadyExists && (
+          <div>{t(`filesharing.${selectedFileType || extension ? 'file' : 'folder'}WithSameNameAlreadyExists`)}</div>
+        )}
       </form>
     </Form>
   );

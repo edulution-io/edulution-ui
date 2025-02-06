@@ -71,7 +71,7 @@ const UserArea = () => {
     useElementHeight(
       [FLOATING_BUTTONS_BAR_ID, LESSON_SESSION_HEADER_ID, FILTER_BAR_ID, FOOTER_ID],
       selectedMemberCount,
-    ) + 10;
+    ) + 30;
 
   return (
     <>
