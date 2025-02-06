@@ -585,7 +585,8 @@
       "GuacamoleNotResponding": "RDP-Dienst nicht verfügbar.",
       "GuacamoleUserNotFound": "Nutzername oder Passwort konnte nicht gefunden.",
       "LmnVdiApiNotResponding": "Linuxmuster VDI-Dienst antwortet nicht.",
-      "SessionNotFound": "Session nicht gefunden."
+      "SessionNotFound": "Session nicht gefunden.",
+      "AppNotProperlyConfigured": "Guacamole ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator."
     }
   },
   "wlan": {

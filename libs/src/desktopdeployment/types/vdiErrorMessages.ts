@@ -15,6 +15,7 @@ enum VdiErrorMessages {
   GuacamoleUserNotFound = 'desktopdeployment.errors.GuacamoleUserNotFound',
   LmnVdiApiNotResponding = 'desktopdeployment.errors.LmnVdiApiNotResponding',
   SessionNotFound = 'desktopdeployment.errors.SessionNotFound',
+  AppNotProperlyConfigured = 'desktopdeployment.errors.AppNotProperlyConfigured',
 }
 
 export default VdiErrorMessages;

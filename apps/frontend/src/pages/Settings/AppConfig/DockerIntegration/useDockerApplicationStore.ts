@@ -12,7 +12,7 @@
 
 import { create } from 'zustand';
 import axios from 'axios';
-import { parse } from 'yaml';
+import { parse, type YAMLMap } from 'yaml';
 import eduApi from '@/api/eduApi';
 import { type ContainerInfo, type ContainerCreateOptions } from 'dockerode';
 import { type RowSelectionState } from '@tanstack/react-table';
@@ -35,6 +35,7 @@ const initialValues = {
   eventSource: null,
   selectedRows: {},
   dockerContainerConfig: null,
+  traefikConfig: null,
 };
 
 const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) => ({
@@ -59,11 +60,13 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
         set({ isLoading: true, error: null });
         const containerName = DOCKER_APPLICATIONS[applicationName] || '';
         const dockerContainerConfig = await get().getDockerContainerConfig(applicationName, containerName);
+        await get().getTraefikConfig(applicationName, containerName);
         const applicationNames = Object.keys(dockerContainerConfig.services);
         const containers = await get().getContainers(applicationNames);
 
         set({ tableContentData: containers });
       }
+      set({ traefikConfig: null });
     }
   },
 
@@ -142,6 +145,37 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
     } catch (error) {
       handleApiError(error, set);
       return { services: {} };
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  getTraefikConfig: async (applicationName: TApps, containerName: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await axios.get<string>(
+        `${EDU_PLUGINS_GITHUB_URL}/${applicationName}/${containerName}/${applicationName}.yml`,
+        {
+          headers: {
+            Accept: RequestResponseContentType.APPLICATION_GITHUB_RAW,
+          },
+          validateStatus: (status) => status === 200 || status === 404,
+        },
+      );
+
+      if (response.status === 404) {
+        set({ traefikConfig: null });
+        return null;
+      }
+
+      const traefikConfig = parse(response.data) as YAMLMap;
+      set({ traefikConfig });
+      return traefikConfig;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status !== 404) {
+        handleApiError(error, set);
+      }
+      return null;
     } finally {
       set({ isLoading: false });
     }
