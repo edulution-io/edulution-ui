@@ -1,4 +1,17 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
@@ -38,12 +51,14 @@ class OnlyofficeService {
   ) {
     const callbackData = req.body as OnlyOfficeCallbackData;
     const cleanedPath = getPathWithoutWebdav(path);
+    const uniqueFileName = `${uuidv4()}-${filename}`;
 
     try {
       if (callbackData.status === 2 || callbackData.status === 4) {
-        const file = await FilesystemService.retrieveAndSaveFile(filename, callbackData);
+        const file = await FilesystemService.retrieveAndSaveFile(uniqueFileName, callbackData);
         if (file) {
           await uploadFile(username, cleanedPath, file, '');
+          await FilesystemService.deleteFile(uniqueFileName);
           return res.status(HttpStatus.OK).json({ error: 0 });
         }
         throw new CustomHttpException(FileSharingErrorMessage.FileNotFound, HttpStatus.NOT_FOUND);

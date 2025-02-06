@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { HttpStatus, Injectable } from '@nestjs/common';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import {
@@ -75,6 +87,7 @@ class LmnApiService {
       throw new CustomHttpException(
         LmnApiErrorMessage.PrintPasswordsFailed,
         HttpStatus.BAD_GATEWAY,
+        undefined,
         LmnApiService.name,
       );
     }
@@ -93,7 +106,12 @@ class LmnApiService {
       );
       return response.data;
     } catch (error) {
-      throw new CustomHttpException(LmnApiErrorMessage.StartExamModeFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
+      throw new CustomHttpException(
+        LmnApiErrorMessage.StartExamModeFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
     }
   }
 
@@ -115,7 +133,12 @@ class LmnApiService {
       );
       return response.data;
     } catch (error) {
-      throw new CustomHttpException(LmnApiErrorMessage.StopExamModeFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
+      throw new CustomHttpException(
+        LmnApiErrorMessage.StopExamModeFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
     }
   }
 
@@ -132,6 +155,7 @@ class LmnApiService {
       throw new CustomHttpException(
         LmnApiErrorMessage.RemoveManagementGroupFailed,
         HttpStatus.BAD_GATEWAY,
+        undefined,
         LmnApiService.name,
       );
     }
@@ -153,6 +177,7 @@ class LmnApiService {
       throw new CustomHttpException(
         LmnApiErrorMessage.AddManagementGroupFailed,
         HttpStatus.BAD_GATEWAY,
+        undefined,
         LmnApiService.name,
       );
     }
@@ -170,6 +195,7 @@ class LmnApiService {
       throw new CustomHttpException(
         LmnApiErrorMessage.GetUserSchoolClassFailed,
         HttpStatus.BAD_GATEWAY,
+        undefined,
         LmnApiService.name,
       );
     }
@@ -190,6 +216,7 @@ class LmnApiService {
       throw new CustomHttpException(
         LmnApiErrorMessage.GetUserSchoolClassesFailed,
         HttpStatus.BAD_GATEWAY,
+        undefined,
         LmnApiService.name,
       );
     }
@@ -215,6 +242,7 @@ class LmnApiService {
       throw new CustomHttpException(
         LmnApiErrorMessage.ToggleSchoolClassJoinedFailed,
         HttpStatus.BAD_GATEWAY,
+        undefined,
         LmnApiService.name,
       );
     }
@@ -232,6 +260,7 @@ class LmnApiService {
       throw new CustomHttpException(
         LmnApiErrorMessage.GetUserSessionsFailed,
         HttpStatus.BAD_GATEWAY,
+        undefined,
         LmnApiService.name,
       );
     }
@@ -251,6 +280,7 @@ class LmnApiService {
       throw new CustomHttpException(
         LmnApiErrorMessage.AddUserSessionsFailed,
         HttpStatus.BAD_GATEWAY,
+        undefined,
         LmnApiService.name,
       );
     }
@@ -272,6 +302,7 @@ class LmnApiService {
       throw new CustomHttpException(
         LmnApiErrorMessage.UpdateUserSessionsFailed,
         HttpStatus.BAD_GATEWAY,
+        undefined,
         LmnApiService.name,
       );
     }
@@ -289,6 +320,7 @@ class LmnApiService {
       throw new CustomHttpException(
         LmnApiErrorMessage.RemoveUserSessionsFailed,
         HttpStatus.BAD_GATEWAY,
+        undefined,
         LmnApiService.name,
       );
     }
@@ -306,6 +338,7 @@ class LmnApiService {
       throw new CustomHttpException(
         LmnApiErrorMessage.GetUserSessionsFailed,
         HttpStatus.BAD_GATEWAY,
+        undefined,
         LmnApiService.name,
       );
     }
@@ -321,7 +354,12 @@ class LmnApiService {
       );
       return response.data;
     } catch (error) {
-      throw new CustomHttpException(LmnApiErrorMessage.GetUserFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
+      throw new CustomHttpException(
+        LmnApiErrorMessage.GetUserFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
     }
   }
 
@@ -340,7 +378,12 @@ class LmnApiService {
       );
       return await this.getUser(lmnApiToken, username);
     } catch (error) {
-      throw new CustomHttpException(LmnApiErrorMessage.UpdateUserFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
+      throw new CustomHttpException(
+        LmnApiErrorMessage.UpdateUserFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
     }
   }
 
@@ -353,7 +396,12 @@ class LmnApiService {
       );
       return response.data;
     } catch (error) {
-      throw new CustomHttpException(LmnApiErrorMessage.GetUsersQuotaFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
+      throw new CustomHttpException(
+        LmnApiErrorMessage.GetUsersQuotaFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
     }
   }
 
@@ -369,6 +417,7 @@ class LmnApiService {
       throw new CustomHttpException(
         LmnApiErrorMessage.GetCurrentUserRoomFailed,
         HttpStatus.BAD_GATEWAY,
+        undefined,
         LmnApiService.name,
       );
     }
@@ -386,21 +435,27 @@ class LmnApiService {
       throw new CustomHttpException(
         LmnApiErrorMessage.SearchUsersOrGroupsFailed,
         HttpStatus.BAD_GATEWAY,
+        undefined,
         LmnApiService.name,
       );
     }
   }
 
   private static getProjectFromForm = (formValues: GroupForm, username: string) => ({
-    admins: Array.from(new Set([...formValues.admins])),
+    admins: formValues.admins,
     displayName: formValues.displayName,
     admingroups: formValues.admingroups,
     description: formValues.description,
     join: formValues.join,
     hide: formValues.hide,
-    members: Array.from(new Set([...formValues.members, username])),
+    members: formValues.members.filter((m) => m.value !== username),
     membergroups: formValues.membergroups,
     school: formValues.school || DEFAULT_SCHOOL,
+    mailalias: formValues.mailalias,
+    maillist: formValues.maillist,
+    mailquota: formValues.mailquota,
+    proxyAddresses: formValues.proxyAddresses,
+    quota: formValues.quota,
   });
 
   public async getUserProjects(lmnApiToken: string): Promise<LmnApiProject[]> {
@@ -415,6 +470,7 @@ class LmnApiService {
       throw new CustomHttpException(
         LmnApiErrorMessage.GetUserProjectsFailed,
         HttpStatus.BAD_GATEWAY,
+        undefined,
         LmnApiService.name,
       );
     }
@@ -427,9 +483,15 @@ class LmnApiService {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
-      return response.data;
+      const members = response.data.members.filter((member) => response.data.sophomorixMembers.includes(member.cn));
+      return { ...response.data, members };
     } catch (error) {
-      throw new CustomHttpException(LmnApiErrorMessage.GetProjectFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
+      throw new CustomHttpException(
+        LmnApiErrorMessage.GetProjectFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
     }
   }
 
@@ -443,14 +505,18 @@ class LmnApiService {
       );
       return response.data;
     } catch (error) {
-      throw new CustomHttpException(LmnApiErrorMessage.CreateProjectFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
+      throw new CustomHttpException(
+        LmnApiErrorMessage.CreateProjectFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
     }
   }
 
   public async updateProject(lmnApiToken: string, formValues: GroupForm, username: string): Promise<LmnApiProject> {
     try {
       const data = LmnApiService.getProjectFromForm(formValues, username);
-
       const response = await this.enqueue<LmnApiProject>(() =>
         this.lmnApi.patch<LmnApiProject>(`${PROJECTS_LMN_API_ENDPOINT}/${formValues.name}`, data, {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
@@ -458,7 +524,12 @@ class LmnApiService {
       );
       return response.data;
     } catch (error) {
-      throw new CustomHttpException(LmnApiErrorMessage.UpdateProjectFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
+      throw new CustomHttpException(
+        LmnApiErrorMessage.UpdateProjectFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
     }
   }
 
@@ -471,7 +542,12 @@ class LmnApiService {
       );
       return response.data;
     } catch (error) {
-      throw new CustomHttpException(LmnApiErrorMessage.RemoveProjectFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
+      throw new CustomHttpException(
+        LmnApiErrorMessage.RemoveProjectFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
     }
   }
 
@@ -490,6 +566,7 @@ class LmnApiService {
       throw new CustomHttpException(
         LmnApiErrorMessage.ToggleProjectJoinedFailed,
         HttpStatus.BAD_GATEWAY,
+        undefined,
         LmnApiService.name,
       );
     }
@@ -510,6 +587,7 @@ class LmnApiService {
       throw new CustomHttpException(
         LmnApiErrorMessage.TogglePrinterJoinedFailed,
         HttpStatus.BAD_GATEWAY,
+        undefined,
         LmnApiService.name,
       );
     }
@@ -524,7 +602,12 @@ class LmnApiService {
       );
       return response.data;
     } catch (error) {
-      throw new CustomHttpException(LmnApiErrorMessage.GetPrintersFailed, HttpStatus.BAD_GATEWAY, LmnApiService.name);
+      throw new CustomHttpException(
+        LmnApiErrorMessage.GetPrintersFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
     }
   }
 
@@ -535,12 +618,17 @@ class LmnApiService {
     newPasswordEncoded: string,
     bypassSecurityCheck: boolean = false,
   ): Promise<null> {
-    const oldPassword = atob(oldPasswordEncoded);
     if (!bypassSecurityCheck) {
+      const oldPassword = atob(oldPasswordEncoded);
       const currentPassword = await this.userService.getPassword(username);
 
       if (oldPassword !== currentPassword) {
-        throw new CustomHttpException(LmnApiErrorMessage.PasswordMismatch, HttpStatus.UNAUTHORIZED, LmnApiService.name);
+        throw new CustomHttpException(
+          LmnApiErrorMessage.PasswordMismatch,
+          HttpStatus.UNAUTHORIZED,
+          undefined,
+          LmnApiService.name,
+        );
       }
     }
 
@@ -563,6 +651,7 @@ class LmnApiService {
       throw new CustomHttpException(
         LmnApiErrorMessage.PasswordChangeFailed,
         HttpStatus.BAD_GATEWAY,
+        undefined,
         LmnApiService.name,
       );
     }
@@ -588,6 +677,7 @@ class LmnApiService {
       throw new CustomHttpException(
         LmnApiErrorMessage.PasswordChangeFailed,
         HttpStatus.BAD_GATEWAY,
+        undefined,
         LmnApiService.name,
       );
     }

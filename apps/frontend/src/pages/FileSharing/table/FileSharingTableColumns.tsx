@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { MdFolder } from 'react-icons/md';
@@ -40,19 +52,17 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
     accessorFn: (row) => row.type + row.filename,
     cell: ({ row }) => {
       const [searchParams, setSearchParams] = useSearchParams();
-      const { setCurrentlyEditingFile, currentlyEditingFile } = useFileSharingStore();
+      const { setCurrentlyEditingFile, resetCurrentlyEditingFile, setPublicDownloadLink } = useFileSharingStore();
       const { setShowEditor } = useFileEditorStore();
-      const handleFilenameClick = (filenamePath: string) => {
+      const handleFilenameClick = async () => {
         setShowEditor(false);
+        setPublicDownloadLink('');
         if (row.original.type === ContentType.DIRECTORY) {
-          searchParams.set('path', filenamePath);
-          setSearchParams(searchParams);
-          setShowEditor(false);
           setCurrentlyEditingFile(null);
-        } else if (currentlyEditingFile?.filename !== row.original.filename) {
-          setCurrentlyEditingFile(row.original);
+          searchParams.set('path', getPathWithoutWebdav(row.original.filename));
+          setSearchParams(searchParams);
         } else {
-          setShowEditor(true);
+          await resetCurrentlyEditingFile(row.original);
         }
       };
       const renderFileIcon = (item: DirectoryFileDTO) => {
@@ -73,7 +83,7 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
             icon={renderFileIcon(row.original)}
             row={row}
             text={row.original.basename}
-            onClick={() => handleFilenameClick(getPathWithoutWebdav(row.original.filename))}
+            onClick={handleFilenameClick}
           />
         </div>
       );

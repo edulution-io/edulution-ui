@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useState } from 'react';
 import { t } from 'i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
@@ -8,6 +20,7 @@ import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import usePrintPasswordsStore from '@/pages/ClassManagement/PasswordsPage/usePrintPasswordsStore';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import CircleLoader from '@/components/ui/CircleLoader';
+import { Button } from '@/components/shared/Button';
 
 interface PrintPasswordsDialogProps {
   title: PrintPasswordsFormat;
@@ -92,20 +105,20 @@ const PrintPasswordsDialog: React.FC<PrintPasswordsDialogProps> = ({ selectedCla
 
     return (
       <div className="mt-4 flex justify-between space-x-4">
-        <button
-          type="button"
+        <Button
+          variant="btn-attention"
+          size="lg"
           onClick={onClose}
-          className="rounded-md bg-ciLightRed px-4 py-2 text-background hover:bg-ciRed"
         >
           {t('cancel')}
-        </button>
-        <button
-          type="button"
-          className="rounded-md bg-ciLightGreen px-4 py-2 text-background hover:bg-ciGreen"
+        </Button>
+        <Button
+          variant="btn-collaboration"
+          size="lg"
           onClick={handelConfirm}
         >
           {t('downloadFile')}
-        </button>
+        </Button>
       </div>
     );
   };

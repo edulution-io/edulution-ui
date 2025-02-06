@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import ClassManagementStore from '@libs/classManagement/types/store/classManagementStore';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
@@ -26,9 +38,13 @@ const initialState = {
   isLoading: false,
   isRoomLoading: false,
   isSessionLoading: false,
+  areSessionsLoading: false,
   isProjectLoading: false,
+  areProjectsLoading: false,
   isPrinterLoading: false,
+  arePrintersLoading: false,
   isSchoolClassLoading: false,
+  areSchoolClassesLoading: false,
   userSchoolClasses: [],
   userProjects: [],
   userSessions: [],
@@ -47,10 +63,12 @@ type PersistentClassManagementStore = (
 
 const useClassManagementStore = create<ClassManagementStore>(
   (persist as PersistentClassManagementStore)(
-    (set) => ({
+    (set, get) => ({
       ...initialState,
 
       fetchProject: async (projectName: string) => {
+        if (get().isProjectLoading) return null;
+
         set({ isProjectLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
@@ -125,8 +143,9 @@ const useClassManagementStore = create<ClassManagementStore>(
       },
 
       fetchUserProjects: async () => {
+        if (get().areProjectsLoading) return;
         try {
-          set({ isLoading: true, error: null });
+          set({ areProjectsLoading: true, error: null });
           const { lmnApiToken } = useLmnApiStore.getState();
           const response = await eduApi.get<LmnApiProject[]>(PROJECT, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
@@ -136,11 +155,12 @@ const useClassManagementStore = create<ClassManagementStore>(
         } catch (error) {
           handleApiError(error, set);
         } finally {
-          set({ isLoading: false });
+          set({ areProjectsLoading: false });
         }
       },
 
       fetchUserSession: async (sessionSid: string) => {
+        if (get().isSessionLoading) return null;
         set({ isSessionLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
@@ -216,8 +236,9 @@ const useClassManagementStore = create<ClassManagementStore>(
       },
 
       fetchUserSessions: async () => {
+        if (get().areSessionsLoading) return;
         try {
-          set({ isLoading: true, error: null });
+          set({ areSessionsLoading: true, error: null });
           const { lmnApiToken } = useLmnApiStore.getState();
           const response = await eduApi.get<LmnApiSession[]>(USER_SESSIONS, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
@@ -227,11 +248,12 @@ const useClassManagementStore = create<ClassManagementStore>(
         } catch (error) {
           handleApiError(error, set);
         } finally {
-          set({ isLoading: false });
+          set({ areSessionsLoading: false });
         }
       },
 
       fetchSchoolClass: async (schoolClassName: string) => {
+        if (get().isSchoolClassLoading) return null;
         set({ isSchoolClassLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
@@ -249,8 +271,9 @@ const useClassManagementStore = create<ClassManagementStore>(
       },
 
       fetchUserSchoolClasses: async () => {
+        if (get().areSchoolClassesLoading) return;
         try {
-          set({ isLoading: true, error: null });
+          set({ areSchoolClassesLoading: true, error: null });
           const { lmnApiToken } = useLmnApiStore.getState();
           const response = await eduApi.get<LmnApiSchoolClass[]>(SCHOOL_CLASSES, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
@@ -260,11 +283,12 @@ const useClassManagementStore = create<ClassManagementStore>(
         } catch (error) {
           handleApiError(error, set);
         } finally {
-          set({ isLoading: false });
+          set({ areSchoolClassesLoading: false });
         }
       },
 
       fetchRoom: async () => {
+        if (get().isRoomLoading) return;
         try {
           set({ isRoomLoading: true, error: null });
           const { lmnApiToken } = useLmnApiStore.getState();
@@ -281,8 +305,9 @@ const useClassManagementStore = create<ClassManagementStore>(
       },
 
       fetchPrinters: async () => {
+        if (get().arePrintersLoading) return;
         try {
-          set({ isPrinterLoading: true, error: null });
+          set({ arePrintersLoading: true, error: null });
           const { lmnApiToken } = useLmnApiStore.getState();
           const response = await eduApi.get<LmnApiPrinter[]>(PRINTERS, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
@@ -292,11 +317,12 @@ const useClassManagementStore = create<ClassManagementStore>(
         } catch (error) {
           handleApiError(error, set);
         } finally {
-          set({ isPrinterLoading: false });
+          set({ arePrintersLoading: false });
         }
       },
 
       fetchPrinter: async (printer: string) => {
+        if (get().isPrinterLoading) return null;
         try {
           set({ isPrinterLoading: true, error: null });
           const { lmnApiToken } = useLmnApiStore.getState();

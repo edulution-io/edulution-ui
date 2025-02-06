@@ -159,6 +159,8 @@
     "hostname": "Hostname",
     "port": "Port",
     "encryption": "Encryption",
+    "rowsSelected": "{{selected}} of {{total}} jobs selected",
+    "rowSelected": "{{selected}} of {{total}} job selected",
     "importer": {
       "filterPlaceHolderText": "Search for importername",
       "title": "Email Importer",
@@ -166,8 +168,6 @@
       "interval": "Sync Interval",
       "isActive": "Active",
       "syncJobsTable": "Importer Jobs",
-      "rowsSelected": "{{selected}} of {{total}} jobs selected",
-      "rowSelected": "{{selected}} of {{total}} job selected",
       "mailAddress": "Email address",
       "noMailConfigured": "Mail app is not active. Please contact your system administrator."
     }
@@ -179,7 +179,8 @@
   "errors": {
     "automaticLoginFailed": "Automatic login failed",
     "unexpectedError": "An unexpected error occurred",
-    "uploadOrFetchAttachmentFailed": "Error uploading or fetching attachment"
+    "uploadOrFetchAttachmentFailed": "Error uploading or fetching attachment",
+    "fileGenerationFailed": "File generation failed"
   },
   "conferences": {
     "errors": {
@@ -276,6 +277,8 @@
     "closeEditor": "Close editor",
     "rowsSelected": "{{selected}} of {{total}} files selected",
     "rowSelected": "{{selected}} of {{total}} file selected",
+    "fileWithSameNameAlreadyExists": "A file with the same name already exists.",
+    "folderWithSameNameAlreadyExists": "A folder with the same name already exists.",
     "errors": {
       "FileNotFound": "File not found",
       "MountPointsNotFound": "Mount points not found",
@@ -329,6 +332,15 @@
   "classmanagement": {
     "title": "CLASS ROOM",
     "sidebar": "Class Room",
+    "invalidProxyAddresses": "Proxy Email-Addresses must be written comma separated without spaces",
+    "invalidQuota": "The quota must be specified according to the documentation",
+    "invalidMailQuota": "The mail quota must be specified as a number in MB",
+    "mailQuota": "Mail Quota (MB)",
+    "proxyAddresses": "Proxy Email-Adresses",
+    "descriptionPlaceholder": "Short description of the project",
+    "proxyAddressesPlaceholder": "info@email1.de,kontakt@email2.com",
+    "quotaPlaceholder": "[{\"share\":\"default-school\",\"quota\":50}]",
+    "quota": "Quota (MB)",
     "detailsprinters": "Details of printer",
     "classes": "Classes",
     "name": "Name",
@@ -415,6 +427,7 @@
     "printOneItemPerPage": "Print one password per page",
     "selectSavedSession": "Select from saved sessions",
     "saveSession": "Save session",
+    "editSession": "Edit session",
     "myRoom": "My room",
     "sharedMailBox": "Shared mailbox",
     "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes.",
@@ -672,6 +685,10 @@
           "title": "General",
           "description": ""
         },
+        "fileSharing": {
+          "title": "General settings",
+          "description": ""
+        },
         "docker": {
           "title": "Docker Applications",
           "description": "To be able to use the extended services, the required Docker containers must be started here."
@@ -898,7 +915,8 @@
     "install": "Install",
     "update": "Update",
     "progress": "Progress...",
-    "pressInstall": "Press Install to start"
+    "pressInstall": "Press Install to start",
+    "disabled": "Disabled"
   },
   "form": {
     "path": "Path",
@@ -936,6 +954,7 @@
     "selectFile": "Select up to 5 files at a time",
     "uploadItems": "Upload: {{count}} items",
     "dragDropClick": "Drag files here or click to select files",
+    "dropHere": "Drop here",
     "filesToUpload": "Files to upload",
     "limitExceeded": "Reached the limit of 5 files"
   },
@@ -1099,6 +1118,8 @@
     "onlyOfficeUrlTitle": "OnlyOffice URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Enter the OnlyOffice JWT Secret",
+    "overrideDocumentVendorMSWithOOTitle": "Use OpenDocument as the standard document format",
+    "overrideDocumentVendorMSWithOODescription": "Should the format used by OpenOffice (odt, ods, odp) be used instead of Microsoft Office (docx, pptx, xlsx) formats?",
     "mailImapUrlTitle": "URL",
     "mailImapUrlDescription": "Enter the FQDN (i.e. 'imap.example.com') of the IMAP-server",
     "mailImapPortTitle": "Port",

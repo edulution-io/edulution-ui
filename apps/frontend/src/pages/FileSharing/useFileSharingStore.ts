@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { RowSelectionState } from '@tanstack/react-table';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import eduApi from '@/api/eduApi';
@@ -9,9 +21,10 @@ import ContentType from '@libs/filesharing/types/contentType';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
 import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
-import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeExtension';
+import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import getFrontEndUrl from '@libs/common/utils/getFrontEndUrl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import delay from '@libs/common/utils/delay';
 
 type UseFileSharingStore = {
   files: DirectoryFileDTO[];
@@ -36,9 +49,11 @@ type UseFileSharingStore = {
   isEditorLoading: boolean;
   downloadLinkURL: string;
   publicDownloadLink: string | null;
+  setPublicDownloadLink: (publicDownloadLink: string) => void;
   isError: boolean;
   setIsLoading: (isLoading: boolean) => void;
   setCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => void;
+  resetCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => Promise<void>;
   setMountPoints: (mountPoints: DirectoryFileDTO[]) => void;
   downloadFile: (filePath: string) => Promise<string | undefined>;
   getDownloadLinkURL: (filePath: string, filename: string) => Promise<string | undefined>;
@@ -78,6 +93,8 @@ const useFileSharingStore = create<UseFileSharingStore>(
         set({ currentPath: path });
       },
 
+      setPublicDownloadLink: (publicDownloadLink) => set({ publicDownloadLink }),
+
       fetchDownloadLinks: async (file: DirectoryFileDTO | null) => {
         try {
           set({ isEditorLoading: true, isError: false, downloadLinkURL: undefined, publicDownloadLink: null });
@@ -103,12 +120,13 @@ const useFileSharingStore = create<UseFileSharingStore>(
       },
 
       setCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => {
-        const { currentlyEditingFile } = get();
-        if (currentlyEditingFile?.etag !== fileToPreview?.etag) {
-          set({ currentlyEditingFile: fileToPreview });
-        } else {
-          set({ currentlyEditingFile });
-        }
+        set({ currentlyEditingFile: fileToPreview });
+      },
+
+      resetCurrentlyEditingFile: async (fileToPreview: DirectoryFileDTO | null) => {
+        set({ currentlyEditingFile: null });
+        await delay(1);
+        set({ currentlyEditingFile: fileToPreview });
       },
 
       setPathToRestoreSession: (path: string) => {

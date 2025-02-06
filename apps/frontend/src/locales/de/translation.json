@@ -159,6 +159,8 @@
     "hostname": "Hostname",
     "port": "Port",
     "encryption": "Verschlüsselung",
+    "rowSelected": "{{selected}} von {{total}} Job ausgewählt",
+    "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
     "importer": {
       "filterPlaceHolderText": "Suche nach E-Mail-Importername",
       "title": "E-Mail-Importer",
@@ -166,8 +168,6 @@
       "interval": "Sync-Intervall",
       "isActive": "Aktiv",
       "syncJobsTable": "Importer Jobs",
-      "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
-      "rowSelected": "{{selected}} von {{total}} Job ausgewählt",
       "mailAddress": "E-Mail-Adresse",
       "noMailConfigured": "Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator."
     }
@@ -179,7 +179,8 @@
   "errors": {
     "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten",
     "automaticLoginFailed": "Automatischer Login fehlgeschlagen",
-    "uploadOrFetchAttachmentFailed": "Fehler beim Hochladen des Anhangs"
+    "uploadOrFetchAttachmentFailed": "Fehler beim Hochladen des Anhangs",
+    "fileGenerationFailed": "Datei konnte nicht generiert werden"
   },
   "conferences": {
     "errors": {
@@ -275,6 +276,8 @@
     "loadingDocument": "Dokument wird geladen...",
     "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt",
     "rowSelected": "{{selected}} von {{total}} Datei ausgewählt",
+    "fileWithSameNameAlreadyExists": "Eine Datei mit diesem Namen existiert bereits.",
+    "folderWithSameNameAlreadyExists": "Ein Ordner mit diesem Namen existiert bereits.",
     "errors": {
       "FileNotFound": "Datei nicht gefunden",
       "MountPointsNotFound": "Laufwerke nicht gefunden",
@@ -329,7 +332,16 @@
   "classmanagement": {
     "title": "KLASSENZIMMER",
     "sidebar": "Klassenzimmer",
+    "invalidProxyAddresses": "Proxy Email-Adressen müssen Komma-separiert ohne Leerzeichen angegebn werden",
+    "invalidQuota": "Die Quota muss der Dokumentation entsprechend angegeben werden",
+    "invalidMailQuota": "Die Mailquota muss als Zahl in MB angegeben werden",
     "name": "Name",
+    "mailQuota": "Mail Quota (MB)",
+    "proxyAddresses": "Proxy Email-Adressen",
+    "descriptionPlaceholder": "Kurze Beschreibung des Projekts",
+    "proxyAddressesPlaceholder": "info@email1.de,kontakt@email2.com",
+    "quotaPlaceholder": "[{\"share\":\"default-school\",\"quota\":50}]",
+    "quota": "Quota (MB)",
     "notMemberOfClass": "Du bist kein Mitglied einer Klasse.",
     "noGroupsToShow": "Keine Gruppen vorhanden.",
     "classes": "Klassen",
@@ -415,6 +427,7 @@
     "printOneItemPerPage": "Drucke ein Passwort pro Seite",
     "selectSavedSession": "Aus gespeicherten Sitzungen wählen",
     "saveSession": "Sitzung speichern",
+    "editSession": "Sitzung editieren",
     "myRoom": "Mein Raum",
     "sharedMailBox": "Geteiltes Postfach",
     "enrolPageDescription": "Wählen Sie die Klassen und Projekte aus, für die Sie sich einschreiben möchten, indem Sie die Checkboxen aktivieren.",
@@ -673,6 +686,10 @@
           "title": "Allgemein",
           "description": ""
         },
+        "fileSharing": {
+          "title": "Allgemeine Einstellungen",
+          "description": ""
+        },
         "docker": {
           "title": "Docker Anwendungen",
           "description": "Um die erweiterten Dienste nutzen zu können hier die benötigten Docker Container gestartet werden."
@@ -898,7 +915,8 @@
     "install": "Installieren",
     "update": "Update",
     "progress": "Fortschritt...",
-    "pressInstall": "Drücke Installieren um zu Starten."
+    "pressInstall": "Drücke Installieren um zu Starten.",
+    "disabled": "Deaktiviert"
   },
   "form": {
     "path": "Link",
@@ -937,6 +955,7 @@
     "selectFile": "Wählen Sie bis zu 5 Dateien gleichzeitig",
     "uploadItems": "Hochladen: {{count}} Datei/en",
     "dragDropClick": "Ziehen Sie Dateien hierher oder klicken Sie, um Dateien auszuwählen",
+    "dropHere": "Hier loslassen",
     "filesToUpload": "Dateien zum Hochladen",
     "limitExceeded": "Dateilimit von 5 Dateien erreicht"
   },
@@ -1118,6 +1137,8 @@
     "onlyOfficeUrlTitle": "OnlyOffice-URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Gib hier den OnlyOffice JWT Secret Key an",
+    "overrideDocumentVendorMSWithOOTitle": "OpenDocument als Standard-Dokumentenformat verwenden",
+    "overrideDocumentVendorMSWithOODescription": "Soll anstatt der Microsoft Office Formate (docx, pptx, xlsx) das OpenDocument Format (odt, ods, odp) verwendet werden?",
     "mailImapUrlTitle": "URL",
     "mailImapUrlDescription": "Gib hier den FQDN (z.B. 'imap.example.com') des IMAP-Servers an.",
     "mailImapPortTitle": "Port",
