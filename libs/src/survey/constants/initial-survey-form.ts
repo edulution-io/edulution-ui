@@ -1,13 +1,11 @@
-import mongoose from 'mongoose';
 import i18next from 'i18next';
-import { Group } from '@libs/groups/types/group';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import getNewSurveyId from '@libs/survey/getNewSurveyId';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
 class InitialSurveyForm implements SurveyDto {
-  readonly id: mongoose.Types.ObjectId;
+  readonly id?: string;
 
   formula: TSurveyFormula;
 
@@ -17,13 +15,13 @@ class InitialSurveyForm implements SurveyDto {
 
   invitedAttendees: AttendeeDto[];
 
-  invitedGroups: Group[];
+  invitedGroups: MultipleSelectorGroup[];
 
   participatedAttendees: AttendeeDto[];
 
-  answers: mongoose.Types.ObjectId[];
+  answers: string[];
 
-  created: Date;
+  createdAt: Date;
 
   expires: Date | undefined;
 
@@ -31,26 +29,19 @@ class InitialSurveyForm implements SurveyDto {
 
   canSubmitMultipleAnswers: boolean;
 
-  canShowResultsTable: boolean;
-
-  canShowResultsChart: boolean;
-
   constructor(creator: AttendeeDto, selectedSurvey?: SurveyDto) {
-    this.id = selectedSurvey?.id || getNewSurveyId();
+    this.id = selectedSurvey?.id;
     this.formula = selectedSurvey?.formula || { title: i18next.t('survey.newTitle').toString() };
     this.saveNo = selectedSurvey?.saveNo || 0;
     this.creator = creator;
     this.invitedAttendees = selectedSurvey?.invitedAttendees || [];
-    this.invitedGroups = [];
+    this.invitedGroups = selectedSurvey?.invitedGroups || [];
     this.participatedAttendees = selectedSurvey?.participatedAttendees || [];
     this.answers = selectedSurvey?.answers || [];
-    this.created = selectedSurvey?.created || new Date();
+    this.createdAt = selectedSurvey?.createdAt || new Date();
     this.expires = selectedSurvey?.expires || undefined;
     this.isAnonymous = selectedSurvey?.isAnonymous || false;
     this.canSubmitMultipleAnswers = selectedSurvey?.canSubmitMultipleAnswers || false;
-
-    this.canShowResultsChart = true;
-    this.canShowResultsTable = true;
   }
 }
 

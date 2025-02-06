@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import { create } from 'zustand';
 import { SURVEY_ANSWER_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -14,7 +13,7 @@ interface SubmittedAnswersDialogStore {
 
   isOpenSubmittedAnswersDialog: boolean;
   setIsOpenSubmittedAnswersDialog: (state: boolean) => void;
-  getSubmittedSurveyAnswers: (surveyId: mongoose.Types.ObjectId, participant?: string) => Promise<void>;
+  getSubmittedSurveyAnswers: (surveyId: string, participant?: string) => Promise<void>;
   user: string | undefined;
   selectUser: (user: string) => void;
   answer: JSON;
@@ -39,7 +38,7 @@ const useSubmittedAnswersDialogStore = create<SubmittedAnswersDialogStore>((set)
 
   setIsOpenSubmittedAnswersDialog: (state: boolean) => set({ isOpenSubmittedAnswersDialog: state }),
   selectUser: (userName: string) => set({ user: userName }),
-  getSubmittedSurveyAnswers: async (surveyId: mongoose.Types.ObjectId, participant?: string): Promise<void> => {
+  getSubmittedSurveyAnswers: async (surveyId: string, participant?: string): Promise<void> => {
     set({ isLoading: true });
     try {
       const response = await eduApi.post<SurveyAnswerDto>(SURVEY_ANSWER_ENDPOINT, { surveyId, participant });

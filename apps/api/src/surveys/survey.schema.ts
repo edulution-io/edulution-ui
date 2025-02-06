@@ -1,4 +1,4 @@
-import mongoose, { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Group } from '@libs/groups/types/group';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
@@ -7,14 +7,8 @@ import Attendee from '../conferences/attendee.schema';
 
 export type SurveyDocument = Survey & Document;
 
-@Schema()
+@Schema({ timestamps: true, strict: true })
 export class Survey {
-  @Prop({ required: true })
-  _id: mongoose.Types.ObjectId;
-
-  @Prop({ required: true })
-  id: mongoose.Types.ObjectId;
-
   @Prop({ required: true })
   formula: TSurveyFormula;
 
@@ -39,11 +33,8 @@ export class Survey {
   @Prop({ required: true })
   participatedAttendees: Attendee[];
 
-  @Prop({ required: true })
-  answers: mongoose.Types.ObjectId[];
-
-  @Prop({ type: Date, required: true })
-  created?: Date;
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'SurveyAnswer' }], required: true })
+  answers: Types.ObjectId[];
 
   @Prop({ type: Date, required: false })
   expires?: Date;
@@ -58,15 +49,13 @@ export class Survey {
   canUpdateFormerAnswer?: boolean;
 
   @Prop({ required: false })
-  canShowResultsTable?: boolean;
-
-  @Prop({ required: false })
-  canShowResultsChart?: boolean;
-
-  @Prop({ required: false })
   canSubmitMultipleAnswers?: boolean;
 }
 
 const SurveySchema = SchemaFactory.createForClass(Survey);
+
+SurveySchema.set('toJSON', {
+  virtuals: true,
+});
 
 export default SurveySchema;

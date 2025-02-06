@@ -1,5 +1,5 @@
 import { HttpStatus, Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
@@ -155,15 +155,13 @@ class BulletinCategoryService implements OnModuleInit {
   }
 
   async remove(id: string): Promise<void> {
-    const objectId = new Types.ObjectId(id);
-
-    const categoryToRemove = await this.bulletinCategoryModel.findById(objectId).exec();
+    const categoryToRemove = await this.bulletinCategoryModel.findById(id).exec();
     if (!categoryToRemove) {
       throw new CustomHttpException(BulletinBoardErrorMessage.CATEGORY_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
     try {
-      await this.bulletinCategoryModel.findByIdAndDelete(objectId).exec();
+      await this.bulletinCategoryModel.findByIdAndDelete(id).exec();
 
       await this.bulletinCategoryModel.updateMany(
         { position: { $gt: categoryToRemove.position } },

@@ -1,8 +1,8 @@
-import getNewSurveyId from '@libs/survey/getNewSurveyId';
-import { Survey } from '../../survey.schema';
-import { firstMockUser, secondMockUser } from '../user/users';
+import { Types } from 'mongoose';
+import { Survey, SurveyDocument } from '../../survey.schema';
+import { firstMockUser, secondMockUser } from '../user';
 
-export const openSurveyId01 = getNewSurveyId();
+export const openSurveyId01 = new Types.ObjectId();
 export const openSurvey01: Survey = {
   _id: openSurveyId01,
   id: openSurveyId01,
@@ -23,13 +23,13 @@ export const openSurvey01: Survey = {
   participatedAttendees: [],
   answers: [],
   saveNo: 1,
-  created: new Date('2021-06-26T00:00:00.000Z'),
+  createdAt: new Date('2021-06-26T00:00:00.000Z'),
   expires: new Date('2044-08-22T12:00:00.000Z'),
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
-};
+} as unknown as SurveyDocument;
 
-export const openSurveyId02 = getNewSurveyId();
+export const openSurveyId02 = new Types.ObjectId();
 export const openSurvey02: Survey = {
   _id: openSurveyId02,
   id: openSurveyId02,
@@ -50,8 +50,8 @@ export const openSurvey02: Survey = {
   participatedAttendees: [],
   answers: [],
   saveNo: 1,
-  created: new Date('2021-06-26T00:00:00.000Z'),
+  createdAt: new Date('2021-06-26T00:00:00.000Z'),
   expires: new Date('2044-08-22T12:00:00.000Z'),
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
-};
+} as unknown as SurveyDocument;

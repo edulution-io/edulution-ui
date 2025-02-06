@@ -1,7 +1,5 @@
-import mongoose from 'mongoose';
-
 interface AnswerDto {
-  surveyId: mongoose.Types.ObjectId;
+  surveyId: string;
 
   attendee?: string;
 }

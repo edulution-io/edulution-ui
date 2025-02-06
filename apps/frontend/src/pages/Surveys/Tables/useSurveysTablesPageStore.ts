@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 import { Row, RowSelectionState } from '@tanstack/react-table';
 import {
-  SURVEYS,
   PUBLIC_SURVEYS,
-  SURVEY_FIND_ONE_ENDPOINT,
   SURVEY_CAN_PARTICIPATE_ENDPOINT,
+  SURVEY_FIND_ONE_ENDPOINT,
   SURVEY_HAS_ANSWERS_ENDPOINT,
+  SURVEYS,
 } from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyStatus from '@libs/survey/survey-status-enum';
@@ -190,8 +190,8 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
     if (get().isNoSurveySelected()) {
       const { canParticipateSelectedSurvey, hasAnswersSelectedSurvey } = get();
       set({ selectedSurvey: row.original });
-      void canParticipateSelectedSurvey(row.original.id.toString());
-      void hasAnswersSelectedSurvey(row.original.id.toString());
+      void canParticipateSelectedSurvey(row.original.id!.toString());
+      void hasAnswersSelectedSurvey(row.original.id!.toString());
     } else {
       set({ selectedSurvey: undefined, canParticipate: false, hasAnswers: false });
     }

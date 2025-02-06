@@ -1,7 +1,5 @@
-import mongoose from 'mongoose';
-
 interface PushAnswerDto {
-  surveyId: mongoose.Types.ObjectId;
+  surveyId: string;
 
   saveNo: number;
 

@@ -1,14 +1,14 @@
 import { Observable } from 'rxjs';
 import { Response } from 'express';
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Sse, MessageEvent, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, MessageEvent, Param, Patch, Post, Query, Res, Sse } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import {
-  FIND_ONE,
   ANSWER,
-  RESULT,
   CAN_PARTICIPATE,
+  FIND_ONE,
   HAS_ANSWERS,
+  RESULT,
   SURVEYS,
 } from '@libs/survey/constants/surveys-endpoint';
 import SurveyStatus from '@libs/survey/survey-status-enum';
@@ -34,9 +34,9 @@ class SurveysController {
   ) {}
 
   @Get(`${FIND_ONE}/:surveyId`)
-  async findOne(@Param() params: { surveyId: string }, @GetCurrentUsername() username: string) {
+  async findOne(@Param() params: { surveyId: string }, @GetCurrentUser() user: JWTUser) {
     const { surveyId } = params;
-    return this.surveyService.findSurvey(surveyId, username);
+    return this.surveyService.findSurvey(surveyId, user);
   }
 
   @Get(`${CAN_PARTICIPATE}/:surveyId`)
@@ -58,8 +58,8 @@ class SurveysController {
   }
 
   @Get()
-  async findByStatus(@Query('status') status: SurveyStatus, @GetCurrentUsername() username: string) {
-    return this.surveyAnswerService.findUserSurveys(status, username);
+  async findByStatus(@Query('status') status: SurveyStatus, @GetCurrentUser() user: JWTUser) {
+    return this.surveyAnswerService.findUserSurveys(status, user);
   }
 
   @Post(ANSWER)
@@ -69,8 +69,8 @@ class SurveysController {
   }
 
   @Post()
-  async updateOrCreateSurvey(@Body() surveyDto: SurveyDto) {
-    return this.surveyService.updateOrCreateSurvey(surveyDto, this.surveysSseConnections);
+  async updateOrCreateSurvey(@Body() surveyDto: SurveyDto, @GetCurrentUser() user: JWTUser) {
+    return this.surveyService.updateOrCreateSurvey(surveyDto, user, this.surveysSseConnections);
   }
 
   @Delete()

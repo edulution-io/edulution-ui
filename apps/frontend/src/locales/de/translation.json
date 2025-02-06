@@ -439,8 +439,14 @@
   "downloadFile": "Datei herunterladen",
   "cancel": "Abbrechen",
   "survey": {
+    "attendee": "Teilnehmer",
+    "attendees": "Teilnehmer",
     "newTitle": "Neue Umfrage",
     "filterPlaceHolderText": "Suche nach Umfragename",
+    "invitedAttendees": "Eingeladen",
+    "isPublic": "Sichtbarkeit",
+    "isPublicTrue": "Öffentlich",
+    "isPublicFalse": "Privat",
     "created": "Erstellt",
     "creationDate": "Erstellungsdatum",
     "expires": "Läuft ab",
@@ -523,7 +529,8 @@
       "settingsFlags": "Einstellungen",
       "isAnonymous": "Soll die Umfrage anonym sein?",
       "isPublic": "Soll die Umfrage öffentlich sein?",
-      "canSubmitMultipleAnswers": "Auch nach Teilnahme bleibt der Status auf offen (Umfrage kann mehrmals beantwortet werden)."
+      "canSubmitMultipleAnswers": "Soll ein Teilnehmer die Umfrage mehrmals beantworten können?",
+      "canUpdateFormerAnswer": "Sollen Antworten nachträglich bearbeitbar sein?"
     },
     "sharePublicSurveyDialog": {
       "title": "Umfrage teilen",
@@ -801,6 +808,7 @@
     "remember_me": "Merken"
   },
   "common": {
+    "answers": "Antworten",
     "error": "Fehler",
     "errors": {
       "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",

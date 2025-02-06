@@ -1,7 +1,5 @@
-import mongoose from 'mongoose';
-
 interface DeleteSurveyDto {
-  surveyIds: mongoose.Types.ObjectId[];
+  surveyIds: string[];
 }
 
 export default DeleteSurveyDto;

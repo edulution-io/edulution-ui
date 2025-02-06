@@ -52,7 +52,7 @@ const DeleteBulletinsCategoriesDialog = ({ trigger }: DeleteBulletinsCategoriesD
           <>
             <div>{t('bulletinboard.confirmSingleCategoryDelete')}</div>
             <div className="m-2 font-bold">{selectedCategory.name}</div>
-            <div className="mt-3 rounded-lg border border-red-400 bg-red-200 p-3">
+            <div className="mt-3 rounded-lg border border-red-400 p-3">
               {t('bulletinboard.confirmSingleCategoryDeleteWarning')}
             </div>
           </>

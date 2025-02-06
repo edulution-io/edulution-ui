@@ -29,7 +29,7 @@ const SurveysList = (props: SurveysListProps) => {
       <span className="text-sm font-semibold">{survey.formula.title || FallbackText}</span>
       <p className="line-clamp-2 text-sm text-muted-foreground">
         {`${t('survey.created')}:  `}
-        {survey.created ? format(survey.created, 'dd.MMMLL', { locale }) : FallbackText}
+        {survey.createdAt ? format(survey.createdAt, 'dd.MMMLL', { locale }) : FallbackText}
       </p>
       {survey.expires ? (
         <p className="text-muted-background line-clamp-2 text-sm">

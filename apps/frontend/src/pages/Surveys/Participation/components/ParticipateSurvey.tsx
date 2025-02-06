@@ -1,12 +1,8 @@
 import React from 'react';
-import mongoose from 'mongoose';
 import { Survey } from 'survey-react-ui';
 import { Model } from 'survey-core';
 import 'survey-core/i18n/english';
 import 'survey-core/i18n/german';
-import 'survey-core/i18n/french';
-import 'survey-core/i18n/spanish';
-import 'survey-core/i18n/italian';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import useLanguage from '@/hooks/useLanguage';
 import surveyTheme from '@/pages/Surveys/theme/theme';
@@ -15,7 +11,7 @@ import '@/pages/Surveys/theme/custom.participation.css';
 import SubmitAnswerDto from '@libs/survey/types/api/submit-answer.dto';
 
 interface ParticipateSurveyProps {
-  surveyId: mongoose.Types.ObjectId;
+  surveyId: string;
   saveNo: number;
   formula: TSurveyFormula;
   answer: JSON;

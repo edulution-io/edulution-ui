@@ -438,7 +438,13 @@
   "downloadFile": "Download file",
   "cancel": "Cancel",
   "survey": {
+    "attendee": "Attendee",
+    "attendees": "Attendees",
     "filterPlaceHolderText": "Search for surveyname",
+    "invitedAttendees": "Invited",
+    "isPublic": "Publicly displayed (?)",
+    "isPublicTrue": "Public",
+    "isPublicFalse": "Private",
     "newTitle": "New survey",
     "created": "Created",
     "creationDate": "Creation date",
@@ -522,7 +528,8 @@
       "settingsFlags": "Options",
       "isAnonymous": "Should the survey be anonymous?",
       "isPublic": "Should the survey be public?",
-      "canSubmitMultipleAnswers": "Should the survey still be visible after participation (Allows the user to submit multiple answers)?"
+      "canSubmitMultipleAnswers": "Should a participant be allowed to answer the survey multiple times?",
+      "canUpdateFormerAnswer": "Should answers be editable afterwards?"
     },
     "sharePublicSurveyDialog": {
       "title": "Share survey",
@@ -801,6 +808,7 @@
   },
   "edit": "Edit",
   "common": {
+    "answers": "Answers",
     "error": "Error",
     "errors": {
       "startDateBeforeEndDate": "The start date must be before the end date",

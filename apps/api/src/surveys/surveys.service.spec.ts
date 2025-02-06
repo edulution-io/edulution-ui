@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus, Logger } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
@@ -14,7 +14,6 @@ import {
   surveyUpdateInitialSurvey,
   surveyUpdateSurveyId,
   surveyUpdateUpdatedSurvey,
-  unknownSurveyId,
 } from './mocks';
 import { surveyUpdateInitialSurveyDto, surveyUpdateUpdatedSurveyDto } from './mocks/surveys/updated-survey';
 import UserConnections from '../types/userConnections';
@@ -61,7 +60,7 @@ describe('SurveyService', () => {
         exec: jest.fn().mockReturnValue(publicSurvey01),
       });
 
-      const result = await service.findPublicSurvey(idOfPublicSurvey01);
+      const result = await service.findPublicSurvey(idOfPublicSurvey01.toString());
       expect(result).toEqual(publicSurvey01);
 
       expect(surveyModel.findOne).toHaveBeenCalledWith({ id: idOfPublicSurvey01, isPublic: true });
@@ -77,7 +76,7 @@ describe('SurveyService', () => {
       });
 
       try {
-        await service.findPublicSurvey(idOfPublicSurvey01);
+        await service.findPublicSurvey(idOfPublicSurvey01.toString());
       } catch (e) {
         const error = e as Error;
         expect(error.message).toEqual(CommonErrorMessages.DBAccessFailed);
@@ -90,7 +89,7 @@ describe('SurveyService', () => {
     it('should delete a survey', async () => {
       surveyModel.deleteMany = jest.fn();
 
-      const surveyIds = [surveyUpdateSurveyId];
+      const surveyIds = [surveyUpdateSurveyId.toString()];
       await service.deleteSurveys(surveyIds, mockSseConnections);
       expect(surveyModel.deleteMany).toHaveBeenCalledWith({ _id: { $in: surveyIds } });
     });
@@ -100,7 +99,7 @@ describe('SurveyService', () => {
         .fn()
         .mockRejectedValueOnce(new CustomHttpException(SurveyErrorMessages.DeleteError, HttpStatus.NOT_MODIFIED));
 
-      const surveyIds = [unknownSurveyId];
+      const surveyIds = [new Types.ObjectId().toString()];
       try {
         await service.deleteSurveys(surveyIds, mockSseConnections);
       } catch (e) {
@@ -113,14 +112,14 @@ describe('SurveyService', () => {
 
   describe('createSurvey', () => {
     it('should create a survey', async () => {
-      surveyModel.create = jest.fn().mockReturnValueOnce(surveyUpdateInitialSurvey);
+      surveyModel.create = jest.fn().mockReturnValueOnce(surveyUpdateInitialSurveyDto);
 
       await service
-        .createSurvey(surveyUpdateInitialSurvey, mockSseConnections)
-        .then((data) => expect(data).toStrictEqual(surveyUpdateInitialSurvey))
+        .createSurvey(surveyUpdateInitialSurveyDto, mockSseConnections)
+        .then((data) => expect(data).toStrictEqual(surveyUpdateInitialSurveyDto))
         .catch(() => {});
 
-      expect(surveyModel.create).toHaveBeenCalledWith(surveyUpdateInitialSurvey);
+      expect(surveyModel.create).toHaveBeenCalledWith(surveyUpdateInitialSurveyDto);
     });
 
     it('should throw an error if the survey creation fails', async () => {
@@ -132,27 +131,27 @@ describe('SurveyService', () => {
         );
 
       try {
-        await service.createSurvey(surveyUpdateInitialSurvey, mockSseConnections);
+        await service.createSurvey(surveyUpdateInitialSurveyDto, mockSseConnections);
       } catch (e) {
         const error = e as Error;
         expect(error.message).toEqual(CommonErrorMessages.DBAccessFailed);
       }
-      expect(surveyModel.create).toHaveBeenCalledWith(surveyUpdateInitialSurvey);
+      expect(surveyModel.create).toHaveBeenCalledWith(surveyUpdateInitialSurveyDto);
     });
   });
 
   describe('updateSurvey', () => {
     it('should update a survey', async () => {
       surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
-        exec: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
+        exec: jest.fn().mockReturnValue(surveyUpdateInitialSurveyDto),
       });
-      const result = await service.updateSurvey(surveyUpdateUpdatedSurvey, mockSseConnections);
+      const result = await service.updateSurvey(surveyUpdateInitialSurveyDto, mockSseConnections);
 
-      expect(result).toStrictEqual(surveyUpdateUpdatedSurvey);
+      expect(result).toStrictEqual(surveyUpdateInitialSurveyDto);
 
       expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith(
         { id: surveyUpdateSurveyId },
-        surveyUpdateUpdatedSurvey,
+        surveyUpdateInitialSurveyDto,
       );
     });
 
@@ -165,7 +164,7 @@ describe('SurveyService', () => {
           ),
       });
       try {
-        await service.updateSurvey(surveyUpdateUpdatedSurvey, mockSseConnections);
+        await service.updateSurvey(surveyUpdateInitialSurveyDto, mockSseConnections);
       } catch (e) {
         const error = e as Error;
         expect(error.message).toBe(CommonErrorMessages.DBAccessFailed);

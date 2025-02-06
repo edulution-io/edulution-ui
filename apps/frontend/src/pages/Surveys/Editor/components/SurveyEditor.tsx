@@ -9,7 +9,7 @@ import 'survey-creator-core/i18n/spanish';
 import 'survey-creator-core/i18n/italian';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import convertJSONToSurveyFormula from '@libs/survey/utils/convertJSONToSurveyFormula';
+import getSurveyFormulaFromJSON from '@libs/survey/utils/getSurveyFormulaFromJSON';
 import useLanguage from '@/hooks/useLanguage';
 import useElementHeight from '@/hooks/useElementHeight';
 import surveyTheme from '@/pages/Surveys/theme/theme';
@@ -105,11 +105,11 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   });
 
   creator.onModified.add(() => {
-    form.setValue('formula', convertJSONToSurveyFormula(creator.JSON as JSON));
+    form.setValue('formula', getSurveyFormulaFromJSON(creator.JSON as JSON));
   });
 
   creator.saveSurveyFunc = (saveNo: number, callback: (saveNo: number, isSuccess: boolean) => void) => {
-    form.setValue('formula', convertJSONToSurveyFormula(creator.JSON as JSON));
+    form.setValue('formula', getSurveyFormulaFromJSON(creator.JSON as JSON));
     form.setValue('saveNo', saveNo);
     callback(saveNo, true);
   };

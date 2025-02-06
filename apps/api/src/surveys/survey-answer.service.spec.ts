@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/unbound-method */
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
@@ -58,7 +58,6 @@ import {
   surveyAnswerAnsweredSurvey04,
   surveyAnswerAnsweredSurvey05,
   surveyUpdateInitialSurvey,
-  unknownSurveyId,
   updatedMockedAnswerForAnsweredSurveys03,
   updatedSurveyAnswerAnsweredSurvey03,
 } from './mocks';
@@ -332,15 +331,16 @@ describe('SurveyAnswerService', () => {
       jest.spyOn(service, 'addAnswer');
 
       surveyModel.findById = jest.fn().mockReturnValue(null);
+      const id = new Types.ObjectId().toString();
 
       try {
-        await service.addAnswer(unknownSurveyId, 1, {} as JSON, firstMockJWTUser);
+        await service.addAnswer(id, 1, {} as JSON, firstMockJWTUser);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toBe(SurveyErrorMessages.NotFoundError);
       }
 
-      expect(service.addAnswer).toHaveBeenCalledWith(unknownSurveyId, 1, {} as JSON, firstMockJWTUser);
+      expect(service.addAnswer).toHaveBeenCalledWith(id, 1, {} as JSON, firstMockJWTUser);
     });
 
     it('should return an error if the survey has already expired', async () => {
@@ -354,7 +354,7 @@ describe('SurveyAnswerService', () => {
 
       try {
         await service.addAnswer(
-          idOfAnsweredSurvey01,
+          idOfAnsweredSurvey01.toString(),
           saveNoAnsweredSurvey01,
           firstUsersMockedAnswerForAnsweredSurveys01,
           firstMockJWTUser,
@@ -379,7 +379,7 @@ describe('SurveyAnswerService', () => {
 
       try {
         await service.addAnswer(
-          idOfAnsweredSurvey02,
+          idOfAnsweredSurvey02.toString(),
           saveNoAnsweredSurvey02,
           mockedAnswerForAnsweredSurveys02,
           firstMockJWTUser,
@@ -407,7 +407,7 @@ describe('SurveyAnswerService', () => {
 
         try {
           await service.addAnswer(
-            idOfAnsweredSurvey02,
+            idOfAnsweredSurvey02.toString(),
             saveNoAnsweredSurvey02,
             mockedAnswerForAnsweredSurveys02,
             secondMockJWTUser,
@@ -434,7 +434,7 @@ describe('SurveyAnswerService', () => {
       model.findByIdAndUpdate = jest.fn().mockReturnValue(updatedSurveyAnswerAnsweredSurvey03);
 
       const result = await service.addAnswer(
-        idOfAnsweredSurvey03,
+        idOfAnsweredSurvey03.toString(),
         saveNoAnsweredSurvey03,
         updatedMockedAnswerForAnsweredSurveys03,
         firstMockJWTUser,
@@ -462,7 +462,7 @@ describe('SurveyAnswerService', () => {
       });
 
       const result = await service.addAnswer(
-        idOfAnsweredSurvey04,
+        idOfAnsweredSurvey04.toString(),
         saveNoAnsweredSurvey04,
         mockedAnswerForAnsweredSurveys04,
         firstMockJWTUser,
@@ -490,7 +490,7 @@ describe('SurveyAnswerService', () => {
       });
 
       const result = await service.addAnswer(
-        idOfAnsweredSurvey05,
+        idOfAnsweredSurvey05.toString(),
         saveNoAnsweredSurvey05,
         newMockedAnswerForAnsweredSurveys05,
         firstMockJWTUser,
@@ -512,7 +512,7 @@ describe('SurveyAnswerService', () => {
 
       model.findOne = jest.fn().mockReturnValue(secondUsersSurveyAnswerAnsweredSurvey01);
 
-      const result = await service.getPrivateAnswer(idOfAnsweredSurvey01, secondUsername);
+      const result = await service.getPrivateAnswer(idOfAnsweredSurvey01.toString(), secondUsername);
       expect(result).toEqual(secondUsersSurveyAnswerAnsweredSurvey01);
 
       expect(service.getPrivateAnswer).toHaveBeenCalledWith(idOfAnsweredSurvey01, secondUsername);
@@ -543,7 +543,7 @@ describe('SurveyAnswerService', () => {
 
       model.deleteMany = jest.fn().mockResolvedValueOnce(true);
 
-      await service.onSurveyRemoval([idOfAnsweredSurvey01]);
+      await service.onSurveyRemoval([idOfAnsweredSurvey01.toString()]);
 
       expect(service.onSurveyRemoval).toHaveBeenCalledWith([idOfAnsweredSurvey01]);
       expect(model.deleteMany).toHaveBeenCalledWith({ surveyId: { $in: [idOfAnsweredSurvey01] } }, { ordered: false });

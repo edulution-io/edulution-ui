@@ -1,8 +1,7 @@
-import mongoose from 'mongoose';
 import { CompleteEvent } from 'survey-core';
 
 interface SubmitAnswerDto {
-  surveyId: mongoose.Types.ObjectId;
+  surveyId: string;
 
   saveNo: number;
 

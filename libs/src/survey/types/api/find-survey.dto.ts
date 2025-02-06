@@ -1,7 +1,5 @@
-import mongoose from 'mongoose';
-
 interface FindSurveyDto {
-  surveyIds?: mongoose.Types.ObjectId[];
+  surveyIds?: string[];
 }
 
 export default FindSurveyDto;

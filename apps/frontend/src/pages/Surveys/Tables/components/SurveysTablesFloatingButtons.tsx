@@ -12,6 +12,7 @@ import { TooltipProvider } from '@/components/ui/Tooltip';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import EditButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/editButton';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
+import useUserStore from '@/store/UserStore/UserStore';
 import useDeleteSurveyStore from '../dialogs/useDeleteSurveyStore';
 
 interface SurveysTablesFloatingButtonsProps {
@@ -30,8 +31,15 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
     canParticipate = false,
     canShowResults = false,
   } = props;
-  const { selectedSurvey, isNoSurveySelected, isExactlyOneSurveySelected, updateUsersSurveys, selectedRows } =
-    useSurveyTablesPageStore();
+  const {
+    selectedSurvey,
+    isNoSurveySelected,
+    isExactlyOneSurveySelected,
+    updateUsersSurveys,
+    selectedRows,
+    hasAnswers,
+  } = useSurveyTablesPageStore();
+  const { user } = useUserStore();
 
   const { setIsOpenPublicResultsTableDialog, setIsOpenPublicResultsVisualisationDialog } = useResultDialogStore();
 
@@ -49,8 +57,6 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
   }
 
   const isSingleSurveySelected = isExactlyOneSurveySelected();
-  const canShowResultsTable = selectedSurvey?.canShowResultsTable && canShowResults;
-  const canShowResultsChart = selectedSurvey?.canShowResultsChart && canShowResults;
 
   const handleDeleteSurvey = () => {
     if (Object.keys(selectedRows).length > 0) {
@@ -59,10 +65,13 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
     }
   };
 
+  const shouldShowResults = isSingleSurveySelected && canShowResults && hasAnswers;
+  const hasCurrentUserAnsweredSurvey = selectedSurvey?.participatedAttendees.some((a) => a.username === user?.username);
+
   const config: FloatingButtonsBarConfig = {
     buttons: [
       EditButton(() => {
-        navigate(`/${EDIT_SURVEY_PAGE}/${selectedSurvey?.id.toString()}`);
+        navigate(`/${EDIT_SURVEY_PAGE}/${selectedSurvey?.id?.toString()}`);
       }, isSingleSurveySelected && canEdit),
 
       DeleteButton(handleDeleteSurvey, canDelete),
@@ -70,25 +79,25 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
         icon: HiOutlineArrowDownOnSquare,
         text: t('surveys.actions.showSubmittedAnswers'),
         onClick: () => setIsOpenSubmittedAnswersDialog(true),
-        isVisible: isSingleSurveySelected && canShowSubmittedAnswers,
+        isVisible: isSingleSurveySelected && canShowSubmittedAnswers && hasCurrentUserAnsweredSurvey,
       },
       {
         icon: HiOutlineArrowDownOnSquareStack,
         text: t('surveys.actions.showResultsTable'),
         onClick: () => setIsOpenPublicResultsTableDialog(true),
-        isVisible: isSingleSurveySelected && canShowResultsTable,
+        isVisible: shouldShowResults,
       },
       {
         icon: HiOutlineArrowDownOnSquareStack,
         text: t('surveys.actions.showResultsChart'),
         onClick: () => setIsOpenPublicResultsVisualisationDialog(true),
-        isVisible: isSingleSurveySelected && canShowResultsChart,
+        isVisible: shouldShowResults,
       },
       {
         icon: AiOutlineUpSquare,
         text: t('common.participate'),
         onClick: () => {
-          navigate(`/${PARTICIPATE_SURVEY_PAGE}/${selectedSurvey?.id.toString()}`);
+          navigate(`/${PARTICIPATE_SURVEY_PAGE}/${selectedSurvey?.id?.toString()}`);
         },
         isVisible: isSingleSurveySelected && canParticipate,
       },

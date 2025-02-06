@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 
 interface ResultDialogStore {
@@ -9,7 +8,7 @@ interface ResultDialogStore {
   setIsOpenPublicResultsTableDialog: (state: boolean) => void;
   isOpenPublicResultsVisualisationDialog: boolean;
   setIsOpenPublicResultsVisualisationDialog: (state: boolean) => void;
-  getSurveyResult: (surveyId: mongoose.Types.ObjectId) => Promise<void>;
+  getSurveyResult: (surveyId: string) => Promise<void>;
   result: JSON[] | undefined;
   isLoading: boolean;
 

@@ -1,39 +1,39 @@
-import getNewSurveyId from '@libs/survey/getNewSurveyId';
-import { Survey } from '../../survey.schema';
-import { SurveyAnswer } from '../../survey-answer.schema';
+import { Types } from 'mongoose';
+import { Survey, SurveyDocument } from '../../survey.schema';
+import { SurveyAnswer, SurveyAnswerDocument } from '../../survey-answer.schema';
 import { firstMockUser, secondMockUser } from '../user';
 
 // -------------------------
 // Answered Survey 01
 // -------------------------
-export const idOfAnsweredSurvey01 = getNewSurveyId();
+export const idOfAnsweredSurvey01 = new Types.ObjectId();
 
 export const saveNoAnsweredSurvey01: number = 117;
-const firstUsersMockedAnswerForTheAnsweredSurvey01 = getNewSurveyId();
-const secondUsersMockedAnswerForTheAnsweredSurvey01 = getNewSurveyId();
+const firstUsersMockedAnswerForTheAnsweredSurvey01 = new Types.ObjectId();
+const secondUsersMockedAnswerForTheAnsweredSurvey01 = new Types.ObjectId();
 
 export const firstUsersMockedAnswerForAnsweredSurveys01: JSON = JSON.parse('{"Frage1": "User1 Antwort1"}') as JSON;
 export const secondUsersMockedAnswerForAnsweredSurveys01: JSON = JSON.parse('{"Frage1": "User2 Antwort1"}') as JSON;
 
-export const firstUsersSurveyAnswerAnsweredSurvey01: SurveyAnswer = {
+export const firstUsersSurveyAnswerAnsweredSurvey01: SurveyAnswerDocument = {
   _id: firstUsersMockedAnswerForTheAnsweredSurvey01,
   id: firstUsersMockedAnswerForTheAnsweredSurvey01,
   surveyId: idOfAnsweredSurvey01,
   saveNo: saveNoAnsweredSurvey01,
   attendee: firstMockUser,
   answer: firstUsersMockedAnswerForAnsweredSurveys01,
-};
+} as unknown as SurveyAnswerDocument;
 
-export const secondUsersSurveyAnswerAnsweredSurvey01: SurveyAnswer = {
+export const secondUsersSurveyAnswerAnsweredSurvey01: SurveyAnswerDocument = {
   _id: secondUsersMockedAnswerForTheAnsweredSurvey01,
   id: secondUsersMockedAnswerForTheAnsweredSurvey01,
   surveyId: idOfAnsweredSurvey01,
   saveNo: saveNoAnsweredSurvey01,
   attendee: secondMockUser,
   answer: secondUsersMockedAnswerForAnsweredSurveys01,
-};
+} as unknown as SurveyAnswerDocument;
 
-export const answeredSurvey01: Survey = {
+export const answeredSurvey01: SurveyDocument = {
   _id: idOfAnsweredSurvey01,
   id: idOfAnsweredSurvey01,
   creator: secondMockUser,
@@ -63,33 +63,33 @@ export const answeredSurvey01: Survey = {
   participatedAttendees: [],
   answers: [],
   saveNo: saveNoAnsweredSurvey01,
-  created: new Date('2021-06-26T00:00:00.000Z'),
+  createdAt: new Date('2021-06-26T00:00:00.000Z'),
   expires: new Date('2021-06-26T12:00:00.000Z'),
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
   canUpdateFormerAnswer: false,
-};
+} as unknown as SurveyDocument;
 
 // -------------------------
 // Answered Survey 02
 // -------------------------
-export const idOfAnsweredSurvey02 = getNewSurveyId();
+export const idOfAnsweredSurvey02 = new Types.ObjectId();
 
 export const saveNoAnsweredSurvey02: number = 1;
-export const idOfTheSurveyAnswerForTheAnsweredSurvey02 = getNewSurveyId();
+export const idOfTheSurveyAnswerForTheAnsweredSurvey02 = new Types.ObjectId();
 
 export const mockedAnswerForAnsweredSurveys02: JSON = JSON.parse('{"Frage1": "Max", "Frage2": "Musterman"}') as JSON;
 
-export const surveyAnswerAnsweredSurvey02: SurveyAnswer = {
+export const surveyAnswerAnsweredSurvey02: SurveyAnswerDocument = {
   _id: idOfTheSurveyAnswerForTheAnsweredSurvey02,
   id: idOfTheSurveyAnswerForTheAnsweredSurvey02,
   surveyId: idOfAnsweredSurvey02,
   saveNo: saveNoAnsweredSurvey02,
   attendee: secondMockUser,
   answer: mockedAnswerForAnsweredSurveys02,
-};
+} as unknown as SurveyAnswerDocument;
 
-export const answeredSurvey02: Survey = {
+export const answeredSurvey02: SurveyDocument = {
   _id: idOfAnsweredSurvey02,
   id: idOfAnsweredSurvey02,
   creator: secondMockUser,
@@ -114,34 +114,34 @@ export const answeredSurvey02: Survey = {
   participatedAttendees: [secondMockUser],
   answers: [idOfTheSurveyAnswerForTheAnsweredSurvey02],
   saveNo: saveNoAnsweredSurvey02,
-  created: new Date('2020-11-29T00:00:00.000Z'),
+  createdAt: new Date('2020-11-29T00:00:00.000Z'),
   expires: new Date('9999-12-28T14:30:00.000Z'),
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
   canUpdateFormerAnswer: false,
-};
+} as unknown as SurveyDocument;
 
 // -------------------------
 // Answered Survey 03
 // -------------------------
-export const idOfAnsweredSurvey03 = getNewSurveyId();
+export const idOfAnsweredSurvey03 = new Types.ObjectId();
 
 export const saveNoAnsweredSurvey03: number = 3;
-const idOfTheSurveyAnswerForTheAnsweredSurvey03 = getNewSurveyId();
+const idOfTheSurveyAnswerForTheAnsweredSurvey03 = new Types.ObjectId();
 
 export const mockedAnswerForAnsweredSurveys03: JSON = JSON.parse('{"Frage1": "Max", "Frage2": "Musterman"}') as JSON;
 export const updatedMockedAnswerForAnsweredSurveys03: JSON = JSON.parse(
   '{"Frage1": "Maximilian", "Frage2": "Musterman"}',
 ) as JSON;
 
-export const surveyAnswerAnsweredSurvey03: SurveyAnswer = {
+export const surveyAnswerAnsweredSurvey03: SurveyAnswerDocument = {
   _id: idOfTheSurveyAnswerForTheAnsweredSurvey03,
   id: idOfTheSurveyAnswerForTheAnsweredSurvey03,
   surveyId: idOfAnsweredSurvey03,
   saveNo: saveNoAnsweredSurvey03,
   attendee: firstMockUser,
   answer: mockedAnswerForAnsweredSurveys03,
-};
+} as unknown as SurveyAnswerDocument;
 
 export const answeredSurvey03BackendLimiter = [
   {
@@ -160,7 +160,7 @@ export const updatedSurveyAnswerAnsweredSurvey03: SurveyAnswer = {
   answer: updatedMockedAnswerForAnsweredSurveys03,
 };
 
-export const answeredSurvey03: Survey = {
+export const answeredSurvey03: SurveyDocument = {
   _id: idOfAnsweredSurvey03,
   id: idOfAnsweredSurvey03,
   creator: secondMockUser,
@@ -186,20 +186,20 @@ export const answeredSurvey03: Survey = {
   participatedAttendees: [firstMockUser],
   answers: [idOfTheSurveyAnswerForTheAnsweredSurvey03],
   saveNo: saveNoAnsweredSurvey03,
-  created: new Date('2020-11-29T00:00:00.000Z'),
+  createdAt: new Date('2020-11-29T00:00:00.000Z'),
   expires: new Date('9999-12-28T14:30:00.000Z'),
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
   canUpdateFormerAnswer: true,
-};
+} as unknown as SurveyDocument;
 
 // -------------------------
 // Answered Survey 04
 // -------------------------
-export const idOfAnsweredSurvey04 = getNewSurveyId();
+export const idOfAnsweredSurvey04 = new Types.ObjectId();
 
 export const saveNoAnsweredSurvey04: number = 4;
-export const idOfTheSurveyAnswerForTheAnsweredSurvey04 = getNewSurveyId();
+export const idOfTheSurveyAnswerForTheAnsweredSurvey04 = new Types.ObjectId();
 
 export const mockedAnswerForAnsweredSurveys04: JSON = JSON.parse('{"Frage1": "Max", "Frage2": "Musterman"}') as JSON;
 
@@ -210,9 +210,9 @@ export const surveyAnswerAnsweredSurvey04: SurveyAnswer = {
   saveNo: saveNoAnsweredSurvey04,
   attendee: firstMockUser,
   answer: mockedAnswerForAnsweredSurveys04,
-};
+} as unknown as SurveyAnswerDocument;
 
-export const answeredSurvey04: Survey = {
+export const answeredSurvey04: SurveyDocument = {
   _id: idOfAnsweredSurvey04,
   id: idOfAnsweredSurvey04,
   creator: secondMockUser,
@@ -242,15 +242,15 @@ export const answeredSurvey04: Survey = {
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
   canUpdateFormerAnswer: false,
-};
+} as unknown as SurveyDocument;
 
 // -------------------------
 // Answered Survey 05
 // -------------------------
-export const idOfAnsweredSurvey05 = getNewSurveyId();
+export const idOfAnsweredSurvey05 = new Types.ObjectId();
 
 export const saveNoAnsweredSurvey05: number = 5;
-export const idOfTheSurveyAnswerForTheAnsweredSurvey05 = getNewSurveyId();
+export const idOfTheSurveyAnswerForTheAnsweredSurvey05 = new Types.ObjectId();
 
 export const mockedAnswerForAnsweredSurveys05: JSON = JSON.parse('{"Frage1": "Max", "Frage2": "Musterman"}') as JSON;
 export const newMockedAnswerForAnsweredSurveys05: JSON = JSON.parse(
@@ -264,7 +264,7 @@ export const surveyAnswerAnsweredSurvey05: SurveyAnswer = {
   saveNo: saveNoAnsweredSurvey05,
   attendee: firstMockUser,
   answer: mockedAnswerForAnsweredSurveys05,
-};
+} as unknown as SurveyAnswerDocument;
 
 export const newSurveyAnswerAnsweredSurvey05: SurveyAnswer = {
   _id: idOfTheSurveyAnswerForTheAnsweredSurvey05,
@@ -273,7 +273,7 @@ export const newSurveyAnswerAnsweredSurvey05: SurveyAnswer = {
   saveNo: saveNoAnsweredSurvey05,
   attendee: firstMockUser,
   answer: mockedAnswerForAnsweredSurveys05,
-};
+} as unknown as SurveyAnswerDocument;
 
 export const answeredSurvey05: Survey = {
   _id: idOfAnsweredSurvey05,
@@ -305,4 +305,4 @@ export const answeredSurvey05: Survey = {
   isAnonymous: false,
   canSubmitMultipleAnswers: true,
   canUpdateFormerAnswer: false,
-};
+} as unknown as SurveyDocument;

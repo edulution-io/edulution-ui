@@ -1,5 +1,4 @@
 export {
-  unknownSurveyId,
   createdSurveyId01,
   createdSurvey01,
   createdSurveyId02,

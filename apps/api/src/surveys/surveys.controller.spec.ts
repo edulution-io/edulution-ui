@@ -26,8 +26,10 @@ import {
   firstUsersMockedAnswerForAnsweredSurveys01,
   firstUsersSurveyAnswerAnsweredSurvey01,
   idOfAnsweredSurvey01,
+  idOfPublicSurvey01,
   openSurvey01,
   openSurvey02,
+  publicSurvey01,
   saveNoAnsweredSurvey01,
   secondUsername,
   secondUsersSurveyAnswerAnsweredSurvey01,
@@ -36,8 +38,6 @@ import {
   surveyUpdateInitialSurvey,
   surveyUpdateUpdatedSurvey,
   updatedSurveyAnswerAnsweredSurvey03,
-  publicSurvey01,
-  idOfPublicSurvey01,
 } from './mocks';
 import { surveyUpdateUpdatedSurveyDto } from './mocks/surveys/updated-survey';
 import UserConnections from '../types/userConnections';
@@ -185,7 +185,7 @@ describe(SurveysController.name, () => {
       surveyAnswerModel.findOne = jest.fn().mockReturnValue(firstUsersSurveyAnswerAnsweredSurvey01);
 
       const result = await controller.getSubmittedSurveyAnswers(
-        { surveyId: idOfAnsweredSurvey01, attendee: undefined },
+        { surveyId: idOfAnsweredSurvey01.toString(), attendee: undefined },
         firstUsername,
       );
       expect(result).toEqual(firstUsersSurveyAnswerAnsweredSurvey01);
@@ -199,7 +199,7 @@ describe(SurveysController.name, () => {
       surveyAnswerModel.findOne = jest.fn().mockReturnValue(secondUsersSurveyAnswerAnsweredSurvey01);
 
       const result = await controller.getSubmittedSurveyAnswers(
-        { surveyId: idOfAnsweredSurvey01, attendee: secondUsername },
+        { surveyId: idOfAnsweredSurvey01.toString(), attendee: secondUsername },
         firstUsername,
       );
       expect(result).toEqual(secondUsersSurveyAnswerAnsweredSurvey01);
@@ -215,11 +215,10 @@ describe(SurveysController.name, () => {
         exec: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
       });
 
-      const { id, created = new Date() } = surveyUpdateUpdatedSurveyDto;
-      const createSurvey: Survey = {
+      const { id } = surveyUpdateUpdatedSurveyDto;
+      const createSurvey = {
         ...surveyUpdateUpdatedSurveyDto,
         _id: new mongoose.Types.ObjectId(id),
-        created,
       };
 
       await controller.updateOrCreateSurvey(surveyUpdateUpdatedSurveyDto);

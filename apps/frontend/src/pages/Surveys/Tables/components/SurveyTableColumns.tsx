@@ -11,6 +11,11 @@ import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPag
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { ButtonSH } from '@/components/ui/ButtonSH';
+import { useTranslation } from 'react-i18next';
+import { PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
+import CopyToClipboardTextCell from '@/components/ui/Table/CopyToClipboardTextCell';
+
+const hideOnMobileClassName = 'hidden lg:flex min-w-24';
 
 const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
   {
@@ -36,7 +41,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     sortingFn: (rowA, rowB) => sortSurveyByTitle(rowA.original, rowB.original),
   },
   {
-    accessorKey: 'created',
+    accessorKey: 'createdAt',
     enableSorting: true,
     header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
     meta: {
@@ -51,14 +56,14 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
           className="h-full w-full"
         >
           <span className="overflow-hidden text-ellipsis font-medium">
-            {row.original?.created
-              ? format(row.original.created, 'PPP', { locale: localDateFormat })
+            {row.original?.createdAt
+              ? format(row.original.createdAt, 'PPP', { locale: localDateFormat })
               : i18next.t('common.not-available')}
           </span>
         </ButtonSH>
       );
     },
-    sortingFn: (rowA, rowB) => sortDate(rowA.original.created, rowB.original.created),
+    sortingFn: (rowA, rowB) => sortDate(rowA.original.createdAt, rowB.original.createdAt),
   },
   {
     accessorKey: 'expires',
@@ -86,12 +91,66 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     sortingFn: (rowA, rowB) => sortDate(rowA.original.expires, rowB.original.expires),
   },
   {
-    id: 'participated',
-    accessorKey: 'participatedAttendees',
+    id: 'survey-isPublic',
+    header: ({ column }) => (
+      <SortableHeader<SurveyDto, unknown>
+        className={hideOnMobileClassName}
+        column={column}
+      />
+    ),
+    meta: {
+      translationId: 'survey.isPublic',
+    },
+    accessorFn: (row) => row.isPublic,
+    cell: ({ row }) => {
+      const iconSize = 16;
+      const { isPublic } = row.original;
+      const url = `${window.location.origin}/${PUBLIC_SURVEYS}/${row.original.id}`;
+      return (
+        <CopyToClipboardTextCell
+          iconSize={iconSize}
+          className={hideOnMobileClassName}
+          isPublic={!!isPublic}
+          url={url}
+          textTranslationId="survey"
+        />
+      );
+    },
+  },
+  {
+    id: 'surveys-invited-attendees',
+    header: ({ column }) => (
+      <SortableHeader<SurveyDto, unknown>
+        className={hideOnMobileClassName}
+        column={column}
+      />
+    ),
+    meta: {
+      translationId: 'survey.invitedAttendees',
+    },
+    accessorFn: (row) => row.invitedAttendees.length,
+    cell: ({ row }) => {
+      const { t } = useTranslation();
+      const { length } = row.original.invitedAttendees;
+      const attendeeCount = length;
+      const attendeeText = `${attendeeCount} ${t(attendeeCount === 1 ? 'survey.attendee' : 'survey.attendees')}`;
+      const groupsCount = row.original.invitedGroups?.length;
+      const groupsText = `${groupsCount ? `, ${groupsCount} ${t(groupsCount === 1 ? 'common.group' : 'common.groups')}` : ''}`;
+      return (
+        <SelectableTextCell
+          className={hideOnMobileClassName}
+          text={`${attendeeText}${groupsText}`}
+        />
+      );
+    },
+  },
+  {
+    id: 'answers',
+    accessorKey: 'answers',
     enableSorting: true,
     header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
     meta: {
-      translationId: 'common.participated',
+      translationId: 'common.answers',
     },
     cell: ({ row }) => {
       const { onClickSurveysTableCell } = useSurveyTablesPageStore();
@@ -100,9 +159,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
           onClick={() => onClickSurveysTableCell(row)}
           className="hidden h-full w-full lg:flex"
         >
-          <span className="flex justify-center font-medium">
-            {row.original?.participatedAttendees.length || 0} / {row.original?.invitedAttendees.length || 0}
-          </span>
+          <span className="flex justify-center font-medium">{row.original?.answers.length || 0}</span>
         </ButtonSH>
       );
     },

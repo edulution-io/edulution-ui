@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/unbound-method */
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
@@ -25,7 +25,6 @@ import {
   publicSurvey02QuestionIdWithLimiters,
   saveNoPublicSurvey02,
   surveyValidAnswerPublicSurvey02,
-  unknownSurveyId,
 } from './mocks';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';
 
@@ -88,15 +87,16 @@ describe(PublicSurveysController.name, () => {
 
     it('throw an error when the survey with the given id does not exist', async () => {
       surveysService.findPublicSurvey = jest.fn().mockRejectedValue(new Error(CommonErrorMessages.DBAccessFailed));
+      const id = new Types.ObjectId().toString();
 
       try {
-        await controller.find({ surveyId: unknownSurveyId.toString() });
+        await controller.find({ surveyId: id });
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toEqual(CommonErrorMessages.DBAccessFailed);
       }
 
-      expect(surveysService.findPublicSurvey).toHaveBeenCalledWith(unknownSurveyId.toString());
+      expect(surveysService.findPublicSurvey).toHaveBeenCalledWith(id);
     });
   });
 
@@ -110,7 +110,7 @@ describe(PublicSurveysController.name, () => {
       surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue(publicSurvey02AfterAddingValidAnswer);
 
       await controller.answerSurvey({
-        surveyId: idOfPublicSurvey02,
+        surveyId: idOfPublicSurvey02.toString(),
         saveNo: saveNoPublicSurvey02,
         answer: mockedValidAnswerForPublicSurveys02,
       });

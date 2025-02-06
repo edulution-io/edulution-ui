@@ -162,6 +162,9 @@ class GroupsService implements OnModuleInit {
 
       const promises = groups.map(async (group) => {
         const members = await GroupsService.fetchGroupMembers(this.keycloakAccessToken, group.id);
+        if (!members?.length) {
+          return;
+        }
         const sanitizedMembers = GroupsService.sanitizeGroupMembers(members);
         const sanitizedGroup = GroupsService.sanitizeGroup(group);
 
@@ -211,7 +214,7 @@ class GroupsService implements OnModuleInit {
     }
   }
 
-  static async fetchGroupMembers(token: string, groupId: string): Promise<LDAPUser[]> {
+  static async fetchGroupMembers(token: string, groupId: string): Promise<LDAPUser[] | undefined> {
     try {
       return await GroupsService.makeAuthorizedRequest<LDAPUser[]>(
         HttpMethods.GET,
