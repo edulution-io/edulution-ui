@@ -22,12 +22,8 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileActionType from '@libs/filesharing/types/fileActionType';
-import CircleLoader from '@/components/ui/CircleLoader';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import APPS from '@libs/appconfig/constants/apps';
-import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import DocumentVendors from '@libs/filesharing/constants/documentVendors';
+import getDocumentVendor from '@libs/filesharing/utils/getDocumentVendor';
 import getFileSharingFormSchema from '../formSchema';
 
 interface CreateContentDialogProps {
@@ -66,18 +62,16 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   });
 
   const clearAllSelectedItems = () => {
+    setSubmitButtonIsInActive(false);
     setMoveOrCopyItemToPath({} as DirectoryFileDTO);
     setSelectedFileType('');
     setFilesToUpload([]);
+    closeDialog();
+    form.reset();
   };
 
   const onSubmit = async () => {
-    const isOpenDocumentFormatEnabled = !!getExtendedOptionValue(
-      appConfigs,
-      APPS.FILE_SHARING,
-      ExtendedOptionKeys.OVERRIDE_FILE_SHARING_DOCUMENT_VENDOR_MS_WITH_OO,
-    );
-    const documentVendor = isOpenDocumentFormatEnabled ? DocumentVendors.ODF : DocumentVendors.MSO;
+    const documentVendor = getDocumentVendor(appConfigs);
 
     const data = await getData(form, currentPath, {
       selectedItems,
@@ -107,14 +101,11 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     }
 
     clearAllSelectedItems();
-    form.reset();
   };
 
   const handelOpenChange = () => {
     if (isDialogOpen) {
-      closeDialog();
-      setSubmitButtonIsInActive(false);
-      form.reset();
+      clearAllSelectedItems();
     } else {
       openDialog(action);
     }
@@ -140,7 +131,6 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
           role="presentation"
           onKeyDown={handleDialogKeyDown}
         >
-          {isLoading && <CircleLoader className="mx-auto mt-5" />}
           <Component
             form={form}
             isRenaming
