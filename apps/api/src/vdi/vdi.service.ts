@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import axios, { AxiosInstance } from 'axios';
 import {
@@ -66,7 +66,6 @@ class VdiService implements OnModuleInit {
       }
 
       const guacamoleUrl = appConfig.options.url;
-      Logger.log(guacamoleUrl);
       if (!guacamoleUrl) {
         return;
       }

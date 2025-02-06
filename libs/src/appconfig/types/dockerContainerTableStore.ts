@@ -34,6 +34,6 @@ export interface DockerContainerTableStore extends AppConfigTable<ContainerInfo>
   runDockerCommand: (containerNames: string[], operation: TDockerCommands) => Promise<void>;
   deleteDockerContainer: (containerNames: string[]) => Promise<void>;
   getDockerContainerConfig: (applicationName: TApps, containerName: string) => Promise<DockerCompose>;
-  getTraefikConfig: (applicationName: TApps, containerName: string) => Promise<YAMLMap | null>;
+  getTraefikConfig: (applicationName: TApps, containerName: string) => Promise<void>;
   reset: () => void;
 }

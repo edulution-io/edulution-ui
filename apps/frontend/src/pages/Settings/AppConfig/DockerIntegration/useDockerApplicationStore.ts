@@ -163,19 +163,16 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
         },
       );
 
-      if (response.status === 404) {
-        set({ traefikConfig: null });
-        return null;
+      let traefikConfig: YAMLMap | null = null;
+      if (response.status === 200) {
+        traefikConfig = parse(response.data) as YAMLMap;
       }
-
-      const traefikConfig = parse(response.data) as YAMLMap;
       set({ traefikConfig });
-      return traefikConfig;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status !== 404) {
         handleApiError(error, set);
+        set({ traefikConfig: null });
       }
-      return null;
     } finally {
       set({ isLoading: false });
     }
