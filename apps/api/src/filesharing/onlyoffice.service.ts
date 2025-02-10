@@ -22,10 +22,12 @@ import CustomFile from '@libs/filesharing/types/customFile';
 import { JwtService } from '@nestjs/jwt';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import APPS from '@libs/appconfig/constants/apps';
+import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import AppConfigService from '../appconfig/appconfig.service';
 import FilesystemService from '../filesystem/filesystem.service';
 
 const { EDULUTION_ONLYOFFICE_JWT_SECRET } = process.env;
+
 @Injectable()
 class OnlyofficeService implements OnModuleInit {
   constructor(
@@ -41,7 +43,7 @@ class OnlyofficeService implements OnModuleInit {
       appConfig.extendedOptions &&
       Object.keys(appConfig.extendedOptions).length === 0
     ) {
-      const patchConfigDto = {
+      const patchConfigDto: PatchConfigDto = {
         field: 'extendedOptions',
         value: {
           [ExtendedOptionKeys.ONLY_OFFICE_URL]: '',
