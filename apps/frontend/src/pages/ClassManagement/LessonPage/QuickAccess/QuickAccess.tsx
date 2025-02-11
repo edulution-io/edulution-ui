@@ -39,7 +39,8 @@ const QuickAccess = () => {
     fetchUserSchoolClasses,
     userSchoolClasses,
     userProjects,
-    isLoading,
+    areProjectsLoading,
+    areSchoolClassesLoading,
     isRoomLoading,
   } = useClassManagementStore();
 
@@ -89,7 +90,7 @@ const QuickAccess = () => {
       translationId: 'myClasses',
       createFunction: undefined,
       icon: <MdGroups className="h-7 w-7" />,
-      isLoading,
+      isLoading: areSchoolClassesLoading,
       groups: getGroupsWhereUserIsMember(userSchoolClasses),
     },
     {
@@ -99,7 +100,7 @@ const QuickAccess = () => {
       updateFunction: updateProject,
       removeFunction: deleteProject,
       icon: <FaUsersGear className="h-7 w-7" />,
-      isLoading,
+      isLoading: areProjectsLoading,
       groups: getGroupsWhereUserIsMember(userProjects),
     },
   ];

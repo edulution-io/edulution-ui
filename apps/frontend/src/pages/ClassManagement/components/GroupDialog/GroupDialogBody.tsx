@@ -27,6 +27,7 @@ import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '
 import GroupPropertiesTable from '@/pages/ClassManagement/components/GroupDialog/GroupPropertiesTable';
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import useGroupStore from '@/store/GroupStore';
+import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 
 interface GroupDialogBodyProps {
   form: UseFormReturn<GroupForm>;
@@ -36,10 +37,11 @@ interface GroupDialogBodyProps {
 }
 
 const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBodyProps) => {
-  const { setValue, watch } = form;
+  const { setValue, watch, getValues } = form;
   const { user, searchAttendees } = useUserStore();
   const { searchGroups, searchGroupsIsLoading } = useGroupStore();
   const { isSessionLoading, isSchoolClassLoading, isProjectLoading } = useClassManagementStore();
+  const { userGroupToEdit } = useLessonStore();
   const { t } = useTranslation();
 
   const isDialogLoading = isProjectLoading || isSchoolClassLoading || isSessionLoading;
@@ -73,8 +75,12 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
       return;
     }
 
-    const sanitizedName = displayName.replace(/\s+/g, '_').replace(/[^a-z0-9_+-]/gi, '');
-    setValue('name', `p_${sanitizedName}`);
+    const sanitizedName = displayName
+      .toLowerCase()
+      .replace(/\s+/g, '_')
+      .replace(/[^a-z0-9_+-]/g, '');
+
+    setValue('name', sanitizedName);
   }, [displayName, setValue]);
 
   const adminUsers = watch('admins') as AttendeeDto[];
@@ -86,6 +92,8 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
   const standardGroupsAccordionTitle = `${t('common.and')} ${standardGroups.length} ${t('common.groups')}`;
   const standardUsersAccordionTitle = `${t('common.groupUsers')}: ${standardUsers.length} ${t('common.users')} ${type === UserGroups.Sessions ? '' : standardGroupsAccordionTitle}`;
 
+  const isNameChangeDisabled = type === UserGroups.Sessions && userGroupToEdit !== null;
+
   return (
     <Form {...form}>
       <form
@@ -96,8 +104,9 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
       >
         <FormField
           name="displayName"
-          disabled={disabled}
+          disabled={isNameChangeDisabled || disabled}
           form={form}
+          defaultValue={getValues('displayName')}
           labelTranslationId={t('classmanagement.name')}
           isLoading={searchGroupsIsLoading}
           variant="dialog"
@@ -156,7 +165,7 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
                 hideGroupSearch={type === UserGroups.Sessions}
                 variant="dialog"
               />
-              <div className="h-16 w-16" />
+              <div className="h-24 w-16" />
             </AccordionContent>
           </AccordionItem>
         </AccordionSH>

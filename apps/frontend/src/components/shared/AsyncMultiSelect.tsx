@@ -41,13 +41,13 @@ const AsyncMultiSelect = <T extends MultipleSelectorOptionSH>({
   const { t } = useTranslation();
 
   const loadingIndicator = (
-    <p className={`leading-1 py-2 text-center ${variant === 'default' ? 'text-secondary' : 'text-muted'}`}>
+    <p className={`leading-1 py-2 text-center ${variant === 'default' ? 'text-secondary' : 'text-background'}`}>
       {t('search.loading')}...
     </p>
   );
 
   const emptyIndicator = (
-    <p className={`leading-1 w-full py-2 text-center ${variant === 'default' ? 'text-secondary' : 'text-muted'}`}>
+    <p className={`leading-1 w-full py-2 text-center ${variant === 'default' ? 'text-secondary' : 'text-background'}`}>
       {t('search.no-results')}
     </p>
   );

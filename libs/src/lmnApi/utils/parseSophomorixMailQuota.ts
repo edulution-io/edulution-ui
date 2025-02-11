@@ -10,27 +10,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
+/**
+ * Input example: [
+ *     "500::"
+ *   ]
+ */
+function parseSophomorixMailQuota(mailQuotaString?: string[]): string {
+  if (!Array.isArray(mailQuotaString) || mailQuotaString.length === 0) {
+    return '0';
+  }
 
-interface GroupForm {
-  id: string;
-  name: string;
-  displayName: string;
-  description: string;
-  quota: string;
-  mailquota: string;
-  maillist: boolean;
-  mailalias: boolean;
-  join: boolean;
-  hide: boolean;
-  admins: MultipleSelectorOptionSH[];
-  admingroups: MultipleSelectorGroup[];
-  members: MultipleSelectorOptionSH[];
-  membergroups: MultipleSelectorGroup[];
-  school: string;
-  creationDate?: string;
-  proxyAddresses: string;
+  const parts = mailQuotaString[0].split('::');
+  const quota = parts[0];
+
+  if (!Number.isNaN(Number(quota))) {
+    return quota;
+  }
+
+  return '0';
 }
 
-export default GroupForm;
+export default parseSophomorixMailQuota;

@@ -28,50 +28,55 @@ import { FaAddressCard } from 'react-icons/fa';
 import getUniqueValues from '@libs/lmnApi/utils/getUniqueValues';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import { FILTER_BAR_ID } from '@libs/classManagement/constants/pageElementIds';
+import { UseFormReturn } from 'react-hook-form';
+import GroupForm from '@libs/groups/types/groupForm';
+import GroupColumn from '@libs/groups/types/groupColumn';
 
 const LessonPage = () => {
   const { userSessions, fetchProject, updateSession, createSession, removeSession, fetchSchoolClass } =
     useClassManagementStore();
   const { getOwnUser } = useLmnApiStore();
-  const { groupType, groupName } = useParams();
+  const { groupType: groupTypeParams, groupName: groupNameParams } = useParams();
   const {
     isLoading,
+    openDialogType,
     setOpenDialogType,
     setUserGroupToEdit,
     member,
     setMember,
-    setCurrentGroupName,
-    setCurrentGroupType,
-    currentGroupName,
-    currentGroupType,
+    setGroupNameInStore,
+    setGroupTypeInStore,
+    groupNameFromStore,
+    groupTypeFromStore,
   } = useLessonStore();
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [isPageLoading, setIsPageLoading] = useState(false);
+
+  const currentSelectedSession = userSessions.find((session) => session.name === groupNameParams);
 
   useEffect(() => {
     void getOwnUser();
   }, []);
 
   const fetchData = async () => {
-    if (!groupName) return;
+    if (!groupNameParams) return;
 
     setIsPageLoading(true);
 
-    switch (groupType) {
+    switch (groupTypeParams) {
       case UserGroups.Projects: {
-        const project = await fetchProject(groupName);
+        const project = await fetchProject(groupNameParams);
         if (project?.members) {
           setMember(getUniqueValues([...project.members, ...project.admins]));
         }
         break;
       }
       case UserGroups.Sessions:
-        setMember(userSessions.find((session) => session.name === groupName)?.members || []);
+        setMember(currentSelectedSession?.members || []);
         break;
       case UserGroups.Classes: {
-        const schoolClass = await fetchSchoolClass(groupName);
+        const schoolClass = await fetchSchoolClass(groupNameParams);
         if (schoolClass?.members) {
           setMember(getUniqueValues([...schoolClass.members]));
         }
@@ -83,47 +88,69 @@ const LessonPage = () => {
   };
 
   useEffect(() => {
-    const restoreTemporarySession = currentGroupType && currentGroupName && !groupType && !groupName;
+    const restoreTemporarySession = !!(
+      groupTypeFromStore &&
+      groupNameFromStore &&
+      !groupTypeParams &&
+      !groupNameParams
+    );
+
     const fetchInitialData =
-      (groupType && groupType !== currentGroupType) || (groupName && groupName !== currentGroupName);
+      !!(groupTypeParams && groupTypeParams !== groupTypeFromStore) ||
+      !!(groupNameParams && groupNameParams !== groupNameFromStore);
 
     if (restoreTemporarySession) {
-      navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}/${currentGroupType}/${currentGroupName}`, { replace: true });
+      navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}/${groupTypeFromStore}/${groupNameFromStore}`, { replace: true });
     } else if (fetchInitialData) {
-      setCurrentGroupType(groupType);
-      setCurrentGroupName(groupName);
+      setGroupTypeInStore(groupTypeParams);
+      setGroupNameInStore(groupNameParams);
       void fetchData();
     }
-  }, [groupType, groupName]);
+  }, [groupTypeParams, groupNameParams]);
+
+  useEffect(() => {
+    setMember(currentSelectedSession?.members || []);
+    if (!isLoading) setIsPageLoading(false);
+  }, [userSessions]);
 
   const handleSessionSelect = (sessionName: string) => {
     navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}/sessions/${sessionName}`);
   };
 
   const onSaveSessionsButtonClick = () => {
-    setIsDialogOpen(true);
     setOpenDialogType(UserGroups.Sessions);
-    setUserGroupToEdit(userSessions.find((session) => session.name === groupName) || null);
+    setUserGroupToEdit(currentSelectedSession || null);
   };
 
   const sessionOptions = userSessions.map((s) => ({ id: s.sid, name: s.name }));
 
   const closeSession = () => {
     setMember([]);
-    setCurrentGroupType();
-    setCurrentGroupName();
+    setGroupTypeInStore();
+    setGroupNameInStore();
     navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}`);
   };
 
-  const sessionToSave = {
+  const createSessionAndNavigate = async (form: UseFormReturn<GroupForm>): Promise<void> => {
+    setIsPageLoading(true);
+    await createSession(form);
+    navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}/sessions/${form.getValues().name}`);
+  };
+
+  const updateSessionWithLoading = async (form: UseFormReturn<GroupForm>): Promise<void> => {
+    setIsPageLoading(true);
+    await updateSession(form);
+  };
+
+  const sessionToSave: GroupColumn = {
     name: UserGroups.Sessions,
     translationId: 'mySessions',
-    createFunction: createSession,
-    updateFunction: updateSession,
+    createFunction: createSessionAndNavigate,
+    updateFunction: updateSessionWithLoading,
     removeFunction: async (id: string) => {
       await removeSession(id);
       setOpenDialogType(null);
-      navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}`);
+      closeSession();
     },
     icon: <FaAddressCard className="h-6 w-6" />,
     groups: userSessions,
@@ -141,19 +168,21 @@ const LessonPage = () => {
           <div className="md:w-1/3">
             <DropdownSelect
               options={sessionOptions}
-              selectedVal={groupName || t('classmanagement.selectSavedSession')}
+              selectedVal={groupNameParams || t('classmanagement.selectSavedSession')}
               handleChange={handleSessionSelect}
             />
           </div>
         )}
-        {groupName || member.length ? (
+        {groupNameParams || member.length ? (
           <div className="flex flex-row justify-between gap-2">
             <button
               type="button"
               onClick={onSaveSessionsButtonClick}
               className="flex h-[42px] cursor-pointer items-center rounded-md bg-accent text-secondary hover:opacity-90"
             >
-              <span className="text-nowrap px-4 text-background">{t('classmanagement.saveSession')}</span>
+              <span className="text-nowrap px-4 text-background">
+                {t(`classmanagement.${currentSelectedSession ? 'editSession' : 'saveSession'}`)}
+              </span>
               <MdSave className="ml-auto inline-block h-8 w-8 pr-2" />
             </button>
             <button
@@ -167,8 +196,8 @@ const LessonPage = () => {
           </div>
         ) : null}
       </div>
-      <div>{groupName || member.length ? <UserArea /> : <QuickAccess />}</div>
-      {isDialogOpen && <GroupDialog item={sessionToSave} />}
+      <div>{groupNameParams || member.length ? <UserArea /> : <QuickAccess />}</div>
+      {openDialogType === UserGroups.Sessions && <GroupDialog item={sessionToSave} />}
     </>
   );
 };
