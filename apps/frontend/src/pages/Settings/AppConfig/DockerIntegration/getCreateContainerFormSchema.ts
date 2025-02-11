@@ -13,10 +13,14 @@
 import { z } from 'zod';
 import { TFunction } from 'i18next';
 
+const fqdnRegex = /^(?=.{1,253}$)(?:(?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.)+[a-zA-Z]{2,}$/;
+
 const getCreateContainerFormSchema = (t: TFunction<'translation', undefined>, showInputForm: boolean) =>
   showInputForm
     ? z.object({
-        EDULUTION_MAIL_HOSTNAME: z.string({ message: t('common.required') }).url({ message: t('common.invalid_url') }),
+        EDULUTION_MAIL_HOSTNAME: z.string({ message: t('common.required') }).refine((val) => fqdnRegex.test(val), {
+          message: t('common.invalid_fqdn'),
+        }),
       })
     : z.object({});
 

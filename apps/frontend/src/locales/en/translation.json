@@ -912,6 +912,7 @@
     "pressInstall": "Press Install to start",
     "disabled": "Disabled",
     "invalid_url": "Invalid URL",
+    "invalid_fqdn": "Invalid FQDN. Please only enter the hostname.",
     "required": "Required"
   },
   "form": {

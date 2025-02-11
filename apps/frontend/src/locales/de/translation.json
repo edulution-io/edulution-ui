@@ -912,6 +912,7 @@
     "pressInstall": "Drücke Installieren um zu Starten.",
     "disabled": "Deaktiviert",
     "invalid_url": "Ungültige URL",
+    "invalid_fqdn": "Ungültiger FQDN. Bitte nur den Hostnamen angeben.",
     "required": "Erforderlich"
   },
   "form": {

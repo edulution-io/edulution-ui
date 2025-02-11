@@ -26,6 +26,7 @@ import type TApps from '@libs/appconfig/types/appsType';
 import convertComposeToDockerode from '@libs/docker/utils/convertComposeToDockerode';
 import extractEnvPlaceholders from '@libs/docker/utils/extractEnvPlaceholders';
 import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
+import updateContainerConfig from '@libs/docker/utils/updateContainerConfig';
 import useDockerApplicationStore from './useDockerApplicationStore';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 import getCreateContainerFormSchema from './getCreateContainerFormSchema';
@@ -84,7 +85,11 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
 
   const handleCreateContainer = async () => {
     if (createContainerConfig) {
-      await createAndRunContainer(createContainerConfig);
+      const formValues = form.getValues();
+      const updatedConfig = showInputForm
+        ? updateContainerConfig(createContainerConfig, formValues)
+        : createContainerConfig;
+      await createAndRunContainer(updatedConfig);
       await fetchTableContent(settingLocation);
     }
   };

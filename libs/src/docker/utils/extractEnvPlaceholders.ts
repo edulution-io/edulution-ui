@@ -23,7 +23,8 @@ const extractEnvPlaceholders = (containerConfig: Dockerode.ContainerCreateOption
           if (typeof value === 'string') {
             const match = value.match(placeholderPattern);
             if (match) {
-              acc[match[1]] = '';
+              const [, placeholder] = match;
+              acc[placeholder] = placeholder;
             }
           }
         });
