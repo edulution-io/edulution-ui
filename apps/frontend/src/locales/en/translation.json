@@ -297,7 +297,8 @@
       "DuplicateFailed": "Copy failed",
       "AppNotProperlyConfigured": "OnlyOffice is not properly configured, contact your system administrator.",
       "CollectingFailed": "Collecting files failed",
-      "SharingFailed": "Sharing files failed"
+      "SharingFailed": "Sharing files failed",
+      "MissingCallbackURL": "Missing callback URL"
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
@@ -687,8 +688,10 @@
         },
         "veyon": {
           "title": "Veyon Proxy",
-          "description": "",
-          "filterPlaceHolderText": "Search for proxy"
+          "description": "Here you can configure the Veyon WebAPI proxies.",
+          "filterPlaceHolderText": "Search for proxy",
+          "invalidCidrFormat": "Invalid CIDR notation",
+          "invalidUrlFormat": "Invalid URL"
         }
       },
       "update": {
@@ -927,7 +930,9 @@
     "proxyConfigDescription": "YAML Editor for the Traefik proxy configuration",
     "expertMode": "Expert mode",
     "proxyPath": "Proxy path",
+    "proxyPathPlaceholder": "e.g. SOGo",
     "proxyDestination": "Proxy destination",
+    "proxyDestinationPlaceholder": "e.g. http://localhost:1234/",
     "stripPrefix": "Strip prefix"
   },
   "fileOperationSuccessful": "File operation successful",
@@ -963,7 +968,8 @@
     "noDataAvailable": "No data available"
   },
   "loadingIndicator": {
-    "message": "Please wait..."
+    "message": "Please wait...",
+    "previewLoading": "Preview loading"
   },
   "search": {
     "type-to-search": "Type to search",
@@ -1190,6 +1196,14 @@
       "paused": "paused",
       "exited": "exited",
       "dead": "dead"
+    }
+  },
+  "veyon": {
+    "errors": {
+      "AppNotProperlyConfigured": "Veyon is not properly configured, contact the system administrator.",
+      "VeyonAuthFailed": "Veyon authentication failed.",
+      "GetUserFailed": "User could not be retrieved.",
+      "VeyonApiNotReachable": "The external Veyon server is not reachable."
     }
   }
 }

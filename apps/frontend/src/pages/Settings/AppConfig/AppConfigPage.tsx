@@ -42,7 +42,7 @@ import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailImporterConfig from './mails/MailImporterConfig';
-import getAppConfigFormSchema from './appConfigSchema';
+import getAppConfigFormSchema from './getAppConfigFormSchema';
 import ProxyConfigForm from './components/ProxyConfigForm';
 import DockerContainerTable from './DockerIntegration/DockerContainerTable';
 

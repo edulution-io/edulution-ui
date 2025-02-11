@@ -10,10 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type LmnApiProjectQuota = {
-  quota: number;
-  share: string;
-  comment?: string;
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+
+const FullScreenImage = ({ imageSrc }: { imageSrc: string }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="flex h-full w-full items-center justify-center bg-foreground">
+      <img
+        src={imageSrc}
+        alt={t('preview.image')}
+        className="max-h-full max-w-full rounded-md"
+      />
+    </div>
+  );
 };
 
-export default LmnApiProjectQuota;
+export default FullScreenImage;

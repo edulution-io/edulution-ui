@@ -10,10 +10,5 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type LmnApiProjectQuota = {
-  quota: number;
-  share: string;
-  comment?: string;
-};
-
-export default LmnApiProjectQuota;
+// eslint-disable-next-line import/prefer-default-export
+export const SHOW_TOASTER_DURATION = 4000;

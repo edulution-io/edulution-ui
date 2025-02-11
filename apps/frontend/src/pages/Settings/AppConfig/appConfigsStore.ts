@@ -34,7 +34,7 @@ type AppConfigsStore = {
   createAppConfig: (appConfig: AppConfigDto) => Promise<void>;
   getAppConfigs: () => Promise<boolean>;
   updateAppConfig: (appConfigs: AppConfigDto) => Promise<void>;
-  patchAppConfig: (name: string, patchConfigDto: PatchConfigDto) => Promise<void>;
+  patchSingleFieldInConfig: (name: string, patchConfigDto: PatchConfigDto) => Promise<void>;
   deleteAppConfigEntry: (name: string) => Promise<void>;
   getConfigFile: (filePath: string) => Promise<string>;
 };
@@ -119,7 +119,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
         }
       },
 
-      patchAppConfig: async (name: string, patchConfigDto: PatchConfigDto) => {
+      patchSingleFieldInConfig: async (name: string, patchConfigDto: PatchConfigDto) => {
         set({ isLoading: true, error: null });
         try {
           const { data } = await eduApi.patch<AppConfigDto[]>(

@@ -15,7 +15,7 @@ import { TFunction } from 'i18next';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import APPS from '@libs/appconfig/constants/apps';
 import TApps from '@libs/appconfig/types/appsType';
-// import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 
 const appIntegrationEnum = z.enum(Object.values(APP_INTEGRATION_VARIANT) as [string, ...string[]]);
 const forbiddenRouts = [...Object.values(APPS), 'auth', 'edu-api'];
@@ -45,17 +45,17 @@ const getAppConfigFormSchema = (t: TFunction<'translation', undefined>) =>
         })
         .optional(),
       stripPrefix: z.boolean().optional(),
-      // extendedOptions: z
-      //   .object({
-      //     [ExtendedOptionKeys.MAIL_IMAP_URL]: z.string().optional(),
-      //     [ExtendedOptionKeys.MAIL_IMAP_PORT]: z.number().optional(),
-      //   })
-      //   .optional(),
-      // mailProviderId: z.string().optional(),
-      // configName: z.string().optional(),
-      // hostname: z.string().optional(),
-      // port: z.string().optional(),
-      // encryption: z.string().optional(),
+      extendedOptions: z
+        .object({
+          [ExtendedOptionKeys.MAIL_IMAP_URL]: z.string().optional(),
+          [ExtendedOptionKeys.MAIL_IMAP_PORT]: z.number().optional(),
+        })
+        .optional(),
+      mailProviderId: z.string().optional(),
+      configName: z.string().optional(),
+      hostname: z.string().optional(),
+      port: z.string().optional(),
+      encryption: z.string().optional(),
     }),
   );
 

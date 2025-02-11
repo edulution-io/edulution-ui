@@ -10,10 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type LmnApiProjectQuota = {
-  quota: number;
-  share: string;
-  comment?: string;
-};
-
-export default LmnApiProjectQuota;
+export const VEYON_API_ENDPOINT = 'veyon';
+export const VEYON_API_FRAMEBUFFER_ENDPOINT = 'framebuffer';
+export const VEYON_API_FEATURE_ENDPOINT = 'feature';

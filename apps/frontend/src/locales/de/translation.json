@@ -296,7 +296,8 @@
       "DuplicateFailed": "Kopieren fehlgeschlagen",
       "AppNotProperlyConfigured": "OnlyOffice ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator.",
       "CollectingFailed": "Einasmmeln der Dateien fehlgeschlagen",
-      "SharingFailed": "Austeilen der Dateien fehlgeschlagen"
+      "SharingFailed": "Austeilen der Dateien fehlgeschlagen",
+      "MissingCallbackURL": "Fehlende Callback-URL"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
@@ -688,8 +689,10 @@
         },
         "veyon": {
           "title": "Veyon Proxy",
-          "description": "",
-          "filterPlaceHolderText": "Suche nach Proxy-Name"
+          "description": "Hier können die Veyon WebAPI-Proxys konfiguriert werden.",
+          "filterPlaceHolderText": "Suche nach Proxy-Name",
+          "invalidCidrFormat": "Ungültige CIDR-Notation",
+          "invalidUrlFormat": "Ungültige URL"
         }
       },
       "update": {
@@ -927,7 +930,9 @@
     "proxyConfigDescription": "YAML-Editor für die Konfiguration des Traefik-Proxy.",
     "expertMode": "Expertenmodus",
     "proxyPath": "Proxy Pfad",
+    "proxyPathPlaceholder": "z.B. SOGo",
     "proxyDestination": "Zielhost",
+    "proxyDestinationPlaceholder": "z.B. http://localhost:1234/",
     "stripPrefix": "Prefix entfernen"
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
@@ -964,7 +969,8 @@
     "noDataAvailable": "Keine Daten verfügbar"
   },
   "loadingIndicator": {
-    "message": "Bitte warten..."
+    "message": "Bitte warten...",
+    "previewLoading": "Vorschau laden"
   },
   "search": {
     "type-to-search": "Tippen um zu suchen",
@@ -1190,6 +1196,14 @@
       "paused": "pausiert",
       "exited": "gestoppt",
       "dead": "tot"
+    }
+  },
+  "veyon": {
+    "errors": {
+      "AppNotProperlyConfigured": "Veyon ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
+      "VeyonAuthFailed": "Veyon-Authentifizierung fehlgeschlagen",
+      "GetUserFailed": "Benutzer konnte nicht abgerufen werden",
+      "VeyonApiNotReachable": "Der externen Veyon-Server ist nicht erreichbar"
     }
   }
 }
