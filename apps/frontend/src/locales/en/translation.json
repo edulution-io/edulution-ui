@@ -907,7 +907,9 @@
     "update": "Update",
     "progress": "Progress...",
     "pressInstall": "Press Install to start",
-    "disabled": "Disabled"
+    "disabled": "Disabled",
+    "invalid_url": "Invalid URL",
+    "required": "Required"
   },
   "form": {
     "path": "Path",
@@ -1143,11 +1145,12 @@
     "image": "Image preview",
     "failedToLoadImage": "Failed to load image"
   },
-  "dockerApplication": {
-    "title": "Docker Application",
+  "containerApplication": {
     "dialogTitle": "{{applicationName}}-Plugins Installer",
-    "mailDescription": "If you want to operate your own mail server, you can carry out the setup for Mailcow here.",
-    "classmanagementDescription": "If you use Veyon in your school network, you can carry out the setup for the Veyon-WebAPI-Proxy here."
+    "EDULUTION_MAIL_HOSTNAME": {
+      "title": "Hostname",
+      "description": "Hostname of the mail server. This could be different from the edulution domain name."
+    }
   },
   "dockerOverview": {
     "title": "Container Overview",

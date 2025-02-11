@@ -10,19 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
-import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+import { z } from 'zod';
+import { TFunction } from 'i18next';
 
-const DOCKER_CONTAINER_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
-  {
-    name: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
-    description: 'containerApplication.description',
-    title: 'containerApplication.title',
-    type: ExtendedOptionField.table,
-    value: '',
-    width: 'full',
-  },
-];
+const getCreateContainerFormSchema = (t: TFunction<'translation', undefined>, showInputForm: boolean) =>
+  showInputForm
+    ? z.object({
+        EDULUTION_MAIL_HOSTNAME: z.string({ message: t('common.required') }).url({ message: t('common.invalid_url') }),
+      })
+    : z.object({});
 
-export default DOCKER_CONTAINER_EXTENDED_OPTIONS;
+export default getCreateContainerFormSchema;
