@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { DropdownSelect } from '@/components';
@@ -29,18 +29,16 @@ import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
 import { useForm } from 'react-hook-form';
 
-interface AddAppConfigDialogProps {
-  option: string;
-  setOption: (option: string) => void;
-}
-
-const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOption }) => {
+const AddAppConfigDialog: React.FC = () => {
   const { t } = useTranslation();
   const isMobileView = useIsMobileView();
   const navigate = useNavigate();
   const { isAddAppConfigDialogOpen, appConfigs, setIsAddAppConfigDialogOpen, createAppConfig, isLoading, error } =
     useAppConfigsStore();
+  const [option, setOption] = useState<string>(`${APPS.CUSTOM}.sidebar`);
+
   const selectedOption = option.toLowerCase().split('.')[0] as TApps;
+  const isCustomAppSelected = selectedOption === APPS.CUSTOM;
 
   const filteredAppOptions = useMemo(() => {
     const existingOptions = appConfigs.map((item) => item.name);
@@ -48,43 +46,18 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
       (item) => !existingOptions.includes(item.id) || item.id === APPS.CUSTOM,
     );
     return filteredOptions.map((item) => ({ id: item.id, name: `${item.id}.sidebar` }));
-  }, [appConfigs, isAddAppConfigDialogOpen]);
+  }, [appConfigs]);
 
-  const form = useForm();
+  const form = useForm({
+    mode: 'onSubmit',
+    resolver: undefined,
+  });
 
   useEffect(() => {
-    if (selectedOption === APPS.CUSTOM) {
+    if (isCustomAppSelected) {
       form.setValue('name', '');
     }
   }, [selectedOption]);
-
-  const getDialogBody = () => {
-    if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
-    return (
-      <div className="my-12 text-background">
-        <p>{t('settings.addApp.description')}</p>
-        <DropdownSelect
-          options={filteredAppOptions}
-          selectedVal={t(option)}
-          handleChange={setOption}
-          openToTop={isMobileView}
-        />
-        {selectedOption === APPS.CUSTOM ? (
-          <Form {...form}>
-            <form className="mt-4">
-              <FormField
-                name="name"
-                defaultValue=""
-                form={form}
-                labelTranslationId={t('common.name')}
-                variant="dialog"
-              />
-            </form>
-          </Form>
-        ) : null}
-      </div>
-    );
-  };
 
   const onSubmit = async () => {
     if (!selectedOption) {
@@ -106,29 +79,52 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
       if (!error) {
         setOption(`${APPS.CUSTOM}.sidebar`);
         setIsAddAppConfigDialogOpen(false);
+        navigate(`/${SETTINGS_PATH}/${selectedOption}`);
       }
     }
   };
 
-  useEffect(() => {
-    if (selectedOption && !isAddAppConfigDialogOpen) {
-      navigate(`/${SETTINGS_PATH}/${selectedOption}`);
-    }
-  }, [isAddAppConfigDialogOpen, selectedOption]);
-
-  const dialogFooter = (
-    <div className="mt-4 flex justify-end">
-      <Button
-        type="button"
-        variant="btn-collaboration"
-        size="lg"
-        onClick={onSubmit}
-        disabled={isLoading || !selectedOption}
-      >
-        {t('common.add')}
-      </Button>
-    </div>
-  );
+  const getDialogBody = () => {
+    if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
+    return (
+      <>
+        <div className="my-12">
+          <p>{t('settings.addApp.description')}</p>
+          <DropdownSelect
+            options={filteredAppOptions}
+            selectedVal={t(option)}
+            handleChange={setOption}
+            openToTop={isMobileView}
+          />
+        </div>
+        <Form {...form}>
+          <form className="mt-4">
+            {isCustomAppSelected ? (
+              <FormField
+                name="name"
+                defaultValue=""
+                form={form}
+                labelTranslationId={t('common.name')}
+                variant="dialog"
+                className=""
+              />
+            ) : null}
+            <div className="mt-12 flex justify-end">
+              <Button
+                type="submit"
+                variant="btn-collaboration"
+                size="lg"
+                onClick={onSubmit}
+                disabled={isLoading || !selectedOption}
+              >
+                {t('common.add')}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </>
+    );
+  };
 
   return (
     <AdaptiveDialog
@@ -136,7 +132,6 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
       handleOpenChange={() => setIsAddAppConfigDialogOpen(false)}
       title={t('settings.addApp.title')}
       body={getDialogBody()}
-      footer={dialogFooter}
     />
   );
 };

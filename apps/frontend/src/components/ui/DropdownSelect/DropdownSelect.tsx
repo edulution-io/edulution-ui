@@ -78,26 +78,24 @@ const DropdownSelect: React.FC<DropdownProps> = ({
       })}
       ref={dropdownRef}
     >
-      <div>
-        <div className={styles['selected-value']}>
-          <input
-            type="text"
-            value={getDisplayValue()}
-            name="searchTerm"
-            onChange={(e) => {
-              setQuery(e.target.value);
-              handleChange('');
-            }}
-            onClickCapture={() => setIsOpen((prevVal) => !prevVal)}
-            disabled={options.length === 0}
-            className={clsx({
-              'bg-background text-foreground': variant === 'light',
-              'bg-muted text-secondary': variant === 'dark',
-            })}
-          />
-        </div>
-        <div className={clsx(styles.arrow, { [styles.open]: isOpen, [styles.up]: openToTop })} />
+      <div className={styles['selected-value']}>
+        <input
+          type="text"
+          value={getDisplayValue()}
+          name="searchTerm"
+          onChange={(e) => {
+            setQuery(e.target.value);
+            handleChange('');
+          }}
+          onClickCapture={() => setIsOpen((prevVal) => !prevVal)}
+          disabled={options.length === 0}
+          className={clsx({
+            'bg-background text-foreground': variant === 'light',
+            'bg-muted text-secondary': variant === 'dark',
+          })}
+        />
       </div>
+      <div className={clsx(styles.arrow, { [styles.open]: isOpen, [styles.up]: openToTop })} />
       <div
         className={clsx(styles.options, {
           [styles.open]: isOpen,

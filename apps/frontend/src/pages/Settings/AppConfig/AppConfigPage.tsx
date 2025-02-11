@@ -54,7 +54,6 @@ const AppConfigPage: React.FC = () => {
   const { appConfigs, getAppConfigs, setIsDeleteAppConfigDialogOpen, updateAppConfig, deleteAppConfigEntry } =
     useAppConfigsStore();
   const { searchGroups } = useGroupStore();
-  const [option, setOption] = useState<string>(`${APPS.CUSTOM}.sidebar`);
   const isMobileView = useIsMobileView();
   const { postExternalMailProviderConfig } = useMailsStore();
 
@@ -275,10 +274,7 @@ const AppConfigPage: React.FC = () => {
           handleSaveSettingsItem={handleSubmit(onSubmit)}
         />
       ) : null}
-      <AddAppConfigDialog
-        option={option}
-        setOption={setOption}
-      />
+      <AddAppConfigDialog />
       <DeleteAppConfigDialog handleDeleteSettingsItem={handleDeleteSettingsItem} />
     </>
   );
