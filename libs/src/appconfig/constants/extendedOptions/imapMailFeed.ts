@@ -1,36 +1,51 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 
 const MAIL_IMAP_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
-  // TODO: ENABLE BOOLEAN TYPE WITH A SWITCH AS INPUT COMPONENT (ADDITIONALLY WIDTH OF THE COMPONENT) (https://github.com/edulution-io/edulution-ui/issues/342)
   {
     name: ExtendedOptionKeys.MAIL_IMAP_URL,
     title: 'appExtendedOptions.mailImapUrlTitle',
     description: 'appExtendedOptions.mailImapUrlDescription',
     type: ExtendedOptionField.input,
     value: 'webmail.schulung.multi.schule',
+    width: 'full',
   },
   {
     name: ExtendedOptionKeys.MAIL_IMAP_PORT,
     title: 'appExtendedOptions.mailImapPortTitle',
     description: 'appExtendedOptions.mailImapPortDescription',
-    type: ExtendedOptionField.input,
-    value: '993',
+    type: ExtendedOptionField.number,
+    value: 993,
+    width: 'third',
   },
   {
     name: ExtendedOptionKeys.MAIL_IMAP_SECURE,
     title: 'appExtendedOptions.mailImapSecureTitle',
     description: 'appExtendedOptions.mailImapSecureDescription',
-    type: ExtendedOptionField.input,
-    value: 'true',
+    type: ExtendedOptionField.switch,
+    value: true,
+    width: 'third',
   },
   {
     name: ExtendedOptionKeys.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED,
     title: 'appExtendedOptions.mailImapRejectUnauthorizedTitle',
     description: 'appExtendedOptions.mailImapRejectUnauthorizedDescription',
-    type: ExtendedOptionField.input,
-    value: 'false',
+    type: ExtendedOptionField.switch,
+    value: false,
+    width: 'third',
   },
 ];
 

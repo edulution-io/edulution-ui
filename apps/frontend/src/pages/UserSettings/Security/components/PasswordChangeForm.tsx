@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { t } from 'i18next';
@@ -32,7 +44,7 @@ const PasswordChangeForm: FC = () => {
   return (
     <div className="pt-5 sm:pt-0">
       <LoadingIndicator isOpen={isLoading} />
-      <h3>{t('usersettings.security.changePassword.title')}</h3>
+      <h3 className="text-background">{t('usersettings.security.changePassword.title')}</h3>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 py-4"
@@ -42,12 +54,11 @@ const PasswordChangeForm: FC = () => {
             htmlFor="currentPassword"
             className="block text-sm font-medium"
           >
-            <p className="font-bold text-ciLightGrey">{t('usersettings.security.changePassword.currentPassword')}</p>
+            <p className="font-bold text-secondary">{t('usersettings.security.changePassword.currentPassword')}</p>
           </Label>
           <Input
             id="currentPassword"
             type="password"
-            variant="lightGray"
             {...register('currentPassword', { required: t('usersettings.errors.currentPasswordRequired') })}
             className={`mb-4 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
               errors.currentPassword ? 'border-red-500' : ''
@@ -58,12 +69,11 @@ const PasswordChangeForm: FC = () => {
             htmlFor="newPassword"
             className="block text-sm font-medium"
           >
-            <p className="font-bold text-ciLightGrey">{t('usersettings.security.changePassword.newPassword')}</p>
+            <p className="font-bold text-secondary">{t('usersettings.security.changePassword.newPassword')}</p>
           </Label>
           <Input
             id="newPassword"
             type="password"
-            variant="lightGray"
             {...register('newPassword', {
               required: t('usersettings.errors.newPasswordRequired'),
               minLength: { value: 8, message: t('usersettings.errors.passwordLength') },
@@ -77,12 +87,11 @@ const PasswordChangeForm: FC = () => {
             htmlFor="confirmPassword"
             className="block text-sm font-medium"
           >
-            <p className="font-bold text-ciLightGrey">{t('usersettings.security.changePassword.confirmPassword')}</p>
+            <p className="font-bold text-secondary">{t('usersettings.security.changePassword.confirmPassword')}</p>
           </Label>
           <Input
             id="confirmPassword"
             type="password"
-            variant="lightGray"
             {...register('confirmPassword', {
               required: t('usersettings.errors.confirmPasswordRequired'),
               validate: (value) => value === watch('newPassword') || t('usersettings.errors.passwordsDoNotMatch'),

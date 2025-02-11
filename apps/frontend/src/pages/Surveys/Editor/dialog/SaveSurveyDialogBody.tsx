@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
@@ -58,10 +70,10 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
         groups={watch('invitedGroups') as MultipleSelectorGroup[]}
         onGroupSearch={searchGroups}
         onGroupsChange={handleGroupsChange}
-        variant="light"
+        variant="dialog"
       />
-      <p className="text-m font-bold text-foreground">{t('survey.expirationDate')}</p>
-      <div className="flex items-center text-foreground">
+      <p className="text-m font-bold text-background">{t('survey.expirationDate')}</p>
+      <div className="flex items-center">
         {t('common.date')}
         <div className="ml-2">
           <DatePicker
@@ -70,15 +82,15 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
           />
         </div>
       </div>
-      <div className="flex items-center text-foreground">
+      <div className="flex items-center text-background">
         <TimeInput
           form={form}
           disabled={!getValues('expires')}
           fieldName="expires"
         />
       </div>
-      <p className="text-m font-bold text-foreground">{t('surveys.saveDialog.settingsFlags')}</p>
-      <div className="flex items-center text-foreground">
+      <p className="text-m font-bold text-background">{t('surveys.saveDialog.settingsFlags')}</p>
+      <div className="flex items-center text-background">
         <Checkbox
           checked={isAnonymousWatched}
           onCheckedChange={(value: boolean) => setValue('isAnonymous', value, { shouldValidate: true })}
@@ -87,7 +99,7 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
         />
         {t('surveys.saveDialog.isAnonymous')}
       </div>
-      <div className="flex items-center text-foreground">
+      <div className="flex items-center text-background">
         <Checkbox
           checked={isPublicWatched}
           onCheckedChange={(value: boolean) => setValue('isPublic', value, { shouldValidate: true })}
@@ -96,7 +108,7 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
         />
         {t('surveys.saveDialog.isPublic')}
       </div>
-      <div className="flex items-center text-foreground">
+      <div className="flex items-center text-background">
         <Checkbox
           checked={canSubmitMultipleAnswersWatched}
           onCheckedChange={(value: boolean) => setValue('canSubmitMultipleAnswers', value, { shouldValidate: true })}

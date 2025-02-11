@@ -1,7 +1,19 @@
-import { Body, Controller, Delete, Get, Logger, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
 
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AppConfigDto } from '@libs/appconfig/types';
+import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import AppConfigService from './appconfig.service';
 import GetCurrentUserGroups from '../common/decorators/getUserGroups.decorator';
@@ -15,14 +27,28 @@ class AppConfigController {
 
   @Post()
   @UseGuards(AppConfigGuard)
-  createConfig(@Body() appConfigDto: AppConfigDto[]) {
-    this.appConfigService.insertConfig(appConfigDto).catch((e) => Logger.error(e, AppConfigController.name));
+  createConfig(@GetCurrentUserGroups() ldapGroups: string[], @Body() appConfigDto: AppConfigDto) {
+    return this.appConfigService.insertConfig(appConfigDto, ldapGroups);
   }
 
-  @Put()
+  @Put(':name')
   @UseGuards(AppConfigGuard)
-  updateConfig(@Body() appConfigDto: AppConfigDto[]) {
-    this.appConfigService.updateConfig(appConfigDto).catch((e) => Logger.error(e, AppConfigController.name));
+  updateConfig(
+    @Param('name') name: string,
+    @Body() appConfigDto: AppConfigDto,
+    @GetCurrentUserGroups() ldapGroups: string[],
+  ) {
+    return this.appConfigService.updateConfig(name, appConfigDto, ldapGroups);
+  }
+
+  @Patch(':name')
+  @UseGuards(AppConfigGuard)
+  patchConfig(
+    @Param('name') name: string,
+    @Body() patchConfigDto: PatchConfigDto,
+    @GetCurrentUserGroups() ldapGroups: string[],
+  ) {
+    return this.appConfigService.patchConfig(name, patchConfigDto, ldapGroups);
   }
 
   @Get()
@@ -32,8 +58,8 @@ class AppConfigController {
 
   @Delete(':name')
   @UseGuards(AppConfigGuard)
-  deleteConfig(@Param('name') name: string) {
-    this.appConfigService.deleteConfig(name).catch((e) => Logger.error(e, AppConfigController.name));
+  deleteConfig(@Param('name') name: string, @GetCurrentUserGroups() ldapGroups: string[]) {
+    return this.appConfigService.deleteConfig(name, ldapGroups);
   }
 
   @Get(EDU_API_CONFIG_ENDPOINTS.PROXYCONFIG)

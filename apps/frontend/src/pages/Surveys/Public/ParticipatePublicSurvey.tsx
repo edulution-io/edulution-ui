@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -10,7 +22,7 @@ const ParticipatePublicSurvey = (): React.ReactNode => {
   const [searchParams] = useSearchParams();
   const surveyId = searchParams.get('surveyId');
 
-  const { survey, answer, setAnswer, pageNo, setPageNo, getPublicSurvey, answerPublicSurvey, isFetching } =
+  const { getPublicSurvey, publicSurvey, answer, setAnswer, pageNo, setPageNo, answerPublicSurvey, isFetching } =
     useParticipatePublicSurveyStore();
 
   const { t } = useTranslation();
@@ -22,15 +34,15 @@ const ParticipatePublicSurvey = (): React.ReactNode => {
   }, [surveyId]);
 
   const content = useMemo(() => {
-    if (!surveyId || !survey) {
+    if (!surveyId || !publicSurvey) {
       return <h4 className="transform(-50%,-50%) absolute right-1/2 top-1/2">{t('survey.notFound')}</h4>;
     }
     return (
       <ScrollArea>
         <ParticipateDialogBody
-          surveyId={survey.id}
-          saveNo={survey.saveNo}
-          formula={survey.formula}
+          surveyId={publicSurvey.id}
+          saveNo={publicSurvey.saveNo}
+          formula={publicSurvey.formula}
           answer={answer}
           setAnswer={setAnswer}
           pageNo={pageNo}
@@ -43,7 +55,7 @@ const ParticipatePublicSurvey = (): React.ReactNode => {
         />
       </ScrollArea>
     );
-  }, [surveyId, survey, answer, pageNo]);
+  }, [surveyId, publicSurvey, answer, pageNo]);
 
   return (
     <>

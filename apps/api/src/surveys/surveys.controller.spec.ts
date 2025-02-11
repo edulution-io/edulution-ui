@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -17,24 +29,24 @@ import SurveyAnswersService from './survey-answer.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
 import {
-  firstUsername,
-  secondUsername,
-  idOfAnsweredSurvey01,
   answeredSurvey01,
   answeredSurvey02,
-  firstUsersSurveyAnswerAnsweredSurvey01,
-  surveyAnswerAnsweredSurvey02,
-  secondUsersSurveyAnswerAnsweredSurvey01,
-  saveNoAnsweredSurvey01,
-  firstUsersMockedAnswerForAnsweredSurveys01,
-  openSurvey01,
-  firstMockJWTUser,
-  openSurvey02,
-  createdSurvey01,
-  surveyUpdateUpdatedSurvey,
-  surveyUpdateInitialSurvey,
   answeredSurvey03,
+  createdSurvey01,
+  firstMockJWTUser,
+  firstUsername,
+  firstUsersMockedAnswerForAnsweredSurveys01,
+  firstUsersSurveyAnswerAnsweredSurvey01,
+  idOfAnsweredSurvey01,
+  openSurvey01,
+  openSurvey02,
+  saveNoAnsweredSurvey01,
+  secondUsername,
+  secondUsersSurveyAnswerAnsweredSurvey01,
+  surveyAnswerAnsweredSurvey02,
   surveyAnswerAnsweredSurvey03,
+  surveyUpdateInitialSurvey,
+  surveyUpdateUpdatedSurvey,
   updatedSurveyAnswerAnsweredSurvey03,
 } from './mocks';
 import { surveyUpdateUpdatedSurveyDto } from './mocks/surveys/updated-survey';

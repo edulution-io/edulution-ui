@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { create, StateCreator } from 'zustand';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
@@ -27,8 +39,8 @@ const initialState = {
   openDialogType: null,
   userGroupToEdit: null,
   member: [],
-  currentGroupType: undefined,
-  currentGroupName: undefined,
+  groupTypeFromStore: undefined,
+  groupNameFromStore: undefined,
   collectionType: LMN_API_COLLECT_OPERATIONS.COPY,
 };
 
@@ -209,11 +221,11 @@ const useLessonStore = create<LessonStore>(
         }
       },
 
-      setCurrentGroupType(groupType?: string) {
-        set({ currentGroupType: groupType });
+      setGroupTypeInStore(groupType?: string) {
+        set({ groupTypeFromStore: groupType });
       },
-      setCurrentGroupName(groupName?: string) {
-        set({ currentGroupName: groupName });
+      setGroupNameInStore(groupName?: string) {
+        set({ groupNameFromStore: groupName });
       },
 
       reset: () => set({ ...initialState }),
@@ -222,8 +234,8 @@ const useLessonStore = create<LessonStore>(
       name: 'class-management-lesson',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
-        currentGroupName: state.currentGroupName,
-        currentGroupType: state.currentGroupType,
+        groupNameFromStore: state.groupNameFromStore,
+        groupTypeFromStore: state.groupTypeFromStore,
         member: state.member,
       }),
     } as PersistOptions<LessonStore>,

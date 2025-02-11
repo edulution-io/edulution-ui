@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useEffect, useState } from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { Button } from '@/components/shared/Button';
@@ -21,6 +33,9 @@ import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import CircleLoader from '@/components/ui/CircleLoader';
 import LmnApiPrinterWithMembers from '@libs/lmnApi/types/lmnApiPrinterWithMembers';
+import useLmnApiStore from '@/store/useLmnApiStore';
+import parseSophomorixQuota from '@libs/lmnApi/utils/parseSophomorixQuota';
+import parseSophomorixMailQuota from '@libs/lmnApi/utils/parseSophomorixMailQuota';
 
 interface GroupDialogProps {
   item: GroupColumn;
@@ -29,6 +44,7 @@ interface GroupDialogProps {
 
 const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
   const { setOpenDialogType, openDialogType, userGroupToEdit, setUserGroupToEdit, member } = useLessonStore();
+  const { user } = useLmnApiStore();
   const [isFetching, setIsFetching] = useState(false);
   const { t } = useTranslation();
 
@@ -50,7 +66,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     displayName: '',
     description: '',
     quota: '',
-    mailquota: '',
+    mailquota: '0',
     mailalias: false,
     maillist: false,
     join: true,
@@ -59,7 +75,8 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     admingroups: [],
     members: [],
     membergroups: [],
-    school: 'default-school',
+    school: user?.school || '',
+    proxyAddresses: '',
   };
 
   const form = useForm<GroupForm>({
@@ -70,13 +87,13 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
 
   const getSelectOptionsFromLmnUsers = (users: UserLmnInfo[]) =>
     users.map(
-      (user) =>
+      (lmnUser) =>
         ({
-          ...user,
-          id: user.dn,
-          path: user.dn,
-          value: user.cn,
-          label: `${user.displayName} (${user.sophomorixAdminClass})`,
+          ...lmnUser,
+          id: lmnUser.dn,
+          path: lmnUser.dn,
+          value: lmnUser.cn,
+          label: `${lmnUser.displayName} (${lmnUser.sophomorixAdminClass})`,
         }) as unknown as MultipleSelectorOptionSH,
     );
 
@@ -90,7 +107,10 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
       (userGroupToEdit as LmnApiSession).sid || (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).cn || '',
     );
     form.setValue('name', userGroupToEdit.name || '');
-    form.setValue('displayName', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).displayName || '');
+    form.setValue(
+      'displayName',
+      (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).displayName || userGroupToEdit.name || '',
+    );
     form.setValue(
       'school',
       (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).sophomorixSchoolname || DEFAULT_SCHOOL,
@@ -98,9 +118,15 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     form.setValue('join', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).sophomorixJoinable || false);
     form.setValue('hide', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).sophomorixHidden || false);
     form.setValue('mailalias', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).sophomorixMailAlias || false);
+    form.setValue('quota', parseSophomorixQuota((userGroupToEdit as LmnApiProject).sophomorixAddQuota));
+    form.setValue('mailquota', parseSophomorixMailQuota((userGroupToEdit as LmnApiProject).sophomorixAddMailQuota));
     form.setValue('creationDate', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).sophomorixCreationDate || '');
     form.setValue('maillist', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).sophomorixMailList || false);
     form.setValue('description', (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).description || '');
+    form.setValue(
+      'proxyAddresses',
+      (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).proxyAddresses?.join(',') || '',
+    );
     form.setValue('members', getSelectOptionsFromLmnUsers(fetchedGroup.members));
     if ((fetchedGroup as LmnApiProjectWithMembers | LmnApiSchoolClassWithMembers).admins) {
       form.setValue(
@@ -134,12 +160,13 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
           break;
         default:
       }
+      setIsFetching(false);
+
       if (!fetchedGroup) {
         return;
       }
 
       setFormInitialValues(fetchedGroup);
-      setIsFetching(false);
     };
     void fetchData();
   }, [userGroupToEdit?.name]);
@@ -233,7 +260,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
 
   return (
     <AdaptiveDialog
-      isOpen={openDialogType === item.name}
+      isOpen
       trigger={trigger}
       handleOpenChange={onClose}
       title={t(getTitle())}

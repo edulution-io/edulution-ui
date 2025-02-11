@@ -1,7 +1,31 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import { type ContainerInfo } from 'dockerode';
 import APPS from '@libs/appconfig/constants/apps';
-import { AppConfigTableConfig } from '@/pages/Settings/AppConfig/components/table/types/appConfigTableConfig';
+import type BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
+import { type BulletinCategoryTableStore } from '@libs/appconfig/types/bulletinCategoryTableStore';
+import { type DockerContainerTableStore } from '@libs/appconfig/types/dockerContainerTableStore';
+import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
+import { VeyonConfigTableStore } from '@libs/appconfig/types/veyonConfigTableStore';
+import type AppConfigTableEntry from './appConfigTableEntry';
 
 type AppConfigTableConfigsByAppName = {
-  [APPS.BULLETIN_BOARD]: AppConfigTableConfig[];
+  [APPS.BULLETIN_BOARD]: AppConfigTableEntry<BulletinCategoryResponseDto, BulletinCategoryTableStore>[];
+  [APPS.CLASS_MANAGEMENT]: (
+    | AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>
+    | AppConfigTableEntry<VeyonProxyItem, VeyonConfigTableStore>
+  )[];
+  [APPS.MAIL]: AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>[];
+  [APPS.DESKTOP_DEPLOYMENT]: AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>[];
 };
 export default AppConfigTableConfigsByAppName;

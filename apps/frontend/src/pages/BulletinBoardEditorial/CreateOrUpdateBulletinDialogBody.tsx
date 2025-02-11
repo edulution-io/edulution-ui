@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, FormMessage } from '@/components/ui/Form';
@@ -61,11 +73,10 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
             options={categories}
             selectedVal={isGetCategoriesLoading ? t('common.loading') : watch('category')?.name}
             handleChange={handleCategoryChange}
-            variant="light"
           />
           <div>
             {formState.errors.category && (
-              <FormMessage className="text-[0.8rem] font-medium text-foreground">
+              <FormMessage className="text-[0.8rem] font-medium text-background">
                 {formState.errors.category.message?.toString()}
               </FormMessage>
             )}
@@ -113,7 +124,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
           defaultValue={form.getValues('title')}
           form={form}
           labelTranslationId={t('bulletinboard.title')}
-          variant="default"
+          variant="dialog"
         />
         <div>
           <div className="mb-1 font-bold">{t('bulletinboard.content')}</div>
@@ -124,7 +135,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
           />
           <div>
             {formState.errors.content && (
-              <FormMessage className="text-[0.8rem] font-medium text-foreground">
+              <FormMessage className="text-[0.8rem] font-medium text-background">
                 {formState.errors.content.message?.toString()}
               </FormMessage>
             )}

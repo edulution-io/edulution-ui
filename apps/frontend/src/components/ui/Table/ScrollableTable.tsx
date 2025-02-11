@@ -1,4 +1,16 @@
-import React from 'react';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import React, { useMemo, useState } from 'react';
 import {
   ColumnDef,
   flexRender,
@@ -20,6 +32,7 @@ import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { ChevronDown } from 'lucide-react';
 import DropdownMenu from '@/components/shared/DropdownMenu';
+import DEFAULT_TABLE_SORT_PROPERTY_KEY from '@libs/common/constants/defaultTableSortProperty';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -44,7 +57,6 @@ interface DataTableProps<TData, TValue> {
   showHeader?: boolean;
   showSelectedCount?: boolean;
   footer?: React.ReactNode;
-  enableMultiRowSelection?: boolean;
 }
 
 const ScrollableTable = <TData, TValue>({
@@ -60,14 +72,17 @@ const ScrollableTable = <TData, TValue>({
   additionalScrollContainerOffset = 0,
   scrollContainerOffsetElementIds = {},
   enableRowSelection,
-  enableMultiRowSelection,
   tableIsUsedOnAppConfigPage = false,
-  textColorClass = 'text-white',
+  textColorClass = 'text-muted-foreground',
   showHeader = true,
   showSelectedCount = true,
   footer,
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
+
+  const hasPositionCol = useMemo(() => columns.some((c) => c.id === 'position'), [columns]);
+
+  const [sorting, setSorting] = useState(hasPositionCol ? [{ id: DEFAULT_TABLE_SORT_PROPERTY_KEY, desc: false }] : []);
 
   const selectedRowsMessageId = scrollContainerOffsetElementIds.selectedRowsMessageId || SELECTED_ROW_MESSAGE_ID;
   const tableHeaderId = scrollContainerOffsetElementIds.tableHeaderId || TABLE_HEADER_ID;
@@ -86,13 +101,14 @@ const ScrollableTable = <TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
     getFilteredRowModel: getFilteredRowModel(),
     getRowId: getRowId || ((originalRow: TData) => (originalRow as { id: string }).id),
     onRowSelectionChange,
     enableRowSelection,
-    enableMultiRowSelection,
     state: {
       rowSelection: selectedRows,
+      sorting,
     },
   });
 
@@ -104,25 +120,34 @@ const ScrollableTable = <TData, TValue>({
     <>
       {isLoading && data?.length === 0 ? <LoadingIndicator isOpen={isLoading} /> : null}
 
-      {showSelectedCount &&
-        (selectedRowsCount > 0
-          ? t(`${applicationName}.${filteredRowCount === 1 ? 'rowSelected' : 'rowsSelected'}`, {
+      {showSelectedCount ? (
+        <div
+          id={selectedRowsMessageId}
+          className="flex-1 text-sm text-muted-foreground"
+        >
+          {selectedRowsCount > 0 ? (
+            t(`${applicationName}.${filteredRowCount === 1 ? 'rowSelected' : 'rowsSelected'}`, {
               selected: selectedRowsCount,
               total: filteredRowCount,
             })
-          : !footer && (
-              <>
-                {!tableIsUsedOnAppConfigPage && (
-                  <div
-                    id={selectedRowsMessageId}
-                    className={`flex-1 text-sm ${textColorClass}`}
-                  >
-                    &nbsp;
-                  </div>
-                )}
-                <p />
-              </>
-            ))}
+          ) : (
+            <>&nbsp;</>
+          )}
+        </div>
+      ) : (
+        <>
+          {!tableIsUsedOnAppConfigPage && (
+            <div
+              id={selectedRowsMessageId}
+              className={`flex-1 text-sm ${textColorClass}`}
+            >
+              &nbsp;
+            </div>
+          )}
+          <p />
+        </>
+      )}
+
       <div
         className={`w-full flex-1 overflow-auto scrollbar-thin ${!tableIsUsedOnAppConfigPage ? 'pl-3 pr-3.5' : ''}`}
         style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
@@ -134,13 +159,13 @@ const ScrollableTable = <TData, TValue>({
                 placeholder={t(filterPlaceHolderText)}
                 value={filterValue}
                 onChange={(event) => table.getColumn(filterKey)?.setFilterValue(event.target.value)}
-                className="max-w-xl bg-ciDarkGrey text-ciLightGrey"
+                className="max-w-xl bg-accent text-secondary"
               />
               <DropdownMenu
                 trigger={
                   <Button
                     variant="btn-small"
-                    className="ml-auto bg-ciDarkGrey text-ciLightGrey"
+                    className="ml-auto bg-accent text-secondary"
                   >
                     {t('common.columns')} <ChevronDown />
                   </Button>

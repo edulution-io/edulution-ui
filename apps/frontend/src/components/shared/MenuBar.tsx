@@ -1,9 +1,21 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import { MenubarMenu, MenubarTrigger, VerticalMenubar } from '@/components/ui/MenubarSH';
 
 import cn from '@libs/common/utils/className';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useOnClickOutside, useToggle } from 'usehooks-ts';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import { getFromPathName } from '@libs/common/utils';
@@ -17,6 +29,8 @@ const MenuBar: React.FC = () => {
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
   const isMobileView = useIsMobileView();
+
+  const navigate = useNavigate();
 
   useOnClickOutside(menubarRef, !isOpen ? toggle : () => {});
 
@@ -54,15 +68,23 @@ const MenuBar: React.FC = () => {
 
   const renderMenuBarContent = () => (
     <div
-      className="max-w-[300px]"
+      className="max-w-[var(--menubar-max-width)]"
       ref={menubarRef}
     >
       <div className="bg flex flex-col items-center justify-center py-6">
-        <img
-          src={menuBarEntries.icon}
-          alt={menuBarEntries.title}
-          className="h-20 w-20 object-contain"
-        />
+        <button
+          type="button"
+          onClick={() => {
+            navigate(pathParts[0]);
+            setIsSelected(pathParts[0] === APPS.SETTINGS ? '' : firstMenuBarItem);
+          }}
+        >
+          <img
+            src={menuBarEntries.icon}
+            alt={menuBarEntries.title}
+            className="h-20 w-20 object-contain"
+          />
+        </button>
         <h3 className="mb-4 mt-4 text-center font-bold">{menuBarEntries.title}</h3>
       </div>
       <MenubarMenu>
@@ -123,7 +145,7 @@ const MenuBar: React.FC = () => {
         )}
         onClickCapture={toggle}
       >
-        <p className="text-xl text-white">{!isOpen ? '≡' : '×'}</p>
+        <p className="text-xl text-background">{!isOpen ? '≡' : '×'}</p>
       </div>
     </>
   ) : (

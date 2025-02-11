@@ -1,7 +1,20 @@
-import { Logger } from '@nestjs/common';
-import { Migration, MigrationModels } from '../../migration/migration.type';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
 
-const migration000: Migration<MigrationModels> = {
+import { Logger } from '@nestjs/common';
+import { Migration } from '../../migration/migration.type';
+import { AppConfig } from '../appconfig.schema';
+
+const migration000: Migration<AppConfig> = {
   name: '000-add-db-version-number',
   version: 1,
   execute: async (model) => {
@@ -10,15 +23,15 @@ const migration000: Migration<MigrationModels> = {
 
     const unprocessedDocuments = await model.find({ schemaVersion: previousSchemaVersion });
     if (unprocessedDocuments.length === 0) {
-      Logger.log('No documents to update');
       return;
     }
+    Logger.log(`${unprocessedDocuments?.length} documents to update...`);
 
     // eslint-disable-next-line no-underscore-dangle
     const ids = unprocessedDocuments.map((doc) => doc._id);
 
-    await model.updateMany({ _id: { $in: ids } }, { $set: { schemaVersion: newSchemaVersion } });
-    Logger.log(`Migration completed: ${unprocessedDocuments.length} documents updated`);
+    const result = await model.updateMany({ _id: { $in: ids } }, { $set: { schemaVersion: newSchemaVersion } });
+    Logger.log(`Migration completed: ${result.modifiedCount} documents updated`);
   },
 };
 

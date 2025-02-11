@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import NameInputWithAvailability from '@/pages/BulletinBoard/components/NameInputWithAvailability';
 import DialogSwitch from '@/components/shared/DialogSwitch';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
@@ -64,10 +76,10 @@ const CreateAndUpdateBulletinCategoryBody = ({
             form.setValue('isActive', isChecked);
           }}
         />
-        <p className="pt-4 text-lg font-bold text-foreground">
+        <p className="pt-4 text-lg font-bold text-background">
           {t('bulletinboard.categories.visibleByUsersAndGroupsTitle')}
         </p>
-        <p className="text-foreground">{t('bulletinboard.categories.visibleByUsersAndGroups')}:</p>
+        <p className="text-background">{t('bulletinboard.categories.visibleByUsersAndGroups')}:</p>
         <SearchUsersOrGroups
           users={watch('visibleForUsers') as AttendeeDto[]}
           onSearch={searchAttendees}
@@ -75,12 +87,12 @@ const CreateAndUpdateBulletinCategoryBody = ({
           groups={watch('visibleForGroups') as MultipleSelectorGroup[]}
           onGroupSearch={searchGroups}
           onGroupsChange={(groups) => setValue('visibleForGroups', groups, { shouldValidate: true })}
-          variant="light"
+          variant="dialog"
         />
-        <p className="pt-4 text-lg font-bold text-foreground">
+        <p className="pt-4 text-lg font-bold text-background">
           {t('bulletinboard.categories.editableByUsersAndGroupsTitle')}
         </p>
-        <p className="text-foreground">{t('bulletinboard.categories.editableByUsersAndGroups')}:</p>
+        <p className="text-background">{t('bulletinboard.categories.editableByUsersAndGroups')}:</p>
         <SearchUsersOrGroups
           users={watch('editableByUsers') as AttendeeDto[]}
           onSearch={searchAttendees}
@@ -88,7 +100,7 @@ const CreateAndUpdateBulletinCategoryBody = ({
           groups={watch('editableByGroups') as MultipleSelectorGroup[]}
           onGroupSearch={searchGroups}
           onGroupsChange={(groups) => setValue('editableByGroups', groups, { shouldValidate: true })}
-          variant="light"
+          variant="dialog"
         />
       </form>
     </Form>

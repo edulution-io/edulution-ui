@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useEffect } from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
@@ -10,8 +22,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import getCreateNewCategorieSchema from '@libs/bulletinBoard/constants/createNewCategorieSchema';
 import CreateAndUpdateBulletinCategoryBody from '@/pages/Settings/AppConfig/bulletinboard/components/CreateAndUpdateBulletinCategoryBody';
 import DeleteBulletinsCategoriesDialog from '@/pages/Settings/AppConfig/bulletinboard/components/DeleteBulletinCategoriesDialog';
+import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 
-const CreateAndUpdateBulletinCategoryDialog = () => {
+interface CreateAndUpdateBulletinCategoryDialogProps {
+  tableId: ExtendedOptionKeysType;
+}
+
+const CreateAndUpdateBulletinCategoryDialog: React.FC<CreateAndUpdateBulletinCategoryDialogProps> = ({ tableId }) => {
   const {
     selectedCategory,
     setSelectedCategory,
@@ -20,11 +37,13 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
     nameExistsAlready,
     isNameCheckingLoading,
     setIsDeleteDialogOpen,
+    tableContentData,
   } = useBulletinCategoryTableStore();
 
   const { t } = useTranslation();
 
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
+  const isOpen = isDialogOpen === tableId;
 
   const initialFormValues = selectedCategory || {
     name: '',
@@ -33,6 +52,7 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
     visibleForGroups: [],
     editableByUsers: [],
     editableByGroups: [],
+    position: 1,
   };
 
   const form = useForm<CreateBulletinCategoryDto>({
@@ -48,7 +68,7 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
   }, [selectedCategory, reset]);
 
   const closeDialog = () => {
-    setDialogOpen(false);
+    setDialogOpen('');
     setSelectedCategory(null);
     reset();
   };
@@ -59,15 +79,16 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
     if (selectedCategory) {
       const { name, isActive, visibleForUsers, visibleForGroups, editableByUsers, editableByGroups } = getValues();
       await updateCategory(selectedCategory?.id || '', {
-        name: name && name.trim() !== '' ? name : selectedCategory.name,
+        name: name?.trim() !== '' ? name : selectedCategory.name,
         isActive,
         visibleForUsers,
         visibleForGroups,
         editableByUsers,
         editableByGroups,
+        position: selectedCategory.position,
       });
     } else {
-      await addNewCategory(getValues());
+      await addNewCategory({ ...getValues(), position: tableContentData.length + 1 });
     }
     closeDialog();
   };
@@ -85,7 +106,7 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
       isCurrentNameEqualToSelected={isCurrentNameEqualToSelected}
       isSaveButtonDisabled={isSaveButtonDisabled}
       handleDeleteCategory={() => {
-        setDialogOpen(false);
+        setDialogOpen('');
         setIsDeleteDialogOpen(true);
       }}
     />
@@ -102,9 +123,9 @@ const CreateAndUpdateBulletinCategoryDialog = () => {
   return (
     <>
       <AdaptiveDialog
-        isOpen={isDialogOpen}
+        isOpen={isOpen}
         handleOpenChange={() => {
-          setDialogOpen(false);
+          setDialogOpen('');
           setSelectedCategory(null);
         }}
         title={selectedCategory ? t('bulletinboard.editCategory') : t('bulletinboard.createNewCategory')}

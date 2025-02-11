@@ -1,0 +1,313 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit, MessageEvent, HttpStatus } from '@nestjs/common';
+import Docker from 'dockerode';
+import { fromEvent, Observable, Subscription } from 'rxjs';
+import { map, filter } from 'rxjs/operators';
+import { Response } from 'express';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import type DockerEvent from '@libs/docker/types/dockerEvents';
+import type TDockerCommands from '@libs/docker/types/TDockerCommands';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import DockerErrorMessages from '@libs/docker/constants/dockerErrorMessages';
+import DOCKER_COMMANDS from '@libs/docker/constants/dockerCommands';
+import DOCKER_PROTECTED_CONTAINERS from '@libs/docker/constants/dockerProtectedContainer';
+import SPECIAL_USERS from '@libs/common/constants/specialUsers';
+import type TDockerProtectedContainer from '@libs/docker/types/TDockerProtectedContainer';
+import SseService from '../sse/sse.service';
+import type UserConnections from '../types/userConnections';
+
+@Injectable()
+class DockerService implements OnModuleInit, OnModuleDestroy {
+  // TODO: Add possiblity to use docker api as well https://github.com/edulution-io/edulution-ui/issues/396
+  private readonly dockerSocketPath = '/var/run/docker.sock';
+
+  private readonly docker = new Docker({ socketPath: this.dockerSocketPath });
+
+  private eventSubscription: Subscription;
+
+  private dockerSseConnection: UserConnections = new Map();
+
+  onModuleInit() {
+    this.listenToDockerEvents();
+  }
+
+  onModuleDestroy() {
+    this.closeEventStream();
+  }
+
+  subscribe(username: string, res: Response): Observable<MessageEvent> {
+    return SseService.subscribe(username, this.dockerSseConnection, res);
+  }
+
+  private listenToDockerEvents() {
+    this.docker.getEvents((error, stream) => {
+      if (error || !stream) {
+        Logger.error('Docker stream error', DockerService.name);
+        return;
+      }
+
+      const dockerEvents$ = fromEvent(stream, 'data').pipe(
+        map((chunk) => JSON.parse((chunk as Buffer<ArrayBufferLike>).toString()) as DockerEvent),
+        filter((event) => {
+          if (!event || event.Type !== 'container') {
+            return false;
+          }
+          const ignoredActions = ['exec_create', 'exec_start', 'exec_die'];
+          const actionName = event.Action.split(':')[0].trim();
+          return !ignoredActions.includes(actionName);
+        }),
+      );
+
+      this.eventSubscription = dockerEvents$.subscribe({
+        next: (event) => {
+          SseService.sendEventToUsers(
+            [SPECIAL_USERS.GLOBAL_ADMIN],
+            this.dockerSseConnection,
+            event,
+            SSE_MESSAGE_TYPE.MESSAGE,
+          );
+          this.getContainers()
+            .then((containers) =>
+              SseService.sendEventToUsers(
+                [SPECIAL_USERS.GLOBAL_ADMIN],
+                this.dockerSseConnection,
+                containers,
+                SSE_MESSAGE_TYPE.UPDATED,
+              ),
+            )
+            .catch((e) => Logger.error(e instanceof Error ? e.message : 'Get containers failed', DockerService.name));
+        },
+        error: () => Logger.error('Docker stream error', DockerService.name),
+        complete: () => Logger.log('Close docker event stream', DockerService.name),
+      });
+    });
+  }
+
+  private closeEventStream() {
+    if (this.eventSubscription) {
+      this.eventSubscription.unsubscribe();
+      Logger.log('Close docker event stream', DockerService.name);
+    }
+  }
+
+  async getContainers(applicationNames?: string[]) {
+    try {
+      let filters = {};
+      if (applicationNames) {
+        const formattedNames = applicationNames.map((name) => `/${name}`);
+        filters = {
+          name: formattedNames,
+        };
+      }
+
+      const containers = await this.docker.listContainers({
+        all: true,
+        filters,
+      });
+
+      return containers;
+    } catch (error) {
+      throw new CustomHttpException(
+        DockerErrorMessages.DOCKER_CONNECTION_ERROR,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        DockerService.name,
+      );
+    }
+  }
+
+  private async pullImage(image: string) {
+    try {
+      SseService.sendEventToUsers(
+        [SPECIAL_USERS.GLOBAL_ADMIN],
+        this.dockerSseConnection,
+        { progress: 'docker.events.pullingImage', from: `${image}` } as DockerEvent,
+        SSE_MESSAGE_TYPE.MESSAGE,
+      );
+      const stream = await this.docker.pull(image);
+      await new Promise<void>((resolve, reject) => {
+        this.docker.modem.followProgress(
+          stream,
+          (error) => (error ? reject(error) : resolve()),
+          (event: DockerEvent) => {
+            if (event) {
+              SseService.sendEventToUsers(
+                [SPECIAL_USERS.GLOBAL_ADMIN],
+                this.dockerSseConnection,
+                event,
+                SSE_MESSAGE_TYPE.MESSAGE,
+              );
+            }
+          },
+        );
+      });
+    } catch (error) {
+      throw new CustomHttpException(
+        DockerErrorMessages.DOCKER_IMAGE_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        DockerService.name,
+      );
+    }
+  }
+
+  private async imageExists(imageName: string): Promise<boolean> {
+    const images = await this.docker.listImages();
+
+    SseService.sendEventToUsers(
+      [SPECIAL_USERS.GLOBAL_ADMIN],
+      this.dockerSseConnection,
+      { progress: 'docker.events.checkingImage', from: `${imageName}` } as DockerEvent,
+      SSE_MESSAGE_TYPE.MESSAGE,
+    );
+
+    return images.some((img) => img.RepoTags?.includes(imageName));
+  }
+
+  static replaceEnvVariables(createContainersDto: Docker.ContainerCreateOptions[]) {
+    let newCreateContainersDto: Docker.ContainerCreateOptions[] = [];
+    newCreateContainersDto = createContainersDto.map((service) => ({
+      ...service,
+      Env: service.Env?.map((env) =>
+        env.replace(/\${([^}]+)}/g, (match, varName: string) => process.env[varName] || match),
+      ),
+    }));
+
+    return newCreateContainersDto;
+  }
+
+  async createContainer(createContainersDto: Docker.ContainerCreateOptions[]) {
+    const newCreateContainersDto = DockerService.replaceEnvVariables(createContainersDto);
+    try {
+      await Promise.all(
+        newCreateContainersDto.map(async (containerDto) => {
+          const { Image } = containerDto;
+          if (Image) {
+            const imageExists = await this.imageExists(Image);
+            if (!imageExists) {
+              await this.pullImage(Image);
+            }
+          }
+        }),
+      );
+
+      await Promise.all(
+        newCreateContainersDto.map(async (containerDto) => {
+          SseService.sendEventToUsers(
+            [SPECIAL_USERS.GLOBAL_ADMIN],
+            this.dockerSseConnection,
+            { progress: 'docker.events.creatingContainer', from: `${containerDto.name}` } as DockerEvent,
+            SSE_MESSAGE_TYPE.MESSAGE,
+          );
+          const container = await this.docker.createContainer(containerDto);
+          await container.start();
+          Logger.log(`Container ${containerDto.name} created and started.`, DockerService.name);
+        }),
+      );
+
+      SseService.sendEventToUsers(
+        [SPECIAL_USERS.GLOBAL_ADMIN],
+        this.dockerSseConnection,
+        { progress: 'docker.events.containerCreationSuccessful', from: DockerService.name } as DockerEvent,
+        SSE_MESSAGE_TYPE.MESSAGE,
+      );
+    } catch (error) {
+      SseService.sendEventToUsers(
+        [SPECIAL_USERS.GLOBAL_ADMIN],
+        this.dockerSseConnection,
+        { progress: 'docker.events.containerCreationFailed', from: DockerService.name } as DockerEvent,
+        SSE_MESSAGE_TYPE.MESSAGE,
+      );
+      throw new CustomHttpException(
+        DockerErrorMessages.DOCKER_CREATION_ERROR,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        DockerService.name,
+      );
+    }
+  }
+
+  static checkProtectedContainer(id: string) {
+    const isSelectedContainerProtected = Object.values(DOCKER_PROTECTED_CONTAINERS).includes(
+      id as TDockerProtectedContainer,
+    );
+    if (isSelectedContainerProtected) {
+      throw new CustomHttpException(
+        DockerErrorMessages.DOCKER_COMMAND_EXECUTION_ERROR,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        DockerService.name,
+      );
+    }
+  }
+
+  async executeContainerCommand(params: { id: string; operation: TDockerCommands }) {
+    const { id, operation } = params;
+
+    DockerService.checkProtectedContainer(id);
+
+    try {
+      SseService.sendEventToUsers(
+        [SPECIAL_USERS.GLOBAL_ADMIN],
+        this.dockerSseConnection,
+        { progress: `docker.events.${operation}Container`, from: id } as DockerEvent,
+        SSE_MESSAGE_TYPE.MESSAGE,
+      );
+      switch (operation) {
+        case DOCKER_COMMANDS.START:
+          await this.docker.getContainer(id).start();
+          break;
+        case DOCKER_COMMANDS.STOP:
+          await this.docker.getContainer(id).stop();
+          break;
+        case DOCKER_COMMANDS.RESTART:
+          await this.docker.getContainer(id).restart();
+          break;
+        case DOCKER_COMMANDS.KILL:
+          await this.docker.getContainer(id).kill();
+          break;
+        default:
+          throw new CustomHttpException(
+            DockerErrorMessages.DOCKER_COMMAND_EXECUTION_ERROR,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            undefined,
+            DockerService.name,
+          );
+      }
+    } catch (error) {
+      throw new CustomHttpException(
+        DockerErrorMessages.DOCKER_COMMAND_EXECUTION_ERROR,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        DockerService.name,
+      );
+    }
+  }
+
+  async deleteContainer(id: string) {
+    DockerService.checkProtectedContainer(id);
+    try {
+      await this.docker.getContainer(id).remove();
+    } catch (error) {
+      throw new CustomHttpException(
+        DockerErrorMessages.DOCKER_CONTAINER_DELETION_ERROR,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        DockerService.name,
+      );
+    }
+  }
+}
+
+export default DockerService;

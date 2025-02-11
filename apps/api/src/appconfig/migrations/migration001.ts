@@ -1,13 +1,26 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 /* eslint-disable no-underscore-dangle */
 import { Logger } from '@nestjs/common';
-import { Migration, MigrationModels } from '../../migration/migration.type';
+import { Migration } from '../../migration/migration.type';
+import { AppConfig } from '../appconfig.schema';
 
 type ExtendedOption = {
   name: string;
   value: string;
 };
 
-const migration001: Migration<MigrationModels> = {
+const migration001: Migration<AppConfig> = {
   name: '001-transform-extended-options',
   version: 2,
   execute: async (model) => {
@@ -20,10 +33,10 @@ const migration001: Migration<MigrationModels> = {
       return;
     }
 
-    const isOldExtendedOptionsValid = (extendedOptions: ExtendedOption[]) => {
-      if (!Array.isArray(extendedOptions)) return false;
-      return true;
-    };
+    const isOldExtendedOptionsValid = (extendedOptions: ExtendedOption[]) => Array.isArray(extendedOptions);
+    const isExtendedOptionsAValidObject = (extendedOptions: ExtendedOption[]) => typeof extendedOptions === 'object';
+
+    let processedDocumentsCount = 0;
 
     await Promise.all(
       unprocessedDocuments.map(async (doc) => {
@@ -31,7 +44,9 @@ const migration001: Migration<MigrationModels> = {
 
         const oldExtendedOptions = doc.extendedOptions as ExtendedOption[];
         if (!isOldExtendedOptionsValid(oldExtendedOptions)) {
-          Logger.warn(`Skipping document ${id} due to invalid extendedOptions format`);
+          if (!isExtendedOptionsAValidObject(oldExtendedOptions)) {
+            Logger.warn(`Skipping document ${id} due to invalid extendedOptions format`);
+          }
           return;
         }
 
@@ -51,6 +66,8 @@ const migration001: Migration<MigrationModels> = {
               },
             },
           );
+
+          processedDocumentsCount += 1;
           Logger.log(`Document ${id} updated successfully`);
         } catch (error) {
           Logger.error(`Failed to update document ${id}: ${(error as Error).message}`);
@@ -58,7 +75,9 @@ const migration001: Migration<MigrationModels> = {
       }),
     );
 
-    Logger.log(`Migration completed: ${unprocessedDocuments.length} documents updated`);
+    if (processedDocumentsCount > 0) {
+      Logger.log(`Migration completed: ${processedDocumentsCount} documents updated`);
+    }
   },
 };
 

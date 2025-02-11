@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
@@ -22,21 +34,20 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
   const { t } = useTranslation();
   const isMobileView = useIsMobileView();
   const navigate = useNavigate();
-  const { appConfigs, isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen, updateAppConfig, isLoading, error } =
+  const { isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen, createAppConfig, isLoading, error } =
     useAppConfigsStore();
   const selectedOption = option.toLowerCase().split('.')[0];
 
   const getDialogBody = () => {
     if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
     return (
-      <div className="my-12 text-foreground">
+      <div className="my-12 text-background">
         <p>{t('settings.addApp.description')}</p>
         <DropdownSelect
           options={getFilteredAppOptions()}
           selectedVal={t(option)}
           handleChange={setOption}
           openToTop={isMobileView}
-          variant="light"
         />
       </div>
     );
@@ -57,9 +68,8 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
         accessGroups: [],
         extendedOptions: {},
       };
-      const updatedConfig = [...appConfigs, newConfig];
 
-      await updateAppConfig(updatedConfig);
+      await createAppConfig(newConfig);
       if (!error) {
         setOption('');
         setIsAddAppConfigDialogOpen(false);

@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
@@ -20,7 +32,7 @@ const Header: React.FC<HeaderProps> = ({ hideHeadingText = false }: HeaderProps)
     return (
       <h2
         id={BLANK_LAYOUT_HEADER_ID}
-        className="ml-4 items-center text-2xl font-bold text-white"
+        className="ml-4 items-center text-2xl font-bold text-background"
       >
         {t('heading', {
           givenName: user?.firstName || '-',

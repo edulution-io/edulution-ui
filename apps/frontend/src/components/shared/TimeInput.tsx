@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useEffect, useState } from 'react';
 import { getHours, getMinutes, setHours, setMinutes } from 'date-fns';
 import Input from '@/components/shared/Input';
@@ -42,14 +54,14 @@ const TimeInput = <T extends FieldValues>({ form, disabled, fieldName, date }: T
   }, [date]);
 
   return (
+    // TODO change the background color to bg-foreground @Dominik
     <>
       {t('common.time')}
       <Input
         type="time"
         value={expirationTime}
         onChange={handleExpirationTimeChange}
-        variant="default"
-        className={cn('ml-2', { 'text-gray-300': !expirationTime }, { 'text-foreground': expirationTime })}
+        className={cn('ml-2', { 'text-gray-300': !expirationTime }, { 'text-background': expirationTime })}
         disabled={disabled}
       />
     </>

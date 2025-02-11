@@ -1,20 +1,21 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { FieldValues, Path, PathValue, RegisterOptions, UseFormReturn } from 'react-hook-form';
 import React, { HTMLInputTypeAttribute } from 'react';
 import { useTranslation } from 'react-i18next';
-import { cva, type VariantProps } from 'class-variance-authority';
 import cn from '@libs/common/utils/className';
 import Input from '@/components/shared/Input';
 import { FormControl, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
-
-const variants = cva([], {
-  variants: {
-    variant: {
-      default: 'text-foreground',
-      light: 'text-white',
-      lightGray: 'text-ciLightGrey',
-    },
-  },
-});
 
 type FormFieldProps<T extends FieldValues> = {
   form: UseFormReturn<T>;
@@ -30,7 +31,8 @@ type FormFieldProps<T extends FieldValues> = {
   placeholder?: string;
   rules?: Omit<RegisterOptions<T, Path<T>>, 'disabled' | 'valueAsNumber' | 'valueAsDate' | 'setValueAs'>;
   className?: string;
-} & VariantProps<typeof variants>;
+  variant?: 'dialog' | 'default';
+};
 
 const FormField = <T extends FieldValues>({
   form,
@@ -39,7 +41,6 @@ const FormField = <T extends FieldValues>({
   isLoading,
   labelTranslationId,
   type,
-  variant,
   defaultValue,
   readonly = false,
   value,
@@ -47,6 +48,7 @@ const FormField = <T extends FieldValues>({
   placeholder,
   rules,
   className,
+  variant = 'default',
 }: FormFieldProps<T>) => {
   const { t } = useTranslation();
 
@@ -60,8 +62,8 @@ const FormField = <T extends FieldValues>({
       render={({ field }) => (
         <FormItem>
           {labelTranslationId && (
-            <FormLabel className={cn(variants({ variant }))}>
-              <p className="font-bold">{t(labelTranslationId)}</p>
+            <FormLabel>
+              <p className="font-bold text-background">{t(labelTranslationId)}</p>
             </FormLabel>
           )}
           <FormControl>
@@ -70,7 +72,6 @@ const FormField = <T extends FieldValues>({
               autoComplete="new-password"
               type={type}
               disabled={disabled || isLoading}
-              variant={variant}
               placeholder={placeholder}
               readOnly={readonly}
               value={value}
@@ -80,9 +81,10 @@ const FormField = <T extends FieldValues>({
                 if (onChange) onChange(e);
               }}
               className={className}
+              variant={variant}
             />
           </FormControl>
-          <FormMessage className={cn('text-p', variants({ variant }))} />
+          <FormMessage className={cn('text-p')} />
         </FormItem>
       )}
     />

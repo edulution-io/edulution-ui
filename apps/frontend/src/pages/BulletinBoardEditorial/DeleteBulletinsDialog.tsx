@@ -1,10 +1,22 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import CircleLoader from '@/components/ui/CircleLoader';
-import DeleteItemDialogList from '@/components/shared/DeleteItemDialogList';
+import ItemDialogList from '@/components/shared/ItemDialogList';
 
 interface DeleteBulletinsDialogProps {
   trigger?: React.ReactNode;
@@ -40,13 +52,13 @@ const DeleteBulletinsDialog = ({ trigger, onSubmit }: DeleteBulletinsDialogProps
     if (isDialogLoading) return <CircleLoader className="mx-auto" />;
 
     return (
-      <div className="text-foreground">
+      <div className="text-background">
         {error ? (
           <>
             {t('bulletinboard.error')}: {error.message}
           </>
         ) : (
-          <DeleteItemDialogList
+          <ItemDialogList
             deleteWarningTranslationId={
               isMultiDelete ? 'bulletinboard.confirmMultiDelete' : 'bulletinboard.confirmSingleDelete'
             }

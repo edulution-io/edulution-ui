@@ -1,11 +1,22 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { z } from 'zod';
 import CreateOrRenameContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/CreateOrRenameContentDialogBody';
 import DeleteContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/DeleteContentDialogBody';
-import UploadContentBody from '@/pages/FileSharing/dialog/DialogBodys/UploadContentBody';
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import generateFile from '@/pages/FileSharing/fileoperations/generateFileTypes';
+import generateFile from '@/pages/FileSharing/fileoperations/generateFile';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import { HttpMethods } from '@libs/common/types/http-methods';
 import { t } from 'i18next';
@@ -17,6 +28,9 @@ import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
 import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
 import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
+import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
+import DocumentVendorsType from '@libs/filesharing/types/documentVendorsType';
+import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
 import MoveContentDialogWrapper from '@/pages/FileSharing/dialog/DialogBodys/MoveContentDialogWrapper';
 
@@ -35,8 +49,9 @@ interface DialogBodyConfigurationBase {
     inputValues: {
       selectedItems?: DirectoryFileDTO[];
       moveOrCopyItemToPath?: DirectoryFileDTO;
-      selectedFileType?: { extension: string; generate: string };
+      selectedFileType: TAvailableFileTypes | '';
       filesToUpload?: File[];
+      documentVendor: DocumentVendorsType;
     },
   ) => Promise<PathChangeOrCreateProps | PathChangeOrCreateProps[] | FileUploadProps[] | DeleteFileProps[]>;
   requiresForm?: boolean;
@@ -99,6 +114,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
       return Promise.resolve({ path: cleanedPath, newPath: filename });
     },
   },
+
   createFile: {
     Component: CreateOrRenameContentDialogBody,
     schema: z.object({
@@ -112,19 +128,15 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     httpMethod: HttpMethods.PUT,
     type: ContentType.FILE,
     requiresForm: true,
-    getData: async (form, currentPath, inputValues) => {
-      const { selectedFileType } = inputValues;
-      const fileType = selectedFileType?.extension || '';
-      const filename = String(form.getValues('filename'));
-      const filenameWithExtension = filename + fileType;
-      const generate = selectedFileType?.generate || '';
-      const generateFileMethod = generateFile[generate];
-      const file = await generateFileMethod(generate);
-      const cleanedPath = getPathWithoutWebdav(currentPath);
+    getData: async (form, currentPath, { documentVendor, selectedFileType }) => {
+      const filename = form.getValues('filename');
+
+      const { file, extension } = await generateFile(selectedFileType, filename, documentVendor);
+
       return [
         {
-          path: cleanedPath,
-          name: filenameWithExtension,
+          path: getPathWithoutWebdav(currentPath),
+          name: `${filename}.${extension}`,
           file,
         },
       ];

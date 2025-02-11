@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/shared/Card';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
@@ -9,6 +21,7 @@ import Avatar from '@/components/shared/Avatar';
 import { useTranslation } from 'react-i18next';
 import UserPasswordDialog from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/UserPasswordDialog';
 import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
+import FrameBufferImage from './FrameBufferImage';
 
 interface UserCardProps {
   user: UserLmnInfo;
@@ -60,7 +73,7 @@ const UserCard = ({
   return (
     <Card
       variant="security"
-      className={cn('my-2 ml-1 mr-4 flex h-64 w-64 min-w-64 cursor-pointer', isActive && 'opacity-90')}
+      className={cn('my-2 ml-1 mr-4 flex h-64 min-w-80 cursor-pointer', isActive && 'opacity-90')}
       onClick={onCardClick}
       onMouseOver={() => setIsHovered(true)}
       onMouseOut={() => setIsHovered(false)}
@@ -79,7 +92,7 @@ const UserCard = ({
             <div className={cn('text-md mt-1 h-8 w-44 font-bold', !isSelectable && 'ml-2')}>{displayName}</div>
           </div>
 
-          <div className="-mt-1 ml-2 flex justify-between">
+          <div className="-my-1 ml-2 flex justify-between">
             <div className={cn('mt-1 h-6 rounded-lg px-2 py-0 text-sm', isActive ? 'bg-gray-400' : 'bg-gray-700')}>
               {sophomorixAdminClass}
             </div>
@@ -88,20 +101,22 @@ const UserCard = ({
               <div>{school}</div>
             </div>
           </div>
-          <button
-            type="button"
+          <div
             className={cn(
-              'mt-1 flex flex-grow items-center justify-center rounded-xl text-2xl',
-              isActive ? 'bg-ciGrey' : 'bg-ciDarkGrey',
+              'm-2 flex max-h-36 w-64 flex-grow items-center justify-center rounded-xl text-2xl',
+              isActive ? 'bg-muted' : 'bg-accent',
             )}
-            onClick={(event) => event.stopPropagation()}
           >
-            <Avatar
-              user={{ username: name, firstName: givenName, lastName: surname }}
-              imageSrc={thumbnailPhoto}
-              className={thumbnailPhoto && 'h-24 w-24 p-2'}
-            />
-          </button>
+            {user.sophomorixIntrinsic3.length > 0 ? (
+              <FrameBufferImage user={user} />
+            ) : (
+              <Avatar
+                user={{ username: name, firstName: givenName, lastName: surname }}
+                imageSrc={thumbnailPhoto}
+                className={thumbnailPhoto && 'h-24 w-24 p-2'}
+              />
+            )}
+          </div>
         </div>
         {isSelectable ? (
           <div className="mt-0.5 flex w-1/6 flex-col items-center justify-around">

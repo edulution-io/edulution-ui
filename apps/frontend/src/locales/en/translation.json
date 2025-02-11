@@ -5,6 +5,8 @@
   "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
   "preparing": "preparing...",
   "closeEditingWindow": "Close editing window",
+  "framebufferImage": "Framebuffer image",
+  "previewImage": "Image preview",
   "bulletinboard": {
     "settings": "Settings",
     "categoryIsRequired": "Selecting a category is required",
@@ -23,6 +25,7 @@
     "sidebar": "Bulletin Board",
     "newCategorie": "New category",
     "category": "Category",
+    "categoryPositionChanged": "Position of the category changed",
     "name": "Name",
     "visibleFor": "Visible for",
     "visibleForUsers": "Visible for users",
@@ -152,19 +155,19 @@
   "mail": {
     "title": "MAIL",
     "sidebar": "Mail",
+    "configName": "Configuration name",
+    "hostname": "Hostname",
+    "port": "Port",
+    "encryption": "Encryption",
+    "rowsSelected": "{{selected}} of {{total}} jobs selected",
+    "rowSelected": "{{selected}} of {{total}} job selected",
     "importer": {
       "filterPlaceHolderText": "Search for importername",
       "title": "Email Importer",
       "provider": "Email Provider",
-      "configName": "Configuration name",
-      "hostname": "Hostname",
-      "port": "Port",
-      "encryption": "Encryption",
       "interval": "Sync Interval",
       "isActive": "Active",
       "syncJobsTable": "Importer Jobs",
-      "rowsSelected": "{{selected}} of {{total}} jobs selected",
-      "rowSelected": "{{selected}} of {{total}} job selected",
       "mailAddress": "Email address",
       "noMailConfigured": "Mail app is not active. Please contact your system administrator."
     }
@@ -176,7 +179,8 @@
   "errors": {
     "automaticLoginFailed": "Automatic login failed",
     "unexpectedError": "An unexpected error occurred",
-    "uploadOrFetchAttachmentFailed": "Error uploading or fetching attachment"
+    "uploadOrFetchAttachmentFailed": "Error uploading or fetching attachment",
+    "fileGenerationFailed": "File generation failed"
   },
   "conferences": {
     "errors": {
@@ -193,9 +197,12 @@
       "ConferenceIsNotRunning": "Conference is not running",
       "MissingMandatoryParameters": "Request failed because of missing parameters"
     },
+    "joinThisConference": "Join this conference",
     "filterPlaceHolderText": "Search for conference name",
     "started": "Conference started",
     "stopped": "Conference stopped",
+    "isStarting": "Conference is starting",
+    "isStopping": "Conference is stopping",
     "conferenceFetchedSuccessfully": "Conferences successfully fetched",
     "tryManually": "Join manually",
     "changeUser": "Change user",
@@ -270,6 +277,8 @@
     "closeEditor": "Close editor",
     "rowsSelected": "{{selected}} of {{total}} files selected",
     "rowSelected": "{{selected}} of {{total}} file selected",
+    "fileWithSameNameAlreadyExists": "A file with the same name already exists.",
+    "folderWithSameNameAlreadyExists": "A folder with the same name already exists.",
     "errors": {
       "FileNotFound": "File not found",
       "MountPointsNotFound": "Mount points not found",
@@ -289,6 +298,7 @@
       "DuplicateFailed": "Copy failed",
       "AppNotProperlyConfigured": "OnlyOffice is not properly configured, contact your system administrator.",
       "CollectingFailed": "Collecting files failed",
+      "MissingCallbackURL": "Missing callback URL",
       "SharingFailed": "Sharing files failed",
       "CopyFailed": "Copy failed"
     },
@@ -325,6 +335,15 @@
   "classmanagement": {
     "title": "CLASS ROOM",
     "sidebar": "Class Room",
+    "invalidProxyAddresses": "Proxy Email-Addresses must be written comma separated without spaces",
+    "invalidQuota": "The quota must be specified according to the documentation",
+    "invalidMailQuota": "The mail quota must be specified as a number in MB",
+    "mailQuota": "Mail Quota (MB)",
+    "proxyAddresses": "Proxy Email-Adresses",
+    "descriptionPlaceholder": "Short description of the project",
+    "proxyAddressesPlaceholder": "info@email1.de,kontakt@email2.com",
+    "quotaPlaceholder": "[{\"share\":\"default-school\",\"quota\":50}]",
+    "quota": "Quota (MB)",
     "detailsprinters": "Details of printer",
     "classes": "Classes",
     "name": "Name",
@@ -411,9 +430,21 @@
     "printOneItemPerPage": "Print one password per page",
     "selectSavedSession": "Select from saved sessions",
     "saveSession": "Save session",
+    "editSession": "Edit session",
     "myRoom": "My room",
     "sharedMailBox": "Shared mailbox",
     "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes.",
+    "veyonConfigTable": {
+      "id": "ID",
+      "subnet": "Subnet",
+      "subnetDescription": "Subnet in CIDR notation (10.0.0.0/24)",
+      "subnetPlaceholder": "10.0.0.0/24",
+      "proxyAdress": "Proxy Adress",
+      "proxyAdressDescription": "URL of the Veyon-WebAPI-Proxy",
+      "proxyAdressPlaceholder": "http://localhost:11080",
+      "createConfig": "Create config",
+      "editConfig": "Edit config"
+    },
     "collectAndCut": "Cut",
     "collectAndCopy": "Copy",
     "copyOrCut": "Would you like to cut or copy the files?",
@@ -471,6 +502,10 @@
   "surveys": {
     "rowsSelected": "{{selected}} of {{total}} surveys selected",
     "rowSelected": "{{selected}} of {{total}} survey selected",
+    "confirmMultiDelete": "Should these surveys really be deleted?",
+    "confirmSingleDelete": "Should this survey really be deleted?",
+    "deleteSurveys": "Delete {{count}} surveys",
+    "deleteSurvey": "Delete survey",
     "title": "SURVEYS",
     "sidebar": "Surveys",
     "view": {
@@ -648,6 +683,19 @@
         "general": {
           "title": "General",
           "description": ""
+        },
+        "fileSharing": {
+          "title": "General settings",
+          "description": ""
+        },
+        "docker": {
+          "title": "Docker Applications",
+          "description": "To be able to use the extended services, the required Docker containers must be started here."
+        },
+        "veyon": {
+          "title": "Veyon Proxy",
+          "description": "",
+          "filterPlaceHolderText": "Search for proxy"
         }
       },
       "update": {
@@ -668,12 +716,15 @@
       "ReadAppConfigFailed": "Read app failed",
       "DisableAppConfigFailed": "Disable app failed",
       "WriteTraefikConfigFailed": "Write traefik config failed",
-      "ReadTraefikConfigFailed": "Read traefik config failed"
+      "ReadTraefikConfigFailed": "Read traefik config failed",
+      "forbiddenProxyPath": "Forbidden proxy path"
     },
     "yamleditor": {
       "invalidYaml": "Wrong YAML syntax",
       "placeholder": "Enter your Traefik config here"
-    }
+    },
+    "rowsSelected": "{{selected}} of {{total}} Container selected",
+    "rowSelected": "{{selected}} of {{total}} Container selected"
   },
   "usersettings": {
     "title": "MY PROFILE",
@@ -773,13 +824,16 @@
   },
   "edit": "Edit",
   "common": {
+    "error": "Error",
     "errors": {
       "startDateBeforeEndDate": "The start date must be before the end date",
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },
+    "sortOrder": "Sort order",
     "checking": "Checking",
     "options": "Options",
+    "cancel": "Cancel",
     "columns": "Columns",
     "copy": {
       "success": "Successfully copied to clipboard",
@@ -787,6 +841,7 @@
       "doCopy": "Copy",
       "link": "Copy link"
     },
+    "openInNewTab": "Open in new tab",
     "from": "from",
     "youAreCurrentlyNotLoggedIn": "You are currently not logged in",
     "toLogin": "To login",
@@ -852,7 +907,14 @@
     "not-available": "Not available",
     "date": "Date",
     "time": "Time",
-    "revert": "Revert"
+    "revert": "Revert",
+    "restart": "Restart",
+    "kill": "Kill",
+    "install": "Install",
+    "update": "Update",
+    "progress": "Progress...",
+    "pressInstall": "Press Install to start",
+    "disabled": "Disabled"
   },
   "form": {
     "path": "Path",
@@ -890,6 +952,7 @@
     "selectFile": "Select up to 5 files at a time",
     "uploadItems": "Upload: {{count}} items",
     "dragDropClick": "Drag files here or click to select files",
+    "dropHere": "Drop here",
     "filesToUpload": "Files to upload",
     "limitExceeded": "Reached the limit of 5 files"
   },
@@ -905,7 +968,8 @@
     "noDataAvailable": "No data available"
   },
   "loadingIndicator": {
-    "message": "Please wait..."
+    "message": "Please wait...",
+    "previewLoading": "Preview loading"
   },
   "search": {
     "type-to-search": "Type to search",
@@ -1053,14 +1117,16 @@
     "onlyOfficeUrlTitle": "OnlyOffice URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Enter the OnlyOffice JWT Secret",
+    "overrideDocumentVendorMSWithOOTitle": "Use OpenDocument as the standard document format",
+    "overrideDocumentVendorMSWithOODescription": "Should the format used by OpenOffice (odt, ods, odp) be used instead of Microsoft Office (docx, pptx, xlsx) formats?",
     "mailImapUrlTitle": "URL",
     "mailImapUrlDescription": "Enter the FQDN (i.e. 'imap.example.com') of the IMAP-server",
     "mailImapPortTitle": "Port",
     "mailImapPortDescription": "Enter the port number of the IMAP-server (i.e. 993)",
     "mailImapSecureTitle": "Secure Connection",
-    "mailImapSecureDescription": "Enter 'true' if the connection should be established via TLS (more secure), otherwise it's set to 'false' and will use STARTTLS",
+    "mailImapSecureDescription": "Should the connection be established via TLS or STARTTLS",
     "mailImapRejectUnauthorizedTitle": "Reject Unauthorized",
-    "mailImapRejectUnauthorizedDescription": "Enter 'true' if the connection should reject self-signed certificates, otherwise it's set to 'false' to accept them"
+    "mailImapRejectUnauthorizedDescription": "Should a certificate check be carried out for this connection?"
   },
   "mails": {
     "errors": {
@@ -1084,5 +1150,51 @@
   "preview": {
     "image": "Image preview",
     "failedToLoadImage": "Failed to load image"
+  },
+  "dockerApplication": {
+    "title": "Docker Application",
+    "dialogTitle": "{{applicationName}}-Plugins Installer",
+    "mailDescription": "If you want to operate your own mail server, you can carry out the setup for Mailcow here.",
+    "classmanagementDescription": "If you use Veyon in your school network, you can carry out the setup for the Veyon-WebAPI-Proxy here."
+  },
+  "dockerOverview": {
+    "title": "Container Overview",
+    "containerName": "Container Name",
+    "state": "State",
+    "status": "Status",
+    "state-badge": "Badge",
+    "imageName": "Image",
+    "filterPlaceHolderText": "Search for container name",
+    "port": "Port",
+    "created": "Created at"
+  },
+  "docker": {
+    "error": {
+      "dockerConnectionError": "Docker connection failed",
+      "dockerImageNotFound": "Docker Image could not be found",
+      "dockerCreationError": "Docker Container could not be created",
+      "dockerCommandExecutionError": "Docker command could not be executed",
+      "dockerContainerDeletionError": "Docker Container could not be deleted"
+    },
+    "events": {
+      "pullingImage": "Pulling docker image...",
+      "checkingImage": "Checking if image already exists...",
+      "creatingContainer": "Creating docker container...",
+      "containerCreated": "Container created.",
+      "startContainer": "Container started.",
+      "stopContainer": "Container stopped.",
+      "restartContainer": "Restart Container.",
+      "killContainer": "Container killed.",
+      "containerCreationSuccessful": "Container successfully created.",
+      "containerCreationFailed": "Container could not be created."
+    },
+    "status": {
+      "running": "running",
+      "created": "created",
+      "restarting": "restarting",
+      "paused": "paused",
+      "exited": "exited",
+      "dead": "dead"
+    }
   }
 }

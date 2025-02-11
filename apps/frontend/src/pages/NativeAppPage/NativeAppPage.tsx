@@ -1,13 +1,27 @@
-import React from 'react';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import React, { lazy, Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import APPS from '@libs/appconfig/constants/apps';
 import FramePlaceholder from '@/components/framing/FramePlaceholder';
 import { ConferencePage } from '@/pages/ConferencePage';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
-import SurveysPage from '@/pages/Surveys/SurveysPage';
 import type TApps from '@libs/appconfig/types/appsType';
 import BulletinBoardEditorialPage from '@/pages/BulletinBoardEditorial/BulletinBoardEditorialPage';
+import CircleLoader from '@/components/ui/CircleLoader';
+
+const SurveysPage = lazy(() => import('@/pages/Surveys/SurveysPage'));
 
 const pages: Partial<Record<TApps, JSX.Element>> = {
   [APPS.CONFERENCES]: <ConferencePage />,
@@ -15,7 +29,11 @@ const pages: Partial<Record<TApps, JSX.Element>> = {
   [APPS.MAIL]: <FramePlaceholder />,
   [APPS.LINUXMUSTER]: <FramePlaceholder />,
   [APPS.WHITEBOARD]: <FramePlaceholder />,
-  [APPS.SURVEYS]: <SurveysPage />,
+  [APPS.SURVEYS]: (
+    <Suspense fallback={<CircleLoader />}>
+      <SurveysPage />
+    </Suspense>
+  ),
   [APPS.DESKTOP_DEPLOYMENT]: <DesktopDeploymentPage />,
   [APPS.CLASS_MANAGEMENT]: <Outlet />,
   [APPS.BULLETIN_BOARD]: <BulletinBoardEditorialPage />,

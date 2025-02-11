@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import mongoose from 'mongoose';
 import { create } from 'zustand';
 import { CompleteEvent } from 'survey-core';
@@ -19,10 +31,10 @@ const useParticipatePublicSurveyStore = create<ParticipatePublicSurveyStore>((se
     set({ isFetching: true });
     try {
       const response = await eduApi.get<SurveyDto>(`${PUBLIC_SURVEYS_ENDPOINT}/`, { params: { surveyId } });
-      const survey = response.data;
-      set({ survey });
+      const publicSurvey = response.data;
+      set({ publicSurvey });
     } catch (error) {
-      set({ survey: undefined });
+      set({ publicSurvey: undefined });
       handleApiError(error, set);
     } finally {
       set({ isFetching: false });

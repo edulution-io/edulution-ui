@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
@@ -79,8 +91,8 @@ const DropdownSelect: React.FC<DropdownProps> = ({
             onClickCapture={() => setIsOpen((prevVal) => !prevVal)}
             disabled={options.length === 0}
             className={clsx({
-              'bg-white text-black': variant === 'light',
-              'bg-ciDarkGrey text-ciLightGrey': variant === 'dark',
+              'bg-background text-foreground': variant === 'light',
+              'bg-muted text-secondary': variant === 'dark',
             })}
           />
         </div>
@@ -90,8 +102,8 @@ const DropdownSelect: React.FC<DropdownProps> = ({
         className={clsx(styles.options, {
           [styles.open]: isOpen,
           [styles.up]: openToTop,
-          'bg-white text-black': variant === 'light',
-          'bg-ciDarkGrey text-ciLightGrey': variant === 'dark',
+          'bg-background text-foreground': variant === 'light',
+          'bg-muted text-secondary': variant === 'dark',
         })}
       >
         {filter(options).map((option) => (
@@ -101,7 +113,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
             className={clsx(styles.option, {
               [styles.selected]: t(option.name) === selectedVal,
               'hover:bg-gray-200': variant === 'light',
-              'bg-ciDarkGrey hover:bg-white': variant === 'dark',
+              'bg-muted hover:bg-secondary': variant === 'dark',
             })}
           >
             {t(option.name)}

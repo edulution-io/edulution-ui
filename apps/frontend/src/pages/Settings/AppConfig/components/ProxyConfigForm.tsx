@@ -1,30 +1,41 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useEffect, useMemo, useState } from 'react';
-import { AppConfigOption } from '@libs/appconfig/types';
+import { UseFormReturn } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { parse, stringify } from 'yaml';
 import { FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Switch from '@/components/ui/Switch';
 import YamlEditor from '@/components/shared/YamlEditor';
-import { UseFormReturn } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import Input from '@/components/shared/Input';
-import { parse, stringify } from 'yaml';
-import YamlDokument from '@libs/appconfig/types/yamlDokument';
 import { Button } from '@/components/shared/Button';
-import ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
+import { type AppConfigOption } from '@libs/appconfig/types';
+import type YamlDokument from '@libs/appconfig/types/yamlDokument';
+import type ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
 import getDefaultYaml from '@libs/appconfig/utils/getDefaultYaml';
 
 type ProxyConfigFormProps = {
-  settingLocation: string;
   item: AppConfigOption;
   form: UseFormReturn<ProxyConfigFormType>;
 };
 
-const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item, form }) => {
+const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
   const { t } = useTranslation();
   const [expertModeEnabled, setExpertModeEnabled] = useState(false);
   const isYamlConfigured = form.watch(`${item.id}.proxyConfig`) !== '';
 
-  const defaultYaml = useMemo(() => getDefaultYaml(settingLocation), [settingLocation]);
+  const defaultYaml = useMemo(() => getDefaultYaml(item.id), [item.id]);
 
   const updateYaml = () => {
     const proxyPath = form.getValues(`${item.id}.proxyPath`);
@@ -33,22 +44,22 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
 
     const jsonData = parse(form.getValues(`${item.id}.proxyConfig`) || defaultYaml) as YamlDokument;
     if (proxyPath) {
-      jsonData.http.routers[settingLocation].rule = `PathPrefix(\`/${proxyPath}\`)`;
+      jsonData.http.routers[item.id].rule = `PathPrefix(\`/${proxyPath}\`)`;
       if (stripPrefix) {
         jsonData.http.middlewares['strip-prefix'] = {
           stripPrefix: {
             prefixes: [`/${proxyPath}`],
           },
         };
-        jsonData.http.routers[settingLocation].middlewares = ['strip-prefix'];
+        jsonData.http.routers[item.id].middlewares = ['strip-prefix'];
       } else {
         delete jsonData.http.middlewares['strip-prefix'];
-        jsonData.http.routers[settingLocation].middlewares = [];
+        jsonData.http.routers[item.id].middlewares = [];
       }
     }
 
     if (proxyDestination) {
-      jsonData.http.services[settingLocation].loadBalancer.servers[0].url = proxyDestination;
+      jsonData.http.services[item.id].loadBalancer.servers[0].url = proxyDestination;
     }
 
     const updatedYaml = stringify(jsonData);
@@ -56,7 +67,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
   };
 
   useEffect(() => {
-    if (!expertModeEnabled) {
+    if (!expertModeEnabled && form.watch(`${item.id}.proxyPath`) !== '') {
       updateYaml();
     }
   }, [
@@ -73,7 +84,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
     <AccordionSH type="multiple">
       <AccordionItem value={item.id}>
         <AccordionTrigger className="flex text-h4">
-          <h4>{t(`form.proxyConfig`)}</h4>
+          <h4 className="text-background">{t(`form.proxyConfig`)}</h4>
         </AccordionTrigger>
         <AccordionContent className="space-y-10 px-1 pt-4">
           <div className="flex flex-row items-center space-x-6">
@@ -84,11 +95,10 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
               defaultValue=""
               render={({ field }) => (
                 <FormItem>
-                  <p className="font-bold">{t(`form.proxyPath`)}</p>
+                  <p className="font-bold text-background">{t(`form.proxyPath`)}</p>
                   <FormControl>
                     <Input
                       {...field}
-                      variant="lightGray"
                       onChange={(e) => {
                         field.onChange(e);
                         updateYaml();
@@ -106,11 +116,10 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
               defaultValue=""
               render={({ field }) => (
                 <FormItem>
-                  <p className="font-bold">{t(`form.proxyDestination`)}</p>
+                  <p className="font-bold text-background">{t(`form.proxyDestination`)}</p>
                   <FormControl>
                     <Input
                       {...field}
-                      variant="lightGray"
                       onChange={(e) => {
                         field.onChange(e);
                         updateYaml();
@@ -128,7 +137,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
               defaultValue={false}
               render={({ field }) => (
                 <FormItem>
-                  <p className="font-bold">{t('form.stripPrefix')}</p>
+                  <p className="font-bold text-background">{t('form.stripPrefix')}</p>
                   <FormControl>
                     <Switch
                       {...field}
@@ -159,17 +168,17 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
               checked={expertModeEnabled}
               onCheckedChange={setExpertModeEnabled}
             />
-            <p>{t('form.expertMode')}</p>
+            <p className="text-background">{t('form.expertMode')}</p>
           </div>
 
           <FormFieldSH
             key={`${item.id}.proxyConfig`}
             control={form.control}
             name={`${item.id}.proxyConfig`}
-            defaultValue={defaultYaml}
+            defaultValue=""
             render={({ field }) => (
               <FormItem>
-                <p className="font-bold">{t(`form.proxyConfig`)}</p>
+                <p className="font-bold text-background">{t(`form.proxyConfig`)}</p>
                 <FormControl>
                   <YamlEditor
                     value={field.value}
@@ -179,7 +188,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ settingLocation, item
                     disabled={!expertModeEnabled}
                   />
                 </FormControl>
-                <p>{t(`form.proxyConfigDescription`)}</p>
+                <p className="text-background">{t(`form.proxyConfigDescription`)}</p>
                 <FormMessage className="text-p" />
               </FormItem>
             )}

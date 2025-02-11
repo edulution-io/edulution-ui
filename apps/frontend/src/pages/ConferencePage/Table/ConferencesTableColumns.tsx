@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { LockClosedIcon } from '@radix-ui/react-icons';
@@ -286,8 +298,9 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
         isRowLoading || !isUserTheCreator
           ? undefined
           : async () => {
+              let wasConferenceStateToggled;
               if (isUserTheCreator) {
-                await toggleConferenceRunningState(meetingID, isRunning);
+                wasConferenceStateToggled = await toggleConferenceRunningState(meetingID, isRunning);
                 if (!isRunning) {
                   await joinConference(meetingID);
                 } else if (joinConferenceUrl.includes(meetingID)) {
@@ -296,9 +309,14 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
               } else if (isRunning) {
                 await joinConference(meetingID);
               }
-              await delay(5000);
+
+              if (wasConferenceStateToggled) {
+                await delay(5000);
+                toast.info(i18next.t(`conferences.${isRunning ? 'stopped' : 'started'}`));
+              } else {
+                setJoinConferenceUrl('');
+              }
               await getConferences();
-              toast.info(i18next.t(`conferences.${isRunning ? 'stopped' : 'started'}`));
             };
       return (
         <SelectableTextCell

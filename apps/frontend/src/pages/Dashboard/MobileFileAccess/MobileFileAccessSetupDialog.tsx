@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useMemo, useState } from 'react';
 import { t } from 'i18next';
 import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
@@ -38,11 +50,11 @@ const MobileFileAccessSetupDialog: React.FC<MobileFileAccessSetupDialogProps> = 
       <div className="mt-4 overflow-auto">
         {t('form.url')}:
         <Card variant="text">
-          <pre className="m-2 text-foreground">{webdavAccessDetails.url}</pre>
+          <pre className="m-2 text-background">{webdavAccessDetails.url}</pre>
         </Card>
         {t('common.username')}:
         <Card variant="text">
-          <pre className="m-2 text-foreground">{user?.username}</pre>
+          <pre className="m-2 text-background">{user?.username}</pre>
         </Card>
       </div>
     </>
@@ -60,7 +72,7 @@ const MobileFileAccessSetupDialog: React.FC<MobileFileAccessSetupDialogProps> = 
           className="flex flex-col items-center"
         >
           <IconContext.Provider value={iconContextValue}>
-            <MdOutlineFileDownload className="text-foreground" />
+            <MdOutlineFileDownload className="text-background" />
           </IconContext.Provider>
         </NavLink>
       </Button>
@@ -68,7 +80,7 @@ const MobileFileAccessSetupDialog: React.FC<MobileFileAccessSetupDialogProps> = 
   );
 
   const getDialogBody = () => (
-    <div className={`${isStepOne ? '' : 'min-w-[85%]'} text-foreground`}>
+    <div className={`${isStepOne ? '' : 'min-w-[85%]'} text-background`}>
       <p className="flex justify-center">
         {t(isStepOne ? 'dashboard.mobileAccess.scanAppStoreLink' : 'dashboard.mobileAccess.scanAccessInfo')}
       </p>
@@ -79,7 +91,7 @@ const MobileFileAccessSetupDialog: React.FC<MobileFileAccessSetupDialogProps> = 
         type="button"
         variant="btn-outline"
         onClick={() => setIsStepOne(!isStepOne)}
-        className={`absolute top-1/2 text-foreground ${isStepOne ? 'right-0  mr-4' : 'left-0 ml-4'}`}
+        className={`absolute top-1/2 text-background ${isStepOne ? 'right-0  mr-4' : 'left-0 ml-4'}`}
       >
         {isStepOne ? <MdArrowForwardIos /> : <MdArrowBackIosNew />}
       </Button>
@@ -96,7 +108,7 @@ const MobileFileAccessSetupDialog: React.FC<MobileFileAccessSetupDialogProps> = 
   );
 
   const getSheetBody = () => (
-    <div className="text-foreground">
+    <div className="text-background">
       <p className="my-4">{t('dashboard.mobileAccess.downloadApp')}</p>
       {navToAppStoreButton()}
       <p className="mt-4">{t('dashboard.mobileAccess.accessData')}:</p>

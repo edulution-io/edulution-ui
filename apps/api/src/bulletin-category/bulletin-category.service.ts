@@ -1,4 +1,16 @@
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import { HttpStatus, Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
@@ -15,13 +27,22 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 import { BulletinCategoryPermissionType } from '@libs/appconfig/types/bulletinCategoryPermissionType';
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 import { BulletinCategory, BulletinCategoryDocument } from './bulletin-category.schema';
+import MigrationService from '../migration/migration.service';
+import bulletinCategoryMigrationsList from './migrations/bulletinCategoryMigrationsList';
 
 @Injectable()
-class BulletinCategoryService {
+class BulletinCategoryService implements OnModuleInit {
   constructor(
     @InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
+
+  async onModuleInit() {
+    await MigrationService.runMigrations<BulletinCategoryDocument>(
+      this.bulletinCategoryModel,
+      bulletinCategoryMigrationsList,
+    );
+  }
 
   async getUsersWithPermissionCached(
     bulletinCategoryId: string,
@@ -107,10 +128,6 @@ class BulletinCategoryService {
   }
 
   async create(currentUser: JWTUser, dto: CreateBulletinCategoryDto) {
-    if (!currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_CREATE_CATEGORY, HttpStatus.FORBIDDEN);
-    }
-
     const category = (await this.bulletinCategoryModel.create({
       name: dto.name,
       isActive: dto.isActive ?? true,
@@ -123,6 +140,7 @@ class BulletinCategoryService {
         lastName: currentUser.family_name,
         username: currentUser.preferred_username,
       },
+      position: dto.position,
     })) as unknown as BulletinCategoryResponseDto;
 
     await this.getUsersWithPermissionCached(category.id, BulletinCategoryPermission.VIEW);
@@ -131,7 +149,7 @@ class BulletinCategoryService {
     return category;
   }
 
-  async update(currentUser: JWTUser, id: string, dto: CreateBulletinCategoryDto): Promise<void> {
+  async update(id: string, dto: CreateBulletinCategoryDto): Promise<void> {
     const category: BulletinCategoryDocument | null = await this.bulletinCategoryModel.findById(id).exec();
     if (!category) {
       throw new CustomHttpException(
@@ -141,10 +159,6 @@ class BulletinCategoryService {
       );
     }
 
-    if (!currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_CATEGORY, HttpStatus.FORBIDDEN);
-    }
-
     Object.assign(category, dto);
     await category.save();
 
@@ -152,14 +166,21 @@ class BulletinCategoryService {
     await this.getUsersWithPermissionCached(String(category.id), BulletinCategoryPermission.EDIT);
   }
 
-  async remove(currentUser: JWTUser, id: string): Promise<void> {
-    if (!currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_DELETE_CATEGORY, HttpStatus.FORBIDDEN);
-    }
-    try {
-      const objectId = new Types.ObjectId(id);
+  async remove(id: string): Promise<void> {
+    const objectId = new Types.ObjectId(id);
 
+    const categoryToRemove = await this.bulletinCategoryModel.findById(objectId).exec();
+    if (!categoryToRemove) {
+      throw new CustomHttpException(BulletinBoardErrorMessage.CATEGORY_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+
+    try {
       await this.bulletinCategoryModel.findByIdAndDelete(objectId).exec();
+
+      await this.bulletinCategoryModel.updateMany(
+        { position: { $gt: categoryToRemove.position } },
+        { $inc: { position: -1 } },
+      );
     } catch (error) {
       throw new CustomHttpException(BulletinBoardErrorMessage.CATEGORY_DELETE_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -169,6 +190,29 @@ class BulletinCategoryService {
     const result = await this.bulletinCategoryModel.exists({ name: new RegExp(`^${name}$`, 'i') }).exec();
     const exists = !!result;
     return { exists };
+  }
+
+  async setPosition(categoryId: string, newPosition: number): Promise<boolean> {
+    const category = await this.bulletinCategoryModel.findById(categoryId).exec();
+    if (!category) {
+      throw new CustomHttpException(BulletinBoardErrorMessage.CATEGORY_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+
+    const categoryWithSamePosition = await this.bulletinCategoryModel.findOne({ position: newPosition }).exec();
+
+    if (!categoryWithSamePosition) {
+      category.position = newPosition;
+      await category.save();
+      return true;
+    }
+
+    const oldPosition = category.position;
+    category.position = newPosition;
+    categoryWithSamePosition.position = oldPosition;
+    await category.save();
+    await categoryWithSamePosition.save();
+
+    return true;
   }
 }
 

@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { AxiosError } from 'axios';
 import { create } from 'zustand';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
@@ -7,8 +19,7 @@ import { WebDavActionResult } from '@libs/filesharing/types/fileActionStatus';
 import { t } from 'i18next';
 import { HttpMethods } from '@libs/common/types/http-methods';
 import FileActionType from '@libs/filesharing/types/fileActionType';
-import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
-import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
+import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
 import ContentType from '@libs/filesharing/types/contentType';
 import handleFileOrCreateFile from '@/pages/FileSharing/dialog/handleFileAction/handleFileOrCreateFile';
 import handleArrayData from '@/pages/FileSharing/dialog/handleFileAction/handleArrayData';
@@ -25,7 +36,7 @@ interface FileSharingDialogStore {
   userInput: string;
   filesToUpload: File[];
   moveOrCopyItemToPath: DirectoryFileDTO;
-  selectedFileType: (typeof AVAILABLE_FILE_TYPES)[FileTypeKey];
+  selectedFileType: TAvailableFileTypes | '';
   setMoveOrCopyItemToPath: (item: DirectoryFileDTO) => void;
   setIsLoading: (isLoading: boolean) => void;
   error: AxiosError | null;
@@ -33,7 +44,7 @@ interface FileSharingDialogStore {
   isSubmitButtonInActive: boolean;
   setError: (error: AxiosError) => void;
   reset: () => void;
-  setSelectedFileType: (fileType: (typeof AVAILABLE_FILE_TYPES)[FileTypeKey]) => void;
+  setSelectedFileType: (fileType: TAvailableFileTypes | '') => void;
   handleItemAction: (
     action: FileActionType,
     endpoint: string,
@@ -55,7 +66,7 @@ const initialState: Partial<FileSharingDialogStore> = {
   error: null,
   userInput: '',
   moveOrCopyItemToPath: {} as DirectoryFileDTO,
-  selectedFileType: {} as (typeof AVAILABLE_FILE_TYPES)[FileTypeKey],
+  selectedFileType: '',
   filesToUpload: [],
   isSubmitButtonInActive: false,
 };
