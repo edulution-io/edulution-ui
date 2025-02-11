@@ -10,16 +10,31 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { IsString, ValidateNested } from 'class-validator';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import ExtendedOptionKeysDto from '@libs/appconfig/types/extendedOptionKeysDto';
 import { AppConfigOptions } from './appConfigOptionsType';
 import AppIntegrationType from './appIntegrationType';
+import TApps from './appsType';
 
-export type AppConfigDto = {
-  name: string;
+class AppConfigDto {
+  @IsString()
+  name: TApps;
+
+  @IsString()
   icon: string;
+
+  @IsString()
   appType: AppIntegrationType;
+
+  @ValidateNested()
   options: AppConfigOptions;
+
+  @ValidateNested()
   accessGroups: MultipleSelectorGroup[];
+
+  @ValidateNested()
   extendedOptions?: ExtendedOptionKeysDto;
-};
+}
+
+export default AppConfigDto;

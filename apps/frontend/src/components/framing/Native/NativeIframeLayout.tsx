@@ -17,11 +17,12 @@ import useUserStore from '@/store/UserStore/UserStore';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
+import type TApps from '@libs/appconfig/types/appsType';
 
 interface NativeIframeLayoutProps {
   scriptOnStartUp?: string;
   scriptOnStop?: string;
-  appName: string;
+  appName: TApps;
 }
 
 const NativeIframeLayout: React.FC<NativeIframeLayoutProps> = ({ scriptOnStartUp, scriptOnStop, appName }) => {

@@ -10,33 +10,53 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { DropdownSelect } from '@/components';
 import { Button } from '@/components/shared/Button';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
-import { AppConfigDto } from '@libs/appconfig/types';
+import NATIVE_APP_CONFIG_OPTIONS from '@/pages/Settings/AppConfig/nativeAppConfigOptions';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import { useNavigate } from 'react-router-dom';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import CircleLoader from '@/components/ui/CircleLoader';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
+import TApps from '@libs/appconfig/types/appsType';
+import APPS from '@libs/appconfig/constants/apps';
+import { Form } from '@/components/ui/Form';
+import FormField from '@/components/shared/FormField';
+import { useForm } from 'react-hook-form';
 
 interface AddAppConfigDialogProps {
   option: string;
   setOption: (option: string) => void;
-  getFilteredAppOptions: () => { id: string; name: string }[];
 }
 
-const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOption, getFilteredAppOptions }) => {
+const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOption }) => {
   const { t } = useTranslation();
   const isMobileView = useIsMobileView();
   const navigate = useNavigate();
-  const { isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen, createAppConfig, isLoading, error } =
+  const { isAddAppConfigDialogOpen, appConfigs, setIsAddAppConfigDialogOpen, createAppConfig, isLoading, error } =
     useAppConfigsStore();
-  const selectedOption = option.toLowerCase().split('.')[0];
+  const selectedOption = option.toLowerCase().split('.')[0] as TApps;
+
+  const filteredAppOptions = useMemo(() => {
+    const existingOptions = appConfigs.map((item) => item.name);
+    const filteredOptions = NATIVE_APP_CONFIG_OPTIONS.filter(
+      (item) => !existingOptions.includes(item.id) || item.id === APPS.CUSTOM,
+    );
+    return filteredOptions.map((item) => ({ id: item.id, name: `${item.id}.sidebar` }));
+  }, [appConfigs, isAddAppConfigDialogOpen]);
+
+  const form = useForm();
+
+  useEffect(() => {
+    if (selectedOption === APPS.CUSTOM) {
+      form.setValue('name', '');
+    }
+  }, [selectedOption]);
 
   const getDialogBody = () => {
     if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
@@ -44,11 +64,24 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
       <div className="my-12 text-background">
         <p>{t('settings.addApp.description')}</p>
         <DropdownSelect
-          options={getFilteredAppOptions()}
+          options={filteredAppOptions}
           selectedVal={t(option)}
           handleChange={setOption}
           openToTop={isMobileView}
         />
+        {selectedOption === APPS.CUSTOM ? (
+          <Form {...form}>
+            <form className="mt-4">
+              <FormField
+                name="name"
+                defaultValue=""
+                form={form}
+                labelTranslationId={t('common.name')}
+                variant="dialog"
+              />
+            </form>
+          </Form>
+        ) : null}
       </div>
     );
   };
@@ -57,7 +90,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
     if (!selectedOption) {
       return;
     }
-    const optionsConfig = APP_CONFIG_OPTIONS.find((item) => item.id.includes(selectedOption));
+    const optionsConfig = NATIVE_APP_CONFIG_OPTIONS.find((item) => item.id.includes(selectedOption));
 
     if (optionsConfig) {
       const newConfig: AppConfigDto = {
@@ -71,7 +104,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
 
       await createAppConfig(newConfig);
       if (!error) {
-        setOption('');
+        setOption(`${APPS.CUSTOM}.sidebar`);
         setIsAddAppConfigDialogOpen(false);
       }
     }

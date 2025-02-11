@@ -11,7 +11,7 @@
  */
 
 import { useMemo } from 'react';
-import { AppConfigDto } from '@libs/appconfig/types';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import APPS from '@libs/appconfig/constants/apps';
 

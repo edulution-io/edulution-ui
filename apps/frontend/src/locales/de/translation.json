@@ -87,6 +87,9 @@
       "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen"
     }
   },
+  "custom": {
+    "sidebar": "Benutzerdefiniert"
+  },
   "dashboard": {
     "mobileAccess": {
       "title": "Mobiler Datenzugriff",

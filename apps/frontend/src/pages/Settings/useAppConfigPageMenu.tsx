@@ -13,7 +13,7 @@
 import { PlusIcon, SettingsIcon } from '@/assets/icons';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { useNavigate } from 'react-router-dom';
-import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
+import NATIVE_APP_CONFIG_OPTIONS from '@/pages/Settings/AppConfig/nativeAppConfigOptions';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
@@ -41,7 +41,7 @@ const useAppConfigPageMenu = () => {
   const appConfigPageMenu = (): MenuBarEntry => ({
     ...settingsMenuBarEntry,
     menuItems: [
-      ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfigs, option.id) !== undefined).map(
+      ...NATIVE_APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfigs, option.id) !== undefined).map(
         (item) => ({
           id: item.id,
           label: `${item.id}.sidebar`,

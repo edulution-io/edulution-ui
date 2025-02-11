@@ -13,14 +13,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { AppConfigOptions } from '@libs/appconfig/types';
-import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import ExtendedOptionKeysDto from '@libs/appconfig/types/extendedOptionKeysDto';
+import type AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
+import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import type ExtendedOptionKeysDto from '@libs/appconfig/types/extendedOptionKeysDto';
+import type TApps from '@libs/appconfig/types/appsType';
 
 @Schema({ timestamps: true, strict: true })
 export class AppConfig extends Document {
-  @Prop({ required: true })
-  name: string;
+  @Prop({ type: String, required: true })
+  name: TApps;
 
   @Prop({ required: true })
   icon: string;

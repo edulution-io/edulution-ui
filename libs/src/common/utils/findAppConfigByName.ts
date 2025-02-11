@@ -10,9 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { AppConfigDto } from '@libs/appconfig/types';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
+import type TApps from '@libs/appconfig/types/appsType';
 
-const findAppConfigByName = (appConfig: AppConfigDto[], entryName: string) =>
+const findAppConfigByName = (appConfig: AppConfigDto[], entryName: TApps) =>
   appConfig.find(({ name }) => name === entryName);
 
 export default findAppConfigByName;

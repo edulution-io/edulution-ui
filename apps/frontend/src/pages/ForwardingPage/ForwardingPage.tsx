@@ -19,6 +19,7 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { toast } from 'sonner';
 import { getFromPathName } from '@libs/common/utils';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
+import TApps from '@libs/appconfig/types/appsType';
 
 const ForwardingPage: React.FC = () => {
   const { t } = useTranslation();
@@ -29,7 +30,7 @@ const ForwardingPage: React.FC = () => {
 
   const { appConfigs } = useAppConfigsStore();
 
-  const rootPathName = getFromPathName(pathname, 1);
+  const rootPathName = getFromPathName(pathname, 1) as TApps;
 
   useEffect(() => {
     if (isForwarding) {

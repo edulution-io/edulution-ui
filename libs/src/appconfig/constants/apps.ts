@@ -39,6 +39,7 @@ const APPS = {
   SETTINGS: 'settings',
   USER_SETTINGS: 'usersettings',
   BULLETIN_BOARD: 'bulletinboard',
+  CUSTOM: 'custom',
   NONE: 'none',
 } as const;
 

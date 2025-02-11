@@ -15,7 +15,7 @@ import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Connection, Model } from 'mongoose';
 import { readFileSync, writeFileSync } from 'fs';
-import { AppConfigDto } from '@libs/appconfig/types';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
 import GroupRoles from '@libs/groups/types/group-roles.enum';

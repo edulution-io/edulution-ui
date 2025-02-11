@@ -19,14 +19,14 @@ import VEYON_FEATURE_ACTIONS from '@libs/veyon/constants/veyonFeatureActions';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import { framebufferConfigLow } from '@libs/veyon/constants/framebufferConfig';
 import VEYON_API_AUTH_RESPONSE_KEYS from '@libs/veyon/constants/veyonApiAuthResponse';
-import { type AppConfigDto } from '@libs/appconfig/types';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import type VeyonUserResponse from '@libs/veyon/types/veyonUserResponse';
 import VeyonService from './veyon.service';
 import UsersService from '../users/users.service';
 import AppConfigService from '../appconfig/appconfig.service';
 
 const mockAppConfig = {
-  name: 'Test',
+  name: 'filesharing',
   icon: 'icon-path',
   appType: APP_INTEGRATION_VARIANT.NATIVE,
   options: {

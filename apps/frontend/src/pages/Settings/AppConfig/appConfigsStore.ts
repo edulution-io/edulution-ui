@@ -18,8 +18,9 @@ import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoi
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
-import { AppConfigDto } from '@libs/appconfig/types/appConfigDto';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import PatchConfigDto from '@libs/common/types/patchConfigDto';
+import APPS from '@libs/appconfig/constants/apps';
 
 type AppConfigsStore = {
   appConfigs: AppConfigDto[];
@@ -49,7 +50,7 @@ const initialState = {
   isDeleteAppConfigDialogOpen: false,
   appConfigs: [
     {
-      name: '',
+      name: APPS.CUSTOM,
       icon: '',
       appType: APP_INTEGRATION_VARIANT.NATIVE,
       options: {},

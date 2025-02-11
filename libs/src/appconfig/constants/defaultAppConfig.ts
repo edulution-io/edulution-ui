@@ -11,7 +11,7 @@
  */
 
 import { ClassManagementIcon, FilesharingIcon, SurveysIcon, WhiteboardIcon } from '@libs/assets';
-import { AppConfigDto } from '@libs/appconfig/types';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APPS from './apps';
 import APP_INTEGRATION_VARIANT from './appIntegrationVariants';
 

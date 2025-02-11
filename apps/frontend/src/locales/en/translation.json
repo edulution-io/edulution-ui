@@ -87,6 +87,9 @@
       "attachmentDeletionFailed": "Failed to delete an attachment"
     }
   },
+  "custom": {
+    "sidebar": "Benutzerdefiniert"
+  },
   "dashboard": {
     "mobileAccess": {
       "title": "Mobile File Access",
