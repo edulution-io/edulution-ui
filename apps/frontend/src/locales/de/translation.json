@@ -296,7 +296,8 @@
       "DuplicateFailed": "Kopieren fehlgeschlagen",
       "AppNotProperlyConfigured": "OnlyOffice ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator.",
       "CollectingFailed": "Einasmmeln der Dateien fehlgeschlagen",
-      "SharingFailed": "Austeilen der Dateien fehlgeschlagen"
+      "SharingFailed": "Austeilen der Dateien fehlgeschlagen",
+      "MissingCallbackURL": "Fehlende Callback-URL"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
@@ -965,7 +966,8 @@
     "noDataAvailable": "Keine Daten verfügbar"
   },
   "loadingIndicator": {
-    "message": "Bitte warten..."
+    "message": "Bitte warten...",
+    "previewLoading": "Vorschau laden"
   },
   "search": {
     "type-to-search": "Tippen um zu suchen",

@@ -10,5 +10,5 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const ONLY_OFFICE_ROUTE = 'only-office';
-export default ONLY_OFFICE_ROUTE;
+const FILE_PREVIEW_ROUTE = 'file-preview';
+export default FILE_PREVIEW_ROUTE;
