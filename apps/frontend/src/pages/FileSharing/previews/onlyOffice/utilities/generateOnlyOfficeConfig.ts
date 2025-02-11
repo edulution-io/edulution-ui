@@ -74,7 +74,7 @@ const generateOnlyOfficeConfig = ({
       toolbarNoTabs: false,
       uiTheme: 'theme-dark',
       unit: 'cm',
-      zoom: 100,
+      zoom: mode === 'view' ? 50 : 100,
     },
   },
 });

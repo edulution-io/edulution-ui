@@ -29,6 +29,7 @@ enum FileSharingErrorMessage {
   DuplicateFailed = 'filesharing.errors.DuplicateFailed',
   CollectingFailed = 'filesharing.errors.CollectingFailed',
   SharingFailed = 'filesharing.errors.SharingFailed',
+  MissingCallbackURL = 'filesharing.errors.MissingCallbackURL',
 }
 
 export default FileSharingErrorMessage;

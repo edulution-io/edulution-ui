@@ -297,7 +297,8 @@
       "DuplicateFailed": "Copy failed",
       "AppNotProperlyConfigured": "OnlyOffice is not properly configured, contact your system administrator.",
       "CollectingFailed": "Collecting files failed",
-      "SharingFailed": "Sharing files failed"
+      "SharingFailed": "Sharing files failed",
+      "MissingCallbackURL": "Missing callback URL"
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
@@ -960,7 +961,8 @@
     "noDataAvailable": "No data available"
   },
   "loadingIndicator": {
-    "message": "Please wait..."
+    "message": "Please wait...",
+    "previewLoading": "Preview loading"
   },
   "search": {
     "type-to-search": "Type to search",
