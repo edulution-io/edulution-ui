@@ -10,14 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
+import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import DocumentVendors from '@libs/filesharing/constants/documentVendors';
 import { AppConfigDto } from '@libs/appconfig/types';
 
 const getDocumentVendor = (appConfigs: AppConfigDto[]) => {
-  const isOpenDocumentFormatEnabled = !!getExtendedOptionValue(
+  const isOpenDocumentFormatEnabled = !!getExtendedOptionsValue(
     appConfigs,
     APPS.FILE_SHARING,
     ExtendedOptionKeys.OVERRIDE_FILE_SHARING_DOCUMENT_VENDOR_MS_WITH_OO,

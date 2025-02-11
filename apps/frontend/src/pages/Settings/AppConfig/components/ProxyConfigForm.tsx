@@ -87,73 +87,80 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
           <h4 className="text-background">{t(`form.proxyConfig`)}</h4>
         </AccordionTrigger>
         <AccordionContent className="space-y-10 px-1 pt-4">
-          <div className="flex flex-row items-center space-x-6">
-            <FormFieldSH
-              key={`${item.id}.proxyPath`}
-              control={form.control}
-              name={`${item.id}.proxyPath`}
-              defaultValue=""
-              render={({ field }) => (
-                <FormItem>
-                  <p className="font-bold text-background">{t(`form.proxyPath`)}</p>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        updateYaml();
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-p" />
-                </FormItem>
-              )}
-            />
-            <FormFieldSH
-              key={`${item.id}.proxyDestination`}
-              control={form.control}
-              name={`${item.id}.proxyDestination`}
-              defaultValue=""
-              render={({ field }) => (
-                <FormItem>
-                  <p className="font-bold text-background">{t(`form.proxyDestination`)}</p>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        updateYaml();
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-p" />
-                </FormItem>
-              )}
-            />
-            <FormFieldSH
-              key={`${item.id}.stripPrefix`}
-              control={form.control}
-              name={`${item.id}.stripPrefix`}
-              defaultValue={false}
-              render={({ field }) => (
-                <FormItem>
-                  <p className="font-bold text-background">{t('form.stripPrefix')}</p>
-                  <FormControl>
-                    <Switch
-                      {...field}
-                      checked={field.value as boolean}
-                      onCheckedChange={(checked) => {
-                        field.onChange(checked);
-                        updateYaml();
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-p" />
-                </FormItem>
-              )}
-            />
+          <div className="flex flex-row items-center justify-between gap-2">
+            <div className="flex flex-row items-center justify-between gap-10">
+              <FormFieldSH
+                key={`${item.id}.proxyPath`}
+                control={form.control}
+                name={`${item.id}.proxyPath`}
+                defaultValue=""
+                render={({ field }) => (
+                  <FormItem>
+                    <p className="font-bold text-background">{t(`form.proxyPath`)}</p>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        className="min-w-32"
+                        placeholder={t('form.proxyPathPlaceholder')}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          updateYaml();
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-p" />
+                  </FormItem>
+                )}
+              />
+              <FormFieldSH
+                key={`${item.id}.proxyDestination`}
+                control={form.control}
+                name={`${item.id}.proxyDestination`}
+                defaultValue=""
+                render={({ field }) => (
+                  <FormItem>
+                    <p className="font-bold text-background">{t(`form.proxyDestination`)}</p>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        className="min-w-64"
+                        placeholder={t('form.proxyDestinationPlaceholder')}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          updateYaml();
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-p" />
+                  </FormItem>
+                )}
+              />
+              <FormFieldSH
+                key={`${item.id}.stripPrefix`}
+                control={form.control}
+                name={`${item.id}.stripPrefix`}
+                defaultValue={false}
+                render={({ field }) => (
+                  <FormItem>
+                    <p className="font-bold text-background">{t('form.stripPrefix')}</p>
+                    <FormControl>
+                      <Switch
+                        {...field}
+                        checked={field.value as boolean}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked);
+                          updateYaml();
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-p" />
+                  </FormItem>
+                )}
+              />
+            </div>
             {isYamlConfigured && (
               <Button
+                className="mr-4"
                 type="button"
                 variant="btn-collaboration"
                 size="lg"
@@ -163,6 +170,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
               </Button>
             )}
           </div>
+
           <div className="flex items-center space-x-2">
             <Switch
               checked={expertModeEnabled}

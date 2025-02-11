@@ -48,7 +48,7 @@ class AppConfigController {
     @Body() patchConfigDto: PatchConfigDto,
     @GetCurrentUserGroups() ldapGroups: string[],
   ) {
-    return this.appConfigService.patchConfig(name, patchConfigDto, ldapGroups);
+    return this.appConfigService.patchSingleFieldInConfig(name, patchConfigDto, ldapGroups);
   }
 
   @Get()

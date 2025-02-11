@@ -27,9 +27,9 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import DockerContainerTableColumns from '../../DockerIntegration/DockerContainerTableColumns';
 import CreateDockerContainerDialog from '../../DockerIntegration/CreateDockerContainerDialog';
 import useDockerApplicationStore from '../../DockerIntegration/useDockerApplicationStore';
-import VeyonConfigTableColumns from '../../classmgmt/VeyonConfigTableColumns';
-import useVeyonConfigTableStore from '../../classmgmt/useVeyonTableStore';
-import AddVeyonProxyDialog from '../../classmgmt/AddVeyonProxyDialog';
+import VeyonConfigTableColumns from '../../classmanagement/VeyonConfigTableColumns';
+import useVeyonConfigTableStore from '../../classmanagement/useVeyonTableStore';
+import AddVeyonProxyDialog from '../../classmanagement/AddVeyonProxyDialog';
 
 const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
   [APPS.BULLETIN_BOARD]: [

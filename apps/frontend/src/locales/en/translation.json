@@ -687,8 +687,10 @@
         },
         "veyon": {
           "title": "Veyon Proxy",
-          "description": "",
-          "filterPlaceHolderText": "Search for proxy"
+          "description": "Here you can configure the Veyon WebAPI proxies.",
+          "filterPlaceHolderText": "Search for proxy",
+          "invalidCidrFormat": "Invalid CIDR notation",
+          "invalidUrlFormat": "Invalid URL"
         }
       },
       "update": {
@@ -925,7 +927,9 @@
     "proxyConfigDescription": "YAML Editor for the Traefik proxy configuration",
     "expertMode": "Expert mode",
     "proxyPath": "Proxy path",
+    "proxyPathPlaceholder": "e.g. SOGo",
     "proxyDestination": "Proxy destination",
+    "proxyDestinationPlaceholder": "e.g. http://localhost:1234/",
     "stripPrefix": "Strip prefix"
   },
   "fileOperationSuccessful": "File operation successful",
@@ -1188,6 +1192,14 @@
       "paused": "paused",
       "exited": "exited",
       "dead": "dead"
+    }
+  },
+  "veyon": {
+    "errors": {
+      "AppNotProperlyConfigured": "Veyon is not properly configured, contact the system administrator.",
+      "VeyonAuthFailed": "Veyon authentication failed.",
+      "GetUserFailed": "User could not be retrieved.",
+      "VeyonApiNotReachable": "The external Veyon server is not reachable."
     }
   }
 }

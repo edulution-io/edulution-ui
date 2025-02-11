@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Card, CardContent } from '@/components/shared/Card';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import cn from '@libs/common/utils/className';
@@ -21,6 +21,10 @@ import Avatar from '@/components/shared/Avatar';
 import { useTranslation } from 'react-i18next';
 import UserPasswordDialog from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/UserPasswordDialog';
 import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
+import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import APPS from '@libs/appconfig/constants/apps';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import FrameBufferImage from './FrameBufferImage';
 
 interface UserCardProps {
@@ -41,7 +45,7 @@ const UserCard = ({
   const { t } = useTranslation();
   const { currentUser } = useLmnApiPasswordStore();
   const { displayName, name, sophomorixAdminClass, school, givenName, sn: surname, thumbnailPhoto } = user;
-
+  const { appConfigs } = useAppConfigsStore();
   const [isHovered, setIsHovered] = useState<boolean>(false);
 
   const isStudent = user.sophomorixRole === SOPHOMORIX_STUDENT;
@@ -49,6 +53,11 @@ const UserCard = ({
   const isMemberSelected = !!selectedMember.find((m) => m.dn === user.dn) && isSelectable;
 
   const isActive = isHovered || isMemberSelected;
+
+  const isVeyonEnabled = useMemo(() => {
+    const veyonConfigs = getExtendedOptionsValue(appConfigs, APPS.CLASS_MANAGEMENT, ExtendedOptionKeys.VEYON_PROXYS);
+    return Array.isArray(veyonConfigs) && veyonConfigs.length > 0;
+  }, [appConfigs]);
 
   const onCardClick = () => {
     if (!isStudent) {
@@ -107,7 +116,7 @@ const UserCard = ({
               isActive ? 'bg-muted' : 'bg-accent',
             )}
           >
-            {user.sophomorixIntrinsic3.length > 0 ? (
+            {isVeyonEnabled && user.sophomorixIntrinsic3.length > 0 ? (
               <FrameBufferImage user={user} />
             ) : (
               <Avatar

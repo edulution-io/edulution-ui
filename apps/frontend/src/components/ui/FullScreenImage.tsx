@@ -10,11 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const VEYON_ERROR_MESSAGES = {
-  AppNotProperlyConfigured: 'veyon.errors.AppNotProperlyConfigured',
-  VeyonAuthFailed: 'veyon.errors.VeyonAuthFailed',
-  GetUserFailed: 'veyon.errors.GetUserFailed',
-  VeyonApiNotReachable: 'veyon.errors.VeyonApiNotReachable',
-} as const;
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-export default VEYON_ERROR_MESSAGES;
+const FullScreenImage = ({ imageSrc }: { imageSrc: string }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="flex h-full w-full items-center justify-center bg-foreground">
+      <img
+        src={imageSrc}
+        alt={t('preview.image')}
+        className="max-h-full max-w-full rounded-md"
+      />
+    </div>
+  );
+};
+
+export default FullScreenImage;

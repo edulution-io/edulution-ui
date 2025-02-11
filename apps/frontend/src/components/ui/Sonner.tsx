@@ -15,6 +15,7 @@
 import React from 'react';
 import { useTheme } from 'next-themes';
 import { Toaster as Sonner } from 'sonner';
+import { SHOW_TOASTER_DURATION } from '@libs/ui/constants/durations';
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
@@ -28,7 +29,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       closeButton
       offset={60}
       toastOptions={{
-        duration: 4000,
+        duration: SHOW_TOASTER_DURATION,
         classNames: {
           toast: 'group toast group-[.toaster]:bg-overlay group-[.toaster]:border-border group-[.toaster]:shadow-lg',
           content: 'group-[.toaster]:text-background',

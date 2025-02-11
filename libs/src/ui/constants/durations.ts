@@ -10,11 +10,5 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const VEYON_ERROR_MESSAGES = {
-  AppNotProperlyConfigured: 'veyon.errors.AppNotProperlyConfigured',
-  VeyonAuthFailed: 'veyon.errors.VeyonAuthFailed',
-  GetUserFailed: 'veyon.errors.GetUserFailed',
-  VeyonApiNotReachable: 'veyon.errors.VeyonApiNotReachable',
-} as const;
-
-export default VEYON_ERROR_MESSAGES;
+// eslint-disable-next-line import/prefer-default-export
+export const SHOW_TOASTER_DURATION = 4000;

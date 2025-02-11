@@ -10,11 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const VEYON_ERROR_MESSAGES = {
-  AppNotProperlyConfigured: 'veyon.errors.AppNotProperlyConfigured',
-  VeyonAuthFailed: 'veyon.errors.VeyonAuthFailed',
-  GetUserFailed: 'veyon.errors.GetUserFailed',
-  VeyonApiNotReachable: 'veyon.errors.VeyonApiNotReachable',
-} as const;
-
-export default VEYON_ERROR_MESSAGES;
+export const VEYON_API_ENDPOINT = 'veyon';
+export const VEYON_API_FRAMEBUFFER_ENDPOINT = 'framebuffer';
+export const VEYON_API_FEATURE_ENDPOINT = 'feature';
