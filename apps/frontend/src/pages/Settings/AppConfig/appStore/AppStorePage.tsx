@@ -14,7 +14,7 @@ import React, { useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOnClickOutside } from 'usehooks-ts';
 import { useTranslation } from 'react-i18next';
-import { SettingsIcon } from '@/assets/icons';
+import { AppStoreIcon } from '@/assets/icons';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import { Card } from '@/components/shared/Card';
 import cn from '@libs/common/utils/className';
@@ -28,7 +28,7 @@ import AddAppConfigDialog from '../AddAppConfigDialog';
 import AppStoreFloatingButtons from './AppStoreFloatingButtons';
 import useAppConfigsStore from '../appConfigsStore';
 
-const emptyAppConfigOption = { id: APPS.NONE, icon: '', color: '', isNativeApp: false };
+const emptyAppConfigOption = { id: APPS.NONE, icon: '', isNativeApp: false };
 
 const AppStorePage: React.FC = () => {
   const { t } = useTranslation();
@@ -68,9 +68,9 @@ const AppStorePage: React.FC = () => {
   return (
     <>
       <NativeAppHeader
-        title={t('appstore')}
-        description={t('appstore')}
-        iconSrc={SettingsIcon}
+        title={t('appstore.title')}
+        description={t('appstore.description')}
+        iconSrc={AppStoreIcon}
       />
       <div
         className="space-4 flex max-w-full flex-wrap gap-4 overflow-y-auto overflow-x-visible scrollbar-thin"

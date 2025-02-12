@@ -40,9 +40,10 @@ const APPS = {
   USER_SETTINGS: 'usersettings',
   BULLETIN_BOARD: 'bulletinboard',
   NONE: 'none',
-  FORWARDED: 'forwarded',
+  FORWARDING: 'forwarding',
+  FRAME: 'frame',
   EMBEDDED: 'embedded',
-  EMBEDDED_CUSTOM: 'embeddedcustom',
+  APPSTORE: 'appstore',
 } as const;
 
 export default APPS;

@@ -206,7 +206,7 @@ const AppConfigPage: React.FC = () => {
                         settingLocation={settingLocation}
                       />
                     ) : null}
-                    {Object.keys(item.options)?.map((itemOption) =>
+                    {APP_CONFIG_OPTIONS.filter((itm) => itm.id === item.name)[0].options?.map((itemOption) =>
                       itemOption !== 'proxyConfig' ? (
                         <FormFieldSH
                           key={`${item.name}.options.${itemOption}`}

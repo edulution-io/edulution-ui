@@ -28,7 +28,7 @@ const AppStoreFloatingButtons: React.FC<AppStoreFloatingButtonsProps> = ({ handl
       buttons: [
         {
           icon: MdAdd,
-          text: t(`appstore.add`),
+          text: t(`common.add`),
           onClick: handleCreateApp,
         },
       ],

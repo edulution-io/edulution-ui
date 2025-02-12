@@ -17,7 +17,7 @@ import type TApps from './appsType';
 type AppConfigOption = {
   id: TApps;
   icon: string;
-  color: string;
+  color?: string;
   options?: AppConfigOptionsType[];
   isNativeApp: boolean;
   extendedOptions?: AppConfigExtendedOptionsBySections;

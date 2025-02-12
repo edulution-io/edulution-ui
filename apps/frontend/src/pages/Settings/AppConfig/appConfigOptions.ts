@@ -20,6 +20,7 @@ import {
   ForwardIcon,
   LinuxmusterIcon,
   MailIcon,
+  NativeIcon,
   SurveysMenuIcon,
   WhiteBoardIcon,
 } from '@/assets/icons';
@@ -37,7 +38,6 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.MAIL,
     icon: MailIcon,
-    color: 'bg-ciDarkBlue',
     options: ['url', 'proxyConfig'],
     isNativeApp: true,
     extendedOptions: {
@@ -48,22 +48,19 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.CONFERENCES,
     icon: ConferencesIcon,
-    color: 'bg-ciDarkBlue',
     options: ['url', 'apiKey', 'proxyConfig'],
     isNativeApp: true,
   },
   {
     id: APPS.SURVEYS,
     icon: SurveysMenuIcon,
-    color: 'bg-ciDarkBlue',
-    options: ['url', 'proxyConfig'],
+    options: [],
     isNativeApp: true,
   },
   {
     id: APPS.FILE_SHARING,
     icon: FileSharingIcon,
-    color: 'bg-ciDarkBlue',
-    options: ['url', 'proxyConfig'],
+    options: ['proxyConfig'],
     isNativeApp: true,
     extendedOptions: {
       [AppConfigSectionsKeys.fileSharing]: FILE_SHARING_EXTENDED_OPTIONS,
@@ -74,7 +71,6 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.CLASS_MANAGEMENT,
     icon: ClassManagementIcon,
-    color: 'bg-ciLightBlue',
     options: ['proxyConfig'],
     isNativeApp: true,
     extendedOptions: {
@@ -85,7 +81,6 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.DESKTOP_DEPLOYMENT,
     icon: DesktopDeploymentIcon,
-    color: 'bg-ciLightGreen',
     options: ['url', 'proxyConfig'],
     isNativeApp: true,
     extendedOptions: {
@@ -95,38 +90,39 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.LINUXMUSTER,
     icon: LinuxmusterIcon,
-    color: 'bg-ciGreenToBlue',
     options: ['url', 'proxyConfig'],
     isNativeApp: true,
   },
   {
     id: APPS.WHITEBOARD,
     icon: WhiteBoardIcon,
-    color: 'bg-ciDarkBlue',
-    options: ['url', 'proxyConfig'],
+    options: [],
     isNativeApp: true,
   },
   {
     id: APPS.BULLETIN_BOARD,
     icon: BulletinBoardIcon,
-    color: 'bg-ciDarkBlue',
     isNativeApp: true,
     extendedOptions: {
       [AppConfigSectionsKeys.bulletinBoard]: BULLETIN_BOARD_EXTENDED_OPTIONS,
     },
   },
   {
-    id: APPS.FORWARDED,
+    id: APPS.FORWARDING,
     icon: ForwardIcon,
-    color: 'bg-ciDarkBlue',
+    options: ['url', 'proxyConfig'],
+    isNativeApp: false,
+  },
+  {
+    id: APPS.FRAME,
+    icon: EmbeddedIcon,
     options: ['url', 'proxyConfig'],
     isNativeApp: false,
   },
   {
     id: APPS.EMBEDDED,
-    icon: EmbeddedIcon,
-    color: 'bg-ciDarkBlue',
-    options: ['url', 'proxyConfig'],
+    icon: NativeIcon,
+    options: [],
     isNativeApp: false,
   },
 ];

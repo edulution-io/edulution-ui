@@ -15,6 +15,7 @@ import { Outlet, Route } from 'react-router-dom';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import CircleLoader from '@/components/ui/CircleLoader';
 import AppStorePage from '@/pages/Settings/AppConfig/appStore/AppStorePage';
+import APPS from '@libs/appconfig/constants/apps';
 
 const AppConfigPage = lazy(() => import('@/pages/Settings/AppConfig/AppConfigPage'));
 
@@ -35,7 +36,7 @@ const getSettingsRoutes = () => [
       element={getLazyAppConfigPage()}
     />
     <Route
-      path="appstore"
+      path={APPS.APPSTORE}
       element={<AppStorePage />}
     />
     <Route

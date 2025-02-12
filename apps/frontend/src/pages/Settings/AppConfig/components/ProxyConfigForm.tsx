@@ -67,7 +67,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
       const updatedYaml = stringify(jsonData);
       form.setValue(`${item.name}.proxyConfig`, updatedYaml);
     } else {
-      form.setValue(`${item.id}.proxyConfig`, stringify(traefikConfig));
+      form.setValue(`${item.name}.proxyConfig`, stringify(traefikConfig));
     }
   };
 

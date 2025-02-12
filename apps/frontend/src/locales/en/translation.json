@@ -87,8 +87,17 @@
       "attachmentDeletionFailed": "Failed to delete an attachment"
     }
   },
-  "custom": {
-    "sidebar": "Benutzerdefiniert"
+  "appstore": {
+    "title": "App Store"
+  },
+  "forwarding": {
+    "sidebar": "Forwarding"
+  },
+  "frame": {
+    "sidebar": "Frame"
+  },
+  "embedded": {
+    "sidebar": "Embedded"
   },
   "dashboard": {
     "mobileAccess": {

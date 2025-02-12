@@ -87,8 +87,17 @@
       "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen"
     }
   },
-  "custom": {
-    "sidebar": "Benutzerdefiniert"
+  "appstore": {
+    "title": "App-Store"
+  },
+  "forwarding": {
+    "sidebar": "Weiterleitung"
+  },
+  "frame": {
+    "sidebar": "Frame"
+  },
+  "embedded": {
+    "sidebar": "Eingebettet"
   },
   "dashboard": {
     "mobileAccess": {

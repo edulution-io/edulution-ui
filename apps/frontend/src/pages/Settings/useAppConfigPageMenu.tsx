@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { PlusIcon, SettingsIcon } from '@/assets/icons';
+import { AppStoreIcon, SettingsIcon } from '@/assets/icons';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { useNavigate } from 'react-router-dom';
 import APP_CONFIG_OPTIONS from '@/pages/Settings/AppConfig/appConfigOptions';
@@ -30,9 +30,9 @@ const useAppConfigPageMenu = () => {
     color: 'hover:bg-ciGreenToBlue',
     menuItems: [
       {
-        id: 'appstore',
-        label: 'common.appstore',
-        icon: PlusIcon,
+        id: APPS.APPSTORE,
+        label: `${APPS.APPSTORE}.title`,
+        icon: AppStoreIcon,
         action: () => navigate(APPSTORE_PATH),
       },
     ],
