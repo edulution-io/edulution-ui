@@ -71,8 +71,9 @@ const MenuBar: React.FC = () => {
       className="max-w-[var(--menubar-max-width)]"
       ref={menubarRef}
     >
-      <div className="bg flex flex-col items-center justify-center py-6">
+      <div className="flex flex-col items-center justify-center py-6">
         <button
+          className="flex flex-col items-center justify-center"
           type="button"
           onClick={() => {
             navigate(pathParts[0]);
@@ -84,8 +85,8 @@ const MenuBar: React.FC = () => {
             alt={menuBarEntries.title}
             className="h-20 w-20 object-contain"
           />
+          <h3 className="mb-4 mt-4 text-center font-bold">{menuBarEntries.title}</h3>
         </button>
-        <h3 className="mb-4 mt-4 text-center font-bold">{menuBarEntries.title}</h3>
       </div>
       <MenubarMenu>
         {menuBarEntries.menuItems.map((item) => (
