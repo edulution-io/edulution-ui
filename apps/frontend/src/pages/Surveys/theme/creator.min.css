@@ -1236,7 +1236,8 @@ svc-tab-designer {
   display: flex;
   flex-grow: 1;
   height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
   position: static;
   background: var(--ctr-surface-background-color, var(--sjs-general-backcolor-dim, var(--background-dim, #f3f3f3)));
 }
@@ -1625,11 +1626,10 @@ svc-tab-test {
 .svc-notifier.svc-notifier--shown {
   visibility: visible;
   opacity: var(--ctr-notification-opacity, 0.75);
+  width: fit-content;
 }
 .svc-notifier {
-  position: absolute;
-  bottom: var(--sjs-base-unit, var(--base-unit, 8px));
-  left: var(--sjs-base-unit, var(--base-unit, 8px));
+  position: relative;
   background: var(--ctr-notification-background-color, var(--sjs-general-backcolor, var(--background, #fff)));
   opacity: 0;
   padding: var(--sjs-base-unit, var(--base-unit, 8px)) calc(2 * (var(--sjs-base-unit, var(--base-unit, 8px))));
