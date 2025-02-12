@@ -20,7 +20,7 @@ import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/compone
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import APP_CONFIG_OPTIONS from '@/pages/Settings/AppConfig/appConfigOptions';
 import AddAppConfigDialog from '@/pages/Settings/AppConfig/AddAppConfigDialog';
-import { AppConfigOptions, AppConfigOptionsType } from '@libs/appconfig/types';
+import type { AppConfigOptions, AppConfigOptionsType } from '@libs/appconfig/types/appConfigOptionsType';
 import useGroupStore from '@/store/GroupStore';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';

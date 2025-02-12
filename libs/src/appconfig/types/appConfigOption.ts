@@ -14,7 +14,7 @@ import type AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appCo
 import { type AppConfigOptionsType } from './appConfigOptionsType';
 import type TApps from './appsType';
 
-export type AppConfigOption = {
+type AppConfigOption = {
   id: TApps;
   icon: string;
   color: string;
@@ -22,3 +22,5 @@ export type AppConfigOption = {
   isNativeApp: boolean;
   extendedOptions?: AppConfigExtendedOptionsBySections;
 };
+
+export default AppConfigOption;

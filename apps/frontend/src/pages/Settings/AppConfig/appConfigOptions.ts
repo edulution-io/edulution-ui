@@ -23,7 +23,7 @@ import {
   SurveysMenuIcon,
   WhiteBoardIcon,
 } from '@/assets/icons';
-import { AppConfigOption } from '@libs/appconfig/types';
+import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
 import APPS from '@libs/appconfig/constants/apps';
 import AppConfigSectionsKeys from '@libs/appconfig/constants/appConfigSectionsKeys';
 import ONLY_OFFICE_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/onlyOffice';
@@ -119,14 +119,14 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     icon: ForwardIcon,
     color: 'bg-ciDarkBlue',
     options: ['url', 'proxyConfig'],
-    isNativeApp: true,
+    isNativeApp: false,
   },
   {
     id: APPS.EMBEDDED,
     icon: EmbeddedIcon,
     color: 'bg-ciDarkBlue',
     options: ['url', 'proxyConfig'],
-    isNativeApp: true,
+    isNativeApp: false,
   },
 ];
 

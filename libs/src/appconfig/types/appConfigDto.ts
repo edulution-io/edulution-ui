@@ -13,7 +13,7 @@
 import { IsString, ValidateNested } from 'class-validator';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import ExtendedOptionKeysDto from '@libs/appconfig/types/extendedOptionKeysDto';
-import { AppConfigOptions } from './appConfigOptionsType';
+import { type AppConfigOptions } from './appConfigOptionsType';
 import AppIntegrationType from './appIntegrationType';
 
 class AppConfigDto {

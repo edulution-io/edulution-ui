@@ -12,7 +12,7 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { AppConfigOptions } from '@libs/appconfig/types';
+import { type AppConfigOptions } from '@libs/appconfig/types/appConfigOptionsType';
 import type AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import type ExtendedOptionKeysDto from '@libs/appconfig/types/extendedOptionKeysDto';

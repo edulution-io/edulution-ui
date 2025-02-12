@@ -20,7 +20,7 @@ import YamlEditor from '@/components/shared/YamlEditor';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
-import { type AppConfigOption } from '@libs/appconfig/types';
+import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
 import type YamlDokument from '@libs/appconfig/types/yamlDokument';
 import type ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
 import getDefaultYaml from '@libs/appconfig/utils/getDefaultYaml';
