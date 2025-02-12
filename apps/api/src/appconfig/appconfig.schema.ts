@@ -18,7 +18,7 @@ import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup
 import type ExtendedOptionKeysDto from '@libs/appconfig/types/extendedOptionKeysDto';
 import type TApps from '@libs/appconfig/types/appsType';
 
-@Schema({ timestamps: true, strict: true })
+@Schema({ timestamps: true, strict: true, minimize: false })
 export class AppConfig extends Document {
   @Prop({ type: String, required: true })
   name: TApps;

@@ -39,7 +39,7 @@ const DockerContainerFloatingButtons: React.FC = () => {
     (container) => container.State === DOCKER_STATES.RUNNING,
   );
   const areSelectedContainersNotRunning = selectedContainers.every(
-    (container) => container.State === DOCKER_STATES.RUNNING,
+    (container) => container.State === DOCKER_STATES.RUNNING || container.State === DOCKER_STATES.RESTARTING,
   );
   const areSelectedContainersProtected = selectedContainers.some((container) =>
     Object.values(DOCKER_PROTECTED_CONTAINERS).includes(
