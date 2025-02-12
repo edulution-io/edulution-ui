@@ -38,7 +38,6 @@ import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import type TApps from '@libs/appconfig/types/appsType';
 import type MailProviderConfig from '@libs/appconfig/types/mailProviderConfig';
 import APPS from '@libs/appconfig/constants/apps';
-import AppConfigTypeSelect from './AppConfigTypeSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailImporterConfig from './mails/MailImporterConfig';
@@ -173,31 +172,25 @@ const AppConfigPage: React.FC = () => {
             onSubmit={handleSubmit(onSubmit)}
             className="column max-w-screen-2xl space-y-6"
           >
-            {APP_CONFIG_OPTIONS.map((item) =>
-              settingLocation === item.id ? (
+            {appConfigs.map((item) =>
+              settingLocation === item.name ? (
                 <div
-                  key={item.id}
+                  key={item.name}
                   className="m-5"
                 >
                   <div className="space-y-10">
-                    <AppConfigTypeSelect
-                      control={control}
-                      settingLocation={settingLocation}
-                      isNativeApp={item.isNativeApp}
-                      defaultValue={form.watch(`${item.id}.appType`)}
-                    />
                     <FormFieldSH
-                      key={`${item.id}.accessGroups`}
+                      key={`${item.name}.accessGroups`}
                       control={control}
-                      name={`${item.id}.accessGroups`}
+                      name={`${item.name}.accessGroups`}
                       render={() => (
                         <FormItem>
                           <h4 className="text-background">{t(`permission.groups`)}</h4>
                           <FormControl>
                             <AsyncMultiSelect<MultipleSelectorGroup>
-                              value={getValues(`${item.id}.accessGroups`)}
+                              value={getValues(`${item.name}.accessGroups`)}
                               onSearch={searchGroups}
-                              onChange={(groups) => handleGroupsChange(groups, `${item.id}`)}
+                              onChange={(groups) => handleGroupsChange(groups, `${item.name}`)}
                               placeholder={t('search.type-to-search')}
                             />
                           </FormControl>
@@ -206,18 +199,20 @@ const AppConfigPage: React.FC = () => {
                         </FormItem>
                       )}
                     />
-                    <ExtendedOptionsForm
-                      extendedOptions={item.extendedOptions}
-                      control={control}
-                      settingLocation={settingLocation}
-                    />
-                    {item.options?.map((itemOption) =>
+                    {item.appType === 'native' ? (
+                      <ExtendedOptionsForm
+                        extendedOptions={APP_CONFIG_OPTIONS.filter((itm) => itm.id === item.name)[0].extendedOptions}
+                        control={control}
+                        settingLocation={settingLocation}
+                      />
+                    ) : null}
+                    {Object.keys(item.options)?.map((itemOption) =>
                       itemOption !== 'proxyConfig' ? (
                         <FormFieldSH
-                          key={`${item.id}.options.${itemOption}`}
+                          key={`${item.name}.options.${itemOption}`}
                           control={control}
-                          name={`${item.id}.options.${itemOption}`}
-                          defaultValue=""
+                          name={`${item.name}.options.${itemOption}`}
+                          // defaultValue=""
                           render={({ field }) => (
                             <FormItem>
                               <h4 className="text-background">{t(`form.${itemOption}`)}</h4>
@@ -230,7 +225,7 @@ const AppConfigPage: React.FC = () => {
                         />
                       ) : (
                         <ProxyConfigForm
-                          key={`${item.id}.options.${itemOption}`}
+                          key={`${item.name}.options.${itemOption}`}
                           item={item}
                           form={form as UseFormReturn<ProxyConfigFormType>}
                         />
