@@ -15,11 +15,10 @@ import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import ExtendedOptionKeysDto from '@libs/appconfig/types/extendedOptionKeysDto';
 import { AppConfigOptions } from './appConfigOptionsType';
 import AppIntegrationType from './appIntegrationType';
-import TApps from './appsType';
 
 class AppConfigDto {
   @IsString()
-  name: TApps;
+  name: string;
 
   @IsString()
   icon: string;

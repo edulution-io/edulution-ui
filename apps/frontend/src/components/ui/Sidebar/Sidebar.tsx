@@ -14,7 +14,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import APPS from '@libs/appconfig/constants/apps';
 import { SettingsIcon } from '@/assets/icons';
-import NATIVE_APP_CONFIG_OPTIONS from '@/pages/Settings/AppConfig/nativeAppConfigOptions';
+import APP_CONFIG_OPTIONS from '@/pages/Settings/AppConfig/appConfigOptions';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
@@ -47,7 +47,7 @@ const Sidebar: React.FC = () => {
   };
 
   const sidebarItems = [
-    ...NATIVE_APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfigs, option.id)).map((item) => ({
+    ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfigs, option.id)).map((item) => ({
       title: t(`${item.id}.sidebar`),
       link: `/${item.id}`,
       icon: item.icon,

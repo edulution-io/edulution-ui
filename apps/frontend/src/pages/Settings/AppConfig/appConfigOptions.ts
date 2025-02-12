@@ -15,7 +15,9 @@ import {
   ClassManagementIcon,
   ConferencesIcon,
   DesktopDeploymentIcon,
+  EmbeddedIcon,
   FileSharingIcon,
+  ForwardIcon,
   LinuxmusterIcon,
   MailIcon,
   SurveysMenuIcon,
@@ -31,14 +33,7 @@ import FILE_SHARING_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOpt
 import DOCKER_CONTAINER_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/dockerContainer';
 import CLASS_MANAGEMENT_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/classMgmt';
 
-const NATIVE_APP_CONFIG_OPTIONS: AppConfigOption[] = [
-  {
-    id: APPS.CUSTOM,
-    icon: ConferencesIcon,
-    color: 'bg-ciDarkBlue',
-    options: ['url', 'proxyConfig'],
-    isNativeApp: true,
-  },
+const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.MAIL,
     icon: MailIcon,
@@ -119,6 +114,20 @@ const NATIVE_APP_CONFIG_OPTIONS: AppConfigOption[] = [
       [AppConfigSectionsKeys.bulletinBoard]: BULLETIN_BOARD_EXTENDED_OPTIONS,
     },
   },
+  {
+    id: APPS.FORWARDED,
+    icon: ForwardIcon,
+    color: 'bg-ciDarkBlue',
+    options: ['url', 'proxyConfig'],
+    isNativeApp: true,
+  },
+  {
+    id: APPS.EMBEDDED,
+    icon: EmbeddedIcon,
+    color: 'bg-ciDarkBlue',
+    options: ['url', 'proxyConfig'],
+    isNativeApp: true,
+  },
 ];
 
-export default NATIVE_APP_CONFIG_OPTIONS;
+export default APP_CONFIG_OPTIONS;

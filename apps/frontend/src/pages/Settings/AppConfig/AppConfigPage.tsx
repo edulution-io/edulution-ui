@@ -18,7 +18,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Input from '@/components/shared/Input';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import NATIVE_APP_CONFIG_OPTIONS from '@/pages/Settings/AppConfig/nativeAppConfigOptions';
+import APP_CONFIG_OPTIONS from '@/pages/Settings/AppConfig/appConfigOptions';
 import AddAppConfigDialog from '@/pages/Settings/AppConfig/AddAppConfigDialog';
 import { AppConfigOptions, AppConfigOptionsType } from '@libs/appconfig/types';
 import useGroupStore from '@/store/GroupStore';
@@ -124,7 +124,7 @@ const AppConfigPage: React.FC = () => {
 
   const onSubmit = async () => {
     if (isAnAppConfigSelected) {
-      const selectedOption = NATIVE_APP_CONFIG_OPTIONS.find((item) => item.id.includes(settingLocation));
+      const selectedOption = APP_CONFIG_OPTIONS.find((item) => item.id.includes(settingLocation));
       if (!selectedOption) {
         return;
       }
@@ -173,7 +173,7 @@ const AppConfigPage: React.FC = () => {
             onSubmit={handleSubmit(onSubmit)}
             className="column max-w-screen-2xl space-y-6"
           >
-            {NATIVE_APP_CONFIG_OPTIONS.map((item) =>
+            {APP_CONFIG_OPTIONS.map((item) =>
               settingLocation === item.id ? (
                 <div
                   key={item.id}
@@ -264,7 +264,7 @@ const AppConfigPage: React.FC = () => {
         <NativeAppHeader
           title={t(isAnAppConfigSelected ? `${settingLocation}.sidebar` : 'settings.sidebar')}
           description={!isMobileView && settingLocation ? t(`settings.description.${settingLocation}`) : null}
-          iconSrc={NATIVE_APP_CONFIG_OPTIONS.find((item) => item.id === settingLocation)?.icon || SettingsIcon}
+          iconSrc={APP_CONFIG_OPTIONS.find((item) => item.id === settingLocation)?.icon || SettingsIcon}
         />
         {isAnAppConfigSelected ? settingsForm() : <DockerContainerTable />}
       </div>

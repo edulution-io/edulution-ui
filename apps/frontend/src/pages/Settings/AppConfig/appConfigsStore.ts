@@ -50,7 +50,7 @@ const initialState = {
   isDeleteAppConfigDialogOpen: false,
   appConfigs: [
     {
-      name: APPS.CUSTOM,
+      name: APPS.NONE,
       icon: '',
       appType: APP_INTEGRATION_VARIANT.NATIVE,
       options: {},
