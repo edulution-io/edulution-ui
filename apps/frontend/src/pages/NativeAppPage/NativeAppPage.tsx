@@ -18,8 +18,8 @@ import { ConferencePage } from '@/pages/ConferencePage';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
 import type TApps from '@libs/appconfig/types/appsType';
-import BulletinBoardEditorialPage from '@/pages/BulletinBoardEditorial/BulletinBoardEditorialPage';
 import CircleLoader from '@/components/ui/CircleLoader';
+import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
 
 const SurveysPage = lazy(() => import('@/pages/Surveys/SurveysPage'));
 
@@ -36,7 +36,7 @@ const pages: Partial<Record<TApps, JSX.Element>> = {
   ),
   [APPS.DESKTOP_DEPLOYMENT]: <DesktopDeploymentPage />,
   [APPS.CLASS_MANAGEMENT]: <Outlet />,
-  [APPS.BULLETIN_BOARD]: <BulletinBoardEditorialPage />,
+  [APPS.BULLETIN_BOARD]: <BulletinBoardPage />,
 };
 
 type NativeAppPageProps = {

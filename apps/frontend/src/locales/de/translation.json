@@ -9,6 +9,7 @@
   "previewImage": "Bildvorschau",
   "bulletinboard": {
     "settings": "Einstellungen",
+    "noBulletinsToShow": "Aktuell gibt es keine Mitteilungen anzuzeigen, schaue am besten später noch mal vorbei!",
     "categoryIsRequired": "Es muss eine Kategorie ausgewählt werden",
     "createdFrom": "von {{ createdBy }}, aktualisiert am {{ lastUpdated }}",
     "createdFromAndUpdatedBy": "von {{ createdBy }}, aktualisiert von {{ lastUpdatedBy }} am {{ lastUpdated }}",
@@ -21,7 +22,7 @@
     "activeFrom": "Aktiv von",
     "activeUntil": "Aktiv bis",
     "appTitle": "Schwarzes Brett",
-    "description": "Verwalte deine Mitteilungen",
+    "description": "Hier findest du aktuelle Mitteilungen",
     "filterPlaceHolderText": "Suche nach Kategoriename",
     "sidebar": "Schwarzes Brett",
     "newCategorie": "Neue Kategorie",
@@ -658,7 +659,7 @@
       "aichat": "Hier kannst du alle Einstellungen vornehmen.",
       "linuxmuster": "Hier kannst du alle Einstellungen vornehmen.",
       "whiteboard": "Hier kannst du alle Einstellungen vornehmen.",
-      "bulletinboard": "Konfiguriere hier die Nutzergruppen ,die Zugriff auf die App Schwarzes Brett Editor haben. Über die Kategorieren kann gesteuert werden, bei welchen Nutzern und Gruppen das Schwarze Brett mit den Mitteilungen statt dem klassischen Dashboard angezeigt wird."
+      "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Schwarzes Brett haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden."
     },
     "appconfig": {
       "sections": {
@@ -672,7 +673,7 @@
         },
         "bulletinBoard": {
           "title": "Kategorien",
-          "description": "Füge neue Kategorien hinzu oder bearbeite existierende um zu steuern für welche Nutzer und Gruppen das Schwarze Brett statt dem klassischen Dashboard angezeigt werden soll."
+          "description": "Füge neue Kategorien hinzu oder bearbeite existierende, um zu steuern, für welche Nutzer und Gruppen Mitteilungen angezeigt werden sollen."
         },
         "general": {
           "title": "Allgemein",
@@ -830,6 +831,7 @@
     "checking": "Prüfen",
     "cancel": "Abbrechen",
     "columns": "Spalten",
+    "table": "Tabelle",
     "copy": {
       "success": "Erfolgreich in Zwischenablage kopiert",
       "error": "In Zwischenablage kopieren fehlgeschlagen",

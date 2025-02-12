@@ -16,10 +16,10 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import CircleLoader from '@/components/ui/CircleLoader';
 import getBulletinFormSchema from '@libs/bulletinBoard/constants/bulletinDialogFormSchema';
-import CreateOrUpdateBulletinDialogBody from '@/pages/BulletinBoardEditorial/CreateOrUpdateBulletinDialogBody';
+import CreateOrUpdateBulletinDialogBody from '@/pages/BulletinBoard/BulletinBoardEditorial/CreateOrUpdateBulletinDialogBody';
 import { MdDelete, MdUpdate } from 'react-icons/md';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 
@@ -35,8 +35,8 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
     isCreateBulletinDialogOpen,
     updateBulletin,
     getBulletins,
-    categories,
-    getCategories,
+    categoriesWithEditPermission,
+    getCategoriesWithEditPermission,
     createBulletin,
     deleteBulletins,
     selectedBulletinToEdit,
@@ -46,13 +46,13 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
 
   useEffect(() => {
     if (isCreateBulletinDialogOpen) {
-      void getCategories();
+      void getCategoriesWithEditPermission();
     }
   }, [isCreateBulletinDialogOpen]);
 
   const initialFormValues: CreateBulletinDto = {
     title: selectedBulletinToEdit?.title || '',
-    category: selectedBulletinToEdit?.category || categories[0],
+    category: selectedBulletinToEdit?.category || categoriesWithEditPermission[0],
     attachmentFileNames: selectedBulletinToEdit?.attachmentFileNames || [],
     content: selectedBulletinToEdit?.content || '',
     isActive: selectedBulletinToEdit?.isActive || true,

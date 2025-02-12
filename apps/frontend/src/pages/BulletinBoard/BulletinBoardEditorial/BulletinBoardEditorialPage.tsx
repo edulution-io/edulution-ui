@@ -11,24 +11,18 @@
  */
 
 import React, { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import NativeAppHeader from '@/components/layout/NativeAppHeader';
-import { BulletinBoardIcon } from '@/assets/icons';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
-import bulletinBoardEditorialTableColumns from '@/pages/BulletinBoardEditorial/BulletinBoardEditorialTableColumns';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import bulletinBoardEditorialTableColumns from '@/pages/BulletinBoard/BulletinBoardEditorial/BulletinBoardEditorialTableColumns';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import BULLETIN_BOARD_EDITORIAL_PAGE_TABLE_HEADER from '@libs/bulletinBoard/constants/pageElementIds';
 import APPS from '@libs/appconfig/constants/apps';
-import BulletinBoardEditorialFloatingButtonsBar from '@/pages/BulletinBoardEditorial/BulletinBoardEditorialFloatingButtonsBar';
-import DeleteBulletinsDialog from '@/pages/BulletinBoardEditorial/DeleteBulletinsDialog';
-import CreateOrUpdateBulletinDialog from '@/pages/BulletinBoardEditorial/CreateOrUpdateBulletinDialog';
+import DeleteBulletinsDialog from '@/pages/BulletinBoard/BulletinBoardEditorial/DeleteBulletinsDialog';
+import CreateOrUpdateBulletinDialog from '@/pages/BulletinBoard/BulletinBoardEditorial/CreateOrUpdateBulletinDialog';
 
 const BulletinBoardEditorialPage = () => {
-  const { t } = useTranslation();
-
-  const { bulletins, getCategories, getBulletins, isLoading, selectedRows, setSelectedRows } =
+  const { bulletins, getCategoriesWithEditPermission, getBulletins, isLoading, selectedRows, setSelectedRows } =
     useBulletinBoardEditorialStore();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
@@ -37,7 +31,7 @@ const BulletinBoardEditorialPage = () => {
   };
 
   const fetchBulletinData = async () => {
-    await getCategories();
+    await getCategoriesWithEditPermission();
     await getBulletins();
   };
 
@@ -46,12 +40,7 @@ const BulletinBoardEditorialPage = () => {
   }, []);
 
   return (
-    <div>
-      <NativeAppHeader
-        title={t('bulletinboard.appTitle')}
-        description={t('bulletinboard.description')}
-        iconSrc={BulletinBoardIcon}
-      />
+    <>
       <ScrollableTable
         columns={bulletinBoardEditorialTableColumns}
         data={bulletins}
@@ -69,10 +58,9 @@ const BulletinBoardEditorialPage = () => {
         }}
       />
 
-      <BulletinBoardEditorialFloatingButtonsBar />
       <CreateOrUpdateBulletinDialog />
       <DeleteBulletinsDialog />
-    </div>
+    </>
   );
 };
 
