@@ -24,10 +24,6 @@ const convertComposeToDockerode = (compose: DockerCompose): ContainerCreateOptio
       {} as { [key: string]: object },
     );
 
-    const environment = service.environment
-      ? Object.entries(service.environment).map(([key, value]) => `${key}=${value}`)
-      : undefined;
-
     const binds = service.volumes?.map((volume) => {
       const [source, target] = volume.split(':');
       return `${source}:${target}`;
@@ -51,10 +47,14 @@ const convertComposeToDockerode = (compose: DockerCompose): ContainerCreateOptio
       {} as { [key: string]: object },
     );
 
+    const stopTimeOut = service.stop_grace_period ? Number(service.stop_grace_period.split('s')[0]) : undefined;
+
     const containerOptions: ContainerCreateOptions = {
       name: service.container_name,
       Image: service.image,
-      Env: environment,
+      OpenStdin: service.stdin_open,
+      StopTimeout: stopTimeOut,
+      Env: service.environment || undefined,
       Cmd: service.command ? service.command.split(' ') : undefined,
       HostConfig: {
         Binds: binds,

@@ -20,6 +20,7 @@ const DOCKER_APPLICATIONS: Partial<DockerApplicationList> = {
   mail: 'edulution-mail',
   classmanagement: 'edulution-veyon',
   desktopdeployment: 'edulution-guacamole',
+  filesharing: 'edulution-onlyoffice',
 } as const;
 
 export default DOCKER_APPLICATIONS;

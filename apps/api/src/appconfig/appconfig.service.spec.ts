@@ -93,7 +93,7 @@ describe('AppConfigService', () => {
   describe('patchSingleFieldInConfig', () => {
     it('should update the configuration and return updated configs', async () => {
       const name = 'testConfig';
-      const patchConfigDto: PatchConfigDto = { field: 'testField', value: 'newValue' };
+      const patchConfigDto: PatchConfigDto = { field: 'extendedOptions', value: 'newValue' };
 
       mockAppConfigModel.updateOne.mockResolvedValue({});
       jest.spyOn(service, 'getAppConfigs').mockResolvedValue([mockAppConfig]);
@@ -110,7 +110,7 @@ describe('AppConfigService', () => {
 
     it('should throw CustomHttpException if updateOne fails', async () => {
       const name = 'testConfig';
-      const patchConfigDto: PatchConfigDto = { field: 'testField', value: 'newValue' };
+      const patchConfigDto: PatchConfigDto = { field: 'extendedOptions', value: 'newValue' };
 
       mockAppConfigModel.updateOne.mockRejectedValue(new Error('Database error'));
 
