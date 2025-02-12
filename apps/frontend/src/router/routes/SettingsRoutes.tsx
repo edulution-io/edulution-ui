@@ -11,9 +11,10 @@
  */
 
 import React, { lazy, Suspense } from 'react';
-import { Route } from 'react-router-dom';
+import { Outlet, Route } from 'react-router-dom';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import CircleLoader from '@/components/ui/CircleLoader';
+import AppStorePage from '@/pages/Settings/AppConfig/appStore/AppStorePage';
 
 const AppConfigPage = lazy(() => import('@/pages/Settings/AppConfig/AppConfigPage'));
 
@@ -27,8 +28,16 @@ const getSettingsRoutes = () => [
   <Route
     key={SETTINGS_PATH}
     path={SETTINGS_PATH}
-    element={getLazyAppConfigPage()}
+    element={<Outlet />}
   >
+    <Route
+      path=""
+      element={getLazyAppConfigPage()}
+    />
+    <Route
+      path="appstore"
+      element={<AppStorePage />}
+    />
     <Route
       path=":settingLocation"
       element={getLazyAppConfigPage()}

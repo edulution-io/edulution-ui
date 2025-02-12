@@ -17,11 +17,11 @@ import NATIVE_APP_CONFIG_OPTIONS from '@/pages/Settings/AppConfig/nativeAppConfi
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
-import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
+import { APPSTORE_PATH, SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 
 const useAppConfigPageMenu = () => {
   const navigate = useNavigate();
-  const { appConfigs, isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen } = useAppConfigsStore();
+  const { appConfigs } = useAppConfigsStore();
 
   const settingsMenuBarEntry: MenuBarEntry = {
     appName: APPS.SETTINGS,
@@ -30,10 +30,10 @@ const useAppConfigPageMenu = () => {
     color: 'hover:bg-ciGreenToBlue',
     menuItems: [
       {
-        id: 'add',
-        label: 'common.add',
+        id: 'appstore',
+        label: 'common.appstore',
         icon: PlusIcon,
-        action: () => {},
+        action: () => navigate(APPSTORE_PATH),
       },
     ],
   };
@@ -49,10 +49,7 @@ const useAppConfigPageMenu = () => {
           action: () => navigate(`/${SETTINGS_PATH}/${item.id}`),
         }),
       ),
-      ...settingsMenuBarEntry.menuItems.map((item) => ({
-        ...item,
-        action: () => setIsAddAppConfigDialogOpen(!isAddAppConfigDialogOpen),
-      })),
+      ...settingsMenuBarEntry.menuItems,
     ],
   });
 
