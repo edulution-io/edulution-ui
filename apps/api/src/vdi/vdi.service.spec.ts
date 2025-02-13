@@ -48,7 +48,7 @@ describe('VdiService', () => {
     };
 
     axios.post = jest.fn().mockResolvedValue(mockData);
-    const response = await axios.post(`${process.env.GUACAMOLE_API_URL}/guacamole/api`);
+    const response = await axios.post(`http://localhost:8081/guacamole/api`);
 
     expect(response).toHaveProperty('authToken');
   });

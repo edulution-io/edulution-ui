@@ -100,6 +100,22 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
       type: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
     }),
   ],
+  [APPS.FILE_SHARING]: [
+    createAppConfigTableEntry<ContainerInfo, DockerContainerTableStore>({
+      columns: DockerContainerTableColumns,
+      useStore: useDockerApplicationStore,
+      dialogBody: (
+        <CreateDockerContainerDialog
+          settingLocation={APPS.FILE_SHARING}
+          tableId={ExtendedOptionKeys.DOCKER_CONTAINER_TABLE}
+        />
+      ),
+      showAddButton: true,
+      filterKey: 'name',
+      filterPlaceHolderText: 'dockerOverview.filterPlaceHolderText',
+      type: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
+    }),
+  ],
 };
 
 export default TABLE_CONFIG_MAP;

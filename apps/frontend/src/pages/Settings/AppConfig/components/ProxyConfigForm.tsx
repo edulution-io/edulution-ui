@@ -24,6 +24,7 @@ import { type AppConfigOption } from '@libs/appconfig/types';
 import type YamlDokument from '@libs/appconfig/types/yamlDokument';
 import type ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
 import getDefaultYaml from '@libs/appconfig/utils/getDefaultYaml';
+import useDockerApplicationStore from '../DockerIntegration/useDockerApplicationStore';
 
 type ProxyConfigFormProps = {
   item: AppConfigOption;
@@ -33,6 +34,7 @@ type ProxyConfigFormProps = {
 const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
   const { t } = useTranslation();
   const [expertModeEnabled, setExpertModeEnabled] = useState(false);
+  const { traefikConfig } = useDockerApplicationStore();
   const isYamlConfigured = form.watch(`${item.id}.proxyConfig`) !== '';
 
   const defaultYaml = useMemo(() => getDefaultYaml(item.id), [item.id]);
@@ -42,38 +44,42 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
     const proxyDestination = form.getValues(`${item.id}.proxyDestination`);
     const stripPrefix = form.getValues(`${item.id}.stripPrefix`) as boolean;
 
-    const jsonData = parse(form.getValues(`${item.id}.proxyConfig`) || defaultYaml) as YamlDokument;
-    if (proxyPath) {
-      jsonData.http.routers[item.id].rule = `PathPrefix(\`/${proxyPath}\`)`;
-      if (stripPrefix) {
-        jsonData.http.middlewares['strip-prefix'] = {
-          stripPrefix: {
-            prefixes: [`/${proxyPath}`],
-          },
-        };
-        jsonData.http.routers[item.id].middlewares = ['strip-prefix'];
-      } else {
-        delete jsonData.http.middlewares['strip-prefix'];
-        jsonData.http.routers[item.id].middlewares = [];
+    if (!traefikConfig) {
+      const jsonData = parse(form.getValues(`${item.id}.proxyConfig`) || defaultYaml) as YamlDokument;
+      if (proxyPath) {
+        jsonData.http.routers[item.id].rule = `PathPrefix(\`/${proxyPath}\`)`;
+        if (stripPrefix) {
+          jsonData.http.middlewares['strip-prefix'] = {
+            stripPrefix: {
+              prefixes: [`/${proxyPath}`],
+            },
+          };
+          jsonData.http.routers[item.id].middlewares = ['strip-prefix'];
+        } else {
+          delete jsonData.http.middlewares['strip-prefix'];
+          jsonData.http.routers[item.id].middlewares = [];
+        }
       }
-    }
 
-    if (proxyDestination) {
-      jsonData.http.services[item.id].loadBalancer.servers[0].url = proxyDestination;
+      if (proxyDestination) {
+        jsonData.http.services[item.id].loadBalancer.servers[0].url = proxyDestination;
+      }
+      const updatedYaml = stringify(jsonData);
+      form.setValue(`${item.id}.proxyConfig`, updatedYaml);
+    } else {
+      form.setValue(`${item.id}.proxyConfig`, stringify(traefikConfig));
     }
-
-    const updatedYaml = stringify(jsonData);
-    form.setValue(`${item.id}.proxyConfig`, updatedYaml);
   };
 
   useEffect(() => {
-    if (!expertModeEnabled && form.watch(`${item.id}.proxyPath`) !== '') {
+    if ((!expertModeEnabled && form.watch(`${item.id}.proxyPath`) !== '') || traefikConfig) {
       updateYaml();
     }
   }, [
     form.watch(`${item.id}.proxyPath`),
     form.watch(`${item.id}.proxyDestination`),
     form.watch(`${item.id}.stripPrefix`),
+    traefikConfig,
   ]);
 
   const handleClearProxyConfig = () => {

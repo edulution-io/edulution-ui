@@ -17,7 +17,7 @@ import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import ExtendedOptionKeysDto from '@libs/appconfig/types/extendedOptionKeysDto';
 
-@Schema({ timestamps: true, strict: true })
+@Schema({ timestamps: true, strict: true, minimize: false })
 export class AppConfig extends Document {
   @Prop({ required: true })
   name: string;
