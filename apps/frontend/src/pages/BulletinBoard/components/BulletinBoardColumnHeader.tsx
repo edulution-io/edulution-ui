@@ -52,7 +52,7 @@ const BulletinBoardColumnHeader = ({
         { label: 'categorySeparator', isSeparator: true },
         {
           label: t('bulletinboard.manageCategories'),
-          onClick: () => navigate(`${SETTINGS_PATH}/${APPS.BULLETIN_BOARD}`),
+          onClick: () => navigate(`/${SETTINGS_PATH}/${APPS.BULLETIN_BOARD}`),
         },
       );
     }
