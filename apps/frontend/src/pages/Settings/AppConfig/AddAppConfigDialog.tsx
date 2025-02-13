@@ -42,11 +42,16 @@ const AddAppConfigDialog: React.FC = () => {
   });
 
   const onSubmit = async () => {
+    const newAppName = form.getValues('customAppName').toLowerCase();
+
     const newConfig: AppConfigDto = {
-      name: form.getValues('customAppName'),
+      name: newAppName,
       icon: SettingsIcon,
       appType: APP_INTEGRATION_VARIANT.FORWARDED,
-      options: {},
+      options: {
+        url: '',
+        proxyConfig: '',
+      },
       accessGroups: [],
       extendedOptions: {},
     };
@@ -54,7 +59,7 @@ const AddAppConfigDialog: React.FC = () => {
     await createAppConfig(newConfig);
     if (!error) {
       setIsAddAppConfigDialogOpen(false);
-      navigate(`/${SETTINGS_PATH}/${form.getValues('customAppName')}`);
+      navigate(`/${SETTINGS_PATH}/${newAppName}`);
     }
   };
 
