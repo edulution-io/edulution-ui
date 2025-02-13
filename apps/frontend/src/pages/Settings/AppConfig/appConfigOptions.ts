@@ -68,7 +68,6 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.MAIL,
     icon: MailIcon,
-    icon: MailIcon,
     color: 'bg-ciDarkBlue',
     options: ['url', 'proxyConfig'],
     isNativeApp: true,
