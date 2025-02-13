@@ -22,21 +22,15 @@ import DeleteBulletinsDialog from '@/pages/BulletinBoard/BulletinBoardEditorial/
 import CreateOrUpdateBulletinDialog from '@/pages/BulletinBoard/BulletinBoardEditorial/CreateOrUpdateBulletinDialog';
 
 const BulletinBoardEditorialPage = () => {
-  const { bulletins, getCategoriesWithEditPermission, getBulletins, isLoading, selectedRows, setSelectedRows } =
-    useBulletinBoardEditorialStore();
+  const { bulletins, getBulletins, isLoading, selectedRows, setSelectedRows } = useBulletinBoardEditorialStore();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedRows) : updaterOrValue;
     setSelectedRows(newValue);
   };
 
-  const fetchBulletinData = async () => {
-    await getCategoriesWithEditPermission();
-    await getBulletins();
-  };
-
   useEffect(() => {
-    void fetchBulletinData();
+    void getBulletins();
   }, []);
 
   return (

@@ -74,6 +74,8 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
   setSelectedBulletinToEdit: (selectedBulletinToEdit) => set({ selectedBulletinToEdit }),
 
   getBulletins: async (isLoading = true) => {
+    if (get().isLoading) return;
+
     set({ isLoading, error: null });
     try {
       const { data } = await eduApi.get<BulletinResponseDto[]>(BULLETIN_BOARD_BULLETINS_EDU_API_ENDPOINT);

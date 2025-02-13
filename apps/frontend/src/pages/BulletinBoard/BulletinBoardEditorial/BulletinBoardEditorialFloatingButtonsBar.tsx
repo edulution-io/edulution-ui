@@ -42,27 +42,25 @@ const BulletinBoardEditorialFloatingButtonsBar: React.FC = () => {
 
   const selectedBulletinIds = Object.keys(selectedRows);
 
-  const onEditorialModeButtonClick = () => {
+  const onSwitchEditorialModeButtonClick = () => {
     setIsEditorialModeEnabled(!isEditorialModeEnabled);
     setSelectedRows({});
   };
 
-  const buttons = [
-    {
-      icon: isEditorialModeEnabled ? MdOutlineViewColumn : MdOutlineTableChart,
-      text: t(`common.${isEditorialModeEnabled ? 'columns' : 'table'}`),
-      onClick: onEditorialModeButtonClick,
-    },
-    DeleteButton(() => setIsDeleteBulletinDialogOpen(true), selectedBulletinIds.length > 0),
-    EditButton(() => {
-      setIsCreateBulletinDialogOpen(true);
-      setSelectedBulletinToEdit(bulletins.find((b) => b.id === selectedBulletinIds[0]) || null);
-    }, selectedBulletinIds.length === 1),
-    CreateButton(() => setIsCreateBulletinDialogOpen(true)),
-  ];
-
   const config: FloatingButtonsBarConfig = {
-    buttons,
+    buttons: [
+      {
+        icon: isEditorialModeEnabled ? MdOutlineViewColumn : MdOutlineTableChart,
+        text: t(`common.${isEditorialModeEnabled ? 'columns' : 'table'}`),
+        onClick: onSwitchEditorialModeButtonClick,
+      },
+      DeleteButton(() => setIsDeleteBulletinDialogOpen(true), selectedBulletinIds.length > 0),
+      EditButton(() => {
+        setIsCreateBulletinDialogOpen(true);
+        setSelectedBulletinToEdit(bulletins.find((b) => b.id === selectedBulletinIds[0]) || null);
+      }, selectedBulletinIds.length === 1),
+      CreateButton(() => setIsCreateBulletinDialogOpen(true)),
+    ],
     keyPrefix: 'bulletin-board-page-floating-button_',
   };
 
