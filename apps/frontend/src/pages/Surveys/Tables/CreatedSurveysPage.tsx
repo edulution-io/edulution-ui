@@ -10,51 +10,53 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import SurveysPageView from '@libs/survey/types/api/page-view';
-import useSurveysPageHook from '@/pages/Surveys/Tables/hooks/use-surveys-page-hook';
 import SurveyTablePage from '@/pages/Surveys/Tables/SurveyTablePage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
-const OpenSurveys = () => {
+const CreatedSurveysPage = () => {
   const {
-    selectedPageView,
-    updateSelectedPageView,
     selectSurvey,
     setSelectedRows,
-    openSurveys,
-    updateOpenSurveys,
-    isFetchingOpenSurveys,
+    createdSurveys,
+    isFetchingCreatedSurveys,
+    updateCreatedSurveys,
+    hasAnswers,
+    canParticipate,
   } = useSurveyTablesPageStore();
 
   const { t } = useTranslation();
 
-  useSurveysPageHook(
-    selectedPageView,
-    SurveysPageView.OPEN,
-    updateSelectedPageView,
-    selectSurvey,
-    setSelectedRows,
-    updateOpenSurveys,
-    isFetchingOpenSurveys,
-    openSurveys,
-  );
+  const fetch = useCallback(() => {
+    if (!isFetchingCreatedSurveys) {
+      void updateCreatedSurveys();
+    }
+  }, []);
+
+  useEffect(() => {
+    setSelectedRows({});
+    selectSurvey(undefined);
+    void fetch();
+  }, []);
 
   return (
     <>
-      {isFetchingOpenSurveys ? <LoadingIndicator isOpen={isFetchingOpenSurveys} /> : null}
+      {isFetchingCreatedSurveys ? <LoadingIndicator isOpen={isFetchingCreatedSurveys} /> : null}
       <SurveyTablePage
-        title={t('surveys.view.open.title')}
-        description={t('surveys.view.open.description')}
-        surveys={openSurveys || []}
-        isLoading={isFetchingOpenSurveys}
-        canShowResults
-        canParticipate
+        title={t('surveys.view.created.title')}
+        description={t('surveys.view.created.description')}
+        surveys={createdSurveys}
+        isLoading={isFetchingCreatedSurveys}
+        canDelete
+        canEdit
+        canShowResults={hasAnswers}
+        canParticipate={canParticipate}
+        canShowSubmittedAnswers={hasAnswers}
       />
     </>
   );
 };
 
-export default OpenSurveys;
+export default CreatedSurveysPage;

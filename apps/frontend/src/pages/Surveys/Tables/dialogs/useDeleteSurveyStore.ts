@@ -11,8 +11,8 @@
  */
 
 import { create } from 'zustand';
-import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import { SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
@@ -39,7 +39,7 @@ const useDeleteSurveyStore = create<DeleteSurveyStore>((set) => ({
   deleteSurveys: async (surveys: SurveyDto[]) => {
     set({ isLoading: true });
     try {
-      await eduApi.delete(SURVEYS_ENDPOINT, {
+      await eduApi.delete(SURVEYS, {
         data: { surveyIds: surveys.map((survey) => survey.id) },
       });
     } catch (error) {

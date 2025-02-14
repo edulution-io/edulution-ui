@@ -10,40 +10,85 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { BLANK_LAYOUT_HEADER_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
+import React, { useEffect } from 'react';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import useElementHeight from '@/hooks/useElementHeight';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
-import BulletinBoardPageColumn from '@/pages/BulletinBoard/components/BulletinBoardPageColumn';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import APPS from '@libs/appconfig/constants/apps';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
+import NativeAppHeader from '@/components/layout/NativeAppHeader';
+import { BulletinBoardIcon } from '@/assets/icons';
+import { useTranslation } from 'react-i18next';
+import BulletinBoardEditorialPage from '@/pages/BulletinBoard/BulletinBoardEditorial/BulletinBoardEditorialPage';
+import BulletinBoardEditorialFloatingButtonsBar from '@/pages/BulletinBoard/BulletinBoardEditorial/BulletinBoardEditorialFloatingButtonsBar';
+import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import BulletinBoardPageColumn from '@/pages/BulletinBoard/components/BulletinBoardPageColumn';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 
 const BulletinBoardPage = () => {
-  const { bulletinsByCategories } = useBulletinBoardStore();
+  const { t } = useTranslation();
   const { appConfigs } = useAppConfigsStore();
+  const { bulletinsByCategories, getBulletinsByCategories, isLoading, isEditorialModeEnabled } =
+    useBulletinBoardStore();
+  const { getCategoriesWithEditPermission } = useBulletinBoardEditorialStore();
 
   const bulletinBoardConfig = findAppConfigByName(appConfigs, APPS.BULLETIN_BOARD);
-  const pageBarsHeight = useElementHeight([BLANK_LAYOUT_HEADER_ID, FOOTER_ID]) + 15;
+  const pageBarsHeight = useElementHeight([NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 15;
+
+  useEffect(() => {
+    void getBulletinsByCategories();
+    void getCategoriesWithEditPermission();
+  }, [isEditorialModeEnabled]);
+
+  if (isLoading) {
+    return <LoadingIndicator isOpen />;
+  }
+
+  const getPageContent = () => {
+    if (isEditorialModeEnabled) {
+      return <BulletinBoardEditorialPage />;
+    }
+
+    return (
+      <div
+        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
+        className="flex h-full w-full flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin"
+      >
+        {bulletinsByCategories?.length ? (
+          bulletinsByCategories
+            .sort((a, b) => a.category.position - b.category.position)
+            .map(({ bulletins, category, canEditCategory }) => (
+              <BulletinBoardPageColumn
+                key={category.id}
+                categoryCount={bulletinsByCategories.length}
+                canEditCategory={canEditCategory}
+                category={category}
+                bulletins={bulletins}
+                canManageBulletins={!!bulletinBoardConfig}
+              />
+            ))
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <div>{t('bulletinboard.noBulletinsToShow')}</div>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
-    <div
-      style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
-      className="flex h-full w-full flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin"
-    >
-      {bulletinsByCategories
-        ?.sort((a, b) => a.category.position - b.category.position)
-        .map(({ bulletins, category, canEditCategory }) => (
-          <BulletinBoardPageColumn
-            key={category.id}
-            categoryCount={bulletinsByCategories.length}
-            canEditCategory={canEditCategory}
-            category={category}
-            bulletins={bulletins}
-            canManageBulletins={!!bulletinBoardConfig}
-          />
-        ))}
-    </div>
+    <>
+      <NativeAppHeader
+        title={t('bulletinboard.appTitle')}
+        description={t('bulletinboard.description')}
+        iconSrc={BulletinBoardIcon}
+      />
+
+      {getPageContent()}
+
+      <BulletinBoardEditorialFloatingButtonsBar />
+    </>
   );
 };
 

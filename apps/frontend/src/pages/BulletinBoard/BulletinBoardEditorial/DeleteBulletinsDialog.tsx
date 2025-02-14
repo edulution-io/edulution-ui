@@ -14,7 +14,7 @@ import React from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import CircleLoader from '@/components/ui/CircleLoader';
 import ItemDialogList from '@/components/shared/ItemDialogList';
 

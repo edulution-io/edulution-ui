@@ -10,10 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import mongoose from 'mongoose';
-
 interface PushAnswerDto {
-  surveyId: mongoose.Types.ObjectId;
+  surveyId: string;
 
   saveNo: number;
 

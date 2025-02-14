@@ -21,3 +21,7 @@
   overflow-y: auto;
   width: 100%;
 }
+
+.tabulator-cell {
+  color: theme("colors.foreground") !important;
+}

@@ -12,8 +12,8 @@
 
 import React, { useState } from 'react';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
-import CreateOrUpdateBulletinDialog from '@/pages/BulletinBoardEditorial/CreateOrUpdateBulletinDialog';
-import DeleteBulletinsDialog from '@/pages/BulletinBoardEditorial/DeleteBulletinsDialog';
+import CreateOrUpdateBulletinDialog from '@/pages/BulletinBoard/BulletinBoardEditorial/CreateOrUpdateBulletinDialog';
+import DeleteBulletinsDialog from '@/pages/BulletinBoard/BulletinBoardEditorial/DeleteBulletinsDialog';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import BulletinBoardColumnHeader from '@/pages/BulletinBoard/components/BulletinBoardColumnHeader';
@@ -61,7 +61,7 @@ const BulletinBoardPageColumn = ({
         category={category}
         canEditCategory={canEditCategory}
       />
-      <div className="flex flex-col gap-4 overflow-y-auto pb-20 text-background scrollbar-thin">
+      <div className="mb-2 flex flex-col gap-4 overflow-y-auto pb-20 text-background scrollbar-thin">
         {bulletins.map((bulletin) => (
           <BulletinBoardColumnItem
             key={bulletin.id}

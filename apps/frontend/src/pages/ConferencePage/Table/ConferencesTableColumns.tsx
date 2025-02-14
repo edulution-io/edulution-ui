@@ -22,11 +22,10 @@ import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import i18next from 'i18next';
 import useUserStore from '@/store/UserStore/UserStore';
-import { PiEyeLight, PiEyeSlash } from 'react-icons/pi';
 import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
-import copyToClipboard from '@/utils/copyToClipboard';
 import { toast } from 'sonner';
 import delay from '@libs/common/utils/delay';
+import CopyToClipboardTextCell from '@/components/ui/Table/CopyToClipboardTextCell';
 
 function getRowAction(isRunning: boolean, isLoading: boolean, isUserTheCreator: boolean) {
   if (isLoading) {
@@ -144,35 +143,16 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     },
     accessorFn: (row) => row.isPublic,
     cell: ({ row }) => {
-      const { t } = useTranslation();
       const iconSize = 16;
       const { isPublic } = row.original;
       const url = `${window.location.origin}/${CONFERENCES_PUBLIC_EDU_API_ENDPOINT}/${row.original.meetingID}`;
       return (
-        <SelectableTextCell
+        <CopyToClipboardTextCell
+          iconSize={iconSize}
           className={hideOnMobileClassName}
-          onClick={
-            isPublic
-              ? () => {
-                  copyToClipboard(url);
-                }
-              : undefined
-          }
-          text={t(`conferences.${isPublic ? 'isPublicTrue' : 'isPublicFalse'}`)}
-          textOnHover={isPublic ? t('common.copy.link') : ''}
-          icon={
-            isPublic ? (
-              <PiEyeLight
-                width={iconSize}
-                height={iconSize}
-              />
-            ) : (
-              <PiEyeSlash
-                width={iconSize}
-                height={iconSize}
-              />
-            )
-          }
+          isPublic={isPublic}
+          url={url}
+          textTranslationId="conferences"
         />
       );
     },

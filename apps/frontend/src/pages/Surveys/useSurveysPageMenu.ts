@@ -10,14 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useSearchParams } from 'react-router-dom';
-import SurveysPageView from '@libs/survey/types/api/page-view';
-import { PlusIcon, SurveysSidebarIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, UserIcon } from '@/assets/icons';
+import { useNavigate } from 'react-router-dom';
+import {
+  ANSWERED_SURVEYS_PAGE,
+  CREATED_SURVEYS_PAGE,
+  CREATOR_SURVEYS_PAGE,
+  OPEN_SURVEYS_PAGE,
+} from '@libs/survey/constants/surveys-endpoint';
+import { UserIcon, PlusIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, SurveysSidebarIcon } from '@/assets/icons';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import APPS from '@libs/appconfig/constants/apps';
 
 const useSurveysPageMenu = () => {
-  const [, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const menuBar = (): MenuBarEntry => ({
     title: 'surveys.title',
@@ -30,7 +35,7 @@ const useSurveysPageMenu = () => {
         label: 'surveys.view.open.menu',
         icon: SurveysViewOpenIcon,
         action: () => {
-          setSearchParams({ page: SurveysPageView.OPEN });
+          navigate(OPEN_SURVEYS_PAGE);
         },
       },
       {
@@ -38,7 +43,7 @@ const useSurveysPageMenu = () => {
         label: 'surveys.view.answered.menu',
         icon: SurveysViewAnsweredIcon,
         action: () => {
-          setSearchParams({ page: SurveysPageView.ANSWERED });
+          navigate(ANSWERED_SURVEYS_PAGE);
         },
       },
       {
@@ -46,7 +51,7 @@ const useSurveysPageMenu = () => {
         label: 'surveys.view.created.menu',
         icon: UserIcon,
         action: () => {
-          setSearchParams({ page: SurveysPageView.CREATED });
+          navigate(CREATED_SURVEYS_PAGE);
         },
       },
       {
@@ -54,7 +59,7 @@ const useSurveysPageMenu = () => {
         label: 'surveys.view.editor.menu',
         icon: PlusIcon,
         action: () => {
-          setSearchParams({ page: SurveysPageView.CREATOR });
+          navigate(CREATOR_SURVEYS_PAGE);
         },
       },
     ],

@@ -10,10 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import unknownSurveyId from './unknown-survey-id';
-
-export { unknownSurveyId };
-
 export { createdSurveyId01, createdSurvey01, createdSurveyId02, createdSurvey02 } from './created-surveys';
 export { surveyUpdateSurveyId, surveyUpdateInitialSurvey, surveyUpdateUpdatedSurvey } from './updated-survey';
 export { openSurveyId01, openSurvey01, openSurveyId02, openSurvey02 } from './open-surveys';

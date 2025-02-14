@@ -10,37 +10,36 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import SurveysPageView from '@libs/survey/types/api/page-view';
-import useSurveysPageHook from '@/pages/Surveys/Tables/hooks/use-surveys-page-hook';
 import SurveyTablePage from '@/pages/Surveys/Tables/SurveyTablePage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
-const AnsweredSurveys = () => {
+const AnsweredSurveysPage = () => {
   const {
-    selectedPageView,
-    updateSelectedPageView,
     selectSurvey,
     setSelectedRows,
     answeredSurveys,
     isFetchingAnsweredSurveys,
     updateAnsweredSurveys,
+    canParticipate,
+    hasAnswers,
   } = useSurveyTablesPageStore();
 
   const { t } = useTranslation();
 
-  useSurveysPageHook(
-    selectedPageView,
-    SurveysPageView.ANSWERED,
-    updateSelectedPageView,
-    selectSurvey,
-    setSelectedRows,
-    updateAnsweredSurveys,
-    isFetchingAnsweredSurveys,
-    answeredSurveys,
-  );
+  const fetch = useCallback(() => {
+    if (!isFetchingAnsweredSurveys) {
+      void updateAnsweredSurveys();
+    }
+  }, []);
+
+  useEffect(() => {
+    selectSurvey(undefined);
+    setSelectedRows({});
+    void fetch();
+  }, []);
 
   return (
     <>
@@ -50,12 +49,12 @@ const AnsweredSurveys = () => {
         description={t('surveys.view.answered.description')}
         surveys={answeredSurveys}
         isLoading={isFetchingAnsweredSurveys}
-        canShowResults
-        canParticipate
-        canShowSubmittedAnswers
+        canShowResults={hasAnswers}
+        canParticipate={canParticipate}
+        canShowSubmittedAnswers={hasAnswers}
       />
     </>
   );
 };
 
-export default AnsweredSurveys;
+export default AnsweredSurveysPage;

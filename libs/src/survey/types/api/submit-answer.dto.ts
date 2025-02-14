@@ -10,8 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import getNewSurveyId from '@libs/survey/getNewSurveyId';
+import { CompleteEvent } from 'survey-core';
 
-const unknownSurveyId = getNewSurveyId();
+interface SubmitAnswerDto {
+  surveyId: string;
 
-export default unknownSurveyId;
+  saveNo: number;
+
+  answer: JSON;
+
+  surveyEditorCallbackOnSave?: CompleteEvent | undefined;
+
+  isPublic: boolean;
+}
+
+export default SubmitAnswerDto;

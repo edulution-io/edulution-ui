@@ -35,7 +35,16 @@ import DOCKER_CONTAINER_EXTENDED_OPTIONS from '@libs/appconfig/constants/extende
 import CLASS_MANAGEMENT_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/classMgmt';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
 
-const APP_CONFIG_OPTIONS: AppConfigOption[] = [
+export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
+  {
+    id: APPS.BULLETIN_BOARD,
+    icon: BulletinBoardIcon,
+    color: 'bg-ciDarkBlue',
+    isNativeApp: true,
+    extendedOptions: {
+      [AppConfigSectionsKeys.bulletinBoard]: BULLETIN_BOARD_EXTENDED_OPTIONS,
+    },
+  },
   {
     id: APPS.MAIL,
     icon: MailIcon,
@@ -99,14 +108,6 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     icon: WhiteBoardIcon,
     options: [],
     isNativeApp: true,
-  },
-  {
-    id: APPS.BULLETIN_BOARD,
-    icon: BulletinBoardIcon,
-    isNativeApp: true,
-    extendedOptions: {
-      [AppConfigSectionsKeys.bulletinBoard]: BULLETIN_BOARD_EXTENDED_OPTIONS,
-    },
   },
   {
     id: APPS.FORWARDING,

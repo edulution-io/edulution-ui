@@ -17,10 +17,10 @@ import { Button } from '@/components/shared/Button';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import SaveSurveyDialogBody from '@/pages/Surveys/Editor/dialog/SaveSurveyDialogBody';
 import CircleLoader from '@/components/ui/CircleLoader';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 
 interface SaveSurveyDialogProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: UseFormReturn<any>;
+  form: UseFormReturn<SurveyDto>;
   isOpenSaveSurveyDialog: boolean;
   setIsOpenSaveSurveyDialog: (state: boolean) => void;
   submitSurvey: () => void;

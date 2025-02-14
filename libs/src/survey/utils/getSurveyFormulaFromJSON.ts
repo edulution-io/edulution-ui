@@ -12,14 +12,27 @@
 
 import { t } from 'i18next';
 import SurveyFormula from '@libs/survey/types/TSurveyFormula';
-import isSurveyFormula from '@libs/survey/utils/isSurveyFormula';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import { toast } from 'sonner';
+import isSurveyPage from '@libs/survey/utils/isSurveyPage';
+import isSurveyElement from '@libs/survey/utils/isSurveyElement';
 
-const convertJSONToSurveyFormula = (formula: JSON): SurveyFormula => {
+const isValidSurveyFormula = (surveyFormula: SurveyFormula): boolean => {
+  const { title, pages, elements } = surveyFormula;
+  if (pages) {
+    return pages.every(isSurveyPage);
+  }
+  if (elements) {
+    return elements.every(isSurveyElement);
+  }
+  return !!title;
+};
+
+const getSurveyFormulaFromJSON = (formula: JSON): SurveyFormula => {
   try {
     const typedFormula = formula as unknown as SurveyFormula;
-    const isValidFormula = isSurveyFormula(typedFormula);
+
+    const isValidFormula = isValidSurveyFormula(typedFormula);
     if (isValidFormula) {
       return typedFormula;
     }
@@ -30,4 +43,4 @@ const convertJSONToSurveyFormula = (formula: JSON): SurveyFormula => {
   return { title: t('survey.newTitle').toString() };
 };
 
-export default convertJSONToSurveyFormula;
+export default getSurveyFormulaFromJSON;

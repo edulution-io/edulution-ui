@@ -15,21 +15,45 @@ import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingBut
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import CreateButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/createButton';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import EditButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/editButton';
+import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
+import { t } from 'i18next';
+import { MdOutlineTableChart, MdOutlineViewColumn } from 'react-icons/md';
 
 const BulletinBoardEditorialFloatingButtonsBar: React.FC = () => {
   const {
+    categoriesWithEditPermission,
+    setSelectedRows,
     selectedRows,
     bulletins,
     setIsDeleteBulletinDialogOpen,
     setIsCreateBulletinDialogOpen,
     setSelectedBulletinToEdit,
   } = useBulletinBoardEditorialStore();
+
+  const { isEditorialModeEnabled, setIsEditorialModeEnabled } = useBulletinBoardStore();
+
+  const hasTheUserEditPermissionToCategories = categoriesWithEditPermission.length > 0;
+
+  if (!hasTheUserEditPermissionToCategories) {
+    return null;
+  }
+
   const selectedBulletinIds = Object.keys(selectedRows);
+
+  const onSwitchEditorialModeButtonClick = () => {
+    setIsEditorialModeEnabled(!isEditorialModeEnabled);
+    setSelectedRows({});
+  };
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
+      {
+        icon: isEditorialModeEnabled ? MdOutlineViewColumn : MdOutlineTableChart,
+        text: t(`common.${isEditorialModeEnabled ? 'columns' : 'table'}`),
+        onClick: onSwitchEditorialModeButtonClick,
+      },
       DeleteButton(() => setIsDeleteBulletinDialogOpen(true), selectedBulletinIds.length > 0),
       EditButton(() => {
         setIsCreateBulletinDialogOpen(true);

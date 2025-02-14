@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import mongoose from 'mongoose';
 import { create } from 'zustand';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { SURVEY_RESULT_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
@@ -28,11 +27,10 @@ const useResultDialogStore = create<ResultDialogStore>((set) => ({
   setIsOpenPublicResultsTableDialog: (state: boolean) => set({ isOpenPublicResultsTableDialog: state }),
   setIsOpenPublicResultsVisualisationDialog: (state: boolean) => set({ isOpenPublicResultsVisualisationDialog: state }),
 
-  getSurveyResult: async (surveyId: mongoose.Types.ObjectId): Promise<void> => {
+  getSurveyResult: async (surveyId: string): Promise<void> => {
     set({ isLoading: true });
     try {
-      // TODO: Issue 388: [REPORT] Survey - rework ids to only use the timestamps in the frontend
-      const response = await eduApi.get<JSON[]>(`${SURVEY_RESULT_ENDPOINT}${surveyId.toString('base64')}`);
+      const response = await eduApi.get<JSON[]>(`${SURVEY_RESULT_ENDPOINT}/${surveyId}`);
       const result = response.data;
       set({ result });
     } catch (error) {
