@@ -737,7 +737,9 @@
       "DisableAppConfigFailed": "Disable app failed",
       "WriteTraefikConfigFailed": "Write traefik config failed",
       "ReadTraefikConfigFailed": "Read traefik config failed",
-      "forbiddenProxyPath": "Forbidden proxy path"
+      "forbiddenProxyPath": "Forbidden proxy path",
+      "fieldRequired": "This field is required",
+      "onlyAlphanumericAllowed": "Only alphanumeric characters are allowed"
     },
     "yamleditor": {
       "invalidYaml": "Wrong YAML syntax",

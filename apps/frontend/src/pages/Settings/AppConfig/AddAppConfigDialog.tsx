@@ -49,7 +49,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
   });
 
   const onSubmit = async () => {
-    const newAppName = form.getValues('customAppName').toLowerCase();
+    const newAppName = form.getValues('customAppName');
     const newAppIcon = form.getValues('customIcon');
     const getAppType = () => {
       switch (selectedApp.id) {

@@ -19,8 +19,11 @@ const forbiddenRouts = [...Object.values(APPS), 'auth', 'edu-api'];
 
 const getCustomAppConfigFormSchema = (t: TFunction<'translation', undefined>) =>
   z.object({
-    customAppName: z.string().refine((val) => !forbiddenRouts.includes(val as TApps), {
-      message: t('settings.errors.forbiddenProxyPath'),
-    }),
+    customAppName: z
+      .string()
+      .min(1, { message: t('settings.errors.fieldRequired') })
+      .regex(/^[\p{L}\p{N}-]+$/u, { message: t('settings.errors.onlyAlphanumericAllowed') })
+      .refine((val) => !forbiddenRouts.includes(val as TApps), { message: t('settings.errors.forbiddenProxyPath') }),
+    customIcon: z.string().min(1, { message: t('settings.errors.fieldRequired') }),
   });
 export default getCustomAppConfigFormSchema;
