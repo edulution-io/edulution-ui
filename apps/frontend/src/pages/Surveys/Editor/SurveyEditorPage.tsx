@@ -15,7 +15,7 @@ import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { zodResolver } from '@hookform/resolvers/zod';
-import InitialSurveyForm from '@libs/survey/constants/initial-survey-form';
+import getInitialSurveyFormValues from '@libs/survey/constants/initial-survey-form';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import useUserStore from '@/store/UserStore/UserStore';
@@ -57,7 +57,7 @@ const SurveyEditorPage = () => {
       value: user.username,
       label: `${user.firstName} ${user.lastName}`,
     };
-    return new InitialSurveyForm(surveyCreator, selectedSurvey);
+    return getInitialSurveyFormValues(surveyCreator, selectedSurvey);
   }, [selectedSurvey]);
 
   const form = useForm<SurveyDto>({
@@ -85,6 +85,7 @@ const SurveyEditorPage = () => {
       isAnonymous,
       isPublic,
       canSubmitMultipleAnswers,
+      canUpdateFormerAnswer,
     } = form.getValues();
 
     await updateOrCreateSurvey({
@@ -101,6 +102,7 @@ const SurveyEditorPage = () => {
       isAnonymous,
       isPublic,
       canSubmitMultipleAnswers,
+      canUpdateFormerAnswer,
     });
 
     void updateUsersSurveys();

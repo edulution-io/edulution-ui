@@ -21,7 +21,6 @@ import sortSurveyByTitle from '@libs/survey/utils/sortSurveyByTitle';
 import sortSurveyByInvitesAndParticipation from '@libs/survey/utils/sortSurveyByInvitesAndParticipation';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
-import { ButtonSH } from '@/components/ui/ButtonSH';
 import { useTranslation } from 'react-i18next';
 import { PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import CopyToClipboardTextCell from '@/components/ui/Table/CopyToClipboardTextCell';
@@ -39,12 +38,13 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       translationId: 'common.title',
     },
     cell: ({ row }) => (
-        <SelectableTextCell
-          row={row}
-          text={row.original.formula.title || i18next.t('common.not-available')}
-          className="h-full w-full"
-        />
-      ),
+      <SelectableTextCell
+        row={row}
+        text={row.original.formula.title || i18next.t('common.not-available')}
+        className="h-full w-full"
+        onClick={() => row.toggleSelected()}
+      />
+    ),
     sortingFn: (rowA, rowB) => sortSurveyByTitle(rowA.original, rowB.original),
   },
   {
@@ -56,17 +56,15 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     },
     cell: ({ row }) => {
       const localDateFormat = getLocaleDateFormat();
+      const text = row.original?.createdAt
+        ? format(row.original.createdAt, 'PPP', { locale: localDateFormat })
+        : i18next.t('common.not-available');
       return (
-        <ButtonSH
-          onClick={() => row.toggleSelected()}
+        <SelectableTextCell
+          text={text}
           className="h-full w-full"
-        >
-          <span className="overflow-hidden text-ellipsis font-medium">
-            {row.original?.createdAt
-              ? format(row.original.createdAt, 'PPP', { locale: localDateFormat })
-              : i18next.t('common.not-available')}
-          </span>
-        </ButtonSH>
+          onClick={() => row.toggleSelected()}
+        />
       );
     },
     sortingFn: (rowA, rowB) => sortDate(rowA.original.createdAt, rowB.original.createdAt),
@@ -80,17 +78,15 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     },
     cell: ({ row }) => {
       const localDateFormat = getLocaleDateFormat();
+      const text = row.original?.expires
+        ? format(row.original.expires, 'PPP', { locale: localDateFormat })
+        : i18next.t('common.not-available');
       return (
-        <ButtonSH
-          onClick={() => row.toggleSelected()}
+        <SelectableTextCell
+          text={text}
           className="h-full w-full"
-        >
-          <span className="overflow-hidden text-ellipsis font-medium">
-            {row.original?.expires
-              ? format(row.original.expires, 'PPP', { locale: localDateFormat })
-              : i18next.t('common.not-available')}
-          </span>
-        </ButtonSH>
+          onClick={() => row.toggleSelected()}
+        />
       );
     },
     sortingFn: (rowA, rowB) => sortDate(rowA.original.expires, rowB.original.expires),
@@ -145,6 +141,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
         <SelectableTextCell
           className={hideOnMobileClassName}
           text={`${attendeeText}${groupsText}`}
+          onClick={() => row.toggleSelected()}
         />
       );
     },
@@ -158,13 +155,12 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       translationId: 'common.answers',
     },
     cell: ({ row }) => (
-        <ButtonSH
-          onClick={() => row.toggleSelected()}
-          className="hidden h-full w-full lg:flex"
-        >
-          <span className="flex justify-center font-medium">{row.original?.answers.length || 0}</span>
-        </ButtonSH>
-      ),
+      <SelectableTextCell
+        text={`${row.original?.answers.length || 0}`}
+        className="h-full w-full"
+        onClick={() => row.toggleSelected()}
+      />
+    ),
     sortingFn: (rowA, rowB) => sortSurveyByInvitesAndParticipation(rowA.original, rowB.original),
   },
 ];

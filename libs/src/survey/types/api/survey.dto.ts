@@ -13,7 +13,7 @@
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 
 interface SurveyDto {
   id?: string;
@@ -24,15 +24,16 @@ interface SurveyDto {
   }[];
   saveNo: number;
   creator: AttendeeDto;
-  invitedAttendees: AttendeeDto[];
-  invitedGroups: MultipleSelectorGroup[];
-  participatedAttendees: AttendeeDto[];
+  invitedAttendees: MultipleSelectorOptionSH[];
+  invitedGroups: MultipleSelectorOptionSH[];
+  participatedAttendees: MultipleSelectorOptionSH[];
   answers: string[];
   createdAt?: Date;
   expires?: Date;
   isAnonymous?: boolean;
   isPublic?: boolean;
   canSubmitMultipleAnswers?: boolean;
+  canUpdateFormerAnswer?: boolean;
 }
 
 export default SurveyDto;

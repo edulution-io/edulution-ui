@@ -28,6 +28,8 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import SseService from '../sse/sse.service';
 import type UserConnections from '../types/userConnections';
 import { Survey, SurveyDocument } from './survey.schema';
+import MigrationService from '../migration/migration.service';
+import surveysMigrationsList from './migrations/surveysMigrationsList';
 
 @Injectable()
 class SurveysService {
@@ -35,6 +37,10 @@ class SurveysService {
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
+
+  async onModuleInit() {
+    await MigrationService.runMigrations<SurveyDocument>(this.surveyModel, surveysMigrationsList);
+  }
 
   async findSurvey(surveyId: string, user: JwtUser): Promise<Survey | null> {
     const survey = await this.surveyModel
@@ -164,7 +170,12 @@ class SurveysService {
     );
 
     return Array.from(
-      new Set([...survey.invitedAttendees.map((attendee) => attendee.username), ...usersInGroups.flat()]),
+      new Set([
+        ...survey.invitedAttendees
+          .map((attendee) => attendee.username)
+          .filter((username): username is string => typeof username === 'string'),
+        ...usersInGroups.flat().filter(Boolean),
+      ]),
     );
   }
 }

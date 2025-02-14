@@ -29,6 +29,9 @@ export class SurveyAnswer {
 
   @Prop({ type: JSON, required: true })
   answer: JSON;
+
+  @Prop({ default: 1 })
+  schemaVersion: number;
 }
 
 const SurveyAnswerSchema = SchemaFactory.createForClass(SurveyAnswer);

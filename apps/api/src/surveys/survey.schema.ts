@@ -62,6 +62,9 @@ export class Survey {
 
   @Prop({ required: false })
   canSubmitMultipleAnswers?: boolean;
+
+  @Prop({ default: 1 })
+  schemaVersion: number;
 }
 
 const SurveySchema = SchemaFactory.createForClass(Survey);

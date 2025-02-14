@@ -24,6 +24,8 @@ import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
 import Attendee from '../conferences/attendee.schema';
 import SurveysService from './surveys.service';
+import MigrationService from '../migration/migration.service';
+import surveyAnswersMigrationsList from './migrations/surveyAnswersMigrationsList';
 
 @Injectable()
 class SurveyAnswersService {
@@ -32,6 +34,10 @@ class SurveyAnswersService {
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
     private readonly surveysService: SurveysService,
   ) {}
+
+  async onModuleInit() {
+    await MigrationService.runMigrations<SurveyAnswerDocument>(this.surveyAnswerModel, surveyAnswersMigrationsList);
+  }
 
   public canUserParticipateSurvey = async (surveyId: string, username: string): Promise<boolean> => {
     const survey = await this.surveyModel.findById<Survey>(surveyId);
@@ -166,7 +172,7 @@ class SurveyAnswersService {
       throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorSurveyExpired, HttpStatus.UNAUTHORIZED);
     }
 
-    if (!username && isPublic) {
+    if (isPublic) {
       return;
     }
 
