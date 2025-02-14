@@ -18,10 +18,8 @@ import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
 import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
 import APPS from '@libs/appconfig/constants/apps';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveysPageView from '@libs/survey/types/api/page-view';
 import cn from '@libs/common/utils/className';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FallbackText from '@/components/shared/FallbackText';
 
@@ -34,14 +32,7 @@ const SurveysList = (props: SurveysListProps) => {
   const { items, className } = props;
   const { t } = useTranslation();
 
-  const { selectSurvey, updateSelectedPageView } = useSurveyTablesPageStore();
-  const { setIsOpenParticipateSurveyDialog } = useParticipateDialogStore();
-
-  const updateSurveyStores = (survey: SurveyDto) => {
-    updateSelectedPageView(SurveysPageView.OPEN);
-    selectSurvey(survey);
-    setIsOpenParticipateSurveyDialog(true);
-  };
+  const { selectSurvey } = useSurveyTablesPageStore();
 
   const locale = getLocaleDateFormat();
 
@@ -50,7 +41,7 @@ const SurveysList = (props: SurveysListProps) => {
       <span className="text-sm font-semibold">{survey.formula.title || FallbackText}</span>
       <p className="line-clamp-2 text-sm text-muted-foreground">
         {`${t('survey.created')}:  `}
-        {survey.created ? format(survey.created, 'dd.MMMLL', { locale }) : FallbackText}
+        {survey.createdAt ? format(survey.createdAt, 'dd.MMMLL', { locale }) : FallbackText}
       </p>
       {survey.expires ? (
         <p className="text-muted-background line-clamp-2 text-sm">
@@ -67,10 +58,9 @@ const SurveysList = (props: SurveysListProps) => {
         {items.map((item) => (
           <NavLink
             to={APPS.SURVEYS}
-            onClick={() => updateSurveyStores(item)}
-            // TODO: Issue 388: [REPORT] Survey - rework ids to only use the timestamps in the frontend
-            key={item.id.toString('base64')}
-            className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border p-2 text-left transition-all hover:bg-accent"
+            onClick={() => selectSurvey(item)}
+            key={item.id}
+            className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border p-2 text-left transition-all hover:bg-ciDarkGrey"
           >
             {getSurveyInfo(item)}
           </NavLink>

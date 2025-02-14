@@ -453,15 +453,23 @@
   "downloadFile": "Download file",
   "cancel": "Cancel",
   "survey": {
+    "attendee": "Attendee",
+    "attendees": "Attendees",
     "filterPlaceHolderText": "Search for surveyname",
+    "invitedAttendees": "Invited",
+    "isPublic": "Publicly displayed (?)",
+    "isPublicTrue": "Public",
+    "isPublicFalse": "Private",
     "newTitle": "New survey",
     "created": "Created",
     "creationDate": "Creation date",
     "expires": "Expires",
     "expirationDate": "Expiration date",
-    "notFound": "Survey not found",
-    "noFormula": "The formula of the survey is not readable",
-    "noAnswer": "No answer available",
+    "finished": "You successfully completed the survey.",
+    "thanks": "Thank you for your participation.",
+    "noAnswer": "No answers available jet.",
+    "notFound": "Survey could not be found.",
+    "noFormula": "The formula of the survey is not readable.",
     "canSubmitMultiple": "Allow multiple submission",
     "editor": {
       "new": "New (blank)",
@@ -470,27 +478,27 @@
       "expectingUserInput": "Expecting the user to answer here, ... "
     },
     "errors": {
-      "updateOrCreateError": "Neither able to update a survey nor to create a new one",
-      "deleteError": "Not able to delete the surveys",
-      "noAnswerError": "No answers available jet",
-      "noFormulaError": "The formula of the survey is not readable",
-      "noBackendLimitersError": "In order to use this functionality you have to define limiters inside of the editor",
-      "notFoundError": "Survey not found",
+      "updateOrCreateError": "Neither able to update a survey nor to create a new one.",
+      "deleteError": "Not able to delete the surveys.",
+      "noAnswerError": "No answers available jet.",
+      "noFormulaError": "The formula of the survey is not readable.",
+      "noBackendLimitersError": "In order to use this functionality you have to define limiters inside of the editor.",
+      "notFoundError": "Survey not found.",
       "surveyFormulaStructuralError": "The formula of the survey has structural issues.",
-      "participationErrorUserNotAssigned": "User is no participant of the survey",
-      "participationErrorAlreadyParticipated": "User has already participated in the survey",
-      "participationErrorSurveyExpired": "Survey has already expired",
-      "idTypeError": "Missing survey id",
-      "missingAnswerError": "Please, provide an answer for the submission"
+      "participationErrorUserNotAssigned": "User is no participant of the survey.",
+      "participationErrorAlreadyParticipated": "User has already participated in the survey.",
+      "participationErrorSurveyExpired": "Survey has already expired.",
+      "idTypeError": "Missing survey id.",
+      "missingAnswerError": "Please provide an answer before submitting."
     }
   },
   "survey-answer": {
     "errors": {
-      "notAbleToFindOrCreateSurveyAnswerError": "Neither able to find nor to create the users survey answer entry in database",
-      "notAbleToFindSurveyAnswerError": "Survey answers not found",
-      "notAbleToUpdateSurveyAnswerError": "Not able to update the submitted survey answer",
-      "notAbleToCreateSurveyAnswerError": "Not able to create the users survey answer",
-      "notAbleToDeleteSurveyAnswerError": "Not able to delete the users survey answer"
+      "notAbleToFindOrCreateSurveyAnswerError": "Neither able to find nor to create the users survey answer entry in database.",
+      "notAbleToFindSurveyAnswerError": "Survey answers not found.",
+      "notAbleToUpdateSurveyAnswerError": "Not able to update the submitted survey answer.",
+      "notAbleToCreateSurveyAnswerError": "Not able to create the users survey answer.",
+      "notAbleToDeleteSurveyAnswerError": "Not able to delete the users survey answer."
     }
   },
   "surveys": {
@@ -535,13 +543,14 @@
       "settingsFlags": "Options",
       "isAnonymous": "Should the survey be anonymous?",
       "isPublic": "Should the survey be public?",
-      "canSubmitMultipleAnswers": "Should the survey still be visible after participation?"
+      "canSubmitMultipleAnswers": "Should a participant be allowed to answer the survey multiple times?",
+      "canUpdateFormerAnswer": "Should answers be editable afterwards?"
     },
     "sharePublicSurveyDialog": {
       "title": "Share survey",
       "description": "Here you can share the survey with external people. Please copy the link and send it to the participants.",
-      "savedToClipboard": "Saved to clipboard",
-      "savedToClipboardError": "Unable to save into clipboard"
+      "savedToClipboard": "Saved to clipboard.",
+      "savedToClipboardError": "Unable to save into clipboard."
     },
     "participateDialog": {
       "title": "Participate in the survey"
@@ -821,6 +830,7 @@
   },
   "edit": "Edit",
   "common": {
+    "answers": "Answers",
     "error": "Error",
     "errors": {
       "startDateBeforeEndDate": "The start date must be before the end date",

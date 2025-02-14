@@ -10,12 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const ParticipatePublicSurveyStoreInitialState = {
-  publicSurvey: undefined,
-  answer: {} as JSON,
-  pageNo: 0,
-  isFetching: false,
-  isSubmitting: false,
-};
+import migration000 from './surveysMigration000SurveyIds';
 
-export default ParticipatePublicSurveyStoreInitialState;
+// Add new migrations here
+const surveysMigrationsList = [migration000];
+
+export default surveysMigrationsList;

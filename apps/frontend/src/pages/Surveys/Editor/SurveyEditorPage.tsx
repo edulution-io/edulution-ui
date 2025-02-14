@@ -10,66 +10,65 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { zodResolver } from '@hookform/resolvers/zod';
-import InitialSurveyForm from '@libs/survey/constants/initial-survey-form';
+import getInitialSurveyFormValues from '@libs/survey/constants/initial-survey-form';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import useUserStore from '@/store/UserStore/UserStore';
-import useSurveyEditorFormStore from '@/pages/Surveys/Editor/useSurveyEditorFormStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import SharePublicSurveyDialog from '@/pages/Surveys/Editor/dialog/SharePublicSurveyDialog';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
+import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import { useTranslation } from 'react-i18next';
+import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
-interface SurveyEditorFormProps {
-  editMode?: boolean;
-}
-
-const SurveyEditorForm = (props: SurveyEditorFormProps) => {
-  const { editMode = false } = props;
+const SurveyEditorPage = () => {
+  const { updateSelectedSurvey, isFetching, selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
+  const { isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog, updateOrCreateSurvey, isLoading, reset } =
+    useSurveyEditorPageStore();
 
   const { t } = useTranslation();
   const { user } = useUserStore();
 
-  const { selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
-  const {
-    isOpenSaveSurveyDialog,
-    setIsOpenSaveSurveyDialog,
+  const { surveyId } = useParams();
 
-    updateOrCreateSurvey,
-    isLoading,
-  } = useSurveyEditorFormStore();
+  useEffect(() => {
+    reset();
+    void updateSelectedSurvey(surveyId, false);
+  }, [surveyId]);
 
-  if (!user || !user.username) {
-    return null;
-  }
+  const initialFormValues: SurveyDto | undefined = useMemo(() => {
+    if (!user || !user.username) {
+      return undefined;
+    }
 
-  const surveyCreator: AttendeeDto = {
-    firstName: user.firstName,
-    lastName: user.lastName,
-    username: user.username,
-    value: user.username,
-    label: `${user.firstName} ${user.lastName}`,
-  };
-
-  const initialFormValues: SurveyDto = useMemo(
-    () => new InitialSurveyForm(surveyCreator, editMode && selectedSurvey ? selectedSurvey : undefined),
-    [selectedSurvey],
-  );
+    const surveyCreator: AttendeeDto = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
+      value: user.username,
+      label: `${user.firstName} ${user.lastName}`,
+    };
+    return getInitialSurveyFormValues(surveyCreator, selectedSurvey);
+  }, [selectedSurvey]);
 
   const form = useForm<SurveyDto>({
     mode: 'onChange',
     resolver: zodResolver(getSurveyEditorFormSchema(t)),
     defaultValues: initialFormValues,
   });
+
+  useEffect(() => {
+    form.reset(initialFormValues);
+  }, [initialFormValues]);
 
   const saveSurvey = async () => {
     const {
@@ -81,11 +80,12 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
       invitedGroups,
       participatedAttendees,
       answers,
-      created,
+      createdAt,
       expires,
       isAnonymous,
       isPublic,
       canSubmitMultipleAnswers,
+      canUpdateFormerAnswer,
     } = form.getValues();
 
     await updateOrCreateSurvey({
@@ -97,11 +97,12 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
       invitedGroups,
       participatedAttendees,
       answers,
-      created,
+      createdAt,
       expires,
       isAnonymous,
       isPublic,
       canSubmitMultipleAnswers,
+      canUpdateFormerAnswer,
     });
 
     void updateUsersSurveys();
@@ -116,18 +117,24 @@ const SurveyEditorForm = (props: SurveyEditorFormProps) => {
   return (
     <>
       {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
-      <SurveyEditor form={form} />
-      <FloatingButtonsBar config={config} />
-      <SaveSurveyDialog
-        form={form}
-        isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
-        setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
-        submitSurvey={saveSurvey}
-        isSubmitting={isLoading}
-      />
-      <SharePublicSurveyDialog />
+      {isFetching ? (
+        <LoadingIndicator isOpen={isFetching} />
+      ) : (
+        <>
+          <SurveyEditor form={form} />
+          <FloatingButtonsBar config={config} />
+          <SaveSurveyDialog
+            form={form}
+            isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
+            setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
+            submitSurvey={saveSurvey}
+            isSubmitting={isLoading}
+          />
+          <SharePublicSurveyDialog />
+        </>
+      )}
     </>
   );
 };
 
-export default SurveyEditorForm;
+export default SurveyEditorPage;

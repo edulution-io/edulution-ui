@@ -10,19 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SurveyDto from '@libs/survey/types/api/survey.dto';
+import migration000 from './surveyAnswersMigration000SurveyIds';
 
-interface SurveyEditorFormStore {
-  isOpenSaveSurveyDialog: boolean;
-  setIsOpenSaveSurveyDialog: (state: boolean) => void;
-  updateOrCreateSurvey: (survey: SurveyDto) => Promise<void>;
-  isLoading: boolean;
+// Add new migrations here
+const surveyAnswersMigrationsList = [migration000];
 
-  isOpenSharePublicSurveyDialog: boolean;
-  publicSurveyId: string;
-  closeSharePublicSurveyDialog: () => void;
-
-  reset: () => void;
-}
-
-export default SurveyEditorFormStore;
+export default surveyAnswersMigrationsList;

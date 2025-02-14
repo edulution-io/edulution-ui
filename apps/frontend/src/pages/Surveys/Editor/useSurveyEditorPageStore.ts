@@ -11,32 +11,57 @@
  */
 
 import { create } from 'zustand';
-import SurveyEditorFormStore from '@libs/survey/types/editor/surveyEditorFormStore';
-import SurveyEditorFormStoreInitialState from '@libs/survey/types/editor/surveyEditorFormStoreInitialState';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
+import { SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
-const useSurveyEditorFormStore = create<SurveyEditorFormStore>((set) => ({
-  ...SurveyEditorFormStoreInitialState,
-  reset: () => set(SurveyEditorFormStoreInitialState),
+interface SurveyEditorPageStore {
+  survey: SurveyDto | undefined;
+  setSurvey: (survey: SurveyDto | undefined) => void;
+
+  isOpenSaveSurveyDialog: boolean;
+  setIsOpenSaveSurveyDialog: (state: boolean) => void;
+  updateOrCreateSurvey: (survey: SurveyDto) => Promise<void>;
+  isLoading: boolean;
+
+  isOpenSharePublicSurveyDialog: boolean;
+  publicSurveyId: string;
+  closeSharePublicSurveyDialog: () => void;
+
+  reset: () => void;
+}
+
+const SurveyEditorPageStoreInitialState = {
+  survey: undefined,
+
+  isOpenSaveSurveyDialog: false,
+  isLoading: false,
+
+  isOpenSharePublicSurveyDialog: false,
+  publicSurveyId: '',
+};
+
+const useSurveyEditorPageStore = create<SurveyEditorPageStore>((set) => ({
+  ...SurveyEditorPageStoreInitialState,
+  reset: () => set(SurveyEditorPageStoreInitialState),
+
+  setSurvey: (survey: SurveyDto | undefined) => set({ survey }),
 
   setIsOpenSaveSurveyDialog: (state: boolean) => set({ isOpenSaveSurveyDialog: state }),
 
   updateOrCreateSurvey: async (survey: SurveyDto): Promise<void> => {
     set({ isLoading: true });
     try {
-      const result = await eduApi.post<SurveyDto>(SURVEYS_ENDPOINT, survey);
+      const result = await eduApi.post<SurveyDto>(SURVEYS, survey);
       const resultingSurvey = result.data;
       if (resultingSurvey && survey.isPublic) {
         set({
           isOpenSharePublicSurveyDialog: true,
-          // TODO: Issue 388: [REPORT] Survey - rework ids to only use the timestamps in the frontend
-          publicSurveyId: resultingSurvey.id.toString('base64'),
+          publicSurveyId: resultingSurvey.id,
         });
       } else {
-        set({ isOpenSharePublicSurveyDialog: false, publicSurveyId: '' });
+        set({ isOpenSharePublicSurveyDialog: false, publicSurveyId: undefined });
       }
     } catch (error) {
       handleApiError(error, set);
@@ -46,7 +71,7 @@ const useSurveyEditorFormStore = create<SurveyEditorFormStore>((set) => ({
   },
 
   closeSharePublicSurveyDialog: () =>
-    set({ isOpenSaveSurveyDialog: false, publicSurveyId: SurveyEditorFormStoreInitialState.publicSurveyId }),
+    set({ isOpenSaveSurveyDialog: false, publicSurveyId: SurveyEditorPageStoreInitialState.publicSurveyId }),
 }));
 
-export default useSurveyEditorFormStore;
+export default useSurveyEditorPageStore;

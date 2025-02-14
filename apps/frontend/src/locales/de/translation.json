@@ -454,16 +454,24 @@
   "downloadFile": "Datei herunterladen",
   "cancel": "Abbrechen",
   "survey": {
+    "attendee": "Teilnehmer",
+    "attendees": "Teilnehmer",
     "newTitle": "Neue Umfrage",
     "filterPlaceHolderText": "Suche nach Umfragename",
+    "invitedAttendees": "Eingeladen",
+    "isPublic": "Sichtbarkeit",
+    "isPublicTrue": "Öffentlich",
+    "isPublicFalse": "Privat",
     "created": "Erstellt",
     "creationDate": "Erstellungsdatum",
     "expires": "Läuft ab",
     "expirationDate": "Ablaufdatum",
-    "notFound": "Umfrage nicht gefunden",
-    "noFormula": "Das Formular ist nicht lesbar",
-    "noAnswer": "Keine Antwort verfügbar",
-    "canSubmitMultiple": "Erlaube Mehrfachantworten",
+    "finished": "Du hast erfolgreich an der Umfrage teilgenommen.",
+    "thanks": "Vielen Dank für deine Teilnahme.",
+    "notFound": "Die Umfrage konnte nicht gefunden werden.",
+    "noFormula": "Das Formular ist nicht lesbar.",
+    "noAnswer": "Es sind noch keine Antworten verfügbar.",
+    "canSubmitMultiple": "Erlaube Mehrfachantworten.",
     "editor": {
       "new": "Neu (Leer)",
       "abort": "Alle Änderungen verwerfen",
@@ -471,9 +479,9 @@
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
     },
     "errors": {
-      "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden",
+      "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden.",
       "deleteError": "Die Umfragen konnten nicht gelöscht werden.",
-      "noAnswerError": "Es sind noch keine Antworten vorhanden.",
+      "noAnswerError": "Bisher ist noch keine Antwort abgegeben worden.",
       "noFormulaError": "Das Formular der Umfrage ist nicht lesbar.",
       "noBackendLimitersError": "Um diese Funktion nutzen zu können müssen im Editor die Grenzwerte definiert werden.",
       "notFoundError": "Umfrage konnte nicht gefunden werden.",
@@ -481,15 +489,15 @@
       "participationErrorUserNotAssigned": "Du bist zu dieser Umfrage nicht eingeladen.",
       "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
       "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",
-      "idTypeError": "Ungültige Umfrage-ID",
-      "missingAnswerError": "Bitte fülle die Umfrage aus bevor du deine Antwort abschickst."
+      "idTypeError": "Ungültige Umfrage-ID.",
+      "missingAnswerError": "Bitte fülle die Umfrage aus, bevor du deine Antwort abschickst."
     }
   },
   "survey-answer": {
     "errors": {
-      "notAbleToFindOrCreateSurveyAnswerError": "Antwort konnte nicht gefunden oder erstellt werden",
+      "notAbleToFindOrCreateSurveyAnswerError": "Antwort konnte nicht gefunden oder erstellt werden.",
       "notAbleToFindSurveyAnswerError": "Keine Antworten vorhanden.",
-      "notAbleToUpdateSurveyAnswerError": "Antwort konnte nicht aktualisiert werden",
+      "notAbleToUpdateSurveyAnswerError": "Antwort konnte nicht aktualisiert werden.",
       "notAbleToCreateSurveyAnswerError": "Antwort konnte nicht erstellt werden.",
       "notAbleToDeleteSurveyAnswerError": "Antwort konnte nicht gelöscht werden."
     }
@@ -536,13 +544,14 @@
       "settingsFlags": "Einstellungen",
       "isAnonymous": "Soll die Umfrage anonym sein?",
       "isPublic": "Soll die Umfrage öffentlich sein?",
-      "canSubmitMultipleAnswers": "Auch nach Teilnahme bleibt der Status auf offen"
+      "canSubmitMultipleAnswers": "Soll ein Teilnehmer die Umfrage mehrmals beantworten können?",
+      "canUpdateFormerAnswer": "Sollen Antworten nachträglich bearbeitbar sein?"
     },
     "sharePublicSurveyDialog": {
       "title": "Umfrage teilen",
       "description": "Hier kannst du den Link zur Umfrage kopieren und teilen.",
-      "savedToClipboard": "In die Zwischenablage kopiert",
-      "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden"
+      "savedToClipboard": "In die Zwischenablage kopiert.",
+      "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden."
     },
     "participateDialog": {
       "title": "An der Umfrage teilnehmen"
@@ -821,6 +830,7 @@
     "remember_me": "Merken"
   },
   "common": {
+    "answers": "Antworten",
     "error": "Fehler",
     "errors": {
       "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",

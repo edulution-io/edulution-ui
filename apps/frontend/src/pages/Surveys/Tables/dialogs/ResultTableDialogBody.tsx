@@ -27,7 +27,7 @@ const ResultTableDialogBody = () => {
   const { t } = useTranslation();
 
   useEffect((): void => {
-    if (selectedSurvey) {
+    if (selectedSurvey?.id) {
       void getSurveyResult(selectedSurvey.id);
     }
   }, [selectedSurvey]);

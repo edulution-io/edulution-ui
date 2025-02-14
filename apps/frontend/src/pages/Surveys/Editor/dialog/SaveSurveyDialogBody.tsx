@@ -22,14 +22,13 @@ import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import useGroupStore from '@/store/GroupStore';
 import TimeInput from '@/components/shared/TimeInput';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 
 interface SaveSurveyDialogBodyProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: UseFormReturn<any>;
+  form: UseFormReturn<SurveyDto>;
 }
 
-const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
-  const { form } = props;
+const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
   const { setValue, watch, getValues } = form;
   const { user } = useUserStore();
   const { searchAttendees } = useUserStore();
@@ -42,24 +41,25 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
 
   const onAttendeesSearch = async (value: string): Promise<AttendeeDto[]> => {
     const result = await searchAttendees(value);
-    if (!user) {
-      return result;
-    }
-    return result.filter((r) => r.username !== user.username);
+    return user ? result.filter((r) => r.username !== user.username) : result;
   };
 
   const handleGroupsChange = (groups: MultipleSelectorOptionSH[]) => {
-    setValue('invitedGroups', groups /* , { shouldValidate: true } */);
+    setValue('invitedGroups', groups, { shouldValidate: true });
   };
-
-  const expiresWatched = watch('expires') as Date;
-  const isAnonymousWatched = watch('isAnonymous') as boolean;
-  const isPublicWatched = watch('isPublic') as boolean;
-  const canSubmitMultipleAnswersWatched = watch('canSubmitMultipleAnswers') as boolean;
 
   const handleExpirationDateChange = (value: Date | undefined) => {
-    setValue('expires', value);
+    setValue('expires', value && value >= new Date() ? value : undefined);
   };
+
+  const checkboxOptions: { name: keyof SurveyDto; label: string }[] = [
+    { name: 'isAnonymous', label: 'surveys.saveDialog.isAnonymous' },
+    { name: 'isPublic', label: 'surveys.saveDialog.isPublic' },
+    { name: 'canSubmitMultipleAnswers', label: 'surveys.saveDialog.canSubmitMultipleAnswers' },
+    { name: 'canUpdateFormerAnswer', label: 'surveys.saveDialog.canUpdateFormerAnswer' },
+  ];
+
+  const selectedDate = watch('expires');
 
   return (
     <>
@@ -77,7 +77,7 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
         {t('common.date')}
         <div className="ml-2">
           <DatePicker
-            selected={expiresWatched}
+            selected={selectedDate ? new Date(selectedDate) : undefined}
             onSelect={handleExpirationDateChange}
           />
         </div>
@@ -90,33 +90,16 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
         />
       </div>
       <p className="text-m font-bold text-background">{t('surveys.saveDialog.settingsFlags')}</p>
-      <div className="flex items-center text-background">
+      {checkboxOptions.map(({ name, label }) => (
         <Checkbox
-          checked={isAnonymousWatched}
-          onCheckedChange={(value: boolean) => setValue('isAnonymous', value, { shouldValidate: true })}
-          aria-label={`${t('survey.isAnonymous')}`}
-          className="mr-2"
+          key={name}
+          label={t(label)}
+          checked={Boolean(watch(name))}
+          onCheckedChange={(value: boolean) => setValue(name, value, { shouldValidate: true })}
+          aria-label={t(`survey.${name}`)}
+          className="text-background"
         />
-        {t('surveys.saveDialog.isAnonymous')}
-      </div>
-      <div className="flex items-center text-background">
-        <Checkbox
-          checked={isPublicWatched}
-          onCheckedChange={(value: boolean) => setValue('isPublic', value, { shouldValidate: true })}
-          aria-label={`${t('survey.isPublic')}`}
-          className="mr-2"
-        />
-        {t('surveys.saveDialog.isPublic')}
-      </div>
-      <div className="flex items-center text-background">
-        <Checkbox
-          checked={canSubmitMultipleAnswersWatched}
-          onCheckedChange={(value: boolean) => setValue('canSubmitMultipleAnswers', value, { shouldValidate: true })}
-          aria-label={`${t('survey.canSubmitMultipleAnswers')}`}
-          className="mr-2"
-        />
-        {t('surveys.saveDialog.canSubmitMultipleAnswers')}
-      </div>
+      ))}
     </>
   );
 };

@@ -10,18 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { lazy, Suspense } from 'react';
+import React from 'react';
 import { Outlet } from 'react-router-dom';
 import APPS from '@libs/appconfig/constants/apps';
+import type TApps from '@libs/appconfig/types/appsType';
 import FramePlaceholder from '@/components/framing/FramePlaceholder';
 import { ConferencePage } from '@/pages/ConferencePage';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
-import type TApps from '@libs/appconfig/types/appsType';
-import CircleLoader from '@/components/ui/CircleLoader';
 import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
-
-const SurveysPage = lazy(() => import('@/pages/Surveys/SurveysPage'));
 
 const pages: Partial<Record<TApps, JSX.Element>> = {
   [APPS.CONFERENCES]: <ConferencePage />,
@@ -29,11 +26,6 @@ const pages: Partial<Record<TApps, JSX.Element>> = {
   [APPS.MAIL]: <FramePlaceholder />,
   [APPS.LINUXMUSTER]: <FramePlaceholder />,
   [APPS.WHITEBOARD]: <FramePlaceholder />,
-  [APPS.SURVEYS]: (
-    <Suspense fallback={<CircleLoader />}>
-      <SurveysPage />
-    </Suspense>
-  ),
   [APPS.DESKTOP_DEPLOYMENT]: <DesktopDeploymentPage />,
   [APPS.CLASS_MANAGEMENT]: <Outlet />,
   [APPS.BULLETIN_BOARD]: <BulletinBoardPage />,
