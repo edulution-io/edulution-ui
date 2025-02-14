@@ -25,12 +25,11 @@ import {
 } from '@libs/userSettings/constants/user-settings-endpoints';
 import getAuthRoutes from '@/router/routes/AuthRoutes';
 import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
-import { HomePage } from '@/pages/Home';
 import NativeAppPage from '@/pages/NativeAppPage/NativeAppPage';
 import UserSettingsMailsPage from '@/pages/UserSettings/Mails/UserSettingsMailsPage';
 import UserSettingsDetailsPage from '@/pages/UserSettings/Details/UserSettingsDetailsPage';
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
-import ONLY_OFFICE_ROUTE from '@libs/filesharing/constants/routes';
+import FILE_PREVIEW_ROUTE from '@libs/filesharing/constants/routes';
 import LanguageSettingsPage from '@/pages/UserSettings/Language/LanguageSettingsPage';
 import FileViewer from '@/pages/FileSharing/previews/FileViewer';
 import UserSettingsMobileAccess from '@/pages/UserSettings/MobileAccess/UserSettingsMobileAccess';
@@ -41,6 +40,7 @@ import getPublicRoutes from '@/router/routes/PublicRoutes';
 import getSettingsRoutes from './routes/SettingsRoutes';
 import getForwardedRoutes from './routes/ForwardedRoutes';
 import getEmbeddedRoutes from './routes/EmbeddedRoutes';
+import DashboardPage from '../pages/Dashboard/DashboardPage';
 
 const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
   createBrowserRouter(
@@ -52,7 +52,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
           <>
             <Route element={<EmptyLayout />}>
               <Route
-                path={ONLY_OFFICE_ROUTE}
+                path={FILE_PREVIEW_ROUTE}
                 element={<FileViewer editMode />}
               />
             </Route>
@@ -62,7 +62,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
             <Route element={<MainLayout />}>
               <Route
                 path="/"
-                element={<HomePage />}
+                element={<DashboardPage />}
               />
               <Route
                 path={USER_SETTINGS_PATH}

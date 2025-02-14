@@ -10,4 +10,5 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { default as HomePage } from './HomePage';
+// eslint-disable-next-line import/prefer-default-export
+export const SHOW_TOASTER_DURATION = 4000;

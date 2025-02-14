@@ -27,9 +27,9 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import DockerContainerTableColumns from '../../DockerIntegration/DockerContainerTableColumns';
 import CreateDockerContainerDialog from '../../DockerIntegration/CreateDockerContainerDialog';
 import useDockerApplicationStore from '../../DockerIntegration/useDockerApplicationStore';
-import VeyonConfigTableColumns from '../../classmgmt/VeyonConfigTableColumns';
-import useVeyonConfigTableStore from '../../classmgmt/useVeyonTableStore';
-import AddVeyonProxyDialog from '../../classmgmt/AddVeyonProxyDialog';
+import VeyonConfigTableColumns from '../../classmanagement/VeyonConfigTableColumns';
+import useVeyonConfigTableStore from '../../classmanagement/useVeyonTableStore';
+import AddVeyonProxyDialog from '../../classmanagement/AddVeyonProxyDialog';
 
 const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
   [APPS.BULLETIN_BOARD]: [
@@ -91,6 +91,22 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
       dialogBody: (
         <CreateDockerContainerDialog
           settingLocation={APPS.DESKTOP_DEPLOYMENT}
+          tableId={ExtendedOptionKeys.DOCKER_CONTAINER_TABLE}
+        />
+      ),
+      showAddButton: true,
+      filterKey: 'name',
+      filterPlaceHolderText: 'dockerOverview.filterPlaceHolderText',
+      type: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
+    }),
+  ],
+  [APPS.FILE_SHARING]: [
+    createAppConfigTableEntry<ContainerInfo, DockerContainerTableStore>({
+      columns: DockerContainerTableColumns,
+      useStore: useDockerApplicationStore,
+      dialogBody: (
+        <CreateDockerContainerDialog
+          settingLocation={APPS.FILE_SHARING}
           tableId={ExtendedOptionKeys.DOCKER_CONTAINER_TABLE}
         />
       ),

@@ -10,34 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type DockerCompose = {
-  services: {
-    [key: string]: {
-      image: string;
-      container_name?: string;
-      volumes?: string[];
-      environment?: string[];
-      restart?: string;
-      ports?: string[];
-      command?: string;
-      depends_on?: string[];
-      stdin_open?: boolean;
-      stop_grace_period?: string;
-    };
-  };
-  volumes?: {
-    [key: string]: {
-      driver?: string;
-      driver_opts?: {
-        [key: string]: string;
-      };
-    };
-  };
-  networks?: {
-    [key: string]: {
-      external?: boolean;
-    };
-  };
-};
-
-export default DockerCompose;
+export const VEYON_API_ENDPOINT = 'veyon';
+export const VEYON_API_FRAMEBUFFER_ENDPOINT = 'framebuffer';
+export const VEYON_API_FEATURE_ENDPOINT = 'feature';

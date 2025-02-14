@@ -17,7 +17,7 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
 import PrintPasswordsStore from '@libs/classManagement/types/store/printPasswordsStore';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
-import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import { HTTP_HEADERS, ResponseType } from '@libs/common/types/http-methods';
 
 const initialState = {
   isLoading: false,
@@ -38,7 +38,7 @@ const usePrintPasswordsStore = create<PrintPasswordsStore>((set) => ({
         },
         {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
-          responseType: 'blob',
+          responseType: ResponseType.BLOB,
         },
       );
 

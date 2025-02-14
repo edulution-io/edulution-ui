@@ -12,6 +12,7 @@
 
 import { type RowSelectionState } from '@tanstack/react-table';
 import { type ContainerCreateOptions, type ContainerInfo } from 'dockerode';
+import { type YAMLMap } from 'yaml';
 import type AppConfigTable from '@libs/bulletinBoard/types/appConfigTable';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
 import type DockerCompose from '@libs/docker/types/dockerCompose';
@@ -25,6 +26,7 @@ export interface DockerContainerTableStore extends AppConfigTable<ContainerInfo>
   error: string | null;
   eventSource: EventSource | null;
   dockerContainerConfig: DockerCompose | null;
+  traefikConfig: YAMLMap | null;
   setEventSource: () => void;
   getContainers: (applicationNames?: string[]) => Promise<ContainerInfo[]>;
   updateContainers: (containers: ContainerInfo[]) => void;
@@ -32,5 +34,6 @@ export interface DockerContainerTableStore extends AppConfigTable<ContainerInfo>
   runDockerCommand: (containerNames: string[], operation: TDockerCommands) => Promise<void>;
   deleteDockerContainer: (containerNames: string[]) => Promise<void>;
   getDockerContainerConfig: (applicationName: TApps, containerName: string) => Promise<DockerCompose>;
+  getTraefikConfig: (applicationName: TApps, containerName: string) => Promise<void>;
   reset: () => void;
 }

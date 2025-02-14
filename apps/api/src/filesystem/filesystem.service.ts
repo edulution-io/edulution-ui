@@ -11,7 +11,15 @@
  */
 
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { createWriteStream, existsSync, mkdirSync, promises as fsPromises, readFileSync, writeFileSync } from 'fs';
+import {
+  createWriteStream,
+  existsSync,
+  mkdirSync,
+  promises as fsPromises,
+  readFileSync,
+  writeFileSync,
+  unlinkSync,
+} from 'fs';
 import { dirname, extname, join } from 'path';
 import { createHash } from 'crypto';
 import { pipeline, Readable } from 'stream';
@@ -22,7 +30,6 @@ import { ResponseType } from '@libs/common/types/http-methods';
 import { firstValueFrom, from } from 'rxjs';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
-import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
 import CustomFile from '@libs/filesharing/types/customFile';
 import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
@@ -73,13 +80,13 @@ class FilesystemService {
     return join(directory, hashedFilename);
   }
 
-  static async retrieveAndSaveFile(filename: string, body: OnlyOfficeCallbackData): Promise<CustomFile | undefined> {
-    if ((body.status !== 2 && body.status !== 4) || !body.url) {
-      return undefined;
+  static async retrieveAndSaveFile(filename: string, url: string): Promise<CustomFile | undefined> {
+    if (!url) {
+      throw new CustomHttpException(FileSharingErrorMessage.MissingCallbackURL, HttpStatus.BAD_REQUEST);
     }
 
     try {
-      const response = await axios.get<ArrayBuffer>(body.url, { responseType: 'arraybuffer' });
+      const response = await axios.get<ArrayBuffer>(url, { responseType: 'arraybuffer' });
       const filePath = join(PUBLIC_DOWNLOADS_PATH, filename);
       mkdirSync(dirname(filePath), { recursive: true });
       writeFileSync(filePath, new Uint8Array(response.data));
@@ -144,6 +151,13 @@ class FilesystemService {
       } as WebdavStatusReplay;
     } catch (error) {
       throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+    }
+  }
+
+  static checkIfFileExistAndDelete(filePath: string) {
+    if (existsSync(filePath)) {
+      unlinkSync(filePath);
+      Logger.log(`${filePath} deleted.`, FilesystemService.name);
     }
   }
 }

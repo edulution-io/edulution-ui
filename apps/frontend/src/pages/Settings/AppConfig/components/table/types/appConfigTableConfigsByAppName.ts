@@ -27,5 +27,6 @@ type AppConfigTableConfigsByAppName = {
   )[];
   [APPS.MAIL]: AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>[];
   [APPS.DESKTOP_DEPLOYMENT]: AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>[];
+  [APPS.FILE_SHARING]: AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>[];
 };
 export default AppConfigTableConfigsByAppName;

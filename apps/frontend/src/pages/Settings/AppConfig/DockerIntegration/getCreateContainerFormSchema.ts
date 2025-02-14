@@ -10,34 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type DockerCompose = {
-  services: {
-    [key: string]: {
-      image: string;
-      container_name?: string;
-      volumes?: string[];
-      environment?: string[];
-      restart?: string;
-      ports?: string[];
-      command?: string;
-      depends_on?: string[];
-      stdin_open?: boolean;
-      stop_grace_period?: string;
-    };
-  };
-  volumes?: {
-    [key: string]: {
-      driver?: string;
-      driver_opts?: {
-        [key: string]: string;
-      };
-    };
-  };
-  networks?: {
-    [key: string]: {
-      external?: boolean;
-    };
-  };
-};
+import { z } from 'zod';
+import { TFunction } from 'i18next';
 
-export default DockerCompose;
+const fqdnRegex = /^(?=.{1,253}$)(?:(?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.)+[a-zA-Z]{2,}$/;
+
+const getCreateContainerFormSchema = (t: TFunction<'translation', undefined>, showInputForm: boolean) =>
+  showInputForm
+    ? z.object({
+        EDULUTION_MAIL_HOSTNAME: z.string({ message: t('common.required') }).refine((val) => fqdnRegex.test(val), {
+          message: t('common.invalid_fqdn'),
+        }),
+      })
+    : z.object({});
+
+export default getCreateContainerFormSchema;

@@ -11,6 +11,7 @@
  */
 
 const APPS = {
+  BULLETIN_BOARD: 'bulletinboard',
   TICKET_SYSTEM: 'ticketsystem',
   MAIL: 'mail',
   CHAT: 'chat',
@@ -38,7 +39,6 @@ const APPS = {
   WHITEBOARD: 'whiteboard',
   SETTINGS: 'settings',
   USER_SETTINGS: 'usersettings',
-  BULLETIN_BOARD: 'bulletinboard',
   NONE: 'none',
 } as const;
 

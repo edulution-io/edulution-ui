@@ -17,7 +17,7 @@ import { UseFormReturn } from 'react-hook-form';
 import FormField from '@/components/shared/FormField';
 import { DropdownSelect } from '@/components';
 import WysiwygEditor from '@/components/shared/WysiwygEditor';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import { BULLETIN_BOARD_ATTACHMENT_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
 import DialogSwitch from '@/components/shared/DialogSwitch';
 import DateAndTimeInput from '@/components/shared/DateAndTimeInput';
@@ -29,7 +29,7 @@ interface CreateOrUpdateBulletinDialogBodyProps {
 
 const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialogBodyProps) => {
   const { t } = useTranslation();
-  const { uploadAttachment, categories, isGetCategoriesLoading } = useBulletinBoardEditorialStore();
+  const { uploadAttachment, categoriesWithEditPermission, isGetCategoriesLoading } = useBulletinBoardEditorialStore();
   const { setValue, watch, formState } = form;
 
   const isVisibilityDateSet = !!watch('isVisibleStartDate') || !!watch('isVisibleEndDate');
@@ -47,7 +47,10 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
   }, [isPermanentlyActive]);
 
   const handleCategoryChange = (categoryName: string) => {
-    form.setValue('category', categories.find((c) => c.name === categoryName) || categories[0]);
+    form.setValue(
+      'category',
+      categoriesWithEditPermission.find((c) => c.name === categoryName) || categoriesWithEditPermission[0],
+    );
   };
 
   const handleUpload = async (file: File): Promise<string> => {
@@ -70,7 +73,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
         <div>
           <div className="mb-1 font-bold">{t('bulletinboard.category')}</div>
           <DropdownSelect
-            options={categories}
+            options={categoriesWithEditPermission}
             selectedVal={isGetCategoriesLoading ? t('common.loading') : watch('category')?.name}
             handleChange={handleCategoryChange}
           />

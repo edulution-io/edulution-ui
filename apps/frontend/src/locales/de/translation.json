@@ -9,6 +9,7 @@
   "previewImage": "Bildvorschau",
   "bulletinboard": {
     "settings": "Einstellungen",
+    "noBulletinsToShow": "Aktuell gibt es keine Mitteilungen anzuzeigen, schaue am besten später noch mal vorbei!",
     "categoryIsRequired": "Es muss eine Kategorie ausgewählt werden",
     "createdFrom": "von {{ createdBy }}, aktualisiert am {{ lastUpdated }}",
     "createdFromAndUpdatedBy": "von {{ createdBy }}, aktualisiert von {{ lastUpdatedBy }} am {{ lastUpdated }}",
@@ -21,7 +22,7 @@
     "activeFrom": "Aktiv von",
     "activeUntil": "Aktiv bis",
     "appTitle": "Schwarzes Brett",
-    "description": "Verwalte deine Mitteilungen",
+    "description": "Hier findest du deine aktuelle Mitteilungen",
     "filterPlaceHolderText": "Suche nach Kategoriename",
     "sidebar": "Schwarzes Brett",
     "newCategorie": "Neue Kategorie",
@@ -296,7 +297,8 @@
       "DuplicateFailed": "Kopieren fehlgeschlagen",
       "AppNotProperlyConfigured": "OnlyOffice ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator.",
       "CollectingFailed": "Einasmmeln der Dateien fehlgeschlagen",
-      "SharingFailed": "Austeilen der Dateien fehlgeschlagen"
+      "SharingFailed": "Austeilen der Dateien fehlgeschlagen",
+      "MissingCallbackURL": "Fehlende Callback-URL"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
@@ -594,7 +596,8 @@
       "GuacamoleNotResponding": "RDP-Dienst nicht verfügbar.",
       "GuacamoleUserNotFound": "Nutzername oder Passwort konnte nicht gefunden.",
       "LmnVdiApiNotResponding": "Linuxmuster VDI-Dienst antwortet nicht.",
-      "SessionNotFound": "Session nicht gefunden."
+      "SessionNotFound": "Session nicht gefunden.",
+      "AppNotProperlyConfigured": "Guacamole ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator."
     }
   },
   "wlan": {
@@ -666,7 +669,7 @@
       "aichat": "Hier kannst du alle Einstellungen vornehmen.",
       "linuxmuster": "Hier kannst du alle Einstellungen vornehmen.",
       "whiteboard": "Hier kannst du alle Einstellungen vornehmen.",
-      "bulletinboard": "Konfiguriere hier die Nutzergruppen ,die Zugriff auf die App Schwarzes Brett Editor haben. Über die Kategorieren kann gesteuert werden, bei welchen Nutzern und Gruppen das Schwarze Brett mit den Mitteilungen statt dem klassischen Dashboard angezeigt wird."
+      "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Schwarzes Brett haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden."
     },
     "appconfig": {
       "sections": {
@@ -680,7 +683,7 @@
         },
         "bulletinBoard": {
           "title": "Kategorien",
-          "description": "Füge neue Kategorien hinzu oder bearbeite existierende um zu steuern für welche Nutzer und Gruppen das Schwarze Brett statt dem klassischen Dashboard angezeigt werden soll."
+          "description": "Füge neue Kategorien hinzu oder bearbeite existierende, um zu steuern, für welche Nutzer und Gruppen Mitteilungen angezeigt werden sollen."
         },
         "general": {
           "title": "Allgemein",
@@ -696,8 +699,10 @@
         },
         "veyon": {
           "title": "Veyon Proxy",
-          "description": "",
-          "filterPlaceHolderText": "Suche nach Proxy-Name"
+          "description": "Hier können die Veyon WebAPI-Proxys konfiguriert werden.",
+          "filterPlaceHolderText": "Suche nach Proxy-Name",
+          "invalidCidrFormat": "Ungültige CIDR-Notation",
+          "invalidUrlFormat": "Ungültige URL"
         }
       },
       "update": {
@@ -837,6 +842,7 @@
     "checking": "Prüfen",
     "cancel": "Abbrechen",
     "columns": "Spalten",
+    "table": "Tabelle",
     "copy": {
       "success": "Erfolgreich in Zwischenablage kopiert",
       "error": "In Zwischenablage kopieren fehlgeschlagen",
@@ -916,7 +922,10 @@
     "update": "Update",
     "progress": "Fortschritt...",
     "pressInstall": "Drücke Installieren um zu Starten.",
-    "disabled": "Deaktiviert"
+    "disabled": "Deaktiviert",
+    "invalid_url": "Ungültige URL",
+    "invalid_fqdn": "Ungültiger FQDN. Bitte nur den Hostnamen angeben.",
+    "required": "Erforderlich"
   },
   "form": {
     "path": "Link",
@@ -934,7 +943,9 @@
     "proxyConfigDescription": "YAML-Editor für die Konfiguration des Traefik-Proxy.",
     "expertMode": "Expertenmodus",
     "proxyPath": "Proxy Pfad",
+    "proxyPathPlaceholder": "z.B. SOGo",
     "proxyDestination": "Zielhost",
+    "proxyDestinationPlaceholder": "z.B. http://localhost:1234/",
     "stripPrefix": "Prefix entfernen"
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
@@ -971,7 +982,8 @@
     "noDataAvailable": "Keine Daten verfügbar"
   },
   "loadingIndicator": {
-    "message": "Bitte warten..."
+    "message": "Bitte warten...",
+    "previewLoading": "Vorschau laden"
   },
   "search": {
     "type-to-search": "Tippen um zu suchen",
@@ -1152,11 +1164,12 @@
     "image": "Bildvorschau",
     "failedToLoadImage": "Bild konnte nicht geladen werden"
   },
-  "dockerApplication": {
-    "title": "Docker-Anwendung",
+  "containerApplication": {
     "dialogTitle": "{{applicationName}}-Plugins installieren",
-    "mailDescription": "Falls ein eigener Mailserver betrieben werden soll, kann hier das Setup für Mailcow durchgeführt werden.",
-    "classmanagementDescription": "Falls Veyon im Schulnetz eingesetzt wird, kann hier das Setup für den Veyon-WebAPI-Proxy durchgeführt werden."
+    "EDULUTION_MAIL_HOSTNAME": {
+      "title": "Hostname",
+      "description": "Hostname des Mailservers. Dieser kann von der edulution Domain abweichen."
+    }
   },
   "dockerOverview": {
     "title": "Container-Übersicht",
@@ -1196,6 +1209,14 @@
       "paused": "pausiert",
       "exited": "gestoppt",
       "dead": "tot"
+    }
+  },
+  "veyon": {
+    "errors": {
+      "AppNotProperlyConfigured": "Veyon ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
+      "VeyonAuthFailed": "Veyon-Authentifizierung fehlgeschlagen",
+      "GetUserFailed": "Benutzer konnte nicht abgerufen werden",
+      "VeyonApiNotReachable": "Der externen Veyon-Server ist nicht erreichbar"
     }
   }
 }

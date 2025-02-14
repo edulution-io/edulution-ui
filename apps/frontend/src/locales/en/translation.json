@@ -9,6 +9,7 @@
   "previewImage": "Image preview",
   "bulletinboard": {
     "settings": "Settings",
+    "noBulletinsToShow": "There are currently no messages to display, so check back later!",
     "categoryIsRequired": "Selecting a category is required",
     "createdFrom": "by {{ createdBy }}, updated on {{ lastUpdated }}",
     "createdFromAndUpdatedBy": "by {{ createdBy }}, updated by {{ lastUpdatedBy }} on {{ lastUpdated }}",
@@ -21,7 +22,7 @@
     "activeFrom": "Active from",
     "activeUntil": "Active until",
     "appTitle": "Bulletin Board",
-    "description": "Manage your bulletins",
+    "description": "Here you find your latest bulletins",
     "sidebar": "Bulletin Board",
     "newCategorie": "New category",
     "category": "Category",
@@ -297,7 +298,8 @@
       "DuplicateFailed": "Copy failed",
       "AppNotProperlyConfigured": "OnlyOffice is not properly configured, contact your system administrator.",
       "CollectingFailed": "Collecting files failed",
-      "SharingFailed": "Sharing files failed"
+      "SharingFailed": "Sharing files failed",
+      "MissingCallbackURL": "Missing callback URL"
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
@@ -593,7 +595,8 @@
       "GuacamoleNotResponding": "RDP service not available.",
       "GuacamoleUserNotFound": "Username or password could not be found.",
       "LmnVdiApiNotResponding": "Linuxmuster VDI service does not respond.",
-      "SessionNotFound": "Session not found."
+      "SessionNotFound": "Session not found.",
+      "AppNotProperlyConfigured": "Guacamole is not properly configured, contact your system administrator."
     }
   },
   "wlan": {
@@ -665,7 +668,7 @@
       "aichat": "Here you can make all the settings.",
       "linuxmuster": "Here you can make all the settings.",
       "whiteboard": "Here you can make all the settings.",
-      "bulletinboard": "Configure the user groups that have access to the Blackboard Editor app here. The categories can be used to control for which users and groups the notice board with the messages is displayed instead of the classic dashboard."
+      "bulletinboard": "Configure the user groups that have access to the Bulletin Board app here. The categories can be used to control which messages are displayed to users."
     },
     "appconfig": {
       "sections": {
@@ -679,7 +682,7 @@
         },
         "bulletinBoard": {
           "title": "Categories",
-          "description": "Add new categories or edit existing ones to control for which users and groups the bulletin board should be displayed instead of the classic dashboard."
+          "description": "Add new categories or edit existing ones to control for which users and groups notifications should be displayed."
         },
         "general": {
           "title": "General",
@@ -695,8 +698,10 @@
         },
         "veyon": {
           "title": "Veyon Proxy",
-          "description": "",
-          "filterPlaceHolderText": "Search for proxy"
+          "description": "Here you can configure the Veyon WebAPI proxies.",
+          "filterPlaceHolderText": "Search for proxy",
+          "invalidCidrFormat": "Invalid CIDR notation",
+          "invalidUrlFormat": "Invalid URL"
         }
       },
       "update": {
@@ -837,6 +842,7 @@
     "options": "Options",
     "cancel": "Cancel",
     "columns": "Columns",
+    "table": "Table",
     "copy": {
       "success": "Successfully copied to clipboard",
       "error": "Copy to clipboard failed",
@@ -916,7 +922,10 @@
     "update": "Update",
     "progress": "Progress...",
     "pressInstall": "Press Install to start",
-    "disabled": "Disabled"
+    "disabled": "Disabled",
+    "invalid_url": "Invalid URL",
+    "invalid_fqdn": "Invalid FQDN. Please only enter the hostname.",
+    "required": "Required"
   },
   "form": {
     "path": "Path",
@@ -934,7 +943,9 @@
     "proxyConfigDescription": "YAML Editor for the Traefik proxy configuration",
     "expertMode": "Expert mode",
     "proxyPath": "Proxy path",
+    "proxyPathPlaceholder": "e.g. SOGo",
     "proxyDestination": "Proxy destination",
+    "proxyDestinationPlaceholder": "e.g. http://localhost:1234/",
     "stripPrefix": "Strip prefix"
   },
   "fileOperationSuccessful": "File operation successful",
@@ -970,7 +981,8 @@
     "noDataAvailable": "No data available"
   },
   "loadingIndicator": {
-    "message": "Please wait..."
+    "message": "Please wait...",
+    "previewLoading": "Preview loading"
   },
   "search": {
     "type-to-search": "Type to search",
@@ -1152,11 +1164,12 @@
     "image": "Image preview",
     "failedToLoadImage": "Failed to load image"
   },
-  "dockerApplication": {
-    "title": "Docker Application",
+  "containerApplication": {
     "dialogTitle": "{{applicationName}}-Plugins Installer",
-    "mailDescription": "If you want to operate your own mail server, you can carry out the setup for Mailcow here.",
-    "classmanagementDescription": "If you use Veyon in your school network, you can carry out the setup for the Veyon-WebAPI-Proxy here."
+    "EDULUTION_MAIL_HOSTNAME": {
+      "title": "Hostname",
+      "description": "Hostname of the mail server. This could be different from the edulution domain name."
+    }
   },
   "dockerOverview": {
     "title": "Container Overview",
@@ -1196,6 +1209,14 @@
       "paused": "paused",
       "exited": "exited",
       "dead": "dead"
+    }
+  },
+  "veyon": {
+    "errors": {
+      "AppNotProperlyConfigured": "Veyon is not properly configured, contact the system administrator.",
+      "VeyonAuthFailed": "Veyon authentication failed.",
+      "GetUserFailed": "User could not be retrieved.",
+      "VeyonApiNotReachable": "The external Veyon server is not reachable."
     }
   }
 }

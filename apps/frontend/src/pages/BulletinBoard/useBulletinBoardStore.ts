@@ -22,17 +22,22 @@ export interface BulletinBoardTableStore {
   error: Error | null;
   getBulletinsByCategories: () => Promise<void>;
   bulletinsByCategories: BulletinsByCategories | null;
+  isEditorialModeEnabled: boolean;
+  setIsEditorialModeEnabled: (isEditorialModeEnabled: boolean) => void;
 }
 
 const initialValues = {
   isLoading: false,
   error: null,
   bulletinsByCategories: null,
+  isEditorialModeEnabled: false,
 };
 
 const useBulletinBoardStore = create<BulletinBoardTableStore>((set, get) => ({
   ...initialValues,
   reset: () => set(initialValues),
+
+  setIsEditorialModeEnabled: (isEditorialModeEnabled) => set({ isEditorialModeEnabled }),
 
   getBulletinsByCategories: async (isLoading = true) => {
     if (get().isLoading) return;

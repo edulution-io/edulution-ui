@@ -31,7 +31,7 @@ const UserArea = () => {
   const { user } = useUserStore();
   const { member } = useLessonStore();
   const [selectedMember, setSelectedMember] = useState<UserLmnInfo[]>([]);
-  const isMemberSelected = selectedMember.length;
+  const selectedMemberCount = selectedMember.length;
 
   const isTeacherInSameClass = useMemo(
     () =>
@@ -53,7 +53,7 @@ const UserArea = () => {
   const selectableMembers = member.filter((m) => m.sophomorixRole === SOPHOMORIX_STUDENT && isTeacherInSameSchool(m));
 
   const getSelectedStudents = () => {
-    if (isMemberSelected) {
+    if (selectedMemberCount) {
       return selectedMember.filter((m) => m.sophomorixRole === SOPHOMORIX_STUDENT);
     }
     return selectableMembers;
@@ -68,8 +68,10 @@ const UserArea = () => {
   };
 
   const pageBarsHeight =
-    useElementHeight([FLOATING_BUTTONS_BAR_ID, LESSON_SESSION_HEADER_ID, FILTER_BAR_ID, FOOTER_ID], isMemberSelected) +
-    30;
+    useElementHeight(
+      [FLOATING_BUTTONS_BAR_ID, LESSON_SESSION_HEADER_ID, FILTER_BAR_ID, FOOTER_ID],
+      selectedMemberCount,
+    ) + 30;
 
   return (
     <>
@@ -91,7 +93,7 @@ const UserArea = () => {
 
         <h3 className="mb-2 flex flex-grow justify-center text-center text-lg text-background md:text-xl">
           {member.length} {t('classmanagement.usersInThisSession')}{' '}
-          {isMemberSelected ? `(${isMemberSelected} ${t('common.selected')})` : null}
+          {selectedMemberCount ? `(${selectedMemberCount} ${t('common.selected')})` : null}
         </h3>
       </div>
       <div
@@ -109,7 +111,10 @@ const UserArea = () => {
           />
         ))}
       </div>
-      {isMemberSelected ? <LessonFloatingButtonsBar students={getSelectedStudents()} /> : null}
+      <LessonFloatingButtonsBar
+        students={getSelectedStudents()}
+        isMemberSelected={!!selectedMemberCount}
+      />
     </>
   );
 };

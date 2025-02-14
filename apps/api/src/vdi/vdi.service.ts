@@ -10,6 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
+import axios, { AxiosInstance } from 'axios';
 import {
   RDPConnection,
   VdiErrorMessages,
@@ -22,31 +25,63 @@ import {
   VirtualMachines,
 } from '@libs/desktopdeployment/types';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import { HttpStatus, Injectable } from '@nestjs/common';
-import axios, { AxiosInstance } from 'axios';
+import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
+import APPS from '@libs/appconfig/constants/apps';
 import UsersService from '../users/users.service';
+import AppConfigService from '../appconfig/appconfig.service';
 
-const { LMN_VDI_API_SECRET, LMN_VDI_API_URL, GUACAMOLE_API_URL, GUACAMOLE_API_PASSWORD, GUACAMOLE_API_USER } =
+const { LMN_VDI_API_SECRET, LMN_VDI_API_URL, EDULUTION_GUACAMOLE_ADMIN_PASSWORD, EDULUTION_GUACAMOLE_ADMIN_USER } =
   process.env;
 
 @Injectable()
-class VdiService {
+class VdiService implements OnModuleInit {
   private lmnVdiApi: AxiosInstance;
 
   private guacamoleApi: AxiosInstance;
 
   private vdiId = '';
 
-  constructor(private usersService: UsersService) {
-    this.guacamoleApi = axios.create({
-      baseURL: `${GUACAMOLE_API_URL}/guacamole/api`,
-    });
+  constructor(
+    private usersService: UsersService,
+    private readonly appConfigService: AppConfigService,
+  ) {
     this.lmnVdiApi = axios.create({
       baseURL: `${LMN_VDI_API_URL}/api`,
       headers: {
         'LMN-API-Secret': LMN_VDI_API_SECRET,
       },
     });
+  }
+
+  onModuleInit() {
+    void this.updateVdiConfig();
+  }
+
+  @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
+  async updateVdiConfig() {
+    try {
+      const appConfig = await this.appConfigService.getAppConfigByName(APPS.DESKTOP_DEPLOYMENT).catch((error) => {
+        if (error instanceof HttpException) {
+          return null;
+        }
+        throw error;
+      });
+
+      if (!appConfig) {
+        return;
+      }
+
+      const guacamoleUrl = appConfig.options.url;
+      if (!guacamoleUrl) {
+        return;
+      }
+
+      this.guacamoleApi = axios.create({
+        baseURL: `${guacamoleUrl}/guacamole/api`,
+      });
+    } catch (error) {
+      throw new CustomHttpException(VdiErrorMessages.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   static createRDPConnection(
@@ -76,7 +111,7 @@ class VdiService {
     try {
       const response = await this.guacamoleApi.post<GuacamoleDto>(
         '/tokens',
-        { username: GUACAMOLE_API_USER, password: GUACAMOLE_API_PASSWORD },
+        { username: EDULUTION_GUACAMOLE_ADMIN_USER, password: EDULUTION_GUACAMOLE_ADMIN_PASSWORD },
         {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         },
