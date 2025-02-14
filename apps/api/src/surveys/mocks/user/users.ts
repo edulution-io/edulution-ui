@@ -13,34 +13,34 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { firstUsername, secondUsername } from './usernames';
 
+// export const firstMockUser = {
+//   email: 'first@example.com',
+//   username: firstUsername,
+//   roles: ['user'],
+//   mfaEnabled: false,
+//   isTotpSet: false,
+// };
+//
+// export const secondMockUser = {
+//   email: 'second@example.com',
+//   username: secondUsername,
+//   roles: ['user'],
+//   mfaEnabled: false,
+//   isTotpSet: false,
+// };
+
 export const firstMockUser = {
-  email: 'first@example.com',
-  username: firstUsername,
-  roles: ['user'],
-  mfaEnabled: false,
-  isTotpSet: false,
-};
-
-export const secondMockUser = {
-  email: 'second@example.com',
-  username: secondUsername,
-  roles: ['user'],
-  mfaEnabled: false,
-  isTotpSet: false,
-};
-
-export const firstParticipant = {
   firstName: 'first',
   lastName: 'participant',
-  username: 'first-participant',
+  username: firstUsername,
   value: 'first-participant',
   label: 'first participant',
 };
 
-export const secondParticipant = {
+export const secondMockUser = {
   firstName: 'second',
   lastName: 'participant',
-  username: 'second-participant',
+  username: secondUsername,
   value: 'second-participant',
   label: 'second participant',
 };

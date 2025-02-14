@@ -34,6 +34,7 @@ import {
   answeredSurvey03,
   createdSurvey01,
   firstMockJWTUser,
+  firstMockUser,
   firstUsername,
   firstUsersMockedAnswerForAnsweredSurveys01,
   firstUsersSurveyAnswerAnsweredSurvey01,
@@ -43,6 +44,7 @@ import {
   openSurvey02,
   publicSurvey01,
   saveNoAnsweredSurvey01,
+  secondMockUser,
   secondUsername,
   secondUsersSurveyAnswerAnsweredSurvey01,
   surveyAnswerAnsweredSurvey02,
@@ -52,6 +54,8 @@ import {
 } from './mocks';
 import UserConnections from '../types/userConnections';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';
+import GroupsService from '../groups/groups.service';
+import mockGroupsService from '../groups/groups.service.mock';
 
 const mockSseConnections: UserConnections = new Map();
 
@@ -72,6 +76,7 @@ describe(SurveysController.name, () => {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
         },
+        { provide: GroupsService, useValue: mockGroupsService },
         SurveyAnswersService,
         {
           provide: getModelToken(SurveyAnswer.name),
@@ -281,6 +286,12 @@ describe(SurveysController.name, () => {
   });
 
   describe('answerSurvey', () => {
+    beforeEach(() => {
+      jest
+        .spyOn(mockGroupsService, 'getInvitedMembers')
+        .mockResolvedValue([firstMockUser.username, secondMockUser.username]);
+    });
+
     it('should call the addAnswer() function of the surveyAnswerService', async () => {
       jest.spyOn(surveyAnswerService, 'addAnswer');
 

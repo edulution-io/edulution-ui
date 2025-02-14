@@ -187,6 +187,7 @@ class SurveyAnswersService {
 
     const isCreator = creator?.username === username;
     const invitedMembers = await this.groupsService.getInvitedMembers(survey.invitedGroups, survey.invitedAttendees);
+
     const isAttendee = invitedMembers.includes(username);
 
     const canParticipate = isCreator || isAttendee;
