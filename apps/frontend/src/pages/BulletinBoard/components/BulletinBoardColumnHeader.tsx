@@ -21,7 +21,7 @@ import { Card } from '@/components/shared/Card';
 import { DropdownMenuItemType } from '@libs/ui/types/dropdownMenuItemType';
 import { useNavigate } from 'react-router-dom';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import useLdapGroups from '@/hooks/useLdapGroups';
 
@@ -52,7 +52,7 @@ const BulletinBoardColumnHeader = ({
         { label: 'categorySeparator', isSeparator: true },
         {
           label: t('bulletinboard.manageCategories'),
-          onClick: () => navigate(`${SETTINGS_PATH}/${APPS.BULLETIN_BOARD}`),
+          onClick: () => navigate(`/${SETTINGS_PATH}/${APPS.BULLETIN_BOARD}`),
         },
       );
     }
@@ -62,7 +62,7 @@ const BulletinBoardColumnHeader = ({
   return (
     <Card
       variant="security"
-      className="sticky mx-0 mb-4 flex min-h-[44px] items-center justify-between overflow-hidden rounded-lg py-1 pl-3 pr-2 opacity-90"
+      className="sticky mx-0 mb-4 flex h-[50px] min-h-[50px] items-center justify-between overflow-hidden rounded-lg py-1 pl-3 pr-2 opacity-90"
     >
       <h4 className="flex-1 truncate text-background">{category.name}</h4>
       <DropdownMenu

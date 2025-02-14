@@ -9,6 +9,7 @@
   "previewImage": "Image preview",
   "bulletinboard": {
     "settings": "Settings",
+    "noBulletinsToShow": "There are currently no messages to display, so check back later!",
     "categoryIsRequired": "Selecting a category is required",
     "createdFrom": "by {{ createdBy }}, updated on {{ lastUpdated }}",
     "createdFromAndUpdatedBy": "by {{ createdBy }}, updated by {{ lastUpdatedBy }} on {{ lastUpdated }}",
@@ -21,7 +22,7 @@
     "activeFrom": "Active from",
     "activeUntil": "Active until",
     "appTitle": "Bulletin Board",
-    "description": "Manage your bulletins",
+    "description": "Here you find your latest bulletins",
     "sidebar": "Bulletin Board",
     "newCategorie": "New category",
     "category": "Category",
@@ -658,7 +659,7 @@
       "aichat": "Here you can make all the settings.",
       "linuxmuster": "Here you can make all the settings.",
       "whiteboard": "Here you can make all the settings.",
-      "bulletinboard": "Configure the user groups that have access to the Blackboard Editor app here. The categories can be used to control for which users and groups the notice board with the messages is displayed instead of the classic dashboard."
+      "bulletinboard": "Configure the user groups that have access to the Bulletin Board app here. The categories can be used to control which messages are displayed to users."
     },
     "appconfig": {
       "sections": {
@@ -672,7 +673,7 @@
         },
         "bulletinBoard": {
           "title": "Categories",
-          "description": "Add new categories or edit existing ones to control for which users and groups the bulletin board should be displayed instead of the classic dashboard."
+          "description": "Add new categories or edit existing ones to control for which users and groups notifications should be displayed."
         },
         "general": {
           "title": "General",
@@ -831,6 +832,7 @@
     "options": "Options",
     "cancel": "Cancel",
     "columns": "Columns",
+    "table": "Table",
     "copy": {
       "success": "Successfully copied to clipboard",
       "error": "Copy to clipboard failed",

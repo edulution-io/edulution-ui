@@ -17,7 +17,7 @@ import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { IoEyeSharp } from 'react-icons/io5';
 import { FaEyeSlash } from 'react-icons/fa';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import { FaClock } from 'react-icons/fa6';
 
 const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [

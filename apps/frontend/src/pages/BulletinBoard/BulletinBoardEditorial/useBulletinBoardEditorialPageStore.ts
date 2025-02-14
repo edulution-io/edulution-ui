@@ -46,15 +46,15 @@ interface BulletinBoardEditorialStore {
   isDialogLoading: boolean;
   uploadAttachment: (attachment: File) => Promise<string>;
   isAttachmentUploadLoading: boolean;
-  categories: BulletinCategoryResponseDto[];
-  getCategories: () => Promise<void>;
+  categoriesWithEditPermission: BulletinCategoryResponseDto[];
+  getCategoriesWithEditPermission: () => Promise<void>;
   isGetCategoriesLoading: boolean;
   reset: () => void;
 }
 
 const initialValues = {
   bulletins: [],
-  categories: [],
+  categoriesWithEditPermission: [],
   selectedBulletinToEdit: null,
   isLoading: false,
   error: null,
@@ -74,6 +74,8 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
   setSelectedBulletinToEdit: (selectedBulletinToEdit) => set({ selectedBulletinToEdit }),
 
   getBulletins: async (isLoading = true) => {
+    if (get().isLoading) return;
+
     set({ isLoading, error: null });
     try {
       const { data } = await eduApi.get<BulletinResponseDto[]>(BULLETIN_BOARD_BULLETINS_EDU_API_ENDPOINT);
@@ -153,7 +155,7 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
     }
   },
 
-  getCategories: async () => {
+  getCategoriesWithEditPermission: async () => {
     if (get().isGetCategoriesLoading) return;
 
     set({ error: null, isGetCategoriesLoading: true });
@@ -161,7 +163,7 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
       const response = await eduApi.get<BulletinCategoryResponseDto[]>(
         `${BULLETIN_CATEGORY_WITH_PERMISSION_EDU_API_ENDPOINT}${BulletinCategoryPermission.EDIT}`,
       );
-      set({ categories: response.data?.sort((a, b) => a.position - b.position) });
+      set({ categoriesWithEditPermission: response.data?.sort((a, b) => a.position - b.position) });
     } catch (error) {
       handleApiError(error, set);
     } finally {

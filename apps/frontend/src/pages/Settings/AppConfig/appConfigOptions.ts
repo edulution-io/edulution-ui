@@ -50,6 +50,15 @@ import CLASS_MANAGEMENT_EXTENDED_OPTIONS from '@libs/appconfig/constants/extende
 
 export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
+    id: APPS.BULLETIN_BOARD,
+    icon: BulletinBoardIcon,
+    color: 'bg-ciDarkBlue',
+    isNativeApp: true,
+    extendedOptions: {
+      [AppConfigSectionsKeys.bulletinBoard]: BULLETIN_BOARD_EXTENDED_OPTIONS,
+    },
+  },
+  {
     id: APPS.TICKET_SYSTEM,
     icon: TicketSystemIcon,
     color: 'bg-ciDarkBlue',
@@ -191,15 +200,6 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciDarkBlue',
     options: ['url', 'proxyConfig'],
     isNativeApp: true,
-  },
-  {
-    id: APPS.BULLETIN_BOARD,
-    icon: BulletinBoardIcon,
-    color: 'bg-ciDarkBlue',
-    isNativeApp: true,
-    extendedOptions: {
-      [AppConfigSectionsKeys.bulletinBoard]: BULLETIN_BOARD_EXTENDED_OPTIONS,
-    },
   },
 ];
 
