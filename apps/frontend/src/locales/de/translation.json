@@ -88,7 +88,9 @@
     }
   },
   "appstore": {
-    "title": "App-Store"
+    "title": "App-Store",
+    "description": "Hier kannst du edulution.io Apps hinzufügen.",
+    "chooseIcon": "Icon auswählen"
   },
   "forwarding": {
     "sidebar": "Weiterleitung"

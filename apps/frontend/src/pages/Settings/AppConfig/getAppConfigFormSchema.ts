@@ -12,18 +12,15 @@
 
 import { z } from 'zod';
 import { TFunction } from 'i18next';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import APPS from '@libs/appconfig/constants/apps';
 import TApps from '@libs/appconfig/types/appsType';
 // import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 
-const appIntegrationEnum = z.enum(Object.values(APP_INTEGRATION_VARIANT) as [string, ...string[]]);
 const forbiddenRouts = [...Object.values(APPS), 'auth', 'edu-api'];
 
 const getAppConfigFormSchema = (t: TFunction<'translation', undefined>) =>
   z.record(
     z.object({
-      appType: appIntegrationEnum,
       accessGroups: z.array(z.object({})).optional(),
       options: z
         .object({

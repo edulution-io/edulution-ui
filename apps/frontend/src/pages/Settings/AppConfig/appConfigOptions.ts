@@ -33,12 +33,13 @@ import BULLETIN_BOARD_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedO
 import FILE_SHARING_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/fileSharing';
 import DOCKER_CONTAINER_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/dockerContainer';
 import CLASS_MANAGEMENT_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/classMgmt';
+import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
 
 const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.MAIL,
     icon: MailIcon,
-    options: ['url', 'proxyConfig'],
+    options: [APP_CONFIG_OPTION_KEYS.URL, APP_CONFIG_OPTION_KEYS.PROXYCONFIG],
     isNativeApp: true,
     extendedOptions: {
       [AppConfigSectionsKeys.imapMailFeed]: MAIL_IMAP_EXTENDED_OPTIONS,
@@ -48,7 +49,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.CONFERENCES,
     icon: ConferencesIcon,
-    options: ['url', 'apiKey', 'proxyConfig'],
+    options: [APP_CONFIG_OPTION_KEYS.URL, APP_CONFIG_OPTION_KEYS.APIKEY, APP_CONFIG_OPTION_KEYS.PROXYCONFIG],
     isNativeApp: true,
   },
   {
@@ -60,7 +61,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.FILE_SHARING,
     icon: FileSharingIcon,
-    options: ['proxyConfig'],
+    options: [APP_CONFIG_OPTION_KEYS.PROXYCONFIG],
     isNativeApp: true,
     extendedOptions: {
       [AppConfigSectionsKeys.fileSharing]: FILE_SHARING_EXTENDED_OPTIONS,
@@ -71,7 +72,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.CLASS_MANAGEMENT,
     icon: ClassManagementIcon,
-    options: ['proxyConfig'],
+    options: [APP_CONFIG_OPTION_KEYS.PROXYCONFIG],
     isNativeApp: true,
     extendedOptions: {
       [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
@@ -81,7 +82,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.DESKTOP_DEPLOYMENT,
     icon: DesktopDeploymentIcon,
-    options: ['url', 'proxyConfig'],
+    options: [APP_CONFIG_OPTION_KEYS.URL, APP_CONFIG_OPTION_KEYS.PROXYCONFIG],
     isNativeApp: true,
     extendedOptions: {
       [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
@@ -90,7 +91,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.LINUXMUSTER,
     icon: LinuxmusterIcon,
-    options: ['url', 'proxyConfig'],
+    options: [APP_CONFIG_OPTION_KEYS.URL, APP_CONFIG_OPTION_KEYS.PROXYCONFIG],
     isNativeApp: true,
   },
   {
@@ -110,13 +111,13 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.FORWARDING,
     icon: ForwardIcon,
-    options: ['url', 'proxyConfig'],
+    options: [APP_CONFIG_OPTION_KEYS.URL, APP_CONFIG_OPTION_KEYS.PROXYCONFIG],
     isNativeApp: false,
   },
   {
     id: APPS.FRAME,
     icon: EmbeddedIcon,
-    options: ['url', 'proxyConfig'],
+    options: [APP_CONFIG_OPTION_KEYS.URL, APP_CONFIG_OPTION_KEYS.PROXYCONFIG],
     isNativeApp: false,
   },
   {

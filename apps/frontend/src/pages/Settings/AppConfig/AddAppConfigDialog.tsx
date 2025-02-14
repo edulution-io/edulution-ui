@@ -11,23 +11,29 @@
  */
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/components/shared/Button';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
-import { useNavigate } from 'react-router-dom';
+import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import { Button } from '@/components/shared/Button';
 import CircleLoader from '@/components/ui/CircleLoader';
-import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
-import { SettingsIcon } from '@/assets/icons';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
+import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
+import APPS from '@libs/appconfig/constants/apps';
 import getCustomAppConfigFormSchema from './schemas/getCustomAppConfigFormSchema';
+import SelectIconField from './components/SelectIconField';
 
-const AddAppConfigDialog: React.FC = () => {
+interface AddAppConfigDialogProps {
+  selectedApp: AppConfigOption;
+}
+
+const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen, createAppConfig, isLoading, error } =
@@ -38,19 +44,33 @@ const AddAppConfigDialog: React.FC = () => {
     resolver: zodResolver(getCustomAppConfigFormSchema(t)),
     defaultValues: {
       customAppName: '',
+      customIcon: '',
     },
   });
 
   const onSubmit = async () => {
     const newAppName = form.getValues('customAppName').toLowerCase();
+    const newAppIcon = form.getValues('customIcon');
+    const getAppType = () => {
+      switch (selectedApp.id) {
+        case APPS.FORWARDING:
+          return APP_INTEGRATION_VARIANT.FORWARDED;
+        case APPS.EMBEDDED:
+          return APP_INTEGRATION_VARIANT.EMBEDDED;
+        case APPS.FRAME:
+          return APP_INTEGRATION_VARIANT.EMBEDDED;
+        default:
+          return APP_INTEGRATION_VARIANT.FORWARDED;
+      }
+    };
 
     const newConfig: AppConfigDto = {
       name: newAppName,
-      icon: SettingsIcon,
-      appType: APP_INTEGRATION_VARIANT.FORWARDED,
+      icon: newAppIcon,
+      appType: getAppType(),
       options: {
         url: '',
-        proxyConfig: '',
+        proxyConfig: '""',
       },
       accessGroups: [],
       extendedOptions: {},
@@ -68,7 +88,7 @@ const AddAppConfigDialog: React.FC = () => {
     return (
       <Form {...form}>
         <form
-          className="mt-4"
+          className="mt-4 space-y-4"
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <FormField
@@ -79,6 +99,7 @@ const AddAppConfigDialog: React.FC = () => {
             variant="dialog"
             className=""
           />
+          <SelectIconField form={form} />
           <div className="mt-12 flex justify-end">
             <Button
               type="submit"

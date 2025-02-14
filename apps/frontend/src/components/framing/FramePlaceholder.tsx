@@ -18,11 +18,10 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '@/store/UserStore/UserStore';
 import { getFromPathName } from '@libs/common/utils';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
-import TApps from '@libs/appconfig/types/appsType';
 
 const FramePlaceholder: React.FC = () => {
   const { pathname } = useLocation();
-  const rootPathName = getFromPathName(pathname, 1) as TApps;
+  const rootPathName = getFromPathName(pathname, 1);
   const { appConfigs } = useAppConfigsStore();
   const { isAuthenticated } = useUserStore();
   const { setEmbeddedFrameLoaded, setActiveEmbeddedFrame } = useFrameStore();

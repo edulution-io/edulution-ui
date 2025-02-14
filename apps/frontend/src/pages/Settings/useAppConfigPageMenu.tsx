@@ -13,8 +13,6 @@
 import { AppStoreIcon, SettingsIcon } from '@/assets/icons';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { useNavigate } from 'react-router-dom';
-import APP_CONFIG_OPTIONS from '@/pages/Settings/AppConfig/appConfigOptions';
-import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import { APPSTORE_PATH, SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
@@ -41,14 +39,12 @@ const useAppConfigPageMenu = () => {
   const appConfigPageMenu = (): MenuBarEntry => ({
     ...settingsMenuBarEntry,
     menuItems: [
-      ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfigs, option.id) !== undefined).map(
-        (item) => ({
-          id: item.id,
-          label: `${item.id}.sidebar`,
-          icon: item.icon,
-          action: () => navigate(`/${SETTINGS_PATH}/${item.id}`),
-        }),
-      ),
+      ...appConfigs.map((item) => ({
+        id: item.name,
+        label: `${item.name}.sidebar`,
+        icon: item.icon,
+        action: () => navigate(`/${SETTINGS_PATH}/${item.name}`),
+      })),
       ...settingsMenuBarEntry.menuItems,
     ],
   });

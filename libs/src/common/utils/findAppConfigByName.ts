@@ -11,9 +11,8 @@
  */
 
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import type TApps from '@libs/appconfig/types/appsType';
 
-const findAppConfigByName = (appConfig: AppConfigDto[], entryName: TApps) =>
+const findAppConfigByName = (appConfig: AppConfigDto[], entryName: string) =>
   appConfig.find(({ name }) => name === entryName);
 
 export default findAppConfigByName;

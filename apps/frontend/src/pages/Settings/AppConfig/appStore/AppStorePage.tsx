@@ -23,6 +23,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
+import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
 import APP_CONFIG_OPTIONS from '../appConfigOptions';
 import AddAppConfigDialog from '../AddAppConfigDialog';
 import AppStoreFloatingButtons from './AppStoreFloatingButtons';
@@ -47,13 +48,23 @@ const AppStorePage: React.FC = () => {
 
   const handleCreateApp = () => {
     if (selectedApp.isNativeApp) {
+      const { options = [], extendedOptions = {} } = selectedApp;
+      const newExtendedOptions = Object.values(extendedOptions).reduce<Record<string, string>>((acc, item) => {
+        acc[item[0].name] = '';
+        return acc;
+      }, {});
+
       const newConfig: AppConfigDto = {
         name: selectedApp.id,
         icon: selectedApp.icon,
         appType: APP_INTEGRATION_VARIANT.NATIVE,
-        options: {},
+        options: {
+          url: options.includes(APP_CONFIG_OPTION_KEYS.URL) ? '' : undefined,
+          apiKey: options.includes(APP_CONFIG_OPTION_KEYS.APIKEY) ? '' : undefined,
+          proxyConfig: options.includes(APP_CONFIG_OPTION_KEYS.PROXYCONFIG) ? '""' : undefined,
+        },
         accessGroups: [],
-        extendedOptions: {},
+        extendedOptions: newExtendedOptions,
       };
 
       void createAppConfig(newConfig);
@@ -105,7 +116,7 @@ const AppStorePage: React.FC = () => {
         ))}
         <AppStoreFloatingButtons handleCreateApp={handleCreateApp} />
       </div>
-      <AddAppConfigDialog />
+      <AddAppConfigDialog selectedApp={selectedApp} />
     </>
   );
 };
