@@ -14,13 +14,16 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdAdd } from 'react-icons/md';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import FloatingButtonsBarProps from '@libs/ui/types/FloatingButtons/floatingButtonsProps';
+import type FloatingButtonsBarProps from '@libs/ui/types/FloatingButtons/floatingButtonsProps';
+import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
+import APPS from '@libs/appconfig/constants/apps';
 
 interface AppStoreFloatingButtonsProps {
   handleCreateApp: () => void;
+  selectedApp: AppConfigOption;
 }
 
-const AppStoreFloatingButtons: React.FC<AppStoreFloatingButtonsProps> = ({ handleCreateApp }) => {
+const AppStoreFloatingButtons: React.FC<AppStoreFloatingButtonsProps> = ({ handleCreateApp, selectedApp }) => {
   const { t } = useTranslation();
 
   const appStoreFloatingButtonsConfig: FloatingButtonsBarProps = {
@@ -30,6 +33,7 @@ const AppStoreFloatingButtons: React.FC<AppStoreFloatingButtonsProps> = ({ handl
           icon: MdAdd,
           text: t(`common.add`),
           onClick: handleCreateApp,
+          isVisible: selectedApp.id !== APPS.NONE,
         },
       ],
       keyPrefix: 'appStore',

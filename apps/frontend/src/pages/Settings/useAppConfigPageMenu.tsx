@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import { APPSTORE_PATH, SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 
 const useAppConfigPageMenu = () => {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ const useAppConfigPageMenu = () => {
     menuItems: [
       ...appConfigs.map((item) => ({
         id: item.name,
-        label: `${item.name}.sidebar`,
+        label: item.appType === APP_INTEGRATION_VARIANT.NATIVE ? `${item.name}.sidebar` : item.name,
         icon: item.icon,
         action: () => navigate(`/${SETTINGS_PATH}/${item.name}`),
       })),

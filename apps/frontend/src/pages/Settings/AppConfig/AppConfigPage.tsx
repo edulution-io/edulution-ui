@@ -23,8 +23,6 @@ import type { AppConfigOptionsType } from '@libs/appconfig/types/appConfigOption
 import useGroupStore from '@/store/GroupStore';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
-import { SettingsIcon } from '@/assets/icons';
-import useIsMobileView from '@/hooks/useIsMobileView';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import { MailProviderConfigDto } from '@libs/mail/types';
@@ -52,7 +50,6 @@ const AppConfigPage: React.FC = () => {
   const { appConfigs, getAppConfigs, setIsDeleteAppConfigDialogOpen, updateAppConfig, deleteAppConfigEntry } =
     useAppConfigsStore();
   const { searchGroups } = useGroupStore();
-  const isMobileView = useIsMobileView();
   const { postExternalMailProviderConfig } = useMailsStore();
 
   const form = useForm<{ [settingLocation: string]: AppConfigDto } | ProxyConfigFormType | MailProviderConfig>({
@@ -256,11 +253,18 @@ const AppConfigPage: React.FC = () => {
   return (
     <>
       <div className="h-[calc(100vh-var(--floating-buttons-height))] overflow-y-auto scrollbar-thin">
-        <NativeAppHeader
-          title={t(isAnAppConfigSelected ? `${settingLocation}.sidebar` : 'settings.sidebar')}
-          description={!isMobileView && settingLocation ? t(`settings.description.${settingLocation}`) : null}
-          iconSrc={APP_CONFIG_OPTIONS.find((item) => item.id === settingLocation)?.icon || SettingsIcon}
-        />
+        {appConfigs.map((item) => {
+          if (item.name === settingLocation) {
+            return (
+              <NativeAppHeader
+                key={item.name}
+                title={t(item.appType === APP_INTEGRATION_VARIANT.NATIVE ? `${item.name}.sidebar` : item.name)}
+                iconSrc={item.icon}
+              />
+            );
+          }
+          return null;
+        })}
         {isAnAppConfigSelected ? settingsForm() : <DockerContainerTable />}
       </div>
       {isAnAppConfigSelected ? (

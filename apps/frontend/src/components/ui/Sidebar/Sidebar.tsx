@@ -21,6 +21,7 @@ import useMailsStore from '@/pages/Mail/useMailsStore';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import DesktopSidebar from './DesktopSidebar';
 import MobileSidebar from './MobileSidebar';
 
@@ -48,7 +49,7 @@ const Sidebar: React.FC = () => {
     ...appConfigs
       .filter((option) => findAppConfigByName(appConfigs, option.name))
       .map((item) => ({
-        title: t(`${item.name}.sidebar`),
+        title: t(item.appType === APP_INTEGRATION_VARIANT.NATIVE ? `${item.name}.sidebar` : item.name),
         link: `/${item.name}`,
         icon: item.icon,
         color: 'bg-ciGreenToBlue',

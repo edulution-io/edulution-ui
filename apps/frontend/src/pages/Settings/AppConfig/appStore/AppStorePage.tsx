@@ -35,10 +35,11 @@ const AppStorePage: React.FC = () => {
   const { t } = useTranslation();
   const [selectedApp, setSelectedApp] = useState<AppConfigOption>(emptyAppConfigOption);
   const appFieldRef = useRef<HTMLDivElement>(null);
-  const { appConfigs, error, setIsAddAppConfigDialogOpen, createAppConfig } = useAppConfigsStore();
+  const { appConfigs, error, isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen, createAppConfig } =
+    useAppConfigsStore();
   const navigate = useNavigate();
 
-  useOnClickOutside(appFieldRef, () => setSelectedApp(emptyAppConfigOption));
+  useOnClickOutside(appFieldRef, () => !isAddAppConfigDialogOpen && setSelectedApp(emptyAppConfigOption));
 
   const filteredAppOptions = useMemo(() => {
     const existingOptions = appConfigs.map((item) => item.name);
@@ -97,8 +98,8 @@ const AppStorePage: React.FC = () => {
             <Card
               key={item.id}
               className={cn(
-                'flex h-32 w-48 flex-col items-center',
-                selectedApp.id === item.id ? 'bg-ciGreenToBlue' : '',
+                'm-1 flex h-32 w-48 flex-col items-center transition-transform duration-300 ease-in-out hover:scale-105',
+                selectedApp.id === item.id ? 'scale-105 bg-ciGreenToBlue' : '',
                 !filteredAppOptions.includes(item.id) ? 'opacity-50' : '',
               )}
               variant="text"
@@ -114,7 +115,10 @@ const AppStorePage: React.FC = () => {
             </Card>
           </button>
         ))}
-        <AppStoreFloatingButtons handleCreateApp={handleCreateApp} />
+        <AppStoreFloatingButtons
+          handleCreateApp={handleCreateApp}
+          selectedApp={selectedApp}
+        />
       </div>
       <AddAppConfigDialog selectedApp={selectedApp} />
     </>
