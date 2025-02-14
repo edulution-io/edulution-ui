@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, MessageEvent, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Response } from 'express';
 import { Model, Types } from 'mongoose';
@@ -27,17 +27,25 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
+import { Observable } from 'rxjs';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 
 import { BulletinCategory, BulletinCategoryDocument } from '../bulletin-category/bulletin-category.schema';
 import BulletinCategoryService from '../bulletin-category/bulletin-category.service';
+import SseService from '../sse/sse.service';
+import type UserConnections from '../types/userConnections';
+import GroupsService from '../groups/groups.service';
 
 @Injectable()
 class BulletinBoardService implements OnModuleInit {
+  private bulletinsSseConnections: UserConnections = new Map();
+
   constructor(
     @InjectModel(Bulletin.name) private bulletinModel: Model<BulletinDocument>,
     @InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>,
     private readonly bulletinCategoryService: BulletinCategoryService,
+    private readonly groupsService: GroupsService,
   ) {}
 
   private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
@@ -46,6 +54,10 @@ class BulletinBoardService implements OnModuleInit {
     if (!existsSync(this.attachmentsPath)) {
       mkdirSync(this.attachmentsPath, { recursive: true });
     }
+  }
+
+  subscribe(username: string, res: Response): Observable<MessageEvent> {
+    return SseService.subscribe(username, this.bulletinsSseConnections, res);
   }
 
   static checkAttachmentFile(file: Express.Multer.File): string {
@@ -168,7 +180,7 @@ class BulletinBoardService implements OnModuleInit {
       username: currentUser.preferred_username,
     };
 
-    return this.bulletinModel.create({
+    const createdBulletin = this.bulletinModel.create({
       creator,
       title: dto.title,
       attachmentFileNames: dto.attachmentFileNames,
@@ -177,6 +189,14 @@ class BulletinBoardService implements OnModuleInit {
       isVisibleStartDate: dto.isVisibleStartDate,
       isVisibleEndDate: dto.isVisibleEndDate,
     });
+
+    const invitedMembersList = await this.groupsService.getInvitedMembers(
+      dto.category.visibleForGroups,
+      dto.category.visibleForUsers,
+    );
+    SseService.sendEventToUsers(invitedMembersList, this.bulletinsSseConnections, dto.title, SSE_MESSAGE_TYPE.CREATED);
+
+    return createdBulletin;
   }
 
   private static replaceContentTokenWithPlaceholder(content: string): string {

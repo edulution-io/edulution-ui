@@ -73,6 +73,8 @@ import {
 } from './mocks';
 import SurveysService from './surveys.service';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';
+import GroupsService from '../groups/groups.service';
+import mockGroupsService from '../groups/groups.service.mock';
 
 describe('SurveyAnswerService', () => {
   let service: SurveyAnswersService;
@@ -89,6 +91,7 @@ describe('SurveyAnswerService', () => {
           useValue: jest.fn(),
         },
         SurveyAnswersService,
+        { provide: GroupsService, useValue: mockGroupsService },
         {
           provide: getModelToken(SurveyAnswer.name),
           useValue: jest.fn(),

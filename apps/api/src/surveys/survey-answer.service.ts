@@ -23,16 +23,16 @@ import JWTUser from '@libs/user/types/jwt/jwtUser';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
 import Attendee from '../conferences/attendee.schema';
-import SurveysService from './surveys.service';
 import MigrationService from '../migration/migration.service';
 import surveyAnswersMigrationsList from './migrations/surveyAnswersMigrationsList';
+import GroupsService from '../groups/groups.service';
 
 @Injectable()
 class SurveyAnswersService {
   constructor(
     @InjectModel(SurveyAnswer.name) private surveyAnswerModel: Model<SurveyAnswerDocument>,
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
-    private readonly surveysService: SurveysService,
+    private readonly groupsService: GroupsService,
   ) {}
 
   async onModuleInit() {
@@ -186,7 +186,7 @@ class SurveyAnswersService {
     }
 
     const isCreator = creator?.username === username;
-    const invitedMembers = await this.surveysService.getInvitedMembers(survey);
+    const invitedMembers = await this.groupsService.getInvitedMembers(survey.invitedGroups, survey.invitedAttendees);
     const isAttendee = invitedMembers.includes(username);
 
     const canParticipate = isCreator || isAttendee;
