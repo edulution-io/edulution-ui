@@ -9,6 +9,7 @@
   "previewImage": "Bildvorschau",
   "bulletinboard": {
     "settings": "Einstellungen",
+    "noBulletinsToShow": "Aktuell gibt es keine Mitteilungen anzuzeigen, schaue am besten später noch mal vorbei!",
     "categoryIsRequired": "Es muss eine Kategorie ausgewählt werden",
     "createdFrom": "von {{ createdBy }}, aktualisiert am {{ lastUpdated }}",
     "createdFromAndUpdatedBy": "von {{ createdBy }}, aktualisiert von {{ lastUpdatedBy }} am {{ lastUpdated }}",
@@ -21,7 +22,7 @@
     "activeFrom": "Aktiv von",
     "activeUntil": "Aktiv bis",
     "appTitle": "Schwarzes Brett",
-    "description": "Verwalte deine Mitteilungen",
+    "description": "Hier findest du deine aktuelle Mitteilungen",
     "filterPlaceHolderText": "Suche nach Kategoriename",
     "sidebar": "Schwarzes Brett",
     "newCategorie": "Neue Kategorie",
@@ -460,16 +461,24 @@
   "downloadFile": "Datei herunterladen",
   "cancel": "Abbrechen",
   "survey": {
+    "attendee": "Teilnehmer",
+    "attendees": "Teilnehmer",
     "newTitle": "Neue Umfrage",
     "filterPlaceHolderText": "Suche nach Umfragename",
+    "invitedAttendees": "Eingeladen",
+    "isPublic": "Sichtbarkeit",
+    "isPublicTrue": "Öffentlich",
+    "isPublicFalse": "Privat",
     "created": "Erstellt",
     "creationDate": "Erstellungsdatum",
     "expires": "Läuft ab",
     "expirationDate": "Ablaufdatum",
-    "notFound": "Umfrage nicht gefunden",
-    "noFormula": "Das Formular ist nicht lesbar",
-    "noAnswer": "Keine Antwort verfügbar",
-    "canSubmitMultiple": "Erlaube Mehrfachantworten",
+    "finished": "Du hast erfolgreich an der Umfrage teilgenommen.",
+    "thanks": "Vielen Dank für deine Teilnahme.",
+    "notFound": "Die Umfrage konnte nicht gefunden werden.",
+    "noFormula": "Das Formular ist nicht lesbar.",
+    "noAnswer": "Es sind noch keine Antworten verfügbar.",
+    "canSubmitMultiple": "Erlaube Mehrfachantworten.",
     "editor": {
       "new": "Neu (Leer)",
       "abort": "Alle Änderungen verwerfen",
@@ -477,9 +486,9 @@
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
     },
     "errors": {
-      "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden",
+      "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden.",
       "deleteError": "Die Umfragen konnten nicht gelöscht werden.",
-      "noAnswerError": "Es sind noch keine Antworten vorhanden.",
+      "noAnswerError": "Bisher ist noch keine Antwort abgegeben worden.",
       "noFormulaError": "Das Formular der Umfrage ist nicht lesbar.",
       "noBackendLimitersError": "Um diese Funktion nutzen zu können müssen im Editor die Grenzwerte definiert werden.",
       "notFoundError": "Umfrage konnte nicht gefunden werden.",
@@ -487,15 +496,15 @@
       "participationErrorUserNotAssigned": "Du bist zu dieser Umfrage nicht eingeladen.",
       "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
       "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",
-      "idTypeError": "Ungültige Umfrage-ID",
-      "missingAnswerError": "Bitte fülle die Umfrage aus bevor du deine Antwort abschickst."
+      "idTypeError": "Ungültige Umfrage-ID.",
+      "missingAnswerError": "Bitte fülle die Umfrage aus, bevor du deine Antwort abschickst."
     }
   },
   "survey-answer": {
     "errors": {
-      "notAbleToFindOrCreateSurveyAnswerError": "Antwort konnte nicht gefunden oder erstellt werden",
+      "notAbleToFindOrCreateSurveyAnswerError": "Antwort konnte nicht gefunden oder erstellt werden.",
       "notAbleToFindSurveyAnswerError": "Keine Antworten vorhanden.",
-      "notAbleToUpdateSurveyAnswerError": "Antwort konnte nicht aktualisiert werden",
+      "notAbleToUpdateSurveyAnswerError": "Antwort konnte nicht aktualisiert werden.",
       "notAbleToCreateSurveyAnswerError": "Antwort konnte nicht erstellt werden.",
       "notAbleToDeleteSurveyAnswerError": "Antwort konnte nicht gelöscht werden."
     }
@@ -542,13 +551,14 @@
       "settingsFlags": "Einstellungen",
       "isAnonymous": "Soll die Umfrage anonym sein?",
       "isPublic": "Soll die Umfrage öffentlich sein?",
-      "canSubmitMultipleAnswers": "Auch nach Teilnahme bleibt der Status auf offen"
+      "canSubmitMultipleAnswers": "Soll ein Teilnehmer die Umfrage mehrmals beantworten können?",
+      "canUpdateFormerAnswer": "Sollen Antworten nachträglich bearbeitbar sein?"
     },
     "sharePublicSurveyDialog": {
       "title": "Umfrage teilen",
       "description": "Hier kannst du den Link zur Umfrage kopieren und teilen.",
-      "savedToClipboard": "In die Zwischenablage kopiert",
-      "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden"
+      "savedToClipboard": "In die Zwischenablage kopiert.",
+      "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden."
     },
     "participateDialog": {
       "title": "An der Umfrage teilnehmen"
@@ -593,7 +603,8 @@
       "GuacamoleNotResponding": "RDP-Dienst nicht verfügbar.",
       "GuacamoleUserNotFound": "Nutzername oder Passwort konnte nicht gefunden.",
       "LmnVdiApiNotResponding": "Linuxmuster VDI-Dienst antwortet nicht.",
-      "SessionNotFound": "Session nicht gefunden."
+      "SessionNotFound": "Session nicht gefunden.",
+      "AppNotProperlyConfigured": "Guacamole ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator."
     }
   },
   "wlan": {
@@ -665,7 +676,7 @@
       "aichat": "Hier kannst du alle Einstellungen vornehmen.",
       "linuxmuster": "Hier kannst du alle Einstellungen vornehmen.",
       "whiteboard": "Hier kannst du alle Einstellungen vornehmen.",
-      "bulletinboard": "Konfiguriere hier die Nutzergruppen ,die Zugriff auf die App Schwarzes Brett Editor haben. Über die Kategorieren kann gesteuert werden, bei welchen Nutzern und Gruppen das Schwarze Brett mit den Mitteilungen statt dem klassischen Dashboard angezeigt wird."
+      "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Schwarzes Brett haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden."
     },
     "appconfig": {
       "sections": {
@@ -679,7 +690,7 @@
         },
         "bulletinBoard": {
           "title": "Kategorien",
-          "description": "Füge neue Kategorien hinzu oder bearbeite existierende um zu steuern für welche Nutzer und Gruppen das Schwarze Brett statt dem klassischen Dashboard angezeigt werden soll."
+          "description": "Füge neue Kategorien hinzu oder bearbeite existierende, um zu steuern, für welche Nutzer und Gruppen Mitteilungen angezeigt werden sollen."
         },
         "general": {
           "title": "Allgemein",
@@ -695,8 +706,10 @@
         },
         "veyon": {
           "title": "Veyon Proxy",
-          "description": "",
-          "filterPlaceHolderText": "Suche nach Proxy-Name"
+          "description": "Hier können die Veyon WebAPI-Proxys konfiguriert werden.",
+          "filterPlaceHolderText": "Suche nach Proxy-Name",
+          "invalidCidrFormat": "Ungültige CIDR-Notation",
+          "invalidUrlFormat": "Ungültige URL"
         }
       },
       "update": {
@@ -824,6 +837,7 @@
     "remember_me": "Merken"
   },
   "common": {
+    "answers": "Antworten",
     "error": "Fehler",
     "errors": {
       "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
@@ -835,6 +849,7 @@
     "checking": "Prüfen",
     "cancel": "Abbrechen",
     "columns": "Spalten",
+    "table": "Tabelle",
     "copy": {
       "success": "Erfolgreich in Zwischenablage kopiert",
       "error": "In Zwischenablage kopieren fehlgeschlagen",
@@ -914,7 +929,10 @@
     "update": "Update",
     "progress": "Fortschritt...",
     "pressInstall": "Drücke Installieren um zu Starten.",
-    "disabled": "Deaktiviert"
+    "disabled": "Deaktiviert",
+    "invalid_url": "Ungültige URL",
+    "invalid_fqdn": "Ungültiger FQDN. Bitte nur den Hostnamen angeben.",
+    "required": "Erforderlich"
   },
   "form": {
     "path": "Link",
@@ -932,7 +950,9 @@
     "proxyConfigDescription": "YAML-Editor für die Konfiguration des Traefik-Proxy.",
     "expertMode": "Expertenmodus",
     "proxyPath": "Proxy Pfad",
+    "proxyPathPlaceholder": "z.B. SOGo",
     "proxyDestination": "Zielhost",
+    "proxyDestinationPlaceholder": "z.B. http://localhost:1234/",
     "stripPrefix": "Prefix entfernen"
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
@@ -1151,11 +1171,12 @@
     "image": "Bildvorschau",
     "failedToLoadImage": "Bild konnte nicht geladen werden"
   },
-  "dockerApplication": {
-    "title": "Docker-Anwendung",
+  "containerApplication": {
     "dialogTitle": "{{applicationName}}-Plugins installieren",
-    "mailDescription": "Falls ein eigener Mailserver betrieben werden soll, kann hier das Setup für Mailcow durchgeführt werden.",
-    "classmanagementDescription": "Falls Veyon im Schulnetz eingesetzt wird, kann hier das Setup für den Veyon-WebAPI-Proxy durchgeführt werden."
+    "EDULUTION_MAIL_HOSTNAME": {
+      "title": "Hostname",
+      "description": "Hostname des Mailservers. Dieser kann von der edulution Domain abweichen."
+    }
   },
   "dockerOverview": {
     "title": "Container-Übersicht",
@@ -1195,6 +1216,14 @@
       "paused": "pausiert",
       "exited": "gestoppt",
       "dead": "tot"
+    }
+  },
+  "veyon": {
+    "errors": {
+      "AppNotProperlyConfigured": "Veyon ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
+      "VeyonAuthFailed": "Veyon-Authentifizierung fehlgeschlagen",
+      "GetUserFailed": "Benutzer konnte nicht abgerufen werden",
+      "VeyonApiNotReachable": "Der externen Veyon-Server ist nicht erreichbar"
     }
   }
 }

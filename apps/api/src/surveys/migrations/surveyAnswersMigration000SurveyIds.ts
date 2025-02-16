@@ -1,0 +1,75 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import { Logger } from '@nestjs/common';
+import { Types } from 'mongoose';
+import { Migration } from '../../migration/migration.type';
+import { SurveyAnswerDocument } from '../survey-answer.schema';
+
+const name = '000-transform-survey-answers-document-ids';
+
+const migration000SurveyIds: Migration<SurveyAnswerDocument> = {
+  name,
+  version: 1,
+  execute: async (model) => {
+    const previousSchemaVersion = undefined;
+    const newSchemaVersion = 1;
+
+    const unprocessedDocuments = await model
+      .find<SurveyAnswerDocument>({
+        $or: [{ schemaVersion: { $exists: false } }, { schemaVersion: previousSchemaVersion }],
+      })
+      .sort({ _id: 1 })
+      .exec();
+
+    if (unprocessedDocuments.length === 0) {
+      return;
+    }
+
+    Logger.log(`Found ${unprocessedDocuments.length} documents to process...`);
+
+    let processedCount = 0;
+
+    await Promise.all(
+      unprocessedDocuments.map(async (doc: SurveyAnswerDocument) => {
+        try {
+          // eslint-disable-next-line no-underscore-dangle
+          const id = String(doc.id);
+          const surveyId = String(doc.surveyId);
+
+          const newDoc = {
+            ...doc.toObject(),
+            _id: new Types.ObjectId(id),
+            schemaVersion: newSchemaVersion,
+            surveyId: new Types.ObjectId(surveyId),
+          } as SurveyAnswerDocument;
+
+          delete newDoc.id;
+
+          await model.create(newDoc);
+
+          await model.deleteOne({ id });
+
+          processedCount += 1;
+        } catch (error) {
+          Logger.error(`Failed to migrate document ${doc.id}:`, error);
+        }
+      }),
+    );
+
+    if (processedCount > 0) {
+      Logger.log(`Migration ${name} completed: ${processedCount} documents migrated`);
+    }
+  },
+};
+
+export default migration000SurveyIds;

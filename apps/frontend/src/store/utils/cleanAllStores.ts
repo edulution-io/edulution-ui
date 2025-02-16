@@ -29,15 +29,14 @@ import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/
 import useCommunityLicenseStore from '@/pages/UserSettings/Info/useCommunityLicenseStore';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import useSurveyEditorFormStore from '@/pages/Surveys/Editor/useSurveyEditorFormStore';
+import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useDeleteSurveyStore from '@/pages/Surveys/Tables/dialogs/useDeleteSurveyStore';
-import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
-import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
 import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
-import useParticipatePublicSurveyStore from '@/pages/Surveys/Public/useParticipatePublicSurveyStore';
+import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/PublicConferenceStore';
 import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 
 const cleanAllStores = () => {
@@ -49,12 +48,10 @@ const cleanAllStores = () => {
   useBulletinBoardEditorialStore.getState().reset();
   useBulletinBoardStore.getState().reset();
   useClassManagementStore.getState().reset();
-  useSubmittedAnswersDialogStore.getState().reset();
   useCommunityLicenseStore.getState().reset();
   useConferenceDetailsDialogStore.getState().reset();
   useConferenceStore.getState().reset();
   useCreateConferenceDialogStore.getState().reset();
-  useDeleteSurveyStore.getState().reset();
   useDesktopDeploymentStore.getState().reset();
   useFileEditorStore.getState().reset();
   useFileSharingDialogStore.getState().reset();
@@ -64,14 +61,16 @@ const cleanAllStores = () => {
   useLmnApiPasswordStore.getState().reset();
   useLmnApiStore.getState().reset();
   useMailsStore.getState().reset();
-  useParticipateDialogStore.getState().reset();
-  useParticipatePublicSurveyStore.getState().reset();
   usePrintPasswordsStore.getState().reset();
   usePublicConferenceStore.getState().reset();
   useResultDialogStore.getState().reset();
   useSidebarStore.getState().reset();
-  useSurveyEditorFormStore.getState().reset();
   useSurveyTablesPageStore.getState().reset();
+  useSurveyEditorPageStore.getState().reset();
+  useResultDialogStore.getState().reset();
+  useSubmittedAnswersDialogStore.getState().reset();
+  useDeleteSurveyStore.getState().reset();
+  useParticipateSurveyStore.getState().reset();
   localStorage.removeItem('i18nextLng');
 };
 

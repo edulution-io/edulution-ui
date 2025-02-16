@@ -21,6 +21,8 @@ type DockerCompose = {
       ports?: string[];
       command?: string;
       depends_on?: string[];
+      stdin_open?: boolean;
+      stop_grace_period?: string;
     };
   };
   volumes?: {

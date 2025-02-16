@@ -11,25 +11,21 @@
  */
 
 import React from 'react';
-import mongoose from 'mongoose';
 import { ColumnDef, OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import APPS from '@libs/appconfig/constants/apps';
 import SURVEYS_PAGE_TABLE_HEADER_ID from '@libs/survey/constants/pageElementIds';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 
-interface MongoId {
-  id: mongoose.Types.ObjectId;
-}
-
-interface DataTableProps<TData extends MongoId, TValue> {
+interface DataTableProps<TData extends SurveyDto, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: Array<TData>;
   isLoading?: boolean;
 }
 
-const SurveyTable = <TData extends MongoId, TValue>({
+const SurveyTable = <TData extends SurveyDto, TValue>({
   columns,
   data,
   isLoading = false,
@@ -50,7 +46,7 @@ const SurveyTable = <TData extends MongoId, TValue>({
       onRowSelectionChange={handleRowSelectionChange}
       selectedRows={selectedRows}
       isLoading={isLoading}
-      getRowId={(originalRow: TData) => originalRow.id.toString()}
+      getRowId={(originalRow: TData) => originalRow.id!}
       applicationName={APPS.SURVEYS}
       scrollContainerOffsetElementIds={{
         tableHeaderId: SURVEYS_PAGE_TABLE_HEADER_ID,

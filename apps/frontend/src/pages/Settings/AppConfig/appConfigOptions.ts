@@ -50,6 +50,15 @@ import CLASS_MANAGEMENT_EXTENDED_OPTIONS from '@libs/appconfig/constants/extende
 
 export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
+    id: APPS.BULLETIN_BOARD,
+    icon: BulletinBoardIcon,
+    color: 'bg-ciDarkBlue',
+    isNativeApp: true,
+    extendedOptions: {
+      [AppConfigSectionsKeys.bulletinBoard]: BULLETIN_BOARD_EXTENDED_OPTIONS,
+    },
+  },
+  {
     id: APPS.TICKET_SYSTEM,
     icon: TicketSystemIcon,
     color: 'bg-ciDarkBlue',
@@ -98,6 +107,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     extendedOptions: {
       [AppConfigSectionsKeys.fileSharing]: FILE_SHARING_EXTENDED_OPTIONS,
       [AppConfigSectionsKeys.onlyOffice]: ONLY_OFFICE_EXTENDED_OPTIONS,
+      [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
     },
   },
   { id: APPS.FORUMS, icon: ForumsIcon, color: 'bg-ciDarkBlue', options: ['url', 'proxyConfig'], isNativeApp: false },
@@ -190,15 +200,6 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciDarkBlue',
     options: ['url', 'proxyConfig'],
     isNativeApp: true,
-  },
-  {
-    id: APPS.BULLETIN_BOARD,
-    icon: BulletinBoardIcon,
-    color: 'bg-ciDarkBlue',
-    isNativeApp: true,
-    extendedOptions: {
-      [AppConfigSectionsKeys.bulletinBoard]: BULLETIN_BOARD_EXTENDED_OPTIONS,
-    },
   },
 ];
 

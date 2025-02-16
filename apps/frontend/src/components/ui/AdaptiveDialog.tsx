@@ -91,7 +91,7 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
           </VisuallyHidden>
         </SheetHeader>
         {bodyContent}
-        <SheetFooter id={footerId}>{footer}</SheetFooter>
+        {footer ? <SheetFooter id={footerId}>{footer}</SheetFooter> : null}
         <SheetDescription aria-disabled />
       </SheetContent>
     </Sheet>
@@ -110,12 +110,14 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
           <DialogTitle>{title}</DialogTitle>
         </VisuallyHidden>
         {bodyContent}
-        <DialogFooter
-          layout={layout}
-          id={footerId}
-        >
-          {footer}
-        </DialogFooter>
+        {footer ? (
+          <DialogFooter
+            layout={layout}
+            id={footerId}
+          >
+            {footer}
+          </DialogFooter>
+        ) : null}
         <DialogDescription aria-disabled />
       </DialogContent>
     </Dialog>

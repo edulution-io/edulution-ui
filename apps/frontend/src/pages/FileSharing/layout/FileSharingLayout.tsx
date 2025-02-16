@@ -17,7 +17,7 @@ import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import getExtendedOptionValue from '@libs/appconfig/utils/getExtendedOptionValue';
+import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import isFileValid from '@libs/filesharing/utils/isFileValid';
 import useIsMobileView from '@/hooks/useIsMobileView';
@@ -35,7 +35,7 @@ const FileSharingLayout: React.FC<FileSharingLayoutProps> = () => {
   const { appConfigs } = useAppConfigsStore();
 
   const documentServerURL = useMemo(
-    () => getExtendedOptionValue(appConfigs, APPS.FILE_SHARING, ExtendedOptionKeys.ONLY_OFFICE_URL),
+    () => getExtendedOptionsValue(appConfigs, APPS.FILE_SHARING, ExtendedOptionKeys.ONLY_OFFICE_URL),
     [appConfigs],
   );
 

@@ -10,14 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import mongoose from 'mongoose';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
-import { Group } from '@libs/groups/types/group';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
+import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 
 interface SurveyDto {
-  id: mongoose.Types.ObjectId;
+  id?: string;
   formula: TSurveyFormula;
   backendLimiters?: {
     questionId: string;
@@ -25,17 +24,16 @@ interface SurveyDto {
   }[];
   saveNo: number;
   creator: AttendeeDto;
-  invitedAttendees: AttendeeDto[];
-  invitedGroups: Group[];
-  participatedAttendees: AttendeeDto[];
-  answers: mongoose.Types.ObjectId[];
-  created?: Date;
+  invitedAttendees: MultipleSelectorOptionSH[];
+  invitedGroups: MultipleSelectorOptionSH[];
+  participatedAttendees: MultipleSelectorOptionSH[];
+  answers: string[];
+  createdAt?: Date;
   expires?: Date;
   isAnonymous?: boolean;
   isPublic?: boolean;
-  canShowResultsTable?: boolean;
-  canShowResultsChart?: boolean;
   canSubmitMultipleAnswers?: boolean;
+  canUpdateFormerAnswer?: boolean;
 }
 
 export default SurveyDto;

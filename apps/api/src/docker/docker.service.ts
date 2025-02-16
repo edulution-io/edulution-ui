@@ -232,7 +232,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       throw new CustomHttpException(
         DockerErrorMessages.DOCKER_CREATION_ERROR,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        undefined,
+        error,
         DockerService.name,
       );
     }

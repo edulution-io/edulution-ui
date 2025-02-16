@@ -15,7 +15,7 @@ import React, { HTMLInputTypeAttribute } from 'react';
 import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
 import Input from '@/components/shared/Input';
-import { FormControl, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
+import { FormControl, FormDescription, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 
 type FormFieldProps<T extends FieldValues> = {
   form: UseFormReturn<T>;
@@ -31,6 +31,7 @@ type FormFieldProps<T extends FieldValues> = {
   placeholder?: string;
   rules?: Omit<RegisterOptions<T, Path<T>>, 'disabled' | 'valueAsNumber' | 'valueAsDate' | 'setValueAs'>;
   className?: string;
+  description?: string;
   variant?: 'dialog' | 'default';
 };
 
@@ -48,6 +49,7 @@ const FormField = <T extends FieldValues>({
   placeholder,
   rules,
   className,
+  description,
   variant = 'default',
 }: FormFieldProps<T>) => {
   const { t } = useTranslation();
@@ -85,6 +87,7 @@ const FormField = <T extends FieldValues>({
             />
           </FormControl>
           <FormMessage className={cn('text-p')} />
+          {description ? <FormDescription>{description}</FormDescription> : null}
         </FormItem>
       )}
     />

@@ -19,7 +19,7 @@ import APPS from '@libs/appconfig/constants/apps';
 const useIsSurveysActive = () => {
   const { appConfigs } = useAppConfigsStore();
 
-  return useMemo(() => !!appConfigs.find((conf: AppConfigDto) => conf.name === APPS.SURVEYS.toString()), [appConfigs]);
+  return useMemo(() => !!appConfigs.find((conf: AppConfigDto) => conf.name === APPS.SURVEYS), [appConfigs]);
 };
 
 export default useIsSurveysActive;

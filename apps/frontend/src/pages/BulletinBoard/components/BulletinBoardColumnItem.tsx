@@ -18,12 +18,11 @@ import { PiDotsThreeVerticalBold } from 'react-icons/pi';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import { DropdownMenuItemType } from '@libs/ui/types/dropdownMenuItemType';
 import { useTranslation } from 'react-i18next';
-import APPS from '@libs/appconfig/constants/apps';
 import { RowSelectionState } from '@tanstack/react-table';
 import useUserStore from '@/store/UserStore/UserStore';
-import { useNavigate } from 'react-router-dom';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 
 const BulletinBoardColumnItem = ({
   bulletin,
@@ -36,7 +35,6 @@ const BulletinBoardColumnItem = ({
 }) => {
   const { t } = useTranslation();
   const { user } = useUserStore();
-  const navigate = useNavigate();
   const { isSuperAdmin } = useLdapGroups();
   const {
     setSelectedRows,
@@ -45,6 +43,7 @@ const BulletinBoardColumnItem = ({
     setSelectedBulletinToEdit,
     getBulletins,
   } = useBulletinBoardEditorialStore();
+  const { setIsEditorialModeEnabled } = useBulletinBoardStore();
 
   const handleDeleteBulletin = async () => {
     await getBulletins();
@@ -100,7 +99,7 @@ const BulletinBoardColumnItem = ({
     if (canManageBulletins) {
       items.push({
         label: t('bulletinboard.manageBulletins'),
-        onClick: () => navigate(`/${APPS.BULLETIN_BOARD}`),
+        onClick: () => setIsEditorialModeEnabled(true),
       });
     }
     return items;

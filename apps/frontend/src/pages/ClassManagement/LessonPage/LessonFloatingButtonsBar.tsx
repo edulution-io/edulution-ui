@@ -11,6 +11,7 @@
  */
 
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { MdSchool } from 'react-icons/md';
 import { t } from 'i18next';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
@@ -22,18 +23,22 @@ import { FiPrinter } from 'react-icons/fi';
 import { IconType } from 'react-icons';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
+import ReloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/reloadButton';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 import buildShareDTO from '@libs/filesharing/utils/buildShareDTO';
 import CLASSMGMT_OPTIONS from '@libs/classManagement/constants/classmgmtOptions';
 import getDialogComponent from '@/pages/ClassManagement/LessonPage/getDialogComponent';
 import buildCollectDTO from '@libs/filesharing/utils/buildCollectDTO';
+import getUniqueValues from '@libs/lmnApi/utils/getUniqueValues';
+import useClassManagementStore from '../useClassManagementStore';
 
 interface FloatingButtonsBarProps {
   students: UserLmnInfo[];
+  isMemberSelected: boolean;
 }
 
-const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students }) => {
+const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students, isMemberSelected }) => {
   const [whichDialogIsOpen, setWhichDialogIsOpen] = useState<string>('');
   const {
     startExamMode,
@@ -49,6 +54,9 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
   } = useLessonStore();
   const { fetchUser, user, schoolPrefix } = useLmnApiStore();
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();
+  const { fetchSchoolClass } = useClassManagementStore();
+  const { groupName } = useParams();
+
   const updateStudents = async () => {
     const updatedStudents = await Promise.all(students.map((m) => fetchUser(m.cn)));
 
@@ -57,6 +65,15 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
         (m): m is UserLmnInfo => !!m,
       ),
     );
+  };
+
+  const handleReload = async () => {
+    if (groupName) {
+      const schoolClass = await fetchSchoolClass(groupName);
+      if (schoolClass?.members) {
+        setMember(getUniqueValues([...schoolClass.members]));
+      }
+    }
   };
 
   const buttons: {
@@ -178,11 +195,17 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students 
   ];
 
   const config: FloatingButtonsBarConfig = {
-    buttons: buttons.map((button) => ({
-      icon: button.icon,
-      text: t(`classmanagement.${button.text}`),
-      onClick: () => setWhichDialogIsOpen(button.text),
-    })),
+    buttons: [
+      ReloadButton(() => {
+        void handleReload();
+      }),
+      ...buttons.map((button) => ({
+        icon: button.icon,
+        text: t(`classmanagement.${button.text}`),
+        onClick: () => setWhichDialogIsOpen(button.text),
+        isVisible: isMemberSelected,
+      })),
+    ],
     keyPrefix: 'class-management-page-floating-button_',
   };
 

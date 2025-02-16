@@ -28,3 +28,19 @@ export const secondMockUser = {
   mfaEnabled: false,
   isTotpSet: false,
 };
+
+export const firstParticipant = {
+  firstName: 'first',
+  lastName: 'participant',
+  username: 'first-participant',
+  value: 'first-participant',
+  label: 'first participant',
+};
+
+export const secondParticipant = {
+  firstName: 'second',
+  lastName: 'participant',
+  username: 'second-participant',
+  value: 'second-participant',
+  label: 'second participant',
+};

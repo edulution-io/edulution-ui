@@ -17,8 +17,8 @@ import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtended
 const DOCKER_CONTAINER_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
   {
     name: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
-    description: 'dockerApplication.description',
-    title: 'dockerApplication.title',
+    description: 'containerApplication.description',
+    title: 'containerApplication.title',
     type: ExtendedOptionField.table,
     value: '',
     width: 'full',

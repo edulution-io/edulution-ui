@@ -16,6 +16,7 @@ enum SurveysPageView {
   ANSWERED = 'answered',
   CREATOR = 'creator',
   EDITOR = 'editor',
+  PARTICIPATION = 'participation',
 }
 
 export default SurveysPageView;
