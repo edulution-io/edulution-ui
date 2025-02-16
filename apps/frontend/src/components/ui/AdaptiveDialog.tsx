@@ -79,7 +79,7 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
       <SheetContent
         side="bottom"
         variant={variant}
-        className={mobileContentClassName}
+        className={`${mobileContentClassName} overflow-x-hidden`}
       >
         <SheetHeader
           variant={variant}
@@ -103,7 +103,7 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
         variant={variant}
-        className={desktopContentClassName}
+        className={`${desktopContentClassName} overflow-x-hidden `}
       >
         <DialogTitle>{title}</DialogTitle>
         <VisuallyHidden>

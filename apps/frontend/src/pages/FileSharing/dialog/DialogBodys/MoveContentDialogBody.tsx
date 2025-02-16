@@ -68,7 +68,8 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   }, [currentPath]);
 
   const handleBreadcrumbNavigate = (path: string) => {
-    setCurrentPath(path);
+    const newPath = path.replace('webdav/', '');
+    setCurrentPath(newPath);
   };
 
   const getHiddenSegments = (): string[] => {
@@ -84,7 +85,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   };
 
   const footer = (
-    <div className="bottom-0 bg-gray-100 p-4 text-sm text-foreground">
+    <div className="bottom-0 justify-end bg-gray-100 p-4 text-sm text-foreground">
       {moveOrCopyItemToPath?.basename && showSelectedFile ? (
         <p className="bg-gray-100">
           {t('moveItemDialog.selectedItem')}: {moveOrCopyItemToPath.basename}
@@ -100,7 +101,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   const columns = FileSharingTableColumns(onFilenameClick, [FILESHARING_TABLE_COLUM_NAMES.SELECT_FILENAME]);
 
   return (
-    <div className="flex h-[60vh] flex-col text-background">
+    <div className="h-[60vh] flex-col text-background">
       <LoadingIndicator isOpen={isLoading} />
       <div className="pb-2">
         <DirectoryBreadcrumb
