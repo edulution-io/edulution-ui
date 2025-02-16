@@ -324,15 +324,37 @@ class FilesharingService {
     }
   };
 
+  getPathUntilFolder(fullPath: string, folderName: string): string {
+    Logger.log('fullPath', fullPath);
+    Logger.log('folderName', folderName);
+    const segments = fullPath.split('/');
+    const index = segments.indexOf(folderName);
+
+    if (index === -1) {
+      return fullPath;
+    }
+    const partialSegments = segments.slice(0, index + 1);
+    return partialSegments.join('/');
+  }
+
   duplicateFile = async (username: string, duplicateFile: DuplicateFileRequestDto): Promise<WebdavStatusReplay> => {
     const client = await this.getClient(username);
     const fullOriginPath = `${this.baseurl}${duplicateFile.originFilePath}`;
 
-    Logger.log('destinationFilePaths', duplicateFile.destinationFilePaths);
     const duplicationResults = await Promise.allSettled(
-      duplicateFile.destinationFilePaths.map(async (destinationPath) =>
-        FilesharingService.copyFile(client, fullOriginPath, destinationPath),
-      ),
+      duplicateFile.destinationFilePaths.map(async (destinationPath) => {
+        const filesAfterTransfer = this.getPathUntilFolder(destinationPath, FILE_PATHS.TRANSFER + '/');
+        const filesAfterTeacherFolder = this.getPathUntilFolder(destinationPath, username);
+        if (filesAfterTransfer.includes(username)) {
+          await FilesharingService.copyFile(client, fullOriginPath, destinationPath);
+        } else {
+          await this.createFolder(username, filesAfterTransfer, username);
+        }
+        if (!filesAfterTransfer.includes(FILE_PATHS.COLLECT)) {
+          await this.createFolder(username, filesAfterTeacherFolder, FILE_PATHS.COLLECT + '/');
+        }
+        await FilesharingService.copyFile(client, fullOriginPath, destinationPath);
+      }),
     );
 
     const failedTasks = duplicationResults.filter((result) => result.status === 'rejected');
