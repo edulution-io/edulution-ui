@@ -23,7 +23,7 @@ export class AppConfig extends Document {
   @Prop({ unique: true, required: true })
   name: string;
 
-  @Prop({ default: {} })
+  @Prop({ type: Object, default: {} })
   translations: AppNameTranslations;
 
   @Prop({ required: true })

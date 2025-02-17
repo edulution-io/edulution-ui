@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import axios, { AxiosInstance } from 'axios';
 import { Readable } from 'stream';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -47,9 +47,14 @@ class VeyonService implements OnModuleInit {
   @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
   async updateVeyonProxyConfig() {
     try {
-      const appConfig = await this.appConfigService.getAppConfigByName(APPS.CLASS_MANAGEMENT);
+      const appConfig = await this.appConfigService.getAppConfigByName(APPS.CLASS_MANAGEMENT).catch((error) => {
+        if (error instanceof HttpException) {
+          return null;
+        }
+        throw error;
+      });
 
-      if (!appConfig.extendedOptions || Object.keys(appConfig.extendedOptions).length === 0) {
+      if (!appConfig || !appConfig.extendedOptions || Object.keys(appConfig.extendedOptions).length === 0) {
         return;
       }
 
