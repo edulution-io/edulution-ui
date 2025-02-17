@@ -10,13 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import useElementHeight from '@/hooks/useElementHeight';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import APPS from '@libs/appconfig/constants/apps';
-import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import { BulletinBoardIcon } from '@/assets/icons';
 import { useTranslation } from 'react-i18next';
@@ -25,23 +22,48 @@ import BulletinBoardEditorialFloatingButtonsBar from '@/pages/BulletinBoard/Bull
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import BulletinBoardPageColumn from '@/pages/BulletinBoard/components/BulletinBoardPageColumn';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import { useParams } from 'react-router-dom';
 
 const BulletinBoardPage = () => {
   const { t } = useTranslation();
-  const { appConfigs } = useAppConfigsStore();
-  const { bulletinsByCategories, getBulletinsByCategories, isLoading, isEditorialModeEnabled } =
-    useBulletinBoardStore();
+  const { bulletinId } = useParams();
+  const {
+    resetBulletinBoardNotifications,
+    bulletinBoardNotifications,
+    bulletinsByCategories,
+    getBulletinsByCategories,
+    isLoading,
+    isEditorialModeEnabled,
+  } = useBulletinBoardStore();
   const { getCategoriesWithEditPermission } = useBulletinBoardEditorialStore();
+  const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
 
-  const bulletinBoardConfig = findAppConfigByName(appConfigs, APPS.BULLETIN_BOARD);
   const pageBarsHeight = useElementHeight([NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 15;
 
   useEffect(() => {
-    void getBulletinsByCategories();
-    void getCategoriesWithEditPermission();
-  }, [isEditorialModeEnabled]);
+    resetBulletinBoardNotifications();
+  }, []);
 
-  if (isLoading) {
+  useEffect(() => {
+    void getBulletinsByCategories(false);
+    void getCategoriesWithEditPermission();
+    setIsInitialLoading(false);
+  }, [isEditorialModeEnabled, bulletinBoardNotifications]);
+
+  useEffect(() => {
+    if (bulletinId) {
+      const element = document.getElementById(bulletinId);
+      if (element) {
+        element.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'center',
+        });
+      }
+    }
+  }, [bulletinId, bulletinsByCategories]);
+
+  if (isLoading || isInitialLoading) {
     return <LoadingIndicator isOpen />;
   }
 
@@ -65,7 +87,6 @@ const BulletinBoardPage = () => {
                 canEditCategory={canEditCategory}
                 category={category}
                 bulletins={bulletins}
-                canManageBulletins={!!bulletinBoardConfig}
               />
             ))
         ) : (

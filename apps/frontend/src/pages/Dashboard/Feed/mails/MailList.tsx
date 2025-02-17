@@ -10,14 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { ComponentProps } from 'react';
 import { NavLink } from 'react-router-dom';
 import cn from '@libs/common/utils/className';
 import APPS from '@libs/appconfig/constants/apps';
 import MailDto from '@libs/mail/types/mail.dto';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { BadgeSH } from '@/components/ui/BadgeSH';
-import getBadgeVariantFromLabel from '@/pages/Dashboard/Feed/mails/getBadgeVariantFromLabel';
+import BadgeLabels from '@libs/dashboard/feed/mails/badge-labels.enum';
+import BadgeVariant from '@libs/dashboard/feed/mails/badge-variant.enum';
 
 interface MailListProps {
   items: MailDto[];
@@ -29,6 +30,18 @@ const MailList = ({ items, className }: MailListProps) => {
     if (!item.labels || item.labels.size === 0) {
       return null;
     }
+
+    const getBadgeVariantFromLabel = (label: string): ComponentProps<typeof BadgeSH>['variant'] => {
+      if ([BadgeLabels.WORK as string].includes(label.toLowerCase())) {
+        return BadgeVariant.DEFAULT;
+      }
+
+      if ([BadgeLabels.PERSONAL as string].includes(label.toLowerCase())) {
+        return BadgeVariant.OUTLINE;
+      }
+
+      return BadgeVariant.SECONDARY;
+    };
 
     const badges = Array.from(item.labels).map((label) => (
       <BadgeSH

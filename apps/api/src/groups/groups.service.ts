@@ -161,7 +161,7 @@ class GroupsService implements OnModuleInit {
   }
 
   private static sanitizeGroupMembers(members: LDAPUser[]): GroupMemberDto[] {
-    return members.map((member: LDAPUser) => ({
+    return members?.map((member: LDAPUser) => ({
       id: member.id,
       username: member.username,
       firstName: member.firstName,

@@ -48,7 +48,7 @@ import GetToken from '../common/decorators/getToken.decorator';
 class BulletinBoardController {
   constructor(private readonly bulletinBoardService: BulletinBoardService) {}
 
-  @Get('')
+  @Get()
   getBulletinsByCategory(@GetCurrentUser() currentUser: JWTUser, @GetToken() token: string) {
     return this.bulletinBoardService.getBulletinsByCategory(currentUser, token);
   }

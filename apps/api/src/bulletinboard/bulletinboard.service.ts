@@ -102,12 +102,22 @@ class BulletinBoardService implements OnModuleInit {
   async getBulletinsByCategory(currentUser: JwtUser, token: string): Promise<BulletinsByCategories> {
     const bulletinCategoriesWithViewPermission: BulletinCategoryResponseDto[] =
       await this.bulletinCategoryService.findAll(currentUser, BulletinCategoryPermission.VIEW, true);
+
     const bulletinCategoriesWithEditPermission: BulletinCategoryResponseDto[] =
       await this.bulletinCategoryService.findAll(currentUser, BulletinCategoryPermission.EDIT, true);
 
     const bulletins = await this.findAllBulletins(currentUser, token, true);
 
-    return bulletinCategoriesWithViewPermission.map((category) => ({
+    const mergedCategories = [
+      ...new Map(
+        [...bulletinCategoriesWithViewPermission, ...bulletinCategoriesWithEditPermission].map((category) => [
+          category.id,
+          category,
+        ]),
+      ).values(),
+    ];
+
+    return mergedCategories.map((category) => ({
       category,
       canEditCategory: bulletinCategoriesWithEditPermission.some((editCategory) => editCategory.id === category.id),
       bulletins: bulletins.filter((bulletin) => bulletin.category.id === category.id),
@@ -180,7 +190,7 @@ class BulletinBoardService implements OnModuleInit {
       username: currentUser.preferred_username,
     };
 
-    const createdBulletin = this.bulletinModel.create({
+    const createdBulletin = await this.bulletinModel.create({
       creator,
       title: dto.title,
       attachmentFileNames: dto.attachmentFileNames,
@@ -190,11 +200,7 @@ class BulletinBoardService implements OnModuleInit {
       isVisibleEndDate: dto.isVisibleEndDate,
     });
 
-    const invitedMembersList = await this.groupsService.getInvitedMembers(
-      dto.category.visibleForGroups,
-      dto.category.visibleForUsers,
-    );
-    SseService.sendEventToUsers(invitedMembersList, this.bulletinsSseConnections, dto.title, SSE_MESSAGE_TYPE.CREATED);
+    await this.notifyUsers(dto, createdBulletin);
 
     return createdBulletin;
   }
@@ -244,8 +250,33 @@ class BulletinBoardService implements OnModuleInit {
     bulletin.isVisibleEndDate = dto.isVisibleEndDate;
     bulletin.updatedBy = updatedBy;
 
-    return bulletin.save();
+    const updatedBulletin = await bulletin.save();
+
+    await this.notifyUsers(dto, updatedBulletin);
+
+    return updatedBulletin;
   }
+
+  notifyUsers = async (dto: CreateBulletinDto, resultingBulletin: BulletinDocument) => {
+    const invitedMembersList = await this.groupsService.getInvitedMembers(
+      [...dto.category.visibleForGroups, ...dto.category.editableByGroups],
+      [...dto.category.visibleForUsers, ...dto.category.editableByUsers],
+    );
+
+    const now = new Date();
+    const isWithinVisibilityPeriod =
+      (!dto.isVisibleStartDate || now >= new Date(dto.isVisibleStartDate)) &&
+      (!dto.isVisibleEndDate || now <= new Date(dto.isVisibleEndDate));
+
+    if (isWithinVisibilityPeriod) {
+      SseService.sendEventToUsers(
+        invitedMembersList,
+        this.bulletinsSseConnections,
+        resultingBulletin,
+        SSE_MESSAGE_TYPE.UPDATED,
+      );
+    }
+  };
 
   async removeBulletins(currentUser: JwtUser, ids: string[]) {
     const bulletins = await this.bulletinModel.find({ _id: { $in: ids } }).exec();

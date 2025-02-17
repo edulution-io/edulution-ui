@@ -23,6 +23,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 
 const BulletinBoardColumnItem = ({
   bulletin,
@@ -108,7 +109,12 @@ const BulletinBoardColumnItem = ({
   const getProcessedBulletinContent = (content: string) => {
     if (content.match(/<img[^>]*src="([^"]*)"[^>]*>/)) {
       const srcMatch = content.match(/src="([^"]*)"/);
-      const src = srcMatch ? srcMatch[1] : '';
+      let src = srcMatch ? srcMatch[1] : '';
+
+      if (!src.startsWith('http') && !src.startsWith(`/${EDU_API_ROOT}`)) {
+        src = `/${src}`;
+      }
+
       return (
         <button
           key={`image-${content}`}
@@ -134,6 +140,7 @@ const BulletinBoardColumnItem = ({
 
   return (
     <div
+      id={bulletin.id}
       key={bulletin.id}
       className="relative flex items-center justify-between break-all rounded-lg bg-white bg-opacity-5 p-4"
     >
