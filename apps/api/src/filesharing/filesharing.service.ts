@@ -343,7 +343,7 @@ class FilesharingService {
 
     const duplicationResults = await Promise.allSettled(
       duplicateFile.destinationFilePaths.map(async (destinationPath) => {
-        const filesAfterTransfer = this.getPathUntilFolder(destinationPath, FILE_PATHS.TRANSFER + '/');
+        const filesAfterTransfer = this.getPathUntilFolder(destinationPath, `${FILE_PATHS.TRANSFER}/`);
         const filesAfterTeacherFolder = this.getPathUntilFolder(destinationPath, username);
         if (filesAfterTransfer.includes(username)) {
           await FilesharingService.copyFile(client, fullOriginPath, destinationPath);
@@ -351,7 +351,7 @@ class FilesharingService {
           await this.createFolder(username, filesAfterTransfer, username);
         }
         if (!filesAfterTransfer.includes(FILE_PATHS.COLLECT)) {
-          await this.createFolder(username, filesAfterTeacherFolder, FILE_PATHS.COLLECT + '/');
+          await this.createFolder(username, filesAfterTeacherFolder, `${FILE_PATHS.COLLECT}/`);
         }
         await FilesharingService.copyFile(client, fullOriginPath, destinationPath);
       }),
