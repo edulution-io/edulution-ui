@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { FC, useEffect } from 'react';
+import React, { FC, useCallback, useEffect } from 'react';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import FileViewerLayout from '@/pages/FileSharing/previews/utilities/FileViewerLayout';
 import FileRenderer from '@/pages/FileSharing/previews/utilities/FileRenderer';
@@ -30,6 +30,7 @@ const FileViewer: FC<FileViewerProps> = ({ editMode }) => {
     isFullScreenEditingEnabled,
     setIsFullScreenEditingEnabled,
     fetchDownloadLinks,
+    setCurrentlyEditingFile,
   } = useFileSharingStore();
   const [searchParams] = useSearchParams();
 
@@ -38,6 +39,12 @@ const FileViewer: FC<FileViewerProps> = ({ editMode }) => {
       void fetchDownloadLinks(currentlyEditingFile);
     }
   }, [currentlyEditingFile, isFullScreenEditingEnabled]);
+
+  const handleCloseFile = useCallback(() => {
+    if (!currentlyEditingFile) return;
+    setCurrentlyEditingFile(null);
+    setIsFullScreenEditingEnabled(false);
+  }, [currentlyEditingFile, setCurrentlyEditingFile, setIsFullScreenEditingEnabled]);
 
   const isOpenedInNewTab = Boolean(searchParams.get('tab'));
 
@@ -51,7 +58,7 @@ const FileViewer: FC<FileViewerProps> = ({ editMode }) => {
           disableMinimizeWindow
           disableToggleMaximizeWindow
           titleTranslationId={t('filesharing.fileEditor')}
-          handleClose={() => setIsFullScreenEditingEnabled(false)}
+          handleClose={() => handleCloseFile()}
         >
           <FileRenderer editMode />
         </ResizableWindow>
