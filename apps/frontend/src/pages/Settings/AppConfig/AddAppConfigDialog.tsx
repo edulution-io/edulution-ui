@@ -26,6 +26,7 @@ import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVar
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
 import APPS from '@libs/appconfig/constants/apps';
+import slugify from '@libs/common/utils/slugify';
 import getCustomAppConfigFormSchema from './schemas/getCustomAppConfigFormSchema';
 import SelectIconField from './components/SelectIconField';
 
@@ -36,12 +37,12 @@ interface AddAppConfigDialogProps {
 const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen, createAppConfig, isLoading, error } =
+  const { isAddAppConfigDialogOpen, appConfigs, setIsAddAppConfigDialogOpen, createAppConfig, isLoading, error } =
     useAppConfigsStore();
 
   const form = useForm({
     mode: 'onSubmit',
-    resolver: zodResolver(getCustomAppConfigFormSchema(t)),
+    resolver: zodResolver(getCustomAppConfigFormSchema(t, appConfigs)),
     defaultValues: {
       customAppName: '',
       customIcon: '',
@@ -65,7 +66,10 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
     };
 
     const newConfig: AppConfigDto = {
-      name: newAppName,
+      name: slugify(newAppName),
+      translations: {
+        de: newAppName,
+      },
       icon: newAppIcon,
       appType: getAppType(),
       options: {

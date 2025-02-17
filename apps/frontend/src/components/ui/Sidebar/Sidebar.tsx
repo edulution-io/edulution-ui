@@ -16,12 +16,13 @@ import APPS from '@libs/appconfig/constants/apps';
 import { SettingsIcon } from '@/assets/icons';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import useLdapGroups from '@/hooks/useLdapGroups';
+import useLanguage from '@/hooks/useLanguage';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import getDisplayName from '@libs/common/utils/getDisplayName';
 import DesktopSidebar from './DesktopSidebar';
 import MobileSidebar from './MobileSidebar';
 
@@ -30,6 +31,7 @@ const Sidebar: React.FC = () => {
   const { appConfigs } = useAppConfigsStore();
   const { isSuperAdmin } = useLdapGroups();
   const isMobileView = useIsMobileView();
+  const { language } = useLanguage();
 
   const { mails } = useMailsStore();
   const { runningConferences } = useConferenceStore();
@@ -49,7 +51,7 @@ const Sidebar: React.FC = () => {
     ...appConfigs
       .filter((option) => findAppConfigByName(appConfigs, option.name))
       .map((item) => ({
-        title: t(item.appType === APP_INTEGRATION_VARIANT.NATIVE ? `${item.name}.sidebar` : item.name),
+        title: getDisplayName(item, t, language),
         link: `/${item.name}`,
         icon: item.icon,
         color: 'bg-ciGreenToBlue',

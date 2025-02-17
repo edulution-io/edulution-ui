@@ -11,14 +11,18 @@
  */
 
 import { IsString, ValidateNested } from 'class-validator';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import ExtendedOptionKeysDto from '@libs/appconfig/types/extendedOptionKeysDto';
+import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import type ExtendedOptionKeysDto from '@libs/appconfig/types/extendedOptionKeysDto';
 import { type AppConfigOptions } from './appConfigOptionsType';
-import AppIntegrationType from './appIntegrationType';
+import type AppIntegrationType from './appIntegrationType';
+import type AppNameTranslations from './appNameTranslations';
 
 class AppConfigDto {
   @IsString()
   name: string;
+
+  @IsString()
+  translations?: AppNameTranslations;
 
   @IsString()
   icon: string;

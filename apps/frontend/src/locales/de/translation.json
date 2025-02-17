@@ -740,7 +740,8 @@
       "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen",
       "forbiddenProxyPath": "Dieser Proxy-Pfad ist nicht erlaubt.",
       "fieldRequired": "Dieses Feld ist erforderlich",
-      "onlyAlphanumericAllowed": "Nur Alphanumerische Zeichen sind erlaubt."
+      "maxChars": "Maximal {{count}} Zeichen",
+      "nameAlreadyExists": "App mit diesem Namen existiert bereits"
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",

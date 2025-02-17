@@ -739,7 +739,8 @@
       "ReadTraefikConfigFailed": "Read traefik config failed",
       "forbiddenProxyPath": "Forbidden proxy path",
       "fieldRequired": "This field is required",
-      "onlyAlphanumericAllowed": "Only alphanumeric characters are allowed"
+      "maxChars": "Maximum {{count}} characters",
+      "nameAlreadyExists": "App with this name already exists"
     },
     "yamleditor": {
       "invalidYaml": "Wrong YAML syntax",

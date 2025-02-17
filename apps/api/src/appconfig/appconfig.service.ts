@@ -125,7 +125,7 @@ class AppConfigService implements OnModuleInit {
       let appConfigDto: AppConfigDto[];
       if (ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
         appConfigDto = await this.appConfigModel
-          .find({}, 'name icon appType options accessGroups extendedOptions')
+          .find({}, 'name translations icon appType options accessGroups extendedOptions')
           .lean();
       } else {
         const appConfigObjects = await this.appConfigModel
@@ -133,7 +133,7 @@ class AppConfigService implements OnModuleInit {
             {
               'accessGroups.path': { $in: ldapGroups },
             },
-            'name icon appType options extendedOptions',
+            'name translations icon appType options extendedOptions',
           )
           .lean();
 

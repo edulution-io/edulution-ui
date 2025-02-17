@@ -13,17 +13,26 @@
 import { z } from 'zod';
 import { TFunction } from 'i18next';
 import APPS from '@libs/appconfig/constants/apps';
-import TApps from '@libs/appconfig/types/appsType';
+import AppConfigDto from '@libs/appconfig/types/appConfigDto';
+import slugify from '@libs/common/utils/slugify';
 
-const forbiddenRouts = [...Object.values(APPS), 'auth', 'edu-api'];
+const forbiddenRoutes = [...Object.values(APPS), 'auth', 'edu-api'];
 
-const getCustomAppConfigFormSchema = (t: TFunction<'translation', undefined>) =>
-  z.object({
+const getCustomAppConfigFormSchema = (t: TFunction<'translation', undefined>, appConfigs: AppConfigDto[]) => {
+  const existingAppNames = appConfigs.map((item) => item.name);
+  const existingDisplayNames = appConfigs.flatMap((item) => Object.values(item.translations ?? {}));
+
+  return z.object({
     customAppName: z
       .string()
       .min(1, { message: t('settings.errors.fieldRequired') })
-      .regex(/^[\p{L}\p{N}-]+$/u, { message: t('settings.errors.onlyAlphanumericAllowed') })
-      .refine((val) => !forbiddenRouts.includes(val as TApps), { message: t('settings.errors.forbiddenProxyPath') }),
+      .max(20, { message: t('settings.errors.maxChars', { count: 20 }) })
+      .refine((val) => !forbiddenRoutes.includes(val), { message: t('settings.errors.nameAlreadyExists') })
+      .refine((val) => !existingAppNames.includes(slugify(val)) && !existingDisplayNames.includes(val), {
+        message: t('settings.errors.nameAlreadyExists'),
+      }),
     customIcon: z.string().min(1, { message: t('settings.errors.fieldRequired') }),
   });
+};
+
 export default getCustomAppConfigFormSchema;

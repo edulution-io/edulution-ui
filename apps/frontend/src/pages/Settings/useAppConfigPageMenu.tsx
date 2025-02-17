@@ -13,14 +13,18 @@
 import { AppStoreIcon, SettingsIcon } from '@/assets/icons';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import useLanguage from '@/hooks/useLanguage';
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import { APPSTORE_PATH, SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import getDisplayName from '@libs/common/utils/getDisplayName';
 
 const useAppConfigPageMenu = () => {
   const navigate = useNavigate();
   const { appConfigs } = useAppConfigsStore();
+  const { language } = useLanguage();
+  const { t } = useTranslation();
 
   const settingsMenuBarEntry: MenuBarEntry = {
     appName: APPS.SETTINGS,
@@ -42,7 +46,7 @@ const useAppConfigPageMenu = () => {
     menuItems: [
       ...appConfigs.map((item) => ({
         id: item.name,
-        label: item.appType === APP_INTEGRATION_VARIANT.NATIVE ? `${item.name}.sidebar` : item.name,
+        label: getDisplayName(item, t, language),
         icon: item.icon,
         action: () => navigate(`/${SETTINGS_PATH}/${item.name}`),
       })),

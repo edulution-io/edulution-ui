@@ -20,6 +20,7 @@ import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/compone
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import APP_CONFIG_OPTIONS from '@/pages/Settings/AppConfig/appConfigOptions';
 import type { AppConfigOptionsType } from '@libs/appconfig/types/appConfigOptionsType';
+import useLanguage from '@/hooks/useLanguage';
 import useGroupStore from '@/store/GroupStore';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
@@ -35,6 +36,7 @@ import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import type MailProviderConfig from '@libs/appconfig/types/mailProviderConfig';
 import APPS from '@libs/appconfig/constants/apps';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import getDisplayName from '@libs/common/utils/getDisplayName';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailImporterConfig from './mails/MailImporterConfig';
@@ -51,6 +53,7 @@ const AppConfigPage: React.FC = () => {
     useAppConfigsStore();
   const { searchGroups } = useGroupStore();
   const { postExternalMailProviderConfig } = useMailsStore();
+  const { language } = useLanguage();
 
   const form = useForm<{ [settingLocation: string]: AppConfigDto } | ProxyConfigFormType | MailProviderConfig>({
     mode: 'onChange',
@@ -258,7 +261,7 @@ const AppConfigPage: React.FC = () => {
             return (
               <NativeAppHeader
                 key={item.name}
-                title={t(item.appType === APP_INTEGRATION_VARIANT.NATIVE ? `${item.name}.sidebar` : item.name)}
+                title={getDisplayName(item, t, language)}
                 iconSrc={item.icon}
               />
             );
