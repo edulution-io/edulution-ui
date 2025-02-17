@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { useOnClickOutside } from 'usehooks-ts';
 import { useTranslation } from 'react-i18next';
 import { AppStoreIcon } from '@/assets/icons';
+import useIsMobileView from '@/hooks/useIsMobileView';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import { Card } from '@/components/shared/Card';
 import cn from '@libs/common/utils/className';
@@ -33,13 +34,17 @@ const emptyAppConfigOption = { id: APPS.NONE, icon: '', isNativeApp: false };
 
 const AppStorePage: React.FC = () => {
   const { t } = useTranslation();
+  const isMobileView = useIsMobileView();
   const [selectedApp, setSelectedApp] = useState<AppConfigOption>(emptyAppConfigOption);
   const appFieldRef = useRef<HTMLDivElement>(null);
   const { appConfigs, error, isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen, createAppConfig } =
     useAppConfigsStore();
   const navigate = useNavigate();
 
-  useOnClickOutside(appFieldRef, () => !isAddAppConfigDialogOpen && setSelectedApp(emptyAppConfigOption));
+  useOnClickOutside(
+    appFieldRef,
+    () => !isAddAppConfigDialogOpen && !isMobileView && setSelectedApp(emptyAppConfigOption),
+  );
 
   const filteredAppOptions = useMemo(() => {
     const existingOptions = appConfigs.map((item) => item.name);
@@ -84,37 +89,36 @@ const AppStorePage: React.FC = () => {
         description={t('appstore.description')}
         iconSrc={AppStoreIcon}
       />
-      <div
-        className="space-4 flex max-w-full flex-wrap gap-4 overflow-y-auto overflow-x-visible scrollbar-thin"
-        ref={appFieldRef}
-      >
-        {APP_CONFIG_OPTIONS.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            onClick={() => setSelectedApp(item)}
-            disabled={!filteredAppOptions.includes(item.id)}
-          >
-            <Card
+      <div ref={appFieldRef}>
+        <div className="space-2 flex max-h-[27rem] w-full flex-wrap gap-2 overflow-y-auto scrollbar-thin md:max-h-[36rem]">
+          {APP_CONFIG_OPTIONS.map((item) => (
+            <button
               key={item.id}
-              className={cn(
-                'm-1 flex h-32 w-48 flex-col items-center transition-transform duration-300 ease-in-out hover:scale-105',
-                selectedApp.id === item.id ? 'scale-105 bg-ciGreenToBlue' : '',
-                !filteredAppOptions.includes(item.id) ? 'opacity-50' : '',
-              )}
-              variant="text"
+              type="button"
+              onClick={() => (selectedApp.id === item.id ? setSelectedApp(emptyAppConfigOption) : setSelectedApp(item))}
+              disabled={!filteredAppOptions.includes(item.id)}
             >
-              <div className="m-4 flex flex-col items-center">
-                <img
-                  src={item.icon}
-                  alt={item.id}
-                  className="h-16 w-16"
-                />
-                <p>{t(`${item.id}.sidebar`)}</p>
-              </div>
-            </Card>
-          </button>
-        ))}
+              <Card
+                key={item.id}
+                className={cn(
+                  'm-1 flex h-32 w-32 flex-col items-center ease-in-out md:w-48 lg:transition-transform lg:duration-300 2xl:hover:scale-105',
+                  selectedApp.id === item.id ? 'scale-105 bg-ciGreenToBlue' : '',
+                  !filteredAppOptions.includes(item.id) ? 'opacity-50' : '',
+                )}
+                variant="text"
+              >
+                <div className="m-4 flex flex-col items-center">
+                  <img
+                    src={item.icon}
+                    alt={item.id}
+                    className="h-14 w-14 md:h-16 md:w-16"
+                  />
+                  <p>{t(`${item.id}.sidebar`)}</p>
+                </div>
+              </Card>
+            </button>
+          ))}
+        </div>
         <AppStoreFloatingButtons
           handleCreateApp={handleCreateApp}
           selectedApp={selectedApp}

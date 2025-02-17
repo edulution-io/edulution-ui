@@ -25,6 +25,7 @@ interface AppStoreFloatingButtonsProps {
 
 const AppStoreFloatingButtons: React.FC<AppStoreFloatingButtonsProps> = ({ handleCreateApp, selectedApp }) => {
   const { t } = useTranslation();
+  const areButtonsVisible = selectedApp.id !== APPS.NONE;
 
   const appStoreFloatingButtonsConfig: FloatingButtonsBarProps = {
     config: {
@@ -33,14 +34,14 @@ const AppStoreFloatingButtons: React.FC<AppStoreFloatingButtonsProps> = ({ handl
           icon: MdAdd,
           text: t(`common.add`),
           onClick: handleCreateApp,
-          isVisible: selectedApp.id !== APPS.NONE,
+          isVisible: areButtonsVisible,
         },
       ],
-      keyPrefix: 'appStore',
+      keyPrefix: 'appstore-page-floating-button_',
     },
   };
 
-  return <FloatingButtonsBar {...appStoreFloatingButtonsConfig} />;
+  return areButtonsVisible ? <FloatingButtonsBar {...appStoreFloatingButtonsConfig} /> : null;
 };
 
 export default AppStoreFloatingButtons;
