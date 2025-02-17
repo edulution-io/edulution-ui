@@ -10,16 +10,28 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { MobileDevicesIcon } from '@/assets/icons';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
-import MobileFileAccessSetupDialog from '@/pages/Dashboard/MobileFileAccess/MobileFileAccessSetupDialog';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/shared/Button';
+import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
+import { EDU_APP_APPSTORE_URL } from '@libs/common/constants';
+import { Card } from '@/components/shared/Card';
+import useUserStore from '@/store/UserStore/UserStore';
 
 const UserSettingsMobileAccess: React.FC = () => {
   const { t } = useTranslation();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { user } = useUserStore();
+
+  const webdavAccessDetails = {
+    displayName: window.document.title,
+    url: `${window.location.origin}/webdav`,
+    username: user?.username,
+    password: '',
+    token: '',
+  };
+  const webdavAccessJson = JSON.stringify(webdavAccessDetails);
+
   return (
     <>
       <NativeAppHeader
@@ -27,21 +39,34 @@ const UserSettingsMobileAccess: React.FC = () => {
         description={t('usersettings.mobileAccess.description')}
         iconSrc={MobileDevicesIcon}
       />
-      <div className="mt-4 flex justify-end">
-        <Button
-          variant="btn-security"
-          size="lg"
-          onClick={() => setIsDialogOpen(!isDialogOpen)}
-        >
-          <p>{t('dashboard.mobileAccess.manual')}</p>
-        </Button>
+      <div className="p-4 text-background">
+        <h2 className="mb-4 text-xl font-bold">{t('dashboard.mobileAccess.title')}</h2>
+
+        <div className="flex flex-col space-y-8 md:flex-row md:items-start md:space-x-8 md:space-y-0">
+          <div className="flex-1">
+            <h3 className="mb-2 text-lg font-semibold">{t('dashboard.mobileAccess.downloadApp')}</h3>
+            <div className="bg-muted">
+              <QRCodeDisplay value={EDU_APP_APPSTORE_URL} />
+            </div>
+          </div>
+
+          <div className="flex-1">
+            <h3 className="mb-2 text-lg font-semibold">{t('dashboard.mobileAccess.accessData')}</h3>
+            <div className="bg-muted">
+              <QRCodeDisplay value={webdavAccessJson} />
+            </div>
+          </div>
+        </div>
+
+        {/* Login data display */}
+        <div className="mt-8">
+          <p className="mb-2">{t('dashboard.mobileAccess.copyCredentials')}</p>
+          <Card variant="text">
+            <pre className="m-2">{`${t('form.url')}: ${webdavAccessDetails.url}`}</pre>
+            <pre className="m-2">{`${t('common.username')}: ${webdavAccessDetails.username}`}</pre>
+          </Card>
+        </div>
       </div>
-      {isDialogOpen ? (
-        <MobileFileAccessSetupDialog
-          isOpen={isDialogOpen}
-          setIsOpen={setIsDialogOpen}
-        />
-      ) : null}
     </>
   );
 };

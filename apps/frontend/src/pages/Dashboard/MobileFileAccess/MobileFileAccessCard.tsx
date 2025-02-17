@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import { AppleLogo } from '@/assets/icons';
 import { Card, CardContent } from '@/components/shared/Card';
-import MobileFileAccessSetupDialog from './MobileFileAccessSetupDialog';
+import MobileFileAccessSetupDialog from '@/pages/Dashboard/MobileFileAccess/MobileFileAccessSetupDialog';
 
 const MobileFileAccess: React.FC = () => {
   const { t } = useTranslation();
