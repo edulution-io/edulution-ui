@@ -170,6 +170,7 @@ const LessonPage = () => {
               options={sessionOptions}
               selectedVal={groupNameParams || t('classmanagement.selectSavedSession')}
               handleChange={handleSessionSelect}
+              variant={'session'}
             />
           </div>
         )}

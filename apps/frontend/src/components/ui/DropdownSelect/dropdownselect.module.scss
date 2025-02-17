@@ -129,18 +129,30 @@
 }
 
 .dropdown.dark .selected-value input {
+  background-color: var(--muted);
+  color: #d1d5db;
+  border: 1px solid #555;
+}
+
+.dropdown.session .selected-value input {
   background-color: #2d2d30;
   color: #d1d5db;
   border: 1px solid #555;
 }
 
 .dropdown.dark .options {
-  background-color: var(--bg-muted, #2d2d30);
+  background-color: var(--bg-muted, #2d3748);
   color: rgba(255, 255, 255, 0.8);
   border: 1px solid #555;
 }
 
 .dropdown.dark .option {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.dropdown.session .option.selected,
+.dropdown.session .option:hover {
+  background-color: var(--muted);
   color: rgba(255, 255, 255, 0.8);
 }
 

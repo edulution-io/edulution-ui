@@ -28,7 +28,7 @@ interface DropdownProps {
   handleChange: (value: string) => void;
   openToTop?: boolean;
   classname?: string;
-  variant?: 'light' | 'dark';
+  variant?: 'light' | 'dark' | 'session';
 }
 
 const DropdownSelect: React.FC<DropdownProps> = ({
@@ -75,6 +75,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
       className={cn(styles.dropdown, classname, {
         [styles.dark]: variant === 'dark',
         [styles.light]: variant === 'light',
+        [styles.session]: variant === 'session',
       })}
       ref={dropdownRef}
     >
@@ -93,6 +94,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
             className={clsx({
               'bg-background text-foreground': variant === 'light',
               'bg-muted text-secondary': variant === 'dark',
+              'bg-secondary-foreground text-secondary': variant === 'session',
             })}
           />
         </div>
@@ -104,6 +106,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
           [styles.up]: openToTop,
           'bg-background text-foreground': variant === 'light',
           'bg-muted text-secondary': variant === 'dark',
+          'bg-secondary-foreground text-secondary': variant === 'session',
         })}
       >
         {filter(options).map((option) => (
@@ -114,6 +117,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
               [styles.selected]: t(option.name) === selectedVal,
               'hover:bg-gray-200': variant === 'light',
               'bg-muted hover:bg-secondary': variant === 'dark',
+              'bg-secondary-foreground text-secondary': variant === 'session',
             })}
           >
             {t(option.name)}
