@@ -19,7 +19,7 @@ import type ExtendedOptionKeysDto from '@libs/appconfig/types/extendedOptionKeys
 
 @Schema({ timestamps: true, strict: true, minimize: false })
 export class AppConfig extends Document {
-  @Prop({ required: true })
+  @Prop({ unique: true, required: true })
   name: string;
 
   @Prop({ required: true })
