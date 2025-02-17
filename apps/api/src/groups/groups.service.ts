@@ -161,13 +161,15 @@ class GroupsService implements OnModuleInit {
   }
 
   private static sanitizeGroupMembers(members: LDAPUser[]): GroupMemberDto[] {
-    return members?.map((member: LDAPUser) => ({
-      id: member.id,
-      username: member.username,
-      firstName: member.firstName,
-      lastName: member.lastName,
-      email: member.email,
-    }));
+    return Array.isArray(members)
+      ? members.map((member: LDAPUser) => ({
+          id: member.id,
+          username: member.username,
+          firstName: member.firstName,
+          lastName: member.lastName,
+          email: member.email,
+        }))
+      : [];
   }
 
   @Interval(KEYCLOACK_SYNC_MS)

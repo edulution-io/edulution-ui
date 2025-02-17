@@ -22,13 +22,10 @@ import BulletinBoardEditorialFloatingButtonsBar from '@/pages/BulletinBoard/Bull
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import BulletinBoardPageColumn from '@/pages/BulletinBoard/components/BulletinBoardPageColumn';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
-import { useParams } from 'react-router-dom';
 
 const BulletinBoardPage = () => {
   const { t } = useTranslation();
-  const { bulletinId } = useParams();
   const {
-    resetBulletinBoardNotifications,
     bulletinBoardNotifications,
     bulletinsByCategories,
     getBulletinsByCategories,
@@ -41,27 +38,10 @@ const BulletinBoardPage = () => {
   const pageBarsHeight = useElementHeight([NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 15;
 
   useEffect(() => {
-    resetBulletinBoardNotifications();
-  }, []);
-
-  useEffect(() => {
     void getBulletinsByCategories(false);
     void getCategoriesWithEditPermission();
     setIsInitialLoading(false);
   }, [isEditorialModeEnabled, bulletinBoardNotifications]);
-
-  useEffect(() => {
-    if (bulletinId) {
-      const element = document.getElementById(bulletinId);
-      if (element) {
-        element.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-          inline: 'center',
-        });
-      }
-    }
-  }, [bulletinId, bulletinsByCategories]);
 
   if (isLoading || isInitialLoading) {
     return <LoadingIndicator isOpen />;
