@@ -16,11 +16,15 @@ import { type AppConfigOptions } from '@libs/appconfig/types/appConfigOptionsTyp
 import type AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import type ExtendedOptionKeysDto from '@libs/appconfig/types/extendedOptionKeysDto';
+import type AppNameTranslations from '@libs/appconfig/types/appNameTranslations';
 
 @Schema({ timestamps: true, strict: true, minimize: false })
 export class AppConfig extends Document {
   @Prop({ unique: true, required: true })
   name: string;
+
+  @Prop({ default: {} })
+  translations: AppNameTranslations;
 
   @Prop({ required: true })
   icon: string;
