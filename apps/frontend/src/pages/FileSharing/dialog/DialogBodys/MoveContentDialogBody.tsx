@@ -101,7 +101,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   const columns = FileSharingTableColumns(onFilenameClick, [FILESHARING_TABLE_COLUM_NAMES.SELECT_FILENAME]);
 
   return (
-    <div className="h-[60vh] flex-col text-background">
+    <div className="h-[60vh] flex-col overflow-auto text-background scrollbar-thin">
       <LoadingIndicator isOpen={isLoading} />
       <div className="pb-2">
         <DirectoryBreadcrumb
@@ -113,20 +113,22 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
         />
       </div>
       {!isLoading && (
-        <ScrollableTable
-          columns={columns}
-          data={files}
-          selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filename]: true } : {}}
-          onRowSelectionChange={handleRowSelectionChange}
-          applicationName={APPS.FILE_SHARING}
-          getRowId={(row) => row.filename}
-          showHeader={false}
-          textColorClass="text-background"
-          showSelectedCount={false}
-          footer={footer}
-          filterKey="select-filename"
-          filterPlaceHolderText="filesharing.filterPlaceHolderText"
-        />
+        <div className="overflow-auto">
+          <ScrollableTable
+            columns={columns}
+            data={files}
+            selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filename]: true } : {}}
+            onRowSelectionChange={handleRowSelectionChange}
+            applicationName={APPS.FILE_SHARING}
+            getRowId={(row) => row.filename}
+            showHeader={false}
+            textColorClass="text-background"
+            showSelectedCount={false}
+            footer={footer}
+            filterKey="select-filename"
+            filterPlaceHolderText="filesharing.filterPlaceHolderText"
+          />
+        </div>
       )}
     </div>
   );

@@ -289,7 +289,7 @@ class FilesharingService {
     try {
       await FilesharingService.copyFileViaWebDAV(client, encodeURI(originPath), sanitizedDestinationPath);
     } catch (error) {
-      Logger.error(error); // TODO: Replace this with a custom exception. Issue #217
+      throw new CustomHttpException(FileSharingErrorMessage.DuplicateFailed, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
