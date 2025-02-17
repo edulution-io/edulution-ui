@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 'use client';
 
 import * as React from 'react';
@@ -40,7 +52,9 @@ const InputOTPSlot = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        'relative mx-1 flex h-11 w-11 items-center justify-center border-y border-r border-input text-p shadow-sm transition-all first:rounded-l-md first:border-l last:rounded-r-md',
+        'relative mx-1 flex h-11 w-11 items-center justify-center border border-input text-p shadow-sm transition-all',
+        'first:ml-0 first:rounded-l-md first:border-l',
+        'last:rounded-r-md last:border-r',
         isActive && 'z-10 ring-1 ring-ring',
         className,
       )}

@@ -1,43 +1,59 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import { createBrowserRouter, createRoutesFromElements, Outlet, Route } from 'react-router-dom';
-import MainLayout from '@/components/layout/MainLayout';
-import { HomePage } from '@/pages/Home';
-
-import AppConfigPage from '@/pages/Settings/AppConfig/AppConfigPage';
 import { AppConfigDto } from '@libs/appconfig/types';
+import type TApps from '@libs/appconfig/types/appsType';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
-import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
-import { MAILS_PATH, SECURITY_PATH, USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
-import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
-import UserSettingsMailsPage from '@/pages/UserSettings/Mails/UserSettingsMailsPage';
-import NativeAppPage from '@/pages/NativeAppPage/NativeAppPage';
-import EmptyLayout from '@/components/layout/EmptyLayout';
-import FileViewer from '@/pages/FileSharing/previews/FileViewer';
-import useLdapGroups from '@/hooks/useLdapGroups';
+import {
+  LANGUAGE_PATH,
+  MAILS_PATH,
+  MOBILE_ACCESS_PATH,
+  SECURITY_PATH,
+  USER_DETAILS_PATH,
+  USER_SETTINGS_PATH,
+} from '@libs/userSettings/constants/user-settings-endpoints';
 import getAuthRoutes from '@/router/routes/AuthRoutes';
-import TApps from '@libs/appconfig/types/appsType';
+import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
+import NativeAppPage from '@/pages/NativeAppPage/NativeAppPage';
+import UserSettingsMailsPage from '@/pages/UserSettings/Mails/UserSettingsMailsPage';
+import UserSettingsDetailsPage from '@/pages/UserSettings/Details/UserSettingsDetailsPage';
+import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
+import FILE_PREVIEW_ROUTE from '@libs/filesharing/constants/routes';
+import LanguageSettingsPage from '@/pages/UserSettings/Language/LanguageSettingsPage';
+import FileViewer from '@/pages/FileSharing/previews/FileViewer';
+import UserSettingsMobileAccess from '@/pages/UserSettings/MobileAccess/UserSettingsMobileAccess';
+import getSurveyRoutes from '@/router/routes/SurveyRoutes';
+import EmptyLayout from '@/components/layout/EmptyLayout';
+import MainLayout from '@/components/layout/MainLayout';
+import getPublicRoutes from '@/router/routes/PublicRoutes';
 import getSettingsRoutes from './routes/SettingsRoutes';
 import getForwardedRoutes from './routes/ForwardedRoutes';
 import getEmbeddedRoutes from './routes/EmbeddedRoutes';
+import DashboardPage from '../pages/Dashboard/DashboardPage';
 
-const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
-  const { isSuperAdmin } = useLdapGroups();
-
-  return createBrowserRouter(
+const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
+  createBrowserRouter(
     createRoutesFromElements(
       <>
+        {getPublicRoutes()}
         {getAuthRoutes(isAuthenticated)}
         {isAuthenticated ? (
           <>
             <Route element={<EmptyLayout />}>
               <Route
-                path="/onlyoffice"
-                element={
-                  <FileViewer
-                    mode="edit"
-                    editWindow
-                  />
-                }
+                path={FILE_PREVIEW_ROUTE}
+                element={<FileViewer editMode />}
               />
             </Route>
             {getForwardedRoutes(appConfigs)}
@@ -46,7 +62,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
             <Route element={<MainLayout />}>
               <Route
                 path="/"
-                element={<HomePage />}
+                element={<DashboardPage />}
               />
               <Route
                 path={USER_SETTINGS_PATH}
@@ -61,24 +77,22 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
                   element={<UserSettingsSecurityPage />}
                 />
                 <Route
+                  path={USER_DETAILS_PATH}
+                  element={<UserSettingsDetailsPage />}
+                />
+                <Route
                   path={MAILS_PATH}
                   element={<UserSettingsMailsPage />}
                 />
-              </Route>
-              {isSuperAdmin ? (
                 <Route
-                  path="settings"
-                  element={<AppConfigPage />}
-                >
-                  {appConfigs.map((item) => (
-                    <Route
-                      key={item.name}
-                      path={item.name}
-                      element={<AppConfigPage />}
-                    />
-                  ))}
-                </Route>
-              ) : null}
+                  path={LANGUAGE_PATH}
+                  element={<LanguageSettingsPage />}
+                />
+                <Route
+                  path={MOBILE_ACCESS_PATH}
+                  element={<UserSettingsMobileAccess />}
+                />
+              </Route>
               {appConfigs.map((item) =>
                 item.appType === APP_INTEGRATION_VARIANT.NATIVE ? (
                   <Route
@@ -88,14 +102,14 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) => {
                   />
                 ) : null,
               )}
+              {getSettingsRoutes()}
               {getClassManagementRoutes()}
-              {getSettingsRoutes(appConfigs)}
+              {getSurveyRoutes()}
             </Route>
           </>
         ) : null}
       </>,
     ),
   );
-};
 
 export default createRouter;

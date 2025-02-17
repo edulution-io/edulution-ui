@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 'use client';
 
 /* eslint-disable react/no-unknown-property, react/no-unstable-nested-components, @typescript-eslint/no-shadow, react/button-has-type, @typescript-eslint/no-unused-expressions, react/jsx-no-useless-fragment */
@@ -48,7 +60,7 @@ interface MultipleSelectorProps {
   groupBy?: string;
   className?: string;
   badgeClassName?: string;
-  variant?: 'light' | 'dark';
+  variant?: 'default' | 'dialog';
   /**
    * First item selected is a default behavior by cmdk. That is why the default is true.
    * This is a workaround solution by add a dummy item.
@@ -178,7 +190,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       triggerSearchOnFocus = false,
       commandProps,
       inputProps,
-      variant = 'dark',
+      variant = 'default',
     }: MultipleSelectorProps,
     ref: React.Ref<MultipleSelectorRef>,
   ) => {
@@ -357,7 +369,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
         }}
         className={cn(
           'overflow-visible',
-          variant === 'dark' ? 'bg-ciDarkGrey text-ciLightGrey' : '',
+          variant === 'default' ? 'bg-accent text-secondary' : 'bg-muted text-secondary',
           commandProps?.className,
         )}
         shouldFilter={commandProps?.shouldFilter !== undefined ? commandProps.shouldFilter : !onSearch} // When onSearch is provided, we don't want to filter the options. You can still override it.
@@ -366,8 +378,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
         <div
           className={cn(
             'group rounded-md p-[8px] px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
-            variant === 'dark' ? 'bg-ciDarkGrey text-ciLightGrey' : '',
-            variant === 'light' ? 'border border-input' : '',
+            variant === 'default' ? 'bg-muted text-secondary' : '',
             className,
           )}
         >
@@ -403,9 +414,9 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                   >
                     <X
                       className={
-                        variant === 'dark'
-                          ? 'h-3 w-3 text-ciLightGrey hover:text-foreground'
-                          : 'h-3 w-3 text-muted-foreground hover:text-foreground'
+                        variant === 'default'
+                          ? 'h-3 w-3 text-secondary hover:bg-muted-foreground'
+                          : 'h-3 w-3 text-secondary '
                       }
                     />
                   </button>
@@ -434,7 +445,9 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
               placeholder={hidePlaceholderWhenSelected && selected.length !== 0 ? '' : placeholder}
               className={cn(
                 'ml-2 flex-1 outline-none placeholder:text-muted-foreground',
-                variant === 'dark' ? 'bg-ciDarkGrey text-ciLightGrey placeholder:text-ciLightGrey' : '',
+                variant === 'default'
+                  ? 'bg-accent text-secondary placeholder:text-secondary'
+                  : 'bg-muted text-secondary placeholder:text-secondary',
                 inputProps?.className,
               )}
             />
@@ -445,7 +458,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
             <CommandList
               className={cn(
                 'absolute top-0 z-50 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in',
-                variant === 'dark' ? 'bg-ciDarkGrey text-ciLightGrey' : 'bg-white',
+                variant === 'default' ? 'bg-accent text-secondary' : 'bg-muted',
               )}
             >
               {isLoading ? (
@@ -464,7 +477,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                     <CommandGroup
                       key={key}
                       heading={key}
-                      className={variant === 'dark' ? 'h-full overflow-auto text-ciLightGrey' : 'h-full overflow-auto'}
+                      className={variant === 'default' ? 'h-full overflow-auto text-secondary' : 'h-full overflow-auto'}
                     >
                       <>
                         {dropdowns.map((option) => (
@@ -488,11 +501,13 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                             }}
                             className={cn(
                               'cursor-pointer',
-                              variant === 'dark' ? 'bg-ciDarkGrey text-ciLightGrey' : 'bg-white text-black',
+                              variant === 'default'
+                                ? 'bg-accent text-secondary hover:bg-accent-light hover:text-secondary'
+                                : 'bg-muted text-secondary hover:bg-muted-light hover:text-secondary',
                               option.disable &&
-                                (variant === 'dark'
-                                  ? 'cursor-default text-muted-foreground'
-                                  : 'cursor-default text-gray-500'),
+                                (variant === 'default'
+                                  ? 'cursor-default text-muted-foreground hover:bg-accent hover:text-muted-foreground'
+                                  : 'cursor-default text-gray-500 hover:bg-muted hover:text-gray-500'),
                             )}
                           >
                             {option.label}

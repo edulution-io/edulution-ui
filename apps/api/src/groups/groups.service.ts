@@ -1,11 +1,23 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import axios from 'axios';
 import { Interval, SchedulerRegistry } from '@nestjs/schedule';
-import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import { Group } from '@libs/groups/types/group';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import GroupsErrorMessage from '@libs/groups/types/groupsErrorMessage';
-import { GROUPS_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
+import { GROUPS_CACHE_TTL_MS, KEYCLOACK_SYNC_MS } from '@libs/common/constants/cacheTtl';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import GroupMemberDto from '@libs/groups/types/groupMember.dto';
@@ -16,6 +28,7 @@ import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/com
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
 import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
+import GROUPS_TOKEN_INTERVAL from '@libs/groups/constants/schedulerRegistry';
 
 const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API, KEYCLOAK_EDU_API_CLIENT_ID, KEYCLOAK_EDU_API_CLIENT_SECRET } =
   process.env as {
@@ -23,16 +36,27 @@ const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API, KEYCLOAK_EDU_API_CLIENT_ID, KEYCLOA
   };
 
 @Injectable()
-class GroupsService {
+class GroupsService implements OnModuleInit {
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private jwtService: JwtService,
     private schedulerRegistry: SchedulerRegistry,
-  ) {
-    this.scheduleTokenRefresh();
-  }
+  ) {}
+
+  private keycloakAccessToken: string;
 
   private accessTokenRefreshInterval: number = 5000;
+
+  async onModuleInit() {
+    this.scheduleTokenRefresh();
+    await this.initializeService();
+  }
+
+  private async initializeService() {
+    await this.obtainAccessToken();
+
+    await this.updateGroupsAndMembersInCache();
+  }
 
   scheduleTokenRefresh() {
     const callback = () => {
@@ -40,10 +64,8 @@ class GroupsService {
     };
 
     const interval = setInterval(callback, this.accessTokenRefreshInterval);
-    this.schedulerRegistry.addInterval('accessTokenRefresh', interval);
+    this.schedulerRegistry.addInterval(GROUPS_TOKEN_INTERVAL, interval);
   }
-
-  private keycloakAccessToken: string;
 
   async obtainAccessToken() {
     const tokenEndpoint = `${KEYCLOAK_API}/realms/${KEYCLOAK_EDU_UI_REALM}${AUTH_PATHS.AUTH_OIDC_TOKEN_PATH}`;
@@ -79,7 +101,7 @@ class GroupsService {
   }
 
   updateTokenRefreshInterval() {
-    this.schedulerRegistry.deleteInterval('accessTokenRefresh');
+    this.schedulerRegistry.deleteInterval(GROUPS_TOKEN_INTERVAL);
     this.scheduleTokenRefresh();
   }
 
@@ -109,7 +131,7 @@ class GroupsService {
     try {
       return await GroupsService.makeAuthorizedRequest<LDAPUser[]>(HttpMethods.GET, 'users', token);
     } catch (e) {
-      throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY);
     }
   }
 
@@ -126,7 +148,7 @@ class GroupsService {
 
       return response.data;
     } catch (e) {
-      throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY);
     }
   }
 
@@ -144,7 +166,7 @@ class GroupsService {
     }));
   }
 
-  @Interval(GROUPS_CACHE_TTL_MS * 0.5)
+  @Interval(KEYCLOACK_SYNC_MS)
   async updateGroupsAndMembersInCache() {
     try {
       const groups = await GroupsService.fetchAllGroups(this.keycloakAccessToken);
@@ -152,6 +174,9 @@ class GroupsService {
 
       const promises = groups.map(async (group) => {
         const members = await GroupsService.fetchGroupMembers(this.keycloakAccessToken, group.id);
+        if (!members?.length) {
+          return;
+        }
         const sanitizedMembers = GroupsService.sanitizeGroupMembers(members);
         const sanitizedGroup = GroupsService.sanitizeGroup(group);
 
@@ -197,11 +222,11 @@ class GroupsService {
       const groups = await GroupsService.makeAuthorizedRequest<Group[]>(HttpMethods.GET, 'groups', token, 'search');
       return GroupsService.flattenGroups(groups);
     } catch (e) {
-      throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY);
     }
   }
 
-  static async fetchGroupMembers(token: string, groupId: string): Promise<LDAPUser[]> {
+  static async fetchGroupMembers(token: string, groupId: string): Promise<LDAPUser[] | undefined> {
     try {
       return await GroupsService.makeAuthorizedRequest<LDAPUser[]>(
         HttpMethods.GET,
@@ -210,7 +235,7 @@ class GroupsService {
         'briefRepresentation=true',
       );
     } catch (e) {
-      throw new CustomHttpException(GroupsErrorMessage.CouldNotFetchGroupMembers, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(GroupsErrorMessage.CouldNotFetchGroupMembers, HttpStatus.BAD_GATEWAY);
     }
   }
 
@@ -227,7 +252,7 @@ class GroupsService {
 
       return groups.filter((group) => group.path.includes(searchKeyWord));
     } catch (e) {
-      throw new CustomHttpException(GroupsErrorMessage.CouldNotSearchGroups, HttpStatus.BAD_GATEWAY, e);
+      throw new CustomHttpException(GroupsErrorMessage.CouldNotSearchGroups, HttpStatus.BAD_GATEWAY, searchKeyWord);
     }
   }
 }

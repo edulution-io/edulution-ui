@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useEffect, useState } from 'react';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import { useTranslation } from 'react-i18next';
@@ -49,19 +61,19 @@ const EnrolPage: React.FC = () => {
       name: UserGroups.Classes,
       translationId: 'myClasses',
       icon: <MdGroups className="h-7 w-7" />,
-      groups: userSchoolClasses.filter(filterGroups),
+      groups: userSchoolClasses?.filter(filterGroups),
     },
     {
       name: UserGroups.Printers,
       translationId: 'printers',
       icon: <FaPrint className="h-5 w-7" />,
-      groups: printers.filter(filterGroups),
+      groups: Array.isArray(printers) ? printers.filter(filterGroups) : [],
     },
     {
       name: UserGroups.Projects,
       translationId: 'myProjects',
       icon: <FaUsersGear className="h-5 w-7" />,
-      groups: userProjects.filter(filterGroups),
+      groups: userProjects?.filter(filterGroups),
     },
   ];
 
@@ -73,21 +85,20 @@ const EnrolPage: React.FC = () => {
         name="filter"
         onChange={(e) => setFilterKeyWord(e.target.value)}
         placeholder={t('classmanagement.typeToFilter')}
-        variant="lightGray"
         id={FILTER_BAR_ID}
         className="mb-2"
       />
       <div
-        className="flex max-w-full flex-wrap overflow-y-auto overflow-x-visible scrollbar-thin"
+        className="flex max-w-full flex-row flex-wrap overflow-y-auto overflow-x-visible scrollbar-thin"
         style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
       >
-        <div className="mt-2 text-lg">{t('classmanagement.enrolPageDescription')}</div>
+        <div className="mt-2 min-w-full text-lg text-background">{t('classmanagement.enrolPageDescription')}</div>
         {groupRows.map((row) => (
           <div
             key={row.name}
-            className="mt-4"
+            className="mt-4 min-w-full text-background"
           >
-            <h4>{t(`classmanagement.${row.name}`)}</h4>
+            <h4 className="text-background">{t(`classmanagement.${row.name}`)}</h4>
             <GroupList
               row={row}
               isEnrolEnabled

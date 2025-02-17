@@ -1,20 +1,30 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import cn from '@libs/common/utils/className';
-import { CardSH as SHCard, CardContent as SHCardContent } from '@/components/ui/CardSH';
+import { CardContent as SHCardContent, CardSH as SHCard } from '@/components/ui/CardSH';
 import { cva, type VariantProps } from 'class-variance-authority';
-
-import styles from './card.module.scss';
 
 const cardVariants = cva('border-solid', {
   variants: {
     variant: {
-      collaboration: 'border-ciDarkBlue border-4',
+      collaboration: 'border-primary border-4',
       organisation: 'border-ciLightBlue border-4',
       infrastructure: 'border-ciLightGreen border-4',
-      security: styles['gradient-box'],
+      security: 'gradient-box',
       modal:
         'border-4 border-white fixed left-[50%] top-[40%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-xl bg-white p-[25px] text-foreground',
-      text: 'border-ciGrey border-3 bg-ciGrey bg-opacity-20 inset-2 overflow-auto scrollbar-none hover:scrollbar-thin',
+      text: 'border-muted border-3 bg-muted bg-opacity-20 inset-2 overflow-auto scrollbar-none hover:scrollbar-thin',
     },
   },
   defaultVariants: {

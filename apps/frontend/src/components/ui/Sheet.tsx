@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 'use client';
 
 import * as React from 'react';
@@ -6,7 +18,7 @@ import { Cross2Icon } from '@radix-ui/react-icons';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 import cn from '@libs/common/utils/className';
-import { translateKey } from '@/utils/common';
+import i18n from '@/i18n';
 
 const Sheet = SheetPrimitive.Root;
 
@@ -35,15 +47,14 @@ const sheetVariants = cva(
   {
     variants: {
       side: {
-        top: 'inset-x-0 top-0 border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top',
-        bottom:
-          'inset-x-0 bottom-0 border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom',
-        left: 'inset-y-0 left-0 h-full w-3/4 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm',
+        top: 'inset-x-0 top-0 data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top',
+        bottom: 'inset-x-0 bottom-0  data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom',
+        left: 'inset-y-0 left-0 h-full w-3/4  data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm',
         right:
-          'inset-y-0 right-0 h-full w-3/4 border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm',
+          'inset-y-0 right-0 h-full w-3/4 data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm',
       },
       variant: {
-        primary: 'bg-white',
+        primary: 'bg-overlay',
         secondary: 'bg-ciGray',
         tertiary: 'bg-black',
       },
@@ -66,8 +77,8 @@ const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Con
       <SheetPrimitive.Content
         ref={ref}
         className={cn(
-          { 'color-black text-foreground': variant === 'primary' },
-          { 'color-white text-background': variant === 'secondary' || variant === 'tertiary' },
+          { 'bg-overlay text-background': variant === 'primary' },
+          { 'bg-overlay text-foreground': variant === 'secondary' || variant === 'tertiary' },
           sheetVariants({ side, variant }),
           'max-h-[90vh] overflow-auto',
           className,
@@ -83,7 +94,7 @@ const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Con
           )}
         >
           <Cross2Icon className="h-4 w-4" />
-          <span className="sr-only">{translateKey('dialog.close')}</span>
+          <span className="sr-only">{i18n.t('dialog.close')}</span>
         </SheetPrimitive.Close>
       </SheetPrimitive.Content>
     </SheetPortal>
@@ -95,8 +106,8 @@ interface SheetHeaderProps extends React.HTMLAttributes<HTMLDivElement>, Variant
 const SheetHeader = ({ className, variant, ...props }: SheetHeaderProps) => (
   <div
     className={cn(
-      { 'color-black text-foreground': variant === 'primary' },
-      { 'color-white text-background': variant === 'secondary' || variant === 'tertiary' },
+      { 'color-black text-background': variant === 'primary' },
+      { 'color-white text-foreground': variant === 'secondary' || variant === 'tertiary' },
       'flex flex-col space-y-2 text-center sm:text-left',
       className,
     )}

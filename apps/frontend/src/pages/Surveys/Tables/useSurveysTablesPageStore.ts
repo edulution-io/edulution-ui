@@ -1,19 +1,147 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { create } from 'zustand';
-import eduApi from '@/api/eduApi';
-import SURVEYS_ENDPOINT from '@libs/survey/constants/surveys-endpoint';
+import { RowSelectionState } from '@tanstack/react-table';
+import {
+  PUBLIC_SURVEYS,
+  SURVEY_CAN_PARTICIPATE_ENDPOINT,
+  SURVEY_FIND_ONE_ENDPOINT,
+  SURVEY_HAS_ANSWERS_ENDPOINT,
+  SURVEYS,
+} from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveysPageView from '@libs/survey/types/api/page-view';
 import SurveyStatus from '@libs/survey/survey-status-enum';
-import SurveysTablesPageStore from '@libs/survey/types/tables/surveysTablePageStore';
-import SurveysTablesPageStoreInitialState from '@libs/survey/types/tables/surveysTablePageStoreInitialState';
+import { HttpStatus } from '@nestjs/common';
+import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
+
+interface SurveysTablesPageStore {
+  selectedSurvey: SurveyDto | undefined;
+  selectSurvey: (survey: SurveyDto | undefined) => void;
+
+  updateSelectedSurvey: (surveyId: string | undefined, isPublic: boolean) => Promise<void>;
+  isFetching: boolean;
+
+  canParticipateSelectedSurvey: (surveyId?: string, isPublic?: boolean) => Promise<void>;
+  canParticipate: boolean;
+
+  hasAnswersSelectedSurvey: (surveyId?: string) => Promise<void>;
+  hasAnswers: boolean;
+
+  updateUsersSurveys: () => Promise<void>;
+
+  openSurveys: SurveyDto[];
+  updateOpenSurveys: () => Promise<void>;
+  isFetchingOpenSurveys: boolean;
+
+  createdSurveys: SurveyDto[];
+  updateCreatedSurveys: () => Promise<void>;
+  isFetchingCreatedSurveys: boolean;
+
+  answeredSurveys: SurveyDto[];
+  updateAnsweredSurveys: () => Promise<void>;
+  isFetchingAnsweredSurveys: boolean;
+
+  selectedRows: RowSelectionState;
+  setSelectedRows: (rows: RowSelectionState) => void;
+
+  reset: () => void;
+}
+
+const SurveysTablesPageStoreInitialState: Partial<SurveysTablesPageStore> = {
+  selectedSurvey: undefined,
+
+  canParticipate: false,
+  hasAnswers: false,
+
+  answeredSurveys: [],
+  isFetchingAnsweredSurveys: false,
+
+  createdSurveys: [],
+  isFetchingCreatedSurveys: false,
+
+  openSurveys: [],
+  isFetchingOpenSurveys: false,
+
+  selectedRows: {},
+};
 
 const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
   ...(SurveysTablesPageStoreInitialState as SurveysTablesPageStore),
   reset: () => set(SurveysTablesPageStoreInitialState),
 
-  updateSelectedPageView: (pageView: SurveysPageView) => set({ selectedPageView: pageView }),
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
+
+  updateSelectedSurvey: async (surveyId?: string, isPublic?: boolean): Promise<void> => {
+    if (!surveyId) {
+      set({ selectedSurvey: undefined });
+      return;
+    }
+    set({ isFetching: true });
+    try {
+      if (isPublic) {
+        const response = await eduApi.get<SurveyDto>(`${PUBLIC_SURVEYS}/${surveyId}`);
+        set({ selectedSurvey: response.data });
+      } else {
+        const response = await eduApi.get<SurveyDto>(`${SURVEY_FIND_ONE_ENDPOINT}/${surveyId}`);
+        set({ selectedSurvey: response.data });
+      }
+    } catch (error) {
+      set({ selectedSurvey: undefined });
+      handleApiError(error, set);
+    } finally {
+      set({ isFetching: false });
+    }
+  },
+
+  canParticipateSelectedSurvey: async (surveyId?: string, isPublic?: boolean): Promise<void> => {
+    if (!surveyId) {
+      set({ canParticipate: false });
+      return;
+    }
+    if (isPublic) {
+      set({ canParticipate: true });
+      return;
+    }
+    try {
+      const response = await eduApi.get<boolean>(`${SURVEY_CAN_PARTICIPATE_ENDPOINT}/${surveyId}`);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- it's a number
+      if (response.status === HttpStatus.OK) {
+        set({ canParticipate: response.data });
+      }
+    } catch (error) {
+      set({ canParticipate: false });
+      handleApiError(error, set);
+    }
+  },
+
+  hasAnswersSelectedSurvey: async (surveyId?: string): Promise<void> => {
+    if (!surveyId) {
+      set({ hasAnswers: false });
+      return;
+    }
+    try {
+      const response = await eduApi.get<boolean>(`${SURVEY_HAS_ANSWERS_ENDPOINT}/${surveyId}`);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- it's a number
+      if (response.status === HttpStatus.OK) {
+        set({ hasAnswers: response.data });
+      }
+    } catch (error) {
+      set({ hasAnswers: false });
+      handleApiError(error, set);
+    }
+  },
+
   updateUsersSurveys: async (): Promise<void> => {
     const { updateOpenSurveys, updateCreatedSurveys, updateAnsweredSurveys } = get();
     const promises = [updateOpenSurveys(), updateCreatedSurveys(), updateAnsweredSurveys()];
@@ -23,7 +151,7 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
   updateOpenSurveys: async (): Promise<void> => {
     set({ isFetchingOpenSurveys: true });
     try {
-      const response = await eduApi.get<SurveyDto[]>(SURVEYS_ENDPOINT, { params: { status: SurveyStatus.OPEN } });
+      const response = await eduApi.get<SurveyDto[]>(SURVEYS, { params: { status: SurveyStatus.OPEN } });
       const surveys = response.data;
       set({ openSurveys: surveys });
     } catch (error) {
@@ -37,7 +165,7 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
   updateCreatedSurveys: async (): Promise<void> => {
     set({ isFetchingCreatedSurveys: true });
     try {
-      const response = await eduApi.get<SurveyDto[]>(SURVEYS_ENDPOINT, { params: { status: SurveyStatus.CREATED } });
+      const response = await eduApi.get<SurveyDto[]>(SURVEYS, { params: { status: SurveyStatus.CREATED } });
       const surveys = response.data;
       set({ createdSurveys: surveys });
     } catch (error) {
@@ -51,7 +179,7 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
   updateAnsweredSurveys: async (): Promise<void> => {
     set({ isFetchingAnsweredSurveys: true });
     try {
-      const response = await eduApi.get<SurveyDto[]>(SURVEYS_ENDPOINT, { params: { status: SurveyStatus.ANSWERED } });
+      const response = await eduApi.get<SurveyDto[]>(SURVEYS, { params: { status: SurveyStatus.ANSWERED } });
       const surveys = response.data;
       set({ answeredSurveys: surveys });
     } catch (error) {
@@ -61,6 +189,8 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
       set({ isFetchingAnsweredSurveys: false });
     }
   },
+
+  setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
 }));
 
 export default useSurveyTablesPageStore;

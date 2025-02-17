@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +27,7 @@ interface SearchUsersOrGroupsProps {
   onGroupsChange: (options: MultipleSelectorGroup[]) => void;
   disabled?: boolean;
   hideGroupSearch?: boolean;
-  variant?: 'light' | 'dark';
+  variant?: 'default' | 'dialog';
 }
 
 const SearchUsersOrGroups = ({
@@ -33,7 +45,7 @@ const SearchUsersOrGroups = ({
 
   return (
     <div className="flex w-full flex-col">
-      <p className="text-m font-bold text-foreground">{t('conferences.attendees')}</p>
+      <p className="text-m font-bold text-background">{t('conferences.attendees')}</p>
       <AsyncMultiSelect<AttendeeDto>
         value={users}
         disabled={disabled}
@@ -59,7 +71,7 @@ const SearchUsersOrGroups = ({
       ) : null}
       {hideGroupSearch ? null : (
         <>
-          <p className="text-m font-bold text-foreground">{t('common.groups')}</p>
+          <p className="text-m font-bold text-background">{t('common.groups')}</p>
           <AsyncMultiSelect<MultipleSelectorGroup>
             value={groups}
             disabled={disabled}

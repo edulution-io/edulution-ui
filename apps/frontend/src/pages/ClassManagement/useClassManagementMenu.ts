@@ -1,4 +1,15 @@
-import { MenuBarEntryProps } from '@/datatypes/types';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import {
   ClassManagementIcon,
   CreateProjectIcon,
@@ -13,11 +24,14 @@ import {
   CLASS_MANAGEMENT_PRINT_PASSWORDS_PATH,
   CLASS_MANAGEMENT_PROJECTS_PATH,
 } from '@libs/classManagement/constants/classManagementPaths';
+import APPS from '@libs/appconfig/constants/apps';
+import MenuBarEntry from '@libs/menubar/menuBarEntry';
 
 const useClassManagementMenu = () => {
   const navigate = useNavigate();
-  const menuBar = (): MenuBarEntryProps => ({
+  const menuBar = (): MenuBarEntry => ({
     title: 'classmanagement.title',
+    appName: APPS.CLASS_MANAGEMENT,
     icon: ClassManagementIcon,
     color: 'hover:bg-ciGreenToBlue',
     menuItems: [

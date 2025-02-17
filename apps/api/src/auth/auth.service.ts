@@ -1,19 +1,29 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 import { Request } from 'express';
-import { from, Observable, of, throwError } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
-import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
+import { from, Observable } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { TOTP, Secret } from 'otpauth';
-import { OidcMetadata, SigninResponse, ErrorResponse } from 'oidc-client-ts';
+import { Secret, TOTP } from 'otpauth';
+import { ErrorResponse, OidcMetadata, SigninResponse } from 'oidc-client-ts';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
-import AUTH_CACHE from '@libs/auth/constants/auth-cache';
 import AUTH_TOTP_CONFIG from '@libs/auth/constants/totp-config';
 import type AuthRequestArgs from '@libs/auth/types/auth-request';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
@@ -26,10 +36,7 @@ const { KEYCLOAK_EDU_UI_SECRET, KEYCLOAK_EDU_UI_CLIENT_ID, KEYCLOAK_EDU_UI_REALM
 class AuthService {
   private keycloakApi: AxiosInstance;
 
-  constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
-  ) {
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
     this.keycloakApi = axios.create({
       baseURL: `${KEYCLOAK_API}/realms/${KEYCLOAK_EDU_UI_REALM}`,
       timeout: 5000,
@@ -37,28 +44,18 @@ class AuthService {
   }
 
   authconfig(req: Request): Observable<OidcMetadata> {
-    return from(this.cacheManager.get<OidcMetadata>(AUTH_CACHE.CACHE_KEY)).pipe(
-      switchMap((cachedData: OidcMetadata | undefined) => {
-        if (cachedData) {
-          return of(cachedData);
-        }
+    return from(this.keycloakApi.get<OidcMetadata>(AUTH_PATHS.AUTH_OIDC_CONFIG_PATH)).pipe(
+      map((response: AxiosResponse<OidcMetadata>) => {
+        const oidcConfig = response.data;
+        const apiAuthUrl = `${req.protocol}://${req.get('host')}${req.baseUrl}/${EDU_API_ROOT}/${AUTH_PATHS.AUTH_ENDPOINT}`;
 
-        return from(this.keycloakApi.get<OidcMetadata>(AUTH_PATHS.AUTH_OIDC_CONFIG_PATH)).pipe(
-          map((response: AxiosResponse<OidcMetadata>) => {
-            const oidcConfig = response.data;
-            const apiAuthUrl = `${req.protocol}://${req.get('host')}${req.baseUrl}/${EDU_API_ROOT}/${AUTH_PATHS.AUTH_ENDPOINT}`;
-
-            oidcConfig.authorization_endpoint = apiAuthUrl;
-            oidcConfig.token_endpoint = apiAuthUrl;
-
-            void this.cacheManager.set(AUTH_CACHE.CACHE_KEY, oidcConfig, AUTH_CACHE.CACHE_TTL);
-            return oidcConfig;
-          }),
-        );
+        oidcConfig.authorization_endpoint = apiAuthUrl;
+        oidcConfig.token_endpoint = apiAuthUrl;
+        return oidcConfig;
       }),
-      catchError((error) =>
-        throwError(() => new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.UNAUTHORIZED, error)),
-      ),
+      catchError(() => {
+        throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.UNAUTHORIZED);
+      }),
     );
   }
 
@@ -87,7 +84,7 @@ class AuthService {
         const errorMessage: ErrorResponse = error.response.data as ErrorResponse;
         throw new HttpException(errorMessage, HttpStatus.UNAUTHORIZED);
       }
-      throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.UNAUTHORIZED, error);
+      throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.UNAUTHORIZED, body);
     }
   }
 

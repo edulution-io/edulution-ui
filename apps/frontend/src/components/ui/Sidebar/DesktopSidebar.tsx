@@ -1,8 +1,20 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { SidebarProps } from '@libs/ui/types/sidebar';
 import { SIDEBAR_TRANSLATE_AMOUNT } from '@libs/ui/constants';
 import { useWindowSize } from 'usehooks-ts';
-import { SidebarItem, UserMenuButton, HomeButton, DownButton, UpButton } from './SidebarMenuItems';
+import { DownButton, HomeButton, SidebarItem, UpButton, UserMenuButton } from './SidebarMenuItems';
 
 const DesktopSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -129,7 +141,7 @@ const DesktopSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
   }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
 
   return (
-    <div className="fixed right-0 z-[50] h-screen bg-black bg-opacity-90 md:bg-none">
+    <div className="fixed right-0 z-[50] h-screen bg-black md:bg-none">
       <HomeButton />
       {isUpButtonVisible ? <UpButton onClick={handleUpButtonClick} /> : null}
 

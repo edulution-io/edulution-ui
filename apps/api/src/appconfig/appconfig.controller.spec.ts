@@ -1,21 +1,23 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { AppConfigDto } from '@libs/appconfig/types';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
-import { AppExtendedOptions } from '@libs/appconfig/constants/appExtendedType';
 import AppConfigController from './appconfig.controller';
 import AppConfigService from './appconfig.service';
 import { AppConfig } from './appconfig.schema';
-import mockAppConfigService from './appconfig.service.mock';
+import { mockAppConfig, mockAppConfigModel, mockAppConfigService, mockLdapGroup } from './appconfig.mock';
 
 jest.mock('./appconfig.service');
-
-const mockAppConfigModel = {
-  insertMany: jest.fn(),
-  bulkWrite: jest.fn(),
-  find: jest.fn(),
-  deleteOne: jest.fn(),
-};
 
 describe('AppConfigController', () => {
   let controller: AppConfigController;
@@ -47,91 +49,27 @@ describe('AppConfigController', () => {
 
   describe('createConfig', () => {
     it('should call insertConfig method of appConfigService with correct arguments', () => {
-      const appConfigDto: AppConfigDto[] = [
-        {
-          name: 'TestConfig',
-          icon: 'test-icon',
-          appType: APP_INTEGRATION_VARIANT.NATIVE,
-          options: {
-            url: 'https://example.com/api/',
-            apiKey: 'secret-key',
-          },
-          extendedOptions: [
-            {
-              name: AppExtendedOptions.ONLY_OFFICE_URL,
-              value: 'https://example.com/api/',
-              title: 'OnlyOffice URL',
-              description: 'The URL for OnlyOffice',
-              type: 'input',
-            },
-            {
-              name: AppExtendedOptions.ONLY_OFFICE_JWT_SECRET,
-              value: 'secret-key',
-              title: 'OnlyOffice Secret',
-              description: 'The secret key for OnlyOffice',
-              type: 'input',
-            },
-          ],
-          accessGroups: [
-            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
-            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
-          ],
-        },
-      ];
-      controller.createConfig(appConfigDto);
-      expect(service.insertConfig).toHaveBeenCalledWith(appConfigDto);
+      void controller.createConfig(mockLdapGroup, mockAppConfig);
+      expect(service.insertConfig).toHaveBeenCalledWith(mockAppConfig, mockLdapGroup);
     });
 
     it('should call updateConfig method of appConfigService with correct arguments', () => {
-      const appConfigDto: AppConfigDto[] = [
-        {
-          name: 'TestConfig',
-          icon: 'test-icon',
-          appType: APP_INTEGRATION_VARIANT.NATIVE,
-          options: {
-            url: 'https://example.com/api/',
-            apiKey: 'secret-key',
-          },
-          extendedOptions: [
-            {
-              name: AppExtendedOptions.ONLY_OFFICE_URL,
-              value: 'https://example.com/api/',
-              title: 'OnlyOffice URL',
-              description: 'The URL for OnlyOffice',
-              type: 'input',
-            },
-            {
-              name: AppExtendedOptions.ONLY_OFFICE_JWT_SECRET,
-              value: 'secret-key',
-              title: 'OnlyOffice Secret',
-              description: 'The secret key for OnlyOffice',
-              type: 'input',
-            },
-          ],
-          accessGroups: [
-            { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
-            { id: '2', value: 'group2', name: 'group2', path: 'group2', label: 'group2' },
-          ],
-        },
-      ];
-      controller.updateConfig(appConfigDto);
-      expect(service.updateConfig).toHaveBeenCalledWith(appConfigDto);
+      void controller.updateConfig(mockAppConfig.name, mockAppConfig, mockLdapGroup);
+      expect(service.updateConfig).toHaveBeenCalledWith(mockAppConfig.name, mockAppConfig, mockLdapGroup);
     });
   });
 
   describe('getAppConfigs', () => {
-    const ldapGroups = ['group1', 'group2'];
     it('should call getAppConfigs method of appConfigService', async () => {
-      await controller.getAppConfigs(ldapGroups);
+      await controller.getAppConfigs(mockLdapGroup);
       expect(service.getAppConfigs).toHaveBeenCalled();
     });
   });
 
   describe('deleteConfig', () => {
     it('should call deleteConfig method of appConfigService with correct arguments', () => {
-      const name = 'TestConfig';
-      controller.deleteConfig(name);
-      expect(service.deleteConfig).toHaveBeenCalledWith(name);
+      void controller.deleteConfig(mockAppConfig.name, mockLdapGroup);
+      expect(service.deleteConfig).toHaveBeenCalledWith(mockAppConfig.name, mockLdapGroup);
     });
   });
 

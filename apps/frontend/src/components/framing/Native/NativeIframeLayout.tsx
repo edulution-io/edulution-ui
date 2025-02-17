@@ -1,10 +1,22 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useEffect, useRef } from 'react';
-import { findAppConfigByName } from '@/utils/common';
 import useFrameStore from '@/components/framing/FrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '@/store/UserStore/UserStore';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 
 interface NativeIframeLayoutProps {
   scriptOnStartUp?: string;
@@ -16,10 +28,10 @@ const NativeIframeLayout: React.FC<NativeIframeLayoutProps> = ({ scriptOnStartUp
   const { t } = useTranslation();
   const { appConfigs } = useAppConfigsStore();
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const { isAuthenticated, isPreparingLogout } = useUserStore();
-  const { loadedFrames, activeFrame } = useFrameStore();
+  const { isAuthenticated, isPreparingLogout, eduApiToken } = useUserStore();
+  const { loadedEmbeddedFrames, activeEmbeddedFrame } = useFrameStore();
 
-  const getStyle = () => (activeFrame === appName ? { display: 'block' } : { display: 'none' });
+  const getStyle = () => (activeEmbeddedFrame === appName ? { display: 'block' } : { display: 'none' });
 
   const injectScript = (iframe: HTMLIFrameElement, script: string) => {
     const attemptInject = () => {
@@ -61,13 +73,19 @@ const NativeIframeLayout: React.FC<NativeIframeLayoutProps> = ({ scriptOnStartUp
   const currentAppConfig = findAppConfigByName(appConfigs, appName);
   if (!currentAppConfig) return null;
 
+  let { url } = currentAppConfig.options;
+
+  if (url) {
+    url = url.replace(/token=[^&]+/, `token=${eduApiToken}`);
+  }
+
   return (
     <iframe
       ref={iframeRef}
       title={appName}
       className="absolute inset-y-0 left-0 ml-0 mr-14 w-full md:w-[calc(100%-var(--sidebar-width))]"
       height="100%"
-      src={loadedFrames.includes(currentAppConfig.name) ? currentAppConfig.options.url : undefined}
+      src={loadedEmbeddedFrames.includes(currentAppConfig.name) ? url : undefined}
       style={getStyle()}
     />
   );

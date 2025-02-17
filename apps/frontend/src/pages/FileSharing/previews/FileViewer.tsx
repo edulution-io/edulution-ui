@@ -1,45 +1,64 @@
-import React, { FC } from 'react';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import React, { FC, useEffect } from 'react';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import useIsMobileView from '@/hooks/useIsMobileView';
-import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import FileViewerLayout from '@/pages/FileSharing/previews/utilities/FileViewerLayout';
 import FileRenderer from '@/pages/FileSharing/previews/utilities/FileRenderer';
-import getFileExtension from '@libs/filesharing/utils/getFileExtension';
-import useDownloadLinks from '@/pages/FileSharing/hooks/useDownloadLinks';
+import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
+import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 
 interface FileViewerProps {
-  mode: 'view' | 'edit';
-  editWindow: boolean;
+  editMode: boolean;
 }
 
-const FileViewer: FC<FileViewerProps> = ({ mode, editWindow = false }) => {
-  const { currentlyEditingFile } = useFileSharingStore();
-  const { downloadLinkURL, publicDownloadLink, isEditorLoading, isError } = useFileSharingStore();
-  const { showEditor } = useFileEditorStore();
-  const isMobile = useIsMobileView();
-  useDownloadLinks(currentlyEditingFile);
-  if (!currentlyEditingFile) return null;
-  const fileExtension = getFileExtension(currentlyEditingFile?.filename);
+const FileViewer: FC<FileViewerProps> = ({ editMode }) => {
+  const { t } = useTranslation();
+  const {
+    currentlyEditingFile,
+    isEditorLoading,
+    isFullScreenEditingEnabled,
+    setIsFullScreenEditingEnabled,
+    fetchDownloadLinks,
+  } = useFileSharingStore();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (currentlyEditingFile) {
+      void fetchDownloadLinks(currentlyEditingFile);
+    }
+  }, [currentlyEditingFile, isFullScreenEditingEnabled]);
+
+  const isOpenedInNewTab = Boolean(searchParams.get('tab'));
 
   return (
     <FileViewerLayout
       isLoading={isEditorLoading}
-      editMode={mode === 'edit'}
-      renderComponent={() => (
-        <FileRenderer
-          isLoading={isEditorLoading}
-          editWindow={editWindow}
-          isError={isError}
-          fileUrl={downloadLinkURL}
-          fileExtension={fileExtension}
-          publicDownloadLink={publicDownloadLink}
-          showEditor={showEditor}
-          mode={mode}
-          isMobile={isMobile}
-          currentlyEditingFile={currentlyEditingFile}
-        />
+      editMode={isOpenedInNewTab}
+    >
+      {isFullScreenEditingEnabled && !isOpenedInNewTab ? (
+        <ResizableWindow
+          disableMinimizeWindow
+          disableToggleMaximizeWindow
+          titleTranslationId={t('filesharing.fileEditor')}
+          handleClose={() => setIsFullScreenEditingEnabled(false)}
+        >
+          <FileRenderer editMode />
+        </ResizableWindow>
+      ) : (
+        <FileRenderer editMode={editMode} />
       )}
-    />
+    </FileViewerLayout>
   );
 };
 

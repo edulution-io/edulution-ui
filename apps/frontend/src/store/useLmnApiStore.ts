@@ -1,13 +1,26 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { create, StateCreator } from 'zustand';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
-import lmnApi from '@/api/lmnApi';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
-import handleApiError from '@/utils/handleApiError';
-import eduApi from '@/api/eduApi';
 import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
+import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import getSchoolPrefix from '@libs/classManagement/utils/getSchoolPrefix';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
+import lmnApi from '@/api/lmnApi';
+import eduApi from '@/api/eduApi';
+import handleApiError from '@/utils/handleApiError';
 
 const { USER, USERS_QUOTA } = LMN_API_EDU_API_ENDPOINTS;
 
@@ -17,13 +30,15 @@ interface UseLmnApiStore {
   isLoading: boolean;
   isGetOwnUserLoading: boolean;
   isFetchUserLoading: boolean;
+  isPatchingUserLoading: boolean;
   error: Error | null;
   schoolPrefix: string;
   usersQuota: QuotaResponse | null;
   setLmnApiToken: (username: string, password: string) => Promise<void>;
   getOwnUser: () => Promise<void>;
-  fetchUser: (name: string) => Promise<UserLmnInfo | null>;
+  fetchUser: (name: string, checkIfFirstPasswordIsSet?: boolean) => Promise<UserLmnInfo | null>;
   fetchUsersQuota: (name: string) => Promise<void>;
+  patchUserDetails: (details: Partial<UpdateUserDetailsDto>) => Promise<void>;
   reset: () => void;
 }
 
@@ -33,6 +48,7 @@ const initialState = {
   isLoading: false,
   isGetOwnUserLoading: false,
   isFetchUserLoading: false,
+  isPatchingUserLoading: false,
   error: null,
   schoolPrefix: '',
   usersQuota: null,
@@ -50,7 +66,6 @@ const useLmnApiStore = create<UseLmnApiStore>(
 
       setLmnApiToken: async (username, password): Promise<void> => {
         set({ isLoading: true, error: null });
-
         try {
           lmnApi.defaults.headers.Authorization = `Basic ${btoa(`${username}:${password}`)}`;
           const response = await lmnApi.get<string>('/auth/');
@@ -78,13 +93,18 @@ const useLmnApiStore = create<UseLmnApiStore>(
         }
       },
 
-      fetchUser: async (username): Promise<UserLmnInfo | null> => {
+      fetchUser: async (username, checkIfFirstPasswordIsSet): Promise<UserLmnInfo | null> => {
+        if (get().isFetchUserLoading) return null;
+
         set({ isFetchUserLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.get<UserLmnInfo>(`${USER}/${username}`, {
-            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
-          });
+          const response = await eduApi.get<UserLmnInfo>(
+            `${USER}/${username}?checkFirstPassword=${!!checkIfFirstPasswordIsSet}`,
+            {
+              headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+            },
+          );
           return response.data;
         } catch (error) {
           handleApiError(error, set);
@@ -106,6 +126,23 @@ const useLmnApiStore = create<UseLmnApiStore>(
           handleApiError(error, set);
         } finally {
           set({ isFetchUserLoading: false });
+        }
+      },
+
+      patchUserDetails: async (userDetails) => {
+        set({ isPatchingUserLoading: true, error: null });
+        try {
+          const { lmnApiToken } = useLmnApiStore.getState();
+          const { data } = await eduApi.patch<UserLmnInfo>(
+            `${USER}`,
+            { userDetails },
+            { headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken } },
+          );
+          set({ user: data });
+        } catch (error) {
+          handleApiError(error, set);
+        } finally {
+          set({ isPatchingUserLoading: false });
         }
       },
 

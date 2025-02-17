@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form } from '@/components/ui/Form';
@@ -11,6 +23,8 @@ import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
 import useGroupStore from '@/store/GroupStore';
+import RadioGroupFormField from '@/components/shared/RadioGroupFormField';
+import CONFERENCES_IS_PUBLIC_FORM_VALUES from '@libs/conferences/constants/isPublicFormValues';
 
 interface CreateConferenceDialogBodyProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,10 +63,11 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
       >
         <FormField
           name="name"
+          defaultValue={form.getValues('name') as string}
           form={form}
           labelTranslationId={t('conferences.name')}
           disabled={searchGroupsIsLoading}
-          variant="default"
+          variant="dialog"
         />
         <SearchUsersOrGroups
           users={watch('invitedAttendees') as AttendeeDto[]}
@@ -61,15 +76,26 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           groups={watch('invitedGroups') as MultipleSelectorGroup[]}
           onGroupSearch={searchGroups}
           onGroupsChange={handleGroupsChange}
-          variant="light"
+          variant="dialog"
         />
         <FormField
           name="password"
+          defaultValue={form.getValues('password') as string}
           form={form}
           labelTranslationId={t('conferences.password')}
           type="password"
           disabled={searchGroupsIsLoading}
-          variant="default"
+          variant="dialog"
+        />
+
+        <RadioGroupFormField
+          control={form.control}
+          name="isPublic"
+          labelClassname="text-base font-bold text-background"
+          titleTranslationId={t('conferences.isPublic')}
+          defaultValue={CONFERENCES_IS_PUBLIC_FORM_VALUES[0].value}
+          items={CONFERENCES_IS_PUBLIC_FORM_VALUES}
+          disabled={searchGroupsIsLoading}
         />
       </form>
     </Form>

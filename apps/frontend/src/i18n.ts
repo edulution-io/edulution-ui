@@ -1,11 +1,22 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
 
-// Importing translation files
 import translationEN from './locales/en/translation.json';
 import translationDE from './locales/de/translation.json';
 
-// the translations
 const resources = {
   en: {
     translation: translationEN,
@@ -14,14 +25,20 @@ const resources = {
     translation: translationDE,
   },
 };
+
 i18n
-  .use(initReactI18next) // passes i18n down to react-i18next
+  .use(LanguageDetector)
+  .use(initReactI18next)
   .init({
+    supportedLngs: ['en', 'de'],
     debug: false,
     resources,
-    lng: 'de', // default language
+    fallbackLng: 'de',
     interpolation: {
-      escapeValue: false, // react already safes from xss
+      escapeValue: false,
+    },
+    detection: {
+      order: ['navigator'],
     },
   })
   .catch((e) => {

@@ -1,92 +1,122 @@
-import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
-import { Model, Connection } from 'mongoose';
-import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Connection, Model } from 'mongoose';
+import { readFileSync, writeFileSync } from 'fs';
 import { AppConfigDto } from '@libs/appconfig/types';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
-import defaultAppConfig from '@libs/appconfig/constants/defaultAppConfig';
+import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
+import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import { AppConfig } from './appconfig.schema';
+import initializeCollection from './initializeCollection';
+import MigrationService from '../migration/migration.service';
+import appConfigMigrationsList from './migrations/appConfigMigrationsList';
+import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
 class AppConfigService implements OnModuleInit {
   constructor(
     @InjectConnection() private readonly connection: Connection,
     @InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async onModuleInit() {
-    const collections = await this.connection.db?.listCollections({ name: 'appconfigs' }).toArray();
+    await initializeCollection(this.connection, this.appConfigModel);
 
-    if (collections?.length === 0) {
-      await this.connection.db?.createCollection('appconfigs');
-    }
-
-    const count = await this.appConfigModel.countDocuments();
-
-    if (count === 0) {
-      await this.appConfigModel.insertMany(defaultAppConfig);
-    }
+    await MigrationService.runMigrations<AppConfig>(this.appConfigModel, appConfigMigrationsList);
   }
 
-  async insertConfig(appConfigDto: AppConfigDto[]) {
+  async insertConfig(appConfigDto: AppConfigDto, ldapGroups: string[]) {
     try {
-      await this.appConfigModel.insertMany(appConfigDto);
-    } catch (e) {
+      await this.appConfigModel.create(appConfigDto);
+      return await this.getAppConfigs(ldapGroups);
+    } catch (error) {
       throw new CustomHttpException(
         AppConfigErrorMessages.WriteAppConfigFailed,
         HttpStatus.SERVICE_UNAVAILABLE,
+        undefined,
         AppConfigService.name,
       );
+    } finally {
+      AppConfigService.writeProxyConfigFile(appConfigDto);
+      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
     }
   }
 
-  async updateConfig(appConfigDto: AppConfigDto[]) {
+  async updateConfig(name: string, appConfigDto: AppConfigDto, ldapGroups: string[]) {
     try {
-      const bulkOperations = appConfigDto.map((appConfig) => {
-        if (appConfig?.options?.proxyConfig) {
-          const { proxyConfig } = appConfig.options;
-          if (proxyConfig !== '' && proxyConfig !== '""') {
-            writeFileSync(
-              `${TRAEFIK_CONFIG_FILES_PATH}/${appConfig?.name}.yml`,
-              JSON.parse(appConfig?.options?.proxyConfig) as string,
-            );
-          } else {
-            const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appConfig?.name}.yml`;
-
-            if (existsSync(filePath)) {
-              unlinkSync(filePath);
-              Logger.log(`${filePath} deleted.`, AppConfigService.name);
-            }
-          }
-        }
-
-        return {
-          updateOne: {
-            filter: { name: appConfig.name },
-            update: {
-              $set: {
-                icon: appConfig.icon,
-                appType: appConfig.appType,
-                options: appConfig.options,
-                accessGroups: appConfig.accessGroups,
-                extendedOptions: appConfig.extendedOptions,
-              },
-            },
-            upsert: true,
+      await this.appConfigModel.updateOne(
+        { name },
+        {
+          $set: {
+            icon: appConfigDto.icon,
+            appType: appConfigDto.appType,
+            options: appConfigDto.options,
+            accessGroups: appConfigDto.accessGroups,
+            extendedOptions: appConfigDto.extendedOptions,
           },
-        };
-      });
-
-      await this.appConfigModel.bulkWrite(bulkOperations);
-    } catch (e) {
+        },
+        { upsert: true },
+      );
+      return await this.getAppConfigs(ldapGroups);
+    } catch (error) {
       throw new CustomHttpException(
         AppConfigErrorMessages.WriteAppConfigFailed,
         HttpStatus.SERVICE_UNAVAILABLE,
+        undefined,
         AppConfigService.name,
       );
+    } finally {
+      AppConfigService.writeProxyConfigFile(appConfigDto);
+      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
+    }
+  }
+
+  async patchSingleFieldInConfig(name: string, patchConfigDto: PatchConfigDto, ldapGroups: string[]) {
+    try {
+      await this.appConfigModel.updateOne({ name }, { $set: { [patchConfigDto.field]: patchConfigDto.value } });
+      return await this.getAppConfigs(ldapGroups);
+    } catch (error) {
+      throw new CustomHttpException(
+        AppConfigErrorMessages.WriteAppConfigFailed,
+        HttpStatus.SERVICE_UNAVAILABLE,
+        undefined,
+        AppConfigService.name,
+      );
+    } finally {
+      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
+    }
+  }
+
+  static writeProxyConfigFile(appConfigDto: AppConfigDto) {
+    if (appConfigDto?.options?.proxyConfig) {
+      const { proxyConfig } = appConfigDto.options;
+      if (proxyConfig !== '' && proxyConfig !== '""') {
+        writeFileSync(
+          `${TRAEFIK_CONFIG_FILES_PATH}/${appConfigDto?.name}.yml`,
+          JSON.parse(appConfigDto?.options?.proxyConfig) as string,
+        );
+      } else {
+        const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appConfigDto?.name}.yml`;
+
+        FilesystemService.checkIfFileExistAndDelete(filePath);
+      }
     }
   }
 
@@ -94,14 +124,18 @@ class AppConfigService implements OnModuleInit {
     try {
       let appConfigDto: AppConfigDto[];
       if (ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
-        appConfigDto = await this.appConfigModel.find({}, 'name icon appType options accessGroups extendedOptions');
+        appConfigDto = await this.appConfigModel
+          .find({}, 'name icon appType options accessGroups extendedOptions')
+          .lean();
       } else {
-        const appConfigObjects = await this.appConfigModel.find(
-          {
-            'accessGroups.path': { $in: ldapGroups },
-          },
-          'name icon appType options extendedOptions',
-        );
+        const appConfigObjects = await this.appConfigModel
+          .find(
+            {
+              'accessGroups.path': { $in: ldapGroups },
+            },
+            'name icon appType options extendedOptions',
+          )
+          .lean();
 
         appConfigDto = appConfigObjects.map((config) => ({
           name: config.name,
@@ -109,45 +143,46 @@ class AppConfigService implements OnModuleInit {
           appType: config.appType,
           options: { url: config.options.url ?? '' },
           accessGroups: [],
-          extendedOptions: config.extendedOptions ?? [],
+          extendedOptions: config.extendedOptions,
         }));
       }
 
       return appConfigDto;
-    } catch (e) {
+    } catch (error) {
       throw new CustomHttpException(
         AppConfigErrorMessages.ReadAppConfigFailed,
         HttpStatus.SERVICE_UNAVAILABLE,
+        undefined,
         AppConfigService.name,
       );
     }
   }
 
-  async getAppConfigByName(name: string): Promise<AppConfig | null> {
-    try {
-      const appConfig = await this.appConfigModel.findOne({ name });
-      if (!appConfig) {
-        throw new HttpException(`AppConfig with name ${name} not found`, HttpStatus.NOT_FOUND);
-      }
-      return appConfig;
-    } catch (e) {
-      throw new CustomHttpException(
-        AppConfigErrorMessages.ReadAppConfigFailed,
-        HttpStatus.SERVICE_UNAVAILABLE,
-        AppConfigService.name,
-      );
+  async getAppConfigByName(name: string): Promise<AppConfigDto> {
+    const appConfig = await this.appConfigModel.findOne({ name }).lean();
+    if (!appConfig) {
+      throw new HttpException(`AppConfig with name ${name} not found`, HttpStatus.NOT_FOUND);
     }
+    return appConfig;
   }
 
-  async deleteConfig(configName: string) {
+  async deleteConfig(configName: string, ldapGroups: string[]) {
     try {
       await this.appConfigModel.deleteOne({ name: configName });
-    } catch (e) {
+      return await this.getAppConfigs(ldapGroups);
+    } catch (error) {
       throw new CustomHttpException(
         AppConfigErrorMessages.DisableAppConfigFailed,
         HttpStatus.SERVICE_UNAVAILABLE,
+        undefined,
         AppConfigService.name,
       );
+    } finally {
+      const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${configName}.yml`;
+
+      FilesystemService.checkIfFileExistAndDelete(filePath);
+
+      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
     }
   }
 
@@ -157,10 +192,11 @@ class AppConfigService implements OnModuleInit {
       const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appName}.yml`;
 
       writeFileSync(filePath, JSON.parse(content) as string);
-    } catch (e) {
+    } catch (error) {
       throw new CustomHttpException(
         AppConfigErrorMessages.WriteTraefikConfigFailed,
         HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
         AppConfigService.name,
       );
     }
@@ -171,10 +207,11 @@ class AppConfigService implements OnModuleInit {
     try {
       const fileBuffer = readFileSync(filePath);
       return fileBuffer.toString('base64');
-    } catch (e) {
+    } catch (error) {
       throw new CustomHttpException(
         AppConfigErrorMessages.ReadTraefikConfigFailed,
         HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
         AppConfigService.name,
       );
     }

@@ -1,7 +1,20 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import {
   AiChatIcon,
   AntiMalwareIcon,
   BackupIcon,
+  BulletinBoardIcon,
   ChatIcon,
   ClassManagementIcon,
   ConferencesIcon,
@@ -27,8 +40,24 @@ import {
 } from '@/assets/icons';
 import { AppConfigOption } from '@libs/appconfig/types';
 import APPS from '@libs/appconfig/constants/apps';
+import AppConfigSectionsKeys from '@libs/appconfig/constants/appConfigSectionsKeys';
+import ONLY_OFFICE_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/onlyOffice';
+import MAIL_IMAP_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/imapMailFeed';
+import BULLETIN_BOARD_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/bulletinBoard';
+import FILE_SHARING_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/fileSharing';
+import DOCKER_CONTAINER_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/dockerContainer';
+import CLASS_MANAGEMENT_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/classMgmt';
 
 export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
+  {
+    id: APPS.BULLETIN_BOARD,
+    icon: BulletinBoardIcon,
+    color: 'bg-ciDarkBlue',
+    isNativeApp: true,
+    extendedOptions: {
+      [AppConfigSectionsKeys.bulletinBoard]: BULLETIN_BOARD_EXTENDED_OPTIONS,
+    },
+  },
   {
     id: APPS.TICKET_SYSTEM,
     icon: TicketSystemIcon,
@@ -36,7 +65,17 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     options: ['url', 'proxyConfig'],
     isNativeApp: false,
   },
-  { id: APPS.MAIL, icon: MailIcon, color: 'bg-ciDarkBlue', options: ['url', 'proxyConfig'], isNativeApp: true },
+  {
+    id: APPS.MAIL,
+    icon: MailIcon,
+    color: 'bg-ciDarkBlue',
+    options: ['url', 'proxyConfig'],
+    isNativeApp: true,
+    extendedOptions: {
+      [AppConfigSectionsKeys.imapMailFeed]: MAIL_IMAP_EXTENDED_OPTIONS,
+      [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
+    },
+  },
   { id: APPS.CHAT, icon: ChatIcon, color: 'bg-ciDarkBlue', options: ['url', 'proxyConfig'], isNativeApp: false },
   {
     id: APPS.CONFERENCES,
@@ -49,6 +88,7 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     id: APPS.SURVEYS,
     icon: SurveysMenuIcon,
     color: 'bg-ciDarkBlue',
+    options: ['url', 'proxyConfig'],
     isNativeApp: true,
   },
   {
@@ -64,7 +104,11 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciDarkBlue',
     options: ['url', 'proxyConfig'],
     isNativeApp: true,
-    extendedOptions: ['name', 'type', 'description', 'value'],
+    extendedOptions: {
+      [AppConfigSectionsKeys.fileSharing]: FILE_SHARING_EXTENDED_OPTIONS,
+      [AppConfigSectionsKeys.onlyOffice]: ONLY_OFFICE_EXTENDED_OPTIONS,
+      [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
+    },
   },
   { id: APPS.FORUMS, icon: ForumsIcon, color: 'bg-ciDarkBlue', options: ['url', 'proxyConfig'], isNativeApp: false },
   {
@@ -92,8 +136,12 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     id: APPS.CLASS_MANAGEMENT,
     icon: ClassManagementIcon,
     color: 'bg-ciLightBlue',
-    options: ['url', 'proxyConfig'],
+    options: ['proxyConfig'],
     isNativeApp: true,
+    extendedOptions: {
+      [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
+      [AppConfigSectionsKeys.veyon]: CLASS_MANAGEMENT_EXTENDED_OPTIONS,
+    },
   },
   { id: APPS.PRINTER, icon: PrinterIcon, color: 'bg-ciLightGreen', options: ['url'], isNativeApp: false },
   { id: APPS.NETWORK, icon: NetworkIcon, color: 'bg-ciLightGreen', options: ['url'], isNativeApp: false },
@@ -110,6 +158,9 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     color: 'bg-ciLightGreen',
     options: ['url', 'proxyConfig'],
     isNativeApp: true,
+    extendedOptions: {
+      [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
+    },
   },
   { id: APPS.WLAN, icon: WlanIcon, color: 'bg-ciLightGreen', options: ['url'], isNativeApp: false },
   {
@@ -143,7 +194,13 @@ export const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     options: ['url', 'proxyConfig'],
     isNativeApp: true,
   },
-  { id: APPS.WHITEBOARD, icon: WhiteBoardIcon, color: 'bg-ciDarkBlue', isNativeApp: true },
+  {
+    id: APPS.WHITEBOARD,
+    icon: WhiteBoardIcon,
+    color: 'bg-ciDarkBlue',
+    options: ['url', 'proxyConfig'],
+    isNativeApp: true,
+  },
 ];
 
 export default APP_CONFIG_OPTIONS;

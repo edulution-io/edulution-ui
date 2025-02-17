@@ -1,28 +1,40 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import SaveSurveyDialogBody from '@/pages/Surveys/Editor/dialog/SaveSurveyDialogBody';
+import CircleLoader from '@/components/ui/CircleLoader';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 
 interface SaveSurveyDialogProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: UseFormReturn<any>;
+  form: UseFormReturn<SurveyDto>;
   isOpenSaveSurveyDialog: boolean;
   setIsOpenSaveSurveyDialog: (state: boolean) => void;
-  commitSurvey: () => void;
-  isCommitting: boolean;
+  submitSurvey: () => void;
+  isSubmitting: boolean;
   trigger?: React.ReactNode;
 }
 
 const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
-  const { trigger, form, commitSurvey, isCommitting, isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog } = props;
+  const { trigger, form, submitSurvey, isSubmitting, isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog } = props;
 
   const { t } = useTranslation();
 
   const getDialogBody = () => {
-    if (isCommitting) return <LoadingIndicator isOpen={isCommitting} />;
+    if (isSubmitting) return <CircleLoader className="mx-auto" />;
     return <SaveSurveyDialogBody form={form} />;
   };
 
@@ -31,13 +43,13 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          commitSurvey();
+          submitSurvey();
         }}
       >
         <Button
           type="submit"
           variant="btn-collaboration"
-          disabled={isCommitting}
+          disabled={isSubmitting}
           size="lg"
         >
           {t('common.save')}

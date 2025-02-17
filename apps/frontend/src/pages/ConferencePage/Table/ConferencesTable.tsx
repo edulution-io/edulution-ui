@@ -1,24 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import React, { useEffect } from 'react';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
-import {
-  flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  OnChangeFn,
-  RowSelectionState,
-  SortingState,
-  useReactTable,
-} from '@tanstack/react-table';
+import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import ConferencesTableColumns from '@/pages/ConferencePage/Table/ConferencesTableColumns';
-import { ScrollArea } from '@/components/ui/ScrollArea';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import ConferenceDto from '@libs/conferences/types/conference.dto';
+import ScrollableTable from '@/components/ui/Table/ScrollableTable';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
+import CONFERENCES_PAGE_TABLE_HEADER from '@libs/conferences/constants/pageElementIds';
+import useUserStore from '@/store/UserStore/UserStore';
+import APPS from '@libs/appconfig/constants/apps';
 
 const ConferencesTable = () => {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const { t } = useTranslation();
+  const { user } = useUserStore();
   const { conferences, getConferences, isLoading, selectedRows, setSelectedRows } = useConferenceStore();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
@@ -26,89 +29,30 @@ const ConferencesTable = () => {
     setSelectedRows(newValue);
   };
 
-  const table = useReactTable({
-    data: conferences,
-    columns: ConferencesTableColumns,
-    getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onRowSelectionChange: handleRowSelectionChange,
-    getRowId: (originalRow: ConferenceDto) => originalRow.meetingID,
-    state: {
-      sorting,
-      rowSelection: selectedRows,
-    },
-  });
-
   useEffect(() => {
-    void getConferences(undefined);
+    void getConferences();
   }, []);
 
-  const selectedRowsCount = table.getFilteredSelectedRowModel().rows.length;
-
   return (
-    <>
-      {isLoading && conferences?.length === 0 ? <LoadingIndicator isOpen={isLoading} /> : null}
-      {selectedRowsCount > 0 ? (
-        <div className="flex-1 text-sm text-muted-foreground text-white">
-          {t('conferences.selected-x-rows', {
-            selected: selectedRowsCount,
-            total: table.getFilteredRowModel().rows.length,
-          })}
-        </div>
-      ) : (
-        <div className="flex-1 text-sm text-muted-foreground text-white">&nbsp;</div>
-      )}
-
-      <div className="w-full flex-1  pl-3 pr-3.5">
-        <ScrollArea className="max-h-[80vh] overflow-auto">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  className="text-white"
-                >
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody className="container">
-              {table.getRowModel().rows.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() ? 'selected' : undefined}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className="text-white"
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={conferences?.length}
-                    className="h-24 text-center text-white"
-                  >
-                    {t('table.noDataAvailable')}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </ScrollArea>
-      </div>
-    </>
+    <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
+      <ScrollableTable
+        columns={ConferencesTableColumns}
+        data={conferences}
+        filterKey="conference-name"
+        filterPlaceHolderText="conferences.filterPlaceHolderText"
+        onRowSelectionChange={handleRowSelectionChange}
+        isLoading={isLoading}
+        selectedRows={selectedRows}
+        getRowId={(originalRow) => originalRow.meetingID}
+        applicationName={APPS.CONFERENCES}
+        additionalScrollContainerOffset={20}
+        enableRowSelection={(row) => row.original.creator.username === user?.username}
+        scrollContainerOffsetElementIds={{
+          tableHeaderId: CONFERENCES_PAGE_TABLE_HEADER,
+          others: [NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID],
+        }}
+      />
+    </div>
   );
 };
 

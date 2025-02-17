@@ -1,10 +1,20 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useEffect } from 'react';
 import AppRouter from '@/router/AppRouter';
-import i18n from '@/i18n';
-import useLanguage from '@/store/useLanguage';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
 import eduApi from '@/api/eduApi';
-import BBBFrame from '@/pages/ConferencePage/BBBFrame';
+import BBBFrame from '@/pages/ConferencePage/BBBIFrame';
 import EmbeddedIframes from '@/components/framing/EmbeddedIframes';
 import NativeFrames from '@/components/framing/Native/NativeFrames';
 import useLmnApiStore from '@/store/useLmnApiStore';
@@ -14,20 +24,25 @@ import Toaster from '@/components/ui/Sonner';
 import { WebStorageStateStore } from 'oidc-client-ts';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import i18n from '@/i18n';
 import VDIFrame from './pages/DesktopDeployment/VDIFrame';
 import CommunityLicenseDialog from './pages/UserSettings/Info/CommunityLicenseDialog';
 
 const App = () => {
-  const { lang } = useLanguage();
   const { eduApiToken } = useUserStore();
   const { lmnApiToken } = useLmnApiStore();
+  const { user } = useUserStore();
 
   lmnApi.defaults.headers.common[HTTP_HEADERS.XApiKey] = lmnApiToken;
   eduApi.defaults.headers.Authorization = `Bearer ${eduApiToken}`;
 
   useEffect(() => {
-    i18n.changeLanguage(lang).catch((e) => console.error('Change Language Error', e));
-  }, [lang]);
+    if (user?.language && user.language !== 'system') {
+      i18n.changeLanguage(user.language).catch((e) => console.error('Change Language Error', e));
+    } else {
+      i18n.changeLanguage(navigator.language).catch((e) => console.error('Reset to System Language Error', e));
+    }
+  }, [user?.language]);
 
   const oidcConfig: AuthProviderProps = {
     authority: `${window.location.origin}/${EDU_API_ROOT}/auth`,

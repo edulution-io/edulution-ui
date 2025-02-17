@@ -1,107 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import {
-  flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  OnChangeFn,
-  RowSelectionState,
-  SortingState,
-  useReactTable,
-} from '@tanstack/react-table';
-import { ScrollArea } from '@/components/ui/ScrollArea';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import React from 'react';
+import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import { SyncJobDto } from '@libs/mail/types';
+import ScrollableTable from '@/components/ui/Table/ScrollableTable';
+import APPS from '@libs/appconfig/constants/apps';
 import MailImporterTableColumns from './MailImporterTableColumns';
 
 const MailImporterTable: React.FC = () => {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const { t } = useTranslation();
-  const { syncJobs, selectedSyncJob, setSelectedSyncJob, getSyncJob } = useMailsStore();
+  const { syncJobs, selectedSyncJob, setSelectedSyncJob } = useMailsStore();
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedSyncJob) : updaterOrValue;
     setSelectedSyncJob(newValue);
   };
-  useEffect(() => {
-    void getSyncJob();
-  }, []);
-
-  const table = useReactTable({
-    data: syncJobs,
-    columns: MailImporterTableColumns,
-    getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onRowSelectionChange: handleRowSelectionChange,
-    getRowId: (originalRow: SyncJobDto) => `${originalRow.id}`,
-    state: {
-      sorting,
-      rowSelection: selectedSyncJob,
-    },
-  });
 
   return (
-    <>
-      {table.getFilteredSelectedRowModel().rows.length > 0 ? (
-        <div className="flex-1 text-sm text-background">
-          {t('mail.importer.rowsSelected', {
-            selected: table.getFilteredSelectedRowModel().rows.length,
-            total: table.getFilteredRowModel().rows.length,
-          })}
-        </div>
-      ) : (
-        <div className="flex-1 text-sm">&nbsp;</div>
-      )}
-      <div className="flex-1 pr-3.5">
-        <ScrollArea className="max-h-[80vh] overflow-auto scrollbar-thin">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  className="text-background"
-                >
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody className="container">
-              {table.getRowModel().rows.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() ? 'selected' : undefined}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className="text-background"
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={syncJobs.length}
-                    className="h-24 text-center text-background"
-                  >
-                    {t('table.noDataAvailable')}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </ScrollArea>
-      </div>
-    </>
+    <ScrollableTable
+      columns={MailImporterTableColumns}
+      data={syncJobs}
+      filterKey="hostname"
+      filterPlaceHolderText="mail.importer.filterPlaceHolderText"
+      applicationName={APPS.MAIL}
+      onRowSelectionChange={handleRowSelectionChange}
+      selectedRows={selectedSyncJob}
+      getRowId={(originalRow: SyncJobDto) => `${originalRow.id}`}
+    />
   );
 };
 

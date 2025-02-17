@@ -1,15 +1,19 @@
-import React from 'react';
-import getLoginScript from '@/pages/Mail/scripts/login';
-import APPS from '@libs/appconfig/constants/apps';
-import NativeIframeWithScripts from '@/components/framing/Native/NativeIframeWithScripts';
-import logoutScript from '@/pages/Mail/scripts/logout';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
 
-const MailPage: React.FC = () => (
-  <NativeIframeWithScripts
-    appName={APPS.MAIL}
-    getLoginScript={getLoginScript}
-    logoutScript={logoutScript}
-  />
-);
+import React from 'react';
+import APPS from '@libs/appconfig/constants/apps';
+import NativeIframeLayout from '@/components/framing/Native/NativeIframeLayout';
+
+const MailPage: React.FC = () => <NativeIframeLayout appName={APPS.MAIL} />;
 
 export default MailPage;

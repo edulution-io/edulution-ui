@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { parse } from 'yaml';
@@ -60,8 +72,8 @@ const YamlEditor: React.FC<YamlEditorProps> = ({ value, onChange, disabled = fal
         placeholder={t('settings.yamleditor.placeholder')}
         style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '12pt' }}
         className={cn(
-          'overflow-y-auto bg-ciDarkGrey text-p text-ciLightGrey scrollbar-thin placeholder:text-p focus:outline-none',
-          error ? 'border border-ciLightRed' : 'border border-ciDarkGrey',
+          'overflow-y-auto bg-accent text-p text-secondary scrollbar-thin placeholder:text-p focus:outline-none',
+          error ? 'border border-ciLightRed' : 'border border-accent',
         )}
         disabled={disabled}
       />

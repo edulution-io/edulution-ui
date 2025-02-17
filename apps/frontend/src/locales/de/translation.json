@@ -5,6 +5,89 @@
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
   "preparing": "Vorbereiten...",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
+  "framebufferImage": "Framebuffer-Bild",
+  "previewImage": "Bildvorschau",
+  "bulletinboard": {
+    "settings": "Einstellungen",
+    "noBulletinsToShow": "Aktuell gibt es keine Mitteilungen anzuzeigen, schaue am besten später noch mal vorbei!",
+    "categoryIsRequired": "Es muss eine Kategorie ausgewählt werden",
+    "createdFrom": "von {{ createdBy }}, aktualisiert am {{ lastUpdated }}",
+    "createdFromAndUpdatedBy": "von {{ createdBy }}, aktualisiert von {{ lastUpdatedBy }} am {{ lastUpdated }}",
+    "deleteBulletinCategory": "Kategorie löschen",
+    "confirmSingleCategoryDelete": "Soll diese Kategorie wirklich gelöscht werden?",
+    "confirmSingleCategoryDeleteWarning": "Vorsicht, es werden alle Mitteilungen in dieser Kategorie mitgelöscht!",
+    "isVisibleStartDate": "Aktiv von",
+    "isVisibleEndDate": "Aktiv bis",
+    "isActiveOrExpired": "Aktiv/Abgelaufen",
+    "activeFrom": "Aktiv von",
+    "activeUntil": "Aktiv bis",
+    "appTitle": "Schwarzes Brett",
+    "description": "Hier findest du deine aktuelle Mitteilungen",
+    "filterPlaceHolderText": "Suche nach Kategoriename",
+    "sidebar": "Schwarzes Brett",
+    "newCategorie": "Neue Kategorie",
+    "category": "Kategorie",
+    "categoryPositionChanged": "Position der Kategorie geändert",
+    "name": "Name",
+    "editCategorie": "Kategorie bearbeiten",
+    "isActive": "Aktiv",
+    "isPermanentlyActive": "Ist permanent aktiv",
+    "visibleFor": "Sichtbar für",
+    "visibleForUsers": "Sichtbar für Nutzer",
+    "visibleForGroups": "Sichtbar für Gruppen",
+    "editableByUsers": "Redaktionierbar von Nutzern",
+    "editableByGroups": "Redaktionierbar von Gruppen",
+    "editorialAccess": "Redaktioneller Zugriff",
+    "manageCategories": "Kategorien verwalten",
+    "manageBulletins": "Mitteilungen verwalten",
+    "error": "Fehler",
+    "delete": "Löschen",
+    "deleteBulletin": "Mitteilung löschen",
+    "deleteBulletins": "{{count}} Mitteilungen löschen",
+    "editBulletin": "Mitteilung bearbeiten",
+    "createBulletin": "Mitteilung erstellen",
+    "confirmSingleDelete": "Soll diese Mitteilung wirklich gelöscht werden?",
+    "confirmMultiDelete": "Sollen diese Mitteilungen wirklich gelöscht werden?",
+    "rowsSelected": "{{selected}} von {{total}} Mitteilungen ausgewählt",
+    "rowSelected": "{{selected}} von {{total}} Mitteilung ausgewählt",
+    "cancel": "Abbrechen",
+    "title": "Titel",
+    "content": "Inhalt",
+    "placeholderCategoryName": "Name",
+    "categoryName": "Name der Kategorie",
+    "bulletinUpdatedSuccessfully": "Mitteilung erfolgreich gespeichert",
+    "bulletinCreatedSuccessfully": "Mitteilung erfolgreich erstellt",
+    "bulletinsDeletedSuccessfully": "Mitteilungen erfolgreich gelöscht",
+    "categoryCreatedSuccessfully": "Kategorie erfolgreich erstellt",
+    "categoryUpdatedSuccessfully": "Kategorie erfolgreich aktualisiert",
+    "categoryDeletedSuccessfully": "Kategorie erfolgreich gelöscht",
+    "editCategory": "Kategorie bearbeiten",
+    "createNewCategory": "Kategorie erstellen",
+    "categories": {
+      "visibleByUsersAndGroups": "Diese Kategorie mit ihren Mitteilungen ist sichtbar für Nutzer und Gruppen auf der Startseite",
+      "visibleByUsersAndGroupsTitle": "Startseite",
+      "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen in der Bulletin Board App",
+      "editableByUsersAndGroupsTitle": "Mitteilungen verwalten"
+    },
+    "errors": {
+      "categoryNotFound": "Kategorie nicht gefunden",
+      "categoryDeleteFailed": "Kategorie konnte nicht gelöscht werden",
+      "attachmentUploadFailed": "Anhang konnte nicht hochgeladen werden",
+      "fileNotProvided": "Datei wurde nicht bereitgestellt",
+      "fileNotFound": "Datei nicht gefunden",
+      "invalidCategory": "Ungültige Kategorie",
+      "invalidFileType": "Ungültiger Dateityp",
+      "bulletinNotFound": "Bulletin nicht gefunden",
+      "unauthorizedUpdateBulletin": "Keine Berechtigung, um dieses Bulletin zu aktualisieren",
+      "unauthorizedDeleteBulletin": "Keine Berechtigung, um dieses Bulletin zu löschen",
+      "categoryNameAlreadyExists": "Kategoriename existiert bereits",
+      "unauthorizedCreateBulletin": "Keine Berechtigung, um dieses Bulletin zu erstellen",
+      "unauthorizedCreateCategory": "Keine Berechtigung, um diese Kategorie zu erstellen",
+      "unauthorizedDeleteCategory": "Keine Berechtigung, um diese Kategorie zu löschen",
+      "unauthorizedUpdateCategory": "Keine Berechtigung, um diese Kategorie zu aktualisieren",
+      "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen"
+    }
+  },
   "dashboard": {
     "mobileAccess": {
       "title": "Mobiler Datenzugriff",
@@ -12,11 +95,11 @@
       "accessData": "Zugangsdaten",
       "content": "Du kannst von vielen mobilen Geräten aus auf den Schulserver zugreifen. Drücke auf Anleitung um zu starten.",
       "scanAccessInfo": "Um die Zugangsdaten zu übertragen, bitte folgenden QR-Code mit der edulution.io App scannen.",
-      "scanAppStoreLink": "Scanne den QR-Code mit deinem mobilen Gerät um die edultion-io App im AppStore herunterzuladen.",
+      "scanAppStoreLink": "Scanne den QR-Code mit deinem mobilen Gerät um die edulution.io App im AppStore herunterzuladen.",
       "nextStepPreview": "Im nächsten Schritt kannst du die Zugangsdaten übertragen.",
       "copyCredentials": "Oder manuell eintragen:",
       "downloadDirect": "Oder lade die App direkt herunter:",
-      "downloadApp": "Lade hier die edulution-io App herunter:"
+      "downloadApp": "Lade hier die edulution.io App herunter:"
     },
     "quota": {
       "title": "Quotas",
@@ -54,6 +137,7 @@
       "GetUserSchoolClassFailed": "Abrufen der Schulklasse des Benutzers fehlgeschlagen",
       "GetUserProjectsFailed": "Abrufen der Projekte des Benutzers fehlgeschlagen",
       "GetUserFailed": "Abrufen fehlgeschlagen",
+      "UpdateUserFailed": "Aktualisierung fehlgeschlagen",
       "GetCurrentUserRoomFailed": "Abrufen des aktuellen Benutzerraums fehlgeschlagen",
       "CreateProjectFailed": "Projekterstellung fehlgeschlagen",
       "RemoveProjectFailed": "Entfernen des Projekts fehlgeschlagen",
@@ -72,18 +156,21 @@
   "mail": {
     "title": "MAIL",
     "sidebar": "Mail",
+    "configName": "Name der Konfiguration",
+    "hostname": "Hostname",
+    "port": "Port",
+    "encryption": "Verschlüsselung",
+    "rowSelected": "{{selected}} von {{total}} Job ausgewählt",
+    "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
     "importer": {
+      "filterPlaceHolderText": "Suche nach E-Mail-Importername",
       "title": "E-Mail-Importer",
       "provider": "E-Mail-Provider",
-      "configName": "Name der Konfiguration",
-      "hostname": "Hostname",
-      "port": "Port",
-      "encryption": "Verschlüsselung",
       "interval": "Sync-Intervall",
       "isActive": "Aktiv",
       "syncJobsTable": "Importer Jobs",
-      "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
-      "mailAddress": "E-Mail-Adresse"
+      "mailAddress": "E-Mail-Adresse",
+      "noMailConfigured": "Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator."
     }
   },
   "chat": {
@@ -92,18 +179,46 @@
   },
   "errors": {
     "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten",
-    "automaticLoginFailed": "Automatischer Login fehlgeschlagen"
+    "automaticLoginFailed": "Automatischer Login fehlgeschlagen",
+    "uploadOrFetchAttachmentFailed": "Fehler beim Hochladen des Anhangs",
+    "fileGenerationFailed": "Datei konnte nicht generiert werden"
   },
   "conferences": {
     "errors": {
       "MeetingNotFound": "Ein Meeting mit dieser ID wurde nicht gefunden",
       "BbbServerNotReachable": "Der externe BBB-Server ist nicht erreichbar",
+      "CouldNotStartConference": "Die Konference konnte nicht gestartet werden",
+      "CouldNotStopConference": "Die Konferenz konnte nicht gestoppt werden",
       "BbbUnauthorized": "Du bist nicht autorisiert auf den externen BBB-Server zuzugreifen",
       "AppNotProperlyConfigured": "Die Konferenz-App ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
       "YouAreNotTheCreator": "Du bist nicht der Ersteller der Konferenz",
       "AlreadyInAnotherMeeting": "Du befindest dich bereits in einer Konferenz. Bitte verlasse die laufende Konferenz, bevor du einer neuen beitritst.",
-      "DBAccessFailed": "Datenbankzugriff fehlgeschlagen"
+      "DBAccessFailed": "Datenbankzugriff fehlgeschlagen",
+      "WrongPassword": "Das eingegebene Passwort ist falsch",
+      "ConferenceIsNotRunning": "Die Konferenz wurde nicht gestartet",
+      "MissingMandatoryParameters": "Anfrage aufgrund fehlender Parameter fehlgeschlagen"
     },
+    "joinThisConference": "An dieser Konferenz teilnehmen",
+    "filterPlaceHolderText": "Suche nach Konferenzname",
+    "started": "Konferenz gestartet",
+    "stopped": "Konferenz beendet",
+    "isStarting": "Konferenz wird gestartet",
+    "isStopping": "Konferenz wird beendet",
+    "tryManually": "Manuell verbinden",
+    "changeUser": "Benutzer wechseln",
+    "joinAgain": "Erneut teilnehmen",
+    "passwordOfConference": "Passwort der Konferenz",
+    "orContinueWithoutAccount": "Oder fahre ohne Account fort",
+    "conferenceIsNotStartedYet": "Die Konferenz wurde noch nicht gestartet. Du befindest dich derzeit im Warteraum und wirst automatisch weitergeleitet, sobald die Konferenz beginnt.",
+    "conferenceIsPasswordProtected": "Diese Konferenz ist passwortgeschützt. Bitte gib das Passwort ein, um teilzunehmen.",
+    "pleaseEnterYourFullName": "Gib deinen vollständigen Namen ein, um der Konferenz beizutreten.",
+    "yourFullName": "Dein vollständiger Name",
+    "isNotPublicOrDoesNotExist": "Die Konferenz konnte nicht gefunden werden.",
+    "publicConference": "Öffentliche Konferenz",
+    "joinUrl": "Zugangslink",
+    "isPublic": "Zutrittsbeschränkung",
+    "isPublicTrue": "Öffentlich",
+    "isPublicFalse": "Privat",
     "title": "KONFERENZEN",
     "description": "Das Konferenz Tool ermöglicht Audio- und Videokonferenzen und unterstützt Präsentationen mit erweiterten Whiteboard-Funktionen.",
     "sidebar": "Konferenzen",
@@ -113,6 +228,9 @@
     "deleteConference": "Konferenz löschen",
     "deleteConferences": "{{count}} Konferenzen löschen",
     "editConference": "Konferenz bearbeiten",
+    "conferenceUpdatedSuccessfully": "Konferenz erfolgreich gespeichert ",
+    "conferenceFetchedSuccessfully": "Konferenzen erfolgreich aktualisiert ",
+    "conferenceCreatedSuccessfully": "Konferenz erfolgreich erstellet",
     "confirmSingleDelete": "Soll diese Konferenz wirklich gelöscht werden?",
     "confirmMultiDelete": "Sollen diese Konferenzen wirklich gelöscht werden?",
     "name": "Name der Konferenz",
@@ -125,7 +243,8 @@
     "privacyStatus": "Zutritt",
     "public": "Öffentlich",
     "private": "Privat",
-    "selected-x-rows": "{{selected}} von {{total}} ausgewählt",
+    "rowsSelected": "{{selected}} von {{total}} Konferenzen ausgewählt",
+    "rowSelected": "{{selected}} von {{total}} Konferenz ausgewählt",
     "cancel": "Abbrechen",
     "password_required": "Kein Passwort eingegeben",
     "error": "Fehler",
@@ -148,12 +267,18 @@
     "noSurveys": "Keine offenen Umfragen"
   },
   "filesharing": {
+    "filterPlaceHolderText": "Suche nach Dateiname",
     "title": "FILESHARING",
     "sidebar": "Filesharing",
     "previewTitle": "Dateivorschau",
     "saveFile": "Datei speichern",
+    "fileEditor": "Datei Editor",
     "closeEditor": "Editor schließen",
     "loadingDocument": "Dokument wird geladen...",
+    "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt",
+    "rowSelected": "{{selected}} von {{total}} Datei ausgewählt",
+    "fileWithSameNameAlreadyExists": "Eine Datei mit diesem Namen existiert bereits.",
+    "folderWithSameNameAlreadyExists": "Ein Ordner mit diesem Namen existiert bereits.",
     "errors": {
       "FileNotFound": "Datei nicht gefunden",
       "MountPointsNotFound": "Laufwerke nicht gefunden",
@@ -172,7 +297,8 @@
       "DuplicateFailed": "Kopieren fehlgeschlagen",
       "AppNotProperlyConfigured": "OnlyOffice ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator.",
       "CollectingFailed": "Einasmmeln der Dateien fehlgeschlagen",
-      "SharingFailed": "Austeilen der Dateien fehlgeschlagen"
+      "SharingFailed": "Austeilen der Dateien fehlgeschlagen",
+      "MissingCallbackURL": "Fehlende Callback-URL"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
@@ -208,7 +334,16 @@
   "classmanagement": {
     "title": "KLASSENZIMMER",
     "sidebar": "Klassenzimmer",
+    "invalidProxyAddresses": "Proxy Email-Adressen müssen Komma-separiert ohne Leerzeichen angegebn werden",
+    "invalidQuota": "Die Quota muss der Dokumentation entsprechend angegeben werden",
+    "invalidMailQuota": "Die Mailquota muss als Zahl in MB angegeben werden",
     "name": "Name",
+    "mailQuota": "Mail Quota (MB)",
+    "proxyAddresses": "Proxy Email-Adressen",
+    "descriptionPlaceholder": "Kurze Beschreibung des Projekts",
+    "proxyAddressesPlaceholder": "info@email1.de,kontakt@email2.com",
+    "quotaPlaceholder": "[{\"share\":\"default-school\",\"quota\":50}]",
+    "quota": "Quota (MB)",
     "notMemberOfClass": "Du bist kein Mitglied einer Klasse.",
     "noGroupsToShow": "Keine Gruppen vorhanden.",
     "classes": "Klassen",
@@ -252,12 +387,15 @@
     "exam": "Klassenarbeit",
     "printPasswordsPageDescription": "Erstelle Dateien um die Passwörter einzelner Klassen auszudrucken oder selektiere Klassen um gleichzeitig mehrere auszudrucken.",
     "userPasswordDialogTitle": "Passwort von {{displayName}}",
-    "firstPassword": "Standard Passwort",
+    "firstPassword": "Initiales Passwort",
+    "firstPasswordNotSet": "Initiales Passwort ist nicht gesetzt",
     "currentPassword": "Aktuelles Passwort",
-    "restoreFirstPassword": "Standard Passwort wiederherstellen",
+    "restoreFirstPassword": "Initiales Passwort wiederherstellen",
     "setRandom": "Zufälliges setzen",
     "currentPasswordChangedSuccessfully": "Aktuelles Passwort erfolgreich geändert",
-    "firstPasswordChangedSuccessfully": "Standard Passwort erfolgreich geändert",
+    "firstPasswordChangedSuccessfully": "Initiales Passwort erfolgreich geändert",
+    "firstPasswordIsCurrentlySet": "Das initiale Passwort ist als aktuelles Passwort gesetzt.",
+    "firstPasswordIsCurrentlyNotSet": "Das initiale Passwort ist nicht als aktuelles Passwort gesetzt.",
     "passwordRequirements": "Verwenden Sie Großbuchstaben, Kleinbuchstaben und Sonderzeichen oder Zahlen.",
     "projectsPageDescription": "Hier findest du eine Übersicht über alle Projekte in denen du Admin bist.",
     "typeToFilter": "Tippen um zu filtern...",
@@ -291,9 +429,21 @@
     "printOneItemPerPage": "Drucke ein Passwort pro Seite",
     "selectSavedSession": "Aus gespeicherten Sitzungen wählen",
     "saveSession": "Sitzung speichern",
+    "editSession": "Sitzung editieren",
     "myRoom": "Mein Raum",
     "sharedMailBox": "Geteiltes Postfach",
-    "enrolPageDescription": "Wählen Sie die Klassen und Projekte aus, für die Sie sich einschreiben möchten, indem Sie die Checkboxen aktivieren."
+    "enrolPageDescription": "Wählen Sie die Klassen und Projekte aus, für die Sie sich einschreiben möchten, indem Sie die Checkboxen aktivieren.",
+    "veyonConfigTable": {
+      "id": "ID",
+      "subnet": "Subnet",
+      "subnetDescription": "Subnet in CIDR-Notation (10.0.0.0/24)",
+      "subnetPlaceholder": "10.0.0.0/24",
+      "proxyAdress": "Proxy Addresse",
+      "proxyAdressDescription": "URL des Veyon-WebAPI-Proxy",
+      "proxyAdressPlaceholder": "http://localhost:11080",
+      "createConfig": "Konfiguration erstellen",
+      "editConfig": "Konfiguration bearbeiten"
+    }
   },
   "select": "Auswählen",
   "selectAll": "Alle auswählen",
@@ -304,14 +454,24 @@
   "downloadFile": "Datei herunterladen",
   "cancel": "Abbrechen",
   "survey": {
+    "attendee": "Teilnehmer",
+    "attendees": "Teilnehmer",
+    "newTitle": "Neue Umfrage",
+    "filterPlaceHolderText": "Suche nach Umfragename",
+    "invitedAttendees": "Eingeladen",
+    "isPublic": "Sichtbarkeit",
+    "isPublicTrue": "Öffentlich",
+    "isPublicFalse": "Privat",
     "created": "Erstellt",
     "creationDate": "Erstellungsdatum",
     "expires": "Läuft ab",
     "expirationDate": "Ablaufdatum",
-    "notFound": "Umfrage nicht gefunden",
-    "noFormula": "Das Formular ist nicht lesbar",
-    "noAnswer": "Keine Antwort verfügbar",
-    "canSubmitMultiple": "Erlaube Mehrfachantworten",
+    "finished": "Du hast erfolgreich an der Umfrage teilgenommen.",
+    "thanks": "Vielen Dank für deine Teilnahme.",
+    "notFound": "Die Umfrage konnte nicht gefunden werden.",
+    "noFormula": "Das Formular ist nicht lesbar.",
+    "noAnswer": "Es sind noch keine Antworten verfügbar.",
+    "canSubmitMultiple": "Erlaube Mehrfachantworten.",
     "editor": {
       "new": "Neu (Leer)",
       "abort": "Alle Änderungen verwerfen",
@@ -319,43 +479,64 @@
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
     },
     "errors": {
-      "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden",
+      "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden.",
       "deleteError": "Die Umfragen konnten nicht gelöscht werden.",
-      "noAnswerError": "Es sind noch keine Antworten vorhanden.",
+      "noAnswerError": "Bisher ist noch keine Antwort abgegeben worden.",
       "noFormulaError": "Das Formular der Umfrage ist nicht lesbar.",
       "noBackendLimitersError": "Um diese Funktion nutzen zu können müssen im Editor die Grenzwerte definiert werden.",
       "notFoundError": "Umfrage konnte nicht gefunden werden.",
+      "surveyFormulaStructuralError": "Das Formular der Umfrage weist Struktureller Fehler auf.",
       "participationErrorUserNotAssigned": "Du bist zu dieser Umfrage nicht eingeladen.",
       "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
       "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",
-      "idTypeError": "Ungültige Umfrage-ID",
-      "missingAnswerError": "Bitte fülle die Umfrage aus bevor du deine Antwort abschickst."
+      "idTypeError": "Ungültige Umfrage-ID.",
+      "missingAnswerError": "Bitte fülle die Umfrage aus, bevor du deine Antwort abschickst."
     }
   },
   "survey-answer": {
     "errors": {
-      "notAbleToFindOrCreateSurveyAnswerError": "Antwort konnte nicht gefunden oder erstellt werden",
+      "notAbleToFindOrCreateSurveyAnswerError": "Antwort konnte nicht gefunden oder erstellt werden.",
       "notAbleToFindSurveyAnswerError": "Keine Antworten vorhanden.",
-      "notAbleToUpdateSurveyAnswerError": "Antwort konnte nicht aktualisiert werden",
+      "notAbleToUpdateSurveyAnswerError": "Antwort konnte nicht aktualisiert werden.",
       "notAbleToCreateSurveyAnswerError": "Antwort konnte nicht erstellt werden.",
       "notAbleToDeleteSurveyAnswerError": "Antwort konnte nicht gelöscht werden."
     }
   },
   "surveys": {
+    "rowsSelected": "{{selected}} von {{total}} Umfragen ausgewählt",
+    "rowSelected": "{{selected}} von {{total}} Umfrage ausgewählt",
+    "confirmMultiDelete": "Sollen diese Umfragen wirklich gelöscht werden?",
+    "confirmSingleDelete": "Soll die Umfrage wirklich gelöscht werden?",
+    "deleteSurveys": "Lösche {{count}} Umfragen",
+    "deleteSurvey": "Umfrage Löschen",
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
     "view": {
-      "open": "Offene Umfragen",
-      "created": "Eigene Umfragen",
-      "answered": "Schon beantwortet",
-      "editor": "Neue erstellen"
+      "open": {
+        "menu": "Offene Umfragen",
+        "title": "Offene Umfragen",
+        "description": "Hier findest du die Umfragen, zu denen du eingeladen wurdest."
+      },
+      "created": {
+        "menu": "Eigene Umfragen",
+        "title": "Eigens erstellte Umfragen",
+        "description": "Hier findest du die Umfragen, die du selbst erstellt hast."
+      },
+      "answered": {
+        "menu": "Schon beantwortet",
+        "title": "Schon beantwortete Umfragen",
+        "description": "Hier findest du die Umfragen, an denen du bereits teilgenommen hast."
+      },
+      "editor": {
+        "menu": "Neue erstellen"
+      }
     },
     "actions": {
       "showResultsChart": "Schaubild",
       "showResultsTable": "Tabelle",
-      "showCommittedAnswers": "Antworten"
+      "showSubmittedAnswers": "Antworten"
     },
-    "commitedAnswersDialog": {
+    "submittedAnswersDialog": {
       "title": "Eingereichte Abgabe des Nutzers"
     },
     "saveDialog": {
@@ -363,13 +544,14 @@
       "settingsFlags": "Einstellungen",
       "isAnonymous": "Soll die Umfrage anonym sein?",
       "isPublic": "Soll die Umfrage öffentlich sein?",
-      "canSubmitMultipleAnswers": "Auch nach Teilnahme bleibt der Status auf offen"
+      "canSubmitMultipleAnswers": "Soll ein Teilnehmer die Umfrage mehrmals beantworten können?",
+      "canUpdateFormerAnswer": "Sollen Antworten nachträglich bearbeitbar sein?"
     },
     "sharePublicSurveyDialog": {
       "title": "Umfrage teilen",
       "description": "Hier kannst du den Link zur Umfrage kopieren und teilen.",
-      "savedToClipboard": "In die Zwischenablage kopiert",
-      "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden"
+      "savedToClipboard": "In die Zwischenablage kopiert.",
+      "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden."
     },
     "participateDialog": {
       "title": "An der Umfrage teilnehmen"
@@ -414,7 +596,8 @@
       "GuacamoleNotResponding": "RDP-Dienst nicht verfügbar.",
       "GuacamoleUserNotFound": "Nutzername oder Passwort konnte nicht gefunden.",
       "LmnVdiApiNotResponding": "Linuxmuster VDI-Dienst antwortet nicht.",
-      "SessionNotFound": "Session nicht gefunden."
+      "SessionNotFound": "Session nicht gefunden.",
+      "AppNotProperlyConfigured": "Guacamole ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator."
     }
   },
   "wlan": {
@@ -460,8 +643,68 @@
       "description": "Möchtest du diese App sicher löschen?"
     },
     "delete": "Löschen",
-    "description": "Hier können Sie alle Einstellungen vornehmen.",
+    "description": {
+      "ticketsystem": "Hier kannst du alle Einstellungen vornehmen.",
+      "mail": "Hier kannst du alle Einstellungen vornehmen.",
+      "chat": "Hier kannst du alle Einstellungen vornehmen.",
+      "conferences": "Hier kannst du alle Einstellungen vornehmen.",
+      "surveys": "Hier kannst du alle Einstellungen vornehmen.",
+      "knowledgebase": "Hier kannst du alle Einstellungen vornehmen.",
+      "filesharing": "Hier kannst du alle Einstellungen vornehmen.",
+      "forums": "Hier kannst du alle Einstellungen vornehmen.",
+      "roombooking": "Hier kannst du alle Einstellungen vornehmen.",
+      "learningmanagement": "Hier kannst du alle Einstellungen vornehmen.",
+      "schoolinformation": "Hier kannst du alle Einstellungen vornehmen.",
+      "classmanagement": "Hier kannst du alle Einstellungen vornehmen.",
+      "printer": "Hier kannst du alle Einstellungen vornehmen.",
+      "network": "Hier kannst du alle Einstellungen vornehmen.",
+      "locationservices": "Hier kannst du alle Einstellungen vornehmen.",
+      "desktopdeployment": "Hier kannst du alle Einstellungen vornehmen.",
+      "wlan": "Hier kannst du alle Einstellungen vornehmen.",
+      "mobiledevices": "Hier kannst du alle Einstellungen vornehmen.",
+      "virtualization": "Hier kannst du alle Einstellungen vornehmen.",
+      "firewall": "Hier kannst du alle Einstellungen vornehmen.",
+      "antimalware": "Hier kannst du alle Einstellungen vornehmen.",
+      "backup": "Hier kannst du alle Einstellungen vornehmen.",
+      "aichat": "Hier kannst du alle Einstellungen vornehmen.",
+      "linuxmuster": "Hier kannst du alle Einstellungen vornehmen.",
+      "whiteboard": "Hier kannst du alle Einstellungen vornehmen.",
+      "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Schwarzes Brett haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden."
+    },
     "appconfig": {
+      "sections": {
+        "onlyOffice": {
+          "title": "Only Office Integration",
+          "description": ""
+        },
+        "imapMailFeed": {
+          "title": "IMAP Integration",
+          "description": ""
+        },
+        "bulletinBoard": {
+          "title": "Kategorien",
+          "description": "Füge neue Kategorien hinzu oder bearbeite existierende, um zu steuern, für welche Nutzer und Gruppen Mitteilungen angezeigt werden sollen."
+        },
+        "general": {
+          "title": "Allgemein",
+          "description": ""
+        },
+        "fileSharing": {
+          "title": "Allgemeine Einstellungen",
+          "description": ""
+        },
+        "docker": {
+          "title": "Docker Anwendungen",
+          "description": "Um die erweiterten Dienste nutzen zu können hier die benötigten Docker Container gestartet werden."
+        },
+        "veyon": {
+          "title": "Veyon Proxy",
+          "description": "Hier können die Veyon WebAPI-Proxys konfiguriert werden.",
+          "filterPlaceHolderText": "Suche nach Proxy-Name",
+          "invalidCidrFormat": "Ungültige CIDR-Notation",
+          "invalidUrlFormat": "Ungültige URL"
+        }
+      },
       "update": {
         "success": "App erfolgreich gespeichert",
         "failed": "Aktualisierung fehlgeschlagen"
@@ -480,16 +723,40 @@
       "ReadAppConfigFailed": "App lesen fehlgeschlagen",
       "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen",
       "WriteTraefikConfigFailed": "Traefik-Konfiguration speichern fehlgeschlagen",
-      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen"
+      "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen",
+      "forbiddenProxyPath": "Dieser Proxy-Pfad ist nicht erlaubt."
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",
       "placeholder": "Hier ihre Traefik-Konfiguration eintragen"
-    }
+    },
+    "rowsSelected": "{{selected}} von {{total}} Container ausgewählt",
+    "rowSelected": "{{selected}} von {{total}} Container ausgewählt"
   },
   "usersettings": {
     "title": "MEIN PROFIL",
     "sidebar": "Mein Profil",
+    "details": {
+      "title": "Benutzerdetails",
+      "description": "Hier können Sie Ihre Benutzerdaten einsehen und teilweise bearbeiten.",
+      "userInformation": "Benutzerbezogene Informationen",
+      "dateOfBirth": "Geburtsdatum",
+      "givenName": "Vorname",
+      "displayName": "Anzeigename",
+      "name": "Benutzername",
+      "role": "Rolle",
+      "schoolName": "Schulname",
+      "schoolSubjects": "Klassen",
+      "sophomorixState": "Status",
+      "quotas": "Quotas",
+      "proxyAddresses": "E-Mail Proxy-Addressen",
+      "addNew": "Tippen um hinzuzufügen",
+      "badgeAlreadyExists": "Der Eintrag existiert bereits",
+      "sophomorixCustom1_teacher": "Schulfach 1",
+      "sophomorixCustom2_teacher": "Schulfach 2",
+      "sophomorixCustomMulti1_teacher": "Kaffeesorten",
+      "userimageconfig": "Profilbild"
+    },
     "security": {
       "title": "Sicherheit",
       "sidebar": "Sicherheit",
@@ -506,6 +773,10 @@
     "mails": {
       "title": "E-Mail"
     },
+    "mobileAccess": {
+      "title": "App-Zugriff",
+      "description": "Hier kannst du für den mobilen Zugriff auf deine Dateien die edulution.io App einrichten. Aktuell nur für Apple iOS verfügbar."
+    },
     "faq": "FAQ",
     "externalIntegration": "Externe Anbindung",
     "config": {
@@ -516,6 +787,13 @@
       "disabled": "deaktiviert",
       "disable": "Deaktivieren"
     },
+    "language": {
+      "title": "Sprache",
+      "description": "Bitte wähle die Sprache für die Benutzeroberfläche aus.",
+      "german": "Deutsch",
+      "english": "Englisch",
+      "system": "Systemsprache"
+    },
     "addTotp": {
       "title": "QR-Code",
       "description": "Bitte den QR-Code scannen und den TOTP-Code eingeben:"
@@ -525,7 +803,9 @@
       "newPasswordRequired": "Neues Passwort ist erforderlich",
       "confirmPasswordRequired": "Erneute Eingabe des Passwortes ist erforderlich zur Bestätigung",
       "passwordsDoNotMatch": "Passwörter stimmen nicht überein",
-      "passwordLength": "Das Passwort muss mindestens 8 Zeichen lang sein"
+      "passwordLength": "Das Passwort muss mindestens 8 Zeichen lang sein",
+      "notSupportedFileFormat": "Nicht unterstütztes Dateiformat.",
+      "notAbleToCompressImage": "Bild konnte nicht komprimiert werden."
     }
   },
   "forwardingpage": {
@@ -550,10 +830,34 @@
     "remember_me": "Merken"
   },
   "common": {
+    "answers": "Antworten",
+    "error": "Fehler",
     "errors": {
+      "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
+    "sortOrder": "Sortierung",
+    "options": "Optionen",
+    "checking": "Prüfen",
+    "cancel": "Abbrechen",
+    "columns": "Spalten",
+    "table": "Tabelle",
+    "copy": {
+      "success": "Erfolgreich in Zwischenablage kopiert",
+      "error": "In Zwischenablage kopieren fehlgeschlagen",
+      "doCopy": "Kopieren",
+      "link": "Link kopieren"
+    },
+    "openInNewTab": "In neuem Tab öffnen",
+    "from": "von",
+    "youAreCurrentlyNotLoggedIn": "Du bist momentan nicht angemeldet",
+    "toLogin": "Zum Login",
+    "name": "Name",
+    "join": "Teilnehmen",
+    "details": "Details",
+    "createdAt": "Erstellt am",
+    "updatedAt": "Bearbeitet am",
     "actions": "Aktionen",
     "forward": "Weiterleiten",
     "showOptions": "Optionen zeigen",
@@ -604,14 +908,24 @@
     "connect": "Verbinden",
     "custom": "Benutzerdefiniert",
     "select": "Wählen...",
+    "none": "Keine",
     "edit": "Bearbeiten",
-    "copy": "Kopieren",
     "participate": "Teilnehmen",
     "participated": "Teilgenommen",
-    "not-available": "'Nicht verfügbar'",
+    "not-available": "Nicht verfügbar",
     "date": "Datum",
     "time": "Uhrzeit",
-    "revert": "Zurücksetzen"
+    "revert": "Zurücksetzen",
+    "restart": "Neu starten",
+    "kill": "Beenden",
+    "install": "Installieren",
+    "update": "Update",
+    "progress": "Fortschritt...",
+    "pressInstall": "Drücke Installieren um zu Starten.",
+    "disabled": "Deaktiviert",
+    "invalid_url": "Ungültige URL",
+    "invalid_fqdn": "Ungültiger FQDN. Bitte nur den Hostnamen angeben.",
+    "required": "Erforderlich"
   },
   "form": {
     "path": "Link",
@@ -629,7 +943,9 @@
     "proxyConfigDescription": "YAML-Editor für die Konfiguration des Traefik-Proxy.",
     "expertMode": "Expertenmodus",
     "proxyPath": "Proxy Pfad",
+    "proxyPathPlaceholder": "z.B. SOGo",
     "proxyDestination": "Zielhost",
+    "proxyDestinationPlaceholder": "z.B. http://localhost:1234/",
     "stripPrefix": "Prefix entfernen"
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
@@ -638,7 +954,8 @@
     "filename": "Dateiname",
     "size": "Größe",
     "lastModified": "Zuletzt geändert",
-    "type": "Typ"
+    "type": "Typ",
+    "filesOrFoldersSelected": "{{selected}} von {{total}} Dateien/Ordnern ausgewählt"
   },
   "currentDirectory": "Aktuelles Verzeichnis",
   "filesharingUpload": {
@@ -649,6 +966,7 @@
     "selectFile": "Wählen Sie bis zu 5 Dateien gleichzeitig",
     "uploadItems": "Hochladen: {{count}} Datei/en",
     "dragDropClick": "Ziehen Sie Dateien hierher oder klicken Sie, um Dateien auszuwählen",
+    "dropHere": "Hier loslassen",
     "filesToUpload": "Dateien zum Hochladen",
     "limitExceeded": "Dateilimit von 5 Dateien erreicht"
   },
@@ -661,11 +979,11 @@
     "sidebar": "Whiteboard"
   },
   "table": {
-    "rowsSelected": "{{selected}} von {{total}} Datei(n)/Ordner ausgewählt",
     "noDataAvailable": "Keine Daten verfügbar"
   },
   "loadingIndicator": {
-    "message": "Bitte warten..."
+    "message": "Bitte warten...",
+    "previewLoading": "Vorschau laden"
   },
   "search": {
     "type-to-search": "Tippen um zu suchen",
@@ -808,6 +1126,7 @@
   },
   "mails": {
     "errors": {
+      "NotAbleToGetImapOption": "Auslesen der 'IMAP-Konfiguration' ist nicht möglich",
       "NotAbleToConnectClientError": "Verbindung zum IMAP-Server nicht möglich",
       "NotAbleToLockMailboxError": "Die Mailbox konnte nicht aufgerufen werden",
       "NotAbleToFetchMailsError": "Mails konnten nicht abgerufen werden",
@@ -826,12 +1145,78 @@
   },
   "appExtendedOptions": {
     "title": "Erweiterungen",
-    "onlyOfficeUrl": "Bitte gib die OnlyOffice-URL an",
+    "onlyOfficeUrl": "Gib hier die OnlyOffice-URL an",
     "onlyOfficeUrlTitle": "OnlyOffice-URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
-    "onlyOfficeJwtSecretDescription": "Bitte gib den OnlyOffice JWT Secret Key an"
+    "onlyOfficeJwtSecretDescription": "Gib hier den OnlyOffice JWT Secret Key an",
+    "overrideDocumentVendorMSWithOOTitle": "OpenDocument als Standard-Dokumentenformat verwenden",
+    "overrideDocumentVendorMSWithOODescription": "Soll anstatt der Microsoft Office Formate (docx, pptx, xlsx) das OpenDocument Format (odt, ods, odp) verwendet werden?",
+    "mailImapUrlTitle": "URL",
+    "mailImapUrlDescription": "Gib hier den FQDN (z.B. 'imap.example.com') des IMAP-Servers an.",
+    "mailImapPortTitle": "Port",
+    "mailImapPortDescription": "Gib hier die Port Nummer des IMAP-Servers an (z.B. 993)",
+    "mailImapSecureTitle": "Sichere Verbindung",
+    "mailImapSecureDescription": "Soll die Verbindung über 'TLS' oder 'STARTTLS' aufgebaut werden.",
+    "mailImapRejectUnauthorizedTitle": "Nicht zertifizierte Verbindungen ablehnen",
+    "mailImapRejectUnauthorizedDescription": "Soll eine Zertifikatsprüfung für diese Verbindung durchgeführt werden?"
   },
   "preview": {
+    "image": "Bildvorschau",
     "failedToLoadImage": "Bild konnte nicht geladen werden"
+  },
+  "containerApplication": {
+    "dialogTitle": "{{applicationName}}-Plugins installieren",
+    "EDULUTION_MAIL_HOSTNAME": {
+      "title": "Hostname",
+      "description": "Hostname des Mailservers. Dieser kann von der edulution Domain abweichen."
+    }
+  },
+  "dockerOverview": {
+    "title": "Container-Übersicht",
+    "containerName": "Container-Name",
+    "state": "Betriebszustand",
+    "state-badge": "Badge",
+    "status": "Status",
+    "imageName": "Image",
+    "filterPlaceHolderText": "Suche nach Container-Name",
+    "port": "Port",
+    "created": "Erstellt am"
+  },
+  "docker": {
+    "error": {
+      "dockerConnectionError": "Docker-Verbindung fehlgeschlagen",
+      "dockerImageNotFound": "Docker Image konnte nicht gefunden werden",
+      "dockerCreationError": "Docker Container konnte nicht erstellt werden",
+      "dockerCommandExecutionError": "Docker Befehl konnte nicht ausgeführt werden",
+      "dockerContainerDeletionError": "Docker Container konnte nicht gelöscht werden"
+    },
+    "events": {
+      "pullingImage": "Docker Image wird abgerufen...",
+      "checkingImage": "Check, ob Image schon vorhande ist...",
+      "creatingContainer": "Docker Container wird erstellt...",
+      "containerCreated": "Container erstellt.",
+      "startContainer": "Container gestartet.",
+      "stopContainer": "Container gestoppt.",
+      "restartContainer": "Container neu gestartet.",
+      "killContainer": "Container erzwungen gestoppt.",
+      "containerCreationSuccessful": "Container erfolgreich erstellt.",
+      "containerCreationFailed": "Container konnte nicht erstellt werden."
+    },
+    "status": {
+      "running": "läuft",
+      "created": "erstellt",
+      "restarting": "neu gestartet",
+      "paused": "pausiert",
+      "exited": "gestoppt",
+      "dead": "tot"
+    }
+  },
+  "veyon": {
+    "errors": {
+      "AppNotProperlyConfigured": "Veyon ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
+      "VeyonAuthFailed": "Veyon-Authentifizierung fehlgeschlagen",
+      "GetUserFailed": "Benutzer konnte nicht abgerufen werden",
+      "VeyonApiNotReachable": "Der externen Veyon-Server ist nicht erreichbar"
+    }
   }
 }

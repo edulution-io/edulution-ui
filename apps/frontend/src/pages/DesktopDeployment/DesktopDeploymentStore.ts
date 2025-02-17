@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { create } from 'zustand';
 import handleApiError from '@/utils/handleApiError';
 import userStore from '@/store/UserStore/UserStore';
@@ -12,7 +24,6 @@ const initialState = {
   isLoading: false,
   error: null,
   connections: null,
-  isVdiConnectionMinimized: false,
   isVdiConnectionOpen: false,
   guacId: '',
   virtualMachines: null,
@@ -27,7 +38,6 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
   setError: (error) => set({ error }),
   setIsLoading: (isLoading) => set({ isLoading }),
   setGuacToken: (guacToken) => set({ guacToken }),
-  setIsVdiConnectionMinimized: (isVdiConnectionMinimized) => set({ isVdiConnectionMinimized }),
   setIsVdiConnectionOpen: (isVdiConnectionOpen) => set({ isVdiConnectionOpen }),
   setGuacId: (guacId) => set({ guacId }),
   setVirtualMachines: (virtualMachines) => set({ virtualMachines }),
@@ -38,7 +48,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
       const response = await eduApi.get<GuacamoleDto>(EDU_API_VDI_ENDPOINT);
 
       const { authToken, dataSource } = response.data;
-      set({ guacToken: authToken, dataSource, isVdiConnectionMinimized: false });
+      set({ guacToken: authToken, dataSource });
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -79,7 +89,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
   },
 
   postRequestVdi: async (group: string) => {
-    set({ isLoading: true });
+    set({ error: null, isLoading: true });
 
     const vdiConnectionRequestBody = {
       group,
