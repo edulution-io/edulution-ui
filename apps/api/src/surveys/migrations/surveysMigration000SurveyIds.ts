@@ -51,27 +51,39 @@ const migration000SurveyIds: Migration<SurveyDocument> = {
       unprocessedDocuments.map(async (doc: OLDSurveyDocumentWithVirtuals) => {
         try {
           // eslint-disable-next-line no-underscore-dangle
-          const id = String(doc.id);
+          const currentId = doc._id;
 
-          const newDoc = {
-            ...doc.toObject(),
-            _id: new Types.ObjectId(id),
-            schemaVersion: newSchemaVersion,
-            answers: Array.isArray(doc.answers)
-              ? doc.answers.map((answer) => (typeof answer === 'string' ? new Types.ObjectId(String(answer)) : answer))
-              : [],
-          } as OLDSurveyDocumentWithVirtuals;
+          if (currentId instanceof Types.ObjectId) {
+            await model.updateOne({ _id: currentId }, { $set: { schemaVersion: newSchemaVersion } });
+            processedCount += 1;
+          } else if (typeof currentId === 'string') {
+            const newId = new Types.ObjectId(currentId);
 
-          delete newDoc.id;
-          delete newDoc.created;
-          delete newDoc.canShowResultsTable;
-          delete newDoc.canShowResultsChart;
+            const newDoc = {
+              ...doc.toObject(),
+              _id: newId,
+              schemaVersion: newSchemaVersion,
+              answers: Array.isArray(doc.answers)
+                ? doc.answers.map((answer) =>
+                    typeof answer === 'string' ? new Types.ObjectId(String(answer)) : answer,
+                  )
+                : [],
+            } as OLDSurveyDocumentWithVirtuals;
 
-          await model.create(newDoc);
+            delete newDoc.id;
+            delete newDoc.created;
+            delete newDoc.canShowResultsTable;
+            delete newDoc.canShowResultsChart;
 
-          await model.deleteOne({ id });
+            await model.create(newDoc);
 
-          processedCount += 1;
+            await model.deleteOne({ _id: currentId });
+
+            processedCount += 1;
+          } else {
+            // Unsupported _id type: log an error.
+            Logger.error(`Document ${doc.id} has unsupported _id type: ${typeof currentId}`);
+          }
         } catch (error) {
           Logger.error(`Failed to migrate document ${doc.id}:`, error);
         }
