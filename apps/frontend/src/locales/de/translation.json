@@ -276,9 +276,10 @@
   },
   "feed": {
     "title": "Aktuelles",
-    "noConferences": "Keine laufende Konferenz",
-    "noMails": "Keine ungelesenen Mails",
-    "noSurveys": "Keine offenen Umfragen"
+    "noconferences": "Keine laufende Konferenz",
+    "nomail": "Keine ungelesenen Mails",
+    "nosurveys": "Keine offenen Umfragen",
+    "nobulletinboard": "Keine neuen Mitteilungen"
   },
   "filesharing": {
     "filterPlaceHolderText": "Suche nach Dateiname",

@@ -22,6 +22,7 @@ import useMailsStore from '@/pages/Mail/useMailsStore';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import getDisplayName from '@/utils/getDisplayName';
+import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import DesktopSidebar from './DesktopSidebar';
 import MobileSidebar from './MobileSidebar';
 
@@ -34,13 +35,16 @@ const Sidebar: React.FC = () => {
 
   const { mails } = useMailsStore();
   const { runningConferences } = useConferenceStore();
+  const { bulletinBoardNotifications } = useBulletinBoardStore();
 
   const getNotificationCounter = (app: string): number | undefined => {
     switch (app) {
       case APPS.MAIL:
         return mails.length || 0;
       case APPS.CONFERENCES:
-        return runningConferences.length || 0;
+        return runningConferences.length;
+      case APPS.BULLETIN_BOARD:
+        return bulletinBoardNotifications.length;
       default:
         return undefined;
     }

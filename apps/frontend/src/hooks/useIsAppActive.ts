@@ -13,13 +13,12 @@
 import { useMemo } from 'react';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import APPS from '@libs/appconfig/constants/apps';
+import TApps from '@libs/appconfig/types/appsType';
 
-// TODO: NIEDUUI-312: Remove this check when the information about the app is stored in the appConfigs/userConfig/dataBase
-const useIsSurveysActive = () => {
+const useIsAppActive = (appName: TApps) => {
   const { appConfigs } = useAppConfigsStore();
 
-  return useMemo(() => !!appConfigs.find((conf: AppConfigDto) => conf.name === APPS.SURVEYS), [appConfigs]);
+  return useMemo(() => !!appConfigs.find((conf: AppConfigDto) => conf.name === appName), [appConfigs]);
 };
 
-export default useIsSurveysActive;
+export default useIsAppActive;

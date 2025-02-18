@@ -277,9 +277,10 @@
   },
   "feed": {
     "title": "Current affairs",
-    "noConferences": "No running conference",
-    "noMails": "No unread mail",
-    "noSurveys": "No open survey"
+    "noconferences": "No running conference",
+    "nomail": "No unread mail",
+    "nosurveys": "No open survey",
+    "nobulletinboard": "No new bulletins"
   },
   "filesharing": {
     "filterPlaceHolderText": "Search for filename",
