@@ -83,7 +83,7 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
       };
 
       const showCoolDownWithFileName = fileCooldowns[row.original.basename]
-        ? row.original.basename + 'CoolDOWN'
+        ? `${row.original.basename}CoolDOWN`
         : row.original.basename;
 
       return (
