@@ -25,7 +25,6 @@ import UserGroups from '@libs/groups/types/userGroups.enum';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
-import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import LmnApiSchoolClassWithMembers from '@libs/lmnApi/types/lmnApiSchoolClassWithMembers';
 import LmnApiProjectWithMembers from '@libs/lmnApi/types/lmnApiProjectWithMembers';
 import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
@@ -36,6 +35,7 @@ import LmnApiPrinterWithMembers from '@libs/lmnApi/types/lmnApiPrinterWithMember
 import useLmnApiStore from '@/store/useLmnApiStore';
 import parseSophomorixQuota from '@libs/lmnApi/utils/parseSophomorixQuota';
 import parseSophomorixMailQuota from '@libs/lmnApi/utils/parseSophomorixMailQuota';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 
 interface GroupDialogProps {
   item: GroupColumn;
@@ -94,7 +94,8 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
           path: lmnUser.dn,
           value: lmnUser.cn,
           label: `${lmnUser.displayName} (${lmnUser.sophomorixAdminClass})`,
-        }) as unknown as MultipleSelectorOptionSH,
+          username: lmnUser.cn,
+        }) as AttendeeDto,
     );
 
   const setFormInitialValues = (

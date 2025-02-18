@@ -23,6 +23,7 @@ import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import type TApps from '@libs/appconfig/types/appsType';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
+import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import DesktopSidebar from './DesktopSidebar';
 import MobileSidebar from './MobileSidebar';
 
@@ -34,13 +35,16 @@ const Sidebar: React.FC = () => {
 
   const { mails } = useMailsStore();
   const { runningConferences } = useConferenceStore();
+  const { bulletinBoardNotifications } = useBulletinBoardStore();
 
   const getNotificationCounter = (app: TApps): number | undefined => {
     switch (app) {
       case APPS.MAIL:
         return mails.length || 0;
       case APPS.CONFERENCES:
-        return runningConferences.length || 0;
+        return runningConferences.length;
+      case APPS.BULLETIN_BOARD:
+        return bulletinBoardNotifications.length;
       default:
         return undefined;
     }

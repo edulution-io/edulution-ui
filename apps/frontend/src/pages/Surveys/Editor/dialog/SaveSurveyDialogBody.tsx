@@ -14,15 +14,14 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useUserStore from '@/store/UserStore/UserStore';
 import DatePicker from '@/components/shared/DatePicker';
 import Checkbox from '@/components/ui/Checkbox';
-import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import useGroupStore from '@/store/GroupStore';
 import TimeInput from '@/components/shared/TimeInput';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
 interface SaveSurveyDialogBodyProps {
   form: UseFormReturn<SurveyDto>;
@@ -35,7 +34,7 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
   const { searchGroups } = useGroupStore();
   const { t } = useTranslation();
 
-  const handleAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
+  const handleAttendeesChange = (attendees: AttendeeDto[]) => {
     setValue('invitedAttendees', attendees, { shouldValidate: true });
   };
 
@@ -44,7 +43,7 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
     return user ? result.filter((r) => r.username !== user.username) : result;
   };
 
-  const handleGroupsChange = (groups: MultipleSelectorOptionSH[]) => {
+  const handleGroupsChange = (groups: MultipleSelectorGroup[]) => {
     setValue('invitedGroups', groups, { shouldValidate: true });
   };
 
@@ -64,10 +63,10 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
   return (
     <>
       <SearchUsersOrGroups
-        users={watch('invitedAttendees') as AttendeeDto[]}
+        users={watch('invitedAttendees')}
         onSearch={onAttendeesSearch}
         onUserChange={handleAttendeesChange}
-        groups={watch('invitedGroups') as MultipleSelectorGroup[]}
+        groups={watch('invitedGroups')}
         onGroupSearch={searchGroups}
         onGroupsChange={handleGroupsChange}
         variant="dialog"

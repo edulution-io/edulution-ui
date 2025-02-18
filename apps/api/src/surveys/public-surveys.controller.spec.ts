@@ -39,6 +39,8 @@ import {
   surveyValidAnswerPublicSurvey02,
 } from './mocks';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';
+import GroupsService from '../groups/groups.service';
+import mockGroupsService from '../groups/groups.service.mock';
 
 describe(PublicSurveysController.name, () => {
   let controller: PublicSurveysController;
@@ -58,6 +60,7 @@ describe(PublicSurveysController.name, () => {
           useValue: jest.fn(),
         },
         SurveyAnswersService,
+        { provide: GroupsService, useValue: mockGroupsService },
         {
           provide: getModelToken(SurveyAnswer.name),
           useValue: jest.fn(),
