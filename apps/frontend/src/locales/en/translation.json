@@ -709,7 +709,7 @@
         },
         "docker": {
           "title": "Docker Applications",
-          "description": "To be able to use the extended services, the required Docker containers must be started here."
+          "description": "To be able to use the extended services, the required container applications must be started here."
         },
         "veyon": {
           "title": "Veyon Proxy",
