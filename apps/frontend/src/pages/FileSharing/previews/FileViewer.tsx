@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { FC, useCallback, useEffect } from 'react';
+import React, { FC, useEffect } from 'react';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import FileViewerLayout from '@/pages/FileSharing/previews/utilities/FileViewerLayout';
 import FileRenderer from '@/pages/FileSharing/previews/utilities/FileRenderer';
@@ -40,11 +40,11 @@ const FileViewer: FC<FileViewerProps> = ({ editMode }) => {
     }
   }, [currentlyEditingFile, isFullScreenEditingEnabled]);
 
-  const handleCloseFile = useCallback(() => {
+  const handleCloseFile = () => {
     if (!currentlyEditingFile) return;
     setIsFullScreenEditingEnabled(false);
     startFileSaving(currentlyEditingFile.basename, 5000);
-  }, [currentlyEditingFile, setIsFullScreenEditingEnabled, startFileSaving]);
+  };
 
   const isOpenedInNewTab = Boolean(searchParams.get('tab'));
 
