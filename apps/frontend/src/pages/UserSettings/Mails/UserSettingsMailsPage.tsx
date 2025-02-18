@@ -139,7 +139,6 @@ const UserSettingsMailsPage: React.FC = () => {
               selectedVal={isGetSyncJobLoading ? t('common.loading') : t(option)}
               handleChange={setOption}
               classname="md:w-1/3"
-              variant="default"
             />
             <Form {...form}>
               <form
