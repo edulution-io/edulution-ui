@@ -52,11 +52,11 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
     accessorFn: (row) => row.type + row.filename,
     cell: ({ row }) => {
       const [searchParams, setSearchParams] = useSearchParams();
-      const { fileCooldowns, setCurrentlyEditingFile, resetCurrentlyEditingFile, setPublicDownloadLink } =
+      const { fileSaving, setCurrentlyEditingFile, resetCurrentlyEditingFile, setPublicDownloadLink } =
         useFileSharingStore();
       const { setShowEditor } = useFileEditorStore();
       const handleFilenameClick = async () => {
-        if (fileCooldowns[row.original.basename]) {
+        if (fileSaving[row.original.basename]) {
           return;
         }
 
@@ -82,16 +82,14 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
         return <MdFolder size={TABLE_ICON_SIZE} />;
       };
 
-      const showCoolDownWithFileName = fileCooldowns[row.original.basename]
-        ? `${row.original.basename}CoolDOWN`
-        : row.original.basename;
+      const isSaving = fileSaving[row.original.basename];
 
       return (
-        <div className="w-full">
+        <div className={`w-full ${isSaving ? 'pointer-events-none opacity-50' : ''}`}>
           <SelectableTextCell
             icon={renderFileIcon(row.original)}
             row={row}
-            text={showCoolDownWithFileName}
+            text={row.original.basename}
             onClick={handleFilenameClick}
           />
         </div>

@@ -52,9 +52,9 @@ type UseFileSharingStore = {
   publicDownloadLink: string | null;
   setPublicDownloadLink: (publicDownloadLink: string) => void;
   isError: boolean;
-  fileCooldowns: Record<string, boolean>;
-  setFileCooldown: (filename: string, isOnCooldown: boolean) => void;
-  startFileCooldown: (filename: string, durationMs: number) => void;
+  fileSaving: Record<string, boolean>;
+  setFileSaving: (filename: string, isOnCooldown: boolean) => void;
+  startFileSaving: (filename: string, durationMs: number) => void;
   setIsLoading: (isLoading: boolean) => void;
   setCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => void;
   resetCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => Promise<void>;
@@ -81,7 +81,7 @@ const initialState = {
   publicDownloadLink: null,
   isEditorLoading: false,
   isFullScreenEditingEnabled: false,
-  fileCooldowns: {},
+  fileSaving: {},
 };
 
 type PersistedFileManagerStore = (
@@ -218,24 +218,24 @@ const useFileSharingStore = create<UseFileSharingStore>(
         }
       },
 
-      setFileCooldown: (filename, isOnCooldown) => {
+      setFileSaving: (filename, isOnCooldown) => {
         set((state) => ({
-          fileCooldowns: {
-            ...state.fileCooldowns,
+          fileSaving: {
+            ...state.fileSaving,
             [filename]: isOnCooldown,
           },
         }));
       },
 
-      startFileCooldown: (filename, durationMs) => {
+      startFileSaving: (filename, durationMs) => {
         set({
-          fileCooldowns: {
+          fileSaving: {
             [filename]: true,
           },
         });
         set({ currentlyEditingFile: null });
         setTimeout(() => {
-          get().setFileCooldown(filename, false);
+          set({ fileSaving: { filename: false } });
         }, durationMs);
       },
 
