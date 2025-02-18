@@ -12,3 +12,4 @@
 
 /* eslint-disable import/prefer-default-export */
 export const SETTINGS_PATH = 'settings';
+export const APPSTORE_PATH = `${SETTINGS_PATH}/appstore`;

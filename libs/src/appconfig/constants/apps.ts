@@ -40,6 +40,10 @@ const APPS = {
   SETTINGS: 'settings',
   USER_SETTINGS: 'usersettings',
   NONE: 'none',
+  FORWARDING: 'forwarding',
+  FRAME: 'frame',
+  EMBEDDED: 'embedded',
+  APPSTORE: 'appstore',
 } as const;
 
 export default APPS;
