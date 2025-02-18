@@ -10,15 +10,23 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ClassManagementIcon, FilesharingIcon, SurveysIcon, WhiteboardIcon } from '@libs/assets';
+import { ClassManagementIcon, FilesharingIcon, SurveysIcon, WhiteboardIcon, BulletinBoardIcon } from '@libs/assets';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APPS from './apps';
 import APP_INTEGRATION_VARIANT from './appIntegrationVariants';
 
-const { FILE_SHARING, SURVEYS, CLASS_MANAGEMENT, WHITEBOARD } = APPS;
+const { BULLETIN_BOARD, FILE_SHARING, SURVEYS, CLASS_MANAGEMENT, WHITEBOARD } = APPS;
 const { NATIVE } = APP_INTEGRATION_VARIANT;
 
 const defaultAppConfig: AppConfigDto[] = [
+  {
+    name: BULLETIN_BOARD,
+    icon: BulletinBoardIcon,
+    appType: NATIVE,
+    options: {},
+    accessGroups: [],
+    extendedOptions: {},
+  },
   {
     name: FILE_SHARING,
     icon: FilesharingIcon,

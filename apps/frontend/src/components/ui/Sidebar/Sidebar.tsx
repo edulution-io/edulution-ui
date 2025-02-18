@@ -21,7 +21,6 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
-import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import getDisplayName from '@libs/common/utils/getDisplayName';
 import DesktopSidebar from './DesktopSidebar';
 import MobileSidebar from './MobileSidebar';
@@ -48,15 +47,13 @@ const Sidebar: React.FC = () => {
   };
 
   const sidebarItems = [
-    ...appConfigs
-      .filter((option) => findAppConfigByName(appConfigs, option.name))
-      .map((item) => ({
-        title: getDisplayName(item, t, language),
-        link: `/${item.name}`,
-        icon: item.icon,
-        color: 'bg-ciGreenToBlue',
-        notificationCounter: getNotificationCounter(item.name),
-      })),
+    ...appConfigs.map((item) => ({
+      title: getDisplayName(item, t, language),
+      link: `/${item.name}`,
+      icon: item.icon,
+      color: 'bg-ciGreenToBlue',
+      notificationCounter: getNotificationCounter(item.name),
+    })),
     ...(isSuperAdmin
       ? [
           {
