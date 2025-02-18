@@ -17,7 +17,7 @@ import FeedWidgetAccordionTrigger from '@/pages/Dashboard/Feed/components/FeedWi
 import useIsAppActive from '@/hooks/useIsAppActive';
 import TApps from '@libs/appconfig/types/appsType';
 
-export interface FeedAccordionItemProps<T> {
+interface FeedAccordionItemProps<T> {
   appKey: TApps;
   icon: string;
   listItems: T[];

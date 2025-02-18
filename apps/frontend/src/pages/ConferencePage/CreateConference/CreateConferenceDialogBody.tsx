@@ -79,7 +79,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
         />
         <FormField
           name="password"
-          defaultValue={getValues('password') as string}
+          defaultValue={getValues('password')}
           form={form}
           labelTranslationId={t('conferences.password')}
           type="password"

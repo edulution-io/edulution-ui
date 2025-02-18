@@ -30,23 +30,21 @@ const BulletinList = (props: BulletinListProps) => {
   const locale = getLocaleDateFormat();
 
   return (
-    <ScrollArea className={cn('max-h-[470px] overflow-y-auto scrollbar-thin', className)}>
-      <div className="flex flex-col gap-2 py-2 pt-0">
-        {bulletinBoardNotifications.map((bulletin) => (
-          <NavLink
-            to={`${APPS.BULLETIN_BOARD}/${bulletin.id}`}
-            key={bulletin.id}
-            className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border border-muted-foreground p-2 text-left transition-all hover:bg-ciDarkGrey"
-          >
-            <div className="flex w-full flex-col gap-1">
-              <span className="text-sm font-semibold">{bulletin.title}</span>
-              <p className="line-clamp-2 text-sm text-muted-foreground">
-                {format(bulletin.createdAt, 'dd. MMMM', { locale })}
-              </p>
-            </div>
-          </NavLink>
-        ))}
-      </div>
+    <ScrollArea className={cn('flex max-h-[470px] flex-col gap-2 overflow-y-auto py-2 pt-0 scrollbar-thin', className)}>
+      {bulletinBoardNotifications.map((bulletin) => (
+        <NavLink
+          to={`${APPS.BULLETIN_BOARD}/${bulletin.id}`}
+          key={bulletin.id}
+          className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border border-muted-foreground p-2 text-left transition-all hover:bg-ciDarkGrey"
+        >
+          <div className="flex w-full flex-col gap-1">
+            <span className="text-sm font-semibold">{bulletin.title}</span>
+            <p className="line-clamp-2 text-sm text-muted-foreground">
+              {format(bulletin.createdAt, 'dd. MMMM', { locale })}
+            </p>
+          </div>
+        </NavLink>
+      ))}
     </ScrollArea>
   );
 };

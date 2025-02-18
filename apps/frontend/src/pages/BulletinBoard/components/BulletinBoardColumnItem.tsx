@@ -52,7 +52,7 @@ const BulletinBoardColumnItem = ({
   const isCurrentBulletin = bulletinId === bulletin.id;
 
   useEffect(() => {
-    if (bulletinId !== bulletin.id) return undefined;
+    if (!isCurrentBulletin) return undefined;
 
     const element = document.getElementById(bulletinId);
 

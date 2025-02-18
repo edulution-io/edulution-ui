@@ -257,7 +257,7 @@ class BulletinBoardService implements OnModuleInit {
     return updatedBulletin;
   }
 
-  notifyUsers = async (dto: CreateBulletinDto, resultingBulletin: BulletinDocument) => {
+  async notifyUsers(dto: CreateBulletinDto, resultingBulletin: BulletinDocument) {
     const invitedMembersList = await this.groupsService.getInvitedMembers(
       [...dto.category.visibleForGroups, ...dto.category.editableByGroups],
       [...dto.category.visibleForUsers, ...dto.category.editableByUsers],
@@ -276,7 +276,7 @@ class BulletinBoardService implements OnModuleInit {
         SSE_MESSAGE_TYPE.UPDATED,
       );
     }
-  };
+  }
 
   async removeBulletins(currentUser: JwtUser, ids: string[]) {
     const bulletins = await this.bulletinModel.find({ _id: { $in: ids } }).exec();
