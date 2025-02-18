@@ -17,10 +17,10 @@ import i18n from '@/i18n';
 const getDisplayName = (item: AppConfigDto, language: string) => {
   let displayName;
 
-  if (item.appType === APP_INTEGRATION_VARIANT.NATIVE) {
+  if (item.appType === APP_INTEGRATION_VARIANT.NATIVE || !item.translations) {
     displayName = `${item.name}.sidebar`;
   } else {
-    displayName = item.translations?.[language] || item.name;
+    displayName = item.translations[language];
   }
 
   return i18n.t(displayName);
