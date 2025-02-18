@@ -16,7 +16,7 @@ import defaultAppConfig from '@libs/appconfig/constants/defaultAppConfig';
 import { Migration } from '../../migration/migration.type';
 import { AppConfig } from '../appconfig.schema';
 
-const migration001: Migration<AppConfig> = {
+const migration002: Migration<AppConfig> = {
   name: '002-fix-icon-src',
   version: 3,
   execute: async (model) => {
@@ -66,4 +66,4 @@ const migration001: Migration<AppConfig> = {
   },
 };
 
-export default migration001;
+export default migration002;
