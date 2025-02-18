@@ -88,6 +88,20 @@
       "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen"
     }
   },
+  "appstore": {
+    "title": "App-Store",
+    "description": "Hier kannst du edulution.io Apps hinzufügen.",
+    "chooseIcon": "Icon auswählen"
+  },
+  "forwarding": {
+    "sidebar": "Weiterleitung"
+  },
+  "frame": {
+    "sidebar": "Frame"
+  },
+  "embedded": {
+    "sidebar": "Eingebettet"
+  },
   "dashboard": {
     "mobileAccess": {
       "title": "Mobiler Datenzugriff",
@@ -725,7 +739,10 @@
       "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen",
       "WriteTraefikConfigFailed": "Traefik-Konfiguration speichern fehlgeschlagen",
       "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen",
-      "forbiddenProxyPath": "Dieser Proxy-Pfad ist nicht erlaubt."
+      "forbiddenProxyPath": "Dieser Proxy-Pfad ist nicht erlaubt.",
+      "fieldRequired": "Dieses Feld ist erforderlich",
+      "maxChars": "Maximal {{count}} Zeichen",
+      "nameAlreadyExists": "App mit diesem Namen existiert bereits"
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",

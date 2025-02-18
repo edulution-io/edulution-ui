@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { AppConfigDto } from '@libs/appconfig/types/appConfigDto';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 

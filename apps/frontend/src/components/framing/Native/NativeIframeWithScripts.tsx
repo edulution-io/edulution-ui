@@ -13,9 +13,10 @@
 import React, { useEffect, useState } from 'react';
 import NativeIframeLayout from '@/components/framing/Native/NativeIframeLayout';
 import useUserStore from '@/store/UserStore/UserStore';
+import type TApps from '@libs/appconfig/types/appsType';
 
 interface IframeAppProps {
-  appName: string;
+  appName: TApps;
   getLoginScript: (username: string, webdavKey: string) => string;
   logoutScript: string;
 }

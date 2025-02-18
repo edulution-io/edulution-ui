@@ -10,17 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
-import { type AppConfigOptionsType } from './appConfigOptionsType';
-import type TApps from './appsType';
-
-type AppConfigOption = {
-  id: TApps;
-  icon: string;
-  color?: string;
-  options?: AppConfigOptionsType[];
-  isNativeApp: boolean;
-  extendedOptions?: AppConfigExtendedOptionsBySections;
+type AppNameTranslations = {
+  [languageCode: string]: string;
 };
 
-export default AppConfigOption;
+export default AppNameTranslations;
