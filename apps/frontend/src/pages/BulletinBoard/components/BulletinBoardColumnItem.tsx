@@ -11,7 +11,7 @@
  */
 
 /* eslint-disable react/no-danger */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@/components/shared/Button';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import { PiDotsThreeVerticalBold } from 'react-icons/pi';
@@ -23,6 +23,9 @@ import useUserStore from '@/store/UserStore/UserStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import { useParams } from 'react-router-dom';
+import cn from '@libs/common/utils/className';
 
 const BulletinBoardColumnItem = ({
   bulletin,
@@ -34,6 +37,7 @@ const BulletinBoardColumnItem = ({
   handleImageClick: (imageUrl: string) => void;
 }) => {
   const { t } = useTranslation();
+  const { bulletinId } = useParams();
   const { user } = useUserStore();
   const { isSuperAdmin } = useLdapGroups();
   const {
@@ -43,7 +47,43 @@ const BulletinBoardColumnItem = ({
     setSelectedBulletinToEdit,
     getBulletins,
   } = useBulletinBoardEditorialStore();
-  const { setIsEditorialModeEnabled } = useBulletinBoardStore();
+  const { resetBulletinBoardNotifications, setIsEditorialModeEnabled } = useBulletinBoardStore();
+
+  const isCurrentBulletin = bulletinId === bulletin.id;
+
+  useEffect(() => {
+    if (!isCurrentBulletin) return undefined;
+
+    const element = document.getElementById(bulletinId);
+
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'center',
+      });
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            element.classList.add('blinking');
+            resetBulletinBoardNotifications();
+          } else {
+            element.classList.remove('blinking');
+          }
+        },
+        { threshold: 0.5 },
+      );
+
+      observer.observe(element);
+
+      return () => {
+        observer.disconnect();
+      };
+    }
+
+    return undefined;
+  }, [bulletinId]);
 
   const handleDeleteBulletin = async () => {
     await getBulletins();
@@ -108,7 +148,12 @@ const BulletinBoardColumnItem = ({
   const getProcessedBulletinContent = (content: string) => {
     if (content.match(/<img[^>]*src="([^"]*)"[^>]*>/)) {
       const srcMatch = content.match(/src="([^"]*)"/);
-      const src = srcMatch ? srcMatch[1] : '';
+      let src = srcMatch ? srcMatch[1] : '';
+
+      if (!src.startsWith('http') && !src.startsWith(`/${EDU_API_ROOT}`)) {
+        src = `/${src}`;
+      }
+
       return (
         <button
           key={`image-${content}`}
@@ -134,8 +179,11 @@ const BulletinBoardColumnItem = ({
 
   return (
     <div
+      id={bulletin.id}
       key={bulletin.id}
-      className="relative flex items-center justify-between break-all rounded-lg bg-white bg-opacity-5 p-4"
+      className={cn('relative mx-1 flex items-center justify-between break-all rounded-lg bg-white bg-opacity-5 p-4', {
+        ring: isCurrentBulletin,
+      })}
     >
       <div className="flex-1">
         <h4 className="w-[calc(100%-20px)] overflow-x-hidden text-ellipsis break-normal text-lg font-bold text-background">

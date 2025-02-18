@@ -13,14 +13,14 @@
 import { RadioGroupItemSH, RadioGroupSH } from '@/components/ui/RadioGroupSH';
 import { FormControl, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 import React from 'react';
-import { Control, FieldValues } from 'react-hook-form';
+import { Control, FieldValues, Path } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
 import type RadioGroupItem from '@libs/ui/types/radioGroupItem';
 
-interface RadioGroupProps {
-  control: Control<FieldValues>;
-  name: string;
+interface RadioGroupProps<T extends FieldValues> {
+  control: Control<T>;
+  name: Path<T>;
   titleTranslationId?: string;
   defaultValue?: string;
   items: RadioGroupItem[];
@@ -31,7 +31,7 @@ interface RadioGroupProps {
   disabled?: boolean;
 }
 
-const RadioGroupFormField: React.FC<RadioGroupProps> = ({
+const RadioGroupFormField = <T extends FieldValues>({
   control,
   name,
   titleTranslationId,
@@ -42,7 +42,7 @@ const RadioGroupFormField: React.FC<RadioGroupProps> = ({
   imageWidth = 'large',
   fixedImageSize = false,
   disabled = false,
-}: RadioGroupProps) => {
+}: RadioGroupProps<T>) => {
   const { t } = useTranslation();
 
   const imagePixelWidth = imageWidth === 'small' ? '100px' : '150px';

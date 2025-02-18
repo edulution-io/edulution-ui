@@ -11,7 +11,7 @@
  */
 
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 
 interface GroupForm {
   id: string;
@@ -24,9 +24,9 @@ interface GroupForm {
   mailalias: boolean;
   join: boolean;
   hide: boolean;
-  admins: MultipleSelectorOptionSH[];
+  admins: AttendeeDto[];
   admingroups: MultipleSelectorGroup[];
-  members: MultipleSelectorOptionSH[];
+  members: AttendeeDto[];
   membergroups: MultipleSelectorGroup[];
   school: string;
   creationDate?: string;

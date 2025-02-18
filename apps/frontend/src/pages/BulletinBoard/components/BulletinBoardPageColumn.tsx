@@ -27,13 +27,11 @@ const BulletinBoardPageColumn = ({
   categoryCount,
   category,
   canEditCategory,
-  canManageBulletins,
 }: {
   categoryCount: number;
   category: BulletinCategoryResponseDto;
   bulletins: BulletinResponseDto[];
   canEditCategory: boolean;
-  canManageBulletins: boolean;
 }) => {
   const { t } = useTranslation();
   const { getBulletinsByCategories } = useBulletinBoardStore();
@@ -66,7 +64,7 @@ const BulletinBoardPageColumn = ({
           <BulletinBoardColumnItem
             key={bulletin.id}
             bulletin={bulletin}
-            canManageBulletins={canManageBulletins}
+            canManageBulletins={canEditCategory}
             handleImageClick={handleImagePreviewClick}
           />
         ))}

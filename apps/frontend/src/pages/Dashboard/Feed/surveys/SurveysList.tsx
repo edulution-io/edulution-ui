@@ -41,7 +41,7 @@ const SurveysList = (props: SurveysListProps) => {
       <span className="text-sm font-semibold">{survey.formula.title || FallbackText}</span>
       <p className="line-clamp-2 text-sm text-muted-foreground">
         {`${t('survey.created')}:  `}
-        {survey.createdAt ? format(survey.createdAt, 'dd.MMMLL', { locale }) : FallbackText}
+        {survey.createdAt ? format(survey.createdAt, 'dd. MMMM', { locale }) : FallbackText}
       </p>
       {survey.expires ? (
         <p className="text-muted-background line-clamp-2 text-sm">
@@ -60,7 +60,7 @@ const SurveysList = (props: SurveysListProps) => {
             to={APPS.SURVEYS}
             onClick={() => selectSurvey(item)}
             key={item.id}
-            className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border p-2 text-left transition-all hover:bg-ciDarkGrey"
+            className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border border-muted-foreground p-2 text-left transition-all hover:bg-ciDarkGrey"
           >
             {getSurveyInfo(item)}
           </NavLink>

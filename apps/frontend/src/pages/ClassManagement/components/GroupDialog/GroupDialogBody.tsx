@@ -22,7 +22,6 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import GroupForm from '@libs/groups/types/groupForm';
-import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import GroupPropertiesTable from '@/pages/ClassManagement/components/GroupDialog/GroupPropertiesTable';
 import UserGroups from '@libs/groups/types/userGroups.enum';
@@ -47,11 +46,11 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
   const isDialogLoading = isProjectLoading || isSchoolClassLoading || isSessionLoading;
   if (isDialogLoading) return <CircleLoader className="mx-auto" />;
 
-  const handleAdminUsersChange = (attendees: MultipleSelectorOptionSH[]) => {
+  const handleAdminUsersChange = (attendees: AttendeeDto[]) => {
     setValue('admins', attendees, { shouldValidate: true });
   };
 
-  const handleStandardUsersChange = (attendees: MultipleSelectorOptionSH[]) => {
+  const handleStandardUsersChange = (attendees: AttendeeDto[]) => {
     setValue('members', attendees, { shouldValidate: true });
   };
 
@@ -83,9 +82,9 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
     setValue('name', sanitizedName);
   }, [displayName, setValue]);
 
-  const adminUsers = watch('admins') as AttendeeDto[];
+  const adminUsers = watch('admins');
   const adminGroups = watch('admingroups');
-  const standardUsers = watch('members') as AttendeeDto[];
+  const standardUsers = watch('members');
   const standardGroups = watch('membergroups');
 
   const adminsAccordionTitle = `${t('common.groupAdmins')}: ${adminUsers.length} ${t('common.users')} ${t('common.and')} ${adminGroups.length} ${t('common.groups')}`;

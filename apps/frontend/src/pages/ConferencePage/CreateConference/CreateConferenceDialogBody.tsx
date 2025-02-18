@@ -20,19 +20,18 @@ import useUserStore from '@/store/UserStore/UserStore';
 import CircleLoader from '@/components/ui/CircleLoader';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
 import useGroupStore from '@/store/GroupStore';
 import RadioGroupFormField from '@/components/shared/RadioGroupFormField';
 import CONFERENCES_IS_PUBLIC_FORM_VALUES from '@libs/conferences/constants/isPublicFormValues';
+import ConferencesForm from '@libs/conferences/types/conferencesForm';
 
 interface CreateConferenceDialogBodyProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: UseFormReturn<any>;
+  form: UseFormReturn<ConferencesForm>;
 }
 
 const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) => {
-  const { setValue, watch } = form;
+  const { setValue, getValues, watch, control } = form;
   const { user, searchAttendees } = useUserStore();
   const { isLoading } = useCreateConferenceDialogStore();
   const { searchGroups, searchGroupsIsLoading } = useGroupStore();
@@ -40,7 +39,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
 
   if (isLoading) return <CircleLoader className="mx-auto" />;
 
-  const handleAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
+  const handleAttendeesChange = (attendees: AttendeeDto[]) => {
     setValue('invitedAttendees', attendees, { shouldValidate: true });
   };
 
@@ -49,7 +48,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
     return result.filter((r) => r.username !== user?.username);
   };
 
-  const handleGroupsChange = (groups: MultipleSelectorOptionSH[]) => {
+  const handleGroupsChange = (groups: MultipleSelectorGroup[]) => {
     setValue('invitedGroups', groups, { shouldValidate: true });
   };
 
@@ -63,24 +62,24 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
       >
         <FormField
           name="name"
-          defaultValue={form.getValues('name') as string}
+          defaultValue={getValues('name')}
           form={form}
           labelTranslationId={t('conferences.name')}
           disabled={searchGroupsIsLoading}
           variant="dialog"
         />
         <SearchUsersOrGroups
-          users={watch('invitedAttendees') as AttendeeDto[]}
+          users={watch('invitedAttendees')}
           onSearch={onAttendeesSearch}
           onUserChange={handleAttendeesChange}
-          groups={watch('invitedGroups') as MultipleSelectorGroup[]}
+          groups={watch('invitedGroups')}
           onGroupSearch={searchGroups}
           onGroupsChange={handleGroupsChange}
           variant="dialog"
         />
         <FormField
           name="password"
-          defaultValue={form.getValues('password') as string}
+          defaultValue={getValues('password')}
           form={form}
           labelTranslationId={t('conferences.password')}
           type="password"
@@ -89,7 +88,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
         />
 
         <RadioGroupFormField
-          control={form.control}
+          control={control}
           name="isPublic"
           labelClassname="text-base font-bold text-background"
           titleTranslationId={t('conferences.isPublic')}

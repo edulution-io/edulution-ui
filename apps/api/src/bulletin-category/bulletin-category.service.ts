@@ -116,7 +116,6 @@ class BulletinCategoryService implements OnModuleInit {
     if (currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
       return bulletinCategories;
     }
-
     const accessibleCategories = await Promise.all(
       bulletinCategories.map(async (category) => {
         const usersWithPermission = await this.getUsersWithPermissionCached(String(category.id), permission);

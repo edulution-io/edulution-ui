@@ -105,6 +105,20 @@
   }
 }
 
+.blinking {
+  animation-delay: 0.5s;
+  animation-name: blink-animation;
+  animation-duration: 0.7s;
+  animation-timing-function: ease-out;
+}
+
+@keyframes blink-animation {
+  50% {
+    opacity: 0.5;
+    background-color: var(--primary);
+  }
+}
+
 .alert-enter {
   animation: slideInFromRight 0.5s forwards;
 }

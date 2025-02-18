@@ -37,6 +37,8 @@ import getSurveyRoutes from '@/router/routes/SurveyRoutes';
 import EmptyLayout from '@/components/layout/EmptyLayout';
 import MainLayout from '@/components/layout/MainLayout';
 import getPublicRoutes from '@/router/routes/PublicRoutes';
+import APPS from '@libs/appconfig/constants/apps';
+import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
 import getSettingsRoutes from './routes/SettingsRoutes';
 import getForwardedRoutes from './routes/ForwardedRoutes';
 import getEmbeddedRoutes from './routes/EmbeddedRoutes';
@@ -102,6 +104,12 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
                   />
                 ) : null,
               )}
+
+              <Route
+                path={`${APPS.BULLETIN_BOARD}/:bulletinId`}
+                element={<BulletinBoardPage />}
+              />
+
               {getSettingsRoutes()}
               {getClassManagementRoutes()}
               {getSurveyRoutes()}

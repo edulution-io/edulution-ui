@@ -17,6 +17,7 @@ import type ConferenceDto from '@libs/conferences/types/conference.dto';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
 import { type Survey } from '../surveys/survey.schema';
 import { type Conference } from '../conferences/conference.schema';
+import { BulletinDocument } from '../bulletinboard/bulletin.schema';
 
 type SseEventData =
   | string
@@ -27,6 +28,7 @@ type SseEventData =
   | Survey
   | Conference
   | DockerEvent
-  | ContainerInfo[];
+  | ContainerInfo[]
+  | BulletinDocument;
 
 export default SseEventData;

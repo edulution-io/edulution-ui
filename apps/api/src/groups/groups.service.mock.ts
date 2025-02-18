@@ -17,6 +17,7 @@ const mockGroupsService = {
   fetchAllUsers: jest.fn().mockResolvedValue([]),
   fetchUserById: jest.fn().mockResolvedValue({}),
   searchGroups: jest.fn().mockResolvedValue([]),
+  getInvitedMembers: jest.fn().mockResolvedValue([]),
 };
 
 export default mockGroupsService;
