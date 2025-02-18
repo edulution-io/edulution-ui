@@ -15,15 +15,19 @@ import eduApi from '@/api/eduApi';
 import { BULLETIN_BOARD_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
 import handleApiError from '@/utils/handleApiError';
 import BulletinsByCategories from '@libs/bulletinBoard/types/bulletinsByCategories';
+import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 
 export interface BulletinBoardTableStore {
   reset: () => void;
   isLoading: boolean;
   error: Error | null;
-  getBulletinsByCategories: () => Promise<void>;
+  getBulletinsByCategories: (isLoading?: boolean) => Promise<void>;
   bulletinsByCategories: BulletinsByCategories | null;
   isEditorialModeEnabled: boolean;
   setIsEditorialModeEnabled: (isEditorialModeEnabled: boolean) => void;
+  bulletinBoardNotifications: BulletinResponseDto[];
+  addBulletinBoardNotification: (bulletin: BulletinResponseDto) => void;
+  resetBulletinBoardNotifications: () => void;
 }
 
 const initialValues = {
@@ -31,6 +35,7 @@ const initialValues = {
   error: null,
   bulletinsByCategories: null,
   isEditorialModeEnabled: false,
+  bulletinBoardNotifications: [],
 };
 
 const useBulletinBoardStore = create<BulletinBoardTableStore>((set, get) => ({
@@ -38,6 +43,12 @@ const useBulletinBoardStore = create<BulletinBoardTableStore>((set, get) => ({
   reset: () => set(initialValues),
 
   setIsEditorialModeEnabled: (isEditorialModeEnabled) => set({ isEditorialModeEnabled }),
+
+  addBulletinBoardNotification: (bulletin) =>
+    set({
+      bulletinBoardNotifications: [...get().bulletinBoardNotifications.filter((b) => b.id !== bulletin.id), bulletin],
+    }),
+  resetBulletinBoardNotifications: () => set({ bulletinBoardNotifications: [] }),
 
   getBulletinsByCategories: async (isLoading = true) => {
     if (get().isLoading) return;

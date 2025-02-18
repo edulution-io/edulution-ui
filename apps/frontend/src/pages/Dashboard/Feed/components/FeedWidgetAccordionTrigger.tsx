@@ -29,14 +29,14 @@ const FeedWidgetAccordionTrigger = (props: FeedWidgetAccordionTriggerProps) => {
   const { t } = useTranslation();
 
   return (
-    <AccordionTrigger className="flex pb-2 pt-0 text-xl font-bold">
-      {t(labelTranslationId)}
+    <AccordionTrigger className="flex pb-2 pt-0">
       <img
         src={src}
         alt={alt}
-        className={cn('ml-4', className)}
+        className={cn('mr-3', className)}
         width={width}
       />
+      <span className="mr-2 text-xl font-bold">{t(labelTranslationId)}</span>
     </AccordionTrigger>
   );
 };

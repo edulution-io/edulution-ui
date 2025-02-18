@@ -12,42 +12,53 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { SurveysSidebarIcon } from '@/assets/icons';
-import APPS from '@libs/appconfig/constants/apps';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import useIsSurveysActive from '@/pages/Surveys/useIsSurveysActive';
-import FeedWidgetAccordionTrigger from '@/pages/Dashboard/Feed/components/FeedWidgetAccordionTrigger';
-import SurveysList from '@/pages/Dashboard/Feed/surveys/SurveysList';
 import { AccordionContent, AccordionItem } from '@/components/ui/AccordionSH';
+import FeedWidgetAccordionTrigger from '@/pages/Dashboard/Feed/components/FeedWidgetAccordionTrigger';
+import useIsAppActive from '@/hooks/useIsAppActive';
+import TApps from '@libs/appconfig/types/appsType';
 
-const SurveysFeed = () => {
-  const { openSurveys } = useSurveyTablesPageStore();
+interface FeedAccordionItemProps<T> {
+  appKey: TApps;
+  icon: string;
+  listItems: T[];
+  ListComponent: React.ComponentType<{ items: T[]; className?: string }>;
+  isVisible?: boolean;
+}
+
+const FeedAccordionItem = <T,>({
+  appKey,
+  icon,
+  listItems,
+  ListComponent,
+  isVisible = true,
+}: FeedAccordionItemProps<T>) => {
   const { t } = useTranslation();
+  const isActive = useIsAppActive(appKey);
 
-  const isActive = useIsSurveysActive();
-  if (!isActive) {
+  if (!isActive || !isVisible) {
     return null;
   }
 
   return (
-    <AccordionItem value={APPS.SURVEYS}>
+    <AccordionItem value={appKey}>
       <FeedWidgetAccordionTrigger
-        src={SurveysSidebarIcon}
-        alt={`${APPS.SURVEYS}-notification-icon`}
-        labelTranslationId="surveys.sidebar"
+        src={icon}
+        alt={`${appKey}-notification-icon`}
+        labelTranslationId={`${appKey}.sidebar`}
       />
       <AccordionContent className="pb-2">
-        {openSurveys.length > 0 ? (
-          <SurveysList
-            items={openSurveys}
+        {listItems && listItems.length > 0 ? (
+          <ListComponent
+            items={listItems}
             className="my-2"
           />
         ) : (
-          <span className="my-2 text-center text-sm">{t('feed.noSurveys')}</span>
+          <span className="my-2 text-center text-sm">{t(`feed.no${appKey}`)}</span>
         )}
       </AccordionContent>
+      <hr className="mb-6 mt-2 border-muted-foreground" />
     </AccordionItem>
   );
 };
 
-export default SurveysFeed;
+export default FeedAccordionItem;
