@@ -20,12 +20,12 @@ import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import { Button } from '@/components/shared/Button';
 import type BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
-import type TApps from '@libs/appconfig/types/appsType';
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import type TApps from '@libs/appconfig/types/appsType';
 
 interface AppConfigTableProps {
-  applicationName: TApps;
+  applicationName: string;
   tableId: string;
 }
 
@@ -46,7 +46,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
     useEffect(() => {
       const fetchDataAsync = async () => {
         if (fetchTableContent) {
-          await fetchTableContent(applicationName);
+          await fetchTableContent(applicationName as TApps);
         }
       };
 

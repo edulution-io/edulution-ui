@@ -12,8 +12,7 @@
 
 import React from 'react';
 import { createBrowserRouter, createRoutesFromElements, Outlet, Route } from 'react-router-dom';
-import { AppConfigDto } from '@libs/appconfig/types';
-import type TApps from '@libs/appconfig/types/appsType';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import {
   LANGUAGE_PATH,
@@ -100,7 +99,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
                   <Route
                     key={item.name}
                     path={item.name}
-                    element={<NativeAppPage page={item.name as TApps} />}
+                    element={<NativeAppPage page={item.name} />}
                   />
                 ) : null,
               )}

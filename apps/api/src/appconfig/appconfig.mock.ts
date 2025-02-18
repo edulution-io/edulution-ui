@@ -12,7 +12,7 @@
 
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import { AppConfigDto } from '@libs/appconfig/types';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 
 export const mockAppConfigService = {
   insertConfig: jest.fn().mockResolvedValue(undefined),
@@ -35,7 +35,7 @@ export const mockAppConfigService = {
 export const mockLdapGroup = ['/role-globaladministrator'];
 
 export const mockAppConfig: AppConfigDto = {
-  name: 'Test',
+  name: 'filesharing',
   icon: 'icon-path',
   appType: APP_INTEGRATION_VARIANT.EMBEDDED,
   options: {

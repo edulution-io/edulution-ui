@@ -10,9 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { useMemo } from 'react';
-import { AppConfigDto } from '@libs/appconfig/types';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import TApps from '@libs/appconfig/types/appsType';
 
 const useIsAppActive = (appName: TApps) => {

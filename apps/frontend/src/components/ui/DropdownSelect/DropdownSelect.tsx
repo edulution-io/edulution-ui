@@ -11,7 +11,6 @@
  */
 
 import React, { useRef, useState } from 'react';
-import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
 import cn from '@libs/common/utils/className';
@@ -92,16 +91,16 @@ const DropdownSelect: React.FC<DropdownProps> = ({
             }}
             onClickCapture={() => setIsOpen((prevVal) => !prevVal)}
             disabled={options.length === 0}
-            className={clsx({
+            className={cn({
               'bg-background text-foreground': variant === 'default',
               'bg-muted text-secondary': variant === 'dialog',
             })}
           />
         </div>
-        <div className={clsx(styles.arrow, { [styles.open]: isOpen, [styles.up]: openToTop })} />
       </div>
+      <div className={cn(styles.arrow, { [styles.open]: isOpen, [styles.up]: openToTop })} />
       <div
-        className={clsx(styles.options, {
+        className={cn('scrollbar-thin', styles.options, {
           [styles.open]: isOpen,
           [styles.up]: openToTop,
           'bg-background text-foreground': variant === 'default',
@@ -112,7 +111,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
           <div
             key={option.id}
             onClickCapture={() => selectOption(option)}
-            className={clsx(styles.option, {
+            className={cn(styles.option, {
               [styles.selected]: t(option.name) === selectedVal,
               'hover:bg-gray-200': variant === 'default',
               'bg-muted hover:bg-secondary': variant === 'dialog',
