@@ -1,4 +1,3 @@
-/* Base Styles for Dropdown */
 .dropdown {
   position: relative;
   cursor: default;
@@ -15,15 +14,12 @@
   top: 14px;
   width: 0;
 }
-
 .dropdown .arrow.open {
   border-width: 0 5px 5px;
 }
-
 .dropdown .arrow.up {
   border-width: 0 5px 5px;
 }
-
 .dropdown .arrow.up.open {
   border-width: 5px 5px 0;
 }
@@ -70,94 +66,57 @@
   padding: 8px 10px;
 }
 
-/* Light Theme Styles */
-.dropdown.light {
-  color: #333;
+.dropdown.default .selected-value input {
+  background-color: var(--accent);
+  color: var(--secondary);
 }
 
-.dropdown.light .arrow {
-  border-color: #999 transparent transparent;
+.dropdown.default .options {
+  background-color: var(--accent);
+  color: var(--secondary);
 }
 
-.dropdown.light .arrow.open,
-.dropdown.light .arrow.up {
-  border-color: transparent transparent #999;
+.dropdown.default .option {
+  color: var(--secondary);
+}
+.dropdown.default .option.selected,
+.dropdown.default .option:hover {
+  background-color: var(--muted);
+  color: var(--secondary);
 }
 
-.dropdown.light .arrow.up.open {
-  border-color: #999 transparent transparent;
-}
-
-.dropdown.light .selected-value input {
-  background-color: #fff;
-  color: #333;
-  border: 1px solid #ccc;
-}
-
-.dropdown.light .options {
-  background-color: #fff;
-  color: #333;
-  border: 1px solid #ccc;
-}
-
-.dropdown.light .option {
-  color: rgba(51, 51, 51, 0.8);
-}
-
-.dropdown.light .option.selected,
-.dropdown.light .option:hover {
-  background-color: #f2f9fc;
-  color: #333;
-}
-
-/* Dark Theme Styles */
-.dropdown.dark {
-  color: #d1d5db;
-}
-
-.dropdown.dark .arrow {
-  border-color: #999 transparent transparent;
-}
-
-.dropdown.dark .arrow.open,
-.dropdown.dark .arrow.up {
-  border-color: transparent transparent #999;
-}
-
-.dropdown.dark .arrow.up.open {
-  border-color: #999 transparent transparent;
-}
-
-.dropdown.dark .selected-value input {
+.dropdown.dialog .selected-value input {
+  border: 1px solid #666;
   background-color: var(--muted);
   color: #d1d5db;
-  border: 1px solid #555;
 }
 
-.dropdown.session .selected-value input {
-  background-color: #2d2d30;
+.dropdown.dialog .options {
+  border: 1px solid #666;
+  background-color: #333;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.dropdown.dialog .option {
+  color: rgba(255, 255, 255, 0.8);
+}
+.dropdown.dialog .option.selected,
+.dropdown.dialog .option:hover {
+  background-color: #444;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.light .dropdown {
+  color: #333;
+}
+
+.light .dropdown .arrow {
+  border-color: #999 transparent transparent;
+}
+
+.dark .dropdown {
   color: #d1d5db;
-  border: 1px solid #555;
 }
-
-.dropdown.dark .options {
-  background-color: var(--bg-muted, #2d3748);
-  color: rgba(255, 255, 255, 0.8);
-  border: 1px solid #555;
-}
-
-.dropdown.dark .option {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.dropdown.session .option.selected,
-.dropdown.session .option:hover {
-  background-color: var(--muted);
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.dropdown.dark .option.selected,
-.dropdown.dark .option:hover {
-  background-color: #555;
-  color: rgba(255, 255, 255, 0.8);
+.dark .dropdown .arrow {
+  border-color: #999 transparent transparent;
 }
