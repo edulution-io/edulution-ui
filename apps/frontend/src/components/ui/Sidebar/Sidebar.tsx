@@ -21,7 +21,7 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
-import getDisplayName from '@libs/common/utils/getDisplayName';
+import getDisplayName from '@/utils/getDisplayName';
 import DesktopSidebar from './DesktopSidebar';
 import MobileSidebar from './MobileSidebar';
 
@@ -48,7 +48,7 @@ const Sidebar: React.FC = () => {
 
   const sidebarItems = [
     ...appConfigs.map((item) => ({
-      title: getDisplayName(item, t, language),
+      title: getDisplayName(item, language),
       link: `/${item.name}`,
       icon: item.icon,
       color: 'bg-ciGreenToBlue',

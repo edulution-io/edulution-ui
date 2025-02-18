@@ -54,7 +54,7 @@ class VeyonService implements OnModuleInit {
         throw error;
       });
 
-      if (!appConfig || !appConfig.extendedOptions || Object.keys(appConfig.extendedOptions).length === 0) {
+      if (!appConfig?.extendedOptions || Object.keys(appConfig.extendedOptions).length === 0) {
         return;
       }
 

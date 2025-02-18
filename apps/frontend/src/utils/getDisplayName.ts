@@ -12,9 +12,9 @@
 
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import { TFunction } from 'i18next';
+import i18n from '@/i18n';
 
-const getDisplayName = (item: AppConfigDto, t: TFunction<'translation', undefined>, language: string) => {
+const getDisplayName = (item: AppConfigDto, language: string) => {
   let displayName;
 
   if (item.appType === APP_INTEGRATION_VARIANT.NATIVE) {
@@ -23,7 +23,7 @@ const getDisplayName = (item: AppConfigDto, t: TFunction<'translation', undefine
     displayName = item.translations?.[language] || item.name;
   }
 
-  return t(displayName);
+  return i18n.t(displayName);
 };
 
 export default getDisplayName;

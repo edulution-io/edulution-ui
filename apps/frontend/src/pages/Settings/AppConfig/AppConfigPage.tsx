@@ -36,7 +36,7 @@ import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import type MailProviderConfig from '@libs/appconfig/types/mailProviderConfig';
 import APPS from '@libs/appconfig/constants/apps';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
-import getDisplayName from '@libs/common/utils/getDisplayName';
+import getDisplayName from '@/utils/getDisplayName';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailImporterConfig from './mails/MailImporterConfig';
@@ -261,7 +261,7 @@ const AppConfigPage: React.FC = () => {
             return (
               <NativeAppHeader
                 key={item.name}
-                title={getDisplayName(item, t, language)}
+                title={getDisplayName(item, language)}
                 iconSrc={item.icon}
               />
             );
