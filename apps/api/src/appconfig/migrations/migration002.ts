@@ -44,9 +44,10 @@ const migration002: Migration<AppConfig> = {
             { _id: doc._id },
             {
               $set: {
-                icon: isDefaultAppConfig(appName)
-                  ? defaultAppConfig.find((config) => config.name === appName)?.icon
-                  : doc.icon,
+                icon:
+                  isDefaultAppConfig(appName) && process.env.NODE_ENV === 'production'
+                    ? defaultAppConfig.find((config) => config.name === appName)?.icon
+                    : doc.icon,
                 schemaVersion: newSchemaVersion,
               },
             },
