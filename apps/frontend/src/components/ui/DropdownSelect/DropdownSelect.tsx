@@ -21,13 +21,15 @@ export type DropdownOptions = {
   name: string;
 };
 
+type DropdownVariant = 'dialog' | 'default';
+
 interface DropdownProps {
   options: DropdownOptions[];
   selectedVal: string;
   handleChange: (value: string) => void;
   openToTop?: boolean;
   classname?: string;
-  variant?: 'light' | 'dark';
+  variant?: DropdownVariant;
 }
 
 const DropdownSelect: React.FC<DropdownProps> = ({
@@ -36,7 +38,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
   handleChange,
   openToTop = false,
   classname,
-  variant = 'dark',
+  variant = 'default',
 }) => {
   const { t } = useTranslation();
   const [query, setQuery] = useState<string>('');
@@ -72,8 +74,8 @@ const DropdownSelect: React.FC<DropdownProps> = ({
   return (
     <div
       className={cn(styles.dropdown, classname, {
-        [styles.dark]: variant === 'dark',
-        [styles.light]: variant === 'light',
+        [styles.default]: variant === 'default',
+        [styles.dialog]: variant === 'dialog',
       })}
       ref={dropdownRef}
     >
@@ -90,8 +92,8 @@ const DropdownSelect: React.FC<DropdownProps> = ({
             onClickCapture={() => setIsOpen((prevVal) => !prevVal)}
             disabled={options.length === 0}
             className={cn({
-              'bg-background text-foreground': variant === 'light',
-              'bg-muted text-secondary': variant === 'dark',
+              'bg-background text-foreground': variant === 'default',
+              'bg-muted text-secondary': variant === 'dialog',
             })}
           />
         </div>
@@ -101,8 +103,8 @@ const DropdownSelect: React.FC<DropdownProps> = ({
         className={cn('scrollbar-thin', styles.options, {
           [styles.open]: isOpen,
           [styles.up]: openToTop,
-          'bg-background text-foreground': variant === 'light',
-          'bg-muted text-secondary': variant === 'dark',
+          'bg-background text-foreground': variant === 'default',
+          'bg-muted text-secondary': variant === 'dialog',
         })}
       >
         {filter(options).map((option) => (
@@ -111,8 +113,8 @@ const DropdownSelect: React.FC<DropdownProps> = ({
             onClickCapture={() => selectOption(option)}
             className={cn(styles.option, {
               [styles.selected]: t(option.name) === selectedVal,
-              'hover:bg-gray-200': variant === 'light',
-              'bg-muted hover:bg-secondary': variant === 'dark',
+              'hover:bg-gray-200': variant === 'default',
+              'bg-muted hover:bg-secondary': variant === 'dialog',
             })}
           >
             {t(option.name)}
