@@ -93,11 +93,11 @@ const SelectIconField = ({ form }: { form: UseFormReturn<{ customAppName: string
     <div>
       <p className="mb-1 font-bold">{t('appstore.chooseIcon')}</p>
       <Card
-        className="flex flex-wrap gap-4"
+        className="flex flex-wrap gap-4 p-3"
         variant="text"
       >
         {iconsList.map((icon) => {
-          const iconName = icon.split('/').at(-1) as string;
+          const iconName = icon.split('/').at(-1);
           return (
             <button
               key={iconName}
@@ -111,7 +111,7 @@ const SelectIconField = ({ form }: { form: UseFormReturn<{ customAppName: string
               <img
                 src={icon}
                 alt={iconName}
-                className="h-12 w-12"
+                className="h-14 w-14"
               />
             </button>
           );

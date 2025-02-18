@@ -21,7 +21,7 @@ class AppConfigDto {
   @IsString()
   name: string;
 
-  @IsString()
+  @ValidateNested()
   translations?: AppNameTranslations;
 
   @IsString()

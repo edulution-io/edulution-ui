@@ -24,7 +24,10 @@ const getAppConfigFormSchema = (t: TFunction<'translation', undefined>) =>
       accessGroups: z.array(z.object({})).optional(),
       options: z
         .object({
-          url: z.string().optional(),
+          url: z.preprocess(
+            (val) => (typeof val === 'string' && val.trim() === '' ? undefined : val),
+            z.string().url().optional(),
+          ),
           apiKey: z.string().optional(),
         })
         .optional(),

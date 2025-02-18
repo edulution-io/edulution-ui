@@ -11,7 +11,7 @@
  */
 
 type AppNameTranslations = {
-  [key: string]: string;
+  [languageCode: string]: string;
 };
 
 export default AppNameTranslations;

@@ -163,6 +163,8 @@ const AppConfigPage: React.FC = () => {
     }
   };
 
+  const matchingConfig = appConfigs.find((item) => item.name === settingLocation);
+
   const settingsForm = () => {
     if (isAnAppConfigSelected) {
       return (
@@ -171,72 +173,65 @@ const AppConfigPage: React.FC = () => {
             onSubmit={handleSubmit(onSubmit)}
             className="column max-w-screen-2xl space-y-6"
           >
-            {appConfigs.map((item) =>
-              settingLocation === item.name ? (
-                <div
-                  key={item.name}
-                  className="m-5"
-                >
-                  <div className="space-y-10">
+            {matchingConfig && (
+              <div className="m-5 space-y-10">
+                <FormFieldSH
+                  key={`${matchingConfig.name}.accessGroups`}
+                  control={control}
+                  name={`${matchingConfig.name}.accessGroups`}
+                  render={() => (
+                    <FormItem>
+                      <h4 className="text-background">{t(`permission.groups`)}</h4>
+                      <FormControl>
+                        <AsyncMultiSelect<MultipleSelectorGroup>
+                          value={getValues(`${matchingConfig.name}.accessGroups`)}
+                          onSearch={searchGroups}
+                          onChange={(groups) => handleGroupsChange(groups, `${matchingConfig.name}`)}
+                          placeholder={t('search.type-to-search')}
+                        />
+                      </FormControl>
+                      <p className="text-background">{t(`permission.selectGroupsDescription`)}</p>
+                      <FormMessage className="text-p" />
+                    </FormItem>
+                  )}
+                />
+                {matchingConfig.appType === APP_INTEGRATION_VARIANT.NATIVE && matchingConfig.extendedOptions ? (
+                  <ExtendedOptionsForm
+                    extendedOptions={APP_CONFIG_OPTIONS.find((itm) => itm.id === settingLocation)?.extendedOptions}
+                    control={control}
+                    settingLocation={settingLocation}
+                  />
+                ) : null}
+                {Object.keys(matchingConfig.options)
+                  .filter((key) => key === APP_CONFIG_OPTION_KEYS.URL || key === APP_CONFIG_OPTION_KEYS.APIKEY)
+                  .map((filteredKey) => (
                     <FormFieldSH
-                      key={`${item.name}.accessGroups`}
+                      key={`${matchingConfig.name}.options.${filteredKey}`}
                       control={control}
-                      name={`${item.name}.accessGroups`}
-                      render={() => (
+                      name={`${matchingConfig.name}.options.${filteredKey}`}
+                      defaultValue={filteredKey}
+                      render={({ field }) => (
                         <FormItem>
-                          <h4 className="text-background">{t(`permission.groups`)}</h4>
+                          <h4 className="text-background">{t(`form.${filteredKey}`)}</h4>
                           <FormControl>
-                            <AsyncMultiSelect<MultipleSelectorGroup>
-                              value={getValues(`${item.name}.accessGroups`)}
-                              onSearch={searchGroups}
-                              onChange={(groups) => handleGroupsChange(groups, `${item.name}`)}
-                              placeholder={t('search.type-to-search')}
-                            />
+                            <Input {...field} />
                           </FormControl>
-                          <p className="text-background">{t(`permission.selectGroupsDescription`)}</p>
                           <FormMessage className="text-p" />
                         </FormItem>
                       )}
                     />
-                    {item.appType === APP_INTEGRATION_VARIANT.NATIVE && item.extendedOptions ? (
-                      <ExtendedOptionsForm
-                        extendedOptions={APP_CONFIG_OPTIONS.filter((itm) => itm.id === item.name)[0].extendedOptions}
-                        control={control}
-                        settingLocation={settingLocation}
-                      />
-                    ) : null}
-                    {Object.keys(item.options)
-                      .filter((key) => key === APP_CONFIG_OPTION_KEYS.URL || key === APP_CONFIG_OPTION_KEYS.APIKEY)
-                      .map((filteredKey) => (
-                        <FormFieldSH
-                          key={`${item.name}.options.${filteredKey}`}
-                          control={control}
-                          name={`${item.name}.options.${filteredKey}`}
-                          defaultValue={filteredKey}
-                          render={({ field }) => (
-                            <FormItem>
-                              <h4 className="text-background">{t(`form.${filteredKey}`)}</h4>
-                              <FormControl>
-                                <Input {...field} />
-                              </FormControl>
-                              <FormMessage className="text-p" />
-                            </FormItem>
-                          )}
-                        />
-                      ))}
-                    {APP_CONFIG_OPTION_KEYS.PROXYCONFIG in item.options ? (
-                      <ProxyConfigForm
-                        key={`${item.name}.options.${APP_CONFIG_OPTION_KEYS.PROXYCONFIG}`}
-                        item={item}
-                        form={form as UseFormReturn<ProxyConfigFormType>}
-                      />
-                    ) : null}
-                    {settingLocation === APPS.MAIL ? (
-                      <MailImporterConfig form={form as UseFormReturn<MailProviderConfig>} />
-                    ) : null}
-                  </div>
-                </div>
-              ) : null,
+                  ))}
+                {APP_CONFIG_OPTION_KEYS.PROXYCONFIG in matchingConfig.options && (
+                  <ProxyConfigForm
+                    key={`${matchingConfig.name}.options.${APP_CONFIG_OPTION_KEYS.PROXYCONFIG}`}
+                    item={matchingConfig}
+                    form={form as UseFormReturn<ProxyConfigFormType>}
+                  />
+                )}
+                {settingLocation === APPS.MAIL && (
+                  <MailImporterConfig form={form as UseFormReturn<MailProviderConfig>} />
+                )}
+              </div>
             )}
           </form>
         </Form>
@@ -256,18 +251,13 @@ const AppConfigPage: React.FC = () => {
   return (
     <>
       <div className="h-[calc(100vh-var(--floating-buttons-height))] overflow-y-auto scrollbar-thin">
-        {appConfigs.map((item) => {
-          if (item.name === settingLocation) {
-            return (
-              <NativeAppHeader
-                key={item.name}
-                title={getDisplayName(item, language)}
-                iconSrc={item.icon}
-              />
-            );
-          }
-          return null;
-        })}
+        {matchingConfig && (
+          <NativeAppHeader
+            key={matchingConfig.name}
+            title={getDisplayName(matchingConfig, language)}
+            iconSrc={matchingConfig.icon}
+          />
+        )}
         {isAnAppConfigSelected ? settingsForm() : <DockerContainerTable />}
       </div>
       {isAnAppConfigSelected ? (

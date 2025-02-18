@@ -97,7 +97,6 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
         >
           <FormField
             name="customAppName"
-            defaultValue=""
             form={form}
             labelTranslationId={t('common.name')}
             variant="dialog"

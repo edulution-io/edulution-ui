@@ -52,6 +52,9 @@ const AppStorePage: React.FC = () => {
     return filteredOptions.map((item) => item.id);
   }, [appConfigs]);
 
+  const getDisabledState = (appConfig: AppConfigOption) =>
+    !filteredAppOptions.includes(appConfig.id) || appConfig.id === APPS.EMBEDDED;
+
   const handleCreateApp = () => {
     if (selectedApp.isNativeApp) {
       const { options = [], extendedOptions = {} } = selectedApp;
@@ -96,14 +99,14 @@ const AppStorePage: React.FC = () => {
               key={item.id}
               type="button"
               onClick={() => (selectedApp.id === item.id ? setSelectedApp(emptyAppConfigOption) : setSelectedApp(item))}
-              disabled={!filteredAppOptions.includes(item.id) || item.id === APPS.EMBEDDED}
+              disabled={getDisabledState(item)}
             >
               <Card
                 key={item.id}
                 className={cn(
                   'm-1 flex h-32 w-32 flex-col items-center ease-in-out md:w-48 lg:transition-transform lg:duration-300 2xl:hover:scale-105',
                   selectedApp.id === item.id ? 'scale-105 bg-ciGreenToBlue' : '',
-                  !filteredAppOptions.includes(item.id) || item.id === APPS.EMBEDDED ? 'opacity-50' : '',
+                  getDisabledState(item) ? 'opacity-50' : '',
                 )}
                 variant="text"
               >
