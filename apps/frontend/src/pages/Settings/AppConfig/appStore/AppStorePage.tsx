@@ -96,14 +96,14 @@ const AppStorePage: React.FC = () => {
               key={item.id}
               type="button"
               onClick={() => (selectedApp.id === item.id ? setSelectedApp(emptyAppConfigOption) : setSelectedApp(item))}
-              disabled={!filteredAppOptions.includes(item.id)}
+              disabled={!filteredAppOptions.includes(item.id) || item.id === APPS.EMBEDDED}
             >
               <Card
                 key={item.id}
                 className={cn(
                   'm-1 flex h-32 w-32 flex-col items-center ease-in-out md:w-48 lg:transition-transform lg:duration-300 2xl:hover:scale-105',
                   selectedApp.id === item.id ? 'scale-105 bg-ciGreenToBlue' : '',
-                  !filteredAppOptions.includes(item.id) ? 'opacity-50' : '',
+                  !filteredAppOptions.includes(item.id) || item.id === APPS.EMBEDDED ? 'opacity-50' : '',
                 )}
                 variant="text"
               >
