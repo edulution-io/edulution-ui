@@ -75,7 +75,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
   return (
     <div
       className={cn(styles.dropdown, classname, {
-        [styles.standard]: variant === 'default',
+        [styles.default]: variant === 'default',
         [styles.dialog]: variant === 'dialog',
       })}
       ref={dropdownRef}
