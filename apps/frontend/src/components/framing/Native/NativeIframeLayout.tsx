@@ -73,10 +73,9 @@ const NativeIframeLayout: React.FC<NativeIframeLayoutProps> = ({ scriptOnStartUp
   const currentAppConfig = findAppConfigByName(appConfigs, appName);
   if (!currentAppConfig) return null;
 
-  let { url } = currentAppConfig.options;
-
-  if (url) {
-    url = url.replace(/token=[^&]+/, `token=${eduApiToken}`);
+  const initialUrlRef = useRef<string | undefined>(undefined);
+  if (!initialUrlRef.current && currentAppConfig.options.url) {
+    initialUrlRef.current = currentAppConfig.options.url.replace(/token=[^&]+/, `token=${eduApiToken}`);
   }
 
   return (
@@ -85,7 +84,7 @@ const NativeIframeLayout: React.FC<NativeIframeLayoutProps> = ({ scriptOnStartUp
       title={appName}
       className="absolute inset-y-0 left-0 ml-0 mr-14 w-full md:w-[calc(100%-var(--sidebar-width))]"
       height="100%"
-      src={loadedEmbeddedFrames.includes(currentAppConfig.name) ? url : undefined}
+      src={loadedEmbeddedFrames.includes(currentAppConfig.name) ? initialUrlRef.current : undefined}
       style={getStyle()}
     />
   );
