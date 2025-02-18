@@ -52,6 +52,9 @@ type UseFileSharingStore = {
   publicDownloadLink: string | null;
   setPublicDownloadLink: (publicDownloadLink: string) => void;
   isError: boolean;
+  fileCooldowns: Record<string, boolean>;
+  setFileCooldown: (filename: string, isOnCooldown: boolean) => void;
+  startFileCooldown: (filename: string, durationMs: number) => void;
   setIsLoading: (isLoading: boolean) => void;
   setCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => void;
   resetCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => Promise<void>;
@@ -78,6 +81,7 @@ const initialState = {
   publicDownloadLink: null,
   isEditorLoading: false,
   isFullScreenEditingEnabled: false,
+  fileCooldowns: {},
 };
 
 type PersistedFileManagerStore = (
@@ -212,6 +216,27 @@ const useFileSharingStore = create<UseFileSharingStore>(
         } finally {
           set({ isLoading: false });
         }
+      },
+
+      setFileCooldown: (filename, isOnCooldown) => {
+        set((state) => ({
+          fileCooldowns: {
+            ...state.fileCooldowns,
+            [filename]: isOnCooldown,
+          },
+        }));
+      },
+
+      startFileCooldown: (filename, durationMs) => {
+        set({
+          fileCooldowns: {
+            [filename]: true,
+          },
+        });
+        set({ currentlyEditingFile: null });
+        setTimeout(() => {
+          get().setFileCooldown(filename, false);
+        }, durationMs);
       },
 
       fetchMountPoints: async () => {
