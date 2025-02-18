@@ -71,6 +71,15 @@
   color: var(--secondary);
 }
 
+.dropdown.default .arrow {
+  border-color: #999 transparent transparent;
+}
+
+.dropdown.default .arrow.open,
+.dropdown.default .arrow.up {
+  border-color: transparent transparent #999;
+}
+
 .dropdown.default .options {
   background-color: var(--accent);
   color: var(--secondary);
