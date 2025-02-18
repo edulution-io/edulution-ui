@@ -101,7 +101,6 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
             form={form}
             labelTranslationId={t('common.name')}
             variant="dialog"
-            className=""
           />
           <SelectIconField form={form} />
           <div className="mt-12 flex justify-end">
