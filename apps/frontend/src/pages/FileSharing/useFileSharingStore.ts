@@ -57,6 +57,8 @@ type UseFileSharingStore = {
   setPublicDownloadLink: (publicDownloadLink: string) => void;
   isError: boolean;
   setDialogShownFiles: (files: DirectoryFileDTO[]) => void;
+  currentlyDisabledFiles: Record<string, boolean>;
+  startFileIsCurrentlyDisabled: (filename: string, isLocked: boolean, durationMs: number) => Promise<void>;
   setIsLoading: (isLoading: boolean) => void;
   setCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => void;
   resetCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => Promise<void>;
@@ -85,6 +87,7 @@ const initialState = {
   publicDownloadLink: null,
   isEditorLoading: false,
   isFullScreenEditingEnabled: false,
+  currentlyDisabledFiles: {},
 };
 
 type PersistedFileManagerStore = (
@@ -254,6 +257,19 @@ const useFileSharingStore = create<UseFileSharingStore>(
           return '';
         } finally {
           set({ isLoading: false });
+        }
+      },
+
+      startFileIsCurrentlyDisabled: async (filename, isLocked, durationMs) => {
+        set((state) => ({
+          currentlyDisabledFiles: {
+            ...state.currentlyDisabledFiles,
+            [filename]: isLocked,
+          },
+        }));
+        if (durationMs) {
+          await delay(durationMs);
+          set({ currentlyDisabledFiles: { filename: !isLocked } });
         }
       },
 

@@ -16,7 +16,7 @@ import { NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 
 interface NativeAppHeaderProps {
   title: string;
-  description: string | null;
+  description?: string;
   iconSrc: string;
 }
 

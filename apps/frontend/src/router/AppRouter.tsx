@@ -19,7 +19,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import useLogout from '@/hooks/useLogout';
-import useNotifications from '@/pages/Dashboard/Feed/components/useNotifications';
+import useNotifications from '@/hooks/useNotifications';
 
 const AppRouter: React.FC = () => {
   const auth = useAuth();

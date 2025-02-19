@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpException, HttpStatus, Inject, Injectable, MessageEvent } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, MessageEvent } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
@@ -19,16 +19,12 @@ import { Model } from 'mongoose';
 import { Response } from 'express';
 import { Observable } from 'rxjs';
 import { createHash } from 'crypto';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Interval } from '@nestjs/schedule';
-import { Cache } from 'cache-manager';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import BbbResponseDto from '@libs/conferences/types/bbb-api/bbb-response.dto';
 import ConferenceRole from '@libs/conferences/types/conference-role.enum';
-import { GROUPS_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
-import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import APPS from '@libs/appconfig/constants/apps';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
@@ -41,6 +37,7 @@ import AppConfigService from '../appconfig/appconfig.service';
 import Attendee from './attendee.schema';
 import SseService from '../sse/sse.service';
 import type UserConnections from '../types/userConnections';
+import GroupsService from '../groups/groups.service';
 
 @Injectable()
 class ConferencesService {
@@ -52,8 +49,8 @@ class ConferencesService {
 
   constructor(
     @InjectModel(Conference.name) private conferenceModel: Model<ConferenceDocument>,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly appConfigService: AppConfigService,
+    private readonly groupsService: GroupsService,
   ) {}
 
   subscribe(username: string, res: Response): Observable<MessageEvent> {
@@ -68,7 +65,10 @@ class ConferencesService {
         const isRunning = await this.checkConferenceIsRunningWithBBB(conference.meetingID);
         if (!isRunning) {
           await this.update({ ...conference.toObject(), isRunning: false });
-          const attendees = await this.getInvitedMembers(conference);
+          const attendees = await this.groupsService.getInvitedMembers(
+            conference.invitedGroups,
+            conference.invitedAttendees,
+          );
           SseService.sendEventToUsers(
             attendees,
             this.conferencesSseConnections,
@@ -149,22 +149,6 @@ class ConferencesService {
     this.BBB_SECRET = appConfig.options.apiKey;
   }
 
-  async getInvitedMembers(createConferenceDto: CreateConferenceDto | Conference): Promise<string[]> {
-    const usersInGroups = await Promise.all(
-      createConferenceDto.invitedGroups.map(async (group) => {
-        const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
-          `${GROUPS_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
-        );
-
-        return groupWithMembers?.members?.map((member) => member.username) || [];
-      }),
-    );
-
-    return Array.from(
-      new Set([...createConferenceDto.invitedAttendees.map((attendee) => attendee.username), ...usersInGroups.flat()]),
-    );
-  }
-
   async create(createConferenceDto: CreateConferenceDto, currentUser: JWTUser): Promise<Conference | undefined> {
     const creator = {
       firstName: currentUser.given_name,
@@ -188,7 +172,10 @@ class ConferencesService {
     } catch (e) {
       throw new CustomHttpException(ConferencesErrorMessage.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR);
     } finally {
-      const invitedMembersList = await this.getInvitedMembers(createConferenceDto);
+      const invitedMembersList = await this.groupsService.getInvitedMembers(
+        createConferenceDto.invitedGroups,
+        createConferenceDto.invitedAttendees,
+      );
       const conference = await this.conferenceModel
         .findOne({ meetingID: newConference.meetingID }, { _id: 0, __v: 0 })
         .lean();
@@ -241,7 +228,10 @@ class ConferencesService {
         conference.meetingID,
       );
     } finally {
-      const invitedMembersList = await this.getInvitedMembers(conference);
+      const invitedMembersList = await this.groupsService.getInvitedMembers(
+        conference.invitedGroups,
+        conference.invitedAttendees,
+      );
       const publicConferencesSubscriber = conference.meetingID;
       SseService.sendEventToUsers(
         [...invitedMembersList, publicConferencesSubscriber],
@@ -272,7 +262,10 @@ class ConferencesService {
         conference.meetingID,
       );
     } finally {
-      const invitedMembersList = await this.getInvitedMembers(conference);
+      const invitedMembersList = await this.groupsService.getInvitedMembers(
+        conference.invitedGroups,
+        conference.invitedAttendees,
+      );
       const publicConferencesSubscriber = conference.meetingID;
       SseService.sendEventToUsers(
         [...invitedMembersList, publicConferencesSubscriber],
@@ -302,7 +295,10 @@ class ConferencesService {
     if (isCreator) {
       role = ConferenceRole.Moderator;
     } else {
-      const invitedMembers = await this.getInvitedMembers(conference);
+      const invitedMembers = await this.groupsService.getInvitedMembers(
+        conference.invitedGroups,
+        conference.invitedAttendees,
+      );
       const isInvitedMember = invitedMembers.find((member) => member === username);
       const isCorrectPassword = conference.password ? conference.password === password : true;
       if (!isInvitedMember && !isCorrectPassword) {
@@ -424,7 +420,11 @@ class ConferencesService {
     }
 
     const invitedMembersList = (
-      await Promise.all(conferences.map((conference) => this.getInvitedMembers(conference)))
+      await Promise.all(
+        conferences.map((conference) =>
+          this.groupsService.getInvitedMembers(conference.invitedGroups, conference.invitedAttendees),
+        ),
+      )
     ).flat();
 
     SseService.sendEventToUsers(

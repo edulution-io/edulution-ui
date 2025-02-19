@@ -122,7 +122,6 @@ const UserSettingsMailsPage: React.FC = () => {
       <div className="flex flex-row justify-between">
         <NativeAppHeader
           title={t('mail.sidebar')}
-          description={null}
           iconSrc={MailIcon}
         />
         <StateLoader isLoading={isEditSyncJobLoading} />

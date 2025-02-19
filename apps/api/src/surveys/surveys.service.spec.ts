@@ -21,6 +21,8 @@ import { firstMockJWTUser, mockedSurveys } from './mocks';
 import { surveyUpdateInitialSurveyDto } from './mocks/surveys/updated-survey';
 import UserConnections from '../types/userConnections';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';
+import GroupsService from '../groups/groups.service';
+import mockGroupsService from '../groups/groups.service.mock';
 
 const mockSseConnections: UserConnections = new Map();
 
@@ -38,6 +40,7 @@ describe('SurveyService', () => {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
         },
+        { provide: GroupsService, useValue: mockGroupsService },
         {
           provide: CACHE_MANAGER,
           useValue: cacheManagerMock,

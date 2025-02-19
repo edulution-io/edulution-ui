@@ -30,6 +30,8 @@ const FileViewer: FC<FileViewerProps> = ({ editMode }) => {
     isFullScreenEditingEnabled,
     setIsFullScreenEditingEnabled,
     fetchDownloadLinks,
+    startFileIsCurrentlyDisabled,
+    setCurrentlyEditingFile,
   } = useFileSharingStore();
   const [searchParams] = useSearchParams();
 
@@ -38,6 +40,14 @@ const FileViewer: FC<FileViewerProps> = ({ editMode }) => {
       void fetchDownloadLinks(currentlyEditingFile);
     }
   }, [currentlyEditingFile, isFullScreenEditingEnabled]);
+
+  const handleCloseFile = async () => {
+    if (!currentlyEditingFile) return;
+    const { basename } = currentlyEditingFile;
+    setIsFullScreenEditingEnabled(false);
+    setCurrentlyEditingFile(null);
+    await startFileIsCurrentlyDisabled(basename, true, 5000);
+  };
 
   const isOpenedInNewTab = Boolean(searchParams.get('tab'));
 
@@ -51,7 +61,7 @@ const FileViewer: FC<FileViewerProps> = ({ editMode }) => {
           disableMinimizeWindow
           disableToggleMaximizeWindow
           titleTranslationId={t('filesharing.fileEditor')}
-          handleClose={() => setIsFullScreenEditingEnabled(false)}
+          handleClose={() => handleCloseFile()}
         >
           <FileRenderer editMode />
         </ResizableWindow>

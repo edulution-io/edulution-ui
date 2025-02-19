@@ -31,19 +31,18 @@ import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileE
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import FILESHARING_TABLE_COLUM_NAMES from '@libs/filesharing/constants/filesharingTableColumNames';
 import { useTranslation } from 'react-i18next';
+import CircleLoader from '@/components/ui/CircleLoader';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
 
 const hideOnMobileClassName = 'hidden lg:flex';
 
-const FileSharingTableColumns = (
-  onFilenameClick?: (row: DirectoryFileDTO) => void,
-  visibleColumns?: string[],
-): ColumnDef<DirectoryFileDTO>[] => {
+const FileSharingTableColumns = (visibleColumns?: string[]): ColumnDef<DirectoryFileDTO>[] => {
   const allColumns: ColumnDef<DirectoryFileDTO>[] = [
     {
       id: FILESHARING_TABLE_COLUM_NAMES.SELECT_FILENAME,
+
       header: ({ table, column }) => (
         <SortableHeader<DirectoryFileDTO, unknown>
           table={table}
@@ -56,10 +55,15 @@ const FileSharingTableColumns = (
       accessorFn: (row) => row.type + row.filename,
       cell: ({ row }) => {
         const [searchParams, setSearchParams] = useSearchParams();
-        const { setCurrentlyEditingFile, resetCurrentlyEditingFile, setPublicDownloadLink } = useFileSharingStore();
+        const { currentlyDisabledFiles, setCurrentlyEditingFile, resetCurrentlyEditingFile, setPublicDownloadLink } =
+          useFileSharingStore();
         const { setShowEditor } = useFileEditorStore();
+        const isCurrentlyDisabled = currentlyDisabledFiles[row.original.basename];
+        const handleFilenameClick = async () => {
+          if (isCurrentlyDisabled) {
+            return;
+          }
 
-        const defaultHandleFilenameClick = async () => {
           setShowEditor(false);
           setPublicDownloadLink('');
           if (row.original.type === ContentType.DIRECTORY) {
@@ -70,32 +74,35 @@ const FileSharingTableColumns = (
             await resetCurrentlyEditingFile(row.original);
           }
         };
-
-        const handleCellClick = async () => {
-          if (onFilenameClick) {
-            onFilenameClick(row.original);
-          } else {
-            await defaultHandleFilenameClick();
+        const renderFileIcon = (item: DirectoryFileDTO) => {
+          if (isCurrentlyDisabled) {
+            return (
+              <CircleLoader
+                height="h-6"
+                width="w-6"
+              />
+            );
           }
+          if (row.original.type === ContentType.FILE) {
+            return (
+              <FileIconComponent
+                filename={item.filename}
+                size={Number(TABLE_ICON_SIZE)}
+              />
+            );
+          }
+          return <MdFolder size={TABLE_ICON_SIZE} />;
         };
 
-        const renderFileIcon = (item: DirectoryFileDTO) =>
-          item.type === ContentType.FILE ? (
-            <FileIconComponent
-              filename={item.filename}
-              size={Number(TABLE_ICON_SIZE)}
-            />
-          ) : (
-            <MdFolder size={TABLE_ICON_SIZE} />
-          );
+        const isSaving = currentlyDisabledFiles[row.original.basename];
 
         return (
-          <div className="w-full">
+          <div className={`w-full ${isSaving ? 'pointer-events-none opacity-50' : ''}`}>
             <SelectableTextCell
               icon={renderFileIcon(row.original)}
               row={row}
               text={row.original.basename}
-              onClick={handleCellClick}
+              onClick={handleFilenameClick}
             />
           </div>
         );

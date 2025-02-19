@@ -16,10 +16,12 @@ import {
   Delete,
   Get,
   HttpStatus,
+  MessageEvent,
   Param,
   Patch,
   Post,
   Res,
+  Sse,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -35,8 +37,9 @@ import APPS from '@libs/appconfig/constants/apps';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
+import { Observable } from 'rxjs';
 import BulletinBoardService from './bulletinboard.service';
-import GetCurrentUser from '../common/decorators/getUser.decorator';
+import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import GetToken from '../common/decorators/getToken.decorator';
 
 @ApiTags(APPS.BULLETIN_BOARD)
@@ -45,7 +48,7 @@ import GetToken from '../common/decorators/getToken.decorator';
 class BulletinBoardController {
   constructor(private readonly bulletinBoardService: BulletinBoardService) {}
 
-  @Get('')
+  @Get()
   getBulletinsByCategory(@GetCurrentUser() currentUser: JWTUser, @GetToken() token: string) {
     return this.bulletinBoardService.getBulletinsByCategory(currentUser, token);
   }
@@ -107,6 +110,11 @@ class BulletinBoardController {
   uploadBulletinAttachment(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
     const fileName = BulletinBoardService.checkAttachmentFile(file);
     return res.status(200).json(fileName);
+  }
+
+  @Sse('sse')
+  sse(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
+    return this.bulletinBoardService.subscribe(username, res);
   }
 }
 

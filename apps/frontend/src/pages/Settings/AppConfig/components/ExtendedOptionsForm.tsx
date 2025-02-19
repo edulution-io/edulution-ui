@@ -20,13 +20,12 @@ import cn from '@libs/common/utils/className';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { type AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import type AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
-import type TApps from '@libs/appconfig/types/appsType';
 import AppConfigSwitch from './booleanField/AppConfigSwitch';
 
 type ExtendedOptionsFormProps<T extends FieldValues> = {
   extendedOptions: AppConfigExtendedOptionsBySections | undefined;
   control: Control<T>;
-  settingLocation: TApps;
+  settingLocation: string;
 };
 
 const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T extends FieldValues>({

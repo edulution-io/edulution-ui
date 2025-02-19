@@ -11,7 +11,8 @@
  */
 
 import { IsArray, IsBoolean, IsNumber, IsString } from 'class-validator';
-import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 
 class CreateBulletinCategoryDto {
   @IsString()
@@ -21,16 +22,16 @@ class CreateBulletinCategoryDto {
   isActive: boolean;
 
   @IsArray()
-  visibleForUsers: MultipleSelectorOptionSH[] = [];
+  visibleForUsers: AttendeeDto[] = [];
 
   @IsArray()
-  visibleForGroups: MultipleSelectorOptionSH[] = [];
+  visibleForGroups: MultipleSelectorGroup[] = [];
 
   @IsArray()
-  editableByUsers: MultipleSelectorOptionSH[] = [];
+  editableByUsers: AttendeeDto[] = [];
 
   @IsArray()
-  editableByGroups: MultipleSelectorOptionSH[] = [];
+  editableByGroups: MultipleSelectorGroup[] = [];
 
   @IsNumber()
   position: number;

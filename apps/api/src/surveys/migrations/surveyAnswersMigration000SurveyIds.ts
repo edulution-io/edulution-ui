@@ -43,23 +43,32 @@ const migration000SurveyIds: Migration<SurveyAnswerDocument> = {
       unprocessedDocuments.map(async (doc: SurveyAnswerDocument) => {
         try {
           // eslint-disable-next-line no-underscore-dangle
-          const id = String(doc.id);
-          const surveyId = String(doc.surveyId);
+          const currentId = doc._id;
 
-          const newDoc = {
-            ...doc.toObject(),
-            _id: new Types.ObjectId(id),
-            schemaVersion: newSchemaVersion,
-            surveyId: new Types.ObjectId(surveyId),
-          } as SurveyAnswerDocument;
+          if (currentId instanceof Types.ObjectId) {
+            await model.updateOne({ _id: currentId }, { $set: { schemaVersion: newSchemaVersion } });
+            processedCount += 1;
+          } else if (typeof currentId === 'string') {
+            const newId = new Types.ObjectId(currentId);
+            const surveyId = String(doc.surveyId);
 
-          delete newDoc.id;
+            const newDoc = {
+              ...doc.toObject(),
+              _id: newId,
+              schemaVersion: newSchemaVersion,
+              surveyId: new Types.ObjectId(surveyId),
+            } as SurveyAnswerDocument;
 
-          await model.create(newDoc);
+            delete newDoc.id;
 
-          await model.deleteOne({ id });
+            await model.create(newDoc);
 
-          processedCount += 1;
+            await model.deleteOne({ _id: currentId });
+
+            processedCount += 1;
+          } else {
+            Logger.error(`Document ${doc.id} has an unsupported _id type: ${typeof currentId}`);
+          }
         } catch (error) {
           Logger.error(`Failed to migrate document ${doc.id}:`, error);
         }

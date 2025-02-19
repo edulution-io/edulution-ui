@@ -76,6 +76,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
             options={categoriesWithEditPermission}
             selectedVal={isGetCategoriesLoading ? t('common.loading') : watch('category')?.name}
             handleChange={handleCategoryChange}
+            variant="dialog"
           />
           <div>
             {formState.errors.category && (
