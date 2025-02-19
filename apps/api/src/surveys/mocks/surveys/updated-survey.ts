@@ -14,7 +14,6 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { Types } from 'mongoose';
 import { firstMockUser, firstUsername, mockedParticipants, secondMockUser } from '../user';
 import { Survey, SurveyDocument } from '../../survey.schema';
-import { firstParticipant, secondParticipant } from '../user/users';
 
 export const surveyUpdateSurveyId = new Types.ObjectId();
 
@@ -55,7 +54,7 @@ export const surveyUpdateInitialSurveyDto: SurveyDto = {
   },
   invitedAttendees: mockedParticipants,
   invitedGroups: [],
-  participatedAttendees: [firstParticipant, secondParticipant],
+  participatedAttendees: [firstMockUser, secondMockUser],
   answers: surveyUpdateInitialSurvey.answers.map((a) => a.toString()),
   saveNo: 1,
   isPublic: false,
@@ -98,7 +97,7 @@ export const surveyUpdateUpdatedSurveyDto: SurveyDto = {
   },
   invitedAttendees: mockedParticipants,
   invitedGroups: [],
-  participatedAttendees: [firstParticipant, secondParticipant],
+  participatedAttendees: [firstMockUser, secondMockUser],
   answers: surveyUpdateInitialSurvey.answers.map((a) => a.toString()),
   saveNo: 1,
   isPublic: false,

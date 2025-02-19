@@ -16,12 +16,60 @@ import APPS from '@libs/appconfig/constants/apps';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { AccordionSH } from '@/components/ui/AccordionSH';
 import { Card, CardContent } from '@/components/shared/Card';
-import ConferencesFeed from '@/pages/Dashboard/Feed/conferences/ConferencesFeed';
-import MailsFeed from '@/pages/Dashboard/Feed/mails/MailsFeed';
-import SurveysFeed from '@/pages/Dashboard/Feed/surveys/SurveysFeed';
+import FeedAccordionItem from '@/pages/Dashboard/Feed/components/FeedAccordionItem';
+import { BulletinBoardIcon, ConferencesIcon, MailIcon, SurveysSidebarIcon } from '@/assets/icons';
+import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
+import BulletinList from '@/pages/Dashboard/Feed/bulletinboard/BulletinList';
+import ConferencesList from '@/pages/Dashboard/Feed/conferences/ConferencesList';
+import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
+import useMailsStore from '@/pages/Mail/useMailsStore';
+import useLdapGroups from '@/hooks/useLdapGroups';
+import MailList from '@/pages/Dashboard/Feed/mails/MailList';
+import SurveysList from '@/pages/Dashboard/Feed/surveys/SurveysList';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 
 const Feed = () => {
   const { t } = useTranslation();
+  const { bulletinBoardNotifications } = useBulletinBoardStore();
+  const { runningConferences } = useConferenceStore();
+  const { mails } = useMailsStore();
+  const { isSuperAdmin } = useLdapGroups();
+  const { openSurveys } = useSurveyTablesPageStore();
+
+  const feed = [
+    <FeedAccordionItem
+      key={APPS.BULLETIN_BOARD}
+      appKey={APPS.BULLETIN_BOARD}
+      icon={BulletinBoardIcon}
+      listItems={bulletinBoardNotifications}
+      ListComponent={BulletinList}
+    />,
+
+    <FeedAccordionItem
+      key={APPS.CONFERENCES}
+      appKey={APPS.CONFERENCES}
+      icon={ConferencesIcon}
+      listItems={runningConferences}
+      ListComponent={ConferencesList}
+    />,
+
+    <FeedAccordionItem
+      key={APPS.MAIL}
+      appKey={APPS.MAIL}
+      icon={MailIcon}
+      listItems={mails}
+      ListComponent={MailList}
+      isVisible={!isSuperAdmin}
+    />,
+
+    <FeedAccordionItem
+      key={APPS.SURVEYS}
+      appKey={APPS.SURVEYS}
+      icon={SurveysSidebarIcon}
+      listItems={openSurveys}
+      ListComponent={SurveysList}
+    />,
+  ];
 
   return (
     <Card
@@ -35,11 +83,9 @@ const Feed = () => {
           <ScrollArea className="scrollbar-thin">
             <AccordionSH
               type="multiple"
-              defaultValue={[APPS.MAIL, APPS.CONFERENCES, APPS.SURVEYS]}
+              defaultValue={[APPS.MAIL, APPS.CONFERENCES, APPS.SURVEYS, APPS.BULLETIN_BOARD]}
             >
-              <ConferencesFeed />
-              <MailsFeed />
-              <SurveysFeed />
+              {...feed}
             </AccordionSH>
           </ScrollArea>
         </div>

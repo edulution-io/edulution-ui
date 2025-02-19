@@ -32,9 +32,9 @@ const pages: Partial<Record<TApps, JSX.Element>> = {
 };
 
 type NativeAppPageProps = {
-  page: TApps;
+  page: string;
 };
 
-const NativeAppPage: React.FC<NativeAppPageProps> = ({ page }) => pages[page];
+const NativeAppPage: React.FC<NativeAppPageProps> = ({ page }) => pages[page as TApps];
 
 export default NativeAppPage;

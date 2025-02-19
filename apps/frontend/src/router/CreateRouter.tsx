@@ -12,8 +12,7 @@
 
 import React from 'react';
 import { createBrowserRouter, createRoutesFromElements, Outlet, Route } from 'react-router-dom';
-import { AppConfigDto } from '@libs/appconfig/types';
-import type TApps from '@libs/appconfig/types/appsType';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import {
   LANGUAGE_PATH,
@@ -37,6 +36,8 @@ import getSurveyRoutes from '@/router/routes/SurveyRoutes';
 import EmptyLayout from '@/components/layout/EmptyLayout';
 import MainLayout from '@/components/layout/MainLayout';
 import getPublicRoutes from '@/router/routes/PublicRoutes';
+import APPS from '@libs/appconfig/constants/apps';
+import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
 import getSettingsRoutes from './routes/SettingsRoutes';
 import getForwardedRoutes from './routes/ForwardedRoutes';
 import getEmbeddedRoutes from './routes/EmbeddedRoutes';
@@ -98,10 +99,16 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
                   <Route
                     key={item.name}
                     path={item.name}
-                    element={<NativeAppPage page={item.name as TApps} />}
+                    element={<NativeAppPage page={item.name} />}
                   />
                 ) : null,
               )}
+
+              <Route
+                path={`${APPS.BULLETIN_BOARD}/:bulletinId`}
+                element={<BulletinBoardPage />}
+              />
+
               {getSettingsRoutes()}
               {getClassManagementRoutes()}
               {getSurveyRoutes()}

@@ -29,6 +29,10 @@ import JwtUser from '@libs/user/types/jwt/jwtUser';
 import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
 import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
 import GROUPS_TOKEN_INTERVAL from '@libs/groups/constants/schedulerRegistry';
+import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import Attendee from '../conferences/attendee.schema';
 
 const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API, KEYCLOAK_EDU_API_CLIENT_ID, KEYCLOAK_EDU_API_CLIENT_SECRET } =
   process.env as {
@@ -157,13 +161,15 @@ class GroupsService implements OnModuleInit {
   }
 
   private static sanitizeGroupMembers(members: LDAPUser[]): GroupMemberDto[] {
-    return members.map((member: LDAPUser) => ({
-      id: member.id,
-      username: member.username,
-      firstName: member.firstName,
-      lastName: member.lastName,
-      email: member.email,
-    }));
+    return Array.isArray(members)
+      ? members.map((member: LDAPUser) => ({
+          id: member.id,
+          username: member.username,
+          firstName: member.firstName,
+          lastName: member.lastName,
+          email: member.email,
+        }))
+      : [];
   }
 
   @Interval(KEYCLOACK_SYNC_MS)
@@ -196,6 +202,23 @@ class GroupsService implements OnModuleInit {
     } catch (e) {
       Logger.error(e, GroupsService.name);
     }
+  }
+
+  async getInvitedMembers(
+    invitedGroups: (MultipleSelectorGroup | Group)[],
+    invitedAttendees: (AttendeeDto | Attendee)[],
+  ): Promise<string[]> {
+    const usersInGroups = await Promise.all(
+      invitedGroups.map(async (group) => {
+        const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
+          `${GROUPS_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
+        );
+
+        return groupWithMembers?.members?.map((member) => member.username) || [];
+      }),
+    );
+
+    return Array.from(new Set([...invitedAttendees.map((attendee) => attendee.username), ...usersInGroups.flat()]));
   }
 
   private static flattenGroups(groups: Group[]): Group[] {

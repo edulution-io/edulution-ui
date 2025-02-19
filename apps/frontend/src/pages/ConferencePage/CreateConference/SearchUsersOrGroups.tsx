@@ -16,11 +16,10 @@ import { useTranslation } from 'react-i18next';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import { Button } from '@/components/shared/Button';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 
 interface SearchUsersOrGroupsProps {
   users: AttendeeDto[];
-  onUserChange: (options: MultipleSelectorOptionSH[]) => void;
+  onUserChange: (options: AttendeeDto[]) => void;
   onSearch: (value: string) => Promise<AttendeeDto[]>;
   groups: MultipleSelectorGroup[];
   onGroupSearch: (value: string) => Promise<MultipleSelectorGroup[]>;

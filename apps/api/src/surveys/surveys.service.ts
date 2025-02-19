@@ -12,15 +12,11 @@
 
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
+import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import GroupWithMembers from '@libs/groups/types/groupWithMembers';
-import { GROUPS_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
@@ -30,12 +26,13 @@ import type UserConnections from '../types/userConnections';
 import { Survey, SurveyDocument } from './survey.schema';
 import MigrationService from '../migration/migration.service';
 import surveysMigrationsList from './migrations/surveysMigrationsList';
+import GroupsService from '../groups/groups.service';
 
 @Injectable()
-class SurveysService {
+class SurveysService implements OnModuleInit {
   constructor(
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private readonly groupsService: GroupsService,
   ) {}
 
   async onModuleInit() {
@@ -111,7 +108,10 @@ class SurveysService {
       if (survey.isPublic) {
         SseService.informAllUsers(surveysSseConnections, survey, SSE_MESSAGE_TYPE.UPDATED);
       } else {
-        const invitedMembersList = await this.getInvitedMembers(survey);
+        const invitedMembersList = await this.groupsService.getInvitedMembers(
+          survey.invitedGroups,
+          survey.invitedAttendees,
+        );
         const updatedSurvey = await this.surveyModel.findById(survey.id).exec();
         SseService.sendEventToUsers(
           invitedMembersList,
@@ -139,7 +139,10 @@ class SurveysService {
       if (survey.isPublic) {
         SseService.informAllUsers(surveysSseConnections, survey, SSE_MESSAGE_TYPE.CREATED);
       } else {
-        const invitedMembersList = await this.getInvitedMembers(survey);
+        const invitedMembersList = await this.groupsService.getInvitedMembers(
+          survey.invitedGroups,
+          survey.invitedAttendees,
+        );
         SseService.sendEventToUsers(invitedMembersList, surveysSseConnections, survey, SSE_MESSAGE_TYPE.CREATED);
       }
     }
@@ -156,27 +159,6 @@ class SurveysService {
     }
 
     return this.createSurvey(surveyDto, currentUser, surveysSseConnections);
-  }
-
-  async getInvitedMembers(survey: SurveyDto | Survey): Promise<string[]> {
-    const usersInGroups = await Promise.all(
-      survey.invitedGroups.map(async (group) => {
-        const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
-          `${GROUPS_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
-        );
-
-        return groupWithMembers?.members?.map((member) => member.username) || [];
-      }),
-    );
-
-    return Array.from(
-      new Set([
-        ...survey.invitedAttendees
-          .map((attendee) => attendee.username)
-          .filter((username): username is string => typeof username === 'string'),
-        ...usersInGroups.flat().filter(Boolean),
-      ]),
-    );
   }
 }
 

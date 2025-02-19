@@ -10,13 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import useElementHeight from '@/hooks/useElementHeight';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import APPS from '@libs/appconfig/constants/apps';
-import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import { BulletinBoardIcon } from '@/assets/icons';
 import { useTranslation } from 'react-i18next';
@@ -28,20 +25,25 @@ import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardE
 
 const BulletinBoardPage = () => {
   const { t } = useTranslation();
-  const { appConfigs } = useAppConfigsStore();
-  const { bulletinsByCategories, getBulletinsByCategories, isLoading, isEditorialModeEnabled } =
-    useBulletinBoardStore();
+  const {
+    bulletinBoardNotifications,
+    bulletinsByCategories,
+    getBulletinsByCategories,
+    isLoading,
+    isEditorialModeEnabled,
+  } = useBulletinBoardStore();
   const { getCategoriesWithEditPermission } = useBulletinBoardEditorialStore();
+  const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
 
-  const bulletinBoardConfig = findAppConfigByName(appConfigs, APPS.BULLETIN_BOARD);
   const pageBarsHeight = useElementHeight([NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 15;
 
   useEffect(() => {
-    void getBulletinsByCategories();
+    void getBulletinsByCategories(false);
     void getCategoriesWithEditPermission();
-  }, [isEditorialModeEnabled]);
+    setIsInitialLoading(false);
+  }, [isEditorialModeEnabled, bulletinBoardNotifications]);
 
-  if (isLoading) {
+  if (isLoading || isInitialLoading) {
     return <LoadingIndicator isOpen />;
   }
 
@@ -65,7 +67,6 @@ const BulletinBoardPage = () => {
                 canEditCategory={canEditCategory}
                 category={category}
                 bulletins={bulletins}
-                canManageBulletins={!!bulletinBoardConfig}
               />
             ))
         ) : (

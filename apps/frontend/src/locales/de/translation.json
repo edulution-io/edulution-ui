@@ -88,6 +88,20 @@
       "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen"
     }
   },
+  "appstore": {
+    "title": "App-Store",
+    "description": "Hier kannst du edulution.io Apps hinzufügen.",
+    "chooseIcon": "Icon auswählen"
+  },
+  "forwarding": {
+    "sidebar": "Weiterleitung"
+  },
+  "frame": {
+    "sidebar": "Frame"
+  },
+  "embedded": {
+    "sidebar": "Eingebettet"
+  },
   "dashboard": {
     "mobileAccess": {
       "title": "Mobiler Datenzugriff",
@@ -262,9 +276,10 @@
   },
   "feed": {
     "title": "Aktuelles",
-    "noConferences": "Keine laufende Konferenz",
-    "noMails": "Keine ungelesenen Mails",
-    "noSurveys": "Keine offenen Umfragen"
+    "noconferences": "Keine laufende Konferenz",
+    "nomail": "Keine ungelesenen Mails",
+    "nosurveys": "Keine offenen Umfragen",
+    "nobulletinboard": "Keine neuen Mitteilungen"
   },
   "filesharing": {
     "filterPlaceHolderText": "Suche nach Dateiname",
@@ -695,7 +710,7 @@
         },
         "docker": {
           "title": "Docker Anwendungen",
-          "description": "Um die erweiterten Dienste nutzen zu können hier die benötigten Docker Container gestartet werden."
+          "description": "Um die erweiterten Dienste nutzen zu können, können hier die benötigten Container-Anwendungen installiert und gestartet werden."
         },
         "veyon": {
           "title": "Veyon Proxy",
@@ -724,7 +739,10 @@
       "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen",
       "WriteTraefikConfigFailed": "Traefik-Konfiguration speichern fehlgeschlagen",
       "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen",
-      "forbiddenProxyPath": "Dieser Proxy-Pfad ist nicht erlaubt."
+      "forbiddenProxyPath": "Dieser Proxy-Pfad ist nicht erlaubt.",
+      "fieldRequired": "Dieses Feld ist erforderlich",
+      "maxChars": "Maximal {{count}} Zeichen",
+      "nameAlreadyExists": "App mit diesem Namen existiert bereits"
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",

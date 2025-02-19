@@ -10,16 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useMemo } from 'react';
-import { AppConfigDto } from '@libs/appconfig/types';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import APPS from '@libs/appconfig/constants/apps';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
+import i18n from '@/i18n';
 
-// TODO: NIEDUUI-312: Remove this check when the information about the app is stored in the appConfigs/userConfig/dataBase
-const useIsMailsActive = () => {
-  const { appConfigs } = useAppConfigsStore();
+const getDisplayName = (item: AppConfigDto, language: string) => {
+  let displayName;
 
-  return useMemo(() => !!appConfigs.find((conf: AppConfigDto) => conf.name === APPS.MAIL.toString()), [appConfigs]);
+  if (item.appType === APP_INTEGRATION_VARIANT.NATIVE || !item.translations) {
+    displayName = `${item.name}.sidebar`;
+  } else {
+    displayName = item.translations[language];
+  }
+
+  return i18n.t(displayName);
 };
 
-export default useIsMailsActive;
+export default getDisplayName;

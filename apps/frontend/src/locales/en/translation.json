@@ -88,6 +88,20 @@
       "attachmentDeletionFailed": "Failed to delete an attachment"
     }
   },
+  "appstore": {
+    "title": "App Store",
+    "description": "Here you can add edulution.io apps.",
+    "chooseIcon": "Choose icon"
+  },
+  "forwarding": {
+    "sidebar": "Forwarding"
+  },
+  "frame": {
+    "sidebar": "Frame"
+  },
+  "embedded": {
+    "sidebar": "Embedded"
+  },
   "dashboard": {
     "mobileAccess": {
       "title": "Mobile File Access",
@@ -263,9 +277,10 @@
   },
   "feed": {
     "title": "Current affairs",
-    "noConferences": "No running conference",
-    "noMails": "No unread mail",
-    "noSurveys": "No open survey"
+    "noconferences": "No running conference",
+    "nomail": "No unread mail",
+    "nosurveys": "No open survey",
+    "nobulletinboard": "No new bulletins"
   },
   "filesharing": {
     "filterPlaceHolderText": "Search for filename",
@@ -694,7 +709,7 @@
         },
         "docker": {
           "title": "Docker Applications",
-          "description": "To be able to use the extended services, the required Docker containers must be started here."
+          "description": "To be able to use the extended services, the required container applications must be started here."
         },
         "veyon": {
           "title": "Veyon Proxy",
@@ -723,7 +738,10 @@
       "DisableAppConfigFailed": "Disable app failed",
       "WriteTraefikConfigFailed": "Write traefik config failed",
       "ReadTraefikConfigFailed": "Read traefik config failed",
-      "forbiddenProxyPath": "Forbidden proxy path"
+      "forbiddenProxyPath": "Forbidden proxy path",
+      "fieldRequired": "This field is required",
+      "maxChars": "Maximum {{count}} characters",
+      "nameAlreadyExists": "App with this name already exists"
     },
     "yamleditor": {
       "invalidYaml": "Wrong YAML syntax",

@@ -120,7 +120,7 @@ const MenuBar: React.FC = () => {
     <>
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black bg-opacity-50"
+          className="fixed inset-0 z-40 bg-foreground bg-opacity-50"
           role="button"
           tabIndex={0}
           onClickCapture={toggle}
@@ -131,7 +131,7 @@ const MenuBar: React.FC = () => {
         className={cn(
           'fixed top-0 z-50 h-full overflow-y-scroll bg-gray-700 duration-300 ease-in-out',
           !isOpen ? 'w-0' : 'w-64',
-          'bg-black',
+          'bg-foreground',
         )}
       >
         {isOpen && renderMenuBarContent()}
@@ -151,7 +151,7 @@ const MenuBar: React.FC = () => {
     </>
   ) : (
     <div className="relative flex h-screen">
-      <VerticalMenubar className="w-64 overflow-y-auto bg-black bg-opacity-40 scrollbar-thin">
+      <VerticalMenubar className="w-64 overflow-y-auto bg-foreground bg-opacity-40 scrollbar-thin">
         {renderMenuBarContent()}
       </VerticalMenubar>
     </div>

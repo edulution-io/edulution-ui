@@ -18,7 +18,7 @@ import cn from '@libs/common/utils/className';
 interface SelectableTextCellProps<TData> {
   icon?: React.ReactElement;
   row?: Row<TData>;
-  text?: string;
+  text?: string | JSX.Element;
   textOnHover?: string;
   onClick?: () => void;
   className?: string;
