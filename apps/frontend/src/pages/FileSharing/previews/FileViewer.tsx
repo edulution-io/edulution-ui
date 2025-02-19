@@ -30,7 +30,8 @@ const FileViewer: FC<FileViewerProps> = ({ editMode }) => {
     isFullScreenEditingEnabled,
     setIsFullScreenEditingEnabled,
     fetchDownloadLinks,
-    startFileSaving,
+    startFileIsCurrentlyDisabled,
+    setCurrentlyEditingFile,
   } = useFileSharingStore();
   const [searchParams] = useSearchParams();
 
@@ -40,10 +41,12 @@ const FileViewer: FC<FileViewerProps> = ({ editMode }) => {
     }
   }, [currentlyEditingFile, isFullScreenEditingEnabled]);
 
-  const handleCloseFile = () => {
+  const handleCloseFile = async () => {
     if (!currentlyEditingFile) return;
+    const { basename } = currentlyEditingFile;
     setIsFullScreenEditingEnabled(false);
-    startFileSaving(currentlyEditingFile.basename, 5000);
+    setCurrentlyEditingFile(null);
+    await startFileIsCurrentlyDisabled(basename, true, 5000);
   };
 
   const isOpenedInNewTab = Boolean(searchParams.get('tab'));

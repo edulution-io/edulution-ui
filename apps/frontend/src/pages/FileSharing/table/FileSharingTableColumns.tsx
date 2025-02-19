@@ -30,6 +30,7 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import i18n from '@/i18n';
+import CircleLoader from '@/components/ui/CircleLoader';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
@@ -52,11 +53,12 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
     accessorFn: (row) => row.type + row.filename,
     cell: ({ row }) => {
       const [searchParams, setSearchParams] = useSearchParams();
-      const { fileSaving, setCurrentlyEditingFile, resetCurrentlyEditingFile, setPublicDownloadLink } =
+      const { currentlyDisabledFiles, setCurrentlyEditingFile, resetCurrentlyEditingFile, setPublicDownloadLink } =
         useFileSharingStore();
       const { setShowEditor } = useFileEditorStore();
+      const isCurrentlyDisabled = currentlyDisabledFiles[row.original.basename];
       const handleFilenameClick = async () => {
-        if (fileSaving[row.original.basename]) {
+        if (isCurrentlyDisabled) {
           return;
         }
 
@@ -71,6 +73,14 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
         }
       };
       const renderFileIcon = (item: DirectoryFileDTO) => {
+        if (isCurrentlyDisabled) {
+          return (
+            <CircleLoader
+              height="h-6"
+              width="w-6"
+            />
+          );
+        }
         if (row.original.type === ContentType.FILE) {
           return (
             <FileIconComponent
@@ -82,7 +92,7 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
         return <MdFolder size={TABLE_ICON_SIZE} />;
       };
 
-      const isSaving = fileSaving[row.original.basename];
+      const isSaving = currentlyDisabledFiles[row.original.basename];
 
       return (
         <div className={`w-full ${isSaving ? 'pointer-events-none opacity-50' : ''}`}>

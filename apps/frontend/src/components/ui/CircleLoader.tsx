@@ -17,12 +17,23 @@ import cn from '@libs/common/utils/className';
 interface CircleLoaderProps {
   className?: string;
   transitionDurationMS?: number;
+  height?: string;
+  width?: string;
 }
 
-const CircleLoader = ({ className, transitionDurationMS = 1000 }: CircleLoaderProps) => (
-  <div className={cn('relative box-border h-12 w-12', className)}>
+const CircleLoader = ({
+  className,
+  transitionDurationMS = 1000,
+  height = 'h-12',
+  width = 'w-12',
+}: CircleLoaderProps) => (
+  <div className={cn('relative box-border', height, width, className)}>
     <motion.span
-      className="absolute left-0 top-0 z-30 box-border block h-12 w-12 rounded-full border-4 border-t-4 border-gray-300 border-t-blue-500"
+      className={cn(
+        'absolute left-0 top-0 z-30 box-border block rounded-full border-4 border-t-4 border-gray-300 border-t-blue-500',
+        height,
+        width,
+      )}
       animate={{ rotate: 360 }}
       transition={{
         loop: Infinity,
