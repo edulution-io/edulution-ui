@@ -49,6 +49,8 @@ const migration002: Migration<AppConfig> = {
                     ? defaultAppConfig.find((config) => config.name === appName)?.icon
                     : doc.icon,
                 schemaVersion: newSchemaVersion,
+                options: doc.options ? doc.options : {},
+                extendedOptions: doc.extendedOptions ? doc.extendedOptions : {},
               },
             },
           );
