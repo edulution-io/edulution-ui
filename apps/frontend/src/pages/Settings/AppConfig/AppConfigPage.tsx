@@ -202,26 +202,27 @@ const AppConfigPage: React.FC = () => {
                     settingLocation={settingLocation}
                   />
                 ) : null}
-                {Object.keys(matchingConfig.options)
-                  .filter((key) => key === APP_CONFIG_OPTION_KEYS.URL || key === APP_CONFIG_OPTION_KEYS.APIKEY)
-                  .map((filteredKey) => (
-                    <FormFieldSH
-                      key={`${matchingConfig.name}.options.${filteredKey}`}
-                      control={control}
-                      name={`${matchingConfig.name}.options.${filteredKey}`}
-                      defaultValue={filteredKey}
-                      render={({ field }) => (
-                        <FormItem>
-                          <h4 className="text-background">{t(`form.${filteredKey}`)}</h4>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage className="text-p" />
-                        </FormItem>
-                      )}
-                    />
-                  ))}
-                {APP_CONFIG_OPTION_KEYS.PROXYCONFIG in matchingConfig.options && (
+                {matchingConfig.options &&
+                  Object.keys(matchingConfig.options)
+                    .filter((key) => key === APP_CONFIG_OPTION_KEYS.URL || key === APP_CONFIG_OPTION_KEYS.APIKEY)
+                    .map((filteredKey) => (
+                      <FormFieldSH
+                        key={`${matchingConfig.name}.options.${filteredKey}`}
+                        control={control}
+                        name={`${matchingConfig.name}.options.${filteredKey}`}
+                        defaultValue={filteredKey}
+                        render={({ field }) => (
+                          <FormItem>
+                            <h4 className="text-background">{t(`form.${filteredKey}`)}</h4>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage className="text-p" />
+                          </FormItem>
+                        )}
+                      />
+                    ))}
+                {matchingConfig.options && APP_CONFIG_OPTION_KEYS.PROXYCONFIG in matchingConfig.options && (
                   <ProxyConfigForm
                     key={`${matchingConfig.name}.options.${APP_CONFIG_OPTION_KEYS.PROXYCONFIG}`}
                     item={matchingConfig}
