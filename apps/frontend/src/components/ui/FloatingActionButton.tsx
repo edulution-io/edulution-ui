@@ -1,16 +1,22 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useMemo } from 'react';
 import { Button } from '@/components/shared/Button';
-import {
-  DropdownMenuContent as Content,
-  DropdownMenuItem as MenuItem,
-  DropdownMenuSH as DropdownMenu,
-  DropdownMenuTrigger as Trigger,
-} from '@/components/ui/DropdownMenuSH';
 import { IconContext, IconType } from 'react-icons';
 import { DropdownOption } from '@libs/filesharing/types/fileCreationDropDownOptions';
-import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
-import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
 import { useTranslation } from 'react-i18next';
+import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
+import DropdownMenu from '@/components/shared/DropdownMenu';
 
 interface FloatingActionButtonProps {
   icon: IconType;
@@ -19,7 +25,7 @@ interface FloatingActionButtonProps {
   type?: 'button' | 'submit' | 'reset';
   variant?: 'button' | 'dropdown';
   options?: DropdownOption[];
-  onSelectFileSelect?: (fileType: (typeof AVAILABLE_FILE_TYPES)[FileTypeKey]) => void;
+  onSelectFileSelect?: (fileType: TAvailableFileTypes) => void;
 }
 
 const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
@@ -37,8 +43,8 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
   const renderContent = () => {
     if (variant === 'dropdown' && options.length > 0) {
       return (
-        <DropdownMenu>
-          <Trigger asChild>
+        <DropdownMenu
+          trigger={
             <Button
               type="button"
               variant="btn-hexagon"
@@ -49,30 +55,20 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
                 <Icon />
               </IconContext.Provider>
             </Button>
-          </Trigger>
-          <Content className="z-[100]">
-            {options.map((option) => (
-              <MenuItem
-                key={option.title}
-                onSelect={() => {
-                  if (onSelectFileSelect) {
-                    onSelectFileSelect(option.type);
-                  }
-                  if (onClick) {
-                    onClick();
-                  }
-                }}
-              >
-                <div className="flex flex-row items-center space-x-2">
-                  <option.icon style={{ color: option.iconColor }} />
-                  <span>{option.title}</span>
-                </div>
-              </MenuItem>
-            ))}
-          </Content>
-        </DropdownMenu>
+          }
+          items={options.map((option) => ({
+            label: option.title,
+            onClick: () => {
+              if (onSelectFileSelect) onSelectFileSelect(option.type);
+              if (onClick) onClick();
+            },
+            icon: option.icon as IconType,
+            iconColor: option.iconColor,
+          }))}
+        />
       );
     }
+
     return (
       <Button
         type={type}
@@ -91,7 +87,9 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
   return (
     <div className="flex flex-col items-center justify-center">
       {renderContent()}
-      <p className="whitespace-prewrap max-w-25 top-0 justify-center overflow-hidden text-center">{text}</p>
+      <p className="whitespace-prewrap max-w-25 top-0 justify-center overflow-hidden text-center text-background">
+        {text}
+      </p>
     </div>
   );
 };

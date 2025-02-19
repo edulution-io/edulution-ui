@@ -13,62 +13,61 @@ jobs:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-22.04
     timeout-minutes: 5
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
         with:
           token: ${{ github.token }}
 
       - name: Use Node.js
-        uses: actions/setup-node@v4.0.3
+        uses: actions/setup-node@v4.1.0
         with:
-          node-version: 20.x
+          node-version: 18.x
           cache: 'npm'
 
       - name: Cache Node.js modules
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4.2.0
         with:
-          path: node_modules
+          path: |
+            **/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
       - name: Install dependencies
-        run: npm ci
+        run: npm i
 
   build-frontend:
     runs-on: ubuntu-22.04
     needs: prepare
     timeout-minutes: 5
-
     steps:
       - name: Generate Frontend Docker Tags
         id: generate_docker_tags_fe
         run: |
           docker_registry_path="ghcr.io/edulution-io/edulution-ui"
           docker_tags_fe="$docker_registry_path:$(echo ${{ github.ref }} | cut -d'/' -f3- | sed 's/[^a-z0-9_-]/-/gi')"
-          if [[ ${{ github.ref }} = 'refs/heads/master' ]] || [[ ${{ github.ref }} =~ ^refs/tags/v.*$ ]]
-          then
+          if [[ ${{ github.ref }} = 'refs/heads/master' ]] || [[ ${{ github.ref }} =~ ^refs/tags/v.*$ ]]; then
             docker_tags_fe+=",$docker_registry_path:latest"
           fi
           echo "docker_tags_fe=$docker_tags_fe" >> $GITHUB_OUTPUT
 
       - name: Checkout
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
         with:
           token: ${{ github.token }}
 
       - name: Use Node.js
-        uses: actions/setup-node@v4.0.3
+        uses: actions/setup-node@v4.1.0
         with:
-          node-version: 20.x
+          node-version: 18.x
           cache: 'npm'
 
       - name: Restore cached Node.js modules
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4.2.0
         with:
-          path: node_modules
+          path: |
+            **/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
@@ -82,11 +81,16 @@ jobs:
         uses: docker/login-action@v3.3.0
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.CONTAINER_REGISTRY_TOKEN }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker-container
 
       - name: Build and push docker image
-        uses: docker/build-push-action@v6.7.0
+        uses: docker/build-push-action@v6.10.0
         with:
           build-args: |
             buildId=${{ github.sha }}
@@ -95,39 +99,40 @@ jobs:
           file: apps/frontend/Dockerfile
           push: true
           tags: ${{ steps.generate_docker_tags_fe.outputs.docker_tags_fe }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   build-api:
     runs-on: ubuntu-22.04
     needs: prepare
     timeout-minutes: 5
-
     steps:
       - name: Generate API Docker Tags
         id: generate_docker_tags_api
         run: |
           docker_registry_path="ghcr.io/edulution-io/edulution-api"
           docker_tags_api="$docker_registry_path:$(echo ${{ github.ref }} | cut -d'/' -f3- | sed 's/[^a-z0-9_-]/-/gi')"
-          if [[ ${{ github.ref }} = 'refs/heads/master' ]] || [[ ${{ github.ref }} =~ ^refs/tags/v.*$ ]]
-          then
+          if [[ ${{ github.ref }} = 'refs/heads/master' ]] || [[ ${{ github.ref }} =~ ^refs/tags/v.*$ ]]; then
             docker_tags_api+=",$docker_registry_path:latest"
           fi
           echo "docker_tags_api=$docker_tags_api" >> $GITHUB_OUTPUT
 
       - name: Checkout
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
         with:
           token: ${{ github.token }}
 
       - name: Use Node.js
-        uses: actions/setup-node@v4.0.3
+        uses: actions/setup-node@v4.1.0
         with:
-          node-version: 20.x
+          node-version: 18.x
           cache: 'npm'
 
       - name: Restore cached Node.js modules
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4.2.0
         with:
-          path: node_modules
+          path: |
+            **/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
@@ -139,11 +144,16 @@ jobs:
         uses: docker/login-action@v3.3.0
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.CONTAINER_REGISTRY_TOKEN }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker-container
 
       - name: Build and push docker image
-        uses: docker/build-push-action@v6.7.0
+        uses: docker/build-push-action@v6.10.0
         with:
           build-args: |
             buildId=${{ github.sha }}
@@ -152,28 +162,30 @@ jobs:
           file: apps/api/Dockerfile
           push: true
           tags: ${{ steps.generate_docker_tags_api.outputs.docker_tags_api }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   test:
     runs-on: ubuntu-22.04
     needs: prepare
     timeout-minutes: 5
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
         with:
           token: ${{ github.token }}
 
       - name: Use Node.js
-        uses: actions/setup-node@v4.0.3
+        uses: actions/setup-node@v4.1.0
         with:
-          node-version: 20.x
+          node-version: 18.x
           cache: 'npm'
 
       - name: Restore cached Node.js modules
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4.2.0
         with:
-          path: node_modules
+          path: |
+            **/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-

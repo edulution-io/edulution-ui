@@ -1,15 +1,27 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 /* eslint-disable @typescript-eslint/unbound-method */
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
+import { Response } from 'express';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import ConferencesService from './conferences.service';
 import ConferencesController from './conferences.controller';
 import { Conference } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
-import mockAppConfigService from '../appconfig/appconfig.service.mock';
-import type UserConnections from '../types/userConnections';
+import { mockAppConfigService } from '../appconfig/appconfig.mock';
 
 const mockConferencesModel = {
   insertMany: jest.fn(),
@@ -26,6 +38,7 @@ const mockConferencesService = {
   update: jest.fn(),
   toggleConferenceIsRunning: jest.fn(),
   remove: jest.fn(),
+  subscribe: jest.fn(),
 };
 
 const jwtUser: JWTUser = {
@@ -48,8 +61,6 @@ const jwtUser: JWTUser = {
   email: '',
   ldapGroups: [],
 };
-
-const mockSseConnections: UserConnections = new Map();
 
 describe(ConferencesController.name, () => {
   let controller: ConferencesController;
@@ -88,19 +99,20 @@ describe(ConferencesController.name, () => {
       const createConferenceDto: CreateConferenceDto = {
         name: 'Test Conference',
         password: 'testpassword',
+        isPublic: false,
         invitedAttendees: [],
         invitedGroups: [],
       };
       await controller.create(createConferenceDto, jwtUser);
-      expect(service.create).toHaveBeenCalledWith(createConferenceDto, jwtUser, mockSseConnections);
+      expect(service.create).toHaveBeenCalledWith(createConferenceDto, jwtUser);
     });
   });
 
   describe('join', () => {
     it('should call join method of conferencesService with correct arguments', async () => {
       const meetingID = '123';
-      await controller.join(meetingID, jwtUser);
-      expect(service.join).toHaveBeenCalledWith(meetingID, jwtUser);
+      await controller.join(meetingID, 'password', jwtUser);
+      expect(service.join).toHaveBeenCalledWith(meetingID, jwtUser, 'password');
     });
   });
 
@@ -116,6 +128,7 @@ describe(ConferencesController.name, () => {
       const conference: Conference = {
         name: 'Test Conference',
         meetingID: '123',
+        isPublic: false,
         creator: { firstName: 'John', lastName: 'Doe', username: 'johndoe' },
         password: 'testpassword',
         isRunning: false,
@@ -133,13 +146,13 @@ describe(ConferencesController.name, () => {
 
   describe('toggleIsRunning', () => {
     it('should call toggleConferenceIsRunning method of conferencesService with correct arguments', async () => {
-      const conference: Pick<Conference, 'meetingID'> = { meetingID: '123' };
+      const conference: Pick<Conference, 'meetingID' | 'isRunning'> = { meetingID: '123', isRunning: false };
       const username = 'testuser';
       await controller.toggleIsRunning(conference, jwtUser);
       expect(service.toggleConferenceIsRunning).toHaveBeenCalledWith(
         conference.meetingID,
+        conference.isRunning,
         username,
-        mockSseConnections,
       );
       expect(service.findAllConferencesTheUserHasAccessTo).toHaveBeenCalledWith(jwtUser);
     });
@@ -150,8 +163,17 @@ describe(ConferencesController.name, () => {
       const meetingIDs = ['123', '456'];
       const username = 'testuser';
       await controller.remove(meetingIDs, jwtUser);
-      expect(service.remove).toHaveBeenCalledWith(meetingIDs, username, mockSseConnections);
+      expect(service.remove).toHaveBeenCalledWith(meetingIDs, username);
       expect(service.findAllConferencesTheUserHasAccessTo).toHaveBeenCalledWith(jwtUser);
+    });
+  });
+
+  describe('sse', () => {
+    it('should call subscribe method of conferencesService with correct arguments', () => {
+      const username = 'testuser';
+      const mockResponse = { setHeader: jest.fn(), flushHeaders: jest.fn(), on: jest.fn() } as unknown as Response;
+      controller.sse(username, mockResponse);
+      expect(service.subscribe).toHaveBeenCalledWith(username, mockResponse);
     });
   });
 });

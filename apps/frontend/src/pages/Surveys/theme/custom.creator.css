@@ -3,8 +3,214 @@
 @tailwind utilities;
 
 .survey-editor {
+  .svc-page__content-actions {
+    .sv-svg-icon {
+      max-width: 24px;
+      max-height: 24px;
+    }
+  }
+
+  .svc-question__drag-area {
+    .sv-svg-icon {
+      height: 30px;
+      width: 30px;
+    }
+  }
+  .sd-file__drag-area-placeholder {
+    .sv-string-viewer {
+      color: #bcbcbc;
+    }
+  }
+
+  .svc-list__filter-icon {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    display: inline-flex;
+    align-items: center;
+
+    .svc-list__input {
+      display: flex;
+      top: 2px;
+      bottom: 2px;
+      left: 2px;
+      right: 2px;
+    }
+
+    .sv-svg-icon {
+      height: 30px;
+      width: 30px;
+    }
+  }
+  .sv-popup__content {
+    color: #bcbcbc;
+
+    .svc-list {
+      justify-items: start;
+
+      .svc-list__item-body {
+        margin-top: 2px;
+        margin-bottom: 2px;
+        display: inline-flex;
+        align-items: center;
+
+        .sv-string-viewer {
+          display: inline-block;
+          margin-left: 8px;
+          margin-right: 8px;
+        }
+
+        .sv-svg-icon {
+          height: 24px;
+          width: 24px;
+        }
+      }
+
+      .svc-list-item__marker-icon {
+        justify-self: end;
+      }
+    }
+  }
+
+  .svc-context-button,
+  .svc-context-button--danger {
+    .sv-svg-icon {
+      max-width: 36px;
+      max-height: 36px;
+    }
+  }
+  .svc-image-item-value-controls__add {
+    .sv-svg-icon {
+      max-width: 24px;
+      max-height: 24px;
+    }
+  }
+
+  .svc-item-value-controls__button {
+    .sv-svg-icon {
+      height: 20px;
+      width: 20px;
+    }
+  }
+
+  .sd-completedpage h3 {
+    color: theme("colors.ciLightGrey") !important;
+  }
+
+  .sd-element {
+    padding: 5px;
+  }
+
+  .svc-notifier--info {
+    position: fixed;
+    right: 210px;
+    bottom: 120px;
+    transform: translate(50%, 50%);
+  }
+
+  /* header-bar-icons */
+  .sv-action-bar-item__icon {
+    max-width: 24px;
+    max-height: 24px;
+  }
+
+  /* page-footer-icons / add-new-question-bar */
+  .svc-element__add-new-question {
+    padding-right: 20px;
+    padding-left: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+
+    svg {
+      max-width: 30px;
+      max-height: 30px;
+    }
+  }
+
+  /* survey-element-action-icons / question-actions-bar */
+  .svc-survey-element-toolbar {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+  }
+  .svc-survey-element-toolbar__item,
+  .svc-survey-element-toolbar__item--with-text {
+    align-items: center;
+
+    svg {
+      max-width: 20px;
+      max-height: 20px;
+      justify-content: center;
+    }
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+  .svc-survey-element-toolbar__item--with-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+
+    max-height: 50px;
+  }
+  .svc-dropdown-action--convertTo-last {
+    margin-right: 3rem;
+  }
+
+  /* survey-page-action-icons / page-actions-bar */
+  .svc-page-toolbar {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+  }
+  .svc-page-toolbar__item,
+  .svc-page-toolbar__item--with-text {
+    max-height: 50px;
+    align-items: center;
+
+    svg {
+      max-width: 24px;
+      max-height: 24px;
+      justify-content: center;
+    }
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+  .svc-page-toolbar__item--with-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+
+    max-height: 50px;
+  }
+
   /* Sturctured */
   .svc-creator {
+    .sd-container-modern,
+    .sd-container-modern--static,
+    .svc-designer__placeholder-container {
+      width: calc(100vw - var(--sidebar-width) - var(--menubar-max-width));
+
+      @media only screen and (max-width: 767px) {
+        width: 100vw;
+      }
+    }
+
+    .svc-designer__placeholder-container {
+      height: 800px;
+    }
+
     .svc-top-bar {
       max-height: 40px;
       height: 40px;
@@ -89,7 +295,7 @@
       }
     }
 
-    @media only screen and (max-width: 640px) {
+    @media only screen and (max-width: 951px) {
       .svc-top-bar {
         display: none !important;
       }

@@ -1,34 +1,39 @@
-import { FormControl, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
-import Input from '@/components/shared/Input';
-import React from 'react';
-import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import { FieldValues, Path, PathValue, RegisterOptions, UseFormReturn } from 'react-hook-form';
+import React, { HTMLInputTypeAttribute } from 'react';
 import { useTranslation } from 'react-i18next';
-import { cva, type VariantProps } from 'class-variance-authority';
-
 import cn from '@libs/common/utils/className';
-
-const variants = cva([], {
-  variants: {
-    variant: {
-      default: 'text-foreground',
-      light: 'text-white',
-      lightGray: 'text-ciLightGrey',
-    },
-  },
-});
+import Input from '@/components/shared/Input';
+import { FormControl, FormDescription, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 
 type FormFieldProps<T extends FieldValues> = {
   form: UseFormReturn<T>;
   disabled?: boolean;
   name: Path<T> | string;
   isLoading?: boolean;
-  labelTranslationId: string;
-  type?: 'password';
-  defaultValue?: PathValue<T, Path<T>> | string;
+  labelTranslationId?: string;
+  type?: HTMLInputTypeAttribute;
+  defaultValue?: string | number | boolean;
   readonly?: boolean;
-  value?: string;
+  value?: string | number;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-} & VariantProps<typeof variants>;
+  placeholder?: string;
+  rules?: Omit<RegisterOptions<T, Path<T>>, 'disabled' | 'valueAsNumber' | 'valueAsDate' | 'setValueAs'>;
+  className?: string;
+  description?: string;
+  variant?: 'dialog' | 'default';
+};
 
 const FormField = <T extends FieldValues>({
   form,
@@ -37,11 +42,15 @@ const FormField = <T extends FieldValues>({
   isLoading,
   labelTranslationId,
   type,
-  variant,
   defaultValue,
   readonly = false,
   value,
   onChange,
+  placeholder,
+  rules,
+  className,
+  description,
+  variant = 'default',
 }: FormFieldProps<T>) => {
   const { t } = useTranslation();
 
@@ -51,17 +60,21 @@ const FormField = <T extends FieldValues>({
       disabled={disabled}
       name={name as Path<T>}
       defaultValue={defaultValue as PathValue<T, Path<T>>}
+      rules={rules}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className={cn(variants({ variant }))}>
-            <p className="font-bold">{t(labelTranslationId)}</p>
-          </FormLabel>
+          {labelTranslationId && (
+            <FormLabel>
+              <p className="font-bold text-background">{t(labelTranslationId)}</p>
+            </FormLabel>
+          )}
           <FormControl>
             <Input
               {...field}
+              autoComplete="new-password"
               type={type}
               disabled={disabled || isLoading}
-              variant={variant}
+              placeholder={placeholder}
               readOnly={readonly}
               value={value}
               defaultValue={defaultValue as string}
@@ -69,9 +82,12 @@ const FormField = <T extends FieldValues>({
                 field.onChange(e);
                 if (onChange) onChange(e);
               }}
+              className={className}
+              variant={variant}
             />
           </FormControl>
-          <FormMessage className={cn('text-p', variants({ variant }))} />
+          <FormMessage className={cn('text-p')} />
+          {description ? <FormDescription>{description}</FormDescription> : null}
         </FormItem>
       )}
     />

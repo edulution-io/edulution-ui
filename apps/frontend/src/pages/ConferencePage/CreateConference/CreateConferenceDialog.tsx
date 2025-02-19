@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
@@ -6,10 +18,12 @@ import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import CreateConferenceDialogBody from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogBody';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import ConferencesForm from '@libs/conferences/types/conferencesForm';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import getConferencesFormSchema from '@libs/conferences/constants/formSchema';
+import stringToBoolean from '@libs/common/utils/stringToBoolean';
+import CONFERENCES_IS_PUBLIC_FORM_VALUES from '@libs/conferences/constants/isPublicFormValues';
+import CircleLoader from '@/components/ui/CircleLoader';
 
 interface CreateConferenceDialogProps {
   trigger?: React.ReactNode;
@@ -30,6 +44,7 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
   const initialFormValues: ConferencesForm = {
     name: '',
     password: '',
+    isPublic: CONFERENCES_IS_PUBLIC_FORM_VALUES[0].value,
     invitedAttendees: [],
     invitedGroups: [],
   };
@@ -44,6 +59,7 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
     const newConference = {
       name: form.getValues('name'),
       password: form.getValues('password'),
+      isPublic: stringToBoolean(form.getValues('isPublic')),
       invitedAttendees: form.getValues('invitedAttendees'),
       invitedGroups: form.getValues('invitedGroups'),
     };
@@ -56,7 +72,7 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
   const handleFormSubmit = form.handleSubmit(onSubmit);
 
   const getDialogBody = () => {
-    if (isLoading) return <LoadingIndicator isOpen={isLoading} />;
+    if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
     return <CreateConferenceDialogBody form={form} />;
   };
 

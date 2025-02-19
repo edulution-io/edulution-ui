@@ -1,13 +1,24 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { MailIcon } from '@/assets/icons';
-import { DropdownMenu } from '@/components';
+import { DropdownSelect } from '@/components';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useUserStore from '@/store/UserStore/UserStore';
-import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
-import Input from '@/components/shared/Input';
+import { Form } from '@/components/ui/Form';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
 import ReloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/reloadButton';
@@ -16,6 +27,12 @@ import syncjobDefaultConfig from '@libs/mail/constants/sync-job-default-config';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import StateLoader from '@/pages/FileSharing/utilities/StateLoader';
 import replaceDiacritics from '@libs/common/utils/replaceDiacritics';
+import FormField from '@/components/shared/FormField';
+import useElementHeight from '@/hooks/useElementHeight';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import APPS from '@libs/appconfig/constants/apps';
+import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import MailImporterTable from './MailImporterTable';
 
 const UserSettingsMailsPage: React.FC = () => {
@@ -34,17 +51,23 @@ const UserSettingsMailsPage: React.FC = () => {
   const { user } = useUserStore();
   const [option, setOption] = useState('');
   const form = useForm();
+  const { appConfigs } = useAppConfigsStore();
+  const isMailConfigured = findAppConfigByName(appConfigs, APPS.MAIL);
+
+  const pageBarsHeight = useElementHeight([NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 10;
 
   useEffect(() => {
-    void getExternalMailProviderConfig();
-    void getSyncJob();
+    if (isMailConfigured) {
+      void getExternalMailProviderConfig();
+    }
   }, []);
 
   useEffect(() => {
-    if (externalMailProviderConfig.length > 0) {
+    if (isMailConfigured && externalMailProviderConfig.length > 0) {
       setOption(externalMailProviderConfig[0].name);
+      void getSyncJob();
     }
-  }, [externalMailProviderConfig]);
+  }, [externalMailProviderConfig.length]);
 
   const handleDeleteSyncJob = () => {
     if (Object.keys(selectedSyncJob).length > 0) {
@@ -84,61 +107,58 @@ const UserSettingsMailsPage: React.FC = () => {
   };
 
   const renderFormField = (fieldName: string, label: string, type?: string) => (
-    <FormFieldSH
-      control={form.control}
+    <FormField
+      form={form}
       name={fieldName}
+      labelTranslationId={label}
+      type={type}
       defaultValue=""
-      render={({ field }) => (
-        <FormItem>
-          <p className="font-bold">{label}</p>
-          <FormControl>
-            <Input
-              {...field}
-              type={type}
-              placeholder={label}
-              variant="lightGray"
-              data-testid={`test-id-login-page-${fieldName}-input`}
-            />
-          </FormControl>
-          <FormMessage className="text-p" />
-        </FormItem>
-      )}
+      className="mb-4 mt-2 "
     />
   );
 
   return (
-    <div className="bottom-8 left-4 right-0 top-3 h-screen md:left-64 md:right-[--sidebar-width]">
+    <div className="h-screen overflow-y-hidden">
       <div className="flex flex-row justify-between">
         <NativeAppHeader
           title={t('mail.sidebar')}
-          description={null}
           iconSrc={MailIcon}
         />
         <StateLoader isLoading={isEditSyncJobLoading} />
       </div>
-      <div className="space-y-4 p-4 ">
-        <h3>{t('mail.importer.title')}</h3>
-        <DropdownMenu
-          options={externalMailProviderConfig}
-          selectedVal={isGetSyncJobLoading ? t('common.loading') : t(option)}
-          handleChange={setOption}
-          classname="md:w-1/3"
-        />
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleCreateSyncJob)}
-            className="md:max-w-[75%]"
-          >
-            {renderFormField('email', t('mail.importer.mailAddress'))}
-            {renderFormField('password', t('common.password'), 'password')}
-          </form>
-        </Form>
-      </div>
-      <div className="px-4">
-        <h3 className="pt-5">{t('mail.importer.syncJobsTable')}</h3>
-        <MailImporterTable />
-      </div>
-      <FloatingButtonsBar config={config} />
+      {isMailConfigured ? (
+        <div
+          className="w-full flex-1 overflow-auto pl-3 pr-3.5 scrollbar-thin"
+          style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
+        >
+          <h3 className="text-background">{t('mail.importer.title')}</h3>
+          <div className="space-y-4">
+            <DropdownSelect
+              options={externalMailProviderConfig}
+              selectedVal={isGetSyncJobLoading ? t('common.loading') : t(option)}
+              handleChange={setOption}
+              classname="md:w-1/3"
+            />
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(handleCreateSyncJob)}
+                className="md:max-w-[75%]"
+              >
+                {renderFormField('email', t('mail.importer.mailAddress'))}
+                {renderFormField('password', t('common.password'), 'password')}
+              </form>
+            </Form>
+
+            <div className="px-4">
+              <h3 className="pt-5 text-background">{t('mail.importer.syncJobsTable')}</h3>
+              <MailImporterTable />
+            </div>
+          </div>
+          <FloatingButtonsBar config={config} />
+        </div>
+      ) : (
+        <p>{t('mail.importer.noMailConfigured')}</p>
+      )}
     </div>
   );
 };

@@ -1,10 +1,29 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
-import { AvatarFallback, AvatarSH } from '@/components/ui/AvatarSH';
-import useUserStore from '@/store/UserStore/UserStore';
+import { AvatarFallback, AvatarSH, AvatarImage } from '@/components/ui/AvatarSH';
 
-const Avatar: React.FC = () => {
-  const { user } = useUserStore();
+type AvatarProps = {
+  user?: {
+    username: string;
+    firstName?: string;
+    lastName?: string;
+  };
+  imageSrc?: string;
+  className?: string;
+};
 
+const Avatar: React.FC<AvatarProps> = ({ user, imageSrc, className }) => {
   const getAvatarFallbackText = () => {
     if (!user) return '-';
     const { username, firstName = '', lastName = '' } = user;
@@ -13,8 +32,12 @@ const Avatar: React.FC = () => {
   };
 
   return (
-    <AvatarSH>
-      <AvatarFallback className="bg-ciGrey text-black">{getAvatarFallbackText()}</AvatarFallback>
+    <AvatarSH className={className}>
+      <AvatarImage
+        src={imageSrc}
+        alt={user?.firstName}
+      />
+      <AvatarFallback className="bg-ciGrey text-foreground">{getAvatarFallbackText()}</AvatarFallback>
     </AvatarSH>
   );
 };

@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 // This DTO is based on a third-party object definition from the LMN (Linuxmuster.net) API.
 // Any modifications should be carefully reviewed to ensure compatibility with the source.
 
@@ -116,6 +128,7 @@ interface UserLmnInfo {
   sophomorixFirstnameInitial: string;
   sophomorixFirstPassword: string;
   sophomorixIntrinsic2: string[];
+  sophomorixIntrinsic3: string[];
   sophomorixMailQuotaCalculated: string[];
   sophomorixMailQuotaUsed: string[];
   sophomorixQuota: string[];
@@ -132,6 +145,7 @@ interface UserLmnInfo {
   sophomorixWebuiDashboard: string[];
   sophomorixWebuiPermissionsCalculated: string[];
   sophomorixIntrinsicMulti1?: string[];
+  thumbnailPhoto: string;
   unixHomeDirectory: string;
   dn: string;
   examMode: boolean;
@@ -149,6 +163,7 @@ interface UserLmnInfo {
   school: string;
   webfilter: boolean;
   wifi: boolean;
+  FirstPasswordSet?: boolean;
 }
 
 export default UserLmnInfo;

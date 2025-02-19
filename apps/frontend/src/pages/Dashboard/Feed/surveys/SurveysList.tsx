@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -6,12 +18,10 @@ import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
 import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
 import APPS from '@libs/appconfig/constants/apps';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveysPageView from '@libs/survey/types/api/page-view';
-import SurveyFormulaDto from '@libs/survey/types/survey-formula.dto';
 import cn from '@libs/common/utils/className';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
+import FallbackText from '@/components/shared/FallbackText';
 
 interface SurveysListProps {
   items: SurveyDto[];
@@ -22,36 +32,25 @@ const SurveysList = (props: SurveysListProps) => {
   const { items, className } = props;
   const { t } = useTranslation();
 
-  const { selectSurvey, updateSelectedPageView } = useSurveyTablesPageStore();
-  const { setIsOpenParticipateSurveyDialog } = useParticipateDialogStore();
-
-  const updateSurveyStores = (survey: SurveyDto) => {
-    updateSelectedPageView(SurveysPageView.OPEN);
-    selectSurvey(survey);
-    setIsOpenParticipateSurveyDialog(true);
-  };
+  const { selectSurvey } = useSurveyTablesPageStore();
 
   const locale = getLocaleDateFormat();
 
-  const getSurveyInfo = (survey: SurveyDto) => {
-    const surveyFormula = JSON.parse(JSON.stringify(survey.formula || {})) as SurveyFormulaDto;
-
-    return (
-      <div className="flex w-full flex-col gap-1">
-        <span className="text-sm font-semibold">{surveyFormula?.title || survey.id.toString('hex')}</span>
-        <p className="line-clamp-2 text-sm text-muted-foreground">
-          {`${t('survey.created')}:  `}
-          {survey.created ? format(survey.created, 'dd.MMMLL', { locale }) : t('not-available')}
+  const getSurveyInfo = (survey: SurveyDto) => (
+    <div className="flex w-full flex-col gap-1">
+      <span className="text-sm font-semibold">{survey.formula.title || FallbackText}</span>
+      <p className="line-clamp-2 text-sm text-muted-foreground">
+        {`${t('survey.created')}:  `}
+        {survey.createdAt ? format(survey.createdAt, 'dd. MMMM', { locale }) : FallbackText}
+      </p>
+      {survey.expires ? (
+        <p className="text-muted-background line-clamp-2 text-sm">
+          {`${t('survey.expires')}:  `}
+          {formatDistanceToNow(survey.expires, { addSuffix: true, locale })}
         </p>
-        {survey.expires ? (
-          <p className="text-muted-background line-clamp-2 text-sm">
-            {`${t('survey.expires')}:  `}
-            {formatDistanceToNow(survey.expires, { addSuffix: true, locale })}
-          </p>
-        ) : null}
-      </div>
-    );
-  };
+      ) : null}
+    </div>
+  );
 
   return (
     <ScrollArea className={cn('max-h-[470px] overflow-y-auto scrollbar-thin', className)}>
@@ -59,9 +58,9 @@ const SurveysList = (props: SurveysListProps) => {
         {items.map((item) => (
           <NavLink
             to={APPS.SURVEYS}
-            onClick={() => updateSurveyStores(item)}
-            key={item.id.toString('base64')}
-            className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border p-2 text-left transition-all hover:bg-ciDarkGrey"
+            onClick={() => selectSurvey(item)}
+            key={item.id}
+            className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border border-muted-foreground p-2 text-left transition-all hover:bg-ciDarkGrey"
           >
             {getSurveyInfo(item)}
           </NavLink>

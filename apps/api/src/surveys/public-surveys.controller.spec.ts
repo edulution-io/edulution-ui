@@ -1,9 +1,21 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/unbound-method */
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
@@ -25,9 +37,10 @@ import {
   publicSurvey02QuestionIdWithLimiters,
   saveNoPublicSurvey02,
   surveyValidAnswerPublicSurvey02,
-  unknownSurveyId,
 } from './mocks';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';
+import GroupsService from '../groups/groups.service';
+import mockGroupsService from '../groups/groups.service.mock';
 
 describe(PublicSurveysController.name, () => {
   let controller: PublicSurveysController;
@@ -47,6 +60,7 @@ describe(PublicSurveysController.name, () => {
           useValue: jest.fn(),
         },
         SurveyAnswersService,
+        { provide: GroupsService, useValue: mockGroupsService },
         {
           provide: getModelToken(SurveyAnswer.name),
           useValue: jest.fn(),
@@ -76,33 +90,34 @@ describe(PublicSurveysController.name, () => {
   describe('find', () => {
     it('return a public survey with the given surveyId if it exists ', async () => {
       surveyModel.findOne = jest.fn().mockResolvedValueOnce({
-        lean: jest.fn().mockReturnValue(publicSurvey01),
+        exec: jest.fn().mockReturnValue(publicSurvey01),
       });
       surveysService.findPublicSurvey = jest.fn().mockReturnValue(publicSurvey01);
 
-      const result = await controller.find(idOfPublicSurvey01);
+      const result = await controller.find({ surveyId: idOfPublicSurvey01.toString() });
       expect(result).toEqual(publicSurvey01);
 
-      expect(surveysService.findPublicSurvey).toHaveBeenCalledWith(idOfPublicSurvey01);
+      expect(surveysService.findPublicSurvey).toHaveBeenCalledWith(idOfPublicSurvey01.toString());
     });
 
     it('throw an error when the survey with the given id does not exist', async () => {
       surveysService.findPublicSurvey = jest.fn().mockRejectedValue(new Error(CommonErrorMessages.DBAccessFailed));
+      const id = new Types.ObjectId().toString();
 
       try {
-        await controller.find(unknownSurveyId);
+        await controller.find({ surveyId: id });
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toEqual(CommonErrorMessages.DBAccessFailed);
       }
 
-      expect(surveysService.findPublicSurvey).toHaveBeenCalledWith(unknownSurveyId);
+      expect(surveysService.findPublicSurvey).toHaveBeenCalledWith(id);
     });
   });
 
   describe('answerSurvey', () => {
     it('should call the addAnswerToPublicSurvey() function of the surveyAnswerService', async () => {
-      jest.spyOn(surveyAnswerService, 'addAnswerToPublicSurvey');
+      jest.spyOn(surveyAnswerService, 'addAnswer');
 
       surveyModel.findById = jest.fn().mockResolvedValueOnce(publicSurvey02);
 
@@ -110,13 +125,13 @@ describe(PublicSurveysController.name, () => {
       surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue(publicSurvey02AfterAddingValidAnswer);
 
       await controller.answerSurvey({
-        surveyId: idOfPublicSurvey02,
+        surveyId: idOfPublicSurvey02.toString(),
         saveNo: saveNoPublicSurvey02,
         answer: mockedValidAnswerForPublicSurveys02,
       });
 
-      expect(surveyAnswerService.addAnswerToPublicSurvey).toHaveBeenCalledWith(
-        idOfPublicSurvey02,
+      expect(surveyAnswerService.addAnswer).toHaveBeenCalledWith(
+        idOfPublicSurvey02.toString(),
         saveNoPublicSurvey02,
         mockedValidAnswerForPublicSurveys02,
       );
@@ -159,13 +174,13 @@ describe(PublicSurveysController.name, () => {
       surveyModel.findById = jest.fn().mockResolvedValueOnce(publicSurvey02);
 
       const result = await controller.getChoices({
-        surveyId: idOfPublicSurvey02,
+        surveyId: idOfPublicSurvey02.toString(),
         questionId: publicSurvey02QuestionIdWithLimiters,
       });
       expect(result).toEqual(filteredChoices);
 
       expect(surveyAnswerService.getSelectableChoices).toHaveBeenCalledWith(
-        idOfPublicSurvey02,
+        idOfPublicSurvey02.toString(),
         publicSurvey02QuestionIdWithLimiters,
       );
       expect(surveyAnswerService.countChoiceSelections).toHaveBeenCalledTimes(4);
@@ -184,13 +199,13 @@ describe(PublicSurveysController.name, () => {
       surveyModel.findById = jest.fn().mockResolvedValueOnce(publicSurvey02AfterAddingValidAnswer);
 
       const result = await controller.getChoices({
-        surveyId: idOfPublicSurvey02,
+        surveyId: idOfPublicSurvey02.toString(),
         questionId: publicSurvey02QuestionIdWithLimiters,
       });
       expect(result).toEqual(filteredChoicesAfterAddingValidAnswer);
 
       expect(surveyAnswerService.getSelectableChoices).toHaveBeenCalledWith(
-        idOfPublicSurvey02,
+        idOfPublicSurvey02.toString(),
         publicSurvey02QuestionIdWithLimiters,
       );
       expect(surveyAnswerService.countChoiceSelections).toHaveBeenCalledTimes(4);

@@ -1,4 +1,16 @@
-import React from 'react';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import React, { useEffect, useState } from 'react';
 import UseLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
 import { useTranslation } from 'react-i18next';
 import UserPasswordDialogForm from '@libs/classManagement/types/userPasswordDialogForm';
@@ -8,23 +20,20 @@ import { z } from 'zod';
 import CircleLoader from '@/components/ui/CircleLoader';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import UserPasswordDialogBody from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/UserPasswordDialogBody';
+import useLmnApiStore from '@/store/useLmnApiStore';
+import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import { Form } from '@/components/ui/Form';
 
-interface UserPasswordDialogProps {
-  trigger?: React.ReactNode;
-}
-
-const UserPasswordDialog = ({ trigger }: UserPasswordDialogProps) => {
+const UserPasswordDialog = () => {
   const { t } = useTranslation();
 
   const { isLoading, setCurrentUser, currentUser } = UseLmnApiPasswordStore();
-
-  if (!currentUser) return null;
-
-  const { sophomorixFirstPassword, displayName } = currentUser;
+  const { isFetchUserLoading, fetchUser } = useLmnApiStore();
+  const [user, setUser] = useState<UserLmnInfo | null>(null);
 
   const initialFormValues: UserPasswordDialogForm = {
     currentPassword: '',
-    firstPassword: sophomorixFirstPassword,
+    firstPassword: '',
   };
 
   const passwordValidationSchema = z
@@ -44,18 +53,41 @@ const UserPasswordDialog = ({ trigger }: UserPasswordDialogProps) => {
     defaultValues: initialFormValues,
   });
 
+  const updateUser = async () => {
+    if (currentUser?.cn) {
+      const result = await fetchUser(currentUser?.cn, true);
+      if (result) {
+        setUser(result);
+      }
+    }
+  };
+
+  useEffect(() => {
+    void updateUser();
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (user?.sophomorixFirstPassword) {
+      form.setValue('firstPassword', user.sophomorixFirstPassword);
+    }
+  }, [user]);
+
   const onClose = () => {
     setCurrentUser(null);
+    setUser(null);
     form.reset();
   };
 
   const getDialogBody = () => {
-    if (isLoading) return <CircleLoader className="mx-auto" />;
+    if (!user || isLoading || isFetchUserLoading) return <CircleLoader className="mx-auto" />;
     return (
-      <UserPasswordDialogBody
-        user={currentUser}
-        form={form}
-      />
+      <Form {...form}>
+        <UserPasswordDialogBody
+          user={user}
+          form={form}
+          updateUser={updateUser}
+        />
+      </Form>
     );
   };
 
@@ -63,10 +95,9 @@ const UserPasswordDialog = ({ trigger }: UserPasswordDialogProps) => {
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
     <div onClick={(e) => e.stopPropagation()}>
       <AdaptiveDialog
-        isOpen={!!currentUser}
-        trigger={trigger}
+        isOpen
         handleOpenChange={onClose}
-        title={t('classmanagement.userPasswordDialogTitle', { displayName })}
+        title={t('classmanagement.userPasswordDialogTitle', { displayName: user?.displayName })}
         desktopContentClassName="max-w-4xl"
         body={getDialogBody()}
         footer={null}

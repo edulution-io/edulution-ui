@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import { Button } from '@/components/shared/Button';
@@ -85,7 +97,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
       <TableCell
         className={`${
           moveOrCopyItemToPath.basename === row.basename ? 'bg-ciLightBlue' : ''
-        } max-w-[150px] overflow-hidden truncate whitespace-nowrap text-foreground`}
+        } max-w-[150px] overflow-hidden truncate whitespace-nowrap text-background`}
       >
         <div className="flex w-full items-center justify-between text-ellipsis">
           <div>{row.basename}</div>
@@ -102,7 +114,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="text-foreground">{t('moveItemDialog.folderName')}</TableHead>
+            <TableHead className="text-background">{t('moveItemDialog.folderName')}</TableHead>
           </TableRow>
         </TableHeader>
         {showAllFiles ? (
@@ -124,7 +136,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
       />
       <ScrollArea className="h-[200px]">{renderTable()}</ScrollArea>
       {moveOrCopyItemToPath && showSelectedFile && (
-        <p className="pt-10 text-foreground">
+        <p className="pt-10 text-background">
           {t('moveItemDialog.selectedItem')}: {decodeURIComponent(moveOrCopyItemToPath.filename)}
         </p>
       )}

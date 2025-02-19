@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Put, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
@@ -5,6 +17,7 @@ import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsReq
 import GroupForm from '@libs/groups/types/groupForm';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import LmnApiService from './lmnApi.service';
 
@@ -132,8 +145,21 @@ export class LmnApiController {
   }
 
   @Get('user/:username')
-  async getUser(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @Param() params: { username: string }) {
-    return this.lmnApiService.getUser(lmnApiToken, params.username);
+  async getUser(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Param() params: { username: string },
+    @Query('checkFirstPassword') checkFirstPassword?: boolean,
+  ) {
+    return this.lmnApiService.getUser(lmnApiToken, params.username, checkFirstPassword);
+  }
+
+  @Patch('user')
+  async updateCurrentUserDetails(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Body() body: { userDetails: Partial<UpdateUserDetailsDto> },
+    @GetCurrentUsername() currentUsername: string,
+  ) {
+    return this.lmnApiService.updateUser(lmnApiToken, body.userDetails, currentUsername);
   }
 
   @Get(`user/:username/${USERS_QUOTA}`)

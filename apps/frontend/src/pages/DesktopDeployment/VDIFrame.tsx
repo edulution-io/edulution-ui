@@ -1,50 +1,77 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
 import Guacamole from 'guacamole-common-js';
 import { WEBSOCKET_URL } from '@libs/desktopdeployment/constants';
+import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import { SIDEBAR_WIDTH } from '@libs/ui/constants';
-import APPS from '@libs/appconfig/constants/apps';
-import ControlPanel from '@/components/shared/ControlPanel';
+import useFrameStore from '@/components/framing/FrameStore';
+import { MAXIMIZED_BAR_HEIGHT } from '@libs/ui/constants/resizableWindowElements';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 
 const VDIFrame = () => {
   const displayRef = useRef<HTMLDivElement>(null);
   const guacRef = useRef<Guacamole.Client | null>(null);
-  const {
-    error,
-    guacToken,
-    dataSource,
-    isVdiConnectionMinimized,
-    guacId,
-    isVdiConnectionOpen,
-    setIsVdiConnectionMinimized,
-    setIsVdiConnectionOpen,
-  } = useDesktopDeploymentStore();
+  const { error, guacToken, dataSource, guacId, isVdiConnectionOpen, setIsVdiConnectionOpen } =
+    useDesktopDeploymentStore();
   const [clientState, setClientState] = useState(0);
+  const [hasCurrentFrameSizeLoaded, setHasCurrentFrameSizeLoaded] = useState(false);
+  const { currentWindowedFrameSizes, minimizedWindowedFrames } = useFrameStore();
 
   const handleDisconnect = () => {
     if (guacRef.current) {
       guacRef.current.disconnect();
     }
     setIsVdiConnectionOpen(false);
+    setClientState(0);
+    setHasCurrentFrameSizeLoaded(false);
   };
 
+  const id = 'desktopdeployment.topic';
+  const width = currentWindowedFrameSizes[id]?.width;
+  const height = (currentWindowedFrameSizes[id]?.height || MAXIMIZED_BAR_HEIGHT) - MAXIMIZED_BAR_HEIGHT;
+  const isMinimized = minimizedWindowedFrames.includes(id);
+
   useEffect(() => {
-    if (guacToken === '' || !displayRef.current) return () => {};
+    if (!hasCurrentFrameSizeLoaded) {
+      setHasCurrentFrameSizeLoaded(!!width && !!height);
+    }
+  }, [currentWindowedFrameSizes[id]]);
+
+  useEffect(() => {
+    if (displayRef.current) {
+      if (isVdiConnectionOpen && !isMinimized) {
+        displayRef.current.focus();
+      }
+    }
+  }, [displayRef.current, isVdiConnectionOpen, isMinimized]);
+
+  useEffect(() => {
+    if (guacToken === '' || !displayRef.current || !isVdiConnectionOpen || !hasCurrentFrameSizeLoaded) return () => {};
 
     const tunnel = new Guacamole.WebSocketTunnel(WEBSOCKET_URL);
     const guac = new Guacamole.Client(tunnel);
     guacRef.current = guac;
     const displayElement = displayRef.current;
+    displayElement.tabIndex = 0;
 
     const guacamoleConfig = {
       token: guacToken,
       GUAC_ID: guacId,
       GUAC_TYPE: 'c',
       GUAC_DATA_SOURCE: dataSource,
-      GUAC_WIDTH: window.innerWidth - SIDEBAR_WIDTH,
-      GUAC_HEIGHT: window.innerHeight,
+      GUAC_WIDTH: width,
+      GUAC_HEIGHT: height,
       GUAC_DPI: 96,
       GUAC_TIMEZONE: 'Europe/Berlin',
       GUAC_AUDIO: ['audio/L8', 'audio/L16'],
@@ -79,7 +106,7 @@ const VDIFrame = () => {
     touch.ontouchend = guac.sendTouchState.bind(guac);
     touch.ontouchmove = guac.sendTouchState.bind(guac);
 
-    const keyboard = new Guacamole.Keyboard(document);
+    const keyboard = new Guacamole.Keyboard(displayElement);
     keyboard.onkeydown = (keysym) => guac.sendKeyEvent(1, keysym);
     keyboard.onkeyup = (keysym) => guac.sendKeyEvent(0, keysym);
 
@@ -112,48 +139,32 @@ const VDIFrame = () => {
     return () => {
       handleDisconnect();
     };
-  }, [guacToken, isVdiConnectionOpen]);
+  }, [guacToken, isVdiConnectionOpen, hasCurrentFrameSizeLoaded]);
 
   useEffect(() => {
-    const handleResize = () => {
-      if (guacRef.current) {
-        guacRef.current.sendSize(window.innerWidth - SIDEBAR_WIDTH, window.innerHeight);
-      }
-    };
+    if (guacRef.current && !isMinimized && displayRef.current) {
+      guacRef.current.sendSize(width, height);
+      displayRef.current.focus();
+    }
+  }, [guacRef.current, width, height, isMinimized]);
 
-    window.addEventListener('resize', handleResize, { passive: true });
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [guacRef.current]);
-
-  if (!isVdiConnectionOpen) {
+  if (!isVdiConnectionOpen || error) {
     return null;
   }
 
-  const style = isVdiConnectionMinimized ? { width: 0 } : {};
-
-  return createPortal(
-    !error ? (
-      <>
-        {clientState < 3 && <LoadingIndicator isOpen />}
-        <ControlPanel
-          isMinimized={isVdiConnectionMinimized}
-          toggleMinimized={() => setIsVdiConnectionMinimized(!isVdiConnectionMinimized)}
-          onClose={handleDisconnect}
-          label={APPS.DESKTOP_DEPLOYMENT}
-        />
-        <div
-          id="display"
-          ref={displayRef}
-          className="z-1 absolute inset-y-0 left-0 ml-0 w-screen overflow-hidden md:w-[calc(100%-var(--sidebar-width))]"
-          style={style}
-        />
-      </>
-    ) : null,
-
-    document.body,
+  return (
+    <ResizableWindow
+      titleTranslationId={id}
+      handleClose={handleDisconnect}
+      disableToggleMaximizeWindow
+    >
+      <div
+        id="display"
+        ref={displayRef}
+        className="h-full w-full border-none bg-black"
+      />
+      {clientState < 3 && <LoadingIndicator isOpen />}
+    </ResizableWindow>
   );
 };
 

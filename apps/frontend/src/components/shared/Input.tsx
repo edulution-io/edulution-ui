@@ -1,20 +1,33 @@
-import React, { useState } from 'react';
-import { Input as SHInput } from '@/components/ui/Input';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { EyeDarkIcon, EyeDarkSlashIcon } from '@/assets/icons';
-import cn from '@libs/common/utils/className';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
 
-const originInputVariants = cva(['rounded'], {
+import React, { useState } from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import cn from '@libs/common/utils/className';
+import { Input as SHInput } from '@/components/ui/Input';
+import { EyeDarkIcon, EyeDarkSlashIcon, EyeLightIcon, EyeLightSlashIcon } from '@/assets/icons';
+
+export const originInputVariants = cva(['rounded'], {
   variants: {
     variant: {
-      light:
-        'placeholder:color:ciLightGrey border border-input placeholder:text-p placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-ciGrey focus:outline-none',
-      default:
-        'placeholder:color:ciLightGrey placeholder:text-p border border-input placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-ciGrey focus:outline-none',
       login:
-        'block w-full border-2 border-gray-300 bg-white px-3 py-2 shadow-md placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-ciGrey focus:outline-none',
-      lightGray: 'bg-ciDarkGrey text-ciLightGrey placeholder:text-p focus:outline-none',
+        'block w-full border-2 border-gray-300 bg-background px-3 py-2 shadow-md placeholder:text-p focus:border-gray-600 focus:bg-background focus:placeholder-muted focus:outline-none text-foreground',
+      lightGrayDisabled: 'bg-ciDarkGreyDisabled text-secondary placeholder:text-p focus:outline-none',
+      default: 'bg-accent text-secondary placeholder:text-p focus:outline-none',
+      dialog: 'bg-muted text-foreground placeholder:text-p focus:outline-none text-background',
     },
+  },
+  defaultVariants: {
+    variant: 'default',
   },
 });
 
@@ -24,29 +37,42 @@ type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
   };
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, variant, shouldTrim = false, onChange, ...props }, ref) => {
+  ({ className, type = 'text', variant, shouldTrim = false, onChange, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
 
-      const newValue = shouldTrim ? value.trim() : value;
-
       if (onChange) {
-        onChange({
-          ...event,
-          target: {
-            ...event.target,
-            value: newValue,
-          },
-        });
+        if (type === 'text' || type === 'password') {
+          const newValue = shouldTrim ? value.trim() : value;
+          onChange({
+            ...event,
+            target: {
+              ...event.target,
+              value: newValue,
+            },
+          });
+        } else if (type === 'number') {
+          const newValue = Number(value);
+          onChange({
+            ...event,
+            target: {
+              ...event.target,
+              value: newValue as unknown as string,
+            },
+          });
+        }
       }
     };
 
+    const closedIcon = variant === 'login' ? EyeDarkIcon : EyeLightIcon;
+    const openedIcon = variant === 'login' ? EyeDarkSlashIcon : EyeLightSlashIcon;
     return (
       <div className="relative">
         <SHInput
           type={showPassword ? 'text' : type}
+          inputMode={type === 'number' ? 'numeric' : undefined}
           className={cn(originInputVariants({ variant, className }))}
           ref={ref}
           onChange={handleChange}
@@ -59,7 +85,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               onClickCapture={() => setShowPassword((prevValue) => !prevValue)}
             >
               <img
-                src={showPassword ? EyeDarkIcon : EyeDarkSlashIcon}
+                src={showPassword ? closedIcon : openedIcon}
                 alt="eye"
                 width="25px"
               />

@@ -1,14 +1,25 @@
-import getNewSurveyId from '@libs/survey/getNewSurveyId';
-import { Survey } from '../../survey.schema';
-import { firstMockUser, secondMockUser } from '../user/users';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
 
-export const openSurveyId01 = getNewSurveyId();
+import { Types } from 'mongoose';
+import { Survey, SurveyDocument } from '../../survey.schema';
+import { firstMockUser, secondMockUser } from '../user';
+
+export const openSurveyId01 = new Types.ObjectId();
 export const openSurvey01: Survey = {
   _id: openSurveyId01,
   id: openSurveyId01,
   creator: secondMockUser,
   formula: {
-    // @ts-expect-error: 'formula' has the following structure
     title: 'The Open Survey',
     description: 'This is open survey will be answered and move to the list of answered surveys',
     elements: [
@@ -24,20 +35,18 @@ export const openSurvey01: Survey = {
   participatedAttendees: [],
   answers: [],
   saveNo: 1,
-  created: new Date('2021-06-26T00:00:00.000Z'),
-  expirationDate: new Date('2044-08-22'),
-  expirationTime: '12:00',
+  createdAt: new Date('2021-06-26T00:00:00.000Z'),
+  expires: new Date('2044-08-22T12:00:00.000Z'),
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
-};
+} as unknown as SurveyDocument;
 
-export const openSurveyId02 = getNewSurveyId();
+export const openSurveyId02 = new Types.ObjectId();
 export const openSurvey02: Survey = {
   _id: openSurveyId02,
   id: openSurveyId02,
   creator: secondMockUser,
   formula: {
-    // @ts-expect-error: 'formula' has the following structure
     title: 'Open Survey 01',
     description: 'This is a test survey',
     elements: [
@@ -53,9 +62,8 @@ export const openSurvey02: Survey = {
   participatedAttendees: [],
   answers: [],
   saveNo: 1,
-  created: new Date('2021-06-26T00:00:00.000Z'),
-  expirationDate: new Date('2044-08-22'),
-  expirationTime: '12:00',
+  createdAt: new Date('2021-06-26T00:00:00.000Z'),
+  expires: new Date('2044-08-22T12:00:00.000Z'),
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
-};
+} as unknown as SurveyDocument;

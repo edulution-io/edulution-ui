@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useEffect } from 'react';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import { DesktopDeploymentIcon } from '@/assets/icons';
@@ -8,6 +20,8 @@ import VirtualMachineOs from '@libs/desktopdeployment/types/virtual-machines.enu
 import { VirtualMachines } from '@libs/desktopdeployment/types';
 import { VDI_SYNC_TIME_INTERVAL } from '@libs/desktopdeployment/constants';
 import { useInterval } from 'usehooks-ts';
+import useElementHeight from '@/hooks/useElementHeight';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import ConnectionErrorDialog from './components/ConnectionErrorDialog';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 import VdiCard from './components/VdiCard';
@@ -85,29 +99,32 @@ const DesktopDeploymentPage: React.FC = () => {
     void postRequestVdi(VirtualMachineOs.WIN10);
   };
 
+  const pageBarsHeight = useElementHeight([NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 20;
+
   return (
     <>
-      <div className="absolute inset-y-0 left-0 ml-0 mr-14 w-screen overflow-y-auto p-5 lg:pr-20">
-        <NativeAppHeader
-          title={t('desktopdeployment.topic')}
-          description={t('desktopdeployment.description')}
-          iconSrc={DesktopDeploymentIcon}
-        />
-        <div className="flex flex-col gap-10 md:flex-row">
-          {osConfigs.map(({ os, title }) => (
-            <VdiCard
-              key={os}
-              title={t(title)}
-              availableClients={getAvailableClients(os, virtualMachines)}
-              onClick={() => handleConnect()}
-              osType={os}
-              disabled={getAvailableClients(os, virtualMachines) === 0}
-            />
-          ))}
-        </div>
-        <ConnectionErrorDialog handleReload={handleReload} />
-        <LoadingIndicator isOpen={isLoading} />
+      <NativeAppHeader
+        title={t('desktopdeployment.topic')}
+        description={t('desktopdeployment.description')}
+        iconSrc={DesktopDeploymentIcon}
+      />
+      <div
+        className="ml-4 flex w-full flex-1 flex-col gap-10 overflow-y-auto scrollbar-thin md:ml-0 md:flex-row"
+        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
+      >
+        {osConfigs.map(({ os, title }) => (
+          <VdiCard
+            key={os}
+            title={t(title)}
+            availableClients={getAvailableClients(os, virtualMachines)}
+            onClick={() => handleConnect()}
+            osType={os}
+            disabled={getAvailableClients(os, virtualMachines) === 0}
+          />
+        ))}
       </div>
+      <ConnectionErrorDialog handleReload={handleReload} />
+      <LoadingIndicator isOpen={isLoading} />
       <DesktopDeploymentFloatingButtons
         handleConnect={handleConnect}
         handleReload={handleReload}

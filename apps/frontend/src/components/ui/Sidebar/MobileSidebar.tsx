@@ -1,7 +1,19 @@
-import React, { useRef, useCallback } from 'react';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import React, { useCallback, useRef } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
 import { SidebarProps } from '@libs/ui/types/sidebar';
-import { UserMenuButton, HomeButton, MobileMenuButton, MobileSidebarItem } from './SidebarMenuItems';
+import { HomeButton, MobileMenuButton, MobileSidebarItem, UserMenuButton } from './SidebarMenuItems';
 import useSidebarStore from './sidebarStore';
 
 const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
@@ -31,7 +43,7 @@ const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
       >
         <div
           ref={sidebarRef}
-          className="fixed right-0 h-full min-w-[260px] border-l-[1px] border-ciGrey bg-black bg-opacity-90 md:bg-none"
+          className="fixed right-0 h-full min-w-[260px] border-l-[1px] border-muted bg-black md:bg-none"
         >
           <div className="relative right-0 top-0 h-14 bg-black pr-4 pt-4" />
           <div className="h-[calc(100%-56px)] overflow-auto">
