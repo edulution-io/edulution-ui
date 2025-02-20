@@ -30,9 +30,12 @@ class MailsController {
   ) {}
 
   @Get()
-  async getMails(@GetCurrentUsername() username: string): Promise<MailDto[]> {
+  async getMails(
+    @GetCurrentUsername() username: string,
+    @GetUsersEmailAddress() emailAddress: string,
+  ): Promise<MailDto[]> {
     const password = await this.userService.getPassword(username);
-    return this.mailsService.getMails(username, password);
+    return this.mailsService.getMails(emailAddress, password);
   }
 
   @Get('provider-config')
