@@ -64,7 +64,6 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.SURVEYS,
     icon: SurveysMenuIcon,
-    options: [],
     isNativeApp: true,
   },
   {
@@ -81,7 +80,6 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.CLASS_MANAGEMENT,
     icon: ClassManagementIcon,
-    options: [APP_CONFIG_OPTION_KEYS.PROXYCONFIG],
     isNativeApp: true,
     extendedOptions: {
       [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
@@ -106,7 +104,6 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.WHITEBOARD,
     icon: WhiteBoardIcon,
-    options: [],
     isNativeApp: true,
   },
   {

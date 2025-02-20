@@ -125,7 +125,7 @@ const AppConfigPage: React.FC = () => {
         return;
       }
 
-      const proxyConfig = JSON.stringify(getValues(`${settingLocation}.options.proxyConfig`)) || '""';
+      const proxyConfig = JSON.stringify(getValues(`${settingLocation}.proxyConfig`)) || '""';
 
       const options = {
         url: Object.keys(selectedAppConfig?.options).includes(APP_CONFIG_OPTION_KEYS.URL)
