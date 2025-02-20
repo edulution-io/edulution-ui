@@ -29,6 +29,7 @@ import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import getCurrentTimestamp from '@libs/filesharing/utils/getCurrentTimestamp';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
+import ContentType from '@libs/filesharing/types/contentType';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
@@ -163,6 +164,8 @@ class FilesharingService {
   createFolder = async (username: string, path: string, folderName: string): Promise<WebdavStatusReplay> => {
     const client = await this.getClient(username);
     const fullPath = `${this.baseurl}${path}/${folderName}`;
+
+    Logger.log('Wanna to create folder', fullPath);
 
     return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(
       client,
@@ -324,9 +327,7 @@ class FilesharingService {
     }
   };
 
-  getPathUntilFolder(fullPath: string, folderName: string): string {
-    Logger.log('fullPath', fullPath);
-    Logger.log('folderName', folderName);
+  static getPathUntilFolder(fullPath: string, folderName: string): string {
     const segments = fullPath.split('/');
     const index = segments.indexOf(folderName);
 
@@ -337,23 +338,97 @@ class FilesharingService {
     return partialSegments.join('/');
   }
 
+  async checkIfFileOrFolderExists(
+    username: string,
+    parentPath: string,
+    name: string, // folderName or filename
+    contentType: ContentType, // 'DIRECTORY' or 'FILE'
+  ): Promise<boolean> {
+    if (contentType === ContentType.DIRECTORY) {
+      // 1) List directories at `parentPath`
+      const directories = await this.getDirAtPath(username, parentPath);
+
+      // 2) Build a set of directory basenames
+      const existingFolders = new Set(
+        directories.filter((item) => item.type === ContentType.DIRECTORY).map((item) => item.basename),
+      );
+
+      // Debug logs
+      Logger.log('Looking for directory:', name);
+      return existingFolders.has(name);
+    }
+    if (contentType === ContentType.FILE) {
+      // 1) List files at `parentPath`
+      const files = await this.getFilesAtPath(username, parentPath);
+
+      // 2) Build a set of file basenames
+      const existingFiles = new Set(
+        files.filter((item) => item.type === ContentType.FILE).map((item) => item.basename),
+      );
+
+      // Debug logs
+      Logger.log('Looking for file:', name);
+      return existingFiles.has(name);
+    }
+    return false;
+  }
+
+  static splitPathAndLastSegment(fullPath: string): { parentPath: string; lastSegment: string } {
+    const trimmed = fullPath.replace(/\/+$/, '');
+    const lastSlashIndex = trimmed.lastIndexOf('/');
+    if (lastSlashIndex === -1) {
+      return { parentPath: '', lastSegment: trimmed };
+    }
+    return {
+      parentPath: trimmed.slice(0, lastSlashIndex),
+      lastSegment: trimmed.slice(lastSlashIndex + 1),
+    };
+  }
+
   duplicateFile = async (username: string, duplicateFile: DuplicateFileRequestDto): Promise<WebdavStatusReplay> => {
     const client = await this.getClient(username);
     const fullOriginPath = `${this.baseurl}${duplicateFile.originFilePath}`;
 
     const duplicationResults = await Promise.allSettled(
       duplicateFile.destinationFilePaths.map(async (destinationPath) => {
-        const filesAfterTransfer = this.getPathUntilFolder(destinationPath, `${FILE_PATHS.TRANSFER}/`);
-        const filesAfterTeacherFolder = this.getPathUntilFolder(destinationPath, username);
-        if (filesAfterTransfer.includes(username)) {
-          await FilesharingService.copyFile(client, fullOriginPath, destinationPath);
-        } else {
+        const filesAfterTransfer = FilesharingService.getPathUntilFolder(destinationPath, `${FILE_PATHS.TRANSFER}`);
+        const filesAfterTeacherFolder = FilesharingService.getPathUntilFolder(destinationPath, `${username}`);
+        Logger.log('filesAfterTransfer', filesAfterTransfer);
+        Logger.log('filesAfterTeacherFolder', filesAfterTeacherFolder);
+        const userFolderExists = await this.checkIfFileOrFolderExists(
+          username,
+          filesAfterTransfer,
+          username,
+          ContentType.DIRECTORY,
+        );
+
+        const collectFolderExists = await this.checkIfFileOrFolderExists(
+          username,
+          filesAfterTeacherFolder,
+          `${FILE_PATHS.COLLECT}`,
+          ContentType.DIRECTORY,
+        );
+
+        Logger.log('userFolderExists', userFolderExists);
+        Logger.log('collectFolderExists', collectFolderExists);
+
+        if (!userFolderExists) {
+          Logger.log('Creating folder', filesAfterTransfer, username);
           await this.createFolder(username, filesAfterTransfer, username);
         }
-        if (!filesAfterTransfer.includes(FILE_PATHS.COLLECT)) {
-          await this.createFolder(username, filesAfterTeacherFolder, `${FILE_PATHS.COLLECT}/`);
+        if (!collectFolderExists) {
+          Logger.log('Creating folder', filesAfterTeacherFolder, `${FILE_PATHS.COLLECT}`);
+          await this.createFolder(username, filesAfterTeacherFolder, `${FILE_PATHS.COLLECT}`);
         }
-        await FilesharingService.copyFile(client, fullOriginPath, destinationPath);
+
+        const { parentPath, lastSegment } = FilesharingService.splitPathAndLastSegment(destinationPath);
+
+        const exists =
+          (await this.checkIfFileOrFolderExists(username, parentPath, lastSegment, ContentType.DIRECTORY)) ||
+          (await this.checkIfFileOrFolderExists(username, parentPath, lastSegment, ContentType.FILE));
+        if (!exists) {
+          await FilesharingService.copyFile(client, fullOriginPath, destinationPath);
+        }
       }),
     );
 

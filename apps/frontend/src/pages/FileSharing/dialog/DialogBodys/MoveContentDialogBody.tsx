@@ -78,12 +78,6 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
     return segements?.slice(0, index) || [];
   };
 
-  const onFilenameClick = (row: DirectoryFileDTO) => {
-    if (row.type === ContentType.DIRECTORY) {
-      setCurrentPath(row.filename);
-    }
-  };
-
   const footer = (
     <div className="bottom-0 justify-end bg-gray-100 p-4 text-sm text-foreground">
       {moveOrCopyItemToPath?.basename && showSelectedFile ? (
@@ -98,7 +92,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
     </div>
   );
 
-  const columns = FileSharingTableColumns(onFilenameClick, [FILESHARING_TABLE_COLUM_NAMES.SELECT_FILENAME]);
+  const columns = FileSharingTableColumns([FILESHARING_TABLE_COLUM_NAMES.SELECT_FILENAME]);
 
   return (
     <div className="h-[60vh] flex-col overflow-auto text-background scrollbar-thin">

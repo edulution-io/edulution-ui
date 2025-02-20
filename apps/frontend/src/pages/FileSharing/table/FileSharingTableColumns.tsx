@@ -207,7 +207,7 @@ const FileSharingTableColumns = (visibleColumns?: string[]): ColumnDef<Directory
   ];
 
   if (visibleColumns) {
-    return allColumns.filter((column) => visibleColumns.includes(column.id as string));
+    return allColumns.filter((column) => visibleColumns?.includes(column.id as string));
   }
 
   return allColumns;
