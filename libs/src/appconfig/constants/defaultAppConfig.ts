@@ -33,7 +33,9 @@ const defaultAppConfig: AppConfigDto[] = [
     name: FILE_SHARING,
     icon: getImageUrl(FilesharingIcon),
     appType: NATIVE,
-    options: {},
+    options: {
+      proxyConfig: '""',
+    },
     accessGroups: [],
     extendedOptions: {},
   },
