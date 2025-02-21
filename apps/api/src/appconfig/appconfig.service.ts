@@ -139,6 +139,7 @@ class AppConfigService implements OnModuleInit {
 
         appConfigDto = appConfigObjects.map((config) => ({
           name: config.name,
+          translations: config.translations,
           icon: config.icon,
           appType: config.appType,
           options: { url: config.options.url ?? '' },
