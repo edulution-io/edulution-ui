@@ -90,9 +90,9 @@ class UsersService {
     );
 
     await Promise.all(
-      Object.entries(usersBySchool).map(([school, userList]) => {
-        return this.cacheManager.set(ALL_USERS_CACHE_KEY + school, userList, DEFAULT_CACHE_TTL_MS);
-      }),
+      Object.entries(usersBySchool).map(([school, userList]) =>
+        this.cacheManager.set(ALL_USERS_CACHE_KEY + school, userList, DEFAULT_CACHE_TTL_MS),
+      ),
     );
 
     await this.cacheManager.set(ALL_USERS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, fetchedUsers, DEFAULT_CACHE_TTL_MS);

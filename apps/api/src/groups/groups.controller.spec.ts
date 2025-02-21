@@ -12,6 +12,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
+import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
 import { GroupsController } from './groups.controller';
 import GroupsService from './groups.service';
 import mockGroupsService from './groups.service.mock';
@@ -45,8 +46,8 @@ describe(GroupsController.name, () => {
   describe('searchGroups', () => {
     it('should call searchGroups method of groupsService with correct arguments', async () => {
       const groupName = 'testGroup';
-      await controller.searchGroups(groupName);
-      expect(service.searchGroups).toHaveBeenCalledWith(groupName);
+      await controller.searchGroups(groupName, SPECIAL_SCHOOLS.GLOBAL);
+      expect(service.searchGroups).toHaveBeenCalledWith(SPECIAL_SCHOOLS.GLOBAL, groupName);
     });
   });
 
