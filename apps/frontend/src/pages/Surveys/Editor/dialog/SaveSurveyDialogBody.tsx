@@ -8,7 +8,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import useGroupStore from '@/store/GroupStore';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import Checkbox from '@/components/ui/Checkbox';
-import DateTimeInput, { TimeInputType } from '@/components/shared/DateTimePicker/DateTimeInput';
+import { DateTimeInput } from '@/components/shared/DateTimePicker/DateTimeInput';
 
 interface SaveSurveyDialogBodyProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -39,12 +39,13 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
     setValue('invitedGroups', groups /* , { shouldValidate: true } */);
   };
 
-  const expiresWatched = watch('expires') as TimeInputType;
+  const expiresWatched = watch('expires') as string;
   const isAnonymousWatched = watch('isAnonymous') as boolean;
   const isPublicWatched = watch('isPublic') as boolean;
   const canSubmitMultipleAnswersWatched = watch('canSubmitMultipleAnswers') as boolean;
 
-  const handleExpirationDateChange = (value: TimeInputType /* Date | undefined */) => {
+  const handleExpirationDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
     setValue('expires', value);
   };
 
@@ -64,6 +65,7 @@ const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
         <DateTimeInput
           value={expiresWatched}
           onChange={handleExpirationDateChange}
+          variant="dialog"
         />
       </div>
       <p className="text-m font-bold text-background">{t('surveys.saveDialog.settingsFlags')}</p>

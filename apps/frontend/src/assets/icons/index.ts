@@ -1,6 +1,5 @@
 export { default as MobileLogoIcon } from '@/assets/logos/edulution-logo-small-colorfull.svg';
 export { default as FirewallIcon } from '@/assets/icons/firewall-light.svg';
-export { default as CalendarLight } from '@/assets/icons/calendar-light.svg';
 export { default as ConferencesIcon } from '@/assets/icons/edulution/Konferenzen.svg';
 export { default as LearningManagementIcon } from '@/assets/icons/edulution/Lernmanagement.svg';
 export { default as FileSharingIcon } from '@/assets/icons/edulution/Filesharing.svg';

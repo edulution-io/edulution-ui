@@ -124,9 +124,6 @@ module.exports = {
     require('tailwind-scrollbar')({ nocompatible: true }),
     plugin(function ({ addBase, theme }) {
       addBase({
-        ':root': {
-          '--menubar-max-width': '300px',
-        },
         h1: { fontSize: theme('fontSize.h1'), fontWeight: '700' },
         h2: { fontSize: theme('fontSize.h2'), letterSpacing: '0.020em', fontWeight: '700' },
         h3: { fontSize: theme('fontSize.h3'), letterSpacing: '0.040em', fontWeight: '700' },
