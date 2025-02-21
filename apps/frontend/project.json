@@ -4,13 +4,7 @@
   "projectType": "application",
   "styles": ["./src/index.scss"],
   "targets": {
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "cache": true,
-      "options": {
-        "fix": true
-      }
-    },
+    "lint": { "executor": "@nx/eslint:lint", "cache": true, "options": { "fix": true } },
     "build": {
       "executor": "@nx/vite:build",
       "defaultConfiguration": "production",
@@ -25,27 +19,11 @@
     "serve": {
       "executor": "@nx/vite:dev-server",
       "defaultConfiguration": "development",
-      "options": {
-        "buildTarget": "frontend:build",
-        "hmr": true
-      },
+      "options": { "buildTarget": "frontend:build", "hmr": true },
       "configurations": {
-        "development": {
-          "buildTarget": "frontend:build:development"
-        },
-        "demo": {
-          "buildTarget": "frontend:build:development"
-        },
-        "production": {
-          "buildTarget": "frontend:build:production",
-          "hmr": false
-        }
-      }
-    },
-    "test": {
-      "executor": "@nx/vite:test",
-      "options": {
-        "watch": false
+        "development": { "buildTarget": "frontend:build:development" },
+        "demo": { "buildTarget": "frontend:build:development" },
+        "production": { "buildTarget": "frontend:build:production", "hmr": false }
       }
     }
   },
