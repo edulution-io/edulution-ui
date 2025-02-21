@@ -38,7 +38,10 @@ const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
 
 const hideOnMobileClassName = 'hidden lg:flex';
 
-const FileSharingTableColumns = (visibleColumns?: string[]): ColumnDef<DirectoryFileDTO>[] => {
+export const FileSharingTableColumns = (
+  visibleColumns?: string[],
+  onFilenameClick?: (item: DirectoryFileDTO) => void,
+): ColumnDef<DirectoryFileDTO>[] => {
   const allColumns: ColumnDef<DirectoryFileDTO>[] = [
     {
       id: FILESHARING_TABLE_COLUM_NAMES.SELECT_FILENAME,
@@ -60,18 +63,22 @@ const FileSharingTableColumns = (visibleColumns?: string[]): ColumnDef<Directory
         const { setShowEditor } = useFileEditorStore();
         const isCurrentlyDisabled = currentlyDisabledFiles[row.original.basename];
         const handleFilenameClick = async () => {
-          if (isCurrentlyDisabled) {
-            return;
-          }
+          if (!onFilenameClick) {
+            if (isCurrentlyDisabled) {
+              return;
+            }
 
-          setShowEditor(false);
-          setPublicDownloadLink('');
-          if (row.original.type === ContentType.DIRECTORY) {
-            setCurrentlyEditingFile(null);
-            searchParams.set('path', getPathWithoutWebdav(row.original.filename));
-            setSearchParams(searchParams);
+            setShowEditor(false);
+            setPublicDownloadLink('');
+            if (row.original.type === ContentType.DIRECTORY) {
+              setCurrentlyEditingFile(null);
+              searchParams.set('path', getPathWithoutWebdav(row.original.filename));
+              setSearchParams(searchParams);
+            } else {
+              await resetCurrentlyEditingFile(row.original);
+            }
           } else {
-            await resetCurrentlyEditingFile(row.original);
+            onFilenameClick(row.original);
           }
         };
         const renderFileIcon = (item: DirectoryFileDTO) => {
