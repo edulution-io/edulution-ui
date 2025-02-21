@@ -12,4 +12,7 @@
 
 const addLeadingZero = (value: number) => (value < 10 ? `0${value}` : `${value}`);
 
-export default addLeadingZero;
+const convertDateToDateTimeInput = (date: Date) =>
+  `${date.getFullYear()}-${addLeadingZero(date.getMonth() + 1)}-${date.getDate()}T${addLeadingZero(date.getHours())}:${addLeadingZero(date.getMinutes())}`;
+
+export default convertDateToDateTimeInput;

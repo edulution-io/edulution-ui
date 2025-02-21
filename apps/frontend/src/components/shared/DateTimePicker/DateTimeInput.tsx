@@ -13,7 +13,7 @@
 import * as React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import cn from '@libs/common/utils/className';
-import convertDateToDateTimeInput from './utils/convertDateTimeInputToDate';
+import convertDateToDateTimeInput from './convertDateTimeInputToDate';
 
 export const originInputVariants = cva(['rounded'], {
   variants: {
