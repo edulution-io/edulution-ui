@@ -290,7 +290,7 @@ class FilesharingService {
   private static async copyFile(client: AxiosInstance, originPath: string, destinationPath: string) {
     const sanitizedDestinationPath = destinationPath.replace(/\u202F/g, ' ');
     try {
-      await FilesharingService.copyFileViaWebDAV(client, encodeURI(originPath), sanitizedDestinationPath);
+      await FilesharingService.copyFileViaWebDAV(client, originPath, sanitizedDestinationPath);
     } catch (error) {
       throw new CustomHttpException(FileSharingErrorMessage.DuplicateFailed, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -312,11 +312,10 @@ class FilesharingService {
     duplicateFile: DuplicateFileRequestDto,
   ): Promise<WebdavStatusReplay> => {
     const client = await this.getClient(username);
-    const fullOriginPath = `${this.baseurl}${duplicateFile.originFilePath}`;
 
     const duplicationPromises = duplicateFile.destinationFilePaths.map(async (destinationPath) => {
       await this.createCollectFolderIfNotExists(username, destinationPath);
-      await FilesharingService.copyFile(client, fullOriginPath, destinationPath);
+      await FilesharingService.copyFile(client, duplicateFile.originFilePath, destinationPath);
     });
 
     try {
@@ -346,7 +345,7 @@ class FilesharingService {
   ): Promise<boolean> {
     if (contentType === ContentType.DIRECTORY) {
       // 1) List directories at `parentPath`
-      const directories = await this.getDirAtPath(username, parentPath);
+      const directories = await this.getDirAtPath(username, parentPath + '/');
 
       // 2) Build a set of directory basenames
       const existingFolders = new Set(
@@ -387,57 +386,49 @@ class FilesharingService {
 
   duplicateFile = async (username: string, duplicateFile: DuplicateFileRequestDto): Promise<WebdavStatusReplay> => {
     const client = await this.getClient(username);
-    const fullOriginPath = `${this.baseurl}${duplicateFile.originFilePath}`;
 
-    const duplicationResults = await Promise.allSettled(
-      duplicateFile.destinationFilePaths.map(async (destinationPath) => {
-        const filesAfterTransfer = FilesharingService.getPathUntilFolder(destinationPath, `${FILE_PATHS.TRANSFER}`);
-        const filesAfterTeacherFolder = FilesharingService.getPathUntilFolder(destinationPath, `${username}`);
-        Logger.log('filesAfterTransfer', filesAfterTransfer);
-        Logger.log('filesAfterTeacherFolder', filesAfterTeacherFolder);
-        const userFolderExists = await this.checkIfFileOrFolderExists(
-          username,
-          filesAfterTransfer,
-          username,
-          ContentType.DIRECTORY,
-        );
+    const promises = duplicateFile.destinationFilePaths.map(async (destinationPath) => {
+      const filesAfterTransfer = FilesharingService.getPathUntilFolder(destinationPath, FILE_PATHS.TRANSFER);
+      const filesAfterTeacherFolder = FilesharingService.getPathUntilFolder(destinationPath, username);
 
+      const userFolderExists = await this.checkIfFileOrFolderExists(
+        username,
+        filesAfterTransfer,
+        username,
+        ContentType.DIRECTORY,
+      );
+
+      if (!userFolderExists) {
+        Logger.log('Creating folder', filesAfterTransfer, username);
+        await this.createFolder(username, filesAfterTransfer, username);
+      }
+
+      if (!userFolderExists) {
         const collectFolderExists = await this.checkIfFileOrFolderExists(
           username,
           filesAfterTeacherFolder,
-          `${FILE_PATHS.COLLECT}`,
+          FILE_PATHS.COLLECT,
           ContentType.DIRECTORY,
         );
-
-        Logger.log('userFolderExists', userFolderExists);
-        Logger.log('collectFolderExists', collectFolderExists);
-
-        if (!userFolderExists) {
-          Logger.log('Creating folder', filesAfterTransfer, username);
-          await this.createFolder(username, filesAfterTransfer, username);
-        }
         if (!collectFolderExists) {
-          Logger.log('Creating folder', filesAfterTeacherFolder, `${FILE_PATHS.COLLECT}`);
-          await this.createFolder(username, filesAfterTeacherFolder, `${FILE_PATHS.COLLECT}`);
+          Logger.log('Creating folder', filesAfterTeacherFolder, FILE_PATHS.COLLECT);
+          await this.createFolder(username, filesAfterTeacherFolder, FILE_PATHS.COLLECT);
         }
+      }
 
-        const { parentPath, lastSegment } = FilesharingService.splitPathAndLastSegment(destinationPath);
+      const { parentPath, lastSegment } = FilesharingService.splitPathAndLastSegment(destinationPath);
 
-        const exists =
-          (await this.checkIfFileOrFolderExists(username, parentPath, lastSegment, ContentType.DIRECTORY)) ||
-          (await this.checkIfFileOrFolderExists(username, parentPath, lastSegment, ContentType.FILE));
-        if (!exists) {
-          await FilesharingService.copyFile(client, fullOriginPath, destinationPath);
-        }
-      }),
-    );
+      const exists =
+        (await this.checkIfFileOrFolderExists(username, parentPath, lastSegment, ContentType.DIRECTORY)) ||
+        (await this.checkIfFileOrFolderExists(username, parentPath, lastSegment, ContentType.FILE));
 
-    const failedTasks = duplicationResults.filter((result) => result.status === 'rejected');
+      if (!exists) {
+        await FilesharingService.copyFile(client, duplicateFile.originFilePath, destinationPath);
+      }
+    });
 
-    if (failedTasks.length > 0) {
-      console.error('Duplication failed for some tasks:', failedTasks);
-      throw new CustomHttpException(FileSharingErrorMessage.SharingFailed, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    await Promise.all(promises);
+
     return { success: true, status: HttpStatus.OK };
   };
 

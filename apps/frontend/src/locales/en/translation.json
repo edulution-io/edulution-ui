@@ -311,7 +311,7 @@
       "CreateCollectFolderForStudentFailed": "Create collect folder for student failed",
       "DeleteFromServerFailed": "Delete from server failed",
       "SaveFailed": "Save failed",
-      "DuplicateFailed": "Copy failed",
+      "DuplicateFailed": "Duplicate failed",
       "AppNotProperlyConfigured": "OnlyOffice is not properly configured, contact your system administrator.",
       "CollectingFailed": "Collecting files failed",
       "MissingCallbackURL": "Missing callback URL",
