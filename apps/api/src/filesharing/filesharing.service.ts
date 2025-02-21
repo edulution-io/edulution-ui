@@ -345,7 +345,7 @@ class FilesharingService {
   ): Promise<boolean> {
     if (contentType === ContentType.DIRECTORY) {
       // 1) List directories at `parentPath`
-      const directories = await this.getDirAtPath(username, parentPath + '/');
+      const directories = await this.getDirAtPath(username, `${parentPath}/`);
 
       // 2) Build a set of directory basenames
       const existingFolders = new Set(
