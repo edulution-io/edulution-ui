@@ -14,6 +14,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Response } from 'express';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import GroupForm from '@libs/groups/types/groupForm';
+import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
 import { LmnApiController } from './lmnApi.controller';
 import LmnApiService from './lmnApi.service';
 import mockLmnApiService from './lmnApi.service.mock';
@@ -197,8 +198,8 @@ describe('LmnApiController', () => {
 
   describe('searchUsersOrGroups', () => {
     it('should call searchUsersOrGroups', async () => {
-      await controller.searchUsersOrGroups('mockToken', 'searchQuery');
-      expect(service.searchUsersOrGroups).toHaveBeenCalledWith('mockToken', 'searchQuery');
+      await controller.searchUsersOrGroups('mockToken', 'searchQuery', SPECIAL_SCHOOLS.GLOBAL);
+      expect(service.searchUsersOrGroups).toHaveBeenCalledWith('mockToken', SPECIAL_SCHOOLS.GLOBAL, 'searchQuery');
     });
   });
 

@@ -20,8 +20,9 @@ import JWTUser from '@libs/user/types/jwt/jwtUser';
 import JoinPublicConferenceDetails from '@libs/conferences/types/joinPublicConferenceDetails';
 import ConferencesService from './conferences.service';
 import { Conference } from './conference.schema';
-import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import { Public } from '../common/decorators/public.decorator';
+import GetCurrentUser from '../common/decorators/getUser.decorator';
+import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 
 @ApiTags(CONFERENCES_EDU_API_ENDPOINT)
 @ApiBearerAuth()

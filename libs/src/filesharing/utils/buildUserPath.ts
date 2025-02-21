@@ -11,11 +11,12 @@
  */
 
 import UserRoles from '@libs/user/constants/userRoles';
+import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
 
 const buildUserPath = (role: string | null, schoolClass: string, username?: string | null): string => {
   switch (role) {
     case UserRoles.GLOBAL_ADMIN: {
-      return 'global';
+      return SPECIAL_SCHOOLS.GLOBAL;
     }
 
     case UserRoles.SCHOOL_ADMIN: {

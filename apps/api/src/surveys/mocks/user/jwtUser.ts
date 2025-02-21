@@ -31,6 +31,7 @@ export const firstMockJWTUser: JwtUser = {
   given_name: 'firstName',
   family_name: 'lastName',
   email: 'first@example.com',
+  school: 'default-school',
   ldapGroups: [],
 };
 
@@ -52,5 +53,6 @@ export const secondMockJWTUser: JwtUser = {
   given_name: 'firstName',
   family_name: 'lastName',
   email: 'second@example.com',
+  school: 'default-school',
   ldapGroups: [],
 };

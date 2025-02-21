@@ -358,7 +358,7 @@ const useClassManagementStore = create<ClassManagementStore>(
             ...d,
             id: d.dn,
             value: d.cn,
-            label: `[${d.sophomorixSchoolname} | ${t(d.type)}] ${d.displayName} (${d.cn})`,
+            label: `[${t(d.type)}] ${d.displayName} (${d.cn})`,
             name: d.cn,
             path: d.cn,
           }));

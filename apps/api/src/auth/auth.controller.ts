@@ -19,7 +19,7 @@ import AuthRequestArgs from '@libs/auth/types/auth-request';
 import { AUTH_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import { Public } from '../common/decorators/public.decorator';
 import AuthService from './auth.service';
-import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 
 @ApiTags(AUTH_PATHS.AUTH_ENDPOINT)
 @Controller(AUTH_PATHS.AUTH_ENDPOINT)

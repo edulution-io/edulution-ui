@@ -30,7 +30,8 @@ import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
-import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
+import GetCurrentUser from '../common/decorators/getUser.decorator';
 import SseService from '../sse/sse.service';
 import type UserConnections from '../types/userConnections';
 

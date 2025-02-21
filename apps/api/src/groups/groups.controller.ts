@@ -15,6 +15,7 @@ import { EDU_API_GROUPS_ENDPOINT } from '@libs/groups/constants/eduApiEndpoints'
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import GroupsService from './groups.service';
 import GetToken from '../common/decorators/getToken.decorator';
+import GetCurrentSchool from '../common/decorators/getCurrentSchool.decorator';
 
 @ApiTags(EDU_API_GROUPS_ENDPOINT)
 @ApiBearerAuth()
@@ -23,8 +24,8 @@ export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}
 
   @Get()
-  async searchGroups(@Query('groupName') groupName: string) {
-    return this.groupsService.searchGroups(groupName);
+  async searchGroups(@Query('groupName') groupName: string, @GetCurrentSchool() school: string) {
+    return this.groupsService.searchGroups(school, groupName);
   }
 
   @Get('user')

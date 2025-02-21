@@ -18,8 +18,9 @@ import GroupForm from '@libs/groups/types/groupForm';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
-import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import LmnApiService from './lmnApi.service';
+import GetCurrentSchool from '../common/decorators/getCurrentSchool.decorator';
+import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 
 const { ROOT, USERS_QUOTA } = LMN_API_EDU_API_ENDPOINTS;
 
@@ -171,8 +172,9 @@ export class LmnApiController {
   async searchUsersOrGroups(
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
     @Query('searchQuery') searchQuery: string,
+    @GetCurrentSchool() school: string,
   ) {
-    return this.lmnApiService.searchUsersOrGroups(lmnApiToken, searchQuery);
+    return this.lmnApiService.searchUsersOrGroups(lmnApiToken, school, searchQuery);
   }
 
   @Post('projects')

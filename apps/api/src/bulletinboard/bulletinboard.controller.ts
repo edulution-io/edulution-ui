@@ -39,8 +39,9 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
 import { Observable } from 'rxjs';
 import BulletinBoardService from './bulletinboard.service';
-import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import GetCurrentUser from '../common/decorators/getUser.decorator';
 import GetToken from '../common/decorators/getToken.decorator';
+import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 
 @ApiTags(APPS.BULLETIN_BOARD)
 @ApiBearerAuth()
