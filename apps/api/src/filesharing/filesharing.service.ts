@@ -165,8 +165,6 @@ class FilesharingService {
     const client = await this.getClient(username);
     const fullPath = `${this.baseurl}${path}/${folderName}`;
 
-    Logger.log('Wanna to create folder', fullPath);
-
     return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(
       client,
       {
@@ -356,22 +354,11 @@ class FilesharingService {
     return false;
   }
 
-  static splitPathAndLastSegment(fullPath: string): { parentPath: string; lastSegment: string } {
-    const trimmed = fullPath.replace(/\/+$/, '');
-    const lastSlashIndex = trimmed.lastIndexOf('/');
-    if (lastSlashIndex === -1) {
-      return { parentPath: '', lastSegment: trimmed };
-    }
-    return {
-      parentPath: trimmed.slice(0, lastSlashIndex),
-      lastSegment: trimmed.slice(lastSlashIndex + 1),
-    };
-  }
-
+  /* eslint-disable no-await-in-loop, no-restricted-syntax */
   duplicateFile = async (username: string, duplicateFile: DuplicateFileRequestDto): Promise<WebdavStatusReplay> => {
     const client = await this.getClient(username);
 
-    const promises = duplicateFile.destinationFilePaths.map(async (destinationPath) => {
+    for (const destinationPath of duplicateFile.destinationFilePaths) {
       const filesAfterTransfer = FilesharingService.getPathUntilFolder(destinationPath, FILE_PATHS.TRANSFER);
       const filesAfterTeacherFolder = FilesharingService.getPathUntilFolder(destinationPath, username);
 
@@ -383,7 +370,6 @@ class FilesharingService {
       );
 
       if (!userFolderExists) {
-        Logger.log('Creating folder', filesAfterTransfer, username);
         await this.createFolder(username, filesAfterTransfer, username);
       }
 
@@ -395,23 +381,11 @@ class FilesharingService {
           ContentType.DIRECTORY,
         );
         if (!collectFolderExists) {
-          Logger.log('Creating folder', filesAfterTeacherFolder, FILE_PATHS.COLLECT);
           await this.createFolder(username, filesAfterTeacherFolder, FILE_PATHS.COLLECT);
         }
       }
-
-      const { parentPath, lastSegment } = FilesharingService.splitPathAndLastSegment(destinationPath);
-
-      const exists =
-        (await this.checkIfFileOrFolderExists(username, parentPath, lastSegment, ContentType.DIRECTORY)) ||
-        (await this.checkIfFileOrFolderExists(username, parentPath, lastSegment, ContentType.FILE));
-
-      if (!exists) {
-        await FilesharingService.copyFile(client, duplicateFile.originFilePath, destinationPath);
-      }
-    });
-
-    await Promise.all(promises);
+      await FilesharingService.copyFile(client, duplicateFile.originFilePath, destinationPath);
+    }
 
     return { success: true, status: HttpStatus.OK };
   };
