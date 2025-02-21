@@ -340,33 +340,21 @@ class FilesharingService {
   async checkIfFileOrFolderExists(
     username: string,
     parentPath: string,
-    name: string, // folderName or filename
-    contentType: ContentType, // 'DIRECTORY' or 'FILE'
+    name: string,
+    contentType: ContentType,
   ): Promise<boolean> {
     if (contentType === ContentType.DIRECTORY) {
-      // 1) List directories at `parentPath`
       const directories = await this.getDirAtPath(username, `${parentPath}/`);
-
-      // 2) Build a set of directory basenames
       const existingFolders = new Set(
         directories.filter((item) => item.type === ContentType.DIRECTORY).map((item) => item.basename),
       );
-
-      // Debug logs
-      Logger.log('Looking for directory:', name);
       return existingFolders.has(name);
     }
     if (contentType === ContentType.FILE) {
-      // 1) List files at `parentPath`
       const files = await this.getFilesAtPath(username, parentPath);
-
-      // 2) Build a set of file basenames
       const existingFiles = new Set(
         files.filter((item) => item.type === ContentType.FILE).map((item) => item.basename),
       );
-
-      // Debug logs
-      Logger.log('Looking for file:', name);
       return existingFiles.has(name);
     }
     return false;
