@@ -86,9 +86,7 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
   const handleCreateContainer = async () => {
     if (createContainerConfig) {
       const formValues = form.getValues();
-      const updatedConfig = showInputForm
-        ? updateContainerConfig(createContainerConfig, formValues)
-        : createContainerConfig;
+      const updatedConfig = updateContainerConfig(createContainerConfig, formValues);
       await createAndRunContainer(updatedConfig);
       await fetchTableContent(settingLocation);
     }
