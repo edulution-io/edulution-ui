@@ -235,7 +235,7 @@ class LmnApiService {
     };
 
     if (action === 'join') {
-      //TODO create _collect and teachersFolder on start
+      // TODO create _collect and teachersFolder on start
       const data = await this.getSchoolClass(lmnApiToken, schoolClass);
       Logger.log(data.sophomorixMembers);
     }
