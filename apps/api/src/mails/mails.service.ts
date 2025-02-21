@@ -121,7 +121,7 @@ class MailsService implements OnModuleInit {
       mailboxLock = await this.imapClient.getMailboxLock('INBOX');
 
       const fetchMail: AsyncGenerator<FetchMessageObject> = this.imapClient.fetch(
-        { seen: false },
+        { recent: true },
         { envelope: true, labels: true },
       );
 
