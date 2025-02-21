@@ -5,8 +5,11 @@
   "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
   "preparing": "preparing...",
   "closeEditingWindow": "Close editing window",
+  "framebufferImage": "Framebuffer image",
+  "previewImage": "Image preview",
   "bulletinboard": {
     "settings": "Settings",
+    "noBulletinsToShow": "There are currently no messages to display, so check back later!",
     "categoryIsRequired": "Selecting a category is required",
     "createdFrom": "by {{ createdBy }}, updated on {{ lastUpdated }}",
     "createdFromAndUpdatedBy": "by {{ createdBy }}, updated by {{ lastUpdatedBy }} on {{ lastUpdated }}",
@@ -19,10 +22,11 @@
     "activeFrom": "Active from",
     "activeUntil": "Active until",
     "appTitle": "Bulletin Board",
-    "description": "Manage your bulletins",
+    "description": "Here you find your latest bulletins",
     "sidebar": "Bulletin Board",
     "newCategorie": "New category",
     "category": "Category",
+    "categoryPositionChanged": "Position of the category changed",
     "name": "Name",
     "visibleFor": "Visible for",
     "visibleForUsers": "Visible for users",
@@ -84,6 +88,20 @@
       "attachmentDeletionFailed": "Failed to delete an attachment"
     }
   },
+  "appstore": {
+    "title": "App Store",
+    "description": "Here you can add edulution.io apps.",
+    "chooseIcon": "Choose icon"
+  },
+  "forwarding": {
+    "sidebar": "Forwarding"
+  },
+  "frame": {
+    "sidebar": "Frame"
+  },
+  "embedded": {
+    "sidebar": "Embedded"
+  },
   "dashboard": {
     "mobileAccess": {
       "title": "Mobile File Access",
@@ -95,7 +113,7 @@
       "nextStepPreview": "In the next step you can transfer the access data.",
       "copyCredentials": "Or enter manually:",
       "downloadDirect": "Or download the app directly:",
-      "downloadApp": "Download the edulution-io app here:"
+      "downloadApp": "Download the edulution.io app here:"
     },
     "quota": {
       "title": "Quotas",
@@ -152,19 +170,19 @@
   "mail": {
     "title": "MAIL",
     "sidebar": "Mail",
+    "configName": "Configuration name",
+    "hostname": "Hostname",
+    "port": "Port",
+    "encryption": "Encryption",
+    "rowsSelected": "{{selected}} of {{total}} jobs selected",
+    "rowSelected": "{{selected}} of {{total}} job selected",
     "importer": {
       "filterPlaceHolderText": "Search for importername",
       "title": "Email Importer",
       "provider": "Email Provider",
-      "configName": "Configuration name",
-      "hostname": "Hostname",
-      "port": "Port",
-      "encryption": "Encryption",
       "interval": "Sync Interval",
       "isActive": "Active",
       "syncJobsTable": "Importer Jobs",
-      "rowsSelected": "{{selected}} of {{total}} jobs selected",
-      "rowSelected": "{{selected}} of {{total}} job selected",
       "mailAddress": "Email address",
       "noMailConfigured": "Mail app is not active. Please contact your system administrator."
     }
@@ -176,7 +194,8 @@
   "errors": {
     "automaticLoginFailed": "Automatic login failed",
     "unexpectedError": "An unexpected error occurred",
-    "uploadOrFetchAttachmentFailed": "Error uploading or fetching attachment"
+    "uploadOrFetchAttachmentFailed": "Error uploading or fetching attachment",
+    "fileGenerationFailed": "File generation failed"
   },
   "conferences": {
     "errors": {
@@ -193,9 +212,12 @@
       "ConferenceIsNotRunning": "Conference is not running",
       "MissingMandatoryParameters": "Request failed because of missing parameters"
     },
+    "joinThisConference": "Join this conference",
     "filterPlaceHolderText": "Search for conference name",
     "started": "Conference started",
     "stopped": "Conference stopped",
+    "isStarting": "Conference is starting",
+    "isStopping": "Conference is stopping",
     "conferenceFetchedSuccessfully": "Conferences successfully fetched",
     "tryManually": "Join manually",
     "changeUser": "Change user",
@@ -255,9 +277,10 @@
   },
   "feed": {
     "title": "Current affairs",
-    "noConferences": "No running conference",
-    "noMails": "No unread mail",
-    "noSurveys": "No open survey"
+    "noconferences": "No running conference",
+    "nomail": "No unread mail",
+    "nosurveys": "No open survey",
+    "nobulletinboard": "No new bulletins"
   },
   "filesharing": {
     "filterPlaceHolderText": "Search for filename",
@@ -270,6 +293,8 @@
     "closeEditor": "Close editor",
     "rowsSelected": "{{selected}} of {{total}} files selected",
     "rowSelected": "{{selected}} of {{total}} file selected",
+    "fileWithSameNameAlreadyExists": "A file with the same name already exists.",
+    "folderWithSameNameAlreadyExists": "A folder with the same name already exists.",
     "errors": {
       "FileNotFound": "File not found",
       "MountPointsNotFound": "Mount points not found",
@@ -288,7 +313,8 @@
       "DuplicateFailed": "Copy failed",
       "AppNotProperlyConfigured": "OnlyOffice is not properly configured, contact your system administrator.",
       "CollectingFailed": "Collecting files failed",
-      "SharingFailed": "Sharing files failed"
+      "SharingFailed": "Sharing files failed",
+      "MissingCallbackURL": "Missing callback URL"
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
@@ -323,6 +349,15 @@
   "classmanagement": {
     "title": "CLASS ROOM",
     "sidebar": "Class Room",
+    "invalidProxyAddresses": "Proxy Email-Addresses must be written comma separated without spaces",
+    "invalidQuota": "The quota must be specified according to the documentation",
+    "invalidMailQuota": "The mail quota must be specified as a number in MB",
+    "mailQuota": "Mail Quota (MB)",
+    "proxyAddresses": "Proxy Email-Adresses",
+    "descriptionPlaceholder": "Short description of the project",
+    "proxyAddressesPlaceholder": "info@email1.de,kontakt@email2.com",
+    "quotaPlaceholder": "[{\"share\":\"default-school\",\"quota\":50}]",
+    "quota": "Quota (MB)",
     "detailsprinters": "Details of printer",
     "classes": "Classes",
     "name": "Name",
@@ -409,9 +444,21 @@
     "printOneItemPerPage": "Print one password per page",
     "selectSavedSession": "Select from saved sessions",
     "saveSession": "Save session",
+    "editSession": "Edit session",
     "myRoom": "My room",
     "sharedMailBox": "Shared mailbox",
-    "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes."
+    "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes.",
+    "veyonConfigTable": {
+      "id": "ID",
+      "subnet": "Subnet",
+      "subnetDescription": "Subnet in CIDR notation (10.0.0.0/24)",
+      "subnetPlaceholder": "10.0.0.0/24",
+      "proxyAdress": "Proxy Adress",
+      "proxyAdressDescription": "URL of the Veyon-WebAPI-Proxy",
+      "proxyAdressPlaceholder": "http://localhost:11080",
+      "createConfig": "Create config",
+      "editConfig": "Edit config"
+    }
   },
   "select": "Select",
   "selectAll": "Select all",
@@ -421,15 +468,23 @@
   "downloadFile": "Download file",
   "cancel": "Cancel",
   "survey": {
+    "attendee": "Attendee",
+    "attendees": "Attendees",
     "filterPlaceHolderText": "Search for surveyname",
+    "invitedAttendees": "Invited",
+    "isPublic": "Publicly displayed (?)",
+    "isPublicTrue": "Public",
+    "isPublicFalse": "Private",
     "newTitle": "New survey",
     "created": "Created",
     "creationDate": "Creation date",
     "expires": "Expires",
     "expirationDate": "Expiration date",
-    "notFound": "Survey not found",
-    "noFormula": "The formula of the survey is not readable",
-    "noAnswer": "No answer available",
+    "finished": "You successfully completed the survey.",
+    "thanks": "Thank you for your participation.",
+    "noAnswer": "No answers available jet.",
+    "notFound": "Survey could not be found.",
+    "noFormula": "The formula of the survey is not readable.",
     "canSubmitMultiple": "Allow multiple submission",
     "editor": {
       "new": "New (blank)",
@@ -438,32 +493,36 @@
       "expectingUserInput": "Expecting the user to answer here, ... "
     },
     "errors": {
-      "updateOrCreateError": "Neither able to update a survey nor to create a new one",
-      "deleteError": "Not able to delete the surveys",
-      "noAnswerError": "No answers available jet",
-      "noFormulaError": "The formula of the survey is not readable",
-      "noBackendLimitersError": "In order to use this functionality you have to define limiters inside of the editor",
-      "notFoundError": "Survey not found",
+      "updateOrCreateError": "Neither able to update a survey nor to create a new one.",
+      "deleteError": "Not able to delete the surveys.",
+      "noAnswerError": "No answers available jet.",
+      "noFormulaError": "The formula of the survey is not readable.",
+      "noBackendLimitersError": "In order to use this functionality you have to define limiters inside of the editor.",
+      "notFoundError": "Survey not found.",
       "surveyFormulaStructuralError": "The formula of the survey has structural issues.",
-      "participationErrorUserNotAssigned": "User is no participant of the survey",
-      "participationErrorAlreadyParticipated": "User has already participated in the survey",
-      "participationErrorSurveyExpired": "Survey has already expired",
-      "idTypeError": "Missing survey id",
-      "missingAnswerError": "Please, provide an answer for the submission"
+      "participationErrorUserNotAssigned": "User is no participant of the survey.",
+      "participationErrorAlreadyParticipated": "User has already participated in the survey.",
+      "participationErrorSurveyExpired": "Survey has already expired.",
+      "idTypeError": "Missing survey id.",
+      "missingAnswerError": "Please provide an answer before submitting."
     }
   },
   "survey-answer": {
     "errors": {
-      "notAbleToFindOrCreateSurveyAnswerError": "Neither able to find nor to create the users survey answer entry in database",
-      "notAbleToFindSurveyAnswerError": "Survey answers not found",
-      "notAbleToUpdateSurveyAnswerError": "Not able to update the submitted survey answer",
-      "notAbleToCreateSurveyAnswerError": "Not able to create the users survey answer",
-      "notAbleToDeleteSurveyAnswerError": "Not able to delete the users survey answer"
+      "notAbleToFindOrCreateSurveyAnswerError": "Neither able to find nor to create the users survey answer entry in database.",
+      "notAbleToFindSurveyAnswerError": "Survey answers not found.",
+      "notAbleToUpdateSurveyAnswerError": "Not able to update the submitted survey answer.",
+      "notAbleToCreateSurveyAnswerError": "Not able to create the users survey answer.",
+      "notAbleToDeleteSurveyAnswerError": "Not able to delete the users survey answer."
     }
   },
   "surveys": {
     "rowsSelected": "{{selected}} of {{total}} surveys selected",
     "rowSelected": "{{selected}} of {{total}} survey selected",
+    "confirmMultiDelete": "Should these surveys really be deleted?",
+    "confirmSingleDelete": "Should this survey really be deleted?",
+    "deleteSurveys": "Delete {{count}} surveys",
+    "deleteSurvey": "Delete survey",
     "title": "SURVEYS",
     "sidebar": "Surveys",
     "view": {
@@ -499,13 +558,14 @@
       "settingsFlags": "Options",
       "isAnonymous": "Should the survey be anonymous?",
       "isPublic": "Should the survey be public?",
-      "canSubmitMultipleAnswers": "Should the survey still be visible after participation?"
+      "canSubmitMultipleAnswers": "Should a participant be allowed to answer the survey multiple times?",
+      "canUpdateFormerAnswer": "Should answers be editable afterwards?"
     },
     "sharePublicSurveyDialog": {
       "title": "Share survey",
       "description": "Here you can share the survey with external people. Please copy the link and send it to the participants.",
-      "savedToClipboard": "Saved to clipboard",
-      "savedToClipboardError": "Unable to save into clipboard"
+      "savedToClipboard": "Saved to clipboard.",
+      "savedToClipboardError": "Unable to save into clipboard."
     },
     "participateDialog": {
       "title": "Participate in the survey"
@@ -550,7 +610,8 @@
       "GuacamoleNotResponding": "RDP service not available.",
       "GuacamoleUserNotFound": "Username or password could not be found.",
       "LmnVdiApiNotResponding": "Linuxmuster VDI service does not respond.",
-      "SessionNotFound": "Session not found."
+      "SessionNotFound": "Session not found.",
+      "AppNotProperlyConfigured": "Guacamole is not properly configured, contact your system administrator."
     }
   },
   "wlan": {
@@ -622,7 +683,7 @@
       "aichat": "Here you can make all the settings.",
       "linuxmuster": "Here you can make all the settings.",
       "whiteboard": "Here you can make all the settings.",
-      "bulletinboard": "Configure the user groups that have access to the Blackboard Editor app here. The categories can be used to control for which users and groups the notice board with the messages is displayed instead of the classic dashboard."
+      "bulletinboard": "Configure the user groups that have access to the Bulletin Board app here. The categories can be used to control which messages are displayed to users."
     },
     "appconfig": {
       "sections": {
@@ -636,11 +697,26 @@
         },
         "bulletinBoard": {
           "title": "Categories",
-          "description": "Add new categories or edit existing ones to control for which users and groups the bulletin board should be displayed instead of the classic dashboard."
+          "description": "Add new categories or edit existing ones to control for which users and groups notifications should be displayed."
         },
         "general": {
           "title": "General",
           "description": ""
+        },
+        "fileSharing": {
+          "title": "General settings",
+          "description": ""
+        },
+        "docker": {
+          "title": "Docker Applications",
+          "description": "To be able to use the extended services, the required container applications must be started here."
+        },
+        "veyon": {
+          "title": "Veyon Proxy",
+          "description": "Here you can configure the Veyon WebAPI proxies.",
+          "filterPlaceHolderText": "Search for proxy",
+          "invalidCidrFormat": "Invalid CIDR notation",
+          "invalidUrlFormat": "Invalid URL"
         }
       },
       "update": {
@@ -661,12 +737,18 @@
       "ReadAppConfigFailed": "Read app failed",
       "DisableAppConfigFailed": "Disable app failed",
       "WriteTraefikConfigFailed": "Write traefik config failed",
-      "ReadTraefikConfigFailed": "Read traefik config failed"
+      "ReadTraefikConfigFailed": "Read traefik config failed",
+      "forbiddenProxyPath": "Forbidden proxy path",
+      "fieldRequired": "This field is required",
+      "maxChars": "Maximum {{count}} characters",
+      "nameAlreadyExists": "App with this name already exists"
     },
     "yamleditor": {
       "invalidYaml": "Wrong YAML syntax",
       "placeholder": "Enter your Traefik config here"
-    }
+    },
+    "rowsSelected": "{{selected}} of {{total}} Container selected",
+    "rowSelected": "{{selected}} of {{total}} Container selected"
   },
   "usersettings": {
     "title": "MY PROFILE",
@@ -689,7 +771,8 @@
       "badgeAlreadyExists": "This entry exists already",
       "sophomorixCustom1_teacher": "Schoolsubject 1",
       "sophomorixCustom2_teacher": "Schoolsubject 2",
-      "sophomorixCustomMulti1_teacher": "Coffee-brands"
+      "sophomorixCustomMulti1_teacher": "Coffee-brands",
+      "userimageconfig": "Profile picture"
     },
     "security": {
       "title": "Security",
@@ -706,6 +789,10 @@
     },
     "mails": {
       "title": "Email"
+    },
+    "mobileAccess": {
+      "title": "Mobile Access",
+      "description": "Here you can set up the edulution.io app for mobile access to your files. Currently only available for Apple iOS."
     },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
@@ -733,7 +820,9 @@
       "newPasswordRequired": "New password is required",
       "confirmPasswordRequired": "Repeat the new password for the confirmation",
       "passwordsDoNotMatch": "Passwords do not match",
-      "passwordLength": "Password must be at least 8 characters long"
+      "passwordLength": "Password must be at least 8 characters long",
+      "notSupportedFileFormat": "Not supported file format",
+      "notAbleToCompressImage": "Not able to compress the image"
     }
   },
   "forwardingpage": {
@@ -759,20 +848,26 @@
   },
   "edit": "Edit",
   "common": {
+    "answers": "Answers",
+    "error": "Error",
     "errors": {
       "startDateBeforeEndDate": "The start date must be before the end date",
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },
+    "sortOrder": "Sort order",
     "checking": "Checking",
     "options": "Options",
+    "cancel": "Cancel",
     "columns": "Columns",
+    "table": "Table",
     "copy": {
       "success": "Successfully copied to clipboard",
       "error": "Copy to clipboard failed",
       "doCopy": "Copy",
       "link": "Copy link"
     },
+    "openInNewTab": "Open in new tab",
     "from": "from",
     "youAreCurrentlyNotLoggedIn": "You are currently not logged in",
     "toLogin": "To login",
@@ -838,7 +933,17 @@
     "not-available": "Not available",
     "date": "Date",
     "time": "Time",
-    "revert": "Revert"
+    "revert": "Revert",
+    "restart": "Restart",
+    "kill": "Kill",
+    "install": "Install",
+    "update": "Update",
+    "progress": "Progress...",
+    "pressInstall": "Press Install to start",
+    "disabled": "Disabled",
+    "invalid_url": "Invalid URL",
+    "invalid_fqdn": "Invalid FQDN. Please only enter the hostname.",
+    "required": "Required"
   },
   "form": {
     "path": "Path",
@@ -856,7 +961,9 @@
     "proxyConfigDescription": "YAML Editor for the Traefik proxy configuration",
     "expertMode": "Expert mode",
     "proxyPath": "Proxy path",
+    "proxyPathPlaceholder": "e.g. SOGo",
     "proxyDestination": "Proxy destination",
+    "proxyDestinationPlaceholder": "e.g. http://localhost:1234/",
     "stripPrefix": "Strip prefix"
   },
   "fileOperationSuccessful": "File operation successful",
@@ -876,6 +983,7 @@
     "selectFile": "Select up to 5 files at a time",
     "uploadItems": "Upload: {{count}} items",
     "dragDropClick": "Drag files here or click to select files",
+    "dropHere": "Drop here",
     "filesToUpload": "Files to upload",
     "limitExceeded": "Reached the limit of 5 files"
   },
@@ -891,7 +999,8 @@
     "noDataAvailable": "No data available"
   },
   "loadingIndicator": {
-    "message": "Please wait..."
+    "message": "Please wait...",
+    "previewLoading": "Preview loading"
   },
   "search": {
     "type-to-search": "Type to search",
@@ -1039,14 +1148,16 @@
     "onlyOfficeUrlTitle": "OnlyOffice URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Enter the OnlyOffice JWT Secret",
+    "overrideDocumentVendorMSWithOOTitle": "Use OpenDocument as the standard document format",
+    "overrideDocumentVendorMSWithOODescription": "Should the format used by OpenOffice (odt, ods, odp) be used instead of Microsoft Office (docx, pptx, xlsx) formats?",
     "mailImapUrlTitle": "URL",
     "mailImapUrlDescription": "Enter the FQDN (i.e. 'imap.example.com') of the IMAP-server",
     "mailImapPortTitle": "Port",
     "mailImapPortDescription": "Enter the port number of the IMAP-server (i.e. 993)",
     "mailImapSecureTitle": "Secure Connection",
-    "mailImapSecureDescription": "Enter 'true' if the connection should be established via TLS (more secure), otherwise it's set to 'false' and will use STARTTLS",
+    "mailImapSecureDescription": "Should the connection be established via TLS or STARTTLS",
     "mailImapRejectUnauthorizedTitle": "Reject Unauthorized",
-    "mailImapRejectUnauthorizedDescription": "Enter 'true' if the connection should reject self-signed certificates, otherwise it's set to 'false' to accept them"
+    "mailImapRejectUnauthorizedDescription": "Should a certificate check be carried out for this connection?"
   },
   "mails": {
     "errors": {
@@ -1070,5 +1181,60 @@
   "preview": {
     "image": "Image preview",
     "failedToLoadImage": "Failed to load image"
+  },
+  "containerApplication": {
+    "dialogTitle": "{{applicationName}}-Plugins Installer",
+    "EDULUTION_MAIL_HOSTNAME": {
+      "title": "Hostname",
+      "description": "Hostname of the mail server. This could be different from the edulution domain name."
+    }
+  },
+  "dockerOverview": {
+    "title": "Container Overview",
+    "containerName": "Container Name",
+    "state": "State",
+    "status": "Status",
+    "state-badge": "Badge",
+    "imageName": "Image",
+    "filterPlaceHolderText": "Search for container name",
+    "port": "Port",
+    "created": "Created at"
+  },
+  "docker": {
+    "error": {
+      "dockerConnectionError": "Docker connection failed",
+      "dockerImageNotFound": "Docker Image could not be found",
+      "dockerCreationError": "Docker Container could not be created",
+      "dockerCommandExecutionError": "Docker command could not be executed",
+      "dockerContainerDeletionError": "Docker Container could not be deleted"
+    },
+    "events": {
+      "pullingImage": "Pulling docker image...",
+      "checkingImage": "Checking if image already exists...",
+      "creatingContainer": "Creating docker container...",
+      "containerCreated": "Container created.",
+      "startContainer": "Container started.",
+      "stopContainer": "Container stopped.",
+      "restartContainer": "Restart Container.",
+      "killContainer": "Container killed.",
+      "containerCreationSuccessful": "Container successfully created.",
+      "containerCreationFailed": "Container could not be created."
+    },
+    "status": {
+      "running": "running",
+      "created": "created",
+      "restarting": "restarting",
+      "paused": "paused",
+      "exited": "exited",
+      "dead": "dead"
+    }
+  },
+  "veyon": {
+    "errors": {
+      "AppNotProperlyConfigured": "Veyon is not properly configured, contact the system administrator.",
+      "VeyonAuthFailed": "Veyon authentication failed.",
+      "GetUserFailed": "User could not be retrieved.",
+      "VeyonApiNotReachable": "The external Veyon server is not reachable."
+    }
   }
 }

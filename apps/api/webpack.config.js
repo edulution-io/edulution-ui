@@ -2,17 +2,20 @@ const { NxWebpackPlugin } = require('@nx/webpack');
 const { join } = require('path');
 
 module.exports = {
+  devtool: 'source-map',
   output: {
     path: join(__dirname, '../../dist/apps/api'),
+    sourceMapFilename: '[name].js.map',
   },
   module: {
     rules: [
       {
         test: /\.svg$/,
-        use: ['@svgr/webpack'],
+        type: 'asset/source',
       },
     ],
   },
+
   plugins: [
     new NxWebpackPlugin({
       target: 'node',

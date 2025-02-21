@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { ReactNode, useEffect, useState } from 'react';
 import { Rnd } from 'react-rnd';
 import useIsMobileView from '@/hooks/useIsMobileView';
@@ -156,7 +168,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
         });
         setCurrentPosition(position);
       }}
-      className={cn('overflow-hidden rounded-lg rounded-t-none shadow-lg', {
+      className={cn('bg-global overflow-hidden rounded-lg rounded-t-none shadow-lg', {
         'rounded-t-lg border border-slate-500 bg-gray-800': !isMaximized && !isMinimized,
         'rounded-none transition-transform active:transition-none': isMinimized,
       })}

@@ -3,17 +3,13 @@ FROM node@sha256:7000d2e73f938c4f62fdda6d398d7dffd50e6c129409ae2b1a36ccebf9289ff
 
 WORKDIR /opt/edulution/api
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 COPY ./dist/apps/api/package*.json ./
 
 RUN npm ci
 
 COPY ./dist/apps/api/ ./
-
-RUN chown -R node:node /opt/edulution/api/
-
-USER node
 
 EXPOSE 3000
 

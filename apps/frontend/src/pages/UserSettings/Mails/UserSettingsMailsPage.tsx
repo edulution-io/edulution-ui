@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -55,7 +67,7 @@ const UserSettingsMailsPage: React.FC = () => {
       setOption(externalMailProviderConfig[0].name);
       void getSyncJob();
     }
-  }, [externalMailProviderConfig]);
+  }, [externalMailProviderConfig.length]);
 
   const handleDeleteSyncJob = () => {
     if (Object.keys(selectedSyncJob).length > 0) {
@@ -101,8 +113,7 @@ const UserSettingsMailsPage: React.FC = () => {
       labelTranslationId={label}
       type={type}
       defaultValue=""
-      className="mb-4 mt-2"
-      variant="lightGray"
+      className="mb-4 mt-2 "
     />
   );
 
@@ -111,7 +122,6 @@ const UserSettingsMailsPage: React.FC = () => {
       <div className="flex flex-row justify-between">
         <NativeAppHeader
           title={t('mail.sidebar')}
-          description={null}
           iconSrc={MailIcon}
         />
         <StateLoader isLoading={isEditSyncJobLoading} />
@@ -121,7 +131,7 @@ const UserSettingsMailsPage: React.FC = () => {
           className="w-full flex-1 overflow-auto pl-3 pr-3.5 scrollbar-thin"
           style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
         >
-          <h3>{t('mail.importer.title')}</h3>
+          <h3 className="text-background">{t('mail.importer.title')}</h3>
           <div className="space-y-4">
             <DropdownSelect
               options={externalMailProviderConfig}
@@ -140,7 +150,7 @@ const UserSettingsMailsPage: React.FC = () => {
             </Form>
 
             <div className="px-4">
-              <h3 className="pt-5">{t('mail.importer.syncJobsTable')}</h3>
+              <h3 className="pt-5 text-background">{t('mail.importer.syncJobsTable')}</h3>
               <MailImporterTable />
             </div>
           </div>

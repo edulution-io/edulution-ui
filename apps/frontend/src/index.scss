@@ -1,10 +1,93 @@
 @tailwind base;
 @layer base {
+  .loader:empty {
+    background-image: var(--background-image);
+  }
+
   html {
     @apply text-white;
     font-family: 'Lato', sans-serif;
 
     @apply scrollbar-thin scrollbar-track-black/10 scrollbar-thumb-ciLightGrey scrollbar-thumb-rounded-full;
+  }
+
+  :root {
+    --floating-buttons-height: 150px;
+    --sidebar-width: 56px;
+    --radius: 0.25rem;
+    --menubar-max-width: 300px;
+  }
+
+  .bg-global {
+    background-image: var(--background-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .light {
+    --background-image: url('assets/backgroundLightMode.webp');
+    --background: #000000;
+    --foreground: #ffffff;
+    --muted-foreground: #505050;
+    --muted-light: #dcdcdc;
+    --primary: #2c78dc;
+    --primary-foreground: #ffffff;
+    --secondary: #2e2a24;
+    --secondary-foreground: #f2f2f2;
+    --muted: #b1b1ac;
+    --accent: #d2d2cf;
+    --accent-light: #e3e3e3;
+    --input: #1d170f;
+    --card: #00000000; /* bleibt transparent */
+    --card-foreground: #000000; /* Invertiert von #FFFFFF */
+    --popover: #000000; /* Invertiert von #FFFFFF */
+    --popover-foreground: #f0e8d5; /* Invertiert von #0F172A */
+    --border: #342b1b;
+    --destructive: #00ffff;
+    --destructive-foreground: #130800;
+    --ring: #735b49;
+    --overlay: #ffffff;
+    --overlay-foreground: #ffffff;
+    --muted-dialog: #eaeaea;
+  }
+  .dark {
+    --background-image: url('assets/backgroundDarkMode.webp');
+    --background: #ffffff;
+    --foreground: #000000;
+    --muted-foreground: #bbbbbb;
+    --primary: #0281c7;
+    --primary-foreground: #ffffff;
+    --secondary: #d1d5db; /* früher ciLightGrey */
+    --secondary-foreground: #2d2d30;
+    --muted: #2d3748; /* früher ciGrey       */
+    --muted-light: #3a4557;
+    --accent: #2d2d30; /* früher ciDarkGrey   */
+    --accent-light: #3c3f45;
+    --input: #e2e8f0;
+    --card: #00000000;
+    --card-foreground: #ffffff;
+    --popover: #ffffff;
+    --popover-foreground: #0f172a;
+    --border: #cbd4e4; /* 214.3 31.8% 91.4%  */
+    --destructive: #ff0000; /* 0 100% 50%         */
+    --destructive-foreground: #ecf7ff; /* 210 40% 98%  */
+    --ring: #8ca4b6; /* 215 20.2% 65.1%    */
+    --overlay: #1e2938;
+    --overlay-foreground: #ffffff;
+    --muted-dialog: #1e293b;
+  }
+}
+
+@layer components {
+  .gradient-box {
+    border-width: 4px !important;
+    background:
+      var(--background-image) padding-box,
+      linear-gradient(to right top, #88d840, #0081c6) border-box;
+    border-radius: 4px;
+    border-style: solid;
+    border-color: transparent;
   }
 }
 
@@ -19,6 +102,20 @@
   100% {
     transform: translateX(0);
     opacity: 1;
+  }
+}
+
+.blinking {
+  animation-delay: 0.5s;
+  animation-name: blink-animation;
+  animation-duration: 0.7s;
+  animation-timing-function: ease-out;
+}
+
+@keyframes blink-animation {
+  50% {
+    opacity: 0.5;
+    background-color: var(--primary);
   }
 }
 
@@ -37,14 +134,9 @@
   }
 }
 
-.bg-global {
-  @apply bg-cover bg-center bg-no-repeat;
-  background-image: url('./assets/background.jpg');
-}
-
 iframe {
   @apply bg-cover bg-center bg-no-repeat;
-  background-image: url('./assets/background.jpg');
+  background-image: url('./assets/backgroundDarkMode.webp');
 }
 
 .ql-editor,
@@ -60,4 +152,22 @@ iframe {
   -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 1);
   -moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 1);
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 1);
+}
+
+.ql-stroke,
+.ql-picker-label:hover .ql-stroke {
+  stroke: white !important;
+}
+
+.ql-active .ql-stroke {
+  stroke: white !important;
+}
+
+button:hover .ql-fill,
+.ql-picker-label:hover .ql-fill {
+  stroke: white !important;
+}
+
+.ql-active .ql-fill {
+  stroke: white !important;
 }

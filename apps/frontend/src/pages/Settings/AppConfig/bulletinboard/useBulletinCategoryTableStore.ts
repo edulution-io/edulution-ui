@@ -1,8 +1,21 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { create, StoreApi, UseBoundStore } from 'zustand';
 import eduApi from '@/api/eduApi';
 import {
   BULLETIN_BOARD_EDU_API_ENDPOINT,
   BULLETIN_CATEGORY_EDU_API_ENDPOINT,
+  BULLETIN_CATEGORY_POSITION_EDU_API_ENDPOINT,
   BULLETIN_CATEGORY_WITH_PERMISSION_EDU_API_ENDPOINT,
 } from '@libs/bulletinBoard/constants/apiEndpoints';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
@@ -21,6 +34,7 @@ const initialValues = {
   nameExistsAlready: false,
   isDeleteDialogOpen: false,
   isDeleteDialogLoading: false,
+  isCategoryPositionLoading: false,
   error: null,
 };
 
@@ -30,6 +44,21 @@ const useBulletinCategoryTableStore: UseBoundStore<StoreApi<BulletinCategoryTabl
     setIsLoading: (isLoading) => set({ isLoading }),
     setIsDialogOpen: (isOpen) => set({ isDialogOpen: isOpen }),
     setIsDeleteDialogOpen: (isOpen) => set({ isDeleteDialogOpen: isOpen }),
+
+    setCategoryPosition: async (categoryId, position) => {
+      set({ error: null, isCategoryPositionLoading: true });
+      try {
+        await eduApi.post<BulletinCategoryResponseDto[]>(BULLETIN_CATEGORY_POSITION_EDU_API_ENDPOINT, {
+          categoryId,
+          position,
+        });
+        toast.success(i18n.t('bulletinboard.categoryPositionChanged'));
+      } catch (error) {
+        handleApiError(error, set);
+      } finally {
+        set({ isCategoryPositionLoading: false });
+      }
+    },
 
     addNewCategory: async (category) => {
       set({ error: null, isLoading: true });
@@ -66,7 +95,7 @@ const useBulletinCategoryTableStore: UseBoundStore<StoreApi<BulletinCategoryTabl
     checkIfNameAllReadyExists: async (name): Promise<void> => {
       try {
         set({ isNameCheckingLoading: true });
-        const response = await eduApi.post<{ exists: boolean }>(`${BULLETIN_CATEGORY_EDU_API_ENDPOINT}/${name}`);
+        const response = await eduApi.get<{ exists: boolean }>(`${BULLETIN_CATEGORY_EDU_API_ENDPOINT}/${name}`);
         set({ nameExistsAlready: response.data.exists });
       } catch (error) {
         set({ nameExistsAlready: true });

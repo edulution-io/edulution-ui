@@ -1,16 +1,26 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import NameInputWithAvailability from '@/pages/BulletinBoard/components/NameInputWithAvailability';
 import DialogSwitch from '@/components/shared/DialogSwitch';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
-import AttendeeDto from '@libs/user/types/attendee.dto';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { Form } from '@/components/ui/Form';
 import React from 'react';
-import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import { UseFormReturn } from 'react-hook-form';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import { useTranslation } from 'react-i18next';
 import useUserStore from '@/store/UserStore/UserStore';
 import useGroupStore from '@/store/GroupStore';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 
 interface CreateAndUpdateBulletinCategoryBodyProps {
   handleFormSubmit: (e: React.FormEvent) => void;
@@ -29,11 +39,11 @@ const CreateAndUpdateBulletinCategoryBody = ({
 
   const { setValue, watch } = form;
 
-  const handleVisibleAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
+  const handleVisibleAttendeesChange = (attendees: AttendeeDto[]) => {
     setValue('visibleForUsers', attendees, { shouldValidate: true });
   };
 
-  const handleEditableAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
+  const handleEditableAttendeesChange = (attendees: AttendeeDto[]) => {
     setValue('editableByUsers', attendees, { shouldValidate: true });
   };
 
@@ -64,31 +74,31 @@ const CreateAndUpdateBulletinCategoryBody = ({
             form.setValue('isActive', isChecked);
           }}
         />
-        <p className="pt-4 text-lg font-bold text-foreground">
+        <p className="pt-4 text-lg font-bold text-background">
           {t('bulletinboard.categories.visibleByUsersAndGroupsTitle')}
         </p>
-        <p className="text-foreground">{t('bulletinboard.categories.visibleByUsersAndGroups')}:</p>
+        <p className="text-background">{t('bulletinboard.categories.visibleByUsersAndGroups')}:</p>
         <SearchUsersOrGroups
-          users={watch('visibleForUsers') as AttendeeDto[]}
+          users={watch('visibleForUsers')}
           onSearch={searchAttendees}
           onUserChange={handleVisibleAttendeesChange}
-          groups={watch('visibleForGroups') as MultipleSelectorGroup[]}
+          groups={watch('visibleForGroups')}
           onGroupSearch={searchGroups}
           onGroupsChange={(groups) => setValue('visibleForGroups', groups, { shouldValidate: true })}
-          variant="light"
+          variant="dialog"
         />
-        <p className="pt-4 text-lg font-bold text-foreground">
+        <p className="pt-4 text-lg font-bold text-background">
           {t('bulletinboard.categories.editableByUsersAndGroupsTitle')}
         </p>
-        <p className="text-foreground">{t('bulletinboard.categories.editableByUsersAndGroups')}:</p>
+        <p className="text-background">{t('bulletinboard.categories.editableByUsersAndGroups')}:</p>
         <SearchUsersOrGroups
-          users={watch('editableByUsers') as AttendeeDto[]}
+          users={watch('editableByUsers')}
           onSearch={searchAttendees}
           onUserChange={handleEditableAttendeesChange}
-          groups={watch('editableByGroups') as MultipleSelectorGroup[]}
+          groups={watch('editableByGroups')}
           onGroupSearch={searchGroups}
           onGroupsChange={(groups) => setValue('editableByGroups', groups, { shouldValidate: true })}
-          variant="light"
+          variant="dialog"
         />
       </form>
     </Form>

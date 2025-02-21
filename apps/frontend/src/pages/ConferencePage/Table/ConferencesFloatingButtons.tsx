@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
@@ -18,7 +30,8 @@ import { useTranslation } from 'react-i18next';
 const ConferencesFloatingButtons: React.FC = () => {
   const { t } = useTranslation();
   const { openCreateConferenceDialog } = useCreateConferenceDialogStore();
-  const { joinConference, setSelectedConference, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
+  const { joinConference, joinConferenceUrl, setSelectedConference, setJoinConferenceUrl } =
+    useConferenceDetailsDialogStore();
   const { selectedRows, toggleConferenceRunningState, getConferences, setIsDeleteConferencesDialogOpen, conferences } =
     useConferenceStore();
   const selectedConferenceIds = Object.keys(selectedRows);
@@ -29,15 +42,20 @@ const ConferencesFloatingButtons: React.FC = () => {
   const startOrStopConference = async () => {
     if (firstSelectedConference) {
       const { meetingID, isRunning } = firstSelectedConference;
-      void toggleConferenceRunningState(meetingID, isRunning);
+      const wasConferenceStateToggled = await toggleConferenceRunningState(meetingID, isRunning);
       if (isRunning) {
         void joinConference(meetingID);
+      } else if (joinConferenceUrl.includes(meetingID)) {
+        setJoinConferenceUrl('');
+      }
+
+      if (wasConferenceStateToggled) {
+        await delay(5000);
+        toast.info(t(`conferences.${isRunning ? 'stopped' : 'started'}`));
       } else {
         setJoinConferenceUrl('');
       }
-      await delay(5000);
       await getConferences();
-      toast.info(t(`conferences.${isRunning ? 'stopped' : 'started'}`));
     }
   };
 

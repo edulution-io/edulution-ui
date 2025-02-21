@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import { FaWifi } from 'react-icons/fa';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
@@ -112,15 +124,15 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
       <button
         type="button"
         className={cn(
-          'relative z-10 rounded-full p-1.5',
-          'group-hover:bg-ciDarkGrey group-hover:text-foreground',
-          button.defaultColor || (button.value ? 'bg-ciGreen text-foreground' : 'bg-ciRed'),
+          'relative rounded-full p-1.5',
+          'group-hover:bg-accent group-hover:text-background',
+          button.defaultColor || (button.value ? 'bg-ciGreen text-background' : 'bg-ciRed'),
         )}
         title={t(button.title)}
         onClick={(e) => onButtonClick(e, button)}
       >
         <button.icon className="text-lg" />
-        <div className="absolute right-0 top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-xl bg-ciDarkGrey px-2 text-background group-hover:flex">
+        <div className="absolute right-0 top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-xl bg-accent px-2 text-background group-hover:flex">
           {t(`classmanagement.${button.title}`)} {t(getButtonDescription(button.value))}
         </div>
       </button>

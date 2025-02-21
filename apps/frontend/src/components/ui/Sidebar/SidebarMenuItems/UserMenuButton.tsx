@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -6,12 +18,17 @@ import { USER_SETTINGS_SECURITY_PATH } from '@libs/userSettings/constants/user-s
 import Avatar from '@/components/shared/Avatar';
 import useLogout from '@/hooks/useLogout';
 import DropdownMenu from '@/components/shared/DropdownMenu';
+import useUserStore from '@/store/UserStore/UserStore';
+import useLmnApiStore from '@/store/useLmnApiStore';
 
 const UserMenuButton: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const auth = useAuth();
   const handleLogout = useLogout();
+  const { user } = useUserStore();
+  const { user: lmnApiUser } = useLmnApiStore();
+  const thumbnailPhoto = lmnApiUser?.thumbnailPhoto || '';
 
   const handleUserSettingsClick = () => {
     navigate(USER_SETTINGS_SECURITY_PATH);
@@ -29,7 +46,10 @@ const UserMenuButton: React.FC = () => {
               <p className="text-md font-bold md:hidden">
                 {auth?.user?.profile?.given_name ?? ''} {auth?.user?.profile?.family_name ?? ''}
               </p>
-              <Avatar />
+              <Avatar
+                user={{ username: user?.username || '', firstName: user?.firstName, lastName: user?.lastName }}
+                imageSrc={thumbnailPhoto}
+              />
             </div>
           }
           items={[

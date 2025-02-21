@@ -1,5 +1,16 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useRef, useState } from 'react';
-import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
 import cn from '@libs/common/utils/className';
@@ -10,13 +21,15 @@ export type DropdownOptions = {
   name: string;
 };
 
+type DropdownVariant = 'dialog' | 'default';
+
 interface DropdownProps {
   options: DropdownOptions[];
   selectedVal: string;
   handleChange: (value: string) => void;
   openToTop?: boolean;
   classname?: string;
-  variant?: 'light' | 'dark';
+  variant?: DropdownVariant;
 }
 
 const DropdownSelect: React.FC<DropdownProps> = ({
@@ -25,7 +38,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
   handleChange,
   openToTop = false,
   classname,
-  variant = 'dark',
+  variant = 'default',
 }) => {
   const { t } = useTranslation();
   const [query, setQuery] = useState<string>('');
@@ -61,8 +74,8 @@ const DropdownSelect: React.FC<DropdownProps> = ({
   return (
     <div
       className={cn(styles.dropdown, classname, {
-        [styles.dark]: variant === 'dark',
-        [styles.light]: variant === 'light',
+        [styles.default]: variant === 'default',
+        [styles.dialog]: variant === 'dialog',
       })}
       ref={dropdownRef}
     >
@@ -78,30 +91,30 @@ const DropdownSelect: React.FC<DropdownProps> = ({
             }}
             onClickCapture={() => setIsOpen((prevVal) => !prevVal)}
             disabled={options.length === 0}
-            className={clsx({
-              'bg-white text-black': variant === 'light',
-              'bg-ciDarkGrey text-ciLightGrey': variant === 'dark',
+            className={cn({
+              'bg-background text-foreground': variant === 'default',
+              'bg-muted text-secondary': variant === 'dialog',
             })}
           />
         </div>
-        <div className={clsx(styles.arrow, { [styles.open]: isOpen, [styles.up]: openToTop })} />
       </div>
+      <div className={cn(styles.arrow, { [styles.open]: isOpen, [styles.up]: openToTop })} />
       <div
-        className={clsx(styles.options, {
+        className={cn('scrollbar-thin', styles.options, {
           [styles.open]: isOpen,
           [styles.up]: openToTop,
-          'bg-white text-black': variant === 'light',
-          'bg-ciDarkGrey text-ciLightGrey': variant === 'dark',
+          'bg-background text-foreground': variant === 'default',
+          'bg-muted text-secondary': variant === 'dialog',
         })}
       >
         {filter(options).map((option) => (
           <div
             key={option.id}
             onClickCapture={() => selectOption(option)}
-            className={clsx(styles.option, {
+            className={cn(styles.option, {
               [styles.selected]: t(option.name) === selectedVal,
-              'hover:bg-gray-200': variant === 'light',
-              'bg-ciDarkGrey hover:bg-white': variant === 'dark',
+              'hover:bg-gray-200': variant === 'default',
+              'bg-muted hover:bg-secondary': variant === 'dialog',
             })}
           >
             {t(option.name)}

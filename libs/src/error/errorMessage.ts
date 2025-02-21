@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
@@ -11,6 +23,8 @@ import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
+import DockerErrorMessages from '@libs/docker/constants/dockerErrorMessages';
+import VeyonErrorMessages from '@libs/veyon/types/veyonErrorMessages';
 
 type ErrorMessage =
   | CommonErrorMessages
@@ -25,6 +39,8 @@ type ErrorMessage =
   | MailsErrorMessages
   | SurveyErrorMessages
   | BulletinBoardErrorMessage
-  | SurveyAnswerErrorMessages;
+  | SurveyAnswerErrorMessages
+  | DockerErrorMessages
+  | VeyonErrorMessages;
 
 export default ErrorMessage;

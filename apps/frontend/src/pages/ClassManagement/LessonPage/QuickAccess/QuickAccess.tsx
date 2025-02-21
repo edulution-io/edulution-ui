@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useEffect } from 'react';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import GroupsColumn from '@/pages/ClassManagement/LessonPage/QuickAccess/GroupsColumn';
@@ -27,7 +39,8 @@ const QuickAccess = () => {
     fetchUserSchoolClasses,
     userSchoolClasses,
     userProjects,
-    isLoading,
+    areProjectsLoading,
+    areSchoolClassesLoading,
     isRoomLoading,
   } = useClassManagementStore();
 
@@ -77,7 +90,7 @@ const QuickAccess = () => {
       translationId: 'myClasses',
       createFunction: undefined,
       icon: <MdGroups className="h-7 w-7" />,
-      isLoading,
+      isLoading: areSchoolClassesLoading,
       groups: getGroupsWhereUserIsMember(userSchoolClasses),
     },
     {
@@ -87,19 +100,19 @@ const QuickAccess = () => {
       updateFunction: updateProject,
       removeFunction: deleteProject,
       icon: <FaUsersGear className="h-7 w-7" />,
-      isLoading,
+      isLoading: areProjectsLoading,
       groups: getGroupsWhereUserIsMember(userProjects),
     },
   ];
 
   return (
     <div className="max-h-[calc(100vh-70px)] overflow-y-auto scrollbar-thin ">
-      <h3 className="mt-2 text-center">{t('quickAccess')}</h3>
+      <h3 className="mt-2 text-center text-background">{t('quickAccess')}</h3>
       <div className="my-4 flex flex-wrap">
         {groupColumns.map((item) => (
           <div
             key={item.name}
-            className="mb-8 w-full px-5 md:w-1/3"
+            className="mb-8 w-full px-5 text-background md:w-1/3"
           >
             <GroupsColumn column={item} />
           </div>

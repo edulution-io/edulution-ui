@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -38,34 +50,32 @@ const AccountInformation = () => {
       variant="collaboration"
       className="min-h-[100%]"
     >
-      <CardContent>
-        <div className="flex flex-col gap-2">
-          <h4 className="mb-4 font-bold">{t('accountData.account_info')}</h4>
-          {userInfoFields.map((field) => (
-            <Field
-              key={`userInfoField-${field.name}`}
-              value={field.value}
-              labelTranslationId={field.label}
-              readOnly={field.readOnly}
-              variant="lightGrayDisabled"
-            />
-          ))}
-          <Button
-            className="mt-4"
-            variant="btn-collaboration"
-            size="sm"
-            onClick={() => navigate(USER_SETTINGS_SECURITY_PATH)}
-          >
-            {t('accountData.change_password')}
-          </Button>
-          <Button
-            variant="btn-collaboration"
-            size="sm"
-            onClick={() => navigate(USER_SETTINGS_USER_DETAILS_PATH)}
-          >
-            {t('accountData.change_my_data')}
-          </Button>
-        </div>
+      <CardContent className="flex flex-col gap-2">
+        <h4 className="mb-4 font-bold">{t('accountData.account_info')}</h4>
+        {userInfoFields.map((field) => (
+          <Field
+            key={`userInfoField-${field.name}`}
+            value={field.value}
+            labelTranslationId={field.label}
+            readOnly={field.readOnly}
+            variant="lightGrayDisabled"
+          />
+        ))}
+        <Button
+          className="mt-4"
+          variant="btn-collaboration"
+          size="sm"
+          onClick={() => navigate(USER_SETTINGS_SECURITY_PATH)}
+        >
+          {t('accountData.change_password')}
+        </Button>
+        <Button
+          variant="btn-collaboration"
+          size="sm"
+          onClick={() => navigate(USER_SETTINGS_USER_DETAILS_PATH)}
+        >
+          {t('accountData.change_my_data')}
+        </Button>
       </CardContent>
     </Card>
   );

@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
@@ -61,7 +73,7 @@ const UserPasswordDialogBody = ({
   };
 
   return (
-    <div className="flex flex-col text-base text-foreground">
+    <div className="flex flex-col text-base text-background">
       <table className="w-full table-fixed">
         <tbody>
           <tr>
@@ -76,11 +88,11 @@ const UserPasswordDialogBody = ({
                   <FormField
                     name="firstPassword"
                     form={form}
-                    variant="default"
                     type="password"
                     className="w-full flex-grow"
                     value={form.watch('firstPassword')}
                     onChange={(e) => form.setValue('firstPassword', e.target.value)}
+                    variant="dialog"
                   />
                 </div>
                 <Button
@@ -111,8 +123,8 @@ const UserPasswordDialogBody = ({
                   <FormField
                     name="currentPassword"
                     form={form}
-                    variant="default"
                     type="password"
+                    variant="dialog"
                   />
                 </div>
                 <Button

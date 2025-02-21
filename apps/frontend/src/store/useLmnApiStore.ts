@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
@@ -121,7 +133,12 @@ const useLmnApiStore = create<UseLmnApiStore>(
         set({ isPatchingUserLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          await eduApi.post<null>(`${USER}`, { userDetails }, { headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken } });
+          const { data } = await eduApi.patch<UserLmnInfo>(
+            `${USER}`,
+            { userDetails },
+            { headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken } },
+          );
+          set({ user: data });
         } catch (error) {
           handleApiError(error, set);
         } finally {

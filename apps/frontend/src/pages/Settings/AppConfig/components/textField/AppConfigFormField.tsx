@@ -1,17 +1,27 @@
-import React from 'react';
-import { z } from 'zod';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import React, { HTMLInputTypeAttribute } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Control, FieldValues, Path } from 'react-hook-form';
+import { Control, FieldValues, Path, PathValue } from 'react-hook-form';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
-import formSchema from '@/pages/Settings/AppConfig/appConfigSchema';
 import { FormDescription, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
 
 type AppConfigFormFieldProps<T extends FieldValues> = {
   fieldPath: Path<T>;
-  control: Control<z.infer<typeof formSchema>, T>;
+  control: Control<T>;
   option: AppConfigExtendedOption;
-  type?: 'password' | 'text';
+  type?: HTMLInputTypeAttribute;
 };
 
 const AppConfigFormField = <T extends FieldValues>({
@@ -26,6 +36,7 @@ const AppConfigFormField = <T extends FieldValues>({
     <FormFieldSH
       control={control}
       name={fieldPath}
+      defaultValue={'' as PathValue<T, Path<T>>}
       render={({ field }) => (
         <FormItem>
           <div>{t(option.title)}</div>
@@ -34,7 +45,6 @@ const AppConfigFormField = <T extends FieldValues>({
               autoComplete="new-password"
               {...field}
               type={type}
-              variant="lightGray"
             />
           </FormControl>
           <FormDescription>{t(option.description)}</FormDescription>

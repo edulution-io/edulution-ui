@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
@@ -43,7 +55,7 @@ const DeleteBulletinsCategoriesDialog = ({ trigger }: DeleteBulletinsCategoriesD
     if (isDeleteDialogLoading) return <CircleLoader />;
 
     return (
-      <div className="text-foreground">
+      <div className="text-background">
         {error ? (
           <>
             {t('bulletinboard.error')}: {error.message}
@@ -52,7 +64,7 @@ const DeleteBulletinsCategoriesDialog = ({ trigger }: DeleteBulletinsCategoriesD
           <>
             <div>{t('bulletinboard.confirmSingleCategoryDelete')}</div>
             <div className="m-2 font-bold">{selectedCategory.name}</div>
-            <div className="mt-3 rounded-lg border border-red-400 bg-red-200 p-3">
+            <div className="mt-3 rounded-lg border border-red-400 p-3">
               {t('bulletinboard.confirmSingleCategoryDeleteWarning')}
             </div>
           </>

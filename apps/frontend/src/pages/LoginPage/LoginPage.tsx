@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
@@ -135,7 +147,7 @@ const LoginPage: React.FC = () => {
       defaultValue=""
       render={({ field }) => (
         <FormItem>
-          <p className="font-bold">{label}</p>
+          <p className="font-bold text-foreground">{label}</p>
           <FormControl>
             <Input
               {...field}
@@ -147,14 +159,17 @@ const LoginPage: React.FC = () => {
               data-testid={`test-id-login-page-${fieldName}-input`}
             />
           </FormControl>
-          <FormMessage className="text-p" />
+          <FormMessage className="text-p text-foreground" />
         </FormItem>
       )}
     />
   );
 
   return (
-    <Card variant="modal">
+    <Card
+      variant="modal"
+      className="bg-background"
+    >
       <img
         src={DesktopLogo}
         alt="edulution"
@@ -177,7 +192,7 @@ const LoginPage: React.FC = () => {
             />
           ) : (
             <>
-              {renderFormField('username', t('common.username'), undefined, true)}
+              {renderFormField('username', t('common.username'), 'text', true)}
               {renderFormField('password', t('common.password'), 'password')}
             </>
           )}

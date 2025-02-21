@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { RowSelectionState } from '@tanstack/react-table';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import eduApi from '@/api/eduApi';
@@ -9,9 +21,11 @@ import ContentType from '@libs/filesharing/types/contentType';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
 import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
-import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeExtension';
+import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import getFrontEndUrl from '@libs/common/utils/getFrontEndUrl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import delay from '@libs/common/utils/delay';
+import { ResponseType } from '@libs/common/types/http-methods';
 
 type UseFileSharingStore = {
   files: DirectoryFileDTO[];
@@ -36,9 +50,13 @@ type UseFileSharingStore = {
   isEditorLoading: boolean;
   downloadLinkURL: string;
   publicDownloadLink: string | null;
+  setPublicDownloadLink: (publicDownloadLink: string) => void;
   isError: boolean;
+  currentlyDisabledFiles: Record<string, boolean>;
+  startFileIsCurrentlyDisabled: (filename: string, isLocked: boolean, durationMs: number) => Promise<void>;
   setIsLoading: (isLoading: boolean) => void;
   setCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => void;
+  resetCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => Promise<void>;
   setMountPoints: (mountPoints: DirectoryFileDTO[]) => void;
   downloadFile: (filePath: string) => Promise<string | undefined>;
   getDownloadLinkURL: (filePath: string, filename: string) => Promise<string | undefined>;
@@ -62,6 +80,7 @@ const initialState = {
   publicDownloadLink: null,
   isEditorLoading: false,
   isFullScreenEditingEnabled: false,
+  currentlyDisabledFiles: {},
 };
 
 type PersistedFileManagerStore = (
@@ -77,6 +96,8 @@ const useFileSharingStore = create<UseFileSharingStore>(
       setCurrentPath: (path: string) => {
         set({ currentPath: path });
       },
+
+      setPublicDownloadLink: (publicDownloadLink) => set({ publicDownloadLink }),
 
       fetchDownloadLinks: async (file: DirectoryFileDTO | null) => {
         try {
@@ -103,12 +124,13 @@ const useFileSharingStore = create<UseFileSharingStore>(
       },
 
       setCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => {
-        const { currentlyEditingFile } = get();
-        if (currentlyEditingFile?.etag !== fileToPreview?.etag) {
-          set({ currentlyEditingFile: fileToPreview });
-        } else {
-          set({ currentlyEditingFile });
-        }
+        set({ currentlyEditingFile: fileToPreview });
+      },
+
+      resetCurrentlyEditingFile: async (fileToPreview: DirectoryFileDTO | null) => {
+        set({ currentlyEditingFile: null });
+        await delay(1);
+        set({ currentlyEditingFile: fileToPreview });
       },
 
       setPathToRestoreSession: (path: string) => {
@@ -156,7 +178,7 @@ const useFileSharingStore = create<UseFileSharingStore>(
             `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_STREAM}`,
             {
               params: { filePath },
-              responseType: 'blob',
+              responseType: ResponseType.BLOB,
             },
           );
 
@@ -192,6 +214,19 @@ const useFileSharingStore = create<UseFileSharingStore>(
           return '';
         } finally {
           set({ isLoading: false });
+        }
+      },
+
+      startFileIsCurrentlyDisabled: async (filename, isLocked, durationMs) => {
+        set((state) => ({
+          currentlyDisabledFiles: {
+            ...state.currentlyDisabledFiles,
+            [filename]: isLocked,
+          },
+        }));
+        if (durationMs) {
+          await delay(durationMs);
+          set({ currentlyDisabledFiles: { filename: !isLocked } });
         }
       },
 

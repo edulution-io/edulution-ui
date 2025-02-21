@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
@@ -11,6 +23,7 @@ import Separator from '@/components/ui/Separator';
 import Field from '@/components/shared/Field';
 import Label from '@/components/ui/Label';
 import BadgeField from '@/components/shared/BadgeField';
+import UserImageConfig from './UserImageConfig';
 
 const UserSettingsDetailsPage: React.FC = () => {
   const { t } = useTranslation();
@@ -44,16 +57,19 @@ const UserSettingsDetailsPage: React.FC = () => {
         className="w-full flex-1 overflow-auto pl-3 pr-3.5 scrollbar-thin"
         style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
       >
+        <UserImageConfig />
+        <Separator className="my-4 bg-ciGrey" />
+
         <div className="md:max-w-[75%]">
-          <h3>{t('usersettings.details.userInformation')}</h3>
-          <div className="py-4 text-ciGrey">
+          <h3 className="text-background">{t('usersettings.details.userInformation')}</h3>
+          <div className="py-4 text-background">
             {userInfo.map((field) => (
               <Field
                 key={`userInfoField-${field.name}`}
                 value={field.value}
                 labelTranslationId={field.label}
-                variant="lightGrayDisabled"
                 className="mb-4 mt-2"
+                disabled
               />
             ))}
 
@@ -67,18 +83,18 @@ const UserSettingsDetailsPage: React.FC = () => {
             />
           </div>
         </div>
-        <Separator className="my-4 bg-ciGrey" />
+        <Separator className="my-4 bg-muted" />
 
-        <h3>{t('usersettings.details.title')}</h3>
+        <h3 className="text-background">{t('usersettings.details.title')}</h3>
         <div className="mb-4 space-y-4 py-4">
           <UserSettingsDetailsForm />
         </div>
 
-        <Separator className="my-4 bg-ciGrey" />
+        <Separator className="my-4 bg-muted" />
 
         <div className="md:max-w-[75%]">
-          <h3>{t('usersettings.details.quotas')}</h3>
-          <div className="space-y-4 py-4 text-ciGrey">
+          <h3 className="text-background">{t('usersettings.details.quotas')}</h3>
+          <div className="py-4 text-muted">
             <Quota />
           </div>
 
