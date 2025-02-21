@@ -93,8 +93,7 @@ class SurveyAnswersService {
     return createdSurveys || [];
   }
 
-  async getOpenSurveys(user: JWTUser): Promise<Survey[]> {
-    const currentDate = new Date();
+  async getOpenSurveys(user: JWTUser, currentDate: Date = new Date()): Promise<Survey[]> {
     const query = {
       $or: [
         {
