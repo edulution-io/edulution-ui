@@ -16,11 +16,14 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { getDecryptedPassword } from '@libs/common/utils';
+import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
 import USER_DB_PROJECTION from '@libs/user/constants/user-db-projections';
+import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
+import { ALL_USERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
 import GroupsService from '../groups/groups.service';
@@ -64,11 +67,10 @@ class UsersService {
     return result.deletedCount > 0;
   }
 
-  async findAllCachedUsers(token: string, school: string): Promise<Record<string, LDAPUser[]>> {
-    const cachedUsers = await this.cacheManager.get<Record<string, LDAPUser[]>>('allUsersBySchool');
-
-    if (cachedUsers && cachedUsers[school]) {
-      return { [school]: cachedUsers[school] };
+  async findAllCachedUsers(token: string, schoolName: string): Promise<LDAPUser[]> {
+    const cachedUsers = await this.cacheManager.get<LDAPUser[]>(ALL_USERS_CACHE_KEY + schoolName);
+    if (cachedUsers) {
+      return cachedUsers;
     }
 
     const fetchedUsers = await GroupsService.fetchAllUsers(token);
@@ -87,14 +89,21 @@ class UsersService {
       {} as Record<string, LDAPUser[]>,
     );
 
-    await this.cacheManager.set('allUsersBySchool', usersBySchool);
-    return { [school]: usersBySchool[school] || [] };
+    await Promise.all(
+      Object.entries(usersBySchool).map(([school, userList]) => {
+        return this.cacheManager.set(ALL_USERS_CACHE_KEY + school, userList, DEFAULT_CACHE_TTL_MS);
+      }),
+    );
+
+    await this.cacheManager.set(ALL_USERS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, fetchedUsers, DEFAULT_CACHE_TTL_MS);
+
+    return usersBySchool[schoolName] || [];
   }
 
-  async searchUsersByName(token: string, school: string, name: string): Promise<Partial<User>[]> {
+  async searchUsersByName(token: string, schoolName: string, name: string): Promise<Partial<User>[]> {
     const searchString = name.toLowerCase();
-    const usersBySchool = await this.findAllCachedUsers(token, school);
-    const users = usersBySchool[school] || [];
+
+    const users = await this.findAllCachedUsers(token, schoolName);
 
     return users
       .filter(
@@ -103,7 +112,11 @@ class UsersService {
           user.lastName?.toLowerCase().includes(searchString) ||
           user.username?.toLowerCase().includes(searchString),
       )
-      .map((u) => ({ firstName: u.firstName, lastName: u.lastName, username: u.username }));
+      .map((u) => ({
+        firstName: u.firstName,
+        lastName: u.lastName,
+        username: u.username,
+      }));
   }
 
   async getPassword(username: string): Promise<string> {
