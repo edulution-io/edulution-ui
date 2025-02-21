@@ -41,7 +41,9 @@ import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
+import CreateWorkingDirectoryDto from '@libs/classManagement/types/createWorkingDirectoryDto';
 import UsersService from '../users/users.service';
+import FilesharingService from '../filesharing/filesharing.service';
 
 @Injectable()
 class LmnApiService {
@@ -51,7 +53,10 @@ class LmnApiService {
 
   private queue: Promise<unknown> = Promise.resolve();
 
-  constructor(private readonly userService: UsersService) {
+  constructor(
+    private readonly userService: UsersService,
+    private readonly fileSharingService: FilesharingService,
+  ) {
     const httpsAgent = new https.Agent({
       rejectUnauthorized: false,
     });
@@ -703,6 +708,24 @@ class LmnApiService {
         LmnApiService.name,
       );
     }
+  }
+
+  async handleCreateWorkingDirectory(createWorkingDirectoryDto: CreateWorkingDirectoryDto): Promise<void> {
+    const { teacher } = createWorkingDirectoryDto;
+    const { members } = createWorkingDirectoryDto.schoolClass;
+
+    await Promise.all(
+      members.map(async (member) => {
+        const unixPath = LmnApiService.convertWindowsToUnixPath(member.homeDirectory);
+        return this.fileSharingService.createFolder(member.name, unixPath, teacher);
+      }),
+    );
+  }
+
+  private static convertWindowsToUnixPath(windowsPath: string): string {
+    const pathWithoutServer = windowsPath.replace(/^\\\\[^\\]+\\/, '');
+    const pathWithoutFirstElement = pathWithoutServer.split('\\').slice(1).join('/');
+    return `${pathWithoutFirstElement}/transfer`;
   }
 }
 

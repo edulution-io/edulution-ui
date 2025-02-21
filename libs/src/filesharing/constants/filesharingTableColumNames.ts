@@ -10,15 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Module } from '@nestjs/common';
-import LmnApiService from './lmnApi.service';
-import { LmnApiController } from './lmnApi.controller';
-import FilesharingModule from '../filesharing/filesharing.module';
+const FILESHARING_TABLE_COLUM_NAMES = {
+  SELECT_FILENAME: 'select-filename',
+  LAST_MODIFIED: 'lastmod',
+  SIZE: 'size',
+  TYPE: 'type',
+} as const;
 
-@Module({
-  providers: [LmnApiService],
-  imports: [FilesharingModule],
-  controllers: [LmnApiController],
-  exports: [LmnApiService],
-})
-export default class LmnApiModule {}
+export default FILESHARING_TABLE_COLUM_NAMES;

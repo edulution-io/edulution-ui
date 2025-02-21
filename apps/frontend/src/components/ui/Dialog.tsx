@@ -17,6 +17,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import cn from '@libs/common/utils/className';
 import i18n from '@/i18n';
+import { LAYOUT_OPTIONS, LayoutOption } from '@libs/ui/constants/layout';
 
 const Dialog = DialogPrimitive.Root;
 
@@ -88,9 +89,18 @@ const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivEleme
 );
 DialogHeader.displayName = 'DialogHeader';
 
-const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+interface DialogFooterProps extends React.HTMLAttributes<HTMLDivElement> {
+  layout?: LayoutOption;
+}
+
+const DialogFooter = ({ className, layout = LAYOUT_OPTIONS.ONE_COLUMN, ...props }: DialogFooterProps) => (
   <div
-    className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)}
+    className={cn(
+      layout === LAYOUT_OPTIONS.TWO_COLUMN
+        ? 'flex flex-col justify-between '
+        : 'flex flex-col sm:flex-row sm:justify-end sm:space-x-2',
+      className,
+    )}
     {...props}
   />
 );
