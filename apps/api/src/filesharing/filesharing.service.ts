@@ -289,11 +289,7 @@ class FilesharingService {
 
   private static async copyFile(client: AxiosInstance, originPath: string, destinationPath: string) {
     const sanitizedDestinationPath = destinationPath.replace(/\u202F/g, ' ');
-    try {
-      await FilesharingService.copyFileViaWebDAV(client, originPath, sanitizedDestinationPath);
-    } catch (error) {
-      throw new CustomHttpException(FileSharingErrorMessage.DuplicateFailed, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    await FilesharingService.copyFileViaWebDAV(client, originPath, sanitizedDestinationPath);
   }
 
   cutCollectedItems = async (username: string, originPath: string, newPath: string): Promise<WebdavStatusReplay> => {
@@ -513,7 +509,7 @@ class FilesharingService {
       },
       FileSharingErrorMessage.DuplicateFailed,
       (response: WebdavStatusReplay) => ({
-        success: response.status >= 200 && response.status < 300,
+        success: response.success,
         status: response.status,
       }),
     );
