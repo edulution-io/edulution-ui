@@ -15,11 +15,10 @@ import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import useUserStore from '@/store/UserStore/UserStore';
-import DatePicker from '@/components/shared/DatePicker';
 import Checkbox from '@/components/ui/Checkbox';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import useGroupStore from '@/store/GroupStore';
-import TimeInput from '@/components/shared/TimeInput';
+import { DateTimeInput } from '@/components/shared/DateTimePicker/DateTimeInput';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
@@ -28,7 +27,7 @@ interface SaveSurveyDialogBodyProps {
 }
 
 const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
-  const { setValue, watch, getValues } = form;
+  const { setValue, watch } = form;
   const { user } = useUserStore();
   const { searchAttendees } = useUserStore();
   const { searchGroups } = useGroupStore();
@@ -45,10 +44,6 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
 
   const handleGroupsChange = (groups: MultipleSelectorGroup[]) => {
     setValue('invitedGroups', groups, { shouldValidate: true });
-  };
-
-  const handleExpirationDateChange = (value: Date | undefined) => {
-    setValue('expires', value && value >= new Date() ? value : undefined);
   };
 
   const checkboxOptions: { name: keyof SurveyDto; label: string }[] = [
@@ -72,22 +67,11 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
         variant="dialog"
       />
       <p className="text-m font-bold text-background">{t('survey.expirationDate')}</p>
-      <div className="flex items-center">
-        {t('common.date')}
-        <div className="ml-2">
-          <DatePicker
-            selected={selectedDate ? new Date(selectedDate) : undefined}
-            onSelect={handleExpirationDateChange}
-          />
-        </div>
-      </div>
-      <div className="flex items-center text-background">
-        <TimeInput
-          form={form}
-          disabled={!getValues('expires')}
-          fieldName="expires"
-        />
-      </div>
+      <DateTimeInput
+        value={selectedDate}
+        onChange={(value: Date | undefined) => setValue('expires', value)}
+        variant="dialog"
+      />
       <p className="text-m font-bold text-background">{t('surveys.saveDialog.settingsFlags')}</p>
       {checkboxOptions.map(({ name, label }) => (
         <Checkbox
