@@ -223,8 +223,8 @@ class LmnApiService {
     }
   }
 
-  public buildStudentPath = (teacherName: string, studentNames: string[], className: string) => {
-    return studentNames.map((student) => {
+  public buildStudentPath = (teacherName: string, studentNames: string[], className: string) =>
+    studentNames.map((student) => {
       const pathToTeachersFolder = `/students/${className}/${student}/transfer/${teacherName}`;
       const pathToCollectFolder = `${pathToTeachersFolder}/_collect`;
 
@@ -233,7 +233,6 @@ class LmnApiService {
         pathToCollectFolder,
       };
     });
-  };
 
   public async toggleSchoolClassJoined(
     lmnApiToken: string,
