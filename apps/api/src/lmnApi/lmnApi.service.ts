@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import {
   EXAM_MODE_LMN_API_ENDPOINT,
@@ -104,6 +104,7 @@ class LmnApiService {
           },
         ),
       );
+
       return response.data;
     } catch (error) {
       throw new CustomHttpException(
@@ -232,6 +233,12 @@ class LmnApiService {
     const config = {
       headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
     };
+
+    if (action === 'join') {
+      //TODO create _collect and teachersFolder on start
+      const data = await this.getSchoolClass(lmnApiToken, schoolClass);
+      Logger.log(data.sophomorixMembers);
+    }
 
     try {
       const response = await this.enqueue<LmnApiSchoolClass>(() =>
