@@ -223,10 +223,23 @@ class LmnApiService {
     }
   }
 
+  public buildStudentPath = (teacherName: string, studentNames: string[], className: string) => {
+    return studentNames.map((student) => {
+      const pathToTeachersFolder = `/students/${className}/${student}/transfer/${teacherName}`;
+      const pathToCollectFolder = `${pathToTeachersFolder}/_collect`;
+
+      return {
+        pathToTeachersFolder,
+        pathToCollectFolder,
+      };
+    });
+  };
+
   public async toggleSchoolClassJoined(
     lmnApiToken: string,
     schoolClass: string,
     action: string,
+    username: string,
   ): Promise<LmnApiSchoolClass> {
     const requestUrl = `${SCHOOL_CLASSES_LMN_API_ENDPOINT}/${schoolClass}/${action}`;
 
@@ -235,9 +248,12 @@ class LmnApiService {
     };
 
     if (action === 'join') {
-      // TODO create _collect and teachersFolder on start
       const data = await this.getSchoolClass(lmnApiToken, schoolClass);
-      Logger.log(data.sophomorixMembers);
+      const studentPaths = this.buildStudentPath(username, data.sophomorixMembers, data.sophomorixSchoolname);
+      studentPaths.forEach(({ pathToTeachersFolder, pathToCollectFolder }) => {
+        Logger.log(pathToTeachersFolder);
+        Logger.log(pathToCollectFolder);
+      });
     }
 
     try {
