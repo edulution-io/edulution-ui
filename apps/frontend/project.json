@@ -41,6 +41,12 @@
           "hmr": false
         }
       }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "options": {
+        "watch": false
+      }
     }
   },
   "neverConnectToCloud": true
