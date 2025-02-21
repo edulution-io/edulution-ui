@@ -53,6 +53,10 @@ interface DataTableProps<TData, TValue> {
   };
   tableIsUsedOnAppConfigPage?: boolean;
   enableRowSelection?: boolean | ((row: Row<TData>) => boolean) | undefined;
+  textColorClass?: string;
+  showHeader?: boolean;
+  showSelectedCount?: boolean;
+  footer?: React.ReactNode;
 }
 
 const ScrollableTable = <TData, TValue>({
@@ -69,6 +73,10 @@ const ScrollableTable = <TData, TValue>({
   scrollContainerOffsetElementIds = {},
   enableRowSelection,
   tableIsUsedOnAppConfigPage = false,
+  textColorClass = 'text-muted-foreground',
+  showHeader = true,
+  showSelectedCount = true,
+  footer,
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
 
@@ -112,7 +120,7 @@ const ScrollableTable = <TData, TValue>({
     <>
       {isLoading && data?.length === 0 ? <LoadingIndicator isOpen={isLoading} /> : null}
 
-      {selectedRowsCount > 0 ? (
+      {showSelectedCount ? (
         <div
           id={selectedRowsMessageId}
           className="flex-1 text-sm text-muted-foreground"
@@ -131,7 +139,7 @@ const ScrollableTable = <TData, TValue>({
           {!tableIsUsedOnAppConfigPage && (
             <div
               id={selectedRowsMessageId}
-              className="flex-1 text-sm text-muted-foreground"
+              className={`flex-1 text-sm ${textColorClass}`}
             >
               &nbsp;
             </div>
@@ -175,20 +183,22 @@ const ScrollableTable = <TData, TValue>({
             </div>
           )}
           <Table>
-            <TableHeader
-              className="text-background scrollbar-thin"
-              id={tableHeaderId}
-            >
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
+            {showHeader && (
+              <TableHeader
+                className={`text-foreground ${textColorClass}`}
+                id={tableHeaderId}
+              >
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableHeader>
+            )}
             <TableBody className="container">
               {table.getRowModel().rows.length ? (
                 table.getRowModel().rows.map((row) => (
@@ -199,7 +209,7 @@ const ScrollableTable = <TData, TValue>({
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={`${row.id}-${cell.column.id}`}
-                        className="text-background"
+                        className={textColorClass}
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
@@ -210,7 +220,7 @@ const ScrollableTable = <TData, TValue>({
                 <TableRow>
                   <TableCell
                     colSpan={columns?.length}
-                    className="h-24 text-center text-background"
+                    className={`h-24 text-center ${textColorClass}`}
                   >
                     {t('table.noDataAvailable')}
                   </TableCell>
@@ -220,6 +230,7 @@ const ScrollableTable = <TData, TValue>({
           </Table>
         </div>
       </div>
+      {footer && <div className="max-w-[42vh] overflow-hidden text-ellipsis whitespace-nowrap">{footer}</div>}
     </>
   );
 };

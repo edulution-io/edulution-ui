@@ -13,7 +13,6 @@
 import { z } from 'zod';
 import CreateOrRenameContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/CreateOrRenameContentDialogBody';
 import DeleteContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/DeleteContentDialogBody';
-import MoveContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/MoveContentDialogBody';
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
@@ -32,6 +31,8 @@ import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
 import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
 import DocumentVendorsType from '@libs/filesharing/types/documentVendorsType';
 import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
+import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
+import MoveContentDialogWrapper from '@/pages/FileSharing/dialog/DialogBodys/MoveContentDialogWrapper';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
@@ -77,7 +78,7 @@ interface UploadFileDialogBodyConfiguration extends DialogBodyConfigurationBase 
 }
 
 interface MoveDialogBodyConfiguration extends DialogBodyConfigurationBase {
-  Component: React.ComponentType;
+  Component: React.ComponentType<MoveContentDialogBodyProps>;
 }
 
 type DialogBodyConfiguration =
@@ -220,13 +221,14 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
   },
 
   moveFileFolder: {
-    Component: MoveContentDialogBody,
+    Component: MoveContentDialogWrapper,
     titleKey: 'moveItemDialog.changeDirectory',
     submitKey: 'moveItemDialog.move',
     endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
     httpMethod: HttpMethods.PATCH,
     type: ContentType.FILE || ContentType.DIRECTORY,
     requiresForm: false,
+
     getData: (_form, currentPath, inputValues) => {
       const { moveOrCopyItemToPath, selectedItems } = inputValues;
       if (!moveOrCopyItemToPath || !selectedItems) {

@@ -10,15 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Module } from '@nestjs/common';
-import LmnApiService from './lmnApi.service';
-import { LmnApiController } from './lmnApi.controller';
-import FilesharingModule from '../filesharing/filesharing.module';
+import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 
-@Module({
-  providers: [LmnApiService],
-  imports: [FilesharingModule],
-  controllers: [LmnApiController],
-  exports: [LmnApiService],
-})
-export default class LmnApiModule {}
+export type LmnApiCollectOperationsType = (typeof LMN_API_COLLECT_OPERATIONS)[keyof typeof LMN_API_COLLECT_OPERATIONS];

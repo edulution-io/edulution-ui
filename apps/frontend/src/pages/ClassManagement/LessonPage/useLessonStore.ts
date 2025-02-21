@@ -26,6 +26,10 @@ import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
+import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
+import { toast } from 'sonner';
+import { t } from 'i18next';
+import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 
 const { PROJECT, SCHOOL_CLASSES, EXAM_MODE, MANAGEMENT_GROUPS, PRINTERS } = LMN_API_EDU_API_ENDPOINTS;
 
@@ -37,6 +41,7 @@ const initialState = {
   member: [],
   groupTypeFromStore: undefined,
   groupNameFromStore: undefined,
+  collectionType: LMN_API_COLLECT_OPERATIONS.COPY,
 };
 
 type PersistentLessonStore = (
@@ -52,6 +57,7 @@ const useLessonStore = create<LessonStore>(
       setMember: (member) => set({ member }),
       setOpenDialogType: (type) => set({ openDialogType: type }),
       setUserGroupToEdit: (group) => set({ userGroupToEdit: group }),
+      setCollectionType: (collectionType: LmnApiCollectOperationsType) => set({ collectionType }),
 
       addManagementGroup: async (group: string, users: string[]) => {
         set({ error: null, isLoading: true });
@@ -84,22 +90,32 @@ const useLessonStore = create<LessonStore>(
             ),
           });
         } catch (error) {
-          handleApiError(error, set);
+          // THIS IS A TEMPORARY FIX UNTIL THE API RETURNS A SUITABLE ERROR MESSAGE -> Files are shared but the webdav Server returns an 500 error.
+          // TODO https://github.com/edulution-io/edulution-ui/issues/217
+          // handleApiError(error, set);
         } finally {
+          toast.success(t('classmanagement.filesShared'));
           set({ isLoading: false });
         }
       },
 
-      collectFiles: async (collectFileRequestDTO: CollectFileRequestDTO[], userRole: string) => {
+      collectFiles: async (
+        collectFileRequestDTO: CollectFileRequestDTO[],
+        userRole: string,
+        type: LmnApiCollectOperationsType,
+      ) => {
         set({ error: null, isLoading: true });
-        const queryParamString = `?userRole=${encodeURIComponent(userRole)}`;
+        const queryParamString = `?type=${type}&userRole=${userRole}`;
         try {
           await eduApi.post(`${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.COLLECT}/${queryParamString}`, {
             collectFileRequestDTO,
           });
         } catch (error) {
-          handleApiError(error, set);
+          // THIS IS A TEMPORARY FIX UNTIL THE API RETURNS A SUITABLE ERROR MESSAGE -> Files are shared but the webdav Server returns an 500 error.
+          // TODO https://github.com/edulution-io/edulution-ui/issues/217
+          // handleApiError(error, set);
         } finally {
+          toast.success(t('classmanagement.filesCollected'));
           set({ isLoading: false });
         }
       },
