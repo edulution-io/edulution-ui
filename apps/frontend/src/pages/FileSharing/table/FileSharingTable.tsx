@@ -14,7 +14,7 @@ import React from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
-import FileSharingTableColumns from '@/pages/FileSharing/table/FileSharingTableColumns';
+import { FileSharingTableColumns } from '@/pages/FileSharing/table/FileSharingTableColumns';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
