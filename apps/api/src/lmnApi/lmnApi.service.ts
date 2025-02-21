@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import {
   EXAM_MODE_LMN_API_ENDPOINT,
@@ -104,6 +104,7 @@ class LmnApiService {
           },
         ),
       );
+
       return response.data;
     } catch (error) {
       throw new CustomHttpException(
@@ -222,16 +223,37 @@ class LmnApiService {
     }
   }
 
+  public buildStudentPath = (teacherName: string, studentNames: string[], className: string) =>
+    studentNames.map((student) => {
+      const pathToTeachersFolder = `/students/${className}/${student}/transfer/${teacherName}`;
+      const pathToCollectFolder = `${pathToTeachersFolder}/_collect`;
+
+      return {
+        pathToTeachersFolder,
+        pathToCollectFolder,
+      };
+    });
+
   public async toggleSchoolClassJoined(
     lmnApiToken: string,
     schoolClass: string,
     action: string,
+    username: string,
   ): Promise<LmnApiSchoolClass> {
     const requestUrl = `${SCHOOL_CLASSES_LMN_API_ENDPOINT}/${schoolClass}/${action}`;
 
     const config = {
       headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
     };
+
+    if (action === 'join') {
+      const data = await this.getSchoolClass(lmnApiToken, schoolClass);
+      const studentPaths = this.buildStudentPath(username, data.sophomorixMembers, data.sophomorixSchoolname);
+      studentPaths.forEach(({ pathToTeachersFolder, pathToCollectFolder }) => {
+        Logger.log(pathToTeachersFolder);
+        Logger.log(pathToCollectFolder);
+      });
+    }
 
     try {
       const response = await this.enqueue<LmnApiSchoolClass>(() =>
