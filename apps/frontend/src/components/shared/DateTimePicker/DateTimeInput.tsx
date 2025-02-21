@@ -1,6 +1,19 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import * as React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import cn from '@libs/common/utils/className';
+import convertDateToDateTimeInput from './utils/convertDateTimeInputToDate';
 
 export const originInputVariants = cva(['rounded'], {
   variants: {
@@ -17,32 +30,41 @@ export const originInputVariants = cva(['rounded'], {
   },
 });
 
-type DateTimeInputProps = React.InputHTMLAttributes<HTMLInputElement> &
+type ExcludedInputProps = 'value' | 'onChange';
+type DateTimeInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, ExcludedInputProps> &
   VariantProps<typeof originInputVariants> & {
+    value: Date | undefined;
+    onChange?: (value: Date | undefined) => void;
     popupColorScheme?: string;
   };
 
 const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
-  ({ className, variant, popupColorScheme = 'dark', ...props }, ref) => {
-    const date = new Date();
-    const month = date.getMonth() + 1;
-    const minimumDateString = `${date.getFullYear()}-${month < 10 ? `0${month}` : month}-${date.getDate()}T00:00`;
+  ({ className, variant, popupColorScheme = 'dark', onChange, ...props }, ref) => {
+    const minimumDateString = convertDateToDateTimeInput(new Date());
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      onChange?.(value ? new Date(value) : undefined);
+    };
+
     return (
       <div className="relative">
         <input
+          {...props}
           aria-label="Date and time"
           type="datetime-local"
+          value={props.value ? convertDateToDateTimeInput(props.value) : ''}
+          onChange={handleChange}
           style={{
             colorScheme: popupColorScheme,
           }}
           className={cn(
+            'placeholder:color:secondary flex h-9 w-[210px] rounded-md px-3 py-1 text-p text-background shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
             originInputVariants({ variant }),
-            // After merging changes from main branch, Add the className prop to the default input component
             className,
           )}
           min={minimumDateString}
           ref={ref}
-          {...props}
         />
       </div>
     );

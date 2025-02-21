@@ -46,11 +46,6 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
     setValue('invitedGroups', groups, { shouldValidate: true });
   };
 
-  const handleExpirationDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setValue('expires', new Date(value));
-  };
-
   const checkboxOptions: { name: keyof SurveyDto; label: string }[] = [
     { name: 'isAnonymous', label: 'surveys.saveDialog.isAnonymous' },
     { name: 'isPublic', label: 'surveys.saveDialog.isPublic' },
@@ -72,14 +67,11 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
         variant="dialog"
       />
       <p className="text-m font-bold text-background">{t('survey.expirationDate')}</p>
-      <div className="flex items-center">
-        <p className="text-m font-bold text-background">{t('survey.expirationDate')}</p>
-        <DateTimeInput
-          value={selectedDate?.toISOString()}
-          onChange={handleExpirationDateChange}
-          variant="dialog"
-        />
-      </div>
+      <DateTimeInput
+        value={selectedDate}
+        onChange={(value: Date | undefined) => setValue('expires', value)}
+        variant="dialog"
+      />
       <p className="text-m font-bold text-background">{t('surveys.saveDialog.settingsFlags')}</p>
       {checkboxOptions.map(({ name, label }) => (
         <Checkbox
