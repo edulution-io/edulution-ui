@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import { type ContainerInfo } from 'dockerode';
 import AppConfigBulletinCategoryTableColumn from '@/pages/Settings/AppConfig/bulletinboard/AppConfigBulletinCategoryTableColumn';
@@ -15,9 +27,9 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import DockerContainerTableColumns from '../../DockerIntegration/DockerContainerTableColumns';
 import CreateDockerContainerDialog from '../../DockerIntegration/CreateDockerContainerDialog';
 import useDockerApplicationStore from '../../DockerIntegration/useDockerApplicationStore';
-import VeyonConfigTableColumns from '../../classmgmt/VeyonConfigTableColumns';
-import useVeyonConfigTableStore from '../../classmgmt/useVeyonTableStore';
-import AddVeyonProxyDialog from '../../classmgmt/AddVeyonProxyDialog';
+import VeyonConfigTableColumns from '../../classmanagement/VeyonConfigTableColumns';
+import useVeyonConfigTableStore from '../../classmanagement/useVeyonTableStore';
+import AddVeyonProxyDialog from '../../classmanagement/AddVeyonProxyDialog';
 
 const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
   [APPS.BULLETIN_BOARD]: [
@@ -79,6 +91,22 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
       dialogBody: (
         <CreateDockerContainerDialog
           settingLocation={APPS.DESKTOP_DEPLOYMENT}
+          tableId={ExtendedOptionKeys.DOCKER_CONTAINER_TABLE}
+        />
+      ),
+      showAddButton: true,
+      filterKey: 'name',
+      filterPlaceHolderText: 'dockerOverview.filterPlaceHolderText',
+      type: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
+    }),
+  ],
+  [APPS.FILE_SHARING]: [
+    createAppConfigTableEntry<ContainerInfo, DockerContainerTableStore>({
+      columns: DockerContainerTableColumns,
+      useStore: useDockerApplicationStore,
+      dialogBody: (
+        <CreateDockerContainerDialog
+          settingLocation={APPS.FILE_SHARING}
           tableId={ExtendedOptionKeys.DOCKER_CONTAINER_TABLE}
         />
       ),

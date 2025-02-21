@@ -15,9 +15,9 @@
     <a href="https://nx.dev/">
         <img src="https://img.shields.io/badge/nx-monorepo-blue" alt="NX Monorepo" />
     </a>
-    <!-- <a href="https://github.com/edulution-io/edulution-ui/tree/master/LICENSE"> 
-        <img src="https://img.shields.io/github/license/edulution-io/edulution-io/edulution-ui?label=License" alt="Badge License" />
-    </a> -->
+    <a href="https://github.com/edulution-io/edulution-ui/tree/master/LICENSE"> 
+        <img src="https://img.shields.io/badge/License-AGPL_v3-blue.svg" alt="Badge License" />
+    </a>
     <a href="https://ask.linuxmuster.net">
         <img src="https://img.shields.io/discourse/users?logo=discourse&logoColor=white&server=https%3A%2F%2Fask.linuxmuster.net" alt="Community Forum"/>
     </a>
@@ -122,3 +122,33 @@ docker compose up -d
 ```bash
 bash <(curl -s https://get.edulution.io/installer)
 ```
+
+---
+
+### OnlyOffice in development
+
+1. Start the OnlyOffice container from the settings (http://localhost:5173/settings/filesharing), make sure the port `8088` is available.
+
+2. Enter the Only Office Integration values in the settings (http://localhost:5173/settings/filesharing):
+
+- OnlyOffice-URL: `http://host.docker.internal:8088/`
+- OnlyOffice JWT Secret: `<your-secret`
+
+3. On some systems `host.docker.internal` is not natively available without additional configuration. How to set up in Linux:
+
+- Find the host machine's IP address
+  ```bash
+  ip addr show docker0
+  ```
+- Add the mapping to `/etc/hosts`
+  ```bash
+  sudo nano /etc/hosts
+  ```
+- Add the following line (replace the IP with the actual one)
+  ```bash
+  172.17.0.1 host.docker.internal
+  ```
+- You are done. Test it with
+  ```bash
+  wget http://host.docker.internal:5173
+  ```

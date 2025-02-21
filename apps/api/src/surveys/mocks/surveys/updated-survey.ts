@@ -1,11 +1,21 @@
-import SurveyDto from '@libs/survey/types/api/survey.dto';
-import getNewSurveyId from '@libs/survey/getNewSurveyId';
-import { firstUsername, secondUsername } from '../user/usernames';
-import { firstMockUser, secondMockUser } from '../user/users';
-import { mockedParticipants } from '../user/participants';
-import { Survey } from '../../survey.schema';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
 
-export const surveyUpdateSurveyId = getNewSurveyId();
+import SurveyDto from '@libs/survey/types/api/survey.dto';
+import { Types } from 'mongoose';
+import { firstMockUser, firstUsername, mockedParticipants, secondMockUser } from '../user';
+import { Survey, SurveyDocument } from '../../survey.schema';
+
+export const surveyUpdateSurveyId = new Types.ObjectId();
 
 export const surveyUpdateInitialSurvey: Survey = {
   _id: surveyUpdateSurveyId,
@@ -22,15 +32,31 @@ export const surveyUpdateInitialSurvey: Survey = {
       },
     ],
   },
-  invitedAttendees: [],
+  invitedAttendees: mockedParticipants,
   invitedGroups: [],
   participatedAttendees: [],
   answers: [],
   saveNo: 1,
-  created: new Date('2020-11-29T00:00:00.000Z'),
+  createdAt: new Date('2020-11-29T00:00:00.000Z'),
   expires: new Date('2025-04-22T14:30:00.000Z'),
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
+  isPublic: false,
+} as unknown as SurveyDocument;
+
+export const surveyUpdateInitialSurveyDto: SurveyDto = {
+  ...surveyUpdateInitialSurvey,
+  formula: surveyUpdateInitialSurvey.formula,
+  creator: {
+    ...firstMockUser,
+    label: 'pupil1-name1',
+    value: firstUsername,
+  },
+  invitedAttendees: mockedParticipants,
+  invitedGroups: [],
+  participatedAttendees: [firstMockUser, secondMockUser],
+  answers: surveyUpdateInitialSurvey.answers.map((a) => a.toString()),
+  saveNo: 1,
   isPublic: false,
 };
 
@@ -54,12 +80,13 @@ export const surveyUpdateUpdatedSurvey: Survey = {
   invitedGroups: [],
   answers: [],
   saveNo: 2,
-  created: new Date('2020-11-29T00:00:00.000Z'),
+  createdAt: new Date('2020-11-29T00:00:00.000Z'),
   expires: new Date('2025-04-22T14:30:00.000Z'),
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
   isPublic: false,
-};
+} as unknown as SurveyDocument;
+
 export const surveyUpdateUpdatedSurveyDto: SurveyDto = {
   ...surveyUpdateUpdatedSurvey,
   formula: surveyUpdateUpdatedSurvey.formula,
@@ -70,10 +97,8 @@ export const surveyUpdateUpdatedSurveyDto: SurveyDto = {
   },
   invitedAttendees: mockedParticipants,
   invitedGroups: [],
-  participatedAttendees: [
-    { ...firstMockUser, label: 'pupil1-name1', value: firstUsername },
-    { ...secondMockUser, label: 'pupil2-name2', value: secondUsername },
-  ],
+  participatedAttendees: [firstMockUser, secondMockUser],
+  answers: surveyUpdateInitialSurvey.answers.map((a) => a.toString()),
   saveNo: 1,
   isPublic: false,
 };

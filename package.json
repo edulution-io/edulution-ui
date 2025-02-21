@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "1.0.104",
+  "version": "1.1.6",
   "scripts": {
     "test": "nx run-many --target=test --projects=frontend,api",
     "test:api": "nx run api:test --detectOpenHandles",
@@ -27,7 +27,8 @@
     "check-circular-deps": "./scripts/checkCircDeps.sh",
     "format": "pretty-quick --staged",
     "check-translations": "tsx ./scripts/checkTranslations.ts",
-    "check-error-message-translations": "tsx scripts/checkErrorMessages.ts"
+    "check-error-message-translations": "tsx scripts/checkErrorMessages.ts",
+    "addLicenseHeader": "tsx ./scripts/addLicenseHeader.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",

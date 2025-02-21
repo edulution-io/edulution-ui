@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { Model } from 'mongoose';
 import { FetchMessageObject, ImapFlow, MailboxLockObject } from 'imapflow';
 import { ArgumentMetadata, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
@@ -69,7 +81,7 @@ class MailsService implements OnModuleInit {
       appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED] === 'true' || false;
   }
 
-  async getMails(username: string, password: string): Promise<MailDto[]> {
+  async getMails(emailAddress: string, password: string): Promise<MailDto[]> {
     if (!this.imapUrl || !this.imapPort) {
       return [];
     }
@@ -82,7 +94,7 @@ class MailsService implements OnModuleInit {
         rejectUnauthorized: this.imapRejectUnauthorized,
       },
       auth: {
-        user: username,
+        user: emailAddress,
         pass: password,
       },
       logger: false,
@@ -122,11 +134,11 @@ class MailsService implements OnModuleInit {
         };
         mails.push(mailDto);
       }
-    } catch (err) {
+    } catch (error) {
       throw new CustomHttpException(
         MailsErrorMessages.NotAbleToFetchMailsError,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        username,
+        emailAddress,
       );
     } finally {
       if (mailboxLock) {
@@ -220,7 +232,7 @@ class MailsService implements OnModuleInit {
     throw new CustomHttpException(MailsErrorMessages.MailProviderNotFound, HttpStatus.NOT_FOUND, '', MailsService.name);
   }
 
-  async getSyncJobs(username: string): Promise<SyncJobDto[]> {
+  async getSyncJobs(emailAddress: string): Promise<SyncJobDto[]> {
     if (!MAILCOW_API_URL || !MAILCOW_API_TOKEN) {
       return [];
     }
@@ -228,37 +240,37 @@ class MailsService implements OnModuleInit {
     try {
       const syncJobs = await this.mailcowApi.get<SyncJobDto[]>('/get/syncjobs/all/no_log');
 
-      const filteredSyncJobs = new FilterUserPipe(username).transform(syncJobs.data, {} as ArgumentMetadata);
+      const filteredSyncJobs = new FilterUserPipe(emailAddress).transform(syncJobs.data, {} as ArgumentMetadata);
 
       return filteredSyncJobs;
-    } catch (e) {
+    } catch (error) {
       throw new CustomHttpException(MailsErrorMessages.MailcowApiGetSyncJobsFailed, HttpStatus.BAD_GATEWAY);
     }
   }
 
-  async createSyncJob(createSyncJobDto: CreateSyncJobDto, username: string) {
+  async createSyncJob(createSyncJobDto: CreateSyncJobDto, emailAddress: string) {
     try {
       const response = await this.mailcowApi.post<SyncJobResponseDto>('/add/syncjob', createSyncJobDto);
       if (response) {
-        const syncJobs = await this.getSyncJobs(username);
+        const syncJobs = await this.getSyncJobs(emailAddress);
         return syncJobs;
       }
       throw new CustomHttpException(MailsErrorMessages.MailcowApiCreateSyncJobFailed, HttpStatus.BAD_GATEWAY);
-    } catch (e) {
+    } catch (error) {
       throw new CustomHttpException(MailsErrorMessages.MailcowApiCreateSyncJobFailed, HttpStatus.BAD_GATEWAY);
     }
   }
 
-  async deleteSyncJobs(syncJobIds: string[], username: string) {
+  async deleteSyncJobs(syncJobIds: string[], emailAddress: string) {
     // NIEDUUI-374: Check if user has permission to delete
     try {
       const response = await this.mailcowApi.post<SyncJobResponseDto>('/delete/syncjob', syncJobIds);
       if (response) {
-        const syncJobs = await this.getSyncJobs(username);
+        const syncJobs = await this.getSyncJobs(emailAddress);
         return syncJobs;
       }
       throw new CustomHttpException(MailsErrorMessages.MailcowApiDeleteSyncJobsFailed, HttpStatus.BAD_GATEWAY);
-    } catch (e) {
+    } catch (error) {
       throw new CustomHttpException(MailsErrorMessages.MailcowApiDeleteSyncJobsFailed, HttpStatus.BAD_GATEWAY);
     }
   }

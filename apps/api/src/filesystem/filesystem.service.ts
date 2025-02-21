@@ -1,6 +1,26 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { createWriteStream, existsSync, mkdirSync, promises as fsPromises, readFileSync, writeFileSync } from 'fs';
-import { dirname, extname, join, resolve } from 'path';
+import {
+  createWriteStream,
+  existsSync,
+  mkdirSync,
+  promises as fsPromises,
+  readFileSync,
+  writeFileSync,
+  unlinkSync,
+} from 'fs';
+import { dirname, extname, join } from 'path';
 import { createHash } from 'crypto';
 import { pipeline, Readable } from 'stream';
 import { promisify } from 'util';
@@ -10,7 +30,6 @@ import { ResponseType } from '@libs/common/types/http-methods';
 import { firstValueFrom, from } from 'rxjs';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
-import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
 import CustomFile from '@libs/filesharing/types/customFile';
 import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
@@ -61,14 +80,14 @@ class FilesystemService {
     return join(directory, hashedFilename);
   }
 
-  static async retrieveAndSaveFile(filename: string, body: OnlyOfficeCallbackData): Promise<CustomFile | undefined> {
-    if ((body.status !== 2 && body.status !== 4) || !body.url) {
-      return undefined;
+  static async retrieveAndSaveFile(filename: string, url: string): Promise<CustomFile | undefined> {
+    if (!url) {
+      throw new CustomHttpException(FileSharingErrorMessage.MissingCallbackURL, HttpStatus.BAD_REQUEST);
     }
 
     try {
-      const response = await axios.get<ArrayBuffer>(body.url, { responseType: 'arraybuffer' });
-      const filePath = join(`${PUBLIC_DOWNLOADS_PATH}/${filename}`);
+      const response = await axios.get<ArrayBuffer>(url, { responseType: 'arraybuffer' });
+      const filePath = join(PUBLIC_DOWNLOADS_PATH, filename);
       mkdirSync(dirname(filePath), { recursive: true });
       writeFileSync(filePath, new Uint8Array(response.data));
       const fileBuffer = readFileSync(filePath);
@@ -83,12 +102,17 @@ class FilesystemService {
         size: fileBuffer.length,
       } as CustomFile;
     } catch (error) {
-      throw new CustomHttpException(FileSharingErrorMessage.SaveFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(
+        FileSharingErrorMessage.SaveFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        filename,
+        FilesystemService.name,
+      );
     }
   }
 
   static async deleteFile(fileName: string): Promise<void> {
-    const filePath = resolve(PUBLIC_DOWNLOADS_PATH, fileName);
+    const filePath = join(PUBLIC_DOWNLOADS_PATH, fileName);
     try {
       await fsPromises.unlink(filePath);
       Logger.log(`File deleted at ${filePath}`);
@@ -127,6 +151,13 @@ class FilesystemService {
       } as WebdavStatusReplay;
     } catch (error) {
       throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+    }
+  }
+
+  static checkIfFileExistAndDelete(filePath: string) {
+    if (existsSync(filePath)) {
+      unlinkSync(filePath);
+      Logger.log(`${filePath} deleted.`, FilesystemService.name);
     }
   }
 }

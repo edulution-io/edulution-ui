@@ -1,9 +1,21 @@
-import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Connection, Model } from 'mongoose';
-import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
-import { AppConfigDto } from '@libs/appconfig/types';
+import { readFileSync, writeFileSync } from 'fs';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
@@ -14,6 +26,7 @@ import { AppConfig } from './appconfig.schema';
 import initializeCollection from './initializeCollection';
 import MigrationService from '../migration/migration.service';
 import appConfigMigrationsList from './migrations/appConfigMigrationsList';
+import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
 class AppConfigService implements OnModuleInit {
@@ -75,7 +88,7 @@ class AppConfigService implements OnModuleInit {
     }
   }
 
-  async patchConfig(name: string, patchConfigDto: PatchConfigDto, ldapGroups: string[]) {
+  async patchSingleFieldInConfig(name: string, patchConfigDto: PatchConfigDto, ldapGroups: string[]) {
     try {
       await this.appConfigModel.updateOne({ name }, { $set: { [patchConfigDto.field]: patchConfigDto.value } });
       return await this.getAppConfigs(ldapGroups);
@@ -102,10 +115,7 @@ class AppConfigService implements OnModuleInit {
       } else {
         const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appConfigDto?.name}.yml`;
 
-        if (existsSync(filePath)) {
-          unlinkSync(filePath);
-          Logger.log(`${filePath} deleted.`, AppConfigService.name);
-        }
+        FilesystemService.checkIfFileExistAndDelete(filePath);
       }
     }
   }
@@ -115,7 +125,7 @@ class AppConfigService implements OnModuleInit {
       let appConfigDto: AppConfigDto[];
       if (ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
         appConfigDto = await this.appConfigModel
-          .find({}, 'name icon appType options accessGroups extendedOptions')
+          .find({}, 'name translations icon appType options accessGroups extendedOptions')
           .lean();
       } else {
         const appConfigObjects = await this.appConfigModel
@@ -123,12 +133,13 @@ class AppConfigService implements OnModuleInit {
             {
               'accessGroups.path': { $in: ldapGroups },
             },
-            'name icon appType options extendedOptions',
+            'name translations icon appType options extendedOptions',
           )
           .lean();
 
         appConfigDto = appConfigObjects.map((config) => ({
           name: config.name,
+          translations: config.translations,
           icon: config.icon,
           appType: config.appType,
           options: { url: config.options.url ?? '' },
@@ -170,10 +181,8 @@ class AppConfigService implements OnModuleInit {
     } finally {
       const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${configName}.yml`;
 
-      if (existsSync(filePath)) {
-        unlinkSync(filePath);
-        Logger.log(`${filePath} deleted.`, AppConfigService.name);
-      }
+      FilesystemService.checkIfFileExistAndDelete(filePath);
+
       this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
     }
   }

@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 /* eslint-disable @typescript-eslint/dot-notation */
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpException } from '@nestjs/common';
@@ -7,14 +19,14 @@ import VEYON_FEATURE_ACTIONS from '@libs/veyon/constants/veyonFeatureActions';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import { framebufferConfigLow } from '@libs/veyon/constants/framebufferConfig';
 import VEYON_API_AUTH_RESPONSE_KEYS from '@libs/veyon/constants/veyonApiAuthResponse';
-import { type AppConfigDto } from '@libs/appconfig/types';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import type VeyonUserResponse from '@libs/veyon/types/veyonUserResponse';
 import VeyonService from './veyon.service';
 import UsersService from '../users/users.service';
 import AppConfigService from '../appconfig/appconfig.service';
 
 const mockAppConfig = {
-  name: 'Test',
+  name: 'filesharing',
   icon: 'icon-path',
   appType: APP_INTEGRATION_VARIANT.NATIVE,
   options: {

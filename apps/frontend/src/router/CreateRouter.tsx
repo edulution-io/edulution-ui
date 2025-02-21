@@ -1,7 +1,18 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import { createBrowserRouter, createRoutesFromElements, Outlet, Route } from 'react-router-dom';
-import { AppConfigDto } from '@libs/appconfig/types';
-import type TApps from '@libs/appconfig/types/appsType';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import {
   LANGUAGE_PATH,
@@ -13,21 +24,24 @@ import {
 } from '@libs/userSettings/constants/user-settings-endpoints';
 import getAuthRoutes from '@/router/routes/AuthRoutes';
 import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
-import { HomePage } from '@/pages/Home';
 import NativeAppPage from '@/pages/NativeAppPage/NativeAppPage';
 import UserSettingsMailsPage from '@/pages/UserSettings/Mails/UserSettingsMailsPage';
 import UserSettingsDetailsPage from '@/pages/UserSettings/Details/UserSettingsDetailsPage';
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
-import ONLY_OFFICE_ROUTE from '@libs/filesharing/constants/routes';
+import FILE_PREVIEW_ROUTE from '@libs/filesharing/constants/routes';
 import LanguageSettingsPage from '@/pages/UserSettings/Language/LanguageSettingsPage';
 import FileViewer from '@/pages/FileSharing/previews/FileViewer';
 import UserSettingsMobileAccess from '@/pages/UserSettings/MobileAccess/UserSettingsMobileAccess';
+import getSurveyRoutes from '@/router/routes/SurveyRoutes';
 import EmptyLayout from '@/components/layout/EmptyLayout';
 import MainLayout from '@/components/layout/MainLayout';
 import getPublicRoutes from '@/router/routes/PublicRoutes';
+import APPS from '@libs/appconfig/constants/apps';
+import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
 import getSettingsRoutes from './routes/SettingsRoutes';
 import getForwardedRoutes from './routes/ForwardedRoutes';
 import getEmbeddedRoutes from './routes/EmbeddedRoutes';
+import DashboardPage from '../pages/Dashboard/DashboardPage';
 
 const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
   createBrowserRouter(
@@ -39,7 +53,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
           <>
             <Route element={<EmptyLayout />}>
               <Route
-                path={ONLY_OFFICE_ROUTE}
+                path={FILE_PREVIEW_ROUTE}
                 element={<FileViewer editMode />}
               />
             </Route>
@@ -49,7 +63,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
             <Route element={<MainLayout />}>
               <Route
                 path="/"
-                element={<HomePage />}
+                element={<DashboardPage />}
               />
               <Route
                 path={USER_SETTINGS_PATH}
@@ -85,12 +99,19 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
                   <Route
                     key={item.name}
                     path={item.name}
-                    element={<NativeAppPage page={item.name as TApps} />}
+                    element={<NativeAppPage page={item.name} />}
                   />
                 ) : null,
               )}
-              {getClassManagementRoutes()}
+
+              <Route
+                path={`${APPS.BULLETIN_BOARD}/:bulletinId`}
+                element={<BulletinBoardPage />}
+              />
+
               {getSettingsRoutes()}
+              {getClassManagementRoutes()}
+              {getSurveyRoutes()}
             </Route>
           </>
         ) : null}

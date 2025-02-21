@@ -1,9 +1,21 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { getConnectionToken, getModelToken } from '@nestjs/mongoose';
 import { readFileSync } from 'fs';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import { AppConfigDto } from '@libs/appconfig/types';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -78,15 +90,15 @@ describe('AppConfigService', () => {
     });
   });
 
-  describe('patchconfig', () => {
+  describe('patchSingleFieldInConfig', () => {
     it('should update the configuration and return updated configs', async () => {
       const name = 'testConfig';
-      const patchConfigDto: PatchConfigDto = { field: 'testField', value: 'newValue' };
+      const patchConfigDto: PatchConfigDto = { field: 'extendedOptions', value: 'newValue' };
 
       mockAppConfigModel.updateOne.mockResolvedValue({});
       jest.spyOn(service, 'getAppConfigs').mockResolvedValue([mockAppConfig]);
 
-      const result = await service.patchConfig(name, patchConfigDto, mockLdapGroup);
+      const result = await service.patchSingleFieldInConfig(name, patchConfigDto, mockLdapGroup);
 
       expect(mockAppConfigModel.updateOne).toHaveBeenCalledWith(
         { name },
@@ -98,11 +110,11 @@ describe('AppConfigService', () => {
 
     it('should throw CustomHttpException if updateOne fails', async () => {
       const name = 'testConfig';
-      const patchConfigDto: PatchConfigDto = { field: 'testField', value: 'newValue' };
+      const patchConfigDto: PatchConfigDto = { field: 'extendedOptions', value: 'newValue' };
 
       mockAppConfigModel.updateOne.mockRejectedValue(new Error('Database error'));
 
-      await expect(service.patchConfig(name, patchConfigDto, mockLdapGroup)).rejects.toThrow(
+      await expect(service.patchSingleFieldInConfig(name, patchConfigDto, mockLdapGroup)).rejects.toThrow(
         new CustomHttpException(
           AppConfigErrorMessages.WriteAppConfigFailed,
           HttpStatus.SERVICE_UNAVAILABLE,

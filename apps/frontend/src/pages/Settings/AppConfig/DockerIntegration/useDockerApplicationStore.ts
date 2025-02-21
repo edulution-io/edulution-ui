@@ -1,6 +1,18 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { create } from 'zustand';
 import axios from 'axios';
-import { parse } from 'yaml';
+import { parse, type YAMLMap } from 'yaml';
 import eduApi from '@/api/eduApi';
 import { type ContainerInfo, type ContainerCreateOptions } from 'dockerode';
 import { type RowSelectionState } from '@tanstack/react-table';
@@ -23,6 +35,7 @@ const initialValues = {
   eventSource: null,
   selectedRows: {},
   dockerContainerConfig: null,
+  traefikConfig: null,
 };
 
 const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) => ({
@@ -47,11 +60,13 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
         set({ isLoading: true, error: null });
         const containerName = DOCKER_APPLICATIONS[applicationName] || '';
         const dockerContainerConfig = await get().getDockerContainerConfig(applicationName, containerName);
+        await get().getTraefikConfig(applicationName, containerName);
         const applicationNames = Object.keys(dockerContainerConfig.services);
         const containers = await get().getContainers(applicationNames);
 
         set({ tableContentData: containers });
       }
+      set({ traefikConfig: null });
     }
   },
 
@@ -130,6 +145,34 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
     } catch (error) {
       handleApiError(error, set);
       return { services: {} };
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  getTraefikConfig: async (applicationName: TApps, containerName: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await axios.get<string>(
+        `${EDU_PLUGINS_GITHUB_URL}/${applicationName}/${containerName}/${applicationName}.yml`,
+        {
+          headers: {
+            Accept: RequestResponseContentType.APPLICATION_GITHUB_RAW,
+          },
+          validateStatus: (status) => status === 200 || status === 404,
+        },
+      );
+
+      let traefikConfig: YAMLMap | null = null;
+      if (response.status === 200) {
+        traefikConfig = parse(response.data) as YAMLMap;
+      }
+      set({ traefikConfig });
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status !== 404) {
+        handleApiError(error, set);
+        set({ traefikConfig: null });
+      }
     } finally {
       set({ isLoading: false });
     }

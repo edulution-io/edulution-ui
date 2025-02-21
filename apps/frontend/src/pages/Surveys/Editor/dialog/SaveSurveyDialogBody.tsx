@@ -1,102 +1,97 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import useUserStore from '@/store/UserStore/UserStore';
-import useGroupStore from '@/store/GroupStore';
-import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import Checkbox from '@/components/ui/Checkbox';
+import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
+import useGroupStore from '@/store/GroupStore';
 import { DateTimeInput } from '@/components/shared/DateTimePicker/DateTimeInput';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
 interface SaveSurveyDialogBodyProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: UseFormReturn<any>;
+  form: UseFormReturn<SurveyDto>;
 }
 
-const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
-  const { form } = props;
-  const { setValue, watch /* , getValues */ } = form;
+const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
+  const { setValue, watch } = form;
   const { user } = useUserStore();
   const { searchAttendees } = useUserStore();
   const { searchGroups } = useGroupStore();
   const { t } = useTranslation();
 
-  const handleAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
+  const handleAttendeesChange = (attendees: AttendeeDto[]) => {
     setValue('invitedAttendees', attendees, { shouldValidate: true });
   };
 
   const onAttendeesSearch = async (value: string): Promise<AttendeeDto[]> => {
     const result = await searchAttendees(value);
-    if (!user) {
-      return result;
-    }
-    return result.filter((r) => r.username !== user.username);
+    return user ? result.filter((r) => r.username !== user.username) : result;
   };
 
-  const handleGroupsChange = (groups: MultipleSelectorOptionSH[]) => {
-    setValue('invitedGroups', groups /* , { shouldValidate: true } */);
+  const handleGroupsChange = (groups: MultipleSelectorGroup[]) => {
+    setValue('invitedGroups', groups, { shouldValidate: true });
   };
-
-  const expiresWatched = watch('expires') as string;
-  const isAnonymousWatched = watch('isAnonymous') as boolean;
-  const isPublicWatched = watch('isPublic') as boolean;
-  const canSubmitMultipleAnswersWatched = watch('canSubmitMultipleAnswers') as boolean;
 
   const handleExpirationDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
-    setValue('expires', value);
+    setValue('expires', new Date(value));
   };
 
+  const checkboxOptions: { name: keyof SurveyDto; label: string }[] = [
+    { name: 'isAnonymous', label: 'surveys.saveDialog.isAnonymous' },
+    { name: 'isPublic', label: 'surveys.saveDialog.isPublic' },
+    { name: 'canSubmitMultipleAnswers', label: 'surveys.saveDialog.canSubmitMultipleAnswers' },
+    { name: 'canUpdateFormerAnswer', label: 'surveys.saveDialog.canUpdateFormerAnswer' },
+  ];
+
+  const selectedDate = watch('expires');
+
   return (
-    <div className="flex flex-col gap-4">
+    <>
       <SearchUsersOrGroups
-        users={watch('invitedAttendees') as AttendeeDto[]}
+        users={watch('invitedAttendees')}
         onSearch={onAttendeesSearch}
         onUserChange={handleAttendeesChange}
-        groups={watch('invitedGroups') as MultipleSelectorGroup[]}
+        groups={watch('invitedGroups')}
         onGroupSearch={searchGroups}
         onGroupsChange={handleGroupsChange}
         variant="dialog"
       />
-      <div>
+      <p className="text-m font-bold text-background">{t('survey.expirationDate')}</p>
+      <div className="flex items-center">
         <p className="text-m font-bold text-background">{t('survey.expirationDate')}</p>
         <DateTimeInput
-          value={expiresWatched}
+          value={selectedDate?.toISOString()}
           onChange={handleExpirationDateChange}
           variant="dialog"
         />
       </div>
       <p className="text-m font-bold text-background">{t('surveys.saveDialog.settingsFlags')}</p>
-      <div className="flex items-center text-background">
+      {checkboxOptions.map(({ name, label }) => (
         <Checkbox
-          checked={isAnonymousWatched}
-          onCheckedChange={(value: boolean) => setValue('isAnonymous', value, { shouldValidate: true })}
-          aria-label={`${t('survey.isAnonymous')}`}
-          className="mr-2"
+          key={name}
+          label={t(label)}
+          checked={Boolean(watch(name))}
+          onCheckedChange={(value: boolean) => setValue(name, value, { shouldValidate: true })}
+          aria-label={t(`survey.${name}`)}
+          className="text-background"
         />
-        {t('surveys.saveDialog.isAnonymous')}
-      </div>
-      <div className="flex items-center text-background">
-        <Checkbox
-          checked={isPublicWatched}
-          onCheckedChange={(value: boolean) => setValue('isPublic', value, { shouldValidate: true })}
-          aria-label={`${t('survey.isPublic')}`}
-          className="mr-2"
-        />
-        {t('surveys.saveDialog.isPublic')}
-      </div>
-      <div className="flex items-center text-background">
-        <Checkbox
-          checked={canSubmitMultipleAnswersWatched}
-          onCheckedChange={(value: boolean) => setValue('canSubmitMultipleAnswers', value, { shouldValidate: true })}
-          aria-label={`${t('survey.canSubmitMultipleAnswers')}`}
-          className="mr-2"
-        />
-        {t('surveys.saveDialog.canSubmitMultipleAnswers')}
-      </div>
-    </div>
+      ))}
+    </>
   );
 };
 

@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useMemo, useState } from 'react';
 import UserCard from '@/pages/ClassManagement/LessonPage/UserArea/UserCard';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
@@ -19,7 +31,7 @@ const UserArea = () => {
   const { user } = useUserStore();
   const { member } = useLessonStore();
   const [selectedMember, setSelectedMember] = useState<UserLmnInfo[]>([]);
-  const isMemberSelected = selectedMember.length;
+  const selectedMemberCount = selectedMember.length;
 
   const isTeacherInSameClass = useMemo(
     () =>
@@ -41,7 +53,7 @@ const UserArea = () => {
   const selectableMembers = member.filter((m) => m.sophomorixRole === SOPHOMORIX_STUDENT && isTeacherInSameSchool(m));
 
   const getSelectedStudents = () => {
-    if (isMemberSelected) {
+    if (selectedMemberCount) {
       return selectedMember.filter((m) => m.sophomorixRole === SOPHOMORIX_STUDENT);
     }
     return selectableMembers;
@@ -56,8 +68,10 @@ const UserArea = () => {
   };
 
   const pageBarsHeight =
-    useElementHeight([FLOATING_BUTTONS_BAR_ID, LESSON_SESSION_HEADER_ID, FILTER_BAR_ID, FOOTER_ID], isMemberSelected) +
-    10;
+    useElementHeight(
+      [FLOATING_BUTTONS_BAR_ID, LESSON_SESSION_HEADER_ID, FILTER_BAR_ID, FOOTER_ID],
+      selectedMemberCount,
+    ) + 30;
 
   return (
     <>
@@ -79,7 +93,7 @@ const UserArea = () => {
 
         <h3 className="mb-2 flex flex-grow justify-center text-center text-lg text-background md:text-xl">
           {member.length} {t('classmanagement.usersInThisSession')}{' '}
-          {isMemberSelected ? `(${isMemberSelected} ${t('common.selected')})` : null}
+          {selectedMemberCount ? `(${selectedMemberCount} ${t('common.selected')})` : null}
         </h3>
       </div>
       <div
@@ -97,7 +111,10 @@ const UserArea = () => {
           />
         ))}
       </div>
-      {isMemberSelected ? <LessonFloatingButtonsBar students={getSelectedStudents()} /> : null}
+      <LessonFloatingButtonsBar
+        students={getSelectedStudents()}
+        isMemberSelected={!!selectedMemberCount}
+      />
     </>
   );
 };

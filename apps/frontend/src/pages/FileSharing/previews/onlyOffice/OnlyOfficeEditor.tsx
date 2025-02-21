@@ -1,9 +1,22 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { DocumentEditor } from '@onlyoffice/document-editor-react';
 import React, { FC, useCallback } from 'react';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import { useTranslation } from 'react-i18next';
 import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
+import { useSearchParams } from 'react-router-dom';
 
 interface OnlyOfficeEditorProps {
   editorType: {
@@ -26,12 +39,14 @@ const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
   documentServerURL,
   editorConfig,
 }) => {
-  const { setCurrentlyEditingFile } = useFileSharingStore();
+  const { isFullScreenEditingEnabled } = useFileSharingStore();
   const { deleteFileAfterEdit } = useFileEditorStore();
+  const [searchParams] = useSearchParams();
   const { t } = useTranslation();
+
   const handleDocumentReady = useCallback(() => {
     void deleteFileAfterEdit(editorConfig.document.url);
-  }, [mode, fileName, filePath, setCurrentlyEditingFile]);
+  }, [mode, fileName, filePath]);
 
   const validateConfig = (config: OnlyOfficeEditorConfig) =>
     !(!config.document || !config.document.url || !config.editorConfig.callbackUrl);
@@ -43,8 +58,17 @@ const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
     }
   };
 
+  const isOpenedInNewTab = Boolean(searchParams.get('tab'));
+
+  let className = 'h-[75vh]';
+  if (isFullScreenEditingEnabled) {
+    className = 'h-full';
+  } else if (isOpenedInNewTab) {
+    className = 'h-screen';
+  }
+
   return (
-    <div className={mode === 'view' ? 'relative h-[75vh]' : 'relative h-[95vh]'}>
+    <div className={`relative ${className}`}>
       {editorType && validateConfig(editorConfig) ? (
         <DocumentEditor
           key={editorType.key}

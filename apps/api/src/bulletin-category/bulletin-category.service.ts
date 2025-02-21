@@ -1,5 +1,17 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { HttpStatus, Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
@@ -104,7 +116,6 @@ class BulletinCategoryService implements OnModuleInit {
     if (currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
       return bulletinCategories;
     }
-
     const accessibleCategories = await Promise.all(
       bulletinCategories.map(async (category) => {
         const usersWithPermission = await this.getUsersWithPermissionCached(String(category.id), permission);
@@ -155,15 +166,13 @@ class BulletinCategoryService implements OnModuleInit {
   }
 
   async remove(id: string): Promise<void> {
-    const objectId = new Types.ObjectId(id);
-
-    const categoryToRemove = await this.bulletinCategoryModel.findById(objectId).exec();
+    const categoryToRemove = await this.bulletinCategoryModel.findById(id).exec();
     if (!categoryToRemove) {
       throw new CustomHttpException(BulletinBoardErrorMessage.CATEGORY_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
     try {
-      await this.bulletinCategoryModel.findByIdAndDelete(objectId).exec();
+      await this.bulletinCategoryModel.findByIdAndDelete(id).exec();
 
       await this.bulletinCategoryModel.updateMany(
         { position: { $gt: categoryToRemove.position } },
