@@ -11,7 +11,8 @@
  */
 
 import React, { useEffect, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { toast } from 'sonner';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,6 +22,7 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import useUserStore from '@/store/UserStore/UserStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
@@ -36,6 +38,8 @@ const SurveyEditorPage = () => {
     useSurveyEditorPageStore();
 
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
   const { user } = useUserStore();
 
   const { surveyId } = useParams();
@@ -88,25 +92,32 @@ const SurveyEditorPage = () => {
       canUpdateFormerAnswer,
     } = form.getValues();
 
-    await updateOrCreateSurvey({
-      id,
-      formula,
-      saveNo,
-      creator,
-      invitedAttendees,
-      invitedGroups,
-      participatedAttendees,
-      answers,
-      createdAt,
-      expires,
-      isAnonymous,
-      isPublic,
-      canSubmitMultipleAnswers,
-      canUpdateFormerAnswer,
-    });
+    try {
+      await updateOrCreateSurvey({
+        id,
+        formula,
+        saveNo,
+        creator,
+        invitedAttendees,
+        invitedGroups,
+        participatedAttendees,
+        answers,
+        createdAt,
+        expires,
+        isAnonymous,
+        isPublic,
+        canSubmitMultipleAnswers,
+        canUpdateFormerAnswer,
+      });
 
-    void updateUsersSurveys();
-    setIsOpenSaveSurveyDialog(false);
+      void updateUsersSurveys();
+      setIsOpenSaveSurveyDialog(false);
+
+      toast.success(t('survey.editor.saveSurveySuccess'));
+      navigate(`/${CREATED_SURVEYS_PAGE}`);
+    } catch (error) {
+      toast.error(t('survey.errors.updateOrCreateError'));
+    }
   };
 
   const config: FloatingButtonsBarConfig = {
