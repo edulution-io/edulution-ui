@@ -11,18 +11,17 @@
  */
 
 import * as React from 'react';
+import { t } from 'i18next';
 import { cva, type VariantProps } from 'class-variance-authority';
 import cn from '@libs/common/utils/className';
-import convertDateToDateTimeInput from './convertDateTimeInputToDate';
+import convertDateToDateTimeInput from './convertDateToDateTimeInput';
+import { INPUT_DEFAULT, INPUT_VARIANT_DEFAULT, INPUT_VARIANT_DIALOG } from '@libs/ui/constants/commonClassNames';
 
 export const originInputVariants = cva(['rounded'], {
   variants: {
     variant: {
-      login:
-        'block w-full border-2 border-gray-300 bg-background px-3 py-2 shadow-md placeholder:text-p focus:border-gray-600 focus:bg-background focus:placeholder-muted focus:outline-none text-foreground',
-      lightGrayDisabled: 'bg-ciDarkGreyDisabled text-secondary placeholder:text-p focus:outline-none',
-      default: 'bg-accent text-secondary placeholder:text-p focus:outline-none',
-      dialog: 'bg-muted text-foreground placeholder:text-p focus:outline-none text-background',
+      default: INPUT_VARIANT_DEFAULT,
+      dialog: INPUT_VARIANT_DIALOG,
     },
   },
   defaultVariants: {
@@ -51,18 +50,14 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
       <div className="relative">
         <input
           {...props}
-          aria-label="Date and time"
+          aria-label={t('form.input.dateTimePicker')}
           type="datetime-local"
           value={props.value ? convertDateToDateTimeInput(props.value) : ''}
           onChange={handleChange}
           style={{
             colorScheme: popupColorScheme,
           }}
-          className={cn(
-            'placeholder:color:secondary flex h-9 w-[210px] rounded-md px-3 py-1 text-p text-background shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
-            originInputVariants({ variant }),
-            className,
-          )}
+          className={cn(INPUT_DEFAULT, originInputVariants({ variant }), 'w-[210px]', className)}
           min={minimumDateString}
           ref={ref}
         />

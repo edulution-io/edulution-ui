@@ -964,7 +964,10 @@
     "proxyPathPlaceholder": "z.B. SOGo",
     "proxyDestination": "Zielhost",
     "proxyDestinationPlaceholder": "z.B. http://localhost:1234/",
-    "stripPrefix": "Prefix entfernen"
+    "stripPrefix": "Prefix entfernen",
+    "input": {
+      "dateTimePicker": "Date and Time picker"
+    }
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
   "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",

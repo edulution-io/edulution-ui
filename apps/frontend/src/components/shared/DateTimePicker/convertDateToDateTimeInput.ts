@@ -10,9 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const addLeadingZero = (value: number) => (value < 10 ? `0${value}` : `${value}`);
+function addLeadingZero(value: number): string {
+  return String(value).padStart(2, '0');
+}
 
-const convertDateToDateTimeInput = (date: Date) =>
-  `${date.getFullYear()}-${addLeadingZero(date.getMonth() + 1)}-${date.getDate()}T${addLeadingZero(date.getHours())}:${addLeadingZero(date.getMinutes())}`;
+export default function convertDateToDateTimeInput(date: Date): string {
+  const year = date.getFullYear();
+  const month = addLeadingZero(date.getMonth() + 1);
+  const day = addLeadingZero(date.getDate());
+  const hours = addLeadingZero(date.getHours());
+  const minutes = addLeadingZero(date.getMinutes());
 
-export default convertDateToDateTimeInput;
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
