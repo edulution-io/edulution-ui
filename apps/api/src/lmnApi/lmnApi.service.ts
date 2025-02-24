@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import {
   EXAM_MODE_LMN_API_ENDPOINT,
@@ -245,9 +245,6 @@ class LmnApiService {
       const filesAfterTransfer = `students/${data.sophomorixSchoolname}-${LmnApiService.extractClass(data.cn)}/${member}/${FILE_PATHS.TRANSFER}`;
       const filesAfterTeacherFolder = `${filesAfterTransfer}/${teacher}`;
 
-      Logger.log(filesAfterTransfer);
-      Logger.log(filesAfterTeacherFolder);
-
       // eslint-disable-next-line no-await-in-loop
       const userFolderExists = await this.fileSharingService.checkIfFileOrFolderExists(
         teacher,
@@ -257,20 +254,19 @@ class LmnApiService {
       );
 
       if (!userFolderExists) {
-        Logger.log(`Creating folder for ${member} in ${filesAfterTransfer}`);
-      }
-
-      if (!userFolderExists) {
         // eslint-disable-next-line no-await-in-loop
-        const collectFolderExists = await this.fileSharingService.checkIfFileOrFolderExists(
-          teacher,
-          filesAfterTeacherFolder,
-          FILE_PATHS.COLLECT,
-          ContentType.DIRECTORY,
-        );
-        if (!collectFolderExists) {
-          Logger.log(`Creating folder for ${member} in ${filesAfterTransfer}`);
-        }
+        await this.fileSharingService.createFolder(teacher, filesAfterTransfer, teacher);
+      }
+      // eslint-disable-next-line no-await-in-loop
+      const collectFolderExists = await this.fileSharingService.checkIfFileOrFolderExists(
+        teacher,
+        filesAfterTeacherFolder,
+        FILE_PATHS.COLLECT,
+        ContentType.DIRECTORY,
+      );
+      if (!collectFolderExists) {
+        // eslint-disable-next-line no-await-in-loop
+        await this.fileSharingService.createFolder(teacher, filesAfterTeacherFolder, FILE_PATHS.COLLECT);
       }
     }
   };
