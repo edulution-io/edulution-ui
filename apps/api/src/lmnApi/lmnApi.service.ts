@@ -42,6 +42,8 @@ import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 import CreateWorkingDirectoryDto from '@libs/classManagement/types/createWorkingDirectoryDto';
+import ContentType from '@libs/filesharing/types/contentType';
+import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import UsersService from '../users/users.service';
 import FilesharingService from '../filesharing/filesharing.service';
 
@@ -228,43 +230,69 @@ class LmnApiService {
     }
   }
 
-  public buildStudentPath = (teacherName: string, studentNames: string[], className: string) =>
-    studentNames.map((student) => {
-      const pathToTeachersFolder = `/students/${className}/${student}/transfer/${teacherName}`;
-      const pathToCollectFolder = `${pathToTeachersFolder}/_collect`;
+  static extractClass(str: string): string | null {
+    const parts = str.split('-');
+    if (parts.length === 0) {
+      return null;
+    }
+    return parts[parts.length - 1];
+  }
 
-      return {
-        pathToTeachersFolder,
-        pathToCollectFolder,
-      };
-    });
+  private createGroupFolders = async (lmnApiToken: string, group: string, teacher: string) => {
+    const data = await this.getSchoolClass(lmnApiToken, group);
+    // eslint-disable-next-line no-restricted-syntax
+    for (const member of data.sophomorixMembers) {
+      const filesAfterTransfer = `students/${data.sophomorixSchoolname}-${LmnApiService.extractClass(data.cn)}/${member}/${FILE_PATHS.TRANSFER}`;
+      const filesAfterTeacherFolder = `${filesAfterTransfer}/${teacher}`;
+
+      Logger.log(filesAfterTransfer);
+      Logger.log(filesAfterTeacherFolder);
+
+      // eslint-disable-next-line no-await-in-loop
+      const userFolderExists = await this.fileSharingService.checkIfFileOrFolderExists(
+        teacher,
+        filesAfterTransfer,
+        member,
+        ContentType.DIRECTORY,
+      );
+
+      if (!userFolderExists) {
+        Logger.log(`Creating folder for ${member} in ${filesAfterTransfer}`);
+      }
+
+      if (!userFolderExists) {
+        // eslint-disable-next-line no-await-in-loop
+        const collectFolderExists = await this.fileSharingService.checkIfFileOrFolderExists(
+          teacher,
+          filesAfterTeacherFolder,
+          FILE_PATHS.COLLECT,
+          ContentType.DIRECTORY,
+        );
+        if (!collectFolderExists) {
+          Logger.log(`Creating folder for ${member} in ${filesAfterTransfer}`);
+        }
+      }
+    }
+  };
 
   public async toggleSchoolClassJoined(
     lmnApiToken: string,
     schoolClass: string,
     action: string,
-    username: string,
+    teacher: string,
   ): Promise<LmnApiSchoolClass> {
     const requestUrl = `${SCHOOL_CLASSES_LMN_API_ENDPOINT}/${schoolClass}/${action}`;
-
     const config = {
       headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
     };
 
-    if (action === 'join') {
-      const data = await this.getSchoolClass(lmnApiToken, schoolClass);
-      const studentPaths = this.buildStudentPath(username, data.sophomorixMembers, data.sophomorixSchoolname);
-      studentPaths.forEach(({ pathToTeachersFolder, pathToCollectFolder }) => {
-        Logger.log(pathToTeachersFolder);
-        Logger.log(pathToCollectFolder);
-      });
-    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let response: AxiosResponse<LmnApiSchoolClass, any>;
 
     try {
-      const response = await this.enqueue<LmnApiSchoolClass>(() =>
+      response = await this.enqueue<LmnApiSchoolClass>(() =>
         this.lmnApi.post<LmnApiSchoolClass>(requestUrl, undefined, config),
       );
-      return response.data;
     } catch (error) {
       throw new CustomHttpException(
         LmnApiErrorMessage.ToggleSchoolClassJoinedFailed,
@@ -273,6 +301,11 @@ class LmnApiService {
         LmnApiService.name,
       );
     }
+
+    if (action === 'join' && response.status === 200) {
+      await this.createGroupFolders(lmnApiToken, schoolClass, teacher);
+    }
+    return response.data;
   }
 
   public async getUserSession(lmnApiToken: string, sessionSid: string, username: string): Promise<LmnApiSession> {
