@@ -1,15 +1,28 @@
-import { PlusIcon, SettingsIcon } from '@/assets/icons';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import { AppStoreIcon, SettingsIcon } from '@/assets/icons';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { useNavigate } from 'react-router-dom';
-import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
-import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
+import useLanguage from '@/hooks/useLanguage';
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
-import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
+import { APPSTORE_PATH, SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
+import getDisplayName from '@/utils/getDisplayName';
 
 const useAppConfigPageMenu = () => {
   const navigate = useNavigate();
-  const { appConfigs, isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen } = useAppConfigsStore();
+  const { appConfigs } = useAppConfigsStore();
+  const { language } = useLanguage();
 
   const settingsMenuBarEntry: MenuBarEntry = {
     appName: APPS.SETTINGS,
@@ -18,10 +31,10 @@ const useAppConfigPageMenu = () => {
     color: 'hover:bg-ciGreenToBlue',
     menuItems: [
       {
-        id: 'add',
-        label: 'common.add',
-        icon: PlusIcon,
-        action: () => {},
+        id: APPS.APPSTORE,
+        label: `${APPS.APPSTORE}.title`,
+        icon: AppStoreIcon,
+        action: () => navigate(APPSTORE_PATH),
       },
     ],
   };
@@ -29,18 +42,13 @@ const useAppConfigPageMenu = () => {
   const appConfigPageMenu = (): MenuBarEntry => ({
     ...settingsMenuBarEntry,
     menuItems: [
-      ...APP_CONFIG_OPTIONS.filter((option) => findAppConfigByName(appConfigs, option.id) !== undefined).map(
-        (item) => ({
-          id: item.id,
-          label: `${item.id}.sidebar`,
-          icon: item.icon,
-          action: () => navigate(`/${SETTINGS_PATH}/${item.id}`),
-        }),
-      ),
-      ...settingsMenuBarEntry.menuItems.map((item) => ({
-        ...item,
-        action: () => setIsAddAppConfigDialogOpen(!isAddAppConfigDialogOpen),
+      ...appConfigs.map((item) => ({
+        id: item.name,
+        label: getDisplayName(item, language),
+        icon: item.icon,
+        action: () => navigate(`/${SETTINGS_PATH}/${item.name}`),
       })),
+      ...settingsMenuBarEntry.menuItems,
     ],
   });
 

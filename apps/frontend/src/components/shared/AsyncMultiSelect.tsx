@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import MultipleSelectorSH from '@/components/ui/MultipleSelectorSH';
 import { useTranslation } from 'react-i18next';
@@ -29,13 +41,13 @@ const AsyncMultiSelect = <T extends MultipleSelectorOptionSH>({
   const { t } = useTranslation();
 
   const loadingIndicator = (
-    <p className={`leading-1 py-2 text-center ${variant === 'default' ? 'text-secondary' : 'text-muted'}`}>
+    <p className={`leading-1 py-2 text-center ${variant === 'default' ? 'text-secondary' : 'text-background'}`}>
       {t('search.loading')}...
     </p>
   );
 
   const emptyIndicator = (
-    <p className={`leading-1 w-full py-2 text-center ${variant === 'default' ? 'text-secondary' : 'text-muted'}`}>
+    <p className={`leading-1 w-full py-2 text-center ${variant === 'default' ? 'text-secondary' : 'text-background'}`}>
       {t('search.no-results')}
     </p>
   );

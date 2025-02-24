@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -6,10 +18,8 @@ import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
 import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
 import APPS from '@libs/appconfig/constants/apps';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveysPageView from '@libs/survey/types/api/page-view';
 import cn from '@libs/common/utils/className';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import useParticipateDialogStore from '@/pages/Surveys/Tables/dialogs/useParticpateDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FallbackText from '@/components/shared/FallbackText';
 
@@ -22,14 +32,7 @@ const SurveysList = (props: SurveysListProps) => {
   const { items, className } = props;
   const { t } = useTranslation();
 
-  const { selectSurvey, updateSelectedPageView } = useSurveyTablesPageStore();
-  const { setIsOpenParticipateSurveyDialog } = useParticipateDialogStore();
-
-  const updateSurveyStores = (survey: SurveyDto) => {
-    updateSelectedPageView(SurveysPageView.OPEN);
-    selectSurvey(survey);
-    setIsOpenParticipateSurveyDialog(true);
-  };
+  const { selectSurvey } = useSurveyTablesPageStore();
 
   const locale = getLocaleDateFormat();
 
@@ -38,7 +41,7 @@ const SurveysList = (props: SurveysListProps) => {
       <span className="text-sm font-semibold">{survey.formula.title || FallbackText}</span>
       <p className="line-clamp-2 text-sm text-muted-foreground">
         {`${t('survey.created')}:  `}
-        {survey.created ? format(survey.created, 'dd.MMMLL', { locale }) : FallbackText}
+        {survey.createdAt ? format(survey.createdAt, 'dd. MMMM', { locale }) : FallbackText}
       </p>
       {survey.expires ? (
         <p className="text-muted-background line-clamp-2 text-sm">
@@ -55,10 +58,9 @@ const SurveysList = (props: SurveysListProps) => {
         {items.map((item) => (
           <NavLink
             to={APPS.SURVEYS}
-            onClick={() => updateSurveyStores(item)}
-            // TODO: Issue 388: [REPORT] Survey - rework ids to only use the timestamps in the frontend
-            key={item.id.toString('base64')}
-            className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border p-2 text-left transition-all hover:bg-accent"
+            onClick={() => selectSurvey(item)}
+            key={item.id}
+            className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border border-muted-foreground p-2 text-left transition-all hover:bg-ciDarkGrey"
           >
             {getSurveyInfo(item)}
           </NavLink>

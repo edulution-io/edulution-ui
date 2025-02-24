@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
@@ -10,9 +22,8 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileActionType from '@libs/filesharing/types/fileActionType';
-import AVAILABLE_FILE_TYPES from '@libs/filesharing/types/availableFileTypes';
-import { FileTypeKey } from '@libs/filesharing/types/fileTypeKey';
-import CircleLoader from '@/components/ui/CircleLoader';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import getDocumentVendor from '@libs/filesharing/utils/getDocumentVendor';
 import getFileSharingFormSchema from '../formSchema';
 
 interface CreateContentDialogProps {
@@ -39,6 +50,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     setSubmitButtonIsInActive,
   } = useFileSharingDialogStore();
   const { currentPath, selectedItems } = useFileSharingStore();
+  const { appConfigs } = useAppConfigsStore();
 
   const { Component, schema, titleKey, submitKey, initialValues, endpoint, httpMethod, type, getData } =
     getDialogBodySetup(action);
@@ -50,18 +62,25 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   });
 
   const clearAllSelectedItems = () => {
+    setSubmitButtonIsInActive(false);
     setMoveOrCopyItemToPath({} as DirectoryFileDTO);
-    setSelectedFileType({} as (typeof AVAILABLE_FILE_TYPES)[FileTypeKey]);
+    setSelectedFileType('');
     setFilesToUpload([]);
+    closeDialog();
+    form.reset();
   };
 
   const onSubmit = async () => {
+    const documentVendor = getDocumentVendor(appConfigs);
+
     const data = await getData(form, currentPath, {
       selectedItems,
       moveOrCopyItemToPath,
       selectedFileType,
       filesToUpload,
+      documentVendor,
     });
+
     if (Array.isArray(data) && data.some((item) => 'file' in item && item.file instanceof File)) {
       const uploadPromises = data.map((item) => {
         if ('file' in item && item.file instanceof File) {
@@ -82,21 +101,17 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     }
 
     clearAllSelectedItems();
-    form.reset();
   };
 
   const handelOpenChange = () => {
     if (isDialogOpen) {
-      closeDialog();
-      setSubmitButtonIsInActive(false);
-      form.reset();
+      clearAllSelectedItems();
     } else {
       openDialog(action);
     }
   };
 
-  const title =
-    action === FileActionType.CREATE_FILE ? t(`fileCreateNewContent.${selectedFileType.type}`) : t(titleKey);
+  const title = action === FileActionType.CREATE_FILE ? t(`fileCreateNewContent.${selectedFileType}`) : t(titleKey);
   const handleFormSubmit = form.handleSubmit(onSubmit);
 
   const handleDialogKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -116,7 +131,6 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
           role="presentation"
           onKeyDown={handleDialogKeyDown}
         >
-          {isLoading && <CircleLoader className="mx-auto mt-5" />}
           <Component
             form={form}
             isRenaming

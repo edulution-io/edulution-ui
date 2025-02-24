@@ -1,13 +1,27 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import {
   Body,
   Controller,
   Delete,
   Get,
   HttpStatus,
+  MessageEvent,
   Param,
   Patch,
   Post,
   Res,
+  Sse,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -23,8 +37,9 @@ import APPS from '@libs/appconfig/constants/apps';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
+import { Observable } from 'rxjs';
 import BulletinBoardService from './bulletinboard.service';
-import GetCurrentUser from '../common/decorators/getUser.decorator';
+import GetCurrentUser, { GetCurrentUsername } from '../common/decorators/getUser.decorator';
 import GetToken from '../common/decorators/getToken.decorator';
 
 @ApiTags(APPS.BULLETIN_BOARD)
@@ -33,7 +48,7 @@ import GetToken from '../common/decorators/getToken.decorator';
 class BulletinBoardController {
   constructor(private readonly bulletinBoardService: BulletinBoardService) {}
 
-  @Get('')
+  @Get()
   getBulletinsByCategory(@GetCurrentUser() currentUser: JWTUser, @GetToken() token: string) {
     return this.bulletinBoardService.getBulletinsByCategory(currentUser, token);
   }
@@ -95,6 +110,11 @@ class BulletinBoardController {
   uploadBulletinAttachment(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
     const fileName = BulletinBoardService.checkAttachmentFile(file);
     return res.status(200).json(fileName);
+  }
+
+  @Sse('sse')
+  sse(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
+    return this.bulletinBoardService.subscribe(username, res);
   }
 }
 

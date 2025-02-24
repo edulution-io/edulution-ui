@@ -1,89 +1,121 @@
-import React, { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { DropdownSelect } from '@/components';
-import { Button } from '@/components/shared/Button';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import { APP_CONFIG_OPTIONS } from '@/pages/Settings/AppConfig/appConfigOptions';
-import { AppConfigDto } from '@libs/appconfig/types';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import { useTranslation } from 'react-i18next';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import { Button } from '@/components/shared/Button';
 import CircleLoader from '@/components/ui/CircleLoader';
+import { Form } from '@/components/ui/Form';
+import FormField from '@/components/shared/FormField';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
+import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
+import APPS from '@libs/appconfig/constants/apps';
+import slugify from '@libs/common/utils/slugify';
+import getCustomAppConfigFormSchema from './schemas/getCustomAppConfigFormSchema';
+import SelectIconField from './components/SelectIconField';
 
 interface AddAppConfigDialogProps {
-  option: string;
-  setOption: (option: string) => void;
-  getFilteredAppOptions: () => { id: string; name: string }[];
+  selectedApp: AppConfigOption;
 }
 
-const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOption, getFilteredAppOptions }) => {
+const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) => {
   const { t } = useTranslation();
-  const isMobileView = useIsMobileView();
   const navigate = useNavigate();
-  const { isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen, createAppConfig, isLoading, error } =
+  const { isAddAppConfigDialogOpen, appConfigs, setIsAddAppConfigDialogOpen, createAppConfig, isLoading, error } =
     useAppConfigsStore();
-  const selectedOption = option.toLowerCase().split('.')[0];
+
+  const form = useForm({
+    mode: 'onSubmit',
+    resolver: zodResolver(getCustomAppConfigFormSchema(t, appConfigs)),
+    defaultValues: {
+      customAppName: '',
+      customIcon: '',
+    },
+  });
+
+  const onSubmit = async () => {
+    const newAppName = form.getValues('customAppName');
+    const newAppIcon = form.getValues('customIcon');
+    const getAppType = () => {
+      switch (selectedApp.id) {
+        case APPS.FORWARDING:
+          return APP_INTEGRATION_VARIANT.FORWARDED;
+        case APPS.EMBEDDED:
+          return APP_INTEGRATION_VARIANT.EMBEDDED;
+        case APPS.FRAME:
+          return APP_INTEGRATION_VARIANT.EMBEDDED;
+        default:
+          return APP_INTEGRATION_VARIANT.FORWARDED;
+      }
+    };
+
+    const newConfig: AppConfigDto = {
+      name: slugify(newAppName),
+      translations: {
+        de: newAppName,
+      },
+      icon: newAppIcon,
+      appType: getAppType(),
+      options: {
+        url: '',
+        proxyConfig: '""',
+      },
+      accessGroups: [],
+      extendedOptions: {},
+    };
+
+    await createAppConfig(newConfig);
+    if (!error) {
+      setIsAddAppConfigDialogOpen(false);
+      navigate(`/${SETTINGS_PATH}/${newAppName}`);
+    }
+  };
 
   const getDialogBody = () => {
     if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
     return (
-      <div className="my-12 text-background">
-        <p>{t('settings.addApp.description')}</p>
-        <DropdownSelect
-          options={getFilteredAppOptions()}
-          selectedVal={t(option)}
-          handleChange={setOption}
-          openToTop={isMobileView}
-        />
-      </div>
+      <Form {...form}>
+        <form
+          className="mt-4 space-y-4"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
+          <FormField
+            name="customAppName"
+            form={form}
+            labelTranslationId={t('common.name')}
+            variant="dialog"
+          />
+          <SelectIconField form={form} />
+          <div className="mt-12 flex justify-end">
+            <Button
+              type="submit"
+              variant="btn-collaboration"
+              size="lg"
+              disabled={isLoading}
+            >
+              {t('common.add')}
+            </Button>
+          </div>
+        </form>
+      </Form>
     );
   };
-
-  const onSubmit = async () => {
-    if (!selectedOption) {
-      return;
-    }
-    const optionsConfig = APP_CONFIG_OPTIONS.find((item) => item.id.includes(selectedOption));
-
-    if (optionsConfig) {
-      const newConfig: AppConfigDto = {
-        name: selectedOption,
-        icon: optionsConfig.icon,
-        appType: APP_INTEGRATION_VARIANT.FORWARDED,
-        options: {},
-        accessGroups: [],
-        extendedOptions: {},
-      };
-
-      await createAppConfig(newConfig);
-      if (!error) {
-        setOption('');
-        setIsAddAppConfigDialogOpen(false);
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (selectedOption && !isAddAppConfigDialogOpen) {
-      navigate(`/${SETTINGS_PATH}/${selectedOption}`);
-    }
-  }, [isAddAppConfigDialogOpen, selectedOption]);
-
-  const dialogFooter = (
-    <div className="mt-4 flex justify-end">
-      <Button
-        type="button"
-        variant="btn-collaboration"
-        size="lg"
-        onClick={onSubmit}
-        disabled={isLoading || !selectedOption}
-      >
-        {t('common.add')}
-      </Button>
-    </div>
-  );
 
   return (
     <AdaptiveDialog
@@ -91,7 +123,6 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ option, setOpti
       handleOpenChange={() => setIsAddAppConfigDialogOpen(false)}
       title={t('settings.addApp.title')}
       body={getDialogBody()}
-      footer={dialogFooter}
     />
   );
 };

@@ -91,6 +91,20 @@ export default defineConfig(({ mode }) => {
       outDir: '../../dist/apps/frontend',
       emptyOutDir: true,
       reportCompressedSize: true,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            excalidraw: ['@excalidraw/excalidraw'],
+            surveyjs: [
+              'survey-analytics',
+              'survey-core',
+              'survey-creator-core',
+              'survey-creator-react',
+              'survey-react-ui',
+            ],
+          },
+        },
+      },
       commonjsOptions: {
         transformMixedEsModules: true,
       },

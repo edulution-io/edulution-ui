@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { MdFolder } from 'react-icons/md';
@@ -18,6 +30,7 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import i18n from '@/i18n';
+import CircleLoader from '@/components/ui/CircleLoader';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
@@ -40,22 +53,34 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
     accessorFn: (row) => row.type + row.filename,
     cell: ({ row }) => {
       const [searchParams, setSearchParams] = useSearchParams();
-      const { setCurrentlyEditingFile, currentlyEditingFile } = useFileSharingStore();
+      const { currentlyDisabledFiles, setCurrentlyEditingFile, resetCurrentlyEditingFile, setPublicDownloadLink } =
+        useFileSharingStore();
       const { setShowEditor } = useFileEditorStore();
-      const handleFilenameClick = (filenamePath: string) => {
+      const isCurrentlyDisabled = currentlyDisabledFiles[row.original.basename];
+      const handleFilenameClick = async () => {
+        if (isCurrentlyDisabled) {
+          return;
+        }
+
         setShowEditor(false);
+        setPublicDownloadLink('');
         if (row.original.type === ContentType.DIRECTORY) {
-          searchParams.set('path', filenamePath);
-          setSearchParams(searchParams);
-          setShowEditor(false);
           setCurrentlyEditingFile(null);
-        } else if (currentlyEditingFile?.filename !== row.original.filename) {
-          setCurrentlyEditingFile(row.original);
+          searchParams.set('path', getPathWithoutWebdav(row.original.filename));
+          setSearchParams(searchParams);
         } else {
-          setShowEditor(true);
+          await resetCurrentlyEditingFile(row.original);
         }
       };
       const renderFileIcon = (item: DirectoryFileDTO) => {
+        if (isCurrentlyDisabled) {
+          return (
+            <CircleLoader
+              height="h-6"
+              width="w-6"
+            />
+          );
+        }
         if (row.original.type === ContentType.FILE) {
           return (
             <FileIconComponent
@@ -67,13 +92,15 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
         return <MdFolder size={TABLE_ICON_SIZE} />;
       };
 
+      const isSaving = currentlyDisabledFiles[row.original.basename];
+
       return (
-        <div className="w-full">
+        <div className={`w-full ${isSaving ? 'pointer-events-none opacity-50' : ''}`}>
           <SelectableTextCell
             icon={renderFileIcon(row.original)}
             row={row}
             text={row.original.basename}
-            onClick={() => handleFilenameClick(getPathWithoutWebdav(row.original.filename))}
+            onClick={handleFilenameClick}
           />
         </div>
       );

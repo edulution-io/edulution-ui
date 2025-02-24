@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IoAdd } from 'react-icons/io5';
@@ -8,12 +20,12 @@ import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import { Button } from '@/components/shared/Button';
 import type BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
-import type TApps from '@libs/appconfig/types/appsType';
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import type TApps from '@libs/appconfig/types/appsType';
 
 interface AppConfigTableProps {
-  applicationName: TApps;
+  applicationName: string;
   tableId: string;
 }
 
@@ -34,7 +46,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
     useEffect(() => {
       const fetchDataAsync = async () => {
         if (fetchTableContent) {
-          await fetchTableContent(applicationName);
+          await fetchTableContent(applicationName as TApps);
         }
       };
 

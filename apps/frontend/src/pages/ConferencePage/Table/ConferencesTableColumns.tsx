@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { LockClosedIcon } from '@radix-ui/react-icons';
@@ -10,11 +22,10 @@ import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import i18next from 'i18next';
 import useUserStore from '@/store/UserStore/UserStore';
-import { PiEyeLight, PiEyeSlash } from 'react-icons/pi';
 import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
-import copyToClipboard from '@/utils/copyToClipboard';
 import { toast } from 'sonner';
 import delay from '@libs/common/utils/delay';
+import CopyToClipboardTextCell from '@/components/ui/Table/CopyToClipboardTextCell';
 
 function getRowAction(isRunning: boolean, isLoading: boolean, isUserTheCreator: boolean) {
   if (isLoading) {
@@ -132,35 +143,16 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     },
     accessorFn: (row) => row.isPublic,
     cell: ({ row }) => {
-      const { t } = useTranslation();
       const iconSize = 16;
       const { isPublic } = row.original;
       const url = `${window.location.origin}/${CONFERENCES_PUBLIC_EDU_API_ENDPOINT}/${row.original.meetingID}`;
       return (
-        <SelectableTextCell
+        <CopyToClipboardTextCell
+          iconSize={iconSize}
           className={hideOnMobileClassName}
-          onClick={
-            isPublic
-              ? () => {
-                  copyToClipboard(url);
-                }
-              : undefined
-          }
-          text={t(`conferences.${isPublic ? 'isPublicTrue' : 'isPublicFalse'}`)}
-          textOnHover={isPublic ? t('common.copy.link') : ''}
-          icon={
-            isPublic ? (
-              <PiEyeLight
-                width={iconSize}
-                height={iconSize}
-              />
-            ) : (
-              <PiEyeSlash
-                width={iconSize}
-                height={iconSize}
-              />
-            )
-          }
+          isPublic={isPublic}
+          url={url}
+          textTranslationId="conferences"
         />
       );
     },

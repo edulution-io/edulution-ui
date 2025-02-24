@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { readFileSync } from 'fs';
 import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -13,10 +25,14 @@ import { PUBLIC_ROUTE_KEY } from '../common/decorators/public.decorator';
 class AuthenticationGuard implements CanActivate {
   private token: string;
 
+  private pubKey: string;
+
   constructor(
     private jwtService: JwtService,
     private reflector: Reflector,
-  ) {}
+  ) {
+    this.pubKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
+  }
 
   private static extractTokenFromHeader(request: Request): string {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
@@ -44,10 +60,8 @@ class AuthenticationGuard implements CanActivate {
     }
 
     try {
-      const pubKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
-
       request.user = await this.jwtService.verifyAsync<JWTUser>(this.token, {
-        publicKey: pubKey,
+        publicKey: this.pubKey,
         algorithms: ['RS256'],
       });
       request.token = this.token;

@@ -1,3 +1,18 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
+import axios, { AxiosInstance } from 'axios';
 import {
   RDPConnection,
   VdiErrorMessages,
@@ -10,31 +25,63 @@ import {
   VirtualMachines,
 } from '@libs/desktopdeployment/types';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import { HttpStatus, Injectable } from '@nestjs/common';
-import axios, { AxiosInstance } from 'axios';
+import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
+import APPS from '@libs/appconfig/constants/apps';
 import UsersService from '../users/users.service';
+import AppConfigService from '../appconfig/appconfig.service';
 
-const { LMN_VDI_API_SECRET, LMN_VDI_API_URL, GUACAMOLE_API_URL, GUACAMOLE_API_PASSWORD, GUACAMOLE_API_USER } =
+const { LMN_VDI_API_SECRET, LMN_VDI_API_URL, EDULUTION_GUACAMOLE_ADMIN_PASSWORD, EDULUTION_GUACAMOLE_ADMIN_USER } =
   process.env;
 
 @Injectable()
-class VdiService {
+class VdiService implements OnModuleInit {
   private lmnVdiApi: AxiosInstance;
 
   private guacamoleApi: AxiosInstance;
 
   private vdiId = '';
 
-  constructor(private usersService: UsersService) {
-    this.guacamoleApi = axios.create({
-      baseURL: `${GUACAMOLE_API_URL}/guacamole/api`,
-    });
+  constructor(
+    private usersService: UsersService,
+    private readonly appConfigService: AppConfigService,
+  ) {
     this.lmnVdiApi = axios.create({
       baseURL: `${LMN_VDI_API_URL}/api`,
       headers: {
         'LMN-API-Secret': LMN_VDI_API_SECRET,
       },
     });
+  }
+
+  onModuleInit() {
+    void this.updateVdiConfig();
+  }
+
+  @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
+  async updateVdiConfig() {
+    try {
+      const appConfig = await this.appConfigService.getAppConfigByName(APPS.DESKTOP_DEPLOYMENT).catch((error) => {
+        if (error instanceof HttpException) {
+          return null;
+        }
+        throw error;
+      });
+
+      if (!appConfig) {
+        return;
+      }
+
+      const guacamoleUrl = appConfig.options.url;
+      if (!guacamoleUrl) {
+        return;
+      }
+
+      this.guacamoleApi = axios.create({
+        baseURL: `${guacamoleUrl}/guacamole/api`,
+      });
+    } catch (error) {
+      throw new CustomHttpException(VdiErrorMessages.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   static createRDPConnection(
@@ -64,7 +111,7 @@ class VdiService {
     try {
       const response = await this.guacamoleApi.post<GuacamoleDto>(
         '/tokens',
-        { username: GUACAMOLE_API_USER, password: GUACAMOLE_API_PASSWORD },
+        { username: EDULUTION_GUACAMOLE_ADMIN_USER, password: EDULUTION_GUACAMOLE_ADMIN_PASSWORD },
         {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         },

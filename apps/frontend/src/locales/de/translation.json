@@ -9,6 +9,7 @@
   "previewImage": "Bildvorschau",
   "bulletinboard": {
     "settings": "Einstellungen",
+    "noBulletinsToShow": "Aktuell gibt es keine Mitteilungen anzuzeigen, schaue am besten später noch mal vorbei!",
     "categoryIsRequired": "Es muss eine Kategorie ausgewählt werden",
     "createdFrom": "von {{ createdBy }}, aktualisiert am {{ lastUpdated }}",
     "createdFromAndUpdatedBy": "von {{ createdBy }}, aktualisiert von {{ lastUpdatedBy }} am {{ lastUpdated }}",
@@ -21,7 +22,7 @@
     "activeFrom": "Aktiv von",
     "activeUntil": "Aktiv bis",
     "appTitle": "Schwarzes Brett",
-    "description": "Verwalte deine Mitteilungen",
+    "description": "Hier findest du deine aktuelle Mitteilungen",
     "filterPlaceHolderText": "Suche nach Kategoriename",
     "sidebar": "Schwarzes Brett",
     "newCategorie": "Neue Kategorie",
@@ -86,6 +87,20 @@
       "unauthorizedUpdateCategory": "Keine Berechtigung, um diese Kategorie zu aktualisieren",
       "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen"
     }
+  },
+  "appstore": {
+    "title": "App-Store",
+    "description": "Hier kannst du edulution.io Apps hinzufügen.",
+    "chooseIcon": "Icon auswählen"
+  },
+  "forwarding": {
+    "sidebar": "Weiterleitung"
+  },
+  "frame": {
+    "sidebar": "Frame"
+  },
+  "embedded": {
+    "sidebar": "Eingebettet"
   },
   "dashboard": {
     "mobileAccess": {
@@ -159,6 +174,8 @@
     "hostname": "Hostname",
     "port": "Port",
     "encryption": "Verschlüsselung",
+    "rowSelected": "{{selected}} von {{total}} Job ausgewählt",
+    "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
     "importer": {
       "filterPlaceHolderText": "Suche nach E-Mail-Importername",
       "title": "E-Mail-Importer",
@@ -166,8 +183,6 @@
       "interval": "Sync-Intervall",
       "isActive": "Aktiv",
       "syncJobsTable": "Importer Jobs",
-      "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
-      "rowSelected": "{{selected}} von {{total}} Job ausgewählt",
       "mailAddress": "E-Mail-Adresse",
       "noMailConfigured": "Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator."
     }
@@ -179,7 +194,8 @@
   "errors": {
     "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten",
     "automaticLoginFailed": "Automatischer Login fehlgeschlagen",
-    "uploadOrFetchAttachmentFailed": "Fehler beim Hochladen des Anhangs"
+    "uploadOrFetchAttachmentFailed": "Fehler beim Hochladen des Anhangs",
+    "fileGenerationFailed": "Datei konnte nicht generiert werden"
   },
   "conferences": {
     "errors": {
@@ -260,9 +276,10 @@
   },
   "feed": {
     "title": "Aktuelles",
-    "noConferences": "Keine laufende Konferenz",
-    "noMails": "Keine ungelesenen Mails",
-    "noSurveys": "Keine offenen Umfragen"
+    "noconferences": "Keine laufende Konferenz",
+    "nomail": "Keine ungelesenen Mails",
+    "nosurveys": "Keine offenen Umfragen",
+    "nobulletinboard": "Keine neuen Mitteilungen"
   },
   "filesharing": {
     "filterPlaceHolderText": "Suche nach Dateiname",
@@ -275,6 +292,8 @@
     "loadingDocument": "Dokument wird geladen...",
     "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt",
     "rowSelected": "{{selected}} von {{total}} Datei ausgewählt",
+    "fileWithSameNameAlreadyExists": "Eine Datei mit diesem Namen existiert bereits.",
+    "folderWithSameNameAlreadyExists": "Ein Ordner mit diesem Namen existiert bereits.",
     "errors": {
       "FileNotFound": "Datei nicht gefunden",
       "MountPointsNotFound": "Laufwerke nicht gefunden",
@@ -293,7 +312,8 @@
       "DuplicateFailed": "Kopieren fehlgeschlagen",
       "AppNotProperlyConfigured": "OnlyOffice ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator.",
       "CollectingFailed": "Einasmmeln der Dateien fehlgeschlagen",
-      "SharingFailed": "Austeilen der Dateien fehlgeschlagen"
+      "SharingFailed": "Austeilen der Dateien fehlgeschlagen",
+      "MissingCallbackURL": "Fehlende Callback-URL"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
@@ -329,7 +349,16 @@
   "classmanagement": {
     "title": "KLASSENZIMMER",
     "sidebar": "Klassenzimmer",
+    "invalidProxyAddresses": "Proxy Email-Adressen müssen Komma-separiert ohne Leerzeichen angegebn werden",
+    "invalidQuota": "Die Quota muss der Dokumentation entsprechend angegeben werden",
+    "invalidMailQuota": "Die Mailquota muss als Zahl in MB angegeben werden",
     "name": "Name",
+    "mailQuota": "Mail Quota (MB)",
+    "proxyAddresses": "Proxy Email-Adressen",
+    "descriptionPlaceholder": "Kurze Beschreibung des Projekts",
+    "proxyAddressesPlaceholder": "info@email1.de,kontakt@email2.com",
+    "quotaPlaceholder": "[{\"share\":\"default-school\",\"quota\":50}]",
+    "quota": "Quota (MB)",
     "notMemberOfClass": "Du bist kein Mitglied einer Klasse.",
     "noGroupsToShow": "Keine Gruppen vorhanden.",
     "classes": "Klassen",
@@ -415,6 +444,7 @@
     "printOneItemPerPage": "Drucke ein Passwort pro Seite",
     "selectSavedSession": "Aus gespeicherten Sitzungen wählen",
     "saveSession": "Sitzung speichern",
+    "editSession": "Sitzung editieren",
     "myRoom": "Mein Raum",
     "sharedMailBox": "Geteiltes Postfach",
     "enrolPageDescription": "Wählen Sie die Klassen und Projekte aus, für die Sie sich einschreiben möchten, indem Sie die Checkboxen aktivieren.",
@@ -439,16 +469,24 @@
   "downloadFile": "Datei herunterladen",
   "cancel": "Abbrechen",
   "survey": {
+    "attendee": "Teilnehmer",
+    "attendees": "Teilnehmer",
     "newTitle": "Neue Umfrage",
     "filterPlaceHolderText": "Suche nach Umfragename",
+    "invitedAttendees": "Eingeladen",
+    "isPublic": "Sichtbarkeit",
+    "isPublicTrue": "Öffentlich",
+    "isPublicFalse": "Privat",
     "created": "Erstellt",
     "creationDate": "Erstellungsdatum",
     "expires": "Läuft ab",
     "expirationDate": "Ablaufdatum",
-    "notFound": "Umfrage nicht gefunden",
-    "noFormula": "Das Formular ist nicht lesbar",
-    "noAnswer": "Keine Antwort verfügbar",
-    "canSubmitMultiple": "Erlaube Mehrfachantworten",
+    "finished": "Du hast erfolgreich an der Umfrage teilgenommen.",
+    "thanks": "Vielen Dank für deine Teilnahme.",
+    "notFound": "Die Umfrage konnte nicht gefunden werden.",
+    "noFormula": "Das Formular ist nicht lesbar.",
+    "noAnswer": "Es sind noch keine Antworten verfügbar.",
+    "canSubmitMultiple": "Erlaube Mehrfachantworten.",
     "editor": {
       "new": "Neu (Leer)",
       "abort": "Alle Änderungen verwerfen",
@@ -456,9 +494,9 @@
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
     },
     "errors": {
-      "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden",
+      "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden.",
       "deleteError": "Die Umfragen konnten nicht gelöscht werden.",
-      "noAnswerError": "Es sind noch keine Antworten vorhanden.",
+      "noAnswerError": "Bisher ist noch keine Antwort abgegeben worden.",
       "noFormulaError": "Das Formular der Umfrage ist nicht lesbar.",
       "noBackendLimitersError": "Um diese Funktion nutzen zu können müssen im Editor die Grenzwerte definiert werden.",
       "notFoundError": "Umfrage konnte nicht gefunden werden.",
@@ -466,15 +504,15 @@
       "participationErrorUserNotAssigned": "Du bist zu dieser Umfrage nicht eingeladen.",
       "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
       "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",
-      "idTypeError": "Ungültige Umfrage-ID",
-      "missingAnswerError": "Bitte fülle die Umfrage aus bevor du deine Antwort abschickst."
+      "idTypeError": "Ungültige Umfrage-ID.",
+      "missingAnswerError": "Bitte fülle die Umfrage aus, bevor du deine Antwort abschickst."
     }
   },
   "survey-answer": {
     "errors": {
-      "notAbleToFindOrCreateSurveyAnswerError": "Antwort konnte nicht gefunden oder erstellt werden",
+      "notAbleToFindOrCreateSurveyAnswerError": "Antwort konnte nicht gefunden oder erstellt werden.",
       "notAbleToFindSurveyAnswerError": "Keine Antworten vorhanden.",
-      "notAbleToUpdateSurveyAnswerError": "Antwort konnte nicht aktualisiert werden",
+      "notAbleToUpdateSurveyAnswerError": "Antwort konnte nicht aktualisiert werden.",
       "notAbleToCreateSurveyAnswerError": "Antwort konnte nicht erstellt werden.",
       "notAbleToDeleteSurveyAnswerError": "Antwort konnte nicht gelöscht werden."
     }
@@ -521,13 +559,14 @@
       "settingsFlags": "Einstellungen",
       "isAnonymous": "Soll die Umfrage anonym sein?",
       "isPublic": "Soll die Umfrage öffentlich sein?",
-      "canSubmitMultipleAnswers": "Auch nach Teilnahme bleibt der Status auf offen"
+      "canSubmitMultipleAnswers": "Soll ein Teilnehmer die Umfrage mehrmals beantworten können?",
+      "canUpdateFormerAnswer": "Sollen Antworten nachträglich bearbeitbar sein?"
     },
     "sharePublicSurveyDialog": {
       "title": "Umfrage teilen",
       "description": "Hier kannst du den Link zur Umfrage kopieren und teilen.",
-      "savedToClipboard": "In die Zwischenablage kopiert",
-      "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden"
+      "savedToClipboard": "In die Zwischenablage kopiert.",
+      "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden."
     },
     "participateDialog": {
       "title": "An der Umfrage teilnehmen"
@@ -572,7 +611,8 @@
       "GuacamoleNotResponding": "RDP-Dienst nicht verfügbar.",
       "GuacamoleUserNotFound": "Nutzername oder Passwort konnte nicht gefunden.",
       "LmnVdiApiNotResponding": "Linuxmuster VDI-Dienst antwortet nicht.",
-      "SessionNotFound": "Session nicht gefunden."
+      "SessionNotFound": "Session nicht gefunden.",
+      "AppNotProperlyConfigured": "Guacamole ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator."
     }
   },
   "wlan": {
@@ -644,7 +684,7 @@
       "aichat": "Hier kannst du alle Einstellungen vornehmen.",
       "linuxmuster": "Hier kannst du alle Einstellungen vornehmen.",
       "whiteboard": "Hier kannst du alle Einstellungen vornehmen.",
-      "bulletinboard": "Konfiguriere hier die Nutzergruppen ,die Zugriff auf die App Schwarzes Brett Editor haben. Über die Kategorieren kann gesteuert werden, bei welchen Nutzern und Gruppen das Schwarze Brett mit den Mitteilungen statt dem klassischen Dashboard angezeigt wird."
+      "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Schwarzes Brett haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden."
     },
     "appconfig": {
       "sections": {
@@ -658,20 +698,26 @@
         },
         "bulletinBoard": {
           "title": "Kategorien",
-          "description": "Füge neue Kategorien hinzu oder bearbeite existierende um zu steuern für welche Nutzer und Gruppen das Schwarze Brett statt dem klassischen Dashboard angezeigt werden soll."
+          "description": "Füge neue Kategorien hinzu oder bearbeite existierende, um zu steuern, für welche Nutzer und Gruppen Mitteilungen angezeigt werden sollen."
         },
         "general": {
           "title": "Allgemein",
           "description": ""
         },
+        "fileSharing": {
+          "title": "Allgemeine Einstellungen",
+          "description": ""
+        },
         "docker": {
           "title": "Docker Anwendungen",
-          "description": "Um die erweiterten Dienste nutzen zu können hier die benötigten Docker Container gestartet werden."
+          "description": "Um die erweiterten Dienste nutzen zu können, können hier die benötigten Container-Anwendungen installiert und gestartet werden."
         },
         "veyon": {
           "title": "Veyon Proxy",
-          "description": "",
-          "filterPlaceHolderText": "Suche nach Proxy-Name"
+          "description": "Hier können die Veyon WebAPI-Proxys konfiguriert werden.",
+          "filterPlaceHolderText": "Suche nach Proxy-Name",
+          "invalidCidrFormat": "Ungültige CIDR-Notation",
+          "invalidUrlFormat": "Ungültige URL"
         }
       },
       "update": {
@@ -693,7 +739,10 @@
       "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen",
       "WriteTraefikConfigFailed": "Traefik-Konfiguration speichern fehlgeschlagen",
       "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen",
-      "forbiddenProxyPath": "Dieser Proxy-Pfad ist nicht erlaubt."
+      "forbiddenProxyPath": "Dieser Proxy-Pfad ist nicht erlaubt.",
+      "fieldRequired": "Dieses Feld ist erforderlich",
+      "maxChars": "Maximal {{count}} Zeichen",
+      "nameAlreadyExists": "App mit diesem Namen existiert bereits"
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",
@@ -799,6 +848,7 @@
     "remember_me": "Merken"
   },
   "common": {
+    "answers": "Antworten",
     "error": "Fehler",
     "errors": {
       "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
@@ -810,6 +860,7 @@
     "checking": "Prüfen",
     "cancel": "Abbrechen",
     "columns": "Spalten",
+    "table": "Tabelle",
     "copy": {
       "success": "Erfolgreich in Zwischenablage kopiert",
       "error": "In Zwischenablage kopieren fehlgeschlagen",
@@ -888,7 +939,11 @@
     "install": "Installieren",
     "update": "Update",
     "progress": "Fortschritt...",
-    "pressInstall": "Drücke Installieren um zu Starten."
+    "pressInstall": "Drücke Installieren um zu Starten.",
+    "disabled": "Deaktiviert",
+    "invalid_url": "Ungültige URL",
+    "invalid_fqdn": "Ungültiger FQDN. Bitte nur den Hostnamen angeben.",
+    "required": "Erforderlich"
   },
   "form": {
     "path": "Link",
@@ -906,7 +961,9 @@
     "proxyConfigDescription": "YAML-Editor für die Konfiguration des Traefik-Proxy.",
     "expertMode": "Expertenmodus",
     "proxyPath": "Proxy Pfad",
+    "proxyPathPlaceholder": "z.B. SOGo",
     "proxyDestination": "Zielhost",
+    "proxyDestinationPlaceholder": "z.B. http://localhost:1234/",
     "stripPrefix": "Prefix entfernen"
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
@@ -927,6 +984,7 @@
     "selectFile": "Wählen Sie bis zu 5 Dateien gleichzeitig",
     "uploadItems": "Hochladen: {{count}} Datei/en",
     "dragDropClick": "Ziehen Sie Dateien hierher oder klicken Sie, um Dateien auszuwählen",
+    "dropHere": "Hier loslassen",
     "filesToUpload": "Dateien zum Hochladen",
     "limitExceeded": "Dateilimit von 5 Dateien erreicht"
   },
@@ -942,7 +1000,8 @@
     "noDataAvailable": "Keine Daten verfügbar"
   },
   "loadingIndicator": {
-    "message": "Bitte warten..."
+    "message": "Bitte warten...",
+    "previewLoading": "Vorschau laden"
   },
   "search": {
     "type-to-search": "Tippen um zu suchen",
@@ -1108,6 +1167,8 @@
     "onlyOfficeUrlTitle": "OnlyOffice-URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Gib hier den OnlyOffice JWT Secret Key an",
+    "overrideDocumentVendorMSWithOOTitle": "OpenDocument als Standard-Dokumentenformat verwenden",
+    "overrideDocumentVendorMSWithOODescription": "Soll anstatt der Microsoft Office Formate (docx, pptx, xlsx) das OpenDocument Format (odt, ods, odp) verwendet werden?",
     "mailImapUrlTitle": "URL",
     "mailImapUrlDescription": "Gib hier den FQDN (z.B. 'imap.example.com') des IMAP-Servers an.",
     "mailImapPortTitle": "Port",
@@ -1121,11 +1182,12 @@
     "image": "Bildvorschau",
     "failedToLoadImage": "Bild konnte nicht geladen werden"
   },
-  "dockerApplication": {
-    "title": "Docker-Anwendung",
+  "containerApplication": {
     "dialogTitle": "{{applicationName}}-Plugins installieren",
-    "mailDescription": "Falls ein eigener Mailserver betrieben werden soll, kann hier das Setup für Mailcow durchgeführt werden.",
-    "classmanagementDescription": "Falls Veyon im Schulnetz eingesetzt wird, kann hier das Setup für den Veyon-WebAPI-Proxy durchgeführt werden."
+    "EDULUTION_MAIL_HOSTNAME": {
+      "title": "Hostname",
+      "description": "Hostname des Mailservers. Dieser kann von der edulution Domain abweichen."
+    }
   },
   "dockerOverview": {
     "title": "Container-Übersicht",
@@ -1165,6 +1227,14 @@
       "paused": "pausiert",
       "exited": "gestoppt",
       "dead": "tot"
+    }
+  },
+  "veyon": {
+    "errors": {
+      "AppNotProperlyConfigured": "Veyon ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
+      "VeyonAuthFailed": "Veyon-Authentifizierung fehlgeschlagen",
+      "GetUserFailed": "Benutzer konnte nicht abgerufen werden",
+      "VeyonApiNotReachable": "Der externen Veyon-Server ist nicht erreichbar"
     }
   }
 }

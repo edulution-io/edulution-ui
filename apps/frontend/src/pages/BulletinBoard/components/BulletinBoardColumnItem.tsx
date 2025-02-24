@@ -1,17 +1,31 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 /* eslint-disable react/no-danger */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@/components/shared/Button';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import { PiDotsThreeVerticalBold } from 'react-icons/pi';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import { DropdownMenuItemType } from '@libs/ui/types/dropdownMenuItemType';
 import { useTranslation } from 'react-i18next';
-import APPS from '@libs/appconfig/constants/apps';
 import { RowSelectionState } from '@tanstack/react-table';
 import useUserStore from '@/store/UserStore/UserStore';
-import { useNavigate } from 'react-router-dom';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import { useParams } from 'react-router-dom';
+import cn from '@libs/common/utils/className';
 
 const BulletinBoardColumnItem = ({
   bulletin,
@@ -23,8 +37,8 @@ const BulletinBoardColumnItem = ({
   handleImageClick: (imageUrl: string) => void;
 }) => {
   const { t } = useTranslation();
+  const { bulletinId } = useParams();
   const { user } = useUserStore();
-  const navigate = useNavigate();
   const { isSuperAdmin } = useLdapGroups();
   const {
     setSelectedRows,
@@ -33,6 +47,43 @@ const BulletinBoardColumnItem = ({
     setSelectedBulletinToEdit,
     getBulletins,
   } = useBulletinBoardEditorialStore();
+  const { resetBulletinBoardNotifications, setIsEditorialModeEnabled } = useBulletinBoardStore();
+
+  const isCurrentBulletin = bulletinId === bulletin.id;
+
+  useEffect(() => {
+    if (!isCurrentBulletin) return undefined;
+
+    const element = document.getElementById(bulletinId);
+
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'center',
+      });
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            element.classList.add('blinking');
+            resetBulletinBoardNotifications();
+          } else {
+            element.classList.remove('blinking');
+          }
+        },
+        { threshold: 0.5 },
+      );
+
+      observer.observe(element);
+
+      return () => {
+        observer.disconnect();
+      };
+    }
+
+    return undefined;
+  }, [bulletinId]);
 
   const handleDeleteBulletin = async () => {
     await getBulletins();
@@ -88,7 +139,7 @@ const BulletinBoardColumnItem = ({
     if (canManageBulletins) {
       items.push({
         label: t('bulletinboard.manageBulletins'),
-        onClick: () => navigate(`/${APPS.BULLETIN_BOARD}`),
+        onClick: () => setIsEditorialModeEnabled(true),
       });
     }
     return items;
@@ -97,7 +148,12 @@ const BulletinBoardColumnItem = ({
   const getProcessedBulletinContent = (content: string) => {
     if (content.match(/<img[^>]*src="([^"]*)"[^>]*>/)) {
       const srcMatch = content.match(/src="([^"]*)"/);
-      const src = srcMatch ? srcMatch[1] : '';
+      let src = srcMatch ? srcMatch[1] : '';
+
+      if (!src.startsWith('http') && !src.startsWith(`/${EDU_API_ROOT}`)) {
+        src = `/${src}`;
+      }
+
       return (
         <button
           key={`image-${content}`}
@@ -123,8 +179,11 @@ const BulletinBoardColumnItem = ({
 
   return (
     <div
+      id={bulletin.id}
       key={bulletin.id}
-      className="relative flex items-center justify-between break-all rounded-lg bg-white bg-opacity-5 p-4"
+      className={cn('relative mx-1 flex items-center justify-between break-all rounded-lg bg-white bg-opacity-5 p-4', {
+        ring: isCurrentBulletin,
+      })}
     >
       <div className="flex-1">
         <h4 className="w-[calc(100%-20px)] overflow-x-hidden text-ellipsis break-normal text-lg font-bold text-background">

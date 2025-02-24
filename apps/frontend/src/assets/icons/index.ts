@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 export { default as MobileLogoIcon } from '@/assets/logos/edulution-logo-small-colorfull.svg';
 export { default as FirewallIcon } from '@/assets/icons/firewall-light.svg';
 export { default as ConferencesIcon } from '@/assets/icons/edulution/Konferenzen.svg';
@@ -23,7 +35,7 @@ export { default as EducationIcon } from '@/assets/icons/edulution/Education.svg
 export { default as DesktopIcon } from '@/assets/icons/edulution/Desktop.svg';
 export { default as ReloadIcon } from '@/assets/icons/edulution/Neu_Laden.svg';
 export { default as LernmanagementIcon } from '@/assets/icons/edulution/Lernmanagement.svg';
-export { default as AppleLogo } from '@/assets/icons/apple.png';
+export { default as AppleLogo } from '@/assets/icons/apple.svg';
 export { default as IsoIcon } from '@/assets/icons/iso.svg';
 export { default as ProgrammIcon } from '@/assets/icons/programm.svg';
 export { default as ProjectIcon } from '@/assets/icons/project.svg';
@@ -37,9 +49,8 @@ export { default as LocationServicesIcon } from '@/assets/icons/edulution/Stando
 export { default as MobileDevicesIcon } from '@/assets/icons/edulution/Mobile_Endger„te.svg';
 export { default as AntiMalwareIcon } from '@/assets/icons/edulution/Anti_Malware.svg';
 export { default as BackupIcon } from '@/assets/icons/edulution/Backup.svg';
-export { default as TrashIcon } from '@/assets/icons/trash.png';
-export { default as EyeLightIcon } from '@/assets/icons/eye.png';
-export { default as EyeDarkIcon } from '@/assets/icons/eye-dark.png';
+export { default as EyeLightIcon } from '@/assets/icons/eye.svg';
+export { default as EyeDarkIcon } from '@/assets/icons/eye-dark.svg';
 export { default as EyeLightSlashIcon } from '@/assets/icons/eye-slash-light.svg';
 export { default as EyeDarkSlashIcon } from '@/assets/icons/eye-slash-dark.svg';
 export { default as SurveysMenuIcon } from '@/assets/icons/survey-menu.svg';
@@ -60,3 +71,6 @@ export { default as NativeIcon } from '@/assets/icons/edulution/Icon_Nativ.svg';
 export { default as LanguageIcon } from '@/assets/icons/language.svg';
 export { default as GermanIcon } from '@/assets/icons/german.svg';
 export { default as EnglishIcon } from '@/assets/icons/english.svg';
+export { default as WindowsLogo } from '@/assets/icons/windows.svg';
+export { default as LinuxLogo } from '@/assets/icons/ubuntu.svg';
+export { default as AppStoreIcon } from '@/assets/icons/appstore.svg';

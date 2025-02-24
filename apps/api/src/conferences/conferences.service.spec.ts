@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 /* eslint-disable @typescript-eslint/unbound-method */
 
 import { Test, TestingModule } from '@nestjs/testing';
@@ -16,6 +28,8 @@ import { mockAppConfigService } from '../appconfig/appconfig.mock';
 import Attendee from './attendee.schema';
 import type UserConnections from '../types/userConnections';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';
+import GroupsService from '../groups/groups.service';
+import mockGroupsService from '../groups/groups.service.mock';
 
 const mockConference: CreateConferenceDto = {
   name: 'Testconference',
@@ -103,6 +117,7 @@ describe(ConferencesService.name, () => {
           provide: AppConfigService,
           useValue: mockAppConfigService,
         },
+        { provide: GroupsService, useValue: mockGroupsService },
         {
           provide: CACHE_MANAGER,
           useValue: cacheManagerMock,

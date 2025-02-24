@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -43,12 +55,16 @@ const useFileSharingPage = () => {
   }, [path, pathToRestoreSession, homePath, setPathToRestoreSession, fetchFiles]);
 
   useEffect(() => {
-    if (fileOperationResult && !isLoading) {
-      if (fileOperationResult.success) {
-        toast.success(fileOperationResult.message);
-        void fetchFiles(currentPath);
+    const updateFilesAfterSuccess = async () => {
+      if (fileOperationResult && !isLoading) {
+        if (fileOperationResult.success) {
+          await fetchFiles(currentPath);
+          toast.success(fileOperationResult.message);
+        }
       }
-    }
+    };
+
+    void updateFilesAfterSuccess();
   }, [fileOperationResult, isLoading, fetchFiles, currentPath]);
 
   return { isFileProcessing, isLoading, currentPath, searchParams, setSearchParams };
