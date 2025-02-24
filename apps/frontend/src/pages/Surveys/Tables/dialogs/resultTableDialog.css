@@ -8,7 +8,8 @@
 }
 
 .sa-table__entries-label,
-.sa-table__entries-label--right {
+.sa-table__entries-label--right,
+.sa-table__global-filter {
   color: theme("colors.foreground") !important;
 }
 
