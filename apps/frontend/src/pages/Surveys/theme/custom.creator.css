@@ -3,6 +3,23 @@
 @tailwind utilities;
 
 .survey-editor {
+  .sv-popup__body-content {
+    padding: 20px;
+  }
+
+  .sv-ranking-item__text {
+    color: theme("colors.ciLightGrey") !important;
+  }
+
+  .sd-table__cell .sd-table__cell--row-text {
+    color: theme("colors.ciLightGrey") !important;
+  }
+
+  .sd-table__cell--header,
+  .sd-table__cell--column-title {
+    color: theme("colors.ciLightGrey") !important;
+  }
+
   .svc-page__content-actions {
     .sv-svg-icon {
       max-width: 24px;
