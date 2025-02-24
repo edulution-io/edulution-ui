@@ -90,9 +90,7 @@ const useLessonStore = create<LessonStore>(
             ),
           });
         } catch (error) {
-          // THIS IS A TEMPORARY FIX UNTIL THE API RETURNS A SUITABLE ERROR MESSAGE -> Files are shared but the webdav Server returns an 500 error.
-          // TODO https://github.com/edulution-io/edulution-ui/issues/217
-          // handleApiError(error, set);
+          handleApiError(error, set);
         } finally {
           toast.success(t('classmanagement.filesShared'));
           set({ isLoading: false });
@@ -111,9 +109,7 @@ const useLessonStore = create<LessonStore>(
             collectFileRequestDTO,
           });
         } catch (error) {
-          // THIS IS A TEMPORARY FIX UNTIL THE API RETURNS A SUITABLE ERROR MESSAGE -> Files are shared but the webdav Server returns an 500 error.
-          // TODO https://github.com/edulution-io/edulution-ui/issues/217
-          // handleApiError(error, set);
+          handleApiError(error, set);
         } finally {
           toast.success(t('classmanagement.filesCollected'));
           set({ isLoading: false });
