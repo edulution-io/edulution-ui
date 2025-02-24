@@ -41,14 +41,13 @@ const useCommunityLicenseStore = create<CommunityLicenseStore>(
 
         set({ isLoading: true });
         try {
-          const response = await eduApi.get<LicenseInfoDto>(LICENSE_ENDPOINT);
-          const licenseInfo = response.data;
-
+          const { data: licenseInfo } = await eduApi.get<LicenseInfoDto>(LICENSE_ENDPOINT);
+          set({ licenseInfo });
           if (!licenseInfo || !licenseInfo.isLicenseActive) {
             setTimeout(() => set({ isOpen: true }), 400);
             return;
           }
-          set({ isOpen: false, wasViewedAlready: true, isLicenseActive: licenseInfo.isLicenseActive });
+          set({ isOpen: false, wasViewedAlready: true });
         } catch (error) {
           handleApiError(error, set);
         } finally {
@@ -61,7 +60,7 @@ const useCommunityLicenseStore = create<CommunityLicenseStore>(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         wasViewedAlready: state.wasViewedAlready,
-        isLicenseActive: state.isLicenseActive,
+        licenseInfo: state.licenseInfo,
       }),
     },
   ),

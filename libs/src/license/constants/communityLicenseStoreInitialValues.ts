@@ -13,9 +13,9 @@
 const communityLicenseStoreInitialValues = {
   isLoading: false,
   error: null,
-  isLicenseActive: false,
   wasViewedAlready: false,
   isOpen: false,
+  licenseInfo: null,
 };
 
 export default communityLicenseStoreInitialValues;

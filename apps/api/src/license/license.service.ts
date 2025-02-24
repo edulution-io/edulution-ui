@@ -84,7 +84,9 @@ class LicenseService implements OnModuleInit {
   async getLicenseDetails() {
     let licenseInfo: LicenseInfoDto | null;
     try {
-      licenseInfo = await this.licenseModel.findOne<LicenseInfoDto>().lean();
+      licenseInfo = await this.licenseModel
+        .findOne<LicenseInfoDto>({}, 'customerId hostname isLicenseActive numberOfUsers validFromUtc validToUtc')
+        .lean();
       return licenseInfo;
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -177,14 +179,12 @@ class LicenseService implements OnModuleInit {
           validateStatus: (status) => status < 500,
         },
       );
-      let isLicenseActive: boolean;
+      let isLicenseActive = false;
 
-      if (response.status >= 400 && response.status <= 404) {
-        isLicenseActive = false;
+      if (response.status === 200) {
+        isLicenseActive = true;
       }
-
-      isLicenseActive = true;
-      Logger.log(isLicenseActive, LicenseService.name);
+      Logger.log(response.status, LicenseService.name);
 
       await this.updateLicense(isLicenseActive);
     } catch (error) {

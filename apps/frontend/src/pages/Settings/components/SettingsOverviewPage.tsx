@@ -10,17 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import LicenseInfoDto from './license-info.dto';
+import React from 'react';
+import DockerContainerTable from '../AppConfig/DockerIntegration/DockerContainerTable';
+import LicenseOverview from './LicenseOverview';
 
-interface CommunityLicenseStore {
-  isLoading: boolean;
-  error: Error | null;
-  wasViewedAlready: boolean;
-  isOpen: boolean;
-  licenseInfo: LicenseInfoDto | null;
-  checkForActiveUserLicense: () => Promise<void>;
-  close: () => void;
-  reset: () => void;
-}
+const SettingsOverviewPage: React.FC = () => (
+  <>
+    <LicenseOverview />
+    <DockerContainerTable />
+  </>
+);
 
-export default CommunityLicenseStore;
+export default SettingsOverviewPage;
