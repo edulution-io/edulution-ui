@@ -16,7 +16,6 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import SaveSurveyDialogBody from '@/pages/Surveys/Editor/dialog/SaveSurveyDialogBody';
-import CircleLoader from '@/components/ui/CircleLoader';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 
 interface SaveSurveyDialogProps {
@@ -33,10 +32,7 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
 
   const { t } = useTranslation();
 
-  const getDialogBody = () => {
-    if (isSubmitting) return <CircleLoader className="mx-auto" />;
-    return <SaveSurveyDialogBody form={form} />;
-  };
+  const getDialogBody = () => <SaveSurveyDialogBody form={form} />;
 
   const getFooter = () => (
     <form
@@ -62,8 +58,8 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
       trigger={trigger}
       handleOpenChange={() => setIsOpenSaveSurveyDialog(!isOpenSaveSurveyDialog)}
       title={t('surveys.saveDialog.title')}
-      body={getDialogBody()}
-      footer={getFooter()}
+      body={!isSubmitting && getDialogBody()}
+      footer={!isSubmitting && getFooter()}
       desktopContentClassName="max-w-[50%] min-h-[500px] max-h-[90%] overflow-auto"
     />
   );
