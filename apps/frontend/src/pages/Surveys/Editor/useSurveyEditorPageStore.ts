@@ -65,6 +65,7 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>((set) => ({
       }
     } catch (error) {
       handleApiError(error, set);
+      throw error;
     } finally {
       set({ isLoading: false });
     }
