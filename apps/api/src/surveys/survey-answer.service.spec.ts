@@ -204,9 +204,9 @@ describe('SurveyAnswerService', () => {
       surveyModel.find = jest.fn().mockReturnValue([openSurvey01, openSurvey02]);
 
       const currentDate = new Date();
-      const result = await service.getOpenSurveys(firstMockJWTUser);
+      const result = await service.getOpenSurveys(firstMockJWTUser, currentDate);
       expect(result).toEqual([openSurvey01, openSurvey02]);
-      expect(service.getOpenSurveys).toHaveBeenCalledWith(firstMockJWTUser);
+      expect(service.getOpenSurveys).toHaveBeenCalledWith(firstMockJWTUser, currentDate);
 
       expect(surveyModel.find).toHaveBeenCalledWith({
         $or: [

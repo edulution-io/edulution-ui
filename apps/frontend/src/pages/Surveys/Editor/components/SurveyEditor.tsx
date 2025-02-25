@@ -63,7 +63,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
       'paneldynamic',
       'matrix',
       'matrixdropdown',
-      'matrixdynamic',
+      // 'matrixdynamic',
       'image',
       // 'html',
       // 'expression',
