@@ -755,9 +755,18 @@
       "customerId": "Kunden-Nr",
       "hostname": "Hostname",
       "numberOfUsers": "Anzahl Benutzer",
-      "validFromUtc": "Gueltig ab",
-      "validToUtc": "Gueltig bis",
-      "licenseStatus": "Lizenzstatus"
+      "validFromUtc": "Gültig ab",
+      "validToUtc": "Gültig bis",
+      "licenseStatus": "Lizenzstatus",
+      "register": "Registrieren",
+      "registerLicense": "Lizenz registrieren",
+      "licenseKey": "Lizenzschlüssel",
+      "licenseKeyDescription": "Gib hier den Lizenzschlüssel ein, den du beim Kauf bekommen hast.",
+      "licenseSignedSuccessfully": "Lizenz erfolgreich registriert",
+      "errors": {
+        "signingFailed": "Registrierung fehlgeschlagen",
+        "verificationFailed": "Tokenverifizierung fehlgeschlagen"
+      }
     }
   },
   "usersettings": {

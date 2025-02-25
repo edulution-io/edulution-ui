@@ -16,6 +16,7 @@ const communityLicenseStoreInitialValues = {
   wasViewedAlready: false,
   isOpen: false,
   licenseInfo: null,
+  isRegisterDialogOpen: false,
 };
 
 export default communityLicenseStoreInitialValues;

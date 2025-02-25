@@ -18,7 +18,10 @@ interface CommunityLicenseStore {
   wasViewedAlready: boolean;
   isOpen: boolean;
   licenseInfo: LicenseInfoDto | null;
+  isRegisterDialogOpen: boolean;
+  setIsRegisterDialogOpen: (isRegisterDialogOpen: boolean) => void;
   checkForActiveUserLicense: () => Promise<void>;
+  signLicense: (licenseKey: string) => Promise<void>;
   close: () => void;
   reset: () => void;
 }

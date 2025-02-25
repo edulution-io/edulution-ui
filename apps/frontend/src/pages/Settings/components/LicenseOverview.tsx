@@ -11,14 +11,16 @@
  */
 
 import React from 'react';
-import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
-import useCommunityLicenseStore from '@/pages/UserSettings/Info/useCommunityLicenseStore';
 import { useTranslation } from 'react-i18next';
+import useCommunityLicenseStore from '@/pages/UserSettings/Info/useCommunityLicenseStore';
+import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
+import { Button } from '@/components/shared/Button';
 import LicenseField from './LicenseField';
+import RegisterLicenseDialog from './RegisterLicenseDialog';
 
 const LicenseOverview: React.FC = () => {
   const { t } = useTranslation();
-  const { licenseInfo } = useCommunityLicenseStore();
+  const { licenseInfo, isRegisterDialogOpen, setIsRegisterDialogOpen } = useCommunityLicenseStore();
 
   if (!licenseInfo) return null;
 
@@ -41,29 +43,45 @@ const LicenseOverview: React.FC = () => {
     },
   ];
 
+  const handleOpenRegisterLicenseDialog = () => {
+    setIsRegisterDialogOpen(!isRegisterDialogOpen);
+  };
+
   return (
-    <AccordionSH
-      type="multiple"
-      defaultValue={['license']}
-    >
-      <AccordionItem value="license">
-        <AccordionTrigger className="flex text-h4">
-          <h4>{t('settings.license.title')}</h4>
-        </AccordionTrigger>
-        <AccordionContent className="space-y-2 px-1">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {fields.map((field) => (
-              <LicenseField
-                key={field.label}
-                label={field.label}
-                value={field.value}
-                valueClassName={field.valueClassName}
-              />
-            ))}
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-    </AccordionSH>
+    <>
+      <AccordionSH
+        type="multiple"
+        defaultValue={['license']}
+      >
+        <AccordionItem value="license">
+          <AccordionTrigger className="flex text-h4">
+            <h4>{t('settings.license.title')}</h4>
+          </AccordionTrigger>
+          <AccordionContent className="space-y-2 px-1">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {fields.map((field) => (
+                <LicenseField
+                  key={field.label}
+                  label={field.label}
+                  value={field.value}
+                  valueClassName={field.valueClassName}
+                />
+              ))}
+            </div>
+            <div className="mt-4 flex justify-end gap-4 pr-3.5">
+              <Button
+                variant="btn-security"
+                size="lg"
+                onClick={handleOpenRegisterLicenseDialog}
+              >
+                {t('settings.license.register')}
+              </Button>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </AccordionSH>
+      <RegisterLicenseDialog />
+    </>
   );
 };
 

@@ -750,13 +750,22 @@
     "rowsSelected": "{{selected}} of {{total}} Container selected",
     "rowSelected": "{{selected}} of {{total}} Container selected",
     "license": {
-      "title": "Lizenzübersicht",
-      "customerId": "Kunden-Nr",
+      "title": "License Overview",
+      "customerId": "Customer No",
       "hostname": "Hostname",
-      "numberOfUsers": "Anzahl Benutzer",
-      "validFromUtc": "Gueltig ab",
-      "validToUtc": "Gueltig bis",
-      "licenseStatus": "Lizenzstatus"
+      "numberOfUsers": "Number of users",
+      "validFromUtc": "Valid from",
+      "validToUtc": "Valid to",
+      "licenseStatus": "License status",
+      "register": "Register",
+      "registerLicense": "Register license",
+      "licenseKey": "License key",
+      "licenseKeyDescription": "Enter the license key you received with your purchase.",
+      "licenseSignedSuccessfully": "License registered successfully",
+      "errors": {
+        "signingFailed": "Registration failed",
+        "verificationFailed": "Token verification failed"
+      }
     }
   },
   "usersettings": {

@@ -11,8 +11,8 @@
  */
 
 const LicenseErrorMessages = {
-  LICENSE_SIGNING_FAILED: 'license.errors.signingFailed',
-  LICENSE_VERIFICATION_FAILED: 'license.errors.verificationFailed',
+  LICENSE_SIGNING_FAILED: 'settings.license.errors.signingFailed',
+  LICENSE_VERIFICATION_FAILED: 'settings.license.errors.verificationFailed',
 } as const;
 
 export default LicenseErrorMessages;
