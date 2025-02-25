@@ -966,7 +966,10 @@
     "proxyPathPlaceholder": "e.g. SOGo",
     "proxyDestination": "Proxy destination",
     "proxyDestinationPlaceholder": "e.g. http://localhost:1234/",
-    "stripPrefix": "Strip prefix"
+    "stripPrefix": "Strip prefix",
+    "input": {
+      "dateTimePicker": "Datum und Uhrzeit auswählen"
+    }
   },
   "fileOperationSuccessful": "File operation successful",
   "unknownErrorOccurred": "An unknown error occurred",
