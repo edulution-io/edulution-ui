@@ -488,7 +488,7 @@
     "canSubmitMultiple": "Allow multiple submission",
     "editor": {
       "new": "New (blank)",
-      "saveSurveySuccess": "saved the survey.",
+      "saveSurveySuccess": "Saved the survey.",
       "abort": "Revert all changes",
       "addDescription": "Add a description",
       "expectingUserInput": "Expecting the user to answer here, ... "
