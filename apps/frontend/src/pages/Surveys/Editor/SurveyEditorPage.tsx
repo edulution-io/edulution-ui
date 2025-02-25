@@ -116,7 +116,12 @@ const SurveyEditorPage = () => {
       toast.success(t('survey.editor.saveSurveySuccess'));
       navigate(`/${CREATED_SURVEYS_PAGE}`);
     } catch (error) {
-      toast.error(t('survey.errors.updateOrCreateError'));
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (error.response?.status === 413) {
+        toast.error(t('survey.errors.surveyTooBig'));
+      } else {
+        toast.error(t('survey.errors.updateOrCreateError'));
+      }
     }
   };
 

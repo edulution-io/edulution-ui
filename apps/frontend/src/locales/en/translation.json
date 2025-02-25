@@ -494,6 +494,7 @@
       "expectingUserInput": "Expecting the user to answer here, ... "
     },
     "errors": {
+      "surveyTooBig": "The survey is too big.",
       "updateOrCreateError": "Neither able to update a survey nor to create a new one.",
       "deleteError": "Not able to delete the surveys.",
       "noAnswerError": "No answers available jet.",
