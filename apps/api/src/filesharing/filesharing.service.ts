@@ -359,29 +359,29 @@ class FilesharingService {
     const client = await this.getClient(username);
 
     for (const destinationPath of duplicateFile.destinationFilePaths) {
-      const filesAfterTransfer = FilesharingService.getPathUntilFolder(destinationPath, FILE_PATHS.TRANSFER);
-      const filesAfterTeacherFolder = FilesharingService.getPathUntilFolder(destinationPath, username);
+      const pathUpToTransferFolder = FilesharingService.getPathUntilFolder(destinationPath, FILE_PATHS.TRANSFER);
+      const pathUpToTeacherFolder = FilesharingService.getPathUntilFolder(destinationPath, username);
 
       const userFolderExists = await this.checkIfFileOrFolderExists(
         username,
-        filesAfterTransfer,
+        pathUpToTransferFolder,
         username,
         ContentType.DIRECTORY,
       );
 
       if (!userFolderExists) {
-        await this.createFolder(username, filesAfterTransfer, username);
+        await this.createFolder(username, pathUpToTransferFolder, username);
       }
 
       if (!userFolderExists) {
         const collectFolderExists = await this.checkIfFileOrFolderExists(
           username,
-          filesAfterTeacherFolder,
+          pathUpToTeacherFolder,
           FILE_PATHS.COLLECT,
           ContentType.DIRECTORY,
         );
         if (!collectFolderExists) {
-          await this.createFolder(username, filesAfterTeacherFolder, FILE_PATHS.COLLECT);
+          await this.createFolder(username, pathUpToTeacherFolder, FILE_PATHS.COLLECT);
         }
       }
       await FilesharingService.copyFile(client, duplicateFile.originFilePath, destinationPath);
