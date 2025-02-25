@@ -3,21 +3,71 @@
 @tailwind utilities;
 
 .survey-editor {
+  /* fixes - white (should be transparent) empty field in the matrix upper most left corner */
+  .sd-matrix tr > td {
+    background-color: transparent;
+  }
+  .svc-matrix-cell {
+    color: #d1d5db !important;
+  }
+
+  /* fixes - black (on dark) text and icon in the file select component */
+  .sd-file__decorator {
+    .sv-string-editor,
+    .sd-file__choose-btn,
+    .sd-file__choose-btn--text {
+      color: #d1d5db;
+    }
+    .sd-file__choose-btn {
+      opacity: 1;
+    }
+    svg use {
+      fill: #d1d5db;
+      opacity: 0.75;
+    }
+  }
+
+  /* fixes - black (on dark) color of the addRow button text for the dynamic matrix */
+  .sd-matrixdynamic__footer {
+    color: #d1d5db;
+    :disabled {
+      color: #d1d5db;
+      opacity: 1;
+    }
+  }
+  /* fixes - bright gray (on white) color of the addRow button text for the dynamic matrix */
+  .sd-table__cell-action--remove-row {
+    .sd-matrixdynamic__remove-btn {
+      fill: black;
+      opacity: 1;
+    }
+  }
+
+  /* fixes - the styling of the popup, context menu */
   .sv-popup__body-content {
     padding: 20px;
   }
+  .sv-popup__body-header {
+    color: #d1d5db !important;
+  }
+  .sv-popup__scrolling-content {
+    padding: 10px;
+  }
+  .svc-question__content--in-popup {
+    padding: 10px 30px 10px 30px;
+  }
 
   .sv-ranking-item__text {
-    color: theme("colors.ciLightGrey") !important;
+    color: #d1d5db !important;
   }
 
   .sd-table__cell .sd-table__cell--row-text {
-    color: theme("colors.ciLightGrey") !important;
+    color: #d1d5db !important;
   }
 
   .sd-table__cell--header,
   .sd-table__cell--column-title {
-    color: theme("colors.ciLightGrey") !important;
+    color: #d1d5db !important;
   }
 
   .svc-page__content-actions {
