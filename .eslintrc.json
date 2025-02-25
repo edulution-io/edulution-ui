@@ -13,7 +13,8 @@
     "plugin:jsx-a11y/recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
-    "prettier"
+    "prettier",
+    "plugin:import/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -21,17 +22,7 @@
     "sourceType": "module",
     "project": ["./tsconfig.base.json"]
   },
-  "plugins": [
-    "react",
-    "react-refresh",
-    "@typescript-eslint",
-    "import",
-    "prettier",
-    "jsx-a11y",
-    "react-hooks",
-    "n",
-    "promise"
-  ],
+  "plugins": ["react", "@typescript-eslint", "import", "prettier", "jsx-a11y"],
   "settings": {
     "import/parsers": {
       "@typescript-eslint/parser": [".ts", ".tsx"]

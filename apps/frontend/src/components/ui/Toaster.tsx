@@ -13,18 +13,14 @@
 'use client';
 
 import React from 'react';
-import { useTheme } from 'next-themes';
 import { Toaster as Sonner } from 'sonner';
 import { SHOW_TOASTER_DURATION } from '@libs/ui/constants/durations';
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
-const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = 'system' } = useTheme();
-
-  return (
+const Toaster = ({ ...props }: ToasterProps) => (
     <Sonner
-      theme={theme as ToasterProps['theme']}
+      theme="dark"
       className="toaster group"
       closeButton
       offset={60}
@@ -39,6 +35,5 @@ const Toaster = ({ ...props }: ToasterProps) => {
       {...props}
     />
   );
-};
 
 export default Toaster;
