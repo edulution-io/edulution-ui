@@ -3,6 +3,12 @@
 @tailwind utilities;
 
 .survey-editor {
+  .sv-svg-icon,
+  .svc-panel__add-new-question-icon {
+    max-width: 24px;
+    max-height: 24px;
+  }
+
   .svc-list__filter {
     margin: 2px;
 
