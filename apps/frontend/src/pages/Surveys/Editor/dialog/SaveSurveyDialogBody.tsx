@@ -66,12 +66,15 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
         onGroupsChange={handleGroupsChange}
         variant="dialog"
       />
-      <p className="text-m font-bold text-background">{t('survey.expirationDate')}</p>
-      <DateTimeInput
-        value={selectedDate}
-        onChange={(value: Date | undefined) => setValue('expires', value)}
-        variant="dialog"
-      />
+      <div>
+        <p className="text-m font-bold text-background">{t('survey.expirationDate')}</p>
+        <DateTimeInput
+          value={selectedDate}
+          onChange={(value: Date | undefined) => setValue('expires', value)}
+          variant="dialog"
+          className="mt-0 pt-0"
+        />
+      </div>
       <p className="text-m font-bold text-background">{t('surveys.saveDialog.settingsFlags')}</p>
       {checkboxOptions.map(({ name, label }) => (
         <Checkbox

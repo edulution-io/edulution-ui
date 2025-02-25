@@ -64,7 +64,7 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
       title={t('surveys.saveDialog.title')}
       body={getDialogBody()}
       footer={getFooter()}
-      desktopContentClassName="max-w-[50%] min-h-[700px] max-h-[90%] overflow-auto"
+      desktopContentClassName="max-w-[50%] min-h-[500px] max-h-[90%] overflow-auto"
     />
   );
 };
