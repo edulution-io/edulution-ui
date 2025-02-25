@@ -748,7 +748,16 @@
       "placeholder": "Enter your Traefik config here"
     },
     "rowsSelected": "{{selected}} of {{total}} Container selected",
-    "rowSelected": "{{selected}} of {{total}} Container selected"
+    "rowSelected": "{{selected}} of {{total}} Container selected",
+    "license": {
+      "title": "Lizenzübersicht",
+      "customerId": "Kunden-Nr",
+      "hostname": "Hostname",
+      "numberOfUsers": "Anzahl Benutzer",
+      "validFromUtc": "Gueltig ab",
+      "validToUtc": "Gueltig bis",
+      "licenseStatus": "Lizenzstatus"
+    }
   },
   "usersettings": {
     "title": "MY PROFILE",
