@@ -8,12 +8,13 @@
 }
 
 .sa-table__entries-label,
-.sa-table__entries-label--right {
-  color: theme("colors.foreground") !important;
+.sa-table__entries-label--right,
+.sa-table__global-filter {
+  color: #000000 !important;
 }
 
 .sa-table select {
-  color: theme("colors.foreground") !important;
+  color: #000000 !important;
 }
 
 .surveyDashboardContainer {
@@ -23,5 +24,5 @@
 }
 
 .tabulator-cell {
-  color: theme("colors.foreground") !important;
+  color: #000000 !important;
 }
