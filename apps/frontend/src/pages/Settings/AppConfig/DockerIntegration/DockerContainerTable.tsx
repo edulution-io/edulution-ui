@@ -36,12 +36,12 @@ const DockerContainerTable: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
+    <>
+      <div className="absolute right-10 top-12 md:right-20 md:top-10">{isLoading ? <CircleLoader /> : null}</div>
       <AccordionSH
         type="multiple"
         defaultValue={['container']}
       >
-        <div className="absolute right-10 top-12 md:right-20 md:top-10">{isLoading ? <CircleLoader /> : null}</div>
         <AccordionItem value="container">
           <AccordionTrigger className="flex text-h4">
             <h4>{t('dockerOverview.title')}</h4>
@@ -66,7 +66,7 @@ const DockerContainerTable: React.FC = () => {
         </AccordionItem>
       </AccordionSH>
       <DockerContainerFloatingButtons />
-    </div>
+    </>
   );
 };
 

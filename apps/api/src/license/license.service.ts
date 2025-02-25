@@ -15,7 +15,7 @@ import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cron } from '@nestjs/schedule';
+import { Interval } from '@nestjs/schedule';
 import { Cache } from 'cache-manager';
 import axios, { AxiosInstance } from 'axios';
 import type LicenseInfoDto from '@libs/license/types/license-info.dto';
@@ -27,6 +27,7 @@ import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import LICENSE_ENDPOINT from '@libs/license/constants/license-endpoints';
 import LICENSE_SERVER_URL from '@libs/license/constants/licenseServerUrl';
 import LicenseErrorMessages from '@libs/license/constants/licenseErrorMessages';
+import LICENSE_CHECK_INTERVAL from '@libs/license/constants/licenseCheckInterval';
 import { License, LicenseDocument } from './license.schema';
 
 @Injectable()
@@ -71,7 +72,7 @@ class LicenseService implements OnModuleInit {
     }
   }
 
-  @Cron('*/5 * * * * *')
+  @Interval(LICENSE_CHECK_INTERVAL)
   async checkLicenseValidity() {
     Logger.log('Checking license validity...', LicenseService.name);
     await this.verifyToken();
