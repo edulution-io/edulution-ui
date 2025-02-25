@@ -62,24 +62,6 @@
     }
   }
 
-  .svc-matrix-cell__question-controls {
-    .svc-context-button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-
-      .sv-svg-icon,
-      svg use {
-        width: 24px;
-        min-width: 24px;
-        height: 24px;
-        min-height: 24px;
-      }
-    }
-  }
-
   .sv-popup__body-content {
     padding: 20px;
   }
@@ -110,6 +92,21 @@
     .sv-svg-icon {
       max-width: 24px;
       max-height: 24px;
+    }
+  }
+  .svc-context-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+
+    .sv-svg-icon,
+    svg use {
+      width: 24px;
+      min-width: 24px;
+      height: 24px;
+      min-height: 24px;
     }
   }
 
