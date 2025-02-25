@@ -37,7 +37,12 @@ import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
-import PROJECTS_PREFIX from '@libs/lmnApi/constants/projectsPrefix';
+import PROJECTS_PREFIX from '@libs/lmnApi/constants/prefixes/projectsPrefix';
+import SCHOOLS_PREFIX from '@libs/lmnApi/constants/prefixes/schoolsPrefix';
+import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
+import ALL_GROUPS_PREFIX from '@libs/lmnApi/constants/prefixes/allGroupsPrefix';
+import LINBO_DEVICE_GROUPS_PREFIX from '@libs/lmnApi/constants/prefixes/dPrefix';
+import ROLES_PREFIX from '@libs/lmnApi/constants/prefixes/rolesPrefix';
 import Attendee from '../conferences/attendee.schema';
 
 const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API, KEYCLOAK_EDU_API_CLIENT_ID, KEYCLOAK_EDU_API_CLIENT_SECRET } =
@@ -196,30 +201,51 @@ class GroupsService implements OnModuleInit {
     return groups;
   }
 
-  private async cacheSchoolGroups(groups: Group[]): Promise<Group[]> {
-    const schoolGroups = groups.filter((group) => group.path.startsWith('/s_'));
+  private async cacheSchoolGroups(groups: Group[]): Promise<string[]> {
+    const schoolGroups = groups
+      .filter((group) => group.path.startsWith(SCHOOLS_PREFIX))
+      .map((s) => ({ ...s, name: s.path.replace(SCHOOLS_PREFIX, '') }));
     await this.cacheManager.set(ALL_SCHOOLS_CACHE_KEY, schoolGroups, GROUPS_CACHE_TTL_MS);
 
-    return schoolGroups;
+    return schoolGroups.map((schoolGroup) => schoolGroup.name).filter(Boolean);
   }
 
-  private async cacheGroupsBySchoolName(schoolGroups: Group[], allGroups: Group[]): Promise<void> {
-    const foundSchoolGroups = schoolGroups
-      .map((schoolGroup) => {
-        const schoolName = schoolGroup.path.replace('/s_', '');
-        return { schoolGroup, schoolName };
-      })
-      .filter(({ schoolName }) => Boolean(schoolName));
+  private async cacheGroupsBySchoolName(schoolGroupNames: string[], allGroups: Group[]): Promise<void> {
+    const schoolNameToGroups = new Map<string, Group[]>();
+    const alreadyAssignedGroupPaths = new Set<string>();
 
-    const setGroupsInCache = foundSchoolGroups.map(({ schoolName }) => {
+    const multiSchoolNames = schoolGroupNames.filter((name) => name !== DEFAULT_SCHOOL);
+
+    multiSchoolNames.forEach((schoolName) => {
       const groupsBelongingToSchool = allGroups.filter(
         (g) => g.path.startsWith(`${PROJECTS_PREFIX}${schoolName}-`) || g.path.startsWith(`/${schoolName}-`),
       );
 
-      return this.cacheManager.set(ALL_GROUPS_CACHE_KEY + schoolName, groupsBelongingToSchool, GROUPS_CACHE_TTL_MS);
+      schoolNameToGroups.set(schoolName, groupsBelongingToSchool);
+
+      groupsBelongingToSchool.forEach((group) => {
+        alreadyAssignedGroupPaths.add(group.path);
+      });
     });
 
-    await Promise.all(setGroupsInCache);
+    if (schoolGroupNames.includes(DEFAULT_SCHOOL)) {
+      const defaultSchoolGroups = allGroups.filter((g) => {
+        const isUnassigned = !alreadyAssignedGroupPaths.has(g.path);
+        const isExcluded = [ALL_GROUPS_PREFIX, SCHOOLS_PREFIX, ROLES_PREFIX, LINBO_DEVICE_GROUPS_PREFIX].some((p) =>
+          g.path.startsWith(p),
+        );
+        return isUnassigned && !isExcluded;
+      });
+
+      schoolNameToGroups.set(DEFAULT_SCHOOL, defaultSchoolGroups);
+    }
+
+    const setGroupsPromises: Promise<void>[] = [];
+    schoolNameToGroups.forEach((groups, schoolName) => {
+      setGroupsPromises.push(this.cacheManager.set(ALL_GROUPS_CACHE_KEY + schoolName, groups, GROUPS_CACHE_TTL_MS));
+    });
+
+    await Promise.all(setGroupsPromises);
   }
 
   private async updateGroupsInCache(groups: Group[]): Promise<void> {
@@ -286,9 +312,9 @@ class GroupsService implements OnModuleInit {
     try {
       const allGroups = await this.fetchAndCacheAllGroups();
 
-      const schoolGroups = await this.cacheSchoolGroups(allGroups);
+      const schoolGroupNames = await this.cacheSchoolGroups(allGroups);
 
-      await this.cacheGroupsBySchoolName(schoolGroups, allGroups);
+      await this.cacheGroupsBySchoolName(schoolGroupNames, allGroups);
 
       await this.updateGroupsInCache(allGroups);
     } catch (error) {

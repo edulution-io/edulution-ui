@@ -11,7 +11,7 @@
  */
 
 import LdapGroups from '@libs/groups/types/ldapGroups';
-import PROJECTS_PREFIX from '@libs/lmnApi/constants/projectsPrefix';
+import PROJECTS_PREFIX from '@libs/lmnApi/constants/prefixes/projectsPrefix';
 
 const regexPatterns = {
   school: /^\/SCHOOLS\/s_([^/]+)\/?/,
