@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 .survey-editor {
-  /* fixes - gray (should be black) color in the white search field */
   .svc-list__filter {
     margin: 2px;
 
@@ -15,14 +14,12 @@
     }
   }
 
-  /* fixes - white (should be black) color on a focused, selected input field */
   .svc-string-editor__input {
     :focus {
       color: black !important;
     }
   }
 
-  /* fixes - white (should be transparent) empty field in the matrix upper most left corner */
   .sd-matrix tr > td {
     background-color: transparent;
   }
@@ -30,7 +27,6 @@
     color: #d1d5db !important;
   }
 
-  /* fixes - black (on dark) text and icon in the file select component */
   .sd-file__decorator {
     .sv-string-editor,
     .sd-file__choose-btn,
@@ -46,7 +42,6 @@
     }
   }
 
-  /* fixes - black (on dark) color of the addRow button text for the dynamic matrix */
   .sd-matrixdynamic__footer {
     color: #d1d5db;
     :disabled {
@@ -54,7 +49,6 @@
       opacity: 1;
     }
   }
-  /* fixes - bright gray (on white) color of the addRow button text for the dynamic matrix */
   .sd-table__cell-action--remove-row {
     .sd-matrixdynamic__remove-btn {
       fill: black;
@@ -62,7 +56,6 @@
     }
   }
 
-  /* fixes - icon size for the context menu buttons */
   .svc-matrix-cell__question-controls {
     .svc-context-button {
       display: flex;
@@ -80,7 +73,7 @@
       }
     }
   }
-  /* fixes - the styling of the popup, context menu */
+
   .sv-popup__body-content {
     padding: 20px;
   }
