@@ -92,7 +92,6 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           name="isPublic"
           labelClassname="text-base font-bold text-background"
           titleTranslationId={t('conferences.isPublic')}
-          defaultValue={CONFERENCES_IS_PUBLIC_FORM_VALUES[0].value}
           items={CONFERENCES_IS_PUBLIC_FORM_VALUES}
           disabled={searchGroupsIsLoading}
         />
