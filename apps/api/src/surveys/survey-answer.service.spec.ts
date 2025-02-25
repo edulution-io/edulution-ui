@@ -18,7 +18,6 @@
 import { Model, Types } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import { Survey, SurveyDocument } from './survey.schema';
@@ -73,7 +72,6 @@ import {
   updatedSurveyAnswerAnsweredSurvey03,
 } from './mocks';
 import SurveysService from './surveys.service';
-import cacheManagerMock from '../common/mocks/cacheManagerMock';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
 
@@ -96,10 +94,6 @@ describe('SurveyAnswerService', () => {
         {
           provide: getModelToken(SurveyAnswer.name),
           useValue: jest.fn(),
-        },
-        {
-          provide: CACHE_MANAGER,
-          useValue: cacheManagerMock,
         },
       ],
     }).compile();
