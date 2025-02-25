@@ -10,19 +10,19 @@
 .sa-table__entries-label,
 .sa-table__entries-label--right,
 .sa-table__global-filter {
-  color: #000000 !important;
+  color: theme("colors.foreground") !important;
 }
 
 .sa-table select {
-  color: #000000 !important;
+  color: theme("colors.foreground") !important;
+}
+
+.tabulator-cell {
+  color: theme("colors.foreground") !important;
 }
 
 .surveyDashboardContainer {
   overflow-x: auto;
   overflow-y: auto;
   width: 100%;
-}
-
-.tabulator-cell {
-  color: #000000 !important;
 }
