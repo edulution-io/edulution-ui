@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const LICENSE_SERVER_URL = 'http://localhost:3002/';
+const LICENSE_SERVER_URL = 'https://license.edulution.io/license';
 
 export default LICENSE_SERVER_URL;

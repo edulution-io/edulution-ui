@@ -159,9 +159,9 @@ class LicenseService implements OnModuleInit {
 
   async verifyToken() {
     try {
-      const license = await this.getLicenseDetails();
+      const licenseInfo = await this.licenseModel.findOne<LicenseInfoDto>({}, 'token').lean();
 
-      if (!license) {
+      if (!licenseInfo) {
         throw new CustomHttpException(
           CommonErrorMessages.DBAccessFailed,
           HttpStatus.INTERNAL_SERVER_ERROR,
@@ -170,7 +170,7 @@ class LicenseService implements OnModuleInit {
         );
       }
 
-      const { token } = license;
+      const { token } = licenseInfo;
 
       const response = await this.licenseServerApi.post<LicenseJwt>(
         'verify',
@@ -183,8 +183,8 @@ class LicenseService implements OnModuleInit {
 
       if (response.status === 200) {
         isLicenseActive = true;
+        Logger.log('License is active', LicenseService.name);
       }
-      Logger.log(response.status, LicenseService.name);
 
       await this.updateLicense(isLicenseActive);
     } catch (error) {
