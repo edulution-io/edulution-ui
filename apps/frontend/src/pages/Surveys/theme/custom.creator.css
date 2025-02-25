@@ -3,6 +3,18 @@
 @tailwind utilities;
 
 .survey-editor {
+  /* fixes - gray (should be black) color in the white search field */
+  .svc-list__filter {
+    margin: 2px;
+
+    .svc-list__input {
+      margin: 4px;
+      padding-left: 4px;
+      padding-right: 4px;
+      color: black;
+    }
+  }
+
   /* fixes - white (should be black) color on a focused, selected input field */
   .svc-string-editor__input {
     :focus {
