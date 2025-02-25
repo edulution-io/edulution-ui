@@ -10,12 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { MdCheckCircle, MdError } from 'react-icons/md';
 import Input from '@/components/shared/Input';
 import { useTranslation } from 'react-i18next';
 import { UseFormRegisterReturn } from 'react-hook-form';
 import useBulletinCategoryTableStore from '../../Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
+import { useDebounce } from '@/components/ui/MultipleSelectorSH';
 
 interface NameInputWithAvailabilityProps {
   register: UseFormRegisterReturn<'name'>;
@@ -33,9 +34,19 @@ const NameInputWithAvailability = ({
   const { t } = useTranslation();
   const { nameExistsAlready, isNameCheckingLoading, checkIfNameAllReadyExists } = useBulletinCategoryTableStore();
 
-  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [inputValue, setInputValue] = useState('');
+
+  const debouncedValue = useDebounce(inputValue, 500);
+
+  useEffect(() => {
+    if (debouncedValue) {
+      void checkIfNameAllReadyExists(debouncedValue);
+    }
+  }, [debouncedValue, checkIfNameAllReadyExists]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
     onValueChange(e.target.value);
-    await checkIfNameAllReadyExists(e.target.value);
   };
 
   const renderAvailabilityStatus = () => {
