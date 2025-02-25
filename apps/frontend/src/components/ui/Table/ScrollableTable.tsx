@@ -154,7 +154,7 @@ const ScrollableTable = <TData, TValue>({
       >
         <div className="w-full">
           {!!data.length && (
-            <div className="flex items-center py-4">
+            <div className="flex items-center justify-between py-4">
               <Input
                 placeholder={t(filterPlaceHolderText)}
                 value={filterValue}

@@ -101,7 +101,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
         </p>
       ) : (
         <p className="bg-gray-100">
-          <p>Select a File </p>
+          <span>{t('filesharing.selectFile')}</span>
         </p>
       )}
     </div>
