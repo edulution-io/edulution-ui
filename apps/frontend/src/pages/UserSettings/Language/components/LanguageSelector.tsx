@@ -66,7 +66,6 @@ const LanguageSelector: React.FC<SelectLanguageProps> = ({ settingLocation }) =>
       <RadioGroupFormField
         control={control}
         name={`${settingLocation}.userLanguage`}
-        defaultValue={selectedLanguage}
         items={languageOptions}
         imageWidth={isMobileView ? 'small' : 'large'}
         fixedImageSize
