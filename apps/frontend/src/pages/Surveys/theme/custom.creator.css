@@ -3,6 +3,13 @@
 @tailwind utilities;
 
 .survey-editor {
+  /* fixes - white (should be black) color on a focused, selected input field */
+  .svc-string-editor__input {
+    :focus {
+      color: black !important;
+    }
+  }
+
   /* fixes - white (should be transparent) empty field in the matrix upper most left corner */
   .sd-matrix tr > td {
     background-color: transparent;
