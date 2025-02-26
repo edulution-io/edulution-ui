@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const LICENSE_CHECK_INTERVAL = 24 * 60 * 60 * 1000; // 1 day
+const LICENSE_CHECK_INTERVAL = 24 * 60 * 60 * 1000; // 24 h
 
 export default LICENSE_CHECK_INTERVAL;

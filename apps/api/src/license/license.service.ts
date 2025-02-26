@@ -70,12 +70,18 @@ class LicenseService implements OnModuleInit {
 
       await defaultLicense.save();
     }
+
+    await this.checkLicenseValidity();
   }
 
   @Interval(LICENSE_CHECK_INTERVAL)
   async checkLicenseValidity() {
-    Logger.log('Checking license validity...', LicenseService.name);
-    await this.verifyToken();
+    const licenseInfo = await this.licenseModel.findOne<LicenseInfoDto>({}, 'isLicenseActive').lean();
+
+    if (licenseInfo && licenseInfo.isLicenseActive) {
+      Logger.log('Checking license validity...', LicenseService.name);
+      await this.verifyToken();
+    }
   }
 
   async invalidateCache(key: string): Promise<void> {
