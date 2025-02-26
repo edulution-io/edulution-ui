@@ -18,7 +18,8 @@ import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import UsersService from './users.service';
 import UpdateUserDto from './dto/update-user.dto';
 import GetToken from '../common/decorators/getToken.decorator';
-import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
+import GetCurrentSchool from '../common/decorators/getCurrentSchool.decorator';
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -61,8 +62,12 @@ export class UsersController {
   }
 
   @Get('search/:searchString')
-  async search(@GetToken() token: string, @Param('searchString') searchString: string) {
-    return this.usersService.searchUsersByName(token, searchString);
+  async search(
+    @GetToken() token: string,
+    @Param('searchString') searchString: string,
+    @GetCurrentSchool() school: string,
+  ) {
+    return this.usersService.searchUsersByName(token, school, searchString);
   }
 }
 
