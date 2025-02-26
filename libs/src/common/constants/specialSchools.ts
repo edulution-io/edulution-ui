@@ -10,20 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as React from 'react';
-import cn from '@libs/common/utils/className';
-import { INPUT_DEFAULT } from '@libs/ui/constants/commonClassNames';
+const SPECIAL_SCHOOLS = {
+  GLOBAL: 'global',
+} as const;
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
-
-const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type, ...props }, ref) => (
-  <input
-    type={type}
-    className={cn(INPUT_DEFAULT, 'w-full', className)}
-    ref={ref}
-    {...props}
-  />
-));
-Input.displayName = 'Input';
-
-export { Input };
+export default SPECIAL_SCHOOLS;

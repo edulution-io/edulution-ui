@@ -10,20 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as React from 'react';
-import cn from '@libs/common/utils/className';
-import { INPUT_DEFAULT } from '@libs/ui/constants/commonClassNames';
+import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { Request } from 'express';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+const GetCurrentSchool = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
+  const request: Request = ctx.switchToHttp().getRequest();
+  if (!request.user?.school) {
+    throw new UnauthorizedException('school in JWT is missing');
+  }
+  return request.user.school;
+});
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type, ...props }, ref) => (
-  <input
-    type={type}
-    className={cn(INPUT_DEFAULT, 'w-full', className)}
-    ref={ref}
-    {...props}
-  />
-));
-Input.displayName = 'Input';
-
-export { Input };
+export default GetCurrentSchool;

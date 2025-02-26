@@ -22,7 +22,6 @@ interface RadioGroupProps<T extends FieldValues> {
   control: Control<T>;
   name: Path<T>;
   titleTranslationId?: string;
-  defaultValue?: string;
   items: RadioGroupItem[];
   formClassname?: string;
   labelClassname?: string;
@@ -35,7 +34,6 @@ const RadioGroupFormField = <T extends FieldValues>({
   control,
   name,
   titleTranslationId,
-  defaultValue,
   items,
   formClassname,
   labelClassname,
@@ -56,8 +54,8 @@ const RadioGroupFormField = <T extends FieldValues>({
           <h4 className={labelClassname}>{titleTranslationId && t(titleTranslationId)}</h4>
           <FormControl>
             <RadioGroupSH
+              value={field.value}
               onValueChange={disabled ? undefined : field.onChange}
-              defaultValue={defaultValue}
               className="flex flex-row flex-wrap"
             >
               {items.map((item) => (
