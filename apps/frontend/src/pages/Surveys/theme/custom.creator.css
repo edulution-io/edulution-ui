@@ -23,6 +23,9 @@
   .svc-string-editor__input {
     :focus {
       color: black !important;
+      border-radius: 3px;
+      background-color: white;
+      box-shadow: 0 0 0 4px white;
     }
   }
 
@@ -30,28 +33,28 @@
     background-color: transparent;
   }
   .svc-matrix-cell {
-    color: #d1d5db !important;
+    color: theme("colors.ciLightGrey") !important;
   }
 
   .sd-file__decorator {
     .sv-string-editor,
     .sd-file__choose-btn,
     .sd-file__choose-btn--text {
-      color: #d1d5db;
+      color: theme("colors.ciLightGrey");
     }
     .sd-file__choose-btn {
       opacity: 1;
     }
     svg use {
-      fill: #d1d5db;
+      color: theme("colors.ciLightGrey");
       opacity: 0.75;
     }
   }
 
   .sd-matrixdynamic__footer {
-    color: #d1d5db;
+    color: theme("colors.ciLightGrey");
     :disabled {
-      color: #d1d5db;
+      color: theme("colors.ciLightGrey");
       opacity: 1;
     }
   }
@@ -66,7 +69,7 @@
     padding: 20px;
   }
   .sv-popup__body-header {
-    color: #d1d5db !important;
+    color: theme("colors.ciLightGrey") !important;
   }
   .sv-popup__scrolling-content {
     padding: 10px;
@@ -76,16 +79,16 @@
   }
 
   .sv-ranking-item__text {
-    color: #d1d5db !important;
+    color: theme("colors.ciLightGrey") !important;
   }
 
   .sd-table__cell .sd-table__cell--row-text {
-    color: #d1d5db !important;
+    color: theme("colors.ciLightGrey") !important;
   }
 
   .sd-table__cell--header,
   .sd-table__cell--column-title {
-    color: #d1d5db !important;
+    color: theme("colors.ciLightGrey") !important;
   }
 
   .svc-page__content-actions {
