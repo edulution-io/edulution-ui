@@ -23,6 +23,7 @@ import cn from '@libs/common/utils/className';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import { CommandGroup, CommandItem, CommandList, CommandSH } from '@/components/ui/CommandSH';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
+import { useDebounce } from '@/hooks/useDebounce';
 
 interface GroupOption {
   [key: string]: MultipleSelectorOptionSH[];
@@ -82,20 +83,6 @@ interface MultipleSelectorProps {
 export interface MultipleSelectorRef {
   selectedValue: MultipleSelectorOptionSH[];
   input: HTMLInputElement;
-}
-
-export function useDebounce<T>(value: T, delay?: number): T {
-  const [debouncedValue, setDebouncedValue] = React.useState<T>(value);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedValue(value), delay || 500);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
 }
 
 function transToGroupOption(options: MultipleSelectorOptionSH[], groupBy?: string) {

@@ -10,50 +10,48 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { MdCheckCircle, MdError } from 'react-icons/md';
 import Input from '@/components/shared/Input';
 import { useTranslation } from 'react-i18next';
-import { UseFormRegisterReturn } from 'react-hook-form';
-import { useDebounce } from '@/components/ui/MultipleSelectorSH';
+import { Control, useWatch, Path } from 'react-hook-form';
+import { useDebounceValue } from 'usehooks-ts';
 import useBulletinCategoryTableStore from '../../Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
 
-interface NameInputWithAvailabilityProps {
-  register: UseFormRegisterReturn<'name'>;
+interface NameInputWithAvailabilityProps<T extends { name: string }> {
+  control: Control<T>;
   placeholder: string;
-  onValueChange: (newValue: string) => void;
+  onValueChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   shouldAvailabilityStatusShow: boolean;
 }
 
-const NameInputWithAvailability = ({
-  register,
+const NameInputWithAvailability = <T extends { name: string }>({
+  control,
   placeholder,
   onValueChange,
   shouldAvailabilityStatusShow,
-}: NameInputWithAvailabilityProps) => {
+}: NameInputWithAvailabilityProps<T>) => {
   const { t } = useTranslation();
   const { nameExistsAlready, isNameCheckingLoading, checkIfNameAllReadyExists } = useBulletinCategoryTableStore();
 
-  const [inputValue, setInputValue] = useState('');
+  const watchedValue = useWatch<T>({ control, name: 'name' as Path<T> });
 
-  const debouncedValue = useDebounce(inputValue, 500);
+  const [debouncedValue] = useDebounceValue(watchedValue ?? '', 500);
+
+  const lastValueRef = useRef('');
 
   useEffect(() => {
-    if (debouncedValue) {
-      void checkIfNameAllReadyExists(debouncedValue);
+    const trimmed = debouncedValue.trim();
+    if (trimmed && trimmed !== lastValueRef.current) {
+      lastValueRef.current = trimmed;
+      void checkIfNameAllReadyExists(trimmed);
     }
-  }, [debouncedValue, checkIfNameAllReadyExists]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-    onValueChange(e.target.value);
-  };
+  }, [debouncedValue, checkIfNameAllReadyExists, onValueChange]);
 
   const renderAvailabilityStatus = () => {
     if (isNameCheckingLoading) {
       return <span className="text-sm text-gray-500">{t('common.checking')}...</span>;
     }
-
     if (!nameExistsAlready) {
       return (
         <MdCheckCircle
@@ -62,7 +60,6 @@ const NameInputWithAvailability = ({
         />
       );
     }
-
     return (
       <MdError
         className="text-red-500"
@@ -74,10 +71,9 @@ const NameInputWithAvailability = ({
   return (
     <div className="flex items-center space-x-2">
       <Input
-        {...register}
         placeholder={placeholder}
+        onChange={onValueChange}
         className="input-class"
-        onChange={handleChange}
         variant="dialog"
       />
       {shouldAvailabilityStatusShow && renderAvailabilityStatus()}
