@@ -18,13 +18,13 @@ import DirectoryBreadcrumb from '@/pages/FileSharing/breadcrumb/DirectoryBreadcr
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import APPS from '@libs/appconfig/constants/apps';
-import { FileSharingTableColumns } from '@/pages/FileSharing/table/FileSharingTableColumns';
 import { ColumnDef, OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import FILESHARING_TABLE_COLUM_NAMES from '@libs/filesharing/constants/filesharingTableColumNames';
 import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
 import ContentType from '@libs/filesharing/types/contentType';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useLmnApiStore from '@/store/useLmnApiStore';
+import getFileSharingTableColumns from '@/pages/FileSharing/table/FileSharingTableColumns';
 
 const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   showAllFiles = false,
@@ -109,7 +109,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 
   const visibleColumns = [FILESHARING_TABLE_COLUM_NAMES.SELECT_FILENAME];
 
-  const columns: ColumnDef<DirectoryFileDTO>[] = FileSharingTableColumns(visibleColumns, onFilenameClick);
+  const columns: ColumnDef<DirectoryFileDTO>[] = getFileSharingTableColumns(visibleColumns, onFilenameClick);
 
   return (
     <div className="h-[60vh] flex-col overflow-auto text-background scrollbar-thin">

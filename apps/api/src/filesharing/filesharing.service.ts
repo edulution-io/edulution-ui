@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -18,7 +18,7 @@ import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMes
 import ErrorMessage from '@libs/error/errorMessage';
 import { HttpMethods, HttpMethodsWebDav, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { Readable } from 'stream';
-import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
+import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
 import CustomFile from '@libs/filesharing/types/customFile';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import process from 'node:process';
@@ -101,7 +101,7 @@ class FilesharingService {
     // eslint-disable-next-line
     transformer?: (data: any) => T,
     showDebugMessage?: boolean,
-  ): Promise<T | WebdavStatusReplay> {
+  ): Promise<T | WebdavStatusResponse> {
     try {
       const response = await client(config);
       FilesharingService.handleWebDAVError(response);
@@ -161,22 +161,22 @@ class FilesharingService {
     )) as DirectoryFileDTO[];
   };
 
-  createFolder = async (username: string, path: string, folderName: string): Promise<WebdavStatusReplay> => {
+  createFolder = async (username: string, path: string, folderName: string): Promise<WebdavStatusResponse> => {
     const client = await this.getClient(username);
     const fullPath = `${this.baseurl}${path}/${folderName}`;
 
-    return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(
+    return FilesharingService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethodsWebDav.MKCOL,
         url: fullPath,
       },
       FileSharingErrorMessage.FolderCreationFailed,
-      (response: WebdavStatusReplay) =>
+      (response: WebdavStatusResponse) =>
         ({
           success: response?.status >= 200 && response?.status < 300,
           status: response.status,
-        }) as WebdavStatusReplay,
+        }) as WebdavStatusResponse,
     );
   };
 
@@ -185,11 +185,11 @@ class FilesharingService {
     path: string,
     fileName: string,
     content: string = '',
-  ): Promise<WebdavStatusReplay> => {
+  ): Promise<WebdavStatusResponse> => {
     const client = await this.getClient(username);
     const fullPath = `${this.baseurl}${getPathWithoutWebdav(path)}/${fileName}`;
 
-    return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(
+    return FilesharingService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethods.PUT,
@@ -198,18 +198,23 @@ class FilesharingService {
         data: content,
       },
       FileSharingErrorMessage.CreationFailed,
-      (response: WebdavStatusReplay) =>
+      (response: WebdavStatusResponse) =>
         ({
           success: response.status >= 200 && response.status < 300,
           status: response.status,
-        }) as WebdavStatusReplay,
+        }) as WebdavStatusResponse,
     );
   };
 
-  uploadFile = async (username: string, path: string, file: CustomFile, name: string): Promise<WebdavStatusReplay> => {
+  uploadFile = async (
+    username: string,
+    path: string,
+    file: CustomFile,
+    name: string,
+  ): Promise<WebdavStatusResponse> => {
     const client = await this.getClient(username);
     const fullPath = `${this.baseurl}${path}/${name}`;
-    return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(
+    return FilesharingService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethods.PUT,
@@ -218,20 +223,20 @@ class FilesharingService {
         data: file.buffer,
       },
       FileSharingErrorMessage.UploadFailed,
-      (response: WebdavStatusReplay) =>
+      (response: WebdavStatusResponse) =>
         ({
           success: response.status === 201 || response.status === 200,
           filename: file.originalname,
           status: response.status,
-        }) as WebdavStatusReplay,
+        }) as WebdavStatusResponse,
     );
   };
 
-  deleteFileAtPath = async (username: string, path: string): Promise<WebdavStatusReplay> => {
+  deleteFileAtPath = async (username: string, path: string): Promise<WebdavStatusResponse> => {
     const client = await this.getClient(username);
     const fullPath = `${this.baseurl}${path}`;
 
-    return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(
+    return FilesharingService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethods.DELETE,
@@ -239,20 +244,24 @@ class FilesharingService {
         headers: { 'Content-Type': RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
       },
       FileSharingErrorMessage.DeletionFailed,
-      (response: WebdavStatusReplay) =>
+      (response: WebdavStatusResponse) =>
         ({
           success: response.status >= 200 && response.status < 300,
           status: response.status,
-        }) as WebdavStatusReplay,
+        }) as WebdavStatusResponse,
     );
   };
 
-  moveOrRenameResource = async (username: string, originPath: string, newPath: string): Promise<WebdavStatusReplay> => {
+  moveOrRenameResource = async (
+    username: string,
+    originPath: string,
+    newPath: string,
+  ): Promise<WebdavStatusResponse> => {
     const client = await this.getClient(username);
     const fullOriginPath = `${this.baseurl}${originPath}`;
     const fullNewPath = `${this.baseurl}${newPath}`;
 
-    return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(
+    return FilesharingService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethodsWebDav.MOVE,
@@ -263,7 +272,7 @@ class FilesharingService {
         },
       },
       FileSharingErrorMessage.RenameFailed,
-      (response: WebdavStatusReplay) => ({
+      (response: WebdavStatusResponse) => ({
         success: response.status >= 200 && response.status < 300,
         status: response.status,
       }),
@@ -279,7 +288,7 @@ class FilesharingService {
       throw new CustomHttpException(
         FileSharingErrorMessage.CreationFailed,
         HttpStatus.NOT_FOUND,
-        error,
+        pathWithoutFilename,
         FilesharingService.name,
       );
     }
@@ -290,13 +299,18 @@ class FilesharingService {
     await FilesharingService.copyFileViaWebDAV(client, originPath, sanitizedDestinationPath);
   }
 
-  cutCollectedItems = async (username: string, originPath: string, newPath: string): Promise<WebdavStatusReplay> => {
+  cutCollectedItems = async (username: string, originPath: string, newPath: string): Promise<WebdavStatusResponse> => {
     const result = await this.moveOrRenameResource(username, originPath, newPath);
 
     try {
       await this.createCollectFolderIfNotExists(username, originPath);
     } catch (error) {
-      Logger.error(error);
+      throw new CustomHttpException(
+        FileSharingErrorMessage.CollectingFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        originPath,
+        FilesharingService.name,
+      );
     }
     return result;
   };
@@ -304,7 +318,7 @@ class FilesharingService {
   copyCollectedItems = async (
     username: string,
     duplicateFile: DuplicateFileRequestDto,
-  ): Promise<WebdavStatusReplay> => {
+  ): Promise<WebdavStatusResponse> => {
     const client = await this.getClient(username);
 
     const duplicationPromises = duplicateFile.destinationFilePaths.map(async (destinationPath) => {
@@ -354,11 +368,12 @@ class FilesharingService {
     return false;
   }
 
-  /* eslint-disable no-await-in-loop, no-restricted-syntax */
-  duplicateFile = async (username: string, duplicateFile: DuplicateFileRequestDto): Promise<WebdavStatusReplay> => {
+  /* eslint-disable no-await-in-loop */
+  async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
 
-    for (const destinationPath of duplicateFile.destinationFilePaths) {
+    for (let i = 0; i < duplicateFile.destinationFilePaths.length; i += 1) {
+      const destinationPath = duplicateFile.destinationFilePaths[i];
       const pathUpToTransferFolder = FilesharingService.getPathUntilFolder(destinationPath, FILE_PATHS.TRANSFER);
       const pathUpToTeacherFolder = FilesharingService.getPathUntilFolder(destinationPath, username);
 
@@ -384,11 +399,12 @@ class FilesharingService {
           await this.createFolder(username, pathUpToTeacherFolder, FILE_PATHS.COLLECT);
         }
       }
+
       await FilesharingService.copyFile(client, duplicateFile.originFilePath, destinationPath);
     }
 
     return { success: true, status: HttpStatus.OK };
-  };
+  }
 
   async getWebDavFileStream(username: string, filePath: string): Promise<Readable> {
     try {
@@ -408,7 +424,7 @@ class FilesharingService {
     }
   }
 
-  async fileLocation(username: string, filePath: string, filename: string): Promise<WebdavStatusReplay> {
+  async fileLocation(username: string, filePath: string, filename: string): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
     return this.fileSystemService.fileLocation(username, filePath, filename, client);
   }
@@ -471,8 +487,8 @@ class FilesharingService {
     client: AxiosInstance,
     originPath: string,
     destinationPath: string,
-  ): Promise<WebdavStatusReplay> {
-    return FilesharingService.executeWebdavRequest<WebdavStatusReplay>(
+  ): Promise<WebdavStatusResponse> {
+    return FilesharingService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethodsWebDav.COPY,
@@ -482,8 +498,8 @@ class FilesharingService {
         },
       },
       FileSharingErrorMessage.DuplicateFailed,
-      (response: WebdavStatusReplay) => ({
-        success: response.success,
+      (response: WebdavStatusResponse) => ({
+        success: response.status >= 200 && response.status < 300,
         status: response.status,
       }),
     );

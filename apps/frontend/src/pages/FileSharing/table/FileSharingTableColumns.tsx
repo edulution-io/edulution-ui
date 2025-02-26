@@ -38,7 +38,7 @@ const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
 
 const hideOnMobileClassName = 'hidden lg:flex';
 
-export const FileSharingTableColumns = (
+const getFileSharingTableColumns = (
   visibleColumns?: string[],
   onFilenameClick?: (item: DirectoryFileDTO) => void,
 ): ColumnDef<DirectoryFileDTO>[] => {
@@ -220,4 +220,4 @@ export const FileSharingTableColumns = (
   return allColumns;
 };
 
-export default FileSharingTableColumns;
+export default getFileSharingTableColumns;

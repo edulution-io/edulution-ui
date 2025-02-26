@@ -42,6 +42,7 @@ import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 import CreateWorkingDirectoryDto from '@libs/classManagement/types/createWorkingDirectoryDto';
+import convertWindowsToUnixPath from '@libs/common/utils/convertWindowsToUnixPath';
 import UsersService from '../users/users.service';
 import FilesharingService from '../filesharing/filesharing.service';
 
@@ -698,16 +699,10 @@ class LmnApiService {
 
     await Promise.all(
       members.map(async (member) => {
-        const unixPath = LmnApiService.convertWindowsToUnixPath(member.homeDirectory);
+        const unixPath = convertWindowsToUnixPath(member.homeDirectory);
         return this.fileSharingService.createFolder(member.name, unixPath, teacher);
       }),
     );
-  }
-
-  private static convertWindowsToUnixPath(windowsPath: string): string {
-    const pathWithoutServer = windowsPath.replace(/^\\\\[^\\]+\\/, '');
-    const pathWithoutFirstElement = pathWithoutServer.split('\\').slice(1).join('/');
-    return `${pathWithoutFirstElement}/transfer`;
   }
 }
 

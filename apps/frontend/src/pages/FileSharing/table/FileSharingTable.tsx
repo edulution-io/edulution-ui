@@ -14,11 +14,11 @@ import React from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
-import { FileSharingTableColumns } from '@/pages/FileSharing/table/FileSharingTableColumns';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 import { BREADCRUMB_ID } from '@libs/ui/constants/defaultIds';
+import getFileSharingTableColumns from '@/pages/FileSharing/table/FileSharingTableColumns';
 
 const FileSharingTable = () => {
   const { setSelectedRows, setSelectedItems, selectedRows, files, isLoading } = useFileSharingStore();
@@ -39,7 +39,7 @@ const FileSharingTable = () => {
 
   return (
     <ScrollableTable
-      columns={FileSharingTableColumns()}
+      columns={getFileSharingTableColumns()}
       data={files}
       filterKey="select-filename"
       filterPlaceHolderText="filesharing.filterPlaceHolderText"

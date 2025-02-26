@@ -89,10 +89,10 @@ const useLessonStore = create<LessonStore>(
               decodeURIComponent(destinationFilePath),
             ),
           });
+          toast.success(t('classmanagement.filesShared'));
         } catch (error) {
           handleApiError(error, set);
         } finally {
-          toast.success(t('classmanagement.filesShared'));
           set({ isLoading: false });
         }
       },
@@ -108,10 +108,10 @@ const useLessonStore = create<LessonStore>(
           await eduApi.post(`${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.COLLECT}/${queryParamString}`, {
             collectFileRequestDTO,
           });
+          toast.success(t('classmanagement.filesCollected'));
         } catch (error) {
           handleApiError(error, set);
         } finally {
-          toast.success(t('classmanagement.filesCollected'));
           set({ isLoading: false });
         }
       },
