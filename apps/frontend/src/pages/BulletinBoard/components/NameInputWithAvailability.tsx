@@ -15,8 +15,8 @@ import { MdCheckCircle, MdError } from 'react-icons/md';
 import Input from '@/components/shared/Input';
 import { useTranslation } from 'react-i18next';
 import { UseFormRegisterReturn } from 'react-hook-form';
-import useBulletinCategoryTableStore from '../../Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
 import { useDebounce } from '@/components/ui/MultipleSelectorSH';
+import useBulletinCategoryTableStore from '../../Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
 
 interface NameInputWithAvailabilityProps {
   register: UseFormRegisterReturn<'name'>;
