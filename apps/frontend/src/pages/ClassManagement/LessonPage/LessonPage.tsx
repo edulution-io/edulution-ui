@@ -33,15 +33,8 @@ import GroupForm from '@libs/groups/types/groupForm';
 import GroupColumn from '@libs/groups/types/groupColumn';
 
 const LessonPage = () => {
-  const {
-    userSessions,
-    fetchProject,
-    updateSession,
-    createSession,
-    removeSession,
-    fetchSchoolClass,
-    isSchoolClassLoading,
-  } = useClassManagementStore();
+  const { userSessions, fetchProject, updateSession, createSession, removeSession, fetchSchoolClass } =
+    useClassManagementStore();
   const { getOwnUser } = useLmnApiStore();
   const { groupType: groupTypeParams, groupName: groupNameParams } = useParams();
   const {
@@ -116,7 +109,9 @@ const LessonPage = () => {
   }, [groupTypeParams, groupNameParams]);
 
   useEffect(() => {
-    setMember(currentSelectedSession?.members || []);
+    if (currentSelectedSession) {
+      setMember(currentSelectedSession.members);
+    }
     if (!isLoading) setIsPageLoading(false);
   }, [userSessions]);
 
@@ -169,7 +164,7 @@ const LessonPage = () => {
         className="my-2 flex flex-col gap-2 md:flex-row"
         id={FILTER_BAR_ID}
       >
-        <LoadingIndicator isOpen={isPageLoading || isLoading || isSchoolClassLoading} />
+        <LoadingIndicator isOpen={isPageLoading || isLoading} />
         <UserProjectOrSchoolClassSearch />
         {sessionOptions && (
           <div className="md:w-1/3">
