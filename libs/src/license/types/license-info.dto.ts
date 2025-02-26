@@ -12,7 +12,7 @@
 
 interface LicenseInfoDto {
   customerId: string;
-  hostname: string;
+  licenseId: string;
   numberOfUsers: number;
   licenseKey?: string;
   token?: string;

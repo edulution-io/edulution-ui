@@ -755,7 +755,7 @@
     "license": {
       "title": "Lizenzübersicht",
       "customerId": "Kunden-Nr",
-      "hostname": "Hostname",
+      "licenseId": "Lizenz-ID",
       "numberOfUsers": "Anzahl Benutzer",
       "validFromUtc": "Gültig ab",
       "validToUtc": "Gültig bis",
@@ -765,6 +765,7 @@
       "licenseKey": "Lizenzschlüssel",
       "licenseKeyDescription": "Gib hier den Lizenzschlüssel ein, den du beim Kauf bekommen hast.",
       "licenseSignedSuccessfully": "Lizenz erfolgreich registriert",
+      "noLicenseRegistered": "Keine Lizenz registriert",
       "errors": {
         "signingFailed": "Registrierung fehlgeschlagen",
         "verificationFailed": "Tokenverifizierung fehlgeschlagen"

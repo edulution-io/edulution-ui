@@ -21,7 +21,7 @@ export class License {
   customerId: string;
 
   @Prop({ default: '' })
-  hostname: string;
+  licenseId: string;
 
   @Prop({ default: 0 })
   numberOfUsers: number;

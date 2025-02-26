@@ -26,7 +26,7 @@ const LicenseOverview: React.FC = () => {
 
   const fields = [
     { label: t('settings.license.customerId'), value: licenseInfo.customerId },
-    { label: t('settings.license.hostname'), value: licenseInfo.hostname },
+    { label: t('settings.license.licenseId'), value: licenseInfo.licenseId },
     { label: t('settings.license.numberOfUsers'), value: licenseInfo.numberOfUsers },
     {
       label: t('settings.license.validFromUtc'),
@@ -58,16 +58,20 @@ const LicenseOverview: React.FC = () => {
             <h4>{t('settings.license.title')}</h4>
           </AccordionTrigger>
           <AccordionContent className="space-y-2 px-1">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {fields.map((field) => (
-                <LicenseField
-                  key={field.label}
-                  label={field.label}
-                  value={field.value}
-                  valueClassName={field.valueClassName}
-                />
-              ))}
-            </div>
+            {licenseInfo.customerId ? (
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {fields.map((field) => (
+                  <LicenseField
+                    key={field.label}
+                    label={field.label}
+                    value={field.value}
+                    valueClassName={field.valueClassName}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-muted-foreground">{t('settings.license.noLicenseRegistered')}</div>
+            )}
             <div className="mt-4 flex justify-end gap-4 pr-3.5">
               <Button
                 variant="btn-security"

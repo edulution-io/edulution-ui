@@ -10,12 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type LicenseJwt = {
+type TokenPayload = {
   customerId: string;
-  hostname: string;
+  licenseId: string;
   numberOfUsers: number;
   iat: number;
   exp: number;
 };
 
-export default LicenseJwt;
+export default TokenPayload;

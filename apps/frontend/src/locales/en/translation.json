@@ -754,7 +754,7 @@
     "license": {
       "title": "License Overview",
       "customerId": "Customer No",
-      "hostname": "Hostname",
+      "licenseId": "License ID",
       "numberOfUsers": "Number of users",
       "validFromUtc": "Valid from",
       "validToUtc": "Valid to",
@@ -764,6 +764,7 @@
       "licenseKey": "License key",
       "licenseKeyDescription": "Enter the license key you received with your purchase.",
       "licenseSignedSuccessfully": "License registered successfully",
+      "noLicenseRegistered": "No license registered",
       "errors": {
         "signingFailed": "Registration failed",
         "verificationFailed": "Token verification failed"

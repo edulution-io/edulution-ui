@@ -20,7 +20,7 @@ import { Cache } from 'cache-manager';
 import axios, { AxiosInstance } from 'axios';
 import type LicenseInfoDto from '@libs/license/types/license-info.dto';
 import type SignLicenseDto from '@libs/license/types/sign-license.dto';
-import type LicenseJwt from '@libs/license/types/license-jwt';
+import type TokenPayload from '@libs/license/types/token-payload';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
@@ -59,7 +59,7 @@ class LicenseService implements OnModuleInit {
       // eslint-disable-next-line new-cap
       const defaultLicense = new this.licenseModel({
         customerId: '',
-        hostname: '',
+        licenseId: '',
         numberOfUsers: 0,
         licenseKey: '',
         token: '',
@@ -92,7 +92,7 @@ class LicenseService implements OnModuleInit {
     let licenseInfo: LicenseInfoDto | null;
     try {
       licenseInfo = await this.licenseModel
-        .findOne<LicenseInfoDto>({}, 'customerId hostname isLicenseActive numberOfUsers validFromUtc validToUtc')
+        .findOne<LicenseInfoDto>({}, 'customerId licenseId isLicenseActive numberOfUsers validFromUtc validToUtc')
         .lean();
       return licenseInfo;
     } catch (error) {
@@ -122,7 +122,7 @@ class LicenseService implements OnModuleInit {
         );
       }
 
-      const tokenInfo = this.jwtService.decode<LicenseJwt>(token);
+      const tokenInfo = this.jwtService.decode<TokenPayload>(token);
 
       const dbResponse = await this.licenseModel
         .updateOne<LicenseInfoDto>(
@@ -130,7 +130,7 @@ class LicenseService implements OnModuleInit {
           {
             $set: {
               customerId: tokenInfo.customerId,
-              hostname: tokenInfo.hostname,
+              licenseId: tokenInfo.licenseId,
               numberOfUsers: tokenInfo.numberOfUsers,
               licenseKey: signLicenseDto.licenseKey,
               token,
@@ -179,7 +179,7 @@ class LicenseService implements OnModuleInit {
 
       const { token } = licenseInfo;
 
-      const response = await this.licenseServerApi.post<LicenseJwt>(
+      const response = await this.licenseServerApi.post<TokenPayload>(
         'verify',
         { token },
         {
