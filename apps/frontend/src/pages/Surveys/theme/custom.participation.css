@@ -72,6 +72,35 @@
   }
 
   /* Coloring */
+  /*.sd-input,*/
+  .sd-dropdown__value,
+  .sd-dropdown__filter-string-input {
+    background: none;
+  }
+  .sv-dropdown_select-wrapper {
+    color: theme("colors.ciDarkGrey") !important;
+    background: theme("colors.ciLightGrey") !important;
+
+    ::placeholder {
+      color: theme("colors.ciDarkGrey") !important;
+    }
+
+    .sd-dropdown_chevron-button-svg use {
+      fill: theme("colors.ciDarkGrey") !important;
+    }
+    .sd-dropdown_clean-button-svg use {
+      fill: theme("colors.ciDarkGrey") !important;
+    }
+  }
+  .sd-matrixdynamic__remove-btn .sd-action__icon use {
+    fill: theme("colors.ciLightGrey") !important;
+  }
+  .sd-matrixdynamic__footer {
+    .sd-matrixdynamic__add-btn {
+      color: rgba(255, 255, 255, 0.75);
+    }
+  }
+
   .sd-element__content,
   .sd-question__content {
     .sv-dropdown_select-wrapper {
