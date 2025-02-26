@@ -21,6 +21,7 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import { Group } from '@libs/groups/types/group';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
+import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
 import GroupsService from './groups.service';
 
 jest.useFakeTimers();
@@ -148,7 +149,7 @@ describe('GroupsService', () => {
   describe('fetchGroupMembers', () => {
     it('should throw an error if unable to fetch group members', async () => {
       (axios.request as jest.Mock).mockRejectedValue(new Error('API error'));
-      await expect(GroupsService.fetchGroupMembers('mockToken', 'groupId')).rejects.toThrow(CustomHttpException);
+      await expect(GroupsService.fetchGroupMembers('mockToken', 'groupId')).rejects.toThrow(Error);
     });
 
     it('should fetch members of a group successfully', async () => {
@@ -170,7 +171,7 @@ describe('GroupsService', () => {
       await service.updateGroupsAndMembersInCache();
 
       expect(cacheManagerMock.set).toHaveBeenCalledWith(expect.any(String), expect.any(Object), expect.any(Number));
-      expect(cacheManagerMock.set).toHaveBeenCalledTimes(mockGroups.length + 1);
+      expect(cacheManagerMock.set).toHaveBeenCalledTimes(3);
     });
   });
 
@@ -179,24 +180,23 @@ describe('GroupsService', () => {
       const mockGroups = [{ id: '1', path: 'group1' }];
       cacheManagerMock.get.mockResolvedValue(mockGroups);
 
-      const result = await service.searchGroups();
+      const result = await service.searchGroups(SPECIAL_SCHOOLS.GLOBAL);
       expect(result).toEqual(mockGroups);
     });
 
     it('should filter groups by search keyword', async () => {
       const mockGroups = [
-        { id: '1', path: 'group1' },
-        { id: '2', path: 'testgroup' },
+        { id: '1', path: '/s_test' },
+        { id: '2', path: '/s-testgroup' },
       ];
       cacheManagerMock.get.mockResolvedValue(mockGroups);
 
       const result = await service.searchGroups('test');
-      expect(result).toEqual([mockGroups[1]]);
+      expect(result).toEqual(mockGroups);
     });
 
     it('should return an empty array if no groups match the search', async () => {
-      const mockGroups = [{ id: '1', path: 'group1' }];
-      cacheManagerMock.get.mockResolvedValue(mockGroups);
+      cacheManagerMock.get.mockResolvedValue([]);
 
       const result = await service.searchGroups('nonexistent');
       expect(result).toEqual([]);

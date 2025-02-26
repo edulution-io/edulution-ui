@@ -11,11 +11,12 @@
  */
 
 import LdapGroups from '@libs/groups/types/ldapGroups';
+import PROJECTS_PREFIX from '@libs/lmnApi/constants/prefixes/projectsPrefix';
 
 const regexPatterns = {
   school: /^\/SCHOOLS\/s_([^/]+)\/?/,
   class: /^\/SCHOOLS\/s_[^/]+\/.*students.*\/([^/]+)$/,
-  project: /^\/p_([^/]+)/,
+  project: new RegExp(`^${PROJECTS_PREFIX}([^/]+)`),
   role: /^\/role-(.+)/,
 };
 
@@ -39,7 +40,7 @@ const processLdapGroups = (jwtLdapGroups: string[]): LdapGroups => {
   return {
     schools: [...new Set(schools)],
     projects,
-    projectPaths: projects.map((project) => `/p_${project}`),
+    projectPaths: projects.map((project) => `${PROJECTS_PREFIX}${project}`),
     classes,
     classPaths: jwtLdapGroups.filter((group) => regexPatterns.class.test(group)),
     roles: [...new Set(roles)],
