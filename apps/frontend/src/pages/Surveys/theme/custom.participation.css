@@ -48,6 +48,7 @@
   .sv-components-container-contentBottom {
     .sd-navigation__complete-btn {
       color: white;
+      background-color: var(--primary);
     }
   }
 
