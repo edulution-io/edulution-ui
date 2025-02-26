@@ -10,42 +10,43 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { MdOutlineCloudUpload } from 'react-icons/md';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
 import { HiExclamationTriangle, HiTrash } from 'react-icons/hi2';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
-import Progress from '@/components/ui/Progress';
-import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
+import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 
 const UploadContentBody = () => {
   const { t } = useTranslation();
-  const [fileUploadSize, setFileUploadSize] = useState(0);
-  const { filesToUpload, setFilesToUpload, setSubmitButtonIsInActive } = useFileSharingDialogStore();
+
+  const [isFileSizeError, setIsFileSizeError] = useState(false);
+
+  const { filesToUpload, setFilesToUpload } = useFileSharingDialogStore();
 
   const removeFile = (name: string) => {
     setFilesToUpload((prevFiles) => prevFiles.filter((file) => file.name !== name));
   };
 
-  useEffect(() => {
-    const totalSize = filesToUpload.reduce((total, file) => total + bytesToMegabytes(file.size), 0);
-    setFileUploadSize(totalSize);
-    if (totalSize > MAX_FILE_UPLOAD_SIZE || totalSize === 0) {
-      setSubmitButtonIsInActive(true);
-    } else {
-      setSubmitButtonIsInActive(false);
-    }
-  }, [filesToUpload]);
-
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
+      const hasTooLargeFile = acceptedFiles.some((file) => bytesToMegabytes(file.size) > MAX_FILE_UPLOAD_SIZE);
+
+      if (hasTooLargeFile) {
+        setIsFileSizeError(true);
+      } else {
+        setIsFileSizeError(false);
+      }
+
+      const filteredFiles = acceptedFiles.filter((file) => bytesToMegabytes(file.size) <= MAX_FILE_UPLOAD_SIZE);
+
       setFilesToUpload((prevFiles) => {
-        const newFiles = acceptedFiles.filter((file) => !prevFiles.some((f) => f.name === file.name));
+        const newFiles = filteredFiles.filter((file) => !prevFiles.some((f) => f.name === file.name));
         return [...prevFiles, ...newFiles];
       });
     },
@@ -61,30 +62,19 @@ const UploadContentBody = () => {
     <form className="overflow-auto">
       <div {...getRootProps({ className: dropzoneStyle })}>
         <input {...getInputProps()} />
-        {filesToUpload.length < 5 && fileUploadSize < MAX_FILE_UPLOAD_SIZE ? (
+        {isFileSizeError ? (
+          <div className="flex-col items-center justify-center text-ciRed">
+            <HiExclamationTriangle className="mb-2 h-6 w-6" />
+            <p className="font-bold">{t('filesharingUpload.dataLimitExceeded')}</p>
+          </div>
+        ) : (
           <div className="flex min-h-48 flex-col items-center justify-center space-y-2">
             <p className="text-center font-semibold text-secondary">
               {isDragActive ? t('filesharingUpload.dropHere') : t('filesharingUpload.dragDropClick')}
             </p>
             <MdOutlineCloudUpload className="h-12 w-12 text-muted" />
           </div>
-        ) : (
-          <p className="inline-flex items-center font-bold text-ciRed">
-            <HiExclamationTriangle className="mr-2 h-6 w-6" />
-            {fileUploadSize > MAX_FILE_UPLOAD_SIZE
-              ? t('filesharingUpload.dataLimitExceeded')
-              : t('filesharingUpload.limitExceeded')}
-          </p>
         )}
-      </div>
-      <div>
-        <Progress value={(fileUploadSize / MAX_FILE_UPLOAD_SIZE) * 100} />
-        <div className="flex flex-row justify-between text-background">
-          <p>{t('filesharingUpload.fileSize')}</p>
-          <p>
-            {fileUploadSize.toFixed(2)} / {MAX_FILE_UPLOAD_SIZE}MB
-          </p>
-        </div>
       </div>
 
       <ScrollArea className="mt-2 max-h-[50vh] overflow-y-auto overflow-x-hidden rounded-xl border border-gray-600 px-2 scrollbar-thin">

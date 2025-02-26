@@ -24,6 +24,7 @@ import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import getDocumentVendor from '@libs/filesharing/utils/getDocumentVendor';
+import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
 import getFileSharingFormSchema from '../formSchema';
 
 interface CreateContentDialogProps {
@@ -70,6 +71,14 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     form.reset();
   };
 
+  const chunkArray = <T,>(array: T[], size: number): T[][] => {
+    const result: T[][] = [];
+    for (let i = 0; i < array.length; i += size) {
+      result.push(array.slice(i, i + size));
+    }
+    return result;
+  };
+
   const onSubmit = async () => {
     const documentVendor = getDocumentVendor(appConfigs);
 
@@ -82,19 +91,25 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     });
 
     if (Array.isArray(data) && data.some((item) => 'file' in item && item.file instanceof File)) {
-      const uploadPromises = data.map((item) => {
-        if ('file' in item && item.file instanceof File) {
-          const formData = new FormData();
-          formData.append('file', item.file);
-          formData.append('path', item.path);
-          formData.append('name', item.name);
-          formData.append('currentPath', currentPath);
-          return handleItemAction(action, endpoint, httpMethod, type, formData);
-        }
-        return Promise.resolve();
-      });
+      const chunkedData = chunkArray<FileUploadProps>(data as FileUploadProps[], 5);
 
-      await Promise.all(uploadPromises);
+      // eslint-disable-next-line no-restricted-syntax
+      for (const chunk of chunkedData) {
+        const uploadPromises = chunk.map((item) => {
+          if ('file' in item && item.file instanceof File) {
+            const formData = new FormData();
+            formData.append('file', item.file);
+            formData.append('path', item.path);
+            formData.append('name', item.name);
+            formData.append('currentPath', currentPath);
+            return handleItemAction(action, endpoint, httpMethod, type, formData);
+          }
+          return Promise.resolve();
+        });
+
+        // eslint-disable-next-line no-await-in-loop
+        await Promise.all(uploadPromises);
+      }
     } else {
       setSubmitButtonIsInActive(false);
       await handleItemAction(action, endpoint, httpMethod, type, data);
