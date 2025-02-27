@@ -10,12 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-// This DTO is based on a third-party object definition from the LDAP API.
-// Any modifications should be carefully reviewed to ensure compatibility with the source.
-export type LDAPUserAttributes = {
-  LDAP_ENTRY_DN: string[];
-  school?: string[];
-  LDAP_ID: string[];
-  modifyTimestamp: string[];
-  createTimestamp: string[];
-};
+import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { Request } from 'express';
+
+const GetCurrentUsername = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
+  const request: Request = ctx.switchToHttp().getRequest();
+  if (!request.user?.preferred_username) {
+    throw new UnauthorizedException('preferred_username in JWT is missing');
+  }
+  return request.user.preferred_username;
+});
+
+export default GetCurrentUsername;

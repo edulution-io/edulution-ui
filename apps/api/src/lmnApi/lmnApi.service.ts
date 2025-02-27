@@ -423,10 +423,14 @@ class LmnApiService {
     }
   }
 
-  public async searchUsersOrGroups(lmnApiToken: string, searchQuery: string): Promise<LmnApiSearchResult[]> {
+  public async searchUsersOrGroups(
+    lmnApiToken: string,
+    school: string,
+    searchQuery: string,
+  ): Promise<LmnApiSearchResult[]> {
     try {
       const response = await this.enqueue<LmnApiSearchResult[]>(() =>
-        this.lmnApi.get<LmnApiSearchResult[]>(`${QUERY_LMN_API_ENDPOINT}/global/${searchQuery}`, {
+        this.lmnApi.get<LmnApiSearchResult[]>(`${QUERY_LMN_API_ENDPOINT}/${school}/${searchQuery}`, {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
@@ -600,6 +604,7 @@ class LmnApiService {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
+
       return response.data;
     } catch (error) {
       throw new CustomHttpException(

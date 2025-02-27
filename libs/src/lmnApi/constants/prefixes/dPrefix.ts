@@ -10,12 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-// This DTO is based on a third-party object definition from the LDAP API.
-// Any modifications should be carefully reviewed to ensure compatibility with the source.
-export type LDAPUserAttributes = {
-  LDAP_ENTRY_DN: string[];
-  school?: string[];
-  LDAP_ID: string[];
-  modifyTimestamp: string[];
-  createTimestamp: string[];
-};
+const LINBO_DEVICE_GROUPS_PREFIX = '/d_';
+
+export default LINBO_DEVICE_GROUPS_PREFIX;
