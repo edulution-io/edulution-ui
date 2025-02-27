@@ -10,26 +10,38 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ClassManagementIcon, FilesharingIcon, SurveysIcon, WhiteboardIcon } from '@libs/assets';
-import { AppConfigDto } from '@libs/appconfig/types';
+import { ClassManagementIcon, FilesharingIcon, SurveysIcon, WhiteboardIcon, BulletinBoardIcon } from '@libs/assets';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APPS from './apps';
 import APP_INTEGRATION_VARIANT from './appIntegrationVariants';
 
-const { FILE_SHARING, SURVEYS, CLASS_MANAGEMENT, WHITEBOARD } = APPS;
+const { BULLETIN_BOARD, FILE_SHARING, SURVEYS, CLASS_MANAGEMENT, WHITEBOARD } = APPS;
 const { NATIVE } = APP_INTEGRATION_VARIANT;
+
+const getImageUrl = (src: string) => `data:image/svg+xml,${encodeURIComponent(src)}`;
 
 const defaultAppConfig: AppConfigDto[] = [
   {
-    name: FILE_SHARING,
-    icon: FilesharingIcon,
+    name: BULLETIN_BOARD,
+    icon: getImageUrl(BulletinBoardIcon),
     appType: NATIVE,
     options: {},
     accessGroups: [],
     extendedOptions: {},
   },
   {
+    name: FILE_SHARING,
+    icon: getImageUrl(FilesharingIcon),
+    appType: NATIVE,
+    options: {
+      proxyConfig: '""',
+    },
+    accessGroups: [],
+    extendedOptions: {},
+  },
+  {
     name: SURVEYS,
-    icon: SurveysIcon,
+    icon: getImageUrl(SurveysIcon),
     appType: NATIVE,
     options: {},
     accessGroups: [],
@@ -37,7 +49,7 @@ const defaultAppConfig: AppConfigDto[] = [
   },
   {
     name: CLASS_MANAGEMENT,
-    icon: ClassManagementIcon,
+    icon: getImageUrl(ClassManagementIcon),
     appType: NATIVE,
     options: {},
     accessGroups: [],
@@ -45,7 +57,7 @@ const defaultAppConfig: AppConfigDto[] = [
   },
   {
     name: WHITEBOARD,
-    icon: WhiteboardIcon,
+    icon: getImageUrl(WhiteboardIcon),
     appType: NATIVE,
     options: {},
     accessGroups: [],

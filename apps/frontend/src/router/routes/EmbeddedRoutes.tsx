@@ -13,7 +13,7 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 import FramePlaceholder from '@/components/framing/FramePlaceholder';
-import { AppConfigDto } from '@libs/appconfig/types';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 
 const getEmbeddedRoutes = (appConfigs: AppConfigDto[]) => [

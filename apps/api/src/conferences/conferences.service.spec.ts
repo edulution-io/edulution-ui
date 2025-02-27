@@ -28,6 +28,8 @@ import { mockAppConfigService } from '../appconfig/appconfig.mock';
 import Attendee from './attendee.schema';
 import type UserConnections from '../types/userConnections';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';
+import GroupsService from '../groups/groups.service';
+import mockGroupsService from '../groups/groups.service.mock';
 
 const mockConference: CreateConferenceDto = {
   name: 'Testconference',
@@ -60,6 +62,7 @@ const mockJWTUser: JWTUser = {
   given_name: 'firstName',
   family_name: 'lastName',
   email: '',
+  school: 'default-school',
   ldapGroups: [],
 };
 
@@ -115,6 +118,7 @@ describe(ConferencesService.name, () => {
           provide: AppConfigService,
           useValue: mockAppConfigService,
         },
+        { provide: GroupsService, useValue: mockGroupsService },
         {
           provide: CACHE_MANAGER,
           useValue: cacheManagerMock,

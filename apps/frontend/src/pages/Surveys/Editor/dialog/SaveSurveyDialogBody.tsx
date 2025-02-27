@@ -14,28 +14,26 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useUserStore from '@/store/UserStore/UserStore';
-import DatePicker from '@/components/shared/DatePicker';
 import Checkbox from '@/components/ui/Checkbox';
-import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import useGroupStore from '@/store/GroupStore';
-import TimeInput from '@/components/shared/TimeInput';
+import { DateTimeInput } from '@/components/shared/DateTimePicker/DateTimeInput';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
 interface SaveSurveyDialogBodyProps {
   form: UseFormReturn<SurveyDto>;
 }
 
 const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
-  const { setValue, watch, getValues } = form;
+  const { setValue, watch } = form;
   const { user } = useUserStore();
   const { searchAttendees } = useUserStore();
   const { searchGroups } = useGroupStore();
   const { t } = useTranslation();
 
-  const handleAttendeesChange = (attendees: MultipleSelectorOptionSH[]) => {
+  const handleAttendeesChange = (attendees: AttendeeDto[]) => {
     setValue('invitedAttendees', attendees, { shouldValidate: true });
   };
 
@@ -44,12 +42,8 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
     return user ? result.filter((r) => r.username !== user.username) : result;
   };
 
-  const handleGroupsChange = (groups: MultipleSelectorOptionSH[]) => {
+  const handleGroupsChange = (groups: MultipleSelectorGroup[]) => {
     setValue('invitedGroups', groups, { shouldValidate: true });
-  };
-
-  const handleExpirationDateChange = (value: Date | undefined) => {
-    setValue('expires', value && value >= new Date() ? value : undefined);
   };
 
   const checkboxOptions: { name: keyof SurveyDto; label: string }[] = [
@@ -64,29 +58,21 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
   return (
     <>
       <SearchUsersOrGroups
-        users={watch('invitedAttendees') as AttendeeDto[]}
+        users={watch('invitedAttendees')}
         onSearch={onAttendeesSearch}
         onUserChange={handleAttendeesChange}
-        groups={watch('invitedGroups') as MultipleSelectorGroup[]}
+        groups={watch('invitedGroups')}
         onGroupSearch={searchGroups}
         onGroupsChange={handleGroupsChange}
         variant="dialog"
       />
-      <p className="text-m font-bold text-background">{t('survey.expirationDate')}</p>
-      <div className="flex items-center">
-        {t('common.date')}
-        <div className="ml-2">
-          <DatePicker
-            selected={selectedDate ? new Date(selectedDate) : undefined}
-            onSelect={handleExpirationDateChange}
-          />
-        </div>
-      </div>
-      <div className="flex items-center text-background">
-        <TimeInput
-          form={form}
-          disabled={!getValues('expires')}
-          fieldName="expires"
+      <div>
+        <p className="text-m font-bold text-background">{t('survey.expirationDate')}</p>
+        <DateTimeInput
+          value={selectedDate}
+          onChange={(value: Date | undefined) => setValue('expires', value)}
+          variant="dialog"
+          className="mt-0 pt-0"
         />
       </div>
       <p className="text-m font-bold text-background">{t('surveys.saveDialog.settingsFlags')}</p>

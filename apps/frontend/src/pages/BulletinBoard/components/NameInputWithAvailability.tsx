@@ -67,6 +67,7 @@ const NameInputWithAvailability = ({
         placeholder={placeholder}
         className="input-class"
         onChange={handleChange}
+        variant="dialog"
       />
       {shouldAvailabilityStatusShow && renderAvailabilityStatus()}
     </div>

@@ -10,21 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ComponentProps } from 'react';
-import { BadgeSH } from '@/components/ui/BadgeSH';
-import BadgeLabels from '@libs/dashboard/feed/mails/badge-labels.enum';
-import BadgeVariant from '@libs/dashboard/feed/mails/badge-variant.enum';
-
-function getBadgeVariantFromLabel(label: string): ComponentProps<typeof BadgeSH>['variant'] {
-  if ([BadgeLabels.WORK as string].includes(label.toLowerCase())) {
-    return BadgeVariant.DEFAULT;
-  }
-
-  if ([BadgeLabels.PERSONAL as string].includes(label.toLowerCase())) {
-    return BadgeVariant.OUTLINE;
-  }
-
-  return BadgeVariant.SECONDARY;
+function addLeadingZero(value: number): string {
+  return String(value).padStart(2, '0');
 }
 
-export default getBadgeVariantFromLabel;
+export default function convertDateToDateTimeInput(date: Date): string {
+  const year = date.getFullYear();
+  const month = addLeadingZero(date.getMonth() + 1);
+  const day = addLeadingZero(date.getDate());
+  const hours = addLeadingZero(date.getHours());
+  const minutes = addLeadingZero(date.getMinutes());
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}

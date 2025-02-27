@@ -10,6 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './appConfigDto';
-export * from './appConfigOptionsType';
-export * from './appConfigOption';
+const SPECIAL_SCHOOLS = {
+  GLOBAL: 'global',
+} as const;
+
+export default SPECIAL_SCHOOLS;

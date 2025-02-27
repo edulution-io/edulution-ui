@@ -21,7 +21,11 @@ import { GROUPS_CACHE_TTL_MS, KEYCLOACK_SYNC_MS } from '@libs/common/constants/c
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import GroupMemberDto from '@libs/groups/types/groupMember.dto';
-import { ALL_GROUPS_CACHE_KEY, GROUPS_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
+import {
+  ALL_GROUPS_CACHE_KEY,
+  ALL_SCHOOLS_CACHE_KEY,
+  GROUP_WITH_MEMBERS_CACHE_KEY,
+} from '@libs/groups/constants/cacheKeys';
 import { readFileSync } from 'fs';
 import { JwtService } from '@nestjs/jwt';
 import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/common/types/http-methods';
@@ -29,6 +33,17 @@ import JwtUser from '@libs/user/types/jwt/jwtUser';
 import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
 import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
 import GROUPS_TOKEN_INTERVAL from '@libs/groups/constants/schedulerRegistry';
+import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
+import PROJECTS_PREFIX from '@libs/lmnApi/constants/prefixes/projectsPrefix';
+import SCHOOLS_PREFIX from '@libs/lmnApi/constants/prefixes/schoolsPrefix';
+import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
+import ALL_GROUPS_PREFIX from '@libs/lmnApi/constants/prefixes/allGroupsPrefix';
+import LINBO_DEVICE_GROUPS_PREFIX from '@libs/lmnApi/constants/prefixes/dPrefix';
+import ROLES_PREFIX from '@libs/lmnApi/constants/prefixes/rolesPrefix';
+import Attendee from '../conferences/attendee.schema';
 
 const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API, KEYCLOAK_EDU_API_CLIENT_ID, KEYCLOAK_EDU_API_CLIENT_SECRET } =
   process.env as {
@@ -47,9 +62,9 @@ class GroupsService implements OnModuleInit {
 
   private accessTokenRefreshInterval: number = 5000;
 
-  async onModuleInit() {
+  onModuleInit() {
     this.scheduleTokenRefresh();
-    await this.initializeService();
+    void this.initializeService();
   }
 
   private async initializeService() {
@@ -130,8 +145,13 @@ class GroupsService implements OnModuleInit {
   static async fetchAllUsers(token: string): Promise<LDAPUser[]> {
     try {
       return await GroupsService.makeAuthorizedRequest<LDAPUser[]>(HttpMethods.GET, 'users', token);
-    } catch (e) {
-      throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY);
+    } catch (error) {
+      throw new CustomHttpException(
+        GroupsErrorMessage.CouldNotGetUsers,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        GroupsService.name,
+      );
     }
   }
 
@@ -147,8 +167,13 @@ class GroupsService implements OnModuleInit {
       });
 
       return response.data;
-    } catch (e) {
-      throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY);
+    } catch (error) {
+      throw new CustomHttpException(
+        GroupsErrorMessage.CouldNotGetUsers,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        GroupsService.name,
+      );
     }
   }
 
@@ -157,45 +182,161 @@ class GroupsService implements OnModuleInit {
   }
 
   private static sanitizeGroupMembers(members: LDAPUser[]): GroupMemberDto[] {
-    return members.map((member: LDAPUser) => ({
-      id: member.id,
-      username: member.username,
-      firstName: member.firstName,
-      lastName: member.lastName,
-      email: member.email,
-    }));
+    return Array.isArray(members)
+      ? members.map((member: LDAPUser) => ({
+          id: member.id,
+          username: member.username,
+          firstName: member.firstName,
+          lastName: member.lastName,
+          email: member.email,
+        }))
+      : [];
   }
 
-  @Interval(KEYCLOACK_SYNC_MS)
-  async updateGroupsAndMembersInCache() {
-    try {
-      const groups = await GroupsService.fetchAllGroups(this.keycloakAccessToken);
-      await this.cacheManager.set(ALL_GROUPS_CACHE_KEY, groups, GROUPS_CACHE_TTL_MS);
+  private async fetchAndCacheAllGroups(): Promise<Group[]> {
+    const groups = await GroupsService.fetchAllGroups(this.keycloakAccessToken);
 
-      const promises = groups.map(async (group) => {
-        const members = await GroupsService.fetchGroupMembers(this.keycloakAccessToken, group.id);
-        if (!members?.length) {
-          return;
-        }
-        const sanitizedMembers = GroupsService.sanitizeGroupMembers(members);
-        const sanitizedGroup = GroupsService.sanitizeGroup(group);
+    await this.cacheManager.set(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, groups, GROUPS_CACHE_TTL_MS);
 
-        await this.cacheManager.set(
-          `${GROUPS_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
-          {
-            ...sanitizedGroup,
-            members: sanitizedMembers,
-          },
-          GROUPS_CACHE_TTL_MS,
+    return groups;
+  }
+
+  private async cacheSchoolGroups(groups: Group[]): Promise<string[]> {
+    const schoolGroups = groups
+      .filter((group) => group.path.startsWith(SCHOOLS_PREFIX))
+      .map((s) => ({ ...s, name: s.path.replace(SCHOOLS_PREFIX, '') }));
+    await this.cacheManager.set(ALL_SCHOOLS_CACHE_KEY, schoolGroups, GROUPS_CACHE_TTL_MS);
+
+    return schoolGroups.map((schoolGroup) => schoolGroup.name).filter(Boolean);
+  }
+
+  private async cacheGroupsBySchoolName(schoolGroupNames: string[], allGroups: Group[]): Promise<void> {
+    const schoolNameToGroups = new Map<string, Group[]>();
+    const alreadyAssignedGroupPaths = new Set<string>();
+
+    const multiSchoolNames = schoolGroupNames.filter((name) => name !== DEFAULT_SCHOOL);
+
+    multiSchoolNames.forEach((schoolName) => {
+      const groupsBelongingToSchool = allGroups.filter(
+        (g) => g.path.startsWith(`${PROJECTS_PREFIX}${schoolName}-`) || g.path.startsWith(`/${schoolName}-`),
+      );
+
+      schoolNameToGroups.set(schoolName, groupsBelongingToSchool);
+
+      groupsBelongingToSchool.forEach((group) => {
+        alreadyAssignedGroupPaths.add(group.path);
+      });
+    });
+
+    if (schoolGroupNames.includes(DEFAULT_SCHOOL)) {
+      const defaultSchoolGroups = allGroups.filter((g) => {
+        const isUnassigned = !alreadyAssignedGroupPaths.has(g.path);
+        const isExcluded = [ALL_GROUPS_PREFIX, SCHOOLS_PREFIX, ROLES_PREFIX, LINBO_DEVICE_GROUPS_PREFIX].some((p) =>
+          g.path.startsWith(p),
         );
+        return isUnassigned && !isExcluded;
       });
 
-      await Promise.all(promises);
-
-      Logger.log(`${groups.length} groups and their members updated successfully in cache. ✅`, GroupsService.name);
-    } catch (e) {
-      Logger.error(e, GroupsService.name);
+      schoolNameToGroups.set(DEFAULT_SCHOOL, defaultSchoolGroups);
     }
+
+    const setGroupsPromises: Promise<void>[] = [];
+    schoolNameToGroups.forEach((groups, schoolName) => {
+      setGroupsPromises.push(this.cacheManager.set(ALL_GROUPS_CACHE_KEY + schoolName, groups, GROUPS_CACHE_TTL_MS));
+    });
+
+    await Promise.all(setGroupsPromises);
+  }
+
+  private async updateGroupsInCache(groups: Group[]): Promise<void> {
+    const failedGroups = await this.tryUpdateGroupsInCache(groups, 1);
+
+    if (failedGroups.length > 0) {
+      Logger.error(
+        `Some groups (${failedGroups.map((g) => g.id).join(', ')}) failed to update after ${
+          this.maximumRetries
+        } attempts.`,
+        GroupsService.name,
+      );
+    } else {
+      Logger.log(`All ${groups.length} groups updated successfully in cache. ✅`, GroupsService.name);
+    }
+  }
+
+  private async tryUpdateGroupsInCache(groups: Group[], attempt: number): Promise<Group[]> {
+    const results = await Promise.allSettled(
+      groups.map((group) => GroupsService.updateGroupInCache(this.cacheManager, this.keycloakAccessToken, group)),
+    );
+
+    const failedGroups: Group[] = [];
+    results.forEach((result, index) => {
+      if (result.status === 'rejected') {
+        failedGroups.push(groups[index]);
+      }
+    });
+
+    if (failedGroups.length > 0 && attempt < this.maximumRetries) {
+      return this.tryUpdateGroupsInCache(failedGroups, attempt + 1);
+    }
+
+    return failedGroups;
+  }
+
+  private static async updateGroupInCache(
+    cacheManager: Cache,
+    keycloakAccessToken: string,
+    group: Group,
+  ): Promise<void> {
+    const members = await GroupsService.fetchGroupMembers(keycloakAccessToken, group.id);
+    if (!members?.length) {
+      return;
+    }
+
+    const sanitizedMembers = GroupsService.sanitizeGroupMembers(members);
+    const sanitizedGroup = GroupsService.sanitizeGroup(group);
+
+    await cacheManager.set(
+      `${GROUP_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
+      {
+        ...sanitizedGroup,
+        members: sanitizedMembers,
+      },
+      GROUPS_CACHE_TTL_MS,
+    );
+  }
+
+  private maximumRetries = 3;
+
+  @Interval(KEYCLOACK_SYNC_MS)
+  async updateGroupsAndMembersInCache(): Promise<void> {
+    try {
+      const allGroups = await this.fetchAndCacheAllGroups();
+
+      const schoolGroupNames = await this.cacheSchoolGroups(allGroups);
+
+      await this.cacheGroupsBySchoolName(schoolGroupNames, allGroups);
+
+      await this.updateGroupsInCache(allGroups);
+    } catch (error) {
+      Logger.error(`updateGroupsAndMembersInCache failed.`, GroupsService.name);
+    }
+  }
+
+  async getInvitedMembers(
+    invitedGroups: (MultipleSelectorGroup | Group)[],
+    invitedAttendees: (AttendeeDto | Attendee)[],
+  ): Promise<string[]> {
+    const usersInGroups = await Promise.all(
+      invitedGroups.map(async (group) => {
+        const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
+          `${GROUP_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
+        );
+
+        return groupWithMembers?.members?.map((member) => member.username) || [];
+      }),
+    );
+
+    return Array.from(new Set([...invitedAttendees.map((attendee) => attendee.username), ...usersInGroups.flat()]));
   }
 
   private static flattenGroups(groups: Group[]): Group[] {
@@ -221,27 +362,28 @@ class GroupsService implements OnModuleInit {
     try {
       const groups = await GroupsService.makeAuthorizedRequest<Group[]>(HttpMethods.GET, 'groups', token, 'search');
       return GroupsService.flattenGroups(groups);
-    } catch (e) {
-      throw new CustomHttpException(GroupsErrorMessage.CouldNotGetUsers, HttpStatus.BAD_GATEWAY);
+    } catch (error) {
+      throw new CustomHttpException(
+        GroupsErrorMessage.CouldNotGetUsers,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        GroupsService.name,
+      );
     }
   }
 
   static async fetchGroupMembers(token: string, groupId: string): Promise<LDAPUser[] | undefined> {
-    try {
-      return await GroupsService.makeAuthorizedRequest<LDAPUser[]>(
-        HttpMethods.GET,
-        `groups/${groupId}/members`,
-        token,
-        'briefRepresentation=true',
-      );
-    } catch (e) {
-      throw new CustomHttpException(GroupsErrorMessage.CouldNotFetchGroupMembers, HttpStatus.BAD_GATEWAY);
-    }
+    return GroupsService.makeAuthorizedRequest<LDAPUser[]>(
+      HttpMethods.GET,
+      `groups/${groupId}/members`,
+      token,
+      'briefRepresentation=true',
+    );
   }
 
-  public async searchGroups(searchKeyWord?: string): Promise<Group[]> {
+  public async searchGroups(school: string, searchKeyWord?: string): Promise<Group[]> {
     try {
-      const groups = await this.cacheManager.get<Group[]>(ALL_GROUPS_CACHE_KEY);
+      const groups = await this.cacheManager.get<Group[]>(ALL_GROUPS_CACHE_KEY + school);
       if (!groups) {
         return [];
       }
@@ -251,8 +393,13 @@ class GroupsService implements OnModuleInit {
       }
 
       return groups.filter((group) => group.path.includes(searchKeyWord));
-    } catch (e) {
-      throw new CustomHttpException(GroupsErrorMessage.CouldNotSearchGroups, HttpStatus.BAD_GATEWAY, searchKeyWord);
+    } catch (error) {
+      throw new CustomHttpException(
+        GroupsErrorMessage.CouldNotSearchGroups,
+        HttpStatus.BAD_GATEWAY,
+        searchKeyWord,
+        GroupsService.name,
+      );
     }
   }
 }

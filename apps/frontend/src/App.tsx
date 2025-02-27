@@ -20,7 +20,7 @@ import NativeFrames from '@/components/framing/Native/NativeFrames';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import lmnApi from '@/api/lmnApi';
 import useUserStore from '@/store/UserStore/UserStore';
-import Toaster from '@/components/ui/Sonner';
+import Toaster from '@/components/ui/Toaster';
 import { WebStorageStateStore } from 'oidc-client-ts';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';

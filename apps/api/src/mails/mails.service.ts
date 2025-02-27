@@ -81,7 +81,7 @@ class MailsService implements OnModuleInit {
       appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED] === 'true' || false;
   }
 
-  async getMails(username: string, password: string): Promise<MailDto[]> {
+  async getMails(emailAddress: string, password: string): Promise<MailDto[]> {
     if (!this.imapUrl || !this.imapPort) {
       return [];
     }
@@ -94,7 +94,7 @@ class MailsService implements OnModuleInit {
         rejectUnauthorized: this.imapRejectUnauthorized,
       },
       auth: {
-        user: username,
+        user: emailAddress,
         pass: password,
       },
       logger: false,
@@ -121,7 +121,7 @@ class MailsService implements OnModuleInit {
       mailboxLock = await this.imapClient.getMailboxLock('INBOX');
 
       const fetchMail: AsyncGenerator<FetchMessageObject> = this.imapClient.fetch(
-        { seen: false },
+        { recent: true },
         { envelope: true, labels: true },
       );
 
@@ -138,7 +138,7 @@ class MailsService implements OnModuleInit {
       throw new CustomHttpException(
         MailsErrorMessages.NotAbleToFetchMailsError,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        username,
+        emailAddress,
       );
     } finally {
       if (mailboxLock) {

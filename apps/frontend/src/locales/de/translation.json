@@ -88,6 +88,20 @@
       "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen"
     }
   },
+  "appstore": {
+    "title": "App-Store",
+    "description": "Hier kannst du edulution.io Apps hinzufügen.",
+    "chooseIcon": "Icon auswählen"
+  },
+  "forwarding": {
+    "sidebar": "Weiterleitung"
+  },
+  "frame": {
+    "sidebar": "Frame"
+  },
+  "embedded": {
+    "sidebar": "Eingebettet"
+  },
   "dashboard": {
     "mobileAccess": {
       "title": "Mobiler Datenzugriff",
@@ -262,9 +276,10 @@
   },
   "feed": {
     "title": "Aktuelles",
-    "noConferences": "Keine laufende Konferenz",
-    "noMails": "Keine ungelesenen Mails",
-    "noSurveys": "Keine offenen Umfragen"
+    "noconferences": "Keine laufende Konferenz",
+    "nomail": "Keine ungelesenen Mails",
+    "nosurveys": "Keine offenen Umfragen",
+    "nobulletinboard": "Keine neuen Mitteilungen"
   },
   "filesharing": {
     "filterPlaceHolderText": "Suche nach Dateiname",
@@ -474,11 +489,13 @@
     "canSubmitMultiple": "Erlaube Mehrfachantworten.",
     "editor": {
       "new": "Neu (Leer)",
+      "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
       "abort": "Alle Änderungen verwerfen",
       "addDescription": "Beschreibung hinzufügen",
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
     },
     "errors": {
+      "surveyTooBig": "Die Umfrage ist zu groß.",
       "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden.",
       "deleteError": "Die Umfragen konnten nicht gelöscht werden.",
       "noAnswerError": "Bisher ist noch keine Antwort abgegeben worden.",
@@ -695,7 +712,7 @@
         },
         "docker": {
           "title": "Docker Anwendungen",
-          "description": "Um die erweiterten Dienste nutzen zu können hier die benötigten Docker Container gestartet werden."
+          "description": "Um die erweiterten Dienste nutzen zu können, können hier die benötigten Container-Anwendungen installiert und gestartet werden."
         },
         "veyon": {
           "title": "Veyon Proxy",
@@ -724,7 +741,10 @@
       "DisableAppConfigFailed": "App deaktivieren fehlgeschlagen",
       "WriteTraefikConfigFailed": "Traefik-Konfiguration speichern fehlgeschlagen",
       "ReadTraefikConfigFailed": "Traefik-Konfiguration lesen fehlgeschlagen",
-      "forbiddenProxyPath": "Dieser Proxy-Pfad ist nicht erlaubt."
+      "forbiddenProxyPath": "Dieser Proxy-Pfad ist nicht erlaubt.",
+      "fieldRequired": "Dieses Feld ist erforderlich",
+      "maxChars": "Maximal {{count}} Zeichen",
+      "nameAlreadyExists": "App mit diesem Namen existiert bereits"
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",
@@ -948,7 +968,10 @@
     "proxyPathPlaceholder": "z.B. SOGo",
     "proxyDestination": "Zielhost",
     "proxyDestinationPlaceholder": "z.B. http://localhost:1234/",
-    "stripPrefix": "Prefix entfernen"
+    "stripPrefix": "Prefix entfernen",
+    "input": {
+      "dateTimePicker": "Date and Time picker"
+    }
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
   "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
@@ -1014,6 +1037,7 @@
     "directoryDialogTitle": "Erstelle ein neues Verzeichnis",
     "createButtonText": "Erstellen",
     "min_3_chars": "Mindestens 3 Zeichen",
+    "max_30_chars": "Maximal 30 Zeichen",
     "fileOperationSuccessful": "Dateierstellung erfolgreich",
     "noMessageAvailable": "Keine Nachricht verfügbar",
     "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",

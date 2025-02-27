@@ -134,6 +134,7 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
             min="0"
             step="1"
             type="number"
+            variant={disabled ? 'default' : 'dialog'}
           />
         );
       case 'text':
@@ -145,6 +146,7 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
           <Input
             {...register(groupProperty.name)}
             placeholder={t(`classmanagement.${groupProperty.name}Placeholder`)}
+            variant={disabled ? 'default' : 'dialog'}
           />
         );
     }

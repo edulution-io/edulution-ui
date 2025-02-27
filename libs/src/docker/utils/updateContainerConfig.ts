@@ -14,7 +14,7 @@ import { ContainerCreateOptions } from 'dockerode';
 
 const updateContainerConfig = (
   containerConfig: ContainerCreateOptions[],
-  formValues: Record<string, string>,
+  formValues?: Record<string, string>,
 ): ContainerCreateOptions[] => {
   const placeholderPattern = /^<(.+)>$/;
 
@@ -27,7 +27,7 @@ const updateContainerConfig = (
         const value = envObj[key];
         if (typeof value === 'string') {
           const match = value.match(placeholderPattern);
-          if (match) {
+          if (match && formValues) {
             const placeholderName = match[1];
 
             updatedEnvObj[key] = formValues[placeholderName] ?? value;

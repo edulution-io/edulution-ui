@@ -10,16 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useMemo } from 'react';
-import { AppConfigDto } from '@libs/appconfig/types';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import APPS from '@libs/appconfig/constants/apps';
+const slugify = (text: string) =>
+  text
+    .toString()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9 -]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
 
-// TODO: NIEDUUI-312: Remove this check when the information about the app is stored in the appConfigs/userConfig/dataBase
-const useIsMailsActive = () => {
-  const { appConfigs } = useAppConfigsStore();
-
-  return useMemo(() => !!appConfigs.find((conf: AppConfigDto) => conf.name === APPS.MAIL.toString()), [appConfigs]);
-};
-
-export default useIsMailsActive;
+export default slugify;

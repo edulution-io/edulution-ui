@@ -19,7 +19,6 @@ import { Model } from 'mongoose';
 import { HttpStatus } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
@@ -34,6 +33,7 @@ import {
   answeredSurvey03,
   createdSurvey01,
   firstMockJWTUser,
+  firstMockUser,
   firstUsername,
   firstUsersMockedAnswerForAnsweredSurveys01,
   firstUsersSurveyAnswerAnsweredSurvey01,
@@ -43,6 +43,7 @@ import {
   openSurvey02,
   publicSurvey01,
   saveNoAnsweredSurvey01,
+  secondMockUser,
   secondUsername,
   secondUsersSurveyAnswerAnsweredSurvey01,
   surveyAnswerAnsweredSurvey02,
@@ -51,7 +52,8 @@ import {
   updatedSurveyAnswerAnsweredSurvey03,
 } from './mocks';
 import UserConnections from '../types/userConnections';
-import cacheManagerMock from '../common/mocks/cacheManagerMock';
+import GroupsService from '../groups/groups.service';
+import mockGroupsService from '../groups/groups.service.mock';
 
 const mockSseConnections: UserConnections = new Map();
 
@@ -72,14 +74,11 @@ describe(SurveysController.name, () => {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
         },
+        { provide: GroupsService, useValue: mockGroupsService },
         SurveyAnswersService,
         {
           provide: getModelToken(SurveyAnswer.name),
           useValue: jest.fn(),
-        },
-        {
-          provide: CACHE_MANAGER,
-          useValue: cacheManagerMock,
         },
       ],
     }).compile();
@@ -281,6 +280,12 @@ describe(SurveysController.name, () => {
   });
 
   describe('answerSurvey', () => {
+    beforeEach(() => {
+      jest
+        .spyOn(mockGroupsService, 'getInvitedMembers')
+        .mockResolvedValue([firstMockUser.username, secondMockUser.username]);
+    });
+
     it('should call the addAnswer() function of the surveyAnswerService', async () => {
       jest.spyOn(surveyAnswerService, 'addAnswer');
 

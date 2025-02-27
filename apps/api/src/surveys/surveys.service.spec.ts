@@ -14,13 +14,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Logger } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import SurveysService from './surveys.service';
 import { Survey } from './survey.schema';
 import { firstMockJWTUser, mockedSurveys } from './mocks';
 import { surveyUpdateInitialSurveyDto } from './mocks/surveys/updated-survey';
 import UserConnections from '../types/userConnections';
-import cacheManagerMock from '../common/mocks/cacheManagerMock';
+import GroupsService from '../groups/groups.service';
+import mockGroupsService from '../groups/groups.service.mock';
 
 const mockSseConnections: UserConnections = new Map();
 
@@ -38,10 +38,7 @@ describe('SurveyService', () => {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
         },
-        {
-          provide: CACHE_MANAGER,
-          useValue: cacheManagerMock,
-        },
+        { provide: GroupsService, useValue: mockGroupsService },
       ],
     }).compile();
 

@@ -16,7 +16,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
-import { GROUPS_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
+import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
@@ -73,7 +73,7 @@ class BulletinCategoryService implements OnModuleInit {
       const usersInGroups = await Promise.all(
         groupsToCheck.map(async (group) => {
           const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
-            `${GROUPS_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
+            `${GROUP_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
           );
 
           return groupWithMembers?.members?.map((member) => member.username) || [];
@@ -116,7 +116,6 @@ class BulletinCategoryService implements OnModuleInit {
     if (currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
       return bulletinCategories;
     }
-
     const accessibleCategories = await Promise.all(
       bulletinCategories.map(async (category) => {
         const usersWithPermission = await this.getUsersWithPermissionCached(String(category.id), permission);

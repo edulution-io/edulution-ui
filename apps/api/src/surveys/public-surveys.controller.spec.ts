@@ -18,7 +18,6 @@
 import { Model, Types } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveysService from './surveys.service';
 import SurveyAnswersService from './survey-answer.service';
@@ -38,7 +37,8 @@ import {
   saveNoPublicSurvey02,
   surveyValidAnswerPublicSurvey02,
 } from './mocks';
-import cacheManagerMock from '../common/mocks/cacheManagerMock';
+import GroupsService from '../groups/groups.service';
+import mockGroupsService from '../groups/groups.service.mock';
 
 describe(PublicSurveysController.name, () => {
   let controller: PublicSurveysController;
@@ -58,13 +58,10 @@ describe(PublicSurveysController.name, () => {
           useValue: jest.fn(),
         },
         SurveyAnswersService,
+        { provide: GroupsService, useValue: mockGroupsService },
         {
           provide: getModelToken(SurveyAnswer.name),
           useValue: jest.fn(),
-        },
-        {
-          provide: CACHE_MANAGER,
-          useValue: cacheManagerMock,
         },
       ],
     }).compile();

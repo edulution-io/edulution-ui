@@ -14,7 +14,7 @@ import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsVal
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import DocumentVendors from '@libs/filesharing/constants/documentVendors';
-import { AppConfigDto } from '@libs/appconfig/types';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 
 const getDocumentVendor = (appConfigs: AppConfigDto[]) => {
   const isOpenDocumentFormatEnabled = !!getExtendedOptionsValue(

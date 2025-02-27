@@ -14,7 +14,7 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 import BlankLayout from '@/components/layout/BlankLayout';
 import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
-import { AppConfigDto } from '@libs/appconfig/types';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 
 const getForwardedRoutes = (appConfigs: AppConfigDto[]) => [
