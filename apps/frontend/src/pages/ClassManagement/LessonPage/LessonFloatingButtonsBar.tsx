@@ -48,7 +48,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students,
     setMember,
     shareFiles,
     collectFiles,
-    collectionType,
+    collectDialogCurrentlySelectedCollectionOperation,
     member,
     groupNameFromStore,
   } = useLessonStore();
@@ -105,7 +105,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students,
           user?.sophomorixIntrinsic2[0] || '',
         );
         if (!collectDTO) return;
-        await collectFiles(collectDTO, user?.sophomorixRole || '', collectionType);
+        await collectFiles(collectDTO, user?.sophomorixRole || '', collectDialogCurrentlySelectedCollectionOperation);
       },
       disableAction: async () => {},
     },

@@ -22,7 +22,8 @@ import { RadioGroupItemSH, RadioGroupSH } from '@/components/ui/RadioGroupSH';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 
 const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
-  const { collectionType, setCollectionType } = useLessonStore();
+  const { collectDialogCurrentlySelectedCollectionOperation, setCollectDialogCurrentlySelectedCollectionOperation } =
+    useLessonStore();
 
   const options: Record<LmnApiCollectOperationsType, { label: string; icon: JSX.Element }> = {
     [LMN_API_COLLECT_OPERATIONS.CUT]: {
@@ -41,10 +42,10 @@ const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, 
       <div className="flex flex-col items-center justify-start pb-8">
         <RadioGroupSH
           className="flex flex-col gap-4"
-          value={collectionType}
+          value={collectDialogCurrentlySelectedCollectionOperation}
           onValueChange={(value: LmnApiCollectOperationsType) => {
             if (options[value]) {
-              setCollectionType(value);
+              setCollectDialogCurrentlySelectedCollectionOperation(value);
             }
           }}
         >
@@ -57,7 +58,7 @@ const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, 
               <RadioGroupItemSH
                 id={`option-${key}`}
                 value={key}
-                checked={collectionType === key}
+                checked={collectDialogCurrentlySelectedCollectionOperation === key}
               />
               <label htmlFor={`option-${key}`}>
                 <div className="flex flex-row justify-center space-x-2">

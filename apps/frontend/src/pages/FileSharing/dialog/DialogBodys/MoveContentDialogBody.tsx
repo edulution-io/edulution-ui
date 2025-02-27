@@ -13,7 +13,6 @@
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import DirectoryBreadcrumb from '@/pages/FileSharing/breadcrumb/DirectoryBreadcrumb';
 import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
@@ -25,6 +24,7 @@ import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialo
 import ContentType from '@libs/filesharing/types/contentType';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 import useLmnApiStore from '@/store/useLmnApiStore';
+import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 
 const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   showAllFiles = false,
@@ -40,7 +40,8 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 
   const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
 
-  const { fetchDialogDirs, fetchDialogFiles, dialogShownDirs, dialogShownFiles, isLoading } = useFileSharingStore();
+  const { fetchDialogDirs, fetchDialogFiles, dialogShownDirs, dialogShownFiles, isLoading } =
+    useFileSharingMoveDialogStore();
 
   const fetchMechanism = fileType === ContentType.DIRECTORY ? fetchDialogDirs : fetchDialogFiles;
 

@@ -57,7 +57,8 @@ const useLessonStore = create<LessonStore>(
       setMember: (member) => set({ member }),
       setOpenDialogType: (type) => set({ openDialogType: type }),
       setUserGroupToEdit: (group) => set({ userGroupToEdit: group }),
-      setCollectionType: (collectionType: LmnApiCollectOperationsType) => set({ collectionType }),
+      setCollectDialogCurrentlySelectedCollectionOperation: (collectionType: LmnApiCollectOperationsType) =>
+        set({ collectDialogCurrentlySelectedCollectionOperation: collectionType }),
 
       addManagementGroup: async (group: string, users: string[]) => {
         set({ error: null, isLoading: true });

@@ -27,7 +27,7 @@ interface LessonState {
   member: UserLmnInfo[];
   groupTypeFromStore: string | undefined;
   groupNameFromStore: string | undefined;
-  collectionType: LmnApiCollectOperationsType;
+  collectDialogCurrentlySelectedCollectionOperation: LmnApiCollectOperationsType;
 }
 
 interface LessonActions {
@@ -50,7 +50,7 @@ interface LessonActions {
   setMember: (member: UserLmnInfo[]) => void;
   setGroupTypeInStore: (groupType?: string) => void;
   setGroupNameInStore: (groupName?: string) => void;
-  setCollectionType: (collectionType: LmnApiCollectOperationsType) => void;
+  setCollectDialogCurrentlySelectedCollectionOperation: (collectionType: LmnApiCollectOperationsType) => void;
 }
 
 type LessonStore = LessonState & LessonActions;
