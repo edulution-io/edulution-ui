@@ -237,10 +237,11 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
       }
       const newCleanedPath = getPathWithoutWebdav(moveOrCopyItemToPath.filename);
       const cleanedPath = getPathWithoutWebdav(currentPath);
+
       return Promise.resolve(
         selectedItems.map((item) => ({
-          path: `${cleanedPath}/${item.basename}`,
-          newPath: `${newCleanedPath}/${item.basename}`,
+          path: encodeURI(`${cleanedPath}/${item.basename}`),
+          newPath: encodeURI(`${newCleanedPath}/${item.basename}`),
         })),
       );
     },
