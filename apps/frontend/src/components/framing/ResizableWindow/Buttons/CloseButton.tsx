@@ -10,7 +10,27 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
+import React from 'react';
+import cn from '@libs/common/utils/className';
+import { MdClose } from 'react-icons/md';
+import WindowControlBaseButton from './WindowControlBaseButton';
 
-const FILE_PREVIEW_ROUTE = `${APPS.FILE_SHARING}/file-preview`;
-export default FILE_PREVIEW_ROUTE;
+interface CloseButtonProps {
+  handleClose: () => void;
+  className?: string;
+}
+
+const CloseButton = ({ handleClose, className }: CloseButtonProps) => {
+  const closeClasses = cn('bg-red-800 hover:bg-red-700', className);
+
+  return (
+    <WindowControlBaseButton
+      onClick={handleClose}
+      className={closeClasses}
+    >
+      <MdClose />
+    </WindowControlBaseButton>
+  );
+};
+
+export default CloseButton;

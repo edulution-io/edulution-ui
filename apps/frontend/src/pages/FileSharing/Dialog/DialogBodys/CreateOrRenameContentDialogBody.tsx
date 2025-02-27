@@ -17,8 +17,8 @@ import { FilesharingDialogProps } from '@libs/filesharing/types/filesharingDialo
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import ContentType from '@libs/filesharing/types/contentType';
 import { useTranslation } from 'react-i18next';
-import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
-import generateFile from '@/pages/FileSharing/fileoperations/generateFile';
+import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
+import generateFile from '@/pages/FileSharing/utilities/generateFile';
 import getDocumentVendor from '@libs/filesharing/utils/getDocumentVendor';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 

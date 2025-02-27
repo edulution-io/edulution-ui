@@ -18,8 +18,8 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import DirectoryBreadcrumb from '@/pages/FileSharing/breadcrumb/DirectoryBreadcrumb';
-import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
+import DirectoryBreadcrumb from '@/pages/FileSharing/Table/DirectoryBreadcrumb';
+import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import ContentType from '@libs/filesharing/types/contentType';
 import useLmnApiStore from '@/store/useLmnApiStore';
 
@@ -39,7 +39,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   const { t } = useTranslation();
   const [currentPath, setCurrentPath] = useState(pathToFetch || '');
   const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
-  const { fetchDirs, fetchFiles, directorys, files } = useFileSharingStore();
+  const { fetchDirs, fetchFiles, directories, files } = useFileSharingStore();
   const { user } = useLmnApiStore();
 
   useEffect(() => {
@@ -120,7 +120,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
         {showAllFiles ? (
           <TableBody>{files.map(renderTableRow)}</TableBody>
         ) : (
-          <TableBody>{directorys.map(renderTableRow)}</TableBody>
+          <TableBody>{directories.map(renderTableRow)}</TableBody>
         )}
       </Table>
     </ScrollArea>

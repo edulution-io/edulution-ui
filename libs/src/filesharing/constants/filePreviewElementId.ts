@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
+const FILE_PREVIEW_ELEMENT_ID = 'file-sharing-file-preview-element-id';
 
-const FILE_PREVIEW_ROUTE = `${APPS.FILE_SHARING}/file-preview`;
-export default FILE_PREVIEW_ROUTE;
+export default FILE_PREVIEW_ELEMENT_ID;

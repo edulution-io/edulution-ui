@@ -19,7 +19,7 @@ import { HiExclamationTriangle, HiTrash } from 'react-icons/hi2';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import Progress from '@/components/ui/Progress';
 import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
-import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
+import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 

@@ -22,8 +22,7 @@ import { useTranslation } from 'react-i18next';
 import { HiChevronDown } from 'react-icons/hi';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import useIsMobileView from '@/hooks/useIsMobileView';
-import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import { BREADCRUMB_ID } from '@libs/ui/constants/defaultIds';
 import useUserPath from '../hooks/useUserPath';
 
@@ -46,8 +45,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
   const displaySegments = isMobileView ? 1 : 4;
   const { t } = useTranslation();
   const { homePath } = useUserPath();
-  const { setShowEditor } = useFileEditorStore();
-  const { setCurrentlyEditingFile } = useFileSharingStore();
+  const { setCurrentlyEditingFile } = useFileEditorStore();
 
   const segments = path
     .split('/')
@@ -59,7 +57,6 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
   const getSegmentKey = (index: number) => segments.slice(0, index + 1).join('/');
 
   const handleSegmentClick = (index: number) => {
-    setShowEditor(false);
     setCurrentlyEditingFile(null);
 
     const newPath = getSegmentKey(index);

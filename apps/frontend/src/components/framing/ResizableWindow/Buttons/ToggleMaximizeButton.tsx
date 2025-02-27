@@ -14,28 +14,30 @@ import React, { useMemo } from 'react';
 import cn from '@libs/common/utils/className';
 import { BiWindow, BiWindows } from 'react-icons/bi';
 import { IconContext } from 'react-icons';
+import WindowControlBaseButton from './WindowControlBaseButton';
 
-const ToggleMaximizeButton = ({
-  handleMaximizeToggle,
-  isMinimized,
-  isMaximized,
-}: {
+interface ToggleMaximizeButtonProps {
   handleMaximizeToggle: () => void;
   isMinimized: boolean;
   isMaximized: boolean;
-}) => {
+}
+
+const ToggleMaximizeButton = ({ handleMaximizeToggle, isMinimized, isMaximized }: ToggleMaximizeButtonProps) => {
   const iconContextValue = useMemo(() => ({ className: 'h-4 w-4' }), []);
 
+  const extraClasses = cn({
+    'h-5 w-8 px-0': isMinimized,
+  });
+
   return (
-    <button
-      type="button"
-      onClick={handleMaximizeToggle}
-      className={cn('flex h-10 w-16 items-center justify-center p-5 text-sm hover:bg-gray-600', {
-        'h-5 w-8 px-0': isMinimized,
-      })}
-    >
-      <IconContext.Provider value={iconContextValue}>{isMaximized ? <BiWindows /> : <BiWindow />}</IconContext.Provider>
-    </button>
+    <IconContext.Provider value={iconContextValue}>
+      <WindowControlBaseButton
+        onClick={handleMaximizeToggle}
+        className={extraClasses}
+      >
+        {isMaximized ? <BiWindows /> : <BiWindow />}
+      </WindowControlBaseButton>
+    </IconContext.Provider>
   );
 };
 

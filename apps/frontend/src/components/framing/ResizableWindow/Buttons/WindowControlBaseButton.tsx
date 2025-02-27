@@ -10,7 +10,23 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
+import React, { FC, ReactNode } from 'react';
+import cn from '@libs/common/utils/className';
 
-const FILE_PREVIEW_ROUTE = `${APPS.FILE_SHARING}/file-preview`;
-export default FILE_PREVIEW_ROUTE;
+interface WindowControlBaseButtonProps {
+  onClick: () => void;
+  children: ReactNode;
+  className?: string;
+}
+
+const WindowControlBaseButton: FC<WindowControlBaseButtonProps> = ({ onClick, children, className }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className={cn('flex h-10 w-16 items-center justify-center p-5 text-sm hover:bg-gray-600', className)}
+  >
+    {children}
+  </button>
+);
+
+export default WindowControlBaseButton;

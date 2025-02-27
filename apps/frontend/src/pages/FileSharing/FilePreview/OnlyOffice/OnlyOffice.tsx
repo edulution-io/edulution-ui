@@ -11,7 +11,7 @@
  */
 
 import React, { FC } from 'react';
-import OnlyOfficeEditor from '@/pages/FileSharing/previews/onlyOffice/OnlyOfficeEditor';
+import OnlyOfficeEditor from '@/pages/FileSharing/FilePreview/OnlyOffice/OnlyOfficeEditor';
 import useOnlyOffice from '@/pages/FileSharing/hooks/useOnlyOffice';
 
 interface OnlyOfficeProps {

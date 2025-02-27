@@ -11,13 +11,13 @@
  */
 
 import { z } from 'zod';
-import CreateOrRenameContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/CreateOrRenameContentDialogBody';
-import DeleteContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/DeleteContentDialogBody';
-import MoveContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/MoveContentDialogBody';
+import CreateOrRenameContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/CreateOrRenameContentDialogBody';
+import DeleteContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/DeleteContentDialogBody';
+import MoveContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveContentDialogBody';
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import generateFile from '@/pages/FileSharing/fileoperations/generateFile';
+import generateFile from '@/pages/FileSharing/utilities/generateFile';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import { HttpMethods } from '@libs/common/types/http-methods';
 import { t } from 'i18next';

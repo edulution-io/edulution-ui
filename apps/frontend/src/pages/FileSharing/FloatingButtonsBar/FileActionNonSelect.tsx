@@ -16,7 +16,7 @@ import { MdFilePresent } from 'react-icons/md';
 import { HiOutlineFolderAdd } from 'react-icons/hi';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import FileActionButtonProps from '@libs/filesharing/types/fileActionButtonProps';
-import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
+import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import FileTypesConfiguration from '@libs/filesharing/constants/fileTypesConfiguration';
 import UploadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/uploadButton';

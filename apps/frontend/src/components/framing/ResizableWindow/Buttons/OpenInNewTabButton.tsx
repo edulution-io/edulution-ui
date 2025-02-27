@@ -11,15 +11,17 @@
  */
 
 import React from 'react';
+import { ImNewTab } from 'react-icons/im';
+import WindowControlBaseButton from './WindowControlBaseButton';
 
-const MinimizeButton = ({ minimizeWindow }: { minimizeWindow: () => void }) => (
-  <button
-    type="button"
-    onClick={minimizeWindow}
-    className="flex h-10 w-16 items-center justify-center p-5 text-sm hover:bg-gray-600"
-  >
-    <div className="mt-[-8px]">__</div>
-  </button>
+interface OpenInNewTabButtonProps {
+  onClick: () => Promise<void> | void;
+}
+
+const OpenInNewTabButton = ({ onClick }: OpenInNewTabButtonProps) => (
+  <WindowControlBaseButton onClick={onClick}>
+    <ImNewTab />
+  </WindowControlBaseButton>
 );
 
-export default MinimizeButton;
+export default OpenInNewTabButton;

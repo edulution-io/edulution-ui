@@ -12,7 +12,6 @@
 
 import React, { FC } from 'react';
 import { t } from 'i18next';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { MdDriveFileRenameOutline } from 'react-icons/md';
 import ContentType from '@libs/filesharing/types/contentType';
 import FileActionButtonProps from '@libs/filesharing/types/fileActionButtonProps';
@@ -24,9 +23,10 @@ import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/Floating
 import DownloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/downloadButton';
 import MoveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/moveButton';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
+import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 
 const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItem }) => {
-  const { downloadFile } = useFileSharingStore();
+  const { downloadFile } = useFileEditorStore();
 
   const startDownload = async (filePath: string, filename: string) => {
     const downloadLinkURL = await downloadFile(filePath);

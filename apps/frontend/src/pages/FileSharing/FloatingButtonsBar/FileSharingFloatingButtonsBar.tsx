@@ -12,10 +12,10 @@
 
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import React from 'react';
-import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
-import FileActionOneSelect from '@/pages/FileSharing/buttonsBar/FileActionOneSelect';
-import FileActionNonSelect from '@/pages/FileSharing/buttonsBar/FileActionNonSelect';
-import FileActionMultiSelect from '@/pages/FileSharing/buttonsBar/FileActionMultiSelect';
+import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
+import FileActionOneSelect from '@/pages/FileSharing/FloatingButtonsBar/FileActionOneSelect';
+import FileActionNonSelect from '@/pages/FileSharing/FloatingButtonsBar/FileActionNonSelect';
+import FileActionMultiSelect from '@/pages/FileSharing/FloatingButtonsBar/FileActionMultiSelect';
 
 const FileSharingFloatingButtonsBar = () => {
   const { openDialog } = useFileSharingDialogStore();

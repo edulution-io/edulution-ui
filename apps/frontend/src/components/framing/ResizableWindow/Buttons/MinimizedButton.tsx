@@ -11,17 +11,17 @@
  */
 
 import React from 'react';
-import cn from '@libs/common/utils/className';
-import { MdClose } from 'react-icons/md';
+import WindowControlBaseButton from './WindowControlBaseButton';
 
-const CloseButton = ({ handleClose, className }: { handleClose: () => void; className?: string }) => (
-  <button
-    type="button"
-    onClick={handleClose}
-    className={cn('flex h-10 w-16 items-center justify-center bg-red-800 p-5 hover:bg-red-700', className)}
-  >
-    <MdClose />
-  </button>
+interface MinimizeButtonProps {
+  minimizeWindow: () => void;
+}
+
+const MinimizeButton = ({ minimizeWindow }: MinimizeButtonProps) => (
+  <WindowControlBaseButton onClick={minimizeWindow}>
+    {/* Just place the underline as a child */}
+    <div className="mt-[-8px]">__</div>
+  </WindowControlBaseButton>
 );
 
-export default CloseButton;
+export default MinimizeButton;

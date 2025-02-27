@@ -27,7 +27,7 @@ import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 import { TABLE_ICON_SIZE } from '@libs/ui/constants';
 import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
+import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import i18n from '@/i18n';
 import CircleLoader from '@/components/ui/CircleLoader';
@@ -53,16 +53,14 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
     accessorFn: (row) => row.type + row.filename,
     cell: ({ row }) => {
       const [searchParams, setSearchParams] = useSearchParams();
-      const { currentlyDisabledFiles, setCurrentlyEditingFile, resetCurrentlyEditingFile, setPublicDownloadLink } =
-        useFileSharingStore();
-      const { setShowEditor } = useFileEditorStore();
+      const { currentlyDisabledFiles } = useFileSharingStore();
+      const { setCurrentlyEditingFile, resetCurrentlyEditingFile, setPublicDownloadLink } = useFileEditorStore();
       const isCurrentlyDisabled = currentlyDisabledFiles[row.original.basename];
       const handleFilenameClick = async () => {
         if (isCurrentlyDisabled) {
           return;
         }
 
-        setShowEditor(false);
         setPublicDownloadLink('');
         if (row.original.type === ContentType.DIRECTORY) {
           setCurrentlyEditingFile(null);

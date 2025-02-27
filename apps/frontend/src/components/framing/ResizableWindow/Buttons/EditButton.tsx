@@ -10,7 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
+import React from 'react';
+import { FiEdit } from 'react-icons/fi';
+import WindowControlBaseButton from './WindowControlBaseButton';
 
-const FILE_PREVIEW_ROUTE = `${APPS.FILE_SHARING}/file-preview`;
-export default FILE_PREVIEW_ROUTE;
+interface EditButtonProps {
+  onClick: () => Promise<void> | void;
+}
+
+const EditButton = ({ onClick }: EditButtonProps) => (
+  <WindowControlBaseButton onClick={onClick}>
+    <FiEdit />
+  </WindowControlBaseButton>
+);
+
+export default EditButton;
