@@ -30,9 +30,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/Dialog';
 import useIsMobileView from '@/hooks/useIsMobileView';
-import useElementHeight from '@/hooks/useElementHeight';
-import { LAYOUT_OPTIONS, LayoutOption } from '@libs/ui/constants/layout';
-import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 interface AdaptiveDialogProps {
   isOpen: boolean;
@@ -42,10 +39,8 @@ interface AdaptiveDialogProps {
   body: React.ReactNode;
   footer?: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'tertiary';
-  layout?: LayoutOption;
   mobileContentClassName?: string;
   desktopContentClassName?: string;
-  additionalScrollContainerOffset?: number;
 }
 
 const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
@@ -56,19 +51,10 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
   body,
   footer,
   variant = 'primary',
-  layout = LAYOUT_OPTIONS.ONE_COLUMN,
   mobileContentClassName,
   desktopContentClassName,
-  additionalScrollContainerOffset = 0,
 }) => {
   const isMobileView = useIsMobileView();
-
-  const headerId = 'dialog-header';
-  const footerId = 'dialog-footer';
-
-  const pageBarsHeight = useElementHeight([headerId, footerId]) + additionalScrollContainerOffset;
-
-  const bodyContent = <div style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}>{body}</div>;
 
   return isMobileView ? (
     <Sheet
@@ -79,19 +65,13 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
       <SheetContent
         side="bottom"
         variant={variant}
-        className={`${mobileContentClassName} overflow-x-hidden`}
+        className={mobileContentClassName}
       >
-        <SheetHeader
-          variant={variant}
-          id={headerId}
-        >
+        <SheetHeader variant={variant}>
           <SheetTitle>{title}</SheetTitle>
-          <VisuallyHidden>
-            <SheetTitle>{title}</SheetTitle>
-          </VisuallyHidden>
         </SheetHeader>
-        {bodyContent}
-        {footer ? <SheetFooter id={footerId}>{footer}</SheetFooter> : null}
+        {body}
+        {footer ? <SheetFooter>{footer}</SheetFooter> : null}
         <SheetDescription aria-disabled />
       </SheetContent>
     </Sheet>
@@ -103,21 +83,11 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
         variant={variant}
-        className={`${desktopContentClassName} overflow-x-hidden `}
+        className={desktopContentClassName}
       >
         <DialogTitle>{title}</DialogTitle>
-        <VisuallyHidden>
-          <DialogTitle>{title}</DialogTitle>
-        </VisuallyHidden>
-        {bodyContent}
-        {footer ? (
-          <DialogFooter
-            layout={layout}
-            id={footerId}
-          >
-            {footer}
-          </DialogFooter>
-        ) : null}
+        {body}
+        {footer ? <DialogFooter>{footer}</DialogFooter> : null}
         <DialogDescription aria-disabled />
       </DialogContent>
     </Dialog>

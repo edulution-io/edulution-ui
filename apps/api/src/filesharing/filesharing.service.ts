@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -469,6 +469,8 @@ class FilesharingService {
             destinationFilePaths: [`${item.destinationPath}${getCurrentTimestamp()}`],
           });
         }
+
+        Logger.log('currentTimeStamp', getCurrentTimestamp());
       } catch (error) {
         throw new Error(`Operation failed for user ${item.userName}`);
       }

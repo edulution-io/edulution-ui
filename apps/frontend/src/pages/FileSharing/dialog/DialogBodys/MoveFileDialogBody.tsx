@@ -16,7 +16,7 @@ import MoveContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/MoveCo
 import MoveContentDialogProps from '@libs/filesharing/types/moveContentDialogProps';
 import ContentType from '@libs/filesharing/types/contentType';
 
-const MoveContentDialogWrapper: React.FC<Omit<MoveContentDialogProps, 'pathToFetch'>> = (props) => {
+const MoveFileDialogBody: React.FC<Omit<MoveContentDialogProps, 'pathToFetch'>> = (props) => {
   const { homePath } = useUserPath();
 
   return (
@@ -29,4 +29,4 @@ const MoveContentDialogWrapper: React.FC<Omit<MoveContentDialogProps, 'pathToFet
   );
 };
 
-export default MoveContentDialogWrapper;
+export default MoveFileDialogBody;

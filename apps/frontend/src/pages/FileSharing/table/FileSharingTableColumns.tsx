@@ -38,6 +38,26 @@ const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
 
 const hideOnMobileClassName = 'hidden lg:flex';
 
+const renderFileIcon = (item: DirectoryFileDTO, isCurrentlyDisabled: boolean) => {
+  if (isCurrentlyDisabled) {
+    return (
+      <CircleLoader
+        height="h-6"
+        width="w-6"
+      />
+    );
+  }
+  if (item.type === ContentType.FILE) {
+    return (
+      <FileIconComponent
+        filename={item.filename}
+        size={Number(TABLE_ICON_SIZE)}
+      />
+    );
+  }
+  return <MdFolder size={TABLE_ICON_SIZE} />;
+};
+
 const getFileSharingTableColumns = (
   visibleColumns?: string[],
   onFilenameClick?: (item: DirectoryFileDTO) => void,
@@ -63,42 +83,25 @@ const getFileSharingTableColumns = (
         const { setShowEditor } = useFileEditorStore();
         const isCurrentlyDisabled = currentlyDisabledFiles[row.original.basename];
         const handleFilenameClick = async () => {
-          if (!onFilenameClick) {
-            if (isCurrentlyDisabled) {
-              return;
-            }
-
-            setShowEditor(false);
-            setPublicDownloadLink('');
-            if (row.original.type === ContentType.DIRECTORY) {
-              setCurrentlyEditingFile(null);
-              searchParams.set('path', getPathWithoutWebdav(row.original.filename));
-              setSearchParams(searchParams);
-            } else {
-              await resetCurrentlyEditingFile(row.original);
-            }
-          } else {
+          if (onFilenameClick) {
             onFilenameClick(row.original);
+            return;
           }
-        };
-        const renderFileIcon = (item: DirectoryFileDTO) => {
+
           if (isCurrentlyDisabled) {
-            return (
-              <CircleLoader
-                height="h-6"
-                width="w-6"
-              />
-            );
+            return;
           }
-          if (row.original.type === ContentType.FILE) {
-            return (
-              <FileIconComponent
-                filename={item.filename}
-                size={Number(TABLE_ICON_SIZE)}
-              />
-            );
+
+          setShowEditor(false);
+          setPublicDownloadLink('');
+
+          if (row.original.type === ContentType.DIRECTORY) {
+            setCurrentlyEditingFile(null);
+            searchParams.set('path', getPathWithoutWebdav(row.original.filename));
+            setSearchParams(searchParams);
+          } else {
+            await resetCurrentlyEditingFile(row.original);
           }
-          return <MdFolder size={TABLE_ICON_SIZE} />;
         };
 
         const isSaving = currentlyDisabledFiles[row.original.basename];
@@ -106,7 +109,7 @@ const getFileSharingTableColumns = (
         return (
           <div className={`w-full ${isSaving ? 'pointer-events-none opacity-50' : ''}`}>
             <SelectableTextCell
-              icon={renderFileIcon(row.original)}
+              icon={renderFileIcon(row.original, isCurrentlyDisabled)}
               row={row}
               text={row.original.basename}
               onClick={handleFilenameClick}

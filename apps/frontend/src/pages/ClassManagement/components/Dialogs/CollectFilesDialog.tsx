@@ -18,34 +18,22 @@ import { Button } from '@/components/shared/Button';
 import { FaCopy, FaCut } from 'react-icons/fa';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
-import { LAYOUT_OPTIONS } from '@libs/ui/constants/layout';
 import { RadioGroupItemSH, RadioGroupSH } from '@/components/ui/RadioGroupSH';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 
 const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
   const { collectionType, setCollectionType } = useLessonStore();
 
-  const options: Record<
-    LmnApiCollectOperationsType,
-    {
-      id: LmnApiCollectOperationsType;
-      label: string;
-      icon: JSX.Element;
-    }
-  > = {
+  const options: Record<LmnApiCollectOperationsType, { label: string; icon: JSX.Element }> = {
     [LMN_API_COLLECT_OPERATIONS.CUT]: {
-      id: LMN_API_COLLECT_OPERATIONS.CUT,
       label: t('classmanagement.collectAndCut'),
       icon: <FaCut />,
     },
     [LMN_API_COLLECT_OPERATIONS.COPY]: {
-      id: LMN_API_COLLECT_OPERATIONS.COPY,
       label: t('classmanagement.collectAndCopy'),
       icon: <FaCopy />,
     },
   };
-
-  const selectedOption = options[collectionType];
 
   const getDialogBody = () => (
     <>
@@ -53,24 +41,25 @@ const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, 
       <div className="flex flex-col items-center justify-start pb-8">
         <RadioGroupSH
           className="flex flex-col gap-4"
-          value={selectedOption?.id}
+          value={collectionType}
           onValueChange={(value: LmnApiCollectOperationsType) => {
             if (options[value]) {
               setCollectionType(value);
             }
           }}
         >
-          {Object.values(options).map((option) => (
+          {Object.entries(options).map(([key, option]) => (
             <div
-              key={option.id}
+              key={key}
+              id={`option-${key}`}
               className="flex cursor-pointer items-center gap-2"
             >
               <RadioGroupItemSH
-                id={`option-${option.id}`}
-                value={option.id}
-                checked={selectedOption?.id === option.id}
+                id={`option-${key}`}
+                value={key}
+                checked={collectionType === key}
               />
-              <label htmlFor={`option-${option.id}`}>
+              <label htmlFor={`option-${key}`}>
                 <div className="flex flex-row justify-center space-x-2">
                   {option.icon}
                   <span>{option.label}</span>
@@ -103,7 +92,6 @@ const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, 
       title={t(`classmanagement.${title}`)}
       body={getDialogBody()}
       footer={getFooter()}
-      layout={LAYOUT_OPTIONS.TWO_COLUMN}
     />
   );
 };
