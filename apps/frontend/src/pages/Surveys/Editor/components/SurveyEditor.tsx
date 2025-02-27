@@ -111,6 +111,10 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   creator.onDefineElementMenuItems.add((_, options) => {
     const settingsItemIndex = options.items.findIndex((option) => option.iconName === 'icon-settings_16x16');
     options.items.splice(settingsItemIndex, 1);
+
+    // const singleTextInputItem = creator.toolbox.getItemByName("text");
+    // singleTextInputItem.className = DEFAULT
+    // const multipleTextInputItem = creator.toolbox.getItemByName("multipletext");
   });
 
   creator.onModified.add(() => {

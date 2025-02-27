@@ -2,6 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+/*.svc-list__input:focus,*/
+/*.svc-string-editor__input:focus,*/
+/*.sv-dropdown_select-wrapper {*/
+/*  ::before {*/
+/*    border-color: var(--border);*/
+/*    background-color: var(--input);*/
+/*    color: var(--primary-foreground);*/
+/*    border-radius: var(--radius);*/
+/*    border: 1px solid var(--ring);*/
+/*  }*/
+/*}*/
+
+/*.svc-string-editor {*/
+/*  .svc-string-editor__input:focus {*/
+/*    color: var(--primary-foreground);*/
+/*    background-color: var(--destructive) !important;*/
+/*    border-radius: var(--radius);*/
+/*    border: 1px solid var(--border);*/
+/*  }*/
+
+/*  .svc-string-editor__content {*/
+/*    background-color: var(--input);*/
+
+/*    .svc-string-editor__border .svc-string-editor__border--hover,*/
+/*    .svc-string-editor__border .svc-string-editor__border--focus {*/
+/*      border-color: var(--border) !important;*/
+/*    }*/
+/*  }*/
+/*}*/
+
 .survey-editor {
   .sv-svg-icon,
   .svc-panel__add-new-question-icon {
