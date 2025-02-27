@@ -73,6 +73,8 @@ const useNotifications = () => {
   useEffect(() => {
     if (isConferenceAppActivated) {
       const eventSource = new EventSource(`/${EDU_API_ROOT}/${CONFERENCES_SSE_EDU_API_ENDPOINT}?token=${eduApiToken}`);
+      const controller = new AbortController();
+      const { signal } = controller;
 
       const createConferenceHandler = (e: MessageEvent<string>) => {
         const conferenceDto = JSON.parse(e.data) as ConferenceDto;
@@ -101,16 +103,13 @@ const useNotifications = () => {
         setConferences(newConferences);
       };
 
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.CREATED, createConferenceHandler);
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.STARTED, updateConferenceHandler);
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.STOPPED, updateConferenceHandler);
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.DELETED, deleteConferenceHandler);
+      eventSource.addEventListener(SSE_MESSAGE_TYPE.CREATED, createConferenceHandler, { signal });
+      eventSource.addEventListener(SSE_MESSAGE_TYPE.STARTED, updateConferenceHandler, { signal });
+      eventSource.addEventListener(SSE_MESSAGE_TYPE.STOPPED, updateConferenceHandler, { signal });
+      eventSource.addEventListener(SSE_MESSAGE_TYPE.DELETED, deleteConferenceHandler, { signal });
 
       return () => {
-        eventSource.removeEventListener(SSE_MESSAGE_TYPE.CREATED, createConferenceHandler);
-        eventSource.removeEventListener(SSE_MESSAGE_TYPE.STARTED, updateConferenceHandler);
-        eventSource.removeEventListener(SSE_MESSAGE_TYPE.STOPPED, updateConferenceHandler);
-        eventSource.removeEventListener(SSE_MESSAGE_TYPE.DELETED, deleteConferenceHandler);
+        controller.abort();
 
         eventSource.close();
       };
