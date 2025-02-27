@@ -42,7 +42,7 @@ import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 import CreateWorkingDirectoryDto from '@libs/classManagement/types/createWorkingDirectoryDto';
-import convertWindowsToUnixPath from '@libs/common/utils/convertWindowsToUnixPath';
+import convertWindowsToUnixPath from '@libs/filesharing/utils/convertWindowsToUnixPath';
 import UsersService from '../users/users.service';
 import FilesharingService from '../filesharing/filesharing.service';
 

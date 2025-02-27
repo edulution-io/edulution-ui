@@ -29,7 +29,6 @@ import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpo
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import { toast } from 'sonner';
 import { t } from 'i18next';
-import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 
 const { PROJECT, SCHOOL_CLASSES, EXAM_MODE, MANAGEMENT_GROUPS, PRINTERS } = LMN_API_EDU_API_ENDPOINTS;
 
@@ -41,7 +40,6 @@ const initialState = {
   member: [],
   groupTypeFromStore: undefined,
   groupNameFromStore: undefined,
-  collectDialogCurrentlySelectedCollectionOperation: LMN_API_COLLECT_OPERATIONS.COPY,
 };
 
 type PersistentLessonStore = (
@@ -57,9 +55,6 @@ const useLessonStore = create<LessonStore>(
       setMember: (member) => set({ member }),
       setOpenDialogType: (type) => set({ openDialogType: type }),
       setUserGroupToEdit: (group) => set({ userGroupToEdit: group }),
-      setCollectDialogCurrentlySelectedCollectionOperation: (collectionType: LmnApiCollectOperationsType) =>
-        set({ collectDialogCurrentlySelectedCollectionOperation: collectionType }),
-
       addManagementGroup: async (group: string, users: string[]) => {
         set({ error: null, isLoading: true });
         try {

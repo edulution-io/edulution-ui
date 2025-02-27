@@ -16,14 +16,14 @@ import React from 'react';
 import ShareCollectDialogProps from '@libs/classManagement/types/shareCollectDialogProps';
 import { Button } from '@/components/shared/Button';
 import { FaCopy, FaCut } from 'react-icons/fa';
-import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import { RadioGroupItemSH, RadioGroupSH } from '@/components/ui/RadioGroupSH';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
+import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 
 const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
   const { collectDialogCurrentlySelectedCollectionOperation, setCollectDialogCurrentlySelectedCollectionOperation } =
-    useLessonStore();
+    useFileSharingMoveDialogStore();
 
   const options: Record<LmnApiCollectOperationsType, { label: string; icon: JSX.Element }> = {
     [LMN_API_COLLECT_OPERATIONS.CUT]: {

@@ -32,6 +32,7 @@ import getDialogComponent from '@/pages/ClassManagement/LessonPage/getDialogComp
 import buildCollectDTO from '@libs/filesharing/utils/buildCollectDTO';
 import getUniqueValues from '@libs/lmnApi/utils/getUniqueValues';
 import useClassManagementStore from '../useClassManagementStore';
+import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 
 interface FloatingButtonsBarProps {
   students: UserLmnInfo[];
@@ -48,11 +49,11 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students,
     setMember,
     shareFiles,
     collectFiles,
-    collectDialogCurrentlySelectedCollectionOperation,
     member,
     groupNameFromStore,
   } = useLessonStore();
   const { fetchUser, user, schoolPrefix } = useLmnApiStore();
+  const { collectDialogCurrentlySelectedCollectionOperation } = useFileSharingMoveDialogStore();
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();
   const { fetchSchoolClass } = useClassManagementStore();
   const { groupName } = useParams();

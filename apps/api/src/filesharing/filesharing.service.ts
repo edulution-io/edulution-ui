@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -368,12 +368,10 @@ class FilesharingService {
     return false;
   }
 
-  /* eslint-disable no-await-in-loop */
   async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
 
-    for (let i = 0; i < duplicateFile.destinationFilePaths.length; i += 1) {
-      const destinationPath = duplicateFile.destinationFilePaths[i];
+    const promises = duplicateFile.destinationFilePaths.map(async (destinationPath) => {
       const pathUpToTransferFolder = FilesharingService.getPathUntilFolder(destinationPath, FILE_PATHS.TRANSFER);
       const pathUpToTeacherFolder = FilesharingService.getPathUntilFolder(destinationPath, username);
 
@@ -383,7 +381,6 @@ class FilesharingService {
         username,
         ContentType.DIRECTORY,
       );
-
       if (!userFolderExists) {
         await this.createFolder(username, pathUpToTransferFolder, username);
       }
@@ -401,7 +398,9 @@ class FilesharingService {
       }
 
       await FilesharingService.copyFile(client, duplicateFile.originFilePath, destinationPath);
-    }
+    });
+
+    await Promise.all(promises);
 
     return { success: true, status: HttpStatus.OK };
   }
@@ -469,8 +468,6 @@ class FilesharingService {
             destinationFilePaths: [`${item.destinationPath}${getCurrentTimestamp()}`],
           });
         }
-
-        Logger.log('currentTimeStamp', getCurrentTimestamp());
       } catch (error) {
         throw new Error(`Operation failed for user ${item.userName}`);
       }

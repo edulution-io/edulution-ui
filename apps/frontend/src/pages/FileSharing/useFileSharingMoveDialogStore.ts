@@ -19,8 +19,11 @@ import ContentType from '@libs/filesharing/types/contentType';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import handleApiError from '@/utils/handleApiError';
 import { RowSelectionState } from '@tanstack/react-table';
+import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
+import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 
 interface UseFileSharingMoveDialogStore {
+  collectDialogCurrentlySelectedCollectionOperation: LmnApiCollectOperationsType;
   isLoading: boolean;
   selectedItems: DirectoryFileDTO[];
   dialogShownFiles: DirectoryFileDTO[];
@@ -32,6 +35,7 @@ interface UseFileSharingMoveDialogStore {
   setDialogShownFiles: (files: DirectoryFileDTO[]) => void;
   setIsLoading: (isLoading: boolean) => void;
   setSelectedItems: (items: DirectoryFileDTO[]) => void;
+  setCollectDialogCurrentlySelectedCollectionOperation: (collectionType: LmnApiCollectOperationsType) => void;
   reset: () => void;
 }
 
@@ -41,10 +45,15 @@ const initialState = {
   selectedItems: [] as DirectoryFileDTO[],
   isLoading: false,
   selectedRows: {} as RowSelectionState,
+  collectDialogCurrentlySelectedCollectionOperation: LMN_API_COLLECT_OPERATIONS.COPY,
 };
 
 const useFileSharingMoveDialogStore = create<UseFileSharingMoveDialogStore>((set) => ({
   ...initialState,
+
+  setCollectDialogCurrentlySelectedCollectionOperation: (collectionType: LmnApiCollectOperationsType) =>
+    set({ collectDialogCurrentlySelectedCollectionOperation: collectionType }),
+
   fetchDialogFiles: async (path: string = '/') => {
     try {
       set({ isLoading: true });
