@@ -117,7 +117,7 @@ const useNotifications = () => {
     }
 
     return undefined;
-  }, [isConferenceAppActivated, eduApiToken]);
+  }, [isConferenceAppActivated]);
 
   useEffect(() => {
     if (isSurveysAppActivated) {
@@ -133,7 +133,7 @@ const useNotifications = () => {
     }
 
     return undefined;
-  }, [isSurveysAppActivated, eduApiToken]);
+  }, [isSurveysAppActivated]);
 
   useEffect(() => {
     if (isBulletinBoardActive) {
@@ -158,7 +158,7 @@ const useNotifications = () => {
     }
 
     return undefined;
-  }, [isBulletinBoardActive, eduApiToken]);
+  }, [isBulletinBoardActive]);
 };
 
 export default useNotifications;
