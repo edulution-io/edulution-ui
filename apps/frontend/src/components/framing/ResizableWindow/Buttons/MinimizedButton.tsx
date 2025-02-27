@@ -19,7 +19,6 @@ interface MinimizeButtonProps {
 
 const MinimizeButton = ({ minimizeWindow }: MinimizeButtonProps) => (
   <WindowControlBaseButton onClick={minimizeWindow}>
-    {/* Just place the underline as a child */}
     <div className="mt-[-8px]">__</div>
   </WindowControlBaseButton>
 );

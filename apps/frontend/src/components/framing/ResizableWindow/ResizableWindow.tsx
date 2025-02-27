@@ -200,7 +200,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
       })}
       bounds="window"
       disableDragging={disableDragging}
-      enableResizing={!isMaximized}
+      enableResizing={!isMaximized && !isCurrentlySticky}
       style={{
         zIndex: zIndex + 500,
       }}
