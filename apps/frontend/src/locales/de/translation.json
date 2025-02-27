@@ -795,9 +795,7 @@
     },
     "mobileAccess": {
       "title": "App-Zugriff",
-      "description": "Hier kannst du für den mobilen Zugriff auf deine Dateien die edulution.io App einrichten. Aktuell nur für Apple iOS verfügbar.",
-      "stepOneTitle": "Schritt 1: App herunterladen",
-      "stepTwoTitle": "Schritt 2: Dateizugriff einrichten"
+      "description": "Hier kannst du für den mobilen Zugriff auf deine Dateien die edulution.io App einrichten. Aktuell nur für Apple iOS verfügbar."
     },
     "faq": "FAQ",
     "externalIntegration": "Externe Anbindung",

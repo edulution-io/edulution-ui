@@ -794,9 +794,7 @@
     },
     "mobileAccess": {
       "title": "Mobile Access",
-      "description": "Here you can set up the edulution.io app for mobile access to your files. Currently only available for Apple iOS.",
-      "stepOneTitle": "Step 1: Download the app",
-      "stepTwoTitle": "Step 2: Access Your Files"
+      "description": "Here you can set up the edulution.io app for mobile access to your files. Currently only available for Apple iOS."
     },
     "faq": "FAQ",
     "externalIntegration": "External Integration",

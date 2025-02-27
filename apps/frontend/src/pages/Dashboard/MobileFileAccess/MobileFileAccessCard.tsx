@@ -32,7 +32,7 @@ const MobileFileAccess: React.FC = () => {
           className="bottom-6"
           variant="btn-infrastructure"
           size="lg"
-          onClick={() => navigate('/user/mobile-access')}
+          onClick={() => navigate('/user/security')}
         >
           <img
             src={AppleLogo}

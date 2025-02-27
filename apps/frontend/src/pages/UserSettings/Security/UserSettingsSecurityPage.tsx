@@ -19,6 +19,7 @@ import PasswordChangeForm from '@/pages/UserSettings/Security/components/Passwor
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import Separator from '@/components/ui/Separator';
 import AddMfaForm from './components/AddMfaForm';
+import MobileAccess from '@/pages/UserSettings/Security/components/MobileAccess';
 
 const UserSettingsSecurityPage: React.FC = () => {
   const { t } = useTranslation();
@@ -41,6 +42,8 @@ const UserSettingsSecurityPage: React.FC = () => {
         <PasswordChangeForm />
         <Separator className="my-1 bg-muted" />
         <AddMfaForm />
+        <Separator className="my-1 bg-muted" />
+        <MobileAccess />
       </div>
     </div>
   );
