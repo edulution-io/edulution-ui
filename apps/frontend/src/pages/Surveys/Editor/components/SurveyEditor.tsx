@@ -111,10 +111,6 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   creator.onDefineElementMenuItems.add((_, options) => {
     const settingsItemIndex = options.items.findIndex((option) => option.iconName === 'icon-settings_16x16');
     options.items.splice(settingsItemIndex, 1);
-
-    // const singleTextInputItem = creator.toolbox.getItemByName("text");
-    // singleTextInputItem.className = DEFAULT
-    // const multipleTextInputItem = creator.toolbox.getItemByName("multipletext");
   });
 
   creator.onModified.add(() => {
@@ -139,6 +135,43 @@ const SurveyEditor = (props: SurveyEditorProps) => {
         style={{
           height: '100%',
           width: '100%',
+          root: {
+            '--sjs-corner-radius': '3px',
+            '--sjs-general-backcolor': 'rgba(0, 0, 0, 0.4)',
+            '--sjs-general-backcolor-dark': 'var(--accent)',
+            '--sjs-general-backcolor-dim-light': 'var(--accent)',
+            '--sjs-general-backcolor-dim-dark': 'var(--muted)',
+            '--sjs-general-forecolor': 'var(--secondary)',
+            '--sjs-general-forecolor-light': 'var(--secondary)',
+            '--sjs-general-dim-forecolor': 'var(--muted)',
+            '--sjs-general-dim-forecolor-light': 'var(--muted-light)',
+            '--sjs-secondary-backcolor': 'var(--overlay)',
+            '--sjs-secondary-backcolor-light': 'var(--muted-dialog)',
+            '--sjs-secondary-backcolor-semi-light': 'var(--overlay-foreground)',
+            '--sjs-secondary-forecolor': 'var(--secondary-foreground)',
+            '--sjs-secondary-forecolor-light': 'var(--secondary-foreground)',
+            '--sjs-border-inside': 'var(--border)',
+            '--sjs-special-red-forecolor': 'var(--destructive)',
+            '--sjs-special-green': 'var(--edulution-green)',
+            '--sjs-special-green-light': 'var(--edulution-green)',
+            '--sjs-special-green-forecolor': 'var(--edulution-green)',
+            '--sjs-special-blue': 'var(--edulution-blue)',
+            '--sjs-special-blue-light': 'var(--edulution-blue)',
+            '--sjs-special-blue-forecolor': 'var(--edulution-blue)',
+            '--sjs-special-yellow': 'var(--overlay)',
+            '--sjs-special-yellow-light': 'var(--muted)',
+            '--sjs-special-yellow-forecolor': 'var(--muted-light)',
+            '--sjs-general-backcolor-dim': 'var(--accent)',
+            '--sjs-primary-backcolor': 'var(--ring)',
+            '--sjs-primary-backcolor-dark': 'var(--muted)',
+            '--sjs-primary-backcolor-light': 'var(--muted-light)',
+            '--sjs-primary-forecolor': 'var(--muted-foreground)',
+            '--sjs-primary-forecolor-light': 'var(--background)',
+            '--sjs-special-red': 'var(--destructive)',
+            '--sjs-special-red-light': 'transparent',
+            '--sjs-header-backcolor': 'transparent',
+            '--page-title-font-size2': '24pt',
+          }
         }}
       />
     </div>
