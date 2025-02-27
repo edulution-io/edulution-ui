@@ -41,7 +41,7 @@ const initialState = {
   member: [],
   groupTypeFromStore: undefined,
   groupNameFromStore: undefined,
-  collectionType: LMN_API_COLLECT_OPERATIONS.COPY,
+  collectDialogCurrentlySelectedCollectionOperation: LMN_API_COLLECT_OPERATIONS.COPY,
 };
 
 type PersistentLessonStore = (
