@@ -101,14 +101,14 @@ class FilesharingController {
 
   @Patch()
   async moveOrRenameResource(
-    @Query('path') path: string,
     @Body()
     body: {
+      path: string;
       newPath: string;
     },
     @GetCurrentUsername() username: string,
   ) {
-    return this.filesharingService.moveOrRenameResource(username, path, body.newPath);
+    return this.filesharingService.moveOrRenameResource(username, body.path, body.newPath);
   }
 
   @Get(FileSharingApiEndpoints.FILE_STREAM)
