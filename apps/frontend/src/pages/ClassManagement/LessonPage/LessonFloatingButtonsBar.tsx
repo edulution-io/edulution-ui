@@ -31,8 +31,8 @@ import CLASSMGMT_OPTIONS from '@libs/classManagement/constants/classmgmtOptions'
 import getDialogComponent from '@/pages/ClassManagement/LessonPage/getDialogComponent';
 import buildCollectDTO from '@libs/filesharing/utils/buildCollectDTO';
 import getUniqueValues from '@libs/lmnApi/utils/getUniqueValues';
-import useClassManagementStore from '../useClassManagementStore';
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
+import useClassManagementStore from '../useClassManagementStore';
 
 interface FloatingButtonsBarProps {
   students: UserLmnInfo[];
