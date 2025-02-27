@@ -23,7 +23,7 @@ import {
 } from '@libs/veyon/constants/veyonApiEndpoints';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import VeyonService from './veyon.service';
-import { GetCurrentUsername } from '../common/decorators/getUser.decorator';
+import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 
 @ApiTags(VEYON_API_ENDPOINT)
 @ApiBearerAuth()

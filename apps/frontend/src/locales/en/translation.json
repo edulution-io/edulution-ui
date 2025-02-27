@@ -1042,6 +1042,7 @@
     "directoryDialogTitle": "Create a new directory",
     "createButtonText": "Create",
     "min_3_chars": "Minimum 3 characters",
+    "max_30_chars": "Maximum 30 characters",
     "fileOperationSuccessful": "File creation successful",
     "noMessageAvailable": "No message available",
     "unknownErrorOccurred": "An unknown error occurred",

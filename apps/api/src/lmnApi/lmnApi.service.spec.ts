@@ -22,6 +22,7 @@ import {
 } from '@libs/lmnApi/constants/lmnApiEndpoints';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import GroupForm from '@libs/groups/types/groupForm';
+import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import LmnApiService from './lmnApi.service';
 import UsersService from '../users/users.service';
@@ -163,7 +164,7 @@ describe('LmnApiService', () => {
     it('should return search results', async () => {
       mockedAxios.get.mockResolvedValue({ data: [{ id: user1, type: 'user' }] });
 
-      const result = await service.searchUsersOrGroups(mockToken, 'searchTerm');
+      const result = await service.searchUsersOrGroups(mockToken, SPECIAL_SCHOOLS.GLOBAL, 'searchTerm');
 
       expect(result).toEqual([{ id: user1, type: 'user' }]);
     });
@@ -171,7 +172,9 @@ describe('LmnApiService', () => {
     it('should throw CustomHttpException if search fails', async () => {
       mockedAxios.get.mockRejectedValue(new Error('Error'));
 
-      await expect(service.searchUsersOrGroups(mockToken, 'searchTerm')).rejects.toThrow(CustomHttpException);
+      await expect(service.searchUsersOrGroups(mockToken, SPECIAL_SCHOOLS.GLOBAL, 'searchTerm')).rejects.toThrow(
+        CustomHttpException,
+      );
     });
   });
 

@@ -1043,6 +1043,7 @@
     "directoryDialogTitle": "Erstelle ein neues Verzeichnis",
     "createButtonText": "Erstellen",
     "min_3_chars": "Mindestens 3 Zeichen",
+    "max_30_chars": "Maximal 30 Zeichen",
     "fileOperationSuccessful": "Dateierstellung erfolgreich",
     "noMessageAvailable": "Keine Nachricht verfügbar",
     "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
