@@ -105,7 +105,7 @@
   "dashboard": {
     "mobileAccess": {
       "title": "Mobiler Datenzugriff",
-      "manual": "Anleitung",
+      "manual": "Einrichten",
       "accessData": "Zugangsdaten",
       "content": "Du kannst von vielen mobilen Geräten aus auf den Schulserver zugreifen. Drücke auf Anleitung um zu starten.",
       "scanAccessInfo": "Um die Zugangsdaten zu übertragen, bitte folgenden QR-Code mit der edulution.io App scannen.",

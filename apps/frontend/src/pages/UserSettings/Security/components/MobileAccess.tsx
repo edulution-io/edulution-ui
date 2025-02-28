@@ -24,7 +24,7 @@ const MobileAccess: React.FC = () => {
       <div className="flex flex-col">
         <div className="my-4 flex justify-start">
           <div className="text-background">
-            <span className="font-bold">{t('usersettings.mobileAccess.description')}</span>.
+            <p className="font-bold">{t('usersettings.mobileAccess.description')}</p>
           </div>
         </div>
         <div className="mt-4 flex justify-end">
