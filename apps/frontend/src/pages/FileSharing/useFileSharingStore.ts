@@ -43,7 +43,7 @@ type UseFileSharingStore = {
   isLoading: boolean;
   isError: boolean;
   currentlyDisabledFiles: Record<string, boolean>;
-  startFileIsCurrentlyDisabled: (filename: string, isLocked: boolean, durationMs: number) => Promise<void>;
+  setFileIsCurrentlyDisabled: (filename: string, isLocked: boolean, durationMs?: number) => Promise<void>;
   setIsLoading: (isLoading: boolean) => void;
   setMountPoints: (mountPoints: DirectoryFileDTO[]) => void;
 };
@@ -112,7 +112,7 @@ const useFileSharingStore = create<UseFileSharingStore>(
         }
       },
 
-      startFileIsCurrentlyDisabled: async (filename, isLocked, durationMs) => {
+      setFileIsCurrentlyDisabled: async (filename, isLocked, durationMs) => {
         set((state) => ({
           currentlyDisabledFiles: {
             ...state.currentlyDisabledFiles,

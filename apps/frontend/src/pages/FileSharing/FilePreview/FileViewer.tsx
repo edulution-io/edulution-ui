@@ -27,7 +27,7 @@ const FileViewer = () => {
   const { t } = useTranslation();
   const { addFileToOpenInNewTab, currentlyEditingFile, fetchDownloadLinks, setCurrentlyEditingFile } =
     useFileEditorStore();
-  const { startFileIsCurrentlyDisabled } = useFileSharingStore();
+  const { setFileIsCurrentlyDisabled } = useFileSharingStore();
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
   const windowSize = useWindowResize();
@@ -67,7 +67,7 @@ const FileViewer = () => {
     const { basename } = currentlyEditingFile;
     setIsEditMode(false);
     setCurrentlyEditingFile(null);
-    await startFileIsCurrentlyDisabled(basename, true, 5000);
+    await setFileIsCurrentlyDisabled(basename, true, 5000);
   };
 
   if (!filePreviewRect || !currentlyEditingFile) return null;

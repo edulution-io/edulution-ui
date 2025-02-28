@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import ImageComponent from '@/components/ui/ImageComponent';
 import VideoComponent from '@/components/ui/VideoComponent';
 import OnlyOffice from '@/pages/FileSharing/FilePreview/OnlyOffice/OnlyOffice';
@@ -22,6 +22,7 @@ import useIsMobileView from '@/hooks/useIsMobileView';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 
 interface FileRendererProps {
   editMode: boolean;
@@ -36,9 +37,16 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode }) => {
     isEditorLoading,
     error,
   } = useFileEditorStore();
+  const { setFileIsCurrentlyDisabled } = useFileSharingStore();
 
   if (!currentlyEditingFile) return null;
   const fileExtension = getFileExtension(currentlyEditingFile.filename);
+
+  useEffect(() => {
+    if (!isEditorLoading) {
+      void setFileIsCurrentlyDisabled(currentlyEditingFile.basename, false);
+    }
+  }, [isEditorLoading]);
 
   if (isEditorLoading || error || !fileUrl) {
     return (
