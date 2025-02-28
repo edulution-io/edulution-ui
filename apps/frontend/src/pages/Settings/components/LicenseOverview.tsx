@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import useCommunityLicenseStore from '@/pages/UserSettings/Info/useCommunityLicenseStore';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import { Button } from '@/components/shared/Button';
+import type LicenseInfoDto from '@libs/license/types/license-info.dto';
 import LicenseField from './LicenseField';
 import RegisterLicenseDialog from './RegisterLicenseDialog';
 
@@ -22,24 +23,22 @@ const LicenseOverview: React.FC = () => {
   const { t } = useTranslation();
   const { licenseInfo, isRegisterDialogOpen, setIsRegisterDialogOpen } = useCommunityLicenseStore();
 
-  if (!licenseInfo) return null;
-
-  const fields = [
-    { label: t('settings.license.customerId'), value: licenseInfo.customerId },
-    { label: t('settings.license.licenseId'), value: licenseInfo.licenseId },
-    { label: t('settings.license.numberOfUsers'), value: licenseInfo.numberOfUsers },
+  const getFields = (license: LicenseInfoDto) => [
+    { label: t('settings.license.customerId'), value: license.customerId },
+    { label: t('settings.license.licenseId'), value: license.licenseId },
+    { label: t('settings.license.numberOfUsers'), value: license.numberOfUsers },
     {
       label: t('settings.license.validFromUtc'),
-      value: new Date(licenseInfo.validFromUtc).toLocaleDateString(),
+      value: new Date(license.validFromUtc).toLocaleDateString(),
     },
     {
       label: t('settings.license.validToUtc'),
-      value: new Date(licenseInfo.validToUtc).toLocaleDateString(),
+      value: new Date(license.validToUtc).toLocaleDateString(),
     },
     {
       label: t('settings.license.licenseStatus'),
-      value: licenseInfo.isLicenseActive ? 'Aktiv' : 'Inaktiv',
-      valueClassName: licenseInfo.isLicenseActive ? 'text-ciLightGreen' : 'text-ciRed',
+      value: license.isLicenseActive ? 'Aktiv' : 'Inaktiv',
+      valueClassName: license?.isLicenseActive ? 'text-ciLightGreen' : 'text-ciRed',
     },
   ];
 
@@ -58,9 +57,9 @@ const LicenseOverview: React.FC = () => {
             <h4>{t('settings.license.title')}</h4>
           </AccordionTrigger>
           <AccordionContent className="space-y-2 px-1">
-            {licenseInfo.customerId ? (
+            {licenseInfo && licenseInfo.customerId ? (
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {fields.map((field) => (
+                {getFields(licenseInfo).map((field) => (
                   <LicenseField
                     key={field.label}
                     label={field.label}

@@ -139,6 +139,7 @@ class LicenseService implements OnModuleInit {
               isLicenseActive: true,
             },
           },
+          { upsert: true },
         )
         .lean();
 
