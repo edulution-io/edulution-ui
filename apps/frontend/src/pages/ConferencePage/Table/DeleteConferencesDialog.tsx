@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import { Button } from '@/components/shared/Button';
 import ItemDialogList from '@/components/shared/ItemDialogList';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 interface DeleteConferencesDialogProps {
   trigger?: React.ReactNode;

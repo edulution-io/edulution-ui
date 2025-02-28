@@ -16,7 +16,7 @@ import useBeforeUnload from '@/hooks/useBeforeUnload';
 import { useTranslation } from 'react-i18next';
 import FileRenderer from '@/pages/FileSharing/FilePreview/FileRenderer';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 
 const FullScreenFileViewer = () => {
   const { t } = useTranslation();
@@ -50,7 +50,7 @@ const FullScreenFileViewer = () => {
   useBeforeUnload(t('closeEditingWindow'));
 
   if (isLoading || isEditorLoading || isDownloadFileLoading || isGetDownloadLinkUrlLoading)
-    return <LoadingIndicator isOpen />;
+    return <LoadingIndicatorDialog isOpen />;
 
   if (!downloadLinkURL) return null;
 
