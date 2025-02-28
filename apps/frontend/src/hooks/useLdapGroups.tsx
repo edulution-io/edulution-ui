@@ -15,9 +15,14 @@ import GroupRoles from '@libs/groups/types/group-roles.enum';
 
 const useLdapGroups = () => {
   const auth = useAuth();
-  const ldapGroups = (auth.user?.profile.ldapGroups as string[]) || [];
-  const isAuthReady = !!auth.user;
+
+  if (!auth || !auth.user) {
+    return { ldapGroups: [], isAuthReady: false, isSuperAdmin: false };
+  }
+
+  const ldapGroups = (auth.user.profile?.ldapGroups as string[]) ?? [];
   const isSuperAdmin = ldapGroups.includes(GroupRoles.SUPER_ADMIN);
+  const isAuthReady = true;
 
   return { isSuperAdmin, ldapGroups, isAuthReady };
 };
