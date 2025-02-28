@@ -27,6 +27,11 @@ import { SHOW_TOASTER_DURATION } from '@libs/ui/constants/durations';
 const displayedErrors = new Set<string>();
 
 const handleApiError = (error: any, set: (params: any) => void, errorName = 'error') => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  if (error.name === 'CanceledError' || error.code === 'ERR_CANCELED') {
+    return;
+  }
+
   if (axios.isAxiosError(error)) {
     const axiosError = error as CustomAxiosError;
 

@@ -61,7 +61,7 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
           return;
         }
 
-        void setFileIsCurrentlyDisabled(row.original.basename, true, 2000);
+        void setFileIsCurrentlyDisabled(row.original.basename, true);
 
         setPublicDownloadLink('');
         if (row.original.type === ContentType.DIRECTORY) {

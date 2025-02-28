@@ -32,9 +32,9 @@ type FileEditorStore = {
   deleteFileAfterEdit: (url: string) => Promise<void>;
   reset: () => void;
   error: Error | null;
-  downloadFile: (filePath: string) => Promise<string | undefined>;
-  getDownloadLinkURL: (filePath: string, filename: string) => Promise<string | undefined>;
-  fetchDownloadLinks: (file: DirectoryFileDTO | null) => Promise<void>;
+  downloadFile: (filePath: string, signal?: AbortSignal) => Promise<string | undefined>;
+  getDownloadLinkURL: (filePath: string, filename: string, signal?: AbortSignal) => Promise<string | undefined>;
+  fetchDownloadLinks: (file: DirectoryFileDTO | null, signal?: AbortSignal) => Promise<void>;
   currentlyEditingFile: DirectoryFileDTO | null;
   filesToOpenInNewTab: DirectoryFileDTO[];
   addFileToOpenInNewTab: (fileToPreview: DirectoryFileDTO) => void;
@@ -101,7 +101,7 @@ const useFileEditorStore = create<FileEditorStore>(
 
       setPublicDownloadLink: (publicDownloadLink) => set({ publicDownloadLink }),
 
-      fetchDownloadLinks: async (file) => {
+      fetchDownloadLinks: async (file, signal) => {
         try {
           set({ isEditorLoading: true, error: null, downloadLinkURL: undefined, publicDownloadLink: null });
 
@@ -109,12 +109,14 @@ const useFileEditorStore = create<FileEditorStore>(
             return;
           }
 
-          const downloadLink = await get().downloadFile(file.filename);
+          const downloadLink = await get().downloadFile(file.filename, signal);
           set({ downloadLinkURL: downloadLink });
 
           if (isOnlyOfficeDocument(file.filename)) {
-            const publicLink = await get().getDownloadLinkURL(file.filename, file.basename);
-            set({ publicDownloadLink: `${getFrontEndUrl()}/${EDU_API_ROOT}/downloads/${publicLink}` || ' ' });
+            const publicLink = await get().getDownloadLinkURL(file.filename, file.basename, signal);
+            if (publicLink) {
+              set({ publicDownloadLink: `${getFrontEndUrl()}/${EDU_API_ROOT}/downloads/${publicLink}` });
+            }
           }
         } catch (error) {
           handleApiError(error, set);
@@ -138,7 +140,7 @@ const useFileEditorStore = create<FileEditorStore>(
         set({ currentlyEditingFile: file });
       },
 
-      downloadFile: async (filePath) => {
+      downloadFile: async (filePath, signal) => {
         try {
           set({ isDownloadFileLoading: true });
           const fileStreamResponse = await eduApi.get<Blob>(
@@ -146,11 +148,11 @@ const useFileEditorStore = create<FileEditorStore>(
             {
               params: { filePath },
               responseType: ResponseType.BLOB,
+              signal,
             },
           );
 
-          const fileStream = fileStreamResponse.data;
-          return window.URL.createObjectURL(fileStream);
+          return window.URL.createObjectURL(fileStreamResponse.data);
         } catch (error) {
           handleApiError(error, set);
           return '';
@@ -159,7 +161,7 @@ const useFileEditorStore = create<FileEditorStore>(
         }
       },
 
-      getDownloadLinkURL: async (filePath, filename) => {
+      getDownloadLinkURL: async (filePath, filename, signal) => {
         try {
           set({ isGetDownloadLinkUrlLoading: true });
           const response = await eduApi.get<WebdavStatusReplay>(
@@ -169,6 +171,7 @@ const useFileEditorStore = create<FileEditorStore>(
                 filePath,
                 fileName: filename,
               },
+              signal,
             },
           );
           const { data, success } = response.data;

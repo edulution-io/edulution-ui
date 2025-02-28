@@ -35,18 +35,29 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode }) => {
     publicDownloadLink,
     currentlyEditingFile,
     isEditorLoading,
+    isDownloadFileLoading,
+    isGetDownloadLinkUrlLoading,
     error,
   } = useFileEditorStore();
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
 
-  if (!currentlyEditingFile) return null;
-  const fileExtension = getFileExtension(currentlyEditingFile.filename);
-
   useEffect(() => {
-    if (!isEditorLoading) {
+    if (currentlyEditingFile && !isEditorLoading && !isDownloadFileLoading && !isGetDownloadLinkUrlLoading) {
       void setFileIsCurrentlyDisabled(currentlyEditingFile.basename, false);
     }
-  }, [isEditorLoading]);
+  }, [isEditorLoading, isDownloadFileLoading, isGetDownloadLinkUrlLoading, currentlyEditingFile?.basename]);
+
+  useEffect(
+    () => () => {
+      if (currentlyEditingFile) {
+        void setFileIsCurrentlyDisabled(currentlyEditingFile.basename, false);
+      }
+    },
+    [currentlyEditingFile?.basename],
+  );
+
+  if (!currentlyEditingFile) return null;
+  const fileExtension = getFileExtension(currentlyEditingFile.filename);
 
   if (isEditorLoading || error || !fileUrl) {
     return (

@@ -68,7 +68,7 @@ type PersistedFileManagerStore = (
 
 const useFileSharingStore = create<UseFileSharingStore>(
   (persist as PersistedFileManagerStore)(
-    (set) => ({
+    (set, get) => ({
       ...initialState,
       setCurrentPath: (path: string) => {
         set({ currentPath: path });
@@ -113,15 +113,18 @@ const useFileSharingStore = create<UseFileSharingStore>(
       },
 
       setFileIsCurrentlyDisabled: async (filename, isLocked, durationMs) => {
-        set((state) => ({
+        set({
           currentlyDisabledFiles: {
-            ...state.currentlyDisabledFiles,
+            ...get().currentlyDisabledFiles,
             [filename]: isLocked,
           },
-        }));
+        });
         if (durationMs) {
           await delay(durationMs);
-          set({ currentlyDisabledFiles: { filename: !isLocked } });
+          set({
+            ...get().currentlyDisabledFiles,
+            currentlyDisabledFiles: { [filename]: !isLocked },
+          });
         }
       },
 
