@@ -284,7 +284,7 @@ class FilesharingService {
 
     const folderAlreadyExistis = await this.checkIfFileOrFolderExists(
       username,
-      pathWithoutFilename + '/',
+      `${pathWithoutFilename}/`,
       FILE_PATHS.COLLECT,
       ContentType.DIRECTORY,
     );
