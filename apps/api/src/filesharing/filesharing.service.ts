@@ -289,17 +289,17 @@ class FilesharingService {
       ContentType.DIRECTORY,
     );
 
-    if (!folderAlreadyExistis) {
-      try {
-        await this.createFolder(username, pathWithoutFilename, FILE_PATHS.COLLECT);
-      } catch (error) {
-        throw new CustomHttpException(
-          FileSharingErrorMessage.CreationFailed,
-          HttpStatus.NOT_FOUND,
-          pathWithoutFilename,
-          FilesharingService.name,
-        );
-      }
+    if (folderAlreadyExistis) return;
+
+    try {
+      await this.createFolder(username, pathWithoutFilename, FILE_PATHS.COLLECT);
+    } catch (error) {
+      throw new CustomHttpException(
+        FileSharingErrorMessage.CreationFailed,
+        HttpStatus.NOT_FOUND,
+        pathWithoutFilename,
+        FilesharingService.name,
+      );
     }
   }
 
