@@ -23,7 +23,7 @@ import cn from '@libs/common/utils/className';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import { CommandGroup, CommandItem, CommandList, CommandSH } from '@/components/ui/CommandSH';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
-import { useDebounce } from '@/hooks/useDebounce';
+import { useDebounceValue } from 'usehooks-ts';
 
 interface GroupOption {
   [key: string]: MultipleSelectorOptionSH[];
@@ -188,7 +188,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
     const [selected, setSelected] = React.useState<MultipleSelectorOptionSH[]>(value || []);
     const [options, setOptions] = React.useState<GroupOption>(transToGroupOption(arrayDefaultOptions, groupBy));
     const [inputValue, setInputValue] = React.useState('');
-    const debouncedSearchTerm = useDebounce(inputValue, delay || 500);
+    const [debouncedSearchTerm] = useDebounceValue(inputValue, delay || 500);
 
     React.useImperativeHandle(
       ref,

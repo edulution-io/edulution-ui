@@ -51,6 +51,8 @@ const CreateAndUpdateBulletinCategoryBody = ({
     setValue('name', e.target.value, { shouldValidate: true });
   };
 
+  const { errors } = form.formState;
+
   return (
     <Form {...form}>
       <form
@@ -66,6 +68,7 @@ const CreateAndUpdateBulletinCategoryBody = ({
             shouldAvailabilityStatusShow={form.formState.isValid && !isCurrentNameEqualToSelected()}
           />
         </div>
+        {errors.name && <span className="text-sm text-red-500">{errors.name.message}</span>}
 
         <DialogSwitch
           translationId="bulletinboard.isActive"

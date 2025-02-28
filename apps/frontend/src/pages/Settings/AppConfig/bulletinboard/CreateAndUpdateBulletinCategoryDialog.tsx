@@ -125,6 +125,7 @@ const CreateAndUpdateBulletinCategoryDialog: React.FC<CreateAndUpdateBulletinCat
       <AdaptiveDialog
         isOpen={isOpen}
         handleOpenChange={() => {
+          closeDialog();
           setDialogOpen('');
           setSelectedCategory(null);
         }}

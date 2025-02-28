@@ -17,8 +17,8 @@ const getCreateNewCategorieSchema = (t: TFunction<'translation', undefined>) =>
   z.object({
     name: z
       .string()
-      .min(3, { message: t('common.min_chars', { count: 3 }) })
-      .max(60, { message: t('common.max_chars', { count: 60 }) }),
+      .min(3, { message: t('fileCreateNewContent.min_3_chars', { count: 3 }) })
+      .max(30, { message: t('fileCreateNewContent.max_30_chars', { count: 30 }) }),
   });
 
 export default getCreateNewCategorieSchema;
