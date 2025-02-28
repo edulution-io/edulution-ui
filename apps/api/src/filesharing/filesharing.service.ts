@@ -26,7 +26,6 @@ import { Request, Response } from 'express';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
-import getCurrentTimestamp from '@libs/filesharing/utils/getCurrentTimestamp';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 import ContentType from '@libs/filesharing/types/contentType';
@@ -282,15 +281,25 @@ class FilesharingService {
   private async createCollectFolderIfNotExists(username: string, destinationPath: string) {
     const sanitizedDestinationPath = destinationPath.replace(`${FILE_PATHS.COLLECT}/`, '');
     const pathWithoutFilename = sanitizedDestinationPath.slice(0, sanitizedDestinationPath.lastIndexOf('/'));
-    try {
-      await this.createFolder(username, pathWithoutFilename, FILE_PATHS.COLLECT);
-    } catch (error) {
-      throw new CustomHttpException(
-        FileSharingErrorMessage.CreationFailed,
-        HttpStatus.NOT_FOUND,
-        pathWithoutFilename,
-        FilesharingService.name,
-      );
+
+    const folderAlreadyExistis = await this.checkIfFileOrFolderExists(
+      username,
+      pathWithoutFilename + '/',
+      FILE_PATHS.COLLECT,
+      ContentType.DIRECTORY,
+    );
+
+    if (!folderAlreadyExistis) {
+      try {
+        await this.createFolder(username, pathWithoutFilename, FILE_PATHS.COLLECT);
+      } catch (error) {
+        throw new CustomHttpException(
+          FileSharingErrorMessage.CreationFailed,
+          HttpStatus.NOT_FOUND,
+          pathWithoutFilename,
+          FilesharingService.name,
+        );
+      }
     }
   }
 
@@ -322,7 +331,6 @@ class FilesharingService {
     const client = await this.getClient(username);
 
     const duplicationPromises = duplicateFile.destinationFilePaths.map(async (destinationPath) => {
-      await this.createCollectFolderIfNotExists(username, destinationPath);
       await FilesharingService.copyFile(client, duplicateFile.originFilePath, destinationPath);
     });
 
@@ -465,7 +473,7 @@ class FilesharingService {
         } else {
           await this.copyCollectedItems(username, {
             originFilePath: item.originPath,
-            destinationFilePaths: [`${item.destinationPath}${getCurrentTimestamp()}`],
+            destinationFilePaths: [`${item.destinationPath}`],
           });
         }
       } catch (error) {
