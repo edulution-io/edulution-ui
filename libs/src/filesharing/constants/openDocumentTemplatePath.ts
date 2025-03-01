@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const OPEN_DOCUMENT_TEMPLATE_PATH = '/open-document-templates';
+const OPEN_DOCUMENT_TEMPLATE_PATH = '/openDocumentTemplates';
 
 export default OPEN_DOCUMENT_TEMPLATE_PATH;
