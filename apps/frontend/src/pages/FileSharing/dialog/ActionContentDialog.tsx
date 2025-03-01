@@ -93,23 +93,22 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     if (Array.isArray(data) && data.some((item) => 'file' in item && item.file instanceof File)) {
       const chunkedData = chunkArray<FileUploadProps>(data as FileUploadProps[], 5);
 
-      // eslint-disable-next-line no-restricted-syntax
-      for (const chunk of chunkedData) {
-        const uploadPromises = chunk.map((item) => {
-          if ('file' in item && item.file instanceof File) {
-            const formData = new FormData();
-            formData.append('file', item.file);
-            formData.append('path', item.path);
-            formData.append('name', item.name);
-            formData.append('currentPath', currentPath);
-            return handleItemAction(action, endpoint, httpMethod, type, formData);
-          }
-          return Promise.resolve();
-        });
-
-        // eslint-disable-next-line no-await-in-loop
-        await Promise.all(uploadPromises);
-      }
+      await chunkedData.reduce<Promise<void>>(async (promiseChain, chunk) => {
+        await promiseChain;
+        await Promise.all(
+          chunk.map((item) => {
+            if ('file' in item && item.file instanceof File) {
+              const formData = new FormData();
+              formData.append('file', item.file);
+              formData.append('path', item.path);
+              formData.append('name', item.name);
+              formData.append('currentPath', currentPath);
+              return handleItemAction(action, endpoint, httpMethod, type, formData);
+            }
+            return Promise.resolve();
+          }),
+        );
+      }, Promise.resolve());
     } else {
       setSubmitButtonIsInActive(false);
       await handleItemAction(action, endpoint, httpMethod, type, data);
