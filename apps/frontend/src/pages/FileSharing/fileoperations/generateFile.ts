@@ -74,11 +74,11 @@ const generateFile = async (
 
         const wbArrayBuffer = OpenOfficeXLSX.write(workbook, { bookType: 'ods', type: 'array' }) as ArrayBuffer;
 
-        const blob = new Blob([wbArrayBuffer], {
+        const fileBlob = new Blob([wbArrayBuffer], {
           type: 'application/vnd.oasis.opendocument.spreadsheet',
         });
 
-        file = new File([blob], 'Beispiel.ods', {
+        file = new File([fileBlob], `${basename}.${extension}`, {
           type: 'application/vnd.oasis.opendocument.spreadsheet',
         });
       }
