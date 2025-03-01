@@ -79,7 +79,7 @@ const generateFile = async (
         });
 
         file = new File([fileBlob], `${basename}.${extension}`, {
-          type: 'application/vnd.oasis.opendocument.spreadsheet',
+          type: fileBlob.type,
         });
       }
       break;
