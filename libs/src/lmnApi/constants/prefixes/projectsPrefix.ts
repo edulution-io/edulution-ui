@@ -10,21 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useAuth } from 'react-oidc-context';
-import GroupRoles from '@libs/groups/types/group-roles.enum';
+const PROJECTS_PREFIX = '/p_';
 
-const useLdapGroups = () => {
-  const auth = useAuth();
-
-  if (!auth || !auth.user) {
-    return { ldapGroups: [], isAuthReady: false, isSuperAdmin: false };
-  }
-
-  const ldapGroups = (auth.user.profile?.ldapGroups as string[]) ?? [];
-  const isSuperAdmin = ldapGroups.includes(GroupRoles.SUPER_ADMIN);
-  const isAuthReady = true;
-
-  return { isSuperAdmin, ldapGroups, isAuthReady };
-};
-
-export default useLdapGroups;
+export default PROJECTS_PREFIX;

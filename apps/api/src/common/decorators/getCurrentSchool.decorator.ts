@@ -10,21 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useAuth } from 'react-oidc-context';
-import GroupRoles from '@libs/groups/types/group-roles.enum';
+import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { Request } from 'express';
 
-const useLdapGroups = () => {
-  const auth = useAuth();
-
-  if (!auth || !auth.user) {
-    return { ldapGroups: [], isAuthReady: false, isSuperAdmin: false };
+const GetCurrentSchool = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
+  const request: Request = ctx.switchToHttp().getRequest();
+  if (!request.user?.school) {
+    throw new UnauthorizedException('school in JWT is missing');
   }
+  return request.user.school;
+});
 
-  const ldapGroups = (auth.user.profile?.ldapGroups as string[]) ?? [];
-  const isSuperAdmin = ldapGroups.includes(GroupRoles.SUPER_ADMIN);
-  const isAuthReady = true;
-
-  return { isSuperAdmin, ldapGroups, isAuthReady };
-};
-
-export default useLdapGroups;
+export default GetCurrentSchool;
