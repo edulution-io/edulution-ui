@@ -24,6 +24,7 @@ import AVAILABLE_FILE_TYPES from '@libs/filesharing/constants/availableFileTypes
 import OPEN_DOCUMENT_TEMPLATE_PATH from '@libs/filesharing/constants/openDocumentTemplatePath';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
+import * as OpenOfficeXLSX from 'xlsx';
 
 const generateFile = async (
   fileType: TAvailableFileTypes | '',
@@ -65,11 +66,21 @@ const generateFile = async (
         });
         file = new File([fileBlob], `${basename}.${extension}`, { type: fileBlob.type });
       } else {
-        const response = await axios.get(`${OPEN_DOCUMENT_TEMPLATE_PATH}/odsTemplate.ods`, {
-          responseType: 'arraybuffer',
+        const workbook = OpenOfficeXLSX.utils.book_new();
+
+        const data = [[]];
+        const worksheet = OpenOfficeXLSX.utils.aoa_to_sheet(data);
+        OpenOfficeXLSX.utils.book_append_sheet(workbook, worksheet, 'Tabelle1');
+
+        const wbArrayBuffer = OpenOfficeXLSX.write(workbook, { bookType: 'ods', type: 'array' }) as ArrayBuffer;
+
+        const blob = new Blob([wbArrayBuffer], {
+          type: 'application/vnd.oasis.opendocument.spreadsheet',
         });
-        const fileBlob = new Blob([response.data], { type: 'application/vnd.oasis.opendocument.spreadsheet' });
-        file = new File([fileBlob], `${basename}.${extension}`, { type: fileBlob.type });
+
+        file = new File([blob], 'Beispiel.ods', {
+          type: 'application/vnd.oasis.opendocument.spreadsheet',
+        });
       }
       break;
     }
