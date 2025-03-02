@@ -1,90 +1,14 @@
 .survey-editor {
-  /*fix padding on the search field in the dropdown*/
-  .svc-list__filter {
-    margin: 2px;
-
-    .svc-list__input {
-      margin: 4px;
-      padding-left: 4px;
-      padding-right: 4px;
-    }
-  }
-
-  /*.svc-list__filter-icon {*/
-  /*  margin-top: 2px;*/
-  /*  margin-bottom: 2px;*/
-  /*  display: inline-flex;*/
-  /*  align-items: center;*/
-
-  /*  .svc-list__input {*/
-  /*    display: flex;*/
-  /*    top: 2px;*/
-  /*    bottom: 2px;*/
-  /*    left: 2px;*/
-  /*    right: 2px;*/
-  /*  }*/
-
-  /*  .sv-svg-icon {*/
-  /*    height: 30px;*/
-  /*    width: 30px;*/
-  /*  }*/
-  /*}*/
-
-  /*.svc-context-button,*/
-  /*.svc-context-button--danger {*/
-  /*  .sv-svg-icon {*/
-  /*    max-width: 36px;*/
-  /*    max-height: 36px;*/
-  /*  }*/
-  /*}*/
-  /*.svc-image-item-value-controls__add {*/
-  /*  .sv-svg-icon {*/
-  /*    max-width: 24px;*/
-  /*    max-height: 24px;*/
-  /*  }*/
-  /*}*/
-
-  /*.svc-item-value-controls__button {*/
-  /*  .sv-svg-icon {*/
-  /*    height: 20px;*/
-  /*    width: 20px;*/
-  /*  }*/
-  /*}*/
-
-  /*.sd-completedpage h3 {*/
-  /*  color: theme("colors.ciLightGrey") !important;*/
-  /*}*/
-
   /*.sd-element {*/
   /*  padding: 5px;*/
   /*}*/
 
-  /*.svc-notifier--info {*/
-  /*  position: fixed;*/
-  /*  right: 210px;*/
-  /*  bottom: 120px;*/
-  /*  transform: translate(50%, 50%);*/
-  /*}*/
-
-  /*!* header-bar-icons *!*/
-  /*.sv-action-bar-item__icon {*/
-  /*  max-width: 24px;*/
-  /*  max-height: 24px;*/
-  /*}*/
-
-  /*!* page-footer-icons / add-new-question-bar *!*/
-  /*.svc-element__add-new-question {*/
-  /*  padding-right: 20px;*/
-  /*  padding-left: 20px;*/
-  /*  display: flex;*/
-  /*  justify-content: center;*/
-  /*  gap: 8px;*/
-
-  /*  svg {*/
-  /*    max-width: 30px;*/
-  /*    max-height: 30px;*/
-  /*  }*/
-  /*}*/
+  .svc-notifier--info {
+    position: fixed;
+    right: 210px;
+    bottom: 120px;
+    transform: translate(50%, 50%);
+  }
 
   /* -------------- */
   /* STRUCTURED */
@@ -97,6 +21,15 @@
     max-width: 24px;
     max-height: 24px;
   }
+  .svc-add-new-item-button__text {
+    font-size: 12pt;
+    line-height: 12pt;
+  }
+  .svc-add-new-item-button__text:hover,
+  .svc-panel__add-new-question-icon:hover {
+    color: var(--primary);
+    background-color: unset;
+  }
 
   /* WIDTH OF THE SURVEY / CONTENT */
   .sd-container-modern,
@@ -104,7 +37,14 @@
   .svc-tab-designer,
   .svc-designer__placeholder-container {
     max-width: calc(100vw - var(--sidebar-width) - var(--menubar-max-width)) !important;
-    width: calc(100vw - var(--sidebar-width) - var(--menubar-max-width));
+    width: calc(100vw - var(--sidebar-width) - var(--menubar-max-width) - 4rem) !important;
+    height: 100%;
+    justify-content: center;
+
+    .svc-scroll__scrollbar,
+    .svc-scroll__scrollbar-sizer {
+      height: 0px !important;
+    }
 
     @media only screen and (max-width: 767px) {
       width: 100vw;
@@ -119,7 +59,7 @@
   .svc-flex-column,
   .svc-side-bar,
   .svc-side-bar__wrapper,
-  .svc-side-bar__conainer-header,
+  .svc-side-bar__container-header,
   .svc-side-bar__container-content,
   .svc-side-bar__shadow,
   .svc-flyout-side-bar {
@@ -130,6 +70,7 @@
   .svc-top-bar,
   .svc-tabbed-menu,
   .svc-tabbed-menu-wrapper,
+  .svc-toolbar-wrapper,
   .sv-action-bar--default-size-mode {
     background-color: var(--overlay) !important;
   }
@@ -166,9 +107,7 @@
     }
   }
 
-  /* -------------- */
   /* CREATOR MAIN WINDOW */
-  /* -------------- */
   .sv-string-editor {
     line-break: normal;
     white-space: pre-wrap;
@@ -180,39 +119,29 @@
       line-height: 20pt;
       color: var(--primary);
     }
+
     .sd-description .sv-string-editor {
       font-size: 16pt;
       line-height: 16pt;
-    }
-    .svc-page .svc-page__content {
-      .sd-page,
-      .sd-body__page {
-        .sd-title,
-        .sd-page__title {
-          color: var(--primary);
-        }
-      }
     }
   }
 
   /* -------------- */
   /* CREATOR PAGE */
   /* -------------- */
-
   /* PAGE TITLE AND DESCRIPTION, SIZE AND COLOR */
-  .svc-page .sd-page .sd-page__title .sv-string-editor {
-    font-size: 16pt;
-    line-height: 16pt;
-  }
-  .sd-page__title {
-    color: var(--ring) !important;
-    ::before {
+  .svc-page .sd-page {
+    .sd-page__title .sv-string-editor {
+      font-size: 16pt;
+      line-height: 16pt;
+    }
+    .sd-page__title .sv-string-editor {
       color: var(--ring) !important;
     }
-  }
-  .sd-page__description .sv-string-editor {
-    font-size: 12pt;
-    line-height: 12pt;
+    .sd-page__description .sv-string-editor {
+      font-size: 12pt;
+      line-height: 12pt;
+    }
   }
 
   /*!* survey-page-action-icons / page-actions-bar *!*/
@@ -248,7 +177,7 @@
     max-height: 50px;
   }
 
-  /* SIZE AND COLOR FOR THE QUESTIONS DRAG FUNKTION */
+  /* SIZE AND COLOR FOR THE QUESTIONS DRAG FUNCTION */
   .svc-question__drag-area {
     .sv-svg-icon {
       max-height: 30px;
@@ -257,6 +186,12 @@
       width: 30px;
       opacity: 1;
     }
+    svg use {
+      fill: var(--ring);
+      opacity: 1;
+    }
+  }
+  .svc-question__drag-area:hover {
     svg use {
       fill: var(--primary);
       opacity: 1;
@@ -276,14 +211,29 @@
     padding-bottom: 0;
     margin-bottom: 0;
 
-    svg use {
-      fill: var(--primary);
-
-      :hover {
+    .svc-survey-element-toolbar,
+    .sv-action-bar,
+    .sv-action-bar--small-size-mode {
+      svg use {
         fill: var(--ring);
+      }
+      :hover {
+        svg use {
+          fill: var(--primary);
+          opacity: 1;
+        }
       }
     }
   }
+
+  /* RATING - Add Space between the Add and Remove and the Rating Icons  */
+  .sd-element__content,
+  .sd-question__content {
+    fieldset {
+      margin-left: 3rem;
+    }
+  }
+
   .svc-survey-element-toolbar {
     display: flex;
     flex-direction: row;
@@ -324,61 +274,84 @@
     display: none !important;
   }
 
-  /*!* ???????? *!*/
-  /*.sv-action-bar-item:not(.sv-action-bar-item--pressed):hover:enabled {*/
-  /*  background-color: var(--secondary-foreground) !important;*/
-  /*}*/
-  /*.sv-action-bar-item:not(.sv-action-bar-item--pressed):focus:enabled {*/
-  /*  background-color: var(--secondary-foreground) !important;*/
-  /*}*/
+  /*  FOOTER BAR WITH - QUESTION ACTION MENU */
+  .sv-action-bar,
+  .svc-footer-bar {
+    margin: 0 24px;
+    .sv-action-bar-separator {
+      display: none !important;
+    }
+    .svc-element__add-new-question {
+      justify-content: center;
+      gap: 8px;
+      svg {
+        max-width: 30px;
+        max-height: 30px;
+      }
+    }
+  }
 
-  /*!* ???????? *!*/
-  /*.svc-footer-bar {*/
-  /*  .sv-action-bar-separator {*/
-  /*    display: none !important;*/
-  /*  }*/
-
-  /*  .sv-action-bar-item,*/
-  /*  .sv-action-bar-item--icon {*/
-  /*    transform: translateX(-5px);*/
-  /*  }*/
-  /*}*/
+  .sv-action-bar-item:not(.sv-action-bar-item--pressed):hover:enabled {
+    background-color: var(--secondary-foreground) !important;
+  }
+  .sv-action-bar-item:not(.sv-action-bar-item--pressed):focus:enabled {
+    background-color: var(--primary-foreground) !important;
+  }
 
   /* -------------- */
   /* COLORED */
   /* -------------- */
+
+  /* PAGES - CHANGE COLOR HIGHLIGHTS */
+  .svc-question__content:not(.svc-page__content--new) {
+    box-shadow: unset !important;
+  }
+  .svc-page__content:hover:not(.svc-page__content--new) {
+    background-color: var(--overlay-transparent) !important;
+    box-shadow: 0 0 0 1px var(--ring-transparent) !important;
+  }
+  .svc-page__content--selected:not(.svc-page__content--new),
+  .svc-page__content--selected:focus:hover:not(.svc-page__content--new) {
+    background-color: var(--overlay-transparent) !important;
+    box-shadow: 0 0 0 1px var(--ring) !important;
+  }
+
+  /* Questions - CHANGE COLOR HIGHLIGHTS */
+  .svc-question__content:not(.svc-question__content--dragged) {
+    box-shadow: unset !important;
+  }
+  .svc-question__content:not(.svc-question__content--dragged):focus,
+  .svc-question__content--selected:not(.svc-question__content--dragged) {
+    box-shadow: 0 0 0 1px var(--ring) !important;
+  }
+  .svc-question__content:not(.svc-question__content--dragged):hover,
+  .svc-question__content--selected:not(.svc-question__content--dragged) {
+    box-shadow: 0 0 0 1px var(--ring-transparent) !important;
+  }
+
   /* COLOR THE QUESTION PANELS DARK */
+  .svc-question__adorner,
+  .svc-question__adorner--collapse-never,
   .svc-question__content {
     background-color: rgba(0, 0, 0, 0.4) !important;
   }
 
-  /* RATING - Add Space between the Add and Remove and the Rating Icons  */
-  .sd-element__content,
-  .sd-question__content {
-    fieldset {
-      margin-left: 3rem;
-    }
-  }
-
   /* BUTTONS COLORING */
-  /*.svc-btn,*/
-  /*.svc-tabbed-menu-item--selected {*/
-  /*  background-color: var(--primary) !important;*/
-  /*}*/
   .svc-btn {
+    border-radius: var(--radius);
     background-color: var(--accent);
     color: var(--input);
-
-    :hover {
-      background-color: var(--accent-light);
-    }
-    :disabled {
-      background-color: var(--accent);
-    }
-    :focus {
-      border-radius: var(--radius);
-      border: 1px solid var(--ring);
-    }
+    justify-content: center;
+  }
+  .svc-btn:hover {
+    background-color: var(--accent-light);
+  }
+  .svc-btn:disabled {
+    background-color: var(--accent);
+  }
+  .svc-btn:focus {
+    border-radius: var(--radius);
+    border: 1px solid var(--ring);
   }
 
   /* DECLARE THE DEFAULT TEXT COLOR */
@@ -418,25 +391,36 @@
     }
   }
 
-  /* TEXT INPUT COLORING */
-  .sd-text__content input {
+  .sv-dropdown_select-wrapper:disabled {
+    background-color: var(--muted);
+    max-width: 150px;
+  }
+  /* TEXT INPUT COLORING*/
+  .sd-text,
+  .sd-input,
+  .sd-comment {
     background-color: var(--accent);
     color: var(--input);
 
-    :disabled {
-      background-color: var(--muted);
-    }
-
     :focus {
       border-radius: var(--radius);
-      border: 1px solid var(--ring);
+      border: 1px solid var(--ring) !important;
     }
   }
-  /* REMOVE THE SINGLE LINE INPUT INPUT FIELD */
-  .sd-text,
-  .sd-text__content {
-    display: none !important;
+
+  .sd-text:disabled,
+  .sd-input:disabled,
+  .sd-comment:disabled,
+  /*.sd-dropdown,*/
+  .sd-multipletext__item {
+    color: var(--muted-foreground);
+    background-color: var(--muted);
   }
+  /* REMOVE THE SINGLE LINE INPUT INPUT FIELD */
+  /*.sd-text,*/
+  /*.sd-text__content {*/
+  /*  display: none !important;*/
+  /*}*/
   /* REMOVE THE WHITE BOX IN THE STANDARD MATRIX COMPONENT */
   .sd-matrix tr > td {
     background-color: transparent;
@@ -470,17 +454,26 @@
       opacity: 1;
     }
   }
-  /*.svc-matrix-cell {*/
-  /*  color: var(--primary-foreground) !important;*/
-  /*}*/
   /* fixes - icon size for the context menu buttons inside of the matrix cell components*/
-  .svc-page__content-actions {
-    .sv-svg-icon,
-    svg use {
+  .svc-page-toolbar__item,
+  .svc-page-toolbar__item--with-text {
+    .sv-svg-icon {
       max-width: 24px;
       max-height: 24px;
     }
+    svg use {
+      fill: var(--ring);
+      opacity: 1;
+    }
   }
+  .svc-page-toolbar__item:hover,
+  .svc-page-toolbar__item--with-text:hover {
+    svg use {
+      fill: var(--primary);
+      opacity: 1;
+    }
+  }
+
   .svc-matrix-cell__question-controls {
     .svc-context-button {
       display: flex;
@@ -547,10 +540,30 @@
     }
   }
 
+  .sd-completedpage h3 {
+    color: theme("colors.ciLightGrey") !important;
+  }
+
+  /* FIX COLORING AN PLACING FOR THE LOGIC TAB */
+  .svc-surface-placeholder__title {
+    color: var(--primary-foreground) !important;
+    justify-self: center;
+  }
+  .svc-surface-placeholder__description {
+    color: var(--muted-foreground) !important;
+    justify-self: center;
+  }
+  .svc-logic-tab__content .svc-logic-tab__content-action {
+    margin: 30px;
+    padding: 0 30px;
+    max-width: fit-content;
+    justify-self: center;
+  }
+
   /* FIX COLOR SET ON THE JSON EDITOR TAB */
   .svc-text,
   .svc-json-editor-tab__content-area {
-    color: var(--secondary-foreground) !important;
+    color: var(--primary-foreground) !important;
   }
   .svc-json-editor-tab__content-area {
     background-color: unset !important;
@@ -588,24 +601,68 @@
     color: var(--overlay-foreground);
     background-color: var(--overlay);
 
+    /*fix padding on the search field in the dropdown*/
+    .svc-list__filter {
+      margin: 2px;
+
+      .svc-list__input {
+        margin: 4px;
+        margin-left: 16px;
+        padding-left: 4px;
+        padding-right: 4px;
+        color: var(--secondary-foreground);
+        max-height: 32px !important;
+      }
+    }
+
+    .svc-list__filter-icon {
+      margin-top: 2px;
+      margin-bottom: 2px;
+      display: inline-flex;
+      align-items: center;
+
+      .svc-list__input {
+        display: flex;
+        top: 2px;
+        bottom: 2px;
+        left: 2px;
+        right: 2px;
+        max-height: 32px !important;
+      }
+
+      .sv-svg-icon {
+        height: 24px;
+        width: 24px;
+      }
+    }
+
+    .svc-list__item,
+    .svc-list__item--with-icon {
+      max-height: 40px;
+    }
     .svc-list {
       justify-items: start;
 
       .svc-list__item-body {
-        margin-top: 2px;
-        margin-bottom: 2px;
         display: inline-flex;
         align-items: center;
+        height: fit-content;
 
         .sv-string-viewer {
           display: inline-block;
           margin-left: 8px;
           margin-right: 8px;
+
+          color: var(--primary-foreground);
+        }
+        .sv-string-viewer:hover {
+          color: var(--primary);
         }
 
         .sv-svg-icon {
           height: 24px;
           width: 24px;
+          color: var(--ring);
         }
       }
 

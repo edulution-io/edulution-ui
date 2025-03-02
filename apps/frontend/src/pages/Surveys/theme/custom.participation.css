@@ -17,6 +17,19 @@
     font-size: 16pt;
     line-height: 16pt;
   }
+  .sd-container-modern__title {
+    opacity: 100%;
+    background-color: black !important;
+    z-index: 900;
+    border-bottom: 2px solid var(--ring);
+  }
+
+  .sd-body,
+  .sd-body--responsive {
+    max-height: calc(100vw - 38rem);
+    overflow: auto;
+    border-top: 2px solid var(--ring);
+  }
 
   .sd-page {
     .sd-page__title .sv-string-viewer {
@@ -43,12 +56,18 @@
       display: flex;
       align-items: center;
     }
+
+    .sd-rating__item {
+      background-color: var(--muted);
+    }
+    .sd-rating__item--selected {
+      background-color: var(--primary);
+    }
   }
 
   .sv-components-container-contentBottom {
     .sd-navigation__complete-btn {
       color: white;
-      background-color: var(--primary);
     }
   }
 

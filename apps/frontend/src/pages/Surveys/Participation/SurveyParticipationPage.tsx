@@ -17,7 +17,6 @@ import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticip
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import ParticipateSurvey from '@/pages/Surveys/Participation/components/ParticipateSurvey';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import { ScrollArea } from '@/components/ui/ScrollArea';
 
 interface SurveyParticipationPageProps {
   isPublic: boolean;
@@ -54,20 +53,18 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
       );
     }
     return (
-      <ScrollArea>
-        <ParticipateSurvey
-          surveyId={selectedSurvey.id!}
-          saveNo={selectedSurvey.saveNo}
-          formula={selectedSurvey.formula}
-          answer={answer}
-          setAnswer={setAnswer}
-          pageNo={pageNo}
-          setPageNo={setPageNo}
-          submitAnswer={answerSurvey}
-          className="survey-participation"
-          isPublic={isPublic}
-        />
-      </ScrollArea>
+      <ParticipateSurvey
+        surveyId={selectedSurvey.id!}
+        saveNo={selectedSurvey.saveNo}
+        formula={selectedSurvey.formula}
+        answer={answer}
+        setAnswer={setAnswer}
+        pageNo={pageNo}
+        setPageNo={setPageNo}
+        submitAnswer={answerSurvey}
+        className="survey-participation"
+        isPublic={isPublic}
+      />
     );
   }, [selectedSurvey, answer, pageNo, hasFinished]);
 

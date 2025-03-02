@@ -48,6 +48,7 @@
     --destructive-foreground: #130800;
     --ring: #735b49;
     --overlay: #ffffff;
+    --overlay-transparent: #ffffff50;
     --overlay-foreground: #ffffff;
     --muted-dialog: #eaeaea;
     --edulution-green: #88d840;
@@ -63,6 +64,7 @@
     --secondary: #d1d5db; /* früher ciLightGrey */
     --secondary-foreground: #2d2d30;
     --muted: #2d3748; /* früher ciGrey       */
+    --muted-transparent: #2d374850;
     --muted-light: #3a4557;
     --accent: #2d2d30; /* früher ciDarkGrey   */
     --accent-light: #3c3f45;
@@ -75,7 +77,9 @@
     --destructive: #ff0000; /* 0 100% 50%         */
     --destructive-foreground: #ecf7ff; /* 210 40% 98%  */
     --ring: #8ca4b6; /* 215 20.2% 65.1%    */
+    --ring-transparent: #8ca4b650;
     --overlay: #1e2938;
+    --overlay-transparent: #1e293850;
     --overlay-foreground: #ffffff;
     --muted-dialog: #1e293b;
     --edulution-green: #88d840;
