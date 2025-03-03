@@ -44,6 +44,7 @@ interface DataTableProps<TData, TValue> {
   isLoading?: boolean;
   getRowId?: (originalRow: TData) => string;
   applicationName: string;
+  initialSorting?: { id: string; desc: boolean }[];
   additionalScrollContainerOffset?: number;
   scrollContainerOffsetElementIds?: {
     headerId?: string;
@@ -68,13 +69,19 @@ const ScrollableTable = <TData, TValue>({
   additionalScrollContainerOffset = 0,
   scrollContainerOffsetElementIds = {},
   enableRowSelection,
+  initialSorting,
   tableIsUsedOnAppConfigPage = false,
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
 
   const hasPositionCol = useMemo(() => columns.some((c) => c.id === 'position'), [columns]);
 
-  const [sorting, setSorting] = useState(hasPositionCol ? [{ id: DEFAULT_TABLE_SORT_PROPERTY_KEY, desc: false }] : []);
+  const [sorting, setSorting] = useState(() => {
+    if (initialSorting && initialSorting.length > 0) {
+      return initialSorting;
+    }
+    return hasPositionCol ? [{ id: DEFAULT_TABLE_SORT_PROPERTY_KEY, desc: false }] : [];
+  });
 
   const selectedRowsMessageId = scrollContainerOffsetElementIds.selectedRowsMessageId || SELECTED_ROW_MESSAGE_ID;
   const tableHeaderId = scrollContainerOffsetElementIds.tableHeaderId || TABLE_HEADER_ID;
