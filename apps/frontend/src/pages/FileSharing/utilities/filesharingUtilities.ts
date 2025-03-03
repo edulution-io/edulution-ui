@@ -111,5 +111,3 @@ export function getElapsedTime(dateParam: Date): string {
   }
   return date.toLocaleDateString();
 }
-
-export default { parseDate };
