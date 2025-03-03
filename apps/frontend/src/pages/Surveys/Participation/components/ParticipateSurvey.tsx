@@ -11,7 +11,9 @@
  */
 
 import React from 'react';
+import { toast } from 'sonner';
 import { Survey } from 'survey-react-ui';
+import { useTranslation } from 'react-i18next';
 import { Model } from 'survey-core';
 import 'survey-core/i18n/english';
 import 'survey-core/i18n/german';
@@ -30,7 +32,7 @@ interface ParticipateSurveyProps {
   setAnswer: (answer: JSON) => void;
   pageNo: number;
   setPageNo: (pageNo: number) => void;
-  submitAnswer: (answerDto: SubmitAnswerDto) => Promise<boolean>;
+  submitAnswer: (answerDto: SubmitAnswerDto) => Promise<void>;
   updateOpenSurveys?: () => void;
   updateAnsweredSurveys?: () => void;
   isPublic?: boolean;
@@ -55,6 +57,8 @@ const ParticipateSurvey = (props: ParticipateSurveyProps) => {
 
   const { language } = useLanguage();
 
+  const { t } = useTranslation();
+
   const surveyModel = new Model(formula);
   surveyModel.applyTheme(surveyTheme);
 
@@ -78,12 +82,23 @@ const ParticipateSurvey = (props: ParticipateSurveyProps) => {
   surveyModel.onCurrentPageChanged.add(saveSurvey);
 
   surveyModel.onComplete.add(async (_sender, _options) => {
-    await submitAnswer({
-      surveyId,
-      saveNo,
-      answer,
-      isPublic,
-    });
+    try {
+      await submitAnswer({
+        surveyId,
+        saveNo,
+        answer,
+        isPublic,
+      });
+
+      toast.success(t('survey.participate.saveAnswerSuccess'));
+    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (error.response?.status === 413) {
+        toast.error(t('survey.errors.answerTooBig'));
+      } else {
+        toast.error(t('survey.errors.submitAnswerError'));
+      }
+    }
     if (!isPublic) {
       updateOpenSurveys();
       updateAnsweredSurveys();

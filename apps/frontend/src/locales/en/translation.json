@@ -493,8 +493,13 @@
       "addDescription": "Add a description",
       "expectingUserInput": "Expecting the user to answer here, ... "
     },
+    "participate": {
+      "saveAnswerSuccess": "Saved the answer."
+    },
     "errors": {
       "surveyTooBig": "The survey is too big.",
+      "answerTooBig": "The answer is too big.",
+      "submitAnswerError": "Not able to submit the answer.",
       "updateOrCreateError": "Neither able to update a survey nor to create a new one.",
       "deleteError": "Not able to delete the surveys.",
       "noAnswerError": "No answers available jet.",

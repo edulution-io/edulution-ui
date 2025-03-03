@@ -21,7 +21,7 @@ interface ParticipateSurveyStore {
   setAnswer: (answer: JSON) => void;
   pageNo: number;
   setPageNo: (pageNo: number) => void;
-  answerSurvey: (answerDto: SubmitAnswerDto) => Promise<boolean>;
+  answerSurvey: (answerDto: SubmitAnswerDto) => Promise<void>;
   isSubmitting: boolean;
   hasFinished: boolean;
   setHasFinished: (hasFinished: boolean) => void;
@@ -42,7 +42,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set) => ({
   setAnswer: (answer: JSON) => set({ answer }),
   setPageNo: (pageNo: number) => set({ pageNo }),
 
-  answerSurvey: async (answerDto: SubmitAnswerDto): Promise<boolean> => {
+  answerSurvey: async (answerDto: SubmitAnswerDto): Promise<void> => {
     const { surveyId, saveNo, answer, isPublic = false } = answerDto;
     set({ isSubmitting: true });
     try {
@@ -52,12 +52,11 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set) => ({
         await eduApi.patch<string>(SURVEYS, { surveyId, saveNo, answer });
       }
       set({ hasFinished: true });
-      return true;
     } catch (error) {
       handleApiError(error, set);
-      return false;
+      throw error;
     } finally {
-      set({ isSubmitting: false });
+      set({ hasFinished: true, isSubmitting: false });
     }
   },
 
