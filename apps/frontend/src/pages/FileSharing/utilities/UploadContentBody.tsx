@@ -21,36 +21,44 @@ import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharing
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 
 const UploadContentBody = () => {
   const { t } = useTranslation();
-
+  const { files } = useFileSharingStore();
   const [isFileSizeError, setIsFileSizeError] = useState(false);
+
+  const [duplicates, setDuplicates] = useState<File[]>([]);
 
   const { filesToUpload, setFilesToUpload } = useFileSharingDialogStore();
 
   const removeFile = (name: string) => {
     setFilesToUpload((prevFiles) => prevFiles.filter((file) => file.name !== name));
+    setDuplicates((prevDupes) => prevDupes.filter((file) => file.name !== name));
   };
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       const hasTooLargeFile = acceptedFiles.some((file) => bytesToMegabytes(file.size) > MAX_FILE_UPLOAD_SIZE);
-
-      if (hasTooLargeFile) {
-        setIsFileSizeError(true);
-      } else {
-        setIsFileSizeError(false);
-      }
+      setIsFileSizeError(hasTooLargeFile);
 
       const filteredFiles = acceptedFiles.filter((file) => bytesToMegabytes(file.size) <= MAX_FILE_UPLOAD_SIZE);
+
+      const foundDuplicates = filteredFiles.filter((file) => files.some((existing) => existing.basename === file.name));
+
+      setDuplicates((prevDupes) => {
+        const newDupes = foundDuplicates.filter(
+          (dup) => !prevDupes.some((existingDup) => existingDup.name === dup.name),
+        );
+        return [...prevDupes, ...newDupes];
+      });
 
       setFilesToUpload((prevFiles) => {
         const newFiles = filteredFiles.filter((file) => !prevFiles.some((f) => f.name === file.name));
         return [...prevFiles, ...newFiles];
       });
     },
-    [setFilesToUpload],
+    [setFilesToUpload, files],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
@@ -78,6 +86,18 @@ const UploadContentBody = () => {
       </div>
 
       <ScrollArea className="mt-2 max-h-[50vh] overflow-y-auto overflow-x-hidden rounded-xl border border-gray-600 px-2 scrollbar-thin">
+        {duplicates.length > 0 && (
+          <div className="mb-4 rounded border border-yellow-400 bg-yellow-50 p-3 text-yellow-800">
+            <p className="font-bold">{t('filesharingUpload.overwriteWarningTitle')}</p>
+            <p className="text-sm">{t('filesharingUpload.overwriteWarningDescription')}</p>
+            <ul className="ml-4 list-disc">
+              {duplicates.map((file) => (
+                <li key={file.name}>{file.name}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <ul className="my-3 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
           {filesToUpload.map((file) => (
             <li

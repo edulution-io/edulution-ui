@@ -991,7 +991,9 @@
     "dragDropClick": "Ziehen Sie Dateien hierher oder klicken Sie, um Dateien auszuwählen",
     "dropHere": "Hier loslassen",
     "filesToUpload": "Dateien zum Hochladen",
-    "limitExceeded": "Dateilimit von 5 Dateien erreicht"
+    "limitExceeded": "Dateilimit von 5 Dateien erreicht",
+    "overwriteWarningTitle": "Warnung: Datei/en existiert bereits",
+    "overwriteWarningDescription": "Die folgenden Daten werden überschrieben:"
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",

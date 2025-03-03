@@ -990,7 +990,9 @@
     "dragDropClick": "Drag files here or click to select files",
     "dropHere": "Drop here",
     "filesToUpload": "Files to upload",
-    "limitExceeded": "Reached the limit of 5 files"
+    "limitExceeded": "Reached the limit of 5 files",
+    "overwriteWarningTitle": "Overwrite warning",
+    "overwriteWarningDescription": "The file already exists. Those will be overridden!"
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",
