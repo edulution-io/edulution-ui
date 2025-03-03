@@ -14,7 +14,7 @@ import React from 'react';
 import { toast } from 'sonner';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
-import { Model } from 'survey-core';
+import { Model, CompletingEvent } from 'survey-core';
 import 'survey-core/i18n/english';
 import 'survey-core/i18n/german';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
@@ -32,7 +32,7 @@ interface ParticipateSurveyProps {
   setAnswer: (answer: JSON) => void;
   pageNo: number;
   setPageNo: (pageNo: number) => void;
-  submitAnswer: (answerDto: SubmitAnswerDto) => Promise<void>;
+  submitAnswer: (answerDto: SubmitAnswerDto, sender: Model, options: CompletingEvent) => Promise<void>;
   updateOpenSurveys?: () => void;
   updateAnsweredSurveys?: () => void;
   isPublic?: boolean;
@@ -81,24 +81,22 @@ const ParticipateSurvey = (props: ParticipateSurveyProps) => {
   surveyModel.onMatrixCellValueChanged.add(saveSurvey);
   surveyModel.onCurrentPageChanged.add(saveSurvey);
 
-  surveyModel.onComplete.add(async (_sender, _options) => {
-    try {
-      await submitAnswer({
+  surveyModel.onCompleting.add(async (sender, options) => {
+    await submitAnswer(
+      {
         surveyId,
         saveNo,
         answer,
         isPublic,
-      });
+      },
+      sender,
+      options,
+    );
+  });
 
-      toast.success(t('survey.participate.saveAnswerSuccess'));
-    } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (error.response?.status === 413) {
-        toast.error(t('survey.errors.answerTooBig'));
-      } else {
-        toast.error(t('survey.errors.submitAnswerError'));
-      }
-    }
+  surveyModel.onComplete.add((_sender, _options) => {
+    toast.success(t('survey.participate.saveAnswerSuccess'));
+
     if (!isPublic) {
       updateOpenSurveys();
       updateAnsweredSurveys();

@@ -11,17 +11,19 @@
  */
 
 import { create } from 'zustand';
+import { toast } from 'sonner';
+import { t } from 'i18next';
+import { Model, CompletingEvent } from 'survey-core';
 import { SURVEYS, PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import SubmitAnswerDto from '@libs/survey/types/api/submit-answer.dto';
 import eduApi from '@/api/eduApi';
-import handleApiError from '@/utils/handleApiError';
 
 interface ParticipateSurveyStore {
   answer: JSON;
   setAnswer: (answer: JSON) => void;
   pageNo: number;
   setPageNo: (pageNo: number) => void;
-  answerSurvey: (answerDto: SubmitAnswerDto) => Promise<void>;
+  answerSurvey: (answerDto: SubmitAnswerDto, sender: Model, options: CompletingEvent) => Promise<void>;
   isSubmitting: boolean;
   hasFinished: boolean;
   setHasFinished: (hasFinished: boolean) => void;
@@ -35,28 +37,45 @@ const ParticipateSurveyStoreInitialState: Partial<ParticipateSurveyStore> = {
   hasFinished: false,
 };
 
-const useParticipateSurveyStore = create<ParticipateSurveyStore>((set) => ({
+const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => ({
   ...(ParticipateSurveyStoreInitialState as ParticipateSurveyStore),
   reset: () => set(ParticipateSurveyStoreInitialState),
 
   setAnswer: (answer: JSON) => set({ answer }),
   setPageNo: (pageNo: number) => set({ pageNo }),
 
-  answerSurvey: async (answerDto: SubmitAnswerDto): Promise<void> => {
+  answerSurvey: async (answerDto: SubmitAnswerDto, sender: Model, options: CompletingEvent): Promise<void> => {
     const { surveyId, saveNo, answer, isPublic = false } = answerDto;
+    const { isSubmitting } = get();
+    if (isSubmitting) {
+      return;
+    }
     set({ isSubmitting: true });
+
+    // eslint-disable-next-line no-param-reassign
+    options.allow = false;
+
     try {
       if (isPublic) {
-        await eduApi.post<string>(PUBLIC_SURVEYS, { surveyId, saveNo, answer });
+        await eduApi.post(PUBLIC_SURVEYS, { surveyId, saveNo, answer });
       } else {
-        await eduApi.patch<string>(SURVEYS, { surveyId, saveNo, answer });
+        await eduApi.patch(SURVEYS, { surveyId, saveNo, answer });
       }
+
       set({ hasFinished: true });
+
+      // eslint-disable-next-line no-param-reassign
+      options.allow = true;
+      sender.doComplete();
     } catch (error) {
-      handleApiError(error, set);
-      throw error;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (error.response?.status === 413) {
+        toast.error(t('survey.errors.answerTooBig'));
+      } else {
+        toast.error(t('survey.errors.submitAnswerError'));
+      }
     } finally {
-      set({ hasFinished: true, isSubmitting: false });
+      set({ isSubmitting: false });
     }
   },
 
