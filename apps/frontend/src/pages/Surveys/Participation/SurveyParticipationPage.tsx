@@ -62,7 +62,6 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
         pageNo={pageNo}
         setPageNo={setPageNo}
         submitAnswer={answerSurvey}
-        className="survey-participation"
         isPublic={isPublic}
       />
     );

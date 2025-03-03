@@ -1,8 +1,4 @@
 .survey-editor {
-  /*.sd-element {*/
-  /*  padding: 5px;*/
-  /*}*/
-
   .svc-notifier--info {
     position: fixed;
     right: 210px;
@@ -11,62 +7,10 @@
   }
 
   /* -------------- */
-  /* STRUCTURED */
+  /* TOP-BAR */
   /* -------------- */
 
-  /* FIX HUGE ICONS */
-  .sv-svg-icon,
-  .svc-panel__add-new-question-icon,
-  svg use {
-    max-width: 24px;
-    max-height: 24px;
-  }
-  .svc-add-new-item-button__text {
-    font-size: 12pt;
-    line-height: 12pt;
-  }
-  .svc-add-new-item-button__text:hover,
-  .svc-panel__add-new-question-icon:hover {
-    color: var(--primary);
-    background-color: unset;
-  }
-
-  /* WIDTH OF THE SURVEY / CONTENT */
-  .sd-container-modern,
-  .sd-container-modern--static,
-  .svc-tab-designer,
-  .svc-designer__placeholder-container {
-    max-width: calc(100vw - var(--sidebar-width) - var(--menubar-max-width)) !important;
-    width: calc(100vw - var(--sidebar-width) - var(--menubar-max-width) - 4rem) !important;
-    height: 100%;
-    justify-content: center;
-
-    .svc-scroll__scrollbar,
-    .svc-scroll__scrollbar-sizer {
-      height: 0px !important;
-    }
-
-    @media only screen and (max-width: 767px) {
-      width: 100vw;
-    }
-  }
-  .svc-designer__placeholder-container {
-    height: 800px;
-  }
-
-  /* REMOVE WHITE BACKGROUND */
-  .svc-flex-row,
-  .svc-flex-column,
-  .svc-side-bar,
-  .svc-side-bar__wrapper,
-  .svc-side-bar__container-header,
-  .svc-side-bar__container-content,
-  .svc-side-bar__shadow,
-  .svc-flyout-side-bar {
-    background-color: unset !important;
-  }
-
-  /*  TOP BAR WITH - TABBED MENU */
+  /*  fixes color and size of the topbar and the tabbed menu and the toolbar (undo-, redo- buttons) */
   .svc-top-bar,
   .svc-tabbed-menu,
   .svc-tabbed-menu-wrapper,
@@ -100,19 +44,75 @@
     display: flex;
     align-items: center;
   }
-  /* REMOVE THE BAR ON TOP FOR MOBILE VIEW */
+
+  /* no topbar for the mobile view */
   @media only screen and (max-width: 951px) {
     .svc-top-bar {
       display: none !important;
     }
   }
 
+  /* -------------- */
   /* CREATOR MAIN WINDOW */
+  /* -------------- */
+
+  /* fixes huge icons */
+  .sv-svg-icon,
+  .svc-panel__add-new-question-icon,
+  svg use {
+    max-width: 24px;
+    max-height: 24px;
+  }
+  .svc-add-new-item-button__text {
+    font-size: 12pt;
+    line-height: 12pt;
+  }
+  .svc-add-new-item-button__text:hover,
+  .svc-panel__add-new-question-icon:hover {
+    color: var(--primary);
+    background-color: unset;
+  }
+
+  /* width of the content / creator / survey */
+  .sd-container-modern,
+  .sd-container-modern--static,
+  .svc-tab-designer,
+  .svc-designer__placeholder-container {
+    max-width: calc(100vw - var(--sidebar-width) - var(--menubar-max-width)) !important;
+    width: calc(100vw - var(--sidebar-width) - var(--menubar-max-width) - 4rem) !important;
+    height: 100%;
+    justify-content: center;
+
+    .svc-scroll__scrollbar,
+    .svc-scroll__scrollbar-sizer {
+      height: 0px !important;
+    }
+
+    @media only screen and (max-width: 767px) {
+      width: 100vw;
+    }
+  }
+  .svc-designer__placeholder-container {
+    height: 800px;
+  }
+
+  /* removes white background on the creator panels */
+  .svc-flex-row,
+  .svc-flex-column,
+  .svc-side-bar,
+  .svc-side-bar__wrapper,
+  .svc-side-bar__container-header,
+  .svc-side-bar__container-content,
+  .svc-side-bar__shadow,
+  .svc-flyout-side-bar {
+    background-color: unset !important;
+  }
+
+  /* survey title and description colors and sizes */
   .sv-string-editor {
     line-break: normal;
     white-space: pre-wrap;
   }
-  /* SURVEY TITLE AND DESCRIPTION, SIZE AND COLOR */
   .svc-designer-header {
     .sd-title .sv-string-editor {
       font-size: 20pt;
@@ -129,7 +129,8 @@
   /* -------------- */
   /* CREATOR PAGE */
   /* -------------- */
-  /* PAGE TITLE AND DESCRIPTION, SIZE AND COLOR */
+
+  /* page title and description colors and sizes */
   .svc-page .sd-page {
     .sd-page__title .sv-string-editor {
       font-size: 16pt;
@@ -144,7 +145,7 @@
     }
   }
 
-  /*!* survey-page-action-icons / page-actions-bar *!*/
+  /* survey-page-action-icons / page-actions-bar */
   .svc-page-toolbar {
     display: flex;
     flex-direction: row;
@@ -177,7 +178,7 @@
     max-height: 50px;
   }
 
-  /* SIZE AND COLOR FOR THE QUESTIONS DRAG FUNCTION */
+  /* question drag icon colors and size */
   .svc-question__drag-area {
     .sv-svg-icon {
       max-height: 30px;
@@ -226,7 +227,7 @@
     }
   }
 
-  /* RATING - Add Space between the Add and Remove and the Rating Icons  */
+  /* rating component - add space between the options  */
   .sd-element__content,
   .sd-question__content {
     fieldset {
@@ -266,7 +267,7 @@
     margin-right: 3rem;
   }
 
-  /* HIDDEN */
+  /* hidden */
   .svc-creator__non-commercial,
   .svc-creator__non-commercial-text {
     visibility: hidden;
@@ -274,7 +275,7 @@
     display: none !important;
   }
 
-  /*  FOOTER BAR WITH - QUESTION ACTION MENU */
+  /*  footer bar - add question button */
   .sv-action-bar,
   .svc-footer-bar {
     margin: 0 24px;
@@ -302,7 +303,7 @@
   /* COLORED */
   /* -------------- */
 
-  /* PAGES - CHANGE COLOR HIGHLIGHTS */
+  /* page color highlights */
   .svc-question__content:not(.svc-page__content--new) {
     box-shadow: unset !important;
   }
@@ -316,7 +317,7 @@
     box-shadow: 0 0 0 1px var(--ring) !important;
   }
 
-  /* Questions - CHANGE COLOR HIGHLIGHTS */
+  /* questions color highlights  */
   .svc-question__content:not(.svc-question__content--dragged) {
     box-shadow: unset !important;
   }
@@ -329,14 +330,14 @@
     box-shadow: 0 0 0 1px var(--ring-transparent) !important;
   }
 
-  /* COLOR THE QUESTION PANELS DARK */
+  /* question panels dark background */
   .svc-question__adorner,
   .svc-question__adorner--collapse-never,
   .svc-question__content {
     background-color: rgba(0, 0, 0, 0.4) !important;
   }
 
-  /* BUTTONS COLORING */
+  /* buttons coloring */
   .svc-btn {
     border-radius: var(--radius);
     background-color: var(--accent);
@@ -354,12 +355,12 @@
     border: 1px solid var(--ring);
   }
 
-  /* DECLARE THE DEFAULT TEXT COLOR */
+  /* default text color */
   .svc-string-editor__input {
     color: var(--primary-foreground) !important;
   }
 
-  /* STYLING INPUTS WITHOUT INPUT COMPONENTS */
+  /* input without real input component (titles, descriptions, etc.) */
   .svc-string-editor {
     .svc-string-editor__content {
       .svc-string-editor__input {
@@ -395,7 +396,7 @@
     background-color: var(--muted);
     max-width: 150px;
   }
-  /* TEXT INPUT COLORING*/
+  /* text, comment, and multitext input component */
   .sd-text,
   .sd-input,
   .sd-comment {
@@ -407,25 +408,25 @@
       border: 1px solid var(--ring) !important;
     }
   }
-
   .sd-text:disabled,
   .sd-input:disabled,
   .sd-comment:disabled,
-  /*.sd-dropdown,*/
   .sd-multipletext__item {
     color: var(--muted-foreground);
     background-color: var(--muted);
   }
-  /* REMOVE THE SINGLE LINE INPUT INPUT FIELD */
-  /*.sd-text,*/
-  /*.sd-text__content {*/
-  /*  display: none !important;*/
-  /*}*/
-  /* REMOVE THE WHITE BOX IN THE STANDARD MATRIX COMPONENT */
+  /* text, comment component remove single line input field */
+  .sd-text,
+  .sd-text__content,
+  .sd-comment {
+    display: none !important;
+  }
+
+  /* fixes white color on matrices first cells  */
   .sd-matrix tr > td {
     background-color: transparent;
   }
-  /* DYNAMIC MATRIX INPUT COLORING */
+  /* dynamic matrix - fixes input coloring */
   .svc-matrix-cell .sd-dropdown--empty {
     background-color: var(--accent);
     color: var(--input);
@@ -492,7 +493,7 @@
       }
     }
   }
-  /* RATING AND RANKING COLORING */
+  /* rating, and ranking component colors */
   .sd-rating__item-star svg {
     fill: var(--primary) !important;
   }
@@ -524,7 +525,7 @@
     background-color: var(--accent-light);
   }
 
-  /* FIX THE FILE UPLOAD COMPONENT */
+  /* upload component colors*/
   .sd-file__decorator {
     .sv-string-editor,
     .sd-file__choose-btn,
@@ -544,7 +545,7 @@
     color: theme("colors.ciLightGrey") !important;
   }
 
-  /* FIX COLORING AN PLACING FOR THE LOGIC TAB */
+  /* logic tab view coloring */
   .svc-surface-placeholder__title {
     color: var(--primary-foreground) !important;
     justify-self: center;
@@ -560,7 +561,7 @@
     justify-self: center;
   }
 
-  /* FIX COLOR SET ON THE JSON EDITOR TAB */
+  /* json tab view coloring */
   .svc-text,
   .svc-json-editor-tab__content-area {
     color: var(--primary-foreground) !important;
@@ -601,7 +602,6 @@
     color: var(--overlay-foreground);
     background-color: var(--overlay);
 
-    /*fix padding on the search field in the dropdown*/
     .svc-list__filter {
       margin: 2px;
 
@@ -671,29 +671,4 @@
       }
     }
   }
-
-  /* FIX THE TOOLBOX STYLING */
-  /* TH TOOLBOX GOT DEACTIVATED */
-  /*.svc-toolbox__item-title {*/
-  /*  max-height: 30px;*/
-  /*  padding: 2rem;*/
-  /*}*/
-  /*.svc-toolbox__item-title:hover {*/
-  /*  background: var(--secondary-foreground) !important;*/
-  /*  border-radius: var(--radius);*/
-  /*}*/
-  /*.svc-toolbox__item-subtype {*/
-  /*  max-height: 50px;*/
-  /*}*/
-  /*.svc-toolbox__item-title {*/
-  /*  padding: var(--primary-foreground);*/
-  /*}*/
-
-  /*.sv-list__item-body {*/
-  /*  color: var(--primary-foreground) !important;*/
-  /*}*/
-  /*.sv-list__item--selected.sv-list__item--group > .sv-list__item-body,*/
-  /*.sv-list__item.sv-list__item--selected:hover.sv-list__item--group > .sv-list__item-body {*/
-  /*  color: var(--primary-foreground) !important;*/
-  /*}*/
 }

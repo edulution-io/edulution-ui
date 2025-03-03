@@ -3,12 +3,6 @@
 @tailwind utilities;
 
 .survey-result-table {
-  .sa-visualizer__content {
-    color: var(--foreground);
-  }
-
-  /*background-color: var(--overlay);*/
-
   .sa-commercial {
     visibility: hidden;
     height: 0px;
@@ -24,13 +18,17 @@
     color: var(--foreground) !important;
   }
 
-  .tabulator-cell {
-    color: var(--foreground) !important;
+  .sa-visualizer__content {
+    color: var(--foreground);
   }
 
   .surveyDashboardContainer {
     overflow-x: auto;
     overflow-y: auto;
     width: 100%;
+  }
+
+  .tabulator-cell {
+    color: var(--foreground) !important;
   }
 }

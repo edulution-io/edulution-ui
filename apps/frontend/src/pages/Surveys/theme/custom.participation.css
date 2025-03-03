@@ -3,10 +3,13 @@
 @tailwind utilities;
 
 .survey-participation {
-  /* Structured */
   .sv-string-viewer {
     line-break: normal;
     white-space: pre-wrap;
+  }
+  .sd-container-modern__title {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-bottom: 1px solid var(--ring);
   }
   .sd-header__text .sd-title .sv-string-viewer {
     font-size: 20pt;
@@ -17,18 +20,11 @@
     font-size: 16pt;
     line-height: 16pt;
   }
-  .sd-container-modern__title {
-    opacity: 100%;
-    background-color: black !important;
-    z-index: 900;
-    border-bottom: 2px solid var(--ring);
-  }
 
   .sd-body,
   .sd-body--responsive {
-    max-height: calc(100vw - 38rem);
+    height: calc(100vh - 120px);
     overflow: auto;
-    border-top: 2px solid var(--ring);
   }
 
   .sd-page {
@@ -67,11 +63,11 @@
 
   .sv-components-container-contentBottom {
     .sd-navigation__complete-btn {
-      color: white;
+      color: var(--primary-foreground);
     }
   }
 
   .sd-completedpage h3 {
-    color: theme("colors.ciLightGrey") !important;
+    color: var(--primary-foreground) !important;
   }
 }
