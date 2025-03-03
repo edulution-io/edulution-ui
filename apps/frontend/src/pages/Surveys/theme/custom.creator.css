@@ -6,11 +6,6 @@
     transform: translate(50%, 50%);
   }
 
-  /* -------------- */
-  /* TOP-BAR */
-  /* -------------- */
-
-  /*  fixes color and size of the topbar and the tabbed menu and the toolbar (undo-, redo- buttons) */
   .svc-top-bar,
   .svc-tabbed-menu,
   .svc-tabbed-menu-wrapper,
@@ -45,18 +40,12 @@
     align-items: center;
   }
 
-  /* no topbar for the mobile view */
   @media only screen and (max-width: 951px) {
     .svc-top-bar {
       display: none !important;
     }
   }
 
-  /* -------------- */
-  /* CREATOR MAIN WINDOW */
-  /* -------------- */
-
-  /* fixes huge icons */
   .sv-svg-icon,
   .svc-panel__add-new-question-icon,
   svg use {
@@ -96,7 +85,6 @@
     height: 800px;
   }
 
-  /* removes white background on the creator panels */
   .svc-flex-row,
   .svc-flex-column,
   .svc-side-bar,
@@ -108,7 +96,6 @@
     background-color: unset !important;
   }
 
-  /* survey title and description colors and sizes */
   .sv-string-editor {
     line-break: normal;
     white-space: pre-wrap;
@@ -126,11 +113,6 @@
     }
   }
 
-  /* -------------- */
-  /* CREATOR PAGE */
-  /* -------------- */
-
-  /* page title and description colors and sizes */
   .svc-page .sd-page {
     .sd-page__title .sv-string-editor {
       font-size: 16pt;
@@ -145,7 +127,6 @@
     }
   }
 
-  /* survey-page-action-icons / page-actions-bar */
   .svc-page-toolbar {
     display: flex;
     flex-direction: row;
@@ -178,7 +159,6 @@
     max-height: 50px;
   }
 
-  /* question drag icon colors and size */
   .svc-question__drag-area {
     .sv-svg-icon {
       max-height: 30px;
@@ -199,7 +179,6 @@
     }
   }
 
-  /* survey-element-action-icons / question-actions-bar */
   .sd-question__content {
     padding-bottom: 20px;
   }
@@ -267,7 +246,6 @@
     margin-right: 3rem;
   }
 
-  /* hidden */
   .svc-creator__non-commercial,
   .svc-creator__non-commercial-text {
     visibility: hidden;
@@ -275,7 +253,6 @@
     display: none !important;
   }
 
-  /*  footer bar - add question button */
   .sv-action-bar,
   .svc-footer-bar {
     margin: 0 24px;
@@ -298,10 +275,6 @@
   .sv-action-bar-item:not(.sv-action-bar-item--pressed):focus:enabled {
     background-color: var(--primary-foreground) !important;
   }
-
-  /* -------------- */
-  /* COLORED */
-  /* -------------- */
 
   /* page color highlights */
   .svc-question__content:not(.svc-page__content--new) {
@@ -337,7 +310,6 @@
     background-color: rgba(0, 0, 0, 0.4) !important;
   }
 
-  /* buttons coloring */
   .svc-btn {
     border-radius: var(--radius);
     background-color: var(--accent);
@@ -355,7 +327,6 @@
     border: 1px solid var(--ring);
   }
 
-  /* default text color */
   .svc-string-editor__input {
     color: var(--primary-foreground) !important;
   }
@@ -396,7 +367,6 @@
     background-color: var(--muted);
     max-width: 150px;
   }
-  /* text, comment, and multitext input component */
   .sd-text,
   .sd-input,
   .sd-comment {
@@ -415,7 +385,6 @@
     color: var(--muted-foreground);
     background-color: var(--muted);
   }
-  /* text, comment component remove single line input field */
   .sd-text,
   .sd-text__content,
   .sd-comment {
@@ -426,7 +395,7 @@
   .sd-matrix tr > td {
     background-color: transparent;
   }
-  /* dynamic matrix - fixes input coloring */
+
   .svc-matrix-cell .sd-dropdown--empty {
     background-color: var(--accent);
     color: var(--input);
@@ -440,7 +409,6 @@
       border: 1px solid var(--ring);
     }
   }
-  /* fixes - black (on dark) color of the addRow button text for the dynamic matrix */
   .sd-matrixdynamic__footer {
     color: var(--primary-foreground);
     :disabled {
@@ -448,14 +416,14 @@
       opacity: 1;
     }
   }
-  /* fixes - bright gray (on white) color of the addRow button text for the dynamic matrix */
   .sd-table__cell-action--remove-row {
     .sd-matrixdynamic__remove-btn {
       fill: var(--secondary-foreground);
       opacity: 1;
     }
   }
-  /* fixes - icon size for the context menu buttons inside of the matrix cell components*/
+
+  /* fixes - icon size for the context menu buttons (matrix cell) */
   .svc-page-toolbar__item,
   .svc-page-toolbar__item--with-text {
     .sv-svg-icon {
@@ -493,7 +461,7 @@
       }
     }
   }
-  /* rating, and ranking component colors */
+
   .sd-rating__item-star svg {
     fill: var(--primary) !important;
   }
@@ -525,7 +493,6 @@
     background-color: var(--accent-light);
   }
 
-  /* upload component colors*/
   .sd-file__decorator {
     .sv-string-editor,
     .sd-file__choose-btn,
@@ -561,7 +528,6 @@
     justify-self: center;
   }
 
-  /* json tab view coloring */
   .svc-text,
   .svc-json-editor-tab__content-area {
     color: var(--primary-foreground) !important;
@@ -570,11 +536,6 @@
     background-color: unset !important;
   }
 
-  /* -------------- */
-  /* STUFF */
-  /* -------------- */
-
-  /* FIX THE POPUP CONTEXT MENU STYLING */
   .sv-popup__body-header {
     padding: 30px 30px 5px 30px;
     color: var(--overlay-foreground) !important;
