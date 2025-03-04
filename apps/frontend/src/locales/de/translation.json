@@ -195,7 +195,8 @@
     "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten",
     "automaticLoginFailed": "Automatischer Login fehlgeschlagen",
     "uploadOrFetchAttachmentFailed": "Fehler beim Hochladen des Anhangs",
-    "fileGenerationFailed": "Datei konnte nicht generiert werden"
+    "fileGenerationFailed": "Datei konnte nicht generiert werden",
+    "requestTooLarge": "Deine Anfrage ist zu groß. Falls du Medien angehängt hast, versuche diese zu komprimieren oder zu entfernen"
   },
   "conferences": {
     "errors": {
@@ -498,8 +499,6 @@
       "saveAnswerSuccess": "Die Antwort wurde gespeichert."
     },
     "errors": {
-      "surveyTooBig": "Die Umfrage ist zu groß.",
-      "answerTooBig": "Die Antwort ist zu groß.",
       "submitAnswerError": "Die Antwort konnte nicht gespeichert werden.",
       "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden.",
       "deleteError": "Die Umfragen konnten nicht gelöscht werden.",
