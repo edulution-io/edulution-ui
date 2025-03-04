@@ -158,59 +158,74 @@
 
     max-height: 50px;
   }
+  .svc-question__content {
+    padding-bottom: 60px;
 
-  .svc-question__drag-area {
-    .sv-svg-icon {
-      max-height: 30px;
-      height: 30px;
-      max-width: 30px;
-      width: 30px;
-      opacity: 1;
+    .sd-selectbase {
+      margin: 0 !important;
+      padding: 0 !important;
     }
-    svg use {
-      fill: var(--ring);
-      opacity: 1;
-    }
-  }
-  .svc-question__drag-area:hover {
-    svg use {
-      fill: var(--primary);
-      opacity: 1;
-    }
-  }
 
-  .sd-question__content {
-    padding-bottom: 20px;
-  }
-  .svc-question__content-actions {
-    position: absolute;
-    bottom: 5px;
-    min-height: 60px;
-    max-height: 60px;
-    height: 60px;
-    padding-bottom: 0;
-    margin-bottom: 0;
-
-    .svc-survey-element-toolbar,
-    .sv-action-bar,
-    .sv-action-bar--small-size-mode {
+    .svc-question__drag-area {
+      .sv-svg-icon {
+        max-height: 30px;
+        height: 30px;
+        max-width: 30px;
+        width: 30px;
+        opacity: 1;
+      }
       svg use {
         fill: var(--ring);
+        opacity: 1;
       }
-      :hover {
+    }
+    .svc-question__drag-area:hover {
+      svg use {
+        fill: var(--primary);
+        opacity: 1;
+      }
+    }
+
+    .svc-question__content-actions {
+      position: absolute;
+      bottom: 5px;
+      min-height: 45px;
+      max-height: 45px;
+      height: 45px;
+      padding-bottom: 0;
+      margin-bottom: 0;
+
+      .svc-survey-element-toolbar,
+      .sv-action-bar,
+      .sv-action-bar--small-size-mode {
         svg use {
-          fill: var(--primary);
-          opacity: 1;
+          fill: var(--ring);
+        }
+        :hover {
+          svg use {
+            fill: var(--primary);
+            opacity: 1;
+          }
         }
       }
     }
-  }
 
-  /* rating component - add space between the options  */
-  .sd-element__content,
-  .sd-question__content {
-    fieldset {
-      margin-left: 3rem;
+    /* rating component - add space between the options  */
+    .sd-element__content,
+    .sd-question__content {
+      padding: 0 !important;
+      margin: 0 !important;
+
+      fieldset {
+        margin-left: 3rem;
+      }
+    }
+    /* imagepicker component - remove spacing on the inner image picker selection panel */
+    .svc-question__content--imagepicker {
+      .sd-imagepicker {
+        margin: 0 !important;
+        padding: 0 !important;
+      }
     }
   }
 
@@ -255,7 +270,7 @@
 
   .sv-action-bar,
   .svc-footer-bar {
-    margin: 0 24px;
+    margin: 0 30px;
     .sv-action-bar-separator {
       display: none !important;
     }
@@ -372,11 +387,10 @@
   .sd-comment {
     background-color: var(--accent);
     color: var(--input);
-
-    :focus {
-      border-radius: var(--radius);
-      border: 1px solid var(--ring) !important;
-    }
+  }
+  .sd-input:focus {
+    border-radius: var(--radius);
+    border: 1px solid var(--ring) !important;
   }
   .sd-text:disabled,
   .sd-input:disabled,
@@ -389,6 +403,13 @@
   .sd-text__content,
   .sd-comment {
     display: none !important;
+  }
+
+  /* fixes white color boolean switch  */
+  .sd-boolean,
+  .sd-boolean--indeterminate {
+    background-color: var(--accent);
+    color: var(--primary-foreground);
   }
 
   /* fixes white color on matrices first cells  */
@@ -536,100 +557,153 @@
     background-color: unset !important;
   }
 
-  .sv-popup__body-header {
-    padding: 30px 30px 5px 30px;
-    color: var(--overlay-foreground) !important;
+  .sv-popup__container {
+    background-color: var(--overlay);
+    border-radius: 3px;
+    border: 1px solid var(--ring);
   }
   .sv-popup__body-content {
     background-color: var(--overlay) !important;
   }
-  .svc-question__content--in-popup {
-    padding: 0 30px;
-    background-color: var(--overlay) !important;
-  }
   .sv-popup__scrolling-content {
-    padding: 0 10px;
-  }
-  .sv-popup__body-footer {
+    padding: 0;
     margin: 0;
-    padding: 20px 30px 30px 30px;
-    background-color: var(--overlay) !important;
   }
-  .sv-popup__content {
-    .svc-question__content {
-      color: var(--overlay-foreground);
-      background-color: var(--overlay);
+
+  .sv-popup__body-header {
+    padding: 30px 30px 0 30px;
+    color: var(--overlay-foreground) !important;
+  }
+  .sv-popup__body-content {
+    .sd-element__content.sd-question__content {
+      padding: 0;
+      margin: 0;
     }
+  }
+
+  .sv-popup__scrolling-content {
+    padding: 0;
+  }
+  .sv-popup__body-content,
+  .sv-popup__content {
+    padding: 0;
+
     color: var(--overlay-foreground);
     background-color: var(--overlay);
 
-    .svc-list__filter {
-      margin: 2px;
-
-      .svc-list__input {
-        margin: 4px;
-        margin-left: 16px;
-        padding-left: 4px;
-        padding-right: 4px;
-        color: var(--secondary-foreground);
-        max-height: 32px !important;
-      }
-    }
-
-    .svc-list__filter-icon {
-      margin-top: 2px;
-      margin-bottom: 2px;
-      display: inline-flex;
-      align-items: center;
-
-      .svc-list__input {
-        display: flex;
-        top: 2px;
-        bottom: 2px;
-        left: 2px;
-        right: 2px;
-        max-height: 32px !important;
-      }
-
-      .sv-svg-icon {
-        height: 24px;
-        width: 24px;
-      }
-    }
-
-    .svc-list__item,
-    .svc-list__item--with-icon {
-      max-height: 40px;
-    }
-    .svc-list {
+    .svc-list__container {
       justify-items: start;
 
-      .svc-list__item-body {
+      .svc-list__empty-container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+      }
+
+      .svc-list__filter {
+        margin: 4px 2px;
+        height: 36px;
         display: inline-flex;
         align-items: center;
-        height: fit-content;
+        .svc-list__filter-icon {
+          margin-left: 4px;
 
-        .sv-string-viewer {
-          display: inline-block;
+          .sv-svg-icon {
+            height: 24px;
+            width: 24px;
+          }
+          svg use {
+            color: var(--ring);
+            fill: var(--ring);
+          }
+        }
+        .svc-list__input {
           margin-left: 8px;
-          margin-right: 8px;
+          padding: 2px 4px;
 
+          display: flex;
+          top: 2px;
+          bottom: 2px;
+          left: 2px;
+          right: 2px;
+          max-height: 32px !important;
+          background-color: var(--accent);
           color: var(--primary-foreground);
         }
-        .sv-string-viewer:hover {
-          color: var(--primary);
+        input:hover {
+          border-radius: var(--radius) !important;
+          border: 1px solid var(--ring-transparent) !important;
         }
-
-        .sv-svg-icon {
-          height: 24px;
-          width: 24px;
-          color: var(--ring);
+        input:focus {
+          outline: 0;
+          box-shadow: none;
+          border-radius: var(--radius) !important;
+          border: 1px solid var(--ring) !important;
         }
       }
 
-      .svc-list-item__marker-icon {
-        justify-self: end;
+      .svc-list__item,
+      .svc-list__item--with-icon {
+        display: flex;
+        justify-content: start;
+        max-height: 40px;
+        height: 32px;
+
+        margin: 0 8px;
+        padding: 0;
+
+        .svc-list__item-body {
+          display: inline-flex;
+          align-items: center;
+          max-height: 28px;
+          line-height: 28px;
+
+          .sv-string-viewer {
+            max-height: 28px;
+            margin-left: 8px;
+            color: var(--primary-foreground);
+          }
+          .sv-string-viewer:hover {
+            color: var(--primary);
+          }
+          .sv-svg-icon {
+            height: 24px;
+            width: 24px;
+          }
+          svg use {
+            color: var(--ring);
+            fill: var(--ring);
+          }
+        }
+        .svc-list__item-body:hover {
+          .sv-string-viewer:hover {
+            color: var(--primary);
+          }
+          svg use {
+            color: var(--primary);
+            fill: var(--primary);
+          }
+        }
+
+        .svc-list-item__marker-icon {
+          justify-self: end;
+        }
       }
     }
+
+    .sv-popup__body-footer {
+      justify-content: end;
+      margin-top: 16px;
+      padding: 0 0 30px 0;
+    }
+  }
+  .svc-question__content--in-popup.svc-question__content {
+    margin: 0;
+    padding: 0 30px 0 30px;
+    background-color: var(--overlay) !important;
+  }
+  .svc-question__content--in-popup.svc-question__content:hover {
+    border: none !important;
+    box-shadow: none !important;
   }
 }

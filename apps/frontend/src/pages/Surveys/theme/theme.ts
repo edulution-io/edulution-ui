@@ -94,7 +94,7 @@ const surveyTheme: ITheme = {
     '--sjs-article-font-default-paragraphIndent': '0px',
     '--sjs-article-font-default-textCase': 'none',
     '--sjs-general-backcolor-dim': 'var(--accent)',
-    '--sjs-primary-backcolor': 'var(--ring)',
+    '--sjs-primary-backcolor': 'var(--primary)',
     '--sjs-primary-backcolor-dark': 'var(--muted)',
     '--sjs-primary-backcolor-light': 'var(--muted-light)',
     '--sjs-primary-forecolor': 'var(--muted-foreground)',

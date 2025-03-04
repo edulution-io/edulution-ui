@@ -54,10 +54,14 @@
     }
 
     .sd-rating__item {
-      background-color: var(--muted);
+      background-color: var(--accent);
     }
     .sd-rating__item--selected {
       background-color: var(--primary);
+      border-color: var(--input);
+      .sv-string-viewer {
+        color: var(--primary-foreground);
+      }
     }
   }
 
