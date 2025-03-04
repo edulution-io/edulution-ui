@@ -15,7 +15,7 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { Button } from '@/components/shared/Button';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useDeleteSurveyStore from '@/pages/Surveys/Tables/dialogs/useDeleteSurveyStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import ItemDialogList from '@/components/shared/ItemDialogList';

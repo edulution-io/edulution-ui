@@ -14,37 +14,36 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import cn from '@libs/common/utils/className';
 
-interface CircleLoaderProps {
+interface HorizontalLoaderProps {
   className?: string;
   transitionDurationMS?: number;
   height?: string;
   width?: string;
+  barWidth?: string;
+  barColor?: string;
+  backgroundColor?: string;
 }
 
-const CircleLoader = ({
+const HorizontalLoader = ({
   className,
-  transitionDurationMS = 1000,
-  height = 'h-12',
-  width = 'w-12',
-}: CircleLoaderProps) => (
-  <div className={cn('relative box-border', height, width, className)}>
+  transitionDurationMS = 4000,
+  height = 'h-1',
+  width = 'w-full',
+  barWidth = 'w-1/2',
+  barColor = 'bg-primary',
+  backgroundColor = 'bg-muted-foreground',
+}: HorizontalLoaderProps) => (
+  <div className={cn('relative overflow-hidden rounded-xl', height, width, backgroundColor, className)}>
     <motion.span
-      className={cn(
-        'absolute left-0 top-0 z-30 box-border block rounded-full border-4 border-t-4 border-gray-300 border-t-blue-500',
-        height,
-        width,
-      )}
-      animate={{ rotate: 360 }}
+      className={cn('absolute bottom-0 left-0 top-0', barWidth, barColor)}
+      animate={{ x: ['0%', '100%', '0%'] }}
       transition={{
-        loop: Infinity,
-        ease: 'linear',
-        duration: transitionDurationMS,
-      }}
-      style={{
-        animation: `spin ${transitionDurationMS / 1000}s linear infinite`,
+        duration: transitionDurationMS / 1000,
+        repeat: Infinity,
+        ease: 'easeInOut',
       }}
     />
   </div>
 );
 
-export default CircleLoader;
+export default HorizontalLoader;

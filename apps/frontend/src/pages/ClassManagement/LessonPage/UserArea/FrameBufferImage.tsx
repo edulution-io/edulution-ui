@@ -10,11 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useInterval } from 'usehooks-ts';
 import { MdCropFree } from 'react-icons/md';
 import { useTranslation } from 'react-i18next';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
 import FullScreenImage from '@/components/ui/FullScreenImage';
 import Avatar from '@/components/shared/Avatar';

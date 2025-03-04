@@ -17,7 +17,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { Button } from '@/components/shared/Button';
 import OtpInput from '@/components/shared/OtpInput';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 type SetupMfaDialogProps = {
   isOpen: boolean;

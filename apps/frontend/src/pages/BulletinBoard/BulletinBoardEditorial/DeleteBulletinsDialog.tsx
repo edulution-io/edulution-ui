@@ -15,7 +15,7 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import ItemDialogList from '@/components/shared/ItemDialogList';
 
 interface DeleteBulletinsDialogProps {

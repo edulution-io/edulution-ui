@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { Button } from '@/components/shared/Button';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 interface AddAppConfigDialogProps {
   handleDeleteSettingsItem: () => void;

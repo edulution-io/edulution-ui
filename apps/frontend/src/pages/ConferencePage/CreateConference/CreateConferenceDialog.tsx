@@ -23,7 +23,7 @@ import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import getConferencesFormSchema from '@libs/conferences/constants/formSchema';
 import stringToBoolean from '@libs/common/utils/stringToBoolean';
 import CONFERENCES_IS_PUBLIC_FORM_VALUES from '@libs/conferences/constants/isPublicFormValues';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 interface CreateConferenceDialogProps {
   trigger?: React.ReactNode;
