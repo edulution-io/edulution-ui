@@ -26,7 +26,6 @@ import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
-import SharePublicSurveyDialog from '@/pages/Surveys/Editor/dialog/SharePublicSurveyDialog';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
@@ -139,7 +138,6 @@ const SurveyEditorPage = () => {
             submitSurvey={saveSurvey}
             isSubmitting={isLoading}
           />
-          <SharePublicSurveyDialog />
         </>
       )}
     </>
