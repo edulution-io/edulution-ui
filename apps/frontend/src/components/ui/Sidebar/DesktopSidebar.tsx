@@ -141,7 +141,7 @@ const DesktopSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
   }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
 
   return (
-    <div className="fixed right-0 z-[50] h-screen bg-black md:bg-none">
+    <div className="fixed right-0 z-[600] h-screen bg-black md:bg-none">
       <HomeButton />
       {isUpButtonVisible ? <UpButton onClick={handleUpButtonClick} /> : null}
 
