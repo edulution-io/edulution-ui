@@ -92,36 +92,29 @@ const SurveyEditorPage = () => {
       canUpdateFormerAnswer,
     } = form.getValues();
 
-    try {
-      await updateOrCreateSurvey({
-        id,
-        formula,
-        saveNo,
-        creator,
-        invitedAttendees,
-        invitedGroups,
-        participatedAttendees,
-        answers,
-        createdAt,
-        expires,
-        isAnonymous,
-        isPublic,
-        canSubmitMultipleAnswers,
-        canUpdateFormerAnswer,
-      });
+    const success = await updateOrCreateSurvey({
+      id,
+      formula,
+      saveNo,
+      creator,
+      invitedAttendees,
+      invitedGroups,
+      participatedAttendees,
+      answers,
+      createdAt,
+      expires,
+      isAnonymous,
+      isPublic,
+      canSubmitMultipleAnswers,
+      canUpdateFormerAnswer,
+    });
 
+    if (success) {
       void updateUsersSurveys();
       setIsOpenSaveSurveyDialog(false);
 
       toast.success(t('survey.editor.saveSurveySuccess'));
       navigate(`/${CREATED_SURVEYS_PAGE}`);
-    } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (error.response?.status === 413) {
-        toast.error(t('survey.errors.surveyTooBig'));
-      } else {
-        toast.error(t('survey.errors.updateOrCreateError'));
-      }
     }
   };
 
