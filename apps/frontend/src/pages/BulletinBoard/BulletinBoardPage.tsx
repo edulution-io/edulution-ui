@@ -19,7 +19,7 @@ import { BulletinBoardIcon } from '@/assets/icons';
 import { useTranslation } from 'react-i18next';
 import BulletinBoardEditorialPage from '@/pages/BulletinBoard/BulletinBoardEditorial/BulletinBoardEditorialPage';
 import BulletinBoardEditorialFloatingButtonsBar from '@/pages/BulletinBoard/BulletinBoardEditorial/BulletinBoardEditorialFloatingButtonsBar';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import BulletinBoardPageColumn from '@/pages/BulletinBoard/components/BulletinBoardPageColumn';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 
@@ -44,7 +44,7 @@ const BulletinBoardPage = () => {
   }, [isEditorialModeEnabled, bulletinBoardNotifications]);
 
   if (isLoading || isInitialLoading) {
-    return <LoadingIndicator isOpen />;
+    return <LoadingIndicatorDialog isOpen />;
   }
 
   const getPageContent = () => {

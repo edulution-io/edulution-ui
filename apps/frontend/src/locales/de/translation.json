@@ -3,7 +3,6 @@
   "changeLang": "Sprache ändern",
   "heading": "Herzlich Willkommen {{givenName}} {{familyName}}",
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
-  "preparing": "Vorbereiten...",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
   "framebufferImage": "Framebuffer-Bild",
   "previewImage": "Bildvorschau",
@@ -288,7 +287,7 @@
     "previewTitle": "Dateivorschau",
     "saveFile": "Datei speichern",
     "fileEditor": "Datei Editor",
-    "filePreview": "Datei Vorschau",
+    "filePreview": "Dateivorschau",
     "closeEditor": "Editor schließen",
     "loadingDocument": "Dokument wird geladen...",
     "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt",
@@ -1006,8 +1005,7 @@
     "noDataAvailable": "Keine Daten verfügbar"
   },
   "loadingIndicator": {
-    "message": "Bitte warten...",
-    "previewLoading": "Vorschau laden"
+    "message": "Bitte warten..."
   },
   "search": {
     "type-to-search": "Tippen um zu suchen",

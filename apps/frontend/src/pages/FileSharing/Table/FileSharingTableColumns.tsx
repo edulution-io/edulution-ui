@@ -30,7 +30,7 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import i18n from '@/i18n';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
@@ -76,8 +76,8 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
         if (isCurrentlyDisabled) {
           return (
             <CircleLoader
-              height="h-6"
-              width="w-6"
+              height="h-[22px]"
+              width="w-[22px]"
             />
           );
         }

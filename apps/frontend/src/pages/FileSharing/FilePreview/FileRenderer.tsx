@@ -14,7 +14,6 @@ import React, { FC, useEffect } from 'react';
 import ImageComponent from '@/components/ui/ImageComponent';
 import VideoComponent from '@/components/ui/VideoComponent';
 import OnlyOffice from '@/pages/FileSharing/FilePreview/OnlyOffice/OnlyOffice';
-import FileContentLoadingIndicator from '@/components/shared/FileContentLoadingIndicator';
 import { t } from 'i18next';
 import isImageExtension from '@libs/filesharing/utils/isImageExtension';
 import isVideoExtension from '@libs/filesharing/utils/isVideoExtension';
@@ -23,6 +22,7 @@ import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 interface FileRendererProps {
   editMode: boolean;
@@ -61,8 +61,8 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode }) => {
 
   if (isEditorLoading || error || !fileUrl) {
     return (
-      <div className="bg-global flex h-full items-center justify-center py-20">
-        <p>{t('preparing')}</p>
+      <div className="flex h-full items-center justify-center">
+        <CircleLoader />
       </div>
     );
   }
@@ -88,7 +88,9 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode }) => {
         type={isMobileView ? 'mobile' : 'desktop'}
       />
     ) : (
-      <FileContentLoadingIndicator />
+      <div className="flex flex-col items-center justify-center space-y-4">
+        <CircleLoader />
+      </div>
     );
   }
 

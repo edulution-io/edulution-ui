@@ -19,7 +19,7 @@ import GroupColumn from '@libs/groups/types/groupColumn';
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import { MdGroups } from 'react-icons/md';
 import { FaPrint, FaUsersGear } from 'react-icons/fa6';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import Input from '@/components/shared/Input';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
@@ -106,7 +106,7 @@ const EnrolPage: React.FC = () => {
           </div>
         ))}
       </div>
-      <LoadingIndicator isOpen={isLoading} />
+      <LoadingIndicatorDialog isOpen={isLoading} />
     </div>
   );
 };
