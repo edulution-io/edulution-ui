@@ -25,8 +25,6 @@ interface ParticipateSurveyStore {
   setPageNo: (pageNo: number) => void;
   answerSurvey: (answerDto: SubmitAnswerDto, sender: Model, options: CompletingEvent) => Promise<void>;
   isSubmitting: boolean;
-  hasFinished: boolean;
-  setHasFinished: (hasFinished: boolean) => void;
   reset: () => void;
 }
 
@@ -34,7 +32,6 @@ const ParticipateSurveyStoreInitialState: Partial<ParticipateSurveyStore> = {
   pageNo: 0,
   answer: {} as JSON,
   isSubmitting: false,
-  hasFinished: false,
 };
 
 const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => ({
@@ -62,8 +59,6 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
         await eduApi.patch(SURVEYS, { surveyId, saveNo, answer });
       }
 
-      set({ hasFinished: true });
-
       // eslint-disable-next-line no-param-reassign
       options.allow = true;
       sender.doComplete();
@@ -78,8 +73,6 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       set({ isSubmitting: false });
     }
   },
-
-  setHasFinished: (hasFinished: boolean) => set({ hasFinished }),
 }));
 
 export default useParticipateSurveyStore;
