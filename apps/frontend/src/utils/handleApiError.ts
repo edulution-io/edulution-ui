@@ -16,7 +16,7 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import CustomAxiosError from '@libs/error/CustomAxiosError';
-import { SHOW_TOASTER_DURATION } from '@libs/ui/constants/durations';
+import SHOW_TOASTER_DURATION from '@libs/ui/constants/showToasterDuration';
 
 /*
  * Use this function to handle errors in your store functions that do requests to the API.
@@ -30,7 +30,11 @@ const handleApiError = (error: any, set: (params: any) => void, errorName = 'err
   if (axios.isAxiosError(error)) {
     const axiosError = error as CustomAxiosError;
 
-    const errorMessage = i18n.t(axiosError.response?.data?.message) || axiosError.response?.statusText;
+    let errorMessage = i18n.t(axiosError.response?.data?.message) || axiosError.response?.statusText;
+
+    if (error.response?.status === 413) {
+      errorMessage = i18n.t('errors.requestTooLarge');
+    }
 
     if (!displayedErrors.has(errorMessage)) {
       displayedErrors.add(errorMessage);

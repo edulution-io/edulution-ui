@@ -15,6 +15,7 @@ enum ImageExtensions {
   JPEG = 'jpeg',
   JPG = 'jpg',
   GIF = 'gif',
+  WEBP = 'webp',
 }
 
 export default ImageExtensions;
