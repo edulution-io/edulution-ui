@@ -16,6 +16,7 @@ import { t } from 'i18next';
 import { Model, CompletingEvent } from 'survey-core';
 import { SURVEYS, PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import SubmitAnswerDto from '@libs/survey/types/api/submit-answer.dto';
+import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
 
 interface ParticipateSurveyStore {
@@ -23,7 +24,7 @@ interface ParticipateSurveyStore {
   setAnswer: (answer: JSON) => void;
   pageNo: number;
   setPageNo: (pageNo: number) => void;
-  answerSurvey: (answerDto: SubmitAnswerDto, sender: Model, options: CompletingEvent) => Promise<void>;
+  answerSurvey: (answerDto: SubmitAnswerDto, sender: Model, options: CompletingEvent) => Promise<boolean>;
   isSubmitting: boolean;
   reset: () => void;
 }
@@ -41,11 +42,11 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
   setAnswer: (answer: JSON) => set({ answer }),
   setPageNo: (pageNo: number) => set({ pageNo }),
 
-  answerSurvey: async (answerDto: SubmitAnswerDto, sender: Model, options: CompletingEvent): Promise<void> => {
+  answerSurvey: async (answerDto: SubmitAnswerDto, sender: Model, options: CompletingEvent): Promise<boolean> => {
     const { surveyId, saveNo, answer, isPublic = false } = answerDto;
     const { isSubmitting } = get();
     if (isSubmitting) {
-      return;
+      return false;
     }
     set({ isSubmitting: true });
 
@@ -62,13 +63,13 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       // eslint-disable-next-line no-param-reassign
       options.allow = true;
       sender.doComplete();
+
+      return true;
     } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (error.response?.status === 413) {
-        toast.error(t('survey.errors.answerTooBig'));
-      } else {
-        toast.error(t('survey.errors.submitAnswerError'));
-      }
+      handleApiError(error, set);
+      toast.error(t('survey.errors.submitAnswerError'));
+
+      return false;
     } finally {
       set({ isSubmitting: false });
     }

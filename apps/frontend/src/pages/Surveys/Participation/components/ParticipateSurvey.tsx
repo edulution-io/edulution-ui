@@ -32,7 +32,7 @@ interface ParticipateSurveyProps {
   setAnswer: (answer: JSON) => void;
   pageNo: number;
   setPageNo: (pageNo: number) => void;
-  submitAnswer: (answerDto: SubmitAnswerDto, sender: Model, options: CompletingEvent) => Promise<void>;
+  submitAnswer: (answerDto: SubmitAnswerDto, sender: Model, options: CompletingEvent) => Promise<boolean>;
   updateOpenSurveys?: () => void;
   updateAnsweredSurveys?: () => void;
   isPublic?: boolean;
@@ -82,7 +82,7 @@ const ParticipateSurvey = (props: ParticipateSurveyProps) => {
   surveyModel.onCurrentPageChanged.add(saveSurvey);
 
   surveyModel.onCompleting.add(async (sender, options) => {
-    await submitAnswer(
+    const success = await submitAnswer(
       {
         surveyId,
         saveNo,
@@ -92,14 +92,14 @@ const ParticipateSurvey = (props: ParticipateSurveyProps) => {
       sender,
       options,
     );
-  });
 
-  surveyModel.onComplete.add((_sender, _options) => {
-    toast.success(t('survey.participate.saveAnswerSuccess'));
+    if (success) {
+      if (!isPublic) {
+        updateOpenSurveys();
+        updateAnsweredSurveys();
+      }
 
-    if (!isPublic) {
-      updateOpenSurveys();
-      updateAnsweredSurveys();
+      toast.success(t('survey.participate.saveAnswerSuccess'));
     }
   });
 
