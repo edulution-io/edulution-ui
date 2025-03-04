@@ -194,7 +194,8 @@
     "automaticLoginFailed": "Automatic login failed",
     "unexpectedError": "An unexpected error occurred",
     "uploadOrFetchAttachmentFailed": "Error uploading or fetching attachment",
-    "fileGenerationFailed": "File generation failed"
+    "fileGenerationFailed": "File generation failed",
+    "requestTooLarge": "Your request is too large. If you have attached media, try compressing or removing it"
   },
   "conferences": {
     "errors": {
@@ -494,7 +495,6 @@
       "expectingUserInput": "Expecting the user to answer here, ... "
     },
     "errors": {
-      "surveyTooBig": "The survey is too big.",
       "updateOrCreateError": "Neither able to update a survey nor to create a new one.",
       "deleteError": "Not able to delete the surveys.",
       "noAnswerError": "No answers available jet.",

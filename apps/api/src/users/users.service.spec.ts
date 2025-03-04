@@ -15,6 +15,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import CryptoJS from 'crypto-js';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
@@ -348,13 +349,18 @@ describe(UsersService.name, () => {
 
   describe('getPassword', () => {
     it("should return the user's password", async () => {
-      const userData = { password: 'password', encryptKey: 'encryptKey' };
+      const originalPassword = 'password';
+      const encryptKey = 'encryptKey';
+      const encryptedPassword = CryptoJS.AES.encrypt(originalPassword, encryptKey).toString();
+
+      const userData = { password: encryptedPassword, encryptKey };
       model.findOne = jest.fn().mockReturnValue({
         lean: jest.fn().mockResolvedValue(userData),
       });
+
       const user = await service.getPassword('testuser');
 
-      expect(user).toEqual(getDecryptedPassword('password', 'encryptKey'));
+      expect(user).toEqual(getDecryptedPassword(encryptedPassword, encryptKey));
       expect(model.findOne).toHaveBeenCalledWith({ username: 'testuser' }, 'password encryptKey');
     });
   });

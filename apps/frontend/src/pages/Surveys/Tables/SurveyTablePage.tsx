@@ -21,6 +21,7 @@ import SubmittedAnswersDialog from '@/pages/Surveys/Tables/dialogs/SubmittedAnsw
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import DeleteSurveysDialog from '@/pages/Surveys/Tables/dialogs/DeleteSurveysDialog';
+import SharePublicSurveyDialog from '@/pages/Surveys/Editor/dialog/SharePublicSurveyDialog';
 
 interface SurveysTablePageProps {
   title: string;
@@ -75,6 +76,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
           <ResultTableDialog />
           <ResultVisualizationDialog />
           <SubmittedAnswersDialog />
+          <SharePublicSurveyDialog />
         </div>
       </TooltipProvider>
     </>

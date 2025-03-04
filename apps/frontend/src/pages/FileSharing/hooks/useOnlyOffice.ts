@@ -38,6 +38,8 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
   const { getOnlyOfficeJwtToken } = useFileEditorStore();
   const { language } = useLanguage();
 
+  const token = useMemo(() => eduApiToken, [filePath, fileName]);
+
   const fileExtension = getFileExtension(fileName);
   const editorType = useMemo(() => findDocumentsEditorType(fileExtension), [fileExtension]);
   const { appConfigs } = useAppConfigsStore();
@@ -50,7 +52,7 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
   const callbackUrl = getCallbackBaseUrl({
     fileName,
     filePath,
-    token: eduApiToken,
+    token,
   });
 
   useEffect(() => {
