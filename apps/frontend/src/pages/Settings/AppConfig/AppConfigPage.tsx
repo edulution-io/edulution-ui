@@ -158,7 +158,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
 
   const matchingConfig = appConfigs.find((item) => item.name === settingLocation);
 
-  const settingsForm = () => (
+  const getSettingsForm = () => (
     <Form {...form}>
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -244,7 +244,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
             iconSrc={matchingConfig.icon}
           />
         )}
-        {settingsForm()}
+        {getSettingsForm()}
       </div>
       <AppConfigFloatingButtons
         handleDeleteSettingsItem={() => setIsDeleteAppConfigDialogOpen(true)}

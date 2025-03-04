@@ -76,16 +76,16 @@ class LicenseService implements OnModuleInit {
 
   @Interval(LICENSE_CHECK_INTERVAL)
   async checkLicenseValidity() {
-    const licenseInfo = await this.licenseModel.findOne<LicenseInfoDto>({}, 'isLicenseActive').lean();
+    const licenseInfo = await this.licenseModel.findOne<LicenseInfoDto>({}, 'isLicenseActive token').lean();
 
-    if (licenseInfo && licenseInfo.isLicenseActive) {
+    if (licenseInfo?.isLicenseActive && licenseInfo?.token) {
       Logger.log('Checking license validity...', LicenseService.name);
-      await this.verifyToken();
+      await this.verifyToken(licenseInfo.token);
     }
   }
 
-  async invalidateCache(key: string): Promise<void> {
-    await this.cacheManager.del(key);
+  async invalidateLicenseCache(): Promise<void> {
+    await this.cacheManager.del(`/${EDU_API_ROOT}/${LICENSE_ENDPOINT}`);
   }
 
   async getLicenseDetails() {
@@ -100,10 +100,10 @@ class LicenseService implements OnModuleInit {
     }
   }
 
-  async updateLicense(isLicenseActive: boolean) {
+  async setIsLicenseActive(isLicenseActive: boolean) {
     try {
       await this.licenseModel.updateOne<LicenseInfoDto>({}, { $set: { isLicenseActive } }).lean();
-      await this.invalidateCache(`/${EDU_API_ROOT}/${LICENSE_ENDPOINT}`);
+      await this.invalidateLicenseCache();
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -152,6 +152,8 @@ class LicenseService implements OnModuleInit {
         );
       }
 
+      await this.invalidateLicenseCache();
+
       const license = await this.getLicenseDetails();
 
       return license;
@@ -165,36 +167,20 @@ class LicenseService implements OnModuleInit {
     }
   }
 
-  async verifyToken() {
+  async verifyToken(token: string) {
     try {
-      const licenseInfo = await this.licenseModel.findOne<LicenseInfoDto>({}, 'token').lean();
-
-      if (!licenseInfo) {
-        throw new CustomHttpException(
-          CommonErrorMessages.DBAccessFailed,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-          undefined,
-          LicenseService.name,
-        );
-      }
-
-      const { token } = licenseInfo;
-
-      const response = await this.licenseServerApi.post<TokenPayload>(
+      const { status } = await this.licenseServerApi.post<TokenPayload>(
         'verify',
         { token },
-        {
-          validateStatus: (status) => status < 500,
-        },
+        { validateStatus: (valStatus) => valStatus < 500 },
       );
-      let isLicenseActive = false;
 
-      if (response.status === 200) {
-        isLicenseActive = true;
+      const isLicenseActive = status === 200;
+      if (isLicenseActive) {
         Logger.log('License is active', LicenseService.name);
       }
 
-      await this.updateLicense(isLicenseActive);
+      await this.setIsLicenseActive(isLicenseActive);
     } catch (error) {
       throw new CustomHttpException(
         LicenseErrorMessages.LICENSE_VERIFICATION_FAILED,
