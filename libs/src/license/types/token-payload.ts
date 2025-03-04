@@ -14,6 +14,8 @@ type TokenPayload = {
   customerId: string;
   licenseId: string;
   numberOfUsers: number;
+  validFromUtc: number;
+  validToUtc: number;
   iat: number;
   exp: number;
 };

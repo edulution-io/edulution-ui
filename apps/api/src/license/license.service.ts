@@ -76,11 +76,11 @@ class LicenseService implements OnModuleInit {
 
   @Interval(LICENSE_CHECK_INTERVAL)
   async checkLicenseValidity() {
-    const licenseInfo = await this.licenseModel.findOne<LicenseInfoDto>({}, 'isLicenseActive token').lean();
+    const licenseInfo = await this.licenseModel.findOne<LicenseInfoDto>({}, 'licenseKey token isLicenseActive').lean();
 
     if (licenseInfo?.isLicenseActive && licenseInfo?.token) {
       Logger.log('Checking license validity...', LicenseService.name);
-      await this.verifyToken(licenseInfo.token);
+      await this.verifyToken(licenseInfo);
     }
   }
 
@@ -111,6 +111,7 @@ class LicenseService implements OnModuleInit {
 
   async signLicense(signLicenseDto: SignLicenseDto) {
     try {
+      Logger.log('Signing license...', LicenseService.name);
       const { data: token } = await this.licenseServerApi.post<string>('sign', signLicenseDto);
 
       if (!token) {
@@ -134,8 +135,8 @@ class LicenseService implements OnModuleInit {
               numberOfUsers: tokenInfo.numberOfUsers,
               licenseKey: signLicenseDto.licenseKey,
               token,
-              validFromUtc: tokenInfo.iat * 1000,
-              validToUtc: tokenInfo.exp * 1000,
+              validFromUtc: tokenInfo.validFromUtc * 1000,
+              validToUtc: tokenInfo.validToUtc * 1000,
               isLicenseActive: true,
             },
           },
@@ -152,6 +153,8 @@ class LicenseService implements OnModuleInit {
         );
       }
 
+      Logger.log('License signed', LicenseService.name);
+
       await this.invalidateLicenseCache();
 
       const license = await this.getLicenseDetails();
@@ -167,7 +170,9 @@ class LicenseService implements OnModuleInit {
     }
   }
 
-  async verifyToken(token: string) {
+  async verifyToken(licenseInfo: LicenseInfoDto) {
+    const { token, licenseKey } = licenseInfo;
+
     try {
       const { status } = await this.licenseServerApi.post<TokenPayload>(
         'verify',
@@ -175,12 +180,17 @@ class LicenseService implements OnModuleInit {
         { validateStatus: (valStatus) => valStatus < 500 },
       );
 
-      const isLicenseActive = status === 200;
+      const isLicenseActive = status === 200 || status === 205;
       if (isLicenseActive) {
         Logger.log('License is active', LicenseService.name);
       }
 
       await this.setIsLicenseActive(isLicenseActive);
+
+      if (licenseKey && status === 205) {
+        Logger.log('License was updated. Resigning...', LicenseService.name);
+        await this.signLicense({ licenseKey });
+      }
     } catch (error) {
       throw new CustomHttpException(
         LicenseErrorMessages.LICENSE_VERIFICATION_FAILED,
