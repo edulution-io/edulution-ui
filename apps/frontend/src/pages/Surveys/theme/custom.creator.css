@@ -295,6 +295,11 @@
   .svc-question__content:not(.svc-page__content--new) {
     box-shadow: unset !important;
   }
+  .svc-page__content:not(.svc-page__content--new):focus,
+  .svc-hovered.svc-page__content:not(.svc-page__content--new) {
+    background-color: var(--overlay-transparent) !important;
+    box-shadow: 0 0 0 1px var(--ring-transparent) !important;
+  }
   .svc-page__content:hover:not(.svc-page__content--new) {
     background-color: var(--overlay-transparent) !important;
     box-shadow: 0 0 0 1px var(--ring-transparent) !important;
