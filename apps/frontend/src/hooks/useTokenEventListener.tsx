@@ -1,0 +1,50 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import { useEffect, useRef } from 'react';
+import { useAuth } from 'react-oidc-context';
+import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
+import useLogout from './useLogout';
+
+const useTokenEventListeners = () => {
+  const auth = useAuth();
+  const { t } = useTranslation();
+  const handleLogout = useLogout();
+
+  const handleTokenExpiredRef = useRef<() => void>(() => {});
+  handleTokenExpiredRef.current = () => {
+    if (auth.user?.expired) {
+      void handleLogout();
+      toast.error(t('auth.errors.TokenExpired'));
+    }
+  };
+
+  useEffect(() => {
+    handleTokenExpiredRef.current();
+  }, [auth.user?.expired]);
+
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      auth.events.addSilentRenewError(handleLogout);
+      auth.events.addAccessTokenExpired(handleTokenExpiredRef.current);
+
+      return () => {
+        auth.events.removeSilentRenewError(handleLogout);
+        auth.events.removeAccessTokenExpired(handleTokenExpiredRef.current);
+      };
+    }
+    return () => {};
+  }, [auth.events, auth.isAuthenticated]);
+};
+
+export default useTokenEventListeners;
