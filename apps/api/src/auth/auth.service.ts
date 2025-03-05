@@ -39,7 +39,6 @@ class AuthService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
     this.keycloakApi = axios.create({
       baseURL: `${KEYCLOAK_API}/realms/${KEYCLOAK_EDU_UI_REALM}`,
-      timeout: 5000,
     });
   }
 
@@ -54,7 +53,7 @@ class AuthService {
         return oidcConfig;
       }),
       catchError(() => {
-        throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.UNAUTHORIZED);
+        throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.UNAUTHORIZED, undefined, AuthService.name);
       }),
     );
   }
@@ -84,7 +83,10 @@ class AuthService {
         const errorMessage: ErrorResponse = error.response.data as ErrorResponse;
         throw new HttpException(errorMessage, HttpStatus.UNAUTHORIZED);
       }
-      throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.UNAUTHORIZED, body);
+      throw new HttpException(
+        { error: AuthErrorMessages.Unknown, error_description: AuthErrorMessages.LmnConnectionFailed },
+        HttpStatus.UNAUTHORIZED,
+      );
     }
   }
 
@@ -109,10 +111,17 @@ class AuthService {
         password = passwordString.slice(0, lastColonIndex);
         token = passwordString.slice(lastColonIndex + 1);
       } else {
-        throw new CustomHttpException(AuthErrorMessages.TotpMissing, HttpStatus.UNAUTHORIZED);
+        throw new HttpException(
+          { error: AuthErrorMessages.TotpMissing, error_description: AuthErrorMessages.TotpMissing },
+          HttpStatus.UNAUTHORIZED,
+        );
       }
 
-      if (!token) throw new CustomHttpException(AuthErrorMessages.TotpMissing, HttpStatus.UNAUTHORIZED);
+      if (!token)
+        throw new HttpException(
+          { error: AuthErrorMessages.TotpMissing, error_description: AuthErrorMessages.TotpMissing },
+          HttpStatus.UNAUTHORIZED,
+        );
 
       const isTotpValid = AuthService.checkTotp(token, username, totpSecret);
 
@@ -120,7 +129,10 @@ class AuthService {
         return this.signin(body, password);
       }
 
-      throw new CustomHttpException(AuthErrorMessages.TotpInvalid, HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        { error: AuthErrorMessages.TotpInvalid, error_description: AuthErrorMessages.TotpInvalid },
+        HttpStatus.UNAUTHORIZED,
+      );
     }
     return this.signin(body, passwordString);
   }
@@ -147,7 +159,7 @@ class AuthService {
         .lean();
       return user;
     }
-    throw new CustomHttpException(AuthErrorMessages.TotpInvalid, HttpStatus.UNAUTHORIZED);
+    throw new CustomHttpException(AuthErrorMessages.TotpInvalid, HttpStatus.UNAUTHORIZED, undefined, AuthService.name);
   }
 
   async getTotpInfo(username: string) {
@@ -171,7 +183,7 @@ class AuthService {
         .lean();
       return user;
     } catch (error) {
-      throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND, undefined, AuthService.name);
     }
   }
 }

@@ -10,13 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum AuthErrorMessages {
-  TokenExpired = 'auth.errors.TokenExpired',
-  Unauthorized = 'auth.errors.Unauthorized',
-  Unknown = 'auth.errors.Unknown',
-  TotpMissing = 'auth.errors.TotpMissing',
-  TotpInvalid = 'auth.errors.TotpInvalid',
-  LmnConnectionFailed = 'auth.errors.LmnConnectionFailed',
-}
+import { z } from 'zod';
+import { TFunction } from 'i18next';
 
-export default AuthErrorMessages;
+const getLoginFormSchema = (t: TFunction<'translation', undefined>) =>
+  z.object({
+    username: z
+      .string({ required_error: t('username.required') })
+      .min(1, { message: t('common.required') })
+      .max(32, { message: t('login.username_too_long') }),
+    password: z
+      .string({ required_error: t('common.required') })
+      .min(1, { message: t('common.required') })
+      .max(32, { message: t('login.password_too_long') }),
+  });
+
+export default getLoginFormSchema;
