@@ -29,7 +29,7 @@ import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 
 const SurveyEditorPage = () => {
   const { updateSelectedSurvey, isFetching, selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
@@ -124,9 +124,9 @@ const SurveyEditorPage = () => {
 
   return (
     <>
-      {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
+      {isLoading ? <LoadingIndicatorDialog isOpen={isLoading} /> : null}
       {isFetching ? (
-        <LoadingIndicator isOpen={isFetching} />
+        <LoadingIndicatorDialog isOpen={isFetching} />
       ) : (
         <>
           <SurveyEditor form={form} />

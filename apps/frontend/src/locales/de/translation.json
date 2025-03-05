@@ -3,7 +3,6 @@
   "changeLang": "Sprache ändern",
   "heading": "Herzlich Willkommen {{givenName}} {{familyName}}",
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
-  "preparing": "Vorbereiten...",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
   "framebufferImage": "Framebuffer-Bild",
   "previewImage": "Bildvorschau",
@@ -289,6 +288,7 @@
     "previewTitle": "Dateivorschau",
     "saveFile": "Datei speichern",
     "fileEditor": "Datei Editor",
+    "filePreview": "Dateivorschau",
     "closeEditor": "Editor schließen",
     "loadingDocument": "Dokument wird geladen...",
     "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt",
@@ -495,7 +495,11 @@
       "addDescription": "Beschreibung hinzufügen",
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
     },
+    "participate": {
+      "saveAnswerSuccess": "Die Antwort wurde gespeichert."
+    },
     "errors": {
+      "submitAnswerError": "Die Antwort konnte nicht gespeichert werden.",
       "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden.",
       "deleteError": "Die Umfragen konnten nicht gelöscht werden.",
       "noAnswerError": "Bisher ist noch keine Antwort abgegeben worden.",
@@ -1024,8 +1028,7 @@
     "noDataAvailable": "Keine Daten verfügbar"
   },
   "loadingIndicator": {
-    "message": "Bitte warten...",
-    "previewLoading": "Vorschau laden"
+    "message": "Bitte warten..."
   },
   "search": {
     "type-to-search": "Tippen um zu suchen",

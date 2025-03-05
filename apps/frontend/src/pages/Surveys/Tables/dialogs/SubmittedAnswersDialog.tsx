@@ -14,7 +14,7 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import SubmittedAnswersDialogBody from '@/pages/Surveys/Tables/dialogs/SubmittedAnswersDialogBody';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
@@ -58,7 +58,7 @@ const SubmittedAnswersDialog = () => {
 
   return (
     <>
-      {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
+      {isLoading ? <LoadingIndicatorDialog isOpen={isLoading} /> : null}
       <AdaptiveDialog
         isOpen={isOpenSubmittedAnswersDialog}
         handleOpenChange={() => setIsOpenSubmittedAnswersDialog(!isOpenSubmittedAnswersDialog)}

@@ -11,7 +11,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import GroupList from '@/pages/ClassManagement/components/GroupList/GroupList';
 import { useTranslation } from 'react-i18next';
 import useLmnApiStore from '@/store/useLmnApiStore';
@@ -94,7 +94,7 @@ const ProjectsPage = () => {
         ))}
       </div>
       <ProjectsFloatingButtonsBar />
-      <LoadingIndicator isOpen={isLoading} />
+      <LoadingIndicatorDialog isOpen={isLoading} />
     </>
   );
 };
