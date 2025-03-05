@@ -17,13 +17,13 @@ import {
   Get,
   Header,
   HttpStatus,
+  Logger,
   Patch,
   Post,
   Put,
   Query,
   Req,
   Res,
-  StreamableFile,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -114,14 +114,22 @@ class FilesharingController {
   @Header('Content-Type', RequestResponseContentType.APPLICATION_OCTET_STREAM as string)
   async webDavFileStream(
     @Query('filePath') filePath: string,
+    @Res() res: Response,
     @GetCurrentUsername() username: string,
-  ): Promise<StreamableFile> {
+  ) {
     const stream = await this.filesharingService.getWebDavFileStream(username, filePath);
+
+    stream.on('error', (err) => {
+      if (err.message !== 'Premature close') {
+        Logger.error(`${FilesharingController.name}: Unknown stream error:`, err);
+      }
+    });
+
     const fileName = filePath.split('/').pop();
 
-    return new StreamableFile(stream, {
-      disposition: `attachment; filename="${fileName}"`,
-    });
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+
+    stream.pipe(res);
   }
 
   @Get(FileSharingApiEndpoints.FILE_LOCATION)

@@ -14,7 +14,7 @@ import React, { useEffect } from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import APPS from '@libs/appconfig/constants/apps';
 import useDockerApplicationStore from './useDockerApplicationStore';
 import DockerContainerTableColumns from './DockerContainerTableColumns';

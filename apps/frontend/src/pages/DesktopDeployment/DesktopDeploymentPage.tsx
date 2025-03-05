@@ -14,7 +14,7 @@ import React, { useEffect } from 'react';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import { DesktopDeploymentIcon } from '@/assets/icons';
 import { useTranslation } from 'react-i18next';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useUserStore from '@/store/UserStore/UserStore';
 import VirtualMachineOs from '@libs/desktopdeployment/types/virtual-machines.enum';
 import { VirtualMachines } from '@libs/desktopdeployment/types';
@@ -124,7 +124,7 @@ const DesktopDeploymentPage: React.FC = () => {
         ))}
       </div>
       <ConnectionErrorDialog handleReload={handleReload} />
-      <LoadingIndicator isOpen={isLoading} />
+      <LoadingIndicatorDialog isOpen={isLoading} />
       <DesktopDeploymentFloatingButtons
         handleConnect={handleConnect}
         handleReload={handleReload}
