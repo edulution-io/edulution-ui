@@ -53,13 +53,15 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
     accessorFn: (row) => row.type + row.filename,
     cell: ({ row }) => {
       const [searchParams, setSearchParams] = useSearchParams();
-      const { currentlyDisabledFiles } = useFileSharingStore();
+      const { currentlyDisabledFiles, setFileIsCurrentlyDisabled } = useFileSharingStore();
       const { setCurrentlyEditingFile, resetCurrentlyEditingFile, setPublicDownloadLink } = useFileEditorStore();
       const isCurrentlyDisabled = currentlyDisabledFiles[row.original.basename];
       const handleFilenameClick = async () => {
         if (isCurrentlyDisabled) {
           return;
         }
+
+        void setFileIsCurrentlyDisabled(row.original.basename, true);
 
         setPublicDownloadLink('');
         if (row.original.type === ContentType.DIRECTORY) {

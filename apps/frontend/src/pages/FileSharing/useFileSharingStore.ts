@@ -43,7 +43,7 @@ type UseFileSharingStore = {
   isLoading: boolean;
   isError: boolean;
   currentlyDisabledFiles: Record<string, boolean>;
-  startFileIsCurrentlyDisabled: (filename: string, isLocked: boolean, durationMs: number) => Promise<void>;
+  setFileIsCurrentlyDisabled: (filename: string, isLocked: boolean, durationMs?: number) => Promise<void>;
   setIsLoading: (isLoading: boolean) => void;
   setMountPoints: (mountPoints: DirectoryFileDTO[]) => void;
 };
@@ -68,7 +68,7 @@ type PersistedFileManagerStore = (
 
 const useFileSharingStore = create<UseFileSharingStore>(
   (persist as PersistedFileManagerStore)(
-    (set) => ({
+    (set, get) => ({
       ...initialState,
       setCurrentPath: (path: string) => {
         set({ currentPath: path });
@@ -112,16 +112,19 @@ const useFileSharingStore = create<UseFileSharingStore>(
         }
       },
 
-      startFileIsCurrentlyDisabled: async (filename, isLocked, durationMs) => {
-        set((state) => ({
+      setFileIsCurrentlyDisabled: async (filename, isLocked, durationMs) => {
+        set({
           currentlyDisabledFiles: {
-            ...state.currentlyDisabledFiles,
+            ...get().currentlyDisabledFiles,
             [filename]: isLocked,
           },
-        }));
+        });
         if (durationMs) {
           await delay(durationMs);
-          set({ currentlyDisabledFiles: { filename: !isLocked } });
+          set({
+            ...get().currentlyDisabledFiles,
+            currentlyDisabledFiles: { [filename]: !isLocked },
+          });
         }
       },
 

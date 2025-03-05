@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import FileRenderer from '@/pages/FileSharing/FilePreview/FileRenderer';
@@ -27,8 +27,9 @@ const FileViewer = () => {
   const { t } = useTranslation();
   const { addFileToOpenInNewTab, currentlyEditingFile, fetchDownloadLinks, setCurrentlyEditingFile } =
     useFileEditorStore();
-  const { startFileIsCurrentlyDisabled } = useFileSharingStore();
+  const { setFileIsCurrentlyDisabled } = useFileSharingStore();
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const windowSize = useWindowResize();
   const [filePreviewRect, setFilePreviewRect] = useState<Pick<DOMRect, 'x' | 'y' | 'width' | 'height'> | null>(null);
@@ -57,9 +58,16 @@ const FileViewer = () => {
   };
 
   useEffect(() => {
+    abortControllerRef.current?.abort();
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     if (currentlyEditingFile) {
-      void fetchDownloadLinks(currentlyEditingFile);
+      void fetchDownloadLinks(currentlyEditingFile, controller.signal);
     }
+
+    return () => controller.abort();
   }, [currentlyEditingFile, isEditMode]);
 
   const handleCloseFile = async () => {
@@ -67,7 +75,7 @@ const FileViewer = () => {
     const { basename } = currentlyEditingFile;
     setIsEditMode(false);
     setCurrentlyEditingFile(null);
-    await startFileIsCurrentlyDisabled(basename, true, 5000);
+    await setFileIsCurrentlyDisabled(basename, true, 5000);
   };
 
   if (!filePreviewRect || !currentlyEditingFile) return null;
