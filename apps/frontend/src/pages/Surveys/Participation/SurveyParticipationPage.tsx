@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import ParticipateSurvey from '@/pages/Surveys/Participation/components/ParticipateSurvey';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 
 interface SurveyParticipationPageProps {
   isPublic: boolean;
@@ -67,7 +67,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
     );
   }, [selectedSurvey, answer, pageNo, hasFinished]);
 
-  return isFetching ? <LoadingIndicator isOpen={isFetching} /> : content;
+  return isFetching ? <LoadingIndicatorDialog isOpen={isFetching} /> : content;
 };
 
 export default SurveyParticipationPage;

@@ -23,7 +23,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import useElementHeight from '@/hooks/useElementHeight';
 import { HEADER_ID, SELECTED_ROW_MESSAGE_ID, TABLE_HEADER_ID } from '@libs/ui/constants/defaultIds';
@@ -110,7 +110,7 @@ const ScrollableTable = <TData, TValue>({
 
   return (
     <>
-      {isLoading && data?.length === 0 ? <LoadingIndicator isOpen={isLoading} /> : null}
+      {isLoading && data?.length === 0 ? <LoadingIndicatorDialog isOpen={isLoading} /> : null}
 
       {selectedRowsCount > 0 ? (
         <div
