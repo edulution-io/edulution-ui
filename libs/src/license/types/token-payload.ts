@@ -10,36 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Document } from 'mongoose';
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-
-export type LicenseDocument = License & Document;
-
-@Schema({ strict: true })
-export class License {
-  @Prop({ default: '' })
+type TokenPayload = {
   customerId: string;
-
-  @Prop({ default: '' })
   licenseId: string;
-
-  @Prop({ default: 0 })
   numberOfUsers: number;
+  validFromUtc: number;
+  validToUtc: number;
+  iat: number;
+  exp: number;
+};
 
-  @Prop({ default: '' })
-  licenseKey: string;
-
-  @Prop({ default: '' })
-  token: string;
-
-  @Prop({ type: Date, default: new Date() })
-  validFromUtc: Date;
-
-  @Prop({ type: Date, default: '' })
-  validToUtc: Date;
-
-  @Prop({ default: false })
-  isLicenseActive: boolean;
-}
-
-export const LicenseSchema = SchemaFactory.createForClass(License);
+export default TokenPayload;

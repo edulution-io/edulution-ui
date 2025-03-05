@@ -10,20 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import LicenseInfoDto from './license-info.dto';
+import React from 'react';
 
-interface CommunityLicenseStore {
-  isLoading: boolean;
-  error: Error | null;
-  wasViewedAlready: boolean;
-  isOpen: boolean;
-  licenseInfo: LicenseInfoDto | null;
-  isRegisterDialogOpen: boolean;
-  setIsRegisterDialogOpen: (isRegisterDialogOpen: boolean) => void;
-  checkForActiveUserLicense: () => Promise<void>;
-  signLicense: (licenseKey: string) => Promise<void>;
-  close: () => void;
-  reset: () => void;
+interface LicenseFieldProps {
+  label: string;
+  value: string | number;
+  valueClassName?: string;
 }
 
-export default CommunityLicenseStore;
+const LicenseField: React.FC<LicenseFieldProps> = ({ label, value, valueClassName }) => (
+  <div>
+    <p className="text-sm font-medium text-muted-foreground">{label}</p>
+    <p className={`text-base ${valueClassName || 'text-background'}`}>{value}</p>
+  </div>
+);
+
+export default LicenseField;

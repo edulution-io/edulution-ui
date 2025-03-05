@@ -10,20 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import LicenseInfoDto from './license-info.dto';
+import React from 'react';
+import { useParams } from 'react-router-dom';
+import AppConfigPage from './AppConfig/AppConfigPage';
+import SettingsOverviewPage from './components/SettingsOverviewPage';
 
-interface CommunityLicenseStore {
-  isLoading: boolean;
-  error: Error | null;
-  wasViewedAlready: boolean;
-  isOpen: boolean;
-  licenseInfo: LicenseInfoDto | null;
-  isRegisterDialogOpen: boolean;
-  setIsRegisterDialogOpen: (isRegisterDialogOpen: boolean) => void;
-  checkForActiveUserLicense: () => Promise<void>;
-  signLicense: (licenseKey: string) => Promise<void>;
-  close: () => void;
-  reset: () => void;
-}
+const SettingsPage: React.FC = () => {
+  const { settingLocation } = useParams();
+  const isAnAppConfigSelected = !!settingLocation;
 
-export default CommunityLicenseStore;
+  return (
+    <div className="h-[calc(100vh-var(--floating-buttons-height))] overflow-y-auto scrollbar-thin">
+      {isAnAppConfigSelected ? <AppConfigPage settingLocation={settingLocation} /> : <SettingsOverviewPage />}
+    </div>
+  );
+};
+
+export default SettingsPage;

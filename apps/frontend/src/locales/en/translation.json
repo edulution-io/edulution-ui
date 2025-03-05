@@ -754,7 +754,26 @@
       "placeholder": "Enter your Traefik config here"
     },
     "rowsSelected": "{{selected}} of {{total}} Container selected",
-    "rowSelected": "{{selected}} of {{total}} Container selected"
+    "rowSelected": "{{selected}} of {{total}} Container selected",
+    "license": {
+      "title": "License Overview",
+      "customerId": "Customer No",
+      "licenseId": "License ID",
+      "numberOfUsers": "Number of users",
+      "validFromUtc": "Valid from",
+      "validToUtc": "Valid to",
+      "licenseStatus": "License status",
+      "register": "Register",
+      "registerLicense": "Register license",
+      "licenseKey": "License key",
+      "licenseKeyDescription": "Enter the license key you received with your purchase.",
+      "licenseSignedSuccessfully": "License registered successfully",
+      "noLicenseRegistered": "No license registered",
+      "errors": {
+        "signingFailed": "Registration failed",
+        "verificationFailed": "Token verification failed"
+      }
+    }
   },
   "usersettings": {
     "title": "MY PROFILE",

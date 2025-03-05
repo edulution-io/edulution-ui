@@ -755,7 +755,26 @@
       "placeholder": "Hier ihre Traefik-Konfiguration eintragen"
     },
     "rowsSelected": "{{selected}} von {{total}} Container ausgewählt",
-    "rowSelected": "{{selected}} von {{total}} Container ausgewählt"
+    "rowSelected": "{{selected}} von {{total}} Container ausgewählt",
+    "license": {
+      "title": "Lizenzübersicht",
+      "customerId": "Kunden-Nr",
+      "licenseId": "Lizenz-ID",
+      "numberOfUsers": "Anzahl Benutzer",
+      "validFromUtc": "Gültig ab",
+      "validToUtc": "Gültig bis",
+      "licenseStatus": "Lizenzstatus",
+      "register": "Registrieren",
+      "registerLicense": "Lizenz registrieren",
+      "licenseKey": "Lizenzschlüssel",
+      "licenseKeyDescription": "Gib hier den Lizenzschlüssel ein, den du beim Kauf bekommen hast.",
+      "licenseSignedSuccessfully": "Lizenz erfolgreich registriert",
+      "noLicenseRegistered": "Keine Lizenz registriert",
+      "errors": {
+        "signingFailed": "Registrierung fehlgeschlagen",
+        "verificationFailed": "Tokenverifizierung fehlgeschlagen"
+      }
+    }
   },
   "usersettings": {
     "title": "MEIN PROFIL",

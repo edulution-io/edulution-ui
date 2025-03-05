@@ -10,20 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import LicenseInfoDto from './license-info.dto';
+import LicenseErrorMessages from '../constants/licenseErrorMessages';
 
-interface CommunityLicenseStore {
-  isLoading: boolean;
-  error: Error | null;
-  wasViewedAlready: boolean;
-  isOpen: boolean;
-  licenseInfo: LicenseInfoDto | null;
-  isRegisterDialogOpen: boolean;
-  setIsRegisterDialogOpen: (isRegisterDialogOpen: boolean) => void;
-  checkForActiveUserLicense: () => Promise<void>;
-  signLicense: (licenseKey: string) => Promise<void>;
-  close: () => void;
-  reset: () => void;
-}
+type LicenseErrorMessagesType = (typeof LicenseErrorMessages)[keyof typeof LicenseErrorMessages];
 
-export default CommunityLicenseStore;
+export default LicenseErrorMessagesType;
