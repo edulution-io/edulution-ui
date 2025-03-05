@@ -1,9 +1,6 @@
 .survey-editor {
-  .svc-notifier--info {
-    position: fixed;
-    right: 210px;
-    bottom: 120px;
-    transform: translate(50%, 50%);
+  .svc-notifier {
+    display: none !important;
   }
 
   .svc-top-bar,
