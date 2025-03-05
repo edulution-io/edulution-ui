@@ -11,17 +11,20 @@
  */
 
 import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { FaGear } from 'react-icons/fa6';
 import { settings } from 'survey-core';
 import { editorLocalization, localization } from 'survey-creator-core';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import 'survey-creator-core/i18n/english';
 import 'survey-creator-core/i18n/german';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
+import SurveyFormula from '@libs/survey/types/TSurveyFormula';
+import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import getSurveyFormulaFromJSON from '@libs/survey/utils/getSurveyFormulaFromJSON';
 import useLanguage from '@/hooks/useLanguage';
 import useElementHeight from '@/hooks/useElementHeight';
+import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
+import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
@@ -29,13 +32,16 @@ import '@/pages/Surveys/theme/custom.survey.css';
 import '@/pages/Surveys/theme/custom.creator.css';
 
 interface SurveyEditorProps {
-  form: UseFormReturn<SurveyDto>;
+  initialFormula: SurveyFormula;
+  initialSaveNo: number;
+  saveSurvey: (formula: SurveyFormula, saveNo: number) => Promise<void>;
+  setIsOpenSaveSurveyDialog: (state: boolean) => void;
 }
 
 settings.lazyRender.enabled = true;
 
 const SurveyEditor = (props: SurveyEditorProps) => {
-  const { form } = props;
+  const { saveSurvey, initialFormula, initialSaveNo, setIsOpenSaveSurveyDialog } = props;
 
   const { language } = useLanguage();
 
@@ -77,8 +83,8 @@ const SurveyEditor = (props: SurveyEditorProps) => {
 
   creator.theme = surveyTheme;
 
-  creator.saveNo = form.getValues('saveNo');
-  creator.JSON = form.getValues('formula');
+  creator.JSON = initialFormula;
+  creator.saveNo = initialSaveNo;
 
   // TOOLBAR (HEADER)
   const settingsActionHeader = creator.toolbar.actions.findIndex((action) => action.id === 'svd-settings');
@@ -103,6 +109,8 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   // PROPERTY GRID (RIGHT SIDEBAR)
   creator.showSidebar = false;
 
+  creator.showSaveButton = false;
+
   creator.startEditTitleOnQuestionAdded = true;
 
   creator.onElementAllowOperations.add((_, options) => {
@@ -116,32 +124,41 @@ const SurveyEditor = (props: SurveyEditorProps) => {
     options.items.splice(settingsItemIndex, 1);
   });
 
-  creator.onModified.add(() => {
-    form.setValue('formula', getSurveyFormulaFromJSON(creator.JSON as JSON));
-  });
+  creator.saveSurveyFunc = async (saveNo: number, _callback: (saveNo: number, isSuccess: boolean) => void) => {
+    await saveSurvey(getSurveyFormulaFromJSON(creator.getSurveyJSON() as JSON), saveNo);
+  }
 
-  creator.saveSurveyFunc = (saveNo: number, callback: (saveNo: number, isSuccess: boolean) => void) => {
-    form.setValue('formula', getSurveyFormulaFromJSON(creator.JSON as JSON));
-    form.setValue('saveNo', saveNo);
-    callback(saveNo, true);
+  const config: FloatingButtonsBarConfig = {
+    buttons: [
+      SaveButton( () => creator.saveSurvey() ),
+      {
+        icon: FaGear,
+        text: 'common.settings',
+        onClick: () => setIsOpenSaveSurveyDialog(true)
+      }
+    ],
+    keyPrefix: 'surveys-page-floating-button_',
   };
 
   const pageBarsHeight = useElementHeight([FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 10;
 
   return (
-    <div
-      className="survey-editor"
-      style={{ height: `calc(100% - ${pageBarsHeight}px)` }}
-    >
-      <SurveyCreatorComponent
-        creator={creator}
-        style={{
-          height: '100%',
-          width: '100%',
-        }}
-      />
-    </div>
+    <>
+      <div
+        className="survey-editor"
+        style={{ height: `calc(100% - ${pageBarsHeight}px)` }}
+      >
+        <SurveyCreatorComponent
+          creator={creator}
+          style={{
+            height: '100%',
+            width: '100%',
+          }}
+        />
+      </div>
+      <FloatingButtonsBar config={config} />
+    </>
   );
-};
+}
 
 export default SurveyEditor;

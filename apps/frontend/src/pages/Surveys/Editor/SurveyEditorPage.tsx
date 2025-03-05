@@ -25,16 +25,14 @@ import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPage
 import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
-import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import SharePublicSurveyDialog from '@/pages/Surveys/Editor/dialog/SharePublicSurveyDialog';
-import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
-import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
-import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import SaveSurveyDialog from "@/pages/Surveys/Editor/dialog/SaveSurveyDialog";
+import SurveyFormula from "@libs/survey/types/TSurveyFormula";
 
 const SurveyEditorPage = () => {
-  const { updateSelectedSurvey, isFetching, selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
-  const { isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog, updateOrCreateSurvey, isLoading, reset } =
+  const { updateSelectedSurvey, isFetching, selectedSurvey } = useSurveyTablesPageStore();
+  const { isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog, updateOrCreateSurvey, reset } =
     useSurveyEditorPageStore();
 
   const { t } = useTranslation();
@@ -65,20 +63,14 @@ const SurveyEditorPage = () => {
   }, [selectedSurvey]);
 
   const form = useForm<SurveyDto>({
-    mode: 'onChange',
+    mode: 'onSubmit',
     resolver: zodResolver(getSurveyEditorFormSchema(t)),
     defaultValues: initialFormValues,
   });
 
-  useEffect(() => {
-    form.reset(initialFormValues);
-  }, [initialFormValues]);
-
-  const saveSurvey = async () => {
+  const handleSaveSurvey = async (formula: SurveyFormula, saveNo: number) => {
     const {
       id,
-      formula,
-      saveNo,
       creator,
       invitedAttendees,
       invitedGroups,
@@ -92,11 +84,14 @@ const SurveyEditorPage = () => {
       canUpdateFormerAnswer,
     } = form.getValues();
 
-    try {
+    // console.log("id", id);
+
+    try{
       await updateOrCreateSurvey({
-        id,
         formula,
         saveNo,
+
+        id,
         creator,
         invitedAttendees,
         invitedGroups,
@@ -110,7 +105,6 @@ const SurveyEditorPage = () => {
         canUpdateFormerAnswer,
       });
 
-      void updateUsersSurveys();
       setIsOpenSaveSurveyDialog(false);
 
       toast.success(t('survey.editor.saveSurveySuccess'));
@@ -125,30 +119,23 @@ const SurveyEditorPage = () => {
     }
   };
 
-  const config: FloatingButtonsBarConfig = {
-    buttons: [SaveButton(() => setIsOpenSaveSurveyDialog(true))],
-    keyPrefix: 'surveys-page-floating-button_',
-  };
-
   return (
     <>
-      {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
-      {isFetching ? (
-        <LoadingIndicator isOpen={isFetching} />
-      ) : (
-        <>
-          <SurveyEditor form={form} />
-          <FloatingButtonsBar config={config} />
-          <SaveSurveyDialog
-            form={form}
-            isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
-            setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
-            submitSurvey={saveSurvey}
-            isSubmitting={isLoading}
-          />
-          <SharePublicSurveyDialog />
-        </>
-      )}
+      {isFetching ? <LoadingIndicator isOpen={isFetching} /> : null}
+      <>
+        <SurveyEditor
+          initialFormula={initialFormValues?.formula || { title: t('survey.newTitle').toString() }}
+          initialSaveNo={selectedSurvey?.saveNo || 0}
+          saveSurvey={handleSaveSurvey}
+          setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
+        />
+        <SaveSurveyDialog
+          form={form}
+          isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
+          setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
+        />
+        <SharePublicSurveyDialog />
+      </>
     </>
   );
 };
