@@ -18,7 +18,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/shared/Button';
 import FormField from '@/components/shared/FormField';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import { Form } from '@/components/ui/Form';
 import useCommunityLicenseStore from '@/pages/UserSettings/Info/useCommunityLicenseStore';
 
