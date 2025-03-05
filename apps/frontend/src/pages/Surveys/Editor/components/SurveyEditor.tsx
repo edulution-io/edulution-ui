@@ -12,6 +12,7 @@
 
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
+import { settings } from 'survey-core';
 import { editorLocalization, localization } from 'survey-creator-core';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import 'survey-creator-core/i18n/english';
@@ -31,6 +32,8 @@ interface SurveyEditorProps {
   form: UseFormReturn<SurveyDto>;
 }
 
+settings.lazyRender.enabled = true;
+
 const SurveyEditor = (props: SurveyEditorProps) => {
   const { form } = props;
 
@@ -41,7 +44,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
 
   const creatorOptions = {
     generateValidJSON: true,
-    isAutoSave: true,
+    isAutoSave: false,
     maxNestedPanels: 0,
     showJSONEditorTab: true,
     showPreviewTab: false,
