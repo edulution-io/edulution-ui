@@ -25,7 +25,7 @@ interface SurveyParticipationPageProps {
 const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.ReactNode => {
   const { isPublic = false } = props;
   const { selectedSurvey, updateSelectedSurvey, isFetching } = useSurveyTablesPageStore();
-  const { answer, setAnswer, pageNo, setPageNo, answerSurvey, hasFinished, reset } = useParticipateSurveyStore();
+  const { answer, setAnswer, pageNo, setPageNo, answerSurvey, reset } = useParticipateSurveyStore();
 
   const { t } = useTranslation();
 
@@ -37,14 +37,6 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
   }, [surveyId]);
 
   const content = useMemo(() => {
-    if (hasFinished) {
-      return (
-        <div className="relative top-1/3">
-          <h4 className="flex justify-center">{t('survey.finished')}</h4>
-          <h4 className="flex justify-center">{t('survey.thanks')}</h4>
-        </div>
-      );
-    }
     if (!selectedSurvey) {
       return (
         <div className="relative top-1/3">
@@ -65,7 +57,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
         isPublic={isPublic}
       />
     );
-  }, [selectedSurvey, answer, pageNo, hasFinished]);
+  }, [selectedSurvey, answer, pageNo]);
 
   return isFetching ? <LoadingIndicatorDialog isOpen={isFetching} /> : content;
 };

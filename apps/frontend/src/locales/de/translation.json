@@ -495,7 +495,11 @@
       "addDescription": "Beschreibung hinzufügen",
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
     },
+    "participate": {
+      "saveAnswerSuccess": "Die Antwort wurde gespeichert."
+    },
     "errors": {
+      "submitAnswerError": "Die Antwort konnte nicht gespeichert werden.",
       "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden.",
       "deleteError": "Die Umfragen konnten nicht gelöscht werden.",
       "noAnswerError": "Bisher ist noch keine Antwort abgegeben worden.",
