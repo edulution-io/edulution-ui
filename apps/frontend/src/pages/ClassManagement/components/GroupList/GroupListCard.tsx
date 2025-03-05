@@ -26,7 +26,7 @@ import { useTranslation } from 'react-i18next';
 import { FaCog } from 'react-icons/fa';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 
 interface GroupListCardProps {

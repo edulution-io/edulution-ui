@@ -19,7 +19,7 @@ import Checkbox from '@/components/ui/Checkbox';
 import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import usePrintPasswordsStore from '@/pages/ClassManagement/PasswordsPage/usePrintPasswordsStore';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import { Button } from '@/components/shared/Button';
 
 interface PrintPasswordsDialogProps {

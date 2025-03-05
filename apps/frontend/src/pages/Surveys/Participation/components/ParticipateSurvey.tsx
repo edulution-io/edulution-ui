@@ -18,11 +18,12 @@ import { Model, CompletingEvent } from 'survey-core';
 import 'survey-core/i18n/english';
 import 'survey-core/i18n/german';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
+import SubmitAnswerDto from '@libs/survey/types/api/submit-answer.dto';
+import cn from '@libs/common/utils/className';
 import useLanguage from '@/hooks/useLanguage';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/custom.participation.css';
-import SubmitAnswerDto from '@libs/survey/types/api/submit-answer.dto';
 
 interface ParticipateSurveyProps {
   surveyId: string;
@@ -104,7 +105,7 @@ const ParticipateSurvey = (props: ParticipateSurveyProps) => {
   });
 
   return (
-    <div className={className}>
+    <div className={cn('survey-participation', className)}>
       <Survey model={surveyModel} />
     </div>
   );

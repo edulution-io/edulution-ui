@@ -2,26 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
-.sa-commercial {
-  visibility: hidden;
-  height: 0px;
-}
+.survey-result-table {
+  .sa-commercial {
+    visibility: hidden;
+    height: 0px;
+  }
 
-.sa-table__entries-label,
-.sa-table__entries-label--right {
-  color: theme("colors.foreground") !important;
-}
+  .sa-table__entries-label,
+  .sa-table__entries-label--right,
+  .sa-table__global-filter {
+    color: var(--foreground) !important;
+  }
 
-.sa-table select {
-  color: theme("colors.foreground") !important;
-}
+  .sa-table select {
+    color: var(--foreground) !important;
+  }
 
-.surveyDashboardContainer {
-  overflow-x: auto;
-  overflow-y: auto;
-  width: 100%;
-}
+  .sa-visualizer__content {
+    color: var(--foreground);
+  }
 
-.tabulator-cell {
-  color: theme("colors.foreground") !important;
+  .surveyDashboardContainer {
+    overflow-x: auto;
+    overflow-y: auto;
+    width: 100%;
+  }
+
+  .tabulator-cell {
+    color: var(--foreground) !important;
+  }
 }

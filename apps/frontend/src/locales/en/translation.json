@@ -3,7 +3,6 @@
   "changeLang": "Change Language",
   "heading": "Welcome {{givenName}} {{familyName}}",
   "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
-  "preparing": "preparing...",
   "closeEditingWindow": "Close editing window",
   "framebufferImage": "Framebuffer image",
   "previewImage": "Image preview",
@@ -289,6 +288,7 @@
     "sidebar": "File Sharing",
     "previewTitle": "File Preview",
     "fileEditor": "File editor",
+    "filePreview": "File preview",
     "saveFile": "Save file",
     "loadingDocument": "Loading document...",
     "closeEditor": "Close editor",
@@ -1008,8 +1008,7 @@
     "noDataAvailable": "No data available"
   },
   "loadingIndicator": {
-    "message": "Please wait...",
-    "previewLoading": "Preview loading"
+    "message": "Please wait..."
   },
   "search": {
     "type-to-search": "Type to search",

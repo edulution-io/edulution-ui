@@ -30,6 +30,10 @@ const handleApiError = (error: any, set: (params: any) => void, errorName = 'err
   if (axios.isAxiosError(error)) {
     const axiosError = error as CustomAxiosError;
 
+    if (error.name === 'CanceledError' || error.code === 'ERR_CANCELED') {
+      return;
+    }
+
     let errorMessage = i18n.t(axiosError.response?.data?.message) || axiosError.response?.statusText;
 
     if (error.response?.status === 413) {

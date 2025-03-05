@@ -16,7 +16,7 @@ import QuickAccess from '@/pages/ClassManagement/LessonPage/QuickAccess/QuickAcc
 import UserProjectOrSchoolClassSearch from '@/pages/ClassManagement/LessonPage/UserProjectOrSchoolClassSearch';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import UserArea from '@/pages/ClassManagement/LessonPage/UserArea/UserArea';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import { MdClose, MdSave } from 'react-icons/md';
@@ -162,7 +162,7 @@ const LessonPage = () => {
         className="my-2 flex flex-col gap-2 md:flex-row"
         id={FILTER_BAR_ID}
       >
-        <LoadingIndicator isOpen={isPageLoading || isLoading} />
+        <LoadingIndicatorDialog isOpen={isPageLoading || isLoading} />
         <UserProjectOrSchoolClassSearch />
         {sessionOptions && (
           <div className="md:w-1/3">
