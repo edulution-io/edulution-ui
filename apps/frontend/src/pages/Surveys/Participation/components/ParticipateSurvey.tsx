@@ -11,8 +11,10 @@
  */
 
 import React from 'react';
+import { toast } from 'sonner';
 import { Survey } from 'survey-react-ui';
-import { Model } from 'survey-core';
+import { useTranslation } from 'react-i18next';
+import { Model, CompletingEvent } from 'survey-core';
 import 'survey-core/i18n/english';
 import 'survey-core/i18n/german';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
@@ -31,7 +33,7 @@ interface ParticipateSurveyProps {
   setAnswer: (answer: JSON) => void;
   pageNo: number;
   setPageNo: (pageNo: number) => void;
-  submitAnswer: (answerDto: SubmitAnswerDto) => Promise<boolean>;
+  submitAnswer: (answerDto: SubmitAnswerDto, sender: Model, options: CompletingEvent) => Promise<boolean>;
   updateOpenSurveys?: () => void;
   updateAnsweredSurveys?: () => void;
   isPublic?: boolean;
@@ -56,6 +58,8 @@ const ParticipateSurvey = (props: ParticipateSurveyProps) => {
 
   const { language } = useLanguage();
 
+  const { t } = useTranslation();
+
   const surveyModel = new Model(formula);
   surveyModel.applyTheme(surveyTheme);
 
@@ -78,16 +82,25 @@ const ParticipateSurvey = (props: ParticipateSurveyProps) => {
   surveyModel.onMatrixCellValueChanged.add(saveSurvey);
   surveyModel.onCurrentPageChanged.add(saveSurvey);
 
-  surveyModel.onComplete.add(async (_sender, _options) => {
-    await submitAnswer({
-      surveyId,
-      saveNo,
-      answer,
-      isPublic,
-    });
-    if (!isPublic) {
-      updateOpenSurveys();
-      updateAnsweredSurveys();
+  surveyModel.onCompleting.add(async (sender, options) => {
+    const success = await submitAnswer(
+      {
+        surveyId,
+        saveNo,
+        answer,
+        isPublic,
+      },
+      sender,
+      options,
+    );
+
+    if (success) {
+      if (!isPublic) {
+        updateOpenSurveys();
+        updateAnsweredSurveys();
+      }
+
+      toast.success(t('survey.participate.saveAnswerSuccess'));
     }
   });
 

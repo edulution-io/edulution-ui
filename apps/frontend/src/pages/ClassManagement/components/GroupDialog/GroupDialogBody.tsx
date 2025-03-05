@@ -17,7 +17,7 @@ import { UseFormReturn } from 'react-hook-form';
 import FormField from '@/components/shared/FormField';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import useUserStore from '@/store/UserStore/UserStore';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';

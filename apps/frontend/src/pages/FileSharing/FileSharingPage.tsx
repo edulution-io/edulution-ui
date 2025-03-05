@@ -11,18 +11,38 @@
  */
 
 import React from 'react';
-import DirectoryBreadcrumb from '@/pages/FileSharing/breadcrumb/DirectoryBreadcrumb';
-import ActionContentDialog from '@/pages/FileSharing/dialog/ActionContentDialog';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import StateLoader from '@/pages/FileSharing/utilities/StateLoader';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import DirectoryBreadcrumb from '@/pages/FileSharing/Table/DirectoryBreadcrumb';
+import ActionContentDialog from '@/pages/FileSharing/Dialog/ActionContentDialog';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useFileSharingPage from '@/pages/FileSharing/hooks/useFileSharingPage';
-import FileSharingFloatingButtonsBar from '@/pages/FileSharing/buttonsBar/FileSharingFloatingButtonsBar';
-import FileSharingLayout from '@/pages/FileSharing/layout/FileSharingLayout';
+import FileSharingFloatingButtonsBar from '@/pages/FileSharing/FloatingButtonsBar/FileSharingFloatingButtonsBar';
+import FileSharingTable from '@/pages/FileSharing/Table/FileSharingTable';
+import FileViewer from '@/pages/FileSharing/FilePreview/FileViewer';
+import useIsMobileView from '@/hooks/useIsMobileView';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
+import APPS from '@libs/appconfig/constants/apps';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import ContentType from '@libs/filesharing/types/contentType';
+import isFileValid from '@libs/filesharing/utils/isFileValid';
+import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
+import FILE_PREVIEW_ELEMENT_ID from '@libs/filesharing/constants/filePreviewElementId';
+import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 
 const FileSharingPage = () => {
+  const isMobileView = useIsMobileView();
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
-  const { files } = useFileSharingStore();
+  const { currentlyEditingFile } = useFileEditorStore();
+  const { appConfigs } = useAppConfigsStore();
+
+  const isDocumentServerConfigured = !!getExtendedOptionsValue(
+    appConfigs,
+    APPS.FILE_SHARING,
+    ExtendedOptionKeys.ONLY_OFFICE_URL,
+  );
+  const isValidFile = currentlyEditingFile?.type === ContentType.FILE && isFileValid(currentlyEditingFile);
+  const isFilePreviewVisible = isValidFile && isDocumentServerConfigured && !isMobileView;
+
   return (
     <div className="w-full overflow-x-auto">
       <div className="h-[calc(100vh-var(--floating-buttons-height))] flex-1 overflow-hidden">
@@ -35,14 +55,25 @@ const FileSharingPage = () => {
             }}
             style={{ color: 'white' }}
           />
-          <StateLoader isLoading={isFileProcessing} />
         </div>
-        <LoadingIndicator isOpen={isLoading} />
+        <LoadingIndicatorDialog isOpen={isLoading} />
         <div
-          className="max-h[75vh] w-full md:w-auto md:max-w-7xl xl:max-w-full"
+          className="flex h-full w-full flex-row md:w-auto md:max-w-7xl xl:max-w-full"
           data-testid="test-id-file-sharing-page-data-table"
         >
-          <FileSharingLayout files={files} />
+          <div className={isFilePreviewVisible ? 'w-1/2 2xl:w-2/3' : 'w-full'}>
+            {isFileProcessing ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}
+            <FileSharingTable />
+          </div>
+          {isFilePreviewVisible && (
+            <div
+              id={FILE_PREVIEW_ELEMENT_ID}
+              className="h-full w-1/2 2xl:w-1/3"
+              data-testid="test-id-file-preview"
+            >
+              <FileViewer />
+            </div>
+          )}
         </div>
       </div>
       <div className="fixed bottom-8 mt-10 flex flex-row space-x-24">

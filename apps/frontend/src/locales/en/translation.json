@@ -3,7 +3,6 @@
   "changeLang": "Change Language",
   "heading": "Welcome {{givenName}} {{familyName}}",
   "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
-  "preparing": "preparing...",
   "closeEditingWindow": "Close editing window",
   "framebufferImage": "Framebuffer image",
   "previewImage": "Image preview",
@@ -195,7 +194,8 @@
     "automaticLoginFailed": "Automatic login failed",
     "unexpectedError": "An unexpected error occurred",
     "uploadOrFetchAttachmentFailed": "Error uploading or fetching attachment",
-    "fileGenerationFailed": "File generation failed"
+    "fileGenerationFailed": "File generation failed",
+    "requestTooLarge": "Your request is too large. If you have attached media, try compressing or removing it"
   },
   "conferences": {
     "errors": {
@@ -288,6 +288,7 @@
     "sidebar": "File Sharing",
     "previewTitle": "File Preview",
     "fileEditor": "File editor",
+    "filePreview": "File preview",
     "saveFile": "Save file",
     "loadingDocument": "Loading document...",
     "closeEditor": "Close editor",
@@ -493,8 +494,11 @@
       "addDescription": "Add a description",
       "expectingUserInput": "Expecting the user to answer here, ... "
     },
+    "participate": {
+      "saveAnswerSuccess": "Saved the answer."
+    },
     "errors": {
-      "surveyTooBig": "The survey is too big.",
+      "submitAnswerError": "Not able to submit the answer.",
       "updateOrCreateError": "Neither able to update a survey nor to create a new one.",
       "deleteError": "Not able to delete the surveys.",
       "noAnswerError": "No answers available jet.",
@@ -1004,8 +1008,7 @@
     "noDataAvailable": "No data available"
   },
   "loadingIndicator": {
-    "message": "Please wait...",
-    "previewLoading": "Preview loading"
+    "message": "Please wait..."
   },
   "search": {
     "type-to-search": "Type to search",

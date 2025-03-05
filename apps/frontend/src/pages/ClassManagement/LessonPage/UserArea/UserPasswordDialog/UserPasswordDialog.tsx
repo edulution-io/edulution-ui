@@ -17,7 +17,7 @@ import UserPasswordDialogForm from '@libs/classManagement/types/userPasswordDial
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import UserPasswordDialogBody from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/UserPasswordDialogBody';
 import useLmnApiStore from '@/store/useLmnApiStore';

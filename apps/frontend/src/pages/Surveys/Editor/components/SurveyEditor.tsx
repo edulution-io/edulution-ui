@@ -76,6 +76,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   const creator = new SurveyCreator(creatorOptions);
 
   creator.theme = surveyTheme;
+  creator.locale = language;
 
   creator.saveNo = form.getValues('saveNo');
   creator.JSON = form.getValues('formula');

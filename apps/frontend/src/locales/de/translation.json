@@ -3,7 +3,6 @@
   "changeLang": "Sprache ändern",
   "heading": "Herzlich Willkommen {{givenName}} {{familyName}}",
   "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
-  "preparing": "Vorbereiten...",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
   "framebufferImage": "Framebuffer-Bild",
   "previewImage": "Bildvorschau",
@@ -195,7 +194,8 @@
     "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten",
     "automaticLoginFailed": "Automatischer Login fehlgeschlagen",
     "uploadOrFetchAttachmentFailed": "Fehler beim Hochladen des Anhangs",
-    "fileGenerationFailed": "Datei konnte nicht generiert werden"
+    "fileGenerationFailed": "Datei konnte nicht generiert werden",
+    "requestTooLarge": "Deine Anfrage ist zu groß. Falls du Medien angehängt hast, versuche diese zu komprimieren oder zu entfernen"
   },
   "conferences": {
     "errors": {
@@ -288,6 +288,7 @@
     "previewTitle": "Dateivorschau",
     "saveFile": "Datei speichern",
     "fileEditor": "Datei Editor",
+    "filePreview": "Dateivorschau",
     "closeEditor": "Editor schließen",
     "loadingDocument": "Dokument wird geladen...",
     "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt",
@@ -494,8 +495,11 @@
       "addDescription": "Beschreibung hinzufügen",
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
     },
+    "participate": {
+      "saveAnswerSuccess": "Die Antwort wurde gespeichert."
+    },
     "errors": {
-      "surveyTooBig": "Die Umfrage ist zu groß.",
+      "submitAnswerError": "Die Antwort konnte nicht gespeichert werden.",
       "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden.",
       "deleteError": "Die Umfragen konnten nicht gelöscht werden.",
       "noAnswerError": "Bisher ist noch keine Antwort abgegeben worden.",
@@ -1005,8 +1009,7 @@
     "noDataAvailable": "Keine Daten verfügbar"
   },
   "loadingIndicator": {
-    "message": "Bitte warten...",
-    "previewLoading": "Vorschau laden"
+    "message": "Bitte warten..."
   },
   "search": {
     "type-to-search": "Tippen um zu suchen",
