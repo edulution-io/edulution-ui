@@ -129,7 +129,8 @@
       "Unknown": "User not found.",
       "TotpMissing": "Totp missing.",
       "TotpInvalid": "Totp invalid.",
-      "LmnConnectionFailed": "Connection to school server failed."
+      "LmnConnectionFailed": "Connection to school server failed.",
+      "KeycloakConnectionFailed": "Connection to authentication server failed."
     }
   },
   "lmnApi": {

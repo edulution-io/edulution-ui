@@ -53,7 +53,10 @@ class AuthService {
         return oidcConfig;
       }),
       catchError(() => {
-        throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.UNAUTHORIZED, undefined, AuthService.name);
+        throw new HttpException(
+          { error: AuthErrorMessages.Unknown, error_description: AuthErrorMessages.KeycloakConnectionFailed },
+          HttpStatus.SERVICE_UNAVAILABLE,
+        );
       }),
     );
   }
@@ -79,13 +82,18 @@ class AuthService {
       });
       return response.data;
     } catch (error) {
-      if (error instanceof AxiosError && error.response?.data) {
+      if (error instanceof AxiosError && error.response?.data && error.response.status < 500) {
         const errorMessage: ErrorResponse = error.response.data as ErrorResponse;
         throw new HttpException(errorMessage, HttpStatus.UNAUTHORIZED);
       }
+      if (error instanceof AxiosError && error.response && error.response.status === 503)
+        throw new HttpException(
+          { error: AuthErrorMessages.Unknown, error_description: AuthErrorMessages.KeycloakConnectionFailed },
+          error.response.status,
+        );
       throw new HttpException(
         { error: AuthErrorMessages.Unknown, error_description: AuthErrorMessages.LmnConnectionFailed },
-        HttpStatus.UNAUTHORIZED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
