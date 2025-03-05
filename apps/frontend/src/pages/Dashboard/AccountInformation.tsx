@@ -23,15 +23,15 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import Field from '@/components/shared/Field';
 
 const AccountInformation = () => {
-  const { user, getOwnUser } = useLmnApiStore();
+  const { user, lmnApiToken, getOwnUser } = useLmnApiStore();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (!user) {
+    if (!user && lmnApiToken) {
       void getOwnUser();
     }
-  }, [user]);
+  }, [user, lmnApiToken]);
 
   const userInfoFields = [
     { name: 'name', label: t('accountData.name'), value: user?.displayName || '...', readOnly: true },

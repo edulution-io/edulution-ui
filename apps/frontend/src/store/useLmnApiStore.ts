@@ -81,9 +81,8 @@ const useLmnApiStore = create<UseLmnApiStore>(
         if (get().isGetOwnUserLoading) return;
         set({ isGetOwnUserLoading: true, error: null });
         try {
-          const { lmnApiToken } = useLmnApiStore.getState();
           const response = await eduApi.get<UserLmnInfo>(USER, {
-            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+            headers: { [HTTP_HEADERS.XApiKey]: get().lmnApiToken },
           });
           set({ user: response.data, schoolPrefix: getSchoolPrefix(response.data) });
         } catch (error) {
@@ -98,11 +97,10 @@ const useLmnApiStore = create<UseLmnApiStore>(
 
         set({ isFetchUserLoading: true, error: null });
         try {
-          const { lmnApiToken } = useLmnApiStore.getState();
           const response = await eduApi.get<UserLmnInfo>(
             `${USER}/${username}?checkFirstPassword=${!!checkIfFirstPasswordIsSet}`,
             {
-              headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+              headers: { [HTTP_HEADERS.XApiKey]: get().lmnApiToken },
             },
           );
           return response.data;
@@ -117,9 +115,8 @@ const useLmnApiStore = create<UseLmnApiStore>(
       fetchUsersQuota: async (username): Promise<void> => {
         set({ isFetchUserLoading: true, error: null });
         try {
-          const { lmnApiToken } = useLmnApiStore.getState();
           const { data } = await eduApi.get<QuotaResponse>(`${USER}/${username}/${USERS_QUOTA}`, {
-            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+            headers: { [HTTP_HEADERS.XApiKey]: get().lmnApiToken },
           });
           set({ usersQuota: data });
         } catch (error) {
@@ -132,11 +129,10 @@ const useLmnApiStore = create<UseLmnApiStore>(
       patchUserDetails: async (userDetails) => {
         set({ isPatchingUserLoading: true, error: null });
         try {
-          const { lmnApiToken } = useLmnApiStore.getState();
           const { data } = await eduApi.patch<UserLmnInfo>(
             `${USER}`,
             { userDetails },
-            { headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken } },
+            { headers: { [HTTP_HEADERS.XApiKey]: get().lmnApiToken } },
           );
           set({ user: data });
         } catch (error) {

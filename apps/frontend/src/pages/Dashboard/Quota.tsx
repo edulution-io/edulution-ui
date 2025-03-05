@@ -18,14 +18,14 @@ import { type QuotaInfo } from '@libs/lmnApi/types/lmnApiQuotas';
 
 const Quota: React.FC = () => {
   const { t } = useTranslation();
-  const { user: lmnUser, usersQuota, fetchUsersQuota } = useLmnApiStore();
+  const { user: lmnUser, lmnApiToken, usersQuota, fetchUsersQuota } = useLmnApiStore();
   const { user } = useUserStore();
 
   useEffect(() => {
-    if (usersQuota === null) {
+    if (usersQuota === null && lmnApiToken) {
       void fetchUsersQuota(user?.username || '');
     }
-  }, [user]);
+  }, [user, lmnApiToken]);
 
   const quota = usersQuota?.[lmnUser?.school || 'default-school'] as QuotaInfo | undefined;
   const quotaUsed = quota?.used || '--';

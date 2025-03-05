@@ -23,7 +23,6 @@ import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
 import useUserStore from '@/store/UserStore/UserStore';
-import useLmnApiStore from '@/store/useLmnApiStore';
 import UserDto from '@libs/user/types/user.dto';
 import processLdapGroups from '@libs/user/utils/processLdapGroups';
 import OtpInput from '@/components/shared/OtpInput';
@@ -41,7 +40,6 @@ const LoginPage: React.FC = () => {
   const { eduApiToken, totpIsLoading, createOrUpdateUser, setEduApiToken, getTotpStatus } = useUserStore();
 
   const { isLoading } = auth;
-  const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
   const [loginComplete, setLoginComplete] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [totp, setTotp] = useState('');
@@ -110,9 +108,7 @@ const LoginPage: React.FC = () => {
     }
     const registerUser = async () => {
       await handleRegisterUser();
-      if (!lmnApiToken) {
-        await setLmnApiToken(form.getValues('username'), form.getValues('password'));
-      }
+
       setLoginComplete(true);
       setSearchParams('');
     };
