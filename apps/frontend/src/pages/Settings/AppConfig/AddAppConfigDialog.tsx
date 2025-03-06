@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
@@ -49,8 +49,10 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
     },
   });
 
+  const newAppName = form.getValues('customAppName');
+  const slugifiedAppName = slugify(newAppName);
+
   const onSubmit = async () => {
-    const newAppName = form.getValues('customAppName');
     const newAppIcon = form.getValues('customIcon');
     const getAppType = () => {
       switch (selectedApp.id) {
@@ -66,7 +68,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
     };
 
     const newConfig: AppConfigDto = {
-      name: slugify(newAppName),
+      name: slugifiedAppName,
       translations: {
         de: newAppName,
       },
@@ -81,11 +83,14 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
     };
 
     await createAppConfig(newConfig);
-    if (!error) {
-      setIsAddAppConfigDialogOpen(false);
-      navigate(`/${SETTINGS_PATH}/${newAppName}`);
-    }
   };
+
+  useEffect(() => {
+    if (isAddAppConfigDialogOpen && !isLoading && !error) {
+      setIsAddAppConfigDialogOpen(false);
+      navigate(`/${SETTINGS_PATH}/${slugifiedAppName}`);
+    }
+  }, [isLoading, error]);
 
   const getDialogBody = () => {
     if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
