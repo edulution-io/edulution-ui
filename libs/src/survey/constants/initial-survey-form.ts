@@ -13,10 +13,11 @@
 import i18next from 'i18next';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 
 const getInitialSurveyFormValues = (creator: AttendeeDto, selectedSurvey?: SurveyDto): SurveyDto => ({
   id: selectedSurvey?.id,
-  formula: selectedSurvey?.formula || { title: i18next.t('survey.newTitle').toString() },
+  formula: selectedSurvey?.formula || ({ title: i18next.t('survey.newTitle').toString() } as SurveyFormula),
   saveNo: selectedSurvey?.saveNo || 0,
   creator,
   invitedAttendees: selectedSurvey?.invitedAttendees || [],
@@ -24,7 +25,7 @@ const getInitialSurveyFormValues = (creator: AttendeeDto, selectedSurvey?: Surve
   participatedAttendees: selectedSurvey?.participatedAttendees || [],
   answers: selectedSurvey?.answers || [],
   createdAt: selectedSurvey?.createdAt || new Date(),
-  expires: selectedSurvey?.expires,
+  expires: selectedSurvey?.expires ? new Date(selectedSurvey?.expires) || undefined : undefined,
   isAnonymous: selectedSurvey?.isAnonymous || false,
   canSubmitMultipleAnswers: selectedSurvey?.canSubmitMultipleAnswers || false,
   isPublic: selectedSurvey?.isPublic || false,

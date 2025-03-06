@@ -24,15 +24,15 @@ import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPag
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
+import SurveyFormula from '@libs/survey/types/TSurveyFormula';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SharePublicSurveyDialog from '@/pages/Surveys/Editor/dialog/SharePublicSurveyDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
-import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 
 const SurveyEditorPage = () => {
   const { updateSelectedSurvey, isFetching, selectedSurvey } = useSurveyTablesPageStore();
-  const { updateOrCreateSurvey, reset } = useSurveyEditorPageStore();
+  const { isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog, updateOrCreateSurvey, reset } = useSurveyEditorPageStore();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -83,8 +83,6 @@ const SurveyEditorPage = () => {
       canUpdateFormerAnswer,
     } = form.getValues();
 
-    // console.log("id", id);
-
     try {
       await updateOrCreateSurvey({
         formula,
@@ -124,8 +122,27 @@ const SurveyEditorPage = () => {
           initialFormula={initialFormValues?.formula || { title: t('survey.newTitle').toString() }}
           initialSaveNo={selectedSurvey?.saveNo || 0}
           saveSurvey={handleSaveSurvey}
+          isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
+          setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
+          invitedAttendees={form.watch('invitedAttendees')}
+          setInvitedAttendees={(value: AttendeeDto[]) =>
+            form.setValue('invitedAttendees', value, { shouldValidate: true })
+          }
+          invitedGroups={form.watch('invitedGroups')}
+          setInvitedGroups={(value: MultipleSelectorGroup[]) =>
+            form.setValue('invitedGroups', value, { shouldValidate: true })
+          }
+          expires={form.watch('expires')}
+          setExpires={(value: Date | undefined) => form.setValue('expires', value)}
+          isAnonymous={form.watch('isAnonymous')}
+          setIsAnonymous={(value: boolean | undefined) => form.setValue('isAnonymous', value)}
+          isPublic={form.watch('isPublic')}
+          setIsPublic={(value: boolean | undefined) => form.setValue('isPublic', value)}
+          canSubmitMultipleAnswers={form.watch('canSubmitMultipleAnswers')}
+          setCanSubmitMultipleAnswers={(value: boolean | undefined) => form.setValue('canSubmitMultipleAnswers', value)}
+          canUpdateFormerAnswer={form.watch('canUpdateFormerAnswer')}
+          setCanUpdateFormerAnswer={(value: boolean | undefined) => form.setValue('canUpdateFormerAnswer', value)}
         />
-        <SaveSurveyDialog form={form} />
         <SharePublicSurveyDialog />
       </>
     </>

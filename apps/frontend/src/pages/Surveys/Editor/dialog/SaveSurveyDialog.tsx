@@ -11,25 +11,75 @@
  */
 
 import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import SaveSurveyDialogBody from '@/pages/Surveys/Editor/dialog/SaveSurveyDialogBody';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
-import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
 interface SaveSurveyDialogProps {
-  form: UseFormReturn<SurveyDto>;
+  isOpenSaveSurveyDialog: boolean;
+  setIsOpenSaveSurveyDialog: (state: boolean) => void;
+
+  invitedAttendees: AttendeeDto[];
+  setInvitedAttendees: (attendees: AttendeeDto[]) => void;
+  invitedGroups: MultipleSelectorGroup[];
+  setInvitedGroups: (groups: MultipleSelectorGroup[]) => void;
+
+  expires?: Date;
+  setExpires: (date: Date | undefined) => void;
+  isAnonymous?: boolean;
+  setIsAnonymous: (state: boolean | undefined) => void;
+  isPublic?: boolean;
+  setIsPublic: (state: boolean | undefined) => void;
+  canSubmitMultipleAnswers?: boolean;
+  setCanSubmitMultipleAnswers: (state: boolean | undefined) => void;
+  canUpdateFormerAnswer?: boolean;
+  setCanUpdateFormerAnswer: (state: boolean | undefined) => void;
 }
 
 const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
-  const { form } = props;
+  const {
+    isOpenSaveSurveyDialog,
+    setIsOpenSaveSurveyDialog,
 
-  const { isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog } = useSurveyEditorPageStore();
+    invitedAttendees,
+    setInvitedAttendees,
+    invitedGroups,
+    setInvitedGroups,
+
+    expires,
+    setExpires,
+    isAnonymous,
+    setIsAnonymous,
+    isPublic,
+    setIsPublic,
+    canSubmitMultipleAnswers,
+    setCanSubmitMultipleAnswers,
+    canUpdateFormerAnswer,
+    setCanUpdateFormerAnswer,
+  } = props;
 
   const { t } = useTranslation();
 
-  const getDialogBody = () => <SaveSurveyDialogBody form={form} />;
+  const getDialogBody = () => (
+    <SaveSurveyDialogBody
+      invitedAttendees={invitedAttendees}
+      setInvitedAttendees={setInvitedAttendees}
+      invitedGroups={invitedGroups}
+      setInvitedGroups={setInvitedGroups}
+      expires={expires}
+      setExpires={setExpires}
+      isAnonymous={isAnonymous}
+      setIsAnonymous={setIsAnonymous}
+      isPublic={isPublic}
+      setIsPublic={setIsPublic}
+      canSubmitMultipleAnswers={canSubmitMultipleAnswers}
+      setCanSubmitMultipleAnswers={setCanSubmitMultipleAnswers}
+      canUpdateFormerAnswer={canUpdateFormerAnswer}
+      setCanUpdateFormerAnswer={setCanUpdateFormerAnswer}
+    />
+  );
 
   return (
     <AdaptiveDialog

@@ -937,6 +937,7 @@
     "time": "Time",
     "revert": "Revert",
     "restart": "Restart",
+    "settings": "Settings",
     "kill": "Kill",
     "install": "Install",
     "update": "Update",

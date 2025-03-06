@@ -10,124 +10,91 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { FaGear } from 'react-icons/fa6';
-import { settings } from 'survey-core';
-import { editorLocalization, localization } from 'survey-creator-core';
+import React, { useMemo } from 'react';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
-import 'survey-creator-core/i18n/english';
-import 'survey-creator-core/i18n/german';
+import { FaGear } from 'react-icons/fa6';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 import SurveyFormula from '@libs/survey/types/TSurveyFormula';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import getSurveyFormulaFromJSON from '@libs/survey/utils/getSurveyFormulaFromJSON';
 import useLanguage from '@/hooks/useLanguage';
 import useElementHeight from '@/hooks/useElementHeight';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import surveyTheme from '@/pages/Surveys/theme/theme';
-import '@/pages/Surveys/theme/default2.min.css';
-import '@/pages/Surveys/theme/creator.min.css';
-import '@/pages/Surveys/theme/custom.survey.css';
-import '@/pages/Surveys/theme/custom.creator.css';
-import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import SurveyCreatorObject from '@/pages/Surveys/Editor/components/SurveyCreatorObject';
+import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 
 interface SurveyEditorProps {
   initialFormula: SurveyFormula;
   initialSaveNo: number;
   saveSurvey: (formula: SurveyFormula, saveNo: number) => Promise<void>;
+
+  isOpenSaveSurveyDialog: boolean;
+  setIsOpenSaveSurveyDialog: (state: boolean) => void;
+
+  invitedAttendees: AttendeeDto[];
+  setInvitedAttendees: (attendees: AttendeeDto[]) => void;
+  invitedGroups: MultipleSelectorGroup[];
+  setInvitedGroups: (groups: MultipleSelectorGroup[]) => void;
+
+  expires?: Date;
+  setExpires: (date: Date | undefined) => void;
+  isAnonymous?: boolean;
+  setIsAnonymous: (state: boolean | undefined) => void;
+  isPublic?: boolean;
+  setIsPublic: (state: boolean | undefined) => void;
+  canSubmitMultipleAnswers?: boolean;
+  setCanSubmitMultipleAnswers: (state: boolean | undefined) => void;
+  canUpdateFormerAnswer?: boolean;
+  setCanUpdateFormerAnswer: (state: boolean | undefined) => void;
 }
 
-settings.lazyRender.enabled = true;
-
 const SurveyEditor = (props: SurveyEditorProps) => {
-  const { saveSurvey, initialFormula, initialSaveNo } = props;
-  const { setIsOpenSaveSurveyDialog } = useSurveyEditorPageStore();
+  const {
+    saveSurvey,
+    initialFormula,
+    initialSaveNo,
+
+    isOpenSaveSurveyDialog,
+    setIsOpenSaveSurveyDialog,
+
+    invitedAttendees,
+    setInvitedAttendees,
+    invitedGroups,
+    setInvitedGroups,
+
+    expires,
+    setExpires,
+    isAnonymous,
+    setIsAnonymous,
+    isPublic,
+    setIsPublic,
+    canSubmitMultipleAnswers,
+    setCanSubmitMultipleAnswers,
+    canUpdateFormerAnswer,
+    setCanUpdateFormerAnswer,
+  } = props;
 
   const { language } = useLanguage();
 
-  editorLocalization.defaultLocale = language;
-  localization.currentLocale = language;
+  const creator = useMemo(() => {
+    const surveyCreatorModel: SurveyCreator = SurveyCreatorObject({ language });
 
-  const creatorOptions = {
-    generateValidJSON: true,
-    isAutoSave: false,
-    maxNestedPanels: 0,
-    showJSONEditorTab: true,
-    showPreviewTab: false,
-    showLogicTab: true,
-    questionTypes: [
-      'radiogroup',
-      'rating',
-      'checkbox',
-      'dropdown',
-      // 'tagbox',
-      'boolean',
-      'file',
-      'imagepicker',
-      'ranking',
-      'text',
-      'comment',
-      'multipletext',
-      'panel',
-      'paneldynamic',
-      'matrix',
-      'matrixdropdown',
-      // 'matrixdynamic',
-      'image',
-      // 'html',
-      // 'expression',
-      // 'signaturepad',
-    ],
-  };
-  const creator = new SurveyCreator(creatorOptions);
+    surveyCreatorModel.JSON = initialFormula;
+    surveyCreatorModel.saveNo = initialSaveNo;
+    surveyCreatorModel.locale = language;
 
-  creator.theme = surveyTheme;
+    surveyCreatorModel.saveSurveyFunc = async (
+      saveNo: number,
+      _callback: (saveNo: number, isSuccess: boolean) => void,
+    ) => {
+      await saveSurvey(getSurveyFormulaFromJSON(surveyCreatorModel.getSurveyJSON() as JSON), saveNo);
+    };
 
-  creator.JSON = initialFormula;
-  creator.saveNo = initialSaveNo;
-
-  // TOOLBAR (HEADER)
-  const settingsActionHeader = creator.toolbar.actions.findIndex((action) => action.id === 'svd-settings');
-  creator.toolbar.actions.splice(settingsActionHeader, 1);
-
-  const expandGridActionHeader = creator.toolbar.actions.findIndex((action) => action.id === 'svd-grid-expand');
-  creator.toolbar.actions.splice(expandGridActionHeader, 1);
-
-  // TOOLBAR (FOOTER)
-  const designerActionFooter = creator.footerToolbar.actions.findIndex((action) => action.id === 'svd-designer');
-  creator.footerToolbar.actions.splice(designerActionFooter, 1);
-
-  const previewActionFooter = creator.footerToolbar.actions.findIndex((action) => action.id === 'svd-preview');
-  creator.footerToolbar.actions.splice(previewActionFooter, 1);
-
-  const settingsActionFooter = creator.footerToolbar.actions.findIndex((action) => action.id === 'svd-settings');
-  creator.footerToolbar.actions.splice(settingsActionFooter, 1);
-
-  // TOOLBOX (LEFT SIDEBAR)
-  creator.showToolbox = false;
-
-  // PROPERTY GRID (RIGHT SIDEBAR)
-  creator.showSidebar = false;
-
-  creator.showSaveButton = false;
-
-  creator.startEditTitleOnQuestionAdded = true;
-
-  creator.onElementAllowOperations.add((_, options) => {
-    // eslint-disable-next-line no-param-reassign
-    options.allowShowSettings = false;
-  });
-
-  // ELEMENT MENU (part of the ELEMENT/QUESTION)
-  creator.onDefineElementMenuItems.add((_, options) => {
-    const settingsItemIndex = options.items.findIndex((option) => option.iconName === 'icon-settings_16x16');
-    options.items.splice(settingsItemIndex, 1);
-  });
-
-  creator.saveSurveyFunc = async (saveNo: number, _callback: (saveNo: number, isSuccess: boolean) => void) => {
-    await saveSurvey(getSurveyFormulaFromJSON(creator.getSurveyJSON() as JSON), saveNo);
-  };
+    return surveyCreatorModel;
+  }, [initialFormula, initialSaveNo, language]);
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
@@ -155,6 +122,24 @@ const SurveyEditor = (props: SurveyEditorProps) => {
             height: '100%',
             width: '100%',
           }}
+        />
+        <SaveSurveyDialog
+          isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
+          setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
+          invitedAttendees={invitedAttendees}
+          setInvitedAttendees={setInvitedAttendees}
+          invitedGroups={invitedGroups}
+          setInvitedGroups={setInvitedGroups}
+          expires={expires}
+          setExpires={setExpires}
+          isAnonymous={isAnonymous}
+          setIsAnonymous={setIsAnonymous}
+          isPublic={isPublic}
+          setIsPublic={setIsPublic}
+          canSubmitMultipleAnswers={canSubmitMultipleAnswers}
+          setCanSubmitMultipleAnswers={setCanSubmitMultipleAnswers}
+          canUpdateFormerAnswer={canUpdateFormerAnswer}
+          setCanUpdateFormerAnswer={setCanUpdateFormerAnswer}
         />
       </div>
       <FloatingButtonsBar config={config} />

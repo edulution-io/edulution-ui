@@ -12,7 +12,6 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { UseFormReturn } from 'react-hook-form';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import useUserStore from '@/store/UserStore/UserStore';
 import Checkbox from '@/components/ui/Checkbox';
@@ -23,65 +22,101 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
 interface SaveSurveyDialogBodyProps {
-  form: UseFormReturn<SurveyDto>;
+  invitedAttendees: AttendeeDto[];
+  setInvitedAttendees: (attendees: AttendeeDto[]) => void;
+  invitedGroups: MultipleSelectorGroup[];
+  setInvitedGroups: (groups: MultipleSelectorGroup[]) => void;
+
+  expires?: Date;
+  setExpires: (date: Date | undefined) => void;
+  isAnonymous?: boolean;
+  setIsAnonymous: (state: boolean | undefined) => void;
+  isPublic?: boolean;
+  setIsPublic: (state: boolean | undefined) => void;
+  canSubmitMultipleAnswers?: boolean;
+  setCanSubmitMultipleAnswers: (state: boolean | undefined) => void;
+  canUpdateFormerAnswer?: boolean;
+  setCanUpdateFormerAnswer: (state: boolean | undefined) => void;
 }
 
-const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
-  const { setValue, watch } = form;
+const SaveSurveyDialogBody = (props: SaveSurveyDialogBodyProps) => {
+  const {
+    invitedAttendees,
+    setInvitedAttendees,
+    invitedGroups,
+    setInvitedGroups,
+
+    expires,
+    setExpires,
+    isAnonymous,
+    setIsAnonymous,
+    isPublic,
+    setIsPublic,
+    canSubmitMultipleAnswers,
+    setCanSubmitMultipleAnswers,
+    canUpdateFormerAnswer,
+    setCanUpdateFormerAnswer,
+  } = props;
+
   const { user } = useUserStore();
   const { searchAttendees } = useUserStore();
   const { searchGroups } = useGroupStore();
   const { t } = useTranslation();
-
-  const handleAttendeesChange = (attendees: AttendeeDto[]) => {
-    setValue('invitedAttendees', attendees, { shouldValidate: true });
-  };
 
   const onAttendeesSearch = async (value: string): Promise<AttendeeDto[]> => {
     const result = await searchAttendees(value);
     return user ? result.filter((r) => r.username !== user.username) : result;
   };
 
-  const handleGroupsChange = (groups: MultipleSelectorGroup[]) => {
-    setValue('invitedGroups', groups, { shouldValidate: true });
-  };
-
-  const checkboxOptions: { name: keyof SurveyDto; label: string }[] = [
-    { name: 'isAnonymous', label: 'surveys.saveDialog.isAnonymous' },
-    { name: 'isPublic', label: 'surveys.saveDialog.isPublic' },
-    { name: 'canSubmitMultipleAnswers', label: 'surveys.saveDialog.canSubmitMultipleAnswers' },
-    { name: 'canUpdateFormerAnswer', label: 'surveys.saveDialog.canUpdateFormerAnswer' },
+  const checkboxOptions: {
+    name: keyof SurveyDto;
+    label: string;
+    getter: boolean | undefined;
+    setter: (value: boolean | undefined) => void;
+  }[] = [
+    { name: 'isAnonymous', label: 'surveys.saveDialog.isAnonymous', getter: isAnonymous, setter: setIsAnonymous },
+    { name: 'isPublic', label: 'surveys.saveDialog.isPublic', getter: isPublic, setter: setIsPublic },
+    {
+      name: 'canSubmitMultipleAnswers',
+      label: 'surveys.saveDialog.canSubmitMultipleAnswers',
+      getter: canSubmitMultipleAnswers,
+      setter: setCanSubmitMultipleAnswers,
+    },
+    {
+      name: 'canUpdateFormerAnswer',
+      label: 'surveys.saveDialog.canUpdateFormerAnswer',
+      getter: canUpdateFormerAnswer,
+      setter: setCanUpdateFormerAnswer,
+    },
   ];
-
-  const selectedDate = watch('expires');
 
   return (
     <>
       <SearchUsersOrGroups
-        users={watch('invitedAttendees')}
+        users={invitedAttendees}
         onSearch={onAttendeesSearch}
-        onUserChange={handleAttendeesChange}
-        groups={watch('invitedGroups')}
+        onUserChange={setInvitedAttendees}
+        groups={invitedGroups}
         onGroupSearch={searchGroups}
-        onGroupsChange={handleGroupsChange}
+        onGroupsChange={setInvitedGroups}
         variant="dialog"
       />
       <div>
         <p className="text-m font-bold text-background">{t('survey.expirationDate')}</p>
         <DateTimeInput
-          value={selectedDate}
-          onChange={(value: Date | undefined) => setValue('expires', value)}
+          value={expires}
+          onChange={setExpires}
           variant="dialog"
           className="mt-0 pt-0"
         />
       </div>
       <p className="text-m font-bold text-background">{t('surveys.saveDialog.settingsFlags')}</p>
-      {checkboxOptions.map(({ name, label }) => (
+      {checkboxOptions.map(({ name, label, getter, setter }) => (
         <Checkbox
           key={name}
           label={t(label)}
-          checked={Boolean(watch(name))}
-          onCheckedChange={(value: boolean) => setValue(name, value, { shouldValidate: true })}
+          checked={Boolean(getter)}
+          onCheckedChange={(value: boolean) => setter(value)}
           aria-label={t(`survey.${name}`)}
           className="text-background"
         />
