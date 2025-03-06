@@ -182,6 +182,7 @@ const LoginPage: React.FC = () => {
         >
           {isEnterTotpVisible ? (
             <>
+              <div className="mt-3 text-center font-bold">{t('login.enterMultiFactorCode')}</div>
               <OtpInput
                 totp={totp}
                 setTotp={setTotp}

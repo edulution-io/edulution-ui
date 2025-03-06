@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import UserCard from '@/pages/ClassManagement/LessonPage/UserArea/UserCard';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import { useTranslation } from 'react-i18next';
@@ -24,26 +24,14 @@ import Checkbox from '@/components/ui/Checkbox';
 import useElementHeight from '@/hooks/useElementHeight';
 import { FILTER_BAR_ID, LESSON_SESSION_HEADER_ID } from '@libs/classManagement/constants/pageElementIds';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
-import useClassManagementStore from '../../useClassManagementStore';
 
-const UserArea = () => {
+const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
   const { t } = useTranslation();
-  const { user: teacher, lmnApiToken, getOwnUser } = useLmnApiStore();
+  const { user: teacher } = useLmnApiStore();
   const { user } = useUserStore();
   const { member } = useLessonStore();
   const [selectedMember, setSelectedMember] = useState<UserLmnInfo[]>([]);
   const selectedMemberCount = selectedMember.length;
-  const { fetchRoom, fetchUserSessions, fetchUserProjects, fetchUserSchoolClasses } = useClassManagementStore();
-
-  useEffect(() => {
-    if (!member && lmnApiToken) {
-      void getOwnUser();
-      void fetchRoom();
-      void fetchUserSessions();
-      void fetchUserProjects();
-      void fetchUserSchoolClasses();
-    }
-  }, [member, lmnApiToken]);
 
   const isTeacherInSameClass = useMemo(
     () =>
@@ -124,6 +112,7 @@ const UserArea = () => {
         ))}
       </div>
       <LessonFloatingButtonsBar
+        fetchData={fetchData}
         students={getSelectedStudents()}
         isMemberSelected={!!selectedMemberCount}
       />

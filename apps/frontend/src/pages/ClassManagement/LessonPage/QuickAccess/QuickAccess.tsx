@@ -27,7 +27,7 @@ import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 
 const QuickAccess = () => {
   const { t } = useTranslation();
-  const { getOwnUser, user, lmnApiToken } = useLmnApiStore();
+  const { user, lmnApiToken } = useLmnApiStore();
   const {
     createProject,
     updateProject,
@@ -46,7 +46,6 @@ const QuickAccess = () => {
 
   useEffect(() => {
     if (lmnApiToken) {
-      void getOwnUser();
       void fetchRoom();
       void fetchUserSessions();
       void fetchUserProjects();

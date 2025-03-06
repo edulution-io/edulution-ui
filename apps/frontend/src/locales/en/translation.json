@@ -840,8 +840,9 @@
       "system": "System language"
     },
     "addTotp": {
-      "title": "QR-Code",
-      "description": "Please scan the QR-Code and enter the TOTP:"
+      "title": "Set up Two-Factor Authentication",
+      "qrCodeInstructions": "Scan the QR code with an authenticator app that supports TOTP (Time-based One-Time Password).",
+      "totpCodeInstructions": "Then enter the generated code here and save it:"
     },
     "errors": {
       "currentPasswordRequired": "Current password is required",
@@ -872,7 +873,8 @@
     "username_too_long": "Username to long",
     "password_too_long": "Password to long",
     "forgot_password": "Forgot password?",
-    "remember_me": "Remember me"
+    "remember_me": "Remember me",
+    "enterMultiFactorCode": "Two-Factor Authentication"
   },
   "edit": "Edit",
   "common": {
