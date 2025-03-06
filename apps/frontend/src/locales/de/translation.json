@@ -1272,5 +1272,6 @@
   "For more on this error consult the server log at the debug level.": "Verbindung zum AD-Server fehlgeschlagen. Bitte versuche es später noch einmal.",
   "Failed to fetch": "Verbindung zum edulution Server fehlgeschlagen. Bitte versuche es später noch einmal.",
   "Invalid client or Invalid client credentials": "Ungültige Serverkonfiguration. Bitte überprüfe die Client-ID oder das Client-Secret.",
-  "Not Found (404)": "Verbindung zum edulution Server fehlgeschlagen. Bitte versuche es später noch einmal."
+  "Not Found (404)": "Verbindung zum edulution Server fehlgeschlagen. Bitte versuche es später noch einmal.",
+  "NetworkError when attempting to fetch resource.": "Netzwerkfehler beim Abrufen der Website."
 }
