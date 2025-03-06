@@ -59,6 +59,10 @@ const LoginPage: React.FC = () => {
 
   useEffect(() => {
     if (auth.error) {
+      if (auth.error.message.includes('Invalid response Content-Type:')) {
+        form.setError('password', { message: t('auth.errors.EdulutionConnectionFailed') });
+        return;
+      }
       form.setError('password', { message: t(auth.error.message) });
     }
   }, [auth.error]);

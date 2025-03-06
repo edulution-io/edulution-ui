@@ -130,7 +130,8 @@
       "TotpMissing": "Totp missing.",
       "TotpInvalid": "Totp invalid.",
       "LmnConnectionFailed": "Connection to school server failed.",
-      "KeycloakConnectionFailed": "Connection to authentication server failed."
+      "KeycloakConnectionFailed": "Connection to authentication server failed.",
+      "EdulutionConnectionFailed": "Connection to edulution server failed. Please try again later."
     }
   },
   "lmnApi": {
