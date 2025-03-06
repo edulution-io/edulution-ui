@@ -49,7 +49,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
     },
   });
 
-  const newAppName = form.getValues('customAppName');
+  const newAppName = form.watch('customAppName');
   const slugifiedAppName = slugify(newAppName);
 
   const onSubmit = async () => {

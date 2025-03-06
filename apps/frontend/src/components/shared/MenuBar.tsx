@@ -20,6 +20,7 @@ import { useOnClickOutside, useToggle } from 'usehooks-ts';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import { getFromPathName } from '@libs/common/utils';
 import APPS from '@libs/appconfig/constants/apps';
+import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 
 const MenuBar: React.FC = () => {
   const [isOpen, toggle] = useToggle(false);
@@ -65,6 +66,12 @@ const MenuBar: React.FC = () => {
       setIsSelected(matchedItem.id);
     }
   }, [pathname, menuBarEntries.menuItems, queryParams, shouldSelectFirstItem]);
+
+  useEffect(() => {
+    if (pathParts[0] === SETTINGS_PATH) {
+      setIsSelected(pathParts[1]);
+    }
+  }, [pathParts]);
 
   const renderMenuBarContent = () => (
     <div
