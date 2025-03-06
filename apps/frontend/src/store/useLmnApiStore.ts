@@ -145,7 +145,8 @@ const useLmnApiStore = create<UseLmnApiStore>(
         }
       },
 
-      reset: () => set({ ...initialState, user: get().user, schoolPrefix: get().schoolPrefix }),
+      reset: () =>
+        set({ ...initialState, user: get().user, schoolPrefix: get().schoolPrefix, usersQuota: get().usersQuota }),
     }),
     {
       name: 'lmn-user-storage',
@@ -154,6 +155,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
         lmnApiToken: state.lmnApiToken,
         user: state.user,
         schoolPrefix: state.schoolPrefix,
+        usersQuota: state.usersQuota,
       }),
     },
   ),

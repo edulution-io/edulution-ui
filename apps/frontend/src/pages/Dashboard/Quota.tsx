@@ -22,10 +22,10 @@ const Quota: React.FC = () => {
   const { user } = useUserStore();
 
   useEffect(() => {
-    if (usersQuota === null && lmnApiToken) {
+    if (lmnApiToken) {
       void fetchUsersQuota(user?.username || '');
     }
-  }, [user, lmnApiToken]);
+  }, [lmnApiToken]);
 
   const quota = usersQuota?.[lmnUser?.school || 'default-school'] as QuotaInfo | undefined;
   const quotaUsed = quota?.used || '--';
