@@ -11,7 +11,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import { useForm } from 'react-hook-form';
 import CryptoJS from 'crypto-js';
@@ -41,12 +41,10 @@ const LoginPage: React.FC = () => {
 
   const { isLoading } = auth;
   const [loginComplete, setLoginComplete] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
   const [totp, setTotp] = useState('');
   const [webdavKey, setWebdavKey] = useState('');
   const [encryptKey, setEncryptKey] = useState('');
-
-  const isEnterTotpVisible = searchParams.get('enterTotp') === 'true';
 
   const form = useForm({
     mode: 'onSubmit',
@@ -114,7 +112,7 @@ const LoginPage: React.FC = () => {
       await handleRegisterUser();
 
       setLoginComplete(true);
-      setSearchParams('');
+      setIsEnterTotpVisible(false);
     };
 
     void registerUser();
@@ -135,8 +133,7 @@ const LoginPage: React.FC = () => {
     if (!isMfaEnabled) {
       await form.handleSubmit(onSubmit)();
     } else {
-      searchParams.set('enterTotp', 'true');
-      setSearchParams(searchParams);
+      setIsEnterTotpVisible(true);
     }
   };
 
@@ -203,12 +200,25 @@ const LoginPage: React.FC = () => {
             </>
           )}
           {!form.getFieldState('password').error && <p className="flex h-2" />}
+          {isEnterTotpVisible ? (
+            <Button
+              className="mx-auto w-full justify-center text-foreground shadow-xl hover:bg-ciGrey/10"
+              type="button"
+              variant="btn-outline"
+              size="lg"
+              disabled={isLoading || totpIsLoading}
+              onClick={() => setIsEnterTotpVisible(false)}
+            >
+              {t('common.cancel')}
+            </Button>
+          ) : null}
           <Button
             className="mx-auto w-full justify-center text-background shadow-xl"
             type="submit"
             variant="btn-security"
             size="lg"
             data-testid="test-id-login-page-submit-button"
+            disabled={isLoading || totpIsLoading}
           >
             {totpIsLoading || isLoading ? t('common.loading') : t('common.login')}
           </Button>
