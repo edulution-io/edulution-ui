@@ -31,7 +31,12 @@ const getClassManagementRoutes = () => [
   >
     <Route
       path=""
-      element={<Navigate to={CLASS_MANAGEMENT_LESSON_LOCATION} />}
+      element={
+        <Navigate
+          to={CLASS_MANAGEMENT_LESSON_LOCATION}
+          replace
+        />
+      }
     />
     <Route
       path={CLASS_MANAGEMENT_LESSON_LOCATION}
