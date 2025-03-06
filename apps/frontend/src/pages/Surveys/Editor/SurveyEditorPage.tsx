@@ -27,13 +27,12 @@ import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorFor
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SharePublicSurveyDialog from '@/pages/Surveys/Editor/dialog/SharePublicSurveyDialog';
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import SaveSurveyDialog from "@/pages/Surveys/Editor/dialog/SaveSurveyDialog";
-import SurveyFormula from "@libs/survey/types/TSurveyFormula";
+import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
+import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 
 const SurveyEditorPage = () => {
   const { updateSelectedSurvey, isFetching, selectedSurvey } = useSurveyTablesPageStore();
-  const { isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog, updateOrCreateSurvey, reset } =
-    useSurveyEditorPageStore();
+  const { updateOrCreateSurvey, reset } = useSurveyEditorPageStore();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -86,7 +85,7 @@ const SurveyEditorPage = () => {
 
     // console.log("id", id);
 
-    try{
+    try {
       await updateOrCreateSurvey({
         formula,
         saveNo,
@@ -104,8 +103,6 @@ const SurveyEditorPage = () => {
         canSubmitMultipleAnswers,
         canUpdateFormerAnswer,
       });
-
-      setIsOpenSaveSurveyDialog(false);
 
       toast.success(t('survey.editor.saveSurveySuccess'));
       navigate(`/${CREATED_SURVEYS_PAGE}`);
@@ -127,13 +124,8 @@ const SurveyEditorPage = () => {
           initialFormula={initialFormValues?.formula || { title: t('survey.newTitle').toString() }}
           initialSaveNo={selectedSurvey?.saveNo || 0}
           saveSurvey={handleSaveSurvey}
-          setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
         />
-        <SaveSurveyDialog
-          form={form}
-          isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
-          setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
-        />
+        <SaveSurveyDialog form={form} />
         <SharePublicSurveyDialog />
       </>
     </>

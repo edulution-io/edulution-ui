@@ -30,18 +30,19 @@ import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
 import '@/pages/Surveys/theme/custom.survey.css';
 import '@/pages/Surveys/theme/custom.creator.css';
+import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 
 interface SurveyEditorProps {
   initialFormula: SurveyFormula;
   initialSaveNo: number;
   saveSurvey: (formula: SurveyFormula, saveNo: number) => Promise<void>;
-  setIsOpenSaveSurveyDialog: (state: boolean) => void;
 }
 
 settings.lazyRender.enabled = true;
 
 const SurveyEditor = (props: SurveyEditorProps) => {
-  const { saveSurvey, initialFormula, initialSaveNo, setIsOpenSaveSurveyDialog } = props;
+  const { saveSurvey, initialFormula, initialSaveNo } = props;
+  const { setIsOpenSaveSurveyDialog } = useSurveyEditorPageStore();
 
   const { language } = useLanguage();
 
@@ -126,16 +127,16 @@ const SurveyEditor = (props: SurveyEditorProps) => {
 
   creator.saveSurveyFunc = async (saveNo: number, _callback: (saveNo: number, isSuccess: boolean) => void) => {
     await saveSurvey(getSurveyFormulaFromJSON(creator.getSurveyJSON() as JSON), saveNo);
-  }
+  };
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
-      SaveButton( () => creator.saveSurvey() ),
+      SaveButton(() => creator.saveSurvey()),
       {
         icon: FaGear,
         text: 'common.settings',
-        onClick: () => setIsOpenSaveSurveyDialog(true)
-      }
+        onClick: () => setIsOpenSaveSurveyDialog(true),
+      },
     ],
     keyPrefix: 'surveys-page-floating-button_',
   };
@@ -159,6 +160,6 @@ const SurveyEditor = (props: SurveyEditorProps) => {
       <FloatingButtonsBar config={config} />
     </>
   );
-}
+};
 
 export default SurveyEditor;

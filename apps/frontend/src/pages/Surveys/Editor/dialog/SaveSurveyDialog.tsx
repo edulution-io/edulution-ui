@@ -16,15 +16,16 @@ import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import SaveSurveyDialogBody from '@/pages/Surveys/Editor/dialog/SaveSurveyDialogBody';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 
 interface SaveSurveyDialogProps {
   form: UseFormReturn<SurveyDto>;
-  isOpenSaveSurveyDialog: boolean;
-  setIsOpenSaveSurveyDialog: (state: boolean) => void;
 }
 
 const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
-  const { form, isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog } = props;
+  const { form } = props;
+
+  const { isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog } = useSurveyEditorPageStore();
 
   const { t } = useTranslation();
 
