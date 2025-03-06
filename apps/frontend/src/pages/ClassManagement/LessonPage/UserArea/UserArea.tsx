@@ -25,7 +25,7 @@ import useElementHeight from '@/hooks/useElementHeight';
 import { FILTER_BAR_ID, LESSON_SESSION_HEADER_ID } from '@libs/classManagement/constants/pageElementIds';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 
-const UserArea = () => {
+const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
   const { t } = useTranslation();
   const { user: teacher } = useLmnApiStore();
   const { user } = useUserStore();
@@ -112,6 +112,7 @@ const UserArea = () => {
         ))}
       </div>
       <LessonFloatingButtonsBar
+        fetchData={fetchData}
         students={getSelectedStudents()}
         isMemberSelected={!!selectedMemberCount}
       />

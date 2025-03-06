@@ -31,11 +31,19 @@ import { FILTER_BAR_ID } from '@libs/classManagement/constants/pageElementIds';
 import { UseFormReturn } from 'react-hook-form';
 import GroupForm from '@libs/groups/types/groupForm';
 import GroupColumn from '@libs/groups/types/groupColumn';
+import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 
 const LessonPage = () => {
-  const { userSessions, fetchProject, updateSession, createSession, removeSession, fetchSchoolClass } =
-    useClassManagementStore();
-  const { getOwnUser } = useLmnApiStore();
+  const {
+    userSessions,
+    fetchProject,
+    updateSession,
+    createSession,
+    removeSession,
+    fetchSchoolClass,
+    fetchUserSessions,
+  } = useClassManagementStore();
+  const { lmnApiToken, getOwnUser } = useLmnApiStore();
   const { groupType: groupTypeParams, groupName: groupNameParams } = useParams();
   const {
     isLoading,
@@ -52,31 +60,36 @@ const LessonPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [isPageLoading, setIsPageLoading] = useState(false);
-
-  const currentSelectedSession = userSessions.find((session) => session.name === groupNameParams);
+  const [currentSelectedSession, setCurrentSelectedSession] = useState<LmnApiSession | null>(null);
 
   useEffect(() => {
-    void getOwnUser();
-  }, []);
+    if (lmnApiToken) {
+      void getOwnUser();
+    }
+  }, [lmnApiToken]);
 
   const fetchData = async () => {
-    if (!groupNameParams) return;
+    if (isPageLoading) return;
 
     setIsPageLoading(true);
 
     switch (groupTypeParams) {
       case UserGroups.Projects: {
-        const project = await fetchProject(groupNameParams);
+        const project = await fetchProject(groupNameParams!);
         if (project?.members) {
           setMember(getUniqueValues([...project.members, ...project.admins]));
         }
         break;
       }
-      case UserGroups.Sessions:
-        setMember(currentSelectedSession?.members || []);
+      case UserGroups.Sessions: {
+        await fetchUserSessions();
+        const session = userSessions.find((s) => s.name === groupNameParams);
+        setCurrentSelectedSession(session || null);
+        setMember(session?.members || []);
         break;
+      }
       case UserGroups.Classes: {
-        const schoolClass = await fetchSchoolClass(groupNameParams);
+        const schoolClass = await fetchSchoolClass(groupNameParams!);
         if (schoolClass?.members) {
           setMember(getUniqueValues([...schoolClass.members]));
         }
@@ -95,23 +108,17 @@ const LessonPage = () => {
       !groupNameParams
     );
 
-    const fetchInitialData =
-      !!(groupTypeParams && groupTypeParams !== groupTypeFromStore) ||
-      !!(groupNameParams && groupNameParams !== groupNameFromStore);
-
     if (restoreTemporarySession) {
       navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}/${groupTypeFromStore}/${groupNameFromStore}`, { replace: true });
-    } else if (fetchInitialData) {
+      return;
+    }
+
+    if (groupTypeParams && groupNameParams && lmnApiToken) {
       setGroupTypeInStore(groupTypeParams);
       setGroupNameInStore(groupNameParams);
       void fetchData();
     }
-  }, [groupTypeParams, groupNameParams]);
-
-  useEffect(() => {
-    setMember(currentSelectedSession?.members || []);
-    if (!isLoading) setIsPageLoading(false);
-  }, [userSessions]);
+  }, [groupTypeParams, groupNameParams, lmnApiToken]);
 
   const handleSessionSelect = (sessionName: string) => {
     navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}/sessions/${sessionName}`);
@@ -196,7 +203,7 @@ const LessonPage = () => {
           </div>
         ) : null}
       </div>
-      <div>{groupNameParams || member.length ? <UserArea /> : <QuickAccess />}</div>
+      <div>{groupNameParams || member.length ? <UserArea fetchData={fetchData} /> : <QuickAccess />}</div>
       {openDialogType === UserGroups.Sessions && <GroupDialog item={sessionToSave} />}
     </>
   );
