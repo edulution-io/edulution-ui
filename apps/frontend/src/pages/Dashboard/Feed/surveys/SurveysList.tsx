@@ -44,7 +44,7 @@ const SurveysList = (props: SurveysListProps) => {
         {survey.createdAt ? format(survey.createdAt, 'dd. MMMM', { locale }) : FallbackText}
       </p>
       {survey.expires ? (
-        <p className="text-muted-background line-clamp-2 text-sm">
+        <p className="line-clamp-2 text-sm text-muted-foreground">
           {`${t('survey.expires')}:  `}
           {formatDistanceToNow(survey.expires, { addSuffix: true, locale })}
         </p>

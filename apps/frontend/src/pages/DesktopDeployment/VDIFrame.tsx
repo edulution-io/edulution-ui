@@ -14,7 +14,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Guacamole from 'guacamole-common-js';
 import { WEBSOCKET_URL } from '@libs/desktopdeployment/constants';
 import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useFrameStore from '@/components/framing/FrameStore';
 import { MAXIMIZED_BAR_HEIGHT } from '@libs/ui/constants/resizableWindowElements';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
@@ -163,7 +163,7 @@ const VDIFrame = () => {
         ref={displayRef}
         className="h-full w-full border-none bg-black"
       />
-      {clientState < 3 && <LoadingIndicator isOpen />}
+      {clientState < 3 && <LoadingIndicatorDialog isOpen />}
     </ResizableWindow>
   );
 };

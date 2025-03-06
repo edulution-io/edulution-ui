@@ -13,7 +13,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import ResultTableDialogBodyWrapper from '@/pages/Surveys/Tables/dialogs/ResultTableDialogBody';
 import './resultTableDialog.css';
@@ -25,7 +25,7 @@ const ResultTableDialog = () => {
 
   return isOpenPublicResultsTableDialog ? (
     <>
-      {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
+      {isLoading ? <LoadingIndicatorDialog isOpen={isLoading} /> : null}
       <AdaptiveDialog
         isOpen={isOpenPublicResultsTableDialog}
         handleOpenChange={() => setIsOpenPublicResultsTableDialog(!isOpenPublicResultsTableDialog)}

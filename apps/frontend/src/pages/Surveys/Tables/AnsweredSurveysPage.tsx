@@ -14,7 +14,7 @@ import React, { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import SurveyTablePage from '@/pages/Surveys/Tables/SurveyTablePage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 
 const AnsweredSurveysPage = () => {
   const {
@@ -43,7 +43,7 @@ const AnsweredSurveysPage = () => {
 
   return (
     <>
-      {isFetchingAnsweredSurveys ? <LoadingIndicator isOpen={isFetchingAnsweredSurveys} /> : null}
+      {isFetchingAnsweredSurveys ? <LoadingIndicatorDialog isOpen={isFetchingAnsweredSurveys} /> : null}
       <SurveyTablePage
         title={t('surveys.view.answered.title')}
         description={t('surveys.view.answered.description')}
