@@ -45,6 +45,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
         onClick={() => row.toggleSelected()}
       />
     ),
+    accessorFn: (row) => row.formula.title,
     sortingFn: (rowA, rowB) => sortSurveyByTitle(rowA.original, rowB.original),
   },
   {

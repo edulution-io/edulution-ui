@@ -14,7 +14,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { t } from 'i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import MoveContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/MoveContentDialogBody';
+import MoveContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveContentDialogBody';
 import { Button } from '@/components/shared/Button';
 import ShareCollectDialogProps from '@libs/classManagement/types/shareCollectDialogProps';
 import useUserPath from '@/pages/FileSharing/hooks/useUserPath';

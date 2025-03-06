@@ -46,7 +46,7 @@ const ResultTableDialogBody = () => {
   }
 
   return (
-    <ScrollArea className="overflow-x-auto overflow-y-auto">
+    <ScrollArea className="survey-result-table overflow-x-auto overflow-y-auto">
       <ResultTable
         formula={selectedSurvey.formula}
         result={result}

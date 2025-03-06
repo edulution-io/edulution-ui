@@ -16,9 +16,10 @@ import { createPortal } from 'react-dom';
 import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
 import { useTranslation } from 'react-i18next';
 import testCookieAccess from '@libs/common/utils/testCookieAccess';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { Button } from '@/components/shared/Button';
+import OpenInNewTabButton from '@/components/framing/ResizableWindow/Buttons/OpenInNewTabButton';
 
 const BBBIFrame = () => {
   const { t } = useTranslation();
@@ -36,7 +37,7 @@ const BBBIFrame = () => {
   }
 
   if (joinConferenceUrl && isEmbeddingAllowed === null) {
-    return <LoadingIndicator isOpen />;
+    return <LoadingIndicatorDialog isOpen />;
   }
 
   const openInNewTab = () => window.open(joinConferenceUrl, '_blank', 'noopener,noreferrer');
@@ -69,10 +70,21 @@ const BBBIFrame = () => {
     return null;
   }
 
+  const additionalButtons = [
+    <OpenInNewTabButton
+      onClick={() => {
+        openInNewTab();
+        setJoinConferenceUrl('');
+      }}
+      key={OpenInNewTabButton.name}
+    />,
+  ];
+
   return createPortal(
     <ResizableWindow
       titleTranslationId="conferences.conference"
       handleClose={() => setJoinConferenceUrl('')}
+      additionalButtons={additionalButtons}
     >
       <iframe
         className="h-full w-full border-none"

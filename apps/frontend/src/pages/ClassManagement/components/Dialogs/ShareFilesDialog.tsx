@@ -13,7 +13,7 @@
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { t } from 'i18next';
 import React from 'react';
-import MoveContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/MoveContentDialogBody';
+import MoveContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveContentDialogBody';
 import { Button } from '@/components/shared/Button';
 import ShareCollectDialogProps from '@libs/classManagement/types/shareCollectDialogProps';
 import useUserPath from '@/pages/FileSharing/hooks/useUserPath';

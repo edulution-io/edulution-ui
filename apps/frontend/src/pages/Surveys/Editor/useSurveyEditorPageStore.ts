@@ -22,7 +22,7 @@ interface SurveyEditorPageStore {
 
   isOpenSaveSurveyDialog: boolean;
   setIsOpenSaveSurveyDialog: (state: boolean) => void;
-  updateOrCreateSurvey: (survey: SurveyDto) => Promise<void>;
+  updateOrCreateSurvey: (survey: SurveyDto) => Promise<boolean>;
   isLoading: boolean;
 
   isOpenSharePublicSurveyDialog: boolean;
@@ -50,7 +50,7 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>((set) => ({
 
   setIsOpenSaveSurveyDialog: (state: boolean) => set({ isOpenSaveSurveyDialog: state }),
 
-  updateOrCreateSurvey: async (survey: SurveyDto): Promise<void> => {
+  updateOrCreateSurvey: async (survey) => {
     set({ isLoading: true });
     try {
       const result = await eduApi.post<SurveyDto>(SURVEYS, survey);
@@ -63,9 +63,11 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>((set) => ({
       } else {
         set({ isOpenSharePublicSurveyDialog: false, publicSurveyId: undefined });
       }
+
+      return true;
     } catch (error) {
       handleApiError(error, set);
-      throw error;
+      return false;
     } finally {
       set({ isLoading: false });
     }
