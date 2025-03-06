@@ -35,7 +35,7 @@ import GroupColumn from '@libs/groups/types/groupColumn';
 const LessonPage = () => {
   const { userSessions, fetchProject, updateSession, createSession, removeSession, fetchSchoolClass } =
     useClassManagementStore();
-  const { getOwnUser } = useLmnApiStore();
+  const { lmnApiToken, getOwnUser } = useLmnApiStore();
   const { groupType: groupTypeParams, groupName: groupNameParams } = useParams();
   const {
     isLoading,
@@ -56,8 +56,10 @@ const LessonPage = () => {
   const currentSelectedSession = userSessions.find((session) => session.name === groupNameParams);
 
   useEffect(() => {
-    void getOwnUser();
-  }, []);
+    if (lmnApiToken) {
+      void getOwnUser();
+    }
+  }, [lmnApiToken]);
 
   const fetchData = async () => {
     if (!groupNameParams) return;

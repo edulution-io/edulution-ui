@@ -28,10 +28,10 @@ const AccountInformation = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (!user && lmnApiToken) {
+    if (lmnApiToken) {
       void getOwnUser();
     }
-  }, [user, lmnApiToken]);
+  }, [lmnApiToken]);
 
   const userInfoFields = [
     { name: 'name', label: t('accountData.name'), value: user?.displayName || '...', readOnly: true },

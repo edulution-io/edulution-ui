@@ -66,6 +66,9 @@ const useLmnApiStore = create<UseLmnApiStore>(
 
       setLmnApiToken: async (username, password): Promise<void> => {
         set({ isLoading: true, error: null });
+        if (username !== get().user?.cn) {
+          set(initialState);
+        }
         try {
           lmnApi.defaults.headers.Authorization = `Basic ${btoa(`${username}:${password}`)}`;
           const response = await lmnApi.get<string>('/auth/');
@@ -142,7 +145,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
         }
       },
 
-      reset: () => set(initialState),
+      reset: () => set({ ...initialState, user: get().user, schoolPrefix: get().schoolPrefix }),
     }),
     {
       name: 'lmn-user-storage',
