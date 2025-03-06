@@ -31,8 +31,9 @@ import SharePublicSurveyDialog from '@/pages/Surveys/Editor/dialog/SharePublicSu
 import LoadingIndicator from '@/components/shared/LoadingIndicator';
 
 const SurveyEditorPage = () => {
-  const { updateSelectedSurvey, isFetching, selectedSurvey } = useSurveyTablesPageStore();
-  const { isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog, updateOrCreateSurvey, reset } = useSurveyEditorPageStore();
+  const { updateSelectedSurvey, isFetching, selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
+  const { isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog, updateOrCreateSurvey, isLoading, reset } =
+    useSurveyEditorPageStore();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -103,6 +104,7 @@ const SurveyEditorPage = () => {
       });
 
       toast.success(t('survey.editor.saveSurveySuccess'));
+      void updateUsersSurveys();
       navigate(`/${CREATED_SURVEYS_PAGE}`);
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -116,35 +118,41 @@ const SurveyEditorPage = () => {
 
   return (
     <>
-      {isFetching ? <LoadingIndicator isOpen={isFetching} /> : null}
-      <>
-        <SurveyEditor
-          initialFormula={initialFormValues?.formula || { title: t('survey.newTitle').toString() }}
-          initialSaveNo={selectedSurvey?.saveNo || 0}
-          saveSurvey={handleSaveSurvey}
-          isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
-          setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
-          invitedAttendees={form.watch('invitedAttendees')}
-          setInvitedAttendees={(value: AttendeeDto[]) =>
-            form.setValue('invitedAttendees', value, { shouldValidate: true })
-          }
-          invitedGroups={form.watch('invitedGroups')}
-          setInvitedGroups={(value: MultipleSelectorGroup[]) =>
-            form.setValue('invitedGroups', value, { shouldValidate: true })
-          }
-          expires={form.watch('expires')}
-          setExpires={(value: Date | undefined) => form.setValue('expires', value)}
-          isAnonymous={form.watch('isAnonymous')}
-          setIsAnonymous={(value: boolean | undefined) => form.setValue('isAnonymous', value)}
-          isPublic={form.watch('isPublic')}
-          setIsPublic={(value: boolean | undefined) => form.setValue('isPublic', value)}
-          canSubmitMultipleAnswers={form.watch('canSubmitMultipleAnswers')}
-          setCanSubmitMultipleAnswers={(value: boolean | undefined) => form.setValue('canSubmitMultipleAnswers', value)}
-          canUpdateFormerAnswer={form.watch('canUpdateFormerAnswer')}
-          setCanUpdateFormerAnswer={(value: boolean | undefined) => form.setValue('canUpdateFormerAnswer', value)}
-        />
-        <SharePublicSurveyDialog />
-      </>
+      {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
+      {isFetching ? (
+        <LoadingIndicator isOpen={isFetching} />
+      ) : (
+        <>
+          <SurveyEditor
+            initialFormula={initialFormValues?.formula || { title: t('survey.newTitle').toString() }}
+            initialSaveNo={selectedSurvey?.saveNo || 0}
+            saveSurvey={handleSaveSurvey}
+            isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
+            setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
+            invitedAttendees={form.watch('invitedAttendees')}
+            setInvitedAttendees={(value: AttendeeDto[]) =>
+              form.setValue('invitedAttendees', value, { shouldValidate: true })
+            }
+            invitedGroups={form.watch('invitedGroups')}
+            setInvitedGroups={(value: MultipleSelectorGroup[]) =>
+              form.setValue('invitedGroups', value, { shouldValidate: true })
+            }
+            expires={form.watch('expires')}
+            setExpires={(value: Date | undefined) => form.setValue('expires', value)}
+            isAnonymous={form.watch('isAnonymous')}
+            setIsAnonymous={(value: boolean | undefined) => form.setValue('isAnonymous', value)}
+            isPublic={form.watch('isPublic')}
+            setIsPublic={(value: boolean | undefined) => form.setValue('isPublic', value)}
+            canSubmitMultipleAnswers={form.watch('canSubmitMultipleAnswers')}
+            setCanSubmitMultipleAnswers={(value: boolean | undefined) =>
+              form.setValue('canSubmitMultipleAnswers', value)
+            }
+            canUpdateFormerAnswer={form.watch('canUpdateFormerAnswer')}
+            setCanUpdateFormerAnswer={(value: boolean | undefined) => form.setValue('canUpdateFormerAnswer', value)}
+          />
+          <SharePublicSurveyDialog />
+        </>
+      )}
     </>
   );
 };

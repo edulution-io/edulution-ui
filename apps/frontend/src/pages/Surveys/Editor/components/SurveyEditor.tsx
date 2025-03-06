@@ -11,8 +11,9 @@
  */
 
 import React, { useMemo } from 'react';
-import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import { FaGear } from 'react-icons/fa6';
+import { useTranslation } from 'react-i18next';
+import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 import AttendeeDto from '@libs/user/types/attendee.dto';
@@ -23,7 +24,7 @@ import useLanguage from '@/hooks/useLanguage';
 import useElementHeight from '@/hooks/useElementHeight';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import SurveyCreatorObject from '@/pages/Surveys/Editor/components/SurveyCreatorObject';
+import updateOrCreateSurveyCreatorModel from '@/pages/Surveys/Editor/components/updateOrCreateSurveyCreatorModel';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 
 interface SurveyEditorProps {
@@ -78,9 +79,10 @@ const SurveyEditor = (props: SurveyEditorProps) => {
   } = props;
 
   const { language } = useLanguage();
+  const { t } = useTranslation();
 
   const creator = useMemo(() => {
-    const surveyCreatorModel: SurveyCreator = SurveyCreatorObject({ language });
+    const surveyCreatorModel: SurveyCreator = updateOrCreateSurveyCreatorModel(language);
 
     surveyCreatorModel.JSON = initialFormula;
     surveyCreatorModel.saveNo = initialSaveNo;
@@ -101,7 +103,7 @@ const SurveyEditor = (props: SurveyEditorProps) => {
       SaveButton(() => creator.saveSurvey()),
       {
         icon: FaGear,
-        text: 'common.settings',
+        text: t('common.settings'),
         onClick: () => setIsOpenSaveSurveyDialog(true),
       },
     ],

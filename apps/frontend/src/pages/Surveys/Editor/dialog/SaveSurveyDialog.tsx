@@ -16,6 +16,7 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import SaveSurveyDialogBody from '@/pages/Surveys/Editor/dialog/SaveSurveyDialogBody';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import { Button } from '@/components/shared/Button';
 
 interface SaveSurveyDialogProps {
   isOpenSaveSurveyDialog: boolean;
@@ -81,12 +82,24 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
     />
   );
 
+  const Footer = (
+    <Button
+      type="button"
+      variant="btn-collaboration"
+      size="lg"
+      onClick={() => setIsOpenSaveSurveyDialog(false)}
+    >
+      {t('common.close')}
+    </Button>
+  );
+
   return (
     <AdaptiveDialog
       isOpen={isOpenSaveSurveyDialog}
       handleOpenChange={() => setIsOpenSaveSurveyDialog(!isOpenSaveSurveyDialog)}
       title={t('surveys.saveDialog.title')}
       body={getDialogBody()}
+      footer={Footer}
       desktopContentClassName="max-w-[50%] min-h-[500px] max-h-[90%] overflow-auto"
     />
   );

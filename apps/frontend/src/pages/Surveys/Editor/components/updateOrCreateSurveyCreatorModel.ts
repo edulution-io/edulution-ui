@@ -21,14 +21,9 @@ import '@/pages/Surveys/theme/creator.min.css';
 import '@/pages/Surveys/theme/custom.survey.css';
 import '@/pages/Surveys/theme/custom.creator.css';
 
-interface SurveyCreatorObjectProps {
-  language?: string;
-}
-
 settings.lazyRender.enabled = true;
 
-const SurveyCreatorObject = (props: SurveyCreatorObjectProps) => {
-  const { language = 'en' } = props;
+const updateOrCreateSurveyCreatorModel = (language = 'en') => {
   editorLocalization.defaultLocale = language;
   localization.currentLocale = language;
 
@@ -108,4 +103,4 @@ const SurveyCreatorObject = (props: SurveyCreatorObjectProps) => {
   return creator;
 };
 
-export default SurveyCreatorObject;
+export default updateOrCreateSurveyCreatorModel;
