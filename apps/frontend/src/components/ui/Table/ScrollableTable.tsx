@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import {
   ColumnDef,
   flexRender,
@@ -44,6 +44,7 @@ interface DataTableProps<TData, TValue> {
   isLoading?: boolean;
   getRowId?: (originalRow: TData) => string;
   applicationName: string;
+  initialSorting?: { id: string; desc: boolean }[];
   additionalScrollContainerOffset?: number;
   scrollContainerOffsetElementIds?: {
     headerId?: string;
@@ -68,13 +69,15 @@ const ScrollableTable = <TData, TValue>({
   additionalScrollContainerOffset = 0,
   scrollContainerOffsetElementIds = {},
   enableRowSelection,
+  initialSorting,
   tableIsUsedOnAppConfigPage = false,
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
 
-  const hasPositionCol = useMemo(() => columns.some((c) => c.id === 'position'), [columns]);
-
-  const [sorting, setSorting] = useState(hasPositionCol ? [{ id: DEFAULT_TABLE_SORT_PROPERTY_KEY, desc: false }] : []);
+  const defaultSorting = columns.some((c) => c.id === DEFAULT_TABLE_SORT_PROPERTY_KEY)
+    ? [{ id: 'position', desc: false }]
+    : [];
+  const [sorting, setSorting] = useState(() => (initialSorting?.length ? initialSorting : defaultSorting));
 
   const selectedRowsMessageId = scrollContainerOffsetElementIds.selectedRowsMessageId || SELECTED_ROW_MESSAGE_ID;
   const tableHeaderId = scrollContainerOffsetElementIds.tableHeaderId || TABLE_HEADER_ID;

@@ -52,6 +52,10 @@ const FileSharingTable = () => {
       scrollContainerOffsetElementIds={{
         others: [BREADCRUMB_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID],
       }}
+      initialSorting={[
+        { id: 'type', desc: false },
+        { id: 'select-filename', desc: false },
+      ]}
     />
   );
 };
