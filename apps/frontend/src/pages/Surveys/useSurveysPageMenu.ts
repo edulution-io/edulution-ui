@@ -31,7 +31,7 @@ const useSurveysPageMenu = () => {
     appName: APPS.SURVEYS,
     menuItems: [
       {
-        id: 'overview-open-surveys',
+        id: 'open',
         label: 'surveys.view.open.menu',
         icon: SurveysViewOpenIcon,
         action: () => {
@@ -39,7 +39,7 @@ const useSurveysPageMenu = () => {
         },
       },
       {
-        id: 'overview-answered-surveys',
+        id: 'answered',
         label: 'surveys.view.answered.menu',
         icon: SurveysViewAnsweredIcon,
         action: () => {
@@ -47,7 +47,7 @@ const useSurveysPageMenu = () => {
         },
       },
       {
-        id: 'overview-created-surveys',
+        id: 'created',
         label: 'surveys.view.created.menu',
         icon: UserIcon,
         action: () => {
@@ -55,7 +55,7 @@ const useSurveysPageMenu = () => {
         },
       },
       {
-        id: 'survey-editor-view',
+        id: 'creator',
         label: 'surveys.view.editor.menu',
         icon: PlusIcon,
         action: () => {
