@@ -51,8 +51,6 @@ const CreateAndUpdateBulletinCategoryBody = ({
     setValue('name', e.target.value, { shouldValidate: true });
   };
 
-  const { errors } = form.formState;
-
   return (
     <Form {...form}>
       <form
@@ -60,15 +58,13 @@ const CreateAndUpdateBulletinCategoryBody = ({
         className="space-y-4"
       >
         <div className="flex items-center space-x-2">
-          <p>{t('bulletinboard.categoryName')}:</p>
           <NameInputWithAvailability
-            control={form.control}
+            form={form}
             placeholder={t('bulletinboard.categoryName')}
             onValueChange={handleNameChange}
             shouldAvailabilityStatusShow={form.formState.isValid && !isCurrentNameEqualToSelected()}
           />
         </div>
-        {errors.name && <span className="text-sm text-red-500">{errors.name.message}</span>}
 
         <DialogSwitch
           translationId="bulletinboard.isActive"
