@@ -13,7 +13,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/PublicConferenceStore';
 import useUserStore from '@/store/UserStore/UserStore';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
@@ -25,7 +25,7 @@ import PublicConferenceJoinForm from '@/pages/ConferencePage/PublicConference/Pu
 import ConferenceDto from '@libs/conferences/types/conference.dto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import delay from '@libs/common/utils/delay';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 const PublicConferencePage = (): React.ReactNode => {
   const { t } = useTranslation();
@@ -148,7 +148,7 @@ const PublicConferencePage = (): React.ReactNode => {
   }, [user?.username, meetingId, publicConference, conferences, isWaitingForConferenceToStart]);
 
   if (isGetConferencesLoading || isGetJoinConferenceUrlLoading || isGetPublicConferenceLoading) {
-    return <LoadingIndicator isOpen />;
+    return <LoadingIndicatorDialog isOpen />;
   }
 
   if (!publicConference?.isPublic || !meetingId) {

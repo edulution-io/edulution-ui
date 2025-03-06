@@ -18,7 +18,7 @@ import GroupColumn from '@libs/groups/types/groupColumn';
 import { MdGroups } from 'react-icons/md';
 import { FaUsersGear } from 'react-icons/fa6';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import getUserRegex from '@libs/lmnApi/constants/userRegex';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import { useTranslation } from 'react-i18next';

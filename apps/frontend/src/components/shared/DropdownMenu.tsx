@@ -26,9 +26,10 @@ import { DropdownMenuItemType } from '@libs/ui/types/dropdownMenuItemType';
 type DropdownMenuProps = {
   trigger: React.ReactNode;
   items: DropdownMenuItemType[];
+  menuContentClassName?: string;
 };
 
-const DropdownMenu: React.FC<DropdownMenuProps> = ({ trigger, items }) => {
+const DropdownMenu: React.FC<DropdownMenuProps> = ({ trigger, items, menuContentClassName }) => {
   if (!items || !items.length) return null;
 
   return (
@@ -38,6 +39,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ trigger, items }) => {
         <DropdownMenuContent
           className={cn(
             'z-50 min-w-[8rem] overflow-hidden rounded-lg border border-gray-700 bg-gray-800 p-1 text-background shadow-md',
+            menuContentClassName,
           )}
         >
           {items.map((item) => {

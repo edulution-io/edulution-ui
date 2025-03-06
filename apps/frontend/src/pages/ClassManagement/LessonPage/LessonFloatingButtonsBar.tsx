@@ -25,7 +25,7 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import ReloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/reloadButton';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
-import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
+import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import buildShareDTO from '@libs/filesharing/utils/buildShareDTO';
 import CLASSMGMT_OPTIONS from '@libs/classManagement/constants/classmgmtOptions';
 import getDialogComponent from '@/pages/ClassManagement/LessonPage/getDialogComponent';

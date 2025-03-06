@@ -13,15 +13,15 @@
 import React, { lazy, Suspense } from 'react';
 import { Outlet, Route } from 'react-router-dom';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import AppStorePage from '@/pages/Settings/AppConfig/appStore/AppStorePage';
 import APPS from '@libs/appconfig/constants/apps';
 
-const AppConfigPage = lazy(() => import('@/pages/Settings/AppConfig/AppConfigPage'));
+const SettingsPage = lazy(() => import('@/pages/Settings/SettingsPage'));
 
-const getLazyAppConfigPage = () => (
+const getLazySettingsPage = () => (
   <Suspense fallback={<CircleLoader />}>
-    <AppConfigPage />
+    <SettingsPage />
   </Suspense>
 );
 
@@ -32,8 +32,8 @@ const getSettingsRoutes = () => [
     element={<Outlet />}
   >
     <Route
-      path=""
-      element={getLazyAppConfigPage()}
+      index
+      element={getLazySettingsPage()}
     />
     <Route
       path={APPS.APPSTORE}
@@ -41,7 +41,7 @@ const getSettingsRoutes = () => [
     />
     <Route
       path=":settingLocation"
-      element={getLazyAppConfigPage()}
+      element={getLazySettingsPage()}
     />
   </Route>,
 ];
