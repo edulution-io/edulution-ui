@@ -27,8 +27,7 @@ import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorFor
 import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
-import SharePublicSurveyDialog from '@/pages/Surveys/Editor/dialog/SharePublicSurveyDialog';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 
 const SurveyEditorPage = () => {
   const { updateSelectedSurvey, isFetching, selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
@@ -84,74 +83,63 @@ const SurveyEditorPage = () => {
       canUpdateFormerAnswer,
     } = form.getValues();
 
-    try {
-      await updateOrCreateSurvey({
-        formula,
-        saveNo,
+    const success = await updateOrCreateSurvey({
+      formula,
+      saveNo,
 
-        id,
-        creator,
-        invitedAttendees,
-        invitedGroups,
-        participatedAttendees,
-        answers,
-        createdAt,
-        expires,
-        isAnonymous,
-        isPublic,
-        canSubmitMultipleAnswers,
-        canUpdateFormerAnswer,
-      });
+      id,
+      creator,
+      invitedAttendees,
+      invitedGroups,
+      participatedAttendees,
+      answers,
+      createdAt,
+      expires,
+      isAnonymous,
+      isPublic,
+      canSubmitMultipleAnswers,
+      canUpdateFormerAnswer,
+    });
+
+    if (success) {
+      void updateUsersSurveys();
 
       toast.success(t('survey.editor.saveSurveySuccess'));
-      void updateUsersSurveys();
       navigate(`/${CREATED_SURVEYS_PAGE}`);
-    } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (error.response?.status === 413) {
-        toast.error(t('survey.errors.surveyTooBig'));
-      } else {
-        toast.error(t('survey.errors.updateOrCreateError'));
-      }
     }
   };
 
   return (
     <>
-      {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
+      {isLoading ? <LoadingIndicatorDialog isOpen={isLoading} /> : null}
       {isFetching ? (
-        <LoadingIndicator isOpen={isFetching} />
+        <LoadingIndicatorDialog isOpen={isFetching} />
       ) : (
-        <>
-          <SurveyEditor
-            initialFormula={initialFormValues?.formula || { title: t('survey.newTitle').toString() }}
-            initialSaveNo={selectedSurvey?.saveNo || 0}
-            saveSurvey={handleSaveSurvey}
-            isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
-            setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
-            invitedAttendees={form.watch('invitedAttendees')}
-            setInvitedAttendees={(value: AttendeeDto[]) =>
-              form.setValue('invitedAttendees', value, { shouldValidate: true })
-            }
-            invitedGroups={form.watch('invitedGroups')}
-            setInvitedGroups={(value: MultipleSelectorGroup[]) =>
-              form.setValue('invitedGroups', value, { shouldValidate: true })
-            }
-            expires={form.watch('expires')}
-            setExpires={(value: Date | undefined) => form.setValue('expires', value)}
-            isAnonymous={form.watch('isAnonymous')}
-            setIsAnonymous={(value: boolean | undefined) => form.setValue('isAnonymous', value)}
-            isPublic={form.watch('isPublic')}
-            setIsPublic={(value: boolean | undefined) => form.setValue('isPublic', value)}
-            canSubmitMultipleAnswers={form.watch('canSubmitMultipleAnswers')}
-            setCanSubmitMultipleAnswers={(value: boolean | undefined) =>
-              form.setValue('canSubmitMultipleAnswers', value)
-            }
-            canUpdateFormerAnswer={form.watch('canUpdateFormerAnswer')}
-            setCanUpdateFormerAnswer={(value: boolean | undefined) => form.setValue('canUpdateFormerAnswer', value)}
-          />
-          <SharePublicSurveyDialog />
-        </>
+        <SurveyEditor
+          initialFormula={initialFormValues?.formula || { title: t('survey.newTitle').toString() }}
+          initialSaveNo={selectedSurvey?.saveNo || 0}
+          saveSurvey={handleSaveSurvey}
+          isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
+          setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
+          invitedAttendees={form.watch('invitedAttendees')}
+          setInvitedAttendees={(value: AttendeeDto[]) =>
+            form.setValue('invitedAttendees', value, { shouldValidate: true })
+          }
+          invitedGroups={form.watch('invitedGroups')}
+          setInvitedGroups={(value: MultipleSelectorGroup[]) =>
+            form.setValue('invitedGroups', value, { shouldValidate: true })
+          }
+          expires={form.watch('expires')}
+          setExpires={(value: Date | undefined) => form.setValue('expires', value)}
+          isAnonymous={form.watch('isAnonymous')}
+          setIsAnonymous={(value: boolean | undefined) => form.setValue('isAnonymous', value)}
+          isPublic={form.watch('isPublic')}
+          setIsPublic={(value: boolean | undefined) => form.setValue('isPublic', value)}
+          canSubmitMultipleAnswers={form.watch('canSubmitMultipleAnswers')}
+          setCanSubmitMultipleAnswers={(value: boolean | undefined) => form.setValue('canSubmitMultipleAnswers', value)}
+          canUpdateFormerAnswer={form.watch('canUpdateFormerAnswer')}
+          setCanUpdateFormerAnswer={(value: boolean | undefined) => form.setValue('canUpdateFormerAnswer', value)}
+        />
       )}
     </>
   );

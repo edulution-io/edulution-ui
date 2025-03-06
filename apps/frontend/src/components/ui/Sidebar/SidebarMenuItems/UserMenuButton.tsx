@@ -41,6 +41,7 @@ const UserMenuButton: React.FC = () => {
     >
       <div className="flex h-[58px] cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-2">
         <DropdownMenu
+          menuContentClassName="z-[600]"
           trigger={
             <div className="group flex items-center gap-4">
               <p className="text-md font-bold md:hidden">

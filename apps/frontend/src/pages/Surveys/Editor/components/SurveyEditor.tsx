@@ -22,10 +22,14 @@ import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingBut
 import getSurveyFormulaFromJSON from '@libs/survey/utils/getSurveyFormulaFromJSON';
 import useLanguage from '@/hooks/useLanguage';
 import useElementHeight from '@/hooks/useElementHeight';
-import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import updateOrCreateSurveyCreatorModel from '@/pages/Surveys/Editor/components/updateOrCreateSurveyCreatorModel';
+import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
+import '@/pages/Surveys/theme/default2.min.css';
+import '@/pages/Surveys/theme/creator.min.css';
+import '@/pages/Surveys/theme/custom.survey.css';
+import '@/pages/Surveys/theme/custom.creator.css';
+import updateOrCreateSurveyCreatorModel from '@/pages/Surveys/Editor/components/updateOrCreateSurveyCreatorModel';
 
 interface SurveyEditorProps {
   initialFormula: SurveyFormula;

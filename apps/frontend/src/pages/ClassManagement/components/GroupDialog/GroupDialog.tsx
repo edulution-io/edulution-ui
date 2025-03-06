@@ -30,7 +30,7 @@ import LmnApiProjectWithMembers from '@libs/lmnApi/types/lmnApiProjectWithMember
 import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import LmnApiPrinterWithMembers from '@libs/lmnApi/types/lmnApiPrinterWithMembers';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import parseSophomorixQuota from '@libs/lmnApi/utils/parseSophomorixQuota';
