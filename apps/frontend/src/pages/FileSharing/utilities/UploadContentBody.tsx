@@ -7,10 +7,11 @@
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { MdOutlineCloudUpload } from 'react-icons/md';
 import { Button } from '@/components/shared/Button';
@@ -22,44 +23,61 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import WarningBox from '@/components/shared/WarningBox';
 
 const UploadContentBody = () => {
   const { t } = useTranslation();
   const { files } = useFileSharingStore();
-  const [isFileSizeError, setIsFileSizeError] = useState(false);
+  const [oversizeFiles, setOversizeFiles] = useState<File[]>([]);
+  const { setSubmitButtonIsInActive } = useFileSharingDialogStore();
 
-  const [duplicates, setDuplicates] = useState<File[]>([]);
+  const [filesThatWillBeOverridden, setFilesThatWillBeOverridden] = useState<File[]>([]);
 
   const { filesToUpload, setFilesToUpload } = useFileSharingDialogStore();
 
+  const splitByMaxFileSize = (incomingFiles: File[], maxSizeMB: number): { oversize: File[]; normal: File[] } => {
+    const oversize = incomingFiles.filter((f) => bytesToMegabytes(f.size) > maxSizeMB);
+    const normal = incomingFiles.filter((f) => bytesToMegabytes(f.size) <= maxSizeMB);
+    return { oversize, normal };
+  };
+
+  const findDuplicates = (incomingFiles: File[], existingFiles: { basename: string }[]): File[] =>
+    incomingFiles.filter((file) => existingFiles.some((existing) => existing.basename === file.name));
+
   const removeFile = (name: string) => {
-    setFilesToUpload((prevFiles) => prevFiles.filter((file) => file.name !== name));
-    setDuplicates((prevDupes) => prevDupes.filter((file) => file.name !== name));
+    setFilesToUpload((prev) => prev.filter((file) => file.name !== name));
+    setFilesThatWillBeOverridden((prev) => prev.filter((file) => file.name !== name));
+    setOversizeFiles((prev) => prev.filter((file) => file.name !== name));
   };
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const hasTooLargeFile = acceptedFiles.some((file) => bytesToMegabytes(file.size) > MAX_FILE_UPLOAD_SIZE);
-      setIsFileSizeError(hasTooLargeFile);
+      const { oversize, normal } = splitByMaxFileSize(acceptedFiles, MAX_FILE_UPLOAD_SIZE);
 
-      const filteredFiles = acceptedFiles.filter((file) => bytesToMegabytes(file.size) <= MAX_FILE_UPLOAD_SIZE);
+      const duplicates = findDuplicates(normal, files);
 
-      const foundDuplicates = filteredFiles.filter((file) => files.some((existing) => existing.basename === file.name));
+      setOversizeFiles((prev) => [...prev, ...oversize.filter((f) => !prev.some((x) => x.name === f.name))]);
 
-      setDuplicates((prevDupes) => {
-        const newDupes = foundDuplicates.filter(
-          (dup) => !prevDupes.some((existingDup) => existingDup.name === dup.name),
-        );
+      setFilesThatWillBeOverridden((prevDupes) => {
+        const newDupes = duplicates.filter((dup) => !prevDupes.some((existingDup) => existingDup.name === dup.name));
         return [...prevDupes, ...newDupes];
       });
 
       setFilesToUpload((prevFiles) => {
-        const newFiles = filteredFiles.filter((file) => !prevFiles.some((f) => f.name === file.name));
-        return [...prevFiles, ...newFiles];
+        const allNewFiles = acceptedFiles.filter((file) => !prevFiles.some((f) => f.name === file.name));
+        return [...prevFiles, ...allNewFiles];
       });
     },
-    [setFilesToUpload, files],
+    [files, setOversizeFiles, setFilesThatWillBeOverridden, setFilesToUpload],
   );
+
+  useEffect(() => {
+    setSubmitButtonIsInActive(oversizeFiles.length !== 0);
+  }, [oversizeFiles]);
+
+  const areDuplicatesPlural = filesThatWillBeOverridden.length > 1;
+  const areOversizePlural = oversizeFiles.length > 1;
+  const isAnyFileOversize = oversizeFiles.length > 0;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
   const dropzoneStyle = `border-2 border-dashed border-gray-300 rounded-md p-10 mb-4 ${
@@ -70,40 +88,61 @@ const UploadContentBody = () => {
     <form className="overflow-auto">
       <div {...getRootProps({ className: dropzoneStyle })}>
         <input {...getInputProps()} />
-        {isFileSizeError ? (
-          <div className="flex-col items-center justify-center text-ciRed">
-            <HiExclamationTriangle className="mb-2 h-6 w-6" />
-            <p className="font-bold">{t('filesharingUpload.dataLimitExceeded')}</p>
-          </div>
-        ) : (
-          <div className="flex min-h-48 flex-col items-center justify-center space-y-2">
-            <p className="text-center font-semibold text-secondary">
-              {isDragActive ? t('filesharingUpload.dropHere') : t('filesharingUpload.dragDropClick')}
-            </p>
-            <MdOutlineCloudUpload className="h-12 w-12 text-muted" />
-          </div>
-        )}
+
+        <div className="flex min-h-48 flex-col items-center justify-center space-y-2">
+          <p className="text-center font-semibold text-secondary">
+            {isDragActive ? t('filesharingUpload.dropHere') : t('filesharingUpload.dragDropClick')}
+          </p>
+          <MdOutlineCloudUpload className="h-12 w-12 text-muted" />
+        </div>
       </div>
 
-      <ScrollArea className="mt-2 max-h-[50vh] overflow-y-auto overflow-x-hidden rounded-xl border border-gray-600 px-2 scrollbar-thin">
-        {duplicates.length > 0 && (
-          <div className="mb-4 rounded border border-yellow-400 bg-yellow-50 p-3 text-yellow-800">
-            <p className="font-bold">{t('filesharingUpload.overwriteWarningTitle')}</p>
-            <p className="text-sm">{t('filesharingUpload.overwriteWarningDescription')}</p>
-            <ul className="ml-4 list-disc">
-              {duplicates.map((file) => (
-                <li key={file.name}>{file.name}</li>
-              ))}
-            </ul>
-          </div>
-        )}
+      {filesThatWillBeOverridden.length > 0 && (
+        <WarningBox
+          icon={<HiExclamationTriangle className="text-yellow-500" />}
+          title={
+            areDuplicatesPlural
+              ? t('filesharingUpload.overwriteWarningTitleFiles')
+              : t('filesharingUpload.overwriteWarningTitleFile')
+          }
+          description={
+            areDuplicatesPlural
+              ? t('filesharingUpload.overwriteWarningDescriptionFiles')
+              : t('filesharingUpload.overwriteWarningDescriptionFile')
+          }
+          items={filesThatWillBeOverridden}
+          borderColor="border-yellow-400"
+          backgroundColor="bg-yellow-50"
+          textColor="text-yellow-800"
+        />
+      )}
 
+      {isAnyFileOversize && (
+        <WarningBox
+          icon={<HiExclamationTriangle className="text-red-500" />}
+          title={
+            areOversizePlural
+              ? t('filesharingUpload.oversizedFilesDetected')
+              : t('filesharingUpload.oversizedFileDetected')
+          }
+          description={t('filesharingUpload.cannotUploadOversized')}
+          items={oversizeFiles}
+          borderColor="border-red-400"
+          backgroundColor="bg-red-50"
+          textColor="text-red-800"
+        />
+      )}
+
+      <ScrollArea className="mt-2 max-h-[50vh] overflow-y-auto overflow-x-hidden rounded-xl border border-gray-600 px-2 scrollbar-thin">
         <ul className="my-3 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
           {filesToUpload.map((file) => (
             <li
               key={file.name}
-              className="group relative overflow-hidden rounded-xl border border-gray-700 p-2 shadow-lg transition-all duration-200
-                 hover:min-h-[80px] hover:overflow-visible"
+              className={`
+                  group relative overflow-hidden rounded-xl border p-2 shadow-lg 
+                  transition-all duration-200 hover:min-h-[80px] hover:overflow-visible
+                  ${bytesToMegabytes(file.size) < MAX_FILE_UPLOAD_SIZE ? 'border-gray-700' : 'border-red-700 bg-red-50  opacity-50'}
+                `}
             >
               {file.type.startsWith('image/') ? (
                 <img
@@ -120,6 +159,7 @@ const UploadContentBody = () => {
                   />
                 </div>
               )}
+
               <Button
                 onClick={() => removeFile(file.name)}
                 className="absolute right-1 top-1 h-8 rounded-full bg-red-500 bg-opacity-70 p-2 hover:bg-red-600"
@@ -130,8 +170,8 @@ const UploadContentBody = () => {
               <div className="flex items-center justify-center">
                 <div
                   className="truncate text-center text-xs text-neutral-500 underline transition-all duration-200
-                     group-hover:min-w-full group-hover:overflow-visible group-hover:whitespace-normal
-                     group-hover:break-words group-hover:p-1"
+                             group-hover:min-w-full group-hover:overflow-visible group-hover:whitespace-normal
+                             group-hover:break-words group-hover:p-1"
                 >
                   {file.name}
                 </div>

@@ -40,6 +40,7 @@ const contentFiletypes: ContentFileTypes = {
   '.jpg': 'image',
   '.jpeg': 'image',
   '.gif': 'image',
+  '.webp': 'image',
   '.svg': 'vector',
   '.js': 'code',
   '.java': 'code',
