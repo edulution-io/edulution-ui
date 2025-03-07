@@ -24,7 +24,7 @@ const getInitialSurveyFormValues = (creator: AttendeeDto, selectedSurvey?: Surve
   participatedAttendees: selectedSurvey?.participatedAttendees || [],
   answers: selectedSurvey?.answers || [],
   createdAt: selectedSurvey?.createdAt || new Date(),
-  expires: selectedSurvey?.expires,
+  expires: selectedSurvey?.expires || '',
   isAnonymous: selectedSurvey?.isAnonymous || false,
   canSubmitMultipleAnswers: selectedSurvey?.canSubmitMultipleAnswers || false,
   isPublic: selectedSurvey?.isPublic || false,

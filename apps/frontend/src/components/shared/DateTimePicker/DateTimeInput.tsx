@@ -32,8 +32,8 @@ export const originInputVariants = cva(['rounded'], {
 type ExcludedInputProps = 'value' | 'onChange';
 type DateTimeInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, ExcludedInputProps> &
   VariantProps<typeof originInputVariants> & {
-    value: Date | undefined;
-    onChange?: (value: Date | undefined) => void;
+    value: Date | string | undefined;
+    onChange?: (value: Date | string | undefined) => void;
     popupColorScheme?: string;
   };
 
@@ -43,7 +43,7 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      onChange?.(value ? new Date(value) : undefined);
+      onChange?.(convertDateToDateTimeInput(value));
     };
 
     return (
@@ -52,13 +52,14 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
           {...props}
           aria-label={t('form.input.dateTimePicker')}
           type="datetime-local"
-          value={props.value ? convertDateToDateTimeInput(props.value) : ''}
+          value={convertDateToDateTimeInput(props.value)}
           onChange={handleChange}
           style={{
             colorScheme: popupColorScheme,
           }}
-          className={cn(INPUT_DEFAULT, originInputVariants({ variant }), 'w-[210px]', className)}
+          className={cn(INPUT_DEFAULT, originInputVariants({ variant }), 'w-[220px]', className)}
           min={minimumDateString}
+          max="9999-12-31T23:59"
           ref={ref}
         />
       </div>
