@@ -26,11 +26,10 @@ import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
 import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
-import SharePublicSurveyDialog from '@/pages/Surveys/Editor/dialog/SharePublicSurveyDialog';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 
 const SurveyEditorPage = () => {
   const { updateSelectedSurvey, isFetching, selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
@@ -92,36 +91,29 @@ const SurveyEditorPage = () => {
       canUpdateFormerAnswer,
     } = form.getValues();
 
-    try {
-      await updateOrCreateSurvey({
-        id,
-        formula,
-        saveNo,
-        creator,
-        invitedAttendees,
-        invitedGroups,
-        participatedAttendees,
-        answers,
-        createdAt,
-        expires,
-        isAnonymous,
-        isPublic,
-        canSubmitMultipleAnswers,
-        canUpdateFormerAnswer,
-      });
+    const success = await updateOrCreateSurvey({
+      id,
+      formula,
+      saveNo,
+      creator,
+      invitedAttendees,
+      invitedGroups,
+      participatedAttendees,
+      answers,
+      createdAt,
+      expires,
+      isAnonymous,
+      isPublic,
+      canSubmitMultipleAnswers,
+      canUpdateFormerAnswer,
+    });
 
+    if (success) {
       void updateUsersSurveys();
       setIsOpenSaveSurveyDialog(false);
 
       toast.success(t('survey.editor.saveSurveySuccess'));
       navigate(`/${CREATED_SURVEYS_PAGE}`);
-    } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (error.response?.status === 413) {
-        toast.error(t('survey.errors.surveyTooBig'));
-      } else {
-        toast.error(t('survey.errors.updateOrCreateError'));
-      }
     }
   };
 
@@ -132,9 +124,9 @@ const SurveyEditorPage = () => {
 
   return (
     <>
-      {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
+      {isLoading ? <LoadingIndicatorDialog isOpen={isLoading} /> : null}
       {isFetching ? (
-        <LoadingIndicator isOpen={isFetching} />
+        <LoadingIndicatorDialog isOpen={isFetching} />
       ) : (
         <>
           <SurveyEditor form={form} />
@@ -146,7 +138,6 @@ const SurveyEditorPage = () => {
             submitSurvey={saveSurvey}
             isSubmitting={isLoading}
           />
-          <SharePublicSurveyDialog />
         </>
       )}
     </>

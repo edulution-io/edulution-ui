@@ -19,7 +19,7 @@ import GroupColumn from '@libs/groups/types/groupColumn';
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import { MdGroups } from 'react-icons/md';
 import { FaPrint, FaUsersGear } from 'react-icons/fa6';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import Input from '@/components/shared/Input';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
@@ -30,7 +30,7 @@ import { FOOTER_ID } from '@libs/common/constants/pageElementIds';
 
 const EnrolPage: React.FC = () => {
   const { t } = useTranslation();
-  const { getOwnUser, user } = useLmnApiStore();
+  const { getOwnUser, lmnApiToken } = useLmnApiStore();
   const {
     userProjects,
     userSchoolClasses,
@@ -43,15 +43,13 @@ const EnrolPage: React.FC = () => {
   const [filterKeyWord, setFilterKeyWord] = useState<string>('');
 
   useEffect(() => {
-    void getOwnUser();
-    void fetchUserProjects();
-    void fetchPrinters();
-    void fetchUserSchoolClasses();
-  }, []);
-
-  if (!user) {
-    return null;
-  }
+    if (lmnApiToken) {
+      void getOwnUser();
+      void fetchUserProjects();
+      void fetchPrinters();
+      void fetchUserSchoolClasses();
+    }
+  }, [lmnApiToken]);
 
   const filterGroups = (group: LmnApiProject | LmnApiSchoolClass | LmnApiPrinter) =>
     group.cn.includes(filterKeyWord) || group.displayName.includes(filterKeyWord);
@@ -106,7 +104,7 @@ const EnrolPage: React.FC = () => {
           </div>
         ))}
       </div>
-      <LoadingIndicator isOpen={isLoading} />
+      <LoadingIndicatorDialog isOpen={isLoading} />
     </div>
   );
 };

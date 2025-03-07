@@ -19,7 +19,7 @@ import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
 import ProgressTextArea from '@/components/shared/ProgressTextArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
 import type TApps from '@libs/appconfig/types/appsType';

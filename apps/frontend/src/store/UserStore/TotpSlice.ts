@@ -48,7 +48,12 @@ const createTotpSlice: StateCreator<UserStore, [], [], TotpSlice> = (set) => ({
       const { data } = await eduApi.get<boolean>(
         `${AUTH_PATHS.AUTH_ENDPOINT}/${AUTH_PATHS.AUTH_CHECK_TOTP}/${username}`,
       );
-      return data;
+
+      if (typeof data === 'boolean') {
+        return data;
+      }
+
+      return false;
     } catch (e) {
       handleApiError(e, set);
       return false;
