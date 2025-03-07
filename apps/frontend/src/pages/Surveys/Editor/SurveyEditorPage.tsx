@@ -16,11 +16,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { settings } from 'survey-core';
-import { editorLocalization, localization } from 'survey-creator-core';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
-import 'survey-creator-core/i18n/english';
-import 'survey-creator-core/i18n/german';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyFormula from '@libs/survey/types/TSurveyFormula';
@@ -37,14 +33,8 @@ import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingBut
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
-import surveyTheme from '@/pages/Surveys/theme/theme';
-import '@/pages/Surveys/theme/default2.min.css';
-import '@/pages/Surveys/theme/creator.min.css';
-import '@/pages/Surveys/theme/custom.survey.css';
-import '@/pages/Surveys/theme/custom.creator.css';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
-
-settings.lazyRender.enabled = true;
+import createSurveyCreatorComponent from '@/pages/Surveys/Editor/createSurveyCreatorObject';
 
 const SurveyEditorPage = () => {
   const { fetchSelectedSurvey, isFetching, selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
@@ -83,75 +73,12 @@ const SurveyEditorPage = () => {
     form.reset(initialFormValues);
   }, [initialFormValues]);
 
-  editorLocalization.defaultLocale = language;
-  localization.currentLocale = language;
-
-  const creatorOptions = useMemo(
-    () => ({
-      generateValidJSON: true,
-      isAutoSave: false,
-      maxNestedPanels: 0,
-      showJSONEditorTab: true,
-      showPreviewTab: false,
-      showLogicTab: true,
-      questionTypes: [
-        'radiogroup',
-        'rating',
-        'checkbox',
-        'dropdown',
-        'boolean',
-        'file',
-        'imagepicker',
-        'ranking',
-        'text',
-        'comment',
-        'multipletext',
-        'panel',
-        'paneldynamic',
-        'matrix',
-        'matrixdropdown',
-        'image',
-      ],
-    }),
-    [],
-  );
-
   // Store the SurveyCreator in a ref so it is only created once
   const creatorRef = useRef<SurveyCreator | null>(null);
 
   // Initialize creator only once
   if (!creatorRef.current) {
-    const creator = new SurveyCreator(creatorOptions);
-    creator.theme = surveyTheme;
-    creator.locale = language;
-    creator.showToolbox = false;
-    creator.showSidebar = false;
-    creator.startEditTitleOnQuestionAdded = true;
-
-    const settingsActionHeader = creator.toolbar.actions.findIndex((action) => action.id === 'svd-settings');
-    if (settingsActionHeader >= 0) creator.toolbar.actions.splice(settingsActionHeader, 1);
-    const expandGridActionHeader = creator.toolbar.actions.findIndex((action) => action.id === 'svd-grid-expand');
-    if (expandGridActionHeader >= 0) creator.toolbar.actions.splice(expandGridActionHeader, 1);
-    const designerActionFooter = creator.footerToolbar.actions.findIndex((action) => action.id === 'svd-designer');
-    if (designerActionFooter >= 0) creator.footerToolbar.actions.splice(designerActionFooter, 1);
-    const previewActionFooter = creator.footerToolbar.actions.findIndex((action) => action.id === 'svd-preview');
-    if (previewActionFooter >= 0) creator.footerToolbar.actions.splice(previewActionFooter, 1);
-    const settingsActionFooter = creator.footerToolbar.actions.findIndex((action) => action.id === 'svd-settings');
-    if (settingsActionFooter >= 0) creator.footerToolbar.actions.splice(settingsActionFooter, 1);
-
-    creator.onElementAllowOperations.add((_, options) => {
-      // eslint-disable-next-line no-param-reassign
-      options.allowShowSettings = false;
-    });
-
-    creator.onDefineElementMenuItems.add((_, options) => {
-      const settingsItemIndex = options.items.findIndex((option) => option.iconName === 'icon-settings_16x16');
-      if (settingsItemIndex >= 0) {
-        options.items.splice(settingsItemIndex, 1);
-      }
-    });
-
-    creatorRef.current = creator;
+    creatorRef.current = createSurveyCreatorComponent(language);
   }
 
   const creator = creatorRef.current;
