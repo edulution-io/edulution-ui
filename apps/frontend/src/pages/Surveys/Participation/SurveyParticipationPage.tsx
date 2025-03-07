@@ -24,7 +24,7 @@ interface SurveyParticipationPageProps {
 
 const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.ReactNode => {
   const { isPublic = false } = props;
-  const { selectedSurvey, updateSelectedSurvey, isFetching } = useSurveyTablesPageStore();
+  const { selectedSurvey, fetchSelectedSurvey, isFetching } = useSurveyTablesPageStore();
   const { answer, setAnswer, pageNo, setPageNo, answerSurvey, reset } = useParticipateSurveyStore();
 
   const { t } = useTranslation();
@@ -33,7 +33,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
 
   useEffect(() => {
     reset();
-    void updateSelectedSurvey(surveyId, isPublic);
+    void fetchSelectedSurvey(surveyId, isPublic);
   }, [surveyId]);
 
   const content = useMemo(() => {
