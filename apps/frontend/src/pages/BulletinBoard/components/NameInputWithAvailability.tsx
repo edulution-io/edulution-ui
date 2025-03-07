@@ -50,11 +50,11 @@ const NameInputWithAvailability = ({
   }, [watchedValue]);
 
   useEffect(() => {
-    const trimmed = debouncedValue.trim();
-    if (trimmed && trimmed !== lastValueRef.current) {
-      lastValueRef.current = trimmed;
+    const trimmedValue = debouncedValue.trim();
+    if (trimmedValue && trimmedValue !== lastValueRef.current) {
+      lastValueRef.current = trimmedValue;
       void (async () => {
-        await checkIfNameAllReadyExists(trimmed);
+        await checkIfNameAllReadyExists(trimmedValue);
         setIsActivelyTyping(false);
         setIsNameChecked(true);
       })();
@@ -65,11 +65,7 @@ const NameInputWithAvailability = ({
   }, [debouncedValue, checkIfNameAllReadyExists]);
 
   const renderAvailabilityStatus = () => {
-    if (isActivelyTyping && !isNameChecked) {
-      return <span className="text-sm text-gray-500">{t('common.checking')}...</span>;
-    }
-
-    if (isNameCheckingLoading) {
+    if ((isActivelyTyping && !isNameChecked) || isNameCheckingLoading) {
       return <span className="text-sm text-gray-500">{t('common.checking')}...</span>;
     }
 
