@@ -58,6 +58,7 @@ interface DataTableProps<TData, TValue> {
   showHeader?: boolean;
   showSelectedCount?: boolean;
   footer?: React.ReactNode;
+  isDialog?: boolean;
 }
 
 const ScrollableTable = <TData, TValue>({
@@ -79,6 +80,7 @@ const ScrollableTable = <TData, TValue>({
   showHeader = true,
   showSelectedCount = true,
   footer,
+  isDialog = false,
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
 
@@ -162,7 +164,7 @@ const ScrollableTable = <TData, TValue>({
                 placeholder={t(filterPlaceHolderText)}
                 value={filterValue}
                 onChange={(event) => table.getColumn(filterKey)?.setFilterValue(event.target.value)}
-                className="max-w-xl bg-accent text-secondary"
+                className={`max-w-xl text-secondary ${isDialog ? 'bg-muted' : 'bg-accent'}`}
               />
               <DropdownMenu
                 trigger={

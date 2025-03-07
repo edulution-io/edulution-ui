@@ -139,6 +139,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
               showSelectedCount={false}
               filterKey="select-filename"
               filterPlaceHolderText="filesharing.filterPlaceHolderText"
+              isDialog={true}
             />
           </div>
         )}
