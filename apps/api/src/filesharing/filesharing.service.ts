@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -34,6 +34,7 @@ import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
 import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
+import GenericQueueService from '../generic-queue/generic-queue.service';
 
 @Injectable()
 class FilesharingService {
@@ -45,6 +46,7 @@ class FilesharingService {
     private readonly userService: UsersService,
     private readonly onlyofficeService: OnlyofficeService,
     private readonly fileSystemService: FilesystemService,
+    private readonly genericQueueService: GenericQueueService,
   ) {}
 
   private setCacheTimeout(token: string): NodeJS.Timeout {
@@ -56,7 +58,7 @@ class FilesharingService {
     );
   }
 
-  private async getClient(username: string): Promise<AxiosInstance> {
+  async getClient(username: string): Promise<AxiosInstance> {
     if (!this.clientCache.has(username)) {
       await this.initializeClient(username);
     } else {
@@ -278,6 +280,18 @@ class FilesharingService {
     );
   };
 
+  async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
+    await Promise.all(
+      duplicateFile.destinationFilePaths.map((destinationPath) =>
+        this.genericQueueService.addJob('duplicate-file', {
+          username,
+          originFilePath: duplicateFile.originFilePath,
+          destinationPath,
+        }),
+      ),
+    );
+  }
+
   private async createCollectFolderIfNotExists(username: string, destinationPath: string) {
     const sanitizedDestinationPath = destinationPath.replace(`${FILE_PATHS.COLLECT}/`, '');
     const pathWithoutFilename = sanitizedDestinationPath.slice(0, sanitizedDestinationPath.lastIndexOf('/'));
@@ -356,47 +370,11 @@ class FilesharingService {
   ): Promise<boolean> {
     if (contentType === ContentType.DIRECTORY) {
       const directories = await this.getDirAtPath(username, `${parentPath}/`);
+      Logger.log(`Directories found: ${directories.map((d) => d.basename).join(', ')}`, FilesharingService.name);
       return directories.some((item) => item.type === ContentType.DIRECTORY && item.basename === name);
     }
 
     return false;
-  }
-
-  async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto): Promise<WebdavStatusResponse> {
-    const client = await this.getClient(username);
-
-    const promises = duplicateFile.destinationFilePaths.map(async (destinationPath) => {
-      const pathUpToTransferFolder = FilesharingService.getPathUntilFolder(destinationPath, FILE_PATHS.TRANSFER);
-      const pathUpToTeacherFolder = FilesharingService.getPathUntilFolder(destinationPath, username);
-
-      const userFolderExists = await this.checkIfFileOrFolderExists(
-        username,
-        pathUpToTransferFolder,
-        username,
-        ContentType.DIRECTORY,
-      );
-      if (!userFolderExists) {
-        await this.createFolder(username, pathUpToTransferFolder, username);
-      }
-
-      if (!userFolderExists) {
-        const collectFolderExists = await this.checkIfFileOrFolderExists(
-          username,
-          pathUpToTeacherFolder,
-          FILE_PATHS.COLLECT,
-          ContentType.DIRECTORY,
-        );
-        if (!collectFolderExists) {
-          await this.createFolder(username, pathUpToTeacherFolder, FILE_PATHS.COLLECT);
-        }
-      }
-
-      await FilesharingService.copyFileViaWebDAV(client, duplicateFile.originFilePath, destinationPath);
-    });
-
-    await Promise.all(promises);
-
-    return { success: true, status: HttpStatus.OK };
   }
 
   async getWebDavFileStream(username: string, filePath: string): Promise<Readable> {
@@ -468,7 +446,7 @@ class FilesharingService {
     }
   }
 
-  private static async copyFileViaWebDAV(
+  static async copyFileViaWebDAV(
     client: AxiosInstance,
     originPath: string,
     destinationPath: string,

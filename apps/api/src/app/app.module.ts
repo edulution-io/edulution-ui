@@ -23,6 +23,8 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
+import { BullModule } from '@nestjs/bull';
+import process from 'node:process';
 import LoggingInterceptor from '../logging/logging.interceptor';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
@@ -39,12 +41,20 @@ import BulletinCategoryModule from '../bulletin-category/bulletin-category.modul
 import BulletinBoardModule from '../bulletinboard/bulletinboard.module';
 import DockerModule from '../docker/docker.module';
 import VeyonModule from '../veyon/veyon.module';
+import GenericQueueModule from '../generic-queue/generic-queue.module';
 
 @Module({
   imports: [
     ServeStaticModule.forRoot({
       rootPath: PUBLIC_DOWNLOADS_PATH,
       serveRoot: `/${EDU_API_ROOT}/downloads`,
+    }),
+    BullModule.registerQueue({
+      name: 'genericQueue',
+      redis: {
+        host: process.env.REDIS_HOST ?? 'localhost',
+        port: +process.env.REDIS_PORT! || 6379,
+      },
     }),
     AuthModule,
     AppConfigModule,
@@ -60,6 +70,7 @@ import VeyonModule from '../veyon/veyon.module';
     BulletinCategoryModule,
     BulletinBoardModule,
     DockerModule,
+    GenericQueueModule,
     VeyonModule,
     JwtModule.register({
       global: true,
