@@ -57,8 +57,9 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
           style={{
             colorScheme: popupColorScheme,
           }}
-          className={cn(INPUT_DEFAULT, originInputVariants({ variant }), 'w-[210px]', className)}
+          className={cn(INPUT_DEFAULT, originInputVariants({ variant }), 'w-[220px]', 'text-p', className)}
           min={minimumDateString}
+          max="9999-12-31T23:59"
           ref={ref}
         />
       </div>

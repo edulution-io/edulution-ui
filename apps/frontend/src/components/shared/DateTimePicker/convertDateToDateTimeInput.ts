@@ -15,7 +15,7 @@ function addLeadingZero(value: number, length: number = 2): string {
 }
 
 function convertDateToDateTimeInput(date: Date): string {
-  const year = addLeadingZero(date.getFullYear(), 4).slice(-4);
+  const year = addLeadingZero(date.getUTCFullYear(), 4);
   const month = addLeadingZero(date.getMonth() + 1);
   const day = addLeadingZero(date.getDate());
   const hours = addLeadingZero(date.getHours());
