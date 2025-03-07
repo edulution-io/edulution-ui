@@ -22,8 +22,7 @@ import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOper
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 
 const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
-  const { activeCollectionOperation, setCollectDialogCurrentlySelectedCollectionOperation } =
-    useFileSharingMoveDialogStore();
+  const { activeCollectionOperation, setActiveCollectionOperation } = useFileSharingMoveDialogStore();
 
   const options: Record<LmnApiCollectOperationsType, { label: string; icon: JSX.Element }> = {
     [LMN_API_COLLECT_OPERATIONS.CUT]: {
@@ -45,7 +44,7 @@ const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, 
           value={activeCollectionOperation}
           onValueChange={(value: LmnApiCollectOperationsType) => {
             if (options[value]) {
-              setCollectDialogCurrentlySelectedCollectionOperation(value);
+              setActiveCollectionOperation(value);
             }
           }}
         >
