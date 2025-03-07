@@ -12,7 +12,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { parse, stringify } from 'yaml';
 import { FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Switch from '@/components/ui/Switch';
@@ -92,121 +92,130 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
         <AccordionTrigger className="flex text-h4">
           <h4 className="text-background">{t(`form.proxyConfig`)}</h4>
         </AccordionTrigger>
-        <AccordionContent className="space-y-10 px-1 pt-4">
-          <div className="flex flex-row items-center justify-between gap-2">
-            <div className="flex flex-row items-center justify-between gap-10">
-              <FormFieldSH
-                key={`${item.name}.proxyPath`}
-                control={form.control}
-                name={`${item.name}.proxyPath`}
-                defaultValue=""
-                render={({ field }) => (
-                  <FormItem>
-                    <p className="font-bold text-background">{t(`form.proxyPath`)}</p>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        className="min-w-32"
-                        placeholder={t('form.proxyPathPlaceholder')}
-                        onChange={(e) => {
-                          field.onChange(e);
-                          updateYaml();
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage className="text-p" />
-                  </FormItem>
-                )}
-              />
-              <FormFieldSH
-                key={`${item.name}.proxyDestination`}
-                control={form.control}
-                name={`${item.name}.proxyDestination`}
-                defaultValue=""
-                render={({ field }) => (
-                  <FormItem>
-                    <p className="font-bold text-background">{t(`form.proxyDestination`)}</p>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        className="min-w-64"
-                        placeholder={t('form.proxyDestinationPlaceholder')}
-                        onChange={(e) => {
-                          field.onChange(e);
-                          updateYaml();
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage className="text-p" />
-                  </FormItem>
-                )}
-              />
-              <FormFieldSH
-                key={`${item.name}.stripPrefix`}
-                control={form.control}
-                name={`${item.name}.stripPrefix`}
-                defaultValue={false}
-                render={({ field }) => (
-                  <FormItem>
-                    <p className="font-bold text-background">{t('form.stripPrefix')}</p>
-                    <FormControl>
-                      <Switch
-                        {...field}
-                        checked={field.value as boolean}
-                        onCheckedChange={(checked) => {
-                          field.onChange(checked);
-                          updateYaml();
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage className="text-p" />
-                  </FormItem>
-                )}
-              />
-            </div>
-            {isYamlConfigured && (
-              <Button
-                className="mr-4"
-                type="button"
-                variant="btn-collaboration"
-                size="lg"
-                onClickCapture={handleClearProxyConfig}
-              >
-                {t('common.delete')}
-              </Button>
-            )}
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <Switch
-              checked={expertModeEnabled}
-              onCheckedChange={setExpertModeEnabled}
+        <AccordionContent>
+          <p>
+            <Trans
+              i18nKey="form.proxyConfigDescription"
+              components={{
+                strong: <strong />,
+                br: <br />,
+              }}
             />
-            <p className="text-background">{t('form.expertMode')}</p>
+          </p>
+          <div className="space-y-10 px-1 pt-4">
+            <div className="flex flex-row items-center justify-between gap-2">
+              <div className="flex flex-row items-center justify-between gap-10">
+                <FormFieldSH
+                  key={`${item.name}.proxyPath`}
+                  control={form.control}
+                  name={`${item.name}.proxyPath`}
+                  defaultValue=""
+                  disabled={expertModeEnabled || !!traefikConfig}
+                  render={({ field }) => (
+                    <FormItem>
+                      <p className="font-bold text-background">{t(`form.proxyPath`)}</p>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          className="min-w-32"
+                          placeholder={t('form.proxyPathPlaceholder')}
+                          onChange={(e) => {
+                            field.onChange(e);
+                            updateYaml();
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-p" />
+                    </FormItem>
+                  )}
+                />
+                <FormFieldSH
+                  key={`${item.name}.proxyDestination`}
+                  control={form.control}
+                  name={`${item.name}.proxyDestination`}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <FormItem>
+                      <p className="font-bold text-background">{t(`form.proxyDestination`)}</p>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          className="min-w-64"
+                          placeholder={t('form.proxyDestinationPlaceholder')}
+                          onChange={(e) => {
+                            field.onChange(e);
+                            updateYaml();
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-p" />
+                    </FormItem>
+                  )}
+                />
+                <FormFieldSH
+                  key={`${item.name}.stripPrefix`}
+                  control={form.control}
+                  name={`${item.name}.stripPrefix`}
+                  defaultValue={false}
+                  render={({ field }) => (
+                    <FormItem>
+                      <p className="font-bold text-background">{t('form.stripPrefix')}</p>
+                      <FormControl>
+                        <Switch
+                          {...field}
+                          checked={field.value as boolean}
+                          onCheckedChange={(checked) => {
+                            field.onChange(checked);
+                            updateYaml();
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-p" />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              {isYamlConfigured && (
+                <Button
+                  className="mr-4"
+                  type="button"
+                  variant="btn-collaboration"
+                  size="lg"
+                  onClickCapture={handleClearProxyConfig}
+                >
+                  {t('common.delete')}
+                </Button>
+              )}
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={expertModeEnabled}
+                onCheckedChange={setExpertModeEnabled}
+              />
+              <p className="text-background">{t('form.expertMode')}</p>
+            </div>
+            <FormFieldSH
+              key={`${item.name}.proxyConfig`}
+              control={form.control}
+              name={`${item.name}.proxyConfig`}
+              defaultValue=""
+              render={({ field }) => (
+                <FormItem>
+                  <p className="font-bold text-background">{t(`form.proxyConfig`)}</p>
+                  <FormControl>
+                    <YamlEditor
+                      value={field.value}
+                      onChange={(newValue) => {
+                        field.onChange(newValue);
+                      }}
+                      disabled={!expertModeEnabled}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-p" />
+                </FormItem>
+              )}
+            />
           </div>
-
-          <FormFieldSH
-            key={`${item.name}.proxyConfig`}
-            control={form.control}
-            name={`${item.name}.proxyConfig`}
-            defaultValue=""
-            render={({ field }) => (
-              <FormItem>
-                <p className="font-bold text-background">{t(`form.proxyConfig`)}</p>
-                <FormControl>
-                  <YamlEditor
-                    value={field.value}
-                    onChange={(newValue) => {
-                      field.onChange(newValue);
-                    }}
-                    disabled={!expertModeEnabled}
-                  />
-                </FormControl>
-                <p className="text-background">{t(`form.proxyConfigDescription`)}</p>
-                <FormMessage className="text-p" />
-              </FormItem>
-            )}
-          />
         </AccordionContent>
       </AccordionItem>
     </AccordionSH>
