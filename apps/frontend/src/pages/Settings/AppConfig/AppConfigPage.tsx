@@ -57,7 +57,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
   const { language } = useLanguage();
 
   const form = useForm<{ [settingLocation: string]: AppConfigDto } | ProxyConfigFormType | MailProviderConfig>({
-    mode: 'onChange',
+    mode: 'onSubmit',
     resolver: zodResolver(getAppConfigFormSchema(t)),
   });
 
