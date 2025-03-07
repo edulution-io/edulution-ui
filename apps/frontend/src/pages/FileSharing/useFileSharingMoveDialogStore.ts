@@ -23,7 +23,7 @@ import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOpe
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 
 interface UseFileSharingMoveDialogStore {
-  collectDialogCurrentlySelectedCollectionOperation: LmnApiCollectOperationsType;
+  activeCollectionOperation: LmnApiCollectOperationsType;
   isLoading: boolean;
   selectedItems: DirectoryFileDTO[];
   dialogShownFiles: DirectoryFileDTO[];

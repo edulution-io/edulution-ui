@@ -186,14 +186,13 @@ const getFileSharingTableColumns = (
     {
       accessorKey: FILESHARING_TABLE_COLUM_NAMES.TYPE,
       id: FILESHARING_TABLE_COLUM_NAMES.TYPE,
-      header: function Header({ column }) {
-        return (
-          <SortableHeader<DirectoryFileDTO, unknown>
-            className={hideOnMobileClassName}
-            column={column}
-          />
-        );
-      },
+      header: ({ column }) => (
+        <SortableHeader<DirectoryFileDTO, unknown>
+          className={hideOnMobileClassName}
+          column={column}
+        />
+      ),
+
       meta: {
         translationId: 'fileSharingTable.type',
       },

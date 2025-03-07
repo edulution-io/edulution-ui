@@ -41,6 +41,7 @@ import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import FilesharingService from './filesharing.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
+import FilesystemService from '../filesystem/filesystem.service';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
@@ -96,7 +97,7 @@ class FilesharingController {
     if (target === DeleteTargetType.FILE_SERVER) {
       return this.filesharingService.deleteFileAtPath(username, path);
     }
-    return FilesharingService.deleteFileFromServer(path);
+    return FilesystemService.deleteFile(path);
   }
 
   @Patch()
@@ -108,7 +109,8 @@ class FilesharingController {
     },
     @GetCurrentUsername() username: string,
   ) {
-    return this.filesharingService.moveOrRenameResource(username, body.path, body.newPath);
+    const { path, newPath } = body;
+    return this.filesharingService.moveOrRenameResource(username, path, newPath);
   }
 
   @Get(FileSharingApiEndpoints.FILE_STREAM)

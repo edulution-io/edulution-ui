@@ -50,9 +50,11 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const selectionValue = typeof updaterOrValue === 'function' ? updaterOrValue({}) : updaterOrValue;
 
-    const selectedItems = Object.entries(selectionValue)
-      .filter(([_, isSelected]) => isSelected)
-      .map(([rowId]) => files.find((file) => file.filename === rowId))
+    const fileMap = new Map(files.map((file) => [file.filename, file]));
+
+    const selectedItems = Object.keys(selectionValue)
+      .filter((key) => selectionValue[key])
+      .map((key) => fileMap.get(key))
       .filter(Boolean) as DirectoryFileDTO[];
 
     setMoveOrCopyItemToPath(selectedItems[0]);
@@ -74,22 +76,12 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   };
 
   useEffect(() => {
-    if (!showAllFiles) {
-      void fetchMechanism(currentPath);
-      return;
-    }
-
-    if (!pathToFetch) {
-      void fetchMechanism(currentPath);
-      return;
-    }
-
-    if (currentPath.includes(pathToFetch)) {
+    if (!showAllFiles || !pathToFetch || currentPath.includes(pathToFetch)) {
       void fetchMechanism(currentPath);
     } else {
       void fetchMechanism(pathToFetch);
     }
-  }, [currentPath]);
+  }, [currentPath, showAllFiles, pathToFetch]);
 
   const handleBreadcrumbNavigate = (path: string) => {
     const newPath = path.replace('webdav/', '');
@@ -104,13 +96,13 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   };
 
   const footer = (
-    <div className="bottom-0 justify-end bg-gray-100 p-4 text-sm text-foreground">
+    <div className="bottom-0 justify-end bg-secondary p-4 text-sm text-foreground">
       {moveOrCopyItemToPath?.basename && showSelectedFile ? (
-        <p className="bg-gray-100">
+        <p className="bg-secondary">
           {t('moveItemDialog.selectedItem')}: {moveOrCopyItemToPath.basename}
         </p>
       ) : (
-        <p className="bg-gray-100">
+        <p className="bg-secondary">
           <span>{t('filesharing.selectFile')}</span>
         </p>
       )}
@@ -121,7 +113,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   const columns: ColumnDef<DirectoryFileDTO>[] = getFileSharingTableColumns(visibleColumns, onFilenameClick);
 
   return (
-    <div>
+    <>
       <div className="h-[60vh] flex-col overflow-auto text-background scrollbar-thin">
         <LoadingIndicatorDialog isOpen={isLoading} />
         <div className="pb-2">
@@ -152,7 +144,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
         )}
       </div>
       {footer}
-    </div>
+    </>
   );
 };
 

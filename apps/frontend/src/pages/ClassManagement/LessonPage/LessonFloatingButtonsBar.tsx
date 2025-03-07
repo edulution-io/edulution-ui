@@ -51,7 +51,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students,
     groupNameFromStore,
   } = useLessonStore();
   const { fetchUser, user, schoolPrefix } = useLmnApiStore();
-  const { collectDialogCurrentlySelectedCollectionOperation } = useFileSharingMoveDialogStore();
+  const { activeCollectionOperation } = useFileSharingMoveDialogStore();
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();
 
   const updateStudents = async () => {
@@ -93,7 +93,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students,
           user?.sophomorixIntrinsic2[0] || '',
         );
         if (!collectDTO) return;
-        await collectFiles(collectDTO, user?.sophomorixRole || '', collectDialogCurrentlySelectedCollectionOperation);
+        await collectFiles(collectDTO, user?.sophomorixRole || '', activeCollectionOperation);
       },
       disableAction: async () => {},
     },

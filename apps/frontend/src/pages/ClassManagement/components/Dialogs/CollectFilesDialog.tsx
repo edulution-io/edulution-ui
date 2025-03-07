@@ -22,7 +22,7 @@ import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOper
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 
 const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
-  const { collectDialogCurrentlySelectedCollectionOperation, setCollectDialogCurrentlySelectedCollectionOperation } =
+  const { activeCollectionOperation, setCollectDialogCurrentlySelectedCollectionOperation } =
     useFileSharingMoveDialogStore();
 
   const options: Record<LmnApiCollectOperationsType, { label: string; icon: JSX.Element }> = {
@@ -42,7 +42,7 @@ const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, 
       <div className="flex flex-col items-center justify-start pb-8">
         <RadioGroupSH
           className="flex flex-col gap-4"
-          value={collectDialogCurrentlySelectedCollectionOperation}
+          value={activeCollectionOperation}
           onValueChange={(value: LmnApiCollectOperationsType) => {
             if (options[value]) {
               setCollectDialogCurrentlySelectedCollectionOperation(value);
@@ -58,7 +58,7 @@ const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, 
               <RadioGroupItemSH
                 id={`option-${key}`}
                 value={key}
-                checked={collectDialogCurrentlySelectedCollectionOperation === key}
+                checked={activeCollectionOperation === key}
               />
               <label htmlFor={`option-${key}`}>
                 <div className="flex flex-row justify-center space-x-2">

@@ -303,12 +303,7 @@ class FilesharingService {
     }
   }
 
-  private static async copyFile(client: AxiosInstance, originPath: string, destinationPath: string) {
-    const sanitizedDestinationPath = destinationPath.replace(/\u202F/g, ' ');
-    await FilesharingService.copyFileViaWebDAV(client, originPath, sanitizedDestinationPath);
-  }
-
-  cutCollectedItems = async (username: string, originPath: string, newPath: string): Promise<WebdavStatusResponse> => {
+  async cutCollectedItems(username: string, originPath: string, newPath: string): Promise<WebdavStatusResponse> {
     const result = await this.moveOrRenameResource(username, originPath, newPath);
 
     try {
@@ -322,7 +317,7 @@ class FilesharingService {
       );
     }
     return result;
-  };
+  }
 
   copyCollectedItems = async (
     username: string,
@@ -331,7 +326,7 @@ class FilesharingService {
     const client = await this.getClient(username);
 
     const duplicationPromises = duplicateFile.destinationFilePaths.map(async (destinationPath) => {
-      await FilesharingService.copyFile(client, duplicateFile.originFilePath, destinationPath);
+      await FilesharingService.copyFileViaWebDAV(client, duplicateFile.originFilePath, destinationPath);
     });
 
     try {
@@ -361,18 +356,9 @@ class FilesharingService {
   ): Promise<boolean> {
     if (contentType === ContentType.DIRECTORY) {
       const directories = await this.getDirAtPath(username, `${parentPath}/`);
-      const existingFolders = new Set(
-        directories.filter((item) => item.type === ContentType.DIRECTORY).map((item) => item.basename),
-      );
-      return existingFolders.has(name);
+      return directories.some((item) => item.type === ContentType.DIRECTORY && item.basename === name);
     }
-    if (contentType === ContentType.FILE) {
-      const files = await this.getFilesAtPath(username, parentPath);
-      const existingFiles = new Set(
-        files.filter((item) => item.type === ContentType.FILE).map((item) => item.basename),
-      );
-      return existingFiles.has(name);
-    }
+
     return false;
   }
 
@@ -405,7 +391,7 @@ class FilesharingService {
         }
       }
 
-      await FilesharingService.copyFile(client, duplicateFile.originFilePath, destinationPath);
+      await FilesharingService.copyFileViaWebDAV(client, duplicateFile.originFilePath, destinationPath);
     });
 
     await Promise.all(promises);
@@ -438,14 +424,6 @@ class FilesharingService {
 
   async getOnlyOfficeToken(payload: string) {
     return this.onlyofficeService.generateOnlyOfficeToken(payload);
-  }
-
-  static async deleteFileFromServer(path: string): Promise<void> {
-    try {
-      await FilesystemService.deleteFile(path);
-    } catch (error) {
-      throw new CustomHttpException(FileSharingErrorMessage.DeletionFailed, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
   }
 
   async handleCallback(req: Request, res: Response, path: string, filename: string, username: string) {
@@ -495,13 +473,14 @@ class FilesharingService {
     originPath: string,
     destinationPath: string,
   ): Promise<WebdavStatusResponse> {
+    const sanitizedDestinationPath = destinationPath.replace(/\u202F/g, ' ');
     return FilesharingService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethodsWebDav.COPY,
         url: originPath,
         headers: {
-          Destination: destinationPath,
+          Destination: sanitizedDestinationPath,
         },
       },
       FileSharingErrorMessage.DuplicateFailed,
