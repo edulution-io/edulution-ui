@@ -20,7 +20,7 @@ type OtpInputProps = {
 };
 
 const OtpInput: React.FC<OtpInputProps> = ({ totp, setTotp, onComplete }) => (
-  <div className="flex flex-col items-center space-y-4">
+  <div className="mb-3 flex flex-col items-center">
     <InputOTP
       maxLength={6}
       value={totp}

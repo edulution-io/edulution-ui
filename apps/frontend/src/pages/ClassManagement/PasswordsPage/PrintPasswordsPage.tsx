@@ -28,21 +28,19 @@ import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageE
 
 const PrintPasswordsPage: React.FC = () => {
   const { t } = useTranslation();
-  const { getOwnUser, user } = useLmnApiStore();
+  const { getOwnUser, user, lmnApiToken } = useLmnApiStore();
   const { userSchoolClasses, fetchUserSchoolClasses } = useClassManagementStore();
   const [filterKeyWord, setFilterKeyWord] = useState<string>('');
   const [selectedClasses, setSelectedClasses] = useState<LmnApiSchoolClass[]>([]);
 
   useEffect(() => {
-    void getOwnUser();
-    void fetchUserSchoolClasses();
-  }, []);
+    if (lmnApiToken) {
+      void getOwnUser();
+      void fetchUserSchoolClasses();
+    }
+  }, [lmnApiToken]);
 
-  if (!user) {
-    return null;
-  }
-
-  const userRegex = getUserRegex(user.cn);
+  const userRegex = getUserRegex(user?.cn || '');
 
   const filterSchoolClasses = (schoolClass: LmnApiSchoolClass) =>
     schoolClass.member?.find((member) => userRegex.test(member)) &&

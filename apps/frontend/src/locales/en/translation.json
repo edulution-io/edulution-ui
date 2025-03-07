@@ -128,7 +128,10 @@
       "Unauthorized": "You are not authorized.",
       "Unknown": "User not found.",
       "TotpMissing": "Totp missing.",
-      "TotpInvalid": "Totp invalid."
+      "TotpInvalid": "Totp invalid.",
+      "LmnConnectionFailed": "Connection to school server failed.",
+      "KeycloakConnectionFailed": "Connection to authentication server failed.",
+      "EdulutionConnectionFailed": "Connection to edulution server failed. Please try again later."
     }
   },
   "lmnApi": {
@@ -837,8 +840,9 @@
       "system": "System language"
     },
     "addTotp": {
-      "title": "QR-Code",
-      "description": "Please scan the QR-Code and enter the TOTP:"
+      "title": "Set up Two-Factor Authentication",
+      "qrCodeInstructions": "Scan the QR code with an authenticator app that supports TOTP (Time-based One-Time Password).",
+      "totpCodeInstructions": "Then enter the generated code here and save it:"
     },
     "errors": {
       "currentPasswordRequired": "Current password is required",
@@ -869,7 +873,8 @@
     "username_too_long": "Username to long",
     "password_too_long": "Password to long",
     "forgot_password": "Forgot password?",
-    "remember_me": "Remember me"
+    "remember_me": "Remember me",
+    "enterMultiFactorCode": "Two-Factor Authentication"
   },
   "edit": "Edit",
   "common": {
@@ -1270,5 +1275,11 @@
       "GetUserFailed": "User could not be retrieved.",
       "VeyonApiNotReachable": "The external Veyon server is not reachable."
     }
-  }
+  },
+  "Invalid user credentials": "Username or password incorrect.",
+  "For more on this error consult the server log at the debug level.": "Connection to AD server failed. Please try again later.",
+  "Failed to fetch": "Connection to edulution server failed. Please try again later.",
+  "Invalid client or Invalid client credentials": "Invalid server configuration. Please check the client ID or the client secret.",
+  "Not Found (404)": "Connection to edulution server failed. Please try again later.",
+  "NetworkError when attempting to fetch resource.": "Network error when attempting to fetch resource."
 }

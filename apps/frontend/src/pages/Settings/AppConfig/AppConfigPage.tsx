@@ -40,7 +40,7 @@ import getDisplayName from '@/utils/getDisplayName';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailImporterConfig from './mails/MailImporterConfig';
-import getAppConfigFormSchema from './getAppConfigFormSchema';
+import getAppConfigFormSchema from './schemas/getAppConfigFormSchema';
 import ProxyConfigForm from './components/ProxyConfigForm';
 
 interface AppConfigPageProps {
@@ -57,7 +57,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
   const { language } = useLanguage();
 
   const form = useForm<{ [settingLocation: string]: AppConfigDto } | ProxyConfigFormType | MailProviderConfig>({
-    mode: 'onChange',
+    mode: 'onSubmit',
     resolver: zodResolver(getAppConfigFormSchema(t)),
   });
 

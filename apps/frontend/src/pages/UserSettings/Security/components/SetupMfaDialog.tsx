@@ -63,6 +63,7 @@ const SetupMfaDialog: React.FC<SetupMfaDialogProps> = ({ isOpen, setIsOpen }) =>
         void handleSetMfaEnabled();
       }}
     >
+      <div className="mb-3">{t('usersettings.addTotp.qrCodeInstructions')}</div>
       <div className="flex justify-center rounded-xl bg-background p-2">
         {qrCodeIsLoading ? (
           <div className="flex h-[200px] w-[200px] items-center justify-center">
@@ -75,6 +76,7 @@ const SetupMfaDialog: React.FC<SetupMfaDialogProps> = ({ isOpen, setIsOpen }) =>
           />
         )}
       </div>
+      <div className="mt-3">{t('usersettings.addTotp.totpCodeInstructions')}</div>
       <OtpInput
         totp={totp}
         setTotp={setTotp}

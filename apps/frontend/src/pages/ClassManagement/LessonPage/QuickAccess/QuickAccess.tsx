@@ -27,7 +27,7 @@ import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 
 const QuickAccess = () => {
   const { t } = useTranslation();
-  const { getOwnUser, user } = useLmnApiStore();
+  const { user, lmnApiToken } = useLmnApiStore();
   const {
     createProject,
     updateProject,
@@ -45,12 +45,13 @@ const QuickAccess = () => {
   } = useClassManagementStore();
 
   useEffect(() => {
-    void getOwnUser();
-    void fetchRoom();
-    void fetchUserSessions();
-    void fetchUserProjects();
-    void fetchUserSchoolClasses();
-  }, []);
+    if (lmnApiToken) {
+      void fetchRoom();
+      void fetchUserSessions();
+      void fetchUserProjects();
+      void fetchUserSchoolClasses();
+    }
+  }, [lmnApiToken]);
 
   if (!user) {
     return <CircleLoader />;
