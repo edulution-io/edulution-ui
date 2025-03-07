@@ -26,6 +26,7 @@ interface SurveyEditorPageStore {
   isLoading: boolean;
 
   isOpenSharePublicSurveyDialog: boolean;
+  setIsOpenSharePublicSurveyDialog: (isOpen: boolean, publicSurveyId: string) => void;
   publicSurveyId: string;
   closeSharePublicSurveyDialog: () => void;
 
@@ -49,6 +50,9 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>((set) => ({
   setSurvey: (survey: SurveyDto | undefined) => set({ survey }),
 
   setIsOpenSaveSurveyDialog: (state: boolean) => set({ isOpenSaveSurveyDialog: state }),
+
+  setIsOpenSharePublicSurveyDialog: (isOpenSharePublicSurveyDialog, publicSurveyId) =>
+    set({ isOpenSharePublicSurveyDialog, publicSurveyId }),
 
   updateOrCreateSurvey: async (survey) => {
     set({ isLoading: true });
