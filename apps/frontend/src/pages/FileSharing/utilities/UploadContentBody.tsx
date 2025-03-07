@@ -28,37 +28,37 @@ import WarningBox from '@/components/shared/WarningBox';
 const UploadContentBody = () => {
   const { t } = useTranslation();
   const { files } = useFileSharingStore();
-  const [oversizeFiles, setOversizeFiles] = useState<File[]>([]);
+  const [oversizedFiles, setOversizedFiles] = useState<File[]>([]);
   const { setSubmitButtonIsInActive } = useFileSharingDialogStore();
 
-  const [filesThatWillBeOverridden, setFilesThatWillBeOverridden] = useState<File[]>([]);
+  const [filesThatWillBeOverwritten, setFilesThatWillBeOverwritten] = useState<File[]>([]);
 
   const { filesToUpload, setFilesToUpload } = useFileSharingDialogStore();
 
-  const splitByMaxFileSize = (incomingFiles: File[], maxSizeMB: number): { oversize: File[]; normal: File[] } => {
+  const splitFilesByMaxFileSize = (incomingFiles: File[], maxSizeMB: number): { oversize: File[]; normal: File[] } => {
     const oversize = incomingFiles.filter((f) => bytesToMegabytes(f.size) > maxSizeMB);
     const normal = incomingFiles.filter((f) => bytesToMegabytes(f.size) <= maxSizeMB);
     return { oversize, normal };
   };
 
-  const findDuplicates = (incomingFiles: File[], existingFiles: { basename: string }[]): File[] =>
+  const findDuplicateFiles = (incomingFiles: File[], existingFiles: { basename: string }[]): File[] =>
     incomingFiles.filter((file) => existingFiles.some((existing) => existing.basename === file.name));
 
   const removeFile = (name: string) => {
     setFilesToUpload((prev) => prev.filter((file) => file.name !== name));
-    setFilesThatWillBeOverridden((prev) => prev.filter((file) => file.name !== name));
-    setOversizeFiles((prev) => prev.filter((file) => file.name !== name));
+    setFilesThatWillBeOverwritten((prev) => prev.filter((file) => file.name !== name));
+    setOversizedFiles((prev) => prev.filter((file) => file.name !== name));
   };
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const { oversize, normal } = splitByMaxFileSize(acceptedFiles, MAX_FILE_UPLOAD_SIZE);
+      const { oversize, normal } = splitFilesByMaxFileSize(acceptedFiles, MAX_FILE_UPLOAD_SIZE);
 
-      const duplicates = findDuplicates(normal, files);
+      const duplicates = findDuplicateFiles(normal, files);
 
-      setOversizeFiles((prev) => [...prev, ...oversize.filter((f) => !prev.some((x) => x.name === f.name))]);
+      setOversizedFiles((prev) => [...prev, ...oversize.filter((f) => !prev.some((x) => x.name === f.name))]);
 
-      setFilesThatWillBeOverridden((prevDupes) => {
+      setFilesThatWillBeOverwritten((prevDupes) => {
         const newDupes = duplicates.filter((dup) => !prevDupes.some((existingDup) => existingDup.name === dup.name));
         return [...prevDupes, ...newDupes];
       });
@@ -68,16 +68,16 @@ const UploadContentBody = () => {
         return [...prevFiles, ...allNewFiles];
       });
     },
-    [files, setOversizeFiles, setFilesThatWillBeOverridden, setFilesToUpload],
+    [files, setOversizedFiles, setFilesThatWillBeOverwritten, setFilesToUpload],
   );
 
   useEffect(() => {
-    setSubmitButtonIsInActive(oversizeFiles.length !== 0);
-  }, [oversizeFiles]);
+    setSubmitButtonIsInActive(oversizedFiles.length !== 0);
+  }, [oversizedFiles]);
 
-  const areDuplicatesPlural = filesThatWillBeOverridden.length > 1;
-  const areOversizePlural = oversizeFiles.length > 1;
-  const isAnyFileOversize = oversizeFiles.length > 0;
+  const hasMultipleDuplicates = filesThatWillBeOverwritten.length > 1;
+  const hasMultipleOversizedFiles = oversizedFiles.length > 1;
+  const isAnyFileOversized = oversizedFiles.length > 0;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
   const dropzoneStyle = `border-2 border-dashed border-gray-300 rounded-md p-10 mb-4 ${
@@ -97,36 +97,36 @@ const UploadContentBody = () => {
         </div>
       </div>
 
-      {filesThatWillBeOverridden.length > 0 && (
+      {filesThatWillBeOverwritten.length > 0 && (
         <WarningBox
           icon={<HiExclamationTriangle className="text-yellow-500" />}
           title={
-            areDuplicatesPlural
+            hasMultipleDuplicates
               ? t('filesharingUpload.overwriteWarningTitleFiles')
               : t('filesharingUpload.overwriteWarningTitleFile')
           }
           description={
-            areDuplicatesPlural
+            hasMultipleDuplicates
               ? t('filesharingUpload.overwriteWarningDescriptionFiles')
               : t('filesharingUpload.overwriteWarningDescriptionFile')
           }
-          items={filesThatWillBeOverridden}
+          items={filesThatWillBeOverwritten}
           borderColor="border-yellow-400"
           backgroundColor="bg-yellow-50"
           textColor="text-yellow-800"
         />
       )}
 
-      {isAnyFileOversize && (
+      {isAnyFileOversized && (
         <WarningBox
           icon={<HiExclamationTriangle className="text-red-500" />}
           title={
-            areOversizePlural
+            hasMultipleOversizedFiles
               ? t('filesharingUpload.oversizedFilesDetected')
               : t('filesharingUpload.oversizedFileDetected')
           }
           description={t('filesharingUpload.cannotUploadOversized')}
-          items={oversizeFiles}
+          items={oversizedFiles}
           borderColor="border-red-400"
           backgroundColor="bg-red-50"
           textColor="text-red-800"

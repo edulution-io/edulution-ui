@@ -1020,7 +1020,7 @@
     "overwriteWarningDescriptionFiles": "Die folgenden Dateien werden überschrieben:",
     "oversizedFilesDetected": "Zu große Dateien entdeckt",
     "oversizedFileDetected": "Zu große Datei entdeckt!",
-    "cannotUploadOversized": "Es können keine zu großen Dateien (größer 50 MB) hochladen."
+    "cannotUploadOversized": "Es können keine zu großen Dateien (größer 50 MB) hochgeladen werden."
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",

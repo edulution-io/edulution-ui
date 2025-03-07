@@ -27,11 +27,29 @@ import getDocumentVendor from '@libs/filesharing/utils/getDocumentVendor';
 import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
 import ContentType from '@libs/filesharing/types/contentType';
 import { HttpMethods } from '@libs/common/types/http-methods';
-import MAX_UPLOAD_CHUNK_SIZE from '@libs/ui/constants/maxArrayChunkSize';
+import MAX_UPLOAD_CHUNK_SIZE from '@libs/ui/constants/maxUploadChunkSize';
 import getFileSharingFormSchema from '../formSchema';
+import splitArrayIntoChunks from '@libs/common/utils/splitArrayIntoChunks';
 
 interface CreateContentDialogProps {
   trigger?: React.ReactNode;
+}
+
+interface BatchUploadOptions {
+  uploads: FileUploadProps[];
+  batchSize: number;
+  destinationPath: string;
+  actionType: FileActionType;
+  endpointUrl: string;
+  method: HttpMethods;
+  requestContentType: ContentType;
+  handleFileUploadAction: (
+    action: FileActionType,
+    endpoint: string,
+    httpMethod: HttpMethods,
+    type: ContentType,
+    formData: FormData,
+  ) => Promise<void>;
 }
 
 const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) => {
@@ -74,30 +92,16 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     form.reset();
   };
 
-  const splitArrayIntoChunks = <T,>(array: T[], chunkSize: number): T[][] => {
-    const chunks: T[][] = [];
-    for (let i = 0; i < array.length; i += chunkSize) {
-      chunks.push(array.slice(i, i + chunkSize));
-    }
-    return chunks;
-  };
-
-  const processFileUploadsInBatches = async (
-    uploads: FileUploadProps[],
-    batchSize: number,
-    destinationPath: string,
-    actionType: FileActionType,
-    endpointUrl: string,
-    method: HttpMethods,
-    requestContentType: ContentType,
-    handleFileUploadAction: (
-      action: FileActionType,
-      endpoint: string,
-      httpMethod: HttpMethods,
-      type: ContentType,
-      formData: FormData,
-    ) => Promise<void>,
-  ) => {
+  async function processFileUploadsInBatches({
+    uploads,
+    batchSize,
+    destinationPath,
+    actionType,
+    endpointUrl,
+    method,
+    requestContentType,
+    handleFileUploadAction,
+  }: BatchUploadOptions) {
     const batches = splitArrayIntoChunks(uploads, batchSize);
 
     await batches.reduce<Promise<void>>(async (prevPromise, batch) => {
@@ -118,7 +122,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
         }),
       );
     }, Promise.resolve());
-  };
+  }
 
   const onSubmit = async () => {
     const documentVendor = getDocumentVendor(appConfigs);
@@ -131,17 +135,20 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       documentVendor,
     });
 
-    if (Array.isArray(uploadPayload) && uploadPayload.some((item) => 'file' in item && item.file instanceof File)) {
-      await processFileUploadsInBatches(
-        uploadPayload as FileUploadProps[],
-        MAX_UPLOAD_CHUNK_SIZE,
-        currentPath,
-        action,
-        endpoint,
-        httpMethod,
-        type,
-        handleItemAction,
-      );
+    const hasFilesToUpload =
+      Array.isArray(uploadPayload) && uploadPayload.some((item) => 'file' in item && item.file instanceof File);
+
+    if (hasFilesToUpload) {
+      await processFileUploadsInBatches({
+        uploads: uploadPayload as FileUploadProps[],
+        batchSize: MAX_UPLOAD_CHUNK_SIZE,
+        destinationPath: currentPath,
+        actionType: action,
+        endpointUrl: endpoint,
+        method: httpMethod,
+        requestContentType: type,
+        handleFileUploadAction: handleItemAction,
+      });
     } else {
       setSubmitButtonIsInActive(false);
       await handleItemAction(action, endpoint, httpMethod, type, uploadPayload);
