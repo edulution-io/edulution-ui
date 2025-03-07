@@ -128,7 +128,10 @@
       "Unauthorized": "Du bist nicht autorisiert.",
       "Unknown": "Nutzer nicht gefunden.",
       "TotpMissing": "Totp fehlt.",
-      "TotpInvalid": "Totp ungültig."
+      "TotpInvalid": "Totp ungültig.",
+      "LmnConnectionFailed": "Verbindung zum Schulserver fehlgeschlagen.",
+      "KeycloakConnectionFailed": "Verbindung zum Authentifizierungsserver fehlgeschlagen.",
+      "EdulutionConnectionFailed": "Verbindung zum edulution Server fehlgeschlagen. Bitte versuche es später noch einmal."
     }
   },
   "lmnApi": {
@@ -838,8 +841,9 @@
       "system": "Systemsprache"
     },
     "addTotp": {
-      "title": "QR-Code",
-      "description": "Bitte den QR-Code scannen und den TOTP-Code eingeben:"
+      "title": "Zwei-Faktor-Authentisierung einrichten",
+      "qrCodeInstructions": "Den QR-Code mit einer Authenticator App scannen, die TOTP (Time-based One-Time Password) unterstützt.",
+      "totpCodeInstructions": "Danach das generierte Passwort hier eintragen und speichern:"
     },
     "errors": {
       "currentPasswordRequired": "Aktuelles Passwort ist erforderlich",
@@ -870,7 +874,8 @@
     "username_too_long": "Benutzername zu lang",
     "password_too_long": "Passwort zu lang",
     "forgot_password": "Passwort vergessen?",
-    "remember_me": "Merken"
+    "remember_me": "Merken",
+    "enterMultiFactorCode": "Zwei-Faktor-Authentisierung"
   },
   "common": {
     "answers": "Antworten",
@@ -1264,5 +1269,11 @@
       "GetUserFailed": "Benutzer konnte nicht abgerufen werden",
       "VeyonApiNotReachable": "Der externen Veyon-Server ist nicht erreichbar"
     }
-  }
+  },
+  "Invalid user credentials": "Benutzername oder Passwort falsch",
+  "For more on this error consult the server log at the debug level.": "Verbindung zum AD-Server fehlgeschlagen. Bitte versuche es später noch einmal.",
+  "Failed to fetch": "Verbindung zum edulution Server fehlgeschlagen. Bitte versuche es später noch einmal.",
+  "Invalid client or Invalid client credentials": "Ungültige Serverkonfiguration. Bitte überprüfe die Client-ID oder das Client-Secret.",
+  "Not Found (404)": "Verbindung zum edulution Server fehlgeschlagen. Bitte versuche es später noch einmal.",
+  "NetworkError when attempting to fetch resource.": "Netzwerkfehler beim Abrufen der Website."
 }

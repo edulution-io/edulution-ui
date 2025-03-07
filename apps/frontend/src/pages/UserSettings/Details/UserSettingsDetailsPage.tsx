@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import useLmnApiStore from '@/store/useLmnApiStore';
@@ -28,7 +28,13 @@ import UserImageConfig from './UserImageConfig';
 const UserSettingsDetailsPage: React.FC = () => {
   const { t } = useTranslation();
 
-  const { user } = useLmnApiStore();
+  const { user, lmnApiToken, getOwnUser } = useLmnApiStore();
+
+  useEffect(() => {
+    if (lmnApiToken) {
+      void getOwnUser();
+    }
+  }, [lmnApiToken]);
 
   const userInfo = useMemo(
     () => [
