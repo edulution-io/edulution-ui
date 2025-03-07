@@ -90,7 +90,13 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
         />
       );
     },
-    sortingFn: (rowA, rowB) => sortDate(rowA.original.expires, rowB.original.expires),
+    sortingFn: (rowA, rowB) => {
+      const valueA = rowA.original.expires;
+      const dateA = typeof valueA === 'string' ? new Date(valueA) : valueA;
+      const valueB = rowB.original.expires;
+      const dateB = typeof valueB === 'string' ? new Date(valueB) : valueB;
+      return sortDate(dateA, dateB);
+    },
   },
   {
     id: 'survey-isPublic',

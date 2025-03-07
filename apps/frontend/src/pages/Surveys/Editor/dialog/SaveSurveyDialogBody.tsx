@@ -70,7 +70,7 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
         <p className="text-m font-bold text-background">{t('survey.expirationDate')}</p>
         <DateTimeInput
           value={selectedDate}
-          onChange={(value: Date | undefined) => setValue('expires', value)}
+          onChange={(value: string | Date | undefined) => setValue('expires', value)}
           variant="dialog"
           className="mt-0 pt-0"
         />
