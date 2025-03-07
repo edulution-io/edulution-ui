@@ -28,8 +28,8 @@ import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
 import ContentType from '@libs/filesharing/types/contentType';
 import { HttpMethods } from '@libs/common/types/http-methods';
 import MAX_UPLOAD_CHUNK_SIZE from '@libs/ui/constants/maxUploadChunkSize';
-import getFileSharingFormSchema from '../formSchema';
 import splitArrayIntoChunks from '@libs/common/utils/splitArrayIntoChunks';
+import getFileSharingFormSchema from '../formSchema';
 
 interface CreateContentDialogProps {
   trigger?: React.ReactNode;
