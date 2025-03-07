@@ -27,8 +27,8 @@ interface SaveSurveyDialogBodyProps {
   invitedGroups: MultipleSelectorGroup[];
   setInvitedGroups: (groups: MultipleSelectorGroup[]) => void;
 
-  expires?: Date;
-  setExpires: (date: Date | undefined) => void;
+  expires?: string | Date;
+  setExpires: (date: string | Date | undefined) => void;
   isAnonymous?: boolean;
   setIsAnonymous: (state: boolean | undefined) => void;
   isPublic?: boolean;

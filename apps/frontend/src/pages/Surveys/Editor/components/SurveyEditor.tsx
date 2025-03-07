@@ -25,11 +25,11 @@ import useElementHeight from '@/hooks/useElementHeight';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
+import updateOrCreateSurveyCreatorModel from '@/pages/Surveys/Editor/components/updateOrCreateSurveyCreatorModel';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
 import '@/pages/Surveys/theme/custom.survey.css';
 import '@/pages/Surveys/theme/custom.creator.css';
-import updateOrCreateSurveyCreatorModel from '@/pages/Surveys/Editor/components/updateOrCreateSurveyCreatorModel';
 
 interface SurveyEditorProps {
   initialFormula: SurveyFormula;
@@ -44,8 +44,8 @@ interface SurveyEditorProps {
   invitedGroups: MultipleSelectorGroup[];
   setInvitedGroups: (groups: MultipleSelectorGroup[]) => void;
 
-  expires?: Date;
-  setExpires: (date: Date | undefined) => void;
+  expires?: string | Date;
+  setExpires: (date: string | Date | undefined) => void;
   isAnonymous?: boolean;
   setIsAnonymous: (state: boolean | undefined) => void;
   isPublic?: boolean;

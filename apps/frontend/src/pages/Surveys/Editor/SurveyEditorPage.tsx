@@ -130,7 +130,7 @@ const SurveyEditorPage = () => {
             form.setValue('invitedGroups', value, { shouldValidate: true })
           }
           expires={form.watch('expires')}
-          setExpires={(value: Date | undefined) => form.setValue('expires', value)}
+          setExpires={(value: string | Date | undefined) => form.setValue('expires', value)}
           isAnonymous={form.watch('isAnonymous')}
           setIsAnonymous={(value: boolean | undefined) => form.setValue('isAnonymous', value)}
           isPublic={form.watch('isPublic')}
