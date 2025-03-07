@@ -40,7 +40,7 @@ import getDisplayName from '@/utils/getDisplayName';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailImporterConfig from './mails/MailImporterConfig';
-import getAppConfigFormSchema from './getAppConfigFormSchema';
+import getAppConfigFormSchema from './schemas/getAppConfigFormSchema';
 import ProxyConfigForm from './components/ProxyConfigForm';
 
 interface AppConfigPageProps {
