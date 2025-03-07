@@ -28,7 +28,7 @@ import CONFERENCES_IS_PUBLIC_FORM_VALUES from '@libs/conferences/constants/isPub
 import QRCodeWithCopyButton from '@/components/ui/QRCodeWithCopyButton';
 import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import UseIsMobileView from '@/hooks/useIsMobileView';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import Separator from '@/components/ui/Separator';
 
 interface ConferenceDetailsDialogProps {

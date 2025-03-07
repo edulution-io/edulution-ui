@@ -10,6 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { useCallback } from 'react';
 import useUserStore from '@/store/UserStore/UserStore';
 import { useAuth } from 'react-oidc-context';
 import cleanAllStores from '@/store/utils/cleanAllStores';
@@ -18,12 +19,11 @@ const useLogout = () => {
   const auth = useAuth();
   const { logout } = useUserStore();
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     await logout();
-    await auth.removeUser().then(() => {
-      cleanAllStores();
-    });
-  };
+    await auth.removeUser();
+    cleanAllStores();
+  }, [logout, auth]);
 
   return handleLogout;
 };

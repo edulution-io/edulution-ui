@@ -11,7 +11,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import GroupList from '@/pages/ClassManagement/components/GroupList/GroupList';
 import { useTranslation } from 'react-i18next';
 import useLmnApiStore from '@/store/useLmnApiStore';
@@ -29,7 +29,7 @@ import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageE
 
 const ProjectsPage = () => {
   const { t } = useTranslation();
-  const { getOwnUser, user } = useLmnApiStore();
+  const { getOwnUser, user, lmnApiToken } = useLmnApiStore();
   const {
     createProject,
     updateProject,
@@ -42,17 +42,15 @@ const ProjectsPage = () => {
   const [filterKeyWord, setFilterKeyWord] = useState<string>('');
 
   useEffect(() => {
-    void getOwnUser();
-    void fetchUserProjects();
-    void fetchUserSchoolClasses();
-  }, []);
-
-  if (!user) {
-    return null;
-  }
+    if (lmnApiToken) {
+      void getOwnUser();
+      void fetchUserProjects();
+      void fetchUserSchoolClasses();
+    }
+  }, [lmnApiToken]);
 
   const filterProjects = (project: LmnApiProject) =>
-    project.sophomorixAdmins.includes(user.cn) &&
+    project.sophomorixAdmins.includes(user?.cn || '') &&
     (project.cn.includes(filterKeyWord) || project.displayName.includes(filterKeyWord));
 
   const groupRows: GroupColumn[] = [
@@ -94,7 +92,7 @@ const ProjectsPage = () => {
         ))}
       </div>
       <ProjectsFloatingButtonsBar />
-      <LoadingIndicator isOpen={isLoading} />
+      <LoadingIndicatorDialog isOpen={isLoading} />
     </>
   );
 };

@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import {
   ColumnDef,
   flexRender,
@@ -23,7 +23,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import useElementHeight from '@/hooks/useElementHeight';
 import { HEADER_ID, SELECTED_ROW_MESSAGE_ID, TABLE_HEADER_ID } from '@libs/ui/constants/defaultIds';
@@ -44,6 +44,7 @@ interface DataTableProps<TData, TValue> {
   isLoading?: boolean;
   getRowId?: (originalRow: TData) => string;
   applicationName: string;
+  initialSorting?: { id: string; desc: boolean }[];
   additionalScrollContainerOffset?: number;
   scrollContainerOffsetElementIds?: {
     headerId?: string;
@@ -72,6 +73,7 @@ const ScrollableTable = <TData, TValue>({
   additionalScrollContainerOffset = 0,
   scrollContainerOffsetElementIds = {},
   enableRowSelection,
+  initialSorting,
   tableIsUsedOnAppConfigPage = false,
   textColorClass = 'text-muted-foreground',
   showHeader = true,
@@ -80,9 +82,10 @@ const ScrollableTable = <TData, TValue>({
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
 
-  const hasPositionCol = useMemo(() => columns.some((c) => c.id === 'position'), [columns]);
-
-  const [sorting, setSorting] = useState(hasPositionCol ? [{ id: DEFAULT_TABLE_SORT_PROPERTY_KEY, desc: false }] : []);
+  const defaultSorting = columns.some((c) => c.id === DEFAULT_TABLE_SORT_PROPERTY_KEY)
+    ? [{ id: 'position', desc: false }]
+    : [];
+  const [sorting, setSorting] = useState(() => (initialSorting?.length ? initialSorting : defaultSorting));
 
   const selectedRowsMessageId = scrollContainerOffsetElementIds.selectedRowsMessageId || SELECTED_ROW_MESSAGE_ID;
   const tableHeaderId = scrollContainerOffsetElementIds.tableHeaderId || TABLE_HEADER_ID;
@@ -118,7 +121,7 @@ const ScrollableTable = <TData, TValue>({
 
   return (
     <>
-      {isLoading && data?.length === 0 ? <LoadingIndicator isOpen={isLoading} /> : null}
+      {isLoading && data?.length === 0 ? <LoadingIndicatorDialog isOpen={isLoading} /> : null}
 
       {showSelectedCount ? (
         <div

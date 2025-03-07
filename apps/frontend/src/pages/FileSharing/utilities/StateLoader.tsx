@@ -11,7 +11,7 @@
  */
 
 import React, { FC } from 'react';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 interface StateLoaderProps {
   isLoading: boolean;

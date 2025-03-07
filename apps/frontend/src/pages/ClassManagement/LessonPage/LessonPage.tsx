@@ -16,7 +16,7 @@ import QuickAccess from '@/pages/ClassManagement/LessonPage/QuickAccess/QuickAcc
 import UserProjectOrSchoolClassSearch from '@/pages/ClassManagement/LessonPage/UserProjectOrSchoolClassSearch';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import UserArea from '@/pages/ClassManagement/LessonPage/UserArea/UserArea';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import { MdClose, MdSave } from 'react-icons/md';
@@ -31,11 +31,19 @@ import { FILTER_BAR_ID } from '@libs/classManagement/constants/pageElementIds';
 import { UseFormReturn } from 'react-hook-form';
 import GroupForm from '@libs/groups/types/groupForm';
 import GroupColumn from '@libs/groups/types/groupColumn';
+import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 
 const LessonPage = () => {
-  const { userSessions, fetchProject, updateSession, createSession, removeSession, fetchSchoolClass } =
-    useClassManagementStore();
-  const { getOwnUser } = useLmnApiStore();
+  const {
+    userSessions,
+    fetchProject,
+    updateSession,
+    createSession,
+    removeSession,
+    fetchSchoolClass,
+    fetchUserSessions,
+  } = useClassManagementStore();
+  const { lmnApiToken, getOwnUser } = useLmnApiStore();
   const { groupType: groupTypeParams, groupName: groupNameParams } = useParams();
   const {
     isLoading,
@@ -52,31 +60,36 @@ const LessonPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [isPageLoading, setIsPageLoading] = useState(false);
-
-  const currentSelectedSession = userSessions.find((session) => session.name === groupNameParams);
+  const [currentSelectedSession, setCurrentSelectedSession] = useState<LmnApiSession | null>(null);
 
   useEffect(() => {
-    void getOwnUser();
-  }, []);
+    if (lmnApiToken) {
+      void getOwnUser();
+    }
+  }, [lmnApiToken]);
 
   const fetchData = async () => {
-    if (!groupNameParams) return;
+    if (isPageLoading) return;
 
     setIsPageLoading(true);
 
     switch (groupTypeParams) {
       case UserGroups.Projects: {
-        const project = await fetchProject(groupNameParams);
+        const project = await fetchProject(groupNameParams!);
         if (project?.members) {
           setMember(getUniqueValues([...project.members, ...project.admins]));
         }
         break;
       }
-      case UserGroups.Sessions:
-        setMember(currentSelectedSession?.members || []);
+      case UserGroups.Sessions: {
+        await fetchUserSessions();
+        const session = userSessions.find((s) => s.name === groupNameParams);
+        setCurrentSelectedSession(session || null);
+        setMember(session?.members || []);
         break;
+      }
       case UserGroups.Classes: {
-        const schoolClass = await fetchSchoolClass(groupNameParams);
+        const schoolClass = await fetchSchoolClass(groupNameParams!);
         if (schoolClass?.members) {
           setMember(getUniqueValues([...schoolClass.members]));
         }
@@ -95,18 +108,17 @@ const LessonPage = () => {
       !groupNameParams
     );
 
-    const fetchInitialData =
-      !!(groupTypeParams && groupTypeParams !== groupTypeFromStore) ||
-      !!(groupNameParams && groupNameParams !== groupNameFromStore);
-
     if (restoreTemporarySession) {
       navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}/${groupTypeFromStore}/${groupNameFromStore}`, { replace: true });
-    } else if (fetchInitialData) {
+      return;
+    }
+
+    if (groupTypeParams && groupNameParams && lmnApiToken) {
       setGroupTypeInStore(groupTypeParams);
       setGroupNameInStore(groupNameParams);
       void fetchData();
     }
-  }, [groupTypeParams, groupNameParams]);
+  }, [groupTypeParams, groupNameParams, lmnApiToken]);
 
   useEffect(() => {
     if (currentSelectedSession) {
@@ -164,7 +176,7 @@ const LessonPage = () => {
         className="my-2 flex flex-col gap-2 md:flex-row"
         id={FILTER_BAR_ID}
       >
-        <LoadingIndicator isOpen={isPageLoading || isLoading} />
+        <LoadingIndicatorDialog isOpen={isPageLoading || isLoading} />
         <UserProjectOrSchoolClassSearch />
         {sessionOptions && (
           <div className="md:w-1/3">
@@ -198,7 +210,7 @@ const LessonPage = () => {
           </div>
         ) : null}
       </div>
-      <div>{groupNameParams || member.length ? <UserArea /> : <QuickAccess />}</div>
+      <div>{groupNameParams || member.length ? <UserArea fetchData={fetchData} /> : <QuickAccess />}</div>
       {openDialogType === UserGroups.Sessions && <GroupDialog item={sessionToSave} />}
     </>
   );
