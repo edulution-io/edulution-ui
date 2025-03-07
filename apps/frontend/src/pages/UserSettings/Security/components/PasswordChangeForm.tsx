@@ -17,7 +17,7 @@ import { Button } from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
 import Label from '@/components/ui/Label';
 import useUserSettingsPageStore from '@/pages/UserSettings/Security/useUserSettingsPageStore';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 
 interface PasswordChangeFormInputs {
   currentPassword: string;
@@ -43,7 +43,7 @@ const PasswordChangeForm: FC = () => {
 
   return (
     <div className="pt-5 sm:pt-0">
-      <LoadingIndicator isOpen={isLoading} />
+      <LoadingIndicatorDialog isOpen={isLoading} />
       <h3 className="text-background">{t('usersettings.security.changePassword.title')}</h3>
       <form
         onSubmit={handleSubmit(onSubmit)}

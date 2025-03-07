@@ -29,13 +29,13 @@ import UserSettingsDetailsPage from '@/pages/UserSettings/Details/UserSettingsDe
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
 import FILE_PREVIEW_ROUTE from '@libs/filesharing/constants/routes';
 import LanguageSettingsPage from '@/pages/UserSettings/Language/LanguageSettingsPage';
-import FileViewer from '@/pages/FileSharing/previews/FileViewer';
 import getSurveyRoutes from '@/router/routes/SurveyRoutes';
 import EmptyLayout from '@/components/layout/EmptyLayout';
 import MainLayout from '@/components/layout/MainLayout';
 import getPublicRoutes from '@/router/routes/PublicRoutes';
 import APPS from '@libs/appconfig/constants/apps';
 import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
+import FullScreenFileViewer from '@/pages/FileSharing/FilePreview/FullScreenFileViewer';
 import getSettingsRoutes from './routes/SettingsRoutes';
 import getForwardedRoutes from './routes/ForwardedRoutes';
 import getEmbeddedRoutes from './routes/EmbeddedRoutes';
@@ -52,7 +52,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
             <Route element={<EmptyLayout />}>
               <Route
                 path={FILE_PREVIEW_ROUTE}
-                element={<FileViewer editMode />}
+                element={<FullScreenFileViewer />}
               />
             </Route>
             {getForwardedRoutes(appConfigs)}

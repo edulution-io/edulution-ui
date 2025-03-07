@@ -11,7 +11,11 @@
  */
 
 interface LicenseInfoDto {
-  licenseKey: string;
+  customerId: string;
+  licenseId: string;
+  numberOfUsers: number;
+  licenseKey?: string;
+  token?: string;
   validFromUtc: Date;
   validToUtc: Date;
   isLicenseActive: boolean;

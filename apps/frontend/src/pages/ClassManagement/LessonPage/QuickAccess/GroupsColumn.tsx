@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import GroupCard from '@/pages/ClassManagement/LessonPage/QuickAccess/GroupCard';
 import GroupColumn from '@libs/groups/types/groupColumn';
 import useUserStore from '@/store/UserStore/UserStore';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';

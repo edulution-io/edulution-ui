@@ -11,11 +11,11 @@
  */
 
 import { useEffect, useMemo, useState } from 'react';
-import useFileEditorStore from '@/pages/FileSharing/previews/onlyOffice/useFileEditorStore';
+import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
-import findDocumentsEditorType from '@/pages/FileSharing/previews/onlyOffice/utilities/documentsEditorType';
-import getCallbackBaseUrl from '@/pages/FileSharing/previews/onlyOffice/utilities/callbackBaseUrl';
-import generateOnlyOfficeConfig from '@/pages/FileSharing/previews/onlyOffice/utilities/generateOnlyOfficeConfig';
+import findDocumentsEditorType from '@/pages/FileSharing/FilePreview/OnlyOffice/utilities/documentsEditorType';
+import getCallbackBaseUrl from '@/pages/FileSharing/FilePreview/OnlyOffice/utilities/callbackBaseUrl';
+import generateOnlyOfficeConfig from '@/pages/FileSharing/FilePreview/OnlyOffice/utilities/generateOnlyOfficeConfig';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
@@ -38,6 +38,8 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
   const { getOnlyOfficeJwtToken } = useFileEditorStore();
   const { language } = useLanguage();
 
+  const token = useMemo(() => eduApiToken, [filePath, fileName]);
+
   const fileExtension = getFileExtension(fileName);
   const editorType = useMemo(() => findDocumentsEditorType(fileExtension), [fileExtension]);
   const { appConfigs } = useAppConfigsStore();
@@ -50,7 +52,7 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
   const callbackUrl = getCallbackBaseUrl({
     fileName,
     filePath,
-    token: eduApiToken,
+    token,
   });
 
   useEffect(() => {
