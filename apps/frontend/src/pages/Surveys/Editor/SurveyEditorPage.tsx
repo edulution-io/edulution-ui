@@ -73,17 +73,12 @@ const SurveyEditorPage = () => {
     form.reset(initialFormValues);
   }, [initialFormValues]);
 
-  // Store the SurveyCreator in a ref so it is only created once
   const creatorRef = useRef<SurveyCreator | null>(null);
-
-  // Initialize creator only once
   if (!creatorRef.current) {
     creatorRef.current = createSurveyCreatorComponent(language);
   }
-
   const creator = creatorRef.current;
 
-  // Only update these properties when necessary
   useEffect(() => {
     if (creator) {
       creator.saveNo = form.getValues('saveNo');
