@@ -217,7 +217,7 @@
     },
     "sharePublicDialog": {
       "title": "Konferenz teilen",
-      "description": "Hier kannst du den Link zur Umfrage kopieren und teilen."
+      "description": "Hier kannst du den Link zur Konferenz kopieren und teilen."
     },
     "joinThisConference": "An dieser Konferenz teilnehmen",
     "filterPlaceHolderText": "Suche nach Konferenzname",

@@ -217,7 +217,7 @@
     },
     "sharePublicDialog": {
       "title": "Share Conference",
-      "description": "Here you can copy and share the link to the survey."
+      "description": "Here you can copy and share the link to the conference."
     },
     "joinThisConference": "Join this conference",
     "filterPlaceHolderText": "Search for conference name",
