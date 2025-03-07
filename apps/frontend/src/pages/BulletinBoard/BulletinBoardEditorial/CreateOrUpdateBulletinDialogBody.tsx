@@ -20,8 +20,8 @@ import WysiwygEditor from '@/components/shared/WysiwygEditor';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import { BULLETIN_BOARD_ATTACHMENT_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
 import DialogSwitch from '@/components/shared/DialogSwitch';
-import DateAndTimeInput from '@/components/shared/DateAndTimeInput';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
+import DatetimePickerHourCycle from '@/components/ui/DatetimePickerHourCycle';
 
 interface CreateOrUpdateBulletinDialogBodyProps {
   form: UseFormReturn<CreateBulletinDto>;
@@ -41,8 +41,8 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
 
   useEffect(() => {
     if (isPermanentlyActive) {
-      setValue('isVisibleStartDate', null);
-      setValue('isVisibleEndDate', null);
+      setValue('isVisibleStartDate', undefined);
+      setValue('isVisibleEndDate', undefined);
     }
   }, [isPermanentlyActive]);
 
@@ -109,14 +109,14 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
 
           {isActive && !isPermanentlyActive && (
             <>
-              <DateAndTimeInput
-                form={form}
-                name="isVisibleStartDate"
+              <DatetimePickerHourCycle
+                value={form.watch('isVisibleStartDate')}
+                onChange={(value) => form.setValue('isVisibleStartDate', value)}
                 translationId="bulletinboard.activeFrom"
               />
-              <DateAndTimeInput
-                form={form}
-                name="isVisibleEndDate"
+              <DatetimePickerHourCycle
+                value={form.watch('isVisibleEndDate')}
+                onChange={(value) => form.setValue('isVisibleEndDate', value)}
                 translationId="bulletinboard.activeUntil"
               />
             </>
