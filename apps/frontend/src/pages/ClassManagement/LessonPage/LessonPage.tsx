@@ -212,7 +212,12 @@ const LessonPage = () => {
           </div>
         ) : null}
       </div>
-      {filesharingProgress && <ShareFileInformationBox filesharingProgress={filesharingProgress} />}
+
+      {filesharingProgress && (
+        <div className="p-8">
+          <ShareFileInformationBox filesharingProgress={filesharingProgress} />
+        </div>
+      )}
       <div>{groupNameParams || member.length ? <UserArea fetchData={fetchData} /> : <QuickAccess />}</div>
       {openDialogType === UserGroups.Sessions && <GroupDialog item={sessionToSave} />}
     </>

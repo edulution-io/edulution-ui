@@ -18,7 +18,7 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { Response } from 'express';
 import { Observable } from 'rxjs';
 import { MessageEvent } from '@nestjs/common';
-import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import { FilesharingProgressDto } from '@libs/filesharing/types/filesharingProgressDto';
 import type UserConnections from '../types/userConnections';
 import SseService from '../sse/sse.service';
 import FilesharingService from './filesharing.service';
@@ -64,7 +64,7 @@ class FilesharingQueueProcessor {
       await this.fileSharingService.createFolder(username, pathUpToTransferFolder, username);
     }
 
-    if (!userFolderExists) {
+    if (userFolderExists) {
       const collectFolderExists = await this.fileSharingService.checkIfFileOrFolderExists(
         username,
         pathUpToTeacherFolder,
