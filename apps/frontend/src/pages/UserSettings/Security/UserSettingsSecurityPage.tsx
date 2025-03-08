@@ -18,7 +18,6 @@ import { SecurityIcon } from '@/assets/icons';
 import PasswordChangeForm from '@/pages/UserSettings/Security/components/PasswordChangeForm';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import Separator from '@/components/ui/Separator';
-import MobileAccess from '@/pages/UserSettings/Security/components/MobileAccess';
 import AddMfaForm from './components/AddMfaForm';
 
 const UserSettingsSecurityPage: React.FC = () => {
@@ -42,8 +41,6 @@ const UserSettingsSecurityPage: React.FC = () => {
         <PasswordChangeForm />
         <Separator className="my-1 bg-muted" />
         <AddMfaForm />
-        <Separator className="my-1 bg-muted" />
-        <MobileAccess />
       </div>
     </div>
   );

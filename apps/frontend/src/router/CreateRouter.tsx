@@ -17,6 +17,7 @@ import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVar
 import {
   LANGUAGE_PATH,
   MAILS_PATH,
+  MOBILE_ACCESS_PATH,
   SECURITY_PATH,
   USER_DETAILS_PATH,
   USER_SETTINGS_PATH,
@@ -29,6 +30,7 @@ import UserSettingsDetailsPage from '@/pages/UserSettings/Details/UserSettingsDe
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
 import FILE_PREVIEW_ROUTE from '@libs/filesharing/constants/routes';
 import LanguageSettingsPage from '@/pages/UserSettings/Language/LanguageSettingsPage';
+import UserSettingsMobileAccess from '@/pages/UserSettings/MobileAccess/UserSettingsMobileAccess';
 import getSurveyRoutes from '@/router/routes/SurveyRoutes';
 import EmptyLayout from '@/components/layout/EmptyLayout';
 import MainLayout from '@/components/layout/MainLayout';
@@ -86,6 +88,10 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
                 <Route
                   path={LANGUAGE_PATH}
                   element={<LanguageSettingsPage />}
+                />
+                <Route
+                  path={MOBILE_ACCESS_PATH}
+                  element={<UserSettingsMobileAccess />}
                 />
               </Route>
               {appConfigs.map((item) =>
