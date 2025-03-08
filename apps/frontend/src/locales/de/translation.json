@@ -322,6 +322,11 @@
       "SharingFailed": "Austeilen der Dateien fehlgeschlagen",
       "CopyFailed": "Kopieren fehlgeschlagen"
     },
+    "progressBox": {
+      "title": "Dateien werden ausgeteilt",
+      "processedInfo": "{{processed}} von {{total}} Dateien erfolgreich ausgeteilt",
+      "fileInfo": "Datei {{filename}} wird an {{studentName}} ausgeteilt"
+    },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
       "FileNameRequired": "Dateiname ist erforderlich",

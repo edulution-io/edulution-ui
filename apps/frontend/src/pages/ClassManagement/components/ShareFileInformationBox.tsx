@@ -13,22 +13,42 @@
 import React from 'react';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import Progress from '@/components/ui/Progress';
+import { useTranslation } from 'react-i18next';
 
 interface ShareFileInformationBoxProps {
   filesharingProgress: FilesharingProgressDto | null;
 }
 
-const ShareFileInformationBox: React.FC<ShareFileInformationBoxProps> = ({ filesharingProgress }) => (
-  <div className="flex flex-col gap-2 rounded  border p-4 shadow">
-    <h2 className="text-sm font-bold">Share File Information</h2>
-    <Progress value={filesharingProgress?.percent} />
-    <p className="text-sm text-background">
-      Total : {filesharingProgress?.total} davon {filesharingProgress?.processed} erfolgreich
-    </p>
-    <p className="text-sm text-background">
-      File Name: {filesharingProgress?.currentFile} wird an {filesharingProgress?.studentName} geteilt
-    </p>
-  </div>
-);
+const ShareFileInformationBox: React.FC<ShareFileInformationBoxProps> = ({ filesharingProgress }) => {
+  const { t } = useTranslation();
+
+  if (!filesharingProgress) {
+    return null;
+  }
+
+  const { processed, total, percent, currentFile, studentName } = filesharingProgress;
+
+  return (
+    <div className="flex flex-col gap-2 rounded border p-4 shadow">
+      <h2 className="text-sm font-bold">{t('filesharing.progressBox.title')}</h2>
+
+      <Progress value={percent} />
+
+      <p className="text-sm text-background">
+        {t('filesharing.progressBox.processedInfo', {
+          processed,
+          total,
+        })}
+      </p>
+
+      <p className="text-sm text-background">
+        {t('filesharing.progressBox.fileInfo', {
+          filename: currentFile,
+          studentName,
+        })}
+      </p>
+    </div>
+  );
+};
 
 export default ShareFileInformationBox;

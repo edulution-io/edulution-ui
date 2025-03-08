@@ -328,6 +328,11 @@
       "FileNameRequired": "File name is required",
       "NewFileNameRequired": "New file name is required",
       "NameRequired": "Name is required"
+    },
+    "progressBox": {
+      "title": "Distributing files",
+      "processedInfo": "{{processed}} out of {{total}} files distributed successfully",
+      "fileInfo": "File {{filename}} is being distributed to {{studentName}}"
     }
   },
   "forums": {
