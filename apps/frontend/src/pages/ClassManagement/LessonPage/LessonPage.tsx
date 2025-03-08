@@ -32,6 +32,7 @@ import { UseFormReturn } from 'react-hook-form';
 import GroupForm from '@libs/groups/types/groupForm';
 import GroupColumn from '@libs/groups/types/groupColumn';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
+import ShareFileInformationBox from '@/pages/ClassManagement/components/ShareFileInformationBox';
 
 const LessonPage = () => {
   const {
@@ -188,7 +189,6 @@ const LessonPage = () => {
             />
           </div>
         )}
-        <p className="text-background">{filesharingProgress?.percent}</p>
         {groupNameParams || member.length ? (
           <div className="flex flex-row justify-between gap-2">
             <button
@@ -212,6 +212,7 @@ const LessonPage = () => {
           </div>
         ) : null}
       </div>
+      {filesharingProgress && <ShareFileInformationBox filesharingProgress={filesharingProgress} />}
       <div>{groupNameParams || member.length ? <UserArea fetchData={fetchData} /> : <QuickAccess />}</div>
       {openDialogType === UserGroups.Sessions && <GroupDialog item={sessionToSave} />}
     </>
