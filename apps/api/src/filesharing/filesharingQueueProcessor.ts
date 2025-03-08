@@ -14,11 +14,24 @@ import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import ContentType from '@libs/filesharing/types/contentType';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import { Response } from 'express';
+import { Observable } from 'rxjs';
+import { MessageEvent } from '@nestjs/common';
+import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import type UserConnections from '../types/userConnections';
+import SseService from '../sse/sse.service';
 import FilesharingService from './filesharing.service';
 
 @Processor('genericQueue')
 class FilesharingQueueProcessor {
   constructor(private readonly fileSharingService: FilesharingService) {}
+
+  private fileSharingSseConnections: UserConnections = new Map();
+
+  subscribe(username: string, res: Response): Observable<MessageEvent> {
+    return SseService.subscribe(username, this.fileSharingSseConnections, res);
+  }
 
   @Process({ name: 'duplicate-file', concurrency: 1 })
   public async handleDuplicateFile(
@@ -26,9 +39,16 @@ class FilesharingQueueProcessor {
       username: string;
       originFilePath: string;
       destinationPath: string;
+      studentName: string;
+      duplicateFileOperationsCount: number;
+      processed: number;
     }>,
   ) {
-    const { username, originFilePath, destinationPath } = job.data;
+    const { username, originFilePath, destinationPath, duplicateFileOperationsCount, processed, studentName } =
+      job.data;
+
+    let failed = 0;
+
     const client = await this.fileSharingService.getClient(username);
     const pathUpToTransferFolder = FilesharingService.getPathUntilFolder(destinationPath, FILE_PATHS.TRANSFER);
     const pathUpToTeacherFolder = FilesharingService.getPathUntilFolder(destinationPath, username);
@@ -56,7 +76,28 @@ class FilesharingQueueProcessor {
         await this.fileSharingService.createFolder(username, pathUpToTeacherFolder, FILE_PATHS.COLLECT);
       }
     }
-    await FilesharingService.copyFileViaWebDAV(client, originFilePath, destinationPath);
+    try {
+      await FilesharingService.copyFileViaWebDAV(client, originFilePath, destinationPath);
+    } catch (e) {
+      failed += 1;
+    }
+
+    const percent = Math.round(((processed + failed) / duplicateFileOperationsCount) * 100);
+
+    SseService.sendEventToUser(
+      username,
+      this.fileSharingSseConnections,
+      new FilesharingProgressDto(
+        Number(job.id),
+        processed,
+        failed,
+        duplicateFileOperationsCount,
+        studentName,
+        percent,
+        originFilePath,
+      ),
+      SSE_MESSAGE_TYPE.UPDATED,
+    );
   }
 }
 

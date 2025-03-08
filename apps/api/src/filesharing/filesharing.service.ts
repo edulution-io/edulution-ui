@@ -253,6 +253,14 @@ class FilesharingService {
     );
   };
 
+  static getStudentNameFromPath = (filePath: string): string | null => {
+    const parts = filePath.split('/');
+    if (parts.length < 3) {
+      return null;
+    }
+    return parts[2];
+  };
+
   moveOrRenameResource = async (
     username: string,
     originPath: string,
@@ -282,11 +290,14 @@ class FilesharingService {
 
   async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
     await Promise.all(
-      duplicateFile.destinationFilePaths.map((destinationPath) =>
+      duplicateFile.destinationFilePaths.map((destinationPath, i = 1) =>
         this.genericQueueService.addJob('duplicate-file', {
           username,
           originFilePath: duplicateFile.originFilePath,
           destinationPath,
+          studentName: FilesharingService.getStudentNameFromPath(destinationPath),
+          duplicateFileOperationsCount: duplicateFile.destinationFilePaths.length,
+          processed: i + 1,
         }),
       ),
     );

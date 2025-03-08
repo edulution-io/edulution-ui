@@ -18,12 +18,14 @@ import {
   Header,
   HttpStatus,
   Logger,
+  MessageEvent,
   Patch,
   Post,
   Put,
   Query,
   Req,
   Res,
+  Sse,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -39,15 +41,20 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
+import { Observable } from 'rxjs';
 import FilesharingService from './filesharing.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
+import FilesharingQueueProcessor from './filesharingQueueProcessor';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
 @Controller(FileSharingApiEndpoints.BASE)
 class FilesharingController {
-  constructor(private readonly filesharingService: FilesharingService) {}
+  constructor(
+    private readonly filesharingService: FilesharingService,
+    private readonly filesharingQueueProcessor: FilesharingQueueProcessor,
+  ) {}
 
   @Get()
   async getFilesAtPath(
@@ -186,6 +193,11 @@ class FilesharingController {
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 1 });
     }
+  }
+
+  @Sse('sse')
+  sse(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
+    return this.filesharingQueueProcessor.subscribe(username, res);
   }
 }
 

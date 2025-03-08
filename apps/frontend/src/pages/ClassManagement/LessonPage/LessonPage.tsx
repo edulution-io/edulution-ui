@@ -56,6 +56,7 @@ const LessonPage = () => {
     setGroupTypeInStore,
     groupNameFromStore,
     groupTypeFromStore,
+    filesharingProgress,
   } = useLessonStore();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -187,6 +188,7 @@ const LessonPage = () => {
             />
           </div>
         )}
+        <p className="text-background">{filesharingProgress?.percent}</p>
         {groupNameParams || member.length ? (
           <div className="flex flex-row justify-between gap-2">
             <button
