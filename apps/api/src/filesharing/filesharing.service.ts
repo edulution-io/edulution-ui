@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -381,7 +381,6 @@ class FilesharingService {
   ): Promise<boolean> {
     if (contentType === ContentType.DIRECTORY) {
       const directories = await this.getDirAtPath(username, `${parentPath}/`);
-      Logger.log(`Directories found: ${directories.map((d) => d.basename).join(', ')}`, FilesharingService.name);
       return directories.some((item) => item.type === ContentType.DIRECTORY && item.basename === name);
     }
 
