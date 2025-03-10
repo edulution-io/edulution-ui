@@ -20,6 +20,7 @@ import {
 import { UserIcon, PlusIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, SurveysSidebarIcon } from '@/assets/icons';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import APPS from '@libs/appconfig/constants/apps';
+import SurveysPageView from '@libs/survey/types/api/page-view';
 
 const useSurveysPageMenu = () => {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ const useSurveysPageMenu = () => {
     appName: APPS.SURVEYS,
     menuItems: [
       {
-        id: 'open',
+        id: SurveysPageView.OPEN,
         label: 'surveys.view.open.menu',
         icon: SurveysViewOpenIcon,
         action: () => {
@@ -39,7 +40,7 @@ const useSurveysPageMenu = () => {
         },
       },
       {
-        id: 'answered',
+        id: SurveysPageView.ANSWERED,
         label: 'surveys.view.answered.menu',
         icon: SurveysViewAnsweredIcon,
         action: () => {
@@ -47,7 +48,7 @@ const useSurveysPageMenu = () => {
         },
       },
       {
-        id: 'created',
+        id: SurveysPageView.CREATED,
         label: 'surveys.view.created.menu',
         icon: UserIcon,
         action: () => {
@@ -55,7 +56,7 @@ const useSurveysPageMenu = () => {
         },
       },
       {
-        id: 'creator',
+        id: SurveysPageView.CREATOR,
         label: 'surveys.view.editor.menu',
         icon: PlusIcon,
         action: () => {
