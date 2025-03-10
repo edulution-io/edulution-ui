@@ -12,6 +12,8 @@
 
 import React, { useEffect } from 'react';
 import { useAuth } from 'react-oidc-context';
+import useLmnApiStore from '@/store/useLmnApiStore';
+import type UserDto from '@libs/user/types/user.dto';
 import useAppConfigsStore from '../pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '../store/UserStore/UserStore';
 import useLogout from '../hooks/useLogout';
@@ -21,7 +23,9 @@ import useTokenEventListeners from '../hooks/useTokenEventListener';
 const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const auth = useAuth();
   const { getAppConfigs } = useAppConfigsStore();
-  const { isAuthenticated, setEduApiToken } = useUserStore();
+  const { isAuthenticated, setEduApiToken, user, getWebdavKey } = useUserStore();
+  const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
+
   const handleLogout = useLogout();
 
   useEffect(() => {
@@ -42,6 +46,17 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
 
     if (isAuthenticated) {
       void handleGetAppConfigs();
+    }
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    const handleGetLmnApiKey = async (usr: UserDto) => {
+      const webdavKey = await getWebdavKey();
+      await setLmnApiToken(usr.username, webdavKey);
+    };
+
+    if (isAuthenticated && !lmnApiToken && user) {
+      void handleGetLmnApiKey(user);
     }
   }, [isAuthenticated]);
 

@@ -29,7 +29,7 @@ import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageE
 
 const ProjectsPage = () => {
   const { t } = useTranslation();
-  const { getOwnUser, user } = useLmnApiStore();
+  const { getOwnUser, user, lmnApiToken } = useLmnApiStore();
   const {
     createProject,
     updateProject,
@@ -42,17 +42,15 @@ const ProjectsPage = () => {
   const [filterKeyWord, setFilterKeyWord] = useState<string>('');
 
   useEffect(() => {
-    void getOwnUser();
-    void fetchUserProjects();
-    void fetchUserSchoolClasses();
-  }, []);
-
-  if (!user) {
-    return null;
-  }
+    if (lmnApiToken) {
+      void getOwnUser();
+      void fetchUserProjects();
+      void fetchUserSchoolClasses();
+    }
+  }, [lmnApiToken]);
 
   const filterProjects = (project: LmnApiProject) =>
-    project.sophomorixAdmins.includes(user.cn) &&
+    project.sophomorixAdmins.includes(user?.cn || '') &&
     (project.cn.includes(filterKeyWord) || project.displayName.includes(filterKeyWord));
 
   const groupRows: GroupColumn[] = [
