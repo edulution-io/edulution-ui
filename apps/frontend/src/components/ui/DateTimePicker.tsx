@@ -15,11 +15,12 @@ import { useImperativeHandle, useRef } from 'react';
 import { add, format } from 'date-fns';
 import { type Locale, enUS } from 'date-fns/locale';
 import { Calendar as CalendarIcon, Clock } from 'lucide-react';
+import { CaptionProps } from 'react-day-picker';
 import cn from '@libs/common/utils/className';
-import { Button } from '@/components/shared/Button';
-import { buttonVariants } from '@/components/ui/ButtonSH';
-import { Calendar, CalendarProps } from '@/components/ui/Calendar';
+import { Button, originButtonVariants } from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
+import { Calendar, CalendarProps } from '@/components/ui/Calendar';
+import Label from '@/components/ui/Label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
@@ -232,14 +233,71 @@ function getArrowByType(value: string, step: number, type: TimePickerType) {
 
 // ---------- utils end ----------
 
+interface CaptionLabelProps {
+  months: { value: number; label: string }[];
+  years: { value: number; label: string }[];
+  displayMonth: Date;
+  onMonthChange: (date: Date | undefined) => void;
+}
+
+const CaptionLabel = ({ months, years, displayMonth, onMonthChange }: CaptionLabelProps) => (
+  <div className="inline-flex gap-2">
+    <Select
+      defaultValue={displayMonth.getMonth().toString()}
+      onValueChange={(value) => {
+        const newDate = new Date(displayMonth);
+        newDate.setMonth(Number.parseInt(value, 10));
+        onMonthChange?.(newDate);
+      }}
+    >
+      <SelectTrigger className="w-fit gap-1 border-none p-0 focus:bg-accent focus:text-accent-foreground">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {months.map((month) => (
+          <SelectItem
+            key={month.value}
+            value={month.value.toString()}
+          >
+            {month.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+    <Select
+      defaultValue={displayMonth.getFullYear().toString()}
+      onValueChange={(value) => {
+        const newDate = new Date(displayMonth);
+        newDate.setFullYear(Number.parseInt(value, 10));
+        onMonthChange?.(newDate);
+      }}
+    >
+      <SelectTrigger className="w-fit gap-1 border-none p-0 focus:bg-accent focus:text-accent-foreground">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {years.map((year) => (
+          <SelectItem
+            key={year.value}
+            value={year.value.toString()}
+          >
+            {year.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  </div>
+);
+
 const CalendarWithYearRange = ({
   className,
   classNames,
   components,
+  onMonthChange,
   showOutsideDays = true,
-  yearRange = 50,
+  yearRange = 10,
   ...props
-}: CalendarProps & { yearRange?: number }) => {
+}: CalendarProps & { onMonthChange: (value: Date | undefined) => void; yearRange?: number }) => {
   const MONTHS = React.useMemo(() => {
     let locale: Pick<Locale, 'options' | 'localize' | 'formatLong'> = enUS;
     const { options, localize, formatLong } = props.locale || {};
@@ -273,69 +331,24 @@ const CalendarWithYearRange = ({
 
   return (
     <Calendar
+      showOutsideDays={showOutsideDays}
       className={className}
       classNames={{
         nav_button_previous: cn(
-          buttonVariants({ variant: 'outline' }),
+          originButtonVariants({ variant: 'btn-outline' }),
           'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 absolute left-5 top-2',
           disableLeftNavigation() && 'pointer-events-none',
         ),
         nav_button_next: cn(
-          buttonVariants({ variant: 'outline' }),
+          originButtonVariants({ variant: 'btn-outline' }),
           'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 absolute right-5 top-2',
           disableRightNavigation() && 'pointer-events-none',
         ),
         ...classNames,
       }}
       components={{
-        CaptionLabel: ({ displayMonth }) => (
-          <div className="inline-flex gap-2">
-            <Select
-              defaultValue={displayMonth.getMonth().toString()}
-              onValueChange={(value) => {
-                const newDate = new Date(displayMonth);
-                newDate.setMonth(Number.parseInt(value, 10));
-                props.onMonthChange?.(newDate);
-              }}
-            >
-              <SelectTrigger className="w-fit gap-1 border-none p-0 focus:bg-accent focus:text-accent-foreground">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {MONTHS.map((month) => (
-                  <SelectItem
-                    key={month.value}
-                    value={month.value.toString()}
-                  >
-                    {month.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select
-              defaultValue={displayMonth.getFullYear().toString()}
-              onValueChange={(value) => {
-                const newDate = new Date(displayMonth);
-                newDate.setFullYear(Number.parseInt(value, 10));
-                props.onMonthChange?.(newDate);
-              }}
-            >
-              <SelectTrigger className="w-fit gap-1 border-none p-0 focus:bg-accent focus:text-accent-foreground">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {YEARS.map((year) => (
-                  <SelectItem
-                    key={year.value}
-                    value={year.value.toString()}
-                  >
-                    {year.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        ),
+        CaptionLabel: (captionProps: CaptionProps) =>
+          CaptionLabel({ months: MONTHS, years: YEARS, displayMonth: captionProps.displayMonth, onMonthChange }),
         ...components,
       }}
       {...props}
@@ -435,6 +448,7 @@ const TimePickerInput = React.forwardRef<HTMLInputElement, TimePickerInputProps>
      * allow the user to enter the second digit within 2 seconds
      * otherwise start again with entering first digit
      */
+    // eslint-disable-next-line consistent-return
     React.useEffect(() => {
       if (flag) {
         const timer = setTimeout(() => {
@@ -547,12 +561,12 @@ const TimePicker = React.forwardRef<TimePickerRef, TimePickerProps>(
     );
     return (
       <div className="my-4 flex items-center justify-center gap-2">
-        <label
+        <Label
           htmlFor="datetime-picker-hour-input"
           className="cursor-pointer"
         >
           <Clock className="mr-2 h-4 w-4" />
-        </label>
+        </Label>
         <TimePickerInput
           picker={hourCycle === 24 ? 'hours' : '12hours'}
           date={date}
@@ -594,9 +608,9 @@ const TimePicker = React.forwardRef<TimePickerRef, TimePickerProps>(
               period={period}
               setPeriod={setPeriod}
               date={date}
-              onDateChange={(date: Date | undefined) => {
-                onChange?.(date);
-                if (date && date?.getHours() >= 12) {
+              onDateChange={(newDate: Date | undefined) => {
+                onChange?.(newDate);
+                if (newDate && newDate?.getHours() >= 12) {
                   setPeriod('PM');
                 } else {
                   setPeriod('AM');
@@ -673,6 +687,7 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
     const [month, setMonth] = React.useState<Date>(value ?? defaultPopupValue);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const [displayDate, setDisplayDate] = React.useState<Date | undefined>(value ?? undefined);
+    // eslint-disable-next-line no-param-reassign
     onMonthChange ||= onChange;
     /**
      * carry over the current time when a user clicks a new day
@@ -739,7 +754,7 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
           <Button
             variant="btn-outline"
             className={cn(
-              'h-9 w-full max-w-[230px] justify-start px-4 py-0 text-left font-normal',
+              'h-9 w-fit justify-start py-0 text-left font-normal',
               !displayDate && 'text-muted-foreground',
               className,
             )}
@@ -774,11 +789,11 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
           {granularity !== 'day' && (
             <div className="border-t border-border">
               <TimePicker
-                onChange={(value) => {
-                  onChange?.(value);
-                  setDisplayDate(value);
-                  if (value) {
-                    setMonth(value);
+                onChange={(newValue) => {
+                  onChange?.(newValue);
+                  setDisplayDate(newValue);
+                  if (newValue) {
+                    setMonth(newValue);
                   }
                 }}
                 date={month}
