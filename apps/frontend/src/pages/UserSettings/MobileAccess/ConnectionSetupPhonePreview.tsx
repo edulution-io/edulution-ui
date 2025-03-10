@@ -22,7 +22,7 @@ interface ConnectionSetupProps {
 }
 
 const ConnectionSetupPhonePreview: React.FC<ConnectionSetupProps> = ({ username, schoolurl, schoolname }) => (
-  <div className="flex h-[700px] w-[360px] flex-col overflow-hidden rounded-md bg-gray-900 text-white shadow-lg">
+  <div className="flex h-[550px] w-[360px] flex-col overflow-hidden rounded-md bg-gray-900 text-white shadow-lg">
     <div className="flex items-center bg-gray-800 p-4">
       <button
         type="button"
@@ -34,11 +34,10 @@ const ConnectionSetupPhonePreview: React.FC<ConnectionSetupProps> = ({ username,
       <h1 className="text-lg font-bold">{t('mobileAccessSetup.connectionTitle')}</h1>
     </div>
 
-    {/* Body */}
     <div className="flex flex-grow flex-col gap-4 p-4">
       <p className="text-base">{t('mobileAccessSetup.pleaseEnterCredentials')}</p>
 
-      <div className="flex cursor-pointer items-center text-blue-400">
+      <div className="flex cursor-pointer items-center justify-center text-blue-400">
         <FaQrcode className="mr-1" />
         <span>{t('mobileAccessSetup.scanQrCode')}</span>
       </div>

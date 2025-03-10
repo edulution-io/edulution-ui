@@ -60,7 +60,7 @@ const MobileFileAccessSetupBox: React.FC = () => {
           <div className="space-y-2 rounded border p-4 shadow">
             <h3 className="text-base font-bold">1. {t('dashboard.mobileAccess.downloadApp')}</h3>
 
-            <div className="mt-2 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <div className="mt-2 flex flex-col items-center justify-center gap-4">
               {!isMobileView && <QRCodeDisplay value={EDU_APP_APPSTORE_URL} />}
 
               <NavLink
