@@ -22,6 +22,7 @@ import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDial
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import surveyTheme from '@/pages/Surveys/theme/theme';
+import '../theme/custom.participation.css';
 
 interface SurveyParticipationPageProps {
   isPublic: boolean;
