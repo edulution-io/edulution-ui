@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
 import { Model } from 'survey-core';
 import { useParams } from 'react-router-dom';
@@ -43,50 +43,43 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
     void updateSelectedSurvey(surveyId, isPublic);
   }, [surveyId]);
 
-  const surveyModelRef = useRef<Model | null>(null);
-  if (!surveyModelRef.current) {
+  const surveyModel = useMemo(() => {
     if (!selectedSurvey) {
-      return null;
+      return undefined;
     }
-    const surveyParticipationModel = new Model();
+    const surveyParticipationModel = new Model(selectedSurvey.formula);
     surveyParticipationModel.applyTheme(surveyTheme);
     surveyParticipationModel.locale = language;
     if (surveyParticipationModel.pages.length > 3) {
       surveyParticipationModel.showProgressBar = 'top';
     }
-  }
-  const surveyModel = surveyModelRef.current;
 
-  useEffect(() => {
-    if (surveyModel && selectedSurvey) {
-      surveyModel.fromJSON(selectedSurvey.formula);
-      surveyModel.locale = language;
+    surveyParticipationModel.onCompleting.add(async (sender, options) => {
+      const success = await answerSurvey(
+        {
+          surveyId: selectedSurvey.id || surveyId || '',
+          saveNo: selectedSurvey.saveNo,
+          answer: surveyParticipationModel.getData() as JSON,
+          isPublic,
+        },
+        sender,
+        options,
+      );
 
-      surveyModel.onCompleting.add(async (sender, options) => {
-        const success = await answerSurvey(
-          {
-            surveyId: selectedSurvey.id || surveyId || '',
-            saveNo: selectedSurvey.saveNo,
-            answer: surveyModel.getData() as JSON,
-            isPublic,
-          },
-          sender,
-          options,
-        );
-
-        if (success) {
-          if (!isPublic) {
-            void updateOpenSurveys();
-            void updateAnsweredSurveys();
-          }
-
-          toast.success(t('survey.participate.saveAnswerSuccess'));
+      if (success) {
+        if (!isPublic) {
+          void updateOpenSurveys();
+          void updateAnsweredSurveys();
         }
-      });
-    }
+
+        toast.success(t('survey.participate.saveAnswerSuccess'));
+      }
+    });
+
+    return surveyParticipationModel;
   }, [selectedSurvey, language]);
 
-  if (!selectedSurvey) {
+  if (!surveyModel) {
     return isFetching ? (
       <LoadingIndicatorDialog isOpen={isFetching} />
     ) : (
