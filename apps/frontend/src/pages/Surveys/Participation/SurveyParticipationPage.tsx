@@ -13,15 +13,15 @@
 import React, { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
 import { Model } from 'survey-core';
+import { Survey } from 'survey-react-ui';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import cn from '@libs/common/utils/className';
 import useLanguage from '@/hooks/useLanguage';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import surveyTheme from '@/pages/Surveys/theme/theme';
-import cn from '@libs/common/utils/className';
-import { Survey } from 'survey-react-ui';
 
 interface SurveyParticipationPageProps {
   isPublic: boolean;
