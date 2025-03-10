@@ -51,8 +51,28 @@ class FilesystemService {
     streamFetching = false,
   ): Promise<AxiosResponse<Readable> | Readable> {
     try {
-      const fileStream = from(client.get<Readable>(url, { responseType: ResponseType.STREAM }));
-      return await firstValueFrom(fileStream).then((res) => (streamFetching ? res : res.data));
+      const response$ = from(client.get<Readable>(url, { responseType: ResponseType.STREAM }));
+
+      const response = await firstValueFrom(response$);
+
+      const lengthHeader: string = response.headers?.['content-length'] as string;
+      let contentLength = 0;
+      contentLength = parseInt(lengthHeader, 10) || 0;
+
+      const readStream = response.data;
+
+      if (contentLength > 0) {
+        let downloaded = 0;
+        readStream.on('data', (chunk: Buffer) => {
+          downloaded += chunk.length;
+          const percent = ((downloaded / contentLength) * 100).toFixed(2);
+          Logger.log(`Download fortgeschritten: ${percent}%`);
+        });
+      } else {
+        Logger.log('Keine content-length - prozentualer Fortschritt nicht möglich');
+      }
+
+      return streamFetching ? response : readStream;
     } catch (error) {
       throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, url);
     }
