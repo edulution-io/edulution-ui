@@ -18,12 +18,13 @@ import { CaptionProps } from 'react-day-picker';
 import cn from '@libs/common/utils/className';
 import { Button } from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
-import { Calendar, CalendarProps, DropdownVariant } from '@/components/ui/Calendar';
+import { Calendar, CalendarProps } from '@/components/ui/Calendar';
 import Label from '@/components/ui/Label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
-import styles from './DropdownSelect/dropdownselect.module.scss';
+import { DropdownVariant } from '@/components/ui/DropdownSelect/DropdownSelect';
+import styles from '@/components/ui/DropdownSelect//dropdownselect.module.scss';
 
 // ---------- utils start ----------
 /**

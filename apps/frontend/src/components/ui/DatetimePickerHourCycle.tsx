@@ -15,7 +15,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DateTimePicker } from '@/components/ui/DateTimePicker';
-import { DropdownVariant } from '@/components/ui/Calendar';
+import { DropdownVariant } from '@/components/ui/DropdownSelect/DropdownSelect';
 
 const defaultDate = new Date();
 defaultDate.setMonth(defaultDate.getDay() + 7);

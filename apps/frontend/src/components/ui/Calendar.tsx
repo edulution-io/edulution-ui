@@ -13,12 +13,10 @@
 'use client';
 
 import * as React from 'react';
-import { DayPicker } from 'react-day-picker';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import cn from '@libs/common/utils/className';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { DayPicker } from 'react-day-picker';
 import { buttonVariants } from '@/components/ui/ButtonSH';
-
-export type DropdownVariant = 'dialog' | 'default';
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker> & { minDate?: Date };
 
