@@ -69,6 +69,8 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
           value={form.watch('expires')}
           onChange={(value) => form.setValue('expires', value)}
           translationId="survey.expirationDate"
+          minDate={new Date()}
+          variant="dialog"
         />
       </div>
       <p className="text-m font-bold text-background">{t('surveys.saveDialog.settingsFlags')}</p>

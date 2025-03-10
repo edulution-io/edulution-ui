@@ -21,7 +21,7 @@ export type DropdownOptions = {
   name: string;
 };
 
-type DropdownVariant = 'dialog' | 'default';
+export type DropdownVariant = 'dialog' | 'default';
 
 interface DropdownProps {
   options: DropdownOptions[];

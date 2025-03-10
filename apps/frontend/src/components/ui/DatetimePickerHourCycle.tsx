@@ -15,6 +15,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DateTimePicker } from '@/components/ui/DateTimePicker';
+import { DropdownVariant } from '@/components/ui/Calendar';
 
 const defaultDate = new Date();
 defaultDate.setMonth(defaultDate.getDay() + 7);
@@ -25,10 +26,12 @@ interface DatetimePickerHourCycleProps {
   onChange: (value: Date | undefined) => void;
   defaultTime?: Date | undefined;
   translationId?: string;
+  variant?: DropdownVariant;
+  minDate?: Date;
 }
 
 const DatetimePickerHourCycle = (props: DatetimePickerHourCycleProps) => {
-  const { value, onChange, defaultTime, translationId } = props;
+  const { value, onChange, defaultTime, translationId, variant = 'default', minDate } = props;
 
   const { t } = useTranslation();
 
@@ -41,6 +44,9 @@ const DatetimePickerHourCycle = (props: DatetimePickerHourCycleProps) => {
           value={value}
           onChange={onChange}
           defaultPopupValue={defaultTime || defaultDate}
+          variant={variant}
+          minDate={minDate}
+          yearRange={3}
         />
       </div>
     </div>

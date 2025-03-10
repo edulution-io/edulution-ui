@@ -13,16 +13,18 @@
 'use client';
 
 import * as React from 'react';
-import cn from '@libs/common/utils/className';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { DayPicker } from 'react-day-picker';
-
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import cn from '@libs/common/utils/className';
 import { buttonVariants } from '@/components/ui/ButtonSH';
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+export type DropdownVariant = 'dialog' | 'default';
 
-const Calendar = ({ className, classNames, components, showOutsideDays = true, ...props }: CalendarProps) => (
+export type CalendarProps = React.ComponentProps<typeof DayPicker> & { minDate?: Date };
+
+const Calendar = ({ className, classNames, components, showOutsideDays = true, minDate, ...props }: CalendarProps) => (
   <DayPicker
+    disabled={minDate ? { before: minDate } : undefined}
     showOutsideDays={showOutsideDays}
     className={cn('p-3', className)}
     classNames={{

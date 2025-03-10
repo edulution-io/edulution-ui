@@ -9,7 +9,6 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
 import * as React from 'react';
 import { useImperativeHandle, useRef } from 'react';
 import { add, format } from 'date-fns';
@@ -17,13 +16,14 @@ import { type Locale, enUS } from 'date-fns/locale';
 import { Calendar as CalendarIcon, Clock } from 'lucide-react';
 import { CaptionProps } from 'react-day-picker';
 import cn from '@libs/common/utils/className';
-import { Button, originButtonVariants } from '@/components/shared/Button';
+import { Button } from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
-import { Calendar, CalendarProps } from '@/components/ui/Calendar';
+import { Calendar, CalendarProps, DropdownVariant } from '@/components/ui/Calendar';
 import Label from '@/components/ui/Label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
+import styles from './DropdownSelect/dropdownselect.module.scss';
 
 // ---------- utils start ----------
 /**
@@ -238,9 +238,10 @@ interface CaptionLabelProps {
   years: { value: number; label: string }[];
   displayMonth: Date;
   onMonthChange: (date: Date | undefined) => void;
+  variant: DropdownVariant;
 }
 
-const CaptionLabel = ({ months, years, displayMonth, onMonthChange }: CaptionLabelProps) => (
+const CaptionLabel = ({ months, years, displayMonth, onMonthChange, variant = 'default' }: CaptionLabelProps) => (
   <div className="inline-flex gap-2">
     <Select
       defaultValue={displayMonth.getMonth().toString()}
@@ -250,10 +251,15 @@ const CaptionLabel = ({ months, years, displayMonth, onMonthChange }: CaptionLab
         onMonthChange?.(newDate);
       }}
     >
-      <SelectTrigger className="w-fit gap-1 border-none p-0 focus:bg-accent focus:text-accent-foreground">
+      <SelectTrigger className="w-fit gap-1 border-none px-4 py-0 focus:bg-accent focus:text-accent-foreground">
         <SelectValue />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent
+        className={cn(styles.options, styles.open, {
+          'bg-background text-foreground': variant === 'default',
+          'bg-muted text-secondary': variant === 'dialog',
+        })}
+      >
         {months.map((month) => (
           <SelectItem
             key={month.value}
@@ -272,10 +278,15 @@ const CaptionLabel = ({ months, years, displayMonth, onMonthChange }: CaptionLab
         onMonthChange?.(newDate);
       }}
     >
-      <SelectTrigger className="w-fit gap-1 border-none p-0 focus:bg-accent focus:text-accent-foreground">
+      <SelectTrigger className="w-fit gap-1 border-none px-4 py-0 focus:bg-accent focus:text-accent-foreground">
         <SelectValue />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent
+        className={cn(styles.options, styles.open, {
+          'bg-background text-foreground': variant === 'default',
+          'bg-muted text-secondary': variant === 'dialog',
+        })}
+      >
         {years.map((year) => (
           <SelectItem
             key={year.value}
@@ -294,10 +305,17 @@ const CalendarWithYearRange = ({
   classNames,
   components,
   onMonthChange,
+  minDate,
   showOutsideDays = true,
-  yearRange = 10,
+  yearRange = 3,
+  variant = 'default',
   ...props
-}: CalendarProps & { onMonthChange: (value: Date | undefined) => void; yearRange?: number }) => {
+}: CalendarProps & {
+  onMonthChange: (value: Date | undefined) => void;
+  minDate?: Date;
+  yearRange?: number;
+  variant: DropdownVariant;
+}) => {
   const MONTHS = React.useMemo(() => {
     let locale: Pick<Locale, 'options' | 'localize' | 'formatLong'> = enUS;
     const { options, localize, formatLong } = props.locale || {};
@@ -312,43 +330,28 @@ const CalendarWithYearRange = ({
   }, []);
 
   const YEARS = React.useMemo(() => genYears(yearRange), []);
-  const disableLeftNavigation = () => {
-    const today = new Date();
-    const startDate = new Date(today.getFullYear() - yearRange, 0, 1);
-    if (props.month) {
-      return props.month.getMonth() === startDate.getMonth() && props.month.getFullYear() === startDate.getFullYear();
-    }
-    return false;
-  };
-  const disableRightNavigation = () => {
-    const today = new Date();
-    const endDate = new Date(today.getFullYear() + yearRange, 11, 31);
-    if (props.month) {
-      return props.month.getMonth() === endDate.getMonth() && props.month.getFullYear() === endDate.getFullYear();
-    }
-    return false;
-  };
 
   return (
     <Calendar
+      minDate={minDate}
       showOutsideDays={showOutsideDays}
       className={className}
       classNames={{
-        nav_button_previous: cn(
-          originButtonVariants({ variant: 'btn-outline' }),
-          'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 absolute left-5 top-2',
-          disableLeftNavigation() && 'pointer-events-none',
-        ),
-        nav_button_next: cn(
-          originButtonVariants({ variant: 'btn-outline' }),
-          'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 absolute right-5 top-2',
-          disableRightNavigation() && 'pointer-events-none',
-        ),
+        nav_button_previous: 'hidden',
+        nav_button_next: 'hidden',
         ...classNames,
       }}
       components={{
+        IconLeft: () => null,
+        IconRight: () => null,
         CaptionLabel: (captionProps: CaptionProps) =>
-          CaptionLabel({ months: MONTHS, years: YEARS, displayMonth: captionProps.displayMonth, onMonthChange }),
+          CaptionLabel({
+            months: MONTHS,
+            years: YEARS,
+            displayMonth: captionProps.displayMonth,
+            onMonthChange,
+            variant,
+          }),
         ...components,
       }}
       {...props}
@@ -364,10 +367,11 @@ interface PeriodSelectorProps {
   onDateChange?: (date: Date | undefined) => void;
   onRightFocus?: () => void;
   onLeftFocus?: () => void;
+  variant?: DropdownVariant;
 }
 
 const TimePeriodSelect = React.forwardRef<HTMLButtonElement, PeriodSelectorProps>(
-  ({ period, setPeriod, date, onDateChange, onLeftFocus, onRightFocus }, ref) => {
+  ({ period, setPeriod, date, onDateChange, onLeftFocus, onRightFocus, variant = 'default' }, ref) => {
     const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
       if (e.key === 'ArrowRight') onRightFocus?.();
       if (e.key === 'ArrowLeft') onLeftFocus?.();
@@ -395,7 +399,10 @@ const TimePeriodSelect = React.forwardRef<HTMLButtonElement, PeriodSelectorProps
         >
           <SelectTrigger
             ref={ref}
-            className="w-[65px] focus:bg-accent focus:text-accent-foreground"
+            className={cn(styles.dropdown, 'w-[65px] focus:bg-accent focus:text-accent-foreground', {
+              [styles.default]: variant === 'default',
+              [styles.dialog]: variant === 'dialog',
+            })}
             onKeyDown={handleKeyDown}
           >
             <SelectValue />
@@ -560,7 +567,7 @@ const TimePicker = React.forwardRef<TimePickerRef, TimePickerProps>(
       [minuteRef, hourRef, secondRef],
     );
     return (
-      <div className="my-4 flex items-center justify-center gap-2">
+      <div className="mb-4 flex items-center justify-center gap-2">
         <Label
           htmlFor="datetime-picker-hour-input"
           className="cursor-pointer"
@@ -586,19 +593,6 @@ const TimePicker = React.forwardRef<TimePickerRef, TimePickerProps>(
               ref={minuteRef}
               onLeftFocus={() => hourRef?.current?.focus()}
               onRightFocus={() => secondRef?.current?.focus()}
-            />
-          </>
-        )}
-        {granularity === 'second' && (
-          <>
-            :
-            <TimePickerInput
-              picker="seconds"
-              date={date}
-              onDateChange={onChange}
-              ref={secondRef}
-              onLeftFocus={() => minuteRef?.current?.focus()}
-              onRightFocus={() => periodRef?.current?.focus()}
             />
           </>
         )}
@@ -659,6 +653,10 @@ type DateTimePickerProps = {
    * Show the default month and time when popup the calendar. Default is the current Date().
    * */
   defaultPopupValue?: Date;
+
+  minDate?: Date;
+
+  variant: DropdownVariant;
 } & Pick<CalendarProps, 'locale' | 'weekStartsOn' | 'showWeekNumber' | 'showOutsideDays'>;
 
 type DateTimePickerRef = {
@@ -677,9 +675,11 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
       yearRange = 50,
       disabled = false,
       displayFormat,
+      className,
+      minDate,
       granularity = 'second',
       placeholder = 'Pick a date',
-      className,
+      variant = 'default',
       ...props
     },
     ref,
@@ -770,7 +770,12 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0">
+        <PopoverContent
+          className={cn('w-auto p-0', styles.options, styles.open, {
+            'bg-background text-foreground': variant === 'default',
+            'bg-muted text-secondary': variant === 'dialog',
+          })}
+        >
           <CalendarWithYearRange
             mode="single"
             selected={displayDate}
@@ -784,10 +789,17 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
             onMonthChange={handleMonthChange}
             yearRange={yearRange}
             locale={locale}
+            minDate={minDate}
+            variant={variant}
             {...props}
           />
           {granularity !== 'day' && (
-            <div className="border-t border-border">
+            <div
+              className={cn(styles.options, styles.open, {
+                'bg-background text-foreground': variant === 'default',
+                'bg-muted text-secondary': variant === 'dialog',
+              })}
+            >
               <TimePicker
                 onChange={(newValue) => {
                   onChange?.(newValue);
@@ -807,7 +819,6 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
     );
   },
 );
-
 DateTimePicker.displayName = 'DateTimePicker';
 
 export { DateTimePicker, TimePickerInput, TimePicker };
