@@ -32,7 +32,7 @@ const MenuBar: React.FC = () => {
 
   const navigate = useNavigate();
 
-  useOnClickOutside(menubarRef, !isOpen ? toggle : () => {});
+  useOnClickOutside(menubarRef, toggle);
 
   if (menuBarEntries.disabled) {
     return null;
