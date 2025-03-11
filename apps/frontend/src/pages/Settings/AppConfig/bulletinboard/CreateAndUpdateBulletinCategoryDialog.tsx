@@ -125,8 +125,7 @@ const CreateAndUpdateBulletinCategoryDialog: React.FC<CreateAndUpdateBulletinCat
       <AdaptiveDialog
         isOpen={isOpen}
         handleOpenChange={() => {
-          setDialogOpen('');
-          setSelectedCategory(null);
+          closeDialog();
         }}
         title={selectedCategory ? t('bulletinboard.editCategory') : t('bulletinboard.createNewCategory')}
         body={getDialogBody()}
