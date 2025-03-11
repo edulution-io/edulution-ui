@@ -289,18 +289,11 @@ class FilesharingService {
   };
 
   async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
-    await Promise.all(
-      duplicateFile.destinationFilePaths.map((destinationPath, i = 1) =>
-        this.genericQueueService.addJob('duplicate-file', {
-          username,
-          originFilePath: duplicateFile.originFilePath,
-          destinationPath,
-          studentName: FilesharingService.getStudentNameFromPath(destinationPath),
-          duplicateFileOperationsCount: duplicateFile.destinationFilePaths.length,
-          processed: i + 1,
-        }),
-      ),
-    );
+    await this.genericQueueService.addJob('duplicate-file', {
+      username,
+      originFilePath: duplicateFile.originFilePath,
+      destinationFilePaths: duplicateFile.destinationFilePaths,
+    });
   }
 
   private async createCollectFolderIfNotExists(username: string, destinationPath: string) {

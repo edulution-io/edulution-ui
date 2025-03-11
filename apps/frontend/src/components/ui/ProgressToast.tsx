@@ -14,6 +14,8 @@
 import React, { useEffect } from 'react';
 import { toast } from 'sonner';
 import { t } from 'i18next';
+import { MdRefresh } from 'react-icons/md';
+import { Button } from '@/components/shared/Button';
 
 interface GenericProgressData {
   percent: number;
@@ -29,6 +31,8 @@ interface GenericProgressData {
   processed: number;
 
   total: number;
+
+  onRetry?: () => void;
 }
 
 interface ProgressToasterProps {
@@ -51,7 +55,7 @@ const ProgressBar: React.FC<{ value: number }> = ({ value }) => {
 };
 
 const ProgressBox: React.FC<{ data: GenericProgressData }> = ({ data }) => {
-  const { percent, title, description, failed, processed, total } = data;
+  const { percent, title, description, failed, processed, total, onRetry } = data;
 
   return (
     <div className="flex flex-col gap-2">
@@ -66,12 +70,26 @@ const ProgressBox: React.FC<{ data: GenericProgressData }> = ({ data }) => {
 
       <p className="text-sm text-background">
         {t('filesharing.progressBox.processedInfo', {
-          processed,
+          processed: processed - failed,
           total,
         })}
       </p>
 
-      {failed > 0 && <p className="text-sm text-background">{t('filesharing.progressBox.errorInfo', { failed })}</p>}
+      {failed > 0 && (
+        <div className="flex items-center gap-2 text-sm text-background">
+          {t('filesharing.progressBox.errorInfo', { failed })}
+
+          {onRetry && (
+            <Button
+              onClick={() => onRetry()}
+              className="flex items-center gap-1 rounded bg-gray-100 px-2 py-1 text-sm hover:bg-gray-200"
+            >
+              <MdRefresh className="inline-block" />
+              {t('filesharing.progressBox.retry', 'Wiederholen')}
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 };
@@ -79,9 +97,19 @@ const ProgressBox: React.FC<{ data: GenericProgressData }> = ({ data }) => {
 const ProgressToaster: React.FC<ProgressToasterProps> = ({ data, completedDuration = 5000 }) => {
   useEffect(() => {
     if (data) {
+      let toastDuration: number;
+
+      if (data.failed > 0) {
+        toastDuration = Infinity;
+      } else if (data.percent >= 100) {
+        toastDuration = completedDuration;
+      } else {
+        toastDuration = Infinity;
+      }
+
       toast(<ProgressBox data={data} />, {
         id: data.id,
-        duration: data.percent >= 100 ? completedDuration : Infinity,
+        duration: toastDuration,
       });
     }
   }, [data, completedDuration]);

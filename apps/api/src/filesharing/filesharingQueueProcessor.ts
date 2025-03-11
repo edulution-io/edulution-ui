@@ -38,66 +38,67 @@ class FilesharingQueueProcessor {
     job: Job<{
       username: string;
       originFilePath: string;
-      destinationPath: string;
-      studentName: string;
-      duplicateFileOperationsCount: number;
-      processed: number;
+      destinationFilePaths: string[];
     }>,
   ) {
-    const { username, originFilePath, destinationPath, duplicateFileOperationsCount, processed, studentName } =
-      job.data;
+    const { username, originFilePath, destinationFilePaths } = job.data;
 
-    let failed = 0;
+    const total = destinationFilePaths.length;
+    let processed = 0;
+    const failedPaths: string[] = [];
 
     const client = await this.fileSharingService.getClient(username);
-    const pathUpToTransferFolder = FilesharingService.getPathUntilFolder(destinationPath, FILE_PATHS.TRANSFER);
-    const pathUpToTeacherFolder = FilesharingService.getPathUntilFolder(destinationPath, username);
 
-    const userFolderExists = await this.fileSharingService.checkIfFileOrFolderExists(
-      username,
-      pathUpToTransferFolder,
-      username,
-      ContentType.DIRECTORY,
-    );
+    if (destinationFilePaths.length > 0) {
+      const firstPath = destinationFilePaths[0];
 
-    if (!userFolderExists) {
-      await this.fileSharingService.createFolder(username, pathUpToTransferFolder, username);
-    }
+      const pathUpToTransferFolder = FilesharingService.getPathUntilFolder(firstPath, FILE_PATHS.TRANSFER);
+      const pathUpToTeacherFolder = FilesharingService.getPathUntilFolder(firstPath, username);
 
-    if (userFolderExists) {
-      const collectFolderExists = await this.fileSharingService.checkIfFileOrFolderExists(
+      const userFolderExists = await this.fileSharingService.checkIfFileOrFolderExists(
         username,
-        pathUpToTeacherFolder,
-        FILE_PATHS.COLLECT,
+        pathUpToTransferFolder,
+        username,
         ContentType.DIRECTORY,
       );
+      if (!userFolderExists) {
+        await this.fileSharingService.createFolder(username, pathUpToTransferFolder, username);
+      }
 
-      if (!collectFolderExists) {
-        await this.fileSharingService.createFolder(username, pathUpToTeacherFolder, FILE_PATHS.COLLECT);
+      if (userFolderExists) {
+        const collectFolderExists = await this.fileSharingService.checkIfFileOrFolderExists(
+          username,
+          pathUpToTeacherFolder,
+          FILE_PATHS.COLLECT,
+          ContentType.DIRECTORY,
+        );
+
+        if (!collectFolderExists) {
+          await this.fileSharingService.createFolder(username, pathUpToTeacherFolder, FILE_PATHS.COLLECT);
+        }
       }
     }
-    try {
-      await FilesharingService.copyFileViaWebDAV(client, originFilePath, destinationPath);
-    } catch (e) {
-      failed += 1;
+
+    /* eslint-disable no-restricted-syntax, no-await-in-loop */
+    for (const destinationPath of destinationFilePaths) {
+      try {
+        // no-await-in-loop
+        await FilesharingService.copyFileViaWebDAV(client, originFilePath, destinationPath);
+      } catch (e) {
+        failedPaths.push(destinationPath);
+      }
+
+      processed += 1;
+      const percent = Math.round((processed / total) * 100);
+      const studentName = FilesharingService.getStudentNameFromPath(destinationPath) || '';
+
+      SseService.sendEventToUser(
+        username,
+        this.fileSharingSseConnections,
+        new FilesharingProgressDto(Number(job.id), processed, total, studentName, percent, originFilePath, failedPaths),
+        SSE_MESSAGE_TYPE.UPDATED,
+      );
     }
-
-    const percent = Math.round((processed / duplicateFileOperationsCount) * 100);
-
-    SseService.sendEventToUser(
-      username,
-      this.fileSharingSseConnections,
-      new FilesharingProgressDto(
-        Number(job.id),
-        processed,
-        failed,
-        duplicateFileOperationsCount,
-        studentName,
-        percent,
-        originFilePath,
-      ),
-      SSE_MESSAGE_TYPE.UPDATED,
-    );
   }
 }
 

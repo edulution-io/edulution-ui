@@ -15,8 +15,6 @@ export class FilesharingProgressDto {
 
   processed: number;
 
-  failed: number;
-
   total: number;
 
   percent: number;
@@ -25,22 +23,24 @@ export class FilesharingProgressDto {
 
   studentName: string;
 
+  failedPaths?: string[];
+
   constructor(
     processID: number,
     processed: number,
-    failed: number,
     total: number,
     studentName: string,
     percent: number,
     currentFile: string,
+    failedPaths?: string[],
   ) {
     this.processID = processID;
     this.processed = processed;
-    this.failed = failed;
     this.total = total;
     this.studentName = studentName;
     this.percent = percent;
     this.currentFile = currentFile;
+    this.failedPaths = failedPaths;
   }
 }
 
