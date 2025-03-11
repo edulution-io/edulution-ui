@@ -332,7 +332,8 @@
     "progressBox": {
       "title": "Distributing files",
       "processedInfo": "{{processed}} out of {{total}} files distributed successfully",
-      "fileInfo": "File {{filename}} is being distributed to {{studentName}}"
+      "fileInfo": "File {{filename}} is being distributed to {{studentName}}",
+      "errorInfo": "{{failed}} file(s) could not be distributed"
     }
   },
   "forums": {

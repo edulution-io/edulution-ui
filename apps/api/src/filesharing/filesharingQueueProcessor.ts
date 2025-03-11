@@ -82,7 +82,7 @@ class FilesharingQueueProcessor {
       failed += 1;
     }
 
-    const percent = Math.round(((processed + failed) / duplicateFileOperationsCount) * 100);
+    const percent = Math.round((processed / duplicateFileOperationsCount) * 100);
 
     SseService.sendEventToUser(
       username,

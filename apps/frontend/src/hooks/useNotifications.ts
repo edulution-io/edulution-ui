@@ -30,6 +30,7 @@ import UseBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import { FilesharingProgressDto } from '@libs/filesharing/types/filesharingProgressDto';
+import delay from '@libs/common/utils/delay';
 
 const useNotifications = () => {
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
@@ -127,11 +128,13 @@ const useNotifications = () => {
       const eventSource = new EventSource(`/${EDU_API_ROOT}/${APPS.FILE_SHARING}/sse?token=${eduApiToken}`);
 
       const handleFileSharingEvent = (e: MessageEvent<string>) => {
-        const data: FilesharingProgressDto = JSON.parse(e.data) as FilesharingProgressDto;
-        setFilesharingProgress(data);
-        if (data.percent === 100) {
-          setFilesharingProgress(null);
-        }
+        void (async () => {
+          const data: FilesharingProgressDto = JSON.parse(e.data) as FilesharingProgressDto;
+          setFilesharingProgress(data);
+          if (data.percent === 100) {
+            await delay(5000).then(() => setFilesharingProgress(null));
+          }
+        })();
       };
 
       eventSource.addEventListener(SSE_MESSAGE_TYPE.UPDATED, handleFileSharingEvent);

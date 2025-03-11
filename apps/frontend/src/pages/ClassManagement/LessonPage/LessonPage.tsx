@@ -32,7 +32,7 @@ import { UseFormReturn } from 'react-hook-form';
 import GroupForm from '@libs/groups/types/groupForm';
 import GroupColumn from '@libs/groups/types/groupColumn';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
-import ShareFileInformationBox from '@/pages/ClassManagement/components/ShareFileInformationBox';
+import ProgressToaster from '@/components/ui/ProgressToast';
 
 const LessonPage = () => {
   const {
@@ -213,13 +213,27 @@ const LessonPage = () => {
         ) : null}
       </div>
 
-      {filesharingProgress && (
-        <div className="p-8">
-          <ShareFileInformationBox filesharingProgress={filesharingProgress} />
-        </div>
-      )}
       <div>{groupNameParams || member.length ? <UserArea fetchData={fetchData} /> : <QuickAccess />}</div>
       {openDialogType === UserGroups.Sessions && <GroupDialog item={sessionToSave} />}
+
+      {filesharingProgress && (
+        <div className="p-8">
+          <ProgressToaster
+            data={{
+              percent: filesharingProgress.percent ?? 0,
+              title: t('filesharing.progressBox.title'),
+              id: filesharingProgress.currentFile,
+              description: t('filesharing.progressBox.fileInfo', {
+                filename: filesharingProgress.currentFile.split('/').pop(),
+                studentName: filesharingProgress.studentName,
+              }),
+              failed: filesharingProgress.failed,
+              processed: filesharingProgress.processed,
+              total: filesharingProgress.total,
+            }}
+          />
+        </div>
+      )}
     </>
   );
 };
