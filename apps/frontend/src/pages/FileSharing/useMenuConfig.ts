@@ -11,7 +11,7 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import {
   FileSharingIcon,
@@ -46,11 +46,13 @@ const useFileSharingMenuConfig = () => {
   const { mountPoints } = useFileSharingStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const { user } = userStore();
 
   const handlePathChange = useCallback(
-    (newPath: string) => {
+    (newPath: string, basePath: string) => {
       const newSearchParams = new URLSearchParams(searchParams);
+      navigate(`filesharing/${basePath}`);
       newSearchParams.set('path', newPath);
       setSearchParams(newSearchParams);
     },
@@ -68,7 +70,7 @@ const useFileSharingMenuConfig = () => {
             : mountPoint.basename,
         icon: findCorrespondingMountPointIcon(mountPoint.filename),
         color: 'hover:bg-ciGreenToBlue',
-        action: () => handlePathChange(getPathWithoutWebdav(mountPoint.filename)),
+        action: () => handlePathChange(getPathWithoutWebdav(mountPoint.filename), mountPoint.basename),
       }))
       .filter((item) => item !== null);
     setMenuItems(items);
