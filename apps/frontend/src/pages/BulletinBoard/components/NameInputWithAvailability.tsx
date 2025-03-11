@@ -73,14 +73,14 @@ const NameInputWithAvailability = ({
       if (!nameExistsAlready) {
         return (
           <MdCheckCircle
-            className="text-green-500"
+            className="text-ciGreen"
             size={20}
           />
         );
       }
       return (
         <MdError
-          className="text-red-500"
+          className="text-ciRed"
           size={20}
         />
       );
