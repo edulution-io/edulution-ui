@@ -24,7 +24,7 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 
 const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ form, isRenaming }) => {
   const { selectedItems, files } = useFileSharingStore();
-  const { selectedFileType, setSubmitButtonIsInActive } = useFileSharingDialogStore();
+  const { selectedFileType, setSubmitButtonIsDisabled } = useFileSharingDialogStore();
   const { appConfigs } = useAppConfigsStore();
   const documentVendor = getDocumentVendor(appConfigs);
   const { t } = useTranslation();
@@ -66,7 +66,7 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
       }
 
       setFilenameAlreadyExists(alreadyExists);
-      setSubmitButtonIsInActive(alreadyExists);
+      setSubmitButtonIsDisabled(alreadyExists);
     };
 
     void checkIfFilenameAlreadyExists();

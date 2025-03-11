@@ -10,9 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum VideoExtensions {
-  MP4 = 'mp4',
-  WEBM = 'webm',
-}
+const MAX_UPLOAD_CHUNK_SIZE = 5;
 
-export default VideoExtensions;
+export default MAX_UPLOAD_CHUNK_SIZE;

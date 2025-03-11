@@ -1024,7 +1024,13 @@
     "dragDropClick": "Ziehen Sie Dateien hierher oder klicken Sie, um Dateien auszuwählen",
     "dropHere": "Hier loslassen",
     "filesToUpload": "Dateien zum Hochladen",
-    "limitExceeded": "Dateilimit von 5 Dateien erreicht"
+    "overwriteWarningTitleFile": "Warnung: Datei existiert bereits",
+    "overwriteWarningTitleFiles": "Warnung: Dateien existieren bereits",
+    "overwriteWarningDescriptionFile": "Die folgende Datei wird überschrieben:",
+    "overwriteWarningDescriptionFiles": "Die folgenden Dateien werden überschrieben:",
+    "oversizedFilesDetected": "Zu große Dateien entdeckt",
+    "oversizedFileDetected": "Zu große Datei entdeckt!",
+    "cannotUploadOversized": "Es können keine Dateien größer als 50MB hochgeladen werden."
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",

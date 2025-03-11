@@ -10,9 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum VideoExtensions {
-  MP4 = 'mp4',
-  WEBM = 'webm',
-}
+const splitArrayIntoChunks = <T>(array: T[], chunkSize: number): T[][] => {
+  const chunks: T[][] = [];
+  for (let i = 0; i < array.length; i += chunkSize) {
+    chunks.push(array.slice(i, i + chunkSize));
+  }
+  return chunks;
+};
 
-export default VideoExtensions;
+export default splitArrayIntoChunks;
