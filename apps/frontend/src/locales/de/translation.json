@@ -327,6 +327,7 @@
       "CopyFailed": "Kopieren fehlgeschlagen"
     },
     "progressBox": {
+      "info": "Info",
       "title": "Dateien werden ausgeteilt",
       "processedInfo": "{{processed}} von {{total}} Dateien erfolgreich ausgeteilt",
       "fileInfo": "Datei {{filename}} wird an {{studentName}} ausgeteilt",

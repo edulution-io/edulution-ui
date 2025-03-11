@@ -334,6 +334,7 @@
       "NameRequired": "Name is required"
     },
     "progressBox": {
+      "info": "Info",
       "title": "Distributing files",
       "processedInfo": "{{processed}} out of {{total}} files distributed successfully",
       "fileInfo": "File {{filename}} is being distributed to {{studentName}}",

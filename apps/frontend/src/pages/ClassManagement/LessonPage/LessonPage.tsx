@@ -33,6 +33,7 @@ import GroupForm from '@libs/groups/types/groupForm';
 import GroupColumn from '@libs/groups/types/groupColumn';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import ProgressToaster from '@/components/ui/ProgressToast';
+import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 
 const LessonPage = () => {
   const {
@@ -63,6 +64,8 @@ const LessonPage = () => {
   const { t } = useTranslation();
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [currentSelectedSession, setCurrentSelectedSession] = useState<LmnApiSession | null>(null);
+
+  const [isFileSharingProgessInfoDialogOpen, setIsFileSharingProgessInfoDialogOpen] = useState(false);
 
   useEffect(() => {
     if (lmnApiToken) {
@@ -230,11 +233,20 @@ const LessonPage = () => {
               failed: filesharingProgress.failedPaths?.length || 0,
               processed: filesharingProgress.processed,
               total: filesharingProgress.total,
-              onRetry: () => {},
+              onRetry: () => {
+                setIsFileSharingProgessInfoDialogOpen(true);
+              },
             }}
           />
         </div>
       )}
+
+      <AdaptiveDialog
+        isOpen={isFileSharingProgessInfoDialogOpen}
+        handleOpenChange={() => setIsFileSharingProgessInfoDialogOpen(!isFileSharingProgessInfoDialogOpen)}
+        title={'test'}
+        body={<h4>ffffff</h4>}
+      ></AdaptiveDialog>
     </>
   );
 };

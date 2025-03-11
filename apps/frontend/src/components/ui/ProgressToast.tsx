@@ -14,7 +14,7 @@
 import React, { useEffect } from 'react';
 import { toast } from 'sonner';
 import { t } from 'i18next';
-import { MdRefresh } from 'react-icons/md';
+import { MdInfo } from 'react-icons/md';
 import { Button } from '@/components/shared/Button';
 
 interface GenericProgressData {
@@ -81,8 +81,8 @@ const ProgressBox: React.FC<{ data: GenericProgressData }> = ({ data }) => {
 
           {onRetry && (
             <Button onClick={() => onRetry()}>
-              <MdRefresh className="inline-block" />
-              {t('filesharing.progressBox.retry', 'Wiederholen')}
+              <MdInfo className="inline-block" />
+              {t('filesharing.progressBox.info')}
             </Button>
           )}
         </div>
