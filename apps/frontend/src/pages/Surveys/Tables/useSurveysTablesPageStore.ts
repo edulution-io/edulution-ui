@@ -29,7 +29,7 @@ interface SurveysTablesPageStore {
   selectedSurvey: SurveyDto | undefined;
   selectSurvey: (survey: SurveyDto | undefined) => void;
 
-  updateSelectedSurvey: (surveyId: string | undefined, isPublic: boolean) => Promise<void>;
+  fetchSelectedSurvey: (surveyId: string | undefined, isPublic: boolean) => Promise<void>;
   isFetching: boolean;
 
   canParticipateSelectedSurvey: (surveyId?: string, isPublic?: boolean) => Promise<void>;
@@ -82,7 +82,7 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
 
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
 
-  updateSelectedSurvey: async (surveyId?: string, isPublic?: boolean): Promise<void> => {
+  fetchSelectedSurvey: async (surveyId?: string, isPublic?: boolean): Promise<void> => {
     if (!surveyId) {
       set({ selectedSurvey: undefined });
       return;
