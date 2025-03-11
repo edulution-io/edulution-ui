@@ -77,7 +77,7 @@ const MobileFileAccessSetupBox: React.FC = () => {
             </AccordionContent>
           </AccordionItem>
           <Separator className="my-1 bg-muted" />
-          <AccordionItem value={'accessManual'}>
+          <AccordionItem value="accessManual">
             <AccordionTrigger className="flex text-h4">
               <h4>{t('dashboard.mobileAccess.manual')}</h4>
             </AccordionTrigger>
@@ -94,7 +94,7 @@ const MobileFileAccessSetupBox: React.FC = () => {
             </AccordionContent>
           </AccordionItem>
           <Separator className="my-1 bg-muted" />
-          <AccordionItem value={'accessWithQrCode'}>
+          <AccordionItem value="accessWithQrCode">
             <AccordionTrigger className="flex text-h4">
               <h4>{t('dashboard.mobileAccess.setupWithQrCode')}</h4>
             </AccordionTrigger>

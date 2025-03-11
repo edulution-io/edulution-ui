@@ -51,7 +51,7 @@ const ConnectionSetupPhonePreview: React.FC<ConnectionSetupProps> = ({ username,
 
       <Button
         className="h-12 w-full"
-        variant={'btn-security'}
+        variant="btn-security"
       >
         <IoMdAdd />
         {t('mobileAccessSetup.addButton')}
