@@ -104,7 +104,7 @@
   "dashboard": {
     "mobileAccess": {
       "title": "Mobiler Datenzugriff",
-      "manual": "Anleitung",
+      "manual": "Manuelles Einrichten",
       "setupWithQrCode": "Einrichtung via QR-Code",
       "accessData": "Zugangsdaten",
       "content": "Du kannst von vielen mobilen Geräten aus auf den Schulserver zugreifen. Drücke auf Anleitung um zu starten.",
@@ -659,7 +659,7 @@
 
   "mobileAccessSetup": {
     "connectionTitle": "Verbindung einrichten",
-    "pleaseEnterCredentials": "Bitte geben die Anmeldedaten zum Schulserver an",
+    "pleaseEnterCredentials": "Bitte gib die Anmeldedaten zum Schulserver an",
     "scanQrCode": "QR Code scannen",
     "orText": "ODER",
     "yourPassword": "Dein Passwort",

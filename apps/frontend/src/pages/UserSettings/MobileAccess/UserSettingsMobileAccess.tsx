@@ -76,23 +76,7 @@ const MobileFileAccessSetupBox: React.FC = () => {
               </div>
             </AccordionContent>
           </AccordionItem>
-          <Separator className="my-1 bg-muted" />
-          <AccordionItem value="accessManual">
-            <AccordionTrigger className="flex text-h4">
-              <h4>{t('dashboard.mobileAccess.manual')}</h4>
-            </AccordionTrigger>
-            <AccordionContent className="space-y-2 px-1">
-              <p className="text-sm text-muted-foreground">{t('dashboard.mobileAccess.copyCredentials')}</p>
 
-              <div className="mt-2 flex justify-center">
-                <ConnectionSetupPhonePreview
-                  username={webdavAccessDetails.username || ''}
-                  schoolname={webdavAccessDetails.displayName}
-                  schoolurl={webdavAccessDetails.url}
-                />
-              </div>
-            </AccordionContent>
-          </AccordionItem>
           <Separator className="my-1 bg-muted" />
           <AccordionItem value="accessWithQrCode">
             <AccordionTrigger className="flex text-h4">
@@ -104,6 +88,22 @@ const MobileFileAccessSetupBox: React.FC = () => {
                 <div className="mt-2 flex justify-center">
                   <QRCodeDisplay value={webdavAccessJson} />
                 </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          <Separator className="my-1 bg-muted" />
+          <AccordionItem value="accessManual">
+            <AccordionTrigger className="flex text-h4">
+              <h4>{t('dashboard.mobileAccess.manual')}</h4>
+            </AccordionTrigger>
+            <AccordionContent className="space-y-2 px-1">
+              <div className="mt-2 flex justify-center">
+                <ConnectionSetupPhonePreview
+                  username={webdavAccessDetails.username || ''}
+                  schoolname={webdavAccessDetails.displayName}
+                  schoolurl={webdavAccessDetails.url}
+                />
               </div>
             </AccordionContent>
           </AccordionItem>
