@@ -10,35 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
 import { settings } from 'survey-core';
 import { editorLocalization, localization } from 'survey-creator-core';
-import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
+import { SurveyCreator } from 'survey-creator-react';
 import 'survey-creator-core/i18n/english';
 import 'survey-creator-core/i18n/german';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
-import getSurveyFormulaFromJSON from '@libs/survey/utils/getSurveyFormulaFromJSON';
-import useLanguage from '@/hooks/useLanguage';
-import useElementHeight from '@/hooks/useElementHeight';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
 import '@/pages/Surveys/theme/custom.survey.css';
 import '@/pages/Surveys/theme/custom.creator.css';
 
-interface SurveyEditorProps {
-  form: UseFormReturn<SurveyDto>;
-}
-
 settings.lazyRender.enabled = true;
 
-const SurveyEditor = (props: SurveyEditorProps) => {
-  const { form } = props;
-
-  const { language } = useLanguage();
-
+const createSurveyCreatorComponent = (language = 'en') => {
   editorLocalization.defaultLocale = language;
   localization.currentLocale = language;
 
@@ -54,7 +39,6 @@ const SurveyEditor = (props: SurveyEditorProps) => {
       'rating',
       'checkbox',
       'dropdown',
-      // 'tagbox',
       'boolean',
       'file',
       'imagepicker',
@@ -66,83 +50,43 @@ const SurveyEditor = (props: SurveyEditorProps) => {
       'paneldynamic',
       'matrix',
       'matrixdropdown',
-      // 'matrixdynamic',
       'image',
-      // 'html',
-      // 'expression',
-      // 'signaturepad',
     ],
   };
+
   const creator = new SurveyCreator(creatorOptions);
 
   creator.theme = surveyTheme;
   creator.locale = language;
 
-  creator.saveNo = form.getValues('saveNo');
-  creator.JSON = form.getValues('formula');
-
-  // TOOLBAR (HEADER)
-  const settingsActionHeader = creator.toolbar.actions.findIndex((action) => action.id === 'svd-settings');
-  creator.toolbar.actions.splice(settingsActionHeader, 1);
-
-  const expandGridActionHeader = creator.toolbar.actions.findIndex((action) => action.id === 'svd-grid-expand');
-  creator.toolbar.actions.splice(expandGridActionHeader, 1);
-
-  // TOOLBAR (FOOTER)
-  const designerActionFooter = creator.footerToolbar.actions.findIndex((action) => action.id === 'svd-designer');
-  creator.footerToolbar.actions.splice(designerActionFooter, 1);
-
-  const previewActionFooter = creator.footerToolbar.actions.findIndex((action) => action.id === 'svd-preview');
-  creator.footerToolbar.actions.splice(previewActionFooter, 1);
-
-  const settingsActionFooter = creator.footerToolbar.actions.findIndex((action) => action.id === 'svd-settings');
-  creator.footerToolbar.actions.splice(settingsActionFooter, 1);
-
-  // TOOLBOX (LEFT SIDEBAR)
   creator.showToolbox = false;
-
-  // PROPERTY GRID (RIGHT SIDEBAR)
   creator.showSidebar = false;
-
   creator.startEditTitleOnQuestionAdded = true;
+
+  const settingsActionHeader = creator.toolbar.actions.findIndex((action) => action.id === 'svd-settings');
+  if (settingsActionHeader >= 0) creator.toolbar.actions.splice(settingsActionHeader, 1);
+  const expandGridActionHeader = creator.toolbar.actions.findIndex((action) => action.id === 'svd-grid-expand');
+  if (expandGridActionHeader >= 0) creator.toolbar.actions.splice(expandGridActionHeader, 1);
+  const designerActionFooter = creator.footerToolbar.actions.findIndex((action) => action.id === 'svd-designer');
+  if (designerActionFooter >= 0) creator.footerToolbar.actions.splice(designerActionFooter, 1);
+  const previewActionFooter = creator.footerToolbar.actions.findIndex((action) => action.id === 'svd-preview');
+  if (previewActionFooter >= 0) creator.footerToolbar.actions.splice(previewActionFooter, 1);
+  const settingsActionFooter = creator.footerToolbar.actions.findIndex((action) => action.id === 'svd-settings');
+  if (settingsActionFooter >= 0) creator.footerToolbar.actions.splice(settingsActionFooter, 1);
 
   creator.onElementAllowOperations.add((_, options) => {
     // eslint-disable-next-line no-param-reassign
     options.allowShowSettings = false;
   });
 
-  // ELEMENT MENU (part of the ELEMENT/QUESTION)
   creator.onDefineElementMenuItems.add((_, options) => {
     const settingsItemIndex = options.items.findIndex((option) => option.iconName === 'icon-settings_16x16');
-    options.items.splice(settingsItemIndex, 1);
+    if (settingsItemIndex >= 0) {
+      options.items.splice(settingsItemIndex, 1);
+    }
   });
 
-  creator.onModified.add(() => {
-    form.setValue('formula', getSurveyFormulaFromJSON(creator.JSON as JSON));
-  });
-
-  creator.saveSurveyFunc = (saveNo: number, callback: (saveNo: number, isSuccess: boolean) => void) => {
-    form.setValue('formula', getSurveyFormulaFromJSON(creator.JSON as JSON));
-    form.setValue('saveNo', saveNo);
-    callback(saveNo, true);
-  };
-
-  const pageBarsHeight = useElementHeight([FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 10;
-
-  return (
-    <div
-      className="survey-editor"
-      style={{ height: `calc(100% - ${pageBarsHeight}px)` }}
-    >
-      <SurveyCreatorComponent
-        creator={creator}
-        style={{
-          height: '100%',
-          width: '100%',
-        }}
-      />
-    </div>
-  );
+  return creator;
 };
 
-export default SurveyEditor;
+export default createSurveyCreatorComponent;
