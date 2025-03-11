@@ -1274,6 +1274,10 @@
     }
   },
   "veyon": {
+    "lockScreen": "Lock screen",
+    "lockInputDevices": "Lock input",
+    "rebootSystem": "Reboot system",
+    "powerDown": "Halt system",
     "errors": {
       "AppNotProperlyConfigured": "Veyon is not properly configured, contact the system administrator.",
       "VeyonAuthFailed": "Veyon authentication failed.",

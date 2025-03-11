@@ -1274,6 +1274,10 @@
     }
   },
   "veyon": {
+    "lockScreen": "Bildschirm sperren",
+    "lockInputDevices": "Eingabe sperren",
+    "rebootSystem": "System neu starten",
+    "powerDown": "System herunterfahren",
     "errors": {
       "AppNotProperlyConfigured": "Veyon ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
       "VeyonAuthFailed": "Veyon-Authentifizierung fehlgeschlagen",
