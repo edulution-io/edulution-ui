@@ -61,13 +61,12 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
           return;
         }
 
-        void setFileIsCurrentlyDisabled(row.original.basename, true);
-
         setPublicDownloadLink('');
         if (row.original.type === ContentType.DIRECTORY) {
           searchParams.set('path', getPathWithoutWebdav(row.original.filename));
           setSearchParams(searchParams);
         } else {
+          void setFileIsCurrentlyDisabled(row.original.basename, true);
           setIsFilePreviewVisible(true);
           setCurrentlyEditingFile(row.original);
         }
