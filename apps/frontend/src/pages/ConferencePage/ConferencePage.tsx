@@ -20,10 +20,17 @@ import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import { ConferencesIcon } from '@/assets/icons';
 import DeleteConferencesDialog from '@/pages/ConferencePage/Table/DeleteConferencesDialog';
 import ConferencesFloatingButtons from '@/pages/ConferencePage/Table/ConferencesFloatingButtons';
+import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
+import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
+import useSharePublicConferenceStore from '@/pages/ConferencePage/useSharePublicConferenceStore';
 
 const ConferencePage: React.FC = () => {
   const { t } = useTranslation();
   const { selectedConference } = useConferenceDetailsDialogStore();
+  const { publicConferenceId, setSharePublicConferenceDialogId } = useSharePublicConferenceStore();
+  const sharePublicConferenceUrl = publicConferenceId
+    ? `${window.location.origin}/${CONFERENCES_PUBLIC_EDU_API_ENDPOINT}/${publicConferenceId}`
+    : '';
 
   return (
     <div>
@@ -38,6 +45,13 @@ const ConferencePage: React.FC = () => {
       <ConferencesFloatingButtons />
       <CreateConferenceDialog />
       <DeleteConferencesDialog />
+      <SharePublicQRDialog
+        url={sharePublicConferenceUrl}
+        isOpen={!!sharePublicConferenceUrl}
+        handleClose={() => setSharePublicConferenceDialogId('')}
+        titleTranslationId="conferences.sharePublicDialog.title"
+        descriptionTranslationId="conferences.sharePublicDialog.description"
+      />
       {selectedConference ? <ConferenceDetailsDialog /> : null}
     </div>
   );

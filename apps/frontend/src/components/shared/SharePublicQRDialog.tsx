@@ -12,38 +12,46 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
-import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import QRCodeWithCopyButton from '@/components/ui/QRCodeWithCopyButton';
 
-const SharePublicSurveyDialog = () => {
-  const { isOpenSharePublicSurveyDialog, closeSharePublicSurveyDialog, publicSurveyId } = useSurveyEditorPageStore();
+interface SharePublicQRDialogProps {
+  url: string;
+  isOpen: boolean;
+  titleTranslationId: string;
+  descriptionTranslationId: string;
+  handleClose: () => void;
+}
 
+const SharePublicQRDialog = ({
+  url,
+  handleClose,
+  descriptionTranslationId,
+  titleTranslationId,
+  isOpen,
+}: SharePublicQRDialogProps) => {
   const { t } = useTranslation();
-
-  const url = publicSurveyId ? `${window.location.origin}/${PUBLIC_SURVEYS}/${publicSurveyId}` : '';
 
   const getDialogBody = () => (
     <QRCodeWithCopyButton
       url={url}
-      titleTranslationId="surveys.sharePublicSurveyDialog.description"
+      titleTranslationId={t(descriptionTranslationId)}
       toasterTranslationIds={{
-        success: 'surveys.sharePublicSurveyDialog.savedToClipboard',
-        error: 'surveys.sharePublicSurveyDialog.savedToClipboardError',
+        success: 'common.savedToClipboard',
+        error: 'common.savedToClipboardError',
       }}
     />
   );
 
   return (
     <AdaptiveDialog
-      isOpen={isOpenSharePublicSurveyDialog && !!url}
-      handleOpenChange={() => closeSharePublicSurveyDialog()}
-      title={t('surveys.sharePublicSurveyDialog.title')}
+      isOpen={isOpen}
+      handleOpenChange={handleClose}
+      title={t(titleTranslationId)}
       body={getDialogBody()}
       desktopContentClassName="max-w-[60%] max-h-[75%] min-h-fit-content"
     />
   );
 };
 
-export default SharePublicSurveyDialog;
+export default SharePublicQRDialog;
