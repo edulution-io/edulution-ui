@@ -23,6 +23,7 @@ import cn from '@libs/common/utils/className';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import { CommandGroup, CommandItem, CommandList, CommandSH } from '@/components/ui/CommandSH';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
+import { useDebounceValue } from 'usehooks-ts';
 
 interface GroupOption {
   [key: string]: MultipleSelectorOptionSH[];
@@ -82,20 +83,6 @@ interface MultipleSelectorProps {
 export interface MultipleSelectorRef {
   selectedValue: MultipleSelectorOptionSH[];
   input: HTMLInputElement;
-}
-
-export function useDebounce<T>(value: T, delay?: number): T {
-  const [debouncedValue, setDebouncedValue] = React.useState<T>(value);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedValue(value), delay || 500);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
 }
 
 function transToGroupOption(options: MultipleSelectorOptionSH[], groupBy?: string) {
@@ -201,7 +188,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
     const [selected, setSelected] = React.useState<MultipleSelectorOptionSH[]>(value || []);
     const [options, setOptions] = React.useState<GroupOption>(transToGroupOption(arrayDefaultOptions, groupBy));
     const [inputValue, setInputValue] = React.useState('');
-    const debouncedSearchTerm = useDebounce(inputValue, delay || 500);
+    const [debouncedSearchTerm] = useDebounceValue(inputValue, delay || 500);
 
     React.useImperativeHandle(
       ref,

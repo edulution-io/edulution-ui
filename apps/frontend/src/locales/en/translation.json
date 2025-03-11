@@ -216,6 +216,10 @@
       "ConferenceIsNotRunning": "Conference is not running",
       "MissingMandatoryParameters": "Request failed because of missing parameters"
     },
+    "sharePublicDialog": {
+      "title": "Share Conference",
+      "description": "Here you can copy and share the link to the conference."
+    },
     "joinThisConference": "Join this conference",
     "filterPlaceHolderText": "Search for conference name",
     "started": "Conference started",
@@ -573,9 +577,7 @@
     },
     "sharePublicSurveyDialog": {
       "title": "Share survey",
-      "description": "Here you can share the survey with external people. Please copy the link and send it to the participants.",
-      "savedToClipboard": "Saved to clipboard.",
-      "savedToClipboardError": "Unable to save into clipboard."
+      "description": "Here you can share the survey with external people. Please copy the link and send it to the participants."
     },
     "participateDialog": {
       "title": "Participate in the survey"
@@ -889,6 +891,9 @@
   },
   "edit": "Edit",
   "common": {
+    "share": "Share",
+    "savedToClipboard": "Saved to clipboard.",
+    "savedToClipboardError": "Unable to save into clipboard.",
     "answers": "Answers",
     "error": "Error",
     "errors": {

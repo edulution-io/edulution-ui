@@ -216,6 +216,10 @@
       "ConferenceIsNotRunning": "Die Konferenz wurde nicht gestartet",
       "MissingMandatoryParameters": "Anfrage aufgrund fehlender Parameter fehlgeschlagen"
     },
+    "sharePublicDialog": {
+      "title": "Konferenz teilen",
+      "description": "Hier kannst du den Link zur Konferenz kopieren und teilen."
+    },
     "joinThisConference": "An dieser Konferenz teilnehmen",
     "filterPlaceHolderText": "Suche nach Konferenzname",
     "started": "Konferenz gestartet",
@@ -574,9 +578,7 @@
     },
     "sharePublicSurveyDialog": {
       "title": "Umfrage teilen",
-      "description": "Hier kannst du den Link zur Umfrage kopieren und teilen.",
-      "savedToClipboard": "In die Zwischenablage kopiert.",
-      "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden."
+      "description": "Hier kannst du den Link zur Umfrage kopieren und teilen."
     },
     "participateDialog": {
       "title": "An der Umfrage teilnehmen"
@@ -889,6 +891,9 @@
     "enterMultiFactorCode": "Zwei-Faktor-Authentisierung"
   },
   "common": {
+    "share": "Teilen",
+    "savedToClipboard": "In die Zwischenablage kopiert.",
+    "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden.",
     "answers": "Antworten",
     "error": "Fehler",
     "errors": {
