@@ -19,9 +19,13 @@ import {
 } from '@/assets/icons';
 import { useNavigate } from 'react-router-dom';
 import {
+  CLASS_MANAGEMENT_ENROL_LOCATION,
   CLASS_MANAGEMENT_ENROL_PATH,
+  CLASS_MANAGEMENT_LESSON_LOCATION,
   CLASS_MANAGEMENT_LESSON_PATH,
+  CLASS_MANAGEMENT_PRINT_PASSWORDS_LOCATION,
   CLASS_MANAGEMENT_PRINT_PASSWORDS_PATH,
+  CLASS_MANAGEMENT_PROJECTS_LOCATION,
   CLASS_MANAGEMENT_PROJECTS_PATH,
 } from '@libs/classManagement/constants/classManagementPaths';
 import APPS from '@libs/appconfig/constants/apps';
@@ -36,7 +40,7 @@ const useClassManagementMenu = () => {
     color: 'hover:bg-ciGreenToBlue',
     menuItems: [
       {
-        id: 'lesson',
+        id: CLASS_MANAGEMENT_LESSON_LOCATION,
         label: 'classmanagement.lesson',
         icon: LearningManagementIcon,
         action: () => {
@@ -44,7 +48,7 @@ const useClassManagementMenu = () => {
         },
       },
       {
-        id: 'enrol',
+        id: CLASS_MANAGEMENT_ENROL_LOCATION,
         label: 'classmanagement.enrol',
         icon: EnrolIcon,
         action: () => {
@@ -52,7 +56,7 @@ const useClassManagementMenu = () => {
         },
       },
       {
-        id: 'printPasswords',
+        id: CLASS_MANAGEMENT_PRINT_PASSWORDS_LOCATION,
         label: 'classmanagement.printPasswords',
         icon: FirstPasswordIcon,
         action: () => {
@@ -60,7 +64,7 @@ const useClassManagementMenu = () => {
         },
       },
       {
-        id: 'myProjects',
+        id: CLASS_MANAGEMENT_PROJECTS_LOCATION,
         label: 'classmanagement.myProjects',
         icon: CreateProjectIcon,
         action: () => {
