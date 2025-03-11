@@ -10,9 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ContentType from '@libs/filesharing/types/contentType';
+const splitArrayIntoChunks = <T>(array: T[], chunkSize: number): T[][] => {
+  const chunks: T[][] = [];
+  for (let i = 0; i < array.length; i += chunkSize) {
+    chunks.push(array.slice(i, i + chunkSize));
+  }
+  return chunks;
+};
 
-const buildApiFileTypePathUrl = (base: string, type: ContentType, path: string): string =>
-  `${base}?type=${type}&path=/${path}`;
-
-export default buildApiFileTypePathUrl;
+export default splitArrayIntoChunks;

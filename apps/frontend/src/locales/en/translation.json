@@ -1035,7 +1035,13 @@
     "dragDropClick": "Drag files here or click to select files",
     "dropHere": "Drop here",
     "filesToUpload": "Files to upload",
-    "limitExceeded": "Reached the limit of 5 files"
+    "overwriteWarningTitleFile": "Warning: File already exists",
+    "overwriteWarningTitleFiles": "Warning: Files already exist",
+    "overwriteWarningDescriptionFile": "The following file will be overwritten:",
+    "overwriteWarningDescriptionFiles": "The following files will be overwritten:",
+    "oversizedFilesDetected": "Oversized files detected",
+    "oversizedFileDetected": "Oversized file detected!",
+    "cannotUploadOversized": "Cannot upload oversized files (more than 50 MB)."
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",
