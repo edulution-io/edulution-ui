@@ -99,7 +99,7 @@ const UploadContentBody = () => {
 
       {filesThatWillBeOverwritten.length > 0 && (
         <WarningBox
-          icon={<HiExclamationTriangle className="text-yellow-500" />}
+          icon={<HiExclamationTriangle className="text-ciYellow" />}
           title={
             hasMultipleDuplicates
               ? t('filesharingUpload.overwriteWarningTitleFiles')
@@ -119,7 +119,7 @@ const UploadContentBody = () => {
 
       {isAnyFileOversized && (
         <WarningBox
-          icon={<HiExclamationTriangle className="text-red-500" />}
+          icon={<HiExclamationTriangle className="text-ciRed" />}
           title={
             hasMultipleOversizedFiles
               ? t('filesharingUpload.oversizedFilesDetected')
@@ -162,7 +162,7 @@ const UploadContentBody = () => {
 
               <Button
                 onClick={() => removeFile(file.name)}
-                className="absolute right-1 top-1 h-8 rounded-full bg-red-500 bg-opacity-70 p-2 hover:bg-red-600"
+                className="absolute right-1 top-1 h-8 rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
               >
                 <HiTrash className="text-text-ciRed h-4 w-4" />
               </Button>
