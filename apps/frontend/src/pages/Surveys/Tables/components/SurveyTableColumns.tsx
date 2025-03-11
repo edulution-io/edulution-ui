@@ -22,8 +22,8 @@ import sortSurveyByInvitesAndParticipation from '@libs/survey/utils/sortSurveyBy
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { useTranslation } from 'react-i18next';
-import { PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
-import CopyToClipboardTextCell from '@/components/ui/Table/CopyToClipboardTextCell';
+import OpenShareQRDialogTextCell from '@/components/ui/Table/OpenShareQRDialogTextCell';
+import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 
 const hideOnMobileClassName = 'hidden lg:flex min-w-24';
 
@@ -107,13 +107,13 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     cell: ({ row }) => {
       const iconSize = 16;
       const { isPublic } = row.original;
-      const url = `${window.location.origin}/${PUBLIC_SURVEYS}/${row.original.id}`;
+      const { setIsOpenSharePublicSurveyDialog } = useSurveyEditorPageStore();
       return (
-        <CopyToClipboardTextCell
+        <OpenShareQRDialogTextCell
+          openDialog={() => row.original.id && setIsOpenSharePublicSurveyDialog(true, row.original.id)}
           iconSize={iconSize}
           className={hideOnMobileClassName}
           isPublic={!!isPublic}
-          url={url}
           textTranslationId="survey"
         />
       );
