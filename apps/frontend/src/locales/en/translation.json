@@ -105,6 +105,7 @@
     "mobileAccess": {
       "title": "Mobile File Access",
       "manual": "Manuell setup",
+      "setupWithQrCode": "Setup with QR code",
       "accessData": "Login data",
       "content": "You can access the school server from many mobile devices. Click on Manual to start.",
       "scanAccessInfo": "To transfer the access data, please scan the following QR code with the edulution.io app.",

@@ -2,13 +2,12 @@
  * LICENSE
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the GNU Affero General Public License, or (at your option) any later version.
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import React from 'react';
@@ -24,11 +23,9 @@ import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import ConnectionSetupPhonePreview from '@/pages/UserSettings/MobileAccess/ConnectionSetupPhonePreview';
 import useElementHeight from '@/hooks/useElementHeight';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
+import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
+import Separator from '@/components/ui/Separator';
 
-/**
- * A single, vertical "guide" for setting up mobile file access,
- * showing a QR code for the app store and also credentials for WebDAV.
- */
 const MobileFileAccessSetupBox: React.FC = () => {
   const isMobileView = useIsMobileView();
   const { user } = useUserStore();
@@ -56,45 +53,61 @@ const MobileFileAccessSetupBox: React.FC = () => {
         className="flex-1 overflow-auto px-3 pb-3 scrollbar-thin"
         style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
       >
-        <div className="mt-4 space-y-6">
-          <div className="space-y-2 rounded border p-4 shadow">
-            <h3 className="text-base font-bold">1. {t('dashboard.mobileAccess.downloadApp')}</h3>
+        <AccordionSH
+          type="multiple"
+          defaultValue={['mails', 'accessManual', 'accessWithQrCode']}
+        >
+          <AccordionItem value="mails">
+            <AccordionTrigger className="flex text-h4">
+              <h4>{t('dashboard.mobileAccess.downloadApp')}</h4>
+            </AccordionTrigger>
+            <AccordionContent className="space-y-2 px-1">
+              <div className="mt-2 flex flex-col items-center justify-center gap-4">
+                {!isMobileView && <QRCodeDisplay value={EDU_APP_APPSTORE_URL} />}
 
-            <div className="mt-2 flex flex-col items-center justify-center gap-4">
-              {!isMobileView && <QRCodeDisplay value={EDU_APP_APPSTORE_URL} />}
+                <NavLink
+                  to={EDU_APP_APPSTORE_URL}
+                  target="_blank"
+                  className="flex flex-col items-center"
+                >
+                  <MdOutlineFileDownload className="text-xl text-background" />
+                  <span className="text-sm text-blue-400">{t('common.download')}</span>
+                </NavLink>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+          <Separator className="my-1 bg-muted" />
+          <AccordionItem value={'accessManual'}>
+            <AccordionTrigger className="flex text-h4">
+              <h4>{t('dashboard.mobileAccess.manual')}</h4>
+            </AccordionTrigger>
+            <AccordionContent className="space-y-2 px-1">
+              <p className="text-sm text-muted-foreground">{t('dashboard.mobileAccess.copyCredentials')}</p>
 
-              <NavLink
-                to={EDU_APP_APPSTORE_URL}
-                target="_blank"
-                className="flex flex-col items-center"
-              >
-                <MdOutlineFileDownload className="text-xl text-background" />
-                <span className="text-sm text-blue-400">{t('common.download')}</span>
-              </NavLink>
-            </div>
-          </div>
-
-          <div className="space-y-2 rounded border p-4 shadow">
-            <h3 className="text-base font-bold">2. {t('dashboard.mobileAccess.manual')}</h3>
-            <p className="text-sm text-muted-foreground">{t('dashboard.mobileAccess.copyCredentials')}</p>
-
-            <div className="mt-2 flex justify-center">
-              <ConnectionSetupPhonePreview
-                username={webdavAccessDetails.username || ''}
-                schoolname={webdavAccessDetails.displayName}
-                schoolurl={webdavAccessDetails.url}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2 rounded border p-4 shadow">
-            <h3 className="text-base font-bold">3. {t('dashboard.mobileAccess.scanAccessInfo')}</h3>
-
-            <div className="mt-2 flex justify-center">
-              <QRCodeDisplay value={webdavAccessJson} />
-            </div>
-          </div>
-        </div>
+              <div className="mt-2 flex justify-center">
+                <ConnectionSetupPhonePreview
+                  username={webdavAccessDetails.username || ''}
+                  schoolname={webdavAccessDetails.displayName}
+                  schoolurl={webdavAccessDetails.url}
+                />
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+          <Separator className="my-1 bg-muted" />
+          <AccordionItem value={'accessWithQrCode'}>
+            <AccordionTrigger className="flex text-h4">
+              <h4>{t('dashboard.mobileAccess.setupWithQrCode')}</h4>
+            </AccordionTrigger>
+            <AccordionContent className="space-y-2 px-1">
+              <p className="text-sm text-muted-foreground">{t('dashboard.mobileAccess.scanAccessInfo')}</p>
+              <div className="space-y-2 p-4 shadow">
+                <div className="mt-2 flex justify-center">
+                  <QRCodeDisplay value={webdavAccessJson} />
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </AccordionSH>
       </div>
     </div>
   );

@@ -14,6 +14,8 @@ import React from 'react';
 import { MdArrowBackIosNew } from 'react-icons/md';
 import { FaQrcode } from 'react-icons/fa';
 import { t } from 'i18next';
+import { Button } from '@/components/shared/Button';
+import { IoMdAdd } from 'react-icons/io';
 
 interface ConnectionSetupProps {
   username: string;
@@ -22,44 +24,38 @@ interface ConnectionSetupProps {
 }
 
 const ConnectionSetupPhonePreview: React.FC<ConnectionSetupProps> = ({ username, schoolurl, schoolname }) => (
-  <div className="flex h-[550px] w-[360px] flex-col overflow-hidden rounded-md bg-gray-900 text-white shadow-lg">
-    <div className="flex items-center bg-gray-800 p-4">
-      <button
-        type="button"
-        className="mr-2"
-        disabled
-      >
-        <MdArrowBackIosNew className="h-5 w-5 text-white" />
-      </button>
-      <h1 className="text-lg font-bold">{t('mobileAccessSetup.connectionTitle')}</h1>
+  <div className="flex h-[550px] w-[360px] flex-col overflow-hidden rounded-md text-background shadow-lg">
+    <div className="relative flex items-center justify-center bg-accent p-4">
+      <MdArrowBackIosNew className="absolute left-4 h-5 w-5 text-background" />
+      <p className="text-lg font-bold">{t('mobileAccessSetup.connectionTitle')}</p>
     </div>
 
-    <div className="flex flex-grow flex-col gap-4 p-4">
-      <p className="text-base">{t('mobileAccessSetup.pleaseEnterCredentials')}</p>
+    <div className="flex flex-grow flex-col justify-center gap-4 p-4">
+      <p className="text-center text-base">{t('mobileAccessSetup.pleaseEnterCredentials')}</p>
 
-      <div className="flex cursor-pointer items-center justify-center text-blue-400">
+      <div className="flex cursor-pointer items-center justify-center text-ciGreen">
         <FaQrcode className="mr-1" />
         <span>{t('mobileAccessSetup.scanQrCode')}</span>
       </div>
 
       <div className="my-2 flex items-center">
-        <hr className="flex-grow border-gray-600" />
-        <span className="mx-2 text-gray-400">{t('mobileAccessSetup.orText')}</span>
-        <hr className="flex-grow border-gray-600" />
+        <hr className="flex-grow border-secondary" />
+        <span className="mx-2 text-secondary">{t('mobileAccessSetup.orText')}</span>
+        <hr className="flex-grow border-secondary" />
       </div>
 
-      <div className="w-full rounded bg-gray-800 p-3 text-orange-400">{schoolname}</div>
-      <div className="w-full whitespace-normal break-words rounded bg-gray-800 p-3 text-orange-400">{schoolurl}</div>
-      <div className="w-full rounded bg-gray-800 p-3 text-orange-400">{username}</div>
-      <div className="w-full rounded bg-gray-800 p-3 text-orange-400">{t('mobileAccessSetup.yourPassword')}</div>
+      <div className="w-full rounded bg-accent p-3 text-background">{schoolname}</div>
+      <div className="w-full whitespace-normal break-words rounded bg-accent p-3 text-background">{schoolurl}</div>
+      <div className="w-full rounded bg-accent p-3 text-background">{username}</div>
+      <div className="w-full rounded bg-accent p-3 text-background">{t('mobileAccessSetup.yourPassword')}</div>
 
-      <button
-        type="button"
-        className="mt-2 cursor-not-allowed rounded bg-blue-600 p-3 text-center font-semibold text-white opacity-60"
-        disabled
+      <Button
+        className="h-12 w-full"
+        variant={'btn-security'}
       >
+        <IoMdAdd />
         {t('mobileAccessSetup.addButton')}
-      </button>
+      </Button>
     </div>
   </div>
 );
