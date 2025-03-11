@@ -24,6 +24,10 @@ import type YamlDokument from '@libs/appconfig/types/yamlDokument';
 import type ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import getDefaultYaml from '@libs/appconfig/utils/getDefaultYaml';
+import slugify from '@libs/common/utils/slugify';
+import DOCKER_APPLICATIONS from '@libs/docker/constants/dockerApplicationList';
+import type TApps from '@libs/appconfig/types/appsType';
+import cn from '@libs/common/utils/className';
 import useDockerApplicationStore from '../DockerIntegration/useDockerApplicationStore';
 
 type ProxyConfigFormProps = {
@@ -34,56 +38,80 @@ type ProxyConfigFormProps = {
 const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
   const { t } = useTranslation();
   const [expertModeEnabled, setExpertModeEnabled] = useState(false);
-  const { traefikConfig } = useDockerApplicationStore();
-  const isYamlConfigured = form.watch(`${item.name}.proxyConfig`) !== '';
+  const { traefikConfig, getTraefikConfig } = useDockerApplicationStore();
+  const [isTraefikConfigPredefined, setIsTraefikConfigPredefined] = useState(false);
 
+  const isYamlConfigured = form.watch(`${item.name}.proxyConfig`) !== '';
   const defaultYaml = useMemo(() => getDefaultYaml(item.name), [item.name]);
+  const isKnownApp = Object.keys(DOCKER_APPLICATIONS).includes(item.name);
+  const isProxyActuallyConfigured = item.options.proxyConfig !== '""';
+
+  useEffect(() => {
+    if (traefikConfig && isKnownApp && isProxyActuallyConfigured) {
+      setIsTraefikConfigPredefined(true);
+      form.setValue(`${item.name}.proxyConfig`, stringify(traefikConfig));
+    } else {
+      setIsTraefikConfigPredefined(false);
+    }
+  }, [traefikConfig, item.name]);
+
+  useEffect(() => {
+    if (isKnownApp) {
+      const containerName = DOCKER_APPLICATIONS[item.name as TApps] || '';
+
+      void getTraefikConfig(item.name as TApps, containerName);
+    }
+  }, [item.name]);
 
   const updateYaml = () => {
-    const proxyPath = form.getValues(`${item.name}.proxyPath`);
+    const proxyPath = slugify(form.getValues(`${item.name}.proxyPath`) || '');
     const proxyDestination = form.getValues(`${item.name}.proxyDestination`);
     const stripPrefix = form.getValues(`${item.name}.stripPrefix`) as boolean;
 
-    if (!traefikConfig) {
-      const jsonData = parse(form.getValues(`${item.name}.proxyConfig`) || defaultYaml) as YamlDokument;
-      if (proxyPath) {
-        jsonData.http.routers[item.name].rule = `PathPrefix(\`/${proxyPath}\`)`;
-        if (stripPrefix) {
-          jsonData.http.middlewares['strip-prefix'] = {
-            stripPrefix: {
-              prefixes: [`/${proxyPath}`],
-            },
-          };
-          jsonData.http.routers[item.name].middlewares = ['strip-prefix'];
-        } else {
-          delete jsonData.http.middlewares['strip-prefix'];
-          jsonData.http.routers[item.name].middlewares = [];
-        }
+    const jsonData = parse(form.getValues(`${item.name}.proxyConfig`) || defaultYaml) as YamlDokument;
+    if (proxyPath) {
+      jsonData.http.routers[item.name].rule = `PathPrefix(\`/${proxyPath}\`)`;
+      if (stripPrefix) {
+        jsonData.http.middlewares['strip-prefix'] = {
+          stripPrefix: {
+            prefixes: [`/${proxyPath}`],
+          },
+        };
+        jsonData.http.routers[item.name].middlewares = ['strip-prefix'];
+      } else {
+        delete jsonData.http.middlewares['strip-prefix'];
+        jsonData.http.routers[item.name].middlewares = [];
       }
-
-      if (proxyDestination) {
-        jsonData.http.services[item.name].loadBalancer.servers[0].url = proxyDestination;
-      }
-      const updatedYaml = stringify(jsonData);
-      form.setValue(`${item.name}.proxyConfig`, updatedYaml);
-    } else {
-      form.setValue(`${item.name}.proxyConfig`, stringify(traefikConfig));
     }
+
+    if (proxyDestination) {
+      jsonData.http.services[item.name].loadBalancer.servers[0].url = proxyDestination;
+    }
+    const updatedYaml = stringify(jsonData);
+    form.setValue(`${item.name}.proxyConfig`, updatedYaml);
   };
 
   useEffect(() => {
-    if ((!expertModeEnabled && form.watch(`${item.name}.proxyPath`) !== '') || traefikConfig) {
+    if (!expertModeEnabled && !isTraefikConfigPredefined) {
       updateYaml();
     }
   }, [
-    form.watch(`${item.name}.proxyPath`),
-    form.watch(`${item.name}.proxyDestination`),
-    form.watch(`${item.name}.stripPrefix`),
-    traefikConfig,
+    isTraefikConfigPredefined,
+    form.getValues(`${item.name}.proxyPath`),
+    form.getValues(`${item.name}.proxyDestination`),
+    form.getValues(`${item.name}.stripPrefix`),
   ]);
 
   const handleClearProxyConfig = () => {
     form.setValue(`${item.name}.proxyConfig`, '');
+  };
+
+  const handleLoadDefaultConfig = () => {
+    if (isTraefikConfigPredefined) {
+      form.setValue(`${item.name}.proxyConfig`, stringify(traefikConfig));
+    } else {
+      form.setValue(`${item.name}.proxyConfig`, defaultYaml);
+    }
   };
 
   return (
@@ -102,15 +130,29 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
               }}
             />
           </p>
-          <div className="space-y-10 px-1 pt-4">
-            <div className="flex flex-row items-center justify-between gap-2">
+
+          <div className="mt-4 flex items-center space-x-2">
+            <Switch
+              checked={expertModeEnabled}
+              onCheckedChange={setExpertModeEnabled}
+            />
+            <p className="text-background">{t('form.expertMode')}</p>
+          </div>
+
+          <div className="space-y-4 px-1 pt-4">
+            <div
+              className={cn(
+                'flex-row items-center justify-between gap-2',
+                !expertModeEnabled || isKnownApp ? 'hidden' : 'flex',
+              )}
+            >
               <div className="flex flex-row items-center justify-between gap-10">
                 <FormFieldSH
                   key={`${item.name}.proxyPath`}
                   control={form.control}
                   name={`${item.name}.proxyPath`}
                   defaultValue=""
-                  disabled={expertModeEnabled || !!traefikConfig}
+                  disabled={!expertModeEnabled}
                   render={({ field }) => (
                     <FormItem>
                       <p className="font-bold text-background">{t(`form.proxyPath`)}</p>
@@ -134,6 +176,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
                   control={form.control}
                   name={`${item.name}.proxyDestination`}
                   defaultValue=""
+                  disabled={!expertModeEnabled}
                   render={({ field }) => (
                     <FormItem>
                       <p className="font-bold text-background">{t(`form.proxyDestination`)}</p>
@@ -157,6 +200,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
                   control={form.control}
                   name={`${item.name}.stripPrefix`}
                   defaultValue={false}
+                  disabled={!expertModeEnabled}
                   render={({ field }) => (
                     <FormItem>
                       <p className="font-bold text-background">{t('form.stripPrefix')}</p>
@@ -175,25 +219,8 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
                   )}
                 />
               </div>
-              {isYamlConfigured && (
-                <Button
-                  className="mr-4"
-                  type="button"
-                  variant="btn-collaboration"
-                  size="lg"
-                  onClickCapture={handleClearProxyConfig}
-                >
-                  {t('common.delete')}
-                </Button>
-              )}
             </div>
-            <div className="flex items-center space-x-2">
-              <Switch
-                checked={expertModeEnabled}
-                onCheckedChange={setExpertModeEnabled}
-              />
-              <p className="text-background">{t('form.expertMode')}</p>
-            </div>
+
             <FormFieldSH
               key={`${item.name}.proxyConfig`}
               control={form.control}
@@ -215,6 +242,27 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
                 </FormItem>
               )}
             />
+            <div className="flex flex-row justify-end">
+              <Button
+                className="mr-4"
+                type="button"
+                variant="btn-infrastructure"
+                size="lg"
+                onClickCapture={handleLoadDefaultConfig}
+              >
+                {t('common.template')}
+              </Button>
+              <Button
+                className="mr-4"
+                type="button"
+                variant="btn-collaboration"
+                size="lg"
+                onClickCapture={handleClearProxyConfig}
+                disabled={!isYamlConfigured}
+              >
+                {t('common.delete')}
+              </Button>
+            </div>
           </div>
         </AccordionContent>
       </AccordionItem>
