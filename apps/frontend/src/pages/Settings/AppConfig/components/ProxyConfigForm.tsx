@@ -44,12 +44,15 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
   const isYamlConfigured = form.watch(`${item.name}.proxyConfig`) !== '';
   const defaultYaml = useMemo(() => getDefaultYaml(item.name), [item.name]);
   const isKnownApp = Object.keys(DOCKER_APPLICATIONS).includes(item.name);
-  const isProxyActuallyConfigured = item.options.proxyConfig !== '""';
+  const isProxyActuallyConfigured = item.options.proxyConfig !== '';
+
+  const proxyPath = slugify(form.getValues(`${item.name}.proxyPath`) || '');
+  const proxyDestination = form.getValues(`${item.name}.proxyDestination`);
+  const stripPrefix = form.getValues(`${item.name}.stripPrefix`) as boolean;
 
   useEffect(() => {
     if (traefikConfig && isKnownApp && isProxyActuallyConfigured) {
       setIsTraefikConfigPredefined(true);
-      form.setValue(`${item.name}.proxyConfig`, stringify(traefikConfig));
     } else {
       setIsTraefikConfigPredefined(false);
     }
@@ -64,10 +67,6 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
   }, [item.name]);
 
   const updateYaml = () => {
-    const proxyPath = slugify(form.getValues(`${item.name}.proxyPath`) || '');
-    const proxyDestination = form.getValues(`${item.name}.proxyDestination`);
-    const stripPrefix = form.getValues(`${item.name}.stripPrefix`) as boolean;
-
     const jsonData = parse(form.getValues(`${item.name}.proxyConfig`) || defaultYaml) as YamlDokument;
     if (proxyPath) {
       jsonData.http.routers[item.name].rule = `PathPrefix(\`/${proxyPath}\`)`;
@@ -88,19 +87,16 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
       jsonData.http.services[item.name].loadBalancer.servers[0].url = proxyDestination;
     }
     const updatedYaml = stringify(jsonData);
-    form.setValue(`${item.name}.proxyConfig`, updatedYaml);
+    if (updatedYaml !== form.getValues(`${item.name}.proxyConfig`)) {
+      form.setValue(`${item.name}.proxyConfig`, updatedYaml);
+    }
   };
 
   useEffect(() => {
-    if (!expertModeEnabled && !isTraefikConfigPredefined) {
+    if (expertModeEnabled && !isTraefikConfigPredefined) {
       updateYaml();
     }
-  }, [
-    isTraefikConfigPredefined,
-    form.getValues(`${item.name}.proxyPath`),
-    form.getValues(`${item.name}.proxyDestination`),
-    form.getValues(`${item.name}.stripPrefix`),
-  ]);
+  }, [isTraefikConfigPredefined, proxyPath, proxyDestination, stripPrefix]);
 
   const handleClearProxyConfig = () => {
     form.setValue(`${item.name}.proxyConfig`, '');
@@ -113,6 +109,12 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
       form.setValue(`${item.name}.proxyConfig`, defaultYaml);
     }
   };
+
+  useEffect(() => {
+    if ((expertModeEnabled && proxyPath === '') || proxyPath == null) {
+      handleLoadDefaultConfig();
+    }
+  }, [proxyPath]);
 
   return (
     <AccordionSH type="multiple">
@@ -161,10 +163,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
                           {...field}
                           className="min-w-32"
                           placeholder={t('form.proxyPathPlaceholder')}
-                          onChange={(e) => {
-                            field.onChange(e);
-                            updateYaml();
-                          }}
+                          onChange={field.onChange}
                         />
                       </FormControl>
                       <FormMessage className="text-p" />
@@ -185,10 +184,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
                           {...field}
                           className="min-w-64"
                           placeholder={t('form.proxyDestinationPlaceholder')}
-                          onChange={(e) => {
-                            field.onChange(e);
-                            updateYaml();
-                          }}
+                          onChange={field.onChange}
                         />
                       </FormControl>
                       <FormMessage className="text-p" />
@@ -210,7 +206,6 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
                           checked={field.value as boolean}
                           onCheckedChange={(checked) => {
                             field.onChange(checked);
-                            updateYaml();
                           }}
                         />
                       </FormControl>
@@ -225,16 +220,13 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
               key={`${item.name}.proxyConfig`}
               control={form.control}
               name={`${item.name}.proxyConfig`}
-              defaultValue=""
               render={({ field }) => (
                 <FormItem>
                   <p className="font-bold text-background">{t(`form.proxyConfig`)}</p>
                   <FormControl>
                     <YamlEditor
                       value={field.value}
-                      onChange={(newValue) => {
-                        field.onChange(newValue);
-                      }}
+                      onChange={field.onChange}
                       disabled={!expertModeEnabled}
                     />
                   </FormControl>
