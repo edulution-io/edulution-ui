@@ -230,6 +230,7 @@ const LessonPage = () => {
               failed: filesharingProgress.failedPaths?.length || 0,
               processed: filesharingProgress.processed,
               total: filesharingProgress.total,
+              onRetry: () => {},
             }}
           />
         </div>

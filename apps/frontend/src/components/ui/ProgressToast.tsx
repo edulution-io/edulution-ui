@@ -45,7 +45,7 @@ const ProgressBar: React.FC<{ value: number }> = ({ value }) => {
   const progress = Math.min(Math.max(value, 0), 100);
 
   return (
-    <div className="h-2 w-full rounded bg-gray-200">
+    <div className="h-2 w-full rounded bg-background">
       <div
         className="h-full rounded bg-blue-500"
         style={{ width: `${progress}%` }}
@@ -80,10 +80,7 @@ const ProgressBox: React.FC<{ data: GenericProgressData }> = ({ data }) => {
           {t('filesharing.progressBox.errorInfo', { failed })}
 
           {onRetry && (
-            <Button
-              onClick={() => onRetry()}
-              className="flex items-center gap-1 rounded bg-gray-100 px-2 py-1 text-sm hover:bg-gray-200"
-            >
+            <Button onClick={() => onRetry()}>
               <MdRefresh className="inline-block" />
               {t('filesharing.progressBox.retry', 'Wiederholen')}
             </Button>
