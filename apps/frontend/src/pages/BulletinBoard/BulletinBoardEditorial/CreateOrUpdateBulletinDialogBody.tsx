@@ -21,7 +21,7 @@ import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardE
 import { BULLETIN_BOARD_ATTACHMENT_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
 import DialogSwitch from '@/components/shared/DialogSwitch';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
-import DatetimePickerHourCycle from '@/components/ui/DatetimePickerHourCycle';
+import DateTimePicker from '@/components/shared/DateTimePicker';
 
 interface CreateOrUpdateBulletinDialogBodyProps {
   form: UseFormReturn<CreateBulletinDto>;
@@ -109,15 +109,17 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
 
           {isActive && !isPermanentlyActive && (
             <>
-              <DatetimePickerHourCycle
+              <DateTimePicker
                 value={form.watch('isVisibleStartDate')}
                 onChange={(value) => form.setValue('isVisibleStartDate', value)}
                 translationId="bulletinboard.activeFrom"
+                variant="dialog"
               />
-              <DatetimePickerHourCycle
+              <DateTimePicker
                 value={form.watch('isVisibleEndDate')}
                 onChange={(value) => form.setValue('isVisibleEndDate', value)}
                 translationId="bulletinboard.activeUntil"
+                variant="dialog"
               />
             </>
           )}

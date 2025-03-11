@@ -18,7 +18,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import Checkbox from '@/components/ui/Checkbox';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import useGroupStore from '@/store/GroupStore';
-import DatetimePickerHourCycle from '@/components/ui/DatetimePickerHourCycle';
+import DateTimePicker from '@/components/shared/DateTimePicker';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
@@ -65,7 +65,7 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
         variant="dialog"
       />
       <div>
-        <DatetimePickerHourCycle
+        <DateTimePicker
           value={form.watch('expires')}
           onChange={(value) => form.setValue('expires', value)}
           translationId="survey.expirationDate"

@@ -14,14 +14,14 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { DateTimePicker } from '@/components/ui/DateTimePicker';
-import { DropdownVariant } from '@/components/ui/DropdownSelect/DropdownSelect';
+import DropdownVariant from '@libs/ui/types/DropdownVariant';
+import { DateTimePickerSH } from '@/components/ui/DateTimePickerSH';
 
 const defaultDate = new Date();
 defaultDate.setMonth(defaultDate.getDay() + 7);
 defaultDate.setHours(14, 30, 0, 0);
 
-interface DatetimePickerHourCycleProps {
+interface DateTimePickerProps {
   value: Date | undefined;
   onChange: (value: Date | undefined) => void;
   defaultTime?: Date | undefined;
@@ -30,7 +30,7 @@ interface DatetimePickerHourCycleProps {
   minDate?: Date;
 }
 
-const DatetimePickerHourCycle = (props: DatetimePickerHourCycleProps) => {
+const DateTimePicker = (props: DateTimePickerProps) => {
   const { value, onChange, defaultTime, translationId, variant = 'default', minDate } = props;
 
   const { t } = useTranslation();
@@ -39,7 +39,7 @@ const DatetimePickerHourCycle = (props: DatetimePickerHourCycleProps) => {
     <div className="flex flex-col gap-3 lg:flex-row">
       <div className="flex w-72 flex-col gap-2">
         {translationId ? <div className="text-background">{t(translationId)}</div> : null}
-        <DateTimePicker
+        <DateTimePickerSH
           hourCycle={24}
           value={value}
           onChange={onChange}
@@ -53,4 +53,4 @@ const DatetimePickerHourCycle = (props: DatetimePickerHourCycleProps) => {
   );
 };
 
-export default DatetimePickerHourCycle;
+export default DateTimePicker;

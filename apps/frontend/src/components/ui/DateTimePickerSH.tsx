@@ -16,14 +16,13 @@ import { type Locale, enUS } from 'date-fns/locale';
 import { Calendar as CalendarIcon, Clock } from 'lucide-react';
 import { CaptionProps } from 'react-day-picker';
 import cn from '@libs/common/utils/className';
+import DropdownVariant from '@libs/ui/types/DropdownVariant';
 import { Button } from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
 import { Calendar, CalendarProps } from '@/components/ui/Calendar';
 import Label from '@/components/ui/Label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
-
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
-import { DropdownVariant } from '@/components/ui/DropdownSelect/DropdownSelect';
 import styles from '@/components/ui/DropdownSelect//dropdownselect.module.scss';
 
 // ---------- utils start ----------
@@ -624,7 +623,7 @@ TimePicker.displayName = 'TimePicker';
 
 type Granularity = 'day' | 'hour' | 'minute' | 'second';
 
-type DateTimePickerProps = {
+type DateTimePickerSHProps = {
   value?: Date;
   onChange?: (date: Date | undefined) => void;
   onMonthChange?: (date: Date | undefined) => void;
@@ -664,7 +663,7 @@ type DateTimePickerRef = {
   value?: Date;
 } & Omit<HTMLButtonElement, 'value'>;
 
-const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePickerProps>(
+const DateTimePickerSH = React.forwardRef<Partial<DateTimePickerRef>, DateTimePickerSHProps>(
   (
     {
       locale = enUS,
@@ -820,7 +819,7 @@ const DateTimePicker = React.forwardRef<Partial<DateTimePickerRef>, DateTimePick
     );
   },
 );
-DateTimePicker.displayName = 'DateTimePicker';
+DateTimePickerSH.displayName = 'DateTimePicker';
 
-export { DateTimePicker, TimePickerInput, TimePicker };
-export type { TimePickerType, DateTimePickerProps, DateTimePickerRef };
+export { DateTimePickerSH, TimePickerInput, TimePicker };
+export type { TimePickerType, DateTimePickerSHProps, DateTimePickerRef };
