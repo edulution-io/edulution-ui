@@ -47,8 +47,8 @@ const CreateAndUpdateBulletinCategoryBody = ({
     setValue('editableByUsers', attendees, { shouldValidate: true });
   };
 
-  const handleNameChange = (newName: string) => {
-    setValue('name', newName, { shouldValidate: true });
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue('name', e.target.value, { shouldValidate: true });
   };
 
   return (
@@ -58,9 +58,8 @@ const CreateAndUpdateBulletinCategoryBody = ({
         className="space-y-4"
       >
         <div className="flex items-center space-x-2">
-          <p>{t('bulletinboard.categoryName')}:</p>
           <NameInputWithAvailability
-            register={form.register('name')}
+            form={form}
             placeholder={t('bulletinboard.categoryName')}
             onValueChange={handleNameChange}
             shouldAvailabilityStatusShow={form.formState.isValid && !isCurrentNameEqualToSelected()}
