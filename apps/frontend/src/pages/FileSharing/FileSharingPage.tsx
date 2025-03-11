@@ -17,31 +17,13 @@ import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDial
 import useFileSharingPage from '@/pages/FileSharing/hooks/useFileSharingPage';
 import FileSharingFloatingButtonsBar from '@/pages/FileSharing/FloatingButtonsBar/FileSharingFloatingButtonsBar';
 import FileSharingTable from '@/pages/FileSharing/Table/FileSharingTable';
-import FileViewer from '@/pages/FileSharing/FilePreview/FileViewer';
-import useIsMobileView from '@/hooks/useIsMobileView';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
-import APPS from '@libs/appconfig/constants/apps';
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import ContentType from '@libs/filesharing/types/contentType';
-import isFileValid from '@libs/filesharing/utils/isFileValid';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
-import FILE_PREVIEW_ELEMENT_ID from '@libs/filesharing/constants/filePreviewElementId';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
+import FILE_PREVIEW_ELEMENT_ID from '@libs/filesharing/constants/filePreviewElementId';
 
 const FileSharingPage = () => {
-  const isMobileView = useIsMobileView();
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
-  const { currentlyEditingFile } = useFileEditorStore();
-  const { appConfigs } = useAppConfigsStore();
-
-  const isDocumentServerConfigured = !!getExtendedOptionsValue(
-    appConfigs,
-    APPS.FILE_SHARING,
-    ExtendedOptionKeys.ONLY_OFFICE_URL,
-  );
-  const isValidFile = currentlyEditingFile?.type === ContentType.FILE && isFileValid(currentlyEditingFile);
-  const isFilePreviewVisible = isValidFile && isDocumentServerConfigured && !isMobileView;
+  const { isFilePreviewVisible } = useFileEditorStore();
 
   return (
     <div className="w-full overflow-x-auto">
@@ -70,9 +52,7 @@ const FileSharingPage = () => {
               id={FILE_PREVIEW_ELEMENT_ID}
               className="h-full w-1/2 2xl:w-1/3"
               data-testid="test-id-file-preview"
-            >
-              <FileViewer />
-            </div>
+            />
           )}
         </div>
       </div>

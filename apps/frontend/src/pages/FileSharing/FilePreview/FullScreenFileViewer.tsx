@@ -56,7 +56,10 @@ const FullScreenFileViewer = () => {
 
   return (
     <div className="h-screen w-screen">
-      <FileRenderer editMode />
+      <FileRenderer
+        editMode
+        isOpenedInNewTab
+      />
     </div>
   );
 };

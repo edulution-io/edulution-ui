@@ -73,6 +73,7 @@ module.exports = {
         overlay: {
           DEFAULT: 'var(--overlay)',
           foreground: 'var(--overlay-foreground)',
+          transparent: 'var(--overlay-transparent)',
         },
       },
       backgroundImage: {

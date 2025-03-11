@@ -25,9 +25,10 @@ import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import getFrontEndUrl from '@libs/common/utils/getFrontEndUrl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import delay from '@libs/common/utils/delay';
 
 type FileEditorStore = {
+  isFilePreviewVisible: boolean;
+  setIsFilePreviewVisible: (isVisible: boolean) => void;
   getOnlyOfficeJwtToken: (config: OnlyOfficeEditorConfig) => Promise<string>;
   deleteFileAfterEdit: (url: string) => Promise<void>;
   reset: () => void;
@@ -39,7 +40,6 @@ type FileEditorStore = {
   filesToOpenInNewTab: DirectoryFileDTO[];
   addFileToOpenInNewTab: (fileToPreview: DirectoryFileDTO) => void;
   setCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => void;
-  resetCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => Promise<void>;
   isEditorLoading: boolean;
   isDownloadFileLoading: boolean;
   downloadLinkURL: string;
@@ -49,6 +49,7 @@ type FileEditorStore = {
 };
 
 const initialState = {
+  isFilePreviewVisible: false,
   publicDownloadLink: null,
   isEditorLoading: false,
   downloadLinkURL: '',
@@ -69,6 +70,8 @@ const useFileEditorStore = create<FileEditorStore>(
     (set, get) => ({
       ...initialState,
       reset: () => set(initialState),
+
+      setIsFilePreviewVisible: (isFilePreviewVisible) => set({ isFilePreviewVisible }),
 
       deleteFileAfterEdit: async (url) => {
         try {
@@ -131,12 +134,6 @@ const useFileEditorStore = create<FileEditorStore>(
       },
 
       setCurrentlyEditingFile: (file) => {
-        set({ currentlyEditingFile: file });
-      },
-
-      resetCurrentlyEditingFile: async (file) => {
-        set({ currentlyEditingFile: null });
-        await delay(1);
         set({ currentlyEditingFile: file });
       },
 

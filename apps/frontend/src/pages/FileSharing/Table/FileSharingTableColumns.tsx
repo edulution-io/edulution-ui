@@ -54,9 +54,9 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
     cell: ({ row }) => {
       const [searchParams, setSearchParams] = useSearchParams();
       const { currentlyDisabledFiles, setFileIsCurrentlyDisabled } = useFileSharingStore();
-      const { setCurrentlyEditingFile, resetCurrentlyEditingFile, setPublicDownloadLink } = useFileEditorStore();
+      const { setCurrentlyEditingFile, setPublicDownloadLink, setIsFilePreviewVisible } = useFileEditorStore();
       const isCurrentlyDisabled = currentlyDisabledFiles[row.original.basename];
-      const handleFilenameClick = async () => {
+      const handleFilenameClick = () => {
         if (isCurrentlyDisabled) {
           return;
         }
@@ -65,11 +65,11 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
 
         setPublicDownloadLink('');
         if (row.original.type === ContentType.DIRECTORY) {
-          setCurrentlyEditingFile(null);
           searchParams.set('path', getPathWithoutWebdav(row.original.filename));
           setSearchParams(searchParams);
         } else {
-          await resetCurrentlyEditingFile(row.original);
+          setIsFilePreviewVisible(true);
+          setCurrentlyEditingFile(row.original);
         }
       };
       const renderFileIcon = (item: DirectoryFileDTO) => {

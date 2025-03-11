@@ -19,7 +19,10 @@ interface EditButtonProps {
 }
 
 const EditButton = ({ onClick }: EditButtonProps) => (
-  <WindowControlBaseButton onClick={onClick}>
+  <WindowControlBaseButton
+    onClick={onClick}
+    tooltipTranslationId="common.edit"
+  >
     <FiEdit />
   </WindowControlBaseButton>
 );

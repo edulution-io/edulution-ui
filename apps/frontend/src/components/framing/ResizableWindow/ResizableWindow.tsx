@@ -24,6 +24,7 @@ import MinimizeButton from '@/components/framing/ResizableWindow/Buttons/Minimiz
 import ToggleMaximizeButton from '@/components/framing/ResizableWindow/Buttons/ToggleMaximizeButton';
 import CloseButton from '@/components/framing/ResizableWindow/Buttons/CloseButton';
 import RectangleSize from '@libs/ui/types/rectangleSize';
+import { HiOutlineCursorArrowRipple } from 'react-icons/hi2';
 
 interface ResizableWindowProps {
   titleTranslationId: string;
@@ -98,7 +99,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
       setCurrentWindowedFrameSize(titleTranslationId, initialSize);
       setCurrentPosition(initialPosition);
     }
-  }, [windowSize, isMaximized, isMinimized, isMobileView]);
+  }, [windowSize, isMaximized, isMinimized, isMobileView, titleTranslationId]);
 
   const minimizedWidth = Math.min(300, documentWidth * 0.333);
 
@@ -170,7 +171,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
 
   useEffect(() => {
     setWindowedFramesZIndices(titleTranslationId);
-  }, []);
+  }, [titleTranslationId]);
 
   const zIndex = windowedFramesZIndices[titleTranslationId] || 0;
   const hasCurrentFramedWindowHighestZIndex = hasFramedWindowHighestZIndex(titleTranslationId);
@@ -195,7 +196,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
         setCurrentPosition(position);
       }}
       className={cn('bg-global overflow-hidden rounded-lg rounded-t-none shadow-lg', {
-        'rounded-t-lg border border-slate-500 bg-gray-800': !isMaximized && !isMinimized,
+        'rounded-t-lg border border-slate-500 bg-gray-800': !isMaximized && !isMinimized && !isCurrentlySticky,
         'rounded-none transition-transform active:transition-none': isMinimized,
       })}
       bounds="window"
@@ -208,12 +209,19 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
       {!hasCurrentFramedWindowHighestZIndex && !isMinimized && (
         // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
         <div
-          className="pointer-events-auto absolute left-0 top-0 h-full w-full"
+          className="group pointer-events-auto absolute left-0 top-0 flex h-full w-full items-center justify-center bg-overlay-transparent opacity-10 hover:opacity-100"
           style={{
             zIndex: zIndex + 1,
           }}
           onClick={() => setWindowedFramesZIndices(titleTranslationId)}
-        />
+        >
+          <div
+            style={{ marginTop: MAXIMIZED_BAR_HEIGHT }}
+            className="h-14 w-14 rounded-full bg-foreground p-2 opacity-0 group-hover:opacity-100"
+          >
+            <HiOutlineCursorArrowRipple size={40} />
+          </div>
+        </div>
       )}
       <div
         role="button"
@@ -233,7 +241,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
           </div>
         </div>
         <div className="flex">
-          {...additionalButtons}
+          {!isMinimized && additionalButtons}
           {!isMinimized && !disableMinimizeWindow && <MinimizeButton minimizeWindow={minimizeWindow} />}
           {((isMinimized && !disableMinimizeWindow && disableToggleMaximizeWindow) || !disableToggleMaximizeWindow) && (
             <ToggleMaximizeButton

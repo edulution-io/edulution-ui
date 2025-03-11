@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ReactElement, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import FileRenderer from '@/pages/FileSharing/FilePreview/FileRenderer';
@@ -22,17 +22,35 @@ import OpenInNewTabButton from '@/components/framing/ResizableWindow/Buttons/Ope
 import FILE_PREVIEW_ROUTE from '@libs/filesharing/constants/routes';
 import EditButton from '@/components/framing/ResizableWindow/Buttons/EditButton';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
+import useIsMobileView from '@/hooks/useIsMobileView';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
+import APPS from '@libs/appconfig/constants/apps';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import ContentType from '@libs/filesharing/types/contentType';
+import isFileValid from '@libs/filesharing/utils/isFileValid';
+import ToggleDockButton from '@/components/framing/ResizableWindow/Buttons/ToggleDockButton';
+import { useLocation } from 'react-router-dom';
 
-const FileViewer = () => {
+const FileSharingPreviewFrame = () => {
   const { t } = useTranslation();
-  const { addFileToOpenInNewTab, currentlyEditingFile, fetchDownloadLinks, setCurrentlyEditingFile } =
-    useFileEditorStore();
+  const {
+    addFileToOpenInNewTab,
+    currentlyEditingFile,
+    fetchDownloadLinks,
+    setCurrentlyEditingFile,
+    setIsFilePreviewVisible,
+    isFilePreviewVisible,
+  } = useFileEditorStore();
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
-  const [isEditMode, setIsEditMode] = useState<boolean>(false);
-  const abortControllerRef = useRef<AbortController | null>(null);
-
   const windowSize = useWindowResize();
+  const location = useLocation();
+
   const [filePreviewRect, setFilePreviewRect] = useState<Pick<DOMRect, 'x' | 'y' | 'width' | 'height'> | null>(null);
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
+  const [isInDockedMode, setIsInDockedMode] = useState<boolean>(true);
+
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     const el = document.getElementById(FILE_PREVIEW_ELEMENT_ID);
@@ -49,11 +67,17 @@ const FileViewer = () => {
     });
   }, [windowSize, currentlyEditingFile, isEditMode]);
 
+  const resetPreview = () => {
+    setIsFilePreviewVisible(false);
+    setIsInDockedMode(true);
+    setCurrentlyEditingFile(null);
+  };
+
   const openInNewTab = () => {
     if (currentlyEditingFile) {
       addFileToOpenInNewTab(currentlyEditingFile);
-      window.open(`${FILE_PREVIEW_ROUTE}?file=${currentlyEditingFile.etag}`, '_blank');
-      setCurrentlyEditingFile(null);
+      window.open(`/${FILE_PREVIEW_ROUTE}?file=${currentlyEditingFile.etag}`, '_blank');
+      resetPreview();
     }
   };
 
@@ -74,36 +98,65 @@ const FileViewer = () => {
     if (!currentlyEditingFile) return;
     const { basename } = currentlyEditingFile;
     setIsEditMode(false);
-    setCurrentlyEditingFile(null);
+    resetPreview();
     await setFileIsCurrentlyDisabled(basename, true, 5000);
   };
 
-  if (!filePreviewRect || !currentlyEditingFile) return null;
+  const isMobileView = useIsMobileView();
+  const { appConfigs } = useAppConfigsStore();
 
-  const { x, y, width, height } = filePreviewRect;
+  useEffect(() => {
+    if (isFilePreviewVisible && !currentlyEditingFile) {
+      resetPreview();
+    }
+  }, [currentlyEditingFile]);
+
+  const isDocumentServerConfigured = !!getExtendedOptionsValue(
+    appConfigs,
+    APPS.FILE_SHARING,
+    ExtendedOptionKeys.ONLY_OFFICE_URL,
+  );
+  const isValidFile = currentlyEditingFile?.type === ContentType.FILE && isFileValid(currentlyEditingFile);
+  const isFileReady = isValidFile && isDocumentServerConfigured && !isMobileView;
+
+  const pathSegments = location.pathname.split('/').filter(Boolean);
+  const hidePreviewOnOtherPages = pathSegments[0] !== APPS.FILE_SHARING && isInDockedMode;
+
+  if (!isFilePreviewVisible || !isFileReady || !filePreviewRect || hidePreviewOnOtherPages) return null;
+
   const isEditButtonVisible = !isEditMode && isOnlyOfficeDocument(currentlyEditingFile.filename);
   const additionalButtons = [
     <OpenInNewTabButton
       onClick={openInNewTab}
       key={OpenInNewTabButton.name}
     />,
-    isEditButtonVisible ? (
+    isEditButtonVisible && (
       <EditButton
         onClick={() => setIsEditMode(true)}
         key={EditButton.name}
       />
-    ) : null,
-  ];
+    ),
+    isInDockedMode && (
+      <ToggleDockButton
+        onClick={() => setIsInDockedMode(!isInDockedMode)}
+        isDocked={isInDockedMode}
+        key={ToggleDockButton.name}
+      />
+    ),
+  ].filter((b): b is ReactElement => Boolean(b));
+
+  const { x, y, width, height } = filePreviewRect;
 
   return (
     <ResizableWindow
-      disableMinimizeWindow
+      disableMinimizeWindow={isInDockedMode}
+      disableToggleMaximizeWindow={isInDockedMode}
       titleTranslationId={currentlyEditingFile?.basename || t(`filesharing.filePreview`)}
       handleClose={handleCloseFile}
       initialPosition={{ x, y }}
       initialSize={{ width, height }}
       openMaximized={false}
-      stickToInitialSizeAndPositionWhenRestored
+      stickToInitialSizeAndPositionWhenRestored={isInDockedMode}
       additionalButtons={additionalButtons}
     >
       <FileRenderer editMode={isEditMode} />
@@ -111,4 +164,4 @@ const FileViewer = () => {
   );
 };
 
-export default FileViewer;
+export default FileSharingPreviewFrame;
