@@ -10,15 +10,30 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { TFunction } from 'i18next';
-import { z } from 'zod';
+import React from 'react';
+import { Navigate, Route } from 'react-router-dom';
+import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
+import APPS from '@libs/appconfig/constants/apps';
 
-const getCreateNewCategorieSchema = (t: TFunction<'translation', undefined>) =>
-  z.object({
-    name: z
-      .string()
-      .min(3, { message: t('common.min_chars', { count: 3 }) })
-      .max(30, { message: t('common.max_chars', { count: 30 }) }),
-  });
+const getFileSharingRoutes = () => [
+  <Route
+    key={APPS.FILE_SHARING}
+    path={APPS.FILE_SHARING}
+  >
+    <Route
+      index
+      element={
+        <Navigate
+          to="Home"
+          replace
+        />
+      }
+    />
+    <Route
+      path=":mointPoint/*"
+      element={<FileSharingPage />}
+    />
+  </Route>,
+];
 
-export default getCreateNewCategorieSchema;
+export default getFileSharingRoutes;
