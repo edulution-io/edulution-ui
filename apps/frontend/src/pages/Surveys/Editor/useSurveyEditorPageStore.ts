@@ -10,15 +10,17 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { create } from 'zustand';
+import { create, StateCreator } from 'zustand';
+import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
 interface SurveyEditorPageStore {
-  survey: SurveyDto | undefined;
-  setSurvey: (survey: SurveyDto | undefined) => void;
+  storedSurvey: SurveyDto | undefined;
+  updateStoredSurvey: (survey: SurveyDto) => void;
+  resetStoredSurvey: () => void;
 
   isOpenSaveSurveyDialog: boolean;
   setIsOpenSaveSurveyDialog: (state: boolean) => void;
@@ -32,8 +34,13 @@ interface SurveyEditorPageStore {
   reset: () => void;
 }
 
-const SurveyEditorPageStoreInitialState = {
-  survey: undefined,
+type PersistedSurveyEditorPageStore = (
+  survey: StateCreator<SurveyEditorPageStore>,
+  options: PersistOptions<Partial<SurveyEditorPageStore>>,
+) => StateCreator<SurveyEditorPageStore>;
+
+const initialState = {
+  storedSurvey: undefined,
 
   isOpenSaveSurveyDialog: false,
   isLoading: false,
@@ -42,39 +49,48 @@ const SurveyEditorPageStoreInitialState = {
   publicSurveyId: '',
 };
 
-const useSurveyEditorPageStore = create<SurveyEditorPageStore>((set) => ({
-  ...SurveyEditorPageStoreInitialState,
-  reset: () => set(SurveyEditorPageStoreInitialState),
+const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
+  (persist as PersistedSurveyEditorPageStore)(
+    (set) => ({
+      ...initialState,
+      reset: () => set(initialState),
 
-  setSurvey: (survey: SurveyDto | undefined) => set({ survey }),
+      updateStoredSurvey: (survey: SurveyDto) => set({ storedSurvey: survey }),
+      resetStoredSurvey: () => set({ storedSurvey: undefined }),
 
-  setIsOpenSaveSurveyDialog: (state: boolean) => set({ isOpenSaveSurveyDialog: state }),
+      setIsOpenSaveSurveyDialog: (state: boolean) => set({ isOpenSaveSurveyDialog: state }),
 
-  updateOrCreateSurvey: async (survey) => {
-    set({ isLoading: true });
-    try {
-      const result = await eduApi.post<SurveyDto>(SURVEYS, survey);
-      const resultingSurvey = result.data;
-      if (resultingSurvey && survey.isPublic) {
-        set({
-          isOpenSharePublicSurveyDialog: true,
-          publicSurveyId: resultingSurvey.id,
-        });
-      } else {
-        set({ isOpenSharePublicSurveyDialog: false, publicSurveyId: undefined });
-      }
+      updateOrCreateSurvey: async (survey: SurveyDto): Promise<boolean> => {
+        set({ isLoading: true });
+        try {
+          const result = await eduApi.post<SurveyDto>(SURVEYS, survey);
+          const resultingSurvey = result.data;
+          if (resultingSurvey && survey.isPublic) {
+            set({
+              isOpenSharePublicSurveyDialog: true,
+              publicSurveyId: resultingSurvey.id,
+            });
+          } else {
+            set({ isOpenSharePublicSurveyDialog: false, publicSurveyId: undefined });
+          }
+          return true;
+        } catch (error) {
+          handleApiError(error, set);
+          return false;
+        } finally {
+          set({ isLoading: false });
+        }
+      },
 
-      return true;
-    } catch (error) {
-      handleApiError(error, set);
-      return false;
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-
-  closeSharePublicSurveyDialog: () =>
-    set({ isOpenSaveSurveyDialog: false, publicSurveyId: SurveyEditorPageStoreInitialState.publicSurveyId }),
-}));
+      closeSharePublicSurveyDialog: () =>
+        set({ isOpenSaveSurveyDialog: false, publicSurveyId: initialState.publicSurveyId }),
+    }),
+    {
+      name: 'survey-editor-storage',
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({ survey: state.storedSurvey }),
+    },
+  ),
+);
 
 export default useSurveyEditorPageStore;
