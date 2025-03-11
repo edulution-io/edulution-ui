@@ -28,6 +28,7 @@ const contentFiletypes: ContentFileTypes = {
   '.mp4': 'video',
   '.mov': 'video',
   '.3g2': 'video',
+  '.webm': 'video',
   '.7z': 'compressed',
   '.pdf': 'acrobat',
   '.doc': 'document',

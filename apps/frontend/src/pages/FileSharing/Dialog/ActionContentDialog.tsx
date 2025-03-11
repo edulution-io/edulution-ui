@@ -68,8 +68,8 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     setSelectedFileType,
     setMoveOrCopyItemToPath,
     setFilesToUpload,
-    isSubmitButtonInActive,
-    setSubmitButtonIsInActive,
+    isSubmitButtonDisabled,
+    setSubmitButtonIsDisabled,
   } = useFileSharingDialogStore();
   const { currentPath, selectedItems } = useFileSharingStore();
   const { appConfigs } = useAppConfigsStore();
@@ -84,7 +84,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   });
 
   const clearAllSelectedItems = () => {
-    setSubmitButtonIsInActive(false);
+    setSubmitButtonIsDisabled(false);
     setMoveOrCopyItemToPath({} as DirectoryFileDTO);
     setSelectedFileType('');
     setFilesToUpload([]);
@@ -92,7 +92,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     form.reset();
   };
 
-  async function processFileUploadsInBatches({
+  const processFileUploadsInBatches = async ({
     uploads,
     batchSize,
     destinationPath,
@@ -101,7 +101,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     method,
     requestContentType,
     handleFileUploadAction,
-  }: BatchUploadOptions) {
+  }: BatchUploadOptions) => {
     const batches = splitArrayIntoChunks(uploads, batchSize);
 
     await batches.reduce<Promise<void>>(async (prevPromise, batch) => {
@@ -122,7 +122,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
         }),
       );
     }, Promise.resolve());
-  }
+  };
 
   const onSubmit = async () => {
     const documentVendor = getDocumentVendor(appConfigs);
@@ -150,7 +150,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
         handleFileUploadAction: handleItemAction,
       });
     } else {
-      setSubmitButtonIsInActive(false);
+      setSubmitButtonIsDisabled(false);
       await handleItemAction(action, endpoint, httpMethod, type, uploadPayload);
     }
 
@@ -199,7 +199,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
             <form onSubmit={handleFormSubmit}>
               <Button
                 variant="btn-collaboration"
-                disabled={isLoading || isSubmitButtonInActive}
+                disabled={isLoading || isSubmitButtonDisabled}
                 size="lg"
                 type="submit"
                 onClick={handleFormSubmit}

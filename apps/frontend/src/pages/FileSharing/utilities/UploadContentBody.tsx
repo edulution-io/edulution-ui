@@ -29,7 +29,7 @@ const UploadContentBody = () => {
   const { t } = useTranslation();
   const { files } = useFileSharingStore();
   const [oversizedFiles, setOversizedFiles] = useState<File[]>([]);
-  const { setSubmitButtonIsInActive } = useFileSharingDialogStore();
+  const { setSubmitButtonIsDisabled } = useFileSharingDialogStore();
 
   const [filesThatWillBeOverwritten, setFilesThatWillBeOverwritten] = useState<File[]>([]);
 
@@ -72,7 +72,7 @@ const UploadContentBody = () => {
   );
 
   useEffect(() => {
-    setSubmitButtonIsInActive(oversizedFiles.length !== 0);
+    setSubmitButtonIsDisabled(oversizedFiles.length !== 0);
   }, [oversizedFiles]);
 
   const hasMultipleDuplicates = filesThatWillBeOverwritten.length > 1;
@@ -111,9 +111,9 @@ const UploadContentBody = () => {
               : t('filesharingUpload.overwriteWarningDescriptionFile')
           }
           items={filesThatWillBeOverwritten}
-          borderColor="border-yellow-400"
-          backgroundColor="bg-yellow-50"
-          textColor="text-yellow-800"
+          borderColor="border-ciLightYellow"
+          backgroundColor="bg-background"
+          textColor="text-ciLightYellow"
         />
       )}
 
@@ -127,9 +127,9 @@ const UploadContentBody = () => {
           }
           description={t('filesharingUpload.cannotUploadOversized')}
           items={oversizedFiles}
-          borderColor="border-red-400"
-          backgroundColor="bg-red-50"
-          textColor="text-red-800"
+          borderColor="border-ciLightRed"
+          backgroundColor="bg-background"
+          textColor="text-ciLightRed"
         />
       )}
 
@@ -141,7 +141,7 @@ const UploadContentBody = () => {
               className={`
                   group relative overflow-hidden rounded-xl border p-2 shadow-lg 
                   transition-all duration-200 hover:min-h-[80px] hover:overflow-visible
-                  ${bytesToMegabytes(file.size) < MAX_FILE_UPLOAD_SIZE ? 'border-gray-700' : 'border-red-700 bg-red-50  opacity-50'}
+                  ${bytesToMegabytes(file.size) < MAX_FILE_UPLOAD_SIZE ? 'border-accent' : 'border-ciRed  opacity-50'}
                 `}
             >
               {file.type.startsWith('image/') ? (
