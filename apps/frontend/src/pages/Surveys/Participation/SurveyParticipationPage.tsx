@@ -80,19 +80,19 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
     return surveyParticipationModel;
   }, [selectedSurvey, language]);
 
+  if (isFetching) {
+    return <LoadingIndicatorDialog isOpen />;
+  }
+
   if (!surveyModel) {
-    return isFetching ? (
-      <LoadingIndicatorDialog isOpen={isFetching} />
-    ) : (
+    return (
       <div className="relative top-1/3">
         <h4 className="flex justify-center">{t('survey.notFound')}</h4>
       </div>
     );
   }
 
-  return isFetching ? (
-    <LoadingIndicatorDialog isOpen={isFetching} />
-  ) : (
+  return (
     <div className={cn('survey-participation')}>
       <Survey model={surveyModel} />
     </div>
