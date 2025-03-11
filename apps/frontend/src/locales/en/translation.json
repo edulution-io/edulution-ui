@@ -215,6 +215,10 @@
       "ConferenceIsNotRunning": "Conference is not running",
       "MissingMandatoryParameters": "Request failed because of missing parameters"
     },
+    "sharePublicDialog": {
+      "title": "Share Conference",
+      "description": "Here you can copy and share the link to the conference."
+    },
     "joinThisConference": "Join this conference",
     "filterPlaceHolderText": "Search for conference name",
     "started": "Conference started",
@@ -586,9 +590,7 @@
     },
     "sharePublicSurveyDialog": {
       "title": "Share survey",
-      "description": "Here you can share the survey with external people. Please copy the link and send it to the participants.",
-      "savedToClipboard": "Saved to clipboard.",
-      "savedToClipboardError": "Unable to save into clipboard."
+      "description": "Here you can share the survey with external people. Please copy the link and send it to the participants."
     },
     "participateDialog": {
       "title": "Participate in the survey"
@@ -892,6 +894,9 @@
   },
   "edit": "Edit",
   "common": {
+    "share": "Share",
+    "savedToClipboard": "Saved to clipboard.",
+    "savedToClipboardError": "Unable to save into clipboard.",
     "answers": "Answers",
     "error": "Error",
     "errors": {
@@ -1032,7 +1037,13 @@
     "dragDropClick": "Drag files here or click to select files",
     "dropHere": "Drop here",
     "filesToUpload": "Files to upload",
-    "limitExceeded": "Reached the limit of 5 files"
+    "overwriteWarningTitleFile": "Warning: File already exists",
+    "overwriteWarningTitleFiles": "Warning: Files already exist",
+    "overwriteWarningDescriptionFile": "The following file will be overwritten:",
+    "overwriteWarningDescriptionFiles": "The following files will be overwritten:",
+    "oversizedFilesDetected": "Oversized files detected",
+    "oversizedFileDetected": "Oversized file detected!",
+    "cannotUploadOversized": "Cannot upload oversized files (more than 50 MB)."
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",

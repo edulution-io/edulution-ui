@@ -390,8 +390,20 @@ class FilesharingService {
   async getWebDavFileStream(username: string, filePath: string): Promise<Readable> {
     try {
       const client = await this.getClient(username);
-      const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
-      const resp = await FilesystemService.fetchFileStream(url, client);
+      let decoded = decodeURIComponent(filePath);
+
+      if (decoded.includes('%')) {
+        decoded = decodeURIComponent(decoded);
+      }
+
+      const pathWithoutWebdav = getPathWithoutWebdav(decoded).replace(/^\/+/, '');
+
+      const encodedPath = encodeURI(pathWithoutWebdav);
+
+      const base = this.baseurl.replace(/\/+$/, '');
+      const finalUrl = `${base}/${encodedPath}`;
+
+      const resp = await FilesystemService.fetchFileStream(finalUrl, client);
       if (resp instanceof Readable) {
         return resp;
       }

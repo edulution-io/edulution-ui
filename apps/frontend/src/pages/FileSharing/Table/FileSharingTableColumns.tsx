@@ -91,14 +91,13 @@ const getFileSharingTableColumns = (
             return;
           }
 
-          void setFileIsCurrentlyDisabled(row.original.basename, true);
-
           setPublicDownloadLink('');
           if (row.original.type === ContentType.DIRECTORY) {
             setCurrentlyEditingFile(null);
             searchParams.set('path', getPathWithoutWebdav(row.original.filename));
             setSearchParams(searchParams);
           } else {
+            void setFileIsCurrentlyDisabled(row.original.basename, true);
             await resetCurrentlyEditingFile(row.original);
           }
         };
