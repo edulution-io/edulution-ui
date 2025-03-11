@@ -21,7 +21,9 @@ import SubmittedAnswersDialog from '@/pages/Surveys/Tables/dialogs/SubmittedAnsw
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import DeleteSurveysDialog from '@/pages/Surveys/Tables/dialogs/DeleteSurveysDialog';
-import SharePublicSurveyDialog from '@/pages/Surveys/Editor/dialog/SharePublicSurveyDialog';
+import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
+import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import { PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 
 interface SurveysTablePageProps {
   title: string;
@@ -49,6 +51,8 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
     canParticipate = false,
     canShowResults = false,
   } = props;
+  const { isOpenSharePublicSurveyDialog, closeSharePublicSurveyDialog, publicSurveyId } = useSurveyEditorPageStore();
+  const sharePublicSurveyUrl = publicSurveyId ? `${window.location.origin}/${PUBLIC_SURVEYS}/${publicSurveyId}` : '';
 
   return (
     <>
@@ -76,7 +80,13 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
           <ResultTableDialog />
           <ResultVisualizationDialog />
           <SubmittedAnswersDialog />
-          <SharePublicSurveyDialog />
+          <SharePublicQRDialog
+            url={sharePublicSurveyUrl}
+            isOpen={isOpenSharePublicSurveyDialog && !!sharePublicSurveyUrl}
+            handleClose={() => closeSharePublicSurveyDialog()}
+            titleTranslationId="surveys.sharePublicSurveyDialog.title"
+            descriptionTranslationId="surveys.sharePublicSurveyDialog.description"
+          />
         </div>
       </TooltipProvider>
     </>
