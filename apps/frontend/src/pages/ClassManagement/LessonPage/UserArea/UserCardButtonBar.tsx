@@ -96,8 +96,8 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
     { icon: FaEarthAmericas, value: internet, title: CLASSMGMT_OPTIONS.INTERNET },
     { icon: FiPrinter, value: printing, title: CLASSMGMT_OPTIONS.PRINTING },
     { icon: MdSchool, value: examMode, title: CLASSMGMT_OPTIONS.EXAMMODE },
-    { icon: PiEyeFill, value: null, title: CLASSMGMT_OPTIONS.VEYON, defaultColor: 'bg-gray-600' },
-    { icon: PiKey, value: null, title: CLASSMGMT_OPTIONS.PASSWORDOPTIONS, defaultColor: 'bg-gray-600' },
+    { icon: PiEyeFill, value: null, title: CLASSMGMT_OPTIONS.VEYON, defaultColor: 'text-ciLightGrey' },
+    { icon: PiKey, value: null, title: CLASSMGMT_OPTIONS.PASSWORDOPTIONS, defaultColor: 'text-ciLightGrey' },
   ];
 
   const getButtonDescription = (isEnabled: boolean | null) => {
@@ -112,7 +112,7 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
       icon: FaArrowRightToBracket,
       value: null,
       title: CLASSMGMT_OPTIONS.JOINCLASS,
-      defaultColor: 'bg-ciRed',
+      defaultColor: 'text-ciLightGrey',
     });
   }
 
@@ -124,15 +124,14 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
       <button
         type="button"
         className={cn(
-          'relative rounded-full p-1.5',
-          'group-hover:bg-accent group-hover:text-background',
-          button.defaultColor || (button.value ? 'bg-ciGreen text-background' : 'bg-ciRed'),
+          'relative p-2 hover:bg-ciGreenToBlue',
+          'group-hover:bg-ciGreenToBlue group-hover:text-background',
         )}
         title={t(button.title)}
         onClick={(e) => onButtonClick(e, button)}
       >
-        <button.icon className="text-lg" />
-        <div className="absolute right-0 top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-xl bg-accent px-2 text-background group-hover:flex">
+        <button.icon className={cn('text-lg', button.defaultColor || (button.value ? 'text-ciGreen' : 'text-ciRed'))} />
+        <div className="absolute -right-[5px] top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-l-[8px] bg-ciGreenToBlue px-2 text-background group-hover:flex">
           {t(`classmanagement.${button.title}`)} {t(getButtonDescription(button.value))}
         </div>
       </button>

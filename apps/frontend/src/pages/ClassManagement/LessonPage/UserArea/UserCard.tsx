@@ -128,7 +128,7 @@ const UserCard = ({
           </div>
         </div>
         {isSelectable ? (
-          <div className="mt-0.5 flex w-1/6 flex-col items-center justify-around">
+          <div className="ml-2 mt-0.5 flex w-1/6 flex-col items-center justify-around rounded-r-xl border-l-[1px] border-accent bg-black">
             <UserCardButtonBar
               user={user}
               isTeacherInSameClass={isTeacherInSameClass}
