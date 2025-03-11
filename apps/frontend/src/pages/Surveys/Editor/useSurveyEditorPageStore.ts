@@ -88,7 +88,7 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
     {
       name: 'survey-editor-storage',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ survey: state.storedSurvey }),
+      partialize: (state) => ({ storedSurvey: state.storedSurvey }),
     },
   ),
 );
