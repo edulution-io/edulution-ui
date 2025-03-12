@@ -20,7 +20,6 @@ import WysiwygEditor from '@/components/shared/WysiwygEditor';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import { BULLETIN_BOARD_ATTACHMENT_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
 import DialogSwitch from '@/components/shared/DialogSwitch';
-// import DateAndTimeInput from '@/components/shared/DateAndTimeInput';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import DateTimePickerField from '@/components/ui/DateTimePickerField';
 
