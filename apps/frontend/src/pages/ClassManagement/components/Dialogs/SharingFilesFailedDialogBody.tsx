@@ -11,6 +11,7 @@
  */
 
 import React from 'react';
+import ItemDialogList from '@/components/shared/ItemDialogList';
 
 interface SharingFilesFailedDialogBodyProps {
   failedFile: string;
@@ -23,11 +24,7 @@ const SharingFilesFailedDialogBody: React.FC<SharingFilesFailedDialogBodyProps> 
 
     <p className="text-sm text-background">Die folgende(n) Person(en) haben die Datei nicht erhalten:</p>
 
-    <ul className="list-inside list-disc pl-4 text-sm text-background">
-      {affectedUsers.map((user) => (
-        <li key={user}>{user}</li>
-      ))}
-    </ul>
+    <ItemDialogList items={affectedUsers.map((user) => ({ name: user, id: user }))} />
   </div>
 );
 

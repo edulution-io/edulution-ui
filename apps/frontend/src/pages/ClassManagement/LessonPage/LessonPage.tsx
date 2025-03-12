@@ -238,6 +238,7 @@ const LessonPage = () => {
               processed: filesharingProgress.processed,
               total: filesharingProgress.total,
               onRetry: () => {
+                navigate('/' + CLASS_MANAGEMENT_LESSON_PATH);
                 setIsFileSharingProgessInfoDialogOpen(true);
               },
             }}
