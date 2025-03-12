@@ -41,7 +41,7 @@ interface FileSharingDialogStore {
   setIsLoading: (isLoading: boolean) => void;
   error: AxiosError | null;
   fileOperationStatus: boolean | undefined;
-  isSubmitButtonInActive: boolean;
+  isSubmitButtonDisabled: boolean;
   setError: (error: AxiosError) => void;
   reset: () => void;
   setSelectedFileType: (fileType: TAvailableFileTypes | '') => void;
@@ -57,7 +57,7 @@ interface FileSharingDialogStore {
   setAction: (action: FileActionType) => void;
   fileOperationResult: WebDavActionResult | undefined;
   setFileOperationResult: (fileOperationSuccessful: boolean, message: string, status: number) => void;
-  setSubmitButtonIsInActive: (isSubmitButtonActive: boolean) => void;
+  setSubmitButtonIsDisabled: (isSubmitButtonActive: boolean) => void;
 }
 
 const initialState: Partial<FileSharingDialogStore> = {
@@ -68,7 +68,7 @@ const initialState: Partial<FileSharingDialogStore> = {
   moveOrCopyItemToPath: {} as DirectoryFileDTO,
   selectedFileType: '',
   filesToUpload: [],
-  isSubmitButtonInActive: false,
+  isSubmitButtonDisabled: false,
 };
 
 const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => ({
@@ -84,7 +84,7 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
   reset: () => set(initialState),
   setFilesToUpload: (files) => set({ filesToUpload: typeof files === 'function' ? files(get().filesToUpload) : files }),
   setMoveOrCopyItemToPath: (path) => set({ moveOrCopyItemToPath: path }),
-  setSubmitButtonIsInActive: (isSubmitButtonInActive) => set({ isSubmitButtonInActive }),
+  setSubmitButtonIsDisabled: (isSubmitButtonDisabled) => set({ isSubmitButtonDisabled }),
   setSelectedFileType: (fileType) => set({ selectedFileType: fileType }),
   setFileOperationResult: (success, message = t('unknownErrorOccurred'), status = 500) => {
     const result: WebDavActionResult = { success, message, status };

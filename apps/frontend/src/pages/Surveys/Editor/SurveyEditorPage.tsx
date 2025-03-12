@@ -10,49 +10,59 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { toast } from 'sonner';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { zodResolver } from '@hookform/resolvers/zod';
-import getInitialSurveyFormValues from '@libs/survey/constants/initial-survey-form';
+import { useTranslation } from 'react-i18next';
+import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import SurveyFormula from '@libs/survey/types/TSurveyFormula';
+import getInitialSurveyFormValues from '@libs/survey/constants/initial-survey-form';
+import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
+import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
 import useUserStore from '@/store/UserStore/UserStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
-import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
-import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
-import SurveyEditor from '@/pages/Surveys/Editor/components/SurveyEditor';
-import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
+import useLanguage from '@/hooks/useLanguage';
+import useElementHeight from '@/hooks/useElementHeight';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
+import createSurveyCreatorComponent from '@/pages/Surveys/Editor/createSurveyCreatorObject';
+import useBeforeUnload from '@/hooks/useBeforeUnload';
 
 const SurveyEditorPage = () => {
-  const { updateSelectedSurvey, isFetching, selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
-  const { isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog, updateOrCreateSurvey, isLoading, reset } =
-    useSurveyEditorPageStore();
+  const { fetchSelectedSurvey, isFetching, selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
+  const {
+    isOpenSaveSurveyDialog,
+    setIsOpenSaveSurveyDialog,
+    updateOrCreateSurvey,
+    isLoading,
+    reset,
+    storedSurvey,
+    updateStoredSurvey,
+    resetStoredSurvey,
+  } = useSurveyEditorPageStore();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
-
   const { user } = useUserStore();
-
   const { surveyId } = useParams();
+  const { language } = useLanguage();
 
   useEffect(() => {
     reset();
-    void updateSelectedSurvey(surveyId, false);
+    void fetchSelectedSurvey(surveyId, false);
   }, [surveyId]);
 
   const initialFormValues: SurveyDto | undefined = useMemo(() => {
-    if (!user || !user.username) {
-      return undefined;
-    }
-
+    if (!user || !user.username) return undefined;
     const surveyCreator: AttendeeDto = {
       firstName: user.firstName,
       lastName: user.lastName,
@@ -60,7 +70,7 @@ const SurveyEditorPage = () => {
       value: user.username,
       label: `${user.firstName} ${user.lastName}`,
     };
-    return getInitialSurveyFormValues(surveyCreator, selectedSurvey);
+    return getInitialSurveyFormValues(surveyCreator, selectedSurvey, storedSurvey);
   }, [selectedSurvey]);
 
   const form = useForm<SurveyDto>({
@@ -73,49 +83,55 @@ const SurveyEditorPage = () => {
     form.reset(initialFormValues);
   }, [initialFormValues]);
 
-  const saveSurvey = async () => {
-    const {
-      id,
-      formula,
-      saveNo,
-      creator,
-      invitedAttendees,
-      invitedGroups,
-      participatedAttendees,
-      answers,
-      createdAt,
-      expires,
-      isAnonymous,
-      isPublic,
-      canSubmitMultipleAnswers,
-      canUpdateFormerAnswer,
-    } = form.getValues();
+  const creatorRef = useRef<SurveyCreator | null>(null);
+  if (!creatorRef.current) {
+    creatorRef.current = createSurveyCreatorComponent(language);
+  }
+  const creator = creatorRef.current;
 
-    const success = await updateOrCreateSurvey({
-      id,
+  const updateSurveyStorage = () => {
+    if (!creator) return;
+    const formula = creator.JSON as SurveyFormula;
+    const saveNo = creator.saveNo || 0;
+    updateStoredSurvey({
+      ...form.getValues(),
       formula,
       saveNo,
-      creator,
-      invitedAttendees,
-      invitedGroups,
-      participatedAttendees,
-      answers,
-      createdAt,
-      expires,
-      isAnonymous,
-      isPublic,
-      canSubmitMultipleAnswers,
-      canUpdateFormerAnswer,
     });
+  };
 
+  useBeforeUnload('unload', updateSurveyStorage);
+
+  useEffect(() => {
+    if (creator) {
+      creator.saveNo = form.getValues('saveNo');
+      creator.JSON = form.getValues('formula');
+      creator.locale = language;
+      creator.saveSurveyFunc = updateSurveyStorage;
+    }
+  }, [creator, form, language]);
+
+  const handleSaveSurvey = async () => {
+    if (!creator) return;
+    const formula = creator.JSON as SurveyFormula;
+    const saveNo = creator.saveNo || 0;
+    const success = await updateOrCreateSurvey({
+      ...form.getValues(),
+      formula,
+      saveNo,
+    });
     if (success) {
       void updateUsersSurveys();
       setIsOpenSaveSurveyDialog(false);
+
+      resetStoredSurvey();
 
       toast.success(t('survey.editor.saveSurveySuccess'));
       navigate(`/${CREATED_SURVEYS_PAGE}`);
     }
   };
+
+  const pageBarsHeight = useElementHeight([FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 10;
 
   const config: FloatingButtonsBarConfig = {
     buttons: [SaveButton(() => setIsOpenSaveSurveyDialog(true))],
@@ -124,18 +140,28 @@ const SurveyEditorPage = () => {
 
   return (
     <>
-      {isLoading ? <LoadingIndicatorDialog isOpen={isLoading} /> : null}
+      {isLoading && <LoadingIndicatorDialog isOpen={isLoading} />}
       {isFetching ? (
         <LoadingIndicatorDialog isOpen={isFetching} />
       ) : (
         <>
-          <SurveyEditor form={form} />
+          <div
+            className="survey-editor"
+            style={{ height: `calc(100% - ${pageBarsHeight}px)` }}
+          >
+            {creator && (
+              <SurveyCreatorComponent
+                creator={creator}
+                style={{ height: '100%', width: '100%' }}
+              />
+            )}
+          </div>
           <FloatingButtonsBar config={config} />
           <SaveSurveyDialog
             form={form}
             isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
             setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
-            submitSurvey={saveSurvey}
+            submitSurvey={handleSaveSurvey}
             isSubmitting={isLoading}
           />
         </>
