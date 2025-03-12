@@ -14,6 +14,7 @@
 import React, { useEffect } from 'react';
 import { toast } from 'sonner';
 import { t } from 'i18next';
+import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 
 interface GenericProgressData {
   percent: number;
@@ -75,6 +76,8 @@ const ProgressBox: React.FC<{ data: GenericProgressData }> = ({ data }) => {
 };
 
 const ProgressToaster: React.FC<ProgressToasterProps> = ({ data, completedDuration = 5000 }) => {
+  const { setFilesharingProgress } = useLessonStore();
+
   useEffect(() => {
     if (data) {
       let toastDuration: number;
@@ -90,6 +93,9 @@ const ProgressToaster: React.FC<ProgressToasterProps> = ({ data, completedDurati
       toast(<ProgressBox data={data} />, {
         id: data.id,
         duration: toastDuration,
+        onDismiss: () => {
+          setFilesharingProgress(null);
+        },
       });
     }
   }, [data, completedDuration]);
