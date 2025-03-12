@@ -161,6 +161,31 @@ class VeyonService implements OnModuleInit {
     }
   }
 
+  private async pollFeatureState(
+    featureUid: VeyonFeatureUid,
+    connectionUid: string,
+    expectedState: boolean,
+    retries = 0,
+  ): Promise<void> {
+    if (retries >= 5) {
+      return;
+    }
+
+    const { data } = await this.veyonApi.get<{ active: boolean }>(`feature/${featureUid}`, {
+      headers: { 'Connection-Uid': connectionUid },
+    });
+
+    if (data.active === expectedState) {
+      return;
+    }
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 1000);
+    });
+
+    await this.pollFeatureState(featureUid, connectionUid, expectedState, retries + 1);
+  }
+
   async setFeature(
     featureUid: VeyonFeatureUid,
     body: VeyonFeatureRequest,
@@ -170,6 +195,8 @@ class VeyonService implements OnModuleInit {
       await this.veyonApi.put<Record<string, never>>(`feature/${featureUid}`, body, {
         headers: { 'Connection-Uid': connectionUid },
       });
+
+      await this.pollFeatureState(featureUid, connectionUid, body.active);
 
       const veyonFeatures = await this.getFeatures(connectionUid);
       return veyonFeatures;

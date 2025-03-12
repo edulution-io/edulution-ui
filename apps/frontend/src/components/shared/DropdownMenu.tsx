@@ -27,14 +27,20 @@ type DropdownMenuProps = {
   trigger: React.ReactNode;
   items: DropdownMenuItemType[];
   menuContentClassName?: string;
+  disabled?: boolean;
 };
 
-const DropdownMenu: React.FC<DropdownMenuProps> = ({ trigger, items, menuContentClassName }) => {
+const DropdownMenu: React.FC<DropdownMenuProps> = ({ trigger, items, menuContentClassName, disabled = false }) => {
   if (!items || !items.length) return null;
 
   return (
     <DropdownMenuSH>
-      <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        disabled={disabled}
+        asChild
+      >
+        {trigger}
+      </DropdownMenuTrigger>
       <DropdownMenuPortal>
         <DropdownMenuContent
           className={cn(

@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FaWifi } from 'react-icons/fa';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import { useTranslation } from 'react-i18next';
@@ -34,7 +34,6 @@ import useVeyonApiStore from '../../useVeyonApiStore';
 interface UserCardButtonBarProps {
   user: UserLmnInfo;
   isTeacherInSameClass: boolean;
-  connectionUid?: string;
 }
 
 interface UserCardButton {
@@ -45,7 +44,7 @@ interface UserCardButton {
   defaultColor?: string;
 }
 
-const UserCardButtonBar = ({ user, isTeacherInSameClass, connectionUid = '' }: UserCardButtonBarProps) => {
+const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProps) => {
   const { t } = useTranslation();
   const { fetchUser, schoolPrefix } = useLmnApiStore();
   const {
@@ -60,7 +59,25 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass, connectionUid = '' }: U
   const { internet, printing, examMode, webfilter, wifi, cn: commonName } = user;
   const { groupType, groupName } = useParams();
   const { setCurrentUser } = useLmnApiPasswordStore();
-  const { setFeature } = useVeyonApiStore();
+  const { userConnectionUids, userConnectionsFeatureStates, setFeatureIsLoading, setFeature, getFeatures } =
+    useVeyonApiStore();
+  const connectionUid = userConnectionUids.find((conn) => conn.veyonUsername === user.cn)?.connectionUid || '';
+  const veyonIsActive = !!connectionUid;
+  const userConnectionFeatureState = userConnectionsFeatureStates[connectionUid];
+
+  const getFeatureState = (featureUid: string) => {
+    const feature = userConnectionFeatureState?.find((item) => item.uid === featureUid);
+    return feature ? feature.active : undefined;
+  };
+
+  useEffect(() => {
+    if (connectionUid) {
+      void getFeatures(connectionUid);
+    }
+  }, [connectionUid]);
+
+  const isScreenLocked = !!getFeatureState(VEYON_FEATURE_ACTIONS.SCREENLOCK);
+  const areInputDevicesLocked = !!getFeatureState(VEYON_FEATURE_ACTIONS.INPUT_DEVICES_LOCK);
 
   const onButtonClick = async (event: React.MouseEvent<HTMLElement>, button: UserCardButton) => {
     event.stopPropagation();
@@ -133,8 +150,8 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass, connectionUid = '' }: U
     });
   }
 
-  const handleSetVeyonFeature = (featureUid: string) => {
-    void setFeature(connectionUid, featureUid, true);
+  const handleSetVeyonFeature = (featureUid: string, active: boolean) => {
+    void setFeature(connectionUid, featureUid, active);
   };
 
   return userCardButtons.map((button) =>
@@ -167,31 +184,42 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass, connectionUid = '' }: U
       >
         <DropdownMenu
           menuContentClassName="z-[600]"
+          disabled={!veyonIsActive || setFeatureIsLoading.has(connectionUid)}
           trigger={
             <div
               className={cn(
-                'relative p-2 hover:bg-ciGreenToBlue',
-                'group-hover:bg-ciGreenToBlue group-hover:text-background',
+                'relative p-2 ',
+                veyonIsActive && 'group-hover:bg-ciGreenToBlue group-hover:text-background hover:bg-ciGreenToBlue',
               )}
               title={t(button.title)}
             >
-              <button.icon
-                className={cn('text-lg', button.defaultColor || (button.value ? 'text-ciGreen' : 'text-ciRed'))}
-              />
-              <div className="absolute -right-[5px] top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-l-[8px] bg-ciGreenToBlue px-2 text-background group-hover:flex">
-                {t(`classmanagement.${button.title}`)} {t(getButtonDescription(button.value))}
-              </div>
+              <button.icon className={cn('text-lg', veyonIsActive ? button.defaultColor : 'text-ciDarkGrey')} />
+
+              {veyonIsActive && (
+                <div className="absolute -right-[5px] top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-l-[8px] bg-ciGreenToBlue px-2 text-background group-hover:flex">
+                  {t(`classmanagement.${button.title}`)} {t(getButtonDescription(button.value))}
+                </div>
+              )}
             </div>
           }
           items={[
-            { label: t('veyon.lockScreen'), onClick: () => handleSetVeyonFeature(VEYON_FEATURE_ACTIONS.SCREENLOCK) },
             {
-              label: t('veyon.lockInputDevices'),
-              onClick: () => handleSetVeyonFeature(VEYON_FEATURE_ACTIONS.INPUT_DEVICES_LOCK),
+              label: t(isScreenLocked ? 'veyon.unlockScreen' : 'veyon.lockScreen'),
+              onClick: () => handleSetVeyonFeature(VEYON_FEATURE_ACTIONS.SCREENLOCK, !isScreenLocked),
+            },
+            {
+              label: t(areInputDevicesLocked ? 'veyon.unlockInputDevices' : 'veyon.lockInputDevices'),
+              onClick: () => handleSetVeyonFeature(VEYON_FEATURE_ACTIONS.INPUT_DEVICES_LOCK, !areInputDevicesLocked),
             },
             { label: 'veyonSeparater', isSeparator: true },
-            { label: t('veyon.rebootSystem'), onClick: () => handleSetVeyonFeature(VEYON_FEATURE_ACTIONS.REBOOT) },
-            { label: t('veyon.powerDown'), onClick: () => handleSetVeyonFeature(VEYON_FEATURE_ACTIONS.POWER_DOWN) },
+            {
+              label: t('veyon.rebootSystem'),
+              onClick: () => handleSetVeyonFeature(VEYON_FEATURE_ACTIONS.REBOOT, true),
+            },
+            {
+              label: t('veyon.powerDown'),
+              onClick: () => handleSetVeyonFeature(VEYON_FEATURE_ACTIONS.POWER_DOWN, true),
+            },
           ]}
         />
       </div>

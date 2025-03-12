@@ -1277,6 +1277,7 @@
     "lockScreen": "Lock screen",
     "unlockScreen": "Unlock screen",
     "lockInputDevices": "Lock input",
+    "unlockInputDevices": "Unlock input",
     "rebootSystem": "Reboot system",
     "powerDown": "Halt system",
     "errors": {

@@ -1277,6 +1277,7 @@
     "lockScreen": "Bildschirm sperren",
     "unlockScreen": "Bildschirm entsprerren",
     "lockInputDevices": "Eingabe sperren",
+    "unlockInputDevices": "Eingabe entsprerren",
     "rebootSystem": "System neu starten",
     "powerDown": "System herunterfahren",
     "errors": {

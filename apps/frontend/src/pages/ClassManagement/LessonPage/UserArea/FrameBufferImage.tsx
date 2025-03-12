@@ -29,7 +29,7 @@ type FrameBufferImageProps = {
 const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
   const { t } = useTranslation();
   const [imageSrc, setImageSrc] = useState<string>('');
-  const { userConnectionUids, authenticateVeyonClient, getFrameBufferStream } = useVeyonApiStore();
+  const { userConnectionUids, setFeatureIsLoading, authenticateVeyonClient, getFrameBufferStream } = useVeyonApiStore();
   const [isImagePreviewModalOpen, setIsImagePreviewModalOpen] = useState(false);
 
   const connectionUid = userConnectionUids.find((conn) => conn.veyonUsername === user.cn)?.connectionUid || '';
@@ -92,7 +92,14 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
               onClick={() => handleImagePreviewClick()}
               className="relative flex items-center"
             >
-              <MdCropFree />
+              {setFeatureIsLoading.has(connectionUid) ? (
+                <CircleLoader
+                  height="h-6"
+                  width="w-6"
+                />
+              ) : (
+                <MdCropFree />
+              )}
             </button>
           </div>
 
