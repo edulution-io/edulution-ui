@@ -56,8 +56,6 @@ const SurveyEditorPage = () => {
   const { surveyId } = useParams();
   const { language } = useLanguage();
 
-  useBeforeUnload('unload', () => {});
-
   useEffect(() => {
     reset();
     void fetchSelectedSurvey(surveyId, false);
@@ -101,6 +99,8 @@ const SurveyEditorPage = () => {
       saveNo,
     });
   };
+
+  useBeforeUnload('', updateSurveyStorage);
 
   useEffect(() => {
     if (creator) {

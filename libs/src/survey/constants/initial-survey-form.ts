@@ -13,16 +13,14 @@
 import i18next from 'i18next';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import getFirstValidDateOfArray from '@libs/common/utils/getFirstValidDateOfArray';
 
 const getInitialSurveyFormValues = (
   creator: AttendeeDto,
   selectedSurvey?: SurveyDto,
   storedSurvey?: SurveyDto,
 ): SurveyDto => {
-  let expiresDate = storedSurvey?.expires ? new Date(storedSurvey?.expires) : undefined;
-  if (!expiresDate || Number.isNaN(expiresDate.getTime())) {
-    expiresDate = selectedSurvey?.expires ? new Date(selectedSurvey?.expires) : undefined;
-  }
+  const expiresDate = getFirstValidDateOfArray(storedSurvey?.expires, selectedSurvey?.expires);
 
   return {
     id: storedSurvey?.id || selectedSurvey?.id,
@@ -32,13 +30,14 @@ const getInitialSurveyFormValues = (
     invitedAttendees: storedSurvey?.invitedAttendees || selectedSurvey?.invitedAttendees || [],
     invitedGroups: storedSurvey?.invitedGroups || selectedSurvey?.invitedGroups || [],
     participatedAttendees: storedSurvey?.participatedAttendees || selectedSurvey?.participatedAttendees || [],
-    answers: selectedSurvey?.answers || selectedSurvey?.answers || [],
-    createdAt: selectedSurvey?.createdAt || selectedSurvey?.createdAt || new Date(),
-    expires: expiresDate && !Number.isNaN(expiresDate.getTime()) ? expiresDate : undefined,
-    isAnonymous: selectedSurvey?.isAnonymous || false,
-    canSubmitMultipleAnswers: selectedSurvey?.canSubmitMultipleAnswers || false,
-    isPublic: selectedSurvey?.isPublic || false,
-    canUpdateFormerAnswer: selectedSurvey?.canUpdateFormerAnswer || false,
+    answers: storedSurvey?.answers || selectedSurvey?.answers || [],
+    createdAt: storedSurvey?.createdAt || selectedSurvey?.createdAt || new Date(),
+    expires: expiresDate,
+    isAnonymous: storedSurvey?.isAnonymous ?? selectedSurvey?.isAnonymous ?? false,
+    canSubmitMultipleAnswers:
+      storedSurvey?.canSubmitMultipleAnswers ?? selectedSurvey?.canSubmitMultipleAnswers ?? false,
+    isPublic: storedSurvey?.isPublic ?? selectedSurvey?.isPublic ?? false,
+    canUpdateFormerAnswer: storedSurvey?.canUpdateFormerAnswer ?? selectedSurvey?.canUpdateFormerAnswer ?? false,
   };
 };
 
