@@ -98,6 +98,7 @@ const MobileFileAccessSetupBox: React.FC = () => {
               <h4>{t('dashboard.mobileAccess.manual')}</h4>
             </AccordionTrigger>
             <AccordionContent className="space-y-2 px-1">
+              <p className="text-sm text-muted-foreground">{t('dashboard.mobileAccess.manualAccessInfo')}</p>
               <div className="mt-2 flex justify-center">
                 <ConnectionSetupPhonePreview
                   username={webdavAccessDetails.username || ''}

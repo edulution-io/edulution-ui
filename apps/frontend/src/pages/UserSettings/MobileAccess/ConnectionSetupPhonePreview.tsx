@@ -24,7 +24,7 @@ interface ConnectionSetupProps {
 }
 
 const ConnectionSetupPhonePreview: React.FC<ConnectionSetupProps> = ({ username, schoolurl, schoolname }) => (
-  <div className="flex h-[550px] w-[360px] flex-col overflow-hidden rounded-md text-background shadow-lg">
+  <div className="flex h-[550px] w-[360px] cursor-default flex-col overflow-hidden rounded-md text-background shadow-lg">
     <div className="relative flex items-center justify-center bg-accent p-4">
       <MdArrowBackIosNew className="absolute left-4 h-5 w-5 text-background" />
       <p className="text-lg font-bold">{t('mobileAccessSetup.connectionTitle')}</p>
@@ -33,7 +33,7 @@ const ConnectionSetupPhonePreview: React.FC<ConnectionSetupProps> = ({ username,
     <div className="flex flex-grow flex-col justify-center gap-4 p-4">
       <p className="text-center text-base">{t('mobileAccessSetup.pleaseEnterCredentials')}</p>
 
-      <div className="flex cursor-pointer items-center justify-center text-ciGreen">
+      <div className="flex items-center justify-center text-ciGreen">
         <FaQrcode className="mr-1" />
         <span>{t('mobileAccessSetup.scanQrCode')}</span>
       </div>
