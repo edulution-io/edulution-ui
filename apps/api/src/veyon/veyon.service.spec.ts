@@ -21,6 +21,7 @@ import { framebufferConfigLow } from '@libs/veyon/constants/framebufferConfig';
 import VEYON_API_AUTH_RESPONSE_KEYS from '@libs/veyon/constants/veyonApiAuthResponse';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import type VeyonUserResponse from '@libs/veyon/types/veyonUserResponse';
+import type VeyonFeaturesResponse from '@libs/veyon/types/veyonFeaturesResponse';
 import VeyonService from './veyon.service';
 import UsersService from '../users/users.service';
 import AppConfigService from '../appconfig/appconfig.service';
@@ -208,7 +209,14 @@ describe('VeyonService', () => {
 
   describe('setFeature', () => {
     it('should return an empty object if successful', async () => {
-      const mockResponse = {};
+      const mockResponse: VeyonFeaturesResponse[] = [
+        {
+          active: 'true',
+          name: 'screenlock',
+          parentUid: '123',
+          uid: VEYON_FEATURE_ACTIONS.SCREENLOCK,
+        },
+      ];
       jest.spyOn(appConfigService, 'getAppConfigByName').mockResolvedValueOnce(mockAppConfig as AppConfigDto);
 
       await service.updateVeyonProxyConfig();
@@ -217,9 +225,13 @@ describe('VeyonService', () => {
         data: mockResponse,
       });
 
+      jest.spyOn(service as any, 'pollFeatureState').mockResolvedValueOnce({});
+
+      jest.spyOn(service, 'getFeatures').mockResolvedValueOnce(mockResponse);
+
       const result = await service.setFeature(VEYON_FEATURE_ACTIONS.SCREENLOCK, { active: true }, 'test-uid');
 
-      expect(result).toEqual({});
+      expect(result).toEqual(mockResponse);
     });
 
     it('should throw HttpException if an error occurs', async () => {
