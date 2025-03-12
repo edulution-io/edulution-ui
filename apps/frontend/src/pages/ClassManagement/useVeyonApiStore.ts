@@ -22,10 +22,13 @@ import {
   VEYON_API_FRAMEBUFFER_ENDPOINT,
 } from '@libs/veyon/constants/veyonApiEndpoints';
 import { RequestResponseContentType, ResponseType } from '@libs/common/types/http-methods';
+import UserConnectionsFeatureStates from '@libs/veyon/types/userConnectionsFeatureState';
+import VeyonFeaturesResponse from '@libs/veyon/types/veyonFeaturesResponse';
 
 type VeyonApiStore = {
   error: AxiosError | null;
   userConnectionUids: SuccessfullVeyonAuthResponse[];
+  userConnectionsFeatureStates: UserConnectionsFeatureStates;
   isLoading: boolean;
   updateConnectionUids: (ip: string, userConnectionUid: SuccessfullVeyonAuthResponse | Record<string, never>) => void;
   authenticateVeyonClient: (ip: string, veyonUser: string) => Promise<void>;
@@ -36,12 +39,14 @@ type VeyonApiStore = {
     active: boolean,
     args?: Record<string, unknown>,
   ) => Promise<void>;
+  getFeatures: (connectionUid: string) => Promise<void>;
 };
 
 const useVeyonApiStore = create<VeyonApiStore>((set, get) => ({
   error: null,
   isLoading: false,
   userConnectionUids: [],
+  userConnectionsFeatureStates: {},
 
   updateConnectionUids: (ip: string, userConnectionUid: SuccessfullVeyonAuthResponse | Record<string, never>) => {
     set((state) => {
@@ -114,9 +119,37 @@ const useVeyonApiStore = create<VeyonApiStore>((set, get) => ({
   setFeature: async (connectionUid: string, featureUid: string, active: boolean, args?: Record<string, unknown>) => {
     set({ isLoading: true });
     try {
-      await eduApi.put(`${VEYON_API_ENDPOINT}/${VEYON_API_FEATURE_ENDPOINT}/${connectionUid}/${featureUid}`, {
-        active,
-        args,
+      const { data } = await eduApi.put<VeyonFeaturesResponse[]>(
+        `${VEYON_API_ENDPOINT}/${VEYON_API_FEATURE_ENDPOINT}/${featureUid}/${connectionUid}`,
+        {
+          active,
+          args,
+        },
+      );
+      set({
+        userConnectionsFeatureStates: {
+          ...get().userConnectionsFeatureStates,
+          [connectionUid]: data,
+        },
+      });
+    } catch (error) {
+      handleApiError(error, set, 'veyonAuthError');
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  getFeatures: async (connectionUid: string) => {
+    set({ isLoading: true });
+    try {
+      const { data } = await eduApi.get<VeyonFeaturesResponse[]>(
+        `${VEYON_API_ENDPOINT}/${VEYON_API_FEATURE_ENDPOINT}/${connectionUid}`,
+      );
+      set({
+        userConnectionsFeatureStates: {
+          ...get().userConnectionsFeatureStates,
+          [connectionUid]: data,
+        },
       });
     } catch (error) {
       handleApiError(error, set, 'veyonAuthError');

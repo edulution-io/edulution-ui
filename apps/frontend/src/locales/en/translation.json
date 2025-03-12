@@ -1275,6 +1275,7 @@
   },
   "veyon": {
     "lockScreen": "Lock screen",
+    "unlockScreen": "Unlock screen",
     "lockInputDevices": "Lock input",
     "rebootSystem": "Reboot system",
     "powerDown": "Halt system",

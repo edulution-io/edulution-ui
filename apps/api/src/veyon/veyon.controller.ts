@@ -63,6 +63,11 @@ class VeyonController {
   ) {
     return this.veyonService.setFeature(featureUid, body, connectionUid);
   }
+
+  @Get(`${VEYON_API_FEATURE_ENDPOINT}/:connectionUid`)
+  async getFeatures(@Param('connectionUid') connectionUid: string) {
+    return this.veyonService.getFeatures(connectionUid);
+  }
 }
 
 export default VeyonController;

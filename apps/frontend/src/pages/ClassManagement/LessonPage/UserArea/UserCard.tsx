@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Card, CardContent } from '@/components/shared/Card';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import cn from '@libs/common/utils/className';
@@ -46,13 +46,10 @@ const UserCard = ({
   const { currentUser } = useLmnApiPasswordStore();
   const { displayName, name, sophomorixAdminClass, school, givenName, sn: surname, thumbnailPhoto } = user;
   const { appConfigs } = useAppConfigsStore();
-  const [isHovered, setIsHovered] = useState<boolean>(false);
 
   const isStudent = user.sophomorixRole === SOPHOMORIX_STUDENT;
   const isSelectable = isTeacherInSameSchool && isStudent;
   const isMemberSelected = !!selectedMember.find((m) => m.dn === user.dn) && isSelectable;
-
-  const isActive = isHovered || isMemberSelected;
 
   const isVeyonEnabled = useMemo(() => {
     const veyonConfigs = getExtendedOptionsValue(appConfigs, APPS.CLASS_MANAGEMENT, ExtendedOptionKeys.VEYON_PROXYS);
@@ -82,10 +79,11 @@ const UserCard = ({
   return (
     <Card
       variant="security"
-      className={cn('my-2 ml-1 mr-4 flex h-64 min-w-80 cursor-pointer', isActive && 'opacity-90')}
+      className={cn(
+        'my-2 ml-1 mr-4 flex h-64 min-w-80 cursor-pointer hover:opacity-90',
+        isMemberSelected && 'opacity-90',
+      )}
       onClick={onCardClick}
-      onMouseOver={() => setIsHovered(true)}
-      onMouseOut={() => setIsHovered(false)}
     >
       <CardContent className="flex w-full flex-row p-0">
         <div className={cn('m-0 flex flex-col justify-between', isSelectable ? 'w-5/6' : 'w-full')}>
@@ -102,7 +100,12 @@ const UserCard = ({
           </div>
 
           <div className="-my-1 ml-2 flex justify-between">
-            <div className={cn('mt-1 h-6 rounded-lg px-2 py-0 text-sm', isActive ? 'bg-gray-400' : 'bg-gray-700')}>
+            <div
+              className={cn(
+                'mt-1 h-6 rounded-lg px-2 py-0 text-sm hover:bg-gray-400',
+                isMemberSelected ? 'bg-gray-400' : 'bg-gray-700',
+              )}
+            >
               {sophomorixAdminClass}
             </div>
             <div className={cn('flex flex-col text-xs', !isSelectable && 'mr-2')}>
@@ -113,7 +116,7 @@ const UserCard = ({
           <div
             className={cn(
               'm-2 flex max-h-36 w-64 flex-grow items-center justify-center rounded-xl text-2xl',
-              isActive ? 'bg-muted' : 'bg-accent',
+              isMemberSelected ? 'bg-muted' : 'bg-accent',
             )}
           >
             {isVeyonEnabled && user.sophomorixIntrinsic3.length > 0 ? (

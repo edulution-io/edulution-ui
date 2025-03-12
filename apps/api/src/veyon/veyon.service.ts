@@ -21,6 +21,7 @@ import type VeyonFeatureRequest from '@libs/veyon/types/veyonFeatureRequest';
 import type VeyonFeatureUid from '@libs/veyon/types/veyonFeatureUid';
 import type VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import type SuccessfullVeyonAuthResponse from '@libs/veyon/types/connectionUidResponse';
+import type VeyonFeaturesResponse from '@libs/veyon/types/veyonFeaturesResponse';
 import VEYON_AUTH_METHODS from '@libs/veyon/constants/veyonAuthMethods';
 import APPS from '@libs/appconfig/constants/apps';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -164,9 +165,27 @@ class VeyonService implements OnModuleInit {
     featureUid: VeyonFeatureUid,
     body: VeyonFeatureRequest,
     connectionUid: string,
-  ): Promise<Record<string, never>> {
+  ): Promise<VeyonFeaturesResponse[]> {
     try {
-      const { data } = await this.veyonApi.put<Record<string, never>>(`feature/${featureUid}`, body, {
+      await this.veyonApi.put<Record<string, never>>(`feature/${featureUid}`, body, {
+        headers: { 'Connection-Uid': connectionUid },
+      });
+
+      const veyonFeatures = await this.getFeatures(connectionUid);
+      return veyonFeatures;
+    } catch (error) {
+      throw new CustomHttpException(
+        VeyonErrorMessages.VeyonApiNotReachable,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        VeyonService.name,
+      );
+    }
+  }
+
+  async getFeatures(connectionUid: string): Promise<VeyonFeaturesResponse[]> {
+    try {
+      const { data } = await this.veyonApi.get<VeyonFeaturesResponse[]>('feature', {
         headers: { 'Connection-Uid': connectionUid },
       });
       return data;

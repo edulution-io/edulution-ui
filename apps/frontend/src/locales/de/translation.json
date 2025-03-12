@@ -1275,6 +1275,7 @@
   },
   "veyon": {
     "lockScreen": "Bildschirm sperren",
+    "unlockScreen": "Bildschirm entsprerren",
     "lockInputDevices": "Eingabe sperren",
     "rebootSystem": "System neu starten",
     "powerDown": "System herunterfahren",
