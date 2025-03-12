@@ -490,6 +490,7 @@
     "collectAndCopy": "Copy",
     "copyOrCut": "Would you like to cut or copy the files?",
     "filesShared": "Files shared",
+    "filesSharingStarted": "Files sharing started",
     "filesCollected": "Files collected"
   },
   "select": "Select",

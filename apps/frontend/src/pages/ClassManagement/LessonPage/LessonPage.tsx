@@ -258,7 +258,9 @@ const LessonPage = () => {
         <AdaptiveDialog
           isOpen={isFileSharingProgessInfoDialogOpen}
           handleOpenChange={() => setIsFileSharingProgessInfoDialogOpen(!isFileSharingProgessInfoDialogOpen)}
-          title="test"
+          title={t('classmanagement.failDialog.title', {
+            file: filesharingProgress.currentFile.split('/').pop(),
+          })}
           body={
             <SharingFilesFailedDialogBody
               failedFile={filesharingProgress?.currentFile}

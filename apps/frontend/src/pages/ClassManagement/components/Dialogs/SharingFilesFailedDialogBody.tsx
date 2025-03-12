@@ -43,8 +43,6 @@ const SharingFilesFailedDialogBody: React.FC<SharingFilesFailedDialogBodyProps> 
 
   return (
     <div className="flex flex-col gap-3">
-      <h2 className="text-sm font-bold">{t('classmanagement.failDialog.title', { file: failedFile })}</h2>
-
       <ul className="list-disc pl-4 text-left">
         <li>{t('classmanagement.failDialog.reasonMissing')}</li>
         <li>{t('classmanagement.failDialog.reasonAlreadyReceived')}</li>

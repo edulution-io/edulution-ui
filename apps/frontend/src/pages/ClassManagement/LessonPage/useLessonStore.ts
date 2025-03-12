@@ -89,7 +89,7 @@ const useLessonStore = create<LessonStore>(
               decodeURIComponent(destinationFilePath),
             ),
           });
-          toast.success(t('classmanagement.filesShared'));
+          toast.info(t('classmanagement.filesSharingStarted'));
         } catch (error) {
           handleApiError(error, set);
         } finally {

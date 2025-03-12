@@ -470,6 +470,7 @@
     "collectAndCopy": "Kopieren",
     "copyOrCut": "Möchtest du die Dateien ausschneiden oder kopieren?",
     "filesShared": "Dateien geteilt",
+    "filesSharingStarted": "Dateien werden geteilt",
     "filesCollected": "Dateien eingesammelt",
     "failDialog": {
       "title": "Datei „{{file}}“ konnte nicht geteilt werden",
