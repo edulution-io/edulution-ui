@@ -17,10 +17,14 @@ import FilesharingService from './filesharing.service';
 import AppConfigModule from '../appconfig/appconfig.module';
 import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
+import GenericQueueModule from '../generic-queue/generic-queue.module';
+import FilesharingQueueProcessor from './filesharingQueueProcessor';
+import SseService from '../sse/sse.service';
 
 @Module({
-  imports: [HttpModule, AppConfigModule],
+  imports: [HttpModule, AppConfigModule, GenericQueueModule],
   controllers: [FilesharingController],
-  providers: [FilesharingService, FilesystemService, OnlyofficeService],
+  providers: [FilesharingService, FilesystemService, OnlyofficeService, FilesharingQueueProcessor, SseService],
+  exports: [FilesharingService],
 })
 export default class FilesharingModule {}

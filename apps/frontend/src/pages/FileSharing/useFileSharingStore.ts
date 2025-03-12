@@ -21,6 +21,8 @@ import ContentType from '@libs/filesharing/types/contentType';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
 import delay from '@libs/common/utils/delay';
+import { ResponseType } from '@libs/common/types/http-methods';
+import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
 
 type UseFileSharingStore = {
   files: DirectoryFileDTO[];
@@ -125,6 +127,52 @@ const useFileSharingStore = create<UseFileSharingStore>(
             ...get().currentlyDisabledFiles,
             currentlyDisabledFiles: { [filename]: !isLocked },
           });
+        }
+      },
+
+      downloadFile: async (filePath: string) => {
+        try {
+          set({ isLoading: true });
+          const fileStreamResponse = await eduApi.get<Blob>(
+            `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_STREAM}`,
+            {
+              params: { filePath },
+              responseType: ResponseType.BLOB,
+            },
+          );
+
+          const fileStream = fileStreamResponse.data;
+          return window.URL.createObjectURL(fileStream);
+        } catch (error) {
+          handleApiError(error, set);
+          return '';
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      getDownloadLinkURL: async (filePath: string, filename: string) => {
+        try {
+          set({ isLoading: true });
+          const response = await eduApi.get<WebdavStatusResponse>(
+            `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_LOCATION}`,
+            {
+              params: {
+                filePath,
+                fileName: filename,
+              },
+            },
+          );
+          const { data, success } = response.data;
+          if (success && data) {
+            return data;
+          }
+          return '';
+        } catch (error) {
+          handleApiError(error, set);
+          return '';
+        } finally {
+          set({ isLoading: false });
         }
       },
 

@@ -17,6 +17,8 @@ import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
+import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
+import { FilesharingProgressDto } from '@libs/filesharing/types/filesharingProgressDto';
 
 interface LessonState {
   isLoading: boolean;
@@ -26,12 +28,17 @@ interface LessonState {
   member: UserLmnInfo[];
   groupTypeFromStore: string | undefined;
   groupNameFromStore: string | undefined;
+  filesharingProgress: FilesharingProgressDto | null;
 }
 
 interface LessonActions {
   reset: () => void;
   shareFiles: (duplicateFileRequestDto: DuplicateFileRequestDto) => Promise<void>;
-  collectFiles: (collectFileRequestDTO: CollectFileRequestDTO[], userRole: string) => Promise<void>;
+  collectFiles: (
+    collectFileRequestDTO: CollectFileRequestDTO[],
+    userRole: string,
+    type: LmnApiCollectOperationsType,
+  ) => Promise<void>;
   addManagementGroup: (group: string, users: string[]) => Promise<void>;
   removeManagementGroup: (group: string, users: string[]) => Promise<void>;
   startExamMode: (users: string[]) => Promise<void>;
@@ -44,6 +51,7 @@ interface LessonActions {
   setMember: (member: UserLmnInfo[]) => void;
   setGroupTypeInStore: (groupType?: string) => void;
   setGroupNameInStore: (groupName?: string) => void;
+  setFilesharingProgress: (progress: FilesharingProgressDto | null) => void;
 }
 
 type LessonStore = LessonState & LessonActions;

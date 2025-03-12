@@ -10,17 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type FileOperationResult = {
-  success: boolean;
-  message: string;
-  status: number;
-};
+import { Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bull';
+import GenericQueueService from './generic-queue.service';
+import { QUEUE_NAMES } from '../common/queueNames/queueNames';
 
-export interface WebdavStatusResponse {
-  success: boolean;
-  status: number;
-  filename?: string;
-  data?: string;
-}
-
-export default FileOperationResult;
+@Module({
+  imports: [
+    BullModule.registerQueue({
+      name: QUEUE_NAMES.GENERIC_QUEUE,
+    }),
+  ],
+  providers: [GenericQueueService],
+  exports: [GenericQueueService],
+})
+export default class GenericQueueModule {}

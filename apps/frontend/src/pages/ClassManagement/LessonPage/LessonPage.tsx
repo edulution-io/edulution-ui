@@ -32,6 +32,9 @@ import { UseFormReturn } from 'react-hook-form';
 import GroupForm from '@libs/groups/types/groupForm';
 import GroupColumn from '@libs/groups/types/groupColumn';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
+import ProgressToaster from '@/components/ui/ProgressToast';
+import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import SharingFilesFailedDialogBody from '@/pages/ClassManagement/components/Dialogs/SharingFilesFailedDialogBody';
 
 const LessonPage = () => {
   const {
@@ -43,6 +46,9 @@ const LessonPage = () => {
     fetchSchoolClass,
     fetchUserSessions,
   } = useClassManagementStore();
+
+  const navigate = useNavigate();
+
   const { lmnApiToken, getOwnUser } = useLmnApiStore();
   const { groupType: groupTypeParams, groupName: groupNameParams } = useParams();
   const {
@@ -56,11 +62,14 @@ const LessonPage = () => {
     setGroupTypeInStore,
     groupNameFromStore,
     groupTypeFromStore,
+    filesharingProgress,
   } = useLessonStore();
-  const navigate = useNavigate();
+
   const { t } = useTranslation();
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [currentSelectedSession, setCurrentSelectedSession] = useState<LmnApiSession | null>(null);
+
+  const [isFileSharingProgessInfoDialogOpen, setIsFileSharingProgessInfoDialogOpen] = useState(false);
 
   useEffect(() => {
     if (lmnApiToken) {
@@ -120,6 +129,13 @@ const LessonPage = () => {
     }
   }, [groupTypeParams, groupNameParams, lmnApiToken]);
 
+  useEffect(() => {
+    if (currentSelectedSession) {
+      setMember(currentSelectedSession.members);
+    }
+    if (!isLoading) setIsPageLoading(false);
+  }, [userSessions]);
+
   const handleSessionSelect = (sessionName: string) => {
     navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}/sessions/${sessionName}`);
   };
@@ -163,6 +179,19 @@ const LessonPage = () => {
     groups: userSessions,
   };
 
+  useEffect(() => {
+    if (
+      filesharingProgress &&
+      filesharingProgress.percent >= 100 &&
+      filesharingProgress.failedPaths?.length &&
+      filesharingProgress.failedPaths?.length > 0
+    ) {
+      setIsFileSharingProgessInfoDialogOpen(true);
+    } else {
+      setIsFileSharingProgessInfoDialogOpen(false);
+    }
+  }, [filesharingProgress]);
+
   return (
     <>
       <div
@@ -203,8 +232,44 @@ const LessonPage = () => {
           </div>
         ) : null}
       </div>
+
       <div>{groupNameParams || member.length ? <UserArea fetchData={fetchData} /> : <QuickAccess />}</div>
       {openDialogType === UserGroups.Sessions && <GroupDialog item={sessionToSave} />}
+
+      {filesharingProgress && (
+        <div className="p-8">
+          <ProgressToaster
+            data={{
+              percent: filesharingProgress.percent ?? 0,
+              title: t('filesharing.progressBox.title'),
+              id: filesharingProgress.currentFile,
+              description: t('filesharing.progressBox.fileInfo', {
+                filename: filesharingProgress.currentFile.split('/').pop(),
+                studentName: filesharingProgress.studentName,
+              }),
+              failed: filesharingProgress.failedPaths?.length || 0,
+              processed: filesharingProgress.processed,
+              total: filesharingProgress.total,
+            }}
+          />
+        </div>
+      )}
+      {filesharingProgress && filesharingProgress.failedPaths && (
+        <AdaptiveDialog
+          isOpen={isFileSharingProgessInfoDialogOpen}
+          handleOpenChange={() => setIsFileSharingProgessInfoDialogOpen(!isFileSharingProgessInfoDialogOpen)}
+          title={t('classmanagement.failDialog.title', {
+            file: filesharingProgress.currentFile.split('/').pop(),
+          })}
+          body={
+            <SharingFilesFailedDialogBody
+              failedFile={filesharingProgress?.currentFile}
+              affectedUsers={filesharingProgress?.failedPaths.map((path) => path.split('/').at(2) || '')}
+              failedPaths={filesharingProgress?.failedPaths}
+            />
+          }
+        />
+      )}
     </>
   );
 };

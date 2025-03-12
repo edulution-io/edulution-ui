@@ -292,6 +292,7 @@
   "filesharing": {
     "filterPlaceHolderText": "Suche nach Dateiname",
     "title": "FILESHARING",
+    "selectFile": "Datei auswählen",
     "sidebar": "Filesharing",
     "previewTitle": "Dateivorschau",
     "saveFile": "Datei speichern",
@@ -316,13 +317,22 @@
       "WebDavError": "Dateiserver nicht erreichbar",
       "DownloadFailed": "Herunterladen fehlgeschlagen",
       "FolderCreationFailed": "Ordner konnte nicht erstellt werden",
+      "CreateCollectFolderForStudentFailed": "Collect Ordner für Schüler konnte nicht erstellt werden",
       "DeleteFromServerFailed": "Löschen vom Server fehlgeschlagen",
       "SaveFailed": "Speichern fehlgeschlagen",
       "DuplicateFailed": "Kopieren fehlgeschlagen",
       "AppNotProperlyConfigured": "OnlyOffice ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator.",
       "CollectingFailed": "Einasmmeln der Dateien fehlgeschlagen",
+      "MissingCallbackURL": "Fehlende Callback-URL",
       "SharingFailed": "Austeilen der Dateien fehlgeschlagen",
-      "MissingCallbackURL": "Fehlende Callback-URL"
+      "CopyFailed": "Kopieren fehlgeschlagen"
+    },
+    "progressBox": {
+      "info": "Info",
+      "title": "Dateien werden ausgeteilt",
+      "processedInfo": "{{processed}} von {{total}} Dateien erfolgreich ausgeteilt",
+      "fileInfo": "Datei {{filename}} wird an {{studentName}} ausgeteilt",
+      "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
@@ -456,7 +466,23 @@
     "editSession": "Sitzung editieren",
     "myRoom": "Mein Raum",
     "sharedMailBox": "Geteiltes Postfach",
-    "enrolPageDescription": "Wählen Sie die Klassen und Projekte aus, für die Sie sich einschreiben möchten, indem Sie die Checkboxen aktivieren.",
+    "enrolPageDescription": "Wähle die Klassen und Projekte aus, für die du dich einschreiben möchtest, indem du die Checkboxen aktivierst.",
+    "collectAndCut": "Ausschneiden",
+    "collectAndCopy": "Kopieren",
+    "copyOrCut": "Möchtest du die Dateien ausschneiden oder kopieren?",
+    "filesShared": "Dateien geteilt",
+    "filesSharingStarted": "Dateien werden geteilt",
+    "filesCollected": "Dateien eingesammelt",
+    "failDialog": {
+      "title": "Datei „{{file}}“ konnte nicht geteilt werden",
+      "reasonMissing": "Die Datei ist möglicherweise nicht mehr vorhanden oder wurde umbenannt.",
+      "reasonAlreadyReceived": "Der Empfänger hat die Datei bereits.",
+      "reasonDuplicate": "Der Dateiname ist doppelt vorhanden.",
+      "affectedPersons": "Die folgenden Personen haben die Datei nicht erhalten:",
+      "affectedPerson": "Die folgende Person hat die Datei nicht erhalten:",
+      "filenameAdvice": "Wenn das Austeilen nochmals probiert werden soll, wird die Datei unter dem Namen {{filename}} verteilt",
+      "retryButton": "Nochmals versuchen"
+    },
     "veyonConfigTable": {
       "id": "ID",
       "subnet": "Subnet",

@@ -20,12 +20,12 @@ import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import getLastPartOfUrl from '@libs/filesharing/utils/getLastPartOfUrl';
 import handleApiError from '@/utils/handleApiError';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
-import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import getFrontEndUrl from '@libs/common/utils/getFrontEndUrl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import delay from '@libs/common/utils/delay';
+import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
 
 type FileEditorStore = {
   getOnlyOfficeJwtToken: (config: OnlyOfficeEditorConfig) => Promise<string>;
@@ -164,7 +164,7 @@ const useFileEditorStore = create<FileEditorStore>(
       getDownloadLinkURL: async (filePath, filename, signal) => {
         try {
           set({ isGetDownloadLinkUrlLoading: true });
-          const response = await eduApi.get<WebdavStatusReplay>(
+          const response = await eduApi.get<WebdavStatusResponse>(
             `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_LOCATION}`,
             {
               params: {

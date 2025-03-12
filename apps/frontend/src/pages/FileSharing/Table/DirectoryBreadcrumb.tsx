@@ -32,6 +32,7 @@ interface DirectoryBreadcrumbProps {
   style?: React.CSSProperties;
   showHome?: boolean;
   hiddenSegments?: string[];
+  showTitle?: boolean;
 }
 
 const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
@@ -40,6 +41,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
   hiddenSegments,
   onNavigate,
   style,
+  showTitle = true,
 }) => {
   const isMobileView = useIsMobileView();
   const displaySegments = isMobileView ? 1 : 4;
@@ -72,7 +74,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
       style={style}
       id={BREADCRUMB_ID}
     >
-      <p className="mr-2 text-background">{t('currentDirectory')}</p>
+      {showTitle && <p className="mr-2 text-background">{t('currentDirectory')}</p>}
       <BreadcrumbList>
         {showHome && (
           <BreadcrumbItem key="home">
