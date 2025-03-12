@@ -238,7 +238,6 @@ const LessonPage = () => {
               processed: filesharingProgress.processed,
               total: filesharingProgress.total,
               onRetry: () => {
-                navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}`);
                 setIsFileSharingProgessInfoDialogOpen(true);
               },
             }}
@@ -253,7 +252,7 @@ const LessonPage = () => {
           body={
             <SharingFilesFailedDialogBody
               failedFile={filesharingProgress?.currentFile}
-              affectedUsers={filesharingProgress?.failedPaths}
+              affectedUsers={filesharingProgress?.failedPaths.map((path) => path.split('/').at(2) || '')}
             />
           }
         />
