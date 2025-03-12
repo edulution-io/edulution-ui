@@ -10,15 +10,21 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { TFunction } from 'i18next';
-import { z } from 'zod';
+import { create } from 'zustand';
 
-const getCreateNewCategorieSchema = (t: TFunction<'translation', undefined>) =>
-  z.object({
-    name: z
-      .string()
-      .min(3, { message: t('common.min_chars', { count: 3 }) })
-      .max(30, { message: t('common.max_chars', { count: 30 }) }),
-  });
+interface SharePublicConferenceStore {
+  setSharePublicConferenceDialogId: (publicConferenceId: string) => void;
+  publicConferenceId: string;
+}
 
-export default getCreateNewCategorieSchema;
+const initialValues = {
+  publicConferenceId: '',
+};
+
+const useSharePublicConferenceStore = create<SharePublicConferenceStore>((set) => ({
+  ...initialValues,
+
+  setSharePublicConferenceDialogId: (publicConferenceId) => set({ publicConferenceId }),
+}));
+
+export default useSharePublicConferenceStore;

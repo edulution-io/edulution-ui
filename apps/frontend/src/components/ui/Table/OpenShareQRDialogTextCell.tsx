@@ -12,21 +12,20 @@
 
 import React from 'react';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
-import copyToClipboard from '@/utils/copyToClipboard';
 import { PiEyeLight, PiEyeSlash } from 'react-icons/pi';
 import { useTranslation } from 'react-i18next';
 
-const CopyToClipboardTextCell = ({
-  url,
+const OpenShareQRDialogTextCell = ({
+  openDialog,
   isPublic,
   className,
   iconSize,
   textTranslationId,
 }: {
+  openDialog: () => void;
   iconSize: number;
   className: string;
   isPublic: boolean;
-  url: string;
   textTranslationId: string;
 }) => {
   const { t } = useTranslation();
@@ -34,15 +33,9 @@ const CopyToClipboardTextCell = ({
   return (
     <SelectableTextCell
       className={className}
-      onClick={
-        isPublic
-          ? () => {
-              copyToClipboard(url);
-            }
-          : undefined
-      }
+      onClick={isPublic ? () => openDialog() : undefined}
       text={t(`${textTranslationId}.${isPublic ? 'isPublicTrue' : 'isPublicFalse'}`)}
-      textOnHover={isPublic ? t('common.copy.link') : ''}
+      textOnHover={isPublic ? t('common.share') : ''}
       icon={
         isPublic ? (
           <PiEyeLight
@@ -60,4 +53,4 @@ const CopyToClipboardTextCell = ({
   );
 };
 
-export default CopyToClipboardTextCell;
+export default OpenShareQRDialogTextCell;
