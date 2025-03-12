@@ -44,9 +44,11 @@ const UserCard = ({
 }: UserCardProps) => {
   const { t } = useTranslation();
   const { currentUser } = useLmnApiPasswordStore();
-  const { displayName, name, sophomorixAdminClass, school, givenName, sn: surname, thumbnailPhoto } = user;
+  const { displayName, name, sophomorixAdminClass, school, givenName, sn: surname, thumbnailPhoto, examMode } = user;
   const { appConfigs } = useAppConfigsStore();
   const [isHovered, setIsHovered] = useState<boolean>(false);
+
+  const studentName = examMode ? name + '-exam' : name;
 
   const isStudent = user.sophomorixRole === SOPHOMORIX_STUDENT;
   const isSelectable = isTeacherInSameSchool && isStudent;
@@ -106,7 +108,7 @@ const UserCard = ({
               {sophomorixAdminClass}
             </div>
             <div className={cn('flex flex-col text-xs', !isSelectable && 'mr-2')}>
-              <div>{name}</div>
+              <div>{studentName}</div>
               <div>{school}</div>
             </div>
           </div>
@@ -120,7 +122,7 @@ const UserCard = ({
               <FrameBufferImage user={user} />
             ) : (
               <Avatar
-                user={{ username: name, firstName: givenName, lastName: surname }}
+                user={{ username: studentName, firstName: givenName, lastName: surname }}
                 imageSrc={thumbnailPhoto}
                 className={thumbnailPhoto && 'h-24 w-24 p-2'}
               />
