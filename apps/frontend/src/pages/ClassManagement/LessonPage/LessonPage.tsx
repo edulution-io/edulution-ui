@@ -34,6 +34,7 @@ import GroupColumn from '@libs/groups/types/groupColumn';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import ProgressToaster from '@/components/ui/ProgressToast';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import SharingFilesFailedDialogBody from '@/pages/ClassManagement/components/Dialogs/SharingFilesFailedDialogBody';
 
 const LessonPage = () => {
   const {
@@ -45,6 +46,9 @@ const LessonPage = () => {
     fetchSchoolClass,
     fetchUserSessions,
   } = useClassManagementStore();
+
+  const navigate = useNavigate();
+
   const { lmnApiToken, getOwnUser } = useLmnApiStore();
   const { groupType: groupTypeParams, groupName: groupNameParams } = useParams();
   const {
@@ -60,7 +64,7 @@ const LessonPage = () => {
     groupTypeFromStore,
     filesharingProgress,
   } = useLessonStore();
-  const navigate = useNavigate();
+
   const { t } = useTranslation();
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [currentSelectedSession, setCurrentSelectedSession] = useState<LmnApiSession | null>(null);
@@ -240,13 +244,19 @@ const LessonPage = () => {
           />
         </div>
       )}
-
-      <AdaptiveDialog
-        isOpen={isFileSharingProgessInfoDialogOpen}
-        handleOpenChange={() => setIsFileSharingProgessInfoDialogOpen(!isFileSharingProgessInfoDialogOpen)}
-        title={'test'}
-        body={<h4>ffffff</h4>}
-      ></AdaptiveDialog>
+      {filesharingProgress && filesharingProgress.failedPaths && (
+        <AdaptiveDialog
+          isOpen={isFileSharingProgessInfoDialogOpen}
+          handleOpenChange={() => setIsFileSharingProgessInfoDialogOpen(!isFileSharingProgessInfoDialogOpen)}
+          title="test"
+          body={
+            <SharingFilesFailedDialogBody
+              failedFile={filesharingProgress?.currentFile}
+              affectedUsers={filesharingProgress?.failedPaths}
+            />
+          }
+        />
+      )}
     </>
   );
 };

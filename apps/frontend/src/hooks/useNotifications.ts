@@ -131,7 +131,7 @@ const useNotifications = () => {
         void (async () => {
           const data: FilesharingProgressDto = JSON.parse(e.data) as FilesharingProgressDto;
           setFilesharingProgress(data);
-          if (data.percent === 100) {
+          if (data.percent === 100 && data.failedPaths?.length === 0) {
             await delay(5000).then(() => setFilesharingProgress(null));
           }
         })();
