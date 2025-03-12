@@ -80,8 +80,8 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
     },
     accessorFn: (row) => {
       const currentDate = new Date();
-      const startDate = row.isVisibleStartDate ? new Date(row.isVisibleStartDate) : null;
-      const endDate = row.isVisibleEndDate ? new Date(row.isVisibleEndDate) : null;
+      const startDate = row.isVisibleStartDate ? new Date(row.isVisibleStartDate) : undefined;
+      const endDate = row.isVisibleEndDate ? new Date(row.isVisibleEndDate) : undefined;
       const isExpired = (startDate && currentDate < startDate) || (endDate && currentDate > endDate);
       return row.isActive && !isExpired;
     },
@@ -89,8 +89,8 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
       const { setIsCreateBulletinDialogOpen, setSelectedBulletinToEdit } = useBulletinBoardEditorialStore();
 
       const currentDate = new Date();
-      const startDate = original.isVisibleStartDate ? new Date(original.isVisibleStartDate) : null;
-      const endDate = original.isVisibleEndDate ? new Date(original.isVisibleEndDate) : null;
+      const startDate = original.isVisibleStartDate ? new Date(original.isVisibleStartDate) : undefined;
+      const endDate = original.isVisibleEndDate ? new Date(original.isVisibleEndDate) : undefined;
       const isExpired = (startDate && currentDate < startDate) || (endDate && currentDate > endDate);
 
       const isActiveIcon = original.isActive ? (

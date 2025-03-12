@@ -20,7 +20,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import useGroupStore from '@/store/GroupStore';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import Checkbox from '@/components/ui/Checkbox';
-import DateTimePickerForm from '@/components/ui/DateTimePickerFormSH';
+import DateTimePickerField from '@/components/ui/DateTimePickerField';
 
 interface SaveSurveyDialogBodyProps {
   form: UseFormReturn<SurveyDto>;
@@ -65,7 +65,7 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
         variant="dialog"
       />
       <div>
-        <DateTimePickerForm
+        <DateTimePickerField
           form={form}
           path="expires"
           translationId="survey.expirationDate"

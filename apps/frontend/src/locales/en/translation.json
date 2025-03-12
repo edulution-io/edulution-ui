@@ -907,6 +907,7 @@
     "cancel": "Cancel",
     "columns": "Columns",
     "table": "Table",
+    "clock": "clock",
     "copy": {
       "success": "Successfully copied to clipboard",
       "error": "Copy to clipboard failed",

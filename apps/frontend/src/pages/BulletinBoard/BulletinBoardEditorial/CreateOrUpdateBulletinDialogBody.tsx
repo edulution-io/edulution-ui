@@ -22,7 +22,7 @@ import { BULLETIN_BOARD_ATTACHMENT_EDU_API_ENDPOINT } from '@libs/bulletinBoard/
 import DialogSwitch from '@/components/shared/DialogSwitch';
 // import DateAndTimeInput from '@/components/shared/DateAndTimeInput';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
-import DateTimePickerForm from "@/components/ui/DateTimePickerFormSH";
+import DateTimePickerField from '@/components/ui/DateTimePickerField';
 
 interface CreateOrUpdateBulletinDialogBodyProps {
   form: UseFormReturn<CreateBulletinDto>;
@@ -42,8 +42,8 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
 
   useEffect(() => {
     if (isPermanentlyActive) {
-      setValue('isVisibleStartDate', null);
-      setValue('isVisibleEndDate', null);
+      setValue('isVisibleStartDate', undefined);
+      setValue('isVisibleEndDate', undefined);
     }
   }, [isPermanentlyActive]);
 
@@ -110,15 +110,17 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
 
           {isActive && !isPermanentlyActive && (
             <>
-              <DateTimePickerForm
+              <DateTimePickerField
                 form={form}
                 path="isVisibleStartDate"
                 translationId="bulletinboard.activeFrom"
+                variant="dialog"
               />
-              <DateTimePickerForm
+              <DateTimePickerField
                 form={form}
                 path="isVisibleEndDate"
                 translationId="bulletinboard.activeUntil"
+                variant="dialog"
               />
             </>
           )}

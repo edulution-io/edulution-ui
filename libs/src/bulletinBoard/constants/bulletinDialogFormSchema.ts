@@ -35,18 +35,18 @@ const getBulletinFormSchema = (t: TFunction<'translation', undefined>) =>
         .nullable()
         .optional()
         .refine((val) => !val || !Number.isNaN(Date.parse(val)), { message: t('common.invalid_date') })
-        .transform((val) => (val ? new Date(val).toISOString() : null)),
+        .transform((val) => (val ? new Date(val).toISOString() : undefined)),
       isVisibleEndDate: z
         .string()
         .nullable()
         .optional()
         .refine((val) => !val || !Number.isNaN(Date.parse(val)), { message: t('common.invalid_date') })
-        .transform((val) => (val ? new Date(val).toISOString() : null)),
+        .transform((val) => (val ? new Date(val).toISOString() : undefined)),
     })
     .refine(
       (data) => {
-        const startDate = data.isVisibleStartDate ? new Date(data.isVisibleStartDate) : null;
-        const endDate = data.isVisibleEndDate ? new Date(data.isVisibleEndDate) : null;
+        const startDate = data.isVisibleStartDate ? new Date(data.isVisibleStartDate) : undefined;
+        const endDate = data.isVisibleEndDate ? new Date(data.isVisibleEndDate) : undefined;
 
         if (!startDate || !endDate) {
           return true;

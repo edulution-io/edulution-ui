@@ -14,14 +14,13 @@ import React, { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
 import cn from '@libs/common/utils/className';
+import { DropdownVariant } from '@libs/ui/types/DropdownVariant';
 import styles from './dropdownselect.module.scss';
 
 export type DropdownOptions = {
   id: string;
   name: string;
 };
-
-type DropdownVariant = 'dialog' | 'default';
 
 interface DropdownProps {
   options: DropdownOptions[];

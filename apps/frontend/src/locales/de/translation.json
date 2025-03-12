@@ -907,6 +907,7 @@
     "cancel": "Abbrechen",
     "columns": "Spalten",
     "table": "Tabelle",
+    "clock": "Uhr",
     "copy": {
       "success": "Erfolgreich in Zwischenablage kopiert",
       "error": "In Zwischenablage kopieren fehlgeschlagen",

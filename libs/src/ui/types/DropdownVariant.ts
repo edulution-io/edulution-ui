@@ -10,31 +10,4 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IsArray, IsBoolean, IsDate, IsString, ValidateNested } from 'class-validator';
-import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
-
-class CreateBulletinDto {
-  @IsString()
-  title: string;
-
-  @IsString()
-  content: string;
-
-  @IsArray()
-  @IsString({ each: true })
-  attachmentFileNames: string[];
-
-  @IsBoolean()
-  isActive: boolean;
-
-  @ValidateNested()
-  category: BulletinCategoryResponseDto;
-
-  @IsDate()
-  isVisibleStartDate: Date | undefined;
-
-  @IsDate()
-  isVisibleEndDate: Date | undefined;
-}
-
-export default CreateBulletinDto;
+export type DropdownVariant = 'dialog' | 'default';
