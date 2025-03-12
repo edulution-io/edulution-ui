@@ -10,16 +10,17 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import { AppleLogo } from '@/assets/icons';
 import { Card, CardContent } from '@/components/shared/Card';
-import MobileFileAccessSetupDialog from './MobileFileAccessSetupDialog';
+import { useNavigate } from 'react-router-dom';
+import { USER_SETTINGS_MOBILE_ACCESS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
 
 const MobileFileAccess: React.FC = () => {
   const { t } = useTranslation();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const navigate = useNavigate();
   return (
     <Card
       variant="security"
@@ -32,7 +33,7 @@ const MobileFileAccess: React.FC = () => {
           className="bottom-6"
           variant="btn-infrastructure"
           size="lg"
-          onClick={() => setIsDialogOpen(!isDialogOpen)}
+          onClick={() => navigate(USER_SETTINGS_MOBILE_ACCESS_PATH)}
         >
           <img
             src={AppleLogo}
@@ -41,12 +42,6 @@ const MobileFileAccess: React.FC = () => {
           />
           <p>{t('dashboard.mobileAccess.manual')}</p>
         </Button>
-        {isDialogOpen ? (
-          <MobileFileAccessSetupDialog
-            isOpen={isDialogOpen}
-            setIsOpen={setIsDialogOpen}
-          />
-        ) : null}
       </CardContent>
     </Card>
   );

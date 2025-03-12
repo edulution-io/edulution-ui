@@ -13,22 +13,32 @@
 import i18next from 'i18next';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import getFirstValidDateOfArray from '@libs/common/utils/getFirstValidDateOfArray';
 
-const getInitialSurveyFormValues = (creator: AttendeeDto, selectedSurvey?: SurveyDto): SurveyDto => ({
-  id: selectedSurvey?.id,
-  formula: selectedSurvey?.formula || { title: i18next.t('survey.newTitle').toString() },
-  saveNo: selectedSurvey?.saveNo || 0,
-  creator,
-  invitedAttendees: selectedSurvey?.invitedAttendees || [],
-  invitedGroups: selectedSurvey?.invitedGroups || [],
-  participatedAttendees: selectedSurvey?.participatedAttendees || [],
-  answers: selectedSurvey?.answers || [],
-  createdAt: selectedSurvey?.createdAt || new Date(),
-  expires: selectedSurvey?.expires,
-  isAnonymous: selectedSurvey?.isAnonymous || false,
-  canSubmitMultipleAnswers: selectedSurvey?.canSubmitMultipleAnswers || false,
-  isPublic: selectedSurvey?.isPublic || false,
-  canUpdateFormerAnswer: selectedSurvey?.canUpdateFormerAnswer || false,
-});
+const getInitialSurveyFormValues = (
+  creator: AttendeeDto,
+  selectedSurvey?: SurveyDto,
+  storedSurvey?: SurveyDto,
+): SurveyDto => {
+  const expiresDate = getFirstValidDateOfArray(storedSurvey?.expires, selectedSurvey?.expires);
+
+  return {
+    id: storedSurvey?.id || selectedSurvey?.id,
+    formula: storedSurvey?.formula || selectedSurvey?.formula || { title: i18next.t('survey.newTitle').toString() },
+    saveNo: storedSurvey?.saveNo || selectedSurvey?.saveNo || 0,
+    creator,
+    invitedAttendees: storedSurvey?.invitedAttendees || selectedSurvey?.invitedAttendees || [],
+    invitedGroups: storedSurvey?.invitedGroups || selectedSurvey?.invitedGroups || [],
+    participatedAttendees: storedSurvey?.participatedAttendees || selectedSurvey?.participatedAttendees || [],
+    answers: storedSurvey?.answers || selectedSurvey?.answers || [],
+    createdAt: storedSurvey?.createdAt || selectedSurvey?.createdAt || new Date(),
+    expires: expiresDate,
+    isAnonymous: storedSurvey?.isAnonymous ?? selectedSurvey?.isAnonymous ?? false,
+    canSubmitMultipleAnswers:
+      storedSurvey?.canSubmitMultipleAnswers ?? selectedSurvey?.canSubmitMultipleAnswers ?? false,
+    isPublic: storedSurvey?.isPublic ?? selectedSurvey?.isPublic ?? false,
+    canUpdateFormerAnswer: storedSurvey?.canUpdateFormerAnswer ?? selectedSurvey?.canUpdateFormerAnswer ?? false,
+  };
+};
 
 export default getInitialSurveyFormValues;

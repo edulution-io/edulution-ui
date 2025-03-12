@@ -42,6 +42,7 @@ import RootLayout from '@/components/layout/RootLayout';
 import getSettingsRoutes from './routes/SettingsRoutes';
 import getForwardedRoutes from './routes/ForwardedRoutes';
 import getEmbeddedRoutes from './routes/EmbeddedRoutes';
+import getFileSharingRoutes from './routes/FileSharingRoutes';
 import DashboardPage from '../pages/Dashboard/DashboardPage';
 
 const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
@@ -113,6 +114,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
               {getSettingsRoutes()}
               {getClassManagementRoutes()}
               {getSurveyRoutes()}
+              {getFileSharingRoutes()}
             </Route>
           </Route>
         ) : null}

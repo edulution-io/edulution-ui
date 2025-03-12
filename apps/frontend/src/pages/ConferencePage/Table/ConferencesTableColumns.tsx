@@ -22,10 +22,10 @@ import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import i18next from 'i18next';
 import useUserStore from '@/store/UserStore/UserStore';
-import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import { toast } from 'sonner';
 import delay from '@libs/common/utils/delay';
-import CopyToClipboardTextCell from '@/components/ui/Table/CopyToClipboardTextCell';
+import OpenShareQRDialogTextCell from '@/components/ui/Table/OpenShareQRDialogTextCell';
+import useSharePublicConferenceStore from '@/pages/ConferencePage/useSharePublicConferenceStore';
 
 function getRowAction(isRunning: boolean, isLoading: boolean, isUserTheCreator: boolean) {
   if (isLoading) {
@@ -145,13 +145,13 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     cell: ({ row }) => {
       const iconSize = 16;
       const { isPublic } = row.original;
-      const url = `${window.location.origin}/${CONFERENCES_PUBLIC_EDU_API_ENDPOINT}/${row.original.meetingID}`;
+      const { setSharePublicConferenceDialogId } = useSharePublicConferenceStore();
       return (
-        <CopyToClipboardTextCell
+        <OpenShareQRDialogTextCell
+          openDialog={() => setSharePublicConferenceDialogId(row.original.meetingID)}
           iconSize={iconSize}
           className={hideOnMobileClassName}
           isPublic={isPublic}
-          url={url}
           textTranslationId="conferences"
         />
       );
