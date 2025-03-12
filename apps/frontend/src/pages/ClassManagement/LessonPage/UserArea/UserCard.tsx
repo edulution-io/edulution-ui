@@ -48,7 +48,7 @@ const UserCard = ({
   const { appConfigs } = useAppConfigsStore();
   const [isHovered, setIsHovered] = useState<boolean>(false);
 
-  const studentName = examMode ? name + '-exam' : name;
+  const studentName = examMode ? `${name}-exam` : name;
 
   const isStudent = user.sophomorixRole === SOPHOMORIX_STUDENT;
   const isSelectable = isTeacherInSameSchool && isStudent;
