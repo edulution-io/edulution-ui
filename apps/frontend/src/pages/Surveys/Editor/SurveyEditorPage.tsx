@@ -100,7 +100,7 @@ const SurveyEditorPage = () => {
     });
   };
 
-  useBeforeUnload('', updateSurveyStorage);
+  useBeforeUnload('unload', updateSurveyStorage);
 
   useEffect(() => {
     if (creator) {
