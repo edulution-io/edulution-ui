@@ -31,6 +31,8 @@ module.exports = {
         ciLightGreen: '#88D840',
         ciRed: '#ee0505',
         ciLightRed: '#F87171',
+        ciYellow: '#FFD700',
+        ciLightYellow: '#ffd00c',
         ciGreen: '#37ee05',
         ciLightGrey: '#D1D5DB',
         ciGrey: '#848493',

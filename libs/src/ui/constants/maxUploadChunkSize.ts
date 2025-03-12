@@ -10,9 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ContentType from '@libs/filesharing/types/contentType';
+const MAX_UPLOAD_CHUNK_SIZE = 5;
 
-const buildApiFileTypePathUrl = (base: string, type: ContentType, path: string): string =>
-  `${base}?type=${type}&path=/${path}`;
-
-export default buildApiFileTypePathUrl;
+export default MAX_UPLOAD_CHUNK_SIZE;

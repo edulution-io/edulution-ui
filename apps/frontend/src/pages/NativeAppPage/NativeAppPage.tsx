@@ -17,12 +17,10 @@ import type TApps from '@libs/appconfig/types/appsType';
 import FramePlaceholder from '@/components/framing/FramePlaceholder';
 import { ConferencePage } from '@/pages/ConferencePage';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
-import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
 import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
 
 const pages: Partial<Record<TApps, JSX.Element>> = {
   [APPS.CONFERENCES]: <ConferencePage />,
-  [APPS.FILE_SHARING]: <FileSharingPage />,
   [APPS.MAIL]: <FramePlaceholder />,
   [APPS.LINUXMUSTER]: <FramePlaceholder />,
   [APPS.WHITEBOARD]: <FramePlaceholder />,
