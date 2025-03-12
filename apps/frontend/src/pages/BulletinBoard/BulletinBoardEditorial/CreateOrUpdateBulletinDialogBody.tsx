@@ -20,8 +20,9 @@ import WysiwygEditor from '@/components/shared/WysiwygEditor';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import { BULLETIN_BOARD_ATTACHMENT_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
 import DialogSwitch from '@/components/shared/DialogSwitch';
-import DateAndTimeInput from '@/components/shared/DateAndTimeInput';
+// import DateAndTimeInput from '@/components/shared/DateAndTimeInput';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
+import DateTimePickerForm from "@/components/ui/DateTimePickerFormSH";
 
 interface CreateOrUpdateBulletinDialogBodyProps {
   form: UseFormReturn<CreateBulletinDto>;
@@ -109,14 +110,14 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
 
           {isActive && !isPermanentlyActive && (
             <>
-              <DateAndTimeInput
+              <DateTimePickerForm
                 form={form}
-                name="isVisibleStartDate"
+                path="isVisibleStartDate"
                 translationId="bulletinboard.activeFrom"
               />
-              <DateAndTimeInput
+              <DateTimePickerForm
                 form={form}
-                name="isVisibleEndDate"
+                path="isVisibleEndDate"
                 translationId="bulletinboard.activeUntil"
               />
             </>

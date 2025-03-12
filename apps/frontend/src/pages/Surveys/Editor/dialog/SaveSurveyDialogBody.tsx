@@ -14,13 +14,13 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import useUserStore from '@/store/UserStore/UserStore';
-import Checkbox from '@/components/ui/Checkbox';
-import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
-import useGroupStore from '@/store/GroupStore';
-import { DateTimeInput } from '@/components/shared/DateTimePicker/DateTimeInput';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import useUserStore from '@/store/UserStore/UserStore';
+import useGroupStore from '@/store/GroupStore';
+import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
+import Checkbox from '@/components/ui/Checkbox';
+import DateTimePickerForm from '@/components/ui/DateTimePickerFormSH';
 
 interface SaveSurveyDialogBodyProps {
   form: UseFormReturn<SurveyDto>;
@@ -53,8 +53,6 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
     { name: 'canUpdateFormerAnswer', label: 'surveys.saveDialog.canUpdateFormerAnswer' },
   ];
 
-  const selectedDate = watch('expires');
-
   return (
     <>
       <SearchUsersOrGroups
@@ -67,12 +65,11 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
         variant="dialog"
       />
       <div>
-        <p className="text-m font-bold text-background">{t('survey.expirationDate')}</p>
-        <DateTimeInput
-          value={selectedDate}
-          onChange={(value: Date | undefined) => setValue('expires', value)}
+        <DateTimePickerForm
+          form={form}
+          path="expires"
+          translationId="survey.expirationDate"
           variant="dialog"
-          className="mt-0 pt-0"
         />
       </div>
       <p className="text-m font-bold text-background">{t('surveys.saveDialog.settingsFlags')}</p>
