@@ -471,7 +471,8 @@
       "reasonMissing": "The file may no longer exist or has been renamed.",
       "reasonAlreadyReceived": "The recipient already has the file.",
       "reasonDuplicate": "The file name is duplicated.",
-      "affectedPersons": "The following person(s) did not receive the file:",
+      "affectedPersons": "The following persons did not receive the file:",
+      "affectedPerson": "The following person did not receive the file:",
       "filenameAdvice": "If you want to try sharing again, the file will be shared under the name {{filename}}",
       "retryButton": "Try Again"
     },

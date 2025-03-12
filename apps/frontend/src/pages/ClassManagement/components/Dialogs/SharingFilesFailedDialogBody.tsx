@@ -49,7 +49,11 @@ const SharingFilesFailedDialogBody: React.FC<SharingFilesFailedDialogBodyProps> 
         <li>{t('classmanagement.failDialog.reasonDuplicate')}</li>
       </ul>
 
-      <p className="text-sm text-background">{t('classmanagement.failDialog.affectedPersons')}</p>
+      <p className="text-sm text-background">
+        {affectedUsers.length > 1
+          ? t('classmanagement.failDialog.affectedPersons')
+          : t('classmanagement.failDialog.affectedPerson')}
+      </p>
       <ItemDialogList items={affectedUsers.map((user) => ({ name: user, id: user }))} />
 
       <p>
