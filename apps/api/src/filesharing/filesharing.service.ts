@@ -35,6 +35,7 @@ import WebdavClientFactory from './webdav.client.factory';
 import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
 import GenericQueueService from '../generic-queue/generic-queue.service';
+import { QUEUE_NAMES } from '../common/queueNames/queueNames';
 
 @Injectable()
 class FilesharingService {
@@ -289,7 +290,7 @@ class FilesharingService {
   };
 
   async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
-    await this.genericQueueService.addJob('duplicate-file', {
+    await this.genericQueueService.addJob(QUEUE_NAMES.DUPLICATE_FILE_QUEUE, {
       username,
       originFilePath: duplicateFile.originFilePath,
       destinationFilePaths: duplicateFile.destinationFilePaths,

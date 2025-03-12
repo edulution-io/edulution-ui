@@ -22,8 +22,9 @@ import { FilesharingProgressDto } from '@libs/filesharing/types/filesharingProgr
 import type UserConnections from '../types/userConnections';
 import SseService from '../sse/sse.service';
 import FilesharingService from './filesharing.service';
+import { QUEUE_NAMES } from '../common/queueNames/queueNames';
 
-@Processor('genericQueue')
+@Processor(QUEUE_NAMES.GENERIC_QUEUE)
 class FilesharingQueueProcessor {
   constructor(private readonly fileSharingService: FilesharingService) {}
 
@@ -33,7 +34,7 @@ class FilesharingQueueProcessor {
     return SseService.subscribe(username, this.fileSharingSseConnections, res);
   }
 
-  @Process({ name: 'duplicate-file', concurrency: 1 })
+  @Process({ name: QUEUE_NAMES.DUPLICATE_FILE_QUEUE, concurrency: 1 })
   public async handleDuplicateFile(
     job: Job<{
       username: string;

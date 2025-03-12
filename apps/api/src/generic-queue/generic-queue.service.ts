@@ -13,10 +13,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
 import { JobOptions, Queue } from 'bull';
+import { QUEUE_NAMES } from '../common/queueNames/queueNames';
 
 @Injectable()
 class GenericQueueService {
-  constructor(@InjectQueue('genericQueue') private readonly queue: Queue) {}
+  constructor(@InjectQueue(QUEUE_NAMES.GENERIC_QUEUE) private readonly queue: Queue) {}
 
   public async addJob<TData = unknown>(jobName: string, data: TData, options?: JobOptions): Promise<void> {
     await this.queue.add(jobName, data, options);
