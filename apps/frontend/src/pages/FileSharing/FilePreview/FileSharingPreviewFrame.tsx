@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import React, { ReactElement, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import FileRenderer from '@/pages/FileSharing/FilePreview/FileRenderer';
@@ -31,6 +31,8 @@ import ContentType from '@libs/filesharing/types/contentType';
 import isFileValid from '@libs/filesharing/utils/isFileValid';
 import ToggleDockButton from '@/components/framing/ResizableWindow/Buttons/ToggleDockButton';
 import { useLocation } from 'react-router-dom';
+import useFrameStore from '@/components/framing/FrameStore';
+import RESIZEABLE_WINDOW_DEFAULT_POSITION from '@libs/ui/constants/resizableWindowDefaultPosition';
 
 const FileSharingPreviewFrame = () => {
   const { t } = useTranslation();
@@ -41,14 +43,16 @@ const FileSharingPreviewFrame = () => {
     setCurrentlyEditingFile,
     setIsFilePreviewVisible,
     isFilePreviewVisible,
+    isFilePreviewDocked,
+    setIsFilePreviewDocked,
   } = useFileEditorStore();
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
+  const { setCurrentWindowedFrameSize } = useFrameStore();
   const windowSize = useWindowResize();
   const location = useLocation();
 
   const [filePreviewRect, setFilePreviewRect] = useState<Pick<DOMRect, 'x' | 'y' | 'width' | 'height'> | null>(null);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
-  const [isInDockedMode, setIsInDockedMode] = useState<boolean>(true);
 
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -69,7 +73,7 @@ const FileSharingPreviewFrame = () => {
 
   const resetPreview = () => {
     setIsFilePreviewVisible(false);
-    setIsInDockedMode(true);
+    setIsFilePreviewDocked(true);
     setCurrentlyEditingFile(null);
   };
 
@@ -105,11 +109,16 @@ const FileSharingPreviewFrame = () => {
   const isMobileView = useIsMobileView();
   const { appConfigs } = useAppConfigsStore();
 
-  useEffect(() => {
-    if (isFilePreviewVisible && !currentlyEditingFile) {
-      resetPreview();
-    }
-  }, [currentlyEditingFile]);
+  const { x, y, width, height } = filePreviewRect || { x: 0, y: 0, width: 0, height: 0 };
+
+  const initialPositionMemo = useMemo(
+    () => (isFilePreviewDocked ? { x, y } : RESIZEABLE_WINDOW_DEFAULT_POSITION),
+    [isFilePreviewDocked, x, y],
+  );
+  const initialSizeMemo = useMemo(
+    () => (isFilePreviewDocked ? { width, height } : undefined),
+    [isFilePreviewDocked, width, height],
+  );
 
   const isDocumentServerConfigured = !!getExtendedOptionsValue(
     appConfigs,
@@ -120,9 +129,11 @@ const FileSharingPreviewFrame = () => {
   const isFileReady = isValidFile && isDocumentServerConfigured && !isMobileView;
 
   const pathSegments = location.pathname.split('/').filter(Boolean);
-  const hidePreviewOnOtherPages = pathSegments[0] !== APPS.FILE_SHARING && isInDockedMode;
+  const hidePreviewOnOtherPages = pathSegments[0] !== APPS.FILE_SHARING && isFilePreviewDocked;
 
   if (!isFilePreviewVisible || !isFileReady || !filePreviewRect || hidePreviewOnOtherPages) return null;
+
+  const windowTitle = currentlyEditingFile?.basename || t(`filesharing.filePreview`);
 
   const isEditButtonVisible = !isEditMode && isOnlyOfficeDocument(currentlyEditingFile.filename);
   const additionalButtons = [
@@ -136,27 +147,28 @@ const FileSharingPreviewFrame = () => {
         key={EditButton.name}
       />
     ),
-    isInDockedMode && (
+    isFilePreviewDocked && (
       <ToggleDockButton
-        onClick={() => setIsInDockedMode(!isInDockedMode)}
-        isDocked={isInDockedMode}
+        onClick={() => {
+          setIsFilePreviewDocked(!isFilePreviewDocked);
+          setCurrentWindowedFrameSize(windowTitle, undefined);
+        }}
+        isDocked={isFilePreviewDocked}
         key={ToggleDockButton.name}
       />
     ),
   ].filter((b): b is ReactElement => Boolean(b));
 
-  const { x, y, width, height } = filePreviewRect;
-
   return (
     <ResizableWindow
-      disableMinimizeWindow={isInDockedMode}
-      disableToggleMaximizeWindow={isInDockedMode}
-      titleTranslationId={currentlyEditingFile?.basename || t(`filesharing.filePreview`)}
+      disableMinimizeWindow={isFilePreviewDocked}
+      disableToggleMaximizeWindow={isFilePreviewDocked}
+      titleTranslationId={windowTitle}
       handleClose={handleCloseFile}
-      initialPosition={{ x, y }}
-      initialSize={{ width, height }}
+      initialPosition={initialPositionMemo}
+      initialSize={initialSizeMemo}
       openMaximized={false}
-      stickToInitialSizeAndPositionWhenRestored={isInDockedMode}
+      stickToInitialSizeAndPositionWhenRestored={isFilePreviewDocked}
       additionalButtons={additionalButtons}
     >
       <FileRenderer editMode={isEditMode} />

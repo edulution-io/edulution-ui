@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-// RootLayout.tsx
 import React from 'react';
 import FileSharingPreviewFrame from '@/pages/FileSharing/FilePreview/FileSharingPreviewFrame';
 import { Outlet } from 'react-router-dom';

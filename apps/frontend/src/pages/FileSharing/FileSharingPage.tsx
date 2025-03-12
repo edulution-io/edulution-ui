@@ -23,7 +23,7 @@ import FILE_PREVIEW_ELEMENT_ID from '@libs/filesharing/constants/filePreviewElem
 
 const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
-  const { isFilePreviewVisible } = useFileEditorStore();
+  const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
 
   return (
     <div className="w-full overflow-x-auto">
@@ -43,14 +43,14 @@ const FileSharingPage = () => {
           className="flex h-full w-full flex-row md:w-auto md:max-w-7xl xl:max-w-full"
           data-testid="test-id-file-sharing-page-data-table"
         >
-          <div className={isFilePreviewVisible ? 'w-1/2 2xl:w-2/3' : 'w-full'}>
+          <div className={isFilePreviewVisible && isFilePreviewDocked ? 'w-1/2 2xl:w-2/3' : 'w-full'}>
             {isFileProcessing ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}
             <FileSharingTable />
           </div>
           {isFilePreviewVisible && (
             <div
               id={FILE_PREVIEW_ELEMENT_ID}
-              className="h-full w-1/2 2xl:w-1/3"
+              className={isFilePreviewDocked ? 'h-full w-1/2 2xl:w-1/3' : ''}
               data-testid="test-id-file-preview"
             />
           )}

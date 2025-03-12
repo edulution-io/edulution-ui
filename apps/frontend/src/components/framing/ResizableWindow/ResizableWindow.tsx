@@ -25,6 +25,7 @@ import ToggleMaximizeButton from '@/components/framing/ResizableWindow/Buttons/T
 import CloseButton from '@/components/framing/ResizableWindow/Buttons/CloseButton';
 import RectangleSize from '@libs/ui/types/rectangleSize';
 import { HiOutlineCursorArrowRipple } from 'react-icons/hi2';
+import RESIZEABLE_WINDOW_DEFAULT_POSITION from '@libs/ui/constants/resizableWindowDefaultPosition';
 
 interface ResizableWindowProps {
   titleTranslationId: string;
@@ -90,16 +91,19 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
     }
   }, []);
 
-  const isCurrentlySticky = stickToInitialSizeAndPositionWhenRestored && !isMinimized && !isMaximized;
-
   useEffect(() => {
     if (isMaximized && !isMinimized) {
       setMaxWidth();
-    } else if (isCurrentlySticky && initialPosition && initialSize) {
-      setCurrentWindowedFrameSize(titleTranslationId, initialSize);
+      return;
+    }
+
+    if (initialPosition) {
       setCurrentPosition(initialPosition);
     }
-  }, [windowSize, isMaximized, isMinimized, isMobileView, titleTranslationId]);
+    if (initialSize) {
+      setCurrentWindowedFrameSize(titleTranslationId, initialSize);
+    }
+  }, [windowSize, isMaximized, isMinimized, isMobileView, titleTranslationId, initialPosition, initialSize]);
 
   const minimizedWidth = Math.min(300, documentWidth * 0.333);
 
@@ -141,6 +145,8 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
     setWindowedFrameOpen(titleTranslationId, false);
   };
 
+  const defaultFrameSize: RectangleSize = { width: 800, height: 600 };
+
   const handleMaximizeToggle = () => {
     if (isMinimized) {
       setCurrentWindowedFrameSize(titleTranslationId, prevSize);
@@ -154,11 +160,11 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
       setCurrentWindowedFrameSize(
         titleTranslationId,
         initialSize || {
-          width: currentWindowedFrameSizes[titleTranslationId].width * 0.8,
-          height: currentWindowedFrameSizes[titleTranslationId].height * 0.7,
+          width: (currentWindowedFrameSizes[titleTranslationId]?.width || defaultFrameSize.width) * 0.8,
+          height: (currentWindowedFrameSizes[titleTranslationId]?.height || defaultFrameSize.height) * 0.7,
         },
       );
-      setCurrentPosition(initialPosition || { x: 50, y: 50 });
+      setCurrentPosition(initialPosition || RESIZEABLE_WINDOW_DEFAULT_POSITION);
     } else {
       savePreviousValues();
       setMaxWidth();
@@ -171,10 +177,12 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
 
   useEffect(() => {
     setWindowedFramesZIndices(titleTranslationId);
-  }, [titleTranslationId]);
+  }, []);
 
   const zIndex = windowedFramesZIndices[titleTranslationId] || 0;
   const hasCurrentFramedWindowHighestZIndex = hasFramedWindowHighestZIndex(titleTranslationId);
+
+  const isCurrentlySticky = stickToInitialSizeAndPositionWhenRestored && !isMinimized && !isMaximized;
   const disableDragging = (isMaximized && !isMinimized) || (isMobileView && isMinimized) || isCurrentlySticky;
 
   return createPortal(
@@ -183,8 +191,8 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
       minHeight={isMinimized ? DEFAULT_MINIMIZED_BAR_HEIGHT : 300}
       minWidth={isMinimized ? minimizedWidth : undefined}
       size={{
-        width: currentWindowedFrameSizes[titleTranslationId]?.width || 800,
-        height: currentWindowedFrameSizes[titleTranslationId]?.height || 600,
+        width: currentWindowedFrameSizes[titleTranslationId]?.width || defaultFrameSize.width,
+        height: currentWindowedFrameSizes[titleTranslationId]?.height || defaultFrameSize.height,
       }}
       position={{ x: currentPosition.x, y: currentPosition.y }}
       onDragStop={(_e, d) => setCurrentPosition({ x: d.x, y: d.y })}
