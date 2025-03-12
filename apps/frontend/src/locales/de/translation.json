@@ -112,7 +112,6 @@
       "manualAccessInfo": "Gibt die Anmeldedaten manuell in der edulution.io App ein. Das folgende Beispiel zeigt, wie die einzelnen Felder auszufüllen sind.",
       "scanAppStoreLink": "Scanne den QR-Code mit deinem mobilen Gerät um die edulution.io App im AppStore herunterzuladen.",
       "nextStepPreview": "Im nächsten Schritt kannst du die Zugangsdaten übertragen.",
-      "copyCredentials": "Oder manuell eintragen:",
       "downloadDirect": "Oder lade die App direkt herunter:",
       "downloadApp": "Lade hier die edulution.io App herunter:"
     },
