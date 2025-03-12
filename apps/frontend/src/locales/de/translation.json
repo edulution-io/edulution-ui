@@ -104,13 +104,14 @@
   "dashboard": {
     "mobileAccess": {
       "title": "Mobiler Datenzugriff",
-      "manual": "Anleitung",
+      "manual": "Manuelles Einrichten",
+      "setupWithQrCode": "Einrichtung via QR-Code",
       "accessData": "Zugangsdaten",
       "content": "Du kannst von vielen mobilen Geräten aus auf den Schulserver zugreifen. Drücke auf Anleitung um zu starten.",
       "scanAccessInfo": "Um die Zugangsdaten zu übertragen, bitte folgenden QR-Code mit der edulution.io App scannen.",
+      "manualAccessInfo": "Gib die Anmeldedaten manuell in der edulution.io App ein. Das folgende Beispiel zeigt, wie die einzelnen Felder auszufüllen sind.",
       "scanAppStoreLink": "Scanne den QR-Code mit deinem mobilen Gerät um die edulution.io App im AppStore herunterzuladen.",
       "nextStepPreview": "Im nächsten Schritt kannst du die Zugangsdaten übertragen.",
-      "copyCredentials": "Oder manuell eintragen:",
       "downloadDirect": "Oder lade die App direkt herunter:",
       "downloadApp": "Lade hier die edulution.io App herunter:"
     },
@@ -657,6 +658,16 @@
   "roombooking": {
     "sidebar": "Raumbuchung"
   },
+
+  "mobileAccessSetup": {
+    "connectionTitle": "Verbindung einrichten",
+    "pleaseEnterCredentials": "Bitte gib die Anmeldedaten zum Schulserver an",
+    "scanQrCode": "QR Code scannen",
+    "orText": "ODER",
+    "yourPassword": "Dein Passwort",
+    "addButton": "Hinzufügen"
+  },
+
   "settings": {
     "title": "EINSTELLUNGEN",
     "sidebar": "Einstellungen",
@@ -978,7 +989,8 @@
     "disabled": "Deaktiviert",
     "invalid_url": "Ungültige URL",
     "invalid_fqdn": "Ungültiger FQDN. Bitte nur den Hostnamen angeben.",
-    "required": "Erforderlich"
+    "required": "Erforderlich",
+    "download": "Herunterladen"
   },
   "form": {
     "path": "Link",
