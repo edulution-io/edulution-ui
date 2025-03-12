@@ -26,6 +26,7 @@ import CloseButton from '@/components/framing/ResizableWindow/Buttons/CloseButto
 import RectangleSize from '@libs/ui/types/rectangleSize';
 import { HiOutlineCursorArrowRipple } from 'react-icons/hi2';
 import RESIZEABLE_WINDOW_DEFAULT_POSITION from '@libs/ui/constants/resizableWindowDefaultPosition';
+import RESIZABLE_WINDOW_DEFAULT_SIZE from '@libs/ui/constants/resizableWindowDefaultSize';
 
 interface ResizableWindowProps {
   titleTranslationId: string;
@@ -145,8 +146,6 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
     setWindowedFrameOpen(titleTranslationId, false);
   };
 
-  const defaultFrameSize: RectangleSize = { width: 800, height: 600 };
-
   const handleMaximizeToggle = () => {
     if (isMinimized) {
       setCurrentWindowedFrameSize(titleTranslationId, prevSize);
@@ -160,8 +159,8 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
       setCurrentWindowedFrameSize(
         titleTranslationId,
         initialSize || {
-          width: (currentWindowedFrameSizes[titleTranslationId]?.width || defaultFrameSize.width) * 0.8,
-          height: (currentWindowedFrameSizes[titleTranslationId]?.height || defaultFrameSize.height) * 0.7,
+          width: (currentWindowedFrameSizes[titleTranslationId]?.width || RESIZABLE_WINDOW_DEFAULT_SIZE.width) * 0.8,
+          height: (currentWindowedFrameSizes[titleTranslationId]?.height || RESIZABLE_WINDOW_DEFAULT_SIZE.height) * 0.7,
         },
       );
       setCurrentPosition(initialPosition || RESIZEABLE_WINDOW_DEFAULT_POSITION);
@@ -191,8 +190,8 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
       minHeight={isMinimized ? DEFAULT_MINIMIZED_BAR_HEIGHT : 300}
       minWidth={isMinimized ? minimizedWidth : undefined}
       size={{
-        width: currentWindowedFrameSizes[titleTranslationId]?.width || defaultFrameSize.width,
-        height: currentWindowedFrameSizes[titleTranslationId]?.height || defaultFrameSize.height,
+        width: currentWindowedFrameSizes[titleTranslationId]?.width || RESIZABLE_WINDOW_DEFAULT_SIZE.width,
+        height: currentWindowedFrameSizes[titleTranslationId]?.height || RESIZABLE_WINDOW_DEFAULT_SIZE.height,
       }}
       position={{ x: currentPosition.x, y: currentPosition.y }}
       onDragStop={(_e, d) => setCurrentPosition({ x: d.x, y: d.y })}
