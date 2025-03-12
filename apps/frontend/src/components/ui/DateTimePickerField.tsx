@@ -111,7 +111,7 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
                         field.value?.getHours() || 'hh'
                       }
-                      {':'}
+                      :
                       {
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
                         field.value?.getMinutes() ? String(field.value.getMinutes()).padStart(2, '0') : 'mm'
