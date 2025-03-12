@@ -179,6 +179,19 @@ const LessonPage = () => {
     groups: userSessions,
   };
 
+  useEffect(() => {
+    if (
+      filesharingProgress &&
+      filesharingProgress.percent >= 100 &&
+      filesharingProgress.failedPaths?.length &&
+      filesharingProgress.failedPaths?.length > 0
+    ) {
+      setIsFileSharingProgessInfoDialogOpen(true);
+    } else {
+      setIsFileSharingProgessInfoDialogOpen(false);
+    }
+  }, [filesharingProgress]);
+
   return (
     <>
       <div
@@ -237,9 +250,6 @@ const LessonPage = () => {
               failed: filesharingProgress.failedPaths?.length || 0,
               processed: filesharingProgress.processed,
               total: filesharingProgress.total,
-              onRetry: () => {
-                setIsFileSharingProgessInfoDialogOpen(true);
-              },
             }}
           />
         </div>
@@ -253,6 +263,7 @@ const LessonPage = () => {
             <SharingFilesFailedDialogBody
               failedFile={filesharingProgress?.currentFile}
               affectedUsers={filesharingProgress?.failedPaths.map((path) => path.split('/').at(2) || '')}
+              failedPaths={filesharingProgress?.failedPaths}
             />
           }
         />

@@ -466,6 +466,15 @@
     "myRoom": "My room",
     "sharedMailBox": "Shared mailbox",
     "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes.",
+    "failDialog": {
+      "title": "The file \"{{file}}\" could not be shared",
+      "reasonMissing": "The file may no longer exist or has been renamed.",
+      "reasonAlreadyReceived": "The recipient already has the file.",
+      "reasonDuplicate": "The file name is duplicated.",
+      "affectedPersons": "The following person(s) did not receive the file:",
+      "filenameAdvice": "If you want to try sharing again, the file will be shared under the name {{filename}}",
+      "retryButton": "Try Again"
+    },
     "veyonConfigTable": {
       "id": "ID",
       "subnet": "Subnet",

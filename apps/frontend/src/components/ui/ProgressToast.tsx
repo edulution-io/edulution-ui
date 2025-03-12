@@ -14,8 +14,6 @@
 import React, { useEffect } from 'react';
 import { toast } from 'sonner';
 import { t } from 'i18next';
-import { MdInfo } from 'react-icons/md';
-import { Button } from '@/components/shared/Button';
 
 interface GenericProgressData {
   percent: number;
@@ -31,8 +29,6 @@ interface GenericProgressData {
   processed: number;
 
   total: number;
-
-  onRetry?: () => void;
 }
 
 interface ProgressToasterProps {
@@ -55,7 +51,7 @@ const ProgressBar: React.FC<{ value: number }> = ({ value }) => {
 };
 
 const ProgressBox: React.FC<{ data: GenericProgressData }> = ({ data }) => {
-  const { percent, title, description, failed, processed, total, onRetry } = data;
+  const { percent, title, description, failed, processed, total } = data;
 
   return (
     <div className="flex flex-col gap-2">
@@ -74,19 +70,6 @@ const ProgressBox: React.FC<{ data: GenericProgressData }> = ({ data }) => {
           total,
         })}
       </p>
-
-      {failed > 0 && (
-        <div className="flex items-center gap-2 text-sm text-background">
-          {t('filesharing.progressBox.errorInfo', { failed })}
-
-          {onRetry && (
-            <Button onClick={() => onRetry()}>
-              <MdInfo className="inline-block" />
-              {t('filesharing.progressBox.info')}
-            </Button>
-          )}
-        </div>
-      )}
     </div>
   );
 };

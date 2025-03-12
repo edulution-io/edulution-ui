@@ -471,6 +471,15 @@
     "copyOrCut": "Möchtest du die Dateien ausschneiden oder kopieren?",
     "filesShared": "Dateien geteilt",
     "filesCollected": "Dateien eingesammelt",
+    "failDialog": {
+      "title": "Datei „{{file}}“ konnte nicht geteilt werden",
+      "reasonMissing": "Die Datei ist möglicherweise nicht mehr vorhanden oder wurde umbenannt.",
+      "reasonAlreadyReceived": "Der Empfänger hat die Datei bereits.",
+      "reasonDuplicate": "Der Dateiname ist doppelt vorhanden.",
+      "affectedPersons": "Die folgende(n) Person(en) haben die Datei nicht erhalten:",
+      "filenameAdvice": "Wenn das Austeilen nochmals probiert werden soll, wird die Datei unter dem Namen {{filename}} verteilt",
+      "retryButton": "Nochmals versuchen"
+    },
     "veyonConfigTable": {
       "id": "ID",
       "subnet": "Subnet",
