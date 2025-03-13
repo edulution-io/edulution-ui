@@ -126,9 +126,7 @@ const getFileSharingTableColumns = (
     {
       accessorKey: FILESHARING_TABLE_COLUM_NAMES.LAST_MODIFIED,
       id: FILESHARING_TABLE_COLUM_NAMES.LAST_MODIFIED,
-      header: function Header({ column }) {
-        return <SortableHeader<DirectoryFileDTO, unknown> column={column} />;
-      },
+      header: ({ column }) => <SortableHeader<DirectoryFileDTO, unknown> column={column} />,
       meta: {
         translationId: 'fileSharingTable.lastModified',
       },
@@ -159,14 +157,12 @@ const getFileSharingTableColumns = (
     {
       accessorKey: FILESHARING_TABLE_COLUM_NAMES.SIZE,
       id: FILESHARING_TABLE_COLUM_NAMES.SIZE,
-      header: function Header({ column }) {
-        return (
-          <SortableHeader<DirectoryFileDTO, unknown>
-            className={hideOnMobileClassName}
-            column={column}
-          />
-        );
-      },
+      header: ({ column }) => (
+        <SortableHeader<DirectoryFileDTO, unknown>
+          className={hideOnMobileClassName}
+          column={column}
+        />
+      ),
       meta: {
         translationId: 'fileSharingTable.size',
       },
