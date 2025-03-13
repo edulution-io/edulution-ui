@@ -21,13 +21,13 @@ import ContentType from '@libs/filesharing/types/contentType';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
 import delay from '@libs/common/utils/delay';
-import DownloadProgress from '@libs/filesharing/types/downloadProgress';
+import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 
 type UseFileSharingStore = {
   files: DirectoryFileDTO[];
   selectedItems: DirectoryFileDTO[];
   currentPath: string;
-  downloadProgressList: DownloadProgress[];
+  downloadProgressList: DownloadFileDto[];
   pathToRestoreSession: string;
   setDirectories: (files: DirectoryFileDTO[]) => void;
   directories: DirectoryFileDTO[];
@@ -48,8 +48,8 @@ type UseFileSharingStore = {
   setFileIsCurrentlyDisabled: (filename: string, isLocked: boolean, durationMs?: number) => Promise<void>;
   setIsLoading: (isLoading: boolean) => void;
   setMountPoints: (mountPoints: DirectoryFileDTO[]) => void;
-  setDownloadProgressList: (progressList: DownloadProgress[]) => void;
-  updateDownloadProgress: (progress: DownloadProgress) => void;
+  setDownloadProgressList: (progressList: DownloadFileDto[]) => void;
+  updateDownloadProgress: (progress: DownloadFileDto) => void;
   removeDownloadProgress: (fileName: string) => void;
 };
 

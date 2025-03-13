@@ -27,7 +27,7 @@ import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileReques
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import { Observable } from 'rxjs';
-import DownloadFileDto from '@libs/filesharing/types/DownloadFileDto';
+import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
