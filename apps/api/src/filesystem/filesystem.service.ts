@@ -49,11 +49,10 @@ class FilesystemService {
     url: string,
     client: AxiosInstance,
     streamFetching = false,
+    onProgress?: (percent: string) => void,
   ): Promise<AxiosResponse<Readable> | Readable> {
     try {
-      const response$ = from(client.get<Readable>(url, { responseType: ResponseType.STREAM }));
-
-      const response = await firstValueFrom(response$);
+      const response = await firstValueFrom(from(client.get<Readable>(url, { responseType: ResponseType.STREAM })));
 
       const lengthHeader: string = response.headers?.['content-length'] as string;
       let contentLength = 0;
@@ -66,10 +65,8 @@ class FilesystemService {
         readStream.on('data', (chunk: Buffer) => {
           downloaded += chunk.length;
           const percent = ((downloaded / contentLength) * 100).toFixed(2);
-          Logger.log(`Download fortgeschritten: ${percent}%`);
+          if (onProgress) onProgress(percent);
         });
-      } else {
-        Logger.log('Keine content-length - prozentualer Fortschritt nicht möglich');
       }
 
       return streamFetching ? response : readStream;

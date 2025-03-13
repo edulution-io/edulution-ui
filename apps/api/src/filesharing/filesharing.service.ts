@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, MessageEvent } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -26,11 +26,16 @@ import { Request, Response } from 'express';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
+import { Observable } from 'rxjs';
+import DownloadFileDto from '@libs/filesharing/types/DownloadFileDto';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
 import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
+import SseService from '../sse/sse.service';
+import UserConnections from '../types/userConnections';
 
 @Injectable()
 class FilesharingService {
@@ -43,6 +48,8 @@ class FilesharingService {
     private readonly onlyofficeService: OnlyofficeService,
     private readonly fileSystemService: FilesystemService,
   ) {}
+
+  private fileSharingSseConnection: UserConnections = new Map();
 
   private setCacheTimeout(token: string): NodeJS.Timeout {
     return setTimeout(
@@ -311,7 +318,10 @@ class FilesharingService {
       const base = this.baseurl.replace(/\/+$/, '');
       const finalUrl = `${base}/${encodedPath}`;
 
-      const resp = await FilesystemService.fetchFileStream(finalUrl, client);
+      const resp = await FilesystemService.fetchFileStream(finalUrl, client, false, (pct: string) => {
+        const downloadDto = new DownloadFileDto(filePath, parseFloat(pct));
+        SseService.sendEventToUser(username, this.fileSharingSseConnection, downloadDto, SSE_MESSAGE_TYPE.UPDATED);
+      });
       if (resp instanceof Readable) {
         return resp;
       }
@@ -397,6 +407,10 @@ class FilesharingService {
         status: response.status,
       }),
     );
+  }
+
+  subscribe(username: string, res: Response): Observable<MessageEvent> {
+    return SseService.subscribe(username, this.fileSharingSseConnection, res);
   }
 }
 

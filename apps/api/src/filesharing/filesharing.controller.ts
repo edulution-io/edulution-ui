@@ -24,8 +24,10 @@ import {
   Query,
   Req,
   Res,
+  Sse,
   UploadedFile,
   UseInterceptors,
+  MessageEvent,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
@@ -38,6 +40,7 @@ import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackDa
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
+import { Observable } from 'rxjs';
 import FilesharingService from './filesharing.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 
@@ -182,6 +185,11 @@ class FilesharingController {
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 1 });
     }
+  }
+
+  @Sse('sse')
+  sse(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
+    return this.filesharingService.subscribe(username, res);
   }
 }
 

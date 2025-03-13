@@ -28,13 +28,15 @@ import isFileValid from '@libs/filesharing/utils/isFileValid';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import FILE_PREVIEW_ELEMENT_ID from '@libs/filesharing/constants/filePreviewElementId';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import ProgressToaster from '@/components/ui/ProgressToaster';
 
 const FileSharingPage = () => {
   const isMobileView = useIsMobileView();
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
   const { currentlyEditingFile } = useFileEditorStore();
   const { appConfigs } = useAppConfigsStore();
-
+  const { downloadProgress } = useFileSharingStore();
   const isDocumentServerConfigured = !!getExtendedOptionsValue(
     appConfigs,
     APPS.FILE_SHARING,
@@ -76,6 +78,9 @@ const FileSharingPage = () => {
           )}
         </div>
       </div>
+
+      <p>{JSON.stringify(downloadProgress)}</p>
+      {downloadProgress > 0 && <ProgressToaster data={{ percent: downloadProgress, id: 'g' }} />}
       <div className="fixed bottom-8 mt-10 flex flex-row space-x-24">
         <ActionContentDialog />
         <FileSharingFloatingButtonsBar />

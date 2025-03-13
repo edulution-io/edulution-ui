@@ -26,6 +26,7 @@ type UseFileSharingStore = {
   files: DirectoryFileDTO[];
   selectedItems: DirectoryFileDTO[];
   currentPath: string;
+  downloadProgress: number;
   pathToRestoreSession: string;
   setDirectories: (files: DirectoryFileDTO[]) => void;
   directories: DirectoryFileDTO[];
@@ -46,6 +47,7 @@ type UseFileSharingStore = {
   setFileIsCurrentlyDisabled: (filename: string, isLocked: boolean, durationMs?: number) => Promise<void>;
   setIsLoading: (isLoading: boolean) => void;
   setMountPoints: (mountPoints: DirectoryFileDTO[]) => void;
+  setDownloadProgress: (progress: number) => void;
 };
 
 const initialState = {
@@ -59,6 +61,7 @@ const initialState = {
   isLoading: false,
   isError: false,
   currentlyDisabledFiles: {},
+  downloadProgress: 0,
 };
 
 type PersistedFileManagerStore = (
@@ -73,6 +76,8 @@ const useFileSharingStore = create<UseFileSharingStore>(
       setCurrentPath: (path: string) => {
         set({ currentPath: path });
       },
+
+      setDownloadProgress: (progress: number) => set({ downloadProgress: progress }),
 
       setPathToRestoreSession: (path: string) => {
         set({ pathToRestoreSession: path });

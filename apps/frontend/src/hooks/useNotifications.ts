@@ -28,6 +28,7 @@ import { BULLETIN_BOARD_SSE_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constan
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import UseBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 
 const useNotifications = () => {
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
@@ -40,8 +41,9 @@ const useNotifications = () => {
   const isSurveysAppActivated = useIsAppActive(APPS.SURVEYS);
   const { updateOpenSurveys } = useSurveyTablesPageStore();
   const isBulletinBoardActive = useIsAppActive(APPS.BULLETIN_BOARD);
+  const isFileSharingActive = useIsAppActive(APPS.FILE_SHARING);
   const { addBulletinBoardNotification } = UseBulletinBoardStore();
-
+  const { setDownloadProgress } = useFileSharingStore();
   useDockerContainerEvents();
 
   useEffect(() => {
@@ -133,6 +135,30 @@ const useNotifications = () => {
 
     return undefined;
   }, [isSurveysAppActivated]);
+
+  useEffect(() => {
+    if (isFileSharingActive) {
+      const controller = new AbortController();
+      const { signal } = controller;
+
+      const eventSource = new EventSource(`/${EDU_API_ROOT}/${APPS.FILE_SHARING}/sse?token=${eduApiToken}`);
+
+      const handleFileSharingEvent = (e: MessageEvent<string>) => {
+        const { data } = e;
+        const percentage = JSON.parse(data) as number;
+        setDownloadProgress(percentage);
+      };
+
+      eventSource.addEventListener(SSE_MESSAGE_TYPE.UPDATED, handleFileSharingEvent, { signal });
+
+      return () => {
+        eventSource.removeEventListener(SSE_MESSAGE_TYPE.UPDATED, handleFileSharingEvent);
+        eventSource.close();
+        controller.abort();
+      };
+    }
+    return undefined;
+  }, [isFileSharingActive]);
 
   useEffect(() => {
     if (isBulletinBoardActive) {
