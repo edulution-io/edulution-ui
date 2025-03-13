@@ -24,11 +24,11 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 
 import QUEUE_NAMES from '@libs/queue/constants/queueNames';
 import DuplicateFileJobData from '@libs/queue/constants/duplicateFileJobData';
+import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
+import CollectFileJobData from '@libs/queue/constants/collectFileJobData';
 import type UserConnections from '../types/userConnections';
 import FilesharingService from './filesharing.service';
 import SseService from '../sse/sse.service';
-import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
-import CollectFileJobData from '@libs/queue/constants/collectFileJobData';
 
 @Processor(APPS.FILE_SHARING, { concurrency: 1 })
 class FilesharingQueueProcessor extends WorkerHost {
