@@ -29,13 +29,15 @@ import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 import ContentType from '@libs/filesharing/types/contentType';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bull';
+import APPS from '@libs/appconfig/constants/apps';
+import QUEUE_NAMES from '@libs/queue/constants/queueNames';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
 import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
-import GenericQueueService from '../generic-queue/generic-queue.service';
-import { QUEUE_NAMES } from '../common/queueNames/queueNames';
 
 @Injectable()
 class FilesharingService {
@@ -47,7 +49,7 @@ class FilesharingService {
     private readonly userService: UsersService,
     private readonly onlyofficeService: OnlyofficeService,
     private readonly fileSystemService: FilesystemService,
-    private readonly genericQueueService: GenericQueueService,
+    @InjectQueue(APPS.FILE_SHARING) private fileSharingQueue: Queue,
   ) {}
 
   private setCacheTimeout(token: string): NodeJS.Timeout {
@@ -262,11 +264,7 @@ class FilesharingService {
     return parts[2];
   };
 
-  moveOrRenameResource = async (
-    username: string,
-    originPath: string,
-    newPath: string,
-  ): Promise<WebdavStatusResponse> => {
+  async moveOrRenameResource(username: string, originPath: string, newPath: string): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
     const fullOriginPath = `${this.baseurl}${originPath}`;
     const fullNewPath = `${this.baseurl}${newPath}`;
@@ -287,14 +285,21 @@ class FilesharingService {
         status: response.status,
       }),
     );
-  };
+  }
 
   async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
-    await this.genericQueueService.addJob(QUEUE_NAMES.DUPLICATE_FILE_QUEUE, {
-      username,
-      originFilePath: duplicateFile.originFilePath,
-      destinationFilePaths: duplicateFile.destinationFilePaths,
-    });
+    let i = 0;
+    return Promise.all(
+      duplicateFile.destinationFilePaths.map(async (destinationPath) => {
+        await this.fileSharingQueue.add(QUEUE_NAMES.DUPLICATE_FILE_QUEUE, {
+          username,
+          originFilePath: duplicateFile.originFilePath,
+          destinationFilePath: destinationPath,
+          total: duplicateFile.destinationFilePaths.length,
+          processed: (i += 1),
+        });
+      }),
+    );
   }
 
   private async createCollectFolderIfNotExists(username: string, destinationPath: string) {

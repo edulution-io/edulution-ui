@@ -32,9 +32,10 @@ import { UseFormReturn } from 'react-hook-form';
 import GroupForm from '@libs/groups/types/groupForm';
 import GroupColumn from '@libs/groups/types/groupColumn';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
-import ProgressToaster from '@/components/ui/ProgressToast';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import SharingFilesFailedDialogBody from '@/pages/ClassManagement/components/Dialogs/SharingFilesFailedDialogBody';
+import { toast } from 'sonner';
+import ProgressBox from '@/components/ui/ProgressBox';
 
 const LessonPage = () => {
   const {
@@ -70,6 +71,38 @@ const LessonPage = () => {
   const [currentSelectedSession, setCurrentSelectedSession] = useState<LmnApiSession | null>(null);
 
   const [isFileSharingProgessInfoDialogOpen, setIsFileSharingProgessInfoDialogOpen] = useState(false);
+
+  useEffect(() => {
+    if (!filesharingProgress) return;
+
+    const percent = filesharingProgress.percent ?? 0;
+    const dataForBox = {
+      percent,
+      title: t('filesharing.progressBox.title'),
+      id: filesharingProgress.currentFile,
+      description: t('filesharing.progressBox.fileInfo', {
+        filename: filesharingProgress.currentFile.split('/').pop(),
+        studentName: filesharingProgress.studentName,
+      }),
+      failed: filesharingProgress.failedPaths?.length || 0,
+      processed: filesharingProgress.processed,
+      total: filesharingProgress.total,
+    };
+
+    let toastDuration: number;
+    if (dataForBox.failed > 0) {
+      toastDuration = Infinity;
+    } else if (percent >= 100) {
+      toastDuration = 5000;
+    } else {
+      toastDuration = Infinity;
+    }
+
+    toast(<ProgressBox data={dataForBox} />, {
+      id: dataForBox.id,
+      duration: toastDuration,
+    });
+  }, [filesharingProgress, t]);
 
   useEffect(() => {
     if (lmnApiToken) {
@@ -236,24 +269,6 @@ const LessonPage = () => {
       <div>{groupNameParams || member.length ? <UserArea fetchData={fetchData} /> : <QuickAccess />}</div>
       {openDialogType === UserGroups.Sessions && <GroupDialog item={sessionToSave} />}
 
-      {filesharingProgress && (
-        <div className="p-8">
-          <ProgressToaster
-            data={{
-              percent: filesharingProgress.percent ?? 0,
-              title: t('filesharing.progressBox.title'),
-              id: filesharingProgress.currentFile,
-              description: t('filesharing.progressBox.fileInfo', {
-                filename: filesharingProgress.currentFile.split('/').pop(),
-                studentName: filesharingProgress.studentName,
-              }),
-              failed: filesharingProgress.failedPaths?.length || 0,
-              processed: filesharingProgress.processed,
-              total: filesharingProgress.total,
-            }}
-          />
-        </div>
-      )}
       {filesharingProgress && filesharingProgress.failedPaths && (
         <AdaptiveDialog
           isOpen={isFileSharingProgessInfoDialogOpen}
@@ -263,7 +278,7 @@ const LessonPage = () => {
           })}
           body={
             <SharingFilesFailedDialogBody
-              failedFile={filesharingProgress?.currentFile}
+              failedFilePath={filesharingProgress?.currentFile}
               affectedUsers={filesharingProgress?.failedPaths.map((path) => path.split('/').at(2) || '')}
               failedPaths={filesharingProgress?.failedPaths}
             />

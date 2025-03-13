@@ -11,46 +11,21 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect } from 'react';
-import { toast } from 'sonner';
+import React from 'react';
 import { t } from 'i18next';
+import Progress from '@/components/ui/Progress';
 
-interface GenericProgressData {
+interface ProgressBoxProps {
   percent: number;
-
   title?: string;
-
   description?: string;
-
   id: string;
-
   failed: number;
-
   processed: number;
-
   total: number;
 }
 
-interface ProgressToasterProps {
-  data?: GenericProgressData | null;
-
-  completedDuration?: number;
-}
-
-const ProgressBar: React.FC<{ value: number }> = ({ value }) => {
-  const progress = Math.min(Math.max(value, 0), 100);
-
-  return (
-    <div className="h-2 w-full rounded bg-background">
-      <div
-        className="h-full rounded bg-blue-500"
-        style={{ width: `${progress}%` }}
-      />
-    </div>
-  );
-};
-
-const ProgressBox: React.FC<{ data: GenericProgressData }> = ({ data }) => {
+const ProgressBox: React.FC<{ data: ProgressBoxProps }> = ({ data }) => {
   const { percent, title, description, failed, processed, total } = data;
 
   return (
@@ -58,7 +33,7 @@ const ProgressBox: React.FC<{ data: GenericProgressData }> = ({ data }) => {
       {title && <h2 className="text-sm font-bold">{title}</h2>}
 
       <div className="flex items-center gap-2">
-        <ProgressBar value={percent} />
+        <Progress value={percent} />
         <span className="whitespace-nowrap text-sm text-background">{percent}%</span>
       </div>
 
@@ -74,27 +49,4 @@ const ProgressBox: React.FC<{ data: GenericProgressData }> = ({ data }) => {
   );
 };
 
-const ProgressToaster: React.FC<ProgressToasterProps> = ({ data, completedDuration = 5000 }) => {
-  useEffect(() => {
-    if (data) {
-      let toastDuration: number;
-
-      if (data.failed > 0) {
-        toastDuration = Infinity;
-      } else if (data.percent >= 100) {
-        toastDuration = completedDuration;
-      } else {
-        toastDuration = Infinity;
-      }
-
-      toast(<ProgressBox data={data} />, {
-        id: data.id,
-        duration: toastDuration,
-      });
-    }
-  }, [data, completedDuration]);
-
-  return null;
-};
-
-export default ProgressToaster;
+export default ProgressBox;

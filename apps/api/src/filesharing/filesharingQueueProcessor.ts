@@ -10,96 +10,97 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Process, Processor } from '@nestjs/bull';
-import { Job } from 'bull';
-import FILE_PATHS from '@libs/filesharing/constants/file-paths';
-import ContentType from '@libs/filesharing/types/contentType';
-import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { Job } from 'bullmq';
 import { Response } from 'express';
 import { Observable } from 'rxjs';
 import { MessageEvent } from '@nestjs/common';
-import { FilesharingProgressDto } from '@libs/filesharing/types/filesharingProgressDto';
+
+import APPS from '@libs/appconfig/constants/apps';
+import FILE_PATHS from '@libs/filesharing/constants/file-paths';
+import ContentType from '@libs/filesharing/types/contentType';
+import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+
+import QUEUE_NAMES from '@libs/queue/constants/queueNames';
+import DuplicateFileJobData from '@libs/queue/constants/duplicateFileJobData';
 import type UserConnections from '../types/userConnections';
-import SseService from '../sse/sse.service';
 import FilesharingService from './filesharing.service';
-import { QUEUE_NAMES } from '../common/queueNames/queueNames';
+import SseService from '../sse/sse.service';
 
-@Processor(QUEUE_NAMES.GENERIC_QUEUE)
-class FilesharingQueueProcessor {
-  constructor(private readonly fileSharingService: FilesharingService) {}
-
+@Processor(APPS.FILE_SHARING, { concurrency: 1 })
+class FilesharingQueueProcessor extends WorkerHost {
   private fileSharingSseConnections: UserConnections = new Map();
+
+  constructor(private readonly fileSharingService: FilesharingService) {
+    super();
+  }
 
   subscribe(username: string, res: Response): Observable<MessageEvent> {
     return SseService.subscribe(username, this.fileSharingSseConnections, res);
   }
 
-  @Process({ name: QUEUE_NAMES.DUPLICATE_FILE_QUEUE, concurrency: 1 })
-  public async handleDuplicateFile(
-    job: Job<{
-      username: string;
-      originFilePath: string;
-      destinationFilePaths: string[];
-    }>,
-  ) {
-    const { username, originFilePath, destinationFilePaths } = job.data;
+  async process(job: Job<DuplicateFileJobData>): Promise<void> {
+    switch (job.name) {
+      case QUEUE_NAMES.DUPLICATE_FILE_QUEUE:
+        await this.processDuplicateFile(job);
+        break;
+      default:
+        break;
+    }
+  }
 
-    const total = destinationFilePaths.length;
-    let processed = 0;
+  private async processDuplicateFile(job: Job<DuplicateFileJobData>): Promise<void> {
+    const { username, originFilePath, destinationFilePath, total, processed } = job.data;
     const failedPaths: string[] = [];
 
     const client = await this.fileSharingService.getClient(username);
 
-    if (destinationFilePaths.length > 0) {
-      const firstPath = destinationFilePaths[0];
+    const pathUpToTransferFolder = FilesharingService.getPathUntilFolder(destinationFilePath, FILE_PATHS.TRANSFER);
+    const pathUpToTeacherFolder = FilesharingService.getPathUntilFolder(destinationFilePath, username);
 
-      const pathUpToTransferFolder = FilesharingService.getPathUntilFolder(firstPath, FILE_PATHS.TRANSFER);
-      const pathUpToTeacherFolder = FilesharingService.getPathUntilFolder(firstPath, username);
+    const userFolderExists = await this.fileSharingService.checkIfFileOrFolderExists(
+      username,
+      pathUpToTransferFolder,
+      username,
+      ContentType.DIRECTORY,
+    );
+    if (!userFolderExists) {
+      await this.fileSharingService.createFolder(username, pathUpToTransferFolder, username);
+    }
 
-      const userFolderExists = await this.fileSharingService.checkIfFileOrFolderExists(
+    if (userFolderExists) {
+      const collectFolderExists = await this.fileSharingService.checkIfFileOrFolderExists(
         username,
-        pathUpToTransferFolder,
-        username,
+        pathUpToTeacherFolder,
+        FILE_PATHS.COLLECT,
         ContentType.DIRECTORY,
       );
-      if (!userFolderExists) {
-        await this.fileSharingService.createFolder(username, pathUpToTransferFolder, username);
-      }
-
-      if (userFolderExists) {
-        const collectFolderExists = await this.fileSharingService.checkIfFileOrFolderExists(
-          username,
-          pathUpToTeacherFolder,
-          FILE_PATHS.COLLECT,
-          ContentType.DIRECTORY,
-        );
-
-        if (!collectFolderExists) {
-          await this.fileSharingService.createFolder(username, pathUpToTeacherFolder, FILE_PATHS.COLLECT);
-        }
+      if (!collectFolderExists) {
+        await this.fileSharingService.createFolder(username, pathUpToTeacherFolder, FILE_PATHS.COLLECT);
       }
     }
 
-    /* eslint-disable no-restricted-syntax, no-await-in-loop */
-    for (const destinationPath of destinationFilePaths) {
-      try {
-        // no-await-in-loop
-        await FilesharingService.copyFileViaWebDAV(client, originFilePath, destinationPath);
-      } catch (e) {
-        failedPaths.push(destinationPath);
-      }
-
-      processed += 1;
-      const percent = Math.round((processed / total) * 100);
-      const studentName = FilesharingService.getStudentNameFromPath(destinationPath) || '';
-
-      SseService.sendEventToUser(
-        username,
-        this.fileSharingSseConnections,
-        new FilesharingProgressDto(Number(job.id), processed, total, studentName, percent, originFilePath, failedPaths),
-        SSE_MESSAGE_TYPE.UPDATED,
-      );
+    try {
+      await FilesharingService.copyFileViaWebDAV(client, originFilePath, destinationFilePath);
+    } catch {
+      failedPaths.push(destinationFilePath);
     }
+
+    const percent = Math.round((processed / total) * 100);
+    const studentName = FilesharingService.getStudentNameFromPath(destinationFilePath) || '';
+
+    const progressDto = new FilesharingProgressDto(
+      Number(job.id),
+      processed,
+      total,
+      studentName,
+      percent,
+      originFilePath,
+      failedPaths,
+    );
+
+    SseService.sendEventToUser(username, this.fileSharingSseConnections, progressDto, SSE_MESSAGE_TYPE.UPDATED);
   }
 }
 

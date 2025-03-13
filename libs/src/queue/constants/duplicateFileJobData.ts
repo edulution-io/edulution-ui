@@ -10,9 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const QUEUE_NAMES = {
-  DUPLICATE_FILE_QUEUE: 'duplicate-file',
-  GENERIC_QUEUE: 'genericQueue',
-} as const;
+interface DuplicateFileJobData {
+  username: string;
+  originFilePath: string;
+  destinationFilePath: string;
+  total: number;
+  processed: number;
+}
 
-export type QueueName = (typeof QUEUE_NAMES)[keyof typeof QUEUE_NAMES];
+export default DuplicateFileJobData;

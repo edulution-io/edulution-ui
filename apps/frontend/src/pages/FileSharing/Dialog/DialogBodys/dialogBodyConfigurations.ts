@@ -32,7 +32,7 @@ import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesT
 import DocumentVendorsType from '@libs/filesharing/types/documentVendorsType';
 import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
-import MoveFileDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveFileDialogBody';
+import MoveDirectoryDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveDirectoryDialogBody';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
@@ -222,7 +222,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
   },
 
   moveFileFolder: {
-    Component: MoveFileDialogBody,
+    Component: MoveDirectoryDialogBody,
     titleKey: 'moveItemDialog.changeDirectory',
     submitKey: 'moveItemDialog.move',
     endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
