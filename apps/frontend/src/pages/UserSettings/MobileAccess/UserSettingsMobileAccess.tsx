@@ -10,40 +10,108 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
+import { t } from 'i18next';
+import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
+import useUserStore from '@/store/UserStore/UserStore';
+import { MdOutlineFileDownload } from 'react-icons/md';
+import { NavLink } from 'react-router-dom';
+import useIsMobileView from '@/hooks/useIsMobileView';
+import { EDU_APP_APPSTORE_URL } from '@libs/common/constants';
 import { MobileDevicesIcon } from '@/assets/icons';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
-import MobileFileAccessSetupDialog from '@/pages/Dashboard/MobileFileAccess/MobileFileAccessSetupDialog';
-import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/shared/Button';
+import ConnectionSetupPhonePreview from '@/pages/UserSettings/MobileAccess/ConnectionSetupPhonePreview';
+import useElementHeight from '@/hooks/useElementHeight';
+import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
+import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
+import Separator from '@/components/ui/Separator';
 
-const UserSettingsMobileAccess: React.FC = () => {
-  const { t } = useTranslation();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+const MobileFileAccessSetupBox: React.FC = () => {
+  const isMobileView = useIsMobileView();
+  const { user } = useUserStore();
+
+  const webdavAccessDetails = {
+    displayName: `${window.document.title}`,
+    url: `${window.location.origin}/webdav`,
+    username: user?.username,
+    password: '',
+    token: '',
+  };
+  const webdavAccessJson = JSON.stringify(webdavAccessDetails);
+
+  const pageBarsHeight = useElementHeight([NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 10;
+
   return (
-    <>
+    <div className="flex h-screen flex-col overflow-hidden">
       <NativeAppHeader
         title={t('usersettings.mobileAccess.title')}
         description={t('usersettings.mobileAccess.description')}
         iconSrc={MobileDevicesIcon}
       />
-      <div className="mt-4 flex justify-end">
-        <Button
-          variant="btn-security"
-          size="lg"
-          onClick={() => setIsDialogOpen(!isDialogOpen)}
+
+      <div
+        className="flex-1 overflow-auto px-3 pb-3 scrollbar-thin"
+        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
+      >
+        <AccordionSH
+          type="multiple"
+          defaultValue={['mails', 'accessManual', 'accessWithQrCode']}
         >
-          <p>{t('dashboard.mobileAccess.manual')}</p>
-        </Button>
+          <AccordionItem value="mails">
+            <AccordionTrigger className="flex text-h4">
+              <h4>{t('dashboard.mobileAccess.downloadApp')}</h4>
+            </AccordionTrigger>
+            <AccordionContent className="space-y-2 px-1">
+              <div className="mt-2 flex flex-col items-center justify-center gap-4">
+                {!isMobileView && <QRCodeDisplay value={EDU_APP_APPSTORE_URL} />}
+
+                <NavLink
+                  to={EDU_APP_APPSTORE_URL}
+                  target="_blank"
+                  className="flex flex-col items-center"
+                >
+                  <MdOutlineFileDownload className="text-xl text-background" />
+                  <span className="text-sm text-blue-400">{t('common.download')}</span>
+                </NavLink>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          <Separator className="my-1 bg-muted" />
+          <AccordionItem value="accessWithQrCode">
+            <AccordionTrigger className="flex text-h4">
+              <h4>{t('dashboard.mobileAccess.setupWithQrCode')}</h4>
+            </AccordionTrigger>
+            <AccordionContent className="space-y-2 px-1">
+              <p className="text-sm text-muted-foreground">{t('dashboard.mobileAccess.scanAccessInfo')}</p>
+              <div className="space-y-2 p-4 shadow">
+                <div className="mt-2 flex justify-center">
+                  <QRCodeDisplay value={webdavAccessJson} />
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          <Separator className="my-1 bg-muted" />
+          <AccordionItem value="accessManual">
+            <AccordionTrigger className="flex text-h4">
+              <h4>{t('dashboard.mobileAccess.manualSetup')}</h4>
+            </AccordionTrigger>
+            <AccordionContent className="space-y-2 px-1">
+              <p className="text-sm text-muted-foreground">{t('dashboard.mobileAccess.manualAccessInfo')}</p>
+              <div className="mt-2 flex justify-center">
+                <ConnectionSetupPhonePreview
+                  username={webdavAccessDetails.username || ''}
+                  schoolname={webdavAccessDetails.displayName}
+                  schoolurl={webdavAccessDetails.url}
+                />
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </AccordionSH>
       </div>
-      {isDialogOpen ? (
-        <MobileFileAccessSetupDialog
-          isOpen={isDialogOpen}
-          setIsOpen={setIsDialogOpen}
-        />
-      ) : null}
-    </>
+    </div>
   );
 };
 
-export default UserSettingsMobileAccess;
+export default MobileFileAccessSetupBox;

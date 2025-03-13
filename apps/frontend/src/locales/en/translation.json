@@ -104,13 +104,15 @@
   "dashboard": {
     "mobileAccess": {
       "title": "Mobile File Access",
-      "manual": "Manual",
+      "manual": "Setup",
+      "manualSetup": "Manual setup",
+      "setupWithQrCode": "Setup with QR code",
       "accessData": "Login data",
       "content": "You can access the school server from many mobile devices. Click on Manual to start.",
       "scanAccessInfo": "To transfer the access data, please scan the following QR code with the edulution.io app.",
+      "manualAccessInfo": "Enter your login details manually in the edulution.io app. The example below shows how to fill in each field.",
       "scanAppStoreLink": "Scan the QR code with your mobile device to download the edultion-io app from the AppStore.",
       "nextStepPreview": "In the next step you can transfer the access data.",
-      "copyCredentials": "Or enter manually:",
       "downloadDirect": "Or download the app directly:",
       "downloadApp": "Download the edulution.io app here:"
     },
@@ -656,6 +658,16 @@
   "roombooking": {
     "sidebar": "Room booking"
   },
+
+  "mobileAccessSetup": {
+    "connectionTitle": "Configure Connection",
+    "pleaseEnterCredentials": "Please enter your server credentials",
+    "scanQrCode": "Scan QR Code",
+    "orText": "OR",
+    "yourPassword": "Your Password",
+    "addButton": "Add"
+  },
+
   "settings": {
     "title": "SETTINGS",
     "sidebar": "Settings",
@@ -978,7 +990,8 @@
     "disabled": "Disabled",
     "invalid_url": "Invalid URL",
     "invalid_fqdn": "Invalid FQDN. Please only enter the hostname.",
-    "required": "Required"
+    "required": "Required",
+    "download": "Download"
   },
   "form": {
     "path": "Path",

@@ -10,9 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ContentType from '@libs/filesharing/types/contentType';
+function getFirstValidDateOfArray(...possibleDates: Array<string | Date | undefined>): Date | undefined {
+  return possibleDates
+    .filter((dateStr) => dateStr !== undefined)
+    .map((dateStr) => (dateStr instanceof Date ? dateStr : new Date(dateStr)))
+    .find((date) => !Number.isNaN(date.getTime()));
+}
 
-const buildApiFileTypePathUrl = (base: string, type: ContentType, path: string): string =>
-  `${base}?type=${type}&path=${path ? `/${path}` : ''}`;
-
-export default buildApiFileTypePathUrl;
+export default getFirstValidDateOfArray;
