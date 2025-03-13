@@ -21,7 +21,7 @@ import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardE
 import { BULLETIN_BOARD_ATTACHMENT_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
 import DialogSwitch from '@/components/shared/DialogSwitch';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
-import DateTimePickerField from '@/components/ui/DateTimePickerField';
+import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
 
 interface CreateOrUpdateBulletinDialogBodyProps {
   form: UseFormReturn<CreateBulletinDto>;

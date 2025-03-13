@@ -20,7 +20,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import useGroupStore from '@/store/GroupStore';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import Checkbox from '@/components/ui/Checkbox';
-import DateTimePickerField from '@/components/ui/DateTimePickerField';
+import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
 
 interface SaveSurveyDialogBodyProps {
   form: UseFormReturn<SurveyDto>;
@@ -64,14 +64,12 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
         onGroupsChange={handleGroupsChange}
         variant="dialog"
       />
-      <div>
-        <DateTimePickerField
-          form={form}
-          path="expires"
-          translationId="survey.expirationDate"
-          variant="dialog"
-        />
-      </div>
+      <DateTimePickerField
+        form={form}
+        path="expires"
+        translationId="survey.expirationDate"
+        variant="dialog"
+      />
       <p className="text-m font-bold text-background">{t('surveys.saveDialog.settingsFlags')}</p>
       {checkboxOptions.map(({ name, label }) => (
         <Checkbox

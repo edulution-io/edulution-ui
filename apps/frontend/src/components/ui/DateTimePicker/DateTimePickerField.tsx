@@ -12,18 +12,23 @@
 
 'use client';
 
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
+import { HiTrash } from 'react-icons/hi2';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import { DropdownVariant } from '@libs/ui/types/DropdownVariant';
 import cn from '@libs/common/utils/className';
 import { Button } from '@/components/shared/Button';
 import { Calendar } from '@/components/ui/Calendar';
-import { ScrollArea, ScrollBar } from '@/components/ui/ScrollArea';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
+import MinuteButton from '@/components/ui/DateTimePicker/MinuteButtons';
+import safeGetHours from '@/components/ui/DateTimePicker/safeGetHours';
+import safeGetMinutes from '@/components/ui/DateTimePicker/safeGetMinutes';
+import HourButton from '@/components/ui/DateTimePicker/HourButtons';
 
 interface DateTimePickerFieldProps<T extends FieldValues> {
   form: UseFormReturn<T>;
@@ -34,62 +39,103 @@ interface DateTimePickerFieldProps<T extends FieldValues> {
 
 const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldProps<T>) => {
   const { form, path, translationId, variant = 'default' } = props;
-
   const { t } = useTranslation();
 
-  function handleDateSelect(date: Date | undefined) {
-    if (!date) {
-      form.setValue(path, date as PathValue<T, Path<T>>);
-      return;
-    }
+  const fieldValue = form.watch(path);
+  const hours = safeGetHours(fieldValue);
+  const minutes = safeGetMinutes(fieldValue);
 
-    const currentDate = form.getValues(path) || new Date();
-    const newDate = new Date(currentDate);
+  const handleClear = useCallback(() => {
+    form.setValue(path, undefined as PathValue<T, Path<T>>);
+  }, [fieldValue, form, path]);
 
-    newDate.setDate(date.getDate());
-    newDate.setMonth(date.getMonth());
-    newDate.setFullYear(date.getFullYear());
+  const handleDateSelect = useCallback(
+    (date: Date | undefined) => {
+      if (!date) {
+        form.setValue(path, date as PathValue<T, Path<T>>);
+        return;
+      }
 
-    form.setValue(path, newDate as PathValue<T, Path<T>>);
-  }
+      const currentDate = (fieldValue as unknown) instanceof Date ? fieldValue : new Date();
+      const newDate = new Date(currentDate);
 
-  function handleTimeChange(type: 'hour' | 'minute', value: string) {
-    const currentDate = form.getValues(path) || new Date();
-    const newDate = new Date(currentDate);
+      newDate.setDate(date.getDate());
+      newDate.setMonth(date.getMonth());
+      newDate.setFullYear(date.getFullYear());
 
-    if (type === 'hour') {
-      const hour = parseInt(value, 10);
+      form.setValue(path, newDate as PathValue<T, Path<T>>);
+    },
+    [fieldValue, form, path],
+  );
+
+  const onChangeHour = useCallback(
+    (hour: number) => {
+      const currentDate = (fieldValue as unknown) instanceof Date ? fieldValue : new Date();
+      const newDate = new Date(currentDate);
       newDate.setHours(hour);
-    } else if (type === 'minute') {
-      newDate.setMinutes(parseInt(value, 10));
-    }
 
-    form.setValue(path, newDate as PathValue<T, Path<T>>);
-  }
+      form.setValue(path, newDate as PathValue<T, Path<T>>);
+    },
+    [fieldValue, form, path],
+  );
+
+  const onChangeMinute = useCallback(
+    (minute: number) => {
+      const currentDate = (fieldValue as unknown) instanceof Date ? fieldValue : new Date();
+      const newDate = new Date(currentDate);
+      newDate.setMinutes(minute);
+
+      form.setValue(path, newDate as PathValue<T, Path<T>>);
+    },
+    [fieldValue, form, path],
+  );
+
+  const isDateDisabled = useCallback((date: Date) => date < new Date(), []);
+
+  const timeDisplay = useMemo(() => {
+    if ((fieldValue as unknown) instanceof Date) {
+      return format(fieldValue, 'MM/dd/yyyy HH:mm');
+    }
+    return 'MM/DD/YYYY HH:mm';
+  }, [fieldValue]);
 
   return (
     <Form {...form}>
       <FormFieldSH
         control={form.control}
         name={path}
-        render={({ field }) => (
-          <FormItem className="flex flex-col">
+        render={() => (
+          <FormItem className="flex flex-col space-y-0">
             {translationId ? <p className="text-m font-bold text-background">{t(translationId)}</p> : null}
+
             <Popover>
               <PopoverTrigger asChild>
-                <FormControl>
+                <FormControl
+                  className={cn('w-auto p-0', {
+                    'bg-muted text-foreground hover:bg-muted-light hover:text-foreground': variant === 'default',
+                    'bg-muted text-secondary hover:bg-muted hover:text-primary-foreground': variant === 'dialog',
+                  })}
+                >
                   <Button
                     variant="btn-outline"
                     className={cn(
                       'my-0 h-10 w-fit px-3 py-0 pl-3 text-left font-normal',
-                      !field.value && 'text-muted-foreground',
+                      !fieldValue && 'text-muted-foreground',
                     )}
                   >
-                    {field.value ? format(field.value, 'MM/dd/yyyy HH:mm') : <span>MM/DD/YYYY HH:mm</span>}
-                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    {timeDisplay}
+                    <HiTrash
+                      className="ml-auto h-4 w-4 opacity-50 hover:opacity-100"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        handleClear();
+                      }}
+                    />
+                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50 hover:opacity-100" />
                   </Button>
                 </FormControl>
               </PopoverTrigger>
+
               <PopoverContent
                 className={cn('w-auto p-0', {
                   'bg-background text-foreground': variant === 'default',
@@ -99,24 +145,14 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
                 <div className="sm:flex">
                   <Calendar
                     mode="single"
-                    selected={field.value}
-                    // eslint-disable-next-line react/jsx-no-bind
+                    selected={fieldValue && (fieldValue as unknown) instanceof Date ? fieldValue : undefined}
                     onSelect={handleDateSelect}
                     initialFocus
-                    disabled={(date) => date < new Date()}
+                    disabled={isDateDisabled}
                   />
                   <div>
                     <div className="m-2 flex h-6 justify-center">
-                      {
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                        field.value?.getHours() || 'hh'
-                      }
-                      :
-                      {
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                        field.value?.getMinutes() ? String(field.value.getMinutes()).padStart(2, '0') : 'mm'
-                      }{' '}
-                      {t('common.clock')}
+                      {hours.toString().padStart(2, '0')}:{minutes.toString().padStart(2, '0')} {t('common.clock')}
                     </div>
                     <div className="flex flex-col divide-y sm:h-[300px] sm:flex-row sm:divide-x sm:divide-y-0">
                       <ScrollArea className="w-64 sm:w-auto">
@@ -124,42 +160,29 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
                           {Array.from({ length: 24 }, (_, i) => i)
                             .reverse()
                             .map((hour) => (
-                              <Button
+                              <HourButton
                                 key={hour}
-                                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                                variant={field.value && field.value.getHours() === hour ? 'btn-outline' : 'btn-small'}
-                                className={cn('aspect-square max-h-[25px] max-w-[64px] shrink-0 sm:w-full', {
-                                  'bg-background text-foreground': variant === 'default',
-                                  'bg-muted text-secondary': variant === 'dialog',
-                                })}
-                                onClick={() => handleTimeChange('hour', hour.toString())}
-                              >
-                                {hour}
-                              </Button>
+                                hour={hour}
+                                currentHour={hours}
+                                onChangeHour={onChangeHour}
+                                variant={variant}
+                              />
                             ))}
                         </div>
                       </ScrollArea>
+
                       <ScrollArea className="w-64 sm:w-auto">
                         <div className="flex p-2 sm:flex-col">
                           {Array.from({ length: 12 }, (_, i) => i * 5).map((minute) => (
-                            <Button
+                            <MinuteButton
                               key={minute}
-                              // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                              variant={field.value && field.value.getMinutes() === minute ? 'btn-outline' : 'btn-small'}
-                              className={cn('aspect-square max-h-[25px] max-w-[64px] shrink-0 sm:w-full', {
-                                'bg-background text-foreground': variant === 'default',
-                                'bg-muted text-secondary': variant === 'dialog',
-                              })}
-                              onClick={() => handleTimeChange('minute', minute.toString())}
-                            >
-                              {minute.toString().padStart(2, '0')}
-                            </Button>
+                              minute={minute}
+                              currentMinute={minutes}
+                              onChangeMinute={onChangeMinute}
+                              variant={variant}
+                            />
                           ))}
                         </div>
-                        <ScrollBar
-                          orientation="horizontal"
-                          className="sm:hidden"
-                        />
                       </ScrollArea>
                     </div>
                   </div>
