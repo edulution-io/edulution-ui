@@ -10,9 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum VideoExtensions {
-  MP4 = 'mp4',
-  WEBM = 'webm',
+function getFirstValidDateOfArray(...possibleDates: Array<string | Date | undefined>): Date | undefined {
+  return possibleDates
+    .filter((dateStr) => dateStr !== undefined)
+    .map((dateStr) => (dateStr instanceof Date ? dateStr : new Date(dateStr)))
+    .find((date) => !Number.isNaN(date.getTime()));
 }
 
-export default VideoExtensions;
+export default getFirstValidDateOfArray;

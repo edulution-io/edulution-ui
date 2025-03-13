@@ -29,7 +29,7 @@ const createSurveyCreatorComponent = (language = 'en') => {
 
   const creatorOptions = {
     generateValidJSON: true,
-    isAutoSave: false,
+    isAutoSave: true,
     maxNestedPanels: 0,
     showJSONEditorTab: true,
     showPreviewTab: false,

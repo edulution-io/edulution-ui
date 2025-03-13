@@ -24,10 +24,32 @@ import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import getDocumentVendor from '@libs/filesharing/utils/getDocumentVendor';
+import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
+import ContentType from '@libs/filesharing/types/contentType';
+import { HttpMethods } from '@libs/common/types/http-methods';
+import MAX_UPLOAD_CHUNK_SIZE from '@libs/ui/constants/maxUploadChunkSize';
+import splitArrayIntoChunks from '@libs/common/utils/splitArrayIntoChunks';
 import getFileSharingFormSchema from '../formSchema';
 
 interface CreateContentDialogProps {
   trigger?: React.ReactNode;
+}
+
+interface BatchUploadOptions {
+  uploads: FileUploadProps[];
+  batchSize: number;
+  destinationPath: string;
+  actionType: FileActionType;
+  endpointUrl: string;
+  method: HttpMethods;
+  requestContentType: ContentType;
+  handleFileUploadAction: (
+    action: FileActionType,
+    endpoint: string,
+    httpMethod: HttpMethods,
+    type: ContentType,
+    formData: FormData,
+  ) => Promise<void>;
 }
 
 const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) => {
@@ -46,8 +68,8 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     setSelectedFileType,
     setMoveOrCopyItemToPath,
     setFilesToUpload,
-    isSubmitButtonInActive,
-    setSubmitButtonIsInActive,
+    isSubmitButtonDisabled,
+    setSubmitButtonIsDisabled,
   } = useFileSharingDialogStore();
   const { currentPath, selectedItems } = useFileSharingStore();
   const { appConfigs } = useAppConfigsStore();
@@ -62,7 +84,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   });
 
   const clearAllSelectedItems = () => {
-    setSubmitButtonIsInActive(false);
+    setSubmitButtonIsDisabled(false);
     setMoveOrCopyItemToPath({} as DirectoryFileDTO);
     setSelectedFileType('');
     setFilesToUpload([]);
@@ -70,10 +92,42 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     form.reset();
   };
 
+  const processFileUploadsInBatches = async ({
+    uploads,
+    batchSize,
+    destinationPath,
+    actionType,
+    endpointUrl,
+    method,
+    requestContentType,
+    handleFileUploadAction,
+  }: BatchUploadOptions) => {
+    const batches = splitArrayIntoChunks(uploads, batchSize);
+
+    await batches.reduce<Promise<void>>(async (prevPromise, batch) => {
+      await prevPromise;
+
+      await Promise.all(
+        batch.map(async (uploadItem) => {
+          if ('file' in uploadItem && uploadItem.file instanceof File) {
+            const formData = new FormData();
+            formData.append('file', uploadItem.file);
+            formData.append('path', uploadItem.path);
+            formData.append('name', uploadItem.name);
+            formData.append('currentPath', destinationPath);
+
+            return handleFileUploadAction(actionType, endpointUrl, method, requestContentType, formData);
+          }
+          return Promise.resolve();
+        }),
+      );
+    }, Promise.resolve());
+  };
+
   const onSubmit = async () => {
     const documentVendor = getDocumentVendor(appConfigs);
 
-    const data = await getData(form, currentPath, {
+    const uploadPayload = await getData(form, currentPath, {
       selectedItems,
       moveOrCopyItemToPath,
       selectedFileType,
@@ -81,23 +135,23 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       documentVendor,
     });
 
-    if (Array.isArray(data) && data.some((item) => 'file' in item && item.file instanceof File)) {
-      const uploadPromises = data.map((item) => {
-        if ('file' in item && item.file instanceof File) {
-          const formData = new FormData();
-          formData.append('file', item.file);
-          formData.append('path', item.path);
-          formData.append('name', item.name);
-          formData.append('currentPath', currentPath);
-          return handleItemAction(action, endpoint, httpMethod, type, formData);
-        }
-        return Promise.resolve();
-      });
+    const hasFilesToUpload =
+      Array.isArray(uploadPayload) && uploadPayload.some((item) => 'file' in item && item.file instanceof File);
 
-      await Promise.all(uploadPromises);
+    if (hasFilesToUpload) {
+      await processFileUploadsInBatches({
+        uploads: uploadPayload as FileUploadProps[],
+        batchSize: MAX_UPLOAD_CHUNK_SIZE,
+        destinationPath: currentPath,
+        actionType: action,
+        endpointUrl: endpoint,
+        method: httpMethod,
+        requestContentType: type,
+        handleFileUploadAction: handleItemAction,
+      });
     } else {
-      setSubmitButtonIsInActive(false);
-      await handleItemAction(action, endpoint, httpMethod, type, data);
+      setSubmitButtonIsDisabled(false);
+      await handleItemAction(action, endpoint, httpMethod, type, uploadPayload);
     }
 
     clearAllSelectedItems();
@@ -145,7 +199,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
             <form onSubmit={handleFormSubmit}>
               <Button
                 variant="btn-collaboration"
-                disabled={isLoading || isSubmitButtonInActive}
+                disabled={isLoading || isSubmitButtonDisabled}
                 size="lg"
                 type="submit"
                 onClick={handleFormSubmit}
