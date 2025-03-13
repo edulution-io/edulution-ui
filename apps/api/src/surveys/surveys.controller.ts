@@ -11,23 +11,46 @@
  */
 
 import { Observable } from 'rxjs';
-import { Response } from 'express';
-import { Body, Controller, Delete, Get, MessageEvent, Param, Patch, Post, Query, Res, Sse } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { extname } from 'path';
+import { diskStorage } from 'multer';
+import { Response, Request } from 'express';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  MessageEvent,
+  Param,
+  Patch,
+  Post,
+  Res,
+  Sse,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import {
   ANSWER,
   CAN_PARTICIPATE,
   FIND_ONE,
   HAS_ANSWERS,
+  IMAGES,
   RESULT,
   SURVEYS,
 } from '@libs/survey/constants/surveys-endpoint';
+import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
+import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AnswerDto from '@libs/survey/types/api/answer.dto';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
@@ -73,6 +96,43 @@ class SurveysController {
   @Get()
   async findByStatus(@Query('status') status: SurveyStatus, @GetCurrentUser() user: JWTUser) {
     return this.surveyAnswerService.findUserSurveys(status, user);
+  }
+
+  @Post(`${IMAGES}/:surveyId/:questionId`)
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: (req: Request) => {
+          const { surveyId, questionId } = req.params;
+          return `${SURVEYS_IMAGES_PATH}/${surveyId}/${questionId}`;
+        },
+        filename: (_req, file, callback) => {
+          const uniqueFilename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${extname(file.originalname)}`;
+          callback(null, uniqueFilename);
+        },
+      }),
+      fileFilter: (_req, file, callback) => {
+        if (IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+          callback(null, true);
+        } else {
+          callback(
+            new CustomHttpException(CommonErrorMessages.INVALID_FILE_TYPE, HttpStatus.INTERNAL_SERVER_ERROR),
+            false,
+          );
+        }
+      },
+    }),
+  )
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  uploadImage(
+    @Param() params: { surveyId: string; questionId: string },
+    @UploadedFile() file: Express.Multer.File,
+    @Res() res: Response,
+  ) {
+    const { surveyId, questionId } = params;
+    const filePath = SurveysService.getImageUrl(file, surveyId, questionId);
+    return res.status(HttpStatus.CREATED).json(filePath);
   }
 
   @Post(ANSWER)

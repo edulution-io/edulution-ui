@@ -14,11 +14,11 @@ import React, { useMemo, useRef } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/node_modules/quill/dist/quill.snow.css';
 import BULLETIN_EDITOR_FORMATS from '@libs/bulletinBoard/constants/bulletinEditorFormats';
-import useUserStore from '@/store/UserStore/UserStore';
+import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import useUserStore from '@/store/UserStore/UserStore';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import BULLETIN_BOARD_ALLOWED_MIME_TYPES from '@libs/bulletinBoard/constants/allowedMimeTypes';
 
 interface WysiwygEditorProps {
   value: string;
@@ -35,7 +35,7 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
   const handleImage = () => {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
-    input.setAttribute('accept', BULLETIN_BOARD_ALLOWED_MIME_TYPES.join(', '));
+    input.setAttribute('accept', IMAGE_UPLOAD_ALLOWED_MIME_TYPES.join(', '));
     input.click();
 
     input.onchange = async () => {

@@ -31,12 +31,12 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import { Response } from 'express';
-import BULLETIN_BOARD_ALLOWED_MIME_TYPES from '@libs/bulletinBoard/constants/allowedMimeTypes';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import APPS from '@libs/appconfig/constants/apps';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
+import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import { Observable } from 'rxjs';
 import BulletinBoardService from './bulletinboard.service';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
@@ -96,11 +96,11 @@ class BulletinBoardController {
         },
       }),
       fileFilter: (_req, file, callback) => {
-        if (BULLETIN_BOARD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+        if (IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
           callback(null, true);
         } else {
           callback(
-            new CustomHttpException(BulletinBoardErrorMessage.INVALID_FILE_TYPE, HttpStatus.INTERNAL_SERVER_ERROR),
+            new CustomHttpException(CommonErrorMessages.INVALID_FILE_TYPE, HttpStatus.INTERNAL_SERVER_ERROR),
             false,
           );
         }

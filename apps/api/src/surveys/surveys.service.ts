@@ -10,23 +10,29 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { join } from 'path';
+import { Response } from 'express';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { createReadStream, existsSync, promises } from 'fs';
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import CustomHttpException from '@libs/error/CustomHttpException';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
-import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
+import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import SseService from '../sse/sse.service';
+import GroupsService from '../groups/groups.service';
+import surveysMigrationsList from './migrations/surveysMigrationsList';
+import MigrationService from '../migration/migration.service';
 import type UserConnections from '../types/userConnections';
 import { Survey, SurveyDocument } from './survey.schema';
-import MigrationService from '../migration/migration.service';
-import surveysMigrationsList from './migrations/surveysMigrationsList';
-import GroupsService from '../groups/groups.service';
+import surveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 
 @Injectable()
 class SurveysService implements OnModuleInit {
@@ -159,6 +165,49 @@ class SurveysService implements OnModuleInit {
     }
 
     return this.createSurvey(surveyDto, currentUser, surveysSseConnections);
+  }
+
+  static checkImageFile(file: Express.Multer.File): string {
+    if (!file) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
+    }
+    if (!IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+      throw new CustomHttpException(CommonErrorMessages.ATTACHMENT_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
+    }
+    return file.filename;
+  }
+
+  static getImagePath(surveyId: string, questionId: string, fileName: string): string {
+    return join(SURVEYS_IMAGES_PATH, surveyId, questionId, fileName);
+  }
+
+  static getImageUrl(file: Express.Multer.File, surveyId: string, questionId: string): string {
+    const existingFileName = this.checkImageFile(file);
+    return SurveysService.getImagePath(surveyId, questionId, existingFileName);
+  }
+
+  static serveImage(surveyId: string, questionId: string, fileName: string, res: Response): Response {
+    const imagePath = SurveysService.getImagePath(surveyId, questionId, fileName);
+
+    if (!existsSync(imagePath)) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+
+    const fileStream = createReadStream(imagePath);
+    fileStream.pipe(res);
+
+    return res;
+  }
+
+  async onSurveyRemoval(surveyIds: string[]): Promise<void> {
+    const imageDirectories = surveyIds.map((surveyId) => join(SURVEYS_IMAGES_PATH, surveyId));
+    const deletionPromises = imageDirectories.map((directory) => promises.rmdir(directory, { recursive: true }));
+
+    try {
+      await Promise.all(deletionPromises);
+    } catch (error) {
+      throw new CustomHttpException(surveyErrorMessages.ImageDeletionFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }
 

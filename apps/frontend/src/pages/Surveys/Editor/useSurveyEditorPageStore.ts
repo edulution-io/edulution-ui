@@ -13,7 +13,7 @@
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import { SURVEYS } from '@libs/survey/constants/surveys-endpoint';
+import { SURVEY_IMAGES_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
@@ -21,6 +21,9 @@ interface SurveyEditorPageStore {
   storedSurvey: SurveyDto | undefined;
   updateStoredSurvey: (survey: SurveyDto) => void;
   resetStoredSurvey: () => void;
+
+  uploadAttachment: (attachment: File) => Promise<string>;
+  isAttachmentUploadLoading: boolean;
 
   isOpenSaveSurveyDialog: boolean;
   setIsOpenSaveSurveyDialog: (state: boolean) => void;
@@ -42,6 +45,8 @@ type PersistedSurveyEditorPageStore = (
 
 const initialState = {
   storedSurvey: undefined,
+
+  isAttachmentUploadLoading: false,
 
   isOpenSaveSurveyDialog: false,
   isLoading: false,
@@ -83,6 +88,25 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
           return false;
         } finally {
           set({ isLoading: false });
+        }
+      },
+
+      uploadAttachment: async (file): Promise<string> => {
+        set({ isAttachmentUploadLoading: true });
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+          const response = await eduApi.post<string>(SURVEY_IMAGES_ENDPOINT, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          });
+
+          return response.data;
+        } catch (error) {
+          handleApiError(error, set);
+          return '';
+        } finally {
+          set({ isAttachmentUploadLoading: false });
         }
       },
 
