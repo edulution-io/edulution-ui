@@ -430,13 +430,16 @@ class FilesharingService {
     userRole: string,
     type: LmnApiCollectOperationsType,
   ) {
-    await Promise.all(
+    let processedItems = 0;
+    return Promise.all(
       collectFileRequestDTO.map(async (collectFileRequest) => {
         await this.fileSharingQueue.add(QUEUE_NAMES.COLLECT_FILE_QUEUE, {
           username,
           userRole,
           item: collectFileRequest,
           operationType: type,
+          total: collectFileRequestDTO.length,
+          processed: (processedItems += 1),
         });
       }),
     );

@@ -18,6 +18,8 @@ interface CollectFileJobData {
   userRole: string;
   item: CollectFileRequestDTO;
   operationType: LmnApiCollectOperationsType;
+  total: number;
+  processed: number;
 }
 
 export default CollectFileJobData;

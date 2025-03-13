@@ -56,9 +56,11 @@ class FilesharingQueueProcessor extends WorkerHost {
   }
 
   private async processCollectFile(job: Job<CollectFileJobData>): Promise<void> {
-    const { username, userRole, item, operationType } = job.data;
+    const { username, userRole, item, operationType, total, processed } = job.data;
 
     const initFolderName = `${userRole}s/${username}/transfer/collected`;
+
+    const failedPaths: string[] = [];
 
     try {
       await this.fileSharingService.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName);
@@ -72,8 +74,22 @@ class FilesharingQueueProcessor extends WorkerHost {
         });
       }
     } catch (error) {
-      throw new Error(`Operation failed for user ${item.userName}`);
+      failedPaths.push(item.destinationPath);
     }
+
+    const percent = Math.round((processed / total) * 100);
+
+    const progressDto = new FilesharingProgressDto(
+      Number(job.id),
+      processed,
+      total,
+      username,
+      percent,
+      operationType,
+      failedPaths,
+    );
+
+    SseService.sendEventToUser(username, this.fileSharingSseConnections, progressDto, SSE_MESSAGE_TYPE.UPDATED);
   }
 
   private async processDuplicateFile(job: Job<DuplicateFileJobData>): Promise<void> {
