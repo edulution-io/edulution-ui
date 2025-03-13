@@ -488,8 +488,6 @@
       "createConfig": "Create config",
       "editConfig": "Edit config"
     },
-    "collectAndCut": "Cut",
-    "collectAndCopy": "Copy",
     "copyOrCut": "Would you like to cut or copy the files?",
     "filesShared": "Files shared",
     "filesSharingStarted": "Files sharing started",
@@ -927,6 +925,7 @@
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },
+    "cut": "Cut",
     "sortOrder": "Sort order",
     "checking": "Checking",
     "options": "Options",
