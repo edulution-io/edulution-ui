@@ -35,11 +35,21 @@ import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDial
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 import createSurveyCreatorComponent from '@/pages/Surveys/Editor/createSurveyCreatorObject';
+import useBeforeUnload from '@/hooks/useBeforeUnload';
 
 const SurveyEditorPage = () => {
   const { fetchSelectedSurvey, isFetching, selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
-  const { isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog, updateOrCreateSurvey, isLoading, reset } =
-    useSurveyEditorPageStore();
+  const {
+    isOpenSaveSurveyDialog,
+    setIsOpenSaveSurveyDialog,
+    updateOrCreateSurvey,
+    isLoading,
+    reset,
+    storedSurvey,
+    updateStoredSurvey,
+    resetStoredSurvey,
+  } = useSurveyEditorPageStore();
+
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useUserStore();
@@ -60,7 +70,7 @@ const SurveyEditorPage = () => {
       value: user.username,
       label: `${user.firstName} ${user.lastName}`,
     };
-    return getInitialSurveyFormValues(surveyCreator, selectedSurvey);
+    return getInitialSurveyFormValues(surveyCreator, selectedSurvey, storedSurvey);
   }, [selectedSurvey]);
 
   const form = useForm<SurveyDto>({
@@ -79,11 +89,25 @@ const SurveyEditorPage = () => {
   }
   const creator = creatorRef.current;
 
+  const updateSurveyStorage = () => {
+    if (!creator) return;
+    const formula = creator.JSON as SurveyFormula;
+    const saveNo = creator.saveNo || 0;
+    updateStoredSurvey({
+      ...form.getValues(),
+      formula,
+      saveNo,
+    });
+  };
+
+  useBeforeUnload('unload', updateSurveyStorage);
+
   useEffect(() => {
     if (creator) {
       creator.saveNo = form.getValues('saveNo');
       creator.JSON = form.getValues('formula');
       creator.locale = language;
+      creator.saveSurveyFunc = updateSurveyStorage;
     }
   }, [creator, form, language]);
 
@@ -99,6 +123,9 @@ const SurveyEditorPage = () => {
     if (success) {
       void updateUsersSurveys();
       setIsOpenSaveSurveyDialog(false);
+
+      resetStoredSurvey();
+
       toast.success(t('survey.editor.saveSurveySuccess'));
       navigate(`/${CREATED_SURVEYS_PAGE}`);
     }
