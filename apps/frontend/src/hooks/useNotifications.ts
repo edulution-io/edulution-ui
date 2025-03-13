@@ -43,7 +43,7 @@ const useNotifications = () => {
   const isBulletinBoardActive = useIsAppActive(APPS.BULLETIN_BOARD);
   const isFileSharingActive = useIsAppActive(APPS.FILE_SHARING);
   const { addBulletinBoardNotification } = UseBulletinBoardStore();
-  const { setDownloadProgress } = useFileSharingStore();
+  const { updateDownloadProgress, removeDownloadProgress } = useFileSharingStore();
   useDockerContainerEvents();
 
   useEffect(() => {
@@ -144,9 +144,12 @@ const useNotifications = () => {
       const eventSource = new EventSource(`/${EDU_API_ROOT}/${APPS.FILE_SHARING}/sse?token=${eduApiToken}`);
 
       const handleFileSharingEvent = (e: MessageEvent<string>) => {
-        const { data } = e;
-        const percentage = JSON.parse(data) as number;
-        setDownloadProgress(percentage);
+        const data = JSON.parse(e.data) as { fileName: string; percent: number };
+        const { fileName, percent } = data;
+        updateDownloadProgress(data);
+        if (percent >= 100) {
+          setTimeout(() => removeDownloadProgress(fileName), 2000);
+        }
       };
 
       eventSource.addEventListener(SSE_MESSAGE_TYPE.UPDATED, handleFileSharingEvent, { signal });
@@ -157,6 +160,7 @@ const useNotifications = () => {
         controller.abort();
       };
     }
+
     return undefined;
   }, [isFileSharingActive]);
 
