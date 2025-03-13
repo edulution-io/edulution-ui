@@ -30,6 +30,7 @@ import FILE_PREVIEW_ELEMENT_ID from '@libs/filesharing/constants/filePreviewElem
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import ProgressToaster from '@/components/ui/ProgressToaster';
+import { t } from 'i18next';
 
 const FileSharingPage = () => {
   const isMobileView = useIsMobileView();
@@ -83,9 +84,10 @@ const FileSharingPage = () => {
         <ProgressToaster
           key={progress.fileName}
           data={{
+            title: t('common.download'),
             percent: progress.percent,
             id: progress.fileName,
-            description: progress.fileName,
+            description: progress.fileName.split('/').pop(),
           }}
         />
       ))}

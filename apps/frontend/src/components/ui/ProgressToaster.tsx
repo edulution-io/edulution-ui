@@ -54,16 +54,15 @@ const ProgressBox: React.FC<{ data: GenericProgressData }> = ({ data }) => {
   const { percent, title, description, failed, processed, total } = data;
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex w-full flex-col gap-2">
+      {' '}
+      {/* <- ensures full width */}
       {title && <h2 className="text-sm font-bold">{title}</h2>}
-
-      <div className="flex items-center gap-2">
+      <div className="flex w-full items-center gap-2">
         <ProgressBar value={percent} />
         <span className="whitespace-nowrap text-sm text-background">{percent}%</span>
       </div>
-
       {description && <p className="text-sm text-background">{description}</p>}
-
       <p className="text-sm text-background">
         {processed && failed && (
           <>
