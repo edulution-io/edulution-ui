@@ -136,7 +136,7 @@ class FilesharingService {
     '  </d:prop>\n' +
     '</d:propfind>\n';
 
-  getFilesAtPath = async (username: string, path: string): Promise<DirectoryFileDTO[]> => {
+  async getFilesAtPath(username: string, path: string): Promise<DirectoryFileDTO[]> {
     const client = await this.getClient(username);
     return (await FilesharingService.executeWebdavRequest<DirectoryFileDTO[]>(
       client,
@@ -148,9 +148,9 @@ class FilesharingService {
       FileSharingErrorMessage.FileNotFound,
       mapToDirectoryFiles,
     )) as DirectoryFileDTO[];
-  };
+  }
 
-  getDirAtPath = async (username: string, path: string): Promise<DirectoryFileDTO[]> => {
+  async getDirAtPath(username: string, path: string): Promise<DirectoryFileDTO[]> {
     const client = await this.getClient(username);
     return (await FilesharingService.executeWebdavRequest<DirectoryFileDTO[]>(
       client,
@@ -163,9 +163,9 @@ class FilesharingService {
       FileSharingErrorMessage.FolderNotFound,
       mapToDirectories,
     )) as DirectoryFileDTO[];
-  };
+  }
 
-  createFolder = async (username: string, path: string, folderName: string): Promise<WebdavStatusResponse> => {
+  async createFolder(username: string, path: string, folderName: string): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
     const fullPath = `${this.baseurl}${path}/${folderName}`;
 
@@ -182,14 +182,14 @@ class FilesharingService {
           status: response.status,
         }) as WebdavStatusResponse,
     );
-  };
+  }
 
-  createFile = async (
+  async createFile(
     username: string,
     path: string,
     fileName: string,
     content: string = '',
-  ): Promise<WebdavStatusResponse> => {
+  ): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
     const fullPath = `${this.baseurl}${getPathWithoutWebdav(path)}/${fileName}`;
 
@@ -208,7 +208,7 @@ class FilesharingService {
           status: response.status,
         }) as WebdavStatusResponse,
     );
-  };
+  }
 
   uploadFile = async (
     username: string,
@@ -236,7 +236,7 @@ class FilesharingService {
     );
   };
 
-  deleteFileAtPath = async (username: string, path: string): Promise<WebdavStatusResponse> => {
+  async deleteFileAtPath(username: string, path: string): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
     const fullPath = `${this.baseurl}${path}`;
 
@@ -254,7 +254,7 @@ class FilesharingService {
           status: response.status,
         }) as WebdavStatusResponse,
     );
-  };
+  }
 
   static getStudentNameFromPath = (filePath: string): string | null => {
     const parts = filePath.split('/');
@@ -343,10 +343,7 @@ class FilesharingService {
     return result;
   }
 
-  copyCollectedItems = async (
-    username: string,
-    duplicateFile: DuplicateFileRequestDto,
-  ): Promise<WebdavStatusResponse> => {
+  async copyCollectedItems(username: string, duplicateFile: DuplicateFileRequestDto): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
 
     const duplicationPromises = duplicateFile.destinationFilePaths.map(async (destinationPath) => {
@@ -359,7 +356,7 @@ class FilesharingService {
     } catch (error) {
       throw new CustomHttpException(FileSharingErrorMessage.SharingFailed, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-  };
+  }
 
   static getPathUntilFolder(fullPath: string, folderName: string): string {
     const segments = fullPath.split('/');
