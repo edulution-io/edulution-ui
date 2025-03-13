@@ -10,18 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@nestjs/common';
-import { InjectQueue } from '@nestjs/bull';
-import { JobOptions, Queue } from 'bull';
-import { QUEUE_NAMES } from '../common/queueNames/queueNames';
+import QUEUE_NAMES from '@libs/queue/constants/queueNames';
 
-@Injectable()
-class GenericQueueService {
-  constructor(@InjectQueue(QUEUE_NAMES.GENERIC_QUEUE) private readonly queue: Queue) {}
-
-  public async addJob<TData = unknown>(jobName: string, data: TData, options?: JobOptions): Promise<void> {
-    await this.queue.add(jobName, data, options);
-  }
-}
-
-export default GenericQueueService;
+export type QueueNamesType = (typeof QUEUE_NAMES)[keyof typeof QUEUE_NAMES];

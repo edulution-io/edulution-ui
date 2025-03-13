@@ -148,7 +148,7 @@ const UploadContentBody = () => {
                 <img
                   src={URL.createObjectURL(file)}
                   alt={t('filesharingUpload.previewAlt', { filename: file.name })}
-                  className="mb-2 h-auto w-full object-cover"
+                  className="mb-2 aspect-square h-auto w-full object-cover"
                   onLoad={() => URL.revokeObjectURL(file.name)}
                 />
               ) : (

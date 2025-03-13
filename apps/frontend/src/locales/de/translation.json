@@ -104,7 +104,8 @@
   "dashboard": {
     "mobileAccess": {
       "title": "Mobiler Datenzugriff",
-      "manual": "Manuelles Einrichten",
+      "manual": "Anleitung",
+      "manualSetup": "Manuelles Einrichten",
       "setupWithQrCode": "Einrichtung via QR-Code",
       "accessData": "Zugangsdaten",
       "content": "Du kannst von vielen mobilen Geräten aus auf den Schulserver zugreifen. Drücke auf Anleitung um zu starten.",
@@ -467,8 +468,7 @@
     "myRoom": "Mein Raum",
     "sharedMailBox": "Geteiltes Postfach",
     "enrolPageDescription": "Wähle die Klassen und Projekte aus, für die du dich einschreiben möchtest, indem du die Checkboxen aktivierst.",
-    "collectAndCut": "Ausschneiden",
-    "collectAndCopy": "Kopieren",
+
     "copyOrCut": "Möchtest du die Dateien ausschneiden oder kopieren?",
     "filesShared": "Dateien geteilt",
     "filesSharingStarted": "Dateien werden geteilt",
@@ -927,6 +927,7 @@
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
+    "cut": "Ausschneiden",
     "sortOrder": "Sortierung",
     "options": "Optionen",
     "checking": "Prüfen",

@@ -12,17 +12,24 @@
 
 import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
+import { BullModule } from '@nestjs/bullmq';
+import Apps from '@libs/appconfig/constants/apps';
 import FilesharingController from './filesharing.controller';
 import FilesharingService from './filesharing.service';
 import AppConfigModule from '../appconfig/appconfig.module';
 import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
-import GenericQueueModule from '../generic-queue/generic-queue.module';
 import FilesharingQueueProcessor from './filesharingQueueProcessor';
 import SseService from '../sse/sse.service';
 
 @Module({
-  imports: [HttpModule, AppConfigModule, GenericQueueModule],
+  imports: [
+    HttpModule,
+    AppConfigModule,
+    BullModule.registerQueue({
+      name: Apps.FILE_SHARING,
+    }),
+  ],
   controllers: [FilesharingController],
   providers: [FilesharingService, FilesystemService, OnlyofficeService, FilesharingQueueProcessor, SseService],
   exports: [FilesharingService],

@@ -29,7 +29,7 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import UseBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
-import { FilesharingProgressDto } from '@libs/filesharing/types/filesharingProgressDto';
+import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import delay from '@libs/common/utils/delay';
 
 const useNotifications = () => {
@@ -124,28 +124,28 @@ const useNotifications = () => {
   }, [isConferenceAppActivated]);
 
   useEffect(() => {
-    if (isClassRoomManagementActive) {
-      const eventSource = new EventSource(`/${EDU_API_ROOT}/${APPS.FILE_SHARING}/sse?token=${eduApiToken}`);
-
-      const handleFileSharingEvent = (e: MessageEvent<string>) => {
-        void (async () => {
-          const data: FilesharingProgressDto = JSON.parse(e.data) as FilesharingProgressDto;
-          setFilesharingProgress(data);
-          if (data.percent === 100 && data.failedPaths?.length === 0) {
-            await delay(5000).then(() => setFilesharingProgress(null));
-          }
-        })();
-      };
-
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.UPDATED, handleFileSharingEvent);
-
-      return () => {
-        eventSource.removeEventListener(SSE_MESSAGE_TYPE.UPDATED, handleFileSharingEvent);
-        eventSource.close();
-      };
+    if (!isClassRoomManagementActive) {
+      return undefined;
     }
 
-    return undefined;
+    const eventSource = new EventSource(`/${EDU_API_ROOT}/${APPS.FILE_SHARING}/sse?token=${eduApiToken}`);
+
+    const handleFileSharingEvent = (e: MessageEvent<string>) => {
+      void (async () => {
+        const data: FilesharingProgressDto = JSON.parse(e.data) as FilesharingProgressDto;
+        setFilesharingProgress(data);
+        if (data.percent === 100 && data.failedPaths?.length === 0) {
+          await delay(5000).then(() => setFilesharingProgress(null));
+        }
+      })();
+    };
+
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.UPDATED, handleFileSharingEvent);
+
+    return () => {
+      eventSource.removeEventListener(SSE_MESSAGE_TYPE.UPDATED, handleFileSharingEvent);
+      eventSource.close();
+    };
   }, [isClassRoomManagementActive]);
 
   useEffect(() => {

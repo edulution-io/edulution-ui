@@ -104,7 +104,8 @@
   "dashboard": {
     "mobileAccess": {
       "title": "Mobile File Access",
-      "manual": "Manuell setup",
+      "manual": "Setup",
+      "manualSetup": "Manual setup",
       "setupWithQrCode": "Setup with QR code",
       "accessData": "Login data",
       "content": "You can access the school server from many mobile devices. Click on Manual to start.",
@@ -488,8 +489,6 @@
       "createConfig": "Create config",
       "editConfig": "Edit config"
     },
-    "collectAndCut": "Cut",
-    "collectAndCopy": "Copy",
     "copyOrCut": "Would you like to cut or copy the files?",
     "filesShared": "Files shared",
     "filesSharingStarted": "Files sharing started",
@@ -927,6 +926,7 @@
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },
+    "cut": "Cut",
     "sortOrder": "Sort order",
     "checking": "Checking",
     "options": "Options",

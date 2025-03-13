@@ -26,11 +26,11 @@ const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, 
 
   const options: Record<LmnApiCollectOperationsType, { label: string; icon: JSX.Element }> = {
     [LMN_API_COLLECT_OPERATIONS.CUT]: {
-      label: t('classmanagement.collectAndCut'),
+      label: t('common.cut'),
       icon: <FaCut />,
     },
     [LMN_API_COLLECT_OPERATIONS.COPY]: {
-      label: t('classmanagement.collectAndCopy'),
+      label: t('common.copy.doCopy'),
       icon: <FaCopy />,
     },
   };

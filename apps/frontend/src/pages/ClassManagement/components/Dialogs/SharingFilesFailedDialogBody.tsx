@@ -15,16 +15,15 @@ import { useTranslation } from 'react-i18next';
 import ItemDialogList from '@/components/shared/ItemDialogList';
 import { Button } from '@/components/shared/Button';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
-import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 
 interface SharingFilesFailedDialogBodyProps {
-  failedFile: string;
+  failedFilePath: string;
   affectedUsers: string[];
   failedPaths: string[];
 }
 
 const SharingFilesFailedDialogBody: React.FC<SharingFilesFailedDialogBodyProps> = ({
-  failedFile,
+  failedFilePath,
   affectedUsers,
   failedPaths,
 }) => {
@@ -36,7 +35,7 @@ const SharingFilesFailedDialogBody: React.FC<SharingFilesFailedDialogBodyProps> 
   const minute = date.getMinutes();
   const second = date.getSeconds();
 
-  const failedFileName = failedFile.split('/').pop() || '';
+  const failedFileName = failedFilePath.split('/').pop() || '';
   const possibleNewFileName = `${failedFileName}_${day}_${month}_${minute}_${second}`;
 
   const { shareFiles } = useLessonStore();
@@ -68,14 +67,14 @@ const SharingFilesFailedDialogBody: React.FC<SharingFilesFailedDialogBodyProps> 
           className="bg-primary"
           onClick={async () => {
             await shareFiles({
-              originFilePath: failedFile,
+              originFilePath: failedFilePath,
               destinationFilePaths: failedPaths.map((path) => {
                 const parts = path.split('/');
                 parts.pop();
                 const pathWithoutLast = parts.join('/');
                 return `${pathWithoutLast}/${possibleNewFileName}`;
               }),
-            } as DuplicateFileRequestDto);
+            });
           }}
         >
           {t('classmanagement.failDialog.retryButton')}

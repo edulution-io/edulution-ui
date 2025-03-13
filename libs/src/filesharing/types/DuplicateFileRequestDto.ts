@@ -14,11 +14,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsString } from 'class-validator';
 
 class DuplicateFileRequestDto {
-  constructor(originFilePath: string, destinationFilePaths: string[]) {
-    this.originFilePath = originFilePath;
-    this.destinationFilePaths = destinationFilePaths;
-  }
-
   @ApiProperty({
     description: 'The original path of the file that will be duplicated',
     example: '/teachers/agy-netzint-teacher/Thesis/aaa.txt',
