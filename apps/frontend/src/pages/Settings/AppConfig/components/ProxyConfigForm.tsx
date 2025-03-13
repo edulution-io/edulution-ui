@@ -18,7 +18,7 @@ import { FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui
 import Switch from '@/components/ui/Switch';
 import YamlEditor from '@/components/shared/YamlEditor';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
-import Input from '@/components/shared/Input';
+import FormField from '@/components/shared/FormField';
 import { Button } from '@/components/shared/Button';
 import type YamlDokument from '@libs/appconfig/types/yamlDokument';
 import type ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
@@ -67,28 +67,32 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
   }, [item.name]);
 
   const updateYaml = () => {
-    const jsonData = parse(form.getValues(`${item.name}.proxyConfig`) || defaultYaml) as YamlDokument;
-    if (proxyPath) {
-      jsonData.http.routers[item.name].rule = `PathPrefix(\`/${proxyPath}\`)`;
-      if (stripPrefix) {
-        jsonData.http.middlewares['strip-prefix'] = {
-          stripPrefix: {
-            prefixes: [`/${proxyPath}`],
-          },
-        };
-        jsonData.http.routers[item.name].middlewares = ['strip-prefix'];
-      } else {
-        delete jsonData.http.middlewares['strip-prefix'];
-        jsonData.http.routers[item.name].middlewares = [];
+    try {
+      const jsonData = parse(form.getValues(`${item.name}.proxyConfig`) || defaultYaml) as YamlDokument;
+      if (proxyPath) {
+        jsonData.http.routers[item.name].rule = `PathPrefix(\`/${proxyPath}\`)`;
+        if (stripPrefix) {
+          jsonData.http.middlewares['strip-prefix'] = {
+            stripPrefix: {
+              prefixes: [`/${proxyPath}`],
+            },
+          };
+          jsonData.http.routers[item.name].middlewares = ['strip-prefix'];
+        } else {
+          delete jsonData.http.middlewares['strip-prefix'];
+          jsonData.http.routers[item.name].middlewares = [];
+        }
       }
-    }
 
-    if (proxyDestination) {
-      jsonData.http.services[item.name].loadBalancer.servers[0].url = proxyDestination;
-    }
-    const updatedYaml = stringify(jsonData);
-    if (updatedYaml !== form.getValues(`${item.name}.proxyConfig`)) {
-      form.setValue(`${item.name}.proxyConfig`, updatedYaml);
+      if (proxyDestination) {
+        jsonData.http.services[item.name].loadBalancer.servers[0].url = proxyDestination;
+      }
+      const updatedYaml = stringify(jsonData);
+      if (updatedYaml !== form.getValues(`${item.name}.proxyConfig`)) {
+        form.setValue(`${item.name}.proxyConfig`, updatedYaml);
+      }
+    } catch (error) {
+      console.error('Error parsing YAML:', error);
     }
   };
 
@@ -148,48 +152,26 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
                 !expertModeEnabled || isKnownApp ? 'hidden' : 'flex',
               )}
             >
-              <div className="flex flex-row items-center justify-between gap-10">
-                <FormFieldSH
+              <div className="flex flex-wrap items-center justify-between gap-10">
+                <FormField
                   key={`${item.name}.proxyPath`}
-                  control={form.control}
                   name={`${item.name}.proxyPath`}
-                  defaultValue=""
                   disabled={!expertModeEnabled}
-                  render={({ field }) => (
-                    <FormItem>
-                      <p className="font-bold text-background">{t(`form.proxyPath`)}</p>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          className="min-w-32"
-                          placeholder={t('form.proxyPathPlaceholder')}
-                          onChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormMessage className="text-p" />
-                    </FormItem>
-                  )}
+                  form={form}
+                  defaultValue=""
+                  labelTranslationId={t('form.proxyPath')}
+                  placeholder={t('form.proxyPathPlaceholder')}
+                  className="min-w-64"
                 />
-                <FormFieldSH
+                <FormField
                   key={`${item.name}.proxyDestination`}
-                  control={form.control}
                   name={`${item.name}.proxyDestination`}
-                  defaultValue=""
                   disabled={!expertModeEnabled}
-                  render={({ field }) => (
-                    <FormItem>
-                      <p className="font-bold text-background">{t(`form.proxyDestination`)}</p>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          className="min-w-64"
-                          placeholder={t('form.proxyDestinationPlaceholder')}
-                          onChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormMessage className="text-p" />
-                    </FormItem>
-                  )}
+                  form={form}
+                  defaultValue=""
+                  labelTranslationId={t('form.proxyDestination')}
+                  placeholder={t('form.proxyDestinationPlaceholder')}
+                  className="min-w-96"
                 />
                 <FormFieldSH
                   key={`${item.name}.stripPrefix`}
@@ -240,7 +222,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
                 type="button"
                 variant="btn-infrastructure"
                 size="lg"
-                onClickCapture={handleLoadDefaultConfig}
+                onClick={handleLoadDefaultConfig}
               >
                 {t('common.template')}
               </Button>
@@ -249,7 +231,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
                 type="button"
                 variant="btn-collaboration"
                 size="lg"
-                onClickCapture={handleClearProxyConfig}
+                onClick={handleClearProxyConfig}
                 disabled={!isYamlConfigured}
               >
                 {t('common.delete')}
