@@ -907,7 +907,6 @@
     "cancel": "Abbrechen",
     "columns": "Spalten",
     "table": "Tabelle",
-    "clock": "Uhr",
     "copy": {
       "success": "Erfolgreich in Zwischenablage kopiert",
       "error": "In Zwischenablage kopieren fehlgeschlagen",
@@ -1014,7 +1013,9 @@
     "proxyDestinationPlaceholder": "z.B. http://localhost:1234/",
     "stripPrefix": "Prefix entfernen",
     "input": {
-      "dateTimePicker": "Date and Time picker"
+      "dateTimePicker": {
+        "timeSlot": "Uhr"
+      }
     }
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",

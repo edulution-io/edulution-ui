@@ -907,7 +907,6 @@
     "cancel": "Cancel",
     "columns": "Columns",
     "table": "Table",
-    "clock": "o'clock",
     "copy": {
       "success": "Successfully copied to clipboard",
       "error": "Copy to clipboard failed",
@@ -1014,7 +1013,9 @@
     "proxyDestinationPlaceholder": "e.g. http://localhost:1234/",
     "stripPrefix": "Strip prefix",
     "input": {
-      "dateTimePicker": "Datum und Uhrzeit auswählen"
+      "dateTimePicker": {
+        "timeSlot": "o'clock"
+      }
     }
   },
   "fileOperationSuccessful": "File operation successful",

@@ -145,7 +145,8 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
                   />
                   <div>
                     <div className="m-2 flex h-6 justify-center">
-                      {hours.toString().padStart(2, '0')}:{minutes.toString().padStart(2, '0')} {t('common.clock')}
+                      {hours.toString().padStart(2, '0')}:{minutes.toString().padStart(2, '0')}{' '}
+                      {t('form.input.dateTimePicker.timeSlot')}
                     </div>
                     <div className="flex flex-col divide-y sm:h-[300px] sm:flex-row sm:divide-x sm:divide-y-0">
                       <ScrollArea className="w-64 sm:w-auto">
