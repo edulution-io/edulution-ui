@@ -29,6 +29,7 @@ import MinuteButton from '@/components/ui/DateTimePicker/MinuteButtons';
 import safeGetHours from '@/components/ui/DateTimePicker/safeGetHours';
 import safeGetMinutes from '@/components/ui/DateTimePicker/safeGetMinutes';
 import HourButton from '@/components/ui/DateTimePicker/HourButtons';
+import safeGetDate from '@/components/ui/DateTimePicker/safeGetDate';
 
 interface DateTimePickerFieldProps<T extends FieldValues> {
   form: UseFormReturn<T>;
@@ -55,14 +56,10 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
         form.setValue(path, date as PathValue<T, Path<T>>);
         return;
       }
-
-      const currentDate = (fieldValue as unknown) instanceof Date ? fieldValue : new Date();
-      const newDate = new Date(currentDate);
-
+      const newDate = safeGetDate(fieldValue);
       newDate.setDate(date.getDate());
       newDate.setMonth(date.getMonth());
       newDate.setFullYear(date.getFullYear());
-
       form.setValue(path, newDate as PathValue<T, Path<T>>);
     },
     [fieldValue, form, path],
@@ -70,10 +67,8 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
 
   const onChangeHour = useCallback(
     (hour: number) => {
-      const currentDate = (fieldValue as unknown) instanceof Date ? fieldValue : new Date();
-      const newDate = new Date(currentDate);
+      const newDate = safeGetDate(fieldValue);
       newDate.setHours(hour);
-
       form.setValue(path, newDate as PathValue<T, Path<T>>);
     },
     [fieldValue, form, path],
@@ -81,10 +76,8 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
 
   const onChangeMinute = useCallback(
     (minute: number) => {
-      const currentDate = (fieldValue as unknown) instanceof Date ? fieldValue : new Date();
-      const newDate = new Date(currentDate);
+      const newDate = safeGetDate(fieldValue);
       newDate.setMinutes(minute);
-
       form.setValue(path, newDate as PathValue<T, Path<T>>);
     },
     [fieldValue, form, path],
