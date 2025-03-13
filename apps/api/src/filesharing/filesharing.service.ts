@@ -21,7 +21,6 @@ import { Readable } from 'stream';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
 import CustomFile from '@libs/filesharing/types/customFile';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
-import process from 'node:process';
 import { Request, Response } from 'express';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
