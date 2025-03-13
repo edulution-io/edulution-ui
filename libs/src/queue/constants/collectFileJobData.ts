@@ -10,9 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const QUEUE_NAMES = {
-  DUPLICATE_FILE_QUEUE: 'duplicate-file',
-  COLLECT_FILE_QUEUE: 'collect-file',
-} as const;
+import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
+import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 
-export default QUEUE_NAMES;
+interface CollectFileJobData {
+  username: string;
+  userRole: string;
+  item: CollectFileRequestDTO;
+  operationType: LmnApiCollectOperationsType;
+}
+
+export default CollectFileJobData;

@@ -26,7 +26,6 @@ import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileReques
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
-import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 import ContentType from '@libs/filesharing/types/contentType';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bull';
@@ -431,36 +430,16 @@ class FilesharingService {
     userRole: string,
     type: LmnApiCollectOperationsType,
   ) {
-    if (!collectFileRequestDTO || collectFileRequestDTO.length === 0) {
-      throw new Error('collectFileRequestDTO is empty or undefined');
-    }
-    const initFolderName = `${userRole}s/${username}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}`;
-
-    await this.createFolder(username, initFolderName, collectFileRequestDTO[0].newFolderName);
-    const operations = collectFileRequestDTO.map(async (item) => {
-      try {
-        await this.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName);
-
-        if (type === LMN_API_COLLECT_OPERATIONS.CUT) {
-          await this.cutCollectedItems(username, item.originPath, item.destinationPath);
-        } else {
-          await this.copyCollectedItems(username, {
-            originFilePath: item.originPath,
-            destinationFilePaths: [`${item.destinationPath}`],
-          });
-        }
-      } catch (error) {
-        throw new Error(`Operation failed for user ${item.userName}`);
-      }
-    });
-
-    const results = await Promise.allSettled(operations);
-
-    const failedTasks = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
-
-    if (failedTasks.length > 0) {
-      throw new CustomHttpException(FileSharingErrorMessage.CollectingFailed, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    await Promise.all(
+      collectFileRequestDTO.map(async (collectFileRequest) => {
+        await this.fileSharingQueue.add(QUEUE_NAMES.COLLECT_FILE_QUEUE, {
+          username,
+          userRole,
+          item: collectFileRequest,
+          operationType: type,
+        });
+      }),
+    );
   }
 
   static async copyFileViaWebDAV(

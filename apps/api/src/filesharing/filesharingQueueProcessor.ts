@@ -27,6 +27,8 @@ import DuplicateFileJobData from '@libs/queue/constants/duplicateFileJobData';
 import type UserConnections from '../types/userConnections';
 import FilesharingService from './filesharing.service';
 import SseService from '../sse/sse.service';
+import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
+import CollectFileJobData from '@libs/queue/constants/collectFileJobData';
 
 @Processor(APPS.FILE_SHARING, { concurrency: 1 })
 class FilesharingQueueProcessor extends WorkerHost {
@@ -40,13 +42,37 @@ class FilesharingQueueProcessor extends WorkerHost {
     return SseService.subscribe(username, this.fileSharingSseConnections, res);
   }
 
-  async process(job: Job<DuplicateFileJobData>): Promise<void> {
+  async process(job: Job<DuplicateFileJobData | CollectFileJobData>): Promise<void> {
     switch (job.name) {
       case QUEUE_NAMES.DUPLICATE_FILE_QUEUE:
-        await this.processDuplicateFile(job);
+        await this.processDuplicateFile(job as Job<DuplicateFileJobData>);
+        break;
+      case QUEUE_NAMES.COLLECT_FILE_QUEUE:
+        await this.processCollectFile(job as Job<CollectFileJobData>);
         break;
       default:
         break;
+    }
+  }
+
+  private async processCollectFile(job: Job<CollectFileJobData>): Promise<void> {
+    const { username, userRole, item, operationType } = job.data;
+
+    const initFolderName = `${userRole}s/${username}/transfer/collected`;
+
+    try {
+      await this.fileSharingService.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName);
+
+      if (operationType === LMN_API_COLLECT_OPERATIONS.CUT) {
+        await this.fileSharingService.cutCollectedItems(username, item.originPath, item.destinationPath);
+      } else {
+        await this.fileSharingService.copyCollectedItems(username, {
+          originFilePath: item.originPath,
+          destinationFilePaths: [item.destinationPath],
+        });
+      }
+    } catch (error) {
+      throw new Error(`Operation failed for user ${item.userName}`);
     }
   }
 
