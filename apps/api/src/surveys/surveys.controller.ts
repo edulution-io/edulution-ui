@@ -12,20 +12,7 @@
 
 import { Observable } from 'rxjs';
 import { Response } from 'express';
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  MessageEvent,
-  Param,
-  Patch,
-  Post,
-  Query,
-  Res,
-  Sse,
-  Logger,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, MessageEvent, Param, Patch, Post, Query, Res, Sse } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import {
@@ -96,8 +83,6 @@ class SurveysController {
 
   @Post()
   async updateOrCreateSurvey(@Body() surveyDto: SurveyDto, @GetCurrentUser() user: JWTUser) {
-    Logger.log(`${JSON.stringify(surveyDto)}`);
-
     return this.surveyService.updateOrCreateSurvey(surveyDto, user, this.surveysSseConnections);
   }
 
