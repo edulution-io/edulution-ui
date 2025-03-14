@@ -40,10 +40,10 @@ export class Bulletin {
   attachmentFileNames: string[];
 
   @Prop({ type: Date, required: false })
-  isVisibleStartDate: Date | undefined;
+  isVisibleStartDate: Date | null;
 
   @Prop({ type: Date, required: false })
-  isVisibleEndDate: Date | undefined;
+  isVisibleEndDate: Date | null;
 }
 
 export const BulletinSchema = SchemaFactory.createForClass(Bulletin);

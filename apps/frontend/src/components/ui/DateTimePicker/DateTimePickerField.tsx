@@ -51,7 +51,7 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
   const minutes = safeGetMinutes(fieldValue);
 
   const handleClear = useCallback(() => {
-    form.setValue(path, undefined as PathValue<T, Path<T>>);
+    form.setValue(path, null as PathValue<T, Path<T>>);
   }, [fieldValue, form, path]);
 
   const handleDateSelect = useCallback(

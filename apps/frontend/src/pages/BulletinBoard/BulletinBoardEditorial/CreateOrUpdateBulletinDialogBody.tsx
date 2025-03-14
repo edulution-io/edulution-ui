@@ -41,8 +41,8 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
 
   useEffect(() => {
     if (isPermanentlyActive) {
-      setValue('isVisibleStartDate', undefined);
-      setValue('isVisibleEndDate', undefined);
+      setValue('isVisibleStartDate', null);
+      setValue('isVisibleEndDate', null);
     }
   }, [isPermanentlyActive]);
 

@@ -150,8 +150,8 @@ class BulletinBoardService implements OnModuleInit {
           return false;
         }
 
-        const startDate = bulletin.isVisibleStartDate ? new Date(bulletin.isVisibleStartDate) : undefined;
-        const endDate = bulletin.isVisibleEndDate ? new Date(bulletin.isVisibleEndDate) : undefined;
+        const startDate = bulletin.isVisibleStartDate ? new Date(bulletin.isVisibleStartDate) : null;
+        const endDate = bulletin.isVisibleEndDate ? new Date(bulletin.isVisibleEndDate) : null;
 
         return (!startDate || currentDate >= startDate) && (!endDate || currentDate <= endDate);
       })

@@ -56,8 +56,8 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
     attachmentFileNames: selectedBulletinToEdit?.attachmentFileNames || [],
     content: selectedBulletinToEdit?.content || '',
     isActive: selectedBulletinToEdit?.isActive || true,
-    isVisibleEndDate: selectedBulletinToEdit?.isVisibleEndDate || undefined,
-    isVisibleStartDate: selectedBulletinToEdit?.isVisibleStartDate || undefined,
+    isVisibleEndDate: selectedBulletinToEdit?.isVisibleEndDate || null,
+    isVisibleStartDate: selectedBulletinToEdit?.isVisibleStartDate || null,
   };
 
   const form = useForm<CreateBulletinDto>({

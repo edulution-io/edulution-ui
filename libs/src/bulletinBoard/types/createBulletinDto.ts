@@ -31,10 +31,10 @@ class CreateBulletinDto {
   category: BulletinCategoryResponseDto;
 
   @IsDate()
-  isVisibleStartDate: Date | undefined;
+  isVisibleStartDate: Date | null;
 
   @IsDate()
-  isVisibleEndDate: Date | undefined;
+  isVisibleEndDate: Date | null;
 }
 
 export default CreateBulletinDto;
