@@ -82,7 +82,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
         ? async () => {
             await joinConference(meetingID);
           }
-        : undefined;
+        : () => row.toggleSelected();
       return (
         <SelectableTextCell
           onClick={onClick}
