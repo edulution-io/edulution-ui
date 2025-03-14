@@ -26,13 +26,13 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
 import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import surveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
 import surveysMigrationsList from './migrations/surveysMigrationsList';
 import MigrationService from '../migration/migration.service';
 import type UserConnections from '../types/userConnections';
 import { Survey, SurveyDocument } from './survey.schema';
-import surveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 
 @Injectable()
 class SurveysService implements OnModuleInit {

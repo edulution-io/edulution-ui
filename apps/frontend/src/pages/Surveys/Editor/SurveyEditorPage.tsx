@@ -48,6 +48,7 @@ const SurveyEditorPage = () => {
     storedSurvey,
     updateStoredSurvey,
     resetStoredSurvey,
+    uploadImageFile,
   } = useSurveyEditorPageStore();
 
   const { t } = useTranslation();
@@ -108,6 +109,16 @@ const SurveyEditorPage = () => {
       creator.JSON = form.getValues('formula');
       creator.locale = language;
       creator.saveSurveyFunc = updateSurveyStorage;
+
+      creator.onUploadFile.add(async (_, options) => {
+        const formData = new FormData();
+
+        options.files.forEach((file) => formData.append(file.name, file));
+
+        if (surveyId) {
+          await uploadImageFile(surveyId, options.question.id, formData, options.callback);
+        }
+      });
     }
   }, [creator, form, language]);
 

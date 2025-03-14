@@ -12,18 +12,26 @@
 
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
+import { HttpStatus } from '@nestjs/common';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { SURVEY_IMAGES_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import commonErrorMessages from '@libs/common/constants/common-error-messages';
 
 interface SurveyEditorPageStore {
   storedSurvey: SurveyDto | undefined;
   updateStoredSurvey: (survey: SurveyDto) => void;
   resetStoredSurvey: () => void;
 
-  uploadAttachment: (attachment: File) => Promise<string>;
-  isAttachmentUploadLoading: boolean;
+  uploadImageFile: (
+    surveyId: string,
+    questionId: string,
+    formData: FormData,
+    callback: CallableFunction,
+  ) => Promise<void>;
+  isUploadingImageFile: boolean;
 
   isOpenSaveSurveyDialog: boolean;
   setIsOpenSaveSurveyDialog: (state: boolean) => void;
@@ -46,7 +54,7 @@ type PersistedSurveyEditorPageStore = (
 const initialState = {
   storedSurvey: undefined,
 
-  isAttachmentUploadLoading: false,
+  isUploadingImageFile: false,
 
   isOpenSaveSurveyDialog: false,
   isLoading: false,
@@ -91,22 +99,35 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
         }
       },
 
-      uploadAttachment: async (file): Promise<string> => {
-        set({ isAttachmentUploadLoading: true });
-        const formData = new FormData();
-        formData.append('file', file);
-
+      uploadImageFile: async (
+        surveyId: string,
+        questionId: string,
+        formData: FormData,
+        callback: CallableFunction,
+      ): Promise<void> => {
+        set({ isUploadingImageFile: true });
         try {
-          const response = await eduApi.post<string>(SURVEY_IMAGES_ENDPOINT, formData, {
-            headers: { 'Content-Type': 'multipart/form-data' },
-          });
+          console.log('uploadImageFile (formData: ', formData, ' )');
 
-          return response.data;
+          const response = await eduApi.post<string>(
+            SURVEY_IMAGES_ENDPOINT,
+            { surveyId, questionId, file: formData },
+            {
+              headers: { 'Content-Type': 'multipart/form-data' },
+            },
+          );
+
+          console.log('  -> response: ', response);
+
+          if (!response) {
+            throw new CustomHttpException(commonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR);
+          }
+          callback('success', response.data);
         } catch (error) {
           handleApiError(error, set);
-          return '';
+          callback('error');
         } finally {
-          set({ isAttachmentUploadLoading: false });
+          set({ isUploadingImageFile: false });
         }
       },
 

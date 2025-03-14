@@ -10,6 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+import { copyFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
 import { Observable } from 'rxjs';
 import { extname } from 'path';
 import { diskStorage } from 'multer';
@@ -29,6 +31,7 @@ import {
   Query,
   UploadedFile,
   UseInterceptors,
+  Logger,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -98,14 +101,16 @@ class SurveysController {
     return this.surveyAnswerService.findUserSurveys(status, user);
   }
 
-  @Post(`${IMAGES}/:surveyId/:questionId`)
+  @Post(IMAGES)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
         destination: (req: Request) => {
-          const { surveyId, questionId } = req.params;
-          return `${SURVEYS_IMAGES_PATH}/${surveyId}/${questionId}`;
+          const { surveyId, questionId } = req.body;
+          const directory = `${SURVEYS_IMAGES_PATH}/${surveyId}/${questionId}`;
+          mkdirSync(directory, { recursive: true });
+          return directory;
         },
         filename: (_req, file, callback) => {
           const uniqueFilename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${extname(file.originalname)}`;
@@ -126,11 +131,14 @@ class SurveysController {
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   uploadImage(
-    @Param() params: { surveyId: string; questionId: string },
+    @Body() body: { surveyId: string; questionId: string },
     @UploadedFile() file: Express.Multer.File,
     @Res() res: Response,
   ) {
-    const { surveyId, questionId } = params;
+    const { surveyId, questionId } = body;
+
+    Logger.log(`${surveyId} ${questionId}`);
+
     const filePath = SurveysService.getImageUrl(file, surveyId, questionId);
     return res.status(HttpStatus.CREATED).json(filePath);
   }
