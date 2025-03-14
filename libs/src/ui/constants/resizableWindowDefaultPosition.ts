@@ -10,28 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import cn from '@libs/common/utils/className';
-import { MdClose } from 'react-icons/md';
-import WindowControlBaseButton from './WindowControlBaseButton';
+const RESIZEABLE_WINDOW_DEFAULT_POSITION = { x: 50, y: 50 };
 
-interface CloseButtonProps {
-  handleClose: () => void;
-  className?: string;
-}
-
-const CloseButton = ({ handleClose, className }: CloseButtonProps) => {
-  const closeClasses = cn('bg-red-800 hover:bg-red-700', className);
-
-  return (
-    <WindowControlBaseButton
-      tooltipTranslationId="common.close"
-      onClick={handleClose}
-      className={closeClasses}
-    >
-      <MdClose />
-    </WindowControlBaseButton>
-  );
-};
-
-export default CloseButton;
+export default RESIZEABLE_WINDOW_DEFAULT_POSITION;

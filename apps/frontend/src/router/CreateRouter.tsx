@@ -38,6 +38,7 @@ import getPublicRoutes from '@/router/routes/PublicRoutes';
 import APPS from '@libs/appconfig/constants/apps';
 import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
 import FullScreenFileViewer from '@/pages/FileSharing/FilePreview/FullScreenFileViewer';
+import RootLayout from '@/components/layout/RootLayout';
 import getSettingsRoutes from './routes/SettingsRoutes';
 import getForwardedRoutes from './routes/ForwardedRoutes';
 import getEmbeddedRoutes from './routes/EmbeddedRoutes';
@@ -51,7 +52,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
         {getPublicRoutes()}
         {getAuthRoutes(isAuthenticated)}
         {isAuthenticated ? (
-          <>
+          <Route element={<RootLayout />}>
             <Route element={<EmptyLayout />}>
               <Route
                 path={FILE_PREVIEW_ROUTE}
@@ -115,7 +116,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
               {getSurveyRoutes()}
               {getFileSharingRoutes()}
             </Route>
-          </>
+          </Route>
         ) : null}
       </>,
     ),

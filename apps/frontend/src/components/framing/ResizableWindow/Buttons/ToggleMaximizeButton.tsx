@@ -32,6 +32,7 @@ const ToggleMaximizeButton = ({ handleMaximizeToggle, isMinimized, isMaximized }
   return (
     <IconContext.Provider value={iconContextValue}>
       <WindowControlBaseButton
+        tooltipTranslationId={isMaximized ? 'common.restore' : 'common.maximize'}
         onClick={handleMaximizeToggle}
         className={extraClasses}
       >
