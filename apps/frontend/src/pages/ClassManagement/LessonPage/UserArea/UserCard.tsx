@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent } from '@/components/shared/Card';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import cn from '@libs/common/utils/className';
@@ -20,10 +20,6 @@ import { SOPHOMORIX_STUDENT } from '@libs/lmnApi/constants/sophomorixRoles';
 import { useTranslation } from 'react-i18next';
 import UserPasswordDialog from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/UserPasswordDialog';
 import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
-import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import APPS from '@libs/appconfig/constants/apps';
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import VEYON_FEATURE_ACTIONS from '@libs/veyon/constants/veyonFeatureActions';
 import useVeyonApiStore from '../../useVeyonApiStore';
 import UserCardVeyonPreview from './UserCardVeyonPreview';
@@ -34,6 +30,7 @@ interface UserCardProps {
   setSelectedMember: React.Dispatch<React.SetStateAction<UserLmnInfo[]>>;
   isTeacherInSameClass: boolean;
   isTeacherInSameSchool: boolean;
+  isVeyonEnabled: boolean;
 }
 
 const UserCard = ({
@@ -42,23 +39,26 @@ const UserCard = ({
   setSelectedMember,
   isTeacherInSameClass,
   isTeacherInSameSchool,
+  isVeyonEnabled,
 }: UserCardProps) => {
   const { t } = useTranslation();
   const { currentUser } = useLmnApiPasswordStore();
   const { displayName, name, sophomorixAdminClass, school } = user;
-  const { appConfigs } = useAppConfigsStore();
-  const { userConnectionsFeatureStates, userConnectionUids, getFeatures } = useVeyonApiStore();
+  const { userConnectionsFeatureStates, userConnectionUids, authenticateVeyonClient, getFeatures } = useVeyonApiStore();
 
   const isStudent = user.sophomorixRole === SOPHOMORIX_STUDENT;
   const isSelectable = isTeacherInSameSchool && isStudent;
   const isMemberSelected = !!selectedMember.find((m) => m.dn === user.dn) && isSelectable;
 
-  const isVeyonEnabled = useMemo(() => {
-    const veyonConfigs = getExtendedOptionsValue(appConfigs, APPS.CLASS_MANAGEMENT, ExtendedOptionKeys.VEYON_PROXYS);
-    return Array.isArray(veyonConfigs) && veyonConfigs.length > 0;
-  }, [appConfigs]);
-
   const connectionUid = userConnectionUids.find((conn) => conn.veyonUsername === user.cn)?.connectionUid || '';
+
+  useEffect(() => {
+    if (isVeyonEnabled && user.sophomorixIntrinsic3.length > 0) {
+      const connIp = user.sophomorixIntrinsic3[0];
+
+      void authenticateVeyonClient(connIp, user.cn);
+    }
+  }, [user]);
 
   useEffect(() => {
     if (isVeyonEnabled && connectionUid) {
@@ -143,6 +143,7 @@ const UserCard = ({
               user={user}
               isVeyonEnabled={isVeyonEnabled}
               areInputDevicesLocked={areInputDevicesLocked}
+              connectionUid={connectionUid}
             />
           </div>
         </div>

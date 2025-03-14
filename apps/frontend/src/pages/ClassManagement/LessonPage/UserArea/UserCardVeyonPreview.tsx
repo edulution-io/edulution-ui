@@ -19,14 +19,21 @@ interface UserCardVeyonPreviewProps {
   user: UserLmnInfo;
   isVeyonEnabled: boolean;
   areInputDevicesLocked: boolean;
+  connectionUid: string;
 }
 
-const UserCardVeyonPreview: React.FC<UserCardVeyonPreviewProps> = ({ user, isVeyonEnabled, areInputDevicesLocked }) => {
-  if (isVeyonEnabled && user.sophomorixIntrinsic3.length > 0) {
+const UserCardVeyonPreview: React.FC<UserCardVeyonPreviewProps> = ({
+  user,
+  isVeyonEnabled,
+  areInputDevicesLocked,
+  connectionUid,
+}) => {
+  if (isVeyonEnabled && user.sophomorixIntrinsic3.length > 0 && connectionUid) {
     return (
       <FrameBufferImage
         user={user}
         areInputDevicesLocked={areInputDevicesLocked}
+        connectionUid={connectionUid}
       />
     );
   }

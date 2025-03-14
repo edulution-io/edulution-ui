@@ -18,7 +18,6 @@ import { useTranslation } from 'react-i18next';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
 import FullScreenImage from '@/components/ui/FullScreenImage';
-import Avatar from '@/components/shared/Avatar';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import { VEYON_REFRESH_INTERVAL, VEYON_REFRESH_INTERVAL_HIGH } from '@libs/veyon/constants/refreshInterval';
 import useVeyonApiStore from '../../useVeyonApiStore';
@@ -26,27 +25,21 @@ import useVeyonApiStore from '../../useVeyonApiStore';
 type FrameBufferImageProps = {
   user: UserLmnInfo;
   areInputDevicesLocked: boolean;
+  connectionUid: string;
 };
 
-const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user, areInputDevicesLocked }) => {
+const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ areInputDevicesLocked, connectionUid }) => {
   const { t } = useTranslation();
   const [imageSrc, setImageSrc] = useState<string>('');
-  const { userConnectionUids, setFeatureIsLoading, authenticateVeyonClient, getFrameBufferStream } = useVeyonApiStore();
+  const { setFeatureIsLoading, getFrameBufferStream } = useVeyonApiStore();
   const [isImagePreviewModalOpen, setIsImagePreviewModalOpen] = useState(false);
-
-  const connectionUid = userConnectionUids.find((conn) => conn.veyonUsername === user.cn)?.connectionUid || '';
-
-  useEffect(() => {
-    if (user.sophomorixIntrinsic3.length > 0) {
-      const connIp = user.sophomorixIntrinsic3[0];
-
-      void authenticateVeyonClient(connIp, user.cn);
-    }
-  }, [user]);
 
   const fetchImage = async () => {
     const image = await getFrameBufferStream(connectionUid, isImagePreviewModalOpen);
-    if (!image.size) return null;
+    if (!image.size) {
+      setImageSrc('');
+      return null;
+    }
 
     const imageURL = URL.createObjectURL(image);
     setImageSrc(imageURL);
@@ -56,8 +49,6 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user, areInputDevic
   useEffect(() => {
     if (connectionUid) {
       void fetchImage();
-    } else {
-      setImageSrc('');
     }
   }, [connectionUid]);
 
@@ -125,17 +116,7 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user, areInputDevic
       );
     }
 
-    if (connectionUid) {
-      return <CircleLoader />;
-    }
-
-    return (
-      <Avatar
-        user={{ username: user.cn, firstName: user.givenName, lastName: user.sn }}
-        imageSrc={user.thumbnailPhoto}
-        className={user.thumbnailPhoto && 'h-24 w-24 p-2'}
-      />
-    );
+    return <CircleLoader />;
   };
 
   return renderContent();

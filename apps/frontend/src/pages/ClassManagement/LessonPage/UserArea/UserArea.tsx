@@ -24,14 +24,24 @@ import Checkbox from '@/components/ui/Checkbox';
 import useElementHeight from '@/hooks/useElementHeight';
 import { FILTER_BAR_ID, LESSON_SESSION_HEADER_ID } from '@libs/classManagement/constants/pageElementIds';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
+import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import APPS from '@libs/appconfig/constants/apps';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 
 const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
   const { t } = useTranslation();
   const { user: teacher } = useLmnApiStore();
   const { user } = useUserStore();
   const { member } = useLessonStore();
+  const { appConfigs } = useAppConfigsStore();
   const [selectedMember, setSelectedMember] = useState<UserLmnInfo[]>([]);
   const selectedMemberCount = selectedMember.length;
+
+  const isVeyonEnabled = useMemo(() => {
+    const veyonConfigs = getExtendedOptionsValue(appConfigs, APPS.CLASS_MANAGEMENT, ExtendedOptionKeys.VEYON_PROXYS);
+    return Array.isArray(veyonConfigs) && veyonConfigs.length > 0;
+  }, [appConfigs]);
 
   const isTeacherInSameClass = useMemo(
     () =>
@@ -108,6 +118,7 @@ const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
             setSelectedMember={setSelectedMember}
             isTeacherInSameClass={isTeacherInSameClass(m)}
             isTeacherInSameSchool={isTeacherInSameSchool(m)}
+            isVeyonEnabled={isVeyonEnabled}
           />
         ))}
       </div>
