@@ -941,6 +941,11 @@
       "link": "Link kopieren"
     },
     "openInNewTab": "In neuem Tab öffnen",
+    "maximize": "Maximieren",
+    "minimize": "Minimieren",
+    "restore": "Wiederherstellen",
+    "dock": "Andocken",
+    "undock": "Abdocken",
     "from": "von",
     "youAreCurrentlyNotLoggedIn": "Du bist momentan nicht angemeldet",
     "toLogin": "Zum Login",

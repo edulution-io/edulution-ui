@@ -15,7 +15,6 @@ import React, { FC, useCallback } from 'react';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import { useTranslation } from 'react-i18next';
 import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
-import { useSearchParams } from 'react-router-dom';
 
 interface OnlyOfficeEditorProps {
   editorType: {
@@ -28,6 +27,7 @@ interface OnlyOfficeEditorProps {
   editorConfig: OnlyOfficeEditorConfig;
   filePath: string;
   fileName: string;
+  isOpenedInNewTab?: boolean;
 }
 
 const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
@@ -37,9 +37,9 @@ const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
   editorType,
   documentServerURL,
   editorConfig,
+  isOpenedInNewTab,
 }) => {
   const { deleteFileAfterEdit } = useFileEditorStore();
-  const [searchParams] = useSearchParams();
   const { t } = useTranslation();
 
   const handleDocumentReady = useCallback(() => {
@@ -55,8 +55,6 @@ const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
         void deleteFileAfterEdit(editorConfig.document.url);
     }
   };
-
-  const isOpenedInNewTab = Boolean(searchParams.get('tab'));
 
   let className = 'h-full';
   if (isOpenedInNewTab) {

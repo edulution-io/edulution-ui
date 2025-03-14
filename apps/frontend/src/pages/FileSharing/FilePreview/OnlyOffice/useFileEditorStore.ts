@@ -28,6 +28,10 @@ import delay from '@libs/common/utils/delay';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
 
 type FileEditorStore = {
+  isFilePreviewDocked: boolean;
+  setIsFilePreviewDocked: (isFilePreviewDocked: boolean) => void;
+  isFilePreviewVisible: boolean;
+  setIsFilePreviewVisible: (isVisible: boolean) => void;
   getOnlyOfficeJwtToken: (config: OnlyOfficeEditorConfig) => Promise<string>;
   deleteFileAfterEdit: (url: string) => Promise<void>;
   reset: () => void;
@@ -49,6 +53,8 @@ type FileEditorStore = {
 };
 
 const initialState = {
+  isFilePreviewDocked: true,
+  isFilePreviewVisible: false,
   publicDownloadLink: null,
   isEditorLoading: false,
   downloadLinkURL: '',
@@ -69,6 +75,10 @@ const useFileEditorStore = create<FileEditorStore>(
     (set, get) => ({
       ...initialState,
       reset: () => set(initialState),
+
+      setIsFilePreviewDocked: (isFilePreviewDocked) => set({ isFilePreviewDocked }),
+
+      setIsFilePreviewVisible: (isFilePreviewVisible) => set({ isFilePreviewVisible }),
 
       deleteFileAfterEdit: async (url) => {
         try {

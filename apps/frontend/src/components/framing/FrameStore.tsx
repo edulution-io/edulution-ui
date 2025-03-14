@@ -24,8 +24,8 @@ interface FrameStore {
   setWindowedFrameOpen: (appName: string, isOpen: boolean) => void;
   minimizedWindowedFrames: string[];
   setWindowedFrameMinimized: (appName: string, isMinimized: boolean) => void;
-  currentWindowedFrameSizes: { [appName: string]: RectangleSize };
-  setCurrentWindowedFrameSize: (appName: string, size: RectangleSize) => void;
+  currentWindowedFrameSizes: { [appName: string]: RectangleSize | undefined };
+  setCurrentWindowedFrameSize: (appName: string, size?: RectangleSize) => void;
   windowedFramesZIndices: { [appName: string]: number };
   setWindowedFramesZIndices: (appName: string) => void;
   hasFramedWindowHighestZIndex: (appName: string) => boolean;

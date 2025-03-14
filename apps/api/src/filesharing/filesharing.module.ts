@@ -13,7 +13,7 @@
 import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { BullModule } from '@nestjs/bullmq';
-import Apps from '@libs/appconfig/constants/apps';
+import APPS from '@libs/appconfig/constants/apps';
 import FilesharingController from './filesharing.controller';
 import FilesharingService from './filesharing.service';
 import AppConfigModule from '../appconfig/appconfig.module';
@@ -27,7 +27,7 @@ import SseService from '../sse/sse.service';
     HttpModule,
     AppConfigModule,
     BullModule.registerQueue({
-      name: Apps.FILE_SHARING,
+      name: APPS.FILE_SHARING,
     }),
   ],
   controllers: [FilesharingController],

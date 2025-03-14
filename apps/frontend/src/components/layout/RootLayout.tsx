@@ -11,20 +11,24 @@
  */
 
 import React from 'react';
-import { FiEdit } from 'react-icons/fi';
-import WindowControlBaseButton from './WindowControlBaseButton';
+import FileSharingPreviewFrame from '@/pages/FileSharing/FilePreview/FileSharingPreviewFrame';
+import { Outlet } from 'react-router-dom';
+import NativeFrames from '@/components/framing/Native/NativeFrames';
+import CommunityLicenseDialog from '@/pages/UserSettings/Info/CommunityLicenseDialog';
+import BBBFrame from '@/pages/ConferencePage/BBBIFrame';
+import VDIFrame from '@/pages/DesktopDeployment/VDIFrame';
+import EmbeddedIframes from '@/components/framing/EmbeddedIframes';
 
-interface EditButtonProps {
-  onClick: () => Promise<void> | void;
-}
-
-const EditButton = ({ onClick }: EditButtonProps) => (
-  <WindowControlBaseButton
-    onClick={onClick}
-    tooltipTranslationId="common.edit"
-  >
-    <FiEdit />
-  </WindowControlBaseButton>
+const RootLayout = () => (
+  <>
+    <FileSharingPreviewFrame />
+    <BBBFrame />
+    <VDIFrame />
+    <EmbeddedIframes />
+    <NativeFrames />
+    <CommunityLicenseDialog />
+    <Outlet />
+  </>
 );
 
-export default EditButton;
+export default RootLayout;

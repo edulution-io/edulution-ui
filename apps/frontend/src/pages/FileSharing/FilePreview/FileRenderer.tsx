@@ -26,9 +26,10 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 interface FileRendererProps {
   editMode: boolean;
+  isOpenedInNewTab?: boolean;
 }
 
-const FileRenderer: FC<FileRendererProps> = ({ editMode }) => {
+const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab }) => {
   const isMobileView = useIsMobileView();
   const {
     downloadLinkURL: fileUrl,
@@ -86,6 +87,7 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode }) => {
         filePath={currentlyEditingFile.filename}
         mode={editMode ? 'edit' : 'view'}
         type={isMobileView ? 'mobile' : 'desktop'}
+        isOpenedInNewTab={isOpenedInNewTab}
       />
     ) : (
       <div className="flex flex-col items-center justify-center space-y-4">

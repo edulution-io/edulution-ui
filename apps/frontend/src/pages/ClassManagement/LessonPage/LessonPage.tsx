@@ -102,7 +102,7 @@ const LessonPage = () => {
       id: dataForBox.id,
       duration: toastDuration,
     });
-  }, [filesharingProgress, t]);
+  }, [filesharingProgress]);
 
   useEffect(() => {
     if (lmnApiToken) {

@@ -20,9 +20,16 @@ interface ActionTooltipProps {
   onAction?: () => void;
   tooltipText: string;
   className?: string;
+  openOnSide?: 'top' | 'left' | 'bottom' | 'right';
 }
 
-const ActionTooltip: React.FC<ActionTooltipProps> = ({ trigger, onAction, tooltipText, className }) => {
+const ActionTooltip: React.FC<ActionTooltipProps> = ({
+  trigger,
+  onAction,
+  tooltipText,
+  className,
+  openOnSide = 'top',
+}) => {
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if ((event.key === 'Enter' || event.key === ' ') && onAction) {
       onAction();
@@ -43,7 +50,7 @@ const ActionTooltip: React.FC<ActionTooltipProps> = ({ trigger, onAction, toolti
       </TooltipTrigger>
       <TooltipContent
         className={cn('rounded-lg bg-accent p-2', className)}
-        side="top"
+        side={openOnSide}
         align="center"
       >
         {tooltipText}
