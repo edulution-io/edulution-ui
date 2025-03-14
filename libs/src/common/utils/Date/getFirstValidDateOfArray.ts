@@ -10,9 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const getFirstValidDateOfArray = (...possibleDates: Array<string | Date | undefined>): Date | undefined =>
+const getFirstValidDateOfArray = (...possibleDates: Array<string | Date | undefined | null>): Date | undefined =>
   possibleDates
-    .filter((dateStr) => dateStr !== undefined)
+    .filter((dateStr) => dateStr != null)
     .map((dateStr) => (dateStr instanceof Date ? dateStr : new Date(dateStr)))
     .find((date) => !Number.isNaN(date.getTime()));
 
