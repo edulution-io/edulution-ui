@@ -10,38 +10,31 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-class FilesharingProgressDto {
+import { IsNumber, IsString, IsOptional, IsArray } from 'class-validator';
+
+export class FilesharingProgressDto {
+  @IsNumber()
   processID: number;
 
+  @IsNumber()
   processed: number;
 
+  @IsNumber()
   total: number;
 
+  @IsNumber()
   percent: number;
 
+  @IsString()
   currentFile: string;
 
+  @IsString()
   studentName: string;
 
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
   failedPaths?: string[];
-
-  constructor(
-    processID: number,
-    processed: number,
-    total: number,
-    studentName: string,
-    percent: number,
-    currentFile: string,
-    failedPaths?: string[],
-  ) {
-    this.processID = processID;
-    this.processed = processed;
-    this.total = total;
-    this.studentName = studentName;
-    this.percent = percent;
-    this.currentFile = currentFile;
-    this.failedPaths = failedPaths;
-  }
 }
 
 export default FilesharingProgressDto;

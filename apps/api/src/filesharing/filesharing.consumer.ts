@@ -70,15 +70,15 @@ class FilesharingConsumer extends WorkerHost {
     const percent = Math.round((processed / total) * 100);
     const studentName = FilesharingService.getStudentNameFromPath(destinationFilePath) || '';
 
-    const progressDto = new FilesharingProgressDto(
-      Number(job.id),
+    const progressDto: FilesharingProgressDto = {
+      processID: Number(job.id),
       processed,
       total,
-      studentName,
       percent,
-      originFilePath,
+      currentFile: originFilePath,
+      studentName,
       failedPaths,
-    );
+    };
 
     SseService.sendEventToUser(username, this.fileSharingSseConnections, progressDto, SSE_MESSAGE_TYPE.UPDATED);
   }
