@@ -17,6 +17,7 @@ import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindo
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useFrameStore from '@/components/framing/FrameStore';
 import { MAXIMIZED_BAR_HEIGHT } from '@libs/ui/constants/resizableWindowElements';
+import RESIZABLE_WINDOW_DEFAULT_SIZE from '@libs/ui/constants/resizableWindowDefaultSize';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 
 const VDIFrame = () => {
@@ -38,7 +39,7 @@ const VDIFrame = () => {
   };
 
   const id = 'desktopdeployment.topic';
-  const width = currentWindowedFrameSizes[id]?.width;
+  const width = currentWindowedFrameSizes[id]?.width || RESIZABLE_WINDOW_DEFAULT_SIZE.width;
   const height = (currentWindowedFrameSizes[id]?.height || MAXIMIZED_BAR_HEIGHT) - MAXIMIZED_BAR_HEIGHT;
   const isMinimized = minimizedWindowedFrames.includes(id);
 

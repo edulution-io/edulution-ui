@@ -23,7 +23,7 @@ import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressD
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 
 import QUEUE_NAMES from '@libs/queue/constants/queueNames';
-import DuplicateFileJobData from '@libs/queue/constants/duplicateFileJobData';
+import DuplicateFileJobData from '@libs/queue/types/duplicateFileJobData';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 import CollectFileJobData from '@libs/queue/constants/collectFileJobData';
 import type UserConnections from '../types/userConnections';

@@ -940,6 +940,11 @@
       "link": "Copy link"
     },
     "openInNewTab": "Open in new tab",
+    "maximize": "Maximize",
+    "minimize": "Minimize",
+    "restore": "Restore",
+    "dock": "Dock",
+    "undock": "Undock",
     "from": "from",
     "youAreCurrentlyNotLoggedIn": "You are currently not logged in",
     "toLogin": "To login",

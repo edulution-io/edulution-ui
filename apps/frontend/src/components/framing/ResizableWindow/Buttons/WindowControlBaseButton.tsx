@@ -12,21 +12,42 @@
 
 import React, { FC, ReactNode } from 'react';
 import cn from '@libs/common/utils/className';
+import { TooltipProvider } from '@/components/ui/Tooltip';
+import ActionTooltip from '@/components/shared/ActionTooltip';
+import { useTranslation } from 'react-i18next';
 
 interface WindowControlBaseButtonProps {
   onClick: () => void;
   children: ReactNode;
   className?: string;
+  tooltipTranslationId: string;
 }
 
-const WindowControlBaseButton: FC<WindowControlBaseButtonProps> = ({ onClick, children, className }) => (
-  <button
-    type="button"
-    onClick={onClick}
-    className={cn('flex h-10 w-16 items-center justify-center p-5 text-sm hover:bg-gray-600', className)}
-  >
-    {children}
-  </button>
-);
+const WindowControlBaseButton: FC<WindowControlBaseButtonProps> = ({
+  onClick,
+  children,
+  className,
+  tooltipTranslationId,
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <TooltipProvider>
+      <ActionTooltip
+        tooltipText={t(tooltipTranslationId)}
+        openOnSide="left"
+        trigger={
+          <button
+            type="button"
+            onClick={onClick}
+            className={cn('flex h-10 w-16 items-center justify-center p-5 text-sm hover:bg-gray-600', className)}
+          >
+            {children}
+          </button>
+        }
+      />
+    </TooltipProvider>
+  );
+};
 
 export default WindowControlBaseButton;
