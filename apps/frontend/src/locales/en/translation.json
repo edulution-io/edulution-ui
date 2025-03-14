@@ -1014,7 +1014,8 @@
     "stripPrefix": "Strip prefix",
     "input": {
       "dateTimePicker": {
-        "timeSlot": "o'clock"
+        "timeSlot": "o'clock",
+        "placeholder": "MM/DD/YYYY HH:mm AM/PM"
       }
     }
   },

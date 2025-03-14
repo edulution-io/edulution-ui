@@ -12,8 +12,7 @@
 
 'use client';
 
-import React, { useCallback, useMemo } from 'react';
-import { format } from 'date-fns';
+import React, { useCallback } from 'react';
 import { enUS, de } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
@@ -44,7 +43,8 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
   const { form, path, translationId, variant = 'default' } = props;
   const { t } = useTranslation();
 
-  const language = useLanguage();
+  const { language } = useLanguage();
+  const locale = language === 'de' ? de : enUS;
 
   const fieldValue = form.watch(path);
   const hours = safeGetHours(fieldValue);
@@ -89,23 +89,17 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
 
   const isDateDisabled = useCallback((date: Date) => date < new Date(), []);
 
-  const locale = useMemo(() => {
-    if (language?.language === 'de') return de;
-    return enUS;
-  }, [language]);
+  const timeDisplay: string = fieldValue
+    ? (fieldValue as Date).toLocaleString(language, {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
 
-  const timeDisplay = useMemo(() => {
-    if (language.language === 'en') {
-      if ((fieldValue as unknown) instanceof Date) {
-        return format(fieldValue, 'MM/dd/yyyy HH:mm', { locale });
-      }
-      return 'MM/DD/YYYY HH:mm';
-    }
-    if ((fieldValue as unknown) instanceof Date) {
-      return format(fieldValue, 'dd/MM/yyyy HH:mm', { locale });
-    }
-    return 'DD/MM/YYYY HH:mm';
-  }, [fieldValue]);
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: language === 'en',
+      })
+    : t('form.input.dateTimePicker.placeholder');
 
   return (
     <Form {...form}>

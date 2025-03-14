@@ -1014,7 +1014,8 @@
     "stripPrefix": "Prefix entfernen",
     "input": {
       "dateTimePicker": {
-        "timeSlot": "Uhr"
+        "timeSlot": "Uhr",
+        "placeholder": "DD/MM/YYYY HH:mm"
       }
     }
   },

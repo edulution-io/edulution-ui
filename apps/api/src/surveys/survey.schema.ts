@@ -49,7 +49,7 @@ export class Survey {
   answers: Types.ObjectId[];
 
   @Prop({ type: Date, required: false })
-  expires?: Date | null;
+  expires: Date | null;
 
   @Prop({ required: false })
   isAnonymous?: boolean;
