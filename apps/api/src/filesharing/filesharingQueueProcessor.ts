@@ -81,6 +81,8 @@ class FilesharingQueueProcessor extends WorkerHost {
 
     const progressDto = new FilesharingProgressDto(
       Number(job.id),
+      'filesharing.progressBox.titleCollecting',
+      'filesharing.progressBox.fileInfoCollecting',
       processed,
       total,
       username,
@@ -134,6 +136,8 @@ class FilesharingQueueProcessor extends WorkerHost {
 
     const progressDto = new FilesharingProgressDto(
       Number(job.id),
+      'filesharing.progressBox.titleSharing',
+      'filesharing.progressBox.titleCollecting',
       processed,
       total,
       studentName,

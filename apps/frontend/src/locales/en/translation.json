@@ -337,9 +337,12 @@
     },
     "progressBox": {
       "info": "Info",
-      "title": "Distributing files",
-      "processedInfo": "{{processed}} out of {{total}} files distributed successfully",
-      "fileInfo": "File {{filename}} is being distributed to {{studentName}}",
+      "titleSharing": "Distributing files",
+      "titleCollecting": "Collecting files",
+      "processedSharingInfo": "{{processed}} out of {{total}} files distributed successfully",
+      "processedCollectingInfo": "{{processed}} out of {{total}} files collected successfully",
+      "fileInfoSharing": "File {{filename}} is being distributed to {{studentName}}",
+      "fileInfoCollecting": "File {{filename}} is being collected to {{studentName}}",
       "errorInfo": "{{failed}} file(s) could not be distributed"
     }
   },

@@ -13,6 +13,10 @@
 class FilesharingProgressDto {
   processID: number;
 
+  title: string;
+
+  description: string;
+
   processed: number;
 
   total: number;
@@ -27,6 +31,8 @@ class FilesharingProgressDto {
 
   constructor(
     processID: number,
+    title: string,
+    description: string,
     processed: number,
     total: number,
     studentName: string,
@@ -35,6 +41,8 @@ class FilesharingProgressDto {
     failedPaths?: string[],
   ) {
     this.processID = processID;
+    this.title = title;
+    this.description = description;
     this.processed = processed;
     this.total = total;
     this.studentName = studentName;

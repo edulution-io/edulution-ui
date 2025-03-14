@@ -330,9 +330,12 @@
     },
     "progressBox": {
       "info": "Info",
-      "title": "Dateien werden ausgeteilt",
-      "processedInfo": "{{processed}} von {{total}} Dateien erfolgreich ausgeteilt",
-      "fileInfo": "Datei {{filename}} wird an {{studentName}} ausgeteilt",
+      "titleSharing": "Dateien werden ausgeteilt",
+      "titleCollecting": "Dateien werden eingesammelt",
+      "processedSharingInfo": "{{processed}} von {{total}} Dateien erfolgreich ausgeteilt",
+      "processedCollectingInfo": "{{processed}} von {{total}} Dateien erfolgreich eingesammelt",
+      "fileInfoSharing": "Datei {{filename}} wird an {{studentName}} ausgeteilt",
+      "fileInfoCollecting": "Datei {{filename}} wird von {{studentName}} eingesammelt",
       "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden"
     },
     "tooltips": {

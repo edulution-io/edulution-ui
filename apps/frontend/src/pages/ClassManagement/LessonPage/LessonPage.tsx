@@ -78,9 +78,9 @@ const LessonPage = () => {
     const percent = filesharingProgress.percent ?? 0;
     const dataForBox = {
       percent,
-      title: t('filesharing.progressBox.title'),
+      title: t(filesharingProgress.title),
       id: filesharingProgress.currentFile,
-      description: t('filesharing.progressBox.fileInfo', {
+      description: t(filesharingProgress.description, {
         filename: filesharingProgress.currentFile.split('/').pop(),
         studentName: filesharingProgress.studentName,
       }),
