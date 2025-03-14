@@ -218,29 +218,21 @@ describe('VeyonService', () => {
 
   describe('setFeature', () => {
     it('should return an empty object if successful', async () => {
-      const mockResponse: VeyonFeaturesResponse[] = [
-        {
-          active: 'true',
-          name: 'screenlock',
-          parentUid: '123',
-          uid: VEYON_FEATURE_ACTIONS.SCREENLOCK,
-        },
-      ];
       jest.spyOn(appConfigService, 'getAppConfigByName').mockResolvedValueOnce(mockAppConfig as AppConfigDto);
 
       await service.updateVeyonProxyConfig();
 
       (service['veyonApi'].put as jest.Mock).mockResolvedValueOnce({
-        data: mockResponse,
+        data: mockedFeaturesResponse,
       });
 
       jest.spyOn(service as any, 'pollFeatureState').mockResolvedValueOnce({});
 
-      jest.spyOn(service, 'getFeatures').mockResolvedValueOnce(mockResponse);
+      jest.spyOn(service, 'getFeatures').mockResolvedValueOnce(mockedFeaturesResponse);
 
       const result = await service.setFeature(VEYON_FEATURE_ACTIONS.SCREENLOCK, { active: true }, 'test-uid');
 
-      expect(result).toEqual(mockResponse);
+      expect(result).toEqual(mockedFeaturesResponse);
     });
 
     it('should throw HttpException if an error occurs', async () => {

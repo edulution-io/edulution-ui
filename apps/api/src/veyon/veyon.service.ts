@@ -29,6 +29,8 @@ import VeyonErrorMessages from '@libs/veyon/constants/veyonErrorMessages';
 import delay from '@libs/common/utils/delay';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import VEYON_API_AUTH_RESPONSE_KEYS from '@libs/veyon/constants/veyonApiAuthResponse';
+import { VEYON_API_FEATURE_ENDPOINT, VEYON_API_FRAMEBUFFER_ENDPOINT } from '@libs/veyon/constants/veyonApiEndpoints';
+import { HTTP_HEADERS, ResponseType } from '@libs/common/types/http-methods';
 import UsersService from '../users/users.service';
 import AppConfigService from '../appconfig/appconfig.service';
 
@@ -126,11 +128,11 @@ class VeyonService implements OnModuleInit {
 
   async getFrameBufferStream(connectionUid: string, framebufferConfig: FrameBufferConfig): Promise<Readable> {
     try {
-      const { data } = await this.veyonApi.get<Readable>(`/framebuffer`, {
+      const { data } = await this.veyonApi.get<Readable>(VEYON_API_FRAMEBUFFER_ENDPOINT, {
         params: framebufferConfig,
-        responseType: 'stream',
+        responseType: ResponseType.STREAM,
         headers: {
-          'Connection-Uid': connectionUid,
+          [HTTP_HEADERS.CONNECTION_UID]: connectionUid,
         },
       });
       return data;
@@ -145,9 +147,9 @@ class VeyonService implements OnModuleInit {
 
   async getUser(connectionUid: string): Promise<VeyonUserResponse> {
     try {
-      const { data } = await this.veyonApi.get<VeyonUserResponse>(`/user`, {
+      const { data } = await this.veyonApi.get<VeyonUserResponse>('user', {
         headers: {
-          'Connection-Uid': connectionUid,
+          [HTTP_HEADERS.CONNECTION_UID]: connectionUid,
         },
       });
       return data;
@@ -171,8 +173,8 @@ class VeyonService implements OnModuleInit {
       return;
     }
 
-    const { data } = await this.veyonApi.get<{ active: boolean }>(`feature/${featureUid}`, {
-      headers: { 'Connection-Uid': connectionUid },
+    const { data } = await this.veyonApi.get<{ active: boolean }>(`${VEYON_API_FEATURE_ENDPOINT}/${featureUid}`, {
+      headers: { [HTTP_HEADERS.CONNECTION_UID]: connectionUid },
     });
 
     if (data.active === expectedState) {
@@ -192,8 +194,8 @@ class VeyonService implements OnModuleInit {
     connectionUid: string,
   ): Promise<VeyonFeaturesResponse[]> {
     try {
-      await this.veyonApi.put<Record<string, never>>(`feature/${featureUid}`, body, {
-        headers: { 'Connection-Uid': connectionUid },
+      await this.veyonApi.put<Record<string, never>>(`${VEYON_API_FEATURE_ENDPOINT}/${featureUid}`, body, {
+        headers: { [HTTP_HEADERS.CONNECTION_UID]: connectionUid },
       });
 
       await this.pollFeatureState(featureUid, connectionUid, body.active);
@@ -212,8 +214,8 @@ class VeyonService implements OnModuleInit {
 
   async getFeatures(connectionUid: string): Promise<VeyonFeaturesResponse[]> {
     try {
-      const { data } = await this.veyonApi.get<VeyonFeaturesResponse[]>('feature', {
-        headers: { 'Connection-Uid': connectionUid },
+      const { data } = await this.veyonApi.get<VeyonFeaturesResponse[]>(VEYON_API_FEATURE_ENDPOINT, {
+        headers: { [HTTP_HEADERS.CONNECTION_UID]: connectionUid },
       });
       return data;
     } catch (error) {
