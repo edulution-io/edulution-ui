@@ -11,6 +11,7 @@
  */
 
 import React, { useEffect } from 'react';
+import { toast } from 'sonner';
 import { Card, CardContent } from '@/components/shared/Card';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import cn from '@libs/common/utils/className';
@@ -78,13 +79,11 @@ const UserCard = ({
 
   const onCardClick = () => {
     if (!isStudent) {
-      // eslint-disable-next-line no-alert
-      alert(t('classmanagement.itsNotPossibleToEditOtherTeacher'));
+      toast.info(t('classmanagement.itsNotPossibleToEditOtherTeacher'));
       return;
     }
     if (!isTeacherInSameSchool) {
-      // eslint-disable-next-line no-alert
-      alert(t('classmanagement.itsNotPossibleToEditOtherSchoolStudents'));
+      toast.info(t('classmanagement.itsNotPossibleToEditOtherSchoolStudents'));
       return;
     }
 
@@ -98,15 +97,15 @@ const UserCard = ({
 
   return (
     <Card
-      variant="security"
+      variant="text"
       className={cn(
-        'my-2 ml-1 mr-4 flex h-64 min-w-80 cursor-pointer hover:opacity-90',
-        isMemberSelected && 'opacity-90',
+        'my-2 ml-1 mr-4 flex h-64 min-w-80 cursor-pointer hover:opacity-80',
+        isMemberSelected && 'opacity-80',
       )}
       onClick={onCardClick}
     >
       <CardContent className="flex w-full flex-row p-0">
-        <div className={cn('m-0 flex flex-col justify-between', isSelectable ? 'w-5/6' : 'w-full')}>
+        <div className="m-0 flex w-5/6 flex-col justify-between">
           <div className="flew-row flex h-8">
             {isSelectable && (
               <Checkbox
@@ -120,25 +119,13 @@ const UserCard = ({
           </div>
 
           <div className="-my-1 ml-2 flex justify-between">
-            <div
-              className={cn(
-                'mt-1 h-6 rounded-lg px-2 py-0 text-sm hover:bg-gray-400',
-                isMemberSelected ? 'bg-gray-400' : 'bg-gray-700',
-              )}
-            >
-              {sophomorixAdminClass}
-            </div>
+            <div className="mt-1 h-6 rounded-lg bg-accent-light px-2 py-0 text-sm">{sophomorixAdminClass}</div>
             <div className={cn('flex flex-col text-xs', !isSelectable && 'mr-2')}>
               <div>{name}</div>
               <div>{school}</div>
             </div>
           </div>
-          <div
-            className={cn(
-              'm-2 flex max-h-36 w-64 flex-grow items-center justify-center rounded-xl text-2xl',
-              isMemberSelected ? 'bg-muted' : 'bg-accent',
-            )}
-          >
+          <div className="m-2 flex max-h-36 w-64 flex-grow items-center justify-center rounded-xl bg-accent-light text-2xl">
             <UserCardVeyonPreview
               user={user}
               isVeyonEnabled={isVeyonEnabled}
@@ -147,16 +134,15 @@ const UserCard = ({
             />
           </div>
         </div>
-        {isSelectable ? (
-          <div className="ml-2 mt-0.5 flex w-1/6 flex-col items-center justify-around rounded-r-xl border-l-[1px] border-accent bg-black">
-            <UserCardButtonBar
-              user={user}
-              isTeacherInSameClass={isTeacherInSameClass}
-              isScreenLocked={isScreenLocked}
-              areInputDevicesLocked={areInputDevicesLocked}
-            />
-          </div>
-        ) : null}
+        <div className="ml-2 flex w-1/6 flex-col items-center justify-around rounded-r-xl border-l-[1px] border-accent bg-foreground">
+          <UserCardButtonBar
+            user={user}
+            isTeacherInSameClass={isTeacherInSameClass}
+            isScreenLocked={isScreenLocked}
+            areInputDevicesLocked={areInputDevicesLocked}
+            disabled={!isSelectable}
+          />
+        </div>
       </CardContent>
       {currentUser?.dn === user.dn && <UserPasswordDialog />}
     </Card>

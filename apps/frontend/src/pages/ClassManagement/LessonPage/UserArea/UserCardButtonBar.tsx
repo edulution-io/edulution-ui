@@ -36,6 +36,7 @@ interface UserCardButtonBarProps {
   isTeacherInSameClass: boolean;
   isScreenLocked: boolean;
   areInputDevicesLocked: boolean;
+  disabled: boolean;
 }
 
 interface UserCardButton {
@@ -51,6 +52,7 @@ const UserCardButtonBar = ({
   isTeacherInSameClass,
   isScreenLocked,
   areInputDevicesLocked,
+  disabled,
 }: UserCardButtonBarProps) => {
   const { t } = useTranslation();
   const { fetchUser, schoolPrefix } = useLmnApiStore();
@@ -153,17 +155,25 @@ const UserCardButtonBar = ({
       >
         <button
           type="button"
-          className={cn(
-            'relative p-2 hover:bg-ciGreenToBlue',
-            'group-hover:bg-ciGreenToBlue group-hover:text-background',
-          )}
+          className="relative p-2 "
           title={t(button.title)}
           onClick={(e) => onButtonClick(e, button)}
+          disabled={disabled}
         >
           <button.icon
-            className={cn('text-lg', button.defaultColor || (button.value ? 'text-ciGreen' : 'text-ciRed'))}
+            className={cn(
+              'text-lg',
+              disabled && 'text-ciDarkGrey',
+              !disabled && button.value !== null && 'text-ciGreen',
+              !disabled && button.value === false && 'text-ciRed',
+            )}
           />
-          <div className="absolute -right-[5px] top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-l-[8px] bg-ciGreenToBlue px-2 text-background group-hover:flex">
+          <div
+            className={cn(
+              'absolute -right-[5px] top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-l-[8px] bg-ciGreenToBlue px-2 text-background ',
+              !disabled && 'group-hover:flex',
+            )}
+          >
             {t(`classmanagement.${button.title}`)} {t(getButtonDescription(button.value))}
           </div>
         </button>
@@ -175,18 +185,17 @@ const UserCardButtonBar = ({
       >
         <DropdownMenu
           menuContentClassName="z-[600]"
-          disabled={!veyonIsActive || setFeatureIsLoading.has(connectionUid)}
+          disabled={disabled || !veyonIsActive || setFeatureIsLoading.has(connectionUid)}
           trigger={
             <div
-              className={cn(
-                'relative p-2 ',
-                veyonIsActive && 'group-hover:bg-ciGreenToBlue group-hover:text-background hover:bg-ciGreenToBlue',
-              )}
+              className={cn('relative p-2', disabled && 'cursor-auto')}
               title={t(button.title)}
             >
-              <button.icon className={cn('text-lg', veyonIsActive ? button.defaultColor : 'text-ciDarkGrey')} />
+              <button.icon
+                className={cn('text-lg', veyonIsActive && !disabled ? button.defaultColor : 'text-ciDarkGrey')}
+              />
 
-              {veyonIsActive && (
+              {(!disabled || veyonIsActive) && (
                 <div className="absolute -right-[5px] top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-l-[8px] bg-ciGreenToBlue px-2 text-background group-hover:flex">
                   {t(`classmanagement.${button.title}`)} {t(getButtonDescription(button.value))}
                 </div>
