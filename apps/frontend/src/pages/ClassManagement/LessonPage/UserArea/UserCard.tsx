@@ -10,14 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Card, CardContent } from '@/components/shared/Card';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import cn from '@libs/common/utils/className';
 import UserCardButtonBar from '@/pages/ClassManagement/LessonPage/UserArea/UserCardButtonBar';
 import Checkbox from '@/components/ui/Checkbox';
 import { SOPHOMORIX_STUDENT } from '@libs/lmnApi/constants/sophomorixRoles';
-import Avatar from '@/components/shared/Avatar';
 import { useTranslation } from 'react-i18next';
 import UserPasswordDialog from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/UserPasswordDialog';
 import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
@@ -25,7 +24,9 @@ import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsVal
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import FrameBufferImage from './FrameBufferImage';
+import VEYON_FEATURE_ACTIONS from '@libs/veyon/constants/veyonFeatureActions';
+import useVeyonApiStore from '../../useVeyonApiStore';
+import UserCardVeyonPreview from './UserCardVeyonPreview';
 
 interface UserCardProps {
   user: UserLmnInfo;
@@ -44,8 +45,9 @@ const UserCard = ({
 }: UserCardProps) => {
   const { t } = useTranslation();
   const { currentUser } = useLmnApiPasswordStore();
-  const { displayName, name, sophomorixAdminClass, school, givenName, sn: surname, thumbnailPhoto } = user;
+  const { displayName, name, sophomorixAdminClass, school } = user;
   const { appConfigs } = useAppConfigsStore();
+  const { userConnectionsFeatureStates, userConnectionUids, getFeatures } = useVeyonApiStore();
 
   const isStudent = user.sophomorixRole === SOPHOMORIX_STUDENT;
   const isSelectable = isTeacherInSameSchool && isStudent;
@@ -55,6 +57,24 @@ const UserCard = ({
     const veyonConfigs = getExtendedOptionsValue(appConfigs, APPS.CLASS_MANAGEMENT, ExtendedOptionKeys.VEYON_PROXYS);
     return Array.isArray(veyonConfigs) && veyonConfigs.length > 0;
   }, [appConfigs]);
+
+  const connectionUid = userConnectionUids.find((conn) => conn.veyonUsername === user.cn)?.connectionUid || '';
+
+  useEffect(() => {
+    if (isVeyonEnabled && connectionUid) {
+      void getFeatures(connectionUid);
+    }
+  }, [isVeyonEnabled, connectionUid]);
+
+  const userConnectionFeatureState = userConnectionsFeatureStates[connectionUid];
+
+  const getFeatureState = (featureUid: string) => {
+    const feature = userConnectionFeatureState?.find((item) => item.uid === featureUid);
+    return feature ? feature.active : undefined;
+  };
+
+  const isScreenLocked = !!getFeatureState(VEYON_FEATURE_ACTIONS.SCREENLOCK);
+  const areInputDevicesLocked = !!getFeatureState(VEYON_FEATURE_ACTIONS.INPUT_DEVICES_LOCK);
 
   const onCardClick = () => {
     if (!isStudent) {
@@ -119,15 +139,11 @@ const UserCard = ({
               isMemberSelected ? 'bg-muted' : 'bg-accent',
             )}
           >
-            {isVeyonEnabled && user.sophomorixIntrinsic3.length > 0 ? (
-              <FrameBufferImage user={user} />
-            ) : (
-              <Avatar
-                user={{ username: name, firstName: givenName, lastName: surname }}
-                imageSrc={thumbnailPhoto}
-                className={thumbnailPhoto && 'h-24 w-24 p-2'}
-              />
-            )}
+            <UserCardVeyonPreview
+              user={user}
+              isVeyonEnabled={isVeyonEnabled}
+              areInputDevicesLocked={areInputDevicesLocked}
+            />
           </div>
         </div>
         {isSelectable ? (
@@ -135,6 +151,8 @@ const UserCard = ({
             <UserCardButtonBar
               user={user}
               isTeacherInSameClass={isTeacherInSameClass}
+              isScreenLocked={isScreenLocked}
+              areInputDevicesLocked={areInputDevicesLocked}
             />
           </div>
         ) : null}

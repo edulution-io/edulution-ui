@@ -13,6 +13,7 @@
 import React, { useEffect, useState } from 'react';
 import { useInterval } from 'usehooks-ts';
 import { MdCropFree } from 'react-icons/md';
+import { TbKeyboardOff } from 'react-icons/tb';
 import { useTranslation } from 'react-i18next';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
@@ -24,9 +25,10 @@ import useVeyonApiStore from '../../useVeyonApiStore';
 
 type FrameBufferImageProps = {
   user: UserLmnInfo;
+  areInputDevicesLocked: boolean;
 };
 
-const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
+const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user, areInputDevicesLocked }) => {
   const { t } = useTranslation();
   const [imageSrc, setImageSrc] = useState<string>('');
   const { userConnectionUids, setFeatureIsLoading, authenticateVeyonClient, getFrameBufferStream } = useVeyonApiStore();
@@ -85,6 +87,12 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
             src={imageSrc}
             alt={t('framebufferImage')}
           />
+
+          {areInputDevicesLocked && (
+            <div className="group absolute left-1 top-1">
+              <TbKeyboardOff className="h-5 w-5 text-ciRed" />
+            </div>
+          )}
 
           <div className="group absolute bottom-3 right-3 rounded-full bg-ciGrey/40 p-3 hover:bg-ciDarkGrey">
             <button

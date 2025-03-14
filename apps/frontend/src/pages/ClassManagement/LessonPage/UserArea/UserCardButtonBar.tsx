@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { FaWifi } from 'react-icons/fa';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import { useTranslation } from 'react-i18next';
@@ -34,6 +34,8 @@ import useVeyonApiStore from '../../useVeyonApiStore';
 interface UserCardButtonBarProps {
   user: UserLmnInfo;
   isTeacherInSameClass: boolean;
+  isScreenLocked: boolean;
+  areInputDevicesLocked: boolean;
 }
 
 interface UserCardButton {
@@ -44,7 +46,12 @@ interface UserCardButton {
   defaultColor?: string;
 }
 
-const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProps) => {
+const UserCardButtonBar = ({
+  user,
+  isTeacherInSameClass,
+  isScreenLocked,
+  areInputDevicesLocked,
+}: UserCardButtonBarProps) => {
   const { t } = useTranslation();
   const { fetchUser, schoolPrefix } = useLmnApiStore();
   const {
@@ -59,25 +66,9 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
   const { internet, printing, examMode, webfilter, wifi, cn: commonName } = user;
   const { groupType, groupName } = useParams();
   const { setCurrentUser } = useLmnApiPasswordStore();
-  const { userConnectionUids, userConnectionsFeatureStates, setFeatureIsLoading, setFeature, getFeatures } =
-    useVeyonApiStore();
+  const { userConnectionUids, setFeatureIsLoading, setFeature } = useVeyonApiStore();
   const connectionUid = userConnectionUids.find((conn) => conn.veyonUsername === user.cn)?.connectionUid || '';
   const veyonIsActive = !!connectionUid;
-  const userConnectionFeatureState = userConnectionsFeatureStates[connectionUid];
-
-  const getFeatureState = (featureUid: string) => {
-    const feature = userConnectionFeatureState?.find((item) => item.uid === featureUid);
-    return feature ? feature.active : undefined;
-  };
-
-  useEffect(() => {
-    if (connectionUid) {
-      void getFeatures(connectionUid);
-    }
-  }, [connectionUid]);
-
-  const isScreenLocked = !!getFeatureState(VEYON_FEATURE_ACTIONS.SCREENLOCK);
-  const areInputDevicesLocked = !!getFeatureState(VEYON_FEATURE_ACTIONS.INPUT_DEVICES_LOCK);
 
   const onButtonClick = async (event: React.MouseEvent<HTMLElement>, button: UserCardButton) => {
     event.stopPropagation();
