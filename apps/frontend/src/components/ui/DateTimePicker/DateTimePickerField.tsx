@@ -14,22 +14,24 @@
 
 import React, { useCallback, useMemo } from 'react';
 import { format } from 'date-fns';
+import { enUS, de } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { HiTrash } from 'react-icons/hi2';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import { DropdownVariant } from '@libs/ui/types/DropdownVariant';
 import cn from '@libs/common/utils/className';
+import safeGetHours from '@libs/common/utils/Date/safeGetHours';
+import safeGetMinutes from '@libs/common/utils/Date/safeGetMinutes';
+import safeGetDate from '@libs/common/utils/Date/safeGetDate';
+import useLanguage from '@/hooks/useLanguage';
 import { Button } from '@/components/shared/Button';
 import { Calendar } from '@/components/ui/Calendar';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 import MinuteButton from '@/components/ui/DateTimePicker/MinuteButtons';
-import safeGetHours from '@/components/ui/DateTimePicker/safeGetHours';
-import safeGetMinutes from '@/components/ui/DateTimePicker/safeGetMinutes';
 import HourButton from '@/components/ui/DateTimePicker/HourButtons';
-import safeGetDate from '@/components/ui/DateTimePicker/safeGetDate';
 
 interface DateTimePickerFieldProps<T extends FieldValues> {
   form: UseFormReturn<T>;
@@ -41,6 +43,8 @@ interface DateTimePickerFieldProps<T extends FieldValues> {
 const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldProps<T>) => {
   const { form, path, translationId, variant = 'default' } = props;
   const { t } = useTranslation();
+
+  const language = useLanguage();
 
   const fieldValue = form.watch(path);
   const hours = safeGetHours(fieldValue);
@@ -85,11 +89,22 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
 
   const isDateDisabled = useCallback((date: Date) => date < new Date(), []);
 
+  const locale = useMemo(() => {
+    if (language?.language === 'de') return de;
+    return enUS;
+  }, [language]);
+
   const timeDisplay = useMemo(() => {
-    if ((fieldValue as unknown) instanceof Date) {
-      return format(fieldValue, 'MM/dd/yyyy HH:mm');
+    if (language.language === 'en') {
+      if ((fieldValue as unknown) instanceof Date) {
+        return format(fieldValue, 'MM/dd/yyyy HH:mm', { locale });
+      }
+      return 'MM/DD/YYYY HH:mm';
     }
-    return 'MM/DD/YYYY HH:mm';
+    if ((fieldValue as unknown) instanceof Date) {
+      return format(fieldValue, 'dd/MM/yyyy HH:mm', { locale });
+    }
+    return 'DD/MM/YYYY HH:mm';
   }, [fieldValue]);
 
   return (
@@ -123,6 +138,7 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
                         event.preventDefault();
                         handleClear();
                       }}
+                      visibility={fieldValue ? 'visible' : 'hidden'}
                     />
                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50 hover:opacity-100" />
                   </Button>
@@ -142,6 +158,7 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
                     onSelect={handleDateSelect}
                     initialFocus
                     disabled={isDateDisabled}
+                    locale={locale}
                   />
                   <div>
                     <div className="m-2 flex h-6 justify-center">
