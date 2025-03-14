@@ -54,7 +54,7 @@ interface DataTableProps<TData, TValue> {
   };
   tableIsUsedOnAppConfigPage?: boolean;
   enableRowSelection?: boolean | ((row: Row<TData>) => boolean) | undefined;
-  textColorClass?: string;
+  classname?: string;
   showHeader?: boolean;
   showSelectedCount?: boolean;
   footer?: React.ReactNode;
@@ -76,7 +76,7 @@ const ScrollableTable = <TData, TValue>({
   enableRowSelection,
   initialSorting,
   tableIsUsedOnAppConfigPage = false,
-  textColorClass = 'text-muted-foreground',
+  classname = 'text-muted-foreground',
   showHeader = true,
   showSelectedCount = true,
   footer,
@@ -144,7 +144,7 @@ const ScrollableTable = <TData, TValue>({
           {!tableIsUsedOnAppConfigPage && (
             <div
               id={selectedRowsMessageId}
-              className={`flex-1 text-sm ${textColorClass}`}
+              className={`flex-1 text-sm ${classname}`}
             >
               &nbsp;
             </div>
@@ -190,7 +190,7 @@ const ScrollableTable = <TData, TValue>({
           <Table>
             {showHeader && (
               <TableHeader
-                className={`text-foreground ${textColorClass}`}
+                className={`text-foreground ${classname}`}
                 id={tableHeaderId}
               >
                 {table.getHeaderGroups().map((headerGroup) => (
@@ -214,7 +214,7 @@ const ScrollableTable = <TData, TValue>({
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={`${row.id}-${cell.column.id}`}
-                        className={textColorClass}
+                        className={classname}
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
@@ -225,7 +225,7 @@ const ScrollableTable = <TData, TValue>({
                 <TableRow>
                   <TableCell
                     colSpan={columns?.length}
-                    className={`h-24 text-center ${textColorClass}`}
+                    className={`h-24 text-center ${classname}`}
                   >
                     {t('table.noDataAvailable')}
                   </TableCell>
@@ -235,7 +235,7 @@ const ScrollableTable = <TData, TValue>({
           </Table>
         </div>
       </div>
-      {footer && <div className="max-w-[42vh] overflow-hidden text-ellipsis whitespace-nowrap">{footer}</div>}
+      {footer && <div className="overflow-hidden text-ellipsis whitespace-nowrap">{footer}</div>}
     </>
   );
 };

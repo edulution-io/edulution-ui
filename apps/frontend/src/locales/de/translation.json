@@ -474,14 +474,14 @@
     "filesSharingStarted": "Dateien werden geteilt",
     "filesCollected": "Dateien eingesammelt",
     "failDialog": {
-      "title": "Datei „{{file}}“ konnte nicht geteilt werden",
+      "title": "Datei {{file}} konnte nicht geteilt werden",
       "reasonMissing": "Die Datei ist möglicherweise nicht mehr vorhanden oder wurde umbenannt.",
       "reasonAlreadyReceived": "Der Empfänger hat die Datei bereits.",
       "reasonDuplicate": "Der Dateiname ist doppelt vorhanden.",
       "affectedPersons": "Die folgenden Personen haben die Datei nicht erhalten:",
       "affectedPerson": "Die folgende Person hat die Datei nicht erhalten:",
       "filenameAdvice": "Wenn das Austeilen nochmals probiert werden soll, wird die Datei unter dem Namen {{filename}} verteilt",
-      "retryButton": "Nochmals versuchen"
+      "retryButton": "Erneut versuchen"
     },
     "veyonConfigTable": {
       "id": "ID",

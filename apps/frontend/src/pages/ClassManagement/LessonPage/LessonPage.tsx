@@ -76,7 +76,7 @@ const LessonPage = () => {
     if (!filesharingProgress) return;
 
     const percent = filesharingProgress.percent ?? 0;
-    const dataForBox = {
+    const toasterData = {
       percent,
       title: t('filesharing.progressBox.title'),
       id: filesharingProgress.currentFile,
@@ -90,7 +90,7 @@ const LessonPage = () => {
     };
 
     let toastDuration: number;
-    if (dataForBox.failed > 0) {
+    if (toasterData.failed > 0) {
       toastDuration = Infinity;
     } else if (percent >= 100) {
       toastDuration = 5000;
@@ -98,8 +98,8 @@ const LessonPage = () => {
       toastDuration = Infinity;
     }
 
-    toast(<ProgressBox data={dataForBox} />, {
-      id: dataForBox.id,
+    toast(<ProgressBox data={toasterData} />, {
+      id: toasterData.id,
       duration: toastDuration,
     });
   }, [filesharingProgress]);
@@ -161,13 +161,6 @@ const LessonPage = () => {
       void fetchData();
     }
   }, [groupTypeParams, groupNameParams, lmnApiToken]);
-
-  useEffect(() => {
-    if (currentSelectedSession) {
-      setMember(currentSelectedSession.members);
-    }
-    if (!isLoading) setIsPageLoading(false);
-  }, [userSessions]);
 
   const handleSessionSelect = (sessionName: string) => {
     navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}/sessions/${sessionName}`);

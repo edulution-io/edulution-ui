@@ -19,7 +19,7 @@ import FilesharingService from './filesharing.service';
 import AppConfigModule from '../appconfig/appconfig.module';
 import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
-import FilesharingQueueProcessor from './filesharingQueueProcessor';
+import FilesharingConsumer from './filesharing.consumer';
 import SseService from '../sse/sse.service';
 
 @Module({
@@ -31,7 +31,7 @@ import SseService from '../sse/sse.service';
     }),
   ],
   controllers: [FilesharingController],
-  providers: [FilesharingService, FilesystemService, OnlyofficeService, FilesharingQueueProcessor, SseService],
+  providers: [FilesharingService, FilesystemService, OnlyofficeService, FilesharingConsumer, SseService],
   exports: [FilesharingService],
 })
 export default class FilesharingModule {}

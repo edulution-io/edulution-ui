@@ -31,7 +31,7 @@ import ContentType from '@libs/filesharing/types/contentType';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bull';
 import APPS from '@libs/appconfig/constants/apps';
-import QUEUE_NAMES from '@libs/queue/constants/queueNames';
+import JOB_NAMES from '@libs/queue/constants/jobNames';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
@@ -290,7 +290,7 @@ class FilesharingService {
     let i = 0;
     return Promise.all(
       duplicateFile.destinationFilePaths.map(async (destinationPath) => {
-        await this.fileSharingQueue.add(QUEUE_NAMES.DUPLICATE_FILE_QUEUE, {
+        await this.fileSharingQueue.add(JOB_NAMES.DUPLICATE_FILE_JOB, {
           username,
           originFilePath: duplicateFile.originFilePath,
           destinationFilePath: destinationPath,
@@ -305,11 +305,10 @@ class FilesharingService {
     const sanitizedDestinationPath = destinationPath.replace(`${FILE_PATHS.COLLECT}/`, '');
     const pathWithoutFilename = sanitizedDestinationPath.slice(0, sanitizedDestinationPath.lastIndexOf('/'));
 
-    const folderAlreadyExistis = await this.checkIfFileOrFolderExists(
+    const folderAlreadyExistis = await this.checkIfFolderExists(
       username,
       `${pathWithoutFilename}/`,
       FILE_PATHS.COLLECT,
-      ContentType.DIRECTORY,
     );
 
     if (folderAlreadyExistis) return;
@@ -368,18 +367,9 @@ class FilesharingService {
     return partialSegments.join('/');
   }
 
-  async checkIfFileOrFolderExists(
-    username: string,
-    parentPath: string,
-    name: string,
-    contentType: ContentType,
-  ): Promise<boolean> {
-    if (contentType === ContentType.DIRECTORY) {
-      const directories = await this.getDirAtPath(username, `${parentPath}/`);
-      return directories.some((item) => item.type === ContentType.DIRECTORY && item.basename === name);
-    }
-
-    return false;
+  async checkIfFolderExists(username: string, parentPath: string, name: string): Promise<boolean> {
+    const directories = await this.getDirAtPath(username, `${parentPath}/`);
+    return directories.some((item) => item.type === ContentType.DIRECTORY && item.basename === name);
   }
 
   async getWebDavFileStream(username: string, filePath: string): Promise<Readable> {
@@ -460,6 +450,13 @@ class FilesharingService {
 
     if (failedTasks.length > 0) {
       throw new CustomHttpException(FileSharingErrorMessage.CollectingFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async ensureFolderExists(username: string, basePath: string, folderName: string) {
+    const exists = await this.checkIfFolderExists(username, basePath, folderName);
+    if (!exists) {
+      await this.createFolder(username, basePath, folderName);
     }
   }
 

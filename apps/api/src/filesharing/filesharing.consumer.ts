@@ -18,18 +18,17 @@ import { MessageEvent } from '@nestjs/common';
 
 import APPS from '@libs/appconfig/constants/apps';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
-import ContentType from '@libs/filesharing/types/contentType';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 
-import QUEUE_NAMES from '@libs/queue/constants/queueNames';
+import JOB_NAMES from '@libs/queue/constants/jobNames';
 import DuplicateFileJobData from '@libs/queue/types/duplicateFileJobData';
 import type UserConnections from '../types/userConnections';
 import FilesharingService from './filesharing.service';
 import SseService from '../sse/sse.service';
 
 @Processor(APPS.FILE_SHARING, { concurrency: 1 })
-class FilesharingQueueProcessor extends WorkerHost {
+class FilesharingConsumer extends WorkerHost {
   private fileSharingSseConnections: UserConnections = new Map();
 
   constructor(private readonly fileSharingService: FilesharingService) {
@@ -42,7 +41,7 @@ class FilesharingQueueProcessor extends WorkerHost {
 
   async process(job: Job<DuplicateFileJobData>): Promise<void> {
     switch (job.name) {
-      case QUEUE_NAMES.DUPLICATE_FILE_QUEUE:
+      case JOB_NAMES.DUPLICATE_FILE_JOB:
         await this.processDuplicateFile(job);
         break;
       default:
@@ -59,27 +58,8 @@ class FilesharingQueueProcessor extends WorkerHost {
     const pathUpToTransferFolder = FilesharingService.getPathUntilFolder(destinationFilePath, FILE_PATHS.TRANSFER);
     const pathUpToTeacherFolder = FilesharingService.getPathUntilFolder(destinationFilePath, username);
 
-    const userFolderExists = await this.fileSharingService.checkIfFileOrFolderExists(
-      username,
-      pathUpToTransferFolder,
-      username,
-      ContentType.DIRECTORY,
-    );
-    if (!userFolderExists) {
-      await this.fileSharingService.createFolder(username, pathUpToTransferFolder, username);
-    }
-
-    if (userFolderExists) {
-      const collectFolderExists = await this.fileSharingService.checkIfFileOrFolderExists(
-        username,
-        pathUpToTeacherFolder,
-        FILE_PATHS.COLLECT,
-        ContentType.DIRECTORY,
-      );
-      if (!collectFolderExists) {
-        await this.fileSharingService.createFolder(username, pathUpToTeacherFolder, FILE_PATHS.COLLECT);
-      }
-    }
+    await this.fileSharingService.ensureFolderExists(username, pathUpToTransferFolder, username);
+    await this.fileSharingService.ensureFolderExists(username, pathUpToTeacherFolder, FILE_PATHS.COLLECT);
 
     try {
       await FilesharingService.copyFileViaWebDAV(client, originFilePath, destinationFilePath);
@@ -104,4 +84,4 @@ class FilesharingQueueProcessor extends WorkerHost {
   }
 }
 
-export default FilesharingQueueProcessor;
+export default FilesharingConsumer;

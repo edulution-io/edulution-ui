@@ -319,7 +319,7 @@
       "WebDavError": "Data server access failed",
       "DownloadFailed": "Download failed",
       "FolderCreationFailed": "Folder creation failed",
-      "CreateCollectFolderForStudentFailed": "Create collect folder for student failed",
+      "CreateCollectFolderForStudentFailed": "Creating the collect folder for student failed",
       "DeleteFromServerFailed": "Delete from server failed",
       "SaveFailed": "Save failed",
       "DuplicateFailed": "Duplicate failed",
@@ -340,7 +340,7 @@
       "title": "Distributing files",
       "processedInfo": "{{processed}} out of {{total}} files distributed successfully",
       "fileInfo": "File {{filename}} is being distributed to {{studentName}}",
-      "errorInfo": "{{failed}} file(s) could not be distributed"
+      "errorInfo": "{{failed}} files could not be handed out"
     }
   },
   "forums": {
@@ -469,14 +469,14 @@
     "sharedMailBox": "Shared mailbox",
     "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes.",
     "failDialog": {
-      "title": "The file \"{{file}}\" could not be shared",
+      "title": "The file {{file}}could not be shared",
       "reasonMissing": "The file may no longer exist or has been renamed.",
       "reasonAlreadyReceived": "The recipient already has the file.",
       "reasonDuplicate": "The file name is duplicated.",
       "affectedPersons": "The following persons did not receive the file:",
       "affectedPerson": "The following person did not receive the file:",
-      "filenameAdvice": "If you want to try sharing again, the file will be shared under the name {{filename}}",
-      "retryButton": "Try Again"
+      "filenameAdvice": "If you try to share again, the file will be shared under the name {{filename}}",
+      "retryButton": "Retry"
     },
     "veyonConfigTable": {
       "id": "ID",
@@ -491,7 +491,7 @@
     },
     "copyOrCut": "Would you like to cut or copy the files?",
     "filesShared": "Files shared",
-    "filesSharingStarted": "Files sharing started",
+    "filesSharingStarted": "Sharing files started",
     "filesCollected": "Files collected"
   },
   "select": "Select",
