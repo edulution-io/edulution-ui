@@ -191,8 +191,10 @@ const getFileSharingTableColumns = (
       meta: {
         translationId: 'fileSharingTable.type',
       },
-      cell: function Cell({ row }) {
+
+      cell: ({ row }) => {
         const { t } = useTranslation();
+
         const renderFileCategorize = (item: DirectoryFileDTO) => {
           if (row.original.type === ContentType.FILE) {
             return t(`fileCategory.${getFileCategorie(item.filename)}`);

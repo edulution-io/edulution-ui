@@ -23,7 +23,7 @@ import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressD
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 
 import QUEUE_NAMES from '@libs/queue/constants/queueNames';
-import DuplicateFileJobData from '@libs/queue/constants/duplicateFileJobData';
+import DuplicateFileJobData from '@libs/queue/types/duplicateFileJobData';
 import type UserConnections from '../types/userConnections';
 import FilesharingService from './filesharing.service';
 import SseService from '../sse/sse.service';
