@@ -156,7 +156,6 @@ const UserCardButtonBar = ({
         <button
           type="button"
           className="relative p-2 "
-          title={t(button.title)}
           onClick={(e) => onButtonClick(e, button)}
           disabled={disabled}
         >
@@ -187,10 +186,7 @@ const UserCardButtonBar = ({
           menuContentClassName="z-[600]"
           disabled={disabled || !veyonIsActive || setFeatureIsLoading.has(connectionUid)}
           trigger={
-            <div
-              className={cn('relative p-2', disabled && 'cursor-auto')}
-              title={t(button.title)}
-            >
+            <div className={cn('relative p-2', disabled && 'cursor-auto')}>
               <button.icon
                 className={cn('text-lg', veyonIsActive && !disabled ? button.defaultColor : 'text-ciDarkGrey')}
               />
