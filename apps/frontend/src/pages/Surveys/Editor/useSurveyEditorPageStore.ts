@@ -15,22 +15,17 @@ import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import { HttpStatus } from '@nestjs/common';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { SURVEY_IMAGES_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
-import eduApi from '@/api/eduApi';
-import handleApiError from '@/utils/handleApiError';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import commonErrorMessages from '@libs/common/constants/common-error-messages';
+import eduApi from '@/api/eduApi';
+import handleApiError from '@/utils/handleApiError';
 
 interface SurveyEditorPageStore {
   storedSurvey: SurveyDto | undefined;
   updateStoredSurvey: (survey: SurveyDto) => void;
   resetStoredSurvey: () => void;
 
-  uploadImageFile: (
-    surveyId: string,
-    questionId: string,
-    formData: FormData,
-    callback: CallableFunction,
-  ) => Promise<void>;
+  uploadImageFile: (surveyId: string, questionId: string, file: File, callback: CallableFunction) => Promise<void>;
   isUploadingImageFile: boolean;
 
   isOpenSaveSurveyDialog: boolean;
@@ -102,22 +97,17 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
       uploadImageFile: async (
         surveyId: string,
         questionId: string,
-        formData: FormData,
+        file: File,
         callback: CallableFunction,
       ): Promise<void> => {
         set({ isUploadingImageFile: true });
         try {
-          console.log('uploadImageFile (formData: ', formData, ' )');
+          const formData = new FormData();
+          formData.append('file', file);
 
-          const response = await eduApi.post<string>(
-            SURVEY_IMAGES_ENDPOINT,
-            { surveyId, questionId, file: formData },
-            {
-              headers: { 'Content-Type': 'multipart/form-data' },
-            },
-          );
-
-          console.log('  -> response: ', response);
+          const response = await eduApi.post<string>(`${SURVEY_IMAGES_ENDPOINT}/${surveyId}/${questionId}`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          });
 
           if (!response) {
             throw new CustomHttpException(commonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR);

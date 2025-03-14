@@ -45,7 +45,7 @@ class PublicSurveysController {
   @Public()
   getImages(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
     const { surveyId, questionId, filename } = params;
-    return SurveysService.serveImage(surveyId, questionId, filename, res);
+    return this.surveyService.serveImage(surveyId, questionId, filename, res);
   }
 
   @Get(`${RESTFUL_CHOICES}/:surveyId/:questionId`)

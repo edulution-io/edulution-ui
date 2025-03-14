@@ -10,11 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-import { copyFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
 import { Observable } from 'rxjs';
 import { extname } from 'path';
 import { diskStorage } from 'multer';
+import { existsSync, mkdirSync } from 'fs';
 import { Response, Request } from 'express';
 import {
   Body,
@@ -31,7 +30,6 @@ import {
   Query,
   UploadedFile,
   UseInterceptors,
-  Logger,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -101,16 +99,18 @@ class SurveysController {
     return this.surveyAnswerService.findUserSurveys(status, user);
   }
 
-  @Post(IMAGES)
+  @Post(`${IMAGES}/:surveyId/:questionId`)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: (req: Request) => {
-          const { surveyId, questionId } = req.body;
-          const directory = `${SURVEYS_IMAGES_PATH}/${surveyId}/${questionId}`;
-          mkdirSync(directory, { recursive: true });
-          return directory;
+        destination: (req: Request, _file, callback) => {
+          const { surveyId, questionId } = req.params;
+          const destination = `${SURVEYS_IMAGES_PATH}/${surveyId}/${questionId}`;
+          if (!existsSync(destination)) {
+            mkdirSync(destination, { recursive: true });
+          }
+          callback(null, destination);
         },
         filename: (_req, file, callback) => {
           const uniqueFilename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${extname(file.originalname)}`;
@@ -131,16 +131,14 @@ class SurveysController {
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   uploadImage(
-    @Body() body: { surveyId: string; questionId: string },
+    @Param() param: { surveyId: string; questionId: string },
     @UploadedFile() file: Express.Multer.File,
     @Res() res: Response,
   ) {
-    const { surveyId, questionId } = body;
-
-    Logger.log(`${surveyId} ${questionId}`);
-
-    const filePath = SurveysService.getImageUrl(file, surveyId, questionId);
-    return res.status(HttpStatus.CREATED).json(filePath);
+    const { surveyId, questionId } = param;
+    SurveysService.checkImageFile(file);
+    const imageUrl = SurveysService.getImageUrl(surveyId, questionId, file.filename);
+    return res.status(HttpStatus.CREATED).json(imageUrl);
   }
 
   @Post(ANSWER)

@@ -111,13 +111,12 @@ const SurveyEditorPage = () => {
       creator.saveSurveyFunc = updateSurveyStorage;
 
       creator.onUploadFile.add(async (_, options) => {
-        const formData = new FormData();
-
-        options.files.forEach((file) => formData.append(file.name, file));
-
-        if (surveyId) {
-          await uploadImageFile(surveyId, options.question.id, formData, options.callback);
-        }
+        // TODO: Currently this can only work for already created surveys
+        if (!surveyId) return;
+        const promises = options.files.map((file: File) =>
+          uploadImageFile(surveyId, options.question.id, file, options.callback),
+        );
+        await Promise.all(promises);
       });
     }
   }, [creator, form, language]);

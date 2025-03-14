@@ -10,6 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import getBaseUrl from '@libs/common/utils/getBaseUrl';
+import { PUBLIC_SURVEYS, IMAGES } from '@libs/survey/constants/surveys-endpoint';
 import { join } from 'path';
 import { Response } from 'express';
 import { Model, Types } from 'mongoose';
@@ -26,7 +28,6 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
 import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import surveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
 import surveysMigrationsList from './migrations/surveysMigrationsList';
@@ -167,6 +168,25 @@ class SurveysService implements OnModuleInit {
     return this.createSurvey(surveyDto, currentUser, surveysSseConnections);
   }
 
+  static getImagePath(surveyId: string, questionId: string, fileName: string): string {
+    return join(SURVEYS_IMAGES_PATH, surveyId, questionId, fileName);
+  }
+
+  static getImageUrl(surveyId: string, questionId: string, fileName: string): string {
+    const baseUrl = getBaseUrl();
+    return join(baseUrl, 'edu-api', PUBLIC_SURVEYS, IMAGES, surveyId, questionId, fileName);
+  }
+
+  serveImage(surveyId: string, questionId: string, fileName: string, res: Response): Response {
+    const imagePath = SurveysService.getImagePath(surveyId, questionId, fileName);
+    if (!existsSync(imagePath)) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+    const fileStream = createReadStream(imagePath);
+    fileStream.pipe(res);
+    return res;
+  }
+
   static checkImageFile(file: Express.Multer.File): string {
     if (!file) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
@@ -177,28 +197,6 @@ class SurveysService implements OnModuleInit {
     return file.filename;
   }
 
-  static getImagePath(surveyId: string, questionId: string, fileName: string): string {
-    return join(SURVEYS_IMAGES_PATH, surveyId, questionId, fileName);
-  }
-
-  static getImageUrl(file: Express.Multer.File, surveyId: string, questionId: string): string {
-    const existingFileName = this.checkImageFile(file);
-    return SurveysService.getImagePath(surveyId, questionId, existingFileName);
-  }
-
-  static serveImage(surveyId: string, questionId: string, fileName: string, res: Response): Response {
-    const imagePath = SurveysService.getImagePath(surveyId, questionId, fileName);
-
-    if (!existsSync(imagePath)) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
-    }
-
-    const fileStream = createReadStream(imagePath);
-    fileStream.pipe(res);
-
-    return res;
-  }
-
   async onSurveyRemoval(surveyIds: string[]): Promise<void> {
     const imageDirectories = surveyIds.map((surveyId) => join(SURVEYS_IMAGES_PATH, surveyId));
     const deletionPromises = imageDirectories.map((directory) => promises.rmdir(directory, { recursive: true }));
@@ -206,7 +204,7 @@ class SurveysService implements OnModuleInit {
     try {
       await Promise.all(deletionPromises);
     } catch (error) {
-      throw new CustomHttpException(surveyErrorMessages.ImageDeletionFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(SurveyErrorMessages.ImageDeletionFailed, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }
