@@ -28,6 +28,7 @@ import CollectFileJobData from '@libs/queue/constants/collectFileJobData';
 import type UserConnections from '../types/userConnections';
 import FilesharingService from './filesharing.service';
 import SseService from '../sse/sse.service';
+import FilePaths from '@libs/filesharing/constants/file-paths';
 
 @Processor(APPS.FILE_SHARING, { concurrency: 1 })
 class FilesharingConsumer extends WorkerHost {
@@ -82,12 +83,12 @@ class FilesharingConsumer extends WorkerHost {
       processID: Number(job.id),
       title: 'filesharing.progressBox.titleCollecting',
       description: 'filesharing.progressBox.fileInfoCollecting',
-      statusDescription: 'filesharing.progressBox.processedSharingInfo',
+      statusDescription: 'filesharing.progressBox.processedCollectingInfo',
       processed,
       total,
       studentName: username,
       percent,
-      currentFile: operationType,
+      currentFile: FilePaths.COLLECT,
       failedPaths,
     };
 
@@ -118,8 +119,8 @@ class FilesharingConsumer extends WorkerHost {
     const progressDto: FilesharingProgressDto = {
       processID: Number(job.id),
       title: 'filesharing.progressBox.titleSharing',
-      description: 'filesharing.progressBox.fileInfoCollecting',
-      statusDescription: 'filesharing.progressBox.processedCollectingInfo',
+      description: 'filesharing.progressBox.fileInfoSharing',
+      statusDescription: 'filesharing.progressBox.processedSharingInfo',
       processed,
       total,
       percent,
