@@ -25,10 +25,10 @@ import JOB_NAMES from '@libs/queue/constants/jobNames';
 import DuplicateFileJobData from '@libs/queue/types/duplicateFileJobData';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 import CollectFileJobData from '@libs/queue/constants/collectFileJobData';
+import FilePaths from '@libs/filesharing/constants/file-paths';
 import type UserConnections from '../types/userConnections';
 import FilesharingService from './filesharing.service';
 import SseService from '../sse/sse.service';
-import FilePaths from '@libs/filesharing/constants/file-paths';
 
 @Processor(APPS.FILE_SHARING, { concurrency: 1 })
 class FilesharingConsumer extends WorkerHost {
