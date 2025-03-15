@@ -82,6 +82,7 @@ class FilesharingConsumer extends WorkerHost {
       processID: Number(job.id),
       title: 'filesharing.progressBox.titleCollecting',
       description: 'filesharing.progressBox.fileInfoCollecting',
+      statusDescription: 'filesharing.progressBox.processedSharingInfo',
       processed,
       total,
       studentName: username,
@@ -117,7 +118,8 @@ class FilesharingConsumer extends WorkerHost {
     const progressDto: FilesharingProgressDto = {
       processID: Number(job.id),
       title: 'filesharing.progressBox.titleSharing',
-      description: 'filesharing.progressBox.titleCollecting',
+      description: 'filesharing.progressBox.fileInfoCollecting',
+      statusDescription: 'filesharing.progressBox.processedCollectingInfo',
       processed,
       total,
       percent,

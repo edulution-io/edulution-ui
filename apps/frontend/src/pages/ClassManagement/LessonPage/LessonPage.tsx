@@ -84,6 +84,7 @@ const LessonPage = () => {
         filename: filesharingProgress.currentFile.split('/').pop(),
         studentName: filesharingProgress.studentName,
       }),
+      statusDescription: filesharingProgress.statusDescription,
       failed: filesharingProgress.failedPaths?.length || 0,
       processed: filesharingProgress.processed,
       total: filesharingProgress.total,

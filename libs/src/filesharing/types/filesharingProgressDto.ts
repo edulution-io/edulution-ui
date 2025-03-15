@@ -22,6 +22,9 @@ export class FilesharingProgressDto {
   @IsString()
   description: string;
 
+  @IsString()
+  statusDescription: string;
+
   @IsNumber()
   processed: number;
 
