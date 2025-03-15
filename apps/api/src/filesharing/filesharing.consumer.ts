@@ -82,12 +82,12 @@ class FilesharingConsumer extends WorkerHost {
       processID: Number(job.id),
       title: 'filesharing.progressBox.titleCollecting',
       description: 'filesharing.progressBox.fileInfoCollecting',
-      processed: processed,
-      total: total,
+      processed,
+      total,
       studentName: username,
-      percent: percent,
+      percent,
       currentFile: operationType,
-      failedPaths: failedPaths,
+      failedPaths,
     };
 
     SseService.sendEventToUser(username, this.fileSharingSseConnections, progressDto, SSE_MESSAGE_TYPE.UPDATED);
