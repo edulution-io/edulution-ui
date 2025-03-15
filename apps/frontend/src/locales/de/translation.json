@@ -477,14 +477,14 @@
     "filesSharingStarted": "Dateien werden geteilt",
     "filesCollected": "Dateien eingesammelt",
     "failDialog": {
-      "title": "Datei „{{file}}“ konnte nicht geteilt werden",
+      "title": "Datei {{file}} konnte nicht geteilt werden",
       "reasonMissing": "Die Datei ist möglicherweise nicht mehr vorhanden oder wurde umbenannt.",
       "reasonAlreadyReceived": "Der Empfänger hat die Datei bereits.",
       "reasonDuplicate": "Der Dateiname ist doppelt vorhanden.",
       "affectedPersons": "Die folgenden Personen haben die Datei nicht erhalten:",
       "affectedPerson": "Die folgende Person hat die Datei nicht erhalten:",
       "filenameAdvice": "Wenn das Austeilen nochmals probiert werden soll, wird die Datei unter dem Namen {{filename}} verteilt",
-      "retryButton": "Nochmals versuchen"
+      "retryButton": "Erneut versuchen"
     },
     "veyonConfigTable": {
       "id": "ID",
@@ -1025,7 +1025,8 @@
     "invalid_url": "Ungültige URL",
     "invalid_fqdn": "Ungültiger FQDN. Bitte nur den Hostnamen angeben.",
     "required": "Erforderlich",
-    "download": "Herunterladen"
+    "download": "Herunterladen",
+    "template": "Vorlage"
   },
   "form": {
     "path": "Link",
@@ -1040,7 +1041,7 @@
     "apiKey": "API Schlüssel",
     "apiKeyDescription": "Der API Schlüssel wird für die Authentifizierung verwendet",
     "proxyConfig": "Proxy-Konfiguration",
-    "proxyConfigDescription": "YAML-Editor für die Konfiguration des Traefik-Proxy.",
+    "proxyConfigDescription": "Hier kann eine eigene Proxy-Konfiguration für Traefik hinterlegt werden. Dabei kann entweder über die Eingabefelder mithilfe einer Vorlage gearbeitet werden, oder direkt im Expertenmodus eine Konfiguration im YAML-Format erstellt werden. <br/><strong>Achtung:</strong> Eine falsche Konfiguration könnte dazu führen, dass die Anwendung nicht mehr erreichbar ist.",
     "expertMode": "Expertenmodus",
     "proxyPath": "Proxy Pfad",
     "proxyPathPlaceholder": "z.B. SOGo",

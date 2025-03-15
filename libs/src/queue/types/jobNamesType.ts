@@ -10,9 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const QUEUE_NAMES = {
-  DUPLICATE_FILE_QUEUE: 'duplicate-file',
-  COLLECT_FILE_QUEUE: 'collect-file',
-} as const;
+import JOB_NAMES from '@libs/queue/constants/jobNames';
 
-export default QUEUE_NAMES;
+export type JobNamesType = (typeof JOB_NAMES)[keyof typeof JOB_NAMES];

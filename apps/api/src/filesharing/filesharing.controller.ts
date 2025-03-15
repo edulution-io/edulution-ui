@@ -45,7 +45,7 @@ import { Observable } from 'rxjs';
 import FilesharingService from './filesharing.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
-import FilesharingQueueProcessor from './filesharingQueueProcessor';
+import FilesharingConsumer from './filesharing.consumer';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
@@ -53,7 +53,7 @@ import FilesharingQueueProcessor from './filesharingQueueProcessor';
 class FilesharingController {
   constructor(
     private readonly filesharingService: FilesharingService,
-    private readonly filesharingQueueProcessor: FilesharingQueueProcessor,
+    private readonly filesharingQueueProcessor: FilesharingConsumer,
   ) {}
 
   @Get()
