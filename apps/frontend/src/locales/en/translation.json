@@ -495,7 +495,7 @@
     "copyOrCut": "Would you like to cut or copy the files?",
     "filesShared": "Files shared",
     "filesSharingStarted": "Sharing files started",
-    "filesCollected": "Files collected"
+    "filesCollectingStarted": "File collecting started"
   },
   "select": "Select",
   "selectAll": "Select all",

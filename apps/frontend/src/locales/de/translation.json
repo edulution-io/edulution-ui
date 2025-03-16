@@ -475,7 +475,7 @@
     "copyOrCut": "Möchtest du die Dateien ausschneiden oder kopieren?",
     "filesShared": "Dateien geteilt",
     "filesSharingStarted": "Dateien werden geteilt",
-    "filesCollected": "Dateien eingesammelt",
+    "filesCollectingStarted": "Dateien werden eingesammelt",
     "failDialog": {
       "title": "Datei {{file}} konnte nicht geteilt werden",
       "reasonMissing": "Die Datei ist möglicherweise nicht mehr vorhanden oder wurde umbenannt.",
