@@ -47,7 +47,8 @@ class FilesharingService {
     private readonly userService: UsersService,
     private readonly onlyofficeService: OnlyofficeService,
     private readonly fileSystemService: FilesystemService,
-    @InjectQueue(APPS.FILE_SHARING) private fileSharingQueue: Queue,
+    @InjectQueue(`${APPS.FILE_SHARING}-${JOB_NAMES.COLLECT_FILE_JOB}`) private fileCollectingQueue: Queue,
+    @InjectQueue(`${APPS.FILE_SHARING}-${JOB_NAMES.DUPLICATE_FILE_JOB}`) private fileSharingQueue: Queue,
   ) {}
 
   private setCacheTimeout(token: string): NodeJS.Timeout {
@@ -423,7 +424,7 @@ class FilesharingService {
     let processedItems = 0;
     return Promise.all(
       collectFileRequestDTO.map(async (collectFileRequest) => {
-        await this.fileSharingQueue.add(JOB_NAMES.COLLECT_FILE_QUEUE, {
+        await this.fileCollectingQueue.add(JOB_NAMES.COLLECT_FILE_JOB, {
           username,
           userRole,
           item: collectFileRequest,

@@ -45,7 +45,8 @@ import { Observable } from 'rxjs';
 import FilesharingService from './filesharing.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
-import FilesharingConsumer from './filesharing.consumer';
+import FilesharingConsumer from './consumers/filesharing.consumer';
+import FileCollectConsumer from './consumers/filecollect.consumer';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
@@ -53,7 +54,8 @@ import FilesharingConsumer from './filesharing.consumer';
 class FilesharingController {
   constructor(
     private readonly filesharingService: FilesharingService,
-    private readonly filesharingQueueProcessor: FilesharingConsumer,
+    private readonly filesharingCollectConsumer: FileCollectConsumer,
+    private readonly filesharingConsumer: FilesharingConsumer,
   ) {}
 
   @Get()
@@ -195,9 +197,14 @@ class FilesharingController {
     }
   }
 
-  @Sse('sse')
+  @Sse('sse-sharing')
   sse(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
-    return this.filesharingQueueProcessor.subscribe(username, res);
+    return this.filesharingConsumer.subscribe(username, res);
+  }
+
+  @Sse('sse-collect')
+  sseCollect(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
+    return this.filesharingCollectConsumer.subscribe(username, res);
   }
 }
 

@@ -18,7 +18,7 @@ import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
-import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import { FilesharingProgressDto } from '@libs/filesharing/types/filesharingProgressDto';
 
 interface LessonState {
   isLoading: boolean;

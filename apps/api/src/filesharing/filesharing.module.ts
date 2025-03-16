@@ -14,24 +14,34 @@ import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { BullModule } from '@nestjs/bullmq';
 import APPS from '@libs/appconfig/constants/apps';
+import JOB_NAMES from '@libs/queue/constants/jobNames';
 import FilesharingController from './filesharing.controller';
 import FilesharingService from './filesharing.service';
 import AppConfigModule from '../appconfig/appconfig.module';
 import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
-import FilesharingConsumer from './filesharing.consumer';
+import FilesharingConsumer from './consumers/filesharing.consumer';
 import SseService from '../sse/sse.service';
+import FilecollectConsumer from './consumers/filecollect.consumer';
 
 @Module({
   imports: [
     HttpModule,
     AppConfigModule,
-    BullModule.registerQueue({
-      name: APPS.FILE_SHARING,
-    }),
+    BullModule.registerQueue(
+      { name: `${APPS.FILE_SHARING}-${JOB_NAMES.COLLECT_FILE_JOB}` },
+      { name: `${APPS.FILE_SHARING}-${JOB_NAMES.DUPLICATE_FILE_JOB}` },
+    ),
   ],
   controllers: [FilesharingController],
-  providers: [FilesharingService, FilesystemService, OnlyofficeService, FilesharingConsumer, SseService],
+  providers: [
+    FilesharingService,
+    FilesystemService,
+    OnlyofficeService,
+    FilesharingConsumer,
+    FilecollectConsumer,
+    SseService,
+  ],
   exports: [FilesharingService],
 })
 export default class FilesharingModule {}

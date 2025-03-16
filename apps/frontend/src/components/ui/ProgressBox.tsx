@@ -40,16 +40,14 @@ const ProgressBox: React.FC<{ data: ProgressBoxProps }> = ({ data }) => {
 
       {description && <p className="text-sm text-background">{description}</p>}
 
-      <p className="text-sm text-background">
-        {statusDescription && (
-          <p className="text-sm text-background">
-            {t(statusDescription, {
-              processed: processed - failed,
-              total,
-            })}
-          </p>
-        )}
-      </p>
+      {statusDescription && (
+        <p className="text-sm text-background">
+          {t(statusDescription, {
+            processed: processed - failed,
+            total,
+          })}
+        </p>
+      )}
     </div>
   );
 };

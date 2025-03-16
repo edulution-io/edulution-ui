@@ -18,19 +18,16 @@ import { MessageEvent } from '@nestjs/common';
 
 import APPS from '@libs/appconfig/constants/apps';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
-import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import { FilesharingProgressDto } from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 
 import JOB_NAMES from '@libs/queue/constants/jobNames';
 import DuplicateFileJobData from '@libs/queue/types/duplicateFileJobData';
-import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
-import CollectFileJobData from '@libs/queue/constants/collectFileJobData';
-import FilePaths from '@libs/filesharing/constants/file-paths';
-import type UserConnections from '../types/userConnections';
-import FilesharingService from './filesharing.service';
-import SseService from '../sse/sse.service';
+import type UserConnections from '../../types/userConnections';
+import FilesharingService from '../filesharing.service';
+import SseService from '../../sse/sse.service';
 
-@Processor(APPS.FILE_SHARING, { concurrency: 1 })
+@Processor(`${APPS.FILE_SHARING}-${JOB_NAMES.DUPLICATE_FILE_JOB}`, { concurrency: 1 })
 class FilesharingConsumer extends WorkerHost {
   private fileSharingSseConnections: UserConnections = new Map();
 
@@ -42,57 +39,8 @@ class FilesharingConsumer extends WorkerHost {
     return SseService.subscribe(username, this.fileSharingSseConnections, res);
   }
 
-  async process(job: Job<DuplicateFileJobData | CollectFileJobData>): Promise<void> {
-    switch (job.name) {
-      case JOB_NAMES.DUPLICATE_FILE_JOB:
-        await this.processDuplicateFile(job as Job<DuplicateFileJobData>);
-        break;
-      case JOB_NAMES.COLLECT_FILE_QUEUE:
-        await this.processCollectFile(job as Job<CollectFileJobData>);
-        break;
-      default:
-        break;
-    }
-  }
-
-  private async processCollectFile(job: Job<CollectFileJobData>): Promise<void> {
-    const { username, userRole, item, operationType, total, processed } = job.data;
-
-    const initFolderName = `${userRole}s/${username}/transfer/collected`;
-
-    const failedPaths: string[] = [];
-
-    try {
-      await this.fileSharingService.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName);
-
-      if (operationType === LMN_API_COLLECT_OPERATIONS.CUT) {
-        await this.fileSharingService.cutCollectedItems(username, item.originPath, item.destinationPath);
-      } else {
-        await this.fileSharingService.copyCollectedItems(username, {
-          originFilePath: item.originPath,
-          destinationFilePaths: [item.destinationPath],
-        });
-      }
-    } catch (error) {
-      failedPaths.push(item.destinationPath);
-    }
-
-    const percent = Math.round((processed / total) * 100);
-
-    const progressDto: FilesharingProgressDto = {
-      processID: Number(job.id),
-      title: 'filesharing.progressBox.titleCollecting',
-      description: 'filesharing.progressBox.fileInfoCollecting',
-      statusDescription: 'filesharing.progressBox.processedCollectingInfo',
-      processed,
-      total,
-      studentName: username,
-      percent,
-      currentFile: FilePaths.COLLECT,
-      failedPaths,
-    };
-
-    SseService.sendEventToUser(username, this.fileSharingSseConnections, progressDto, SSE_MESSAGE_TYPE.UPDATED);
+  async process(job: Job<DuplicateFileJobData>): Promise<void> {
+    await this.processDuplicateFile(job);
   }
 
   private async processDuplicateFile(job: Job<DuplicateFileJobData>): Promise<void> {

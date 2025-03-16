@@ -12,7 +12,7 @@
 
 const JOB_NAMES = {
   DUPLICATE_FILE_JOB: 'duplicate-file',
-  COLLECT_FILE_QUEUE: 'collect-file',
+  COLLECT_FILE_JOB: 'collect-file',
 } as const;
 
 export default JOB_NAMES;

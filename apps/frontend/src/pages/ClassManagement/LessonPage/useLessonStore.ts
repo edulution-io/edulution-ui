@@ -29,7 +29,7 @@ import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpo
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import { toast } from 'sonner';
 import { t } from 'i18next';
-import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import { FilesharingProgressDto } from '@libs/filesharing/types/filesharingProgressDto';
 
 const { PROJECT, SCHOOL_CLASSES, EXAM_MODE, MANAGEMENT_GROUPS, PRINTERS } = LMN_API_EDU_API_ENDPOINTS;
 
