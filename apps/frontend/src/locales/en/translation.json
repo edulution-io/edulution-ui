@@ -1178,7 +1178,8 @@
     "rename": "Rename",
     "move": "Move",
     "delete": "Delete",
-    "download": "Download"
+    "download": "Download",
+    "copy": "Copy"
   },
   "response": {
     "successfully": "Action was successful",

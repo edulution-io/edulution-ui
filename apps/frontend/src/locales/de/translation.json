@@ -1179,8 +1179,10 @@
     "rename": "Umbenennen",
     "move": "Verschieben",
     "delete": "Löschen",
-    "download": "Herunterladen"
+    "download": "Herunterladen",
+    "copy": "Kopieren"
   },
+
   "response": {
     "successfully": "Aktion war erfolgreich",
     "error": "Fehler",

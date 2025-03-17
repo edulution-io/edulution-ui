@@ -17,12 +17,14 @@ import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingBut
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
 import MoveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/moveButton';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
+import CopyButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/copyButton';
 
 const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog }) => {
   const config: FloatingButtonsBarConfig = {
     buttons: [
       DeleteButton(() => openDialog(FileActionType.DELETE_FILE_FOLDER)),
       MoveButton(() => openDialog(FileActionType.MOVE_FILE_FOLDER)),
+      CopyButton(() => openDialog(FileActionType.COPY_FILE_FOLDER)),
     ],
     keyPrefix: 'file-sharing-page-floating-button_',
   };
