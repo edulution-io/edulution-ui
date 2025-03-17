@@ -57,7 +57,6 @@ interface DataTableProps<TData, TValue> {
   textColorClassname?: string;
   showHeader?: boolean;
   showSelectedCount?: boolean;
-  footer?: React.ReactNode;
   isDialog?: boolean;
 }
 
@@ -79,7 +78,6 @@ const ScrollableTable = <TData, TValue>({
   textColorClassname = 'text-muted-foreground',
   showHeader = true,
   showSelectedCount = true,
-  footer,
   isDialog = false,
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
@@ -235,7 +233,6 @@ const ScrollableTable = <TData, TValue>({
           </Table>
         </div>
       </div>
-      {footer && <div className="overflow-hidden text-ellipsis whitespace-nowrap">{footer}</div>}
     </>
   );
 };
