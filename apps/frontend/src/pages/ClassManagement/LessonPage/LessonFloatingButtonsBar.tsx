@@ -188,7 +188,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
         variant: 'dropdown',
         icon: PiEyeFill,
         text: t(`classmanagement.${CLASSMGMT_OPTIONS.VEYON}`),
-        isVisible: isMemberSelected && isVeyonEnabled,
+        isVisible: isMemberSelected && isVeyonEnabled && connectionUids.length > 0,
         dropdownItems: [
           {
             label: t('veyon.lockScreen'),
