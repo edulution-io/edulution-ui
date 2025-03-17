@@ -54,7 +54,7 @@ interface DataTableProps<TData, TValue> {
   };
   tableIsUsedOnAppConfigPage?: boolean;
   enableRowSelection?: boolean | ((row: Row<TData>) => boolean) | undefined;
-  classname?: string;
+  textColorClassname?: string;
   showHeader?: boolean;
   showSelectedCount?: boolean;
   footer?: React.ReactNode;
@@ -76,7 +76,7 @@ const ScrollableTable = <TData, TValue>({
   enableRowSelection,
   initialSorting,
   tableIsUsedOnAppConfigPage = false,
-  classname = 'text-muted-foreground',
+  textColorClassname = 'text-muted-foreground',
   showHeader = true,
   showSelectedCount = true,
   footer,
@@ -144,7 +144,7 @@ const ScrollableTable = <TData, TValue>({
           {!tableIsUsedOnAppConfigPage && (
             <div
               id={selectedRowsMessageId}
-              className={`flex-1 text-sm ${classname}`}
+              className={`flex-1 text-sm ${textColorClassname}`}
             >
               &nbsp;
             </div>
@@ -190,7 +190,7 @@ const ScrollableTable = <TData, TValue>({
           <Table>
             {showHeader && (
               <TableHeader
-                className={`text-foreground ${classname}`}
+                className={`text-foreground ${textColorClassname}`}
                 id={tableHeaderId}
               >
                 {table.getHeaderGroups().map((headerGroup) => (
@@ -214,7 +214,7 @@ const ScrollableTable = <TData, TValue>({
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={`${row.id}-${cell.column.id}`}
-                        className={classname}
+                        className={textColorClassname}
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
@@ -225,7 +225,7 @@ const ScrollableTable = <TData, TValue>({
                 <TableRow>
                   <TableCell
                     colSpan={columns?.length}
-                    className={`h-24 text-center ${classname}`}
+                    className={`h-24 text-center ${textColorClassname}`}
                   >
                     {t('table.noDataAvailable')}
                   </TableCell>

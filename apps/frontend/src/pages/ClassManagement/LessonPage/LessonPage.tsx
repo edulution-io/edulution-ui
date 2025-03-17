@@ -79,9 +79,9 @@ const LessonPage = () => {
     const toasterData = {
       percent,
       title: t('filesharing.progressBox.title'),
-      id: filesharingProgress.currentFile,
+      id: filesharingProgress.currentFilePath,
       description: t('filesharing.progressBox.fileInfo', {
-        filename: filesharingProgress.currentFile.split('/').pop(),
+        filename: filesharingProgress.currentFilePath.split('/').pop(),
         studentName: filesharingProgress.studentName,
       }),
       failed: filesharingProgress.failedPaths?.length || 0,
@@ -206,16 +206,9 @@ const LessonPage = () => {
   };
 
   useEffect(() => {
-    if (
-      filesharingProgress &&
-      filesharingProgress.percent >= 100 &&
-      filesharingProgress.failedPaths?.length &&
-      filesharingProgress.failedPaths?.length > 0
-    ) {
-      setIsFileSharingProgessInfoDialogOpen(true);
-    } else {
-      setIsFileSharingProgessInfoDialogOpen(false);
-    }
+    setIsFileSharingProgessInfoDialogOpen(
+      (filesharingProgress?.percent ?? 0) >= 100 && (filesharingProgress?.failedPaths?.length ?? 0) > 0,
+    );
   }, [filesharingProgress]);
 
   return (
@@ -267,11 +260,11 @@ const LessonPage = () => {
           isOpen={isFileSharingProgessInfoDialogOpen}
           handleOpenChange={() => setIsFileSharingProgessInfoDialogOpen(!isFileSharingProgessInfoDialogOpen)}
           title={t('classmanagement.failDialog.title', {
-            file: filesharingProgress.currentFile.split('/').pop(),
+            file: filesharingProgress.currentFilePath.split('/').pop(),
           })}
           body={
             <SharingFilesFailedDialogBody
-              failedFilePath={filesharingProgress?.currentFile}
+              failedFilePath={filesharingProgress?.currentFilePath}
               affectedUsers={filesharingProgress?.failedPaths.map((path) => path.split('/').at(2) || '')}
               failedPaths={filesharingProgress?.failedPaths}
             />
