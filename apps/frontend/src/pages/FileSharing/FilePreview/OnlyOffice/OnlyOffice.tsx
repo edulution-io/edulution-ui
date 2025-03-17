@@ -20,9 +20,10 @@ interface OnlyOfficeProps {
   url: string;
   type: 'desktop' | 'mobile';
   mode: 'view' | 'edit';
+  isOpenedInNewTab?: boolean;
 }
 
-const OnlyOffice: FC<OnlyOfficeProps> = ({ url, filePath, fileName, mode, type }) => {
+const OnlyOffice: FC<OnlyOfficeProps> = ({ url, filePath, fileName, mode, type, isOpenedInNewTab }) => {
   const { documentServerURL, editorType, editorConfig } = useOnlyOffice({
     filePath,
     fileName,
@@ -40,6 +41,7 @@ const OnlyOffice: FC<OnlyOfficeProps> = ({ url, filePath, fileName, mode, type }
         editorConfig={editorConfig}
         filePath={filePath}
         fileName={fileName}
+        isOpenedInNewTab={isOpenedInNewTab}
       />
     )
   );

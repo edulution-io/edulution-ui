@@ -10,28 +10,30 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import cn from '@libs/common/utils/className';
-import { MdClose } from 'react-icons/md';
+import React, { useMemo } from 'react';
+import { BiSolidDockRight } from 'react-icons/bi';
+import { IconContext } from 'react-icons';
+import { VscEmptyWindow } from 'react-icons/vsc';
 import WindowControlBaseButton from './WindowControlBaseButton';
 
-interface CloseButtonProps {
-  handleClose: () => void;
-  className?: string;
+interface ToggleDockButtonProps {
+  onClick: () => void;
+  isDocked: boolean;
 }
 
-const CloseButton = ({ handleClose, className }: CloseButtonProps) => {
-  const closeClasses = cn('bg-red-800 hover:bg-red-700', className);
+const ToggleDockButton = ({ onClick, isDocked }: ToggleDockButtonProps) => {
+  const iconContextValue = useMemo(() => ({ className: 'h-4 w-4' }), []);
 
   return (
-    <WindowControlBaseButton
-      tooltipTranslationId="common.close"
-      onClick={handleClose}
-      className={closeClasses}
-    >
-      <MdClose />
-    </WindowControlBaseButton>
+    <IconContext.Provider value={iconContextValue}>
+      <WindowControlBaseButton
+        onClick={onClick}
+        tooltipTranslationId={isDocked ? 'common.undock' : 'common.dock'}
+      >
+        {isDocked ? <VscEmptyWindow /> : <BiSolidDockRight />}
+      </WindowControlBaseButton>
+    </IconContext.Provider>
   );
 };
 
-export default CloseButton;
+export default ToggleDockButton;
