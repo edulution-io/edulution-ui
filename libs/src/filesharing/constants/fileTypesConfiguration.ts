@@ -13,10 +13,10 @@
 import { t } from 'i18next';
 import { SiDiagramsdotnet } from 'react-icons/si';
 import { FaFileAlt, FaFileExcel, FaFilePowerpoint, FaFileWord } from 'react-icons/fa';
-import { DropdownOption } from '@libs/filesharing/types/fileCreationDropDownOptions';
+import FilesharingDropdownOptions from '@libs/filesharing/types/fileCreationDropDownOptions';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/constants/availableFileTypes';
 
-const FileTypesConfiguration: DropdownOption[] = [
+const FileTypesConfiguration: FilesharingDropdownOptions[] = [
   {
     type: AVAILABLE_FILE_TYPES.drawIoFile,
     name: t(AVAILABLE_FILE_TYPES.drawIoFile),

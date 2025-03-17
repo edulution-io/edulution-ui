@@ -10,13 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import { ElementType } from 'react';
 import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
 
-export interface DropdownOption {
+interface FilesharingDropdownOptions {
   name: string;
-  type: TAvailableFileTypes;
+  type?: TAvailableFileTypes;
   title: string;
-  icon: React.ElementType;
+  onClick?: () => void;
+  icon?: ElementType;
   iconColor?: string;
 }
+
+export default FilesharingDropdownOptions;

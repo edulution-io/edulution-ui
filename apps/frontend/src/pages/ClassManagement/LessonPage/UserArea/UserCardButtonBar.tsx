@@ -30,6 +30,7 @@ import CLASSMGMT_OPTIONS from '@libs/classManagement/constants/classmgmtOptions'
 import ClassmgmtOptionsType from '@libs/classManagement/types/classmgmtOptionsType';
 import VEYON_FEATURE_ACTIONS from '@libs/veyon/constants/veyonFeatureActions';
 import useVeyonApiStore from '../../useVeyonApiStore';
+import useVeyonFeatures from './useVeyonFeatures';
 
 interface UserCardButtonBarProps {
   user: UserLmnInfo;
@@ -68,7 +69,9 @@ const UserCardButtonBar = ({
   const { internet, printing, examMode, webfilter, wifi, cn: commonName } = user;
   const { groupType, groupName } = useParams();
   const { setCurrentUser } = useLmnApiPasswordStore();
-  const { userConnectionUids, setFeatureIsLoading, setFeature } = useVeyonApiStore();
+  const { userConnectionUids, setFeatureIsLoading } = useVeyonApiStore();
+  const { handleSetVeyonFeature } = useVeyonFeatures();
+
   const connectionUid = userConnectionUids.find((conn) => conn.veyonUsername === user.cn)?.connectionUid || '';
   const veyonIsActive = !!connectionUid;
 
@@ -143,10 +146,6 @@ const UserCardButtonBar = ({
     });
   }
 
-  const handleSetVeyonFeature = (featureUid: string, active: boolean) => {
-    void setFeature(connectionUid, featureUid, active);
-  };
-
   return userCardButtons.map((button) =>
     button.variant === 'button' ? (
       <div
@@ -201,20 +200,25 @@ const UserCardButtonBar = ({
           items={[
             {
               label: t(isScreenLocked ? 'veyon.unlockScreen' : 'veyon.lockScreen'),
-              onClick: () => handleSetVeyonFeature(VEYON_FEATURE_ACTIONS.SCREENLOCK, !isScreenLocked),
+              onClick: () => handleSetVeyonFeature([connectionUid], VEYON_FEATURE_ACTIONS.SCREENLOCK, !isScreenLocked),
             },
             {
               label: t(areInputDevicesLocked ? 'veyon.unlockInputDevices' : 'veyon.lockInputDevices'),
-              onClick: () => handleSetVeyonFeature(VEYON_FEATURE_ACTIONS.INPUT_DEVICES_LOCK, !areInputDevicesLocked),
+              onClick: () =>
+                handleSetVeyonFeature(
+                  [connectionUid],
+                  VEYON_FEATURE_ACTIONS.INPUT_DEVICES_LOCK,
+                  !areInputDevicesLocked,
+                ),
             },
             { label: 'veyonSeparater', isSeparator: true },
             {
               label: t('veyon.rebootSystem'),
-              onClick: () => handleSetVeyonFeature(VEYON_FEATURE_ACTIONS.REBOOT, true),
+              onClick: () => handleSetVeyonFeature([connectionUid], VEYON_FEATURE_ACTIONS.REBOOT, true),
             },
             {
               label: t('veyon.powerDown'),
-              onClick: () => handleSetVeyonFeature(VEYON_FEATURE_ACTIONS.POWER_DOWN, true),
+              onClick: () => handleSetVeyonFeature([connectionUid], VEYON_FEATURE_ACTIONS.POWER_DOWN, true),
             },
           ]}
         />

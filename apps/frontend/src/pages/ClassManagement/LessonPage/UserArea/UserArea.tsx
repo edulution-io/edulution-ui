@@ -125,6 +125,7 @@ const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
       <LessonFloatingButtonsBar
         fetchData={fetchData}
         students={getSelectedStudents()}
+        isVeyonEnabled={isVeyonEnabled}
         isMemberSelected={!!selectedMemberCount}
       />
     </>

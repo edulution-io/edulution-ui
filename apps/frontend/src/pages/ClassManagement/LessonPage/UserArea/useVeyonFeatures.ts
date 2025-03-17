@@ -10,19 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IconType } from 'react-icons';
-import type FilesharingDropdownOptions from '@libs/filesharing/types/fileCreationDropDownOptions';
-import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
+import useVeyonApiStore from '../../useVeyonApiStore';
 
-interface FloatingButtonConfig {
-  icon: IconType;
-  text: string;
-  onClick?: () => void;
-  isVisible?: boolean;
-  type?: 'button' | 'submit' | 'reset';
-  variant?: 'button' | 'dropdown';
-  options?: FilesharingDropdownOptions[];
-  onSelectFileSelect?: (fileType: TAvailableFileTypes) => void;
-}
+const useVeyonFeatures = () => {
+  const setFeature = useVeyonApiStore((state) => state.setFeature);
 
-export default FloatingButtonConfig;
+  const handleSetVeyonFeature = (connectionUids: (string | undefined)[], featureUid: string, active: boolean) => {
+    connectionUids.forEach((connectionUid) => {
+      if (connectionUid) void setFeature(connectionUid, featureUid, active);
+    });
+  };
+
+  return {
+    handleSetVeyonFeature,
+  };
+};
+
+export default useVeyonFeatures;

@@ -54,7 +54,7 @@ const UserCard = ({
   const connectionUid = userConnectionUids.find((conn) => conn.veyonUsername === user.cn)?.connectionUid || '';
 
   useEffect(() => {
-    if (isVeyonEnabled && user.sophomorixIntrinsic3.length > 0) {
+    if (isVeyonEnabled && user.sophomorixIntrinsic3.length > 0 && isStudent) {
       const connIp = user.sophomorixIntrinsic3[0];
 
       void authenticateVeyonClient(connIp, user.cn);
