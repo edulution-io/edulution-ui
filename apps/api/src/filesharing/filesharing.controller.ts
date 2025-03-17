@@ -38,10 +38,11 @@ import { Request, Response } from 'express';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
+import DuplicateFileRequestDto from '@libs/filesharing/types/duplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import { Observable } from 'rxjs';
+import CopyFileRequestDto from '@libs/filesharing/types/copyFileRequestDto';
 import FilesharingService from './filesharing.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
@@ -162,6 +163,11 @@ class FilesharingController {
     @GetCurrentUsername() username: string,
   ) {
     return this.filesharingService.duplicateFile(username, duplicateFileRequestDto);
+  }
+
+  @Post(FileSharingApiEndpoints.COPY)
+  async copyFiles(@Body() copyFileRequestDTO: CopyFileRequestDto, @GetCurrentUsername() username: string) {
+    return this.filesharingService.copyFile(username, copyFileRequestDTO);
   }
 
   @Post(FileSharingApiEndpoints.COLLECT)

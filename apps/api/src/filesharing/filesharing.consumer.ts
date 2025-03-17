@@ -45,6 +45,7 @@ class FilesharingConsumer extends WorkerHost {
         await this.processDuplicateFile(job);
         break;
       default:
+        await this.proccessCopyFile(job);
         break;
     }
   }
@@ -60,6 +61,34 @@ class FilesharingConsumer extends WorkerHost {
 
     await this.fileSharingService.ensureFolderExists(username, pathUpToTransferFolder, username);
     await this.fileSharingService.ensureFolderExists(username, pathUpToTeacherFolder, FILE_PATHS.COLLECT);
+
+    try {
+      await FilesharingService.copyFileViaWebDAV(client, originFilePath, destinationFilePath);
+    } catch {
+      failedPaths.push(destinationFilePath);
+    }
+
+    const percent = Math.round((processed / total) * 100);
+    const studentName = FilesharingService.getStudentNameFromPath(destinationFilePath) || '';
+
+    const progressDto: FilesharingProgressDto = {
+      processID: Number(job.id),
+      processed,
+      total,
+      percent,
+      currentFile: originFilePath,
+      studentName,
+      failedPaths,
+    };
+
+    SseService.sendEventToUser(username, this.fileSharingSseConnections, progressDto, SSE_MESSAGE_TYPE.UPDATED);
+  }
+
+  private async proccessCopyFile(job: Job<DuplicateFileJobData>): Promise<void> {
+    const { username, originFilePath, destinationFilePath, total, processed } = job.data;
+    const failedPaths: string[] = [];
+
+    const client = await this.fileSharingService.getClient(username);
 
     try {
       await FilesharingService.copyFileViaWebDAV(client, originFilePath, destinationFilePath);

@@ -12,7 +12,7 @@
 
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
+import DuplicateFileRequestDto from '@libs/filesharing/types/duplicateFileRequestDto';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import buildSharePath from '@libs/filesharing/utils/buildSharePath';
 

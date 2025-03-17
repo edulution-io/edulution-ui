@@ -24,6 +24,7 @@ import DownloadButton from '@/components/shared/FloatingsButtonsBar/CommonButton
 import MoveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/moveButton';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
+import CopyButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/copyButton';
 
 const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItem }) => {
   const { downloadFile } = useFileEditorStore();
@@ -45,6 +46,7 @@ const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedIt
   const config: FloatingButtonsBarConfig = {
     buttons: [
       DeleteButton(() => openDialog(FileActionType.DELETE_FILE_FOLDER)),
+      CopyButton(() => openDialog(FileActionType.COPY_FILE_FOLDER)),
       MoveButton(() => openDialog(FileActionType.MOVE_FILE_FOLDER)),
       {
         icon: MdDriveFileRenameOutline,

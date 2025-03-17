@@ -33,6 +33,7 @@ import DocumentVendorsType from '@libs/filesharing/types/documentVendorsType';
 import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
 import MoveDirectoryDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveDirectoryDialogBody';
+import CopyFileRequestDto from '@libs/filesharing/types/copyFileRequestDto';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
@@ -54,7 +55,9 @@ interface DialogBodyConfigurationBase {
       filesToUpload?: File[];
       documentVendor: DocumentVendorsType;
     },
-  ) => Promise<PathChangeOrCreateProps | PathChangeOrCreateProps[] | FileUploadProps[] | DeleteFileProps[]>;
+  ) => Promise<
+    PathChangeOrCreateProps | PathChangeOrCreateProps[] | FileUploadProps[] | DeleteFileProps[] | CopyFileRequestDto
+  >;
   requiresForm?: boolean;
 }
 
@@ -218,6 +221,31 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
           file,
         })),
       );
+    },
+  },
+
+  copyFileFolder: {
+    Component: MoveDirectoryDialogBody,
+    titleKey: 'copyItemDialog.copy',
+    submitKey: 'copyItemDialog.copy',
+    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.COPY}`,
+    httpMethod: HttpMethods.POST,
+    type: ContentType.FILE || ContentType.DIRECTORY,
+    requiresForm: false,
+
+    getData: (_form, _currentPath, inputValues) => {
+      const { moveOrCopyItemToPath, selectedItems } = inputValues;
+
+      if (!moveOrCopyItemToPath || !selectedItems?.length) {
+        return Promise.resolve([]);
+      }
+
+      const copyFileRequestDto: CopyFileRequestDto = {
+        originFilePaths: selectedItems.map((item) => getPathWithoutWebdav(item.filename)),
+        destinationFilePath: getPathWithoutWebdav(moveOrCopyItemToPath.filename),
+      };
+
+      return Promise.resolve(copyFileRequestDto);
     },
   },
 

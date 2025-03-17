@@ -15,10 +15,10 @@ import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
-import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
+import DuplicateFileRequestDto from '@libs/filesharing/types/duplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
-import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import { FilesharingProgressDto } from '@libs/filesharing/types/filesharingProgressDto';
 
 interface LessonState {
   isLoading: boolean;

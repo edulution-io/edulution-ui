@@ -10,14 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileActionType {
-  MOVE_FILE_FOLDER = 'moveFileFolder',
-  CREATE_FOLDER = 'createFolder',
-  CREATE_FILE = 'createFile',
-  DELETE_FILE_FOLDER = 'deleteFileFolder',
-  UPLOAD_FILE = 'uploadFile',
-  RENAME_FILE_FOLDER = 'renameFileFolder',
-  COPY_FILE_FOLDER = 'copyFileFolder',
-}
+import { IsArray, IsString } from 'class-validator';
 
-export default FileActionType;
+class CopyFileRequestDto {
+  @IsArray()
+  @IsString({ each: true })
+  originFilePaths: string[];
+
+  @IsString()
+  destinationFilePath: string;
+}
+export default CopyFileRequestDto;

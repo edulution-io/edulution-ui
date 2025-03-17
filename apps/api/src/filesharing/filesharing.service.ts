@@ -22,7 +22,7 @@ import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResul
 import CustomFile from '@libs/filesharing/types/customFile';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import { Request, Response } from 'express';
-import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
+import DuplicateFileRequestDto from '@libs/filesharing/types/duplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
@@ -32,6 +32,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bull';
 import APPS from '@libs/appconfig/constants/apps';
 import JOB_NAMES from '@libs/queue/constants/jobNames';
+import CopyFileRequestDto from '@libs/filesharing/types/copyFileRequestDto';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
@@ -301,6 +302,27 @@ class FilesharingService {
     );
   }
 
+  async copyFile(username: string, copyFile: CopyFileRequestDto) {
+    let i = 0;
+
+    return Promise.all(
+      copyFile.originFilePaths.map((originFilePath) => {
+        const filename = originFilePath.split('/').pop();
+        const destinationFullPath = `${copyFile.destinationFilePath}/${filename}`;
+
+        i += 1;
+
+        return this.fileSharingQueue.add('f', {
+          username,
+          originFilePath,
+          destinationFilePath: destinationFullPath, // Hier Zieldatei-Pfad!
+          processed: i,
+          total: copyFile.originFilePaths.length,
+        });
+      }),
+    );
+  }
+
   private async createCollectFolderIfNotExists(username: string, destinationPath: string) {
     const sanitizedDestinationPath = destinationPath.replace(`${FILE_PATHS.COLLECT}/`, '');
     const pathWithoutFilename = sanitizedDestinationPath.slice(0, sanitizedDestinationPath.lastIndexOf('/'));
@@ -345,7 +367,7 @@ class FilesharingService {
     const client = await this.getClient(username);
 
     const duplicationPromises = duplicateFile.destinationFilePaths.map(async (destinationPath) => {
-      await FilesharingService.copyFileViaWebDAV(client, duplicateFile.originFilePath, destinationPath);
+      await FilesharingService.copyFileViaWebDAV(client, duplicateFile.originFilePath.at(0) || '', destinationPath);
     });
 
     try {
