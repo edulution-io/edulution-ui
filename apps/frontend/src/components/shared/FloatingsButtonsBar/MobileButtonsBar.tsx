@@ -29,15 +29,7 @@ const MobileButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
 
   const { buttons, keyPrefix } = config;
   const floatingButtons = buttons.map((conf, index) => {
-    const {
-      icon,
-      text,
-      onClick,
-      isVisible = true,
-      variant = 'button',
-      options = undefined,
-      onSelectFileSelect = undefined,
-    } = conf;
+    const { icon, text, onClick, isVisible = true, variant = 'button', options = undefined } = conf;
     return isVisible ? (
       // eslint-disable-next-line react/no-array-index-key
       <div key={`${keyPrefix}${index}`}>
@@ -47,7 +39,6 @@ const MobileButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
           text={text}
           onClick={onClick}
           options={options}
-          onSelectFileSelect={onSelectFileSelect}
         />
       </div>
     ) : null;

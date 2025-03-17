@@ -191,23 +191,19 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
         isVisible: isMemberSelected && isVeyonEnabled,
         options: [
           {
-            name: 'lockScreen',
-            title: t('veyon.lockScreen'),
+            label: t('veyon.lockScreen'),
             onClick: () => handleSetVeyonFeature(connectionUids, VEYON_FEATURE_ACTIONS.SCREENLOCK, true),
           },
           {
-            name: 'unlockScreen',
-            title: t('veyon.unlockScreen'),
+            label: t('veyon.unlockScreen'),
             onClick: () => handleSetVeyonFeature(connectionUids, VEYON_FEATURE_ACTIONS.SCREENLOCK, false),
           },
           {
-            name: 'lockInputDevices',
-            title: t('veyon.lockInputDevices'),
+            label: t('veyon.lockInputDevices'),
             onClick: () => handleSetVeyonFeature(connectionUids, VEYON_FEATURE_ACTIONS.INPUT_DEVICES_LOCK, true),
           },
           {
-            name: 'unlockInputDevices',
-            title: t('veyon.unlockInputDevices'),
+            label: t('veyon.unlockInputDevices'),
             onClick: () => handleSetVeyonFeature(connectionUids, VEYON_FEATURE_ACTIONS.INPUT_DEVICES_LOCK, false),
           },
         ],

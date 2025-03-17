@@ -21,7 +21,7 @@ import {
   DropdownMenuSH,
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenuSH';
-import { DropdownMenuItemType } from '@libs/ui/types/dropdownMenuItemType';
+import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
 
 type DropdownMenuProps = {
   trigger: React.ReactNode;

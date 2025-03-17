@@ -24,7 +24,6 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
   type = 'button',
   variant = 'button',
   options = [],
-  onSelectFileSelect,
 }) => {
   const { t } = useTranslation();
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
@@ -46,11 +45,9 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
             </Button>
           }
           items={options.map((option) => ({
-            label: option.title,
+            label: option.label,
             onClick: () => {
               if (option.onClick) option.onClick();
-              if (onSelectFileSelect && option.type) onSelectFileSelect(option.type);
-              if (onClick) onClick();
             },
             icon: option.icon as IconType,
             iconColor: option.iconColor,
