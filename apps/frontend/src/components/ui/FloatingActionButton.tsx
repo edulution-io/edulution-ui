@@ -12,7 +12,7 @@
 
 import React, { useMemo } from 'react';
 import { Button } from '@/components/shared/Button';
-import { IconContext, IconType } from 'react-icons';
+import { IconContext } from 'react-icons';
 import { useTranslation } from 'react-i18next';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import type FloatingButtonConfig from '@libs/ui/types/FloatingButtons/floatingButtonConfig';
@@ -23,13 +23,13 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
   onClick,
   type = 'button',
   variant = 'button',
-  options = [],
+  dropdownItems = [],
 }) => {
   const { t } = useTranslation();
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
 
   const renderContent = () => {
-    if (variant === 'dropdown' && options.length > 0) {
+    if (variant === 'dropdown' && dropdownItems.length > 0) {
       return (
         <DropdownMenu
           trigger={
@@ -44,14 +44,7 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
               </IconContext.Provider>
             </Button>
           }
-          items={options.map((option) => ({
-            label: option.label,
-            onClick: () => {
-              if (option.onClick) option.onClick();
-            },
-            icon: option.icon as IconType,
-            iconColor: option.iconColor,
-          }))}
+          items={dropdownItems}
         />
       );
     }

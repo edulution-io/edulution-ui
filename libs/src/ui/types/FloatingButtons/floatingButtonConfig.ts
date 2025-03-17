@@ -20,7 +20,7 @@ interface FloatingButtonConfig {
   isVisible?: boolean;
   type?: 'button' | 'submit' | 'reset';
   variant?: 'button' | 'dropdown';
-  options?: DropdownMenuItemType[];
+  dropdownItems?: DropdownMenuItemType[];
 }
 
 export default FloatingButtonConfig;

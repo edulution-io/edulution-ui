@@ -72,7 +72,7 @@ const FileActionNonSelect: FC<FileActionButtonProps> = ({ openDialog }) => {
         variant: 'dropdown',
         icon: MdFilePresent,
         text: t('tooltip.create.file'),
-        options: fileTypesConfiguration,
+        dropdownItems: fileTypesConfiguration,
       },
       {
         icon: HiOutlineFolderAdd,

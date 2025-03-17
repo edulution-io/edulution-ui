@@ -189,7 +189,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
         icon: PiEyeFill,
         text: t(`classmanagement.${CLASSMGMT_OPTIONS.VEYON}`),
         isVisible: isMemberSelected && isVeyonEnabled,
-        options: [
+        dropdownItems: [
           {
             label: t('veyon.lockScreen'),
             onClick: () => handleSetVeyonFeature(connectionUids, VEYON_FEATURE_ACTIONS.SCREENLOCK, true),
@@ -198,6 +198,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
             label: t('veyon.unlockScreen'),
             onClick: () => handleSetVeyonFeature(connectionUids, VEYON_FEATURE_ACTIONS.SCREENLOCK, false),
           },
+          { label: 'veyonSeparator1', isSeparator: true },
           {
             label: t('veyon.lockInputDevices'),
             onClick: () => handleSetVeyonFeature(connectionUids, VEYON_FEATURE_ACTIONS.INPUT_DEVICES_LOCK, true),
@@ -205,6 +206,15 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
           {
             label: t('veyon.unlockInputDevices'),
             onClick: () => handleSetVeyonFeature(connectionUids, VEYON_FEATURE_ACTIONS.INPUT_DEVICES_LOCK, false),
+          },
+          { label: 'veyonSeparator2', isSeparator: true },
+          {
+            label: t('veyon.rebootSystem'),
+            onClick: () => handleSetVeyonFeature(connectionUids, VEYON_FEATURE_ACTIONS.REBOOT, true),
+          },
+          {
+            label: t('veyon.powerDown'),
+            onClick: () => handleSetVeyonFeature(connectionUids, VEYON_FEATURE_ACTIONS.POWER_DOWN, true),
           },
         ],
       },
