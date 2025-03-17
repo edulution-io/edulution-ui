@@ -12,12 +12,14 @@
 
 import { Response } from 'express';
 import { Body, Controller, Get, Post, Param, Res } from '@nestjs/common';
+import APPS from '@libs/appconfig/constants/apps';
 import { IMAGES, PUBLIC_SURVEYS, RESTFUL_CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import { ApiTags } from '@nestjs/swagger';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import { Public } from '../common/decorators/public.decorator';
+import AttachmentService from '../filesystem/attachement.service';
 
 @ApiTags(PUBLIC_SURVEYS)
 @Controller(PUBLIC_SURVEYS)
@@ -41,11 +43,18 @@ class PublicSurveysController {
     return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer);
   }
 
+  @Get(`${IMAGES}/TEMP/:userId/:filename`)
+  @Public()
+  getTemporaryImages(@Param() params: { userId: string; filename: string }, @Res() res: Response) {
+    const { userId, filename } = params;
+    return AttachmentService.serveTemporaryImage(`${APPS.SURVEYS}/${IMAGES}`, userId, filename, res);
+  }
+
   @Get(`${IMAGES}/:surveyId/:questionId/:filename`)
   @Public()
-  getImages(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
+  getPermanentImages(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
     const { surveyId, questionId, filename } = params;
-    return this.surveyService.serveImage(surveyId, questionId, filename, res);
+    return AttachmentService.servePermanentImage(`${APPS.SURVEYS}/${IMAGES}`, `${surveyId}/${questionId}`, filename, res);
   }
 
   @Get(`${RESTFUL_CHOICES}/:surveyId/:questionId`)

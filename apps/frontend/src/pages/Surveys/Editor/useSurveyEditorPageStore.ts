@@ -25,7 +25,7 @@ interface SurveyEditorPageStore {
   updateStoredSurvey: (survey: SurveyDto) => void;
   resetStoredSurvey: () => void;
 
-  uploadImageFile: (surveyId: string, questionId: string, file: File, callback: CallableFunction) => Promise<void>;
+  uploadImageFile: (file: File, callback: CallableFunction) => Promise<void>;
   isUploadingImageFile: boolean;
 
   isOpenSaveSurveyDialog: boolean;
@@ -95,8 +95,6 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
       },
 
       uploadImageFile: async (
-        surveyId: string,
-        questionId: string,
         file: File,
         callback: CallableFunction,
       ): Promise<void> => {
@@ -104,7 +102,7 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
         try {
           const formData = new FormData();
           formData.append('file', file);
-          const response = await eduApi.post<string>(`${SURVEY_IMAGES_ENDPOINT}/${surveyId}/${questionId}`, formData, {
+          const response = await eduApi.post<string>(`${SURVEY_IMAGES_ENDPOINT}`, formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
           });
           if (!response) {

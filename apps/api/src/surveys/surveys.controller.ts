@@ -11,9 +11,7 @@
  */
 
 import { Observable } from 'rxjs';
-import { extname } from 'path';
 import { diskStorage } from 'multer';
-import { existsSync, mkdirSync } from 'fs';
 import { Response, Request } from 'express';
 import {
   Body,
@@ -33,6 +31,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
+import APPS from '@libs/appconfig/constants/apps';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import {
   ANSWER,
@@ -40,24 +39,22 @@ import {
   FIND_ONE,
   HAS_ANSWERS,
   IMAGES,
+  PUBLIC_SURVEYS,
   RESULT,
   SURVEYS,
 } from '@libs/survey/constants/surveys-endpoint';
-import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
-import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AnswerDto from '@libs/survey/types/api/answer.dto';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
-import CustomHttpException from '@libs/error/CustomHttpException';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
 import SseService from '../sse/sse.service';
 import type UserConnections from '../types/userConnections';
+import AttachmentService from '../filesystem/attachement.service';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
@@ -99,45 +96,26 @@ class SurveysController {
     return this.surveyAnswerService.findUserSurveys(status, user);
   }
 
-  @Post(`${IMAGES}/:surveyId/:questionId`)
+  @Post(IMAGES)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: (req: Request, _file, callback) => {
-          const { surveyId, questionId } = req.params;
-          const destination = `${SURVEYS_IMAGES_PATH}/${surveyId}/${questionId}`;
-          if (!existsSync(destination)) {
-            mkdirSync(destination, { recursive: true });
-          }
-          callback(null, destination);
-        },
-        filename: (_req, file, callback) => {
-          const uniqueFilename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${extname(file.originalname)}`;
-          callback(null, uniqueFilename);
-        },
+        destination:  (req: Request, _file, callback) =>
+          AttachmentService.getTemporaryDestination(`${APPS.SURVEYS}/${IMAGES}`, req.user?.preferred_username || 'defaultUser', callback),
+        filename: (_req, file, callback) => AttachmentService.getUniqueFileNames(file, callback),
       }),
-      fileFilter: (_req, file, callback) => {
-        if (IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-          callback(null, true);
-        } else {
-          callback(
-            new CustomHttpException(CommonErrorMessages.INVALID_FILE_TYPE, HttpStatus.INTERNAL_SERVER_ERROR),
-            false,
-          );
-        }
-      },
+      fileFilter: (_req, file, callback) => AttachmentService.filterMimeTypes(file.mimetype, callback),
     }),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   uploadImage(
-    @Param() param: { surveyId: string; questionId: string },
     @UploadedFile() file: Express.Multer.File,
     @Res() res: Response,
+    @GetCurrentUsername() username: string,
   ) {
-    const { surveyId, questionId } = param;
-    SurveysService.checkImageFile(file);
-    const imageUrl = SurveysService.getImageUrl(surveyId, questionId, file.filename);
+    AttachmentService.checkImageFile(file);
+    const imageUrl = AttachmentService.getTemporaryImageUrl(`${PUBLIC_SURVEYS}/${IMAGES}`, username, file.filename);
     return res.status(HttpStatus.CREATED).json(imageUrl);
   }
 
@@ -149,7 +127,27 @@ class SurveysController {
 
   @Post()
   async updateOrCreateSurvey(@Body() surveyDto: SurveyDto, @GetCurrentUser() user: JWTUser) {
-    return this.surveyService.updateOrCreateSurvey(surveyDto, user, this.surveysSseConnections);
+    const survey = await this.surveyService.updateOrCreateSurvey(surveyDto, user, this.surveysSseConnections);
+    if (survey == null) {
+      return null;
+    }
+
+    const FileNames = AttachmentService.getFileNamesFromTEMP(`${APPS.SURVEYS}/${IMAGES}`, user.preferred_username);
+    if (FileNames.length === 0) {
+      return survey;
+    }
+
+    // const updateElement = (element) => {
+    //   if (element.type === 'image') {
+    //     element.link = AttachmentService.getPersistentImageUrl( `${PUBLIC_SURVEYS}/${IMAGES}`, `${survey}/${element.id}`, element.link);
+    //   }
+    // }
+    //
+    // survey.formula.pages?.forEach((page) => {
+    //   page.elements?.forEach(updateElement);
+    // })
+    // survey.formula.elements?.forEach(updateElement);
+
   }
 
   @Delete()
