@@ -104,15 +104,13 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
         try {
           const formData = new FormData();
           formData.append('file', file);
-
           const response = await eduApi.post<string>(`${SURVEY_IMAGES_ENDPOINT}/${surveyId}/${questionId}`, formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
           });
-
           if (!response) {
             throw new CustomHttpException(commonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR);
           }
-          callback('success', response.data);
+          callback('success', `${eduApi.getUri()}${response.data}`);
         } catch (error) {
           handleApiError(error, set);
           callback('error');

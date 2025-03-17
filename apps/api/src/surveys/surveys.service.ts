@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import getBaseUrl from '@libs/common/utils/getBaseUrl';
 import { PUBLIC_SURVEYS, IMAGES } from '@libs/survey/constants/surveys-endpoint';
 import { join } from 'path';
 import { Response } from 'express';
@@ -173,8 +172,7 @@ class SurveysService implements OnModuleInit {
   }
 
   static getImageUrl(surveyId: string, questionId: string, fileName: string): string {
-    const baseUrl = getBaseUrl();
-    return join(baseUrl, 'edu-api', PUBLIC_SURVEYS, IMAGES, surveyId, questionId, fileName);
+    return join(PUBLIC_SURVEYS, IMAGES, surveyId, questionId, fileName);
   }
 
   serveImage(surveyId: string, questionId: string, fileName: string, res: Response): Response {
