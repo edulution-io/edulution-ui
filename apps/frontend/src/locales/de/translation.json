@@ -1151,6 +1151,11 @@
     "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
     "selectedItem": "Ausgewähltes Element"
   },
+
+  "copyItemDialog": {
+    "title": "Dateien kopieren"
+  },
+
   "deleteDialog": {
     "areYouSure": "Sind Sie sich absolut sicher?",
     "actionCannotBeUndone": "Diese Aktion kann nicht rückgängig gemacht werden. Dies wird die Dateien dauerhaft löschen:",

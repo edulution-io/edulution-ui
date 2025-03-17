@@ -1159,6 +1159,11 @@
     "unknownErrorOccurredDuringDeletion": "An unknown error occurred during deletion",
     "deleteFiles": "Delete files"
   },
+
+  "copyItemDialog": {
+    "title": "Copy item"
+  },
+
   "timeAgo": {
     "justNow": "just now",
     "minuteAgo": "{{count}} minutes ago",
