@@ -77,7 +77,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
   const selectedStudents = students.map((m) => m.cn);
   const connectionUids = students
     .map((student) => userConnectionUids.find((conn) => conn.veyonUsername === student.cn)?.connectionUid)
-    .filter((uid) => uid !== '');
+    .filter((uid): uid is string => Boolean(uid));
 
   const buttons: {
     icon: IconType;

@@ -31,6 +31,7 @@ import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import VEYON_API_AUTH_RESPONSE_KEYS from '@libs/veyon/constants/veyonApiAuthResponse';
 import { VEYON_API_FEATURE_ENDPOINT, VEYON_API_FRAMEBUFFER_ENDPOINT } from '@libs/veyon/constants/veyonApiEndpoints';
 import { HTTP_HEADERS, ResponseType } from '@libs/common/types/http-methods';
+import type UserConnectionsFeatureStates from '@libs/veyon/types/userConnectionsFeatureState';
 import UsersService from '../users/users.service';
 import AppConfigService from '../appconfig/appconfig.service';
 
@@ -169,10 +170,9 @@ class VeyonService implements OnModuleInit {
     expectedState: boolean,
     retries = 0,
   ): Promise<void> {
-    if (retries >= 5) {
+    if (retries >= 10) {
       return;
     }
-
     const { data } = await this.veyonApi.get<{ active: boolean }>(`${VEYON_API_FEATURE_ENDPOINT}/${featureUid}`, {
       headers: { [HTTP_HEADERS.CONNECTION_UID]: connectionUid },
     });
@@ -188,19 +188,36 @@ class VeyonService implements OnModuleInit {
     await this.pollFeatureState(featureUid, connectionUid, expectedState, retries + 1);
   }
 
-  async setFeature(
-    featureUid: VeyonFeatureUid,
-    body: VeyonFeatureRequest,
-    connectionUid: string,
-  ): Promise<VeyonFeaturesResponse[]> {
+  async setFeature(featureUid: VeyonFeatureUid, body: VeyonFeatureRequest): Promise<UserConnectionsFeatureStates> {
+    const { connectionUids } = body;
     try {
-      await this.veyonApi.put<Record<string, never>>(`${VEYON_API_FEATURE_ENDPOINT}/${featureUid}`, body, {
-        headers: { [HTTP_HEADERS.CONNECTION_UID]: connectionUid },
-      });
+      await Promise.all(
+        connectionUids.map(async (connectionUid) => {
+          await this.veyonApi.put<Record<string, never>>(
+            `${VEYON_API_FEATURE_ENDPOINT}/${featureUid}`,
+            { active: body.active },
+            {
+              headers: { [HTTP_HEADERS.CONNECTION_UID]: connectionUid },
+            },
+          );
+        }),
+      );
 
-      await this.pollFeatureState(featureUid, connectionUid, body.active);
+      await Promise.all(
+        connectionUids.map(async (connectionUid) => {
+          await this.pollFeatureState(featureUid, connectionUid, body.active);
+        }),
+      );
 
-      const veyonFeatures = await this.getFeatures(connectionUid);
+      const veyonFeatures = (
+        await Promise.all(
+          connectionUids.map(async (connectionUid) => {
+            const features = await this.getFeatures(connectionUid);
+            return { [connectionUid]: features };
+          }),
+        )
+      ).reduce((acc, curr) => ({ ...acc, ...curr }), {});
+
       return veyonFeatures;
     } catch (error) {
       throw new CustomHttpException(

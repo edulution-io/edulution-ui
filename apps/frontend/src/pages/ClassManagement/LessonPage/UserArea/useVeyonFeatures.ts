@@ -15,10 +15,8 @@ import useVeyonApiStore from '../../useVeyonApiStore';
 const useVeyonFeatures = () => {
   const setFeature = useVeyonApiStore((state) => state.setFeature);
 
-  const handleSetVeyonFeature = (connectionUids: (string | undefined)[], featureUid: string, active: boolean) => {
-    connectionUids.forEach((connectionUid) => {
-      if (connectionUid) void setFeature(connectionUid, featureUid, active);
-    });
+  const handleSetVeyonFeature = (connectionUids: string[], featureUid: string, active: boolean) => {
+    if (connectionUids) void setFeature(connectionUids, featureUid, active);
   };
 
   return {

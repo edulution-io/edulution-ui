@@ -23,7 +23,7 @@ const mockData = {
   veyonUsername: 'testuser',
   connectionUid: '1234',
   featureUid: VEYON_FEATURE_ACTIONS.SCREENLOCK,
-  featureRequestBody: { active: true },
+  featureRequestBody: { active: true, connectionUids: ['1234', '5678'] },
   featureResonse: {
     active: 'true',
     name: 'testuser',
@@ -148,21 +148,13 @@ describe('VeyonController', () => {
 
   describe('setFeature', () => {
     it('should call veyonService.setFeature with correct parameters and return the result', async () => {
-      const expectedResponse = [mockData.featureResonse];
+      const expectedResponse = { [mockData.connectionUid]: [mockData.featureResonse] };
 
       jest.spyOn(veyonService, 'setFeature').mockResolvedValue(expectedResponse);
 
-      const result = await veyonController.setFeature(
-        mockData.featureUid,
-        mockData.featureRequestBody,
-        mockData.connectionUid,
-      );
+      const result = await veyonController.setFeature(mockData.featureUid, mockData.featureRequestBody);
 
-      expect(veyonService.setFeature).toHaveBeenCalledWith(
-        mockData.featureUid,
-        mockData.featureRequestBody,
-        mockData.connectionUid,
-      );
+      expect(veyonService.setFeature).toHaveBeenCalledWith(mockData.featureUid, mockData.featureRequestBody);
       expect(result).toEqual(expectedResponse);
     });
 
@@ -171,9 +163,9 @@ describe('VeyonController', () => {
 
       jest.spyOn(veyonService, 'setFeature').mockRejectedValue(error);
 
-      await expect(
-        veyonController.setFeature(mockData.featureUid, mockData.featureRequestBody, mockData.connectionUid),
-      ).rejects.toThrow('Failed to set feature');
+      await expect(veyonController.setFeature(mockData.featureUid, mockData.featureRequestBody)).rejects.toThrow(
+        'Failed to set feature',
+      );
     });
   });
 
