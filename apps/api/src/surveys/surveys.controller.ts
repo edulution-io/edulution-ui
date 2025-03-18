@@ -11,8 +11,7 @@
  */
 
 import { Observable } from 'rxjs';
-import { diskStorage } from 'multer';
-import { Response, Request } from 'express';
+import { Response } from 'express';
 import {
   Body,
   Controller,
@@ -53,7 +52,7 @@ import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorato
 import GetCurrentUser from '../common/decorators/getUser.decorator';
 import SseService from '../sse/sse.service';
 import type UserConnections from '../types/userConnections';
-import AttachmentService from '../filesystem/attachement.service';
+import { checkAttachmentFile, createAttachmentUploadOptions } from '../common/file-attachment/multer.config';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
@@ -98,20 +97,17 @@ class SurveysController {
   @Post(IMAGES)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: (req: Request, _file, callback) =>
-          req.user?.preferred_username
-            ? AttachmentService.getTemporaryDestination(SURVEYS_IMAGES_PATH, req.user?.preferred_username, callback)
-            : null,
-        filename: (_req, file, callback) => AttachmentService.getUniqueFileNames(file, callback),
+    FileInterceptor(
+      'file',
+      createAttachmentUploadOptions((req) => {
+        const { surveyId, questionId } = req.params;
+        return `${SURVEYS_IMAGES_PATH}/${surveyId}/${questionId}`;
       }),
-      fileFilter: (_req, file, callback) => AttachmentService.filterMimeTypes(file.mimetype, callback),
-    }),
+    ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   uploadImage(@UploadedFile() file: Express.Multer.File, @Res() res: Response, @GetCurrentUsername() username: string) {
-    AttachmentService.checkImageFile(file);
+    checkAttachmentFile(file);
     const imageUrl = this.surveyService.getTemporaryImageUrl(username, file.filename);
     return res.status(HttpStatus.CREATED).json(imageUrl);
   }

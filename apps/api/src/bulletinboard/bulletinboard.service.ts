@@ -27,7 +27,6 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
-import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import { Observable } from 'rxjs';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
@@ -59,18 +58,6 @@ class BulletinBoardService implements OnModuleInit {
 
   subscribe(username: string, res: Response): Observable<MessageEvent> {
     return SseService.subscribe(username, this.bulletinsSseConnections, res);
-  }
-
-  static checkAttachmentFile(file: Express.Multer.File): string {
-    if (!file) {
-      throw new CustomHttpException(commonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
-    }
-
-    if (!IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      throw new CustomHttpException(commonErrorMessages.ATTACHMENT_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
-    }
-
-    return file.filename;
   }
 
   serveBulletinAttachment(filename: string, res: Response) {

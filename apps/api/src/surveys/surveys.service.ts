@@ -31,7 +31,7 @@ import surveysMigrationsList from './migrations/surveysMigrationsList';
 import MigrationService from '../migration/migration.service';
 import type UserConnections from '../types/userConnections';
 import { Survey, SurveyDocument } from './survey.schema';
-import AttachmentService from '../filesystem/attachement.service';
+import AttachmentService from '../common/file-attachment/attachement.service';
 
 @Injectable()
 class SurveysService implements OnModuleInit {
@@ -208,7 +208,7 @@ class SurveysService implements OnModuleInit {
         }
 
         // eslint-disable-next-line no-param-reassign
-        element.imageLink = `${baseUrl}${this.attachmentService.getPersistentImageUrl(pathWithIds, fileName)}`;
+        element.imageLink = `${baseUrl}${this.attachmentService.getPersistentAttachmentUrl(pathWithIds, fileName)}`;
       }
     };
 
@@ -228,13 +228,13 @@ class SurveysService implements OnModuleInit {
   }
 
   getTemporaryImageUrl = (userId: string, fileName: string): string =>
-    this.attachmentService.getTemporaryImageUrl(userId, fileName);
+    this.attachmentService.getTemporaryAttachmentUrl(userId, fileName);
 
   serveTemporaryImage = (userId: string, fileName: string, res: Response) =>
-    this.attachmentService.serveTemporaryImage(userId, fileName, res);
+    this.attachmentService.serveTemporaryAttachment(userId, fileName, res);
 
   servePermanentImage = (surveyId: string, questionId: string, fileName: string, res: Response) =>
-    this.attachmentService.servePermanentImage(`${surveyId}/${questionId}`, fileName, res);
+    this.attachmentService.servePersistentAttachment(`${surveyId}/${questionId}`, fileName, res);
 }
 
 export default SurveysService;

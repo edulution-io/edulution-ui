@@ -11,10 +11,8 @@
  */
 
 import { createReadStream, existsSync, mkdirSync, readdirSync, renameSync, rmdirSync } from 'fs';
-import { extname } from 'path';
 import { Response } from 'express';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 
@@ -29,18 +27,19 @@ class AttachmentService {
     this.filePath = filePath;
   }
 
-  getTemporaryImageUrl = (userId: string, fileName: string): string => `${this.domain}/TEMP/${userId}/${fileName}`;
+  getTemporaryAttachmentUrl = (userId: string, fileName: string): string => `${this.domain}/TEMP/${userId}/${fileName}`;
 
-  getPersistentImageUrl = (pathWithIds: string, fileName: string): string =>
+  getPersistentAttachmentUrl = (pathWithIds: string, fileName: string): string =>
     `${this.domain}/${pathWithIds}/${fileName}`;
 
   getTemporaryDirectory = (userId: string): string => `${this.filePath}/TEMP/${userId}`;
 
-  getTemporaryImagePath = (userId: string, fileName: string): string => `${this.filePath}/TEMP/${userId}/${fileName}`;
+  getTemporaryAttachmentPath = (userId: string, fileName: string): string =>
+    `${this.filePath}/TEMP/${userId}/${fileName}`;
 
   getPersistentDirectory = (pathWithIds: string): string => `${this.filePath}/${pathWithIds}`;
 
-  getPersistentImagePath = (pathWithIds: string, fileName: string): string =>
+  getPersistentAttachmentPath = (pathWithIds: string, fileName: string): string =>
     `${this.filePath}/${pathWithIds}/${fileName}`;
 
   clearTEMP(userId: string) {
@@ -57,22 +56,22 @@ class AttachmentService {
     }
   }
 
-  servePermanentImage(pathWithIds: string, fileName: string, res: Response) {
-    const imagePath = this.getPersistentImagePath(pathWithIds, fileName);
-    if (!existsSync(imagePath)) {
+  servePersistentAttachment(pathWithIds: string, fileName: string, res: Response) {
+    const filePath = this.getPersistentAttachmentPath(pathWithIds, fileName);
+    if (!existsSync(filePath)) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
-    const fileStream = createReadStream(imagePath);
+    const fileStream = createReadStream(filePath);
     fileStream.pipe(res);
     return res;
   }
 
-  serveTemporaryImage(userId: string, fileName: string, res: Response) {
-    const imagePath = this.getTemporaryImagePath(userId, fileName);
-    if (!existsSync(imagePath)) {
+  serveTemporaryAttachment(userId: string, fileName: string, res: Response) {
+    const filePath = this.getTemporaryAttachmentPath(userId, fileName);
+    if (!existsSync(filePath)) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
-    const fileStream = createReadStream(imagePath);
+    const fileStream = createReadStream(filePath);
     fileStream.pipe(res);
     return res;
   }
@@ -83,9 +82,9 @@ class AttachmentService {
   };
 
   moveFileToPermanent(fileName: string, userId: string, pathWithIds: string) {
-    const temporalImagePath = this.getTemporaryImagePath(userId, fileName);
-    const permanentImagePath = this.getPersistentImagePath(pathWithIds, fileName);
-    renameSync(temporalImagePath, permanentImagePath);
+    const temporaryAttachmentPath = this.getTemporaryAttachmentPath(userId, fileName);
+    const persistentAttachmentPath = this.getPersistentAttachmentPath(pathWithIds, fileName);
+    renameSync(temporaryAttachmentPath, persistentAttachmentPath);
   }
 
   moveTempFileIntoPermanentDirectory(fileName: string, userId: string, pathWithIds: string) {
@@ -102,38 +101,6 @@ class AttachmentService {
       mkdirSync(permanentDirectory, { recursive: true });
     }
     fileNames.forEach((fileName) => this.moveFileToPermanent(fileName, userId, pathWithIds));
-  }
-
-  // FILE INTERCEPTOR METHODS
-  static getTemporaryDestination = (path: string, userId: string, callback: CallableFunction) => {
-    const destination = `${path}/TEMP/${userId}`;
-    if (!existsSync(destination)) {
-      mkdirSync(destination, { recursive: true });
-    }
-    callback(null, destination);
-  };
-
-  static getUniqueFileNames = (file: Express.Multer.File, callback: CallableFunction) => {
-    const uniqueFilename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${extname(file.originalname)}`;
-    callback(null, uniqueFilename);
-  };
-
-  static filterMimeTypes = (mimeType: string, callback: CallableFunction) => {
-    if (IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(mimeType)) {
-      callback(null, true);
-    } else {
-      callback(new CustomHttpException(CommonErrorMessages.INVALID_FILE_TYPE, HttpStatus.INTERNAL_SERVER_ERROR), false);
-    }
-  };
-
-  static checkImageFile(file: Express.Multer.File): string {
-    if (!file) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
-    }
-    if (!IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      throw new CustomHttpException(CommonErrorMessages.ATTACHMENT_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
-    }
-    return file.filename;
   }
 }
 
