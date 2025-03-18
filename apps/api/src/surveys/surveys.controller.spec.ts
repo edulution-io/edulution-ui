@@ -244,6 +244,7 @@ describe(SurveysController.name, () => {
       jest.spyOn(surveyService, 'deleteSurveys');
       jest.spyOn(surveyAnswerService, 'onSurveyRemoval');
 
+      surveyService.onSurveyRemoval = jest.fn().mockImplementation(() => {});
       surveyModel.deleteMany = jest.fn().mockResolvedValueOnce(true);
       surveyAnswerModel.deleteMany = jest.fn().mockReturnValue(true);
 
