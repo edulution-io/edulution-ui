@@ -75,7 +75,7 @@ class FilesharingConsumer extends WorkerHost {
       processed,
       total,
       percent,
-      currentFile: originFilePath,
+      currentFilePath: originFilePath,
       studentName,
       failedPaths,
     };
