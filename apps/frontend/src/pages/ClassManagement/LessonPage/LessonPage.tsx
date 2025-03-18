@@ -206,16 +206,9 @@ const LessonPage = () => {
   };
 
   useEffect(() => {
-    if (
-      filesharingProgress &&
-      filesharingProgress.percent >= 100 &&
-      filesharingProgress.failedPaths?.length &&
-      filesharingProgress.failedPaths?.length > 0
-    ) {
-      setIsFileSharingProgessInfoDialogOpen(true);
-    } else {
-      setIsFileSharingProgessInfoDialogOpen(false);
-    }
+    const hasProgressCompleted = (filesharingProgress?.percent ?? 0) >= 100;
+    const hasFailedPaths = (filesharingProgress?.failedPaths?.length ?? 0) > 0;
+    setIsFileSharingProgessInfoDialogOpen(hasProgressCompleted && hasFailedPaths);
   }, [filesharingProgress]);
 
   return (
