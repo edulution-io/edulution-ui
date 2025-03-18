@@ -17,6 +17,7 @@ import useElementHeight from '@/hooks/useElementHeight';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import { Card, CardContent } from '@/components/shared/Card';
 import BadgeField from '@/components/shared/BadgeField';
+import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
 
 const Groups = () => {
   const { user } = useLmnApiStore();
@@ -24,6 +25,9 @@ const Groups = () => {
   const { t } = useTranslation();
 
   const cardContentHeight = Math.max(useElementHeight([GROUPS_ID]) - 110, 0);
+
+  const schoolClasses = user?.schoolclasses.map((item) => removeSchoolPrefix(item, user.school)) || [];
+
   return (
     <Card
       variant="organisation"
@@ -36,8 +40,7 @@ const Groups = () => {
           style={{ flexShrink: 0, flexGrow: 0, height: `${cardContentHeight}px` }}
         >
           <BadgeField
-            value={user?.schoolclasses || []}
-            onChange={() => {}}
+            value={schoolClasses}
             readOnly
           />
         </div>

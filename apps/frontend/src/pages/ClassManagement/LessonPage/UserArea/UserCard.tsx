@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import UserPasswordDialog from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/UserPasswordDialog';
 import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
 import VEYON_FEATURE_ACTIONS from '@libs/veyon/constants/veyonFeatureActions';
+import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
 import useVeyonApiStore from '../../useVeyonApiStore';
 import UserCardVeyonPreview from './UserCardVeyonPreview';
 
@@ -52,10 +53,6 @@ const UserCard = ({
   const isStudent = user.sophomorixRole === SOPHOMORIX_STUDENT;
   const isSelectable = isTeacherInSameSchool && isStudent;
   const isMemberSelected = !!selectedMember.find((m) => m.dn === user.dn) && isSelectable;
-  const removeSchoolPrefix = (input: string, prefix: string): string => {
-    const regex = new RegExp(`^${prefix}-`);
-    return input.replace(regex, '');
-  };
   const schoolClassName =
     school === 'default-school' ? sophomorixAdminClass : removeSchoolPrefix(sophomorixAdminClass, school);
 
