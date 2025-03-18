@@ -45,6 +45,7 @@ class PublicSurveysController {
 
   @Get(`${IMAGES}/TEMP/:userId/:filename`)
   @Public()
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   getTemporaryImages(@Param() params: { userId: string; filename: string }, @Res() res: Response) {
     const { userId, filename } = params;
     return AttachmentService.serveTemporaryImage(`${APPS.SURVEYS}/${IMAGES}`, userId, filename, res);
@@ -52,9 +53,18 @@ class PublicSurveysController {
 
   @Get(`${IMAGES}/:surveyId/:questionId/:filename`)
   @Public()
-  getPermanentImages(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  getPermanentImages(
+    @Param() params: { surveyId: string; questionId: string; filename: string },
+    @Res() res: Response,
+  ) {
     const { surveyId, questionId, filename } = params;
-    return AttachmentService.servePermanentImage(`${APPS.SURVEYS}/${IMAGES}`, `${surveyId}/${questionId}`, filename, res);
+    return AttachmentService.servePermanentImage(
+      `${APPS.SURVEYS}/${IMAGES}`,
+      `${surveyId}/${questionId}`,
+      filename,
+      res,
+    );
   }
 
   @Get(`${RESTFUL_CHOICES}/:surveyId/:questionId`)

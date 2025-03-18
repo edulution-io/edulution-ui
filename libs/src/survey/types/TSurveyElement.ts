@@ -20,6 +20,7 @@ interface SurveyElement {
   choicesByUrl?: {
     url: string;
   };
+  imageLink?: string;
   showOtherItem?: boolean;
   showNoneItem?: boolean;
 }

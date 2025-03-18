@@ -895,6 +895,7 @@
     "error": "Error",
     "errors": {
       "attachmentUploadFailed": "Failed to upload attachment",
+      "attachmentDeletionFailed": "Failed to delete files that are attached",
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables",
       "fileNotFound": "File not found",

@@ -10,10 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { join } from 'path';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { promises } from 'fs';
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
@@ -22,7 +20,6 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
@@ -90,7 +87,7 @@ class SurveysService implements OnModuleInit {
     survey: SurveyDto,
     currentUser: JwtUser,
     surveysSseConnections: UserConnections,
-  ): Promise<Survey | null> {
+  ): Promise<SurveyDocument | null> {
     const existingSurvey = await this.surveyModel.findById(survey.id).exec();
     if (!existingSurvey) {
       return null;
@@ -104,7 +101,7 @@ class SurveysService implements OnModuleInit {
     try {
       return await this.surveyModel
         .findOneAndUpdate<Survey>({ _id: new Types.ObjectId(survey.id) }, survey, { new: true })
-        .exec();
+        .lean();
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {
@@ -126,7 +123,11 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  async createSurvey(survey: SurveyDto, currentUser: JwtUser, surveysSseConnections: UserConnections): Promise<Survey> {
+  async createSurvey(
+    survey: SurveyDto,
+    currentUser: JwtUser,
+    surveysSseConnections: UserConnections,
+  ): Promise<SurveyDocument> {
     const creator: AttendeeDto = {
       ...survey.creator,
       firstName: currentUser.given_name,
@@ -155,24 +156,13 @@ class SurveysService implements OnModuleInit {
     surveyDto: SurveyDto,
     currentUser: JwtUser,
     surveysSseConnections: UserConnections,
-  ): Promise<Survey | null> {
+  ): Promise<SurveyDocument | null> {
     const updatedSurvey = await this.updateSurvey(surveyDto, currentUser, surveysSseConnections);
     if (updatedSurvey !== null) {
       return updatedSurvey;
     }
 
     return this.createSurvey(surveyDto, currentUser, surveysSseConnections);
-  }
-
-  async onSurveyRemoval(surveyIds: string[]): Promise<void> {
-    const imageDirectories = surveyIds.map((surveyId) => join(SURVEYS_IMAGES_PATH, surveyId));
-    const deletionPromises = imageDirectories.map((directory) => promises.rmdir(directory, { recursive: true }));
-
-    try {
-      await Promise.all(deletionPromises);
-    } catch (error) {
-      throw new CustomHttpException(SurveyErrorMessages.ImageDeletionFailed, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
   }
 }
 

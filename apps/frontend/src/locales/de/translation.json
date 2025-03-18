@@ -895,6 +895,7 @@
     "error": "Fehler",
     "errors": {
       "attachmentUploadFailed": "Anhang konnte nicht hochgeladen werden",
+      "attachmentDeletionFailed": "Die angehängten Dateien konnten nicht gelöscht werden",
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen",
       "fileNotFound": "Datei nicht gefunden",

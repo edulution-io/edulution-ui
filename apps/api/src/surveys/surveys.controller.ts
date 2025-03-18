@@ -43,11 +43,13 @@ import {
   RESULT,
   SURVEYS,
 } from '@libs/survey/constants/surveys-endpoint';
+import SurveyElement from '@libs/survey/types/TSurveyElement';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AnswerDto from '@libs/survey/types/api/answer.dto';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
+import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
@@ -101,19 +103,21 @@ class SurveysController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination:  (req: Request, _file, callback) =>
-          AttachmentService.getTemporaryDestination(`${APPS.SURVEYS}/${IMAGES}`, req.user?.preferred_username || 'defaultUser', callback),
+        destination: (req: Request, _file, callback) =>
+          req.user?.preferred_username
+            ? AttachmentService.getTemporaryDestination(
+                `${APPS.SURVEYS}/${IMAGES}`,
+                req.user?.preferred_username,
+                callback,
+              )
+            : null,
         filename: (_req, file, callback) => AttachmentService.getUniqueFileNames(file, callback),
       }),
       fileFilter: (_req, file, callback) => AttachmentService.filterMimeTypes(file.mimetype, callback),
     }),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  uploadImage(
-    @UploadedFile() file: Express.Multer.File,
-    @Res() res: Response,
-    @GetCurrentUsername() username: string,
-  ) {
+  uploadImage(@UploadedFile() file: Express.Multer.File, @Res() res: Response, @GetCurrentUsername() username: string) {
     AttachmentService.checkImageFile(file);
     const imageUrl = AttachmentService.getTemporaryImageUrl(`${PUBLIC_SURVEYS}/${IMAGES}`, username, file.filename);
     return res.status(HttpStatus.CREATED).json(imageUrl);
@@ -137,17 +141,49 @@ class SurveysController {
       return survey;
     }
 
-    // const updateElement = (element) => {
-    //   if (element.type === 'image') {
-    //     element.link = AttachmentService.getPersistentImageUrl( `${PUBLIC_SURVEYS}/${IMAGES}`, `${survey}/${element.id}`, element.link);
-    //   }
-    // }
-    //
-    // survey.formula.pages?.forEach((page) => {
-    //   page.elements?.forEach(updateElement);
-    // })
-    // survey.formula.elements?.forEach(updateElement);
+    const updateElement = (element: SurveyElement) => {
+      if (element.type === 'image') {
+        if (!element.imageLink) {
+          return;
+        }
 
+        const fileName = element.imageLink.split('/').pop();
+        if (!fileName) {
+          return;
+        }
+        const domain = `${PUBLIC_SURVEYS}/${IMAGES}`;
+        const uri = element.imageLink.split(domain)[0];
+        // eslint-disable-next-line no-underscore-dangle
+        const pathWithIds = `${survey._id?.toString()}/${element.name}`;
+
+        if (FileNames.includes(fileName)) {
+          AttachmentService.moveFileToPermanentFiles(
+            fileName,
+            `${APPS.SURVEYS}/${IMAGES}`,
+            pathWithIds,
+            user.preferred_username,
+          );
+        }
+
+        // eslint-disable-next-line no-param-reassign
+        element.imageLink = AttachmentService.getPersistentImageUrl(`${uri}${domain}`, pathWithIds, fileName);
+      }
+    };
+
+    survey.formula.pages?.forEach((page) => {
+      page.elements?.forEach(updateElement);
+    });
+    survey.formula.elements?.forEach(updateElement);
+
+    const surveyWithUpdatedImageLinks = await this.surveyService.updateSurvey(
+      { ...surveyDto, formula: survey.formula },
+      user,
+      this.surveysSseConnections,
+    );
+
+    AttachmentService.clearTEMP(`${APPS.SURVEYS}/${IMAGES}`, user.preferred_username);
+
+    return surveyWithUpdatedImageLinks;
   }
 
   @Delete()
@@ -155,6 +191,8 @@ class SurveysController {
     const { surveyIds } = deleteSurveyDto;
     await this.surveyService.deleteSurveys(surveyIds, this.surveysSseConnections);
     await this.surveyAnswerService.onSurveyRemoval(surveyIds);
+
+    void AttachmentService.onObjectRemoval(SURVEYS_IMAGES_PATH, surveyIds);
   }
 
   @Patch()
