@@ -10,17 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type FileOperationResult = {
-  success: boolean;
-  message: string;
-  status: number;
-};
+import ContentType from '@libs/filesharing/types/contentType';
 
-export interface WebdavStatusResponse {
-  success: boolean;
-  status: number;
-  filename?: string;
-  data?: string;
+interface MoveContentDialogBodyProps {
+  showAllFiles?: boolean;
+  pathToFetch?: string;
+  showSelectedFile?: boolean;
+  showHome?: boolean;
+  fileType?: ContentType;
 }
 
-export default FileOperationResult;
+export default MoveContentDialogBodyProps;

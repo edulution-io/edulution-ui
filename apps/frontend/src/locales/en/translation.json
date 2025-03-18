@@ -297,6 +297,7 @@
     "sidebar": "File Sharing",
     "previewTitle": "File Preview",
     "fileEditor": "File editor",
+    "selectFile": "Select file",
     "filePreview": "File preview",
     "saveFile": "Save file",
     "loadingDocument": "Loading document...",
@@ -318,19 +319,28 @@
       "WebDavError": "Data server access failed",
       "DownloadFailed": "Download failed",
       "FolderCreationFailed": "Folder creation failed",
+      "CreateCollectFolderForStudentFailed": "Creating the collect folder for student failed",
       "DeleteFromServerFailed": "Delete from server failed",
       "SaveFailed": "Save failed",
-      "DuplicateFailed": "Copy failed",
+      "DuplicateFailed": "Duplicate failed",
       "AppNotProperlyConfigured": "OnlyOffice is not properly configured, contact your system administrator.",
       "CollectingFailed": "Collecting files failed",
+      "MissingCallbackURL": "Missing callback URL",
       "SharingFailed": "Sharing files failed",
-      "MissingCallbackURL": "Missing callback URL"
+      "CopyFailed": "Copy failed"
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
       "FileNameRequired": "File name is required",
       "NewFileNameRequired": "New file name is required",
       "NameRequired": "Name is required"
+    },
+    "progressBox": {
+      "info": "Info",
+      "title": "Distributing files",
+      "processedInfo": "{{processed}} out of {{total}} files distributed successfully",
+      "fileInfo": "File {{filename}} is being distributed to {{studentName}}",
+      "errorInfo": "{{failed}} files could not be handed out"
     }
   },
   "forums": {
@@ -458,6 +468,16 @@
     "myRoom": "My room",
     "sharedMailBox": "Shared mailbox",
     "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes.",
+    "failDialog": {
+      "title": "The file {{file}} could not be shared",
+      "reasonMissing": "The file may no longer exist or has been renamed.",
+      "reasonAlreadyReceived": "The recipient already has the file.",
+      "reasonDuplicate": "The file name is duplicated.",
+      "affectedPersons": "The following persons did not receive the file:",
+      "affectedPerson": "The following person did not receive the file:",
+      "filenameAdvice": "If you try to share again, the file will be shared under the name {{filename}}",
+      "retryButton": "Retry"
+    },
     "veyonConfigTable": {
       "id": "ID",
       "subnet": "Subnet",
@@ -468,7 +488,11 @@
       "proxyAdressPlaceholder": "http://localhost:11080",
       "createConfig": "Create config",
       "editConfig": "Edit config"
-    }
+    },
+    "copyOrCut": "Would you like to cut or copy the files?",
+    "filesShared": "Files shared",
+    "filesSharingStarted": "Sharing files started",
+    "filesCollected": "Files collected"
   },
   "select": "Select",
   "selectAll": "Select all",
@@ -902,6 +926,7 @@
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables"
     },
+    "cut": "Cut",
     "sortOrder": "Sort order",
     "checking": "Checking",
     "options": "Options",

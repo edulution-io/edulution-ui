@@ -10,17 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type FileOperationResult = {
-  success: boolean;
-  message: string;
-  status: number;
-};
+export const LAYOUT_OPTIONS = {
+  ONE_COLUMN: 'oneColumn',
+  TWO_COLUMN: 'twoColumn',
+} as const;
 
-export interface WebdavStatusResponse {
-  success: boolean;
-  status: number;
-  filename?: string;
-  data?: string;
-}
-
-export default FileOperationResult;
+export type LayoutOption = (typeof LAYOUT_OPTIONS)[keyof typeof LAYOUT_OPTIONS];
