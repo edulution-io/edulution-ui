@@ -177,11 +177,12 @@
     "configName": "Name der Konfiguration",
     "hostname": "Hostname",
     "port": "Port",
+    "portPlaceholder": "z.B. 993",
     "encryption": "Verschlüsselung",
     "rowSelected": "{{selected}} von {{total}} Job ausgewählt",
     "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
     "importer": {
-      "filterPlaceHolderText": "Suche nach E-Mail-Importername",
+      "filterPlaceHolderText": "Suche nach Benutzername",
       "title": "E-Mail-Importer",
       "provider": "E-Mail-Provider",
       "interval": "Sync-Intervall",

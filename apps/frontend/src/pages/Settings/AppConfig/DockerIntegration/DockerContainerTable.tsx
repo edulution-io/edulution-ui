@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
@@ -18,11 +18,16 @@ import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import APPS from '@libs/appconfig/constants/apps';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
+import useIsMobileView from '@/hooks/useIsMobileView';
+import DOCKER_CONTAINER_TABLE_COLUMNS from '@libs/docker/constants/dockerContainerTableColumns';
+import useIsTabletView from '@/hooks/useIsTabletView';
 import useDockerApplicationStore from './useDockerApplicationStore';
 import DockerContainerTableColumns from './DockerContainerTableColumns';
 import DockerContainerFloatingButtons from './DockerContainerFloatingButtons';
 
 const DockerContainerTable: React.FC = () => {
+  const isMobileView = useIsMobileView();
+  const isTabletView = useIsTabletView();
   const { isLoading, containers, selectedRows, setSelectedRows, getContainers } = useDockerApplicationStore();
   const { t } = useTranslation();
 
@@ -34,6 +39,16 @@ const DockerContainerTable: React.FC = () => {
   useEffect(() => {
     void getContainers();
   }, []);
+
+  const initialColumnVisibility = useMemo(
+    () => ({
+      [DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_IMAGE]: !(isMobileView || isTabletView),
+      [DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_PORT]: !isMobileView,
+      [DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_STATUS]: !isMobileView,
+      [DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_CREATION_DATE]: !(isMobileView || isTabletView),
+    }),
+    [isMobileView, isTabletView],
+  );
 
   return (
     <>
@@ -50,7 +65,7 @@ const DockerContainerTable: React.FC = () => {
             <ScrollableTable
               columns={DockerContainerTableColumns}
               data={containers}
-              filterKey="name"
+              filterKey={DOCKER_CONTAINER_TABLE_COLUMNS.NAME}
               filterPlaceHolderText="dockerOverview.filterPlaceHolderText"
               onRowSelectionChange={handleRowSelectionChange}
               selectedRows={selectedRows}
@@ -61,6 +76,7 @@ const DockerContainerTable: React.FC = () => {
               scrollContainerOffsetElementIds={{
                 others: [NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID],
               }}
+              initialColumnVisibility={initialColumnVisibility}
             />
           </AccordionContent>
         </AccordionItem>

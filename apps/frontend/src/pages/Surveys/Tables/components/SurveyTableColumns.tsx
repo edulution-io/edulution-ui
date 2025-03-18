@@ -24,14 +24,12 @@ import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { useTranslation } from 'react-i18next';
 import OpenShareQRDialogTextCell from '@/components/ui/Table/OpenShareQRDialogTextCell';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
-
-const hideOnMobileClassName = 'hidden lg:flex min-w-24';
+import hideOnMobileClassName from '@libs/ui/constants/hideOnMobileClassName';
+import SURVEY_TABLE_COLUMNS from '@libs/survey/constants/surveyTableColumns';
 
 const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
   {
-    id: 'select-survey',
-    accessorKey: 'formula',
-    enableHiding: false,
+    accessorKey: SURVEY_TABLE_COLUMNS.SELECT_SURVEY,
     enableSorting: true,
     header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
     meta: {
@@ -49,7 +47,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     sortingFn: (rowA, rowB) => sortSurveyByTitle(rowA.original, rowB.original),
   },
   {
-    accessorKey: 'createdAt',
+    accessorKey: SURVEY_TABLE_COLUMNS.CREATED_AT,
     enableSorting: true,
     header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
     meta: {
@@ -71,7 +69,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     sortingFn: (rowA, rowB) => sortDate(rowA.original.createdAt, rowB.original.createdAt),
   },
   {
-    accessorKey: 'expires',
+    accessorKey: SURVEY_TABLE_COLUMNS.EXPIRES,
     enableSorting: true,
     header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
     meta: {
@@ -93,7 +91,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     sortingFn: (rowA, rowB) => sortDate(rowA.original.expires, rowB.original.expires),
   },
   {
-    id: 'survey-isPublic',
+    accessorKey: SURVEY_TABLE_COLUMNS.IS_PUBLIC,
     header: ({ column }) => (
       <SortableHeader<SurveyDto, unknown>
         className={hideOnMobileClassName}
@@ -112,7 +110,6 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
         <OpenShareQRDialogTextCell
           openDialog={() => row.original.id && setIsOpenSharePublicSurveyDialog(true, row.original.id)}
           iconSize={iconSize}
-          className={hideOnMobileClassName}
           isPublic={!!isPublic}
           textTranslationId="survey"
         />
@@ -120,13 +117,8 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     },
   },
   {
-    id: 'surveys-invited-attendees',
-    header: ({ column }) => (
-      <SortableHeader<SurveyDto, unknown>
-        className={hideOnMobileClassName}
-        column={column}
-      />
-    ),
+    accessorKey: SURVEY_TABLE_COLUMNS.INVITED_ATTENDEES,
+    header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
     meta: {
       translationId: 'survey.invitedAttendees',
     },
@@ -140,7 +132,6 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       const groupsText = `${groupsCount ? `, ${groupsCount} ${t(groupsCount === 1 ? 'common.group' : 'common.groups')}` : ''}`;
       return (
         <SelectableTextCell
-          className={hideOnMobileClassName}
           text={`${attendeeText}${groupsText}`}
           onClick={() => row.toggleSelected()}
         />
@@ -148,8 +139,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     },
   },
   {
-    id: 'answers',
-    accessorKey: 'answers',
+    accessorKey: SURVEY_TABLE_COLUMNS.ANSWERS,
     enableSorting: true,
     header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
     meta: {

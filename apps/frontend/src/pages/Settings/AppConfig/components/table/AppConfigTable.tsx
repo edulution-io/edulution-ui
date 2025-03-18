@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IoAdd } from 'react-icons/io5';
 import { type ContainerInfo } from 'dockerode';
@@ -23,6 +23,9 @@ import type BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletin
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import type TApps from '@libs/appconfig/types/appsType';
+import useIsMobileView from '@/hooks/useIsMobileView';
+import useIsTabletView from '@/hooks/useIsTabletView';
+import { VisibilityState } from '@tanstack/react-table';
 
 interface AppConfigTableProps {
   applicationName: string;
@@ -30,6 +33,8 @@ interface AppConfigTableProps {
 }
 
 const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableId }) => {
+  const isMobileView = useIsMobileView();
+  const isTabletView = useIsTabletView();
   const { t } = useTranslation();
 
   const appConfigTableConfig = getAppConfigTableConfig(applicationName, tableId) as AppConfigTableConfig;
@@ -39,7 +44,17 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
   }
 
   const renderConfig = (config: AppConfigTableConfig) => {
-    const { columns, useStore, showAddButton, dialogBody, filterPlaceHolderText, filterKey, type } = config;
+    const {
+      columns,
+      hideColumnsInTabletView,
+      hideColumnsInMobileView,
+      useStore,
+      showAddButton,
+      dialogBody,
+      filterPlaceHolderText,
+      filterKey,
+      type,
+    } = config;
     const { tableContentData, fetchTableContent } = useStore();
     const { setDialogOpen, isDialogOpen } = useAppConfigTableDialogStore();
 
@@ -57,6 +72,22 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
       setDialogOpen(tableId);
     };
 
+    const initialColumnVisibility = useMemo(() => {
+      let columnsToHide: string[] = [];
+      if (isMobileView) {
+        columnsToHide = hideColumnsInMobileView;
+      } else if (isTabletView) {
+        columnsToHide = hideColumnsInTabletView;
+      }
+
+      const visibility: VisibilityState = {};
+      columnsToHide.forEach((colKey) => {
+        visibility[colKey] = false;
+      });
+
+      return visibility;
+    }, [isMobileView, isTabletView, hideColumnsInMobileView, hideColumnsInTabletView]);
+
     const getScrollableTable = () => {
       switch (type) {
         case ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE: {
@@ -69,6 +100,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
               applicationName={applicationName}
               enableRowSelection={false}
               tableIsUsedOnAppConfigPage
+              initialColumnVisibility={initialColumnVisibility}
             />
           );
         }
@@ -82,6 +114,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
               applicationName={applicationName}
               enableRowSelection={false}
               tableIsUsedOnAppConfigPage
+              initialColumnVisibility={initialColumnVisibility}
             />
           );
         }
@@ -95,6 +128,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
               applicationName={applicationName}
               enableRowSelection={false}
               tableIsUsedOnAppConfigPage
+              initialColumnVisibility={initialColumnVisibility}
             />
           );
         }

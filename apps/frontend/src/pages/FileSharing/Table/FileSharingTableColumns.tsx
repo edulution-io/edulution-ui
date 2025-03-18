@@ -31,16 +31,14 @@ import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFi
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import i18n from '@/i18n';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
 
-const hideOnMobileClassName = 'hidden lg:flex';
-
 const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
   {
-    id: 'select-filename',
-
+    id: FILE_SHARING_TABLE_COLUMNS.SELECT_FILENAME,
     header: ({ table, column }) => (
       <SortableHeader<DirectoryFileDTO, unknown>
         table={table}
@@ -106,7 +104,6 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
         </div>
       );
     },
-    enableHiding: false,
 
     sortingFn: (rowA, rowB) => {
       const valueA = rowA.original.type + rowA.original.filename;
@@ -115,7 +112,7 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
     },
   },
   {
-    accessorKey: 'lastmod',
+    accessorKey: FILE_SHARING_TABLE_COLUMNS.LAST_MODIFIED,
     header: function Header({ column }) {
       return <SortableHeader<DirectoryFileDTO, unknown> column={column} />;
     },
@@ -148,14 +145,9 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
     },
   },
   {
-    accessorKey: 'size',
+    accessorKey: FILE_SHARING_TABLE_COLUMNS.SIZE,
     header: function Header({ column }) {
-      return (
-        <SortableHeader<DirectoryFileDTO, unknown>
-          className={hideOnMobileClassName}
-          column={column}
-        />
-      );
+      return <SortableHeader<DirectoryFileDTO, unknown> column={column} />;
     },
     meta: {
       translationId: 'fileSharingTable.size',
@@ -166,7 +158,7 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
         fileSize = row.original.size;
       }
       return (
-        <div className={`hidden lg:flex ${sizeColumnWidth}`}>
+        <div className={sizeColumnWidth}>
           <span className="text-right text-base text-span font-medium">{formatBytes(fileSize)}</span>
         </div>
       );
@@ -174,14 +166,9 @@ const FileSharingTableColumns: ColumnDef<DirectoryFileDTO>[] = [
   },
 
   {
-    accessorKey: 'type',
+    accessorKey: FILE_SHARING_TABLE_COLUMNS.TYPE,
     header: function Header({ column }) {
-      return (
-        <SortableHeader<DirectoryFileDTO, unknown>
-          className={hideOnMobileClassName}
-          column={column}
-        />
-      );
+      return <SortableHeader<DirectoryFileDTO, unknown> column={column} />;
     },
     meta: {
       translationId: 'fileSharingTable.type',
