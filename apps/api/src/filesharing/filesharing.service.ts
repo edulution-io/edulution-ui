@@ -30,9 +30,9 @@ import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOper
 import ContentType from '@libs/filesharing/types/contentType';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bull';
-import APPS from '@libs/appconfig/constants/apps';
 import JOB_NAMES from '@libs/queue/constants/jobNames';
 import CopyFileRequestDto from '@libs/filesharing/types/copyFileRequestDto';
+import FILESHARING_QUEUE_NAMES from '@libs/filesharing/constants/queueName';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
@@ -49,7 +49,8 @@ class FilesharingService {
     private readonly userService: UsersService,
     private readonly onlyofficeService: OnlyofficeService,
     private readonly fileSystemService: FilesystemService,
-    @InjectQueue(APPS.FILE_SHARING) private fileSharingQueue: Queue,
+    @InjectQueue(FILESHARING_QUEUE_NAMES.DUPLICATE_QUEUE) private fileSharingDuplicateQueue: Queue,
+    @InjectQueue(FILESHARING_QUEUE_NAMES.COPY_QUEUE) private fileSharingCopyQueue: Queue,
   ) {}
 
   private setCacheTimeout(token: string): NodeJS.Timeout {
@@ -291,7 +292,7 @@ class FilesharingService {
     let i = 0;
     return Promise.all(
       duplicateFile.destinationFilePaths.map(async (destinationPath) => {
-        await this.fileSharingQueue.add(JOB_NAMES.DUPLICATE_FILE_JOB, {
+        await this.fileSharingDuplicateQueue.add(JOB_NAMES.DUPLICATE_FILE_JOB, {
           username,
           originFilePath: duplicateFile.originFilePath,
           destinationFilePath: destinationPath,
@@ -312,10 +313,10 @@ class FilesharingService {
 
         i += 1;
 
-        return this.fileSharingQueue.add('f', {
+        return this.fileSharingCopyQueue.add(JOB_NAMES.COPY_FILE_JOB, {
           username,
           originFilePath,
-          destinationFilePath: destinationFullPath, // Hier Zieldatei-Pfad!
+          destinationFilePath: destinationFullPath,
           processed: i,
           total: copyFile.originFilePaths.length,
         });

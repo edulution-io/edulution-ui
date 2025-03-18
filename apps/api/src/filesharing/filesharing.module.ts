@@ -13,25 +13,36 @@
 import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { BullModule } from '@nestjs/bullmq';
-import APPS from '@libs/appconfig/constants/apps';
+import FILESHARING_QUEUE_NAMES from '@libs/filesharing/constants/queueName';
 import FilesharingController from './filesharing.controller';
 import FilesharingService from './filesharing.service';
 import AppConfigModule from '../appconfig/appconfig.module';
 import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
-import FilesharingConsumer from './filesharing.consumer';
+import FilesharingDuplicateFileConsumer from './consumers/filesharing.duplicateFile.consumer';
 import SseService from '../sse/sse.service';
+import FilesharingCopyFileConsumer from './consumers/filesharing.copyFile.consumer';
 
 @Module({
   imports: [
     HttpModule,
     AppConfigModule,
-    BullModule.registerQueue({
-      name: APPS.FILE_SHARING,
-    }),
+    BullModule.registerQueue(
+      { name: FILESHARING_QUEUE_NAMES.COPY_QUEUE },
+      { name: FILESHARING_QUEUE_NAMES.DELETE_QUEUE },
+      { name: FILESHARING_QUEUE_NAMES.DUPLICATE_QUEUE },
+      { name: FILESHARING_QUEUE_NAMES.MOVE_QUEUE },
+    ),
   ],
   controllers: [FilesharingController],
-  providers: [FilesharingService, FilesystemService, OnlyofficeService, FilesharingConsumer, SseService],
+  providers: [
+    FilesharingService,
+    FilesystemService,
+    OnlyofficeService,
+    FilesharingDuplicateFileConsumer,
+    FilesharingCopyFileConsumer,
+    SseService,
+  ],
   exports: [FilesharingService],
 })
 export default class FilesharingModule {}

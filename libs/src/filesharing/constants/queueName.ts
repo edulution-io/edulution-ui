@@ -9,10 +9,11 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
-const JOB_NAMES = {
-  DUPLICATE_FILE_JOB: 'duplicate-file',
-  COPY_FILE_JOB: 'copy-file',
+const FILESHARING_QUEUE_NAMES = {
+  COPY_QUEUE: 'COPY_QUEUE',
+  DUPLICATE_QUEUE: 'DUPLICATE_QUEUE',
+  DELETE_QUEUE: 'DELETE_QUEUE',
+  MOVE_QUEUE: 'MOVE_QUEUE',
 } as const;
 
-export default JOB_NAMES;
+export default FILESHARING_QUEUE_NAMES;

@@ -16,19 +16,17 @@ import { Response } from 'express';
 import { Observable } from 'rxjs';
 import { MessageEvent } from '@nestjs/common';
 
-import APPS from '@libs/appconfig/constants/apps';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
-import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import { FilesharingProgressDto } from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-
-import JOB_NAMES from '@libs/queue/constants/jobNames';
 import DuplicateFileJobData from '@libs/queue/types/duplicateFileJobData';
-import type UserConnections from '../types/userConnections';
-import FilesharingService from './filesharing.service';
-import SseService from '../sse/sse.service';
+import FILESHARING_QUEUE_NAMES from '@libs/filesharing/constants/queueName';
+import type UserConnections from '../../types/userConnections';
+import FilesharingService from '../filesharing.service';
+import SseService from '../../sse/sse.service';
 
-@Processor(APPS.FILE_SHARING, { concurrency: 1 })
-class FilesharingConsumer extends WorkerHost {
+@Processor(FILESHARING_QUEUE_NAMES.DUPLICATE_QUEUE, { concurrency: 1 })
+class FilesharingDuplicateFileConsumer extends WorkerHost {
   private fileSharingSseConnections: UserConnections = new Map();
 
   constructor(private readonly fileSharingService: FilesharingService) {
@@ -40,17 +38,6 @@ class FilesharingConsumer extends WorkerHost {
   }
 
   async process(job: Job<DuplicateFileJobData>): Promise<void> {
-    switch (job.name) {
-      case JOB_NAMES.DUPLICATE_FILE_JOB:
-        await this.processDuplicateFile(job);
-        break;
-      default:
-        await this.proccessCopyFile(job);
-        break;
-    }
-  }
-
-  private async processDuplicateFile(job: Job<DuplicateFileJobData>): Promise<void> {
     const { username, originFilePath, destinationFilePath, total, processed } = job.data;
     const failedPaths: string[] = [];
 
@@ -83,34 +70,6 @@ class FilesharingConsumer extends WorkerHost {
 
     SseService.sendEventToUser(username, this.fileSharingSseConnections, progressDto, SSE_MESSAGE_TYPE.UPDATED);
   }
-
-  private async proccessCopyFile(job: Job<DuplicateFileJobData>): Promise<void> {
-    const { username, originFilePath, destinationFilePath, total, processed } = job.data;
-    const failedPaths: string[] = [];
-
-    const client = await this.fileSharingService.getClient(username);
-
-    try {
-      await FilesharingService.copyFileViaWebDAV(client, originFilePath, destinationFilePath);
-    } catch {
-      failedPaths.push(destinationFilePath);
-    }
-
-    const percent = Math.round((processed / total) * 100);
-    const studentName = FilesharingService.getStudentNameFromPath(destinationFilePath) || '';
-
-    const progressDto: FilesharingProgressDto = {
-      processID: Number(job.id),
-      processed,
-      total,
-      percent,
-      currentFile: originFilePath,
-      studentName,
-      failedPaths,
-    };
-
-    SseService.sendEventToUser(username, this.fileSharingSseConnections, progressDto, SSE_MESSAGE_TYPE.UPDATED);
-  }
 }
 
-export default FilesharingConsumer;
+export default FilesharingDuplicateFileConsumer;

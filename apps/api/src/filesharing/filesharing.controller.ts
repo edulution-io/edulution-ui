@@ -46,7 +46,7 @@ import CopyFileRequestDto from '@libs/filesharing/types/copyFileRequestDto';
 import FilesharingService from './filesharing.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
-import FilesharingConsumer from './filesharing.consumer';
+import FilesharingDuplicateFileConsumer from './consumers/filesharing.duplicateFile.consumer';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
@@ -54,7 +54,7 @@ import FilesharingConsumer from './filesharing.consumer';
 class FilesharingController {
   constructor(
     private readonly filesharingService: FilesharingService,
-    private readonly filesharingQueueProcessor: FilesharingConsumer,
+    private readonly filesharingQueueProcessor: FilesharingDuplicateFileConsumer,
   ) {}
 
   @Get()

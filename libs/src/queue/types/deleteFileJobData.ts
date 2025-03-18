@@ -10,9 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const JOB_NAMES = {
-  DUPLICATE_FILE_JOB: 'duplicate-file',
-  COPY_FILE_JOB: 'copy-file',
-} as const;
+interface DeleteFileJobData {
+  username: string;
+  pathToDelete: string;
+  total: number;
+  processed: number;
+}
 
-export default JOB_NAMES;
+export default DeleteFileJobData;
