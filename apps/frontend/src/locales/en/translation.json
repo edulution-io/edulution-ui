@@ -502,9 +502,9 @@
       "saveAnswerSuccess": "Saved the answer."
     },
     "errors": {
-      "submitAnswerError": "Not able to submit the answer.",
+      "submitAnswerError": "The answer could not be submitted.",
       "updateOrCreateError": "Neither able to update a survey nor to create a new one.",
-      "deleteError": "Not able to delete the surveys.",
+      "deleteError": "The surveys could not be deleted.",
       "noAnswerError": "No answers available jet.",
       "noFormulaError": "The formula of the survey is not readable.",
       "noBackendLimitersError": "In order to use this functionality you have to define limiters inside of the editor.",
@@ -894,7 +894,7 @@
     "error": "Error",
     "errors": {
       "attachmentUploadFailed": "Failed to upload attachment",
-      "attachmentDeletionFailed": "Failed to delete files that are attached",
+      "attachmentDeletionFailed": "Failed to delete all files that are attached",
       "dbAccessFailed": "Database access failed",
       "envAccessError": "Not able to read environment variables",
       "fileNotFound": "File not found",

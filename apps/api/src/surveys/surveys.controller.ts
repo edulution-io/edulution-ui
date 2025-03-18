@@ -40,12 +40,12 @@ import {
   RESULT,
   SURVEYS,
 } from '@libs/survey/constants/surveys-endpoint';
+import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AnswerDto from '@libs/survey/types/api/answer.dto';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
-import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
@@ -99,16 +99,13 @@ class SurveysController {
   @UseInterceptors(
     FileInterceptor(
       'file',
-      createAttachmentUploadOptions((req) => {
-        const { surveyId, questionId } = req.params;
-        return `${SURVEYS_IMAGES_PATH}/${surveyId}/${questionId}`;
-      }),
+      createAttachmentUploadOptions((req) => `${SURVEYS_IMAGES_PATH}/TEMP/${req.user?.preferred_username}`),
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   uploadImage(@UploadedFile() file: Express.Multer.File, @Res() res: Response, @GetCurrentUsername() username: string) {
-    checkAttachmentFile(file);
-    const imageUrl = this.surveyService.getTemporaryImageUrl(username, file.filename);
+    const fileName = checkAttachmentFile(file);
+    const imageUrl = this.surveyService.getTemporaryImageUrl(username, fileName);
     return res.status(HttpStatus.CREATED).json(imageUrl);
   }
 

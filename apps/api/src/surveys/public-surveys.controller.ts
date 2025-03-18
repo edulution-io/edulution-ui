@@ -41,13 +41,6 @@ class PublicSurveysController {
     return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer);
   }
 
-  @Get(`${RESTFUL_CHOICES}/:surveyId/:questionId`)
-  @Public()
-  async getChoices(@Param() params: { surveyId: string; questionId: string }) {
-    const { surveyId, questionId } = params;
-    return this.surveyAnswerService.getSelectableChoices(surveyId, questionId);
-  }
-
   @Get(`${IMAGES}/TEMP/:userId/:filename`)
   @Public()
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
@@ -62,6 +55,13 @@ class PublicSurveysController {
   getPermanentImage(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
     const { surveyId, questionId, filename } = params;
     return this.surveyService.servePermanentImage(surveyId, questionId, filename, res);
+  }
+
+  @Get(`${RESTFUL_CHOICES}/:surveyId/:questionId`)
+  @Public()
+  async getChoices(@Param() params: { surveyId: string; questionId: string }) {
+    const { surveyId, questionId } = params;
+    return this.surveyAnswerService.getSelectableChoices(surveyId, questionId);
   }
 }
 

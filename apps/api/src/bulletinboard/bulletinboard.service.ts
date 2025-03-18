@@ -21,7 +21,7 @@ import JwtUser from '@libs/user/types/jwt/jwtUser';
 import BulletinsByCategories from '@libs/bulletinBoard/types/bulletinsByCategories';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import commonErrorMessages from '@libs/common/constants/common-error-messages';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
@@ -64,7 +64,7 @@ class BulletinBoardService implements OnModuleInit {
     const filePath = join(this.attachmentsPath, filename);
 
     if (!existsSync(filePath)) {
-      throw new CustomHttpException(commonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
     const fileStream = createReadStream(filePath);
