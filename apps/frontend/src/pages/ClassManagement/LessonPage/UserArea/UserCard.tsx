@@ -17,6 +17,8 @@ import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import cn from '@libs/common/utils/className';
 import UserCardButtonBar from '@/pages/ClassManagement/LessonPage/UserArea/UserCardButtonBar';
 import Checkbox from '@/components/ui/Checkbox';
+import { TooltipProvider } from '@/components/ui/Tooltip';
+import ActionTooltip from '@/components/shared/ActionTooltip';
 import { SOPHOMORIX_STUDENT } from '@libs/lmnApi/constants/sophomorixRoles';
 import { useTranslation } from 'react-i18next';
 import UserPasswordDialog from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/UserPasswordDialog';
@@ -50,6 +52,12 @@ const UserCard = ({
   const isStudent = user.sophomorixRole === SOPHOMORIX_STUDENT;
   const isSelectable = isTeacherInSameSchool && isStudent;
   const isMemberSelected = !!selectedMember.find((m) => m.dn === user.dn) && isSelectable;
+  const removeSchoolPrefix = (input: string, prefix: string): string => {
+    const regex = new RegExp(`^${prefix}-`);
+    return input.replace(regex, '');
+  };
+  const schoolClassName =
+    school === 'default-school' ? sophomorixAdminClass : removeSchoolPrefix(sophomorixAdminClass, school);
 
   const connectionUid = userConnectionUids.find((conn) => conn.veyonUsername === user.cn)?.connectionUid || '';
 
@@ -98,14 +106,16 @@ const UserCard = ({
   return (
     <Card
       variant="text"
-      className={cn(
-        'my-2 ml-1 mr-4 flex h-64 min-w-80 cursor-pointer hover:opacity-80',
-        isMemberSelected && 'opacity-80',
-      )}
+      className="my-2 ml-1 mr-4 flex h-64 min-w-80 cursor-pointer"
       onClick={onCardClick}
     >
       <CardContent className="flex w-full flex-row p-0">
-        <div className="m-0 flex w-5/6 flex-col justify-between">
+        <div
+          className={cn(
+            'm-0 flex w-5/6 flex-col justify-between opacity-85 hover:opacity-100',
+            isMemberSelected && 'opacity-100',
+          )}
+        >
           <div className="flew-row flex h-8">
             {isSelectable && (
               <Checkbox
@@ -115,15 +125,28 @@ const UserCard = ({
                 aria-label={t('select')}
               />
             )}
-            <div className={cn('text-md mt-1 h-8 w-44 font-bold', !isSelectable && 'ml-2')}>{displayName}</div>
+            <div className={cn('text-md mt-1 h-8 w-44 font-bold', !isSelectable && 'ml-2')}>
+              {displayName}
+              <span className="flex text-xs">{name}</span>
+            </div>
           </div>
 
           <div className="-my-1 ml-2 flex justify-between">
-            <div className="mt-1 h-6 rounded-lg bg-accent-light px-2 py-0 text-sm">{sophomorixAdminClass}</div>
-            <div className={cn('flex flex-col text-xs', !isSelectable && 'mr-2')}>
-              <div>{name}</div>
-              <div>{school}</div>
-            </div>
+            <span className="mt-1 h-6 rounded-lg bg-accent-light px-2 py-0 text-sm">{schoolClassName}</span>
+            <TooltipProvider>
+              <ActionTooltip
+                className="bg-accent-light p-1 text-sm"
+                tooltipText={t('classmanagement.quota')}
+                openOnSide="left"
+                trigger={
+                  <div className="flex flex-col">
+                    <span className="mt-1 h-6 rounded-lg bg-accent-light px-2 py-0 text-sm">
+                      {user.sophomorixCloudQuotaCalculated?.[0]}
+                    </span>
+                  </div>
+                }
+              />
+            </TooltipProvider>
           </div>
           <div className="m-2 flex max-h-36 w-64 flex-grow items-center justify-center rounded-xl bg-accent-light text-2xl">
             <UserCardVeyonPreview
