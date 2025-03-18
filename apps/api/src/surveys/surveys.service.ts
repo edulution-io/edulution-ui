@@ -15,7 +15,7 @@ import { join } from 'path';
 import { Response } from 'express';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { createReadStream, existsSync, promises } from 'fs';
+import { createReadStream, existsSync } from 'fs';
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
@@ -86,14 +86,6 @@ class SurveysService implements OnModuleInit {
       throw new CustomHttpException(SurveyErrorMessages.DeleteError, HttpStatus.NOT_MODIFIED, error);
     } finally {
       SseService.informAllUsers(surveysSseConnections, surveyIds.toString(), SSE_MESSAGE_TYPE.DELETED);
-    }
-
-    const imageDirectories = surveyIds.map((surveyId) => join(SURVEYS_IMAGES_PATH, surveyId));
-    const deletionPromises = imageDirectories.map((directory) => promises.rmdir(directory, { recursive: true }));
-    try {
-      await Promise.all(deletionPromises);
-    } catch (error) {
-      throw new CustomHttpException(SurveyErrorMessages.ImageDeletionFailed, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
