@@ -53,8 +53,7 @@ const UserCard = ({
   const isStudent = user.sophomorixRole === SOPHOMORIX_STUDENT;
   const isSelectable = isTeacherInSameSchool && isStudent;
   const isMemberSelected = !!selectedMember.find((m) => m.dn === user.dn) && isSelectable;
-  const schoolClassName =
-    school === 'default-school' ? sophomorixAdminClass : removeSchoolPrefix(sophomorixAdminClass, school);
+  const schoolClassName = removeSchoolPrefix(sophomorixAdminClass, school);
 
   const connectionUid = userConnectionUids.find((conn) => conn.veyonUsername === user.cn)?.connectionUid || '';
 
