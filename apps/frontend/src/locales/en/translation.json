@@ -709,7 +709,8 @@
       "bulletinboard": "Configure the user groups that have access to the Bulletin Board app here. The categories can be used to control which messages are displayed to users."
     },
     "globalSettings": {
-      "title": "Global Settings"
+      "title": "Global Settings",
+      "security": "Security"
     },
     "info": {
       "title": "Info"

@@ -30,7 +30,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
     id: 'state-badge',
     header: ({ table, column }) => {
       const { pathname } = useLocation();
-      const isDockerOverview = pathname === `/${APPS.SETTINGS}`;
+      const isDockerOverview = pathname === `/${APPS.SETTINGS}/tabs/container`;
 
       return (
         <SortableHeader<ContainerInfo, unknown>
@@ -49,7 +49,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
     cell: ({ row }) => {
       const badgeClass = row.original.State === DOCKER_STATES.RUNNING ? 'bg-green-500' : 'bg-red-500';
       const { pathname } = useLocation();
-      const isDockerOverview = pathname === `/${APPS.SETTINGS}`;
+      const isDockerOverview = pathname === `/${APPS.SETTINGS}/tabs/container`;
 
       return (
         <SelectableTextCell

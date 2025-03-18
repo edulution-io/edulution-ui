@@ -710,7 +710,8 @@
       "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Schwarzes Brett haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden."
     },
     "globalSettings": {
-      "title": "Globale Einstellungen"
+      "title": "Globale Einstellungen",
+      "security": "Sicherheit"
     },
     "info": {
       "title": "Info"

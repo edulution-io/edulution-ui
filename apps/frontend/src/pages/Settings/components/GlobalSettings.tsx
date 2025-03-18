@@ -12,11 +12,75 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useForm } from 'react-hook-form';
+import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
+import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
+import useGroupStore from '@/store/GroupStore';
+import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 
-const GlobalSettings = () => {
+const GlobalSettings: React.FC = () => {
   const { t } = useTranslation();
+  const { searchGroups } = useGroupStore();
 
-  return <h4>{t('settings.globalSettings.title')}</h4>;
+  const form = useForm({
+    defaultValues: {
+      'security-groups': [] as MultipleSelectorGroup[],
+    },
+  });
+
+  const handleGroupsChange = (newGroups: MultipleSelectorGroup[]) => {
+    const currentGroups = form.getValues('security-groups') || [];
+
+    const filteredCurrentGroups = currentGroups.filter((currentGroup) =>
+      newGroups.some((newGroup) => newGroup.value === currentGroup.value),
+    );
+    const combinedGroups = [
+      ...filteredCurrentGroups,
+      ...newGroups.filter(
+        (newGroup) => !filteredCurrentGroups.some((currentGroup) => currentGroup.value === newGroup.value),
+      ),
+    ];
+    form.setValue('security-groups', combinedGroups, { shouldValidate: true });
+  };
+
+  return (
+    <AccordionSH
+      type="multiple"
+      defaultValue={['security']}
+    >
+      <AccordionItem value="security">
+        <AccordionTrigger className="flex text-h4">
+          <h4>{t('settings.globalSettings.security')}</h4>
+        </AccordionTrigger>
+        <AccordionContent className="space-y-2 px-1">
+          <Form {...form}>
+            <form>
+              <FormFieldSH
+                control={form.control}
+                name="security-groups"
+                render={() => (
+                  <FormItem>
+                    <p className="font-bold">{t(`permission.groups`)}</p>
+                    <FormControl>
+                      <AsyncMultiSelect<MultipleSelectorGroup>
+                        value={form.getValues('security-groups')}
+                        onSearch={searchGroups}
+                        onChange={(groups) => handleGroupsChange(groups)}
+                        placeholder={t('search.type-to-search')}
+                      />
+                    </FormControl>
+                    <p className="text-background">{t(`permission.selectGroupsDescription`)}</p>
+                    <FormMessage className="text-p" />
+                  </FormItem>
+                )}
+              />
+            </form>
+          </Form>
+        </AccordionContent>
+      </AccordionItem>
+    </AccordionSH>
+  );
 };
 
 export default GlobalSettings;
