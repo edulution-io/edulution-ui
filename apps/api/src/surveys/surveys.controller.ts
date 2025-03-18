@@ -11,10 +11,7 @@
  */
 
 import { Observable } from 'rxjs';
-import { extname } from 'path';
-import { diskStorage } from 'multer';
-import { existsSync, mkdirSync } from 'fs';
-import { Response, Request } from 'express';
+import { Response } from 'express';
 import {
   Body,
   Controller,
@@ -44,20 +41,18 @@ import {
   SURVEYS,
 } from '@libs/survey/constants/surveys-endpoint';
 import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
-import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AnswerDto from '@libs/survey/types/api/answer.dto';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
-import CustomHttpException from '@libs/error/CustomHttpException';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
 import SseService from '../sse/sse.service';
 import type UserConnections from '../types/userConnections';
+import { checkAttachmentFile, createAttachmentUploadOptions } from '../common/multer.config';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
@@ -102,32 +97,13 @@ class SurveysController {
   @Post(`${IMAGES}/:surveyId/:questionId`)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: (req: Request, _file, callback) => {
-          const { surveyId, questionId } = req.params;
-          const destination = `${SURVEYS_IMAGES_PATH}/${surveyId}/${questionId}`;
-          if (!existsSync(destination)) {
-            mkdirSync(destination, { recursive: true });
-          }
-          callback(null, destination);
-        },
-        filename: (_req, file, callback) => {
-          const uniqueFilename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${extname(file.originalname)}`;
-          callback(null, uniqueFilename);
-        },
+    FileInterceptor(
+      'file',
+      createAttachmentUploadOptions((req) => {
+        const { surveyId, questionId } = req.params;
+        return `${SURVEYS_IMAGES_PATH}/${surveyId}/${questionId}`;
       }),
-      fileFilter: (_req, file, callback) => {
-        if (IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-          callback(null, true);
-        } else {
-          callback(
-            new CustomHttpException(CommonErrorMessages.INVALID_FILE_TYPE, HttpStatus.INTERNAL_SERVER_ERROR),
-            false,
-          );
-        }
-      },
-    }),
+    ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   uploadImage(
@@ -136,8 +112,8 @@ class SurveysController {
     @Res() res: Response,
   ) {
     const { surveyId, questionId } = param;
-    SurveysService.checkImageFile(file);
-    const imageUrl = SurveysService.getImageUrl(surveyId, questionId, file.filename);
+    const fileName = checkAttachmentFile(file);
+    const imageUrl = SurveysService.getImageUrl(surveyId, questionId, fileName);
     return res.status(HttpStatus.CREATED).json(imageUrl);
   }
 

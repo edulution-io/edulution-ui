@@ -15,7 +15,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpStatus,
   MessageEvent,
   Param,
   Patch,
@@ -27,21 +26,17 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import { Response } from 'express';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import APPS from '@libs/appconfig/constants/apps';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
-import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
-import CustomHttpException from '@libs/error/CustomHttpException';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import { Observable } from 'rxjs';
 import BulletinBoardService from './bulletinboard.service';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
 import GetToken from '../common/decorators/getToken.decorator';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
+import { checkAttachmentFile, createAttachmentUploadOptions } from '../common/multer.config';
 
 @ApiTags(APPS.BULLETIN_BOARD)
 @ApiBearerAuth()
@@ -87,29 +82,17 @@ class BulletinBoardController {
   @Post('files')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: BULLETIN_ATTACHMENTS_PATH,
-        filename: (_req, file, callback) => {
-          const uniqueFilename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${extname(file.originalname)}`;
-          callback(null, uniqueFilename);
-        },
+    FileInterceptor(
+      'file',
+      createAttachmentUploadOptions(() => {
+        // Static path for bulletin attachments
+        return BULLETIN_ATTACHMENTS_PATH;
       }),
-      fileFilter: (_req, file, callback) => {
-        if (IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-          callback(null, true);
-        } else {
-          callback(
-            new CustomHttpException(CommonErrorMessages.INVALID_FILE_TYPE, HttpStatus.INTERNAL_SERVER_ERROR),
-            false,
-          );
-        }
-      },
-    }),
+    ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   uploadBulletinAttachment(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
-    const fileName = BulletinBoardService.checkAttachmentFile(file);
+    const fileName = checkAttachmentFile(file);
     return res.status(200).json(fileName);
   }
 

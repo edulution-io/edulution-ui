@@ -17,6 +17,7 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { SURVEY_IMAGES_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import commonErrorMessages from '@libs/common/constants/common-error-messages';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
@@ -110,7 +111,7 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
           if (!response) {
             throw new CustomHttpException(commonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR);
           }
-          callback('success', `${eduApi.getUri()}${response.data}`);
+          callback('success', `${window.location.origin}/${EDU_API_ROOT}/${response.data}`);
         } catch (error) {
           handleApiError(error, set);
           callback('error');

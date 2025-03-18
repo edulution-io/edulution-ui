@@ -87,6 +87,14 @@ class SurveysService implements OnModuleInit {
     } finally {
       SseService.informAllUsers(surveysSseConnections, surveyIds.toString(), SSE_MESSAGE_TYPE.DELETED);
     }
+
+    const imageDirectories = surveyIds.map((surveyId) => join(SURVEYS_IMAGES_PATH, surveyId));
+    const deletionPromises = imageDirectories.map((directory) => promises.rmdir(directory, { recursive: true }));
+    try {
+      await Promise.all(deletionPromises);
+    } catch (error) {
+      throw new CustomHttpException(SurveyErrorMessages.ImageDeletionFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async updateSurvey(
@@ -193,17 +201,6 @@ class SurveysService implements OnModuleInit {
       throw new CustomHttpException(CommonErrorMessages.ATTACHMENT_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
     }
     return file.filename;
-  }
-
-  async onSurveyRemoval(surveyIds: string[]): Promise<void> {
-    const imageDirectories = surveyIds.map((surveyId) => join(SURVEYS_IMAGES_PATH, surveyId));
-    const deletionPromises = imageDirectories.map((directory) => promises.rmdir(directory, { recursive: true }));
-
-    try {
-      await Promise.all(deletionPromises);
-    } catch (error) {
-      throw new CustomHttpException(SurveyErrorMessages.ImageDeletionFailed, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
   }
 }
 

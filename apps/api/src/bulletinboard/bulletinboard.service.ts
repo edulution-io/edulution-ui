@@ -21,13 +21,12 @@ import JwtUser from '@libs/user/types/jwt/jwtUser';
 import BulletinsByCategories from '@libs/bulletinBoard/types/bulletinsByCategories';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import CustomHttpException from '@libs/error/CustomHttpException';
-import commonErrorMessages from '@libs/common/constants/common-error-messages';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
-import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import { Observable } from 'rxjs';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
@@ -61,23 +60,11 @@ class BulletinBoardService implements OnModuleInit {
     return SseService.subscribe(username, this.bulletinsSseConnections, res);
   }
 
-  static checkAttachmentFile(file: Express.Multer.File): string {
-    if (!file) {
-      throw new CustomHttpException(commonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
-    }
-
-    if (!IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      throw new CustomHttpException(commonErrorMessages.ATTACHMENT_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
-    }
-
-    return file.filename;
-  }
-
   serveBulletinAttachment(filename: string, res: Response) {
     const filePath = join(this.attachmentsPath, filename);
 
     if (!existsSync(filePath)) {
-      throw new CustomHttpException(commonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
     const fileStream = createReadStream(filePath);
