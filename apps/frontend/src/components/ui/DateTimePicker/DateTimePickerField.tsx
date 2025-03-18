@@ -12,12 +12,13 @@
 
 'use client';
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { enUS, de } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { HiTrash } from 'react-icons/hi2';
 import { CalendarIcon } from '@radix-ui/react-icons';
+import { INPUT_DEFAULT, INPUT_VARIANT_DEFAULT, INPUT_VARIANT_DIALOG } from '@libs/ui/constants/commonClassNames';
 import { DropdownVariant } from '@libs/ui/types/DropdownVariant';
 import cn from '@libs/common/utils/className';
 import safeGetHours from '@libs/common/utils/Date/safeGetHours';
@@ -41,8 +42,10 @@ interface DateTimePickerFieldProps<T extends FieldValues> {
 
 const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldProps<T>) => {
   const { form, path, translationId, variant = 'default' } = props;
-  const { t } = useTranslation();
 
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const { t } = useTranslation();
   const { language } = useLanguage();
   const locale = language === 'de' ? de : enUS;
 
@@ -87,7 +90,13 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
     [fieldValue, form, path],
   );
 
-  const isDateDisabled = useCallback((date: Date) => date < new Date(), []);
+  const isDateDisabled = useCallback((date: Date) => {
+    const newDate = new Date();
+    const yesterday = newDate.getTime() - 24 * 60 * 60 * 1000;
+    newDate.setTime(yesterday);
+
+    return date < newDate;
+  }, []);
 
   const timeDisplay: string = fieldValue
     ? (fieldValue as Date).toLocaleString(language, {
@@ -110,13 +119,19 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
           <FormItem className="flex flex-col space-y-0">
             {translationId ? <p className="text-m font-bold text-background">{t(translationId)}</p> : null}
 
-            <Popover>
+            <Popover
+              open={isOpen}
+              onOpenChange={setIsOpen}
+            >
               <PopoverTrigger asChild>
                 <FormControl
-                  className={cn('w-auto p-0', {
-                    'bg-muted text-foreground hover:bg-muted-light hover:text-foreground': variant === 'default',
-                    'bg-muted text-secondary hover:bg-muted hover:text-primary-foreground': variant === 'dialog',
-                  })}
+                  className={cn(
+                    'w-auto p-0',
+                    'rounded-md',
+                    INPUT_DEFAULT,
+                    variant === 'dialog' ? INPUT_VARIANT_DIALOG : INPUT_VARIANT_DEFAULT,
+                    isOpen ? 'border-ring' : 'border-transparent',
+                  )}
                 >
                   <Button
                     variant="btn-outline"
@@ -142,7 +157,7 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
               <PopoverContent
                 className={cn('w-auto p-0', {
                   'bg-background text-foreground': variant === 'default',
-                  'bg-muted text-secondary': variant === 'dialog',
+                  'border-ring bg-muted text-secondary': variant === 'dialog',
                 })}
               >
                 <div className="sm:flex">
