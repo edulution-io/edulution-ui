@@ -84,10 +84,7 @@ class BulletinBoardController {
   @UseInterceptors(
     FileInterceptor(
       'file',
-      createAttachmentUploadOptions(() => {
-        // Static path for bulletin attachments
-        return BULLETIN_ATTACHMENTS_PATH;
-      }),
+      createAttachmentUploadOptions(() => BULLETIN_ATTACHMENTS_PATH),
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
