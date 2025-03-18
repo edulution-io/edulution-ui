@@ -28,6 +28,9 @@ import { BULLETIN_BOARD_SSE_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constan
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import UseBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
+import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
+import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import delay from '@libs/common/utils/delay';
 
 const useNotifications = () => {
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
@@ -41,6 +44,8 @@ const useNotifications = () => {
   const { updateOpenSurveys } = useSurveyTablesPageStore();
   const isBulletinBoardActive = useIsAppActive(APPS.BULLETIN_BOARD);
   const { addBulletinBoardNotification } = UseBulletinBoardStore();
+  const { setFilesharingProgress } = useLessonStore();
+  const isClassRoomManagementActive = useIsAppActive(APPS.CLASS_MANAGEMENT);
 
   useDockerContainerEvents();
 
@@ -117,6 +122,31 @@ const useNotifications = () => {
 
     return undefined;
   }, [isConferenceAppActivated]);
+
+  useEffect(() => {
+    if (!isClassRoomManagementActive) {
+      return undefined;
+    }
+
+    const eventSource = new EventSource(`/${EDU_API_ROOT}/${APPS.FILE_SHARING}/sse?token=${eduApiToken}`);
+
+    const handleFileSharingEvent = (e: MessageEvent<string>) => {
+      void (async () => {
+        const data: FilesharingProgressDto = JSON.parse(e.data) as FilesharingProgressDto;
+        setFilesharingProgress(data);
+        if (data.percent === 100 && data.failedPaths?.length === 0) {
+          await delay(5000).then(() => setFilesharingProgress(null));
+        }
+      })();
+    };
+
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.UPDATED, handleFileSharingEvent);
+
+    return () => {
+      eventSource.removeEventListener(SSE_MESSAGE_TYPE.UPDATED, handleFileSharingEvent);
+      eventSource.close();
+    };
+  }, [isClassRoomManagementActive]);
 
   useEffect(() => {
     if (isSurveysAppActivated) {

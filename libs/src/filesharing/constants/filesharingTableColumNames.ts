@@ -10,17 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type FileOperationResult = {
-  success: boolean;
-  message: string;
-  status: number;
-};
+const FILESHARING_TABLE_COLUM_NAMES = {
+  SELECT_FILENAME: 'select-filename',
+  LAST_MODIFIED: 'lastmod',
+  SIZE: 'size',
+  TYPE: 'type',
+} as const;
 
-export interface WebdavStatusResponse {
-  success: boolean;
-  status: number;
-  filename?: string;
-  data?: string;
-}
-
-export default FileOperationResult;
+export default FILESHARING_TABLE_COLUM_NAMES;

@@ -10,17 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type FileOperationResult = {
-  success: boolean;
-  message: string;
-  status: number;
+const convertWindowsToUnixPath = (windowsPath: string): string => {
+  const pathWithoutServer = windowsPath.replace(/^\\\\[^\\]+\\/, '');
+  const pathWithoutFirstElement = pathWithoutServer.split('\\').slice(1).join('/');
+  return `${pathWithoutFirstElement}/transfer`;
 };
 
-export interface WebdavStatusResponse {
-  success: boolean;
-  status: number;
-  filename?: string;
-  data?: string;
-}
-
-export default FileOperationResult;
+export default convertWindowsToUnixPath;

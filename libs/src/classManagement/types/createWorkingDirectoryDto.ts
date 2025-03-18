@@ -10,17 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type FileOperationResult = {
-  success: boolean;
-  message: string;
-  status: number;
+import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
+
+type CreateWorkingDirectoryDto = {
+  teacher: string;
+  schoolClass: LmnApiSchoolClass;
 };
 
-export interface WebdavStatusResponse {
-  success: boolean;
-  status: number;
-  filename?: string;
-  data?: string;
-}
-
-export default FileOperationResult;
+export default CreateWorkingDirectoryDto;
