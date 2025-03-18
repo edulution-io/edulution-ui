@@ -11,14 +11,63 @@
  */
 
 import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
+import Separator from '@/components/ui/Separator';
 import DockerContainerTable from '../AppConfig/DockerIntegration/DockerContainerTable';
 import LicenseOverview from './LicenseOverview';
+import GlobalSettings from './GlobalSettings';
 
-const SettingsOverviewPage: React.FC = () => (
-  <>
-    <LicenseOverview />
-    <DockerContainerTable />
-  </>
-);
+const SettingsOverviewPage: React.FC = () => {
+  const { t } = useTranslation();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const tabValue = location.pathname.split('/').pop() || 'container';
+
+  const handleTabClick = (to: string) => {
+    navigate(`/settings/tabs/${to}`);
+  };
+
+  return (
+    <Tabs value={tabValue}>
+      <TabsList className="grid w-fit grid-cols-3">
+        <TabsTrigger
+          value="container"
+          onClick={() => handleTabClick('container')}
+          className="w-64"
+        >
+          {t('dockerOverview.container-view')}
+        </TabsTrigger>
+        <TabsTrigger
+          value="global-settings"
+          onClick={() => handleTabClick('global-settings')}
+          className="w-64"
+        >
+          {t('settings.globalSettings.title')}
+        </TabsTrigger>
+        <TabsTrigger
+          value="info"
+          onClick={() => handleTabClick('info')}
+          className="w-64"
+        >
+          {t('settings.info.title')}
+        </TabsTrigger>
+      </TabsList>
+      <TabsContent value="container">
+        <Separator />
+        <DockerContainerTable />
+      </TabsContent>
+      <TabsContent value="global-settings">
+        <Separator />
+        <GlobalSettings />
+      </TabsContent>
+      <TabsContent value="info">
+        <Separator />
+        <LicenseOverview />
+      </TabsContent>
+    </Tabs>
+  );
+};
 
 export default SettingsOverviewPage;

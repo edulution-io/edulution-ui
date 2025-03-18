@@ -708,6 +708,12 @@
       "whiteboard": "Here you can make all the settings.",
       "bulletinboard": "Configure the user groups that have access to the Bulletin Board app here. The categories can be used to control which messages are displayed to users."
     },
+    "globalSettings": {
+      "title": "Global Settings"
+    },
+    "info": {
+      "title": "Info"
+    },
     "appconfig": {
       "sections": {
         "onlyOffice": {
@@ -1261,7 +1267,8 @@
     "imageName": "Image",
     "filterPlaceHolderText": "Search for container name",
     "port": "Port",
-    "created": "Created at"
+    "created": "Created at",
+    "container-view": "Container"
   },
   "docker": {
     "error": {

@@ -709,6 +709,12 @@
       "whiteboard": "Hier kannst du alle Einstellungen vornehmen.",
       "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Schwarzes Brett haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden."
     },
+    "globalSettings": {
+      "title": "Globale Einstellungen"
+    },
+    "info": {
+      "title": "Info"
+    },
     "appconfig": {
       "sections": {
         "onlyOffice": {
@@ -1261,7 +1267,8 @@
     "imageName": "Image",
     "filterPlaceHolderText": "Suche nach Container-Name",
     "port": "Port",
-    "created": "Erstellt am"
+    "created": "Erstellt am",
+    "container-view": "Container"
   },
   "docker": {
     "error": {
