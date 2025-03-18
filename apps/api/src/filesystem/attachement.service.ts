@@ -10,51 +10,55 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { createReadStream, existsSync, mkdirSync, promises, readdirSync, renameSync, rmdirSync } from 'fs';
-import { extname, join } from 'path';
+import { createReadStream, existsSync, mkdirSync, readdirSync, renameSync, rmdirSync } from 'fs';
+import { extname } from 'path';
 import { Response } from 'express';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 
 @Injectable()
 class AttachmentService {
-  static getTemporaryDirectory = (domain: string, userId: string): string =>
-    `${APPS_FILES_PATH}/${domain}/TEMP/${userId}`;
+  domain: string;
 
-  static getTemporaryImagePath = (domain: string, userId: string, fileName: string): string =>
-    `${APPS_FILES_PATH}/${domain}/TEMP/${userId}/${fileName}`;
+  filePath: string;
 
-  static getPersistentDirectory = (domain: string, pathWithIds: string): string =>
-    `${APPS_FILES_PATH}/${domain}/${pathWithIds}`;
+  constructor(domain: string, filePath: string) {
+    this.domain = domain;
+    this.filePath = filePath;
+  }
 
-  static getPersistentImagePath = (domain: string, pathWithIds: string, fileName: string): string =>
-    `${APPS_FILES_PATH}/${domain}/${pathWithIds}/${fileName}`;
+  getTemporaryImageUrl = (userId: string, fileName: string): string => `${this.domain}/TEMP/${userId}/${fileName}`;
 
-  static getTemporaryImageUrl = (endpoint: string, userId: string, fileName: string): string =>
-    `${endpoint}/TEMP/${userId}/${fileName}`;
+  getPersistentImageUrl = (pathWithIds: string, fileName: string): string =>
+    `${this.domain}/${pathWithIds}/${fileName}`;
 
-  static getPersistentImageUrl = (endpoint: string, pathWithIds: string, fileName: string): string =>
-    `${endpoint}/${pathWithIds}/${fileName}`;
+  getTemporaryDirectory = (userId: string): string => `${this.filePath}/TEMP/${userId}`;
 
-  static clearTEMP = (domain: string, userId: string): void => {
-    const destination = AttachmentService.getTemporaryDirectory(domain, userId);
+  getTemporaryImagePath = (userId: string, fileName: string): string => `${this.filePath}/TEMP/${userId}/${fileName}`;
+
+  getPersistentDirectory = (pathWithIds: string): string => `${this.filePath}/${pathWithIds}`;
+
+  getPersistentImagePath = (pathWithIds: string, fileName: string): string =>
+    `${this.filePath}/${pathWithIds}/${fileName}`;
+
+  clearTEMP(userId: string) {
+    const destination = this.getTemporaryDirectory(userId);
     if (existsSync(destination)) {
       rmdirSync(destination, { recursive: true, maxRetries: 3, retryDelay: 100 });
     }
-  };
+  }
 
-  static clearPersistent = (domain: string, pathWithIds: string): void => {
-    const destination = AttachmentService.getPersistentDirectory(domain, pathWithIds);
+  clearPersistent(pathWithIds: string) {
+    const destination = this.getPersistentDirectory(pathWithIds);
     if (existsSync(destination)) {
       rmdirSync(destination, { recursive: true, maxRetries: 3, retryDelay: 100 });
     }
-  };
+  }
 
-  static servePermanentImage(domain: string, pathWithIds: string, fileName: string, res: Response): Response {
-    const imagePath = AttachmentService.getPersistentImagePath(domain, pathWithIds, fileName);
+  servePermanentImage(pathWithIds: string, fileName: string, res: Response) {
+    const imagePath = this.getPersistentImagePath(pathWithIds, fileName);
     if (!existsSync(imagePath)) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
@@ -63,8 +67,8 @@ class AttachmentService {
     return res;
   }
 
-  static serveTemporaryImage(domain: string, userId: string, fileName: string, res: Response): Response {
-    const imagePath = AttachmentService.getTemporaryImagePath(domain, userId, fileName);
+  serveTemporaryImage(userId: string, fileName: string, res: Response) {
+    const imagePath = this.getTemporaryImagePath(userId, fileName);
     if (!existsSync(imagePath)) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
@@ -73,8 +77,36 @@ class AttachmentService {
     return res;
   }
 
-  static getTemporaryDestination = (domain: string, userId: string, callback: CallableFunction) => {
-    const destination = AttachmentService.getTemporaryDirectory(domain, userId);
+  getFileNamesFromTEMP = (userId: string) => {
+    const tempFolder = this.getTemporaryDirectory(userId);
+    return readdirSync(tempFolder);
+  };
+
+  moveFileToPermanent(fileName: string, userId: string, pathWithIds: string) {
+    const temporalImagePath = this.getTemporaryImagePath(userId, fileName);
+    const permanentImagePath = this.getPersistentImagePath(pathWithIds, fileName);
+    renameSync(temporalImagePath, permanentImagePath);
+  }
+
+  moveTempFileIntoPermanentDirectory(fileName: string, userId: string, pathWithIds: string) {
+    const permanentDirectory = this.getPersistentDirectory(pathWithIds);
+    if (!existsSync(permanentDirectory)) {
+      mkdirSync(permanentDirectory, { recursive: true });
+    }
+    this.moveFileToPermanent(fileName, userId, pathWithIds);
+  }
+
+  moveTempFilesIntoPermanentDirectory(fileNames: string[], userId: string, pathWithIds: string) {
+    const permanentDirectory = this.getPersistentDirectory(pathWithIds);
+    if (!existsSync(permanentDirectory)) {
+      mkdirSync(permanentDirectory, { recursive: true });
+    }
+    fileNames.forEach((fileName) => this.moveFileToPermanent(fileName, userId, pathWithIds));
+  }
+
+  // FILE INTERCEPTOR METHODS
+  static getTemporaryDestination = (path: string, userId: string, callback: CallableFunction) => {
+    const destination = `${path}/TEMP/${userId}`;
     if (!existsSync(destination)) {
       mkdirSync(destination, { recursive: true });
     }
@@ -102,32 +134,6 @@ class AttachmentService {
       throw new CustomHttpException(CommonErrorMessages.ATTACHMENT_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
     }
     return file.filename;
-  }
-
-  static getFileNamesFromTEMP = (domain: string, userId: string) => {
-    const tempFolder = AttachmentService.getTemporaryDirectory(domain, userId);
-    return readdirSync(tempFolder);
-  };
-
-  static moveFileToPermanentFiles = (fileName: string, domain: string, pathWithIds: string, userId: string): void => {
-    const permanentDirectory = AttachmentService.getPersistentDirectory(domain, pathWithIds);
-    if (!existsSync(permanentDirectory)) {
-      mkdirSync(permanentDirectory, { recursive: true });
-    }
-    const temporalImagePath = AttachmentService.getTemporaryImagePath(domain, userId, fileName);
-    const permanentImagePath = AttachmentService.getPersistentImagePath(domain, pathWithIds, fileName);
-    renameSync(temporalImagePath, permanentImagePath);
-  };
-
-  static onObjectRemoval(path: string, ids: string[]): void {
-    const imageDirectories = ids.map((id) => join(path, id));
-    const deletionPromises = imageDirectories.map((dir) => promises.rmdir(dir, { recursive: true }));
-
-    try {
-      void Promise.all(deletionPromises);
-    } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.ATTACHMENT_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
   }
 }
 

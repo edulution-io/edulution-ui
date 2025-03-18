@@ -10,6 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { Response } from 'express';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
@@ -21,15 +22,21 @@ import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import SurveyElement from '@libs/survey/types/TSurveyElement';
+import SURVEYS_IMAGES_DOMAIN from '@libs/survey/constants/surveysImagesDomain';
+import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
 import surveysMigrationsList from './migrations/surveysMigrationsList';
 import MigrationService from '../migration/migration.service';
 import type UserConnections from '../types/userConnections';
 import { Survey, SurveyDocument } from './survey.schema';
+import AttachmentService from '../filesystem/attachement.service';
 
 @Injectable()
 class SurveysService implements OnModuleInit {
+  private attachmentService = new AttachmentService(SURVEYS_IMAGES_DOMAIN, SURVEYS_IMAGES_PATH);
+
   constructor(
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
     private readonly groupsService: GroupsService,
@@ -80,6 +87,13 @@ class SurveysService implements OnModuleInit {
       throw new CustomHttpException(SurveyErrorMessages.DeleteError, HttpStatus.NOT_MODIFIED, error);
     } finally {
       SseService.informAllUsers(surveysSseConnections, surveyIds.toString(), SSE_MESSAGE_TYPE.DELETED);
+    }
+
+    const deleteAttachments = surveyIds.map((id) => this.attachmentService.clearPersistent(id));
+    try {
+      void Promise.all(deleteAttachments);
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.ATTACHMENT_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -152,7 +166,7 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  async updateOrCreateSurvey(
+  async handleUpdateOrCreateSurvey(
     surveyDto: SurveyDto,
     currentUser: JwtUser,
     surveysSseConnections: UserConnections,
@@ -161,9 +175,66 @@ class SurveysService implements OnModuleInit {
     if (updatedSurvey !== null) {
       return updatedSurvey;
     }
-
     return this.createSurvey(surveyDto, currentUser, surveysSseConnections);
   }
+
+  async updateOrCreateSurvey(surveyDto: SurveyDto, user: JwtUser, surveysSseConnections: UserConnections) {
+    const survey = await this.handleUpdateOrCreateSurvey(surveyDto, user, surveysSseConnections);
+    if (survey == null) {
+      return null;
+    }
+
+    const FileNames = this.attachmentService.getFileNamesFromTEMP(user.preferred_username);
+    if (FileNames.length === 0) {
+      return survey;
+    }
+
+    const updateElement = (element: SurveyElement) => {
+      if (element.type === 'image') {
+        if (!element.imageLink) {
+          return;
+        }
+
+        const fileName = element.imageLink.split('/').pop();
+        if (!fileName) {
+          return;
+        }
+        const baseUrl = element.imageLink.split(SURVEYS_IMAGES_DOMAIN)[0];
+        // eslint-disable-next-line no-underscore-dangle
+        const pathWithIds = `${survey._id?.toString()}/${element.name}`;
+
+        if (FileNames.includes(fileName)) {
+          this.attachmentService.moveTempFileIntoPermanentDirectory(fileName, pathWithIds, user.preferred_username);
+        }
+
+        // eslint-disable-next-line no-param-reassign
+        element.imageLink = `${baseUrl}${this.attachmentService.getPersistentImageUrl(pathWithIds, fileName)}`;
+      }
+    };
+
+    survey.formula.pages?.forEach((page) => {
+      page.elements?.forEach(updateElement);
+    });
+    survey.formula.elements?.forEach(updateElement);
+
+    const surveyWithUpdatedImageLinks = await this.updateSurvey(
+      { ...surveyDto, formula: survey.formula },
+      user,
+      surveysSseConnections,
+    );
+    this.attachmentService.clearTEMP(user.preferred_username);
+
+    return surveyWithUpdatedImageLinks;
+  }
+
+  getTemporaryImageUrl = (userId: string, fileName: string): string =>
+    this.attachmentService.getTemporaryImageUrl(userId, fileName);
+
+  serveTemporaryImage = (userId: string, fileName: string, res: Response) =>
+    this.attachmentService.serveTemporaryImage(userId, fileName, res);
+
+  servePermanentImage = (surveyId: string, questionId: string, fileName: string, res: Response) =>
+    this.attachmentService.servePermanentImage(`${surveyId}/${questionId}`, fileName, res);
 }
 
 export default SurveysService;
