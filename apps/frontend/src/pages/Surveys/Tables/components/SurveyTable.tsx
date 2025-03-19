@@ -18,9 +18,8 @@ import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import SURVEY_TABLE_COLUMNS from '@libs/survey/constants/surveyTableColumns';
-import useIsTabletView from '@/hooks/useIsTabletView';
 
 interface DataTableProps<TData extends SurveyDto, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -33,8 +32,7 @@ const SurveyTable = <TData extends SurveyDto, TValue>({
   data,
   isLoading = false,
 }: DataTableProps<TData, TValue>) => {
-  const isMobileView = useIsMobileView();
-  const isTabletView = useIsTabletView();
+  const { isMobileView, isTabletView } = useMedia();
   const { selectedRows, setSelectedRows } = useSurveyTablesPageStore();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {

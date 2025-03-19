@@ -12,5 +12,11 @@
 
 import { useMediaQuery } from 'usehooks-ts';
 
-const useIsMobileView = () => useMediaQuery('(max-width: 767px)');
-export default useIsMobileView;
+const useMedia = () => {
+  const isMobileView = useMediaQuery('(max-width: 767px)');
+  const isTabletView = useMediaQuery('(min-width: 768px) and (max-width: 1023px)');
+
+  return { isMobileView, isTabletView };
+};
+
+export default useMedia;

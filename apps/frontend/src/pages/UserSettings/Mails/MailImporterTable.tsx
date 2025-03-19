@@ -17,13 +17,11 @@ import { SyncJobDto } from '@libs/mail/types';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import APPS from '@libs/appconfig/constants/apps';
 import MAIL_IMPORTER_TABLE_COLUMNS from '@libs/mail/constants/mailImporterTableColumns';
-import useIsMobileView from '@/hooks/useIsMobileView';
-import useIsTabletView from '@/hooks/useIsTabletView';
+import useMedia from '@/hooks/useMedia';
 import MailImporterTableColumns from './MailImporterTableColumns';
 
 const MailImporterTable: React.FC = () => {
-  const isMobileView = useIsMobileView();
-  const isTabletView = useIsTabletView();
+  const { isMobileView, isTabletView } = useMedia();
   const { syncJobs, selectedSyncJob, setSelectedSyncJob } = useMailsStore();
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedSyncJob) : updaterOrValue;

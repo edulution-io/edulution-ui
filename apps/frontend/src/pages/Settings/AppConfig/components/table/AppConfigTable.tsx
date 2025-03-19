@@ -23,8 +23,7 @@ import type BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletin
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import type TApps from '@libs/appconfig/types/appsType';
-import useIsMobileView from '@/hooks/useIsMobileView';
-import useIsTabletView from '@/hooks/useIsTabletView';
+import useMedia from '@/hooks/useMedia';
 import { VisibilityState } from '@tanstack/react-table';
 
 interface AppConfigTableProps {
@@ -33,8 +32,7 @@ interface AppConfigTableProps {
 }
 
 const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableId }) => {
-  const isMobileView = useIsMobileView();
-  const isTabletView = useIsTabletView();
+  const { isMobileView, isTabletView } = useMedia();
   const { t } = useTranslation();
 
   const appConfigTableConfig = getAppConfigTableConfig(applicationName, tableId) as AppConfigTableConfig;

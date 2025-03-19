@@ -16,7 +16,7 @@ import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import useUserStore from '@/store/UserStore/UserStore';
 import { MdOutlineFileDownload } from 'react-icons/md';
 import { NavLink } from 'react-router-dom';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import { EDU_APP_APPSTORE_URL } from '@libs/common/constants';
 import { MobileDevicesIcon } from '@/assets/icons';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
@@ -27,7 +27,7 @@ import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '
 import Separator from '@/components/ui/Separator';
 
 const MobileFileAccessSetupBox: React.FC = () => {
-  const isMobileView = useIsMobileView();
+  const { isMobileView } = useMedia();
   const { user } = useUserStore();
 
   const webdavAccessDetails = {

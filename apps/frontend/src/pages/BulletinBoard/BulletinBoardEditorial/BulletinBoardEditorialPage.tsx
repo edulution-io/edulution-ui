@@ -20,11 +20,11 @@ import BULLETIN_BOARD_EDITORIAL_PAGE_TABLE_HEADER from '@libs/bulletinBoard/cons
 import APPS from '@libs/appconfig/constants/apps';
 import DeleteBulletinsDialog from '@/pages/BulletinBoard/BulletinBoardEditorial/DeleteBulletinsDialog';
 import CreateOrUpdateBulletinDialog from '@/pages/BulletinBoard/BulletinBoardEditorial/CreateOrUpdateBulletinDialog';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS from '@libs/bulletinBoard/constants/bulletinBoardEditorialTableColumns';
 
 const BulletinBoardEditorialPage = () => {
-  const isMobileView = useIsMobileView();
+  const { isMobileView } = useMedia();
   const { bulletins, getBulletins, isLoading, selectedRows, setSelectedRows } = useBulletinBoardEditorialStore();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
@@ -38,9 +38,9 @@ const BulletinBoardEditorialPage = () => {
 
   const initialColumnVisibility = useMemo(
     () => ({
-      [BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS.CATEGORY]: isMobileView,
-      [BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS.IS_VISIBLE_START_DATE]: isMobileView,
-      [BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS.IS_VISIBLE_END_DATE]: isMobileView,
+      [BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS.CATEGORY]: !isMobileView,
+      [BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS.IS_VISIBLE_START_DATE]: !isMobileView,
+      [BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS.IS_VISIBLE_END_DATE]: !isMobileView,
     }),
     [isMobileView],
   );

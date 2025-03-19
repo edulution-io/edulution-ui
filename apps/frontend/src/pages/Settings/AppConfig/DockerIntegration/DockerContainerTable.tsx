@@ -18,16 +18,14 @@ import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import APPS from '@libs/appconfig/constants/apps';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import DOCKER_CONTAINER_TABLE_COLUMNS from '@libs/docker/constants/dockerContainerTableColumns';
-import useIsTabletView from '@/hooks/useIsTabletView';
 import useDockerApplicationStore from './useDockerApplicationStore';
 import DockerContainerTableColumns from './DockerContainerTableColumns';
 import DockerContainerFloatingButtons from './DockerContainerFloatingButtons';
 
 const DockerContainerTable: React.FC = () => {
-  const isMobileView = useIsMobileView();
-  const isTabletView = useIsTabletView();
+  const { isMobileView, isTabletView } = useMedia();
   const { isLoading, containers, selectedRows, setSelectedRows, getContainers } = useDockerApplicationStore();
   const { t } = useTranslation();
 

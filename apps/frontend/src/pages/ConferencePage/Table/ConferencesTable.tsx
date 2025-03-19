@@ -19,11 +19,11 @@ import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/
 import CONFERENCES_PAGE_TABLE_HEADER from '@libs/conferences/constants/pageElementIds';
 import useUserStore from '@/store/UserStore/UserStore';
 import APPS from '@libs/appconfig/constants/apps';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import CONFERENCES_TABLE_COLUMNS from '@libs/conferences/constants/conferencesTableColumns';
 
 const ConferencesTable = () => {
-  const isMobileView = useIsMobileView();
+  const { isMobileView } = useMedia();
 
   const { user } = useUserStore();
   const { conferences, getConferences, isLoading, selectedRows, setSelectedRows } = useConferenceStore();

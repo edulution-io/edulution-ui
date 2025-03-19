@@ -19,13 +19,11 @@ import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 import { BREADCRUMB_ID } from '@libs/ui/constants/defaultIds';
-import useIsMobileView from '@/hooks/useIsMobileView';
-import useIsTabletView from '@/hooks/useIsTabletView';
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
+import useMedia from '@/hooks/useMedia';
 
 const FileSharingTable = () => {
-  const isMobileView = useIsMobileView();
-  const isTabletView = useIsTabletView();
+  const { isMobileView, isTabletView } = useMedia();
   const { setSelectedRows, setSelectedItems, selectedRows, files, isLoading } = useFileSharingStore();
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue =
