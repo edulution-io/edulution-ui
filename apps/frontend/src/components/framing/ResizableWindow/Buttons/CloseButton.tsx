@@ -25,6 +25,7 @@ const CloseButton = ({ handleClose, className }: CloseButtonProps) => {
 
   return (
     <WindowControlBaseButton
+      tooltipTranslationId="common.close"
       onClick={handleClose}
       className={closeClasses}
     >

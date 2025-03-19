@@ -60,7 +60,6 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
         set({ isLoading: true, error: null });
         const containerName = DOCKER_APPLICATIONS[applicationName] || '';
         const dockerContainerConfig = await get().getDockerContainerConfig(applicationName, containerName);
-        await get().getTraefikConfig(applicationName, containerName);
         const applicationNames = Object.keys(dockerContainerConfig.services);
         const containers = await get().getContainers(applicationNames);
 
