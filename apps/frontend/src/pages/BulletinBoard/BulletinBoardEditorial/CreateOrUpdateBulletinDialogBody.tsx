@@ -49,7 +49,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
   const handleCategoryChange = (categoryName: string) => {
     form.setValue(
       'category',
-      categoriesWithEditPermission.find((c) => c.name === categoryName) || categoriesWithEditPermission[0],
+      categoriesWithEditPermission.find((c) => c.id === categoryName) || categoriesWithEditPermission[0],
     );
   };
 
@@ -74,7 +74,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
           <div className="mb-1 font-bold">{t('bulletinboard.category')}</div>
           <DropdownSelect
             options={categoriesWithEditPermission}
-            selectedVal={isGetCategoriesLoading ? t('common.loading') : watch('category')?.name}
+            selectedVal={isGetCategoriesLoading ? t('common.loading') : watch('category')?.id}
             handleChange={handleCategoryChange}
             variant="dialog"
           />

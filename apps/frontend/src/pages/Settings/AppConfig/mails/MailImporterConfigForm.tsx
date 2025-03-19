@@ -23,8 +23,8 @@ type MailsConfigProps = {
   form: UseFormReturn<MailProviderConfig>;
 };
 
-const encOptions = Object.entries(MailEncryption).map(([value], index) => ({
-  id: index.toString(),
+const encOptions = Object.entries(MailEncryption).map(([value]) => ({
+  id: value,
   name: value,
 }));
 

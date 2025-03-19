@@ -37,7 +37,7 @@ const DockerContainerTable: React.FC = () => {
 
   return (
     <>
-      <div className="absolute right-10 top-12 md:right-20 md:top-10">{isLoading ? <CircleLoader /> : null}</div>
+      <div className="absolute right-10 top-12 md:right-16 md:top-1">{isLoading ? <CircleLoader /> : null}</div>
       <AccordionSH
         type="multiple"
         defaultValue={['container']}
@@ -54,7 +54,6 @@ const DockerContainerTable: React.FC = () => {
               filterPlaceHolderText="dockerOverview.filterPlaceHolderText"
               onRowSelectionChange={handleRowSelectionChange}
               selectedRows={selectedRows}
-              isLoading={isLoading}
               getRowId={(originalRow) => originalRow.Id}
               applicationName={APPS.SETTINGS}
               additionalScrollContainerOffset={20}
