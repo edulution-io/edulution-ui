@@ -88,7 +88,9 @@ class SurveysService implements OnModuleInit {
     } finally {
       SseService.informAllUsers(surveysSseConnections, surveyIds.toString(), SSE_MESSAGE_TYPE.DELETED);
     }
+  }
 
+  onSurveyRemoval(surveyIds: string[]): void {
     const deleteAttachments = surveyIds.map((id) => this.attachmentService.clearPersistent(id));
     try {
       void Promise.all(deleteAttachments);
@@ -126,7 +128,7 @@ class SurveysService implements OnModuleInit {
           survey.invitedGroups,
           survey.invitedAttendees,
         );
-        const updatedSurvey = await this.surveyModel.findById(survey.id).exec();
+        const updatedSurvey = await this.surveyModel.findById(survey.id).lean();
         SseService.sendEventToUsers(
           invitedMembersList,
           surveysSseConnections,

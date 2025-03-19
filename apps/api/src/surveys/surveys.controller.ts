@@ -125,6 +125,7 @@ class SurveysController {
     const { surveyIds } = deleteSurveyDto;
     await this.surveyService.deleteSurveys(surveyIds, this.surveysSseConnections);
     await this.surveyAnswerService.onSurveyRemoval(surveyIds);
+    this.surveyService.onSurveyRemoval(surveyIds);
   }
 
   @Patch()
