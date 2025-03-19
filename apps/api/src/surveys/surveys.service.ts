@@ -180,7 +180,12 @@ class SurveysService implements OnModuleInit {
     return this.createSurvey(surveyDto, currentUser, surveysSseConnections);
   }
 
-  async updateOrCreateSurvey(surveyDto: SurveyDto, user: JwtUser, surveysSseConnections: UserConnections) {
+  async updateOrCreateSurvey(
+    surveyDto: SurveyDto,
+    user: JwtUser,
+    baseUrl: string,
+    surveysSseConnections: UserConnections,
+  ) {
     const survey = await this.handleUpdateOrCreateSurvey(surveyDto, user, surveysSseConnections);
     if (survey == null) {
       return null;
@@ -201,7 +206,6 @@ class SurveysService implements OnModuleInit {
         if (!fileName) {
           return;
         }
-        const baseUrl = element.imageLink.split(SURVEYS_IMAGES_DOMAIN)[0];
         // eslint-disable-next-line no-underscore-dangle
         const pathWithIds = `${survey._id?.toString()}/${element.name}`;
 
