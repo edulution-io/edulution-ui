@@ -28,7 +28,7 @@ import FilesharingService from '../filesharing.service';
 import SseService from '../../sse/sse.service';
 
 @Processor(`${APPS.FILE_SHARING}-${JOB_NAMES.DUPLICATE_FILE_JOB}`, { concurrency: 1 })
-class FilesharingConsumer extends WorkerHost {
+class DuplicateFileConsumer extends WorkerHost {
   private fileSharingSseConnections: UserConnections = new Map();
 
   constructor(private readonly fileSharingService: FilesharingService) {
@@ -40,10 +40,6 @@ class FilesharingConsumer extends WorkerHost {
   }
 
   async process(job: Job<DuplicateFileJobData>): Promise<void> {
-    await this.processDuplicateFile(job);
-  }
-
-  private async processDuplicateFile(job: Job<DuplicateFileJobData>): Promise<void> {
     const { username, originFilePath, destinationFilePath, total, processed } = job.data;
     const failedPaths: string[] = [];
 
@@ -81,4 +77,4 @@ class FilesharingConsumer extends WorkerHost {
   }
 }
 
-export default FilesharingConsumer;
+export default DuplicateFileConsumer;

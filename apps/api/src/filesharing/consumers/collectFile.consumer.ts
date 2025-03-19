@@ -30,7 +30,7 @@ import FilesharingService from '../filesharing.service';
 import type UserConnections from '../../types/userConnections';
 
 @Processor(`${APPS.FILE_SHARING}-${JOB_NAMES.COLLECT_FILE_JOB}`, { concurrency: 1 })
-class FileCollectConsumer extends WorkerHost {
+class CollectFileConsumer extends WorkerHost {
   private fileCollectingSseConnections: UserConnections = new Map();
 
   constructor(private readonly fileSharingService: FilesharingService) {
@@ -42,10 +42,6 @@ class FileCollectConsumer extends WorkerHost {
   }
 
   async process(job: Job<CollectFileJobData>): Promise<void> {
-    await this.processCollectFile(job);
-  }
-
-  private async processCollectFile(job: Job<CollectFileJobData>): Promise<void> {
     const { username, userRole, item, operationType, total, processed } = job.data;
     const failedPaths: string[] = [];
 
@@ -85,4 +81,4 @@ class FileCollectConsumer extends WorkerHost {
   }
 }
 
-export default FileCollectConsumer;
+export default CollectFileConsumer;

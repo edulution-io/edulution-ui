@@ -45,8 +45,8 @@ import { Observable } from 'rxjs';
 import FilesharingService from './filesharing.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
-import FilesharingConsumer from './consumers/filesharing.consumer';
-import FileCollectConsumer from './consumers/filecollect.consumer';
+import DuplicateFileConsumer from './consumers/duplicateFile.consumer';
+import CollectFileConsumer from './consumers/collectFile.consumer';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
@@ -54,8 +54,8 @@ import FileCollectConsumer from './consumers/filecollect.consumer';
 class FilesharingController {
   constructor(
     private readonly filesharingService: FilesharingService,
-    private readonly filesharingCollectConsumer: FileCollectConsumer,
-    private readonly filesharingConsumer: FilesharingConsumer,
+    private readonly filesharingCollectConsumer: CollectFileConsumer,
+    private readonly filesharingConsumer: DuplicateFileConsumer,
   ) {}
 
   @Get()

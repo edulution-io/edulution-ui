@@ -20,9 +20,9 @@ import FilesharingService from './filesharing.service';
 import AppConfigModule from '../appconfig/appconfig.module';
 import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
-import FilesharingConsumer from './consumers/filesharing.consumer';
+import DuplicateFileConsumer from './consumers/duplicateFile.consumer';
 import SseService from '../sse/sse.service';
-import FilecollectConsumer from './consumers/filecollect.consumer';
+import FilecollectConsumer from './consumers/collectFile.consumer';
 
 @Module({
   imports: [
@@ -38,7 +38,7 @@ import FilecollectConsumer from './consumers/filecollect.consumer';
     FilesharingService,
     FilesystemService,
     OnlyofficeService,
-    FilesharingConsumer,
+    DuplicateFileConsumer,
     FilecollectConsumer,
     SseService,
   ],
