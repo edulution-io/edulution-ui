@@ -324,7 +324,7 @@
   .svc-question__adorner,
   .svc-question__adorner--collapse-never,
   .svc-question__content {
-    background-color: var(--foreground) !important;
+    background-color: rgba(0, 0, 0, 0.4) !important;
   }
 
   .svc-btn {
@@ -414,15 +414,9 @@
     color: var(--primary-foreground);
   }
 
-  .sd-question--table > .sd-question__content {
-    min-width: 100%;
-    max-width: 100%;
-  }
-  .sd-table__cell--empty,
-  .sd-matrix tr > td:first-of-type,
-  .sd-table__cell--row-text:first-of-type {
-    background-color: var(--foreground) !important;
-    padding-left: 16px;
+  /* fixes white color on matrices first cells  */
+  .sd-matrix tr > td {
+    background-color: transparent;
   }
 
   .svc-matrix-cell .sd-dropdown--empty {
