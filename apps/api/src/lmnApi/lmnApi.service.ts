@@ -41,7 +41,10 @@ import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
+import CreateWorkingDirectoryDto from '@libs/classManagement/types/createWorkingDirectoryDto';
+import convertWindowsToUnixPath from '@libs/filesharing/utils/convertWindowsToUnixPath';
 import UsersService from '../users/users.service';
+import FilesharingService from '../filesharing/filesharing.service';
 
 @Injectable()
 class LmnApiService {
@@ -51,7 +54,10 @@ class LmnApiService {
 
   private queue: Promise<unknown> = Promise.resolve();
 
-  constructor(private readonly userService: UsersService) {
+  constructor(
+    private readonly userService: UsersService,
+    private readonly fileSharingService: FilesharingService,
+  ) {
     const httpsAgent = new https.Agent({
       rejectUnauthorized: false,
     });
@@ -226,8 +232,12 @@ class LmnApiService {
     lmnApiToken: string,
     schoolClass: string,
     action: string,
+    currentUsername: string,
   ): Promise<LmnApiSchoolClass> {
     const requestUrl = `${SCHOOL_CLASSES_LMN_API_ENDPOINT}/${schoolClass}/${action}`;
+    const schoolClassObject = await this.getSchoolClass(lmnApiToken, schoolClass);
+
+    await this.handleCreateWorkingDirectory({ teacher: currentUsername, schoolClass: schoolClassObject });
 
     const config = {
       headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
@@ -686,6 +696,18 @@ class LmnApiService {
         LmnApiService.name,
       );
     }
+  }
+
+  async handleCreateWorkingDirectory(createWorkingDirectoryDto: CreateWorkingDirectoryDto): Promise<void> {
+    const { teacher } = createWorkingDirectoryDto;
+    const { members } = createWorkingDirectoryDto.schoolClass;
+
+    await Promise.all(
+      members.map(async (member) => {
+        const unixPath = convertWindowsToUnixPath(member.homeDirectory);
+        return this.fileSharingService.createFolder(member.name, unixPath, teacher);
+      }),
+    );
   }
 }
 

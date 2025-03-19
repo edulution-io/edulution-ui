@@ -16,7 +16,7 @@ type FileOperationResult = {
   status: number;
 };
 
-export interface WebdavStatusReplay {
+export interface WebdavStatusResponse {
   success: boolean;
   status: number;
   filename?: string;

@@ -11,7 +11,7 @@
  */
 
 import React from 'react';
-import { ImNewTab } from 'react-icons/im';
+import { BiWindowOpen } from 'react-icons/bi';
 import WindowControlBaseButton from './WindowControlBaseButton';
 
 interface OpenInNewTabButtonProps {
@@ -19,8 +19,11 @@ interface OpenInNewTabButtonProps {
 }
 
 const OpenInNewTabButton = ({ onClick }: OpenInNewTabButtonProps) => (
-  <WindowControlBaseButton onClick={onClick}>
-    <ImNewTab />
+  <WindowControlBaseButton
+    onClick={onClick}
+    tooltipTranslationId="common.openInNewTab"
+  >
+    <BiWindowOpen size={16} />
   </WindowControlBaseButton>
 );
 
