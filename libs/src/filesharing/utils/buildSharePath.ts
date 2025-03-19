@@ -11,12 +11,13 @@
  */
 
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import UserRoles from '@libs/user/constants/userRoles';
 import FILE_PATHS from '../constants/file-paths';
 
 const buildSharePath = (userName: string, fileName: string, student: UserLmnInfo): string => {
   const file = fileName.split('/').pop();
 
-  const studentPath = student.examMode ? `/examusers/${student.cn}-exam` : student.sophomorixIntrinsic2[0];
+  const studentPath = student.examMode ? `/${UserRoles.EXAM_USER}/${student.cn}-exam` : student.sophomorixIntrinsic2[0];
 
   return `${studentPath}/${FILE_PATHS.TRANSFER}/${userName}/${file}`;
 };
