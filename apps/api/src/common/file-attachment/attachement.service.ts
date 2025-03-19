@@ -78,6 +78,9 @@ class AttachmentService {
 
   getFileNamesFromTEMP = (userId: string) => {
     const tempFolder = this.getTemporaryDirectory(userId);
+    if (!existsSync(tempFolder)) {
+      return [];
+    }
     return readdirSync(tempFolder);
   };
 

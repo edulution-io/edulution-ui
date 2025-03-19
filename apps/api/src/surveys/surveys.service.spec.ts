@@ -16,7 +16,7 @@ import { Logger } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import SurveysService from './surveys.service';
 import { Survey } from './survey.schema';
-import { firstMockJWTUser, mockedSurveys } from './mocks';
+import { firstMockJWTUser, surveyUpdateUpdatedSurvey } from './mocks';
 import { surveyUpdateInitialSurveyDto } from './mocks/surveys/updated-survey';
 import UserConnections from '../types/userConnections';
 import GroupsService from '../groups/groups.service';
@@ -210,14 +210,14 @@ describe('SurveyService', () => {
 
     it('should create a survey if the update failed', async () => {
       jest.spyOn(service, 'updateSurvey').mockResolvedValue(null);
-      jest.spyOn(service, 'createSurvey').mockResolvedValue(mockedSurveys[0]);
+      jest.spyOn(service, 'createSurvey').mockResolvedValue(surveyUpdateUpdatedSurvey);
 
       const result = await service.updateOrCreateSurvey(
         surveyUpdateInitialSurveyDto,
         firstMockJWTUser,
         mockSseConnections,
       );
-      expect(result).toBe(mockedSurveys[0]);
+      expect(result).toBe(surveyUpdateUpdatedSurvey);
     });
   });
 });
