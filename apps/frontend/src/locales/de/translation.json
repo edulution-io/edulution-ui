@@ -483,7 +483,7 @@
       "reasonDuplicate": "Der Dateiname ist doppelt vorhanden.",
       "affectedPersons": "Die folgenden Personen haben die Datei nicht erhalten:",
       "affectedPerson": "Die folgende Person hat die Datei nicht erhalten:",
-      "filenameAdvice": "Wenn das Austeilen nochmals probiert werden soll, wird die Datei unter dem Namen {{filename}} verteilt",
+      "filenameAdvice": "Wenn das Austeilen erneut versucht werden soll, wird die Datei unter dem Namen {{filename}} verteilt",
       "retryButton": "Erneut versuchen"
     },
     "veyonConfigTable": {

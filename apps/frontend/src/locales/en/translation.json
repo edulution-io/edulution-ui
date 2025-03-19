@@ -472,7 +472,7 @@
     "sharedMailBox": "Shared mailbox",
     "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes.",
     "failDialog": {
-      "title": "The file {{file}}could not be shared",
+      "title": "The file {{file}} could not be shared",
       "reasonMissing": "The file may no longer exist or has been renamed.",
       "reasonAlreadyReceived": "The recipient already has the file.",
       "reasonDuplicate": "The file name is duplicated.",

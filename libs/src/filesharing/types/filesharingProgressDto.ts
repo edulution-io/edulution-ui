@@ -12,7 +12,7 @@
 
 import { IsNumber, IsString, IsOptional, IsArray } from 'class-validator';
 
-export class FilesharingProgressDto {
+class FilesharingProgressDto {
   @IsNumber()
   processID: number;
 
@@ -35,7 +35,7 @@ export class FilesharingProgressDto {
   percent: number;
 
   @IsString()
-  currentFile: string;
+  currentFilePath: string;
 
   @IsString()
   studentName: string;

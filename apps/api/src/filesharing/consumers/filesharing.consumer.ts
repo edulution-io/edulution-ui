@@ -18,11 +18,11 @@ import { MessageEvent } from '@nestjs/common';
 
 import APPS from '@libs/appconfig/constants/apps';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
-import { FilesharingProgressDto } from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 
 import JOB_NAMES from '@libs/queue/constants/jobNames';
 import DuplicateFileJobData from '@libs/queue/types/duplicateFileJobData';
+import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import type UserConnections from '../../types/userConnections';
 import FilesharingService from '../filesharing.service';
 import SseService from '../../sse/sse.service';
@@ -72,7 +72,7 @@ class FilesharingConsumer extends WorkerHost {
       processed,
       total,
       percent,
-      currentFile: originFilePath,
+      currentFilePath: originFilePath,
       studentName,
       failedPaths,
     };

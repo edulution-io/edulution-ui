@@ -29,8 +29,8 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import UseBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
-import { FilesharingProgressDto } from '@libs/filesharing/types/filesharingProgressDto';
 import delay from '@libs/common/utils/delay';
+import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 
 const useNotifications = () => {
   const { isSuperAdmin, isAuthReady } = useLdapGroups();

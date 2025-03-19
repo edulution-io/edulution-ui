@@ -79,9 +79,9 @@ const LessonPage = () => {
     const toasterData = {
       percent,
       title: t(filesharingProgress.title),
-      id: filesharingProgress.currentFile,
+      id: filesharingProgress.currentFilePath,
       description: t(filesharingProgress.description, {
-        filename: filesharingProgress.currentFile.split('/').pop(),
+        filename: filesharingProgress.currentFilePath.split('/').pop(),
         studentName: filesharingProgress.studentName,
       }),
       statusDescription: filesharingProgress.statusDescription,
@@ -207,16 +207,9 @@ const LessonPage = () => {
   };
 
   useEffect(() => {
-    if (
-      filesharingProgress &&
-      filesharingProgress.percent >= 100 &&
-      filesharingProgress.failedPaths?.length &&
-      filesharingProgress.failedPaths?.length > 0
-    ) {
-      setIsFileSharingProgessInfoDialogOpen(true);
-    } else {
-      setIsFileSharingProgessInfoDialogOpen(false);
-    }
+    const hasProgressCompleted = (filesharingProgress?.percent ?? 0) >= 100;
+    const hasFailedPaths = (filesharingProgress?.failedPaths?.length ?? 0) > 0;
+    setIsFileSharingProgessInfoDialogOpen(hasProgressCompleted && hasFailedPaths);
   }, [filesharingProgress]);
 
   return (
@@ -268,11 +261,11 @@ const LessonPage = () => {
           isOpen={isFileSharingProgessInfoDialogOpen}
           handleOpenChange={() => setIsFileSharingProgessInfoDialogOpen(!isFileSharingProgessInfoDialogOpen)}
           title={t('classmanagement.failDialog.title', {
-            file: filesharingProgress.currentFile.split('/').pop(),
+            file: filesharingProgress.currentFilePath.split('/').pop(),
           })}
           body={
             <SharingFilesFailedDialogBody
-              failedFilePath={filesharingProgress?.currentFile}
+              failedFilePath={filesharingProgress?.currentFilePath}
               affectedUsers={filesharingProgress?.failedPaths.map((path) => path.split('/').at(2) || '')}
               failedPaths={filesharingProgress?.failedPaths}
             />

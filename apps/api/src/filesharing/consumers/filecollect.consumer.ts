@@ -22,8 +22,8 @@ import JOB_NAMES from '@libs/queue/constants/jobNames';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 import CollectFileJobData from '@libs/queue/constants/collectFileJobData';
 import FilePaths from '@libs/filesharing/constants/file-paths';
-import { FilesharingProgressDto } from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import SseService from '../../sse/sse.service';
 import FilesharingService from '../filesharing.service';
 
