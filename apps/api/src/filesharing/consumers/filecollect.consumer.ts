@@ -77,7 +77,7 @@ class FileCollectConsumer extends WorkerHost {
       total,
       studentName: username,
       percent,
-      currentFile: FilePaths.COLLECT,
+      currentFilePath: FilePaths.COLLECT,
       failedPaths,
     };
 
