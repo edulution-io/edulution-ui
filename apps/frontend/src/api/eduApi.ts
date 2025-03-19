@@ -13,8 +13,10 @@
 import axios from 'axios';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 
+export const eduUrl = `${window.location.origin}/${EDU_API_ROOT}/`;
+
 const eduApi = axios.create({
-  baseURL: `${window.location.origin}/${EDU_API_ROOT}/`,
+  baseURL: eduUrl,
 });
 
 export default eduApi;
