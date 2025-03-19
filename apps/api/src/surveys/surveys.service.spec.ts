@@ -215,6 +215,7 @@ describe('SurveyService', () => {
       const result = await service.updateOrCreateSurvey(
         surveyUpdateInitialSurveyDto,
         firstMockJWTUser,
+        'http://localhost:5173/',
         mockSseConnections,
       );
       expect(result).toBe(surveyUpdateUpdatedSurvey);
