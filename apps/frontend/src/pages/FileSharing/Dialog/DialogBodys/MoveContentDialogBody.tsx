@@ -17,7 +17,7 @@ import DirectoryBreadcrumb from '@/pages/FileSharing/Table/DirectoryBreadcrumb';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import APPS from '@libs/appconfig/constants/apps';
-import { ColumnDef, OnChangeFn, RowSelectionState } from '@tanstack/react-table';
+import { ColumnDef, OnChangeFn, Row, RowSelectionState } from '@tanstack/react-table';
 import FILESHARING_TABLE_COLUM_NAMES from '@libs/filesharing/constants/filesharingTableColumNames';
 import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
 import ContentType from '@libs/filesharing/types/contentType';
@@ -60,18 +60,20 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
     setMoveOrCopyItemToPath(selectedItems[0]);
   };
 
-  const onFilenameClick = (item: DirectoryFileDTO) => {
-    if (item.type === ContentType.DIRECTORY) {
+  const onFilenameClick = (item: Row<DirectoryFileDTO>) => {
+    if (item.original.type === ContentType.DIRECTORY) {
       let newPath = currentPath;
       if (!newPath.endsWith('/')) {
         newPath += '/';
       }
       if (newPath === '/') {
-        newPath += item.filename.replace('/webdav/', '').replace(`server/${user?.school}/`, '');
+        newPath += item.original.filename.replace('/webdav/', '').replace(`server/${user?.school}/`, '');
       } else {
-        newPath += item.basename;
+        newPath += item.original.basename;
       }
       setCurrentPath(newPath);
+    } else {
+      item.toggleSelected();
     }
   };
 
