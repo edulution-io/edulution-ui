@@ -26,6 +26,10 @@
     height: calc(100vh - 120px);
     overflow: auto;
   }
+  .sd-body.sd-body--static {
+    max-width: calc(100vw - 4rem);
+    width: calc(100vw - 4rem);
+  }
 
   .sd-page {
     .sd-page__title .sv-string-viewer {
