@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { FiPrinter } from 'react-icons/fi';
 import { IconType } from 'react-icons';
 import { MdSchool } from 'react-icons/md';
-import { FaArrowRightToBracket, FaEarthAmericas } from 'react-icons/fa6';
+import { FaArrowRightToBracket, FaEarthEurope } from 'react-icons/fa6';
 import { TbFilterCode } from 'react-icons/tb';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import DropdownMenu from '@/components/shared/DropdownMenu';
@@ -45,6 +45,7 @@ interface UserCardButton {
   value: boolean | null;
   title: ClassmgmtOptionsType;
   variant: 'button' | 'dropdown';
+  disabled: boolean;
   defaultColor?: string;
 }
 
@@ -69,7 +70,7 @@ const UserCardButtonBar = ({
   const { internet, printing, examMode, webfilter, wifi, cn: commonName } = user;
   const { groupType, groupName } = useParams();
   const { setCurrentUser } = useLmnApiPasswordStore();
-  const { userConnectionUids, setFeatureIsLoading } = useVeyonApiStore();
+  const { userConnectionUids, loadingFeatureUids } = useVeyonApiStore();
   const { handleSetVeyonFeature } = useVeyonFeatures();
 
   const connectionUid = userConnectionUids.find((conn) => conn.veyonUsername === user.cn)?.connectionUid || '';
@@ -108,25 +109,37 @@ const UserCardButtonBar = ({
       value: wifi,
       title: CLASSMGMT_OPTIONS.WIFI,
       variant: 'button',
+      disabled,
     },
-    { icon: TbFilterCode, value: webfilter, title: CLASSMGMT_OPTIONS.WEBFILTER, variant: 'button' },
-    { icon: FaEarthAmericas, value: internet, title: CLASSMGMT_OPTIONS.INTERNET, variant: 'button' },
-    { icon: FiPrinter, value: printing, title: CLASSMGMT_OPTIONS.PRINTING, variant: 'button' },
-    { icon: MdSchool, value: examMode, title: CLASSMGMT_OPTIONS.EXAMMODE, variant: 'button' },
+    { icon: TbFilterCode, value: webfilter, title: CLASSMGMT_OPTIONS.WEBFILTER, variant: 'button', disabled },
+    { icon: FaEarthEurope, value: internet, title: CLASSMGMT_OPTIONS.INTERNET, variant: 'button', disabled },
+    { icon: FiPrinter, value: printing, title: CLASSMGMT_OPTIONS.PRINTING, variant: 'button', disabled },
+    { icon: MdSchool, value: examMode, title: CLASSMGMT_OPTIONS.EXAMMODE, variant: 'button', disabled },
     {
       icon: PiEyeFill,
       value: null,
       title: CLASSMGMT_OPTIONS.VEYON,
       variant: 'dropdown',
       defaultColor: 'text-ciLightGrey',
+      disabled,
     },
-    {
-      icon: PiKey,
-      value: null,
-      title: CLASSMGMT_OPTIONS.PASSWORDOPTIONS,
-      variant: 'button',
-      defaultColor: 'text-ciLightGrey',
-    },
+    isTeacherInSameClass
+      ? {
+          icon: PiKey,
+          value: null,
+          title: CLASSMGMT_OPTIONS.PASSWORDOPTIONS,
+          variant: 'button',
+          defaultColor: 'text-ciLightGrey',
+          disabled,
+        }
+      : {
+          icon: FaArrowRightToBracket,
+          value: null,
+          title: CLASSMGMT_OPTIONS.JOINCLASS,
+          variant: 'button',
+          defaultColor: 'text-ciLightGrey',
+          disabled: false,
+        },
   ];
 
   const getButtonDescription = (isEnabled: boolean | null) => {
@@ -136,15 +149,7 @@ const UserCardButtonBar = ({
     return isEnabled ? 'classmanagement.disable' : 'classmanagement.enable';
   };
 
-  if (!isTeacherInSameClass) {
-    userCardButtons.push({
-      icon: FaArrowRightToBracket,
-      value: null,
-      title: CLASSMGMT_OPTIONS.JOINCLASS,
-      variant: 'button',
-      defaultColor: 'text-ciLightGrey',
-    });
-  }
+  const isVeyonButtonEnabled = !disabled && veyonIsActive && !loadingFeatureUids.has(connectionUid);
 
   return userCardButtons.map((button) =>
     button.variant === 'button' ? (
@@ -154,22 +159,22 @@ const UserCardButtonBar = ({
       >
         <button
           type="button"
-          className="relative p-2 "
+          className={cn(button.disabled && 'cursor-not-allowed', 'relative p-2')}
           onClick={(e) => onButtonClick(e, button)}
-          disabled={disabled}
+          disabled={button.disabled}
         >
           <button.icon
             className={cn(
               'text-lg',
-              disabled && 'text-ciDarkGrey',
-              !disabled && button.value !== null && 'text-ciGreen',
-              !disabled && button.value === false && 'text-ciRed',
+              button.disabled && 'text-ciDarkGrey',
+              !button.disabled && button.value !== null && 'text-ciGreen',
+              !button.disabled && button.value === false && 'text-ciRed',
             )}
           />
           <div
             className={cn(
               'absolute -right-[5px] top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-l-[8px] bg-ciGreenToBlue px-2 text-background ',
-              !disabled && 'group-hover:flex',
+              !button.disabled && 'group-hover:flex',
             )}
           >
             {t(`classmanagement.${button.title}`)} {t(getButtonDescription(button.value))}
@@ -183,14 +188,14 @@ const UserCardButtonBar = ({
       >
         <DropdownMenu
           menuContentClassName="z-[600]"
-          disabled={disabled || !veyonIsActive || setFeatureIsLoading.has(connectionUid)}
+          disabled={!isVeyonButtonEnabled}
           trigger={
-            <div className={cn('relative p-2', disabled && 'cursor-auto')}>
+            <div className={cn('relative p-2', !isVeyonButtonEnabled && 'cursor-not-allowed')}>
               <button.icon
-                className={cn('text-lg', veyonIsActive && !disabled ? button.defaultColor : 'text-ciDarkGrey')}
+                className={cn('text-lg', veyonIsActive && !button.disabled ? button.defaultColor : 'text-ciDarkGrey')}
               />
 
-              {(!disabled || veyonIsActive) && (
+              {isVeyonButtonEnabled && (
                 <div className="absolute -right-[5px] top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-l-[8px] bg-ciGreenToBlue px-2 text-background group-hover:flex">
                   {t(`classmanagement.${button.title}`)} {t(getButtonDescription(button.value))}
                 </div>

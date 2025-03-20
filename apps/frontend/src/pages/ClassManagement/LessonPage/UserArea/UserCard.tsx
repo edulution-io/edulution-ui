@@ -33,32 +33,23 @@ interface UserCardProps {
   selectedMember: UserLmnInfo[];
   setSelectedMember: React.Dispatch<React.SetStateAction<UserLmnInfo[]>>;
   isTeacherInSameClass: boolean;
-  isTeacherInSameSchool: boolean;
   isVeyonEnabled: boolean;
 }
 
-const UserCard = ({
-  user,
-  selectedMember,
-  setSelectedMember,
-  isTeacherInSameClass,
-  isTeacherInSameSchool,
-  isVeyonEnabled,
-}: UserCardProps) => {
+const UserCard = ({ user, selectedMember, isTeacherInSameClass, setSelectedMember, isVeyonEnabled }: UserCardProps) => {
   const { t } = useTranslation();
   const { currentUser } = useLmnApiPasswordStore();
   const { displayName, name, sophomorixAdminClass, school } = user;
   const { userConnectionsFeatureStates, userConnectionUids, authenticateVeyonClient, getFeatures } = useVeyonApiStore();
 
-  const isStudent = user.sophomorixRole === SOPHOMORIX_STUDENT;
-  const isSelectable = isTeacherInSameSchool && isStudent;
+  const isSelectable = user.sophomorixRole === SOPHOMORIX_STUDENT && isTeacherInSameClass;
   const isMemberSelected = !!selectedMember.find((m) => m.dn === user.dn) && isSelectable;
   const schoolClassName = removeSchoolPrefix(sophomorixAdminClass, school);
-
   const connectionUid = userConnectionUids.find((conn) => conn.veyonUsername === user.cn)?.connectionUid || '';
+  const userConnectionFeatureState = userConnectionsFeatureStates[connectionUid];
 
   useEffect(() => {
-    if (isVeyonEnabled && user.sophomorixIntrinsic3.length > 0 && isStudent) {
+    if (isVeyonEnabled && user.sophomorixIntrinsic3.length > 0 && isSelectable) {
       const connIp = user.sophomorixIntrinsic3[0];
 
       void authenticateVeyonClient(connIp, user.cn);
@@ -71,8 +62,6 @@ const UserCard = ({
     }
   }, [isVeyonEnabled, connectionUid]);
 
-  const userConnectionFeatureState = userConnectionsFeatureStates[connectionUid];
-
   const getFeatureState = (featureUid: string) => {
     const feature = userConnectionFeatureState?.find((item) => item.uid === featureUid);
     return feature ? feature.active : undefined;
@@ -82,12 +71,9 @@ const UserCard = ({
   const areInputDevicesLocked = !!getFeatureState(VEYON_FEATURE_ACTIONS.INPUT_DEVICES_LOCK);
 
   const onCardClick = () => {
-    if (!isStudent) {
-      toast.info(t('classmanagement.itsNotPossibleToEditOtherTeacher'));
-      return;
-    }
-    if (!isTeacherInSameSchool) {
-      toast.info(t('classmanagement.itsNotPossibleToEditOtherSchoolStudents'));
+    if (!isSelectable) {
+      if (user.sophomorixRole === SOPHOMORIX_STUDENT)
+        toast.info(t('classmanagement.itsNotPossibleToEditExternalStudents'));
       return;
     }
 
@@ -102,7 +88,7 @@ const UserCard = ({
   return (
     <Card
       variant="text"
-      className="my-2 ml-1 mr-4 flex h-64 min-w-80 cursor-pointer"
+      className={cn(isSelectable ? 'cursor-pointer' : 'cursor-not-allowed', 'my-2 ml-1 mr-4 flex h-64 min-w-80')}
       onClick={onCardClick}
     >
       <CardContent className="flex w-full flex-row p-0">
@@ -153,7 +139,12 @@ const UserCard = ({
             />
           </div>
         </div>
-        <div className="ml-2 flex w-1/6 flex-col items-center justify-around rounded-r-xl border-l-[1px] border-accent bg-foreground">
+        <div
+          className={cn(
+            !isSelectable && 'cursor-not-allowed',
+            'ml-2 flex w-1/6 flex-col items-center justify-around rounded-r-xl border-l-[1px] border-accent bg-foreground scrollbar-thin',
+          )}
+        >
           <UserCardButtonBar
             user={user}
             isTeacherInSameClass={isTeacherInSameClass}

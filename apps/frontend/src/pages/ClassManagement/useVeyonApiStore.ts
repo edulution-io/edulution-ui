@@ -30,7 +30,7 @@ type VeyonApiStore = {
   userConnectionUids: SuccessfullVeyonAuthResponse[];
   userConnectionsFeatureStates: UserConnectionsFeatureStates;
   isLoading: boolean;
-  setFeatureIsLoading: Set<string>;
+  loadingFeatureUids: Set<string>;
   updateConnectionUids: (ip: string, userConnectionUid: SuccessfullVeyonAuthResponse | Record<string, never>) => void;
   authenticateVeyonClient: (ip: string, veyonUser: string) => Promise<void>;
   getFrameBufferStream: (connectionUid: string, highQuality?: boolean) => Promise<Blob>;
@@ -46,7 +46,7 @@ type VeyonApiStore = {
 const useVeyonApiStore = create<VeyonApiStore>((set, get) => ({
   error: null,
   isLoading: false,
-  setFeatureIsLoading: new Set<string>(),
+  loadingFeatureUids: new Set<string>(),
   userConnectionUids: [],
   userConnectionsFeatureStates: {},
 
@@ -120,7 +120,7 @@ const useVeyonApiStore = create<VeyonApiStore>((set, get) => ({
 
   setFeature: async (connectionUids: string[], featureUid: string, active: boolean, args?: Record<string, unknown>) => {
     connectionUids.forEach((connectionUid) => {
-      get().setFeatureIsLoading.add(connectionUid);
+      get().loadingFeatureUids.add(connectionUid);
     });
     try {
       const { data } = await eduApi.put<UserConnectionsFeatureStates>(
@@ -138,7 +138,7 @@ const useVeyonApiStore = create<VeyonApiStore>((set, get) => ({
       handleApiError(error, set, 'veyonAuthError');
     } finally {
       connectionUids.forEach((connectionUid) => {
-        get().setFeatureIsLoading.delete(connectionUid);
+        get().loadingFeatureUids.delete(connectionUid);
       });
     }
   },

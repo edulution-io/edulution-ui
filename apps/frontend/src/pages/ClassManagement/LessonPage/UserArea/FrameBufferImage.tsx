@@ -31,7 +31,7 @@ type FrameBufferImageProps = {
 const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ areInputDevicesLocked, connectionUid }) => {
   const { t } = useTranslation();
   const [imageSrc, setImageSrc] = useState<string>('');
-  const { setFeatureIsLoading, getFrameBufferStream } = useVeyonApiStore();
+  const { loadingFeatureUids, getFrameBufferStream } = useVeyonApiStore();
   const [isImagePreviewModalOpen, setIsImagePreviewModalOpen] = useState(false);
 
   const fetchImage = async () => {
@@ -91,7 +91,7 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ areInputDevicesLock
               onClick={() => handleImagePreviewClick()}
               className="relative flex items-center"
             >
-              {setFeatureIsLoading.has(connectionUid) ? (
+              {loadingFeatureUids.has(connectionUid) ? (
                 <CircleLoader
                   height="h-6"
                   width="w-6"
