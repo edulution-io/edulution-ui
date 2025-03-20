@@ -91,7 +91,7 @@ class VeyonService implements OnModuleInit {
   ): Promise<SuccessfullVeyonAuthResponse | Record<string, never>> {
     const password = await this.usersService.getPassword(username);
     try {
-      const { data } = await this.veyonApi.post<VeyonApiAuthResponse>(
+      const response = await this.veyonApi.post<VeyonApiAuthResponse>(
         `/authentication/${ip}`,
         {
           method: VEYON_AUTH_METHODS.AUTHLOGON,
@@ -99,10 +99,15 @@ class VeyonService implements OnModuleInit {
         },
         {
           timeout: 60000,
+          validateStatus: (valStatus) => valStatus < 500,
         },
       );
 
-      const connectionUid = data[VEYON_API_AUTH_RESPONSE_KEYS.CONNECTION_UID];
+      if (response.status !== 200) {
+        return {};
+      }
+
+      const connectionUid = response.data[VEYON_API_AUTH_RESPONSE_KEYS.CONNECTION_UID];
       await delay(200);
       const user = await this.getUser(connectionUid);
       const veyonUsername = user.login.split('\\')[1];
@@ -115,11 +120,11 @@ class VeyonService implements OnModuleInit {
         ip,
         veyonUsername,
         connectionUid,
-        validUntil: data.validUntil,
+        validUntil: response.data.validUntil,
       };
     } catch (error) {
       throw new CustomHttpException(
-        VeyonErrorMessages.VeyonAuthFailed,
+        VeyonErrorMessages.VeyonApiNotReachable,
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
         VeyonService.name,
