@@ -30,6 +30,7 @@ import buildShareDTO from '@libs/filesharing/utils/buildShareDTO';
 import CLASSMGMT_OPTIONS from '@libs/classManagement/constants/classmgmtOptions';
 import getDialogComponent from '@/pages/ClassManagement/LessonPage/getDialogComponent';
 import buildCollectDTO from '@libs/filesharing/utils/buildCollectDTO';
+import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 import VEYON_FEATURE_ACTIONS from '@libs/veyon/constants/veyonFeatureActions';
 import useVeyonFeatures from './UserArea/useVeyonFeatures';
 import useVeyonApiStore from '../useVeyonApiStore';
@@ -60,6 +61,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
     groupNameFromStore,
   } = useLessonStore();
   const { fetchUser, user, schoolPrefix } = useLmnApiStore();
+  const { activeCollectionOperation } = useFileSharingMoveDialogStore();
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();
   const { userConnectionUids } = useVeyonApiStore();
   const { handleSetVeyonFeature } = useVeyonFeatures();
@@ -108,7 +110,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
           user?.sophomorixIntrinsic2[0] || '',
         );
         if (!collectDTO) return;
-        await collectFiles(collectDTO, user?.sophomorixRole || '');
+        await collectFiles(collectDTO, user?.sophomorixRole || '', activeCollectionOperation);
       },
       disableAction: async () => {},
     },

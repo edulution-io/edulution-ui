@@ -10,17 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type FileOperationResult = {
-  success: boolean;
-  message: string;
-  status: number;
-};
-
-export interface WebdavStatusResponse {
-  success: boolean;
-  status: number;
-  filename?: string;
-  data?: string;
+interface DuplicateFileJobData {
+  username: string;
+  originFilePath: string;
+  destinationFilePath: string;
+  total: number;
+  processed: number;
 }
 
-export default FileOperationResult;
+export default DuplicateFileJobData;

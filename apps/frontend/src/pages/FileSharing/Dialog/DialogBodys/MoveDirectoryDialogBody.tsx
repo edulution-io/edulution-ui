@@ -10,17 +10,23 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type FileOperationResult = {
-  success: boolean;
-  message: string;
-  status: number;
+import React from 'react';
+import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
+import MoveContentDialogProps from '@libs/filesharing/types/moveContentDialogProps';
+import ContentType from '@libs/filesharing/types/contentType';
+import MoveContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveContentDialogBody';
+
+const MoveDirectoryDialogBody: React.FC<Omit<MoveContentDialogProps, 'pathToFetch'>> = (props) => {
+  const { homePath } = useUserPath();
+
+  return (
+    <MoveContentDialogBody
+      {...props}
+      showAllFiles
+      pathToFetch={homePath}
+      fileType={ContentType.DIRECTORY}
+    />
+  );
 };
 
-export interface WebdavStatusResponse {
-  success: boolean;
-  status: number;
-  filename?: string;
-  data?: string;
-}
-
-export default FileOperationResult;
+export default MoveDirectoryDialogBody;

@@ -10,17 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type FileOperationResult = {
-  success: boolean;
-  message: string;
-  status: number;
-};
+const LMN_API_COLLECT_OPERATIONS = {
+  CUT: 'cut',
+  COPY: 'copy',
+} as const;
 
-export interface WebdavStatusResponse {
-  success: boolean;
-  status: number;
-  filename?: string;
-  data?: string;
-}
-
-export default FileOperationResult;
+export default LMN_API_COLLECT_OPERATIONS;
