@@ -528,7 +528,13 @@
       "expectingUserInput": "Expecting the user to answer here, ... "
     },
     "participate": {
-      "saveAnswerSuccess": "Saved the answer."
+      "saveAnswerSuccess": "Saved the answer.",
+      "enterUserInfo": "Please enter your information",
+      "preferred_username": "Preferred name",
+      "given_name": "First name",
+      "family_name": "Last name",
+      "email": "E-mail",
+      "saveUserInfo": "Next"
     },
     "errors": {
       "submitAnswerError": "Not able to submit the answer.",

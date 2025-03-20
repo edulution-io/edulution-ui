@@ -20,6 +20,7 @@ import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-erro
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
+import UserInfo from '@libs/user/types/jwt/userinfo';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
 import Attendee from '../conferences/attendee.schema';
@@ -195,45 +196,63 @@ class SurveyAnswersService {
     }
   };
 
-  async addAnswer(surveyId: string, saveNo: number, answer: JSON, user?: JWTUser): Promise<SurveyAnswer | undefined> {
+  async addAnswer(
+    surveyId: string,
+    saveNo: number,
+    answer: JSON,
+    user?: JWTUser | UserInfo,
+  ): Promise<SurveyAnswer | undefined> {
     const survey = await this.surveyModel.findById<Survey>(surveyId);
     if (!survey) {
       throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
     }
 
-    const { isPublic = false, canSubmitMultipleAnswers = false, canUpdateFormerAnswer = false } = survey;
+    const {
+      isAnonymous = false,
+      isPublic = false,
+      canSubmitMultipleAnswers = false,
+      canUpdateFormerAnswer = false,
+    } = survey;
+
+    if (isAnonymous) {
+      const attendee = { firstName: 'Ano', lastName: 'Nymous', username: 'anonymous' };
+      const newSurveyAnswer = await this.surveyAnswerModel.create({
+        attendee,
+        surveyId: new Types.ObjectId(surveyId),
+        saveNo,
+        answer,
+      });
+
+      if (newSurveyAnswer == null) {
+        throw new CustomHttpException(
+          SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      return newSurveyAnswer;
+    }
+
     const username = user?.preferred_username;
-    const attendee =
-      user && !isPublic
-        ? { firstName: user.given_name, lastName: user.family_name, username }
-        : { username: `public-${surveyId}` };
+    const attendee = { firstName: user?.given_name || username, lastName: user?.family_name || username, username };
 
     await this.throwErrorIfParticipationIsNotPossible(survey, username);
 
-    if (!isPublic) {
-      const idExistingUsersAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({
-        $and: [{ 'attendee.username': username }, { surveyId: new Types.ObjectId(surveyId) }],
-      });
-      if (idExistingUsersAnswer && !canSubmitMultipleAnswers) {
-        if (!canUpdateFormerAnswer) {
-          throw new CustomHttpException(
-            SurveyErrorMessages.ParticipationErrorAlreadyParticipated,
-            HttpStatus.FORBIDDEN,
-          );
-        }
-
-        const updatedSurveyAnswer = await this.surveyAnswerModel.findByIdAndUpdate<SurveyAnswer>(
-          idExistingUsersAnswer,
-          {
-            answer,
-            saveNo,
-          },
-        );
-        if (updatedSurveyAnswer == null) {
-          throw new CustomHttpException(SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError, HttpStatus.NOT_FOUND);
-        }
-        return updatedSurveyAnswer;
+    const idExistingUsersAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({
+      $and: [{ 'attendee.username': username }, { surveyId: new Types.ObjectId(surveyId) }],
+    });
+    if (idExistingUsersAnswer && !canSubmitMultipleAnswers) {
+      if (!canUpdateFormerAnswer) {
+        throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorAlreadyParticipated, HttpStatus.FORBIDDEN);
       }
+
+      const updatedSurveyAnswer = await this.surveyAnswerModel.findByIdAndUpdate<SurveyAnswer>(idExistingUsersAnswer, {
+        answer,
+        saveNo,
+      });
+      if (updatedSurveyAnswer == null) {
+        throw new CustomHttpException(SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError, HttpStatus.NOT_FOUND);
+      }
+      return updatedSurveyAnswer;
     }
 
     const newSurveyAnswer = await this.surveyAnswerModel.create({

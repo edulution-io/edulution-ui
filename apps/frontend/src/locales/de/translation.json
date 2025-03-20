@@ -530,7 +530,13 @@
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
     },
     "participate": {
-      "saveAnswerSuccess": "Die Antwort wurde gespeichert."
+      "saveAnswerSuccess": "Die Antwort wurde gespeichert.",
+      "enterUserInfo": "Bitte gib deinen Namen und deine E-Mail-Adresse ein.",
+      "preferred_username": "Bevorzugter Name",
+      "given_name": "Vorname",
+      "family_name": "Nachname",
+      "email": "E-Mail",
+      "saveUserInfo": "Weiter"
     },
     "errors": {
       "submitAnswerError": "Die Antwort konnte nicht gespeichert werden.",

@@ -17,8 +17,10 @@ import { Survey } from 'survey-react-ui';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
+import useUserStore from '@/store/UserStore/UserStore';
 import useLanguage from '@/hooks/useLanguage';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import EnterUserInformation from '@/pages/Surveys/Participation/EnterUserInformation';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import surveyTheme from '@/pages/Surveys/theme/theme';
@@ -32,17 +34,29 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
   const { isPublic = false } = props;
   const { selectedSurvey, fetchSelectedSurvey, isFetching, updateOpenSurveys, updateAnsweredSurveys } =
     useSurveyTablesPageStore();
-  const { answerSurvey, reset } = useParticipateSurveyStore();
+  const { userInfo, updateUserInfo, answerSurvey, reset } = useParticipateSurveyStore();
 
   const { language } = useLanguage();
   const { t } = useTranslation();
 
   const { surveyId } = useParams();
 
+  const { user } = useUserStore();
+
   useEffect(() => {
     reset();
     void fetchSelectedSurvey(surveyId, isPublic);
   }, [surveyId]);
+
+  useEffect(() => {
+    if (!user) return;
+    updateUserInfo({
+      preferred_username: user?.username,
+      family_name: user?.lastName,
+      given_name: user?.firstName,
+      email: user.email,
+    });
+  }, [user]);
 
   const surveyModel = useMemo(() => {
     if (!selectedSurvey) {
@@ -82,6 +96,14 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
 
   if (isFetching) {
     return <LoadingIndicatorDialog isOpen />;
+  }
+
+  if (isPublic && !selectedSurvey?.isAnonymous && !userInfo) {
+    return (
+      <div className="relative top-1/3">
+        <EnterUserInformation setUserInfo={updateUserInfo} />
+      </div>
+    );
   }
 
   if (!surveyModel) {

@@ -10,16 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import UserInfo from '@libs/user/types/jwt/userinfo';
-
-interface PushAnswerDto {
-  surveyId: string;
-
-  saveNo: number;
-
-  answer: JSON;
-
-  userInfo?: UserInfo;
+interface UserInfo {
+  preferred_username: string;
+  given_name?: string;
+  family_name?: string;
+  email?: string;
 }
 
-export default PushAnswerDto;
+export default UserInfo;
