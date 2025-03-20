@@ -147,6 +147,7 @@ describe('VeyonService', () => {
 
       (service['veyonApi'].post as jest.Mock).mockResolvedValueOnce({
         data: mockResponse,
+        status: 200,
       });
 
       const result = await service.authenticate('127.0.0.1', 'username', 'veyonUser');
