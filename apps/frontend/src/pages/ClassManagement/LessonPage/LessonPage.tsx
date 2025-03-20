@@ -32,6 +32,10 @@ import { UseFormReturn } from 'react-hook-form';
 import GroupForm from '@libs/groups/types/groupForm';
 import GroupColumn from '@libs/groups/types/groupColumn';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
+import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import SharingFilesFailedDialogBody from '@/pages/ClassManagement/components/Dialogs/SharingFilesFailedDialogBody';
+import { toast } from 'sonner';
+import ProgressBox from '@/components/ui/ProgressBox';
 
 const LessonPage = () => {
   const {
@@ -43,6 +47,9 @@ const LessonPage = () => {
     fetchSchoolClass,
     fetchUserSessions,
   } = useClassManagementStore();
+
+  const navigate = useNavigate();
+
   const { lmnApiToken, getOwnUser } = useLmnApiStore();
   const { groupType: groupTypeParams, groupName: groupNameParams } = useParams();
   const {
@@ -56,11 +63,46 @@ const LessonPage = () => {
     setGroupTypeInStore,
     groupNameFromStore,
     groupTypeFromStore,
+    filesharingProgress,
   } = useLessonStore();
-  const navigate = useNavigate();
+
   const { t } = useTranslation();
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [currentSelectedSession, setCurrentSelectedSession] = useState<LmnApiSession | null>(null);
+
+  const [isFileSharingProgessInfoDialogOpen, setIsFileSharingProgessInfoDialogOpen] = useState(false);
+
+  useEffect(() => {
+    if (!filesharingProgress) return;
+
+    const percent = filesharingProgress.percent ?? 0;
+    const toasterData = {
+      percent,
+      title: t('filesharing.progressBox.title'),
+      id: filesharingProgress.currentFilePath,
+      description: t('filesharing.progressBox.fileInfo', {
+        filename: filesharingProgress.currentFilePath.split('/').pop(),
+        studentName: filesharingProgress.studentName,
+      }),
+      failed: filesharingProgress.failedPaths?.length || 0,
+      processed: filesharingProgress.processed,
+      total: filesharingProgress.total,
+    };
+
+    let toastDuration: number;
+    if (toasterData.failed > 0) {
+      toastDuration = Infinity;
+    } else if (percent >= 100) {
+      toastDuration = 5000;
+    } else {
+      toastDuration = Infinity;
+    }
+
+    toast(<ProgressBox data={toasterData} />, {
+      id: toasterData.id,
+      duration: toastDuration,
+    });
+  }, [filesharingProgress]);
 
   useEffect(() => {
     if (lmnApiToken) {
@@ -163,6 +205,12 @@ const LessonPage = () => {
     groups: userSessions,
   };
 
+  useEffect(() => {
+    const hasProgressCompleted = (filesharingProgress?.percent ?? 0) >= 100;
+    const hasFailedPaths = (filesharingProgress?.failedPaths?.length ?? 0) > 0;
+    setIsFileSharingProgessInfoDialogOpen(hasProgressCompleted && hasFailedPaths);
+  }, [filesharingProgress]);
+
   return (
     <>
       <div
@@ -203,8 +251,26 @@ const LessonPage = () => {
           </div>
         ) : null}
       </div>
+
       <div>{groupNameParams || member.length ? <UserArea fetchData={fetchData} /> : <QuickAccess />}</div>
       {openDialogType === UserGroups.Sessions && <GroupDialog item={sessionToSave} />}
+
+      {filesharingProgress && filesharingProgress.failedPaths && (
+        <AdaptiveDialog
+          isOpen={isFileSharingProgessInfoDialogOpen}
+          handleOpenChange={() => setIsFileSharingProgessInfoDialogOpen(!isFileSharingProgessInfoDialogOpen)}
+          title={t('classmanagement.failDialog.title', {
+            file: filesharingProgress.currentFilePath.split('/').pop(),
+          })}
+          body={
+            <SharingFilesFailedDialogBody
+              failedFilePath={filesharingProgress?.currentFilePath}
+              affectedUsers={filesharingProgress?.failedPaths.map((path) => path.split('/').at(2) || '')}
+              failedPaths={filesharingProgress?.failedPaths}
+            />
+          }
+        />
+      )}
     </>
   );
 };

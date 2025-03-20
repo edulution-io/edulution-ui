@@ -23,8 +23,10 @@ import {
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import GroupForm from '@libs/groups/types/groupForm';
 import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
+import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import LmnApiService from './lmnApi.service';
 import UsersService from '../users/users.service';
+import FilesharingService from '../filesharing/filesharing.service';
 
 jest.mock('axios');
 const mockedAxios = {
@@ -66,6 +68,12 @@ describe('LmnApiService', () => {
           provide: UsersService,
           useValue: {
             getPassword: jest.fn(),
+          },
+        },
+        {
+          provide: FilesharingService,
+          useValue: {
+            createFolder: jest.fn(),
           },
         },
       ],
@@ -237,17 +245,20 @@ describe('LmnApiService', () => {
 
   describe('toggleSchoolClassJoined', () => {
     it('should call toggleSchoolClassJoined endpoint and return data', async () => {
+      jest.spyOn(service, 'getSchoolClass').mockResolvedValue({} as LmnApiSchoolClass);
+      jest.spyOn(service, 'handleCreateWorkingDirectory').mockResolvedValue();
+
       const mockResponse = { data: { className: 'SchoolClass' } };
       mockedAxios.post.mockResolvedValue(mockResponse);
 
-      const result = await service.toggleSchoolClassJoined(mockToken, 'schoolClass', 'join');
+      const result = await service.toggleSchoolClassJoined(mockToken, 'schoolClass', 'join', 'username');
       expect(result).toEqual(mockResponse.data);
     });
 
     it('should throw CustomHttpException on failure', async () => {
       mockedAxios.post.mockRejectedValue(new Error('API Error'));
 
-      await expect(service.toggleSchoolClassJoined(mockToken, 'schoolClass', 'join')).rejects.toThrow(
+      await expect(service.toggleSchoolClassJoined(mockToken, 'schoolClass', 'join', 'username')).rejects.toThrow(
         CustomHttpException,
       );
     });

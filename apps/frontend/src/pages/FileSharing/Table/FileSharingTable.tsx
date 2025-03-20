@@ -14,13 +14,13 @@ import React, { useMemo } from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
-import FileSharingTableColumns from '@/pages/FileSharing/Table/FileSharingTableColumns';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 import { BREADCRUMB_ID } from '@libs/ui/constants/defaultIds';
-import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
 import useMedia from '@/hooks/useMedia';
+import getFileSharingTableColumns from '@/pages/FileSharing/Table/FileSharingTableColumns';
+import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
 
 const FileSharingTable = () => {
   const { isMobileView, isTabletView } = useMedia();
@@ -51,7 +51,7 @@ const FileSharingTable = () => {
 
   return (
     <ScrollableTable
-      columns={FileSharingTableColumns}
+      columns={getFileSharingTableColumns()}
       data={files}
       filterKey={FILE_SHARING_TABLE_COLUMNS.SELECT_FILENAME}
       filterPlaceHolderText="filesharing.filterPlaceHolderText"

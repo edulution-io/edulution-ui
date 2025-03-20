@@ -10,17 +10,31 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type FileOperationResult = {
-  success: boolean;
-  message: string;
-  status: number;
-};
+import { IsNumber, IsString, IsOptional, IsArray } from 'class-validator';
 
-export interface WebdavStatusResponse {
-  success: boolean;
-  status: number;
-  filename?: string;
-  data?: string;
+class FilesharingProgressDto {
+  @IsNumber()
+  processID: number;
+
+  @IsNumber()
+  processed: number;
+
+  @IsNumber()
+  total: number;
+
+  @IsNumber()
+  percent: number;
+
+  @IsString()
+  currentFilePath: string;
+
+  @IsString()
+  studentName: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  failedPaths?: string[];
 }
 
-export default FileOperationResult;
+export default FilesharingProgressDto;

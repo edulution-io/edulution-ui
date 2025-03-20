@@ -53,6 +53,10 @@ interface DataTableProps<TData, TValue> {
   tableIsUsedOnAppConfigPage?: boolean;
   enableRowSelection?: boolean | ((row: Row<TData>) => boolean) | undefined;
   initialColumnVisibility?: VisibilityState;
+  textColorClassname?: string;
+  showHeader?: boolean;
+  showSelectedCount?: boolean;
+  isDialog?: boolean;
 }
 
 const ScrollableTable = <TData, TValue>({
@@ -70,6 +74,10 @@ const ScrollableTable = <TData, TValue>({
   enableRowSelection,
   initialSorting,
   tableIsUsedOnAppConfigPage = false,
+  textColorClassname = 'text-muted-foreground',
+  showHeader = true,
+  showSelectedCount = true,
+  isDialog = false,
   initialColumnVisibility = {},
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
@@ -127,7 +135,7 @@ const ScrollableTable = <TData, TValue>({
     <>
       {isLoading && data?.length === 0 ? <LoadingIndicatorDialog isOpen={isLoading} /> : null}
 
-      {selectedRowsCount > 0 ? (
+      {showSelectedCount ? (
         <div
           id={selectedRowsMessageId}
           className="flex-1 text-sm text-muted-foreground"
@@ -146,7 +154,7 @@ const ScrollableTable = <TData, TValue>({
           {!tableIsUsedOnAppConfigPage && (
             <div
               id={selectedRowsMessageId}
-              className="flex-1 text-sm text-muted-foreground"
+              className={`flex-1 text-sm ${textColorClassname}`}
             >
               &nbsp;
             </div>
@@ -166,27 +174,29 @@ const ScrollableTable = <TData, TValue>({
                 placeholder={t(filterPlaceHolderText)}
                 value={filterValue}
                 onChange={(event) => table.getColumn(filterKey)?.setFilterValue(event.target.value)}
-                className="max-w-xl bg-accent text-secondary"
+                className={`max-w-xl text-secondary ${isDialog ? 'bg-muted' : 'bg-accent'}`}
               />
 
               <SelectColumnsDropdown table={table} />
             </div>
           )}
           <Table>
-            <TableHeader
-              className="text-background scrollbar-thin"
-              id={tableHeaderId}
-            >
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
+            {showHeader && (
+              <TableHeader
+                className={`text-foreground ${textColorClassname}`}
+                id={tableHeaderId}
+              >
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableHeader>
+            )}
             <TableBody className="container">
               {table.getRowModel().rows.length ? (
                 table.getRowModel().rows.map((row) => (
@@ -197,7 +207,7 @@ const ScrollableTable = <TData, TValue>({
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={`${row.id}-${cell.column.id}`}
-                        className="text-background"
+                        className={textColorClassname}
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
@@ -208,7 +218,7 @@ const ScrollableTable = <TData, TValue>({
                 <TableRow>
                   <TableCell
                     colSpan={columns?.length}
-                    className="h-24 text-center text-background"
+                    className={`h-24 text-center ${textColorClassname}`}
                   >
                     {t('table.noDataAvailable')}
                   </TableCell>
