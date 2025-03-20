@@ -24,7 +24,7 @@ import ContentType from '@libs/filesharing/types/contentType';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/FileSharingTableColumns';
-import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 
 const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   showAllFiles = false,
@@ -117,7 +117,6 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   return (
     <>
       <div className="h-[60vh] flex-col overflow-auto text-background scrollbar-thin">
-        <LoadingIndicatorDialog isOpen={isLoading} />
         <div className="pb-2">
           <DirectoryBreadcrumb
             path={currentPath}
@@ -127,6 +126,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
             showTitle={false}
           />
         </div>
+        <div className="w-full">{isLoading ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}</div>
         {!isLoading && (
           <div>
             <ScrollableTable
