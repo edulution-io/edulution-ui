@@ -95,14 +95,14 @@ describe(PublicSurveysController.name, () => {
     });
 
     it('throw an error when the survey with the given id does not exist', async () => {
-      surveysService.findPublicSurvey = jest.fn().mockRejectedValue(new Error(CommonErrorMessages.DBAccessFailed));
+      surveysService.findPublicSurvey = jest.fn().mockRejectedValue(new Error(CommonErrorMessages.DB_ACCESS_FAILED));
       const id = new Types.ObjectId().toString();
 
       try {
         await controller.find({ surveyId: id });
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toEqual(CommonErrorMessages.DBAccessFailed);
+        expect(e.message).toEqual(CommonErrorMessages.DB_ACCESS_FAILED);
       }
 
       expect(surveysService.findPublicSurvey).toHaveBeenCalledWith(id);

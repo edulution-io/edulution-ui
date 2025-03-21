@@ -12,8 +12,9 @@
 
 enum CommonErrorMessages {
   ATTACHMENT_UPLOAD_FAILED = 'common.errors.attachmentUploadFailed',
-  DBAccessFailed = 'common.errors.dbAccessFailed',
-  EnvAccessError = 'common.errors.envAccessError',
+  DB_ACCESS_FAILED = 'common.errors.dbAccessFailed',
+  FILE_DELETION_FAILED = 'common.errors.fileDeletionFailed',
+  FILE_WRITING_FAILED = 'common.errors.fileWritingFailed',
   FILE_NOT_FOUND = 'common.errors.fileNotFound',
   FILE_NOT_PROVIDED = 'common.errors.fileNotProvided',
   INVALID_FILE_TYPE = 'common.errors.invalidFileType',

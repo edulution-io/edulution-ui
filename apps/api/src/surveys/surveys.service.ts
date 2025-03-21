@@ -15,7 +15,6 @@ import { join } from 'path';
 import { Response } from 'express';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { createReadStream, existsSync, rmdirSync } from 'fs';
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
@@ -33,11 +32,13 @@ import surveysMigrationsList from './migrations/surveysMigrationsList';
 import MigrationService from '../migration/migration.service';
 import type UserConnections from '../types/userConnections';
 import { Survey, SurveyDocument } from './survey.schema';
+import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
 class SurveysService implements OnModuleInit {
   constructor(
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
+    private fileSystemService: FilesystemService,
     private readonly groupsService: GroupsService,
   ) {}
 
@@ -73,7 +74,7 @@ class SurveysService implements OnModuleInit {
     try {
       return await this.surveyModel.findOne<Survey>({ _id: new Types.ObjectId(surveyId), isPublic: true }).exec();
     } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.INTERNAL_SERVER_ERROR, error);
     }
   }
 
@@ -109,7 +110,7 @@ class SurveysService implements OnModuleInit {
         .findOneAndUpdate<Survey>({ _id: new Types.ObjectId(survey.id) }, survey, { new: true })
         .exec();
     } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {
       if (survey.isPublic) {
         SseService.informAllUsers(surveysSseConnections, survey, SSE_MESSAGE_TYPE.UPDATED);
@@ -140,7 +141,7 @@ class SurveysService implements OnModuleInit {
     try {
       return await this.surveyModel.create({ ...survey, creator });
     } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {
       if (survey.isPublic) {
         SseService.informAllUsers(surveysSseConnections, survey, SSE_MESSAGE_TYPE.CREATED);
@@ -163,7 +164,6 @@ class SurveysService implements OnModuleInit {
     if (updatedSurvey !== null) {
       return updatedSurvey;
     }
-
     return this.createSurvey(surveyDto, currentUser, surveysSseConnections);
   }
 
@@ -175,12 +175,9 @@ class SurveysService implements OnModuleInit {
     return join(PUBLIC_SURVEYS, IMAGES, surveyId, questionId, fileName);
   }
 
-  serveImage(surveyId: string, questionId: string, fileName: string, res: Response): Response {
+  async serveImage(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
     const imagePath = SurveysService.getImagePath(surveyId, questionId, fileName);
-    if (!existsSync(imagePath)) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
-    }
-    const fileStream = createReadStream(imagePath);
+    const fileStream = await this.fileSystemService.createReadStream(imagePath);
     fileStream.pipe(res);
     return res;
   }
@@ -197,13 +194,7 @@ class SurveysService implements OnModuleInit {
 
   async onSurveyRemoval(surveyIds: string[]): Promise<void> {
     const imageDirectories = surveyIds.map((surveyId) => join(SURVEYS_IMAGES_PATH, surveyId));
-    const deletionPromises = imageDirectories.map((directory) => rmdirSync(directory, { recursive: true }));
-
-    try {
-      await Promise.all(deletionPromises);
-    } catch (error) {
-      throw new CustomHttpException(SurveyErrorMessages.ImageDeletionFailed, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    await this.fileSystemService.deleteDirectories(imageDirectories);
   }
 }
 export default SurveysService;

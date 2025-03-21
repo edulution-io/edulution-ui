@@ -10,31 +10,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import {
-  createWriteStream,
-  existsSync,
-  mkdirSync,
-  promises as fsPromises,
-  readFileSync,
-  writeFileSync,
-  unlinkSync,
-} from 'fs';
-import { dirname, extname, join } from 'path';
-import { createHash } from 'crypto';
-import { pipeline, Readable } from 'stream';
-import { promisify } from 'util';
-import HashAlgorithm from '@libs/common/constants/hashAlgorithm';
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { ResponseType } from '@libs/common/types/http-methods';
-import { firstValueFrom, from } from 'rxjs';
-import CustomHttpException from '@libs/error/CustomHttpException';
-import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
-import CustomFile from '@libs/filesharing/types/customFile';
-import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import { createWriteStream, createReadStream, promises as fsPromises } from 'fs';
 import process from 'node:process';
+import { promisify } from 'util';
+import { createHash } from 'crypto';
+import { firstValueFrom, from } from 'rxjs';
+import { dirname, extname, join } from 'path';
+import { pipeline, Readable } from 'stream';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { ResponseType } from '@libs/common/types/http-methods';
+import HashAlgorithm from '@libs/common/constants/hashAlgorithm';
+import CustomFile from '@libs/filesharing/types/customFile';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
+import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
 import UsersService from '../users/users.service';
 
 const pipelineAsync = promisify(pipeline);
@@ -58,9 +51,20 @@ class FilesystemService {
     }
   }
 
-  static ensureDirectoryExists(directory: string): void {
-    if (!existsSync(directory)) {
-      mkdirSync(directory, { recursive: true });
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  async ensureDirectoryExists(directory: string): Promise<void> {
+    const existPromise = fsPromises.access(directory);
+    try {
+      await existPromise;
+      return;
+    } catch (error) {
+      // Directory does not exist
+    }
+    const createPathPromise = fsPromises.mkdir(directory, { recursive: true });
+    try {
+      await createPathPromise;
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
   }
 
@@ -88,9 +92,22 @@ class FilesystemService {
     try {
       const response = await axios.get<ArrayBuffer>(url, { responseType: 'arraybuffer' });
       const filePath = join(PUBLIC_DOWNLOADS_PATH, filename);
-      mkdirSync(dirname(filePath), { recursive: true });
-      writeFileSync(filePath, new Uint8Array(response.data));
-      const fileBuffer = readFileSync(filePath);
+
+      const createPathPromise = fsPromises.mkdir(dirname(filePath), { recursive: true });
+      try {
+        await createPathPromise;
+      } catch (error) {
+        throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
+      }
+
+      const writePromise = fsPromises.writeFile(filePath, new Uint8Array(response.data));
+      try {
+        await writePromise;
+      } catch (error) {
+        throw new CustomHttpException(CommonErrorMessages.FILE_WRITING_FAILED, HttpStatus.NOT_FOUND);
+      }
+
+      const fileBuffer = await fsPromises.readFile(filePath);
       const mimetype: string = (response.headers['content-type'] as string) || 'application/octet-stream';
 
       return {
@@ -132,7 +149,7 @@ class FilesystemService {
     client: AxiosInstance,
   ): Promise<WebdavStatusResponse> {
     const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
-    FilesystemService.ensureDirectoryExists(PUBLIC_DOWNLOADS_PATH);
+    await this.ensureDirectoryExists(PUBLIC_DOWNLOADS_PATH);
 
     try {
       const user = await this.userService.findOne(username);
@@ -154,11 +171,59 @@ class FilesystemService {
     }
   }
 
-  static checkIfFileExistAndDelete(filePath: string) {
-    if (existsSync(filePath)) {
-      unlinkSync(filePath);
-      Logger.log(`${filePath} deleted.`, FilesystemService.name);
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  async checkIfFileExistAndDelete(filePath: string) {
+    const existPromise = fsPromises.access(filePath);
+    try {
+      await existPromise;
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
+    const deletionPromise = fsPromises.unlink(filePath);
+    try {
+      await deletionPromise;
+      Logger.log(`${filePath} deleted.`, FilesystemService.name);
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  async readFile(filePath: string): Promise<Buffer<ArrayBufferLike>> {
+    return fsPromises.readFile(filePath);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  async writeFile(
+    path: string,
+    content:
+      | string
+      | NodeJS.ArrayBufferView
+      | Iterable<string | NodeJS.ArrayBufferView>
+      | AsyncIterable<string | NodeJS.ArrayBufferView>,
+  ): Promise<void> {
+    return fsPromises.writeFile(path, content);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  async deleteDirectories(directories: string[]): Promise<void> {
+    const deletionPromises = directories.map((directory) => fsPromises.rmdir(directory, { recursive: true }));
+    try {
+      await Promise.all(deletionPromises);
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  async createReadStream(filePath: string): Promise<Readable> {
+    const existPromise = fsPromises.access(filePath);
+    try {
+      await existPromise;
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+    return createReadStream(filePath);
   }
 }
 
