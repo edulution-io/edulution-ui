@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { useOnClickOutside } from 'usehooks-ts';
 import { useTranslation } from 'react-i18next';
 import { AppStoreIcon } from '@/assets/icons';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import { Card } from '@/components/shared/Card';
 import cn from '@libs/common/utils/className';
@@ -34,7 +34,7 @@ const emptyAppConfigOption = { id: APPS.NONE, icon: '', isNativeApp: false };
 
 const AppStorePage: React.FC = () => {
   const { t } = useTranslation();
-  const isMobileView = useIsMobileView();
+  const { isMobileView } = useMedia();
   const [selectedApp, setSelectedApp] = useState<AppConfigOption>(emptyAppConfigOption);
   const appFieldRef = useRef<HTMLDivElement>(null);
   const { appConfigs, error, isAddAppConfigDialogOpen, setIsAddAppConfigDialogOpen, createAppConfig } =

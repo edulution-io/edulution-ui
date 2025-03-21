@@ -14,7 +14,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import GROUPS_ID from '@libs/dashboard/constants/pageElementIds';
 import useUserStore from '@/store/UserStore/UserStore';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import Feed from '@/pages/Dashboard/Feed/Feed';
 import MobileFileAccessCard from './MobileFileAccess/MobileFileAccessCard';
 import AccountInformation from './AccountInformation';
@@ -24,7 +24,7 @@ import Groups from './Groups';
 const DashboardPage: React.FC = () => {
   const { t } = useTranslation();
 
-  const isMobileView = useIsMobileView();
+  const { isMobileView } = useMedia();
 
   const { user } = useUserStore();
 

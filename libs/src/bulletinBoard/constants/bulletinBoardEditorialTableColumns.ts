@@ -10,16 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import useMedia from '@/hooks/useMedia';
-import MobileButtonsBar from '@/components/shared/FloatingsButtonsBar/MobileButtonsBar';
-import DesktopButtonsBar from '@/components/shared/FloatingsButtonsBar/DesktopButtonsBar';
-import FloatingButtonsBarProps from '@libs/ui/types/FloatingButtons/floatingButtonsProps';
+const BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS = {
+  NAME: 'name',
+  CATEGORY: 'category',
+  IS_ACTIVE: 'isActive',
+  IS_VISIBLE_START_DATE: 'isVisibleStartDate',
+  IS_VISIBLE_END_DATE: 'isVisibleEndDate',
+} as const;
 
-const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
-  const { isMobileView } = useMedia();
-
-  return isMobileView ? <MobileButtonsBar {...props} /> : <DesktopButtonsBar {...props} />;
-};
-
-export default FloatingButtonsBar;
+export default BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS;
