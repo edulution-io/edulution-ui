@@ -99,7 +99,7 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
   }, []);
 
   const timeDisplay: string = fieldValue
-    ? (fieldValue as Date).toLocaleString(language, {
+    ? new Date(fieldValue).toLocaleString(language, {
         day: 'numeric',
         month: 'long',
         year: 'numeric',
