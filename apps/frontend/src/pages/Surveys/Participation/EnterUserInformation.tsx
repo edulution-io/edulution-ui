@@ -33,14 +33,15 @@ const EnterUserInformation = (props: EnterUserInformationProps) => {
   const formSchema: z.Schema = z.object({
     preferred_username: z
       .string({ required_error: 'username.required' })
-      .max(32, { message: 'login.username_too_long' }),
+      .min(8, { message: t('login.username_too_short') })
+      .max(32, { message: t('login.username_too_long') }),
     given_name: z.string().optional(),
     family_name: z.string().optional(),
     email: z.string().optional(),
   });
 
   const form = useForm({
-    mode: 'onSubmit',
+    mode: 'onChange',
     resolver: zodResolver(formSchema),
     defaultValues: {
       preferred_username: '',

@@ -49,7 +49,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
   }, [surveyId]);
 
   useEffect(() => {
-    if (!user) return;
+    if (user == null) return;
     updateUserInfo({
       preferred_username: user?.username,
       family_name: user?.lastName,

@@ -915,6 +915,7 @@
   "user": "User",
   "login": {
     "username_too_long": "Username to long",
+    "username_too_short": "Username to short",
     "password_too_long": "Password to long",
     "forgot_password": "Forgot password?",
     "remember_me": "Remember me",
