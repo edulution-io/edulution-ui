@@ -11,7 +11,7 @@
  */
 
 import React from 'react';
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, Row } from '@tanstack/react-table';
 import { MdFolder } from 'react-icons/md';
 import {
   formatBytes,
@@ -58,7 +58,7 @@ const renderFileIcon = (item: DirectoryFileDTO, isCurrentlyDisabled: boolean) =>
 
 const getFileSharingTableColumns = (
   visibleColumns?: string[],
-  onFilenameClick?: (item: DirectoryFileDTO) => void,
+  onFilenameClick?: (item: Row<DirectoryFileDTO>) => void,
 ): ColumnDef<DirectoryFileDTO>[] => {
   const allColumns: ColumnDef<DirectoryFileDTO>[] = [
     {
@@ -82,7 +82,7 @@ const getFileSharingTableColumns = (
         const isCurrentlyDisabled = currentlyDisabledFiles[row.original.basename];
         const handleFilenameClick = () => {
           if (onFilenameClick) {
-            onFilenameClick(row.original);
+            onFilenameClick(row);
             return;
           }
 
