@@ -16,12 +16,11 @@ import AppConfigController from './appconfig.controller';
 import AppConfigService from './appconfig.service';
 import { AppConfig, AppConfigSchema } from './appconfig.schema';
 import MigrationService from '../migration/migration.service';
-import FilesystemService from '../filesystem/filesystem.service';
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: AppConfig.name, schema: AppConfigSchema }])],
   controllers: [AppConfigController],
-  providers: [AppConfigService, MigrationService, FilesystemService],
+  providers: [AppConfigService, MigrationService],
   exports: [AppConfigService],
 })
 export default class AppConfigModule {}

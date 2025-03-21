@@ -27,8 +27,9 @@ import FilesystemService from '../filesystem/filesystem.service';
     MongooseModule.forFeature([{ name: Survey.name, schema: SurveySchema }]),
     MongooseModule.forFeature([{ name: SurveyAnswer.name, schema: SurveyAnswerSchema }]),
     GroupsModule,
+    FilesystemService,
   ],
   controllers: [SurveysController, PublicSurveysController],
-  providers: [SurveysService, SurveyAnswersService, SseService, FilesystemService],
+  providers: [SurveysService, SurveyAnswersService, SseService],
 })
 export default class SurveysModule {}

@@ -10,6 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+/* eslint-disable @typescript-eslint/class-methods-use-this */
 import { createWriteStream, createReadStream, promises as fsPromises } from 'fs';
 import process from 'node:process';
 import { promisify } from 'util';
@@ -51,20 +52,12 @@ class FilesystemService {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async ensureDirectoryExists(directory: string): Promise<void> {
-    const existPromise = fsPromises.access(directory);
     try {
-      await existPromise;
-      return;
+      await fsPromises.access(directory);
+      await fsPromises.mkdir(directory, { recursive: true });
     } catch (error) {
-      // Directory does not exist
-    }
-    const createPathPromise = fsPromises.mkdir(directory, { recursive: true });
-    try {
-      await createPathPromise;
-    } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(CommonErrorMessages.DIRECTORY_CREATION_FAILED, HttpStatus.NOT_FOUND);
     }
   }
 
@@ -93,16 +86,14 @@ class FilesystemService {
       const response = await axios.get<ArrayBuffer>(url, { responseType: 'arraybuffer' });
       const filePath = join(PUBLIC_DOWNLOADS_PATH, filename);
 
-      const createPathPromise = fsPromises.mkdir(dirname(filePath), { recursive: true });
       try {
-        await createPathPromise;
+        await fsPromises.mkdir(dirname(filePath), { recursive: true });
       } catch (error) {
-        throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
+        throw new CustomHttpException(CommonErrorMessages.DIRECTORY_CREATION_FAILED, HttpStatus.NOT_FOUND);
       }
 
-      const writePromise = fsPromises.writeFile(filePath, new Uint8Array(response.data));
       try {
-        await writePromise;
+        await fsPromises.writeFile(filePath, new Uint8Array(response.data));
       } catch (error) {
         throw new CustomHttpException(CommonErrorMessages.FILE_WRITING_FAILED, HttpStatus.NOT_FOUND);
       }
@@ -171,55 +162,32 @@ class FilesystemService {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  async checkIfFileExistAndDelete(filePath: string) {
-    const existPromise = fsPromises.access(filePath);
+  static async checkIfFileExistAndDelete(filePath: string) {
     try {
-      await existPromise;
+      await fsPromises.access(filePath);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
-    const deletionPromise = fsPromises.unlink(filePath);
     try {
-      await deletionPromise;
+      await fsPromises.unlink(filePath);
       Logger.log(`${filePath} deleted.`, FilesystemService.name);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  async readFile(filePath: string): Promise<Buffer<ArrayBufferLike>> {
-    return fsPromises.readFile(filePath);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  async writeFile(
-    path: string,
-    content:
-      | string
-      | NodeJS.ArrayBufferView
-      | Iterable<string | NodeJS.ArrayBufferView>
-      | AsyncIterable<string | NodeJS.ArrayBufferView>,
-  ): Promise<void> {
-    return fsPromises.writeFile(path, content);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async deleteDirectories(directories: string[]): Promise<void> {
-    const deletionPromises = directories.map((directory) => fsPromises.rmdir(directory, { recursive: true }));
     try {
+      const deletionPromises = directories.map((directory) => fsPromises.rmdir(directory, { recursive: true }));
       await Promise.all(deletionPromises);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async createReadStream(filePath: string): Promise<Readable> {
-    const existPromise = fsPromises.access(filePath);
     try {
-      await existPromise;
+      await fsPromises.access(filePath);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
     }

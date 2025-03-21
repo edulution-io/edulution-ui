@@ -74,13 +74,13 @@ describe('AppConfigController', () => {
   });
 
   describe('getConfigFile', () => {
-    it('should return base64 string from AppConfigService', async () => {
+    it('should return base64 string from AppConfigService', () => {
       const filePath = 'test/path/to/file.txt';
       const base64Content = 'dGVzdCBmaWxlIGNvbnRlbnQ=';
 
-      jest.spyOn(service, 'getFileAsBase64').mockReturnValue(Promise.resolve(base64Content));
+      jest.spyOn(service, 'getFileAsBase64').mockReturnValue(base64Content);
 
-      const result = await controller.getConfigFile(filePath);
+      const result = controller.getConfigFile(filePath);
 
       expect(service.getFileAsBase64).toHaveBeenCalledWith(filePath);
       expect(result).toEqual(base64Content);
@@ -93,8 +93,8 @@ describe('AppConfigController', () => {
         throw new Error('File not found');
       });
 
-      expect(async () => {
-        await controller.getConfigFile(filePath);
+      expect(() => {
+        controller.getConfigFile(filePath);
       }).toThrow('File not found');
     });
   });

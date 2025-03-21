@@ -39,6 +39,8 @@ import {
 } from './mocks';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
+import FilesystemService from '../filesystem/filesystem.service';
+import mockFilesystemService from '../filesystem/filesystem.service.mock';
 
 describe(PublicSurveysController.name, () => {
   let controller: PublicSurveysController;
@@ -63,6 +65,7 @@ describe(PublicSurveysController.name, () => {
           provide: getModelToken(SurveyAnswer.name),
           useValue: jest.fn(),
         },
+        { provide: FilesystemService, useValue: mockFilesystemService },
       ],
     }).compile();
 

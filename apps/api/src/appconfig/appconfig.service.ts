@@ -14,6 +14,7 @@ import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/com
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Connection, Model } from 'mongoose';
+import { readFileSync, writeFileSync } from 'fs';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
@@ -32,7 +33,6 @@ class AppConfigService implements OnModuleInit {
   constructor(
     @InjectConnection() private readonly connection: Connection,
     @InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>,
-    private fileSystemService: FilesystemService,
     private eventEmitter: EventEmitter2,
   ) {}
 
@@ -40,22 +40,6 @@ class AppConfigService implements OnModuleInit {
     await initializeCollection(this.connection, this.appConfigModel);
 
     await MigrationService.runMigrations<AppConfig>(this.appConfigModel, appConfigMigrationsList);
-  }
-
-  async writeProxyConfigFile(appConfigDto: AppConfigDto) {
-    if (appConfigDto?.options?.proxyConfig) {
-      const { proxyConfig } = appConfigDto.options;
-      if (proxyConfig !== '' && proxyConfig !== '""') {
-        await this.fileSystemService.writeFile(
-          `${TRAEFIK_CONFIG_FILES_PATH}/${appConfigDto?.name}.yml`,
-          JSON.parse(appConfigDto?.options?.proxyConfig) as string,
-        );
-      } else {
-        const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appConfigDto?.name}.yml`;
-
-        await this.fileSystemService.checkIfFileExistAndDelete(filePath);
-      }
-    }
   }
 
   async insertConfig(appConfigDto: AppConfigDto, ldapGroups: string[]) {
@@ -70,7 +54,7 @@ class AppConfigService implements OnModuleInit {
         AppConfigService.name,
       );
     } finally {
-      await this.writeProxyConfigFile(appConfigDto);
+      await AppConfigService.writeProxyConfigFile(appConfigDto);
       this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
     }
   }
@@ -99,7 +83,7 @@ class AppConfigService implements OnModuleInit {
         AppConfigService.name,
       );
     } finally {
-      await this.writeProxyConfigFile(appConfigDto);
+      await AppConfigService.writeProxyConfigFile(appConfigDto);
       this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
     }
   }
@@ -117,6 +101,22 @@ class AppConfigService implements OnModuleInit {
       );
     } finally {
       this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
+    }
+  }
+
+  static async writeProxyConfigFile(appConfigDto: AppConfigDto) {
+    if (appConfigDto?.options?.proxyConfig) {
+      const { proxyConfig } = appConfigDto.options;
+      if (proxyConfig !== '' && proxyConfig !== '""') {
+        writeFileSync(
+          `${TRAEFIK_CONFIG_FILES_PATH}/${appConfigDto?.name}.yml`,
+          JSON.parse(appConfigDto?.options?.proxyConfig) as string,
+        );
+      } else {
+        const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appConfigDto?.name}.yml`;
+
+        await FilesystemService.checkIfFileExistAndDelete(filePath);
+      }
     }
   }
 
@@ -181,16 +181,18 @@ class AppConfigService implements OnModuleInit {
     } finally {
       const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${configName}.yml`;
 
-      await this.fileSystemService.checkIfFileExistAndDelete(filePath);
+      await FilesystemService.checkIfFileExistAndDelete(filePath);
 
       this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
     }
   }
 
-  async writeConfigFile(appName: string, content: string) {
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  writeConfigFile(appName: string, content: string) {
     try {
       const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appName}.yml`;
-      await this.fileSystemService.writeFile(filePath, JSON.parse(content) as string);
+
+      writeFileSync(filePath, JSON.parse(content) as string);
     } catch (error) {
       throw new CustomHttpException(
         AppConfigErrorMessages.WriteTraefikConfigFailed,
@@ -201,9 +203,10 @@ class AppConfigService implements OnModuleInit {
     }
   }
 
-  async getFileAsBase64(filePath: string): Promise<string> {
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  getFileAsBase64(filePath: string): string {
     try {
-      const fileBuffer = await this.fileSystemService.readFile(filePath);
+      const fileBuffer = readFileSync(filePath);
       return fileBuffer.toString('base64');
     } catch (error) {
       throw new CustomHttpException(

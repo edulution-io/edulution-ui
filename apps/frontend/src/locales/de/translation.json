@@ -922,8 +922,9 @@
     "errors": {
       "attachmentUploadFailed": "Anhang konnte nicht hochgeladen werden",
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
-      "fileDeletionFailed": "Die Datei konnte nicht gelöscht werden",
-      "fileWritingFailed": "Die Datei konnte nicht geschrieben/beschrieben werden",
+      "directoryNotCreated": "Erstellen des Verzeichnisses fehlgeschlagen",
+      "fileDeletionFailed": "Löschen der Datei fehlgeschlagen",
+      "fileWritingFailed": "Schreiben der Datei fehlgeschlagen",
       "fileNotFound": "Datei nicht gefunden",
       "fileNotProvided": "Datei wurde nicht bereitgestellt",
       "invalidFileType": "Ungültiger Dateityp",

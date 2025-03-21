@@ -921,6 +921,7 @@
     "errors": {
       "attachmentUploadFailed": "Failed to upload attachment",
       "dbAccessFailed": "Database access failed",
+      "directoryNotCreated": "Failed to create directory",
       "fileDeletionFailed": "Failed to delete the file",
       "fileWritingFailed": "Failed to write the file",
       "fileNotFound": "File not found",
