@@ -15,7 +15,7 @@ import i18next from 'i18next';
 import { format } from 'date-fns';
 import { ColumnDef } from '@tanstack/react-table';
 import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
-import sortDate from '@libs/common/utils/sortDate';
+import sortDate from '@libs/common/utils/Date/sortDate';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import sortSurveyByTitle from '@libs/survey/utils/sortSurveyByTitle';
 import sortSurveyByInvitesAndParticipation from '@libs/survey/utils/sortSurveyByInvitesAndParticipation';

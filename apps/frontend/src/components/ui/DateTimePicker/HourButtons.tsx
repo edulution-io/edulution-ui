@@ -12,7 +12,7 @@
 
 import React, { useCallback } from 'react';
 import cn from '@libs/common/utils/className';
-import { DropdownVariant } from '@libs/ui/types/DropdownVariant';
+import DropdownVariant from '@libs/ui/types/DropdownVariant';
 import { Button } from '@/components/shared/Button';
 
 interface HourButtonProps {

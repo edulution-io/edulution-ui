@@ -10,11 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-function sortDate(a: Date | null | undefined, b: Date | null | undefined): number {
+const sortDate = (a: Date | null | undefined, b: Date | null | undefined): number => {
   if (b == null) return !a ? 0 : 1;
   if (a == null) return -1;
   if (a === b) return 0;
   return a < b ? -1 : 1;
-}
+};
 
 export default sortDate;

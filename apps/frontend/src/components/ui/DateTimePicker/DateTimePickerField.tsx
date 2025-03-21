@@ -19,7 +19,7 @@ import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { HiTrash } from 'react-icons/hi2';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import { INPUT_DEFAULT, INPUT_VARIANT_DEFAULT, INPUT_VARIANT_DIALOG } from '@libs/ui/constants/commonClassNames';
-import { DropdownVariant } from '@libs/ui/types/DropdownVariant';
+import DropdownVariant from '@libs/ui/types/DropdownVariant';
 import cn from '@libs/common/utils/className';
 import safeGetHours from '@libs/common/utils/Date/safeGetHours';
 import safeGetMinutes from '@libs/common/utils/Date/safeGetMinutes';
