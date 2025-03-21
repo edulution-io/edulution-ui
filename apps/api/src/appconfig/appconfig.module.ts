@@ -21,7 +21,7 @@ import FilesystemService from '../filesystem/filesystem.service';
 @Module({
   imports: [MongooseModule.forFeature([{ name: AppConfig.name, schema: AppConfigSchema }])],
   controllers: [AppConfigController],
-  providers: [AppConfigService, MigrationService],
-  exports: [AppConfigService, FilesystemService],
+  providers: [AppConfigService, MigrationService, FilesystemService],
+  exports: [AppConfigService],
 })
 export default class AppConfigModule {}
