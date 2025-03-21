@@ -65,7 +65,6 @@ describe(SurveysController.name, () => {
   let surveyAnswerService: SurveyAnswersService;
   let surveyModel: Model<SurveyDocument>;
   let surveyAnswerModel: Model<SurveyAnswerDocument>;
-  // let fileSystemService: FilesystemService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -92,7 +91,6 @@ describe(SurveysController.name, () => {
     surveyAnswerService = module.get<SurveyAnswersService>(SurveyAnswersService);
     surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
     surveyAnswerModel = module.get<Model<SurveyAnswerDocument>>(getModelToken(SurveyAnswer.name));
-    // fileSystemService = module.get<FilesystemService>(FilesystemService);
   });
 
   afterEach(() => {
@@ -249,8 +247,6 @@ describe(SurveysController.name, () => {
       jest.spyOn(surveyService, 'deleteSurveys');
       jest.spyOn(surveyAnswerService, 'onSurveyRemoval');
 
-      // fileSystemService.deleteDirectories = jest.fn().mockImplementation( () => Promise.resolve() );
-
       surveyService.onSurveyRemoval = jest.fn().mockImplementation(() => {});
       surveyModel.deleteMany = jest.fn().mockResolvedValueOnce(true);
       surveyAnswerModel.deleteMany = jest.fn().mockReturnValue(true);
@@ -269,8 +265,6 @@ describe(SurveysController.name, () => {
     it('it should not remove the survey answers if the survey deletion failed', async () => {
       jest.spyOn(surveyService, 'deleteSurveys');
       jest.spyOn(surveyAnswerService, 'onSurveyRemoval');
-
-      // fileSystemService.deleteDirectories = jest.fn().mockImplementation( () => Promise.resolve() );
 
       surveyModel.deleteMany = jest
         .fn()
