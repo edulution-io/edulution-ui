@@ -74,7 +74,7 @@ class SurveysService implements OnModuleInit {
     try {
       return await this.surveyModel.findOne<Survey>({ _id: new Types.ObjectId(surveyId), isPublic: true }).exec();
     } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.INTERNAL_SERVER_ERROR, error);
     }
   }
 
@@ -90,13 +90,17 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  onSurveyRemoval(surveyIds: string[]): void {
-    const deleteAttachments = surveyIds.map((id) => this.attachmentService.clearPersistent(id));
-    try {
-      void Promise.all(deleteAttachments);
-    } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.ATTACHMENT_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+  // onSurveyRemoval(surveyIds: string[]): void {
+  //   const deleteAttachments = surveyIds.map((id) => this.attachmentService.clearPersistent(id));
+  //   try {
+  //     void Promise.all(deleteAttachments);
+  //   } catch (error) {
+  //     throw new CustomHttpException(CommonErrorMessages.ATTACHMENT_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+  //   }
+  // }
+  async onSurveyRemoval(surveyIds: string[]): Promise<void> {
+    const imageDirectories = surveyIds.map((surveyId) => join(SURVEYS_IMAGES_PATH, surveyId));
+    await this.fileSystemService.deleteDirectories(imageDirectories);
   }
 
   async updateSurvey(
@@ -119,7 +123,7 @@ class SurveysService implements OnModuleInit {
         .findOneAndUpdate<Survey>({ _id: new Types.ObjectId(survey.id) }, survey, { new: true })
         .lean();
     } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {
       if (survey.isPublic) {
         SseService.informAllUsers(surveysSseConnections, survey, SSE_MESSAGE_TYPE.UPDATED);
@@ -154,7 +158,7 @@ class SurveysService implements OnModuleInit {
     try {
       return await this.surveyModel.create({ ...survey, creator });
     } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {
       if (survey.isPublic) {
         SseService.informAllUsers(surveysSseConnections, survey, SSE_MESSAGE_TYPE.CREATED);
@@ -168,16 +172,19 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  async handleUpdateOrCreateSurvey(
-    surveyDto: SurveyDto,
-    currentUser: JwtUser,
-    surveysSseConnections: UserConnections,
-  ): Promise<SurveyDocument | null> {
-    const updatedSurvey = await this.updateSurvey(surveyDto, currentUser, surveysSseConnections);
-    if (updatedSurvey !== null) {
-      return updatedSurvey;
-    }
-    return this.createSurvey(surveyDto, currentUser, surveysSseConnections);
+  static getImagePath(surveyId: string, questionId: string, fileName: string): string {
+    return join(SURVEYS_IMAGES_PATH, surveyId, questionId, fileName);
+  }
+
+  static getImageUrl(surveyId: string, questionId: string, fileName: string): string {
+    return join(PUBLIC_SURVEYS, IMAGES, surveyId, questionId, fileName);
+  }
+
+  async serveImage(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
+    const imagePath = SurveysService.getImagePath(surveyId, questionId, fileName);
+    const fileStream = await this.fileSystemService.createReadStream(imagePath);
+    fileStream.pipe(res);
+    return res;
   }
 
   async updateOrCreateSurvey(
@@ -185,8 +192,12 @@ class SurveysService implements OnModuleInit {
     user: JwtUser,
     baseUrl: string,
     surveysSseConnections: UserConnections,
-  ) {
-    const survey = await this.handleUpdateOrCreateSurvey(surveyDto, user, surveysSseConnections);
+  ): Promise<SurveyDocument | null> {
+    let survey: SurveyDocument | null;
+    survey = await this.updateSurvey(surveyDto, user, surveysSseConnections);
+    if (survey == null) {
+      survey = await this.createSurvey(surveyDto, user, surveysSseConnections);
+    }
     if (survey == null) {
       return null;
     }
@@ -195,7 +206,6 @@ class SurveysService implements OnModuleInit {
     if (FileNames.length === 0) {
       return survey;
     }
-
     const updateElement = (element: SurveyElement) => {
       if (element.type === 'image') {
         if (!element.imageLink) {
@@ -231,6 +241,16 @@ class SurveysService implements OnModuleInit {
     this.attachmentService.clearTEMP(user.preferred_username);
 
     return surveyWithUpdatedImageLinks;
+  }
+
+  static checkImageFile(file: Express.Multer.File): string {
+    if (!file) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
+    }
+    if (!IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+      throw new CustomHttpException(CommonErrorMessages.ATTACHMENT_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
+    }
+    return file.filename;
   }
 
   getTemporaryImageUrl = (userId: string, fileName: string): string =>

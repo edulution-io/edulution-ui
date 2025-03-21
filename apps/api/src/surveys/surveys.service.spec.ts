@@ -21,12 +21,13 @@ import { surveyUpdateInitialSurveyDto } from './mocks/surveys/updated-survey';
 import UserConnections from '../types/userConnections';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
+import FilesystemService from '../filesystem/filesystem.service';
+import mockFilesystemService from '../filesystem/filesystem.service.mock';
 
 const mockSseConnections: UserConnections = new Map();
 
 describe('SurveyService', () => {
   let service: SurveysService;
-  // let surveyModel: Model<SurveyDocument>;
 
   beforeEach(async () => {
     Logger.error = jest.fn();
@@ -39,11 +40,11 @@ describe('SurveyService', () => {
           useValue: jest.fn(),
         },
         { provide: GroupsService, useValue: mockGroupsService },
+        { provide: FilesystemService, useValue: mockFilesystemService },
       ],
     }).compile();
 
     service = module.get<SurveysService>(SurveysService);
-    // surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
   });
 
   afterEach(() => {

@@ -10,16 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum CommonErrorMessages {
-  ATTACHMENT_UPLOAD_FAILED = 'common.errors.attachmentUploadFailed',
-  ATTACHMENT_DELETION_FAILED = 'common.errors.attachmentDeletionFailed',
-  DB_ACCESS_FAILED = 'common.errors.dbAccessFailed',
-  DIRECTORY_CREATION_FAILED = 'common.errors.directoryNotCreated',
-  FILE_DELETION_FAILED = 'common.errors.fileDeletionFailed',
-  FILE_WRITING_FAILED = 'common.errors.fileWritingFailed',
-  FILE_NOT_FOUND = 'common.errors.fileNotFound',
-  FILE_NOT_PROVIDED = 'common.errors.fileNotProvided',
-  INVALID_FILE_TYPE = 'common.errors.invalidFileType',
-}
+const mockFilesystemService = {
+  fetchFileStream: jest.fn().mockResolvedValue({ stream: { pipe: jest.fn() } }),
+  ensureDirectoryExists: jest.fn(),
+  generateHashedFilename: jest.fn(),
+  saveFileStream: jest.fn(),
+  getOutputFilePath: jest.fn(),
+  retrieveAndSaveFile: jest.fn(),
+  deleteFile: jest.fn(),
+  fileLocation: jest.fn(),
+  checkIfFileExistAndDelete: jest.fn(),
+  readFile: jest.fn(),
+  writeFile: jest.fn(),
+  deleteDirectories: jest.fn(),
+  createReadStream: jest.fn(),
+};
 
-export default CommonErrorMessages;
+export default mockFilesystemService;

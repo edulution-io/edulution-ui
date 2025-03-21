@@ -54,6 +54,8 @@ import {
 import UserConnections from '../types/userConnections';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
+import FilesystemService from '../filesystem/filesystem.service';
+import mockFilesystemService from '../filesystem/filesystem.service.mock';
 
 const mockSseConnections: UserConnections = new Map();
 
@@ -80,6 +82,7 @@ describe(SurveysController.name, () => {
           provide: getModelToken(SurveyAnswer.name),
           useValue: jest.fn(),
         },
+        { provide: FilesystemService, useValue: mockFilesystemService },
       ],
     }).compile();
 
