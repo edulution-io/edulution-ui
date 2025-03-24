@@ -51,7 +51,6 @@ class PublicSurveysController {
 
   @Get(`${IMAGES}/:surveyId/:questionId/:filename`)
   @Public()
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   getPermanentImage(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
     const { surveyId, questionId, filename } = params;
     return this.surveyService.servePermanentImage(surveyId, questionId, filename, res);
