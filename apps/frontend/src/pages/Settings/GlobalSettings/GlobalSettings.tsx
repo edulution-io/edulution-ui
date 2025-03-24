@@ -66,45 +66,47 @@ const GlobalSettings: React.FC = () => {
   };
 
   return (
-    <AccordionSH
-      type="multiple"
-      defaultValue={['security']}
-    >
-      <AccordionItem value="security">
-        <AccordionTrigger className="flex text-h4">
-          <h4>{t('settings.globalSettings.security')}</h4>
-        </AccordionTrigger>
-        <AccordionContent
-          style={{ overflow: 'visible' }}
-          className="space-y-2 px-1"
-        >
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <FormFieldSH
-                control={form.control}
-                name="mfaEnforcedGroups"
-                render={() => (
-                  <FormItem>
-                    <p className="font-bold">{t(`permission.groups`)}</p>
-                    <FormControl>
-                      <AsyncMultiSelect<MultipleSelectorGroup>
-                        value={form.getValues('mfaEnforcedGroups')}
-                        onSearch={searchGroups}
-                        onChange={(groups) => handleGroupsChange(groups)}
-                        placeholder={t('search.type-to-search')}
-                      />
-                    </FormControl>
-                    <p className="text-background">{t(`permission.selectGroupsDescription`)}</p>
-                    <FormMessage className="text-p" />
-                  </FormItem>
-                )}
-              />
-              <GlobalSettingsFloatingButtons handleSave={form.handleSubmit(onSubmit)} />
-            </form>
-          </Form>
-        </AccordionContent>
-      </AccordionItem>
-    </AccordionSH>
+    <>
+      <AccordionSH
+        type="multiple"
+        defaultValue={['security']}
+      >
+        <AccordionItem value="security">
+          <AccordionTrigger className="flex text-h4">
+            <h4>{t('settings.globalSettings.security')}</h4>
+          </AccordionTrigger>
+          <AccordionContent
+            style={{ overflow: 'visible' }}
+            className="space-y-2 px-1"
+          >
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
+                <FormFieldSH
+                  control={form.control}
+                  name="mfaEnforcedGroups"
+                  render={() => (
+                    <FormItem>
+                      <p className="font-bold">{t(`permission.groups`)}</p>
+                      <FormControl>
+                        <AsyncMultiSelect<MultipleSelectorGroup>
+                          value={form.getValues('mfaEnforcedGroups')}
+                          onSearch={searchGroups}
+                          onChange={(groups) => handleGroupsChange(groups)}
+                          placeholder={t('search.type-to-search')}
+                        />
+                      </FormControl>
+                      <p className="text-background">{t(`permission.selectGroupsDescription`)}</p>
+                      <FormMessage className="text-p" />
+                    </FormItem>
+                  )}
+                />
+              </form>
+            </Form>
+          </AccordionContent>
+        </AccordionItem>
+      </AccordionSH>
+      <GlobalSettingsFloatingButtons handleSave={form.handleSubmit(onSubmit)} />
+    </>
   );
 };
 
