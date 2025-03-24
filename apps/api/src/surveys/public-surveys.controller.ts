@@ -43,7 +43,6 @@ class PublicSurveysController {
 
   @Get(`${IMAGES}/TEMP/:userId/:filename`)
   @Public()
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   getTemporaryImage(@Param() params: { userId: string; filename: string }, @Res() res: Response) {
     const { userId, filename } = params;
     return this.surveyService.serveTemporaryImage(userId, filename, res);
