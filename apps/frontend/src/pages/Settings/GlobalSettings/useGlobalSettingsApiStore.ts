@@ -20,7 +20,7 @@ type GlobalSettingsStore = {
   isGetGlobalSettingsLoading: boolean;
   mfaEnforcedGroups: MultipleSelectorGroup[];
   reset: () => void;
-  getGlobalSettings: () => Promise<void>;
+  getGlobalSettings: () => Promise<MultipleSelectorGroup[]>;
   setGlobalSettings: (settingsDto: { mfaEnforcedGroups: MultipleSelectorGroup[] }) => Promise<void>;
 };
 
@@ -35,12 +35,13 @@ const useGlobalSettingsApiStore = create<GlobalSettingsStore>((set) => ({
 
   getGlobalSettings: async () => {
     set({ isGetGlobalSettingsLoading: true });
-
     try {
       const { data } = await eduApi.get<{ auth: { mfaEnforcedGroups: MultipleSelectorGroup[] } }>('global-settings');
       set({ mfaEnforcedGroups: data.auth.mfaEnforcedGroups });
+      return data.auth.mfaEnforcedGroups;
     } catch (error) {
       handleApiError(error, set);
+      return [];
     } finally {
       set({ isGetGlobalSettingsLoading: false });
     }

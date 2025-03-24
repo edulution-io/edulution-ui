@@ -21,10 +21,13 @@ import UserDto from '@libs/user/types/user.dto';
 const initialState = {
   totpError: null,
   totpIsLoading: false,
+  isSetTotpDialogOpen: false,
 };
 
 const createTotpSlice: StateCreator<UserStore, [], [], TotpSlice> = (set) => ({
   ...initialState,
+
+  setIsSetTotpDialogOpen: (isSetTotpDialogOpen) => set({ isSetTotpDialogOpen }),
 
   setupTotp: async (totp, secret) => {
     set({ totpIsLoading: true });
