@@ -27,6 +27,7 @@ import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
+import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
 import UsersService from '../users/users.service';
@@ -176,6 +177,14 @@ class FilesystemService {
     }
   }
 
+  async deleteDirectory(directory: string): Promise<void> {
+    try {
+      await fsPromises.rmdir(directory, { recursive: true });
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   async deleteDirectories(directories: string[]): Promise<void> {
     try {
       const deletionPromises = directories.map((directory) => fsPromises.rmdir(directory, { recursive: true }));
@@ -192,6 +201,16 @@ class FilesystemService {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
     return createReadStream(filePath);
+  }
+
+  static checkImageFile(file: Express.Multer.File): string {
+    if (!file) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
+    }
+    if (!IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+      throw new CustomHttpException(CommonErrorMessages.ATTACHMENT_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
+    }
+    return file.filename;
   }
 }
 

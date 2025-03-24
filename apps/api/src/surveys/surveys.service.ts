@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Response } from 'express';
+import { join } from 'path';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
@@ -31,18 +31,21 @@ import surveysMigrationsList from './migrations/surveysMigrationsList';
 import MigrationService from '../migration/migration.service';
 import type UserConnections from '../types/userConnections';
 import { Survey, SurveyDocument } from './survey.schema';
-import AttachmentService from '../common/file-attachment/attachement.service';
+import AttachmentService from '../common/file-attachment/attachment.service';
+import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
 class SurveysService implements OnModuleInit {
-  private attachmentService = new AttachmentService(SURVEYS_IMAGES_DOMAIN, SURVEYS_IMAGES_PATH);
+  private attachmentService: AttachmentService;
 
   constructor(
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
+    private readonly fileSystemService: FilesystemService,
     private readonly groupsService: GroupsService,
   ) {}
 
   async onModuleInit() {
+    this.attachmentService = new AttachmentService(SURVEYS_IMAGES_DOMAIN, SURVEYS_IMAGES_PATH, this.fileSystemService);
     await MigrationService.runMigrations<SurveyDocument>(this.surveyModel, surveysMigrationsList);
   }
 
@@ -90,14 +93,6 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  // onSurveyRemoval(surveyIds: string[]): void {
-  //   const deleteAttachments = surveyIds.map((id) => this.attachmentService.clearPersistent(id));
-  //   try {
-  //     void Promise.all(deleteAttachments);
-  //   } catch (error) {
-  //     throw new CustomHttpException(CommonErrorMessages.ATTACHMENT_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
-  //   }
-  // }
   async onSurveyRemoval(surveyIds: string[]): Promise<void> {
     const imageDirectories = surveyIds.map((surveyId) => join(SURVEYS_IMAGES_PATH, surveyId));
     await this.fileSystemService.deleteDirectories(imageDirectories);
@@ -172,21 +167,6 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  static getImagePath(surveyId: string, questionId: string, fileName: string): string {
-    return join(SURVEYS_IMAGES_PATH, surveyId, questionId, fileName);
-  }
-
-  static getImageUrl(surveyId: string, questionId: string, fileName: string): string {
-    return join(PUBLIC_SURVEYS, IMAGES, surveyId, questionId, fileName);
-  }
-
-  async serveImage(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
-    const imagePath = SurveysService.getImagePath(surveyId, questionId, fileName);
-    const fileStream = await this.fileSystemService.createReadStream(imagePath);
-    fileStream.pipe(res);
-    return res;
-  }
-
   async updateOrCreateSurvey(
     surveyDto: SurveyDto,
     user: JwtUser,
@@ -242,25 +222,6 @@ class SurveysService implements OnModuleInit {
 
     return surveyWithUpdatedImageLinks;
   }
-
-  static checkImageFile(file: Express.Multer.File): string {
-    if (!file) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
-    }
-    if (!IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      throw new CustomHttpException(CommonErrorMessages.ATTACHMENT_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
-    }
-    return file.filename;
-  }
-
-  getTemporaryImageUrl = (userId: string, fileName: string): string =>
-    this.attachmentService.getTemporaryAttachmentUrl(userId, fileName);
-
-  serveTemporaryImage = (userId: string, fileName: string, res: Response) =>
-    this.attachmentService.serveTemporaryAttachment(userId, fileName, res);
-
-  servePermanentImage = (surveyId: string, questionId: string, fileName: string, res: Response) =>
-    this.attachmentService.servePersistentAttachment(`${surveyId}/${questionId}`, fileName, res);
 }
 
 export default SurveysService;

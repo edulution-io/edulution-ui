@@ -10,11 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { createReadStream, existsSync, mkdirSync, readdirSync, renameSync, rmdirSync } from 'fs';
+import { existsSync, mkdirSync, readdirSync, renameSync } from 'fs';
 import { Response } from 'express';
-import { HttpStatus, Injectable } from '@nestjs/common';
-import CustomHttpException from '@libs/error/CustomHttpException';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import { Injectable } from '@nestjs/common';
+import FilesystemService from '../../filesystem/filesystem.service';
 
 @Injectable()
 class AttachmentService {
@@ -22,7 +21,11 @@ class AttachmentService {
 
   filePath: string;
 
-  constructor(domain: string, filePath: string) {
+  constructor(
+    domain: string,
+    filePath: string,
+    private fileSystemService: FilesystemService,
+  ) {
     this.domain = domain;
     this.filePath = filePath;
   }
@@ -42,36 +45,26 @@ class AttachmentService {
   getPersistentAttachmentPath = (pathWithIds: string, fileName: string): string =>
     `${this.filePath}/${pathWithIds}/${fileName}`;
 
-  clearTEMP(userId: string) {
+  async clearTEMP(userId: string) {
     const destination = this.getTemporaryDirectory(userId);
-    if (existsSync(destination)) {
-      rmdirSync(destination, { recursive: true, maxRetries: 3, retryDelay: 100 });
-    }
+    await this.fileSystemService.deleteDirectory(destination);
   }
 
-  clearPersistent(pathWithIds: string) {
+  async clearPersistent(pathWithIds: string) {
     const destination = this.getPersistentDirectory(pathWithIds);
-    if (existsSync(destination)) {
-      rmdirSync(destination, { recursive: true, maxRetries: 3, retryDelay: 100 });
-    }
+    await this.fileSystemService.deleteDirectory(destination);
   }
 
-  servePersistentAttachment(pathWithIds: string, fileName: string, res: Response) {
+  async servePersistentAttachment(pathWithIds: string, fileName: string, res: Response) {
     const filePath = this.getPersistentAttachmentPath(pathWithIds, fileName);
-    if (!existsSync(filePath)) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
-    }
-    const fileStream = createReadStream(filePath);
+    const fileStream = await this.fileSystemService.createReadStream(filePath);
     fileStream.pipe(res);
     return res;
   }
 
-  serveTemporaryAttachment(userId: string, fileName: string, res: Response) {
+  async serveTemporaryAttachment(userId: string, fileName: string, res: Response) {
     const filePath = this.getTemporaryAttachmentPath(userId, fileName);
-    if (!existsSync(filePath)) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
-    }
-    const fileStream = createReadStream(filePath);
+    const fileStream = await this.fileSystemService.createReadStream(filePath);
     fileStream.pipe(res);
     return res;
   }
