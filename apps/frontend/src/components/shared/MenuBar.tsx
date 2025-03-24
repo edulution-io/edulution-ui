@@ -17,7 +17,7 @@ import { MenubarMenu, MenubarTrigger, VerticalMenubar } from '@/components/ui/Me
 import cn from '@libs/common/utils/className';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useOnClickOutside, useToggle } from 'usehooks-ts';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import { getFromPathName } from '@libs/common/utils';
 import APPS from '@libs/appconfig/constants/apps';
 
@@ -28,7 +28,7 @@ const MenuBar: React.FC = () => {
   const menuBarEntries = useMenuBarConfig();
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
-  const isMobileView = useIsMobileView();
+  const { isMobileView } = useMedia();
 
   const navigate = useNavigate();
 

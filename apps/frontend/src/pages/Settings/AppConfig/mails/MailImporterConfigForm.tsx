@@ -76,7 +76,7 @@ const MailImporterConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
               <p>{t(field.name)}</p>
               <FormControl>
                 <Input
-                  placeholder="993"
+                  placeholder={t('mail.portPlaceholder')}
                   {...field}
                 />
               </FormControl>

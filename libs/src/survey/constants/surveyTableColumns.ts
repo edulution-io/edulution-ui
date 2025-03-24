@@ -10,16 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import useMedia from '@/hooks/useMedia';
-import MobileButtonsBar from '@/components/shared/FloatingsButtonsBar/MobileButtonsBar';
-import DesktopButtonsBar from '@/components/shared/FloatingsButtonsBar/DesktopButtonsBar';
-import FloatingButtonsBarProps from '@libs/ui/types/FloatingButtons/floatingButtonsProps';
+const SURVEY_TABLE_COLUMNS = {
+  SELECT_SURVEY: 'formula',
+  CREATED_AT: 'createdAt',
+  EXPIRES: 'expires',
+  IS_PUBLIC: 'survey-isPublic',
+  INVITED_ATTENDEES: 'surveys-invited-attendees',
+  ANSWERS: 'answers',
+} as const;
 
-const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
-  const { isMobileView } = useMedia();
-
-  return isMobileView ? <MobileButtonsBar {...props} /> : <DesktopButtonsBar {...props} />;
-};
-
-export default FloatingButtonsBar;
+export default SURVEY_TABLE_COLUMNS;
