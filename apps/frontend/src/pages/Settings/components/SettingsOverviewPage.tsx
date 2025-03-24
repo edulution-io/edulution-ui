@@ -19,7 +19,7 @@ import { DropdownSelect } from '@/components';
 import useIsMobileView from '@/hooks/useIsMobileView';
 import DockerContainerTable from '../AppConfig/DockerIntegration/DockerContainerTable';
 import LicenseOverview from './LicenseOverview';
-import GlobalSettings from './GlobalSettings';
+import GlobalSettings from '../GlobalSettings/GlobalSettings';
 
 const SettingsOverviewPage: React.FC = () => {
   const { t } = useTranslation();

@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
@@ -19,23 +19,35 @@ import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/compone
 import useGroupStore from '@/store/GroupStore';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import GlobalSettingsFloatingButtons from './GlobalSettingsFloatingButtons';
+import useGlobalSettingsApiStore from './useGlobalSettingsApiStore';
 
 interface FormData {
-  'security-groups': MultipleSelectorGroup[];
+  mfaEnforcedGroups: MultipleSelectorGroup[];
 }
 
 const GlobalSettings: React.FC = () => {
   const { t } = useTranslation();
   const { searchGroups } = useGroupStore();
+  const { mfaEnforcedGroups, getGlobalSettings, setGlobalSettings } = useGlobalSettingsApiStore();
 
   const form = useForm<FormData>({
     defaultValues: {
-      'security-groups': [],
+      mfaEnforcedGroups: [],
     },
   });
 
+  useEffect(() => {
+    void getGlobalSettings();
+  }, []);
+
+  useEffect(() => {
+    if (mfaEnforcedGroups) {
+      form.setValue('mfaEnforcedGroups', mfaEnforcedGroups);
+    }
+  }, [mfaEnforcedGroups]);
+
   const handleGroupsChange = (newGroups: MultipleSelectorGroup[]) => {
-    const currentGroups = form.getValues('security-groups') || [];
+    const currentGroups = form.getValues('mfaEnforcedGroups') || [];
 
     const filteredCurrentGroups = currentGroups.filter((currentGroup) =>
       newGroups.some((newGroup) => newGroup.value === currentGroup.value),
@@ -46,11 +58,11 @@ const GlobalSettings: React.FC = () => {
         (newGroup) => !filteredCurrentGroups.some((currentGroup) => currentGroup.value === newGroup.value),
       ),
     ];
-    form.setValue('security-groups', combinedGroups, { shouldValidate: true });
+    form.setValue('mfaEnforcedGroups', combinedGroups, { shouldValidate: true });
   };
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
-    console.warn(data);
+    void setGlobalSettings(data);
   };
 
   return (
@@ -70,13 +82,13 @@ const GlobalSettings: React.FC = () => {
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <FormFieldSH
                 control={form.control}
-                name="security-groups"
+                name="mfaEnforcedGroups"
                 render={() => (
                   <FormItem>
                     <p className="font-bold">{t(`permission.groups`)}</p>
                     <FormControl>
                       <AsyncMultiSelect<MultipleSelectorGroup>
-                        value={form.getValues('security-groups')}
+                        value={form.getValues('mfaEnforcedGroups')}
                         onSearch={searchGroups}
                         onChange={(groups) => handleGroupsChange(groups)}
                         placeholder={t('search.type-to-search')}
