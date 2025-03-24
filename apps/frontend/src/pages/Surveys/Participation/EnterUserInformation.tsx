@@ -32,7 +32,7 @@ const EnterUserInformation = (props: EnterUserInformationProps) => {
 
   const formSchema: z.Schema = z.object({
     preferred_username: z
-      .string({ required_error: 'username.required' })
+      .string()
       .min(8, { message: t('login.username_too_short') })
       .max(32, { message: t('login.username_too_long') }),
     given_name: z.string().optional(),
@@ -73,7 +73,6 @@ const EnterUserInformation = (props: EnterUserInformationProps) => {
             onChange={(e) => form.setValue('preferred_username', e.target.value)}
             labelTranslationId="survey.participate.preferred_username"
           />
-          {!form.getFieldState('preferred_username').error && <p className="flex h-2" />}
           <FormField
             form={form}
             name="given_name"
@@ -81,7 +80,6 @@ const EnterUserInformation = (props: EnterUserInformationProps) => {
             onChange={(e) => form.setValue('given_name', e.target.value)}
             labelTranslationId="survey.participate.given_name"
           />
-          {!form.getFieldState('given_name').error && <p className="flex h-2" />}
           <FormField
             form={form}
             name="family_name"
@@ -89,7 +87,6 @@ const EnterUserInformation = (props: EnterUserInformationProps) => {
             onChange={(e) => form.setValue('family_name', e.target.value)}
             labelTranslationId="survey.participate.family_name"
           />
-          {!form.getFieldState('family_name').error && <p className="flex h-2" />}
           <FormField
             form={form}
             name="email"
@@ -97,8 +94,6 @@ const EnterUserInformation = (props: EnterUserInformationProps) => {
             onChange={(e) => form.setValue('email', e.target.value)}
             labelTranslationId="survey.participate.email"
           />
-          {!form.getFieldState('email').error && <p className="flex h-2" />}
-
           <div className="mt-12 flex justify-end">
             <Button
               type="submit"
