@@ -11,7 +11,7 @@
  */
 
 import { Response } from 'express';
-import { Body, Controller, Get, Post, Param, Res, Logger } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, Res } from '@nestjs/common';
 import { IMAGES, PUBLIC_SURVEYS, RESTFUL_CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -45,9 +45,6 @@ class PublicSurveysController {
   @Public()
   getImage(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
     const { surveyId, questionId, filename } = params;
-
-    Logger.log(`Serving image ${filename} for survey ${surveyId} and question ${questionId}`);
-
     return this.surveyService.serveImage(surveyId, questionId, filename, res);
   }
 
