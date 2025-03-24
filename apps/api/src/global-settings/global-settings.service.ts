@@ -1,0 +1,59 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import { Connection, Model } from 'mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { Injectable, OnModuleInit } from '@nestjs/common';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
+
+@Injectable()
+class GlobalSettingsService implements OnModuleInit {
+  constructor(
+    @InjectConnection() private readonly connection: Connection,
+    @InjectModel(GlobalSettings.name) private globalSettingsModel: Model<GlobalSettingsDocument>,
+  ) {}
+
+  async onModuleInit() {
+    const collections = await this.connection.db
+      ?.listCollections({ name: GlobalSettings.name.toLowerCase() })
+      .toArray();
+
+    if (collections?.length === 0) {
+      await this.connection.db?.createCollection(GlobalSettings.name);
+    }
+
+    const count = await this.globalSettingsModel.countDocuments();
+
+    if (count === 0) {
+      // eslint-disable-next-line new-cap
+      const defaultSettings = new this.globalSettingsModel({ auth: { mfaEnforcedGroups: [], version: 1 } });
+
+      await defaultSettings.save();
+    }
+  }
+
+  async getGloablSettings() {
+    return this.globalSettingsModel.findOne({}, 'auth').lean();
+  }
+
+  async setGlobalSettings(settingsDto: { mfaEnforcedGroups: MultipleSelectorGroup[] }) {
+    const settings = await this.globalSettingsModel.updateOne({ auth: { ...settingsDto } });
+
+    if (settings) {
+      return settings;
+    }
+    return {};
+  }
+}
+
+export default GlobalSettingsService;
