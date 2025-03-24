@@ -163,12 +163,16 @@ class FilesystemService {
     }
   }
 
-  static async checkIfFileExistAndDelete(filePath: string) {
+  static async checkIfFileExist(filePath: string) {
     try {
       await fsPromises.access(filePath);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
+  }
+
+  static async checkIfFileExistAndDelete(filePath: string) {
+    await FilesystemService.checkIfFileExist(filePath);
     try {
       await fsPromises.unlink(filePath);
       Logger.log(`${filePath} deleted.`, FilesystemService.name);
