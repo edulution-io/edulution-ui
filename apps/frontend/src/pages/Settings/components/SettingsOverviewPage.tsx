@@ -16,14 +16,14 @@ import { useTranslation } from 'react-i18next';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
 import Separator from '@/components/ui/Separator';
 import { DropdownSelect } from '@/components';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import DockerContainerTable from '../AppConfig/DockerIntegration/DockerContainerTable';
 import LicenseOverview from './LicenseOverview';
 import GlobalSettings from '../GlobalSettings/GlobalSettings';
 
 const SettingsOverviewPage: React.FC = () => {
   const { t } = useTranslation();
-  const isMobileView = useIsMobileView();
+  const { isMobileView } = useMedia();
   const location = useLocation();
   const navigate = useNavigate();
 
