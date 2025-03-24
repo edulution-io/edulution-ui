@@ -12,20 +12,25 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useForm } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import useGroupStore from '@/store/GroupStore';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
+import GlobalSettingsFloatingButtons from './GlobalSettingsFloatingButtons';
+
+interface FormData {
+  'security-groups': MultipleSelectorGroup[];
+}
 
 const GlobalSettings: React.FC = () => {
   const { t } = useTranslation();
   const { searchGroups } = useGroupStore();
 
-  const form = useForm({
+  const form = useForm<FormData>({
     defaultValues: {
-      'security-groups': [] as MultipleSelectorGroup[],
+      'security-groups': [],
     },
   });
 
@@ -44,6 +49,10 @@ const GlobalSettings: React.FC = () => {
     form.setValue('security-groups', combinedGroups, { shouldValidate: true });
   };
 
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    console.warn(data);
+  };
+
   return (
     <AccordionSH
       type="multiple"
@@ -53,9 +62,12 @@ const GlobalSettings: React.FC = () => {
         <AccordionTrigger className="flex text-h4">
           <h4>{t('settings.globalSettings.security')}</h4>
         </AccordionTrigger>
-        <AccordionContent className="space-y-2 px-1">
+        <AccordionContent
+          style={{ overflow: 'visible' }}
+          className="space-y-2 px-1"
+        >
           <Form {...form}>
-            <form>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
               <FormFieldSH
                 control={form.control}
                 name="security-groups"
@@ -75,6 +87,7 @@ const GlobalSettings: React.FC = () => {
                   </FormItem>
                 )}
               />
+              <GlobalSettingsFloatingButtons handleSave={form.handleSubmit(onSubmit)} />
             </form>
           </Form>
         </AccordionContent>
