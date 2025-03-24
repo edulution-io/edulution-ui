@@ -98,18 +98,18 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
     return <LoadingIndicatorDialog isOpen />;
   }
 
-  if (isPublic && !selectedSurvey?.isAnonymous && !userInfo) {
-    return (
-      <div className="relative top-1/3">
-        <EnterUserInformation setUserInfo={updateUserInfo} />
-      </div>
-    );
-  }
-
   if (!surveyModel) {
     return (
       <div className="relative top-1/3">
         <h4 className="flex justify-center">{t('survey.notFound')}</h4>
+      </div>
+    );
+  }
+
+  if (isPublic && !userInfo && !selectedSurvey?.isAnonymous) {
+    return (
+      <div className="relative top-1/3">
+        <EnterUserInformation setUserInfo={updateUserInfo} />
       </div>
     );
   }
