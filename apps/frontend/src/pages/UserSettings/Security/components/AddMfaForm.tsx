@@ -15,7 +15,6 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import useUserStore from '@/store/UserStore/UserStore';
 import Switch from '@/components/ui/Switch';
-import SetupMfaDialog from './SetupMfaDialog';
 
 const AddMfaForm: React.FC = () => {
   const { t } = useTranslation();
@@ -85,8 +84,6 @@ const AddMfaForm: React.FC = () => {
           </Button>
         </div>
       </div>
-
-      <SetupMfaDialog />
     </>
   );
 };
