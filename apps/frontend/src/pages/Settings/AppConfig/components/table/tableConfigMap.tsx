@@ -24,12 +24,28 @@ import { type DockerContainerTableStore } from '@libs/appconfig/types/dockerCont
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import { VeyonConfigTableStore } from '@libs/appconfig/types/veyonConfigTableStore';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import BULLETIN_BOARD_TABLE_COLUMNS from '@libs/appconfig/constants/bulletinBoardCategoryTableColumns';
+import DOCKER_CONTAINER_TABLE_COLUMNS from '@libs/docker/constants/dockerContainerTableColumns';
+import VEYON_PROXY_TABLE_COLUMNS from '@libs/classManagement/constants/veyonProxyTableColumns';
 import DockerContainerTableColumns from '../../DockerIntegration/DockerContainerTableColumns';
 import CreateDockerContainerDialog from '../../DockerIntegration/CreateDockerContainerDialog';
 import useDockerApplicationStore from '../../DockerIntegration/useDockerApplicationStore';
 import VeyonConfigTableColumns from '../../classmanagement/VeyonConfigTableColumns';
 import useVeyonConfigTableStore from '../../classmanagement/useVeyonTableStore';
 import AddVeyonProxyDialog from '../../classmanagement/AddVeyonProxyDialog';
+
+const DOCKER_CONTAINER_TABLE_COLUMS = {
+  hideColumnsInMobileView: [
+    DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_IMAGE,
+    DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_PORT,
+    DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_STATUS,
+    DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_CREATION_DATE,
+  ],
+  hideColumnsInTabletView: [
+    DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_IMAGE,
+    DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_CREATION_DATE,
+  ],
+};
 
 const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
   [APPS.BULLETIN_BOARD]: [
@@ -38,9 +54,11 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
       useStore: useBulletinCategoryTableStore,
       dialogBody: <CreateAndUpdateBulletinCategoryDialog tableId={ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE} />,
       showAddButton: true,
-      filterKey: 'name',
+      filterKey: DOCKER_CONTAINER_TABLE_COLUMNS.NAME,
       filterPlaceHolderText: 'bulletinboard.filterPlaceHolderText',
       type: ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE,
+      hideColumnsInMobileView: [BULLETIN_BOARD_TABLE_COLUMNS.CREATED_AT],
+      hideColumnsInTabletView: [BULLETIN_BOARD_TABLE_COLUMNS.CREATED_AT],
     }),
   ],
   [APPS.CLASS_MANAGEMENT]: [
@@ -54,18 +72,21 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
         />
       ),
       showAddButton: true,
-      filterKey: 'name',
+      filterKey: DOCKER_CONTAINER_TABLE_COLUMNS.NAME,
       filterPlaceHolderText: 'dockerOverview.filterPlaceHolderText',
       type: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
+      ...DOCKER_CONTAINER_TABLE_COLUMS,
     }),
     createAppConfigTableEntry<VeyonProxyItem, VeyonConfigTableStore>({
       columns: VeyonConfigTableColumns,
       useStore: useVeyonConfigTableStore,
       dialogBody: <AddVeyonProxyDialog tableId={ExtendedOptionKeys.VEYON_PROXYS} />,
       showAddButton: true,
-      filterKey: 'proxyAdress',
+      filterKey: VEYON_PROXY_TABLE_COLUMNS.PROXY_ADDRESS,
       filterPlaceHolderText: 'settings.appconfig.sections.veyon.filterPlaceHolderText',
       type: ExtendedOptionKeys.VEYON_PROXYS,
+      hideColumnsInMobileView: [],
+      hideColumnsInTabletView: [],
     }),
   ],
   [APPS.MAIL]: [
@@ -79,9 +100,10 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
         />
       ),
       showAddButton: true,
-      filterKey: 'name',
+      filterKey: DOCKER_CONTAINER_TABLE_COLUMNS.NAME,
       filterPlaceHolderText: 'dockerOverview.filterPlaceHolderText',
       type: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
+      ...DOCKER_CONTAINER_TABLE_COLUMS,
     }),
   ],
   [APPS.DESKTOP_DEPLOYMENT]: [
@@ -95,9 +117,10 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
         />
       ),
       showAddButton: true,
-      filterKey: 'name',
+      filterKey: DOCKER_CONTAINER_TABLE_COLUMNS.NAME,
       filterPlaceHolderText: 'dockerOverview.filterPlaceHolderText',
       type: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
+      ...DOCKER_CONTAINER_TABLE_COLUMS,
     }),
   ],
   [APPS.FILE_SHARING]: [
@@ -111,9 +134,10 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
         />
       ),
       showAddButton: true,
-      filterKey: 'name',
+      filterKey: DOCKER_CONTAINER_TABLE_COLUMNS.NAME,
       filterPlaceHolderText: 'dockerOverview.filterPlaceHolderText',
       type: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
+      ...DOCKER_CONTAINER_TABLE_COLUMS,
     }),
   ],
 };

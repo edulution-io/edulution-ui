@@ -10,12 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import React from 'react';
 import { FOOTER_ID } from '@libs/common/constants/pageElementIds';
 
 const Footer = () => {
-  const isMobileView = useIsMobileView();
+  const { isMobileView } = useMedia();
 
   return (
     <footer

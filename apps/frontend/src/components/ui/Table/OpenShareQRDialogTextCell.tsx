@@ -24,7 +24,7 @@ const OpenShareQRDialogTextCell = ({
 }: {
   openDialog: () => void;
   iconSize: number;
-  className: string;
+  className?: string;
   isPublic: boolean;
   textTranslationId: string;
 }) => {

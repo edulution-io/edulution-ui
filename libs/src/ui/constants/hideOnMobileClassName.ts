@@ -10,16 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import useMedia from '@/hooks/useMedia';
-import MobileButtonsBar from '@/components/shared/FloatingsButtonsBar/MobileButtonsBar';
-import DesktopButtonsBar from '@/components/shared/FloatingsButtonsBar/DesktopButtonsBar';
-import FloatingButtonsBarProps from '@libs/ui/types/FloatingButtons/floatingButtonsProps';
+const hideOnMobileClassName = 'hidden lg:flex';
 
-const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
-  const { isMobileView } = useMedia();
-
-  return isMobileView ? <MobileButtonsBar {...props} /> : <DesktopButtonsBar {...props} />;
-};
-
-export default FloatingButtonsBar;
+export default hideOnMobileClassName;
