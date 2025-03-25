@@ -21,6 +21,7 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
+import { GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 
 const SetupMfaDialog: React.FC = () => {
   const { t } = useTranslation();
@@ -42,7 +43,7 @@ const SetupMfaDialog: React.FC = () => {
 
   useEffect(() => {
     const handleCheckGlobalSettings = async () => {
-      const mfaEnforcedGroups = await getGlobalSettings();
+      const mfaEnforcedGroups = await getGlobalSettings(GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH);
       const isMfaRequired = mfaEnforcedGroups?.some((group) => ldapGroups.includes(group.path));
       if (isMfaRequired && !user?.mfaEnabled && isDashboardPage) {
         setIsSetTotpDialogOpen(true);

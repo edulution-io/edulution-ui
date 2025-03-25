@@ -10,21 +10,25 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Body, Controller, Get, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import {
+  GLOBAL_SETTINGS_PROJECTION_QUERY_PARAM,
+  GLOBAL_SETTINGS_ROOT_ENDPOINT,
+} from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 import GlobalSettingsService from './global-settings.service';
 
-@ApiTags('global-settings')
+@ApiTags(GLOBAL_SETTINGS_ROOT_ENDPOINT)
 @ApiBearerAuth()
-@Controller('global-settings')
+@Controller(GLOBAL_SETTINGS_ROOT_ENDPOINT)
 class GlobalSettingsController {
   constructor(private readonly globalSettingsService: GlobalSettingsService) {}
 
   @Get()
-  async getGloablSettings() {
-    return this.globalSettingsService.getGloablSettings();
+  async getGloablSettings(@Query(GLOBAL_SETTINGS_PROJECTION_QUERY_PARAM) projection?: string) {
+    return this.globalSettingsService.getGloablSettings(projection);
   }
 
   @Put()

@@ -737,7 +737,8 @@
     },
     "globalSettings": {
       "title": "Globale Einstellungen",
-      "security": "Sicherheit"
+      "security": "Sicherheit",
+      "errors": { "updateError": "Einstellungen konnten nicht aktualisiert werden." }
     },
     "info": {
       "title": "Info"

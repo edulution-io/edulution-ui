@@ -12,8 +12,10 @@
 
 import { Connection, Model } from 'mongoose';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import GlobalSettingsErrorMessages from '@libs/global-settings/constants/globalSettingsErrorMessages';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
 
 @Injectable()
@@ -30,6 +32,7 @@ class GlobalSettingsService implements OnModuleInit {
 
     if (collections?.length === 0) {
       await this.connection.db?.createCollection(GlobalSettings.name);
+      Logger.log(`Created collection: ${GlobalSettings.name}`, GlobalSettings.name);
     }
 
     const count = await this.globalSettingsModel.countDocuments();
@@ -39,20 +42,35 @@ class GlobalSettingsService implements OnModuleInit {
       const defaultSettings = new this.globalSettingsModel({ auth: { mfaEnforcedGroups: [], version: 1 } });
 
       await defaultSettings.save();
+      Logger.log(`Imported default values`, GlobalSettings.name);
     }
   }
 
-  async getGloablSettings() {
-    return this.globalSettingsModel.findOne({}, 'auth').lean();
+  async getGloablSettings(projection?: string) {
+    try {
+      return await this.globalSettingsModel.findOne({}, projection).lean();
+    } catch (error) {
+      return null;
+    }
   }
 
   async setGlobalSettings(settingsDto: { mfaEnforcedGroups: MultipleSelectorGroup[] }) {
-    const settings = await this.globalSettingsModel.updateOne({ auth: { ...settingsDto } });
+    try {
+      const settings = await this.globalSettingsModel.updateOne({ auth: { ...settingsDto } });
 
-    if (settings) {
-      return settings;
+      if (settings) {
+        return settings;
+      }
+
+      return null;
+    } catch (error) {
+      throw new CustomHttpException(
+        GlobalSettingsErrorMessages.UpdateError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        GlobalSettings.name,
+      );
     }
-    return {};
   }
 }
 

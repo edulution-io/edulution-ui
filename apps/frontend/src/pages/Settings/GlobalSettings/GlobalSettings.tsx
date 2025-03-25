@@ -18,6 +18,10 @@ import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import useGroupStore from '@/store/GroupStore';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
+import {
+  GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS,
+  GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH,
+} from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import GlobalSettingsFloatingButtons from './GlobalSettingsFloatingButtons';
 import useGlobalSettingsApiStore from './useGlobalSettingsApiStore';
 
@@ -37,17 +41,17 @@ const GlobalSettings: React.FC = () => {
   });
 
   useEffect(() => {
-    void getGlobalSettings();
+    void getGlobalSettings(GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH);
   }, []);
 
   useEffect(() => {
     if (mfaEnforcedGroups) {
-      form.setValue('mfaEnforcedGroups', mfaEnforcedGroups);
+      form.setValue(GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS, mfaEnforcedGroups);
     }
   }, [mfaEnforcedGroups]);
 
   const handleGroupsChange = (newGroups: MultipleSelectorGroup[]) => {
-    const currentGroups = form.getValues('mfaEnforcedGroups') || [];
+    const currentGroups = form.getValues(GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS) || [];
 
     const filteredCurrentGroups = currentGroups.filter((currentGroup) =>
       newGroups.some((newGroup) => newGroup.value === currentGroup.value),
@@ -58,7 +62,7 @@ const GlobalSettings: React.FC = () => {
         (newGroup) => !filteredCurrentGroups.some((currentGroup) => currentGroup.value === newGroup.value),
       ),
     ];
-    form.setValue('mfaEnforcedGroups', combinedGroups, { shouldValidate: true });
+    form.setValue(GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS, combinedGroups, { shouldValidate: true });
   };
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
@@ -83,13 +87,13 @@ const GlobalSettings: React.FC = () => {
               <form onSubmit={form.handleSubmit(onSubmit)}>
                 <FormFieldSH
                   control={form.control}
-                  name="mfaEnforcedGroups"
+                  name={GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS}
                   render={() => (
                     <FormItem>
                       <p className="font-bold">{t(`permission.groups`)}</p>
                       <FormControl>
                         <AsyncMultiSelect<MultipleSelectorGroup>
-                          value={form.getValues('mfaEnforcedGroups')}
+                          value={form.getValues(GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS)}
                           onSearch={searchGroups}
                           onChange={(groups) => handleGroupsChange(groups)}
                           placeholder={t('search.type-to-search')}
