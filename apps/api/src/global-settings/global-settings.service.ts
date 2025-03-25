@@ -50,7 +50,7 @@ class GlobalSettingsService implements OnModuleInit {
     }
   }
 
-  async getGloablSettings(projection?: string) {
+  async getGlobalSettings(projection?: string) {
     try {
       return await this.globalSettingsModel.findOne({}, projection).lean();
     } catch (error) {

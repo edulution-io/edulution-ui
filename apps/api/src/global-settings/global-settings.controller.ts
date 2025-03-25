@@ -27,13 +27,13 @@ class GlobalSettingsController {
   constructor(private readonly globalSettingsService: GlobalSettingsService) {}
 
   @Get()
-  async getGloablSettings(@Query(GLOBAL_SETTINGS_PROJECTION_QUERY_PARAM) projection?: string) {
-    return this.globalSettingsService.getGloablSettings(projection);
+  async getGlobalSettings(@Query(GLOBAL_SETTINGS_PROJECTION_QUERY_PARAM) projection?: string) {
+    return this.globalSettingsService.getGlobalSettings(projection);
   }
 
   @Put()
   @UseGuards(AppConfigGuard)
-  async setAppSettings(@Body() globalSettingsDto: GlobalSettingsDto) {
+  async setGlobalSettings(@Body() globalSettingsDto: GlobalSettingsDto) {
     return this.globalSettingsService.setGlobalSettings(globalSettingsDto);
   }
 }
