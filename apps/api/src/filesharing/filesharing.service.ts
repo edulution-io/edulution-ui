@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import {HttpStatus, Injectable} from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -27,29 +27,29 @@ import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import ContentType from '@libs/filesharing/types/contentType';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bull';
-import APPS from '@libs/appconfig/constants/apps';
 import JOB_NAMES from '@libs/queue/constants/jobNames';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
 import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
-
+import {JobProducerService} from "../queue/job.producer.service";
 @Injectable()
 class FilesharingService {
   private clientCache = new Map<string, { client: AxiosInstance; timeout: NodeJS.Timeout }>();
 
   private readonly baseurl = process.env.EDUI_WEBDAV_URL as string;
 
+
+
   constructor(
     private readonly userService: UsersService,
     private readonly onlyofficeService: OnlyofficeService,
     private readonly fileSystemService: FilesystemService,
-    @InjectQueue(`${APPS.FILE_SHARING}-${JOB_NAMES.COLLECT_FILE_JOB}`) private fileCollectingQueue: Queue,
-    @InjectQueue(`${APPS.FILE_SHARING}-${JOB_NAMES.DUPLICATE_FILE_JOB}`) private fileSharingQueue: Queue,
-  ) {}
+    private readonly jobProducer: JobProducerService
+
+  ) {
+  }
 
   private setCacheTimeout(token: string): NodeJS.Timeout {
     return setTimeout(
@@ -290,13 +290,14 @@ class FilesharingService {
     let i = 0;
     return Promise.all(
       duplicateFile.destinationFilePaths.map(async (destinationPath) => {
-        await this.fileSharingQueue.add(JOB_NAMES.DUPLICATE_FILE_JOB, {
+
+        await this.jobProducer.addJob(username, JOB_NAMES.DUPLICATE_FILE_JOB, {
           username,
           originFilePath: duplicateFile.originFilePath,
           destinationFilePath: destinationPath,
           total: duplicateFile.destinationFilePaths.length,
           processed: (i += 1),
-        });
+        })
       }),
     );
   }
@@ -423,8 +424,9 @@ class FilesharingService {
   ) {
     let processedItems = 0;
     return Promise.all(
+
       collectFileRequestDTO.map(async (collectFileRequest) => {
-        await this.fileCollectingQueue.add(JOB_NAMES.COLLECT_FILE_JOB, {
+        await this.jobProducer.addJob(username, JOB_NAMES.COLLECT_FILE_JOB, {
           username,
           userRole,
           item: collectFileRequest,

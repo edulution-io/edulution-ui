@@ -12,35 +12,36 @@
 
 import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
-import { BullModule } from '@nestjs/bullmq';
-import APPS from '@libs/appconfig/constants/apps';
-import JOB_NAMES from '@libs/queue/constants/jobNames';
 import FilesharingController from './filesharing.controller';
 import FilesharingService from './filesharing.service';
 import AppConfigModule from '../appconfig/appconfig.module';
 import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
-import DuplicateFileConsumer from './consumers/duplicateFile.consumer';
 import SseService from '../sse/sse.service';
-import FilecollectConsumer from './consumers/collectFile.consumer';
+import {DynamicQueueService} from "../queue/queue.service";
+import {JobProducerService} from "../queue/job.producer.service";
+import {QueueProvider} from "../queue/queue.provider";
+import {WorkerService} from "../queue/worker.service";
+import {JobHandlerService} from "../queue/job.handler.service";
+import DuplicateFileConsumer from "./consumers/duplicateFile.consumer";
+
+
+//TODO: Ein Queue Service evtl => mometan sind es noch zuviele. Prüfugen ob der JobProducerService ausreicht.
+
 
 @Module({
   imports: [
     HttpModule,
-    AppConfigModule,
-    BullModule.registerQueue(
-      { name: `${APPS.FILE_SHARING}-${JOB_NAMES.COLLECT_FILE_JOB}` },
-      { name: `${APPS.FILE_SHARING}-${JOB_NAMES.DUPLICATE_FILE_JOB}` },
-    ),
+    AppConfigModule
   ],
   controllers: [FilesharingController],
   providers: [
     FilesharingService,
     FilesystemService,
     OnlyofficeService,
-    DuplicateFileConsumer,
-    FilecollectConsumer,
     SseService,
+    DynamicQueueService, JobProducerService, QueueProvider, WorkerService, JobHandlerService,
+    DuplicateFileConsumer
   ],
   exports: [FilesharingService],
 })

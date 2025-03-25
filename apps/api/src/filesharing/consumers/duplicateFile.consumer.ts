@@ -10,28 +10,30 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Response } from 'express';
 import { Observable } from 'rxjs';
-import { MessageEvent } from '@nestjs/common';
+import {forwardRef, Inject, Injectable, MessageEvent} from '@nestjs/common';
 
-import APPS from '@libs/appconfig/constants/apps';
-import FILE_PATHS from '@libs/filesharing/constants/file-paths';
-import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-
-import JOB_NAMES from '@libs/queue/constants/jobNames';
 import DuplicateFileJobData from '@libs/queue/types/duplicateFileJobData';
-import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
-import type UserConnections from '../../types/userConnections';
-import FilesharingService from '../filesharing.service';
-import SseService from '../../sse/sse.service';
 
-@Processor(`${APPS.FILE_SHARING}-${JOB_NAMES.DUPLICATE_FILE_JOB}`, { concurrency: 1 })
+import type UserConnections from '../../types/userConnections';
+import SseService from '../../sse/sse.service';
+import FilesharingService from "../filesharing.service";
+import FilesharingProgressDto from "@libs/filesharing/types/filesharingProgressDto";
+import FILE_PATHS from "@libs/filesharing/constants/file-paths";
+import SSE_MESSAGE_TYPE from "@libs/common/constants/sseMessageType";
+
+
+@Injectable()
 class DuplicateFileConsumer extends WorkerHost {
   private fileSharingSseConnections: UserConnections = new Map();
 
-  constructor(private readonly fileSharingService: FilesharingService) {
+  constructor(
+    @Inject(forwardRef(() => FilesharingService))
+    private readonly fileSharingService: FilesharingService,
+  ) {
     super();
   }
 
@@ -40,41 +42,42 @@ class DuplicateFileConsumer extends WorkerHost {
   }
 
   async process(job: Job<DuplicateFileJobData>): Promise<void> {
-    const { username, originFilePath, destinationFilePath, total, processed } = job.data;
-    const failedPaths: string[] = [];
+      const { username, originFilePath, destinationFilePath, total, processed } = job.data;
+      const failedPaths: string[] = [];
 
-    const client = await this.fileSharingService.getClient(username);
+      const client = await this.fileSharingService.getClient(username);
 
-    const pathUpToTransferFolder = FilesharingService.getPathUntilFolder(destinationFilePath, FILE_PATHS.TRANSFER);
-    const pathUpToTeacherFolder = FilesharingService.getPathUntilFolder(destinationFilePath, username);
+      const pathUpToTransferFolder = FilesharingService.getPathUntilFolder(destinationFilePath, FILE_PATHS.TRANSFER);
+      const pathUpToTeacherFolder = FilesharingService.getPathUntilFolder(destinationFilePath, username);
 
-    await this.fileSharingService.ensureFolderExists(username, pathUpToTransferFolder, username);
-    await this.fileSharingService.ensureFolderExists(username, pathUpToTeacherFolder, FILE_PATHS.COLLECT);
+      await this.fileSharingService.ensureFolderExists(username, pathUpToTransferFolder, username);
+      await this.fileSharingService.ensureFolderExists(username, pathUpToTeacherFolder, FILE_PATHS.COLLECT);
+      console.log(pathUpToTeacherFolder);
+      try {
+        await FilesharingService.copyFileViaWebDAV(client, originFilePath, destinationFilePath);
+      } catch {
+        failedPaths.push(destinationFilePath);
+      }
 
-    try {
-      await FilesharingService.copyFileViaWebDAV(client, originFilePath, destinationFilePath);
-    } catch {
-      failedPaths.push(destinationFilePath);
+      const percent = Math.round((processed / total) * 100);
+      const studentName = FilesharingService.getStudentNameFromPath(destinationFilePath) || '';
+
+      const progressDto: FilesharingProgressDto = {
+        processID: Number(job.id),
+        title: 'filesharing.progressBox.titleSharing',
+        description: 'filesharing.progressBox.fileInfoSharing',
+        statusDescription: 'filesharing.progressBox.processedSharingInfo',
+        processed,
+        total,
+        percent,
+        currentFilePath: originFilePath,
+        studentName,
+        failedPaths,
+      };
+
+      SseService.sendEventToUser(username, this.fileSharingSseConnections, progressDto, SSE_MESSAGE_TYPE.UPDATED);
     }
 
-    const percent = Math.round((processed / total) * 100);
-    const studentName = FilesharingService.getStudentNameFromPath(destinationFilePath) || '';
-
-    const progressDto: FilesharingProgressDto = {
-      processID: Number(job.id),
-      title: 'filesharing.progressBox.titleSharing',
-      description: 'filesharing.progressBox.fileInfoSharing',
-      statusDescription: 'filesharing.progressBox.processedSharingInfo',
-      processed,
-      total,
-      percent,
-      currentFilePath: originFilePath,
-      studentName,
-      failedPaths,
-    };
-
-    SseService.sendEventToUser(username, this.fileSharingSseConnections, progressDto, SSE_MESSAGE_TYPE.UPDATED);
-  }
 }
 
 export default DuplicateFileConsumer;
