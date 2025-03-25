@@ -10,16 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import useMedia from '@/hooks/useMedia';
-import MobileButtonsBar from '@/components/shared/FloatingsButtonsBar/MobileButtonsBar';
-import DesktopButtonsBar from '@/components/shared/FloatingsButtonsBar/DesktopButtonsBar';
-import FloatingButtonsBarProps from '@libs/ui/types/FloatingButtons/floatingButtonsProps';
+const CONFERENCES_TABLE_COLUMNS = {
+  CONFERENCE_NAME: 'conference-name',
+  CONFERENCE_CREATOR: 'conference-creator',
+  CONFERENCE_IS_PUBLIC: 'conference-isPublic',
+  CONFERENCE_PASSWORD: 'conference-password',
+  CONFERENCE_INVITED_ATTENDEES: 'conference-invited-attendees',
+  CONFERENCE_JOINED_ATTENDEES: 'conference-joined-attendees',
+  CONFERENCE_ACTION_BUTTON: 'conference-action-button',
+} as const;
 
-const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
-  const { isMobileView } = useMedia();
-
-  return isMobileView ? <MobileButtonsBar {...props} /> : <DesktopButtonsBar {...props} />;
-};
-
-export default FloatingButtonsBar;
+export default CONFERENCES_TABLE_COLUMNS;

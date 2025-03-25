@@ -10,31 +10,45 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import { SyncJobDto } from '@libs/mail/types';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import APPS from '@libs/appconfig/constants/apps';
+import MAIL_IMPORTER_TABLE_COLUMNS from '@libs/mail/constants/mailImporterTableColumns';
+import useMedia from '@/hooks/useMedia';
 import MailImporterTableColumns from './MailImporterTableColumns';
 
 const MailImporterTable: React.FC = () => {
+  const { isMobileView, isTabletView } = useMedia();
   const { syncJobs, selectedSyncJob, setSelectedSyncJob } = useMailsStore();
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedSyncJob) : updaterOrValue;
     setSelectedSyncJob(newValue);
   };
 
+  const initialColumnVisibility = useMemo(
+    () => ({
+      [MAIL_IMPORTER_TABLE_COLUMNS.HOSTNAME]: !isMobileView,
+      [MAIL_IMPORTER_TABLE_COLUMNS.PORT]: !(isMobileView || isTabletView),
+      [MAIL_IMPORTER_TABLE_COLUMNS.ENCRYPTION]: !(isMobileView || isTabletView),
+      [MAIL_IMPORTER_TABLE_COLUMNS.SYNC_INTERVAL]: !(isMobileView || isTabletView),
+    }),
+    [isMobileView, isTabletView],
+  );
+
   return (
     <ScrollableTable
       columns={MailImporterTableColumns}
       data={syncJobs}
-      filterKey="hostname"
+      filterKey={MAIL_IMPORTER_TABLE_COLUMNS.USERNAME}
       filterPlaceHolderText="mail.importer.filterPlaceHolderText"
       applicationName={APPS.MAIL}
       onRowSelectionChange={handleRowSelectionChange}
       selectedRows={selectedSyncJob}
       getRowId={(originalRow: SyncJobDto) => `${originalRow.id}`}
+      initialColumnVisibility={initialColumnVisibility}
     />
   );
 };

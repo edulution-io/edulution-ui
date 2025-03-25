@@ -10,7 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useMediaQuery } from 'usehooks-ts';
+const FILE_SHARING_TABLE_COLUMNS = {
+  SELECT_FILENAME: 'select-filename',
+  LAST_MODIFIED: 'lastmod',
+  SIZE: 'size',
+  TYPE: 'type',
+} as const;
 
-const useIsMobileView = () => useMediaQuery('(max-width: 767px)');
-export default useIsMobileView;
+export default FILE_SHARING_TABLE_COLUMNS;

@@ -24,6 +24,8 @@ interface AppConfigTableEntry<DataType, StoreType extends AppConfigTable<DataTyp
   filterKey: string;
   filterPlaceHolderText: string;
   type: ExtendedOptionKeysType;
+  hideColumnsInMobileView: string[];
+  hideColumnsInTabletView: string[];
 }
 
 export default AppConfigTableEntry;
