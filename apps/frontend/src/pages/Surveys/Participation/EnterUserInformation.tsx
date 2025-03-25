@@ -31,12 +31,14 @@ const EnterUserInformation = (props: EnterUserInformationProps) => {
   const { t } = useTranslation();
 
   const formSchema: z.Schema = z.object({
-    preferred_username: z
+    firstName: z
       .string()
-      .min(8, { message: t('login.username_too_short') })
+      .min(3, { message: t('login.username_too_short') })
       .max(32, { message: t('login.username_too_long') }),
-    given_name: z.string().optional(),
-    family_name: z.string().optional(),
+    lastName: z
+      .string()
+      .min(3, { message: t('login.username_too_short') })
+      .max(32, { message: t('login.username_too_long') }),
     email: z.string().optional(),
   });
 
@@ -44,9 +46,8 @@ const EnterUserInformation = (props: EnterUserInformationProps) => {
     mode: 'onChange',
     resolver: zodResolver(formSchema),
     defaultValues: {
-      preferred_username: '',
-      given_name: '',
-      family_name: '',
+      firstName: '',
+      lastName: '',
       email: '',
     },
   });
