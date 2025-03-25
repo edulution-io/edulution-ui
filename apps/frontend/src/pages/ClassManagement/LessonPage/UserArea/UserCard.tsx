@@ -90,6 +90,12 @@ const UserCard = ({ user, selectedMember, isTeacherInSameClass, setSelectedMembe
       variant="text"
       className={cn(isSelectable ? 'cursor-pointer' : 'cursor-not-allowed', 'my-2 ml-1 mr-4 flex h-64 min-w-80')}
       onClick={onCardClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          onCardClick();
+        }
+      }}
+      tabIndex={0}
     >
       <CardContent className="flex w-full flex-row p-0">
         <div
@@ -144,6 +150,16 @@ const UserCard = ({ user, selectedMember, isTeacherInSameClass, setSelectedMembe
             !isSelectable && 'cursor-not-allowed',
             'ml-2 flex w-1/6 flex-col items-center justify-around rounded-r-xl border-l-[1px] border-accent bg-foreground scrollbar-thin',
           )}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              onCardClick();
+            }
+          }}
+          tabIndex={-1}
+          role="button"
         >
           <UserCardButtonBar
             user={user}
