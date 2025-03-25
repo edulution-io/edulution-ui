@@ -11,6 +11,7 @@
  */
 
 import { join } from 'path';
+import { Response } from 'express';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
@@ -103,7 +104,10 @@ class SurveysService implements OnModuleInit {
     currentUser: JwtUser,
     surveysSseConnections: UserConnections,
   ): Promise<SurveyDocument | null> {
-    const existingSurvey = await this.surveyModel.findById(survey.id).exec();
+
+    Logger.log(`updateSurvey`, 'AttachmentService');
+
+    const existingSurvey = await this.surveyModel.findById(survey.id).lean();
     if (!existingSurvey) {
       return null;
     }
@@ -143,6 +147,9 @@ class SurveysService implements OnModuleInit {
     currentUser: JwtUser,
     surveysSseConnections: UserConnections,
   ): Promise<SurveyDocument> {
+
+    Logger.log(`createSurvey`, 'AttachmentService');
+
     const creator: AttendeeDto = {
       ...survey.creator,
       firstName: currentUser.given_name,
@@ -167,60 +174,128 @@ class SurveysService implements OnModuleInit {
     }
   }
 
+  async updateImageLinkForImageQuestion(
+    baseUrl: string,
+    username: string,
+    surveyId: string,
+    tempFiles: string[],
+    question: SurveyElement
+  ) {
+
+    Logger.log(`updateImageLinkForImageQuestion::question: ${JSON.stringify(question, null, 2)}`, 'AttachmentService');
+
+    if (question.type !== 'image') {
+      Logger.log(`question.type !== 'image'`, 'AttachmentService');
+      return
+    }
+    if (!question.imageLink) {
+      Logger.log(`!question.imageLink`, 'AttachmentService');
+      return;
+    }
+
+    // eslint-disable-next-line no-underscore-dangle
+    const pathWithIds = `${surveyId}/${question.name}`;
+
+    Logger.log(`pathWithIds ${pathWithIds}`, 'AttachmentService');
+
+    const imagesFileName = question.imageLink.split('/').pop();
+    if (!imagesFileName) {
+      return;
+    }
+
+    Logger.log(`imagesFileName ${imagesFileName}`, 'AttachmentService');
+
+    Logger.log(`tempFiles.includes(imagesFileName) ${tempFiles.includes(imagesFileName)}`, 'AttachmentService');
+
+    if (tempFiles.includes(imagesFileName)) {
+      try {
+
+        await this.attachmentService.moveTempFileIntoPermanentDirectory(imagesFileName, username, pathWithIds);
+
+        // eslint-disable-next-line no-param-reassign
+        question.imageLink = `${baseUrl}${this.attachmentService.getPersistentAttachmentUrl(pathWithIds, imagesFileName)}`;
+
+      } catch (error) {
+        Logger.error(error);
+        throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      }
+    } else {
+      Logger.log(`tempFiles does not include imagesFileName`, 'AttachmentService');
+    }
+  };
+
   async updateOrCreateSurvey(
     surveyDto: SurveyDto,
     user: JwtUser,
     baseUrl: string,
     surveysSseConnections: UserConnections,
   ): Promise<SurveyDocument | null> {
+
+    Logger.log(`updateOrCreateSurvey`, 'AttachmentService');
+
     let survey: SurveyDocument | null;
+
     survey = await this.updateSurvey(surveyDto, user, surveysSseConnections);
+
     if (survey == null) {
       survey = await this.createSurvey(surveyDto, user, surveysSseConnections);
     }
-    if (survey == null) {
-      return null;
+
+    Logger.log(`surveyId ${survey._id}`, 'AttachmentService');
+
+    Logger.log(`survey ${JSON.stringify(survey, null, 2)}`, 'AttachmentService');
+
+    // eslint-disable-next-line no-underscore-dangle
+    if (!survey._id) {
+      return survey;
     }
 
-    const FileNames = this.attachmentService.getFileNamesFromTEMP(user.preferred_username);
+    const surveyId = survey._id.toString();
+    const FileNames = await this.attachmentService.getFileNamesFromTEMP(user.preferred_username);
+
+    Logger.log(`FileNames ${JSON.stringify(FileNames, null, 2)}`, 'AttachmentService');
+
     if (FileNames.length === 0) {
       return survey;
     }
-    const updateElement = (element: SurveyElement) => {
-      if (element.type === 'image') {
-        if (!element.imageLink) {
-          return;
-        }
 
-        const fileName = element.imageLink.split('/').pop();
-        if (!fileName) {
-          return;
-        }
-        // eslint-disable-next-line no-underscore-dangle
-        const pathWithIds = `${survey._id?.toString()}/${element.name}`;
+    const updateSurveyElement = async (question: SurveyElement) => {
+      const pathWithIds = join(surveyId, question.name);
+      await this.attachmentService.createPersistentDirectory(pathWithIds);
 
-        if (FileNames.includes(fileName)) {
-          this.attachmentService.moveTempFileIntoPermanentDirectory(fileName, pathWithIds, user.preferred_username);
-        }
+      const exists = await this.attachmentService.checkExistence(this.attachmentService.getPersistentDirectory(pathWithIds));
 
-        // eslint-disable-next-line no-param-reassign
-        element.imageLink = `${baseUrl}${this.attachmentService.getPersistentAttachmentUrl(pathWithIds, fileName)}`;
-      }
-    };
+      Logger.log(`exists ${exists}`, 'AttachmentService');
+
+      await this.updateImageLinkForImageQuestion(baseUrl, user.preferred_username, surveyId, FileNames, question);
+    }
 
     survey.formula.pages?.forEach((page) => {
-      page.elements?.forEach(updateElement);
+      page.elements?.forEach(updateSurveyElement);
     });
-    survey.formula.elements?.forEach(updateElement);
+    survey.formula.elements?.forEach(updateSurveyElement);
 
     const surveyWithUpdatedImageLinks = await this.updateSurvey(
       { ...surveyDto, formula: survey.formula },
       user,
       surveysSseConnections,
     );
-    this.attachmentService.clearTEMP(user.preferred_username);
+    void this.attachmentService.clearTEMP(user.preferred_username);
+
+    Logger.log(`surveyWithUpdatedImageLinks ${JSON.stringify(surveyWithUpdatedImageLinks, null, 2)}`, 'AttachmentService');
 
     return surveyWithUpdatedImageLinks;
+  }
+
+  getTemporaryImageUrl = (username: string, fileName: string): string => this.attachmentService.getTemporaryAttachmentUrl(username, fileName);
+
+  async serveTemporaryImage(userId: string, fileName: string, res: Response): Promise<Response> {
+    return this.attachmentService.serveTemporaryAttachment(userId, fileName, res);
+  }
+
+  async servePermanentImage(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
+    const pathWithIds = join(surveyId, questionId);
+    return this.attachmentService.servePersistentAttachment(pathWithIds, fileName, res);
   }
 }
 

@@ -53,13 +53,191 @@ class FilesystemService {
     }
   }
 
-  async ensureDirectoryExists(directory: string): Promise<void> {
+  static async checkIfFileExist(filePath: string): Promise<boolean> {
     try {
-      await fsPromises.access(directory);
+      await fsPromises.access(`${process.cwd()}/${filePath}`);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+  static async throwErrorIfFileNotExists(filePath: string): Promise<void> {
+    try {
+      await fsPromises.access(`${process.cwd()}/${filePath}`);
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+  }
+
+  static async deleteFile(filePath: string): Promise<void> {
+    try {
+      await fsPromises.unlink(`${process.cwd()}/${filePath}`);
+      Logger.log(`File deleted at ${filePath}`);
+    } catch (error) {
+      throw new CustomHttpException(
+        FileSharingErrorMessage.DeleteFromServerFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        filePath,
+      );
+    }
+  }
+  static async deleteFiles(fileNames: string[]): Promise<void[]> {
+    const deletePromises = fileNames.map((fileName) => this.deleteFile(fileName));
+    return Promise.all(deletePromises);
+  }
+
+  async deleteDirectory(directory: string): Promise<void> {
+    try {
+      await fsPromises.rm(`${process.cwd()}/${directory}`, { recursive: true });
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async deleteDirectories(directories: string[]): Promise<void> {
+    try {
+      const deletionPromises = directories.map((directory) => fsPromises.rm(`${process.cwd()}/${directory}`, { recursive: true }));
+      await Promise.all(deletionPromises);
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async createDirectory(directory: string): Promise<void> {
+    try {
       await fsPromises.mkdir(directory, { recursive: true });
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DIRECTORY_CREATION_FAILED, HttpStatus.NOT_FOUND);
     }
+  }
+  async ensureDirectoryExists(directory: string): Promise<void> {
+    const exists = FilesystemService.checkIfFileExist(directory)
+
+    if (!exists) {
+      Logger.log(`PermanentDirectory does not exist at ${directory}`);
+      Logger.log(`PermanentDirectory does not exist at ${directory}`);
+      Logger.log(`PermanentDirectory does not exist at ${directory}`);
+      Logger.log(`PermanentDirectory does not exist at ${directory}`);
+    } else {
+      Logger.log(`PermanentDirectory exists at ${directory}`);
+      Logger.log(`PermanentDirectory exists at ${directory}`);
+      Logger.log(`PermanentDirectory exists at ${directory}`);
+      Logger.log(`PermanentDirectory exists at ${directory}`);
+    }
+
+    if (!exists) {
+      try{
+        await this.createDirectory(directory)
+      } catch (error) {
+        throw new CustomHttpException(CommonErrorMessages.DIRECTORY_CREATION_FAILED, HttpStatus.NOT_FOUND);
+      }
+    }
+
+    const newExistence = FilesystemService.checkIfFileExist(directory)
+
+    if (!newExistence) {
+      Logger.log(`File does not exist at ${directory}`);
+      Logger.log(`File does not exist at ${directory}`);
+      Logger.log(`File does not exist at ${directory}`);
+      Logger.log(`File does not exist at ${directory}`);
+    } else {
+      Logger.log(`File exists at ${directory}`);
+      Logger.log(`File exists at ${directory}`);
+      Logger.log(`File exists at ${directory}`);
+      Logger.log(`File exists at ${directory}`);
+    }
+  }
+
+  static async checkIfFileExistAndDelete(filePath: string) {
+    const exists = await FilesystemService.checkIfFileExist(filePath);
+    if (exists) {
+      try {
+        await fsPromises.unlink(filePath);
+        Logger.log(`${filePath} deleted.`, FilesystemService.name);
+      } catch (error) {
+        throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
+  static async renameFile(oldFilePath: string, newFilePath: string): Promise<void> {
+
+
+    const exists = await this.checkIfFileExist(oldFilePath);
+
+    if (!exists) {
+      Logger.log(`File does not exist at ${oldFilePath}`);
+      Logger.log(`File does not exist at ${oldFilePath}`);
+      Logger.log(`File does not exist at ${oldFilePath}`);
+      Logger.log(`File does not exist at ${oldFilePath}`);
+    } else {
+      Logger.log(`File exists at ${oldFilePath}`);
+      Logger.log(`File exists at ${oldFilePath}`);
+      Logger.log(`File exists at ${oldFilePath}`);
+      Logger.log(`File exists at ${oldFilePath}`);
+    }
+
+    try {
+      await fsPromises.rename(oldFilePath, newFilePath);
+      Logger.log(`File renamed from ${oldFilePath} to ${newFilePath}`);
+    } catch (error) {
+      Logger.error(`Error: File not renamed from ${oldFilePath} to ${newFilePath}`);
+      Logger.error(error);
+      throw new CustomHttpException(
+        FileSharingErrorMessage.RenameFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error
+      );
+    }
+
+    const newExistence = await this.checkIfFileExist(newFilePath);
+
+    if (!newExistence) {
+      Logger.log(`File does not exist at ${newFilePath}`);
+      Logger.log(`File does not exist at ${newFilePath}`);
+      Logger.log(`File does not exist at ${newFilePath}`);
+      Logger.log(`File does not exist at ${newFilePath}`);
+    } else {
+      Logger.log(`File exists at ${newFilePath}`);
+      Logger.log(`File exists at ${newFilePath}`);
+      Logger.log(`File exists at ${newFilePath}`);
+      Logger.log(`File exists at ${newFilePath}`);
+    }
+
+    // return fsPromises.rename(oldFilePath, newFilePath);
+
+    // try {
+    //   await fsPromises.copyFile(old, newFile, 0);
+    //   Logger.log(`File copied from ${old} to ${newFile}`);
+    // } catch (error) {
+    //   Logger.error(`File copied from ${old} to ${newFile}`);
+    //   Logger.error(error);
+    //   throw new CustomHttpException(
+    //     FileSharingErrorMessage.DuplicateFailed,
+    //     HttpStatus.INTERNAL_SERVER_ERROR,
+    //     error
+    //   );
+    // }
+    // try {
+    //   await fsPromises.unlink(oldFilePath);
+    //   Logger.log(`File removed from ${oldFilePath}`);
+    // } catch (error) {
+    //   Logger.error(`File removed from ${oldFilePath}`);
+    //   Logger.error(error);
+    //   throw new CustomHttpException(
+    //     FileSharingErrorMessage.DeletionFailed,
+    //     HttpStatus.INTERNAL_SERVER_ERROR,
+    //     error
+    //   );
+    // }
+  }
+
+  async getFileNamesFromDirectory(directory: string): Promise<string[]> {
+    const exists = await FilesystemService.checkIfFileExist(directory);
+    if (!exists) {
+      return [];
+    }
+    return fsPromises.readdir(directory)
   }
 
   static generateHashedFilename(filePath: string, filename: string): string {
@@ -67,17 +245,15 @@ class FilesystemService {
     const extension = extname(filename);
     return `${hash}${extension}`;
   }
+  static getOutputFilePath(directory: string, hashedFilename: string): string {
+    return join(directory, hashedFilename);
+  }
 
   static async saveFileStream(stream: AxiosResponse<Readable> | Readable, outputPath: string): Promise<void> {
     const writeStream = createWriteStream(outputPath);
     const actualStream = (stream as AxiosResponse<Readable>).data ? (stream as AxiosResponse<Readable>).data : stream;
     await pipelineAsync(actualStream as Readable, writeStream);
   }
-
-  static getOutputFilePath(directory: string, hashedFilename: string): string {
-    return join(directory, hashedFilename);
-  }
-
   static async retrieveAndSaveFile(filename: string, url: string): Promise<CustomFile | undefined> {
     if (!url) {
       throw new CustomHttpException(FileSharingErrorMessage.MissingCallbackURL, HttpStatus.BAD_REQUEST);
@@ -120,20 +296,6 @@ class FilesystemService {
     }
   }
 
-  static async deleteFile(fileName: string): Promise<void> {
-    const filePath = join(PUBLIC_DOWNLOADS_PATH, fileName);
-    try {
-      await fsPromises.unlink(filePath);
-      Logger.log(`File deleted at ${filePath}`);
-    } catch (error) {
-      throw new CustomHttpException(
-        FileSharingErrorMessage.DeleteFromServerFailed,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        filePath,
-      );
-    }
-  }
-
   async fileLocation(
     username: string,
     filePath: string,
@@ -160,41 +322,6 @@ class FilesystemService {
       } as WebdavStatusResponse;
     } catch (error) {
       throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
-    }
-  }
-
-  static async checkIfFileExist(filePath: string) {
-    try {
-      await fsPromises.access(filePath);
-    } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
-    }
-  }
-
-  static async checkIfFileExistAndDelete(filePath: string) {
-    await FilesystemService.checkIfFileExist(filePath);
-    try {
-      await fsPromises.unlink(filePath);
-      Logger.log(`${filePath} deleted.`, FilesystemService.name);
-    } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  async deleteDirectory(directory: string): Promise<void> {
-    try {
-      await fsPromises.rmdir(directory, { recursive: true });
-    } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  async deleteDirectories(directories: string[]): Promise<void> {
-    try {
-      const deletionPromises = directories.map((directory) => fsPromises.rmdir(directory, { recursive: true }));
-      await Promise.all(deletionPromises);
-    } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

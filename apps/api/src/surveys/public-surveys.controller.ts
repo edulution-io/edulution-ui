@@ -11,7 +11,7 @@
  */
 
 import { Response } from 'express';
-import { Body, Controller, Get, Post, Param, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, Res, Logger } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { IMAGES, PUBLIC_SURVEYS, RESTFUL_CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
@@ -45,6 +45,9 @@ class PublicSurveysController {
   @Public()
   getTemporaryImage(@Param() params: { userId: string; filename: string }, @Res() res: Response) {
     const { userId, filename } = params;
+
+    Logger.log(`Serving temporary image ${filename} for user ${userId}`, 'AttachmentService');
+
     return this.surveyService.serveTemporaryImage(userId, filename, res);
   }
 
@@ -52,6 +55,9 @@ class PublicSurveysController {
   @Public()
   getPermanentImage(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
     const { surveyId, questionId, filename } = params;
+
+    Logger.log(`Serving permanent image ${filename} for question ${questionId} survey ${surveyId}`, 'AttachmentService');
+
     return this.surveyService.servePermanentImage(surveyId, questionId, filename, res);
   }
 

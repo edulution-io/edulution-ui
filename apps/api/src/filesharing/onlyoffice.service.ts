@@ -10,8 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
@@ -22,6 +23,7 @@ import CustomFile from '@libs/filesharing/types/customFile';
 import { JwtService } from '@nestjs/jwt';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import APPS from '@libs/appconfig/constants/apps';
+import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import AppConfigService from '../appconfig/appconfig.service';
 import FilesystemService from '../filesystem/filesystem.service';
@@ -88,7 +90,8 @@ class OnlyofficeService implements OnModuleInit {
     }
 
     await uploadFile(username, cleanedPath, file, '');
-    await FilesystemService.deleteFile(uniqueFileName);
+    const filePath = join(PUBLIC_DOWNLOADS_PATH, uniqueFileName);
+    await FilesystemService.deleteFile(filePath);
 
     return res.status(HttpStatus.OK).json({ error: 0 });
   }
