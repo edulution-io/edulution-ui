@@ -10,60 +10,82 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { create } from 'zustand';
+import { create, StateCreator } from 'zustand';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { GLOBAL_SETTINGS_ROOT_ENDPOINT } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
+import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 
 type GlobalSettingsStore = {
   isSetGlobalSettingLoading: boolean;
   isGetGlobalSettingsLoading: boolean;
-  mfaEnforcedGroups: MultipleSelectorGroup[];
+  globalSettings: GlobalSettingsDto;
   reset: () => void;
-  getGlobalSettings: (projection?: string) => Promise<MultipleSelectorGroup[]>;
+  getGlobalSettings: (projection?: 'auth') => Promise<GlobalSettingsDto>;
   setGlobalSettings: (globalSettingsDto: GlobalSettingsDto) => Promise<void>;
+};
+
+type PersistedGlobalSettingsStore = (
+  globalSettingsState: StateCreator<GlobalSettingsStore>,
+  options: PersistOptions<Partial<GlobalSettingsStore>>,
+) => StateCreator<GlobalSettingsStore>;
+
+const initialGlobalSettings: GlobalSettingsDto = {
+  auth: {
+    mfaEnforcedGroups: [],
+  },
 };
 
 const initialValues = {
   isSetGlobalSettingLoading: false,
   isGetGlobalSettingsLoading: false,
   mfaEnforcedGroups: [],
+  globalSettings: initialGlobalSettings,
 };
 
-const useGlobalSettingsApiStore = create<GlobalSettingsStore>((set) => ({
-  ...initialValues,
+const useGlobalSettingsApiStore = create<GlobalSettingsStore>(
+  (persist as PersistedGlobalSettingsStore)(
+    (set) => ({
+      ...initialValues,
 
-  getGlobalSettings: async (projection?) => {
-    set({ isGetGlobalSettingsLoading: true });
-    try {
-      const { data } = await eduApi.get<{ auth: { mfaEnforcedGroups: MultipleSelectorGroup[] } }>(
-        GLOBAL_SETTINGS_ROOT_ENDPOINT,
-        { params: { projection } },
-      );
-      set({ mfaEnforcedGroups: data.auth.mfaEnforcedGroups });
-      return data.auth.mfaEnforcedGroups;
-    } catch (error) {
-      handleApiError(error, set);
-      return [];
-    } finally {
-      set({ isGetGlobalSettingsLoading: false });
-    }
-  },
+      getGlobalSettings: async (projection?) => {
+        set({ isGetGlobalSettingsLoading: true });
+        try {
+          const { data } = await eduApi.get<GlobalSettingsDto>(GLOBAL_SETTINGS_ROOT_ENDPOINT, {
+            params: { projection },
+          });
+          set({ globalSettings: { ...data } });
 
-  setGlobalSettings: async (globalSettingsDto) => {
-    set({ isSetGlobalSettingLoading: true });
-    try {
-      await eduApi.put(GLOBAL_SETTINGS_ROOT_ENDPOINT, globalSettingsDto);
-    } catch (error) {
-      handleApiError(error, set);
-    } finally {
-      set({ isSetGlobalSettingLoading: false });
-    }
-  },
+          return data;
+        } catch (error) {
+          handleApiError(error, set);
+          return initialGlobalSettings;
+        } finally {
+          set({ isGetGlobalSettingsLoading: false });
+        }
+      },
 
-  reset: () => set(initialValues),
-}));
+      setGlobalSettings: async (globalSettingsDto) => {
+        set({ isSetGlobalSettingLoading: true });
+        try {
+          await eduApi.put(GLOBAL_SETTINGS_ROOT_ENDPOINT, globalSettingsDto);
+          set({ globalSettings: globalSettingsDto });
+        } catch (error) {
+          handleApiError(error, set);
+        } finally {
+          set({ isSetGlobalSettingLoading: false });
+        }
+      },
+
+      reset: () => set(initialValues),
+    }),
+    {
+      name: 'global-settings-storage',
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({ globalSettings: state.globalSettings }),
+    },
+  ),
+);
 
 export default useGlobalSettingsApiStore;

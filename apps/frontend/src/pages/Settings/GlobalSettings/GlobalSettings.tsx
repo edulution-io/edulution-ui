@@ -33,7 +33,8 @@ interface FormData {
 const GlobalSettings: React.FC = () => {
   const { t } = useTranslation();
   const { searchGroups } = useGroupStore();
-  const { mfaEnforcedGroups, getGlobalSettings, setGlobalSettings } = useGlobalSettingsApiStore();
+  const { globalSettings, getGlobalSettings, setGlobalSettings } = useGlobalSettingsApiStore();
+  const { mfaEnforcedGroups } = globalSettings.auth;
 
   const form = useForm<FormData>({
     defaultValues: {

@@ -43,8 +43,9 @@ const SetupMfaDialog: React.FC = () => {
 
   useEffect(() => {
     const handleCheckGlobalSettings = async () => {
-      const mfaEnforcedGroups = await getGlobalSettings(GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH);
-      const isMfaRequired = mfaEnforcedGroups?.some((group) => ldapGroups.includes(group.path));
+      const globalSettingsDto = await getGlobalSettings(GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH);
+      const { mfaEnforcedGroups } = globalSettingsDto.auth;
+      const isMfaRequired = mfaEnforcedGroups.some((group) => ldapGroups.includes(group.path));
       if (isMfaRequired && !user?.mfaEnabled && isDashboardPage) {
         setIsSetTotpDialogOpen(true);
       }
