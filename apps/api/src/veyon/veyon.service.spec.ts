@@ -70,6 +70,11 @@ const mockedUsersFeatureResponse: UserConnectionsFeatureStates = {
   'test-uid': mockedFeatureResponse,
 };
 
+const mockedRejectObject = {
+  response: { status: HttpStatus.INTERNAL_SERVER_ERROR },
+  message: 'Test error',
+};
+
 jest.mock('axios');
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -158,10 +163,7 @@ describe('VeyonService', () => {
     it('should throw HttpException if AxiosError occurs', async () => {
       const mockPassword = 'test-password';
       jest.spyOn(usersService, 'getPassword').mockResolvedValue(mockPassword);
-      mockedAxios.post.mockRejectedValue({
-        response: { status: HttpStatus.INTERNAL_SERVER_ERROR },
-        message: 'Test error',
-      });
+      mockedAxios.post.mockRejectedValue(mockedRejectObject);
 
       await expect(service.authenticate('127.0.0.1', 'username', 'veyonUser')).rejects.toThrow(HttpException);
     });
@@ -213,10 +215,7 @@ describe('VeyonService', () => {
     });
 
     it('should throw HttpException if an error occurs', async () => {
-      mockedAxios.get.mockRejectedValue({
-        response: { status: HttpStatus.INTERNAL_SERVER_ERROR },
-        message: 'Test error',
-      });
+      mockedAxios.get.mockRejectedValue(mockedRejectObject);
 
       await expect(service.getUser('test-uid')).rejects.toThrow(HttpException);
     });
@@ -245,10 +244,7 @@ describe('VeyonService', () => {
     });
 
     it('should throw HttpException if an error occurs', async () => {
-      mockedAxios.put.mockRejectedValue({
-        response: { status: HttpStatus.INTERNAL_SERVER_ERROR },
-        message: 'Test error',
-      });
+      mockedAxios.put.mockRejectedValue(mockedRejectObject);
 
       await expect(
         service.setFeature(VEYON_FEATURE_ACTIONS.SCREENLOCK, { active: true, connectionUids: ['test-uid'] }),
@@ -272,10 +268,7 @@ describe('VeyonService', () => {
     });
 
     it('should throw HttpException if an error occurs', async () => {
-      mockedAxios.get.mockRejectedValue({
-        response: { status: HttpStatus.INTERNAL_SERVER_ERROR },
-        message: 'Test error',
-      });
+      mockedAxios.get.mockRejectedValue(mockedRejectObject);
 
       await expect(service.getFeatures('test-uid')).rejects.toThrow(HttpException);
     });
