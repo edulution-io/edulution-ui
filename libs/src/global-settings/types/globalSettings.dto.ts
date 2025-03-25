@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 /*
  * LICENSE
  *
@@ -11,22 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import { AuthSettings, AuthSettingsSchema } from './schemas/global-settings.auth.schema';
+import { ValidateNested } from 'class-validator';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
-export type GlobalSettingsDocument = GlobalSettings & Document;
+type GlobalSettingsAuth = {
+  mfaEnforcedGroups: MultipleSelectorGroup[];
+};
 
-@Schema({ timestamps: true, strict: true, minimize: false })
-export class GlobalSettings {
-  @Prop({ unique: true, required: true, default: true })
-  singleton: boolean;
-
-  @Prop({ type: AuthSettingsSchema, required: true })
-  auth: AuthSettings;
-
-  @Prop({ default: 1 })
-  schemaVersion: number;
+class GlobalSettingsDto {
+  @ValidateNested()
+  auth: GlobalSettingsAuth;
 }
 
-export const GlobalSettingsSchema = SchemaFactory.createForClass(GlobalSettings);
+export default GlobalSettingsDto;

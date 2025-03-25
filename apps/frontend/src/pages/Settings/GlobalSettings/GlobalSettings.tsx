@@ -22,6 +22,7 @@ import {
   GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS,
   GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH,
 } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
+import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import GlobalSettingsFloatingButtons from './GlobalSettingsFloatingButtons';
 import useGlobalSettingsApiStore from './useGlobalSettingsApiStore';
 
@@ -66,7 +67,9 @@ const GlobalSettings: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
-    void setGlobalSettings(data);
+    const newGlobalSettingsDto: GlobalSettingsDto = { auth: { mfaEnforcedGroups: data.mfaEnforcedGroups } };
+
+    void setGlobalSettings(newGlobalSettingsDto);
   };
 
   return (

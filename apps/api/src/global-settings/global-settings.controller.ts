@@ -12,11 +12,11 @@
 
 import { Body, Controller, Get, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import {
   GLOBAL_SETTINGS_PROJECTION_QUERY_PARAM,
   GLOBAL_SETTINGS_ROOT_ENDPOINT,
 } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
+import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 import GlobalSettingsService from './global-settings.service';
 
@@ -33,8 +33,8 @@ class GlobalSettingsController {
 
   @Put()
   @UseGuards(AppConfigGuard)
-  async setAppSettings(@Body() settingsDto: { mfaEnforcedGroups: MultipleSelectorGroup[] }) {
-    return this.globalSettingsService.setGlobalSettings(settingsDto);
+  async setAppSettings(@Body() globalSettingsDto: GlobalSettingsDto) {
+    return this.globalSettingsService.setGlobalSettings(globalSettingsDto);
   }
 }
 

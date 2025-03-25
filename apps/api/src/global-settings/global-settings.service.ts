@@ -13,9 +13,9 @@
 import { Connection, Model } from 'mongoose';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import GlobalSettingsErrorMessages from '@libs/global-settings/constants/globalSettingsErrorMessages';
+import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
 
 @Injectable()
@@ -39,7 +39,11 @@ class GlobalSettingsService implements OnModuleInit {
 
     if (count === 0) {
       // eslint-disable-next-line new-cap
-      const defaultSettings = new this.globalSettingsModel({ auth: { mfaEnforcedGroups: [], version: 1 } });
+      const defaultSettings = new this.globalSettingsModel({
+        singleton: true,
+        auth: { mfaEnforcedGroups: [] },
+        schemaVersion: 1,
+      });
 
       await defaultSettings.save();
       Logger.log(`Imported default values`, GlobalSettings.name);
@@ -54,9 +58,9 @@ class GlobalSettingsService implements OnModuleInit {
     }
   }
 
-  async setGlobalSettings(settingsDto: { mfaEnforcedGroups: MultipleSelectorGroup[] }) {
+  async setGlobalSettings(globalSettingsDto: GlobalSettingsDto) {
     try {
-      const settings = await this.globalSettingsModel.updateOne({ auth: { ...settingsDto } });
+      const settings = await this.globalSettingsModel.updateOne({ singleton: true }, globalSettingsDto);
 
       if (settings) {
         return settings;

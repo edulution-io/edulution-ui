@@ -15,6 +15,7 @@ import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { GLOBAL_SETTINGS_ROOT_ENDPOINT } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
+import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 
 type GlobalSettingsStore = {
   isSetGlobalSettingLoading: boolean;
@@ -22,7 +23,7 @@ type GlobalSettingsStore = {
   mfaEnforcedGroups: MultipleSelectorGroup[];
   reset: () => void;
   getGlobalSettings: (projection?: string) => Promise<MultipleSelectorGroup[]>;
-  setGlobalSettings: (settingsDto: { mfaEnforcedGroups: MultipleSelectorGroup[] }) => Promise<void>;
+  setGlobalSettings: (globalSettingsDto: GlobalSettingsDto) => Promise<void>;
 };
 
 const initialValues = {
@@ -51,10 +52,10 @@ const useGlobalSettingsApiStore = create<GlobalSettingsStore>((set) => ({
     }
   },
 
-  setGlobalSettings: async (setGlobalSettings) => {
+  setGlobalSettings: async (globalSettingsDto) => {
     set({ isSetGlobalSettingLoading: true });
     try {
-      await eduApi.put(GLOBAL_SETTINGS_ROOT_ENDPOINT, setGlobalSettings);
+      await eduApi.put(GLOBAL_SETTINGS_ROOT_ENDPOINT, globalSettingsDto);
     } catch (error) {
       handleApiError(error, set);
     } finally {
