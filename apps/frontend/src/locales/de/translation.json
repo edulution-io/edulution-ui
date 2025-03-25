@@ -532,10 +532,10 @@
     "participate": {
       "saveAnswerSuccess": "Die Antwort wurde gespeichert.",
       "enterUserInfo": "Bitte gib deinen Namen und deine E-Mail-Adresse ein.",
-      "preferred_username": "Bevorzugter Name",
-      "given_name": "Vorname",
-      "family_name": "Nachname",
-      "email": "E-Mail",
+      "username": "Benutzername",
+      "usernameTollTip": "Du bekommst den Benutzernamen nach der Teilnahme",
+      "firstName": "Vorname",
+      "lastName": "Nachname",
       "saveUserInfo": "Weiter"
     },
     "errors": {

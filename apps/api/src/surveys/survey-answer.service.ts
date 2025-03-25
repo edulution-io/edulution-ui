@@ -20,7 +20,7 @@ import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-erro
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
-import UserInfo from '@libs/user/types/jwt/userinfo';
+import UserInfo from '@libs/common/types/userinfo';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
 import Attendee from '../conferences/attendee.schema';
@@ -132,10 +132,7 @@ class SurveyAnswersService {
         },
       ],
     };
-
-    const survey = await this.surveyModel.find<Survey>(query);
-
-    return survey;
+    return this.surveyModel.find<Survey>(query);
   }
 
   async getAnsweredSurveys(username: string): Promise<Survey[]> {
@@ -196,12 +193,7 @@ class SurveyAnswersService {
     }
   };
 
-  async addAnswer(
-    surveyId: string,
-    saveNo: number,
-    answer: JSON,
-    user?: JWTUser | UserInfo,
-  ): Promise<SurveyAnswer | undefined> {
+  async addAnswer(surveyId: string, saveNo: number, answer: JSON, user?: UserInfo): Promise<SurveyAnswer | undefined> {
     const survey = await this.surveyModel.findById<Survey>(surveyId);
     if (!survey) {
       throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
@@ -232,8 +224,12 @@ class SurveyAnswersService {
       return newSurveyAnswer;
     }
 
-    const username = user?.preferred_username;
-    const attendee = { firstName: user?.given_name || username, lastName: user?.family_name || username, username };
+    if (!user) {
+      throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
+    }
+
+    const username = user?.username;
+    const attendee = { firstName: user?.firstName || 'first-name', lastName: user?.lastName || 'last-name', username };
 
     await this.throwErrorIfParticipationIsNotPossible(survey, username);
 

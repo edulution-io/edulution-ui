@@ -16,7 +16,7 @@ import { t } from 'i18next';
 import { Model, CompletingEvent } from 'survey-core';
 import { SURVEYS, PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import SubmitAnswerDto from '@libs/survey/types/api/submit-answer.dto';
-import UserInfo from '@libs/user/types/jwt/userinfo';
+import UserInfo from '@libs/common/types/userinfo';
 import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
 

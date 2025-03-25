@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import UserInfo from '@libs/user/types/jwt/userinfo';
+import UserInfo from '@libs/common/types/userinfo';
 
 interface PushAnswerDto {
   surveyId: string;

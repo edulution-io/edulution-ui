@@ -530,10 +530,10 @@
     "participate": {
       "saveAnswerSuccess": "Saved the answer.",
       "enterUserInfo": "Please enter your information",
-      "preferred_username": "Preferred name",
-      "given_name": "First name",
-      "family_name": "Last name",
-      "email": "E-mail",
+      "username": "User name",
+      "usernameTollTip": "You will receive a user name after participating",
+      "firstName": "First name",
+      "lastName": "Last name",
       "saveUserInfo": "Next"
     },
     "errors": {

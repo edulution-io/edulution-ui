@@ -20,7 +20,7 @@ import cn from '@libs/common/utils/className';
 import useUserStore from '@/store/UserStore/UserStore';
 import useLanguage from '@/hooks/useLanguage';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import EnterUserInformation from '@/pages/Surveys/Participation/EnterUserInformation';
+import PublicPagesUserInput from '@/pages/Surveys/Participation/PublicPagesUserInput';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import surveyTheme from '@/pages/Surveys/theme/theme';
@@ -51,10 +51,9 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
   useEffect(() => {
     if (user == null) return;
     updateUserInfo({
-      preferred_username: user?.username,
-      family_name: user?.lastName,
-      given_name: user?.firstName,
-      email: user.email,
+      firstName: user.firstName || '...',
+      lastName: user.lastName || '...',
+      username: user.username || '...',
     });
   }, [user]);
 
@@ -109,7 +108,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
   if (isPublic && !userInfo && !selectedSurvey?.isAnonymous) {
     return (
       <div className="relative top-1/3">
-        <EnterUserInformation setUserInfo={updateUserInfo} />
+        <PublicPagesUserInput setUserInfo={updateUserInfo} />
       </div>
     );
   }

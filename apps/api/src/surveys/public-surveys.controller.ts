@@ -10,13 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Get, Post, Param } from '@nestjs/common';
 import { PUBLIC_SURVEYS, RESTFUL_CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
-import { ApiTags } from '@nestjs/swagger';
+import JwtUser from '@libs/user/types/jwt/jwtUser';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import { Public } from '../common/decorators/public.decorator';
+import GetCurrentUser from '../common/decorators/getUser.decorator';
 
 @ApiTags(PUBLIC_SURVEYS)
 @Controller(PUBLIC_SURVEYS)
@@ -35,9 +37,20 @@ class PublicSurveysController {
 
   @Post()
   @Public()
-  async answerSurvey(@Body() pushAnswerDto: PushAnswerDto) {
+  async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUser() currentUser: JwtUser) {
     const { surveyId, saveNo, answer, userInfo } = pushAnswerDto;
-    return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, userInfo);
+    if (!currentUser && !userInfo) {
+      return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, undefined);
+    }
+    if (userInfo) {
+      const user = {
+        firstName: currentUser.given_name || userInfo.firstName,
+        lastName: currentUser.family_name || userInfo.lastName,
+        username: currentUser.preferred_username || userInfo.username,
+      };
+      return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, user);
+    }
+    return undefined;
   }
 
   @Get(`${RESTFUL_CHOICES}/:surveyId/:questionId`)
