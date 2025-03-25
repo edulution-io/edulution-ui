@@ -26,9 +26,10 @@
     height: calc(100vh - 120px);
     overflow: auto;
   }
+  .sd-container-modern__title,
   .sd-body.sd-body--static {
-    max-width: calc(100vw - 4rem);
-    width: calc(100vw - 4rem);
+    max-width: calc(100vw - 2rem);
+    width: calc(100vw - 2rem);
   }
 
   .sd-page {
