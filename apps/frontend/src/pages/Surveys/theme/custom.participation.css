@@ -28,8 +28,8 @@
   }
   .sd-container-modern__title,
   .sd-body.sd-body--static {
-    max-width: calc(100vw - 2rem);
-    width: calc(100vw - 2rem);
+    max-width: calc(100vw);
+    width: calc(100vw);
   }
 
   .sd-page {
