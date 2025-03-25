@@ -40,6 +40,15 @@ class FilesystemService {
 
   private readonly baseurl = process.env.EDUI_WEBDAV_URL as string;
 
+  async createReadStream(filePath: string): Promise<Readable> {
+    try {
+      await fsPromises.access(filePath);
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+    return createReadStream(filePath);
+  }
+
   static async fetchFileStream(
     url: string,
     client: AxiosInstance,
@@ -61,12 +70,21 @@ class FilesystemService {
     }
     return true;
   }
+
   static async throwErrorIfFileNotExists(filePath: string): Promise<void> {
     try {
       await fsPromises.access(`${process.cwd()}/${filePath}`);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
+  }
+
+  async getFileNamesFromDirectory(directory: string): Promise<string[]> {
+    const exists = await FilesystemService.checkIfFileExist(directory);
+    if (!exists) {
+      return [];
+    }
+    return fsPromises.readdir(directory);
   }
 
   static async deleteFile(filePath: string): Promise<void> {
@@ -81,6 +99,7 @@ class FilesystemService {
       );
     }
   }
+
   static async deleteFiles(fileNames: string[]): Promise<void[]> {
     const deletePromises = fileNames.map((fileName) => this.deleteFile(fileName));
     return Promise.all(deletePromises);
@@ -96,7 +115,7 @@ class FilesystemService {
 
   async deleteDirectories(directories: string[]): Promise<void> {
     try {
-      const deletionPromises = directories.map((directory) => fsPromises.rm(`${process.cwd()}/${directory}`, { recursive: true }));
+      const deletionPromises = directories.map((directory) => fsPromises.rm(directory, { recursive: true }));
       await Promise.all(deletionPromises);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -110,41 +129,15 @@ class FilesystemService {
       throw new CustomHttpException(CommonErrorMessages.DIRECTORY_CREATION_FAILED, HttpStatus.NOT_FOUND);
     }
   }
+
   async ensureDirectoryExists(directory: string): Promise<void> {
-    const exists = FilesystemService.checkIfFileExist(directory)
-
+    const exists = await FilesystemService.checkIfFileExist(directory);
     if (!exists) {
-      Logger.log(`PermanentDirectory does not exist at ${directory}`);
-      Logger.log(`PermanentDirectory does not exist at ${directory}`);
-      Logger.log(`PermanentDirectory does not exist at ${directory}`);
-      Logger.log(`PermanentDirectory does not exist at ${directory}`);
-    } else {
-      Logger.log(`PermanentDirectory exists at ${directory}`);
-      Logger.log(`PermanentDirectory exists at ${directory}`);
-      Logger.log(`PermanentDirectory exists at ${directory}`);
-      Logger.log(`PermanentDirectory exists at ${directory}`);
-    }
-
-    if (!exists) {
-      try{
-        await this.createDirectory(directory)
+      try {
+        await this.createDirectory(directory);
       } catch (error) {
         throw new CustomHttpException(CommonErrorMessages.DIRECTORY_CREATION_FAILED, HttpStatus.NOT_FOUND);
       }
-    }
-
-    const newExistence = FilesystemService.checkIfFileExist(directory)
-
-    if (!newExistence) {
-      Logger.log(`File does not exist at ${directory}`);
-      Logger.log(`File does not exist at ${directory}`);
-      Logger.log(`File does not exist at ${directory}`);
-      Logger.log(`File does not exist at ${directory}`);
-    } else {
-      Logger.log(`File exists at ${directory}`);
-      Logger.log(`File exists at ${directory}`);
-      Logger.log(`File exists at ${directory}`);
-      Logger.log(`File exists at ${directory}`);
     }
   }
 
@@ -160,84 +153,19 @@ class FilesystemService {
     }
   }
 
-  static async renameFile(oldFilePath: string, newFilePath: string): Promise<void> {
-
-
-    const exists = await this.checkIfFileExist(oldFilePath);
-
-    if (!exists) {
-      Logger.log(`File does not exist at ${oldFilePath}`);
-      Logger.log(`File does not exist at ${oldFilePath}`);
-      Logger.log(`File does not exist at ${oldFilePath}`);
-      Logger.log(`File does not exist at ${oldFilePath}`);
-    } else {
-      Logger.log(`File exists at ${oldFilePath}`);
-      Logger.log(`File exists at ${oldFilePath}`);
-      Logger.log(`File exists at ${oldFilePath}`);
-      Logger.log(`File exists at ${oldFilePath}`);
-    }
-
+  static async moveFile(oldFilePath: string, newFilePath: string): Promise<void> {
     try {
-      await fsPromises.rename(oldFilePath, newFilePath);
-      Logger.log(`File renamed from ${oldFilePath} to ${newFilePath}`);
+      await this.throwErrorIfFileNotExists(oldFilePath);
+      await fsPromises.cp(oldFilePath, newFilePath);
+
+      await this.throwErrorIfFileNotExists(newFilePath);
+      await fsPromises.unlink(oldFilePath);
+
+      Logger.log(`File moved from ${oldFilePath} to ${newFilePath}`);
     } catch (error) {
-      Logger.error(`Error: File not renamed from ${oldFilePath} to ${newFilePath}`);
       Logger.error(error);
-      throw new CustomHttpException(
-        FileSharingErrorMessage.RenameFailed,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        error
-      );
+      throw new CustomHttpException(FileSharingErrorMessage.RenameFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     }
-
-    const newExistence = await this.checkIfFileExist(newFilePath);
-
-    if (!newExistence) {
-      Logger.log(`File does not exist at ${newFilePath}`);
-      Logger.log(`File does not exist at ${newFilePath}`);
-      Logger.log(`File does not exist at ${newFilePath}`);
-      Logger.log(`File does not exist at ${newFilePath}`);
-    } else {
-      Logger.log(`File exists at ${newFilePath}`);
-      Logger.log(`File exists at ${newFilePath}`);
-      Logger.log(`File exists at ${newFilePath}`);
-      Logger.log(`File exists at ${newFilePath}`);
-    }
-
-    // return fsPromises.rename(oldFilePath, newFilePath);
-
-    // try {
-    //   await fsPromises.copyFile(old, newFile, 0);
-    //   Logger.log(`File copied from ${old} to ${newFile}`);
-    // } catch (error) {
-    //   Logger.error(`File copied from ${old} to ${newFile}`);
-    //   Logger.error(error);
-    //   throw new CustomHttpException(
-    //     FileSharingErrorMessage.DuplicateFailed,
-    //     HttpStatus.INTERNAL_SERVER_ERROR,
-    //     error
-    //   );
-    // }
-    // try {
-    //   await fsPromises.unlink(oldFilePath);
-    //   Logger.log(`File removed from ${oldFilePath}`);
-    // } catch (error) {
-    //   Logger.error(`File removed from ${oldFilePath}`);
-    //   Logger.error(error);
-    //   throw new CustomHttpException(
-    //     FileSharingErrorMessage.DeletionFailed,
-    //     HttpStatus.INTERNAL_SERVER_ERROR,
-    //     error
-    //   );
-    // }
-  }
-
-  async getFileNamesFromDirectory(directory: string): Promise<string[]> {
-    const exists = await FilesystemService.checkIfFileExist(directory);
-    if (!exists) {
-      return [];
-    }
-    return fsPromises.readdir(directory)
   }
 
   static generateHashedFilename(filePath: string, filename: string): string {
@@ -245,6 +173,7 @@ class FilesystemService {
     const extension = extname(filename);
     return `${hash}${extension}`;
   }
+
   static getOutputFilePath(directory: string, hashedFilename: string): string {
     return join(directory, hashedFilename);
   }
@@ -254,6 +183,7 @@ class FilesystemService {
     const actualStream = (stream as AxiosResponse<Readable>).data ? (stream as AxiosResponse<Readable>).data : stream;
     await pipelineAsync(actualStream as Readable, writeStream);
   }
+
   static async retrieveAndSaveFile(filename: string, url: string): Promise<CustomFile | undefined> {
     if (!url) {
       throw new CustomHttpException(FileSharingErrorMessage.MissingCallbackURL, HttpStatus.BAD_REQUEST);
@@ -323,15 +253,6 @@ class FilesystemService {
     } catch (error) {
       throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     }
-  }
-
-  async createReadStream(filePath: string): Promise<Readable> {
-    try {
-      await fsPromises.access(filePath);
-    } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
-    }
-    return createReadStream(filePath);
   }
 
   static checkImageFile(file: Express.Multer.File): string {

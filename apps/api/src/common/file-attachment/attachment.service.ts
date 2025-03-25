@@ -10,9 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { join } from 'path';
 import { Response } from 'express';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import FilesystemService from '../../filesystem/filesystem.service';
 
 @Injectable()
@@ -30,8 +29,6 @@ class AttachmentService {
     this.filePath = filePath;
   }
 
-  checkExistence = async (path: string): Promise<boolean> => FilesystemService.checkIfFileExist(path);
-
   getTemporaryAttachmentUrl = (userId: string, fileName: string): string => `${this.domain}/TEMP/${userId}/${fileName}`;
 
   getPersistentAttachmentUrl = (pathWithIds: string, fileName: string): string =>
@@ -42,28 +39,21 @@ class AttachmentService {
   getTemporaryAttachmentPath = (userId: string, fileName: string): string =>
     `${this.filePath}/TEMP/${userId}/${fileName}`;
 
-  getTemporaryAttachmentAbsolutePath = (userId: string, fileName: string): string =>
-    join(process.cwd(), this.filePath, 'TEMP', userId, fileName);
+  createPersistentDirectory = (pathWithIds: string): Promise<void> =>
+    this.fileSystemService.ensureDirectoryExists(this.getPersistentDirectory(pathWithIds));
 
   getPersistentDirectory = (pathWithIds: string): string => `${this.filePath}/${pathWithIds}`;
-
-  getPersistentDirectoryAbsolutePath = (pathWithIds: string): string => join(process.cwd(), this.filePath, pathWithIds);
-
-  createPersistentDirectory = (pathWithIds: string): Promise<void> => this.fileSystemService.ensureDirectoryExists(this.getPersistentDirectoryAbsolutePath(pathWithIds));
 
   getPersistentAttachmentPath = (pathWithIds: string, fileName: string): string =>
     `${this.filePath}/${pathWithIds}/${fileName}`;
 
-  getPersistentAttachmentAbsolutePath = (pathWithIds: string, fileName: string): string =>
-    join(process.cwd(), this.filePath, pathWithIds, fileName);
+  getFileNamesFromTEMP = (userId: string) => {
+    const tempFolder = this.getTemporaryDirectory(userId);
+    return this.fileSystemService.getFileNamesFromDirectory(tempFolder);
+  };
 
   async clearTEMP(userId: string) {
     const destination = this.getTemporaryDirectory(userId);
-    await this.fileSystemService.deleteDirectory(destination);
-  }
-
-  async clearPersistent(pathWithIds: string) {
-    const destination = this.getPersistentDirectory(pathWithIds);
     await this.fileSystemService.deleteDirectory(destination);
   }
 
@@ -81,44 +71,22 @@ class AttachmentService {
     return res;
   }
 
-  getFileNamesFromTEMP = (userId: string) => {
-    const tempFolder = this.getTemporaryDirectory(userId);
-    return this.fileSystemService.getFileNamesFromDirectory(tempFolder);
-  };
-
-  async moveFileToPermanent(fileName: string, userId: string, pathWithIds: string) {
-    // const permanentDirectory = this.getPersistentDirectory(pathWithIds);
-    // await this.fileSystemService.ensureDirectoryExists(permanentDirectory)
-
-    Logger.log(`moveFileToPermanent`);
-
+  async moveFileToPermanent(userId: string, pathWithIds: string, fileName: string) {
     const temporaryAttachmentPath = this.getTemporaryAttachmentPath(userId, fileName);
-    // const temporaryAttachmentPath = this.getTemporaryAttachmentAbsolutePath(userId, fileName);
     const persistentAttachmentPath = this.getPersistentAttachmentPath(pathWithIds, fileName);
-    // const persistentAttachmentPath = this.getPersistentAttachmentAbsolutePath(pathWithIds, fileName);
-
-    Logger.log(`temporaryAttachmentPath ${temporaryAttachmentPath}`);
-    Logger.log(`persistentAttachmentPath ${persistentAttachmentPath}`);
-
-    return FilesystemService.renameFile(temporaryAttachmentPath, persistentAttachmentPath);
+    return FilesystemService.moveFile(temporaryAttachmentPath, persistentAttachmentPath);
   }
 
-  async moveTempFileIntoPermanentDirectory(fileName: string, userId: string, pathWithIds: string) {
-
-    Logger.log(`moveTempFileIntoPermanentDirectory`);
-
+  async moveTempFileIntoPermanentDirectory(userId: string, pathWithIds: string, fileName: string) {
     const permanentDirectory = this.getPersistentDirectory(pathWithIds);
-    await this.fileSystemService.ensureDirectoryExists(permanentDirectory)
-
-    Logger.log(`PERMANENT DIRECTORY DOES EXIST`);
-
-    return this.moveFileToPermanent(fileName, userId, pathWithIds);
+    await this.fileSystemService.ensureDirectoryExists(permanentDirectory);
+    return this.moveFileToPermanent(userId, pathWithIds, fileName);
   }
 
-  async moveTempFilesIntoPermanentDirectory(fileNames: string[], userId: string, pathWithIds: string) {
+  async moveTempFilesIntoPermanentDirectory(userId: string, pathWithIds: string, fileNames: string[]) {
     const permanentDirectory = this.getPersistentDirectory(pathWithIds);
-    await this.fileSystemService.ensureDirectoryExists(permanentDirectory)
-    const movingPromises = fileNames.map((fileName) => this.moveFileToPermanent(fileName, userId, pathWithIds));
+    await this.fileSystemService.ensureDirectoryExists(permanentDirectory);
+    const movingPromises = fileNames.map((fileName) => this.moveFileToPermanent(userId, pathWithIds, fileName));
     return Promise.all(movingPromises);
   }
 }
