@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { FiPrinter } from 'react-icons/fi';
 import { IconType } from 'react-icons';
 import { MdSchool } from 'react-icons/md';
-import { FaArrowRightToBracket, FaEarthEurope } from 'react-icons/fa6';
+import { FaArrowRightToBracket, FaEarthAmericas } from 'react-icons/fa6';
 import { TbFilterCode } from 'react-icons/tb';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import DropdownMenu from '@/components/shared/DropdownMenu';
@@ -112,7 +112,7 @@ const UserCardButtonBar = ({
       disabled,
     },
     { icon: TbFilterCode, value: webfilter, title: CLASSMGMT_OPTIONS.WEBFILTER, variant: 'button', disabled },
-    { icon: FaEarthEurope, value: internet, title: CLASSMGMT_OPTIONS.INTERNET, variant: 'button', disabled },
+    { icon: FaEarthAmericas, value: internet, title: CLASSMGMT_OPTIONS.INTERNET, variant: 'button', disabled },
     { icon: FiPrinter, value: printing, title: CLASSMGMT_OPTIONS.PRINTING, variant: 'button', disabled },
     { icon: MdSchool, value: examMode, title: CLASSMGMT_OPTIONS.EXAMMODE, variant: 'button', disabled },
     {

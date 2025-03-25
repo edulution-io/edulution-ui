@@ -12,7 +12,7 @@
 
 /* eslint-disable @typescript-eslint/dot-notation */
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpException } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import axios, { AxiosInstance } from 'axios';
 import { Readable } from 'stream';
 import VEYON_FEATURE_ACTIONS from '@libs/veyon/constants/veyonFeatureActions';
@@ -147,7 +147,7 @@ describe('VeyonService', () => {
 
       (service['veyonApi'].post as jest.Mock).mockResolvedValueOnce({
         data: mockResponse,
-        status: 200,
+        status: HttpStatus.OK,
       });
 
       const result = await service.authenticate('127.0.0.1', 'username', 'veyonUser');
@@ -159,7 +159,7 @@ describe('VeyonService', () => {
       const mockPassword = 'test-password';
       jest.spyOn(usersService, 'getPassword').mockResolvedValue(mockPassword);
       mockedAxios.post.mockRejectedValue({
-        response: { status: 500 },
+        response: { status: HttpStatus.INTERNAL_SERVER_ERROR },
         message: 'Test error',
       });
 
@@ -214,7 +214,7 @@ describe('VeyonService', () => {
 
     it('should throw HttpException if an error occurs', async () => {
       mockedAxios.get.mockRejectedValue({
-        response: { status: 500 },
+        response: { status: HttpStatus.INTERNAL_SERVER_ERROR },
         message: 'Test error',
       });
 
@@ -246,7 +246,7 @@ describe('VeyonService', () => {
 
     it('should throw HttpException if an error occurs', async () => {
       mockedAxios.put.mockRejectedValue({
-        response: { status: 500 },
+        response: { status: HttpStatus.INTERNAL_SERVER_ERROR },
         message: 'Test error',
       });
 
@@ -273,7 +273,7 @@ describe('VeyonService', () => {
 
     it('should throw HttpException if an error occurs', async () => {
       mockedAxios.get.mockRejectedValue({
-        response: { status: 500 },
+        response: { status: HttpStatus.INTERNAL_SERVER_ERROR },
         message: 'Test error',
       });
 

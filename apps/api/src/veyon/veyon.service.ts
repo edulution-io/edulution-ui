@@ -99,11 +99,11 @@ class VeyonService implements OnModuleInit {
         },
         {
           timeout: 60000,
-          validateStatus: (valStatus) => valStatus < 500,
+          validateStatus: (valStatus) => valStatus < (HttpStatus.INTERNAL_SERVER_ERROR as number),
         },
       );
 
-      if (response.status !== 200) {
+      if (response.status !== (HttpStatus.OK as number)) {
         return {};
       }
 
