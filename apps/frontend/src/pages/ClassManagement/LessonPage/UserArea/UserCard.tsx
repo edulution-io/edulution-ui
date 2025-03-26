@@ -40,7 +40,7 @@ const UserCard = ({ user, selectedMember, isTeacherInSameClass, setSelectedMembe
   const { t } = useTranslation();
   const { currentUser } = useLmnApiPasswordStore();
   const { userConnectionsFeatureStates, userConnectionUids, authenticateVeyonClient, getFeatures } = useVeyonApiStore();
-  const { displayName, name, sophomorixAdminClass, school, givenName, sn: surname, thumbnailPhoto, examMode } = user;
+  const { displayName, name, sophomorixAdminClass, school, examMode } = user;
 
   const studentName = examMode ? `${name}-exam` : name;
 
@@ -117,7 +117,7 @@ const UserCard = ({ user, selectedMember, isTeacherInSameClass, setSelectedMembe
             )}
             <div className={cn('text-md mt-1 h-8 w-44 font-bold', !isSelectable && 'ml-2')}>
               {displayName}
-              <span className="flex text-xs">{name}</span>
+              <span className="flex text-xs">{studentName}</span>
             </div>
           </div>
 

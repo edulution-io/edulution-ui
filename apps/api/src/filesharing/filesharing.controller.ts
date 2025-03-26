@@ -38,15 +38,15 @@ import { Request, Response } from 'express';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import { Observable } from 'rxjs';
-import FilesharingService from './filesharing.service';
+import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
-import DuplicateFileConsumer from "./consumers/duplicateFile.consumer"
-import CollectFileConsumer from "./consumers/collectFile.consumer";
+import DuplicateFileConsumer from './consumers/duplicateFile.consumer';
+import CollectFileConsumer from './consumers/collectFile.consumer';
+import FilesharingService from './filesharing.service';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
@@ -206,7 +206,6 @@ class FilesharingController {
   sseCollect(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
     return this.filesharingCollectConsumer.subscribe(username, res);
   }
-
 }
 
 export default FilesharingController;

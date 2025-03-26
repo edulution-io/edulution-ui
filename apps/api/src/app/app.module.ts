@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Logger, Module } from '@nestjs/common';
+import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CacheModule } from '@nestjs/cache-manager';
 import { JwtModule } from '@nestjs/jwt';
@@ -40,6 +40,8 @@ import BulletinCategoryModule from '../bulletin-category/bulletin-category.modul
 import BulletinBoardModule from '../bulletinboard/bulletinboard.module';
 import DockerModule from '../docker/docker.module';
 import VeyonModule from '../veyon/veyon.module';
+import FileSharingCommonService from '../fileSharingCommon/fileSharingCommonService';
+import UsersService from '../users/users.service';
 
 const redisHost = process.env.REDIS_HOST ?? 'localhost';
 const redisPort = +(process.env.REDIS_PORT ?? 6379);
@@ -136,4 +138,10 @@ const redisPort = +(process.env.REDIS_PORT ?? 6379);
     },
   ],
 })
-export default class AppModule {}
+export default class AppModule implements OnModuleInit {
+  constructor(private readonly usersService: UsersService) {}
+
+  onModuleInit() {
+    FileSharingCommonService.configure(this.usersService);
+  }
+}

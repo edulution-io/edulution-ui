@@ -14,27 +14,20 @@ import { WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Response } from 'express';
 import { Observable } from 'rxjs';
-import {forwardRef, Inject, MessageEvent} from '@nestjs/common';
-import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
+import { MessageEvent } from '@nestjs/common';
 import CollectFileJobData from '@libs/queue/types/collectFileJobData';
 import FilePaths from '@libs/filesharing/constants/file-paths';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
-import JobData from "@libs/queue/constants/jobData";
+import JobData from '@libs/queue/constants/jobData';
+import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 import SseService from '../../sse/sse.service';
-import FilesharingService from '../filesharing.service';
 
 import type UserConnections from '../../types/userConnections';
+import FileSharingCommonService from '../../fileSharingCommon/fileSharingCommonService';
 
 class CollectFileConsumer extends WorkerHost {
   private fileCollectingSseConnections: UserConnections = new Map();
-
-  constructor(
-    @Inject(forwardRef(() => FilesharingService))
-    private readonly fileSharingService: FilesharingService,
-  ) {
-    super();
-  }
 
   subscribe(username: string, res: Response): Observable<MessageEvent> {
     return SseService.subscribe(username, this.fileCollectingSseConnections, res);
@@ -47,15 +40,12 @@ class CollectFileConsumer extends WorkerHost {
     const initFolderName = `${userRole}s/${username}/transfer/collected`;
 
     try {
-      await this.fileSharingService.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName);
+      await FileSharingCommonService.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName);
 
       if (operationType === LMN_API_COLLECT_OPERATIONS.CUT) {
-        await this.fileSharingService.cutCollectedItems(username, item.originPath, item.destinationPath);
+        await FileSharingCommonService.cutCollectedItems(username, item.originPath, item.destinationPath);
       } else {
-        await this.fileSharingService.copyCollectedItems(username, {
-          originFilePath: item.originPath,
-          destinationFilePaths: [item.destinationPath],
-        });
+        await FileSharingCommonService.copyCollectedItems(username, item.originPath, [item.destinationPath]);
       }
     } catch (error) {
       failedPaths.push(item.destinationPath);
