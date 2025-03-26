@@ -79,7 +79,7 @@ class SurveysService implements OnModuleInit {
     } catch (error) {
       throw new CustomHttpException(SurveyErrorMessages.DeleteError, HttpStatus.NOT_MODIFIED, error);
     } finally {
-      this.sseService.informAllUsers(surveyIds.toString(), SSE_MESSAGE_TYPE.DELETED);
+      this.sseService.informAllUsers(surveyIds.toString(), SSE_MESSAGE_TYPE.SURVEY_DELETED);
     }
   }
 
@@ -102,14 +102,14 @@ class SurveysService implements OnModuleInit {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {
       if (survey.isPublic) {
-        this.sseService.informAllUsers(survey, SSE_MESSAGE_TYPE.UPDATED);
+        this.sseService.informAllUsers(survey, SSE_MESSAGE_TYPE.SURVEY_UPDATED);
       } else {
         const invitedMembersList = await this.groupsService.getInvitedMembers(
           survey.invitedGroups,
           survey.invitedAttendees,
         );
         const updatedSurvey = await this.surveyModel.findById(survey.id).exec();
-        this.sseService.sendEventToUsers(invitedMembersList, updatedSurvey || survey, SSE_MESSAGE_TYPE.UPDATED);
+        this.sseService.sendEventToUsers(invitedMembersList, updatedSurvey || survey, SSE_MESSAGE_TYPE.SURVEY_UPDATED);
       }
     }
   }
@@ -128,13 +128,13 @@ class SurveysService implements OnModuleInit {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {
       if (survey.isPublic) {
-        this.sseService.informAllUsers(survey, SSE_MESSAGE_TYPE.CREATED);
+        this.sseService.informAllUsers(survey, SSE_MESSAGE_TYPE.SURVEY_CREATED);
       } else {
         const invitedMembersList = await this.groupsService.getInvitedMembers(
           survey.invitedGroups,
           survey.invitedAttendees,
         );
-        this.sseService.sendEventToUsers(invitedMembersList, survey, SSE_MESSAGE_TYPE.CREATED);
+        this.sseService.sendEventToUsers(invitedMembersList, survey, SSE_MESSAGE_TYPE.SURVEY_CREATED);
       }
     }
   }

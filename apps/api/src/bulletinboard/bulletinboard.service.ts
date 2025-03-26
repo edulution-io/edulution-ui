@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable, MessageEvent, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Response } from 'express';
 import { Model, Types } from 'mongoose';
@@ -27,7 +27,6 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
-import { Observable } from 'rxjs';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 
@@ -52,10 +51,6 @@ class BulletinBoardService implements OnModuleInit {
     if (!existsSync(this.attachmentsPath)) {
       mkdirSync(this.attachmentsPath, { recursive: true });
     }
-  }
-
-  subscribe(username: string, res: Response): Observable<MessageEvent> {
-    return this.sseService.subscribe(username, res);
   }
 
   static checkAttachmentFile(file: Express.Multer.File): string {
@@ -267,7 +262,7 @@ class BulletinBoardService implements OnModuleInit {
       (!dto.isVisibleEndDate || now <= new Date(dto.isVisibleEndDate));
 
     if (isWithinVisibilityPeriod) {
-      this.sseService.sendEventToUsers(invitedMembersList, resultingBulletin, SSE_MESSAGE_TYPE.UPDATED);
+      this.sseService.sendEventToUsers(invitedMembersList, resultingBulletin, SSE_MESSAGE_TYPE.BULLETIN_UPDATED);
     }
   }
 

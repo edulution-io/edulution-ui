@@ -10,14 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpException, HttpStatus, Injectable, MessageEvent } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import { parseString } from 'xml2js';
 import { Model } from 'mongoose';
-import { Response } from 'express';
-import { Observable } from 'rxjs';
 import { createHash } from 'crypto';
 import { Interval } from '@nestjs/schedule';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -51,10 +49,6 @@ class ConferencesService {
     private readonly sseService: SseService,
   ) {}
 
-  subscribe(username: string, res: Response): Observable<MessageEvent> {
-    return this.sseService.subscribe(username, res);
-  }
-
   @Interval(CONFERENCES_SYNC_INTERVAL_MS)
   async syncRunningConferencesStatus() {
     const runningConferences = await this.conferenceModel.find({ isRunning: true }).exec();
@@ -67,7 +61,7 @@ class ConferencesService {
             conference.invitedGroups,
             conference.invitedAttendees,
           );
-          this.sseService.sendEventToUsers(attendees, conference.meetingID, SSE_MESSAGE_TYPE.STOPPED);
+          this.sseService.sendEventToUsers(attendees, conference.meetingID, SSE_MESSAGE_TYPE.CONFERENCE_STOPPED);
         }
       }),
     );
@@ -173,7 +167,7 @@ class ConferencesService {
         .findOne({ meetingID: newConference.meetingID }, { _id: 0, __v: 0 })
         .lean();
       if (conference) {
-        this.sseService.sendEventToUsers(invitedMembersList, conference, SSE_MESSAGE_TYPE.CREATED);
+        this.sseService.sendEventToUsers(invitedMembersList, conference, SSE_MESSAGE_TYPE.CONFERENCE_CREATED);
       }
     }
   }
@@ -220,7 +214,7 @@ class ConferencesService {
       this.sseService.sendEventToUsers(
         [...invitedMembersList, publicConferencesSubscriber],
         conference.meetingID,
-        SSE_MESSAGE_TYPE.STARTED,
+        SSE_MESSAGE_TYPE.CONFERENCE_STARTED,
       );
     }
   }
@@ -253,7 +247,7 @@ class ConferencesService {
       this.sseService.sendEventToUsers(
         [...invitedMembersList, publicConferencesSubscriber],
         conference.meetingID,
-        SSE_MESSAGE_TYPE.STOPPED,
+        SSE_MESSAGE_TYPE.CONFERENCE_STOPPED,
       );
     }
   }
@@ -409,7 +403,7 @@ class ConferencesService {
       )
     ).flat();
 
-    this.sseService.sendEventToUsers(invitedMembersList, meetingIDs, SSE_MESSAGE_TYPE.DELETED);
+    this.sseService.sendEventToUsers(invitedMembersList, meetingIDs, SSE_MESSAGE_TYPE.CONFERENCE_DELETED);
 
     return true;
   }

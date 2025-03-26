@@ -10,11 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit, MessageEvent, HttpStatus } from '@nestjs/common';
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit, HttpStatus } from '@nestjs/common';
 import Docker from 'dockerode';
-import { fromEvent, Observable, Subscription } from 'rxjs';
+import { fromEvent, Subscription } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
-import { Response } from 'express';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
@@ -45,10 +44,6 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     this.closeEventStream();
   }
 
-  subscribe(username: string, res: Response): Observable<MessageEvent> {
-    return this.sseService.subscribe(username, res);
-  }
-
   private listenToDockerEvents() {
     this.docker.getEvents((error, stream) => {
       if (error || !stream) {
@@ -70,10 +65,14 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
       this.eventSubscription = dockerEvents$.subscribe({
         next: (event) => {
-          this.sseService.sendEventToUsers([SPECIAL_USERS.GLOBAL_ADMIN], event, SSE_MESSAGE_TYPE.MESSAGE);
+          this.sseService.sendEventToUsers([SPECIAL_USERS.GLOBAL_ADMIN], event, SSE_MESSAGE_TYPE.CONTAINER_STATUS);
           this.getContainers()
             .then((containers) =>
-              this.sseService.sendEventToUsers([SPECIAL_USERS.GLOBAL_ADMIN], containers, SSE_MESSAGE_TYPE.UPDATED),
+              this.sseService.sendEventToUsers(
+                [SPECIAL_USERS.GLOBAL_ADMIN],
+                containers,
+                SSE_MESSAGE_TYPE.CONTAINER_UPDATE,
+              ),
             )
             .catch((e) => Logger.error(e instanceof Error ? e.message : 'Get containers failed', DockerService.name));
         },
@@ -121,7 +120,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       this.sseService.sendEventToUsers(
         [SPECIAL_USERS.GLOBAL_ADMIN],
         { progress: 'docker.events.pullingImage', from: `${image}` } as DockerEvent,
-        SSE_MESSAGE_TYPE.MESSAGE,
+        SSE_MESSAGE_TYPE.CONTAINER_PROGRESS,
       );
       const stream = await this.docker.pull(image);
       await new Promise<void>((resolve, reject) => {
@@ -130,7 +129,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
           (error) => (error ? reject(error) : resolve()),
           (event: DockerEvent) => {
             if (event) {
-              this.sseService.sendEventToUsers([SPECIAL_USERS.GLOBAL_ADMIN], event, SSE_MESSAGE_TYPE.MESSAGE);
+              this.sseService.sendEventToUsers([SPECIAL_USERS.GLOBAL_ADMIN], event, SSE_MESSAGE_TYPE.CONTAINER_STATUS);
             }
           },
         );
@@ -151,7 +150,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     this.sseService.sendEventToUsers(
       [SPECIAL_USERS.GLOBAL_ADMIN],
       { progress: 'docker.events.checkingImage', from: `${imageName}` } as DockerEvent,
-      SSE_MESSAGE_TYPE.MESSAGE,
+      SSE_MESSAGE_TYPE.CONTAINER_PROGRESS,
     );
 
     return images.some((img) => img.RepoTags?.includes(imageName));
@@ -189,7 +188,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
           this.sseService.sendEventToUsers(
             [SPECIAL_USERS.GLOBAL_ADMIN],
             { progress: 'docker.events.creatingContainer', from: `${containerDto.name}` } as DockerEvent,
-            SSE_MESSAGE_TYPE.MESSAGE,
+            SSE_MESSAGE_TYPE.CONTAINER_PROGRESS,
           );
           const container = await this.docker.createContainer(containerDto);
           await container.start();
@@ -200,13 +199,13 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       this.sseService.sendEventToUsers(
         [SPECIAL_USERS.GLOBAL_ADMIN],
         { progress: 'docker.events.containerCreationSuccessful', from: DockerService.name } as DockerEvent,
-        SSE_MESSAGE_TYPE.MESSAGE,
+        SSE_MESSAGE_TYPE.CONTAINER_PROGRESS,
       );
     } catch (error) {
       this.sseService.sendEventToUsers(
         [SPECIAL_USERS.GLOBAL_ADMIN],
         { progress: 'docker.events.containerCreationFailed', from: DockerService.name } as DockerEvent,
-        SSE_MESSAGE_TYPE.MESSAGE,
+        SSE_MESSAGE_TYPE.CONTAINER_PROGRESS,
       );
       throw new CustomHttpException(
         DockerErrorMessages.DOCKER_CREATION_ERROR,
@@ -240,7 +239,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       this.sseService.sendEventToUsers(
         [SPECIAL_USERS.GLOBAL_ADMIN],
         { progress: `docker.events.${operation}Container`, from: id } as DockerEvent,
-        SSE_MESSAGE_TYPE.MESSAGE,
+        SSE_MESSAGE_TYPE.CONTAINER_PROGRESS,
       );
       switch (operation) {
         case DOCKER_COMMANDS.START:

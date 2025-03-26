@@ -20,6 +20,7 @@ import FormField from '@/components/shared/FormField';
 import ProgressTextArea from '@/components/shared/ProgressTextArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import useSseStore from '@/store/useSseStore';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
 import type TApps from '@libs/appconfig/types/appsType';
@@ -42,8 +43,9 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
   const [showInputForm, setShowInputForm] = useState(false);
   const [createContainerConfig, setCreateContainerConfig] = useState([{}]);
   const [combinedEnvPlaceholders, setCombinedEnvPlaceholders] = useState({});
-  const { isLoading, eventSource, tableContentData, dockerContainerConfig, createAndRunContainer, fetchTableContent } =
+  const { isLoading, tableContentData, dockerContainerConfig, createAndRunContainer, fetchTableContent } =
     useDockerApplicationStore();
+  const { eventSource } = useSseStore();
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
   const isOpen = isDialogOpen === tableId;
 
@@ -55,10 +57,10 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
       setDockerProgress((prevDockerProgress) => [...prevDockerProgress, `${from}: ${t(progress) ?? ''}`]);
     };
 
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.MESSAGE, dockerProgressHandler);
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.CONTAINER_PROGRESS, dockerProgressHandler);
 
     return () => {
-      eventSource.removeEventListener(SSE_MESSAGE_TYPE.MESSAGE, dockerProgressHandler);
+      eventSource.removeEventListener(SSE_MESSAGE_TYPE.CONTAINER_PROGRESS, dockerProgressHandler);
     };
   }, []);
 

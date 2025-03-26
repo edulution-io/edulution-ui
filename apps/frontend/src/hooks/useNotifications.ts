@@ -17,24 +17,20 @@ import FEED_PULL_TIME_INTERVAL_SLOW from '@libs/dashboard/constants/pull-time-in
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import useUserStore from '@/store/UserStore/UserStore';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import APPS from '@libs/appconfig/constants/apps';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
-import { CONFERENCES_SSE_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import useDockerContainerEvents from '@/hooks/useDockerContainerEvents';
 import useIsAppActive from '@/hooks/useIsAppActive';
-import { BULLETIN_BOARD_SSE_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import UseBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import delay from '@libs/common/utils/delay';
+import useSseStore from '@/store/useSseStore';
 
 const useNotifications = () => {
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
-  const { eduApiToken } = useUserStore();
   const isMailsAppActivated = useIsAppActive(APPS.MAIL);
   const { getMails } = useMailsStore();
   const isConferenceAppActivated = useIsAppActive(APPS.CONFERENCES);
@@ -46,6 +42,7 @@ const useNotifications = () => {
   const { addBulletinBoardNotification } = UseBulletinBoardStore();
   const { setFilesharingProgress } = useLessonStore();
   const isClassRoomManagementActive = useIsAppActive(APPS.CLASS_MANAGEMENT);
+  const { eventSource } = useSseStore();
 
   useDockerContainerEvents();
 
@@ -76,8 +73,7 @@ const useNotifications = () => {
   }, FEED_PULL_TIME_INTERVAL_SLOW);
 
   useEffect(() => {
-    if (isConferenceAppActivated) {
-      const eventSource = new EventSource(`/${EDU_API_ROOT}/${CONFERENCES_SSE_EDU_API_ENDPOINT}?token=${eduApiToken}`);
+    if (isConferenceAppActivated && eventSource) {
       const controller = new AbortController();
       const { signal } = controller;
 
@@ -94,7 +90,7 @@ const useNotifications = () => {
           if (conference.meetingID === data) {
             return {
               ...conference,
-              isRunning: type === SSE_MESSAGE_TYPE.STARTED,
+              isRunning: type === SSE_MESSAGE_TYPE.CONFERENCE_STARTED,
             };
           }
           return conference;
@@ -108,10 +104,10 @@ const useNotifications = () => {
         setConferences(newConferences);
       };
 
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.CREATED, createConferenceHandler, { signal });
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.STARTED, updateConferenceHandler, { signal });
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.STOPPED, updateConferenceHandler, { signal });
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.DELETED, deleteConferenceHandler, { signal });
+      eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_CREATED, createConferenceHandler, { signal });
+      eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_STARTED, updateConferenceHandler, { signal });
+      eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_STOPPED, updateConferenceHandler, { signal });
+      eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_DELETED, deleteConferenceHandler, { signal });
 
       return () => {
         controller.abort();
@@ -124,11 +120,9 @@ const useNotifications = () => {
   }, [isConferenceAppActivated]);
 
   useEffect(() => {
-    if (!isClassRoomManagementActive) {
+    if (!isClassRoomManagementActive || !eventSource) {
       return undefined;
     }
-
-    const eventSource = new EventSource(`/${EDU_API_ROOT}/${APPS.FILE_SHARING}/sse?token=${eduApiToken}`);
 
     const handleFileSharingEvent = (e: MessageEvent<string>) => {
       void (async () => {
@@ -140,18 +134,16 @@ const useNotifications = () => {
       })();
     };
 
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.UPDATED, handleFileSharingEvent);
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_PROGRESS, handleFileSharingEvent);
 
     return () => {
-      eventSource.removeEventListener(SSE_MESSAGE_TYPE.UPDATED, handleFileSharingEvent);
+      eventSource.removeEventListener(SSE_MESSAGE_TYPE.FILESHARING_PROGRESS, handleFileSharingEvent);
       eventSource.close();
     };
   }, [isClassRoomManagementActive]);
 
   useEffect(() => {
-    if (isSurveysAppActivated) {
-      const eventSource = new EventSource(`/${EDU_API_ROOT}/${APPS.SURVEYS}/sse?token=${eduApiToken}`);
-
+    if (isSurveysAppActivated && eventSource) {
       eventSource.onmessage = () => {
         void updateOpenSurveys();
       };
@@ -165,10 +157,9 @@ const useNotifications = () => {
   }, [isSurveysAppActivated]);
 
   useEffect(() => {
-    if (isBulletinBoardActive) {
-      const eventSource = new EventSource(
-        `/${EDU_API_ROOT}/${BULLETIN_BOARD_SSE_EDU_API_ENDPOINT}?token=${eduApiToken}`,
-      );
+    if (isBulletinBoardActive && eventSource) {
+      const controller = new AbortController();
+      const { signal } = controller;
 
       const handleBulletinNotification = (e: MessageEvent<string>) => {
         const { data } = e;
@@ -176,12 +167,10 @@ const useNotifications = () => {
         addBulletinBoardNotification(bulletin);
       };
 
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.CREATED, handleBulletinNotification);
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.UPDATED, handleBulletinNotification);
+      eventSource.addEventListener(SSE_MESSAGE_TYPE.BULLETIN_UPDATED, handleBulletinNotification, { signal });
 
       return () => {
-        eventSource.removeEventListener(SSE_MESSAGE_TYPE.CREATED, handleBulletinNotification);
-        eventSource.removeEventListener(SSE_MESSAGE_TYPE.UPDATED, handleBulletinNotification);
+        controller.abort();
         eventSource.close();
       };
     }

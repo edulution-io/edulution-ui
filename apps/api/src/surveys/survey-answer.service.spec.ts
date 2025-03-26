@@ -74,6 +74,7 @@ import {
 import SurveysService from './surveys.service';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
+import SseService from '../sse/sse.service';
 
 describe('SurveyAnswerService', () => {
   let service: SurveyAnswersService;
@@ -85,6 +86,7 @@ describe('SurveyAnswerService', () => {
       imports: [],
       providers: [
         SurveysService,
+        SseService,
         {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),

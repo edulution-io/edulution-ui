@@ -73,7 +73,7 @@ class FilesharingConsumer extends WorkerHost {
       failedPaths,
     };
 
-    this.sseService.sendEventToUser(username, progressDto, SSE_MESSAGE_TYPE.UPDATED);
+    this.sseService.sendEventToUser(username, progressDto, SSE_MESSAGE_TYPE.FILESHARING_PROGRESS);
   }
 }
 
