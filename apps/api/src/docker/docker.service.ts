@@ -25,7 +25,6 @@ import DOCKER_PROTECTED_CONTAINERS from '@libs/docker/constants/dockerProtectedC
 import SPECIAL_USERS from '@libs/common/constants/specialUsers';
 import type TDockerProtectedContainer from '@libs/docker/types/TDockerProtectedContainer';
 import SseService from '../sse/sse.service';
-import type UserConnections from '../types/userConnections';
 
 @Injectable()
 class DockerService implements OnModuleInit, OnModuleDestroy {
@@ -36,7 +35,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
   private eventSubscription: Subscription;
 
-  private dockerSseConnection: UserConnections = new Map();
+  constructor(private readonly sseService: SseService) {}
 
   onModuleInit() {
     this.listenToDockerEvents();
@@ -47,7 +46,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
   }
 
   subscribe(username: string, res: Response): Observable<MessageEvent> {
-    return SseService.subscribe(username, this.dockerSseConnection, res);
+    return this.sseService.subscribe(username, res);
   }
 
   private listenToDockerEvents() {
@@ -71,20 +70,10 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
       this.eventSubscription = dockerEvents$.subscribe({
         next: (event) => {
-          SseService.sendEventToUsers(
-            [SPECIAL_USERS.GLOBAL_ADMIN],
-            this.dockerSseConnection,
-            event,
-            SSE_MESSAGE_TYPE.MESSAGE,
-          );
+          this.sseService.sendEventToUsers([SPECIAL_USERS.GLOBAL_ADMIN], event, SSE_MESSAGE_TYPE.MESSAGE);
           this.getContainers()
             .then((containers) =>
-              SseService.sendEventToUsers(
-                [SPECIAL_USERS.GLOBAL_ADMIN],
-                this.dockerSseConnection,
-                containers,
-                SSE_MESSAGE_TYPE.UPDATED,
-              ),
+              this.sseService.sendEventToUsers([SPECIAL_USERS.GLOBAL_ADMIN], containers, SSE_MESSAGE_TYPE.UPDATED),
             )
             .catch((e) => Logger.error(e instanceof Error ? e.message : 'Get containers failed', DockerService.name));
         },
@@ -129,9 +118,8 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
   private async pullImage(image: string) {
     try {
-      SseService.sendEventToUsers(
+      this.sseService.sendEventToUsers(
         [SPECIAL_USERS.GLOBAL_ADMIN],
-        this.dockerSseConnection,
         { progress: 'docker.events.pullingImage', from: `${image}` } as DockerEvent,
         SSE_MESSAGE_TYPE.MESSAGE,
       );
@@ -142,12 +130,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
           (error) => (error ? reject(error) : resolve()),
           (event: DockerEvent) => {
             if (event) {
-              SseService.sendEventToUsers(
-                [SPECIAL_USERS.GLOBAL_ADMIN],
-                this.dockerSseConnection,
-                event,
-                SSE_MESSAGE_TYPE.MESSAGE,
-              );
+              this.sseService.sendEventToUsers([SPECIAL_USERS.GLOBAL_ADMIN], event, SSE_MESSAGE_TYPE.MESSAGE);
             }
           },
         );
@@ -165,9 +148,8 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
   private async imageExists(imageName: string): Promise<boolean> {
     const images = await this.docker.listImages();
 
-    SseService.sendEventToUsers(
+    this.sseService.sendEventToUsers(
       [SPECIAL_USERS.GLOBAL_ADMIN],
-      this.dockerSseConnection,
       { progress: 'docker.events.checkingImage', from: `${imageName}` } as DockerEvent,
       SSE_MESSAGE_TYPE.MESSAGE,
     );
@@ -204,9 +186,8 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
       await Promise.all(
         newCreateContainersDto.map(async (containerDto) => {
-          SseService.sendEventToUsers(
+          this.sseService.sendEventToUsers(
             [SPECIAL_USERS.GLOBAL_ADMIN],
-            this.dockerSseConnection,
             { progress: 'docker.events.creatingContainer', from: `${containerDto.name}` } as DockerEvent,
             SSE_MESSAGE_TYPE.MESSAGE,
           );
@@ -216,16 +197,14 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         }),
       );
 
-      SseService.sendEventToUsers(
+      this.sseService.sendEventToUsers(
         [SPECIAL_USERS.GLOBAL_ADMIN],
-        this.dockerSseConnection,
         { progress: 'docker.events.containerCreationSuccessful', from: DockerService.name } as DockerEvent,
         SSE_MESSAGE_TYPE.MESSAGE,
       );
     } catch (error) {
-      SseService.sendEventToUsers(
+      this.sseService.sendEventToUsers(
         [SPECIAL_USERS.GLOBAL_ADMIN],
-        this.dockerSseConnection,
         { progress: 'docker.events.containerCreationFailed', from: DockerService.name } as DockerEvent,
         SSE_MESSAGE_TYPE.MESSAGE,
       );
@@ -258,9 +237,8 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     DockerService.checkProtectedContainer(id);
 
     try {
-      SseService.sendEventToUsers(
+      this.sseService.sendEventToUsers(
         [SPECIAL_USERS.GLOBAL_ADMIN],
-        this.dockerSseConnection,
         { progress: `docker.events.${operation}Container`, from: id } as DockerEvent,
         SSE_MESSAGE_TYPE.MESSAGE,
       );

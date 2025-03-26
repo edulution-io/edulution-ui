@@ -22,7 +22,6 @@ import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import SseService from '../sse/sse.service';
-import type UserConnections from '../types/userConnections';
 import { Survey, SurveyDocument } from './survey.schema';
 import MigrationService from '../migration/migration.service';
 import surveysMigrationsList from './migrations/surveysMigrationsList';
@@ -33,6 +32,7 @@ class SurveysService implements OnModuleInit {
   constructor(
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
     private readonly groupsService: GroupsService,
+    private readonly sseService: SseService,
   ) {}
 
   async onModuleInit() {
@@ -71,7 +71,7 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  async deleteSurveys(surveyIds: string[], surveysSseConnections: UserConnections): Promise<void> {
+  async deleteSurveys(surveyIds: string[]): Promise<void> {
     try {
       const surveyObjectIds = surveyIds.map((s) => new Types.ObjectId(s));
       await this.surveyModel.deleteMany({ _id: { $in: surveyObjectIds } });
@@ -79,15 +79,11 @@ class SurveysService implements OnModuleInit {
     } catch (error) {
       throw new CustomHttpException(SurveyErrorMessages.DeleteError, HttpStatus.NOT_MODIFIED, error);
     } finally {
-      SseService.informAllUsers(surveysSseConnections, surveyIds.toString(), SSE_MESSAGE_TYPE.DELETED);
+      this.sseService.informAllUsers(surveyIds.toString(), SSE_MESSAGE_TYPE.DELETED);
     }
   }
 
-  async updateSurvey(
-    survey: SurveyDto,
-    currentUser: JwtUser,
-    surveysSseConnections: UserConnections,
-  ): Promise<Survey | null> {
+  async updateSurvey(survey: SurveyDto, currentUser: JwtUser): Promise<Survey | null> {
     const existingSurvey = await this.surveyModel.findById(survey.id).exec();
     if (!existingSurvey) {
       return null;
@@ -106,24 +102,19 @@ class SurveysService implements OnModuleInit {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {
       if (survey.isPublic) {
-        SseService.informAllUsers(surveysSseConnections, survey, SSE_MESSAGE_TYPE.UPDATED);
+        this.sseService.informAllUsers(survey, SSE_MESSAGE_TYPE.UPDATED);
       } else {
         const invitedMembersList = await this.groupsService.getInvitedMembers(
           survey.invitedGroups,
           survey.invitedAttendees,
         );
         const updatedSurvey = await this.surveyModel.findById(survey.id).exec();
-        SseService.sendEventToUsers(
-          invitedMembersList,
-          surveysSseConnections,
-          updatedSurvey || survey,
-          SSE_MESSAGE_TYPE.UPDATED,
-        );
+        this.sseService.sendEventToUsers(invitedMembersList, updatedSurvey || survey, SSE_MESSAGE_TYPE.UPDATED);
       }
     }
   }
 
-  async createSurvey(survey: SurveyDto, currentUser: JwtUser, surveysSseConnections: UserConnections): Promise<Survey> {
+  async createSurvey(survey: SurveyDto, currentUser: JwtUser): Promise<Survey> {
     const creator: AttendeeDto = {
       ...survey.creator,
       firstName: currentUser.given_name,
@@ -137,28 +128,24 @@ class SurveysService implements OnModuleInit {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {
       if (survey.isPublic) {
-        SseService.informAllUsers(surveysSseConnections, survey, SSE_MESSAGE_TYPE.CREATED);
+        this.sseService.informAllUsers(survey, SSE_MESSAGE_TYPE.CREATED);
       } else {
         const invitedMembersList = await this.groupsService.getInvitedMembers(
           survey.invitedGroups,
           survey.invitedAttendees,
         );
-        SseService.sendEventToUsers(invitedMembersList, surveysSseConnections, survey, SSE_MESSAGE_TYPE.CREATED);
+        this.sseService.sendEventToUsers(invitedMembersList, survey, SSE_MESSAGE_TYPE.CREATED);
       }
     }
   }
 
-  async updateOrCreateSurvey(
-    surveyDto: SurveyDto,
-    currentUser: JwtUser,
-    surveysSseConnections: UserConnections,
-  ): Promise<Survey | null> {
-    const updatedSurvey = await this.updateSurvey(surveyDto, currentUser, surveysSseConnections);
+  async updateOrCreateSurvey(surveyDto: SurveyDto, currentUser: JwtUser): Promise<Survey | null> {
+    const updatedSurvey = await this.updateSurvey(surveyDto, currentUser);
     if (updatedSurvey !== null) {
       return updatedSurvey;
     }
 
-    return this.createSurvey(surveyDto, currentUser, surveysSseConnections);
+    return this.createSurvey(surveyDto, currentUser);
   }
 }
 

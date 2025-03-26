@@ -34,18 +34,16 @@ import { Bulletin, BulletinDocument } from './bulletin.schema';
 import { BulletinCategory, BulletinCategoryDocument } from '../bulletin-category/bulletin-category.schema';
 import BulletinCategoryService from '../bulletin-category/bulletin-category.service';
 import SseService from '../sse/sse.service';
-import type UserConnections from '../types/userConnections';
 import GroupsService from '../groups/groups.service';
 
 @Injectable()
 class BulletinBoardService implements OnModuleInit {
-  private bulletinsSseConnections: UserConnections = new Map();
-
   constructor(
     @InjectModel(Bulletin.name) private bulletinModel: Model<BulletinDocument>,
     @InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>,
     private readonly bulletinCategoryService: BulletinCategoryService,
     private readonly groupsService: GroupsService,
+    private readonly sseService: SseService,
   ) {}
 
   private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
@@ -57,7 +55,7 @@ class BulletinBoardService implements OnModuleInit {
   }
 
   subscribe(username: string, res: Response): Observable<MessageEvent> {
-    return SseService.subscribe(username, this.bulletinsSseConnections, res);
+    return this.sseService.subscribe(username, res);
   }
 
   static checkAttachmentFile(file: Express.Multer.File): string {
@@ -269,12 +267,7 @@ class BulletinBoardService implements OnModuleInit {
       (!dto.isVisibleEndDate || now <= new Date(dto.isVisibleEndDate));
 
     if (isWithinVisibilityPeriod) {
-      SseService.sendEventToUsers(
-        invitedMembersList,
-        this.bulletinsSseConnections,
-        resultingBulletin,
-        SSE_MESSAGE_TYPE.UPDATED,
-      );
+      this.sseService.sendEventToUsers(invitedMembersList, resultingBulletin, SSE_MESSAGE_TYPE.UPDATED);
     }
   }
 

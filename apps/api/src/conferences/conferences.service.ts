@@ -36,7 +36,6 @@ import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
 import Attendee from './attendee.schema';
 import SseService from '../sse/sse.service';
-import type UserConnections from '../types/userConnections';
 import GroupsService from '../groups/groups.service';
 
 @Injectable()
@@ -45,16 +44,15 @@ class ConferencesService {
 
   private BBB_SECRET: string;
 
-  private conferencesSseConnections: UserConnections = new Map();
-
   constructor(
     @InjectModel(Conference.name) private conferenceModel: Model<ConferenceDocument>,
     private readonly appConfigService: AppConfigService,
     private readonly groupsService: GroupsService,
+    private readonly sseService: SseService,
   ) {}
 
   subscribe(username: string, res: Response): Observable<MessageEvent> {
-    return SseService.subscribe(username, this.conferencesSseConnections, res);
+    return this.sseService.subscribe(username, res);
   }
 
   @Interval(CONFERENCES_SYNC_INTERVAL_MS)
@@ -69,12 +67,7 @@ class ConferencesService {
             conference.invitedGroups,
             conference.invitedAttendees,
           );
-          SseService.sendEventToUsers(
-            attendees,
-            this.conferencesSseConnections,
-            conference.meetingID,
-            SSE_MESSAGE_TYPE.STOPPED,
-          );
+          this.sseService.sendEventToUsers(attendees, conference.meetingID, SSE_MESSAGE_TYPE.STOPPED);
         }
       }),
     );
@@ -180,12 +173,7 @@ class ConferencesService {
         .findOne({ meetingID: newConference.meetingID }, { _id: 0, __v: 0 })
         .lean();
       if (conference) {
-        SseService.sendEventToUsers(
-          invitedMembersList,
-          this.conferencesSseConnections,
-          conference,
-          SSE_MESSAGE_TYPE.CREATED,
-        );
+        this.sseService.sendEventToUsers(invitedMembersList, conference, SSE_MESSAGE_TYPE.CREATED);
       }
     }
   }
@@ -198,17 +186,13 @@ class ConferencesService {
     const isConferenceRunningInBBB = await this.checkConferenceIsRunningWithBBB(conference.meetingID);
 
     if (isRunning) {
-      await this.stopConference(conference, isConferenceRunningInBBB, this.conferencesSseConnections);
+      await this.stopConference(conference, isConferenceRunningInBBB);
     } else {
-      await this.startConference(conference, isConferenceRunningInBBB, this.conferencesSseConnections);
+      await this.startConference(conference, isConferenceRunningInBBB);
     }
   }
 
-  async startConference(
-    conference: Conference,
-    shouldUpdateInBBB: boolean,
-    conferencesSseConnections: UserConnections,
-  ) {
+  async startConference(conference: Conference, shouldUpdateInBBB: boolean) {
     try {
       if (!shouldUpdateInBBB) {
         const query = `name=${encodeURIComponent(conference.name)}&meetingID=${conference.meetingID}`;
@@ -233,16 +217,15 @@ class ConferencesService {
         conference.invitedAttendees,
       );
       const publicConferencesSubscriber = conference.meetingID;
-      SseService.sendEventToUsers(
+      this.sseService.sendEventToUsers(
         [...invitedMembersList, publicConferencesSubscriber],
-        conferencesSseConnections,
         conference.meetingID,
         SSE_MESSAGE_TYPE.STARTED,
       );
     }
   }
 
-  async stopConference(conference: Conference, shouldUpdateInBBB: boolean, conferencesSseConnections: UserConnections) {
+  async stopConference(conference: Conference, shouldUpdateInBBB: boolean) {
     try {
       if (shouldUpdateInBBB) {
         const query = `meetingID=${conference.meetingID}`;
@@ -267,9 +250,8 @@ class ConferencesService {
         conference.invitedAttendees,
       );
       const publicConferencesSubscriber = conference.meetingID;
-      SseService.sendEventToUsers(
+      this.sseService.sendEventToUsers(
         [...invitedMembersList, publicConferencesSubscriber],
-        conferencesSseConnections,
         conference.meetingID,
         SSE_MESSAGE_TYPE.STOPPED,
       );
@@ -427,12 +409,7 @@ class ConferencesService {
       )
     ).flat();
 
-    SseService.sendEventToUsers(
-      invitedMembersList,
-      this.conferencesSseConnections,
-      meetingIDs,
-      SSE_MESSAGE_TYPE.DELETED,
-    );
+    this.sseService.sendEventToUsers(invitedMembersList, meetingIDs, SSE_MESSAGE_TYPE.DELETED);
 
     return true;
   }
