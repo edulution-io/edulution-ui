@@ -921,7 +921,9 @@
     "errors": {
       "attachmentUploadFailed": "Failed to upload attachment",
       "dbAccessFailed": "Database access failed",
-      "envAccessError": "Not able to read environment variables",
+      "directoryNotCreated": "Failed to create directory",
+      "fileDeletionFailed": "Failed to delete the file",
+      "fileWritingFailed": "Failed to write the file",
       "fileNotFound": "File not found",
       "fileNotProvided": "File not provided",
       "invalidFileType": "Invalid file type",
