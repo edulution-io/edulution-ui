@@ -1046,7 +1046,10 @@
     "proxyDestinationPlaceholder": "e.g. http://localhost:1234/",
     "stripPrefix": "Strip prefix",
     "input": {
-      "dateTimePicker": "Datum und Uhrzeit auswählen"
+      "dateTimePicker": {
+        "timeSlot": "o'clock",
+        "placeholder": "MM/DD/YYYY HH:mm AM/PM"
+      }
     }
   },
   "fileOperationSuccessful": "File operation successful",
