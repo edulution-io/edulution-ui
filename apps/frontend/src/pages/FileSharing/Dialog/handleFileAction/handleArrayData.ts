@@ -18,15 +18,12 @@ import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateP
 import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 
-const handleDeleteItems = async (data: PathChangeOrCreateProps[], endpoint: string, httpMethod: HttpMethods) => {
-  const promises = data
-    .map((item) => getPathWithoutWebdav(item.path))
-    .filter((filename) => filename !== undefined)
-    .map((filename) =>
-      eduApi[httpMethod](`${buildApiDeletePathUrl(endpoint, filename, DeleteTargetType.FILE_SERVER)}`),
-    );
-
-  return Promise.all(promises);
+const handleDeleteItems = async (data: PathChangeOrCreateProps[], endpoint: string) => {
+  await eduApi.delete(buildApiDeletePathUrl(endpoint, DeleteTargetType.FILE_SERVER), {
+    data: {
+      paths: data.map((item) => getPathWithoutWebdav(item.path)),
+    },
+  });
 };
 
 const handleArrayActions = async (data: PathChangeOrCreateProps[], endpoint: string, httpMethod: HttpMethods) => {
@@ -41,7 +38,7 @@ const handleArrayData = async (
   data: PathChangeOrCreateProps[],
 ) => {
   if (action === FileActionType.DELETE_FILE_FOLDER) {
-    await handleDeleteItems(data, endpoint, httpMethod);
+    await handleDeleteItems(data, endpoint);
   } else if (action === FileActionType.MOVE_FILE_FOLDER || action === FileActionType.RENAME_FILE_FOLDER) {
     await handleArrayActions(data, endpoint, httpMethod);
   }

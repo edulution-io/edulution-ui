@@ -18,15 +18,13 @@ import AppConfigModule from '../appconfig/appconfig.module';
 import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
 import SseService from '../sse/sse.service';
-import DuplicateFileConsumer from "./consumers/duplicateFile.consumer";
-import DynamicQueueService from "../queue/queue.service";
-import CollectFileConsumer from "./consumers/collectFile.consumer";
+import DuplicateFileConsumer from './consumers/duplicateFile.consumer';
+import DynamicQueueService from '../queue/queue.service';
+import CollectFileConsumer from './consumers/collectFile.consumer';
+import DeleteFileConsumer from './consumers/deleteFile.consumer';
 
 @Module({
-  imports: [
-    HttpModule,
-    AppConfigModule
-  ],
+  imports: [HttpModule, AppConfigModule],
   controllers: [FilesharingController],
   providers: [
     FilesharingService,
@@ -35,7 +33,8 @@ import CollectFileConsumer from "./consumers/collectFile.consumer";
     SseService,
     DynamicQueueService,
     DuplicateFileConsumer,
-    CollectFileConsumer
+    CollectFileConsumer,
+    DeleteFileConsumer,
   ],
   exports: [FilesharingService],
 })

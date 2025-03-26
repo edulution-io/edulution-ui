@@ -99,14 +99,14 @@ class FilesharingController {
 
   @Delete()
   async deleteFile(
-    @Query('path') path: string,
+    @Body('paths') paths: string[],
     @Query('target') target: DeleteTargetType,
     @GetCurrentUsername() username: string,
   ) {
     if (target === DeleteTargetType.FILE_SERVER) {
-      return this.filesharingService.deleteFileAtPath(username, path);
+      return this.filesharingService.deleteFileAtPath(username, paths);
     }
-    return FilesystemService.deleteFile(path);
+    return FilesystemService.deleteFile(paths.at(0) || '');
   }
 
   @Patch()

@@ -10,10 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import CollectFileJobData from '@libs/queue/types/collectFileJobData';
-import DuplicateFileJobData from '@libs/queue/types/duplicateFileJobData';
-import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
+interface DeleteFileJobData {
+  username: string;
+  originFilePath: string;
+  total: number;
+  processed: number;
+}
 
-type JobData = CollectFileJobData | DuplicateFileJobData | DeleteFileJobData;
-
-export default JobData;
+export default DeleteFileJobData;

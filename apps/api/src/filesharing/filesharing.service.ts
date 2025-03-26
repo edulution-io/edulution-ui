@@ -74,6 +74,21 @@ export default class FilesharingService {
     );
   }
 
+  async deleteFileAtPath(username: string, paths: string[]) {
+    let processedItems = 0;
+    return Promise.all(
+      paths.map(async (path) => {
+        const fullPath = `${this.baseurl}${path}`;
+        await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.DELETE_FILE_JOB, {
+          username,
+          originFilePath: fullPath,
+          total: paths.length,
+          processed: (processedItems += 1),
+        });
+      }),
+    );
+  }
+
   async getWebDavFileStream(username: string, filePath: string): Promise<Readable> {
     try {
       const client = await FileSharingCommonService.getClient(username);
@@ -108,14 +123,17 @@ export default class FilesharingService {
     return OnlyofficeService.handleCallback(req, res, path, filename, username, this.uploadFile);
   }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async getFilesAtPath(username: string, path: string) {
     return FileSharingCommonService.getFilesAtPath(username, path);
   }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async getDirAtPath(username: string, path: string) {
     return FileSharingCommonService.getDirAtPath(username, path);
   }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async createFolder(username: string, path: string, folderName: string) {
     return FileSharingCommonService.createFolder(username, path, folderName);
   }
@@ -129,11 +147,6 @@ export default class FilesharingService {
     const fullPath = `${this.baseurl}${path}/${name}`;
     return FileSharingCommonService.uploadFile(username, fullPath, file);
   };
-
-  async deleteFileAtPath(username: string, path: string) {
-    const fullPath = `${this.baseurl}${path}`;
-    return FileSharingCommonService.deletePath(username, fullPath);
-  }
 
   async moveOrRenameResource(username: string, originPath: string, newPath: string) {
     const originFull = `${this.baseurl}${originPath}`;
