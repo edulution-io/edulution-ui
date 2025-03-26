@@ -65,7 +65,7 @@
   .svc-tab-designer,
   .svc-designer__placeholder-container {
     max-width: calc(100vw - var(--sidebar-width) - var(--menubar-max-width)) !important;
-    width: calc(100vw - var(--sidebar-width) - var(--menubar-max-width) - var(--padding)) !important;
+    width: calc(100vw - var(--sidebar-width) - var(--menubar-max-width) - 4rem) !important;
     height: 100%;
     justify-content: center;
 
@@ -214,7 +214,7 @@
       margin: 0 !important;
 
       fieldset {
-        margin-left: var(--padding);
+        margin-left: 3rem;
       }
     }
     /* imagepicker component - remove spacing on the inner image picker selection panel */
@@ -255,7 +255,7 @@
     justify-content: center;
   }
   .svc-dropdown-action--convertTo-last {
-    margin-right: var(--padding);
+    margin-right: 3rem;
   }
 
   .svc-creator__non-commercial,
