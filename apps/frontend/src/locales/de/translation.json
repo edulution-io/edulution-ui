@@ -1047,7 +1047,10 @@
     "proxyDestinationPlaceholder": "z.B. http://localhost:1234/",
     "stripPrefix": "Prefix entfernen",
     "input": {
-      "dateTimePicker": "Date and Time picker"
+      "dateTimePicker": {
+        "timeSlot": "Uhr",
+        "placeholder": "DD/MM/YYYY HH:mm"
+      }
     }
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
