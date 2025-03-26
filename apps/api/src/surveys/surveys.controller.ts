@@ -37,6 +37,7 @@ import {
   FIND_ONE,
   HAS_ANSWERS,
   IMAGES,
+  PUBLIC_SURVEYS,
   RESULT,
   SURVEYS,
 } from '@libs/survey/constants/surveys-endpoint';
@@ -53,6 +54,7 @@ import GetCurrentUser from '../common/decorators/getUser.decorator';
 import SseService from '../sse/sse.service';
 import type UserConnections from '../types/userConnections';
 import { checkAttachmentFile, createAttachmentUploadOptions } from '../common/multer.config';
+import { join } from 'path';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
@@ -113,7 +115,7 @@ class SurveysController {
   ) {
     const { surveyId, questionId } = param;
     const fileName = checkAttachmentFile(file);
-    const imageUrl = SurveysService.getImageUrl(surveyId, questionId, fileName);
+    const imageUrl = join(PUBLIC_SURVEYS, IMAGES, surveyId, questionId, fileName);
     return res.status(HttpStatus.CREATED).json(imageUrl);
   }
 
