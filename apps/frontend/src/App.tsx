@@ -16,17 +16,12 @@ import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
 import { WebStorageStateStore } from 'oidc-client-ts';
 import i18n from '@/i18n';
 import eduApi from '@/api/eduApi';
-import BBBFrame from '@/pages/ConferencePage/BBBIFrame';
-import EmbeddedIframes from '@/components/framing/EmbeddedIframes';
-import NativeFrames from '@/components/framing/Native/NativeFrames';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import lmnApi from '@/api/lmnApi';
 import useUserStore from '@/store/UserStore/UserStore';
 import Toaster from '@/components/ui/Toaster';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import VDIFrame from './pages/DesktopDeployment/VDIFrame';
-import CommunityLicenseDialog from './pages/UserSettings/Info/CommunityLicenseDialog';
 import GlobalHooksWrapper from './components/GlobalHooksWrapper';
 
 const App = () => {
@@ -60,12 +55,7 @@ const App = () => {
   return (
     <AuthProvider {...oidcConfig}>
       <GlobalHooksWrapper>
-        <BBBFrame />
-        <VDIFrame />
         <AppRouter />
-        <EmbeddedIframes />
-        <NativeFrames />
-        <CommunityLicenseDialog />
         <Toaster />
       </GlobalHooksWrapper>
     </AuthProvider>

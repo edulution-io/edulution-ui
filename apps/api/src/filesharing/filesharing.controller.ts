@@ -18,12 +18,14 @@ import {
   Header,
   HttpStatus,
   Logger,
+  MessageEvent,
   Patch,
   Post,
   Put,
   Query,
   Req,
   Res,
+  Sse,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -38,14 +40,21 @@ import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackDa
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
+import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
+import { Observable } from 'rxjs';
 import FilesharingService from './filesharing.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
+import FilesystemService from '../filesystem/filesystem.service';
+import FilesharingConsumer from './filesharing.consumer';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
 @Controller(FileSharingApiEndpoints.BASE)
 class FilesharingController {
-  constructor(private readonly filesharingService: FilesharingService) {}
+  constructor(
+    private readonly filesharingService: FilesharingService,
+    private readonly filesharingConsumer: FilesharingConsumer,
+  ) {}
 
   @Get()
   async getFilesAtPath(
@@ -95,19 +104,20 @@ class FilesharingController {
     if (target === DeleteTargetType.FILE_SERVER) {
       return this.filesharingService.deleteFileAtPath(username, path);
     }
-    return this.filesharingService.deleteFileFromServer(path);
+    return FilesystemService.deleteFile(path);
   }
 
   @Patch()
   async moveOrRenameResource(
-    @Query('path') path: string,
     @Body()
     body: {
+      path: string;
       newPath: string;
     },
     @GetCurrentUsername() username: string,
   ) {
-    return this.filesharingService.moveOrRenameResource(username, path, body.newPath);
+    const { path, newPath } = body;
+    return this.filesharingService.moveOrRenameResource(username, path, newPath);
   }
 
   @Get(FileSharingApiEndpoints.FILE_STREAM)
@@ -157,11 +167,12 @@ class FilesharingController {
   @Post(FileSharingApiEndpoints.COLLECT)
   async collectFiles(
     @Body() body: { collectFileRequestDTO: CollectFileRequestDTO[] },
+    @Query('type') type: LmnApiCollectOperationsType,
     @Query('userRole') userRole: string,
     @GetCurrentUsername() username: string,
   ) {
     const { collectFileRequestDTO } = body;
-    return this.filesharingService.collectFiles(username, collectFileRequestDTO, userRole);
+    return this.filesharingService.collectFiles(username, collectFileRequestDTO, userRole, type);
   }
 
   @Post('callback')
@@ -182,6 +193,11 @@ class FilesharingController {
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 1 });
     }
+  }
+
+  @Sse('sse')
+  sse(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
+    return this.filesharingConsumer.subscribe(username, res);
   }
 }
 

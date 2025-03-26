@@ -17,7 +17,7 @@ import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackDa
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import { Request, Response } from 'express';
-import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
+import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
 import CustomFile from '@libs/filesharing/types/customFile';
 import { JwtService } from '@nestjs/jwt';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
@@ -71,7 +71,7 @@ class OnlyofficeService implements OnModuleInit {
     path: string,
     filename: string,
     username: string,
-    uploadFile: (username: string, path: string, file: CustomFile, name: string) => Promise<WebdavStatusReplay>,
+    uploadFile: (username: string, path: string, file: CustomFile, name: string) => Promise<WebdavStatusResponse>,
   ) {
     const callbackData = req.body as OnlyOfficeCallbackData;
     const cleanedPath = getPathWithoutWebdav(path);

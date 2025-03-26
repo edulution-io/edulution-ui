@@ -10,7 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useMediaQuery } from 'usehooks-ts';
+import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 
-const useIsMobileView = () => useMediaQuery('(max-width: 767px)');
-export default useIsMobileView;
+type CreateWorkingDirectoryDto = {
+  teacher: string;
+  schoolClass: LmnApiSchoolClass;
+};
+
+export default CreateWorkingDirectoryDto;

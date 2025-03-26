@@ -18,7 +18,10 @@ interface MinimizeButtonProps {
 }
 
 const MinimizeButton = ({ minimizeWindow }: MinimizeButtonProps) => (
-  <WindowControlBaseButton onClick={minimizeWindow}>
+  <WindowControlBaseButton
+    onClick={minimizeWindow}
+    tooltipTranslationId="common.minimize"
+  >
     <div className="mt-[-8px]">__</div>
   </WindowControlBaseButton>
 );

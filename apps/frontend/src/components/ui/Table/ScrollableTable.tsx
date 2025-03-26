@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ColumnDef,
   flexRender,
@@ -21,6 +21,7 @@ import {
   Row,
   RowSelectionState,
   useReactTable,
+  VisibilityState,
 } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
@@ -28,11 +29,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import useElementHeight from '@/hooks/useElementHeight';
 import { HEADER_ID, SELECTED_ROW_MESSAGE_ID, TABLE_HEADER_ID } from '@libs/ui/constants/defaultIds';
 import Input from '@/components/shared/Input';
-
-import { Button } from '@/components/shared/Button';
-import { ChevronDown } from 'lucide-react';
-import DropdownMenu from '@/components/shared/DropdownMenu';
 import DEFAULT_TABLE_SORT_PROPERTY_KEY from '@libs/common/constants/defaultTableSortProperty';
+import SelectColumnsDropdown from '@/components/ui/Table/SelectCoumnsDropdown';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -54,6 +52,11 @@ interface DataTableProps<TData, TValue> {
   };
   tableIsUsedOnAppConfigPage?: boolean;
   enableRowSelection?: boolean | ((row: Row<TData>) => boolean) | undefined;
+  initialColumnVisibility?: VisibilityState;
+  textColorClassname?: string;
+  showHeader?: boolean;
+  showSelectedCount?: boolean;
+  isDialog?: boolean;
 }
 
 const ScrollableTable = <TData, TValue>({
@@ -71,8 +74,23 @@ const ScrollableTable = <TData, TValue>({
   enableRowSelection,
   initialSorting,
   tableIsUsedOnAppConfigPage = false,
+  textColorClassname = 'text-muted-foreground',
+  showHeader = true,
+  showSelectedCount = true,
+  isDialog = false,
+  initialColumnVisibility = {},
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(initialColumnVisibility);
+
+  useEffect(() => {
+    setColumnVisibility((prev) => {
+      if (JSON.stringify(initialColumnVisibility) !== JSON.stringify(prev)) {
+        return initialColumnVisibility;
+      }
+      return prev;
+    });
+  }, [initialColumnVisibility]);
 
   const defaultSorting = columns.some((c) => c.id === DEFAULT_TABLE_SORT_PROPERTY_KEY)
     ? [{ id: 'position', desc: false }]
@@ -101,9 +119,11 @@ const ScrollableTable = <TData, TValue>({
     getRowId: getRowId || ((originalRow: TData) => (originalRow as { id: string }).id),
     onRowSelectionChange,
     enableRowSelection,
+    onColumnVisibilityChange: setColumnVisibility,
     state: {
       rowSelection: selectedRows,
       sorting,
+      columnVisibility,
     },
   });
 
@@ -115,7 +135,7 @@ const ScrollableTable = <TData, TValue>({
     <>
       {isLoading && data?.length === 0 ? <LoadingIndicatorDialog isOpen={isLoading} /> : null}
 
-      {selectedRowsCount > 0 ? (
+      {showSelectedCount ? (
         <div
           id={selectedRowsMessageId}
           className="flex-1 text-sm text-muted-foreground"
@@ -134,7 +154,7 @@ const ScrollableTable = <TData, TValue>({
           {!tableIsUsedOnAppConfigPage && (
             <div
               id={selectedRowsMessageId}
-              className="flex-1 text-sm text-muted-foreground"
+              className={`flex-1 text-sm ${textColorClassname}`}
             >
               &nbsp;
             </div>
@@ -149,49 +169,34 @@ const ScrollableTable = <TData, TValue>({
       >
         <div className="w-full">
           {!!data.length && (
-            <div className="flex items-center py-4">
+            <div className="flex justify-between space-x-1 py-4">
               <Input
                 placeholder={t(filterPlaceHolderText)}
                 value={filterValue}
                 onChange={(event) => table.getColumn(filterKey)?.setFilterValue(event.target.value)}
-                className="max-w-xl bg-accent text-secondary"
+                className={`max-w-xl text-secondary ${isDialog ? 'bg-muted' : 'bg-accent'}`}
               />
-              <DropdownMenu
-                trigger={
-                  <Button
-                    variant="btn-small"
-                    className="ml-auto bg-accent text-secondary"
-                  >
-                    {t('common.columns')} <ChevronDown />
-                  </Button>
-                }
-                items={table
-                  .getAllColumns()
-                  .filter((column) => column.getCanHide())
-                  .map((column) => ({
-                    label: t(column.columnDef.meta?.translationId ?? column.id),
-                    isCheckbox: true,
-                    checked: column.getIsVisible(),
-                    onCheckedChange: (value) => column.toggleVisibility(value),
-                  }))}
-              />
+
+              <SelectColumnsDropdown table={table} />
             </div>
           )}
           <Table>
-            <TableHeader
-              className="text-background scrollbar-thin"
-              id={tableHeaderId}
-            >
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
+            {showHeader && (
+              <TableHeader
+                className={`text-foreground ${textColorClassname}`}
+                id={tableHeaderId}
+              >
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableHeader>
+            )}
             <TableBody className="container">
               {table.getRowModel().rows.length ? (
                 table.getRowModel().rows.map((row) => (
@@ -202,7 +207,7 @@ const ScrollableTable = <TData, TValue>({
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={`${row.id}-${cell.column.id}`}
-                        className="text-background"
+                        className={textColorClassname}
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
@@ -213,7 +218,7 @@ const ScrollableTable = <TData, TValue>({
                 <TableRow>
                   <TableCell
                     colSpan={columns?.length}
-                    className="h-24 text-center text-background"
+                    className={`h-24 text-center ${textColorClassname}`}
                   >
                     {t('table.noDataAvailable')}
                   </TableCell>

@@ -10,7 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useMediaQuery } from 'usehooks-ts';
+import ContentType from '@libs/filesharing/types/contentType';
 
-const useIsMidSizeView = () => useMediaQuery('(min-width: 768px) and (max-width: 1550px)');
-export default useIsMidSizeView;
+interface MoveContentDialogBodyProps {
+  showAllFiles?: boolean;
+  pathToFetch?: string;
+  showSelectedFile?: boolean;
+  showHome?: boolean;
+  fileType?: ContentType;
+}
+
+export default MoveContentDialogBodyProps;

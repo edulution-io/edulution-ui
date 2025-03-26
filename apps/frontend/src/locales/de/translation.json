@@ -104,7 +104,8 @@
   "dashboard": {
     "mobileAccess": {
       "title": "Mobiler Datenzugriff",
-      "manual": "Manuelles Einrichten",
+      "manual": "Anleitung",
+      "manualSetup": "Manuelles Einrichten",
       "setupWithQrCode": "Einrichtung via QR-Code",
       "accessData": "Zugangsdaten",
       "content": "Du kannst von vielen mobilen Geräten aus auf den Schulserver zugreifen. Drücke auf Anleitung um zu starten.",
@@ -176,11 +177,12 @@
     "configName": "Name der Konfiguration",
     "hostname": "Hostname",
     "port": "Port",
+    "portPlaceholder": "z.B. 993",
     "encryption": "Verschlüsselung",
     "rowSelected": "{{selected}} von {{total}} Job ausgewählt",
     "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
     "importer": {
-      "filterPlaceHolderText": "Suche nach E-Mail-Importername",
+      "filterPlaceHolderText": "Suche nach Benutzername",
       "title": "E-Mail-Importer",
       "provider": "E-Mail-Provider",
       "interval": "Sync-Intervall",
@@ -292,6 +294,7 @@
   "filesharing": {
     "filterPlaceHolderText": "Suche nach Dateiname",
     "title": "FILESHARING",
+    "selectFile": "Datei auswählen",
     "sidebar": "Filesharing",
     "previewTitle": "Dateivorschau",
     "saveFile": "Datei speichern",
@@ -316,13 +319,22 @@
       "WebDavError": "Dateiserver nicht erreichbar",
       "DownloadFailed": "Herunterladen fehlgeschlagen",
       "FolderCreationFailed": "Ordner konnte nicht erstellt werden",
+      "CreateCollectFolderForStudentFailed": "Collect Ordner für Schüler konnte nicht erstellt werden",
       "DeleteFromServerFailed": "Löschen vom Server fehlgeschlagen",
       "SaveFailed": "Speichern fehlgeschlagen",
       "DuplicateFailed": "Kopieren fehlgeschlagen",
       "AppNotProperlyConfigured": "OnlyOffice ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator.",
       "CollectingFailed": "Einasmmeln der Dateien fehlgeschlagen",
+      "MissingCallbackURL": "Fehlende Callback-URL",
       "SharingFailed": "Austeilen der Dateien fehlgeschlagen",
-      "MissingCallbackURL": "Fehlende Callback-URL"
+      "CopyFailed": "Kopieren fehlgeschlagen"
+    },
+    "progressBox": {
+      "info": "Info",
+      "title": "Dateien werden ausgeteilt",
+      "processedInfo": "{{processed}} von {{total}} Dateien erfolgreich ausgeteilt",
+      "fileInfo": "Datei {{filename}} wird an {{studentName}} ausgeteilt",
+      "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
@@ -456,7 +468,22 @@
     "editSession": "Sitzung editieren",
     "myRoom": "Mein Raum",
     "sharedMailBox": "Geteiltes Postfach",
-    "enrolPageDescription": "Wählen Sie die Klassen und Projekte aus, für die Sie sich einschreiben möchten, indem Sie die Checkboxen aktivieren.",
+    "enrolPageDescription": "Wähle die Klassen und Projekte aus, für die du dich einschreiben möchtest, indem du die Checkboxen aktivierst.",
+
+    "copyOrCut": "Möchtest du die Dateien ausschneiden oder kopieren?",
+    "filesShared": "Dateien geteilt",
+    "filesSharingStarted": "Dateien werden geteilt",
+    "filesCollected": "Dateien eingesammelt",
+    "failDialog": {
+      "title": "Datei {{file}} konnte nicht geteilt werden",
+      "reasonMissing": "Die Datei ist möglicherweise nicht mehr vorhanden oder wurde umbenannt.",
+      "reasonAlreadyReceived": "Der Empfänger hat die Datei bereits.",
+      "reasonDuplicate": "Der Dateiname ist doppelt vorhanden.",
+      "affectedPersons": "Die folgenden Personen haben die Datei nicht erhalten:",
+      "affectedPerson": "Die folgende Person hat die Datei nicht erhalten:",
+      "filenameAdvice": "Wenn das Austeilen erneut versucht werden soll, wird die Datei unter dem Namen {{filename}} verteilt",
+      "retryButton": "Erneut versuchen"
+    },
     "veyonConfigTable": {
       "id": "ID",
       "subnet": "Subnet",
@@ -901,6 +928,7 @@
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "envAccessError": "Konnte Umgebungsvariablen nicht lesen"
     },
+    "cut": "Ausschneiden",
     "sortOrder": "Sortierung",
     "options": "Optionen",
     "checking": "Prüfen",
@@ -914,6 +942,11 @@
       "link": "Link kopieren"
     },
     "openInNewTab": "In neuem Tab öffnen",
+    "maximize": "Maximieren",
+    "minimize": "Minimieren",
+    "restore": "Wiederherstellen",
+    "dock": "Andocken",
+    "undock": "Abdocken",
     "from": "von",
     "youAreCurrentlyNotLoggedIn": "Du bist momentan nicht angemeldet",
     "toLogin": "Zum Login",
@@ -990,7 +1023,8 @@
     "invalid_url": "Ungültige URL",
     "invalid_fqdn": "Ungültiger FQDN. Bitte nur den Hostnamen angeben.",
     "required": "Erforderlich",
-    "download": "Herunterladen"
+    "download": "Herunterladen",
+    "template": "Vorlage"
   },
   "form": {
     "path": "Link",
@@ -1005,7 +1039,7 @@
     "apiKey": "API Schlüssel",
     "apiKeyDescription": "Der API Schlüssel wird für die Authentifizierung verwendet",
     "proxyConfig": "Proxy-Konfiguration",
-    "proxyConfigDescription": "YAML-Editor für die Konfiguration des Traefik-Proxy.",
+    "proxyConfigDescription": "Hier kann eine eigene Proxy-Konfiguration für Traefik hinterlegt werden. Dabei kann entweder über die Eingabefelder mithilfe einer Vorlage gearbeitet werden, oder direkt im Expertenmodus eine Konfiguration im YAML-Format erstellt werden. <br/><strong>Achtung:</strong> Eine falsche Konfiguration könnte dazu führen, dass die Anwendung nicht mehr erreichbar ist.",
     "expertMode": "Expertenmodus",
     "proxyPath": "Proxy Pfad",
     "proxyPathPlaceholder": "z.B. SOGo",

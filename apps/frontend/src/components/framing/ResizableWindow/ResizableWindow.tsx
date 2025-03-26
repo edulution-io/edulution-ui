@@ -12,7 +12,7 @@
 
 import React, { ReactElement, ReactNode, useEffect, useState } from 'react';
 import { Position, Rnd } from 'react-rnd';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import cn from '@libs/common/utils/className';
 import useFrameStore from '@/components/framing/FrameStore';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +24,9 @@ import MinimizeButton from '@/components/framing/ResizableWindow/Buttons/Minimiz
 import ToggleMaximizeButton from '@/components/framing/ResizableWindow/Buttons/ToggleMaximizeButton';
 import CloseButton from '@/components/framing/ResizableWindow/Buttons/CloseButton';
 import RectangleSize from '@libs/ui/types/rectangleSize';
+import { HiOutlineCursorArrowRipple } from 'react-icons/hi2';
+import RESIZEABLE_WINDOW_DEFAULT_POSITION from '@libs/ui/constants/resizableWindowDefaultPosition';
+import RESIZABLE_WINDOW_DEFAULT_SIZE from '@libs/ui/constants/resizableWindowDefaultSize';
 
 interface ResizableWindowProps {
   titleTranslationId: string;
@@ -51,7 +54,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
   additionalButtons = [],
 }) => {
   const windowSize = useWindowResize();
-  const isMobileView = useIsMobileView();
+  const { isMobileView } = useMedia();
   const { t } = useTranslation();
   const {
     minimizedWindowedFrames,
@@ -89,16 +92,19 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
     }
   }, []);
 
-  const isCurrentlySticky = stickToInitialSizeAndPositionWhenRestored && !isMinimized && !isMaximized;
-
   useEffect(() => {
     if (isMaximized && !isMinimized) {
       setMaxWidth();
-    } else if (isCurrentlySticky && initialPosition && initialSize) {
-      setCurrentWindowedFrameSize(titleTranslationId, initialSize);
+      return;
+    }
+
+    if (initialPosition) {
       setCurrentPosition(initialPosition);
     }
-  }, [windowSize, isMaximized, isMinimized, isMobileView]);
+    if (initialSize) {
+      setCurrentWindowedFrameSize(titleTranslationId, initialSize);
+    }
+  }, [windowSize, isMaximized, isMinimized, isMobileView, titleTranslationId, initialPosition, initialSize]);
 
   const minimizedWidth = Math.min(300, documentWidth * 0.333);
 
@@ -153,11 +159,11 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
       setCurrentWindowedFrameSize(
         titleTranslationId,
         initialSize || {
-          width: currentWindowedFrameSizes[titleTranslationId].width * 0.8,
-          height: currentWindowedFrameSizes[titleTranslationId].height * 0.7,
+          width: (currentWindowedFrameSizes[titleTranslationId]?.width || RESIZABLE_WINDOW_DEFAULT_SIZE.width) * 0.8,
+          height: (currentWindowedFrameSizes[titleTranslationId]?.height || RESIZABLE_WINDOW_DEFAULT_SIZE.height) * 0.7,
         },
       );
-      setCurrentPosition(initialPosition || { x: 50, y: 50 });
+      setCurrentPosition(initialPosition || RESIZEABLE_WINDOW_DEFAULT_POSITION);
     } else {
       savePreviousValues();
       setMaxWidth();
@@ -174,6 +180,8 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
 
   const zIndex = windowedFramesZIndices[titleTranslationId] || 0;
   const hasCurrentFramedWindowHighestZIndex = hasFramedWindowHighestZIndex(titleTranslationId);
+
+  const isCurrentlySticky = stickToInitialSizeAndPositionWhenRestored && !isMinimized && !isMaximized;
   const disableDragging = (isMaximized && !isMinimized) || (isMobileView && isMinimized) || isCurrentlySticky;
 
   return createPortal(
@@ -182,8 +190,8 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
       minHeight={isMinimized ? DEFAULT_MINIMIZED_BAR_HEIGHT : 300}
       minWidth={isMinimized ? minimizedWidth : undefined}
       size={{
-        width: currentWindowedFrameSizes[titleTranslationId]?.width || 800,
-        height: currentWindowedFrameSizes[titleTranslationId]?.height || 600,
+        width: currentWindowedFrameSizes[titleTranslationId]?.width || RESIZABLE_WINDOW_DEFAULT_SIZE.width,
+        height: currentWindowedFrameSizes[titleTranslationId]?.height || RESIZABLE_WINDOW_DEFAULT_SIZE.height,
       }}
       position={{ x: currentPosition.x, y: currentPosition.y }}
       onDragStop={(_e, d) => setCurrentPosition({ x: d.x, y: d.y })}
@@ -195,7 +203,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
         setCurrentPosition(position);
       }}
       className={cn('bg-global overflow-hidden rounded-lg rounded-t-none shadow-lg', {
-        'rounded-t-lg border border-slate-500 bg-gray-800': !isMaximized && !isMinimized,
+        'rounded-t-lg border border-slate-500 bg-gray-800': !isMaximized && !isMinimized && !isCurrentlySticky,
         'rounded-none transition-transform active:transition-none': isMinimized,
       })}
       bounds="window"
@@ -208,12 +216,19 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
       {!hasCurrentFramedWindowHighestZIndex && !isMinimized && (
         // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
         <div
-          className="pointer-events-auto absolute left-0 top-0 h-full w-full"
+          className="group pointer-events-auto absolute left-0 top-0 flex h-full w-full items-center justify-center bg-overlay-transparent opacity-10 hover:opacity-100"
           style={{
             zIndex: zIndex + 1,
           }}
           onClick={() => setWindowedFramesZIndices(titleTranslationId)}
-        />
+        >
+          <div
+            style={{ marginTop: MAXIMIZED_BAR_HEIGHT }}
+            className="h-14 w-14 rounded-full bg-foreground p-2 opacity-0 group-hover:opacity-100"
+          >
+            <HiOutlineCursorArrowRipple size={40} />
+          </div>
+        </div>
       )}
       <div
         role="button"
@@ -233,7 +248,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
           </div>
         </div>
         <div className="flex">
-          {...additionalButtons}
+          {!isMinimized && additionalButtons}
           {!isMinimized && !disableMinimizeWindow && <MinimizeButton minimizeWindow={minimizeWindow} />}
           {((isMinimized && !disableMinimizeWindow && disableToggleMaximizeWindow) || !disableToggleMaximizeWindow) && (
             <ToggleMaximizeButton

@@ -16,7 +16,7 @@ import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import useUserStore from '@/store/UserStore/UserStore';
 import { MdOutlineFileDownload } from 'react-icons/md';
 import { NavLink } from 'react-router-dom';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import { EDU_APP_APPSTORE_URL } from '@libs/common/constants';
 import { MobileDevicesIcon } from '@/assets/icons';
 import NativeAppHeader from '@/components/layout/NativeAppHeader';
@@ -27,7 +27,7 @@ import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '
 import Separator from '@/components/ui/Separator';
 
 const MobileFileAccessSetupBox: React.FC = () => {
-  const isMobileView = useIsMobileView();
+  const { isMobileView } = useMedia();
   const { user } = useUserStore();
 
   const webdavAccessDetails = {
@@ -95,7 +95,7 @@ const MobileFileAccessSetupBox: React.FC = () => {
           <Separator className="my-1 bg-muted" />
           <AccordionItem value="accessManual">
             <AccordionTrigger className="flex text-h4">
-              <h4>{t('dashboard.mobileAccess.manual')}</h4>
+              <h4>{t('dashboard.mobileAccess.manualSetup')}</h4>
             </AccordionTrigger>
             <AccordionContent className="space-y-2 px-1">
               <p className="text-sm text-muted-foreground">{t('dashboard.mobileAccess.manualAccessInfo')}</p>

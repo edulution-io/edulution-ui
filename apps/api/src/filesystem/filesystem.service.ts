@@ -31,7 +31,7 @@ import { firstValueFrom, from } from 'rxjs';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import CustomFile from '@libs/filesharing/types/customFile';
-import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
+import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import process from 'node:process';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
@@ -130,14 +130,14 @@ class FilesystemService {
     filePath: string,
     filename: string,
     client: AxiosInstance,
-  ): Promise<WebdavStatusReplay> {
+  ): Promise<WebdavStatusResponse> {
     const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
     FilesystemService.ensureDirectoryExists(PUBLIC_DOWNLOADS_PATH);
 
     try {
       const user = await this.userService.findOne(username);
       if (!user) {
-        return { success: false, status: HttpStatus.NOT_FOUND } as WebdavStatusReplay;
+        return { success: false, status: HttpStatus.NOT_FOUND } as WebdavStatusResponse;
       }
       const responseStream = await FilesystemService.fetchFileStream(url, client);
       const hashedFilename = FilesystemService.generateHashedFilename(filePath, filename);
@@ -148,7 +148,7 @@ class FilesystemService {
         success: true,
         status: HttpStatus.OK,
         data: hashedFilename,
-      } as WebdavStatusReplay;
+      } as WebdavStatusResponse;
     } catch (error) {
       throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     }
