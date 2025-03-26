@@ -18,6 +18,7 @@ import Separator from '@/components/ui/Separator';
 import { DropdownSelect } from '@/components';
 import useMedia from '@/hooks/useMedia';
 import { GLOBAL_SETTINGS_ROOT_ENDPOINT } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
+import CONTAINER from '@libs/docker/constants/container';
 import DockerContainerTable from '../AppConfig/DockerIntegration/DockerContainerTable';
 import LicenseOverview from './LicenseOverview';
 import GlobalSettings from '../GlobalSettings/GlobalSettings';
@@ -28,7 +29,7 @@ const SettingsOverviewPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const tabValue = location.pathname.split('/').pop() || 'container';
+  const tabValue = location.pathname.split('/').pop() || CONTAINER;
   const [option, setOption] = useState(tabValue);
 
   const handleTabClick = (to: string) => {
@@ -36,7 +37,7 @@ const SettingsOverviewPage: React.FC = () => {
   };
 
   const tabOptions = [
-    { id: 'container', name: t('dockerOverview.container-view') },
+    { id: CONTAINER, name: t('dockerOverview.container-view') },
     { id: GLOBAL_SETTINGS_ROOT_ENDPOINT, name: t('settings.globalSettings.title') },
     { id: 'info', name: t('settings.info.title') },
   ];

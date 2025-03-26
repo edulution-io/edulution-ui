@@ -71,6 +71,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
       name: slugifiedAppName,
       translations: {
         de: newAppName,
+        en: newAppName,
       },
       icon: newAppIcon,
       appType: getAppType(),

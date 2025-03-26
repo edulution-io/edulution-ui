@@ -736,7 +736,14 @@
     "globalSettings": {
       "title": "Global Settings",
       "security": "Security",
-      "errors": { "updateError": "Settings could not be updated." }
+      "multiFactorAuthentication": "Multi-factor authentication",
+      "description": "Here you can specify the user groups for which multi-factor authentication is to be enforced.",
+      "selectUserGroups": "Select user groups for which the MFA setup is enforced.",
+      "updateSuccessful": "Setting updated successfully",
+      "errors": {
+        "updateError": "Settings could not be updated.",
+        "notFoundError": "Settings could not be loaded."
+      }
     },
     "info": {
       "title": "Info"

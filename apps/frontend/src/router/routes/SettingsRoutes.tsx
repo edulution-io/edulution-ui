@@ -16,6 +16,8 @@ import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import AppStorePage from '@/pages/Settings/AppConfig/appStore/AppStorePage';
 import APPS from '@libs/appconfig/constants/apps';
+import CONTAINER from '@libs/docker/constants/container';
+import { TABS } from '@libs/common/constants/pageElementIds';
 
 const SettingsPage = lazy(() => import('@/pages/Settings/SettingsPage'));
 
@@ -35,7 +37,7 @@ const getSettingsRoutes = () => [
       index
       element={
         <Navigate
-          to="tabs/container"
+          to={`${TABS}/${CONTAINER}`}
           replace
         />
       }
@@ -44,12 +46,12 @@ const getSettingsRoutes = () => [
       path={APPS.APPSTORE}
       element={<AppStorePage />}
     />
-    <Route path="tabs">
+    <Route path={TABS}>
       <Route
         path=""
         element={
           <Navigate
-            to="container"
+            to={CONTAINER}
             replace
           />
         }

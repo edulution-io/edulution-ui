@@ -12,6 +12,8 @@
 
 import { create, StateCreator } from 'zustand';
 import eduApi from '@/api/eduApi';
+import { toast } from 'sonner';
+import i18n from '@/i18n';
 import handleApiError from '@/utils/handleApiError';
 import { GLOBAL_SETTINGS_ROOT_ENDPOINT } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
@@ -55,9 +57,13 @@ const useGlobalSettingsApiStore = create<GlobalSettingsStore>(
           const { data } = await eduApi.get<GlobalSettingsDto>(GLOBAL_SETTINGS_ROOT_ENDPOINT, {
             params: { projection },
           });
-          set({ globalSettings: { ...data } });
 
-          return data;
+          if (data) {
+            set({ globalSettings: { ...data } });
+            return data;
+          }
+
+          return initialGlobalSettings;
         } catch (error) {
           handleApiError(error, set);
           return initialGlobalSettings;
@@ -71,6 +77,7 @@ const useGlobalSettingsApiStore = create<GlobalSettingsStore>(
         try {
           await eduApi.put(GLOBAL_SETTINGS_ROOT_ENDPOINT, globalSettingsDto);
           set({ globalSettings: globalSettingsDto });
+          toast.success(i18n.t('settings.globalSettings.updateSuccessful'));
         } catch (error) {
           handleApiError(error, set);
         } finally {

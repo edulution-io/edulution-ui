@@ -12,6 +12,7 @@
 
 const GlobalSettingsErrorMessages = {
   UpdateError: 'settings.globalSettings.errors.updateError',
+  NotFoundError: 'settings.globalSettings.errors.notFoundError',
 } as const;
 
 export default GlobalSettingsErrorMessages;

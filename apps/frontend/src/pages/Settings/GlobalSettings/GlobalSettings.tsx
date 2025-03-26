@@ -81,12 +81,13 @@ const GlobalSettings: React.FC = () => {
       >
         <AccordionItem value="security">
           <AccordionTrigger className="flex text-h4">
-            <h4>{t('settings.globalSettings.security')}</h4>
+            <h4>{t('settings.globalSettings.multiFactorAuthentication')}</h4>
           </AccordionTrigger>
           <AccordionContent
             style={{ overflow: 'visible' }}
             className="space-y-2 px-1"
           >
+            <p className="text-background">{t('settings.globalSettings.description')}</p>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
                 <FormFieldSH
@@ -103,7 +104,7 @@ const GlobalSettings: React.FC = () => {
                           placeholder={t('search.type-to-search')}
                         />
                       </FormControl>
-                      <p className="text-background">{t(`permission.selectGroupsDescription`)}</p>
+                      <p className="text-background">{t('settings.globalSettings.selectUserGroups')}</p>
                       <FormMessage className="text-p" />
                     </FormItem>
                   )}

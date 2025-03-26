@@ -738,7 +738,14 @@
     "globalSettings": {
       "title": "Globale Einstellungen",
       "security": "Sicherheit",
-      "errors": { "updateError": "Einstellungen konnten nicht aktualisiert werden." }
+      "multiFactorAuthentication": "Multi-Faktor-Authentisierung",
+      "description": "Hier kann festgelegt werden, für welche Nutzergruppen die Multi-Faktor-Authentisierung erzwungen werden soll.",
+      "selectUserGroups": "Nutzergruppen auswählen, für welche das MFA-Setup erzwungen wird.",
+      "updateSuccessful": "Einstellung erfolgreich aktualisiert.",
+      "errors": {
+        "updateError": "Einstellungen konnten nicht aktualisiert werden.",
+        "notFoundError": "Einstellungen konnten nicht geladen werden."
+      }
     },
     "info": {
       "title": "Info"

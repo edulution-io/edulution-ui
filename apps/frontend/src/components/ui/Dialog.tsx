@@ -50,7 +50,7 @@ const DialogContent = React.forwardRef<
   }
 >(({ className, children, showCloseButton = true, variant, ...props }, ref) => (
   <DialogPortal>
-    <DialogOverlay className={cn(variant === 'primary' && 'bg-black/50 ')} />
+    <DialogOverlay className={cn({ 'bg-black/50': variant === 'primary' })} />{' '}
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
