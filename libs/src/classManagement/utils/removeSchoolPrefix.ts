@@ -10,13 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
+const removeSchoolPrefix = (input: string, prefix: string): string => {
+  const regex = new RegExp(`^${prefix}-`);
+  return input.replace(regex, '');
+};
 
-export interface DropdownOption {
-  name: string;
-  type: TAvailableFileTypes;
-  title: string;
-  icon: React.ElementType;
-  iconColor?: string;
-}
+export default removeSchoolPrefix;
