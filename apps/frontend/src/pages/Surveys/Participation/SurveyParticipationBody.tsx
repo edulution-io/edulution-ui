@@ -12,7 +12,7 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
-import { CompletingEvent, Model } from 'survey-core';
+import { CompletingEvent, Model, Serializer } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
@@ -39,6 +39,8 @@ interface SurveyParticipationBodyProps {
   updateOpenSurveys: () => void;
   updateAnsweredSurveys: () => void;
 }
+
+Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
 
 const SurveyParticipationBody = (props: SurveyParticipationBodyProps): React.ReactNode => {
   const {
