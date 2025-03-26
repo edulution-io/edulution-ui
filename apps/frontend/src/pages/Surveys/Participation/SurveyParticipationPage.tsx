@@ -13,6 +13,7 @@
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
+import { Serializer } from 'survey-core';
 import useUserStore from '@/store/UserStore/UserStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
@@ -23,6 +24,8 @@ import '../theme/custom.participation.css';
 interface SurveyParticipationPageProps {
   isPublic: boolean;
 }
+
+Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
 
 const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.ReactNode => {
   const { isPublic = false } = props;

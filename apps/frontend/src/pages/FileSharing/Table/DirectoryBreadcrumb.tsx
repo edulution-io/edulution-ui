@@ -21,7 +21,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { HiChevronDown } from 'react-icons/hi';
 import DropdownMenu from '@/components/shared/DropdownMenu';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import { BREADCRUMB_ID } from '@libs/ui/constants/defaultIds';
 import useUserPath from '../hooks/useUserPath';
 
@@ -42,7 +42,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
   style,
   showTitle = true,
 }) => {
-  const isMobileView = useIsMobileView();
+  const { isMobileView } = useMedia();
   const displaySegments = isMobileView ? 1 : 4;
   const { t } = useTranslation();
   const { homePath } = useUserPath();

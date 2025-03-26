@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
@@ -18,9 +18,12 @@ import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 import { BREADCRUMB_ID } from '@libs/ui/constants/defaultIds';
+import useMedia from '@/hooks/useMedia';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/FileSharingTableColumns';
+import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
 
 const FileSharingTable = () => {
+  const { isMobileView, isTabletView } = useMedia();
   const { setSelectedRows, setSelectedItems, selectedRows, files, isLoading } = useFileSharingStore();
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue =
@@ -37,11 +40,20 @@ const FileSharingTable = () => {
 
   const { appName } = useFileSharingMenuConfig();
 
+  const initialColumnVisibility = useMemo(
+    () => ({
+      [FILE_SHARING_TABLE_COLUMNS.LAST_MODIFIED]: !(isMobileView || isTabletView),
+      [FILE_SHARING_TABLE_COLUMNS.SIZE]: !(isMobileView || isTabletView),
+      [FILE_SHARING_TABLE_COLUMNS.TYPE]: !(isMobileView || isTabletView),
+    }),
+    [isMobileView, isTabletView],
+  );
+
   return (
     <ScrollableTable
       columns={getFileSharingTableColumns()}
       data={files}
-      filterKey="select-filename"
+      filterKey={FILE_SHARING_TABLE_COLUMNS.SELECT_FILENAME}
       filterPlaceHolderText="filesharing.filterPlaceHolderText"
       onRowSelectionChange={handleRowSelectionChange}
       isLoading={isLoading}
@@ -56,6 +68,7 @@ const FileSharingTable = () => {
         { id: 'type', desc: false },
         { id: 'select-filename', desc: false },
       ]}
+      initialColumnVisibility={initialColumnVisibility}
     />
   );
 };

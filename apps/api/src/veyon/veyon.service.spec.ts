@@ -12,7 +12,7 @@
 
 /* eslint-disable @typescript-eslint/dot-notation */
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpException } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import axios, { AxiosInstance } from 'axios';
 import { Readable } from 'stream';
 import VEYON_FEATURE_ACTIONS from '@libs/veyon/constants/veyonFeatureActions';
@@ -21,6 +21,8 @@ import { framebufferConfigLow } from '@libs/veyon/constants/framebufferConfig';
 import VEYON_API_AUTH_RESPONSE_KEYS from '@libs/veyon/constants/veyonApiAuthResponse';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import type VeyonUserResponse from '@libs/veyon/types/veyonUserResponse';
+import type VeyonFeaturesResponse from '@libs/veyon/types/veyonFeaturesResponse';
+import type UserConnectionsFeatureStates from '@libs/veyon/types/userConnectionsFeatureState';
 import VeyonService from './veyon.service';
 import UsersService from '../users/users.service';
 import AppConfigService from '../appconfig/appconfig.service';
@@ -53,6 +55,24 @@ const mockUserResponse: VeyonUserResponse = {
   fullName: 'veyonUser',
   login: 'domain\\veyonUser',
   session: 0,
+};
+
+const mockedFeatureResponse: VeyonFeaturesResponse[] = [
+  {
+    active: 'true',
+    name: 'testuser',
+    parentUid: '1234',
+    uid: '1234',
+  },
+];
+
+const mockedUsersFeatureResponse: UserConnectionsFeatureStates = {
+  'test-uid': mockedFeatureResponse,
+};
+
+const mockedRejectObject = {
+  response: { status: HttpStatus.INTERNAL_SERVER_ERROR },
+  message: 'Test error',
 };
 
 jest.mock('axios');
@@ -132,6 +152,7 @@ describe('VeyonService', () => {
 
       (service['veyonApi'].post as jest.Mock).mockResolvedValueOnce({
         data: mockResponse,
+        status: HttpStatus.OK,
       });
 
       const result = await service.authenticate('127.0.0.1', 'username', 'veyonUser');
@@ -142,10 +163,7 @@ describe('VeyonService', () => {
     it('should throw HttpException if AxiosError occurs', async () => {
       const mockPassword = 'test-password';
       jest.spyOn(usersService, 'getPassword').mockResolvedValue(mockPassword);
-      mockedAxios.post.mockRejectedValue({
-        response: { status: 500 },
-        message: 'Test error',
-      });
+      mockedAxios.post.mockRejectedValue(mockedRejectObject);
 
       await expect(service.authenticate('127.0.0.1', 'username', 'veyonUser')).rejects.toThrow(HttpException);
     });
@@ -197,40 +215,62 @@ describe('VeyonService', () => {
     });
 
     it('should throw HttpException if an error occurs', async () => {
-      mockedAxios.get.mockRejectedValue({
-        response: { status: 500 },
-        message: 'Test error',
-      });
+      mockedAxios.get.mockRejectedValue(mockedRejectObject);
 
       await expect(service.getUser('test-uid')).rejects.toThrow(HttpException);
     });
   });
 
   describe('setFeature', () => {
-    it('should return an empty object if successful', async () => {
-      const mockResponse = {};
+    it('should return an user feature status array if successful', async () => {
       jest.spyOn(appConfigService, 'getAppConfigByName').mockResolvedValueOnce(mockAppConfig as AppConfigDto);
 
       await service.updateVeyonProxyConfig();
 
       (service['veyonApi'].put as jest.Mock).mockResolvedValueOnce({
-        data: mockResponse,
+        data: mockedUsersFeatureResponse,
       });
 
-      const result = await service.setFeature(VEYON_FEATURE_ACTIONS.SCREENLOCK, { active: true }, 'test-uid');
+      jest.spyOn(service as any, 'pollFeatureState').mockResolvedValueOnce({});
 
-      expect(result).toEqual({});
+      jest.spyOn(service, 'getFeatures').mockResolvedValueOnce(mockedFeatureResponse);
+
+      const result = await service.setFeature(VEYON_FEATURE_ACTIONS.SCREENLOCK, {
+        active: true,
+        connectionUids: ['test-uid'],
+      });
+
+      expect(result).toEqual(mockedUsersFeatureResponse);
     });
 
     it('should throw HttpException if an error occurs', async () => {
-      mockedAxios.put.mockRejectedValue({
-        response: { status: 500 },
-        message: 'Test error',
+      mockedAxios.put.mockRejectedValue(mockedRejectObject);
+
+      await expect(
+        service.setFeature(VEYON_FEATURE_ACTIONS.SCREENLOCK, { active: true, connectionUids: ['test-uid'] }),
+      ).rejects.toThrow(HttpException);
+    });
+  });
+
+  describe('getFeatures', () => {
+    it('should return features if successful', async () => {
+      jest.spyOn(appConfigService, 'getAppConfigByName').mockResolvedValueOnce(mockAppConfig as AppConfigDto);
+
+      await service.updateVeyonProxyConfig();
+
+      (service['veyonApi'].get as jest.Mock).mockResolvedValueOnce({
+        data: mockedFeatureResponse,
       });
 
-      await expect(service.setFeature(VEYON_FEATURE_ACTIONS.SCREENLOCK, { active: true }, 'test-uid')).rejects.toThrow(
-        HttpException,
-      );
+      const result = await service.getFeatures('test-uid');
+
+      expect(result).toEqual(mockedFeatureResponse);
+    });
+
+    it('should throw HttpException if an error occurs', async () => {
+      mockedAxios.get.mockRejectedValue(mockedRejectObject);
+
+      await expect(service.getFeatures('test-uid')).rejects.toThrow(HttpException);
     });
   });
 });

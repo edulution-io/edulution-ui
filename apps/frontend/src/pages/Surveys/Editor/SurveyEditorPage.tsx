@@ -75,7 +75,7 @@ const SurveyEditorPage = () => {
 
   const form = useForm<SurveyDto>({
     mode: 'onChange',
-    resolver: zodResolver(getSurveyEditorFormSchema(t)),
+    resolver: zodResolver(getSurveyEditorFormSchema()),
     defaultValues: initialFormValues,
   });
 

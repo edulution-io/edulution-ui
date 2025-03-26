@@ -25,15 +25,7 @@ const DesktopButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
   const menuBar = useMenuBarConfig();
 
   const floatingButtons = buttons.map((conf, index) => {
-    const {
-      icon,
-      text,
-      onClick,
-      isVisible = true,
-      variant = 'button',
-      options = undefined,
-      onSelectFileSelect = undefined,
-    } = conf;
+    const { icon, text, onClick, isVisible = true, variant = 'button', dropdownItems = undefined } = conf;
     return isVisible ? (
       // eslint-disable-next-line react/no-array-index-key
       <div key={`${keyPrefix}${index}`}>
@@ -42,8 +34,7 @@ const DesktopButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
           icon={icon}
           text={text}
           onClick={onClick}
-          options={options}
-          onSelectFileSelect={onSelectFileSelect}
+          dropdownItems={dropdownItems}
         />
       </div>
     ) : null;

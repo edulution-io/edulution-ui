@@ -13,7 +13,7 @@
 import i18next from 'i18next';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import getFirstValidDateOfArray from '@libs/common/utils/getFirstValidDateOfArray';
+import getFirstValidDateOfArray from '@libs/common/utils/Date/getFirstValidDateOfArray';
 
 const getInitialSurveyFormValues = (
   creator: AttendeeDto,

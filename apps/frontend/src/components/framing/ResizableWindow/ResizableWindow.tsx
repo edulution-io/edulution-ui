@@ -12,7 +12,7 @@
 
 import React, { ReactElement, ReactNode, useEffect, useState } from 'react';
 import { Position, Rnd } from 'react-rnd';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import cn from '@libs/common/utils/className';
 import useFrameStore from '@/components/framing/FrameStore';
 import { useTranslation } from 'react-i18next';
@@ -54,7 +54,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
   additionalButtons = [],
 }) => {
   const windowSize = useWindowResize();
-  const isMobileView = useIsMobileView();
+  const { isMobileView } = useMedia();
   const { t } = useTranslation();
   const {
     minimizedWindowedFrames,

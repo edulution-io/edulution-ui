@@ -29,6 +29,7 @@ services:
       timeout: 1s
       retries: 3
       start_period: 10s
+    command: ['redis-server', '--save', '', '--appendonly', 'no']
 
 volumes:
   db:
