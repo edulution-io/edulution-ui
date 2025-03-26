@@ -18,16 +18,9 @@ import AppConfigModule from '../appconfig/appconfig.module';
 import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
 import SseService from '../sse/sse.service';
-import {DynamicQueueService} from "../queue/queue.service";
-import {JobProducerService} from "../queue/job.producer.service";
-import {QueueProvider} from "../queue/queue.provider";
-import {WorkerService} from "../queue/worker.service";
-import {JobHandlerService} from "../queue/job.handler.service";
 import DuplicateFileConsumer from "./consumers/duplicateFile.consumer";
-
-
-//TODO: Ein Queue Service evtl => mometan sind es noch zuviele. Prüfugen ob der JobProducerService ausreicht.
-
+import DynamicQueueService from "../queue/queue.service";
+import CollectFileConsumer from "./consumers/collectFile.consumer";
 
 @Module({
   imports: [
@@ -40,8 +33,9 @@ import DuplicateFileConsumer from "./consumers/duplicateFile.consumer";
     FilesystemService,
     OnlyofficeService,
     SseService,
-    DynamicQueueService, JobProducerService, QueueProvider, WorkerService, JobHandlerService,
-    DuplicateFileConsumer
+    DynamicQueueService,
+    DuplicateFileConsumer,
+    CollectFileConsumer
   ],
   exports: [FilesharingService],
 })

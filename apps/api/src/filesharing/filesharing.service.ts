@@ -33,7 +33,9 @@ import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
 import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
-import {JobProducerService} from "../queue/job.producer.service";
+import DynamicQueueService from "../queue/queue.service";
+
+
 @Injectable()
 class FilesharingService {
   private clientCache = new Map<string, { client: AxiosInstance; timeout: NodeJS.Timeout }>();
@@ -46,10 +48,8 @@ class FilesharingService {
     private readonly userService: UsersService,
     private readonly onlyofficeService: OnlyofficeService,
     private readonly fileSystemService: FilesystemService,
-    private readonly jobProducer: JobProducerService
-
-  ) {
-  }
+    private readonly dynamicQueueService: DynamicQueueService,
+  ) {}
 
   private setCacheTimeout(token: string): NodeJS.Timeout {
     return setTimeout(
@@ -291,7 +291,7 @@ class FilesharingService {
     return Promise.all(
       duplicateFile.destinationFilePaths.map(async (destinationPath) => {
 
-        await this.jobProducer.addJob(username, JOB_NAMES.DUPLICATE_FILE_JOB, {
+        await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.DUPLICATE_FILE_JOB, {
           username,
           originFilePath: duplicateFile.originFilePath,
           destinationFilePath: destinationPath,
@@ -426,7 +426,7 @@ class FilesharingService {
     return Promise.all(
 
       collectFileRequestDTO.map(async (collectFileRequest) => {
-        await this.jobProducer.addJob(username, JOB_NAMES.COLLECT_FILE_JOB, {
+        await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.COLLECT_FILE_JOB, {
           username,
           userRole,
           item: collectFileRequest,

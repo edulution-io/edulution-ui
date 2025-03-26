@@ -22,9 +22,9 @@ import FilesharingProgressDto from "@libs/filesharing/types/filesharingProgressD
 import FILE_PATHS from "@libs/filesharing/constants/file-paths";
 import SSE_MESSAGE_TYPE from "@libs/common/constants/sseMessageType";
 import JobData from "@libs/queue/constants/jobData";
-import type UserConnections from '../types/userConnections';
-import SseService from '../sse/sse.service';
-import FilesharingService from "../filesharing/filesharing.service";
+import type UserConnections from '../../types/userConnections';
+import SseService from '../../sse/sse.service';
+import FilesharingService from "../filesharing.service";
 
 
 class DuplicateFileConsumer extends WorkerHost {

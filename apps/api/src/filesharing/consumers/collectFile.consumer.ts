@@ -21,10 +21,10 @@ import FilePaths from '@libs/filesharing/constants/file-paths';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import JobData from "@libs/queue/constants/jobData";
-import SseService from '../sse/sse.service';
-import FilesharingService from '../filesharing/filesharing.service';
+import SseService from '../../sse/sse.service';
+import FilesharingService from '../filesharing.service';
 
-import type UserConnections from '../types/userConnections';
+import type UserConnections from '../../types/userConnections';
 
 class CollectFileConsumer extends WorkerHost {
   private fileCollectingSseConnections: UserConnections = new Map();

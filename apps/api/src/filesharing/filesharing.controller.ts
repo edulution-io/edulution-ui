@@ -45,7 +45,8 @@ import { Observable } from 'rxjs';
 import FilesharingService from './filesharing.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
-import DuplicateFileConsumer from './consumers/duplicateFile.consumer';
+import DuplicateFileConsumer from "./consumers/duplicateFile.consumer"
+import CollectFileConsumer from "./consumers/collectFile.consumer";
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
@@ -54,6 +55,7 @@ class FilesharingController {
   constructor(
     private readonly filesharingService: FilesharingService,
     private readonly filesharingConsumer: DuplicateFileConsumer,
+    private readonly filesharingCollectConsumer: CollectFileConsumer,
   ) {}
 
   @Get()
@@ -198,6 +200,11 @@ class FilesharingController {
   @Sse('sse-sharing')
   sse(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
     return this.filesharingConsumer.subscribe(username, res);
+  }
+
+  @Sse('sse-collect')
+  sseCollect(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
+    return this.filesharingCollectConsumer.subscribe(username, res);
   }
 
 }
