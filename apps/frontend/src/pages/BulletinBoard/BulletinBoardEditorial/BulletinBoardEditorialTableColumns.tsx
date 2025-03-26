@@ -19,10 +19,12 @@ import { FaEyeSlash } from 'react-icons/fa';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import { FaClock } from 'react-icons/fa6';
+import BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS from '@libs/bulletinBoard/constants/bulletinBoardEditorialTableColumns';
+import hideOnMobileClassName from '@libs/ui/constants/hideOnMobileClassName';
 
 const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
   {
-    id: 'name',
+    id: BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS.NAME,
     header: ({ column, table }) => (
       <SortableHeader<BulletinResponseDto, unknown>
         column={column}
@@ -51,7 +53,7 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
     },
   },
   {
-    id: 'category',
+    id: BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS.CATEGORY,
     header: ({ column }) => <SortableHeader<BulletinResponseDto, unknown> column={column} />,
     meta: {
       translationId: 'bulletinboard.category',
@@ -72,8 +74,13 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
     },
   },
   {
-    id: 'isActive',
-    header: ({ column }) => <SortableHeader<BulletinResponseDto, unknown> column={column} />,
+    id: BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS.IS_ACTIVE,
+    header: ({ column }) => (
+      <SortableHeader<BulletinResponseDto, unknown>
+        column={column}
+        className={hideOnMobileClassName}
+      />
+    ),
 
     meta: {
       translationId: 'bulletinboard.isActiveOrExpired',
@@ -111,7 +118,7 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
     },
   },
   {
-    id: 'isVisibleStartDate',
+    id: BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS.IS_VISIBLE_START_DATE,
     header: ({ column }) => <SortableHeader<BulletinResponseDto, unknown> column={column} />,
     meta: {
       translationId: 'bulletinboard.isVisibleStartDate',
@@ -131,7 +138,7 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
     },
   },
   {
-    id: 'isVisibleEndDate',
+    id: BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS.IS_VISIBLE_END_DATE,
     header: ({ column }) => <SortableHeader<BulletinResponseDto, unknown> column={column} />,
     meta: {
       translationId: 'bulletinboard.isVisibleEndDate',

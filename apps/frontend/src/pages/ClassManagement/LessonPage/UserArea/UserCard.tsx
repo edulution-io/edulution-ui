@@ -10,66 +10,72 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect } from 'react';
+import { toast } from 'sonner';
 import { Card, CardContent } from '@/components/shared/Card';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import cn from '@libs/common/utils/className';
 import UserCardButtonBar from '@/pages/ClassManagement/LessonPage/UserArea/UserCardButtonBar';
 import Checkbox from '@/components/ui/Checkbox';
+import { TooltipProvider } from '@/components/ui/Tooltip';
+import ActionTooltip from '@/components/shared/ActionTooltip';
 import { SOPHOMORIX_STUDENT } from '@libs/lmnApi/constants/sophomorixRoles';
-import Avatar from '@/components/shared/Avatar';
 import { useTranslation } from 'react-i18next';
 import UserPasswordDialog from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/UserPasswordDialog';
 import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
-import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import APPS from '@libs/appconfig/constants/apps';
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import FrameBufferImage from './FrameBufferImage';
+import VEYON_FEATURE_ACTIONS from '@libs/veyon/constants/veyonFeatureActions';
+import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
+import useVeyonApiStore from '../../useVeyonApiStore';
+import UserCardVeyonPreview from './UserCardVeyonPreview';
 
 interface UserCardProps {
   user: UserLmnInfo;
   selectedMember: UserLmnInfo[];
   setSelectedMember: React.Dispatch<React.SetStateAction<UserLmnInfo[]>>;
   isTeacherInSameClass: boolean;
-  isTeacherInSameSchool: boolean;
+  isVeyonEnabled: boolean;
 }
 
-const UserCard = ({
-  user,
-  selectedMember,
-  setSelectedMember,
-  isTeacherInSameClass,
-  isTeacherInSameSchool,
-}: UserCardProps) => {
+const UserCard = ({ user, selectedMember, isTeacherInSameClass, setSelectedMember, isVeyonEnabled }: UserCardProps) => {
   const { t } = useTranslation();
   const { currentUser } = useLmnApiPasswordStore();
+  const { userConnectionsFeatureStates, userConnectionUids, authenticateVeyonClient, getFeatures } = useVeyonApiStore();
   const { displayName, name, sophomorixAdminClass, school, givenName, sn: surname, thumbnailPhoto, examMode } = user;
-  const { appConfigs } = useAppConfigsStore();
-  const [isHovered, setIsHovered] = useState<boolean>(false);
 
   const studentName = examMode ? `${name}-exam` : name;
 
-  const isStudent = user.sophomorixRole === SOPHOMORIX_STUDENT;
-  const isSelectable = isTeacherInSameSchool && isStudent;
+  const isSelectable = user.sophomorixRole === SOPHOMORIX_STUDENT && isTeacherInSameClass;
   const isMemberSelected = !!selectedMember.find((m) => m.dn === user.dn) && isSelectable;
+  const schoolClassName = removeSchoolPrefix(sophomorixAdminClass, school);
+  const connectionUid = userConnectionUids.find((conn) => conn.veyonUsername === user.cn)?.connectionUid || '';
+  const userConnectionFeatureState = userConnectionsFeatureStates[connectionUid];
 
-  const isActive = isHovered || isMemberSelected;
+  useEffect(() => {
+    if (isVeyonEnabled && user.sophomorixIntrinsic3.length > 0 && isSelectable) {
+      const connIp = user.sophomorixIntrinsic3[0];
 
-  const isVeyonEnabled = useMemo(() => {
-    const veyonConfigs = getExtendedOptionsValue(appConfigs, APPS.CLASS_MANAGEMENT, ExtendedOptionKeys.VEYON_PROXYS);
-    return Array.isArray(veyonConfigs) && veyonConfigs.length > 0;
-  }, [appConfigs]);
+      void authenticateVeyonClient(connIp, user.cn);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (isVeyonEnabled && connectionUid) {
+      void getFeatures(connectionUid);
+    }
+  }, [isVeyonEnabled, connectionUid]);
+
+  const getFeatureState = (featureUid: string) => {
+    const feature = userConnectionFeatureState?.find((item) => item.uid === featureUid);
+    return feature ? feature.active : undefined;
+  };
+
+  const isScreenLocked = !!getFeatureState(VEYON_FEATURE_ACTIONS.SCREENLOCK);
+  const areInputDevicesLocked = !!getFeatureState(VEYON_FEATURE_ACTIONS.INPUT_DEVICES_LOCK);
 
   const onCardClick = () => {
-    if (!isStudent) {
-      // eslint-disable-next-line no-alert
-      alert(t('classmanagement.itsNotPossibleToEditOtherTeacher'));
-      return;
-    }
-    if (!isTeacherInSameSchool) {
-      // eslint-disable-next-line no-alert
-      alert(t('classmanagement.itsNotPossibleToEditOtherSchoolStudents'));
+    if (!isSelectable) {
+      if (user.sophomorixRole === SOPHOMORIX_STUDENT)
+        toast.info(t('classmanagement.itsNotPossibleToEditExternalStudents'));
       return;
     }
 
@@ -83,14 +89,23 @@ const UserCard = ({
 
   return (
     <Card
-      variant="security"
-      className={cn('my-2 ml-1 mr-4 flex h-64 min-w-80 cursor-pointer', isActive && 'opacity-90')}
+      variant="text"
+      className={cn(isSelectable ? 'cursor-pointer' : 'cursor-not-allowed', 'my-2 ml-1 mr-4 flex h-64 min-w-80')}
       onClick={onCardClick}
-      onMouseOver={() => setIsHovered(true)}
-      onMouseOut={() => setIsHovered(false)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          onCardClick();
+        }
+      }}
+      tabIndex={0}
     >
       <CardContent className="flex w-full flex-row p-0">
-        <div className={cn('m-0 flex flex-col justify-between', isSelectable ? 'w-5/6' : 'w-full')}>
+        <div
+          className={cn(
+            'm-0 flex w-5/6 flex-col justify-between opacity-85 hover:opacity-100',
+            isMemberSelected && 'opacity-100',
+          )}
+        >
           <div className="flew-row flex h-8">
             {isSelectable && (
               <Checkbox
@@ -100,43 +115,62 @@ const UserCard = ({
                 aria-label={t('select')}
               />
             )}
-            <div className={cn('text-md mt-1 h-8 w-44 font-bold', !isSelectable && 'ml-2')}>{displayName}</div>
+            <div className={cn('text-md mt-1 h-8 w-44 font-bold', !isSelectable && 'ml-2')}>
+              {displayName}
+              <span className="flex text-xs">{name}</span>
+            </div>
           </div>
 
           <div className="-my-1 ml-2 flex justify-between">
-            <div className={cn('mt-1 h-6 rounded-lg px-2 py-0 text-sm', isActive ? 'bg-gray-400' : 'bg-gray-700')}>
-              {sophomorixAdminClass}
-            </div>
-            <div className={cn('flex flex-col text-xs', !isSelectable && 'mr-2')}>
-              <div>{studentName}</div>
-              <div>{school}</div>
-            </div>
-          </div>
-          <div
-            className={cn(
-              'm-2 flex max-h-36 w-64 flex-grow items-center justify-center rounded-xl text-2xl',
-              isActive ? 'bg-muted' : 'bg-accent',
-            )}
-          >
-            {isVeyonEnabled && user.sophomorixIntrinsic3.length > 0 ? (
-              <FrameBufferImage user={user} />
-            ) : (
-              <Avatar
-                user={{ username: studentName, firstName: givenName, lastName: surname }}
-                imageSrc={thumbnailPhoto}
-                className={thumbnailPhoto && 'h-24 w-24 p-2'}
+            <span className="mt-1 h-6 rounded-lg bg-accent-light px-2 py-0 text-sm">{schoolClassName}</span>
+            <TooltipProvider>
+              <ActionTooltip
+                className="bg-accent-light p-1 text-sm"
+                tooltipText={t('classmanagement.quota')}
+                openOnSide="left"
+                trigger={
+                  <div className="flex flex-col">
+                    <span className="mt-1 h-6 rounded-lg bg-accent-light px-2 py-0 text-sm">
+                      {user.sophomorixCloudQuotaCalculated?.[0]}
+                    </span>
+                  </div>
+                }
               />
-            )}
+            </TooltipProvider>
           </div>
-        </div>
-        {isSelectable ? (
-          <div className="mt-0.5 flex w-1/6 flex-col items-center justify-around">
-            <UserCardButtonBar
+          <div className="m-2 flex max-h-36 w-64 flex-grow items-center justify-center rounded-xl bg-accent-light text-2xl">
+            <UserCardVeyonPreview
               user={user}
-              isTeacherInSameClass={isTeacherInSameClass}
+              isVeyonEnabled={isVeyonEnabled}
+              areInputDevicesLocked={areInputDevicesLocked}
+              connectionUid={connectionUid}
             />
           </div>
-        ) : null}
+        </div>
+        <div
+          className={cn(
+            !isSelectable && 'cursor-not-allowed',
+            'ml-2 flex w-1/6 flex-col items-center justify-around rounded-r-xl border-l-[1px] border-accent bg-foreground scrollbar-thin',
+          )}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              onCardClick();
+            }
+          }}
+          tabIndex={-1}
+          role="button"
+        >
+          <UserCardButtonBar
+            user={user}
+            isTeacherInSameClass={isTeacherInSameClass}
+            isScreenLocked={isScreenLocked}
+            areInputDevicesLocked={areInputDevicesLocked}
+            disabled={!isSelectable}
+          />
+        </div>
       </CardContent>
       {currentUser?.dn === user.dn && <UserPasswordDialog />}
     </Card>

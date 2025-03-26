@@ -10,23 +10,23 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { WorkerHost } from '@nestjs/bullmq';
+import {WorkerHost} from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Response } from 'express';
 import { Observable } from 'rxjs';
-import {forwardRef, Inject, Injectable, MessageEvent} from '@nestjs/common';
+import {forwardRef, Inject, MessageEvent} from '@nestjs/common';
 
 import DuplicateFileJobData from '@libs/queue/types/duplicateFileJobData';
 
-import type UserConnections from '../../types/userConnections';
-import SseService from '../../sse/sse.service';
-import FilesharingService from "../filesharing.service";
 import FilesharingProgressDto from "@libs/filesharing/types/filesharingProgressDto";
 import FILE_PATHS from "@libs/filesharing/constants/file-paths";
 import SSE_MESSAGE_TYPE from "@libs/common/constants/sseMessageType";
+import JobData from "@libs/queue/constants/jobData";
+import type UserConnections from '../types/userConnections';
+import SseService from '../sse/sse.service';
+import FilesharingService from "../filesharing/filesharing.service";
 
 
-@Injectable()
 class DuplicateFileConsumer extends WorkerHost {
   private fileSharingSseConnections: UserConnections = new Map();
 
@@ -41,8 +41,8 @@ class DuplicateFileConsumer extends WorkerHost {
     return SseService.subscribe(username, this.fileSharingSseConnections, res);
   }
 
-  async process(job: Job<DuplicateFileJobData>): Promise<void> {
-      const { username, originFilePath, destinationFilePath, total, processed } = job.data;
+  async process(job: Job<JobData>): Promise<void> {
+      const { username, originFilePath, destinationFilePath, total, processed } = job.data as DuplicateFileJobData;
       const failedPaths: string[] = [];
 
       const client = await this.fileSharingService.getClient(username);
@@ -52,7 +52,7 @@ class DuplicateFileConsumer extends WorkerHost {
 
       await this.fileSharingService.ensureFolderExists(username, pathUpToTransferFolder, username);
       await this.fileSharingService.ensureFolderExists(username, pathUpToTeacherFolder, FILE_PATHS.COLLECT);
-      console.log(pathUpToTeacherFolder);
+
       try {
         await FilesharingService.copyFileViaWebDAV(client, originFilePath, destinationFilePath);
       } catch {

@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom';
 import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
 import MobileLogo from '@/assets/logos/edulution.io_USER INTERFACE-small.svg';
 import { useTranslation } from 'react-i18next';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import useUserStore from '@/store/UserStore/UserStore';
 import { BLANK_LAYOUT_HEADER_ID } from '@libs/common/constants/pageElementIds';
 
@@ -24,7 +24,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ hideHeadingText = false }: HeaderProps) => {
-  const isMobileView = useIsMobileView();
+  const { isMobileView } = useMedia();
   const { t } = useTranslation();
   const { user } = useUserStore();
   const getHeadingText = () => {

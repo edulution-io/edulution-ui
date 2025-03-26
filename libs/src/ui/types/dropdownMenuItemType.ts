@@ -12,7 +12,7 @@
 
 import { IconType } from 'react-icons';
 
-export type DropdownMenuItemType = {
+type DropdownMenuItemType = {
   label: string;
   onClick?: () => void;
   isSeparator?: boolean;
@@ -22,3 +22,5 @@ export type DropdownMenuItemType = {
   icon?: IconType;
   iconColor?: string;
 };
+
+export default DropdownMenuItemType;

@@ -10,30 +10,29 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Response } from 'express';
 import { Observable } from 'rxjs';
-import { MessageEvent } from '@nestjs/common';
-
-import APPS from '@libs/appconfig/constants/apps';
-import JOB_NAMES from '@libs/queue/constants/jobNames';
-
+import {forwardRef, Inject, MessageEvent} from '@nestjs/common';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
-import CollectFileJobData from '@libs/queue/constants/collectFileJobData';
+import CollectFileJobData from '@libs/queue/types/collectFileJobData';
 import FilePaths from '@libs/filesharing/constants/file-paths';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
-import SseService from '../../sse/sse.service';
-import FilesharingService from '../filesharing.service';
+import JobData from "@libs/queue/constants/jobData";
+import SseService from '../sse/sse.service';
+import FilesharingService from '../filesharing/filesharing.service';
 
-import type UserConnections from '../../types/userConnections';
+import type UserConnections from '../types/userConnections';
 
-@Processor(`${APPS.FILE_SHARING}-${JOB_NAMES.COLLECT_FILE_JOB}`, { concurrency: 1 })
 class CollectFileConsumer extends WorkerHost {
   private fileCollectingSseConnections: UserConnections = new Map();
 
-  constructor(private readonly fileSharingService: FilesharingService) {
+  constructor(
+    @Inject(forwardRef(() => FilesharingService))
+    private readonly fileSharingService: FilesharingService,
+  ) {
     super();
   }
 
@@ -41,8 +40,8 @@ class CollectFileConsumer extends WorkerHost {
     return SseService.subscribe(username, this.fileCollectingSseConnections, res);
   }
 
-  async process(job: Job<CollectFileJobData>): Promise<void> {
-    const { username, userRole, item, operationType, total, processed } = job.data;
+  async process(job: Job<JobData>): Promise<void> {
+    const { username, userRole, item, operationType, total, processed } = job.data as CollectFileJobData;
     const failedPaths: string[] = [];
 
     const initFolderName = `${userRole}s/${username}/transfer/collected`;

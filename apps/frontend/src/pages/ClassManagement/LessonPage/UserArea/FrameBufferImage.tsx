@@ -13,38 +13,33 @@
 import React, { useEffect, useState } from 'react';
 import { useInterval } from 'usehooks-ts';
 import { MdCropFree } from 'react-icons/md';
+import { TbKeyboardOff } from 'react-icons/tb';
 import { useTranslation } from 'react-i18next';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
 import FullScreenImage from '@/components/ui/FullScreenImage';
-import Avatar from '@/components/shared/Avatar';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import { VEYON_REFRESH_INTERVAL, VEYON_REFRESH_INTERVAL_HIGH } from '@libs/veyon/constants/refreshInterval';
 import useVeyonApiStore from '../../useVeyonApiStore';
 
 type FrameBufferImageProps = {
   user: UserLmnInfo;
+  areInputDevicesLocked: boolean;
+  connectionUid: string;
 };
 
-const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
+const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ areInputDevicesLocked, connectionUid }) => {
   const { t } = useTranslation();
   const [imageSrc, setImageSrc] = useState<string>('');
-  const { userConnectionUids, authenticateVeyonClient, getFrameBufferStream } = useVeyonApiStore();
+  const { loadingFeatureUids, getFrameBufferStream } = useVeyonApiStore();
   const [isImagePreviewModalOpen, setIsImagePreviewModalOpen] = useState(false);
-
-  const connectionUid = userConnectionUids.find((conn) => conn.veyonUsername === user.cn)?.connectionUid || '';
-
-  useEffect(() => {
-    if (user.sophomorixIntrinsic3.length > 0) {
-      const connIp = user.sophomorixIntrinsic3[0];
-
-      void authenticateVeyonClient(connIp, user.cn);
-    }
-  }, [user]);
 
   const fetchImage = async () => {
     const image = await getFrameBufferStream(connectionUid, isImagePreviewModalOpen);
-    if (!image.size) return null;
+    if (!image.size) {
+      setImageSrc('');
+      return null;
+    }
 
     const imageURL = URL.createObjectURL(image);
     setImageSrc(imageURL);
@@ -54,8 +49,6 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
   useEffect(() => {
     if (connectionUid) {
       void fetchImage();
-    } else {
-      setImageSrc('');
     }
   }, [connectionUid]);
 
@@ -86,13 +79,26 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
             alt={t('framebufferImage')}
           />
 
+          {areInputDevicesLocked && (
+            <div className="group absolute left-1 top-1">
+              <TbKeyboardOff className="h-5 w-5 text-ciRed" />
+            </div>
+          )}
+
           <div className="group absolute bottom-3 right-3 rounded-full bg-ciGrey/40 p-3 hover:bg-ciDarkGrey">
             <button
               type="button"
               onClick={() => handleImagePreviewClick()}
               className="relative flex items-center"
             >
-              <MdCropFree />
+              {loadingFeatureUids.has(connectionUid) ? (
+                <CircleLoader
+                  height="h-6"
+                  width="w-6"
+                />
+              ) : (
+                <MdCropFree />
+              )}
             </button>
           </div>
 
@@ -110,17 +116,7 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ user }) => {
       );
     }
 
-    if (connectionUid) {
-      return <CircleLoader />;
-    }
-
-    return (
-      <Avatar
-        user={{ username: user.cn, firstName: user.givenName, lastName: user.sn }}
-        imageSrc={user.thumbnailPhoto}
-        className={user.thumbnailPhoto && 'h-24 w-24 p-2'}
-      />
-    );
+    return <CircleLoader />;
   };
 
   return renderContent();
