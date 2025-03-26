@@ -34,15 +34,37 @@ const PublicPagesUserInput = (props: PublicPagesUserInputProps) => {
     username: z
       .string()
       .min(3, { message: t('login.username_too_short') })
-      .max(32, { message: t('login.username_too_long') }),
+      .max(32, { message: t('login.username_too_long') })
+      .optional(),
     firstName: z
       .string()
       .min(3, { message: t('login.username_too_short') })
-      .max(32, { message: t('login.username_too_long') }),
+      .max(32, { message: t('login.username_too_long') })
+      .optional(),
     lastName: z
       .string()
       .min(3, { message: t('login.username_too_short') })
-      .max(32, { message: t('login.username_too_long') }),
+      .max(32, { message: t('login.username_too_long') })
+      .optional(),
+  })
+  .superRefine((values, ctx) => {
+    if (!values.username || ( !values.firstName && !values.lastName) ) {
+      ctx.addIssue({
+        message: 'Either you should enter the username you received when participating the first time.',
+        code: z.ZodIssueCode.custom,
+        path: ['username'],
+      });
+      ctx.addIssue({
+        message: 'Or you have to submit an firstName and a lastName',
+        code: z.ZodIssueCode.custom,
+        path: ['firstName'],
+      });
+      ctx.addIssue({
+        message: 'Or you have to submit an firstName and a lastName',
+        code: z.ZodIssueCode.custom,
+        path: ['firstName'],
+      });
+    }
   });
 
   const form = useForm({

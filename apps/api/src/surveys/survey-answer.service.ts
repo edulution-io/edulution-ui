@@ -10,9 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Model, Types } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
-import { HttpStatus, Injectable } from '@nestjs/common';
+import {Model, Types} from 'mongoose';
+import {InjectModel} from '@nestjs/mongoose';
+import {HttpStatus, Injectable} from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
@@ -21,8 +21,8 @@ import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import UserInfo from '@libs/common/types/userinfo';
-import { Survey, SurveyDocument } from './survey.schema';
-import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
+import {Survey, SurveyDocument} from './survey.schema';
+import {SurveyAnswer, SurveyAnswerDocument} from './survey-answer.schema';
 import Attendee from '../conferences/attendee.schema';
 import MigrationService from '../migration/migration.service';
 import surveyAnswersMigrationsList from './migrations/surveyAnswersMigrationsList';
@@ -193,6 +193,22 @@ class SurveyAnswersService {
     }
   };
 
+  async createAnswer(attendee: Attendee, surveyId: string, saveNo: number, answer: JSON) {
+    const newSurveyAnswer = await this.surveyAnswerModel.create({
+      attendee,
+      surveyId: new Types.ObjectId(surveyId),
+      saveNo,
+      answer,
+    });
+    if (newSurveyAnswer == null) {
+      throw new CustomHttpException(
+        SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+    return newSurveyAnswer;
+  }
+
   async addAnswer(surveyId: string, saveNo: number, answer: JSON, user?: UserInfo): Promise<SurveyAnswer | undefined> {
     const survey = await this.surveyModel.findById<Survey>(surveyId);
     if (!survey) {
@@ -207,21 +223,26 @@ class SurveyAnswersService {
     } = survey;
 
     if (isAnonymous) {
-      const attendee = { firstName: 'Ano', lastName: 'Nymous', username: 'anonymous' };
-      const newSurveyAnswer = await this.surveyAnswerModel.create({
-        attendee,
-        surveyId: new Types.ObjectId(surveyId),
-        saveNo,
-        answer,
-      });
+      const attendee = { firstName: 'anonymous', lastName: 'anonymous', username: 'anonymous' };
+      return await this.createAnswer(attendee, surveyId, saveNo, answer);
+    }
+    if (isPublic) {
+      if (!user?.username) {
+        if (!user?.firstName || !user?.lastName) {
+          throw new CustomHttpException(SurveyAnswerErrorMessages., HttpStatus.PRECONDITION_REQUIRED)
+        }
 
-      if (newSurveyAnswer == null) {
-        throw new CustomHttpException(
-          SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
+        const temporaryUsername = `public-${new Date().getTime()}`;
+        const attendee = { firstName: user?.firstName, lastName: user?.lastName, username: temporaryUsername };
+        const createdAnswer = await this.createAnswer(attendee, surveyId, saveNo, answer);
+
+        const permanentUsername = `public-${user?.firstName}-${user?.lastName}-${createdAnswer._id}`;
+        await this.surveyAnswerModel.findByIdAndUpdate<SurveyAnswer>(createdAnswer._id, {
+          'attendee.username': permanentUsername,
+        });
+
+        return createdAnswer;
       }
-      return newSurveyAnswer;
     }
 
     if (!user) {
