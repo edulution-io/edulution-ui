@@ -40,7 +40,7 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
     if (eduApiToken) {
       setEventSource(eduApiToken);
     }
-  }, []);
+  }, [eduApiToken]);
 
   useNotifications();
 

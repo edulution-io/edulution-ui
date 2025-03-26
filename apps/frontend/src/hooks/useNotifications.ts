@@ -144,11 +144,19 @@ const useNotifications = () => {
 
   useEffect(() => {
     if (isSurveysAppActivated && eventSource) {
-      eventSource.onmessage = () => {
+      const controller = new AbortController();
+      const { signal } = controller;
+
+      const handleUpdateSurveys = () => {
         void updateOpenSurveys();
       };
 
+      eventSource.addEventListener(SSE_MESSAGE_TYPE.SURVEY_CREATED, handleUpdateSurveys, { signal });
+      eventSource.addEventListener(SSE_MESSAGE_TYPE.SURVEY_UPDATED, handleUpdateSurveys, { signal });
+      eventSource.addEventListener(SSE_MESSAGE_TYPE.SURVEY_DELETED, handleUpdateSurveys, { signal });
+
       return () => {
+        controller.abort();
         eventSource.close();
       };
     }
