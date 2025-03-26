@@ -10,8 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Observable } from 'rxjs';
+import { join } from 'path';
 import { Response } from 'express';
+import { Observable } from 'rxjs';
 import {
   Body,
   Controller,
@@ -54,7 +55,6 @@ import GetCurrentUser from '../common/decorators/getUser.decorator';
 import SseService from '../sse/sse.service';
 import type UserConnections from '../types/userConnections';
 import { checkAttachmentFile, createAttachmentUploadOptions } from '../common/multer.config';
-import { join } from 'path';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
