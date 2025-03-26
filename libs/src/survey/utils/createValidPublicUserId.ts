@@ -10,8 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import UserDto from '@libs/user/types/user.dto';
+const createValidPublicUserId = (username: string, answerId: string): string => `public_-_${username}_-_${answerId}`;
 
-type UserInfo = Pick<UserDto, 'firstName' | 'lastName' | 'username'>;
-
-export default UserInfo;
+export default createValidPublicUserId;

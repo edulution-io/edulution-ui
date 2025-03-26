@@ -10,20 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useMemo } from 'react';
-import { toast } from 'sonner';
-import { Model } from 'survey-core';
-import { Survey } from 'survey-react-ui';
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import cn from '@libs/common/utils/className';
 import useUserStore from '@/store/UserStore/UserStore';
-import useLanguage from '@/hooks/useLanguage';
-import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import PublicPagesUserInput from '@/pages/Surveys/Participation/PublicPagesUserInput';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import surveyTheme from '@/pages/Surveys/theme/theme';
+import PublicSurveyParticipationUserInput from '@/pages/Surveys/Participation/PublicSurveyAccessForm';
+import SurveyParticipationBody from '@/pages/Surveys/Participation/SurveyParticipationBody';
 import '../theme/custom.participation.css';
 
 interface SurveyParticipationPageProps {
@@ -34,10 +28,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
   const { isPublic = false } = props;
   const { selectedSurvey, fetchSelectedSurvey, isFetching, updateOpenSurveys, updateAnsweredSurveys } =
     useSurveyTablesPageStore();
-  const { userInfo, updateUserInfo, answerSurvey, reset } = useParticipateSurveyStore();
-
-  const { language } = useLanguage();
-  const { t } = useTranslation();
+  const { username, setUsername, answerSurvey, reset, previousAnswer } = useParticipateSurveyStore();
 
   const { surveyId } = useParams();
 
@@ -49,74 +40,48 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
   }, [surveyId]);
 
   useEffect(() => {
-    if (user == null) return;
-    updateUserInfo({
-      firstName: user.firstName || '...',
-      lastName: user.lastName || '...',
-      username: user.username || '...',
-    });
+    if (user) {
+      setUsername(user.username);
+    }
   }, [user]);
 
-  const surveyModel = useMemo(() => {
+  const form = useForm<{ username: string }>();
+
+  const handleAccessSurvey = () => {
     if (!selectedSurvey) {
-      return undefined;
+      return;
     }
-    const surveyParticipationModel = new Model(selectedSurvey.formula);
-    surveyParticipationModel.applyTheme(surveyTheme);
-    surveyParticipationModel.locale = language;
-    if (surveyParticipationModel.pages.length > 3) {
-      surveyParticipationModel.showProgressBar = 'top';
+    if (user) {
+      setUsername(user.username);
+    } else {
+      setUsername(form.watch('username'));
     }
+  };
 
-    surveyParticipationModel.onCompleting.add(async (sender, options) => {
-      const success = await answerSurvey(
-        {
-          surveyId: selectedSurvey.id || surveyId || '',
-          saveNo: selectedSurvey.saveNo,
-          answer: surveyParticipationModel.getData() as JSON,
-          isPublic,
-        },
-        sender,
-        options,
-      );
-
-      if (success) {
-        if (!isPublic) {
-          void updateOpenSurveys();
-          void updateAnsweredSurveys();
-        }
-
-        toast.success(t('survey.participate.saveAnswerSuccess'));
-      }
-    });
-
-    return surveyParticipationModel;
-  }, [selectedSurvey, language]);
-
-  if (isFetching) {
-    return <LoadingIndicatorDialog isOpen />;
-  }
-
-  if (!surveyModel) {
+  if (!user && !username) {
     return (
       <div className="relative top-1/3">
-        <h4 className="flex justify-center">{t('survey.notFound')}</h4>
-      </div>
-    );
-  }
-
-  if (isPublic && !userInfo && !selectedSurvey?.isAnonymous) {
-    return (
-      <div className="relative top-1/3">
-        <PublicPagesUserInput setUserInfo={updateUserInfo} />
+        <PublicSurveyParticipationUserInput
+          form={form}
+          publicUserFullName={form.watch('username')}
+          setPublicUserFullName={(value: string) => form.setValue('username', value)}
+          accessSurvey={handleAccessSurvey}
+        />
       </div>
     );
   }
 
   return (
-    <div className={cn('survey-participation')}>
-      <Survey model={surveyModel} />
-    </div>
+    <SurveyParticipationBody
+      username={user?.username || form.watch('username')}
+      isPublic={isPublic}
+      selectedSurvey={selectedSurvey}
+      previousAnswer={previousAnswer}
+      answerSurvey={answerSurvey}
+      isFetching={isFetching}
+      updateOpenSurveys={updateOpenSurveys}
+      updateAnsweredSurveys={updateAnsweredSurveys}
+    />
   );
 };
 

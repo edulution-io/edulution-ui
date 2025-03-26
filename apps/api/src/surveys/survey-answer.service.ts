@@ -10,19 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Model, Types} from 'mongoose';
-import {InjectModel} from '@nestjs/mongoose';
-import {HttpStatus, Injectable} from '@nestjs/common';
-import CustomHttpException from '@libs/error/CustomHttpException';
+import { Model, Types } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import SurveyStatus from '@libs/survey/survey-status-enum';
+import JwtUser from '@libs/user/types/jwt/jwtUser';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
+import publicUserIdRegex from '@libs/survey/utils/publicUserIdRegex';
+import createValidPublicUserId from '@libs/survey/utils/createValidPublicUserId';
+import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
-import ChoiceDto from '@libs/survey/types/api/choice.dto';
-import JWTUser from '@libs/user/types/jwt/jwtUser';
-import UserInfo from '@libs/common/types/userinfo';
-import {Survey, SurveyDocument} from './survey.schema';
-import {SurveyAnswer, SurveyAnswerDocument} from './survey-answer.schema';
+import { Survey, SurveyDocument } from './survey.schema';
+import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
 import Attendee from '../conferences/attendee.schema';
 import MigrationService from '../migration/migration.service';
 import surveyAnswersMigrationsList from './migrations/surveyAnswersMigrationsList';
@@ -43,7 +44,7 @@ class SurveyAnswersService {
   public canUserParticipateSurvey = async (surveyId: string, username: string): Promise<boolean> => {
     const survey = await this.surveyModel.findById<Survey>(surveyId);
     if (!survey) {
-      throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     try {
@@ -62,12 +63,12 @@ class SurveyAnswersService {
   public getSelectableChoices = async (surveyId: string, questionId: string): Promise<ChoiceDto[]> => {
     const survey = await this.surveyModel.findById(surveyId);
     if (!survey) {
-      throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     const limiter = survey.backendLimiters?.find((limit) => limit.questionId === questionId);
     if (!limiter?.choices?.length) {
-      throw new CustomHttpException(SurveyErrorMessages.NoBackendLimiters, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(SurveyErrorMessages.NoBackendLimiters, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     const possibleChoices = limiter.choices;
@@ -94,7 +95,7 @@ class SurveyAnswersService {
     return createdSurveys || [];
   }
 
-  async getOpenSurveys(user: JWTUser, currentDate: Date = new Date()): Promise<Survey[]> {
+  async getOpenSurveys(user: JwtUser, currentDate: Date = new Date()): Promise<Survey[]> {
     const query = {
       $or: [
         {
@@ -138,11 +139,12 @@ class SurveyAnswersService {
   async getAnsweredSurveys(username: string): Promise<Survey[]> {
     const surveyAnswers = await this.surveyAnswerModel.find<SurveyAnswer>({ 'attendee.username': username });
     const answeredSurveyIds = surveyAnswers.map((answer: SurveyAnswer) => new Types.ObjectId(answer.surveyId));
+    // eslint-disable-next-line no-underscore-dangle
     const answeredSurveys = await this.surveyModel.find<Survey>({ _id: { $in: answeredSurveyIds } });
     return answeredSurveys || [];
   }
 
-  async findUserSurveys(status: SurveyStatus, user: JWTUser): Promise<Survey[] | null> {
+  async findUserSurveys(status: SurveyStatus, user: JwtUser): Promise<Survey[] | null> {
     switch (status) {
       case SurveyStatus.OPEN:
         return this.getOpenSurveys(user);
@@ -169,10 +171,6 @@ class SurveyAnswersService {
       throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorSurveyExpired, HttpStatus.UNAUTHORIZED);
     }
 
-    if (isPublic) {
-      return;
-    }
-
     if (!username) {
       throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorUserNotAssigned, HttpStatus.UNAUTHORIZED);
     }
@@ -180,6 +178,10 @@ class SurveyAnswersService {
     const hasParticipated = participatedAttendees.find((participant: Attendee) => participant.username === username);
     if (hasParticipated && !canSubmitMultipleAnswers && !canUpdateFormerAnswer) {
       throw new CustomHttpException(SurveyErrorMessages.ParticipationErrorAlreadyParticipated, HttpStatus.FORBIDDEN);
+    }
+
+    if (isPublic) {
+      return;
     }
 
     const isCreator = creator?.username === username;
@@ -193,9 +195,9 @@ class SurveyAnswersService {
     }
   };
 
-  async createAnswer(attendee: Attendee, surveyId: string, saveNo: number, answer: JSON) {
-    const newSurveyAnswer = await this.surveyAnswerModel.create({
-      attendee,
+  async createAnswer(username: string, surveyId: string, saveNo: number, answer: JSON): Promise<SurveyAnswerDocument> {
+    const newSurveyAnswer: SurveyAnswerDocument | null = await this.surveyAnswerModel.create({
+      username,
       surveyId: new Types.ObjectId(surveyId),
       saveNo,
       answer,
@@ -209,53 +211,64 @@ class SurveyAnswersService {
     return newSurveyAnswer;
   }
 
-  async addAnswer(surveyId: string, saveNo: number, answer: JSON, user?: UserInfo): Promise<SurveyAnswer | undefined> {
+  async addAnswer(
+    surveyId: string,
+    saveNo: number,
+    answer: JSON,
+    user?: Partial<JwtUser> & { preferred_username: string },
+    publicUserId?: string,
+  ): Promise<SurveyAnswer | undefined> {
     const survey = await this.surveyModel.findById<Survey>(surveyId);
     if (!survey) {
-      throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     const {
-      isAnonymous = false,
       isPublic = false,
+      isAnonymous = false,
       canSubmitMultipleAnswers = false,
       canUpdateFormerAnswer = false,
     } = survey;
 
     if (isAnonymous) {
-      const attendee = { firstName: 'anonymous', lastName: 'anonymous', username: 'anonymous' };
-      return await this.createAnswer(attendee, surveyId, saveNo, answer);
+      return this.createAnswer('anonymous', surveyId, saveNo, answer);
     }
-    if (isPublic) {
-      if (!user?.username) {
-        if (!user?.firstName || !user?.lastName) {
-          throw new CustomHttpException(SurveyAnswerErrorMessages., HttpStatus.PRECONDITION_REQUIRED)
-        }
+    if (!isPublic && !user) {
+      throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
-        const temporaryUsername = `public-${new Date().getTime()}`;
-        const attendee = { firstName: user?.firstName, lastName: user?.lastName, username: temporaryUsername };
-        const createdAnswer = await this.createAnswer(attendee, surveyId, saveNo, answer);
+    const publicUserIdIsAlreadyLinkedToAnAnswer = publicUserId && publicUserIdRegex.test(publicUserId);
+    const isUsersFirstPublicAnswer = isPublic && !user && publicUserId && !publicUserIdIsAlreadyLinkedToAnAnswer;
 
-        const permanentUsername = `public-${user?.firstName}-${user?.lastName}-${createdAnswer._id}`;
-        await this.surveyAnswerModel.findByIdAndUpdate<SurveyAnswer>(createdAnswer._id, {
-          'attendee.username': permanentUsername,
-        });
+    if (isUsersFirstPublicAnswer) {
+      const temporaryUsername = `temporaryUsername`;
+      const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(
+        temporaryUsername,
+        surveyId,
+        saveNo,
+        answer,
+      );
 
-        return createdAnswer;
+      const permanentUsername = createValidPublicUserId(publicUserId, createdAnswer.id as string);
+      const updatedAnswer: SurveyAnswerDocument | null = await this.surveyAnswerModel
+        .findByIdAndUpdate<SurveyAnswerDocument>(createdAnswer.id, { username: permanentUsername }, { new: true })
+        .lean();
+      if (updatedAnswer == null) {
+        throw new CustomHttpException(
+          SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
+
+      return updatedAnswer;
     }
 
-    if (!user) {
-      throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
-    }
-
-    const username = user?.username;
-    const attendee = { firstName: user?.firstName || 'first-name', lastName: user?.lastName || 'last-name', username };
+    const username = user?.preferred_username || publicUserId;
 
     await this.throwErrorIfParticipationIsNotPossible(survey, username);
 
     const idExistingUsersAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({
-      $and: [{ 'attendee.username': username }, { surveyId: new Types.ObjectId(surveyId) }],
+      $and: [{ username }, { surveyId: new Types.ObjectId(surveyId) }],
     });
     if (idExistingUsersAnswer && !canSubmitMultipleAnswers) {
       if (!canUpdateFormerAnswer) {
@@ -267,13 +280,16 @@ class SurveyAnswersService {
         saveNo,
       });
       if (updatedSurveyAnswer == null) {
-        throw new CustomHttpException(SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError, HttpStatus.NOT_FOUND);
+        throw new CustomHttpException(
+          SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
       return updatedSurveyAnswer;
     }
 
     const newSurveyAnswer = await this.surveyAnswerModel.create({
-      attendee,
+      username,
       surveyId: new Types.ObjectId(surveyId),
       saveNo,
       answer,
@@ -287,8 +303,7 @@ class SurveyAnswersService {
     }
 
     const updateSurvey = await this.surveyModel.findByIdAndUpdate<Survey>(surveyId, {
-      participatedAttendees:
-        attendee && !isPublic ? [...survey.participatedAttendees, attendee] : survey.participatedAttendees,
+      participatedAttendees: username ? [...survey.participatedAttendees, { username }] : survey.participatedAttendees,
       answers: [...survey.answers, new Types.ObjectId(String(newSurveyAnswer.id))],
     });
     if (updateSurvey == null) {
@@ -304,7 +319,10 @@ class SurveyAnswersService {
     });
 
     if (usersSurveyAnswer == null) {
-      throw new CustomHttpException(SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(
+        SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
     return usersSurveyAnswer;
   }
@@ -312,7 +330,10 @@ class SurveyAnswersService {
   async getPublicAnswers(surveyId: string): Promise<JSON[] | null> {
     const surveyAnswers = await this.surveyAnswerModel.find<SurveyAnswer>({ surveyId: new Types.ObjectId(surveyId) });
     if (surveyAnswers.length === 0) {
-      throw new CustomHttpException(SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(
+        SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
 
     const answers = surveyAnswers.filter((answer) => answer.answer !== null);

@@ -10,23 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { CompleteEvent } from 'survey-core';
-import JwtUser from '@libs/user/types/jwt/jwtUser';
+const publicUserIdRegex = /(public_-_+[a-zA-Z0-9.-]+_-_+[a-z0-9])/;
 
-interface SubmitAnswerDto {
-  surveyId: string;
-
-  saveNo: number;
-
-  answer: JSON;
-
-  surveyEditorCallbackOnSave?: CompleteEvent | undefined;
-
-  isPublic: boolean;
-
-  publicUserId?: string;
-
-  user?: JwtUser;
-}
-
-export default SubmitAnswerDto;
+export default publicUserIdRegex;

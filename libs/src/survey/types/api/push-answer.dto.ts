@@ -10,8 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import UserInfo from '@libs/common/types/userinfo';
-
 interface PushAnswerDto {
   surveyId: string;
 
@@ -19,7 +17,9 @@ interface PushAnswerDto {
 
   answer: JSON;
 
-  userInfo?: UserInfo;
+  username: string;
+
+  isPublicUserId: boolean;
 }
 
 export default PushAnswerDto;

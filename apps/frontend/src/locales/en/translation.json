@@ -534,7 +534,11 @@
       "usernameTollTip": "You will receive a user name after participating",
       "firstName": "First name",
       "lastName": "Last name",
-      "saveUserInfo": "Next"
+      "saveUserInfo": "Next",
+      "orContinueWithoutAccount": "Or continue without account",
+      "pleaseEnterYourFullName": "To participate in the survey enter your full name.",
+      "yourFullName": "Either enter your name or the Id of a previous participation",
+      "invalidUsername": "Username is invalid (permitted are letters, number, and [. - _])"
     },
     "errors": {
       "submitAnswerError": "Not able to submit the answer.",
@@ -548,7 +552,7 @@
       "participationErrorUserNotAssigned": "User is no participant of the survey.",
       "participationErrorAlreadyParticipated": "User has already participated in the survey.",
       "participationErrorSurveyExpired": "Survey has already expired.",
-      "idTypeError": "Missing survey id.",
+      "missingIdError": "Missing survey id.",
       "missingAnswerError": "Please provide an answer before submitting."
     }
   },

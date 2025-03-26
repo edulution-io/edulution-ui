@@ -536,7 +536,11 @@
       "usernameTollTip": "Du bekommst den Benutzernamen nach der Teilnahme",
       "firstName": "Vorname",
       "lastName": "Nachname",
-      "saveUserInfo": "Weiter"
+      "saveUserInfo": "Weiter",
+      "orContinueWithoutAccount": "Oder fahre ohne Account fort",
+      "pleaseEnterYourFullName": "Gib deinen vollständigen Namen ein, um an der Umfrage teilzunehmen.",
+      "yourFullName": "Dein Name oder die Id deiner vorherigen Teilnahme",
+      "invalidUsername": "Benutzername ist ungültig (erlaubt sind Buchstaben, Zahlen und [. - _])"
     },
     "errors": {
       "submitAnswerError": "Die Antwort konnte nicht gespeichert werden.",
@@ -550,7 +554,7 @@
       "participationErrorUserNotAssigned": "Du bist zu dieser Umfrage nicht eingeladen.",
       "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
       "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",
-      "idTypeError": "Ungültige Umfrage-ID.",
+      "missingIdError": "Fehlende Umfrage-ID.",
       "missingAnswerError": "Bitte fülle die Umfrage aus, bevor du deine Antwort abschickst."
     }
   },

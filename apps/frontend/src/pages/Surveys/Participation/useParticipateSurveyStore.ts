@@ -10,74 +10,111 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { create } from 'zustand';
-import { toast } from 'sonner';
 import { t } from 'i18next';
+import { toast } from 'sonner';
+import { create } from 'zustand';
 import { Model, CompletingEvent } from 'survey-core';
-import { SURVEYS, PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
+import SurveyAnswerDto from '@libs/survey/types/api/survey-answer.dto';
 import SubmitAnswerDto from '@libs/survey/types/api/submit-answer.dto';
-import UserInfo from '@libs/common/types/userinfo';
+import { SURVEYS, PUBLIC_SURVEYS, SURVEY_ANSWER_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
 
 interface ParticipateSurveyStore {
-  userInfo: UserInfo | undefined;
-  updateUserInfo: (userinfo: UserInfo | undefined) => void;
+  username: string | undefined;
+  setUsername: (userinfo: string | undefined) => void;
   answer: JSON;
   setAnswer: (answer: JSON) => void;
   pageNo: number;
   setPageNo: (pageNo: number) => void;
-  answerSurvey: (answerDto: SubmitAnswerDto, sender: Model, options: CompletingEvent) => Promise<boolean>;
+
+  answerSurvey: (
+    answerDto: SubmitAnswerDto,
+    sender: Model,
+    options: CompletingEvent,
+  ) => Promise<SurveyAnswerDto | undefined>;
   isSubmitting: boolean;
+
+  fetchAnswer: (surveyId: string, username: string) => Promise<void>;
+  previousAnswer: SurveyAnswerDto | undefined;
+  isFetching: boolean;
+
   reset: () => void;
 }
 
 const ParticipateSurveyStoreInitialState: Partial<ParticipateSurveyStore> = {
-  userInfo: undefined,
+  username: undefined,
   pageNo: 0,
   answer: {} as JSON,
+
   isSubmitting: false,
+
+  previousAnswer: undefined,
+  isFetching: false,
 };
 
 const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => ({
   ...(ParticipateSurveyStoreInitialState as ParticipateSurveyStore),
   reset: () => set(ParticipateSurveyStoreInitialState),
 
-  updateUserInfo: (userInfo: UserInfo | undefined) => set({ userInfo }),
+  setUsername: (username: string | undefined) => set({ username }),
   setAnswer: (answer: JSON) => set({ answer }),
   setPageNo: (pageNo: number) => set({ pageNo }),
 
-  answerSurvey: async (answerDto: SubmitAnswerDto, sender: Model, options: CompletingEvent): Promise<boolean> => {
-    const { surveyId, saveNo, answer, isPublic = false } = answerDto;
-    const { userInfo } = get();
+  answerSurvey: async (
+    answerDto: SubmitAnswerDto,
+    sender: Model,
+    options: CompletingEvent,
+  ): Promise<SurveyAnswerDto | undefined> => {
+    const { surveyId, saveNo, answer, isPublic = false, user } = answerDto;
+
+    const { username } = get();
     const { isSubmitting } = get();
     if (isSubmitting) {
-      return false;
+      return undefined;
     }
     set({ isSubmitting: true });
 
     // eslint-disable-next-line no-param-reassign
     options.allow = false;
 
+    const targetUrl = isPublic ? PUBLIC_SURVEYS : SURVEYS;
     try {
-      if (isPublic) {
-        await eduApi.post(PUBLIC_SURVEYS, { surveyId, saveNo, answer, userInfo });
-      } else {
-        await eduApi.patch(SURVEYS, { surveyId, saveNo, answer });
-      }
+      const response = await eduApi.post<SurveyAnswerDto>(targetUrl, {
+        surveyId,
+        saveNo,
+        answer,
+        username: user?.preferred_username || username,
+        isPublicUserId: !user,
+      });
 
       // eslint-disable-next-line no-param-reassign
       options.allow = true;
       sender.doComplete();
 
-      return true;
+      return response.data;
     } catch (error) {
       handleApiError(error, set);
       toast.error(t('survey.errors.submitAnswerError'));
 
-      return false;
+      return undefined;
     } finally {
       set({ isSubmitting: false });
+    }
+  },
+
+  fetchAnswer: async (surveyId: string, username: string): Promise<void> => {
+    set({ isFetching: true });
+    try {
+      const response = await eduApi.post<SurveyAnswerDto>(SURVEY_ANSWER_ENDPOINT, { surveyId, username });
+      const surveyAnswer = response.data;
+      const { answer } = surveyAnswer;
+      set({ answer });
+    } catch (error) {
+      set({ previousAnswer: undefined });
+      handleApiError(error, set);
+    } finally {
+      set({ isFetching: false });
     }
   },
 }));

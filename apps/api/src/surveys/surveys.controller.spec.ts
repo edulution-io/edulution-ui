@@ -298,6 +298,8 @@ describe(SurveysController.name, () => {
           surveyId: idOfAnsweredSurvey01.toString(),
           saveNo: saveNoAnsweredSurvey01,
           answer: firstUsersMockedAnswerForAnsweredSurveys01,
+          username: firstMockUser.username,
+          isPublicUserId: false,
         },
         firstMockJWTUser,
       );
