@@ -58,7 +58,7 @@ const PublicPagesUserInput = (props: PublicPagesUserInputProps) => {
   return (
     <Card
       variant="modal"
-      className="border-1 bg-overlay"
+      className="border bg-overlay"
     >
       <h4 className="mb-8 flex justify-center text-background">{t('survey.participate.enterUserInfo')}</h4>
       <Form
