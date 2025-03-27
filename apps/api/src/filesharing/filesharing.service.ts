@@ -23,7 +23,7 @@ import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOpe
 import JOB_NAMES from '@libs/queue/constants/jobNames';
 
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
-import FileSharingCommonService from '../fileSharingCommon/fileSharingCommonService';
+import WebDavService from '../webdav/webDavService';
 import OnlyofficeService from './onlyoffice.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import DynamicQueueService from '../queue/queue.service';
@@ -91,7 +91,7 @@ export default class FilesharingService {
 
   async getWebDavFileStream(username: string, filePath: string): Promise<Readable> {
     try {
-      const client = await FileSharingCommonService.getClient(username);
+      const client = await WebDavService.getClient(username);
       const decoded = decodeURIComponent(filePath).replace(/%(?![0-9A-F]{2})/gi, (s) => decodeURIComponent(s));
       const pathWithoutWebdav = getPathWithoutWebdav(decoded).replace(/^\/+/, '');
       const encodedPath = encodeURI(pathWithoutWebdav);
@@ -111,7 +111,7 @@ export default class FilesharingService {
   }
 
   async fileLocation(username: string, filePath: string, filename: string): Promise<WebdavStatusResponse> {
-    const client = await FileSharingCommonService.getClient(username);
+    const client = await WebDavService.getClient(username);
     return this.fileSystemService.fileLocation(username, filePath, filename, client);
   }
 
@@ -125,33 +125,33 @@ export default class FilesharingService {
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async getFilesAtPath(username: string, path: string) {
-    return FileSharingCommonService.getFilesAtPath(username, path);
+    return WebDavService.getFilesAtPath(username, path);
   }
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async getDirAtPath(username: string, path: string) {
-    return FileSharingCommonService.getDirAtPath(username, path);
+    return WebDavService.getDirAtPath(username, path);
   }
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async createFolder(username: string, path: string, folderName: string) {
-    return FileSharingCommonService.createFolder(username, path, folderName);
+    return WebDavService.createFolder(username, path, folderName);
   }
 
   async createFile(username: string, path: string, fileName: string, content = '') {
     const fullPath = `${this.baseurl}${getPathWithoutWebdav(path)}/${fileName}`;
-    return FileSharingCommonService.createFile(username, fullPath, content);
+    return WebDavService.createFile(username, fullPath, content);
   }
 
   uploadFile = async (username: string, path: string, file: CustomFile, name: string) => {
     const fullPath = `${this.baseurl}${path}/${name}`;
-    return FileSharingCommonService.uploadFile(username, fullPath, file);
+    return WebDavService.uploadFile(username, fullPath, file);
   };
 
   async moveOrRenameResource(username: string, originPath: string, newPath: string) {
     const originFull = `${this.baseurl}${originPath}`;
     const newFull = `${this.baseurl}${newPath}`;
-    return FileSharingCommonService.moveOrRenameResource(username, originFull, newFull);
+    return WebDavService.moveOrRenameResource(username, originFull, newFull);
   }
 
   static getStudentNameFromPath(filePath: string): string | null {

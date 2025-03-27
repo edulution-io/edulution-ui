@@ -24,7 +24,7 @@ import JobData from '@libs/queue/constants/jobData';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import type UserConnections from '../../types/userConnections';
 import SseService from '../../sse/sse.service';
-import FileSharingCommonService from '../../fileSharingCommon/fileSharingCommonService';
+import WebDavService from '../../webdav/webDavService';
 
 class DuplicateFileConsumer extends WorkerHost {
   private fileSharingSseConnections: UserConnections = new Map();
@@ -37,23 +37,20 @@ class DuplicateFileConsumer extends WorkerHost {
     const { username, originFilePath, destinationFilePath, total, processed } = job.data as DuplicateFileJobData;
     const failedPaths: string[] = [];
 
-    const pathUpToTransferFolder = FileSharingCommonService.getPathUntilFolder(
-      destinationFilePath,
-      FILE_PATHS.TRANSFER,
-    );
-    const pathUpToTeacherFolder = FileSharingCommonService.getPathUntilFolder(destinationFilePath, username);
+    const pathUpToTransferFolder = WebDavService.getPathUntilFolder(destinationFilePath, FILE_PATHS.TRANSFER);
+    const pathUpToTeacherFolder = WebDavService.getPathUntilFolder(destinationFilePath, username);
 
-    await FileSharingCommonService.ensureFolderExists(username, pathUpToTransferFolder, username);
-    await FileSharingCommonService.ensureFolderExists(username, pathUpToTeacherFolder, FILE_PATHS.COLLECT);
+    await WebDavService.ensureFolderExists(username, pathUpToTransferFolder, username);
+    await WebDavService.ensureFolderExists(username, pathUpToTeacherFolder, FILE_PATHS.COLLECT);
 
     try {
-      await FileSharingCommonService.copyFileViaWebDAV(username, originFilePath, destinationFilePath);
+      await WebDavService.copyFileViaWebDAV(username, originFilePath, destinationFilePath);
     } catch {
       failedPaths.push(destinationFilePath);
     }
 
     const percent = Math.round((processed / total) * 100);
-    const studentName = FileSharingCommonService.getStudentNameFromPath(destinationFilePath) || '';
+    const studentName = WebDavService.getStudentNameFromPath(destinationFilePath) || '';
 
     const progressDto: FilesharingProgressDto = {
       processID: Number(job.id),

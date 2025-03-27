@@ -27,7 +27,7 @@ import { mapToDirectories, mapToDirectoryFiles } from '../filesharing/filesharin
 import WebdavClientFactory from '../filesharing/webdav.client.factory';
 import UsersService from '../users/users.service';
 
-class FileSharingCommonService {
+class WebDavService {
   private static readonly baseUrl = process.env.EDUI_WEBDAV_URL as string;
 
   private static userService: UsersService;
@@ -49,9 +49,7 @@ class FileSharingCommonService {
 
   private static async initializeClient(username: string): Promise<void> {
     if (!this.userService) {
-      throw new Error(
-        'FileSharingCommonService: userService not configured. Call FileSharingCommonService.configure(...) first!',
-      );
+      throw new Error('WebDavService: userService not configured. Call WebDavService.configure(...) first!');
     }
     const password = await this.userService.getPassword(username);
     const client = WebdavClientFactory.createWebdavClient(this.baseUrl, username, password);
@@ -94,19 +92,9 @@ class FileSharingCommonService {
       return transformer ? transformer(response.data) : (response.data as T);
     } catch (error) {
       if (showDebugMessage) {
-        throw new CustomHttpException(
-          fileSharingErrorMessage,
-          HttpStatus.NOT_FOUND,
-          error,
-          FileSharingCommonService.name,
-        );
+        throw new CustomHttpException(fileSharingErrorMessage, HttpStatus.NOT_FOUND, error, WebDavService.name);
       }
-      throw new CustomHttpException(
-        fileSharingErrorMessage,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        '',
-        FileSharingCommonService.name,
-      );
+      throw new CustomHttpException(fileSharingErrorMessage, HttpStatus.INTERNAL_SERVER_ERROR, '', WebDavService.name);
     }
   }
 
@@ -327,7 +315,7 @@ class FileSharingCommonService {
         FileSharingErrorMessage.CreationFailed,
         HttpStatus.NOT_FOUND,
         pathWithoutFilename,
-        FileSharingCommonService.name,
+        WebDavService.name,
       );
     }
   }
@@ -368,4 +356,4 @@ class FileSharingCommonService {
   }
 }
 
-export default FileSharingCommonService;
+export default WebDavService;

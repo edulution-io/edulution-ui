@@ -24,7 +24,7 @@ import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOper
 import SseService from '../../sse/sse.service';
 
 import type UserConnections from '../../types/userConnections';
-import FileSharingCommonService from '../../fileSharingCommon/fileSharingCommonService';
+import WebDavService from '../../webdav/webDavService';
 
 class CollectFileConsumer extends WorkerHost {
   private fileCollectingSseConnections: UserConnections = new Map();
@@ -40,12 +40,12 @@ class CollectFileConsumer extends WorkerHost {
     const initFolderName = `${userRole}s/${username}/transfer/collected`;
 
     try {
-      await FileSharingCommonService.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName);
+      await WebDavService.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName);
 
       if (operationType === LMN_API_COLLECT_OPERATIONS.CUT) {
-        await FileSharingCommonService.cutCollectedItems(username, item.originPath, item.destinationPath);
+        await WebDavService.cutCollectedItems(username, item.originPath, item.destinationPath);
       } else {
-        await FileSharingCommonService.copyCollectedItems(username, item.originPath, [item.destinationPath]);
+        await WebDavService.copyCollectedItems(username, item.originPath, [item.destinationPath]);
       }
     } catch (error) {
       failedPaths.push(item.destinationPath);

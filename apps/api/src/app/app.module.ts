@@ -40,7 +40,7 @@ import BulletinCategoryModule from '../bulletin-category/bulletin-category.modul
 import BulletinBoardModule from '../bulletinboard/bulletinboard.module';
 import DockerModule from '../docker/docker.module';
 import VeyonModule from '../veyon/veyon.module';
-import FileSharingCommonService from '../fileSharingCommon/fileSharingCommonService';
+import WebDavService from '../webdav/webDavService';
 import UsersService from '../users/users.service';
 
 const redisHost = process.env.REDIS_HOST ?? 'localhost';
@@ -142,6 +142,6 @@ export default class AppModule implements OnModuleInit {
   constructor(private readonly usersService: UsersService) {}
 
   onModuleInit() {
-    FileSharingCommonService.configure(this.usersService);
+    WebDavService.configure(this.usersService);
   }
 }

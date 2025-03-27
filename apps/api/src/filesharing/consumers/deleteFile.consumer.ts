@@ -18,9 +18,11 @@ import { Response } from 'express';
 import JobData from '@libs/queue/constants/jobData';
 import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import FileSharingCommonService from '../../fileSharingCommon/fileSharingCommonService';
+import WebDavService from '../../webdav/webDavService';
 import SseService from '../../sse/sse.service';
 import type UserConnections from '../../types/userConnections';
+import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import FilePaths from '@libs/filesharing/constants/file-paths';
 
 class DeleteFileConsumer extends WorkerHost {
   private fileDeletingSseConnections: UserConnections = new Map();
@@ -34,27 +36,29 @@ class DeleteFileConsumer extends WorkerHost {
 
     const failedPaths: string[] = [];
     try {
-      await FileSharingCommonService.deletePath(username, originFilePath);
+      await WebDavService.deletePath(username, originFilePath);
     } catch (error) {
       failedPaths.push(originFilePath);
     }
 
-    const percent = Math.round((processed / total) * 100);
+    if (total > 2) {
+      const percent = Math.round((processed / total) * 100);
 
-    const progressDto = {
-      processID: Number(job.id),
-      title: 'filesharing.progressBox.titleDeleting',
-      description: 'filesharing.progressBox.fileInfoDeleting',
-      statusDescription: 'filesharing.progressBox.processedDeletingInfo',
-      processed,
-      total,
-      studentName: username,
-      percent,
-      currentFilePath: originFilePath,
-      failedPaths,
-    };
+      const progressDto: FilesharingProgressDto = {
+        processID: Number(job.id),
+        title: 'filesharing.progressBox.titleCollecting',
+        description: 'filesharing.progressBox.fileInfoCollecting',
+        statusDescription: 'filesharing.progressBox.processedCollectingInfo',
+        processed,
+        total,
+        studentName: username,
+        percent,
+        currentFilePath: FilePaths.COLLECT,
+        failedPaths,
+      };
 
-    SseService.sendEventToUser(username, this.fileDeletingSseConnections, progressDto, SSE_MESSAGE_TYPE.UPDATED);
+      SseService.sendEventToUser(username, this.fileDeletingSseConnections, progressDto, SSE_MESSAGE_TYPE.UPDATED);
+    }
   }
 }
 
