@@ -19,7 +19,6 @@ import JobData from '@libs/queue/constants/jobData';
 import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
-import FilePaths from '@libs/filesharing/constants/file-paths';
 import WebDavService from '../../webdav/webDavService';
 import SseService from '../../sse/sse.service';
 import type UserConnections from '../../types/userConnections';
@@ -46,14 +45,14 @@ class DeleteFileConsumer extends WorkerHost {
 
       const progressDto: FilesharingProgressDto = {
         processID: Number(job.id),
-        title: 'filesharing.progressBox.titleCollecting',
-        description: 'filesharing.progressBox.fileInfoCollecting',
-        statusDescription: 'filesharing.progressBox.processedCollectingInfo',
+        title: 'filesharing.progressBox.titleDeleting',
+        description: 'filesharing.progressBox.fileInfoDeleting',
+        statusDescription: 'filesharing.progressBox.processedDeletingInfo',
         processed,
         total,
-        studentName: username,
         percent,
-        currentFilePath: FilePaths.COLLECT,
+        currentFilePath: originFilePath,
+        studentName: '',
         failedPaths,
       };
 

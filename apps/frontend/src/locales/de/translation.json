@@ -333,10 +333,13 @@
       "info": "Info",
       "titleSharing": "Dateien werden ausgeteilt",
       "titleCollecting": "Dateien werden eingesammelt",
+      "titleDeleting": "Dateien werden gelöscht",
       "processedSharingInfo": "{{processed}} von {{total}} Dateien erfolgreich ausgeteilt",
       "processedCollectingInfo": "{{processed}} von {{total}} Dateien erfolgreich eingesammelt",
+      "processedDeletingInfo": "{{processed}} von {{total}} Dateien erfolgreich gelöscht",
       "fileInfoSharing": "Datei {{filename}} wird an {{studentName}} ausgeteilt",
       "fileInfoCollecting": "Datei {{filename}} wird von {{studentName}} eingesammelt",
+      "fileInfoDeleting": "Datei {{filename}} wird gelöscht",
       "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden"
     },
     "tooltips": {

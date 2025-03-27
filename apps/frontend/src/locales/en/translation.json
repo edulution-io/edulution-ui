@@ -340,10 +340,13 @@
       "info": "Info",
       "titleSharing": "Distributing files",
       "titleCollecting": "Collecting files",
+      "titleDeleting": "Files are being deleted",
       "processedSharingInfo": "{{processed}} out of {{total}} files distributed successfully",
       "processedCollectingInfo": "{{processed}} out of {{total}} files collected successfully",
+      "processedDeletingInfo": "{{processed}} out of {{total}} files deleted successfully",
       "fileInfoSharing": "File {{filename}} is being distributed to {{studentName}}",
       "fileInfoCollecting": "File {{filename}} is being collected to {{studentName}}",
+      "fileInfoDeleting": "File {{filename}} is being deleted",
       "errorInfo": "{{failed}} files could not be handed out"
     }
   },

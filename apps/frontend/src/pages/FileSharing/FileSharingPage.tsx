@@ -61,7 +61,7 @@ const FileSharingPage = () => {
       }
 
       toast(<ProgressBox data={toasterData} />, {
-        id: toasterData.id,
+        id: toasterData.title,
         duration: toastDuration,
       });
     };
