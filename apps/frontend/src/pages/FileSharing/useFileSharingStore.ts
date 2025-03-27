@@ -21,12 +21,14 @@ import ContentType from '@libs/filesharing/types/contentType';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
 import delay from '@libs/common/utils/delay';
+import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 
 type UseFileSharingStore = {
   files: DirectoryFileDTO[];
   selectedItems: DirectoryFileDTO[];
   currentPath: string;
   pathToRestoreSession: string;
+  fileOperationProgress: null | FilesharingProgressDto;
   setDirectories: (files: DirectoryFileDTO[]) => void;
   directories: DirectoryFileDTO[];
   selectedRows: RowSelectionState;
@@ -46,6 +48,7 @@ type UseFileSharingStore = {
   setFileIsCurrentlyDisabled: (filename: string, isLocked: boolean, durationMs?: number) => Promise<void>;
   setIsLoading: (isLoading: boolean) => void;
   setMountPoints: (mountPoints: DirectoryFileDTO[]) => void;
+  setFileOperationProgress: (progress: FilesharingProgressDto | null) => void;
 };
 
 const initialState = {
@@ -59,6 +62,7 @@ const initialState = {
   isLoading: false,
   isError: false,
   currentlyDisabledFiles: {},
+  fileOperationProgress: null,
 };
 
 type PersistedFileManagerStore = (
@@ -73,6 +77,8 @@ const useFileSharingStore = create<UseFileSharingStore>(
       setCurrentPath: (path: string) => {
         set({ currentPath: path });
       },
+
+      setFileOperationProgress: (progress: FilesharingProgressDto | null) => set({ fileOperationProgress: progress }),
 
       setPathToRestoreSession: (path: string) => {
         set({ pathToRestoreSession: path });

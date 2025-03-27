@@ -47,6 +47,7 @@ import FilesystemService from '../filesystem/filesystem.service';
 import DuplicateFileConsumer from './consumers/duplicateFile.consumer';
 import CollectFileConsumer from './consumers/collectFile.consumer';
 import FilesharingService from './filesharing.service';
+import DeleteFileConsumer from './consumers/deleteFile.consumer';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
@@ -56,6 +57,7 @@ class FilesharingController {
     private readonly filesharingService: FilesharingService,
     private readonly filesharingConsumer: DuplicateFileConsumer,
     private readonly filesharingCollectConsumer: CollectFileConsumer,
+    private readonly filesharingDeleteConsumer: DeleteFileConsumer,
   ) {}
 
   @Get()
@@ -205,6 +207,11 @@ class FilesharingController {
   @Sse('sse-collect')
   sseCollect(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
     return this.filesharingCollectConsumer.subscribe(username, res);
+  }
+
+  @Sse('sse-delete')
+  sseDelete(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
+    return this.filesharingDeleteConsumer.subscribe(username, res);
   }
 }
 

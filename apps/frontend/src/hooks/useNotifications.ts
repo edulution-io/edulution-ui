@@ -31,6 +31,7 @@ import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import delay from '@libs/common/utils/delay';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 
 const useNotifications = () => {
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
@@ -45,7 +46,9 @@ const useNotifications = () => {
   const isBulletinBoardActive = useIsAppActive(APPS.BULLETIN_BOARD);
   const { addBulletinBoardNotification } = UseBulletinBoardStore();
   const { setFilesharingProgress } = useLessonStore();
+  const { setFileOperationProgress } = useFileSharingStore();
   const isClassRoomManagementActive = useIsAppActive(APPS.CLASS_MANAGEMENT);
+  const isFileSharingActive = useIsAppActive(APPS.FILE_SHARING);
 
   useDockerContainerEvents();
 
@@ -122,6 +125,34 @@ const useNotifications = () => {
 
     return undefined;
   }, [isConferenceAppActivated]);
+
+  useEffect(() => {
+    if (!isFileSharingActive) {
+      return undefined;
+    }
+
+    const eventSourceDeleting = new EventSource(
+      `/${EDU_API_ROOT}/${APPS.FILE_SHARING}/sse-delete?token=${eduApiToken}`,
+    );
+
+    const handelFileDeletingEvent = (e: MessageEvent<string>) => {
+      void (async () => {
+        const data: FilesharingProgressDto = JSON.parse(e.data) as FilesharingProgressDto;
+        setFileOperationProgress(data);
+
+        if (data.percent === 100 && (!data.failedPaths || data.failedPaths.length === 0)) {
+          await delay(5000);
+          setFileOperationProgress(null);
+        }
+      })();
+    };
+    eventSourceDeleting.addEventListener(SSE_MESSAGE_TYPE.UPDATED, handelFileDeletingEvent);
+
+    return () => {
+      eventSourceDeleting.removeEventListener(SSE_MESSAGE_TYPE.UPDATED, handelFileDeletingEvent);
+      eventSourceDeleting.close();
+    };
+  }, [isFileSharingActive]);
 
   useEffect(() => {
     if (!isClassRoomManagementActive) {
