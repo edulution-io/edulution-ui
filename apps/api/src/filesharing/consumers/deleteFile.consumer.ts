@@ -18,11 +18,11 @@ import { Response } from 'express';
 import JobData from '@libs/queue/constants/jobData';
 import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import FilePaths from '@libs/filesharing/constants/file-paths';
 import WebDavService from '../../webdav/webDavService';
 import SseService from '../../sse/sse.service';
 import type UserConnections from '../../types/userConnections';
-import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
-import FilePaths from '@libs/filesharing/constants/file-paths';
 
 class DeleteFileConsumer extends WorkerHost {
   private fileDeletingSseConnections: UserConnections = new Map();
