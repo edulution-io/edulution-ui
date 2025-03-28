@@ -137,6 +137,12 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  const onTotpCancelButtonClick = () => {
+    form.clearErrors();
+    setTotp('');
+    setIsEnterTotpVisible(false);
+  };
+
   const renderFormField = (fieldName: 'username' | 'password', label: string, type?: string, shouldTrim?: boolean) => (
     <FormFieldSH
       control={form.control}
@@ -208,7 +214,7 @@ const LoginPage: React.FC = () => {
               variant="btn-outline"
               size="lg"
               disabled={isLoading || totpIsLoading}
-              onClick={() => setIsEnterTotpVisible(false)}
+              onClick={onTotpCancelButtonClick}
             >
               {t('common.cancel')}
             </Button>
