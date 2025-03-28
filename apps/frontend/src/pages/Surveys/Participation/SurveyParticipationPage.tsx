@@ -121,6 +121,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
   return (
     <SurveyParticipationBody
       username={user?.username || form.watch('username')}
+      isPublicUserId={!user}
       isPublic={isPublic}
       selectedSurvey={selectedSurvey}
       previousAnswer={previousAnswer}

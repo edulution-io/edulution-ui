@@ -11,22 +11,11 @@
  */
 
 import { CompleteEvent } from 'survey-core';
-import JwtUser from '@libs/user/types/jwt/jwtUser';
+import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 
-interface SubmitAnswerDto {
-  surveyId: string;
-
-  saveNo: number;
-
-  answer: JSON;
-
-  surveyEditorCallbackOnSave?: CompleteEvent | undefined;
-
+interface SubmitAnswerDto extends PushAnswerDto {
   isPublic: boolean;
-
-  publicUserId?: string;
-
-  user?: JwtUser;
+  surveyEditorCallbackOnSave?: CompleteEvent | undefined;
 }
 
 export default SubmitAnswerDto;

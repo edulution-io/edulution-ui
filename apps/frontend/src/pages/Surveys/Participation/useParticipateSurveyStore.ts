@@ -71,9 +71,8 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     sender: Model,
     options: CompletingEvent,
   ): Promise<SurveyAnswerDto | undefined> => {
-    const { surveyId, saveNo, answer, isPublic = false, user } = answerDto;
+    const { surveyId, saveNo, answer, isPublic = false, username, isPublicUserId } = answerDto;
 
-    const { username } = get();
     const { isSubmitting } = get();
     if (isSubmitting) {
       return undefined;
@@ -89,8 +88,8 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
         surveyId,
         saveNo,
         answer,
-        username: user?.preferred_username || username,
-        isPublicUserId: !user,
+        username,
+        isPublicUserId,
       });
 
       // eslint-disable-next-line no-param-reassign

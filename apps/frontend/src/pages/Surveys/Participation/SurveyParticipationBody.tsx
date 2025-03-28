@@ -26,7 +26,8 @@ import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDial
 import '../theme/custom.participation.css';
 
 interface SurveyParticipationBodyProps {
-  username: string | undefined;
+  username: string;
+  isPublicUserId: boolean;
   isPublic: boolean;
   selectedSurvey: SurveyDto | undefined;
   answerSurvey: (
@@ -45,6 +46,7 @@ Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
 const SurveyParticipationBody = (props: SurveyParticipationBodyProps): React.ReactNode => {
   const {
     username,
+    isPublicUserId,
     isPublic,
     selectedSurvey,
     previousAnswer,
@@ -74,10 +76,11 @@ const SurveyParticipationBody = (props: SurveyParticipationBodyProps): React.Rea
       }
       const success = await answerSurvey(
         {
-          publicUserId: username,
           surveyId: selectedSurvey.id,
           saveNo: selectedSurvey.saveNo,
           answer: surveyParticipationModel.getData() as JSON,
+          username,
+          isPublicUserId,
           isPublic,
         },
         sender,
