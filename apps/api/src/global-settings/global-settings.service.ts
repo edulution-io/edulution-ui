@@ -53,7 +53,10 @@ class GlobalSettingsService implements OnModuleInit {
 
   async setGlobalSettings(globalSettingsDto: GlobalSettingsDto) {
     try {
-      const updateWriteResult = await this.globalSettingsModel.updateOne({ singleton: true }, globalSettingsDto, {});
+      const updateWriteResult = await this.globalSettingsModel.updateOne(
+        { singleton: true },
+        { $set: globalSettingsDto },
+      );
 
       if (updateWriteResult.modifiedCount === 0) {
         throw new Error();

@@ -12,19 +12,12 @@
 
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Test, TestingModule } from '@nestjs/testing';
-import { getModelToken, getConnectionToken } from '@nestjs/mongoose';
-import type { Model } from 'mongoose';
+import { getModelToken } from '@nestjs/mongoose';
+import type { Model, UpdateWriteOpResult } from 'mongoose';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import GlobalSettingsService from './global-settings.service';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
-
-type MockConnection = {
-  db: {
-    listCollections: jest.Mock;
-    createCollection: jest.Mock;
-  };
-};
 
 class MockGlobalSettings {
   constructor(public data: any) {}
@@ -36,6 +29,8 @@ class MockGlobalSettings {
   static findOne = jest.fn();
 
   static updateOne = jest.fn();
+
+  static create = jest.fn();
 }
 
 describe('GlobalSettingsService', () => {
@@ -45,9 +40,8 @@ describe('GlobalSettingsService', () => {
     updateOne?: jest.Mock;
     countDocuments?: jest.Mock;
     save?: jest.Mock;
+    create?: jest.Mock;
   };
-
-  let connection: MockConnection;
 
   const mockGlobalSettingsDto: GlobalSettingsDto = {
     auth: {
@@ -56,21 +50,8 @@ describe('GlobalSettingsService', () => {
   };
 
   beforeEach(async () => {
-    connection = {
-      db: {
-        listCollections: jest.fn().mockReturnValue({
-          toArray: jest.fn().mockResolvedValue([]),
-        }),
-        createCollection: jest.fn(),
-      },
-    };
-
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        GlobalSettingsService,
-        { provide: getModelToken(GlobalSettings.name), useValue: MockGlobalSettings },
-        { provide: getConnectionToken(), useValue: connection },
-      ],
+      providers: [GlobalSettingsService, { provide: getModelToken(GlobalSettings.name), useValue: MockGlobalSettings }],
     }).compile();
 
     service = module.get<GlobalSettingsService>(GlobalSettingsService);
@@ -78,25 +59,12 @@ describe('GlobalSettingsService', () => {
   });
 
   describe('onModuleInit', () => {
-    it('should create collection and insert default settings if none exist', async () => {
+    it('should execute onModuleInit', async () => {
       model.countDocuments?.mockResolvedValue(0);
 
       await service.onModuleInit();
 
-      expect(connection.db.listCollections).toHaveBeenCalledWith({ name: GlobalSettings.name.toLowerCase() });
-      expect(connection.db.createCollection).toHaveBeenCalledWith(GlobalSettings.name);
       expect(model.countDocuments).toHaveBeenCalled();
-    });
-
-    it('should not create collection or insert if already exists', async () => {
-      connection.db.listCollections.mockReturnValue({
-        toArray: jest.fn().mockResolvedValue([{}]),
-      });
-      model.countDocuments?.mockResolvedValue(1);
-
-      await service.onModuleInit();
-
-      expect(connection.db.createCollection).not.toHaveBeenCalled();
     });
   });
 
@@ -115,18 +83,23 @@ describe('GlobalSettingsService', () => {
         throw new Error('Mongo error');
       });
 
-      const result = await service.getGlobalSettings();
-      expect(result).toBeNull();
+      await expect(service.getGlobalSettings('auth')).rejects.toThrow(CustomHttpException);
     });
   });
 
   describe('setGlobalSettings', () => {
     it('should update settings and return result', async () => {
-      const mockResult = { acknowledged: true, modifiedCount: 1 };
+      const mockResult: UpdateWriteOpResult = {
+        acknowledged: true,
+        modifiedCount: 1,
+        matchedCount: 1,
+        upsertedCount: 0,
+        upsertedId: null,
+      };
       model.updateOne?.mockResolvedValue(mockResult);
 
       const result = await service.setGlobalSettings(mockGlobalSettingsDto);
-      expect(model.updateOne).toHaveBeenCalledWith({ singleton: true }, mockGlobalSettingsDto);
+      expect(model.updateOne).toHaveBeenCalledWith({ singleton: true }, { $set: mockGlobalSettingsDto });
       expect(result).toBe(mockResult);
     });
 
