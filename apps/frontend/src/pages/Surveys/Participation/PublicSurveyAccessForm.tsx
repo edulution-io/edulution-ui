@@ -21,7 +21,7 @@ import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
 import publicUserIdRegex from '@libs/survey/utils/publicUserIdRegex';
 
-interface PublicSurveyParticipationUserInputProps {
+interface PublicSurveyAccessFormProps {
   form: UseFormReturn<{ username: string }>;
   publicUserFullName: string;
   setPublicUserFullName: (value: string) => void;
@@ -30,12 +30,12 @@ interface PublicSurveyParticipationUserInputProps {
   accessSurvey: () => void;
 }
 
-const PublicSurveyParticipationUserInput = ({
+const PublicSurveyAccessForm = ({
   form,
   publicUserFullName,
   setPublicUserFullName,
   accessSurvey,
-}: PublicSurveyParticipationUserInputProps) => {
+}: PublicSurveyAccessFormProps) => {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
@@ -59,7 +59,7 @@ const PublicSurveyParticipationUserInput = ({
           >
             {t('common.toLogin')}
           </Button>
-          <div className="mb-9 mt-12 flex items-center">
+          <div className="mb-6 mt-6 flex items-center">
             <hr className="flex-grow border-t border-gray-300" />
             <span className="mx-4">{t('survey.participate.orContinueWithoutAccount')}</span>
             <hr className="flex-grow border-t border-gray-300" />
@@ -96,7 +96,7 @@ const PublicSurveyParticipationUserInput = ({
               />
             </div>
           )}
-          <div className="mb-2 mt-4 flex justify-end">
+          <div className="mb-2 mt-8 flex justify-end">
             <Button
               variant="btn-collaboration"
               size="lg"
@@ -111,4 +111,4 @@ const PublicSurveyParticipationUserInput = ({
   );
 };
 
-export default PublicSurveyParticipationUserInput;
+export default PublicSurveyAccessForm;

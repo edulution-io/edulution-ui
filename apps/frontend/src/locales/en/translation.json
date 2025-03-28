@@ -539,7 +539,13 @@
       "orContinueWithoutAccount": "Or continue without account",
       "pleaseEnterYourFullName": "To participate in the survey enter your full name.",
       "yourFullName": "Either enter your name or the Id of a previous participation",
-      "invalidUsername": "Username is invalid (permitted are letters, number, and [. - _])"
+      "invalidUsername": "Username is invalid (permitted are letters, number, and [. - _])",
+      "idHeader": "Your participation Id",
+      "idText": "Pls copy the this id for later participation",
+      "idFooter": "In order to overwrite your previous answer, please enter the ID in your next participation.",
+      "idCopySuccess": "ID erfolgreich kopiert",
+      "idCopyError": "ID konnte nicht kopiert werden",
+      "idTimer": "Auto refresh in {{time}}s"
     },
     "errors": {
       "submitAnswerError": "Not able to submit the answer.",

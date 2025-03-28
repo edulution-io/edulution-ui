@@ -13,11 +13,13 @@
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import useUserStore from '@/store/UserStore/UserStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import PublicSurveyParticipationUserInput from '@/pages/Surveys/Participation/PublicSurveyAccessForm';
 import SurveyParticipationBody from '@/pages/Surveys/Participation/SurveyParticipationBody';
+import PublicSurveyAccessForm from '@/pages/Surveys/Participation/PublicSurveyAccessForm';
+import PublicSurveyParticipationId from '@/pages/Surveys/Participation/PublicSurveyParticipationId';
 import '../theme/custom.participation.css';
 
 interface SurveyParticipationPageProps {
@@ -26,11 +28,14 @@ interface SurveyParticipationPageProps {
 
 const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.ReactNode => {
   const { isPublic = false } = props;
+
   const { selectedSurvey, fetchSelectedSurvey, isFetching, updateOpenSurveys, updateAnsweredSurveys } =
     useSurveyTablesPageStore();
-  const { username, setUsername, answerSurvey, reset, previousAnswer } = useParticipateSurveyStore();
+
+  const { username, setUsername, answerSurvey, reset, previousAnswer, publicUserId } = useParticipateSurveyStore();
 
   const { surveyId } = useParams();
+  const { t } = useTranslation();
 
   const { user } = useUserStore();
 
@@ -47,10 +52,16 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
 
   const form = useForm<{ username: string }>();
 
-  const handleAccessSurvey = () => {
-    if (!selectedSurvey) {
-      return;
+  useEffect(() => {
+    if (publicUserId) {
+      setTimeout(() => {
+        reset();
+        form.reset();
+      }, 60000);
     }
+  }, [publicUserId]);
+
+  const handleAccessSurvey = () => {
     if (user) {
       setUsername(user.username);
     } else {
@@ -58,10 +69,34 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
     }
   };
 
-  if (!user && !username) {
+  const handleReset = () => {
+    reset();
+    form.reset();
+  };
+
+  if (publicUserId) {
+    return (
+      <div className="relative top-1/4">
+        <PublicSurveyParticipationId
+          publicParticipationId={publicUserId}
+          reset={handleReset}
+        />
+      </div>
+    );
+  }
+
+  if (!selectedSurvey) {
     return (
       <div className="relative top-1/3">
-        <PublicSurveyParticipationUserInput
+        <h4 className="flex justify-center">{t('survey.notFound')}</h4>
+      </div>
+    );
+  }
+
+  if (!user && !username && !selectedSurvey?.isAnonymous) {
+    return (
+      <div className="relative top-1/4">
+        <PublicSurveyAccessForm
           form={form}
           publicUserFullName={form.watch('username')}
           setPublicUserFullName={(value: string) => form.setValue('username', value)}

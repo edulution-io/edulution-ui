@@ -541,7 +541,13 @@
       "orContinueWithoutAccount": "Oder fahre ohne Account fort",
       "pleaseEnterYourFullName": "Gib deinen vollständigen Namen ein, um an der Umfrage teilzunehmen.",
       "yourFullName": "Dein Name oder die Id deiner vorherigen Teilnahme",
-      "invalidUsername": "Benutzername ist ungültig (erlaubt sind Buchstaben, Zahlen und [. - _])"
+      "invalidUsername": "Benutzername ist ungültig (erlaubt sind Buchstaben, Zahlen und [. - _])",
+      "idHeader": "Deine Teilnahme-ID",
+      "idText": "Bitte notiere dir die folgende Id.",
+      "idFooter": "Um die vorherige Antwort zu überschreiben musst du dich bei der nächsten Teilnahme mit der Id anmelden.",
+      "idCopySuccess": "ID erfolgreich kopiert",
+      "idCopyError": "ID konnte nicht kopiert werden",
+      "idTimer": "Lädt in {{time}}s automatisch neu"
     },
     "errors": {
       "submitAnswerError": "Die Antwort konnte nicht gespeichert werden.",

@@ -17,6 +17,7 @@ import { Model, CompletingEvent } from 'survey-core';
 import SurveyAnswerDto from '@libs/survey/types/api/survey-answer.dto';
 import SubmitAnswerDto from '@libs/survey/types/api/submit-answer.dto';
 import { SURVEYS, PUBLIC_SURVEYS, SURVEY_ANSWER_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
+import publicUserIdRegex from '@libs/survey/utils/publicUserIdRegex';
 import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
 
@@ -39,6 +40,8 @@ interface ParticipateSurveyStore {
   previousAnswer: SurveyAnswerDto | undefined;
   isFetching: boolean;
 
+  publicUserId: string;
+
   reset: () => void;
 }
 
@@ -51,6 +54,8 @@ const ParticipateSurveyStoreInitialState: Partial<ParticipateSurveyStore> = {
 
   previousAnswer: undefined,
   isFetching: false,
+
+  publicUserId: '',
 };
 
 const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => ({
@@ -91,6 +96,12 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       // eslint-disable-next-line no-param-reassign
       options.allow = true;
       sender.doComplete();
+
+      const surveyAnswer = response.data;
+      const publicUserId = surveyAnswer.username;
+      if (publicUserIdRegex.test(publicUserId)) {
+        set({ publicUserId });
+      }
 
       return response.data;
     } catch (error) {
