@@ -25,6 +25,7 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/FileSharingTableColumns';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
+import { getFileNameFromPath } from '@/pages/FileSharing/utilities/filesharingUtilities';
 
 const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   showAllFiles = false,
@@ -69,7 +70,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
       if (newPath === '/') {
         newPath += item.original.filename.replace('/webdav/', '').replace(`server/${user?.school}/`, '');
       } else {
-        newPath += item.original.basename;
+        newPath += getFileNameFromPath(item.original.filename);
       }
       setCurrentPath(newPath);
     } else {
