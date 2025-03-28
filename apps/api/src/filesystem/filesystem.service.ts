@@ -166,7 +166,7 @@ class FilesystemService {
 
   static async checkIfFileExist(filePath: string): Promise<boolean> {
     try {
-      await fsPromises.access(`${process.cwd()}/${filePath}`);
+      await fsPromises.access(filePath);
     } catch (error) {
       return false;
     }
@@ -175,7 +175,7 @@ class FilesystemService {
 
   static async throwErrorIfFileNotExists(filePath: string): Promise<void> {
     try {
-      await fsPromises.access(`${process.cwd()}/${filePath}`);
+      await fsPromises.access(filePath);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -193,7 +193,7 @@ class FilesystemService {
 
   async deleteDirectories(directories: string[]): Promise<void> {
     try {
-      const deletionPromises = directories.map((directory) => fsPromises.rmdir(directory, { recursive: true }));
+      const deletionPromises = directories.map((directory) => fsPromises.rm(directory, { recursive: true }));
       await Promise.all(deletionPromises);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
