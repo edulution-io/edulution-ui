@@ -64,7 +64,7 @@ class FilesystemService {
 
   static async checkIfFileExist(filePath: string): Promise<boolean> {
     try {
-      await fsPromises.access(`${process.cwd()}/${filePath}`);
+      await fsPromises.access(filePath);
     } catch (error) {
       return false;
     }
@@ -73,7 +73,7 @@ class FilesystemService {
 
   static async throwErrorIfFileNotExists(filePath: string): Promise<void> {
     try {
-      await fsPromises.access(`${process.cwd()}/${filePath}`);
+      await fsPromises.access(filePath);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
@@ -89,7 +89,7 @@ class FilesystemService {
 
   static async deleteFile(filePath: string): Promise<void> {
     try {
-      await fsPromises.unlink(`${process.cwd()}/${filePath}`);
+      await fsPromises.unlink(filePath);
       Logger.log(`File deleted at ${filePath}`);
     } catch (error) {
       throw new CustomHttpException(
@@ -107,7 +107,7 @@ class FilesystemService {
 
   async deleteDirectory(directory: string): Promise<void> {
     try {
-      await fsPromises.rm(`${process.cwd()}/${directory}`, { recursive: true });
+      await fsPromises.rm(directory, { recursive: true });
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -196,13 +196,13 @@ class FilesystemService {
       try {
         await fsPromises.mkdir(dirname(filePath), { recursive: true });
       } catch (error) {
-        throw new CustomHttpException(CommonErrorMessages.DIRECTORY_CREATION_FAILED, HttpStatus.NOT_FOUND);
+        throw new CustomHttpException(CommonErrorMessages.DIRECTORY_CREATION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
       }
 
       try {
         await fsPromises.writeFile(filePath, new Uint8Array(response.data));
       } catch (error) {
-        throw new CustomHttpException(CommonErrorMessages.FILE_WRITING_FAILED, HttpStatus.NOT_FOUND);
+        throw new CustomHttpException(CommonErrorMessages.FILE_WRITING_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
       }
 
       const fileBuffer = await fsPromises.readFile(filePath);
@@ -238,7 +238,7 @@ class FilesystemService {
     try {
       const user = await this.userService.findOne(username);
       if (!user) {
-        return { success: false, status: HttpStatus.NOT_FOUND } as WebdavStatusResponse;
+        return { success: false, status: HttpStatus.INTERNAL_SERVER_ERROR } as WebdavStatusResponse;
       }
       const responseStream = await FilesystemService.fetchFileStream(url, client);
       const hashedFilename = FilesystemService.generateHashedFilename(filePath, filename);

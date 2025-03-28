@@ -61,7 +61,7 @@ class BulletinBoardService implements OnModuleInit {
   async serveBulletinAttachment(filename: string, res: Response) {
     const filePath = join(this.attachmentsPath, filename);
 
-    await FilesystemService.checkIfFileExist(filePath);
+    await FilesystemService.throwErrorIfFileNotExists(filePath);
     const fileStream = await this.fileSystemService.createReadStream(filePath);
     fileStream.pipe(res);
 
