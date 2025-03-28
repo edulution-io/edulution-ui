@@ -20,6 +20,7 @@ import { MdSchool } from 'react-icons/md';
 import { FaArrowRightToBracket, FaEarthAmericas } from 'react-icons/fa6';
 import { TbFilterCode } from 'react-icons/tb';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
+import DropdownMenu from '@/components/shared/DropdownMenu';
 import cn from '@libs/common/utils/className';
 import { PiEyeFill, PiKey } from 'react-icons/pi';
 import { useParams } from 'react-router-dom';
@@ -27,20 +28,34 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
 import CLASSMGMT_OPTIONS from '@libs/classManagement/constants/classmgmtOptions';
 import ClassmgmtOptionsType from '@libs/classManagement/types/classmgmtOptionsType';
+import VEYON_FEATURE_ACTIONS from '@libs/veyon/constants/veyonFeatureActions';
+import useVeyonApiStore from '../../useVeyonApiStore';
+import useVeyonFeatures from './useVeyonFeatures';
 
 interface UserCardButtonBarProps {
   user: UserLmnInfo;
   isTeacherInSameClass: boolean;
+  isScreenLocked: boolean;
+  areInputDevicesLocked: boolean;
+  disabled: boolean;
 }
 
 interface UserCardButton {
   icon: IconType;
   value: boolean | null;
   title: ClassmgmtOptionsType;
+  variant: 'button' | 'dropdown';
+  disabled: boolean;
   defaultColor?: string;
 }
 
-const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProps) => {
+const UserCardButtonBar = ({
+  user,
+  isTeacherInSameClass,
+  isScreenLocked,
+  areInputDevicesLocked,
+  disabled,
+}: UserCardButtonBarProps) => {
   const { t } = useTranslation();
   const { fetchUser, schoolPrefix } = useLmnApiStore();
   const {
@@ -55,16 +70,18 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
   const { internet, printing, examMode, webfilter, wifi, cn: commonName } = user;
   const { groupType, groupName } = useParams();
   const { setCurrentUser } = useLmnApiPasswordStore();
+  const { userConnectionUids, loadingFeatureUids } = useVeyonApiStore();
+  const { handleSetVeyonFeature } = useVeyonFeatures();
+
+  const connectionUid = userConnectionUids.find((conn) => conn.veyonUsername === user.cn)?.connectionUid || '';
+  const veyonIsActive = !!connectionUid;
 
   const onButtonClick = async (event: React.MouseEvent<HTMLElement>, button: UserCardButton) => {
     event.stopPropagation();
 
     const users = [user.cn];
 
-    if (button.title === CLASSMGMT_OPTIONS.VEYON) {
-      // eslint-disable-next-line no-alert
-      alert(t('classmanagement.featureIsStillInDevelopment')); // Will be implemented in NIEDUUI-359
-    } else if (button.title === CLASSMGMT_OPTIONS.EXAMMODE) {
+    if (button.title === CLASSMGMT_OPTIONS.EXAMMODE) {
       if (button.value) {
         await stopExamMode(users, groupType, groupName);
       } else {
@@ -86,18 +103,43 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
     setMember([...member.filter((m) => m.cn !== commonName), updatedUser]);
   };
 
-  const booleanButtons: UserCardButton[] = [
+  const userCardButtons: UserCardButton[] = [
     {
       icon: FaWifi,
       value: wifi,
       title: CLASSMGMT_OPTIONS.WIFI,
+      variant: 'button',
+      disabled,
     },
-    { icon: TbFilterCode, value: webfilter, title: CLASSMGMT_OPTIONS.WEBFILTER },
-    { icon: FaEarthAmericas, value: internet, title: CLASSMGMT_OPTIONS.INTERNET },
-    { icon: FiPrinter, value: printing, title: CLASSMGMT_OPTIONS.PRINTING },
-    { icon: MdSchool, value: examMode, title: CLASSMGMT_OPTIONS.EXAMMODE },
-    { icon: PiEyeFill, value: null, title: CLASSMGMT_OPTIONS.VEYON, defaultColor: 'bg-gray-600' },
-    { icon: PiKey, value: null, title: CLASSMGMT_OPTIONS.PASSWORDOPTIONS, defaultColor: 'bg-gray-600' },
+    { icon: TbFilterCode, value: webfilter, title: CLASSMGMT_OPTIONS.WEBFILTER, variant: 'button', disabled },
+    { icon: FaEarthAmericas, value: internet, title: CLASSMGMT_OPTIONS.INTERNET, variant: 'button', disabled },
+    { icon: FiPrinter, value: printing, title: CLASSMGMT_OPTIONS.PRINTING, variant: 'button', disabled },
+    { icon: MdSchool, value: examMode, title: CLASSMGMT_OPTIONS.EXAMMODE, variant: 'button', disabled },
+    {
+      icon: PiEyeFill,
+      value: null,
+      title: CLASSMGMT_OPTIONS.VEYON,
+      variant: 'dropdown',
+      defaultColor: 'text-ciLightGrey',
+      disabled,
+    },
+    isTeacherInSameClass
+      ? {
+          icon: PiKey,
+          value: null,
+          title: CLASSMGMT_OPTIONS.PASSWORDOPTIONS,
+          variant: 'button',
+          defaultColor: 'text-ciLightGrey',
+          disabled,
+        }
+      : {
+          icon: FaArrowRightToBracket,
+          value: null,
+          title: CLASSMGMT_OPTIONS.JOINCLASS,
+          variant: 'button',
+          defaultColor: 'text-ciLightGrey',
+          disabled: false,
+        },
   ];
 
   const getButtonDescription = (isEnabled: boolean | null) => {
@@ -107,37 +149,87 @@ const UserCardButtonBar = ({ user, isTeacherInSameClass }: UserCardButtonBarProp
     return isEnabled ? 'classmanagement.disable' : 'classmanagement.enable';
   };
 
-  if (!isTeacherInSameClass) {
-    booleanButtons.push({
-      icon: FaArrowRightToBracket,
-      value: null,
-      title: CLASSMGMT_OPTIONS.JOINCLASS,
-      defaultColor: 'bg-ciRed',
-    });
-  }
+  const isVeyonButtonEnabled = !disabled && veyonIsActive && !loadingFeatureUids.has(connectionUid);
 
-  return booleanButtons.map((button) => (
-    <div
-      key={button.title}
-      className="group relative"
-    >
-      <button
-        type="button"
-        className={cn(
-          'relative rounded-full p-1.5',
-          'group-hover:bg-accent group-hover:text-background',
-          button.defaultColor || (button.value ? 'bg-ciGreen text-background' : 'bg-ciRed'),
-        )}
-        title={t(button.title)}
-        onClick={(e) => onButtonClick(e, button)}
+  return userCardButtons.map((button) =>
+    button.variant === 'button' ? (
+      <div
+        key={button.title}
+        className="group relative"
       >
-        <button.icon className="text-lg" />
-        <div className="absolute right-0 top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-xl bg-accent px-2 text-background group-hover:flex">
-          {t(`classmanagement.${button.title}`)} {t(getButtonDescription(button.value))}
-        </div>
-      </button>
-    </div>
-  ));
+        <button
+          type="button"
+          className={cn(button.disabled && 'cursor-not-allowed', 'relative p-2')}
+          onClick={(e) => onButtonClick(e, button)}
+          disabled={button.disabled}
+        >
+          <button.icon
+            className={cn(
+              'text-lg',
+              button.disabled && 'text-ciDarkGrey',
+              !button.disabled && button.value !== null && 'text-ciGreen',
+              !button.disabled && button.value === false && 'text-ciRed',
+            )}
+          />
+          <div
+            className={cn(
+              'absolute -right-[5px] top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-l-[8px] bg-ciGreenToBlue px-2 text-background ',
+              !button.disabled && 'group-hover:flex',
+            )}
+          >
+            {t(`classmanagement.${button.title}`)} {t(getButtonDescription(button.value))}
+          </div>
+        </button>
+      </div>
+    ) : (
+      <div
+        key={button.title}
+        className="group relative"
+      >
+        <DropdownMenu
+          menuContentClassName="z-[600]"
+          disabled={!isVeyonButtonEnabled}
+          trigger={
+            <div className={cn('relative p-2', !isVeyonButtonEnabled && 'cursor-not-allowed')}>
+              <button.icon
+                className={cn('text-lg', veyonIsActive && !button.disabled ? button.defaultColor : 'text-ciDarkGrey')}
+              />
+
+              {isVeyonButtonEnabled && (
+                <div className="absolute -right-[5px] top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-l-[8px] bg-ciGreenToBlue px-2 text-background group-hover:flex">
+                  {t(`classmanagement.${button.title}`)} {t(getButtonDescription(button.value))}
+                </div>
+              )}
+            </div>
+          }
+          items={[
+            {
+              label: t(isScreenLocked ? 'veyon.unlockScreen' : 'veyon.lockScreen'),
+              onClick: () => handleSetVeyonFeature([connectionUid], VEYON_FEATURE_ACTIONS.SCREENLOCK, !isScreenLocked),
+            },
+            {
+              label: t(areInputDevicesLocked ? 'veyon.unlockInputDevices' : 'veyon.lockInputDevices'),
+              onClick: () =>
+                handleSetVeyonFeature(
+                  [connectionUid],
+                  VEYON_FEATURE_ACTIONS.INPUT_DEVICES_LOCK,
+                  !areInputDevicesLocked,
+                ),
+            },
+            { label: 'veyonSeparater', isSeparator: true },
+            {
+              label: t('veyon.rebootSystem'),
+              onClick: () => handleSetVeyonFeature([connectionUid], VEYON_FEATURE_ACTIONS.REBOOT, true),
+            },
+            {
+              label: t('veyon.powerDown'),
+              onClick: () => handleSetVeyonFeature([connectionUid], VEYON_FEATURE_ACTIONS.POWER_DOWN, true),
+            },
+          ]}
+        />
+      </div>
+    ),
+  );
 };
 
 export default UserCardButtonBar;

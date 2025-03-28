@@ -10,23 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-// This type is based on a third-party object definition from veyon web-API.
-// Any modifications should be carefully reviewed to ensure compatibility with the source.
+const getFirstValidDateOfArray = (...possibleDates: Array<string | Date | undefined | null>): Date | null =>
+  possibleDates
+    .filter((dateStr) => dateStr != null)
+    .map((dateStr) => (dateStr instanceof Date ? dateStr : new Date(dateStr)))
+    .find((date) => !Number.isNaN(date.getTime())) || null;
 
-type VeyonFeatureRequestArguments = {
-  username: string;
-  password: string;
-  demoAccessToken: string;
-  demoServerHost: string;
-  applications: string[];
-  websiteUrls: string[];
-  text: string;
-};
-
-type VeyonFeatureRequest = {
-  active: boolean;
-  connectionUids: string[];
-  arguments?: VeyonFeatureRequestArguments;
-};
-
-export default VeyonFeatureRequest;
+export default getFirstValidDateOfArray;

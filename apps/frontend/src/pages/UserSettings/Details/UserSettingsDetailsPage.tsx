@@ -23,6 +23,7 @@ import Separator from '@/components/ui/Separator';
 import Field from '@/components/shared/Field';
 import Label from '@/components/ui/Label';
 import BadgeField from '@/components/shared/BadgeField';
+import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
 import UserImageConfig from './UserImageConfig';
 
 const UserSettingsDetailsPage: React.FC = () => {
@@ -49,6 +50,8 @@ const UserSettingsDetailsPage: React.FC = () => {
   );
 
   const pageBarsHeight = useElementHeight([NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 10;
+
+  const schoolClasses = user?.schoolclasses.map((item) => removeSchoolPrefix(item, user.school)) || [];
 
   return (
     <div className="h-screen overflow-y-hidden">
@@ -83,7 +86,7 @@ const UserSettingsDetailsPage: React.FC = () => {
               <p className="font-bold">{t('usersettings.details.schoolSubjects')}</p>
             </Label>
             <BadgeField
-              value={user?.schoolclasses || []}
+              value={schoolClasses}
               readOnly
               className="mt-2"
             />
