@@ -215,8 +215,8 @@ class SurveyAnswersService {
     surveyId: string,
     saveNo: number,
     answer: JSON,
-    user?: Partial<JwtUser> & { preferred_username: string },
-    publicUserId?: string,
+    userName: string,
+    isPublicUserId: boolean,
   ): Promise<SurveyAnswer | undefined> {
     const survey = await this.surveyModel.findById<Survey>(surveyId);
     if (!survey) {
@@ -233,12 +233,9 @@ class SurveyAnswersService {
     if (isAnonymous) {
       return this.createAnswer('anonymous', surveyId, saveNo, answer);
     }
-    if (!isPublic && !user) {
-      throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
 
-    const publicUserIdIsAlreadyLinkedToAnAnswer = publicUserId && publicUserIdRegex.test(publicUserId);
-    const isUsersFirstPublicAnswer = isPublic && !user && publicUserId && !publicUserIdIsAlreadyLinkedToAnAnswer;
+    const publicUserIdIsAlreadyLinkedToAnAnswer = isPublicUserId && publicUserIdRegex.test(userName);
+    const isUsersFirstPublicAnswer = isPublic && !publicUserIdIsAlreadyLinkedToAnAnswer;
 
     if (isUsersFirstPublicAnswer) {
       const temporaryUsername = `temporaryUsername`;
@@ -249,7 +246,7 @@ class SurveyAnswersService {
         answer,
       );
 
-      const permanentUsername = createValidPublicUserId(publicUserId, createdAnswer.id as string);
+      const permanentUsername = createValidPublicUserId(userName, createdAnswer.id as string);
       const updatedAnswer: SurveyAnswerDocument | null = await this.surveyAnswerModel
         .findByIdAndUpdate<SurveyAnswerDocument>(createdAnswer.id, { username: permanentUsername }, { new: true })
         .lean();
@@ -263,12 +260,10 @@ class SurveyAnswersService {
       return updatedAnswer;
     }
 
-    const username = user?.preferred_username || publicUserId;
-
-    await this.throwErrorIfParticipationIsNotPossible(survey, username);
+    await this.throwErrorIfParticipationIsNotPossible(survey, userName);
 
     const idExistingUsersAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({
-      $and: [{ username }, { surveyId: new Types.ObjectId(surveyId) }],
+      $and: [{ userName }, { surveyId: new Types.ObjectId(surveyId) }],
     });
     if (idExistingUsersAnswer && !canSubmitMultipleAnswers) {
       if (!canUpdateFormerAnswer) {
@@ -289,7 +284,7 @@ class SurveyAnswersService {
     }
 
     const newSurveyAnswer = await this.surveyAnswerModel.create({
-      username,
+      userName,
       surveyId: new Types.ObjectId(surveyId),
       saveNo,
       answer,
@@ -303,7 +298,7 @@ class SurveyAnswersService {
     }
 
     const updateSurvey = await this.surveyModel.findByIdAndUpdate<Survey>(surveyId, {
-      participatedAttendees: username ? [...survey.participatedAttendees, { username }] : survey.participatedAttendees,
+      participatedAttendees: userName ? [...survey.participatedAttendees, { userName }] : survey.participatedAttendees,
       answers: [...survey.answers, new Types.ObjectId(String(newSurveyAnswer.id))],
     });
     if (updateSurvey == null) {

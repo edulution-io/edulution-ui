@@ -333,13 +333,13 @@ describe('SurveyAnswerService', () => {
       const id = new Types.ObjectId().toString();
 
       try {
-        await service.addAnswer(id, 1, {} as JSON, firstMockJWTUser);
+        await service.addAnswer(id, 1, {} as JSON, firstMockJWTUser.preferred_username, false);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toBe(SurveyErrorMessages.NotFoundError);
       }
 
-      expect(service.addAnswer).toHaveBeenCalledWith(id, 1, {} as JSON, firstMockJWTUser);
+      expect(service.addAnswer).toHaveBeenCalledWith(id, 1, {} as JSON, firstMockJWTUser.preferred_username, false);
     });
 
     it('should return an error if the survey has already expired', async () => {
@@ -356,7 +356,8 @@ describe('SurveyAnswerService', () => {
           idOfAnsweredSurvey01.toString(),
           saveNoAnsweredSurvey01,
           firstUsersMockedAnswerForAnsweredSurveys01,
-          firstMockJWTUser,
+          firstMockJWTUser.preferred_username,
+          false,
         );
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
@@ -367,7 +368,8 @@ describe('SurveyAnswerService', () => {
         idOfAnsweredSurvey01.toString(),
         saveNoAnsweredSurvey01,
         firstUsersMockedAnswerForAnsweredSurveys01,
-        firstMockJWTUser,
+        firstMockJWTUser.preferred_username,
+        false,
       );
     });
 
@@ -384,7 +386,8 @@ describe('SurveyAnswerService', () => {
       //     idOfAnsweredSurvey02.toString(),
       //     saveNoAnsweredSurvey02,
       //     mockedAnswerForAnsweredSurveys02,
-      //     firstMockJWTUser,
+      //     firstMockJWTUser.preferred_username,
+      //     false,
       //   );
       // } catch (e) {
       //   expect(e).toBeInstanceOf(Error);
@@ -395,7 +398,8 @@ describe('SurveyAnswerService', () => {
       //   idOfAnsweredSurvey02.toString(),
       //   saveNoAnsweredSurvey02,
       //   mockedAnswerForAnsweredSurveys02,
-      //   firstMockJWTUser,
+      //   firstMockJWTUser.preferred_username,
+      //   false,
       // );
     });
 
@@ -412,7 +416,8 @@ describe('SurveyAnswerService', () => {
             idOfAnsweredSurvey02.toString(),
             saveNoAnsweredSurvey02,
             mockedAnswerForAnsweredSurveys02,
-            secondMockJWTUser,
+            secondMockJWTUser.preferred_username,
+            false,
           );
         } catch (e) {
           expect(e).toBeInstanceOf(Error);
@@ -423,7 +428,8 @@ describe('SurveyAnswerService', () => {
           idOfAnsweredSurvey02.toString(),
           saveNoAnsweredSurvey02,
           mockedAnswerForAnsweredSurveys02,
-          secondMockJWTUser,
+          secondMockJWTUser.preferred_username,
+          false,
         );
       },
     );
@@ -439,7 +445,8 @@ describe('SurveyAnswerService', () => {
         idOfAnsweredSurvey03.toString(),
         saveNoAnsweredSurvey03,
         updatedMockedAnswerForAnsweredSurveys03,
-        firstMockJWTUser,
+        firstMockJWTUser.preferred_username,
+        false,
       );
       expect(result).toEqual(updatedSurveyAnswerAnsweredSurvey03);
 
@@ -447,7 +454,8 @@ describe('SurveyAnswerService', () => {
         idOfAnsweredSurvey03.toString(),
         saveNoAnsweredSurvey03,
         updatedMockedAnswerForAnsweredSurveys03,
-        firstMockJWTUser,
+        firstMockJWTUser.preferred_username,
+        false,
       );
     });
 
@@ -467,7 +475,8 @@ describe('SurveyAnswerService', () => {
         idOfAnsweredSurvey04.toString(),
         saveNoAnsweredSurvey04,
         mockedAnswerForAnsweredSurveys04,
-        firstMockJWTUser,
+        firstMockJWTUser.preferred_username,
+        false,
       );
       expect(result).toEqual(surveyAnswerAnsweredSurvey04);
 
@@ -475,7 +484,8 @@ describe('SurveyAnswerService', () => {
         idOfAnsweredSurvey04.toString(),
         saveNoAnsweredSurvey04,
         mockedAnswerForAnsweredSurveys04,
-        firstMockJWTUser,
+        firstMockJWTUser.preferred_username,
+        false,
       );
     });
 
@@ -495,7 +505,8 @@ describe('SurveyAnswerService', () => {
         idOfAnsweredSurvey05.toString(),
         saveNoAnsweredSurvey05,
         newMockedAnswerForAnsweredSurveys05,
-        firstMockJWTUser,
+        firstMockJWTUser.preferred_username,
+        false,
       );
       expect(result).toEqual(newSurveyAnswerAnsweredSurvey05);
 
@@ -503,7 +514,8 @@ describe('SurveyAnswerService', () => {
         idOfAnsweredSurvey05.toString(),
         saveNoAnsweredSurvey05,
         newMockedAnswerForAnsweredSurveys05,
-        firstMockJWTUser,
+        firstMockJWTUser.preferred_username,
+        false,
       );
     });
   });

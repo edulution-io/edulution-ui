@@ -118,6 +118,11 @@ describe(PublicSurveysController.name, () => {
       surveyModel.findById = jest.fn().mockResolvedValueOnce(publicSurvey02);
 
       surveyAnswerModel.create = jest.fn().mockResolvedValueOnce(surveyValidAnswerPublicSurvey02);
+
+      surveyAnswerModel.findByIdAndUpdate = jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValue(surveyValidAnswerPublicSurvey02),
+      });
+
       surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue(publicSurvey02AfterAddingValidAnswer);
 
       await controller.answerSurvey({
@@ -132,8 +137,8 @@ describe(PublicSurveysController.name, () => {
         idOfPublicSurvey02.toString(),
         saveNoPublicSurvey02,
         mockedValidAnswerForPublicSurveys02,
-        { preferred_username: firstMockUser.username },
-        undefined,
+        firstMockUser.username,
+        false,
       );
     });
 
@@ -147,7 +152,6 @@ describe(PublicSurveysController.name, () => {
 
       surveyAnswerModel.findByIdAndUpdate = jest.fn().mockReturnValue({
         lean: jest.fn().mockResolvedValue(surveyValidAnswerPublicSurvey02),
-        exec: jest.fn().mockResolvedValue(surveyValidAnswerPublicSurvey02),
       });
 
       surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue(publicSurvey02AfterAddingValidAnswer);
@@ -164,8 +168,8 @@ describe(PublicSurveysController.name, () => {
         idOfPublicSurvey02.toString(),
         saveNoPublicSurvey02,
         mockedValidAnswerForPublicSurveys02,
-        undefined,
         firstMockUser.username,
+        true,
       );
     });
 

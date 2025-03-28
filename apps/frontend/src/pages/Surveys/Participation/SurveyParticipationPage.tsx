@@ -21,6 +21,7 @@ import SurveyParticipationBody from '@/pages/Surveys/Participation/SurveyPartici
 import PublicSurveyAccessForm from '@/pages/Surveys/Participation/PublicSurveyAccessForm';
 import PublicSurveyParticipationId from '@/pages/Surveys/Participation/PublicSurveyParticipationId';
 import '../theme/custom.participation.css';
+import publicUserIdRegex from '@libs/survey/utils/publicUserIdRegex';
 
 interface SurveyParticipationPageProps {
   isPublic: boolean;
@@ -32,7 +33,8 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
   const { selectedSurvey, fetchSelectedSurvey, isFetching, updateOpenSurveys, updateAnsweredSurveys } =
     useSurveyTablesPageStore();
 
-  const { username, setUsername, answerSurvey, reset, previousAnswer, publicUserId } = useParticipateSurveyStore();
+  const { username, setUsername, answerSurvey, reset, publicUserId, fetchAnswer, previousAnswer } =
+    useParticipateSurveyStore();
 
   const { surveyId } = useParams();
   const { t } = useTranslation();
@@ -49,6 +51,16 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
       setUsername(user.username);
     }
   }, [user]);
+
+  useEffect(() => {
+    if (username && selectedSurvey?.id) {
+      const publicParticipationIdLinkedToSurvey = publicUserIdRegex.test(username);
+      if (selectedSurvey.isPublic && !publicParticipationIdLinkedToSurvey) {
+        return;
+      }
+      void fetchAnswer(selectedSurvey.id, username);
+    }
+  }, [selectedSurvey, username]);
 
   const form = useForm<{ username: string }>();
 

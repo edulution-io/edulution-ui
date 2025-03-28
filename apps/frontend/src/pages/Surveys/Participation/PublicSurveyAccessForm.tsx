@@ -25,8 +25,6 @@ interface PublicSurveyAccessFormProps {
   form: UseFormReturn<{ username: string }>;
   publicUserFullName: string;
   setPublicUserFullName: (value: string) => void;
-  // fetchPreviousAnswer: () => Promise<SurveyAnswerDto>;
-  // isFetching: boolean;
   accessSurvey: () => void;
 }
 

@@ -308,7 +308,8 @@ describe(SurveysController.name, () => {
         idOfAnsweredSurvey01.toString(),
         saveNoAnsweredSurvey01,
         firstUsersMockedAnswerForAnsweredSurveys01,
-        firstMockJWTUser,
+        firstMockJWTUser.preferred_username,
+        false,
       );
     });
   });
