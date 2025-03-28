@@ -10,23 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-// This type is based on a third-party object definition from veyon web-API.
-// Any modifications should be carefully reviewed to ensure compatibility with the source.
-
-type VeyonFeatureRequestArguments = {
-  username: string;
-  password: string;
-  demoAccessToken: string;
-  demoServerHost: string;
-  applications: string[];
-  websiteUrls: string[];
-  text: string;
+const sortDate = (a: Date | null | undefined, b: Date | null | undefined): number => {
+  if (b == null) return !a ? 0 : 1;
+  if (a == null) return -1;
+  if (a === b) return 0;
+  return a < b ? -1 : 1;
 };
 
-type VeyonFeatureRequest = {
-  active: boolean;
-  connectionUids: string[];
-  arguments?: VeyonFeatureRequestArguments;
-};
-
-export default VeyonFeatureRequest;
+export default sortDate;
