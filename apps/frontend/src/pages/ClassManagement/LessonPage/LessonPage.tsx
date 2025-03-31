@@ -163,7 +163,10 @@ const LessonPage = () => {
     }
   }, [groupTypeParams, groupNameParams, lmnApiToken]);
 
-  const handleSessionSelect = (sessionName: string) => {
+  const sessionOptions = userSessions.map((s) => ({ id: s.sid, name: s.name }));
+
+  const handleSessionSelect = (sessionId: string) => {
+    const sessionName = sessionOptions.find((s) => s.id === sessionId)?.name;
     navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}/sessions/${sessionName}`);
   };
 
@@ -171,8 +174,6 @@ const LessonPage = () => {
     setOpenDialogType(UserGroups.Sessions);
     setUserGroupToEdit(currentSelectedSession || null);
   };
-
-  const sessionOptions = userSessions.map((s) => ({ id: s.sid, name: s.name }));
 
   const closeSession = () => {
     setMember([]);
@@ -224,8 +225,9 @@ const LessonPage = () => {
           <div className="md:w-1/3">
             <DropdownSelect
               options={sessionOptions}
-              selectedVal={groupNameParams || t('classmanagement.selectSavedSession')}
+              selectedVal={groupNameParams || ''}
               handleChange={handleSessionSelect}
+              placeholder={t('classmanagement.selectSavedSession')}
             />
           </div>
         )}
