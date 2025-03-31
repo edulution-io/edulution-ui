@@ -10,20 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const SSE_MESSAGE_TYPE = {
-  MESSAGE: 'message',
-  CONTAINER_STATUS: 'container_status',
-  CONTAINER_UPDATE: 'container_update',
-  CONTAINER_PROGRESS: 'container_progress',
-  CONFERENCE_CREATED: 'conference_created',
-  CONFERENCE_STARTED: 'conference_started',
-  CONFERENCE_STOPPED: 'conference_stopped',
-  CONFERENCE_DELETED: 'conference_deleted',
-  SURVEY_CREATED: 'survey_created',
-  SURVEY_UPDATED: 'survey_updated',
-  SURVEY_DELETED: 'survey_deleted',
-  BULLETIN_UPDATED: 'bulletin_update',
-  FILESHARING_PROGRESS: 'filesharing_progress',
+const SSE_EDU_API_ENDPOINTS = {
+  SSE: 'sse',
 } as const;
 
-export default SSE_MESSAGE_TYPE;
+export default SSE_EDU_API_ENDPOINTS;

@@ -12,6 +12,7 @@
 
 import { create } from 'zustand';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
 
 type SseStore = {
   eventSource: EventSource | null;
@@ -22,7 +23,7 @@ const useSseStore = create<SseStore>((set) => ({
   eventSource: null,
   setEventSource: (eduApiToken) =>
     set({
-      eventSource: new EventSource(`/${EDU_API_ROOT}/sse?token=${eduApiToken}`),
+      eventSource: new EventSource(`/${EDU_API_ROOT}/${SSE_EDU_API_ENDPOINTS.SSE}?token=${eduApiToken}`),
     }),
 }));
 

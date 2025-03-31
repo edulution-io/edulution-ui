@@ -15,13 +15,14 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { Response } from 'express';
 import APPS from '@libs/appconfig/constants/apps';
+import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import SseService from './sse.service';
 import { Public } from '../common/decorators/public.decorator';
 
-@ApiTags('sse')
+@ApiTags(SSE_EDU_API_ENDPOINTS.SSE)
 @ApiBearerAuth()
-@Controller('sse')
+@Controller(SSE_EDU_API_ENDPOINTS.SSE)
 class SseController {
   constructor(private readonly sseService: SseService) {}
 
