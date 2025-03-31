@@ -92,7 +92,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         };
       } else {
         attendee = {
-          username: username,
+          username,
           firstName: undefined,
           lastName: undefined,
           label: username,
