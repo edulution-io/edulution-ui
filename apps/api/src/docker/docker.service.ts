@@ -24,6 +24,7 @@ import DOCKER_COMMANDS from '@libs/docker/constants/dockerCommands';
 import DOCKER_PROTECTED_CONTAINERS from '@libs/docker/constants/dockerProtectedContainer';
 import SPECIAL_USERS from '@libs/common/constants/specialUsers';
 import type TDockerProtectedContainer from '@libs/docker/types/TDockerProtectedContainer';
+import CONTAINER from '@libs/docker/constants/container';
 import SseService from '../sse/sse.service';
 import type UserConnections from '../types/userConnections';
 
@@ -60,7 +61,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       const dockerEvents$ = fromEvent(stream, 'data').pipe(
         map((chunk) => JSON.parse((chunk as Buffer<ArrayBufferLike>).toString()) as DockerEvent),
         filter((event) => {
-          if (!event || event.Type !== 'container') {
+          if (!event || event.Type !== CONTAINER) {
             return false;
           }
           const ignoredActions = ['exec_create', 'exec_start', 'exec_die'];

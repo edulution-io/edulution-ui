@@ -40,6 +40,7 @@ import BulletinCategoryModule from '../bulletin-category/bulletin-category.modul
 import BulletinBoardModule from '../bulletinboard/bulletinboard.module';
 import DockerModule from '../docker/docker.module';
 import VeyonModule from '../veyon/veyon.module';
+import GlobalSettingsModule from '../global-settings/global-settings.module';
 
 const redisHost = process.env.REDIS_HOST ?? 'localhost';
 const redisPort = +(process.env.REDIS_PORT ?? 6379);
@@ -77,6 +78,7 @@ const redisPort = +(process.env.REDIS_PORT ?? 6379);
     BulletinBoardModule,
     DockerModule,
     VeyonModule,
+    GlobalSettingsModule,
     JwtModule.register({
       global: true,
     }),

@@ -10,5 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const EDU_API_DOCKER_ENDPOINT = 'docker';
-export const EDU_API_DOCKER_CONTAINER_ENDPOINT = 'containers';
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { GlobalSettings, GlobalSettingsSchema } from './global-settings.schema';
+import GlobalSettingsService from './global-settings.service';
+import GlobalSettingsController from './global-settings.controller';
+
+@Module({
+  imports: [MongooseModule.forFeature([{ name: GlobalSettings.name, schema: GlobalSettingsSchema }])],
+  controllers: [GlobalSettingsController],
+  providers: [GlobalSettingsService],
+})
+export default class GlobalSettingsModule {}

@@ -741,6 +741,21 @@
       "whiteboard": "Here you can make all the settings.",
       "bulletinboard": "Configure the user groups that have access to the Bulletin Board app here. The categories can be used to control which messages are displayed to users."
     },
+    "globalSettings": {
+      "title": "Global Settings",
+      "security": "Security",
+      "multiFactorAuthentication": "Two-factor authentication",
+      "description": "Here you can specify the user groups for which two-factor authentication is to be enforced.",
+      "selectUserGroups": "Select user groups for which the MFA setup is enforced.",
+      "updateSuccessful": "Setting updated successfully",
+      "errors": {
+        "updateError": "Settings could not be updated.",
+        "notFoundError": "Settings could not be loaded."
+      }
+    },
+    "info": {
+      "title": "Info"
+    },
     "appconfig": {
       "sections": {
         "onlyOffice": {
@@ -889,7 +904,9 @@
     "addTotp": {
       "title": "Set up Two-Factor Authentication",
       "qrCodeInstructions": "Scan the QR code with an authenticator app that supports TOTP (Time-based One-Time Password).",
-      "totpCodeInstructions": "Then enter the generated code here and save it:"
+      "totpCodeInstructions": "Then enter the generated code here and save it:",
+      "mfaSetupRequired": "The global guidelines require two-factor authentication to be set up:",
+      "mfaSetupSuccess": "Two-factor authentication has been successfully set up."
     },
     "errors": {
       "currentPasswordRequired": "Current password is required",
@@ -1300,7 +1317,8 @@
     "imageName": "Image",
     "filterPlaceHolderText": "Search for container name",
     "port": "Port",
-    "created": "Created at"
+    "created": "Created at",
+    "container-view": "Container"
   },
   "docker": {
     "error": {
