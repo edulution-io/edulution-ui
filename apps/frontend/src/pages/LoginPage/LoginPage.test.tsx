@@ -22,8 +22,8 @@ import { cleanup, render, screen } from '@testing-library/react';
 import { act, renderHook } from '@testing-library/react-hooks';
 import { userEvent } from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
-import LoginPage from './LoginPage';
 import { HelmetProvider } from 'react-helmet-async';
+import LoginPage from './LoginPage';
 
 vi.mock('react-oidc-context', () => ({
   useAuth: vi.fn().mockImplementation(() => ({
