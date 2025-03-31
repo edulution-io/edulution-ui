@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { PUBLIC_SURVEYS, IMAGES } from '@libs/survey/constants/surveys-endpoint';
 import { join } from 'path';
 import { Response } from 'express';
 import { Model, Types } from 'mongoose';
@@ -24,7 +23,6 @@ import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
-import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
@@ -167,29 +165,11 @@ class SurveysService implements OnModuleInit {
     return this.createSurvey(surveyDto, currentUser, surveysSseConnections);
   }
 
-  static getImagePath(surveyId: string, questionId: string, fileName: string): string {
-    return join(SURVEYS_IMAGES_PATH, surveyId, questionId, fileName);
-  }
-
-  static getImageUrl(surveyId: string, questionId: string, fileName: string): string {
-    return join(PUBLIC_SURVEYS, IMAGES, surveyId, questionId, fileName);
-  }
-
   async serveImage(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
-    const imagePath = SurveysService.getImagePath(surveyId, questionId, fileName);
+    const imagePath = join(SURVEYS_IMAGES_PATH, surveyId, questionId, fileName);
     const fileStream = await this.fileSystemService.createReadStream(imagePath);
     fileStream.pipe(res);
     return res;
-  }
-
-  static checkImageFile(file: Express.Multer.File): string {
-    if (!file) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
-    }
-    if (!IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      throw new CustomHttpException(CommonErrorMessages.ATTACHMENT_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
-    }
-    return file.filename;
   }
 
   async onSurveyRemoval(surveyIds: string[]): Promise<void> {

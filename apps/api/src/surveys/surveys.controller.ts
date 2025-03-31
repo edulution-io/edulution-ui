@@ -10,8 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Observable } from 'rxjs';
+import { join } from 'path';
 import { Response } from 'express';
+import { Observable } from 'rxjs';
 import {
   Body,
   Controller,
@@ -37,6 +38,7 @@ import {
   FIND_ONE,
   HAS_ANSWERS,
   IMAGES,
+  PUBLIC_SURVEYS,
   RESULT,
   SURVEYS,
 } from '@libs/survey/constants/surveys-endpoint';
@@ -113,7 +115,7 @@ class SurveysController {
   ) {
     const { surveyId, questionId } = param;
     const fileName = checkAttachmentFile(file);
-    const imageUrl = SurveysService.getImageUrl(surveyId, questionId, fileName);
+    const imageUrl = join(PUBLIC_SURVEYS, IMAGES, surveyId, questionId, fileName);
     return res.status(HttpStatus.CREATED).json(imageUrl);
   }
 
