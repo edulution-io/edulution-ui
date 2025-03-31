@@ -22,11 +22,11 @@ import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import ContentType from '@libs/filesharing/types/contentType';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import ErrorMessage from '@libs/error/errorMessage';
+import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import { mapToDirectories, mapToDirectoryFiles } from '../filesharing/filesharing.utilities';
 
 import WebdavClientFactory from '../filesharing/webdav.client.factory';
 import UsersService from '../users/users.service';
-import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 
 class WebDavService {
   private static readonly baseUrl = process.env.EDUI_WEBDAV_URL as string;

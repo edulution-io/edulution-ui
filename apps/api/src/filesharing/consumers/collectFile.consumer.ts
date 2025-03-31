@@ -21,11 +21,11 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import JobData from '@libs/queue/constants/jobData';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
+import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import SseService from '../../sse/sse.service';
 
 import type UserConnections from '../../types/userConnections';
 import WebDavService from '../../webdav/webDavService';
-import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 
 class CollectFileConsumer extends WorkerHost {
   private fileCollectingSseConnections: UserConnections = new Map();
