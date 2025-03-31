@@ -73,50 +73,47 @@ const useNotifications = () => {
   }, FEED_PULL_TIME_INTERVAL_SLOW);
 
   useEffect(() => {
-    if (isConferenceAppActivated && eventSource) {
-      const controller = new AbortController();
-      const { signal } = controller;
-
-      const createConferenceHandler = (e: MessageEvent<string>) => {
-        const conferenceDto = JSON.parse(e.data) as ConferenceDto;
-        const newConferences = [...conferencesRef.current, conferenceDto];
-        setConferences(newConferences);
-      };
-
-      const updateConferenceHandler = (e: MessageEvent<string>) => {
-        if (conferencesRef.current.length === 0) return;
-        const { type, data } = e;
-        const newConferences = conferencesRef.current.map((conference) => {
-          if (conference.meetingID === data) {
-            return {
-              ...conference,
-              isRunning: type === SSE_MESSAGE_TYPE.CONFERENCE_STARTED,
-            };
-          }
-          return conference;
-        });
-        setConferences(newConferences);
-      };
-
-      const deleteConferenceHandler = (e: MessageEvent<string[]>) => {
-        const { data } = e;
-        const newConferences = conferencesRef.current.filter((conference) => !data.includes(conference.meetingID));
-        setConferences(newConferences);
-      };
-
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_CREATED, createConferenceHandler, { signal });
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_STARTED, updateConferenceHandler, { signal });
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_STOPPED, updateConferenceHandler, { signal });
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_DELETED, deleteConferenceHandler, { signal });
-
-      return () => {
-        controller.abort();
-
-        eventSource.close();
-      };
+    if (!isConferenceAppActivated || !eventSource) {
+      return undefined;
     }
+    const controller = new AbortController();
+    const { signal } = controller;
 
-    return undefined;
+    const createConferenceHandler = (e: MessageEvent<string>) => {
+      const conferenceDto = JSON.parse(e.data) as ConferenceDto;
+      const newConferences = [...conferencesRef.current, conferenceDto];
+      setConferences(newConferences);
+    };
+
+    const updateConferenceHandler = (e: MessageEvent<string>) => {
+      if (conferencesRef.current.length === 0) return;
+      const { type, data } = e;
+      const newConferences = conferencesRef.current.map((conference) => {
+        if (conference.meetingID === data) {
+          return {
+            ...conference,
+            isRunning: type === SSE_MESSAGE_TYPE.CONFERENCE_STARTED,
+          };
+        }
+        return conference;
+      });
+      setConferences(newConferences);
+    };
+
+    const deleteConferenceHandler = (e: MessageEvent<string[]>) => {
+      const { data } = e;
+      const newConferences = conferencesRef.current.filter((conference) => !data.includes(conference.meetingID));
+      setConferences(newConferences);
+    };
+
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_CREATED, createConferenceHandler, { signal });
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_STARTED, updateConferenceHandler, { signal });
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_STOPPED, updateConferenceHandler, { signal });
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_DELETED, deleteConferenceHandler, { signal });
+
+    return () => {
+      controller.abort();
+    };
   }, [isConferenceAppActivated]);
 
   useEffect(() => {
@@ -138,52 +135,48 @@ const useNotifications = () => {
 
     return () => {
       eventSource.removeEventListener(SSE_MESSAGE_TYPE.FILESHARING_PROGRESS, handleFileSharingEvent);
-      eventSource.close();
     };
   }, [isClassRoomManagementActive]);
 
   useEffect(() => {
-    if (isSurveysAppActivated && eventSource) {
-      const controller = new AbortController();
-      const { signal } = controller;
-
-      const handleUpdateSurveys = () => {
-        void updateOpenSurveys();
-      };
-
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.SURVEY_CREATED, handleUpdateSurveys, { signal });
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.SURVEY_UPDATED, handleUpdateSurveys, { signal });
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.SURVEY_DELETED, handleUpdateSurveys, { signal });
-
-      return () => {
-        controller.abort();
-        eventSource.close();
-      };
+    if (!isSurveysAppActivated || !eventSource) {
+      return undefined;
     }
 
-    return undefined;
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    const handleUpdateSurveys = () => {
+      void updateOpenSurveys();
+    };
+
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.SURVEY_CREATED, handleUpdateSurveys, { signal });
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.SURVEY_UPDATED, handleUpdateSurveys, { signal });
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.SURVEY_DELETED, handleUpdateSurveys, { signal });
+
+    return () => {
+      controller.abort();
+    };
   }, [isSurveysAppActivated]);
 
   useEffect(() => {
-    if (isBulletinBoardActive && eventSource) {
-      const controller = new AbortController();
-      const { signal } = controller;
-
-      const handleBulletinNotification = (e: MessageEvent<string>) => {
-        const { data } = e;
-        const bulletin = JSON.parse(data) as BulletinResponseDto;
-        addBulletinBoardNotification(bulletin);
-      };
-
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.BULLETIN_UPDATED, handleBulletinNotification, { signal });
-
-      return () => {
-        controller.abort();
-        eventSource.close();
-      };
+    if (!isBulletinBoardActive || !eventSource) {
+      return undefined;
     }
+    const controller = new AbortController();
+    const { signal } = controller;
 
-    return undefined;
+    const handleBulletinNotification = (e: MessageEvent<string>) => {
+      const { data } = e;
+      const bulletin = JSON.parse(data) as BulletinResponseDto;
+      addBulletinBoardNotification(bulletin);
+    };
+
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.BULLETIN_UPDATED, handleBulletinNotification, { signal });
+
+    return () => {
+      controller.abort();
+    };
   }, [isBulletinBoardActive]);
 };
 

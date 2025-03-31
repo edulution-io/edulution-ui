@@ -32,7 +32,6 @@ const useDockerContainerEvents = () => {
 
       return () => {
         eventSource.removeEventListener(SSE_MESSAGE_TYPE.CONTAINER_UPDATE, updateTableHandler);
-        eventSource.close();
       };
     }
     return undefined;

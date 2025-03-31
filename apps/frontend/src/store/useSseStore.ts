@@ -17,14 +17,16 @@ import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
 type SseStore = {
   eventSource: EventSource | null;
   setEventSource: (eduApiToken: string) => void;
+  reset: () => void;
 };
 
-const useSseStore = create<SseStore>((set) => ({
+const useSseStore = create<SseStore>((set, get) => ({
   eventSource: null,
   setEventSource: (eduApiToken) =>
     set({
       eventSource: new EventSource(`/${EDU_API_ROOT}/${SSE_EDU_API_ENDPOINTS.SSE}?token=${eduApiToken}`),
     }),
+  reset: () => get().eventSource?.close(),
 }));
 
 export default useSseStore;

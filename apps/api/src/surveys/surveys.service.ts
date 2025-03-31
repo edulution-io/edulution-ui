@@ -79,7 +79,7 @@ class SurveysService implements OnModuleInit {
     } catch (error) {
       throw new CustomHttpException(SurveyErrorMessages.DeleteError, HttpStatus.NOT_MODIFIED, error);
     } finally {
-      this.sseService.informAllUsers(surveyIds.toString(), SSE_MESSAGE_TYPE.SURVEY_DELETED);
+      this.sseService.informAllUsers(surveyIds, SSE_MESSAGE_TYPE.SURVEY_DELETED);
     }
   }
 
@@ -101,6 +101,7 @@ class SurveysService implements OnModuleInit {
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {
+      Logger.warn(survey.isPublic, SurveysService.name);
       if (survey.isPublic) {
         this.sseService.informAllUsers(survey, SSE_MESSAGE_TYPE.SURVEY_UPDATED);
       } else {
@@ -108,7 +109,11 @@ class SurveysService implements OnModuleInit {
           survey.invitedGroups,
           survey.invitedAttendees,
         );
+        Logger.warn(invitedMembersList, SurveysService.name);
+
         const updatedSurvey = await this.surveyModel.findById(survey.id).exec();
+        Logger.warn(updatedSurvey, SurveysService.name);
+
         this.sseService.sendEventToUsers(invitedMembersList, updatedSurvey || survey, SSE_MESSAGE_TYPE.SURVEY_UPDATED);
       }
     }
