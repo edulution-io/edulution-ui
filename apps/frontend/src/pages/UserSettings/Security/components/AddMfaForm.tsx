@@ -15,33 +15,31 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
 import useUserStore from '@/store/UserStore/UserStore';
 import Switch from '@/components/ui/Switch';
-import SetupMfaDialog from './SetupMfaDialog';
 
 const AddMfaForm: React.FC = () => {
   const { t } = useTranslation();
-  const { user, getUser, disableTotp } = useUserStore();
+  const { user, isSetTotpDialogOpen, setIsSetTotpDialogOpen, getUser, disableTotp } = useUserStore();
   const { username = '', mfaEnabled = false } = user ?? {};
-  const [isOpen, setIsOpen] = useState(false);
   const [checked, setChecked] = useState(mfaEnabled);
 
   useEffect(() => {
     if (mfaEnabled) {
-      setIsOpen(false);
+      setIsSetTotpDialogOpen(false);
     }
     setChecked(mfaEnabled);
   }, [user, mfaEnabled]);
 
   useEffect(() => {
     if (checked) {
-      setIsOpen((prev) => !prev !== mfaEnabled);
+      setIsSetTotpDialogOpen(!isSetTotpDialogOpen !== mfaEnabled);
     }
   }, [checked]);
 
   useEffect(() => {
-    if (!isOpen) {
+    if (!isSetTotpDialogOpen) {
       void getUser(username);
     }
-  }, [isOpen]);
+  }, [isSetTotpDialogOpen]);
 
   const handleRevertMfaSetup = async () => {
     await disableTotp();
@@ -80,17 +78,12 @@ const AddMfaForm: React.FC = () => {
             variant="btn-security"
             size="lg"
             onClick={() => handleRevertMfaSetup()}
-            className={mfaEnabled && checked !== mfaEnabled && !isOpen ? '' : 'invisible'}
+            className={mfaEnabled && checked !== mfaEnabled && !isSetTotpDialogOpen ? '' : 'invisible'}
           >
             {t('common.save')}
           </Button>
         </div>
       </div>
-
-      <SetupMfaDialog
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-      />
     </>
   );
 };

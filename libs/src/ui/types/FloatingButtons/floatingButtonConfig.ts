@@ -11,17 +11,16 @@
  */
 
 import { IconType } from 'react-icons';
-import { DropdownOption } from '@libs/filesharing/types/fileCreationDropDownOptions';
-import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
+import type DropdownMenuItemType from '../dropdownMenuItemType';
 
 interface FloatingButtonConfig {
   icon: IconType;
   text: string;
-  onClick: () => void;
+  onClick?: () => void;
   isVisible?: boolean;
+  type?: 'button' | 'submit' | 'reset';
   variant?: 'button' | 'dropdown';
-  options?: DropdownOption[];
-  onSelectFileSelect?: (fileType: TAvailableFileTypes) => void;
+  dropdownItems?: DropdownMenuItemType[];
 }
 
 export default FloatingButtonConfig;

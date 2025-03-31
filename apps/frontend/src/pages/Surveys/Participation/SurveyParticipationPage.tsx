@@ -12,7 +12,7 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
-import { Model } from 'survey-core';
+import { Model, Serializer } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -27,6 +27,8 @@ import '../theme/custom.participation.css';
 interface SurveyParticipationPageProps {
   isPublic: boolean;
 }
+
+Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
 
 const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.ReactNode => {
   const { isPublic = false } = props;

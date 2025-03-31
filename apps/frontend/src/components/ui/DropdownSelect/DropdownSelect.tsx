@@ -14,14 +14,13 @@ import React, { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
 import cn from '@libs/common/utils/className';
+import DropdownVariant from '@libs/ui/types/DropdownVariant';
 import styles from './dropdownselect.module.scss';
 
 export type DropdownOptions = {
   id: string;
   name: string;
 };
-
-type DropdownVariant = 'dialog' | 'default';
 
 interface DropdownProps {
   options: DropdownOptions[];
@@ -30,6 +29,8 @@ interface DropdownProps {
   openToTop?: boolean;
   classname?: string;
   variant?: DropdownVariant;
+  searchEnabled?: boolean;
+  placeholder?: string;
 }
 
 const DropdownSelect: React.FC<DropdownProps> = ({
@@ -39,6 +40,8 @@ const DropdownSelect: React.FC<DropdownProps> = ({
   openToTop = false,
   classname,
   variant = 'default',
+  searchEnabled = false,
+  placeholder = '',
 }) => {
   const { t } = useTranslation();
   const [query, setQuery] = useState<string>('');
@@ -54,18 +57,18 @@ const DropdownSelect: React.FC<DropdownProps> = ({
 
   const selectOption = (option: DropdownOptions) => {
     setQuery(() => '');
-    handleChange(option.name);
+    handleChange(option.id);
     setIsOpen((prevVal) => !prevVal);
   };
 
   const getDisplayValue = (): string => {
     if (query) return query;
-    if (selectedVal) return selectedVal;
-
+    if (selectedVal) return options.find((option) => option.id === selectedVal)?.name || '';
+    if (placeholder) return t(placeholder);
     return '';
   };
 
-  const filter = (opts: DropdownOptions[]): DropdownOptions[] =>
+  const getSearchValue = (opts: DropdownOptions[]): DropdownOptions[] =>
     opts.filter((option) => {
       const optionName = t(option.name);
       return optionName.toLowerCase().indexOf(query.toLowerCase()) > -1;
@@ -79,24 +82,24 @@ const DropdownSelect: React.FC<DropdownProps> = ({
       })}
       ref={dropdownRef}
     >
-      <div>
-        <div className={styles['selected-value']}>
-          <input
-            type="text"
-            value={getDisplayValue()}
-            name="searchTerm"
-            onChange={(e) => {
+      <div className={styles['selected-value']}>
+        <input
+          type={searchEnabled ? 'text' : 'button'}
+          value={getDisplayValue()}
+          name="searchTerm"
+          onChange={(e) => {
+            if (searchEnabled) {
               setQuery(e.target.value);
               handleChange('');
-            }}
-            onClickCapture={() => setIsOpen((prevVal) => !prevVal)}
-            disabled={options.length === 0}
-            className={cn({
-              'bg-background text-foreground': variant === 'default',
-              'bg-muted text-secondary': variant === 'dialog',
-            })}
-          />
-        </div>
+            }
+          }}
+          onClickCapture={() => setIsOpen((prevVal) => !prevVal)}
+          disabled={options.length === 0}
+          className={cn('text-start', {
+            'bg-background text-foreground': variant === 'default',
+            'bg-muted text-secondary': variant === 'dialog',
+          })}
+        />
       </div>
       <div className={cn(styles.arrow, { [styles.open]: isOpen, [styles.up]: openToTop })} />
       <div
@@ -107,13 +110,13 @@ const DropdownSelect: React.FC<DropdownProps> = ({
           'bg-muted text-secondary': variant === 'dialog',
         })}
       >
-        {filter(options).map((option) => (
+        {getSearchValue(options).map((option) => (
           <div
             key={option.id}
             onClickCapture={() => selectOption(option)}
             className={cn(styles.option, {
-              [styles.selected]: t(option.name) === selectedVal,
-              'hover:bg-gray-200': variant === 'default',
+              [styles.selected]: option.id === selectedVal,
+              'hover:bg-accent-light': variant === 'default',
               'bg-muted hover:bg-secondary': variant === 'dialog',
             })}
           >

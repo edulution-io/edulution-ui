@@ -11,7 +11,7 @@
  */
 
 import React from 'react';
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, Row } from '@tanstack/react-table';
 import { MdFolder } from 'react-icons/md';
 import {
   formatBytes,
@@ -29,14 +29,12 @@ import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
-import FILESHARING_TABLE_COLUM_NAMES from '@libs/filesharing/constants/filesharingTableColumNames';
 import { useTranslation } from 'react-i18next';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
-
-const hideOnMobileClassName = 'hidden lg:flex';
 
 const renderFileIcon = (item: DirectoryFileDTO, isCurrentlyDisabled: boolean) => {
   if (isCurrentlyDisabled) {
@@ -60,11 +58,11 @@ const renderFileIcon = (item: DirectoryFileDTO, isCurrentlyDisabled: boolean) =>
 
 const getFileSharingTableColumns = (
   visibleColumns?: string[],
-  onFilenameClick?: (item: DirectoryFileDTO) => void,
+  onFilenameClick?: (item: Row<DirectoryFileDTO>) => void,
 ): ColumnDef<DirectoryFileDTO>[] => {
   const allColumns: ColumnDef<DirectoryFileDTO>[] = [
     {
-      id: FILESHARING_TABLE_COLUM_NAMES.SELECT_FILENAME,
+      id: FILE_SHARING_TABLE_COLUMNS.SELECT_FILENAME,
 
       header: ({ table, column }) => (
         <SortableHeader<DirectoryFileDTO, unknown>
@@ -84,7 +82,7 @@ const getFileSharingTableColumns = (
         const isCurrentlyDisabled = currentlyDisabledFiles[row.original.basename];
         const handleFilenameClick = () => {
           if (onFilenameClick) {
-            onFilenameClick(row.original);
+            onFilenameClick(row);
             return;
           }
 
@@ -117,7 +115,6 @@ const getFileSharingTableColumns = (
           </div>
         );
       },
-      enableHiding: false,
 
       sortingFn: (rowA, rowB) => {
         const valueA = rowA.original.type + rowA.original.filename;
@@ -126,8 +123,7 @@ const getFileSharingTableColumns = (
       },
     },
     {
-      accessorKey: FILESHARING_TABLE_COLUM_NAMES.LAST_MODIFIED,
-      id: FILESHARING_TABLE_COLUM_NAMES.LAST_MODIFIED,
+      accessorKey: FILE_SHARING_TABLE_COLUMNS.LAST_MODIFIED,
       header: ({ column }) => <SortableHeader<DirectoryFileDTO, unknown> column={column} />,
       meta: {
         translationId: 'fileSharingTable.lastModified',
@@ -157,14 +153,8 @@ const getFileSharingTableColumns = (
       },
     },
     {
-      accessorKey: FILESHARING_TABLE_COLUM_NAMES.SIZE,
-      id: FILESHARING_TABLE_COLUM_NAMES.SIZE,
-      header: ({ column }) => (
-        <SortableHeader<DirectoryFileDTO, unknown>
-          className={hideOnMobileClassName}
-          column={column}
-        />
-      ),
+      accessorKey: FILE_SHARING_TABLE_COLUMNS.SIZE,
+      header: ({ column }) => <SortableHeader<DirectoryFileDTO, unknown> column={column} />,
       meta: {
         translationId: 'fileSharingTable.size',
       },
@@ -174,21 +164,15 @@ const getFileSharingTableColumns = (
           fileSize = row.original.size;
         }
         return (
-          <div className={`hidden lg:flex ${sizeColumnWidth}`}>
+          <div className={sizeColumnWidth}>
             <span className="text-right text-base text-span font-medium">{formatBytes(fileSize)}</span>
           </div>
         );
       },
     },
     {
-      accessorKey: FILESHARING_TABLE_COLUM_NAMES.TYPE,
-      id: FILESHARING_TABLE_COLUM_NAMES.TYPE,
-      header: ({ column }) => (
-        <SortableHeader<DirectoryFileDTO, unknown>
-          className={hideOnMobileClassName}
-          column={column}
-        />
-      ),
+      accessorKey: FILE_SHARING_TABLE_COLUMNS.TYPE,
+      header: ({ column }) => <SortableHeader<DirectoryFileDTO, unknown> column={column} />,
 
       meta: {
         translationId: 'fileSharingTable.type',

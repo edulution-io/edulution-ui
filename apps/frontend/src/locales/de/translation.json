@@ -173,11 +173,12 @@
     "configName": "Name der Konfiguration",
     "hostname": "Hostname",
     "port": "Port",
+    "portPlaceholder": "z.B. 993",
     "encryption": "Verschlüsselung",
     "rowSelected": "{{selected}} von {{total}} Job ausgewählt",
     "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
     "importer": {
-      "filterPlaceHolderText": "Suche nach E-Mail-Importername",
+      "filterPlaceHolderText": "Suche nach Benutzername",
       "title": "E-Mail-Importer",
       "provider": "E-Mail-Provider",
       "interval": "Sync-Intervall",
@@ -402,11 +403,11 @@
     "member": "Mitglied",
     "noneAvailable": "Keine vorhanden",
     "isJoinable": "Nutzer können beitreten",
-    "joinclass": "Klasse betreten zum Dateien teilen",
+    "joinclass": "Klasse beitreten",
     "hide": "Anderen Nutzern nicht anzeigen",
     "typeToSearchUsersGroupsProjects": "Tippen um Schüler, Klassen oder Projekte hinzuzufügen",
     "typeToSearchUsersGroupsProjectsToNewSession": "Tippen um Schüler, Klassen oder Projekte zu einer neuen Sitzung hinzuzufügen",
-    "itsNotPossibleToEditOtherTeacher": "Im Moment ist es nicht möglich, das Verzeichnis für das Teilen im Home-Verzeichnis eines anderen Lehrers zu erstellen, oder die Verwaltungsgruppen zu ändern.",
+    "itsNotPossibleToEditExternalStudents": "Es ist nicht möglich Schüler anderer Klassen zu steuern. Bitte treten Sie der Klasse des Schülers bei.",
     "itsNotPossibleToEditOtherSchoolStudents": "Im Moment ist es nicht möglich, das Verzeichnis für das Teilen im Home-Verzeichnis eines Schülers einer anderen Schule zu erstellen oder, die Verwaltungsgruppen zu ändern.",
     "usersInThisSession": "Nutzer in dieser Sitzung",
     "webfilter": "Web Filter",
@@ -731,6 +732,21 @@
       "whiteboard": "Hier kannst du alle Einstellungen vornehmen.",
       "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Schwarzes Brett haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden."
     },
+    "globalSettings": {
+      "title": "Globale Einstellungen",
+      "security": "Sicherheit",
+      "multiFactorAuthentication": "Zwei-Faktor-Authentisierung",
+      "description": "Hier kann festgelegt werden, für welche Nutzergruppen die Zwei-Faktor-Authentisierung erzwungen werden soll.",
+      "selectUserGroups": "Nutzergruppen auswählen, für welche das MFA-Setup erzwungen wird.",
+      "updateSuccessful": "Einstellung erfolgreich aktualisiert.",
+      "errors": {
+        "updateError": "Einstellungen konnten nicht aktualisiert werden.",
+        "notFoundError": "Einstellungen konnten nicht geladen werden."
+      }
+    },
+    "info": {
+      "title": "Info"
+    },
     "appconfig": {
       "sections": {
         "onlyOffice": {
@@ -879,7 +895,9 @@
     "addTotp": {
       "title": "Zwei-Faktor-Authentisierung einrichten",
       "qrCodeInstructions": "Den QR-Code mit einer Authenticator App scannen, die TOTP (Time-based One-Time Password) unterstützt.",
-      "totpCodeInstructions": "Danach das generierte Passwort hier eintragen und speichern:"
+      "totpCodeInstructions": "Danach das generierte Passwort hier eintragen und speichern:",
+      "mfaSetupRequired": "Die globalen Richtlinien erfordern die Eintrichtung der Zwei-Faktor-Authentisierungs:",
+      "mfaSetupSuccess": "Die Zwei-Faktor-Authentisierungs wurde erfolgreich eingerichtet."
     },
     "errors": {
       "currentPasswordRequired": "Aktuelles Passwort ist erforderlich",
@@ -1049,7 +1067,10 @@
     "proxyDestinationPlaceholder": "z.B. http://localhost:1234/",
     "stripPrefix": "Prefix entfernen",
     "input": {
-      "dateTimePicker": "Date and Time picker"
+      "dateTimePicker": {
+        "timeSlot": "Uhr",
+        "placeholder": "DD/MM/YYYY HH:mm"
+      }
     }
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
@@ -1290,7 +1311,8 @@
     "imageName": "Image",
     "filterPlaceHolderText": "Suche nach Container-Name",
     "port": "Port",
-    "created": "Erstellt am"
+    "created": "Erstellt am",
+    "container-view": "Container"
   },
   "docker": {
     "error": {
@@ -1322,6 +1344,12 @@
     }
   },
   "veyon": {
+    "lockScreen": "Bildschirm sperren",
+    "unlockScreen": "Bildschirm entsprerren",
+    "lockInputDevices": "Eingabe sperren",
+    "unlockInputDevices": "Eingabe entsprerren",
+    "rebootSystem": "System neu starten",
+    "powerDown": "System herunterfahren",
     "errors": {
       "AppNotProperlyConfigured": "Veyon ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
       "VeyonAuthFailed": "Veyon-Authentifizierung fehlgeschlagen",

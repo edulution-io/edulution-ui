@@ -10,13 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
+const safeGetDate = (dateValue: unknown): Date => (dateValue instanceof Date ? dateValue : new Date());
 
-export interface DropdownOption {
-  name: string;
-  type: TAvailableFileTypes;
-  title: string;
-  icon: React.ElementType;
-  iconColor?: string;
-}
+export default safeGetDate;

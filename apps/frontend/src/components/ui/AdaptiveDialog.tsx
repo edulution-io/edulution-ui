@@ -29,7 +29,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/Dialog';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 
 interface AdaptiveDialogProps {
   isOpen: boolean;
@@ -54,7 +54,7 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
   mobileContentClassName,
   desktopContentClassName,
 }) => {
-  const isMobileView = useIsMobileView();
+  const { isMobileView } = useMedia();
 
   return isMobileView ? (
     <Sheet
