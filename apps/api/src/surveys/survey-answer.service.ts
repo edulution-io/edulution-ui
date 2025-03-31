@@ -263,7 +263,7 @@ class SurveyAnswersService {
     await this.throwErrorIfParticipationIsNotPossible(survey, userName);
 
     const idExistingUsersAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({
-      $and: [{ userName }, { surveyId: new Types.ObjectId(surveyId) }],
+      $and: [{ username: userName }, { surveyId: new Types.ObjectId(surveyId) }],
     });
     if (idExistingUsersAnswer && !canSubmitMultipleAnswers) {
       if (!canUpdateFormerAnswer) {
@@ -284,7 +284,7 @@ class SurveyAnswersService {
     }
 
     const newSurveyAnswer = await this.surveyAnswerModel.create({
-      userName,
+      username: userName,
       surveyId: new Types.ObjectId(surveyId),
       saveNo,
       answer,
@@ -298,7 +298,9 @@ class SurveyAnswersService {
     }
 
     const updateSurvey = await this.surveyModel.findByIdAndUpdate<Survey>(surveyId, {
-      participatedAttendees: userName ? [...survey.participatedAttendees, { userName }] : survey.participatedAttendees,
+      participatedAttendees: userName
+        ? [...survey.participatedAttendees, { username: userName }]
+        : survey.participatedAttendees,
       answers: [...survey.answers, new Types.ObjectId(String(newSurveyAnswer.id))],
     });
     if (updateSurvey == null) {
@@ -308,9 +310,9 @@ class SurveyAnswersService {
     return newSurveyAnswer;
   }
 
-  async getPrivateAnswer(surveyId: string, username: string): Promise<SurveyAnswer> {
+  async getAnswer(surveyId: string, username: string): Promise<SurveyAnswer> {
     const usersSurveyAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({
-      $and: [{ 'attendee.username': username }, { surveyId: new Types.ObjectId(surveyId) }],
+      $and: [{ username }, { surveyId: new Types.ObjectId(surveyId) }],
     });
 
     if (usersSurveyAnswer == null) {
@@ -320,6 +322,16 @@ class SurveyAnswersService {
       );
     }
     return usersSurveyAnswer;
+  }
+
+  async getAnswerPublicParticipation(surveyId: string, username: string): Promise<SurveyAnswer> {
+    if (!publicUserIdRegex.test(username)) {
+      throw new CustomHttpException(
+        SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+    return this.getAnswer(surveyId, username);
   }
 
   async getPublicAnswers(surveyId: string): Promise<JSON[] | null> {

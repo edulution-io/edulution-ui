@@ -78,7 +78,7 @@ class SurveysController {
   @Post(ANSWER)
   async getSubmittedSurveyAnswers(@Body() getAnswerDto: AnswerDto, @GetCurrentUsername() username: string) {
     const { surveyId, attendee } = getAnswerDto;
-    return this.surveyAnswerService.getPrivateAnswer(surveyId, attendee || username);
+    return this.surveyAnswerService.getAnswer(surveyId, attendee || username);
   }
 
   @Post()

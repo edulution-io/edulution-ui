@@ -58,7 +58,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
       if (selectedSurvey.isPublic && !publicParticipationIdLinkedToSurvey) {
         return;
       }
-      void fetchAnswer(selectedSurvey.id, username);
+      void fetchAnswer(selectedSurvey.id, username, !user?.username);
     }
   }, [selectedSurvey, username]);
 

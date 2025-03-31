@@ -10,13 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { AxiosResponse } from 'axios';
 import { t } from 'i18next';
 import { toast } from 'sonner';
 import { create } from 'zustand';
 import { Model, CompletingEvent } from 'survey-core';
 import SurveyAnswerDto from '@libs/survey/types/api/survey-answer.dto';
 import SubmitAnswerDto from '@libs/survey/types/api/submit-answer.dto';
-import { SURVEYS, PUBLIC_SURVEYS, SURVEY_ANSWER_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
+import { SURVEYS, PUBLIC_SURVEYS, ANSWER, SURVEY_ANSWER_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import publicUserIdRegex from '@libs/survey/utils/publicUserIdRegex';
 import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
@@ -24,10 +25,6 @@ import eduApi from '@/api/eduApi';
 interface ParticipateSurveyStore {
   username: string | undefined;
   setUsername: (userinfo: string | undefined) => void;
-  answer: JSON;
-  setAnswer: (answer: JSON) => void;
-  pageNo: number;
-  setPageNo: (pageNo: number) => void;
 
   answerSurvey: (
     answerDto: SubmitAnswerDto,
@@ -36,7 +33,7 @@ interface ParticipateSurveyStore {
   ) => Promise<SurveyAnswerDto | undefined>;
   isSubmitting: boolean;
 
-  fetchAnswer: (surveyId: string, username: string) => Promise<void>;
+  fetchAnswer: (surveyId: string, username: string, isPublic: boolean) => Promise<void>;
   previousAnswer: SurveyAnswerDto | undefined;
   isFetching: boolean;
 
@@ -47,8 +44,6 @@ interface ParticipateSurveyStore {
 
 const ParticipateSurveyStoreInitialState: Partial<ParticipateSurveyStore> = {
   username: undefined,
-  pageNo: 0,
-  answer: {} as JSON,
 
   isSubmitting: false,
 
@@ -63,8 +58,6 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
   reset: () => set(ParticipateSurveyStoreInitialState),
 
   setUsername: (username: string | undefined) => set({ username }),
-  setAnswer: (answer: JSON) => set({ answer }),
-  setPageNo: (pageNo: number) => set({ pageNo }),
 
   answerSurvey: async (
     answerDto: SubmitAnswerDto,
@@ -113,13 +106,17 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
   },
 
-  fetchAnswer: async (surveyId: string, username: string): Promise<void> => {
+  fetchAnswer: async (surveyId: string, username: string, isPublicParticipationId: boolean): Promise<void> => {
     set({ isFetching: true });
     try {
-      const response = await eduApi.post<SurveyAnswerDto>(SURVEY_ANSWER_ENDPOINT, { surveyId, username });
-      const surveyAnswer = response.data;
-      const { answer } = surveyAnswer;
-      set({ answer });
+      let response: AxiosResponse<SurveyAnswerDto> | undefined;
+      if (isPublicParticipationId) {
+        response = await eduApi.get<SurveyAnswerDto>(`${PUBLIC_SURVEYS}/${ANSWER}/${surveyId}/${username}`);
+      } else {
+        response = await eduApi.get<SurveyAnswerDto>(`${SURVEY_ANSWER_ENDPOINT}/${surveyId}/${username}`);
+      }
+      const surveyAnswer: SurveyAnswerDto = response.data;
+      set({ previousAnswer: surveyAnswer });
     } catch (error) {
       set({ previousAnswer: undefined });
       handleApiError(error, set);

@@ -12,7 +12,7 @@
 
 import { ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Get, Post, Param } from '@nestjs/common';
-import { PUBLIC_SURVEYS, RESTFUL_CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import { ANSWER, PUBLIC_SURVEYS, RESTFUL_CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
@@ -38,6 +38,13 @@ class PublicSurveysController {
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto) {
     const { surveyId, saveNo, answer, username, isPublicUserId } = pushAnswerDto;
     return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, username, isPublicUserId);
+  }
+
+  @Get(`${ANSWER}/:surveyId/:username`)
+  @Public()
+  async getSubmittedSurveyAnswers(@Param() params: { surveyId: string; username: string }) {
+    const { surveyId, username } = params;
+    return this.surveyAnswerService.getAnswerPublicParticipation(surveyId, username);
   }
 
   @Get(`${RESTFUL_CHOICES}/:surveyId/:questionId`)
