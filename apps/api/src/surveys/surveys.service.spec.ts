@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-// import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Logger } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
@@ -23,6 +22,8 @@ import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
+import AttachmentService from '../common/file-attachment/attachment.service';
+import mockAttachmentService from '../common/file-attachment/attachment.service.mock';
 
 const mockSseConnections: UserConnections = new Map();
 
@@ -32,7 +33,6 @@ describe('SurveyService', () => {
   beforeEach(async () => {
     Logger.error = jest.fn();
     const module: TestingModule = await Test.createTestingModule({
-      imports: [],
       providers: [
         SurveysService,
         {
@@ -40,6 +40,7 @@ describe('SurveyService', () => {
           useValue: jest.fn(),
         },
         { provide: GroupsService, useValue: mockGroupsService },
+        { provide: AttachmentService, useValue: mockAttachmentService },
         { provide: FilesystemService, useValue: mockFilesystemService },
       ],
     }).compile();
@@ -210,8 +211,11 @@ describe('SurveyService', () => {
     // });
 
     it('should create a survey if the update failed', async () => {
-      jest.spyOn(service, 'updateSurvey').mockResolvedValue(null);
+      jest.spyOn(service, 'updateSurvey').mockResolvedValueOnce(null);
       jest.spyOn(service, 'createSurvey').mockResolvedValue(surveyUpdateUpdatedSurvey);
+      jest.spyOn(service, 'updateImageLinksInSurveyFormula').mockResolvedValue(surveyUpdateUpdatedSurvey.formula);
+      jest.spyOn(service, 'updateSurvey').mockResolvedValueOnce(surveyUpdateUpdatedSurvey);
+      jest.spyOn(service, 'clearTemp').mockImplementation(async (_userId: string) => {});
 
       const result = await service.updateOrCreateSurvey(
         surveyUpdateInitialSurveyDto,

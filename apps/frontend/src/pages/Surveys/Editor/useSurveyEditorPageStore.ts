@@ -17,6 +17,7 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { SURVEY_IMAGES_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import commonErrorMessages from '@libs/common/constants/common-error-messages';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import eduApi, { eduUrl } from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
@@ -100,7 +101,7 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
           const formData = new FormData();
           formData.append('file', file);
           const response = await eduApi.post<string>(`${SURVEY_IMAGES_ENDPOINT}`, formData, {
-            headers: { 'Content-Type': 'multipart/form-data' },
+            headers: { 'Content-Type': RequestResponseContentType.MULTIPART_FORM_DATA },
           });
           if (!response) {
             throw new CustomHttpException(commonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR);

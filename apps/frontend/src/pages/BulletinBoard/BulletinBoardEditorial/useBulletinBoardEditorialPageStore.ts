@@ -24,6 +24,7 @@ import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 
@@ -143,7 +144,7 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
 
     try {
       const response = await eduApi.post<string>(BULLETIN_BOARD_UPLOAD_EDU_API_ENDPOINT, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { 'Content-Type': RequestResponseContentType.MULTIPART_FORM_DATA },
       });
 
       return response.data;

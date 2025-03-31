@@ -307,7 +307,7 @@ class SurveysService implements OnModuleInit {
       throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    void this.attachmentService.clearTEMP(user.preferred_username);
+    void this.clearTemp(user.preferred_username);
 
     return savedSurvey;
   }
@@ -322,6 +322,10 @@ class SurveysService implements OnModuleInit {
   async servePermanentImage(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
     const pathWithIds = join(surveyId, questionId);
     return this.attachmentService.servePersistentAttachment(pathWithIds, fileName, res);
+  }
+
+  async clearTemp(userId: string): Promise<void> {
+    return this.attachmentService.clearTEMP(userId);
   }
 }
 
