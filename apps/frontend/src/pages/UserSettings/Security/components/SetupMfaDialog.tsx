@@ -103,6 +103,7 @@ const SetupMfaDialog: React.FC = () => {
       <p className="mb-3">{t('usersettings.addTotp.totpCodeInstructions')}</p>
       <OtpInput
         totp={totp}
+        variant="dialog"
         setTotp={setTotp}
         onComplete={handleSetMfaEnabled}
       />
