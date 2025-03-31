@@ -533,11 +533,11 @@
       "pleaseEnterYourFullName": "To participate in the survey enter your full name.",
       "yourFullName": "Your name or a previous participation-id",
       "invalidUsername": "Username is invalid (permitted are letters, number, and [. -])",
-      "idHeader": "Your participation ID",
+      "idHeader": "Your participation id",
       "idText": "Pls copy the this id for later participation",
       "idFooter": "In order to overwrite your previous answer, please enter the ID in your next participation.",
-      "idCopySuccess": "ID erfolgreich kopiert",
-      "idCopyError": "ID konnte nicht kopiert werden"
+      "idCopySuccess": "successfully copied the id to the clipboard",
+      "idCopyError": "error copying the id to the clipboard"
     },
     "errors": {
       "submitAnswerError": "Not able to submit the answer.",
