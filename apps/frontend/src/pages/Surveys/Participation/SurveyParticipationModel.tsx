@@ -64,19 +64,19 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
   const { t } = useTranslation();
   const { language } = useLanguage();
 
-  const surveyModel = useMemo(() => {
+  const surveyParticipationModel = useMemo(() => {
     if (!selectedSurvey || !selectedSurvey.formula) {
       return undefined;
     }
-    const surveyParticipationModel = new Model(selectedSurvey.formula);
+    const newModel = new Model(selectedSurvey.formula);
 
-    surveyParticipationModel.applyTheme(surveyTheme);
-    surveyParticipationModel.locale = language;
-    if (surveyParticipationModel.pages.length > 3) {
-      surveyParticipationModel.showProgressBar = 'top';
+    newModel.applyTheme(surveyTheme);
+    newModel.locale = language;
+    if (newModel.pages.length > 3) {
+      newModel.showProgressBar = 'top';
     }
 
-    surveyParticipationModel.onCompleting.add(async (sender, options) => {
+    newModel.onCompleting.add(async (surveyModel, completingEvent) => {
       if (!selectedSurvey.id) {
         throw new Error(SurveyErrorMessages.MISSING_ID_ERROR);
       }
@@ -104,12 +104,12 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         {
           surveyId: selectedSurvey.id,
           saveNo: selectedSurvey.saveNo,
-          answer: surveyParticipationModel.getData() as JSON,
+          answer: surveyModel.getData() as JSON,
           attendee,
           isPublic,
         },
-        sender,
-        options,
+        surveyModel,
+        completingEvent,
       );
 
       if (success) {
@@ -121,20 +121,20 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       }
     });
 
-    return surveyParticipationModel;
+    return newModel;
   }, [selectedSurvey, language]);
 
   useEffect(() => {
-    if (surveyModel && previousAnswer) {
-      surveyModel.data = previousAnswer.answer;
+    if (surveyParticipationModel && previousAnswer) {
+      surveyParticipationModel.data = previousAnswer.answer;
     }
-  }, [surveyModel, previousAnswer]);
+  }, [surveyParticipationModel, previousAnswer]);
 
   if (isFetching) {
     return <LoadingIndicatorDialog isOpen />;
   }
 
-  if (!surveyModel) {
+  if (!surveyParticipationModel) {
     return (
       <div className="relative top-1/3">
         <h4 className="flex justify-center">{t('survey.notFound')}</h4>
@@ -144,7 +144,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
   return (
     <div className={cn('survey-participation')}>
-      <Survey model={surveyModel} />
+      <Survey model={surveyParticipationModel} />
     </div>
   );
 };

@@ -22,6 +22,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveysController from './surveys.controller';
 import SurveysService from './surveys.service';
 import SurveyAnswersService from './survey-answer.service';
@@ -290,13 +291,18 @@ describe(SurveysController.name, () => {
       surveyAnswerModel.findOne = jest.fn().mockResolvedValueOnce(surveyAnswerAnsweredSurvey03);
       surveyAnswerModel.findByIdAndUpdate = jest.fn().mockReturnValue(updatedSurveyAnswerAnsweredSurvey03);
 
+      const attendee = {
+        username: firstMockJWTUser.preferred_username,
+        firstName: firstMockJWTUser.given_name,
+        lastName: firstMockJWTUser.family_name,
+      } as AttendeeDto;
+
       await controller.answerSurvey(
         {
           surveyId: idOfAnsweredSurvey01.toString(),
           saveNo: saveNoAnsweredSurvey01,
           answer: firstUsersMockedAnswerForAnsweredSurveys01,
-          username: firstMockUser.username,
-          isPublicUserId: false,
+          attendee,
         },
         firstMockJWTUser,
       );
@@ -305,8 +311,7 @@ describe(SurveysController.name, () => {
         idOfAnsweredSurvey01.toString(),
         saveNoAnsweredSurvey01,
         firstUsersMockedAnswerForAnsweredSurveys01,
-        firstMockJWTUser.preferred_username,
-        false,
+        attendee,
       );
     });
   });
