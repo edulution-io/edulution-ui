@@ -177,7 +177,6 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
       }
       body={getDialogBody()}
       footer={getFooter()}
-      mobileContentClassName="bg-background h-fit h-max-1/2"
     />
   );
 };

@@ -407,11 +407,11 @@
     "member": "Mitglied",
     "noneAvailable": "Keine vorhanden",
     "isJoinable": "Nutzer können beitreten",
-    "joinclass": "Klasse betreten zum Dateien teilen",
+    "joinclass": "Klasse beitreten",
     "hide": "Anderen Nutzern nicht anzeigen",
     "typeToSearchUsersGroupsProjects": "Tippen um Schüler, Klassen oder Projekte hinzuzufügen",
     "typeToSearchUsersGroupsProjectsToNewSession": "Tippen um Schüler, Klassen oder Projekte zu einer neuen Sitzung hinzuzufügen",
-    "itsNotPossibleToEditOtherTeacher": "Im Moment ist es nicht möglich, das Verzeichnis für das Teilen im Home-Verzeichnis eines anderen Lehrers zu erstellen, oder die Verwaltungsgruppen zu ändern.",
+    "itsNotPossibleToEditExternalStudents": "Es ist nicht möglich Schüler anderer Klassen zu steuern. Bitte treten Sie der Klasse des Schülers bei.",
     "itsNotPossibleToEditOtherSchoolStudents": "Im Moment ist es nicht möglich, das Verzeichnis für das Teilen im Home-Verzeichnis eines Schülers einer anderen Schule zu erstellen oder, die Verwaltungsgruppen zu ändern.",
     "usersInThisSession": "Nutzer in dieser Sitzung",
     "webfilter": "Web Filter",
@@ -1047,7 +1047,10 @@
     "proxyDestinationPlaceholder": "z.B. http://localhost:1234/",
     "stripPrefix": "Prefix entfernen",
     "input": {
-      "dateTimePicker": "Date and Time picker"
+      "dateTimePicker": {
+        "timeSlot": "Uhr",
+        "placeholder": "DD/MM/YYYY HH:mm"
+      }
     }
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
@@ -1320,6 +1323,12 @@
     }
   },
   "veyon": {
+    "lockScreen": "Bildschirm sperren",
+    "unlockScreen": "Bildschirm entsprerren",
+    "lockInputDevices": "Eingabe sperren",
+    "unlockInputDevices": "Eingabe entsprerren",
+    "rebootSystem": "System neu starten",
+    "powerDown": "System herunterfahren",
     "errors": {
       "AppNotProperlyConfigured": "Veyon ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
       "VeyonAuthFailed": "Veyon-Authentifizierung fehlgeschlagen",

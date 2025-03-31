@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import APPS from '@libs/appconfig/constants/apps';
 import { Card } from '@/components/shared/Card';
-import { DropdownMenuItemType } from '@libs/ui/types/dropdownMenuItemType';
+import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
 import { useNavigate } from 'react-router-dom';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
