@@ -40,24 +40,21 @@ class DeleteFileConsumer extends WorkerHost {
       failedPaths.push(originFilePath);
     }
 
-    if (total > 2) {
-      const percent = Math.round((processed / total) * 100);
+    const percent = Math.round((processed / total) * 100);
 
-      const progressDto: FilesharingProgressDto = {
-        processID: Number(job.id),
-        title: 'filesharing.progressBox.titleDeleting',
-        description: 'filesharing.progressBox.fileInfoDeleting',
-        statusDescription: 'filesharing.progressBox.processedDeletingInfo',
-        processed,
-        total,
-        percent,
-        currentFilePath: originFilePath,
-        studentName: '',
-        failedPaths,
-      };
-
-      SseService.sendEventToUser(username, this.fileDeletingSseConnections, progressDto, SSE_MESSAGE_TYPE.UPDATED);
-    }
+    const progressDto: FilesharingProgressDto = {
+      processID: Number(job.id),
+      title: 'filesharing.progressBox.titleDeleting',
+      description: 'filesharing.progressBox.fileInfoDeleting',
+      statusDescription: 'filesharing.progressBox.processedDeletingInfo',
+      processed,
+      total,
+      percent,
+      currentFilePath: originFilePath,
+      studentName: '',
+      failedPaths,
+    };
+    SseService.sendEventToUser(username, this.fileDeletingSseConnections, progressDto, SSE_MESSAGE_TYPE.UPDATED);
   }
 }
 

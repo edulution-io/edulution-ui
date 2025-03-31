@@ -20,13 +20,9 @@ import FileSharingTable from '@/pages/FileSharing/Table/FileSharingTable';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import FILE_PREVIEW_ELEMENT_ID from '@libs/filesharing/constants/filePreviewElementId';
-import { toast } from 'sonner';
-import ProgressBox from '@/components/ui/ProgressBox';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import { useTranslation } from 'react-i18next';
 
 const FileSharingPage = () => {
-  const { t } = useTranslation();
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const { fileOperationProgress, fetchFiles } = useFileSharingStore();
@@ -34,36 +30,10 @@ const FileSharingPage = () => {
   useEffect(() => {
     const handleFileOperationProgress = async () => {
       if (!fileOperationProgress) return;
-
       const percent = fileOperationProgress.percent ?? 0;
-      const toasterData = {
-        percent,
-        title: t(fileOperationProgress.title),
-        id: fileOperationProgress.currentFilePath,
-        description: t(fileOperationProgress.description, {
-          filename: fileOperationProgress.currentFilePath.split('/').pop(),
-          studentName: fileOperationProgress.studentName,
-        }),
-        statusDescription: fileOperationProgress.statusDescription,
-        failed: fileOperationProgress.failedPaths?.length || 0,
-        processed: fileOperationProgress.processed,
-        total: fileOperationProgress.total,
-      };
-
-      let toastDuration;
-      if (toasterData.failed > 0) {
-        toastDuration = Infinity;
-      } else if (percent >= 100) {
+      if (percent >= 100) {
         await fetchFiles(currentPath);
-        toastDuration = 5000;
-      } else {
-        toastDuration = Infinity;
       }
-
-      toast(<ProgressBox data={toasterData} />, {
-        id: toasterData.title,
-        duration: toastDuration,
-      });
     };
 
     void handleFileOperationProgress();

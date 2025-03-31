@@ -34,8 +34,6 @@ import GroupColumn from '@libs/groups/types/groupColumn';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import SharingFilesFailedDialogBody from '@/pages/ClassManagement/components/Dialogs/SharingFilesFailedDialogBody';
-import { toast } from 'sonner';
-import ProgressBox from '@/components/ui/ProgressBox';
 
 const LessonPage = () => {
   const {
@@ -71,39 +69,6 @@ const LessonPage = () => {
   const [currentSelectedSession, setCurrentSelectedSession] = useState<LmnApiSession | null>(null);
 
   const [isFileSharingProgessInfoDialogOpen, setIsFileSharingProgessInfoDialogOpen] = useState(false);
-
-  useEffect(() => {
-    if (!filesharingProgress) return;
-
-    const percent = filesharingProgress.percent ?? 0;
-    const toasterData = {
-      percent,
-      title: t(filesharingProgress.title),
-      id: filesharingProgress.currentFilePath,
-      description: t(filesharingProgress.description, {
-        filename: filesharingProgress.currentFilePath.split('/').pop(),
-        studentName: filesharingProgress.studentName,
-      }),
-      statusDescription: filesharingProgress.statusDescription,
-      failed: filesharingProgress.failedPaths?.length || 0,
-      processed: filesharingProgress.processed,
-      total: filesharingProgress.total,
-    };
-
-    let toastDuration: number;
-    if (toasterData.failed > 0) {
-      toastDuration = Infinity;
-    } else if (percent >= 100) {
-      toastDuration = 5000;
-    } else {
-      toastDuration = Infinity;
-    }
-
-    toast(<ProgressBox data={toasterData} />, {
-      id: toasterData.id,
-      duration: toastDuration,
-    });
-  }, [filesharingProgress]);
 
   useEffect(() => {
     if (lmnApiToken) {
