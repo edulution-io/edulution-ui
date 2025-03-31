@@ -334,7 +334,7 @@ class WebDavService {
   ): Promise<WebdavStatusResponse> {
     await WebDavService.createCollectFolderIfNotExists(username, originFullPath);
     await WebDavService.moveOrRenameResource(username, originFullPath, newFullPath);
-    return WebDavService.createFolder(username, originFullPath, FILE_PATHS.COLLECT);
+    return WebDavService.createFolder(username, originFullPath.replace(FILE_PATHS.COLLECT, ''), FILE_PATHS.COLLECT);
   }
 
   public static async copyCollectedItems(
