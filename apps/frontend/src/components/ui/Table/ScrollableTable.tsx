@@ -74,7 +74,7 @@ const ScrollableTable = <TData, TValue>({
   enableRowSelection,
   initialSorting,
   tableIsUsedOnAppConfigPage = false,
-  textColorClassname = 'text-muted-foreground',
+  textColorClassname = 'text-background',
   showHeader = true,
   showSelectedCount = true,
   isDialog = false,

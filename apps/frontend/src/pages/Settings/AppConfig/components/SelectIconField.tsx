@@ -93,7 +93,7 @@ const SelectIconField = ({ form }: { form: UseFormReturn<{ customAppName: string
     <div>
       <p className="mb-1 font-bold">{t('appstore.chooseIcon')}</p>
       <Card
-        className="flex flex-wrap gap-4 p-3"
+        className="flex flex-wrap gap-4 bg-muted p-3"
         variant="text"
       >
         {iconsList.map((icon) => {

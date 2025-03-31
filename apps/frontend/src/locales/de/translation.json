@@ -735,6 +735,21 @@
       "whiteboard": "Hier kannst du alle Einstellungen vornehmen.",
       "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Schwarzes Brett haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden."
     },
+    "globalSettings": {
+      "title": "Globale Einstellungen",
+      "security": "Sicherheit",
+      "multiFactorAuthentication": "Zwei-Faktor-Authentisierung",
+      "description": "Hier kann festgelegt werden, für welche Nutzergruppen die Zwei-Faktor-Authentisierung erzwungen werden soll.",
+      "selectUserGroups": "Nutzergruppen auswählen, für welche das MFA-Setup erzwungen wird.",
+      "updateSuccessful": "Einstellung erfolgreich aktualisiert.",
+      "errors": {
+        "updateError": "Einstellungen konnten nicht aktualisiert werden.",
+        "notFoundError": "Einstellungen konnten nicht geladen werden."
+      }
+    },
+    "info": {
+      "title": "Info"
+    },
     "appconfig": {
       "sections": {
         "onlyOffice": {
@@ -883,7 +898,9 @@
     "addTotp": {
       "title": "Zwei-Faktor-Authentisierung einrichten",
       "qrCodeInstructions": "Den QR-Code mit einer Authenticator App scannen, die TOTP (Time-based One-Time Password) unterstützt.",
-      "totpCodeInstructions": "Danach das generierte Passwort hier eintragen und speichern:"
+      "totpCodeInstructions": "Danach das generierte Passwort hier eintragen und speichern:",
+      "mfaSetupRequired": "Die globalen Richtlinien erfordern die Eintrichtung der Zwei-Faktor-Authentisierungs:",
+      "mfaSetupSuccess": "Die Zwei-Faktor-Authentisierungs wurde erfolgreich eingerichtet."
     },
     "errors": {
       "currentPasswordRequired": "Aktuelles Passwort ist erforderlich",
@@ -1291,7 +1308,8 @@
     "imageName": "Image",
     "filterPlaceHolderText": "Suche nach Container-Name",
     "port": "Port",
-    "created": "Erstellt am"
+    "created": "Erstellt am",
+    "container-view": "Container"
   },
   "docker": {
     "error": {

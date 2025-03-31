@@ -11,11 +11,13 @@
  */
 
 import React, { lazy, Suspense } from 'react';
-import { Outlet, Route } from 'react-router-dom';
+import { Navigate, Outlet, Route } from 'react-router-dom';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import AppStorePage from '@/pages/Settings/AppConfig/appStore/AppStorePage';
 import APPS from '@libs/appconfig/constants/apps';
+import CONTAINER from '@libs/docker/constants/container';
+import { TABS } from '@libs/common/constants/pageElementIds';
 
 const SettingsPage = lazy(() => import('@/pages/Settings/SettingsPage'));
 
@@ -33,12 +35,32 @@ const getSettingsRoutes = () => [
   >
     <Route
       index
-      element={getLazySettingsPage()}
+      element={
+        <Navigate
+          to={`${TABS}/${CONTAINER}`}
+          replace
+        />
+      }
     />
     <Route
       path={APPS.APPSTORE}
       element={<AppStorePage />}
     />
+    <Route path={TABS}>
+      <Route
+        path=""
+        element={
+          <Navigate
+            to={CONTAINER}
+            replace
+          />
+        }
+      />
+      <Route
+        path=":tabId"
+        element={getLazySettingsPage()}
+      />
+    </Route>
     <Route
       path=":settingLocation"
       element={getLazySettingsPage()}
