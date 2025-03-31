@@ -15,11 +15,12 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from '../ui/InputOtp';
 
 type OtpInputProps = {
   totp: string;
+  variant?: 'default' | 'dialog';
   setTotp: (value: string) => void;
   onComplete?: () => void;
 };
 
-const OtpInput: React.FC<OtpInputProps> = ({ totp, setTotp, onComplete }) => (
+const OtpInput: React.FC<OtpInputProps> = ({ totp, variant = 'default', setTotp, onComplete }) => (
   <div className="mb-3 flex flex-col items-center">
     <InputOTP
       maxLength={6}
@@ -28,12 +29,30 @@ const OtpInput: React.FC<OtpInputProps> = ({ totp, setTotp, onComplete }) => (
       onComplete={onComplete ? () => onComplete() : undefined}
     >
       <InputOTPGroup>
-        <InputOTPSlot index={0} />
-        <InputOTPSlot index={1} />
-        <InputOTPSlot index={2} />
-        <InputOTPSlot index={3} />
-        <InputOTPSlot index={4} />
-        <InputOTPSlot index={5} />
+        <InputOTPSlot
+          variant={variant}
+          index={0}
+        />
+        <InputOTPSlot
+          variant={variant}
+          index={1}
+        />
+        <InputOTPSlot
+          variant={variant}
+          index={2}
+        />
+        <InputOTPSlot
+          variant={variant}
+          index={3}
+        />
+        <InputOTPSlot
+          variant={variant}
+          index={4}
+        />
+        <InputOTPSlot
+          variant={variant}
+          index={5}
+        />
       </InputOTPGroup>
     </InputOTP>
   </div>

@@ -10,5 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const EDU_API_DOCKER_ENDPOINT = 'docker';
-export const EDU_API_DOCKER_CONTAINER_ENDPOINT = 'containers';
+import { ValidateNested } from 'class-validator';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+
+type GlobalSettingsAuth = {
+  mfaEnforcedGroups: MultipleSelectorGroup[];
+};
+
+class GlobalSettingsDto {
+  @ValidateNested()
+  auth: GlobalSettingsAuth;
+}
+
+export default GlobalSettingsDto;
