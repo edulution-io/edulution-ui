@@ -233,7 +233,6 @@
     "changeUser": "Change user",
     "joinAgain": "Join again",
     "passwordOfConference": "Password of conference",
-    "orContinueWithoutAccount": "Or continue without account",
     "conferenceIsNotStartedYet": "The conference was not started. Currently you are in the waiting room and you will be automatically redirected once the conference starts.",
     "conferenceIsPasswordProtected": "This conference is password protected, please enter it to join.",
     "pleaseEnterYourFullName": "To join the conference enter your full name.",
@@ -530,22 +529,15 @@
     },
     "participate": {
       "saveAnswerSuccess": "Saved the answer.",
-      "enterUserInfo": "Please enter your information",
       "username": "User name",
-      "usernameTollTip": "You will receive a user name after participating",
-      "firstName": "First name",
-      "lastName": "Last name",
-      "saveUserInfo": "Next",
-      "orContinueWithoutAccount": "Or continue without account",
       "pleaseEnterYourFullName": "To participate in the survey enter your full name.",
-      "yourFullName": "Either enter your name or the Id of a previous participation",
-      "invalidUsername": "Username is invalid (permitted are letters, number, and [. - _])",
-      "idHeader": "Your participation Id",
+      "yourFullName": "Your name or a previous participation-id",
+      "invalidUsername": "Username is invalid (permitted are letters, number, and [. -])",
+      "idHeader": "Your participation ID",
       "idText": "Pls copy the this id for later participation",
       "idFooter": "In order to overwrite your previous answer, please enter the ID in your next participation.",
       "idCopySuccess": "ID erfolgreich kopiert",
-      "idCopyError": "ID konnte nicht kopiert werden",
-      "idTimer": "Auto refresh in {{time}}s"
+      "idCopyError": "ID konnte nicht kopiert werden"
     },
     "errors": {
       "submitAnswerError": "Not able to submit the answer.",
@@ -559,7 +551,7 @@
       "participationErrorUserNotAssigned": "User is no participant of the survey.",
       "participationErrorAlreadyParticipated": "User has already participated in the survey.",
       "participationErrorSurveyExpired": "Survey has already expired.",
-      "missingIdError": "Missing survey id.",
+      "missingIdError": "Missing survey ID.",
       "missingAnswerError": "Please provide an answer before submitting."
     }
   },
@@ -1040,7 +1032,8 @@
     "invalid_fqdn": "Invalid FQDN. Please only enter the hostname.",
     "required": "Required",
     "download": "Download",
-    "template": "Template"
+    "template": "Template",
+    "orContinueWithoutAccount": "Or continue without account"
   },
   "form": {
     "path": "Path",

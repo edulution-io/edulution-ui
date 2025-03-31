@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const createValidPublicUserId = (username: string, answerId: string): string => `public_-_${username}_-_${answerId}`;
+const createValidPublicUserId = (username: string, answerId: string): string => `public_${username}_${answerId}`;
 
 export default createValidPublicUserId;

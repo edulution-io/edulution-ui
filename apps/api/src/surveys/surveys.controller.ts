@@ -96,7 +96,12 @@ class SurveysController {
   @Patch()
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUser() currentUser: JWTUser) {
     const { surveyId, saveNo, answer } = pushAnswerDto;
-    return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, currentUser.preferred_username, false);
+    const attendee = {
+      username: currentUser.preferred_username,
+      firstName: currentUser.given_name,
+      lastName: currentUser.family_name,
+    };
+    return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, attendee);
   }
 
   @Sse('sse')

@@ -36,8 +36,8 @@ class PublicSurveysController {
   @Post()
   @Public()
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto) {
-    const { surveyId, saveNo, answer, username, isPublicUserId } = pushAnswerDto;
-    return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, username, isPublicUserId);
+    const { surveyId, saveNo, answer, attendee } = pushAnswerDto;
+    return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, attendee);
   }
 
   @Get(`${ANSWER}/:surveyId/:username`)

@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const publicUsernameRegex = /([a-zA-Z0-9._-])/;
+const publicUsernameRegex = /([a-zA-Z0-9.-])/;
 
 export default publicUsernameRegex;

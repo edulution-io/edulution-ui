@@ -10,6 +10,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const publicUserIdRegex = /(public_+[a-zA-Z0-9.-]+_+[a-z0-9])/;
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/shared/Button';
 
-export default publicUserIdRegex;
+const PublicJoinButton = () => {
+  const { t } = useTranslation();
+
+  return (
+    <div className="mb-2 mt-4 flex justify-end">
+      <Button
+        variant="btn-collaboration"
+        size="lg"
+        type="submit"
+      >
+        {t('common.join')}
+      </Button>
+    </div>
+  );
+};
+
+export default PublicJoinButton;

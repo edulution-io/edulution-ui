@@ -13,13 +13,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
-import { useLocation, useNavigate } from 'react-router-dom';
 import publicUsernameRegex from '@libs/survey/utils/publicUsernameRegex';
 import useUserStore from '@/store/UserStore/UserStore';
-import { Button } from '@/components/shared/Button';
 import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
 import publicUserIdRegex from '@libs/survey/utils/publicUserIdRegex';
+import PublicLoginButton from '@/pages/ConferencePage/PublicConference/PublicLoginButton';
+import PublicJoinButton from '@/pages/ConferencePage/PublicConference/PublicJoinButton';
 
 interface PublicSurveyAccessFormProps {
   form: UseFormReturn<{ username: string }>;
@@ -35,35 +35,11 @@ const PublicSurveyAccessForm = ({
   accessSurvey,
 }: PublicSurveyAccessFormProps) => {
   const { t } = useTranslation();
-  const location = useLocation();
-  const navigate = useNavigate();
   const { user } = useUserStore();
 
   return (
     <div className="mx-auto my-10 w-[90%] rounded-xl bg-white bg-opacity-5 p-5 md:w-[400px]">
-      {!publicUserFullName && !user?.username && (
-        <div>
-          <Button
-            className="mx-auto mt-5 w-[200px] justify-center text-background shadow-xl"
-            type="submit"
-            variant="btn-security"
-            size="lg"
-            data-testid="test-id-login-page-submit-button"
-            onClick={() =>
-              navigate('/login', {
-                state: { from: location.pathname },
-              })
-            }
-          >
-            {t('common.toLogin')}
-          </Button>
-          <div className="mb-6 mt-6 flex items-center">
-            <hr className="flex-grow border-t border-gray-300" />
-            <span className="mx-4">{t('survey.participate.orContinueWithoutAccount')}</span>
-            <hr className="flex-grow border-t border-gray-300" />
-          </div>
-        </div>
-      )}
+      <PublicLoginButton />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(accessSurvey)}>
           {!user?.username && (
@@ -94,15 +70,7 @@ const PublicSurveyAccessForm = ({
               />
             </div>
           )}
-          <div className="mb-2 mt-8 flex justify-end">
-            <Button
-              variant="btn-collaboration"
-              size="lg"
-              type="submit"
-            >
-              {t('common.join')}
-            </Button>
-          </div>
+          <PublicJoinButton />
         </form>
       </Form>
     </div>

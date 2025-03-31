@@ -20,6 +20,8 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SubmitAnswerDto from '@libs/survey/types/api/submit-answer.dto';
 import SurveyAnswerDto from '@libs/survey/types/api/survey-answer.dto';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import UserDto from '@libs/user/types/user.dto';
 import useLanguage from '@/hooks/useLanguage';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
@@ -28,9 +30,9 @@ import 'survey-core/i18n/french';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
 
-interface SurveyParticipationBodyProps {
+interface SurveyParticipationModelProps {
   username: string;
-  isPublicUserId: boolean;
+  user: UserDto | null;
   isPublic: boolean;
   selectedSurvey: SurveyDto | undefined;
   answerSurvey: (
@@ -46,10 +48,10 @@ interface SurveyParticipationBodyProps {
 
 Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
 
-const SurveyParticipationBody = (props: SurveyParticipationBodyProps): React.ReactNode => {
+const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.ReactNode => {
   const {
+    user,
     username,
-    isPublicUserId,
     isPublic,
     selectedSurvey,
     previousAnswer,
@@ -78,13 +80,32 @@ const SurveyParticipationBody = (props: SurveyParticipationBodyProps): React.Rea
       if (!selectedSurvey.id) {
         throw new Error(SurveyErrorMessages.MISSING_ID_ERROR);
       }
+
+      let attendee: AttendeeDto;
+      if (user !== null) {
+        attendee = {
+          username: user.username,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          label: user.username,
+          value: user.username,
+        };
+      } else {
+        attendee = {
+          username: username,
+          firstName: undefined,
+          lastName: undefined,
+          label: username,
+          value: username,
+        };
+      }
+
       const success = await answerSurvey(
         {
           surveyId: selectedSurvey.id,
           saveNo: selectedSurvey.saveNo,
           answer: surveyParticipationModel.getData() as JSON,
-          username,
-          isPublicUserId,
+          attendee,
           isPublic,
         },
         sender,
@@ -128,4 +149,4 @@ const SurveyParticipationBody = (props: SurveyParticipationBodyProps): React.Rea
   );
 };
 
-export default SurveyParticipationBody;
+export default SurveyParticipationModel;

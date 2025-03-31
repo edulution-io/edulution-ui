@@ -15,6 +15,7 @@ import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 
 interface SubmitAnswerDto extends PushAnswerDto {
   isPublic: boolean;
+
   surveyEditorCallbackOnSave?: CompleteEvent | undefined;
 }
 

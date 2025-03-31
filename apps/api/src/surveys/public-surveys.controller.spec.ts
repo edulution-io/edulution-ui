@@ -111,7 +111,7 @@ describe(PublicSurveysController.name, () => {
   });
 
   describe('answerSurvey', () => {
-    it('should call the addAnswerToPublicSurvey() function of the surveyAnswerService I', async () => {
+    it('should call the addAnswerToPublicSurvey() function of the surveyAnswerService', async () => {
       jest.spyOn(surveyAnswerService, 'addAnswer');
 
       surveyAnswerModel.findOne = jest.fn().mockResolvedValueOnce(null);
@@ -129,47 +129,14 @@ describe(PublicSurveysController.name, () => {
         surveyId: idOfPublicSurvey02.toString(),
         saveNo: saveNoPublicSurvey02,
         answer: mockedValidAnswerForPublicSurveys02,
-        username: firstMockUser.username,
-        isPublicUserId: false,
+        attendee: firstMockUser,
       });
 
       expect(surveyAnswerService.addAnswer).toHaveBeenCalledWith(
         idOfPublicSurvey02.toString(),
         saveNoPublicSurvey02,
         mockedValidAnswerForPublicSurveys02,
-        firstMockUser.username,
-        false,
-      );
-    });
-
-    it('should call the addAnswerToPublicSurvey() function of the surveyAnswerService II', async () => {
-      jest.spyOn(surveyAnswerService, 'addAnswer');
-
-      surveyAnswerModel.findOne = jest.fn().mockResolvedValueOnce(null);
-      surveyModel.findById = jest.fn().mockResolvedValueOnce(publicSurvey02);
-
-      surveyAnswerModel.create = jest.fn().mockResolvedValueOnce(surveyValidAnswerPublicSurvey02);
-
-      surveyAnswerModel.findByIdAndUpdate = jest.fn().mockReturnValue({
-        lean: jest.fn().mockResolvedValue(surveyValidAnswerPublicSurvey02),
-      });
-
-      surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue(publicSurvey02AfterAddingValidAnswer);
-
-      await controller.answerSurvey({
-        surveyId: idOfPublicSurvey02.toString(),
-        saveNo: saveNoPublicSurvey02,
-        answer: mockedValidAnswerForPublicSurveys02,
-        username: firstMockUser.username,
-        isPublicUserId: true,
-      });
-
-      expect(surveyAnswerService.addAnswer).toHaveBeenCalledWith(
-        idOfPublicSurvey02.toString(),
-        saveNoPublicSurvey02,
-        mockedValidAnswerForPublicSurveys02,
-        firstMockUser.username,
-        true,
+        firstMockUser,
       );
     });
 

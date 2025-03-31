@@ -61,10 +61,10 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
 
   answerSurvey: async (
     answerDto: SubmitAnswerDto,
-    sender: Model,
-    options: CompletingEvent,
+    surveyModel: Model,
+    completingEvent: CompletingEvent,
   ): Promise<SurveyAnswerDto | undefined> => {
-    const { surveyId, saveNo, answer, isPublic = false, username, isPublicUserId } = answerDto;
+    const { surveyId, saveNo, answer, isPublic = false, attendee } = answerDto;
 
     const { isSubmitting } = get();
     if (isSubmitting) {
@@ -73,7 +73,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     set({ isSubmitting: true });
 
     // eslint-disable-next-line no-param-reassign
-    options.allow = false;
+    completingEvent.allow = false;
 
     const targetUrl = isPublic ? PUBLIC_SURVEYS : SURVEYS;
     try {
@@ -81,17 +81,16 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
         surveyId,
         saveNo,
         answer,
-        username,
-        isPublicUserId,
+        attendee,
       });
 
       // eslint-disable-next-line no-param-reassign
-      options.allow = true;
-      sender.doComplete();
+      completingEvent.allow = true;
+      surveyModel.doComplete();
 
       const surveyAnswer = response.data;
-      const publicUserId = surveyAnswer.username;
-      if (isPublicUserId && publicUserIdRegex.test(publicUserId)) {
+      const publicUserId = surveyAnswer.attendee?.username;
+      if (isPublic && publicUserIdRegex.test(publicUserId)) {
         set({ publicUserId });
       }
 

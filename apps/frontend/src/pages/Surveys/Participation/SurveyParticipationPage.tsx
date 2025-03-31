@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 import useUserStore from '@/store/UserStore/UserStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import SurveyParticipationBody from '@/pages/Surveys/Participation/SurveyParticipationBody';
+import SurveyParticipationModel from '@/pages/Surveys/Participation/SurveyParticipationModel';
 import PublicSurveyAccessForm from '@/pages/Surveys/Participation/PublicSurveyAccessForm';
 import PublicSurveyParticipationId from '@/pages/Surveys/Participation/PublicSurveyParticipationId';
 import '../theme/custom.participation.css';
@@ -46,9 +46,16 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
     void fetchSelectedSurvey(surveyId, isPublic);
   }, [surveyId]);
 
+  const form = useForm<{ username: string }>();
+
   useEffect(() => {
     if (user) {
       setUsername(user.username);
+    }
+    if (user === null) {
+      reset();
+      form.reset();
+      void fetchSelectedSurvey(surveyId, isPublic);
     }
   }, [user]);
 
@@ -62,17 +69,6 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
     }
   }, [selectedSurvey, username]);
 
-  const form = useForm<{ username: string }>();
-
-  useEffect(() => {
-    if (publicUserId) {
-      setTimeout(() => {
-        reset();
-        form.reset();
-      }, 60000);
-    }
-  }, [publicUserId]);
-
   const handleAccessSurvey = () => {
     if (user) {
       setUsername(user.username);
@@ -81,18 +77,10 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
     }
   };
 
-  const handleReset = () => {
-    reset();
-    form.reset();
-  };
-
   if (publicUserId) {
     return (
       <div className="relative top-1/4">
-        <PublicSurveyParticipationId
-          publicParticipationId={publicUserId}
-          reset={handleReset}
-        />
+        <PublicSurveyParticipationId publicParticipationId={publicUserId} />
       </div>
     );
   }
@@ -119,9 +107,9 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
   }
 
   return (
-    <SurveyParticipationBody
+    <SurveyParticipationModel
+      user={user}
       username={user?.username || form.watch('username')}
-      isPublicUserId={!user}
       isPublic={isPublic}
       selectedSurvey={selectedSurvey}
       previousAnswer={previousAnswer}

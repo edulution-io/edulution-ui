@@ -232,7 +232,6 @@
     "changeUser": "Benutzer wechseln",
     "joinAgain": "Erneut teilnehmen",
     "passwordOfConference": "Passwort der Konferenz",
-    "orContinueWithoutAccount": "Oder fahre ohne Account fort",
     "conferenceIsNotStartedYet": "Die Konferenz wurde noch nicht gestartet. Du befindest dich derzeit im Warteraum und wirst automatisch weitergeleitet, sobald die Konferenz beginnt.",
     "conferenceIsPasswordProtected": "Diese Konferenz ist passwortgeschützt. Bitte gib das Passwort ein, um teilzunehmen.",
     "pleaseEnterYourFullName": "Gib deinen vollständigen Namen ein, um der Konferenz beizutreten.",
@@ -532,22 +531,15 @@
     },
     "participate": {
       "saveAnswerSuccess": "Die Antwort wurde gespeichert.",
-      "enterUserInfo": "Bitte gib deinen Namen und deine E-Mail-Adresse ein.",
       "username": "Benutzername",
-      "usernameTollTip": "Du bekommst den Benutzernamen nach der Teilnahme",
-      "firstName": "Vorname",
-      "lastName": "Nachname",
-      "saveUserInfo": "Weiter",
-      "orContinueWithoutAccount": "Oder fahre ohne Account fort",
       "pleaseEnterYourFullName": "Gib deinen vollständigen Namen ein, um an der Umfrage teilzunehmen.",
-      "yourFullName": "Dein Name oder die Id deiner vorherigen Teilnahme",
-      "invalidUsername": "Benutzername ist ungültig (erlaubt sind Buchstaben, Zahlen und [. - _])",
+      "yourFullName": "Dein Name oder Teilnehmer-ID",
+      "invalidUsername": "Benutzername ist ungültig (erlaubt sind Buchstaben, Zahlen und [. -])",
       "idHeader": "Deine Teilnahme-ID",
-      "idText": "Bitte notiere dir die folgende Id.",
-      "idFooter": "Um die vorherige Antwort zu überschreiben musst du dich bei der nächsten Teilnahme mit der Id anmelden.",
+      "idText": "Bitte notiere dir die folgende ID.",
+      "idFooter": "Um die vorherige Antwort zu überschreiben musst du dich bei der nächsten Teilnahme mit der ID anmelden.",
       "idCopySuccess": "ID erfolgreich kopiert",
-      "idCopyError": "ID konnte nicht kopiert werden",
-      "idTimer": "Lädt in {{time}}s automatisch neu"
+      "idCopyError": "ID konnte nicht kopiert werden"
     },
     "errors": {
       "submitAnswerError": "Die Antwort konnte nicht gespeichert werden.",
@@ -1041,7 +1033,8 @@
     "invalid_fqdn": "Ungültiger FQDN. Bitte nur den Hostnamen angeben.",
     "required": "Erforderlich",
     "download": "Herunterladen",
-    "template": "Vorlage"
+    "template": "Vorlage",
+    "orContinueWithoutAccount": "Oder fahre ohne Account fort"
   },
   "form": {
     "path": "Link",
