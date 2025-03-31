@@ -59,7 +59,7 @@ const useGlobalSettingsApiStore = create<GlobalSettingsStore>(
           });
 
           if (data) {
-            set({ globalSettings: { ...data } });
+            set({ globalSettings: data });
             return data;
           }
 

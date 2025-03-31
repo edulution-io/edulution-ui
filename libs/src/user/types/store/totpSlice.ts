@@ -11,7 +11,7 @@
  */
 
 type TotpSlice = {
-  setupTotp: (totp: string, totpSecret: string) => Promise<void>;
+  setupTotp: (totp: string, totpSecret: string) => Promise<boolean>;
   getTotpStatus: (username: string) => Promise<boolean>;
   disableTotp: () => Promise<void>;
   isSetTotpDialogOpen: boolean;

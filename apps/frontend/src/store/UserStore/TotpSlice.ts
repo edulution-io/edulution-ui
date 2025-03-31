@@ -37,8 +37,10 @@ const createTotpSlice: StateCreator<UserStore, [], [], TotpSlice> = (set) => ({
         secret,
       });
       set({ user: { ...data } });
+      return true;
     } catch (e) {
       handleApiError(e, set);
+      return false;
     } finally {
       set({ totpIsLoading: false });
     }

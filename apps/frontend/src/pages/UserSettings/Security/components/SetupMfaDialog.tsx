@@ -13,6 +13,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
+import { toast } from 'sonner';
 import useUserStore from '@/store/UserStore/UserStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { Button } from '@/components/shared/Button';
@@ -72,11 +73,10 @@ const SetupMfaDialog: React.FC = () => {
   };
 
   const handleSetMfaEnabled = async () => {
-    try {
-      await setupTotp(totp, getTotpSecret());
-    } catch (error) {
-      console.error(error);
-    } finally {
+    const setTotpSuccessful = await setupTotp(totp, getTotpSecret());
+
+    if (setTotpSuccessful) {
+      toast.success(t('usersettings.addTotp.mfaSetupSuccess'));
       handleOpenChange();
     }
   };

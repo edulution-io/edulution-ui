@@ -738,8 +738,8 @@
     "globalSettings": {
       "title": "Globale Einstellungen",
       "security": "Sicherheit",
-      "multiFactorAuthentication": "Multi-Faktor-Authentisierung",
-      "description": "Hier kann festgelegt werden, für welche Nutzergruppen die Multi-Faktor-Authentisierung erzwungen werden soll.",
+      "multiFactorAuthentication": "Zwei-Faktor-Authentisierung",
+      "description": "Hier kann festgelegt werden, für welche Nutzergruppen die Zwei-Faktor-Authentisierung erzwungen werden soll.",
       "selectUserGroups": "Nutzergruppen auswählen, für welche das MFA-Setup erzwungen wird.",
       "updateSuccessful": "Einstellung erfolgreich aktualisiert.",
       "errors": {
@@ -899,7 +899,8 @@
       "title": "Zwei-Faktor-Authentisierung einrichten",
       "qrCodeInstructions": "Den QR-Code mit einer Authenticator App scannen, die TOTP (Time-based One-Time Password) unterstützt.",
       "totpCodeInstructions": "Danach das generierte Passwort hier eintragen und speichern:",
-      "mfaSetupRequired": "Die globalen Richtlinien erfordern die Eintrichtung der Zwei-Faktor-Authentisierungs:"
+      "mfaSetupRequired": "Die globalen Richtlinien erfordern die Eintrichtung der Zwei-Faktor-Authentisierungs:",
+      "mfaSetupSuccess": "Die Zwei-Faktor-Authentisierungs wurde erfolgreich eingerichtet."
     },
     "errors": {
       "currentPasswordRequired": "Aktuelles Passwort ist erforderlich",
