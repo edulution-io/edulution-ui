@@ -18,6 +18,7 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import type TApps from '@libs/appconfig/types/appsType';
+import PageTitle from '@/components/PageTitle';
 
 interface NativeIframeLayoutProps {
   scriptOnStartUp?: string;
@@ -80,14 +81,17 @@ const NativeIframeLayout: React.FC<NativeIframeLayoutProps> = ({ scriptOnStartUp
   }
 
   return (
-    <iframe
-      ref={iframeRef}
-      title={appName}
-      className="absolute inset-y-0 left-0 ml-0 mr-14 w-full md:w-[calc(100%-var(--sidebar-width))]"
-      height="100%"
-      src={loadedEmbeddedFrames.includes(currentAppConfig.name) ? initialUrlRef.current : undefined}
-      style={getStyle()}
-    />
+    <>
+      <PageTitle translationId={`${appName}.sidebar`} />
+      <iframe
+        ref={iframeRef}
+        title={appName}
+        className="absolute inset-y-0 left-0 ml-0 mr-14 w-full md:w-[calc(100%-var(--sidebar-width))]"
+        height="100%"
+        src={loadedEmbeddedFrames.includes(currentAppConfig.name) ? initialUrlRef.current : undefined}
+        style={getStyle()}
+      />
+    </>
   );
 };
 

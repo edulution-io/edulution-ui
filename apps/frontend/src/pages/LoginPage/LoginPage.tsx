@@ -26,6 +26,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import UserDto from '@libs/user/types/user.dto';
 import processLdapGroups from '@libs/user/utils/processLdapGroups';
 import OtpInput from '@/components/shared/OtpInput';
+import PageTitle from '@/components/PageTitle';
 import getLoginFormSchema from './getLoginFormSchema';
 
 type LocationState = {
@@ -162,70 +163,73 @@ const LoginPage: React.FC = () => {
   );
 
   return (
-    <Card
-      variant="modal"
-      className="bg-background"
-    >
-      <img
-        src={DesktopLogo}
-        alt="edulution"
-        className="mx-auto w-64"
-      />
-      <Form
-        {...form}
-        data-testid="test-id-login-page-form"
+    <>
+      <PageTitle translationId="login.pageTitle" />
+      <Card
+        variant="modal"
+        className="bg-background"
       >
-        <form
-          onSubmit={form.handleSubmit(isEnterTotpVisible ? onSubmit : handleCheckMfaStatus)}
-          className="space-y-4"
+        <img
+          src={DesktopLogo}
+          alt="edulution"
+          className="mx-auto w-64"
+        />
+        <Form
+          {...form}
           data-testid="test-id-login-page-form"
         >
-          {isEnterTotpVisible ? (
-            <>
-              <div className="mt-3 text-center font-bold">{t('login.enterMultiFactorCode')}</div>
-              <OtpInput
-                totp={totp}
-                setTotp={setTotp}
-                onComplete={form.handleSubmit(onSubmit)}
-              />
-              {form.getFieldState('password').error?.message && (
-                <p>
-                  <span>{t(form.getFieldState('password').error?.message || '')}</span>
-                </p>
-              )}
-            </>
-          ) : (
-            <>
-              {renderFormField('username', t('common.username'), 'text', true)}
-              {renderFormField('password', t('common.password'), 'password')}
-            </>
-          )}
-          {!form.getFieldState('password').error && <p className="flex h-2" />}
-          {isEnterTotpVisible ? (
-            <Button
-              className="mx-auto w-full justify-center text-foreground shadow-xl hover:bg-ciGrey/10"
-              type="button"
-              variant="btn-outline"
-              size="lg"
-              disabled={isLoading || totpIsLoading}
-              onClick={() => setIsEnterTotpVisible(false)}
-            >
-              {t('common.cancel')}
-            </Button>
-          ) : null}
-          <Button
-            className="mx-auto w-full justify-center text-background shadow-xl"
-            type="submit"
-            variant="btn-security"
-            size="lg"
-            data-testid="test-id-login-page-submit-button"
-            disabled={isLoading || totpIsLoading}
+          <form
+            onSubmit={form.handleSubmit(isEnterTotpVisible ? onSubmit : handleCheckMfaStatus)}
+            className="space-y-4"
+            data-testid="test-id-login-page-form"
           >
-            {totpIsLoading || isLoading ? t('common.loading') : t('common.login')}
-          </Button>
-        </form>
-      </Form>
-    </Card>
+            {isEnterTotpVisible ? (
+              <>
+                <div className="mt-3 text-center font-bold">{t('login.enterMultiFactorCode')}</div>
+                <OtpInput
+                  totp={totp}
+                  setTotp={setTotp}
+                  onComplete={form.handleSubmit(onSubmit)}
+                />
+                {form.getFieldState('password').error?.message && (
+                  <p>
+                    <span>{t(form.getFieldState('password').error?.message || '')}</span>
+                  </p>
+                )}
+              </>
+            ) : (
+              <>
+                {renderFormField('username', t('common.username'), 'text', true)}
+                {renderFormField('password', t('common.password'), 'password')}
+              </>
+            )}
+            {!form.getFieldState('password').error && <p className="flex h-2" />}
+            {isEnterTotpVisible ? (
+              <Button
+                className="mx-auto w-full justify-center text-foreground shadow-xl hover:bg-ciGrey/10"
+                type="button"
+                variant="btn-outline"
+                size="lg"
+                disabled={isLoading || totpIsLoading}
+                onClick={() => setIsEnterTotpVisible(false)}
+              >
+                {t('common.cancel')}
+              </Button>
+            ) : null}
+            <Button
+              className="mx-auto w-full justify-center text-background shadow-xl"
+              type="submit"
+              variant="btn-security"
+              size="lg"
+              data-testid="test-id-login-page-submit-button"
+              disabled={isLoading || totpIsLoading}
+            >
+              {totpIsLoading || isLoading ? t('common.loading') : t('common.login')}
+            </Button>
+          </form>
+        </Form>
+      </Card>
+    </>
   );
 };
 

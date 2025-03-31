@@ -11,16 +11,25 @@
  */
 
 import React from 'react';
-import PageTitle from '@/components/PageTitle';
-import DockerContainerTable from '../AppConfig/DockerIntegration/DockerContainerTable';
-import LicenseOverview from './LicenseOverview';
+import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
 
-const SettingsOverviewPage: React.FC = () => (
-  <>
-    <PageTitle translationId="settings.sidebar" />
-    <LicenseOverview />
-    <DockerContainerTable />
-  </>
-);
+interface PageTitleProps {
+  title?: string;
+  translationId: string;
+}
 
-export default SettingsOverviewPage;
+const PageTitle = ({ title, translationId }: PageTitleProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <Helmet>
+      <title>
+        {title ? `${title} - ` : ''}
+        {t(translationId)} - edulution.io
+      </title>
+    </Helmet>
+  );
+};
+
+export default PageTitle;
