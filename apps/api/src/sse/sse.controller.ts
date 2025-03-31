@@ -10,13 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Controller, Res, Sse, MessageEvent } from '@nestjs/common';
+import { Controller, Res, Sse, MessageEvent, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { Response } from 'express';
+import APPS from '@libs/appconfig/constants/apps';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import SseService from './sse.service';
-// import { Public } from '../common/decorators/public.decorator';
+import { Public } from '../common/decorators/public.decorator';
 
 @ApiTags('sse')
 @ApiBearerAuth()
@@ -29,11 +30,11 @@ class SseController {
     return this.sseService.subscribe(username, res);
   }
 
-  // @Public()
-  // @Sse('sse/public')
-  // publicSse(@Query('meetingID') meetingID: string, @Res() res: Response): Observable<MessageEvent> {
-  //   return this.conferencesService.subscribe(meetingID, res);
-  // }
+  @Public()
+  @Sse(`${APPS.CONFERENCES}/public`)
+  publicSse(@Query('meetingID') meetingID: string, @Res() res: Response): Observable<MessageEvent> {
+    return this.sseService.subscribe(meetingID, res);
+  }
 }
 
 export default SseController;
