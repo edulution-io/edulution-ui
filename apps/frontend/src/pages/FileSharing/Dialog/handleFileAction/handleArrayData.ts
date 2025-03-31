@@ -17,6 +17,7 @@ import FileActionType from '@libs/filesharing/types/fileActionType';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
 import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
+import { t } from 'i18next';
 
 const handleDeleteItems = async (data: PathChangeOrCreateProps[], endpoint: string) => {
   await eduApi.delete(buildApiDeletePathUrl(endpoint, DeleteTargetType.FILE_SERVER), {
@@ -36,11 +37,14 @@ const handleArrayData = async (
   endpoint: string,
   httpMethod: HttpMethods,
   data: PathChangeOrCreateProps[],
+  setFileOperationResult: (success: boolean | undefined, message: string, statusCode: number) => void,
 ) => {
   if (action === FileActionType.DELETE_FILE_FOLDER) {
     await handleDeleteItems(data, endpoint);
+    setFileOperationResult(undefined, t('fileOperationSuccessful'), 200);
   } else if (action === FileActionType.MOVE_FILE_FOLDER || action === FileActionType.RENAME_FILE_FOLDER) {
     await handleArrayActions(data, endpoint, httpMethod);
+    setFileOperationResult(true, t('fileOperationSuccessful'), 200);
   }
 };
 

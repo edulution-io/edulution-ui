@@ -1060,6 +1060,7 @@
     }
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
+  "fileOperationStarted": "Dateioperation gestartet",
   "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
   "fileSharingTable": {
     "filename": "Dateiname",

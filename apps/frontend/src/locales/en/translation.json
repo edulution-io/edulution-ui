@@ -1059,6 +1059,7 @@
     }
   },
   "fileOperationSuccessful": "File operation successful",
+  "fileOperationStarted": "File operation started",
   "unknownErrorOccurred": "An unknown error occurred",
   "fileSharingTable": {
     "filename": "Filename",
