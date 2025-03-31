@@ -92,10 +92,10 @@ describe('FilesharingService', () => {
   });
 
   it('should call deleteFile on FileSharingService', async () => {
-    const token = 'test-token';
-    const path = '/test-path';
-    const result = await service.deleteFileAtPath(token, path);
-    expect(service.deleteFileAtPath).toHaveBeenCalledWith(token, path);
+    const username = 'testTeacher';
+    const path = ['/test-path'];
+    const result = await service.deleteFileAtPath(username, path);
+    expect(service.deleteFileAtPath).toHaveBeenCalledWith(username, path);
     expect(result).toEqual({ success: true });
   });
 
