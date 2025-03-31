@@ -25,6 +25,7 @@ import SseService from '../../sse/sse.service';
 
 import type UserConnections from '../../types/userConnections';
 import WebDavService from '../../webdav/webDavService';
+import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 
 class CollectFileConsumer extends WorkerHost {
   private fileCollectingSseConnections: UserConnections = new Map();
@@ -37,15 +38,17 @@ class CollectFileConsumer extends WorkerHost {
     const { username, userRole, item, operationType, total, processed } = job.data as CollectFileJobData;
     const failedPaths: string[] = [];
 
-    const initFolderName = `${userRole}s/${username}/transfer/collected`;
-
+    const initFolderName = `${userRole}s/${username}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}`;
     try {
       await WebDavService.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName);
 
       if (operationType === LMN_API_COLLECT_OPERATIONS.CUT) {
         await WebDavService.cutCollectedItems(username, item.originPath, item.destinationPath);
       } else {
-        await WebDavService.copyCollectedItems(username, item.originPath, [item.destinationPath]);
+        await WebDavService.copyCollectedItems(username, {
+          originFilePath: item.originPath,
+          destinationFilePaths: [`${item.destinationPath}`],
+        });
       }
     } catch (error) {
       failedPaths.push(item.destinationPath);

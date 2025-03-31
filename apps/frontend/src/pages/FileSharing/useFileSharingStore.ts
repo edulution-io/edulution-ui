@@ -22,6 +22,7 @@ import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
 import delay from '@libs/common/utils/delay';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import UserRoles from '@libs/user/constants/userRoles';
 
 type UseFileSharingStore = {
   files: DirectoryFileDTO[];
@@ -137,10 +138,24 @@ const useFileSharingStore = create<UseFileSharingStore>(
       fetchMountPoints: async () => {
         try {
           set({ isLoading: true });
+
           const resp = await eduApi.get<DirectoryFileDTO[]>(
-            `${buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, '')}`,
+            buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, ''),
           );
-          set({ mountPoints: resp.data });
+
+          const resp2 = await eduApi.get<DirectoryFileDTO[]>(
+            buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, '/'),
+          );
+
+          const combined = [...resp.data];
+
+          const examusersItem = resp2.data.find((item) => item.basename === UserRoles.EXAM_USER);
+
+          if (examusersItem && !resp.data.some((item) => item.basename === UserRoles.EXAM_USER)) {
+            combined.push(examusersItem);
+          }
+
+          set({ mountPoints: combined });
         } catch (error) {
           handleApiError(error, set);
         } finally {

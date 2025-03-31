@@ -26,6 +26,7 @@ import { mapToDirectories, mapToDirectoryFiles } from '../filesharing/filesharin
 
 import WebdavClientFactory from '../filesharing/webdav.client.factory';
 import UsersService from '../users/users.service';
+import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 
 class WebDavService {
   private static readonly baseUrl = process.env.EDUI_WEBDAV_URL as string;
@@ -175,6 +176,7 @@ class WebDavService {
   public static async createFolder(username: string, path: string, folderName: string): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
     const fullPath = `${this.baseUrl}${path}/${folderName}`;
+
     return this.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
@@ -288,9 +290,9 @@ class WebDavService {
     );
   }
 
-  public static async checkIfFolderExists(username: string, parentPath: string, folderName: string): Promise<boolean> {
-    const dirs = await this.getDirAtPath(username, `${parentPath}/`);
-    return dirs.some((item) => item.type === ContentType.DIRECTORY && item.basename === folderName);
+  static async checkIfFolderExists(username: string, parentPath: string, name: string): Promise<boolean> {
+    const directories = await this.getDirAtPath(username, `${parentPath}/`);
+    return directories.some((item) => item.type === ContentType.DIRECTORY && item.basename === name);
   }
 
   public static getStudentNameFromPath(filePath: string): string | null {
@@ -301,16 +303,21 @@ class WebDavService {
     return parts[2];
   }
 
-  public static async createCollectFolderIfNotExists(username: string, destinationPath: string): Promise<void> {
+  public static async createCollectFolderIfNotExists(username: string, destinationPath: string) {
     const sanitizedDestinationPath = destinationPath.replace(`${FILE_PATHS.COLLECT}/`, '');
     const pathWithoutFilename = sanitizedDestinationPath.slice(0, sanitizedDestinationPath.lastIndexOf('/'));
 
-    const alreadyExists = await this.checkIfFolderExists(username, `${pathWithoutFilename}/`, FILE_PATHS.COLLECT);
-    if (alreadyExists) return;
+    const folderAlreadyExistis = await this.checkIfFolderExists(
+      username,
+      `${pathWithoutFilename}/`,
+      FILE_PATHS.COLLECT,
+    );
 
-    const fullPath = `${this.baseUrl}${pathWithoutFilename}/${FILE_PATHS.COLLECT}`;
-    const result = await this.createFolder(username, fullPath, FILE_PATHS.COLLECT);
-    if (!result.success) {
+    if (folderAlreadyExistis) return;
+
+    try {
+      await this.createFolder(username, pathWithoutFilename, FILE_PATHS.COLLECT);
+    } catch (error) {
       throw new CustomHttpException(
         FileSharingErrorMessage.CreationFailed,
         HttpStatus.NOT_FOUND,
@@ -325,30 +332,21 @@ class WebDavService {
     originFullPath: string,
     newFullPath: string,
   ): Promise<WebdavStatusResponse> {
-    const moveResult = await this.moveOrRenameResource(username, originFullPath, newFullPath);
-    await this.createCollectFolderIfNotExists(username, originFullPath);
-    return moveResult;
+    await WebDavService.createCollectFolderIfNotExists(username, originFullPath);
+    await WebDavService.moveOrRenameResource(username, originFullPath, newFullPath);
+    return WebDavService.createFolder(username, originFullPath, FILE_PATHS.COLLECT);
   }
 
   public static async copyCollectedItems(
     username: string,
-    originFullPath: string,
-    destinationPaths: string[],
+    duplicateFile: DuplicateFileRequestDto,
   ): Promise<WebdavStatusResponse> {
+    const duplicationPromises = duplicateFile.destinationFilePaths.map(async (destinationPath) => {
+      await WebDavService.copyFileViaWebDAV(username, duplicateFile.originFilePath, destinationPath);
+    });
+
     try {
-      const client = await this.getClient(username);
-      const promises = destinationPaths.map(async (dest) =>
-        this.executeWebdavRequest<WebdavStatusResponse>(
-          client,
-          {
-            method: HttpMethodsWebDav.COPY,
-            url: originFullPath,
-            headers: { Destination: dest },
-          },
-          FileSharingErrorMessage.SharingFailed,
-        ),
-      );
-      await Promise.all(promises);
+      await Promise.all(duplicationPromises);
       return { success: true, status: HttpStatus.OK };
     } catch (error) {
       throw new CustomHttpException(FileSharingErrorMessage.SharingFailed, HttpStatus.INTERNAL_SERVER_ERROR);
