@@ -98,7 +98,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
 
       const surveyAnswer = response.data;
       const publicUserId = surveyAnswer.username;
-      if (publicUserIdRegex.test(publicUserId)) {
+      if (isPublicUserId && publicUserIdRegex.test(publicUserId)) {
         set({ publicUserId });
       }
 

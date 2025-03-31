@@ -24,6 +24,9 @@ import useLanguage from '@/hooks/useLanguage';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import '../theme/custom.participation.css';
+import 'survey-core/i18n/french';
+import 'survey-core/i18n/german';
+import 'survey-core/i18n/italian';
 
 interface SurveyParticipationBodyProps {
   username: string;
@@ -64,6 +67,7 @@ const SurveyParticipationBody = (props: SurveyParticipationBodyProps): React.Rea
       return undefined;
     }
     const surveyParticipationModel = new Model(selectedSurvey.formula);
+
     surveyParticipationModel.applyTheme(surveyTheme);
     surveyParticipationModel.locale = language;
     if (surveyParticipationModel.pages.length > 3) {
