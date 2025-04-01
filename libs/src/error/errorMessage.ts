@@ -26,6 +26,7 @@ import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardEr
 import DockerErrorMessages from '@libs/docker/constants/dockerErrorMessages';
 import VeyonErrorMessages from '@libs/veyon/types/veyonErrorMessages';
 import LicenseErrorMessagesType from '@libs/license/types/licenseErrorMessagesType';
+import TGlobalSettingsErrorMessages from '@libs/global-settings/types/globalSettingsErrorMessagesTypes';
 
 type ErrorMessage =
   | CommonErrorMessages
@@ -43,6 +44,7 @@ type ErrorMessage =
   | SurveyAnswerErrorMessages
   | DockerErrorMessages
   | VeyonErrorMessages
-  | LicenseErrorMessagesType;
+  | LicenseErrorMessagesType
+  | TGlobalSettingsErrorMessages;
 
 export default ErrorMessage;

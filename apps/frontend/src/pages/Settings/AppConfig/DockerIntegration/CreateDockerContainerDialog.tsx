@@ -141,7 +141,7 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
 
   return (
     <>
-      <div className="absolute right-10 top-12 md:right-20 md:top-10">{isLoading ? <CircleLoader /> : null}</div>
+      <div className="absolute right-10 top-12 md:right-24 md:top-1">{isLoading ? <CircleLoader /> : null}</div>
       <AdaptiveDialog
         title={t(`containerApplication.dialogTitle`, { applicationName: t(`${settingLocation}.sidebar`) })}
         isOpen={isOpen}
