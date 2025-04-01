@@ -10,5 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const EDU_API_DOCKER_ENDPOINT = 'docker';
-export const EDU_API_DOCKER_CONTAINER_ENDPOINT = 'containers';
+export const GLOBAL_SETTINGS_ROOT_ENDPOINT = 'global-settings';
+export const GLOBAL_SETTINGS_PROJECTION_QUERY_PARAM = 'projection';
+export const GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH = 'auth';
+
+export const GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS = 'mfaEnforcedGroups';

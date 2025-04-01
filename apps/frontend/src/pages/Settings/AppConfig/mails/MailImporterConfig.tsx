@@ -30,31 +30,29 @@ const MailImporterConfig: React.FC<MailsConfigProps> = ({ form }) => {
   const { t } = useTranslation();
   const { externalMailProviderConfig, getExternalMailProviderConfig, deleteExternalMailProviderConfig } =
     useMailsStore();
-  const [option, setOption] = useState('');
+  const customConfigOption = {
+    id: '0',
+    name: t('common.custom'),
+    label: '',
+    host: '',
+    port: '993',
+    encryption: MailEncryption.SSL,
+  };
+  const [option, setOption] = useState(customConfigOption.id);
 
   useEffect(() => {
     void getExternalMailProviderConfig();
   }, []);
 
-  const mailProviderDropdownOptions: MailProviderConfigDto[] = [
-    {
-      id: '0',
-      name: t('common.custom'),
-      label: '',
-      host: '',
-      port: '993',
-      encryption: MailEncryption.SSL,
-    },
-    ...externalMailProviderConfig,
-  ];
+  const mailProviderDropdownOptions: MailProviderConfigDto[] = [customConfigOption, ...externalMailProviderConfig];
 
   useEffect(() => {
-    setOption(mailProviderDropdownOptions[0].name);
+    setOption(customConfigOption.id);
   }, [externalMailProviderConfig]);
 
   useEffect(() => {
-    if (option && option !== t('common.custom')) {
-      const mailProvider = mailProviderDropdownOptions.filter((itm) => itm.name === option)[0];
+    if (option && option !== customConfigOption.id) {
+      const mailProvider = mailProviderDropdownOptions.filter((itm) => itm.id === option)[0];
       form.setValue('mail.mailProviderId', mailProvider.id);
       form.setValue('mail.configName', mailProvider.name);
       form.setValue('mail.hostname', mailProvider.host);
@@ -62,7 +60,7 @@ const MailImporterConfig: React.FC<MailsConfigProps> = ({ form }) => {
       form.setValue('mail.encryption', mailProvider.encryption);
     }
 
-    if (option === t('common.custom')) {
+    if (option === customConfigOption.id) {
       form.setValue('mail.mailProviderId', '');
       form.setValue('mail.configName', '');
       form.setValue('mail.hostname', '');
@@ -73,7 +71,7 @@ const MailImporterConfig: React.FC<MailsConfigProps> = ({ form }) => {
 
   const handleDeleteMailProviderConfig = async (mailProviderId: string) => {
     await deleteExternalMailProviderConfig(mailProviderId).finally(() => {
-      setOption(t('common.custom'));
+      setOption(customConfigOption.id);
     });
   };
 
@@ -87,7 +85,7 @@ const MailImporterConfig: React.FC<MailsConfigProps> = ({ form }) => {
           <div className="flex gap-4">
             <DropdownSelect
               options={mailProviderDropdownOptions}
-              selectedVal={t(option)}
+              selectedVal={option}
               handleChange={setOption}
               classname="md:w-1/3"
             />

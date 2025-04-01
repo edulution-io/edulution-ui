@@ -10,5 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const EDU_API_DOCKER_ENDPOINT = 'docker';
-export const EDU_API_DOCKER_CONTAINER_ENDPOINT = 'containers';
+import GlobalSettingsErrorMessages from '../constants/globalSettingsErrorMessages';
+
+type TGlobalSettingsErrorMessages = (typeof GlobalSettingsErrorMessages)[keyof typeof GlobalSettingsErrorMessages];
+
+export default TGlobalSettingsErrorMessages;
