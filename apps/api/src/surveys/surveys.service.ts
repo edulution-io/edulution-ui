@@ -96,7 +96,7 @@ class SurveysService implements OnModuleInit {
     currentUser: JwtUser,
     surveysSseConnections: UserConnections,
   ): Promise<SurveyDocument | null> {
-    const existingSurvey = await this.surveyModel.findById(survey.id).lean();
+    const existingSurvey = await this.surveyModel.findById(survey.id).exec();
     if (!existingSurvey) {
       return null;
     }
@@ -120,7 +120,7 @@ class SurveysService implements OnModuleInit {
           survey.invitedGroups,
           survey.invitedAttendees,
         );
-        const updatedSurvey = await this.surveyModel.findById(survey.id).lean();
+        const updatedSurvey = await this.surveyModel.findById(survey.id).exec();
         SseService.sendEventToUsers(
           invitedMembersList,
           surveysSseConnections,
