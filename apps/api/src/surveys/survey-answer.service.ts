@@ -11,6 +11,7 @@
  */
 
 import { Model, Types } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import SurveyStatus from '@libs/survey/survey-status-enum';
@@ -237,14 +238,14 @@ class SurveyAnswersService {
       return this.createAnswer({ username: 'anonymous' }, surveyId, saveNo, answer);
     }
 
-    const userName = attendee.username;
-    const isUnauthenticatedUser = isPublic && !attendee.firstName && !attendee.lastName;
-    const isAnswerFromAuthenticatedUser = publicUserIdRegex.test(userName) || !isUnauthenticatedUser;
+    const { username, firstName, lastName } = attendee;
+    const isUnauthenticatedUser = isPublic && !firstName && !lastName;
+    const isAnswerFromAuthenticatedUser = publicUserIdRegex.test(username) || !isUnauthenticatedUser;
     if (isAnswerFromAuthenticatedUser) {
-      await this.throwErrorIfParticipationIsNotPossible(survey, userName);
+      await this.throwErrorIfParticipationIsNotPossible(survey, username);
 
       const existingUsersAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({
-        $and: [{ 'attendee.username': userName }, { surveyId: new Types.ObjectId(surveyId) }],
+        $and: [{ 'attendee.username': username }, { surveyId: new Types.ObjectId(surveyId) }],
       });
 
       if (existingUsersAnswer == null || canSubmitMultipleAnswers) {
@@ -263,8 +264,8 @@ class SurveyAnswersService {
         }
 
         const updateSurvey = await this.surveyModel.findByIdAndUpdate<Survey>(surveyId, {
-          participatedAttendees: userName
-            ? [...survey.participatedAttendees, { username: userName }]
+          participatedAttendees: username
+            ? [...survey.participatedAttendees, { username }]
             : survey.participatedAttendees,
           answers: [...survey.answers, new Types.ObjectId(String(newSurveyAnswer.id))],
         });
@@ -289,29 +290,22 @@ class SurveyAnswersService {
       return updatedSurveyAnswer;
     }
 
+    const permanentUsername = createValidPublicUserId(username, uuidv4());
+
     const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(
-      { username: `temporaryUsername` },
+      { username: permanentUsername },
       surveyId,
       saveNo,
       answer,
     );
-
-    const permanentUsername = createValidPublicUserId(userName, createdAnswer.id as string);
-    const updatedAnswer: SurveyAnswerDocument | null = await this.surveyAnswerModel
-      .findByIdAndUpdate<SurveyAnswerDocument>(
-        createdAnswer.id,
-        { 'attendee.username': permanentUsername },
-        { new: true },
-      )
-      .lean();
-    if (updatedAnswer == null) {
+    if (createdAnswer == null) {
       throw new CustomHttpException(
         SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
 
-    return updatedAnswer;
+    return createdAnswer;
   }
 
   async getAnswer(surveyId: string, username: string): Promise<SurveyAnswer> {
