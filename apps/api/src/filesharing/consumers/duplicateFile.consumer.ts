@@ -29,6 +29,10 @@ import WebDavService from '../../webdav/webDavService';
 class DuplicateFileConsumer extends WorkerHost {
   private fileSharingSseConnections: UserConnections = new Map();
 
+  constructor(private readonly webDavService: WebDavService) {
+    super();
+  }
+
   subscribe(username: string, res: Response): Observable<MessageEvent> {
     return SseService.subscribe(username, this.fileSharingSseConnections, res);
   }
@@ -40,11 +44,11 @@ class DuplicateFileConsumer extends WorkerHost {
     const pathUpToTransferFolder = WebDavService.getPathUntilFolder(destinationFilePath, FILE_PATHS.TRANSFER);
     const pathUpToTeacherFolder = WebDavService.getPathUntilFolder(destinationFilePath, username);
 
-    await WebDavService.ensureFolderExists(username, pathUpToTransferFolder, username);
-    await WebDavService.ensureFolderExists(username, pathUpToTeacherFolder, FILE_PATHS.COLLECT);
+    await this.webDavService.ensureFolderExists(username, pathUpToTransferFolder, username);
+    await this.webDavService.ensureFolderExists(username, pathUpToTeacherFolder, FILE_PATHS.COLLECT);
 
     try {
-      await WebDavService.copyFileViaWebDAV(username, originFilePath, destinationFilePath);
+      await this.webDavService.copyFileViaWebDAV(username, originFilePath, destinationFilePath);
     } catch {
       failedPaths.push(destinationFilePath);
     }

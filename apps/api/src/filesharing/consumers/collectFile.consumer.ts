@@ -16,19 +16,21 @@ import { Response } from 'express';
 import { Observable } from 'rxjs';
 import { MessageEvent } from '@nestjs/common';
 import CollectFileJobData from '@libs/queue/types/collectFileJobData';
-import FilePaths from '@libs/filesharing/constants/file-paths';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import JobData from '@libs/queue/constants/jobData';
-import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
+import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 import SseService from '../../sse/sse.service';
-
 import type UserConnections from '../../types/userConnections';
 import WebDavService from '../../webdav/webDavService';
 
 class CollectFileConsumer extends WorkerHost {
   private fileCollectingSseConnections: UserConnections = new Map();
+
+  constructor(private readonly webDavService: WebDavService) {
+    super();
+  }
 
   subscribe(username: string, res: Response): Observable<MessageEvent> {
     return SseService.subscribe(username, this.fileCollectingSseConnections, res);
@@ -40,12 +42,12 @@ class CollectFileConsumer extends WorkerHost {
 
     const initFolderName = `${userRole}s/${username}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}`;
     try {
-      await WebDavService.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName);
+      await this.webDavService.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName);
 
       if (operationType === LMN_API_COLLECT_OPERATIONS.CUT) {
-        await WebDavService.cutCollectedItems(username, item.originPath, item.destinationPath);
+        await this.webDavService.cutCollectedItems(username, item.originPath, item.destinationPath);
       } else {
-        await WebDavService.copyCollectedItems(username, {
+        await this.webDavService.copyCollectedItems(username, {
           originFilePath: item.originPath,
           destinationFilePaths: [`${item.destinationPath}`],
         });
@@ -65,7 +67,7 @@ class CollectFileConsumer extends WorkerHost {
       total,
       studentName: username,
       percent,
-      currentFilePath: FilePaths.COLLECT,
+      currentFilePath: FILE_PATHS.COLLECT,
       failedPaths,
     };
 

@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Logger, Module, OnModuleInit } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CacheModule } from '@nestjs/cache-manager';
 import { JwtModule } from '@nestjs/jwt';
@@ -40,9 +40,8 @@ import BulletinCategoryModule from '../bulletin-category/bulletin-category.modul
 import BulletinBoardModule from '../bulletinboard/bulletinboard.module';
 import DockerModule from '../docker/docker.module';
 import VeyonModule from '../veyon/veyon.module';
-import WebDavService from '../webdav/webDavService';
-import UsersService from '../users/users.service';
 import GlobalSettingsModule from '../global-settings/global-settings.module';
+import WebDavModule from '../webdav/webdav.module';
 
 const redisHost = process.env.REDIS_HOST ?? 'localhost';
 const redisPort = +(process.env.REDIS_PORT ?? 6379);
@@ -81,6 +80,7 @@ const redisPort = +(process.env.REDIS_PORT ?? 6379);
     DockerModule,
     VeyonModule,
     GlobalSettingsModule,
+    WebDavModule,
     JwtModule.register({
       global: true,
     }),
@@ -140,10 +140,4 @@ const redisPort = +(process.env.REDIS_PORT ?? 6379);
     },
   ],
 })
-export default class AppModule implements OnModuleInit {
-  constructor(private readonly usersService: UsersService) {}
-
-  onModuleInit() {
-    WebDavService.configure(this.usersService);
-  }
-}
+export default class AppModule {}
