@@ -215,7 +215,6 @@ describe('SurveyService', () => {
       jest.spyOn(service, 'createSurvey').mockResolvedValue(surveyUpdateUpdatedSurvey);
       jest.spyOn(service, 'updateImageLinksInSurveyFormula').mockResolvedValue(surveyUpdateUpdatedSurvey.formula);
       jest.spyOn(service, 'updateSurvey').mockResolvedValueOnce(surveyUpdateUpdatedSurvey);
-      jest.spyOn(service, 'clearTemp').mockImplementation(async (_userId: string) => {});
 
       const result = await service.updateOrCreateSurvey(
         surveyUpdateInitialSurveyDto,
