@@ -531,13 +531,14 @@
       "saveAnswerSuccess": "Saved the answer.",
       "username": "User name",
       "pleaseEnterYourFullName": "To participate in the survey enter your full name.",
-      "yourFullName": "Your name or a previous participation ID",
+      "yourFullName": "Your name or a participation ID",
       "invalidUsername": "Username is invalid (permitted are letters, number, and [. -])",
       "idHeader": "Your participation ID",
       "idText": "Pls copy the this ID for later participation",
       "idFooter": "In order to overwrite your previous answer, please enter the ID in your next participation.",
       "idCopySuccess": "Successfully copied the ID to the clipboard",
-      "idCopyError": "Error copying the ID to the clipboard"
+      "idCopyError": "Error copying the ID to the clipboard",
+      "usernameRequired": "User name is required"
     },
     "errors": {
       "submitAnswerError": "Not able to submit the answer.",

@@ -539,7 +539,8 @@
       "idText": "Bitte notiere dir die folgende ID.",
       "idFooter": "Um die vorherige Antwort zu überschreiben musst du dich bei der nächsten Teilnahme mit der ID anmelden.",
       "idCopySuccess": "ID erfolgreich kopiert",
-      "idCopyError": "ID konnte nicht kopiert werden"
+      "idCopyError": "ID konnte nicht kopiert werden",
+      "usernameRequired": "Der Benutzername ist erforderlich"
     },
     "errors": {
       "submitAnswerError": "Die Antwort konnte nicht gespeichert werden.",

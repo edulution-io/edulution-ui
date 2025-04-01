@@ -12,13 +12,9 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
-import { CompletingEvent, Model, Serializer } from 'survey-core';
+import { Model, Serializer } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
-import cn from '@libs/common/utils/className';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SubmitAnswerDto from '@libs/survey/types/api/submit-answer.dto';
-import SurveyAnswerDto from '@libs/survey/types/api/survey-answer.dto';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import UserDto from '@libs/user/types/user.dto';
@@ -29,21 +25,13 @@ import '../theme/custom.participation.css';
 import 'survey-core/i18n/french';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 
 interface SurveyParticipationModelProps {
   username: string;
   user: UserDto | null;
   isPublic: boolean;
-  selectedSurvey: SurveyDto | undefined;
-  answerSurvey: (
-    answerDto: SubmitAnswerDto,
-    sender: Model,
-    options: CompletingEvent,
-  ) => Promise<SurveyAnswerDto | undefined>;
-  previousAnswer: SurveyAnswerDto | undefined;
-  isFetching: boolean;
-  updateOpenSurveys: () => void;
-  updateAnsweredSurveys: () => void;
 }
 
 Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
@@ -53,13 +41,11 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
     user,
     username,
     isPublic,
-    selectedSurvey,
-    previousAnswer,
-    answerSurvey,
-    isFetching,
-    updateOpenSurveys,
-    updateAnsweredSurveys,
   } = props;
+
+  const { selectedSurvey, isFetching, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
+
+  const { answerSurvey, previousAnswer } = useParticipateSurveyStore();
 
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -143,7 +129,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
   }
 
   return (
-    <div className={cn('survey-participation')}>
+    <div className="survey-participation">
       <Survey model={surveyParticipationModel} />
     </div>
   );

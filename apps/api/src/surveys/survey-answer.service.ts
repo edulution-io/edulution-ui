@@ -290,10 +290,12 @@ class SurveyAnswersService {
       return updatedSurveyAnswer;
     }
 
-    const permanentUsername = createValidPublicUserId(username, uuidv4());
-
+    let user = username;
+    if (canSubmitMultipleAnswers || canUpdateFormerAnswer) {
+      user = createValidPublicUserId(username, uuidv4());
+    }
     const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(
-      { username: permanentUsername },
+      { username: user },
       surveyId,
       saveNo,
       answer,
@@ -333,7 +335,9 @@ class SurveyAnswersService {
     }
 
     const answers = surveyAnswers.filter((answer) => answer.answer !== null);
-    return answers.map((answer) => answer.answer);
+    return answers.map((answer) => {
+      return { user: answer.attendee.username, ...answer.answer }
+    });
   }
 
   async onSurveyRemoval(surveyIds: string[]): Promise<void> {
