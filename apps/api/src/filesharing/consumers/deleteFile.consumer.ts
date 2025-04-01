@@ -26,6 +26,10 @@ import type UserConnections from '../../types/userConnections';
 class DeleteFileConsumer extends WorkerHost {
   private fileDeletingSseConnections: UserConnections = new Map();
 
+  constructor(private readonly webDavService: WebDavService) {
+    super();
+  }
+
   subscribe(username: string, res: Response): Observable<MessageEvent> {
     return SseService.subscribe(username, this.fileDeletingSseConnections, res);
   }
@@ -35,7 +39,7 @@ class DeleteFileConsumer extends WorkerHost {
 
     const failedPaths: string[] = [];
     try {
-      await WebDavService.deletePath(username, originFilePath);
+      await this.webDavService.deletePath(username, originFilePath);
     } catch (error) {
       failedPaths.push(originFilePath);
     }

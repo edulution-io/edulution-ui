@@ -21,7 +21,6 @@ import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import JOB_NAMES from '@libs/queue/constants/jobNames';
-
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import WebDavService from '../webdav/webDavService';
 import OnlyofficeService from './onlyoffice.service';
@@ -36,6 +35,7 @@ export default class FilesharingService {
     private readonly onlyofficeService: OnlyofficeService,
     private readonly fileSystemService: FilesystemService,
     private readonly dynamicQueueService: DynamicQueueService,
+    private readonly webDavService: WebDavService,
   ) {}
 
   async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
@@ -91,7 +91,7 @@ export default class FilesharingService {
 
   async getWebDavFileStream(username: string, filePath: string): Promise<Readable> {
     try {
-      const client = await WebDavService.getClient(username);
+      const client = await this.webDavService.getClient(username);
       const decoded = decodeURIComponent(filePath).replace(/%(?![0-9A-F]{2})/gi, (s) => decodeURIComponent(s));
       const pathWithoutWebdav = getPathWithoutWebdav(decoded).replace(/^\/+/, '');
       const encodedPath = encodeURI(pathWithoutWebdav);
@@ -111,7 +111,7 @@ export default class FilesharingService {
   }
 
   async fileLocation(username: string, filePath: string, filename: string): Promise<WebdavStatusResponse> {
-    const client = await WebDavService.getClient(username);
+    const client = await this.webDavService.getClient(username);
     return this.fileSystemService.fileLocation(username, filePath, filename, client);
   }
 
@@ -123,35 +123,32 @@ export default class FilesharingService {
     return OnlyofficeService.handleCallback(req, res, path, filename, username, this.uploadFile);
   }
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async getFilesAtPath(username: string, path: string) {
-    return WebDavService.getFilesAtPath(username, path);
+    return this.webDavService.getFilesAtPath(username, path);
   }
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async getDirAtPath(username: string, path: string) {
-    return WebDavService.getDirAtPath(username, path);
+    return this.webDavService.getDirAtPath(username, path);
   }
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async createFolder(username: string, path: string, folderName: string) {
-    return WebDavService.createFolder(username, path, folderName);
+    return this.webDavService.createFolder(username, path, folderName);
   }
 
   async createFile(username: string, path: string, fileName: string, content = '') {
     const fullPath = `${this.baseurl}${getPathWithoutWebdav(path)}/${fileName}`;
-    return WebDavService.createFile(username, fullPath, content);
+    return this.webDavService.createFile(username, fullPath, content);
   }
 
   uploadFile = async (username: string, path: string, file: CustomFile, name: string) => {
     const fullPath = `${this.baseurl}${path}/${name}`;
-    return WebDavService.uploadFile(username, fullPath, file);
+    return this.webDavService.uploadFile(username, fullPath, file);
   };
 
   async moveOrRenameResource(username: string, originPath: string, newPath: string) {
     const originFull = `${this.baseurl}${originPath}`;
     const newFull = `${this.baseurl}${newPath}`;
-    return WebDavService.moveOrRenameResource(username, originFull, newFull);
+    return this.webDavService.moveOrRenameResource(username, originFull, newFull);
   }
 
   static getStudentNameFromPath(filePath: string): string | null {

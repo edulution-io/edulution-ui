@@ -22,6 +22,7 @@ import DuplicateFileConsumer from './consumers/duplicateFile.consumer';
 import DynamicQueueService from '../queue/queue.service';
 import CollectFileConsumer from './consumers/collectFile.consumer';
 import DeleteFileConsumer from './consumers/deleteFile.consumer';
+import WebDavService from '../webdav/webDavService';
 
 @Module({
   imports: [HttpModule, AppConfigModule],
@@ -35,6 +36,7 @@ import DeleteFileConsumer from './consumers/deleteFile.consumer';
     DuplicateFileConsumer,
     CollectFileConsumer,
     DeleteFileConsumer,
+    WebDavService,
   ],
   exports: [FilesharingService],
 })

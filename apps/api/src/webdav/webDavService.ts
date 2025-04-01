@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -24,22 +24,18 @@ import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import ErrorMessage from '@libs/error/errorMessage';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import { mapToDirectories, mapToDirectoryFiles } from '../filesharing/filesharing.utilities';
-
-import WebdavClientFactory from '../filesharing/webdav.client.factory';
+import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
 
+@Injectable()
 class WebDavService {
-  private static readonly baseUrl = process.env.EDUI_WEBDAV_URL as string;
+  private readonly baseUrl = process.env.EDUI_WEBDAV_URL as string;
 
-  private static userService: UsersService;
+  private clientCache = new Map<string, { client: AxiosInstance; timeout: NodeJS.Timeout }>();
 
-  private static clientCache = new Map<string, { client: AxiosInstance; timeout: NodeJS.Timeout }>();
+  constructor(private readonly usersService: UsersService) {}
 
-  public static configure(userService: UsersService) {
-    this.userService = userService;
-  }
-
-  private static setCacheTimeout(token: string): NodeJS.Timeout {
+  setCacheTimeout(token: string): NodeJS.Timeout {
     return setTimeout(
       () => {
         this.clientCache.delete(token);
@@ -48,21 +44,17 @@ class WebDavService {
     );
   }
 
-  private static async initializeClient(username: string): Promise<void> {
-    if (!this.userService) {
-      throw new Error('WebDavService: userService not configured. Call WebDavService.configure(...) first!');
-    }
-    const password = await this.userService.getPassword(username);
+  async initializeClient(username: string): Promise<void> {
+    const password = await this.usersService.getPassword(username);
     const client = WebdavClientFactory.createWebdavClient(this.baseUrl, username, password);
     const timeout = this.setCacheTimeout(username);
     this.clientCache.set(username, { client, timeout });
   }
 
-  public static async getClient(username: string): Promise<AxiosInstance> {
+  public async getClient(username: string): Promise<AxiosInstance> {
     if (!this.clientCache.has(username)) {
       await this.initializeClient(username);
     } else {
-      // Reset the expiration timer on the cached client
       clearTimeout(this.clientCache.get(username)!.timeout);
       this.clientCache.get(username)!.timeout = this.setCacheTimeout(username);
     }
@@ -73,7 +65,7 @@ class WebDavService {
     return client;
   }
 
-  public static async executeWebdavRequest<T>(
+  static async executeWebdavRequest<T>(
     client: AxiosInstance,
     config: {
       method: string;
@@ -89,7 +81,7 @@ class WebDavService {
   ): Promise<T | WebdavStatusResponse> {
     try {
       const response = await client(config);
-      this.handleWebDAVError(response);
+      WebDavService.handleWebDAVError(response);
       return transformer ? transformer(response.data) : (response.data as T);
     } catch (error) {
       if (showDebugMessage) {
@@ -120,18 +112,18 @@ class WebDavService {
     return partialSegments.join('/');
   }
 
-  static async ensureFolderExists(username: string, basePath: string, folderName: string) {
+  async ensureFolderExists(username: string, basePath: string, folderName: string) {
     const exists = await this.checkIfFolderExists(username, basePath, folderName);
     if (!exists) {
       await this.createFolder(username, basePath, folderName);
     }
   }
 
-  public static async getFilesAtPath(username: string, path: string): Promise<DirectoryFileDTO[]> {
+  async getFilesAtPath(username: string, path: string): Promise<DirectoryFileDTO[]> {
     const client = await this.getClient(username);
     const url = this.baseUrl + getPathWithoutWebdav(path);
 
-    return (await this.executeWebdavRequest<DirectoryFileDTO[]>(
+    return (await WebDavService.executeWebdavRequest<DirectoryFileDTO[]>(
       client,
       {
         method: HttpMethodsWebDav.PROPFIND,
@@ -143,11 +135,11 @@ class WebDavService {
     )) as DirectoryFileDTO[];
   }
 
-  public static async getDirAtPath(username: string, path: string): Promise<DirectoryFileDTO[]> {
+  async getDirAtPath(username: string, path: string): Promise<DirectoryFileDTO[]> {
     const client = await this.getClient(username);
     const url = this.baseUrl + getPathWithoutWebdav(path);
 
-    return (await this.executeWebdavRequest<DirectoryFileDTO[]>(
+    return (await WebDavService.executeWebdavRequest<DirectoryFileDTO[]>(
       client,
       {
         method: HttpMethodsWebDav.PROPFIND,
@@ -160,7 +152,7 @@ class WebDavService {
     )) as DirectoryFileDTO[];
   }
 
-  public static readonly defaultPropfindXml = `<?xml version="1.0"?>
+  readonly defaultPropfindXml = `<?xml version="1.0"?>
       <d:propfind xmlns:d="DAV:">
         <d:prop>
           <d:getlastmodified/>
@@ -173,11 +165,11 @@ class WebDavService {
       </d:propfind>
   `;
 
-  public static async createFolder(username: string, path: string, folderName: string): Promise<WebdavStatusResponse> {
+  async createFolder(username: string, path: string, folderName: string): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
     const fullPath = `${this.baseUrl}${path}/${folderName}`;
 
-    return this.executeWebdavRequest<WebdavStatusResponse>(
+    return WebDavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethodsWebDav.MKCOL,
@@ -191,9 +183,9 @@ class WebDavService {
     );
   }
 
-  public static async createFile(username: string, fullPath: string, content = ''): Promise<WebdavStatusResponse> {
+  async createFile(username: string, fullPath: string, content = ''): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
-    return this.executeWebdavRequest<WebdavStatusResponse>(
+    return WebDavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethods.PUT,
@@ -209,9 +201,9 @@ class WebDavService {
     );
   }
 
-  public static async uploadFile(username: string, fullPath: string, file: CustomFile): Promise<WebdavStatusResponse> {
+  async uploadFile(username: string, fullPath: string, file: CustomFile): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
-    return this.executeWebdavRequest<WebdavStatusResponse>(
+    return WebDavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethods.PUT,
@@ -228,9 +220,9 @@ class WebDavService {
     );
   }
 
-  public static async deletePath(username: string, fullPath: string): Promise<WebdavStatusResponse> {
+  async deletePath(username: string, fullPath: string): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
-    return this.executeWebdavRequest<WebdavStatusResponse>(
+    return WebDavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethods.DELETE,
@@ -245,13 +237,13 @@ class WebDavService {
     );
   }
 
-  public static async moveOrRenameResource(
+  async moveOrRenameResource(
     username: string,
     originFullPath: string,
     destFullPath: string,
   ): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
-    return this.executeWebdavRequest<WebdavStatusResponse>(
+    return WebDavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethodsWebDav.MOVE,
@@ -269,13 +261,13 @@ class WebDavService {
     );
   }
 
-  public static async copyFileViaWebDAV(
+  async copyFileViaWebDAV(
     username: string,
     originFullPath: string,
     destFullPath: string,
   ): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
-    return this.executeWebdavRequest<WebdavStatusResponse>(
+    return WebDavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethodsWebDav.COPY,
@@ -290,12 +282,12 @@ class WebDavService {
     );
   }
 
-  static async checkIfFolderExists(username: string, parentPath: string, name: string): Promise<boolean> {
+  async checkIfFolderExists(username: string, parentPath: string, name: string): Promise<boolean> {
     const directories = await this.getDirAtPath(username, `${parentPath}/`);
     return directories.some((item) => item.type === ContentType.DIRECTORY && item.basename === name);
   }
 
-  public static getStudentNameFromPath(filePath: string): string | null {
+  static getStudentNameFromPath(filePath: string): string | null {
     const parts = filePath.split('/');
     if (parts.length < 3) {
       return null;
@@ -303,7 +295,7 @@ class WebDavService {
     return parts[2];
   }
 
-  public static async createCollectFolderIfNotExists(username: string, destinationPath: string) {
+  async createCollectFolderIfNotExists(username: string, destinationPath: string) {
     const sanitizedDestinationPath = destinationPath.replace(`${FILE_PATHS.COLLECT}/`, '');
     const pathWithoutFilename = sanitizedDestinationPath.slice(0, sanitizedDestinationPath.lastIndexOf('/'));
 
@@ -327,22 +319,19 @@ class WebDavService {
     }
   }
 
-  public static async cutCollectedItems(
+  async cutCollectedItems(
     username: string,
     originFullPath: string,
     newFullPath: string,
   ): Promise<WebdavStatusResponse> {
-    await WebDavService.createCollectFolderIfNotExists(username, originFullPath);
-    await WebDavService.moveOrRenameResource(username, originFullPath, newFullPath);
-    return WebDavService.createFolder(username, originFullPath.replace(FILE_PATHS.COLLECT, ''), FILE_PATHS.COLLECT);
+    await this.createCollectFolderIfNotExists(username, originFullPath);
+    await this.moveOrRenameResource(username, originFullPath, newFullPath);
+    return this.createFolder(username, originFullPath.replace(FILE_PATHS.COLLECT, ''), FILE_PATHS.COLLECT);
   }
 
-  public static async copyCollectedItems(
-    username: string,
-    duplicateFile: DuplicateFileRequestDto,
-  ): Promise<WebdavStatusResponse> {
+  async copyCollectedItems(username: string, duplicateFile: DuplicateFileRequestDto): Promise<WebdavStatusResponse> {
     const duplicationPromises = duplicateFile.destinationFilePaths.map(async (destinationPath) => {
-      await WebDavService.copyFileViaWebDAV(username, duplicateFile.originFilePath, destinationPath);
+      await this.copyFileViaWebDAV(username, duplicateFile.originFilePath, destinationPath);
     });
 
     try {

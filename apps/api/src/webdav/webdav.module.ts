@@ -10,26 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import axios from 'axios';
-import https from 'https';
+import { Module } from '@nestjs/common';
+import WebDavService from './webDavService';
 
-class WebdavClientFactory {
-  static createWebdavClient(baseUrl: string, username: string, password: string) {
-    const token = Buffer.from(`${username}:${password}`).toString('base64');
-
-    const httpsAgent = new https.Agent({
-      rejectUnauthorized: false,
-    });
-
-    return axios.create({
-      baseURL: baseUrl,
-      headers: {
-        'Content-Type': 'application/xml',
-        Authorization: `Basic ${token}`,
-      },
-      httpsAgent,
-    });
-  }
-}
-
-export default WebdavClientFactory;
+@Module({
+  providers: [WebDavService],
+  exports: [WebDavService],
+})
+export default class WebDavModule {}
