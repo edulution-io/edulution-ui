@@ -14,7 +14,6 @@ import React from 'react';
 import useFrameStore from '@/components/framing/FrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
-import PageTitle from '@/components/PageTitle';
 
 const EmbeddedIframes = () => {
   const { appConfigs } = useAppConfigsStore();
@@ -26,16 +25,13 @@ const EmbeddedIframes = () => {
       const isOpen = activeEmbeddedFrame === appConfig.name;
       const url = loadedEmbeddedFrames.includes(appConfig.name) ? appConfig.options.url : undefined;
       return (
-        <>
-          <PageTitle translationId={`${appConfig.name}.sidebar`} />
-          <iframe
-            key={appConfig.name}
-            title={appConfig.name}
-            className={`absolute inset-y-0 left-0 ml-0 mr-14 w-full md:w-[calc(100%-var(--sidebar-width))] ${isOpen ? 'block' : 'hidden'}`}
-            height="100%"
-            src={url}
-          />
-        </>
+        <iframe
+          key={appConfig.name}
+          title={appConfig.name}
+          className={`absolute inset-y-0 left-0 ml-0 mr-14 w-full md:w-[calc(100%-var(--sidebar-width))] ${isOpen ? 'block' : 'hidden'}`}
+          height="100%"
+          src={url}
+        />
       );
     });
 };

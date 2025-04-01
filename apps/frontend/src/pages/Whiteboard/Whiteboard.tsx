@@ -16,7 +16,6 @@ import cn from '@libs/common/utils/className';
 import useFrameStore from '@/components/framing/FrameStore';
 import APPS from '@libs/appconfig/constants/apps';
 import useLanguage from '@/hooks/useLanguage';
-import PageTitle from '@/components/PageTitle';
 
 const Whiteboard = () => {
   const { activeEmbeddedFrame } = useFrameStore();
@@ -31,7 +30,6 @@ const Whiteboard = () => {
         getStyle(),
       )}
     >
-      <PageTitle translationId="whiteboard.sidebar" />
       <div className="h-full w-full flex-grow">
         <Excalidraw
           theme={THEME.DARK}

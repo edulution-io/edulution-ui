@@ -10,5 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const EDU_API_DOCKER_ENDPOINT = 'docker';
-export const EDU_API_DOCKER_CONTAINER_ENDPOINT = 'containers';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+
+@Schema({ _id: false })
+export class AuthSettings {
+  @Prop({ type: Array, default: [] })
+  mfaEnforcedGroups: MultipleSelectorGroup[];
+}
+
+export const AuthSettingsSchema = SchemaFactory.createForClass(AuthSettings);

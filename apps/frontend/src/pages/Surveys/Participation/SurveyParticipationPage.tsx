@@ -23,6 +23,7 @@ import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticip
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import '../theme/custom.participation.css';
+import PageTitle from '@/components/PageTitle';
 
 interface SurveyParticipationPageProps {
   isPublic: boolean;
@@ -83,12 +84,18 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
   }, [selectedSurvey, language]);
 
   if (isFetching) {
-    return <LoadingIndicatorDialog isOpen />;
+    return (
+      <>
+        <PageTitle translationId="survey.publicSurvey" />
+        <LoadingIndicatorDialog isOpen />
+      </>
+    );
   }
 
   if (!surveyModel) {
     return (
       <div className="relative top-1/3">
+        <PageTitle translationId="survey.publicSurvey" />
         <h4 className="flex justify-center">{t('survey.notFound')}</h4>
       </div>
     );
@@ -96,6 +103,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
 
   return (
     <div className={cn('survey-participation')}>
+      <PageTitle translationId="survey.publicSurvey" />
       <Survey model={surveyModel} />
     </div>
   );

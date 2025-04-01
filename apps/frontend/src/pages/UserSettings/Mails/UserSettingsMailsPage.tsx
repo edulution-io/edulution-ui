@@ -38,7 +38,6 @@ import MailImporterTable from './MailImporterTable';
 const UserSettingsMailsPage: React.FC = () => {
   const { t } = useTranslation();
   const {
-    isGetSyncJobLoading,
     isEditSyncJobLoading,
     externalMailProviderConfig,
     getExternalMailProviderConfig,
@@ -64,7 +63,7 @@ const UserSettingsMailsPage: React.FC = () => {
 
   useEffect(() => {
     if (isMailConfigured && externalMailProviderConfig.length > 0) {
-      setOption(externalMailProviderConfig[0].name);
+      setOption(externalMailProviderConfig[0].id);
       void getSyncJob();
     }
   }, [externalMailProviderConfig.length]);
@@ -135,9 +134,10 @@ const UserSettingsMailsPage: React.FC = () => {
           <div className="space-y-4">
             <DropdownSelect
               options={externalMailProviderConfig}
-              selectedVal={isGetSyncJobLoading ? t('common.loading') : t(option)}
+              selectedVal={t(option)}
               handleChange={setOption}
               classname="md:w-1/3"
+              placeholder={t('common.loading')}
             />
             <Form {...form}>
               <form
