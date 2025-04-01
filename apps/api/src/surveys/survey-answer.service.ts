@@ -312,7 +312,7 @@ class SurveyAnswersService {
 
   async getAnswer(surveyId: string, username: string): Promise<SurveyAnswer> {
     const usersSurveyAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({
-      $and: [{ username }, { surveyId: new Types.ObjectId(surveyId) }],
+      $and: [{ 'attendee.username': username }, { surveyId: new Types.ObjectId(surveyId) }],
     });
 
     if (usersSurveyAnswer == null) {
@@ -334,10 +334,8 @@ class SurveyAnswersService {
       throw new CustomHttpException(SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError, HttpStatus.NOT_FOUND);
     }
 
-    const answers = surveyAnswers.filter((answer) => answer.answer !== null);
-    return answers.map((answer) => {
-      return { user: answer.attendee.username, ...answer.answer }
-    });
+    const answers = surveyAnswers.filter((answer) => answer.answer != null);
+    return answers.map((answer) => ({ user: answer.attendee?.username || 'unknown', ...answer.answer }));
   }
 
   async onSurveyRemoval(surveyIds: string[]): Promise<void> {

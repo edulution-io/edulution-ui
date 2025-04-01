@@ -25,7 +25,7 @@ interface SubmittedAnswersDialogStore {
 
   isOpenSubmittedAnswersDialog: boolean;
   setIsOpenSubmittedAnswersDialog: (state: boolean) => void;
-  getSubmittedSurveyAnswers: (surveyId: string, participant?: string) => Promise<void>;
+  getSubmittedSurveyAnswers: (surveyId: string, attendee?: string) => Promise<void>;
   user: string | undefined;
   selectUser: (user: string) => void;
   answer: JSON;
@@ -50,10 +50,10 @@ const useSubmittedAnswersDialogStore = create<SubmittedAnswersDialogStore>((set)
 
   setIsOpenSubmittedAnswersDialog: (state: boolean) => set({ isOpenSubmittedAnswersDialog: state }),
   selectUser: (userName: string) => set({ user: userName }),
-  getSubmittedSurveyAnswers: async (surveyId: string, participant?: string): Promise<void> => {
+  getSubmittedSurveyAnswers: async (surveyId: string, attendee?: string): Promise<void> => {
     set({ isLoading: true });
     try {
-      const response = await eduApi.post<SurveyAnswerDto>(SURVEY_ANSWER_ENDPOINT, { surveyId, participant });
+      const response = await eduApi.post<SurveyAnswerDto>(SURVEY_ANSWER_ENDPOINT, { surveyId, attendee });
       const surveyAnswer = response.data;
       const { answer } = surveyAnswer;
       set({ answer });

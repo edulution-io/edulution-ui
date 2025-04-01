@@ -75,14 +75,20 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     // eslint-disable-next-line no-param-reassign
     completingEvent.allow = false;
 
-    const targetUrl = isPublic ? PUBLIC_SURVEYS : SURVEYS;
     try {
-      const response = await eduApi.post<SurveyAnswerDto>(targetUrl, {
-        surveyId,
-        saveNo,
-        answer,
-        attendee,
-      });
+      const response = isPublic
+        ? await eduApi.post<SurveyAnswerDto>(PUBLIC_SURVEYS, {
+            surveyId,
+            saveNo,
+            answer,
+            attendee,
+          })
+        : await eduApi.patch<SurveyAnswerDto>(SURVEYS, {
+            surveyId,
+            saveNo,
+            answer,
+            attendee,
+          });
 
       // eslint-disable-next-line no-param-reassign
       completingEvent.allow = true;
