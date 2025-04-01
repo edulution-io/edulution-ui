@@ -16,7 +16,7 @@ const getSurveyFormulaWithIdentificationQuestion = (formula: TSurveyFormula) => 
   const identification = { type: 'text', name: 'user' };
   const updatedFormula = JSON.parse(JSON.stringify(formula)) as TSurveyFormula;
   const { pages, elements } = updatedFormula;
-  if (pages && pages.length > 0) {
+  if (updatedFormula.pages && pages && pages.length > 0) {
     const existingElements = pages[0].elements || [];
     updatedFormula.pages[0].elements = [identification, ...existingElements];
   } else {
