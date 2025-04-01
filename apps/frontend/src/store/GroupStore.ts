@@ -11,7 +11,7 @@
  */
 
 import { create } from 'zustand';
-import eduApi from '@/api/eduApi';
+import eduApi from '@libs/common/constants/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { Group } from '@libs/groups/types/group';

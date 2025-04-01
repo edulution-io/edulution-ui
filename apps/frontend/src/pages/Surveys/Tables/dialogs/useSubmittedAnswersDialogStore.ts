@@ -14,7 +14,7 @@ import { create } from 'zustand';
 import { SURVEY_ANSWER_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyAnswerDto from '@libs/survey/types/api/survey-answer.dto';
-import eduApi from '@/api/eduApi';
+import eduApi from '@libs/common/constants/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import SurveysPageView from '@libs/survey/types/api/page-view';
 

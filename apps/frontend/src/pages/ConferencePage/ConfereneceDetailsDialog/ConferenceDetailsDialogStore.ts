@@ -14,7 +14,7 @@ import { create } from 'zustand';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
-import eduApi from '@/api/eduApi';
+import eduApi from '@libs/common/constants/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
 import {

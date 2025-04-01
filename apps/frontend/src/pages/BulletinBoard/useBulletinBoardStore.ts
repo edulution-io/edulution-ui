@@ -11,7 +11,7 @@
  */
 
 import { create } from 'zustand';
-import eduApi from '@/api/eduApi';
+import eduApi from '@libs/common/constants/eduApi';
 import { BULLETIN_BOARD_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
 import handleApiError from '@/utils/handleApiError';
 import BulletinsByCategories from '@libs/bulletinBoard/types/bulletinsByCategories';

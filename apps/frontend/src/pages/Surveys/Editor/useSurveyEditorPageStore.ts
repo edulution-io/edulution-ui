@@ -12,12 +12,12 @@
 
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
-import { HttpStatus } from '@nestjs/common';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { SURVEY_IMAGES_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import commonErrorMessages from '@libs/common/constants/common-error-messages';
-import eduApi, { eduUrl } from '@/api/eduApi';
+import eduApi from '@libs/common/constants/eduApi';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import handleApiError from '@/utils/handleApiError';
 
 interface SurveyEditorPageStore {
@@ -105,12 +105,12 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
           const formData = new FormData();
           formData.append('file', file);
           const response = await eduApi.post<string>(`${SURVEY_IMAGES_ENDPOINT}/${surveyId}/${questionId}`, formData, {
-            headers: { 'Content-Type': 'multipart/form-data' },
+            headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
           });
           if (!response) {
-            throw new CustomHttpException(commonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new Error(commonErrorMessages.FILE_NOT_PROVIDED);
           }
-          callback('success', `${eduUrl}${response.data}`);
+          callback('success', `${EDU_API_URL}${response.data}`);
         } catch (error) {
           handleApiError(error, set);
           callback('error');

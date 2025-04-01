@@ -13,7 +13,7 @@
 import ClassManagementStore from '@libs/classManagement/types/store/classManagementStore';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
-import eduApi from '@/api/eduApi';
+import eduApi from '@libs/common/constants/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useLmnApiStore from '@/store/useLmnApiStore';

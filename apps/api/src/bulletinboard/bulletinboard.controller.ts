@@ -31,6 +31,7 @@ import { Response } from 'express';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import APPS from '@libs/appconfig/constants/apps';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import { Observable } from 'rxjs';
 import BulletinBoardService from './bulletinboard.service';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
@@ -80,7 +81,7 @@ class BulletinBoardController {
   }
 
   @Post('files')
-  @ApiConsumes('multipart/form-data')
+  @ApiConsumes(RequestResponseContentType.MULTIPART_FORM_DATA)
   @UseInterceptors(
     FileInterceptor(
       'file',

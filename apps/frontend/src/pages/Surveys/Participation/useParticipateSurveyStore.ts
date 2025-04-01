@@ -17,7 +17,7 @@ import { Model, CompletingEvent } from 'survey-core';
 import { SURVEYS, PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import SubmitAnswerDto from '@libs/survey/types/api/submit-answer.dto';
 import handleApiError from '@/utils/handleApiError';
-import eduApi from '@/api/eduApi';
+import eduApi from '@libs/common/constants/eduApi';
 
 interface ParticipateSurveyStore {
   answer: JSON;

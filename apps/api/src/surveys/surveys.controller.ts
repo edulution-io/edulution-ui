@@ -48,6 +48,7 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AnswerDto from '@libs/survey/types/api/answer.dto';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
@@ -97,7 +98,7 @@ class SurveysController {
   }
 
   @Post(`${IMAGES}/:surveyId/:questionId`)
-  @ApiConsumes('multipart/form-data')
+  @ApiConsumes(RequestResponseContentType.MULTIPART_FORM_DATA)
   @UseInterceptors(
     FileInterceptor(
       'file',
