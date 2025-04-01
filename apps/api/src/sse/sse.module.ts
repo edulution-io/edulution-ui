@@ -11,11 +11,14 @@
  */
 
 import { Global, Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
 import SseService from './sse.service';
 import SseController from './sse.controller';
+import { Conference, ConferenceSchema } from '../conferences/conference.schema';
 
 @Global()
 @Module({
+  imports: [MongooseModule.forFeature([{ name: Conference.name, schema: ConferenceSchema }])],
   controllers: [SseController],
   providers: [SseService],
   exports: [SseService],

@@ -13,9 +13,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Response } from 'express';
 import { of } from 'rxjs';
+import { getModelToken } from '@nestjs/mongoose';
 import SseController from './sse.controller';
 import SseService from './sse.service';
+import { Conference } from '../conferences/conference.schema';
 
+const conferencesModelMock = {
+  exists: jest.fn().mockImplementation(({ meetingID }) => ({ _id: meetingID as string })),
+};
 describe('SseController', () => {
   let sseController: SseController;
   let sseService: SseService;
@@ -25,13 +30,12 @@ describe('SseController', () => {
   };
 
   beforeEach(async () => {
+    jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       controllers: [SseController],
       providers: [
-        {
-          provide: SseService,
-          useValue: mockSseService,
-        },
+        { provide: SseService, useValue: mockSseService },
+        { provide: getModelToken(Conference.name), useValue: conferencesModelMock },
       ],
     }).compile();
 
@@ -55,11 +59,11 @@ describe('SseController', () => {
   });
 
   describe('publicSse', () => {
-    it('should call sseService.subscribe with the meetingID and response', () => {
+    it('should call sseService.subscribe with the meetingID and response', async () => {
       const meetingID = '12345';
       const response = {} as Response;
 
-      sseController.publicSse(meetingID, response);
+      await sseController.publicSse(meetingID, response);
 
       expect(sseService.subscribe).toHaveBeenCalledWith(meetingID, response);
     });
