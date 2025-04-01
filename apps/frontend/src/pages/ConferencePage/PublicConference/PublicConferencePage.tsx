@@ -26,7 +26,6 @@ import ConferenceDto from '@libs/conferences/types/conference.dto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import delay from '@libs/common/utils/delay';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import PageTitle from '@/components/PageTitle';
 
 const PublicConferencePage = (): React.ReactNode => {
   const { t } = useTranslation();
@@ -149,18 +148,12 @@ const PublicConferencePage = (): React.ReactNode => {
   }, [user?.username, meetingId, publicConference, conferences, isWaitingForConferenceToStart]);
 
   if (isGetConferencesLoading || isGetJoinConferenceUrlLoading || isGetPublicConferenceLoading) {
-    return (
-      <>
-        <PageTitle translationId="survey.publicSurvey" />
-        <LoadingIndicatorDialog isOpen />
-      </>
-    );
+    return <LoadingIndicatorDialog isOpen />;
   }
 
   if (!publicConference?.isPublic || !meetingId) {
     return (
       <div className="mx-auto w-[90%] md:w-[400px]">
-        <PageTitle translationId="survey.publicSurvey" />
         <div className="text-lg">{t('conferences.isNotPublicOrDoesNotExist')}</div>
       </div>
     );
@@ -168,7 +161,6 @@ const PublicConferencePage = (): React.ReactNode => {
 
   return (
     <div className="h-full overflow-y-auto scrollbar-thin">
-      <PageTitle translationId="survey.publicSurvey" />
       <div className="mx-auto w-[90%] md:w-[400px]">
         <div>{t('conferences.publicConference')}</div>
         <h3 className="mt-3">{publicConference.name}</h3>
