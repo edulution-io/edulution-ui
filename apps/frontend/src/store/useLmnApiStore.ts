@@ -19,7 +19,7 @@ import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import getSchoolPrefix from '@libs/classManagement/utils/getSchoolPrefix';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 import lmnApi from '@/api/lmnApi';
-import eduApi from '@/api/eduApi';
+import eduApi from '@libs/common/constants/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
 const { USER, USERS_QUOTA } = LMN_API_EDU_API_ENDPOINTS;

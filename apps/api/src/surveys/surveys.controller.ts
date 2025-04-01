@@ -55,7 +55,7 @@ import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorato
 import GetCurrentUser from '../common/decorators/getUser.decorator';
 import SseService from '../sse/sse.service';
 import type UserConnections from '../types/userConnections';
-import { checkAttachmentFile, createAttachmentUploadOptions } from '../common/file-attachment/multer.config';
+import { checkAttachmentFile, createAttachmentUploadOptions } from '../common/file-attachment/multer.utilities';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
@@ -102,7 +102,9 @@ class SurveysController {
   @UseInterceptors(
     FileInterceptor(
       'file',
-      createAttachmentUploadOptions((req) => `${SURVEYS_IMAGES_PATH}/${NAME_OF_TEMPORARY_FOLDER}/${req.user?.preferred_username}`),
+      createAttachmentUploadOptions(
+        (req) => `${SURVEYS_IMAGES_PATH}/${NAME_OF_TEMPORARY_FOLDER}/${req.user?.preferred_username}`,
+      ),
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this

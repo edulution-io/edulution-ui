@@ -173,11 +173,12 @@
     "configName": "Configuration name",
     "hostname": "Hostname",
     "port": "Port",
+    "portPlaceholder": "e.g. 993",
     "encryption": "Encryption",
     "rowsSelected": "{{selected}} of {{total}} jobs selected",
     "rowSelected": "{{selected}} of {{total}} job selected",
     "importer": {
-      "filterPlaceHolderText": "Search for importername",
+      "filterPlaceHolderText": "Search for username",
       "title": "Email Importer",
       "provider": "Email Provider",
       "interval": "Sync Interval",
@@ -402,12 +403,12 @@
     "member": "Member",
     "noneAvailable": "None available",
     "isJoinable": "Users can join",
-    "joinclass": "Join class to share files",
+    "joinclass": "Join class",
     "hide": "Hide for other users",
     "teacher": "Teacher",
     "typeToSearchUsersGroupsProjects": "Type to add students, classes or projects",
     "typeToSearchUsersGroupsProjectsToNewSession": "Type to add students, classes or projects to a new session",
-    "itsNotPossibleToEditOtherTeacher": "At the moment it is not possible to create the directory for sharing in another teacher's home directory or to manage the administration groups.",
+    "itsNotPossibleToEditExternalStudents": "It is not possible to control students from other classes. Please join the student's class.",
     "itsNotPossibleToEditOtherSchoolStudents": "At the moment it is not possible to create the directory for sharing in a student's home directory of another school or to manage the administration groups.",
     "usersInThisSession": "Users in this session",
     "webfilter": "Webfilter",
@@ -728,6 +729,21 @@
       "whiteboard": "Here you can make all the settings.",
       "bulletinboard": "Configure the user groups that have access to the Bulletin Board app here. The categories can be used to control which messages are displayed to users."
     },
+    "globalSettings": {
+      "title": "Global Settings",
+      "security": "Security",
+      "multiFactorAuthentication": "Two-factor authentication",
+      "description": "Here you can specify the user groups for which two-factor authentication is to be enforced.",
+      "selectUserGroups": "Select user groups for which the MFA setup is enforced.",
+      "updateSuccessful": "Setting updated successfully",
+      "errors": {
+        "updateError": "Settings could not be updated.",
+        "notFoundError": "Settings could not be loaded."
+      }
+    },
+    "info": {
+      "title": "Info"
+    },
     "appconfig": {
       "sections": {
         "onlyOffice": {
@@ -876,7 +892,9 @@
     "addTotp": {
       "title": "Set up Two-Factor Authentication",
       "qrCodeInstructions": "Scan the QR code with an authenticator app that supports TOTP (Time-based One-Time Password).",
-      "totpCodeInstructions": "Then enter the generated code here and save it:"
+      "totpCodeInstructions": "Then enter the generated code here and save it:",
+      "mfaSetupRequired": "The global guidelines require two-factor authentication to be set up:",
+      "mfaSetupSuccess": "Two-factor authentication has been successfully set up."
     },
     "errors": {
       "currentPasswordRequired": "Current password is required",
@@ -1048,7 +1066,10 @@
     "proxyDestinationPlaceholder": "e.g. http://localhost:1234/",
     "stripPrefix": "Strip prefix",
     "input": {
-      "dateTimePicker": "Datum und Uhrzeit auswählen"
+      "dateTimePicker": {
+        "timeSlot": "o'clock",
+        "placeholder": "MM/DD/YYYY HH:mm AM/PM"
+      }
     }
   },
   "fileOperationSuccessful": "File operation successful",
@@ -1289,7 +1310,8 @@
     "imageName": "Image",
     "filterPlaceHolderText": "Search for container name",
     "port": "Port",
-    "created": "Created at"
+    "created": "Created at",
+    "container-view": "Container"
   },
   "docker": {
     "error": {
@@ -1321,6 +1343,12 @@
     }
   },
   "veyon": {
+    "lockScreen": "Lock screen",
+    "unlockScreen": "Unlock screen",
+    "lockInputDevices": "Lock input",
+    "unlockInputDevices": "Unlock input",
+    "rebootSystem": "Reboot system",
+    "powerDown": "Shutdown system",
     "errors": {
       "AppNotProperlyConfigured": "Veyon is not properly configured, contact the system administrator.",
       "VeyonAuthFailed": "Veyon authentication failed.",

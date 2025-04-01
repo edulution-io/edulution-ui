@@ -37,7 +37,7 @@ import BulletinBoardService from './bulletinboard.service';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
 import GetToken from '../common/decorators/getToken.decorator';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
-import { checkAttachmentFile, createAttachmentUploadOptions } from '../common/file-attachment/multer.config';
+import { checkAttachmentFile, createAttachmentUploadOptions } from '../common/file-attachment/multer.utilities';
 
 @ApiTags(APPS.BULLETIN_BOARD)
 @ApiBearerAuth()

@@ -10,7 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useMediaQuery } from 'usehooks-ts';
+const VEYON_PROXY_TABLE_COLUMNS = {
+  ID: 'id',
+  SUBNET: 'subnet',
+  PROXY_ADDRESS: 'proxyAdress',
+} as const;
 
-const useIsMidSizeView = () => useMediaQuery('(min-width: 768px) and (max-width: 1550px)');
-export default useIsMidSizeView;
+export default VEYON_PROXY_TABLE_COLUMNS;

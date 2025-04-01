@@ -11,7 +11,7 @@
  */
 
 import { create, StoreApi, UseBoundStore } from 'zustand';
-import eduApi from '@/api/eduApi';
+import eduApi from '@libs/common/constants/eduApi';
 import {
   BULLETIN_BOARD_EDU_API_ENDPOINT,
   BULLETIN_CATEGORY_EDU_API_ENDPOINT,

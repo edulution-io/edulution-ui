@@ -18,6 +18,7 @@ import CommunityLicenseDialog from '@/pages/UserSettings/Info/CommunityLicenseDi
 import BBBFrame from '@/pages/ConferencePage/BBBIFrame';
 import VDIFrame from '@/pages/DesktopDeployment/VDIFrame';
 import EmbeddedIframes from '@/components/framing/EmbeddedIframes';
+import SetupMfaDialog from '@/pages/UserSettings/Security/components/SetupMfaDialog';
 
 const RootLayout = () => (
   <>
@@ -27,6 +28,7 @@ const RootLayout = () => (
     <EmbeddedIframes />
     <NativeFrames />
     <CommunityLicenseDialog />
+    <SetupMfaDialog />
     <Outlet />
   </>
 );

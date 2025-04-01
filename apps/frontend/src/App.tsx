@@ -15,12 +15,13 @@ import AppRouter from '@/router/AppRouter';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
 import { WebStorageStateStore } from 'oidc-client-ts';
 import i18n from '@/i18n';
-import eduApi, { eduUrl } from '@/api/eduApi';
+import eduApi from '@libs/common/constants/eduApi';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import lmnApi from '@/api/lmnApi';
 import useUserStore from '@/store/UserStore/UserStore';
 import Toaster from '@/components/ui/Toaster';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import GlobalHooksWrapper from './components/GlobalHooksWrapper';
 
 const App = () => {
@@ -40,7 +41,7 @@ const App = () => {
   }, [user?.language]);
 
   const oidcConfig: AuthProviderProps = {
-    authority: `${eduUrl}auth`,
+    authority: `${EDU_API_URL}auth`,
     client_id: ' ',
     client_secret: ' ',
     redirect_uri: '',

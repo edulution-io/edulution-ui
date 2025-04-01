@@ -39,14 +39,10 @@ import AttachmentService from '../common/file-attachment/attachment.service';
     FilesystemService,
     {
       provide: AttachmentService,
-      useFactory: (
-        fileSystemService: FilesystemService,
-      ) => {
-        return new AttachmentService(SURVEYS_IMAGES_DOMAIN, SURVEYS_IMAGES_PATH, fileSystemService);
-      },
+      useFactory: (fileSystemService: FilesystemService) =>
+        new AttachmentService(SURVEYS_IMAGES_DOMAIN, SURVEYS_IMAGES_PATH, fileSystemService),
       inject: [FilesystemService],
     },
-  ]
+  ],
 })
-
 export default class SurveysModule {}

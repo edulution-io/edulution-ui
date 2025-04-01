@@ -14,7 +14,7 @@ import FileActionType from '@libs/filesharing/types/fileActionType';
 import { HttpMethods } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
 import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
-import eduApi from '@/api/eduApi';
+import eduApi from '@libs/common/constants/eduApi';
 import buildApiFilePathUrl from '@libs/filesharing/utils/buildApiFilePathUrl';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
 

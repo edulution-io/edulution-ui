@@ -12,7 +12,7 @@
 
 import { create } from 'zustand';
 import { RowSelectionState } from '@tanstack/react-table';
-import eduApi from '@/api/eduApi';
+import eduApi from '@libs/common/constants/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import {
   BULLETIN_BOARD_BULLETINS_EDU_API_ENDPOINT,
@@ -24,7 +24,7 @@ import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
-import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 
@@ -144,7 +144,7 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
 
     try {
       const response = await eduApi.post<string>(BULLETIN_BOARD_UPLOAD_EDU_API_ENDPOINT, formData, {
-        headers: { 'Content-Type': RequestResponseContentType.MULTIPART_FORM_DATA },
+        headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
       });
 
       return response.data;

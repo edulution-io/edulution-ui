@@ -10,13 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import axios from 'axios';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+const FILE_SHARING_TABLE_COLUMNS = {
+  SELECT_FILENAME: 'select-filename',
+  LAST_MODIFIED: 'lastmod',
+  SIZE: 'size',
+  TYPE: 'type',
+} as const;
 
-export const eduUrl = `${window.location.origin}/${EDU_API_ROOT}/`;
-
-const eduApi = axios.create({
-  baseURL: eduUrl,
-});
-
-export default eduApi;
+export default FILE_SHARING_TABLE_COLUMNS;

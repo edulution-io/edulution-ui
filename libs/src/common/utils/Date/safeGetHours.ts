@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useMediaQuery } from 'usehooks-ts';
+const safeGetHours = (dateValue: unknown): number => (dateValue instanceof Date ? dateValue.getHours() : 0);
 
-const useIsMobileView = () => useMediaQuery('(max-width: 767px)');
-export default useIsMobileView;
+export default safeGetHours;

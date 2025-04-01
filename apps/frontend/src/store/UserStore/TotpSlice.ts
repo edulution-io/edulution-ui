@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import eduApi from '@/api/eduApi';
+import eduApi from '@libs/common/constants/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { StateCreator } from 'zustand';
 import UserStore from '@libs/user/types/store/userStore';
@@ -21,10 +21,13 @@ import UserDto from '@libs/user/types/user.dto';
 const initialState = {
   totpError: null,
   totpIsLoading: false,
+  isSetTotpDialogOpen: false,
 };
 
 const createTotpSlice: StateCreator<UserStore, [], [], TotpSlice> = (set) => ({
   ...initialState,
+
+  setIsSetTotpDialogOpen: (isSetTotpDialogOpen) => set({ isSetTotpDialogOpen }),
 
   setupTotp: async (totp, secret) => {
     set({ totpIsLoading: true });
@@ -34,8 +37,10 @@ const createTotpSlice: StateCreator<UserStore, [], [], TotpSlice> = (set) => ({
         secret,
       });
       set({ user: { ...data } });
+      return true;
     } catch (e) {
       handleApiError(e, set);
+      return false;
     } finally {
       set({ totpIsLoading: false });
     }
