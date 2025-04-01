@@ -26,7 +26,6 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import SurveyPage from '@libs/survey/types/TSurveyPage';
 import SurveyElement from '@libs/survey/types/TSurveyElement';
-import SURVEYS_IMAGES_DOMAIN from '@libs/survey/constants/surveysImagesDomain';
 import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
@@ -39,16 +38,14 @@ import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
 class SurveysService implements OnModuleInit {
-  private attachmentService: AttachmentService;
-
   constructor(
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
     private readonly fileSystemService: FilesystemService,
     private readonly groupsService: GroupsService,
+    private readonly attachmentService: AttachmentService,
   ) {}
 
   async onModuleInit() {
-    this.attachmentService = new AttachmentService(SURVEYS_IMAGES_DOMAIN, SURVEYS_IMAGES_PATH, this.fileSystemService);
     await MigrationService.runMigrations<SurveyDocument>(this.surveyModel, surveysMigrationsList);
   }
 

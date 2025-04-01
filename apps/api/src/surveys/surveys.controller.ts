@@ -42,6 +42,7 @@ import {
   SURVEYS,
 } from '@libs/survey/constants/surveys-endpoint';
 import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
+import NAME_OF_TEMPORARY_FOLDER from '@libs/common/constants/nameOfTemporaryFolder';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AnswerDto from '@libs/survey/types/api/answer.dto';
@@ -101,7 +102,7 @@ class SurveysController {
   @UseInterceptors(
     FileInterceptor(
       'file',
-      createAttachmentUploadOptions((req) => `${SURVEYS_IMAGES_PATH}/TEMP/${req.user?.preferred_username}`),
+      createAttachmentUploadOptions((req) => `${SURVEYS_IMAGES_PATH}/${NAME_OF_TEMPORARY_FOLDER}/${req.user?.preferred_username}`),
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this

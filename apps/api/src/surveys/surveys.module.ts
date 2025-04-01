@@ -12,6 +12,8 @@
 
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import SURVEYS_IMAGES_DOMAIN from '@libs/survey/constants/surveysImagesDomain';
+import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
 import SurveySchema, { Survey } from './survey.schema';
 import SurveyAnswerSchema, { SurveyAnswer } from './survey-answer.schema';
 import SurveysService from './surveys.service';
@@ -21,6 +23,7 @@ import PublicSurveysController from './public-surveys.controller';
 import SseService from '../sse/sse.service';
 import GroupsModule from '../groups/groups.module';
 import FilesystemService from '../filesystem/filesystem.service';
+import AttachmentService from '../common/file-attachment/attachment.service';
 
 @Module({
   imports: [
@@ -29,6 +32,21 @@ import FilesystemService from '../filesystem/filesystem.service';
     GroupsModule,
   ],
   controllers: [SurveysController, PublicSurveysController],
-  providers: [SurveysService, SurveyAnswersService, SseService, FilesystemService],
+  providers: [
+    SurveysService,
+    SurveyAnswersService,
+    SseService,
+    FilesystemService,
+    {
+      provide: AttachmentService,
+      useFactory: (
+        fileSystemService: FilesystemService,
+      ) => {
+        return new AttachmentService(SURVEYS_IMAGES_DOMAIN, SURVEYS_IMAGES_PATH, fileSystemService);
+      },
+      inject: [FilesystemService],
+    },
+  ]
 })
+
 export default class SurveysModule {}

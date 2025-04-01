@@ -1,0 +1,3 @@
+const NAME_OF_TEMPORARY_FOLDER = 'TEMP';
+
+export default NAME_OF_TEMPORARY_FOLDER;

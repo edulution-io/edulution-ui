@@ -12,6 +12,7 @@
 
 import { Response } from 'express';
 import { Injectable } from '@nestjs/common';
+import NAME_OF_TEMPORARY_FOLDER from '@libs/common/constants/nameOfTemporaryFolder';
 import FilesystemService from '../../filesystem/filesystem.service';
 
 @Injectable()
@@ -29,15 +30,15 @@ class AttachmentService {
     this.filePath = filePath;
   }
 
-  getTemporaryAttachmentUrl = (userId: string, fileName: string): string => `${this.domain}/TEMP/${userId}/${fileName}`;
+  getTemporaryAttachmentUrl = (userId: string, fileName: string): string => `${this.domain}/${NAME_OF_TEMPORARY_FOLDER}/${userId}/${fileName}`;
 
   getPersistentAttachmentUrl = (pathWithIds: string, fileName: string): string =>
     `${this.domain}/${pathWithIds}/${fileName}`;
 
-  getTemporaryDirectory = (userId: string): string => `${this.filePath}/TEMP/${userId}`;
+  getTemporaryDirectory = (userId: string): string => `${this.filePath}/${NAME_OF_TEMPORARY_FOLDER}/${userId}`;
 
   getTemporaryAttachmentPath = (userId: string, fileName: string): string =>
-    `${this.filePath}/TEMP/${userId}/${fileName}`;
+    `${this.filePath}/${NAME_OF_TEMPORARY_FOLDER}/${userId}/${fileName}`;
 
   createPersistentDirectory = (pathWithIds: string): Promise<void> =>
     this.fileSystemService.ensureDirectoryExists(this.getPersistentDirectory(pathWithIds));
