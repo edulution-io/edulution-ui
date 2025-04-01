@@ -11,10 +11,10 @@
  */
 
 import { create, StateCreator } from 'zustand';
-import eduApi from '@/api/eduApi';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import handleApiError from '@/utils/handleApiError';
+import eduApi from '@libs/common/constants/eduApi';
 import { GLOBAL_SETTINGS_ROOT_ENDPOINT } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
