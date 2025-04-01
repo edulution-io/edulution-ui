@@ -27,6 +27,7 @@ import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import SurveyPage from '@libs/survey/types/TSurveyPage';
 import SurveyElement from '@libs/survey/types/TSurveyElement';
 import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
+import SURVEYS_IMAGES_DOMAIN from '@libs/survey/constants/surveysImagesDomain';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
 import surveysMigrationsList from './migrations/surveysMigrationsList';
@@ -167,19 +168,53 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  async updateImageLink(
-    baseUrl: string,
+  async updateLogoLink(
     username: string,
-    pathWithIds: string,
+    surveyId: string,
+    tempFiles: string[],
+    link: string,
+  ): Promise<string | undefined> {
+    if (!link) {
+      return link;
+    }
+
+    const baseUrl = link.split(SURVEYS_IMAGES_DOMAIN)[0];
+    if (!baseUrl) {
+      return link;
+    }
+
+    const imagesFileName = link.split('/').pop();
+    if (!imagesFileName) {
+      return link;
+    }
+
+    if (tempFiles.includes(imagesFileName)) {
+      const pathWithIds = join(surveyId, 'logo');
+      await this.attachmentService.createPersistentDirectory(pathWithIds);
+      await this.attachmentService.moveTempFileIntoPermanentDirectory(username, pathWithIds, imagesFileName);
+      const url = this.attachmentService.getPersistentAttachmentUrl(pathWithIds, imagesFileName);
+      return join(baseUrl, url);
+    }
+    return link;
+  }
+
+  async updateImageLink(
+    username: string,
+    surveyId: string,
     imagesFileName: string,
     question: SurveyElement,
   ): Promise<SurveyElement> {
     try {
+      const baseUrl = question.imageLink?.split(SURVEYS_IMAGES_DOMAIN)[0];
+      if (!baseUrl) {
+        return question;
+      }
+
+      const pathWithIds = join(surveyId, question.name);
+      await this.attachmentService.createPersistentDirectory(pathWithIds);
       await this.attachmentService.moveTempFileIntoPermanentDirectory(username, pathWithIds, imagesFileName);
-      const newImageLink = join(
-        baseUrl,
-        this.attachmentService.getPersistentAttachmentUrl(pathWithIds, imagesFileName),
-      );
+      const url = this.attachmentService.getPersistentAttachmentUrl(pathWithIds, imagesFileName);
+      const newImageLink = join(baseUrl, url);
       return { ...question, imageLink: newImageLink };
     } catch (error) {
       Logger.error(error, SurveysService.name);
@@ -188,15 +223,11 @@ class SurveysService implements OnModuleInit {
   }
 
   async updateImageQuestion(
-    baseUrl: string,
     username: string,
     surveyId: string,
     tempFiles: string[],
     question: SurveyElement,
   ): Promise<SurveyElement> {
-    const pathWithIds = join(surveyId, question.name);
-    await this.attachmentService.createPersistentDirectory(pathWithIds);
-
     if (question.type !== 'image' || !question.imageLink) {
       return question;
     }
@@ -205,13 +236,12 @@ class SurveysService implements OnModuleInit {
       return question;
     }
     if (tempFiles.includes(imagesFileName)) {
-      return this.updateImageLink(baseUrl, username, pathWithIds, imagesFileName, question);
+      return this.updateImageLink(username, surveyId, imagesFileName, question);
     }
     return question;
   }
 
   async updateElements(
-    baseUrl: string,
     username: string,
     surveyId: string,
     tempFiles: string[],
@@ -221,13 +251,12 @@ class SurveysService implements OnModuleInit {
       return elements;
     }
     const updatePromises = elements?.map(async (question) =>
-      this.updateImageQuestion(baseUrl, username, surveyId, tempFiles, question),
+      this.updateImageQuestion(username, surveyId, tempFiles, question),
     );
     return Promise.all(updatePromises);
   }
 
   async updatePages(
-    baseUrl: string,
     username: string,
     surveyId: string,
     tempFiles: string[],
@@ -240,14 +269,13 @@ class SurveysService implements OnModuleInit {
       if (!page.elements || page.elements?.length === 0) {
         return page;
       }
-      const updatedElements = await this.updateElements(baseUrl, username, surveyId, tempFiles, page.elements);
+      const updatedElements = await this.updateElements(username, surveyId, tempFiles, page.elements);
       return { ...page, elements: updatedElements };
     });
     return Promise.all(updatePromises);
   }
 
   async updateImageLinksInSurveyFormula(
-    baseUrl: string,
     username: string,
     surveyId: string,
     formula: TSurveyFormula,
@@ -260,11 +288,14 @@ class SurveysService implements OnModuleInit {
       return formula;
     }
     const updatedFormula = { ...formula };
+    if (formula.logo) {
+      updatedFormula.logo = await this.updateLogoLink(username, surveyId, fileNames, formula.logo);
+    }
     if (formula.pages && formula.pages.length > 0) {
-      updatedFormula.pages = await this.updatePages(baseUrl, username, surveyId, fileNames, formula.pages);
+      updatedFormula.pages = await this.updatePages(username, surveyId, fileNames, formula.pages);
     }
     if (formula.elements && formula.elements.length > 0) {
-      updatedFormula.elements = await this.updateElements(baseUrl, username, surveyId, fileNames, formula.elements);
+      updatedFormula.elements = await this.updateElements(username, surveyId, fileNames, formula.elements);
     }
     return updatedFormula;
   }
@@ -272,7 +303,6 @@ class SurveysService implements OnModuleInit {
   async updateOrCreateSurvey(
     surveyDto: SurveyDto,
     user: JwtUser,
-    baseUrl: string,
     surveysSseConnections: UserConnections,
   ): Promise<SurveyDocument | null> {
     let survey: SurveyDocument | null;
@@ -291,7 +321,6 @@ class SurveysService implements OnModuleInit {
     const surveyId = (survey._id as Types.ObjectId).toString();
 
     const updatedFormula = await this.updateImageLinksInSurveyFormula(
-      baseUrl,
       user.preferred_username,
       surveyId,
       survey.formula,

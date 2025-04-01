@@ -11,7 +11,7 @@
  */
 
 import { Observable } from 'rxjs';
-import { Response, Request } from 'express';
+import { Response } from 'express';
 import {
   Body,
   Controller,
@@ -23,7 +23,6 @@ import {
   Patch,
   Post,
   Res,
-  Req,
   Sse,
   Query,
   UploadedFile,
@@ -121,9 +120,8 @@ class SurveysController {
   }
 
   @Post()
-  async updateOrCreateSurvey(@Body() surveyDto: SurveyDto, @GetCurrentUser() user: JWTUser, @Req() req: Request) {
-    const baseUrl = `${req.protocol}://${req.get('host')}`;
-    return this.surveyService.updateOrCreateSurvey(surveyDto, user, baseUrl, this.surveysSseConnections);
+  async updateOrCreateSurvey(@Body() surveyDto: SurveyDto, @GetCurrentUser() user: JWTUser) {
+    return this.surveyService.updateOrCreateSurvey(surveyDto, user, this.surveysSseConnections);
   }
 
   @Delete()
