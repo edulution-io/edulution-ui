@@ -12,6 +12,7 @@
 
 import axios from 'axios';
 import https from 'https';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 
 class WebdavClientFactory {
   static createWebdavClient(baseUrl: string, username: string, password: string) {
@@ -24,7 +25,7 @@ class WebdavClientFactory {
     return axios.create({
       baseURL: baseUrl,
       headers: {
-        'Content-Type': 'application/xml',
+        [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_XML,
         Authorization: `Basic ${token}`,
       },
       httpsAgent,
