@@ -55,7 +55,7 @@ const CommunityLicenseDialog: React.FC = () => {
           }}
         />
       </p>
-      <div className="flex w-full justify-center">
+      <div className="flex w-full justify-center shadow">
         <Button
           className="md:absolute md:bottom-4"
           variant="btn-collaboration"
@@ -72,7 +72,7 @@ const CommunityLicenseDialog: React.FC = () => {
 
   return (
     <AdaptiveDialog
-      desktopContentClassName="z-[100]"
+      desktopContentClassName="z-50 shadow-2xl border-[1px] border-muted"
       title={t('licensing.communityLicenseDialog.title')}
       isOpen={isOpen}
       handleOpenChange={() => close()}

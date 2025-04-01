@@ -21,6 +21,7 @@ import type VeyonFeatureRequest from '@libs/veyon/types/veyonFeatureRequest';
 import type VeyonFeatureUid from '@libs/veyon/types/veyonFeatureUid';
 import type VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import type SuccessfullVeyonAuthResponse from '@libs/veyon/types/connectionUidResponse';
+import type VeyonFeaturesResponse from '@libs/veyon/types/veyonFeaturesResponse';
 import VEYON_AUTH_METHODS from '@libs/veyon/constants/veyonAuthMethods';
 import APPS from '@libs/appconfig/constants/apps';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -28,6 +29,9 @@ import VeyonErrorMessages from '@libs/veyon/constants/veyonErrorMessages';
 import delay from '@libs/common/utils/delay';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import VEYON_API_AUTH_RESPONSE_KEYS from '@libs/veyon/constants/veyonApiAuthResponse';
+import { VEYON_API_FEATURE_ENDPOINT, VEYON_API_FRAMEBUFFER_ENDPOINT } from '@libs/veyon/constants/veyonApiEndpoints';
+import { HTTP_HEADERS, ResponseType } from '@libs/common/types/http-methods';
+import type UserConnectionsFeatureStates from '@libs/veyon/types/userConnectionsFeatureState';
 import UsersService from '../users/users.service';
 import AppConfigService from '../appconfig/appconfig.service';
 
@@ -87,7 +91,7 @@ class VeyonService implements OnModuleInit {
   ): Promise<SuccessfullVeyonAuthResponse | Record<string, never>> {
     const password = await this.usersService.getPassword(username);
     try {
-      const { data } = await this.veyonApi.post<VeyonApiAuthResponse>(
+      const response = await this.veyonApi.post<VeyonApiAuthResponse>(
         `/authentication/${ip}`,
         {
           method: VEYON_AUTH_METHODS.AUTHLOGON,
@@ -95,10 +99,15 @@ class VeyonService implements OnModuleInit {
         },
         {
           timeout: 60000,
+          validateStatus: (valStatus) => valStatus < (HttpStatus.INTERNAL_SERVER_ERROR as number),
         },
       );
 
-      const connectionUid = data[VEYON_API_AUTH_RESPONSE_KEYS.CONNECTION_UID];
+      if (response.status !== (HttpStatus.OK as number)) {
+        return {};
+      }
+
+      const connectionUid = response.data[VEYON_API_AUTH_RESPONSE_KEYS.CONNECTION_UID];
       await delay(200);
       const user = await this.getUser(connectionUid);
       const veyonUsername = user.login.split('\\')[1];
@@ -111,11 +120,11 @@ class VeyonService implements OnModuleInit {
         ip,
         veyonUsername,
         connectionUid,
-        validUntil: data.validUntil,
+        validUntil: response.data.validUntil,
       };
     } catch (error) {
       throw new CustomHttpException(
-        VeyonErrorMessages.VeyonAuthFailed,
+        VeyonErrorMessages.VeyonApiNotReachable,
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
         VeyonService.name,
@@ -125,11 +134,11 @@ class VeyonService implements OnModuleInit {
 
   async getFrameBufferStream(connectionUid: string, framebufferConfig: FrameBufferConfig): Promise<Readable> {
     try {
-      const { data } = await this.veyonApi.get<Readable>(`/framebuffer`, {
+      const { data } = await this.veyonApi.get<Readable>(VEYON_API_FRAMEBUFFER_ENDPOINT, {
         params: framebufferConfig,
-        responseType: 'stream',
+        responseType: ResponseType.STREAM,
         headers: {
-          'Connection-Uid': connectionUid,
+          [HTTP_HEADERS.CONNECTION_UID]: connectionUid,
         },
       });
       return data;
@@ -144,9 +153,9 @@ class VeyonService implements OnModuleInit {
 
   async getUser(connectionUid: string): Promise<VeyonUserResponse> {
     try {
-      const { data } = await this.veyonApi.get<VeyonUserResponse>(`/user`, {
+      const { data } = await this.veyonApi.get<VeyonUserResponse>('user', {
         headers: {
-          'Connection-Uid': connectionUid,
+          [HTTP_HEADERS.CONNECTION_UID]: connectionUid,
         },
       });
       return data;
@@ -160,14 +169,75 @@ class VeyonService implements OnModuleInit {
     }
   }
 
-  async setFeature(
+  private async pollFeatureState(
     featureUid: VeyonFeatureUid,
-    body: VeyonFeatureRequest,
     connectionUid: string,
-  ): Promise<Record<string, never>> {
+    expectedState: boolean,
+    retries = 0,
+  ): Promise<void> {
+    if (retries >= 10) {
+      return;
+    }
+    const { data } = await this.veyonApi.get<{ active: boolean }>(`${VEYON_API_FEATURE_ENDPOINT}/${featureUid}`, {
+      headers: { [HTTP_HEADERS.CONNECTION_UID]: connectionUid },
+    });
+
+    if (data.active === expectedState) {
+      return;
+    }
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 1000);
+    });
+
+    await this.pollFeatureState(featureUid, connectionUid, expectedState, retries + 1);
+  }
+
+  async setFeature(featureUid: VeyonFeatureUid, body: VeyonFeatureRequest): Promise<UserConnectionsFeatureStates> {
+    const { connectionUids } = body;
     try {
-      const { data } = await this.veyonApi.put<Record<string, never>>(`feature/${featureUid}`, body, {
-        headers: { 'Connection-Uid': connectionUid },
+      await Promise.all(
+        connectionUids.map(async (connectionUid) => {
+          await this.veyonApi.put<Record<string, never>>(
+            `${VEYON_API_FEATURE_ENDPOINT}/${featureUid}`,
+            { active: body.active },
+            {
+              headers: { [HTTP_HEADERS.CONNECTION_UID]: connectionUid },
+            },
+          );
+        }),
+      );
+
+      await Promise.all(
+        connectionUids.map(async (connectionUid) => {
+          await this.pollFeatureState(featureUid, connectionUid, body.active);
+        }),
+      );
+
+      const veyonFeatures = (
+        await Promise.all(
+          connectionUids.map(async (connectionUid) => {
+            const features = await this.getFeatures(connectionUid);
+            return { [connectionUid]: features };
+          }),
+        )
+      ).reduce((acc, curr) => ({ ...acc, ...curr }), {});
+
+      return veyonFeatures;
+    } catch (error) {
+      throw new CustomHttpException(
+        VeyonErrorMessages.VeyonApiNotReachable,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        VeyonService.name,
+      );
+    }
+  }
+
+  async getFeatures(connectionUid: string): Promise<VeyonFeaturesResponse[]> {
+    try {
+      const { data } = await this.veyonApi.get<VeyonFeaturesResponse[]>(VEYON_API_FEATURE_ENDPOINT, {
+        headers: { [HTTP_HEADERS.CONNECTION_UID]: connectionUid },
       });
       return data;
     } catch (error) {

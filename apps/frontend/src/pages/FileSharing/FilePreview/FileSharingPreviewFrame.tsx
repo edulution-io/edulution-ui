@@ -22,7 +22,7 @@ import OpenInNewTabButton from '@/components/framing/ResizableWindow/Buttons/Ope
 import FILE_PREVIEW_ROUTE from '@libs/filesharing/constants/routes';
 import EditButton from '@/components/framing/ResizableWindow/Buttons/EditButton';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
 import APPS from '@libs/appconfig/constants/apps';
@@ -106,7 +106,7 @@ const FileSharingPreviewFrame = () => {
     await setFileIsCurrentlyDisabled(basename, true, 5000);
   };
 
-  const isMobileView = useIsMobileView();
+  const { isMobileView } = useMedia();
   const { appConfigs } = useAppConfigsStore();
 
   const { x, y, width, height } = filePreviewRect || { x: 0, y: 0, width: 0, height: 0 };
