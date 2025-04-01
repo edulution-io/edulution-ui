@@ -13,16 +13,11 @@
 const mockAttachmentService = {
   getTemporaryAttachmentUrl: jest.fn().mockResolvedValue('temporalAttachmentUrl'),
   getPersistentAttachmentUrl: jest.fn().mockResolvedValue('permanentAttachmentUrl'),
-  getTemporaryDirectory: jest.fn().mockResolvedValue('temporalDirectoryPath'),
-  getTemporaryAttachmentPath: jest.fn().mockResolvedValue('temporalAttachmentPath'),
   createPersistentDirectory: jest.fn(),
-  getPersistentDirectory: jest.fn().mockResolvedValue('persistentDirectoryPath'),
-  getPersistentAttachmentPath: jest.fn().mockResolvedValue('permanentAttachmentPath'),
   getFileNamesFromTEMP: jest.fn().mockResolvedValue(['temporalAttachment01', 'temporalAttachment02']),
   clearTEMP: jest.fn(),
   serveTemporaryAttachment: jest.fn().mockResolvedValue({ stream: { pipe: jest.fn() } }),
   servePersistentAttachment: jest.fn().mockResolvedValue({ stream: { pipe: jest.fn() } }),
-  moveFileToPermanent: jest.fn(),
   moveTempFileIntoPermanentDirectory: jest.fn(),
   moveTempFilesIntoPermanentDirectory: jest.fn(),
 };

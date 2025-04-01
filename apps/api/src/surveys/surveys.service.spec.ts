@@ -213,13 +213,12 @@ describe('SurveyService', () => {
     it('should create a survey if the update failed', async () => {
       jest.spyOn(service, 'updateSurvey').mockResolvedValueOnce(null);
       jest.spyOn(service, 'createSurvey').mockResolvedValue(surveyUpdateUpdatedSurvey);
-      jest.spyOn(service, 'updateImageLinksInSurveyFormula').mockResolvedValue(surveyUpdateUpdatedSurvey.formula);
+      jest.spyOn(service, 'updateFormula').mockResolvedValue(surveyUpdateUpdatedSurvey.formula);
       jest.spyOn(service, 'updateSurvey').mockResolvedValueOnce(surveyUpdateUpdatedSurvey);
 
       const result = await service.updateOrCreateSurvey(
         surveyUpdateInitialSurveyDto,
         firstMockJWTUser,
-        'http://localhost:5173/',
         mockSseConnections,
       );
       expect(result).toBe(surveyUpdateUpdatedSurvey);

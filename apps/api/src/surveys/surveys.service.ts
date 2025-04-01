@@ -26,7 +26,6 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import SurveyPage from '@libs/survey/types/TSurveyPage';
 import SurveyElement from '@libs/survey/types/TSurveyElement';
-import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
 import SURVEYS_IMAGES_DOMAIN from '@libs/survey/constants/surveysImagesDomain';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
@@ -35,13 +34,11 @@ import MigrationService from '../migration/migration.service';
 import type UserConnections from '../types/userConnections';
 import { Survey, SurveyDocument } from './survey.schema';
 import AttachmentService from '../common/file-attachment/attachment.service';
-import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
 class SurveysService implements OnModuleInit {
   constructor(
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
-    private readonly fileSystemService: FilesystemService,
     private readonly groupsService: GroupsService,
     private readonly attachmentService: AttachmentService,
   ) {}
@@ -92,11 +89,6 @@ class SurveysService implements OnModuleInit {
     } finally {
       SseService.informAllUsers(surveysSseConnections, surveyIds.toString(), SSE_MESSAGE_TYPE.DELETED);
     }
-  }
-
-  async onSurveyRemoval(surveyIds: string[]): Promise<void> {
-    const imageDirectories = surveyIds.map((surveyId) => join(SURVEYS_IMAGES_PATH, surveyId));
-    await this.fileSystemService.deleteDirectories(imageDirectories);
   }
 
   async updateSurvey(
@@ -168,16 +160,7 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  async updateLogoLink(
-    username: string,
-    surveyId: string,
-    tempFiles: string[],
-    link: string,
-  ): Promise<string | undefined> {
-    if (!link) {
-      return link;
-    }
-
+  async updateLink(username: string, pathWithIds: string, tempFiles: string[], link: string): Promise<string> {
     const baseUrl = link.split(SURVEYS_IMAGES_DOMAIN)[0];
     if (!baseUrl) {
       return link;
@@ -189,8 +172,6 @@ class SurveysService implements OnModuleInit {
     }
 
     if (tempFiles.includes(imagesFileName)) {
-      const pathWithIds = join(surveyId, 'logo');
-      await this.attachmentService.createPersistentDirectory(pathWithIds);
       await this.attachmentService.moveTempFileIntoPermanentDirectory(username, pathWithIds, imagesFileName);
       const url = this.attachmentService.getPersistentAttachmentUrl(pathWithIds, imagesFileName);
       return join(baseUrl, url);
@@ -198,31 +179,12 @@ class SurveysService implements OnModuleInit {
     return link;
   }
 
-  async updateImageLink(
-    username: string,
-    surveyId: string,
-    imagesFileName: string,
-    question: SurveyElement,
-  ): Promise<SurveyElement> {
-    try {
-      const baseUrl = question.imageLink?.split(SURVEYS_IMAGES_DOMAIN)[0];
-      if (!baseUrl) {
-        return question;
-      }
-
-      const pathWithIds = join(surveyId, question.name);
-      await this.attachmentService.createPersistentDirectory(pathWithIds);
-      await this.attachmentService.moveTempFileIntoPermanentDirectory(username, pathWithIds, imagesFileName);
-      const url = this.attachmentService.getPersistentAttachmentUrl(pathWithIds, imagesFileName);
-      const newImageLink = join(baseUrl, url);
-      return { ...question, imageLink: newImageLink };
-    } catch (error) {
-      Logger.error(error, SurveysService.name);
-      throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.INTERNAL_SERVER_ERROR, error);
-    }
+  async updateLogo(username: string, surveyId: string, tempFiles: string[], link: string): Promise<string | undefined> {
+    const pathWithIds = join(surveyId, 'logo');
+    return this.updateLink(username, pathWithIds, tempFiles, link);
   }
 
-  async updateImageQuestion(
+  async updateQuestion(
     username: string,
     surveyId: string,
     tempFiles: string[],
@@ -231,14 +193,14 @@ class SurveysService implements OnModuleInit {
     if (question.type !== 'image' || !question.imageLink) {
       return question;
     }
-    const imagesFileName = question.imageLink.split('/').pop();
-    if (!imagesFileName) {
-      return question;
+    try {
+      const pathWithIds = join(surveyId, question.name);
+      const newImageLink = await this.updateLink(username, pathWithIds, tempFiles, question.imageLink);
+      return { ...question, imageLink: newImageLink };
+    } catch (error) {
+      Logger.error(error, SurveysService.name);
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR, error);
     }
-    if (tempFiles.includes(imagesFileName)) {
-      return this.updateImageLink(username, surveyId, imagesFileName, question);
-    }
-    return question;
   }
 
   async updateElements(
@@ -251,7 +213,7 @@ class SurveysService implements OnModuleInit {
       return elements;
     }
     const updatePromises = elements?.map(async (question) =>
-      this.updateImageQuestion(username, surveyId, tempFiles, question),
+      this.updateQuestion(username, surveyId, tempFiles, question),
     );
     return Promise.all(updatePromises);
   }
@@ -275,11 +237,7 @@ class SurveysService implements OnModuleInit {
     return Promise.all(updatePromises);
   }
 
-  async updateImageLinksInSurveyFormula(
-    username: string,
-    surveyId: string,
-    formula: TSurveyFormula,
-  ): Promise<TSurveyFormula> {
+  async updateFormula(username: string, surveyId: string, formula: TSurveyFormula): Promise<TSurveyFormula> {
     if (!surveyId) {
       return formula;
     }
@@ -289,7 +247,7 @@ class SurveysService implements OnModuleInit {
     }
     const updatedFormula = { ...formula };
     if (formula.logo) {
-      updatedFormula.logo = await this.updateLogoLink(username, surveyId, fileNames, formula.logo);
+      updatedFormula.logo = await this.updateLogo(username, surveyId, fileNames, formula.logo);
     }
     if (formula.pages && formula.pages.length > 0) {
       updatedFormula.pages = await this.updatePages(username, surveyId, fileNames, formula.pages);
@@ -320,11 +278,7 @@ class SurveysService implements OnModuleInit {
     // eslint-disable-next-line no-underscore-dangle
     const surveyId = (survey._id as Types.ObjectId).toString();
 
-    const updatedFormula = await this.updateImageLinksInSurveyFormula(
-      user.preferred_username,
-      surveyId,
-      survey.formula,
-    );
+    const updatedFormula = await this.updateFormula(user.preferred_username, surveyId, survey.formula);
 
     const updatedSurvey = { ...surveyDto, id: surveyId, formula: updatedFormula };
     const savedSurvey = await this.updateSurvey(updatedSurvey, user, surveysSseConnections);
@@ -348,6 +302,10 @@ class SurveysService implements OnModuleInit {
   async servePermanentImage(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
     const pathWithIds = join(surveyId, questionId);
     return this.attachmentService.servePersistentAttachment(pathWithIds, fileName, res);
+  }
+
+  async onSurveyRemoval(surveyIds: string[]): Promise<void> {
+    return this.attachmentService.clearPermanentDirectories(surveyIds);
   }
 }
 
