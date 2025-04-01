@@ -23,6 +23,7 @@ type OtpInputProps = {
 const OtpInput: React.FC<OtpInputProps> = ({ totp, variant = 'default', setTotp, onComplete }) => (
   <div className="mb-3 flex flex-col items-center">
     <InputOTP
+      autoFocus
       maxLength={6}
       value={totp}
       onChange={(value) => setTotp(value)}
