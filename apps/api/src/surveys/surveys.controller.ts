@@ -54,7 +54,7 @@ import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorato
 import GetCurrentUser from '../common/decorators/getUser.decorator';
 import SseService from '../sse/sse.service';
 import type UserConnections from '../types/userConnections';
-import { checkAttachmentFile, createAttachmentUploadOptions } from '../common/multer.config';
+import { checkAttachmentFile, createAttachmentUploadOptions } from '../common/multer.utilities';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
