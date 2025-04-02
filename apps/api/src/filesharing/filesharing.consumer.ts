@@ -12,9 +12,6 @@
 
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
-import { Response } from 'express';
-import { Observable } from 'rxjs';
-import { MessageEvent } from '@nestjs/common';
 
 import APPS from '@libs/appconfig/constants/apps';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
@@ -23,20 +20,16 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 
 import JOB_NAMES from '@libs/queue/constants/jobNames';
 import DuplicateFileJobData from '@libs/queue/types/duplicateFileJobData';
-import type UserConnections from '../types/userConnections';
 import FilesharingService from './filesharing.service';
 import SseService from '../sse/sse.service';
 
 @Processor(APPS.FILE_SHARING, { concurrency: 1 })
 class FilesharingConsumer extends WorkerHost {
-  private fileSharingSseConnections: UserConnections = new Map();
-
-  constructor(private readonly fileSharingService: FilesharingService) {
+  constructor(
+    private readonly fileSharingService: FilesharingService,
+    private readonly sseService: SseService,
+  ) {
     super();
-  }
-
-  subscribe(username: string, res: Response): Observable<MessageEvent> {
-    return SseService.subscribe(username, this.fileSharingSseConnections, res);
   }
 
   async process(job: Job<DuplicateFileJobData>): Promise<void> {
@@ -80,7 +73,7 @@ class FilesharingConsumer extends WorkerHost {
       failedPaths,
     };
 
-    SseService.sendEventToUser(username, this.fileSharingSseConnections, progressDto, SSE_MESSAGE_TYPE.UPDATED);
+    this.sseService.sendEventToUser(username, progressDto, SSE_MESSAGE_TYPE.FILESHARING_PROGRESS);
   }
 }
 

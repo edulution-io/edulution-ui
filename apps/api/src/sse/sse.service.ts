@@ -22,62 +22,45 @@ import type SseEventData from '../types/sseEventData';
 
 @Injectable()
 class SseService {
-  static subscribe(username: string, userConnections: UserConnections, res: Response): Observable<MessageEvent> {
-    const subject = new Subject<SseEvent>();
+  private userConnections: UserConnections = new Map();
 
-    if (!userConnections.has(username)) {
-      userConnections.set(username, []);
+  public subscribe(username: string, res: Response): Observable<MessageEvent> {
+    let subject = this.userConnections.get(username);
+    if (!subject) {
+      subject = new Subject<SseEvent>();
+      this.userConnections.set(username, subject);
     }
 
-    userConnections.get(username)?.push(subject);
-
     res.on('close', () => {
-      const connections = userConnections.get(username);
-      if (connections) {
-        const index = connections.indexOf(subject);
-        if (index !== -1) {
-          connections.splice(index, 1);
-        }
-        if (connections.length === 0) {
-          userConnections.delete(username);
-        }
-      }
+      this.userConnections.delete(username);
       subject.complete();
     });
 
-    return subject.pipe(map((event: SseEvent) => ({ data: event.data, type: event.type }) as MessageEvent));
+    return subject.pipe(
+      map((event: SseEvent) => ({
+        data: event.data,
+        type: event.type,
+      })),
+    );
   }
 
-  static sendEventToUser(
-    username: string,
-    userConnections: UserConnections,
-    data: SseEventData,
-    type: SseStatus = SSE_MESSAGE_TYPE.MESSAGE,
-  ) {
-    const userStreams = userConnections.get(username);
-    if (userStreams) {
-      userStreams.forEach((subject) => {
-        subject.next({ username, type, data });
-      });
+  public sendEventToUser(username: string, data: SseEventData, type: SseStatus = SSE_MESSAGE_TYPE.MESSAGE) {
+    const subject = this.userConnections.get(username);
+    if (subject) {
+      subject.next({ username, type, data });
     }
   }
 
-  static sendEventToUsers(attendees: string[], userConnections: UserConnections, data: SseEventData, type: SseStatus) {
-    attendees.forEach((username) => SseService.sendEventToUser(username, userConnections, data, type));
+  public sendEventToUsers(attendees: string[], data: SseEventData, type: SseStatus) {
+    attendees.forEach((username) => this.sendEventToUser(username, data, type));
   }
 
-  static informAllUsers(
-    userConnections: UserConnections,
-    data: SseEventData,
-    type: SseStatus = SSE_MESSAGE_TYPE.MESSAGE,
-  ): void {
-    userConnections.forEach((subjects, username) => {
-      subjects.forEach((subject) => {
-        subject.next({
-          username,
-          type,
-          data,
-        });
+  public informAllUsers(data: SseEventData, type: SseStatus = SSE_MESSAGE_TYPE.MESSAGE): void {
+    this.userConnections.forEach((subject, username) => {
+      subject.next({
+        username,
+        type,
+        data,
       });
     });
   }
