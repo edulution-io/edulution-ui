@@ -932,7 +932,8 @@
     "password_too_long": "Passwort zu lang",
     "forgot_password": "Passwort vergessen?",
     "remember_me": "Merken",
-    "enterMultiFactorCode": "Zwei-Faktor-Authentisierung"
+    "enterMultiFactorCode": "Zwei-Faktor-Authentisierung",
+    "loginWithApp": "Einloggen mit edulution APP"
   },
   "common": {
     "share": "Teilen",

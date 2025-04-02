@@ -930,7 +930,8 @@
     "password_too_long": "Password to long",
     "forgot_password": "Forgot password?",
     "remember_me": "Remember me",
-    "enterMultiFactorCode": "Two-Factor Authentication"
+    "enterMultiFactorCode": "Two-Factor Authentication",
+    "loginWithApp": "Login with edulution APP"
   },
   "edit": "Edit",
   "common": {
