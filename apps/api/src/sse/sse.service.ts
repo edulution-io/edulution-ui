@@ -24,6 +24,10 @@ import type SseEventData from '../types/sseEventData';
 class SseService {
   private userConnections: UserConnections = new Map();
 
+  public getUserConnection(username: string) {
+    return this.userConnections.get(username);
+  }
+
   public subscribe(username: string, res: Response): Observable<MessageEvent> {
     let subject = this.userConnections.get(username);
     if (!subject) {

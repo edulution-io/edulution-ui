@@ -41,7 +41,7 @@ class SseController {
 
   @Public()
   @Sse(`${APPS.CONFERENCES}/public`)
-  async publicSse(
+  async publicConferenceSse(
     @Query('meetingID') meetingID: string,
     @Res() res: Response,
   ): Promise<Observable<MessageEvent | null>> {
@@ -55,6 +55,12 @@ class SseController {
       { meetingID },
       SseController.name,
     );
+  }
+
+  @Public()
+  @Sse('auth')
+  publicLoginSse(@Query('sessionId') sessionId: string, @Res() res: Response): Observable<MessageEvent | null> {
+    return this.sseService.subscribe(sessionId, res);
   }
 }
 

@@ -17,6 +17,7 @@ import { useForm } from 'react-hook-form';
 import CryptoJS from 'crypto-js';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
+import { v4 as uuidv4 } from 'uuid';
 import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
@@ -29,6 +30,7 @@ import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
 import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import PageTitle from '@/components/PageTitle';
+import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 
@@ -46,10 +48,11 @@ const LoginPage: React.FC = () => {
   const { isLoading } = auth;
   const [loginComplete, setLoginComplete] = useState(false);
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
-  const [totp, setTotp] = useState('');
   const [webdavKey, setWebdavKey] = useState('');
   const [encryptKey, setEncryptKey] = useState('');
   const [showQrCode, setShowQrCode] = useState(false);
+
+  const sessionID = uuidv4();
 
   const form = useForm({
     mode: 'onSubmit',
@@ -57,6 +60,7 @@ const LoginPage: React.FC = () => {
     defaultValues: {
       username: '',
       password: '',
+      totpValue: '',
     },
   });
 
@@ -74,7 +78,9 @@ const LoginPage: React.FC = () => {
     try {
       const username = form.getValues('username');
       const password = form.getValues('password');
-      const passwordHash = btoa(`${password}${isEnterTotpVisible ? `:${totp}` : ''}`);
+      const totpValue = form.getValues('totpValue');
+
+      const passwordHash = btoa(`${password}${isEnterTotpVisible || totpValue ? `:${totpValue}` : ''}`);
       const requestUser = await auth.signinResourceOwnerCredentials({
         username,
         password: passwordHash,
@@ -138,14 +144,29 @@ const LoginPage: React.FC = () => {
       return undefined;
     }
     const eventSource = new EventSource(
-      `${window.location.origin}/${EDU_API_ROOT}/${AUTH_PATHS.AUTH_ENDPOINT}/sse?sessionID=`,
+      `${window.location.origin}/${EDU_API_ROOT}/${SSE_EDU_API_ENDPOINTS.SSE}/${AUTH_PATHS.AUTH_ENDPOINT}?sessionId=${sessionID}`,
     );
 
-    const handleLoginEvent = () => {};
+    const controller = new AbortController();
+    const { signal } = controller;
 
-    document.addEventListener('message', handleLoginEvent);
+    const handleLoginEvent = (e: MessageEvent<string>) => {
+      const { username, password, totpValue } = JSON.parse(atob(e.data)) as {
+        username: string;
+        password: string;
+        totpValue?: string;
+      };
+
+      form.setValue('username', username);
+      form.setValue('password', password);
+      form.setValue('totpValue', totpValue || '', { shouldValidate: true });
+
+      void form.handleSubmit(onSubmit)();
+    };
+
+    eventSource.addEventListener('message', handleLoginEvent, { signal });
     return () => {
-      eventSource.removeEventListener('message', handleLoginEvent);
+      controller.abort();
       eventSource.close();
     };
   }, [showQrCode]);
@@ -161,7 +182,7 @@ const LoginPage: React.FC = () => {
 
   const onTotpCancelButtonClick = () => {
     form.clearErrors();
-    setTotp('');
+    form.setValue('totpValue', '');
     setIsEnterTotpVisible(false);
   };
 
@@ -174,58 +195,47 @@ const LoginPage: React.FC = () => {
   };
 
   const renderFormField = (fieldName: 'username' | 'password', label: string, type?: string, shouldTrim?: boolean) => (
-    <FormFieldSH
-      control={form.control}
-      name={fieldName}
-      render={({ field }) => (
-        <FormItem>
-          <p className="font-bold text-foreground">{label}</p>
-          <FormControl>
-            <Input
-              {...field}
-              type={type}
-              shouldTrim={shouldTrim}
-              disabled={isLoading}
-              placeholder={label}
-              variant="login"
-              data-testid={`test-id-login-page-${fieldName}-input`}
-            />
-          </FormControl>
-          <FormMessage className="text-foreground" />
-        </FormItem>
-      )}
-    />
+    <div className={isEnterTotpVisible ? 'hidden' : ''}>
+      <FormFieldSH
+        control={form.control}
+        name={fieldName}
+        render={({ field }) => (
+          <FormItem>
+            <p className="font-bold text-foreground">{label}</p>
+            <FormControl>
+              <Input
+                {...field}
+                type={type}
+                shouldTrim={shouldTrim}
+                disabled={isLoading}
+                placeholder={label}
+                variant="login"
+                data-testid={`test-id-login-page-${fieldName}-input`}
+              />
+            </FormControl>
+            <FormMessage className="text-foreground" />
+          </FormItem>
+        )}
+      />
+    </div>
   );
 
   const renderErrorMessage = () => {
     const passwordError = form.getFieldState('password').error?.message;
     return passwordError ? (
-      <p>
+      <p className="h-5">
         <span>{t(passwordError)}</span>
       </p>
     ) : null;
   };
 
   const getMainContent = () => {
-    if (isEnterTotpVisible) {
-      return (
-        <>
-          <TotpInput
-            totp={totp}
-            setTotp={setTotp}
-            onComplete={onSubmit}
-          />
-          {renderErrorMessage()}
-        </>
-      );
-    }
-
     if (showQrCode) {
       return (
         <QRCodeDisplay
           value={JSON.stringify({
             url: `${window.location.origin}/${EDU_API_ROOT}/${AUTH_PATHS.AUTH_ENDPOINT}`,
-            sessionID: '123456789',
+            sessionID,
           })}
           size="lg"
         />
@@ -234,6 +244,24 @@ const LoginPage: React.FC = () => {
 
     return (
       <>
+        <div className={isEnterTotpVisible ? '' : 'hidden'}>
+          <FormFieldSH
+            control={form.control}
+            name="totpValue"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <TotpInput
+                    totp={field.value}
+                    setTotp={field.onChange}
+                    onComplete={onSubmit}
+                  />
+                </FormControl>
+                {renderErrorMessage()}
+              </FormItem>
+            )}
+          />
+        </div>
         {renderFormField('username', t('common.username'), 'text', true)}
         {renderFormField('password', t('common.password'), 'password')}
       </>
@@ -262,7 +290,18 @@ const LoginPage: React.FC = () => {
             data-testid="test-id-login-page-form"
           >
             {getMainContent()}
-            {!form.getFieldState('password').error && <p className="flex h-2" />}
+            {!form.getFieldState('password').error && <p className="flex h-3" />}
+
+            <Button
+              className="mx-auto w-full justify-center text-background shadow-xl"
+              type="submit"
+              variant="btn-security"
+              size="lg"
+              data-testid="test-id-login-page-submit-button"
+              disabled={showQrCode || isLoading || totpIsLoading}
+            >
+              {totpIsLoading || isLoading ? t('common.loading') : t('common.login')}
+            </Button>
             <Button
               className="mx-auto w-full justify-center text-foreground shadow-xl hover:bg-ciGrey/10"
               type="button"
@@ -272,16 +311,6 @@ const LoginPage: React.FC = () => {
               onClick={handleCancelOrToggleQrCode}
             >
               {isEnterTotpVisible || showQrCode ? t('common.cancel') : t('login.loginWithApp')}
-            </Button>
-            <Button
-              className="mx-auto w-full justify-center text-background shadow-xl"
-              type="submit"
-              variant="btn-security"
-              size="lg"
-              data-testid="test-id-login-page-submit-button"
-              disabled={isLoading || totpIsLoading}
-            >
-              {totpIsLoading || isLoading ? t('common.loading') : t('common.login')}
             </Button>
           </form>
         </Form>

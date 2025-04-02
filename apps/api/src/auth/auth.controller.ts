@@ -10,13 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Body, Controller, Get, Param, Post, Put, Req, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post, Put, Query, Req, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import { Request } from 'express';
 import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
 import AuthRequestArgs from '@libs/auth/types/auth-request';
 import { AUTH_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import { Public } from '../common/decorators/public.decorator';
 import AuthService from './auth.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
@@ -59,6 +61,16 @@ class AuthController {
   @Put(AUTH_PATHS.AUTH_CHECK_TOTP)
   disableTotp(@GetCurrentUsername() username: string) {
     return this.authService.disableTotp(username);
+  }
+
+  @Public()
+  @Post('login')
+  loginViaApp(
+    @Body() body: { username: string; password: string; totpValue?: string },
+    @Query('sessionId') sessionId: string,
+  ) {
+    if (!sessionId) throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.BAD_REQUEST);
+    return this.authService.loginViaApp(body, sessionId);
   }
 }
 
