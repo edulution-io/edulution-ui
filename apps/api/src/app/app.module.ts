@@ -41,6 +41,7 @@ import BulletinBoardModule from '../bulletinboard/bulletinboard.module';
 import DockerModule from '../docker/docker.module';
 import VeyonModule from '../veyon/veyon.module';
 import GlobalSettingsModule from '../global-settings/global-settings.module';
+import SseModule from '../sse/sse.module';
 
 const redisHost = process.env.REDIS_HOST ?? 'localhost';
 const redisPort = +(process.env.REDIS_PORT ?? 6379);
@@ -79,6 +80,7 @@ const redisPort = +(process.env.REDIS_PORT ?? 6379);
     DockerModule,
     VeyonModule,
     GlobalSettingsModule,
+    SseModule,
     JwtModule.register({
       global: true,
     }),

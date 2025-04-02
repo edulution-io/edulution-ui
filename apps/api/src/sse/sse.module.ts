@@ -10,9 +10,17 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
+import { Global, Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import SseService from './sse.service';
+import SseController from './sse.controller';
+import { Conference, ConferenceSchema } from '../conferences/conference.schema';
 
-export const CONFERENCES_EDU_API_ENDPOINT: string = 'conferences';
-export const CONFERENCES_JOIN_EDU_API_ENDPOINT = `${CONFERENCES_EDU_API_ENDPOINT}/join`;
-export const CONFERENCES_PUBLIC_EDU_API_ENDPOINT = `${CONFERENCES_EDU_API_ENDPOINT}/public`;
-export const CONFERENCES_PUBLIC_SSE_EDU_API_ENDPOINT = `${SSE_EDU_API_ENDPOINTS.SSE}/${CONFERENCES_EDU_API_ENDPOINT}/public`;
+@Global()
+@Module({
+  imports: [MongooseModule.forFeature([{ name: Conference.name, schema: ConferenceSchema }])],
+  controllers: [SseController],
+  providers: [SseService],
+  exports: [SseService],
+})
+export default class SseModule {}
