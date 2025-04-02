@@ -10,11 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Body, Controller, Delete, Get, MessageEvent, Param, Patch, Post, Put, Query, Res, Sse } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Observable } from 'rxjs';
-import { Response } from 'express';
 import { CONFERENCES_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import JoinPublicConferenceDetails from '@libs/conferences/types/joinPublicConferenceDetails';
@@ -22,7 +20,6 @@ import ConferencesService from './conferences.service';
 import { Conference } from './conference.schema';
 import { Public } from '../common/decorators/public.decorator';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
-import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 
 @ApiTags(CONFERENCES_EDU_API_ENDPOINT)
 @ApiBearerAuth()
@@ -70,11 +67,6 @@ class ConferencesController {
     return this.conferencesService.findAllConferencesTheUserHasAccessTo(user);
   }
 
-  @Sse('sse')
-  sse(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
-    return this.conferencesService.subscribe(username, res);
-  }
-
   @Public()
   @Get('public/:meetingID')
   getPublicConference(@Param('meetingID') meetingID: string) {
@@ -85,12 +77,6 @@ class ConferencesController {
   @Post('public')
   joinPublicConference(@Body() joinDetails: JoinPublicConferenceDetails) {
     return this.conferencesService.joinPublicConference(joinDetails);
-  }
-
-  @Public()
-  @Sse('sse/public')
-  publicSse(@Query('meetingID') meetingID: string, @Res() res: Response): Observable<MessageEvent> {
-    return this.conferencesService.subscribe(meetingID, res);
   }
 }
 
