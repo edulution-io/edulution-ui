@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import FileRenderer from '@/pages/FileSharing/FilePreview/FileRenderer';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import PageTitle from '@/components/PageTitle';
 
 const FullScreenFileViewer = () => {
   const { t } = useTranslation();
@@ -24,6 +25,7 @@ const FullScreenFileViewer = () => {
   const {
     filesToOpenInNewTab,
     fetchDownloadLinks,
+    currentlyEditingFile,
     setCurrentlyEditingFile,
     downloadLinkURL,
     isEditorLoading,
@@ -56,6 +58,10 @@ const FullScreenFileViewer = () => {
 
   return (
     <div className="h-screen w-screen">
+      <PageTitle
+        title={currentlyEditingFile?.basename}
+        translationId="filesharing.sidebar"
+      />
       <FileRenderer
         editMode
         isOpenedInNewTab
