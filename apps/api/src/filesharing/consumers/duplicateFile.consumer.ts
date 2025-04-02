@@ -14,7 +14,7 @@ import { WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Response } from 'express';
 import { Observable } from 'rxjs';
-import { MessageEvent } from '@nestjs/common';
+import { Injectable, MessageEvent } from '@nestjs/common';
 
 import DuplicateFileJobData from '@libs/queue/types/duplicateFileJobData';
 
@@ -26,6 +26,7 @@ import type UserConnections from '../../types/userConnections';
 import SseService from '../../sse/sse.service';
 import WebDavService from '../../webdav/webDavService';
 
+@Injectable()
 class DuplicateFileConsumer extends WorkerHost {
   private fileSharingSseConnections: UserConnections = new Map();
 
@@ -37,12 +38,12 @@ class DuplicateFileConsumer extends WorkerHost {
     return SseService.subscribe(username, this.fileSharingSseConnections, res);
   }
 
-  async process(job: Job<JobData>): Promise<void> {
+  process = async (job: Job<JobData>): Promise<void> => {
     const { username, originFilePath, destinationFilePath, total, processed } = job.data as DuplicateFileJobData;
     const failedPaths: string[] = [];
 
-    const pathUpToTransferFolder = WebDavService.getPathUntilFolder(destinationFilePath, FILE_PATHS.TRANSFER);
-    const pathUpToTeacherFolder = WebDavService.getPathUntilFolder(destinationFilePath, username);
+    const pathUpToTransferFolder = this.webDavService.getPathUntilFolder(destinationFilePath, FILE_PATHS.TRANSFER);
+    const pathUpToTeacherFolder = this.webDavService.getPathUntilFolder(destinationFilePath, username);
 
     await this.webDavService.ensureFolderExists(username, pathUpToTransferFolder, username);
     await this.webDavService.ensureFolderExists(username, pathUpToTeacherFolder, FILE_PATHS.COLLECT);
@@ -54,7 +55,7 @@ class DuplicateFileConsumer extends WorkerHost {
     }
 
     const percent = Math.round((processed / total) * 100);
-    const studentName = WebDavService.getStudentNameFromPath(destinationFilePath) || '';
+    const studentName = this.webDavService.getStudentNameFromPath(destinationFilePath) || '';
 
     const progressDto: FilesharingProgressDto = {
       processID: Number(job.id),
@@ -70,7 +71,7 @@ class DuplicateFileConsumer extends WorkerHost {
     };
 
     SseService.sendEventToUser(username, this.fileSharingSseConnections, progressDto, SSE_MESSAGE_TYPE.UPDATED);
-  }
+  };
 }
 
 export default DuplicateFileConsumer;

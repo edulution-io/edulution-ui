@@ -101,7 +101,7 @@ class WebDavService {
     }
   }
 
-  static getPathUntilFolder(fullPath: string, folderName: string): string {
+  getPathUntilFolder(fullPath: string, folderName: string): string {
     const segments = fullPath.split('/');
     const index = segments.indexOf(folderName);
 
@@ -287,7 +287,7 @@ class WebDavService {
     return directories.some((item) => item.type === ContentType.DIRECTORY && item.basename === name);
   }
 
-  static getStudentNameFromPath(filePath: string): string | null {
+  getStudentNameFromPath(filePath: string): string | null {
     const parts = filePath.split('/');
     if (parts.length < 3) {
       return null;
