@@ -129,8 +129,7 @@ class BulletinBoardService implements OnModuleInit {
     } else if (!currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
       filter['creator.username'] = currentUser.preferred_username;
     }
-
-    const bulletins = await this.bulletinModel.find(filter).populate('category').exec();
+    const bulletins = await this.bulletinModel.find(filter).populate('category').sort({ updatedAt: -1 }).exec();
 
     const currentDate = new Date();
 
