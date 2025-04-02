@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import useMedia from '@/hooks/useMedia';
 import useUserStore from '@/store/UserStore/UserStore';
 import { BLANK_LAYOUT_HEADER_ID } from '@libs/common/constants/pageElementIds';
+import PageTitle from '@/components/PageTitle';
 
 interface HeaderProps {
   hideHeadingText?: boolean;
@@ -47,6 +48,7 @@ const Header: React.FC<HeaderProps> = ({ hideHeadingText = false }: HeaderProps)
       id={BLANK_LAYOUT_HEADER_ID}
       className="ml-2 flex items-center pb-1 md:mb-3 md:ml-7"
     >
+      <PageTitle translationId="dashboard.pageTitle" />
       <div className={`rounded-b-[8px] ${isMobileView ? 'mt-3 w-[150px]' : 'mt-0 w-[250px] bg-white'}`}>
         <Link to="/">
           <img

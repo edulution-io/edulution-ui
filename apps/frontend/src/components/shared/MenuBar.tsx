@@ -20,8 +20,11 @@ import { useOnClickOutside, useToggle } from 'usehooks-ts';
 import useMedia from '@/hooks/useMedia';
 import { getFromPathName } from '@libs/common/utils';
 import APPS from '@libs/appconfig/constants/apps';
+import PageTitle from '@/components/PageTitle';
+import { useTranslation } from 'react-i18next';
 
 const MenuBar: React.FC = () => {
+  const { t } = useTranslation();
   const [isOpen, toggle] = useToggle(false);
   const menubarRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
@@ -73,6 +76,12 @@ const MenuBar: React.FC = () => {
       <MenubarMenu>
         {menuBarEntries.menuItems.map((item) => (
           <React.Fragment key={item.label}>
+            {isSelected === item.id && (
+              <PageTitle
+                title={t(`${menuBarEntries.appName}.sidebar`)}
+                translationId={item.label}
+              />
+            )}
             <MenubarTrigger
               className={cn(
                 'flex w-full cursor-pointer items-center gap-3 py-1 pl-3 pr-10 transition-colors',

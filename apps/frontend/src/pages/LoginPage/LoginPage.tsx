@@ -28,6 +28,7 @@ import processLdapGroups from '@libs/user/utils/processLdapGroups';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
 import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
+import PageTitle from '@/components/PageTitle';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 
@@ -240,49 +241,52 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <Card
-      variant="modal"
-      className="bg-background"
-    >
-      <img
-        src={DesktopLogo}
-        alt="edulution"
-        className="mx-auto w-64"
-      />
-      <Form
-        {...form}
-        data-testid="test-id-login-page-form"
+    <>
+      <PageTitle translationId="login.pageTitle" />
+      <Card
+        variant="modal"
+        className="bg-background"
       >
-        <form
-          onSubmit={form.handleSubmit(isEnterTotpVisible ? onSubmit : handleCheckMfaStatus)}
-          className="space-y-4"
+        <img
+          src={DesktopLogo}
+          alt="edulution"
+          className="mx-auto w-64"
+        />
+        <Form
+          {...form}
           data-testid="test-id-login-page-form"
         >
-          {getMainContent()}
-          {!form.getFieldState('password').error && <p className="flex h-3" />}
-          <Button
-            className="mx-auto w-full justify-center text-foreground shadow-xl hover:bg-ciGrey/10"
-            type="button"
-            variant="btn-outline"
-            size="lg"
-            disabled={isLoading || totpIsLoading}
-            onClick={handleCancelOrToggleQrCode}
+          <form
+            onSubmit={form.handleSubmit(isEnterTotpVisible ? onSubmit : handleCheckMfaStatus)}
+            className="space-y-4"
+            data-testid="test-id-login-page-form"
           >
-            {isEnterTotpVisible || showQrCode ? t('common.cancel') : t('login.loginWithApp')}
-          </Button>
-          <Button
-            className="mx-auto w-full justify-center text-background shadow-xl"
-            type="submit"
-            variant="btn-security"
-            size="lg"
-            data-testid="test-id-login-page-submit-button"
-            disabled={showQrCode || isLoading || totpIsLoading}
-          >
-            {totpIsLoading || isLoading ? t('common.loading') : t('common.login')}
-          </Button>
-        </form>
-      </Form>
-    </Card>
+            {getMainContent()}
+            {!form.getFieldState('password').error && <p className="flex h-2" />}
+            <Button
+              className="mx-auto w-full justify-center text-foreground shadow-xl hover:bg-ciGrey/10"
+              type="button"
+              variant="btn-outline"
+              size="lg"
+              disabled={isLoading || totpIsLoading}
+              onClick={handleCancelOrToggleQrCode}
+            >
+              {isEnterTotpVisible || showQrCode ? t('common.cancel') : t('login.loginWithApp')}
+            </Button>
+            <Button
+              className="mx-auto w-full justify-center text-background shadow-xl"
+              type="submit"
+              variant="btn-security"
+              size="lg"
+              data-testid="test-id-login-page-submit-button"
+              disabled={isLoading || totpIsLoading}
+            >
+              {totpIsLoading || isLoading ? t('common.loading') : t('common.login')}
+            </Button>
+          </form>
+        </Form>
+      </Card>
+    </>
   );
 };
 
