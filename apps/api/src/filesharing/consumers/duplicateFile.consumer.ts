@@ -32,7 +32,7 @@ class DuplicateFileConsumer extends WorkerHost {
     super();
   }
 
-  process = async (job: Job<JobData>): Promise<void> => {
+  async process(job: Job<JobData>): Promise<void> {
     const { username, originFilePath, destinationFilePath, total, processed } = job.data as DuplicateFileJobData;
     const failedPaths: string[] = [];
 
@@ -64,8 +64,8 @@ class DuplicateFileConsumer extends WorkerHost {
       failedPaths,
     };
 
-    this.sseService.sendEventToUser(username, progressDto, SSE_MESSAGE_TYPE.FILESHARING_PROGRESS);
-  };
+    this.sseService.sendEventToUser(username, progressDto, SSE_MESSAGE_TYPE.FILESHARING_SHARE_FILES);
+  }
 }
 
 export default DuplicateFileConsumer;

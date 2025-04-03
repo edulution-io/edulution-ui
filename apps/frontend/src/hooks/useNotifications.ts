@@ -124,6 +124,9 @@ const useNotifications = () => {
       return undefined;
     }
 
+    const controller = new AbortController();
+    const { signal } = controller;
+
     const handelFileDeletingEvent = (e: MessageEvent<string>) => {
       void (async () => {
         const data: FilesharingProgressDto = JSON.parse(e.data) as FilesharingProgressDto;
@@ -135,11 +138,11 @@ const useNotifications = () => {
         }
       })();
     };
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_PROGRESS, handelFileDeletingEvent);
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES, handelFileDeletingEvent, { signal });
 
     return () => {
-      eventSource.removeEventListener(SSE_MESSAGE_TYPE.FILESHARING_PROGRESS, handelFileDeletingEvent);
-      eventSource.close();
+      eventSource.removeEventListener(SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES, handelFileDeletingEvent);
+      controller.abort();
     };
   }, [isFileSharingActive]);
 
@@ -147,6 +150,8 @@ const useNotifications = () => {
     if (!isClassRoomManagementActive || !eventSource) {
       return undefined;
     }
+    const controller = new AbortController();
+    const { signal } = controller;
 
     const handleFileSharingEvent = (e: MessageEvent<string>) => {
       void (async () => {
@@ -160,12 +165,11 @@ const useNotifications = () => {
       })();
     };
 
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_PROGRESS, handleFileSharingEvent);
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_PROGRESS, handleFileSharingEvent);
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_COLLECT_FILES, handleFileSharingEvent, { signal });
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_SHARE_FILES, handleFileSharingEvent, { signal });
 
     return () => {
-      eventSource.removeEventListener(SSE_MESSAGE_TYPE.FILESHARING_PROGRESS, handleFileSharingEvent);
-      eventSource.close();
+      controller.abort();
     };
   }, [isClassRoomManagementActive]);
 

@@ -18,15 +18,21 @@ import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 import CollectFileJobData from '@libs/queue/types/collectFileJobData';
 import WebDavService from '../../webdav/webDavService';
+import SseService from '../../sse/sse.service';
+import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 
 @Injectable()
 class CollectFileConsumer extends WorkerHost {
-  constructor(private readonly webDavService: WebDavService) {
+  constructor(
+    private readonly webDavService: WebDavService,
+    private readonly sseService: SseService,
+  ) {
     super();
   }
 
   async process(job: Job<JobData>): Promise<void> {
-    const { username, userRole, item, operationType } = job.data as CollectFileJobData;
+    const { username, userRole, item, operationType, processed, total } = job.data as CollectFileJobData;
     const failedPaths: string[] = [];
 
     const initFolderName = `${userRole}s/${username}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}`;
@@ -45,22 +51,22 @@ class CollectFileConsumer extends WorkerHost {
       failedPaths.push(item.destinationPath);
     }
 
-    // const percent = Math.round((processed / total) * 100);
+    const percent = Math.round((processed / total) * 100);
 
-    // const progressDto: FilesharingProgressDto = {
-    //   processID: Number(job.id),
-    //   title: 'filesharing.progressBox.titleCollecting',
-    //   description: 'filesharing.progressBox.fileInfoCollecting',
-    //   statusDescription: 'filesharing.progressBox.processedCollectingInfo',
-    //   processed,
-    //   total,
-    //   studentName: username,
-    //   percent,
-    //   currentFilePath: FILE_PATHS.COLLECT,
-    //   failedPaths,
-    // };
-    //
-    // SseService.sendEventToUser(username, this.fileCollectingSseConnections, progressDto, SSE_MESSAGE_TYPE.UPDATED);
+    const progressDto: FilesharingProgressDto = {
+      processID: Number(job.id),
+      title: 'filesharing.progressBox.titleCollecting',
+      description: 'filesharing.progressBox.fileInfoCollecting',
+      statusDescription: 'filesharing.progressBox.processedCollectingInfo',
+      processed,
+      total,
+      studentName: username,
+      percent,
+      currentFilePath: FILE_PATHS.COLLECT,
+      failedPaths,
+    };
+
+    this.sseService.sendEventToUser(username, progressDto, SSE_MESSAGE_TYPE.FILESHARING_COLLECT_FILES);
   }
 }
 

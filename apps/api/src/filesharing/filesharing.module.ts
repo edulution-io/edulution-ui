@@ -17,7 +17,6 @@ import FilesharingService from './filesharing.service';
 import AppConfigModule from '../appconfig/appconfig.module';
 import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
-import SseService from '../sse/sse.service';
 import DuplicateFileConsumer from './consumers/duplicateFile.consumer';
 import DynamicQueueService from '../queue/queue.service';
 import CollectFileConsumer from './consumers/collectFile.consumer';
@@ -31,7 +30,6 @@ import WebDavService from '../webdav/webDavService';
     FilesharingService,
     FilesystemService,
     OnlyofficeService,
-    SseService,
     DynamicQueueService,
     DuplicateFileConsumer,
     CollectFileConsumer,

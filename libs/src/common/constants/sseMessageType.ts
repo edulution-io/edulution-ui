@@ -23,7 +23,9 @@ const SSE_MESSAGE_TYPE = {
   SURVEY_UPDATED: 'survey_updated',
   SURVEY_DELETED: 'survey_deleted',
   BULLETIN_UPDATED: 'bulletin_update',
-  FILESHARING_PROGRESS: 'filesharing_progress',
+  FILESHARING_SHARE_FILES: 'filesharing_share_files',
+  FILESHARING_COLLECT_FILES: 'filesharing_collect_files',
+  FILESHARING_DELETE_FILES: 'filesharing_delete_files',
 } as const;
 
 export default SSE_MESSAGE_TYPE;

@@ -16,15 +16,21 @@ import { Injectable } from '@nestjs/common';
 import JobData from '@libs/queue/constants/jobData';
 import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
 import WebDavService from '../../webdav/webDavService';
+import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import SseService from '../../sse/sse.service';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 
 @Injectable()
 class DeleteFileConsumer extends WorkerHost {
-  constructor(private readonly webDavService: WebDavService) {
+  constructor(
+    private readonly webDavService: WebDavService,
+    private readonly sseService: SseService,
+  ) {
     super();
   }
 
   async process(job: Job<JobData>): Promise<void> {
-    const { username, originFilePath } = job.data as DeleteFileJobData;
+    const { username, originFilePath, processed, total } = job.data as DeleteFileJobData;
 
     const failedPaths: string[] = [];
     try {
@@ -32,6 +38,22 @@ class DeleteFileConsumer extends WorkerHost {
     } catch (error) {
       failedPaths.push(originFilePath);
     }
+
+    const percent = Math.round((processed / total) * 100);
+
+    const progressDto: FilesharingProgressDto = {
+      processID: Number(job.id),
+      title: 'filesharing.progressBox.titleDeleting',
+      description: 'filesharing.progressBox.fileInfoDeleting',
+      statusDescription: 'filesharing.progressBox.processedDeletingInfo',
+      processed,
+      total,
+      percent,
+      currentFilePath: originFilePath,
+      studentName: '',
+      failedPaths,
+    };
+    this.sseService.sendEventToUser(username, progressDto, SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES);
   }
 }
 
