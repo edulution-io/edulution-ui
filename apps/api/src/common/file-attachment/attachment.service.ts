@@ -12,9 +12,8 @@
 
 import { Response } from 'express';
 import { Injectable } from '@nestjs/common';
-import NAME_OF_TEMPORARY_FOLDER from '@libs/common/constants/nameOfTemporaryFolder';
+import TEMPORARY_ATTACHMENT_DIRECTORY_NAME from '@libs/common/constants/temporaryAttachmentDirectoryName';
 import { join } from 'path';
-import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
 import FilesystemService from '../../filesystem/filesystem.service';
 
 @Injectable()
@@ -33,28 +32,28 @@ class AttachmentService {
   }
 
   getTemporaryAttachmentUrl = (userId: string, fileName: string): string =>
-    `${this.domain}/${NAME_OF_TEMPORARY_FOLDER}/${userId}/${fileName}`;
+    `${this.domain}/${TEMPORARY_ATTACHMENT_DIRECTORY_NAME}/${userId}/${fileName}`;
 
   getPersistentAttachmentUrl = (pathWithIds: string, fileName: string): string =>
     `${this.domain}/${pathWithIds}/${fileName}`;
 
-  getFileNamesFromTEMP = (userId: string) => {
-    const tempFolder = `${this.filePath}/${NAME_OF_TEMPORARY_FOLDER}/${userId}`;
-    return this.fileSystemService.getFileNamesFromDirectory(tempFolder);
+  getAllFilenamesInTemporaryDirectory = (userId: string) => {
+    const temporaryDirectoryPath = `${this.filePath}/${TEMPORARY_ATTACHMENT_DIRECTORY_NAME}/${userId}`;
+    return this.fileSystemService.getAllFilenamesInDirectory(temporaryDirectoryPath);
   };
 
-  async clearTEMP(userId: string) {
-    const destination = `${this.filePath}/${NAME_OF_TEMPORARY_FOLDER}/${userId}`;
+  async deleteTemporaryDirectory(userId: string) {
+    const destination = `${this.filePath}/${TEMPORARY_ATTACHMENT_DIRECTORY_NAME}/${userId}`;
     await this.fileSystemService.deleteDirectory(destination);
   }
 
-  async clearPermanentDirectories(surveyIds: string[]): Promise<void> {
-    const imageDirectories = surveyIds.map((surveyId) => join(SURVEYS_IMAGES_PATH, surveyId));
+  async deletePermanentDirectories(pathsWithIds: string[]): Promise<void> {
+    const imageDirectories = pathsWithIds.map((pathsWithId) => join(this.filePath, pathsWithId));
     await this.fileSystemService.deleteDirectories(imageDirectories);
   }
 
   async serveTemporaryAttachment(userId: string, fileName: string, res: Response) {
-    const filePath = `${this.filePath}/${NAME_OF_TEMPORARY_FOLDER}/${userId}/${fileName}`;
+    const filePath = `${this.filePath}/${TEMPORARY_ATTACHMENT_DIRECTORY_NAME}/${userId}/${fileName}`;
     const fileStream = await this.fileSystemService.createReadStream(filePath);
     fileStream.pipe(res);
     return res;
@@ -68,7 +67,7 @@ class AttachmentService {
   }
 
   async moveTempFileIntoPermanentDirectory(userId: string, pathWithIds: string, fileName: string) {
-    const temporaryAttachmentPath = `${this.filePath}/${NAME_OF_TEMPORARY_FOLDER}/${userId}/${fileName}`;
+    const temporaryAttachmentPath = `${this.filePath}/${TEMPORARY_ATTACHMENT_DIRECTORY_NAME}/${userId}/${fileName}`;
 
     const permanentDirectory = `${this.filePath}/${pathWithIds}`;
     await this.fileSystemService.ensureDirectoryExists(permanentDirectory);

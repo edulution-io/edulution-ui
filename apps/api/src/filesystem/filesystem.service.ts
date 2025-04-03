@@ -40,28 +40,6 @@ class FilesystemService {
 
   private readonly baseurl = process.env.EDUI_WEBDAV_URL as string;
 
-  async createReadStream(filePath: string): Promise<Readable> {
-    try {
-      await fsPromises.access(filePath);
-    } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
-    }
-    return createReadStream(filePath);
-  }
-
-  static async fetchFileStream(
-    url: string,
-    client: AxiosInstance,
-    streamFetching = false,
-  ): Promise<AxiosResponse<Readable> | Readable> {
-    try {
-      const fileStream = from(client.get<Readable>(url, { responseType: ResponseType.STREAM }));
-      return await firstValueFrom(fileStream).then((res) => (streamFetching ? res : res.data));
-    } catch (error) {
-      throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, url);
-    }
-  }
-
   static async checkIfFileExist(filePath: string): Promise<boolean> {
     try {
       await fsPromises.access(filePath);
@@ -79,7 +57,25 @@ class FilesystemService {
     }
   }
 
-  async getFileNamesFromDirectory(directory: string): Promise<string[]> {
+  async createReadStream(filePath: string): Promise<Readable> {
+    await FilesystemService.throwErrorIfFileNotExists(filePath);
+    return createReadStream(filePath);
+  }
+
+  static async fetchFileStream(
+    url: string,
+    client: AxiosInstance,
+    streamFetching = false,
+  ): Promise<AxiosResponse<Readable> | Readable> {
+    try {
+      const fileStream = from(client.get<Readable>(url, { responseType: ResponseType.STREAM }));
+      return await firstValueFrom(fileStream).then((res) => (streamFetching ? res : res.data));
+    } catch (error) {
+      throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, url);
+    }
+  }
+
+  async getAllFilenamesInDirectory(directory: string): Promise<string[]> {
     const exists = await FilesystemService.checkIfFileExist(directory);
     if (!exists) {
       return [];
@@ -255,7 +251,7 @@ class FilesystemService {
     }
   }
 
-  static checkImageFile(file: Express.Multer.File): string {
+  static checkIfFiletypeIsImageMimeType(file: Express.Multer.File): string {
     if (!file) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
     }

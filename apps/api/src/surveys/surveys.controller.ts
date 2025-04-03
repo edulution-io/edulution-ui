@@ -41,7 +41,7 @@ import {
   SURVEYS,
 } from '@libs/survey/constants/surveys-endpoint';
 import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
-import NAME_OF_TEMPORARY_FOLDER from '@libs/common/constants/nameOfTemporaryFolder';
+import TEMPORARY_ATTACHMENT_DIRECTORY_NAME from '@libs/common/constants/temporaryAttachmentDirectoryName';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AnswerDto from '@libs/survey/types/api/answer.dto';
@@ -102,7 +102,7 @@ class SurveysController {
     FileInterceptor(
       'file',
       createAttachmentUploadOptions(
-        (req) => `${SURVEYS_IMAGES_PATH}/${NAME_OF_TEMPORARY_FOLDER}/${req.user?.preferred_username}`,
+        (req) => `${SURVEYS_IMAGES_PATH}/${TEMPORARY_ATTACHMENT_DIRECTORY_NAME}/${req.user?.preferred_username}`,
       ),
     ),
   )

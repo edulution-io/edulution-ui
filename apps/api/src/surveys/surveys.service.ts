@@ -209,9 +209,6 @@ class SurveysService implements OnModuleInit {
     tempFiles: string[],
     elements: SurveyElement[],
   ): Promise<SurveyElement[]> {
-    if (elements.length === 0) {
-      return elements;
-    }
     const updatePromises = elements?.map(async (question) =>
       this.updateQuestion(username, surveyId, tempFiles, question),
     );
@@ -224,9 +221,6 @@ class SurveysService implements OnModuleInit {
     tempFiles: string[],
     pages: SurveyPage[],
   ): Promise<SurveyPage[]> {
-    if (pages.length === 0) {
-      return pages;
-    }
     const updatePromises = pages?.map(async (page) => {
       if (!page.elements || page.elements?.length === 0) {
         return page;
@@ -238,10 +232,7 @@ class SurveysService implements OnModuleInit {
   }
 
   async updateFormula(username: string, surveyId: string, formula: TSurveyFormula): Promise<TSurveyFormula> {
-    if (!surveyId) {
-      return formula;
-    }
-    const fileNames = await this.attachmentService.getFileNamesFromTEMP(username);
+    const fileNames = await this.attachmentService.getAllFilenamesInTemporaryDirectory(username);
     if (fileNames.length === 0) {
       return formula;
     }
@@ -284,10 +275,10 @@ class SurveysService implements OnModuleInit {
     const savedSurvey = await this.updateSurvey(updatedSurvey, user, surveysSseConnections);
 
     if (savedSurvey == null) {
-      throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.NOT_FOUND);
     }
 
-    await this.attachmentService.clearTEMP(user.preferred_username);
+    await this.attachmentService.deleteTemporaryDirectory(user.preferred_username);
 
     return savedSurvey;
   }
@@ -305,7 +296,7 @@ class SurveysService implements OnModuleInit {
   }
 
   async onSurveyRemoval(surveyIds: string[]): Promise<void> {
-    return this.attachmentService.clearPermanentDirectories(surveyIds);
+    return this.attachmentService.deletePermanentDirectories(surveyIds);
   }
 }
 
