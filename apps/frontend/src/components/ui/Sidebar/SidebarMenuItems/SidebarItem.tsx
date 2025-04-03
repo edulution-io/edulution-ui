@@ -19,7 +19,13 @@ import { getRootPathName } from '@libs/common/utils';
 import SidebarItemNotification from '@/components/ui/Sidebar/SidebarMenuItems/SidebarItemNotification';
 import PageTitle from '@/components/PageTitle';
 
-const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, translate }) => {
+const SidebarItem: React.FC<SidebarMenuItemProps> = ({
+  menuItem,
+  isDesktop,
+  translate,
+  isUpButtonVisible,
+  isDownButtonVisible,
+}) => {
   const { title, icon, color, link, notificationCounter } = menuItem;
   const buttonRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
@@ -32,10 +38,22 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, tran
     if (buttonRef.current == null) return;
 
     const rect = buttonRef.current.getBoundingClientRect();
-    setIsInView(rect.bottom < window.innerHeight - SIDEBAR_TRANSLATE_AMOUNT);
-  }, [translate, size]);
+
+    if (
+      rect.top > SIDEBAR_TRANSLATE_AMOUNT - 1 + (isUpButtonVisible ? 14 : 0) &&
+      rect.bottom < window.innerHeight - SIDEBAR_TRANSLATE_AMOUNT + 1 - (isDownButtonVisible ? 14 : 0)
+    ) {
+      setIsInView(true);
+    } else setIsInView(false);
+  }, [translate, size, buttonRef.current]);
 
   const isCurrentlySelectedItem = rootPathName === menuItem.link && pathname !== '/';
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!isInView) {
+      e.preventDefault();
+    }
+  };
 
   return (
     <div
@@ -45,6 +63,7 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, tran
     >
       {isCurrentlySelectedItem && <PageTitle translationId={title} />}
       <NavLink
+        onClick={handleClick}
         to={link}
         className={`group relative z-[99] flex cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-2 ${isCurrentlySelectedItem ? menuItem.color : ''}`}
       >
@@ -60,7 +79,7 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, tran
         </>
         {isInView ? (
           <div
-            className={`${color} absolute left-full top-0 flex h-full items-center gap-4 rounded-l-[8px] pl-4 pr-[48px] ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
+            className={`${color} absolute left-full top-0 z-[99] flex h-full items-center gap-4 rounded-l-[8px] pl-4 pr-[48px] ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
           >
             <p className="whitespace-nowrap font-bold">{title}</p>
             <img
