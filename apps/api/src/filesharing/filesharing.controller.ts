@@ -18,14 +18,12 @@ import {
   Header,
   HttpStatus,
   Logger,
-  MessageEvent,
   Patch,
   Post,
   Put,
   Query,
   Req,
   Res,
-  Sse,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -40,25 +38,16 @@ import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackDa
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
-import { Observable } from 'rxjs';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
-import DuplicateFileConsumer from './consumers/duplicateFile.consumer';
-import CollectFileConsumer from './consumers/collectFile.consumer';
 import FilesharingService from './filesharing.service';
-import DeleteFileConsumer from './consumers/deleteFile.consumer';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
 @Controller(FileSharingApiEndpoints.BASE)
 class FilesharingController {
-  constructor(
-    private readonly filesharingService: FilesharingService,
-    private readonly filesharingConsumer: DuplicateFileConsumer,
-    private readonly filesharingCollectConsumer: CollectFileConsumer,
-    private readonly filesharingDeleteConsumer: DeleteFileConsumer,
-  ) {}
+  constructor(private readonly filesharingService: FilesharingService) {}
 
   @Get()
   async getFilesAtPath(
@@ -197,21 +186,6 @@ class FilesharingController {
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 1 });
     }
-  }
-
-  @Sse('sse-sharing')
-  sse(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
-    return this.filesharingConsumer.subscribe(username, res);
-  }
-
-  @Sse('sse-collect')
-  sseCollect(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
-    return this.filesharingCollectConsumer.subscribe(username, res);
-  }
-
-  @Sse('sse-delete')
-  sseDelete(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
-    return this.filesharingDeleteConsumer.subscribe(username, res);
   }
 }
 

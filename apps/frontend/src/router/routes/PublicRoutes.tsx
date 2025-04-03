@@ -17,6 +17,7 @@ import SurveyParticipationPage from '@/pages/Surveys/Participation/SurveyPartici
 import BlankLayout from '@/components/layout/BlankLayout';
 import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import PublicConferencePage from '@/pages/ConferencePage/PublicConference/PublicConferencePage';
+import PageTitle from '@/components/PageTitle';
 
 const getPublicRoutes = () => [
   <Route
@@ -25,7 +26,12 @@ const getPublicRoutes = () => [
   >
     <Route
       path={`${CONFERENCES_PUBLIC_EDU_API_ENDPOINT}/:meetingId`}
-      element={<PublicConferencePage />}
+      element={
+        <>
+          <PageTitle translationId="conferences.publicConference" />
+          <PublicConferencePage />
+        </>
+      }
     />
   </Route>,
   <Route
@@ -34,7 +40,12 @@ const getPublicRoutes = () => [
   >
     <Route
       path={`${PUBLIC_SURVEYS}/:surveyId`}
-      element={<SurveyParticipationPage isPublic />}
+      element={
+        <>
+          <PageTitle translationId="survey.publicSurvey" />
+          <SurveyParticipationPage isPublic />
+        </>
+      }
     />
   </Route>,
 ];

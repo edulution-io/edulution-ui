@@ -14,6 +14,7 @@ import React, { useEffect } from 'react';
 import { useAuth } from 'react-oidc-context';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import type UserDto from '@libs/user/types/user.dto';
+import useSseStore from '@/store/useSseStore';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import { toast } from 'sonner';
 import ProgressBox from '@/components/ui/ProgressBox';
@@ -28,10 +29,12 @@ import useTokenEventListeners from '../hooks/useTokenEventListener';
 const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const auth = useAuth();
   const { getAppConfigs } = useAppConfigsStore();
-  const { isAuthenticated, setEduApiToken, user, getWebdavKey } = useUserStore();
+  const { isAuthenticated, eduApiToken, setEduApiToken, user, getWebdavKey } = useUserStore();
   const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
   const { filesharingProgress } = useLessonStore();
   const { fileOperationProgress } = useFileSharingStore();
+  const { setEventSource } = useSseStore();
+
   const handleLogout = useLogout();
 
   useEffect(() => {
@@ -39,6 +42,12 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
       setEduApiToken(auth.user?.access_token);
     }
   }, [auth.user?.access_token]);
+
+  useEffect(() => {
+    if (eduApiToken) {
+      setEventSource(eduApiToken);
+    }
+  }, [eduApiToken]);
 
   useNotifications();
 

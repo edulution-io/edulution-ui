@@ -12,9 +12,7 @@
 
 import { WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
-import { Response } from 'express';
-import { Observable } from 'rxjs';
-import { Injectable, MessageEvent } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import DuplicateFileJobData from '@libs/queue/types/duplicateFileJobData';
 
@@ -22,20 +20,16 @@ import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressD
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import JobData from '@libs/queue/constants/jobData';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
-import type UserConnections from '../../types/userConnections';
 import SseService from '../../sse/sse.service';
 import WebDavService from '../../webdav/webDavService';
 
 @Injectable()
 class DuplicateFileConsumer extends WorkerHost {
-  private fileSharingSseConnections: UserConnections = new Map();
-
-  constructor(private readonly webDavService: WebDavService) {
+  constructor(
+    private readonly webDavService: WebDavService,
+    private readonly sseService: SseService,
+  ) {
     super();
-  }
-
-  subscribe(username: string, res: Response): Observable<MessageEvent> {
-    return SseService.subscribe(username, this.fileSharingSseConnections, res);
   }
 
   process = async (job: Job<JobData>): Promise<void> => {
@@ -70,7 +64,7 @@ class DuplicateFileConsumer extends WorkerHost {
       failedPaths,
     };
 
-    SseService.sendEventToUser(username, this.fileSharingSseConnections, progressDto, SSE_MESSAGE_TYPE.UPDATED);
+    this.sseService.sendEventToUser(username, progressDto, SSE_MESSAGE_TYPE.FILESHARING_PROGRESS);
   };
 }
 

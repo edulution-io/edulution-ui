@@ -17,25 +17,21 @@ import FEED_PULL_TIME_INTERVAL_SLOW from '@libs/dashboard/constants/pull-time-in
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import useUserStore from '@/store/UserStore/UserStore';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import APPS from '@libs/appconfig/constants/apps';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
-import { CONFERENCES_SSE_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import useDockerContainerEvents from '@/hooks/useDockerContainerEvents';
 import useIsAppActive from '@/hooks/useIsAppActive';
-import { BULLETIN_BOARD_SSE_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import UseBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import delay from '@libs/common/utils/delay';
+import useSseStore from '@/store/useSseStore';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 
 const useNotifications = () => {
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
-  const { eduApiToken } = useUserStore();
   const isMailsAppActivated = useIsAppActive(APPS.MAIL);
   const { getMails } = useMailsStore();
   const isConferenceAppActivated = useIsAppActive(APPS.CONFERENCES);
@@ -48,6 +44,7 @@ const useNotifications = () => {
   const { setFilesharingProgress } = useLessonStore();
   const { setFileOperationProgress } = useFileSharingStore();
   const isClassRoomManagementActive = useIsAppActive(APPS.CLASS_MANAGEMENT);
+  const { eventSource } = useSseStore();
   const isFileSharingActive = useIsAppActive(APPS.FILE_SHARING);
 
   useDockerContainerEvents();
@@ -79,61 +76,53 @@ const useNotifications = () => {
   }, FEED_PULL_TIME_INTERVAL_SLOW);
 
   useEffect(() => {
-    if (isConferenceAppActivated) {
-      const eventSource = new EventSource(`/${EDU_API_ROOT}/${CONFERENCES_SSE_EDU_API_ENDPOINT}?token=${eduApiToken}`);
-      const controller = new AbortController();
-      const { signal } = controller;
-
-      const createConferenceHandler = (e: MessageEvent<string>) => {
-        const conferenceDto = JSON.parse(e.data) as ConferenceDto;
-        const newConferences = [...conferencesRef.current, conferenceDto];
-        setConferences(newConferences);
-      };
-
-      const updateConferenceHandler = (e: MessageEvent<string>) => {
-        if (conferencesRef.current.length === 0) return;
-        const { type, data } = e;
-        const newConferences = conferencesRef.current.map((conference) => {
-          if (conference.meetingID === data) {
-            return {
-              ...conference,
-              isRunning: type === SSE_MESSAGE_TYPE.STARTED,
-            };
-          }
-          return conference;
-        });
-        setConferences(newConferences);
-      };
-
-      const deleteConferenceHandler = (e: MessageEvent<string[]>) => {
-        const { data } = e;
-        const newConferences = conferencesRef.current.filter((conference) => !data.includes(conference.meetingID));
-        setConferences(newConferences);
-      };
-
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.CREATED, createConferenceHandler, { signal });
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.STARTED, updateConferenceHandler, { signal });
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.STOPPED, updateConferenceHandler, { signal });
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.DELETED, deleteConferenceHandler, { signal });
-
-      return () => {
-        controller.abort();
-
-        eventSource.close();
-      };
+    if (!isConferenceAppActivated || !eventSource) {
+      return undefined;
     }
+    const controller = new AbortController();
+    const { signal } = controller;
 
-    return undefined;
+    const createConferenceHandler = (e: MessageEvent<string>) => {
+      const conferenceDto = JSON.parse(e.data) as ConferenceDto;
+      const newConferences = [...conferencesRef.current, conferenceDto];
+      setConferences(newConferences);
+    };
+
+    const updateConferenceHandler = (e: MessageEvent<string>) => {
+      if (conferencesRef.current.length === 0) return;
+      const { type, data } = e;
+      const newConferences = conferencesRef.current.map((conference) => {
+        if (conference.meetingID === data) {
+          return {
+            ...conference,
+            isRunning: type === SSE_MESSAGE_TYPE.CONFERENCE_STARTED,
+          };
+        }
+        return conference;
+      });
+      setConferences(newConferences);
+    };
+
+    const deleteConferenceHandler = (e: MessageEvent<string[]>) => {
+      const { data } = e;
+      const newConferences = conferencesRef.current.filter((conference) => !data.includes(conference.meetingID));
+      setConferences(newConferences);
+    };
+
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_CREATED, createConferenceHandler, { signal });
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_STARTED, updateConferenceHandler, { signal });
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_STOPPED, updateConferenceHandler, { signal });
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_DELETED, deleteConferenceHandler, { signal });
+
+    return () => {
+      controller.abort();
+    };
   }, [isConferenceAppActivated]);
 
   useEffect(() => {
-    if (!isFileSharingActive) {
+    if (!isFileSharingActive || !eventSource) {
       return undefined;
     }
-
-    const eventSourceDeleting = new EventSource(
-      `/${EDU_API_ROOT}/${APPS.FILE_SHARING}/sse-delete?token=${eduApiToken}`,
-    );
 
     const handelFileDeletingEvent = (e: MessageEvent<string>) => {
       void (async () => {
@@ -146,25 +135,18 @@ const useNotifications = () => {
         }
       })();
     };
-    eventSourceDeleting.addEventListener(SSE_MESSAGE_TYPE.UPDATED, handelFileDeletingEvent);
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_PROGRESS, handelFileDeletingEvent);
 
     return () => {
-      eventSourceDeleting.removeEventListener(SSE_MESSAGE_TYPE.UPDATED, handelFileDeletingEvent);
-      eventSourceDeleting.close();
+      eventSource.removeEventListener(SSE_MESSAGE_TYPE.FILESHARING_PROGRESS, handelFileDeletingEvent);
+      eventSource.close();
     };
   }, [isFileSharingActive]);
 
   useEffect(() => {
-    if (!isClassRoomManagementActive) {
+    if (!isClassRoomManagementActive || !eventSource) {
       return undefined;
     }
-
-    const eventSourceSharing = new EventSource(
-      `/${EDU_API_ROOT}/${APPS.FILE_SHARING}/sse-sharing?token=${eduApiToken}`,
-    );
-    const eventSourceCollect = new EventSource(
-      `/${EDU_API_ROOT}/${APPS.FILE_SHARING}/sse-collect?token=${eduApiToken}`,
-    );
 
     const handleFileSharingEvent = (e: MessageEvent<string>) => {
       void (async () => {
@@ -178,57 +160,54 @@ const useNotifications = () => {
       })();
     };
 
-    eventSourceSharing.addEventListener(SSE_MESSAGE_TYPE.UPDATED, handleFileSharingEvent);
-    eventSourceCollect.addEventListener(SSE_MESSAGE_TYPE.UPDATED, handleFileSharingEvent);
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_PROGRESS, handleFileSharingEvent);
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_PROGRESS, handleFileSharingEvent);
 
     return () => {
-      eventSourceSharing.removeEventListener(SSE_MESSAGE_TYPE.UPDATED, handleFileSharingEvent);
-      eventSourceSharing.close();
-
-      eventSourceCollect.removeEventListener(SSE_MESSAGE_TYPE.UPDATED, handleFileSharingEvent);
-      eventSourceCollect.close();
+      eventSource.removeEventListener(SSE_MESSAGE_TYPE.FILESHARING_PROGRESS, handleFileSharingEvent);
+      eventSource.close();
     };
-  }, [isClassRoomManagementActive, eduApiToken]);
+  }, [isClassRoomManagementActive]);
 
   useEffect(() => {
-    if (isSurveysAppActivated) {
-      const eventSource = new EventSource(`/${EDU_API_ROOT}/${APPS.SURVEYS}/sse?token=${eduApiToken}`);
-
-      eventSource.onmessage = () => {
-        void updateOpenSurveys();
-      };
-
-      return () => {
-        eventSource.close();
-      };
+    if (!isSurveysAppActivated || !eventSource) {
+      return undefined;
     }
 
-    return undefined;
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    const handleUpdateSurveys = () => {
+      void updateOpenSurveys();
+    };
+
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.SURVEY_CREATED, handleUpdateSurveys, { signal });
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.SURVEY_UPDATED, handleUpdateSurveys, { signal });
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.SURVEY_DELETED, handleUpdateSurveys, { signal });
+
+    return () => {
+      controller.abort();
+    };
   }, [isSurveysAppActivated]);
 
   useEffect(() => {
-    if (isBulletinBoardActive) {
-      const eventSource = new EventSource(
-        `/${EDU_API_ROOT}/${BULLETIN_BOARD_SSE_EDU_API_ENDPOINT}?token=${eduApiToken}`,
-      );
-
-      const handleBulletinNotification = (e: MessageEvent<string>) => {
-        const { data } = e;
-        const bulletin = JSON.parse(data) as BulletinResponseDto;
-        addBulletinBoardNotification(bulletin);
-      };
-
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.CREATED, handleBulletinNotification);
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.UPDATED, handleBulletinNotification);
-
-      return () => {
-        eventSource.removeEventListener(SSE_MESSAGE_TYPE.CREATED, handleBulletinNotification);
-        eventSource.removeEventListener(SSE_MESSAGE_TYPE.UPDATED, handleBulletinNotification);
-        eventSource.close();
-      };
+    if (!isBulletinBoardActive || !eventSource) {
+      return undefined;
     }
+    const controller = new AbortController();
+    const { signal } = controller;
 
-    return undefined;
+    const handleBulletinNotification = (e: MessageEvent<string>) => {
+      const { data } = e;
+      const bulletin = JSON.parse(data) as BulletinResponseDto;
+      addBulletinBoardNotification(bulletin);
+    };
+
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.BULLETIN_UPDATED, handleBulletinNotification, { signal });
+
+    return () => {
+      controller.abort();
+    };
   }, [isBulletinBoardActive]);
 };
 

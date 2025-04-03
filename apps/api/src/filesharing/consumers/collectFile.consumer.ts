@@ -12,32 +12,21 @@
 
 import { WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
-import { Response } from 'express';
-import { Observable } from 'rxjs';
-import { MessageEvent } from '@nestjs/common';
-import CollectFileJobData from '@libs/queue/types/collectFileJobData';
-import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import { Injectable } from '@nestjs/common';
 import JobData from '@libs/queue/constants/jobData';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
-import SseService from '../../sse/sse.service';
-import type UserConnections from '../../types/userConnections';
+import CollectFileJobData from '@libs/queue/types/collectFileJobData';
 import WebDavService from '../../webdav/webDavService';
 
+@Injectable()
 class CollectFileConsumer extends WorkerHost {
-  private fileCollectingSseConnections: UserConnections = new Map();
-
   constructor(private readonly webDavService: WebDavService) {
     super();
   }
 
-  subscribe(username: string, res: Response): Observable<MessageEvent> {
-    return SseService.subscribe(username, this.fileCollectingSseConnections, res);
-  }
-
   async process(job: Job<JobData>): Promise<void> {
-    const { username, userRole, item, operationType, total, processed } = job.data as CollectFileJobData;
+    const { username, userRole, item, operationType } = job.data as CollectFileJobData;
     const failedPaths: string[] = [];
 
     const initFolderName = `${userRole}s/${username}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}`;
@@ -56,22 +45,22 @@ class CollectFileConsumer extends WorkerHost {
       failedPaths.push(item.destinationPath);
     }
 
-    const percent = Math.round((processed / total) * 100);
+    // const percent = Math.round((processed / total) * 100);
 
-    const progressDto: FilesharingProgressDto = {
-      processID: Number(job.id),
-      title: 'filesharing.progressBox.titleCollecting',
-      description: 'filesharing.progressBox.fileInfoCollecting',
-      statusDescription: 'filesharing.progressBox.processedCollectingInfo',
-      processed,
-      total,
-      studentName: username,
-      percent,
-      currentFilePath: FILE_PATHS.COLLECT,
-      failedPaths,
-    };
-
-    SseService.sendEventToUser(username, this.fileCollectingSseConnections, progressDto, SSE_MESSAGE_TYPE.UPDATED);
+    // const progressDto: FilesharingProgressDto = {
+    //   processID: Number(job.id),
+    //   title: 'filesharing.progressBox.titleCollecting',
+    //   description: 'filesharing.progressBox.fileInfoCollecting',
+    //   statusDescription: 'filesharing.progressBox.processedCollectingInfo',
+    //   processed,
+    //   total,
+    //   studentName: username,
+    //   percent,
+    //   currentFilePath: FILE_PATHS.COLLECT,
+    //   failedPaths,
+    // };
+    //
+    // SseService.sendEventToUser(username, this.fileCollectingSseConnections, progressDto, SSE_MESSAGE_TYPE.UPDATED);
   }
 }
 

@@ -11,31 +11,20 @@
  */
 
 import { WorkerHost } from '@nestjs/bullmq';
-import { Observable } from 'rxjs';
 import { Job } from 'bullmq';
-import { MessageEvent } from '@nestjs/common';
-import { Response } from 'express';
+import { Injectable } from '@nestjs/common';
 import JobData from '@libs/queue/constants/jobData';
 import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
-import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import WebDavService from '../../webdav/webDavService';
-import SseService from '../../sse/sse.service';
-import type UserConnections from '../../types/userConnections';
 
+@Injectable()
 class DeleteFileConsumer extends WorkerHost {
-  private fileDeletingSseConnections: UserConnections = new Map();
-
   constructor(private readonly webDavService: WebDavService) {
     super();
   }
 
-  subscribe(username: string, res: Response): Observable<MessageEvent> {
-    return SseService.subscribe(username, this.fileDeletingSseConnections, res);
-  }
-
   async process(job: Job<JobData>): Promise<void> {
-    const { username, originFilePath, total, processed } = job.data as DeleteFileJobData;
+    const { username, originFilePath } = job.data as DeleteFileJobData;
 
     const failedPaths: string[] = [];
     try {
@@ -43,22 +32,6 @@ class DeleteFileConsumer extends WorkerHost {
     } catch (error) {
       failedPaths.push(originFilePath);
     }
-
-    const percent = Math.round((processed / total) * 100);
-
-    const progressDto: FilesharingProgressDto = {
-      processID: Number(job.id),
-      title: 'filesharing.progressBox.titleDeleting',
-      description: 'filesharing.progressBox.fileInfoDeleting',
-      statusDescription: 'filesharing.progressBox.processedDeletingInfo',
-      processed,
-      total,
-      percent,
-      currentFilePath: originFilePath,
-      studentName: '',
-      failedPaths,
-    };
-    SseService.sendEventToUser(username, this.fileDeletingSseConnections, progressDto, SSE_MESSAGE_TYPE.UPDATED);
   }
 }
 

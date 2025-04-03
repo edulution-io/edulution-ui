@@ -22,6 +22,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import { act, renderHook } from '@testing-library/react-hooks';
 import { userEvent } from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import LoginPage from './LoginPage';
 
 vi.mock('react-oidc-context', () => ({
@@ -50,9 +51,11 @@ vi.mock('react-router-dom', async (importOriginal) => {
 describe('LoginPage', () => {
   beforeEach(() => {
     render(
-      <BrowserRouter>
-        <LoginPage />
-      </BrowserRouter>,
+      <HelmetProvider>
+        <BrowserRouter>
+          <LoginPage />
+        </BrowserRouter>
+      </HelmetProvider>,
     );
   });
 
