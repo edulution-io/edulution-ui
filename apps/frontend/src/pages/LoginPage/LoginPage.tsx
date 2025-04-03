@@ -18,6 +18,8 @@ import CryptoJS from 'crypto-js';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
+import { MdOutlineQrCode } from 'react-icons/md';
+import { toast } from 'sonner';
 import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
@@ -31,6 +33,8 @@ import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
 import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import PageTitle from '@/components/PageTitle';
 import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import delay from '@libs/common/utils/delay';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 
@@ -159,15 +163,37 @@ const LoginPage: React.FC = () => {
 
       form.setValue('username', username);
       form.setValue('password', password);
-      form.setValue('totpValue', totpValue || '', { shouldValidate: true });
+      form.setValue('totpValue', totpValue || '');
 
       void form.handleSubmit(onSubmit)();
     };
 
-    eventSource.addEventListener('message', handleLoginEvent, { signal });
-    return () => {
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.MESSAGE, handleLoginEvent, { signal });
+
+    const handleAbortConnection = () => {
       controller.abort();
       eventSource.close();
+    };
+
+    eventSource.onerror = async () => {
+      handleAbortConnection();
+      toast.error(t('auth.errors.EdulutionConnectionFailed'));
+      await delay(5000);
+      setShowQrCode(false);
+    };
+
+    const timeoutId = setTimeout(
+      () => {
+        handleAbortConnection();
+        toast.info(t('login.infoQrCodeExpired'));
+        setShowQrCode(false);
+      },
+      3 * 60 * 1000,
+    );
+
+    return () => {
+      clearTimeout(timeoutId);
+      handleAbortConnection();
     };
   }, [showQrCode]);
 
@@ -232,13 +258,13 @@ const LoginPage: React.FC = () => {
   const getMainContent = () => {
     if (showQrCode) {
       return (
-        <QRCodeDisplay
-          value={JSON.stringify({
-            url: `${window.location.origin}/${EDU_API_ROOT}/${AUTH_PATHS.AUTH_ENDPOINT}`,
-            sessionID,
-          })}
-          size="lg"
-        />
+        <>
+          <QRCodeDisplay
+            value={`${window.location.origin}/${EDU_API_ROOT}/${AUTH_PATHS.AUTH_ENDPOINT}/login?sessionId=${sessionID}`}
+            size="lg"
+          />
+          <p className="font-bold">{t('login.loginWithQrDescription')}</p>
+        </>
       );
     }
 
@@ -290,27 +316,36 @@ const LoginPage: React.FC = () => {
             data-testid="test-id-login-page-form"
           >
             {getMainContent()}
-            {!form.getFieldState('password').error && <p className="flex h-3" />}
+            {!showQrCode && !form.getFieldState('password').error && <p className="flex h-3" />}
 
+            {!showQrCode && (
+              <Button
+                className="mx-auto w-full justify-center shadow-xl"
+                type="submit"
+                variant="btn-security"
+                size="lg"
+                data-testid="test-id-login-page-submit-button"
+                disabled={isLoading || totpIsLoading}
+              >
+                {totpIsLoading || isLoading ? t('common.loading') : t('common.login')}
+              </Button>
+            )}
             <Button
-              className="mx-auto w-full justify-center text-background shadow-xl"
-              type="submit"
-              variant="btn-security"
-              size="lg"
-              data-testid="test-id-login-page-submit-button"
-              disabled={showQrCode || isLoading || totpIsLoading}
-            >
-              {totpIsLoading || isLoading ? t('common.loading') : t('common.login')}
-            </Button>
-            <Button
-              className="mx-auto w-full justify-center text-foreground shadow-xl hover:bg-ciGrey/10"
+              className="mx-auto w-full justify-center shadow-xl hover:bg-ciGrey/10"
               type="button"
               variant="btn-outline"
               size="lg"
               disabled={isLoading || totpIsLoading}
               onClick={handleCancelOrToggleQrCode}
             >
-              {isEnterTotpVisible || showQrCode ? t('common.cancel') : t('login.loginWithApp')}
+              {isEnterTotpVisible || showQrCode ? (
+                t('common.cancel')
+              ) : (
+                <>
+                  {t('login.loginWithApp')}
+                  <MdOutlineQrCode />
+                </>
+              )}
             </Button>
           </form>
         </Form>

@@ -22,7 +22,7 @@ const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-xl text-backgrou
       'btn-collaboration': 'bg-primary',
       'btn-organisation': 'bg-primary',
       'btn-infrastructure': 'bg-ciLightGreen',
-      'btn-security': 'bg-ciGreenToBlue ',
+      'btn-security': 'bg-ciGreenToBlue',
       'btn-outline':
         'border border-input shadow-sm hover:bg-accent hover:text-accent-foreground text-accent-foreground',
       'btn-hexagon': 'bg-cover bg-center flex items-center justify-center',
