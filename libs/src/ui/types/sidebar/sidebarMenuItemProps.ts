@@ -14,8 +14,8 @@ import { SidebarMenuItem } from './sidebarMenuItem';
 
 export type SidebarMenuItemProps = {
   menuItem: SidebarMenuItem;
-  isUpButtonVisible: boolean;
-  isDownButtonVisible: boolean;
+  isUpButtonVisible?: boolean;
+  isDownButtonVisible?: boolean;
   isDesktop?: boolean;
   translate?: number;
 };
