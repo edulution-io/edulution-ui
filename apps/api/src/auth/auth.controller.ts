@@ -19,6 +19,7 @@ import AuthRequestArgs from '@libs/auth/types/auth-request';
 import { AUTH_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
+import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
 import { Public } from '../common/decorators/public.decorator';
 import AuthService from './auth.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
@@ -65,10 +66,7 @@ class AuthController {
 
   @Public()
   @Post('login')
-  loginViaApp(
-    @Body() body: { username: string; password: string; totpValue?: string },
-    @Query('sessionId') sessionId: string,
-  ) {
+  loginViaApp(@Body() body: LoginQrSseDto, @Query('sessionId') sessionId: string) {
     if (!sessionId) throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.BAD_REQUEST);
     return this.authService.loginViaApp(body, sessionId);
   }

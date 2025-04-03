@@ -28,6 +28,7 @@ import AUTH_TOTP_CONFIG from '@libs/auth/constants/totp-config';
 import type AuthRequestArgs from '@libs/auth/types/auth-request';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
 import { User, UserDocument } from '../users/user.schema';
 import { fromBase64 } from '../filesharing/filesharing.utilities';
 import SseService from '../sse/sse.service';
@@ -200,7 +201,7 @@ class AuthService {
     }
   }
 
-  loginViaApp(body: { username: string; password: string; totpValue?: string }, sessionId: string) {
+  loginViaApp(body: LoginQrSseDto, sessionId: string) {
     const { username, password, totpValue } = body;
     const isConnectionActive = this.sseService.getUserConnection(sessionId);
 

@@ -26,7 +26,7 @@ import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
 import useUserStore from '@/store/UserStore/UserStore';
-import UserDto from '@libs/user/types/user.dto';
+import type UserDto from '@libs/user/types/user.dto';
 import processLdapGroups from '@libs/user/utils/processLdapGroups';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
@@ -35,6 +35,7 @@ import PageTitle from '@/components/PageTitle';
 import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import delay from '@libs/common/utils/delay';
+import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 
@@ -155,17 +156,17 @@ const LoginPage: React.FC = () => {
     const { signal } = controller;
 
     const handleLoginEvent = (e: MessageEvent<string>) => {
-      const { username, password, totpValue } = JSON.parse(atob(e.data)) as {
-        username: string;
-        password: string;
-        totpValue?: string;
-      };
+      try {
+        const { username, password, totpValue } = JSON.parse(atob(e.data)) as LoginQrSseDto;
 
-      form.setValue('username', username);
-      form.setValue('password', password);
-      form.setValue('totpValue', totpValue || '');
+        form.setValue('username', username);
+        form.setValue('password', password);
+        form.setValue('totpValue', totpValue || '');
 
-      void form.handleSubmit(onSubmit)();
+        void form.handleSubmit(onSubmit)();
+      } catch (error) {
+        console.error('JSON parse error:', error);
+      }
     };
 
     eventSource.addEventListener(SSE_MESSAGE_TYPE.MESSAGE, handleLoginEvent, { signal });
