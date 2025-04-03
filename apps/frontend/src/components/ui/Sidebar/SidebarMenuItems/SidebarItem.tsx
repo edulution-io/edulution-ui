@@ -65,7 +65,7 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({
       <NavLink
         onClick={handleClick}
         to={link}
-        className={`group relative z-[99] flex cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-2 ${isCurrentlySelectedItem ? menuItem.color : ''}`}
+        className={`group relative z-40 flex cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-2 ${isCurrentlySelectedItem ? menuItem.color : ''}`}
       >
         <p className="md:hidden">{title}</p>
         <>
@@ -79,7 +79,7 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({
         </>
         {isInView ? (
           <div
-            className={`${color} absolute left-full top-0 z-[99] flex h-full items-center gap-4 rounded-l-[8px] pl-4 pr-[48px] ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
+            className={`${color} absolute left-full top-0 z-40 flex h-full items-center gap-4 rounded-l-[8px] pl-4 pr-[48px] ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
           >
             <p className="whitespace-nowrap font-bold">{title}</p>
             <img
