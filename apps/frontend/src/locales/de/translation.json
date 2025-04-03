@@ -540,7 +540,8 @@
       "idFooter": "Um die vorherige Antwort zu überschreiben musst du dich bei der nächsten Teilnahme mit der ID anmelden.",
       "idCopySuccess": "ID erfolgreich kopiert",
       "idCopyError": "ID konnte nicht kopiert werden",
-      "usernameRequired": "Der Benutzername ist erforderlich"
+      "usernameRequired": "Der Benutzername ist erforderlich",
+      "completeMessage": "Vielen Dank, dass du an der Umfrage Teilgenommen hast"
     },
     "errors": {
       "submitAnswerError": "Die Antwort konnte nicht gespeichert werden.",

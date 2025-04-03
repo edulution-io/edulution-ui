@@ -13,7 +13,7 @@
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 
 const getSurveyFormulaWithIdentificationQuestion = (formula: TSurveyFormula) => {
-  const identification = { type: 'text', name: 'user' };
+  const identification = { type: 'text', name: 'identification' };
   const updatedFormula = JSON.parse(JSON.stringify(formula)) as TSurveyFormula;
   const { pages, elements } = updatedFormula;
   if (updatedFormula.pages && pages && pages.length > 0) {

@@ -538,7 +538,8 @@
       "idFooter": "In order to overwrite your previous answer, please enter the ID in your next participation.",
       "idCopySuccess": "Successfully copied the ID to the clipboard",
       "idCopyError": "Error copying the ID to the clipboard",
-      "usernameRequired": "User name is required"
+      "usernameRequired": "User name is required",
+      "completeMessage": "Thank you very much for participating in this survey"
     },
     "errors": {
       "submitAnswerError": "Not able to submit the answer.",

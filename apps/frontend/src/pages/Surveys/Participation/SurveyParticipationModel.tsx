@@ -17,7 +17,6 @@ import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import UserDto from '@libs/user/types/user.dto';
 import useLanguage from '@/hooks/useLanguage';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
@@ -27,25 +26,23 @@ import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
+import useUserStore from '@/store/UserStore/UserStore';
 
 interface SurveyParticipationModelProps {
   username: string;
-  user: UserDto | null;
   isPublic: boolean;
 }
 
 Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
 
 const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.ReactNode => {
-  const {
-    user,
-    username,
-    isPublic,
-  } = props;
+  const { username, isPublic } = props;
 
   const { selectedSurvey, isFetching, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 
   const { answerSurvey, previousAnswer } = useParticipateSurveyStore();
+
+  const { user } = useUserStore();
 
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -61,6 +58,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
     if (newModel.pages.length > 3) {
       newModel.showProgressBar = 'top';
     }
+    newModel.completedHtml = `${t('survey.participate.completeMessage')}`;
 
     newModel.onCompleting.add(async (surveyModel, completingEvent) => {
       if (!selectedSurvey.id) {

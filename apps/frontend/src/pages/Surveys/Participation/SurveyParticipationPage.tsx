@@ -30,11 +30,9 @@ interface SurveyParticipationPageProps {
 const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.ReactNode => {
   const { isPublic = false } = props;
 
-  const { selectedSurvey, fetchSelectedSurvey } =
-    useSurveyTablesPageStore();
+  const { selectedSurvey, fetchSelectedSurvey } = useSurveyTablesPageStore();
 
-  const { username, setUsername, reset, publicUserId, fetchAnswer } =
-    useParticipateSurveyStore();
+  const { username, setUsername, reset, publicUserId, fetchAnswer } = useParticipateSurveyStore();
 
   const { surveyId } = useParams();
   const { t } = useTranslation();
@@ -108,7 +106,6 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
 
   return (
     <SurveyParticipationModel
-      user={user}
       username={user?.username || form.watch('username')}
       isPublic={isPublic}
     />
