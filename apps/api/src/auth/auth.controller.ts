@@ -65,7 +65,7 @@ class AuthController {
   }
 
   @Public()
-  @Post('login')
+  @Post(AUTH_PATHS.AUTH_VIA_APP)
   loginViaApp(@Body() body: LoginQrSseDto, @Query('sessionId') sessionId: string) {
     if (!sessionId) throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.BAD_REQUEST);
     return this.authService.loginViaApp(body, sessionId);

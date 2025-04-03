@@ -261,7 +261,7 @@ const LoginPage: React.FC = () => {
       return (
         <>
           <QRCodeDisplay
-            value={`${window.location.origin}/${EDU_API_ROOT}/${AUTH_PATHS.AUTH_ENDPOINT}/login?sessionId=${sessionID}`}
+            value={`${window.location.origin}/${EDU_API_ROOT}/${AUTH_PATHS.AUTH_ENDPOINT}/${AUTH_PATHS.AUTH_VIA_APP}?sessionId=${sessionID}`}
             size="lg"
           />
           <p className="font-bold">{t('login.loginWithQrDescription')}</p>
@@ -344,7 +344,7 @@ const LoginPage: React.FC = () => {
               ) : (
                 <>
                   {t('login.loginWithApp')}
-                  <MdOutlineQrCode />
+                  <MdOutlineQrCode size={20} />
                 </>
               )}
             </Button>

@@ -14,6 +14,7 @@ import { ExecutionContext } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import type { UpdateWriteOpResult } from 'mongoose';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
+import { GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import GlobalSettingsController from './global-settings.controller';
 import GlobalSettingsService from './global-settings.service';
 import AppConfigGuard from '../appconfig/appconfig.guard';
@@ -78,7 +79,7 @@ describe('GlobalSettingsController', () => {
     });
 
     it('should return projected global settings when projection is provided', async () => {
-      const projection = 'auth';
+      const projection = GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH;
       jest.spyOn(service, 'getGlobalSettings').mockResolvedValue(mockedGlobalSettingsDbResponse);
 
       expect(await controller.getGlobalSettings(projection)).toBe(mockedGlobalSettingsDbResponse);
