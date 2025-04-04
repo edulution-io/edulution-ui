@@ -17,10 +17,10 @@ import JobData from '@libs/queue/constants/jobData';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 import CollectFileJobData from '@libs/queue/types/collectFileJobData';
-import WebDavService from '../../webdav/webDavService';
-import SseService from '../../sse/sse.service';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import WebDavService from '../../webdav/webDavService';
+import SseService from '../../sse/sse.service';
 
 @Injectable()
 class CollectFileConsumer extends WorkerHost {

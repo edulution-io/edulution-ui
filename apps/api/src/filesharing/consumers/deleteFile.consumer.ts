@@ -15,10 +15,10 @@ import { Job } from 'bullmq';
 import { Injectable } from '@nestjs/common';
 import JobData from '@libs/queue/constants/jobData';
 import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
-import WebDavService from '../../webdav/webDavService';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
-import SseService from '../../sse/sse.service';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import WebDavService from '../../webdav/webDavService';
+import SseService from '../../sse/sse.service';
 
 @Injectable()
 class DeleteFileConsumer extends WorkerHost {
