@@ -14,6 +14,7 @@ import { Injectable, MessageEvent } from '@nestjs/common';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Response } from 'express';
+import { Interval } from '@nestjs/schedule';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type SseStatus from '@libs/common/types/sseMessageType';
 import type UserConnections from '../types/userConnections';
@@ -23,6 +24,16 @@ import type SseEventData from '../types/sseEventData';
 @Injectable()
 class SseService {
   private userConnections: UserConnections = new Map();
+
+  @Interval(25000)
+  sendHeartbeat(): void {
+    this.informAllUsers(
+      JSON.stringify({
+        timestamp: new Date().toISOString(),
+      }),
+      SSE_MESSAGE_TYPE.PING,
+    );
+  }
 
   public subscribe(username: string, res: Response): Observable<MessageEvent> {
     let subject = this.userConnections.get(username);
