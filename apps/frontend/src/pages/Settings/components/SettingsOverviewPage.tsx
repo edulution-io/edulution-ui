@@ -19,6 +19,7 @@ import { DropdownSelect } from '@/components';
 import useMedia from '@/hooks/useMedia';
 import { GLOBAL_SETTINGS_ROOT_ENDPOINT } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import CONTAINER from '@libs/docker/constants/container';
+import PageTitle from '@/components/PageTitle';
 import DockerContainerTable from '../AppConfig/DockerIntegration/DockerContainerTable';
 import LicenseOverview from './LicenseOverview';
 import GlobalSettings from '../GlobalSettings/GlobalSettings';
@@ -58,14 +59,26 @@ const SettingsOverviewPage: React.FC = () => {
           ))}
         </TabsList>
         <TabsContent value={tabOptions[0].id}>
+          <PageTitle
+            title={t('settings.sidebar')}
+            translationId={tabOptions[0].name}
+          />
           <Separator />
           <DockerContainerTable />
         </TabsContent>
         <TabsContent value={tabOptions[1].id}>
+          <PageTitle
+            title={t('settings.sidebar')}
+            translationId={tabOptions[1].name}
+          />
           <Separator />
           <GlobalSettings />
         </TabsContent>
         <TabsContent value={tabOptions[2].id}>
+          <PageTitle
+            title={t('settings.sidebar')}
+            translationId={tabOptions[2].name}
+          />
           <Separator />
           <LicenseOverview />
         </TabsContent>

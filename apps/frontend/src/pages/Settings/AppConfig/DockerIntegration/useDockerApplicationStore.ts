@@ -17,8 +17,6 @@ import eduApi from '@libs/common/constants/eduApi';
 import { type ContainerInfo, type ContainerCreateOptions } from 'dockerode';
 import { type RowSelectionState } from '@tanstack/react-table';
 import handleApiError from '@/utils/handleApiError';
-import useUserStore from '@/store/UserStore/UserStore';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import DOCKER_APPLICATIONS from '@libs/docker/constants/dockerApplicationList';
 import { EDU_API_DOCKER_CONTAINER_ENDPOINT, EDU_API_DOCKER_ENDPOINT } from '@libs/docker/constants/dockerEndpoints';
 import { EDU_PLUGINS_GITHUB_URL } from '@libs/common/constants';
@@ -32,7 +30,6 @@ const initialValues = {
   tableContentData: [],
   isLoading: true,
   error: null,
-  eventSource: null,
   selectedRows: {},
   dockerContainerConfig: null,
   traefikConfig: null,
@@ -44,13 +41,6 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
   setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
 
   setIsLoading: (isLoading: boolean) => set({ isLoading }),
-
-  setEventSource: () =>
-    set({
-      eventSource: new EventSource(
-        `/${EDU_API_ROOT}/${EDU_API_DOCKER_ENDPOINT}/sse?token=${useUserStore.getState().eduApiToken}`,
-      ),
-    }),
 
   updateContainers: (containers: ContainerInfo[]) => set({ containers }),
 

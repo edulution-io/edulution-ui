@@ -98,6 +98,7 @@
     "sidebar": "Eingebettet"
   },
   "dashboard": {
+    "pageTitle": "Dashboard",
     "mobileAccess": {
       "title": "Mobiler Datenzugriff",
       "manual": "Anleitung",
@@ -505,6 +506,7 @@
     "attendees": "Teilnehmer",
     "newTitle": "Neue Umfrage",
     "filterPlaceHolderText": "Suche nach Umfragename",
+    "publicSurvey": "Öffentliche Umfrage",
     "invitedAttendees": "Eingeladen",
     "isPublic": "Sichtbarkeit",
     "isPublicTrue": "Öffentlich",
@@ -925,6 +927,7 @@
   "students": "Schüler",
   "user": "Benutzer",
   "login": {
+    "pageTitle": "Login",
     "username_too_long": "Benutzername zu lang",
     "password_too_long": "Passwort zu lang",
     "forgot_password": "Passwort vergessen?",

@@ -24,10 +24,8 @@ export interface DockerContainerTableStore extends AppConfigTable<ContainerInfo>
   setSelectedRows: (selectedRows: RowSelectionState) => void;
   isLoading: boolean;
   error: string | null;
-  eventSource: EventSource | null;
   dockerContainerConfig: DockerCompose | null;
   traefikConfig: YAMLMap | null;
-  setEventSource: () => void;
   getContainers: (applicationNames?: string[]) => Promise<ContainerInfo[]>;
   updateContainers: (containers: ContainerInfo[]) => void;
   createAndRunContainer: (createContainerDto: ContainerCreateOptions[]) => Promise<void>;

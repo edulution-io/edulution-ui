@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable, MessageEvent, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Response } from 'express';
 import { Model, Types } from 'mongoose';
@@ -25,37 +25,30 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
-import { Observable } from 'rxjs';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 
 import { BulletinCategory, BulletinCategoryDocument } from '../bulletin-category/bulletin-category.schema';
 import BulletinCategoryService from '../bulletin-category/bulletin-category.service';
 import SseService from '../sse/sse.service';
-import type UserConnections from '../types/userConnections';
 import GroupsService from '../groups/groups.service';
 import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
 class BulletinBoardService implements OnModuleInit {
-  private bulletinsSseConnections: UserConnections = new Map();
-
   constructor(
     @InjectModel(Bulletin.name) private bulletinModel: Model<BulletinDocument>,
     @InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>,
     private readonly bulletinCategoryService: BulletinCategoryService,
     private fileSystemService: FilesystemService,
     private readonly groupsService: GroupsService,
+    private readonly sseService: SseService,
   ) {}
 
   private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
 
   onModuleInit() {
     void this.fileSystemService.ensureDirectoryExists(this.attachmentsPath);
-  }
-
-  subscribe(username: string, res: Response): Observable<MessageEvent> {
-    return SseService.subscribe(username, this.bulletinsSseConnections, res);
   }
 
   async serveBulletinAttachment(filename: string, res: Response) {
@@ -251,12 +244,7 @@ class BulletinBoardService implements OnModuleInit {
       (!dto.isVisibleEndDate || now <= new Date(dto.isVisibleEndDate));
 
     if (isWithinVisibilityPeriod) {
-      SseService.sendEventToUsers(
-        invitedMembersList,
-        this.bulletinsSseConnections,
-        resultingBulletin,
-        SSE_MESSAGE_TYPE.UPDATED,
-      );
+      this.sseService.sendEventToUsers(invitedMembersList, resultingBulletin, SSE_MESSAGE_TYPE.BULLETIN_UPDATED);
     }
   }
 

@@ -10,20 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  MessageEvent,
-  Param,
-  Patch,
-  Post,
-  Res,
-  Sse,
-  UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
@@ -32,11 +19,9 @@ import JWTUser from '@libs/user/types/jwt/jwtUser';
 import APPS from '@libs/appconfig/constants/apps';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
-import { Observable } from 'rxjs';
 import BulletinBoardService from './bulletinboard.service';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
 import GetToken from '../common/decorators/getToken.decorator';
-import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import { checkAttachmentFile, createAttachmentUploadOptions } from '../common/multer.utilities';
 
 @ApiTags(APPS.BULLETIN_BOARD)
@@ -92,11 +77,6 @@ class BulletinBoardController {
   uploadBulletinAttachment(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
     const fileName = checkAttachmentFile(file);
     return res.status(200).json(fileName);
-  }
-
-  @Sse('sse')
-  sse(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
-    return this.bulletinBoardService.subscribe(username, res);
   }
 }
 

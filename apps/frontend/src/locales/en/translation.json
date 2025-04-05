@@ -98,6 +98,7 @@
     "sidebar": "Embedded"
   },
   "dashboard": {
+    "pageTitle": "Dashboard",
     "mobileAccess": {
       "title": "Mobile File Access",
       "manual": "Setup",
@@ -503,6 +504,7 @@
     "attendees": "Attendees",
     "filterPlaceHolderText": "Search for surveyname",
     "invitedAttendees": "Invited",
+    "publicSurvey": "Public survey",
     "isPublic": "Publicly displayed (?)",
     "isPublicTrue": "Public",
     "isPublicFalse": "Private",
@@ -923,6 +925,7 @@
   "students": "Students",
   "user": "User",
   "login": {
+    "pageTitle": "Login",
     "username_too_long": "Username to long",
     "password_too_long": "Password to long",
     "forgot_password": "Forgot password?",
