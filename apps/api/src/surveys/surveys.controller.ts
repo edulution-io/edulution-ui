@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Observable } from 'rxjs';
 import { Response } from 'express';
 import {
   Body,
@@ -18,12 +17,10 @@ import {
   Delete,
   Get,
   HttpStatus,
-  MessageEvent,
   Param,
   Patch,
   Post,
   Res,
-  Sse,
   Query,
   UploadedFile,
   UseInterceptors,
@@ -52,16 +49,12 @@ import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
-import SseService from '../sse/sse.service';
-import type UserConnections from '../types/userConnections';
 import { checkAttachmentFile, createAttachmentUploadOptions } from '../common/file-attachment/multer.utilities';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
 @Controller(SURVEYS)
 class SurveysController {
-  private surveysSseConnections: UserConnections = new Map();
-
   constructor(
     private readonly surveyService: SurveysService,
     private readonly surveyAnswerService: SurveyAnswerService,
@@ -121,13 +114,13 @@ class SurveysController {
 
   @Post()
   async updateOrCreateSurvey(@Body() surveyDto: SurveyDto, @GetCurrentUser() user: JWTUser) {
-    return this.surveyService.updateOrCreateSurvey(surveyDto, user, this.surveysSseConnections);
+    return this.surveyService.updateOrCreateSurvey(surveyDto, user);
   }
 
   @Delete()
   async deleteSurvey(@Body() deleteSurveyDto: DeleteSurveyDto) {
     const { surveyIds } = deleteSurveyDto;
-    await this.surveyService.deleteSurveys(surveyIds, this.surveysSseConnections);
+    await this.surveyService.deleteSurveys(surveyIds);
     await this.surveyAnswerService.onSurveyRemoval(surveyIds);
     await this.surveyService.onSurveyRemoval(surveyIds);
   }
@@ -136,11 +129,6 @@ class SurveysController {
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUser() user: JWTUser) {
     const { surveyId, saveNo, answer } = pushAnswerDto;
     return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, user);
-  }
-
-  @Sse('sse')
-  sse(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
-    return SseService.subscribe(username, this.surveysSseConnections, res);
   }
 }
 

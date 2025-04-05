@@ -17,6 +17,7 @@ import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@libs/ui/constants
 import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
 import { getRootPathName } from '@libs/common/utils';
 import SidebarItemNotification from '@/components/ui/Sidebar/SidebarMenuItems/SidebarItemNotification';
+import PageTitle from '@/components/PageTitle';
 
 const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, translate }) => {
   const { title, icon, color, link, notificationCounter } = menuItem;
@@ -34,15 +35,18 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem, isDesktop, tran
     setIsInView(rect.bottom < window.innerHeight - SIDEBAR_TRANSLATE_AMOUNT);
   }, [translate, size]);
 
+  const isCurrentlySelectedItem = rootPathName === menuItem.link && pathname !== '/';
+
   return (
     <div
       key={title}
       className="relative"
       ref={buttonRef}
     >
+      {isCurrentlySelectedItem && <PageTitle translationId={title} />}
       <NavLink
         to={link}
-        className={`group relative z-[99] flex cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-2 ${rootPathName === menuItem.link && pathname !== '/' ? menuItem.color : ''}`}
+        className={`group relative z-[99] flex cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-2 ${isCurrentlySelectedItem ? menuItem.color : ''}`}
       >
         <p className="md:hidden">{title}</p>
         <>

@@ -10,9 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
+const SSE_EDU_API_ENDPOINTS = {
+  SSE: 'sse',
+} as const;
 
-export const CONFERENCES_EDU_API_ENDPOINT: string = 'conferences';
-export const CONFERENCES_JOIN_EDU_API_ENDPOINT = `${CONFERENCES_EDU_API_ENDPOINT}/join`;
-export const CONFERENCES_PUBLIC_EDU_API_ENDPOINT = `${CONFERENCES_EDU_API_ENDPOINT}/public`;
-export const CONFERENCES_PUBLIC_SSE_EDU_API_ENDPOINT = `${SSE_EDU_API_ENDPOINTS.SSE}/${CONFERENCES_EDU_API_ENDPOINT}/public`;
+export default SSE_EDU_API_ENDPOINTS;

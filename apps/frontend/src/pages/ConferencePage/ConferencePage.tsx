@@ -35,7 +35,7 @@ const ConferencePage: React.FC = () => {
   return (
     <div>
       <NativeAppHeader
-        title={t('conferences.title')}
+        title={t('conferences.sidebar')}
         description={t('conferences.description')}
         iconSrc={ConferencesIcon}
       />

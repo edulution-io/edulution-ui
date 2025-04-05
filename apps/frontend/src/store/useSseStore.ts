@@ -10,9 +10,23 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { create } from 'zustand';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
 
-export const CONFERENCES_EDU_API_ENDPOINT: string = 'conferences';
-export const CONFERENCES_JOIN_EDU_API_ENDPOINT = `${CONFERENCES_EDU_API_ENDPOINT}/join`;
-export const CONFERENCES_PUBLIC_EDU_API_ENDPOINT = `${CONFERENCES_EDU_API_ENDPOINT}/public`;
-export const CONFERENCES_PUBLIC_SSE_EDU_API_ENDPOINT = `${SSE_EDU_API_ENDPOINTS.SSE}/${CONFERENCES_EDU_API_ENDPOINT}/public`;
+type SseStore = {
+  eventSource: EventSource | null;
+  setEventSource: (eduApiToken: string) => void;
+  reset: () => void;
+};
+
+const useSseStore = create<SseStore>((set, get) => ({
+  eventSource: null,
+  setEventSource: (eduApiToken) =>
+    set({
+      eventSource: new EventSource(`/${EDU_API_ROOT}/${SSE_EDU_API_ENDPOINTS.SSE}?token=${eduApiToken}`),
+    }),
+  reset: () => get().eventSource?.close(),
+}));
+
+export default useSseStore;

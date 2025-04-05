@@ -20,7 +20,6 @@ import AppConfigModule from '../appconfig/appconfig.module';
 import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
 import FilesharingConsumer from './filesharing.consumer';
-import SseService from '../sse/sse.service';
 
 @Module({
   imports: [
@@ -31,7 +30,7 @@ import SseService from '../sse/sse.service';
     }),
   ],
   controllers: [FilesharingController],
-  providers: [FilesharingService, FilesystemService, OnlyofficeService, FilesharingConsumer, SseService],
+  providers: [FilesharingService, FilesystemService, OnlyofficeService, FilesharingConsumer],
   exports: [FilesharingService],
 })
 export default class FilesharingModule {}

@@ -31,7 +31,6 @@ import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
 import surveysMigrationsList from './migrations/surveysMigrationsList';
 import MigrationService from '../migration/migration.service';
-import type UserConnections from '../types/userConnections';
 import { Survey, SurveyDocument } from './survey.schema';
 import AttachmentService from '../common/file-attachment/attachment.service';
 
@@ -40,6 +39,7 @@ class SurveysService implements OnModuleInit {
   constructor(
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
     private readonly groupsService: GroupsService,
+    private readonly sseService: SseService,
     private readonly attachmentService: AttachmentService,
   ) {}
 
@@ -79,7 +79,7 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  async deleteSurveys(surveyIds: string[], surveysSseConnections: UserConnections): Promise<void> {
+  async deleteSurveys(surveyIds: string[]): Promise<void> {
     try {
       const surveyObjectIds = surveyIds.map((s) => new Types.ObjectId(s));
       await this.surveyModel.deleteMany({ _id: { $in: surveyObjectIds } });
@@ -87,15 +87,11 @@ class SurveysService implements OnModuleInit {
     } catch (error) {
       throw new CustomHttpException(SurveyErrorMessages.DeleteError, HttpStatus.NOT_MODIFIED, error);
     } finally {
-      SseService.informAllUsers(surveysSseConnections, surveyIds.toString(), SSE_MESSAGE_TYPE.DELETED);
+      this.sseService.informAllUsers(surveyIds, SSE_MESSAGE_TYPE.SURVEY_DELETED);
     }
   }
 
-  async updateSurvey(
-    survey: SurveyDto,
-    currentUser: JwtUser,
-    surveysSseConnections: UserConnections,
-  ): Promise<SurveyDocument | null> {
+  async updateSurvey(survey: SurveyDto, currentUser: JwtUser): Promise<SurveyDocument | null> {
     const existingSurvey = await this.surveyModel.findById(survey.id).exec();
     if (!existingSurvey) {
       return null;
@@ -113,29 +109,25 @@ class SurveysService implements OnModuleInit {
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {
+      Logger.warn(survey.isPublic, SurveysService.name);
       if (survey.isPublic) {
-        SseService.informAllUsers(surveysSseConnections, survey, SSE_MESSAGE_TYPE.UPDATED);
+        this.sseService.informAllUsers(survey, SSE_MESSAGE_TYPE.SURVEY_UPDATED);
       } else {
         const invitedMembersList = await this.groupsService.getInvitedMembers(
           survey.invitedGroups,
           survey.invitedAttendees,
         );
+        Logger.warn(invitedMembersList, SurveysService.name);
+
         const updatedSurvey = await this.surveyModel.findById(survey.id).exec();
-        SseService.sendEventToUsers(
-          invitedMembersList,
-          surveysSseConnections,
-          updatedSurvey || survey,
-          SSE_MESSAGE_TYPE.UPDATED,
-        );
+        Logger.warn(updatedSurvey, SurveysService.name);
+
+        this.sseService.sendEventToUsers(invitedMembersList, updatedSurvey || survey, SSE_MESSAGE_TYPE.SURVEY_UPDATED);
       }
     }
   }
 
-  async createSurvey(
-    survey: SurveyDto,
-    currentUser: JwtUser,
-    surveysSseConnections: UserConnections,
-  ): Promise<SurveyDocument> {
+  async createSurvey(survey: SurveyDto, currentUser: JwtUser): Promise<SurveyDocument> {
     const creator: AttendeeDto = {
       ...survey.creator,
       firstName: currentUser.given_name,
@@ -149,13 +141,13 @@ class SurveysService implements OnModuleInit {
       throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {
       if (survey.isPublic) {
-        SseService.informAllUsers(surveysSseConnections, survey, SSE_MESSAGE_TYPE.CREATED);
+        this.sseService.informAllUsers(survey, SSE_MESSAGE_TYPE.SURVEY_CREATED);
       } else {
         const invitedMembersList = await this.groupsService.getInvitedMembers(
           survey.invitedGroups,
           survey.invitedAttendees,
         );
-        SseService.sendEventToUsers(invitedMembersList, surveysSseConnections, survey, SSE_MESSAGE_TYPE.CREATED);
+        this.sseService.sendEventToUsers(invitedMembersList, survey, SSE_MESSAGE_TYPE.SURVEY_CREATED);
       }
     }
   }
@@ -249,17 +241,13 @@ class SurveysService implements OnModuleInit {
     return updatedFormula;
   }
 
-  async updateOrCreateSurvey(
-    surveyDto: SurveyDto,
-    user: JwtUser,
-    surveysSseConnections: UserConnections,
-  ): Promise<SurveyDocument | null> {
+  async updateOrCreateSurvey(surveyDto: SurveyDto, user: JwtUser): Promise<SurveyDocument | null> {
     let survey: SurveyDocument | null;
 
-    survey = await this.updateSurvey(surveyDto, user, surveysSseConnections);
+    survey = await this.updateSurvey(surveyDto, user);
 
     if (survey == null) {
-      survey = await this.createSurvey(surveyDto, user, surveysSseConnections);
+      survey = await this.createSurvey(surveyDto, user);
     }
 
     // eslint-disable-next-line no-underscore-dangle
@@ -272,7 +260,7 @@ class SurveysService implements OnModuleInit {
     const updatedFormula = await this.updateFormula(user.preferred_username, surveyId, survey.formula);
 
     const updatedSurvey = { ...surveyDto, id: surveyId, formula: updatedFormula };
-    const savedSurvey = await this.updateSurvey(updatedSurvey, user, surveysSseConnections);
+    const savedSurvey = await this.updateSurvey(updatedSurvey, user);
 
     if (savedSurvey == null) {
       throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.NOT_FOUND);

@@ -10,9 +10,26 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
+import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
 
-export const CONFERENCES_EDU_API_ENDPOINT: string = 'conferences';
-export const CONFERENCES_JOIN_EDU_API_ENDPOINT = `${CONFERENCES_EDU_API_ENDPOINT}/join`;
-export const CONFERENCES_PUBLIC_EDU_API_ENDPOINT = `${CONFERENCES_EDU_API_ENDPOINT}/public`;
-export const CONFERENCES_PUBLIC_SSE_EDU_API_ENDPOINT = `${SSE_EDU_API_ENDPOINTS.SSE}/${CONFERENCES_EDU_API_ENDPOINT}/public`;
+interface PageTitleProps {
+  title?: string;
+  translationId: string;
+}
+
+const PageTitle = ({ title, translationId }: PageTitleProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <Helmet>
+      <title>
+        {title ? `${title} - ` : ''}
+        {t(translationId)} - edulution.io
+      </title>
+    </Helmet>
+  );
+};
+
+export default PageTitle;

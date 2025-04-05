@@ -51,15 +51,13 @@ import {
   surveyUpdateInitialSurvey,
   updatedSurveyAnswerAnsweredSurvey03,
 } from './mocks';
-import UserConnections from '../types/userConnections';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
+import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
 import AttachmentService from '../common/file-attachment/attachment.service';
 import mockAttachmentService from '../common/file-attachment/attachment.service.mock';
-
-const mockSseConnections: UserConnections = new Map();
 
 describe(SurveysController.name, () => {
   let controller: SurveysController;
@@ -74,6 +72,7 @@ describe(SurveysController.name, () => {
       controllers: [SurveysController],
       providers: [
         SurveysService,
+        SseService,
         {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
@@ -241,7 +240,7 @@ describe(SurveysController.name, () => {
     //   };
     //
     //   await controller.updateOrCreateSurvey(surveyUpdateUpdatedSurveyDto, firstMockJWTUser);
-    //   expect(surveyService.updateOrCreateSurvey).toHaveBeenCalledWith(createSurvey, mockSseConnections);
+    //   expect(surveyService.updateOrCreateSurvey).toHaveBeenCalledWith(createSurvey);
     // });
   });
 
@@ -256,7 +255,7 @@ describe(SurveysController.name, () => {
 
       await controller.deleteSurvey({ surveyIds: [idOfAnsweredSurvey01.toString()] });
 
-      expect(surveyService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01.toString()], mockSseConnections);
+      expect(surveyService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01.toString()]);
       expect(surveyAnswerService.onSurveyRemoval).toHaveBeenCalledWith([idOfAnsweredSurvey01.toString()]);
       expect(surveyModel.deleteMany).toHaveBeenCalledWith({ _id: { $in: [idOfAnsweredSurvey01] } });
       expect(surveyAnswerModel.deleteMany).toHaveBeenCalledWith(
@@ -281,7 +280,7 @@ describe(SurveysController.name, () => {
         expect(e.message).toEqual(SurveyErrorMessages.DeleteError);
       }
 
-      expect(surveyService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01.toString()], mockSseConnections);
+      expect(surveyService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01.toString()]);
       expect(surveyAnswerService.onSurveyRemoval).toHaveBeenCalledTimes(0);
     });
   });
