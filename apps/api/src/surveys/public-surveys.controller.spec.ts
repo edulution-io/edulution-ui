@@ -40,6 +40,7 @@ import {
 } from './mocks';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
+import SseService from '../sse/sse.service';
 
 describe(PublicSurveysController.name, () => {
   let controller: PublicSurveysController;
@@ -54,6 +55,7 @@ describe(PublicSurveysController.name, () => {
       controllers: [PublicSurveysController],
       providers: [
         SurveysService,
+        SseService,
         {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
