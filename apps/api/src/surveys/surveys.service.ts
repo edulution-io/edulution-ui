@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { join } from 'path';
 import { Response } from 'express';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -166,13 +165,13 @@ class SurveysService implements OnModuleInit {
     if (tempFiles.includes(imagesFileName)) {
       await this.attachmentService.moveTempFileIntoPermanentDirectory(username, pathWithIds, imagesFileName);
       const url = this.attachmentService.getPersistentAttachmentUrl(pathWithIds, imagesFileName);
-      return join(baseUrl, url);
+      return `${baseUrl}${url}`;
     }
     return link;
   }
 
   async updateLogo(username: string, surveyId: string, tempFiles: string[], link: string): Promise<string | undefined> {
-    const pathWithIds = join(surveyId, 'logo');
+    const pathWithIds = `${surveyId}/logo`;
     return this.updateLink(username, pathWithIds, tempFiles, link);
   }
 
@@ -186,7 +185,7 @@ class SurveysService implements OnModuleInit {
       return question;
     }
     try {
-      const pathWithIds = join(surveyId, question.name);
+      const pathWithIds = `${surveyId}/${question.name}`;
       const newImageLink = await this.updateLink(username, pathWithIds, tempFiles, question.imageLink);
       return { ...question, imageLink: newImageLink };
     } catch (error) {
@@ -213,7 +212,7 @@ class SurveysService implements OnModuleInit {
     tempFiles: string[],
     pages: SurveyPage[],
   ): Promise<SurveyPage[]> {
-    const updatePromises = pages?.map(async (page) => {
+    const updatePromises = pages.map(async (page) => {
       if (!page.elements || page.elements?.length === 0) {
         return page;
       }
@@ -243,16 +242,12 @@ class SurveysService implements OnModuleInit {
 
   async updateOrCreateSurvey(surveyDto: SurveyDto, user: JwtUser): Promise<SurveyDocument | null> {
     let survey: SurveyDocument | null;
-
     survey = await this.updateSurvey(surveyDto, user);
-
     if (survey == null) {
       survey = await this.createSurvey(surveyDto, user);
     }
-
-    // eslint-disable-next-line no-underscore-dangle
-    if (!survey._id) {
-      return survey;
+    if (survey == null) {
+      throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.NOT_FOUND);
     }
     // eslint-disable-next-line no-underscore-dangle
     const surveyId = (survey._id as Types.ObjectId).toString();
@@ -279,7 +274,7 @@ class SurveysService implements OnModuleInit {
   }
 
   async servePermanentImage(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
-    const pathWithIds = join(surveyId, questionId);
+    const pathWithIds = `${surveyId}/${questionId}`;
     return this.attachmentService.servePersistentAttachment(pathWithIds, fileName, res);
   }
 

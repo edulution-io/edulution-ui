@@ -170,10 +170,6 @@ class FilesystemService {
     return `${hash}${extension}`;
   }
 
-  static getOutputFilePath(directory: string, hashedFilename: string): string {
-    return join(directory, hashedFilename);
-  }
-
   static async saveFileStream(stream: AxiosResponse<Readable> | Readable, outputPath: string): Promise<void> {
     const writeStream = createWriteStream(outputPath);
     const actualStream = (stream as AxiosResponse<Readable>).data ? (stream as AxiosResponse<Readable>).data : stream;
@@ -238,7 +234,7 @@ class FilesystemService {
       }
       const responseStream = await FilesystemService.fetchFileStream(url, client);
       const hashedFilename = FilesystemService.generateHashedFilename(filePath, filename);
-      const outputFilePath = FilesystemService.getOutputFilePath(PUBLIC_DOWNLOADS_PATH, hashedFilename);
+      const outputFilePath = join(PUBLIC_DOWNLOADS_PATH, hashedFilename);
 
       await FilesystemService.saveFileStream(responseStream, outputFilePath);
       return {

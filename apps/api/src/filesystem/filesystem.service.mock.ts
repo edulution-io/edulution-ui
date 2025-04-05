@@ -15,7 +15,6 @@ const mockFilesystemService = {
   ensureDirectoryExists: jest.fn(),
   generateHashedFilename: jest.fn(),
   saveFileStream: jest.fn(),
-  getOutputFilePath: jest.fn(),
   retrieveAndSaveFile: jest.fn(),
   deleteFile: jest.fn(),
   fileLocation: jest.fn(),
