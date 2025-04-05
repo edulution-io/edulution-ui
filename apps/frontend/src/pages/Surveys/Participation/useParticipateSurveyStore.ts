@@ -33,7 +33,7 @@ interface ParticipateSurveyStore {
   ) => Promise<SurveyAnswerDto | undefined>;
   isSubmitting: boolean;
 
-  fetchAnswer: (surveyId: string, username: string, isPublic: boolean) => Promise<void>;
+  fetchAnswer: (surveyId: string, username?: string) => Promise<void>;
   previousAnswer: SurveyAnswerDto | undefined;
   isFetching: boolean;
 
@@ -111,20 +111,19 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
   },
 
-  fetchAnswer: async (surveyId: string, username: string, isPublicParticipationId: boolean): Promise<void> => {
+  fetchAnswer: async (surveyId: string, username?: string): Promise<void> => {
     set({ isFetching: true });
     try {
       let response: AxiosResponse<SurveyAnswerDto> | undefined;
-      if (isPublicParticipationId) {
+      if (username) {
         response = await eduApi.get<SurveyAnswerDto>(`${PUBLIC_SURVEYS}/${ANSWER}/${surveyId}/${username}`);
       } else {
-        response = await eduApi.get<SurveyAnswerDto>(`${SURVEY_ANSWER_ENDPOINT}/${surveyId}/${username}`);
+        response = await eduApi.post<SurveyAnswerDto>(SURVEY_ANSWER_ENDPOINT, { surveyId });
       }
       const surveyAnswer: SurveyAnswerDto = response.data;
       set({ previousAnswer: surveyAnswer });
     } catch (error) {
       set({ previousAnswer: undefined });
-      handleApiError(error, set);
     } finally {
       set({ isFetching: false });
     }

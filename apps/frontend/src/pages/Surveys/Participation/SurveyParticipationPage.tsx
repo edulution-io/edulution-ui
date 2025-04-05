@@ -58,12 +58,19 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
   }, [user]);
 
   useEffect(() => {
-    if (username && selectedSurvey?.id) {
+    if (!selectedSurvey?.id) {
+      return;
+    }
+    if (user) {
+      void fetchAnswer(selectedSurvey.id);
+      return;
+    }
+    if (username) {
       const publicParticipationIdLinkedToSurvey = publicUserIdRegex.test(username);
       if (selectedSurvey.isPublic && !publicParticipationIdLinkedToSurvey) {
         return;
       }
-      void fetchAnswer(selectedSurvey.id, username, !user?.username);
+      void fetchAnswer(selectedSurvey.id, username);
     }
   }, [selectedSurvey, username]);
 

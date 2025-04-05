@@ -311,14 +311,16 @@ class SurveyAnswersService {
   }
 
   async getAnswer(surveyId: string, username: string): Promise<SurveyAnswer> {
-    const usersSurveyAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({
-      $and: [{ 'attendee.username': username }, { surveyId: new Types.ObjectId(surveyId) }],
-    });
-
-    if (usersSurveyAnswer == null) {
+    const usersLatestSurveyAnswer = await this.surveyAnswerModel
+      .find<SurveyAnswer>({
+        $and: [{ 'attendee.username': username }, { surveyId: new Types.ObjectId(surveyId) }],
+      })
+      .sort({ updatedAt: -1 })
+      .limit(1);
+    if (usersLatestSurveyAnswer.length === 0) {
       throw new CustomHttpException(SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError, HttpStatus.NOT_FOUND);
     }
-    return usersSurveyAnswer;
+    return usersLatestSurveyAnswer[0];
   }
 
   async getAnswerPublicParticipation(surveyId: string, username: string): Promise<SurveyAnswer> {

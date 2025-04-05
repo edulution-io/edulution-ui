@@ -25,10 +25,10 @@ const firstUsersMockedAnswerForTheAnsweredSurvey01 = new Types.ObjectId();
 const secondUsersMockedAnswerForTheAnsweredSurvey01 = new Types.ObjectId();
 
 export const firstUsersMockedAnswerForAnsweredSurveys01: JSON = JSON.parse(
-  `{"Frage1": "User1 Antwort1", "user": "${firstMockUser.username}"}`,
+  `{"Frage1": "User1 Antwort1", "identification": "${firstMockUser.firstName} ${firstMockUser.lastName}"}`,
 ) as JSON;
 export const secondUsersMockedAnswerForAnsweredSurveys01: JSON = JSON.parse(
-  `{"Frage1": "User2 Antwort1", "user": "${firstMockUser.username}"}`,
+  `{"Frage1": "User2 Antwort1", "identification": "${firstMockUser.firstName} ${firstMockUser.lastName}"}`,
 ) as JSON;
 
 export const firstUsersSurveyAnswerAnsweredSurvey01: SurveyAnswerDocument = {
