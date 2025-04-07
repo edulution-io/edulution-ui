@@ -23,13 +23,14 @@ import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
 import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import useSharePublicConferenceStore from '@/pages/ConferencePage/useSharePublicConferenceStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import EDU_API_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
 
 const ConferencePage: React.FC = () => {
   const { t } = useTranslation();
   const { selectedConference } = useConferenceDetailsDialogStore();
   const { publicConferenceId, setSharePublicConferenceDialogId } = useSharePublicConferenceStore();
   const sharePublicConferenceUrl = publicConferenceId
-    ? `${window.location.origin}/${CONFERENCES_PUBLIC_EDU_API_ENDPOINT}/${publicConferenceId}`
+    ? `${EDU_API_BASE_URL}/${CONFERENCES_PUBLIC_EDU_API_ENDPOINT}/${publicConferenceId}`
     : '';
 
   return (

@@ -10,11 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import axios from 'axios';
-import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import EDU_API_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
 
-const eduApi = axios.create({
-  baseURL: `${EDU_API_URL}/`,
-});
+const EDU_API_URL = `${EDU_API_BASE_URL}/${EDU_API_ROOT}`;
 
-export default eduApi;
+export default EDU_API_URL;
