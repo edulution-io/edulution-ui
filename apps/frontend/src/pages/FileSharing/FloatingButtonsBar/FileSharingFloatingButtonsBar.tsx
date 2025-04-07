@@ -21,7 +21,7 @@ const FileSharingFloatingButtonsBar = () => {
   const { openDialog } = useFileSharingDialogStore();
   const { selectedItems } = useFileSharingStore();
   return (
-    <div className="fixed bottom-8 flex flex-row">
+    <>
       {selectedItems.length === 0 && <FileActionNonSelect openDialog={openDialog} />}
 
       {selectedItems.length === 1 && (
@@ -31,7 +31,7 @@ const FileSharingFloatingButtonsBar = () => {
         />
       )}
       {selectedItems.length > 1 && <FileActionMultiSelect openDialog={openDialog} />}
-    </div>
+    </>
   );
 };
 

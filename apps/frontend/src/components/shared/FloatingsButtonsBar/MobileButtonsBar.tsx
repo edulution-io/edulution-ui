@@ -52,7 +52,7 @@ const MobileButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
         type="button"
         variant="btn-hexagon"
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-8 left-1/2 -translate-x-1/2"
+        className="mx-auto"
         hexagonIconAltText={isOpen ? t('common.close') : t('common.open')}
       >
         <IconContext.Provider value={iconContextValue}>

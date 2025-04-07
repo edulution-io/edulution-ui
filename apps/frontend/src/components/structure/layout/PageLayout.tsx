@@ -16,6 +16,7 @@ import Footer from '@/components/ui/Footer';
 import NativeAppHeaderProps from '@libs/ui/types/NativeAppHeaderProps';
 import cn from '@libs/common/utils/className';
 import { useLocation } from 'react-router-dom';
+import FLOATING_BUTTONS_BAR_ID from '@libs/ui/constants/floatingButtonsBarId';
 
 interface AppLayoutProps {
   nativeAppHeader?: NativeAppHeaderProps;
@@ -48,7 +49,7 @@ const PageLayout = ({ nativeAppHeader, children, isFullScreen }: AppLayoutProps)
         {children}
       </main>
 
-      <div id="floating-bar" />
+      <div id={FLOATING_BUTTONS_BAR_ID} />
 
       <Footer />
     </div>
