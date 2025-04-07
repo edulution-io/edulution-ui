@@ -17,6 +17,7 @@ import { WebStorageStateStore } from 'oidc-client-ts';
 import i18n from '@/i18n';
 import eduApi from '@/api/eduApi';
 import useLmnApiStore from '@/store/useLmnApiStore';
+import { HelmetProvider } from 'react-helmet-async';
 import lmnApi from '@/api/lmnApi';
 import useUserStore from '@/store/UserStore/UserStore';
 import Toaster from '@/components/ui/Toaster';
@@ -55,7 +56,9 @@ const App = () => {
   return (
     <AuthProvider {...oidcConfig}>
       <GlobalHooksWrapper>
-        <AppRouter />
+        <HelmetProvider>
+          <AppRouter />
+        </HelmetProvider>
         <Toaster />
       </GlobalHooksWrapper>
     </AuthProvider>

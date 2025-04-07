@@ -38,6 +38,7 @@ import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinbo
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
+import useSseStore from '../useSseStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetQrCodeSlice();
@@ -71,6 +72,7 @@ const cleanAllStores = () => {
   useSubmittedAnswersDialogStore.getState().reset();
   useDeleteSurveyStore.getState().reset();
   useParticipateSurveyStore.getState().reset();
+  useSseStore.getState().reset();
   localStorage.removeItem('i18nextLng');
 };
 

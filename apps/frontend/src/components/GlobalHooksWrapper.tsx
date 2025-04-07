@@ -14,6 +14,7 @@ import React, { useEffect } from 'react';
 import { useAuth } from 'react-oidc-context';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import type UserDto from '@libs/user/types/user.dto';
+import useSseStore from '@/store/useSseStore';
 import useAppConfigsStore from '../pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '../store/UserStore/UserStore';
 import useLogout from '../hooks/useLogout';
@@ -23,8 +24,9 @@ import useTokenEventListeners from '../hooks/useTokenEventListener';
 const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const auth = useAuth();
   const { isBackendHealthy, getAppConfigs } = useAppConfigsStore();
-  const { isAuthenticated, setEduApiToken, user, getWebdavKey } = useUserStore();
+  const { isAuthenticated, eduApiToken, setEduApiToken, user, getWebdavKey } = useUserStore();
   const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
+  const { setEventSource } = useSseStore();
 
   const handleLogout = useLogout();
 
@@ -33,6 +35,12 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
       setEduApiToken(auth.user?.access_token);
     }
   }, [auth.user?.access_token]);
+
+  useEffect(() => {
+    if (eduApiToken) {
+      setEventSource(eduApiToken);
+    }
+  }, [eduApiToken]);
 
   useNotifications();
 

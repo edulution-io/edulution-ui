@@ -16,17 +16,28 @@ import { PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import SurveyParticipationPage from '@/pages/Surveys/Participation/SurveyParticipationPage';
 import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import PublicConferencePage from '@/pages/ConferencePage/PublicConference/PublicConferencePage';
+import PageTitle from '@/components/PageTitle';
 
 const getPublicRoutes = () => [
   <Route
     key={CONFERENCES_PUBLIC_EDU_API_ENDPOINT}
     path={`${CONFERENCES_PUBLIC_EDU_API_ENDPOINT}/:meetingId`}
-    element={<PublicConferencePage />}
+    element={
+      <>
+        <PageTitle translationId="conferences.publicConference" />
+        <PublicConferencePage />
+      </>
+    }
   />,
   <Route
     key={PUBLIC_SURVEYS}
     path={`${PUBLIC_SURVEYS}/:surveyId`}
-    element={<SurveyParticipationPage isPublic />}
+    element={
+      <>
+        <PageTitle translationId="survey.publicSurvey" />
+        <SurveyParticipationPage isPublic />
+      </>
+    }
   />,
 ];
 

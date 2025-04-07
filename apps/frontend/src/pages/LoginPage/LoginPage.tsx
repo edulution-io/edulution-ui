@@ -26,6 +26,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import UserDto from '@libs/user/types/user.dto';
 import processLdapGroups from '@libs/user/utils/processLdapGroups';
 import OtpInput from '@/components/shared/OtpInput';
+import PageTitle from '@/components/PageTitle';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
@@ -175,6 +176,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <PageLayout>
+      <PageTitle translationId="login.pageTitle" />
       <Card
         variant="modal"
         className="bg-background"

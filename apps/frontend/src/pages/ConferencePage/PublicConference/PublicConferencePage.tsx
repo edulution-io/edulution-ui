@@ -97,22 +97,24 @@ const PublicConferencePage = (): React.ReactNode => {
         `/${EDU_API_ROOT}/${CONFERENCES_PUBLIC_SSE_EDU_API_ENDPOINT}?meetingID=${publicConference.meetingID}`,
       );
 
+      const controller = new AbortController();
+      const { signal } = controller;
+
       const updateConferenceHandler = (e: MessageEvent<string>) => {
         const { type, data } = e;
-        if (meetingId === data && type === SSE_MESSAGE_TYPE.STARTED) {
+        if (meetingId === data && type === SSE_MESSAGE_TYPE.CONFERENCE_STARTED) {
           void joinConference();
-        } else if (meetingId === data && type === SSE_MESSAGE_TYPE.STOPPED) {
+        } else if (meetingId === data && type === SSE_MESSAGE_TYPE.CONFERENCE_STOPPED) {
           setJoinConferenceUrl('');
           setWaitingForConferenceToStart(true);
         }
       };
 
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.STARTED, updateConferenceHandler);
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.STOPPED, updateConferenceHandler);
+      eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_STARTED, updateConferenceHandler, { signal });
+      eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_STOPPED, updateConferenceHandler, { signal });
 
       return () => {
-        eventSource.removeEventListener(SSE_MESSAGE_TYPE.STARTED, updateConferenceHandler);
-        eventSource.removeEventListener(SSE_MESSAGE_TYPE.STOPPED, updateConferenceHandler);
+        controller.abort();
         eventSource.close();
       };
     }

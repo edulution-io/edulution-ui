@@ -26,9 +26,9 @@ interface AppLayoutProps {
 const PageLayout = ({ nativeAppHeader, children, isFullScreen }: AppLayoutProps) => {
   const { pathname } = useLocation();
 
-  const isMainPage = pathname === '/';
-
   if (isFullScreen) return <main className="flex-1">{children}</main>;
+
+  const isMainPage = pathname === '/';
 
   return (
     <div className={cn('flex h-full w-full flex-col pl-4 pt-4', { 'px-4': isMainPage })}>
@@ -41,7 +41,7 @@ const PageLayout = ({ nativeAppHeader, children, isFullScreen }: AppLayoutProps)
       )}
 
       <main
-        className={cn('flex flex-1 flex-col overflow-x-hidden overflow-y-hidden pl-2 pr-6 scrollbar-thin', {
+        className={cn('flex flex-1 flex-col overflow-y-auto overflow-x-hidden pl-2 pr-6 scrollbar-thin', {
           'px-4': isMainPage,
         })}
       >
