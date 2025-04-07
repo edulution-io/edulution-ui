@@ -11,7 +11,7 @@
  */
 
 import { create, StateCreator } from 'zustand';
-import eduApi from '@libs/common/constants/eduApi';
+import eduApi from '@/api/eduApi';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import { RequestResponseContentType, ResponseType } from '@libs/common/types/http-methods';
 import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';

@@ -13,7 +13,7 @@
 import { create } from 'zustand';
 import { RowSelectionState } from '@tanstack/react-table';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
-import eduApi from '@libs/common/constants/eduApi';
+import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { CONFERENCES_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import { toast } from 'sonner';

@@ -13,7 +13,7 @@
 import { create } from 'zustand';
 import axios from 'axios';
 import { parse, type YAMLMap } from 'yaml';
-import eduApi from '@libs/common/constants/eduApi';
+import eduApi from '@/api/eduApi';
 import { type ContainerInfo, type ContainerCreateOptions } from 'dockerode';
 import { type RowSelectionState } from '@tanstack/react-table';
 import handleApiError from '@/utils/handleApiError';

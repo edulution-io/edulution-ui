@@ -13,7 +13,7 @@
 import { create } from 'zustand';
 import handleApiError from '@/utils/handleApiError';
 import userStore from '@/store/UserStore/UserStore';
-import eduApi from '@libs/common/constants/eduApi';
+import eduApi from '@/api/eduApi';
 import { DesktopDeploymentStore, GuacamoleDto, LmnVdiResponse, VirtualMachines } from '@libs/desktopdeployment/types';
 
 const initialState = {

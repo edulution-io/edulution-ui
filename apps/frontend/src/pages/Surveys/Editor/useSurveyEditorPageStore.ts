@@ -15,8 +15,8 @@ import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { SURVEY_IMAGES_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
-import commonErrorMessages from '@libs/common/constants/common-error-messages';
-import eduApi from '@libs/common/constants/eduApi';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import eduApi from '@/api/eduApi';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import handleApiError from '@/utils/handleApiError';
 
@@ -108,9 +108,9 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
             headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
           });
           if (!response) {
-            throw new Error(commonErrorMessages.FILE_NOT_PROVIDED);
+            throw new Error(CommonErrorMessages.FILE_NOT_PROVIDED);
           }
-          callback('success', `${EDU_API_URL}${response.data}`);
+          callback('success', `${EDU_API_URL}/${response.data}`);
         } catch (error) {
           handleApiError(error, set);
           callback('error');

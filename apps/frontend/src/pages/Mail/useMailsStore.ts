@@ -13,7 +13,7 @@
 import { create } from 'zustand';
 import { MailDto, MailsStore, MailProviderConfigDto, CreateSyncJobDto, SyncJobDto } from '@libs/mail/types';
 import MAIL_ENDPOINT from '@libs/mail/constants/mail-endpoint';
-import eduApi from '@libs/common/constants/eduApi';
+import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import MailStoreInitialState from '@libs/mail/constants/mailsStoreInitialState';
 import { MAILS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';

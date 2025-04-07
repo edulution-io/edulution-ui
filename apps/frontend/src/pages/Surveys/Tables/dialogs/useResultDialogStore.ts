@@ -15,7 +15,7 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { SURVEY_RESULT_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import ResultDialogStoreInitialState from '@libs/survey/types/tables/dialogs/resultDialogStoreInitialState';
 import ResultDialogStore from '@libs/survey/types/tables/dialogs/resultDialogStore';
-import eduApi from '@libs/common/constants/eduApi';
+import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
 const useResultDialogStore = create<ResultDialogStore>((set) => ({

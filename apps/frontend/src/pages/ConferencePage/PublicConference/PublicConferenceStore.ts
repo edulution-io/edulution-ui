@@ -12,7 +12,7 @@
 
 import { create, StateCreator } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
-import eduApi from '@libs/common/constants/eduApi';
+import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import ConferenceDto from '@libs/conferences/types/conference.dto';

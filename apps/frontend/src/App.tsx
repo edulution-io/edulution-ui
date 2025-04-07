@@ -15,7 +15,7 @@ import AppRouter from '@/router/AppRouter';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
 import { WebStorageStateStore } from 'oidc-client-ts';
 import i18n from '@/i18n';
-import eduApi from '@libs/common/constants/eduApi';
+import eduApi from '@/api/eduApi';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import { HelmetProvider } from 'react-helmet-async';
 import lmnApi from '@/api/lmnApi';
@@ -42,7 +42,7 @@ const App = () => {
   }, [user?.language]);
 
   const oidcConfig: AuthProviderProps = {
-    authority: `${EDU_API_URL}auth`,
+    authority: `${EDU_API_URL}/auth`,
     client_id: ' ',
     client_secret: ' ',
     redirect_uri: '',
