@@ -12,13 +12,14 @@
 
 import useMedia from '@/hooks/useMedia';
 import React from 'react';
+import APPLICATION_NAME from '@libs/common/constants/applicationName';
 
 const Footer = () => {
   const { isMobileView } = useMedia();
 
   return (
     <footer className="bg-background-centered-shadow flex h-[22px] w-full justify-center overflow-hidden whitespace-nowrap text-muted">
-      &copy; {new Date().getFullYear()} edulution.io - {!isMobileView && 'All rights reserved.'} V{APP_VERSION}
+      &copy; {new Date().getFullYear()} ${APPLICATION_NAME}. {!isMobileView && 'All rights reserved.'} V{APP_VERSION}
     </footer>
   );
 };

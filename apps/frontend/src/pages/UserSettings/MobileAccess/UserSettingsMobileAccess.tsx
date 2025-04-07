@@ -23,13 +23,14 @@ import ConnectionSetupPhonePreview from '@/pages/UserSettings/MobileAccess/Conne
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import Separator from '@/components/ui/Separator';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import APPLICATION_NAME from '@libs/common/constants/applicationName';
 
 const MobileFileAccessSetupBox: React.FC = () => {
   const { isMobileView } = useMedia();
   const { user } = useUserStore();
 
   const webdavAccessDetails = {
-    displayName: `${window.document.title}`,
+    displayName: APPLICATION_NAME,
     url: `${window.location.origin}/webdav`,
     username: user?.username,
     password: '',
@@ -41,7 +42,7 @@ const MobileFileAccessSetupBox: React.FC = () => {
     <PageLayout
       nativeAppHeader={{
         title: t('usersettings.mobileAccess.title'),
-        description: t('usersettings.mobileAccess.description'),
+        description: t('usersettings.mobileAccess.description', { applicationName: APPLICATION_NAME }),
         iconSrc: MobileDevicesIcon,
       }}
     >
@@ -51,7 +52,7 @@ const MobileFileAccessSetupBox: React.FC = () => {
       >
         <AccordionItem value="mails">
           <AccordionTrigger className="flex text-h4">
-            <h4>{t('dashboard.mobileAccess.downloadApp')}</h4>
+            <h4>{t('dashboard.mobileAccess.downloadApp', { applicationName: APPLICATION_NAME })}</h4>
           </AccordionTrigger>
           <AccordionContent className="space-y-2 px-1">
             <div className="mt-2 flex flex-col items-center justify-center gap-4">
@@ -75,7 +76,9 @@ const MobileFileAccessSetupBox: React.FC = () => {
             <h4>{t('dashboard.mobileAccess.setupWithQrCode')}</h4>
           </AccordionTrigger>
           <AccordionContent className="space-y-2 px-1">
-            <p className="text-sm text-muted-foreground">{t('dashboard.mobileAccess.scanAccessInfo')}</p>
+            <p className="text-sm text-muted-foreground">
+              {t('dashboard.mobileAccess.scanAccessInfo', { applicationName: APPLICATION_NAME })}
+            </p>
             <div className="space-y-2 p-4 shadow">
               <div className="mt-2 flex justify-center">
                 <QRCodeDisplay value={webdavAccessJson} />
@@ -90,7 +93,9 @@ const MobileFileAccessSetupBox: React.FC = () => {
             <h4>{t('dashboard.mobileAccess.manualSetup')}</h4>
           </AccordionTrigger>
           <AccordionContent className="space-y-2 px-1">
-            <p className="text-sm text-muted-foreground">{t('dashboard.mobileAccess.manualAccessInfo')}</p>
+            <p className="text-sm text-muted-foreground">
+              {t('dashboard.mobileAccess.manualAccessInfo', { applicationName: APPLICATION_NAME })}
+            </p>
             <div className="mt-2 flex justify-center">
               <ConnectionSetupPhonePreview
                 username={webdavAccessDetails.username || ''}
