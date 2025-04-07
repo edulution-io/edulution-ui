@@ -12,7 +12,7 @@
 
 import { create } from 'zustand';
 import { RowSelectionState } from '@tanstack/react-table';
-import eduApi from '@libs/common/constants/eduApi';
+import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import {
   BULLETIN_BOARD_BULLETINS_EDU_API_ENDPOINT,

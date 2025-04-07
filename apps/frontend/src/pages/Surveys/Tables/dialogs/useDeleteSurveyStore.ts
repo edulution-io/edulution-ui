@@ -13,7 +13,7 @@
 import { create } from 'zustand';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { SURVEYS } from '@libs/survey/constants/surveys-endpoint';
-import eduApi from '@libs/common/constants/eduApi';
+import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
 interface DeleteSurveyStore {

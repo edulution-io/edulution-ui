@@ -12,7 +12,7 @@
 
 import { create } from 'zustand';
 import { AxiosError } from 'axios';
-import eduApi from '@libs/common/constants/eduApi';
+import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { CONFERENCES_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';

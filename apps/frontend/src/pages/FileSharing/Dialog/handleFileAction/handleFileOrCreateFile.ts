@@ -13,7 +13,7 @@
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import { HttpMethods } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
-import eduApi from '@libs/common/constants/eduApi';
+import eduApi from '@/api/eduApi';
 import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 

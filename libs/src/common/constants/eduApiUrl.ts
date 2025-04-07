@@ -12,6 +12,6 @@
 
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 
-const EDU_API_URL = `${window.location.origin}/${EDU_API_ROOT}/`;
+const EDU_API_URL = `${window.location.origin}/${EDU_API_ROOT}`;
 
 export default EDU_API_URL;

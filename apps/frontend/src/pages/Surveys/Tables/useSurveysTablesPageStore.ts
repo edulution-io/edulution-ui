@@ -22,7 +22,7 @@ import {
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import { HttpStatus } from '@nestjs/common';
-import eduApi from '@libs/common/constants/eduApi';
+import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
 interface SurveysTablesPageStore {

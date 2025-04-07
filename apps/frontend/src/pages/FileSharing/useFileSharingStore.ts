@@ -12,7 +12,7 @@
 
 import { RowSelectionState } from '@tanstack/react-table';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import eduApi from '@libs/common/constants/eduApi';
+import eduApi from '@/api/eduApi';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import handleApiError from '@/utils/handleApiError';

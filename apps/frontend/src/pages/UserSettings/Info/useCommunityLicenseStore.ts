@@ -18,7 +18,7 @@ import LICENSE_ENDPOINT from '@libs/license/constants/license-endpoints';
 import LicenseInfoDto from '@libs/license/types/license-info.dto';
 import CommunityLicenseStore from '@libs/license/types/communityLicenseStore';
 import communityLicenseStoreInitialValues from '@libs/license/constants/communityLicenseStoreInitialValues';
-import eduApi from '@libs/common/constants/eduApi';
+import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
 type PersistedCommunityLicenseStore = (
