@@ -16,10 +16,10 @@ import FramePlaceholder from '@/components/framing/FramePlaceholder';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 
-const getEmbeddedRoutes = (appConfigs: AppConfigDto[]) => [
-  <Route key="embedded">
+const getFramedRoutes = (appConfigs: AppConfigDto[]) => [
+  <Route key="framed">
     {appConfigs
-      .filter((item) => item.appType === APP_INTEGRATION_VARIANT.EMBEDDED)
+      .filter((item) => item.appType === APP_INTEGRATION_VARIANT.FRAMED)
       .map((item) => (
         <Route
           key={item.name}
@@ -30,4 +30,4 @@ const getEmbeddedRoutes = (appConfigs: AppConfigDto[]) => [
   </Route>,
 ];
 
-export default getEmbeddedRoutes;
+export default getFramedRoutes;

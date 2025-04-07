@@ -242,6 +242,11 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
             key={matchingConfig.name}
             title={getDisplayName(matchingConfig, language)}
             iconSrc={matchingConfig.icon}
+            description={
+              matchingConfig.appType === APP_INTEGRATION_VARIANT.NATIVE
+                ? t(`settings.description.${matchingConfig.name}`)
+                : t(`form.${matchingConfig.appType}`)
+            }
           />
         )}
         {getSettingsForm()}

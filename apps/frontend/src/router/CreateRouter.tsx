@@ -41,7 +41,7 @@ import FullScreenFileViewer from '@/pages/FileSharing/FilePreview/FullScreenFile
 import RootLayout from '@/components/layout/RootLayout';
 import getSettingsRoutes from './routes/SettingsRoutes';
 import getForwardedRoutes from './routes/ForwardedRoutes';
-import getEmbeddedRoutes from './routes/EmbeddedRoutes';
+import getFramedRoutes from './routes/FramedRoutes';
 import getFileSharingRoutes from './routes/FileSharingRoutes';
 import DashboardPage from '../pages/Dashboard/DashboardPage';
 
@@ -60,7 +60,7 @@ const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
               />
             </Route>
             {getForwardedRoutes(appConfigs)}
-            {getEmbeddedRoutes(appConfigs)}
+            {getFramedRoutes(appConfigs)}
 
             <Route element={<MainLayout />}>
               <Route

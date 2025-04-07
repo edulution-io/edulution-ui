@@ -1052,6 +1052,7 @@
     "native": "Native Support",
     "forwarded": "Forwarded",
     "embedded": "Embedded",
+    "framed": "Framed",
     "saved": "Configuration saved!",
     "url": "URL",
     "urlDescription": "Please insert an URL to the application",

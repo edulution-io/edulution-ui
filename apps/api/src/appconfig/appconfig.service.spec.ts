@@ -157,7 +157,7 @@ describe('AppConfigService', () => {
       const expectedConfig = {
         name: appConfigName,
         icon: 'icon-path',
-        appType: APP_INTEGRATION_VARIANT.EMBEDDED,
+        appType: APP_INTEGRATION_VARIANT.NATIVE,
         options: {},
         accessGroups: [
           { id: '1', value: 'group1', name: 'group1', path: 'group1', label: 'group1' },
