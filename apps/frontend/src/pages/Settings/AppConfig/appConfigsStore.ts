@@ -33,7 +33,9 @@ type AppConfigsStore = {
   setIsDeleteAppConfigDialogOpen: (isDeleteAppConfigDialogOpen: boolean) => void;
   reset: () => void;
   createAppConfig: (appConfig: AppConfigDto) => Promise<void>;
-  getAppConfigs: () => Promise<boolean>;
+  getAppConfigs: () => Promise<void>;
+  isGetAppConfigsLoading: boolean;
+  isBackendHealthy: () => Promise<boolean>;
   updateAppConfig: (appConfigs: AppConfigDto) => Promise<void>;
   patchSingleFieldInConfig: (name: string, patchConfigDto: PatchConfigDto) => Promise<void>;
   deleteAppConfigEntry: (name: string) => Promise<void>;
@@ -59,13 +61,14 @@ const initialState = {
     },
   ],
   isLoading: false,
+  isGetAppConfigsLoading: false,
   isConfigFileLoading: false,
   error: null,
 };
 
 const useAppConfigsStore = create<AppConfigsStore>(
   (persist as PersistedAppConfigsStore)(
-    (set) => ({
+    (set, get) => ({
       ...initialState,
       reset: () => set(initialState),
 
@@ -90,17 +93,26 @@ const useAppConfigsStore = create<AppConfigsStore>(
         }
       },
 
-      getAppConfigs: async () => {
-        set({ isLoading: true, error: null });
+      isBackendHealthy: async () => {
         try {
-          const response = await eduApi.get<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINTS.ROOT);
-          set({ appConfigs: response.data });
-          return true;
+          const response = await eduApi.get<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINTS.HEALTH_CHECK);
+          return response.status === 200;
         } catch (e) {
           handleApiError(e, set);
           return false;
+        }
+      },
+
+      getAppConfigs: async () => {
+        if (get().isGetAppConfigsLoading) return;
+        set({ isGetAppConfigsLoading: true, error: null });
+        try {
+          const response = await eduApi.get<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINTS.ROOT);
+          set({ appConfigs: response.data });
+        } catch (e) {
+          handleApiError(e, set);
         } finally {
-          set({ isLoading: false });
+          set({ isGetAppConfigsLoading: false });
         }
       },
 

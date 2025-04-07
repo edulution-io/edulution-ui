@@ -10,12 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Outlet } from 'react-router-dom';
-import React from 'react';
+const LOGIN_ROUTE = '/login';
 
-const EmptyLayout = () => (
-  <main className="flex-1">
-    <Outlet />
-  </main>
-);
-export default EmptyLayout;
+export default LOGIN_ROUTE;

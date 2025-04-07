@@ -10,5 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const LESSON_SESSION_HEADER_ID = 'session-header';
-export const FILTER_BAR_ID = 'filter-bar';
+import React from 'react';
+import { Route } from 'react-router-dom';
+import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+
+const getForwardedAppRoutes = (appConfigs: AppConfigDto[]) =>
+  appConfigs
+    .filter((item) => item.appType === APP_INTEGRATION_VARIANT.FORWARDED)
+    .map((item) => (
+      <Route
+        key={item.name}
+        path={item.name}
+        element={<ForwardingPage />}
+      />
+    ));
+export default getForwardedAppRoutes;

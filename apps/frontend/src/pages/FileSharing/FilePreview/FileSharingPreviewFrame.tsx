@@ -14,13 +14,13 @@ import React, { ReactElement, useEffect, useMemo, useRef, useState } from 'react
 import { useTranslation } from 'react-i18next';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import FileRenderer from '@/pages/FileSharing/FilePreview/FileRenderer';
-import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
+import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import FILE_PREVIEW_ELEMENT_ID from '@libs/filesharing/constants/filePreviewElementId';
 import useWindowResize from '@/hooks/useWindowResize';
-import OpenInNewTabButton from '@/components/framing/ResizableWindow/Buttons/OpenInNewTabButton';
+import OpenInNewTabButton from '@/components/structure/framing/ResizableWindow/Buttons/OpenInNewTabButton';
 import FILE_PREVIEW_ROUTE from '@libs/filesharing/constants/routes';
-import EditButton from '@/components/framing/ResizableWindow/Buttons/EditButton';
+import EditButton from '@/components/structure/framing/ResizableWindow/Buttons/EditButton';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import useMedia from '@/hooks/useMedia';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
@@ -29,9 +29,9 @@ import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import ContentType from '@libs/filesharing/types/contentType';
 import isFileValid from '@libs/filesharing/utils/isFileValid';
-import ToggleDockButton from '@/components/framing/ResizableWindow/Buttons/ToggleDockButton';
+import ToggleDockButton from '@/components/structure/framing/ResizableWindow/Buttons/ToggleDockButton';
 import { useLocation } from 'react-router-dom';
-import useFrameStore from '@/components/framing/FrameStore';
+import useFrameStore from '@/components/structure/framing/useFrameStore';
 import RESIZEABLE_WINDOW_DEFAULT_POSITION from '@libs/ui/constants/resizableWindowDefaultPosition';
 
 const FileSharingPreviewFrame = () => {

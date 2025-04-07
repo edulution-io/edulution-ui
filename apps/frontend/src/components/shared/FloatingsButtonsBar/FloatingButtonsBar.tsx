@@ -15,11 +15,18 @@ import useMedia from '@/hooks/useMedia';
 import MobileButtonsBar from '@/components/shared/FloatingsButtonsBar/MobileButtonsBar';
 import DesktopButtonsBar from '@/components/shared/FloatingsButtonsBar/DesktopButtonsBar';
 import FloatingButtonsBarProps from '@libs/ui/types/FloatingButtons/floatingButtonsProps';
+import { createPortal } from 'react-dom';
 
 const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
   const { isMobileView } = useMedia();
+  const floatingButtonsBarRoot = document.getElementById('floating-bar');
 
-  return isMobileView ? <MobileButtonsBar {...props} /> : <DesktopButtonsBar {...props} />;
+  if (!floatingButtonsBarRoot) return null;
+
+  return createPortal(
+    isMobileView ? <MobileButtonsBar {...props} /> : <DesktopButtonsBar {...props} />,
+    floatingButtonsBarRoot,
+  );
 };
 
 export default FloatingButtonsBar;

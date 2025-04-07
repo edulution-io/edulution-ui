@@ -19,15 +19,16 @@ import ResultTableDialog from '@/pages/Surveys/Tables/dialogs/ResultTableDialog'
 import ResultVisualizationDialog from '@/pages/Surveys/Tables/dialogs/ResultVisualizationDialog';
 import SubmittedAnswersDialog from '@/pages/Surveys/Tables/dialogs/SubmittedAnswersDialog';
 import { TooltipProvider } from '@/components/ui/Tooltip';
-import { ScrollArea } from '@/components/ui/ScrollArea';
 import DeleteSurveysDialog from '@/pages/Surveys/Tables/dialogs/DeleteSurveysDialog';
 import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import { PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
+import PageLayout from '@/components/structure/layout/PageLayout';
 
 interface SurveysTablePageProps {
   title: string;
   description: string;
+  icon: string;
   surveys?: SurveyDto[];
   isLoading?: boolean;
 
@@ -42,6 +43,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
   const {
     title,
     description,
+    icon,
     surveys,
     isLoading = false,
 
@@ -55,18 +57,19 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
   const sharePublicSurveyUrl = publicSurveyId ? `${window.location.origin}/${PUBLIC_SURVEYS}/${publicSurveyId}` : '';
 
   return (
-    <>
-      <div className="py-2">
-        <p className="text-background">{title}</p>
-        <p className="text-sm font-normal text-background">{description}</p>
-      </div>
-      <ScrollArea className="overflow-y-auto overflow-x-hidden scrollbar-thin">
-        <SurveyTable
-          columns={SurveyTableColumns}
-          data={surveys || []}
-          isLoading={isLoading}
-        />
-      </ScrollArea>
+    <PageLayout
+      nativeAppHeader={{
+        title,
+        description,
+        iconSrc: icon,
+      }}
+    >
+      <SurveyTable
+        columns={SurveyTableColumns}
+        data={surveys || []}
+        isLoading={isLoading}
+      />
+
       <SurveysTablesFloatingButtons
         canEdit={canEdit}
         canDelete={canDelete}
@@ -74,6 +77,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
         canParticipate={canParticipate}
         canShowResults={canShowResults}
       />
+
       <TooltipProvider>
         <div className="absolute bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
           <DeleteSurveysDialog surveys={surveys || []} />
@@ -89,7 +93,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
           />
         </div>
       </TooltipProvider>
-    </>
+    </PageLayout>
   );
 };
 

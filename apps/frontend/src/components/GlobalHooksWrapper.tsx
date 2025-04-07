@@ -22,7 +22,7 @@ import useTokenEventListeners from '../hooks/useTokenEventListener';
 
 const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const auth = useAuth();
-  const { getAppConfigs } = useAppConfigsStore();
+  const { isBackendHealthy, getAppConfigs } = useAppConfigsStore();
   const { isAuthenticated, setEduApiToken, user, getWebdavKey } = useUserStore();
   const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
 
@@ -38,10 +38,12 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
 
   useEffect(() => {
     const handleGetAppConfigs = async () => {
-      const isApiResponding = await getAppConfigs();
-      if (!isApiResponding) {
-        void handleLogout();
+      const isApiResponding = await isBackendHealthy();
+      if (isApiResponding) {
+        void getAppConfigs();
+        return;
       }
+      void handleLogout();
     };
 
     if (isAuthenticated) {

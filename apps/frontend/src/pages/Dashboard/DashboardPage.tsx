@@ -16,6 +16,7 @@ import GROUPS_ID from '@libs/dashboard/constants/pageElementIds';
 import useUserStore from '@/store/UserStore/UserStore';
 import useMedia from '@/hooks/useMedia';
 import Feed from '@/pages/Dashboard/Feed/Feed';
+import PageLayout from '@/components/structure/layout/PageLayout';
 import MobileFileAccessCard from './MobileFileAccess/MobileFileAccessCard';
 import AccountInformation from './AccountInformation';
 import QuotaCard from './QuotaCard';
@@ -59,7 +60,7 @@ const DashboardPage: React.FC = () => {
   );
 
   return (
-    <div className="h-full overflow-y-auto scrollbar-thin md:mx-4">
+    <PageLayout>
       <div>
         {isMobileView ? (
           <h2>
@@ -77,7 +78,7 @@ const DashboardPage: React.FC = () => {
         {column2}
         {column3}
       </div>
-    </div>
+    </PageLayout>
   );
 };
 

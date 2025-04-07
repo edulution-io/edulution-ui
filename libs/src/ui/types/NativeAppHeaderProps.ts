@@ -10,8 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const FOOTER_ID = 'footer';
-export const FLOATING_BUTTONS_BAR_ID = 'floating-buttons-bar';
-export const NATIVE_APP_HEADER_ID = 'native-app-header';
-export const BLANK_LAYOUT_HEADER_ID = 'blank-layout-app-header';
-export const TABS = 'tabs';
+interface NativeAppHeaderProps {
+  title: string;
+  description?: string;
+  iconSrc: string;
+}
+
+export default NativeAppHeaderProps;

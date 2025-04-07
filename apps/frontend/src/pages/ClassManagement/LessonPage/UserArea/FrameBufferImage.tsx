@@ -16,7 +16,7 @@ import { MdCropFree } from 'react-icons/md';
 import { TbKeyboardOff } from 'react-icons/tb';
 import { useTranslation } from 'react-i18next';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
+import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 import FullScreenImage from '@/components/ui/FullScreenImage';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import { VEYON_REFRESH_INTERVAL, VEYON_REFRESH_INTERVAL_HIGH } from '@libs/veyon/constants/refreshInterval';

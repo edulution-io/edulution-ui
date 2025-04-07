@@ -87,8 +87,7 @@ const DesktopSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
         return prevTranslate;
       }
 
-      const newTranslate = prevTranslate + SIDEBAR_TRANSLATE_AMOUNT;
-      return newTranslate;
+      return prevTranslate + SIDEBAR_TRANSLATE_AMOUNT;
     });
   };
 
@@ -141,29 +140,31 @@ const DesktopSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
   }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
 
   return (
-    <div className="fixed right-0 z-[600] h-screen bg-black md:bg-none">
-      <HomeButton />
-      {isUpButtonVisible ? <UpButton onClick={handleUpButtonClick} /> : null}
+    <div className="relative h-screen w-[var(--sidebar-width)]">
+      <div className="fixed right-0 z-[600] h-full bg-black md:bg-none">
+        <HomeButton />
+        {isUpButtonVisible ? <UpButton onClick={handleUpButtonClick} /> : null}
 
-      <div
-        ref={sidebarRef}
-        style={{ transform: `translateY(-${translate}px)`, overflowY: 'clip' }}
-        onWheel={() => handleWheel}
-        onTouchStart={() => handleTouchStart}
-        onTouchMove={() => handleTouchMove}
-        onTouchEnd={() => handleTouchEnd}
-      >
-        {sidebarItems.map((item) => (
-          <SidebarItem
-            key={item.link}
-            menuItem={item}
-            translate={translate}
-            isDesktop
-          />
-        ))}
+        <div
+          ref={sidebarRef}
+          style={{ transform: `translateY(-${translate}px)`, overflowY: 'clip' }}
+          onWheel={() => handleWheel}
+          onTouchStart={() => handleTouchStart}
+          onTouchMove={() => handleTouchMove}
+          onTouchEnd={() => handleTouchEnd}
+        >
+          {sidebarItems.map((item) => (
+            <SidebarItem
+              key={item.link}
+              menuItem={item}
+              translate={translate}
+              isDesktop
+            />
+          ))}
+        </div>
+        {isDownButtonVisible ? <DownButton onClick={handleDownButtonClick} /> : null}
+        <UserMenuButton />
       </div>
-      {isDownButtonVisible ? <DownButton onClick={handleDownButtonClick} /> : null}
-      <UserMenuButton />
     </div>
   );
 };

@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import FileRenderer from '@/pages/FileSharing/FilePreview/FileRenderer';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import PageLayout from '@/components/structure/layout/PageLayout';
 
 const FullScreenFileViewer = () => {
   const { t } = useTranslation();
@@ -31,7 +32,6 @@ const FullScreenFileViewer = () => {
     isGetDownloadLinkUrlLoading,
   } = useFileEditorStore();
   const [isLoading, setIsLoading] = useState(true);
-
   const fileETag = searchParams.get('file');
 
   const initializeFile = async () => {
@@ -55,12 +55,12 @@ const FullScreenFileViewer = () => {
   if (!downloadLinkURL) return null;
 
   return (
-    <div className="h-screen w-screen">
+    <PageLayout isFullScreen>
       <FileRenderer
         editMode
         isOpenedInNewTab
       />
-    </div>
+    </PageLayout>
   );
 };
 

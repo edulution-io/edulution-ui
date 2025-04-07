@@ -16,7 +16,6 @@ import { useOnClickOutside } from 'usehooks-ts';
 import { useTranslation } from 'react-i18next';
 import { AppStoreIcon } from '@/assets/icons';
 import useMedia from '@/hooks/useMedia';
-import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import { Card } from '@/components/shared/Card';
 import cn from '@libs/common/utils/className';
 import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
@@ -25,6 +24,7 @@ import AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
+import PageLayout from '@/components/structure/layout/PageLayout';
 import APP_CONFIG_OPTIONS from '../appConfigOptions';
 import AddAppConfigDialog from '../AddAppConfigDialog';
 import AppStoreFloatingButtons from './AppStoreFloatingButtons';
@@ -86,12 +86,13 @@ const AppStorePage: React.FC = () => {
   };
 
   return (
-    <>
-      <NativeAppHeader
-        title={t('appstore.title')}
-        description={t('appstore.description')}
-        iconSrc={AppStoreIcon}
-      />
+    <PageLayout
+      nativeAppHeader={{
+        title: t('appstore.title'),
+        description: t('appstore.description'),
+        iconSrc: AppStoreIcon,
+      }}
+    >
       <div ref={appFieldRef}>
         <div className="space-2 flex max-h-[27rem] w-full flex-wrap gap-2 overflow-y-auto scrollbar-thin md:max-h-[36rem]">
           {APP_CONFIG_OPTIONS.map((item) => (
@@ -128,7 +129,7 @@ const AppStorePage: React.FC = () => {
         />
       </div>
       <AddAppConfigDialog selectedApp={selectedApp} />
-    </>
+    </PageLayout>
   );
 };
 export default AppStorePage;

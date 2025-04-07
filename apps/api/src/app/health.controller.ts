@@ -10,10 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const EDU_API_CONFIG_ENDPOINTS = {
-  ROOT: 'appconfig',
-  PROXYCONFIG: 'proxyconfig',
-  HEALTH_CHECK: 'health',
-} as const;
+import { Controller, Get } from '@nestjs/common';
 
-export default EDU_API_CONFIG_ENDPOINTS;
+@Controller('health')
+class HealthController {
+  @Get()
+  check() {
+    return { status: 'ok' };
+  }
+}
+
+export default HealthController;
