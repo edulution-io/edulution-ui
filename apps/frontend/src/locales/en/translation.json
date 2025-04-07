@@ -1043,7 +1043,9 @@
     "invalid_fqdn": "Invalid FQDN. Please only enter the hostname.",
     "required": "Required",
     "download": "Download",
-    "template": "Template"
+    "template": "Template",
+    "preview": "Preview",
+    "format": "format"
   },
   "form": {
     "path": "Path",
@@ -1066,6 +1068,7 @@
     "proxyDestination": "Proxy destination",
     "proxyDestinationPlaceholder": "e.g. http://localhost:1234/",
     "stripPrefix": "Strip prefix",
+    "embeddedPageEditor": "Editor",
     "input": {
       "dateTimePicker": {
         "timeSlot": "o'clock",

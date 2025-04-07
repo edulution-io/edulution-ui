@@ -52,8 +52,7 @@ const AppStorePage: React.FC = () => {
     return filteredOptions.map((item) => item.id);
   }, [appConfigs]);
 
-  const getDisabledState = (appConfig: AppConfigOption) =>
-    !filteredAppOptions.includes(appConfig.id) || appConfig.id === APPS.EMBEDDED;
+  const getDisabledState = (appConfig: AppConfigOption) => !filteredAppOptions.includes(appConfig.id);
 
   const handleCreateApp = () => {
     if (selectedApp.isNativeApp) {

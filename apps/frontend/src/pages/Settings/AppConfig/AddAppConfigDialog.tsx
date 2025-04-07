@@ -67,6 +67,25 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
       }
     };
 
+    const getOptions = () => {
+      if (selectedApp.id === APPS.EMBEDDED) {
+        return {
+          proxyConfig: '""',
+        };
+      }
+      return {
+        url: '',
+        proxyConfig: '""',
+      };
+    };
+
+    const getExtendedOptions = () => {
+      if (selectedApp.id === APPS.EMBEDDED) {
+        return { EMBEDDED_PAGE_HTML_CONTENT: '' };
+      }
+      return {};
+    };
+
     const newConfig: AppConfigDto = {
       name: slugifiedAppName,
       translations: {
@@ -75,12 +94,9 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
       },
       icon: newAppIcon,
       appType: getAppType(),
-      options: {
-        url: '',
-        proxyConfig: '""',
-      },
+      options: getOptions(),
       accessGroups: [],
-      extendedOptions: {},
+      extendedOptions: getExtendedOptions(),
     };
 
     await createAppConfig(newConfig);
