@@ -26,7 +26,7 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   const { getAppConfigs } = useAppConfigsStore();
   const { isAuthenticated, eduApiToken, setEduApiToken, user, getWebdavKey } = useUserStore();
   const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
-  const { setEventSource } = useSseStore();
+  const { eventSource, setEventSource } = useSseStore();
 
   const handleLogout = useLogout();
 
@@ -38,7 +38,9 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
 
   useEffect(() => {
     if (eduApiToken) {
-      setEventSource(eduApiToken);
+      if (!eventSource) {
+        setEventSource(eduApiToken);
+      }
     }
   }, [eduApiToken]);
 
