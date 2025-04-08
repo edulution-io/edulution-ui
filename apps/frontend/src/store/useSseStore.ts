@@ -26,7 +26,10 @@ const useSseStore = create<SseStore>((set, get) => ({
     set({
       eventSource: new EventSource(`/${EDU_API_ROOT}/${SSE_EDU_API_ENDPOINTS.SSE}?token=${eduApiToken}`),
     }),
-  reset: () => get().eventSource?.close(),
+  reset: () => {
+    get().eventSource?.close();
+    set({ eventSource: null });
+  },
 }));
 
 export default useSseStore;
