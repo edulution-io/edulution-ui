@@ -87,6 +87,17 @@
       "attachmentDeletionFailed": "Failed to delete an attachment"
     }
   },
+
+  "mountpoints": {
+    "home": "Home",
+    "examusers": "Exams",
+    "projects": "Projects",
+    "iso": "ISO",
+    "programs": "Programs",
+    "shares": "Shares",
+    "students-home": "Students-Home"
+  },
+
   "appstore": {
     "title": "App Store",
     "description": "Here you can add edulution.io apps.",

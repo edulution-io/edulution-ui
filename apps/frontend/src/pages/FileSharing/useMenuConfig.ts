@@ -27,6 +27,7 @@ import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import MenuItem from '@libs/menubar/menuItem';
 import APPS from '@libs/appconfig/constants/apps';
+import { t } from 'i18next';
 
 const iconMap = {
   teachers: TeacherIcon,
@@ -60,21 +61,32 @@ const useFileSharingMenuConfig = () => {
   );
 
   useEffect(() => {
-    const items: MenuItem[] = mountPoints
-      .map((mountPoint: DirectoryFileDTO) => ({
+    const items: MenuItem[] = mountPoints.map((mountPoint: DirectoryFileDTO) => {
+      const isHome =
+        mountPoint.filename.includes(`${user?.ldapGroups?.roles?.at(0)}s`) &&
+        mountPoint.filename.includes(`${user?.username}`);
+      let translationKey = `mountpoints.${mountPoint.basename?.toLowerCase()}`;
+
+      if (isHome) {
+        translationKey = 'mountpoints.home';
+      }
+      const baseName = mountPoint.basename ?? '';
+
+      const defaultLabel = baseName ? baseName.charAt(0).toUpperCase() + baseName.slice(1) : '';
+
+      const label = t(translationKey, { defaultValue: defaultLabel });
+
+      return {
         id: mountPoint.basename,
-        label:
-          mountPoint.filename.includes(`${user?.ldapGroups?.roles?.at(0)}s`) &&
-          mountPoint.filename.includes(`${user?.username}`)
-            ? 'home'
-            : mountPoint.basename,
+        label,
         icon: findCorrespondingMountPointIcon(mountPoint.filename),
         color: 'hover:bg-ciGreenToBlue',
         action: () => handlePathChange(getPathWithoutWebdav(mountPoint.filename), mountPoint.basename),
-      }))
-      .filter((item) => item !== null);
+      };
+    });
+
     setMenuItems(items);
-  }, [mountPoints, user?.ldapGroups?.roles, user?.ldapGroups?.schools, searchParams, setSearchParams]);
+  }, [mountPoints, user?.ldapGroups?.roles, user?.ldapGroups?.schools, searchParams, setSearchParams, t]);
 
   return {
     title: 'filesharing.title',

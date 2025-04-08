@@ -292,6 +292,15 @@
     "nosurveys": "Keine offenen Umfragen",
     "nobulletinboard": "Keine neuen Mitteilungen"
   },
+  "mountpoints": {
+    "home": "Home",
+    "examusers": "Klassenarbeiten",
+    "projects": "Projekte",
+    "iso": "ISO",
+    "programs": "Programme",
+    "shares": "Freigaben",
+    "students-home": "Students-Home"
+  },
   "filesharing": {
     "filterPlaceHolderText": "Suche nach Dateiname",
     "title": "FILESHARING",
