@@ -14,11 +14,11 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Job, Queue, Worker } from 'bullmq';
 import JOB_NAMES from '@libs/queue/constants/jobNames';
 import JobData from '@libs/queue/constants/jobData';
+import Redis from 'ioredis';
+import QUEUE_CONSTANTS from '@libs/queue/constants/queueConstants';
 import DuplicateFileConsumer from '../filesharing/consumers/duplicateFile.consumer';
 import CollectFileConsumer from '../filesharing/consumers/collectFile.consumer';
 import DeleteFileConsumer from '../filesharing/consumers/deleteFile.consumer';
-import Redis from 'ioredis';
-import QUEUE_CONSTANTS from '@libs/queue/constants/queueConstants';
 
 @Injectable()
 class QueueService implements OnModuleInit {
