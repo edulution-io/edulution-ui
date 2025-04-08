@@ -25,7 +25,7 @@ import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import WebDavService from '../webdav/webDavService';
 import OnlyofficeService from './onlyoffice.service';
 import FilesystemService from '../filesystem/filesystem.service';
-import DynamicQueueService from '../queue/queue.service';
+import QueueService from '../queue/queue.service';
 
 @Injectable()
 export default class FilesharingService {
@@ -34,7 +34,7 @@ export default class FilesharingService {
   constructor(
     private readonly onlyofficeService: OnlyofficeService,
     private readonly fileSystemService: FilesystemService,
-    private readonly dynamicQueueService: DynamicQueueService,
+    private readonly dynamicQueueService: QueueService,
     private readonly webDavService: WebDavService,
   ) {}
 

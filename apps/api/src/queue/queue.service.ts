@@ -20,7 +20,7 @@ import CollectFileConsumer from '../filesharing/consumers/collectFile.consumer';
 import DeleteFileConsumer from '../filesharing/consumers/deleteFile.consumer';
 
 @Injectable()
-class DynamicQueueService {
+class QueueService {
   private workers = new Map<string, Worker>();
 
   private queues = new Map<string, Queue>();
@@ -104,4 +104,4 @@ class DynamicQueueService {
   }
 }
 
-export default DynamicQueueService;
+export default QueueService;

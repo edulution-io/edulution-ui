@@ -18,7 +18,7 @@ import AppConfigModule from '../appconfig/appconfig.module';
 import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
 import DuplicateFileConsumer from './consumers/duplicateFile.consumer';
-import DynamicQueueService from '../queue/queue.service';
+import QueueService from '../queue/queue.service';
 import CollectFileConsumer from './consumers/collectFile.consumer';
 import DeleteFileConsumer from './consumers/deleteFile.consumer';
 import WebDavService from '../webdav/webDavService';
@@ -30,7 +30,7 @@ import WebDavService from '../webdav/webDavService';
     FilesharingService,
     FilesystemService,
     OnlyofficeService,
-    DynamicQueueService,
+    QueueService,
     DuplicateFileConsumer,
     CollectFileConsumer,
     DeleteFileConsumer,
