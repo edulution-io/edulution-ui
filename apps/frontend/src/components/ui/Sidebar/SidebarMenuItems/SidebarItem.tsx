@@ -29,7 +29,7 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({
   const { title, icon, color, link, notificationCounter } = menuItem;
   const buttonRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
-  const size = useWindowSize();
+  const size = useWindowSize({ debounceDelay: 100 });
   const { pathname } = useLocation();
 
   const rootPathName = getRootPathName(pathname);
