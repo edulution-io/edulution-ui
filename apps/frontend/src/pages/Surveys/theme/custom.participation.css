@@ -23,7 +23,7 @@
 
   .sd-body,
   .sd-body--responsive {
-    height: calc(100vh - 120px);
+    height: calc(100vh - 24rem);
     overflow: auto;
   }
   .sd-body.sd-body--static {

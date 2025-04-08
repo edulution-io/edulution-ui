@@ -10,6 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { toast } from 'sonner';
+import { t } from 'i18next';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
@@ -105,8 +107,10 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
           if (!response) {
             throw new Error(CommonErrorMessages.FILE_NOT_PROVIDED);
           }
+          toast.success(t('survey.editor.uploadImageSuccess'));
           callback('success', `${EDU_API_URL}/${response.data}`);
         } catch (error) {
+          toast.error(t('survey.editor.uploadImageError'));
           handleApiError(error, set);
           callback('error');
         } finally {
