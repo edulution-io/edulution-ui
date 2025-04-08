@@ -21,7 +21,7 @@ import useMedia from '@/hooks/useMedia';
 import CONFERENCES_TABLE_COLUMNS from '@libs/conferences/constants/conferencesTableColumns';
 
 const ConferencesTable = () => {
-  const { isMobileView } = useMedia();
+  const { isMobileView, isTabletView } = useMedia();
 
   const { user } = useUserStore();
   const { conferences, getConferences, isLoading, selectedRows, setSelectedRows } = useConferenceStore();
@@ -38,12 +38,12 @@ const ConferencesTable = () => {
   const initialColumnVisibility = useMemo(
     () => ({
       [CONFERENCES_TABLE_COLUMNS.CONFERENCE_CREATOR]: !isMobileView,
-      [CONFERENCES_TABLE_COLUMNS.CONFERENCE_PASSWORD]: !isMobileView,
-      [CONFERENCES_TABLE_COLUMNS.CONFERENCE_INVITED_ATTENDEES]: !isMobileView,
+      [CONFERENCES_TABLE_COLUMNS.CONFERENCE_PASSWORD]: !(isMobileView || isTabletView),
+      [CONFERENCES_TABLE_COLUMNS.CONFERENCE_INVITED_ATTENDEES]: !(isMobileView || isTabletView),
       [CONFERENCES_TABLE_COLUMNS.CONFERENCE_JOINED_ATTENDEES]: !isMobileView,
       [CONFERENCES_TABLE_COLUMNS.CONFERENCE_ACTION_BUTTON]: !isMobileView,
     }),
-    [isMobileView],
+    [isMobileView, isTabletView],
   );
 
   return (

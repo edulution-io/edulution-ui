@@ -43,6 +43,7 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
   },
   {
     id: MAIL_IMPORTER_TABLE_COLUMNS.PORT,
+    size: 60,
     header: ({ column }) => <SortableHeader<SyncJobDto, unknown> column={column} />,
     meta: {
       translationId: 'mail.port',
@@ -57,6 +58,7 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
   },
   {
     id: MAIL_IMPORTER_TABLE_COLUMNS.ENCRYPTION,
+    size: 115,
     header: ({ column }) => <SortableHeader<SyncJobDto, unknown> column={column} />,
     meta: {
       translationId: 'mail.encryption',
@@ -85,6 +87,7 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
   },
   {
     id: MAIL_IMPORTER_TABLE_COLUMNS.SYNC_INTERVAL,
+    size: 100,
     header: ({ column }) => <SortableHeader<SyncJobDto, unknown> column={column} />,
     meta: {
       translationId: 'mail.importer.interval',
@@ -99,6 +102,7 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
   },
   {
     id: MAIL_IMPORTER_TABLE_COLUMNS.IS_ACTIVE,
+    size: 80,
     header: ({ column }) => (
       <SortableHeader<SyncJobDto, unknown>
         column={column}
