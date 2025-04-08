@@ -33,7 +33,7 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
   const { filesharingProgress } = useLessonStore();
   const { fileOperationProgress } = useFileSharingStore();
-  const { setEventSource } = useSseStore();
+  const { eventSource, setEventSource } = useSseStore();
 
   const handleLogout = useLogout();
 
@@ -45,7 +45,9 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
 
   useEffect(() => {
     if (eduApiToken) {
-      setEventSource(eduApiToken);
+      if (!eventSource) {
+        setEventSource(eduApiToken);
+      }
     }
   }, [eduApiToken]);
 
