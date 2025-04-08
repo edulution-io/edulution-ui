@@ -10,17 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Job, Queue, Worker } from 'bullmq';
-import process from 'node:process';
 import JOB_NAMES from '@libs/queue/constants/jobNames';
 import JobData from '@libs/queue/constants/jobData';
 import DuplicateFileConsumer from '../filesharing/consumers/duplicateFile.consumer';
 import CollectFileConsumer from '../filesharing/consumers/collectFile.consumer';
 import DeleteFileConsumer from '../filesharing/consumers/deleteFile.consumer';
+import Redis from 'ioredis';
+import QUEUE_CONSTANTS from '@libs/queue/constants/queueConstants';
 
 @Injectable()
-class QueueService {
+class QueueService implements OnModuleInit {
   private workers = new Map<string, Worker>();
 
   private queues = new Map<string, Queue>();
@@ -34,6 +35,23 @@ class QueueService {
     private readonly collectFileConsumer: CollectFileConsumer,
     private readonly deleteFileConsumer: DeleteFileConsumer,
   ) {}
+
+  async onModuleInit() {
+    const redisHost = process.env.REDIS_HOST ?? 'localhost';
+    const redisPort = +(process.env.REDIS_PORT ?? 6379);
+    const redis = new Redis({ host: redisHost, port: redisPort });
+
+    const userIds = await this.scanUserIds(redis, QUEUE_CONSTANTS.PREFIX);
+
+    await redis.quit();
+
+    await Promise.all(
+      userIds.map((userId) => {
+        const queue = this.getOrCreateQueueForUser(userId);
+        return queue.obliterate({ force: true });
+      }),
+    );
+  }
 
   createWorkerForUser(userId: string): Worker {
     const queueName = `queue-user-${userId}`;
@@ -101,6 +119,29 @@ class QueueService {
 
       default:
     }
+  }
+
+  private async scanUserIds(
+    redis: Redis,
+    queuePrefix: string,
+    cursor = '0',
+    userIds = new Set<string>(),
+  ): Promise<string[]> {
+    const [nextCursor, keys] = await redis.scan(cursor, 'MATCH', `bull:${queuePrefix}*`, 'COUNT', 100);
+
+    keys.forEach((key) => {
+      if (key.startsWith(`bull:${queuePrefix}`)) {
+        const queueNamePlusSuffix = key.slice('bull:'.length);
+        const [queueName] = queueNamePlusSuffix.split(':');
+        const userId = queueName.replace(queuePrefix, '');
+        userIds.add(userId);
+      }
+    });
+
+    if (nextCursor === '0') {
+      return Array.from(userIds);
+    }
+    return this.scanUserIds(redis, queuePrefix, nextCursor, userIds);
   }
 }
 

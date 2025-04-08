@@ -22,7 +22,6 @@ import QueueService from '../queue/queue.service';
 import CollectFileConsumer from './consumers/collectFile.consumer';
 import DeleteFileConsumer from './consumers/deleteFile.consumer';
 import WebDavService from '../webdav/webDavService';
-import QueueStartupService from '../queue/queueStartup.service';
 
 @Module({
   imports: [HttpModule, AppConfigModule],
@@ -32,7 +31,6 @@ import QueueStartupService from '../queue/queueStartup.service';
     FilesystemService,
     OnlyofficeService,
     QueueService,
-    QueueStartupService,
     DuplicateFileConsumer,
     CollectFileConsumer,
     DeleteFileConsumer,
