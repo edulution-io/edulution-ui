@@ -24,7 +24,7 @@ const Checkbox = React.forwardRef<
     onCheckboxClick?: (event: React.MouseEvent) => void;
     label?: string;
   }
->(({ className, onCheckboxClick = () => {}, label, ...props }, ref) => (
+>(({ className, onCheckboxClick = () => {}, label, disabled, ...props }, ref) => (
   <div className="flex items-center space-x-2">
     <CheckboxPrimitive.Root
       ref={ref}
@@ -37,6 +37,7 @@ const Checkbox = React.forwardRef<
         event.stopPropagation();
         onCheckboxClick(event);
       }}
+      disabled={disabled}
       {...props}
     >
       <CheckboxPrimitive.Indicator className={cn('flex flex-col items-center justify-center text-current')}>
@@ -44,7 +45,16 @@ const Checkbox = React.forwardRef<
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
     <label htmlFor={label}>
-      {label && <span className="cursor-pointer select-none text-background">{label}</span>}
+      {label && (
+        <span
+          className={cn('select-none', {
+            'cursor-pointer text-background': !disabled,
+            'cursor-disabled text-muted-foreground': disabled,
+          })}
+        >
+          {label}
+        </span>
+      )}
     </label>
   </div>
 ));
