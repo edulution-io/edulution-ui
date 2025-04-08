@@ -32,7 +32,7 @@ const handleArrayActions = async (data: PathChangeOrCreateProps[], endpoint: str
   return Promise.all(promises);
 };
 
-const handleArrayData = async (
+const handleBulkFileOperations = async (
   action: FileActionType,
   endpoint: string,
   httpMethod: HttpMethods,
@@ -48,4 +48,4 @@ const handleArrayData = async (
   }
 };
 
-export default handleArrayData;
+export default handleBulkFileOperations;

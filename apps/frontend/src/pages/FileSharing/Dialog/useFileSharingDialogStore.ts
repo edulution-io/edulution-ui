@@ -22,7 +22,7 @@ import FileActionType from '@libs/filesharing/types/fileActionType';
 import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
 import ContentType from '@libs/filesharing/types/contentType';
 import handleFileOrCreateFile from '@/pages/FileSharing/Dialog/handleFileAction/handleFileOrCreateFile';
-import handleArrayData from '@/pages/FileSharing/Dialog/handleFileAction/handleArrayData';
+import handleBulkFileOperations from '@/pages/FileSharing/Dialog/handleFileAction/handleBulkFileOperations';
 import handleSingleData from '@/pages/FileSharing/Dialog/handleFileAction/handleSingleData';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
 import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
@@ -109,7 +109,7 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
         await handleFileOrCreateFile(action, endpoint, httpMethod, type, data);
         get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
       } else if (Array.isArray(data)) {
-        await handleArrayData(
+        await handleBulkFileOperations(
           action,
           endpoint,
           httpMethod,
