@@ -56,8 +56,7 @@ const LoginPage: React.FC = () => {
   const [webdavKey, setWebdavKey] = useState('');
   const [encryptKey, setEncryptKey] = useState('');
   const [showQrCode, setShowQrCode] = useState(false);
-
-  const sessionID = uuidv4();
+  const [sessionID, setSessionID] = useState<string | null>(null);
 
   const form = useForm({
     mode: 'onSubmit',
@@ -76,6 +75,10 @@ const LoginPage: React.FC = () => {
         return;
       }
       form.setError('password', { message: t(auth.error.message) });
+
+      if (showQrCode) {
+        toast.error(t(auth.error.message));
+      }
     }
   }, [auth.error]);
 
@@ -145,9 +148,10 @@ const LoginPage: React.FC = () => {
   }, [loginComplete]);
 
   useEffect(() => {
-    if (!showQrCode) {
+    if (!showQrCode || !sessionID) {
       return undefined;
     }
+
     const eventSource = new EventSource(
       `${window.location.origin}/${EDU_API_ROOT}/${SSE_EDU_API_ENDPOINTS.SSE}/${AUTH_PATHS.AUTH_ENDPOINT}?sessionId=${sessionID}`,
     );
@@ -196,7 +200,7 @@ const LoginPage: React.FC = () => {
       clearTimeout(timeoutId);
       handleAbortConnection();
     };
-  }, [showQrCode]);
+  }, [showQrCode, sessionID]);
 
   const handleCheckMfaStatus = async () => {
     const isMfaEnabled = await getTotpStatus(form.getValues('username'));
@@ -217,6 +221,8 @@ const LoginPage: React.FC = () => {
     if (isEnterTotpVisible) {
       onTotpCancelButtonClick();
     } else {
+      const newSessionID = uuidv4();
+      setSessionID(newSessionID);
       setShowQrCode((prev) => !prev);
     }
   };
