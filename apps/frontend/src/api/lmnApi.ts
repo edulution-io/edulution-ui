@@ -11,10 +11,10 @@
  */
 
 import axios from 'axios';
-import EDU_API_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
+import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
 
 const lmnApi = axios.create({
-  baseURL: `${EDU_API_BASE_URL}/api/v1/`,
+  baseURL: `${EDU_BASE_URL}/api/v1/`,
 });
 
 export default lmnApi;

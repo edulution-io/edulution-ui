@@ -10,10 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import EDU_API_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
+import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
 
 const websocketProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-const url = new URL(EDU_API_BASE_URL);
+const url = new URL(EDU_BASE_URL);
 
 const WEBSOCKET_URL = `${websocketProtocol}://${url.host}/guacamole/websocket-tunnel`;
 

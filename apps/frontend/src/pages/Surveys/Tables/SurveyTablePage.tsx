@@ -24,7 +24,7 @@ import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import { PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import PageLayout from '@/components/structure/layout/PageLayout';
-import EDU_API_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
+import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
 
 interface SurveysTablePageProps {
   title: string;
@@ -55,7 +55,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
     canShowResults = false,
   } = props;
   const { isOpenSharePublicSurveyDialog, closeSharePublicSurveyDialog, publicSurveyId } = useSurveyEditorPageStore();
-  const sharePublicSurveyUrl = publicSurveyId ? `${EDU_API_BASE_URL}/${PUBLIC_SURVEYS}/${publicSurveyId}` : '';
+  const sharePublicSurveyUrl = publicSurveyId ? `${EDU_BASE_URL}/${PUBLIC_SURVEYS}/${publicSurveyId}` : '';
 
   return (
     <PageLayout

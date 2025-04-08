@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const EDU_API_BASE_URL = window.location.origin;
+const EDU_BASE_URL = window.location.origin;
 
-export default EDU_API_BASE_URL;
+export default EDU_BASE_URL;

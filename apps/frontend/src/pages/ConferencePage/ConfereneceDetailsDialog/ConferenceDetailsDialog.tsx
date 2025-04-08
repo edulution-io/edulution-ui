@@ -30,7 +30,7 @@ import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants
 import useMedia from '@/hooks/useMedia';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import Separator from '@/components/ui/Separator';
-import EDU_API_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
+import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
 
 interface ConferenceDetailsDialogProps {
   trigger?: React.ReactNode;
@@ -87,7 +87,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
         {showQrCode && (
           <QRCodeWithCopyButton
             qrCodeSize={isMobileView ? 'md' : 'lg'}
-            url={`${EDU_API_BASE_URL}/${CONFERENCES_PUBLIC_EDU_API_ENDPOINT}/${selectedConference.meetingID}`}
+            url={`${EDU_BASE_URL}/${CONFERENCES_PUBLIC_EDU_API_ENDPOINT}/${selectedConference.meetingID}`}
             titleTranslationId="conferences.joinUrl"
           />
         )}

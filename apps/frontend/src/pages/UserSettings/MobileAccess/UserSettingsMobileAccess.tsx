@@ -23,7 +23,7 @@ import ConnectionSetupPhonePreview from '@/pages/UserSettings/MobileAccess/Conne
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import Separator from '@/components/ui/Separator';
 import PageLayout from '@/components/structure/layout/PageLayout';
-import EDU_API_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
+import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
 
 const MobileFileAccessSetupBox: React.FC = () => {
   const { isMobileView } = useMedia();
@@ -31,7 +31,7 @@ const MobileFileAccessSetupBox: React.FC = () => {
 
   const webdavAccessDetails = {
     displayName: `${window.document.title}`,
-    url: `${EDU_API_BASE_URL}/webdav`,
+    url: `${EDU_BASE_URL}/webdav`,
     username: user?.username,
     password: '',
     token: '',

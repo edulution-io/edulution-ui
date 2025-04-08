@@ -11,8 +11,8 @@
  */
 
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import EDU_API_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
+import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
 
-const EDU_API_URL = `${EDU_API_BASE_URL}/${EDU_API_ROOT}`;
+const EDU_API_URL = `${EDU_BASE_URL}/${EDU_API_ROOT}`;
 
 export default EDU_API_URL;
