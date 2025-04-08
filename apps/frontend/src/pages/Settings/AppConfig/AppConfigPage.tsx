@@ -37,6 +37,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import getDisplayName from '@/utils/getDisplayName';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import { AccordionSH } from '@/components/ui/AccordionSH';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailImporterConfig from './mails/MailImporterConfig';
@@ -162,10 +163,10 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
     <Form {...form}>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="column max-w-screen-2xl space-y-6"
+        className="max-w-screen-2xl"
       >
         {matchingConfig && (
-          <div className="m-5 space-y-10">
+          <>
             <FormFieldSH
               key={`${matchingConfig.name}.accessGroups`}
               control={control}
@@ -186,13 +187,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                 </FormItem>
               )}
             />
-            {matchingConfig.appType === APP_INTEGRATION_VARIANT.NATIVE && matchingConfig.extendedOptions ? (
-              <ExtendedOptionsForm
-                extendedOptions={APP_CONFIG_OPTIONS.find((itm) => itm.id === settingLocation)?.extendedOptions}
-                control={control}
-                settingLocation={settingLocation}
-              />
-            ) : null}
+
             {Object.keys(matchingConfig.options)
               .filter((key) => key === APP_CONFIG_OPTION_KEYS.URL || key === APP_CONFIG_OPTION_KEYS.APIKEY)
               .map((filteredKey) => (
@@ -212,15 +207,26 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                   )}
                 />
               ))}
-            {APP_CONFIG_OPTION_KEYS.PROXYCONFIG in matchingConfig.options && (
-              <ProxyConfigForm
-                key={`${matchingConfig.name}.options.${APP_CONFIG_OPTION_KEYS.PROXYCONFIG}`}
-                item={matchingConfig}
-                form={form as UseFormReturn<ProxyConfigFormType>}
-              />
-            )}
-            {settingLocation === APPS.MAIL && <MailImporterConfig form={form as UseFormReturn<MailProviderConfig>} />}
-          </div>
+
+            <AccordionSH type="multiple">
+              {matchingConfig.appType === APP_INTEGRATION_VARIANT.NATIVE && matchingConfig.extendedOptions ? (
+                <ExtendedOptionsForm
+                  extendedOptions={APP_CONFIG_OPTIONS.find((itm) => itm.id === settingLocation)?.extendedOptions}
+                  control={control}
+                  settingLocation={settingLocation}
+                />
+              ) : null}
+
+              {APP_CONFIG_OPTION_KEYS.PROXYCONFIG in matchingConfig.options && (
+                <ProxyConfigForm
+                  key={`${matchingConfig.name}.options.${APP_CONFIG_OPTION_KEYS.PROXYCONFIG}`}
+                  item={matchingConfig}
+                  form={form as UseFormReturn<ProxyConfigFormType>}
+                />
+              )}
+              {settingLocation === APPS.MAIL && <MailImporterConfig form={form as UseFormReturn<MailProviderConfig>} />}
+            </AccordionSH>
+          </>
         )}
       </form>
     </Form>

@@ -22,7 +22,7 @@ import TABS from '@libs/common/constants/tabsElementId';
 const SettingsPage = lazy(() => import('@/pages/Settings/SettingsPage'));
 
 const getLazySettingsPage = () => (
-  <Suspense fallback={<CircleLoader />}>
+  <Suspense fallback={<CircleLoader className="m-auto" />}>
     <SettingsPage />
   </Suspense>
 );
