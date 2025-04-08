@@ -141,7 +141,6 @@ const useNotifications = () => {
     eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES, handelFileDeletingEvent, { signal });
 
     return () => {
-      eventSource.removeEventListener(SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES, handelFileDeletingEvent);
       controller.abort();
     };
   }, [isFileSharingActive]);
