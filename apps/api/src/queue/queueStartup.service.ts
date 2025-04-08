@@ -13,6 +13,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import Redis from 'ioredis';
 import QueueService from './queue.service';
+import QUEUE_CONSTANTS from '@libs/queue/constants/queueConstants';
 
 @Injectable()
 class QueueStartupService implements OnModuleInit {
@@ -23,7 +24,7 @@ class QueueStartupService implements OnModuleInit {
     const redisPort = +(process.env.REDIS_PORT ?? 6379);
     const redis = new Redis({ host: redisHost, port: redisPort });
 
-    const userIds = await this.scanUserIds(redis, 'queue-user-');
+    const userIds = await this.scanUserIds(redis, QUEUE_CONSTANTS.PREFIX);
 
     await redis.quit();
 
