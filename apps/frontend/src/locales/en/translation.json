@@ -950,7 +950,10 @@
     "password_too_long": "Password to long",
     "forgot_password": "Forgot password?",
     "remember_me": "Remember me",
-    "enterMultiFactorCode": "Two-Factor Authentication"
+    "enterMultiFactorCode": "Two-Factor Authentication",
+    "loginWithApp": "Login with QR",
+    "loginWithQrDescription": "Open the edulution.io APP to simply log in with the QR code.",
+    "infoQrCodeExpired": "Time for login with edulution.io APP expired."
   },
   "edit": "Edit",
   "common": {

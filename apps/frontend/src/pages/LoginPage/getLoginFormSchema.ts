@@ -23,6 +23,7 @@ const getLoginFormSchema = (t: TFunction<'translation', undefined>) =>
       .string({ required_error: t('common.required') })
       .min(1, { message: t('common.required') })
       .max(32, { message: t('login.password_too_long') }),
+    totpValue: z.string().optional(),
   });
 
 export default getLoginFormSchema;

@@ -17,6 +17,7 @@ const AUTH_PATHS = {
   AUTH_OIDC_USERINFO_PATH: '/protocol/openid-connect/userinfo',
   AUTH_QRCODE: 'qrcode',
   AUTH_CHECK_TOTP: 'totp',
+  AUTH_VIA_APP: 'edu-app',
 } as const;
 
 export default AUTH_PATHS;

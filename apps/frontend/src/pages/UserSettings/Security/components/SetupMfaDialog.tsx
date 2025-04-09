@@ -97,6 +97,7 @@ const SetupMfaDialog: React.FC = () => {
           <QRCodeDisplay
             value={qrCode}
             size="lg"
+            className="m-14"
           />
         )}
       </div>
