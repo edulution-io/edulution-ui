@@ -244,6 +244,13 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
     await deleteAppConfigEntry(deleteOptionName);
   };
 
+  const getHeaderDescription = (config: AppConfigDto) => {
+    if (config.appType === APP_INTEGRATION_VARIANT.NATIVE) {
+      return t(`settings.description.${config.name}`);
+    }
+    return t(`settings.description.${config.appType}`);
+  };
+
   return (
     <>
       <div className="h-[calc(100vh-var(--floating-buttons-height))] overflow-y-auto scrollbar-thin">
@@ -252,11 +259,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
             key={matchingConfig.name}
             title={getDisplayName(matchingConfig, language)}
             iconSrc={matchingConfig.icon}
-            description={
-              matchingConfig.appType === APP_INTEGRATION_VARIANT.NATIVE
-                ? t(`settings.description.${matchingConfig.name}`)
-                : t(`form.${matchingConfig.appType}`)
-            }
+            description={getHeaderDescription(matchingConfig)}
           />
         )}
         {getSettingsForm()}
