@@ -176,8 +176,12 @@ const ScrollableTable = <TData, TValue>({
                 onChange={(event) => table.getColumn(filterKey)?.setFilterValue(event.target.value)}
                 className={`max-w-xl text-secondary ${isDialog ? 'bg-muted' : 'bg-accent'}`}
               />
-
-              <SelectColumnsDropdown table={table} />
+              {table.getAllColumns().length > 1 && (
+                <SelectColumnsDropdown
+                  table={table}
+                  isDialog={isDialog}
+                />
+              )}
             </div>
           )}
           <Table>
