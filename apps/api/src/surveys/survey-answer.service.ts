@@ -344,12 +344,9 @@ class SurveyAnswersService {
         identification = `(${username})`;
         identification = lastName ? `${lastName} ${identification}` : identification;
         identification = firstName ? `${firstName} ${identification}` : identification;
+      } else if (publicUserIdRegex.test(username)) {
+        identification = username.split('_').slice(1, -1).join('_');
       } else {
-        if (publicUserIdRegex.test(username)) {
-          identification = username.split('_').slice(1, -1).join('_');
-        }
-      }
-      if (!identification) {
         identification = 'Unauthenticated';
       }
       return { identification, ...answer.answer };
