@@ -37,9 +37,7 @@ class QueueService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    const redisHost = process.env.REDIS_HOST ?? 'localhost';
-    const redisPort = +(process.env.REDIS_PORT ?? 6379);
-    const redis = new Redis({ host: redisHost, port: redisPort });
+    const redis = new Redis({ host: this.redisHost, port: this.redisPort });
 
     const userIds = await this.scanUserIds(redis, QUEUE_CONSTANTS.PREFIX);
 
@@ -54,7 +52,7 @@ class QueueService implements OnModuleInit {
   }
 
   createWorkerForUser(userId: string): Worker {
-    const queueName = `queue-user-${userId}`;
+    const queueName = QUEUE_CONSTANTS.PREFIX + userId;
     if (this.workers.has(userId)) {
       return <Worker<JobData>>this.workers.get(userId);
     }
@@ -77,8 +75,9 @@ class QueueService implements OnModuleInit {
   }
 
   getQueue(userId: string): Queue | undefined {
+    const queueName = QUEUE_CONSTANTS.PREFIX + userId;
     if (!this.queues.has(userId)) {
-      const queue = new Queue(`queue-user-${userId}`, {
+      const queue = new Queue(queueName, {
         connection: {
           host: this.redisHost,
           port: this.redisPort,
