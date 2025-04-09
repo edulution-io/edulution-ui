@@ -38,6 +38,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import getDisplayName from '@/utils/getDisplayName';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import type EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEditorForm';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailImporterConfig from './mails/MailImporterConfig';
@@ -214,12 +215,13 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                   )}
                 />
               ))}
-            {ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT in matchingConfig.extendedOptions! && (
-              <EmbeddedPageEditor
-                name={matchingConfig.name}
-                form={form}
-              />
-            )}
+            {matchingConfig.extendedOptions &&
+              ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT in matchingConfig.extendedOptions && (
+                <EmbeddedPageEditor
+                  name={matchingConfig.name}
+                  form={form as UseFormReturn<EmbeddedPageEditorForm>}
+                />
+              )}
             {APP_CONFIG_OPTION_KEYS.PROXYCONFIG in matchingConfig.options && (
               <ProxyConfigForm
                 key={`${matchingConfig.name}.options.${APP_CONFIG_OPTION_KEYS.PROXYCONFIG}`}

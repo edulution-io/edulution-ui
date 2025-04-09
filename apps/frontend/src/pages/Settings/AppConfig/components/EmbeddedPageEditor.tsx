@@ -20,14 +20,11 @@ import { Textarea } from '@/components/ui/Textarea';
 import { FormControl, FormFieldSH, FormItem } from '@/components/ui/Form';
 import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-
-import 'react-quill-new/node_modules/quill/dist/quill.snow.css';
+import type EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEditorForm';
 
 interface EmbeddedPageEditorProps {
   name: string;
-  form: UseFormReturn<{
-    [key: string]: { extendedOptions: { [ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT]: string } };
-  }>;
+  form: UseFormReturn<EmbeddedPageEditorForm>;
 }
 
 const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) => {
