@@ -932,7 +932,10 @@
     "password_too_long": "Passwort zu lang",
     "forgot_password": "Passwort vergessen?",
     "remember_me": "Merken",
-    "enterMultiFactorCode": "Zwei-Faktor-Authentisierung"
+    "enterMultiFactorCode": "Zwei-Faktor-Authentisierung",
+    "loginWithApp": "Login mit QR",
+    "loginWithQrDescription": "Öffne die edulution.io APP um dich einfach mit dem QR-Code anzumelden.",
+    "infoQrCodeExpired": "Zeit für Login mit edulution.io APP abgelaufen."
   },
   "common": {
     "share": "Teilen",

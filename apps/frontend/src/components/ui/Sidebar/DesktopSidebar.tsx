@@ -93,10 +93,10 @@ const DesktopSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
   };
 
   useEffect(() => {
-    if (!isUpButtonVisible) {
+    if (isUpButtonVisible && !isDownButtonVisible) {
       setTranslate(0);
     }
-  }, [size, isUpButtonVisible]);
+  }, [size.height]);
 
   useEffect(() => {
     setIsUpButtonVisible(translate > 0);
@@ -125,44 +125,46 @@ const DesktopSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
 
   useEffect(() => {
     const container = sidebarRef.current;
+    const controller = new AbortController();
+    const { signal } = controller;
+
     if (container) {
-      container.addEventListener('touchmove', handleTouchMove, { passive: false });
-      container.addEventListener('touchstart', handleTouchStart, { passive: false });
-      container.addEventListener('touchend', handleTouchEnd, { passive: false });
+      container.addEventListener('touchmove', handleTouchMove, { passive: false, signal });
+      container.addEventListener('touchstart', handleTouchStart, { passive: false, signal });
+      container.addEventListener('touchend', handleTouchEnd, { passive: false, signal });
     }
 
     return () => {
-      if (container) {
-        container.removeEventListener('touchmove', handleTouchMove);
-        container.removeEventListener('touchstart', handleTouchStart);
-        container.removeEventListener('touchend', handleTouchEnd);
-      }
+      controller.abort();
     };
   }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
 
   return (
     <div className="fixed right-0 z-[600] h-screen bg-black md:bg-none">
       <HomeButton />
-      {isUpButtonVisible ? <UpButton onClick={handleUpButtonClick} /> : null}
-
-      <div
-        ref={sidebarRef}
-        style={{ transform: `translateY(-${translate}px)`, overflowY: 'clip' }}
-        onWheel={() => handleWheel}
-        onTouchStart={() => handleTouchStart}
-        onTouchMove={() => handleTouchMove}
-        onTouchEnd={() => handleTouchEnd}
-      >
-        {sidebarItems.map((item) => (
-          <SidebarItem
-            key={item.link}
-            menuItem={item}
-            translate={translate}
-            isDesktop
-          />
-        ))}
+      <div>
+        {isUpButtonVisible ? <UpButton onClick={handleUpButtonClick} /> : null}
+        <div
+          ref={sidebarRef}
+          style={{ transform: `translateY(-${translate}px)`, overflowY: 'clip' }}
+          onWheel={() => handleWheel}
+          onTouchStart={() => handleTouchStart}
+          onTouchMove={() => handleTouchMove}
+          onTouchEnd={() => handleTouchEnd}
+        >
+          {sidebarItems.map((item) => (
+            <SidebarItem
+              key={item.link}
+              menuItem={item}
+              translate={translate}
+              isDesktop
+              isUpButtonVisible={isUpButtonVisible}
+              isDownButtonVisible={isDownButtonVisible}
+            />
+          ))}
+        </div>
+        {isDownButtonVisible ? <DownButton onClick={handleDownButtonClick} /> : null}
       </div>
-      {isDownButtonVisible ? <DownButton onClick={handleDownButtonClick} /> : null}
       <UserMenuButton />
     </div>
   );

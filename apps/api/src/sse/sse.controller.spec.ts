@@ -58,12 +58,12 @@ describe('SseController', () => {
     });
   });
 
-  describe('publicSse', () => {
+  describe('publicConferenceSse', () => {
     it('should call sseService.subscribe with the meetingID and response', async () => {
       const meetingID = '12345';
       const response = {} as Response;
 
-      await sseController.publicSse(meetingID, response);
+      await sseController.publicConferenceSse(meetingID, response);
 
       expect(sseService.subscribe).toHaveBeenCalledWith(meetingID, response);
     });

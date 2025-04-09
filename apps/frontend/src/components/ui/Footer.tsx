@@ -22,10 +22,9 @@ const Footer = () => {
       id={FOOTER_ID}
       className="fixed bottom-0 flex w-full justify-center pt-1"
     >
-      <div className="bg-background-centered-shadow mx-auto w-96 rounded-t-lg  text-center">
+      <div className="bg-background-centered-shadow mx-auto w-fit rounded-t-lg  text-center">
         <p className="overflow-hidden whitespace-nowrap text-muted">
-          &copy; {new Date().getFullYear()} {window.document.title}. {!isMobileView && 'All rights reserved.'} V
-          {APP_VERSION}
+          &copy; {new Date().getFullYear()} edulution.io. {!isMobileView && 'All rights reserved.'} V{APP_VERSION}
         </p>
       </div>
     </footer>
