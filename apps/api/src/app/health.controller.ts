@@ -10,15 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 
 @Controller(EDU_API_CONFIG_ENDPOINTS.HEALTH_CHECK)
 class HealthController {
   @Get()
-  check() {
-    return { status: 'ok' };
-  }
+  @HttpCode(HttpStatus.OK)
+  check() {}
 }
 
 export default HealthController;
