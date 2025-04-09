@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.1.71",
   "scripts": {
-    "test": "nx run-many --target=test --projects=frontend,api",
+    "test": "nx run-many --target=test --projects=api",
     "test:api": "nx run api:test --detectOpenHandles",
     "test:frontend": "nx run frontend:test",
     "test-with-ui": "vitest --ui",
