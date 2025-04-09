@@ -181,17 +181,34 @@ class SurveysService implements OnModuleInit {
     tempFiles: string[],
     question: SurveyElement,
   ): Promise<SurveyElement> {
-    if (question.type !== 'image' || !question.imageLink) {
-      return question;
+    if (question.type === 'image' && question.imageLink) {
+      try {
+        const pathWithIds = `${surveyId}/${question.name}`;
+        const newImageLink = await this.updateLink(username, pathWithIds, tempFiles, question.imageLink);
+        return { ...question, imageLink: newImageLink };
+      } catch (error) {
+        Logger.error(error, SurveysService.name);
+        throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      }
     }
-    try {
-      const pathWithIds = `${surveyId}/${question.name}`;
-      const newImageLink = await this.updateLink(username, pathWithIds, tempFiles, question.imageLink);
-      return { ...question, imageLink: newImageLink };
-    } catch (error) {
-      Logger.error(error, SurveysService.name);
-      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR, error);
+    if (question.type === 'imagepicker' && question.choices) {
+      try {
+        const pathWithIds = `${surveyId}/${question.name}`;
+        const choicePromises = question.choices.map(async (choice) => {
+          if (typeof choice !== 'string' && choice.imageLink) {
+            const newImageLink = await this.updateLink(username, pathWithIds, tempFiles, choice.imageLink);
+            return { ...choice, imageLink: newImageLink };
+          }
+          return choice;
+        });
+        const choices = await Promise.all(choicePromises);
+        return { ...question, choices };
+      } catch (error) {
+        Logger.error(error, SurveysService.name);
+        throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      }
     }
+    return question;
   }
 
   async updateElements(
