@@ -339,14 +339,18 @@ class SurveyAnswersService {
     const answers = surveyAnswers.filter((answer) => answer.answer != null);
     return answers.map((answer) => {
       const { username, firstName, lastName } = answer.attendee;
-      let identification = username;
-      identification = lastName ? `${lastName} (${identification})` : identification;
-      identification = firstName ? `${firstName} ${identification}` : identification;
-      if (publicUserIdRegex.test(username)) {
-        const [prefix, ...fullNameWithUuid] = username.split('_');
-        const uuid = fullNameWithUuid.pop();
-        const fullName = fullNameWithUuid.join('_');
-        identification = `${fullName} (${prefix}_${fullName}_${uuid})`;
+      let identification;
+      if (firstName || lastName) {
+        identification = `(${username})`;
+        identification = lastName ? `${lastName} ${identification}` : identification;
+        identification = firstName ? `${firstName} ${identification}` : identification;
+      } else {
+        if (publicUserIdRegex.test(username)) {
+          identification = username.split('_').slice(1, -1).join('_');
+        }
+      }
+      if (!identification) {
+        identification = 'Unauthenticated';
       }
       return { identification, ...answer.answer };
     });
