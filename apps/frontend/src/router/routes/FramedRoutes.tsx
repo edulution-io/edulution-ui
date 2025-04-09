@@ -17,7 +17,7 @@ import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 
 const getFramedRoutes = (appConfigs: AppConfigDto[]) => [
-  <Route key="framed">
+  <Route key={APP_INTEGRATION_VARIANT.FRAMED}>
     {appConfigs
       .filter((item) => item.appType === APP_INTEGRATION_VARIANT.FRAMED)
       .map((item) => (

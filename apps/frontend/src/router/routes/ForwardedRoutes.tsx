@@ -19,7 +19,7 @@ import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVar
 
 const getForwardedRoutes = (appConfigs: AppConfigDto[]) => [
   <Route
-    key="forwarding"
+    key={APP_INTEGRATION_VARIANT.FORWARDED}
     element={<BlankLayout />}
   >
     {appConfigs

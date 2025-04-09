@@ -18,7 +18,7 @@ import EmbeddedPage from '@/pages/EmbeddedPage/EmbeddedPage';
 
 const getEmbeddedRoutes = (appConfigs: AppConfigDto[]) => [
   <Route
-    key="embedded"
+    key={APP_INTEGRATION_VARIANT.EMBEDDED}
     element={<Outlet />}
   >
     {appConfigs
