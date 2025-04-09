@@ -96,7 +96,7 @@ class LicenseService implements OnModuleInit {
         .lean();
       return licenseInfo;
     } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -105,7 +105,7 @@ class LicenseService implements OnModuleInit {
       await this.licenseModel.updateOne<LicenseInfoDto>({}, { $set: { isLicenseActive } }).lean();
       await this.invalidateLicenseCache();
     } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -146,7 +146,7 @@ class LicenseService implements OnModuleInit {
 
       if (!dbResponse) {
         throw new CustomHttpException(
-          CommonErrorMessages.DBAccessFailed,
+          CommonErrorMessages.DB_ACCESS_FAILED,
           HttpStatus.INTERNAL_SERVER_ERROR,
           undefined,
           LicenseService.name,

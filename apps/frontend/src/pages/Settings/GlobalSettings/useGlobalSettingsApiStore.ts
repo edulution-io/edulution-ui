@@ -11,10 +11,10 @@
  */
 
 import { create, StateCreator } from 'zustand';
-import eduApi from '@/api/eduApi';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import handleApiError from '@/utils/handleApiError';
+import eduApi from '@/api/eduApi';
 import {
   GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH,
   GLOBAL_SETTINGS_ROOT_ENDPOINT,

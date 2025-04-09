@@ -54,7 +54,7 @@ class AppConfigService implements OnModuleInit {
         AppConfigService.name,
       );
     } finally {
-      AppConfigService.writeProxyConfigFile(appConfigDto);
+      await AppConfigService.writeProxyConfigFile(appConfigDto);
       this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
     }
   }
@@ -83,7 +83,7 @@ class AppConfigService implements OnModuleInit {
         AppConfigService.name,
       );
     } finally {
-      AppConfigService.writeProxyConfigFile(appConfigDto);
+      await AppConfigService.writeProxyConfigFile(appConfigDto);
       this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
     }
   }
@@ -104,7 +104,7 @@ class AppConfigService implements OnModuleInit {
     }
   }
 
-  static writeProxyConfigFile(appConfigDto: AppConfigDto) {
+  static async writeProxyConfigFile(appConfigDto: AppConfigDto) {
     if (appConfigDto?.options?.proxyConfig) {
       const { proxyConfig } = appConfigDto.options;
       if (proxyConfig !== '' && proxyConfig !== '""') {
@@ -115,7 +115,7 @@ class AppConfigService implements OnModuleInit {
       } else {
         const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appConfigDto?.name}.yml`;
 
-        FilesystemService.checkIfFileExistAndDelete(filePath);
+        await FilesystemService.checkIfFileExistAndDelete(filePath);
       }
     }
   }
@@ -181,7 +181,7 @@ class AppConfigService implements OnModuleInit {
     } finally {
       const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${configName}.yml`;
 
-      FilesystemService.checkIfFileExistAndDelete(filePath);
+      await FilesystemService.checkIfFileExistAndDelete(filePath);
 
       this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
     }
