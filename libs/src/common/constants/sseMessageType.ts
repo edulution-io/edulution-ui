@@ -12,6 +12,7 @@
 
 const SSE_MESSAGE_TYPE = {
   MESSAGE: 'message',
+  PING: 'ping',
   CONTAINER_STATUS: 'container_status',
   CONTAINER_UPDATE: 'container_update',
   CONTAINER_PROGRESS: 'container_progress',
