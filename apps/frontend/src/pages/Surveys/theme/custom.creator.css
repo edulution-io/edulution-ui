@@ -516,6 +516,9 @@
     background-color: var(--accent-light);
   }
 
+  .sd-file__drag-area-placeholder {
+    color: var(--muted-foreground);
+  }
   .sd-file__decorator {
     .sv-string-editor,
     .sd-file__choose-btn,

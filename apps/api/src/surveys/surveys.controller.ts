@@ -10,26 +10,47 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { join } from 'path';
+import { Response } from 'express';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Res,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import {
   ANSWER,
   CAN_PARTICIPATE,
   FIND_ONE,
   HAS_ANSWERS,
+  IMAGES,
+  PUBLIC_SURVEYS,
   RESULT,
   SURVEYS,
 } from '@libs/survey/constants/surveys-endpoint';
+import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AnswerDto from '@libs/survey/types/api/answer.dto';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
+import { checkAttachmentFile, createAttachmentUploadOptions } from '../common/multer.utilities';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
@@ -69,6 +90,29 @@ class SurveysController {
     return this.surveyAnswerService.findUserSurveys(status, user);
   }
 
+  @Post(`${IMAGES}/:surveyId/:questionId`)
+  @ApiConsumes(RequestResponseContentType.MULTIPART_FORM_DATA)
+  @UseInterceptors(
+    FileInterceptor(
+      'file',
+      createAttachmentUploadOptions((req) => {
+        const { surveyId, questionId } = req.params;
+        return `${SURVEYS_IMAGES_PATH}/${surveyId}/${questionId}`;
+      }),
+    ),
+  )
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  uploadImage(
+    @Param() param: { surveyId: string; questionId: string },
+    @UploadedFile() file: Express.Multer.File,
+    @Res() res: Response,
+  ) {
+    const { surveyId, questionId } = param;
+    const fileName = checkAttachmentFile(file);
+    const imageUrl = join(PUBLIC_SURVEYS, IMAGES, surveyId, questionId, fileName);
+    return res.status(HttpStatus.CREATED).json(imageUrl);
+  }
+
   @Post(ANSWER)
   async getSubmittedSurveyAnswers(@Body() getAnswerDto: AnswerDto, @GetCurrentUsername() username: string) {
     const { surveyId, attendee } = getAnswerDto;
@@ -85,6 +129,7 @@ class SurveysController {
     const { surveyIds } = deleteSurveyDto;
     await this.surveyService.deleteSurveys(surveyIds);
     await this.surveyAnswerService.onSurveyRemoval(surveyIds);
+    await this.surveyService.onSurveyRemoval(surveyIds);
   }
 
   @Patch()

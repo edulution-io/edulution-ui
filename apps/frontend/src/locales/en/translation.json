@@ -71,11 +71,7 @@
     "errors": {
       "categoryNotFound": "Category not found",
       "categoryDeleteFailed": "Failed to delete category",
-      "attachmentUploadFailed": "Failed to upload attachment",
-      "fileNotProvided": "File not provided",
-      "fileNotFound": "File not found",
       "invalidCategory": "Invalid category",
-      "invalidFileType": "Invalid file type",
       "bulletinNotFound": "Bulletin not found",
       "unauthorizedUpdateBulletin": "Unauthorized to update this bulletin",
       "unauthorizedDeleteBulletin": "Unauthorized to delete this bulletin",
@@ -551,9 +547,10 @@
       "saveAnswerSuccess": "Saved the answer."
     },
     "errors": {
-      "submitAnswerError": "Not able to submit the answer.",
+      "submitAnswerError": "The answer could not be submitted.",
       "updateOrCreateError": "Neither able to update a survey nor to create a new one.",
-      "deleteError": "Not able to delete the surveys.",
+      "deleteError": "The surveys could not be deleted.",
+      "imageDeletionFailed": "Not all images of the surveys could be deleted.",
       "noAnswerError": "No answers available jet.",
       "noFormulaError": "The formula of the survey is not readable.",
       "noBackendLimitersError": "In order to use this functionality you have to define limiters inside of the editor.",
@@ -963,9 +960,15 @@
     "answers": "Answers",
     "error": "Error",
     "errors": {
-      "startDateBeforeEndDate": "The start date must be before the end date",
+      "attachmentUploadFailed": "Failed to upload attachment",
       "dbAccessFailed": "Database access failed",
-      "envAccessError": "Not able to read environment variables"
+      "directoryNotCreated": "Failed to create directory",
+      "fileDeletionFailed": "Failed to delete the file",
+      "fileWritingFailed": "Failed to write the file",
+      "fileNotFound": "File not found",
+      "fileNotProvided": "File not provided",
+      "invalidFileType": "Invalid file type",
+      "startDateBeforeEndDate": "The start date must be before the end date"
     },
     "cut": "Cut",
     "sortOrder": "Sort order",
