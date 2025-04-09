@@ -35,7 +35,6 @@ type AppConfigsStore = {
   createAppConfig: (appConfig: AppConfigDto) => Promise<void>;
   getAppConfigs: () => Promise<void>;
   isGetAppConfigsLoading: boolean;
-  isBackendHealthy: () => Promise<boolean>;
   updateAppConfig: (appConfigs: AppConfigDto) => Promise<void>;
   patchSingleFieldInConfig: (name: string, patchConfigDto: PatchConfigDto) => Promise<void>;
   deleteAppConfigEntry: (name: string) => Promise<void>;
@@ -90,16 +89,6 @@ const useAppConfigsStore = create<AppConfigsStore>(
           handleApiError(e, set);
         } finally {
           set({ isLoading: false });
-        }
-      },
-
-      isBackendHealthy: async () => {
-        try {
-          const response = await eduApi.get<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINTS.HEALTH_CHECK);
-          return response.status === 200;
-        } catch (e) {
-          handleApiError(e, set);
-          return false;
         }
       },
 

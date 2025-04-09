@@ -15,6 +15,7 @@ import { useAuth } from 'react-oidc-context';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import type UserDto from '@libs/user/types/user.dto';
 import useSseStore from '@/store/useSseStore';
+import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 import useAppConfigsStore from '../pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '../store/UserStore/UserStore';
 import useLogout from '../hooks/useLogout';
@@ -23,7 +24,8 @@ import useTokenEventListeners from '../hooks/useTokenEventListener';
 
 const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const auth = useAuth();
-  const { isBackendHealthy, getAppConfigs } = useAppConfigsStore();
+  const { getAppConfigs } = useAppConfigsStore();
+  const { getIsEduApiHealthy } = useEduApiStore();
   const { isAuthenticated, eduApiToken, setEduApiToken, user, getWebdavKey } = useUserStore();
   const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
   const { setEventSource } = useSseStore();
@@ -46,7 +48,7 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
 
   useEffect(() => {
     const handleGetAppConfigs = async () => {
-      const isApiResponding = await isBackendHealthy();
+      const isApiResponding = await getIsEduApiHealthy();
       if (isApiResponding) {
         void getAppConfigs();
         return;

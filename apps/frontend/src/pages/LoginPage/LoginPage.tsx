@@ -28,7 +28,6 @@ import processLdapGroups from '@libs/user/utils/processLdapGroups';
 import OtpInput from '@/components/shared/OtpInput';
 import PageTitle from '@/components/PageTitle';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import getLoginFormSchema from './getLoginFormSchema';
 
@@ -42,7 +41,6 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { eduApiToken, totpIsLoading, createOrUpdateUser, setEduApiToken, getTotpStatus } = useUserStore();
-  const { getAppConfigs } = useAppConfigsStore();
 
   const { isLoading } = auth;
   const [loginComplete, setLoginComplete] = useState(false);
@@ -115,9 +113,7 @@ const LoginPage: React.FC = () => {
     }
     const registerUser = async () => {
       await handleRegisterUser();
-      await getAppConfigs();
 
-      setLoginComplete(true);
       setIsEnterTotpVisible(false);
       setLoginComplete(true);
     };
