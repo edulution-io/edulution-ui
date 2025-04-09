@@ -166,11 +166,10 @@ const LoginPage: React.FC = () => {
         form.setValue('username', username);
         form.setValue('password', password);
         form.setValue('totpValue', totpValue || '');
-
-        void form.handleSubmit(onSubmit)();
       } catch (error) {
         console.error('JSON parse error:', error);
       }
+      void form.handleSubmit(onSubmit)();
     };
 
     eventSource.addEventListener(SSE_MESSAGE_TYPE.MESSAGE, handleLoginEvent, { signal });
