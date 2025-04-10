@@ -47,6 +47,7 @@ const SurveyEditorPage = () => {
     storedSurvey,
     updateStoredSurvey,
     resetStoredSurvey,
+    uploadImageFile,
   } = useSurveyEditorPageStore();
 
   const { t } = useTranslation();
@@ -107,6 +108,18 @@ const SurveyEditorPage = () => {
       creator.JSON = form.getValues('formula');
       creator.locale = language;
       creator.saveSurveyFunc = updateSurveyStorage;
+
+      creator.onUploadFile.add(async (_, options) => {
+        // TODO: 630 (https://github.com/edulution-io/edulution-ui/issues/630) -  Currently this can only work for already created surveys
+        if (!surveyId) return;
+        const promises = options.files.map((file: File) => {
+          if (!options.question?.id) {
+            return uploadImageFile(surveyId, 'Header', file, options.callback);
+          }
+          return uploadImageFile(surveyId, options.question.id, file, options.callback);
+        });
+        await Promise.all(promises);
+      });
     }
   }, [creator, form, language]);
 

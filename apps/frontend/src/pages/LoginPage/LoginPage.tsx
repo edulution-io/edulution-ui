@@ -17,19 +17,29 @@ import { useForm } from 'react-hook-form';
 import CryptoJS from 'crypto-js';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
+import { v4 as uuidv4 } from 'uuid';
+import { MdOutlineQrCode } from 'react-icons/md';
+import { toast } from 'sonner';
 import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
 import useUserStore from '@/store/UserStore/UserStore';
-import UserDto from '@libs/user/types/user.dto';
+import type UserDto from '@libs/user/types/user.dto';
 import processLdapGroups from '@libs/user/utils/processLdapGroups';
-import OtpInput from '@/components/shared/OtpInput';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
+import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import PageTitle from '@/components/PageTitle';
+import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import delay from '@libs/common/utils/delay';
+import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import getLoginFormSchema from './getLoginFormSchema';
+import TotpInput from './components/TotpInput';
 
 type LocationState = {
   from: string;
@@ -45,9 +55,10 @@ const LoginPage: React.FC = () => {
   const { isLoading } = auth;
   const [loginComplete, setLoginComplete] = useState(false);
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
-  const [totp, setTotp] = useState('');
   const [webdavKey, setWebdavKey] = useState('');
   const [encryptKey, setEncryptKey] = useState('');
+  const [showQrCode, setShowQrCode] = useState(false);
+  const [sessionID, setSessionID] = useState<string | null>(null);
 
   const form = useForm({
     mode: 'onSubmit',
@@ -55,6 +66,7 @@ const LoginPage: React.FC = () => {
     defaultValues: {
       username: '',
       password: '',
+      totpValue: '',
     },
   });
 
@@ -65,6 +77,10 @@ const LoginPage: React.FC = () => {
         return;
       }
       form.setError('password', { message: t(auth.error.message) });
+
+      if (showQrCode) {
+        toast.error(t(auth.error.message));
+      }
     }
   }, [auth.error]);
 
@@ -72,7 +88,9 @@ const LoginPage: React.FC = () => {
     try {
       const username = form.getValues('username');
       const password = form.getValues('password');
-      const passwordHash = btoa(`${password}${isEnterTotpVisible ? `:${totp}` : ''}`);
+      const totpValue = form.getValues('totpValue');
+
+      const passwordHash = btoa(`${password}${isEnterTotpVisible || totpValue ? `:${totpValue}` : ''}`);
       const requestUser = await auth.signinResourceOwnerCredentials({
         username,
         password: passwordHash,
@@ -131,6 +149,60 @@ const LoginPage: React.FC = () => {
     }
   }, [loginComplete]);
 
+  useEffect(() => {
+    if (!showQrCode || !sessionID) {
+      return undefined;
+    }
+
+    const eventSource = new EventSource(
+      `${window.location.origin}/${EDU_API_ROOT}/${SSE_EDU_API_ENDPOINTS.SSE}/${AUTH_PATHS.AUTH_ENDPOINT}?sessionId=${sessionID}`,
+    );
+
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    const handleLoginEvent = (e: MessageEvent<string>) => {
+      try {
+        const { username, password, totpValue } = JSON.parse(atob(e.data)) as LoginQrSseDto;
+
+        form.setValue('username', username);
+        form.setValue('password', password);
+        form.setValue('totpValue', totpValue || '');
+      } catch (error) {
+        console.error('JSON parse error:', error);
+      }
+      void form.handleSubmit(onSubmit)();
+    };
+
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.MESSAGE, handleLoginEvent, { signal });
+
+    const handleAbortConnection = () => {
+      controller.abort();
+      eventSource.close();
+    };
+
+    eventSource.onerror = async () => {
+      handleAbortConnection();
+      toast.error(t('auth.errors.EdulutionConnectionFailed'));
+      await delay(5000);
+      setShowQrCode(false);
+    };
+
+    const timeoutId = setTimeout(
+      () => {
+        handleAbortConnection();
+        toast.info(t('login.infoQrCodeExpired'));
+        setShowQrCode(false);
+      },
+      3 * 60 * 1000,
+    );
+
+    return () => {
+      clearTimeout(timeoutId);
+      handleAbortConnection();
+    };
+  }, [showQrCode, sessionID]);
+
   const handleCheckMfaStatus = async () => {
     const isMfaEnabled = await getTotpStatus(form.getValues('username'));
     if (!isMfaEnabled) {
@@ -142,33 +214,93 @@ const LoginPage: React.FC = () => {
 
   const onTotpCancelButtonClick = () => {
     form.clearErrors();
-    setTotp('');
+    form.setValue('totpValue', '');
     setIsEnterTotpVisible(false);
   };
 
+  const handleCancelOrToggleQrCode = () => {
+    if (isEnterTotpVisible) {
+      onTotpCancelButtonClick();
+    } else {
+      const newSessionID = uuidv4();
+      setSessionID(newSessionID);
+      setShowQrCode((prev) => !prev);
+    }
+  };
+
   const renderFormField = (fieldName: 'username' | 'password', label: string, type?: string, shouldTrim?: boolean) => (
-    <FormFieldSH
-      control={form.control}
-      name={fieldName}
-      render={({ field }) => (
-        <FormItem>
-          <p className="font-bold text-foreground">{label}</p>
-          <FormControl>
-            <Input
-              {...field}
-              type={type}
-              shouldTrim={shouldTrim}
-              disabled={isLoading}
-              placeholder={label}
-              variant="login"
-              data-testid={`test-id-login-page-${fieldName}-input`}
-            />
-          </FormControl>
-          <FormMessage className="text-foreground" />
-        </FormItem>
-      )}
-    />
+    <div className={isEnterTotpVisible ? 'hidden' : ''}>
+      <FormFieldSH
+        control={form.control}
+        name={fieldName}
+        render={({ field }) => (
+          <FormItem>
+            <p className="font-bold text-foreground">{label}</p>
+            <FormControl>
+              <Input
+                {...field}
+                type={type}
+                shouldTrim={shouldTrim}
+                disabled={isLoading}
+                placeholder={label}
+                variant="login"
+                data-testid={`test-id-login-page-${fieldName}-input`}
+              />
+            </FormControl>
+            <FormMessage className="text-foreground" />
+          </FormItem>
+        )}
+      />
+    </div>
   );
+
+  const renderErrorMessage = () => {
+    const passwordError = form.getFieldState('password').error?.message;
+    return passwordError ? (
+      <p className="h-5">
+        <span>{t(passwordError)}</span>
+      </p>
+    ) : null;
+  };
+
+  const getMainContent = () => {
+    if (showQrCode) {
+      return (
+        <>
+          <QRCodeDisplay
+            value={`${window.location.origin}/${EDU_API_ROOT}/${AUTH_PATHS.AUTH_ENDPOINT}/${AUTH_PATHS.AUTH_VIA_APP}?sessionId=${sessionID}`}
+            size="lg"
+          />
+          <p className="font-bold">{t('login.loginWithQrDescription')}</p>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <div className={isEnterTotpVisible ? '' : 'hidden'}>
+          <FormFieldSH
+            control={form.control}
+            name="totpValue"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <TotpInput
+                    totp={field.value}
+                    setTotp={field.onChange}
+                    onComplete={onSubmit}
+                  />
+                </FormControl>
+                {renderErrorMessage()}
+              </FormItem>
+            )}
+          />
+        </div>
+        {renderFormField('username', t('common.username'), 'text', true)}
+        {renderFormField('password', t('common.password'), 'password')}
+      </>
+    );
+  };
 
   return (
     <PageLayout>
@@ -191,48 +323,37 @@ const LoginPage: React.FC = () => {
             className="space-y-4"
             data-testid="test-id-login-page-form"
           >
-            {isEnterTotpVisible ? (
-              <>
-                <div className="mt-3 text-center font-bold">{t('login.enterMultiFactorCode')}</div>
-                <OtpInput
-                  totp={totp}
-                  setTotp={setTotp}
-                  onComplete={form.handleSubmit(onSubmit)}
-                />
-                {form.getFieldState('password').error?.message && (
-                  <p>
-                    <span>{t(form.getFieldState('password').error?.message || '')}</span>
-                  </p>
-                )}
-              </>
-            ) : (
-              <>
-                {renderFormField('username', t('common.username'), 'text', true)}
-                {renderFormField('password', t('common.password'), 'password')}
-              </>
-            )}
-            {!form.getFieldState('password').error && <p className="flex h-2" />}
-            {isEnterTotpVisible ? (
+            {getMainContent()}
+            {!showQrCode && !form.getFieldState('password').error && <p className="flex h-3" />}
+
+            {!showQrCode && (
               <Button
-                className="mx-auto w-full justify-center text-foreground shadow-xl hover:bg-ciGrey/10"
-                type="button"
-                variant="btn-outline"
+                className="mx-auto w-full justify-center shadow-xl"
+                type="submit"
+                variant="btn-security"
                 size="lg"
+                data-testid="test-id-login-page-submit-button"
                 disabled={isLoading || totpIsLoading}
-                onClick={onTotpCancelButtonClick}
               >
-                {t('common.cancel')}
+                {totpIsLoading || isLoading ? t('common.loading') : t('common.login')}
               </Button>
-            ) : null}
+            )}
             <Button
-              className="mx-auto w-full justify-center text-background shadow-xl"
-              type="submit"
-              variant="btn-security"
+              className="mx-auto w-full justify-center shadow-xl hover:bg-ciGrey/10"
+              type="button"
+              variant="btn-outline"
               size="lg"
-              data-testid="test-id-login-page-submit-button"
               disabled={isLoading || totpIsLoading}
+              onClick={handleCancelOrToggleQrCode}
             >
-              {totpIsLoading || isLoading ? t('common.loading') : t('common.login')}
+              {isEnterTotpVisible || showQrCode ? (
+                t('common.cancel')
+              ) : (
+                <>
+                  {t('login.loginWithApp')}
+                  <MdOutlineQrCode size={20} />
+                </>
+              )}
             </Button>
           </form>
         </Form>

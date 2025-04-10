@@ -10,20 +10,29 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { z } from 'zod';
-import { TFunction } from 'i18next';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import OtpInput from '@/components/shared/OtpInput';
 
-const getLoginFormSchema = (t: TFunction<'translation', undefined>) =>
-  z.object({
-    username: z
-      .string({ required_error: t('username.required') })
-      .min(1, { message: t('common.required') })
-      .max(32, { message: t('login.username_too_long') }),
-    password: z
-      .string({ required_error: t('common.required') })
-      .min(1, { message: t('common.required') })
-      .max(32, { message: t('login.password_too_long') }),
-    totpValue: z.string().optional(),
-  });
+interface TotpInputProps {
+  totp: string;
+  setTotp: (value: string) => void;
+  onComplete: () => void;
+}
 
-export default getLoginFormSchema;
+const TotpInput: React.FC<TotpInputProps> = ({ totp, setTotp, onComplete }) => {
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <div className="mt-3 text-center font-bold">{t('login.enterMultiFactorCode')}</div>
+      <OtpInput
+        totp={totp}
+        setTotp={setTotp}
+        onComplete={onComplete}
+      />
+    </>
+  );
+};
+
+export default TotpInput;
