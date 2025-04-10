@@ -135,7 +135,7 @@ const ScrollableTable = <TData, TValue>({
     <>
       {isLoading && data?.length === 0 ? <LoadingIndicatorDialog isOpen={isLoading} /> : null}
 
-      {showSelectedCount ? (
+      {showSelectedCount && (
         <div
           id={selectedRowsMessageId}
           className="flex-1 text-sm text-muted-foreground"
@@ -149,18 +149,6 @@ const ScrollableTable = <TData, TValue>({
             <>&nbsp;</>
           )}
         </div>
-      ) : (
-        <>
-          {!tableIsUsedOnAppConfigPage && (
-            <div
-              id={selectedRowsMessageId}
-              className={`flex-1 text-sm ${textColorClassname}`}
-            >
-              &nbsp;
-            </div>
-          )}
-          <p />
-        </>
       )}
 
       <div
