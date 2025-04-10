@@ -24,6 +24,7 @@ import { HttpStatus } from '@nestjs/common';
 import AppConfigService from './appconfig.service';
 import { AppConfig } from './appconfig.schema';
 import { mockAppConfig, mockAppConfigModel, mockLdapGroup } from './appconfig.mock';
+import FilesystemService from '../filesystem/filesystem.service';
 
 jest.mock('fs');
 
@@ -187,6 +188,8 @@ describe('AppConfigService', () => {
       mockAppConfigModel.updateOne.mockResolvedValue({});
       const configName = 'Test';
       jest.spyOn(service, 'getAppConfigs').mockResolvedValue([mockAppConfig]);
+
+      FilesystemService.checkIfFileExistAndDelete = jest.fn().mockResolvedValue({});
 
       const result = await service.deleteConfig(configName, mockLdapGroup);
 

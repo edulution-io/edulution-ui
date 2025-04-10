@@ -20,6 +20,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
+import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import SseService from './sse.service';
 import { Public } from '../common/decorators/public.decorator';
@@ -41,7 +42,7 @@ class SseController {
 
   @Public()
   @Sse(`${APPS.CONFERENCES}/public`)
-  async publicSse(
+  async publicConferenceSse(
     @Query('meetingID') meetingID: string,
     @Res() res: Response,
   ): Promise<Observable<MessageEvent | null>> {
@@ -55,6 +56,12 @@ class SseController {
       { meetingID },
       SseController.name,
     );
+  }
+
+  @Public()
+  @Sse(AUTH_PATHS.AUTH_ENDPOINT)
+  publicLoginSse(@Query('sessionId') sessionId: string, @Res() res: Response): Observable<MessageEvent | null> {
+    return this.sseService.subscribe(sessionId, res);
   }
 }
 

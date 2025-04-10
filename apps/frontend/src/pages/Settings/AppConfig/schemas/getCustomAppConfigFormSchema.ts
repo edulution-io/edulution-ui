@@ -15,8 +15,10 @@ import { TFunction } from 'i18next';
 import APPS from '@libs/appconfig/constants/apps';
 import AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import slugify from '@libs/common/utils/slugify';
+import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 
-const forbiddenRoutes = [...Object.values(APPS), 'auth', 'edu-api'];
+const forbiddenRoutes = [...Object.values(APPS), AUTH_PATHS.AUTH_ENDPOINT, EDU_API_ROOT];
 
 const getCustomAppConfigFormSchema = (t: TFunction<'translation', undefined>, appConfigs: AppConfigDto[]) => {
   const existingAppNames = appConfigs.map((item) => item.name);

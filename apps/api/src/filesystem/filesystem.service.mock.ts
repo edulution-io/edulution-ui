@@ -10,24 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import useMedia from '@/hooks/useMedia';
-import React from 'react';
-import { FOOTER_ID } from '@libs/common/constants/pageElementIds';
-
-const Footer = () => {
-  const { isMobileView } = useMedia();
-
-  return (
-    <footer
-      id={FOOTER_ID}
-      className="fixed bottom-0 flex w-full justify-center pt-1"
-    >
-      <div className="bg-background-centered-shadow mx-auto w-fit rounded-t-lg  text-center">
-        <p className="overflow-hidden whitespace-nowrap text-muted">
-          &copy; {new Date().getFullYear()} edulution.io. {!isMobileView && 'All rights reserved.'} V{APP_VERSION}
-        </p>
-      </div>
-    </footer>
-  );
+const mockFilesystemService = {
+  fetchFileStream: jest.fn().mockResolvedValue({ stream: { pipe: jest.fn() } }),
+  ensureDirectoryExists: jest.fn(),
+  generateHashedFilename: jest.fn(),
+  saveFileStream: jest.fn(),
+  getOutputFilePath: jest.fn(),
+  retrieveAndSaveFile: jest.fn(),
+  deleteFile: jest.fn(),
+  fileLocation: jest.fn(),
+  checkIfFileExistAndDelete: jest.fn(),
+  readFile: jest.fn(),
+  writeFile: jest.fn(),
+  deleteDirectories: jest.fn(),
+  createReadStream: jest.fn(),
 };
-export default Footer;
+
+export default mockFilesystemService;
