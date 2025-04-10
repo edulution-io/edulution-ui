@@ -13,7 +13,7 @@
 import getForwardedAppRoutes from '@/router/routes/ForwardedAppRoutes';
 import getEmbeddedAppRoutes from '@/router/routes/EmbeddedAppRoutes';
 import getNativeAppRoutes from '@/router/routes/NativeAppRoutes';
-import { Outlet, Route } from 'react-router-dom';
+import { Navigate, Outlet, Route } from 'react-router-dom';
 import {
   LANGUAGE_PATH,
   MAILS_PATH,
@@ -36,58 +36,78 @@ import getFileSharingRoutes from '@/router/routes/FileSharingRoutes';
 import React from 'react';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import DashboardPage from '../../pages/Dashboard/DashboardPage';
+import useLdapGroups from '@/hooks/useLdapGroups';
+import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 
-const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
-  <>
-    {getForwardedAppRoutes(appConfigs)}
-    {getEmbeddedAppRoutes(appConfigs)}
-    {getNativeAppRoutes(appConfigs)}
+const getPrivateRoutes = (appConfigs: AppConfigDto[]) => {
+  const { isSuperAdmin } = useLdapGroups();
 
-    <Route
-      path="/"
-      element={<DashboardPage />}
-    />
+  return (
+    <>
+      {getForwardedAppRoutes(appConfigs)}
+      {getEmbeddedAppRoutes(appConfigs)}
+      {getNativeAppRoutes(appConfigs)}
 
-    <Route
-      path={USER_SETTINGS_PATH}
-      element={<Outlet />}
-    >
       <Route
-        path=""
-        element={<UserSettingsSecurityPage />}
+        path="/"
+        element={<DashboardPage />}
       />
-      <Route
-        path={SECURITY_PATH}
-        element={<UserSettingsSecurityPage />}
-      />
-      <Route
-        path={USER_DETAILS_PATH}
-        element={<UserSettingsDetailsPage />}
-      />
-      <Route
-        path={MAILS_PATH}
-        element={<UserSettingsMailsPage />}
-      />
-      <Route
-        path={LANGUAGE_PATH}
-        element={<LanguageSettingsPage />}
-      />
-      <Route
-        path={MOBILE_ACCESS_PATH}
-        element={<UserSettingsMobileAccess />}
-      />
-    </Route>
 
-    <Route
-      path={`${APPS.BULLETIN_BOARD}/:bulletinId`}
-      element={<BulletinBoardPage />}
-    />
+      <Route
+        path={USER_SETTINGS_PATH}
+        element={<Outlet />}
+      >
+        <Route
+          path=""
+          element={<UserSettingsSecurityPage />}
+        />
+        <Route
+          path={SECURITY_PATH}
+          element={<UserSettingsSecurityPage />}
+        />
+        <Route
+          path={USER_DETAILS_PATH}
+          element={<UserSettingsDetailsPage />}
+        />
+        <Route
+          path={MAILS_PATH}
+          element={<UserSettingsMailsPage />}
+        />
+        <Route
+          path={LANGUAGE_PATH}
+          element={<LanguageSettingsPage />}
+        />
+        <Route
+          path={MOBILE_ACCESS_PATH}
+          element={<UserSettingsMobileAccess />}
+        />
+      </Route>
 
-    {getSettingsRoutes()}
-    {getClassManagementRoutes()}
-    {getSurveyRoutes()}
-    {getFileSharingRoutes()}
-  </>
-);
+      <Route
+        path={`${APPS.BULLETIN_BOARD}/:bulletinId`}
+        element={<BulletinBoardPage />}
+      />
+
+      {isSuperAdmin ? (
+        getSettingsRoutes()
+      ) : (
+        <Route
+          key={SETTINGS_PATH}
+          path="*"
+          element={
+            <Navigate
+              to="/"
+              replace
+            />
+          }
+        />
+      )}
+
+      {getClassManagementRoutes()}
+      {getSurveyRoutes()}
+      {getFileSharingRoutes()}
+    </>
+  );
+};
 
 export default getPrivateRoutes;
