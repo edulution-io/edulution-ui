@@ -13,6 +13,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
+import APPLICATION_NAME from '@libs/common/constants/applicationName';
 
 interface PageTitleProps {
   title?: string;
@@ -26,7 +27,7 @@ const PageTitle = ({ title, translationId }: PageTitleProps) => {
     <Helmet>
       <title>
         {title ? `${title} - ` : ''}
-        {t(translationId)} - edulution.io
+        {t(translationId)} - {APPLICATION_NAME}
       </title>
     </Helmet>
   );

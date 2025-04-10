@@ -41,6 +41,7 @@ import BulletinBoardModule from '../bulletinboard/bulletinboard.module';
 import DockerModule from '../docker/docker.module';
 import VeyonModule from '../veyon/veyon.module';
 import GlobalSettingsModule from '../global-settings/global-settings.module';
+import HealthController from './health.controller';
 import SseModule from '../sse/sse.module';
 import WebDavModule from '../webdav/webdav.module';
 
@@ -135,6 +136,7 @@ const redisPort = +(process.env.REDIS_PORT ?? 6379);
 
     EventEmitterModule.forRoot(),
   ],
+  controllers: [HealthController],
   providers: [
     {
       provide: APP_INTERCEPTOR,

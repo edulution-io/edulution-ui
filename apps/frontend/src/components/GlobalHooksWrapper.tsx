@@ -18,6 +18,7 @@ import useSseStore from '@/store/useSseStore';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileOperationToast from '@/hooks/useFileOperationToast';
+import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 import useAppConfigsStore from '../pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '../store/UserStore/UserStore';
 import useLogout from '../hooks/useLogout';
@@ -27,6 +28,7 @@ import useTokenEventListeners from '../hooks/useTokenEventListener';
 const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const auth = useAuth();
   const { getAppConfigs } = useAppConfigsStore();
+  const { getIsEduApiHealthy } = useEduApiStore();
   const { isAuthenticated, eduApiToken, setEduApiToken, user, getWebdavKey } = useUserStore();
   const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
   const { filesharingProgress } = useLessonStore();
@@ -53,10 +55,12 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
 
   useEffect(() => {
     const handleGetAppConfigs = async () => {
-      const isApiResponding = await getAppConfigs();
-      if (!isApiResponding) {
-        void handleLogout();
+      const isApiResponding = await getIsEduApiHealthy();
+      if (isApiResponding) {
+        void getAppConfigs();
+        return;
       }
+      void handleLogout();
     };
 
     if (isAuthenticated) {

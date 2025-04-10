@@ -27,13 +27,13 @@ import GroupDialog from '@/pages/ClassManagement/components/GroupDialog/GroupDia
 import { FaAddressCard } from 'react-icons/fa';
 import getUniqueValues from '@libs/lmnApi/utils/getUniqueValues';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import { FILTER_BAR_ID } from '@libs/classManagement/constants/pageElementIds';
 import { UseFormReturn } from 'react-hook-form';
 import GroupForm from '@libs/groups/types/groupForm';
 import GroupColumn from '@libs/groups/types/groupColumn';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import SharingFilesFailedDialogBody from '@/pages/ClassManagement/components/Dialogs/SharingFilesFailedDialogBody';
+import PageLayout from '@/components/structure/layout/PageLayout';
 
 const LessonPage = () => {
   const {
@@ -179,11 +179,8 @@ const LessonPage = () => {
   }, [filesharingProgress]);
 
   return (
-    <>
-      <div
-        className="my-2 flex flex-col gap-2 md:flex-row"
-        id={FILTER_BAR_ID}
-      >
+    <PageLayout>
+      <div className="my-2 flex flex-none flex-col gap-2 md:flex-row">
         <LoadingIndicatorDialog isOpen={isPageLoading || isLoading} />
         <UserProjectOrSchoolClassSearch />
         {sessionOptions && (
@@ -220,7 +217,7 @@ const LessonPage = () => {
         ) : null}
       </div>
 
-      <div>{groupNameParams || member.length ? <UserArea fetchData={fetchData} /> : <QuickAccess />}</div>
+      {groupNameParams || member.length ? <UserArea fetchData={fetchData} /> : <QuickAccess />}
       {openDialogType === UserGroups.Sessions && <GroupDialog item={sessionToSave} />}
 
       {filesharingProgress && filesharingProgress.failedPaths && (
@@ -239,7 +236,7 @@ const LessonPage = () => {
           }
         />
       )}
-    </>
+    </PageLayout>
   );
 };
 

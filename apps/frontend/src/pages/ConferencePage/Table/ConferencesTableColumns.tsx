@@ -223,6 +223,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
   },
   {
     id: CONFERENCES_TABLE_COLUMNS.CONFERENCE_JOINED_ATTENDEES,
+    size: 100,
     header: ({ column }) => <SortableHeader<ConferenceDto, unknown> column={column} />,
     meta: {
       translationId: 'conferences.joinedAttendees',
@@ -232,6 +233,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
   },
   {
     id: CONFERENCES_TABLE_COLUMNS.CONFERENCE_ACTION_BUTTON,
+    size: 130,
     header: ({ column }) => <SortableHeader<ConferenceDto, unknown> column={column} />,
     meta: {
       translationId: 'conferences.action',

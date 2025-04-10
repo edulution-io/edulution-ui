@@ -26,6 +26,7 @@ import ConferenceDto from '@libs/conferences/types/conference.dto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import delay from '@libs/common/utils/delay';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import PageLayout from '@/components/structure/layout/PageLayout';
 
 const PublicConferencePage = (): React.ReactNode => {
   const { t } = useTranslation();
@@ -162,7 +163,7 @@ const PublicConferencePage = (): React.ReactNode => {
   }
 
   return (
-    <div className="h-full overflow-y-auto scrollbar-thin">
+    <PageLayout>
       <div className="mx-auto w-[90%] md:w-[400px]">
         <div>{t('conferences.publicConference')}</div>
         <h3 className="mt-3">{publicConference.name}</h3>
@@ -184,7 +185,7 @@ const PublicConferencePage = (): React.ReactNode => {
           />
         )}
       </div>
-    </div>
+    </PageLayout>
   );
 };
 

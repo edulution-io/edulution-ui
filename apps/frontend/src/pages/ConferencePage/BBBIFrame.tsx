@@ -13,13 +13,13 @@
 import React, { useEffect, useState } from 'react';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import { createPortal } from 'react-dom';
-import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
+import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 import { useTranslation } from 'react-i18next';
 import testCookieAccess from '@libs/common/utils/testCookieAccess';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { Button } from '@/components/shared/Button';
-import OpenInNewTabButton from '@/components/framing/ResizableWindow/Buttons/OpenInNewTabButton';
+import OpenInNewTabButton from '@/components/structure/framing/ResizableWindow/Buttons/OpenInNewTabButton';
 
 const BBBIFrame = () => {
   const { t } = useTranslation();

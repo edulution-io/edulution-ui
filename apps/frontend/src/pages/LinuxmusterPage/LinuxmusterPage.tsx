@@ -14,10 +14,10 @@ import React from 'react';
 import getLoginScript from '@/pages/LinuxmusterPage/scripts/login';
 import logoutScript from '@/pages/LinuxmusterPage/scripts/logout';
 import APPS from '@libs/appconfig/constants/apps';
-import NativeIframeWithScripts from '@/components/framing/Native/NativeIframeWithScripts';
+import NativeFrameScriptInjector from '@/components/structure/framing/Native/NativeFrameScriptInjector';
 
 const LinuxmusterPage: React.FC = () => (
-  <NativeIframeWithScripts
+  <NativeFrameScriptInjector
     appName={APPS.LINUXMUSTER}
     getLoginScript={getLoginScript}
     logoutScript={logoutScript}

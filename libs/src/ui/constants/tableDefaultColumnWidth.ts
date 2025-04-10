@@ -10,5 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const SURVEYS_PAGE_TABLE_HEADER_ID = 'surveys-page-table-header';
-export default SURVEYS_PAGE_TABLE_HEADER_ID;
+const TABLE_DEFAULT_COLUMN_WIDTH = 150;
+
+export default TABLE_DEFAULT_COLUMN_WIDTH;
