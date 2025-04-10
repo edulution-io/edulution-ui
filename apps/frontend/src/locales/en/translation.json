@@ -1129,6 +1129,10 @@
     "title": "WHITEBOARD",
     "sidebar": "Whiteboard"
   },
+  "whiteboard-collaboration": {
+    "title": "WHITEBOARD",
+    "sidebar": "Collaborative Whiteboard"
+  },
   "table": {
     "noDataAvailable": "No data available"
   },
