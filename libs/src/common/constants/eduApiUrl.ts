@@ -10,20 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { z } from 'zod';
-import { TFunction } from 'i18next';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 
-const getLoginFormSchema = (t: TFunction<'translation', undefined>) =>
-  z.object({
-    username: z
-      .string({ required_error: t('username.required') })
-      .min(1, { message: t('common.required') })
-      .max(32, { message: t('login.username_too_long') }),
-    password: z
-      .string({ required_error: t('common.required') })
-      .min(1, { message: t('common.required') })
-      .max(32, { message: t('login.password_too_long') }),
-    totpValue: z.string().optional(),
-  });
+const EDU_API_URL = `${window.location.origin}/${EDU_API_ROOT}`;
 
-export default getLoginFormSchema;
+export default EDU_API_URL;

@@ -10,20 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { z } from 'zod';
-import { TFunction } from 'i18next';
+const mockFilesystemService = {
+  fetchFileStream: jest.fn().mockResolvedValue({ stream: { pipe: jest.fn() } }),
+  ensureDirectoryExists: jest.fn(),
+  generateHashedFilename: jest.fn(),
+  saveFileStream: jest.fn(),
+  getOutputFilePath: jest.fn(),
+  retrieveAndSaveFile: jest.fn(),
+  deleteFile: jest.fn(),
+  fileLocation: jest.fn(),
+  checkIfFileExistAndDelete: jest.fn(),
+  readFile: jest.fn(),
+  writeFile: jest.fn(),
+  deleteDirectories: jest.fn(),
+  createReadStream: jest.fn(),
+};
 
-const getLoginFormSchema = (t: TFunction<'translation', undefined>) =>
-  z.object({
-    username: z
-      .string({ required_error: t('username.required') })
-      .min(1, { message: t('common.required') })
-      .max(32, { message: t('login.username_too_long') }),
-    password: z
-      .string({ required_error: t('common.required') })
-      .min(1, { message: t('common.required') })
-      .max(32, { message: t('login.password_too_long') }),
-    totpValue: z.string().optional(),
-  });
-
-export default getLoginFormSchema;
+export default mockFilesystemService;

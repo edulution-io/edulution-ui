@@ -10,20 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { z } from 'zod';
-import { TFunction } from 'i18next';
+import APPS from '@libs/appconfig/constants/apps';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import { IMAGES } from '@libs/survey/constants/surveys-endpoint';
 
-const getLoginFormSchema = (t: TFunction<'translation', undefined>) =>
-  z.object({
-    username: z
-      .string({ required_error: t('username.required') })
-      .min(1, { message: t('common.required') })
-      .max(32, { message: t('login.username_too_long') }),
-    password: z
-      .string({ required_error: t('common.required') })
-      .min(1, { message: t('common.required') })
-      .max(32, { message: t('login.password_too_long') }),
-    totpValue: z.string().optional(),
-  });
+const SURVEYS_IMAGES_PATH = `${APPS_FILES_PATH}/${APPS.SURVEYS}/${IMAGES}`;
 
-export default getLoginFormSchema;
+export default SURVEYS_IMAGES_PATH;

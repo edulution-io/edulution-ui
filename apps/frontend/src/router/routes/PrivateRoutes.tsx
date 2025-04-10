@@ -35,9 +35,9 @@ import getSurveyRoutes from '@/router/routes/SurveyRoutes';
 import getFileSharingRoutes from '@/router/routes/FileSharingRoutes';
 import React from 'react';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import DashboardPage from '../../pages/Dashboard/DashboardPage';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
+import DashboardPage from '../../pages/Dashboard/DashboardPage';
 
 const getPrivateRoutes = (appConfigs: AppConfigDto[]) => {
   const { isSuperAdmin } = useLdapGroups();

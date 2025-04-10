@@ -55,7 +55,12 @@ const MobileFileAccessSetupBox: React.FC = () => {
           </AccordionTrigger>
           <AccordionContent className="space-y-2 px-1">
             <div className="mt-2 flex flex-col items-center justify-center gap-4">
-              {!isMobileView && <QRCodeDisplay value={EDU_APP_APPSTORE_URL} />}
+              {!isMobileView && (
+                <QRCodeDisplay
+                  value={EDU_APP_APPSTORE_URL}
+                  className="m-14"
+                />
+              )}
 
               <NavLink
                 to={EDU_APP_APPSTORE_URL}

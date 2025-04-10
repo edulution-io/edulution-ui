@@ -10,31 +10,25 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import {
-  createWriteStream,
-  existsSync,
-  mkdirSync,
-  promises as fsPromises,
-  readFileSync,
-  writeFileSync,
-  unlinkSync,
-} from 'fs';
-import { dirname, extname, join } from 'path';
-import { createHash } from 'crypto';
-import { pipeline, Readable } from 'stream';
-import { promisify } from 'util';
-import HashAlgorithm from '@libs/common/constants/hashAlgorithm';
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { ResponseType } from '@libs/common/types/http-methods';
-import { firstValueFrom, from } from 'rxjs';
-import CustomHttpException from '@libs/error/CustomHttpException';
-import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
-import CustomFile from '@libs/filesharing/types/customFile';
-import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+/* eslint-disable @typescript-eslint/class-methods-use-this */
+import { createWriteStream, createReadStream, promises as fsPromises } from 'fs';
 import process from 'node:process';
+import { promisify } from 'util';
+import { createHash } from 'crypto';
+import { firstValueFrom, from } from 'rxjs';
+import { dirname, extname, join } from 'path';
+import { pipeline, Readable } from 'stream';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { ResponseType } from '@libs/common/types/http-methods';
+import HashAlgorithm from '@libs/common/constants/hashAlgorithm';
+import CustomFile from '@libs/filesharing/types/customFile';
+import CustomHttpException from '@libs/error/CustomHttpException';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
+import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
 import UsersService from '../users/users.service';
 
 const pipelineAsync = promisify(pipeline);
@@ -58,9 +52,14 @@ class FilesystemService {
     }
   }
 
-  static ensureDirectoryExists(directory: string): void {
-    if (!existsSync(directory)) {
-      mkdirSync(directory, { recursive: true });
+  async ensureDirectoryExists(directory: string): Promise<void> {
+    const exists = await FilesystemService.checkIfFileExist(directory);
+    if (!exists) {
+      try {
+        await fsPromises.mkdir(directory, { recursive: true });
+      } catch (error) {
+        throw new CustomHttpException(CommonErrorMessages.DIRECTORY_CREATION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
     }
   }
 
@@ -88,9 +87,20 @@ class FilesystemService {
     try {
       const response = await axios.get<ArrayBuffer>(url, { responseType: 'arraybuffer' });
       const filePath = join(PUBLIC_DOWNLOADS_PATH, filename);
-      mkdirSync(dirname(filePath), { recursive: true });
-      writeFileSync(filePath, new Uint8Array(response.data));
-      const fileBuffer = readFileSync(filePath);
+
+      try {
+        await fsPromises.mkdir(dirname(filePath), { recursive: true });
+      } catch (error) {
+        throw new CustomHttpException(CommonErrorMessages.DIRECTORY_CREATION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+
+      try {
+        await fsPromises.writeFile(filePath, new Uint8Array(response.data));
+      } catch (error) {
+        throw new CustomHttpException(CommonErrorMessages.FILE_WRITING_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+
+      const fileBuffer = await fsPromises.readFile(filePath);
       const mimetype: string = (response.headers['content-type'] as string) || 'application/octet-stream';
 
       return {
@@ -132,12 +142,12 @@ class FilesystemService {
     client: AxiosInstance,
   ): Promise<WebdavStatusResponse> {
     const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
-    FilesystemService.ensureDirectoryExists(PUBLIC_DOWNLOADS_PATH);
+    await this.ensureDirectoryExists(PUBLIC_DOWNLOADS_PATH);
 
     try {
       const user = await this.userService.findOne(username);
       if (!user) {
-        return { success: false, status: HttpStatus.NOT_FOUND } as WebdavStatusResponse;
+        return { success: false, status: HttpStatus.INTERNAL_SERVER_ERROR } as WebdavStatusResponse;
       }
       const responseStream = await FilesystemService.fetchFileStream(url, client);
       const hashedFilename = FilesystemService.generateHashedFilename(filePath, filename);
@@ -154,11 +164,49 @@ class FilesystemService {
     }
   }
 
-  static checkIfFileExistAndDelete(filePath: string) {
-    if (existsSync(filePath)) {
-      unlinkSync(filePath);
-      Logger.log(`${filePath} deleted.`, FilesystemService.name);
+  static async checkIfFileExist(filePath: string): Promise<boolean> {
+    try {
+      await fsPromises.access(filePath);
+    } catch (error) {
+      return false;
     }
+    return true;
+  }
+
+  static async throwErrorIfFileNotExists(filePath: string): Promise<void> {
+    try {
+      await fsPromises.access(filePath);
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  static async checkIfFileExistAndDelete(filePath: string) {
+    await FilesystemService.throwErrorIfFileNotExists(filePath);
+    try {
+      await fsPromises.unlink(filePath);
+      Logger.log(`${filePath} deleted.`, FilesystemService.name);
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async deleteDirectories(directories: string[]): Promise<void> {
+    try {
+      const deletionPromises = directories.map((directory) => fsPromises.rm(directory, { recursive: true }));
+      await Promise.all(deletionPromises);
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async createReadStream(filePath: string): Promise<Readable> {
+    try {
+      await fsPromises.access(filePath);
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return createReadStream(filePath);
   }
 }
 
