@@ -17,6 +17,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import useMedia from '@/hooks/useMedia';
 import Feed from '@/pages/Dashboard/Feed/Feed';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import APPLICATION_NAME from '@libs/common/constants/applicationName';
 import MobileFileAccessCard from './MobileFileAccess/MobileFileAccessCard';
 import AccountInformation from './AccountInformation';
 import QuotaCard from './QuotaCard';
@@ -70,7 +71,7 @@ const DashboardPage: React.FC = () => {
             })}
           </h2>
         ) : null}
-        <p className="mt-4 text-background">{t('content')}</p>
+        <p className="mt-4 text-background">{t('content', { applicationName: APPLICATION_NAME })}</p>
       </div>
 
       <div className="md:my-17 my-10 flex flex-col-reverse gap-8 md:flex-row">
