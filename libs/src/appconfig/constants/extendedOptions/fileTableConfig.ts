@@ -10,15 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const AppConfigSectionsKeys = {
-  general: 'general',
-  fileSharing: 'fileSharing',
-  onlyOffice: 'onlyOffice',
-  imapMailFeed: 'imapMailFeed',
-  bulletinBoard: 'bulletinBoard',
-  veyon: 'veyon',
-  docker: 'docker',
-  files: 'files',
-} as const;
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 
-export default AppConfigSectionsKeys;
+const EMBEDDED_PAGE_EXTENDED_OPTIONS_TABLE: AppConfigExtendedOption[] = [
+  {
+    name: ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT,
+    description: 'fileTable.description',
+    title: 'fileTable.title',
+    type: ExtendedOptionField.table,
+    value: '',
+    width: 'full',
+  },
+];
+
+export default EMBEDDED_PAGE_EXTENDED_OPTIONS_TABLE;

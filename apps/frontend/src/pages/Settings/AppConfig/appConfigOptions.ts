@@ -34,6 +34,7 @@ import FILE_SHARING_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOpt
 import DOCKER_CONTAINER_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/dockerContainer';
 import CLASS_MANAGEMENT_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/classMgmt';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
+import EMBEDDED_PAGE_EXTENDED_OPTIONS_TABLE from '@libs/appconfig/constants/extendedOptions/fileTableConfig';
 
 const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -123,6 +124,9 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     icon: NativeIcon,
     options: [],
     isNativeApp: false,
+    extendedOptions: {
+      [AppConfigSectionsKeys.files]: EMBEDDED_PAGE_EXTENDED_OPTIONS_TABLE,
+    },
   },
 ];
 

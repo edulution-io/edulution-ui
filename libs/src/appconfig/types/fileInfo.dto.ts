@@ -10,15 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const AppConfigSectionsKeys = {
-  general: 'general',
-  fileSharing: 'fileSharing',
-  onlyOffice: 'onlyOffice',
-  imapMailFeed: 'imapMailFeed',
-  bulletinBoard: 'bulletinBoard',
-  veyon: 'veyon',
-  docker: 'docker',
-  files: 'files',
-} as const;
+import { IsNumber, IsString } from 'class-validator';
 
-export default AppConfigSectionsKeys;
+class FileInfoDto {
+  @IsString()
+  filename: string;
+
+  @IsNumber()
+  size: number;
+
+  @IsString()
+  type: string;
+
+  @IsString()
+  lastModified: string;
+}
+
+export default FileInfoDto;

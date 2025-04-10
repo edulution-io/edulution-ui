@@ -25,6 +25,7 @@ import AppConfigService from './appconfig.service';
 import { AppConfig } from './appconfig.schema';
 import { mockAppConfig, mockAppConfigModel, mockLdapGroup } from './appconfig.mock';
 import FilesystemService from '../filesystem/filesystem.service';
+import mockFilesystemService from '../filesystem/filesystem.service.mock';
 
 jest.mock('fs');
 
@@ -53,6 +54,7 @@ describe('AppConfigService', () => {
           useValue: mockConnection,
         },
         { provide: EventEmitter2, useValue: { emit: jest.fn() } },
+        { provide: FilesystemService, useValue: mockFilesystemService },
       ],
     }).compile();
 

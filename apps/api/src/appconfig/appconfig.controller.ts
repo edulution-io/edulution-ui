@@ -37,12 +37,16 @@ import AppConfigService from './appconfig.service';
 import GetCurrentUserGroups from '../common/decorators/getUserGroups.decorator';
 import AppConfigGuard from './appconfig.guard';
 import { createAttachmentUploadOptions } from '../common/multer.utilities';
+import FilesystemService from '../filesystem/filesystem.service';
 
 @ApiTags(EDU_API_CONFIG_ENDPOINTS.ROOT)
 @ApiBearerAuth()
 @Controller(EDU_API_CONFIG_ENDPOINTS.ROOT)
 class AppConfigController {
-  constructor(private readonly appConfigService: AppConfigService) {}
+  constructor(
+    private readonly appConfigService: AppConfigService,
+    private readonly filesystemService: FilesystemService,
+  ) {}
 
   @Post()
   @UseGuards(AppConfigGuard)
@@ -105,9 +109,15 @@ class AppConfigController {
     return res.status(200).json(file.filename);
   }
 
-  @Get('files/:name/:filename')
+  @Get('file/:name/:filename')
   serveFiles(@Param('name') name: string, @Param('filename') filename: string, @Res() res: Response) {
     return this.appConfigService.serveFiles(name, filename, res);
+  }
+
+  @Get('files/:path(.*)')
+  @UseGuards(AppConfigGuard)
+  getFiles(@Param('path') path: string) {
+    return this.filesystemService.getFilesInfo(path);
   }
 }
 

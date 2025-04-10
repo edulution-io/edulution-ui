@@ -784,6 +784,10 @@
           "filterPlaceHolderText": "Suche nach Proxy-Name",
           "invalidCidrFormat": "Ungültige CIDR-Notation",
           "invalidUrlFormat": "Ungültige URL"
+        },
+        "files": {
+          "title": "Dateien",
+          "description": "Hier können die Dateien verwaltet werden, die in der App angezeigt werden."
         }
       },
       "update": {

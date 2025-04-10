@@ -10,15 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const AppConfigSectionsKeys = {
-  general: 'general',
-  fileSharing: 'fileSharing',
-  onlyOffice: 'onlyOffice',
-  imapMailFeed: 'imapMailFeed',
-  bulletinBoard: 'bulletinBoard',
-  veyon: 'veyon',
-  docker: 'docker',
-  files: 'files',
-} as const;
+import { type RowSelectionState } from '@tanstack/react-table';
+import type AppConfigTable from '@libs/bulletinBoard/types/appConfigTable';
+import type FileInfoDto from './fileInfo.dto';
 
-export default AppConfigSectionsKeys;
+export interface FileTableStore extends AppConfigTable<FileInfoDto> {
+  selectedRows: RowSelectionState;
+  setSelectedRows: (selectedRows: RowSelectionState) => void;
+  files: Record<string, string>;
+  isLoading: boolean;
+  error: string | null;
+  reset: () => void;
+}

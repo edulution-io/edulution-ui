@@ -29,6 +29,8 @@ import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMes
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
+import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import UsersService from '../users/users.service';
 
 const pipelineAsync = promisify(pipeline);
@@ -207,6 +209,38 @@ class FilesystemService {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     return createReadStream(filePath);
+  }
+
+  async getFilesInfo(path: string): Promise<FileInfoDto[]> {
+    try {
+      const folderPath = `${APPS_FILES_PATH}/${path}`;
+      const files = await fsPromises.readdir(folderPath);
+
+      const fileDataPromises = files.map(async (fileName) => {
+        const filePath = join(folderPath, fileName);
+        const stat = await fsPromises.stat(filePath);
+
+        let type: string;
+        if (stat.isFile()) {
+          type = extname(fileName).toLowerCase().split('.').pop() || 'file';
+        } else if (stat.isDirectory()) {
+          type = 'directory';
+        } else {
+          type = 'other';
+        }
+
+        return {
+          filename: fileName,
+          size: stat.size,
+          type,
+          lastModified: stat.mtime.toISOString(),
+        };
+      });
+
+      return await Promise.all(fileDataPromises);
+    } catch (error) {
+      return [];
+    }
   }
 }
 

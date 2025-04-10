@@ -782,6 +782,10 @@
           "filterPlaceHolderText": "Search for proxy",
           "invalidCidrFormat": "Invalid CIDR notation",
           "invalidUrlFormat": "Invalid URL"
+        },
+        "files": {
+          "title": "Files",
+          "description": "The files that are displayed in the app can be managed here."
         }
       },
       "update": {

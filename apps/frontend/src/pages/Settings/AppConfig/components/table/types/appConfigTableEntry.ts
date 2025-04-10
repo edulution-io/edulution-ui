@@ -19,7 +19,7 @@ import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeys
 interface AppConfigTableEntry<DataType, StoreType extends AppConfigTable<DataType>> {
   columns: ColumnDef<DataType>[];
   useStore: UseBoundStore<StoreApi<StoreType>>;
-  dialogBody: React.JSX.Element;
+  dialogBody: React.JSX.Element | null;
   showAddButton: boolean;
   filterKey: string;
   filterPlaceHolderText: string;

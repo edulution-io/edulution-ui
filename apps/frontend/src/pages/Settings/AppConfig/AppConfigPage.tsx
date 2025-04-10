@@ -217,10 +217,17 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
               ))}
             {matchingConfig.extendedOptions &&
               ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT in matchingConfig.extendedOptions && (
-                <EmbeddedPageEditor
-                  name={matchingConfig.name}
-                  form={form as UseFormReturn<EmbeddedPageEditorForm>}
-                />
+                <>
+                  <EmbeddedPageEditor
+                    name={matchingConfig.name}
+                    form={form as UseFormReturn<EmbeddedPageEditorForm>}
+                  />
+                  <ExtendedOptionsForm
+                    extendedOptions={APP_CONFIG_OPTIONS.find((itm) => itm.id === APPS.EMBEDDED)?.extendedOptions}
+                    control={control}
+                    settingLocation={settingLocation}
+                  />
+                </>
               )}
             {APP_CONFIG_OPTION_KEYS.PROXYCONFIG in matchingConfig.options && (
               <ProxyConfigForm

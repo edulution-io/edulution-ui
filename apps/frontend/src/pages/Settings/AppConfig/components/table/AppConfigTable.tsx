@@ -116,6 +116,20 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
             />
           );
         }
+        case ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT: {
+          return (
+            <ScrollableTable
+              columns={columns}
+              data={tableContentData as ContainerInfo[]}
+              filterKey={filterKey}
+              filterPlaceHolderText={filterPlaceHolderText}
+              applicationName={applicationName}
+              enableRowSelection={false}
+              tableIsUsedOnAppConfigPage
+              initialColumnVisibility={initialColumnVisibility}
+            />
+          );
+        }
         case ExtendedOptionKeys.VEYON_PROXYS: {
           return (
             <ScrollableTable
