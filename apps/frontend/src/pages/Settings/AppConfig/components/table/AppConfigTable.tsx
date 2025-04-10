@@ -25,6 +25,7 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import type TApps from '@libs/appconfig/types/appsType';
 import useMedia from '@/hooks/useMedia';
 import { VisibilityState } from '@tanstack/react-table';
+import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 
 interface AppConfigTableProps {
   applicationName: string;
@@ -120,7 +121,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
           return (
             <ScrollableTable
               columns={columns}
-              data={tableContentData as ContainerInfo[]}
+              data={tableContentData as FileInfoDto[]}
               filterKey={filterKey}
               filterPlaceHolderText={filterPlaceHolderText}
               applicationName={applicationName}
