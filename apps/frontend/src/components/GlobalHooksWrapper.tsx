@@ -16,10 +16,8 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import type UserDto from '@libs/user/types/user.dto';
 import useSseStore from '@/store/useSseStore';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
-import { toast } from 'sonner';
-import ProgressBox from '@/components/ui/ProgressBox';
-import { t } from 'i18next';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useFileOperationToast from '@/hooks/useFileOperationToast';
 import useAppConfigsStore from '../pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '../store/UserStore/UserStore';
 import useLogout from '../hooks/useLogout';
@@ -79,40 +77,7 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
 
   useTokenEventListeners();
 
-  useEffect(() => {
-    const progress = fileOperationProgress ?? filesharingProgress;
-    if (!progress) return;
-
-    const percent = progress.percent ?? 0;
-    const failedCount = progress.failedPaths?.length ?? 0;
-    const toasterData = {
-      percent,
-      title: t(progress.title),
-      id: progress.currentFilePath,
-      description: t(progress.description, {
-        filename: progress.currentFilePath.split('/').pop(),
-        studentName: progress.studentName,
-      }),
-      statusDescription: progress.statusDescription,
-      failed: failedCount,
-      processed: progress.processed,
-      total: progress.total,
-    };
-
-    let toastDuration: number;
-    if (toasterData.failed > 0) {
-      toastDuration = Infinity;
-    } else if (percent >= 100) {
-      toastDuration = 5000;
-    } else {
-      toastDuration = Infinity;
-    }
-
-    toast(<ProgressBox data={toasterData} />, {
-      id: toasterData.title,
-      duration: toastDuration,
-    });
-  }, [filesharingProgress, fileOperationProgress]);
+  useFileOperationToast(fileOperationProgress, filesharingProgress);
 
   return children;
 };

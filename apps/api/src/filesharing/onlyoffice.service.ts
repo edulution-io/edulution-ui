@@ -88,7 +88,7 @@ class OnlyofficeService implements OnModuleInit {
     }
 
     await uploadFile(username, cleanedPath, file, '');
-    await FilesystemService.deleteFile(uniqueFileName);
+    await FilesystemService.deleteFiles([uniqueFileName]);
 
     return res.status(HttpStatus.OK).json({ error: 0 });
   }

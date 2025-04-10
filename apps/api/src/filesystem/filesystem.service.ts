@@ -121,18 +121,23 @@ class FilesystemService {
     }
   }
 
-  static async deleteFile(fileName: string): Promise<void> {
-    const filePath = join(PUBLIC_DOWNLOADS_PATH, fileName);
-    try {
-      await fsPromises.unlink(filePath);
-      Logger.log(`File deleted at ${filePath}`);
-    } catch (error) {
-      throw new CustomHttpException(
-        FileSharingErrorMessage.DeleteFromServerFailed,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        filePath,
-      );
-    }
+  static async deleteFiles(fileNames: string[]): Promise<void> {
+    await Promise.all(
+      fileNames.map(async (fileName) => {
+        const filePath = join(PUBLIC_DOWNLOADS_PATH, fileName);
+
+        try {
+          await fsPromises.unlink(filePath);
+          Logger.log(`File deleted at ${filePath}`);
+        } catch (error) {
+          throw new CustomHttpException(
+            FileSharingErrorMessage.DeleteFromServerFailed,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            filePath,
+          );
+        }
+      }),
+    );
   }
 
   async fileLocation(
