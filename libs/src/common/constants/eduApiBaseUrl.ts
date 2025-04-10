@@ -10,11 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import axios from 'axios';
-import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
+const EDU_BASE_URL = window.location.origin;
 
-const lmnApi = axios.create({
-  baseURL: `${EDU_BASE_URL}/api/v1/`,
-});
-
-export default lmnApi;
+export default EDU_BASE_URL;
