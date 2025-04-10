@@ -104,6 +104,11 @@ class AppConfigController {
   uploadEmbeddedPageFiles(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
     return res.status(200).json(file.filename);
   }
+
+  @Get('files/:name/:filename')
+  serveFiles(@Param('name') name: string, @Param('filename') filename: string, @Res() res: Response) {
+    return this.appConfigService.serveFiles(name, filename, res);
+  }
 }
 
 export default AppConfigController;
