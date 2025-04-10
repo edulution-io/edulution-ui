@@ -10,26 +10,29 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { create } from 'zustand';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import OtpInput from '@/components/shared/OtpInput';
 
-type SseStore = {
-  eventSource: EventSource | null;
-  setEventSource: (eduApiToken: string) => void;
-  reset: () => void;
+interface TotpInputProps {
+  totp: string;
+  setTotp: (value: string) => void;
+  onComplete: () => void;
+}
+
+const TotpInput: React.FC<TotpInputProps> = ({ totp, setTotp, onComplete }) => {
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <div className="mt-3 text-center font-bold">{t('login.enterMultiFactorCode')}</div>
+      <OtpInput
+        totp={totp}
+        setTotp={setTotp}
+        onComplete={onComplete}
+      />
+    </>
+  );
 };
 
-const useSseStore = create<SseStore>((set, get) => ({
-  eventSource: null,
-  setEventSource: (eduApiToken) =>
-    set({
-      eventSource: new EventSource(`/${EDU_API_ROOT}/${SSE_EDU_API_ENDPOINTS.SSE}?token=${eduApiToken}`),
-    }),
-  reset: () => {
-    get().eventSource?.close();
-    set({ eventSource: null });
-  },
-}));
-
-export default useSseStore;
+export default TotpInput;

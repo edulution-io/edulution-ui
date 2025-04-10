@@ -41,7 +41,6 @@ interface DataTableProps<TData, TValue> {
   getRowId?: (originalRow: TData) => string;
   applicationName: string;
   initialSorting?: { id: string; desc: boolean }[];
-  tableIsUsedOnAppConfigPage?: boolean;
   enableRowSelection?: boolean | ((row: Row<TData>) => boolean) | undefined;
   initialColumnVisibility?: VisibilityState;
   textColorClassname?: string;
@@ -62,7 +61,6 @@ const ScrollableTable = <TData, TValue>({
   applicationName,
   enableRowSelection,
   initialSorting,
-  tableIsUsedOnAppConfigPage = false,
   textColorClassname = 'text-background',
   showHeader = true,
   showSelectedCount = true,
@@ -112,7 +110,7 @@ const ScrollableTable = <TData, TValue>({
     <>
       {isLoading && data?.length === 0 ? <LoadingIndicatorDialog isOpen={isLoading} /> : null}
 
-      {showSelectedCount ? (
+      {showSelectedCount && (
         <div className="text-sm text-muted-foreground">
           {selectedRowsCount > 0 ? (
             t(`${applicationName}.${filteredRowCount === 1 ? 'rowSelected' : 'rowsSelected'}`, {
@@ -123,11 +121,6 @@ const ScrollableTable = <TData, TValue>({
             <>&nbsp;</>
           )}
         </div>
-      ) : (
-        <>
-          {!tableIsUsedOnAppConfigPage && <div className={`text-sm ${textColorClassname}`}>&nbsp;</div>}
-          <p />
-        </>
       )}
 
       <div className="h-full w-full flex-1 overflow-auto scrollbar-thin">
@@ -140,8 +133,12 @@ const ScrollableTable = <TData, TValue>({
                 onChange={(event) => table.getColumn(filterKey)?.setFilterValue(event.target.value)}
                 className={`max-w-xl text-secondary ${isDialog ? 'bg-muted' : 'bg-accent'}`}
               />
-
-              <SelectColumnsDropdown table={table} />
+              {table.getAllColumns().length > 1 && (
+                <SelectColumnsDropdown
+                  table={table}
+                  isDialog={isDialog}
+                />
+              )}
             </div>
           )}
           <Table>

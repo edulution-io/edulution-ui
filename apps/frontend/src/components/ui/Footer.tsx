@@ -18,7 +18,8 @@ const Footer = () => {
 
   return (
     <footer className="bg-background-centered-shadow flex h-[22px] w-full justify-center overflow-hidden whitespace-nowrap text-muted">
-      &copy; {new Date().getFullYear()} edulution.io - {!isMobileView && 'All rights reserved.'} V{APP_VERSION}
+      &copy; {new Date().getFullYear()} {window.document.title}. {!isMobileView && 'All rights reserved.'} V
+      {APP_VERSION}
     </footer>
   );
 };
