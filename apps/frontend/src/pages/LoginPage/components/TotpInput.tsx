@@ -10,24 +10,29 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import useMedia from '@/hooks/useMedia';
 import React from 'react';
-import { FOOTER_ID } from '@libs/common/constants/pageElementIds';
+import { useTranslation } from 'react-i18next';
+import OtpInput from '@/components/shared/OtpInput';
 
-const Footer = () => {
-  const { isMobileView } = useMedia();
+interface TotpInputProps {
+  totp: string;
+  setTotp: (value: string) => void;
+  onComplete: () => void;
+}
+
+const TotpInput: React.FC<TotpInputProps> = ({ totp, setTotp, onComplete }) => {
+  const { t } = useTranslation();
 
   return (
-    <footer
-      id={FOOTER_ID}
-      className="fixed bottom-0 flex w-full justify-center pt-1"
-    >
-      <div className="bg-background-centered-shadow mx-auto w-fit rounded-t-lg  text-center">
-        <p className="overflow-hidden whitespace-nowrap text-muted">
-          &copy; {new Date().getFullYear()} edulution.io. {!isMobileView && 'All rights reserved.'} V{APP_VERSION}
-        </p>
-      </div>
-    </footer>
+    <>
+      <div className="mt-3 text-center font-bold">{t('login.enterMultiFactorCode')}</div>
+      <OtpInput
+        totp={totp}
+        setTotp={setTotp}
+        onComplete={onComplete}
+      />
+    </>
   );
 };
-export default Footer;
+
+export default TotpInput;
