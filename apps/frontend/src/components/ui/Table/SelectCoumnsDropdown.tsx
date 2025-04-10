@@ -19,9 +19,10 @@ import { useTranslation } from 'react-i18next';
 
 interface SelectColumnsDropdownProps<TData> {
   table: Table<TData>;
+  isDialog?: boolean;
 }
 
-const SelectColumnsDropdown = <TData,>({ table }: SelectColumnsDropdownProps<TData>) => {
+const SelectColumnsDropdown = <TData,>({ table, isDialog }: SelectColumnsDropdownProps<TData>) => {
   const { t } = useTranslation();
 
   const dropdownItems = table
@@ -39,7 +40,7 @@ const SelectColumnsDropdown = <TData,>({ table }: SelectColumnsDropdownProps<TDa
       trigger={
         <Button
           variant="btn-small"
-          className="bg-accent text-secondary"
+          className={`text-secondary ${isDialog ? 'bg-muted' : 'bg-accent'}`}
         >
           {t('common.columns')} <ChevronDown />
         </Button>

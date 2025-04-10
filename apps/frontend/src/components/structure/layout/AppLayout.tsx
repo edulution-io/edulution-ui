@@ -16,13 +16,14 @@ import Header from '@/components/ui/Header';
 import { Outlet, useLocation } from 'react-router-dom';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import MenuBar from '@/components/shared/MenuBar';
-import { useAuth } from 'react-oidc-context';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import Overlays from '@/components/structure/layout/Overlays';
+import useUserStore from '@/store/UserStore/UserStore';
+import APPS from '@libs/appconfig/constants/apps';
 
 const AppLayout = () => {
-  const auth = useAuth();
+  const { isAuthenticated } = useUserStore();
   const { pathname } = useLocation();
   const menuBar = useMenuBarConfig();
   const { appConfigs } = useAppConfigsStore();
@@ -31,21 +32,23 @@ const AppLayout = () => {
   const isCurrentAppForwardingPage = appConfigs.find(
     (a) => a.name === pathname.split('/')[1] && a.appType === APP_INTEGRATION_VARIANT.FORWARDED,
   );
-  const isEdulutionHeaderVisible = pathname === '/' || isCurrentAppForwardingPage;
+  const isAppHeaderVisible = isMainPage || isCurrentAppForwardingPage;
+  const isAppConfigReady = appConfigs.some((appConfig) => appConfig.name !== APPS.NONE);
+  const isAuthenticatedAppReady = isAppConfigReady && isAuthenticated;
 
   return (
     <div className="flex h-screen flex-row">
       <div className="flex h-screen flex-1 flex-col overflow-hidden">
-        {isEdulutionHeaderVisible && <Header hideHeadingText={!isMainPage} />}
+        {isAppHeaderVisible && <Header hideHeadingText={!isMainPage} />}
 
         <div className="flex min-h-0 flex-1 flex-row">
           {!menuBar.disabled && !isMainPage && <MenuBar />}
           <Outlet />
-          <Overlays />
+          {isAuthenticatedAppReady && <Overlays />}
         </div>
       </div>
 
-      {auth.isAuthenticated && <Sidebar />}
+      {isAuthenticatedAppReady && <Sidebar />}
     </div>
   );
 };

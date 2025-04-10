@@ -10,26 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { create } from 'zustand';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
 
-type SseStore = {
-  eventSource: EventSource | null;
-  setEventSource: (eduApiToken: string) => void;
-  reset: () => void;
-};
+const EDU_API_URL = `${window.location.origin}/${EDU_API_ROOT}`;
 
-const useSseStore = create<SseStore>((set, get) => ({
-  eventSource: null,
-  setEventSource: (eduApiToken) =>
-    set({
-      eventSource: new EventSource(`/${EDU_API_ROOT}/${SSE_EDU_API_ENDPOINTS.SSE}?token=${eduApiToken}`),
-    }),
-  reset: () => {
-    get().eventSource?.close();
-    set({ eventSource: null });
-  },
-}));
-
-export default useSseStore;
+export default EDU_API_URL;

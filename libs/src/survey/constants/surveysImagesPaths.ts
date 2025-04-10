@@ -10,26 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { create } from 'zustand';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
+import APPS from '@libs/appconfig/constants/apps';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import { IMAGES } from '@libs/survey/constants/surveys-endpoint';
 
-type SseStore = {
-  eventSource: EventSource | null;
-  setEventSource: (eduApiToken: string) => void;
-  reset: () => void;
-};
+const SURVEYS_IMAGES_PATH = `${APPS_FILES_PATH}/${APPS.SURVEYS}/${IMAGES}`;
 
-const useSseStore = create<SseStore>((set, get) => ({
-  eventSource: null,
-  setEventSource: (eduApiToken) =>
-    set({
-      eventSource: new EventSource(`/${EDU_API_ROOT}/${SSE_EDU_API_ENDPOINTS.SSE}?token=${eduApiToken}`),
-    }),
-  reset: () => {
-    get().eventSource?.close();
-    set({ eventSource: null });
-  },
-}));
-
-export default useSseStore;
+export default SURVEYS_IMAGES_PATH;
