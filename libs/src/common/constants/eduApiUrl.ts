@@ -10,24 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import useMedia from '@/hooks/useMedia';
-import React from 'react';
-import { FOOTER_ID } from '@libs/common/constants/pageElementIds';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 
-const Footer = () => {
-  const { isMobileView } = useMedia();
+const EDU_API_URL = `${window.location.origin}/${EDU_API_ROOT}`;
 
-  return (
-    <footer
-      id={FOOTER_ID}
-      className="fixed bottom-0 flex w-full justify-center pt-1"
-    >
-      <div className="bg-background-centered-shadow mx-auto w-fit rounded-t-lg  text-center">
-        <p className="overflow-hidden whitespace-nowrap text-muted">
-          &copy; {new Date().getFullYear()} edulution.io. {!isMobileView && 'All rights reserved.'} V{APP_VERSION}
-        </p>
-      </div>
-    </footer>
-  );
-};
-export default Footer;
+export default EDU_API_URL;
