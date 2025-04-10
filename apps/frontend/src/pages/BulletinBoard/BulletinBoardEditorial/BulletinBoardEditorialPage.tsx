@@ -22,7 +22,7 @@ import useMedia from '@/hooks/useMedia';
 import BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS from '@libs/bulletinBoard/constants/bulletinBoardEditorialTableColumns';
 
 const BulletinBoardEditorialPage = () => {
-  const { isMobileView } = useMedia();
+  const { isMobileView, isTabletView } = useMedia();
   const { bulletins, getBulletins, isLoading, selectedRows, setSelectedRows } = useBulletinBoardEditorialStore();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
@@ -38,9 +38,9 @@ const BulletinBoardEditorialPage = () => {
     () => ({
       [BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS.CATEGORY]: !isMobileView,
       [BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS.IS_VISIBLE_START_DATE]: !isMobileView,
-      [BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS.IS_VISIBLE_END_DATE]: !isMobileView,
+      [BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS.IS_VISIBLE_END_DATE]: !(isMobileView || isTabletView),
     }),
-    [isMobileView],
+    [isMobileView, isTabletView],
   );
 
   return (

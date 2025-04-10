@@ -75,6 +75,7 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
   },
   {
     id: BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS.IS_ACTIVE,
+    size: 120,
     header: ({ column }) => (
       <SortableHeader<BulletinResponseDto, unknown>
         column={column}
@@ -119,6 +120,7 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
   },
   {
     id: BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS.IS_VISIBLE_START_DATE,
+    size: 155,
     header: ({ column }) => <SortableHeader<BulletinResponseDto, unknown> column={column} />,
     meta: {
       translationId: 'bulletinboard.isVisibleStartDate',
@@ -139,6 +141,7 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
   },
   {
     id: BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS.IS_VISIBLE_END_DATE,
+    size: 155,
     header: ({ column }) => <SortableHeader<BulletinResponseDto, unknown> column={column} />,
     meta: {
       translationId: 'bulletinboard.isVisibleEndDate',

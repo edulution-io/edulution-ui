@@ -42,6 +42,7 @@ const SurveyTable = <TData extends SurveyDto, TValue>({
     () => ({
       [SURVEY_TABLE_COLUMNS.CREATED_AT]: !(isMobileView || isTabletView),
       [SURVEY_TABLE_COLUMNS.EXPIRES]: !isMobileView,
+      [SURVEY_TABLE_COLUMNS.ANSWERS]: !(isMobileView || isTabletView),
       [SURVEY_TABLE_COLUMNS.INVITED_ATTENDEES]: !(isMobileView || isTabletView),
     }),
     [isMobileView, isTabletView],
