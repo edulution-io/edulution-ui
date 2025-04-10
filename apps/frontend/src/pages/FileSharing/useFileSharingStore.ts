@@ -139,23 +139,25 @@ const useFileSharingStore = create<UseFileSharingStore>(
         try {
           set({ isLoading: true });
 
-          const resp = await eduApi.get<DirectoryFileDTO[]>(
+          const defaultMountPointsResponse = await eduApi.get<DirectoryFileDTO[]>(
             buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, ''),
           );
 
-          const resp2 = await eduApi.get<DirectoryFileDTO[]>(
+          const additionalMountPointsResponse = await eduApi.get<DirectoryFileDTO[]>(
             buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, '/'),
           );
 
-          const combined = [...resp.data];
+          const combinedMountPoints = [...defaultMountPointsResponse.data];
 
-          const examusersItem = resp2.data.find((item) => item.basename === UserRoles.EXAM_USER);
+          const examusersItem = additionalMountPointsResponse.data.find(
+            (item) => item.basename === UserRoles.EXAM_USER,
+          );
 
-          if (examusersItem && !resp.data.some((item) => item.basename === UserRoles.EXAM_USER)) {
-            combined.push(examusersItem);
+          if (examusersItem && !defaultMountPointsResponse.data.some((item) => item.basename === UserRoles.EXAM_USER)) {
+            combinedMountPoints.push(examusersItem);
           }
 
-          set({ mountPoints: combined });
+          set({ mountPoints: combinedMountPoints });
         } catch (error) {
           handleApiError(error, set);
         } finally {

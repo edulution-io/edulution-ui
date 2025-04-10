@@ -14,6 +14,6 @@ import CollectFileJobData from '@libs/queue/types/collectFileJobData';
 import DuplicateFileJobData from '@libs/queue/types/duplicateFileJobData';
 import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
 
-type JobData = CollectFileJobData | DuplicateFileJobData | DeleteFileJobData;
+type FileOperationQueueJobData = CollectFileJobData | DuplicateFileJobData | DeleteFileJobData;
 
-export default JobData;
+export default FileOperationQueueJobData;

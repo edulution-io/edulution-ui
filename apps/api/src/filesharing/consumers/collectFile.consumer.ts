@@ -13,7 +13,7 @@
 import { WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Injectable } from '@nestjs/common';
-import JobData from '@libs/queue/constants/jobData';
+import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJobData';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 import CollectFileJobData from '@libs/queue/types/collectFileJobData';
@@ -31,7 +31,7 @@ class CollectFileConsumer extends WorkerHost {
     super();
   }
 
-  async process(job: Job<JobData>): Promise<void> {
+  async process(job: Job<FileOperationQueueJobData>): Promise<void> {
     const { username, userRole, item, operationType, processed, total } = job.data as CollectFileJobData;
     const failedPaths: string[] = [];
 

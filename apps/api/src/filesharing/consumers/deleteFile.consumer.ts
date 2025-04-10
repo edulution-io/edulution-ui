@@ -13,7 +13,7 @@
 import { WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Injectable } from '@nestjs/common';
-import JobData from '@libs/queue/constants/jobData';
+import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJobData';
 import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
@@ -29,7 +29,7 @@ class DeleteFileConsumer extends WorkerHost {
     super();
   }
 
-  async process(job: Job<JobData>): Promise<void> {
+  async process(job: Job<FileOperationQueueJobData>): Promise<void> {
     const { username, originFilePath, processed, total } = job.data as DeleteFileJobData;
 
     const failedPaths: string[] = [];

@@ -18,7 +18,7 @@ import DuplicateFileJobData from '@libs/queue/types/duplicateFileJobData';
 
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import JobData from '@libs/queue/constants/jobData';
+import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJobData';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import SseService from '../../sse/sse.service';
 import WebDavService from '../../webdav/webDavService';
@@ -32,7 +32,7 @@ class DuplicateFileConsumer extends WorkerHost {
     super();
   }
 
-  async process(job: Job<JobData>): Promise<void> {
+  async process(job: Job<FileOperationQueueJobData>): Promise<void> {
     const { username, originFilePath, destinationFilePath, total, processed } = job.data as DuplicateFileJobData;
     const failedPaths: string[] = [];
 

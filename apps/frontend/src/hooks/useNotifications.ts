@@ -47,6 +47,16 @@ const useNotifications = () => {
   const { eventSource } = useSseStore();
   const isFileSharingActive = useIsAppActive(APPS.FILE_SHARING);
 
+  const clearProgressIfComplete = async (
+    data: FilesharingProgressDto,
+    clearFn: (value: FilesharingProgressDto | null) => void,
+  ) => {
+    if (data.percent === 100 && (!data.failedPaths || data.failedPaths.length === 0)) {
+      await delay(5000);
+      clearFn(null);
+    }
+  };
+
   useDockerContainerEvents();
 
   useEffect(() => {
@@ -132,10 +142,7 @@ const useNotifications = () => {
         const data: FilesharingProgressDto = JSON.parse(e.data) as FilesharingProgressDto;
         setFileOperationProgress(data);
 
-        if (data.percent === 100 && (!data.failedPaths || data.failedPaths.length === 0)) {
-          await delay(5000);
-          setFileOperationProgress(null);
-        }
+        await clearProgressIfComplete(data, setFileOperationProgress);
       })();
     };
     eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES, handelFileDeletingEvent, { signal });
@@ -157,10 +164,7 @@ const useNotifications = () => {
         const data: FilesharingProgressDto = JSON.parse(e.data) as FilesharingProgressDto;
         setFilesharingProgress(data);
 
-        if (data.percent === 100 && (!data.failedPaths || data.failedPaths.length === 0)) {
-          await delay(5000);
-          setFilesharingProgress(null);
-        }
+        await clearProgressIfComplete(data, setFilesharingProgress);
       })();
     };
 

@@ -19,16 +19,20 @@ import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import { t } from 'i18next';
 
-const handleDeleteItems = async (data: PathChangeOrCreateProps[], endpoint: string) => {
+const handleDeleteItems = async (pathsToDelete: PathChangeOrCreateProps[], endpoint: string) => {
   await eduApi.delete(buildApiDeletePathUrl(endpoint, DeleteTargetType.FILE_SERVER), {
     data: {
-      paths: data.map((item) => getPathWithoutWebdav(item.path)),
+      paths: pathsToDelete.map((item) => getPathWithoutWebdav(item.path)),
     },
   });
 };
 
-const handleArrayActions = async (data: PathChangeOrCreateProps[], endpoint: string, httpMethod: HttpMethods) => {
-  const promises = data.map((item) => eduApi[httpMethod](endpoint, item));
+const handleArrayActions = async (
+  itemsToProcess: PathChangeOrCreateProps[],
+  endpoint: string,
+  httpMethod: HttpMethods,
+) => {
+  const promises = itemsToProcess.map((item) => eduApi[httpMethod](endpoint, item));
   return Promise.all(promises);
 };
 
@@ -36,14 +40,14 @@ const handleBulkFileOperations = async (
   action: FileActionType,
   endpoint: string,
   httpMethod: HttpMethods,
-  data: PathChangeOrCreateProps[],
+  itemsToProcess: PathChangeOrCreateProps[],
   setFileOperationResult: (success: boolean | undefined, message: string, statusCode: number) => void,
 ) => {
   if (action === FileActionType.DELETE_FILE_FOLDER) {
-    await handleDeleteItems(data, endpoint);
+    await handleDeleteItems(itemsToProcess, endpoint);
     setFileOperationResult(undefined, t('fileOperationSuccessful'), 200);
   } else if (action === FileActionType.MOVE_FILE_FOLDER || action === FileActionType.RENAME_FILE_FOLDER) {
-    await handleArrayActions(data, endpoint, httpMethod);
+    await handleArrayActions(itemsToProcess, endpoint, httpMethod);
     setFileOperationResult(true, t('fileOperationSuccessful'), 200);
   }
 };

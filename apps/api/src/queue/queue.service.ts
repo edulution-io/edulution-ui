@@ -13,7 +13,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Job, Queue, Worker } from 'bullmq';
 import JOB_NAMES from '@libs/queue/constants/jobNames';
-import JobData from '@libs/queue/constants/jobData';
+import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJobData';
 import Redis from 'ioredis';
 import QUEUE_CONSTANTS from '@libs/queue/constants/queueConstants';
 import DuplicateFileConsumer from '../filesharing/consumers/duplicateFile.consumer';
@@ -54,12 +54,12 @@ class QueueService implements OnModuleInit {
   createWorkerForUser(userId: string): Worker {
     const queueName = QUEUE_CONSTANTS.PREFIX + userId;
     if (this.workers.has(userId)) {
-      return <Worker<JobData>>this.workers.get(userId);
+      return <Worker<FileOperationQueueJobData>>this.workers.get(userId);
     }
 
     const worker = new Worker(
       queueName,
-      async (job: Job<JobData>) => {
+      async (job: Job<FileOperationQueueJobData>) => {
         await this.handleJob(job);
       },
       {
@@ -97,14 +97,14 @@ class QueueService implements OnModuleInit {
     return queue as Queue;
   }
 
-  async addJobForUser(userId: string, jobName: string, data: JobData): Promise<void> {
+  async addJobForUser(userId: string, jobName: string, data: FileOperationQueueJobData): Promise<void> {
     this.createWorkerForUser(userId);
 
     const queue = this.getOrCreateQueueForUser(userId);
     await queue.add(jobName, data);
   }
 
-  async handleJob(job: Job<JobData>): Promise<void> {
+  async handleJob(job: Job<FileOperationQueueJobData>): Promise<void> {
     switch (job.name) {
       case JOB_NAMES.COLLECT_FILE_JOB:
         await this.collectFileConsumer.process(job);

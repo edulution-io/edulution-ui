@@ -61,7 +61,7 @@ const useFileSharingMenuConfig = () => {
   );
 
   useEffect(() => {
-    const items: MenuItem[] = mountPoints.map((mountPoint: DirectoryFileDTO) => {
+    const menuBarItems: MenuItem[] = mountPoints.map((mountPoint: DirectoryFileDTO) => {
       const isHome =
         mountPoint.filename.includes(`${user?.ldapGroups?.roles?.at(0)}s`) &&
         mountPoint.filename.includes(`${user?.username}`);
@@ -85,7 +85,7 @@ const useFileSharingMenuConfig = () => {
       };
     });
 
-    setMenuItems(items);
+    setMenuItems(menuBarItems);
   }, [mountPoints, user?.ldapGroups?.roles, user?.ldapGroups?.schools, searchParams, setSearchParams, t]);
 
   return {
