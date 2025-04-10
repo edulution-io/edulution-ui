@@ -10,14 +10,33 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Query,
+  Res,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { type Response } from 'express';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import AppConfigService from './appconfig.service';
 import GetCurrentUserGroups from '../common/decorators/getUserGroups.decorator';
 import AppConfigGuard from './appconfig.guard';
+import { createAttachmentUploadOptions } from '../common/multer.utilities';
 
 @ApiTags(EDU_API_CONFIG_ENDPOINTS.ROOT)
 @ApiBearerAuth()
@@ -66,6 +85,24 @@ class AppConfigController {
   @UseGuards(AppConfigGuard)
   getConfigFile(@Query('filePath') filePath: string) {
     return this.appConfigService.getFileAsBase64(filePath);
+  }
+
+  @Post('files/:name')
+  @UseGuards(AppConfigGuard)
+  @ApiConsumes(RequestResponseContentType.MULTIPART_FORM_DATA)
+  @UseInterceptors(
+    FileInterceptor(
+      'file',
+      createAttachmentUploadOptions(
+        (req) => `${APPS_FILES_PATH}/${req.params.name}`,
+        false,
+        (_req, file) => file.originalname,
+      ),
+    ),
+  )
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  uploadEmbeddedPageFiles(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
+    return res.status(200).json(file.filename);
   }
 }
 
