@@ -11,14 +11,12 @@
  */
 
 import { useTranslation } from 'react-i18next';
-import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import { LanguageIcon } from '@/assets/icons';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import UserLanguage from '@libs/user/constants/userLanguage';
 import useUserStore from '@/store/UserStore/UserStore';
-import useElementHeight from '@/hooks/useElementHeight';
-import { FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
+import PageLayout from '@/components/structure/layout/PageLayout';
 import LanguageSelector from './components/LanguageSelector';
 
 const LanguageSettingsPage = () => {
@@ -32,23 +30,17 @@ const LanguageSettingsPage = () => {
     },
   });
 
-  const pageBarsHeight = useElementHeight([NATIVE_APP_HEADER_ID, FOOTER_ID]);
-
   return (
     <FormProvider {...methods}>
-      <div className="h-screen overflow-y-hidden">
-        <NativeAppHeader
-          title={t('usersettings.language.title')}
-          description={t('usersettings.language.description')}
-          iconSrc={LanguageIcon}
-        />
-        <div
-          className="w-full flex-1 overflow-auto pl-3 pr-3.5 scrollbar-thin"
-          style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
-        >
-          <LanguageSelector settingLocation="usersettings" />
-        </div>
-      </div>
+      <PageLayout
+        nativeAppHeader={{
+          title: t('usersettings.language.title'),
+          description: t('usersettings.language.description'),
+          iconSrc: LanguageIcon,
+        }}
+      >
+        <LanguageSelector settingLocation="usersettings" />
+      </PageLayout>
     </FormProvider>
   );
 };

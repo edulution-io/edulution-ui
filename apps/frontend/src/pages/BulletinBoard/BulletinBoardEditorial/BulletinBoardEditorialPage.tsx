@@ -13,10 +13,8 @@
 import React, { useEffect, useMemo } from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import bulletinBoardEditorialTableColumns from '@/pages/BulletinBoard/BulletinBoardEditorial/BulletinBoardEditorialTableColumns';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
-import BULLETIN_BOARD_EDITORIAL_PAGE_TABLE_HEADER from '@libs/bulletinBoard/constants/pageElementIds';
 import APPS from '@libs/appconfig/constants/apps';
 import DeleteBulletinsDialog from '@/pages/BulletinBoard/BulletinBoardEditorial/DeleteBulletinsDialog';
 import CreateOrUpdateBulletinDialog from '@/pages/BulletinBoard/BulletinBoardEditorial/CreateOrUpdateBulletinDialog';
@@ -57,11 +55,6 @@ const BulletinBoardEditorialPage = () => {
         selectedRows={selectedRows}
         getRowId={(originalRow) => originalRow.id}
         applicationName={APPS.BULLETIN_BOARD}
-        additionalScrollContainerOffset={20}
-        scrollContainerOffsetElementIds={{
-          tableHeaderId: BULLETIN_BOARD_EDITORIAL_PAGE_TABLE_HEADER,
-          others: [NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID],
-        }}
         initialColumnVisibility={initialColumnVisibility}
       />
 

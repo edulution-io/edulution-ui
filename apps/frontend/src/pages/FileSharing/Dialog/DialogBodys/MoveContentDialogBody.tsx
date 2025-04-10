@@ -129,22 +129,20 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
         </div>
         <div className="w-full">{isLoading ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}</div>
         {!isLoading && (
-          <div>
-            <ScrollableTable
-              columns={columns}
-              data={files}
-              selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filename]: true } : {}}
-              onRowSelectionChange={handleRowSelectionChange}
-              applicationName={APPS.FILE_SHARING}
-              getRowId={(row) => row.filename}
-              showHeader={false}
-              textColorClassname="text-background"
-              showSelectedCount={false}
-              filterKey="select-filename"
-              filterPlaceHolderText="filesharing.filterPlaceHolderText"
-              isDialog
-            />
-          </div>
+          <ScrollableTable
+            columns={columns}
+            data={files}
+            selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filename]: true } : {}}
+            onRowSelectionChange={handleRowSelectionChange}
+            applicationName={APPS.FILE_SHARING}
+            getRowId={(row) => row.filename}
+            showHeader={false}
+            textColorClassname="text-background"
+            showSelectedCount={false}
+            filterKey="select-filename"
+            filterPlaceHolderText="filesharing.filterPlaceHolderText"
+            isDialog
+          />
         )}
       </div>
       {footer}

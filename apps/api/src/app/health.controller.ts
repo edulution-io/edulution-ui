@@ -10,5 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const LESSON_SESSION_HEADER_ID = 'session-header';
-export const FILTER_BAR_ID = 'filter-bar';
+import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
+import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
+
+@Controller(EDU_API_CONFIG_ENDPOINTS.HEALTH_CHECK)
+class HealthController {
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  check() {}
+}
+
+export default HealthController;

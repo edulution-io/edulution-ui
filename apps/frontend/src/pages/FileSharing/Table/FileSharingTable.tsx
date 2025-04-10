@@ -16,8 +16,6 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
-import { BREADCRUMB_ID } from '@libs/ui/constants/defaultIds';
 import useMedia from '@/hooks/useMedia';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/FileSharingTableColumns';
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
@@ -60,10 +58,6 @@ const FileSharingTable = () => {
       selectedRows={selectedRows}
       getRowId={(row) => row.filename}
       applicationName={appName}
-      additionalScrollContainerOffset={20}
-      scrollContainerOffsetElementIds={{
-        others: [BREADCRUMB_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID],
-      }}
       initialSorting={[
         { id: 'type', desc: false },
         { id: 'select-filename', desc: false },

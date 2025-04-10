@@ -16,13 +16,13 @@ import CreateConferenceDialog from '@/pages/ConferencePage/CreateConference/Crea
 import ConferencesTable from '@/pages/ConferencePage/Table/ConferencesTable';
 import ConferenceDetailsDialog from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialog';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
-import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import { ConferencesIcon } from '@/assets/icons';
 import DeleteConferencesDialog from '@/pages/ConferencePage/Table/DeleteConferencesDialog';
 import ConferencesFloatingButtons from '@/pages/ConferencePage/Table/ConferencesFloatingButtons';
 import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
 import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import useSharePublicConferenceStore from '@/pages/ConferencePage/useSharePublicConferenceStore';
+import PageLayout from '@/components/structure/layout/PageLayout';
 
 const ConferencePage: React.FC = () => {
   const { t } = useTranslation();
@@ -33,13 +33,13 @@ const ConferencePage: React.FC = () => {
     : '';
 
   return (
-    <div>
-      <NativeAppHeader
-        title={t('conferences.sidebar')}
-        description={t('conferences.description')}
-        iconSrc={ConferencesIcon}
-      />
-
+    <PageLayout
+      nativeAppHeader={{
+        title: t('conferences.sidebar'),
+        description: t('conferences.description'),
+        iconSrc: ConferencesIcon,
+      }}
+    >
       <ConferencesTable />
 
       <ConferencesFloatingButtons />
@@ -53,7 +53,7 @@ const ConferencePage: React.FC = () => {
         descriptionTranslationId="conferences.sharePublicDialog.description"
       />
       {selectedConference ? <ConferenceDetailsDialog /> : null}
-    </div>
+    </PageLayout>
   );
 };
 

@@ -12,8 +12,7 @@
 
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import Sidebar from '@/components/ui/Sidebar/Sidebar';
-import useFrameStore from '@/components/framing/FrameStore';
+import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '@/store/UserStore/UserStore';
 import { getFromPathName } from '@libs/common/utils';
@@ -40,12 +39,7 @@ const FramePlaceholder: React.FC = () => {
     };
   }, [isAuthenticated, pathname]);
 
-  return (
-    <div className="flex">
-      <div className="h-screen w-full" />
-      <Sidebar />
-    </div>
-  );
+  return <div />;
 };
 
 export default FramePlaceholder;

@@ -16,7 +16,6 @@ import UserDto from '../user.dto';
 
 type UserSlice = {
   isAuthenticated: boolean;
-  setIsAuthenticated: (isAuthenticated: boolean) => void;
   user: UserDto | null;
   getUser: (username: string) => Promise<void>;
   createOrUpdateUser: (user: UserDto) => Promise<UserDto | undefined>;

@@ -26,8 +26,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
-import useElementHeight from '@/hooks/useElementHeight';
-import { HEADER_ID, SELECTED_ROW_MESSAGE_ID, TABLE_HEADER_ID } from '@libs/ui/constants/defaultIds';
 import Input from '@/components/shared/Input';
 import DEFAULT_TABLE_SORT_PROPERTY_KEY from '@libs/common/constants/defaultTableSortProperty';
 import SelectColumnsDropdown from '@/components/ui/Table/SelectCoumnsDropdown';
@@ -43,14 +41,6 @@ interface DataTableProps<TData, TValue> {
   getRowId?: (originalRow: TData) => string;
   applicationName: string;
   initialSorting?: { id: string; desc: boolean }[];
-  additionalScrollContainerOffset?: number;
-  scrollContainerOffsetElementIds?: {
-    headerId?: string;
-    selectedRowsMessageId?: string;
-    tableHeaderId?: string;
-    others?: string[];
-  };
-  tableIsUsedOnAppConfigPage?: boolean;
   enableRowSelection?: boolean | ((row: Row<TData>) => boolean) | undefined;
   initialColumnVisibility?: VisibilityState;
   textColorClassname?: string;
@@ -69,11 +59,8 @@ const ScrollableTable = <TData, TValue>({
   selectedRows = {},
   getRowId,
   applicationName,
-  additionalScrollContainerOffset = 0,
-  scrollContainerOffsetElementIds = {},
   enableRowSelection,
   initialSorting,
-  tableIsUsedOnAppConfigPage = false,
   textColorClassname = 'text-background',
   showHeader = true,
   showSelectedCount = true,
@@ -96,18 +83,6 @@ const ScrollableTable = <TData, TValue>({
     ? [{ id: 'position', desc: false }]
     : [];
   const [sorting, setSorting] = useState(() => (initialSorting?.length ? initialSorting : defaultSorting));
-
-  const selectedRowsMessageId = scrollContainerOffsetElementIds.selectedRowsMessageId || SELECTED_ROW_MESSAGE_ID;
-  const tableHeaderId = scrollContainerOffsetElementIds.tableHeaderId || TABLE_HEADER_ID;
-
-  const allScrollContainerOffsetElementIds = [
-    scrollContainerOffsetElementIds.headerId || HEADER_ID,
-    selectedRowsMessageId,
-    tableHeaderId,
-    ...(scrollContainerOffsetElementIds.others || []),
-  ].filter(Boolean);
-
-  const pageBarsHeight = useElementHeight(allScrollContainerOffsetElementIds) + additionalScrollContainerOffset;
 
   const table = useReactTable({
     data,
@@ -136,10 +111,7 @@ const ScrollableTable = <TData, TValue>({
       {isLoading && data?.length === 0 ? <LoadingIndicatorDialog isOpen={isLoading} /> : null}
 
       {showSelectedCount && (
-        <div
-          id={selectedRowsMessageId}
-          className="flex-1 text-sm text-muted-foreground"
-        >
+        <div className="text-sm text-muted-foreground">
           {selectedRowsCount > 0 ? (
             t(`${applicationName}.${filteredRowCount === 1 ? 'rowSelected' : 'rowsSelected'}`, {
               selected: selectedRowsCount,
@@ -151,10 +123,7 @@ const ScrollableTable = <TData, TValue>({
         </div>
       )}
 
-      <div
-        className={`w-full flex-1 overflow-auto scrollbar-thin ${!tableIsUsedOnAppConfigPage ? 'pl-3 pr-3.5' : ''}`}
-        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
-      >
+      <div className="h-full w-full flex-1 overflow-auto scrollbar-thin">
         <div className="w-full">
           {!!data.length && (
             <div className="flex justify-between space-x-1 py-4">
@@ -174,10 +143,7 @@ const ScrollableTable = <TData, TValue>({
           )}
           <Table>
             {showHeader && (
-              <TableHeader
-                className={`text-foreground ${textColorClassname}`}
-                id={tableHeaderId}
-              >
+              <TableHeader className={`text-foreground ${textColorClassname}`}>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (

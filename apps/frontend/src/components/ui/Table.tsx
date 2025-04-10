@@ -29,12 +29,9 @@ const TableHeader = React.forwardRef<HTMLTableSectionElement, React.HTMLAttribut
   ({ className, ...props }, ref) => (
     <thead
       ref={ref}
-      className={cn('z-2 sticky top-0 backdrop-blur-md', className)}
+      className={className}
       {...props}
-    >
-      {props.children}
-      <tr className="absolute bottom-0 left-0 h-[1px] w-full bg-gray-200" />
-    </thead>
+    />
   ),
 );
 TableHeader.displayName = 'TableHeader';
@@ -81,11 +78,15 @@ const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<
     <th
       ref={ref}
       className={cn(
+        'z-2 sticky top-0 backdrop-blur-md',
         'mr-4 h-8 px-2 text-left align-middle font-medium text-background [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
         className,
       )}
       {...props}
-    />
+    >
+      {props.children}
+      <div className="absolute bottom-0 left-0 h-[1px] w-full bg-gray-200" />
+    </th>
   ),
 );
 TableHead.displayName = 'TableHead';
