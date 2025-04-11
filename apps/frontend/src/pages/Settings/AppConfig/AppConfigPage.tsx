@@ -168,7 +168,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
         className="column max-w-screen-2xl space-y-6"
       >
         {matchingConfig && (
-          <div className="m-5 space-y-10">
+          <div className="m-5 space-y-3">
             <FormFieldSH
               key={`${matchingConfig.name}.accessGroups`}
               control={control}

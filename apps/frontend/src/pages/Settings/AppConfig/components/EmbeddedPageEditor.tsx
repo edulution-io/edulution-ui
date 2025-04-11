@@ -53,13 +53,34 @@ const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) =
   const htmlContent = form.watch(`${name}.extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT}`);
 
   return (
-    <AccordionSH type="multiple">
+    <AccordionSH
+      type="multiple"
+      defaultValue={['embedded']}
+    >
       <AccordionItem value="embedded">
         <AccordionTrigger className="flex text-h4">
           <h4 className="text-background">{t(`form.embeddedPageEditor`)}</h4>
         </AccordionTrigger>
         <AccordionContent>
           <div className="space-y-4">
+            <FormFieldSH
+              key={name}
+              control={form.control}
+              name={`${name}.extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT}`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Textarea
+                      value={field.value}
+                      onChange={field.onChange}
+                      className="h-80 overflow-y-auto bg-accent text-secondary scrollbar-thin placeholder:text-p focus:outline-none"
+                      style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '12pt' }}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
             <div className="flex justify-end gap-3">
               <Button
                 type="button"
@@ -78,24 +99,6 @@ const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) =
                 {t('common.format')}
               </Button>
             </div>
-
-            <FormFieldSH
-              key={name}
-              control={form.control}
-              name={`${name}.extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT}`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Textarea
-                      value={field.value}
-                      onChange={field.onChange}
-                      className="h-80 overflow-y-auto bg-accent text-secondary scrollbar-thin placeholder:text-p focus:outline-none"
-                      style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '12pt' }}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
 
             {openPreview && (
               <ResizableWindow
