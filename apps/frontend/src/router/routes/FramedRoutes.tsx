@@ -16,7 +16,7 @@ import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import FramePlaceholder from '@/components/structure/framing/FramePlaceholder';
 
-const getFramedRoutes = (appConfigs: AppConfigDto[]) => {
+const getFramedRoutes = (appConfigs: AppConfigDto[]) =>
   appConfigs
     .filter((item) => item.appType === APP_INTEGRATION_VARIANT.FRAMED)
     .map((item) => (
@@ -26,6 +26,4 @@ const getFramedRoutes = (appConfigs: AppConfigDto[]) => {
         element={<FramePlaceholder />}
       />
     ));
-};
-
 export default getFramedRoutes;

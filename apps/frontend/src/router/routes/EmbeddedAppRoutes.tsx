@@ -16,7 +16,7 @@ import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import EmbeddedPage from '@/pages/EmbeddedPage/EmbeddedPage';
 
-const getEmbeddedRoutes = (appConfigs: AppConfigDto[]) => {
+const getEmbeddedRoutes = (appConfigs: AppConfigDto[]) =>
   appConfigs
     .filter((item) => item.appType === APP_INTEGRATION_VARIANT.EMBEDDED)
     .map((item) => (
@@ -26,6 +26,4 @@ const getEmbeddedRoutes = (appConfigs: AppConfigDto[]) => {
         element={<EmbeddedPage />}
       />
     ));
-};
-
 export default getEmbeddedRoutes;
