@@ -12,26 +12,18 @@
 
 import React from 'react';
 import { Route } from 'react-router-dom';
-import BlankLayout from '@/components/layout/BlankLayout';
-import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import NativeAppPageManager from '@/components/structure/layout/NativeAppPageManager';
 
-const getForwardedRoutes = (appConfigs: AppConfigDto[]) => [
-  <Route
-    key={APP_INTEGRATION_VARIANT.FORWARDED}
-    element={<BlankLayout />}
-  >
-    {appConfigs
-      .filter((item) => item.appType === APP_INTEGRATION_VARIANT.FORWARDED)
-      .map((item) => (
-        <Route
-          key={item.name}
-          path={item.name}
-          element={<ForwardingPage />}
-        />
-      ))}
-  </Route>,
-];
-
-export default getForwardedRoutes;
+const getNativeAppRoutes = (appConfigs: AppConfigDto[]) =>
+  appConfigs
+    .filter((item) => item.appType === APP_INTEGRATION_VARIANT.NATIVE)
+    .map((item) => (
+      <Route
+        key={item.name}
+        path={item.name}
+        element={<NativeAppPageManager page={item.name} />}
+      />
+    ));
+export default getNativeAppRoutes;

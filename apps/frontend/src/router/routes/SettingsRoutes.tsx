@@ -17,7 +17,7 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import AppStorePage from '@/pages/Settings/AppConfig/appStore/AppStorePage';
 import APPS from '@libs/appconfig/constants/apps';
 import CONTAINER from '@libs/docker/constants/container';
-import { TABS } from '@libs/common/constants/pageElementIds';
+import TABS from '@libs/common/constants/tabsElementId';
 
 const SettingsPage = lazy(() => import('@/pages/Settings/SettingsPage'));
 

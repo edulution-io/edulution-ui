@@ -33,7 +33,8 @@ type AppConfigsStore = {
   setIsDeleteAppConfigDialogOpen: (isDeleteAppConfigDialogOpen: boolean) => void;
   reset: () => void;
   createAppConfig: (appConfig: AppConfigDto) => Promise<void>;
-  getAppConfigs: () => Promise<boolean>;
+  getAppConfigs: () => Promise<void>;
+  isGetAppConfigsLoading: boolean;
   updateAppConfig: (appConfigs: AppConfigDto) => Promise<void>;
   patchSingleFieldInConfig: (name: string, patchConfigDto: PatchConfigDto) => Promise<void>;
   deleteAppConfigEntry: (name: string) => Promise<void>;
@@ -59,13 +60,14 @@ const initialState = {
     },
   ],
   isLoading: false,
+  isGetAppConfigsLoading: false,
   isConfigFileLoading: false,
   error: null,
 };
 
 const useAppConfigsStore = create<AppConfigsStore>(
   (persist as PersistedAppConfigsStore)(
-    (set) => ({
+    (set, get) => ({
       ...initialState,
       reset: () => set(initialState),
 
@@ -91,16 +93,15 @@ const useAppConfigsStore = create<AppConfigsStore>(
       },
 
       getAppConfigs: async () => {
-        set({ isLoading: true, error: null });
+        if (get().isGetAppConfigsLoading) return;
+        set({ isGetAppConfigsLoading: true, error: null });
         try {
           const response = await eduApi.get<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINTS.ROOT);
           set({ appConfigs: response.data });
-          return true;
         } catch (e) {
           handleApiError(e, set);
-          return false;
         } finally {
-          set({ isLoading: false });
+          set({ isGetAppConfigsLoading: false });
         }
       },
 

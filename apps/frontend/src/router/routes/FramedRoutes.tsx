@@ -12,22 +12,20 @@
 
 import React from 'react';
 import { Route } from 'react-router-dom';
-import FramePlaceholder from '@/components/framing/FramePlaceholder';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import FramePlaceholder from '@/components/structure/framing/FramePlaceholder';
 
-const getFramedRoutes = (appConfigs: AppConfigDto[]) => [
-  <Route key={APP_INTEGRATION_VARIANT.FRAMED}>
-    {appConfigs
-      .filter((item) => item.appType === APP_INTEGRATION_VARIANT.FRAMED)
-      .map((item) => (
-        <Route
-          key={item.name}
-          path={item.name}
-          element={<FramePlaceholder />}
-        />
-      ))}
-  </Route>,
-];
+const getFramedRoutes = (appConfigs: AppConfigDto[]) => {
+  appConfigs
+    .filter((item) => item.appType === APP_INTEGRATION_VARIANT.FRAMED)
+    .map((item) => (
+      <Route
+        key={item.name}
+        path={item.name}
+        element={<FramePlaceholder />}
+      />
+    ));
+};
 
 export default getFramedRoutes;

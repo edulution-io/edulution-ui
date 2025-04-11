@@ -10,12 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Outlet } from 'react-router-dom';
-import React from 'react';
+import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
+import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 
-const EmptyLayout = () => (
-  <main className="flex-1">
-    <Outlet />
-  </main>
-);
-export default EmptyLayout;
+@Controller(EDU_API_CONFIG_ENDPOINTS.HEALTH_CHECK)
+class HealthController {
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  check() {}
+}
+
+export default HealthController;

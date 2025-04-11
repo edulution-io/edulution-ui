@@ -22,7 +22,6 @@ import APP_CONFIG_OPTIONS from '@/pages/Settings/AppConfig/appConfigOptions';
 import type { AppConfigOptionsType } from '@libs/appconfig/types/appConfigOptionsType';
 import useLanguage from '@/hooks/useLanguage';
 import useGroupStore from '@/store/GroupStore';
-import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useMailsStore from '@/pages/Mail/useMailsStore';
@@ -37,6 +36,7 @@ import type MailProviderConfig from '@libs/appconfig/types/mailProviderConfig';
 import APPS from '@libs/appconfig/constants/apps';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import getDisplayName from '@/utils/getDisplayName';
+import PageLayout from '@/components/structure/layout/PageLayout';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import type EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEditorForm';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
@@ -259,24 +259,25 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
   };
 
   return (
-    <>
-      <div className="h-[calc(100vh-var(--floating-buttons-height))] overflow-y-auto scrollbar-thin">
-        {matchingConfig && (
-          <NativeAppHeader
-            key={matchingConfig.name}
-            title={getDisplayName(matchingConfig, language)}
-            iconSrc={matchingConfig.icon}
-            description={getHeaderDescription(matchingConfig)}
-          />
-        )}
-        {getSettingsForm()}
-      </div>
+    <PageLayout
+      nativeAppHeader={
+        matchingConfig
+          ? {
+              title: getDisplayName(matchingConfig, language),
+              iconSrc: matchingConfig.icon,
+              description: getHeaderDescription(matchingConfig),
+            }
+          : undefined
+      }
+    >
+      {getSettingsForm()}
+
       <AppConfigFloatingButtons
         handleDeleteSettingsItem={() => setIsDeleteAppConfigDialogOpen(true)}
         handleSaveSettingsItem={handleSubmit(onSubmit)}
       />
       <DeleteAppConfigDialog handleDeleteSettingsItem={handleDeleteSettingsItem} />
-    </>
+    </PageLayout>
   );
 };
 

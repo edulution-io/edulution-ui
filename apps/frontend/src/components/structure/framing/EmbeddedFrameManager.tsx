@@ -11,11 +11,11 @@
  */
 
 import React from 'react';
-import useFrameStore from '@/components/framing/FrameStore';
+import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 
-const EmbeddedIframes = () => {
+const EmbeddedFrameManager = () => {
   const { appConfigs } = useAppConfigsStore();
   const { loadedEmbeddedFrames, activeEmbeddedFrame } = useFrameStore();
 
@@ -36,4 +36,4 @@ const EmbeddedIframes = () => {
     });
 };
 
-export default EmbeddedIframes;
+export default EmbeddedFrameManager;

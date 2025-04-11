@@ -36,6 +36,8 @@ import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import delay from '@libs/common/utils/delay';
 import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
+import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
+import PageLayout from '@/components/structure/layout/PageLayout';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 
@@ -130,8 +132,8 @@ const LoginPage: React.FC = () => {
     const registerUser = async () => {
       await handleRegisterUser();
 
-      setLoginComplete(true);
       setIsEnterTotpVisible(false);
+      setLoginComplete(true);
     };
 
     void registerUser();
@@ -140,7 +142,7 @@ const LoginPage: React.FC = () => {
   useEffect(() => {
     if (loginComplete) {
       const { from } = (location?.state ?? { from: '/' }) as LocationState;
-      const toLocation = from === '/login' ? '/' : from;
+      const toLocation = from === LOGIN_ROUTE ? '/' : from;
       navigate(toLocation, {
         replace: true,
       });
@@ -301,7 +303,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <>
+    <PageLayout>
       <PageTitle translationId="login.pageTitle" />
       <Card
         variant="modal"
@@ -356,7 +358,7 @@ const LoginPage: React.FC = () => {
           </form>
         </Form>
       </Card>
-    </>
+    </PageLayout>
   );
 };
 

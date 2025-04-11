@@ -13,8 +13,6 @@
 import React, { useMemo } from 'react';
 import { ColumnDef, OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import APPS from '@libs/appconfig/constants/apps';
-import SURVEYS_PAGE_TABLE_HEADER_ID from '@libs/survey/constants/pageElementIds';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -44,6 +42,7 @@ const SurveyTable = <TData extends SurveyDto, TValue>({
     () => ({
       [SURVEY_TABLE_COLUMNS.CREATED_AT]: !(isMobileView || isTabletView),
       [SURVEY_TABLE_COLUMNS.EXPIRES]: !isMobileView,
+      [SURVEY_TABLE_COLUMNS.ANSWERS]: !(isMobileView || isTabletView),
       [SURVEY_TABLE_COLUMNS.INVITED_ATTENDEES]: !(isMobileView || isTabletView),
     }),
     [isMobileView, isTabletView],
@@ -60,10 +59,6 @@ const SurveyTable = <TData extends SurveyDto, TValue>({
       isLoading={isLoading}
       getRowId={(originalRow: TData) => originalRow.id!}
       applicationName={APPS.SURVEYS}
-      scrollContainerOffsetElementIds={{
-        tableHeaderId: SURVEYS_PAGE_TABLE_HEADER_ID,
-        others: [NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID],
-      }}
       initialColumnVisibility={initialColumnVisibility}
     />
   );

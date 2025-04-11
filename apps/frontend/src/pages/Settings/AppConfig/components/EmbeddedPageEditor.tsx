@@ -18,9 +18,9 @@ import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '
 import { Button } from '@/components/shared/Button';
 import { Textarea } from '@/components/ui/Textarea';
 import { FormControl, FormFieldSH, FormItem } from '@/components/ui/Form';
-import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import type EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEditorForm';
+import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 
 interface EmbeddedPageEditorProps {
   name: string;

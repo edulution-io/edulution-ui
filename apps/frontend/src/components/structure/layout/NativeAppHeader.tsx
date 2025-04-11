@@ -11,26 +11,24 @@
  */
 
 import React from 'react';
-import { Outlet, Route } from 'react-router-dom';
-import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
-import EmbeddedPage from '@/pages/EmbeddedPage/EmbeddedPage';
+import { useTranslation } from 'react-i18next';
+import NativeAppHeaderProps from '@libs/ui/types/NativeAppHeaderProps';
 
-const getEmbeddedRoutes = (appConfigs: AppConfigDto[]) => [
-  <Route
-    key={APP_INTEGRATION_VARIANT.EMBEDDED}
-    element={<Outlet />}
-  >
-    {appConfigs
-      .filter((item) => item.appType === APP_INTEGRATION_VARIANT.EMBEDDED)
-      .map((item) => (
-        <Route
-          key={item.name}
-          path={item.name}
-          element={<EmbeddedPage />}
-        />
-      ))}
-  </Route>,
-];
+const NativeAppHeader = ({ title, iconSrc, description }: NativeAppHeaderProps) => {
+  const { t } = useTranslation();
+  return (
+    <div className="mr-2 flex min-h-[6.25rem] text-background xl:max-h-[6.25rem]">
+      <img
+        src={iconSrc}
+        alt={`${title} ${t('common.icon')}`}
+        className="hidden h-20 w-20 object-contain md:block"
+      />
+      <div className="ml-4">
+        <h2>{title}</h2>
+        <div className="pt-5 sm:pt-0">{description && <p className="pb-4">{description}</p>}</div>
+      </div>
+    </div>
+  );
+};
 
-export default getEmbeddedRoutes;
+export default NativeAppHeader;

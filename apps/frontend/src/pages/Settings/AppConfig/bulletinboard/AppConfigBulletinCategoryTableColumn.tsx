@@ -28,6 +28,7 @@ import useAppConfigTableDialogStore from '../components/table/useAppConfigTableD
 const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
   {
     id: DEFAULT_TABLE_SORT_PROPERTY_KEY,
+    size: 110,
     header: ({ column }) => (
       <SortableHeader<BulletinCategoryResponseDto, unknown>
         column={column}
@@ -86,6 +87,7 @@ const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDt
   },
   {
     id: BULLETIN_BOARD_TABLE_COLUMNS.IS_ACTIVE,
+    size: 60,
     header: ({ column }) => <SortableHeader<BulletinCategoryResponseDto, unknown> column={column} />,
     meta: {
       translationId: 'bulletinboard.isActive',
@@ -110,6 +112,7 @@ const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDt
   },
   {
     id: BULLETIN_BOARD_TABLE_COLUMNS.CREATED_AT,
+    size: 130,
     header: ({ column }) => <SortableHeader<BulletinCategoryResponseDto, unknown> column={column} />,
     meta: {
       translationId: 'common.createdAt',

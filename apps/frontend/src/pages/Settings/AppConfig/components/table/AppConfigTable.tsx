@@ -98,7 +98,6 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
               filterPlaceHolderText={filterPlaceHolderText}
               applicationName={applicationName}
               enableRowSelection={false}
-              tableIsUsedOnAppConfigPage
               initialColumnVisibility={initialColumnVisibility}
             />
           );
@@ -112,7 +111,6 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
               filterPlaceHolderText={filterPlaceHolderText}
               applicationName={applicationName}
               enableRowSelection={false}
-              tableIsUsedOnAppConfigPage
               initialColumnVisibility={initialColumnVisibility}
             />
           );
@@ -126,7 +124,6 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
               filterPlaceHolderText={filterPlaceHolderText}
               applicationName={applicationName}
               enableRowSelection={false}
-              tableIsUsedOnAppConfigPage
               initialColumnVisibility={initialColumnVisibility}
             />
           );
@@ -140,7 +137,6 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
               filterPlaceHolderText={filterPlaceHolderText}
               applicationName={applicationName}
               enableRowSelection={false}
-              tableIsUsedOnAppConfigPage
               initialColumnVisibility={initialColumnVisibility}
             />
           );

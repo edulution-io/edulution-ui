@@ -13,7 +13,7 @@
 import React from 'react';
 import MailPage from '@/pages/Mail/MailPage';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import useFrameStore from '@/components/framing/FrameStore';
+import useFrameStore from '@/components/structure/framing/useFrameStore';
 import LinuxmusterPage from '@/pages/LinuxmusterPage/LinuxmusterPage';
 import Whiteboard from '@/pages/Whiteboard/Whiteboard';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
@@ -26,7 +26,7 @@ const isActiveNativeFrame = (appConfig: AppConfigDto, loadedFrames: string[]) =>
   return loadedFrames.includes(appConfig.name);
 };
 
-const NativeFrames = () => {
+const NativeFrameManager = () => {
   const { appConfigs } = useAppConfigsStore();
   const { loadedEmbeddedFrames } = useFrameStore();
 
@@ -46,4 +46,4 @@ const NativeFrames = () => {
     });
 };
 
-export default NativeFrames;
+export default NativeFrameManager;
