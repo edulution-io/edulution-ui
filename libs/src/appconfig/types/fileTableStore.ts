@@ -10,13 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { type RowSelectionState } from '@tanstack/react-table';
 import type AppConfigTable from '@libs/bulletinBoard/types/appConfigTable';
 import type FileInfoDto from './fileInfo.dto';
 
 export interface FileTableStore extends AppConfigTable<FileInfoDto> {
-  selectedRows: RowSelectionState;
-  setSelectedRows: (selectedRows: RowSelectionState) => void;
   files: Record<string, string>;
   isLoading: boolean;
   error: string | null;

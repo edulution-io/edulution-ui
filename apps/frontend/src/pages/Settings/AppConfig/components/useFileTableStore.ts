@@ -11,7 +11,6 @@
  */
 
 import { create } from 'zustand';
-import { type RowSelectionState } from '@tanstack/react-table';
 import { type FileTableStore } from '@libs/appconfig/types/fileTableStore';
 import eduApi from '@/api/eduApi';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
@@ -28,7 +27,7 @@ const initialValues = {
 const useFileTableStore = create<FileTableStore>((set) => ({
   ...initialValues,
 
-  setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
+  setSelectedRows: (selectedRows) => set({ selectedRows }),
 
   setIsLoading: (isLoading: boolean) => set({ isLoading }),
 

@@ -24,7 +24,7 @@ import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import type TApps from '@libs/appconfig/types/appsType';
 import useMedia from '@/hooks/useMedia';
-import { VisibilityState } from '@tanstack/react-table';
+import { OnChangeFn, RowSelectionState, VisibilityState } from '@tanstack/react-table';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 
 interface AppConfigTableProps {
@@ -54,8 +54,15 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
       filterKey,
       type,
     } = config;
-    const { tableContentData, fetchTableContent } = useStore();
+    const { tableContentData, fetchTableContent, selectedRows, setSelectedRows } = useStore();
     const { setDialogOpen, isDialogOpen } = useAppConfigTableDialogStore();
+
+    const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
+      if (selectedRows && setSelectedRows) {
+        const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedRows) : updaterOrValue;
+        setSelectedRows(newValue);
+      }
+    };
 
     useEffect(() => {
       const fetchDataAsync = async () => {
@@ -122,9 +129,11 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
               data={tableContentData as FileInfoDto[]}
               filterKey={filterKey}
               filterPlaceHolderText={filterPlaceHolderText}
-              applicationName={applicationName}
-              enableRowSelection={false}
+              applicationName="settings.appconfig.sections.files"
+              enableRowSelection
               initialColumnVisibility={initialColumnVisibility}
+              selectedRows={selectedRows}
+              onRowSelectionChange={handleRowSelectionChange}
             />
           );
         }

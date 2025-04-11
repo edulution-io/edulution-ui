@@ -34,6 +34,16 @@ const renderFileIcon = (item: FileInfoDto) => {
 
 const FileTableColumns: ColumnDef<FileInfoDto>[] = [
   {
+    id: 'id',
+    header: () => <div className="hidden" />,
+    cell: ({ row }) => (
+      <SelectableTextCell
+        row={row}
+        className="max-w-0"
+      />
+    ),
+  },
+  {
     id: 'filename',
     header: ({ column }) => <SortableHeader<FileInfoDto, unknown> column={column} />,
 
@@ -45,8 +55,8 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
     cell: ({ row }) => (
       <SelectableTextCell
         icon={renderFileIcon(row.original)}
-        row={row}
         text={row.original.filename}
+        onClick={() => row.toggleSelected()}
       />
     ),
   },
@@ -64,7 +74,7 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
       return (
         <SelectableTextCell
           text={formatBytes(fileSize)}
-          className="cursor-auto"
+          onClick={() => row.toggleSelected()}
         />
       );
     },
@@ -81,7 +91,7 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
     cell: ({ row }) => (
       <SelectableTextCell
         text={row.original.type}
-        className="cursor-auto"
+        onClick={row.toggleSelected}
       />
     ),
   },
@@ -99,7 +109,7 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
       return (
         <SelectableTextCell
           text={formattedDate}
-          className="cursor-auto"
+          onClick={row.toggleSelected}
         />
       );
     },
