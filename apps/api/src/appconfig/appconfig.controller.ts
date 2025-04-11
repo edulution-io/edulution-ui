@@ -119,6 +119,13 @@ class AppConfigController {
   getFiles(@Param('path') path: string) {
     return this.filesystemService.getFilesInfo(path);
   }
+
+  @Delete('file/:name/:filename')
+  @UseGuards(AppConfigGuard)
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  deleteFile(@Param('name') name: string, @Param('filename') filename: string) {
+    return FilesystemService.deleteFile(`${APPS_FILES_PATH}/${name}`, filename);
+  }
 }
 
 export default AppConfigController;

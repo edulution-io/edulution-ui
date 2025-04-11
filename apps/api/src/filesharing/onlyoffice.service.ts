@@ -23,6 +23,7 @@ import { JwtService } from '@nestjs/jwt';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import APPS from '@libs/appconfig/constants/apps';
 import type PatchConfigDto from '@libs/common/types/patchConfigDto';
+import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import AppConfigService from '../appconfig/appconfig.service';
 import FilesystemService from '../filesystem/filesystem.service';
 
@@ -88,7 +89,7 @@ class OnlyofficeService implements OnModuleInit {
     }
 
     await uploadFile(username, cleanedPath, file, '');
-    await FilesystemService.deleteFile(uniqueFileName);
+    await FilesystemService.deleteFile(PUBLIC_DOWNLOADS_PATH, uniqueFileName);
 
     return res.status(HttpStatus.OK).json({ error: 0 });
   }

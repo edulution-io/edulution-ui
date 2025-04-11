@@ -123,8 +123,8 @@ class FilesystemService {
     }
   }
 
-  static async deleteFile(fileName: string): Promise<void> {
-    const filePath = join(PUBLIC_DOWNLOADS_PATH, fileName);
+  static async deleteFile(path: string, fileName: string): Promise<void> {
+    const filePath = join(path, fileName);
     try {
       await fsPromises.unlink(filePath);
       Logger.log(`File deleted at ${filePath}`);
