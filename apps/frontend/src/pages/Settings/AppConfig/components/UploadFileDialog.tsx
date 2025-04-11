@@ -10,27 +10,89 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import React from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
+import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
+import { Button } from '@/components/shared/Button';
+import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
+import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
+import useAppConfigTableDialogStore from './table/useAppConfigTableDialogStore';
+import useAppConfigsStore from '../appConfigsStore';
 
 interface UploadFileDialogProps {
   settingLocation: string;
+  tableId: ExtendedOptionKeysType;
 }
 
-const UploadFileDialog: React.FC<UploadFileDialogProps> = ({ settingLocation }) => {
+const UploadFileDialog: React.FC<UploadFileDialogProps> = ({ settingLocation, tableId }) => {
   const { t } = useTranslation();
-  const [isOpen, setDialogOpen] = useState(false);
-  console.warn(settingLocation);
+  const { isLoading, uploadFile } = useAppConfigsStore();
+  const { filesToUpload, setFilesToUpload } = useFileSharingDialogStore();
 
-  const getDialogBody = () => <div />;
+  const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
+  const isOpen = isDialogOpen === tableId;
+
+  const getDialogBody = () => (
+    <>
+      {isLoading && <HorizontalLoader />}
+      <UploadContentBody />
+    </>
+  );
+
+  const handleUplaod = async () => {
+    try {
+      await Promise.all(
+        filesToUpload.map(async (file) => {
+          const response = await uploadFile(settingLocation, file);
+
+          if (!response) {
+            throw new Error('File upload failed');
+          }
+        }),
+      );
+
+      toast.success(t('settings.appconfig.sections.files.uploadSuccess'));
+
+      setFilesToUpload([]);
+      setDialogOpen('');
+    } catch (error) {
+      toast.error(t('settings.appconfig.sections.files.uploadFailed'));
+    }
+  };
+
+  const getDialogFooter = () => (
+    <>
+      <Button
+        variant="btn-outline"
+        size="lg"
+        type="button"
+        onClick={() => setDialogOpen('')}
+        disabled={isLoading}
+      >
+        {t('common.cancel')}
+      </Button>
+      <Button
+        variant="btn-collaboration"
+        size="lg"
+        type="button"
+        onClick={handleUplaod}
+        disabled={isLoading || filesToUpload.length === 0}
+      >
+        {t('common.upload')}
+      </Button>
+    </>
+  );
 
   return (
     <AdaptiveDialog
-      title={t(`containerApplication.dialogTitle`, { applicationName: t(`${settingLocation}.sidebar`) })}
+      title={t('filesharingUpload.title')}
       isOpen={isOpen}
       body={getDialogBody()}
-      handleOpenChange={() => setDialogOpen((prev) => !prev)}
+      footer={getDialogFooter()}
+      handleOpenChange={() => setDialogOpen('')}
     />
   );
 };

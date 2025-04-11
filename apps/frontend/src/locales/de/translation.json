@@ -786,7 +786,9 @@
         },
         "files": {
           "title": "Dateien",
-          "description": "Hier können die Dateien verwaltet werden, die in der App angezeigt werden."
+          "description": "Hier können die Dateien verwaltet werden, die in der App angezeigt werden.",
+          "uploadSuccess": "Dateien erfolgreich hochgeladen",
+          "uploadFailed": "Hochladen fehlgeschlagen"
         }
       },
       "update": {
@@ -1058,7 +1060,8 @@
     "download": "Herunterladen",
     "template": "Vorlage",
     "preview": "Vorschau",
-    "format": "Formatieren"
+    "format": "Formatieren",
+    "upload": "Hochladen"
   },
   "form": {
     "path": "Link",

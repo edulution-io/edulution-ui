@@ -10,28 +10,35 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import TABLE_CONFIG_MAP from '@/pages/Settings/AppConfig/components/table/tableConfigMap';
+import React from 'react';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { FileTableStore } from '@libs/appconfig/types/fileTableStore';
 import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
+import TABLE_CONFIG_MAP from '@/pages/Settings/AppConfig/components/table/tableConfigMap';
 import createAppConfigTableEntry from './createAppConfigTableEntry';
 import useFileTableStore from '../useFileTableStore';
 import FileTableColumns from '../FileTableColumns';
-
-const dynamicConfigs = createAppConfigTableEntry<FileInfoDto, FileTableStore>({
-  columns: FileTableColumns,
-  useStore: useFileTableStore,
-  dialogBody: null,
-  showAddButton: false,
-  filterKey: 'filename',
-  filterPlaceHolderText: 'filesharing.filterPlaceHolderText',
-  type: ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT,
-  hideColumnsInMobileView: [],
-  hideColumnsInTabletView: [],
-});
+import UploadFileDialog from '../UploadFileDialog';
 
 const getAppConfigTableConfig = (appName: string, tableId: string) => {
   if (!(appName in TABLE_CONFIG_MAP)) {
+    const dynamicConfigs = createAppConfigTableEntry<FileInfoDto, FileTableStore>({
+      columns: FileTableColumns,
+      useStore: useFileTableStore,
+      dialogBody: (
+        <UploadFileDialog
+          settingLocation={appName}
+          tableId={ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT}
+        />
+      ),
+      showAddButton: true,
+      filterKey: 'filename',
+      filterPlaceHolderText: 'filesharing.filterPlaceHolderText',
+      type: ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT,
+      hideColumnsInMobileView: [],
+      hideColumnsInTabletView: [],
+    });
+
     return dynamicConfigs;
   }
 

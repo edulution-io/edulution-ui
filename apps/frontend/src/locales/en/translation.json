@@ -784,7 +784,9 @@
         },
         "files": {
           "title": "Files",
-          "description": "The files that are displayed in the app can be managed here."
+          "description": "The files that are displayed in the app can be managed here.",
+          "uploadSuccess": "Upload successful",
+          "uploadFailed": "Upload failed"
         }
       },
       "update": {
@@ -1057,7 +1059,8 @@
     "download": "Download",
     "template": "Template",
     "preview": "Preview",
-    "format": "format"
+    "format": "Format",
+    "upload": "Upload"
   },
   "form": {
     "path": "Path",
