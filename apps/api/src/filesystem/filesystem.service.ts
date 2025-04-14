@@ -193,7 +193,7 @@ class FilesystemService {
     }
   }
 
-  async deleteDirectories(directories: string[]): Promise<void> {
+  static async deleteDirectories(directories: string[]): Promise<void> {
     try {
       const deletionPromises = directories.map((directory) => fsPromises.rm(directory, { recursive: true }));
       await Promise.all(deletionPromises);

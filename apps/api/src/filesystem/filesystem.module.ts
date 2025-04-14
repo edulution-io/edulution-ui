@@ -11,17 +11,13 @@
  */
 
 import { Global, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import AppConfigController from './appconfig.controller';
-import AppConfigService from './appconfig.service';
-import { AppConfig, AppConfigSchema } from './appconfig.schema';
-import MigrationService from '../migration/migration.service';
+import FilesystemService from './filesystem.service';
+import FileSystemController from './filesystem.controller';
 
 @Global()
 @Module({
-  imports: [MongooseModule.forFeature([{ name: AppConfig.name, schema: AppConfigSchema }])],
-  controllers: [AppConfigController],
-  providers: [AppConfigService, MigrationService],
-  exports: [AppConfigService],
+  controllers: [FileSystemController],
+  providers: [FilesystemService],
+  exports: [FilesystemService],
 })
-export default class AppConfigModule {}
+export default class FileSystemModule {}

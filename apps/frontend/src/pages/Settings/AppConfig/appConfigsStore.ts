@@ -171,7 +171,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
         try {
           const formData = new FormData();
           formData.append('file', file);
-          const response = await eduApi.post<string>(`${EDU_API_CONFIG_ENDPOINTS.ROOT}/files/${appName}`, formData);
+          const response = await eduApi.post<string>(`files/${appName}`, formData);
           return response.data;
         } catch (e) {
           handleApiError(e, set);

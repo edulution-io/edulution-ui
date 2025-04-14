@@ -117,9 +117,12 @@ class AppConfigService implements OnModuleInit {
           JSON.parse(appConfigDto?.options?.proxyConfig) as string,
         );
       } else {
-        const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appConfigDto?.name}.yml`;
-
-        await FilesystemService.checkIfFileExistAndDelete(filePath);
+        const doesFileExist = await FilesystemService.checkIfFileExist(
+          `${TRAEFIK_CONFIG_FILES_PATH}/${appConfigDto?.name}.yml`,
+        );
+        if (doesFileExist) {
+          await FilesystemService.deleteFile(TRAEFIK_CONFIG_FILES_PATH, `${appConfigDto?.name}.yml`);
+        }
       }
     }
   }
@@ -183,9 +186,15 @@ class AppConfigService implements OnModuleInit {
         AppConfigService.name,
       );
     } finally {
-      const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${configName}.yml`;
+      const doesFileExist = await FilesystemService.checkIfFileExist(`${TRAEFIK_CONFIG_FILES_PATH}/${configName}.yml`);
+      if (doesFileExist) {
+        await FilesystemService.deleteFile(TRAEFIK_CONFIG_FILES_PATH, `${configName}.yml`);
+      }
 
-      await FilesystemService.checkIfFileExistAndDelete(filePath);
+      const doesFolderExist = await FilesystemService.checkIfFileExist(`${APPS_FILES_PATH}/${configName}`);
+      if (doesFolderExist) {
+        await FilesystemService.deleteDirectories([`${APPS_FILES_PATH}/${configName}`]);
+      }
 
       this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
     }
