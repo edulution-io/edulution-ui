@@ -787,7 +787,8 @@
           "description": "The files that are displayed in the app can be managed here.",
           "uploadSuccess": "Upload successful",
           "uploadFailed": "Upload failed",
-          "rowSelected": "{{selected}} of {{total}} files selected"
+          "rowSelected": "{{selected}} of {{total}} files selected",
+          "rowsSelected": "{{selected}} of {{total}} files selected"
         }
       },
       "update": {

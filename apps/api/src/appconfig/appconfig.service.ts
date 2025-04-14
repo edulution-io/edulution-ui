@@ -15,8 +15,6 @@ import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Connection, Model } from 'mongoose';
 import { readFileSync, writeFileSync } from 'fs';
-import { join } from 'path';
-import { type Response } from 'express';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
@@ -37,7 +35,6 @@ class AppConfigService implements OnModuleInit {
     @InjectConnection() private readonly connection: Connection,
     @InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>,
     private eventEmitter: EventEmitter2,
-    private readonly fileSystemService: FilesystemService,
   ) {}
 
   async onModuleInit() {
@@ -229,16 +226,6 @@ class AppConfigService implements OnModuleInit {
         AppConfigService.name,
       );
     }
-  }
-
-  async serveFiles(name: string, filename: string, res: Response) {
-    const filePath = join(APPS_FILES_PATH, name, filename);
-
-    await FilesystemService.throwErrorIfFileNotExists(filePath);
-    const fileStream = await this.fileSystemService.createReadStream(filePath);
-    fileStream.pipe(res);
-
-    return res;
   }
 }
 

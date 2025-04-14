@@ -20,6 +20,7 @@ import { dirname, extname, join } from 'path';
 import { pipeline, Readable } from 'stream';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { type Response } from 'express';
 import { ResponseType } from '@libs/common/types/http-methods';
 import HashAlgorithm from '@libs/common/constants/hashAlgorithm';
 import CustomFile from '@libs/filesharing/types/customFile';
@@ -241,6 +242,16 @@ class FilesystemService {
     } catch (error) {
       return [];
     }
+  }
+
+  async serveFiles(name: string, filename: string, res: Response) {
+    const filePath = join(APPS_FILES_PATH, name, filename);
+
+    await FilesystemService.throwErrorIfFileNotExists(filePath);
+    const fileStream = await this.createReadStream(filePath);
+    fileStream.pipe(res);
+
+    return res;
   }
 }
 

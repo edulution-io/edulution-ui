@@ -789,7 +789,8 @@
           "description": "Hier können die Dateien verwaltet werden, die in der App angezeigt werden.",
           "uploadSuccess": "Dateien erfolgreich hochgeladen",
           "uploadFailed": "Hochladen fehlgeschlagen",
-          "rowSelected": "{{selected}} von {{total}} Dateien ausgewählt"
+          "rowSelected": "{{selected}} von {{total}} Dateien ausgewählt",
+          "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt"
         }
       },
       "update": {

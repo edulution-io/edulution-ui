@@ -18,17 +18,13 @@ import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import { createAttachmentUploadOptions } from '../common/multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
-import AppConfigService from '../appconfig/appconfig.service';
 import FilesystemService from './filesystem.service';
 
 @ApiTags('files')
 @ApiBearerAuth()
 @Controller('files')
 class FileSystemController {
-  constructor(
-    private readonly appConfigService: AppConfigService,
-    private readonly filesystemService: FilesystemService,
-  ) {}
+  constructor(private readonly filesystemService: FilesystemService) {}
 
   @Post(':name')
   @UseGuards(AppConfigGuard)
@@ -47,7 +43,7 @@ class FileSystemController {
     return res.status(200).json(file.filename);
   }
 
-  @Get(':path(.*)')
+  @Get('info/:path(.*)')
   @UseGuards(AppConfigGuard)
   getFiles(@Param('path') path: string) {
     return this.filesystemService.getFilesInfo(path);
@@ -55,7 +51,7 @@ class FileSystemController {
 
   @Get('file/:name/:filename')
   serveFiles(@Param('name') name: string, @Param('filename') filename: string, @Res() res: Response) {
-    return this.appConfigService.serveFiles(name, filename, res);
+    return this.filesystemService.serveFiles(name, filename, res);
   }
 
   @Delete(':name/:filename')

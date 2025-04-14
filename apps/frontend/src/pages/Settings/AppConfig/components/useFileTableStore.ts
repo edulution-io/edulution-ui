@@ -34,7 +34,7 @@ const useFileTableStore = create<FileTableStore>((set) => ({
   fetchTableContent: async (applicationName) => {
     set({ isLoading: true });
     try {
-      const { data } = await eduApi.get<FileInfoDto[]>(`files/${applicationName}`);
+      const { data } = await eduApi.get<FileInfoDto[]>(`files/info/${applicationName}`);
 
       set({ tableContentData: data });
     } catch (error) {
