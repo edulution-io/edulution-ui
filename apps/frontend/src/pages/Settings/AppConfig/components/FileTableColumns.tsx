@@ -91,7 +91,7 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
     cell: ({ row }) => (
       <SelectableTextCell
         text={row.original.type}
-        onClick={row.toggleSelected}
+        onClick={() => row.toggleSelected()}
       />
     ),
   },
@@ -109,7 +109,7 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
       return (
         <SelectableTextCell
           text={formattedDate}
-          onClick={row.toggleSelected}
+          onClick={() => row.toggleSelected()}
         />
       );
     },

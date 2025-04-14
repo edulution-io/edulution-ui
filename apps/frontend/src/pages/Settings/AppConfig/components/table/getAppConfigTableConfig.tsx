@@ -32,6 +32,7 @@ const getAppConfigTableConfig = (appName: string, tableId: string) => {
         />
       ),
       showAddButton: true,
+      showRemoveButton: true,
       filterKey: 'filename',
       filterPlaceHolderText: 'filesharing.filterPlaceHolderText',
       type: ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT,

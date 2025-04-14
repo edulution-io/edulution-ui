@@ -18,6 +18,7 @@ interface AppConfigTable<T> {
   fetchTableContent: (applicationName?: TApps) => Promise<void> | void;
   selectedRows?: RowSelectionState;
   setSelectedRows?: (selectedRows: RowSelectionState) => void;
+  deleteTableEntry?: (applicationName: string, fileName: string) => Promise<void>;
 }
 
 export default AppConfigTable;

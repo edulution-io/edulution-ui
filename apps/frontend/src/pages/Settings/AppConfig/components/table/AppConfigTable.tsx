@@ -12,7 +12,7 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IoAdd } from 'react-icons/io5';
+import { IoAdd, IoRemove } from 'react-icons/io5';
 import { type ContainerInfo } from 'dockerode';
 import { AppConfigTableConfig } from '@/pages/Settings/AppConfig/components/table/types/appConfigTableConfig';
 import getAppConfigTableConfig from '@/pages/Settings/AppConfig/components/table/getAppConfigTableConfig';
@@ -49,12 +49,13 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
       hideColumnsInMobileView,
       useStore,
       showAddButton,
+      showRemoveButton = false,
       dialogBody,
       filterPlaceHolderText,
       filterKey,
       type,
     } = config;
-    const { tableContentData, fetchTableContent, selectedRows, setSelectedRows } = useStore();
+    const { tableContentData, fetchTableContent, selectedRows, setSelectedRows, deleteTableEntry } = useStore();
     const { setDialogOpen, isDialogOpen } = useAppConfigTableDialogStore();
 
     const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
@@ -76,6 +77,25 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
 
     const handleAddClick = () => {
       setDialogOpen(tableId);
+    };
+
+    const handleRemoveClick = async () => {
+      if (!selectedRows) return;
+
+      const selectedIndices = Object.keys(selectedRows)
+        .filter((key) => selectedRows[key])
+        .map(Number);
+
+      const deletePromises = selectedIndices.map((index) => {
+        const row = tableContentData[index];
+        if (row && 'filename' in row && row.filename && deleteTableEntry) {
+          return deleteTableEntry(applicationName, row.filename);
+        }
+        return Promise.resolve();
+      });
+
+      await Promise.all(deletePromises);
+      await fetchTableContent(applicationName as TApps);
     };
 
     const initialColumnVisibility = useMemo(() => {
@@ -158,17 +178,30 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
     return (
       <div className="mb-8">
         {getScrollableTable()}
-        {showAddButton && (
-          <div className="flex w-full">
-            <Button
-              className="flex h-2 w-full items-center justify-center rounded-md border border-gray-500 hover:bg-accent"
-              onClick={handleAddClick}
-              type="button"
-            >
-              <IoAdd className="text-xl text-background" />
-            </Button>
-          </div>
-        )}
+        <div className="flex w-full items-center justify-between gap-2">
+          {showAddButton && (
+            <div className="flex w-full">
+              <Button
+                className="flex h-2 w-full items-center justify-center rounded-md border border-gray-500 hover:bg-accent"
+                onClick={handleAddClick}
+                type="button"
+              >
+                <IoAdd className="text-xl text-background" />
+              </Button>
+            </div>
+          )}
+          {showRemoveButton && (
+            <div className="flex w-full">
+              <Button
+                className="flex h-2 w-full items-center justify-center rounded-md border border-gray-500 hover:bg-accent"
+                onClick={handleRemoveClick}
+                type="button"
+              >
+                <IoRemove className="text-xl text-background" />
+              </Button>
+            </div>
+          )}
+        </div>
         {dialogBody}
       </div>
     );
