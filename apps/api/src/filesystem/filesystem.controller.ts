@@ -45,7 +45,6 @@ class FileSystemController {
   }
 
   @Get('info/:path(.*)')
-  @UseGuards(AppConfigGuard)
   getFiles(@Param('path') path: string) {
     return this.filesystemService.getFilesInfo(path);
   }

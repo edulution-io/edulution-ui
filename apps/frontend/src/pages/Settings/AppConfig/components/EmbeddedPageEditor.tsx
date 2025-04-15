@@ -22,6 +22,8 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import type EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEditorForm';
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 import Switch from '@/components/ui/Switch';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import useFileTableStore from './useFileTableStore';
 
 interface EmbeddedPageEditorProps {
   name: string;
@@ -31,6 +33,7 @@ interface EmbeddedPageEditorProps {
 const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) => {
   const { t } = useTranslation();
   const [openPreview, setOpenPreview] = useState(false);
+  const { tableContentData } = useFileTableStore();
 
   const toggleMode = () => {
     setOpenPreview((prev) => !prev);
@@ -49,6 +52,7 @@ const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) =
 
   const htmlContent = form.watch(`${name}.extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT}`);
   const isSandboxMode = form.watch(`${name}.extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_HTML_MODE}`);
+  const htmlContentUrl = `${EDU_API_URL}/files/file/${name}/${tableContentData.find((item) => item.type === 'html')?.filename}`;
 
   return (
     <AccordionSH
@@ -124,7 +128,7 @@ const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) =
               >
                 {isSandboxMode ? (
                   <iframe
-                    src={htmlContent}
+                    src={htmlContentUrl}
                     title={name}
                     className="h-full w-full border-0"
                     sandbox="allow-same-origin allow-scripts allow-forms "

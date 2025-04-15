@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getFromPathName } from '@libs/common/utils';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
@@ -18,20 +18,29 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import PageTitle from '@/components/PageTitle';
 import getDisplayName from '@/utils/getDisplayName';
 import useLanguage from '@/hooks/useLanguage';
+import TApps from '@libs/appconfig/types/appsType';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import useFileTableStore from '../Settings/AppConfig/components/useFileTableStore';
 
 const EmbeddedPage: React.FC = () => {
   const { pathname } = useLocation();
   const { language } = useLanguage();
+  const { tableContentData, fetchTableContent } = useFileTableStore();
 
   const { appConfigs } = useAppConfigsStore();
 
   const rootPathName = getFromPathName(pathname, 1);
+
+  useEffect(() => {
+    void fetchTableContent(rootPathName as TApps);
+  }, []);
 
   const currentAppConfig = findAppConfigByName(appConfigs, rootPathName);
 
   if (!currentAppConfig) return null;
   const pageTitle = getDisplayName(currentAppConfig, language);
   const isSandboxMode = currentAppConfig.extendedOptions?.EMBEDDED_PAGE_HTML_MODE;
+  const htmlContentUrl = `${EDU_API_URL}/files/file/${rootPathName}/${tableContentData.find((item) => item.type === 'html')?.filename}`;
   const htmlContent = (currentAppConfig.extendedOptions?.EMBEDDED_PAGE_HTML_CONTENT as string) || '';
 
   return (
@@ -39,7 +48,7 @@ const EmbeddedPage: React.FC = () => {
       <PageTitle translationId={pageTitle} />
       {isSandboxMode ? (
         <iframe
-          src={htmlContent}
+          src={htmlContentUrl}
           title={pageTitle}
           className="h-full w-full border-0"
           sandbox="allow-same-origin allow-scripts allow-forms"
