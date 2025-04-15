@@ -20,6 +20,7 @@ import { dirname, extname, join } from 'path';
 import { pipeline, Readable } from 'stream';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { lookup } from 'mime-types';
 import { type Response } from 'express';
 import { ResponseType } from '@libs/common/types/http-methods';
 import HashAlgorithm from '@libs/common/constants/hashAlgorithm';
@@ -248,6 +249,10 @@ class FilesystemService {
     const filePath = join(APPS_FILES_PATH, name, filename);
 
     await FilesystemService.throwErrorIfFileNotExists(filePath);
+
+    const contentType = lookup(filePath) || 'application/octet-stream';
+    res.setHeader('Content-Type', contentType);
+
     const fileStream = await this.createReadStream(filePath);
     fileStream.pipe(res);
 

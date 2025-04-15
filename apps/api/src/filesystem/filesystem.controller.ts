@@ -10,6 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+/* eslint-disable @typescript-eslint/class-methods-use-this */
 import { Controller, Delete, Get, Param, Post, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type Response } from 'express';
@@ -19,6 +20,7 @@ import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import { createAttachmentUploadOptions } from '../common/multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 import FilesystemService from './filesystem.service';
+import { Public } from '../common/decorators/public.decorator';
 
 @ApiTags('files')
 @ApiBearerAuth()
@@ -49,6 +51,7 @@ class FileSystemController {
     return this.filesystemService.getFilesInfo(path);
   }
 
+  @Public()
   @Get('file/:name/:filename')
   serveFiles(@Param('name') name: string, @Param('filename') filename: string, @Res() res: Response) {
     return this.filesystemService.serveFiles(name, filename, res);
@@ -56,7 +59,6 @@ class FileSystemController {
 
   @Delete(':name/:filename')
   @UseGuards(AppConfigGuard)
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   deleteFile(@Param('name') name: string, @Param('filename') filename: string) {
     return FilesystemService.deleteFile(`${APPS_FILES_PATH}/${name}`, filename);
   }

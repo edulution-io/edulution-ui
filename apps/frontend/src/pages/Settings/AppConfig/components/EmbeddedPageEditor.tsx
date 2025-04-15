@@ -17,10 +17,11 @@ import { html as beautifyHtml } from 'js-beautify';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import { Button } from '@/components/shared/Button';
 import { Textarea } from '@/components/ui/Textarea';
-import { FormControl, FormFieldSH, FormItem } from '@/components/ui/Form';
+import { FormControl, FormDescription, FormFieldSH, FormItem } from '@/components/ui/Form';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import type EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEditorForm';
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
+import Switch from '@/components/ui/Switch';
 
 interface EmbeddedPageEditorProps {
   name: string;
@@ -38,19 +39,16 @@ const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) =
   const formatCode = () => {
     form.setValue(
       `${name}.extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT}`,
-      beautifyHtml(
-        form.getValues(`${name}.extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT}`),
-
-        {
-          indent_size: 2,
-          preserve_newlines: false,
-          wrap_line_length: 200,
-        },
-      ),
+      beautifyHtml(form.getValues(`${name}.extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT}`), {
+        indent_size: 2,
+        preserve_newlines: false,
+        wrap_line_length: 200,
+      }),
     );
   };
 
   const htmlContent = form.watch(`${name}.extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT}`);
+  const isSandboxMode = form.watch(`${name}.extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_HTML_MODE}`);
 
   return (
     <AccordionSH
@@ -98,6 +96,25 @@ const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) =
               >
                 {t('common.format')}
               </Button>
+              <FormFieldSH
+                control={form.control}
+                name={`${name}.extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_HTML_MODE}`}
+                render={({ field }) => (
+                  <FormItem>
+                    <div>{t('Mode')}</div>
+                    <FormControl>
+                      <div className="flex h-9 items-center">
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={() => field.onChange(!field.value)}
+                          disabled={field.disabled}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormDescription>{t('Mode')}</FormDescription>
+                  </FormItem>
+                )}
+              />
             </div>
 
             {openPreview && (
@@ -105,11 +122,20 @@ const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) =
                 titleTranslationId={t('common.preview')}
                 handleClose={() => setOpenPreview(false)}
               >
-                <div
-                  className="h-screen"
-                  // eslint-disable-next-line react/no-danger
-                  dangerouslySetInnerHTML={{ __html: htmlContent }}
-                />
+                {isSandboxMode ? (
+                  <iframe
+                    src={htmlContent || ''}
+                    title={name}
+                    className="h-full w-full border-0"
+                    sandbox="allow-same-origin allow-scripts allow-forms "
+                  />
+                ) : (
+                  <div
+                    className="h-full w-full"
+                    // eslint-disable-next-line react/no-danger
+                    dangerouslySetInnerHTML={{ __html: htmlContent }}
+                  />
+                )}
               </ResizableWindow>
             )}
           </div>

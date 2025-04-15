@@ -81,7 +81,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
 
     const getExtendedOptions = () => {
       if (selectedApp.id === APPS.EMBEDDED) {
-        return { EMBEDDED_PAGE_HTML_CONTENT: '' };
+        return { EMBEDDED_PAGE_HTML_CONTENT: '', EMBEDDED_PAGE_HTML_MODE: false };
       }
       return {};
     };

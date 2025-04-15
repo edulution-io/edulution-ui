@@ -17,6 +17,7 @@ type EmbeddedPageEditorForm = {
   [settingLocation: string]: AppConfigDto & {
     extendedOptions: {
       [ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT]: string;
+      [ExtendedOptionKeys.EMBEDDED_PAGE_HTML_MODE]: boolean;
     };
   };
 };
