@@ -12,6 +12,7 @@
 
 import React, { useEffect } from 'react';
 import { useAuth } from 'react-oidc-context';
+import { useCookies } from 'react-cookie';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import type UserDto from '@libs/user/types/user.dto';
 import useSseStore from '@/store/useSseStore';
@@ -29,12 +30,22 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   const { isAuthenticated, eduApiToken, setEduApiToken, user, getWebdavKey } = useUserStore();
   const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
   const { eventSource, setEventSource } = useSseStore();
+  const [, setCookie] = useCookies(['authToken']);
 
   const handleLogout = useLogout();
+
+  const isDevelopment = VITE_ENV === 'development';
 
   useEffect(() => {
     if (auth.user?.access_token) {
       setEduApiToken(auth.user?.access_token);
+
+      setCookie('authToken', auth.user?.access_token, {
+        path: '/',
+        domain: window.location.hostname,
+        secure: !isDevelopment,
+        sameSite: isDevelopment ? 'lax' : 'none',
+      });
     }
   }, [auth.user?.access_token]);
 

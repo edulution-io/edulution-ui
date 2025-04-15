@@ -14,15 +14,18 @@ import { useCallback } from 'react';
 import useUserStore from '@/store/UserStore/UserStore';
 import { useAuth } from 'react-oidc-context';
 import cleanAllStores from '@/store/utils/cleanAllStores';
+import { useCookies } from 'react-cookie';
 
 const useLogout = () => {
   const auth = useAuth();
   const { logout } = useUserStore();
+  const [, , removeCookie] = useCookies(['authToken']);
 
   const handleLogout = useCallback(async () => {
     await logout();
     await auth.removeUser();
     cleanAllStores();
+    removeCookie('authToken');
   }, [logout, auth]);
 
   return handleLogout;

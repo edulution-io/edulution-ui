@@ -32,13 +32,14 @@ const EmbeddedPage: React.FC = () => {
   if (!currentAppConfig) return null;
   const pageTitle = getDisplayName(currentAppConfig, language);
   const isSandboxMode = currentAppConfig.extendedOptions?.EMBEDDED_PAGE_HTML_MODE;
+  const sandboxUrl = (currentAppConfig.extendedOptions?.EMBEDDED_PAGE_HTML_CONTENT as string) || '';
 
   return (
     <>
       <PageTitle translationId={pageTitle} />
       {isSandboxMode ? (
         <iframe
-          src={(currentAppConfig.extendedOptions?.EMBEDDED_PAGE_HTML_CONTENT as string) || ''}
+          src={sandboxUrl}
           title={pageTitle}
           className="h-full w-full border-0"
           sandbox="allow-same-origin allow-scripts allow-forms"

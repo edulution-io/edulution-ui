@@ -20,7 +20,6 @@ import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import { createAttachmentUploadOptions } from '../common/multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 import FilesystemService from './filesystem.service';
-import { Public } from '../common/decorators/public.decorator';
 
 @ApiTags('files')
 @ApiBearerAuth()
@@ -51,8 +50,7 @@ class FileSystemController {
     return this.filesystemService.getFilesInfo(path);
   }
 
-  @Public()
-  @Get('file/:name/:filename')
+  @Get('file/:name/:filename(.*)')
   serveFiles(@Param('name') name: string, @Param('filename') filename: string, @Res() res: Response) {
     return this.filesystemService.serveFiles(name, filename, res);
   }
