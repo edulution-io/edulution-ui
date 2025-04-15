@@ -124,7 +124,7 @@ const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) =
               >
                 {isSandboxMode ? (
                   <iframe
-                    src={htmlContent || ''}
+                    src={htmlContent}
                     title={name}
                     className="h-full w-full border-0"
                     sandbox="allow-same-origin allow-scripts allow-forms "

@@ -32,14 +32,14 @@ const EmbeddedPage: React.FC = () => {
   if (!currentAppConfig) return null;
   const pageTitle = getDisplayName(currentAppConfig, language);
   const isSandboxMode = currentAppConfig.extendedOptions?.EMBEDDED_PAGE_HTML_MODE;
-  const sandboxUrl = (currentAppConfig.extendedOptions?.EMBEDDED_PAGE_HTML_CONTENT as string) || '';
+  const htmlContent = (currentAppConfig.extendedOptions?.EMBEDDED_PAGE_HTML_CONTENT as string) || '';
 
   return (
     <>
       <PageTitle translationId={pageTitle} />
       {isSandboxMode ? (
         <iframe
-          src={sandboxUrl}
+          src={htmlContent}
           title={pageTitle}
           className="h-full w-full border-0"
           sandbox="allow-same-origin allow-scripts allow-forms"
@@ -48,7 +48,7 @@ const EmbeddedPage: React.FC = () => {
         <div
           className="h-full w-full"
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: currentAppConfig.extendedOptions?.EMBEDDED_PAGE_HTML_CONTENT as string }}
+          dangerouslySetInnerHTML={{ __html: htmlContent }}
         />
       )}
     </>
