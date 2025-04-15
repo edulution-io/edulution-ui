@@ -82,30 +82,12 @@ const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) =
                 </FormItem>
               )}
             />
-
-            <div className="flex justify-end gap-3">
-              <Button
-                type="button"
-                variant="btn-collaboration"
-                size="lg"
-                onClick={toggleMode}
-              >
-                {t('common.preview')}
-              </Button>
-              <Button
-                type="button"
-                variant="btn-infrastructure"
-                size="lg"
-                onClick={formatCode}
-              >
-                {t('common.format')}
-              </Button>
+            <div className="flex justify-between">
               <FormFieldSH
                 control={form.control}
                 name={`${name}.extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_HTML_MODE}`}
                 render={({ field }) => (
                   <FormItem>
-                    <div>{t('Mode')}</div>
                     <FormControl>
                       <div className="flex h-9 items-center">
                         <Switch
@@ -115,11 +97,31 @@ const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) =
                         />
                       </div>
                     </FormControl>
-                    <FormDescription>{t('Mode')}</FormDescription>
+                    <FormDescription>{t(isSandboxMode ? 'form.sandboxed' : 'form.native')}</FormDescription>
                   </FormItem>
                 )}
               />
+              <div className="flex justify-end gap-3">
+                <Button
+                  type="button"
+                  variant="btn-collaboration"
+                  size="lg"
+                  onClick={toggleMode}
+                >
+                  {t('common.preview')}
+                </Button>
+                <Button
+                  type="button"
+                  variant="btn-infrastructure"
+                  size="lg"
+                  onClick={formatCode}
+                >
+                  {t('common.format')}
+                </Button>
+              </div>
             </div>
+
+            <p>{t('form.embeddedPageEditorModeDescription')}</p>
 
             {openPreview && (
               <ResizableWindow

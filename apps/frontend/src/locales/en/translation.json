@@ -1085,6 +1085,8 @@
     "proxyDestinationPlaceholder": "e.g. http://localhost:1234/",
     "stripPrefix": "Strip prefix",
     "embeddedPageEditor": "Editor",
+    "embeddedPageEditorModeDescription": "Here you can choose between sandbox and native rendering. Sandbox is the safest variant, native the original rendering. Please note that no security precautions can be taken with native rendering. In sandbox mode, the HTML file is read from memory. To do this, upload the file.",
+    "sandboxed": "Sandbox",
     "input": {
       "dateTimePicker": {
         "timeSlot": "o'clock",
