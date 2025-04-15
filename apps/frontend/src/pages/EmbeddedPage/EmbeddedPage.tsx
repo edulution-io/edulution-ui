@@ -33,7 +33,7 @@ const EmbeddedPage: React.FC = () => {
 
   useEffect(() => {
     void fetchTableContent(rootPathName as TApps);
-  }, []);
+  }, [rootPathName]);
 
   const currentAppConfig = findAppConfigByName(appConfigs, rootPathName);
 
