@@ -41,7 +41,7 @@ const QuestionContextMenu = (props: QuestionContextMenuProps) => {
       <Button
         type="submit"
         variant="btn-collaboration"
-        //disabled={isSubmitting}
+        // disabled={isSubmitting}
         size="lg"
       >
         {t('common.save')}
