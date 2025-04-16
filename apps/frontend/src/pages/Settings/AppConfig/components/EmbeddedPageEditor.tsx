@@ -78,6 +78,7 @@ const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) =
                       onChange={field.onChange}
                       className="h-80 overflow-y-auto bg-accent text-secondary scrollbar-thin placeholder:text-p focus:outline-none"
                       style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '12pt' }}
+                      disabled={isSandboxMode}
                     />
                   </FormControl>
                 </FormItem>
