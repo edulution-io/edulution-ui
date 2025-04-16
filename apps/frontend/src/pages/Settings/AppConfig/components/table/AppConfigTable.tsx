@@ -26,10 +26,11 @@ import type TApps from '@libs/appconfig/types/appsType';
 import useMedia from '@/hooks/useMedia';
 import { OnChangeFn, RowSelectionState, VisibilityState } from '@tanstack/react-table';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
+import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 
 interface AppConfigTableProps {
   applicationName: string;
-  tableId: string;
+  tableId: ExtendedOptionKeysType;
 }
 
 const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableId }) => {

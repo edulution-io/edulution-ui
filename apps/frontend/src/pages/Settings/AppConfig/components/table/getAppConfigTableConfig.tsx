@@ -15,12 +15,13 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { FileTableStore } from '@libs/appconfig/types/fileTableStore';
 import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import TABLE_CONFIG_MAP from '@/pages/Settings/AppConfig/components/table/tableConfigMap';
+import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 import createAppConfigTableEntry from './createAppConfigTableEntry';
 import useFileTableStore from '../useFileTableStore';
 import FileTableColumns from '../FileTableColumns';
 import UploadFileDialog from '../UploadFileDialog';
 
-const getAppConfigTableConfig = (appName: string, tableId: string) => {
+const getAppConfigTableConfig = (appName: string, tableId: ExtendedOptionKeysType) => {
   if (!(appName in TABLE_CONFIG_MAP)) {
     const dynamicConfigs = createAppConfigTableEntry<FileInfoDto, FileTableStore>({
       columns: FileTableColumns,
@@ -28,7 +29,7 @@ const getAppConfigTableConfig = (appName: string, tableId: string) => {
       dialogBody: (
         <UploadFileDialog
           settingLocation={appName}
-          tableId={ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT}
+          tableId={tableId}
         />
       ),
       showAddButton: true,
