@@ -295,7 +295,7 @@ class SurveyAnswersService {
       publicUserId = createValidPublicUserId(username, uuidv4());
     }
     const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(
-      { username: publicUserId },
+      { username: publicUserId, firstName: username },
       surveyId,
       saveNo,
       answer,
@@ -340,14 +340,14 @@ class SurveyAnswersService {
     return answers.map((answer) => {
       const { username, firstName, lastName } = answer.attendee;
       let identification;
-      if (firstName || lastName) {
+      if (!firstName) {
+        identification = username;
+      } else if (!publicUserIdRegex.test(username)) {
         identification = `(${username})`;
         identification = lastName ? `${lastName} ${identification}` : identification;
         identification = firstName ? `${firstName} ${identification}` : identification;
       } else if (publicUserIdRegex.test(username)) {
-        identification = username.split('_').slice(1, -1).join('_');
-      } else {
-        identification = 'Unauthenticated';
+        identification = firstName;
       }
       return { identification, ...answer.answer };
     });
