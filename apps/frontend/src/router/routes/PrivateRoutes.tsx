@@ -36,7 +36,7 @@ import getFileSharingRoutes from '@/router/routes/FileSharingRoutes';
 import React from 'react';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import DashboardPage from '../../pages/Dashboard/DashboardPage';
-import ProtectedRoute from './ProtectedRoutes';
+import ProtectedRoute from './ProtectedRoute';
 
 const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
   <>
