@@ -14,16 +14,22 @@ import React, { lazy, Suspense } from 'react';
 import { Navigate, Outlet, Route } from 'react-router-dom';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import AppStorePage from '@/pages/Settings/AppConfig/appStore/AppStorePage';
 import APPS from '@libs/appconfig/constants/apps';
 import CONTAINER from '@libs/docker/constants/container';
 import TABS from '@libs/common/constants/tabsElementId';
 
 const SettingsPage = lazy(() => import('@/pages/Settings/SettingsPage'));
+const AppStorePage = lazy(() => import('@/pages/Settings/AppConfig/appStore/AppStorePage'));
 
 const getLazySettingsPage = () => (
   <Suspense fallback={<CircleLoader />}>
     <SettingsPage />
+  </Suspense>
+);
+
+const getLazyAppstorePage = () => (
+  <Suspense fallback={<CircleLoader />}>
+    <AppStorePage />
   </Suspense>
 );
 
@@ -44,7 +50,7 @@ const getSettingsRoutes = () => [
     />
     <Route
       path={APPS.APPSTORE}
-      element={<AppStorePage />}
+      element={getLazyAppstorePage()}
     />
     <Route path={TABS}>
       <Route

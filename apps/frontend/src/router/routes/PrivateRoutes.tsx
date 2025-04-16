@@ -36,6 +36,7 @@ import getFileSharingRoutes from '@/router/routes/FileSharingRoutes';
 import React from 'react';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import DashboardPage from '../../pages/Dashboard/DashboardPage';
+import ProtectedRoute from './ProtectedRoutes';
 
 const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
   <>
@@ -82,8 +83,7 @@ const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
       path={`${APPS.BULLETIN_BOARD}/:bulletinId`}
       element={<BulletinBoardPage />}
     />
-
-    {getSettingsRoutes()}
+    <Route element={<ProtectedRoute />}>{getSettingsRoutes()}</Route>
     {getClassManagementRoutes()}
     {getSurveyRoutes()}
     {getFileSharingRoutes()}
