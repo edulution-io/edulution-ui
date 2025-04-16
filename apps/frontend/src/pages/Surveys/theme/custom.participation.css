@@ -24,6 +24,10 @@
     line-height: 16pt;
   }
 
+  .sd-container-modern {
+    height: fit-content;
+  }
+
   .sd-body.sd-body--static {
     max-width: 100%;
     width: 100%;
