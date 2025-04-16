@@ -530,7 +530,10 @@
       "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
       "abort": "Alle Änderungen verwerfen",
       "addDescription": "Beschreibung hinzufügen",
-      "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
+      "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
+      "questionSettings": {
+        "defaultTitle": "Frage bearbeiten"
+      }
     },
     "participate": {
       "saveAnswerSuccess": "Die Antwort wurde gespeichert."

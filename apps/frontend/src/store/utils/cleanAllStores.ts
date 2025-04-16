@@ -38,6 +38,7 @@ import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/Pu
 import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
+import useQuestionSettingsDialogStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import useSseStore from '../useSseStore';
 
 const cleanAllStores = () => {
@@ -72,6 +73,7 @@ const cleanAllStores = () => {
   useSubmittedAnswersDialogStore.getState().reset();
   useDeleteSurveyStore.getState().reset();
   useParticipateSurveyStore.getState().reset();
+  useQuestionSettingsDialogStore.getState().reset();
   useSseStore.getState().reset();
   localStorage.removeItem('i18nextLng');
 };

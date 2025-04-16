@@ -36,6 +36,9 @@ import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 import createSurveyCreatorComponent from '@/pages/Surveys/Editor/createSurveyCreatorObject';
 import useBeforeUnload from '@/hooks/useBeforeUnload';
+import QuestionContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
+import useQuestionSettingsDialogStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
+import { Question } from 'survey-core/typings/question';
 
 const SurveyEditorPage = () => {
   const { fetchSelectedSurvey, isFetching, selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
@@ -49,6 +52,8 @@ const SurveyEditorPage = () => {
     updateStoredSurvey,
     resetStoredSurvey,
   } = useSurveyEditorPageStore();
+  const { setIsOpenQuestionContextMenu, isOpenQuestionContextMenu, setSelectedQuestion } =
+    useQuestionSettingsDialogStore();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -108,6 +113,27 @@ const SurveyEditorPage = () => {
       creator.JSON = form.getValues('formula');
       creator.locale = language;
       creator.saveSurveyFunc = updateSurveyStorage;
+
+      creator.onDefineElementMenuItems.add((_, options) => {
+        const settingsItemIndex = options.items.findIndex((option) => option.id === 'settings');
+        if (options.items[settingsItemIndex]) {
+          // eslint-disable-next-line no-param-reassign
+          options.items[settingsItemIndex].visibleIndex = 10;
+          // eslint-disable-next-line no-param-reassign
+          options.items[settingsItemIndex].title = t('survey.editor.questionSettings.defaultTitle');
+          // eslint-disable-next-line no-param-reassign
+          options.items[settingsItemIndex].action = () => {
+            if (_.isObjQuestion(_.selectedElement)) {
+              setIsOpenQuestionContextMenu(true);
+              setSelectedQuestion(_.selectedElement as unknown as Question);
+            }
+          };
+
+          const doubleItemIndex = options.items.findIndex((option) => option.id === 'duplicate');
+          // eslint-disable-next-line no-param-reassign
+          options.items[doubleItemIndex].visibleIndex = 20;
+        }
+      });
     }
   }, [creator, form, language]);
 
@@ -163,6 +189,11 @@ const SurveyEditorPage = () => {
             setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
             submitSurvey={handleSaveSurvey}
             isSubmitting={isLoading}
+          />
+          <QuestionContextMenu
+            // form={form}
+            isOpenQuestionContextMenu={isOpenQuestionContextMenu}
+            setIsOpenQuestionContextMenu={setIsOpenQuestionContextMenu}
           />
         </>
       )}
