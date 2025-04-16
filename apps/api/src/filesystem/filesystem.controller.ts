@@ -17,13 +17,14 @@ import { type Response } from 'express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import { createAttachmentUploadOptions } from '../common/multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 import FilesystemService from './filesystem.service';
 
-@ApiTags('files')
+@ApiTags(EDU_API_CONFIG_ENDPOINTS.FILES)
 @ApiBearerAuth()
-@Controller('files')
+@Controller(EDU_API_CONFIG_ENDPOINTS.FILES)
 class FileSystemController {
   constructor(private readonly filesystemService: FilesystemService) {}
 

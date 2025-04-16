@@ -20,6 +20,7 @@ import getDisplayName from '@/utils/getDisplayName';
 import useLanguage from '@/hooks/useLanguage';
 import TApps from '@libs/appconfig/types/appsType';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import useFileTableStore from '../Settings/AppConfig/components/useFileTableStore';
 
 const EmbeddedPage: React.FC = () => {
@@ -40,7 +41,7 @@ const EmbeddedPage: React.FC = () => {
   if (!currentAppConfig) return null;
   const pageTitle = getDisplayName(currentAppConfig, language);
   const isSandboxMode = currentAppConfig.extendedOptions?.EMBEDDED_PAGE_HTML_MODE;
-  const htmlContentUrl = `${EDU_API_URL}/files/file/${rootPathName}/${tableContentData.find((item) => item.type === 'html')?.filename}`;
+  const htmlContentUrl = `${EDU_API_URL}/${EDU_API_CONFIG_ENDPOINTS.FILES}/file/${rootPathName}/${tableContentData.find((item) => item.type === 'html')?.filename}`;
   const htmlContent = (currentAppConfig.extendedOptions?.EMBEDDED_PAGE_HTML_CONTENT as string) || '';
 
   return (

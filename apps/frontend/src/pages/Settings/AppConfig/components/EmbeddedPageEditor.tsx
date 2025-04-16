@@ -23,6 +23,7 @@ import type EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEdito
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 import Switch from '@/components/ui/Switch';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import useFileTableStore from './useFileTableStore';
 
 interface EmbeddedPageEditorProps {
@@ -52,7 +53,7 @@ const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) =
 
   const htmlContent = form.watch(`${name}.extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT}`);
   const isSandboxMode = form.watch(`${name}.extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_HTML_MODE}`);
-  const htmlContentUrl = `${EDU_API_URL}/files/file/${name}/${tableContentData.find((item) => item.type === 'html')?.filename}`;
+  const htmlContentUrl = `${EDU_API_URL}/${EDU_API_CONFIG_ENDPOINTS.FILES}/file/${name}/${tableContentData.find((item) => item.type === 'html')?.filename}`;
 
   return (
     <AccordionSH

@@ -15,6 +15,7 @@ import { type FileTableStore } from '@libs/appconfig/types/fileTableStore';
 import eduApi from '@/api/eduApi';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import handleApiError from '@/utils/handleApiError';
+import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 
 const initialValues = {
   tableContentData: [],
@@ -34,7 +35,7 @@ const useFileTableStore = create<FileTableStore>((set) => ({
   fetchTableContent: async (applicationName) => {
     set({ isLoading: true });
     try {
-      const { data } = await eduApi.get<FileInfoDto[]>(`files/info/${applicationName}`);
+      const { data } = await eduApi.get<FileInfoDto[]>(`${EDU_API_CONFIG_ENDPOINTS.FILES}/info/${applicationName}`);
 
       set({ tableContentData: data });
     } catch (error) {
@@ -47,7 +48,7 @@ const useFileTableStore = create<FileTableStore>((set) => ({
   deleteTableEntry: async (applicationName, fileName) => {
     set({ isLoading: true, error: null });
     try {
-      await eduApi.delete(`files/${applicationName}/${fileName}`);
+      await eduApi.delete(`${EDU_API_CONFIG_ENDPOINTS.FILES}/${applicationName}/${fileName}`);
     } catch (e) {
       handleApiError(e, set);
     } finally {
