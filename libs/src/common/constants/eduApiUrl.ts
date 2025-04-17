@@ -10,5 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const SURVEYS_PAGE_TABLE_HEADER_ID = 'surveys-page-table-header';
-export default SURVEYS_PAGE_TABLE_HEADER_ID;
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
+
+const EDU_API_URL = `${EDU_BASE_URL}/${EDU_API_ROOT}`;
+
+export default EDU_API_URL;

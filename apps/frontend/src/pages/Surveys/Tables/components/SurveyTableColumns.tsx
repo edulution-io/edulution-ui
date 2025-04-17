@@ -48,6 +48,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
   },
   {
     accessorKey: SURVEY_TABLE_COLUMNS.CREATED_AT,
+    size: 130,
     enableSorting: true,
     header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
     meta: {
@@ -70,6 +71,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
   },
   {
     accessorKey: SURVEY_TABLE_COLUMNS.EXPIRES,
+    size: 130,
     enableSorting: true,
     header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
     meta: {
@@ -92,6 +94,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
   },
   {
     accessorKey: SURVEY_TABLE_COLUMNS.IS_PUBLIC,
+    size: 120,
     header: ({ column }) => (
       <SortableHeader<SurveyDto, unknown>
         className={hideOnMobileClassName}
@@ -140,6 +143,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
   },
   {
     accessorKey: SURVEY_TABLE_COLUMNS.ANSWERS,
+    size: 85,
     enableSorting: true,
     header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
     meta: {

@@ -12,6 +12,7 @@
 
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import PageLayout from '@/components/structure/layout/PageLayout';
 import AppConfigPage from './AppConfig/AppConfigPage';
 import SettingsOverviewPage from './components/SettingsOverviewPage';
 
@@ -19,10 +20,12 @@ const SettingsPage: React.FC = () => {
   const { settingLocation } = useParams();
   const isAnAppConfigSelected = !!settingLocation;
 
-  return (
-    <div className="h-[calc(100vh-var(--floating-buttons-height))] overflow-y-auto scrollbar-thin">
-      {isAnAppConfigSelected ? <AppConfigPage settingLocation={settingLocation} /> : <SettingsOverviewPage />}
-    </div>
+  return isAnAppConfigSelected ? (
+    <AppConfigPage settingLocation={settingLocation} />
+  ) : (
+    <PageLayout>
+      <SettingsOverviewPage />
+    </PageLayout>
   );
 };
 

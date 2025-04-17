@@ -20,47 +20,45 @@ import FileSharingTable from '@/pages/FileSharing/Table/FileSharingTable';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import FILE_PREVIEW_ELEMENT_ID from '@libs/filesharing/constants/filePreviewElementId';
+import PageLayout from '@/components/structure/layout/PageLayout';
 
 const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
 
   return (
-    <div className="w-full overflow-x-auto">
-      <div className="h-[calc(100vh-var(--floating-buttons-height))] flex-1 overflow-hidden">
-        <div className="flex w-full flex-col justify-between space-x-2 pb-2 pt-2">
-          <DirectoryBreadcrumb
-            path={currentPath}
-            onNavigate={(filenamePath) => {
-              searchParams.set('path', filenamePath);
-              setSearchParams(searchParams);
-            }}
-            style={{ color: 'white' }}
+    <PageLayout>
+      <LoadingIndicatorDialog isOpen={isLoading} />
+
+      <div className="flex w-full flex-col justify-between space-x-2 pb-2 pt-2">
+        <DirectoryBreadcrumb
+          path={currentPath}
+          onNavigate={(filenamePath) => {
+            searchParams.set('path', filenamePath);
+            setSearchParams(searchParams);
+          }}
+          style={{ color: 'white' }}
+        />
+      </div>
+
+      <div className="flex h-full w-full flex-row overflow-hidden pb-6">
+        <div className={isFilePreviewVisible && isFilePreviewDocked ? 'w-1/2 2xl:w-2/3' : 'w-full'}>
+          {isFileProcessing ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}
+
+          <FileSharingTable />
+        </div>
+
+        {isFilePreviewVisible && (
+          <div
+            id={FILE_PREVIEW_ELEMENT_ID}
+            className={isFilePreviewDocked ? 'h-full w-1/2 2xl:w-1/3' : ''}
           />
-        </div>
-        <LoadingIndicatorDialog isOpen={isLoading} />
-        <div
-          className="flex h-full w-full flex-row md:w-auto md:max-w-7xl xl:max-w-full"
-          data-testid="test-id-file-sharing-page-data-table"
-        >
-          <div className={isFilePreviewVisible && isFilePreviewDocked ? 'w-1/2 2xl:w-2/3' : 'w-full'}>
-            {isFileProcessing ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}
-            <FileSharingTable />
-          </div>
-          {isFilePreviewVisible && (
-            <div
-              id={FILE_PREVIEW_ELEMENT_ID}
-              className={isFilePreviewDocked ? 'h-full w-1/2 2xl:w-1/3' : ''}
-              data-testid="test-id-file-preview"
-            />
-          )}
-        </div>
+        )}
       </div>
-      <div className="fixed bottom-8 mt-10 flex flex-row space-x-24">
-        <ActionContentDialog />
-        <FileSharingFloatingButtonsBar />
-      </div>
-    </div>
+
+      <ActionContentDialog />
+      <FileSharingFloatingButtonsBar />
+    </PageLayout>
   );
 };
 

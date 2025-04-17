@@ -16,6 +16,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import type { Model, UpdateWriteOpResult } from 'mongoose';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
+import { GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import GlobalSettingsService from './global-settings.service';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
 
@@ -73,8 +74,8 @@ describe('GlobalSettingsService', () => {
       const mockData = { auth: { mfaEnforcedGroups: [] } };
       model.findOne?.mockReturnValue({ lean: () => Promise.resolve(mockData) });
 
-      const result = await service.getGlobalSettings('auth');
-      expect(model.findOne).toHaveBeenCalledWith({}, 'auth');
+      const result = await service.getGlobalSettings(GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH);
+      expect(model.findOne).toHaveBeenCalledWith({}, GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH);
       expect(result).toEqual(mockData);
     });
 
@@ -83,7 +84,9 @@ describe('GlobalSettingsService', () => {
         throw new Error('Mongo error');
       });
 
-      await expect(service.getGlobalSettings('auth')).rejects.toThrow(CustomHttpException);
+      await expect(service.getGlobalSettings(GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH)).rejects.toThrow(
+        CustomHttpException,
+      );
     });
   });
 

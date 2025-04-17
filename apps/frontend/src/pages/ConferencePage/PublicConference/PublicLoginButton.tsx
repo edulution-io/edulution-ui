@@ -13,8 +13,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import useUserStore from '@/store/UserStore/UserStore';
+import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import { Button } from '@/components/shared/Button';
+import useUserStore from '@/store/UserStore/UserStore';
 
 const PublicLoginButton = () => {
   const { t } = useTranslation();
@@ -35,7 +36,7 @@ const PublicLoginButton = () => {
         size="lg"
         data-testid="test-id-login-page-submit-button"
         onClick={() =>
-          navigate('/login', {
+          navigate(LOGIN_ROUTE, {
             state: { from: location.pathname },
           })
         }

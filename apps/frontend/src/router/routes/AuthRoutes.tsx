@@ -12,36 +12,33 @@
 
 import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
-import BlankLayout from '@/components/layout/BlankLayout';
 import LoginPage from '@/pages/LoginPage/LoginPage';
+import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 
 const getAuthRoutes = (isAuthenticated: boolean) => [
   <Route
-    key="auth"
-    element={<BlankLayout />}
-  >
-    <Route
-      path="/login"
-      element={<LoginPage />}
-    />
-    <Route
-      path="*"
-      element={
-        isAuthenticated ? (
-          <Navigate
-            replace
-            to="/"
-          />
-        ) : (
-          <Navigate
-            replace
-            to="/login"
-            state={{ from: window.location.pathname }}
-          />
-        )
-      }
-    />
-  </Route>,
+    key={LOGIN_ROUTE}
+    path={LOGIN_ROUTE}
+    element={<LoginPage />}
+  />,
+  <Route
+    key="wildcard"
+    path="*"
+    element={
+      isAuthenticated ? (
+        <Navigate
+          replace
+          to={window.location.pathname === LOGIN_ROUTE ? '/' : window.location.pathname}
+        />
+      ) : (
+        <Navigate
+          replace
+          to={LOGIN_ROUTE}
+          state={{ from: window.location.pathname }}
+        />
+      )
+    }
+  />,
 ];
 
 export default getAuthRoutes;

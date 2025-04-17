@@ -10,12 +10,25 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Outlet } from 'react-router-dom';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import NativeAppHeaderProps from '@libs/ui/types/NativeAppHeaderProps';
 
-const EmptyLayout = () => (
-  <main className="flex-1">
-    <Outlet />
-  </main>
-);
-export default EmptyLayout;
+const NativeAppHeader = ({ title, iconSrc, description }: NativeAppHeaderProps) => {
+  const { t } = useTranslation();
+  return (
+    <div className="mr-2 flex min-h-[6.25rem] text-background xl:max-h-[6.25rem]">
+      <img
+        src={iconSrc}
+        alt={`${title} ${t('common.icon')}`}
+        className="hidden h-20 w-20 object-contain md:block"
+      />
+      <div className="ml-4">
+        <h2>{title}</h2>
+        <div className="pt-5 sm:pt-0">{description && <p className="pb-4">{description}</p>}</div>
+      </div>
+    </div>
+  );
+};
+
+export default NativeAppHeader;

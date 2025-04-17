@@ -12,25 +12,23 @@
 
 import React from 'react';
 import FileSharingPreviewFrame from '@/pages/FileSharing/FilePreview/FileSharingPreviewFrame';
-import { Outlet } from 'react-router-dom';
-import NativeFrames from '@/components/framing/Native/NativeFrames';
 import CommunityLicenseDialog from '@/pages/UserSettings/Info/CommunityLicenseDialog';
 import BBBFrame from '@/pages/ConferencePage/BBBIFrame';
 import VDIFrame from '@/pages/DesktopDeployment/VDIFrame';
-import EmbeddedIframes from '@/components/framing/EmbeddedIframes';
 import SetupMfaDialog from '@/pages/UserSettings/Security/components/SetupMfaDialog';
+import NativeFrameManager from '@/components/structure/framing/Native/NativeFrameManager';
+import EmbeddedFrameManager from '@/components/structure/framing/EmbeddedFrameManager';
 
-const RootLayout = () => (
+const Overlays = () => (
   <>
     <FileSharingPreviewFrame />
     <BBBFrame />
     <VDIFrame />
-    <EmbeddedIframes />
-    <NativeFrames />
+    <EmbeddedFrameManager />
+    <NativeFrameManager />
     <CommunityLicenseDialog />
     <SetupMfaDialog />
-    <Outlet />
   </>
 );
 
-export default RootLayout;
+export default Overlays;
