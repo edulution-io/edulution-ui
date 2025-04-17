@@ -13,7 +13,7 @@
 import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Get, Post, Param, Res } from '@nestjs/common';
-import { IMAGES, PUBLIC_SURVEYS, RESTFUL_CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import { ANSWER, IMAGES, PUBLIC_SURVEYS, RESTFUL_CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
