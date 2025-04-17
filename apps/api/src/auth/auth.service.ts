@@ -27,8 +27,11 @@ import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
 import AUTH_TOTP_CONFIG from '@libs/auth/constants/totp-config';
 import type AuthRequestArgs from '@libs/auth/types/auth-request';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
 import { User, UserDocument } from '../users/user.schema';
 import { fromBase64 } from '../filesharing/filesharing.utilities';
+import SseService from '../sse/sse.service';
 
 const { KEYCLOAK_EDU_UI_SECRET, KEYCLOAK_EDU_UI_CLIENT_ID, KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API } = process.env;
 
@@ -36,7 +39,10 @@ const { KEYCLOAK_EDU_UI_SECRET, KEYCLOAK_EDU_UI_CLIENT_ID, KEYCLOAK_EDU_UI_REALM
 class AuthService {
   private keycloakApi: AxiosInstance;
 
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private readonly sseService: SseService,
+  ) {
     this.keycloakApi = axios.create({
       baseURL: `${KEYCLOAK_API}/realms/${KEYCLOAK_EDU_UI_REALM}`,
     });
@@ -193,6 +199,19 @@ class AuthService {
     } catch (error) {
       throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND, undefined, AuthService.name);
     }
+  }
+
+  loginViaApp(body: LoginQrSseDto, sessionId: string) {
+    const { username, password, totpValue } = body;
+    const isConnectionActive = this.sseService.getUserConnection(sessionId);
+
+    if (!isConnectionActive) throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
+
+    this.sseService.sendEventToUser(
+      sessionId,
+      btoa(JSON.stringify({ username, password, totpValue })),
+      SSE_MESSAGE_TYPE.MESSAGE,
+    );
   }
 }
 

@@ -32,7 +32,7 @@ const SortTableCell = ({ moveUp, moveDown, position, lastPosition }: SortTableCe
         type="button"
         onClick={moveUp}
         disabled={isDisabledUp}
-        className={`ml-2 ${isDisabledUp ? 'text-foreground' : 'text-muted-foreground'}`}
+        className={`ml-4 ${isDisabledUp ? 'text-foreground' : 'text-muted-foreground'}`}
       >
         <IoArrowUpOutline />
       </button>
@@ -40,7 +40,7 @@ const SortTableCell = ({ moveUp, moveDown, position, lastPosition }: SortTableCe
         type="button"
         onClick={moveDown}
         disabled={isDisabledDown}
-        className={isDisabledDown ? 'text-foreground' : 'text-muted-foreground'}
+        className={`${isDisabledDown ? 'text-foreground' : 'text-muted-foreground'} ml-4`}
       >
         <IoArrowDownOutline />
       </button>

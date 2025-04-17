@@ -41,6 +41,8 @@ import {
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
+import FilesystemService from '../filesystem/filesystem.service';
+import mockFilesystemService from '../filesystem/filesystem.service.mock';
 
 describe(PublicSurveysController.name, () => {
   let controller: PublicSurveysController;
@@ -66,6 +68,7 @@ describe(PublicSurveysController.name, () => {
           provide: getModelToken(SurveyAnswer.name),
           useValue: jest.fn(),
         },
+        { provide: FilesystemService, useValue: mockFilesystemService },
       ],
     }).compile();
 
@@ -98,14 +101,14 @@ describe(PublicSurveysController.name, () => {
     });
 
     it('throw an error when the survey with the given id does not exist', async () => {
-      surveysService.findPublicSurvey = jest.fn().mockRejectedValue(new Error(CommonErrorMessages.DBAccessFailed));
+      surveysService.findPublicSurvey = jest.fn().mockRejectedValue(new Error(CommonErrorMessages.DB_ACCESS_FAILED));
       const id = new Types.ObjectId().toString();
 
       try {
         await controller.find({ surveyId: id });
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toEqual(CommonErrorMessages.DBAccessFailed);
+        expect(e.message).toEqual(CommonErrorMessages.DB_ACCESS_FAILED);
       }
 
       expect(surveysService.findPublicSurvey).toHaveBeenCalledWith(id);

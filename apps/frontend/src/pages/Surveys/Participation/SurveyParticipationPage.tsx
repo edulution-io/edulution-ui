@@ -21,6 +21,7 @@ import SurveyParticipationModel from '@/pages/Surveys/Participation/SurveyPartic
 import PublicSurveyAccessForm from '@/pages/Surveys/Participation/PublicSurveyAccessForm';
 import PublicSurveyParticipationId from '@/pages/Surveys/Participation/PublicSurveyParticipationId';
 import '../theme/custom.participation.css';
+import PageLayout from '@/components/structure/layout/PageLayout';
 import publicUserIdRegex from '@libs/survey/utils/publicUserIdRegex';
 
 interface SurveyParticipationPageProps {
@@ -112,10 +113,12 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
   }
 
   return (
-    <SurveyParticipationModel
-      username={user?.username || form.watch('username')}
-      isPublic={isPublic}
-    />
+    <PageLayout>
+      <SurveyParticipationModel
+        username={user?.username || form.watch('username')}
+        isPublic={isPublic}
+      />
+    </PageLayout>
   );
 };
 

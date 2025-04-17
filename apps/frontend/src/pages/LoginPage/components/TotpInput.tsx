@@ -12,32 +12,27 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
+import OtpInput from '@/components/shared/OtpInput';
 
-interface NativeAppHeaderProps {
-  title: string;
-  description?: string;
-  iconSrc: string;
+interface TotpInputProps {
+  totp: string;
+  setTotp: (value: string) => void;
+  onComplete: () => void;
 }
 
-const NativeAppHeader = ({ title, iconSrc, description }: NativeAppHeaderProps) => {
+const TotpInput: React.FC<TotpInputProps> = ({ totp, setTotp, onComplete }) => {
   const { t } = useTranslation();
+
   return (
-    <div
-      className="mr-2 flex min-h-[6.25rem] text-background xl:max-h-[6.25rem]"
-      id={NATIVE_APP_HEADER_ID}
-    >
-      <img
-        src={iconSrc}
-        alt={`${title} ${t('common.icon')}`}
-        className="hidden h-20 w-20 object-contain md:block"
+    <>
+      <div className="mt-3 text-center font-bold">{t('login.enterMultiFactorCode')}</div>
+      <OtpInput
+        totp={totp}
+        setTotp={setTotp}
+        onComplete={onComplete}
       />
-      <div className="ml-4">
-        <h2>{title}</h2>
-        <div className="pt-5 sm:pt-0">{description && <p className="pb-4">{description}</p>}</div>
-      </div>
-    </div>
+    </>
   );
 };
 
-export default NativeAppHeader;
+export default TotpInput;

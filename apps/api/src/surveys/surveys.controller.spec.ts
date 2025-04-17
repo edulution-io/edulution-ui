@@ -55,6 +55,8 @@ import {
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
+import FilesystemService from '../filesystem/filesystem.service';
+import mockFilesystemService from '../filesystem/filesystem.service.mock';
 
 describe(SurveysController.name, () => {
   let controller: SurveysController;
@@ -84,6 +86,7 @@ describe(SurveysController.name, () => {
             limit: jest.fn().mockResolvedValueOnce([firstUsersSurveyAnswerAnsweredSurvey01]),
           },
         },
+        { provide: FilesystemService, useValue: mockFilesystemService },
       ],
     }).compile();
 
@@ -241,6 +244,7 @@ describe(SurveysController.name, () => {
       jest.spyOn(surveyService, 'deleteSurveys');
       jest.spyOn(surveyAnswerService, 'onSurveyRemoval');
 
+      surveyService.onSurveyRemoval = jest.fn().mockImplementation(() => {});
       surveyModel.deleteMany = jest.fn().mockResolvedValueOnce(true);
       surveyAnswerModel.deleteMany = jest.fn().mockReturnValue(true);
 

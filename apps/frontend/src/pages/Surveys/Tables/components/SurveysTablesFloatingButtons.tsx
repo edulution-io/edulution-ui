@@ -127,9 +127,7 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
 
   return (
     <TooltipProvider>
-      <div className="absolute bottom-8 flex flex-row items-center space-x-8 bg-accent">
-        <FloatingButtonsBar config={config} />
-      </div>
+      <FloatingButtonsBar config={config} />
     </TooltipProvider>
   );
 };

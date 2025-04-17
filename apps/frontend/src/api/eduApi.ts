@@ -11,10 +11,10 @@
  */
 
 import axios from 'axios';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 
 const eduApi = axios.create({
-  baseURL: `${window.location.origin}/${EDU_API_ROOT}/`,
+  baseURL: `${EDU_API_URL}/`,
 });
 
 export default eduApi;

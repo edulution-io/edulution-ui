@@ -27,15 +27,14 @@ import useUserStore from '@/store/UserStore/UserStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useLanguage from '@/hooks/useLanguage';
-import useElementHeight from '@/hooks/useElementHeight';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 import createSurveyCreatorComponent from '@/pages/Surveys/Editor/createSurveyCreatorObject';
 import useBeforeUnload from '@/hooks/useBeforeUnload';
+import PageLayout from '@/components/structure/layout/PageLayout';
 
 const SurveyEditorPage = () => {
   const { fetchSelectedSurvey, isFetching, selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
@@ -48,6 +47,7 @@ const SurveyEditorPage = () => {
     storedSurvey,
     updateStoredSurvey,
     resetStoredSurvey,
+    uploadImageFile,
   } = useSurveyEditorPageStore();
 
   const { t } = useTranslation();
@@ -108,6 +108,18 @@ const SurveyEditorPage = () => {
       creator.JSON = form.getValues('formula');
       creator.locale = language;
       creator.saveSurveyFunc = updateSurveyStorage;
+
+      creator.onUploadFile.add(async (_, options) => {
+        // TODO: 630 (https://github.com/edulution-io/edulution-ui/issues/630) -  Currently this can only work for already created surveys
+        if (!surveyId) return;
+        const promises = options.files.map((file: File) => {
+          if (!options.question?.id) {
+            return uploadImageFile(surveyId, 'Header', file, options.callback);
+          }
+          return uploadImageFile(surveyId, options.question.id, file, options.callback);
+        });
+        await Promise.all(promises);
+      });
     }
   }, [creator, form, language]);
 
@@ -131,42 +143,32 @@ const SurveyEditorPage = () => {
     }
   };
 
-  const pageBarsHeight = useElementHeight([FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 10;
-
   const config: FloatingButtonsBarConfig = {
     buttons: [SaveButton(() => setIsOpenSaveSurveyDialog(true))],
     keyPrefix: 'surveys-page-floating-button_',
   };
 
+  if (isLoading || isFetching) return <LoadingIndicatorDialog isOpen />;
+
   return (
-    <>
-      {isLoading && <LoadingIndicatorDialog isOpen={isLoading} />}
-      {isFetching ? (
-        <LoadingIndicatorDialog isOpen={isFetching} />
-      ) : (
-        <>
-          <div
-            className="survey-editor"
-            style={{ height: `calc(100% - ${pageBarsHeight}px)` }}
-          >
-            {creator && (
-              <SurveyCreatorComponent
-                creator={creator}
-                style={{ height: '100%', width: '100%' }}
-              />
-            )}
-          </div>
-          <FloatingButtonsBar config={config} />
-          <SaveSurveyDialog
-            form={form}
-            isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
-            setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
-            submitSurvey={handleSaveSurvey}
-            isSubmitting={isLoading}
+    <PageLayout>
+      <div className="survey-editor h-full">
+        {creator && (
+          <SurveyCreatorComponent
+            creator={creator}
+            style={{ height: '100%', width: '100%' }}
           />
-        </>
-      )}
-    </>
+        )}
+      </div>
+      <FloatingButtonsBar config={config} />
+      <SaveSurveyDialog
+        form={form}
+        isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
+        setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
+        submitSurvey={handleSaveSurvey}
+        isSubmitting={isLoading}
+      />
+    </PageLayout>
   );
 };
 

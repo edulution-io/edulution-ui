@@ -22,7 +22,7 @@ import lmnApi from '@/api/lmnApi';
 import useUserStore from '@/store/UserStore/UserStore';
 import Toaster from '@/components/ui/Toaster';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import GlobalHooksWrapper from './components/GlobalHooksWrapper';
 
 const App = () => {
@@ -42,7 +42,7 @@ const App = () => {
   }, [user?.language]);
 
   const oidcConfig: AuthProviderProps = {
-    authority: `${window.location.origin}/${EDU_API_ROOT}/auth`,
+    authority: `${EDU_API_URL}/auth`,
     client_id: ' ',
     client_secret: ' ',
     redirect_uri: '',

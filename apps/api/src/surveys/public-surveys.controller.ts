@@ -10,9 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
-import { Body, Controller, Get, Post, Param } from '@nestjs/common';
-import { ANSWER, PUBLIC_SURVEYS, RESTFUL_CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import { Body, Controller, Get, Post, Param, Res } from '@nestjs/common';
+import { IMAGES, PUBLIC_SURVEYS, RESTFUL_CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
@@ -45,6 +46,13 @@ class PublicSurveysController {
   async getSubmittedSurveyAnswers(@Param() params: { surveyId: string; username: string }) {
     const { surveyId, username } = params;
     return this.surveyAnswerService.getAnswerPublicParticipation(surveyId, username);
+  }
+
+  @Get(`${IMAGES}/:surveyId/:questionId/:filename`)
+  @Public()
+  getImage(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
+    const { surveyId, questionId, filename } = params;
+    return this.surveyService.serveImage(surveyId, questionId, filename, res);
   }
 
   @Get(`${RESTFUL_CHOICES}/:surveyId/:questionId`)
