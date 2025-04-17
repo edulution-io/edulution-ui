@@ -530,7 +530,17 @@
         "questionTitle": "Title",
         "addQuestionTitle": "Add a title",
         "questionDescription": "Description",
-        "addQuestionDescription": "Add a description"
+        "addQuestionDescription": "Add a description",
+        "limit": "Limit",
+        "nullLimit": "An upper limit of 0 (:= unbounded) means, that the option selectable, infinitely often ",
+        "backendLimiters": "Choices fetched from backend",
+        "addBackendLimiters": "This will replace the standard choices with new choices that will be fetched from the backend.",
+        "useOtherItem": "Enable users to add user defined options",
+        "addBackendLimiterForOtherItem": "This will limit the maximum number of selections for user defined options.",
+        "upperLimit": "Upper limit",
+        "upperBackendLimiters": "Choices with an upper limit",
+        "addUpperBackendLimiters": "Add choices with an upper limit, such that the option can only be selected that many times.",
+        "addChoice": "Add"
       }
     },
     "participate": {
@@ -1051,6 +1061,8 @@
     "update": "Update",
     "progress": "Progress...",
     "pressInstall": "Press Install to start",
+    "enable": "Enable",
+    "disable": "Disable",
     "disabled": "Disabled",
     "invalid_url": "Invalid URL",
     "invalid_fqdn": "Invalid FQDN. Please only enter the hostname.",

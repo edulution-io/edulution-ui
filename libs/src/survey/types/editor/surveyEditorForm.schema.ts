@@ -46,6 +46,20 @@ const getSurveyEditorFormSchema = () =>
         }),
       ),
     }),
+    backendLimiters: z
+      .array(
+        z.object({
+          questionId: z.string().optional(),
+          choices: z.array(
+            z.object({
+              name: z.string().optional(),
+              title: z.string().optional(),
+              limit: z.number().optional(),
+            }),
+          ),
+        }),
+      )
+      .optional(),
     saveNo: z.number().optional(),
     creator: z.intersection(
       z.object({

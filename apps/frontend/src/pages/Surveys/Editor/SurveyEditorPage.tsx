@@ -197,6 +197,7 @@ const SurveyEditorPage = () => {
         isSubmitting={isLoading}
       />
       <QuestionContextMenu
+        form={form}
         isOpenQuestionContextMenu={isOpenQuestionContextMenu}
         setIsOpenQuestionContextMenu={setIsOpenQuestionContextMenu}
       />

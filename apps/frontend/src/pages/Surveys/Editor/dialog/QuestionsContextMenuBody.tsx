@@ -11,17 +11,41 @@
  */
 
 import React from 'react';
+import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 import cn from '@libs/common/utils/className';
+import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
+import ChoicesByUrl from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesByUrl';
 import Label from '@/components/ui/Label';
 import Input from '@/components/shared/Input';
-import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
 
-const QuestionContextMenuBody = () => {
+interface QuestionContextMenuBodyProps {
+  form: UseFormReturn<SurveyDto>;
+}
+
+const QuestionContextMenuBody = (props: QuestionContextMenuBodyProps) => {
+  const { form } = props;
+
   const { selectedQuestion, questionTitle, setQuestionTitle, questionDescription, setQuestionDescription } =
     useQuestionsContextMenuStore();
 
   const { t } = useTranslation();
+
+  const renderBackendLimiterOptions = () => {
+    if (!form) return null;
+
+    const { setValue, watch } = form;
+    return (
+      <ChoicesByUrl
+        backendLimiters={watch('backendLimiters')}
+        updateBackendLimiters={(backendLimiter: { questionId: string; choices: ChoiceDto[] }[]) =>
+          setValue('backendLimiters', backendLimiter)
+        }
+      />
+    );
+  };
 
   if (!selectedQuestion) return null;
 
@@ -57,6 +81,7 @@ const QuestionContextMenuBody = () => {
           { 'text-primary-foreground': questionDescription },
         )}
       />
+      {renderBackendLimiterOptions()}
     </div>
   );
 };

@@ -532,7 +532,17 @@
         "questionTitle": "Titel",
         "addQuestionTitle": "Titel hinzufügen",
         "questionDescription": "Beschreibung",
-        "addQuestionDescription": "Beschreibung hinzufügen"
+        "addQuestionDescription": "Beschreibung hinzufügen",
+        "limit": "Grenzwert",
+        "nullLimit": "Eine Obergrenze von 0 (:= unbeschränkt) bedeutet, dass die Option unbeschränkt oft Auswählbar ist",
+        "backendLimiters": "Auswahlmöglichkeiten per Backend",
+        "addBackendLimiters": "Dies ersetzt die standart Auswahlmöglichkeiten der Frage mit neuen Optionen welche aus dem Backend geladen werden.",
+        "useOtherItem": "Erlaube Nutzern Nutzerdefinierte Optionen hinzuzufügen",
+        "addBackendLimiterForOtherItem": "Dies begrenzt die Möglichkeit wie oft die nutzer eine Nuzterdefinierte Option auswählen können.",
+        "upperLimit": "Obergrenze",
+        "upperBackendLimiters": "Auswahlmöglichkeiten mit Obergrenze",
+        "addUpperBackendLimiters": "Füge Auswahlsmöglichleiten mit einer Obergrenze hinzu, so dass die Option nur begrenzt oft ausgewählt werden kann.",
+        "addChoice": "Hinzufügen"
       }
     },
     "participate": {
@@ -1052,6 +1062,8 @@
     "update": "Update",
     "progress": "Fortschritt...",
     "pressInstall": "Drücke Installieren um zu Starten.",
+    "enable": "Einschalten",
+    "disable": "Ausschalten",
     "disabled": "Deaktiviert",
     "invalid_url": "Ungültige URL",
     "invalid_fqdn": "Ungültiger FQDN. Bitte nur den Hostnamen angeben.",
