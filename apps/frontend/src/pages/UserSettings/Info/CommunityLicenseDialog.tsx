@@ -17,6 +17,7 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LinkText from '@/components/ui/LinkText';
 import { Button } from '@/components/shared/Button';
 import COMMUNITY_URL from '@libs/common/constants/communityLink';
+import APPLICATION_NAME from '@libs/common/constants/applicationName';
 import useCommunityLicenseStore from './useCommunityLicenseStore';
 
 const CommunityLicenseDialog: React.FC = () => {
@@ -42,7 +43,7 @@ const CommunityLicenseDialog: React.FC = () => {
       <p className="mb-5 text-left">
         <Trans
           i18nKey="licensing.communityLicenseDialog.description"
-          values={{ link: rootUrl }}
+          values={{ link: rootUrl, applicationName: APPLICATION_NAME }}
           components={{
             link1: (
               <LinkText

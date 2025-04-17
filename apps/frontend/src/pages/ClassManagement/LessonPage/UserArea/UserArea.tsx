@@ -21,9 +21,6 @@ import sortByName from '@libs/common/utils/sortByName';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useUserStore from '@/store/UserStore/UserStore';
 import Checkbox from '@/components/ui/Checkbox';
-import useElementHeight from '@/hooks/useElementHeight';
-import { FILTER_BAR_ID, LESSON_SESSION_HEADER_ID } from '@libs/classManagement/constants/pageElementIds';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import APPS from '@libs/appconfig/constants/apps';
@@ -78,18 +75,9 @@ const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
     } else setSelectedMember([]);
   };
 
-  const pageBarsHeight =
-    useElementHeight(
-      [FLOATING_BUTTONS_BAR_ID, LESSON_SESSION_HEADER_ID, FILTER_BAR_ID, FOOTER_ID],
-      selectedMemberCount,
-    ) + 30;
-
   return (
     <>
-      <div
-        className="flex items-center"
-        id={LESSON_SESSION_HEADER_ID}
-      >
+      <div className="flex items-center">
         <div
           className="flew-row ml-2 flex cursor-pointer"
           onClickCapture={onCheckAll}
@@ -107,10 +95,7 @@ const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
           {selectedMemberCount ? `(${selectedMemberCount} ${t('common.selected')})` : null}
         </h3>
       </div>
-      <div
-        className="flex max-w-full flex-wrap overflow-y-auto overflow-x-visible scrollbar-thin"
-        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
-      >
+      <div className="flex flex-wrap overflow-y-auto scrollbar-thin">
         {members.sort(sortByName).map((m) => (
           <UserCard
             key={m.dn}

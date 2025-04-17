@@ -2,7 +2,7 @@
   "welcome": "Willkommen in der Anwendung",
   "changeLang": "Sprache ändern",
   "heading": "Herzlich Willkommen {{givenName}} {{familyName}}",
-  "content": "Hier ist ihr persönliches edulution.io Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Bildungsbetrieb gesammelt sind.",
+  "content": "Hier ist ihr persönliches {{ applicationName }} Dashboard.",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
   "framebufferImage": "Framebuffer-Bild",
   "previewImage": "Bildvorschau",
@@ -85,7 +85,7 @@
   },
   "appstore": {
     "title": "App-Store",
-    "description": "Hier kannst du edulution.io Apps hinzufügen.",
+    "description": "Hier kannst du {{ applicationName }} Apps hinzufügen.",
     "chooseIcon": "Icon auswählen"
   },
   "forwarding": {
@@ -106,12 +106,11 @@
       "setupWithQrCode": "Einrichtung via QR-Code",
       "accessData": "Zugangsdaten",
       "content": "Du kannst von vielen mobilen Geräten aus auf den Schulserver zugreifen. Drücke auf Anleitung um zu starten.",
-      "scanAccessInfo": "Um die Zugangsdaten zu übertragen, bitte folgenden QR-Code mit der edulution.io App scannen.",
-      "manualAccessInfo": "Gib die Anmeldedaten manuell in der edulution.io App ein. Das folgende Beispiel zeigt, wie die einzelnen Felder auszufüllen sind.",
-      "scanAppStoreLink": "Scanne den QR-Code mit deinem mobilen Gerät um die edulution.io App im AppStore herunterzuladen.",
+      "scanAccessInfo": "Um die Zugangsdaten zu übertragen, bitte folgenden QR-Code mit der {{ applicationName }} App scannen.",
+      "manualAccessInfo": "Gib die Anmeldedaten manuell in der {{ applicationName }} App ein. Das folgende Beispiel zeigt, wie die einzelnen Felder auszufüllen sind.",
       "nextStepPreview": "Im nächsten Schritt kannst du die Zugangsdaten übertragen.",
       "downloadDirect": "Oder lade die App direkt herunter:",
-      "downloadApp": "Lade hier die edulution.io App herunter:"
+      "downloadApp": "Lade hier die {{ applicationName }} App herunter:"
     },
     "quota": {
       "title": "Quotas",
@@ -575,7 +574,7 @@
       },
       "created": {
         "menu": "Eigene Umfragen",
-        "title": "Eigens erstellte Umfragen",
+        "title": "Selbst erstellte Umfragen",
         "description": "Hier findest du die Umfragen, die du selbst erstellt hast."
       },
       "answered": {
@@ -876,7 +875,7 @@
     },
     "mobileAccess": {
       "title": "App-Zugriff",
-      "description": "Hier kannst du für den mobilen Zugriff auf deine Dateien die edulution.io App einrichten. Aktuell nur für Apple iOS verfügbar."
+      "description": "Hier kannst du für den mobilen Zugriff auf deine Dateien die {{ applicationName }} App einrichten. Aktuell nur für Apple iOS verfügbar."
     },
     "faq": "FAQ",
     "externalIntegration": "Externe Anbindung",
@@ -933,7 +932,10 @@
     "password_too_long": "Passwort zu lang",
     "forgot_password": "Passwort vergessen?",
     "remember_me": "Merken",
-    "enterMultiFactorCode": "Zwei-Faktor-Authentisierung"
+    "enterMultiFactorCode": "Zwei-Faktor-Authentisierung",
+    "loginWithApp": "Login mit QR",
+    "loginWithQrDescription": "Öffne die edulution.io APP um dich einfach mit dem QR-Code anzumelden.",
+    "infoQrCodeExpired": "Zeit für Login mit edulution.io APP abgelaufen."
   },
   "common": {
     "share": "Teilen",
@@ -1276,7 +1278,7 @@
   "licensing": {
     "communityLicenseDialog": {
       "title": "Community-Edition",
-      "description": "Kostenlose Community Edition der edulution.io UI.<br/>Besuche uns auf <link1>{{link}}</link1>.<br/><strong>Diese Version erhält keinen Hersteller-Support.</strong>"
+      "description": "Kostenlose Community Edition der {{ applicationName }} UI.<br/>Besuche uns auf <link1>{{link}}</link1>.<br/><strong>Diese Version erhält keinen Hersteller-Support.</strong>"
     }
   },
   "appExtendedOptions": {

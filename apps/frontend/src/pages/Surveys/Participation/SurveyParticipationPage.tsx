@@ -23,6 +23,7 @@ import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticip
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import '../theme/custom.participation.css';
+import PageLayout from '@/components/structure/layout/PageLayout';
 
 interface SurveyParticipationPageProps {
   isPublic: boolean;
@@ -95,9 +96,11 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
   }
 
   return (
-    <div className={cn('survey-participation')}>
-      <Survey model={surveyModel} />
-    </div>
+    <PageLayout>
+      <div className={cn('survey-participation')}>
+        <Survey model={surveyModel} />
+      </div>
+    </PageLayout>
   );
 };
 

@@ -40,6 +40,7 @@ const QRCodeWithCopyButton = ({
         <QRCodeDisplay
           value={url}
           size={qrCodeSize}
+          className="m-14"
         />
         <div className="mb-4 mt-4 rounded-xl bg-muted px-2 py-1 text-center">{url}</div>
         <Button

@@ -11,17 +11,21 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import NativeIframeLayout from '@/components/framing/Native/NativeIframeLayout';
 import useUserStore from '@/store/UserStore/UserStore';
 import type TApps from '@libs/appconfig/types/appsType';
+import NativeFrame from '@/components/structure/framing/Native/NativeFrame';
 
-interface IframeAppProps {
+interface NativeFrameScriptInjectorProps {
   appName: TApps;
   getLoginScript: (username: string, webdavKey: string) => string;
   logoutScript: string;
 }
 
-const NativeIframeWithScripts: React.FC<IframeAppProps> = ({ appName, getLoginScript, logoutScript }) => {
+const NativeFrameScriptInjector: React.FC<NativeFrameScriptInjectorProps> = ({
+  appName,
+  getLoginScript,
+  logoutScript,
+}) => {
   const { user, getWebdavKey } = useUserStore();
   const [loginScript, setLoginScript] = useState<string | null>(null);
 
@@ -37,7 +41,7 @@ const NativeIframeWithScripts: React.FC<IframeAppProps> = ({ appName, getLoginSc
   }, [user]);
 
   return loginScript ? (
-    <NativeIframeLayout
+    <NativeFrame
       scriptOnStartUp={loginScript}
       scriptOnStop={logoutScript}
       appName={appName}
@@ -45,4 +49,4 @@ const NativeIframeWithScripts: React.FC<IframeAppProps> = ({ appName, getLoginSc
   ) : null;
 };
 
-export default NativeIframeWithScripts;
+export default NativeFrameScriptInjector;

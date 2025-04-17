@@ -10,12 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Outlet } from 'react-router-dom';
 import React from 'react';
+import { Route } from 'react-router-dom';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import NativeAppPageManager from '@/components/structure/layout/NativeAppPageManager';
 
-const EmptyLayout = () => (
-  <main className="flex-1">
-    <Outlet />
-  </main>
-);
-export default EmptyLayout;
+const getNativeAppRoutes = (appConfigs: AppConfigDto[]) =>
+  appConfigs
+    .filter((item) => item.appType === APP_INTEGRATION_VARIANT.NATIVE)
+    .map((item) => (
+      <Route
+        key={item.name}
+        path={item.name}
+        element={<NativeAppPageManager page={item.name} />}
+      />
+    ));
+export default getNativeAppRoutes;

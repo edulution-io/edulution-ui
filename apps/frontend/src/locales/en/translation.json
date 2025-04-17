@@ -2,7 +2,7 @@
   "welcome": "Welcome to the application",
   "changeLang": "Change Language",
   "heading": "Welcome {{givenName}} {{familyName}}",
-  "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
+  "content": "Here is your personal {{ applicationName }} dashboard.",
   "closeEditingWindow": "Close editing window",
   "framebufferImage": "Framebuffer image",
   "previewImage": "Image preview",
@@ -85,7 +85,7 @@
   },
   "appstore": {
     "title": "App Store",
-    "description": "Here you can add edulution.io apps.",
+    "description": "Here you can add {{ applicationName }} apps.",
     "chooseIcon": "Choose icon"
   },
   "forwarding": {
@@ -106,12 +106,11 @@
       "setupWithQrCode": "Setup with QR code",
       "accessData": "Login data",
       "content": "You can access the school server from many mobile devices. Click on Manual to start.",
-      "scanAccessInfo": "To transfer the access data, please scan the following QR code with the edulution.io app.",
-      "manualAccessInfo": "Enter your login details manually in the edulution.io app. The example below shows how to fill in each field.",
-      "scanAppStoreLink": "Scan the QR code with your mobile device to download the edultion-io app from the AppStore.",
+      "scanAccessInfo": "To transfer the access data, please scan the following QR code with the {{ applicationName }} app.",
+      "manualAccessInfo": "Enter your login details manually in the {{ applicationName }} app. The example below shows how to fill in each field.",
       "nextStepPreview": "In the next step you can transfer the access data.",
       "downloadDirect": "Or download the app directly:",
-      "downloadApp": "Download the edulution.io app here:"
+      "downloadApp": "Download the {{ applicationName }} app here:"
     },
     "quota": {
       "title": "Quotas",
@@ -573,7 +572,7 @@
       },
       "created": {
         "menu": "Own Surveys",
-        "title": "Own Surveys",
+        "title": "Self-created Surveys",
         "description": "Here you find the surveys that you have created by yourself."
       },
       "answered": {
@@ -874,7 +873,7 @@
     },
     "mobileAccess": {
       "title": "Mobile Access",
-      "description": "Here you can set up the edulution.io app for mobile access to your files. Currently only available for Apple iOS."
+      "description": "Here you can set up the {{ applicationName }} app for mobile access to your files. Currently only available for Apple iOS."
     },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
@@ -931,7 +930,10 @@
     "password_too_long": "Password to long",
     "forgot_password": "Forgot password?",
     "remember_me": "Remember me",
-    "enterMultiFactorCode": "Two-Factor Authentication"
+    "enterMultiFactorCode": "Two-Factor Authentication",
+    "loginWithApp": "Login with QR",
+    "loginWithQrDescription": "Open the edulution.io APP to simply log in with the QR code.",
+    "infoQrCodeExpired": "Time for login with edulution.io APP expired."
   },
   "edit": "Edit",
   "common": {
@@ -1292,7 +1294,7 @@
   "licensing": {
     "communityLicenseDialog": {
       "title": "Community Edition",
-      "description": "Free community edition of edulution.io UI.<br/>Visit us on <link1>{{link}}</link1>.<br/><strong>This version does not provide support.</strong>"
+      "description": "Free community edition of {{ applicationName }} UI.<br/>Visit us on <link1>{{link}}</link1>.<br/><strong>This version does not provide support.</strong>"
     }
   },
   "preview": {

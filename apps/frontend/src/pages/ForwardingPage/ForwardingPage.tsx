@@ -59,7 +59,7 @@ const ForwardingPage: React.FC = () => {
   const pageTitle = getDisplayName(currentAppConfig, language);
 
   return (
-    <div className="grid h-[80%] items-center justify-center">
+    <div className="m-auto grid h-[80%] items-center justify-center">
       <PageTitle translationId={pageTitle} />
       <h2 className="text-center text-background">{t('forwardingpage.action')}</h2>
       <div className="mt-20 flex justify-center">

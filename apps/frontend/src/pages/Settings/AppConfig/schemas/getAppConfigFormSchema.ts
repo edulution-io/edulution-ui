@@ -14,9 +14,11 @@ import { z } from 'zod';
 import { TFunction } from 'i18next';
 import APPS from '@libs/appconfig/constants/apps';
 import TApps from '@libs/appconfig/types/appsType';
+import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 // import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 
-const forbiddenRouts = [...Object.values(APPS), 'auth', 'edu-api'];
+const forbiddenRouts = [...Object.values(APPS), AUTH_PATHS.AUTH_ENDPOINT, EDU_API_ROOT];
 
 const getAppConfigFormSchema = (t: TFunction<'translation', undefined>) =>
   z.record(

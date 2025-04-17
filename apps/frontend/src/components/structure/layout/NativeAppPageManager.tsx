@@ -14,12 +14,12 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import APPS from '@libs/appconfig/constants/apps';
 import type TApps from '@libs/appconfig/types/appsType';
-import FramePlaceholder from '@/components/framing/FramePlaceholder';
 import { ConferencePage } from '@/pages/ConferencePage';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
+import FramePlaceholder from '@/components/structure/framing/FramePlaceholder';
 
-const pages: Partial<Record<TApps, JSX.Element>> = {
+const nativeAppPages: Partial<Record<TApps, JSX.Element>> = {
   [APPS.CONFERENCES]: <ConferencePage />,
   [APPS.MAIL]: <FramePlaceholder />,
   [APPS.LINUXMUSTER]: <FramePlaceholder />,
@@ -29,10 +29,10 @@ const pages: Partial<Record<TApps, JSX.Element>> = {
   [APPS.BULLETIN_BOARD]: <BulletinBoardPage />,
 };
 
-type NativeAppPageProps = {
+type NativeAppPageManagerProps = {
   page: string;
 };
 
-const NativeAppPage: React.FC<NativeAppPageProps> = ({ page }) => pages[page as TApps];
+const NativeAppPageManager: React.FC<NativeAppPageManagerProps> = ({ page }) => nativeAppPages[page as TApps];
 
-export default NativeAppPage;
+export default NativeAppPageManager;

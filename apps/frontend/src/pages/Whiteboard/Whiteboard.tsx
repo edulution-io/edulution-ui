@@ -13,7 +13,7 @@
 import React from 'react';
 import { Excalidraw, THEME } from '@excalidraw/excalidraw';
 import cn from '@libs/common/utils/className';
-import useFrameStore from '@/components/framing/FrameStore';
+import useFrameStore from '@/components/structure/framing/useFrameStore';
 import APPS from '@libs/appconfig/constants/apps';
 import useLanguage from '@/hooks/useLanguage';
 

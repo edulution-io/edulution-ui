@@ -23,6 +23,7 @@ import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 
 interface PublicConferenceJoinFormProps {
   meetingId: string;
@@ -95,7 +96,7 @@ const PublicConferenceJoinForm = ({
             size="lg"
             data-testid="test-id-login-page-submit-button"
             onClick={() =>
-              navigate('/login', {
+              navigate(LOGIN_ROUTE, {
                 state: { from: location.pathname },
               })
             }
