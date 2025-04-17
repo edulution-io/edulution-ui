@@ -13,7 +13,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { Button } from '@/components/shared/Button';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
@@ -29,6 +28,7 @@ import ContentType from '@libs/filesharing/types/contentType';
 import { HttpMethods } from '@libs/common/types/http-methods';
 import MAX_UPLOAD_CHUNK_SIZE from '@libs/ui/constants/maxUploadChunkSize';
 import splitArrayIntoChunks from '@libs/common/utils/splitArrayIntoChunks';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import getFileSharingFormSchema from '../formSchema';
 
 interface CreateContentDialogProps {
@@ -197,15 +197,13 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
         ) : (
           <div className="mt-4 flex justify-end">
             <form onSubmit={handleFormSubmit}>
-              <Button
-                variant="btn-collaboration"
-                disabled={isLoading || isSubmitButtonDisabled}
-                size="lg"
-                type="submit"
-                onClick={handleFormSubmit}
-              >
-                {t(submitKey)}
-              </Button>
+              <DialogFooterButtons
+                handleClose={handelOpenChange}
+                handleSubmit={handleFormSubmit}
+                submitButtonText={submitKey}
+                submitButtonType="submit"
+                disableSubmit={isLoading || isSubmitButtonDisabled}
+              />
             </form>
           </div>
         )

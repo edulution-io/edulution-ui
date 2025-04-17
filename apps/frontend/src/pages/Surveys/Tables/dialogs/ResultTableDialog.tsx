@@ -17,21 +17,32 @@ import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDial
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import ResultTableDialogBodyWrapper from '@/pages/Surveys/Tables/dialogs/ResultTableDialogBody';
 import './resultTableDialog.css';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 const ResultTableDialog = () => {
   const { isOpenPublicResultsTableDialog, setIsOpenPublicResultsTableDialog, isLoading } = useResultDialogStore();
 
   const { t } = useTranslation();
 
+  const handleClose = () => setIsOpenPublicResultsTableDialog(!isOpenPublicResultsTableDialog);
+
+  const getFooter = () => (
+    <DialogFooterButtons
+      handleClose={handleClose}
+      cancelButtonText="common.close"
+    />
+  );
+
   return isOpenPublicResultsTableDialog ? (
     <>
       {isLoading ? <LoadingIndicatorDialog isOpen={isLoading} /> : null}
       <AdaptiveDialog
         isOpen={isOpenPublicResultsTableDialog}
-        handleOpenChange={() => setIsOpenPublicResultsTableDialog(!isOpenPublicResultsTableDialog)}
+        handleOpenChange={handleClose}
         title={t('surveys.resultTableDialog.title')}
         body={<ResultTableDialogBodyWrapper />}
         desktopContentClassName="max-h-[75vh] max-w-[85%]"
+        footer={getFooter()}
       />
     </>
   ) : null;
