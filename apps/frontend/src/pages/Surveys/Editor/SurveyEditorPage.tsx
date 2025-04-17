@@ -120,7 +120,7 @@ const SurveyEditorPage = () => {
           // eslint-disable-next-line no-param-reassign
           options.items[settingsItemIndex].visibleIndex = 10;
           // eslint-disable-next-line no-param-reassign
-          options.items[settingsItemIndex].title = t('survey.editor.questionSettings.defaultTitle');
+          options.items[settingsItemIndex].title = t('survey.editor.questionSettings.icon');
           // eslint-disable-next-line no-param-reassign
           options.items[settingsItemIndex].action = () => {
             if (_.isObjQuestion(_.selectedElement)) {
@@ -178,37 +178,26 @@ const SurveyEditorPage = () => {
 
   return (
     <PageLayout>
-      {isLoading && <LoadingIndicatorDialog isOpen={isLoading} />}
-      {isFetching ? (
-        <LoadingIndicatorDialog isOpen={isFetching} />
-      ) : (
-        <>
-          <div
-            className="survey-editor h-full"
-            style={{ height: `calc(100% - ${pageBarsHeight}px)` }}
-          >
-            {creator && (
-              <SurveyCreatorComponent
-                creator={creator}
-                style={{ height: '100%', width: '100%' }}
-              />
-            )}
-          </div>
-          <FloatingButtonsBar config={config} />
-          <SaveSurveyDialog
-            form={form}
-            isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
-            setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
-            submitSurvey={handleSaveSurvey}
-            isSubmitting={isLoading}
+      <div className="survey-editor h-full">
+        {creator && (
+          <SurveyCreatorComponent
+            creator={creator}
+            style={{ height: '100%', width: '100%' }}
           />
-          <QuestionContextMenu
-            // form={form}
-            isOpenQuestionContextMenu={isOpenQuestionContextMenu}
-            setIsOpenQuestionContextMenu={setIsOpenQuestionContextMenu}
-          />
-        </>
-      )}
+        )}
+      </div>
+      <FloatingButtonsBar config={config} />
+      <SaveSurveyDialog
+        form={form}
+        isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
+        setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
+        submitSurvey={handleSaveSurvey}
+        isSubmitting={isLoading}
+      />
+      <QuestionContextMenu
+        isOpenQuestionContextMenu={isOpenQuestionContextMenu}
+        setIsOpenQuestionContextMenu={setIsOpenQuestionContextMenu}
+      />
     </PageLayout>
   );
 };

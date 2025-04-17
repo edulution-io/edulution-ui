@@ -525,7 +525,12 @@
       "addDescription": "Add a description",
       "expectingUserInput": "Expecting the user to answer here, ... ",
       "questionSettings": {
-        "defaultTitle": "Question settings"
+        "icon": "Settings",
+        "title": "Question settings",
+        "questionTitle": "Title",
+        "addQuestionTitle": "Add a title",
+        "questionDescription": "Description",
+        "addQuestionDescription": "Add a description"
       }
     },
     "participate": {

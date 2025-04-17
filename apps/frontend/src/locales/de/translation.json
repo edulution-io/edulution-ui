@@ -527,7 +527,12 @@
       "addDescription": "Beschreibung hinzufügen",
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
       "questionSettings": {
-        "defaultTitle": "Frage bearbeiten"
+        "icon": "Einstellungen",
+        "title": "Einstellungen bezüglich der Frage",
+        "questionTitle": "Titel",
+        "addQuestionTitle": "Titel hinzufügen",
+        "questionDescription": "Beschreibung",
+        "addQuestionDescription": "Beschreibung hinzufügen"
       }
     },
     "participate": {

@@ -39,7 +39,7 @@ const QuestionSettingsDialogStoreInitialState = {
   questionDescription: '',
 };
 
-const useQuestionSettingsDialogStore = create<QuestionSettingsDialogStore>((set) => ({
+const useQuestionSettingsDialogStore = create<QuestionSettingsDialogStore>((set, get) => ({
   ...QuestionSettingsDialogStoreInitialState,
   reset: () => set(QuestionSettingsDialogStoreInitialState),
 
@@ -55,9 +55,21 @@ const useQuestionSettingsDialogStore = create<QuestionSettingsDialogStore>((set)
     });
   },
 
-  setQuestionTitle: (newTitle: string) => set({ questionTitle: newTitle }),
+  setQuestionTitle: (newTitle: string) => {
+    const { selectedQuestion } = get();
+    if (!selectedQuestion) return;
 
-  setQuestionDescription: (newDescription: string) => set({ questionDescription: newDescription }),
+    set({ questionTitle: newTitle });
+    selectedQuestion.title = newTitle;
+  },
+
+  setQuestionDescription: (newDescription: string) => {
+    const { selectedQuestion } = get();
+    if (!selectedQuestion) return;
+
+    set({ questionDescription: newDescription });
+    selectedQuestion.description = newDescription;
+  },
 }));
 
 export default useQuestionSettingsDialogStore;
