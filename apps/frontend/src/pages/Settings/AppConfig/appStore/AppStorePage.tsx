@@ -94,7 +94,7 @@ const AppStorePage: React.FC = () => {
             <Card
               key={item.id}
               className={cn(
-                'm-1 flex h-32 w-32 flex-col items-center ease-in-out md:w-48 lg:transition-transform lg:duration-300 2xl:hover:scale-105',
+                'm-1 flex h-32 w-32 flex-col items-center overflow-hidden ease-in-out md:w-48 lg:transition-transform lg:duration-300 2xl:hover:scale-105',
                 selectedApp.id === item.id ? 'scale-105 bg-ciGreenToBlue' : '',
                 getDisabledState(item) ? 'opacity-50' : '',
               )}
@@ -104,7 +104,7 @@ const AppStorePage: React.FC = () => {
                 <img
                   src={item.icon}
                   alt={item.id}
-                  className="h-14 w-14 md:h-16 md:w-16"
+                  className="h-12 w-12 md:h-14 md:w-14"
                 />
                 <p>{t(`${item.id}.sidebar`)}</p>
               </div>
