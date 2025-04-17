@@ -15,11 +15,11 @@ import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
 import Label from '@/components/ui/Label';
 import Input from '@/components/shared/Input';
-import useQuestionSettingsDialogStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
+import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 
 const QuestionContextMenuBody = () => {
   const { selectedQuestion, questionTitle, setQuestionTitle, questionDescription, setQuestionDescription } =
-    useQuestionSettingsDialogStore();
+    useQuestionsContextMenuStore();
 
   const { t } = useTranslation();
 

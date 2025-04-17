@@ -13,7 +13,7 @@
 import { create } from 'zustand';
 import { Question } from 'survey-core/typings/question';
 
-interface QuestionSettingsDialogStore {
+interface QuestionsContextMenuStore {
   reset: () => void;
 
   isOpenQuestionContextMenu: boolean;
@@ -31,7 +31,7 @@ interface QuestionSettingsDialogStore {
   setQuestionDescription: (newDescription: string) => void;
 }
 
-const QuestionSettingsDialogStoreInitialState = {
+const QuestionsContextMenuStoreInitialState = {
   isOpenQuestionContextMenu: false,
   selectedQuestion: undefined,
   questionType: '',
@@ -39,9 +39,9 @@ const QuestionSettingsDialogStoreInitialState = {
   questionDescription: '',
 };
 
-const useQuestionSettingsDialogStore = create<QuestionSettingsDialogStore>((set, get) => ({
-  ...QuestionSettingsDialogStoreInitialState,
-  reset: () => set(QuestionSettingsDialogStoreInitialState),
+const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get) => ({
+  ...QuestionsContextMenuStoreInitialState,
+  reset: () => set(QuestionsContextMenuStoreInitialState),
 
   setIsOpenQuestionContextMenu: (state: boolean) => set({ isOpenQuestionContextMenu: state }),
 
@@ -72,4 +72,4 @@ const useQuestionSettingsDialogStore = create<QuestionSettingsDialogStore>((set,
   },
 }));
 
-export default useQuestionSettingsDialogStore;
+export default useQuestionsContextMenuStore;

@@ -36,7 +36,7 @@ import createSurveyCreatorComponent from '@/pages/Surveys/Editor/createSurveyCre
 import useBeforeUnload from '@/hooks/useBeforeUnload';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import QuestionContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
-import useQuestionSettingsDialogStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
+import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import { Question } from 'survey-core/typings/question';
 
 const SurveyEditorPage = () => {
@@ -53,7 +53,7 @@ const SurveyEditorPage = () => {
     uploadImageFile,
   } = useSurveyEditorPageStore();
   const { setIsOpenQuestionContextMenu, isOpenQuestionContextMenu, setSelectedQuestion } =
-    useQuestionSettingsDialogStore();
+    useQuestionsContextMenuStore();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
