@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import SurveyTablePage from '@/pages/Surveys/Tables/SurveyTablePage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import { SurveysViewAnsweredIcon } from '@/assets/icons';
 
 const AnsweredSurveysPage = () => {
   const {
@@ -47,6 +48,7 @@ const AnsweredSurveysPage = () => {
       <SurveyTablePage
         title={t('surveys.view.answered.title')}
         description={t('surveys.view.answered.description')}
+        icon={SurveysViewAnsweredIcon}
         surveys={answeredSurveys}
         isLoading={isFetchingAnsweredSurveys}
         canShowResults={hasAnswers}

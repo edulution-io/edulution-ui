@@ -11,113 +11,31 @@
  */
 
 import React from 'react';
-import { createBrowserRouter, createRoutesFromElements, Outlet, Route } from 'react-router-dom';
+import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
-import {
-  LANGUAGE_PATH,
-  MAILS_PATH,
-  MOBILE_ACCESS_PATH,
-  SECURITY_PATH,
-  USER_DETAILS_PATH,
-  USER_SETTINGS_PATH,
-} from '@libs/userSettings/constants/user-settings-endpoints';
-import getAuthRoutes from '@/router/routes/AuthRoutes';
-import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
-import NativeAppPage from '@/pages/NativeAppPage/NativeAppPage';
-import UserSettingsMailsPage from '@/pages/UserSettings/Mails/UserSettingsMailsPage';
-import UserSettingsDetailsPage from '@/pages/UserSettings/Details/UserSettingsDetailsPage';
-import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
 import FILE_PREVIEW_ROUTE from '@libs/filesharing/constants/routes';
-import LanguageSettingsPage from '@/pages/UserSettings/Language/LanguageSettingsPage';
-import UserSettingsMobileAccess from '@/pages/UserSettings/MobileAccess/UserSettingsMobileAccess';
-import getSurveyRoutes from '@/router/routes/SurveyRoutes';
-import EmptyLayout from '@/components/layout/EmptyLayout';
-import MainLayout from '@/components/layout/MainLayout';
 import getPublicRoutes from '@/router/routes/PublicRoutes';
-import APPS from '@libs/appconfig/constants/apps';
-import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
 import FullScreenFileViewer from '@/pages/FileSharing/FilePreview/FullScreenFileViewer';
-import RootLayout from '@/components/layout/RootLayout';
-import getSettingsRoutes from './routes/SettingsRoutes';
-import getForwardedRoutes from './routes/ForwardedRoutes';
-import getEmbeddedRoutes from './routes/EmbeddedRoutes';
-import getFileSharingRoutes from './routes/FileSharingRoutes';
-import DashboardPage from '../pages/Dashboard/DashboardPage';
+import AppLayout from '@/components/structure/layout/AppLayout';
+import getAuthRoutes from '@/router/routes/AuthRoutes';
+import getPrivateRoutes from '@/router/routes/PrivateRoutes';
 
 const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
   createBrowserRouter(
     createRoutesFromElements(
       <>
-        {getPublicRoutes()}
-        {getAuthRoutes(isAuthenticated)}
-        {isAuthenticated ? (
-          <Route element={<RootLayout />}>
-            <Route element={<EmptyLayout />}>
-              <Route
-                path={FILE_PREVIEW_ROUTE}
-                element={<FullScreenFileViewer />}
-              />
-            </Route>
-            {getForwardedRoutes(appConfigs)}
-            {getEmbeddedRoutes(appConfigs)}
+        <Route element={<AppLayout />}>
+          {getPublicRoutes()}
 
-            <Route element={<MainLayout />}>
-              <Route
-                path="/"
-                element={<DashboardPage />}
-              />
-              <Route
-                path={USER_SETTINGS_PATH}
-                element={<Outlet />}
-              >
-                <Route
-                  path=""
-                  element={<UserSettingsSecurityPage />}
-                />
-                <Route
-                  path={SECURITY_PATH}
-                  element={<UserSettingsSecurityPage />}
-                />
-                <Route
-                  path={USER_DETAILS_PATH}
-                  element={<UserSettingsDetailsPage />}
-                />
-                <Route
-                  path={MAILS_PATH}
-                  element={<UserSettingsMailsPage />}
-                />
-                <Route
-                  path={LANGUAGE_PATH}
-                  element={<LanguageSettingsPage />}
-                />
-                <Route
-                  path={MOBILE_ACCESS_PATH}
-                  element={<UserSettingsMobileAccess />}
-                />
-              </Route>
-              {appConfigs.map((item) =>
-                item.appType === APP_INTEGRATION_VARIANT.NATIVE ? (
-                  <Route
-                    key={item.name}
-                    path={item.name}
-                    element={<NativeAppPage page={item.name} />}
-                  />
-                ) : null,
-              )}
+          {isAuthenticated && getPrivateRoutes(appConfigs)}
 
-              <Route
-                path={`${APPS.BULLETIN_BOARD}/:bulletinId`}
-                element={<BulletinBoardPage />}
-              />
+          {getAuthRoutes(isAuthenticated)}
+        </Route>
 
-              {getSettingsRoutes()}
-              {getClassManagementRoutes()}
-              {getSurveyRoutes()}
-              {getFileSharingRoutes()}
-            </Route>
-          </Route>
-        ) : null}
+        <Route
+          path={FILE_PREVIEW_ROUTE}
+          element={<FullScreenFileViewer />}
+        />
       </>,
     ),
   );

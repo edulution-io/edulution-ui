@@ -11,7 +11,7 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import useFrameStore from '@/components/framing/FrameStore';
+import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '@/store/UserStore/UserStore';
 import { toast } from 'sonner';
@@ -19,13 +19,13 @@ import { useTranslation } from 'react-i18next';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import type TApps from '@libs/appconfig/types/appsType';
 
-interface NativeIframeLayoutProps {
+interface NativeFrameProps {
   scriptOnStartUp?: string;
   scriptOnStop?: string;
   appName: TApps;
 }
 
-const NativeIframeLayout: React.FC<NativeIframeLayoutProps> = ({ scriptOnStartUp, scriptOnStop, appName }) => {
+const NativeFrame: React.FC<NativeFrameProps> = ({ scriptOnStartUp, scriptOnStop, appName }) => {
   const { t } = useTranslation();
   const { appConfigs } = useAppConfigsStore();
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -91,4 +91,4 @@ const NativeIframeLayout: React.FC<NativeIframeLayoutProps> = ({ scriptOnStartUp
   );
 };
 
-export default NativeIframeLayout;
+export default NativeFrame;

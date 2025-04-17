@@ -22,7 +22,6 @@ import { useTranslation } from 'react-i18next';
 import { HiChevronDown } from 'react-icons/hi';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import useMedia from '@/hooks/useMedia';
-import { BREADCRUMB_ID } from '@libs/ui/constants/defaultIds';
 import useUserPath from '../hooks/useUserPath';
 
 interface DirectoryBreadcrumbProps {
@@ -66,10 +65,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
   const shouldShowDropdown = clearSegments.length > displaySegments;
 
   return (
-    <Breadcrumb
-      style={style}
-      id={BREADCRUMB_ID}
-    >
+    <Breadcrumb style={style}>
       {showTitle && <p className="mr-2 text-background">{t('currentDirectory')}</p>}
       <BreadcrumbList>
         {showHome && (

@@ -11,10 +11,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
-import useElementHeight from '@/hooks/useElementHeight';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
-import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import { BulletinBoardIcon } from '@/assets/icons';
 import { useTranslation } from 'react-i18next';
 import BulletinBoardEditorialPage from '@/pages/BulletinBoard/BulletinBoardEditorial/BulletinBoardEditorialPage';
@@ -22,6 +19,7 @@ import BulletinBoardEditorialFloatingButtonsBar from '@/pages/BulletinBoard/Bull
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import BulletinBoardPageColumn from '@/pages/BulletinBoard/components/BulletinBoardPageColumn';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import PageLayout from '@/components/structure/layout/PageLayout';
 
 const BulletinBoardPage = () => {
   const { t } = useTranslation();
@@ -34,8 +32,6 @@ const BulletinBoardPage = () => {
   } = useBulletinBoardStore();
   const { getCategoriesWithEditPermission } = useBulletinBoardEditorialStore();
   const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
-
-  const pageBarsHeight = useElementHeight([NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 15;
 
   useEffect(() => {
     void getBulletinsByCategories(false);
@@ -53,10 +49,7 @@ const BulletinBoardPage = () => {
     }
 
     return (
-      <div
-        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
-        className="flex h-full w-full flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin"
-      >
+      <div className="flex h-full max-h-full overflow-x-auto overflow-y-hidden scrollbar-thin">
         {bulletinsByCategories?.length ? (
           bulletinsByCategories
             .sort((a, b) => a.category.position - b.category.position)
@@ -70,7 +63,7 @@ const BulletinBoardPage = () => {
               />
             ))
         ) : (
-          <div className="flex h-full w-full items-center justify-center">
+          <div className="flex h-full min-h-full w-full items-center justify-center">
             <div>{t('bulletinboard.noBulletinsToShow')}</div>
           </div>
         )}
@@ -79,17 +72,17 @@ const BulletinBoardPage = () => {
   };
 
   return (
-    <>
-      <NativeAppHeader
-        title={t('bulletinboard.appTitle')}
-        description={t('bulletinboard.description')}
-        iconSrc={BulletinBoardIcon}
-      />
-
+    <PageLayout
+      nativeAppHeader={{
+        title: t('bulletinboard.appTitle'),
+        description: t('bulletinboard.description'),
+        iconSrc: BulletinBoardIcon,
+      }}
+    >
       {getPageContent()}
 
       <BulletinBoardEditorialFloatingButtonsBar />
-    </>
+    </PageLayout>
   );
 };
 

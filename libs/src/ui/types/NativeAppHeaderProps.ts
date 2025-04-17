@@ -10,5 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const LESSON_SESSION_HEADER_ID = 'session-header';
-export const FILTER_BAR_ID = 'filter-bar';
+interface NativeAppHeaderProps {
+  title: string;
+  description?: string;
+  iconSrc: string;
+}
+
+export default NativeAppHeaderProps;
