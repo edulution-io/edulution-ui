@@ -27,6 +27,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
 import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 import VEYON_PROXY_TABLE_COLUMNS from '@libs/classManagement/constants/veyonProxyTableColumns';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import useVeyonConfigTableStore from './useVeyonTableStore';
 import useAppConfigsStore from '../appConfigsStore';
 
@@ -113,31 +114,24 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
       onSubmit={handleFormSubmit}
       className="space-y-4"
     >
-      <div className="mt-4 flex justify-end space-x-2">
-        <Button
-          variant="btn-outline"
-          size="lg"
-          type="button"
-          onClick={() => setDialogOpen('')}
-        >
-          {t('common.cancel')}
-        </Button>
-        <Button
-          variant="btn-collaboration"
-          size="lg"
-          type="submit"
-          disabled={!formState.isValid}
-        >
-          {t('common.save')}
-        </Button>
+      <div className="flex gap-4">
+        <DialogFooterButtons
+          handleClose={() => setDialogOpen('')}
+          handleSubmit={() => {}}
+          disableSubmit={!formState.isValid}
+          submitButtonText="common.save"
+          submitButtonType="submit"
+        />
         {selectedConfig && (
-          <Button
-            variant="btn-attention"
-            size="lg"
-            onClick={handleDeleteVeyonProxyConfig}
-          >
-            {t('bulletinboard.delete')}
-          </Button>
+          <div className="mt-4">
+            <Button
+              variant="btn-attention"
+              size="lg"
+              onClick={handleDeleteVeyonProxyConfig}
+            >
+              {t('bulletinboard.delete')}
+            </Button>
+          </div>
         )}
       </div>
     </form>
