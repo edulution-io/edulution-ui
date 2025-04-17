@@ -116,7 +116,7 @@ const SurveyEditorPage = () => {
 
       creator.onDefineElementMenuItems.add((_, options) => {
         const settingsItemIndex = options.items.findIndex((option) => option.id === 'settings');
-        if (options.items[settingsItemIndex]) {
+        if (settingsItemIndex !== -1) {
           // eslint-disable-next-line no-param-reassign
           options.items[settingsItemIndex].visibleIndex = 10;
           // eslint-disable-next-line no-param-reassign
@@ -130,8 +130,10 @@ const SurveyEditorPage = () => {
           };
 
           const doubleItemIndex = options.items.findIndex((option) => option.id === 'duplicate');
-          // eslint-disable-next-line no-param-reassign
-          options.items[doubleItemIndex].visibleIndex = 20;
+          if (doubleItemIndex !== -1) {
+            // eslint-disable-next-line no-param-reassign
+            options.items[doubleItemIndex].visibleIndex = 20;
+          }
         }
       });
 
