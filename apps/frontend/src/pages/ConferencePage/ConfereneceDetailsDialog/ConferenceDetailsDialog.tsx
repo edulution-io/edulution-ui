@@ -12,7 +12,6 @@
 
 import React from 'react';
 import CreateConferenceDialogBody from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogBody';
-import { Button } from '@/components/shared/Button';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
 import ConferencesForm from '@libs/conferences/types/conferencesForm';
@@ -31,6 +30,7 @@ import useMedia from '@/hooks/useMedia';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import Separator from '@/components/ui/Separator';
 import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 interface ConferenceDetailsDialogProps {
   trigger?: React.ReactNode;
@@ -95,17 +95,18 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
     );
   };
 
+  const handleClose = () => setSelectedConference(null);
+
   const getFooter = () => (
     <div className="mt-4 flex justify-end">
       <form onSubmit={handleFormSubmit}>
-        <Button
-          variant="btn-collaboration"
-          disabled={isLoading}
-          size="lg"
-          type="submit"
-        >
-          {t('common.save')}
-        </Button>
+        <DialogFooterButtons
+          handleClose={handleClose}
+          handleSubmit={() => {}}
+          submitButtonText="common.save"
+          submitButtonType="submit"
+          disableSubmit={isLoading}
+        />
       </form>
     </div>
   );
@@ -114,7 +115,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
     <AdaptiveDialog
       isOpen
       trigger={trigger}
-      handleOpenChange={() => setSelectedConference(null)}
+      handleOpenChange={handleClose}
       title={t('conferences.editConference')}
       desktopContentClassName="max-w-4xl"
       body={getDialogBody()}

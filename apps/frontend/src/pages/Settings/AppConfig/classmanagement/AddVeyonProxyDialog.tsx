@@ -112,28 +112,26 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
   const getFooter = () => (
     <form
       onSubmit={handleFormSubmit}
-      className="space-y-4"
+      className="flex gap-4"
     >
-      <div className="flex gap-4">
-        <DialogFooterButtons
-          handleClose={() => setDialogOpen('')}
-          handleSubmit={() => {}}
-          disableSubmit={!formState.isValid}
-          submitButtonText="common.save"
-          submitButtonType="submit"
-        />
-        {selectedConfig && (
-          <div className="mt-4">
-            <Button
-              variant="btn-attention"
-              size="lg"
-              onClick={handleDeleteVeyonProxyConfig}
-            >
-              {t('bulletinboard.delete')}
-            </Button>
-          </div>
-        )}
-      </div>
+      {selectedConfig && (
+        <div className="mt-4">
+          <Button
+            variant="btn-attention"
+            size="lg"
+            onClick={handleDeleteVeyonProxyConfig}
+          >
+            {t('bulletinboard.delete')}
+          </Button>
+        </div>
+      )}
+      <DialogFooterButtons
+        handleClose={() => setDialogOpen('')}
+        handleSubmit={() => {}}
+        disableSubmit={!formState.isValid}
+        submitButtonText="common.save"
+        submitButtonType="submit"
+      />
     </form>
   );
 

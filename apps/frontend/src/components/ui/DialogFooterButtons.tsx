@@ -13,6 +13,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../shared/Button';
+import { type ButtonProps } from '../shared/Button';
 
 interface DialogFooterProps {
   disableSubmit?: boolean;
@@ -20,6 +21,8 @@ interface DialogFooterProps {
   cancelButtonText?: string;
   submitButtonText?: string;
   submitButtonType?: 'submit' | 'button';
+  cancelButtonVariant?: ButtonProps['variant'];
+  submitButtonVariant?: ButtonProps['variant'];
   handleSubmit?: () => void;
   handleClose?: () => void;
 }
@@ -30,6 +33,8 @@ const DialogFooterButtons: React.FC<DialogFooterProps> = ({
   cancelButtonText,
   submitButtonText,
   submitButtonType = 'button',
+  cancelButtonVariant = 'btn-outline',
+  submitButtonVariant = 'btn-collaboration',
   handleSubmit,
   handleClose,
 }) => {
@@ -39,7 +44,7 @@ const DialogFooterButtons: React.FC<DialogFooterProps> = ({
     <div className="mt-4 flex justify-end gap-4">
       {handleClose && (
         <Button
-          variant="btn-outline"
+          variant={cancelButtonVariant}
           disabled={disableCancel}
           size="lg"
           type="button"
@@ -50,7 +55,7 @@ const DialogFooterButtons: React.FC<DialogFooterProps> = ({
       )}
       {handleSubmit && (
         <Button
-          variant="btn-collaboration"
+          variant={submitButtonVariant}
           disabled={disableSubmit}
           size="lg"
           type={submitButtonType}
