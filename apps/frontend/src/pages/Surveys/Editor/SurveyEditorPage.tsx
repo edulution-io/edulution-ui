@@ -27,15 +27,14 @@ import useUserStore from '@/store/UserStore/UserStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useLanguage from '@/hooks/useLanguage';
-import useElementHeight from '@/hooks/useElementHeight';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
 import createSurveyCreatorComponent from '@/pages/Surveys/Editor/createSurveyCreatorObject';
 import useBeforeUnload from '@/hooks/useBeforeUnload';
+import PageLayout from '@/components/structure/layout/PageLayout';
 import QuestionContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
 import useQuestionSettingsDialogStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import { Question } from 'survey-core/typings/question';
@@ -51,6 +50,7 @@ const SurveyEditorPage = () => {
     storedSurvey,
     updateStoredSurvey,
     resetStoredSurvey,
+    uploadImageFile,
   } = useSurveyEditorPageStore();
   const { setIsOpenQuestionContextMenu, isOpenQuestionContextMenu, setSelectedQuestion } =
     useQuestionSettingsDialogStore();
@@ -134,6 +134,18 @@ const SurveyEditorPage = () => {
           options.items[doubleItemIndex].visibleIndex = 20;
         }
       });
+
+      creator.onUploadFile.add(async (_, options) => {
+        // TODO: 630 (https://github.com/edulution-io/edulution-ui/issues/630) -  Currently this can only work for already created surveys
+        if (!surveyId) return;
+        const promises = options.files.map((file: File) => {
+          if (!options.question?.id) {
+            return uploadImageFile(surveyId, 'Header', file, options.callback);
+          }
+          return uploadImageFile(surveyId, options.question.id, file, options.callback);
+        });
+        await Promise.all(promises);
+      });
     }
   }, [creator, form, language]);
 
@@ -157,22 +169,22 @@ const SurveyEditorPage = () => {
     }
   };
 
-  const pageBarsHeight = useElementHeight([FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 10;
-
   const config: FloatingButtonsBarConfig = {
     buttons: [SaveButton(() => setIsOpenSaveSurveyDialog(true))],
     keyPrefix: 'surveys-page-floating-button_',
   };
 
+  if (isLoading || isFetching) return <LoadingIndicatorDialog isOpen />;
+
   return (
-    <>
+    <PageLayout>
       {isLoading && <LoadingIndicatorDialog isOpen={isLoading} />}
       {isFetching ? (
         <LoadingIndicatorDialog isOpen={isFetching} />
       ) : (
         <>
           <div
-            className="survey-editor"
+            className="survey-editor h-full"
             style={{ height: `calc(100% - ${pageBarsHeight}px)` }}
           >
             {creator && (
@@ -197,7 +209,7 @@ const SurveyEditorPage = () => {
           />
         </>
       )}
-    </>
+    </PageLayout>
   );
 };
 

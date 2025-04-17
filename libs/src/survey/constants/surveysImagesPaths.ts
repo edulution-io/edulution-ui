@@ -10,24 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { Route } from 'react-router-dom';
-import FramePlaceholder from '@/components/framing/FramePlaceholder';
-import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import APPS from '@libs/appconfig/constants/apps';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import { IMAGES } from '@libs/survey/constants/surveys-endpoint';
 
-const getEmbeddedRoutes = (appConfigs: AppConfigDto[]) => [
-  <Route key="embedded">
-    {appConfigs
-      .filter((item) => item.appType === APP_INTEGRATION_VARIANT.EMBEDDED)
-      .map((item) => (
-        <Route
-          key={item.name}
-          path={item.name}
-          element={<FramePlaceholder />}
-        />
-      ))}
-  </Route>,
-];
+const SURVEYS_IMAGES_PATH = `${APPS_FILES_PATH}/${APPS.SURVEYS}/${IMAGES}`;
 
-export default getEmbeddedRoutes;
+export default SURVEYS_IMAGES_PATH;

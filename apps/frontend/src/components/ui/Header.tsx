@@ -17,7 +17,6 @@ import MobileLogo from '@/assets/logos/edulution.io_USER INTERFACE-small.svg';
 import { useTranslation } from 'react-i18next';
 import useMedia from '@/hooks/useMedia';
 import useUserStore from '@/store/UserStore/UserStore';
-import { BLANK_LAYOUT_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import PageTitle from '@/components/PageTitle';
 
 interface HeaderProps {
@@ -28,13 +27,11 @@ const Header: React.FC<HeaderProps> = ({ hideHeadingText = false }: HeaderProps)
   const { isMobileView } = useMedia();
   const { t } = useTranslation();
   const { user } = useUserStore();
+
   const getHeadingText = () => {
     if (isMobileView || hideHeadingText) return null;
     return (
-      <h2
-        id={BLANK_LAYOUT_HEADER_ID}
-        className="ml-4 items-center text-2xl font-bold text-background"
-      >
+      <h2 className="ml-4 items-center text-2xl font-bold text-background">
         {t('heading', {
           givenName: user?.firstName || '-',
           familyName: user?.lastName || '-',
@@ -44,10 +41,7 @@ const Header: React.FC<HeaderProps> = ({ hideHeadingText = false }: HeaderProps)
   };
 
   return (
-    <div
-      id={BLANK_LAYOUT_HEADER_ID}
-      className="ml-2 flex items-center pb-1 md:mb-3 md:ml-7"
-    >
+    <div className="ml-2 flex items-center pb-1 md:mb-3 md:ml-7">
       <PageTitle translationId="dashboard.pageTitle" />
       <div className={`rounded-b-[8px] ${isMobileView ? 'mt-3 w-[150px]' : 'mt-0 w-[250px] bg-white'}`}>
         <Link to="/">

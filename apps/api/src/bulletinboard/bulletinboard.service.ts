@@ -16,8 +16,6 @@ import { Response } from 'express';
 import { Model, Types } from 'mongoose';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import { join } from 'path';
-import { createReadStream, existsSync, mkdirSync, promises } from 'fs';
-import BULLETIN_BOARD_ALLOWED_MIME_TYPES from '@libs/bulletinBoard/constants/allowedMimeTypes';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import BulletinsByCategories from '@libs/bulletinBoard/types/bulletinsByCategories';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
@@ -34,6 +32,7 @@ import { BulletinCategory, BulletinCategoryDocument } from '../bulletin-category
 import BulletinCategoryService from '../bulletin-category/bulletin-category.service';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
+import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
 class BulletinBoardService implements OnModuleInit {
@@ -41,6 +40,7 @@ class BulletinBoardService implements OnModuleInit {
     @InjectModel(Bulletin.name) private bulletinModel: Model<BulletinDocument>,
     @InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>,
     private readonly bulletinCategoryService: BulletinCategoryService,
+    private fileSystemService: FilesystemService,
     private readonly groupsService: GroupsService,
     private readonly sseService: SseService,
   ) {}
@@ -48,31 +48,14 @@ class BulletinBoardService implements OnModuleInit {
   private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
 
   onModuleInit() {
-    if (!existsSync(this.attachmentsPath)) {
-      mkdirSync(this.attachmentsPath, { recursive: true });
-    }
+    void this.fileSystemService.ensureDirectoryExists(this.attachmentsPath);
   }
 
-  static checkAttachmentFile(file: Express.Multer.File): string {
-    if (!file) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
-    }
-
-    if (!BULLETIN_BOARD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.ATTACHMENT_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
-    }
-
-    return file.filename;
-  }
-
-  serveBulletinAttachment(filename: string, res: Response) {
+  async serveBulletinAttachment(filename: string, res: Response) {
     const filePath = join(this.attachmentsPath, filename);
 
-    if (!existsSync(filePath)) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
-    }
-
-    const fileStream = createReadStream(filePath);
+    await FilesystemService.throwErrorIfFileNotExists(filePath);
+    const fileStream = await this.fileSystemService.createReadStream(filePath);
     fileStream.pipe(res);
 
     return res;
@@ -288,9 +271,7 @@ class BulletinBoardService implements OnModuleInit {
             await Promise.all(
               bulletin.attachmentFileNames.map(async (fileName) => {
                 const filePath = join(this.attachmentsPath, fileName);
-                if (existsSync(filePath)) {
-                  await promises.unlink(filePath);
-                }
+                await FilesystemService.checkIfFileExistAndDelete(filePath);
               }),
             );
           }

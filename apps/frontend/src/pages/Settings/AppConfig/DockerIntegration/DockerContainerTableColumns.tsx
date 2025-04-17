@@ -27,6 +27,7 @@ import DOCKER_CONTAINER_TABLE_COLUMNS from '@libs/docker/constants/dockerContain
 const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
   {
     id: DOCKER_CONTAINER_TABLE_COLUMNS.STATE_BADGE,
+    size: 60,
     header: ({ table, column }) => {
       const { pathname } = useLocation();
       const isDockerOverview = pathname === `/${APPS.SETTINGS}/tabs/container`;
@@ -113,6 +114,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
   {
     id: DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_STATE,
     header: ({ column }) => <SortableHeader<ContainerInfo, unknown> column={column} />,
+    size: 110,
 
     meta: {
       translationId: 'dockerOverview.state',

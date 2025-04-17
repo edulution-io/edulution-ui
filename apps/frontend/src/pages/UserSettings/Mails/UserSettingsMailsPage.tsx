@@ -15,7 +15,6 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { MailIcon } from '@/assets/icons';
 import { DropdownSelect } from '@/components';
-import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useUserStore from '@/store/UserStore/UserStore';
 import { Form } from '@/components/ui/Form';
@@ -28,11 +27,10 @@ import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/Floating
 import StateLoader from '@/pages/FileSharing/utilities/StateLoader';
 import replaceDiacritics from '@libs/common/utils/replaceDiacritics';
 import FormField from '@/components/shared/FormField';
-import useElementHeight from '@/hooks/useElementHeight';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import APPS from '@libs/appconfig/constants/apps';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
+import PageLayout from '@/components/structure/layout/PageLayout';
 import MailImporterTable from './MailImporterTable';
 
 const UserSettingsMailsPage: React.FC = () => {
@@ -52,8 +50,6 @@ const UserSettingsMailsPage: React.FC = () => {
   const form = useForm();
   const { appConfigs } = useAppConfigsStore();
   const isMailConfigured = findAppConfigByName(appConfigs, APPS.MAIL);
-
-  const pageBarsHeight = useElementHeight([NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 10;
 
   useEffect(() => {
     if (isMailConfigured) {
@@ -117,19 +113,15 @@ const UserSettingsMailsPage: React.FC = () => {
   );
 
   return (
-    <div className="h-screen overflow-y-hidden">
-      <div className="flex flex-row justify-between">
-        <NativeAppHeader
-          title={t('mail.sidebar')}
-          iconSrc={MailIcon}
-        />
-        <StateLoader isLoading={isEditSyncJobLoading} />
-      </div>
+    <PageLayout
+      nativeAppHeader={{
+        title: t('mail.sidebar'),
+        iconSrc: MailIcon,
+      }}
+    >
+      <StateLoader isLoading={isEditSyncJobLoading} />
       {isMailConfigured ? (
-        <div
-          className="w-full flex-1 overflow-auto pl-3 pr-3.5 scrollbar-thin"
-          style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
-        >
+        <>
           <h3 className="text-background">{t('mail.importer.title')}</h3>
           <div className="space-y-4">
             <DropdownSelect
@@ -155,11 +147,11 @@ const UserSettingsMailsPage: React.FC = () => {
             </div>
           </div>
           <FloatingButtonsBar config={config} />
-        </div>
+        </>
       ) : (
         <p>{t('mail.importer.noMailConfigured')}</p>
       )}
-    </div>
+    </PageLayout>
   );
 };
 

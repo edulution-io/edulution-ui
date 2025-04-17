@@ -10,5 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const LESSON_SESSION_HEADER_ID = 'session-header';
-export const FILTER_BAR_ID = 'filter-bar';
+const TABLE_DEFAULT_COLUMN_WIDTH = 150;
+
+export default TABLE_DEFAULT_COLUMN_WIDTH;

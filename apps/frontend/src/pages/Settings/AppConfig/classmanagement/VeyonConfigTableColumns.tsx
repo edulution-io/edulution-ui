@@ -23,6 +23,7 @@ import useVeyonConfigTableStore from './useVeyonTableStore';
 const VeyonConfigTableColumns: ColumnDef<VeyonProxyItem>[] = [
   {
     id: VEYON_PROXY_TABLE_COLUMNS.ID,
+    size: 60,
     header: ({ column }) => <SortableHeader<VeyonProxyItem, unknown> column={column} />,
 
     meta: {
