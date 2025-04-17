@@ -346,8 +346,9 @@ class SurveyAnswersService {
         identification = `(${username})`;
         identification = lastName ? `${lastName} ${identification}` : identification;
         identification = firstName ? `${firstName} ${identification}` : identification;
-      } else if (publicUserIdRegex.test(username)) {
+      } else {
         identification = firstName;
+        identification = lastName ? `${identification} ${lastName}` : identification;
       }
       return { identification, ...answer.answer };
     });
