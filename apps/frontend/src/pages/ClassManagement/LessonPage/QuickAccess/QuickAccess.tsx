@@ -113,7 +113,7 @@ const QuickAccess = () => {
         {groupColumns.map((item) => (
           <div
             key={item.name}
-            className="mb-8 w-full px-5 text-background md:w-1/3"
+            className="mb-8 w-full min-w-48 px-5 text-background md:w-1/3"
           >
             <GroupsColumn column={item} />
           </div>

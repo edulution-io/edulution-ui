@@ -14,9 +14,9 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { t } from 'i18next';
 import React from 'react';
 import MoveContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveContentDialogBody';
-import { Button } from '@/components/shared/Button';
 import ShareCollectDialogProps from '@libs/classManagement/types/shareCollectDialogProps';
 import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 const ShareFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
   const { homePath } = useUserPath();
@@ -28,16 +28,11 @@ const ShareFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, on
   );
 
   const getFooter = () => (
-    <div className="mt-4 flex justify-between space-x-4">
-      <Button
-        type="button"
-        size="lg"
-        variant="btn-collaboration"
-        onClick={action}
-      >
-        {t(`classmanagement.${title}`)}
-      </Button>
-    </div>
+    <DialogFooterButtons
+      handleClose={onClose}
+      handleSubmit={action}
+      submitButtonText={`classmanagement.${title}`}
+    />
   );
 
   return (

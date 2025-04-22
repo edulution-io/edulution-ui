@@ -85,30 +85,36 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
 
   if (publicUserId) {
     return (
-      <div className="relative top-1/4">
-        <PublicSurveyParticipationId publicParticipationId={publicUserId} />
-      </div>
+      <PageLayout>
+        <div className="relative top-1/4">
+          <PublicSurveyParticipationId publicParticipationId={publicUserId} />
+        </div>
+      </PageLayout>
     );
   }
 
   if (!selectedSurvey) {
     return (
-      <div className="relative top-1/3">
-        <h4 className="flex justify-center">{t('survey.notFound')}</h4>
-      </div>
+      <PageLayout>
+        <div className="relative top-1/3">
+          <h4 className="flex justify-center">{t('survey.notFound')}</h4>
+        </div>
+      </PageLayout>
     );
   }
 
   if (!user && !username && !selectedSurvey?.isAnonymous) {
     return (
-      <div className="relative top-1/4">
-        <PublicSurveyAccessForm
-          form={form}
-          publicUserFullName={form.watch('username')}
-          setPublicUserFullName={(value: string) => form.setValue('username', value)}
-          accessSurvey={handleAccessSurvey}
-        />
-      </div>
+      <PageLayout>
+        <div className="relative top-1/3">
+          <PublicSurveyAccessForm
+            form={form}
+            publicUserFullName={form.watch('username')}
+            setPublicUserFullName={(value: string) => form.setValue('username', value)}
+            accessSurvey={handleAccessSurvey}
+          />
+        </div>
+      </PageLayout>
     );
   }
 
