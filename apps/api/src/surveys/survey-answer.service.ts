@@ -238,9 +238,9 @@ class SurveyAnswersService {
       return this.createAnswer({ username: 'anonymous' }, surveyId, saveNo, answer);
     }
 
-    const { username, firstName, lastName } = attendee;
+    const { username, firstName, lastName, fullName } = attendee;
     const isUnauthenticatedUser = isPublic && !firstName && !lastName;
-    const isAnswerFromAuthenticatedUser = publicUserIdRegex.test(username) || !isUnauthenticatedUser;
+    const isAnswerFromAuthenticatedUser = publicUserIdRegex.test(username) || fullName || !isUnauthenticatedUser;
     if (isAnswerFromAuthenticatedUser) {
       await this.throwErrorIfParticipationIsNotPossible(survey, username);
 
@@ -295,7 +295,7 @@ class SurveyAnswersService {
       publicUserId = createValidPublicUserId(username, uuidv4());
     }
     const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(
-      { username: publicUserId, firstName: username },
+      { username: publicUserId, fullName: username },
       surveyId,
       saveNo,
       answer,
@@ -338,17 +338,16 @@ class SurveyAnswersService {
 
     const answers = surveyAnswers.filter((answer) => answer.answer != null);
     return answers.map((answer) => {
-      const { username, firstName, lastName } = answer.attendee;
+      const { username, firstName, lastName, fullName } = answer.attendee;
       let identification;
-      if (!firstName) {
-        identification = username;
-      } else if (!publicUserIdRegex.test(username)) {
+      if (fullName) {
+        identification = fullName;
+      } else if (lastName || firstName) {
         identification = `(${username})`;
         identification = lastName ? `${lastName} ${identification}` : identification;
         identification = firstName ? `${firstName} ${identification}` : identification;
       } else {
-        identification = firstName;
-        identification = lastName ? `${identification} ${lastName}` : identification;
+        identification = username;
       }
       return { identification, ...answer.answer };
     });
