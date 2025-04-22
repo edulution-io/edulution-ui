@@ -82,7 +82,7 @@ const EnrolPage: React.FC = () => {
         placeholder={t('classmanagement.typeToFilter')}
         className="mb-2"
       />
-      <div className="zzflex max-h-full max-w-full flex-row flex-wrap overflow-y-auto scrollbar-thin">
+      <div className="flex max-h-full max-w-full flex-row flex-wrap overflow-y-auto scrollbar-thin">
         <p className="mt-2 min-w-full">{t('classmanagement.enrolPageDescription')}</p>
         {groupRows.map((row) => (
           <div
