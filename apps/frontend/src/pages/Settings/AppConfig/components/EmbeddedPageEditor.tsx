@@ -36,7 +36,7 @@ const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) =
   const [openPreview, setOpenPreview] = useState(false);
   const { tableContentData } = useFileTableStore();
 
-  const toggleMode = () => {
+  const togglePreviewIsOpen = () => {
     setOpenPreview((prev) => !prev);
   };
 
@@ -108,7 +108,7 @@ const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) =
                   type="button"
                   variant="btn-collaboration"
                   size="lg"
-                  onClick={toggleMode}
+                  onClick={togglePreviewIsOpen}
                 >
                   {t('common.preview')}
                 </Button>
