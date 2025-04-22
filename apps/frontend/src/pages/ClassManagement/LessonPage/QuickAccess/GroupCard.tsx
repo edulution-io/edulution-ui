@@ -51,8 +51,8 @@ const GroupCard = ({ icon, type, group }: GroupCardProps) => {
 
   return (
     <Card
-      variant="security"
-      className="h-24 w-48 min-w-48 cursor-pointer hover:opacity-90"
+      variant="text"
+      className="h-24 w-48 min-w-48 cursor-pointer ease-in-out hover:scale-110 lg:transition-transform lg:duration-300"
       onClick={onCardClick}
       onMouseOver={() => setIsHovered(true)}
       onMouseOut={() => setIsHovered(false)}
