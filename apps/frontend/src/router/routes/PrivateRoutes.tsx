@@ -62,12 +62,12 @@ const getPrivateRoutes = (appConfigs: AppConfigDto[]) => {
           element={<UserSettingsSecurityPage />}
         />
         <Route
-          path={SECURITY_PATH}
-          element={<UserSettingsSecurityPage />}
-        />
-        <Route
           path={USER_DETAILS_PATH}
           element={<UserSettingsDetailsPage />}
+        />
+        <Route
+          path={SECURITY_PATH}
+          element={<UserSettingsSecurityPage />}
         />
         <Route
           path={MAILS_PATH}
