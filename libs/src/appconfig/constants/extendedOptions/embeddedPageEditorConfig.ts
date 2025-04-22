@@ -14,9 +14,25 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 
-const EMBEDDED_PAGE_EXTENDED_OPTIONS_TABLE: AppConfigExtendedOption[] = [
+const EMBEDDED_PAGE_EDITOR_CONFIG: AppConfigExtendedOption[] = [
+  {
+    name: ExtendedOptionKeys.EMBEDDED_PAGE_HTML_MODE,
+    description: 'settings.appconfig.sections.editor.modeDescription',
+    title: 'common.mode',
+    type: ExtendedOptionField.switch,
+    value: '',
+    width: 'full',
+  },
   {
     name: ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT,
+    description: 'fileTable.description',
+    title: 'fileTable.title',
+    type: ExtendedOptionField.textarea,
+    value: '',
+    width: 'full',
+  },
+  {
+    name: ExtendedOptionKeys.EMBEDDED_PAGE_TABLE,
     description: 'fileTable.description',
     title: 'fileTable.title',
     type: ExtendedOptionField.table,
@@ -25,4 +41,4 @@ const EMBEDDED_PAGE_EXTENDED_OPTIONS_TABLE: AppConfigExtendedOption[] = [
   },
 ];
 
-export default EMBEDDED_PAGE_EXTENDED_OPTIONS_TABLE;
+export default EMBEDDED_PAGE_EDITOR_CONFIG;

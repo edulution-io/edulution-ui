@@ -791,6 +791,11 @@
           "uploadFailed": "Hochladen fehlgeschlagen",
           "rowSelected": "{{selected}} von {{total}} Dateien ausgewählt",
           "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt"
+        },
+        "editor": {
+          "title": "Editor",
+          "description": "Hier kann zwischen Sandbox und nativ gerendert ausgewählt werden. Sandbox ist die sicherste Variante, native das Original-Rendering. Beachte, dass bei nativen Rendering keine Sicherheitsvorkehrungen getroffen werden können. Im Sandbox-Modus wird die HTML-Datei aus dem Speicher gelesen. Lade dazu die Datei hoch.",
+          "modeDescription": "Sandbox ist die sicherste Variante, native das Original-Rendering. Beachte, dass bei nativen Rendering keine Sicherheitsvorkehrungen getroffen werden können. Im Sandbox-Modus wird die HTML-Datei aus dem Speicher gelesen. Lade dazu die Datei hoch."
         }
       },
       "update": {
@@ -1063,7 +1068,8 @@
     "template": "Vorlage",
     "preview": "Vorschau",
     "format": "Formatieren",
-    "upload": "Hochladen"
+    "upload": "Hochladen",
+    "mode": "Modus"
   },
   "form": {
     "path": "Link",

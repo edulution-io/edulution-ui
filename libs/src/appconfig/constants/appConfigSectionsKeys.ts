@@ -19,6 +19,7 @@ const AppConfigSectionsKeys = {
   veyon: 'veyon',
   docker: 'docker',
   files: 'files',
+  editor: 'editor',
 } as const;
 
 export default AppConfigSectionsKeys;

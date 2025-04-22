@@ -12,7 +12,7 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Control, FieldValues, Path } from 'react-hook-form';
+import { Control, FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import AppConfigFormField from '@/pages/Settings/AppConfig/components/textField/AppConfigFormField';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import AppConfigTable from '@/pages/Settings/AppConfig/components/table/AppConfigTable';
@@ -20,16 +20,20 @@ import cn from '@libs/common/utils/className';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { type AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import type AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
+import EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEditorForm';
 import AppConfigSwitch from './booleanField/AppConfigSwitch';
+import EmbeddedPageEditor from './EmbeddedPageEditor';
 
 type ExtendedOptionsFormProps<T extends FieldValues> = {
   extendedOptions: AppConfigExtendedOptionsBySections | undefined;
   control: Control<T>;
   settingLocation: string;
+  form: UseFormReturn<T>;
 };
 
 const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T extends FieldValues>({
   extendedOptions,
+  form,
   control,
   settingLocation,
 }: ExtendedOptionsFormProps<T>) => {
@@ -84,6 +88,13 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
             fieldPath={fieldPath}
             control={control}
             option={option}
+          />
+        );
+      case ExtendedOptionField.textarea:
+        return (
+          <EmbeddedPageEditor
+            name={settingLocation}
+            form={form as unknown as UseFormReturn<EmbeddedPageEditorForm>}
           />
         );
       default:

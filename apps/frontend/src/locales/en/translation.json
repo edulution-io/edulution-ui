@@ -789,6 +789,11 @@
           "uploadFailed": "Upload failed",
           "rowSelected": "{{selected}} of {{total}} files selected",
           "rowsSelected": "{{selected}} of {{total}} files selected"
+        },
+        "editor": {
+          "title": "Editor",
+          "description": "Here you can choose between sandbox and native rendering. Sandbox is the safest variant, native the original rendering. Please note that no security precautions can be taken with native rendering. In sandbox mode, the HTML file is read from memory. To do this, upload the file.",
+          "modeDescription": "Sandbox is the safest variant, native the original rendering. Please note that no security precautions can be taken with native rendering. In sandbox mode, the HTML file is read from memory. To do this, upload the file."
         }
       },
       "update": {
@@ -1062,7 +1067,8 @@
     "template": "Template",
     "preview": "Preview",
     "format": "Format",
-    "upload": "Upload"
+    "upload": "Upload",
+    "mode": "Mode"
   },
   "form": {
     "path": "Path",
