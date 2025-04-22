@@ -25,6 +25,7 @@ import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 
 const EnrolPage: React.FC = () => {
   const { t } = useTranslation();
@@ -82,17 +83,28 @@ const EnrolPage: React.FC = () => {
         className="mb-2"
       />
       <div className="flex max-h-full max-w-full flex-row flex-wrap overflow-y-auto scrollbar-thin">
-        <div className="mt-2 min-w-full text-lg text-background">{t('classmanagement.enrolPageDescription')}</div>
+        <p className="mt-2 min-w-full">{t('classmanagement.enrolPageDescription')}</p>
         {groupRows.map((row) => (
           <div
             key={row.name}
-            className="mt-4 min-w-full text-background"
+            className="mt-4 min-w-full"
           >
-            <h4 className="text-background">{t(`classmanagement.${row.name}`)}</h4>
-            <GroupList
-              row={row}
-              isEnrolEnabled
-            />
+            <AccordionSH
+              type="multiple"
+              defaultValue={[row.name]}
+            >
+              <AccordionItem value={row.name}>
+                <AccordionTrigger>
+                  <h4>{t(`classmanagement.${row.name}`)}</h4>
+                </AccordionTrigger>
+                <AccordionContent className="space-y-2 px-1">
+                  <GroupList
+                    row={row}
+                    isEnrolEnabled
+                  />
+                </AccordionContent>
+              </AccordionItem>
+            </AccordionSH>
           </div>
         ))}
       </div>

@@ -13,10 +13,10 @@
 import React from 'react';
 import { t } from 'i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { Button } from '@/components/shared/Button';
 import type UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import type ClassmanagementButtonConfigProps from '@libs/classManagement/types/classmanagementButtonConfigProps';
 import ItemDialogList from '@/components/shared/ItemDialogList';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 type ConfirmationDialogProps = ClassmanagementButtonConfigProps & {
   member: UserLmnInfo[];
@@ -47,22 +47,13 @@ const LessonConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   };
 
   const getFooter = () => (
-    <div className="mt-4 flex justify-between space-x-4">
-      <Button
-        variant="btn-attention"
-        size="lg"
-        onClick={disableAction}
-      >
-        {t(disableText || 'classmanagement.deactivate')}
-      </Button>
-      <Button
-        variant="btn-collaboration"
-        size="lg"
-        onClick={enableAction}
-      >
-        {t(enableText || 'classmanagement.activate')}
-      </Button>
-    </div>
+    <DialogFooterButtons
+      handleClose={disableAction}
+      handleSubmit={enableAction}
+      cancelButtonVariant="btn-attention"
+      cancelButtonText={t(disableText || 'classmanagement.deactivate')}
+      submitButtonText={t(enableText || 'classmanagement.activate')}
+    />
   );
 
   return (

@@ -13,10 +13,10 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/shared/Button';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import SaveSurveyDialogBody from '@/pages/Surveys/Editor/dialog/SaveSurveyDialogBody';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 interface SaveSurveyDialogProps {
   form: UseFormReturn<SurveyDto>;
@@ -34,6 +34,8 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
 
   const getDialogBody = () => <SaveSurveyDialogBody form={form} />;
 
+  const handleClose = () => setIsOpenSaveSurveyDialog(!isOpenSaveSurveyDialog);
+
   const getFooter = () => (
     <form
       onSubmit={(e) => {
@@ -41,14 +43,13 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
         submitSurvey();
       }}
     >
-      <Button
-        type="submit"
-        variant="btn-collaboration"
-        disabled={isSubmitting}
-        size="lg"
-      >
-        {t('common.save')}
-      </Button>
+      <DialogFooterButtons
+        handleClose={handleClose}
+        handleSubmit={() => {}}
+        disableSubmit={isSubmitting}
+        submitButtonText="common.save"
+        submitButtonType="submit"
+      />
     </form>
   );
 
@@ -56,7 +57,7 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
     <AdaptiveDialog
       isOpen={isOpenSaveSurveyDialog}
       trigger={trigger}
-      handleOpenChange={() => setIsOpenSaveSurveyDialog(!isOpenSaveSurveyDialog)}
+      handleOpenChange={handleClose}
       title={t('surveys.saveDialog.title')}
       body={!isSubmitting && getDialogBody()}
       footer={!isSubmitting && getFooter()}

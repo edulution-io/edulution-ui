@@ -13,7 +13,6 @@
 import React from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
-import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -24,6 +23,7 @@ import getConferencesFormSchema from '@libs/conferences/constants/formSchema';
 import stringToBoolean from '@libs/common/utils/stringToBoolean';
 import CONFERENCES_IS_PUBLIC_FORM_VALUES from '@libs/conferences/constants/isPublicFormValues';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 interface CreateConferenceDialogProps {
   trigger?: React.ReactNode;
@@ -79,14 +79,13 @@ const CreateConferenceDialog = ({ trigger }: CreateConferenceDialogProps) => {
   const getFooter = () => (
     <div className="mt-4 flex justify-end">
       <form onSubmit={handleFormSubmit}>
-        <Button
-          variant="btn-collaboration"
-          disabled={isLoading}
-          size="lg"
-          type="submit"
-        >
-          {t('common.create')}
-        </Button>
+        <DialogFooterButtons
+          handleClose={() => closeCreateConferenceDialog()}
+          handleSubmit={() => {}}
+          submitButtonText="common.save"
+          submitButtonType="submit"
+          disableSubmit={isLoading}
+        />
       </form>
     </div>
   );

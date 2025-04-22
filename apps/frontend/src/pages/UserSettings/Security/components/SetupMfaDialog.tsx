@@ -16,13 +16,13 @@ import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import useUserStore from '@/store/UserStore/UserStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { Button } from '@/components/shared/Button';
 import OtpInput from '@/components/shared/OtpInput';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import { GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 const SetupMfaDialog: React.FC = () => {
   const { t } = useTranslation();
@@ -111,17 +111,14 @@ const SetupMfaDialog: React.FC = () => {
     </form>
   );
 
-  const getDialogFooter = () => (
-    <div className="mt-4 flex justify-center">
-      <Button
-        type="submit"
-        variant="btn-collaboration"
-        size="lg"
-        onClick={handleSetMfaEnabled}
-      >
-        {totpIsLoading ? t('common.loading') : t('common.save')}
-      </Button>
-    </div>
+  const getFooter = () => (
+    <DialogFooterButtons
+      handleClose={handleOpenChange}
+      handleSubmit={handleSetMfaEnabled}
+      submitButtonText="common.save"
+      submitButtonType="submit"
+      disableSubmit={totpIsLoading}
+    />
   );
 
   return (
@@ -130,7 +127,7 @@ const SetupMfaDialog: React.FC = () => {
       handleOpenChange={handleOpenChange}
       title={t('usersettings.addTotp.title')}
       body={getDialogBody()}
-      footer={getDialogFooter()}
+      footer={getFooter()}
     />
   );
 };
