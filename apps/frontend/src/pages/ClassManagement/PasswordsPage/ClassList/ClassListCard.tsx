@@ -21,6 +21,7 @@ import { TooltipProvider } from '@/components/ui/Tooltip';
 import ActionTooltip from '@/components/shared/ActionTooltip';
 import { FaFileCsv, FaRegFilePdf } from 'react-icons/fa6';
 import PrintPasswordsDialog from '@/pages/ClassManagement/PasswordsPage/PrintPasswordsDialog';
+import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
 
 interface ClassListCardProps {
   group: LmnApiSchoolClass;
@@ -88,7 +89,11 @@ const ClassListCard = ({ selectedClasses, setSelectedClasses, group }: ClassList
               <TooltipProvider>
                 <ActionTooltip
                   tooltipText={displayName || commonName}
-                  trigger={<div className="ml-2 text-nowrap text-lg font-bold">{displayName || commonName}</div>}
+                  trigger={
+                    <div className="ml-2 text-nowrap text-lg font-bold">
+                      {displayName || removeSchoolPrefix(commonName, user.school)}
+                    </div>
+                  }
                 />
               </TooltipProvider>
             </div>

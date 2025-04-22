@@ -23,6 +23,8 @@ import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import STUDENTS_REGEX from '@libs/lmnApi/constants/studentsRegex';
+import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
+import useLmnApiStore from '@/store/useLmnApiStore';
 
 interface GroupCardProps {
   icon?: ReactElement;
@@ -34,6 +36,7 @@ const GroupCard = ({ icon, type, group }: GroupCardProps) => {
   const { t } = useTranslation();
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { user } = useLmnApiStore();
 
   if (!group) {
     return null;
@@ -62,7 +65,11 @@ const GroupCard = ({ icon, type, group }: GroupCardProps) => {
           <TooltipProvider>
             <ActionTooltip
               tooltipText={title}
-              trigger={<p className="overflow-hidden text-ellipsis text-nowrap text-lg font-bold">{title}</p>}
+              trigger={
+                <p className="overflow-hidden text-ellipsis text-nowrap text-lg font-bold">
+                  {removeSchoolPrefix(title, user?.school)}
+                </p>
+              }
             />
           </TooltipProvider>
           <div className="flex flex-row items-center">
