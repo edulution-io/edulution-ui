@@ -21,6 +21,7 @@ import { TooltipProvider } from '@/components/ui/Tooltip';
 import ActionTooltip from '@/components/shared/ActionTooltip';
 import { FaFileCsv, FaRegFilePdf } from 'react-icons/fa6';
 import PrintPasswordsDialog from '@/pages/ClassManagement/PasswordsPage/PrintPasswordsDialog';
+import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
 
 interface ClassListCardProps {
   group: LmnApiSchoolClass;
@@ -65,10 +66,10 @@ const ClassListCard = ({ selectedClasses, setSelectedClasses, group }: ClassList
     <>
       <Card
         key={group.dn}
-        variant="organisation"
+        variant="text"
         className={cn(
-          'h-13 my-2 ml-1 mr-8 flex w-64 min-w-64 rounded-lg border',
-          isActive && 'bg-ciLightBlue',
+          'h-13 my-2 ml-1 mr-8 flex w-64 min-w-64 overflow-hidden ',
+          isActive && 'scale-105',
           'cursor-pointer',
         )}
         onClick={onSelect}
@@ -88,7 +89,11 @@ const ClassListCard = ({ selectedClasses, setSelectedClasses, group }: ClassList
               <TooltipProvider>
                 <ActionTooltip
                   tooltipText={displayName || commonName}
-                  trigger={<div className="ml-2 text-nowrap text-lg font-bold">{displayName || commonName}</div>}
+                  trigger={
+                    <div className="ml-2 text-nowrap text-lg font-bold">
+                      {displayName || removeSchoolPrefix(commonName, user.school)}
+                    </div>
+                  }
                 />
               </TooltipProvider>
             </div>
@@ -98,14 +103,14 @@ const ClassListCard = ({ selectedClasses, setSelectedClasses, group }: ClassList
           <button
             type="button"
             onClick={(event) => onButtonClick(event, PrintPasswordsFormat.PDF)}
-            className="absolute -top-[1px] right-2 h-[42px] bg-ciLightBlue px-2 py-3 text-xl hover:bg-ciGreenToBlue"
+            className="absolute -top-[1px] right-9 h-[42px] bg-ciLightBlue px-2 py-3 text-xl hover:bg-opacity-90"
           >
             <FaRegFilePdf />
           </button>
           <button
             type="button"
             onClick={(event) => onButtonClick(event, PrintPasswordsFormat.CSV)}
-            className="absolute -right-7 -top-[1px] h-[42px] rounded-r-lg bg-ciLightBlue px-2 py-3 text-lg hover:bg-ciGreenToBlue"
+            className="absolute -right-0 -top-[1px] h-[42px] rounded-r-lg bg-ciLightBlue px-2 py-3 text-lg hover:bg-opacity-90"
           >
             <FaFileCsv />
           </button>

@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "1.1.79",
+  "version": "1.1.82",
   "scripts": {
     "test": "nx run-many --target=test --projects=api",
     "test:api": "nx run api:test --detectOpenHandles",
@@ -144,6 +144,7 @@
     "tailwind-merge": "^2.2.1",
     "tailwindcss": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
+    "tldraw": "^3.11.1",
     "tslib": "^2.6.2",
     "tsx": "^4.7.2",
     "typeorm": "^0.3.20",
