@@ -2,7 +2,7 @@
   "welcome": "Willkommen in der Anwendung",
   "changeLang": "Sprache ändern",
   "heading": "Herzlich Willkommen {{givenName}} {{familyName}}",
-  "content": "Hier ist ihr persönliches {{ applicationName }} Dashboard.",
+  "content": "Hier ist ihr persönliches {{ applicationName }} Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Unterricht gesammelt sind.",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
   "framebufferImage": "Framebuffer-Bild",
   "previewImage": "Bildvorschau",
@@ -943,7 +943,7 @@
     "forgot_password": "Passwort vergessen?",
     "remember_me": "Merken",
     "enterMultiFactorCode": "Zwei-Faktor-Authentisierung",
-    "loginWithApp": "Login mit QR",
+    "loginWithApp": "Anmelden mit QR-Login",
     "loginWithQrDescription": "Öffne die edulution.io APP um dich einfach mit dem QR-Code anzumelden.",
     "infoQrCodeExpired": "Zeit für Login mit edulution.io APP abgelaufen."
   },
@@ -1125,6 +1125,10 @@
   "whiteboard": {
     "title": "WHITEBOARD",
     "sidebar": "Whiteboard"
+  },
+  "whiteboard-collaboration": {
+    "title": "WHITEBOARD",
+    "sidebar": "Kollaboratives Whiteboard"
   },
   "table": {
     "noDataAvailable": "Keine Daten verfügbar"

@@ -16,12 +16,22 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import ResultVisualizationDialogBody from '@/pages/Surveys/Tables/dialogs/ResultVisualizationDialogBody';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 const ResultVisualizationDialog = () => {
   const { isOpenPublicResultsVisualisationDialog, setIsOpenPublicResultsVisualisationDialog, isLoading } =
     useResultDialogStore();
 
   const { t } = useTranslation();
+
+  const handleClose = () => setIsOpenPublicResultsVisualisationDialog(!isOpenPublicResultsVisualisationDialog);
+
+  const getFooter = () => (
+    <DialogFooterButtons
+      handleClose={handleClose}
+      cancelButtonText="common.close"
+    />
+  );
 
   return isOpenPublicResultsVisualisationDialog ? (
     <>
@@ -32,6 +42,7 @@ const ResultVisualizationDialog = () => {
         title={t('surveys.resultChartDialog.title')}
         body={<ResultVisualizationDialogBody />}
         desktopContentClassName="max-h-[75vh] max-w-[85%]"
+        footer={getFooter()}
       />
     </>
   ) : null;

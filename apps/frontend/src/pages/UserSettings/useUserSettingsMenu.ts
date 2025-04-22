@@ -44,16 +44,16 @@ const useUserSettingsMenu = () => {
     color: 'hover:bg-ciGreenToBlue',
     menuItems: [
       {
-        id: SECURITY_PATH,
-        label: 'usersettings.security.title',
-        icon: SecurityIcon,
-        action: () => navigate(USER_SETTINGS_SECURITY_PATH),
-      },
-      {
         id: USER_DETAILS_PATH,
         label: 'usersettings.details.title',
         icon: UserDetailsSettingsIcon,
         action: () => navigate(USER_SETTINGS_USER_DETAILS_PATH),
+      },
+      {
+        id: SECURITY_PATH,
+        label: 'usersettings.security.title',
+        icon: SecurityIcon,
+        action: () => navigate(USER_SETTINGS_SECURITY_PATH),
       },
       {
         id: MAILS_PATH,

@@ -52,7 +52,7 @@ const UserSettingsDetailsPage: React.FC = () => {
   return (
     <PageLayout
       nativeAppHeader={{
-        title: t('common.not-available'),
+        title: t('usersettings.details.title'),
         description: t('usersettings.details.description'),
         iconSrc: UserDetailsSettingsIcon,
       }}
