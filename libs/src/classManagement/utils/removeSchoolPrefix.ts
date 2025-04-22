@@ -10,7 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const removeSchoolPrefix = (input: string, prefix: string): string => {
+const removeSchoolPrefix = (input: string, prefix?: string): string => {
+  if (!prefix) {
+    return input;
+  }
   const regex = new RegExp(`^${prefix}-`);
   return input.replace(regex, '');
 };
