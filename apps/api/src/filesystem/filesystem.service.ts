@@ -22,7 +22,7 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { lookup } from 'mime-types';
 import { type Response } from 'express';
-import { ResponseType } from '@libs/common/types/http-methods';
+import { HTTP_HEADERS, RequestResponseContentType, ResponseType } from '@libs/common/types/http-methods';
 import HashAlgorithm from '@libs/common/constants/hashAlgorithm';
 import CustomFile from '@libs/filesharing/types/customFile';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -105,7 +105,8 @@ class FilesystemService {
       }
 
       const fileBuffer = await fsPromises.readFile(filePath);
-      const mimetype: string = (response.headers['content-type'] as string) || 'application/octet-stream';
+      const mimetype: string =
+        (response.headers[HTTP_HEADERS.ContentType] as string) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
 
       return {
         fieldname: 'file',
@@ -250,8 +251,8 @@ class FilesystemService {
 
     await FilesystemService.throwErrorIfFileNotExists(filePath);
 
-    const contentType = lookup(filePath) || 'application/octet-stream';
-    res.setHeader('Content-Type', contentType);
+    const contentType = lookup(filePath) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
+    res.setHeader(HTTP_HEADERS.ContentType, contentType);
 
     const fileStream = await this.createReadStream(filePath);
     fileStream.pipe(res);

@@ -15,12 +15,12 @@ import { useLocation } from 'react-router-dom';
 import { getFromPathName } from '@libs/common/utils';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import PageTitle from '@/components/PageTitle';
 import getDisplayName from '@/utils/getDisplayName';
 import useLanguage from '@/hooks/useLanguage';
 import TApps from '@libs/appconfig/types/appsType';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
+import PageLayout from '@/components/structure/layout/PageLayout';
 import useFileTableStore from '../Settings/AppConfig/components/useFileTableStore';
 
 const EmbeddedPage: React.FC = () => {
@@ -45,8 +45,7 @@ const EmbeddedPage: React.FC = () => {
   const htmlContent = (currentAppConfig.extendedOptions?.EMBEDDED_PAGE_HTML_CONTENT as string) || '';
 
   return (
-    <>
-      <PageTitle translationId={pageTitle} />
+    <PageLayout isFullScreen>
       {isSandboxMode ? (
         <iframe
           src={htmlContentUrl}
@@ -61,7 +60,7 @@ const EmbeddedPage: React.FC = () => {
           dangerouslySetInnerHTML={{ __html: htmlContent }}
         />
       )}
-    </>
+    </PageLayout>
   );
 };
 
