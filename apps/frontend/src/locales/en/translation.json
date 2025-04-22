@@ -2,7 +2,7 @@
   "welcome": "Welcome to the application",
   "changeLang": "Change Language",
   "heading": "Welcome {{givenName}} {{familyName}}",
-  "content": "Here is your personal {{ applicationName }} dashboard.",
+  "content": "Here is your personal {{ applicationName }} dashboard. The place where all your applications for digital teaching are collected.",
   "closeEditingWindow": "Close editing window",
   "framebufferImage": "Framebuffer image",
   "previewImage": "Image preview",
