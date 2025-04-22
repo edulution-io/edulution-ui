@@ -162,7 +162,7 @@ const LessonPage = () => {
     }
   }, [groupTypeParams, groupNameParams, lmnApiToken]);
 
-  const sessionOptions = userSessions.map((s) => ({ id: s.sid, name: s.name }));
+  const sessionOptions = userSessions.map((s) => ({ id: s.name, name: s.name }));
 
   const handleSessionSelect = (sessionId: string) => {
     const sessionName = sessionOptions.find((s) => s.id === sessionId)?.name;
@@ -218,14 +218,13 @@ const LessonPage = () => {
         <LoadingIndicatorDialog isOpen={isPageLoading || isLoading} />
         <UserProjectOrSchoolClassSearch />
         {sessionOptions && (
-          <div className="md:w-1/3">
-            <DropdownSelect
-              options={sessionOptions}
-              selectedVal={groupNameParams || ''}
-              handleChange={handleSessionSelect}
-              placeholder={t('classmanagement.selectSavedSession')}
-            />
-          </div>
+          <DropdownSelect
+            options={sessionOptions}
+            selectedVal={groupNameParams || ''}
+            handleChange={handleSessionSelect}
+            placeholder={t('classmanagement.selectSavedSession')}
+            classname="md:w-1/3"
+          />
         )}
         {groupNameParams || member.length ? (
           <div className="flex flex-row justify-between gap-2">
