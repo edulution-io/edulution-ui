@@ -28,8 +28,6 @@ import UserSettingsDetailsPage from '@/pages/UserSettings/Details/UserSettingsDe
 import UserSettingsMailsPage from '@/pages/UserSettings/Mails/UserSettingsMailsPage';
 import LanguageSettingsPage from '@/pages/UserSettings/Language/LanguageSettingsPage';
 import UserSettingsMobileAccess from '@/pages/UserSettings/MobileAccess/UserSettingsMobileAccess';
-import APPS from '@libs/appconfig/constants/apps';
-import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
 import getSettingsRoutes from '@/router/routes/SettingsRoutes';
 import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
 import getSurveyRoutes from '@/router/routes/SurveyRoutes';
@@ -84,10 +82,6 @@ const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
       />
     </Route>
 
-    <Route
-      path={`${APPS.BULLETIN_BOARD}/:bulletinId`}
-      element={<BulletinBoardPage />}
-    />
     <Route element={<ProtectedRoute />}>{getSettingsRoutes()}</Route>
     {getClassManagementRoutes()}
     {getSurveyRoutes()}
