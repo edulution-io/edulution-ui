@@ -92,6 +92,8 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
         );
       case ExtendedOptionField.textarea:
         return (
+          // TODO: Rework this component to be a generic textarea for reusablity
+          // https://github.com/edulution-io/edulution-ui/issues/724
           <EmbeddedPageEditor
             name={settingLocation}
             form={form as unknown as UseFormReturn<EmbeddedPageEditorForm>}

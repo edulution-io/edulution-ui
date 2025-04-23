@@ -17,7 +17,7 @@ import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtended
 const EMBEDDED_PAGE_EDITOR_CONFIG: AppConfigExtendedOption[] = [
   {
     name: ExtendedOptionKeys.EMBEDDED_PAGE_HTML_MODE,
-    description: 'settings.appconfig.sections.editor.modeDescription',
+    description: '',
     title: 'common.mode',
     type: ExtendedOptionField.switch,
     value: '',

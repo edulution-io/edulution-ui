@@ -56,6 +56,16 @@ const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) =
 
   return (
     <div className="space-y-4">
+      <p className="font-bold">
+        {isSandboxMode
+          ? t('settings.appconfig.sections.editor.sandboxMode')
+          : t('settings.appconfig.sections.editor.nativeMode')}
+      </p>
+      <p>
+        {isSandboxMode
+          ? t('settings.appconfig.sections.editor.sandboxModeDescription')
+          : t('settings.appconfig.sections.editor.nativeModeDescription')}
+      </p>
       <FormFieldSH
         key={name}
         control={form.control}
