@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import useMedia from '@/hooks/useMedia';
 import useUserStore from '@/store/UserStore/UserStore';
 import PageTitle from '@/components/PageTitle';
+import APPLICATION_NAME from '@libs/common/constants/applicationName';
 
 interface HeaderProps {
   hideHeadingText?: boolean;
@@ -31,12 +32,15 @@ const Header: React.FC<HeaderProps> = ({ hideHeadingText = false }: HeaderProps)
   const getHeadingText = () => {
     if (isMobileView || hideHeadingText) return null;
     return (
-      <h2 className="ml-4 items-center text-2xl font-bold text-background">
-        {t('heading', {
-          givenName: user?.firstName || '-',
-          familyName: user?.lastName || '-',
-        })}
-      </h2>
+      <div className="ml-4 flex flex-col">
+        <h3>
+          {t('heading', {
+            givenName: user?.firstName || '-',
+            familyName: user?.lastName || '-',
+          })}
+        </h3>
+        <p>{t('content', { applicationName: APPLICATION_NAME })}</p>
+      </div>
     );
   };
 

@@ -18,6 +18,7 @@ import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDial
 import SubmittedAnswersDialogBody from '@/pages/Surveys/Tables/dialogs/SubmittedAnswersDialogBody';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 const SubmittedAnswersDialog = () => {
   const { selectedSurvey: survey } = useSurveyTablesPageStore();
@@ -56,15 +57,25 @@ const SubmittedAnswersDialog = () => {
     );
   };
 
+  const handleClose = () => setIsOpenSubmittedAnswersDialog(!isOpenSubmittedAnswersDialog);
+
+  const getFooter = () => (
+    <DialogFooterButtons
+      handleClose={handleClose}
+      cancelButtonText="common.close"
+    />
+  );
+
   return (
     <>
       {isLoading ? <LoadingIndicatorDialog isOpen={isLoading} /> : null}
       <AdaptiveDialog
         isOpen={isOpenSubmittedAnswersDialog}
-        handleOpenChange={() => setIsOpenSubmittedAnswersDialog(!isOpenSubmittedAnswersDialog)}
+        handleOpenChange={handleClose}
         title={t('surveys.submittedAnswersDialog.title')}
         body={getDialogBody()}
         desktopContentClassName="max-w-[75%]"
+        footer={getFooter()}
       />
     </>
   );
