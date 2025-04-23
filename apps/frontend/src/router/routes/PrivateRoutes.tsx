@@ -10,10 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import React from 'react';
+import { Outlet, Route, Navigate } from 'react-router-dom';
 import getForwardedAppRoutes from '@/router/routes/ForwardedAppRoutes';
 import getEmbeddedAppRoutes from '@/router/routes/EmbeddedAppRoutes';
 import getNativeAppRoutes from '@/router/routes/NativeAppRoutes';
-import { Outlet, Route } from 'react-router-dom';
 import {
   LANGUAGE_PATH,
   MAILS_PATH,
@@ -33,7 +34,6 @@ import getSettingsRoutes from '@/router/routes/SettingsRoutes';
 import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
 import getSurveyRoutes from '@/router/routes/SurveyRoutes';
 import getFileSharingRoutes from '@/router/routes/FileSharingRoutes';
-import React from 'react';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import DashboardPage from '../../pages/Dashboard/DashboardPage';
 import ProtectedRoute from './ProtectedRoute';
@@ -54,8 +54,13 @@ const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
       element={<Outlet />}
     >
       <Route
-        path=""
-        element={<UserSettingsDetailsPage />}
+        index
+        element={
+          <Navigate
+            to={USER_DETAILS_PATH}
+            replace
+          />
+        }
       />
       <Route
         path={USER_DETAILS_PATH}
