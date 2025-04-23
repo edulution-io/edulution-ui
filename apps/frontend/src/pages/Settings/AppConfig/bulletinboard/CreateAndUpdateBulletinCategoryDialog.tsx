@@ -109,6 +109,7 @@ const CreateAndUpdateBulletinCategoryDialog: React.FC<CreateAndUpdateBulletinCat
         setDialogOpen('');
         setIsDeleteDialogOpen(true);
       }}
+      handleClose={closeDialog}
     />
   );
 

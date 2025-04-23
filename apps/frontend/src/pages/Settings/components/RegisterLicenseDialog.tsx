@@ -15,12 +15,12 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/components/shared/Button';
 import FormField from '@/components/shared/FormField';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import { Form } from '@/components/ui/Form';
 import useCommunityLicenseStore from '@/pages/UserSettings/Info/useCommunityLicenseStore';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 const RegisterLicenseDialog: React.FC = () => {
   const { t } = useTranslation();
@@ -48,6 +48,8 @@ const RegisterLicenseDialog: React.FC = () => {
     await signLicense(form.getValues('licenseKey'));
   };
 
+  const handleClose = () => setIsRegisterDialogOpen(false);
+
   const getDialogBody = () => (
     <Form {...form}>
       <form
@@ -61,25 +63,12 @@ const RegisterLicenseDialog: React.FC = () => {
           variant="dialog"
           description={t('settings.license.licenseKeyDescription')}
         />
-        <div className="flex justify-end gap-2">
-          <Button
-            variant="btn-outline"
-            size="lg"
-            type="button"
-            className="w-24 border-2"
-            onClick={() => setIsRegisterDialogOpen(false)}
-          >
-            {t('common.cancel')}
-          </Button>
-          <Button
-            variant="btn-collaboration"
-            size="lg"
-            type="submit"
-            className="w-24"
-          >
-            {t('settings.license.register')}
-          </Button>
-        </div>
+        <DialogFooterButtons
+          handleClose={handleClose}
+          handleSubmit={() => {}}
+          submitButtonText="settings.license.register"
+          submitButtonType="submit"
+        />
       </form>
     </Form>
   );
@@ -91,7 +80,7 @@ const RegisterLicenseDialog: React.FC = () => {
         title={t('settings.license.registerLicense')}
         isOpen={isRegisterDialogOpen}
         body={getDialogBody()}
-        handleOpenChange={() => setIsRegisterDialogOpen(false)}
+        handleOpenChange={handleClose}
       />
     </>
   );

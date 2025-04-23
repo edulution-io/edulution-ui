@@ -62,6 +62,7 @@ export { default as LinuxmusterIcon } from '@/assets/icons/linuxmuster.svg';
 export { default as BulletinBoardIcon } from '@/assets/icons/kanban.svg';
 export { default as SecurityIcon } from '@/assets/icons/security.svg';
 export { default as WhiteBoardIcon } from '@/assets/icons/whiteboard.svg';
+export { default as WhiteBoardCollaborationIcon } from '@/assets/icons/whiteboard_collaboration.svg';
 export { default as EnrolIcon } from '@/assets/icons/enrol.svg';
 export { default as FirstPasswordIcon } from '@/assets/icons/first-Password.svg';
 export { default as CreateProjectIcon } from '@/assets/icons/create-project.svg';
