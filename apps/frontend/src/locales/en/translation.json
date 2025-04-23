@@ -982,7 +982,8 @@
       "success": "Successfully copied to clipboard",
       "error": "Copy to clipboard failed",
       "doCopy": "Copy",
-      "link": "Copy link"
+      "link": "Copy link",
+      "url": "Copy URL"
     },
     "openInNewTab": "Open in new tab",
     "maximize": "Maximize",

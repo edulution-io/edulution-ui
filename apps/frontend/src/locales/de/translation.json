@@ -980,10 +980,11 @@
     "columns": "Spalten",
     "table": "Tabelle",
     "copy": {
-      "success": "Erfolgreich in Zwischenablage kopiert",
+      "success": "Erfolgreich in die Zwischenablage kopiert",
       "error": "In Zwischenablage kopieren fehlgeschlagen",
       "doCopy": "Kopieren",
-      "link": "Link kopieren"
+      "link": "Link kopieren",
+      "url": "URL kopieren"
     },
     "openInNewTab": "In neuem Tab öffnen",
     "maximize": "Maximieren",

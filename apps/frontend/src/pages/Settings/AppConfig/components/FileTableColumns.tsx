@@ -12,13 +12,20 @@
 
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
+import { useLocation } from 'react-router-dom';
+import { MdFileCopy, MdFolder } from 'react-icons/md';
+import i18n from '@/i18n';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import { formatBytes, getElapsedTime } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 import { TABLE_ICON_SIZE } from '@libs/ui/constants';
-import { MdFolder } from 'react-icons/md';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import copyToClipboard from '@/utils/copyToClipboard';
+import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
+import { TooltipProvider } from '@/components/ui/Tooltip';
+import ActionTooltip from '@/components/shared/ActionTooltip';
 
 const renderFileIcon = (item: FileInfoDto) => {
   if (item.type !== 'directory') {
@@ -36,6 +43,9 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
   {
     id: 'id',
     header: () => <div className="hidden" />,
+    meta: {
+      translationId: 'common.select',
+    },
     cell: ({ row }) => (
       <SelectableTextCell
         row={row}
@@ -111,6 +121,35 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
           text={formattedDate}
           onClick={() => row.toggleSelected()}
         />
+      );
+    },
+  },
+  {
+    accessorKey: 'copyToClipboard',
+    header: () => <div className="hidden" />,
+    meta: {
+      translationId: 'common.copy.url',
+    },
+    cell: ({ row }) => {
+      const { pathname } = useLocation();
+      const appName = pathname.split('/')[2];
+      const fileUrl = `${EDU_API_URL}/${EDU_API_CONFIG_ENDPOINTS.FILES}/file/${appName}/${row.original.filename}`;
+      const toasterTranslationIds = {
+        success: 'common.copy.success',
+        error: 'common.copy.error',
+      };
+      return (
+        <TooltipProvider>
+          <ActionTooltip
+            tooltipText={i18n.t('common.copy.url')}
+            trigger={
+              <SelectableTextCell
+                text={<MdFileCopy size={TABLE_ICON_SIZE} />}
+                onClick={() => copyToClipboard(fileUrl, toasterTranslationIds)}
+              />
+            }
+          />
+        </TooltipProvider>
       );
     },
   },
