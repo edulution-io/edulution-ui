@@ -20,7 +20,7 @@ type OtpInputProps = {
   variant?: 'default' | 'dialog';
   setTotp: (value: string) => void;
   onComplete?: () => void;
-  setShowNumPad: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowNumPad?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const OtpInput: React.FC<OtpInputProps> = ({ totp, variant = 'default', setTotp, onComplete, setShowNumPad }) => (
@@ -59,14 +59,16 @@ const OtpInput: React.FC<OtpInputProps> = ({ totp, variant = 'default', setTotp,
         />
       </InputOTPGroup>
     </InputOTP>
-    <Button
-      variant="btn-outline"
-      type="button"
-      onClick={() => setShowNumPad((prev) => !prev)}
-      className="ml-4 h-11 w-11 p-0 hover:bg-ciGrey/10"
-    >
-      <MdDialpad style={{ width: '18px', height: '18px' }} />
-    </Button>
+    {setShowNumPad && (
+      <Button
+        variant="btn-outline"
+        type="button"
+        onClick={() => setShowNumPad((prev) => !prev)}
+        className="ml-4 h-11 w-11 p-0 hover:bg-ciGrey/10"
+      >
+        <MdDialpad style={{ width: '18px', height: '18px' }} />
+      </Button>
+    )}
   </div>
 );
 
