@@ -32,7 +32,7 @@ const handleArrayActions = async (
   endpoint: string,
   httpMethod: HttpMethods,
 ) => {
-  const promises = itemsToProcess.map((item) => eduApi[httpMethod](endpoint, item));
+  const promises = itemsToProcess.map((itemToProcess) => eduApi[httpMethod](endpoint, itemToProcess));
   return Promise.all(promises);
 };
 

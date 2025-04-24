@@ -17,13 +17,13 @@ import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJ
 import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import WebDavService from '../../webdav/webDavService';
+import WebdavService from '../../webdav/webdavService';
 import SseService from '../../sse/sse.service';
 
 @Injectable()
 class DeleteFileConsumer extends WorkerHost {
   constructor(
-    private readonly webDavService: WebDavService,
+    private readonly webDavService: WebdavService,
     private readonly sseService: SseService,
   ) {
     super();

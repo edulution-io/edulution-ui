@@ -38,7 +38,7 @@ const useFileOperationToast = (
 
     const toasterData = {
       percent,
-      title: t(progress.title || ''), // Fallback '' falls undefined
+      title: t(progress.title || ''),
       id: progress.currentFilePath,
       description: t(progress.description || '', {
         filename,

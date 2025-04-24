@@ -129,6 +129,13 @@ const useNotifications = () => {
     };
   }, [isConferenceAppActivated]);
 
+  const handleFilesharingProgress =
+    (setter: (v: FilesharingProgressDto | null) => void) => async (e: MessageEvent<string>) => {
+      const data: FilesharingProgressDto = JSON.parse(e.data) as FilesharingProgressDto;
+      setter(data);
+      await clearProgressIfComplete(data, setter);
+    };
+
   useEffect(() => {
     if (!isFileSharingActive || !eventSource) {
       return undefined;
@@ -137,15 +144,13 @@ const useNotifications = () => {
     const controller = new AbortController();
     const { signal } = controller;
 
-    const handelFileDeletingEvent = (e: MessageEvent<string>) => {
-      void (async () => {
-        const data: FilesharingProgressDto = JSON.parse(e.data) as FilesharingProgressDto;
-        setFileOperationProgress(data);
+    const rawDelete = handleFilesharingProgress(setFileOperationProgress);
 
-        await clearProgressIfComplete(data, setFileOperationProgress);
-      })();
+    const handleDelete = (e: MessageEvent<string>) => {
+      void rawDelete(e);
     };
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES, handelFileDeletingEvent, { signal });
+
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES, handleDelete, { signal });
 
     return () => {
       controller.abort();
@@ -159,17 +164,14 @@ const useNotifications = () => {
     const controller = new AbortController();
     const { signal } = controller;
 
-    const handleFileSharingEvent = (e: MessageEvent<string>) => {
-      void (async () => {
-        const data: FilesharingProgressDto = JSON.parse(e.data) as FilesharingProgressDto;
-        setFilesharingProgress(data);
+    const rawCollectShare = handleFilesharingProgress(setFilesharingProgress);
 
-        await clearProgressIfComplete(data, setFilesharingProgress);
-      })();
+    const handleCollectOrShare = (e: MessageEvent<string>) => {
+      void rawCollectShare(e);
     };
 
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_COLLECT_FILES, handleFileSharingEvent, { signal });
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_SHARE_FILES, handleFileSharingEvent, { signal });
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_COLLECT_FILES, handleCollectOrShare, { signal });
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_SHARE_FILES, handleCollectOrShare, { signal });
 
     return () => {
       controller.abort();

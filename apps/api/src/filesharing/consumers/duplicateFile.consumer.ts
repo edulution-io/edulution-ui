@@ -21,12 +21,12 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJobData';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import SseService from '../../sse/sse.service';
-import WebDavService from '../../webdav/webDavService';
+import WebdavService from '../../webdav/webdavService';
 
 @Injectable()
 class DuplicateFileConsumer extends WorkerHost {
   constructor(
-    private readonly webDavService: WebDavService,
+    private readonly webDavService: WebdavService,
     private readonly sseService: SseService,
   ) {
     super();

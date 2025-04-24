@@ -11,10 +11,10 @@
  */
 
 import { Module } from '@nestjs/common';
-import WebDavService from './webDavService';
+import WebdavService from './webdavService';
 
 @Module({
-  providers: [WebDavService],
-  exports: [WebDavService],
+  providers: [WebdavService],
+  exports: [WebdavService],
 })
 export default class WebDavModule {}

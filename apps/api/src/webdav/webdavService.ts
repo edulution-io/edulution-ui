@@ -16,7 +16,12 @@ import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMes
 import CustomHttpException from '@libs/error/CustomHttpException';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
-import { HttpMethods, HttpMethodsWebDav, RequestResponseContentType } from '@libs/common/types/http-methods';
+import {
+  HTTP_HEADERS,
+  HttpMethods,
+  HttpMethodsWebDav,
+  RequestResponseContentType,
+} from '@libs/common/types/http-methods';
 import CustomFile from '@libs/filesharing/types/customFile';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import ContentType from '@libs/filesharing/types/contentType';
@@ -28,17 +33,17 @@ import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
 
 @Injectable()
-class WebDavService {
+class WebdavService {
   private readonly baseUrl = process.env.EDUI_WEBDAV_URL as string;
 
-  private clientCache = new Map<string, { client: AxiosInstance; timeout: NodeJS.Timeout }>();
+  private webdavClientCache = new Map<string, { client: AxiosInstance; timeout: NodeJS.Timeout }>();
 
   constructor(private readonly usersService: UsersService) {}
 
-  setCacheTimeout(token: string): NodeJS.Timeout {
+  scheduleClientTimeout(token: string): NodeJS.Timeout {
     return setTimeout(
       () => {
-        this.clientCache.delete(token);
+        this.webdavClientCache.delete(token);
       },
       30 * 60 * 1000,
     );
@@ -47,20 +52,24 @@ class WebDavService {
   async initializeClient(username: string): Promise<void> {
     const password = await this.usersService.getPassword(username);
     const client = WebdavClientFactory.createWebdavClient(this.baseUrl, username, password);
-    const timeout = this.setCacheTimeout(username);
-    this.clientCache.set(username, { client, timeout });
+    const timeout = this.scheduleClientTimeout(username);
+    this.webdavClientCache.set(username, { client, timeout });
   }
 
   public async getClient(username: string): Promise<AxiosInstance> {
-    if (!this.clientCache.has(username)) {
+    if (!this.webdavClientCache.has(username)) {
       await this.initializeClient(username);
     } else {
-      clearTimeout(this.clientCache.get(username)!.timeout);
-      this.clientCache.get(username)!.timeout = this.setCacheTimeout(username);
+      clearTimeout(this.webdavClientCache.get(username)!.timeout);
+      this.webdavClientCache.get(username)!.timeout = this.scheduleClientTimeout(username);
     }
-    const client = this.clientCache.get(username)?.client;
+    const client = this.webdavClientCache.get(username)?.client;
     if (!client) {
-      throw new Error(`Failed to initialize WebDAV client for user: ${username}`);
+      throw new CustomHttpException(
+        FileSharingErrorMessage.WebDavError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        `Failed to initialize WebDAV client for user: ${username}`,
+      );
     }
     return client;
   }
@@ -77,26 +86,22 @@ class WebDavService {
     fileSharingErrorMessage: ErrorMessage,
     // eslint-disable-next-line
     transformer?: (data: any) => T,
-    showDebugMessage?: boolean,
   ): Promise<T | WebdavStatusResponse> {
     try {
       const response = await client(config);
-      WebDavService.handleWebDAVError(response);
+      WebdavService.handleWebDAVError(response);
       return transformer ? transformer(response.data) : (response.data as T);
     } catch (error) {
-      if (showDebugMessage) {
-        throw new CustomHttpException(fileSharingErrorMessage, HttpStatus.NOT_FOUND, error, WebDavService.name);
-      }
-      throw new CustomHttpException(fileSharingErrorMessage, HttpStatus.INTERNAL_SERVER_ERROR, '', WebDavService.name);
+      throw new CustomHttpException(fileSharingErrorMessage, HttpStatus.INTERNAL_SERVER_ERROR, '', WebdavService.name);
     }
   }
 
   private static handleWebDAVError(response: AxiosResponse) {
-    if (!response || !(response.status >= 200 || response.status >= 300)) {
+    if (!response || response.status < 200 || response.status >= 300) {
       throw new CustomHttpException(
         FileSharingErrorMessage.WebDavError,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        response.statusText || 'WebDAV request failed',
+        response?.statusText || 'WebDAV request failed',
       );
     }
   }
@@ -123,7 +128,7 @@ class WebDavService {
     const client = await this.getClient(username);
     const url = this.baseUrl + getPathWithoutWebdav(path);
 
-    return (await WebDavService.executeWebdavRequest<DirectoryFileDTO[]>(
+    return (await WebdavService.executeWebdavRequest<DirectoryFileDTO[]>(
       client,
       {
         method: HttpMethodsWebDav.PROPFIND,
@@ -139,13 +144,13 @@ class WebDavService {
     const client = await this.getClient(username);
     const url = this.baseUrl + getPathWithoutWebdav(path);
 
-    return (await WebDavService.executeWebdavRequest<DirectoryFileDTO[]>(
+    return (await WebdavService.executeWebdavRequest<DirectoryFileDTO[]>(
       client,
       {
         method: HttpMethodsWebDav.PROPFIND,
         url,
         data: this.defaultPropfindXml,
-        headers: { 'Content-Type': RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
+        headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
       },
       FileSharingErrorMessage.FolderNotFound,
       mapToDirectories,
@@ -169,7 +174,7 @@ class WebDavService {
     const client = await this.getClient(username);
     const fullPath = `${this.baseUrl}${path}/${folderName}`;
 
-    return WebDavService.executeWebdavRequest<WebdavStatusResponse>(
+    return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethodsWebDav.MKCOL,
@@ -185,7 +190,7 @@ class WebDavService {
 
   async createFile(username: string, fullPath: string, content = ''): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
-    return WebDavService.executeWebdavRequest<WebdavStatusResponse>(
+    return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethods.PUT,
@@ -203,7 +208,7 @@ class WebDavService {
 
   async uploadFile(username: string, fullPath: string, file: CustomFile): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
-    return WebDavService.executeWebdavRequest<WebdavStatusResponse>(
+    return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethods.PUT,
@@ -222,7 +227,7 @@ class WebDavService {
 
   async deletePath(username: string, fullPath: string): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
-    return WebDavService.executeWebdavRequest<WebdavStatusResponse>(
+    return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethods.DELETE,
@@ -243,7 +248,7 @@ class WebDavService {
     destFullPath: string,
   ): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
-    return WebDavService.executeWebdavRequest<WebdavStatusResponse>(
+    return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethodsWebDav.MOVE,
@@ -267,7 +272,7 @@ class WebDavService {
     destFullPath: string,
   ): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
-    return WebDavService.executeWebdavRequest<WebdavStatusResponse>(
+    return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethodsWebDav.COPY,
@@ -314,7 +319,7 @@ class WebDavService {
         FileSharingErrorMessage.CreationFailed,
         HttpStatus.NOT_FOUND,
         pathWithoutFilename,
-        WebDavService.name,
+        WebdavService.name,
       );
     }
   }
@@ -343,4 +348,4 @@ class WebDavService {
   }
 }
 
-export default WebDavService;
+export default WebdavService;

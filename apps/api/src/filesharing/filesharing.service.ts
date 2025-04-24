@@ -22,7 +22,7 @@ import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileReques
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import JOB_NAMES from '@libs/queue/constants/jobNames';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
-import WebDavService from '../webdav/webDavService';
+import WebdavService from '../webdav/webdavService';
 import OnlyofficeService from './onlyoffice.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import QueueService from '../queue/queue.service';
@@ -35,7 +35,7 @@ export default class FilesharingService {
     private readonly onlyofficeService: OnlyofficeService,
     private readonly fileSystemService: FilesystemService,
     private readonly dynamicQueueService: QueueService,
-    private readonly webDavService: WebDavService,
+    private readonly webDavService: WebdavService,
   ) {}
 
   async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
@@ -55,19 +55,19 @@ export default class FilesharingService {
 
   async collectFiles(
     username: string,
-    collectFileRequestDTO: CollectFileRequestDTO[],
+    collectFileRequestDTOs: CollectFileRequestDTO[],
     userRole: string,
     type: LmnApiCollectOperationsType,
   ) {
     let processedItems = 0;
     return Promise.all(
-      collectFileRequestDTO.map(async (collectFileRequest) => {
+      collectFileRequestDTOs.map(async (collectFileRequest) => {
         await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.COLLECT_FILE_JOB, {
           username,
           userRole,
           item: collectFileRequest,
           operationType: type,
-          total: collectFileRequestDTO.length,
+          total: collectFileRequestDTOs.length,
           processed: (processedItems += 1),
         });
       }),

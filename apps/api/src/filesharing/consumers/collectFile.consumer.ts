@@ -19,13 +19,13 @@ import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOper
 import CollectFileJobData from '@libs/queue/types/collectFileJobData';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import WebDavService from '../../webdav/webDavService';
+import WebdavService from '../../webdav/webdavService';
 import SseService from '../../sse/sse.service';
 
 @Injectable()
 class CollectFileConsumer extends WorkerHost {
   constructor(
-    private readonly webDavService: WebDavService,
+    private readonly webDavService: WebdavService,
     private readonly sseService: SseService,
   ) {
     super();

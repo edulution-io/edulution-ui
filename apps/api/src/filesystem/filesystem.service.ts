@@ -88,17 +88,8 @@ class FilesystemService {
       const response = await axios.get<ArrayBuffer>(url, { responseType: 'arraybuffer' });
       const filePath = join(PUBLIC_DOWNLOADS_PATH, filename);
 
-      try {
-        await fsPromises.mkdir(dirname(filePath), { recursive: true });
-      } catch (error) {
-        throw new CustomHttpException(CommonErrorMessages.DIRECTORY_CREATION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-
-      try {
-        await fsPromises.writeFile(filePath, new Uint8Array(response.data));
-      } catch (error) {
-        throw new CustomHttpException(CommonErrorMessages.FILE_WRITING_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
+      await fsPromises.mkdir(dirname(filePath), { recursive: true });
+      await fsPromises.writeFile(filePath, new Uint8Array(response.data));
 
       const fileBuffer = await fsPromises.readFile(filePath);
       const mimetype: string = (response.headers['content-type'] as string) || 'application/octet-stream';
@@ -121,23 +112,23 @@ class FilesystemService {
     }
   }
 
-  static async deleteFiles(fileNames: string[]): Promise<void> {
-    await Promise.all(
-      fileNames.map(async (fileName) => {
-        const filePath = join(PUBLIC_DOWNLOADS_PATH, fileName);
+  static async deleteFile(fileName: string): Promise<void> {
+    const filePath = join(PUBLIC_DOWNLOADS_PATH, fileName);
 
-        try {
-          await fsPromises.unlink(filePath);
-          Logger.log(`File deleted at ${filePath}`);
-        } catch (error) {
-          throw new CustomHttpException(
-            FileSharingErrorMessage.DeleteFromServerFailed,
-            HttpStatus.INTERNAL_SERVER_ERROR,
-            filePath,
-          );
-        }
-      }),
-    );
+    try {
+      await fsPromises.unlink(filePath);
+      Logger.log(`File deleted at ${filePath}`);
+    } catch (error) {
+      throw new CustomHttpException(
+        FileSharingErrorMessage.DeleteFromServerFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        filePath,
+      );
+    }
+  }
+
+  static async deleteFiles(fileNames: string[]): Promise<void> {
+    await Promise.all(fileNames.map((fileName) => FilesystemService.deleteFile(fileName)));
   }
 
   async fileLocation(
