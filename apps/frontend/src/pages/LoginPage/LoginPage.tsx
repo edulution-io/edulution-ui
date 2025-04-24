@@ -163,15 +163,22 @@ const LoginPage: React.FC = () => {
 
     const handleLoginEvent = (e: MessageEvent<string>) => {
       try {
-        const { username, password, totpValue } = JSON.parse(atob(e.data)) as LoginQrSseDto;
+        const { username, password } = JSON.parse(atob(e.data)) as LoginQrSseDto;
 
         form.setValue('username', username);
         form.setValue('password', password);
-        form.setValue('totpValue', totpValue || '');
       } catch (error) {
         console.error('JSON parse error:', error);
       }
-      void form.handleSubmit(onSubmit)();
+
+      const handleEnterMfa = () => {
+        setIsEnterTotpVisible(true);
+        setShowQrCode(false);
+      };
+
+      void getTotpStatus(form.getValues('username')).then((isMfaEnabled) =>
+        isMfaEnabled ? handleEnterMfa() : form.handleSubmit(onSubmit)(),
+      );
     };
 
     eventSource.addEventListener(SSE_MESSAGE_TYPE.MESSAGE, handleLoginEvent, { signal });
@@ -264,7 +271,7 @@ const LoginPage: React.FC = () => {
   };
 
   const getMainContent = () => {
-    if (showQrCode) {
+    if (showQrCode && !isEnterTotpVisible) {
       return (
         <>
           <QRCodeDisplay
