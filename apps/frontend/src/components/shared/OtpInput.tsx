@@ -63,9 +63,9 @@ const OtpInput: React.FC<OtpInputProps> = ({ totp, variant = 'default', setTotp,
       variant="btn-outline"
       type="button"
       onClick={() => setShowNumPad((prev) => !prev)}
-      className="ml-4 h-11 w-11 hover:bg-ciGrey/10"
+      className="ml-4 h-11 w-11 p-0 hover:bg-ciGrey/10"
     >
-      <MdDialpad />
+      <MdDialpad style={{ width: '18px', height: '18px' }} />
     </Button>
   </div>
 );
