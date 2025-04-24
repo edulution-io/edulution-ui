@@ -121,8 +121,8 @@ class FilesystemService {
     }
   }
 
-  static async deleteFile(fileName: string): Promise<void> {
-    const filePath = join(PUBLIC_DOWNLOADS_PATH, fileName);
+  static async deleteFile(path: string, fileName: string): Promise<void> {
+    const filePath = join(path, fileName);
     try {
       await fsPromises.unlink(filePath);
       Logger.log(`File deleted at ${filePath}`);
@@ -191,7 +191,7 @@ class FilesystemService {
     }
   }
 
-  async deleteDirectories(directories: string[]): Promise<void> {
+  static async deleteDirectories(directories: string[]): Promise<void> {
     try {
       const deletionPromises = directories.map((directory) => fsPromises.rm(directory, { recursive: true }));
       await Promise.all(deletionPromises);
