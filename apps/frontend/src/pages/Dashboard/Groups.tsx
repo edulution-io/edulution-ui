@@ -26,7 +26,7 @@ const Groups = () => {
 
   const cardContentHeight = Math.max(useElementHeight([GROUPS_ID]) - 110, 0);
 
-  const schoolClasses = user?.schoolclasses.map((item) => removeSchoolPrefix(item, user.school)) || [];
+  const schoolClasses = user?.schoolclasses?.map((item) => removeSchoolPrefix(item, user.school)) || [];
 
   return (
     <Card
