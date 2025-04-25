@@ -10,18 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-  ClassManagementIcon,
-  FilesharingIcon,
-  SurveysIcon,
-  WhiteBoardCollaborationIcon,
-  BulletinBoardIcon,
-} from '@libs/assets';
+import { ClassManagementIcon, FilesharingIcon, SurveysIcon, WhiteBoardIcon, BulletinBoardIcon } from '@libs/assets';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APPS from './apps';
 import APP_INTEGRATION_VARIANT from './appIntegrationVariants';
 
-const { BULLETIN_BOARD, FILE_SHARING, SURVEYS, CLASS_MANAGEMENT, WHITEBOARD_COLLABORATION } = APPS;
+const { BULLETIN_BOARD, FILE_SHARING, SURVEYS, CLASS_MANAGEMENT, WHITEBOARD } = APPS;
 const { NATIVE } = APP_INTEGRATION_VARIANT;
 
 const getImageUrl = (src: string) => `data:image/svg+xml,${encodeURIComponent(src)}`;
@@ -62,8 +56,8 @@ const defaultAppConfig: AppConfigDto[] = [
     extendedOptions: {},
   },
   {
-    name: WHITEBOARD_COLLABORATION,
-    icon: getImageUrl(WhiteBoardCollaborationIcon),
+    name: WHITEBOARD,
+    icon: getImageUrl(WhiteBoardIcon),
     appType: NATIVE,
     options: {},
     accessGroups: [],
