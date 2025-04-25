@@ -15,6 +15,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import { useAuth } from 'react-oidc-context';
 import cleanAllStores from '@/store/utils/cleanAllStores';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
+import { toast } from 'sonner';
 
 const useLogout = () => {
   const auth = useAuth();
@@ -26,6 +27,7 @@ const useLogout = () => {
     cleanAllStores();
     window.history.pushState(null, '', LOGIN_ROUTE);
     window.dispatchEvent(new PopStateEvent('popstate'));
+    toast.dismiss();
   }, [logout, auth]);
 
   return handleLogout;

@@ -10,83 +10,84 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import useUserStore from '@/store/UserStore/UserStore';
 import { toast } from 'sonner';
-import { useLocation } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import copyToClipboard from '@/utils/copyToClipboard';
-import UserAccountDto from '@libs/user/types/userAccount.dto';
-import Input from '@/components/shared/Input';
+import UserAccountsToastContent from '@/components/ui/UserAccountsToastContent';
 
 const EmbeddedFrameManager = () => {
   const { appConfigs } = useAppConfigsStore();
   const { loadedEmbeddedFrames, activeEmbeddedFrame } = useFrameStore();
   const { userAccounts, getUserAccounts } = useUserStore();
-  const location = useLocation();
-  const { t } = useTranslation();
+
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  const toggleCollapse = useCallback(() => {
+    setIsCollapsed((prev) => !prev);
+  }, []);
+
+  const appConfig = useMemo(
+    () => appConfigs.find((appCfg) => appCfg.name === activeEmbeddedFrame),
+    [appConfigs, activeEmbeddedFrame],
+  );
+
+  const foundUserAccounts = useMemo(() => {
+    if (!appConfig) return [];
+    const url = loadedEmbeddedFrames.includes(appConfig.name) ? appConfig.options.url : undefined;
+    return userAccounts.filter((u) => u.accountUrl === url);
+  }, [appConfig, loadedEmbeddedFrames, userAccounts]);
+
+  const toastId = `${appConfig?.name}-embedded-login-toast`;
+
+  useEffect(
+    () => () => {
+      setIsCollapsed(true);
+      toast.dismiss(toastId);
+    },
+    [toastId],
+  );
 
   useEffect(() => {
     void getUserAccounts();
   }, []);
 
   useEffect(() => {
-    toast.dismiss('embedded-login-toast');
-  }, [location]);
+    if (!activeEmbeddedFrame) return;
 
-  const getToastContent = (foundUserAccounts: UserAccountDto[]) => (
-    <>
-      <p className="mb-2">{t('common.loginDetails')}</p>
-      <div className="space-y-4">
-        {foundUserAccounts.map((userAccount) => (
-          <div
-            key={userAccount.accountId}
-            className="flex flex-col gap-2"
-          >
-            <Input
-              title={t('common.username')}
-              type="text"
-              value={userAccount.accountUser}
-              readOnly
-              className="cursor-pointer"
-              onClick={() => copyToClipboard(userAccount.accountUser)}
-            />
-            <Input
-              title={t('common.password')}
-              type="password"
-              value={userAccount.accountPassword}
-              readOnly
-              className="cursor-pointer"
-              onClick={() => copyToClipboard(userAccount.accountPassword)}
-            />
-          </div>
-        ))}
-      </div>
-    </>
-  );
+    if (!appConfig) return;
+
+    const isOpen = activeEmbeddedFrame === appConfig.name;
+
+    if (isOpen && foundUserAccounts.length > 0) {
+      toast(
+        () => (
+          <UserAccountsToastContent
+            userAccounts={foundUserAccounts}
+            isCollapsed={isCollapsed}
+            onToggleCollapse={toggleCollapse}
+          />
+        ),
+        {
+          id: toastId,
+          duration: 10000,
+          position: 'top-right',
+        },
+      );
+    }
+  }, [activeEmbeddedFrame, appConfig, foundUserAccounts, isCollapsed]);
 
   return appConfigs
-    .filter((appConfig) => appConfig.appType === APP_INTEGRATION_VARIANT.EMBEDDED)
-    .map((appConfig) => {
-      const isOpen = activeEmbeddedFrame === appConfig.name;
-      const url = loadedEmbeddedFrames.includes(appConfig.name) ? appConfig.options.url : undefined;
-
-      const foundUserAccounts = userAccounts.filter((acc) => acc.accountUrl === url);
-
-      if (isOpen && foundUserAccounts.length > 0 && foundUserAccounts[0].accountUrl) {
-        toast(() => getToastContent(foundUserAccounts), {
-          id: 'embedded-login-toast',
-          duration: 10000,
-        });
-      }
+    .filter((appCfg) => appCfg.appType === APP_INTEGRATION_VARIANT.EMBEDDED)
+    .map((appCfg) => {
+      const isOpen = activeEmbeddedFrame === appCfg.name;
+      const url = loadedEmbeddedFrames.includes(appCfg.name) ? appCfg.options.url : undefined;
 
       return (
         <iframe
-          key={appConfig.name}
-          title={appConfig.name}
+          key={appCfg.name}
+          title={appCfg.name}
           className={`absolute inset-y-0 left-0 ml-0 mr-14 w-full md:w-[calc(100%-var(--sidebar-width))] ${isOpen ? 'block' : 'hidden'}`}
           height="100%"
           src={url}
