@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useState } from 'react';
+import React, { FC, useState, Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import OtpInput from '@/components/shared/OtpInput';
 import NumberPad from '@/components/ui/NumberPad';
@@ -18,11 +18,11 @@ import cn from '@libs/common/utils/className';
 
 interface TotpInputProps {
   totp: string;
-  setTotp: React.Dispatch<React.SetStateAction<string>>;
+  setTotp: Dispatch<SetStateAction<string>>;
   onComplete: () => void;
 }
 
-const TotpInput: React.FC<TotpInputProps> = ({ totp, setTotp, onComplete }) => {
+const TotpInput: FC<TotpInputProps> = ({ totp, setTotp, onComplete }) => {
   const { t } = useTranslation();
   const [showNumPad, setShowNumPad] = useState(false);
 

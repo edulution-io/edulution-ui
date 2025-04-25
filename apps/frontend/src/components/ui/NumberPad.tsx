@@ -24,15 +24,15 @@ const NumberPad: React.FC<NumberPadProps> = ({ onPress, onClear }) => {
 
   return (
     <div className="m-4 grid max-w-52 grid-cols-3 gap-2">
-      {digits.map((d) => (
+      {digits.map((digit) => (
         <Button
-          key={d}
+          key={digit}
           variant="btn-outline"
           type="button"
           className="aspect-square hover:bg-ciGrey/10"
-          onClick={() => onPress(d)}
+          onClick={() => onPress(digit)}
         >
-          {d}
+          {digit}
         </Button>
       ))}
       <Button
