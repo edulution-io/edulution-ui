@@ -15,7 +15,9 @@ import { toast } from 'sonner';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import useBeforeUnload from '@/hooks/useBeforeUnload';
 import { useTranslation } from 'react-i18next';
+import { TbTemplate } from 'react-icons/tb';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
@@ -27,14 +29,15 @@ import useUserStore from '@/store/UserStore/UserStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useLanguage from '@/hooks/useLanguage';
-import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
-import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import createSurveyCreatorComponent from '@/pages/Surveys/Editor/createSurveyCreatorObject';
-import useBeforeUnload from '@/hooks/useBeforeUnload';
+import TemplateDialog from '@/pages/Surveys/Editor/dialog/TemplateDialog';
+import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
+import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
+import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 
 const SurveyEditorPage = () => {
   const { fetchSelectedSurvey, isFetching, selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
@@ -49,6 +52,7 @@ const SurveyEditorPage = () => {
     resetStoredSurvey,
     uploadImageFile,
   } = useSurveyEditorPageStore();
+  const { isOpenTemplateMenu, setIsOpenTemplateMenu } = useTemplateMenuStore();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -144,7 +148,14 @@ const SurveyEditorPage = () => {
   };
 
   const config: FloatingButtonsBarConfig = {
-    buttons: [SaveButton(() => setIsOpenSaveSurveyDialog(true))],
+    buttons: [
+      SaveButton(() => setIsOpenSaveSurveyDialog(true)),
+      {
+        icon: TbTemplate,
+        text: t('survey.editor.templates'),
+        onClick: () => {},
+      },
+    ],
     keyPrefix: 'surveys-page-floating-button_',
   };
 
@@ -161,6 +172,11 @@ const SurveyEditorPage = () => {
         )}
       </div>
       <FloatingButtonsBar config={config} />
+      <TemplateDialog
+        form={form}
+        isOpenTemplateMenu={isOpenTemplateMenu}
+        setIsOpenTemplateMenu={setIsOpenTemplateMenu}
+      />
       <SaveSurveyDialog
         form={form}
         isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}

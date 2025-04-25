@@ -525,7 +525,11 @@
       "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
       "abort": "Alle Änderungen verwerfen",
       "addDescription": "Beschreibung hinzufügen",
-      "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
+      "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
+      "templates": "Vorlagen",
+      "templateMenu": {
+        "title": "Wähle das Template aus welches du laden moechtest"
+      }
     },
     "participate": {
       "saveAnswerSuccess": "Die Antwort wurde gespeichert."
