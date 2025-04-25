@@ -10,29 +10,49 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/Dialog';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import { useOnClickOutside } from 'usehooks-ts';
+import { useLocation } from 'react-router-dom';
 
 interface LoadingIndicatorDialogProps {
   isOpen: boolean;
 }
 
-const LoadingIndicatorDialog: React.FC<LoadingIndicatorDialogProps> = ({ isOpen }) => (
-  <Dialog open={isOpen}>
-    <DialogContent
-      showCloseButton={false}
-      variant="loadingSpinner"
+const LoadingIndicatorDialog: React.FC<LoadingIndicatorDialogProps> = ({ isOpen }) => {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const [isClose, setClose] = useState(false);
+  const location = useLocation();
+
+  useOnClickOutside(dialogRef, () => setClose(true));
+
+  useEffect(() => {
+    setClose(false);
+  }, [location]);
+
+  return (
+    <Dialog
+      open={isOpen && !isClose}
+      onOpenChange={setClose}
     >
-      <DialogTitle aria-disabled />
-      <DialogHeader>
-        <div className="flex flex-col items-center justify-center space-y-4">
-          <CircleLoader />
-        </div>
-      </DialogHeader>
-      <DialogDescription aria-disabled />
-    </DialogContent>
-  </Dialog>
-);
+      <DialogContent
+        showCloseButton={false}
+        variant="loadingSpinner"
+      >
+        <DialogTitle aria-disabled />
+        <DialogHeader>
+          <div
+            className="flex flex-col items-center justify-center space-y-4"
+            ref={dialogRef}
+          >
+            <CircleLoader />
+          </div>
+        </DialogHeader>
+        <DialogDescription aria-disabled />
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 export default LoadingIndicatorDialog;
