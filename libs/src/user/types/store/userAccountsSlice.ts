@@ -10,11 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { RowSelectionState } from '@tanstack/react-table';
 import UserAccountDto from '../userAccount.dto';
 
 type UserAccountsSlice = {
   userAccounts: UserAccountDto[];
   isLoading: boolean;
+  selectedRows: RowSelectionState;
+  setSelectedRows: (selectedRows: RowSelectionState) => void;
   getUserAccounts: (username: string) => Promise<void>;
 };
 

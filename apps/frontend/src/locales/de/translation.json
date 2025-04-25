@@ -867,7 +867,9 @@
         "confirmPassword": "Passwort bestätigen",
         "confirm": "Passwort ändern",
         "passwordChangedSuccessfully": "Passwort erfolgreich geändert"
-      }
+      },
+      "filterPlaceHolderText": "Suche nach URL",
+      "userAccounts": "Benutzerkonten"
     },
     "mails": {
       "title": "E-Mail"

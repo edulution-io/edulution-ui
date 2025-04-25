@@ -13,6 +13,7 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IoAdd, IoRemove } from 'react-icons/io5';
+import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import APPS from '@libs/appconfig/constants/apps';
 import { Button } from '@/components/shared/Button';
@@ -21,7 +22,7 @@ import UserAccountsTableColumns from './UserAccountsTableColumns';
 
 const UserAccountsTable: React.FC = () => {
   const { t } = useTranslation();
-  const { user, userAccounts, getUserAccounts } = useUserStore();
+  const { user, userAccounts, selectedRows, setSelectedRows, getUserAccounts } = useUserStore();
 
   useEffect(() => {
     if (user) {
@@ -33,16 +34,23 @@ const UserAccountsTable: React.FC = () => {
 
   const handleRemoveClick = async () => {};
 
+  const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
+    const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedRows) : updaterOrValue;
+    setSelectedRows(newValue);
+  };
+
   return (
     <>
-      <h3 className="text-background">{t('usersettings.config.mfa')}</h3>
+      <h3 className="text-background">{t('usersettings.security.userAccounts')}</h3>
       <ScrollableTable
         columns={UserAccountsTableColumns}
         data={userAccounts}
-        filterKey="accountId"
-        filterPlaceHolderText="test"
+        filterKey="accountUrl"
+        filterPlaceHolderText="usersettings.security.filterPlaceHolderText"
         applicationName={APPS.USER_SETTINGS}
         enableRowSelection
+        onRowSelectionChange={handleRowSelectionChange}
+        selectedRows={selectedRows}
       />
       <div className="flex w-full items-center justify-between gap-2">
         <div className="flex w-full">

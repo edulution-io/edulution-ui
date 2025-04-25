@@ -21,10 +21,13 @@ import type UserAccountsSlice from '@libs/user/types/store/userAccountsSlice';
 const initialState = {
   userAccounts: [],
   isLoading: false,
+  selectedRows: {},
 };
 
 const createUserAccountsSlice: StateCreator<UserStore, [], [], UserAccountsSlice> = (set) => ({
   ...initialState,
+
+  setSelectedRows: (selectedRows) => set({ selectedRows }),
 
   getUserAccounts: async (username: string) => {
     set({ isLoading: true });

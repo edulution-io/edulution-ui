@@ -42,7 +42,7 @@ const UserAccountsTableColumns: ColumnDef<UserAccountDto>[] = [
     accessorFn: (row) => row.accountUrl,
     cell: ({ row }) => (
       <SelectableTextCell
-        onClick={() => {}}
+        onClick={() => row.toggleSelected()}
         text={row.original.accountUrl}
       />
     ),

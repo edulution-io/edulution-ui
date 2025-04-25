@@ -865,7 +865,9 @@
         "confirmPassword": "Confirm Password",
         "confirm": "Change Password",
         "passwordChangedSuccessfully": "Password changed successfully"
-      }
+      },
+      "filterPlaceHolderText": "Search for URL",
+      "userAccounts": "User Accounts"
     },
     "mails": {
       "title": "Email"
