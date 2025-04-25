@@ -202,16 +202,12 @@ class AuthService {
   }
 
   loginViaApp(body: LoginQrSseDto, sessionId: string) {
-    const { username, password, totpValue } = body;
+    const { username, password } = body;
     const isConnectionActive = this.sseService.getUserConnection(sessionId);
 
     if (!isConnectionActive) throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
 
-    this.sseService.sendEventToUser(
-      sessionId,
-      btoa(JSON.stringify({ username, password, totpValue })),
-      SSE_MESSAGE_TYPE.MESSAGE,
-    );
+    this.sseService.sendEventToUser(sessionId, btoa(JSON.stringify({ username, password })), SSE_MESSAGE_TYPE.MESSAGE);
   }
 }
 
