@@ -18,9 +18,6 @@ class LoginQrSseDto {
 
   @IsString()
   password: string;
-
-  @IsString()
-  totpValue?: string;
 }
 
 export default LoginQrSseDto;
