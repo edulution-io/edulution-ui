@@ -23,7 +23,7 @@ const UserAccountsTableColumns: ColumnDef<UserAccountDto>[] = [
     id: 'accountId',
     header: () => {},
     meta: {
-      translationId: 'common.accountId',
+      translationId: 'usersettings.security.accountId',
     },
     accessorFn: (row) => row.accountId,
     cell: ({ row }) => (

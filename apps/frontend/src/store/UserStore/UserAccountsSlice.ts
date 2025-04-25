@@ -20,24 +20,68 @@ import type UserAccountsSlice from '@libs/user/types/store/userAccountsSlice';
 
 const initialState = {
   userAccounts: [],
-  isLoading: false,
+  userAccountsIsLoading: false,
   selectedRows: {},
 };
 
-const createUserAccountsSlice: StateCreator<UserStore, [], [], UserAccountsSlice> = (set) => ({
+const createUserAccountsSlice: StateCreator<UserStore, [], [], UserAccountsSlice> = (set, get) => ({
   ...initialState,
 
   setSelectedRows: (selectedRows) => set({ selectedRows }),
 
-  getUserAccounts: async (username: string) => {
-    set({ isLoading: true });
+  getUserAccounts: async () => {
+    set({ userAccountsIsLoading: true });
     try {
-      const { data } = await eduApi.get<UserAccountDto[]>(`${EDU_API_USERS_ENDPOINT}/${username}/accounts`);
+      const { data } = await eduApi.get<UserAccountDto[]>(`${EDU_API_USERS_ENDPOINT}/${get().user?.username}/accounts`);
       set({ userAccounts: data });
     } catch (e) {
       handleApiError(e, set);
     } finally {
-      set({ isLoading: false });
+      set({ userAccountsIsLoading: false });
+    }
+  },
+
+  addUserAccount: async (userAccountDto) => {
+    set({ userAccountsIsLoading: true });
+    try {
+      const { data } = await eduApi.post<UserAccountDto[]>(
+        `${EDU_API_USERS_ENDPOINT}/${get().user?.username}/accounts`,
+        userAccountDto,
+      );
+      set({ userAccounts: data });
+    } catch (e) {
+      handleApiError(e, set);
+    } finally {
+      set({ userAccountsIsLoading: false });
+    }
+  },
+
+  updateUserAccount: async (accountId, userAccountDto) => {
+    set({ userAccountsIsLoading: true });
+    try {
+      const { data } = await eduApi.patch<UserAccountDto[]>(
+        `${EDU_API_USERS_ENDPOINT}/${get().user?.username}/accounts/${accountId}`,
+        userAccountDto,
+      );
+      set({ userAccounts: data });
+    } catch (e) {
+      handleApiError(e, set);
+    } finally {
+      set({ userAccountsIsLoading: false });
+    }
+  },
+
+  deleteUserAccount: async (accountId) => {
+    set({ userAccountsIsLoading: true });
+    try {
+      const { data } = await eduApi.delete<UserAccountDto[]>(
+        `${EDU_API_USERS_ENDPOINT}/${get().user?.username}/accounts/${accountId}`,
+      );
+      set({ userAccounts: data });
+    } catch (e) {
+      handleApiError(e, set);
+    } finally {
+      set({ userAccountsIsLoading: false });
     }
   },
 

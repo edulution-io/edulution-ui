@@ -833,6 +833,7 @@
   "usersettings": {
     "title": "MY PROFILE",
     "sidebar": "My Profile",
+    "rowsSelected": "{{selected}} of {{total}} accounts selected",
     "details": {
       "title": "User details",
       "description": "Here you see and edit some of your personal information.",
@@ -867,7 +868,10 @@
         "passwordChangedSuccessfully": "Password changed successfully"
       },
       "filterPlaceHolderText": "Search for URL",
-      "userAccounts": "User Accounts"
+      "userAccounts": "User Accounts",
+      "addUserAccount": "Add account",
+      "accountUrl": "Account URL",
+      "accountId": "Konto-ID"
     },
     "mails": {
       "title": "Email"

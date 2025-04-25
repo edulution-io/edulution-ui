@@ -10,38 +10,60 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IoAdd, IoRemove } from 'react-icons/io5';
+import { FiEdit } from 'react-icons/fi';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import APPS from '@libs/appconfig/constants/apps';
 import { Button } from '@/components/shared/Button';
 import useUserStore from '@/store/UserStore/UserStore';
 import UserAccountsTableColumns from './UserAccountsTableColumns';
+import AddUserAccount from './AddUserAccount';
 
 const UserAccountsTable: React.FC = () => {
   const { t } = useTranslation();
-  const { user, userAccounts, selectedRows, setSelectedRows, getUserAccounts } = useUserStore();
+  const { userAccounts, selectedRows, userAccountsIsLoading, setSelectedRows, getUserAccounts, deleteUserAccount } =
+    useUserStore();
+  const [isOpen, setIsOpen] = useState(false);
+  const keys = Object.keys(selectedRows);
+  const isOneRowSelected = keys.length === 1;
 
   useEffect(() => {
-    if (user) {
-      void getUserAccounts(user?.username);
-    }
-  }, [user]);
+    void getUserAccounts();
+  }, []);
 
-  const handleAddClick = () => {};
+  const handleAddClick = () => {
+    setIsOpen(!isOpen);
+  };
 
-  const handleRemoveClick = async () => {};
+  const handleRemoveClick = async () => {
+    await Promise.all(
+      Object.entries(selectedRows)
+        .filter(([_, isSelected]) => isSelected)
+        .map(async ([rowId]) => {
+          const idx = parseInt(rowId, 10);
+          await deleteUserAccount(userAccounts[idx].accountId);
+        }),
+    );
+
+    setSelectedRows({});
+  };
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedRows) : updaterOrValue;
     setSelectedRows(newValue);
   };
 
+  const handleClose = () => {
+    setIsOpen(!isOpen);
+    setSelectedRows({});
+  };
+
   return (
     <>
-      <h3 className="text-background">{t('usersettings.security.userAccounts')}</h3>
+      <h3>{t('usersettings.security.userAccounts')}</h3>
       <ScrollableTable
         columns={UserAccountsTableColumns}
         data={userAccounts}
@@ -51,6 +73,7 @@ const UserAccountsTable: React.FC = () => {
         enableRowSelection
         onRowSelectionChange={handleRowSelectionChange}
         selectedRows={selectedRows}
+        isLoading={userAccountsIsLoading}
       />
       <div className="flex w-full items-center justify-between gap-2">
         <div className="flex w-full">
@@ -59,7 +82,11 @@ const UserAccountsTable: React.FC = () => {
             onClick={handleAddClick}
             type="button"
           >
-            <IoAdd className="text-xl text-background" />
+            {isOneRowSelected ? (
+              <FiEdit className="text-xl text-background" />
+            ) : (
+              <IoAdd className="text-xl text-background" />
+            )}
           </Button>
         </div>
 
@@ -73,6 +100,12 @@ const UserAccountsTable: React.FC = () => {
           </Button>
         </div>
       </div>
+      <AddUserAccount
+        isOpen={isOpen}
+        isOneRowSelected={isOneRowSelected}
+        keys={keys}
+        handleOpenChange={handleClose}
+      />
     </>
   );
 };

@@ -835,6 +835,7 @@
   "usersettings": {
     "title": "MEIN PROFIL",
     "sidebar": "Mein Profil",
+    "rowsSelected": "{{selected}} von {{total}} Konten ausgewählt",
     "details": {
       "title": "Benutzerdetails",
       "description": "Hier können Sie Ihre Benutzerdaten einsehen und teilweise bearbeiten.",
@@ -869,7 +870,10 @@
         "passwordChangedSuccessfully": "Passwort erfolgreich geändert"
       },
       "filterPlaceHolderText": "Suche nach URL",
-      "userAccounts": "Benutzerkonten"
+      "userAccounts": "Benutzerkonten",
+      "addUserAccount": "Konto hinzufügen",
+      "accountUrl": "URL zum Konto",
+      "accountId": "Konto-ID"
     },
     "mails": {
       "title": "E-Mail"

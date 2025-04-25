@@ -13,12 +13,18 @@
 import { RowSelectionState } from '@tanstack/react-table';
 import UserAccountDto from '../userAccount.dto';
 
+type CreateUserAccountDto = Omit<UserAccountDto, 'accountId'>;
+
 type UserAccountsSlice = {
   userAccounts: UserAccountDto[];
-  isLoading: boolean;
+  userAccountsIsLoading: boolean;
   selectedRows: RowSelectionState;
   setSelectedRows: (selectedRows: RowSelectionState) => void;
-  getUserAccounts: (username: string) => Promise<void>;
+  getUserAccounts: () => Promise<void>;
+  addUserAccount: (userAccountDto: CreateUserAccountDto) => Promise<void>;
+  updateUserAccount: (accountId: string, userAccountDto: CreateUserAccountDto) => Promise<void>;
+  deleteUserAccount: (accountId: string) => Promise<void>;
+  resetUserAccountsSlice: () => void;
 };
 
 export default UserAccountsSlice;

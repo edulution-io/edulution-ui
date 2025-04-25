@@ -15,7 +15,7 @@ import UserDto from '@libs/user/types/user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
-import type UserAccountDto from '@libs/user/types/userAccount.dto';
+import UserAccountDto from '@libs/user/types/userAccount.dto';
 import UsersService from './users.service';
 import UpdateUserDto from './dto/update-user.dto';
 import GetToken from '../common/decorators/getToken.decorator';
@@ -78,7 +78,12 @@ export class UsersController {
     @Body() userAccountDto: Omit<UserAccountDto, 'accountId'>,
   ) {
     if (username !== currentUsername) {
-      throw new CustomHttpException(AuthErrorMessages.Unauthorized, HttpStatus.FORBIDDEN);
+      throw new CustomHttpException(
+        AuthErrorMessages.Unauthorized,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        UsersController.name,
+      );
     }
 
     return this.usersService.addUserAccount(currentUsername, userAccountDto);
@@ -87,10 +92,52 @@ export class UsersController {
   @Get(':username/accounts')
   getUserAccounts(@Param('username') username: string, @GetCurrentUsername() currentUsername: string) {
     if (username !== currentUsername) {
-      throw new CustomHttpException(AuthErrorMessages.Unauthorized, HttpStatus.FORBIDDEN);
+      throw new CustomHttpException(
+        AuthErrorMessages.Unauthorized,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        UsersController.name,
+      );
     }
 
     return this.usersService.getUserAccounts(currentUsername);
+  }
+
+  @Patch(':username/accounts/:accountId')
+  updateUserAccount(
+    @Param('username') username: string,
+    @Param('accountId') accountId: string,
+    @GetCurrentUsername() currentUsername: string,
+    @Body() userAccountDto: UserAccountDto,
+  ) {
+    if (username !== currentUsername) {
+      throw new CustomHttpException(
+        AuthErrorMessages.Unauthorized,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        UsersController.name,
+      );
+    }
+
+    return this.usersService.updateUserAccount(currentUsername, accountId, userAccountDto);
+  }
+
+  @Delete(':username/accounts/:accountId')
+  deleteUserAccount(
+    @Param('username') username: string,
+    @Param('accountId') accountId: string,
+    @GetCurrentUsername() currentUsername: string,
+  ) {
+    if (username !== currentUsername) {
+      throw new CustomHttpException(
+        AuthErrorMessages.Unauthorized,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        UsersController.name,
+      );
+    }
+
+    return this.usersService.deleteUserAccount(currentUsername, accountId);
   }
 }
 
