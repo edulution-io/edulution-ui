@@ -10,25 +10,28 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useCallback } from 'react';
-import useUserStore from '@/store/UserStore/UserStore';
-import { useAuth } from 'react-oidc-context';
-import cleanAllStores from '@/store/utils/cleanAllStores';
-import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
+import React from 'react';
+import { Outlet, Navigate } from 'react-router-dom';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import useLdapGroups from '@/hooks/useLdapGroups';
 
-const useLogout = () => {
-  const auth = useAuth();
-  const { logout } = useUserStore();
+const ProtectedRoute = ({ redirectTo = '/' }) => {
+  const { isSuperAdmin } = useLdapGroups();
 
-  const handleLogout = useCallback(async () => {
-    await logout();
-    await auth.removeUser();
-    cleanAllStores();
-    window.history.pushState(null, '', LOGIN_ROUTE);
-    window.dispatchEvent(new PopStateEvent('popstate'));
-  }, [logout, auth]);
+  if (isSuperAdmin === undefined) {
+    return <CircleLoader />;
+  }
 
-  return handleLogout;
+  if (!isSuperAdmin) {
+    return (
+      <Navigate
+        to={redirectTo}
+        replace
+      />
+    );
+  }
+
+  return <Outlet />;
 };
 
-export default useLogout;
+export default ProtectedRoute;

@@ -38,8 +38,10 @@ import delay from '@libs/common/utils/delay';
 import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import APPS from '@libs/appconfig/constants/apps';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
+import useAppConfigsStore from '../Settings/AppConfig/appConfigsStore';
 
 type LocationState = {
   from: string;
@@ -50,10 +52,11 @@ const LoginPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { eduApiToken, totpIsLoading, createOrUpdateUser, setEduApiToken, getTotpStatus } = useUserStore();
+  const { eduApiToken, totpIsLoading, isAuthenticated, createOrUpdateUser, setEduApiToken, getTotpStatus } =
+    useUserStore();
+  const { appConfigs } = useAppConfigsStore();
 
   const { isLoading } = auth;
-  const [loginComplete, setLoginComplete] = useState(false);
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
   const [webdavKey, setWebdavKey] = useState('');
   const [encryptKey, setEncryptKey] = useState('');
@@ -133,21 +136,23 @@ const LoginPage: React.FC = () => {
       await handleRegisterUser();
 
       setIsEnterTotpVisible(false);
-      setLoginComplete(true);
     };
 
     void registerUser();
   }, [auth.isAuthenticated, eduApiToken]);
 
+  const isAppConfigReady = appConfigs.some((appConfig) => appConfig.name !== APPS.NONE);
+  const isAuthenticatedAppReady = isAppConfigReady && isAuthenticated;
+
   useEffect(() => {
-    if (loginComplete) {
+    if (isAuthenticatedAppReady) {
       const { from } = (location?.state ?? { from: '/' }) as LocationState;
       const toLocation = from === LOGIN_ROUTE ? '/' : from;
       navigate(toLocation, {
         replace: true,
       });
     }
-  }, [loginComplete]);
+  }, [isAuthenticatedAppReady]);
 
   useEffect(() => {
     if (!showQrCode || !sessionID) {

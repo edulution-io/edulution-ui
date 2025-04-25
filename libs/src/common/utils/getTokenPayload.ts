@@ -10,25 +10,17 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useCallback } from 'react';
-import useUserStore from '@/store/UserStore/UserStore';
-import { useAuth } from 'react-oidc-context';
-import cleanAllStores from '@/store/utils/cleanAllStores';
-import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
+import JwtUser from '@libs/user/types/jwt/jwtUser';
 
-const useLogout = () => {
-  const auth = useAuth();
-  const { logout } = useUserStore();
+const getTokenPayload = (token: string): JwtUser => {
+  const parts = token.split('.');
+  if (parts.length !== 3) throw new Error('Invalid JWT');
 
-  const handleLogout = useCallback(async () => {
-    await logout();
-    await auth.removeUser();
-    cleanAllStores();
-    window.history.pushState(null, '', LOGIN_ROUTE);
-    window.dispatchEvent(new PopStateEvent('popstate'));
-  }, [logout, auth]);
+  const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
 
-  return handleLogout;
+  const json = typeof window !== 'undefined' ? atob(base64) : Buffer.from(base64, 'base64').toString();
+
+  return JSON.parse(json) as JwtUser;
 };
 
-export default useLogout;
+export default getTokenPayload;
