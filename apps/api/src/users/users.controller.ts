@@ -16,15 +16,16 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import UserAccountDto from '@libs/user/types/userAccount.dto';
+import { EDU_API_USERS_ENDPOINT, EDU_API_USER_ACCOUNTS_ENDPOINT } from '@libs/user/constants/usersApiEndpoints';
 import UsersService from './users.service';
 import UpdateUserDto from './dto/update-user.dto';
 import GetToken from '../common/decorators/getToken.decorator';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentSchool from '../common/decorators/getCurrentSchool.decorator';
 
-@ApiTags('users')
+@ApiTags(EDU_API_USERS_ENDPOINT)
 @ApiBearerAuth()
-@Controller('users')
+@Controller(EDU_API_USERS_ENDPOINT)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -71,7 +72,7 @@ export class UsersController {
     return this.usersService.searchUsersByName(token, school, searchString);
   }
 
-  @Post(':username/accounts')
+  @Post(`:username/${EDU_API_USER_ACCOUNTS_ENDPOINT}`)
   addUserAccount(
     @Param('username') username: string,
     @GetCurrentUsername() currentUsername: string,
@@ -89,7 +90,7 @@ export class UsersController {
     return this.usersService.addUserAccount(currentUsername, userAccountDto);
   }
 
-  @Get(':username/accounts')
+  @Get(`:username/${EDU_API_USER_ACCOUNTS_ENDPOINT}`)
   getUserAccounts(@Param('username') username: string, @GetCurrentUsername() currentUsername: string) {
     if (username !== currentUsername) {
       throw new CustomHttpException(
@@ -103,7 +104,7 @@ export class UsersController {
     return this.usersService.getUserAccounts(currentUsername);
   }
 
-  @Patch(':username/accounts/:accountId')
+  @Patch(`:username/${EDU_API_USER_ACCOUNTS_ENDPOINT}/:accountId`)
   updateUserAccount(
     @Param('username') username: string,
     @Param('accountId') accountId: string,
@@ -122,7 +123,7 @@ export class UsersController {
     return this.usersService.updateUserAccount(currentUsername, accountId, userAccountDto);
   }
 
-  @Delete(':username/accounts/:accountId')
+  @Delete(`:username/${EDU_API_USER_ACCOUNTS_ENDPOINT}/:accountId`)
   deleteUserAccount(
     @Param('username') username: string,
     @Param('accountId') accountId: string,
