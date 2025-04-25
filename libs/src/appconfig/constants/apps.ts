@@ -18,7 +18,6 @@ const APPS = {
   CONFERENCES: 'conferences',
   SURVEYS: 'surveys',
   KNOWLEDGE_BASE: 'knowledgebase',
-  WHITEBOARD_COLLABORATION: 'whiteboard-collaboration',
   FILE_SHARING: 'filesharing',
   FORUMS: 'forums',
   ROOM_BOOKING: 'roombooking',
