@@ -871,7 +871,8 @@
       "userAccounts": "User Accounts",
       "addUserAccount": "Add account",
       "accountUrl": "Account URL",
-      "accountId": "Konto-ID"
+      "accountId": "Konto-ID",
+      "accountData": "Login Data"
     },
     "mails": {
       "title": "Email"

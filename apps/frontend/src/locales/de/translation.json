@@ -873,7 +873,8 @@
       "userAccounts": "Benutzerkonten",
       "addUserAccount": "Konto hinzufügen",
       "accountUrl": "URL zum Konto",
-      "accountId": "Konto-ID"
+      "accountId": "Konto-ID",
+      "accountData": "Zugangsdaten"
     },
     "mails": {
       "title": "E-Mail"
