@@ -9,43 +9,29 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { SurveyCreatorModel } from 'survey-creator-core';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import cn from '@libs/common/utils/className';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import ChoicesByUrl from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesByUrl';
 import Label from '@/components/ui/Label';
 import Input from '@/components/shared/Input';
-import ChoiceDto from '@libs/survey/types/api/choice.dto';
 
 interface QuestionContextMenuBodyProps {
   form: UseFormReturn<SurveyDto>;
+  creator: SurveyCreatorModel;
 }
 
 const QuestionContextMenuBody = (props: QuestionContextMenuBodyProps) => {
-  const { form } = props;
+  const { form, creator } = props;
 
   const { selectedQuestion, questionTitle, setQuestionTitle, questionDescription, setQuestionDescription } =
     useQuestionsContextMenuStore();
 
   const { t } = useTranslation();
-
-  const renderBackendLimiterOptions = () => {
-    if (!form) return null;
-
-    const { setValue, watch } = form;
-    return (
-      <ChoicesByUrl
-        backendLimiters={watch('backendLimiters')}
-        updateBackendLimiters={(backendLimiter: { questionId: string; choices: ChoiceDto[] }[]) =>
-          setValue('backendLimiters', backendLimiter)
-        }
-      />
-    );
-  };
 
   if (!selectedQuestion) return null;
 
@@ -81,7 +67,10 @@ const QuestionContextMenuBody = (props: QuestionContextMenuBodyProps) => {
           { 'text-primary-foreground': questionDescription },
         )}
       />
-      {renderBackendLimiterOptions()}
+      <ChoicesByUrl
+        form={form}
+        creator={creator}
+      />
     </div>
   );
 };

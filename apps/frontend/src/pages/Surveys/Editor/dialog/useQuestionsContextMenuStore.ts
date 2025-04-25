@@ -36,7 +36,7 @@ interface QuestionsContextMenuStore {
   setQuestionDescription: (newDescription: string) => void;
 
   useBackendLimits: boolean;
-  toggleUseBackendLimits: (surveyId?: string) => void;
+  toggleUseBackendLimits: () => void;
 
   currentBackendLimiters: { questionId: string; choices: ChoiceDto[] }[];
   setBackendLimiters: (backendLimiters: { questionId: string; choices: ChoiceDto[] }[]) => void;
@@ -82,7 +82,8 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
       questionType: type || '',
       questionTitle: question?.title || '',
       questionDescription: question?.description || '',
-      useBackendLimits: !!question?.choicesByUrl,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      useBackendLimits: !!question?.choicesByUrl?.url,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       formerChoices: question?.choices || [],
       currentChoices: [],
@@ -106,20 +107,21 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     selectedQuestion.description = newDescription;
   },
 
-  setBackendLimiters: (backendLimiters: { questionId: string; choices: ChoiceDto[] }[] = []) => {
-    const { selectedQuestion } = get();
-    if (!selectedQuestion) {
-      return;
-    }
-    set({ currentBackendLimiters: backendLimiters });
-  },
-
   toggleUseBackendLimits: () => {
     const { selectedQuestion, useBackendLimits } = get();
     if (!selectedQuestion) {
       return;
     }
     set({ useBackendLimits: !useBackendLimits });
+  },
+
+  setBackendLimiters: (backendLimiters: { questionId: string; choices: ChoiceDto[] }[] = []) => {
+    const { selectedQuestion } = get();
+    if (!selectedQuestion) {
+      return;
+    }
+    const choices = backendLimiters.find((limiter) => limiter.questionId === selectedQuestion.name)?.choices || [];
+    set({ currentBackendLimiters: backendLimiters, currentChoices: choices });
   },
 
   onRemoveQuestionId: (questionId: string) => {
@@ -214,15 +216,15 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     if (!selectedQuestion) {
       return;
     }
-    if (showOtherItem) {
+    if (!showOtherItem) {
+      selectedQuestion.showOtherItem = true;
+      set({ showOtherItem: true });
+      addChoice(CHOOSE_OTHER_ITEM_CHOICE_NAME);
+    } else {
       selectedQuestion.showOtherItem = false;
       set({ showOtherItem: false });
       removeChoice(CHOOSE_OTHER_ITEM_CHOICE_NAME);
-      return;
     }
-    selectedQuestion.showOtherItem = true;
-    set({ showOtherItem: true });
-    addChoice(CHOOSE_OTHER_ITEM_CHOICE_NAME);
   },
 }));
 

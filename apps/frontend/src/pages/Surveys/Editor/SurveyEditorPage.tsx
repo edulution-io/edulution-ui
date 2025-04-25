@@ -76,7 +76,7 @@ const SurveyEditorPage = () => {
       label: `${user.firstName} ${user.lastName}`,
     };
     return getInitialSurveyFormValues(surveyCreator, selectedSurvey, storedSurvey);
-  }, [selectedSurvey]);
+  }, [storedSurvey, selectedSurvey]);
 
   const form = useForm<SurveyDto>({
     mode: 'onChange',
@@ -104,7 +104,6 @@ const SurveyEditorPage = () => {
       saveNo,
     });
   };
-
   useBeforeUnload('unload', updateSurveyStorage);
 
   useEffect(() => {
@@ -137,14 +136,14 @@ const SurveyEditorPage = () => {
         }
       });
 
-      creator.onUploadFile.add(async (_, options) => {
+      creator.onUploadFile.add(async (_, uploadFileEvent) => {
         // TODO: 630 (https://github.com/edulution-io/edulution-ui/issues/630) -  Currently this can only work for already created surveys
         if (!surveyId) return;
-        const promises = options.files.map((file: File) => {
-          if (!options.question?.id) {
-            return uploadImageFile(surveyId, 'Header', file, options.callback);
+        const promises = uploadFileEvent.files.map((file: File) => {
+          if (!uploadFileEvent.question?.id) {
+            return uploadImageFile(surveyId, 'Header', file, uploadFileEvent.callback);
           }
-          return uploadImageFile(surveyId, options.question.id, file, options.callback);
+          return uploadImageFile(surveyId, uploadFileEvent.question.id, file, uploadFileEvent.callback);
         });
         await Promise.all(promises);
       });
@@ -198,6 +197,7 @@ const SurveyEditorPage = () => {
       />
       <QuestionContextMenu
         form={form}
+        creator={creator}
         isOpenQuestionContextMenu={isOpenQuestionContextMenu}
         setIsOpenQuestionContextMenu={setIsOpenQuestionContextMenu}
       />

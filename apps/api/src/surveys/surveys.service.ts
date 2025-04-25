@@ -23,6 +23,10 @@ import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
+import { SURVEY_RESTFUL_CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import SurveyElement from '@libs/survey/types/TSurveyElement';
+import SurveyPage from '@libs/survey/types/TSurveyPage';
+import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
@@ -88,8 +92,8 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  async updateSurvey(survey: SurveyDto, currentUser: JwtUser): Promise<Survey | null> {
-    const existingSurvey = await this.surveyModel.findById(survey.id).exec();
+  async updateSurvey(survey: SurveyDto, currentUser: JwtUser): Promise<SurveyDocument | null> {
+    const existingSurvey = await this.surveyModel.findById(survey.id).lean();
     if (!existingSurvey) {
       return null;
     }
@@ -101,8 +105,8 @@ class SurveysService implements OnModuleInit {
 
     try {
       return await this.surveyModel
-        .findOneAndUpdate<Survey>({ _id: new Types.ObjectId(survey.id) }, survey, { new: true })
-        .exec();
+        .findOneAndUpdate<SurveyDocument>({ _id: new Types.ObjectId(survey.id) }, survey, { new: true })
+        .lean();
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {
@@ -116,7 +120,7 @@ class SurveysService implements OnModuleInit {
         );
         Logger.warn(invitedMembersList, SurveysService.name);
 
-        const updatedSurvey = await this.surveyModel.findById(survey.id).exec();
+        const updatedSurvey = await this.surveyModel.findById(survey.id).lean();
         Logger.warn(updatedSurvey, SurveysService.name);
 
         this.sseService.sendEventToUsers(invitedMembersList, updatedSurvey || survey, SSE_MESSAGE_TYPE.SURVEY_UPDATED);
@@ -124,7 +128,7 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  async createSurvey(survey: SurveyDto, currentUser: JwtUser): Promise<Survey> {
+  async createSurvey(survey: SurveyDto, currentUser: JwtUser): Promise<SurveyDocument> {
     const creator: AttendeeDto = {
       ...survey.creator,
       firstName: currentUser.given_name,
@@ -149,12 +153,69 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  async updateOrCreateSurvey(surveyDto: SurveyDto, currentUser: JwtUser): Promise<Survey | null> {
-    const updatedSurvey = await this.updateSurvey(surveyDto, currentUser);
-    if (updatedSurvey !== null) {
-      return updatedSurvey;
+  updateQuestionLinksForChoicesByUrl(surveyId: string, question: SurveyElement): SurveyElement {
+    const hasChoices = question.type === 'radiogroup' || question.type === 'checkbox' || question.type === 'dropdown';
+    if (hasChoices && question.choicesByUrl) {
+      if (question.choicesByUrl.url.includes('TEMP')) {
+        try {
+          const newLink = `${SURVEY_RESTFUL_CHOICES}/${surveyId}/${question.name}`;
+          return { ...question, choicesByUrl: { ...question.choicesByUrl, url: newLink } };
+        } catch (error) {
+          Logger.error(error, SurveysService.name);
+          throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR, error);
+        }
+      }
     }
-    return this.createSurvey(surveyDto, currentUser);
+    return question;
+  }
+
+  updateElementsLinkedChoicesByUrl(surveyId: string, elements: SurveyElement[]): SurveyElement[] {
+    return elements?.map((question) => this.updateQuestionLinksForChoicesByUrl(surveyId, question));
+  }
+
+  updatePagesLinkedChoicesByUrl(surveyId: string, pages: SurveyPage[]): SurveyPage[] {
+    return pages.map((page) => {
+      if (!page.elements || page.elements?.length === 0) {
+        return page;
+      }
+      const updatedElements = this.updateElementsLinkedChoicesByUrl(surveyId, page.elements);
+      return { ...page, elements: updatedElements };
+    });
+  }
+
+  updateFormulaLinkedChoicesByUrl(surveyId: string, formula: SurveyFormula): SurveyFormula {
+    const updatedFormula = { ...formula };
+    if (formula.pages && formula.pages.length > 0) {
+      updatedFormula.pages = this.updatePagesLinkedChoicesByUrl(surveyId, formula.pages);
+    }
+    if (formula.elements && formula.elements.length > 0) {
+      updatedFormula.elements = this.updateElementsLinkedChoicesByUrl(surveyId, formula.elements);
+    }
+    return updatedFormula;
+  }
+
+  async updateOrCreateSurvey(surveyDto: SurveyDto, user: JwtUser): Promise<SurveyDocument | null> {
+    let survey: SurveyDocument | null;
+    survey = await this.updateSurvey(surveyDto, user);
+    if (survey == null) {
+      survey = await this.createSurvey(surveyDto, user);
+    }
+    if (survey == null) {
+      throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.NOT_FOUND);
+    }
+    // eslint-disable-next-line no-underscore-dangle
+    const surveyId = (survey._id as Types.ObjectId).toString();
+
+    const updatedFormula = this.updateFormulaLinkedChoicesByUrl(surveyId, survey.formula);
+
+    const updatedSurvey = { ...surveyDto, id: surveyId, formula: updatedFormula };
+    const savedSurvey = await this.updateSurvey(updatedSurvey, user);
+
+    if (savedSurvey == null) {
+      throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.NOT_FOUND);
+    }
+
+    return savedSurvey;
   }
 
   async serveImage(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {

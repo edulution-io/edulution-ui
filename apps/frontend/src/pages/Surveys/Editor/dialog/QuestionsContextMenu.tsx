@@ -13,23 +13,30 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { SurveyCreatorModel } from 'survey-creator-core';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import QuestionContextMenuBody from '@/pages/Surveys/Editor/dialog/QuestionsContextMenuBody';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 
 interface QuestionContextMenuProps {
   form: UseFormReturn<SurveyDto>;
+  creator: SurveyCreatorModel;
   isOpenQuestionContextMenu: boolean;
   setIsOpenQuestionContextMenu: (state: boolean) => void;
   trigger?: React.ReactNode;
 }
 
 const QuestionContextMenu = (props: QuestionContextMenuProps) => {
-  const { form, trigger, isOpenQuestionContextMenu, setIsOpenQuestionContextMenu } = props;
+  const { form, trigger, isOpenQuestionContextMenu, setIsOpenQuestionContextMenu, creator } = props;
 
   const { t } = useTranslation();
 
-  const getDialogBody = () => <QuestionContextMenuBody form={form} />;
+  const getDialogBody = () => (
+    <QuestionContextMenuBody
+      form={form}
+      creator={creator}
+    />
+  );
 
   return (
     <AdaptiveDialog
