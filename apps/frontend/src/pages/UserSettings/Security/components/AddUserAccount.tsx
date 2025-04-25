@@ -35,7 +35,7 @@ const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelecte
   const idx = isOneRowSelected ? Number(keys[0]) : undefined;
 
   const initialFormValues: Omit<UserAccountDto, 'accountId'> =
-    idx !== undefined
+    idx !== undefined && userAccounts[idx]
       ? userAccounts[idx]
       : {
           accountUrl: '',
