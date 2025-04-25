@@ -27,7 +27,7 @@ const licenseText = `/*
 `;
 
 const targetDirectories = ['apps', 'libs', 'scripts'];
-const excludedPatterns = [/\.config\.ts$/, /\.config\.js$/, /\/excalidraw-assets\//];
+const excludedPatterns = [/\.config\.ts$/, /\.config\.js$/];
 const fileExtensions = ['.js', '.jsx', '.ts', '.tsx'];
 
 const hasLicenseHeader = (fileContent: string) => {

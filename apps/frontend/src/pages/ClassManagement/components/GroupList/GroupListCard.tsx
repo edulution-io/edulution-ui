@@ -28,6 +28,7 @@ import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
+import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
 
 interface GroupListCardProps {
   group: LmnApiProject | LmnApiSchoolClass;
@@ -122,9 +123,9 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
   return (
     <Card
       key={commonName}
-      variant="security"
+      variant="text"
       className={cn(
-        'my-2 ml-1 mr-4 flex h-20 w-64 min-w-64 rounded-lg border',
+        'my-2 ml-1 mr-4 flex h-20 w-64 min-w-64 cursor-pointer ease-in-out hover:scale-105 lg:transition-transform lg:duration-300',
         isActive && 'opacity-90',
         'cursor-pointer',
       )}
@@ -156,7 +157,7 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
                     tooltipText={displayName || commonName}
                     trigger={
                       <div className="ml-2 overflow-hidden whitespace-nowrap text-nowrap text-lg font-bold">
-                        {displayName || commonName.replace('p_', '')}
+                        {displayName || removeSchoolPrefix(commonName, user.school)}
                       </div>
                     }
                   />

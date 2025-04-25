@@ -9,7 +9,6 @@ export default defineConfig(({ mode }) => {
   const pkg = JSON.parse(readFileSync(resolve(__dirname, '../../package.json'), 'utf-8'));
 
   return {
-    // Exception needed for excalidraw
     define: {
       'process.env': {},
       APP_VERSION: JSON.stringify(pkg.version),
@@ -94,7 +93,6 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: {
-            excalidraw: ['@excalidraw/excalidraw'],
             surveyjs: [
               'survey-analytics',
               'survey-core',

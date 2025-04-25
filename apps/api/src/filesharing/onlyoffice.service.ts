@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -90,8 +89,7 @@ class OnlyofficeService implements OnModuleInit {
     }
 
     await uploadFile(username, cleanedPath, file, '');
-    const filePath = join(PUBLIC_DOWNLOADS_PATH, uniqueFileName);
-    await FilesystemService.deleteFile(filePath);
+    await FilesystemService.deleteFile(PUBLIC_DOWNLOADS_PATH, uniqueFileName);
 
     return res.status(HttpStatus.OK).json({ error: 0 });
   }
