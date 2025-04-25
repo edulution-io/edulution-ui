@@ -15,7 +15,6 @@ import MailPage from '@/pages/Mail/MailPage';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import LinuxmusterPage from '@/pages/LinuxmusterPage/LinuxmusterPage';
-import Whiteboard from '@/pages/Whiteboard/Whiteboard';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import APPS from '@libs/appconfig/constants/apps';
@@ -38,8 +37,6 @@ const NativeFrameManager = () => {
           return <MailPage key={appConfig.name} />;
         case APPS.LINUXMUSTER:
           return <LinuxmusterPage key={appConfig.name} />;
-        case APPS.WHITEBOARD:
-          return <Whiteboard key={appConfig.name} />;
         default:
           return null;
       }
