@@ -22,19 +22,19 @@ interface LoadingIndicatorDialogProps {
 
 const LoadingIndicatorDialog: React.FC<LoadingIndicatorDialogProps> = ({ isOpen }) => {
   const dialogRef = useRef<HTMLDivElement>(null);
-  const [isClose, setClose] = useState(false);
+  const [open, setOpen] = useState(isOpen);
   const location = useLocation();
 
-  useOnClickOutside(dialogRef, () => setClose(true));
+  useOnClickOutside(dialogRef, () => setOpen(false));
 
   useEffect(() => {
-    setClose(false);
-  }, [location]);
+    setOpen(isOpen);
+  }, [isOpen, location]);
 
   return (
     <Dialog
-      open={isOpen && !isClose}
-      onOpenChange={setClose}
+      open={open}
+      onOpenChange={setOpen}
     >
       <DialogContent
         showCloseButton={false}
