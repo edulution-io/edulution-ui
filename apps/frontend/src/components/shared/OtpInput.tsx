@@ -10,23 +10,26 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { FC, Dispatch, SetStateAction } from 'react';
+import { MdDialpad } from 'react-icons/md';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '../ui/InputOtp';
+import { Button } from './Button';
 
 type OtpInputProps = {
   totp: string;
   variant?: 'default' | 'dialog';
   setTotp: (value: string) => void;
   onComplete?: () => void;
+  setShowNumPad?: Dispatch<SetStateAction<boolean>>;
 };
 
-const OtpInput: React.FC<OtpInputProps> = ({ totp, variant = 'default', setTotp, onComplete }) => (
-  <div className="mb-3 flex flex-col items-center">
+const OtpInput: FC<OtpInputProps> = ({ totp, variant = 'default', setTotp, onComplete, setShowNumPad }) => (
+  <div className="mb-3 flex items-center justify-center">
     <InputOTP
       autoFocus
       maxLength={6}
       value={totp}
-      onChange={(value) => setTotp(value)}
+      onChange={setTotp}
       onComplete={onComplete ? () => onComplete() : undefined}
     >
       <InputOTPGroup>
@@ -56,6 +59,16 @@ const OtpInput: React.FC<OtpInputProps> = ({ totp, variant = 'default', setTotp,
         />
       </InputOTPGroup>
     </InputOTP>
+    {setShowNumPad && (
+      <Button
+        variant="btn-outline"
+        type="button"
+        onClick={() => setShowNumPad((prev) => !prev)}
+        className="ml-4 h-11 w-11 p-0 hover:bg-ciGrey/10"
+      >
+        <MdDialpad style={{ width: '18px', height: '18px' }} />
+      </Button>
+    )}
   </div>
 );
 
