@@ -14,6 +14,8 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { toast } from 'sonner';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { MdClear } from 'react-icons/md';
+import { RiResetLeftLine } from 'react-icons/ri';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
@@ -144,7 +146,35 @@ const SurveyEditorPage = () => {
   };
 
   const config: FloatingButtonsBarConfig = {
-    buttons: [SaveButton(() => setIsOpenSaveSurveyDialog(true))],
+    buttons: [
+      SaveButton(() => setIsOpenSaveSurveyDialog(true)),
+      {
+        icon: MdClear,
+        text: t('survey.editor.new'),
+        onClick: () => {
+          reset();
+          resetStoredSurvey();
+          form.reset(initialFormValues);
+          if (creator) {
+            creator.saveNo = 0;
+            creator.JSON = { title: t('survey.newTitle').toString() };
+          }
+        },
+      },
+      {
+        icon: RiResetLeftLine,
+        text: t('survey.editor.abort'),
+        onClick: () => {
+          reset();
+          resetStoredSurvey();
+          form.reset(initialFormValues);
+          if (creator) {
+            creator.saveNo = form.getValues('saveNo');
+            creator.JSON = form.getValues('formula');
+          }
+        },
+      },
+    ],
     keyPrefix: 'surveys-page-floating-button_',
   };
 
