@@ -10,11 +10,27 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import QrCodeSlice from '@libs/user/types/store/qrCodeSlice';
-import TotpSlice from '@libs/user/types/store/totpSlice';
-import UserSlice from '@libs/user/types/store/userSlice';
-import UserAccountsSlice from './userAccountsSlice';
+import mongoose, { Document, Types } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { User } from './user.schema';
 
-type UserStore = QrCodeSlice & TotpSlice & UserSlice & UserAccountsSlice;
+export type UserAccountsDocument = UserAccounts & Document;
 
-export default UserStore;
+@Schema()
+export class UserAccounts {
+  @Prop({ type: mongoose.Schema.Types.ObjectId, index: true, ref: User.name, required: true })
+  user_id: Types.ObjectId;
+
+  @Prop()
+  accountUrl: string;
+
+  @Prop()
+  accountUser: string;
+
+  @Prop()
+  accountPassword: string;
+}
+
+export const UserAccountsSchema = SchemaFactory.createForClass(UserAccounts);
+
+export default UserAccountsSchema;

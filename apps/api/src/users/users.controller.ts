@@ -15,6 +15,7 @@ import UserDto from '@libs/user/types/user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
+import type UserAccountDto from '@libs/user/types/userAccount.dto';
 import UsersService from './users.service';
 import UpdateUserDto from './dto/update-user.dto';
 import GetToken from '../common/decorators/getToken.decorator';
@@ -68,6 +69,28 @@ export class UsersController {
     @GetCurrentSchool() school: string,
   ) {
     return this.usersService.searchUsersByName(token, school, searchString);
+  }
+
+  @Post(':username/accounts')
+  addUserAccount(
+    @Param('username') username: string,
+    @GetCurrentUsername() currentUsername: string,
+    @Body() userAccountDto: Omit<UserAccountDto, 'accountId'>,
+  ) {
+    if (username !== currentUsername) {
+      throw new CustomHttpException(AuthErrorMessages.Unauthorized, HttpStatus.FORBIDDEN);
+    }
+
+    return this.usersService.addUserAccount(currentUsername, userAccountDto);
+  }
+
+  @Get(':username/accounts')
+  getUserAccounts(@Param('username') username: string, @GetCurrentUsername() currentUsername: string) {
+    if (username !== currentUsername) {
+      throw new CustomHttpException(AuthErrorMessages.Unauthorized, HttpStatus.FORBIDDEN);
+    }
+
+    return this.usersService.getUserAccounts(currentUsername);
   }
 }
 

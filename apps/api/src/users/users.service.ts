@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /*
  * LICENSE
  *
@@ -24,14 +25,17 @@ import UserDto from '@libs/user/types/user.dto';
 import USER_DB_PROJECTION from '@libs/user/constants/user-db-projections';
 import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
 import { ALL_USERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
+import type UserAccountDto from '@libs/user/types/userAccount.dto';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
 import GroupsService from '../groups/groups.service';
+import { UserAccounts, UserAccountsDocument } from './account.schema';
 
 @Injectable()
 class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(UserAccounts.name) private userAccountModel: Model<UserAccountsDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
@@ -126,6 +130,41 @@ class UsersService {
     }
 
     return getDecryptedPassword(existingUser.password, existingUser.encryptKey);
+  }
+
+  async addUserAccount(username: string, userAccountDto: Omit<UserAccountDto, 'accountId'>): Promise<UserAccounts> {
+    const user = await this.userModel.findOne({ username }, '_id').exec();
+
+    if (!user) {
+      throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
+    }
+
+    const created = await this.userAccountModel.create({
+      ...userAccountDto,
+      user_id: user._id,
+    });
+    return created;
+  }
+
+  async getUserAccounts(username: string): Promise<UserAccountDto[]> {
+    const user = await this.userModel.findOne({ username }, '_id').exec();
+
+    if (!user) {
+      throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
+    }
+
+    const userAccounts = await this.userAccountModel
+      .find({ user_id: user._id }, 'accountUrl accountUser accountPassword')
+      .exec();
+
+    const userAccountsDto = userAccounts.map((account) => ({
+      accountId: account._id as string,
+      accountUrl: account.accountUrl,
+      accountUser: account.accountUser,
+      accountPassword: account.accountPassword,
+    }));
+
+    return userAccountsDto;
   }
 }
 
