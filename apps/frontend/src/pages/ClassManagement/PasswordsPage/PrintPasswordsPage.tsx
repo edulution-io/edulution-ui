@@ -58,12 +58,10 @@ const PrintPasswordsPage: React.FC = () => {
         name="filter"
         onChange={(e) => setFilterKeyWord(e.target.value)}
         placeholder={t('classmanagement.typeToFilter')}
-        className="my-2"
+        className="mb-2"
       />
       <div className="flex max-h-full max-w-full flex-row flex-wrap overflow-y-auto scrollbar-thin">
-        <div className="mt-2 min-w-full text-lg text-background">
-          {t('classmanagement.printPasswordsPageDescription')}
-        </div>
+        <p className="mt-2 min-w-full">{t('classmanagement.printPasswordsPageDescription')}</p>
         {groupRows.map((row) => (
           <div
             key={row.name}

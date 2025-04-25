@@ -10,14 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ITheme, IHeader, ImageFit } from 'survey-core';
+import { IHeader, ImageFit, ITheme } from 'survey-core';
+import COLOR_SCHEME from '@libs/ui/constants/colorScheme';
 
 const surveyTheme: ITheme = {
   backgroundImage: '',
   backgroundImageAttachment: 'fixed',
   backgroundImageFit: 'auto' as ImageFit,
   backgroundOpacity: 0,
-  colorPalette: 'dark',
+  colorPalette: COLOR_SCHEME,
   cssVariables: {
     '--sjs-corner-radius': '3px',
     '--sjs-base-unit': '8px',

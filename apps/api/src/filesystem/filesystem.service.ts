@@ -83,7 +83,8 @@ class FilesystemService {
     return fsPromises.readdir(directory);
   }
 
-  static async deleteFile(filePath: string): Promise<void> {
+  static async deleteFile(path: string, fileName: string): Promise<void> {
+    const filePath = join(path, fileName);
     try {
       await fsPromises.unlink(filePath);
       Logger.log(`File deleted at ${filePath}`);
@@ -94,11 +95,6 @@ class FilesystemService {
         filePath,
       );
     }
-  }
-
-  static async deleteFiles(fileNames: string[]): Promise<void[]> {
-    const deletePromises = fileNames.map((fileName) => this.deleteFile(fileName));
-    return Promise.all(deletePromises);
   }
 
   async deleteDirectory(directory: string): Promise<void> {
@@ -133,18 +129,6 @@ class FilesystemService {
         await this.createDirectory(directory);
       } catch (error) {
         throw new CustomHttpException(CommonErrorMessages.DIRECTORY_CREATION_FAILED, HttpStatus.NOT_FOUND);
-      }
-    }
-  }
-
-  static async checkIfFileExistAndDelete(filePath: string) {
-    const exists = await FilesystemService.checkIfFileExist(filePath);
-    if (exists) {
-      try {
-        await fsPromises.unlink(filePath);
-        Logger.log(`${filePath} deleted.`, FilesystemService.name);
-      } catch (error) {
-        throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
   }
@@ -269,6 +253,25 @@ class FilesystemService {
       throw new CustomHttpException(CommonErrorMessages.ATTACHMENT_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
     }
     return file.filename;
+  }
+
+  static async checkIfFileExistAndDelete(filePath: string) {
+    await FilesystemService.throwErrorIfFileNotExists(filePath);
+    try {
+      await fsPromises.unlink(filePath);
+      Logger.log(`${filePath} deleted.`, FilesystemService.name);
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  static async deleteDirectories(directories: string[]): Promise<void> {
+    try {
+      const deletionPromises = directories.map((directory) => fsPromises.rm(directory, { recursive: true }));
+      await Promise.all(deletionPromises);
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }
 
