@@ -12,7 +12,7 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
-import { Model } from 'survey-core';
+import { Model, Serializer } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -23,10 +23,13 @@ import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticip
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import '../theme/custom.participation.css';
+import PageLayout from '@/components/structure/layout/PageLayout';
 
 interface SurveyParticipationPageProps {
   isPublic: boolean;
 }
+
+Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
 
 const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.ReactNode => {
   const { isPublic = false } = props;
@@ -93,9 +96,11 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
   }
 
   return (
-    <div className={cn('survey-participation')}>
-      <Survey model={surveyModel} />
-    </div>
+    <PageLayout>
+      <div className={cn('survey-participation')}>
+        <Survey model={surveyModel} />
+      </div>
+    </PageLayout>
   );
 };
 

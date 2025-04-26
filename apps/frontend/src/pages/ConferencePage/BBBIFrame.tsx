@@ -13,13 +13,13 @@
 import React, { useEffect, useState } from 'react';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import { createPortal } from 'react-dom';
-import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
+import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 import { useTranslation } from 'react-i18next';
 import testCookieAccess from '@libs/common/utils/testCookieAccess';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { Button } from '@/components/shared/Button';
-import OpenInNewTabButton from '@/components/framing/ResizableWindow/Buttons/OpenInNewTabButton';
+import OpenInNewTabButton from '@/components/structure/framing/ResizableWindow/Buttons/OpenInNewTabButton';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 const BBBIFrame = () => {
   const { t } = useTranslation();
@@ -41,23 +41,23 @@ const BBBIFrame = () => {
   }
 
   const openInNewTab = () => window.open(joinConferenceUrl, '_blank', 'noopener,noreferrer');
+  const handleClose = () => setJoinConferenceUrl('');
+
+  const getFooter = () => (
+    <DialogFooterButtons
+      handleClose={handleClose}
+      handleSubmit={openInNewTab}
+      submitButtonText="common.openInNewTab"
+    />
+  );
+
   const openInNewTabDialog = (
     <AdaptiveDialog
       isOpen
-      handleOpenChange={() => setJoinConferenceUrl('')}
+      handleOpenChange={handleClose}
       title={t('conferences.joinThisConference')}
-      body={
-        <div className="mt-6 flex flex-row-reverse">
-          <Button
-            variant="btn-collaboration"
-            size="lg"
-            type="button"
-            onClick={openInNewTab}
-          >
-            {t('common.openInNewTab')}
-          </Button>
-        </div>
-      }
+      footer={getFooter()}
+      body={null}
     />
   );
 

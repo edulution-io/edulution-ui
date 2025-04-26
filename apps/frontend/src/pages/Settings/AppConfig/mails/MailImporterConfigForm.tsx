@@ -23,8 +23,8 @@ type MailsConfigProps = {
   form: UseFormReturn<MailProviderConfig>;
 };
 
-const encOptions = Object.entries(MailEncryption).map(([value], index) => ({
-  id: index.toString(),
+const encOptions = Object.entries(MailEncryption).map(([value]) => ({
+  id: value,
   name: value,
 }));
 
@@ -76,7 +76,7 @@ const MailImporterConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
               <p>{t(field.name)}</p>
               <FormControl>
                 <Input
-                  placeholder="993"
+                  placeholder={t('mail.portPlaceholder')}
                   {...field}
                 />
               </FormControl>

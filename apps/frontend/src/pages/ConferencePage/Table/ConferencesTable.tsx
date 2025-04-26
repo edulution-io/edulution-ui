@@ -10,17 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import ConferencesTableColumns from '@/pages/ConferencePage/Table/ConferencesTableColumns';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
-import CONFERENCES_PAGE_TABLE_HEADER from '@libs/conferences/constants/pageElementIds';
 import useUserStore from '@/store/UserStore/UserStore';
 import APPS from '@libs/appconfig/constants/apps';
+import useMedia from '@/hooks/useMedia';
+import CONFERENCES_TABLE_COLUMNS from '@libs/conferences/constants/conferencesTableColumns';
 
 const ConferencesTable = () => {
+  const { isMobileView, isTabletView } = useMedia();
+
   const { user } = useUserStore();
   const { conferences, getConferences, isLoading, selectedRows, setSelectedRows } = useConferenceStore();
 
@@ -33,26 +35,31 @@ const ConferencesTable = () => {
     void getConferences();
   }, []);
 
+  const initialColumnVisibility = useMemo(
+    () => ({
+      [CONFERENCES_TABLE_COLUMNS.CONFERENCE_CREATOR]: !isMobileView,
+      [CONFERENCES_TABLE_COLUMNS.CONFERENCE_PASSWORD]: !(isMobileView || isTabletView),
+      [CONFERENCES_TABLE_COLUMNS.CONFERENCE_INVITED_ATTENDEES]: !(isMobileView || isTabletView),
+      [CONFERENCES_TABLE_COLUMNS.CONFERENCE_JOINED_ATTENDEES]: !isMobileView,
+      [CONFERENCES_TABLE_COLUMNS.CONFERENCE_ACTION_BUTTON]: !isMobileView,
+    }),
+    [isMobileView, isTabletView],
+  );
+
   return (
-    <div className="w-full md:w-auto md:max-w-7xl xl:max-w-full">
-      <ScrollableTable
-        columns={ConferencesTableColumns}
-        data={conferences}
-        filterKey="conference-name"
-        filterPlaceHolderText="conferences.filterPlaceHolderText"
-        onRowSelectionChange={handleRowSelectionChange}
-        isLoading={isLoading}
-        selectedRows={selectedRows}
-        getRowId={(originalRow) => originalRow.meetingID}
-        applicationName={APPS.CONFERENCES}
-        additionalScrollContainerOffset={20}
-        enableRowSelection={(row) => row.original.creator.username === user?.username}
-        scrollContainerOffsetElementIds={{
-          tableHeaderId: CONFERENCES_PAGE_TABLE_HEADER,
-          others: [NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID],
-        }}
-      />
-    </div>
+    <ScrollableTable
+      columns={ConferencesTableColumns}
+      data={conferences}
+      filterKey={CONFERENCES_TABLE_COLUMNS.CONFERENCE_NAME}
+      filterPlaceHolderText="conferences.filterPlaceHolderText"
+      onRowSelectionChange={handleRowSelectionChange}
+      isLoading={isLoading}
+      selectedRows={selectedRows}
+      getRowId={(originalRow) => originalRow.meetingID}
+      applicationName={APPS.CONFERENCES}
+      enableRowSelection={(row) => row.original.creator.username === user?.username}
+      initialColumnVisibility={initialColumnVisibility}
+    />
   );
 };
 

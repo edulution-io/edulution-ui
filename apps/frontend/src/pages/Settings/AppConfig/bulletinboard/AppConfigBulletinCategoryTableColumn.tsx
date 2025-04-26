@@ -21,15 +21,18 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 import SortTableCell from '@/components/ui/Table/SortTableCell';
 import DEFAULT_TABLE_SORT_PROPERTY_KEY from '@libs/common/constants/defaultTableSortProperty';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import BULLETIN_BOARD_TABLE_COLUMNS from '@libs/appconfig/constants/bulletinBoardCategoryTableColumns';
+import hideOnMobileClassName from '@libs/ui/constants/hideOnMobileClassName';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 
 const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
   {
     id: DEFAULT_TABLE_SORT_PROPERTY_KEY,
+    size: 110,
     header: ({ column }) => (
       <SortableHeader<BulletinCategoryResponseDto, unknown>
         column={column}
-        className="max-w-32"
+        className={`max-w-32 ${hideOnMobileClassName}`}
       />
     ),
     meta: {
@@ -59,7 +62,7 @@ const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDt
     },
   },
   {
-    id: 'name',
+    id: BULLETIN_BOARD_TABLE_COLUMNS.NAME,
     header: ({ column }) => <SortableHeader<BulletinCategoryResponseDto, unknown> column={column} />,
 
     meta: {
@@ -83,7 +86,8 @@ const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDt
     },
   },
   {
-    id: 'isActive',
+    id: BULLETIN_BOARD_TABLE_COLUMNS.IS_ACTIVE,
+    size: 60,
     header: ({ column }) => <SortableHeader<BulletinCategoryResponseDto, unknown> column={column} />,
     meta: {
       translationId: 'bulletinboard.isActive',
@@ -107,7 +111,8 @@ const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDt
     },
   },
   {
-    id: 'createdAt',
+    id: BULLETIN_BOARD_TABLE_COLUMNS.CREATED_AT,
+    size: 130,
     header: ({ column }) => <SortableHeader<BulletinCategoryResponseDto, unknown> column={column} />,
     meta: {
       translationId: 'common.createdAt',

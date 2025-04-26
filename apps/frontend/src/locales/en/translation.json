@@ -2,7 +2,7 @@
   "welcome": "Welcome to the application",
   "changeLang": "Change Language",
   "heading": "Welcome {{givenName}} {{familyName}}",
-  "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
+  "content": "Here is your personal {{ applicationName }} dashboard. The place where all your applications for digital teaching are collected.",
   "closeEditingWindow": "Close editing window",
   "framebufferImage": "Framebuffer image",
   "previewImage": "Image preview",
@@ -71,11 +71,7 @@
     "errors": {
       "categoryNotFound": "Category not found",
       "categoryDeleteFailed": "Failed to delete category",
-      "attachmentUploadFailed": "Failed to upload attachment",
-      "fileNotProvided": "File not provided",
-      "fileNotFound": "File not found",
       "invalidCategory": "Invalid category",
-      "invalidFileType": "Invalid file type",
       "bulletinNotFound": "Bulletin not found",
       "unauthorizedUpdateBulletin": "Unauthorized to update this bulletin",
       "unauthorizedDeleteBulletin": "Unauthorized to delete this bulletin",
@@ -89,7 +85,7 @@
   },
   "appstore": {
     "title": "App Store",
-    "description": "Here you can add edulution.io apps.",
+    "description": "Here you can add {{ applicationName }} apps.",
     "chooseIcon": "Choose icon"
   },
   "forwarding": {
@@ -102,6 +98,7 @@
     "sidebar": "Embedded"
   },
   "dashboard": {
+    "pageTitle": "Dashboard",
     "mobileAccess": {
       "title": "Mobile File Access",
       "manual": "Setup",
@@ -109,12 +106,11 @@
       "setupWithQrCode": "Setup with QR code",
       "accessData": "Login data",
       "content": "You can access the school server from many mobile devices. Click on Manual to start.",
-      "scanAccessInfo": "To transfer the access data, please scan the following QR code with the edulution.io app.",
-      "manualAccessInfo": "Enter your login details manually in the edulution.io app. The example below shows how to fill in each field.",
-      "scanAppStoreLink": "Scan the QR code with your mobile device to download the edultion-io app from the AppStore.",
+      "scanAccessInfo": "To transfer the access data, please scan the following QR code with the {{ applicationName }} app.",
+      "manualAccessInfo": "Enter your login details manually in the {{ applicationName }} app. The example below shows how to fill in each field.",
       "nextStepPreview": "In the next step you can transfer the access data.",
       "downloadDirect": "Or download the app directly:",
-      "downloadApp": "Download the edulution.io app here:"
+      "downloadApp": "Download the {{ applicationName }} app here:"
     },
     "quota": {
       "title": "Quotas",
@@ -177,11 +173,12 @@
     "configName": "Configuration name",
     "hostname": "Hostname",
     "port": "Port",
+    "portPlaceholder": "e.g. 993",
     "encryption": "Encryption",
     "rowsSelected": "{{selected}} of {{total}} jobs selected",
     "rowSelected": "{{selected}} of {{total}} job selected",
     "importer": {
-      "filterPlaceHolderText": "Search for importername",
+      "filterPlaceHolderText": "Search for username",
       "title": "Email Importer",
       "provider": "Email Provider",
       "interval": "Sync Interval",
@@ -297,6 +294,7 @@
     "sidebar": "File Sharing",
     "previewTitle": "File Preview",
     "fileEditor": "File editor",
+    "selectFile": "Select file",
     "filePreview": "File preview",
     "saveFile": "Save file",
     "loadingDocument": "Loading document...",
@@ -318,19 +316,28 @@
       "WebDavError": "Data server access failed",
       "DownloadFailed": "Download failed",
       "FolderCreationFailed": "Folder creation failed",
+      "CreateCollectFolderForStudentFailed": "Creating the collect folder for student failed",
       "DeleteFromServerFailed": "Delete from server failed",
       "SaveFailed": "Save failed",
-      "DuplicateFailed": "Copy failed",
+      "DuplicateFailed": "Duplicate failed",
       "AppNotProperlyConfigured": "OnlyOffice is not properly configured, contact your system administrator.",
       "CollectingFailed": "Collecting files failed",
+      "MissingCallbackURL": "Missing callback URL",
       "SharingFailed": "Sharing files failed",
-      "MissingCallbackURL": "Missing callback URL"
+      "CopyFailed": "Copy failed"
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
       "FileNameRequired": "File name is required",
       "NewFileNameRequired": "New file name is required",
       "NameRequired": "Name is required"
+    },
+    "progressBox": {
+      "info": "Info",
+      "title": "Distributing files",
+      "processedInfo": "{{processed}} out of {{total}} files distributed successfully",
+      "fileInfo": "File {{filename}} is being distributed to {{studentName}}",
+      "errorInfo": "{{failed}} files could not be handed out"
     }
   },
   "forums": {
@@ -396,12 +403,12 @@
     "member": "Member",
     "noneAvailable": "None available",
     "isJoinable": "Users can join",
-    "joinclass": "Join class to share files",
+    "joinclass": "Join class",
     "hide": "Hide for other users",
     "teacher": "Teacher",
     "typeToSearchUsersGroupsProjects": "Type to add students, classes or projects",
     "typeToSearchUsersGroupsProjectsToNewSession": "Type to add students, classes or projects to a new session",
-    "itsNotPossibleToEditOtherTeacher": "At the moment it is not possible to create the directory for sharing in another teacher's home directory or to manage the administration groups.",
+    "itsNotPossibleToEditExternalStudents": "It is not possible to control students from other classes. Please join the student's class.",
     "itsNotPossibleToEditOtherSchoolStudents": "At the moment it is not possible to create the directory for sharing in a student's home directory of another school or to manage the administration groups.",
     "usersInThisSession": "Users in this session",
     "webfilter": "Webfilter",
@@ -458,6 +465,16 @@
     "myRoom": "My room",
     "sharedMailBox": "Shared mailbox",
     "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes.",
+    "failDialog": {
+      "title": "The file {{file}} could not be shared",
+      "reasonMissing": "The file may no longer exist or has been renamed.",
+      "reasonAlreadyReceived": "The recipient already has the file.",
+      "reasonDuplicate": "The file name is duplicated.",
+      "affectedPersons": "The following persons did not receive the file:",
+      "affectedPerson": "The following person did not receive the file:",
+      "filenameAdvice": "If you try to share again, the file will be shared under the name {{filename}}",
+      "retryButton": "Retry"
+    },
     "veyonConfigTable": {
       "id": "ID",
       "subnet": "Subnet",
@@ -468,7 +485,11 @@
       "proxyAdressPlaceholder": "http://localhost:11080",
       "createConfig": "Create config",
       "editConfig": "Edit config"
-    }
+    },
+    "copyOrCut": "Would you like to cut or copy the files?",
+    "filesShared": "Files shared",
+    "filesSharingStarted": "Sharing files started",
+    "filesCollected": "Files collected"
   },
   "select": "Select",
   "selectAll": "Select all",
@@ -482,6 +503,7 @@
     "attendees": "Attendees",
     "filterPlaceHolderText": "Search for surveyname",
     "invitedAttendees": "Invited",
+    "publicSurvey": "Public survey",
     "isPublic": "Publicly displayed (?)",
     "isPublicTrue": "Public",
     "isPublicFalse": "Private",
@@ -507,9 +529,10 @@
       "saveAnswerSuccess": "Saved the answer."
     },
     "errors": {
-      "submitAnswerError": "Not able to submit the answer.",
+      "submitAnswerError": "The answer could not be submitted.",
       "updateOrCreateError": "Neither able to update a survey nor to create a new one.",
-      "deleteError": "Not able to delete the surveys.",
+      "deleteError": "The surveys could not be deleted.",
+      "imageDeletionFailed": "Not all images of the surveys could be deleted.",
       "noAnswerError": "No answers available jet.",
       "noFormulaError": "The formula of the survey is not readable.",
       "noBackendLimitersError": "In order to use this functionality you have to define limiters inside of the editor.",
@@ -548,7 +571,7 @@
       },
       "created": {
         "menu": "Own Surveys",
-        "title": "Own Surveys",
+        "title": "Self-created Surveys",
         "description": "Here you find the surveys that you have created by yourself."
       },
       "answered": {
@@ -708,6 +731,21 @@
       "whiteboard": "Here you can make all the settings.",
       "bulletinboard": "Configure the user groups that have access to the Bulletin Board app here. The categories can be used to control which messages are displayed to users."
     },
+    "globalSettings": {
+      "title": "Global Settings",
+      "security": "Security",
+      "multiFactorAuthentication": "Two-factor authentication",
+      "description": "Here you can specify the user groups for which two-factor authentication is to be enforced.",
+      "selectUserGroups": "Select user groups for which the MFA setup is enforced.",
+      "updateSuccessful": "Setting updated successfully",
+      "errors": {
+        "updateError": "Settings could not be updated.",
+        "notFoundError": "Settings could not be loaded."
+      }
+    },
+    "info": {
+      "title": "Info"
+    },
     "appconfig": {
       "sections": {
         "onlyOffice": {
@@ -834,7 +872,7 @@
     },
     "mobileAccess": {
       "title": "Mobile Access",
-      "description": "Here you can set up the edulution.io app for mobile access to your files. Currently only available for Apple iOS."
+      "description": "Here you can set up the {{ applicationName }} app for mobile access to your files. Currently only available for Apple iOS."
     },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
@@ -856,7 +894,9 @@
     "addTotp": {
       "title": "Set up Two-Factor Authentication",
       "qrCodeInstructions": "Scan the QR code with an authenticator app that supports TOTP (Time-based One-Time Password).",
-      "totpCodeInstructions": "Then enter the generated code here and save it:"
+      "totpCodeInstructions": "Then enter the generated code here and save it:",
+      "mfaSetupRequired": "The global guidelines require two-factor authentication to be set up:",
+      "mfaSetupSuccess": "Two-factor authentication has been successfully set up."
     },
     "errors": {
       "currentPasswordRequired": "Current password is required",
@@ -884,11 +924,15 @@
   "students": "Students",
   "user": "User",
   "login": {
+    "pageTitle": "Login",
     "username_too_long": "Username to long",
     "password_too_long": "Password to long",
     "forgot_password": "Forgot password?",
     "remember_me": "Remember me",
-    "enterMultiFactorCode": "Two-Factor Authentication"
+    "enterMultiFactorCode": "Two-Factor Authentication",
+    "loginWithApp": "Login with QR-Login",
+    "loginWithQrDescription": "Open the edulution.io APP to simply log in with the QR code.",
+    "infoQrCodeExpired": "Time for login with edulution.io APP expired."
   },
   "edit": "Edit",
   "common": {
@@ -898,10 +942,17 @@
     "answers": "Answers",
     "error": "Error",
     "errors": {
-      "startDateBeforeEndDate": "The start date must be before the end date",
+      "attachmentUploadFailed": "Failed to upload attachment",
       "dbAccessFailed": "Database access failed",
-      "envAccessError": "Not able to read environment variables"
+      "directoryNotCreated": "Failed to create directory",
+      "fileDeletionFailed": "Failed to delete the file",
+      "fileWritingFailed": "Failed to write the file",
+      "fileNotFound": "File not found",
+      "fileNotProvided": "File not provided",
+      "invalidFileType": "Invalid file type",
+      "startDateBeforeEndDate": "The start date must be before the end date"
     },
+    "cut": "Cut",
     "sortOrder": "Sort order",
     "checking": "Checking",
     "options": "Options",
@@ -915,6 +966,11 @@
       "link": "Copy link"
     },
     "openInNewTab": "Open in new tab",
+    "maximize": "Maximize",
+    "minimize": "Minimize",
+    "restore": "Restore",
+    "dock": "Dock",
+    "undock": "Undock",
     "from": "from",
     "youAreCurrentlyNotLoggedIn": "You are currently not logged in",
     "toLogin": "To login",
@@ -991,7 +1047,8 @@
     "invalid_url": "Invalid URL",
     "invalid_fqdn": "Invalid FQDN. Please only enter the hostname.",
     "required": "Required",
-    "download": "Download"
+    "download": "Download",
+    "template": "Template"
   },
   "form": {
     "path": "Path",
@@ -1006,7 +1063,7 @@
     "apiKey": "API Key",
     "apiKeyDescription": "The API Key will be used for authentication",
     "proxyConfig": "Proxy Configuration",
-    "proxyConfigDescription": "YAML Editor for the Traefik proxy configuration",
+    "proxyConfigDescription": "You can store your own proxy configuration for Traefik here. You can either work via the input fields using a template or create a configuration in YAML format directly in expert mode. <br/><strong>Warning:</strong> A wrong configuration could lead to the application being unreachable.",
     "expertMode": "Expert mode",
     "proxyPath": "Proxy path",
     "proxyPathPlaceholder": "e.g. SOGo",
@@ -1014,7 +1071,10 @@
     "proxyDestinationPlaceholder": "e.g. http://localhost:1234/",
     "stripPrefix": "Strip prefix",
     "input": {
-      "dateTimePicker": "Datum und Uhrzeit auswählen"
+      "dateTimePicker": {
+        "timeSlot": "o'clock",
+        "placeholder": "MM/DD/YYYY HH:mm AM/PM"
+      }
     }
   },
   "fileOperationSuccessful": "File operation successful",
@@ -1051,6 +1111,10 @@
   "whiteboard": {
     "title": "WHITEBOARD",
     "sidebar": "Whiteboard"
+  },
+  "whiteboard-collaboration": {
+    "title": "WHITEBOARD",
+    "sidebar": "Collaborative Whiteboard"
   },
   "table": {
     "noDataAvailable": "No data available"
@@ -1232,7 +1296,7 @@
   "licensing": {
     "communityLicenseDialog": {
       "title": "Community Edition",
-      "description": "Free community edition of edulution.io UI.<br/>Visit us on <link1>{{link}}</link1>.<br/><strong>This version does not provide support.</strong>"
+      "description": "Free community edition of {{ applicationName }} UI.<br/>Visit us on <link1>{{link}}</link1>.<br/><strong>This version does not provide support.</strong>"
     }
   },
   "preview": {
@@ -1255,7 +1319,8 @@
     "imageName": "Image",
     "filterPlaceHolderText": "Search for container name",
     "port": "Port",
-    "created": "Created at"
+    "created": "Created at",
+    "container-view": "Container"
   },
   "docker": {
     "error": {
@@ -1287,6 +1352,12 @@
     }
   },
   "veyon": {
+    "lockScreen": "Lock screen",
+    "unlockScreen": "Unlock screen",
+    "lockInputDevices": "Lock input",
+    "unlockInputDevices": "Unlock input",
+    "rebootSystem": "Reboot system",
+    "powerDown": "Shutdown system",
     "errors": {
       "AppNotProperlyConfigured": "Veyon is not properly configured, contact the system administrator.",
       "VeyonAuthFailed": "Veyon authentication failed.",

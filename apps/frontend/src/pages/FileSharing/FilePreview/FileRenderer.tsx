@@ -17,7 +17,7 @@ import OnlyOffice from '@/pages/FileSharing/FilePreview/OnlyOffice/OnlyOffice';
 import { t } from 'i18next';
 import isImageExtension from '@libs/filesharing/utils/isImageExtension';
 import isVideoExtension from '@libs/filesharing/utils/isVideoExtension';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
@@ -26,10 +26,11 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 interface FileRendererProps {
   editMode: boolean;
+  isOpenedInNewTab?: boolean;
 }
 
-const FileRenderer: FC<FileRendererProps> = ({ editMode }) => {
-  const isMobileView = useIsMobileView();
+const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab }) => {
+  const { isMobileView } = useMedia();
   const {
     downloadLinkURL: fileUrl,
     publicDownloadLink,
@@ -86,6 +87,7 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode }) => {
         filePath={currentlyEditingFile.filename}
         mode={editMode ? 'edit' : 'view'}
         type={isMobileView ? 'mobile' : 'desktop'}
+        isOpenedInNewTab={isOpenedInNewTab}
       />
     ) : (
       <div className="flex flex-col items-center justify-center space-y-4">

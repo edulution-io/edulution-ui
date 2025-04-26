@@ -26,6 +26,8 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import APPS from '@libs/appconfig/constants/apps';
 import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
 import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
+import VEYON_PROXY_TABLE_COLUMNS from '@libs/classManagement/constants/veyonProxyTableColumns';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import useVeyonConfigTableStore from './useVeyonTableStore';
 import useAppConfigsStore from '../appConfigsStore';
 
@@ -110,26 +112,10 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
   const getFooter = () => (
     <form
       onSubmit={handleFormSubmit}
-      className="space-y-4"
+      className="flex gap-4"
     >
-      <div className="mt-4 flex justify-end space-x-2">
-        <Button
-          variant="btn-outline"
-          size="lg"
-          type="button"
-          onClick={() => setDialogOpen('')}
-        >
-          {t('common.cancel')}
-        </Button>
-        <Button
-          variant="btn-collaboration"
-          size="lg"
-          type="submit"
-          disabled={!formState.isValid}
-        >
-          {t('common.save')}
-        </Button>
-        {selectedConfig && (
+      {selectedConfig && (
+        <div className="mt-4">
           <Button
             variant="btn-attention"
             size="lg"
@@ -137,8 +123,15 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
           >
             {t('bulletinboard.delete')}
           </Button>
-        )}
-      </div>
+        </div>
+      )}
+      <DialogFooterButtons
+        handleClose={() => setDialogOpen('')}
+        handleSubmit={() => {}}
+        disableSubmit={!formState.isValid}
+        submitButtonText="common.save"
+        submitButtonType="submit"
+      />
     </form>
   );
 
@@ -156,7 +149,9 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
 
   const getDialogBody = () => (
     <Form {...form}>
-      <form className="space-y-4">{renderFormFields(['subnet', 'proxyAdress'])}</form>
+      <form className="space-y-4">
+        {renderFormFields([VEYON_PROXY_TABLE_COLUMNS.SUBNET, VEYON_PROXY_TABLE_COLUMNS.PROXY_ADDRESS])}
+      </form>
     </Form>
   );
 
@@ -174,7 +169,6 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
       }
       body={getDialogBody()}
       footer={getFooter()}
-      mobileContentClassName="bg-background h-fit h-max-1/2"
     />
   );
 };

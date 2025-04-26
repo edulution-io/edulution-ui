@@ -10,19 +10,22 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import APPS from '@libs/appconfig/constants/apps';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
+import useMedia from '@/hooks/useMedia';
+import DOCKER_CONTAINER_TABLE_COLUMNS from '@libs/docker/constants/dockerContainerTableColumns';
+import CONTAINER from '@libs/docker/constants/container';
 import useDockerApplicationStore from './useDockerApplicationStore';
 import DockerContainerTableColumns from './DockerContainerTableColumns';
 import DockerContainerFloatingButtons from './DockerContainerFloatingButtons';
 
 const DockerContainerTable: React.FC = () => {
+  const { isMobileView, isTabletView } = useMedia();
   const { isLoading, containers, selectedRows, setSelectedRows, getContainers } = useDockerApplicationStore();
   const { t } = useTranslation();
 
@@ -35,14 +38,24 @@ const DockerContainerTable: React.FC = () => {
     void getContainers();
   }, []);
 
+  const initialColumnVisibility = useMemo(
+    () => ({
+      [DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_IMAGE]: !(isMobileView || isTabletView),
+      [DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_PORT]: !isMobileView,
+      [DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_STATUS]: !isMobileView,
+      [DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_CREATION_DATE]: !(isMobileView || isTabletView),
+    }),
+    [isMobileView, isTabletView],
+  );
+
   return (
     <>
-      <div className="absolute right-10 top-12 md:right-20 md:top-10">{isLoading ? <CircleLoader /> : null}</div>
+      <div className="absolute right-10 top-12 md:right-16 md:top-1">{isLoading ? <CircleLoader /> : null}</div>
       <AccordionSH
         type="multiple"
-        defaultValue={['container']}
+        defaultValue={[CONTAINER]}
       >
-        <AccordionItem value="container">
+        <AccordionItem value={CONTAINER}>
           <AccordionTrigger className="flex text-h4">
             <h4>{t('dockerOverview.title')}</h4>
           </AccordionTrigger>
@@ -50,17 +63,13 @@ const DockerContainerTable: React.FC = () => {
             <ScrollableTable
               columns={DockerContainerTableColumns}
               data={containers}
-              filterKey="name"
+              filterKey={DOCKER_CONTAINER_TABLE_COLUMNS.NAME}
               filterPlaceHolderText="dockerOverview.filterPlaceHolderText"
               onRowSelectionChange={handleRowSelectionChange}
               selectedRows={selectedRows}
-              isLoading={isLoading}
               getRowId={(originalRow) => originalRow.Id}
               applicationName={APPS.SETTINGS}
-              additionalScrollContainerOffset={20}
-              scrollContainerOffsetElementIds={{
-                others: [NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID],
-              }}
+              initialColumnVisibility={initialColumnVisibility}
             />
           </AccordionContent>
         </AccordionItem>

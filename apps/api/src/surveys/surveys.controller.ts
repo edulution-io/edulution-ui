@@ -10,37 +10,52 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Observable } from 'rxjs';
+import { join } from 'path';
 import { Response } from 'express';
-import { Body, Controller, Delete, Get, MessageEvent, Param, Patch, Post, Query, Res, Sse } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Res,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import {
   ANSWER,
   CAN_PARTICIPATE,
   FIND_ONE,
   HAS_ANSWERS,
+  IMAGES,
+  PUBLIC_SURVEYS,
   RESULT,
   SURVEYS,
 } from '@libs/survey/constants/surveys-endpoint';
+import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AnswerDto from '@libs/survey/types/api/answer.dto';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
-import SseService from '../sse/sse.service';
-import type UserConnections from '../types/userConnections';
+import { checkAttachmentFile, createAttachmentUploadOptions } from '../common/multer.utilities';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
 @Controller(SURVEYS)
 class SurveysController {
-  private surveysSseConnections: UserConnections = new Map();
-
   constructor(
     private readonly surveyService: SurveysService,
     private readonly surveyAnswerService: SurveyAnswerService,
@@ -75,6 +90,29 @@ class SurveysController {
     return this.surveyAnswerService.findUserSurveys(status, user);
   }
 
+  @Post(`${IMAGES}/:surveyId/:questionId`)
+  @ApiConsumes(RequestResponseContentType.MULTIPART_FORM_DATA)
+  @UseInterceptors(
+    FileInterceptor(
+      'file',
+      createAttachmentUploadOptions((req) => {
+        const { surveyId, questionId } = req.params;
+        return `${SURVEYS_IMAGES_PATH}/${surveyId}/${questionId}`;
+      }),
+    ),
+  )
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  uploadImage(
+    @Param() param: { surveyId: string; questionId: string },
+    @UploadedFile() file: Express.Multer.File,
+    @Res() res: Response,
+  ) {
+    const { surveyId, questionId } = param;
+    const fileName = checkAttachmentFile(file);
+    const imageUrl = join(PUBLIC_SURVEYS, IMAGES, surveyId, questionId, fileName);
+    return res.status(HttpStatus.CREATED).json(imageUrl);
+  }
+
   @Post(ANSWER)
   async getSubmittedSurveyAnswers(@Body() getAnswerDto: AnswerDto, @GetCurrentUsername() username: string) {
     const { surveyId, attendee } = getAnswerDto;
@@ -83,25 +121,21 @@ class SurveysController {
 
   @Post()
   async updateOrCreateSurvey(@Body() surveyDto: SurveyDto, @GetCurrentUser() user: JWTUser) {
-    return this.surveyService.updateOrCreateSurvey(surveyDto, user, this.surveysSseConnections);
+    return this.surveyService.updateOrCreateSurvey(surveyDto, user);
   }
 
   @Delete()
   async deleteSurvey(@Body() deleteSurveyDto: DeleteSurveyDto) {
     const { surveyIds } = deleteSurveyDto;
-    await this.surveyService.deleteSurveys(surveyIds, this.surveysSseConnections);
+    await this.surveyService.deleteSurveys(surveyIds);
     await this.surveyAnswerService.onSurveyRemoval(surveyIds);
+    await this.surveyService.onSurveyRemoval(surveyIds);
   }
 
   @Patch()
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUser() user: JWTUser) {
     const { surveyId, saveNo, answer } = pushAnswerDto;
     return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, user);
-  }
-
-  @Sse('sse')
-  sse(@GetCurrentUsername() username: string, @Res() res: Response): Observable<MessageEvent> {
-    return SseService.subscribe(username, this.surveysSseConnections, res);
   }
 }
 

@@ -74,6 +74,9 @@ import {
 import SurveysService from './surveys.service';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
+import SseService from '../sse/sse.service';
+import FilesystemService from '../filesystem/filesystem.service';
+import mockFilesystemService from '../filesystem/filesystem.service.mock';
 
 describe('SurveyAnswerService', () => {
   let service: SurveyAnswersService;
@@ -85,6 +88,7 @@ describe('SurveyAnswerService', () => {
       imports: [],
       providers: [
         SurveysService,
+        SseService,
         {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
@@ -95,6 +99,7 @@ describe('SurveyAnswerService', () => {
           provide: getModelToken(SurveyAnswer.name),
           useValue: jest.fn(),
         },
+        { provide: FilesystemService, useValue: mockFilesystemService },
       ],
     }).compile();
 

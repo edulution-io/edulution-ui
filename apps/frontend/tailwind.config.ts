@@ -29,7 +29,7 @@ module.exports = {
         ciDarkBlue: '#1A202C',
         ciLightBlue: '#66B2DF',
         ciLightGreen: '#88D840',
-        ciRed: '#ee0505',
+        ciRed: '#dc2626',
         ciLightRed: '#F87171',
         ciYellow: '#FFD700',
         ciLightYellow: '#ffd00c',
@@ -75,6 +75,7 @@ module.exports = {
         overlay: {
           DEFAULT: 'var(--overlay)',
           foreground: 'var(--overlay-foreground)',
+          transparent: 'var(--overlay-transparent)',
         },
       },
       backgroundImage: {

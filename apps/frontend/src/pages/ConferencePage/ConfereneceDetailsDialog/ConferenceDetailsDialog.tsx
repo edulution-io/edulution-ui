@@ -12,7 +12,6 @@
 
 import React from 'react';
 import CreateConferenceDialogBody from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogBody';
-import { Button } from '@/components/shared/Button';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
 import ConferencesForm from '@libs/conferences/types/conferencesForm';
@@ -27,9 +26,11 @@ import stringToBoolean from '@libs/common/utils/stringToBoolean';
 import CONFERENCES_IS_PUBLIC_FORM_VALUES from '@libs/conferences/constants/isPublicFormValues';
 import QRCodeWithCopyButton from '@/components/ui/QRCodeWithCopyButton';
 import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
-import UseIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import Separator from '@/components/ui/Separator';
+import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 interface ConferenceDetailsDialogProps {
   trigger?: React.ReactNode;
@@ -37,7 +38,7 @@ interface ConferenceDetailsDialogProps {
 
 const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
   const { t } = useTranslation();
-  const isMobileView = UseIsMobileView();
+  const { isMobileView } = useMedia();
   const { user } = useUserStore();
   const { getConferences } = useConferenceStore();
   const { isLoading, selectedConference, setSelectedConference, updateConference } = useConferenceDetailsDialogStore();
@@ -86,7 +87,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
         {showQrCode && (
           <QRCodeWithCopyButton
             qrCodeSize={isMobileView ? 'md' : 'lg'}
-            url={`${window.location.origin}/${CONFERENCES_PUBLIC_EDU_API_ENDPOINT}/${selectedConference.meetingID}`}
+            url={`${EDU_BASE_URL}/${CONFERENCES_PUBLIC_EDU_API_ENDPOINT}/${selectedConference.meetingID}`}
             titleTranslationId="conferences.joinUrl"
           />
         )}
@@ -94,17 +95,18 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
     );
   };
 
+  const handleClose = () => setSelectedConference(null);
+
   const getFooter = () => (
     <div className="mt-4 flex justify-end">
       <form onSubmit={handleFormSubmit}>
-        <Button
-          variant="btn-collaboration"
-          disabled={isLoading}
-          size="lg"
-          type="submit"
-        >
-          {t('common.save')}
-        </Button>
+        <DialogFooterButtons
+          handleClose={handleClose}
+          handleSubmit={() => {}}
+          submitButtonText="common.save"
+          submitButtonType="submit"
+          disableSubmit={isLoading}
+        />
       </form>
     </div>
   );
@@ -113,7 +115,7 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
     <AdaptiveDialog
       isOpen
       trigger={trigger}
-      handleOpenChange={() => setSelectedConference(null)}
+      handleOpenChange={handleClose}
       title={t('conferences.editConference')}
       desktopContentClassName="max-w-4xl"
       body={getDialogBody()}

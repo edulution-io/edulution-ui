@@ -20,8 +20,8 @@ import WysiwygEditor from '@/components/shared/WysiwygEditor';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import { BULLETIN_BOARD_ATTACHMENT_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
 import DialogSwitch from '@/components/shared/DialogSwitch';
-import DateAndTimeInput from '@/components/shared/DateAndTimeInput';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
+import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
 
 interface CreateOrUpdateBulletinDialogBodyProps {
   form: UseFormReturn<CreateBulletinDto>;
@@ -49,7 +49,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
   const handleCategoryChange = (categoryName: string) => {
     form.setValue(
       'category',
-      categoriesWithEditPermission.find((c) => c.name === categoryName) || categoriesWithEditPermission[0],
+      categoriesWithEditPermission.find((c) => c.id === categoryName) || categoriesWithEditPermission[0],
     );
   };
 
@@ -74,7 +74,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
           <div className="mb-1 font-bold">{t('bulletinboard.category')}</div>
           <DropdownSelect
             options={categoriesWithEditPermission}
-            selectedVal={isGetCategoriesLoading ? t('common.loading') : watch('category')?.name}
+            selectedVal={isGetCategoriesLoading ? t('common.loading') : watch('category')?.id}
             handleChange={handleCategoryChange}
             variant="dialog"
           />
@@ -109,15 +109,17 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
 
           {isActive && !isPermanentlyActive && (
             <>
-              <DateAndTimeInput
+              <DateTimePickerField
                 form={form}
-                name="isVisibleStartDate"
+                path="isVisibleStartDate"
                 translationId="bulletinboard.activeFrom"
+                variant="dialog"
               />
-              <DateAndTimeInput
+              <DateTimePickerField
                 form={form}
-                name="isVisibleEndDate"
+                path="isVisibleEndDate"
                 translationId="bulletinboard.activeUntil"
+                variant="dialog"
               />
             </>
           )}

@@ -14,6 +14,8 @@ import React, { useEffect } from 'react';
 import { useAuth } from 'react-oidc-context';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import type UserDto from '@libs/user/types/user.dto';
+import useSseStore from '@/store/useSseStore';
+import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 import useAppConfigsStore from '../pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '../store/UserStore/UserStore';
 import useLogout from '../hooks/useLogout';
@@ -23,8 +25,10 @@ import useTokenEventListeners from '../hooks/useTokenEventListener';
 const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const auth = useAuth();
   const { getAppConfigs } = useAppConfigsStore();
-  const { isAuthenticated, setEduApiToken, user, getWebdavKey } = useUserStore();
+  const { getIsEduApiHealthy } = useEduApiStore();
+  const { isAuthenticated, eduApiToken, setEduApiToken, user, getWebdavKey } = useUserStore();
   const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
+  const { eventSource, setEventSource } = useSseStore();
 
   const handleLogout = useLogout();
 
@@ -34,14 +38,24 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, [auth.user?.access_token]);
 
+  useEffect(() => {
+    if (eduApiToken) {
+      if (!eventSource) {
+        setEventSource(eduApiToken);
+      }
+    }
+  }, [eduApiToken]);
+
   useNotifications();
 
   useEffect(() => {
     const handleGetAppConfigs = async () => {
-      const isApiResponding = await getAppConfigs();
-      if (!isApiResponding) {
-        void handleLogout();
+      const isApiResponding = await getIsEduApiHealthy();
+      if (isApiResponding) {
+        void getAppConfigs();
+        return;
       }
+      void handleLogout();
     };
 
     if (isAuthenticated) {

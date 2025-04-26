@@ -16,41 +16,49 @@ import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import { useTranslation } from 'react-i18next';
 import LessonFloatingButtonsBar from '@/pages/ClassManagement/LessonPage/LessonFloatingButtonsBar';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
-import { SOPHOMORIX_STUDENT } from '@libs/lmnApi/constants/sophomorixRoles';
+import { SOPHOMORIX_STUDENT, SOPHOMORIX_TEACHER } from '@libs/lmnApi/constants/sophomorixRoles';
 import sortByName from '@libs/common/utils/sortByName';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useUserStore from '@/store/UserStore/UserStore';
 import Checkbox from '@/components/ui/Checkbox';
-import useElementHeight from '@/hooks/useElementHeight';
-import { FILTER_BAR_ID, LESSON_SESSION_HEADER_ID } from '@libs/classManagement/constants/pageElementIds';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
+import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import APPS from '@libs/appconfig/constants/apps';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 
 const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
   const { t } = useTranslation();
   const { user: teacher } = useLmnApiStore();
   const { user } = useUserStore();
   const { member } = useLessonStore();
+  const { appConfigs } = useAppConfigsStore();
   const [selectedMember, setSelectedMember] = useState<UserLmnInfo[]>([]);
   const selectedMemberCount = selectedMember.length;
 
-  const isTeacherInSameClass = useMemo(
-    () =>
-      (student: UserLmnInfo): boolean => {
-        if (!teacher || !user) return false;
-        const teacherClasses = teacher.memberOf.filter((teacherClass) =>
-          teacher.schoolclasses.find((userClass) => teacherClass.includes(userClass)),
-        );
-        return !!teacherClasses.find((tc) => student.memberOf.includes(tc));
-      },
-    [teacher, user],
-  );
+  const isTeacherInSameClass = useMemo(() => {
+    if (!teacher || !user) return () => false;
 
-  const isTeacherInSameSchool = (student: UserLmnInfo): boolean => {
-    if (!teacher || !user) return false;
-    return teacher.sophomorixSchoolname === student.sophomorixSchoolname;
-  };
+    const teacherClasses = teacher.memberOf.filter((teacherClass) =>
+      teacher.schoolclasses.some((userClass) => teacherClass.includes(userClass)),
+    );
 
-  const selectableMembers = member.filter((m) => m.sophomorixRole === SOPHOMORIX_STUDENT && isTeacherInSameSchool(m));
+    return (student: UserLmnInfo): boolean => teacherClasses.some((tc) => student.memberOf.includes(tc));
+  }, [teacher, user]);
+
+  const { members, selectableMembers } = useMemo(() => {
+    const filteredMembers = member.filter((m) => [SOPHOMORIX_STUDENT, SOPHOMORIX_TEACHER].includes(m.sophomorixRole));
+    return {
+      members: filteredMembers,
+      selectableMembers: filteredMembers.filter(
+        (m) => m.sophomorixRole === SOPHOMORIX_STUDENT && isTeacherInSameClass(m),
+      ),
+    };
+  }, [member]);
+
+  const isVeyonEnabled = useMemo(() => {
+    const veyonConfigs = getExtendedOptionsValue(appConfigs, APPS.CLASS_MANAGEMENT, ExtendedOptionKeys.VEYON_PROXYS);
+    return Array.isArray(veyonConfigs) && veyonConfigs.length > 0;
+  }, [appConfigs]);
 
   const getSelectedStudents = () => {
     if (selectedMemberCount) {
@@ -67,18 +75,9 @@ const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
     } else setSelectedMember([]);
   };
 
-  const pageBarsHeight =
-    useElementHeight(
-      [FLOATING_BUTTONS_BAR_ID, LESSON_SESSION_HEADER_ID, FILTER_BAR_ID, FOOTER_ID],
-      selectedMemberCount,
-    ) + 30;
-
   return (
     <>
-      <div
-        className="flex items-center"
-        id={LESSON_SESSION_HEADER_ID}
-      >
+      <div className="flex items-center">
         <div
           className="flew-row ml-2 flex cursor-pointer"
           onClickCapture={onCheckAll}
@@ -92,28 +91,26 @@ const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
         </div>
 
         <h3 className="mb-2 flex flex-grow justify-center text-center text-lg text-background md:text-xl">
-          {member.length} {t('classmanagement.usersInThisSession')}{' '}
+          {members.length} {t('classmanagement.usersInThisSession')}{' '}
           {selectedMemberCount ? `(${selectedMemberCount} ${t('common.selected')})` : null}
         </h3>
       </div>
-      <div
-        className="flex max-w-full flex-wrap overflow-y-auto overflow-x-visible scrollbar-thin"
-        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
-      >
-        {member.sort(sortByName).map((m) => (
+      <div className="flex flex-wrap overflow-y-auto scrollbar-thin">
+        {members.sort(sortByName).map((m) => (
           <UserCard
             key={m.dn}
             user={m}
             selectedMember={selectedMember}
             setSelectedMember={setSelectedMember}
             isTeacherInSameClass={isTeacherInSameClass(m)}
-            isTeacherInSameSchool={isTeacherInSameSchool(m)}
+            isVeyonEnabled={isVeyonEnabled}
           />
         ))}
       </div>
       <LessonFloatingButtonsBar
         fetchData={fetchData}
         students={getSelectedStudents()}
+        isVeyonEnabled={isVeyonEnabled}
         isMemberSelected={!!selectedMemberCount}
       />
     </>

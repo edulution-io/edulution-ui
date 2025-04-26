@@ -109,6 +109,7 @@ const CreateAndUpdateBulletinCategoryDialog: React.FC<CreateAndUpdateBulletinCat
         setDialogOpen('');
         setIsDeleteDialogOpen(true);
       }}
+      handleClose={closeDialog}
     />
   );
 
@@ -130,7 +131,6 @@ const CreateAndUpdateBulletinCategoryDialog: React.FC<CreateAndUpdateBulletinCat
         title={selectedCategory ? t('bulletinboard.editCategory') : t('bulletinboard.createNewCategory')}
         body={getDialogBody()}
         footer={getFooter()}
-        mobileContentClassName="bg-black h-fit h-max-1/2"
       />
       <DeleteBulletinsCategoriesDialog />
     </>

@@ -16,12 +16,14 @@ import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import VEYON_PROXY_TABLE_COLUMNS from '@libs/classManagement/constants/veyonProxyTableColumns';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 import useVeyonConfigTableStore from './useVeyonTableStore';
 
 const VeyonConfigTableColumns: ColumnDef<VeyonProxyItem>[] = [
   {
-    id: 'id',
+    id: VEYON_PROXY_TABLE_COLUMNS.ID,
+    size: 60,
     header: ({ column }) => <SortableHeader<VeyonProxyItem, unknown> column={column} />,
 
     meta: {
@@ -45,7 +47,7 @@ const VeyonConfigTableColumns: ColumnDef<VeyonProxyItem>[] = [
     },
   },
   {
-    id: 'subnet',
+    id: VEYON_PROXY_TABLE_COLUMNS.SUBNET,
     header: ({ column }) => <SortableHeader<VeyonProxyItem, unknown> column={column} />,
 
     meta: {
@@ -69,7 +71,7 @@ const VeyonConfigTableColumns: ColumnDef<VeyonProxyItem>[] = [
     },
   },
   {
-    id: 'proxyAdress',
+    id: VEYON_PROXY_TABLE_COLUMNS.PROXY_ADDRESS,
     header: ({ column }) => <SortableHeader<VeyonProxyItem, unknown> column={column} />,
     meta: {
       translationId: 'classmanagement.veyonConfigTable.proxyAdress',

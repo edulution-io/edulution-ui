@@ -55,13 +55,14 @@ class VeyonController {
     frameBufferStream.pipe(res);
   }
 
-  @Put(`${VEYON_API_FEATURE_ENDPOINT}/:featureUid/:connectionUid`)
-  async setFeature(
-    @Param('featureUid') featureUid: VeyonFeatureUid,
-    @Body() body: VeyonFeatureRequest,
-    @Param('connectionUid') connectionUid: string,
-  ) {
-    return this.veyonService.setFeature(featureUid, body, connectionUid);
+  @Put(`${VEYON_API_FEATURE_ENDPOINT}/:featureUid`)
+  async setFeature(@Param('featureUid') featureUid: VeyonFeatureUid, @Body() body: VeyonFeatureRequest) {
+    return this.veyonService.setFeature(featureUid, body);
+  }
+
+  @Get(`${VEYON_API_FEATURE_ENDPOINT}/:connectionUid`)
+  async getFeatures(@Param('connectionUid') connectionUid: string) {
+    return this.veyonService.getFeatures(connectionUid);
   }
 }
 

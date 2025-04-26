@@ -22,15 +22,15 @@ import cn from '@libs/common/utils/className';
 import DOCKER_STATES from '@libs/docker/constants/dockerStates';
 import { useLocation } from 'react-router-dom';
 import APPS from '@libs/appconfig/constants/apps';
-
-const hideOnMobileClassName = 'hidden 2xl:flex';
+import DOCKER_CONTAINER_TABLE_COLUMNS from '@libs/docker/constants/dockerContainerTableColumns';
 
 const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
   {
-    id: 'state-badge',
+    id: DOCKER_CONTAINER_TABLE_COLUMNS.STATE_BADGE,
+    size: 60,
     header: ({ table, column }) => {
       const { pathname } = useLocation();
-      const isDockerOverview = pathname === `/${APPS.SETTINGS}`;
+      const isDockerOverview = pathname === `/${APPS.SETTINGS}/tabs/container`;
 
       return (
         <SortableHeader<ContainerInfo, unknown>
@@ -49,7 +49,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
     cell: ({ row }) => {
       const badgeClass = row.original.State === DOCKER_STATES.RUNNING ? 'bg-green-500' : 'bg-red-500';
       const { pathname } = useLocation();
-      const isDockerOverview = pathname === `/${APPS.SETTINGS}`;
+      const isDockerOverview = pathname === `/${APPS.SETTINGS}/tabs/container`;
 
       return (
         <SelectableTextCell
@@ -60,7 +60,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
     },
   },
   {
-    id: 'name',
+    id: DOCKER_CONTAINER_TABLE_COLUMNS.NAME,
     header: ({ column }) => <SortableHeader<ContainerInfo, unknown> column={column} />,
 
     meta: {
@@ -86,13 +86,8 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
     },
   },
   {
-    id: 'container-image',
-    header: ({ column }) => (
-      <SortableHeader<ContainerInfo, unknown>
-        className={hideOnMobileClassName}
-        column={column}
-      />
-    ),
+    id: DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_IMAGE,
+    header: ({ column }) => <SortableHeader<ContainerInfo, unknown> column={column} />,
 
     meta: {
       translationId: 'dockerOverview.imageName',
@@ -109,7 +104,6 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
               <SelectableTextCell
                 onClick={onClick}
                 text={row.original.Image}
-                className={hideOnMobileClassName}
               />
             }
           />
@@ -118,13 +112,9 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
     },
   },
   {
-    id: 'container-state',
-    header: ({ column }) => (
-      <SortableHeader<ContainerInfo, unknown>
-        column={column}
-        className="hidden lg:flex"
-      />
-    ),
+    id: DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_STATE,
+    header: ({ column }) => <SortableHeader<ContainerInfo, unknown> column={column} />,
+    size: 110,
 
     meta: {
       translationId: 'dockerOverview.state',
@@ -137,19 +127,14 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
         <SelectableTextCell
           onClick={onClick}
           text={i18n.t(`docker.status.${row.original.State}`)}
-          className="hidden cursor-auto lg:flex"
+          className="cursor-auto"
         />
       );
     },
   },
   {
-    id: 'container-status',
-    header: ({ column }) => (
-      <SortableHeader<ContainerInfo, unknown>
-        column={column}
-        className="hidden lg:flex"
-      />
-    ),
+    id: DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_STATUS,
+    header: ({ column }) => <SortableHeader<ContainerInfo, unknown> column={column} />,
 
     meta: {
       translationId: 'dockerOverview.status',
@@ -162,13 +147,13 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
         <SelectableTextCell
           onClick={onClick}
           text={row.original.Status}
-          className="hidden cursor-auto lg:flex"
+          className="cursor-auto"
         />
       );
     },
   },
   {
-    id: 'container-port',
+    id: DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_PORT,
     header: ({ column }) => <SortableHeader<ContainerInfo, unknown> column={column} />,
 
     meta: {
@@ -191,13 +176,8 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
     },
   },
   {
-    id: 'container-creation-date',
-    header: ({ column }) => (
-      <SortableHeader<ContainerInfo, unknown>
-        column={column}
-        className={hideOnMobileClassName}
-      />
-    ),
+    id: DOCKER_CONTAINER_TABLE_COLUMNS.CONTAINER_CREATION_DATE,
+    header: ({ column }) => <SortableHeader<ContainerInfo, unknown> column={column} />,
 
     meta: {
       translationId: 'dockerOverview.created',
@@ -212,7 +192,6 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
         <SelectableTextCell
           onClick={onClick}
           text={date.toLocaleString()}
-          className={hideOnMobileClassName}
         />
       );
     },

@@ -25,6 +25,7 @@ type VeyonFeatureRequestArguments = {
 
 type VeyonFeatureRequest = {
   active: boolean;
+  connectionUids: string[];
   arguments?: VeyonFeatureRequestArguments;
 };
 

@@ -27,11 +27,15 @@ import GroupDialog from '@/pages/ClassManagement/components/GroupDialog/GroupDia
 import { FaAddressCard } from 'react-icons/fa';
 import getUniqueValues from '@libs/lmnApi/utils/getUniqueValues';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import { FILTER_BAR_ID } from '@libs/classManagement/constants/pageElementIds';
 import { UseFormReturn } from 'react-hook-form';
 import GroupForm from '@libs/groups/types/groupForm';
 import GroupColumn from '@libs/groups/types/groupColumn';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
+import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import SharingFilesFailedDialogBody from '@/pages/ClassManagement/components/Dialogs/SharingFilesFailedDialogBody';
+import { toast } from 'sonner';
+import ProgressBox from '@/components/ui/ProgressBox';
+import PageLayout from '@/components/structure/layout/PageLayout';
 
 const LessonPage = () => {
   const {
@@ -43,6 +47,9 @@ const LessonPage = () => {
     fetchSchoolClass,
     fetchUserSessions,
   } = useClassManagementStore();
+
+  const navigate = useNavigate();
+
   const { lmnApiToken, getOwnUser } = useLmnApiStore();
   const { groupType: groupTypeParams, groupName: groupNameParams } = useParams();
   const {
@@ -56,11 +63,46 @@ const LessonPage = () => {
     setGroupTypeInStore,
     groupNameFromStore,
     groupTypeFromStore,
+    filesharingProgress,
   } = useLessonStore();
-  const navigate = useNavigate();
+
   const { t } = useTranslation();
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [currentSelectedSession, setCurrentSelectedSession] = useState<LmnApiSession | null>(null);
+
+  const [isFileSharingProgessInfoDialogOpen, setIsFileSharingProgessInfoDialogOpen] = useState(false);
+
+  useEffect(() => {
+    if (!filesharingProgress) return;
+
+    const percent = filesharingProgress.percent ?? 0;
+    const toasterData = {
+      percent,
+      title: t('filesharing.progressBox.title'),
+      id: filesharingProgress.currentFilePath,
+      description: t('filesharing.progressBox.fileInfo', {
+        filename: filesharingProgress.currentFilePath.split('/').pop(),
+        studentName: filesharingProgress.studentName,
+      }),
+      failed: filesharingProgress.failedPaths?.length || 0,
+      processed: filesharingProgress.processed,
+      total: filesharingProgress.total,
+    };
+
+    let toastDuration: number;
+    if (toasterData.failed > 0) {
+      toastDuration = Infinity;
+    } else if (percent >= 100) {
+      toastDuration = 5000;
+    } else {
+      toastDuration = Infinity;
+    }
+
+    toast(<ProgressBox data={toasterData} />, {
+      id: toasterData.id,
+      duration: toastDuration,
+    });
+  }, [filesharingProgress]);
 
   useEffect(() => {
     if (lmnApiToken) {
@@ -120,7 +162,10 @@ const LessonPage = () => {
     }
   }, [groupTypeParams, groupNameParams, lmnApiToken]);
 
-  const handleSessionSelect = (sessionName: string) => {
+  const sessionOptions = userSessions.map((s) => ({ id: s.name, name: s.name }));
+
+  const handleSessionSelect = (sessionId: string) => {
+    const sessionName = sessionOptions.find((s) => s.id === sessionId)?.name;
     navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}/sessions/${sessionName}`);
   };
 
@@ -128,8 +173,6 @@ const LessonPage = () => {
     setOpenDialogType(UserGroups.Sessions);
     setUserGroupToEdit(currentSelectedSession || null);
   };
-
-  const sessionOptions = userSessions.map((s) => ({ id: s.sid, name: s.name }));
 
   const closeSession = () => {
     setMember([]);
@@ -163,22 +206,25 @@ const LessonPage = () => {
     groups: userSessions,
   };
 
+  useEffect(() => {
+    const hasProgressCompleted = (filesharingProgress?.percent ?? 0) >= 100;
+    const hasFailedPaths = (filesharingProgress?.failedPaths?.length ?? 0) > 0;
+    setIsFileSharingProgessInfoDialogOpen(hasProgressCompleted && hasFailedPaths);
+  }, [filesharingProgress]);
+
   return (
-    <>
-      <div
-        className="my-2 flex flex-col gap-2 md:flex-row"
-        id={FILTER_BAR_ID}
-      >
+    <PageLayout>
+      <div className="mb-2 flex flex-none flex-col gap-2 md:flex-row">
         <LoadingIndicatorDialog isOpen={isPageLoading || isLoading} />
         <UserProjectOrSchoolClassSearch />
         {sessionOptions && (
-          <div className="md:w-1/3">
-            <DropdownSelect
-              options={sessionOptions}
-              selectedVal={groupNameParams || t('classmanagement.selectSavedSession')}
-              handleChange={handleSessionSelect}
-            />
-          </div>
+          <DropdownSelect
+            options={sessionOptions}
+            selectedVal={groupNameParams || ''}
+            handleChange={handleSessionSelect}
+            placeholder={t('classmanagement.selectSavedSession')}
+            classname="md:w-1/3"
+          />
         )}
         {groupNameParams || member.length ? (
           <div className="flex flex-row justify-between gap-2">
@@ -203,9 +249,27 @@ const LessonPage = () => {
           </div>
         ) : null}
       </div>
-      <div>{groupNameParams || member.length ? <UserArea fetchData={fetchData} /> : <QuickAccess />}</div>
+
+      {groupNameParams || member.length ? <UserArea fetchData={fetchData} /> : <QuickAccess />}
       {openDialogType === UserGroups.Sessions && <GroupDialog item={sessionToSave} />}
-    </>
+
+      {filesharingProgress && filesharingProgress.failedPaths && (
+        <AdaptiveDialog
+          isOpen={isFileSharingProgessInfoDialogOpen}
+          handleOpenChange={() => setIsFileSharingProgessInfoDialogOpen(!isFileSharingProgessInfoDialogOpen)}
+          title={t('classmanagement.failDialog.title', {
+            file: filesharingProgress.currentFilePath.split('/').pop(),
+          })}
+          body={
+            <SharingFilesFailedDialogBody
+              failedFilePath={filesharingProgress?.currentFilePath}
+              affectedUsers={filesharingProgress?.failedPaths.map((path) => path.split('/').at(2) || '')}
+              failedPaths={filesharingProgress?.failedPaths}
+            />
+          }
+        />
+      )}
+    </PageLayout>
   );
 };
 

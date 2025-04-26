@@ -12,15 +12,25 @@
 
 import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
+import { BullModule } from '@nestjs/bullmq';
+import APPS from '@libs/appconfig/constants/apps';
 import FilesharingController from './filesharing.controller';
 import FilesharingService from './filesharing.service';
 import AppConfigModule from '../appconfig/appconfig.module';
 import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
+import FilesharingConsumer from './filesharing.consumer';
 
 @Module({
-  imports: [HttpModule, AppConfigModule],
+  imports: [
+    HttpModule,
+    AppConfigModule,
+    BullModule.registerQueue({
+      name: APPS.FILE_SHARING,
+    }),
+  ],
   controllers: [FilesharingController],
-  providers: [FilesharingService, FilesystemService, OnlyofficeService],
+  providers: [FilesharingService, FilesystemService, OnlyofficeService, FilesharingConsumer],
+  exports: [FilesharingService],
 })
 export default class FilesharingModule {}

@@ -11,12 +11,21 @@
  */
 
 const SSE_MESSAGE_TYPE = {
-  CREATED: 'created',
-  UPDATED: 'updated',
-  STARTED: 'started',
-  STOPPED: 'stopped',
-  DELETED: 'deleted',
   MESSAGE: 'message',
+  PING: 'ping',
+  UPDATED: 'updated',
+  CONTAINER_STATUS: 'container_status',
+  CONTAINER_UPDATE: 'container_update',
+  CONTAINER_PROGRESS: 'container_progress',
+  CONFERENCE_CREATED: 'conference_created',
+  CONFERENCE_STARTED: 'conference_started',
+  CONFERENCE_STOPPED: 'conference_stopped',
+  CONFERENCE_DELETED: 'conference_deleted',
+  SURVEY_CREATED: 'survey_created',
+  SURVEY_UPDATED: 'survey_updated',
+  SURVEY_DELETED: 'survey_deleted',
+  BULLETIN_UPDATED: 'bulletin_update',
+  FILESHARING_PROGRESS: 'filesharing_progress',
 } as const;
 
 export default SSE_MESSAGE_TYPE;

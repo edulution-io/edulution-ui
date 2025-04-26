@@ -22,10 +22,7 @@ import { FaUsersGear } from 'react-icons/fa6';
 import ProjectsFloatingButtonsBar from '@/pages/ClassManagement/ProjectsPage/ProjectsFloatingButtonsBar';
 import Input from '@/components/shared/Input';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
-import useElementHeight from '@/hooks/useElementHeight';
-import { FILTER_BAR_ID } from '@libs/classManagement/constants/pageElementIds';
-
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
+import PageLayout from '@/components/structure/layout/PageLayout';
 
 const ProjectsPage = () => {
   const { t } = useTranslation();
@@ -65,22 +62,16 @@ const ProjectsPage = () => {
     },
   ];
 
-  const pageBarsHeight = useElementHeight([FLOATING_BUTTONS_BAR_ID, FILTER_BAR_ID, FOOTER_ID]) + 10;
-
   return (
-    <>
+    <PageLayout>
       <Input
         name="filter"
         onChange={(e) => setFilterKeyWord(e.target.value)}
         placeholder={t('classmanagement.typeToFilter')}
-        id={FILTER_BAR_ID}
-        className="my-2"
+        className="mb-2"
       />
-      <div
-        className="flex max-w-full flex-row flex-wrap overflow-y-auto overflow-x-visible scrollbar-thin"
-        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
-      >
-        <div className="mt-2 min-w-full text-lg text-background">{t('classmanagement.projectsPageDescription')}</div>
+      <div className="flex max-h-full max-w-full flex-row flex-wrap overflow-y-auto scrollbar-thin">
+        <p className="mt-2 min-w-full">{t('classmanagement.projectsPageDescription')}</p>
         {groupRows.map((row) => (
           <div
             key={row.name}
@@ -93,7 +84,7 @@ const ProjectsPage = () => {
       </div>
       <ProjectsFloatingButtonsBar />
       <LoadingIndicatorDialog isOpen={isLoading} />
-    </>
+    </PageLayout>
   );
 };
 

@@ -10,14 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable, MessageEvent, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Response } from 'express';
 import { Model, Types } from 'mongoose';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import { join } from 'path';
-import { createReadStream, existsSync, mkdirSync, promises } from 'fs';
-import BULLETIN_BOARD_ALLOWED_MIME_TYPES from '@libs/bulletinBoard/constants/allowedMimeTypes';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import BulletinsByCategories from '@libs/bulletinBoard/types/bulletinsByCategories';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
@@ -27,59 +25,37 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
-import { Observable } from 'rxjs';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 
 import { BulletinCategory, BulletinCategoryDocument } from '../bulletin-category/bulletin-category.schema';
 import BulletinCategoryService from '../bulletin-category/bulletin-category.service';
 import SseService from '../sse/sse.service';
-import type UserConnections from '../types/userConnections';
 import GroupsService from '../groups/groups.service';
+import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
 class BulletinBoardService implements OnModuleInit {
-  private bulletinsSseConnections: UserConnections = new Map();
-
   constructor(
     @InjectModel(Bulletin.name) private bulletinModel: Model<BulletinDocument>,
     @InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>,
     private readonly bulletinCategoryService: BulletinCategoryService,
+    private fileSystemService: FilesystemService,
     private readonly groupsService: GroupsService,
+    private readonly sseService: SseService,
   ) {}
 
   private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
 
   onModuleInit() {
-    if (!existsSync(this.attachmentsPath)) {
-      mkdirSync(this.attachmentsPath, { recursive: true });
-    }
+    void this.fileSystemService.ensureDirectoryExists(this.attachmentsPath);
   }
 
-  subscribe(username: string, res: Response): Observable<MessageEvent> {
-    return SseService.subscribe(username, this.bulletinsSseConnections, res);
-  }
-
-  static checkAttachmentFile(file: Express.Multer.File): string {
-    if (!file) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
-    }
-
-    if (!BULLETIN_BOARD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.ATTACHMENT_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
-    }
-
-    return file.filename;
-  }
-
-  serveBulletinAttachment(filename: string, res: Response) {
+  async serveBulletinAttachment(filename: string, res: Response) {
     const filePath = join(this.attachmentsPath, filename);
 
-    if (!existsSync(filePath)) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
-    }
-
-    const fileStream = createReadStream(filePath);
+    await FilesystemService.throwErrorIfFileNotExists(filePath);
+    const fileStream = await this.fileSystemService.createReadStream(filePath);
     fileStream.pipe(res);
 
     return res;
@@ -136,8 +112,7 @@ class BulletinBoardService implements OnModuleInit {
     } else if (!currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
       filter['creator.username'] = currentUser.preferred_username;
     }
-
-    const bulletins = await this.bulletinModel.find(filter).populate('category').exec();
+    const bulletins = await this.bulletinModel.find(filter).populate('category').sort({ updatedAt: -1 }).exec();
 
     const currentDate = new Date();
 
@@ -269,12 +244,7 @@ class BulletinBoardService implements OnModuleInit {
       (!dto.isVisibleEndDate || now <= new Date(dto.isVisibleEndDate));
 
     if (isWithinVisibilityPeriod) {
-      SseService.sendEventToUsers(
-        invitedMembersList,
-        this.bulletinsSseConnections,
-        resultingBulletin,
-        SSE_MESSAGE_TYPE.UPDATED,
-      );
+      this.sseService.sendEventToUsers(invitedMembersList, resultingBulletin, SSE_MESSAGE_TYPE.BULLETIN_UPDATED);
     }
   }
 
@@ -301,9 +271,7 @@ class BulletinBoardService implements OnModuleInit {
             await Promise.all(
               bulletin.attachmentFileNames.map(async (fileName) => {
                 const filePath = join(this.attachmentsPath, fileName);
-                if (existsSync(filePath)) {
-                  await promises.unlink(filePath);
-                }
+                await FilesystemService.checkIfFileExistAndDelete(filePath);
               }),
             );
           }

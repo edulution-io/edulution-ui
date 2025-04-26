@@ -16,101 +16,103 @@ import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import useUserStore from '@/store/UserStore/UserStore';
 import { MdOutlineFileDownload } from 'react-icons/md';
 import { NavLink } from 'react-router-dom';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import { EDU_APP_APPSTORE_URL } from '@libs/common/constants';
 import { MobileDevicesIcon } from '@/assets/icons';
-import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import ConnectionSetupPhonePreview from '@/pages/UserSettings/MobileAccess/ConnectionSetupPhonePreview';
-import useElementHeight from '@/hooks/useElementHeight';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import Separator from '@/components/ui/Separator';
+import PageLayout from '@/components/structure/layout/PageLayout';
+import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
+import APPLICATION_NAME from '@libs/common/constants/applicationName';
 
 const MobileFileAccessSetupBox: React.FC = () => {
-  const isMobileView = useIsMobileView();
+  const { isMobileView } = useMedia();
   const { user } = useUserStore();
 
   const webdavAccessDetails = {
-    displayName: `${window.document.title}`,
-    url: `${window.location.origin}/webdav`,
+    displayName: APPLICATION_NAME,
+    url: `${EDU_BASE_URL}/webdav`,
     username: user?.username,
     password: '',
     token: '',
   };
   const webdavAccessJson = JSON.stringify(webdavAccessDetails);
 
-  const pageBarsHeight = useElementHeight([NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 10;
-
   return (
-    <div className="flex h-screen flex-col overflow-hidden">
-      <NativeAppHeader
-        title={t('usersettings.mobileAccess.title')}
-        description={t('usersettings.mobileAccess.description')}
-        iconSrc={MobileDevicesIcon}
-      />
-
-      <div
-        className="flex-1 overflow-auto px-3 pb-3 scrollbar-thin"
-        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
+    <PageLayout
+      nativeAppHeader={{
+        title: t('usersettings.mobileAccess.title'),
+        description: t('usersettings.mobileAccess.description', { applicationName: APPLICATION_NAME }),
+        iconSrc: MobileDevicesIcon,
+      }}
+    >
+      <AccordionSH
+        type="multiple"
+        defaultValue={['mails', 'accessManual', 'accessWithQrCode']}
       >
-        <AccordionSH
-          type="multiple"
-          defaultValue={['mails', 'accessManual', 'accessWithQrCode']}
-        >
-          <AccordionItem value="mails">
-            <AccordionTrigger className="flex text-h4">
-              <h4>{t('dashboard.mobileAccess.downloadApp')}</h4>
-            </AccordionTrigger>
-            <AccordionContent className="space-y-2 px-1">
-              <div className="mt-2 flex flex-col items-center justify-center gap-4">
-                {!isMobileView && <QRCodeDisplay value={EDU_APP_APPSTORE_URL} />}
-
-                <NavLink
-                  to={EDU_APP_APPSTORE_URL}
-                  target="_blank"
-                  className="flex flex-col items-center"
-                >
-                  <MdOutlineFileDownload className="text-xl text-background" />
-                  <span className="text-sm text-blue-400">{t('common.download')}</span>
-                </NavLink>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-
-          <Separator className="my-1 bg-muted" />
-          <AccordionItem value="accessWithQrCode">
-            <AccordionTrigger className="flex text-h4">
-              <h4>{t('dashboard.mobileAccess.setupWithQrCode')}</h4>
-            </AccordionTrigger>
-            <AccordionContent className="space-y-2 px-1">
-              <p className="text-sm text-muted-foreground">{t('dashboard.mobileAccess.scanAccessInfo')}</p>
-              <div className="space-y-2 p-4 shadow">
-                <div className="mt-2 flex justify-center">
-                  <QRCodeDisplay value={webdavAccessJson} />
-                </div>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-
-          <Separator className="my-1 bg-muted" />
-          <AccordionItem value="accessManual">
-            <AccordionTrigger className="flex text-h4">
-              <h4>{t('dashboard.mobileAccess.manualSetup')}</h4>
-            </AccordionTrigger>
-            <AccordionContent className="space-y-2 px-1">
-              <p className="text-sm text-muted-foreground">{t('dashboard.mobileAccess.manualAccessInfo')}</p>
-              <div className="mt-2 flex justify-center">
-                <ConnectionSetupPhonePreview
-                  username={webdavAccessDetails.username || ''}
-                  schoolname={webdavAccessDetails.displayName}
-                  schoolurl={webdavAccessDetails.url}
+        <AccordionItem value="mails">
+          <AccordionTrigger className="flex text-h4">
+            <h4>{t('dashboard.mobileAccess.downloadApp', { applicationName: APPLICATION_NAME })}</h4>
+          </AccordionTrigger>
+          <AccordionContent className="space-y-2 px-1">
+            <div className="mt-2 flex flex-col items-center justify-center gap-4">
+              {!isMobileView && (
+                <QRCodeDisplay
+                  value={EDU_APP_APPSTORE_URL}
+                  className="m-14"
                 />
+              )}
+
+              <NavLink
+                to={EDU_APP_APPSTORE_URL}
+                target="_blank"
+                className="flex flex-col items-center"
+              >
+                <MdOutlineFileDownload className="text-xl text-background" />
+                <span className="text-sm text-blue-400">{t('common.download')}</span>
+              </NavLink>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        <Separator className="my-1 bg-muted" />
+        <AccordionItem value="accessWithQrCode">
+          <AccordionTrigger className="flex text-h4">
+            <h4>{t('dashboard.mobileAccess.setupWithQrCode')}</h4>
+          </AccordionTrigger>
+          <AccordionContent className="space-y-2 px-1">
+            <p className="text-sm text-muted-foreground">
+              {t('dashboard.mobileAccess.scanAccessInfo', { applicationName: APPLICATION_NAME })}
+            </p>
+            <div className="space-y-2 p-4 shadow">
+              <div className="mt-2 flex justify-center">
+                <QRCodeDisplay value={webdavAccessJson} />
               </div>
-            </AccordionContent>
-          </AccordionItem>
-        </AccordionSH>
-      </div>
-    </div>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        <Separator className="my-1 bg-muted" />
+        <AccordionItem value="accessManual">
+          <AccordionTrigger className="flex text-h4">
+            <h4>{t('dashboard.mobileAccess.manualSetup')}</h4>
+          </AccordionTrigger>
+          <AccordionContent className="space-y-2 px-1">
+            <p className="text-sm text-muted-foreground">
+              {t('dashboard.mobileAccess.manualAccessInfo', { applicationName: APPLICATION_NAME })}
+            </p>
+            <div className="mt-2 flex justify-center">
+              <ConnectionSetupPhonePreview
+                username={webdavAccessDetails.username || ''}
+                schoolname={webdavAccessDetails.displayName}
+                schoolurl={webdavAccessDetails.url}
+              />
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </AccordionSH>
+    </PageLayout>
   );
 };
 

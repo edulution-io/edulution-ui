@@ -23,6 +23,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
+import { BullModule } from '@nestjs/bullmq';
 import LoggingInterceptor from '../logging/logging.interceptor';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
@@ -39,6 +40,12 @@ import BulletinCategoryModule from '../bulletin-category/bulletin-category.modul
 import BulletinBoardModule from '../bulletinboard/bulletinboard.module';
 import DockerModule from '../docker/docker.module';
 import VeyonModule from '../veyon/veyon.module';
+import GlobalSettingsModule from '../global-settings/global-settings.module';
+import HealthController from './health.controller';
+import SseModule from '../sse/sse.module';
+
+const redisHost = process.env.REDIS_HOST ?? 'localhost';
+const redisPort = +(process.env.REDIS_PORT ?? 6379);
 
 @Module({
   imports: [
@@ -46,6 +53,18 @@ import VeyonModule from '../veyon/veyon.module';
       rootPath: PUBLIC_DOWNLOADS_PATH,
       serveRoot: `/${EDU_API_ROOT}/downloads`,
     }),
+
+    BullModule.forRoot({
+      connection: {
+        host: redisHost,
+        port: redisPort,
+      },
+      defaultJobOptions: {
+        removeOnComplete: true,
+        removeOnFail: true,
+      },
+    }),
+
     AuthModule,
     AppConfigModule,
     UsersModule,
@@ -61,6 +80,8 @@ import VeyonModule from '../veyon/veyon.module';
     BulletinBoardModule,
     DockerModule,
     VeyonModule,
+    GlobalSettingsModule,
+    SseModule,
     JwtModule.register({
       global: true,
     }),
@@ -76,8 +97,8 @@ import VeyonModule from '../veyon/veyon.module';
       useFactory: async () => {
         const options: RedisClientOptions<RedisModules, RedisFunctions, RedisScripts> = {
           socket: {
-            host: process.env.REDIS_HOST ?? 'localhost',
-            port: parseInt(process.env.REDIS_PORT ?? '6379', 10),
+            host: redisHost,
+            port: redisPort,
             reconnectStrategy: (retries) => {
               Logger.warn(`Trying to reconnect to redis: ${retries}`, AppModule.name);
               return 3000;
@@ -113,6 +134,7 @@ import VeyonModule from '../veyon/veyon.module';
 
     EventEmitterModule.forRoot(),
   ],
+  controllers: [HealthController],
   providers: [
     {
       provide: APP_INTERCEPTOR,

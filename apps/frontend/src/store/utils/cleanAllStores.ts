@@ -16,7 +16,6 @@ import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import UserStore from '@/store/UserStore/UserStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import useFrameStore from '@/components/framing/FrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useSidebarStore from '@/components/ui/Sidebar/sidebarStore';
 import useDesktopDeploymentStore from '@/pages/DesktopDeployment/DesktopDeploymentStore';
@@ -38,6 +37,8 @@ import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/Pu
 import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
+import useFrameStore from '@/components/structure/framing/useFrameStore';
+import useSseStore from '../useSseStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetQrCodeSlice();
@@ -71,6 +72,7 @@ const cleanAllStores = () => {
   useSubmittedAnswersDialogStore.getState().reset();
   useDeleteSurveyStore.getState().reset();
   useParticipateSurveyStore.getState().reset();
+  useSseStore.getState().reset();
   localStorage.removeItem('i18nextLng');
 };
 

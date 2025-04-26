@@ -18,8 +18,8 @@ import SurveysService from './surveys.service';
 import SurveysController from './surveys.controller';
 import SurveyAnswersService from './survey-answer.service';
 import PublicSurveysController from './public-surveys.controller';
-import SseService from '../sse/sse.service';
 import GroupsModule from '../groups/groups.module';
+import FilesystemService from '../filesystem/filesystem.service';
 
 @Module({
   imports: [
@@ -28,6 +28,6 @@ import GroupsModule from '../groups/groups.module';
     GroupsModule,
   ],
   controllers: [SurveysController, PublicSurveysController],
-  providers: [SurveysService, SurveyAnswersService, SseService],
+  providers: [SurveysService, SurveyAnswersService, FilesystemService],
 })
 export default class SurveysModule {}

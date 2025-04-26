@@ -11,20 +11,14 @@
  */
 
 import { useEffect } from 'react';
+import { type ContainerInfo } from 'dockerode';
 import useDockerApplicationStore from '@/pages/Settings/AppConfig/DockerIntegration/useDockerApplicationStore';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import { ContainerInfo } from 'dockerode';
-import useLdapGroups from './useLdapGroups';
+import useSseStore from '@/store/useSseStore';
 
 const useDockerContainerEvents = () => {
-  const { eventSource, setEventSource, updateContainers } = useDockerApplicationStore();
-  const { isSuperAdmin, isAuthReady } = useLdapGroups();
-
-  useEffect(() => {
-    if (isSuperAdmin && isAuthReady) {
-      setEventSource();
-    }
-  }, [isSuperAdmin]);
+  const { updateContainers } = useDockerApplicationStore();
+  const { eventSource } = useSseStore();
 
   useEffect(() => {
     if (eventSource) {
@@ -34,11 +28,10 @@ const useDockerContainerEvents = () => {
         updateContainers(containerDto);
       };
 
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.UPDATED, updateTableHandler);
+      eventSource.addEventListener(SSE_MESSAGE_TYPE.CONTAINER_UPDATE, updateTableHandler);
 
       return () => {
-        eventSource.removeEventListener(SSE_MESSAGE_TYPE.UPDATED, updateTableHandler);
-        eventSource.close();
+        eventSource.removeEventListener(SSE_MESSAGE_TYPE.CONTAINER_UPDATE, updateTableHandler);
       };
     }
     return undefined;

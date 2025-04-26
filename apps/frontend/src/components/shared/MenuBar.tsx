@@ -17,18 +17,21 @@ import { MenubarMenu, MenubarTrigger, VerticalMenubar } from '@/components/ui/Me
 import cn from '@libs/common/utils/className';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useOnClickOutside, useToggle } from 'usehooks-ts';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import { getFromPathName } from '@libs/common/utils';
 import APPS from '@libs/appconfig/constants/apps';
+import PageTitle from '@/components/PageTitle';
+import { useTranslation } from 'react-i18next';
 
 const MenuBar: React.FC = () => {
+  const { t } = useTranslation();
   const [isOpen, toggle] = useToggle(false);
   const menubarRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
   const menuBarEntries = useMenuBarConfig();
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
-  const isMobileView = useIsMobileView();
+  const { isMobileView } = useMedia();
 
   const navigate = useNavigate();
 
@@ -73,6 +76,12 @@ const MenuBar: React.FC = () => {
       <MenubarMenu>
         {menuBarEntries.menuItems.map((item) => (
           <React.Fragment key={item.label}>
+            {isSelected === item.id && (
+              <PageTitle
+                title={t(`${menuBarEntries.appName}.sidebar`)}
+                translationId={item.label}
+              />
+            )}
             <MenubarTrigger
               className={cn(
                 'flex w-full cursor-pointer items-center gap-3 py-1 pl-3 pr-10 transition-colors',
@@ -90,7 +99,7 @@ const MenuBar: React.FC = () => {
                 alt={item.label}
                 className="h-12 w-12 object-contain"
               />
-              <p className="text-nowrap">{item.label}</p>
+              <p className="text-left">{item.label}</p>
             </MenubarTrigger>
           </React.Fragment>
         ))}

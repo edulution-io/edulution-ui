@@ -50,4 +50,5 @@ export const HTTP_HEADERS = {
   ContentType: 'Content-Type',
   Authorization: 'Authorization',
   XApiKey: 'x-api-key',
+  CONNECTION_UID: 'Connection-Uid',
 } as const;

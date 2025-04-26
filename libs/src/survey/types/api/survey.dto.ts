@@ -29,7 +29,7 @@ interface SurveyDto {
   participatedAttendees: AttendeeDto[];
   answers: string[];
   createdAt?: Date;
-  expires?: Date;
+  expires: Date | null;
   isAnonymous?: boolean;
   isPublic?: boolean;
   canSubmitMultipleAnswers?: boolean;

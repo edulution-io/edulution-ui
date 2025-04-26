@@ -14,7 +14,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
-import { USER_SETTINGS_SECURITY_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
+import { USER_SETTINGS_USER_DETAILS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
 import Avatar from '@/components/shared/Avatar';
 import useLogout from '@/hooks/useLogout';
 import DropdownMenu from '@/components/shared/DropdownMenu';
@@ -31,7 +31,7 @@ const UserMenuButton: React.FC = () => {
   const thumbnailPhoto = lmnApiUser?.thumbnailPhoto || '';
 
   const handleUserSettingsClick = () => {
-    navigate(USER_SETTINGS_SECURITY_PATH);
+    navigate(USER_SETTINGS_USER_DETAILS_PATH);
   };
 
   return (
@@ -39,7 +39,7 @@ const UserMenuButton: React.FC = () => {
       key="usermenu"
       className="fixed bottom-0 right-0 bg-black"
     >
-      <div className="flex h-[58px] cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-2">
+      <div className="flex max-h-14 cursor-pointer items-center justify-start gap-4 px-4 py-2 md:block md:px-2">
         <DropdownMenu
           menuContentClassName="z-[600]"
           trigger={

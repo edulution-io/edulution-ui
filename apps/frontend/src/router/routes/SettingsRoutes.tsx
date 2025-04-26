@@ -10,20 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { lazy, Suspense } from 'react';
-import { Outlet, Route } from 'react-router-dom';
+import React from 'react';
+import { Navigate, Outlet, Route } from 'react-router-dom';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import AppStorePage from '@/pages/Settings/AppConfig/appStore/AppStorePage';
 import APPS from '@libs/appconfig/constants/apps';
-
-const SettingsPage = lazy(() => import('@/pages/Settings/SettingsPage'));
-
-const getLazySettingsPage = () => (
-  <Suspense fallback={<CircleLoader />}>
-    <SettingsPage />
-  </Suspense>
-);
+import CONTAINER from '@libs/docker/constants/container';
+import TABS from '@libs/common/constants/tabsElementId';
+import AppStorePage from '@/pages/Settings/AppConfig/appStore/AppStorePage';
+import SettingsPage from '@/pages/Settings/SettingsPage';
 
 const getSettingsRoutes = () => [
   <Route
@@ -33,15 +27,35 @@ const getSettingsRoutes = () => [
   >
     <Route
       index
-      element={getLazySettingsPage()}
+      element={
+        <Navigate
+          to={`${TABS}/${CONTAINER}`}
+          replace
+        />
+      }
     />
     <Route
       path={APPS.APPSTORE}
       element={<AppStorePage />}
     />
+    <Route path={TABS}>
+      <Route
+        path=""
+        element={
+          <Navigate
+            to={CONTAINER}
+            replace
+          />
+        }
+      />
+      <Route
+        path=":tabId"
+        element={<SettingsPage />}
+      />
+    </Route>
     <Route
       path=":settingLocation"
-      element={getLazySettingsPage()}
+      element={<SettingsPage />}
     />
   </Route>,
 ];

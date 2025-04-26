@@ -24,9 +24,8 @@ import Input from '@/components/shared/Input';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
-import { FILTER_BAR_ID } from '@libs/classManagement/constants/pageElementIds';
-import useElementHeight from '@/hooks/useElementHeight';
-import { FOOTER_ID } from '@libs/common/constants/pageElementIds';
+import PageLayout from '@/components/structure/layout/PageLayout';
+import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 
 const EnrolPage: React.FC = () => {
   const { t } = useTranslation();
@@ -75,37 +74,42 @@ const EnrolPage: React.FC = () => {
     },
   ];
 
-  const pageBarsHeight = useElementHeight([FILTER_BAR_ID, FOOTER_ID]) + 10;
-
   return (
-    <div className="mt-2">
+    <PageLayout>
       <Input
         name="filter"
         onChange={(e) => setFilterKeyWord(e.target.value)}
         placeholder={t('classmanagement.typeToFilter')}
-        id={FILTER_BAR_ID}
         className="mb-2"
       />
-      <div
-        className="flex max-w-full flex-row flex-wrap overflow-y-auto overflow-x-visible scrollbar-thin"
-        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
-      >
-        <div className="mt-2 min-w-full text-lg text-background">{t('classmanagement.enrolPageDescription')}</div>
+      <div className="flex max-h-full max-w-full flex-row flex-wrap overflow-y-auto scrollbar-thin">
+        <p className="mt-2 min-w-full">{t('classmanagement.enrolPageDescription')}</p>
         {groupRows.map((row) => (
           <div
             key={row.name}
-            className="mt-4 min-w-full text-background"
+            className="mt-4 min-w-full"
           >
-            <h4 className="text-background">{t(`classmanagement.${row.name}`)}</h4>
-            <GroupList
-              row={row}
-              isEnrolEnabled
-            />
+            <AccordionSH
+              type="multiple"
+              defaultValue={[row.name]}
+            >
+              <AccordionItem value={row.name}>
+                <AccordionTrigger>
+                  <h4>{t(`classmanagement.${row.name}`)}</h4>
+                </AccordionTrigger>
+                <AccordionContent className="space-y-2 px-1">
+                  <GroupList
+                    row={row}
+                    isEnrolEnabled
+                  />
+                </AccordionContent>
+              </AccordionItem>
+            </AccordionSH>
           </div>
         ))}
       </div>
       <LoadingIndicatorDialog isOpen={isLoading} />
-    </div>
+    </PageLayout>
   );
 };
 
