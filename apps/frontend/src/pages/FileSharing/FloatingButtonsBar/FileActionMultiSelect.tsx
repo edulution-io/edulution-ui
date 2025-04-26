@@ -23,34 +23,39 @@ import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 
-const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItem }) => {
+const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItems }) => {
   const { downloadFiles } = useFileEditorStore();
+  const { setFileIsCurrentlyDisabled } = useFileSharingStore();
+  let selectedFiles: DirectoryFileDTO[] = [];
 
-  let selected: DirectoryFileDTO[] = [];
-
-  if (selectedItem) {
-    selected = Array.isArray(selectedItem) ? selectedItem : [selectedItem];
+  if (selectedItems) {
+    selectedFiles = Array.isArray(selectedItems) ? selectedItems : [selectedItems];
   }
 
   const startDownload = async () => {
-    if (!selected.length) return;
+    if (!selectedFiles.length) return;
 
-    const url = await downloadFiles(selected);
+    await Promise.all(selectedFiles.map((file) => setFileIsCurrentlyDisabled(file.basename, true)));
+
+    const url = await downloadFiles(selectedFiles);
     if (!url) return;
 
     const link = Object.assign(document.createElement('a'), {
       href: url,
-      download: selected.length > 1 ? 'download.zip' : selected[0].basename,
+      download: selectedFiles.length > 1 ? 'download.zip' : selectedFiles[0].basename,
     });
     document.body.append(link);
     link.click();
     link.remove();
+
+    await Promise.all(selectedFiles.map((file) => setFileIsCurrentlyDisabled(file.basename, false)));
   };
 
   const canDownload =
-    selected.length > 0 &&
-    selected.every((f) => f.type === ContentType.FILE && bytesToMegabytes(f.size ?? 0) < MAX_FILE_UPLOAD_SIZE);
+    selectedFiles.length > 0 &&
+    selectedFiles.every((f) => f.type === ContentType.FILE && bytesToMegabytes(f.size ?? 0) < MAX_FILE_UPLOAD_SIZE);
 
   const config: FloatingButtonsBarConfig = {
     buttons: [

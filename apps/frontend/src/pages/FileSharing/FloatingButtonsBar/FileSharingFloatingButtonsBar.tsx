@@ -26,7 +26,7 @@ const FileSharingFloatingButtonsBar = () => {
       {selectedItems.length > 0 && (
         <FileActionMultiSelect
           openDialog={openDialog}
-          selectedItem={selectedItems}
+          selectedItems={selectedItems}
         />
       )}
     </>

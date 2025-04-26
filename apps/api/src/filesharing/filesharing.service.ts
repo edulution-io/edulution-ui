@@ -524,9 +524,7 @@ class FilesharingService {
     createReadStream(tmpPath)
       .pipe(res)
       .on('finish', () => {
-        void (async () => {
-          await cleanup();
-        })();
+        void cleanup();
       });
   }
 }

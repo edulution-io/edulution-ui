@@ -165,7 +165,7 @@ const useFileEditorStore = create<FileEditorStore>(
           const params = new URLSearchParams();
           files.forEach((f) => params.append('filePath', f.filename));
 
-          const totalBytes = files.reduce((s, f) => s + (f.size ?? 0), 0);
+          const totalBytes = files.reduce((size, file) => size + (file.size ?? 0), 0);
 
           const { data } = await eduApi.get<Blob>(
             `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_STREAM}`,
@@ -177,9 +177,7 @@ const useFileEditorStore = create<FileEditorStore>(
               onDownloadProgress: (e: AxiosProgressEvent) => {
                 const total = e.total ?? totalBytes;
                 if (!total) return;
-
                 let percent = Math.round((e.loaded / total) * 100);
-
                 if (percent > 100) percent = 100;
                 get().setDownloadProgress({
                   fileName: files.length > 1 ? 'download.zip' : files[0].basename,
