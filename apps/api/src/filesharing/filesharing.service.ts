@@ -16,7 +16,12 @@ import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import ErrorMessage from '@libs/error/errorMessage';
-import { HttpMethods, HttpMethodsWebDav, RequestResponseContentType } from '@libs/common/types/http-methods';
+import {
+  HTTP_HEADERS,
+  HttpMethods,
+  HttpMethodsWebDav,
+  RequestResponseContentType,
+} from '@libs/common/types/http-methods';
 import { Readable } from 'stream';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
 import CustomFile from '@libs/filesharing/types/customFile';
@@ -32,6 +37,10 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bull';
 import APPS from '@libs/appconfig/constants/apps';
 import JOB_NAMES from '@libs/queue/constants/jobNames';
+import archiver from 'archiver';
+import { createReadStream, createWriteStream, statSync } from 'fs';
+import tmp from 'tmp-promise';
+import { once } from 'events';
 import { mapToDirectories, mapToDirectoryFiles } from './filesharing.utilities';
 import UsersService from '../users/users.service';
 import WebdavClientFactory from './webdav.client.factory';
@@ -486,6 +495,39 @@ class FilesharingService {
         status: response.status,
       }),
     );
+  }
+
+  async streamFilesAsZipBuffered(username: string, paths: string[], res: Response) {
+    const { path: tmpPath, cleanup } = await tmp.file({ postfix: '.zip' });
+
+    const output = createWriteStream(tmpPath);
+    const zip = archiver('zip', { zlib: { level: 9 } });
+
+    zip.pipe(output);
+
+    const entries = await Promise.all(
+      paths.map(async (p) => ({
+        name: p.split('/').pop()!,
+        stream: await this.getWebDavFileStream(username, p),
+      })),
+    );
+
+    entries.forEach(({ stream, name }) => zip.append(stream, { name }));
+
+    await zip.finalize();
+    await once(output, 'close');
+
+    const { size } = statSync(tmpPath);
+    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_ZIP);
+    res.setHeader(HTTP_HEADERS.ContentLength, size);
+
+    createReadStream(tmpPath)
+      .pipe(res)
+      .on('finish', () => {
+        void (async () => {
+          await cleanup();
+        })();
+      });
   }
 }
 

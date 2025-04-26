@@ -16,13 +16,47 @@ import FileActionType from '@libs/filesharing/types/fileActionType';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
 import MoveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/moveButton';
+import DownloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/downloadButton';
+import ContentType from '@libs/filesharing/types/contentType';
+import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
+import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
+import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 
-const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog }) => {
+const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItem }) => {
+  const { downloadFiles } = useFileEditorStore();
+
+  let selected: DirectoryFileDTO[] = [];
+
+  if (selectedItem) {
+    selected = Array.isArray(selectedItem) ? selectedItem : [selectedItem];
+  }
+
+  const startDownload = async () => {
+    if (!selected.length) return;
+
+    const url = await downloadFiles(selected);
+    if (!url) return;
+
+    const link = Object.assign(document.createElement('a'), {
+      href: url,
+      download: selected.length > 1 ? 'download.zip' : selected[0].basename,
+    });
+    document.body.append(link);
+    link.click();
+    link.remove();
+  };
+
+  const canDownload =
+    selected.length > 0 &&
+    selected.every((f) => f.type === ContentType.FILE && bytesToMegabytes(f.size ?? 0) < MAX_FILE_UPLOAD_SIZE);
+
   const config: FloatingButtonsBarConfig = {
     buttons: [
       DeleteButton(() => openDialog(FileActionType.DELETE_FILE_FOLDER)),
       MoveButton(() => openDialog(FileActionType.MOVE_FILE_FOLDER)),
+      DownloadButton(canDownload ? startDownload : () => {}, canDownload),
     ],
     keyPrefix: 'file-sharing-page-floating-button_',
   };

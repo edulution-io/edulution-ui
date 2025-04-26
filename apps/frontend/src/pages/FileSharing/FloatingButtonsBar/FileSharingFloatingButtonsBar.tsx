@@ -13,7 +13,6 @@
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import React from 'react';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
-import FileActionOneSelect from '@/pages/FileSharing/FloatingButtonsBar/FileActionOneSelect';
 import FileActionNonSelect from '@/pages/FileSharing/FloatingButtonsBar/FileActionNonSelect';
 import FileActionMultiSelect from '@/pages/FileSharing/FloatingButtonsBar/FileActionMultiSelect';
 
@@ -24,13 +23,12 @@ const FileSharingFloatingButtonsBar = () => {
     <>
       {selectedItems.length === 0 && <FileActionNonSelect openDialog={openDialog} />}
 
-      {selectedItems.length === 1 && (
-        <FileActionOneSelect
+      {selectedItems.length > 0 && (
+        <FileActionMultiSelect
           openDialog={openDialog}
-          selectedItem={selectedItems.at(0)}
+          selectedItem={selectedItems}
         />
       )}
-      {selectedItems.length > 1 && <FileActionMultiSelect openDialog={openDialog} />}
     </>
   );
 };

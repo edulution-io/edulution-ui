@@ -39,7 +39,7 @@ type FileEditorStore = {
   deleteFileAfterEdit: (url: string) => Promise<void>;
   reset: () => void;
   error: Error | null;
-  downloadFile: (file: DirectoryFileDTO, signal?: AbortSignal) => Promise<string | undefined>;
+  downloadFiles: (file: DirectoryFileDTO[], signal?: AbortSignal) => Promise<string | undefined>;
   getDownloadLinkURL: (filePath: string, filename: string, signal?: AbortSignal) => Promise<string | undefined>;
   fetchDownloadLinks: (file: DirectoryFileDTO | null, signal?: AbortSignal) => Promise<void>;
   currentlyEditingFile: DirectoryFileDTO | null;
@@ -128,7 +128,7 @@ const useFileEditorStore = create<FileEditorStore>(
             return;
           }
 
-          const downloadLink = await get().downloadFile(file, signal);
+          const downloadLink = await get().downloadFiles([file], signal);
           set({ downloadLinkURL: downloadLink });
 
           if (isOnlyOfficeDocument(file.filename)) {
@@ -159,29 +159,39 @@ const useFileEditorStore = create<FileEditorStore>(
         set({ currentlyEditingFile: file });
       },
 
-      downloadFile: async (file: DirectoryFileDTO, signal?: AbortSignal) => {
+      downloadFiles: async (files: DirectoryFileDTO[], signal?: AbortSignal) => {
         try {
           set({ isDownloadFileLoading: true });
-          const fileStreamResponse = await eduApi.get<Blob>(
+          const params = new URLSearchParams();
+          files.forEach((f) => params.append('filePath', f.filename));
+
+          const totalBytes = files.reduce((s, f) => s + (f.size ?? 0), 0);
+
+          const { data } = await eduApi.get<Blob>(
             `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_STREAM}`,
             {
-              params: { filePath: file.filename },
               responseType: ResponseType.BLOB,
               signal,
-              onDownloadProgress: (axiosProgressEvent: AxiosProgressEvent) => {
-                const { loaded } = axiosProgressEvent;
+              params: { filePath: files.map((f) => f.filename) },
+              paramsSerializer: { indexes: null },
+              onDownloadProgress: (e: AxiosProgressEvent) => {
+                const total = e.total ?? totalBytes;
+                if (!total) return;
 
-                if (file.size) {
-                  const percent = Math.round((loaded / file.size) * 100);
-                  get().setDownloadProgress({ fileName: file.basename, percent } as DownloadFileDto);
-                }
+                let percent = Math.round((e.loaded / total) * 100);
+
+                if (percent > 100) percent = 100;
+                get().setDownloadProgress({
+                  fileName: files.length > 1 ? 'download.zip' : files[0].basename,
+                  percent,
+                });
               },
             },
           );
 
-          return URL.createObjectURL(fileStreamResponse.data);
-        } catch (error) {
-          handleApiError(error, set);
+          return URL.createObjectURL(data);
+        } catch (err) {
+          handleApiError(err, set);
           return '';
         } finally {
           set({ isDownloadFileLoading: false });
