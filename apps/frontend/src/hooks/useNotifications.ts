@@ -28,6 +28,8 @@ import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import delay from '@libs/common/utils/delay';
 import useSseStore from '@/store/useSseStore';
+import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
+import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 
 const useNotifications = () => {
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
@@ -41,8 +43,10 @@ const useNotifications = () => {
   const isBulletinBoardActive = useIsAppActive(APPS.BULLETIN_BOARD);
   const { addBulletinBoardNotification } = UseBulletinBoardStore();
   const { setFilesharingProgress } = useLessonStore();
+  const { setDownloadProgress } = useFileEditorStore();
   const isClassRoomManagementActive = useIsAppActive(APPS.CLASS_MANAGEMENT);
   const { eventSource } = useSseStore();
+  const isFileSharingAppActivated = useIsAppActive(APPS.FILE_SHARING);
 
   useDockerContainerEvents();
 
@@ -178,6 +182,27 @@ const useNotifications = () => {
       controller.abort();
     };
   }, [isBulletinBoardActive]);
+
+  useEffect(() => {
+    if (!isFileSharingAppActivated || !eventSource) {
+      return undefined;
+    }
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    const handleFileSharingEvent = (e: MessageEvent<string>) => {
+      const data: DownloadFileDto = JSON.parse(e.data) as DownloadFileDto;
+      if (data.percent === 100) {
+        void delay(5000).then(() => setDownloadProgress(null));
+      }
+    };
+
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.UPDATED, handleFileSharingEvent, { signal });
+
+    return () => {
+      controller.abort();
+    };
+  }, [isFileSharingAppActivated]);
 };
 
 export default useNotifications;

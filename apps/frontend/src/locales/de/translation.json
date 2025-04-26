@@ -329,6 +329,7 @@
       "info": "Info",
       "title": "Dateien werden ausgeteilt",
       "processedInfo": "{{processed}} von {{total}} Dateien erfolgreich ausgeteilt",
+      "downloadInfo": "Datei {{filename}} wird heruntergeladen",
       "fileInfo": "Datei {{filename}} wird an {{studentName}} ausgeteilt",
       "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden"
     },

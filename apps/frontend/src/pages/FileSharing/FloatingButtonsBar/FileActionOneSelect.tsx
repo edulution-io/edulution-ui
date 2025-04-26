@@ -24,16 +24,17 @@ import DownloadButton from '@/components/shared/FloatingsButtonsBar/CommonButton
 import MoveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/moveButton';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 
 const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItem }) => {
   const { downloadFile } = useFileEditorStore();
 
-  const startDownload = async (filePath: string, filename: string) => {
-    const downloadLinkURL = await downloadFile(filePath);
+  const startDownload = async (file: DirectoryFileDTO) => {
+    const downloadLinkURL = await downloadFile(file);
     if (!downloadLinkURL) return;
     const link = document.createElement('a');
     link.href = downloadLinkURL;
-    link.setAttribute('download', filename);
+    link.setAttribute('download', file.basename);
 
     document.body.appendChild(link);
     link.click();
@@ -52,7 +53,7 @@ const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedIt
         onClick: () => openDialog(FileActionType.RENAME_FILE_FOLDER),
       },
       DownloadButton(
-        selectedItem ? () => startDownload(selectedItem.filename, selectedItem.basename) : () => {},
+        selectedItem ? () => startDownload(selectedItem) : () => {},
         selectedItem?.type === ContentType.FILE && bytesToMegabytes(selectedItem?.size || 0) < MAX_FILE_UPLOAD_SIZE,
       ),
     ],

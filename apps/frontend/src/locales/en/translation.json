@@ -336,6 +336,7 @@
       "info": "Info",
       "title": "Distributing files",
       "processedInfo": "{{processed}} out of {{total}} files distributed successfully",
+      "downloadInfo": "Downloading {{filename}}",
       "fileInfo": "File {{filename}} is being distributed to {{studentName}}",
       "errorInfo": "{{failed}} files could not be handed out"
     }

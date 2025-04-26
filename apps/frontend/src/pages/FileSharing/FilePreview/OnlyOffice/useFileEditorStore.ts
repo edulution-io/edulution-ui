@@ -26,9 +26,12 @@ import getFrontEndUrl from '@libs/common/utils/getFrontEndUrl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import delay from '@libs/common/utils/delay';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
+import { AxiosProgressEvent } from 'axios';
+import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 
 type FileEditorStore = {
   isFilePreviewDocked: boolean;
+  downloadProgress: DownloadFileDto | null;
   setIsFilePreviewDocked: (isFilePreviewDocked: boolean) => void;
   isFilePreviewVisible: boolean;
   setIsFilePreviewVisible: (isVisible: boolean) => void;
@@ -36,7 +39,7 @@ type FileEditorStore = {
   deleteFileAfterEdit: (url: string) => Promise<void>;
   reset: () => void;
   error: Error | null;
-  downloadFile: (filePath: string, signal?: AbortSignal) => Promise<string | undefined>;
+  downloadFile: (file: DirectoryFileDTO, signal?: AbortSignal) => Promise<string | undefined>;
   getDownloadLinkURL: (filePath: string, filename: string, signal?: AbortSignal) => Promise<string | undefined>;
   fetchDownloadLinks: (file: DirectoryFileDTO | null, signal?: AbortSignal) => Promise<void>;
   currentlyEditingFile: DirectoryFileDTO | null;
@@ -50,10 +53,12 @@ type FileEditorStore = {
   publicDownloadLink: string | null;
   isGetDownloadLinkUrlLoading: boolean;
   setPublicDownloadLink: (publicDownloadLink: string) => void;
+  setDownloadProgress: (progress: DownloadFileDto | null) => void;
 };
 
 const initialState = {
   isFilePreviewDocked: true,
+  downloadProgress: null,
   isFilePreviewVisible: false,
   publicDownloadLink: null,
   isEditorLoading: false,
@@ -77,6 +82,10 @@ const useFileEditorStore = create<FileEditorStore>(
       reset: () => set(initialState),
 
       setIsFilePreviewDocked: (isFilePreviewDocked) => set({ isFilePreviewDocked }),
+
+      setDownloadProgress: (progress) => {
+        set({ downloadProgress: progress });
+      },
 
       setIsFilePreviewVisible: (isFilePreviewVisible) => set({ isFilePreviewVisible }),
 
@@ -119,7 +128,7 @@ const useFileEditorStore = create<FileEditorStore>(
             return;
           }
 
-          const downloadLink = await get().downloadFile(file.filename, signal);
+          const downloadLink = await get().downloadFile(file, signal);
           set({ downloadLinkURL: downloadLink });
 
           if (isOnlyOfficeDocument(file.filename)) {
@@ -150,19 +159,27 @@ const useFileEditorStore = create<FileEditorStore>(
         set({ currentlyEditingFile: file });
       },
 
-      downloadFile: async (filePath, signal) => {
+      downloadFile: async (file: DirectoryFileDTO, signal?: AbortSignal) => {
         try {
           set({ isDownloadFileLoading: true });
           const fileStreamResponse = await eduApi.get<Blob>(
             `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_STREAM}`,
             {
-              params: { filePath },
+              params: { filePath: file.filename },
               responseType: ResponseType.BLOB,
               signal,
+              onDownloadProgress: (axiosProgressEvent: AxiosProgressEvent) => {
+                const { loaded } = axiosProgressEvent;
+
+                if (file.size) {
+                  const percent = Math.round((loaded / file.size) * 100);
+                  get().setDownloadProgress({ fileName: file.basename, percent } as DownloadFileDto);
+                }
+              },
             },
           );
 
-          return window.URL.createObjectURL(fileStreamResponse.data);
+          return URL.createObjectURL(fileStreamResponse.data);
         } catch (error) {
           handleApiError(error, set);
           return '';
