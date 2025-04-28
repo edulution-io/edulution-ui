@@ -17,6 +17,7 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import type UserDto from '@libs/user/types/user.dto';
 import useSseStore from '@/store/useSseStore';
 import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
+import isDev from '@libs/common/constants/isDev';
 import useAppConfigsStore from '../pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '../store/UserStore/UserStore';
 import useLogout from '../hooks/useLogout';
@@ -34,8 +35,6 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const handleLogout = useLogout();
 
-  const isDevelopment = VITE_ENV === 'development';
-
   useEffect(() => {
     if (auth.user?.access_token) {
       setEduApiToken(auth.user?.access_token);
@@ -43,8 +42,8 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
       setCookie('authToken', auth.user?.access_token, {
         path: '/',
         domain: window.location.hostname,
-        secure: !isDevelopment,
-        sameSite: isDevelopment ? 'lax' : 'none',
+        secure: !isDev,
+        sameSite: isDev ? 'lax' : 'none',
       });
     }
   }, [auth.user?.access_token]);

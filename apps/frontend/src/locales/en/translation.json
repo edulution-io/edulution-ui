@@ -2,7 +2,7 @@
   "welcome": "Welcome to the application",
   "changeLang": "Change Language",
   "heading": "Welcome {{givenName}} {{familyName}}",
-  "content": "Here is your personal {{ applicationName }} dashboard.",
+  "content": "Here is your personal {{ applicationName }} dashboard. The place where all your applications for digital teaching are collected.",
   "closeEditingWindow": "Close editing window",
   "framebufferImage": "Framebuffer image",
   "previewImage": "Image preview",
@@ -789,6 +789,14 @@
           "uploadFailed": "Upload failed",
           "rowSelected": "{{selected}} of {{total}} files selected",
           "rowsSelected": "{{selected}} of {{total}} files selected"
+        },
+        "editor": {
+          "title": "Editor",
+          "description": "Here in the editor you can design your own web applications or integrate existing content. You can create websites, format and customize content. Existing applications or external content can also be inserted and conveniently linked to your own content. This creates a flexible area in which you can easily display content or offer interactive applications. Start by selecting the mode in which the web application is to be launched.",
+          "sandboxMode": "Separate Layout",
+          "nativeMode": "Integrated Layout",
+          "sandboxModeDescription": "In “Sparate layout” mode, the content is displayed as a separate page, similar to a window within the application. In addition to the actual content, additional design elements or functions can also be loaded from other sources. This means that the design is independent of the application and could therefore look or behave differently. Here, the content must be uploaded as an HTML file.",
+          "nativeModeDescription": "In “Integrated layout” mode, on the other hand, the content is inserted directly into the user interface of the application. This means that the content looks exactly like the application itself and fits in seamlessly. However, no additional external design elements or functions can be added dynamically here. However, static elements such as images can be uploaded and used here."
         }
       },
       "update": {
@@ -941,7 +949,7 @@
     "forgot_password": "Forgot password?",
     "remember_me": "Remember me",
     "enterMultiFactorCode": "Two-Factor Authentication",
-    "loginWithApp": "Login with QR",
+    "loginWithApp": "Login with QR-Login",
     "loginWithQrDescription": "Open the edulution.io APP to simply log in with the QR code.",
     "infoQrCodeExpired": "Time for login with edulution.io APP expired."
   },
@@ -975,7 +983,8 @@
       "success": "Successfully copied to clipboard",
       "error": "Copy to clipboard failed",
       "doCopy": "Copy",
-      "link": "Copy link"
+      "link": "Copy link",
+      "url": "Copy URL"
     },
     "openInNewTab": "Open in new tab",
     "maximize": "Maximize",
@@ -1063,7 +1072,8 @@
     "template": "Template",
     "preview": "Preview",
     "format": "Format",
-    "upload": "Upload"
+    "upload": "Upload",
+    "mode": "Mode"
   },
   "form": {
     "path": "Path",

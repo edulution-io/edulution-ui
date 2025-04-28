@@ -37,14 +37,12 @@ import APPS from '@libs/appconfig/constants/apps';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import getDisplayName from '@/utils/getDisplayName';
 import PageLayout from '@/components/structure/layout/PageLayout';
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import type EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEditorForm';
+import type AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailImporterConfig from './mails/MailImporterConfig';
 import getAppConfigFormSchema from './schemas/getAppConfigFormSchema';
 import ProxyConfigForm from './components/ProxyConfigForm';
-import EmbeddedPageEditor from './components/EmbeddedPageEditor';
 
 interface AppConfigPageProps {
   settingLocation: string;
@@ -160,6 +158,8 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
   };
 
   const matchingConfig = appConfigs.find((item) => item.name === settingLocation);
+  const isSupportedAppType = (appType: AppIntegrationType): appType is 'native' | 'embedded' =>
+    ['native', 'embedded'].includes(appType);
 
   const getSettingsForm = () => (
     <Form {...form}>
@@ -189,11 +189,15 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                 </FormItem>
               )}
             />
-            {matchingConfig.appType === APP_INTEGRATION_VARIANT.NATIVE && matchingConfig.extendedOptions ? (
+            {matchingConfig.extendedOptions && isSupportedAppType(matchingConfig.appType) ? (
               <ExtendedOptionsForm
-                extendedOptions={APP_CONFIG_OPTIONS.find((itm) => itm.id === settingLocation)?.extendedOptions}
+                extendedOptions={
+                  APP_CONFIG_OPTIONS.find((itm) => itm.id === settingLocation || itm.id === APPS.EMBEDDED)
+                    ?.extendedOptions
+                }
                 control={control}
                 settingLocation={settingLocation}
+                form={form}
               />
             ) : null}
             {Object.keys(matchingConfig.options)
@@ -215,20 +219,6 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                   )}
                 />
               ))}
-            {matchingConfig.extendedOptions &&
-              ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT in matchingConfig.extendedOptions && (
-                <>
-                  <EmbeddedPageEditor
-                    name={matchingConfig.name}
-                    form={form as UseFormReturn<EmbeddedPageEditorForm>}
-                  />
-                  <ExtendedOptionsForm
-                    extendedOptions={APP_CONFIG_OPTIONS.find((itm) => itm.id === APPS.EMBEDDED)?.extendedOptions}
-                    control={control}
-                    settingLocation={settingLocation}
-                  />
-                </>
-              )}
             {APP_CONFIG_OPTION_KEYS.PROXYCONFIG in matchingConfig.options && (
               <ProxyConfigForm
                 key={`${matchingConfig.name}.options.${APP_CONFIG_OPTION_KEYS.PROXYCONFIG}`}

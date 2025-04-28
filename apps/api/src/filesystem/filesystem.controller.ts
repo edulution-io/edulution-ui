@@ -41,7 +41,7 @@ class FileSystemController {
       ),
     ),
   )
-  uploadEmbeddedPageFiles(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
+  uploadFileToApp(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
     return res.status(200).json(file.filename);
   }
 
@@ -50,15 +50,15 @@ class FileSystemController {
     return this.filesystemService.getFilesInfo(path);
   }
 
-  @Get('file/:name/*filename')
-  serveFiles(@Param('name') name: string, @Param('filename') filename: string, @Res() res: Response) {
-    return this.filesystemService.serveFiles(name, filename, res);
+  @Get('file/:appName/*filename')
+  serveFiles(@Param('appName') appName: string, @Param('filename') filename: string, @Res() res: Response) {
+    return this.filesystemService.serveFiles(appName, filename, res);
   }
 
-  @Delete(':name/:filename')
+  @Delete(':appName/:filename')
   @UseGuards(AppConfigGuard)
-  deleteFile(@Param('name') name: string, @Param('filename') filename: string) {
-    return FilesystemService.deleteFile(`${APPS_FILES_PATH}/${name}`, filename);
+  deleteFile(@Param('appName') appName: string, @Param('filename') filename: string) {
+    return FilesystemService.deleteFile(`${APPS_FILES_PATH}/${appName}`, filename);
   }
 }
 

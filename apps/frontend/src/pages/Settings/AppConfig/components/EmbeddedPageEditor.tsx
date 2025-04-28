@@ -14,16 +14,15 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { html as beautifyHtml } from 'js-beautify';
-import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import { Button } from '@/components/shared/Button';
 import { Textarea } from '@/components/ui/Textarea';
-import { FormControl, FormDescription, FormFieldSH, FormItem } from '@/components/ui/Form';
+import { FormControl, FormFieldSH, FormItem } from '@/components/ui/Form';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import type EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEditorForm';
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
-import Switch from '@/components/ui/Switch';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
+import cn from '@libs/common/utils/className';
 import useFileTableStore from './useFileTableStore';
 
 interface EmbeddedPageEditorProps {
@@ -36,7 +35,7 @@ const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) =
   const [openPreview, setOpenPreview] = useState(false);
   const { tableContentData } = useFileTableStore();
 
-  const toggleMode = () => {
+  const togglePreviewIsOpen = () => {
     setOpenPreview((prev) => !prev);
   };
 
@@ -56,100 +55,81 @@ const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) =
   const htmlContentUrl = `${EDU_API_URL}/${EDU_API_CONFIG_ENDPOINTS.FILES}/file/${name}/${tableContentData.find((item) => item.type === 'html')?.filename}`;
 
   return (
-    <AccordionSH
-      type="multiple"
-      defaultValue={['embedded']}
-    >
-      <AccordionItem value="embedded">
-        <AccordionTrigger className="flex text-h4">
-          <h4 className="text-background">{t(`form.embeddedPageEditor`)}</h4>
-        </AccordionTrigger>
-        <AccordionContent>
-          <div className="space-y-4">
-            <FormFieldSH
-              key={name}
-              control={form.control}
-              name={`${name}.extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT}`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Textarea
-                      value={field.value}
-                      onChange={field.onChange}
-                      className="h-80 overflow-y-auto bg-accent text-secondary scrollbar-thin placeholder:text-p focus:outline-none"
-                      style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '12pt' }}
-                      disabled={isSandboxMode}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <div className="flex justify-between">
-              <FormFieldSH
-                control={form.control}
-                name={`${name}.extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_HTML_MODE}`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <div className="flex h-9 items-center">
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={() => field.onChange(!field.value)}
-                          disabled={field.disabled}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormDescription>{t(isSandboxMode ? 'form.sandboxed' : 'form.native')}</FormDescription>
-                  </FormItem>
+    <div className="space-y-4">
+      <p className="font-bold">
+        {isSandboxMode
+          ? t('settings.appconfig.sections.editor.sandboxMode')
+          : t('settings.appconfig.sections.editor.nativeMode')}
+      </p>
+      <p>
+        {isSandboxMode
+          ? t('settings.appconfig.sections.editor.sandboxModeDescription')
+          : t('settings.appconfig.sections.editor.nativeModeDescription')}
+      </p>
+      <FormFieldSH
+        key={name}
+        control={form.control}
+        name={`${name}.extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT}`}
+        render={({ field }) => (
+          <FormItem>
+            <FormControl>
+              <Textarea
+                value={field.value}
+                onChange={field.onChange}
+                className={cn(
+                  'overflow-y-auto bg-accent text-secondary transition-[max-height,opacity] duration-300 ease-in-out scrollbar-thin placeholder:text-p focus:outline-none',
+                  isSandboxMode ? 'h-8 min-h-0 overflow-hidden opacity-0' : 'max-h-80 opacity-100',
                 )}
+                style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '12pt' }}
+                disabled={isSandboxMode}
               />
-              <div className="flex justify-end gap-3">
-                <Button
-                  type="button"
-                  variant="btn-collaboration"
-                  size="lg"
-                  onClick={toggleMode}
-                >
-                  {t('common.preview')}
-                </Button>
-                <Button
-                  type="button"
-                  variant="btn-infrastructure"
-                  size="lg"
-                  onClick={formatCode}
-                >
-                  {t('common.format')}
-                </Button>
-              </div>
-            </div>
+            </FormControl>
+          </FormItem>
+        )}
+      />
 
-            <p>{t('form.embeddedPageEditorModeDescription')}</p>
+      <div className="flex justify-end gap-3">
+        <Button
+          type="button"
+          variant="btn-collaboration"
+          size="lg"
+          onClick={togglePreviewIsOpen}
+        >
+          {t('common.preview')}
+        </Button>
+        <Button
+          type="button"
+          variant="btn-infrastructure"
+          size="lg"
+          onClick={formatCode}
+          disabled={isSandboxMode}
+        >
+          {t('common.format')}
+        </Button>
+      </div>
 
-            {openPreview && (
-              <ResizableWindow
-                titleTranslationId={t('common.preview')}
-                handleClose={() => setOpenPreview(false)}
-              >
-                {isSandboxMode ? (
-                  <iframe
-                    src={htmlContentUrl}
-                    title={name}
-                    className="h-full w-full border-0"
-                    sandbox="allow-same-origin allow-scripts allow-forms "
-                  />
-                ) : (
-                  <div
-                    className="h-full w-full"
-                    // eslint-disable-next-line react/no-danger
-                    dangerouslySetInnerHTML={{ __html: htmlContent }}
-                  />
-                )}
-              </ResizableWindow>
-            )}
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-    </AccordionSH>
+      {openPreview && (
+        <ResizableWindow
+          titleTranslationId={t('common.preview')}
+          handleClose={() => setOpenPreview(false)}
+        >
+          {isSandboxMode ? (
+            <iframe
+              src={htmlContentUrl}
+              title={name}
+              className="h-full w-full border-0"
+              sandbox="allow-same-origin allow-scripts allow-forms "
+            />
+          ) : (
+            <div
+              className="h-full w-full"
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{ __html: htmlContent }}
+            />
+          )}
+        </ResizableWindow>
+      )}
+    </div>
   );
 };
 

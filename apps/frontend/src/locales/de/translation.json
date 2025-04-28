@@ -2,7 +2,7 @@
   "welcome": "Willkommen in der Anwendung",
   "changeLang": "Sprache ändern",
   "heading": "Herzlich Willkommen {{givenName}} {{familyName}}",
-  "content": "Hier ist ihr persönliches {{ applicationName }} Dashboard.",
+  "content": "Hier ist ihr persönliches {{ applicationName }} Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Unterricht gesammelt sind.",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
   "framebufferImage": "Framebuffer-Bild",
   "previewImage": "Bildvorschau",
@@ -791,6 +791,14 @@
           "uploadFailed": "Hochladen fehlgeschlagen",
           "rowSelected": "{{selected}} von {{total}} Dateien ausgewählt",
           "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt"
+        },
+        "editor": {
+          "title": "Editor",
+          "description": "Hier im Editor kannst du eigene Webanwendungen gestalten oder bestehende Inhalte integrieren. Du kannst dabei Webseiten erstellen, Inhalte formatieren und individuell anpassen. Auch bereits vorhandene Anwendungen oder externe Inhalte lassen sich einfügen und komfortabel mit deinen eigenen Inhalten verbinden. So entsteht ein flexibler Bereich, in dem du auf einfache Weise Inhalte darstellen oder interaktive Anwendungen anbieten kannst. Starte mit der Wahle des Modus, in welchem die Webanwendung gestartet werden soll.",
+          "sandboxMode": "Sparates Layout",
+          "nativeMode": "Integriertes Layout",
+          "sandboxModeDescription": "Im Modus „Sparates Layout“ wird der Inhalt als eigenständige Seite angezeigt, ähnlich wie ein Fenster innerhalb der Anwendung. Dabei können neben dem eigentlichen Inhalt auch zusätzliche Designelemente oder Funktionen aus anderen Quellen geladen werden. Dadurch ist die Gestaltung unabhängig von der Anwendung, könnte also anders aussehen oder sich anders verhalten. Hier muss der Inhalt als HTML-Datei hochgeladen werden.",
+          "nativeModeDescription": "Im Modus „Integriertes Layout“ dagegen wird der Inhalt direkt in die Oberfläche der Anwendung eingefügt. Dadurch sieht der Inhalt genauso aus wie die Anwendung selbst und fügt sich optisch nahtlos ein. Allerdings können hier keine zusätzlichen externen Designelemente oder Funktionen dynamisch hinzugefügt werden. Es können jedoch statische Elemente wie Bilder hochgeladen und hier eingesetzt werden."
         }
       },
       "update": {
@@ -943,7 +951,7 @@
     "forgot_password": "Passwort vergessen?",
     "remember_me": "Merken",
     "enterMultiFactorCode": "Zwei-Faktor-Authentisierung",
-    "loginWithApp": "Login mit QR",
+    "loginWithApp": "Anmelden mit QR-Login",
     "loginWithQrDescription": "Öffne die edulution.io APP um dich einfach mit dem QR-Code anzumelden.",
     "infoQrCodeExpired": "Zeit für Login mit edulution.io APP abgelaufen."
   },
@@ -973,10 +981,11 @@
     "columns": "Spalten",
     "table": "Tabelle",
     "copy": {
-      "success": "Erfolgreich in Zwischenablage kopiert",
+      "success": "Erfolgreich in die Zwischenablage kopiert",
       "error": "In Zwischenablage kopieren fehlgeschlagen",
       "doCopy": "Kopieren",
-      "link": "Link kopieren"
+      "link": "Link kopieren",
+      "url": "URL kopieren"
     },
     "openInNewTab": "In neuem Tab öffnen",
     "maximize": "Maximieren",
@@ -1064,7 +1073,8 @@
     "template": "Vorlage",
     "preview": "Vorschau",
     "format": "Formatieren",
-    "upload": "Hochladen"
+    "upload": "Hochladen",
+    "mode": "Modus"
   },
   "form": {
     "path": "Link",
