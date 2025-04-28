@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import copyToClipboard from '@/utils/copyToClipboard';
 import cn from '@libs/common/utils/className';
 import { IoChevronDown } from 'react-icons/io5';
+import PasswordCell from '@/pages/UserSettings/Security/components/PasswordCell';
 import Input from '../shared/Input';
 
 interface UserAccountsToastContentProps {
@@ -57,13 +58,9 @@ const UserAccountsToastContent: React.FC<UserAccountsToastContentProps> = ({
               className="cursor-pointer"
               onClick={() => copyToClipboard(userAccount.accountUser)}
             />
-            <Input
-              title={t('common.password')}
-              type="password"
-              value={userAccount.accountPassword}
-              readOnly
-              className="mb-1 cursor-pointer"
-              onClick={() => copyToClipboard(userAccount.accountPassword)}
+            <PasswordCell
+              accountPassword={userAccount.accountPassword}
+              isInput
             />
           </div>
         ))}

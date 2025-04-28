@@ -19,13 +19,16 @@ import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { decryptPassword } from '@libs/common/utils/encryptPassword';
 import EncryptedPasswordObject from '@libs/common/types/encryptPasswordObject';
 import copyToClipboard from '@/utils/copyToClipboard';
+import Input from '@/components/shared/Input';
+import cn from '@libs/common/utils/className';
 import EnterMasterPwDialog from './EnterMasterPwDialog';
 
 interface PasswordCellProps {
   accountPassword: string;
+  isInput?: boolean;
 }
 
-const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword }) => {
+const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = false }) => {
   const { t } = useTranslation();
   const placeholder = '********';
   const [password, setPassword] = useState(placeholder);
@@ -45,7 +48,7 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword }) => {
     return placeholder;
   };
 
-  const handleEn = async () => {
+  const handleDecrypt = async () => {
     if (password === placeholder) {
       const encryptedPassword = await handleDecryptPassword();
 
@@ -59,7 +62,7 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword }) => {
 
   const handleShowPassword = async () => {
     if (isOpen === 'show' || masterPw) {
-      await handleEn();
+      await handleDecrypt();
     } else if (password === placeholder) {
       setIsOpen('show');
     } else {
@@ -95,11 +98,22 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword }) => {
   return (
     <>
       <div className="flex min-w-64 flex-row items-center justify-between gap-4">
-        <SelectableTextCell
-          onClick={() => handleCopyPassword()}
-          text={isVisible ? password : placeholder}
-        />
-        <div className="mr-10 flex flex-row items-center gap-2">
+        {isInput ? (
+          <Input
+            title={t('common.username')}
+            type="text"
+            value={isVisible ? password : placeholder}
+            readOnly
+            className="w-full cursor-pointer"
+            onClick={() => handleCopyPassword()}
+          />
+        ) : (
+          <SelectableTextCell
+            onClick={() => handleCopyPassword()}
+            text={isVisible ? password : placeholder}
+          />
+        )}
+        <div className={cn('flex flex-row items-center gap-2', { 'mr-10': !isInput })}>
           <button
             type="button"
             onClick={() => handleShowPassword()}

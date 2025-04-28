@@ -71,7 +71,7 @@ const EmbeddedFrameManager = () => {
         ),
         {
           id: toastId,
-          duration: 10000,
+          duration: 60000,
           position: 'top-right',
         },
       );
