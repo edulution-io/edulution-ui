@@ -63,41 +63,44 @@ const UserAccountsTable: React.FC = () => {
 
   return (
     <>
-      <h3>{t('usersettings.security.userAccounts')}</h3>
-      <ScrollableTable
-        columns={UserAccountsTableColumns}
-        data={userAccounts}
-        filterKey="appName"
-        filterPlaceHolderText="usersettings.security.filterPlaceHolderText"
-        applicationName={APPS.USER_SETTINGS}
-        enableRowSelection
-        onRowSelectionChange={handleRowSelectionChange}
-        selectedRows={selectedRows}
-        isLoading={userAccountsIsLoading}
-      />
-      <div className="flex w-full items-center justify-between gap-2">
-        <div className="flex w-full">
-          <Button
-            className="flex h-2 w-full items-center justify-center rounded-md border border-gray-500 hover:bg-accent"
-            onClick={handleAddClick}
-            type="button"
-          >
-            {isOneRowSelected ? (
-              <FiEdit className="text-xl text-background" />
-            ) : (
-              <IoAdd className="text-xl text-background" />
-            )}
-          </Button>
-        </div>
-
-        <div className="flex w-full">
-          <Button
-            className="flex h-2 w-full items-center justify-center rounded-md border border-gray-500 hover:bg-accent"
-            onClick={handleRemoveClick}
-            type="button"
-          >
-            <IoRemove className="text-xl text-background" />
-          </Button>
+      <div>
+        <h3>{t('usersettings.security.userAccounts')}</h3>
+        <div>
+          <ScrollableTable
+            columns={UserAccountsTableColumns}
+            data={userAccounts}
+            filterKey="appName"
+            filterPlaceHolderText="usersettings.security.filterPlaceHolderText"
+            applicationName={APPS.USER_SETTINGS}
+            enableRowSelection
+            onRowSelectionChange={handleRowSelectionChange}
+            selectedRows={selectedRows}
+            isLoading={userAccountsIsLoading}
+          />
+          <div className="flex w-full items-center justify-between gap-2">
+            <div className="flex w-full">
+              <Button
+                className="flex h-2 w-full items-center justify-center rounded-md border border-gray-500 hover:bg-accent"
+                onClick={handleAddClick}
+                type="button"
+              >
+                {isOneRowSelected ? (
+                  <FiEdit className="text-xl text-background" />
+                ) : (
+                  <IoAdd className="text-xl text-background" />
+                )}
+              </Button>
+            </div>
+            <div className="flex w-full">
+              <Button
+                className="flex h-2 w-full items-center justify-center rounded-md border border-gray-500 hover:bg-accent"
+                onClick={handleRemoveClick}
+                type="button"
+              >
+                <IoRemove className="text-xl text-background" />
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
       <AddUserAccount
