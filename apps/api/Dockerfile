@@ -5,9 +5,9 @@ WORKDIR /opt/edulution/api
 
 ENV NODE_ENV=production
 
-COPY ./dist/apps/api/package*.json ./
+COPY package*.json ./
 
-RUN npm ci
+RUN npm ci --omit=dev
 
 COPY ./dist/apps/api/ ./
 
