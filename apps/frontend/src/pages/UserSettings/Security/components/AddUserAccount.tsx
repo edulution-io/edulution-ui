@@ -91,7 +91,7 @@ const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelecte
       salt: Array.from(salt),
     };
 
-    const userDataDto = {
+    const userAccountDto = {
       appName: data.appName,
       accountUser: data.accountUser,
       accountPassword: encodeBase64(JSON.stringify(newPassword)),
@@ -100,14 +100,14 @@ const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelecte
     if (idx !== undefined) {
       const { accountId } = userAccounts[idx];
 
-      const updatedUserDataDto = {
-        ...userDataDto,
+      const updatedUserAccountDto = {
+        ...userAccountDto,
         accountId,
       };
 
-      await updateUserAccount(accountId, updatedUserDataDto);
+      await updateUserAccount(accountId, updatedUserAccountDto);
     } else {
-      await addUserAccount(userDataDto);
+      await addUserAccount(userAccountDto);
     }
     handleClose();
   };

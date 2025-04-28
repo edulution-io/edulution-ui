@@ -40,13 +40,10 @@ const EmbeddedFrameManager = () => {
 
   const toastId = `${appConfig?.name}-embedded-login-toast`;
 
-  useEffect(
-    () => () => {
-      setIsCollapsed(true);
-      toast.dismiss(toastId);
-    },
-    [toastId],
-  );
+  useEffect(() => {
+    setIsCollapsed(true);
+    toast.dismiss(toastId);
+  }, [toastId]);
 
   useEffect(() => {
     void getUserAccounts();
