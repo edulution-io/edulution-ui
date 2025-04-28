@@ -12,26 +12,18 @@
 
 import React, { useEffect } from 'react';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import useUserStore from '@/store/UserStore/UserStore';
 import { useTranslation } from 'react-i18next';
-import { type QuotaInfo } from '@libs/lmnApi/types/lmnApiQuotas';
+import useQuotaInfo from '@/hooks/useQuotaInfo';
 
 const Quota: React.FC = () => {
   const { t } = useTranslation();
-  const { user: lmnUser, lmnApiToken, usersQuota, fetchUsersQuota } = useLmnApiStore();
-  const { user } = useUserStore();
+  const { user: lmnUser, lmnApiToken } = useLmnApiStore();
+
+  const { quotaUsed, quotaHardLimit, mailQuota, percentageUsed, refetch } = useQuotaInfo();
 
   useEffect(() => {
-    if (lmnApiToken) {
-      void fetchUsersQuota(user?.username || '');
-    }
+    refetch();
   }, [lmnApiToken]);
-
-  const quota = usersQuota?.[lmnUser?.school || 'default-school'] as QuotaInfo | undefined;
-  const quotaUsed = quota?.used || '--';
-  const quotaHardLimit = quota?.hard_limit || '--';
-  const mailQuota = lmnUser?.sophomorixMailQuotaCalculated?.[0] || '--';
-  const percentageUsed = quota ? (quota.used / quota.hard_limit) * 100 : 0;
 
   const getSeparatorColor = () => {
     if (percentageUsed <= 75) {

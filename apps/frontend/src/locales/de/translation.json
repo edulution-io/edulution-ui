@@ -116,7 +116,9 @@
       "title": "Quotas",
       "globalQuota": "Cloudquota berechnet ",
       "mailQuota": "Mailquota berechnet",
-      "mibibyte": "MiB"
+      "mibibyte": "MiB",
+      "remainingLow": "Verbleibendes Quota gering – {{free}} %",
+      "remainingVeryLow": "Verbleibendes Quota sehr gering – {{free}} %"
     }
   },
   "auth": {
