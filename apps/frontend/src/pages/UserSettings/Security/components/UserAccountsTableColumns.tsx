@@ -31,6 +31,7 @@ const UserAccountsTableColumns: ColumnDef<UserAccountDto>[] = [
     accessorFn: (row) => row.accountId,
     cell: ({ row }) => (
       <SelectableTextCell
+        isFirstColumn
         row={row}
         className="max-w-0"
       />

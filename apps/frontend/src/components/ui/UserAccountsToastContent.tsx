@@ -13,6 +13,7 @@
 import React from 'react';
 import type UserAccountDto from '@libs/user/types/userAccount.dto';
 import { useTranslation } from 'react-i18next';
+import { MdFileCopy } from 'react-icons/md';
 import copyToClipboard from '@/utils/copyToClipboard';
 import cn from '@libs/common/utils/className';
 import { IoChevronDown } from 'react-icons/io5';
@@ -57,6 +58,7 @@ const UserAccountsToastContent: React.FC<UserAccountsToastContentProps> = ({
               readOnly
               className="cursor-pointer"
               onClick={() => copyToClipboard(userAccount.accountUser)}
+              icon={<MdFileCopy />}
             />
             <PasswordCell
               accountPassword={userAccount.accountPassword}

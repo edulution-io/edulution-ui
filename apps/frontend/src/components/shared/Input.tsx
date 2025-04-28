@@ -35,10 +35,11 @@ export const originInputVariants = cva(['rounded'], {
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
   VariantProps<typeof originInputVariants> & {
     shouldTrim?: boolean;
+    icon?: React.ReactNode;
   };
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type = 'text', variant, shouldTrim = false, onChange, ...props }, ref) => {
+  ({ className, type = 'text', variant, shouldTrim = false, onChange, icon, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,6 +94,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             </button>
           </div>
         ) : null}
+        {icon && <div className="absolute inset-y-0 right-0 flex items-center pr-3">{icon}</div>}
       </div>
     );
   },

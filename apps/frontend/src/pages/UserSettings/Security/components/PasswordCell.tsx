@@ -113,25 +113,37 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
     form.setValue('masterPw', '');
   };
 
+  const getCopyButton = () => (
+    <button
+      type="button"
+      onClickCapture={() => handleCopyPassword()}
+    >
+      <MdFileCopy />
+    </button>
+  );
+
   return (
     <>
-      <div className="flex min-w-64 flex-row items-center justify-between gap-4">
+      <div className={cn('flex flex-row items-center gap-4', { 'justify-between': !isInput })}>
         {isInput ? (
           <Input
             title={t('common.username')}
             type="text"
             value={isVisible ? password : placeholder}
             readOnly
-            className="w-full cursor-pointer"
+            className="min-w-64 cursor-pointer"
             onClick={() => handleCopyPassword()}
+            icon={getCopyButton()}
           />
         ) : (
           <SelectableTextCell
             onClick={() => handleCopyPassword()}
             text={isVisible ? password : placeholder}
+            className="min-w-28 cursor-pointer"
           />
         )}
         <div className={cn('flex flex-row items-center gap-2', { 'mr-10': !isInput })}>
+          {!isInput && getCopyButton()}
           <button
             type="button"
             onClick={() => handleShowPassword()}
@@ -139,14 +151,8 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
             <img
               src={isVisible ? EyeLightIcon : EyeLightSlashIcon}
               alt="eye"
-              width="25px"
+              className="h-6 min-h-6 w-6 min-w-6"
             />
-          </button>
-          <button
-            type="button"
-            onClick={() => handleCopyPassword()}
-          >
-            <MdFileCopy />
           </button>
         </div>
       </div>
