@@ -10,9 +10,23 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import OnlyOfficeDocumentTypes from '@libs/filesharing/constants/OnlyOfficeDocumentTypes';
 import VideoExtensions from '@libs/filesharing/types/videoExtensions';
+import ImageExtensions from '@libs/filesharing/types/imageExtensions';
+import AudioExtensions from '@libs/filesharing/types/audioExtensions';
 
-const isVideoExtension = (extension: string | undefined): boolean =>
-  Object.values(VideoExtensions).includes(extension as VideoExtensions);
+const previewable = new Set<string>(
+  [
+    ...Object.values(ImageExtensions),
+    ...Object.values(VideoExtensions),
+    ...Object.values(AudioExtensions),
+    ...Object.values(OnlyOfficeDocumentTypes),
+  ].map((ext) => ext.toLowerCase()),
+);
 
-export default isVideoExtension;
+const isPreviewableExtension = (ext?: string): boolean => {
+  if (!ext) return false;
+  return previewable.has(ext.startsWith('.') ? ext.slice(1).toLowerCase() : ext.toLowerCase());
+};
+
+export default isPreviewableExtension;

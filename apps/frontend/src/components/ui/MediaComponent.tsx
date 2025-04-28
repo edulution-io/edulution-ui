@@ -27,7 +27,7 @@ interface VideoComponentProps {
   style?: React.CSSProperties;
 }
 
-const VideoComponent: React.FC<VideoComponentProps> = ({
+const MediaComponent: React.FC<VideoComponentProps> = ({
   url,
   playing = true,
   loop = false,
@@ -40,10 +40,7 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
   height = '100%',
   style = {},
 }) => (
-  <div
-    className="video-player"
-    style={{ position: 'relative', paddingTop: '56.25%', ...style }}
-  >
+  <div style={{ position: 'relative', paddingTop: '56.25%', ...style }}>
     <ReactPlayer
       url={url}
       playing={playing}
@@ -60,4 +57,4 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
   </div>
 );
 
-export default VideoComponent;
+export default MediaComponent;

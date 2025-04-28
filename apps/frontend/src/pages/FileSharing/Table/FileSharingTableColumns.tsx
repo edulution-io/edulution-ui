@@ -32,6 +32,8 @@ import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import { useTranslation } from 'react-i18next';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
+import previewableExtensions from '@libs/filesharing/types/previewableExtensions';
+import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
@@ -95,7 +97,7 @@ const getFileSharingTableColumns = (
             if (isFilePreviewDocked) setIsFilePreviewVisible(false);
             searchParams.set('path', getPathWithoutWebdav(row.original.filename));
             setSearchParams(searchParams);
-          } else {
+          } else if (previewableExtensions(getFileExtension(row.original.basename))) {
             void setFileIsCurrentlyDisabled(row.original.basename, true);
             setIsFilePreviewVisible(true);
             void resetCurrentlyEditingFile(row.original);

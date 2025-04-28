@@ -10,18 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import getFileExtension from '@libs/filesharing/utils/getFileExtension';
-import isImageExtension from '@libs/filesharing/utils/isImageExtension';
-import isMediaExtension from '@libs/filesharing/utils/isMediaExtension';
-import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
+import VideoExtensions from '@libs/filesharing/types/videoExtensions';
+import AudioExtensions from '@libs/filesharing/types/audioExtensions';
 
-const isFileValid = (file: DirectoryFileDTO | null): boolean => {
-  if (!file) {
-    return false;
-  }
-  const extension = getFileExtension(file.filename);
-  return isOnlyOfficeDocument(file.filename) || isImageExtension(extension) || isMediaExtension(extension);
-};
+const isMediaExtension = (extension: string | undefined): boolean =>
+  Object.values(VideoExtensions).includes(extension as VideoExtensions) ||
+  Object.values(AudioExtensions).includes(extension as AudioExtensions);
 
-export default isFileValid;
+export default isMediaExtension;
