@@ -28,13 +28,9 @@ interface EnterMasterPwDialogProps {
 const EnterMasterPwDialog: FC<EnterMasterPwDialogProps> = ({ isOpen, form, handleClose, handleConfirm }) => {
   const { t } = useTranslation();
 
-  const onSubmit = () => {
-    handleConfirm();
-  };
-
   const getDialogBody = () => (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(handleConfirm)}>
         <FormField
           name="masterPw"
           defaultValue=""
@@ -48,7 +44,7 @@ const EnterMasterPwDialog: FC<EnterMasterPwDialogProps> = ({ isOpen, form, handl
   );
 
   const getDialogFooter = () => (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
+    <form onSubmit={form.handleSubmit(handleConfirm)}>
       <DialogFooterButtons
         handleClose={handleClose}
         handleSubmit={() => {}}
