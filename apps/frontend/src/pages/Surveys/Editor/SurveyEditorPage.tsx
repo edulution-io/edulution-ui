@@ -153,7 +153,7 @@ const SurveyEditorPage = () => {
       {
         icon: TbTemplate,
         text: t('survey.editor.templates'),
-        onClick: () => {},
+        onClick: () => setIsOpenTemplateMenu(!isOpenTemplateMenu),
       },
     ],
     keyPrefix: 'surveys-page-floating-button_',
@@ -174,6 +174,7 @@ const SurveyEditorPage = () => {
       <FloatingButtonsBar config={config} />
       <TemplateDialog
         form={form}
+        creator={creator}
         isOpenTemplateMenu={isOpenTemplateMenu}
         setIsOpenTemplateMenu={setIsOpenTemplateMenu}
       />

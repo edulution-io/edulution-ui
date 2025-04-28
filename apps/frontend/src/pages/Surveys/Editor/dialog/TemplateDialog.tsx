@@ -13,6 +13,7 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import TemplateDialogBody from '@/pages/Surveys/Editor/dialog/TemplateDialogBody';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
@@ -20,6 +21,7 @@ import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 interface TemplateDialogProps {
   form: UseFormReturn<SurveyDto>;
+  creator: SurveyCreator;
 
   isOpenTemplateMenu: boolean;
   setIsOpenTemplateMenu: (state: boolean) => void;
@@ -28,11 +30,16 @@ interface TemplateDialogProps {
 }
 
 const TemplateDialog = (props: TemplateDialogProps) => {
-  const { trigger, form, isOpenTemplateMenu, setIsOpenTemplateMenu } = props;
+  const { trigger, form, creator, isOpenTemplateMenu, setIsOpenTemplateMenu } = props;
 
   const { t } = useTranslation();
 
-  const getDialogBody = () => <TemplateDialogBody form={form} />;
+  const getDialogBody = () => (
+    <TemplateDialogBody
+      form={form}
+      creator={creator}
+    />
+  );
 
   const handleClose = () => setIsOpenTemplateMenu(!isOpenTemplateMenu);
 
@@ -43,7 +50,7 @@ const TemplateDialog = (props: TemplateDialogProps) => {
       isOpen={isOpenTemplateMenu}
       trigger={trigger}
       handleOpenChange={handleClose}
-      title={t('surveys.saveDialog.title')}
+      title={t('survey.editor.templateMenu.title')}
       body={getDialogBody()}
       footer={getFooter()}
       desktopContentClassName="max-w-[50%] min-h-[500px] max-h-[90%] overflow-auto"

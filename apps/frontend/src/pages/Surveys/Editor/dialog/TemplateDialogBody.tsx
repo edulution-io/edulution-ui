@@ -10,44 +10,67 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useEffect } from 'react';
 import { UseFormReturn } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
-import Label from '@/components/ui/Label';
+import Templates from '@/pages/Surveys/Editor/dialog/Templates';
+import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
+import Label from '@/components/ui/Label';
 
 interface SaveSurveyDialogBodyProps {
   form: UseFormReturn<SurveyDto>;
+  surveyCreator: SurveyCreator;
 }
 
 const TemplateDialogBody = (props: SaveSurveyDialogBodyProps) => {
-  const { form } = props;
+  const { form, surveyCreator } = props;
+  const { templates, fetchTemplates, uploadTemplate } = useTemplateMenuStore();
+
   const { t } = useTranslation();
 
-  const { templates } = useTemplateMenuStore();
+  const [newTemplateName, setNewTemplateName] = useState<string>('');
 
-  const handleLoadTemplate = (template: SurveyDto) => {
-    const { formula /* , backendLimiter */ } = template;
-    form.setValue('formula', formula);
-    // form.setValue('backendLimiter', backendLimiter);
+  useEffect(() => {
+    void fetchTemplates();
+  }, []);
+
+  const handleSaveTemplate = async () => {
+    const values = form.getValues();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { creator, ...remainingSurvey } = values;
+    await uploadTemplate(newTemplateName, remainingSurvey);
   };
 
   return (
     <>
-      {templates.map((surveyDto: SurveyDto) => (
-        <div
-          key={surveyDto.formula.title}
-          className="flex flex-col gap-2"
+      <Label>
+        <p className="font-bold">{t('survey.editor.templateMenu.submit')}</p>
+      </Label>
+
+      <Input
+        value={newTemplateName}
+        onChange={(e) => setNewTemplateName(e.target.value)}
+      />
+      <div className="flex justify-end">
+        <Button
+          className="my-0 h-[32px] py-0"
+          onClick={handleSaveTemplate}
+          disabled={!newTemplateName}
+          variant="btn-outline"
         >
-          <Label>
-            <p className="font-bold">{t('survey.editor.templateMenu.title')}</p>
-          </Label>
-          <p />
-          <Button onClick={() => handleLoadTemplate(surveyDto)} />
-        </div>
-      ))}
+          {t('common.save')}
+        </Button>
+      </div>
+
+      <Templates
+        form={form}
+        creator={surveyCreator}
+        templates={templates}
+      />
     </>
   );
 };

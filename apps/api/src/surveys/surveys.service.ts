@@ -24,6 +24,7 @@ import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import SURVEYS_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplatePath';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
 import surveysMigrationsList from './migrations/surveysMigrationsList';
@@ -157,6 +158,23 @@ class SurveysService implements OnModuleInit {
     return this.createSurvey(surveyDto, currentUser);
   }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  async createTemplate(fileName: string, surveyDto: SurveyDto): Promise<void> {
+    const templatePath = join(SURVEYS_TEMPLATE_PATH, `${fileName}.json`);
+    return FilesystemService.writeFile(templatePath, JSON.stringify(surveyDto, null, 2));
+  }
+
+  async serveTemplateNames(): Promise<string[]> {
+    return this.fileSystemService.getAllFilenamesInDirectory(SURVEYS_TEMPLATE_PATH);
+  }
+
+  async serveTemplate(fileName: string, res: Response): Promise<Response> {
+    const templatePath = join(SURVEYS_TEMPLATE_PATH, fileName);
+    const fileStream = await this.fileSystemService.createReadStream(templatePath);
+    fileStream.pipe(res);
+    return res;
+  }
+
   async serveImage(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
     const imagePath = join(SURVEYS_IMAGES_PATH, surveyId, questionId, fileName);
     const fileStream = await this.fileSystemService.createReadStream(imagePath);
@@ -164,6 +182,7 @@ class SurveysService implements OnModuleInit {
     return res;
   }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async onSurveyRemoval(surveyIds: string[]): Promise<void> {
     const imageDirectories = surveyIds.map((surveyId) => join(SURVEYS_IMAGES_PATH, surveyId));
     await FilesystemService.deleteDirectories(imageDirectories);

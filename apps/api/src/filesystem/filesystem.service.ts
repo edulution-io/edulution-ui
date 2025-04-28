@@ -191,6 +191,24 @@ class FilesystemService {
     }
   }
 
+  static async writeFile(filePath: string, content: string) {
+    try {
+      await fsPromises.writeFile(filePath, content);
+      Logger.log(`${filePath} created.`, FilesystemService.name);
+    } catch (error) {
+      Logger.error(`Error: ${filePath} is not created.`, FilesystemService.name);
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getAllFilenamesInDirectory(directory: string): Promise<string[]> {
+    const exists = await FilesystemService.checkIfFileExist(directory);
+    if (!exists) {
+      return [];
+    }
+    return fsPromises.readdir(directory);
+  }
+
   static async deleteDirectories(directories: string[]): Promise<void> {
     try {
       const deletionPromises = directories.map((directory) => fsPromises.rm(directory, { recursive: true }));

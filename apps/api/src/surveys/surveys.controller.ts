@@ -35,6 +35,7 @@ import {
   FIND_ONE,
   HAS_ANSWERS,
   IMAGES,
+  TEMPLATES,
   PUBLIC_SURVEYS,
   RESULT,
   SURVEYS,
@@ -111,6 +112,22 @@ class SurveysController {
     const fileName = checkAttachmentFile(file);
     const imageUrl = join(PUBLIC_SURVEYS, IMAGES, surveyId, questionId, fileName);
     return res.status(HttpStatus.CREATED).json(imageUrl);
+  }
+
+  @Post(TEMPLATES)
+  async createTemplate(@Body() fileName: string, surveyDto: SurveyDto) {
+    return this.surveyService.createTemplate(fileName, surveyDto);
+  }
+
+  @Get(TEMPLATES)
+  getTemplateNames() {
+    return this.surveyService.serveTemplateNames();
+  }
+
+  @Get(`${TEMPLATES}/:filename`)
+  getTemplate(@Param() params: { filename: string }, @Res() res: Response) {
+    const { filename } = params;
+    return this.surveyService.serveTemplate(filename, res);
   }
 
   @Post(ANSWER)
