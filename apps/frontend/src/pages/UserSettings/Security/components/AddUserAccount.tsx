@@ -18,8 +18,8 @@ import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import FormField from '@/components/shared/FormField';
 import { Form } from '@/components/ui/Form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import UserAccountDto from '@libs/user/types/userAccount.dto';
 import useUserStore from '@/store/UserStore/UserStore';
+import { deriveKey, encryptPassword } from '@libs/common/utils/encryptPassword';
 import getUserAccountFormSchema from './getUserAccountSchema';
 
 interface AddUserAccountDialogProps {
@@ -29,18 +29,31 @@ interface AddUserAccountDialogProps {
   handleOpenChange: () => void;
 }
 
+type UserAccountFormValues = {
+  accountUrl: string;
+  accountUser: string;
+  accountPassword: string;
+  masterPassword: string;
+};
+
 const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelected, keys, handleOpenChange }) => {
   const { t } = useTranslation();
   const { userAccounts, addUserAccount, updateUserAccount } = useUserStore();
   const idx = isOneRowSelected ? Number(keys[0]) : undefined;
 
-  const initialFormValues: Omit<UserAccountDto, 'accountId'> =
+  const initialFormValues: UserAccountFormValues =
     idx !== undefined && userAccounts[idx]
-      ? userAccounts[idx]
+      ? {
+          accountUrl: userAccounts[idx].accountUrl,
+          accountUser: userAccounts[idx].accountUser,
+          accountPassword: '',
+          masterPassword: '',
+        }
       : {
           accountUrl: '',
           accountUser: '',
           accountPassword: '',
+          masterPassword: '',
         };
 
   const form = useForm({
@@ -60,12 +73,34 @@ const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelecte
     form.reset();
   };
 
-  const onSubmit = async (data: Omit<UserAccountDto, 'accountId'>) => {
+  const onSubmit = async (data: UserAccountFormValues) => {
+    const salt = window.crypto.getRandomValues(new Uint8Array(16));
+    const key = await deriveKey(data.masterPassword, salt);
+    const { iv, ciphertext } = await encryptPassword(data.accountPassword, key);
+
+    const newPassword = {
+      ciphertext: Array.from(new Uint8Array(ciphertext)),
+      iv: Array.from(iv),
+      salt: Array.from(salt),
+    };
+
+    const userDataDto = {
+      accountUrl: data.accountUrl,
+      accountUser: data.accountUser,
+      accountPassword: JSON.stringify(newPassword),
+    };
+
     if (idx !== undefined) {
       const { accountId } = userAccounts[idx];
-      await updateUserAccount(accountId, data);
+
+      const updatedUserDataDto = {
+        ...userDataDto,
+        accountId,
+      };
+
+      await updateUserAccount(accountId, updatedUserDataDto);
     } else {
-      await addUserAccount(data);
+      await addUserAccount(userDataDto);
     }
     handleClose();
   };
@@ -94,6 +129,14 @@ const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelecte
           labelTranslationId={t('common.password')}
           name="accountPassword"
           defaultValue={initialFormValues.accountPassword}
+          form={form}
+          variant="dialog"
+          type="password"
+        />
+        <FormField
+          labelTranslationId={t('usersettings.security.masterPassword')}
+          name="masterPassword"
+          defaultValue=""
           form={form}
           variant="dialog"
           type="password"

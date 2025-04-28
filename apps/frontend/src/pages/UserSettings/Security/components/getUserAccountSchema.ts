@@ -14,15 +14,26 @@ import { z } from 'zod';
 import { TFunction } from 'i18next';
 
 const getUserAccountFormSchema = (t: TFunction<'translation', undefined>) =>
-  z.object({
-    accountUrl: z
-      .string()
-      .min(1, { message: t('common.required') })
-      .refine((value) => !value || z.string().url().safeParse(value).success, {
-        message: t('common.invalid_url'),
-      }),
-    accountUser: z.string().min(1, { message: t('common.required') }),
-    accountPassword: z.string().optional(),
-  });
+  z
+    .object({
+      accountUrl: z
+        .string()
+        .min(1, { message: t('common.required') })
+        .refine((value) => !value || z.string().url().safeParse(value).success, {
+          message: t('common.invalid_url'),
+        }),
+      accountUser: z.string().min(1, { message: t('common.required') }),
+      accountPassword: z.string().optional(),
+      masterPassword: z.string().optional(),
+    })
+    .superRefine((data, ctx) => {
+      if (data.accountPassword && !data.masterPassword) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: t('common.required'),
+          path: ['masterPassword'],
+        });
+      }
+    });
 
 export default getUserAccountFormSchema;

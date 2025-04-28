@@ -10,13 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import { ColumnDef } from '@tanstack/react-table';
 import type UserAccountDto from '@libs/user/types/userAccount.dto';
 import copyToClipboard from '@/utils/copyToClipboard';
-import { EyeLightIcon, EyeLightSlashIcon } from '@/assets/icons';
+import PasswordCell from './PasswordCell';
 
 const UserAccountsTableColumns: ColumnDef<UserAccountDto>[] = [
   {
@@ -68,28 +68,7 @@ const UserAccountsTableColumns: ColumnDef<UserAccountDto>[] = [
       translationId: 'common.password',
     },
     accessorFn: (row) => row.accountPassword,
-    cell: ({ row }) => {
-      const [showPassword, setShowPassword] = useState(false);
-
-      return (
-        <div className="flex min-w-64 gap-4">
-          <SelectableTextCell
-            onClick={() => copyToClipboard(row.original.accountPassword)}
-            text={showPassword ? row.original.accountPassword : '********'}
-          />
-          <button
-            type="button"
-            onClickCapture={() => setShowPassword((prevValue) => !prevValue)}
-          >
-            <img
-              src={showPassword ? EyeLightIcon : EyeLightSlashIcon}
-              alt="eye"
-              width="25px"
-            />
-          </button>{' '}
-        </div>
-      );
-    },
+    cell: ({ row }) => <PasswordCell accountPassword={row.original.accountPassword} />,
   },
 ];
 
