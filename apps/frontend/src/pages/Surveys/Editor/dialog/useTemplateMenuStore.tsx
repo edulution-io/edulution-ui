@@ -13,6 +13,7 @@
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import TemplateDto from '@libs/survey/types/api/template.dto';
 import { SURVEY_TEMPLATES_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import handleApiError from '@/utils/handleApiError';
 // import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
@@ -28,7 +29,7 @@ interface TemplateMenuStore {
   isSubmitting: boolean;
 
   template?: SurveyDto;
-  templates: SurveyDto[];
+  templates: TemplateDto[];
   fetchTemplates: () => Promise<void>;
   fetchTemplate: (fileName: string) => Promise<void>;
   isLoading: boolean;
@@ -61,12 +62,12 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
       handleApiError(error, set);
     }
 
-    let templateDocuments: SurveyDto[] = [];
+    let templateDocuments: TemplateDto[] = [];
     const promises = templateNames?.map(async (fileName) => {
       try {
         const result = await eduApi.get<SurveyDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${fileName}`);
         if (result) {
-          templateDocuments = [...templateDocuments, result.data];
+          templateDocuments = [...templateDocuments, { fileName, surveyDto: result.data }];
         }
       } catch (error) {
         handleApiError(error, set);
@@ -102,7 +103,7 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
   uploadTemplate: async (fileName: string, surveyDto: Partial<SurveyDto>): Promise<void> => {
     set({ isSubmitting: true });
     try {
-      const result = await eduApi.post<Partial<SurveyDto>>(SURVEY_TEMPLATES_ENDPOINT, {
+      const result = await eduApi.post<TemplateDto>(SURVEY_TEMPLATES_ENDPOINT, {
         fileName,
         surveyDto,
       });

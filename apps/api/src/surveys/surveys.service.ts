@@ -159,7 +159,7 @@ class SurveysService implements OnModuleInit {
   }
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  async createTemplate(fileName: string, surveyDto: SurveyDto): Promise<void> {
+  async createTemplate(fileName: string, surveyDto: Partial<SurveyDto>): Promise<void> {
     const templatePath = join(SURVEYS_TEMPLATE_PATH, `${fileName}.json`);
     return FilesystemService.writeFile(templatePath, JSON.stringify(surveyDto, null, 2));
   }

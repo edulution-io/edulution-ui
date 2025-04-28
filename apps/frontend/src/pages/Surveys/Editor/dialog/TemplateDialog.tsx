@@ -37,7 +37,7 @@ const TemplateDialog = (props: TemplateDialogProps) => {
   const getDialogBody = () => (
     <TemplateDialogBody
       form={form}
-      creator={creator}
+      surveyCreator={creator}
     />
   );
 

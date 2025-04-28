@@ -15,31 +15,36 @@ import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import TemplateDto from '@libs/survey/types/api/template.dto';
 import Template from '@/pages/Surveys/Editor/dialog/Template';
 import Label from '@/components/ui/Label';
+import { AccordionSH } from '@/components/ui/AccordionSH';
 
 interface TemplatesProps {
   form: UseFormReturn<SurveyDto>;
   creator: SurveyCreator;
-  templates: SurveyDto[];
+  templates: TemplateDto[];
 }
 
 const Templates = (props: TemplatesProps) => {
   const { form, creator, templates } = props;
   const { t } = useTranslation();
+
   return (
     <>
       <Label>
         <p className="font-bold">{t('survey.editor.templateMenu.fetch')}</p>
       </Label>
-      {templates.map((surveyDto: SurveyDto) => (
-        <Template
-          key={form.getValues('formula').title}
-          form={form}
-          creator={creator}
-          template={surveyDto}
-        />
-      ))}
+      <AccordionSH type="single">
+        {templates.map((templateDto: TemplateDto) => (
+          <Template
+            key={form.getValues('formula').title}
+            form={form}
+            creator={creator}
+            template={templateDto}
+          />
+        ))}
+      </AccordionSH>
     </>
   );
 };

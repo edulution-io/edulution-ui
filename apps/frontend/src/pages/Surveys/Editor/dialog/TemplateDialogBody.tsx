@@ -15,20 +15,21 @@ import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import Templates from '@/pages/Surveys/Editor/dialog/Templates';
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import Label from '@/components/ui/Label';
 
-interface SaveSurveyDialogBodyProps {
+interface TemplateDialogBodyProps {
   form: UseFormReturn<SurveyDto>;
   surveyCreator: SurveyCreator;
 }
 
-const TemplateDialogBody = (props: SaveSurveyDialogBodyProps) => {
+const TemplateDialogBody = (props: TemplateDialogBodyProps) => {
   const { form, surveyCreator } = props;
-  const { templates, fetchTemplates, uploadTemplate } = useTemplateMenuStore();
+  const { setIsOpenTemplateMenu, templates, fetchTemplates, uploadTemplate } = useTemplateMenuStore();
 
   const { t } = useTranslation();
 
@@ -41,8 +42,9 @@ const TemplateDialogBody = (props: SaveSurveyDialogBodyProps) => {
   const handleSaveTemplate = async () => {
     const values = form.getValues();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { creator, ...remainingSurvey } = values;
-    await uploadTemplate(newTemplateName, remainingSurvey);
+    const { formula, saveNo, creator, createdAt, expires, answers, ...remainingSurvey } = values;
+    await uploadTemplate(newTemplateName, { formula: surveyCreator.JSON as SurveyFormula, ...remainingSurvey });
+    setIsOpenTemplateMenu(false);
   };
 
   return (
@@ -52,15 +54,16 @@ const TemplateDialogBody = (props: SaveSurveyDialogBodyProps) => {
       </Label>
 
       <Input
+        className="my-0 mr-[100px] h-[32px] py-0 pr-[100px]"
         value={newTemplateName}
         onChange={(e) => setNewTemplateName(e.target.value)}
       />
-      <div className="flex justify-end">
+      <div className="my-0 flex h-[32px] justify-end py-0">
         <Button
           className="my-0 h-[32px] py-0"
           onClick={handleSaveTemplate}
           disabled={!newTemplateName}
-          variant="btn-outline"
+          variant="btn-collaboration"
         >
           {t('common.save')}
         </Button>

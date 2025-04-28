@@ -15,18 +15,22 @@ import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import TemplateDto from '@libs/survey/types/api/template.dto';
+import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import YamlEditor from '@/components/shared/YamlEditor';
 import { Button } from '@/components/shared/Button';
+import { AccordionTrigger, AccordionItem, AccordionContent } from '@/components/ui/AccordionSH';
 
 interface TemplateProps {
   form: UseFormReturn<SurveyDto>;
   creator: SurveyCreator;
-  template: SurveyDto;
+  template: TemplateDto;
   key?: string;
 }
 
 const Template = (props: TemplateProps) => {
   const { form, creator, template, key } = props;
+  const { fileName, surveyDto } = template;
   const {
     formula,
     /* backendLimiter , */
@@ -36,14 +40,15 @@ const Template = (props: TemplateProps) => {
     isPublic,
     canSubmitMultipleAnswers,
     canUpdateFormerAnswer,
-  } = template;
+  } = surveyDto;
+  const { setIsOpenTemplateMenu } = useTemplateMenuStore();
 
   const { t } = useTranslation();
 
   const handleLoadTemplate = () => {
     // form.setValue('backendLimiter', backendLimiter);
-    form.setValue('invitedAttendees', invitedAttendees);
-    form.setValue('invitedGroups', invitedGroups);
+    form.setValue('invitedAttendees', invitedAttendees || []);
+    form.setValue('invitedGroups', invitedGroups || []);
     form.setValue('isAnonymous', isAnonymous);
     form.setValue('isPublic', isPublic);
     form.setValue('canSubmitMultipleAnswers', canSubmitMultipleAnswers);
@@ -53,28 +58,34 @@ const Template = (props: TemplateProps) => {
       form.setValue('formula', formula);
       creator.JSON = formula;
     }
+
+    setIsOpenTemplateMenu(false);
   };
 
   return (
-    <div
+    <AccordionItem
       key={key}
-      className="my-16"
+      value={fileName}
     >
-      {formula.title}
-      <YamlEditor
-        value={JSON.stringify(template, null, 2)}
-        onChange={() => {}}
-        disabled
-        className="max-w-[calc(100% - 4rem)] max-h-[400px] min-h-[200px] w-full min-w-[400px]"
-      />
-      <Button
-        className="my-0 h-[32px] py-0"
-        onClick={handleLoadTemplate}
-        variant="btn-outline"
-      >
-        {t('common.load')}
-      </Button>
-    </div>
+      <AccordionTrigger className="flex text-h4">
+        <p className="font-bold">{`${fileName} (${t('common.title')}: ${formula?.title})`}</p>
+      </AccordionTrigger>
+      <AccordionContent className="space-y-2 px-1">
+        <YamlEditor
+          value={JSON.stringify(surveyDto, null, 2)}
+          onChange={() => {}}
+          disabled
+          className="max-h-[500px] min-h-[200px] w-full"
+        />
+        <Button
+          className="absolute right-6 my-0 h-[32px] py-0"
+          onClick={handleLoadTemplate}
+          variant="btn-collaboration"
+        >
+          {t('common.load')}
+        </Button>
+      </AccordionContent>
+    </AccordionItem>
   );
 };
 
