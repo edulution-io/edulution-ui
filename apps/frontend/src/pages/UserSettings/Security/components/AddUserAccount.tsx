@@ -24,6 +24,7 @@ import { DropdownSelect } from '@/components';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import getDisplayName from '@/utils/getDisplayName';
 import useLanguage from '@/hooks/useLanguage';
+import { encodeBase64 } from '@libs/common/utils/getBase64String';
 import getUserAccountFormSchema from './getUserAccountSchema';
 
 interface AddUserAccountDialogProps {
@@ -93,7 +94,7 @@ const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelecte
     const userDataDto = {
       appName: data.appName,
       accountUser: data.accountUser,
-      accountPassword: JSON.stringify(newPassword),
+      accountPassword: encodeBase64(JSON.stringify(newPassword)),
     };
 
     if (idx !== undefined) {

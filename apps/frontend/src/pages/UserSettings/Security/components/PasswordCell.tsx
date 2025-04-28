@@ -18,10 +18,11 @@ import { useTranslation } from 'react-i18next';
 import { EyeLightIcon, EyeLightSlashIcon } from '@/assets/icons';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { decryptPassword } from '@libs/common/utils/encryptPassword';
-import EncryptedPasswordObject from '@libs/common/types/encryptPasswordObject';
 import copyToClipboard from '@/utils/copyToClipboard';
 import Input from '@/components/shared/Input';
 import cn from '@libs/common/utils/className';
+import { decodeBase64 } from '@libs/common/utils/getBase64String';
+import type EncryptedPasswordObject from '@libs/common/types/encryptPasswordObject';
 import EnterMasterPwDialog from './EnterMasterPwDialog';
 
 interface PasswordCellProps {
@@ -47,7 +48,10 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
   const masterPw = form.watch('masterPw');
 
   const handleDecryptPassword = async () => {
-    const encryptedPassword = await decryptPassword(JSON.parse(accountPassword) as EncryptedPasswordObject, masterPw);
+    const encryptedPassword = await decryptPassword(
+      JSON.parse(decodeBase64(accountPassword)) as EncryptedPasswordObject,
+      masterPw,
+    );
 
     if (encryptedPassword) {
       return encryptedPassword;
