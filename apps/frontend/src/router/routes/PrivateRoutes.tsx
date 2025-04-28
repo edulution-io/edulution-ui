@@ -10,10 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import React from 'react';
+import { Outlet, Route, Navigate } from 'react-router-dom';
 import getForwardedAppRoutes from '@/router/routes/ForwardedAppRoutes';
 import getFramedRoutes from '@/router/routes/FramedRoutes';
 import getNativeAppRoutes from '@/router/routes/NativeAppRoutes';
-import { Outlet, Route } from 'react-router-dom';
 import {
   LANGUAGE_PATH,
   MAILS_PATH,
@@ -27,16 +28,14 @@ import UserSettingsDetailsPage from '@/pages/UserSettings/Details/UserSettingsDe
 import UserSettingsMailsPage from '@/pages/UserSettings/Mails/UserSettingsMailsPage';
 import LanguageSettingsPage from '@/pages/UserSettings/Language/LanguageSettingsPage';
 import UserSettingsMobileAccess from '@/pages/UserSettings/MobileAccess/UserSettingsMobileAccess';
-import APPS from '@libs/appconfig/constants/apps';
-import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
 import getSettingsRoutes from '@/router/routes/SettingsRoutes';
 import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
 import getSurveyRoutes from '@/router/routes/SurveyRoutes';
 import getFileSharingRoutes from '@/router/routes/FileSharingRoutes';
-import React from 'react';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import DashboardPage from '../../pages/Dashboard/DashboardPage';
 import getEmbeddedRoutes from './EmbeddedAppRoutes';
+import ProtectedRoute from './ProtectedRoute';
 
 const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
   <>
@@ -55,8 +54,13 @@ const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
       element={<Outlet />}
     >
       <Route
-        path=""
-        element={<UserSettingsSecurityPage />}
+        index
+        element={
+          <Navigate
+            to={USER_DETAILS_PATH}
+            replace
+          />
+        }
       />
       <Route
         path={USER_DETAILS_PATH}
@@ -80,12 +84,7 @@ const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
       />
     </Route>
 
-    <Route
-      path={`${APPS.BULLETIN_BOARD}/:bulletinId`}
-      element={<BulletinBoardPage />}
-    />
-
-    {getSettingsRoutes()}
+    <Route element={<ProtectedRoute />}>{getSettingsRoutes()}</Route>
     {getClassManagementRoutes()}
     {getSurveyRoutes()}
     {getFileSharingRoutes()}

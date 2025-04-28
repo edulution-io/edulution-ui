@@ -162,7 +162,7 @@ const FileSharingPreviewFrame = () => {
   return (
     <ResizableWindow
       disableMinimizeWindow={isFilePreviewDocked}
-      disableToggleMaximizeWindow={isFilePreviewDocked}
+      disableToggleMaximizeWindow={false}
       titleTranslationId={windowTitle}
       handleClose={handleCloseFile}
       initialPosition={initialPositionMemo}
