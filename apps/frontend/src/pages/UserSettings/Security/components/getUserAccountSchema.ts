@@ -16,12 +16,7 @@ import { TFunction } from 'i18next';
 const getUserAccountFormSchema = (t: TFunction<'translation', undefined>) =>
   z
     .object({
-      accountUrl: z
-        .string()
-        .min(1, { message: t('common.required') })
-        .refine((value) => !value || z.string().url().safeParse(value).success, {
-          message: t('common.invalid_url'),
-        }),
+      appName: z.string({ message: t('common.required') }),
       accountUser: z.string().min(1, { message: t('common.required') }),
       accountPassword: z.string().optional(),
       masterPassword: z.string().optional(),

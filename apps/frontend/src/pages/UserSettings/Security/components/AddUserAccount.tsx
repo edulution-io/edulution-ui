@@ -16,10 +16,14 @@ import { useForm } from 'react-hook-form';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import FormField from '@/components/shared/FormField';
-import { Form } from '@/components/ui/Form';
+import { Form, FormControl, FormFieldSH, FormItem } from '@/components/ui/Form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useUserStore from '@/store/UserStore/UserStore';
 import { deriveKey, encryptPassword } from '@libs/common/utils/encryptPassword';
+import { DropdownSelect } from '@/components';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import getDisplayName from '@/utils/getDisplayName';
+import useLanguage from '@/hooks/useLanguage';
 import getUserAccountFormSchema from './getUserAccountSchema';
 
 interface AddUserAccountDialogProps {
@@ -30,7 +34,7 @@ interface AddUserAccountDialogProps {
 }
 
 type UserAccountFormValues = {
-  accountUrl: string;
+  appName: string;
   accountUser: string;
   accountPassword: string;
   masterPassword: string;
@@ -38,19 +42,21 @@ type UserAccountFormValues = {
 
 const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelected, keys, handleOpenChange }) => {
   const { t } = useTranslation();
+  const { language } = useLanguage();
   const { userAccounts, addUserAccount, updateUserAccount } = useUserStore();
+  const { appConfigs } = useAppConfigsStore();
   const idx = isOneRowSelected ? Number(keys[0]) : undefined;
 
   const initialFormValues: UserAccountFormValues =
     idx !== undefined && userAccounts[idx]
       ? {
-          accountUrl: userAccounts[idx].accountUrl,
+          appName: userAccounts[idx].appName,
           accountUser: userAccounts[idx].accountUser,
           accountPassword: '',
           masterPassword: '',
         }
       : {
-          accountUrl: '',
+          appName: '',
           accountUser: '',
           accountPassword: '',
           masterPassword: '',
@@ -85,7 +91,7 @@ const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelecte
     };
 
     const userDataDto = {
-      accountUrl: data.accountUrl,
+      appName: data.appName,
       accountUser: data.accountUser,
       accountPassword: JSON.stringify(newPassword),
     };
@@ -105,18 +111,34 @@ const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelecte
     handleClose();
   };
 
+  const appNameOptions = appConfigs.map((appConfig) => ({
+    id: appConfig.name,
+    name: getDisplayName(appConfig, language),
+  }));
+
   const getDialogBody = () => (
     <Form {...form}>
       <form
         className="flex flex-col gap-4"
         onSubmit={form.handleSubmit(onSubmit)}
       >
-        <FormField
-          labelTranslationId={t('usersettings.security.accountUrl')}
-          name="accountUrl"
-          defaultValue={initialFormValues.accountUrl}
-          form={form}
-          variant="dialog"
+        <FormFieldSH
+          control={form.control}
+          name="appName"
+          defaultValue={initialFormValues.appName}
+          render={({ field }) => (
+            <FormItem>
+              <p className="font-bold">{t('common.application')}</p>
+              <FormControl>
+                <DropdownSelect
+                  options={appNameOptions}
+                  selectedVal={field.value}
+                  handleChange={field.onChange}
+                  variant="dialog"
+                />
+              </FormControl>
+            </FormItem>
+          )}
         />
         <FormField
           labelTranslationId={t('common.username')}

@@ -191,12 +191,12 @@ class UsersService {
       }
 
       const userAccounts = await this.userAccountModel
-        .find({ user_id: user._id }, 'accountUrl accountUser accountPassword')
+        .find({ user_id: user._id }, 'appName accountUser accountPassword')
         .exec();
 
       const userAccountsDto = userAccounts.map((account) => ({
         accountId: account._id as string,
-        accountUrl: account.accountUrl,
+        appName: account.appName,
         accountUser: account.accountUser,
         accountPassword: account.accountPassword,
       }));
@@ -223,7 +223,7 @@ class UsersService {
           { _id: accountId },
           {
             $set: {
-              accountUrl: userAccountDto.accountUrl,
+              appName: userAccountDto.appName,
               accountUser: userAccountDto.accountUser,
               accountPassword: userAccountDto.accountPassword,
             },

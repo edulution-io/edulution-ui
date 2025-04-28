@@ -872,7 +872,6 @@
       "filterPlaceHolderText": "Suche nach URL",
       "userAccounts": "Benutzerkonten",
       "addUserAccount": "Konto hinzufügen",
-      "accountUrl": "URL zum Konto",
       "accountId": "Konto-ID",
       "accountData": "Zugangsdaten",
       "masterPassword": "Master-Passwort",
@@ -1061,7 +1060,8 @@
     "invalid_fqdn": "Ungültiger FQDN. Bitte nur den Hostnamen angeben.",
     "required": "Erforderlich",
     "download": "Herunterladen",
-    "template": "Vorlage"
+    "template": "Vorlage",
+    "application": "Anwendung"
   },
   "form": {
     "path": "Link",

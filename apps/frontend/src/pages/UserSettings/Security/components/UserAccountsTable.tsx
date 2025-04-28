@@ -67,7 +67,7 @@ const UserAccountsTable: React.FC = () => {
       <ScrollableTable
         columns={UserAccountsTableColumns}
         data={userAccounts}
-        filterKey="accountUrl"
+        filterKey="appName"
         filterPlaceHolderText="usersettings.security.filterPlaceHolderText"
         applicationName={APPS.USER_SETTINGS}
         enableRowSelection

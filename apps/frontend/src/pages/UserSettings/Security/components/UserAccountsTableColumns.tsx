@@ -16,6 +16,9 @@ import SortableHeader from '@/components/ui/Table/SortableHeader';
 import { ColumnDef } from '@tanstack/react-table';
 import type UserAccountDto from '@libs/user/types/userAccount.dto';
 import copyToClipboard from '@/utils/copyToClipboard';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useLanguage from '@/hooks/useLanguage';
+import getDisplayName from '@/utils/getDisplayName';
 import PasswordCell from './PasswordCell';
 
 const UserAccountsTableColumns: ColumnDef<UserAccountDto>[] = [
@@ -34,18 +37,29 @@ const UserAccountsTableColumns: ColumnDef<UserAccountDto>[] = [
     ),
   },
   {
-    id: 'accountUrl',
+    id: 'appName',
     header: ({ column }) => <SortableHeader<UserAccountDto, unknown> column={column} />,
     meta: {
-      translationId: 'form.url',
+      translationId: 'common.application',
     },
-    accessorFn: (row) => row.accountUrl,
-    cell: ({ row }) => (
-      <SelectableTextCell
-        onClick={() => row.toggleSelected()}
-        text={row.original.accountUrl}
-      />
-    ),
+    accessorFn: (row) => row.appName,
+    cell: ({ row }) => {
+      const { appConfigs } = useAppConfigsStore();
+      const { language } = useLanguage();
+
+      const displayName = () => {
+        const appConfig = appConfigs.find((appCfg) => appCfg.name === row.original.appName);
+        if (!appConfig) return row.original.appName;
+        return getDisplayName(appConfig, language);
+      };
+
+      return (
+        <SelectableTextCell
+          onClick={() => row.toggleSelected()}
+          text={displayName()}
+        />
+      );
+    },
   },
   {
     id: 'accountUser',

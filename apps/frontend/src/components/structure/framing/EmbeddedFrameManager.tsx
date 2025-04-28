@@ -35,8 +35,7 @@ const EmbeddedFrameManager = () => {
 
   const foundUserAccounts = useMemo(() => {
     if (!appConfig) return [];
-    const url = loadedEmbeddedFrames.includes(appConfig.name) ? appConfig.options.url : undefined;
-    return userAccounts.filter((u) => u.accountUrl === url);
+    return userAccounts.filter((u) => u.appName === appConfig.name);
   }, [appConfig, loadedEmbeddedFrames, userAccounts]);
 
   const toastId = `${appConfig?.name}-embedded-login-toast`;

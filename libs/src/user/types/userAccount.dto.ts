@@ -17,7 +17,7 @@ class UserAccountDto {
   accountId: string;
 
   @IsString()
-  accountUrl: string;
+  appName: string;
 
   @IsString()
   accountUser: string;

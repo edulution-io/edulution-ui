@@ -870,7 +870,6 @@
       "filterPlaceHolderText": "Search for URL",
       "userAccounts": "User Accounts",
       "addUserAccount": "Add account",
-      "accountUrl": "Account URL",
       "accountId": "Konto-ID",
       "accountData": "Login Data",
       "masterPassword": "Master Password",
@@ -1060,7 +1059,8 @@
     "invalid_fqdn": "Invalid FQDN. Please only enter the hostname.",
     "required": "Required",
     "download": "Download",
-    "template": "Template"
+    "template": "Template",
+    "application": "Application"
   },
   "form": {
     "path": "Path",

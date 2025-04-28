@@ -22,7 +22,7 @@ export class UserAccounts {
   user_id: Types.ObjectId;
 
   @Prop()
-  accountUrl: string;
+  appName: string;
 
   @Prop()
   accountUser: string;
