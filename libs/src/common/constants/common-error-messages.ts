@@ -19,7 +19,6 @@ enum CommonErrorMessages {
   FILE_NOT_FOUND = 'common.errors.fileNotFound',
   FILE_NOT_PROVIDED = 'common.errors.fileNotProvided',
   INVALID_FILE_TYPE = 'common.errors.invalidFileType',
-  RATE_LIMIT_EXCEEDED = 'common.errors.rateLimitExceeded',
 }
 
 export default CommonErrorMessages;
