@@ -12,41 +12,50 @@
 
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import Input from '@/components/shared/Input';
+import { UseFormReturn } from 'react-hook-form';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import FormField from '@/components/shared/FormField';
+import { Form } from '@/components/ui/Form';
 
 interface EnterMasterPwDialogProps {
   isOpen: string;
-  masterPw: string;
-  setMasterPassword: React.Dispatch<React.SetStateAction<string>>;
+  form: UseFormReturn<{ masterPw: string }>;
   handleClose: () => void;
   handleConfirm: () => void;
 }
 
-const EnterMasterPwDialog: FC<EnterMasterPwDialogProps> = ({
-  isOpen,
-  masterPw,
-  setMasterPassword,
-  handleClose,
-  handleConfirm,
-}) => {
+const EnterMasterPwDialog: FC<EnterMasterPwDialogProps> = ({ isOpen, form, handleClose, handleConfirm }) => {
   const { t } = useTranslation();
 
+  const onSubmit = () => {
+    handleConfirm();
+  };
+
   const getDialogBody = () => (
-    <Input
-      value={masterPw}
-      onChange={(e) => setMasterPassword(e.target.value)}
-      onKeyDown={(key) => (key.key === 'Enter' ? handleConfirm() : null)}
-    />
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <FormField
+          name="masterPw"
+          defaultValue=""
+          form={form}
+          labelTranslationId={t('conferences.password')}
+          type="password"
+          variant="dialog"
+        />
+      </form>
+    </Form>
   );
 
   const getDialogFooter = () => (
-    <DialogFooterButtons
-      handleClose={handleClose}
-      handleSubmit={handleConfirm}
-      submitButtonText="common.confirm"
-    />
+    <form onSubmit={form.handleSubmit(onSubmit)}>
+      <DialogFooterButtons
+        handleClose={handleClose}
+        handleSubmit={() => {}}
+        submitButtonType="submit"
+        submitButtonText="common.confirm"
+      />
+    </form>
   );
 
   return (

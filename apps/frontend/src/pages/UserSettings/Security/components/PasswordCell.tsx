@@ -12,6 +12,7 @@
 
 import React, { useState } from 'react';
 import { MdFileCopy } from 'react-icons/md';
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { EyeLightIcon, EyeLightSlashIcon } from '@/assets/icons';
@@ -35,7 +36,15 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
   const isVisible = password !== '********';
 
   const [isOpen, setIsOpen] = useState('');
-  const [masterPw, setMasterPassword] = useState('');
+
+  const form = useForm({
+    mode: 'onSubmit',
+    defaultValues: {
+      masterPw: '',
+    },
+  });
+
+  const masterPw = form.watch('masterPw');
 
   const handleDecryptPassword = async () => {
     const encryptedPassword = await decryptPassword(JSON.parse(accountPassword) as EncryptedPasswordObject, masterPw);
@@ -43,7 +52,7 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
     if (encryptedPassword) {
       return encryptedPassword;
     }
-    setMasterPassword('');
+    form.setValue('masterPw', '');
     toast.error(t('usersettings.security.wrongMasterPassword'));
     return placeholder;
   };
@@ -97,7 +106,7 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
 
   const handleClose = () => {
     setIsOpen('');
-    setMasterPassword('');
+    form.setValue('masterPw', '');
   };
 
   return (
@@ -139,8 +148,7 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
       </div>
       <EnterMasterPwDialog
         isOpen={isOpen}
-        masterPw={masterPw}
-        setMasterPassword={setMasterPassword}
+        form={form}
         handleClose={handleClose}
         handleConfirm={handleConfirm}
       />
