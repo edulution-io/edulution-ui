@@ -947,6 +947,7 @@
   "edit": "Edit",
   "common": {
     "ok": "OK",
+    "confirm": "Confirm",
     "share": "Share",
     "savedToClipboard": "Saved to clipboard.",
     "savedToClipboardError": "Unable to save into clipboard.",

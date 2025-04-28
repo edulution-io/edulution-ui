@@ -18,18 +18,18 @@ import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 interface EnterMasterPwDialogProps {
   isOpen: string;
-  setIsOpen: React.Dispatch<React.SetStateAction<string>>;
   masterPw: string;
   setMasterPassword: React.Dispatch<React.SetStateAction<string>>;
   handleClose: () => void;
+  handleConfirm: () => void;
 }
 
 const EnterMasterPwDialog: FC<EnterMasterPwDialogProps> = ({
   isOpen,
-  setIsOpen,
   masterPw,
   setMasterPassword,
   handleClose,
+  handleConfirm,
 }) => {
   const { t } = useTranslation();
 
@@ -37,15 +37,15 @@ const EnterMasterPwDialog: FC<EnterMasterPwDialogProps> = ({
     <Input
       value={masterPw}
       onChange={(e) => setMasterPassword(e.target.value)}
-      onKeyDown={(key) => (key.key === 'Enter' ? handleClose() : null)}
+      onKeyDown={(key) => (key.key === 'Enter' ? handleConfirm() : null)}
     />
   );
 
   const getDialogFooter = () => (
     <DialogFooterButtons
-      handleClose={() => setIsOpen('')}
-      handleSubmit={handleClose}
-      submitButtonText="common.ok"
+      handleClose={handleClose}
+      handleSubmit={handleConfirm}
+      submitButtonText="common.confirm"
     />
   );
 
@@ -55,7 +55,7 @@ const EnterMasterPwDialog: FC<EnterMasterPwDialogProps> = ({
       isOpen={isOpen === 'show' || isOpen === 'copy'}
       body={getDialogBody()}
       footer={getDialogFooter()}
-      handleOpenChange={() => setIsOpen('')}
+      handleOpenChange={handleClose}
     />
   );
 };

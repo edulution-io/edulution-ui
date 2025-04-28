@@ -84,7 +84,7 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
     }
   };
 
-  const handleClose = async () => {
+  const handleConfirm = async () => {
     if (isOpen === 'show') {
       await handleShowPassword();
     }
@@ -93,6 +93,11 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
     }
 
     setIsOpen('');
+  };
+
+  const handleClose = () => {
+    setIsOpen('');
+    setMasterPassword('');
   };
 
   return (
@@ -134,10 +139,10 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
       </div>
       <EnterMasterPwDialog
         isOpen={isOpen}
-        setIsOpen={setIsOpen}
         masterPw={masterPw}
         setMasterPassword={setMasterPassword}
         handleClose={handleClose}
+        handleConfirm={handleConfirm}
       />
     </>
   );

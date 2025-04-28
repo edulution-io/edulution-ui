@@ -948,6 +948,7 @@
   },
   "common": {
     "ok": "OK",
+    "confirm": "Bestätigen",
     "share": "Teilen",
     "savedToClipboard": "In die Zwischenablage kopiert.",
     "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden.",
