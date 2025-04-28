@@ -1,126 +1,110 @@
-import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { TldrawSyncRoom, TldrawSyncRoomDocument } from './tldraw-sync-room.schema';
 import { Model } from 'mongoose';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { RoomSnapshot, TLSocketRoom } from '@tldraw/sync-core';
-import { roomsMap } from './tdlraw-sync-rooms';
-import FilesystemService from '../filesystem/filesystem.service';
-import { Readable } from 'stream';
+import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
+import TLDRAW_PERSISTENCE_INTERVAL from '@libs/tldraw-sync/constants/persistenceInterval';
+import TLDRAW_CACHE_KEY from '@libs/tldraw-sync/constants/cacheKey';
+import RoomState from '@libs/tldraw-sync/types/tdlraw-sync-rooms';
+import { UnknownRecord } from 'tldraw';
+import { TldrawSyncRoom, TldrawSyncRoomDocument } from './tldraw-sync-room.schema';
 
-function isEphemeralRoomId(roomId: string) {
-  return roomId.startsWith('multi-');
-}
-
-let roomInitMutex: Promise<null | Error> = Promise.resolve(null);
+const roomsMap = new Map<string, RoomState>();
 
 @Injectable()
 export default class TldrawSyncService implements OnModuleInit, OnModuleDestroy {
-  private readonly logger = new Logger(TldrawSyncService.name);
-  private readonly EPHEMERAL_ROOM_TTL = 60 * 60;
-  private persistInterval: ReturnType<typeof setInterval> | null = null;
+  private persistInterval: NodeJS.Timeout | null = null;
 
   constructor(
     @InjectModel(TldrawSyncRoom.name)
     private readonly roomModel: Model<TldrawSyncRoomDocument>,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    private readonly filesystemService: FilesystemService,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
-  async onModuleInit() {
+  onModuleInit() {
     this.persistInterval = setInterval(() => {
-      for (const [roomId, state] of roomsMap.entries()) {
+      roomsMap.forEach((state, roomId) => {
         if (state.needsPersist) {
-          state.needsPersist = false;
-          this.persistRoom(roomId, state.room.getCurrentSnapshot());
+          const newState = { ...state, needsPersist: false };
+          roomsMap.set(roomId, newState);
+          void this.persistRoom(roomId, state.room.getCurrentSnapshot());
         }
         if (state.room.isClosed()) {
-          this.logger.log(`Removing closed room: ${roomId}`);
-          roomsMap.delete(roomId);
+          void this.removeRoom(roomId);
         }
-      }
-    }, 2000);
+      });
+    }, TLDRAW_PERSISTENCE_INTERVAL);
   }
 
-  async onModuleDestroy() {
+  onModuleDestroy() {
     if (this.persistInterval) {
       clearInterval(this.persistInterval);
     }
   }
 
-  async makeOrLoadRoom(roomId: string) {
-    this.logger.log('makeOrLoadRoom');
+  async makeOrLoadRoom(roomId: string): Promise<TLSocketRoom<UnknownRecord, void>> {
+    const existing = roomsMap.get(roomId);
 
-    roomInitMutex = roomInitMutex
-      .then(async () => {
-        const existing = roomsMap.get(roomId);
-        if (existing && !existing.room.isClosed()) {
-          return null;
-        }
+    if (existing && !existing.room.isClosed()) {
+      return existing.room;
+    }
 
-        const ephemeral = isEphemeralRoomId(roomId);
+    let snapshot: RoomSnapshot | null = await this.loadFromRedis(roomId);
 
-        let snapshot: RoomSnapshot | null = null;
+    if (!snapshot) {
+      const roomDoc = await this.roomModel.findOne({ roomId }).lean();
 
-        if (ephemeral) {
-          snapshot = await this.loadFromRedis(roomId);
-          if (!snapshot) {
-            this.logger.log(`Ephemeral room not found in Redis: ${roomId}, will create new.`);
-          }
-        } else {
-          const roomDoc = await this.roomModel.findOne({ roomId }).lean();
-          if (roomDoc) {
-            snapshot = roomDoc.roomData;
-            this.logger.log(`Loaded snapshot from Mongo for room: ${roomId}`);
-          } else {
-            this.logger.log(`No room found in Mongo for room: ${roomId}, will create new.`);
-          }
-        }
+      if (roomDoc) {
+        snapshot = roomDoc.roomData;
+      }
+    }
 
-        const roomState = this.createRoomState(roomId, snapshot, ephemeral);
-        roomsMap.set(roomId, roomState);
-        return null;
-      })
-      .catch((err) => err);
+    const room = this.createRoom(roomId, snapshot);
 
-    const err = await roomInitMutex;
-    if (err) throw err;
-    return roomsMap.get(roomId)!.room;
+    roomsMap.set(roomId, { roomId, room, needsPersist: false });
+
+    return room;
   }
 
-  private createRoomState(roomId: string, snapshot: RoomSnapshot | null, ephemeral: boolean) {
-    const room = new TLSocketRoom<any, void>({
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  private createRoom(roomId: string, snapshot: RoomSnapshot | null): TLSocketRoom<UnknownRecord, void> {
+    return new TLSocketRoom<UnknownRecord, void>({
       initialSnapshot: snapshot || undefined,
-      onSessionRemoved: (r, { sessionId, numSessionsRemaining }) => {
-        this.logger.log(`Session removed: ${sessionId}, room: ${roomId}`);
+      onSessionRemoved: (room, { numSessionsRemaining }) => {
         if (numSessionsRemaining === 0) {
-          this.logger.log(`No more sessions in room: ${roomId}, closing room.`);
-          r.close();
+          room.close();
         }
       },
       onDataChange: () => {
-        const st = roomsMap.get(roomId);
-        if (st) {
-          st.needsPersist = true;
+        const state = roomsMap.get(roomId);
+        if (state) {
+          state.needsPersist = true;
         }
       },
     });
-    return {
-      roomId,
-      room,
-      isEphemeral: ephemeral,
-      needsPersist: false,
-    };
   }
 
   private async loadFromRedis(roomId: string): Promise<RoomSnapshot | null> {
-    const data = await this.cacheManager.get<RoomSnapshot>(`room:${roomId}`);
-    return data || null;
+    const snapshot = await this.cacheManager.get<RoomSnapshot>(`${TLDRAW_CACHE_KEY}:${roomId}`);
+    return snapshot || null;
   }
 
   private async saveToRedis(roomId: string, snapshot: RoomSnapshot) {
-    await this.cacheManager.set<RoomSnapshot>(`room:${roomId}`, snapshot, this.EPHEMERAL_ROOM_TTL);
+    await this.cacheManager.set(`${TLDRAW_CACHE_KEY}:${roomId}`, snapshot, DEFAULT_CACHE_TTL_MS);
   }
 
   private async saveToMongo(roomId: string, snapshot: RoomSnapshot) {
@@ -128,23 +112,12 @@ export default class TldrawSyncService implements OnModuleInit, OnModuleDestroy 
   }
 
   async persistRoom(roomId: string, snapshot: RoomSnapshot) {
-    const ephemeral = isEphemeralRoomId(roomId);
-    if (ephemeral) {
-      await this.saveToRedis(roomId, snapshot);
-    } else {
-      await this.saveToMongo(roomId, snapshot);
-    }
+    await this.saveToRedis(roomId, snapshot);
+    await this.saveToMongo(roomId, snapshot);
   }
 
-  async removeFromCache(roomId: string) {
-    await this.cacheManager.del(`room:${roomId}`);
-  }
-
-  async storeAsset(assetId: string, data: Buffer): Promise<void> {
-    await this.filesystemService.writeFile(assetId, data);
-  }
-
-  async loadAsset(assetId: string): Promise<Readable> {
-    return this.filesystemService.readFileStream(assetId);
+  async removeRoom(roomId: string) {
+    await this.cacheManager.del(`${TLDRAW_CACHE_KEY}:${roomId}`);
+    roomsMap.delete(roomId);
   }
 }

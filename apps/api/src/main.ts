@@ -19,6 +19,7 @@ import helmet from 'helmet';
 import { JwtService } from '@nestjs/jwt';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import folderPaths from '@libs/common/constants/folderPaths';
+import { WsAdapter } from '@nestjs/platform-ws';
 import AppModule from './app/app.module';
 import AuthenticationGuard from './auth/auth.guard';
 
@@ -32,6 +33,8 @@ async function bootstrap() {
   app.set('trust proxy', true);
 
   app.use(helmet());
+
+  app.useWebSocketAdapter(new WsAdapter(app));
 
   const reflector = new Reflector();
   app.useGlobalGuards(new AuthenticationGuard(new JwtService(), reflector));

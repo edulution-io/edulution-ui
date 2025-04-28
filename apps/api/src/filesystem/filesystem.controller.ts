@@ -45,12 +45,12 @@ class FileSystemController {
     return res.status(200).json(file.filename);
   }
 
-  @Get('info/:path(.*)')
+  @Get('info/*path')
   getFiles(@Param('path') path: string) {
     return this.filesystemService.getFilesInfo(path);
   }
 
-  @Get('file/:name/:filename(.*)')
+  @Get('file/:name/*filename')
   serveFiles(@Param('name') name: string, @Param('filename') filename: string, @Res() res: Response) {
     return this.filesystemService.serveFiles(name, filename, res);
   }

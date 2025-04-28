@@ -68,6 +68,14 @@ export default defineConfig(({ mode }) => {
             Origin: env.VITE_EDU_API_URL,
           },
         },
+        '/websocket': {
+          rewrite: (path) => path.replace(/^\/websocket/, ''),
+          target: env.VITE_EDU_API_URL,
+          ws: true,
+          headers: {
+            Origin: env.VITE_EDU_API_URL,
+          },
+        },
         '/guacamole': {
           rewrite: (path) => path.replace(/^\/guacamole/, ''),
           target: `${env.VITE_GUACAMOLE_URL}/guacamole`,

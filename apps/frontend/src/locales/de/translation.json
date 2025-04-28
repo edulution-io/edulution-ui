@@ -962,7 +962,8 @@
       "fileNotFound": "Datei nicht gefunden",
       "fileNotProvided": "Datei wurde nicht bereitgestellt",
       "invalidFileType": "Ungültiger Dateityp",
-      "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen"
+      "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
+      "rateLimitExceeded": "Zu viele Anfragen, Limit überschritten"
     },
     "cut": "Ausschneiden",
     "sortOrder": "Sortierung",

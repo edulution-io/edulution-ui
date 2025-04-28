@@ -10,16 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum CommonErrorMessages {
-  ATTACHMENT_UPLOAD_FAILED = 'common.errors.attachmentUploadFailed',
-  DB_ACCESS_FAILED = 'common.errors.dbAccessFailed',
-  DIRECTORY_CREATION_FAILED = 'common.errors.directoryNotCreated',
-  FILE_DELETION_FAILED = 'common.errors.fileDeletionFailed',
-  FILE_WRITING_FAILED = 'common.errors.fileWritingFailed',
-  FILE_NOT_FOUND = 'common.errors.fileNotFound',
-  FILE_NOT_PROVIDED = 'common.errors.fileNotProvided',
-  INVALID_FILE_TYPE = 'common.errors.invalidFileType',
-  RATE_LIMIT_EXCEEDED = 'common.errors.rateLimitExceeded',
-}
+import WEBSOCKET_URL from '@libs/common/constants/websocket-url';
 
-export default CommonErrorMessages;
+const EDU_API_WEBSOCKET_URL = `${WEBSOCKET_URL}/websocket`;
+
+export default EDU_API_WEBSOCKET_URL;
