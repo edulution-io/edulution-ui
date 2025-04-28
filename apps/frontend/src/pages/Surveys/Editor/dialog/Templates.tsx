@@ -11,6 +11,7 @@
  */
 
 import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
@@ -38,7 +39,7 @@ const Templates = (props: TemplatesProps) => {
       <AccordionSH type="single">
         {templates.map((templateDto: TemplateDto) => (
           <Template
-            key={form.getValues('formula').title}
+            key={`${templateDto.fileName}-${uuidv4()}`}
             form={form}
             creator={creator}
             template={templateDto}

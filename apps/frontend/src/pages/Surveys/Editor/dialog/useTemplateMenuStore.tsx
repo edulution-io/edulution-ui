@@ -82,7 +82,7 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
       }
     }
 
-    set({ isLoading: true });
+    set({ isLoading: false });
   },
 
   fetchTemplate: async (fileName: string): Promise<void> => {
