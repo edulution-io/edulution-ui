@@ -10,18 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Global, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import AppConfigController from './appconfig.controller';
-import AppConfigService from './appconfig.service';
-import { AppConfig, AppConfigSchema } from './appconfig.schema';
-import MigrationService from '../migration/migration.service';
+import React from 'react';
+import { Route } from 'react-router-dom';
+import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import FramePlaceholder from '@/components/structure/framing/FramePlaceholder';
 
-@Global()
-@Module({
-  imports: [MongooseModule.forFeature([{ name: AppConfig.name, schema: AppConfigSchema }])],
-  controllers: [AppConfigController],
-  providers: [AppConfigService, MigrationService],
-  exports: [AppConfigService],
-})
-export default class AppConfigModule {}
+const getFramedRoutes = (appConfigs: AppConfigDto[]) =>
+  appConfigs
+    .filter((item) => item.appType === APP_INTEGRATION_VARIANT.FRAMED)
+    .map((item) => (
+      <Route
+        key={item.name}
+        path={item.name}
+        element={<FramePlaceholder />}
+      />
+    ));
+export default getFramedRoutes;

@@ -10,18 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Global, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import AppConfigController from './appconfig.controller';
-import AppConfigService from './appconfig.service';
-import { AppConfig, AppConfigSchema } from './appconfig.schema';
-import MigrationService from '../migration/migration.service';
+import type AppConfigTable from '@libs/bulletinBoard/types/appConfigTable';
+import type FileInfoDto from './fileInfo.dto';
 
-@Global()
-@Module({
-  imports: [MongooseModule.forFeature([{ name: AppConfig.name, schema: AppConfigSchema }])],
-  controllers: [AppConfigController],
-  providers: [AppConfigService, MigrationService],
-  exports: [AppConfigService],
-})
-export default class AppConfigModule {}
+export interface FileTableStore extends AppConfigTable<FileInfoDto> {
+  files: Record<string, string>;
+  isLoading: boolean;
+  error: string | null;
+  reset: () => void;
+}

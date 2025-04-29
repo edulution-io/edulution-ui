@@ -12,7 +12,7 @@
 
 import React from 'react';
 import { ColumnDef, Row } from '@tanstack/react-table';
-import { MdFolder } from 'react-icons/md';
+import { FcFolder } from 'react-icons/fc';
 import {
   formatBytes,
   getElapsedTime,
@@ -53,7 +53,7 @@ const renderFileIcon = (item: DirectoryFileDTO, isCurrentlyDisabled: boolean) =>
       />
     );
   }
-  return <MdFolder size={TABLE_ICON_SIZE} />;
+  return <FcFolder size={TABLE_ICON_SIZE} />;
 };
 
 const getFileSharingTableColumns = (

@@ -11,10 +11,14 @@
  */
 
 import type TApps from '@libs/appconfig/types/appsType';
+import { RowSelectionState } from '@tanstack/react-table';
 
 interface AppConfigTable<T> {
   tableContentData: T[];
   fetchTableContent: (applicationName?: TApps) => Promise<void> | void;
+  selectedRows?: RowSelectionState;
+  setSelectedRows?: (selectedRows: RowSelectionState) => void;
+  deleteTableEntry?: (applicationName: string, fileName: string) => Promise<void>;
 }
 
 export default AppConfigTable;
