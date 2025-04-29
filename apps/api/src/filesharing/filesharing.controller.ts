@@ -102,7 +102,7 @@ class FilesharingController {
     if (target === DeleteTargetType.FILE_SERVER) {
       return this.filesharingService.deleteFileAtPath(username, paths);
     }
-    return FilesystemService.deleteFile(PUBLIC_DOWNLOADS_PATH, paths);
+    return FilesystemService.deleteFiles(PUBLIC_DOWNLOADS_PATH, paths);
   }
 
   @Patch()

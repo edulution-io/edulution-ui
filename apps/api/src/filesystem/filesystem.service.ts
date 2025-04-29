@@ -131,6 +131,10 @@ class FilesystemService {
     }
   }
 
+  static async deleteFiles(path: string, fileNames: string[]): Promise<void> {
+    await Promise.all(fileNames.map((fileName) => FilesystemService.deleteFile(path, fileName)));
+  }
+
   async fileLocation(
     username: string,
     filePath: string,
