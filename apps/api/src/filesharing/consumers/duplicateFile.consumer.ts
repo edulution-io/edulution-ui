@@ -20,8 +20,9 @@ import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressD
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJobData';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
+import getStudentNameFromPath from '@libs/filesharing/utils/getStudentNameFromPath';
 import SseService from '../../sse/sse.service';
-import WebdavService from '../../webdav/webdavService';
+import WebdavService from '../../webdav/webdav.service';
 
 @Injectable()
 class DuplicateFileConsumer extends WorkerHost {
@@ -49,7 +50,7 @@ class DuplicateFileConsumer extends WorkerHost {
     }
 
     const percent = Math.round((processed / total) * 100);
-    const studentName = this.webDavService.getStudentNameFromPath(destinationFilePath) || '';
+    const studentName = getStudentNameFromPath(destinationFilePath) || '';
 
     const progressDto: FilesharingProgressDto = {
       processID: Number(job.id),

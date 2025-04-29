@@ -54,23 +54,6 @@ describe('FilesharingService', () => {
     expect(result).toEqual([{ name: 'file1.txt', size: 1234 }]);
   });
 
-  it('should call getDirAtPath on FileSharingService', async () => {
-    const token = 'test-token';
-    const path = '/test-path';
-    const result = await service.getDirAtPath(token, path);
-    expect(service.getDirAtPath).toHaveBeenCalledWith(token, path);
-    expect(result).toEqual([{ name: 'folder1', size: 0 }]);
-  });
-
-  it('should call createFolder on FileSharingService', async () => {
-    const token = 'test-token';
-    const path = '/test-path';
-    const folderName = 'test-folder';
-    const result = await service.createFolder(token, path, folderName);
-    expect(service.createFolder).toHaveBeenCalledWith(token, path, folderName);
-    expect(result).toEqual({ success: true });
-  });
-
   it('should call createFile on FileSharingService', async () => {
     const token = 'test-token';
     const path = '/test-path';

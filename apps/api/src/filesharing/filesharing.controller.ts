@@ -38,16 +38,21 @@ import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackDa
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
+import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
 import FilesharingService from './filesharing.service';
+import WebdavService from '../webdav/webdav.service';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
 @Controller(FileSharingApiEndpoints.BASE)
 class FilesharingController {
-  constructor(private readonly filesharingService: FilesharingService) {}
+  constructor(
+    private readonly filesharingService: FilesharingService,
+    private readonly webdavService: WebdavService,
+  ) {}
 
   @Get()
   async getFilesAtPath(
@@ -58,7 +63,7 @@ class FilesharingController {
     if (type.toUpperCase() === ContentType.FILE.valueOf()) {
       return this.filesharingService.getFilesAtPath(username, path);
     }
-    return this.filesharingService.getDirAtPath(username, path);
+    return this.webdavService.getDirectoryAtPath(username, path);
   }
 
   @Post()
@@ -72,7 +77,7 @@ class FilesharingController {
     @GetCurrentUsername() username: string,
   ) {
     if (type.toUpperCase() === ContentType.DIRECTORY.toString()) {
-      return this.filesharingService.createFolder(username, path, body.newPath);
+      return this.webdavService.createFolder(username, path, body.newPath);
     }
     return this.filesharingService.createFile(username, path, body.newPath, '');
   }
@@ -97,7 +102,7 @@ class FilesharingController {
     if (target === DeleteTargetType.FILE_SERVER) {
       return this.filesharingService.deleteFileAtPath(username, paths);
     }
-    return FilesystemService.deleteFiles(paths);
+    return FilesystemService.deleteFile(PUBLIC_DOWNLOADS_PATH, paths);
   }
 
   @Patch()

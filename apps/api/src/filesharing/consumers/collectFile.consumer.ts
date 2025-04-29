@@ -19,7 +19,7 @@ import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOper
 import CollectFileJobData from '@libs/queue/types/collectFileJobData';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import WebdavService from '../../webdav/webdavService';
+import WebdavService from '../../webdav/webdav.service';
 import SseService from '../../sse/sse.service';
 
 @Injectable()

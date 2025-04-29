@@ -18,14 +18,13 @@ import { ConferencePage } from '@/pages/ConferencePage';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
 import FramePlaceholder from '@/components/structure/framing/FramePlaceholder';
-import WhiteboardCollaboration from '@/pages/Whiteboard/WhiteboardCollaboration';
+import Whiteboard from '@/pages/Whiteboard/Whiteboard';
 
 const nativeAppPages: Partial<Record<TApps, JSX.Element>> = {
   [APPS.CONFERENCES]: <ConferencePage />,
   [APPS.MAIL]: <FramePlaceholder />,
   [APPS.LINUXMUSTER]: <FramePlaceholder />,
-  [APPS.WHITEBOARD]: <FramePlaceholder />,
-  [APPS.WHITEBOARD_COLLABORATION]: <WhiteboardCollaboration />,
+  [APPS.WHITEBOARD]: <Whiteboard />,
   [APPS.DESKTOP_DEPLOYMENT]: <DesktopDeploymentPage />,
   [APPS.CLASS_MANAGEMENT]: <Outlet />,
   [APPS.BULLETIN_BOARD]: <BulletinBoardPage />,

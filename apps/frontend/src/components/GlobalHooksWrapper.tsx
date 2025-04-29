@@ -12,6 +12,7 @@
 
 import React, { useEffect } from 'react';
 import { useAuth } from 'react-oidc-context';
+import { useCookies } from 'react-cookie';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import type UserDto from '@libs/user/types/user.dto';
 import useSseStore from '@/store/useSseStore';
@@ -19,6 +20,7 @@ import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileOperationToast from '@/hooks/useFileOperationToast';
 import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
+import isDev from '@libs/common/constants/isDev';
 import useAppConfigsStore from '../pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '../store/UserStore/UserStore';
 import useLogout from '../hooks/useLogout';
@@ -34,12 +36,20 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   const { filesharingProgress } = useLessonStore();
   const { fileOperationProgress } = useFileSharingStore();
   const { eventSource, setEventSource } = useSseStore();
+  const [, setCookie] = useCookies(['authToken']);
 
   const handleLogout = useLogout();
 
   useEffect(() => {
     if (auth.user?.access_token) {
       setEduApiToken(auth.user?.access_token);
+
+      setCookie('authToken', auth.user?.access_token, {
+        path: '/',
+        domain: window.location.hostname,
+        secure: !isDev,
+        sameSite: isDev ? 'lax' : 'none',
+      });
     }
   }, [auth.user?.access_token]);
 

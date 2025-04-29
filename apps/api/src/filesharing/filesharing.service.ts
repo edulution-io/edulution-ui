@@ -22,7 +22,7 @@ import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileReques
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import JOB_NAMES from '@libs/queue/constants/jobNames';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
-import WebdavService from '../webdav/webdavService';
+import WebdavService from '../webdav/webdav.service';
 import OnlyofficeService from './onlyoffice.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import QueueService from '../queue/queue.service';
@@ -125,10 +125,6 @@ export default class FilesharingService {
 
   async getFilesAtPath(username: string, path: string) {
     return this.webDavService.getFilesAtPath(username, path);
-  }
-
-  async getDirAtPath(username: string, path: string) {
-    return this.webDavService.getDirAtPath(username, path);
   }
 
   async createFolder(username: string, path: string, folderName: string) {

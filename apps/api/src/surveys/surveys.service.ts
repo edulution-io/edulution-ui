@@ -166,7 +166,7 @@ class SurveysService implements OnModuleInit {
 
   async onSurveyRemoval(surveyIds: string[]): Promise<void> {
     const imageDirectories = surveyIds.map((surveyId) => join(SURVEYS_IMAGES_PATH, surveyId));
-    await this.fileSystemService.deleteDirectories(imageDirectories);
+    await FilesystemService.deleteDirectories(imageDirectories);
   }
 }
 export default SurveysService;

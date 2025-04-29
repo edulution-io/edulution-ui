@@ -43,6 +43,7 @@ import VeyonModule from '../veyon/veyon.module';
 import GlobalSettingsModule from '../global-settings/global-settings.module';
 import HealthController from './health.controller';
 import SseModule from '../sse/sse.module';
+import FileSystemModule from '../filesystem/filesystem.module';
 import WebDavModule from '../webdav/webdav.module';
 
 const redisHost = process.env.REDIS_HOST ?? 'localhost';
@@ -68,6 +69,7 @@ const redisPort = +(process.env.REDIS_PORT ?? 6379);
 
     AuthModule,
     AppConfigModule,
+    FileSystemModule,
     UsersModule,
     GroupsModule,
     LmnApiModule,

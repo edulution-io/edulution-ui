@@ -10,33 +10,32 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { Excalidraw, THEME } from '@excalidraw/excalidraw';
-import cn from '@libs/common/utils/className';
-import useFrameStore from '@/components/structure/framing/useFrameStore';
-import APPS from '@libs/appconfig/constants/apps';
+import React, { lazy, Suspense } from 'react';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import PageLayout from '@/components/structure/layout/PageLayout';
 import useLanguage from '@/hooks/useLanguage';
+import COLOR_SCHEME from '@libs/ui/constants/colorScheme';
+import { Editor } from 'tldraw';
+
+const TLDraw = lazy(() =>
+  Promise.all([import('tldraw'), import('tldraw/tldraw.css')]).then(([module]) => ({
+    default: module.Tldraw,
+  })),
+);
 
 const Whiteboard = () => {
-  const { activeEmbeddedFrame } = useFrameStore();
-  const { language: lang } = useLanguage();
+  const { language } = useLanguage();
 
-  const getStyle = () => (activeEmbeddedFrame === APPS.WHITEBOARD ? 'block' : 'hidden');
+  const handleMount = (editor: Editor) => {
+    editor.user.updateUserPreferences({ colorScheme: COLOR_SCHEME, locale: language });
+  };
 
   return (
-    <div
-      className={cn(
-        'absolute inset-y-0 left-0 ml-0 w-screen justify-center md:w-[calc(100%-var(--sidebar-width))]',
-        getStyle(),
-      )}
-    >
-      <div className="h-full w-full flex-grow">
-        <Excalidraw
-          theme={THEME.DARK}
-          langCode={`${lang}-${lang.toUpperCase()}`}
-        />
-      </div>
-    </div>
+    <PageLayout isFullScreen>
+      <Suspense fallback={<CircleLoader className="m-auto" />}>
+        <TLDraw onMount={handleMount} />
+      </Suspense>
+    </PageLayout>
   );
 };
 

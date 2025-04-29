@@ -14,12 +14,12 @@ import { HttpMethods } from '@libs/common/types/http-methods';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import eduApi from '@/api/eduApi';
 import FileActionType from '@libs/filesharing/types/fileActionType';
-import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
+import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
 import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import { t } from 'i18next';
 
-const handleDeleteItems = async (pathsToDelete: PathChangeOrCreateProps[], endpoint: string) => {
+const handleDeleteItems = async (pathsToDelete: PathChangeOrCreateDto[], endpoint: string) => {
   await eduApi.delete(buildApiDeletePathUrl(endpoint, DeleteTargetType.FILE_SERVER), {
     data: {
       paths: pathsToDelete.map((item) => getPathWithoutWebdav(item.path)),
@@ -27,12 +27,14 @@ const handleDeleteItems = async (pathsToDelete: PathChangeOrCreateProps[], endpo
   });
 };
 
-const handleArrayActions = async (
-  itemsToProcess: PathChangeOrCreateProps[],
+const sendBatchRequests = async (
+  pathChangeOrCreateDtos: PathChangeOrCreateDto[],
   endpoint: string,
   httpMethod: HttpMethods,
 ) => {
-  const promises = itemsToProcess.map((itemToProcess) => eduApi[httpMethod](endpoint, itemToProcess));
+  const promises = pathChangeOrCreateDtos.map((pathChangeOrCreateDto) =>
+    eduApi[httpMethod](endpoint, pathChangeOrCreateDto),
+  );
   return Promise.all(promises);
 };
 
@@ -40,14 +42,14 @@ const handleBulkFileOperations = async (
   action: FileActionType,
   endpoint: string,
   httpMethod: HttpMethods,
-  itemsToProcess: PathChangeOrCreateProps[],
+  itemsToProcess: PathChangeOrCreateDto[],
   setFileOperationResult: (success: boolean | undefined, message: string, statusCode: number) => void,
 ) => {
   if (action === FileActionType.DELETE_FILE_FOLDER) {
     await handleDeleteItems(itemsToProcess, endpoint);
     setFileOperationResult(undefined, t('fileOperationSuccessful'), 200);
   } else if (action === FileActionType.MOVE_FILE_FOLDER || action === FileActionType.RENAME_FILE_FOLDER) {
-    await handleArrayActions(itemsToProcess, endpoint, httpMethod);
+    await sendBatchRequests(itemsToProcess, endpoint, httpMethod);
     setFileOperationResult(true, t('fileOperationSuccessful'), 200);
   }
 };

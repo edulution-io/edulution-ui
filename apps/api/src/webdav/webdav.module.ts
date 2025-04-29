@@ -11,7 +11,7 @@
  */
 
 import { Module } from '@nestjs/common';
-import WebdavService from './webdavService';
+import WebdavService from './webdav.service';
 
 @Module({
   providers: [WebdavService],

@@ -17,7 +17,7 @@ import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJ
 import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import WebdavService from '../../webdav/webdavService';
+import WebdavService from '../../webdav/webdav.service';
 import SseService from '../../sse/sse.service';
 
 @Injectable()

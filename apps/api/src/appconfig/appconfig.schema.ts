@@ -41,7 +41,7 @@ export class AppConfig extends Document {
   @Prop({ type: Array, default: [] })
   accessGroups: MultipleSelectorGroup[];
 
-  @Prop({ default: 3 })
+  @Prop({ default: 4 })
   schemaVersion: number;
 }
 

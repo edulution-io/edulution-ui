@@ -20,7 +20,9 @@ import { dirname, extname, join } from 'path';
 import { pipeline, Readable } from 'stream';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { ResponseType } from '@libs/common/types/http-methods';
+import { lookup } from 'mime-types';
+import { type Response } from 'express';
+import { HTTP_HEADERS, RequestResponseContentType, ResponseType } from '@libs/common/types/http-methods';
 import HashAlgorithm from '@libs/common/constants/hashAlgorithm';
 import CustomFile from '@libs/filesharing/types/customFile';
 import CustomHttpException from '@libs/error/CustomHttpException';
@@ -29,6 +31,8 @@ import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMes
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
+import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import UsersService from '../users/users.service';
 
 const pipelineAsync = promisify(pipeline);
@@ -92,7 +96,8 @@ class FilesystemService {
       await fsPromises.writeFile(filePath, new Uint8Array(response.data));
 
       const fileBuffer = await fsPromises.readFile(filePath);
-      const mimetype: string = (response.headers['content-type'] as string) || 'application/octet-stream';
+      const mimetype: string =
+        (response.headers[HTTP_HEADERS.ContentType] as string) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
 
       return {
         fieldname: 'file',
@@ -112,9 +117,8 @@ class FilesystemService {
     }
   }
 
-  static async deleteFile(fileName: string): Promise<void> {
-    const filePath = join(PUBLIC_DOWNLOADS_PATH, fileName);
-
+  static async deleteFile(path: string, fileName: string): Promise<void> {
+    const filePath = join(path, fileName);
     try {
       await fsPromises.unlink(filePath);
       Logger.log(`File deleted at ${filePath}`);
@@ -125,10 +129,6 @@ class FilesystemService {
         filePath,
       );
     }
-  }
-
-  static async deleteFiles(fileNames: string[]): Promise<void> {
-    await Promise.all(fileNames.map((fileName) => FilesystemService.deleteFile(fileName)));
   }
 
   async fileLocation(
@@ -187,7 +187,7 @@ class FilesystemService {
     }
   }
 
-  async deleteDirectories(directories: string[]): Promise<void> {
+  static async deleteDirectories(directories: string[]): Promise<void> {
     try {
       const deletionPromises = directories.map((directory) => fsPromises.rm(directory, { recursive: true }));
       await Promise.all(deletionPromises);
@@ -203,6 +203,52 @@ class FilesystemService {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     return createReadStream(filePath);
+  }
+
+  async getFilesInfo(path: string): Promise<FileInfoDto[]> {
+    try {
+      const folderPath = `${APPS_FILES_PATH}/${path}`;
+      const files = await fsPromises.readdir(folderPath);
+
+      const fileDataPromises = files.map(async (fileName) => {
+        const filePath = join(folderPath, fileName);
+        const stat = await fsPromises.stat(filePath);
+
+        let type: string;
+        if (stat.isFile()) {
+          type = extname(fileName).toLowerCase().split('.').pop() || 'file';
+        } else if (stat.isDirectory()) {
+          type = 'directory';
+        } else {
+          type = 'other';
+        }
+
+        return {
+          filename: fileName,
+          size: stat.size,
+          type,
+          lastModified: stat.mtime.toISOString(),
+        };
+      });
+
+      return await Promise.all(fileDataPromises);
+    } catch (error) {
+      return [];
+    }
+  }
+
+  async serveFiles(name: string, filename: string, res: Response) {
+    const filePath = join(APPS_FILES_PATH, name, filename);
+
+    await FilesystemService.throwErrorIfFileNotExists(filePath);
+
+    const contentType = lookup(filePath) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
+    res.setHeader(HTTP_HEADERS.ContentType, contentType);
+
+    const fileStream = await this.createReadStream(filePath);
+    fileStream.pipe(res);
+
+    return res;
   }
 }
 
