@@ -399,10 +399,7 @@ class FilesharingService {
       const base = this.baseurl.replace(/\/+$/, '');
       const finalUrl = `${base}/${encodedPath}`;
 
-      const resp = await FilesystemService.fetchFileStream(finalUrl, client, false, () => {
-        // const downloadDto = new DownloadFileDto(filePath, parseFloat(pct));
-        // SseService.sendEventToUser(username, this.fileSharingSseConnection, downloadDto, SSE_MESSAGE_TYPE.UPDATED);
-      });
+      const resp = await FilesystemService.fetchFileStream(finalUrl, client, false);
       if (resp instanceof Readable) {
         return resp;
       }

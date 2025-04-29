@@ -42,28 +42,28 @@ class FilesystemService {
   static async fetchFileStream(
     url: string,
     client: AxiosInstance,
-    streamFetching = false,
+    isStreamFetching = false,
     onProgress?: (percent: string) => void,
   ): Promise<AxiosResponse<Readable> | Readable> {
     try {
       const response = await firstValueFrom(from(client.get<Readable>(url, { responseType: ResponseType.STREAM })));
 
-      const lengthHeader: string = response.headers?.['content-length'] as string;
-      let contentLength = 0;
-      contentLength = parseInt(lengthHeader, 10) || 0;
+      const contentLengthHeader = response.headers?.['content-length'] as string | undefined;
+
+      const contentLength = contentLengthHeader && /^\d+$/.test(contentLengthHeader) ? Number(contentLengthHeader) : 0;
 
       const readStream = response.data;
 
       if (contentLength > 0) {
-        let downloaded = 0;
+        let downloadedBytes = 0;
         readStream.on('data', (chunk: Buffer) => {
-          downloaded += chunk.length;
-          const percent = ((downloaded / contentLength) * 100).toFixed(2);
+          downloadedBytes += chunk.length;
+          const percent = ((downloadedBytes / contentLength) * 100).toFixed(2);
           if (onProgress) onProgress(percent);
         });
       }
 
-      return streamFetching ? response : readStream;
+      return isStreamFetching ? response : readStream;
     } catch (error) {
       throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, url);
     }
