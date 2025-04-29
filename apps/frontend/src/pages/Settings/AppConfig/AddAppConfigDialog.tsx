@@ -58,13 +58,32 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
       switch (selectedApp.id) {
         case APPS.FORWARDING:
           return APP_INTEGRATION_VARIANT.FORWARDED;
-        case APPS.EMBEDDED:
-          return APP_INTEGRATION_VARIANT.EMBEDDED;
         case APPS.FRAME:
+          return APP_INTEGRATION_VARIANT.FRAMED;
+        case APPS.EMBEDDED:
           return APP_INTEGRATION_VARIANT.EMBEDDED;
         default:
           return APP_INTEGRATION_VARIANT.FORWARDED;
       }
+    };
+
+    const getOptions = () => {
+      if (selectedApp.id === APPS.EMBEDDED) {
+        return {
+          proxyConfig: '""',
+        };
+      }
+      return {
+        url: '',
+        proxyConfig: '""',
+      };
+    };
+
+    const getExtendedOptions = () => {
+      if (selectedApp.id === APPS.EMBEDDED) {
+        return { EMBEDDED_PAGE_HTML_CONTENT: '', EMBEDDED_PAGE_HTML_MODE: false };
+      }
+      return {};
     };
 
     const newConfig: AppConfigDto = {
@@ -75,12 +94,9 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
       },
       icon: newAppIcon,
       appType: getAppType(),
-      options: {
-        url: '',
-        proxyConfig: '""',
-      },
+      options: getOptions(),
       accessGroups: [],
-      extendedOptions: {},
+      extendedOptions: getExtendedOptions(),
     };
 
     await createAppConfig(newConfig);

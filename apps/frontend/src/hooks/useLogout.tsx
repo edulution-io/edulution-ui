@@ -11,8 +11,9 @@
  */
 
 import { useCallback } from 'react';
-import useUserStore from '@/store/UserStore/UserStore';
 import { useAuth } from 'react-oidc-context';
+import { useCookies } from 'react-cookie';
+import useUserStore from '@/store/UserStore/UserStore';
 import cleanAllStores from '@/store/utils/cleanAllStores';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import { toast } from 'sonner';
@@ -20,11 +21,13 @@ import { toast } from 'sonner';
 const useLogout = () => {
   const auth = useAuth();
   const { logout } = useUserStore();
+  const [, , removeCookie] = useCookies(['authToken']);
 
   const handleLogout = useCallback(async () => {
     await logout();
     await auth.removeUser();
     cleanAllStores();
+    removeCookie('authToken');
     window.history.pushState(null, '', LOGIN_ROUTE);
     window.dispatchEvent(new PopStateEvent('popstate'));
     toast.dismiss();

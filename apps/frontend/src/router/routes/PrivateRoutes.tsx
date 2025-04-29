@@ -11,9 +11,9 @@
  */
 
 import React from 'react';
-import { Outlet, Route, Navigate } from 'react-router-dom';
+import { Navigate, Outlet, Route } from 'react-router-dom';
 import getForwardedAppRoutes from '@/router/routes/ForwardedAppRoutes';
-import getEmbeddedAppRoutes from '@/router/routes/EmbeddedAppRoutes';
+import getFramedRoutes from '@/router/routes/FramedRoutes';
 import getNativeAppRoutes from '@/router/routes/NativeAppRoutes';
 import {
   LANGUAGE_PATH,
@@ -33,14 +33,18 @@ import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
 import getSurveyRoutes from '@/router/routes/SurveyRoutes';
 import getFileSharingRoutes from '@/router/routes/FileSharingRoutes';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
+import APPS from '@libs/appconfig/constants/apps';
+import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
 import DashboardPage from '../../pages/Dashboard/DashboardPage';
+import getEmbeddedRoutes from './EmbeddedAppRoutes';
 import ProtectedRoute from './ProtectedRoute';
 
 const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
   <>
     {getForwardedAppRoutes(appConfigs)}
-    {getEmbeddedAppRoutes(appConfigs)}
+    {getFramedRoutes(appConfigs)}
     {getNativeAppRoutes(appConfigs)}
+    {getEmbeddedRoutes(appConfigs)}
 
     <Route
       path="/"
@@ -81,6 +85,11 @@ const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
         element={<UserSettingsMobileAccess />}
       />
     </Route>
+
+    <Route
+      path={`${APPS.BULLETIN_BOARD}/:bulletinId`}
+      element={<BulletinBoardPage />}
+    />
 
     <Route element={<ProtectedRoute />}>{getSettingsRoutes()}</Route>
     {getClassManagementRoutes()}

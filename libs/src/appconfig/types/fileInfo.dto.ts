@@ -10,18 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Global, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import AppConfigController from './appconfig.controller';
-import AppConfigService from './appconfig.service';
-import { AppConfig, AppConfigSchema } from './appconfig.schema';
-import MigrationService from '../migration/migration.service';
+import { IsNumber, IsString } from 'class-validator';
 
-@Global()
-@Module({
-  imports: [MongooseModule.forFeature([{ name: AppConfig.name, schema: AppConfigSchema }])],
-  controllers: [AppConfigController],
-  providers: [AppConfigService, MigrationService],
-  exports: [AppConfigService],
-})
-export default class AppConfigModule {}
+class FileInfoDto {
+  @IsString()
+  filename: string;
+
+  @IsNumber()
+  size: number;
+
+  @IsString()
+  type: string;
+
+  @IsString()
+  lastModified: string;
+}
+
+export default FileInfoDto;

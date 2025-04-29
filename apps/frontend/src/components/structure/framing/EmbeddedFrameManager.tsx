@@ -75,7 +75,7 @@ const EmbeddedFrameManager = () => {
   }, [activeEmbeddedFrame, appConfig, foundUserAccounts, isCollapsed]);
 
   return appConfigs
-    .filter((appCfg) => appCfg.appType === APP_INTEGRATION_VARIANT.EMBEDDED)
+    .filter((appCfg) => appCfg.appType === APP_INTEGRATION_VARIANT.FRAMED)
     .map((appCfg) => {
       const isOpen = activeEmbeddedFrame === appCfg.name;
       const url = loadedEmbeddedFrames.includes(appCfg.name) ? appCfg.options.url : undefined;

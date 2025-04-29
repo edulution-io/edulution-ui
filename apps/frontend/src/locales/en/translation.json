@@ -729,7 +729,10 @@
       "aichat": "Here you can make all the settings.",
       "linuxmuster": "Here you can make all the settings.",
       "whiteboard": "Here you can make all the settings.",
-      "bulletinboard": "Configure the user groups that have access to the Bulletin Board app here. The categories can be used to control which messages are displayed to users."
+      "bulletinboard": "Configure the user groups that have access to the Bulletin Board app here. The categories can be used to control which messages are displayed to users.",
+      "forwarded": "Forwarding: Simply enter the link to the web application under URL.",
+      "framed": "Frame: Simply enter the link to the web application under URL.",
+      "embedded": "Embedded: Here you can create your own web application in the editor."
     },
     "globalSettings": {
       "title": "Global Settings",
@@ -778,6 +781,22 @@
           "filterPlaceHolderText": "Search for proxy",
           "invalidCidrFormat": "Invalid CIDR notation",
           "invalidUrlFormat": "Invalid URL"
+        },
+        "files": {
+          "title": "Files",
+          "description": "The files that are displayed in the app can be managed here.",
+          "uploadSuccess": "Upload successful",
+          "uploadFailed": "Upload failed",
+          "rowSelected": "{{selected}} of {{total}} files selected",
+          "rowsSelected": "{{selected}} of {{total}} files selected"
+        },
+        "editor": {
+          "title": "Editor",
+          "description": "Here in the editor you can design your own web applications or integrate existing content. You can create websites, format and customize content. Existing applications or external content can also be inserted and conveniently linked to your own content. This creates a flexible area in which you can easily display content or offer interactive applications. Start by selecting the mode in which the web application is to be launched.",
+          "sandboxMode": "Separate Layout",
+          "nativeMode": "Integrated Layout",
+          "sandboxModeDescription": "In “Sparate layout” mode, the content is displayed as a separate page, similar to a window within the application. In addition to the actual content, additional design elements or functions can also be loaded from other sources. This means that the design is independent of the application and could therefore look or behave differently. Here, the content must be uploaded as an HTML file.",
+          "nativeModeDescription": "In “Integrated layout” mode, on the other hand, the content is inserted directly into the user interface of the application. This means that the content looks exactly like the application itself and fits in seamlessly. However, no additional external design elements or functions can be added dynamically here. However, static elements such as images can be uploaded and used here."
         }
       },
       "update": {
@@ -974,7 +993,8 @@
       "success": "Successfully copied to clipboard",
       "error": "Copy to clipboard failed",
       "doCopy": "Copy",
-      "link": "Copy link"
+      "link": "Copy link",
+      "url": "Copy URL"
     },
     "openInNewTab": "Open in new tab",
     "maximize": "Maximize",
@@ -1060,6 +1080,10 @@
     "required": "Required",
     "download": "Download",
     "template": "Template",
+    "preview": "Preview",
+    "format": "Format",
+    "upload": "Upload",
+    "mode": "Mode",
     "application": "Application"
   },
   "form": {
@@ -1082,6 +1106,9 @@
     "proxyDestination": "Proxy destination",
     "proxyDestinationPlaceholder": "e.g. http://localhost:1234/",
     "stripPrefix": "Strip prefix",
+    "embeddedPageEditor": "Editor",
+    "embeddedPageEditorModeDescription": "Here you can choose between sandbox and native rendering. Sandbox is the safest variant, native the original rendering. Please note that no security precautions can be taken with native rendering. In sandbox mode, the HTML file is read from memory. To do this, upload the file.",
+    "sandboxed": "Sandbox",
     "input": {
       "dateTimePicker": {
         "timeSlot": "o'clock",
