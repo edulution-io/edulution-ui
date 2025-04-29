@@ -25,6 +25,7 @@ import {
   Query,
   UploadedFile,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -53,6 +54,7 @@ import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
 import { checkAttachmentFile, createAttachmentUploadOptions } from '../common/multer.utilities';
+import AppConfigGuard from '../appconfig/appconfig.guard';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
@@ -115,6 +117,7 @@ class SurveysController {
     return res.status(HttpStatus.CREATED).json(imageUrl);
   }
 
+  @UseGuards(AppConfigGuard)
   @Post(TEMPLATES)
   async createTemplate(@Body() templateDto: TemplateDto) {
     const { fileName, surveyDto } = templateDto;

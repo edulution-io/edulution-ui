@@ -16,7 +16,6 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import TemplateDto from '@libs/survey/types/api/template.dto';
 import { SURVEY_TEMPLATES_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import handleApiError from '@/utils/handleApiError';
-// import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 
 interface TemplateMenuStore {

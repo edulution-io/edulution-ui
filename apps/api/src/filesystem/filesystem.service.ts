@@ -196,7 +196,6 @@ class FilesystemService {
       await fsPromises.writeFile(filePath, content);
       Logger.log(`${filePath} created.`, FilesystemService.name);
     } catch (error) {
-      Logger.error(`Error: ${filePath} is not created.`, FilesystemService.name);
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
