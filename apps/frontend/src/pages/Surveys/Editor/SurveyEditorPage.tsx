@@ -108,47 +108,47 @@ const SurveyEditorPage = () => {
   useBeforeUnload('unload', updateSurveyStorage);
 
   useEffect(() => {
-    if (creator) {
-      creator.saveNo = form.getValues('saveNo');
-      creator.JSON = form.getValues('formula');
-      creator.locale = language;
-      creator.saveSurveyFunc = updateSurveyStorage;
+    if (!creator) return;
 
-      creator.onDefineElementMenuItems.add((_, options) => {
-        const settingsItemIndex = options.items.findIndex((option) => option.id === 'settings');
-        if (settingsItemIndex !== -1) {
-          // eslint-disable-next-line no-param-reassign
-          options.items[settingsItemIndex].visibleIndex = 10;
-          // eslint-disable-next-line no-param-reassign
-          options.items[settingsItemIndex].title = t('survey.editor.questionSettings.icon');
-          // eslint-disable-next-line no-param-reassign
-          options.items[settingsItemIndex].action = () => {
-            if (_.isObjQuestion(_.selectedElement)) {
-              setIsOpenQuestionContextMenu(true);
-              setSelectedQuestion(_.selectedElement as unknown as Question);
-            }
-          };
+    creator.saveNo = form.getValues('saveNo');
+    creator.JSON = form.getValues('formula');
+    creator.locale = language;
+    creator.saveSurveyFunc = updateSurveyStorage;
 
-          const doubleItemIndex = options.items.findIndex((option) => option.id === 'duplicate');
-          if (doubleItemIndex !== -1) {
-            // eslint-disable-next-line no-param-reassign
-            options.items[doubleItemIndex].visibleIndex = 20;
+    creator.onDefineElementMenuItems.add((_, options) => {
+      const settingsItemIndex = options.items.findIndex((option) => option.id === 'settings');
+      if (settingsItemIndex !== -1) {
+        // eslint-disable-next-line no-param-reassign
+        options.items[settingsItemIndex].visibleIndex = 10;
+        // eslint-disable-next-line no-param-reassign
+        options.items[settingsItemIndex].title = t('survey.editor.questionSettings.settings');
+        // eslint-disable-next-line no-param-reassign
+        options.items[settingsItemIndex].action = () => {
+          if (_.isObjQuestion(_.selectedElement)) {
+            setIsOpenQuestionContextMenu(true);
+            setSelectedQuestion(_.selectedElement as unknown as Question);
           }
+        };
+
+        const doubleItemIndex = options.items.findIndex((option) => option.id === 'duplicate');
+        if (doubleItemIndex !== -1) {
+          // eslint-disable-next-line no-param-reassign
+          options.items[doubleItemIndex].visibleIndex = 20;
         }
-      });
+      }
+    });
 
-      creator.onUploadFile.add(async (_, options) => {
-        // TODO: 630 (https://github.com/edulution-io/edulution-ui/issues/630) -  Currently this can only work for already created surveys
-        if (!surveyId) return;
-        const promises = options.files.map((file: File) => {
-          if (!options.question?.id) {
-            return uploadImageFile(surveyId, 'Header', file, options.callback);
-          }
-          return uploadImageFile(surveyId, options.question.id, file, options.callback);
-        });
-        await Promise.all(promises);
+    creator.onUploadFile.add(async (_, options) => {
+      // TODO: 630 (https://github.com/edulution-io/edulution-ui/issues/630) -  Currently this can only work for already created surveys
+      if (!surveyId) return;
+      const promises = options.files.map((file: File) => {
+        if (!options.question?.id) {
+          return uploadImageFile(surveyId, 'Header', file, options.callback);
+        }
+        return uploadImageFile(surveyId, options.question.id, file, options.callback);
       });
-    }
+      await Promise.all(promises);
+    });
   }, [creator, form, language]);
 
   const handleSaveSurvey = async () => {

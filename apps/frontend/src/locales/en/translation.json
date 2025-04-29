@@ -523,9 +523,8 @@
       "saveSurveySuccess": "Saved the survey.",
       "abort": "Revert all changes",
       "addDescription": "Add a description",
-      "expectingUserInput": "Expecting the user to answer here, ... ",
       "questionSettings": {
-        "icon": "Settings",
+        "settings": "Settings",
         "title": "Question settings",
         "questionTitle": "Title",
         "addQuestionTitle": "Add a title",

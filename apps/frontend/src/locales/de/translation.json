@@ -525,9 +525,8 @@
       "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
       "abort": "Alle Änderungen verwerfen",
       "addDescription": "Beschreibung hinzufügen",
-      "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
       "questionSettings": {
-        "icon": "Einstellungen",
+        "settings": "Einstellungen",
         "title": "Einstellungen bezüglich der Frage",
         "questionTitle": "Titel",
         "addQuestionTitle": "Titel hinzufügen",
