@@ -16,7 +16,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { Question } from 'survey-core/typings/src/question';
+import { Question } from 'survey-core';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';

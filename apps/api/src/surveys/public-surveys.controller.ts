@@ -11,10 +11,11 @@
  */
 
 import { Response } from 'express';
+import { ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Get, Post, Param, Res } from '@nestjs/common';
 import { IMAGES, PUBLIC_SURVEYS, RESTFUL_CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
-import { ApiTags } from '@nestjs/swagger';
+import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import { Public } from '../common/decorators/public.decorator';
@@ -52,6 +53,11 @@ class PublicSurveysController {
   @Public()
   async getChoices(@Param() params: { surveyId: string; questionId: string }) {
     const { surveyId, questionId } = params;
+    if (surveyId === TEMPORAL_SURVEY_ID_STRING) {
+      // eslint-disable-next-line consistent-return
+      return;
+    }
+    // eslint-disable-next-line consistent-return
     return this.surveyAnswerService.getSelectableChoices(surveyId, questionId);
   }
 }
