@@ -14,7 +14,6 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/components/shared/Button';
 import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
 import ProgressTextArea from '@/components/shared/ProgressTextArea';
@@ -28,6 +27,7 @@ import convertComposeToDockerode from '@libs/docker/utils/convertComposeToDocker
 import extractEnvPlaceholders from '@libs/docker/utils/extractEnvPlaceholders';
 import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 import updateContainerConfig from '@libs/docker/utils/updateContainerConfig';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import useDockerApplicationStore from './useDockerApplicationStore';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 import getCreateContainerFormSchema from './getCreateContainerFormSchema';
@@ -94,6 +94,8 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
     }
   };
 
+  const handleClose = () => setDialogOpen('');
+
   const getDialogBody = () => (
     <Form {...form}>
       <form
@@ -116,27 +118,15 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
             ))
           : null}
         <ProgressTextArea text={dockerProgress} />
-        <div className="flex justify-end gap-2">
-          <Button
-            variant="btn-outline"
-            size="lg"
-            type="button"
-            className="w-24 border-2"
-            onClick={() => setDialogOpen('')}
-            disabled={tableContentData.length !== 0 && isLoading}
-          >
-            {tableContentData.length === 0 ? t('common.cancel') : t('common.close')}
-          </Button>
-          <Button
-            variant="btn-collaboration"
-            size="lg"
-            type="submit"
-            className="w-24"
-            disabled={tableContentData.length !== 0 || isLoading}
-          >
-            {t('common.install')}
-          </Button>
-        </div>
+        <DialogFooterButtons
+          handleClose={handleClose}
+          handleSubmit={() => {}}
+          cancelButtonText={tableContentData.length === 0 ? 'common.cancel' : 'common.close'}
+          submitButtonText="common.install"
+          submitButtonType="submit"
+          disableCancel={tableContentData.length !== 0 && isLoading}
+          disableSubmit={tableContentData.length !== 0 || isLoading}
+        />
       </form>
     </Form>
   );
@@ -148,7 +138,7 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
         title={t(`containerApplication.dialogTitle`, { applicationName: t(`${settingLocation}.sidebar`) })}
         isOpen={isOpen}
         body={getDialogBody()}
-        handleOpenChange={() => setDialogOpen('')}
+        handleOpenChange={handleClose}
       />
     </>
   );

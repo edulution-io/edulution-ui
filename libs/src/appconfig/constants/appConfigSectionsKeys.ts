@@ -18,6 +18,8 @@ const AppConfigSectionsKeys = {
   bulletinBoard: 'bulletinBoard',
   veyon: 'veyon',
   docker: 'docker',
+  files: 'files',
+  editor: 'editor',
 } as const;
 
 export default AppConfigSectionsKeys;

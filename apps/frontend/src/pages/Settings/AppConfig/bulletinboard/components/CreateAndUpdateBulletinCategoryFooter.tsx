@@ -11,16 +11,18 @@
  */
 
 import { Button } from '@/components/shared/Button';
-import { MdDelete, MdUpdate } from 'react-icons/md';
+import { MdDelete } from 'react-icons/md';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { BUTTONS_ICON_WIDTH } from '@libs/ui/constants';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 interface CreateAndUpdateBulletinCategoryFooterProps {
   handleFormSubmit: (e: React.FormEvent) => void;
   isCurrentNameEqualToSelected: () => boolean;
   isSaveButtonDisabled: () => boolean;
   handleDeleteCategory: () => void;
+  handleClose: () => void;
 }
 
 const CreateAndUpdateBulletinCategoryFooter = ({
@@ -28,16 +30,15 @@ const CreateAndUpdateBulletinCategoryFooter = ({
   isCurrentNameEqualToSelected,
   isSaveButtonDisabled,
   handleDeleteCategory,
+  handleClose,
 }: CreateAndUpdateBulletinCategoryFooterProps) => {
   const { t } = useTranslation();
   return (
-    <form
-      onSubmit={handleFormSubmit}
-      className="space-y-4"
-    >
-      <div className="mt-4 flex justify-end space-x-2">
+    <form onSubmit={handleFormSubmit}>
+      <div className="flex gap-4">
         {isCurrentNameEqualToSelected() && (
           <Button
+            className="mt-4"
             variant="btn-attention"
             size="lg"
             type="button"
@@ -48,15 +49,13 @@ const CreateAndUpdateBulletinCategoryFooter = ({
           </Button>
         )}
 
-        <Button
-          variant="btn-collaboration"
-          size="lg"
-          disabled={isSaveButtonDisabled()}
-          type="submit"
-        >
-          <MdUpdate size={BUTTONS_ICON_WIDTH} />
-          {t('common.save')}
-        </Button>
+        <DialogFooterButtons
+          handleClose={handleClose}
+          handleSubmit={() => {}}
+          submitButtonText="common.save"
+          disableSubmit={isSaveButtonDisabled()}
+          submitButtonType="submit"
+        />
       </div>
     </form>
   );
