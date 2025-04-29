@@ -10,8 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { settings } from 'survey-core';
-import { surveyLocalization } from 'survey-core';
+import { settings, surveyLocalization } from 'survey-core';
 import { SurveyCreator } from 'survey-creator-react';
 import 'survey-creator-core/survey-creator-core.i18n';
 import 'survey-creator-core/i18n/english';
