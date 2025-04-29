@@ -16,7 +16,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { editorLocalization, localization } from 'survey-creator-core';
 import { Question } from 'survey-core/typings/src/question';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -61,9 +60,6 @@ const SurveyEditorPage = () => {
   const { user } = useUserStore();
   const { surveyId } = useParams();
   const { language } = useLanguage();
-
-  editorLocalization.defaultLocale = language || 'en';
-  localization.currentLocale = language || 'en';
 
   useEffect(() => {
     reset();
@@ -112,10 +108,9 @@ const SurveyEditorPage = () => {
 
   useEffect(() => {
     if (!creator) return;
-
+    creator.locale = language;
     creator.saveNo = form.getValues('saveNo');
     creator.JSON = form.getValues('formula');
-    creator.locale = language;
     creator.saveSurveyFunc = updateSurveyStorage;
 
     creator.onDefineElementMenuItems.add((_, options) => {

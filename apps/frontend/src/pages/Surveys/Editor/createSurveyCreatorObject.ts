@@ -11,10 +11,12 @@
  */
 
 import { settings } from 'survey-core';
-import { editorLocalization, localization } from 'survey-creator-core';
+import { surveyLocalization } from 'survey-core';
 import { SurveyCreator } from 'survey-creator-react';
+import 'survey-creator-core/survey-creator-core.i18n';
 import 'survey-creator-core/i18n/english';
 import 'survey-creator-core/i18n/german';
+import 'survey-creator-core/i18n/french';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
@@ -24,8 +26,9 @@ import '@/pages/Surveys/theme/custom.creator.css';
 settings.lazyRender.enabled = true;
 
 const createSurveyCreatorComponent = (language = 'en') => {
-  editorLocalization.defaultLocale = language;
-  localization.currentLocale = language;
+  surveyLocalization.supportedLocales = ['en', 'de', 'fr'];
+  surveyLocalization.defaultLocale = language;
+  surveyLocalization.currentLocale = language;
 
   const creatorOptions = {
     generateValidJSON: true,

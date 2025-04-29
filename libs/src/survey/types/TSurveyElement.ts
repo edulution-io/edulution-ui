@@ -18,7 +18,7 @@ interface SurveyElement {
   choicesOrder?: string;
   choices: string[] | null;
   choicesByUrl: { url: string } | null;
-  showOtherItem?: boolean;
+  showOtherItem: boolean | null;
   showNoneItem?: boolean;
 }
 

@@ -20,10 +20,25 @@ import Input from '@/components/shared/Input';
 import Label from '@/components/ui/Label';
 
 const ChoicesWithBackendLimitsShowOtherItem = () => {
-  const { useBackendLimits, showOtherItem, toggleShowOtherItem, setChoiceLimit, currentChoices, addChoice } =
-    useQuestionsContextMenuStore();
+  const {
+    selectedQuestion,
+    useBackendLimits,
+    showOtherItem,
+    toggleShowOtherItem,
+    setChoiceLimit,
+    currentChoices,
+    addChoice,
+  } = useQuestionsContextMenuStore();
 
   const { t } = useTranslation();
+
+  const handleToggleShowOtherItem = () => {
+    if (!selectedQuestion) return;
+
+    selectedQuestion.showOtherItem = !showOtherItem;
+
+    toggleShowOtherItem();
+  };
 
   const otherItemsChoiceWithBackendLimit = currentChoices.find(
     (choice) => choice.name === CHOOSE_OTHER_ITEM_CHOICE_NAME,
@@ -34,7 +49,7 @@ const ChoicesWithBackendLimitsShowOtherItem = () => {
       <div className="ml-2 inline-flex">
         <Switch
           checked={showOtherItem}
-          onCheckedChange={toggleShowOtherItem}
+          onCheckedChange={handleToggleShowOtherItem}
           className={cn(
             { 'text-muted-foreground': !useBackendLimits },
             { 'text-primary-foreground': useBackendLimits },
