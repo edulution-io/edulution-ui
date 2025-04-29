@@ -11,8 +11,11 @@
  */
 
 import { settings, surveyLocalization } from 'survey-core';
+import { editorLocalization } from 'survey-creator-react';
 import { SurveyCreator } from 'survey-creator-react';
-import 'survey-creator-core/survey-creator-core.i18n';
+import 'survey-core/i18n/english';
+import 'survey-core/i18n/german';
+import 'survey-core/i18n/french';
 import 'survey-creator-core/i18n/english';
 import 'survey-creator-core/i18n/german';
 import 'survey-creator-core/i18n/french';
@@ -28,6 +31,8 @@ const createSurveyCreatorComponent = (language = 'en') => {
   surveyLocalization.supportedLocales = ['en', 'de', 'fr'];
   surveyLocalization.defaultLocale = language;
   surveyLocalization.currentLocale = language;
+  editorLocalization.defaultLocale = language;
+  editorLocalization.currentLocale = language;
 
   const creatorOptions = {
     generateValidJSON: true,
