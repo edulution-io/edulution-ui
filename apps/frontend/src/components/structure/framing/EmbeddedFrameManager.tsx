@@ -10,71 +10,17 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { toast } from 'sonner';
+import React from 'react';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
-import useUserStore from '@/store/UserStore/UserStore';
-import UserAccountsToastContent from '@/components/ui/UserAccountsToastContent';
+import useUserAccounts from '@/hooks/useUserAccounts';
 
 const EmbeddedFrameManager = () => {
   const { appConfigs } = useAppConfigsStore();
   const { loadedEmbeddedFrames, activeEmbeddedFrame } = useFrameStore();
-  const { userAccounts, getUserAccounts } = useUserStore();
-  const location = useLocation();
 
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const toggleCollapse = useCallback(() => {
-    setIsCollapsed((prev) => !prev);
-  }, []);
-
-  const appConfig = useMemo(
-    () => appConfigs.find((appCfg) => appCfg.name === activeEmbeddedFrame),
-    [appConfigs, activeEmbeddedFrame],
-  );
-
-  const foundUserAccounts = useMemo(() => {
-    if (!appConfig) return [];
-    return userAccounts.filter((u) => u.appName === appConfig.name);
-  }, [appConfig, loadedEmbeddedFrames, userAccounts]);
-
-  const toastId = `${appConfig?.name}-embedded-login-toast`;
-
-  useEffect(() => {
-    setIsCollapsed(false);
-    toast.dismiss(toastId);
-  }, [location, toastId]);
-
-  useEffect(() => {
-    void getUserAccounts();
-  }, []);
-
-  useEffect(() => {
-    if (!activeEmbeddedFrame) return;
-
-    if (!appConfig) return;
-
-    const isOpen = activeEmbeddedFrame === appConfig.name;
-
-    if (isOpen && foundUserAccounts.length > 0) {
-      toast(
-        () => (
-          <UserAccountsToastContent
-            userAccounts={foundUserAccounts}
-            isCollapsed={isCollapsed}
-            onToggleCollapse={toggleCollapse}
-          />
-        ),
-        {
-          id: toastId,
-          duration: 30000,
-          position: 'top-right',
-        },
-      );
-    }
-  }, [activeEmbeddedFrame, appConfig, foundUserAccounts, isCollapsed]);
+  useUserAccounts(activeEmbeddedFrame);
 
   return appConfigs
     .filter((appCfg) => appCfg.appType === APP_INTEGRATION_VARIANT.FRAMED)
