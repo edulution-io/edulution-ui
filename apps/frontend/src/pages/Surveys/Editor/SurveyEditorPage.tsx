@@ -163,7 +163,7 @@ const SurveyEditorPage = () => {
       },
       {
         icon: RiResetLeftLine,
-        text: t('survey.editor.abort'),
+        text: t('survey.editor.reset'),
         onClick: () => {
           reset();
           resetStoredSurvey();

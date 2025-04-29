@@ -521,7 +521,7 @@
     "editor": {
       "new": "New (blank)",
       "saveSurveySuccess": "Saved the survey.",
-      "abort": "Revert",
+      "reset": "Reset",
       "addDescription": "Add a description",
       "expectingUserInput": "Expecting the user to answer here, ... "
     },
