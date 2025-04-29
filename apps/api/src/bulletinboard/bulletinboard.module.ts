@@ -18,7 +18,6 @@ import BulletinBoardService from './bulletinboard.service';
 import { BulletinCategory, BulletinCategorySchema } from '../bulletin-category/bulletin-category.schema';
 import BulletinCategoryModule from '../bulletin-category/bulletin-category.module';
 import GroupsModule from '../groups/groups.module';
-import FilesystemService from '../filesystem/filesystem.service';
 
 @Module({
   imports: [
@@ -28,7 +27,7 @@ import FilesystemService from '../filesystem/filesystem.service';
     GroupsModule,
   ],
   controllers: [BulletinBoardController],
-  providers: [BulletinBoardService, FilesystemService],
+  providers: [BulletinBoardService],
   exports: [],
 })
 export default class BulletinBoardModule {}

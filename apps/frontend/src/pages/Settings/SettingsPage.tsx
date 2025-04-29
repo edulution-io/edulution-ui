@@ -10,15 +10,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import useLdapGroups from '@/hooks/useLdapGroups';
 import AppConfigPage from './AppConfig/AppConfigPage';
 import SettingsOverviewPage from './components/SettingsOverviewPage';
 
 const SettingsPage: React.FC = () => {
   const { settingLocation } = useParams();
+  const { isSuperAdmin } = useLdapGroups();
+  const navigate = useNavigate();
   const isAnAppConfigSelected = !!settingLocation;
+
+  useEffect(() => {
+    if (!isSuperAdmin) {
+      navigate('/');
+    }
+  }, [isSuperAdmin]);
 
   return isAnAppConfigSelected ? (
     <AppConfigPage settingLocation={settingLocation} />
