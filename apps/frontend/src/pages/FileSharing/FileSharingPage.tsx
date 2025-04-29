@@ -34,6 +34,7 @@ const FileSharingPage = () => {
     if (!downloadProgress) return;
 
     const percent = downloadProgress.percent ?? 0;
+
     const toasterData = {
       percent,
       title: t('filesharing.progressBox.downloadInfo', {
