@@ -11,8 +11,7 @@
  */
 
 import { settings, surveyLocalization } from 'survey-core';
-import { editorLocalization } from 'survey-creator-react';
-import { SurveyCreator } from 'survey-creator-react';
+import { editorLocalization, SurveyCreator } from 'survey-creator-react';
 import 'survey-core/i18n/english';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/french';
