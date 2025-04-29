@@ -11,19 +11,21 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { toast } from 'sonner';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import useUserStore from '@/store/UserStore/UserStore';
-import { toast } from 'sonner';
 import UserAccountsToastContent from '@/components/ui/UserAccountsToastContent';
 
 const EmbeddedFrameManager = () => {
   const { appConfigs } = useAppConfigsStore();
   const { loadedEmbeddedFrames, activeEmbeddedFrame } = useFrameStore();
   const { userAccounts, getUserAccounts } = useUserStore();
+  const location = useLocation();
 
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const toggleCollapse = useCallback(() => {
     setIsCollapsed((prev) => !prev);
   }, []);
@@ -41,9 +43,9 @@ const EmbeddedFrameManager = () => {
   const toastId = `${appConfig?.name}-embedded-login-toast`;
 
   useEffect(() => {
-    setIsCollapsed(true);
+    setIsCollapsed(false);
     toast.dismiss(toastId);
-  }, [toastId]);
+  }, [location, toastId]);
 
   useEffect(() => {
     void getUserAccounts();
