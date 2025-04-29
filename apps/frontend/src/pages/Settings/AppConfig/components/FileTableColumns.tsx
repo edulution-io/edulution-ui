@@ -13,7 +13,7 @@
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { useLocation } from 'react-router-dom';
-import { MdFileCopy, MdFolder } from 'react-icons/md';
+import { MdFileCopy } from 'react-icons/md';
 import i18n from '@/i18n';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
@@ -26,6 +26,7 @@ import copyToClipboard from '@/utils/copyToClipboard';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import ActionTooltip from '@/components/shared/ActionTooltip';
+import { FcFolder } from 'react-icons/fc';
 
 const renderFileIcon = (item: FileInfoDto) => {
   if (item.type !== 'directory') {
@@ -36,7 +37,7 @@ const renderFileIcon = (item: FileInfoDto) => {
       />
     );
   }
-  return <MdFolder size={TABLE_ICON_SIZE} />;
+  return <FcFolder size={TABLE_ICON_SIZE} />;
 };
 
 const FileTableColumns: ColumnDef<FileInfoDto>[] = [
