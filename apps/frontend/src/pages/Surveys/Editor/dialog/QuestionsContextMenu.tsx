@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { SurveyCreatorModel } from 'survey-creator-core';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import QuestionContextMenuBody from '@/pages/Surveys/Editor/dialog/QuestionsContextMenuBody';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 
 interface QuestionContextMenuProps {
@@ -38,6 +39,18 @@ const QuestionContextMenu = (props: QuestionContextMenuProps) => {
     />
   );
 
+  const handleClose = () => setIsOpenQuestionContextMenu(!isOpenQuestionContextMenu);
+
+  const getFooter = () => (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+      }}
+    >
+      <DialogFooterButtons handleClose={handleClose} />
+    </form>
+  );
+
   return (
     <AdaptiveDialog
       isOpen={isOpenQuestionContextMenu}
@@ -45,6 +58,7 @@ const QuestionContextMenu = (props: QuestionContextMenuProps) => {
       handleOpenChange={() => setIsOpenQuestionContextMenu(!isOpenQuestionContextMenu)}
       title={t('survey.editor.questionSettings.title')}
       body={getDialogBody()}
+      footer={getFooter()}
       desktopContentClassName="max-w-[50%] max-h-[90%] overflow-auto"
     />
   );

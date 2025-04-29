@@ -14,6 +14,7 @@ import React, { useEffect } from 'react';
 import AppRouter from '@/router/AppRouter';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
 import { WebStorageStateStore } from 'oidc-client-ts';
+import { CookiesProvider } from 'react-cookie';
 import i18n from '@/i18n';
 import eduApi from '@/api/eduApi';
 import useLmnApiStore from '@/store/useLmnApiStore';
@@ -55,12 +56,14 @@ const App = () => {
 
   return (
     <AuthProvider {...oidcConfig}>
-      <GlobalHooksWrapper>
-        <HelmetProvider>
-          <AppRouter />
-        </HelmetProvider>
-        <Toaster />
-      </GlobalHooksWrapper>
+      <CookiesProvider>
+        <GlobalHooksWrapper>
+          <HelmetProvider>
+            <AppRouter />
+          </HelmetProvider>
+          <Toaster />
+        </GlobalHooksWrapper>
+      </CookiesProvider>
     </AuthProvider>
   );
 };

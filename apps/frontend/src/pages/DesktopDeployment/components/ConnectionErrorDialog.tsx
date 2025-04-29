@@ -12,8 +12,8 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/shared/Button';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import useDesktopDeploymentStore from '../DesktopDeploymentStore';
 
 type ConnectionErrorProps = {
@@ -31,24 +31,11 @@ const ConnectionErrorDialog: React.FC<ConnectionErrorProps> = ({ handleReload })
   };
 
   const getFooter = () => (
-    <div className="mt-4 flex justify-between gap-5">
-      <Button
-        variant="btn-collaboration"
-        size="lg"
-        type="button"
-        onClick={() => handleReload()}
-      >
-        {t('common.reload')}
-      </Button>
-      <Button
-        variant="btn-collaboration"
-        size="lg"
-        type="button"
-        onClick={handleClose}
-      >
-        {t('common.close')}
-      </Button>
-    </div>
+    <DialogFooterButtons
+      handleClose={handleClose}
+      handleSubmit={handleReload}
+      submitButtonText="common.reload"
+    />
   );
 
   return (

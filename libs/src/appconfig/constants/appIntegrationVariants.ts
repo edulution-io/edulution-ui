@@ -13,6 +13,7 @@
 const APP_INTEGRATION_VARIANT = {
   NATIVE: 'native',
   FORWARDED: 'forwarded',
+  FRAMED: 'framed',
   EMBEDDED: 'embedded',
 } as const;
 

@@ -17,7 +17,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { Button } from '@/components/shared/Button';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
@@ -27,6 +26,7 @@ import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
 import APPS from '@libs/appconfig/constants/apps';
 import slugify from '@libs/common/utils/slugify';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import getCustomAppConfigFormSchema from './schemas/getCustomAppConfigFormSchema';
 import SelectIconField from './components/SelectIconField';
 
@@ -58,13 +58,32 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
       switch (selectedApp.id) {
         case APPS.FORWARDING:
           return APP_INTEGRATION_VARIANT.FORWARDED;
-        case APPS.EMBEDDED:
-          return APP_INTEGRATION_VARIANT.EMBEDDED;
         case APPS.FRAME:
+          return APP_INTEGRATION_VARIANT.FRAMED;
+        case APPS.EMBEDDED:
           return APP_INTEGRATION_VARIANT.EMBEDDED;
         default:
           return APP_INTEGRATION_VARIANT.FORWARDED;
       }
+    };
+
+    const getOptions = () => {
+      if (selectedApp.id === APPS.EMBEDDED) {
+        return {
+          proxyConfig: '""',
+        };
+      }
+      return {
+        url: '',
+        proxyConfig: '""',
+      };
+    };
+
+    const getExtendedOptions = () => {
+      if (selectedApp.id === APPS.EMBEDDED) {
+        return { EMBEDDED_PAGE_HTML_CONTENT: '', EMBEDDED_PAGE_HTML_MODE: false };
+      }
+      return {};
     };
 
     const newConfig: AppConfigDto = {
@@ -75,12 +94,9 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
       },
       icon: newAppIcon,
       appType: getAppType(),
-      options: {
-        url: '',
-        proxyConfig: '""',
-      },
+      options: getOptions(),
       accessGroups: [],
-      extendedOptions: {},
+      extendedOptions: getExtendedOptions(),
     };
 
     await createAppConfig(newConfig);
@@ -108,27 +124,31 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
             variant="dialog"
           />
           <SelectIconField form={form} />
-          <div className="mt-12 flex justify-end">
-            <Button
-              type="submit"
-              variant="btn-collaboration"
-              size="lg"
-              disabled={isLoading}
-            >
-              {t('common.add')}
-            </Button>
-          </div>
         </form>
       </Form>
     );
   };
 
+  const handleClose = () => setIsAddAppConfigDialogOpen(false);
+
+  const getFooter = () => (
+    <form>
+      <DialogFooterButtons
+        handleClose={handleClose}
+        handleSubmit={form.handleSubmit(onSubmit)}
+        submitButtonText="common.add"
+        disableSubmit={isLoading}
+      />
+    </form>
+  );
+
   return (
     <AdaptiveDialog
       isOpen={isAddAppConfigDialogOpen}
-      handleOpenChange={() => setIsAddAppConfigDialogOpen(false)}
+      handleOpenChange={handleClose}
       title={t('settings.addApp.title')}
       body={getDialogBody()}
+      footer={getFooter()}
     />
   );
 };

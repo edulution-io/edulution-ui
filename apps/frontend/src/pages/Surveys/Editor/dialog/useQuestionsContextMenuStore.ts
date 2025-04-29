@@ -12,7 +12,7 @@
 
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
-import { Question } from 'survey-core/typings/question';
+import { Question } from 'survey-core/typings/src/question';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import CHOOSE_OTHER_ITEM_CHOICE_NAME from '@libs/survey/constants/choose-other-item-choice-name';
 
@@ -87,7 +87,7 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       formerChoices: question?.choices || [],
       currentChoices: [],
-      showOtherItem: question?.showOtherItem || false,
+      showOtherItem: !!question?.showOtherItem,
     });
   },
 

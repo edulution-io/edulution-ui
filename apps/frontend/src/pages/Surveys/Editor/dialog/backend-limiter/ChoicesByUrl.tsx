@@ -46,6 +46,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     updateLimitersChoices,
     currentBackendLimiters,
     formerChoices,
+    showOtherItem,
   } = useQuestionsContextMenuStore();
 
   useEffect(() => {
@@ -74,6 +75,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       correspondingQuestion = updatedFormula?.elements?.find((element) => element.name === selectedQuestion?.name);
     }
     if (correspondingQuestion) {
+      correspondingQuestion.showOtherItem = !!showOtherItem;
       if (useBackendLimits) {
         correspondingQuestion.choicesByUrl = null;
         correspondingQuestion.choices = formerChoices || [];

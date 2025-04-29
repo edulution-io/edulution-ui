@@ -14,12 +14,12 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { t } from 'i18next';
 import React from 'react';
 import ShareCollectDialogProps from '@libs/classManagement/types/shareCollectDialogProps';
-import { Button } from '@/components/shared/Button';
 import { FaCopy, FaCut } from 'react-icons/fa';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import { RadioGroupItemSH, RadioGroupSH } from '@/components/ui/RadioGroupSH';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
   const { activeCollectionOperation, setActiveCollectionOperation } = useFileSharingMoveDialogStore();
@@ -73,16 +73,11 @@ const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, 
   );
 
   const getFooter = () => (
-    <div className="absolute bottom-0 left-0 right-0 flex justify-end p-4">
-      <Button
-        type="button"
-        size="lg"
-        variant="btn-collaboration"
-        onClick={action}
-      >
-        {t(`classmanagement.${title}`)}
-      </Button>
-    </div>
+    <DialogFooterButtons
+      handleClose={onClose}
+      handleSubmit={action}
+      submitButtonText={`classmanagement.${title}`}
+    />
   );
 
   return (

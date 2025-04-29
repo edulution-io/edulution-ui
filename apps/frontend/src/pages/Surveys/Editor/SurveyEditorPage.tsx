@@ -16,6 +16,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
+import { editorLocalization, localization } from 'survey-creator-core';
+import { Question } from 'survey-core/typings/src/question';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
@@ -37,7 +39,6 @@ import useBeforeUnload from '@/hooks/useBeforeUnload';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import QuestionContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
-import { Question } from 'survey-core/typings/question';
 
 const SurveyEditorPage = () => {
   const { fetchSelectedSurvey, isFetching, selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
@@ -60,6 +61,9 @@ const SurveyEditorPage = () => {
   const { user } = useUserStore();
   const { surveyId } = useParams();
   const { language } = useLanguage();
+
+  editorLocalization.defaultLocale = language || 'en';
+  localization.currentLocale = language || 'en';
 
   useEffect(() => {
     reset();
@@ -107,51 +111,52 @@ const SurveyEditorPage = () => {
   useBeforeUnload('unload', updateSurveyStorage);
 
   useEffect(() => {
-    if (creator) {
-      creator.saveNo = form.getValues('saveNo');
-      creator.JSON = form.getValues('formula');
-      creator.locale = language;
-      creator.saveSurveyFunc = updateSurveyStorage;
+    if (!creator) return;
 
-      creator.onDefineElementMenuItems.add((_, options) => {
-        const settingsItemIndex = options.items.findIndex((option) => option.id === 'settings');
-        if (settingsItemIndex !== -1) {
-          // eslint-disable-next-line no-param-reassign
-          options.items[settingsItemIndex].visibleIndex = 10;
-          // eslint-disable-next-line no-param-reassign
-          options.items[settingsItemIndex].title = t('survey.editor.questionSettings.icon');
-          // eslint-disable-next-line no-param-reassign
-          options.items[settingsItemIndex].action = () => {
-            if (_.isObjQuestion(_.selectedElement)) {
-              setIsOpenQuestionContextMenu(true);
-              setSelectedQuestion(_.selectedElement as unknown as Question);
-            }
-          };
+    creator.saveNo = form.getValues('saveNo');
+    creator.JSON = form.getValues('formula');
+    creator.locale = language;
+    creator.saveSurveyFunc = updateSurveyStorage;
 
-          const doubleItemIndex = options.items.findIndex((option) => option.id === 'duplicate');
-          if (doubleItemIndex !== -1) {
-            // eslint-disable-next-line no-param-reassign
-            options.items[doubleItemIndex].visibleIndex = 20;
+    creator.onDefineElementMenuItems.add((_, options) => {
+      const settingsItemIndex = options.items.findIndex((option) => option.id === 'settings');
+      if (settingsItemIndex !== -1) {
+        // eslint-disable-next-line no-param-reassign
+        options.items[settingsItemIndex].visibleIndex = 10;
+        // eslint-disable-next-line no-param-reassign
+        options.items[settingsItemIndex].title = t('survey.editor.questionSettings.settings');
+        // eslint-disable-next-line no-param-reassign
+        options.items[settingsItemIndex].action = () => {
+          if (_.isObjQuestion(_.selectedElement)) {
+            setIsOpenQuestionContextMenu(true);
+            setSelectedQuestion(_.selectedElement as unknown as Question);
           }
+        };
+
+        const doubleItemIndex = options.items.findIndex((option) => option.id === 'duplicate');
+        if (doubleItemIndex !== -1) {
+          // eslint-disable-next-line no-param-reassign
+          options.items[doubleItemIndex].visibleIndex = 20;
         }
-      });
+      }
+    });
 
-      creator.onUploadFile.add(async (_, uploadFileEvent) => {
-        // TODO: 630 (https://github.com/edulution-io/edulution-ui/issues/630) -  Currently this can only work for already created surveys
-        if (!surveyId) return;
-        const promises = uploadFileEvent.files.map((file: File) => {
-          if (!uploadFileEvent.question?.id) {
-            return uploadImageFile(surveyId, 'Header', file, uploadFileEvent.callback);
-          }
-          return uploadImageFile(surveyId, uploadFileEvent.question.id, file, uploadFileEvent.callback);
-        });
-        await Promise.all(promises);
+    creator.onUploadFile.add(async (_, uploadFileEvent) => {
+      // TODO: 630 (https://github.com/edulution-io/edulution-ui/issues/630) -  Currently this can only work for already created surveys
+      if (!surveyId) return;
+      const promises = uploadFileEvent.files.map((file: File) => {
+        if (!uploadFileEvent.question?.id) {
+          return uploadImageFile(surveyId, 'Header', file, uploadFileEvent.callback);
+        }
+        return uploadImageFile(surveyId, uploadFileEvent.question.id, file, uploadFileEvent.callback);
       });
-    }
+      await Promise.all(promises);
+    });
   }, [creator, form, language]);
 
   const handleSaveSurvey = async () => {
     if (!creator) return;
+
     const formula = creator.JSON as SurveyFormula;
     const saveNo = creator.saveNo || 0;
     const success = await updateOrCreateSurvey({
