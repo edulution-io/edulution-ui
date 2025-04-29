@@ -870,7 +870,7 @@
         "passwordChangedSuccessfully": "Passwort erfolgreich geändert"
       },
       "filterPlaceHolderText": "Suche nach URL",
-      "userAccounts": "Benutzerkonten",
+      "passwordSafe": "Passwort-Tresor",
       "addUserAccount": "Konto hinzufügen",
       "accountId": "Konto-ID",
       "accountData": "Zugangsdaten",
