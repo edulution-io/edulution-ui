@@ -11,7 +11,7 @@
  */
 
 import { create } from 'zustand';
-import { Question } from 'survey-core/typings/question';
+import { Question } from 'survey-core/typings/src/question';
 
 interface QuestionsContextMenuStore {
   reset: () => void;

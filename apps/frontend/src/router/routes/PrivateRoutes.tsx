@@ -33,11 +33,11 @@ import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
 import getSurveyRoutes from '@/router/routes/SurveyRoutes';
 import getFileSharingRoutes from '@/router/routes/FileSharingRoutes';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
+import APPS from '@libs/appconfig/constants/apps';
+import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
 import DashboardPage from '../../pages/Dashboard/DashboardPage';
 import getEmbeddedRoutes from './EmbeddedAppRoutes';
 import ProtectedRoute from './ProtectedRoute';
-import APPS from '@libs/appconfig/constants/apps';
-import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
 
 const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
   <>
