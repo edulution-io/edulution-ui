@@ -143,7 +143,21 @@ class FilesystemService {
 
       Logger.log(`File moved from ${oldFilePath} to ${newFilePath}`);
     } catch (error) {
-      Logger.error(error);
+      const existsOldFile = await FilesystemService.checkIfFileExist(oldFilePath);
+      const existsNewFile = await FilesystemService.checkIfFileExist(newFilePath);
+      if (existsNewFile) {
+        Logger.warn(`The new filepath does exist ${newFilePath}`);
+        Logger.warn(`Error on moving file from ${oldFilePath} to ${newFilePath}`);
+        Logger.error(error);
+      }
+      if (existsOldFile) {
+        if (!existsNewFile) {
+          Logger.error(`Error on moving file from ${oldFilePath} to ${newFilePath}`);
+          Logger.error(error);
+        }
+        Logger.warn(`The old file ${oldFilePath} still exists`);
+        // TODO: SHOULD RETRY
+      }
       throw new CustomHttpException(FileSharingErrorMessage.RenameFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     }
   }

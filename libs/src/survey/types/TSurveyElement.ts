@@ -10,13 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+type Choice = string | { value: string; imageLink: string };
+
 interface SurveyElement {
   type: string;
   name: string;
   title?: string;
   description?: string;
   choicesOrder?: string;
-  choices?: string[];
+  choices?: Choice[];
   choicesByUrl?: {
     url: string;
   };
