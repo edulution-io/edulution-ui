@@ -10,18 +10,23 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Global, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import AppConfigController from './appconfig.controller';
-import AppConfigService from './appconfig.service';
-import { AppConfig, AppConfigSchema } from './appconfig.schema';
-import MigrationService from '../migration/migration.service';
+import { useEffect, useState } from 'react';
 
-@Global()
-@Module({
-  imports: [MongooseModule.forFeature([{ name: AppConfig.name, schema: AppConfigSchema }])],
-  controllers: [AppConfigController],
-  providers: [AppConfigService, MigrationService],
-  exports: [AppConfigService],
-})
-export default class AppConfigModule {}
+const usePortalRoot = (id: string): HTMLElement | null => {
+  const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+
+    let node = document.getElementById(id);
+    if (!node) {
+      node = document.createElement('div');
+      node.id = id;
+      document.body.appendChild(node);
+    }
+    setPortalRoot(node);
+  }, [id]);
+
+  return portalRoot;
+};
+export default usePortalRoot;

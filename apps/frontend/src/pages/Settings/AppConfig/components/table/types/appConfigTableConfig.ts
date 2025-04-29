@@ -17,6 +17,8 @@ import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import { VeyonConfigTableStore } from '@libs/appconfig/types/veyonConfigTableStore';
 import { DockerContainerTableStore } from '@libs/appconfig/types/dockerContainerTableStore';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
+import { FileTableStore } from '@libs/appconfig/types/fileTableStore';
 import AppConfigTableEntry from './appConfigTableEntry';
 
 export type AppConfigTableConfig =
@@ -28,4 +30,7 @@ export type AppConfigTableConfig =
     })
   | (AppConfigTableEntry<VeyonProxyItem, VeyonConfigTableStore> & {
       type: typeof ExtendedOptionKeys.VEYON_PROXYS;
+    })
+  | (AppConfigTableEntry<FileInfoDto, FileTableStore> & {
+      type: typeof ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT;
     });
