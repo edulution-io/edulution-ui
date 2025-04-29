@@ -39,6 +39,7 @@ type AppConfigsStore = {
   patchSingleFieldInConfig: (name: string, patchConfigDto: PatchConfigDto) => Promise<void>;
   deleteAppConfigEntry: (name: string) => Promise<void>;
   getConfigFile: (filePath: string) => Promise<string>;
+  uploadFile: (appName: string, file: File) => Promise<string | undefined>;
 };
 
 type PersistedAppConfigsStore = (
@@ -162,6 +163,21 @@ const useAppConfigsStore = create<AppConfigsStore>(
           return '';
         } finally {
           set({ isConfigFileLoading: false });
+        }
+      },
+
+      uploadFile: async (appName, file) => {
+        set({ isLoading: true, error: null });
+        try {
+          const formData = new FormData();
+          formData.append('file', file);
+          const response = await eduApi.post<string>(`files/${appName}`, formData);
+          return response.data;
+        } catch (e) {
+          handleApiError(e, set);
+          return undefined;
+        } finally {
+          set({ isLoading: false });
         }
       },
     }),

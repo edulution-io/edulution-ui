@@ -59,9 +59,13 @@ export const attachmentFileFilter = (
   }
 };
 
-export const createAttachmentUploadOptions = (getDestinationPath: (req: Request) => string) => ({
-  storage: createDiskStorage(getDestinationPath),
-  fileFilter: attachmentFileFilter,
+export const createAttachmentUploadOptions = (
+  getDestinationPath: (req: Request) => string,
+  filter: boolean = true,
+  fileNameGenerator?: (req: Request, file: Express.Multer.File) => string,
+) => ({
+  storage: createDiskStorage(getDestinationPath, fileNameGenerator),
+  fileFilter: filter ? attachmentFileFilter : undefined,
 });
 
 export const checkAttachmentFile = (file: Express.Multer.File): string => {
