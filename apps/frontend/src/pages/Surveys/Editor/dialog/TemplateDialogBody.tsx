@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyFormula from '@libs/survey/types/TSurveyFormula';
+import useLdapGroups from '@/hooks/useLdapGroups';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import TemplateList from '@/pages/Surveys/Editor/dialog/TemplateList';
 import { Button } from '@/components/shared/Button';
@@ -29,6 +30,7 @@ interface TemplateDialogBodyProps {
 const TemplateDialogBody = (props: TemplateDialogBodyProps) => {
   const { form, surveyCreator } = props;
   const { setIsOpenTemplateMenu, templates, fetchTemplates, uploadTemplate } = useTemplateMenuStore();
+  const { isSuperAdmin } = useLdapGroups();
 
   const { t } = useTranslation();
 
@@ -46,18 +48,20 @@ const TemplateDialogBody = (props: TemplateDialogBodyProps) => {
 
   return (
     <div className="space-y-2">
-      <div className="my-0 mb-4 flex h-[32px] max-h-[32px] flex-row items-center justify-between py-0">
-        <Label>
-          <p className="font-bold">{t('survey.editor.templateMenu.submit')}</p>
-        </Label>
-        <Button
-          onClick={handleSaveTemplate}
-          variant="btn-collaboration"
-          className="my-0 h-[32px] rounded py-0"
-        >
-          {t('common.save')}
-        </Button>
-      </div>
+      {isSuperAdmin ? (
+        <div className="my-0 mb-4 flex h-[32px] max-h-[32px] flex-row items-center justify-between py-0">
+          <Label>
+            <p className="font-bold">{t('survey.editor.templateMenu.submit')}</p>
+          </Label>
+          <Button
+            onClick={handleSaveTemplate}
+            variant="btn-collaboration"
+            className="my-0 h-[32px] rounded py-0"
+          >
+            {t('common.save')}
+          </Button>
+        </div>
+      ) : null}
 
       <TemplateList
         form={form}
