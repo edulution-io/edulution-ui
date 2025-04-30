@@ -893,9 +893,9 @@
       "addUserAccount": "Konto hinzufügen",
       "accountId": "Konto-ID",
       "accountData": "Zugangsdaten",
-      "masterPassword": "Master-Passwort",
-      "wrongMasterPassword": "Master-Passwort ist falsch.",
-      "enterMasterPassword": "Bitte Master-Passwort zum Entschlüsseln eingeben"
+      "safePin": "Tresor-PIN",
+      "wrongSafePin": "PIN ist falsch.",
+      "enterSafePin": "Bitte PIN zum Entschlüsseln eingeben."
     },
     "mails": {
       "title": "E-Mail"

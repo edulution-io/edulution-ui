@@ -11,19 +11,18 @@
  */
 
 import React, { FC, useState, Dispatch, SetStateAction } from 'react';
-import { useTranslation } from 'react-i18next';
 import OtpInput from '@/components/shared/OtpInput';
 import NumberPad from '@/components/ui/NumberPad';
 import cn from '@libs/common/utils/className';
 
 interface TotpInputProps {
   totp: string;
+  title: string;
   setTotp: Dispatch<SetStateAction<string>>;
   onComplete: () => void;
 }
 
-const TotpInput: FC<TotpInputProps> = ({ totp, setTotp, onComplete }) => {
-  const { t } = useTranslation();
+const TotpInput: FC<TotpInputProps> = ({ totp, title, setTotp, onComplete }) => {
   const [showNumPad, setShowNumPad] = useState(false);
 
   const handlePress = (digit: string) => {
@@ -38,7 +37,7 @@ const TotpInput: FC<TotpInputProps> = ({ totp, setTotp, onComplete }) => {
 
   return (
     <>
-      <div className="mt-3 text-center font-bold">{t('login.enterMultiFactorCode')}</div>
+      {title && <div className="mt-3 text-center font-bold">{title}</div>}
       <OtpInput
         totp={totp}
         setTotp={setTotp}

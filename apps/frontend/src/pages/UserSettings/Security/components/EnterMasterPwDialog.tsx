@@ -56,7 +56,7 @@ const EnterMasterPwDialog: FC<EnterMasterPwDialogProps> = ({ isOpen, form, handl
 
   return (
     <AdaptiveDialog
-      title={t('usersettings.security.enterMasterPassword')}
+      title={t('usersettings.security.enterSafePin')}
       isOpen={isOpen === 'show' || isOpen === 'copy'}
       body={getDialogBody()}
       footer={getDialogFooter()}

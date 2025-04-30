@@ -19,14 +19,14 @@ const getUserAccountFormSchema = (t: TFunction<'translation', undefined>) =>
       appName: z.string({ message: t('common.required') }),
       accountUser: z.string().min(1, { message: t('common.required') }),
       accountPassword: z.string().optional(),
-      masterPassword: z.string().optional(),
+      safePin: z.string().optional(),
     })
     .superRefine((data, ctx) => {
-      if (data.accountPassword && !data.masterPassword) {
+      if (data.accountPassword && !data.safePin) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: t('common.required'),
-          path: ['masterPassword'],
+          path: ['safePin'],
         });
       }
     });

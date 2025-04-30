@@ -891,9 +891,9 @@
       "addUserAccount": "Add account",
       "accountId": "Account ID",
       "accountData": "Login Data",
-      "masterPassword": "Master Password",
-      "wrongMasterPassword": "Wrong master password",
-      "enterMasterPassword": "Please enter master password for decryption"
+      "safePin": "Safe PIN",
+      "wrongSafePin": "Wrong PIN Number",
+      "enterSafePin": "Please enter your PIN number for decryption"
     },
     "mails": {
       "title": "Email"

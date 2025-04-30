@@ -42,12 +42,9 @@ export const encryptPassword = async (
   return { iv, ciphertext };
 };
 
-export const decryptPassword = async (
-  encryptedData: EncryptedPasswordObject,
-  masterPassword: string,
-): Promise<string> => {
+export const decryptPassword = async (encryptedData: EncryptedPasswordObject, safePin: string): Promise<string> => {
   try {
-    const key = await deriveKey(masterPassword, new Uint8Array(encryptedData.salt));
+    const key = await deriveKey(safePin, new Uint8Array(encryptedData.salt));
     const decrypted = await window.crypto.subtle.decrypt(
       {
         name: 'AES-GCM',

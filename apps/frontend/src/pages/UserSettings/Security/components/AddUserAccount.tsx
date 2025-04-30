@@ -25,6 +25,7 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import getDisplayName from '@/utils/getDisplayName';
 import useLanguage from '@/hooks/useLanguage';
 import { encodeBase64 } from '@libs/common/utils/getBase64String';
+import TotpInput from '@/pages/LoginPage/components/TotpInput';
 import getUserAccountFormSchema from './getUserAccountSchema';
 
 interface AddUserAccountDialogProps {
@@ -38,7 +39,7 @@ type UserAccountFormValues = {
   appName: string;
   accountUser: string;
   accountPassword: string;
-  masterPassword: string;
+  safePin: string;
 };
 
 const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelected, keys, handleOpenChange }) => {
@@ -54,13 +55,13 @@ const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelecte
           appName: userAccounts[idx].appName,
           accountUser: userAccounts[idx].accountUser,
           accountPassword: '',
-          masterPassword: '',
+          safePin: '',
         }
       : {
           appName: '',
           accountUser: '',
           accountPassword: '',
-          masterPassword: '',
+          safePin: '',
         };
 
   const form = useForm({
@@ -82,7 +83,7 @@ const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelecte
 
   const onSubmit = async (data: UserAccountFormValues) => {
     const salt = window.crypto.getRandomValues(new Uint8Array(16));
-    const key = await deriveKey(data.masterPassword, salt);
+    const key = await deriveKey(data.safePin, salt);
     const { iv, ciphertext } = await encryptPassword(data.accountPassword, key);
 
     const newPassword = {
@@ -156,13 +157,22 @@ const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelecte
           variant="dialog"
           type="password"
         />
-        <FormField
-          labelTranslationId={t('usersettings.security.masterPassword')}
-          name="masterPassword"
-          defaultValue=""
-          form={form}
-          variant="dialog"
-          type="password"
+        <FormFieldSH
+          control={form.control}
+          name="safePin"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <TotpInput
+                  totp={field.value}
+                  title={t('usersettings.security.safePin')}
+                  setTotp={field.onChange}
+                  onComplete={() => {}}
+                />
+              </FormControl>
+              <p>{form.getFieldState('safePin').error?.message}</p>
+            </FormItem>
+          )}
         />
       </form>
     </Form>

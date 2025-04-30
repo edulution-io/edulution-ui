@@ -57,7 +57,7 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
       return encryptedPassword;
     }
     form.setValue('masterPw', '');
-    toast.error(t('usersettings.security.wrongMasterPassword'));
+    toast.error(t('usersettings.security.wrongSafePin'));
     return placeholder;
   };
 
