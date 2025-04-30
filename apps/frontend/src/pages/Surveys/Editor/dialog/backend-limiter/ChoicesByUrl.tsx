@@ -10,6 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { toast } from 'sonner';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
@@ -43,6 +44,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     questionType,
     useBackendLimits,
     toggleUseBackendLimits,
+    isUpdatingBackendLimiters,
     setIsUpdatingBackendLimiters,
     setSelectedQuestion,
     shouldToggleShowOtherItem,
@@ -66,46 +68,58 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     if (!form) return;
     form.setValue('backendLimiters', currentBackendLimiters);
   }, [currentBackendLimiters]);
+  useEffect(() => {
+    if (!form) return;
+    setBackendLimiters(form.watch('backendLimiters') || []);
+  }, [selectedQuestion]);
 
   const handleToggleFormula = () => {
     if (!selectedQuestion) return;
+    if (isUpdatingBackendLimiters) return;
 
     setIsUpdatingBackendLimiters(true);
 
-    const surveyFormula = form.getValues('formula');
-    const currentPage = creator?.currentPage;
+    try {
+      const surveyFormula = form.watch('formula');
+      const currentPage = creator?.currentPage;
+      const updatedFormula: SurveyFormula = JSON.parse(JSON.stringify(surveyFormula, null, 2)) as SurveyFormula;
 
-    const updatedFormula: SurveyFormula = JSON.parse(JSON.stringify(surveyFormula, null, 2)) as SurveyFormula;
+      let correspondingQuestion;
+      if (currentPage.isPage) {
+        const correspondingPage = updatedFormula?.pages?.find((page) => page.name === currentPage.name);
+        correspondingQuestion = correspondingPage?.elements?.find(
+          (question) => question.name === selectedQuestion.name,
+        );
+      } else {
+        correspondingQuestion = updatedFormula?.elements?.find((element) => element.name === selectedQuestion.name);
+      }
 
-    let correspondingQuestion;
-    if (currentPage.isPage) {
-      const correspondingPage = updatedFormula?.pages?.find((page) => page.name === currentPage.name);
-      correspondingQuestion = correspondingPage?.elements?.find((question) => question.name === selectedQuestion.name);
-    } else {
-      correspondingQuestion = updatedFormula?.elements?.find((element) => element.name === selectedQuestion.name);
+      if (!correspondingQuestion) {
+        throw new Error('Corresponding Question was not found');
+      }
+
+      if (useBackendLimits) {
+        correspondingQuestion.choicesByUrl = null;
+        correspondingQuestion.choices = formerChoices || [];
+      } else {
+        correspondingQuestion.choices = null;
+        correspondingQuestion.choicesByUrl = {
+          url: `${EDU_API_URL}/${SURVEY_RESTFUL_CHOICES}/${TEMPORAL_SURVEY_ID_STRING}/${selectedQuestion.name}`,
+        };
+      }
+
+      creator.JSON = updatedFormula;
+      form.setValue('formula', updatedFormula);
+      toggleUseBackendLimits();
+
+      const questions: Question[] = creator.survey.getAllQuestions();
+      const question: Question | undefined = questions.find((q) => q.name === correspondingQuestion.name);
+      setSelectedQuestion(question);
+    } catch {
+      toast.error(t('survey.errors.updateOrCreateError'));
+    } finally {
+      setIsUpdatingBackendLimiters(false);
     }
-    if (!correspondingQuestion) return;
-
-    if (useBackendLimits) {
-      correspondingQuestion.choicesByUrl = null;
-      correspondingQuestion.choices = formerChoices || [];
-    } else {
-      correspondingQuestion.choices = null;
-      correspondingQuestion.choicesByUrl = {
-        url: `${EDU_API_URL}/${SURVEY_RESTFUL_CHOICES}/${TEMPORAL_SURVEY_ID_STRING}/${selectedQuestion.name}`,
-      };
-    }
-
-    creator.JSON = updatedFormula;
-
-    toggleUseBackendLimits();
-
-    setIsUpdatingBackendLimiters(false);
-
-    const questions: Question[] = creator.survey.getAllQuestions();
-    const question: Question | undefined = questions.find((q) => q.name === correspondingQuestion.name);
-    setSelectedQuestion(question);
-
     if (shouldToggleShowOtherItem) {
       toggleShowOtherItem();
     }

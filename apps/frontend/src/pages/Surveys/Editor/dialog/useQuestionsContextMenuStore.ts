@@ -79,7 +79,13 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
   ...QuestionsContextMenuStoreInitialState,
   reset: () => set(QuestionsContextMenuStoreInitialState),
 
-  setIsOpenQuestionContextMenu: (state: boolean) => set({ isOpenQuestionContextMenu: state }),
+  setIsOpenQuestionContextMenu: (state: boolean) => {
+    const { reset } = get();
+    if (state === false) {
+      reset();
+    }
+    set({ isOpenQuestionContextMenu: state });
+  },
 
   setSelectedQuestion: (question: Question | undefined) => {
     const type = question?.getType();
