@@ -12,6 +12,7 @@
 
 import React, { FC, Dispatch, SetStateAction } from 'react';
 import { MdDialpad } from 'react-icons/md';
+import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '../ui/InputOtp';
 import { Button } from './Button';
 
@@ -39,7 +40,11 @@ const OtpInput: FC<OtpInputProps> = ({
       autoFocus
       maxLength={maxLength}
       value={totp}
-      onChange={setTotp}
+      onChange={(val) => {
+        if (val === '' || new RegExp(REGEXP_ONLY_DIGITS).test(val)) {
+          setTotp(val);
+        }
+      }}
       onComplete={onComplete ? () => onComplete() : undefined}
     >
       <InputOTPGroup>
