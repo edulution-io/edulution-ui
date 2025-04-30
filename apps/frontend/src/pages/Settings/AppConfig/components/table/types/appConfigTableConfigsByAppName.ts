@@ -15,9 +15,17 @@ import APPS from '@libs/appconfig/constants/apps';
 import type BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import { type BulletinCategoryTableStore } from '@libs/appconfig/types/bulletinCategoryTableStore';
 import { type DockerContainerTableStore } from '@libs/appconfig/types/dockerContainerTableStore';
-import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
-import { VeyonConfigTableStore } from '@libs/appconfig/types/veyonConfigTableStore';
+import type VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
+import { type VeyonConfigTableStore } from '@libs/appconfig/types/veyonConfigTableStore';
+import { type FileTableStore } from '@libs/appconfig/types/fileTableStore';
+import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import type AppConfigTableEntry from './appConfigTableEntry';
+
+type AllowedTableEntry =
+  | AppConfigTableEntry<BulletinCategoryResponseDto, BulletinCategoryTableStore>
+  | AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>
+  | AppConfigTableEntry<VeyonProxyItem, VeyonConfigTableStore>
+  | AppConfigTableEntry<FileInfoDto, FileTableStore>;
 
 type AppConfigTableConfigsByAppName = {
   [APPS.BULLETIN_BOARD]: AppConfigTableEntry<BulletinCategoryResponseDto, BulletinCategoryTableStore>[];
@@ -28,5 +36,8 @@ type AppConfigTableConfigsByAppName = {
   [APPS.MAIL]: AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>[];
   [APPS.DESKTOP_DEPLOYMENT]: AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>[];
   [APPS.FILE_SHARING]: AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>[];
+} & {
+  [key: string]: AllowedTableEntry[];
 };
+
 export default AppConfigTableConfigsByAppName;

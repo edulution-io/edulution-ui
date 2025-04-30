@@ -10,10 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const isDevelopment = VITE_ENV === 'development';
+import isDev from '../constants/isDev';
 
 const getFrontEndUrl = (): string => {
-  if (isDevelopment) {
+  if (isDev) {
     return `${window.location.protocol}//host.docker.internal:5173`;
   }
   return `${window.location.protocol}//${window.location.host}`;
