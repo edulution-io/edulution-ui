@@ -78,10 +78,9 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
           <Button
             type="button"
             onClick={() => removeChoice(row.original.name)}
-            // variant="btn-collaboration"
             className="m-0 flex max-h-[2.25rem] w-[80px] items-center justify-center rounded-md p-0 text-ciRed"
           >
-            <HiTrash />
+            <HiTrash className="h-[18px] w-[18px]" />
           </Button>
         </div>
       );
