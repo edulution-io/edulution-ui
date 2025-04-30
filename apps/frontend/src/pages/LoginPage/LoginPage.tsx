@@ -39,6 +39,7 @@ import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import APPS from '@libs/appconfig/constants/apps';
+import SilentLogin from '@/pages/LoginPage/SilentLogin';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 import useAppConfigsStore from '../Settings/AppConfig/appConfigsStore';
@@ -370,6 +371,7 @@ const LoginPage: React.FC = () => {
           </form>
         </Form>
       </Card>
+      <SilentLogin />
     </PageLayout>
   );
 };

@@ -46,12 +46,14 @@ const App = () => {
     authority: `${EDU_API_URL}/auth`,
     client_id: ' ',
     client_secret: ' ',
-    redirect_uri: '',
+    redirect_uri: window.location.origin,
+    silent_redirect_uri: `${window.location.origin}/authentication/silent_callback`,
     loadUserInfo: true,
     automaticSilentRenew: true,
     userStore: new WebStorageStateStore({
       store: localStorage,
     }),
+    onSigninCallback: (_user) => window.history.replaceState({}, document.title, '/'),
   };
 
   return (
