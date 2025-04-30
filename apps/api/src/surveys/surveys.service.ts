@@ -28,6 +28,7 @@ import SurveyElement from '@libs/survey/types/TSurveyElement';
 import SurveyPage from '@libs/survey/types/TSurveyPage';
 import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import isQuestionTypeChoiceType from '@libs/survey/utils/isQuestionTypeChoiceType';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
 import surveysMigrationsList from './migrations/surveysMigrationsList';
@@ -149,17 +150,21 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  updateQuestionLinksForChoicesByUrl(surveyId: string, question: SurveyElement): SurveyElement {
-    const hasChoices = question.type === 'radiogroup' || question.type === 'checkbox' || question.type === 'dropdown';
-    if (hasChoices && question.choicesByUrl) {
+  static updateQuestionLinksForChoicesByUrl(surveyId: string, question: SurveyElement): SurveyElement {
+    if (isQuestionTypeChoiceType(question.type) && question.choicesByUrl) {
       const pathParts = question.choicesByUrl.url.split('/');
       const temporalSurveyIdIndex = pathParts.findIndex((part: string) => part === TEMPORAL_SURVEY_ID_STRING);
       if (temporalSurveyIdIndex !== -1) {
         try {
           pathParts[temporalSurveyIdIndex] = surveyId;
           const newLink = pathParts.join('/');
-          return { ...question, choicesByUrl: { ...question.choicesByUrl, url: newLink } };
+          return {
+            ...question,
+            choicesByUrl: {
+              ...question.choicesByUrl,
+              url: newLink,
+            },
+          };
         } catch (error) {
           throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR, error);
         }
@@ -168,27 +173,27 @@ class SurveysService implements OnModuleInit {
     return question;
   }
 
-  updateElementsLinkedChoicesByUrl(surveyId: string, elements: SurveyElement[]): SurveyElement[] {
-    return elements?.map((question) => this.updateQuestionLinksForChoicesByUrl(surveyId, question));
+  static updateElementsLinkedChoicesByUrl(surveyId: string, elements: SurveyElement[]): SurveyElement[] {
+    return elements?.map((question) => SurveysService.updateQuestionLinksForChoicesByUrl(surveyId, question));
   }
 
-  updatePagesLinkedChoicesByUrl(surveyId: string, pages: SurveyPage[]): SurveyPage[] {
+  static updatePagesLinkedChoicesByUrl(surveyId: string, pages: SurveyPage[]): SurveyPage[] {
     return pages.map((page) => {
       if (!page.elements || page.elements?.length === 0) {
         return page;
       }
-      const updatedElements = this.updateElementsLinkedChoicesByUrl(surveyId, page.elements);
+      const updatedElements = SurveysService.updateElementsLinkedChoicesByUrl(surveyId, page.elements);
       return { ...page, elements: updatedElements };
     });
   }
 
-  updateFormulaLinkedChoicesByUrl(surveyId: string, formula: SurveyFormula): SurveyFormula {
+  static updateFormulaLinkedChoicesByUrl(surveyId: string, formula: SurveyFormula): SurveyFormula {
     const updatedFormula = { ...formula };
     if (formula.pages && formula.pages.length > 0) {
-      updatedFormula.pages = this.updatePagesLinkedChoicesByUrl(surveyId, formula.pages);
+      updatedFormula.pages = SurveysService.updatePagesLinkedChoicesByUrl(surveyId, formula.pages);
     }
     if (formula.elements && formula.elements.length > 0) {
-      updatedFormula.elements = this.updateElementsLinkedChoicesByUrl(surveyId, formula.elements);
+      updatedFormula.elements = SurveysService.updateElementsLinkedChoicesByUrl(surveyId, formula.elements);
     }
     return updatedFormula;
   }
@@ -205,7 +210,7 @@ class SurveysService implements OnModuleInit {
     // eslint-disable-next-line no-underscore-dangle
     const surveyId = (survey._id as Types.ObjectId).toString();
 
-    const updatedFormula = this.updateFormulaLinkedChoicesByUrl(surveyId, survey.formula);
+    const updatedFormula = SurveysService.updateFormulaLinkedChoicesByUrl(surveyId, survey.formula);
 
     const updatedSurvey = { ...surveyDto, id: surveyId, formula: updatedFormula };
     const savedSurvey = await this.updateSurvey(updatedSurvey, user);

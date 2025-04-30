@@ -11,8 +11,8 @@
  */
 
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { MdRemoveCircleOutline } from 'react-icons/md';
+import { t } from 'i18next';
+import { HiTrash } from 'react-icons/hi2';
 import { ColumnDef } from '@tanstack/react-table';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
@@ -22,44 +22,6 @@ import SortableHeader from '@/components/ui/Table/SortableHeader';
 
 const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
   {
-    id: 'choice-name',
-    header: ({ column }) => (
-      <SortableHeader<ChoiceDto, unknown>
-        className="hidden text-primary-foreground lg:flex"
-        column={column}
-      />
-    ),
-    meta: {
-      translationId: 'common.name',
-    },
-    accessorFn: (row) => row.name,
-    cell: ({ row }) => {
-      const { t } = useTranslation();
-      const { setChoiceName } = useQuestionsContextMenuStore();
-      return (
-        <Input
-          type="text"
-          placeholder={t('common.name')}
-          value={row.original.name}
-          onChange={(e) => setChoiceName(row.original.name, e.target.value)}
-          variant="dialog"
-          className="p-2 text-primary-foreground"
-        />
-      );
-    },
-    sortingFn: (rowA, rowB) => {
-      const choiceNameA = rowA.original.name;
-      const choiceNameB = rowB.original.name;
-      if (!choiceNameB) {
-        return 1;
-      }
-      if (!choiceNameA) {
-        return -1;
-      }
-      return choiceNameA.localeCompare(choiceNameB);
-    },
-  },
-  {
     id: 'choice-title',
     header: ({ column }) => <SortableHeader<ChoiceDto, unknown> column={column} />,
     meta: {
@@ -67,7 +29,6 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
     },
     accessorFn: (row) => row.title,
     cell: ({ row }) => {
-      const { t } = useTranslation();
       const { setChoiceTitle } = useQuestionsContextMenuStore();
       return (
         <Input
@@ -80,17 +41,6 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
         />
       );
     },
-    sortingFn: (rowA, rowB) => {
-      const choiceTitleA = rowA.original.title;
-      const choiceTitleB = rowB.original.title;
-      if (!choiceTitleB) {
-        return 1;
-      }
-      if (!choiceTitleA) {
-        return -1;
-      }
-      return choiceTitleA.localeCompare(choiceTitleB);
-    },
   },
   {
     id: 'choice-limit',
@@ -100,7 +50,6 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
     },
     accessorFn: (row) => row.limit,
     cell: ({ row }) => {
-      const { t } = useTranslation();
       const { setChoiceLimit } = useQuestionsContextMenuStore();
       return (
         <Input
@@ -113,32 +62,10 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
         />
       );
     },
-    sortingFn: (rowA, rowB) => {
-      const choiceLimitA = rowA.original.limit;
-      const choiceLimitB = rowB.original.limit;
-      if (!choiceLimitB) {
-        return 1;
-      }
-      if (!choiceLimitA) {
-        return -1;
-      }
-      if (choiceLimitA === choiceLimitB) {
-        return 0;
-      }
-      if (choiceLimitA < choiceLimitB) {
-        return -1;
-      }
-      return 1;
-    },
   },
   {
     id: 'choice-delete-button',
-    header: ({ column }) => (
-      <SortableHeader<ChoiceDto, unknown>
-        column={column}
-        className="m-0 w-[90px] p-0 text-primary-foreground"
-      />
-    ),
+    header: () => <div className="flex items-center justify-center">{t('common.actions')}</div>,
     meta: {
       translationId: 'common.actions',
     },
@@ -150,10 +77,10 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
           <Button
             type="button"
             onClick={() => removeChoice(row.original.name)}
-            variant="btn-collaboration"
+            // variant="btn-collaboration"
             className="m-0 flex max-h-[2.25rem] w-[80px] items-center justify-center rounded-md p-0 text-ciRed"
           >
-            <MdRemoveCircleOutline className="h-[20px] w-[20px]" />
+            <HiTrash />
           </Button>
         </div>
       );

@@ -26,13 +26,13 @@ export const FIND_ONE = 'id';
 export const ANSWER = 'answers';
 export const RESULT = 'results';
 export const IMAGES = 'images';
-export const RESTFUL_CHOICES = 'choices';
+export const CHOICES = 'choices';
 export const CAN_PARTICIPATE = 'can-participate';
 export const HAS_ANSWERS = 'has-answers';
 
 export const SURVEY_FIND_ONE_ENDPOINT = `${SURVEYS}/${FIND_ONE}`;
 export const SURVEY_ANSWER_ENDPOINT = `${SURVEYS}/${ANSWER}`;
-export const SURVEY_RESTFUL_CHOICES = `${PUBLIC_SURVEYS}/${RESTFUL_CHOICES}`;
+export const SURVEY_CHOICES = `${PUBLIC_SURVEYS}/${CHOICES}`;
 export const SURVEY_RESULT_ENDPOINT = `${SURVEYS}/${RESULT}`;
 export const SURVEY_IMAGES_ENDPOINT = `${SURVEYS}/${IMAGES}`;
 export const SURVEY_CAN_PARTICIPATE_ENDPOINT = `${SURVEYS}/${CAN_PARTICIPATE}`;

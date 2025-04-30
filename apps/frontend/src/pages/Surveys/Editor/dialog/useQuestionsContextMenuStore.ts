@@ -14,7 +14,7 @@ import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
 import { Question } from 'survey-core';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
-import CHOOSE_OTHER_ITEM_CHOICE_NAME from '@libs/survey/constants/choose-other-item-choice-name';
+import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 
 interface QuestionsContextMenuStore {
   reset: () => void;
@@ -240,11 +240,11 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     if (!showOtherItem) {
       selectedQuestion.showOtherItem = true;
       set({ showOtherItem: true });
-      addChoice(CHOOSE_OTHER_ITEM_CHOICE_NAME);
+      addChoice(SHOW_OTHER_ITEM);
     } else {
       selectedQuestion.showOtherItem = false;
       set({ showOtherItem: false });
-      removeChoice(CHOOSE_OTHER_ITEM_CHOICE_NAME);
+      removeChoice(SHOW_OTHER_ITEM);
     }
   },
 }));

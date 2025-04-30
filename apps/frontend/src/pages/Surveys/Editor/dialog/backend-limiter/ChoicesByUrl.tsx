@@ -18,11 +18,12 @@ import { Question } from 'survey-core';
 import { SurveyCreatorModel } from 'survey-creator-core';
 import cn from '@libs/common/utils/className';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
-import { SURVEY_RESTFUL_CHOICES } from '@libs/survey/constants/surveys-endpoint';
-import CHOOSE_OTHER_ITEM_CHOICE_NAME from '@libs/survey/constants/choose-other-item-choice-name';
+import { SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyFormula from '@libs/survey/types/TSurveyFormula';
+import isQuestionTypeChoiceType from '@libs/survey/utils/isQuestionTypeChoiceType';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import ChoicesWithBackendLimitsShowOtherItem from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitsShowOtherItem';
 import ChoicesWithBackendLimitTable from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitsTable';
@@ -104,7 +105,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       } else {
         correspondingQuestion.choices = null;
         correspondingQuestion.choicesByUrl = {
-          url: `${EDU_API_URL}/${SURVEY_RESTFUL_CHOICES}/${TEMPORAL_SURVEY_ID_STRING}/${selectedQuestion.name}`,
+          url: `${EDU_API_URL}/${SURVEY_CHOICES}/${TEMPORAL_SURVEY_ID_STRING}/${selectedQuestion.name}`,
         };
       }
 
@@ -126,8 +127,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
   };
 
   if (!form) return null;
-  const hasChoices = questionType === 'radiogroup' || questionType === 'checkbox' || questionType === 'dropdown';
-  if (!hasChoices) return null;
+  if (!isQuestionTypeChoiceType(questionType)) return null;
   return (
     <>
       <p className="text-m font-bold text-primary-foreground">{t('survey.editor.questionSettings.backendLimiters')}</p>
@@ -150,9 +150,12 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       {useBackendLimits ? (
         <>
           <div className="ml-4 items-center text-foreground">
+            {
+              // TODO: Replace custom table with ScrollableTable component (https://github.com/edulution-io/edulution-ui/issues/761)
+            }
             <ChoicesWithBackendLimitTable
               columns={ChoicesWithBackendLimitTableColumns}
-              data={currentChoices.filter((choice) => choice.name !== CHOOSE_OTHER_ITEM_CHOICE_NAME)}
+              data={currentChoices.filter((choice) => choice.name !== SHOW_OTHER_ITEM)}
               addNewChoice={addNewChoice}
             />
           </div>

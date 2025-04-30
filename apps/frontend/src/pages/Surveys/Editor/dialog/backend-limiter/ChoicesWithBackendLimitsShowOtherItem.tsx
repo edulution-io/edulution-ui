@@ -13,7 +13,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
-import CHOOSE_OTHER_ITEM_CHOICE_NAME from '@libs/survey/constants/choose-other-item-choice-name';
+import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import Switch from '@/components/ui/Switch';
 import Input from '@/components/shared/Input';
@@ -40,9 +40,7 @@ const ChoicesWithBackendLimitsShowOtherItem = () => {
     toggleShowOtherItem();
   };
 
-  const otherItemsChoiceWithBackendLimit = currentChoices.find(
-    (choice) => choice.name === CHOOSE_OTHER_ITEM_CHOICE_NAME,
-  );
+  const otherItemsChoiceWithBackendLimit = currentChoices.find((choice) => choice.name === SHOW_OTHER_ITEM);
 
   return (
     <div className="ml-2 flex-1 items-center text-foreground">
@@ -74,8 +72,8 @@ const ChoicesWithBackendLimitsShowOtherItem = () => {
               value={otherItemsChoiceWithBackendLimit?.limit || 0}
               onChange={(e) =>
                 otherItemsChoiceWithBackendLimit
-                  ? setChoiceLimit(CHOOSE_OTHER_ITEM_CHOICE_NAME, Number(e.target.value))
-                  : addChoice(CHOOSE_OTHER_ITEM_CHOICE_NAME, '', Number(e.target.value))
+                  ? setChoiceLimit(SHOW_OTHER_ITEM, Math.min(Number(e.target.value), 0))
+                  : addChoice(SHOW_OTHER_ITEM, '', Math.min(Number(e.target.value), 0))
               }
               variant="dialog"
               className="ml-2 mt-2 max-w-[80px] flex-1 text-primary-foreground"

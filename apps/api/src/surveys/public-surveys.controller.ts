@@ -13,7 +13,7 @@
 import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Get, Post, Param, Res } from '@nestjs/common';
-import { IMAGES, PUBLIC_SURVEYS, RESTFUL_CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import { IMAGES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SurveysService from './surveys.service';
@@ -49,7 +49,7 @@ class PublicSurveysController {
     return this.surveyService.serveImage(surveyId, questionId, filename, res);
   }
 
-  @Get(`${RESTFUL_CHOICES}/:surveyId/:questionName`)
+  @Get(`${CHOICES}/:surveyId/:questionName`)
   @Public()
   async getChoices(@Param() params: { surveyId: string; questionName: string }) {
     const { surveyId, questionName } = params;

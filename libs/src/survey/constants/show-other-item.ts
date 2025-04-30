@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const CHOOSE_OTHER_ITEM_CHOICE_NAME = 'showOtherItem';
+const SHOW_OTHER_ITEM = 'showOtherItem';
 
-export default CHOOSE_OTHER_ITEM_CHOICE_NAME;
+export default SHOW_OTHER_ITEM;
