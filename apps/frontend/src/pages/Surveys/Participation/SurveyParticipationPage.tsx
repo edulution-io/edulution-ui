@@ -33,7 +33,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
 
   const { selectedSurvey, fetchSelectedSurvey } = useSurveyTablesPageStore();
 
-  const { username, setUsername, reset, publicUserId, fetchAnswer } = useParticipateSurveyStore();
+  const { attendee, setAttendee, reset, publicUserId, fetchAnswer } = useParticipateSurveyStore();
 
   const { surveyId } = useParams();
   const { t } = useTranslation();
@@ -49,7 +49,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
 
   useEffect(() => {
     if (user) {
-      setUsername(user.username);
+      setAttendee({username: user.username});
     }
     if (user === null) {
       reset();

@@ -21,10 +21,12 @@ import { SURVEYS, PUBLIC_SURVEYS, ANSWER, SURVEY_ANSWER_ENDPOINT } from '@libs/s
 import publicUserIdRegex from '@libs/survey/utils/publicUserIdRegex';
 import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import { useTernaryDarkMode } from 'usehooks-ts';
 
 interface ParticipateSurveyStore {
-  username: string | undefined;
-  setUsername: (userinfo: string | undefined) => void;
+  attendee: AttendeeDto | undefined;
+  setAttendee: (attendee: AttendeeDto | undefined) => void;
 
   answerSurvey: (
     answerDto: SubmitAnswerDto,
@@ -33,17 +35,17 @@ interface ParticipateSurveyStore {
   ) => Promise<SurveyAnswerDto | undefined>;
   isSubmitting: boolean;
 
-  fetchAnswer: (surveyId: string, username?: string) => Promise<void>;
+  fetchAnswer: (surveyId: string, attendee: AttendeeDto) => Promise<void>;
   previousAnswer: SurveyAnswerDto | undefined;
   isFetching: boolean;
 
-  publicUserId: string;
+  publicUserId: string,
 
   reset: () => void;
 }
 
 const ParticipateSurveyStoreInitialState: Partial<ParticipateSurveyStore> = {
-  username: undefined,
+  attendee: undefined,
 
   isSubmitting: false,
 
@@ -57,7 +59,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
   ...(ParticipateSurveyStoreInitialState as ParticipateSurveyStore),
   reset: () => set(ParticipateSurveyStoreInitialState),
 
-  setUsername: (username: string | undefined) => set({ username }),
+  setAttendee: (attendee: AttendeeDto | undefined) => set({ attendee }),
 
   answerSurvey: async (
     answerDto: SubmitAnswerDto,
@@ -111,11 +113,11 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
   },
 
-  fetchAnswer: async (surveyId: string, username?: string): Promise<void> => {
+  fetchAnswer: async (surveyId: string, attendee?: AttendeeDto): Promise<void> => {
     set({ isFetching: true });
     try {
       let response: AxiosResponse<SurveyAnswerDto> | undefined;
-      if (username) {
+      if (attendee) {
         response = await eduApi.get<SurveyAnswerDto>(`${PUBLIC_SURVEYS}/${ANSWER}/${surveyId}/${username}`);
       } else {
         response = await eduApi.post<SurveyAnswerDto>(SURVEY_ANSWER_ENDPOINT, { surveyId });
