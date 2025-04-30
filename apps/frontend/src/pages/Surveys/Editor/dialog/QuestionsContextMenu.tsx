@@ -24,11 +24,12 @@ interface QuestionContextMenuProps {
   creator: SurveyCreatorModel;
   isOpenQuestionContextMenu: boolean;
   setIsOpenQuestionContextMenu: (state: boolean) => void;
+  isLoading: boolean;
   trigger?: React.ReactNode;
 }
 
 const QuestionContextMenu = (props: QuestionContextMenuProps) => {
-  const { form, trigger, isOpenQuestionContextMenu, setIsOpenQuestionContextMenu, creator } = props;
+  const { form, trigger, isOpenQuestionContextMenu, setIsOpenQuestionContextMenu, creator, isLoading } = props;
 
   const { t } = useTranslation();
 
@@ -57,8 +58,8 @@ const QuestionContextMenu = (props: QuestionContextMenuProps) => {
       trigger={trigger}
       handleOpenChange={() => setIsOpenQuestionContextMenu(!isOpenQuestionContextMenu)}
       title={t('survey.editor.questionSettings.title')}
-      body={getDialogBody()}
-      footer={getFooter()}
+      body={!isLoading && getDialogBody()}
+      footer={!isLoading && getFooter()}
       desktopContentClassName="max-w-[50%] max-h-[90%] overflow-auto"
     />
   );

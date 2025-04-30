@@ -23,7 +23,7 @@ import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
-import { SURVEY_RESTFUL_CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SurveyElement from '@libs/survey/types/TSurveyElement';
 import SurveyPage from '@libs/survey/types/TSurveyPage';
 import SurveyFormula from '@libs/survey/types/TSurveyFormula';
@@ -110,7 +110,6 @@ class SurveysService implements OnModuleInit {
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {
-      Logger.warn(survey.isPublic, SurveysService.name);
       if (survey.isPublic) {
         this.sseService.informAllUsers(survey, SSE_MESSAGE_TYPE.SURVEY_UPDATED);
       } else {
@@ -118,11 +117,8 @@ class SurveysService implements OnModuleInit {
           survey.invitedGroups,
           survey.invitedAttendees,
         );
-        Logger.warn(invitedMembersList, SurveysService.name);
 
         const updatedSurvey = await this.surveyModel.findById(survey.id).lean();
-        Logger.warn(updatedSurvey, SurveysService.name);
-
         this.sseService.sendEventToUsers(invitedMembersList, updatedSurvey || survey, SSE_MESSAGE_TYPE.SURVEY_UPDATED);
       }
     }
@@ -153,15 +149,18 @@ class SurveysService implements OnModuleInit {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   updateQuestionLinksForChoicesByUrl(surveyId: string, question: SurveyElement): SurveyElement {
     const hasChoices = question.type === 'radiogroup' || question.type === 'checkbox' || question.type === 'dropdown';
     if (hasChoices && question.choicesByUrl) {
-      if (question.choicesByUrl.url.includes('TEMP')) {
+      const pathParts = question.choicesByUrl.url.split('/');
+      const temporalSurveyIdIndex = pathParts.findIndex((part: string) => part === TEMPORAL_SURVEY_ID_STRING);
+      if (temporalSurveyIdIndex !== -1) {
         try {
-          const newLink = `${SURVEY_RESTFUL_CHOICES}/${surveyId}/${question.name}`;
+          pathParts[temporalSurveyIdIndex] = surveyId;
+          const newLink = pathParts.join('/');
           return { ...question, choicesByUrl: { ...question.choicesByUrl, url: newLink } };
         } catch (error) {
-          Logger.error(error, SurveysService.name);
           throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR, error);
         }
       }
@@ -225,6 +224,7 @@ class SurveysService implements OnModuleInit {
     return res;
   }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async onSurveyRemoval(surveyIds: string[]): Promise<void> {
     const imageDirectories = surveyIds.map((surveyId) => join(SURVEYS_IMAGES_PATH, surveyId));
     await FilesystemService.deleteDirectories(imageDirectories);

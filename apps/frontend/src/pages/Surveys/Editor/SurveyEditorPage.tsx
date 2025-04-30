@@ -16,7 +16,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { Question } from 'survey-core/typings/src/question';
+import { Question } from 'survey-core';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
@@ -28,13 +28,13 @@ import useUserStore from '@/store/UserStore/UserStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useLanguage from '@/hooks/useLanguage';
+import useBeforeUnload from '@/hooks/useBeforeUnload';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import createSurveyCreatorComponent from '@/pages/Surveys/Editor/createSurveyCreatorObject';
-import useBeforeUnload from '@/hooks/useBeforeUnload';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import QuestionContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
@@ -52,7 +52,7 @@ const SurveyEditorPage = () => {
     resetStoredSurvey,
     uploadImageFile,
   } = useSurveyEditorPageStore();
-  const { setIsOpenQuestionContextMenu, isOpenQuestionContextMenu, setSelectedQuestion } =
+  const { setIsOpenQuestionContextMenu, isOpenQuestionContextMenu, setSelectedQuestion, isUpdatingBackendLimiters } =
     useQuestionsContextMenuStore();
 
   const { t } = useTranslation();
@@ -200,6 +200,7 @@ const SurveyEditorPage = () => {
         creator={creator}
         isOpenQuestionContextMenu={isOpenQuestionContextMenu}
         setIsOpenQuestionContextMenu={setIsOpenQuestionContextMenu}
+        isLoading={isUpdatingBackendLimiters}
       />
     </PageLayout>
   );

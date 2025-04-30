@@ -12,7 +12,7 @@
 
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
-import { Question } from 'survey-core/typings/src/question';
+import { Question } from 'survey-core';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import CHOOSE_OTHER_ITEM_CHOICE_NAME from '@libs/survey/constants/choose-other-item-choice-name';
 
@@ -25,7 +25,7 @@ interface QuestionsContextMenuStore {
   selectedQuestion: Question | undefined;
   setSelectedQuestion: (question: Question | undefined) => void;
 
-  onRemoveQuestionId: (questionId: string) => void;
+  onRemoveQuestionName: (questionName: string) => void;
 
   questionType: string;
 
@@ -38,9 +38,16 @@ interface QuestionsContextMenuStore {
   useBackendLimits: boolean;
   toggleUseBackendLimits: () => void;
 
-  currentBackendLimiters: { questionId: string; choices: ChoiceDto[] }[];
-  setBackendLimiters: (backendLimiters: { questionId: string; choices: ChoiceDto[] }[]) => void;
-  updateLimitersChoices: (choices: ChoiceDto[]) => { questionId: string; choices: ChoiceDto[] }[] | undefined;
+  currentBackendLimiters: { questionName: string; choices: ChoiceDto[] }[];
+  setBackendLimiters: (backendLimiters: { questionName: string; choices: ChoiceDto[] }[]) => void;
+  updateLimitersChoices: (choices: ChoiceDto[]) => { questionName: string; choices: ChoiceDto[] }[] | undefined;
+
+  isUpdatingBackendLimiters: boolean;
+  setIsUpdatingBackendLimiters: (state: boolean) => void;
+
+  showOtherItem: boolean;
+  toggleShowOtherItem: () => void;
+  shouldToggleShowOtherItem: boolean;
 
   formerChoices: string[];
   currentChoices: ChoiceDto[];
@@ -51,9 +58,6 @@ interface QuestionsContextMenuStore {
   setChoiceName: (choiceName: string, newName: string) => void;
   setChoiceTitle: (choiceName: string, newTitle: string) => void;
   setChoiceLimit: (choiceName: string, newLimit: number) => void;
-
-  showOtherItem: boolean;
-  toggleShowOtherItem: () => void;
 }
 
 const QuestionsContextMenuStoreInitialState = {
@@ -63,17 +67,25 @@ const QuestionsContextMenuStoreInitialState = {
   questionTitle: '',
   questionDescription: '',
   useBackendLimits: false,
+  isUpdatingBackendLimiters: false,
+  showOtherItem: false,
+  shouldToggleShowOtherItem: false,
   currentBackendLimiters: [],
   formerChoices: [],
   currentChoices: [],
-  showOtherItem: false,
 };
 
 const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get) => ({
   ...QuestionsContextMenuStoreInitialState,
   reset: () => set(QuestionsContextMenuStoreInitialState),
 
-  setIsOpenQuestionContextMenu: (state: boolean) => set({ isOpenQuestionContextMenu: state }),
+  setIsOpenQuestionContextMenu: (state: boolean) => {
+    const { reset } = get();
+    if (state === false) {
+      reset();
+    }
+    set({ isOpenQuestionContextMenu: state });
+  },
 
   setSelectedQuestion: (question: Question | undefined) => {
     const type = question?.getType();
@@ -115,22 +127,26 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     set({ useBackendLimits: !useBackendLimits });
   },
 
-  setBackendLimiters: (backendLimiters: { questionId: string; choices: ChoiceDto[] }[] = []) => {
+  setBackendLimiters: (backendLimiters: { questionName: string; choices: ChoiceDto[] }[] = []) => {
     const { selectedQuestion } = get();
     if (!selectedQuestion) {
       return;
     }
-    const choices = backendLimiters.find((limiter) => limiter.questionId === selectedQuestion.name)?.choices || [];
+    const choices = backendLimiters.find((limiter) => limiter.questionName === selectedQuestion.id)?.choices || [];
     set({ currentBackendLimiters: backendLimiters, currentChoices: choices });
   },
 
-  onRemoveQuestionId: (questionId: string) => {
+  setIsUpdatingBackendLimiters: (state: boolean) => set({ isUpdatingBackendLimiters: state }),
+
+  onRemoveQuestionName: (questionName: string) => {
     const { currentBackendLimiters } = get();
-    const updatedBackendLimiters = currentBackendLimiters.filter((limiter) => limiter.questionId !== questionId);
+    const updatedBackendLimiters = currentBackendLimiters.filter((limiter) => limiter.questionName !== questionName);
     set({ currentBackendLimiters: updatedBackendLimiters, currentChoices: [] });
   },
 
-  updateLimitersChoices: (limitedChoices: ChoiceDto[]): { questionId: string; choices: ChoiceDto[] }[] | undefined => {
+  updateLimitersChoices: (
+    limitedChoices: ChoiceDto[],
+  ): { questionName: string; choices: ChoiceDto[] }[] | undefined => {
     const { currentBackendLimiters, selectedQuestion } = get();
 
     if (!selectedQuestion) {
@@ -139,14 +155,14 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
 
     let addedLimiter = false;
     const updatedBackendLimiters = currentBackendLimiters.map((limiter) => {
-      if (limiter.questionId === selectedQuestion?.name) {
+      if (limiter.questionName === selectedQuestion?.name) {
         addedLimiter = true;
-        return { questionId: limiter.questionId, choices: limitedChoices };
+        return { questionName: limiter.questionName, choices: limitedChoices };
       }
       return limiter;
     });
     if (!addedLimiter) {
-      updatedBackendLimiters.push({ questionId: selectedQuestion?.name || '', choices: limitedChoices });
+      updatedBackendLimiters.push({ questionName: selectedQuestion?.name || '', choices: limitedChoices });
     }
 
     set({ currentBackendLimiters: updatedBackendLimiters });
@@ -212,7 +228,12 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
   },
 
   toggleShowOtherItem: () => {
-    const { selectedQuestion, showOtherItem, addChoice, removeChoice } = get();
+    const { isUpdatingBackendLimiters, selectedQuestion, showOtherItem, addChoice, removeChoice } = get();
+    if (isUpdatingBackendLimiters) {
+      set({ shouldToggleShowOtherItem: true });
+      return;
+    }
+    set({ shouldToggleShowOtherItem: false });
     if (!selectedQuestion) {
       return;
     }
