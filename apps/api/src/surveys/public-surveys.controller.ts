@@ -49,16 +49,16 @@ class PublicSurveysController {
     return this.surveyService.serveImage(surveyId, questionId, filename, res);
   }
 
-  @Get(`${RESTFUL_CHOICES}/:surveyId/:questionId`)
+  @Get(`${RESTFUL_CHOICES}/:surveyId/:questionName`)
   @Public()
-  async getChoices(@Param() params: { surveyId: string; questionId: string }) {
-    const { surveyId, questionId } = params;
+  async getChoices(@Param() params: { surveyId: string; questionName: string }) {
+    const { surveyId, questionName } = params;
     if (surveyId === TEMPORAL_SURVEY_ID_STRING) {
       // eslint-disable-next-line consistent-return
       return;
     }
     // eslint-disable-next-line consistent-return
-    return this.surveyAnswerService.getSelectableChoices(surveyId, questionId);
+    return this.surveyAnswerService.getSelectableChoices(surveyId, questionName);
   }
 }
 

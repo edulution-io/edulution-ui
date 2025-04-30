@@ -84,10 +84,10 @@ export const surveyInvalidAnswerPublicSurvey02: SurveyDocument = {
   answer: mockedInvalidAnswerForPublicSurveys02,
 } as unknown as SurveyDocument;
 
-export const publicSurvey02QuestionIdWithLimiters = 'Frage2';
+export const publicSurvey02QuestionNameWithLimiters = 'Frage2';
 export const publicSurvey02BackendLimiter = [
   {
-    questionId: publicSurvey02QuestionIdWithLimiters,
+    questionName: publicSurvey02QuestionNameWithLimiters,
     choices: [
       { name: 'choice0', title: 'CanBeSelected0times', limit: 0 },
       { name: 'choice1', title: 'CanBeSelected1times', limit: 1 },
