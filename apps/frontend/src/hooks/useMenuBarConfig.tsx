@@ -24,10 +24,12 @@ import type TApps from '@libs/appconfig/types/appsType';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import MenuItem from '@libs/menubar/menuItem';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
+import useLdapGroups from './useLdapGroups';
 
 const useMenuBarConfig = (): MenuBarEntry => {
   const { pathname } = useLocation();
   const { t } = useTranslation();
+  const { isSuperAdmin } = useLdapGroups();
 
   const SETTINGS_MENU_CONFIG = useAppConfigPageMenu();
   const USERSETTINGS_MENUBAR_CONFIG = useUserSettingsMenuConfig();
@@ -38,7 +40,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
   const menuBarConfigSwitch = (): MenuBarEntry => {
     const rootPathName = getFromPathName(pathname, 1);
 
-    if (rootPathName === SETTINGS_PATH) return SETTINGS_MENU_CONFIG;
+    if (rootPathName === SETTINGS_PATH && isSuperAdmin) return SETTINGS_MENU_CONFIG;
     if (rootPathName === USER_SETTINGS_PATH) return USERSETTINGS_MENUBAR_CONFIG;
 
     const defaultReturnMenuBarEntry = {

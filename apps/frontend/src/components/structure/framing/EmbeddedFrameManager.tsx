@@ -20,7 +20,7 @@ const EmbeddedFrameManager = () => {
   const { loadedEmbeddedFrames, activeEmbeddedFrame } = useFrameStore();
 
   return appConfigs
-    .filter((appConfig) => appConfig.appType === APP_INTEGRATION_VARIANT.EMBEDDED)
+    .filter((appConfig) => appConfig.appType === APP_INTEGRATION_VARIANT.FRAMED)
     .map((appConfig) => {
       const isOpen = activeEmbeddedFrame === appConfig.name;
       const url = loadedEmbeddedFrames.includes(appConfig.name) ? appConfig.options.url : undefined;

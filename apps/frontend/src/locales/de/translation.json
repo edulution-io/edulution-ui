@@ -741,7 +741,10 @@
       "aichat": "Hier kannst du alle Einstellungen vornehmen.",
       "linuxmuster": "Hier kannst du alle Einstellungen vornehmen.",
       "whiteboard": "Hier kannst du alle Einstellungen vornehmen.",
-      "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Schwarzes Brett haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden."
+      "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Schwarzes Brett haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden.",
+      "forwarded": "Weiterleitungs: Einfach den Link zur Webanwendung unter URL eintragen.",
+      "framed": "Frame: Einfach den Link zur Webanwendung unter URL eintragen.",
+      "embedded": "Eingebettet: Hier kann eine eigene Webanwendung im Editor erstellt werden."
     },
     "globalSettings": {
       "title": "Globale Einstellungen",
@@ -790,6 +793,22 @@
           "filterPlaceHolderText": "Suche nach Proxy-Name",
           "invalidCidrFormat": "Ungültige CIDR-Notation",
           "invalidUrlFormat": "Ungültige URL"
+        },
+        "files": {
+          "title": "Dateien",
+          "description": "Hier können die Dateien verwaltet werden, die in der App angezeigt werden.",
+          "uploadSuccess": "Dateien erfolgreich hochgeladen",
+          "uploadFailed": "Hochladen fehlgeschlagen",
+          "rowSelected": "{{selected}} von {{total}} Dateien ausgewählt",
+          "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt"
+        },
+        "editor": {
+          "title": "Editor",
+          "description": "Hier im Editor kannst du eigene Webanwendungen gestalten oder bestehende Inhalte integrieren. Du kannst dabei Webseiten erstellen, Inhalte formatieren und individuell anpassen. Auch bereits vorhandene Anwendungen oder externe Inhalte lassen sich einfügen und komfortabel mit deinen eigenen Inhalten verbinden. So entsteht ein flexibler Bereich, in dem du auf einfache Weise Inhalte darstellen oder interaktive Anwendungen anbieten kannst. Starte mit der Wahle des Modus, in welchem die Webanwendung gestartet werden soll.",
+          "sandboxMode": "Sparates Layout",
+          "nativeMode": "Integriertes Layout",
+          "sandboxModeDescription": "Im Modus „Sparates Layout“ wird der Inhalt als eigenständige Seite angezeigt, ähnlich wie ein Fenster innerhalb der Anwendung. Dabei können neben dem eigentlichen Inhalt auch zusätzliche Designelemente oder Funktionen aus anderen Quellen geladen werden. Dadurch ist die Gestaltung unabhängig von der Anwendung, könnte also anders aussehen oder sich anders verhalten. Hier muss der Inhalt als HTML-Datei hochgeladen werden.",
+          "nativeModeDescription": "Im Modus „Integriertes Layout“ dagegen wird der Inhalt direkt in die Oberfläche der Anwendung eingefügt. Dadurch sieht der Inhalt genauso aus wie die Anwendung selbst und fügt sich optisch nahtlos ein. Allerdings können hier keine zusätzlichen externen Designelemente oder Funktionen dynamisch hinzugefügt werden. Es können jedoch statische Elemente wie Bilder hochgeladen und hier eingesetzt werden."
         }
       },
       "update": {
@@ -972,10 +991,11 @@
     "columns": "Spalten",
     "table": "Tabelle",
     "copy": {
-      "success": "Erfolgreich in Zwischenablage kopiert",
+      "success": "Erfolgreich in die Zwischenablage kopiert",
       "error": "In Zwischenablage kopieren fehlgeschlagen",
       "doCopy": "Kopieren",
-      "link": "Link kopieren"
+      "link": "Link kopieren",
+      "url": "URL kopieren"
     },
     "openInNewTab": "In neuem Tab öffnen",
     "maximize": "Maximieren",
@@ -1061,6 +1081,10 @@
     "required": "Erforderlich",
     "download": "Herunterladen",
     "template": "Vorlage",
+    "preview": "Vorschau",
+    "format": "Formatieren",
+    "upload": "Hochladen",
+    "mode": "Modus",
     "orContinueWithoutAccount": "Oder fahre ohne Account fort"
   },
   "form": {
@@ -1083,6 +1107,9 @@
     "proxyDestination": "Zielhost",
     "proxyDestinationPlaceholder": "z.B. http://localhost:1234/",
     "stripPrefix": "Prefix entfernen",
+    "embeddedPageEditor": "Editor",
+    "embeddedPageEditorModeDescription": "Hier kann zwischen Sandbox und nativ gerendert ausgewählt werden. Sandbox ist die sicherste Variante, native das Original-Rendering. Beachte, dass bei nativen Rendering keine Sicherheitsvorkehrungen getroffen werden können. Im Sandbox-Modus wird die HTML-Datei aus dem Speicher gelesen. Lade dazu die Datei hoch.",
+    "sandboxed": "Sandbox",
     "input": {
       "dateTimePicker": {
         "timeSlot": "Uhr",
@@ -1151,7 +1178,8 @@
     "acrobat": "PDF",
     "presentation": "Präsentation",
     "spreadsheet": "Tabelle",
-    "vector": "Diagramm"
+    "vector": "Diagramm",
+    "compressed": "Archive"
   },
   "fileCreateNewContent": {
     "documentFile": "Erstelle ein neues Dokument",

@@ -43,7 +43,7 @@ const AppConfigSwitch = <T extends FieldValues>({ fieldPath, control, option }: 
               />
             </div>
           </FormControl>
-          <FormDescription>{t(option.description)}</FormDescription>
+          {option.description && <FormDescription>{t(option.description)}</FormDescription>}
           <FormMessage className="text-p" />
         </FormItem>
       )}
