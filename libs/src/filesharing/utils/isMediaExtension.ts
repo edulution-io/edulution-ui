@@ -10,11 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import VideoExtensions from '@libs/filesharing/types/videoExtensions';
-import AudioExtensions from '@libs/filesharing/types/audioExtensions';
+import VIDEO_EXTENSIONS from '@libs/filesharing/types/videoExtensions';
+import VideoExtensionType from '@libs/filesharing/types/videoExtensionType';
+import AudioExtensionsType from '@libs/filesharing/types/audioExtensionsType';
+import AUDIO_EXTENSIONS from '@libs/filesharing/types/audioExtensions';
 
 const isMediaExtension = (extension: string | undefined): boolean =>
-  Object.values(VideoExtensions).includes(extension as VideoExtensions) ||
-  Object.values(AudioExtensions).includes(extension as AudioExtensions);
+  Object.values(VIDEO_EXTENSIONS).includes(extension as VideoExtensionType) ||
+  Object.values(AUDIO_EXTENSIONS).includes(extension as AudioExtensionsType);
 
 export default isMediaExtension;

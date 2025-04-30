@@ -16,7 +16,7 @@ import isImageExtension from '@libs/filesharing/utils/isImageExtension';
 import isMediaExtension from '@libs/filesharing/utils/isMediaExtension';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 
-const isFileValid = (file: DirectoryFileDTO | null): boolean => {
+const isValidFileToPreview = (file: DirectoryFileDTO | null): boolean => {
   if (!file) {
     return false;
   }
@@ -24,4 +24,4 @@ const isFileValid = (file: DirectoryFileDTO | null): boolean => {
   return isOnlyOfficeDocument(file.filename) || isImageExtension(extension) || isMediaExtension(extension);
 };
 
-export default isFileValid;
+export default isValidFileToPreview;

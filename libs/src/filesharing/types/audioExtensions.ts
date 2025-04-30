@@ -10,17 +10,17 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum AudioExtensions {
-  MP3 = 'mp3',
-  AAC = 'aac',
-  M4A = 'm4a',
-  OGG = 'ogg',
-  OPUS = 'opus',
-  FLAC = 'flac',
-  ALAC = 'alac',
-  WAV = 'wav',
-  AIFF = 'aiff',
-  WMA = 'wma',
-}
+const AUDIO_EXTENSIONS = {
+  MP3: 'mp3',
+  AAC: 'aac',
+  M4A: 'm4a',
+  OGG: 'ogg',
+  OPUS: 'opus',
+  FLAC: 'flac',
+  ALAC: 'alac',
+  WAV: 'wav',
+  AIFF: 'aiff',
+  WMA: 'wma',
+} as const;
 
-export default AudioExtensions;
+export default AUDIO_EXTENSIONS;

@@ -40,7 +40,7 @@ const MediaComponent: React.FC<VideoComponentProps> = ({
   height = '100%',
   style = {},
 }) => (
-  <div style={{ position: 'relative', paddingTop: '56.25%', ...style }}>
+  <div style={{ position: 'relative', ...style }}>
     <ReactPlayer
       url={url}
       playing={playing}
