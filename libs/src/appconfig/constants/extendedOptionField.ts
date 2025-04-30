@@ -16,6 +16,7 @@ const ExtendedOptionField = {
   table: 'table',
   number: 'number',
   switch: 'switch',
+  textarea: 'textarea',
 } as const;
 
 export default ExtendedOptionField;
