@@ -10,17 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Logger, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CacheModule } from '@nestjs/cache-manager';
 import { JwtModule } from '@nestjs/jwt';
-import { redisStore } from 'cache-manager-redis-yet';
-import type { RedisClientOptions, RedisFunctions, RedisModules, RedisScripts } from 'redis';
+import KeyvRedis from '@keyv/redis';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import { BullModule } from '@nestjs/bullmq';
@@ -96,44 +94,11 @@ const redisPort = +(process.env.REDIS_PORT ?? 6379);
 
     ScheduleModule.forRoot(),
 
-    CacheModule.registerAsync<RedisClientOptions>({
+    CacheModule.registerAsync({
       isGlobal: true,
-      useFactory: async () => {
-        const options: RedisClientOptions<RedisModules, RedisFunctions, RedisScripts> = {
-          socket: {
-            host: redisHost,
-            port: redisPort,
-            reconnectStrategy: (retries) => {
-              Logger.warn(`Trying to reconnect to redis: ${retries}`, AppModule.name);
-              return 3000;
-            },
-          },
-          disableOfflineQueue: true,
-        };
-
-        const store = await redisStore(options);
-        const redisClient = store.client;
-
-        const restartRedisService = async () => {
-          await redisClient.disconnect();
-          await redisClient.connect();
-        };
-
-        redisClient.on('connect', () => Logger.log('Connected to redis', AppModule.name));
-        redisClient.on('ready', () => Logger.log('Redis is ready', AppModule.name));
-        redisClient.on('error', (error: Error & { code?: string }) => {
-          Logger.error(`Redis connection error: ${error.code}`, AppModule.name);
-
-          if (!error.code) {
-            setTimeout(() => restartRedisService, 3000);
-          }
-        });
-
-        return {
-          store,
-          ttl: DEFAULT_CACHE_TTL_MS,
-        };
-      },
+      useFactory: () => ({
+        stores: [new KeyvRedis(`redis://${redisHost}:${redisPort}`)],
+      }),
     }),
 
     EventEmitterModule.forRoot(),

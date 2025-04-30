@@ -27,6 +27,7 @@ export default class TldrawSyncGateway implements OnGatewayConnection, OnModuleI
 
   constructor(private readonly tldrawSyncService: TldrawSyncService) {}
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   onModuleInit() {
     Logger.log(`WebSocket Gateway initialized at path: /${TLDRAW_SYNC_ENDPOINTS.BASE}`, TldrawSyncGateway.name);
   }
