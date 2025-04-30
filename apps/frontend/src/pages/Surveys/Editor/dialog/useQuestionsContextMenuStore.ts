@@ -132,7 +132,7 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     if (!selectedQuestion) {
       return;
     }
-    const choices = backendLimiters.find((limiter) => limiter.questionName === selectedQuestion.id)?.choices || [];
+    const choices = backendLimiters.find((limiter) => limiter.questionName === selectedQuestion.name)?.choices || [];
     set({ currentBackendLimiters: backendLimiters, currentChoices: choices });
   },
 

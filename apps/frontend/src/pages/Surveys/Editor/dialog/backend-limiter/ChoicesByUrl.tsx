@@ -54,25 +54,21 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     currentChoices,
     addNewChoice,
     updateLimitersChoices,
-    currentBackendLimiters,
     formerChoices,
   } = useQuestionsContextMenuStore();
 
   useEffect(() => {
     if (!form) return;
-    setBackendLimiters(form.watch('backendLimiters') || []);
+    const initialLimiters = form.getValues('backendLimiters');
+    if (initialLimiters) {
+      setBackendLimiters(initialLimiters);
+    }
   }, []);
   useEffect(() => {
-    updateLimitersChoices(currentChoices);
+    const updatedBackendLimits = updateLimitersChoices(currentChoices);
+    if (!form) return;
+    form.setValue('backendLimiters', updatedBackendLimits);
   }, [currentChoices]);
-  useEffect(() => {
-    if (!form) return;
-    form.setValue('backendLimiters', currentBackendLimiters);
-  }, [currentBackendLimiters]);
-  useEffect(() => {
-    if (!form) return;
-    setBackendLimiters(form.watch('backendLimiters') || []);
-  }, [selectedQuestion]);
 
   const handleToggleFormula = () => {
     if (!selectedQuestion) return;
