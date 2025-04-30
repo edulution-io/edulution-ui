@@ -10,22 +10,32 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect } from 'react';
-import { useAuth } from 'react-oidc-context';
 import useUserStore from '@/store/UserStore/UserStore';
+import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
-const SilentLogin: React.FC = () => {
-  const auth = useAuth();
-  const { eduApiToken } = useUserStore();
+const SigninSilent: React.FC = () => {
+  const { pathname } = useLocation();
+  const { isAuthenticated } = useUserStore();
 
   useEffect(() => {
-    if (eduApiToken) {
-      console.info('Silent Login wird durchgeführt');
-      void auth.signinSilent().catch((err) => console.error('Silent Login fehlgeschlagen:', err));
+    // nicht auf der Callback-Route selbst injecten
+    if (isAuthenticated && pathname !== '/authentication/silent_callback') {
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = [
+        `${window.location.origin}/auth/realms/edulution/protocol/openid-connect/auth`,
+        `?client_id=edu-ui`,
+        `&redirect_uri=${encodeURIComponent(`${window.location.origin}/authentication/silent_callback`)}`,
+        `&response_type=code`,
+        `&scope=openid`,
+        `&prompt=none`,
+      ].join('');
+      document.body.appendChild(iframe);
     }
-  }, [eduApiToken]);
+  }, [pathname, isAuthenticated]);
 
   return null;
 };
 
-export default SilentLogin;
+export default SigninSilent;
