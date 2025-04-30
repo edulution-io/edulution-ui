@@ -126,13 +126,16 @@ const ScrollableTable = <TData, TValue>({
 
       <div className="h-full w-full flex-1 overflow-auto scrollbar-thin">
         {!!data.length && (
-          <div className="flex justify-between space-x-1 py-4 pl-1">
-            <Input
-              placeholder={t(filterPlaceHolderText)}
-              value={filterValue}
-              onChange={(event) => table.getColumn(filterKey)?.setFilterValue(event.target.value)}
-              className={`max-w-xl text-secondary ${isDialog ? 'bg-muted' : 'bg-accent'}`}
-            />
+          <div className="flex items-center gap-2 py-4 pl-1">
+            <div className="min-w-0 flex-1">
+              <Input
+                placeholder={t(filterPlaceHolderText)}
+                value={filterValue}
+                onChange={(e) => table.getColumn(filterKey)?.setFilterValue(e.target.value)}
+                className={`w-full text-secondary ${isDialog ? 'bg-muted' : 'bg-accent'}`}
+              />
+            </div>
+
             {table.getAllColumns().length > 1 && (
               <SelectColumnsDropdown
                 table={table}
