@@ -1181,7 +1181,8 @@
     "acrobat": "PDF",
     "presentation": "Presentation",
     "spreadsheet": "Table",
-    "vector": "Diagram"
+    "vector": "Diagram",
+    "compressed": "Archive"
   },
   "fileCreateNewContent": {
     "documentFile": "Create a new document",

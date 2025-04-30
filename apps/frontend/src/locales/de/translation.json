@@ -1183,7 +1183,8 @@
     "acrobat": "PDF",
     "presentation": "Präsentation",
     "spreadsheet": "Tabelle",
-    "vector": "Diagramm"
+    "vector": "Diagramm",
+    "compressed": "Archive"
   },
   "fileCreateNewContent": {
     "documentFile": "Erstelle ein neues Dokument",
