@@ -11,8 +11,8 @@
  */
 
 const QuotaThresholdPercent = {
-  WARNING: 80,
-  REACHED: 99,
+  WARNING: 75,
+  CRITICAL: 95,
 };
 
 export default QuotaThresholdPercent;

@@ -21,7 +21,7 @@ const useQuotaInfo = (): {
   mailQuota: string;
   percentageUsed: number;
   isLoading: boolean;
-  refetch: () => void;
+  refetchUsersQuota: () => void;
 } => {
   const { user: lmnUser, lmnApiToken, usersQuota, fetchUsersQuota } = useLmnApiStore();
 
@@ -49,7 +49,7 @@ const useQuotaInfo = (): {
       mailQuota,
       percentageUsed,
       isLoading: !quota,
-      refetch,
+      refetchUsersQuota: refetch,
     };
   }, [usersQuota, school, lmnUser]);
 };

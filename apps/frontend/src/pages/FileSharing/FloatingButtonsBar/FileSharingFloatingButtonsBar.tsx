@@ -23,11 +23,10 @@ const FileSharingFloatingButtonsBar = () => {
   const { openDialog } = useFileSharingDialogStore();
   const { selectedItems } = useFileSharingStore();
   const { percentageUsed } = useQuotaInfo();
+  const showFileActionNonSelect = selectedItems.length === 0 && percentageUsed < QuotaThresholdPercent.CRITICAL;
   return (
     <>
-      {selectedItems.length === 0 && percentageUsed < QuotaThresholdPercent.REACHED && (
-        <FileActionNonSelect openDialog={openDialog} />
-      )}
+      {showFileActionNonSelect && <FileActionNonSelect openDialog={openDialog} />}
 
       {selectedItems.length === 1 && (
         <FileActionOneSelect

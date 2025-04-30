@@ -12,17 +12,19 @@
 
 import React from 'react';
 import { AlertTriangle } from 'lucide-react';
-import clsx from 'clsx';
+import cn from '@libs/common/utils/className';
 import QuotaThresholdPercent from '@libs/filesharing/constants/quotaThresholdPercent';
-import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 interface QuotaLimitBadgeProps {
   percentageUsed: number;
 }
 
 const QuotaLimitInfo: React.FC<QuotaLimitBadgeProps> = ({ percentageUsed }) => {
-  const isWarn = percentageUsed >= QuotaThresholdPercent.WARNING && percentageUsed < QuotaThresholdPercent.REACHED;
-  const isError = percentageUsed >= QuotaThresholdPercent.WARNING;
+  const isWarn = percentageUsed >= QuotaThresholdPercent.WARNING && percentageUsed < QuotaThresholdPercent.CRITICAL;
+  const isError = percentageUsed >= QuotaThresholdPercent.CRITICAL;
+
+  const { t } = useTranslation();
 
   if (!isWarn && !isError) return null;
 
@@ -33,13 +35,13 @@ const QuotaLimitInfo: React.FC<QuotaLimitBadgeProps> = ({ percentageUsed }) => {
   const quotaLabel = t(isError ? 'dashboard.quota.remainingVeryLow' : 'dashboard.quota.remainingLow', { free });
 
   return (
-    <div className={clsx('flex items-center gap-2', wrapperClasses)}>
+    <div className={cn('flex items-center gap-2', wrapperClasses)}>
       <AlertTriangle
-        className={clsx('h-4 w-4', iconColor)}
+        className={cn('h-4 w-4', iconColor)}
         aria-hidden
       />
 
-      <span className="text-xs font-medium">{quotaLabel}</span>
+      <span className="text-xs">{quotaLabel}</span>
     </div>
   );
 };

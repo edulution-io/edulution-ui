@@ -14,22 +14,23 @@ import React, { useEffect } from 'react';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import { useTranslation } from 'react-i18next';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
+import QuotaThresholdPercent from '@libs/filesharing/constants/quotaThresholdPercent';
 
 const Quota: React.FC = () => {
   const { t } = useTranslation();
   const { user: lmnUser, lmnApiToken } = useLmnApiStore();
 
-  const { quotaUsed, quotaHardLimit, mailQuota, percentageUsed, refetch } = useQuotaInfo();
+  const { quotaUsed, quotaHardLimit, mailQuota, percentageUsed, refetchUsersQuota } = useQuotaInfo();
 
   useEffect(() => {
-    refetch();
+    refetchUsersQuota();
   }, [lmnApiToken]);
 
   const getSeparatorColor = () => {
-    if (percentageUsed <= 75) {
+    if (percentageUsed <= QuotaThresholdPercent.WARNING) {
       return 'bg-ciLightGreen';
     }
-    if (percentageUsed <= 90) {
+    if (percentageUsed <= QuotaThresholdPercent.CRITICAL) {
       return 'bg-yellow-500';
     }
     return 'bg-ciRed';
