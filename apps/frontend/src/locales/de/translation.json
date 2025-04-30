@@ -890,6 +890,7 @@
       },
       "filterPlaceHolderText": "Suche nach Anwendung",
       "passwordSafe": "Passwort-Tresor",
+      "passwordSafeInfo": "Hier kannst du deine Zugangsdaten für verschiedene Anwendungen speichern. Diese werden verschlüsselt und sind nur für dich sichtbar.",
       "addUserAccount": "Konto hinzufügen",
       "accountId": "Konto-ID",
       "accountData": "Zugangsdaten",

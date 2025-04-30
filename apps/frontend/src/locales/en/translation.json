@@ -888,6 +888,7 @@
       },
       "filterPlaceHolderText": "Search for App",
       "passwordSafe": "Password Safe",
+      "passwordSafeInfo": "Here you can save your access data for various applications. These are encrypted and are only visible to you.",
       "addUserAccount": "Add account",
       "accountId": "Account ID",
       "accountData": "Login Data",

@@ -65,6 +65,7 @@ const UserAccountsTable: React.FC = () => {
     <>
       <div>
         <h3>{t('usersettings.security.passwordSafe')}</h3>
+        <p>{t('usersettings.security.passwordSafeInfo')}</p>
         <div>
           <ScrollableTable
             columns={UserAccountsTableColumns}
