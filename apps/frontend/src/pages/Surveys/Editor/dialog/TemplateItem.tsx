@@ -15,22 +15,20 @@ import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import TemplateDto from '@libs/survey/types/api/template.dto';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import YamlEditor from '@/components/shared/YamlEditor';
 import { Button } from '@/components/shared/Button';
 import { AccordionTrigger, AccordionItem, AccordionContent } from '@/components/ui/AccordionSH';
 
-interface TemplateProps {
+interface TemplateItemProps {
   form: UseFormReturn<SurveyDto>;
   creator: SurveyCreator;
-  template: TemplateDto;
+  template: Partial<SurveyDto>;
   key?: string;
 }
 
-const Template = (props: TemplateProps) => {
+const TemplateItem = (props: TemplateItemProps) => {
   const { form, creator, template, key } = props;
-  const { fileName, surveyDto } = template;
   const {
     formula,
     /* backendLimiter , */
@@ -40,7 +38,7 @@ const Template = (props: TemplateProps) => {
     isPublic,
     canSubmitMultipleAnswers,
     canUpdateFormerAnswer,
-  } = surveyDto;
+  } = template;
   const { setIsOpenTemplateMenu } = useTemplateMenuStore();
 
   const { t } = useTranslation();
@@ -65,28 +63,28 @@ const Template = (props: TemplateProps) => {
   return (
     <AccordionItem
       key={key}
-      value={fileName}
+      value={formula?.title || ''}
     >
-      <AccordionTrigger className="flex text-h4">
-        <p className="font-bold">{`${fileName} (${t('common.title')}: ${formula?.title})`}</p>
-      </AccordionTrigger>
-      <AccordionContent className="space-y-2 px-1">
-        <YamlEditor
-          value={JSON.stringify(surveyDto, null, 2)}
-          onChange={() => {}}
-          disabled
-          className="max-h-[500px] min-h-[200px] w-full"
-        />
+      <AccordionTrigger className="flex h-[24px] justify-between px-4 text-h4">
+        <p className="font-bold ">{`${formula?.title}`}</p>
         <Button
-          className="absolute right-6 my-0 h-[32px] py-0"
           onClick={handleLoadTemplate}
           variant="btn-collaboration"
+          className="absolute right-6 m-2 h-[24px] rounded p-2"
         >
           {t('common.load')}
         </Button>
+      </AccordionTrigger>
+      <AccordionContent className="px-4">
+        <YamlEditor
+          value={JSON.stringify(template, null, 2)}
+          onChange={() => {}}
+          className="max-h-[500px] min-h-[200px]"
+          disabled
+        />
       </AccordionContent>
     </AccordionItem>
   );
 };
 
-export default Template;
+export default TemplateItem;

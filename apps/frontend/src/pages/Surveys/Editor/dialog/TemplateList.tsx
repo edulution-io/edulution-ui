@@ -16,18 +16,17 @@ import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import TemplateDto from '@libs/survey/types/api/template.dto';
-import Template from '@/pages/Surveys/Editor/dialog/Template';
+import TemplateItem from '@/pages/Surveys/Editor/dialog/TemplateItem';
 import Label from '@/components/ui/Label';
 import { AccordionSH } from '@/components/ui/AccordionSH';
 
-interface TemplatesProps {
+interface TemplateListProps {
   form: UseFormReturn<SurveyDto>;
   creator: SurveyCreator;
-  templates: TemplateDto[];
+  templates: Partial<SurveyDto>[];
 }
 
-const Templates = (props: TemplatesProps) => {
+const TemplateList = (props: TemplateListProps) => {
   const { form, creator, templates } = props;
   const { t } = useTranslation();
 
@@ -36,13 +35,16 @@ const Templates = (props: TemplatesProps) => {
       <Label>
         <p className="font-bold">{t('survey.editor.templateMenu.fetch')}</p>
       </Label>
-      <AccordionSH type="single">
-        {templates.map((templateDto: TemplateDto) => (
-          <Template
-            key={`${templateDto.fileName}-${uuidv4()}`}
+      <AccordionSH
+        type="multiple"
+        className="px-4"
+      >
+        {templates.map((template: Partial<SurveyDto>) => (
+          <TemplateItem
+            key={`${uuidv4()}`}
             form={form}
             creator={creator}
-            template={templateDto}
+            template={template}
           />
         ))}
       </AccordionSH>
@@ -50,4 +52,4 @@ const Templates = (props: TemplatesProps) => {
   );
 };
 
-export default Templates;
+export default TemplateList;

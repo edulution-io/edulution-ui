@@ -10,15 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
-import Templates from '@/pages/Surveys/Editor/dialog/Templates';
-import Input from '@/components/shared/Input';
+import TemplateList from '@/pages/Surveys/Editor/dialog/TemplateList';
 import { Button } from '@/components/shared/Button';
 import Label from '@/components/ui/Label';
 
@@ -33,8 +32,6 @@ const TemplateDialogBody = (props: TemplateDialogBodyProps) => {
 
   const { t } = useTranslation();
 
-  const [newTemplateName, setNewTemplateName] = useState<string>('');
-
   useEffect(() => {
     void fetchTemplates();
   }, []);
@@ -42,39 +39,32 @@ const TemplateDialogBody = (props: TemplateDialogBodyProps) => {
   const handleSaveTemplate = async () => {
     const values = form.getValues();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { formula, saveNo, creator, createdAt, expires, answers, ...remainingSurvey } = values;
-    await uploadTemplate(newTemplateName, { formula: surveyCreator.JSON as SurveyFormula, ...remainingSurvey });
+    const { id, formula, saveNo, creator, createdAt, expires, answers, ...remainingSurvey } = values;
+    await uploadTemplate({ formula: surveyCreator.JSON as SurveyFormula, ...remainingSurvey });
     setIsOpenTemplateMenu(false);
   };
 
   return (
-    <>
-      <Label>
-        <p className="font-bold">{t('survey.editor.templateMenu.submit')}</p>
-      </Label>
-
-      <Input
-        className="my-0 mr-[100px] h-[32px] py-0 pr-[100px]"
-        value={newTemplateName}
-        onChange={(e) => setNewTemplateName(e.target.value)}
-      />
-      <div className="my-0 flex h-[32px] justify-end py-0">
+    <div className="space-y-2">
+      <div className="my-0 mb-4 flex h-[32px] max-h-[32px] flex-row items-center justify-between py-0">
+        <Label>
+          <p className="font-bold">{t('survey.editor.templateMenu.submit')}</p>
+        </Label>
         <Button
-          className="my-0 h-[32px] py-0"
           onClick={handleSaveTemplate}
-          disabled={!newTemplateName}
           variant="btn-collaboration"
+          className="my-0 h-[32px] rounded py-0"
         >
           {t('common.save')}
         </Button>
       </div>
 
-      <Templates
+      <TemplateList
         form={form}
         creator={surveyCreator}
         templates={templates}
       />
-    </>
+    </div>
   );
 };
 

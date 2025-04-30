@@ -12,6 +12,7 @@
 
 import { join } from 'path';
 import { Response } from 'express';
+import { v4 as uuidv4 } from 'uuid';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
@@ -159,8 +160,10 @@ class SurveysService implements OnModuleInit {
   }
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  async createTemplate(fileName: string, surveyDto: Partial<SurveyDto>): Promise<void> {
-    const templatePath = join(SURVEYS_TEMPLATE_PATH, `${fileName}.json`);
+  async createTemplate(surveyDto: Partial<SurveyDto>): Promise<void> {
+    const date = new Date();
+    const uniqueFileName = `${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}-${date.getHours()}:${date.getMinutes()}-${uuidv4()}.json`;
+    const templatePath = join(SURVEYS_TEMPLATE_PATH, uniqueFileName);
     return FilesystemService.writeFile(templatePath, JSON.stringify(surveyDto, null, 2));
   }
 

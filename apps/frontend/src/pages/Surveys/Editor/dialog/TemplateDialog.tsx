@@ -53,7 +53,7 @@ const TemplateDialog = (props: TemplateDialogProps) => {
       title={t('survey.editor.templateMenu.title')}
       body={getDialogBody()}
       footer={getFooter()}
-      desktopContentClassName="max-w-[50%] min-h-[500px] max-h-[90%] overflow-auto"
+      desktopContentClassName="max-w-[50%] min-h-[200px] max-h-[90%] overflow-auto"
     />
   );
 };
