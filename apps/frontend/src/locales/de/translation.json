@@ -966,6 +966,8 @@
   },
   "common": {
     "ok": "OK",
+    "next": "Weiter",
+    "back": "Zurück",
     "confirm": "Bestätigen",
     "share": "Teilen",
     "savedToClipboard": "In die Zwischenablage kopiert.",

@@ -19,7 +19,10 @@ const getUserAccountFormSchema = (t: TFunction<'translation', undefined>) =>
       appName: z.string({ message: t('common.required') }),
       accountUser: z.string().min(1, { message: t('common.required') }),
       accountPassword: z.string().optional(),
-      safePin: z.string().optional(),
+      safePin: z
+        .string({ message: t('common.required') })
+        .min(5, { message: t('common.required') })
+        .optional(),
     })
     .superRefine((data, ctx) => {
       if (data.accountPassword && !data.safePin) {

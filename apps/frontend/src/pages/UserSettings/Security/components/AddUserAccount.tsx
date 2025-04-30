@@ -10,13 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import FormField from '@/components/shared/FormField';
-import { Form, FormControl, FormFieldSH, FormItem } from '@/components/ui/Form';
+import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useUserStore from '@/store/UserStore/UserStore';
 import { deriveKey, encryptPassword } from '@libs/common/utils/encryptPassword';
@@ -26,6 +26,7 @@ import getDisplayName from '@/utils/getDisplayName';
 import useLanguage from '@/hooks/useLanguage';
 import { encodeBase64 } from '@libs/common/utils/getBase64String';
 import TotpInput from '@/pages/LoginPage/components/TotpInput';
+import cn from '@libs/common/utils/className';
 import getUserAccountFormSchema from './getUserAccountSchema';
 
 interface AddUserAccountDialogProps {
@@ -47,6 +48,7 @@ const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelecte
   const { language } = useLanguage();
   const { userAccounts, addUserAccount, updateUserAccount } = useUserStore();
   const { appConfigs } = useAppConfigsStore();
+  const [enterSafePin, setEnterSafePin] = useState(false);
   const idx = isOneRowSelected ? Number(keys[0]) : undefined;
 
   const initialFormValues: UserAccountFormValues =
@@ -79,6 +81,7 @@ const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelecte
   const handleClose = () => {
     handleOpenChange();
     form.reset();
+    setEnterSafePin(false);
   };
 
   const onSubmit = async (data: UserAccountFormValues) => {
@@ -120,80 +123,92 @@ const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelecte
 
   const getDialogBody = () => (
     <Form {...form}>
-      <form
-        className="flex flex-col gap-4"
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
-        <FormFieldSH
-          control={form.control}
-          name="appName"
-          defaultValue={initialFormValues.appName}
-          render={({ field }) => (
-            <FormItem>
-              <p className="font-bold">{t('common.application')}</p>
-              <FormControl>
-                <DropdownSelect
-                  options={appNameOptions}
-                  selectedVal={field.value}
-                  handleChange={field.onChange}
-                  variant="dialog"
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          labelTranslationId={t('common.username')}
-          name="accountUser"
-          defaultValue={initialFormValues.accountUser}
-          form={form}
-          variant="dialog"
-        />
-        <FormField
-          labelTranslationId={t('common.password')}
-          name="accountPassword"
-          defaultValue={initialFormValues.accountPassword}
-          form={form}
-          variant="dialog"
-          type="password"
-        />
-        <FormFieldSH
-          control={form.control}
-          name="safePin"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <TotpInput
-                  totp={field.value}
-                  title={t('usersettings.security.safePin')}
-                  setTotp={field.onChange}
-                  onComplete={() => {}}
-                />
-              </FormControl>
-              <p>{form.getFieldState('safePin').error?.message}</p>
-            </FormItem>
-          )}
-        />
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <div className={cn('flex flex-col gap-4', enterSafePin ? 'hidden' : '')}>
+          <FormFieldSH
+            control={form.control}
+            name="appName"
+            defaultValue={initialFormValues.appName}
+            render={({ field }) => (
+              <FormItem>
+                <p className="font-bold">{t('common.application')}</p>
+                <FormControl>
+                  <DropdownSelect
+                    options={appNameOptions}
+                    selectedVal={field.value}
+                    handleChange={field.onChange}
+                    variant="dialog"
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            labelTranslationId={t('common.username')}
+            name="accountUser"
+            defaultValue={initialFormValues.accountUser}
+            form={form}
+            variant="dialog"
+          />
+          <FormField
+            labelTranslationId={t('common.password')}
+            name="accountPassword"
+            defaultValue={initialFormValues.accountPassword}
+            form={form}
+            variant="dialog"
+            type="password"
+          />
+        </div>
+        <div className={cn(enterSafePin ? '' : 'hidden')}>
+          <FormFieldSH
+            control={form.control}
+            name="safePin"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <TotpInput
+                    totp={field.value}
+                    maxLength={5}
+                    title={t('usersettings.security.safePin')}
+                    setTotp={field.onChange}
+                    onComplete={() => {}}
+                  />
+                </FormControl>
+                <FormMessage className={cn('text-p')} />
+              </FormItem>
+            )}
+          />
+        </div>
       </form>
     </Form>
   );
 
-  const getFooter = () => (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
+  const getFooter = () =>
+    enterSafePin ? (
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <DialogFooterButtons
+          handleClose={() => setEnterSafePin(false)}
+          cancelButtonText="common.back"
+          handleSubmit={() => {}}
+          submitButtonType="submit"
+          submitButtonText="common.save"
+        />
+      </form>
+    ) : (
       <DialogFooterButtons
         handleClose={handleClose}
-        handleSubmit={() => {}}
-        submitButtonType="submit"
+        cancelButtonText="common.cancel"
+        handleSubmit={() => setEnterSafePin(true)}
+        submitButtonText="common.next"
       />
-    </form>
-  );
+    );
 
   return (
     <AdaptiveDialog
       body={getDialogBody()}
       footer={getFooter()}
       isOpen={isOpen}
-      handleOpenChange={handleOpenChange}
+      handleOpenChange={handleClose}
       title={t('usersettings.security.addUserAccount')}
     />
   );

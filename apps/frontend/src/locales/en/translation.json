@@ -965,6 +965,8 @@
   "edit": "Edit",
   "common": {
     "ok": "OK",
+    "next": "Next",
+    "back": "Back",
     "confirm": "Confirm",
     "share": "Share",
     "savedToClipboard": "Saved to clipboard.",

@@ -15,12 +15,12 @@ import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
-import FormField from '@/components/shared/FormField';
-import { Form } from '@/components/ui/Form';
+import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
+import TotpInput from '@/pages/LoginPage/components/TotpInput';
 
 interface EnterMasterPwDialogProps {
   isOpen: string;
-  form: UseFormReturn<{ masterPw: string }>;
+  form: UseFormReturn<{ safePin: string }>;
   handleClose: () => void;
   handleConfirm: () => void;
 }
@@ -31,13 +31,24 @@ const EnterMasterPwDialog: FC<EnterMasterPwDialogProps> = ({ isOpen, form, handl
   const getDialogBody = () => (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleConfirm)}>
-        <FormField
-          name="masterPw"
-          defaultValue=""
-          form={form}
-          labelTranslationId={t('conferences.password')}
-          type="password"
-          variant="dialog"
+        <FormFieldSH
+          control={form.control}
+          name="safePin"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <TotpInput
+                  totp={field.value}
+                  maxLength={5}
+                  title={t('usersettings.security.safePin')}
+                  setTotp={field.onChange}
+                  onComplete={() => form.handleSubmit(handleConfirm)}
+                  type="pin"
+                />
+              </FormControl>
+              <FormMessage className="text-p" />
+            </FormItem>
+          )}
         />
       </form>
     </Form>

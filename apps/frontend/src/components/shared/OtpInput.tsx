@@ -17,46 +17,40 @@ import { Button } from './Button';
 
 type OtpInputProps = {
   totp: string;
+  maxLength?: number;
   variant?: 'default' | 'dialog';
+  type?: 'default' | 'pin';
   setTotp: (value: string) => void;
   onComplete?: () => void;
   setShowNumPad?: Dispatch<SetStateAction<boolean>>;
 };
 
-const OtpInput: FC<OtpInputProps> = ({ totp, variant = 'default', setTotp, onComplete, setShowNumPad }) => (
+const OtpInput: FC<OtpInputProps> = ({
+  totp,
+  maxLength = 6,
+  variant = 'default',
+  type,
+  setTotp,
+  onComplete,
+  setShowNumPad,
+}) => (
   <div className="mb-3 flex items-center justify-center">
     <InputOTP
       autoFocus
-      maxLength={6}
+      maxLength={maxLength}
       value={totp}
       onChange={setTotp}
       onComplete={onComplete ? () => onComplete() : undefined}
     >
       <InputOTPGroup>
-        <InputOTPSlot
-          variant={variant}
-          index={0}
-        />
-        <InputOTPSlot
-          variant={variant}
-          index={1}
-        />
-        <InputOTPSlot
-          variant={variant}
-          index={2}
-        />
-        <InputOTPSlot
-          variant={variant}
-          index={3}
-        />
-        <InputOTPSlot
-          variant={variant}
-          index={4}
-        />
-        <InputOTPSlot
-          variant={variant}
-          index={5}
-        />
+        {Array.from({ length: maxLength }, (_, index) => (
+          <InputOTPSlot
+            key={index}
+            index={index}
+            variant={variant}
+            type={type}
+          />
+        ))}
       </InputOTPGroup>
     </InputOTP>
     {setShowNumPad && (

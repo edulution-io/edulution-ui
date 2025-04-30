@@ -23,6 +23,8 @@ import Input from '@/components/shared/Input';
 import cn from '@libs/common/utils/className';
 import { decodeBase64 } from '@libs/common/utils/getBase64String';
 import type EncryptedPasswordObject from '@libs/common/types/encryptPasswordObject';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import EnterMasterPwDialog from './EnterMasterPwDialog';
 
 interface PasswordCellProps {
@@ -40,23 +42,24 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
 
   const form = useForm({
     mode: 'onSubmit',
+    resolver: zodResolver(z.object({ safePin: z.string().min(5, { message: t('common.required') }) })),
     defaultValues: {
-      masterPw: '',
+      safePin: '',
     },
   });
 
-  const masterPw = form.watch('masterPw');
+  const safePin = form.watch('safePin');
 
   const handleDecryptPassword = async () => {
     const encryptedPassword = await decryptPassword(
       JSON.parse(decodeBase64(accountPassword)) as EncryptedPasswordObject,
-      masterPw,
+      safePin,
     );
 
     if (encryptedPassword) {
       return encryptedPassword;
     }
-    form.setValue('masterPw', '');
+    form.setValue('safePin', '');
     toast.error(t('usersettings.security.wrongSafePin'));
     return placeholder;
   };
@@ -74,7 +77,7 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
   };
 
   const handleShowPassword = async () => {
-    if (isOpen === 'show' || masterPw) {
+    if (isOpen === 'show' || safePin) {
       await handleDecrypt();
     } else if (password === placeholder) {
       setIsOpen('show');
@@ -84,7 +87,7 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
   };
 
   const handleCopyPassword = async () => {
-    if (isOpen === 'copy' || masterPw) {
+    if (isOpen === 'copy' || safePin) {
       const encryptedPassword = await handleDecryptPassword();
 
       if (encryptedPassword !== placeholder) {
@@ -110,7 +113,7 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
 
   const handleClose = () => {
     setIsOpen('');
-    form.setValue('masterPw', '');
+    form.setValue('safePin', '');
   };
 
   const getCopyButton = () => (

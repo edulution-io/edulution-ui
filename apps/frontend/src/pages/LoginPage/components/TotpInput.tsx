@@ -18,11 +18,13 @@ import cn from '@libs/common/utils/className';
 interface TotpInputProps {
   totp: string;
   title: string;
+  maxLength?: number;
+  type?: 'default' | 'pin';
   setTotp: Dispatch<SetStateAction<string>>;
   onComplete: () => void;
 }
 
-const TotpInput: FC<TotpInputProps> = ({ totp, title, setTotp, onComplete }) => {
+const TotpInput: FC<TotpInputProps> = ({ totp, title, maxLength, type, setTotp, onComplete }) => {
   const [showNumPad, setShowNumPad] = useState(false);
 
   const handlePress = (digit: string) => {
@@ -40,9 +42,11 @@ const TotpInput: FC<TotpInputProps> = ({ totp, title, setTotp, onComplete }) => 
       {title && <div className="mt-3 text-center font-bold">{title}</div>}
       <OtpInput
         totp={totp}
+        maxLength={maxLength}
         setTotp={setTotp}
         onComplete={onComplete}
         setShowNumPad={setShowNumPad}
+        type={type}
       />
       <div
         className={cn(
