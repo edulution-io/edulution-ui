@@ -54,6 +54,7 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
       return (
         <Input
           type="number"
+          min="0"
           placeholder={t('survey.editor.questionSettings.limit')}
           value={row.original.limit}
           onChange={(e) => setChoiceLimit(row.original.name, Number(e.target.value))}

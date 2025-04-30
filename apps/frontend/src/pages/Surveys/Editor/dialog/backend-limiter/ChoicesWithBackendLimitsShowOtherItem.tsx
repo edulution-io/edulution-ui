@@ -68,12 +68,13 @@ const ChoicesWithBackendLimitsShowOtherItem = () => {
             </Label>
             <Input
               type="number"
+              min="0"
               placeholder={t('common.limit')}
               value={otherItemsChoiceWithBackendLimit?.limit || 0}
               onChange={(e) =>
                 otherItemsChoiceWithBackendLimit
-                  ? setChoiceLimit(SHOW_OTHER_ITEM, Math.min(Number(e.target.value), 0))
-                  : addChoice(SHOW_OTHER_ITEM, '', Math.min(Number(e.target.value), 0))
+                  ? setChoiceLimit(SHOW_OTHER_ITEM, Math.max(Number(e.target.value), 0))
+                  : addChoice(SHOW_OTHER_ITEM, '', Math.max(Number(e.target.value), 0))
               }
               variant="dialog"
               className="ml-2 mt-2 max-w-[80px] flex-1 text-primary-foreground"

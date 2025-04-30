@@ -100,25 +100,27 @@ const ChoicesWithBackendLimitTable = <TData, TValue>({
             )}
           </TableBody>
           <TableFooter>
-            <TableCell
-              colSpan={columns.length - 1}
-              className="m-0 p-0"
-            />
-            <TableCell
-              colSpan={1}
-              className="m-0 p-0"
-            >
-              <div className="flex justify-center">
-                <Button
-                  type="button"
-                  onClick={addNewChoice}
-                  variant="btn-collaboration"
-                  className="my-1 flex max-h-[2.25rem] w-[80px] items-center justify-center rounded-md text-primary-foreground"
-                >
-                  <MdAddCircleOutline className="h-[20px] w-[20px]" />
-                </Button>
-              </div>
-            </TableCell>
+            <TableRow>
+              <TableCell
+                colSpan={columns.length - 1}
+                className="m-0 p-0"
+              />
+              <TableCell
+                colSpan={1}
+                className="m-0 p-0"
+              >
+                <div className="flex justify-center">
+                  <Button
+                    type="button"
+                    onClick={addNewChoice}
+                    variant="btn-collaboration"
+                    className="my-1 flex max-h-[2.25rem] w-[80px] items-center justify-center rounded-md text-primary-foreground"
+                  >
+                    <MdAddCircleOutline className="h-[20px] w-[20px]" />
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>
           </TableFooter>
         </Table>
       </ScrollArea>
