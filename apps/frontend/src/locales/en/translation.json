@@ -892,8 +892,11 @@
       "accountId": "Account ID",
       "accountData": "Login Data",
       "safePin": "Safe PIN",
+      "firstEnterSafePin": "Please set the safe PIN.",
+      "enterSavePin": "Please enter your safe PIN.",
       "wrongSafePin": "Wrong PIN Number",
-      "enterSafePin": "Please enter your PIN number for decryption"
+      "enterSafePin": "Please enter your PIN number for decryption",
+      "safePinDescription": "A PIN is required to encrypt the access data. This PIN is only visible to you and is not saved."
     },
     "mails": {
       "title": "Email"

@@ -42,7 +42,7 @@ const EnterSafePinDialog: FC<EnterMasterPwDialogProps> = ({ isOpen, form, handle
                   maxLength={5}
                   title={t('usersettings.security.safePin')}
                   setTotp={field.onChange}
-                  onComplete={() => form.handleSubmit(handleConfirm)}
+                  onComplete={form.handleSubmit(handleConfirm)}
                   type="pin"
                 />
               </FormControl>

@@ -13,20 +13,22 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import FormField from '@/components/shared/FormField';
-import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
+import { Form, FormControl, FormDescription, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useUserStore from '@/store/UserStore/UserStore';
-import { deriveKey, encryptPassword } from '@libs/common/utils/encryptPassword';
+import { decryptPassword, deriveKey, encryptPassword } from '@libs/common/utils/encryptPassword';
 import { DropdownSelect } from '@/components';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import getDisplayName from '@/utils/getDisplayName';
 import useLanguage from '@/hooks/useLanguage';
-import { encodeBase64 } from '@libs/common/utils/getBase64String';
+import { decodeBase64, encodeBase64 } from '@libs/common/utils/getBase64String';
 import TotpInput from '@/pages/LoginPage/components/TotpInput';
 import cn from '@libs/common/utils/className';
+import type EncryptedPasswordObject from '@libs/common/types/encryptPasswordObject';
 import getUserAccountFormSchema from './getUserAccountSchema';
 
 interface AddUserAccountDialogProps {
@@ -50,6 +52,7 @@ const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelecte
   const { appConfigs } = useAppConfigsStore();
   const [enterSafePin, setEnterSafePin] = useState(false);
   const idx = isOneRowSelected ? Number(keys[0]) : undefined;
+  const isFirstUserAccount = userAccounts.length === 0;
 
   const initialFormValues: UserAccountFormValues =
     idx !== undefined && userAccounts[idx]
@@ -85,6 +88,19 @@ const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelecte
   };
 
   const onSubmit = async (data: UserAccountFormValues) => {
+    if (!isFirstUserAccount) {
+      const isSafePinValid = await decryptPassword(
+        JSON.parse(decodeBase64(userAccounts[0].accountPassword)) as EncryptedPasswordObject,
+        data.safePin,
+      );
+
+      if (!isSafePinValid) {
+        form.setValue('safePin', '');
+        toast.error(t('usersettings.security.wrongSafePin'));
+        return;
+      }
+    }
+
     const salt = window.crypto.getRandomValues(new Uint8Array(16));
     const key = await deriveKey(data.safePin, salt);
     const { iv, ciphertext } = await encryptPassword(data.accountPassword, key);
@@ -169,12 +185,22 @@ const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelecte
                   <TotpInput
                     totp={field.value}
                     maxLength={5}
-                    title={t('usersettings.security.safePin')}
+                    title={t(
+                      isFirstUserAccount
+                        ? 'usersettings.security.firstEnterSafePin'
+                        : 'usersettings.security.enterSavePin',
+                    )}
                     setTotp={field.onChange}
-                    onComplete={() => {}}
+                    onComplete={isFirstUserAccount ? () => {} : form.handleSubmit(onSubmit)}
+                    type={isFirstUserAccount ? 'default' : 'pin'}
                   />
                 </FormControl>
                 <FormMessage className={cn('text-p')} />
+                {isFirstUserAccount && (
+                  <FormDescription className={cn('text-p')}>
+                    {t('usersettings.security.safePinDescription')}
+                  </FormDescription>
+                )}
               </FormItem>
             )}
           />

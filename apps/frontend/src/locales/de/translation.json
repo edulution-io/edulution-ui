@@ -894,8 +894,11 @@
       "accountId": "Konto-ID",
       "accountData": "Zugangsdaten",
       "safePin": "Tresor-PIN",
+      "firstEnterSafePin": "Bitte Tresor-PIN festlegen.",
+      "enterSavePin": "Bitte Tresor-PIN eingeben.",
       "wrongSafePin": "PIN ist falsch.",
-      "enterSafePin": "Bitte PIN zum Entschlüsseln eingeben."
+      "enterSafePin": "Bitte PIN zum Entschlüsseln eingeben.",
+      "safePinDescription": "Zur Verschlüsselung der Zugangsdaten wird eine PIN benötigt. Diese PIN ist nur für dich sichtbar und wird nicht gespeichert."
     },
     "mails": {
       "title": "E-Mail"
