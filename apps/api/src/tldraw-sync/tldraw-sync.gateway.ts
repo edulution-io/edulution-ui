@@ -22,20 +22,18 @@ import TldrawSyncService from './tldraw-sync.service';
   cors: { origin: '*' },
 })
 export default class TldrawSyncGateway implements OnGatewayConnection, OnModuleInit {
-  private readonly logger = new Logger('TldrawSyncGateway');
-
   @WebSocketServer()
   server: Server;
 
   constructor(private readonly tldrawSyncService: TldrawSyncService) {}
 
   onModuleInit() {
-    this.logger.log(`WebSocket Gateway initialized at path: /${TLDRAW_SYNC_ENDPOINTS.BASE}`);
+    Logger.log(`WebSocket Gateway initialized at path: /${TLDRAW_SYNC_ENDPOINTS.BASE}`, TldrawSyncGateway.name);
   }
 
   async handleConnection(client: WebSocket, request: Request) {
     if (!request.url) {
-      this.logger.error('No URL in websocket request');
+      Logger.log('No URL in websocket request', TldrawSyncGateway.name);
       client.close();
       return;
     }
@@ -46,12 +44,12 @@ export default class TldrawSyncGateway implements OnGatewayConnection, OnModuleI
     const sessionId = url.searchParams.get('sessionId');
 
     if (!roomId || !sessionId) {
-      this.logger.warn(`Missing roomId or sessionId, closing socket.`);
+      Logger.log('Missing roomId or sessionId, closing socket', TldrawSyncGateway.name);
       client.close();
       return;
     }
 
-    this.logger.log(`Client connected: roomId=${roomId}, sessionId=${sessionId}`);
+    Logger.log(`Client connected: roomId=${roomId}, sessionId=${sessionId}`, TldrawSyncGateway.name);
 
     const room = await this.tldrawSyncService.makeOrLoadRoom(roomId);
 

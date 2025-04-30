@@ -22,7 +22,6 @@ import TldrawSyncGateway from './tldraw-sync.gateway';
     ScheduleModule.forRoot(),
     MongooseModule.forFeature([{ name: TldrawSyncRoom.name, schema: TldrawSyncRoomSchema }]),
   ],
-  controllers: [],
   providers: [TldrawSyncService, TldrawSyncGateway],
   exports: [TldrawSyncService],
 })

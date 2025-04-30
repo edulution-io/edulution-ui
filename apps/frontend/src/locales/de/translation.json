@@ -956,6 +956,7 @@
     "infoQrCodeExpired": "Zeit für Login mit edulution.io APP abgelaufen."
   },
   "common": {
+    "guest": "Gast",
     "share": "Teilen",
     "savedToClipboard": "In die Zwischenablage kopiert.",
     "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden.",

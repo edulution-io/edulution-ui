@@ -955,6 +955,7 @@
   },
   "edit": "Edit",
   "common": {
+    "guest": "Guest",
     "share": "Share",
     "savedToClipboard": "Saved to clipboard.",
     "savedToClipboardError": "Unable to save into clipboard.",
