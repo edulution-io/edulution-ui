@@ -22,7 +22,6 @@ import {
   MailIcon,
   NativeIcon,
   SurveysMenuIcon,
-  WhiteBoardCollaborationIcon,
   WhiteBoardIcon,
 } from '@/assets/icons';
 import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
@@ -101,11 +100,6 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     id: APPS.LINUXMUSTER,
     icon: LinuxmusterIcon,
     options: [APP_CONFIG_OPTION_KEYS.URL, APP_CONFIG_OPTION_KEYS.PROXYCONFIG],
-    isNativeApp: true,
-  },
-  {
-    id: APPS.WHITEBOARD_COLLABORATION,
-    icon: WhiteBoardCollaborationIcon,
     isNativeApp: true,
   },
   {
