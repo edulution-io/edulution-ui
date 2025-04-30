@@ -44,16 +44,18 @@ const App = () => {
 
   const oidcConfig: AuthProviderProps = {
     authority: `${EDU_API_URL}/auth`,
-    client_id: ' ',
-    client_secret: ' ',
-    redirect_uri: window.location.origin,
+    client_id: 'edu-ui',
+    redirect_uri: `${window.location.origin}/authentication/login_callback`,
     silent_redirect_uri: `${window.location.origin}/authentication/silent_callback`,
-    loadUserInfo: true,
+    response_type: 'code',
+    scope: 'openid profile',
     automaticSilentRenew: true,
-    userStore: new WebStorageStateStore({
-      store: localStorage,
-    }),
-    onSigninCallback: (_user) => window.history.replaceState({}, document.title, '/'),
+    loadUserInfo: true,
+    userStore: new WebStorageStateStore({ store: localStorage }),
+    onSigninCallback: (_user) => {
+      window.history.pushState(null, '', '/');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    },
   };
 
   return (
