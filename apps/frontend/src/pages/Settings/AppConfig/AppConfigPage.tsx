@@ -37,6 +37,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import getDisplayName from '@/utils/getDisplayName';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import type AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailImporterConfig from './mails/MailImporterConfig';
@@ -157,6 +158,8 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
   };
 
   const matchingConfig = appConfigs.find((item) => item.name === settingLocation);
+  const isSupportedAppType = (appType: AppIntegrationType): appType is 'native' | 'embedded' =>
+    ['native', 'embedded'].includes(appType);
 
   const getSettingsForm = () => (
     <Form {...form}>
@@ -165,7 +168,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
         className="column max-w-screen-2xl space-y-6"
       >
         {matchingConfig && (
-          <div className="m-5 space-y-10">
+          <div className="m-5 space-y-3">
             <FormFieldSH
               key={`${matchingConfig.name}.accessGroups`}
               control={control}
@@ -186,11 +189,15 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                 </FormItem>
               )}
             />
-            {matchingConfig.appType === APP_INTEGRATION_VARIANT.NATIVE && matchingConfig.extendedOptions ? (
+            {matchingConfig.extendedOptions && isSupportedAppType(matchingConfig.appType) ? (
               <ExtendedOptionsForm
-                extendedOptions={APP_CONFIG_OPTIONS.find((itm) => itm.id === settingLocation)?.extendedOptions}
+                extendedOptions={
+                  APP_CONFIG_OPTIONS.find((itm) => itm.id === settingLocation || itm.id === APPS.EMBEDDED)
+                    ?.extendedOptions
+                }
                 control={control}
                 settingLocation={settingLocation}
+                form={form}
               />
             ) : null}
             {Object.keys(matchingConfig.options)
@@ -234,6 +241,13 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
     await deleteAppConfigEntry(deleteOptionName);
   };
 
+  const getHeaderDescription = (config: AppConfigDto) => {
+    if (config.appType === APP_INTEGRATION_VARIANT.NATIVE) {
+      return t(`settings.description.${config.name}`);
+    }
+    return t(`settings.description.${config.appType}`);
+  };
+
   return (
     <PageLayout
       nativeAppHeader={
@@ -241,6 +255,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
           ? {
               title: getDisplayName(matchingConfig, language),
               iconSrc: matchingConfig.icon,
+              description: getHeaderDescription(matchingConfig),
             }
           : undefined
       }

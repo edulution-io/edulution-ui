@@ -37,7 +37,7 @@ export const mockLdapGroup = ['/role-globaladministrator'];
 export const mockAppConfig: AppConfigDto = {
   name: 'filesharing',
   icon: 'icon-path',
-  appType: APP_INTEGRATION_VARIANT.EMBEDDED,
+  appType: APP_INTEGRATION_VARIANT.NATIVE,
   options: {
     url: 'test/path',
     apiKey: '123456789',

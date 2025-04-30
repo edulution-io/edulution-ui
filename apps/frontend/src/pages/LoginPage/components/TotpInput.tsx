@@ -10,18 +10,31 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { FC, useState, Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import OtpInput from '@/components/shared/OtpInput';
+import NumberPad from '@/components/ui/NumberPad';
+import cn from '@libs/common/utils/className';
 
 interface TotpInputProps {
   totp: string;
-  setTotp: (value: string) => void;
+  setTotp: Dispatch<SetStateAction<string>>;
   onComplete: () => void;
 }
 
-const TotpInput: React.FC<TotpInputProps> = ({ totp, setTotp, onComplete }) => {
+const TotpInput: FC<TotpInputProps> = ({ totp, setTotp, onComplete }) => {
   const { t } = useTranslation();
+  const [showNumPad, setShowNumPad] = useState(false);
+
+  const handlePress = (digit: string) => {
+    if (totp.length < 6) {
+      setTotp(totp + digit);
+    }
+  };
+
+  const handleClear = () => {
+    setTotp(totp.slice(0, -1));
+  };
 
   return (
     <>
@@ -30,7 +43,19 @@ const TotpInput: React.FC<TotpInputProps> = ({ totp, setTotp, onComplete }) => {
         totp={totp}
         setTotp={setTotp}
         onComplete={onComplete}
+        setShowNumPad={setShowNumPad}
       />
+      <div
+        className={cn(
+          'flex justify-center overflow-hidden transition-[max-height] duration-300 ease-in-out',
+          showNumPad ? 'max-h-80' : 'max-h-0',
+        )}
+      >
+        <NumberPad
+          onPress={handlePress}
+          onClear={handleClear}
+        />
+      </div>
     </>
   );
 };
