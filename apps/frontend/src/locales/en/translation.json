@@ -886,7 +886,7 @@
         "confirm": "Change Password",
         "passwordChangedSuccessfully": "Password changed successfully"
       },
-      "filterPlaceHolderText": "Search for URL",
+      "filterPlaceHolderText": "Search for App",
       "passwordSafe": "Password Safe",
       "addUserAccount": "Add account",
       "accountId": "Account ID",

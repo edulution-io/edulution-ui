@@ -888,7 +888,7 @@
         "confirm": "Passwort ändern",
         "passwordChangedSuccessfully": "Passwort erfolgreich geändert"
       },
-      "filterPlaceHolderText": "Suche nach URL",
+      "filterPlaceHolderText": "Suche nach Anwendung",
       "passwordSafe": "Passwort-Tresor",
       "addUserAccount": "Konto hinzufügen",
       "accountId": "Konto-ID",
