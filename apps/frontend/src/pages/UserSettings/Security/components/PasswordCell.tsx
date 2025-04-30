@@ -25,7 +25,7 @@ import { decodeBase64 } from '@libs/common/utils/getBase64String';
 import type EncryptedPasswordObject from '@libs/common/types/encryptPasswordObject';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import EnterMasterPwDialog from './EnterMasterPwDialog';
+import EnterSafePinDialog from './EnterSafePinDialog';
 
 interface PasswordCellProps {
   accountPassword: string;
@@ -159,7 +159,7 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
           </button>
         </div>
       </div>
-      <EnterMasterPwDialog
+      <EnterSafePinDialog
         isOpen={isOpen}
         form={form}
         handleClose={handleClose}

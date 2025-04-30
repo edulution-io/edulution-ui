@@ -25,7 +25,7 @@ interface EnterMasterPwDialogProps {
   handleConfirm: () => void;
 }
 
-const EnterMasterPwDialog: FC<EnterMasterPwDialogProps> = ({ isOpen, form, handleClose, handleConfirm }) => {
+const EnterSafePinDialog: FC<EnterMasterPwDialogProps> = ({ isOpen, form, handleClose, handleConfirm }) => {
   const { t } = useTranslation();
 
   const getDialogBody = () => (
@@ -76,4 +76,4 @@ const EnterMasterPwDialog: FC<EnterMasterPwDialogProps> = ({ isOpen, form, handl
   );
 };
 
-export default EnterMasterPwDialog;
+export default EnterSafePinDialog;
