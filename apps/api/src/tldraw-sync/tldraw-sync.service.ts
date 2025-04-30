@@ -32,7 +32,7 @@ export default class TldrawSyncService {
   ) {}
 
   @Interval(TLDRAW_PERSISTENCE_INTERVAL)
-  handleRoomPersistence(): Promise<void> {
+  handleRoomPersistence(): void {
     this.roomsMap.forEach((state, roomId) => {
       if (state.needsPersist) {
         const newState = { ...state, needsPersist: false };
