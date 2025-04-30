@@ -33,6 +33,7 @@ import { useTranslation } from 'react-i18next';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
 import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
+import useMedia from '@/hooks/useMedia';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
@@ -81,6 +82,7 @@ const getFileSharingTableColumns = (
         const { resetCurrentlyEditingFile, setPublicDownloadLink, setIsFilePreviewVisible, isFilePreviewDocked } =
           useFileEditorStore();
         const isCurrentlyDisabled = currentlyDisabledFiles[row.original.basename];
+        const { isMobileView } = useMedia();
         const handleFilenameClick = () => {
           if (onFilenameClick) {
             onFilenameClick(row);
@@ -96,7 +98,7 @@ const getFileSharingTableColumns = (
             if (isFilePreviewDocked) setIsFilePreviewVisible(false);
             searchParams.set('path', getPathWithoutWebdav(row.original.filename));
             setSearchParams(searchParams);
-          } else if (isValidFileToPreview(row.original)) {
+          } else if (isValidFileToPreview(row.original) && !isMobileView) {
             void setFileIsCurrentlyDisabled(row.original.basename, true);
             setIsFilePreviewVisible(true);
             void resetCurrentlyEditingFile(row.original);
