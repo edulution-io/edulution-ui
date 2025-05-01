@@ -16,10 +16,10 @@ import copyToClipboard from '@/utils/copyToClipboard';
 import { Button } from '@/components/shared/Button';
 
 interface PublicSurveyParticipationIdProps {
-  publicParticipationId?: string;
+  publicUserLogin?: { publicUserName: string; publicUserId: string };
 }
 
-const PublicSurveyParticipationId = ({ publicParticipationId }: PublicSurveyParticipationIdProps) => {
+const PublicSurveyParticipationId = ({ publicUserLogin }: PublicSurveyParticipationIdProps) => {
   const { t } = useTranslation();
 
   const toasterTranslations = {
@@ -27,7 +27,7 @@ const PublicSurveyParticipationId = ({ publicParticipationId }: PublicSurveyPart
     error: 'survey.participate.idCopyError',
   };
 
-  if (!publicParticipationId) {
+  if (!publicUserLogin) {
     return null;
   }
   return (
@@ -35,12 +35,14 @@ const PublicSurveyParticipationId = ({ publicParticipationId }: PublicSurveyPart
       <h4 className="my-4 mt-0 ">{t('survey.participate.idHeader')}</h4>
       <p>{t('survey.participate.idText')}</p>
       <div className="my-4 flex flex-row items-center justify-center">
-        <p className="mb-2 mt-2 rounded-xl bg-muted px-3 py-2 text-center">{publicParticipationId}</p>
+        <p className="mb-2 mt-2 rounded-xl bg-muted px-3 py-2 text-center">{publicUserLogin.publicUserName}</p>
+
+        <p className="mb-2 mt-2 rounded-xl bg-muted px-3 py-2 text-center">{publicUserLogin.publicUserId}</p>
         <Button
           size="md"
           type="button"
           variant="btn-collaboration"
-          onClick={() => copyToClipboard(publicParticipationId, toasterTranslations)}
+          onClick={() => copyToClipboard(JSON.stringify(publicUserLogin), toasterTranslations)}
           className="mx-4"
         >
           {t('common.copy.doCopy')}

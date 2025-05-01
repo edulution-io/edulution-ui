@@ -532,7 +532,7 @@
       "pleaseEnterYourParticipationId": "Enter a participation-ID if you have received one.",
       "publicUserId": "Ypur participation-ID",
       "invalidUsername": "Username is invalid (permitted are letters, number, and [. -])",
-      "idHeader": "Your participation ID",
+      "idHeader": "Your participation ID (optional)",
       "idText": "Pls copy the this ID for later participation",
       "idFooter": "In order to overwrite your previous answer, please enter the ID in your next participation.",
       "idCopySuccess": "Successfully copied the ID to the clipboard",

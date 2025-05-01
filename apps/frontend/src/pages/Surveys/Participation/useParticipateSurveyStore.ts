@@ -40,7 +40,7 @@ interface ParticipateSurveyStore {
   ) => Promise<SurveyAnswerDto | undefined>;
   isSubmitting: boolean;
 
-  checkForMatchingUserNameAndPubliUserId: (surveyId: string) => Promise<void>;
+  checkForMatchingUserNameAndPubliUserId: (surveyId: string, attendee: AttendeeDto) => Promise<void>;
   existsMatchingUserNameAndPubliUserId: boolean;
   setIsUserAuthenticated: (isUserAuthenticated: boolean) => void;
   isUserAuthenticated: boolean;
@@ -49,7 +49,7 @@ interface ParticipateSurveyStore {
   previousAnswer: SurveyAnswerDto | undefined;
   isFetching: boolean;
 
-  publicUserId: string;
+  publicUserLogin?: { publicUserName: string; publicUserId: string };
 
   reset: () => void;
 }
@@ -65,7 +65,7 @@ const ParticipateSurveyStoreInitialState: Partial<ParticipateSurveyStore> = {
   previousAnswer: undefined,
   isFetching: false,
 
-  publicUserId: '',
+  publicUserLogin: undefined,
 };
 
 const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => ({
@@ -109,11 +109,15 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       surveyModel.doComplete();
 
       const surveyAnswer: SurveyAnswerDto = response.data;
-      const publicUserId = surveyAnswer.attendee?.publicUserId;
-      set({ publicUserId, previousAnswer: surveyAnswer });
+      const { publicUserName, publicUserId } = surveyAnswer.attendee;
+      if (publicUserName && publicUserId) {
+        set({ publicUserLogin: { publicUserName, publicUserId }, previousAnswer: surveyAnswer });
+      } else {
+        set({ publicUserLogin: undefined, previousAnswer: undefined });
+      }
       return surveyAnswer;
     } catch (error) {
-      set({ publicUserId: '', previousAnswer: undefined });
+      set({ publicUserLogin: undefined, previousAnswer: undefined });
       handleApiError(error, set);
       toast.error(t('survey.errors.submitAnswerError'));
       return undefined;
@@ -144,8 +148,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
   },
 
-  checkForMatchingUserNameAndPubliUserId: async (surveyId: string): Promise<void> => {
-    const { attendee } = get();
+  checkForMatchingUserNameAndPubliUserId: async (surveyId: string, attendee: AttendeeDto): Promise<void> => {
     set({ isFetching: true });
     try {
       const response = await eduApi.post<SurveyAnswerDto>(`${PUBLIC_SURVEYS}/${CHECK_EXISTING_PUBLIC_USER}`, {

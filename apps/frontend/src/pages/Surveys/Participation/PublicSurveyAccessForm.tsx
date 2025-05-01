@@ -20,10 +20,10 @@ import PublicLoginButton from '@/pages/ConferencePage/PublicConference/PublicLog
 import PublicJoinButton from '@/pages/ConferencePage/PublicConference/PublicJoinButton';
 
 interface PublicSurveyAccessFormProps {
-  form: UseFormReturn<{ publicUserName: string; publicUserId: string }>;
+  form: UseFormReturn<{ publicUserName: string; publicUserId?: string }>;
   publicUserName: string;
   setPublicUserName: (value: string) => void;
-  publicUserId: string;
+  publicUserId?: string;
   setPublicUserId: (value: string) => void;
   accessSurvey: () => void;
 }
@@ -74,7 +74,6 @@ const PublicSurveyAccessForm = ({
                 onChange={(e) => setPublicUserId(e.target.value)}
                 placeholder={t('survey.participate.publicUserId')}
                 rules={{
-                  required: t('common.min_chars', { count: 3 }),
                   minLength: {
                     value: 3,
                     message: t('common.min_chars', { count: 3 }),

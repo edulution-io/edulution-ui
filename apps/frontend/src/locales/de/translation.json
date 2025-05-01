@@ -532,7 +532,7 @@
       "pleaseEnterYourFullName": "Gib deinen vollständigen Namen ein, um an der Umfrage teilzunehmen.",
       "yourFullName": "Name",
       "pleaseEnterYourParticipationId": "Gib eine Teilnahme-ID ein, solltest du eine erhalten haben.",
-      "publicUserId": "Teilnahme-ID",
+      "publicUserId": "Teilnahme-ID (optional)",
       "invalidUsername": "Benutzername ist ungültig (erlaubt sind Buchstaben, Zahlen und [. -])",
       "idHeader": "Deine Teilnahme-ID",
       "idText": "Bitte notiere dir die folgende ID.",

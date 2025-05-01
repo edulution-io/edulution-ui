@@ -42,7 +42,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
     attendee,
     setAttendee,
     reset,
-    publicUserId,
+    publicUserLogin,
     fetchAnswer,
     checkForMatchingUserNameAndPubliUserId,
     existsMatchingUserNameAndPubliUserId,
@@ -52,7 +52,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
 
   const { t } = useTranslation();
 
-  const form = useForm<{ publicUserName: string; publicUserId: string }>();
+  const form = useForm<{ publicUserName: string; publicUserId?: string }>();
 
   const handleReset = () => {
     reset();
@@ -64,49 +64,30 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
     handleReset();
   }, [surveyId]);
 
-  const updateAttendee = () => {
-    if (user == null) {
-      const name = form.getValues('publicUserName');
-      const id = form.getValues('publicUserId');
-      if (!id) {
-        setAttendee({ username: name, publicUserName: name, publicUserId: undefined, label: name, value: name });
-      } else {
-        const username = createValidPublicUserId(name, id);
-        setAttendee({ username, publicUserName: name, publicUserId: id, label: name, value: username });
-      }
-    } else {
+  useEffect(() => {
+    if (user?.username) {
       setAttendee({
         username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,
+        publicUserName: undefined,
+        publicUserId: undefined,
         label: `${user.firstName} ${user.lastName}`,
         value: user.username,
-        fullName: undefined,
       });
+      setIsUserAuthenticated(true);
     }
-  };
+    handleReset();
+  }, [user]);
 
   useEffect(() => {
     if (!selectedSurvey?.id) {
       return;
     }
-    if (user == null) {
-      handleReset();
-    } else {
-      updateAttendee();
+    if (attendee) {
       void fetchAnswer(selectedSurvey.id);
     }
-  }, [selectedSurvey, user]);
-
-  useEffect(() => {
-    updateAttendee();
-    if (!selectedSurvey?.id) {
-      return;
-    }
-    if (!user && attendee?.publicUserName && attendee?.publicUserId) {
-      void checkForMatchingUserNameAndPubliUserId(selectedSurvey.id);
-    }
-  }, [selectedSurvey, form.getValues('publicUserName'), form.getValues('publicUserId')]);
+  }, [selectedSurvey, attendee]);
 
   useEffect(() => {
     if (existsMatchingUserNameAndPubliUserId) {
@@ -118,15 +99,48 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
   }, [existsMatchingUserNameAndPubliUserId]);
 
   const handleAccessSurvey = () => {
-    updateAttendee();
-    setIsUserAuthenticated(true);
+    if (user) {
+      return;
+    }
+    if (!selectedSurvey?.id) {
+      return;
+    }
+    const { publicUserName, publicUserId } = form.getValues();
+    if (!publicUserId) {
+      setAttendee({
+        username: publicUserName,
+        firstName: undefined,
+        lastName: undefined,
+        publicUserName,
+        publicUserId: undefined,
+        label: publicUserName,
+        value: publicUserName,
+      });
+      setIsUserAuthenticated(true);
+    }
+    if (publicUserName && publicUserId) {
+      const username = createValidPublicUserId(publicUserName, publicUserId);
+      const publicAttendee = {
+        username,
+        firstName: undefined,
+        lastName: undefined,
+        publicUserName,
+        publicUserId,
+        label: publicUserName,
+        value: username,
+      };
+      if (!user && !!attendee?.publicUserName && !!attendee?.publicUserId) {
+        void checkForMatchingUserNameAndPubliUserId(selectedSurvey.id, attendee);
+        setAttendee(publicAttendee);
+      }
+    }
   };
 
-  if (publicUserId) {
+  if (publicUserLogin) {
     return (
       <PageLayout>
         <div className="relative top-1/4">
-          <PublicSurveyParticipationId publicParticipationId={publicUserId} />
+          <PublicSurveyParticipationId publicUserLogin={publicUserLogin} />
         </div>
       </PageLayout>
     );
