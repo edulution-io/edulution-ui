@@ -21,21 +21,10 @@ import PublicJoinButton from '@/pages/ConferencePage/PublicConference/PublicJoin
 
 interface PublicSurveyAccessFormProps {
   form: UseFormReturn<{ publicUserName: string; publicUserId?: string }>;
-  publicUserName: string;
-  setPublicUserName: (value: string) => void;
-  publicUserId?: string;
-  setPublicUserId: (value: string) => void;
   accessSurvey: () => void;
 }
 
-const PublicSurveyAccessForm = ({
-  form,
-  publicUserName,
-  setPublicUserName,
-  publicUserId,
-  setPublicUserId,
-  accessSurvey,
-}: PublicSurveyAccessFormProps) => {
+const PublicSurveyAccessForm = ({ form, accessSurvey }: PublicSurveyAccessFormProps) => {
   const { t } = useTranslation();
   const { user } = useUserStore();
 
@@ -43,46 +32,26 @@ const PublicSurveyAccessForm = ({
     <div className="mx-auto my-10 w-[90%] rounded-xl bg-white bg-opacity-5 p-5 md:w-[400px]">
       <PublicLoginButton />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(accessSurvey)}>
+        <form
+          onSubmit={form.handleSubmit(accessSurvey)}
+          noValidate
+        >
           {!user?.username && (
             <div className="mb-4">
               <div className="mb-2">{t('survey.participate.pleaseEnterYourFullName')}</div>
               <FormField
                 name="publicUserName"
                 form={form}
-                value={publicUserName}
-                onChange={(e) => setPublicUserName(e.target.value)}
+                defaultValue=""
                 placeholder={t('survey.participate.yourFullName')}
-                rules={{
-                  required: t('common.min_chars', { count: 3 }),
-                  minLength: {
-                    value: 3,
-                    message: t('common.min_chars', { count: 3 }),
-                  },
-                  maxLength: {
-                    value: 100,
-                    message: t('common.max_chars', { count: 100 }),
-                  },
-                }}
                 variant="dialog"
               />
               <div className="mb-2">{t('survey.participate.pleaseEnterYourParticipationId')}</div>
               <FormField
                 name="publicUserId"
                 form={form}
-                value={publicUserId}
-                onChange={(e) => setPublicUserId(e.target.value)}
+                defaultValue=""
                 placeholder={t('survey.participate.publicUserId')}
-                rules={{
-                  minLength: {
-                    value: 3,
-                    message: t('common.min_chars', { count: 3 }),
-                  },
-                  maxLength: {
-                    value: 100,
-                    message: t('common.max_chars', { count: 100 }),
-                  },
-                }}
                 variant="dialog"
               />
             </div>

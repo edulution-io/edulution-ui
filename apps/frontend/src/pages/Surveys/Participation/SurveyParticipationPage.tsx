@@ -162,10 +162,6 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
         <div className="relative top-1/3">
           <PublicSurveyAccessForm
             form={form}
-            publicUserName={form.watch('publicUserName')}
-            setPublicUserName={(value: string) => form.setValue('publicUserName', value)}
-            publicUserId={form.watch('publicUserId')}
-            setPublicUserId={(value: string) => form.setValue('publicUserId', value)}
             accessSurvey={handleAccessSurvey}
           />
         </div>
