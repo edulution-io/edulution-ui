@@ -67,6 +67,18 @@ class FilesystemService {
     }
   }
 
+  static async moveFile(oldFilePath: string, newFilePath: string): Promise<void> {
+    try {
+      await this.throwErrorIfFileNotExists(oldFilePath);
+      await fsPromises.cp(oldFilePath, newFilePath);
+
+      await this.throwErrorIfFileNotExists(newFilePath);
+      await fsPromises.unlink(oldFilePath);
+    } catch (error) {
+      throw new CustomHttpException(FileSharingErrorMessage.RenameFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+    }
+  }
+
   static generateHashedFilename(filePath: string, filename: string): string {
     const hash = createHash(HashAlgorithm).update(filePath).digest('hex');
     const extension = extname(filename);
@@ -211,6 +223,14 @@ class FilesystemService {
       return [];
     }
     return fsPromises.readdir(directory);
+  }
+
+  async deleteDirectory(directory: string): Promise<void> {
+    try {
+      await fsPromises.rm(directory, { recursive: true });
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   static async deleteDirectories(directories: string[]): Promise<void> {

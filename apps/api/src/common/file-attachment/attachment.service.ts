@@ -49,7 +49,7 @@ class AttachmentService {
 
   async deletePermanentDirectories(pathsWithIds: string[]): Promise<void> {
     const imageDirectories = pathsWithIds.map((pathsWithId) => join(this.filePath, pathsWithId));
-    await this.fileSystemService.deleteDirectories(imageDirectories);
+    await FilesystemService.deleteDirectories(imageDirectories);
   }
 
   async serveTemporaryAttachment(userId: string, fileName: string, res: Response) {
