@@ -14,6 +14,7 @@ import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Get, Post, Param, Res } from '@nestjs/common';
 import { ANSWER, IMAGES, PUBLIC_SURVEYS, RESTFUL_CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
@@ -41,11 +42,11 @@ class PublicSurveysController {
     return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, attendee);
   }
 
-  @Get(`${ANSWER}/:surveyId/:username`)
+  @Post(ANSWER)
   @Public()
-  async getSubmittedSurveyAnswers(@Param() params: { surveyId: string; username: string }) {
-    const { surveyId, username } = params;
-    return this.surveyAnswerService.getAnswerPublicParticipation(surveyId, username);
+  async getSubmittedSurveyAnswers(@Body() body: { surveyId: string; attendee: AttendeeDto }) {
+    const { surveyId, attendee } = body;
+    return this.surveyAnswerService.getAnswerPublicParticipation(surveyId, attendee);
   }
 
   @Get(`${IMAGES}/:surveyId/:questionId/:filename`)

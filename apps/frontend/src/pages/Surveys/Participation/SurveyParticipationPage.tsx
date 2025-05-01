@@ -14,15 +14,16 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import createValidPublicUserId from '@libs/survey/utils/createValidPublicUserId';
 import useUserStore from '@/store/UserStore/UserStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import SurveyParticipationModel from '@/pages/Surveys/Participation/SurveyParticipationModel';
 import PublicSurveyAccessForm from '@/pages/Surveys/Participation/PublicSurveyAccessForm';
 import PublicSurveyParticipationId from '@/pages/Surveys/Participation/PublicSurveyParticipationId';
-import '../theme/custom.participation.css';
 import PageLayout from '@/components/structure/layout/PageLayout';
-import publicUserIdRegex from '@libs/survey/utils/publicUserIdRegex';
+import '../theme/custom.participation.css';
 
 interface SurveyParticipationPageProps {
   isPublic: boolean;
@@ -31,56 +32,94 @@ interface SurveyParticipationPageProps {
 const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.ReactNode => {
   const { isPublic = false } = props;
 
-  const { selectedSurvey, fetchSelectedSurvey } = useSurveyTablesPageStore();
-
-  const { attendee, setAttendee, reset, publicUserId, fetchAnswer } = useParticipateSurveyStore();
-
   const { surveyId } = useParams();
-  const { t } = useTranslation();
 
   const { user } = useUserStore();
 
-  useEffect(() => {
+  const { selectedSurvey, fetchSelectedSurvey } = useSurveyTablesPageStore();
+
+  const {
+    attendee,
+    setAttendee,
+    reset,
+    publicUserId,
+    fetchAnswer,
+    checkForMatchingUserNameAndPubliUserId,
+    existsMatchingUserNameAndPubliUserId,
+    isUserAuthenticated,
+    setIsUserAuthenticated,
+  } = useParticipateSurveyStore();
+
+  const { t } = useTranslation();
+
+  const form = useForm<{ publicUserName: string; publicUserId: string }>();
+
+  const handleReset = () => {
     reset();
+    form.reset();
     void fetchSelectedSurvey(surveyId, isPublic);
+  };
+
+  useEffect(() => {
+    handleReset();
   }, [surveyId]);
 
-  const form = useForm<{ username: string }>();
-
-  useEffect(() => {
-    if (user) {
-      setAttendee({username: user.username});
+  const updateAttendee = () => {
+    if (user == null) {
+      const name = form.getValues('publicUserName');
+      const id = form.getValues('publicUserId');
+      if (!id) {
+        setAttendee({ username: name, publicUserName: name, publicUserId: undefined, label: name, value: name });
+      } else {
+        const username = createValidPublicUserId(name, id);
+        setAttendee({ username, publicUserName: name, publicUserId: id, label: name, value: username });
+      }
+    } else {
+      setAttendee({
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        label: `${user.firstName} ${user.lastName}`,
+        value: user.username,
+        fullName: undefined,
+      });
     }
-    if (user === null) {
-      reset();
-      form.reset();
-      void fetchSelectedSurvey(surveyId, isPublic);
-    }
-  }, [user]);
+  };
 
   useEffect(() => {
     if (!selectedSurvey?.id) {
       return;
     }
-    if (user) {
+    if (user == null) {
+      handleReset();
+    } else {
+      updateAttendee();
       void fetchAnswer(selectedSurvey.id);
+    }
+  }, [selectedSurvey, user]);
+
+  useEffect(() => {
+    updateAttendee();
+    if (!selectedSurvey?.id) {
       return;
     }
-    if (username) {
-      const publicParticipationIdLinkedToSurvey = publicUserIdRegex.test(username);
-      if (selectedSurvey.isPublic && !publicParticipationIdLinkedToSurvey) {
-        return;
-      }
-      void fetchAnswer(selectedSurvey.id, username);
+    if (!user && attendee?.publicUserName && attendee?.publicUserId) {
+      void checkForMatchingUserNameAndPubliUserId(selectedSurvey.id);
     }
-  }, [selectedSurvey, username]);
+  }, [selectedSurvey, form.getValues('publicUserName'), form.getValues('publicUserId')]);
+
+  useEffect(() => {
+    if (existsMatchingUserNameAndPubliUserId) {
+      setIsUserAuthenticated(true);
+    } else {
+      form.setError('publicUserName', new Error(SurveyErrorMessages.MISSING_ID_ERROR));
+      form.setError('publicUserId', new Error(SurveyErrorMessages.MISSING_ID_ERROR));
+    }
+  }, [existsMatchingUserNameAndPubliUserId]);
 
   const handleAccessSurvey = () => {
-    if (user) {
-      setUsername(user.username);
-    } else {
-      setUsername(form.watch('username'));
-    }
+    updateAttendee();
+    setIsUserAuthenticated(true);
   };
 
   if (publicUserId) {
@@ -103,14 +142,16 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
     );
   }
 
-  if (!user && !username && !selectedSurvey?.isAnonymous) {
+  if (!isUserAuthenticated) {
     return (
       <PageLayout>
         <div className="relative top-1/3">
           <PublicSurveyAccessForm
             form={form}
-            publicUserFullName={form.watch('username')}
-            setPublicUserFullName={(value: string) => form.setValue('username', value)}
+            publicUserName={form.watch('publicUserName')}
+            setPublicUserName={(value: string) => form.setValue('publicUserName', value)}
+            publicUserId={form.watch('publicUserId')}
+            setPublicUserId={(value: string) => form.setValue('publicUserId', value)}
             accessSurvey={handleAccessSurvey}
           />
         </div>
@@ -118,14 +159,18 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
     );
   }
 
-  return (
-    <PageLayout>
-      <SurveyParticipationModel
-        username={user?.username || form.watch('username')}
-        isPublic={isPublic}
-      />
-    </PageLayout>
-  );
+  if (attendee) {
+    return (
+      <PageLayout>
+        <SurveyParticipationModel
+          attendee={attendee}
+          isPublic={isPublic}
+        />
+      </PageLayout>
+    );
+  }
+
+  return null;
 };
 
 export default SurveyParticipationPage;

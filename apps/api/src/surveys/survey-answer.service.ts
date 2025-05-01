@@ -16,8 +16,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
-import publicUserIdRegex from '@libs/survey/utils/publicUserIdRegex';
 import createValidPublicUserId from '@libs/survey/utils/createValidPublicUserId';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
@@ -216,6 +216,23 @@ class SurveyAnswersService {
     return newSurveyAnswer;
   }
 
+  async checkIfPublicUserIsAuthenticated(surveyId: string, attendee: Attendee): Promise<boolean | undefined> {
+    const { username, publicUserName, publicUserId } = attendee;
+    if (publicUserName && publicUserId && username !== publicUserName) {
+      const publicUsername = createValidPublicUserId(publicUserName, publicUserId);
+      if (username === publicUsername) {
+        const existingUsersAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({
+          $and: [{ 'attendee.username': username }, { surveyId: new Types.ObjectId(surveyId) }],
+        });
+        if (existingUsersAnswer == null) {
+          return false;
+        }
+        return true;
+      }
+    }
+    return undefined;
+  }
+
   async addAnswer(
     surveyId: string,
     saveNo: number,
@@ -230,18 +247,36 @@ class SurveyAnswersService {
     const {
       isPublic = false,
       isAnonymous = false,
-      canSubmitMultipleAnswers = false,
       canUpdateFormerAnswer = false,
+      canSubmitMultipleAnswers = false,
     } = survey;
 
+    const { username, firstName, lastName, publicUserName, publicUserId } = attendee;
+
+    const isLoggedInUserParticipation = !publicUserName;
+    const isPublicUserParticipation = isPublic && !isLoggedInUserParticipation && !firstName && !lastName;
+    const isFirstPublicUserParticipation = isPublicUserParticipation && !publicUserId && username === publicUserName;
+
+    let user = attendee;
     if (isAnonymous) {
-      return this.createAnswer({ username: 'anonymous' }, surveyId, saveNo, answer);
+      user = { username: 'anonymous' };
+    } else if (isFirstPublicUserParticipation && (canUpdateFormerAnswer || canSubmitMultipleAnswers)) {
+      const publicUserUsername = createValidPublicUserId(publicUserName, uuidv4());
+      user = { ...attendee, username: publicUserUsername };
     }
 
-    const { username, firstName, lastName, fullName } = attendee;
-    const isUnauthenticatedUser = isPublic && !firstName && !lastName;
-    const isAnswerFromAuthenticatedUser = publicUserIdRegex.test(username) || fullName || !isUnauthenticatedUser;
-    if (isAnswerFromAuthenticatedUser) {
+    if (isAnonymous || isFirstPublicUserParticipation || canSubmitMultipleAnswers) {
+      const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(user, surveyId, saveNo, answer);
+
+      return createdAnswer;
+    }
+
+    const isAuthenticatedPublicUserParticipation =
+      isPublic &&
+      isPublicUserParticipation &&
+      publicUserId &&
+      username === createValidPublicUserId(publicUserName, publicUserId);
+    if (isLoggedInUserParticipation || isAuthenticatedPublicUserParticipation) {
       await this.throwErrorIfParticipationIsNotPossible(survey, username);
 
       const existingUsersAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({
@@ -249,12 +284,7 @@ class SurveyAnswersService {
       });
 
       if (existingUsersAnswer == null || canSubmitMultipleAnswers) {
-        const newSurveyAnswer = await this.surveyAnswerModel.create({
-          attendee,
-          surveyId: new Types.ObjectId(surveyId),
-          saveNo,
-          answer,
-        });
+        const newSurveyAnswer = await this.createAnswer(attendee, surveyId, saveNo, answer);
 
         if (newSurveyAnswer == null) {
           throw new CustomHttpException(
@@ -290,24 +320,10 @@ class SurveyAnswersService {
       return updatedSurveyAnswer;
     }
 
-    let publicUserId = username;
-    if (canSubmitMultipleAnswers || canUpdateFormerAnswer) {
-      publicUserId = createValidPublicUserId(username, uuidv4());
-    }
-    const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(
-      { username: publicUserId, fullName: username },
-      surveyId,
-      saveNo,
-      answer,
+    throw new CustomHttpException(
+      SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
+      HttpStatus.INTERNAL_SERVER_ERROR,
     );
-    if (createdAnswer == null) {
-      throw new CustomHttpException(
-        SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-
-    return createdAnswer;
   }
 
   async getAnswer(surveyId: string, username: string): Promise<SurveyAnswer> {
@@ -323,8 +339,9 @@ class SurveyAnswersService {
     return usersLatestSurveyAnswer[0];
   }
 
-  async getAnswerPublicParticipation(surveyId: string, username: string): Promise<SurveyAnswer> {
-    if (!publicUserIdRegex.test(username)) {
+  async getAnswerPublicParticipation(surveyId: string, attendee: AttendeeDto): Promise<SurveyAnswer> {
+    const { username, publicUserName, publicUserId } = attendee;
+    if (publicUserName && !publicUserId) {
       throw new CustomHttpException(SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError, HttpStatus.NOT_FOUND);
     }
     return this.getAnswer(surveyId, username);
@@ -338,18 +355,22 @@ class SurveyAnswersService {
 
     const answers = surveyAnswers.filter((answer) => answer.answer != null);
     return answers.map((answer) => {
-      const { username, firstName, lastName, fullName } = answer.attendee;
-      let identification;
-      if (fullName) {
-        identification = fullName;
-      } else if (lastName || firstName) {
-        identification = `(${username})`;
+      const { username, firstName, lastName, publicUserName } = answer.attendee;
+
+      const isLoggedInUserParticipation = !publicUserName;
+      const isPublicUserParticipation = !isLoggedInUserParticipation && !firstName && !lastName;
+
+      if (isLoggedInUserParticipation) {
+        let identification = `(${username})`;
         identification = lastName ? `${lastName} ${identification}` : identification;
         identification = firstName ? `${firstName} ${identification}` : identification;
-      } else {
-        identification = username;
+        return { identification, ...answer.answer };
       }
-      return { identification, ...answer.answer };
+      if (isPublicUserParticipation) {
+        return { identification: publicUserName, ...answer.answer };
+      }
+
+      return answer.answer;
     });
   }
 

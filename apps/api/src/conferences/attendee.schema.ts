@@ -23,6 +23,12 @@ class Attendee {
   @Prop()
   fullName?: string;
 
+  @Prop()
+  publicUserName?: string;
+
+  @Prop()
+  publicUserId?: string;
+
   @Prop({ required: true })
   username: string;
 }

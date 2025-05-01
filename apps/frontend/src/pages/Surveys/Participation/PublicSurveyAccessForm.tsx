@@ -13,25 +13,27 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
-import publicUsernameRegex from '@libs/survey/utils/publicUsernameRegex';
 import useUserStore from '@/store/UserStore/UserStore';
 import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
-import publicUserIdRegex from '@libs/survey/utils/publicUserIdRegex';
 import PublicLoginButton from '@/pages/ConferencePage/PublicConference/PublicLoginButton';
 import PublicJoinButton from '@/pages/ConferencePage/PublicConference/PublicJoinButton';
 
 interface PublicSurveyAccessFormProps {
-  form: UseFormReturn<{ username: string }>;
-  publicUserFullName: string;
-  setPublicUserFullName: (value: string) => void;
+  form: UseFormReturn<{ publicUserName: string; publicUserId: string }>;
+  publicUserName: string;
+  setPublicUserName: (value: string) => void;
+  publicUserId: string;
+  setPublicUserId: (value: string) => void;
   accessSurvey: () => void;
 }
 
 const PublicSurveyAccessForm = ({
   form,
-  publicUserFullName,
-  setPublicUserFullName,
+  publicUserName,
+  setPublicUserName,
+  publicUserId,
+  setPublicUserId,
   accessSurvey,
 }: PublicSurveyAccessFormProps) => {
   const { t } = useTranslation();
@@ -46,10 +48,10 @@ const PublicSurveyAccessForm = ({
             <div className="mb-4">
               <div className="mb-2">{t('survey.participate.pleaseEnterYourFullName')}</div>
               <FormField
-                name="name"
+                name="publicUserName"
                 form={form}
-                value={publicUserFullName}
-                onChange={(e) => setPublicUserFullName(e.target.value)}
+                value={publicUserName}
+                onChange={(e) => setPublicUserName(e.target.value)}
                 placeholder={t('survey.participate.yourFullName')}
                 rules={{
                   required: t('common.min_chars', { count: 3 }),
@@ -61,10 +63,26 @@ const PublicSurveyAccessForm = ({
                     value: 100,
                     message: t('common.max_chars', { count: 100 }),
                   },
-                  validate: (value) =>
-                    publicUsernameRegex.test(value) ||
-                    publicUserIdRegex.test(value) ||
-                    t('survey.participate.invalidUsername'),
+                }}
+                variant="dialog"
+              />
+              <div className="mb-2">{t('survey.participate.pleaseEnterYourParticipationId')}</div>
+              <FormField
+                name="publicUserId"
+                form={form}
+                value={publicUserId}
+                onChange={(e) => setPublicUserId(e.target.value)}
+                placeholder={t('survey.participate.publicUserId')}
+                rules={{
+                  required: t('common.min_chars', { count: 3 }),
+                  minLength: {
+                    value: 3,
+                    message: t('common.min_chars', { count: 3 }),
+                  },
+                  maxLength: {
+                    value: 100,
+                    message: t('common.max_chars', { count: 100 }),
+                  },
                 }}
                 variant="dialog"
               />

@@ -26,23 +26,20 @@ import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
-import useUserStore from '@/store/UserStore/UserStore';
 
 interface SurveyParticipationModelProps {
-  username: string;
+  attendee: AttendeeDto;
   isPublic: boolean;
 }
 
 Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
 
 const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.ReactNode => {
-  const { username, isPublic } = props;
+  const { attendee, isPublic } = props;
 
   const { selectedSurvey, isFetching, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 
   const { answerSurvey, previousAnswer } = useParticipateSurveyStore();
-
-  const { user } = useUserStore();
 
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -63,25 +60,6 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
     newModel.onCompleting.add(async (surveyModel, completingEvent) => {
       if (!selectedSurvey.id) {
         throw new Error(SurveyErrorMessages.MISSING_ID_ERROR);
-      }
-
-      let attendee: AttendeeDto;
-      if (user !== null) {
-        attendee = {
-          username: user.username,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          label: user.username,
-          value: user.username,
-        };
-      } else {
-        attendee = {
-          username,
-          firstName: undefined,
-          lastName: undefined,
-          label: username,
-          value: username,
-        };
       }
 
       const success = await answerSurvey(
