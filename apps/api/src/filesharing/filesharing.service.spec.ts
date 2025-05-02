@@ -12,7 +12,6 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import FilesharingService from './filesharing.service';
-import mockFile from './filesharing.service.mock';
 
 describe('FilesharingService', () => {
   let service: FilesharingService;
@@ -46,14 +45,6 @@ describe('FilesharingService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should call getFilesAtPath on FileSharingService', async () => {
-    const token = 'test-token';
-    const path = '/test-path';
-    const result = await service.getFilesAtPath(token, path);
-    expect(service.getFilesAtPath).toHaveBeenCalledWith(token, path);
-    expect(result).toEqual([{ name: 'file1.txt', size: 1234 }]);
-  });
-
   it('should call createFile on FileSharingService', async () => {
     const token = 'test-token';
     const path = '/test-path';
@@ -61,16 +52,6 @@ describe('FilesharingService', () => {
     const content = 'test-content';
     const result = await service.createFile(token, path, fileName, content);
     expect(service.createFile).toHaveBeenCalledWith(token, path, fileName, content);
-    expect(result).toEqual({ success: true });
-  });
-
-  it('should call uploadFile on FileSharingService', async () => {
-    const token = 'test-token';
-    const path = '/test-path';
-    const file = mockFile;
-    const name = 'test-file';
-    const result = await service.uploadFile(token, path, file, name);
-    expect(service.uploadFile).toHaveBeenCalledWith(token, path, file, name);
     expect(result).toEqual({ success: true });
   });
 

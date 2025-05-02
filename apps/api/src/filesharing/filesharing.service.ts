@@ -16,7 +16,6 @@ import { Request, Response } from 'express';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
-import CustomFile from '@libs/filesharing/types/customFile';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
@@ -120,15 +119,9 @@ export default class FilesharingService {
   }
 
   async handleCallback(req: Request, res: Response, path: string, filename: string, username: string) {
-    return OnlyofficeService.handleCallback(req, res, path, filename, username, this.uploadFile);
-  }
-
-  async getFilesAtPath(username: string, path: string) {
-    return this.webDavService.getFilesAtPath(username, path);
-  }
-
-  async createFolder(username: string, path: string, folderName: string) {
-    return this.webDavService.createFolder(username, path, folderName);
+    return OnlyofficeService.handleCallback(req, res, path, filename, username, (user, uploadPath, file, name) =>
+      this.webDavService.uploadFile(user, `${this.baseurl}${uploadPath}/${name}`, file),
+    );
   }
 
   async createFile(username: string, path: string, fileName: string, content = '') {
@@ -136,19 +129,9 @@ export default class FilesharingService {
     return this.webDavService.createFile(username, fullPath, content);
   }
 
-  uploadFile = async (username: string, path: string, file: CustomFile, name: string) => {
-    const fullPath = `${this.baseurl}${path}/${name}`;
-    return this.webDavService.uploadFile(username, fullPath, file);
-  };
-
   async moveOrRenameResource(username: string, originPath: string, newPath: string) {
     const originFull = `${this.baseurl}${originPath}`;
     const newFull = `${this.baseurl}${newPath}`;
     return this.webDavService.moveOrRenameResource(username, originFull, newFull);
-  }
-
-  static getStudentNameFromPath(filePath: string): string | null {
-    const parts = filePath.split('/');
-    return parts.length >= 3 ? parts[2] : null;
   }
 }

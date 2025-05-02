@@ -49,6 +49,8 @@ import WebdavService from '../webdav/webdav.service';
 @ApiBearerAuth()
 @Controller(FileSharingApiEndpoints.BASE)
 class FilesharingController {
+  private readonly baseurl = process.env.EDUI_WEBDAV_URL as string;
+
   constructor(
     private readonly filesharingService: FilesharingService,
     private readonly webdavService: WebdavService,
@@ -61,7 +63,7 @@ class FilesharingController {
     @GetCurrentUsername() username: string,
   ) {
     if (type.toUpperCase() === ContentType.FILE.valueOf()) {
-      return this.filesharingService.getFilesAtPath(username, path);
+      return this.webdavService.getFilesAtPath(username, path);
     }
     return this.webdavService.getDirectoryAtPath(username, path);
   }
@@ -79,7 +81,7 @@ class FilesharingController {
     if (type.toUpperCase() === ContentType.DIRECTORY.toString()) {
       return this.webdavService.createFolder(username, path, body.newPath);
     }
-    return this.filesharingService.createFile(username, path, body.newPath, '');
+    return this.webdavService.createFile(username, path, body.newPath);
   }
 
   @Put()
@@ -90,7 +92,8 @@ class FilesharingController {
     @Body('name') name: string,
     @GetCurrentUsername() username: string,
   ) {
-    return this.filesharingService.uploadFile(username, path, file, name);
+    const fullPath = `${this.baseurl}${path}/${name}`;
+    return this.webdavService.uploadFile(username, fullPath, file);
   }
 
   @Delete()
