@@ -10,4 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { default as VDI_SYNC_TIME_INTERVAL } from './vdi-sync-interval';
+import WEBSOCKET_URL from '@libs/common/constants/websocket-url';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+
+const EDU_API_WEBSOCKET_URL = `${WEBSOCKET_URL}/${EDU_API_ROOT}`;
+
+export default EDU_API_WEBSOCKET_URL;
