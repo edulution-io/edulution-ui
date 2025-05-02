@@ -42,6 +42,7 @@ const useUserAccounts = (appName: string | null) => {
   }, [pathname, toastId]);
 
   useEffect(() => {
+    if (userAccounts.length > 0) return undefined;
     void getUserAccounts();
     return () => {
       toast.dismiss(toastId);
