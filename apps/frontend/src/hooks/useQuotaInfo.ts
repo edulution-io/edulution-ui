@@ -51,7 +51,7 @@ const useQuotaInfo = (): {
       isLoading: !quota,
       refetchUsersQuota: refetch,
     };
-  }, [usersQuota, school, lmnUser]);
+  }, [usersQuota, school, lmnUser, lmnApiToken]);
 };
 
 export default useQuotaInfo;
