@@ -10,11 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import QrCodeSlice from '@libs/user/types/store/qrCodeSlice';
-import TotpSlice from '@libs/user/types/store/totpSlice';
-import UserSlice from '@libs/user/types/store/userSlice';
-import UserAccountsSlice from './userAccountsSlice';
+export const encodeBase64 = (str: string) => {
+  const encoder = new TextEncoder();
+  const bytes = encoder.encode(str);
+  const binary = Array.from(bytes, (b) => String.fromCharCode(b)).join('');
+  return btoa(binary);
+};
 
-type UserStore = QrCodeSlice & TotpSlice & UserSlice & UserAccountsSlice;
-
-export default UserStore;
+export const decodeBase64 = (b64: string) => {
+  const binary = atob(b64);
+  const bytes = Uint8Array.from(binary, (ch) => ch.charCodeAt(0));
+  const decoder = new TextDecoder();
+  return decoder.decode(bytes);
+};

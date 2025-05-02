@@ -10,11 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import QrCodeSlice from '@libs/user/types/store/qrCodeSlice';
-import TotpSlice from '@libs/user/types/store/totpSlice';
-import UserSlice from '@libs/user/types/store/userSlice';
-import UserAccountsSlice from './userAccountsSlice';
-
-type UserStore = QrCodeSlice & TotpSlice & UserSlice & UserAccountsSlice;
-
-export default UserStore;
+export const EDU_API_USERS_ENDPOINT = 'users';
+export const EDU_API_USERS_SEARCH_ENDPOINT = `${EDU_API_USERS_ENDPOINT}/search`;
+export const EDU_API_USER_ACCOUNTS_ENDPOINT = 'accounts';

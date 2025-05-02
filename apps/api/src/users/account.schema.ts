@@ -10,5 +10,27 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const EDU_API_USERS_ENDPOINT = 'users';
-export const EDU_API_USERS_SEARCH_ENDPOINT = `${EDU_API_USERS_ENDPOINT}/search`;
+import mongoose, { Document, Types } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { User } from './user.schema';
+
+export type UserAccountsDocument = UserAccounts & Document;
+
+@Schema()
+export class UserAccounts {
+  @Prop({ type: mongoose.Schema.Types.ObjectId, index: true, ref: User.name, required: true })
+  userId: Types.ObjectId;
+
+  @Prop()
+  appName: string;
+
+  @Prop()
+  accountUser: string;
+
+  @Prop()
+  accountPassword: string;
+}
+
+export const UserAccountsSchema = SchemaFactory.createForClass(UserAccounts);
+
+export default UserAccountsSchema;

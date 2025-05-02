@@ -44,6 +44,7 @@ const cleanAllStores = () => {
   UserStore.getState().resetQrCodeSlice();
   UserStore.getState().resetTotpSlice();
   UserStore.getState().resetUserSlice();
+  UserStore.getState().resetUserAccountsSlice();
   useAppConfigsStore.getState().reset();
   useBulletinCategoryTableStore.getState().reset();
   useBulletinBoardEditorialStore.getState().reset();
