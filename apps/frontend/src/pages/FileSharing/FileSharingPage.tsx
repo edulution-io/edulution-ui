@@ -21,16 +21,19 @@ import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFi
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import FILE_PREVIEW_ELEMENT_ID from '@libs/filesharing/constants/filePreviewElementId';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import QuotaLimitInfo from '@/pages/FileSharing/utilities/QuotaLimitInfo';
+import useQuotaInfo from '@/hooks/useQuotaInfo';
 
 const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
+  const { percentageUsed } = useQuotaInfo();
 
   return (
     <PageLayout>
       <LoadingIndicatorDialog isOpen={isLoading} />
 
-      <div className="flex w-full flex-col justify-between space-x-2 pb-2 pt-2">
+      <div className="flex w-full flex-row justify-between space-x-2 pb-2 pt-2">
         <DirectoryBreadcrumb
           path={currentPath}
           onNavigate={(filenamePath) => {
@@ -39,6 +42,7 @@ const FileSharingPage = () => {
           }}
           style={{ color: 'white' }}
         />
+        <QuotaLimitInfo percentageUsed={percentageUsed} />
       </div>
 
       <div className="flex h-full w-full flex-row overflow-hidden pb-6">
