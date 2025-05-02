@@ -10,4 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export type WebDavActionResult = { success: boolean | undefined; message?: string | string[]; status?: number };
+const QUEUE_CONSTANTS = {
+  PREFIX: 'queue-user-',
+} as const;
+
+export default QUEUE_CONSTANTS;

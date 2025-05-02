@@ -10,4 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export type WebDavActionResult = { success: boolean | undefined; message?: string | string[]; status?: number };
+import { Module } from '@nestjs/common';
+import WebdavService from './webdav.service';
+
+@Module({
+  providers: [WebdavService],
+  exports: [WebdavService],
+})
+export default class WebDavModule {}

@@ -83,6 +83,17 @@
       "attachmentDeletionFailed": "Failed to delete an attachment"
     }
   },
+
+  "mountpoints": {
+    "home": "Home",
+    "examusers": "Exams",
+    "projects": "Projects",
+    "iso": "ISO",
+    "programs": "Programs",
+    "shares": "Shares",
+    "students-home": "Students-Home"
+  },
+
   "appstore": {
     "title": "App Store",
     "description": "Here you can add {{ applicationName }} apps.",
@@ -336,9 +347,15 @@
     },
     "progressBox": {
       "info": "Info",
-      "title": "Distributing files",
-      "processedInfo": "{{processed}} out of {{total}} files distributed successfully",
-      "fileInfo": "File {{filename}} is being distributed to {{studentName}}",
+      "titleSharing": "Distributing files",
+      "titleCollecting": "Collecting files",
+      "titleDeleting": "Files are being deleted",
+      "processedSharingInfo": "{{processed}} out of {{total}} files distributed successfully",
+      "processedCollectingInfo": "{{processed}} out of {{total}} files collected successfully",
+      "processedDeletingInfo": "{{processed}} out of {{total}} files deleted successfully",
+      "fileInfoSharing": "File {{filename}} is being distributed to {{studentName}}",
+      "fileInfoCollecting": "File {{filename}} is being collected to {{studentName}}",
+      "fileInfoDeleting": "File {{filename}} is being deleted",
       "errorInfo": "{{failed}} files could not be handed out"
     }
   },
@@ -491,7 +508,7 @@
     "copyOrCut": "Would you like to cut or copy the files?",
     "filesShared": "Files shared",
     "filesSharingStarted": "Sharing files started",
-    "filesCollected": "Files collected"
+    "filesCollectingStarted": "Collecting files started"
   },
   "select": "Select",
   "selectAll": "Select all",
@@ -1127,6 +1144,7 @@
     }
   },
   "fileOperationSuccessful": "File operation successful",
+  "fileOperationStarted": "File operation started",
   "unknownErrorOccurred": "An unknown error occurred",
   "fileSharingTable": {
     "filename": "Filename",

@@ -10,4 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export type WebDavActionResult = { success: boolean | undefined; message?: string | string[]; status?: number };
+import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
+import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
+
+interface CollectFileJobData {
+  username: string;
+  userRole: string;
+  item: CollectFileRequestDTO;
+  operationType: LmnApiCollectOperationsType;
+  total: number;
+  processed: number;
+}
+
+export default CollectFileJobData;

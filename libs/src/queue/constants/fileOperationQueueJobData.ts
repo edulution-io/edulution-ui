@@ -10,26 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import axios from 'axios';
-import https from 'https';
+import CollectFileJobData from '@libs/queue/types/collectFileJobData';
+import DuplicateFileJobData from '@libs/queue/types/duplicateFileJobData';
+import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
 
-class WebdavClientFactory {
-  static createWebdavClient(baseUrl: string, username: string, password: string) {
-    const token = Buffer.from(`${username}:${password}`).toString('base64');
+type FileOperationQueueJobData = CollectFileJobData | DuplicateFileJobData | DeleteFileJobData;
 
-    const httpsAgent = new https.Agent({
-      rejectUnauthorized: false,
-    });
-
-    return axios.create({
-      baseURL: baseUrl,
-      headers: {
-        'Content-Type': 'application/xml',
-        Authorization: `Basic ${token}`,
-      },
-      httpsAgent,
-    });
-  }
-}
-
-export default WebdavClientFactory;
+export default FileOperationQueueJobData;

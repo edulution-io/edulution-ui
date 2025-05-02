@@ -43,6 +43,7 @@ import HealthController from './health.controller';
 import SseModule from '../sse/sse.module';
 import TldrawSyncModule from '../tldraw-sync/tldraw-sync.module';
 import FileSystemModule from '../filesystem/filesystem.module';
+import WebDavModule from '../webdav/webdav.module';
 
 const redisHost = process.env.REDIS_HOST ?? 'localhost';
 const redisPort = +(process.env.REDIS_PORT ?? 6379);
@@ -82,6 +83,7 @@ const redisPort = +(process.env.REDIS_PORT ?? 6379);
     DockerModule,
     VeyonModule,
     GlobalSettingsModule,
+    WebDavModule,
     SseModule,
     TldrawSyncModule,
     JwtModule.register({

@@ -26,7 +26,7 @@ import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import LmnApiService from './lmnApi.service';
 import UsersService from '../users/users.service';
-import FilesharingService from '../filesharing/filesharing.service';
+import WebDavService from '../webdav/webdav.service';
 
 jest.mock('axios');
 const mockedAxios = {
@@ -71,9 +71,10 @@ describe('LmnApiService', () => {
           },
         },
         {
-          provide: FilesharingService,
+          provide: WebDavService,
           useValue: {
-            createFolder: jest.fn(),
+            uploadFile: jest.fn(),
+            createFile: jest.fn(),
           },
         },
       ],

@@ -112,6 +112,7 @@
     "imapflow": "^1.0.164",
     "input-otp": "^1.2.4",
     "js-beautify": "^1.15.4",
+    "ioredis": "^5.6.0",
     "jszip": "^3.10.1",
     "keyv": "^5.3.3",
     "lucide-react": "^0.323.0",

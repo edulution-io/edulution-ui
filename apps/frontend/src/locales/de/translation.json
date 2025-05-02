@@ -289,6 +289,15 @@
     "nosurveys": "Keine offenen Umfragen",
     "nobulletinboard": "Keine neuen Mitteilungen"
   },
+  "mountpoints": {
+    "home": "Home",
+    "examusers": "Klassenarbeiten",
+    "projects": "Projekte",
+    "iso": "ISO",
+    "programs": "Programme",
+    "shares": "Freigaben",
+    "students-home": "Schüler-Home"
+  },
   "filesharing": {
     "filterPlaceHolderText": "Suche nach Dateiname",
     "title": "FILESHARING",
@@ -329,9 +338,15 @@
     },
     "progressBox": {
       "info": "Info",
-      "title": "Dateien werden ausgeteilt",
-      "processedInfo": "{{processed}} von {{total}} Dateien erfolgreich ausgeteilt",
-      "fileInfo": "Datei {{filename}} wird an {{studentName}} ausgeteilt",
+      "titleSharing": "Dateien werden ausgeteilt",
+      "titleCollecting": "Dateien werden eingesammelt",
+      "titleDeleting": "Dateien werden gelöscht",
+      "processedSharingInfo": "{{processed}} von {{total}} Dateien erfolgreich ausgeteilt",
+      "processedCollectingInfo": "{{processed}} von {{total}} Dateien erfolgreich eingesammelt",
+      "processedDeletingInfo": "{{processed}} von {{total}} Dateien erfolgreich gelöscht",
+      "fileInfoSharing": "Datei {{filename}} wird an {{studentName}} ausgeteilt",
+      "fileInfoCollecting": "Datei {{filename}} wird von {{studentName}} eingesammelt",
+      "fileInfoDeleting": "Datei {{filename}} wird gelöscht",
       "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden"
     },
     "tooltips": {
@@ -471,7 +486,7 @@
     "copyOrCut": "Möchtest du die Dateien ausschneiden oder kopieren?",
     "filesShared": "Dateien geteilt",
     "filesSharingStarted": "Dateien werden geteilt",
-    "filesCollected": "Dateien eingesammelt",
+    "filesCollectingStarted": "Dateien werden eingesammelt",
     "failDialog": {
       "title": "Datei {{file}} konnte nicht geteilt werden",
       "reasonMissing": "Die Datei ist möglicherweise nicht mehr vorhanden oder wurde umbenannt.",
@@ -1128,6 +1143,7 @@
     }
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
+  "fileOperationStarted": "Dateioperation gestartet",
   "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
   "fileSharingTable": {
     "filename": "Dateiname",
