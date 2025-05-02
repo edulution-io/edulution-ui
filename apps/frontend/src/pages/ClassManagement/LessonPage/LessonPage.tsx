@@ -36,6 +36,8 @@ import SharingFilesFailedDialogBody from '@/pages/ClassManagement/components/Dia
 import { toast } from 'sonner';
 import ProgressBox from '@/components/ui/ProgressBox';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import QuotaLimitInfo from '@/pages/FileSharing/utilities/QuotaLimitInfo';
+import useQuotaInfo from '@/hooks/useQuotaInfo';
 
 const LessonPage = () => {
   const {
@@ -47,6 +49,8 @@ const LessonPage = () => {
     fetchSchoolClass,
     fetchUserSessions,
   } = useClassManagementStore();
+
+  const { percentageUsed } = useQuotaInfo();
 
   const navigate = useNavigate();
 
@@ -249,7 +253,7 @@ const LessonPage = () => {
           </div>
         ) : null}
       </div>
-
+      <QuotaLimitInfo percentageUsed={percentageUsed} />
       {groupNameParams || member.length ? <UserArea fetchData={fetchData} /> : <QuickAccess />}
       {openDialogType === UserGroups.Sessions && <GroupDialog item={sessionToSave} />}
 
