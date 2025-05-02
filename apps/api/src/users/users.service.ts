@@ -152,7 +152,7 @@ class UsersService {
 
       const isCreated = await this.userAccountModel.create({
         ...userAccountDto,
-        user_id: user._id,
+        userId: user._id,
       });
 
       if (!isCreated) {
@@ -191,7 +191,7 @@ class UsersService {
       }
 
       const userAccounts = await this.userAccountModel
-        .find({ user_id: user._id }, 'appName accountUser accountPassword')
+        .find({ userId: user._id }, 'appName accountUser accountPassword')
         .exec();
 
       const userAccountsDto = userAccounts.map((account) => ({

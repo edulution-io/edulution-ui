@@ -852,6 +852,7 @@
   "usersettings": {
     "title": "MY PROFILE",
     "sidebar": "My Profile",
+    "rowSelected": "{{selected}} of {{total}} accounts selected",
     "rowsSelected": "{{selected}} of {{total}} accounts selected",
     "details": {
       "title": "User details",
@@ -897,7 +898,7 @@
       "enterSavePin": "Please enter your safe PIN.",
       "wrongSafePin": "Wrong PIN Number",
       "enterSafePin": "Please enter your PIN number for decryption",
-      "safePinDescription": "A PIN is required to encrypt the access data. This PIN is only visible to you and is not saved."
+      "safePinDescription": "A PIN is required to encrypt the access data. This PIN isn't visible for anyone else and is not saved."
     },
     "mails": {
       "title": "Email"

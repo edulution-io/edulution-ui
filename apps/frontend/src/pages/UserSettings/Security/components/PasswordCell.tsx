@@ -36,7 +36,7 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
   const { t } = useTranslation();
   const placeholder = '********';
   const [password, setPassword] = useState(placeholder);
-  const isVisible = password !== '********';
+  const isVisible = password !== placeholder;
 
   const [isOpen, setIsOpen] = useState('');
 

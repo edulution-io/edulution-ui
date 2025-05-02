@@ -45,7 +45,7 @@ type UserAccountFormValues = {
   safePin: string;
 };
 
-const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelected, keys, handleOpenChange }) => {
+const AddUserAccountDialog: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelected, keys, handleOpenChange }) => {
   const { t } = useTranslation();
   const { language } = useLanguage();
   const { userAccounts, addUserAccount, updateUserAccount } = useUserStore();
@@ -240,4 +240,4 @@ const AddUserAccount: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelecte
   );
 };
 
-export default AddUserAccount;
+export default AddUserAccountDialog;

@@ -19,7 +19,7 @@ export type UserAccountsDocument = UserAccounts & Document;
 @Schema()
 export class UserAccounts {
   @Prop({ type: mongoose.Schema.Types.ObjectId, index: true, ref: User.name, required: true })
-  user_id: Types.ObjectId;
+  userId: Types.ObjectId;
 
   @Prop()
   appName: string;

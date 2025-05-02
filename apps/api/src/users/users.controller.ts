@@ -29,6 +29,17 @@ import GetCurrentSchool from '../common/decorators/getCurrentSchool.decorator';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  static throwIfNotCurrentUser(username: string, currentUsername: string) {
+    if (username !== currentUsername) {
+      throw new CustomHttpException(
+        AuthErrorMessages.Unauthorized,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        UsersController.name,
+      );
+    }
+  }
+
   @Post()
   createOrUpdate(@Body() userDto: UserDto) {
     return this.usersService.createOrUpdate(userDto);
@@ -41,9 +52,8 @@ export class UsersController {
 
   @Get(':username/key')
   async findOneKey(@Param('username') username: string, @GetCurrentUsername() currentUsername: string) {
-    if (username !== currentUsername) {
-      throw new CustomHttpException(AuthErrorMessages.Unauthorized, HttpStatus.FORBIDDEN);
-    }
+    UsersController.throwIfNotCurrentUser(username, currentUsername);
+
     const response = await this.usersService.getPassword(currentUsername);
 
     if (!response) {
@@ -78,28 +88,14 @@ export class UsersController {
     @GetCurrentUsername() currentUsername: string,
     @Body() userAccountDto: Omit<UserAccountDto, 'accountId'>,
   ) {
-    if (username !== currentUsername) {
-      throw new CustomHttpException(
-        AuthErrorMessages.Unauthorized,
-        HttpStatus.FORBIDDEN,
-        undefined,
-        UsersController.name,
-      );
-    }
+    UsersController.throwIfNotCurrentUser(username, currentUsername);
 
     return this.usersService.addUserAccount(currentUsername, userAccountDto);
   }
 
   @Get(`:username/${EDU_API_USER_ACCOUNTS_ENDPOINT}`)
   getUserAccounts(@Param('username') username: string, @GetCurrentUsername() currentUsername: string) {
-    if (username !== currentUsername) {
-      throw new CustomHttpException(
-        AuthErrorMessages.Unauthorized,
-        HttpStatus.FORBIDDEN,
-        undefined,
-        UsersController.name,
-      );
-    }
+    UsersController.throwIfNotCurrentUser(username, currentUsername);
 
     return this.usersService.getUserAccounts(currentUsername);
   }
@@ -111,14 +107,7 @@ export class UsersController {
     @GetCurrentUsername() currentUsername: string,
     @Body() userAccountDto: UserAccountDto,
   ) {
-    if (username !== currentUsername) {
-      throw new CustomHttpException(
-        AuthErrorMessages.Unauthorized,
-        HttpStatus.FORBIDDEN,
-        undefined,
-        UsersController.name,
-      );
-    }
+    UsersController.throwIfNotCurrentUser(username, currentUsername);
 
     return this.usersService.updateUserAccount(currentUsername, accountId, userAccountDto);
   }
@@ -129,14 +118,7 @@ export class UsersController {
     @Param('accountId') accountId: string,
     @GetCurrentUsername() currentUsername: string,
   ) {
-    if (username !== currentUsername) {
-      throw new CustomHttpException(
-        AuthErrorMessages.Unauthorized,
-        HttpStatus.FORBIDDEN,
-        undefined,
-        UsersController.name,
-      );
-    }
+    UsersController.throwIfNotCurrentUser(username, currentUsername);
 
     return this.usersService.deleteUserAccount(currentUsername, accountId);
   }

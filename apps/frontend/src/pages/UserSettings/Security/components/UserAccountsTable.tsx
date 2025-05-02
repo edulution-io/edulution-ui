@@ -20,7 +20,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import { Button } from '@/components/shared/Button';
 import useUserStore from '@/store/UserStore/UserStore';
 import UserAccountsTableColumns from './UserAccountsTableColumns';
-import AddUserAccount from './AddUserAccount';
+import AddUserAccountDialog from './AddUserAccountDialog';
 
 const UserAccountsTable: React.FC = () => {
   const { t } = useTranslation();
@@ -104,7 +104,7 @@ const UserAccountsTable: React.FC = () => {
           </div>
         </div>
       </div>
-      <AddUserAccount
+      <AddUserAccountDialog
         isOpen={isOpen}
         isOneRowSelected={isOneRowSelected}
         keys={keys}
