@@ -48,15 +48,6 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab }) => 
     }
   }, [isEditorLoading, isDownloadFileLoading, isGetDownloadLinkUrlLoading, currentlyEditingFile?.basename]);
 
-  useEffect(
-    () => () => {
-      if (currentlyEditingFile) {
-        void setFileIsCurrentlyDisabled(currentlyEditingFile.basename, false);
-      }
-    },
-    [currentlyEditingFile?.basename],
-  );
-
   if (!currentlyEditingFile) return null;
   const fileExtension = getFileExtension(currentlyEditingFile.filename);
 
