@@ -17,6 +17,8 @@ import NativeAppHeaderProps from '@libs/ui/types/NativeAppHeaderProps';
 import cn from '@libs/common/utils/className';
 import { useLocation } from 'react-router-dom';
 import FLOATING_BUTTONS_BAR_ID from '@libs/ui/constants/floatingButtonsBarId';
+import useUserAccounts from '@/hooks/useUserAccounts';
+import { getFromPathName } from '@libs/common/utils';
 
 interface AppLayoutProps {
   nativeAppHeader?: NativeAppHeaderProps;
@@ -26,6 +28,9 @@ interface AppLayoutProps {
 
 const PageLayout = ({ nativeAppHeader, children, isFullScreen }: AppLayoutProps) => {
   const { pathname } = useLocation();
+  const rootPathName = getFromPathName(pathname, 1);
+
+  useUserAccounts(rootPathName);
 
   if (isFullScreen) return <main className="flex-1">{children}</main>;
 

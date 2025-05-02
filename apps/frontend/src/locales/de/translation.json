@@ -116,7 +116,9 @@
       "title": "Quotas",
       "globalQuota": "Cloudquota berechnet ",
       "mailQuota": "Mailquota berechnet",
-      "mibibyte": "MiB"
+      "mibibyte": "MiB",
+      "remainingLow": "Verbleibendes Quota gering – {{free}} %",
+      "remainingVeryLow": "Verbleibendes Quota sehr gering – {{free}} %"
     }
   },
   "auth": {
@@ -854,6 +856,8 @@
   "usersettings": {
     "title": "MEIN PROFIL",
     "sidebar": "Mein Profil",
+    "rowSelected": "{{selected}} von {{total}} Konten ausgewählt",
+    "rowsSelected": "{{selected}} von {{total}} Konten ausgewählt",
     "details": {
       "title": "Benutzerdetails",
       "description": "Hier können Sie Ihre Benutzerdaten einsehen und teilweise bearbeiten.",
@@ -886,7 +890,19 @@
         "confirmPassword": "Passwort bestätigen",
         "confirm": "Passwort ändern",
         "passwordChangedSuccessfully": "Passwort erfolgreich geändert"
-      }
+      },
+      "filterPlaceHolderText": "Suche nach Anwendung",
+      "passwordSafe": "Passwort-Tresor",
+      "passwordSafeInfo": "Hier kannst du deine Zugangsdaten für verschiedene Anwendungen speichern. Diese werden verschlüsselt und sind nur für dich sichtbar.",
+      "addUserAccount": "Konto hinzufügen",
+      "accountId": "Konto-ID",
+      "accountData": "Zugangsdaten",
+      "safePin": "Tresor-PIN",
+      "firstEnterSafePin": "Bitte Tresor-PIN festlegen.",
+      "enterSavePin": "Bitte Tresor-PIN eingeben.",
+      "wrongSafePin": "PIN ist falsch.",
+      "enterSafePin": "Bitte PIN zum Entschlüsseln eingeben.",
+      "safePinDescription": "Zur Verschlüsselung der Zugangsdaten wird eine PIN benötigt. Diese PIN ist für niemanden sichtbar und wird nicht gespeichert."
     },
     "mails": {
       "title": "E-Mail"
@@ -957,6 +973,10 @@
   },
   "common": {
     "guest": "Gast",
+    "ok": "OK",
+    "next": "Weiter",
+    "back": "Zurück",
+    "confirm": "Bestätigen",
     "share": "Teilen",
     "savedToClipboard": "In die Zwischenablage kopiert.",
     "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden.",
@@ -1071,6 +1091,7 @@
     "required": "Erforderlich",
     "download": "Herunterladen",
     "template": "Vorlage",
+    "application": "Anwendung",
     "preview": "Vorschau",
     "format": "Formatieren",
     "upload": "Hochladen",
@@ -1167,7 +1188,8 @@
     "acrobat": "PDF",
     "presentation": "Präsentation",
     "spreadsheet": "Tabelle",
-    "vector": "Diagramm"
+    "vector": "Diagramm",
+    "compressed": "Archive"
   },
   "fileCreateNewContent": {
     "documentFile": "Erstelle ein neues Dokument",

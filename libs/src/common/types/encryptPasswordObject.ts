@@ -10,11 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import QrCodeSlice from '@libs/user/types/store/qrCodeSlice';
-import TotpSlice from '@libs/user/types/store/totpSlice';
-import UserSlice from '@libs/user/types/store/userSlice';
-import UserAccountsSlice from './userAccountsSlice';
+type EncryptedPasswordObject = { ciphertext: number[]; iv: number[]; salt: number[] };
 
-type UserStore = QrCodeSlice & TotpSlice & UserSlice & UserAccountsSlice;
-
-export default UserStore;
+export default EncryptedPasswordObject;

@@ -97,8 +97,8 @@ const NameInputWithAvailability = ({
     <div className="flex items-center space-x-2">
       <FormField
         name="name"
-        defaultValue={placeholder}
         form={form}
+        defaultValue={form.getValues('name')}
         variant="dialog"
         onChange={handleInputChange}
       />
