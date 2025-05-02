@@ -13,6 +13,7 @@
 import buildNewCollectFolderName from '@libs/filesharing/utils/buildNewCollectFolderName';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
+import UserRoles from '@libs/user/constants/userRoles';
 import FILE_PATHS from '../constants/file-paths';
 
 const buildCollectPath = (
@@ -23,13 +24,19 @@ const buildCollectPath = (
 ): CollectFileRequestDTO => {
   const newFolderName = buildNewCollectFolderName(schoolClass);
 
-  const destinationPath = `${homePath}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}/${newFolderName}/${student.cn}/${FILE_PATHS.COLLECT}/`;
-  const originPath = `${student.sophomorixIntrinsic2[0]}/${FILE_PATHS.TRANSFER}/${username}/${FILE_PATHS.COLLECT}/`;
+  const studentName = student.examMode ? `${student.cn}-exam` : student.cn;
+
+  const studentOriginPath = student.examMode
+    ? `/${UserRoles.EXAM_USER}/${studentName}`
+    : student.sophomorixIntrinsic2[0];
+
+  const destinationPath = `${homePath}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}/${newFolderName}/${studentName}/${FILE_PATHS.COLLECT}/`;
+  const originPath = `${studentOriginPath}/${FILE_PATHS.TRANSFER}/${username}/${FILE_PATHS.COLLECT}/`;
 
   return {
     destinationPath,
     originPath,
-    userName: student.cn,
+    userName: studentName,
     newFolderName,
   };
 };

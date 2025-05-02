@@ -16,6 +16,15 @@ class FilesharingProgressDto {
   @IsNumber()
   processID: number;
 
+  @IsString()
+  title: string;
+
+  @IsString()
+  description: string;
+
+  @IsString()
+  statusDescription: string;
+
   @IsNumber()
   processed: number;
 
