@@ -13,7 +13,7 @@
 import SurveyDto from './survey.dto';
 
 interface SurveyTemplateDto {
-  fileName: string;
+  fileName?: string;
   template: Partial<SurveyDto>;
 }
 

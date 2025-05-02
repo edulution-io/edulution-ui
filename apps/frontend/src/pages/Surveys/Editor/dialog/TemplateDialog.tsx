@@ -55,7 +55,7 @@ const TemplateDialog = (props: TemplateDialogProps) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, formula, saveNo, createdAt, expires, answers, ...remainingSurvey } = values;
     await uploadTemplate({
-      fileName: template.fileName,
+      fileName: template?.fileName,
       template: { formula: creator.JSON as SurveyFormula, ...remainingSurvey },
     });
     setIsOpenTemplateMenu(false);
