@@ -10,11 +10,23 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import QrCodeSlice from '@libs/user/types/store/qrCodeSlice';
-import TotpSlice from '@libs/user/types/store/totpSlice';
-import UserSlice from '@libs/user/types/store/userSlice';
-import UserAccountsSlice from './userAccountsSlice';
+import { useEffect, useState } from 'react';
 
-type UserStore = QrCodeSlice & TotpSlice & UserSlice & UserAccountsSlice;
+const usePortalRoot = (id: string): HTMLElement | null => {
+  const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
 
-export default UserStore;
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+
+    let node = document.getElementById(id);
+    if (!node) {
+      node = document.createElement('div');
+      node.id = id;
+      document.body.appendChild(node);
+    }
+    setPortalRoot(node);
+  }, [id]);
+
+  return portalRoot;
+};
+export default usePortalRoot;

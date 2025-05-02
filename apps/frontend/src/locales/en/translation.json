@@ -127,7 +127,9 @@
       "title": "Quotas",
       "globalQuota": "Cloud quota calculated",
       "mailQuota": "Mail quota calculated",
-      "mibibyte": "MiB"
+      "mibibyte": "MiB",
+      "remainingLow": "Remaining quota low – {{free}} %",
+      "remainingVeryLow": "Remaining quota very low – {{free}} %"
     }
   },
   "auth": {
@@ -869,6 +871,8 @@
   "usersettings": {
     "title": "MY PROFILE",
     "sidebar": "My Profile",
+    "rowSelected": "{{selected}} of {{total}} accounts selected",
+    "rowsSelected": "{{selected}} of {{total}} accounts selected",
     "details": {
       "title": "User details",
       "description": "Here you see and edit some of your personal information.",
@@ -901,7 +905,19 @@
         "confirmPassword": "Confirm Password",
         "confirm": "Change Password",
         "passwordChangedSuccessfully": "Password changed successfully"
-      }
+      },
+      "filterPlaceHolderText": "Search for App",
+      "passwordSafe": "Password Safe",
+      "passwordSafeInfo": "Here you can save your access data for various applications. These are encrypted and are only visible to you.",
+      "addUserAccount": "Add account",
+      "accountId": "Account ID",
+      "accountData": "Login Data",
+      "safePin": "Safe PIN",
+      "firstEnterSafePin": "Please set the safe PIN.",
+      "enterSavePin": "Please enter your safe PIN.",
+      "wrongSafePin": "Wrong PIN Number",
+      "enterSafePin": "Please enter your PIN number for decryption",
+      "safePinDescription": "A PIN is required to encrypt the access data. This PIN isn't visible for anyone else and is not saved."
     },
     "mails": {
       "title": "Email"
@@ -972,6 +988,10 @@
   },
   "edit": "Edit",
   "common": {
+    "ok": "OK",
+    "next": "Next",
+    "back": "Back",
+    "confirm": "Confirm",
     "share": "Share",
     "savedToClipboard": "Saved to clipboard.",
     "savedToClipboardError": "Unable to save into clipboard.",
@@ -1089,7 +1109,8 @@
     "preview": "Preview",
     "format": "Format",
     "upload": "Upload",
-    "mode": "Mode"
+    "mode": "Mode",
+    "application": "Application"
   },
   "form": {
     "path": "Path",

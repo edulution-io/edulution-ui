@@ -16,6 +16,7 @@ import UserStore from '@libs/user/types/store/userStore';
 import createUserSlice from './UserSlice';
 import createTotpSlice from './TotpSlice';
 import createQrCodeSlice from './QrCodeSlice';
+import createUserAccountsSlice from './UserAccountsSlice';
 
 const useUserStore = create<UserStore>()(
   persist(
@@ -23,6 +24,7 @@ const useUserStore = create<UserStore>()(
       ...createUserSlice(set, get, store),
       ...createTotpSlice(set, get, store),
       ...createQrCodeSlice(set, get, store),
+      ...createUserAccountsSlice(set, get, store),
     }),
     {
       name: 'user-storage',
