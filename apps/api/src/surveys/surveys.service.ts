@@ -164,6 +164,7 @@ class SurveysService implements OnModuleInit {
     return res;
   }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async onSurveyRemoval(surveyIds: string[]): Promise<void> {
     const imageDirectories = surveyIds.map((surveyId) => join(SURVEYS_IMAGES_PATH, surveyId));
     await FilesystemService.deleteDirectories(imageDirectories);

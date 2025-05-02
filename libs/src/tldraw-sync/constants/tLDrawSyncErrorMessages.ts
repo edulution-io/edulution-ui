@@ -10,4 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { default as VDI_SYNC_TIME_INTERVAL } from './vdi-sync-interval';
+const TLDRAW_ERROR_MESSAGES = {
+  LoadOrCreateRoomFailure: 'tldrawSync.errors.LoadOrCreateRoomFailure',
+  PersistRoomFailure: 'tldrawSync.errors.PersistRoomFailure',
+} as const;
+
+export default TLDRAW_ERROR_MESSAGES;

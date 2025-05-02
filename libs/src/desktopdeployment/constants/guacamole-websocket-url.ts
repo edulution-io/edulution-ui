@@ -10,4 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { default as VDI_SYNC_TIME_INTERVAL } from './vdi-sync-interval';
+import WEBSOCKET_URL from '@libs/common/constants/websocket-url';
+
+const GUACAMOLE_WEBSOCKET_URL = `${WEBSOCKET_URL}/guacamole/websocket-tunnel`;
+
+export default GUACAMOLE_WEBSOCKET_URL;

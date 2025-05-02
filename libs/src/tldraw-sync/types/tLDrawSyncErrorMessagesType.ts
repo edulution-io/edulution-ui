@@ -10,4 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { default as VDI_SYNC_TIME_INTERVAL } from './vdi-sync-interval';
+import TLDRAW_ERROR_MESSAGES from '@libs/tldraw-sync/constants/tLDrawSyncErrorMessages';
+
+type TLDrawSyncErrorMessages = (typeof TLDRAW_ERROR_MESSAGES)[keyof typeof TLDRAW_ERROR_MESSAGES];
+
+export default TLDrawSyncErrorMessages;

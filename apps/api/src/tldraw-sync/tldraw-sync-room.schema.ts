@@ -10,4 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { default as VDI_SYNC_TIME_INTERVAL } from './vdi-sync-interval';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+import { RoomSnapshot } from '@tldraw/sync-core';
+
+@Schema({ timestamps: true, strict: true })
+export class TldrawSyncRoom {
+  @Prop({ required: true, unique: true })
+  roomId: string;
+
+  @Prop({ type: Object, required: true })
+  roomData: RoomSnapshot;
+}
+
+export type TldrawSyncRoomDocument = TldrawSyncRoom & Document;
+export const TldrawSyncRoomSchema = SchemaFactory.createForClass(TldrawSyncRoom);

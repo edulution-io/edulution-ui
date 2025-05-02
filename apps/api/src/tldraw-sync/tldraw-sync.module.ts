@@ -10,4 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { default as VDI_SYNC_TIME_INTERVAL } from './vdi-sync-interval';
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { TldrawSyncRoom, TldrawSyncRoomSchema } from './tldraw-sync-room.schema';
+import TldrawSyncService from './tldraw-sync.service';
+import TldrawSyncGateway from './tldraw-sync.gateway';
+
+@Module({
+  imports: [MongooseModule.forFeature([{ name: TldrawSyncRoom.name, schema: TldrawSyncRoomSchema }])],
+  providers: [TldrawSyncService, TldrawSyncGateway],
+  exports: [TldrawSyncService],
+})
+export default class TldrawSyncModule {}

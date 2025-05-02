@@ -10,11 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
+import { TLSocketRoom } from '@tldraw/sync-core';
+import { UnknownRecord } from 'tldraw';
 
-const websocketProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-const url = new URL(EDU_BASE_URL);
+interface RoomState {
+  roomId: string;
+  room: TLSocketRoom<UnknownRecord, void>;
+  needsPersist: boolean;
+}
 
-const WEBSOCKET_URL = `${websocketProtocol}://${url.host}/guacamole/websocket-tunnel`;
-
-export default WEBSOCKET_URL;
+export default RoomState;
