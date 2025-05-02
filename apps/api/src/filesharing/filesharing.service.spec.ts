@@ -45,30 +45,11 @@ describe('FilesharingService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should call createFile on FileSharingService', async () => {
-    const token = 'test-token';
-    const path = '/test-path';
-    const fileName = 'test-file';
-    const content = 'test-content';
-    const result = await service.createFile(token, path, fileName, content);
-    expect(service.createFile).toHaveBeenCalledWith(token, path, fileName, content);
-    expect(result).toEqual({ success: true });
-  });
-
   it('should call deleteFile on FileSharingService', async () => {
     const username = 'testTeacher';
     const path = ['/test-path'];
     const result = await service.deleteFileAtPath(username, path);
     expect(service.deleteFileAtPath).toHaveBeenCalledWith(username, path);
-    expect(result).toEqual({ success: true });
-  });
-
-  it('should call renameFile on FileSharingService', async () => {
-    const token = 'test-token';
-    const path = '/test-path';
-    const newName = 'new-test-file';
-    const result = await service.moveOrRenameResource(token, path, newName);
-    expect(service.moveOrRenameResource).toHaveBeenCalledWith(token, path, newName);
     expect(result).toEqual({ success: true });
   });
 });

@@ -118,7 +118,9 @@ class FilesharingController {
     @GetCurrentUsername() username: string,
   ) {
     const { path, newPath } = body;
-    return this.filesharingService.moveOrRenameResource(username, path, newPath);
+    const originFull = `${this.baseurl}${path}`;
+    const newFull = `${this.baseurl}${newPath}`;
+    return this.webdavService.moveOrRenameResource(username, originFull, newFull);
   }
 
   @Get(FileSharingApiEndpoints.FILE_STREAM)

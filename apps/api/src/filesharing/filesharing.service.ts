@@ -123,15 +123,4 @@ export default class FilesharingService {
       this.webDavService.uploadFile(user, `${this.baseurl}${uploadPath}/${name}`, file),
     );
   }
-
-  async createFile(username: string, path: string, fileName: string, content = '') {
-    const fullPath = `${this.baseurl}${getPathWithoutWebdav(path)}/${fileName}`;
-    return this.webDavService.createFile(username, fullPath, content);
-  }
-
-  async moveOrRenameResource(username: string, originPath: string, newPath: string) {
-    const originFull = `${this.baseurl}${originPath}`;
-    const newFull = `${this.baseurl}${newPath}`;
-    return this.webDavService.moveOrRenameResource(username, originFull, newFull);
-  }
 }
