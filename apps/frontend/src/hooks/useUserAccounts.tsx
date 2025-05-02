@@ -49,7 +49,7 @@ const useUserAccounts = (appName: string | null) => {
   }, []);
 
   useEffect(() => {
-    if (!appName) return;
+    if (!appName || appName === '/') return;
 
     if (!appConfig) return;
 
