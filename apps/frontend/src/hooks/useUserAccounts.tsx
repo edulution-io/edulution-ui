@@ -42,14 +42,16 @@ const useUserAccounts = (appName: string | null) => {
   }, [pathname, toastId]);
 
   useEffect(() => {
-    void getUserAccounts();
+    if (userAccounts.length === 0) {
+      void getUserAccounts();
+    }
     return () => {
       toast.dismiss(toastId);
     };
   }, []);
 
   useEffect(() => {
-    if (!appName) return;
+    if (!appName || appName === '/') return;
 
     if (!appConfig) return;
 

@@ -30,6 +30,7 @@ const createUserAccountsSlice: StateCreator<UserStore, [], [], UserAccountsSlice
   setSelectedRows: (selectedRows) => set({ selectedRows }),
 
   getUserAccounts: async () => {
+    if (get().user?.username === undefined) return;
     set({ userAccountsIsLoading: true });
     try {
       const { data } = await eduApi.get<UserAccountDto[]>(
