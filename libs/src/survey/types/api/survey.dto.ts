@@ -16,6 +16,7 @@ import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
 interface SurveyDto {
+  _id?: string;
   id?: string;
   formula: TSurveyFormula;
   backendLimiters?: {

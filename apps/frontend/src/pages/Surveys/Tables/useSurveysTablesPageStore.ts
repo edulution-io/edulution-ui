@@ -24,6 +24,7 @@ import SurveyStatus from '@libs/survey/survey-status-enum';
 import { HttpStatus } from '@nestjs/common';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
+import { Form } from 'react-router-dom';
 
 interface SurveysTablesPageStore {
   selectedSurvey: SurveyDto | undefined;
@@ -83,6 +84,10 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
 
   fetchSelectedSurvey: async (surveyId?: string, isPublic?: boolean): Promise<void> => {
+    const { isFetching } = get();
+    if (isFetching) {
+      return;
+    }
     if (!surveyId) {
       set({ selectedSurvey: undefined });
       return;
