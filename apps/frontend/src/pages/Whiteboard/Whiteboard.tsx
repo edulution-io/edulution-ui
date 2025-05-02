@@ -27,7 +27,7 @@ const Whiteboard = () => {
   const { t } = useTranslation();
   const { user } = useUserStore();
 
-  const WS_BASE_URL = `${EDU_API_WEBSOCKET_URL}/${TLDRAW_SYNC_ENDPOINTS.BASE}`;
+  const WS_BASE_URL = `${EDU_API_WEBSOCKET_URL}/edu-api/${TLDRAW_SYNC_ENDPOINTS.BASE}`;
 
   const roomId = user?.username;
 

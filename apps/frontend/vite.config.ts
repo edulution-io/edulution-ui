@@ -62,15 +62,8 @@ export default defineConfig(({ mode }) => {
         '/edu-api': {
           target: env.VITE_EDU_API_URL,
           changeOrigin: true,
-          secure: false,
-          headers: {
-            Origin: env.VITE_EDU_API_URL,
-          },
-        },
-        '/websocket': {
-          rewrite: (path) => path.replace(/^\/websocket/, ''),
-          target: env.VITE_EDU_API_URL,
           ws: true,
+          secure: false,
           headers: {
             Origin: env.VITE_EDU_API_URL,
           },

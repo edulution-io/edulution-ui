@@ -12,6 +12,6 @@
 
 import WEBSOCKET_URL from '@libs/common/constants/websocket-url';
 
-const EDU_API_WEBSOCKET_URL = `${WEBSOCKET_URL}/websocket`;
+const EDU_API_WEBSOCKET_URL = `${WEBSOCKET_URL}`;
 
 export default EDU_API_WEBSOCKET_URL;

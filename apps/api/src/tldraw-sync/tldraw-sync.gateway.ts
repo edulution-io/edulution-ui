@@ -18,7 +18,7 @@ import ROOM_ID_PARAM from '@libs/tldraw-sync/constants/roomIdParam';
 import TldrawSyncService from './tldraw-sync.service';
 
 @WebSocketGateway({
-  path: `/${TLDRAW_SYNC_ENDPOINTS.BASE}`,
+  path: `edu-api/${TLDRAW_SYNC_ENDPOINTS.BASE}`,
   cors: { origin: '*' },
 })
 export default class TldrawSyncGateway implements OnGatewayConnection, OnModuleInit {
