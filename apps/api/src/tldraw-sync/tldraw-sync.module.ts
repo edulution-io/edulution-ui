@@ -12,16 +12,12 @@
 
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ScheduleModule } from '@nestjs/schedule';
 import { TldrawSyncRoom, TldrawSyncRoomSchema } from './tldraw-sync-room.schema';
 import TldrawSyncService from './tldraw-sync.service';
 import TldrawSyncGateway from './tldraw-sync.gateway';
 
 @Module({
-  imports: [
-    ScheduleModule.forRoot(),
-    MongooseModule.forFeature([{ name: TldrawSyncRoom.name, schema: TldrawSyncRoomSchema }]),
-  ],
+  imports: [MongooseModule.forFeature([{ name: TldrawSyncRoom.name, schema: TldrawSyncRoomSchema }])],
   providers: [TldrawSyncService, TldrawSyncGateway],
   exports: [TldrawSyncService],
 })
