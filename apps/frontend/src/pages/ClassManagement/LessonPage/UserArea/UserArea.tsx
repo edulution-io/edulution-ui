@@ -25,6 +25,8 @@ import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsVal
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import useQuotaInfo from '@/hooks/useQuotaInfo';
+import QuotaThresholdPercent from '@libs/filesharing/constants/quotaThresholdPercent';
 
 const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
   const { t } = useTranslation();
@@ -34,6 +36,9 @@ const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
   const { appConfigs } = useAppConfigsStore();
   const [selectedMember, setSelectedMember] = useState<UserLmnInfo[]>([]);
   const selectedMemberCount = selectedMember.length;
+  const { percentageUsed } = useQuotaInfo();
+
+  const isQuotaExceeded = percentageUsed > QuotaThresholdPercent.CRITICAL;
 
   const isTeacherInSameClass = useMemo(() => {
     if (!teacher || !user) return () => false;
@@ -112,6 +117,7 @@ const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
         students={getSelectedStudents()}
         isVeyonEnabled={isVeyonEnabled}
         isMemberSelected={!!selectedMemberCount}
+        isQuotaExceeded={isQuotaExceeded}
       />
     </>
   );
