@@ -48,7 +48,9 @@ const QuestionContextMenu = (props: QuestionContextMenuProps) => {
         e.preventDefault();
       }}
     >
-      <DialogFooterButtons handleClose={handleClose} />
+      <DialogFooterButtons
+        handleSubmit={handleClose}
+      />
     </form>
   );
 
