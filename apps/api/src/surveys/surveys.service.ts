@@ -19,6 +19,7 @@ import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
@@ -160,11 +161,15 @@ class SurveysService implements OnModuleInit {
   }
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  async createTemplate(surveyDto: Partial<SurveyDto>): Promise<void> {
-    const date = new Date();
-    const uniqueFileName = `${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}-${date.getHours()}:${date.getMinutes()}-${uuidv4()}.json`;
-    const templatePath = join(SURVEYS_TEMPLATE_PATH, uniqueFileName);
-    return FilesystemService.writeFile(templatePath, JSON.stringify(surveyDto, null, 2));
+  async createTemplate(surveyTemplateDto: SurveyTemplateDto): Promise<void> {
+    let filename = surveyTemplateDto.fileName;
+    if (!filename) {
+      const date = new Date();
+      filename = `${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}-${date.getHours()}:${date.getMinutes()}-${uuidv4()}.json`;
+    }
+    const templatePath = join(SURVEYS_TEMPLATE_PATH, filename);
+    await this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);
+    return FilesystemService.writeFile(templatePath, JSON.stringify(surveyTemplateDto.template, null, 2));
   }
 
   async serveTemplateNames(): Promise<string[]> {

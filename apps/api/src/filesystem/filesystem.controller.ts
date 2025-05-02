@@ -55,7 +55,7 @@ class FileSystemController {
     return this.filesystemService.serveFiles(appName, filename, res);
   }
 
-  @Delete(':appName/:filename')
+  @Delete(':appName/:filename(.*)')
   @UseGuards(AppConfigGuard)
   deleteFile(@Param('appName') appName: string, @Param('filename') filename: string) {
     return FilesystemService.deleteFile(`${APPS_FILES_PATH}/${appName}`, filename);

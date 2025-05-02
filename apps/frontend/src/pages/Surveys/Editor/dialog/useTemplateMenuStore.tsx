@@ -16,6 +16,7 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { SURVEY_TEMPLATES_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import handleApiError from '@/utils/handleApiError';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
 
 interface TemplateMenuStore {
   resetTemplateStore: () => void;
@@ -23,13 +24,13 @@ interface TemplateMenuStore {
   isOpenTemplateMenu: boolean;
   setIsOpenTemplateMenu: (state: boolean) => void;
 
-  uploadTemplate: (surveyDto: Partial<SurveyDto>) => Promise<void>;
+  uploadTemplate: (template: SurveyTemplateDto) => Promise<void>;
   isSubmitting: boolean;
 
-  template?: Partial<SurveyDto>;
-  templates: Partial<SurveyDto>[];
+  template?: SurveyTemplateDto;
+  setTemplate: (template: SurveyTemplateDto) => void;
+  templates: SurveyTemplateDto[];
   fetchTemplates: () => Promise<void>;
-  fetchTemplate: (fileName: string) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -60,12 +61,13 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
       handleApiError(error, set);
     }
 
-    let templateDocuments: Partial<SurveyDto>[] = [];
+    let templateDocuments: SurveyTemplateDto[] = [];
     const promises = templateNames?.map(async (fileName) => {
       try {
         const result = await eduApi.get<SurveyDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${fileName}`);
         if (result) {
-          templateDocuments = [...templateDocuments, result.data];
+          const newTemplate = { fileName, template: result.data };
+          templateDocuments = [...templateDocuments, newTemplate];
         }
       } catch (error) {
         handleApiError(error, set);
@@ -83,25 +85,12 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
     set({ isLoading: false });
   },
 
-  fetchTemplate: async (fileName: string): Promise<void> => {
-    set({ isLoading: true });
-    try {
-      const result = await eduApi.get<Partial<SurveyDto>>(`${SURVEY_TEMPLATES_ENDPOINT}/${fileName}`);
-      if (result) {
-        set({ template: result.data });
-      }
-    } catch (error) {
-      handleApiError(error, set);
-      set({ template: undefined });
-    } finally {
-      set({ isLoading: false });
-    }
-  },
+  setTemplate: (template: SurveyTemplateDto) => set({ template }),
 
-  uploadTemplate: async (surveyDto: Partial<SurveyDto>): Promise<void> => {
+  uploadTemplate: async (template: SurveyTemplateDto): Promise<void> => {
     set({ isSubmitting: true });
     try {
-      const result = await eduApi.post<Partial<SurveyDto>>(SURVEY_TEMPLATES_ENDPOINT, surveyDto);
+      const result = await eduApi.post<Partial<SurveyDto>>(SURVEY_TEMPLATES_ENDPOINT, template);
       if (!result) {
         throw new Error(CommonErrorMessages.FILE_NOT_PROVIDED);
       }

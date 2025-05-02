@@ -44,6 +44,7 @@ import {
 import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
 import AnswerDto from '@libs/survey/types/api/answer.dto';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
@@ -118,8 +119,8 @@ class SurveysController {
 
   @UseGuards(AppConfigGuard)
   @Post(TEMPLATES)
-  async createTemplate(@Body() surveyDto: Partial<SurveyDto>) {
-    return this.surveyService.createTemplate(surveyDto);
+  async createTemplate(@Body() surveyTemplateDto: SurveyTemplateDto) {
+    return this.surveyService.createTemplate(surveyTemplateDto);
   }
 
   @Get(TEMPLATES)

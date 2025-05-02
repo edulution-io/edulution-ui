@@ -11,11 +11,11 @@
  */
 
 import React from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
 import TemplateItem from '@/pages/Surveys/Editor/dialog/TemplateItem';
 import Label from '@/components/ui/Label';
 import { AccordionSH } from '@/components/ui/AccordionSH';
@@ -23,7 +23,7 @@ import { AccordionSH } from '@/components/ui/AccordionSH';
 interface TemplateListProps {
   form: UseFormReturn<SurveyDto>;
   creator: SurveyCreator;
-  templates: Partial<SurveyDto>[];
+  templates: SurveyTemplateDto[];
 }
 
 const TemplateList = (props: TemplateListProps) => {
@@ -39,9 +39,9 @@ const TemplateList = (props: TemplateListProps) => {
         type="multiple"
         className="px-4"
       >
-        {templates.map((template: Partial<SurveyDto>) => (
+        {templates.map((template: SurveyTemplateDto) => (
           <TemplateItem
-            key={`${uuidv4()}`}
+            key={template.fileName}
             form={form}
             creator={creator}
             template={template}

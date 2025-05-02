@@ -12,15 +12,10 @@
 
 import React, { useEffect } from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveyFormula from '@libs/survey/types/TSurveyFormula';
-import useLdapGroups from '@/hooks/useLdapGroups';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import TemplateList from '@/pages/Surveys/Editor/dialog/TemplateList';
-import { Button } from '@/components/shared/Button';
-import Label from '@/components/ui/Label';
 
 interface TemplateDialogBodyProps {
   form: UseFormReturn<SurveyDto>;
@@ -29,40 +24,14 @@ interface TemplateDialogBodyProps {
 
 const TemplateDialogBody = (props: TemplateDialogBodyProps) => {
   const { form, surveyCreator } = props;
-  const { setIsOpenTemplateMenu, templates, fetchTemplates, uploadTemplate } = useTemplateMenuStore();
-  const { isSuperAdmin } = useLdapGroups();
-
-  const { t } = useTranslation();
+  const { templates, fetchTemplates } = useTemplateMenuStore();
 
   useEffect(() => {
     void fetchTemplates();
   }, []);
 
-  const handleSaveTemplate = async () => {
-    const values = form.getValues();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id, formula, saveNo, creator, createdAt, expires, answers, ...remainingSurvey } = values;
-    await uploadTemplate({ formula: surveyCreator.JSON as SurveyFormula, ...remainingSurvey });
-    setIsOpenTemplateMenu(false);
-  };
-
   return (
     <div className="space-y-2">
-      {isSuperAdmin ? (
-        <div className="my-0 mb-4 flex h-[32px] max-h-[32px] flex-row items-center justify-between py-0">
-          <Label>
-            <p className="font-bold">{t('survey.editor.templateMenu.submit')}</p>
-          </Label>
-          <Button
-            onClick={handleSaveTemplate}
-            variant="btn-collaboration"
-            className="my-0 h-[32px] rounded py-0"
-          >
-            {t('common.save')}
-          </Button>
-        </div>
-      ) : null}
-
       <TemplateList
         form={form}
         creator={surveyCreator}
