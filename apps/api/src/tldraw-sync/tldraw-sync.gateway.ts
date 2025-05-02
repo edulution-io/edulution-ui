@@ -15,8 +15,8 @@ import { OnGatewayConnection, WebSocketGateway, WebSocketServer } from '@nestjs/
 import { Server, WebSocket } from 'ws';
 import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/apiEndpoints';
 import ROOM_ID_PARAM from '@libs/tldraw-sync/constants/roomIdParam';
-import TldrawSyncService from './tldraw-sync.service';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import TldrawSyncService from './tldraw-sync.service';
 
 @WebSocketGateway({
   path: `${EDU_API_ROOT}/${TLDRAW_SYNC_ENDPOINTS.BASE}`,
