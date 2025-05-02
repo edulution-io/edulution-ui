@@ -45,14 +45,24 @@ class FileSystemController {
     return res.status(200).json(file.filename);
   }
 
-  @Get('info/*path')
-  getFiles(@Param('path') path: string) {
-    return this.filesystemService.getFilesInfo(path);
+  static buildPathString(path: string | string[]) {
+    if (Array.isArray(path)) {
+      return path.join('/');
+    }
+    return path;
   }
 
-  @Get('file/:appName/*filename')
-  serveFiles(@Param('appName') appName: string, @Param('filename') filename: string, @Res() res: Response) {
-    return this.filesystemService.serveFiles(appName, filename, res);
+  @Get('info/*path')
+  getFiles(@Param('path') path: string | string[]) {
+    return this.filesystemService.getFilesInfo(FileSystemController.buildPathString(path));
+  }
+
+  @Get('file/:appName/*filename') serveFiles(
+    @Param('appName') appName: string,
+    @Param('filename') filename: string | string[],
+    @Res() res: Response,
+  ) {
+    return this.filesystemService.serveFiles(appName, FileSystemController.buildPathString(filename), res);
   }
 
   @Delete(':appName/:filename')

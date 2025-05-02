@@ -12,7 +12,7 @@
 
 import { Logger, OnModuleInit } from '@nestjs/common';
 import { OnGatewayConnection, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
-import { Server, WebSocket } from 'ws';
+import { RawData, Server, WebSocket } from 'ws';
 import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/apiEndpoints';
 import ROOM_ID_PARAM from '@libs/tldraw-sync/constants/roomIdParam';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
@@ -23,8 +23,7 @@ import TldrawSyncService from './tldraw-sync.service';
   cors: { origin: '*' },
 })
 export default class TldrawSyncGateway implements OnGatewayConnection, OnModuleInit {
-  @WebSocketServer()
-  server: Server;
+  @WebSocketServer() server: Server;
 
   constructor(private readonly tldrawSyncService: TldrawSyncService) {}
 
@@ -53,8 +52,32 @@ export default class TldrawSyncGateway implements OnGatewayConnection, OnModuleI
 
     Logger.log(`Client connected: roomId=${roomId}, sessionId=${sessionId}`, TldrawSyncGateway.name);
 
-    const room = await this.tldrawSyncService.makeOrLoadRoom(roomId);
+    const caughtMessages: RawData[] = [];
+    const collectMessagesListener = (message: RawData) => {
+      caughtMessages.push(message);
+    };
+    client.on('message', collectMessagesListener);
 
-    room.handleSocketConnect({ sessionId, socket: client });
+    let room;
+    try {
+      room = await this.tldrawSyncService.makeOrLoadRoom(roomId);
+    } catch (err) {
+      Logger.error(`Error loading room ${roomId}: ${(err as Error).message}`, TldrawSyncGateway.name);
+      client.off('message', collectMessagesListener);
+      client.close();
+      return;
+    }
+
+    try {
+      room.handleSocketConnect({ sessionId, socket: client });
+    } catch (err) {
+      Logger.error(`Error connecting to room ${roomId}: ${(err as Error).message}`, TldrawSyncGateway.name);
+      client.off('message', collectMessagesListener);
+      client.close();
+      return;
+    }
+
+    client.off('message', collectMessagesListener);
+    caughtMessages.forEach((message) => client.emit('message', message));
   }
 }
