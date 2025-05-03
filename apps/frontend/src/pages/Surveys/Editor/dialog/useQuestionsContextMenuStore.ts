@@ -176,8 +176,8 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
 
   addNewChoice: () => {
     const { currentChoices, addChoice } = get();
-    const newChoiceTitle = currentChoices.length;
-    const newChoiceName = `choice_${newChoiceTitle}_id-${uuidv4()}`;
+    const newChoiceTitle = `choice-${currentChoices.length}`;
+    const newChoiceName = `${newChoiceTitle}-${uuidv4()}`;
     addChoice(newChoiceName, `${newChoiceTitle}`, 1);
   },
 

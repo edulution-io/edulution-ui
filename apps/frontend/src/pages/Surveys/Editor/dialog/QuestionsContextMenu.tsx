@@ -48,9 +48,7 @@ const QuestionContextMenu = (props: QuestionContextMenuProps) => {
         e.preventDefault();
       }}
     >
-      <DialogFooterButtons
-        handleSubmit={handleClose}
-      />
+      <DialogFooterButtons handleSubmit={handleClose} />
     </form>
   );
 
@@ -62,7 +60,7 @@ const QuestionContextMenu = (props: QuestionContextMenuProps) => {
       title={t('survey.editor.questionSettings.title')}
       body={!isLoading && getDialogBody()}
       footer={!isLoading && getFooter()}
-      desktopContentClassName="max-w-[50%] max-h-[90%] overflow-auto"
+      desktopContentClassName="w-[50%] max-w-[600px] min-w-[350px] max-h-[90%] overflow-auto"
     />
   );
 };
