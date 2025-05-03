@@ -1080,6 +1080,7 @@
     "progress": "Progress...",
     "pressInstall": "Press Install to start",
     "enable": "Enable",
+    "enabled": "Enabled",
     "disable": "Disable",
     "disabled": "Disabled",
     "invalid_url": "Invalid URL",

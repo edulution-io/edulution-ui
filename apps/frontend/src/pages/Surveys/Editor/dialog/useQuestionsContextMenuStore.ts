@@ -12,7 +12,7 @@
 
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
-import { Question } from 'survey-core';
+import { ChoicesRestful, Question } from 'survey-core';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 
@@ -94,10 +94,8 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
       questionType: type || '',
       questionTitle: question?.title || '',
       questionDescription: question?.description || '',
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      useBackendLimits: !!question?.choicesByUrl?.url,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      formerChoices: question?.choices || [],
+      useBackendLimits: !!(question?.choicesByUrl as ChoicesRestful)?.url,
+      formerChoices: (question?.choices as string[]) || [],
       currentChoices: [],
       showOtherItem: !!question?.showOtherItem,
     });
@@ -178,8 +176,9 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
 
   addNewChoice: () => {
     const { currentChoices, addChoice } = get();
-    const newChoiceName = `choice_${currentChoices.length}_id-${uuidv4()}`;
-    addChoice(newChoiceName, '', 0);
+    const newChoiceTitle = currentChoices.length;
+    const newChoiceName = `choice_${newChoiceTitle}_id-${uuidv4()}`;
+    addChoice(newChoiceName, `${newChoiceTitle}`, 1);
   },
 
   removeChoice: (name: string) => {

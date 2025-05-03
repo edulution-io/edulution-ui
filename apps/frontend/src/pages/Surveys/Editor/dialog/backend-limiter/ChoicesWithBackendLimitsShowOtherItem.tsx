@@ -70,7 +70,7 @@ const ChoicesWithBackendLimitsShowOtherItem = () => {
               type="number"
               min="0"
               placeholder={t('common.limit')}
-              value={otherItemsChoiceWithBackendLimit?.limit || 0}
+              value={otherItemsChoiceWithBackendLimit?.limit || 1}
               onChange={(e) =>
                 otherItemsChoiceWithBackendLimit
                   ? setChoiceLimit(SHOW_OTHER_ITEM, Math.max(Number(e.target.value), 0))

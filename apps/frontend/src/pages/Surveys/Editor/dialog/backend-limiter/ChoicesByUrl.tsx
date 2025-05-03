@@ -22,6 +22,7 @@ import { SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import SurveyElement from '@libs/survey/types/TSurveyElement';
 import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 import isQuestionTypeChoiceType from '@libs/survey/utils/isQuestionTypeChoiceType';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
@@ -81,7 +82,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       const currentPage = creator?.currentPage;
       const updatedFormula: SurveyFormula = JSON.parse(JSON.stringify(surveyFormula, null, 2)) as SurveyFormula;
 
-      let correspondingQuestion;
+      let correspondingQuestion: SurveyElement | undefined;
       if (currentPage.isPage) {
         const correspondingPage = updatedFormula?.pages?.find((page) => page.name === currentPage.name);
         correspondingQuestion = correspondingPage?.elements?.find(
@@ -98,11 +99,13 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       if (useBackendLimits) {
         correspondingQuestion.choicesByUrl = null;
         correspondingQuestion.choices = formerChoices || [];
+        correspondingQuestion.hideIfChoicesEmpty = false;
       } else {
         correspondingQuestion.choices = null;
         correspondingQuestion.choicesByUrl = {
           url: `${EDU_API_URL}/${SURVEY_CHOICES}/${TEMPORAL_SURVEY_ID_STRING}/${selectedQuestion.name}`,
         };
+        correspondingQuestion.hideIfChoicesEmpty = true;
       }
 
       creator.JSON = updatedFormula;
@@ -141,7 +144,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
             { 'text-primary-foreground': useBackendLimits },
           )}
         />
-        <p className="ml-2 text-sm">{t(`common.${useBackendLimits ? 'disable' : 'enable'}`)}</p>
+        <p className="ml-2 text-sm">{t(`common.${useBackendLimits ? 'enabled' : 'disabled'}`)}</p>
       </div>
       {useBackendLimits ? (
         <>

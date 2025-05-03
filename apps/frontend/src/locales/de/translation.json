@@ -1081,6 +1081,7 @@
     "progress": "Fortschritt...",
     "pressInstall": "Drücke Installieren um zu Starten.",
     "enable": "Einschalten",
+    "enabled": "Aktiviert",
     "disable": "Ausschalten",
     "disabled": "Deaktiviert",
     "invalid_url": "Ungültige URL",

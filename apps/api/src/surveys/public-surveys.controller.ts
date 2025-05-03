@@ -54,10 +54,8 @@ class PublicSurveysController {
   async getChoices(@Param() params: { surveyId: string; questionName: string }) {
     const { surveyId, questionName } = params;
     if (surveyId === TEMPORAL_SURVEY_ID_STRING) {
-      // eslint-disable-next-line consistent-return
-      return;
+      return [];
     }
-    // eslint-disable-next-line consistent-return
     return this.surveyAnswerService.getSelectableChoices(surveyId, questionName);
   }
 }
