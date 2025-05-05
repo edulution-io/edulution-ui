@@ -97,7 +97,9 @@
   "appstore": {
     "title": "App Store",
     "description": "Here you can add {{ applicationName }} apps.",
-    "chooseIcon": "Choose icon"
+    "chooseIcon": "Choose icon",
+    "uploadIcon": "Upload icon",
+    "dropIconDescription": "Drag an image here or click to select an image. Supported formats: SVG, WEBP"
   },
   "forwarding": {
     "sidebar": "Forwarding"
