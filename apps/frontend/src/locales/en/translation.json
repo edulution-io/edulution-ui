@@ -111,7 +111,7 @@
   "dashboard": {
     "pageTitle": "Dashboard",
     "mobileAccess": {
-      "title": "Mobile File Access",
+      "title": "Mobile Access",
       "manual": "Setup",
       "manualSetup": "Manual setup",
       "setupWithQrCode": "Setup with QR code",
