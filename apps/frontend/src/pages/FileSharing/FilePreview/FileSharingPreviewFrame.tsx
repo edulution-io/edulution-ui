@@ -106,6 +106,7 @@ const FileSharingPreviewFrame = () => {
     setIsEditMode(false);
     resetPreview();
     await setFileIsCurrentlyDisabled(basename, true, 5000);
+    closingRef.current = false;
   };
 
   const { isMobileView } = useMedia();
