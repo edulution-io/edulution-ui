@@ -76,14 +76,7 @@ const createSurveyCreatorComponent = (language = 'en') => {
 
   creator.onElementAllowOperations.add((_, options) => {
     // eslint-disable-next-line no-param-reassign
-    options.allowShowSettings = false;
-  });
-
-  creator.onDefineElementMenuItems.add((_, options) => {
-    const settingsItemIndex = options.items.findIndex((option) => option.iconName === 'icon-settings_16x16');
-    if (settingsItemIndex >= 0) {
-      options.items.splice(settingsItemIndex, 1);
-    }
+    options.allowShowSettings = true;
   });
 
   return creator;

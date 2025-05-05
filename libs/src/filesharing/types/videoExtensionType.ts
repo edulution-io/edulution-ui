@@ -10,10 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const VIDEO_EXTENSIONS = {
-  MP4: 'mp4',
-  MOV: 'mov',
-  WEBM: 'webm',
-} as const;
+import VideoExtensions from '@libs/filesharing/types/videoExtensions';
 
-export default VIDEO_EXTENSIONS;
+type VideoExtension = (typeof VideoExtensions)[keyof typeof VideoExtensions];
+
+export default VideoExtension;

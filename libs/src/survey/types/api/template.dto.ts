@@ -10,9 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import VideoExtensions from '@libs/filesharing/types/videoExtensions';
+import SurveyDto from './survey.dto';
 
-const isVideoExtension = (extension: string | undefined): boolean =>
-  Object.values(VideoExtensions).includes(extension as VideoExtensions);
+interface SurveyTemplateDto {
+  fileName?: string;
+  template: Partial<SurveyDto>;
+}
 
-export default isVideoExtension;
+export default SurveyTemplateDto;
