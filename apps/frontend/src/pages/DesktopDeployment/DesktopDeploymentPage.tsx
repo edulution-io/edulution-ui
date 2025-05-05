@@ -56,7 +56,7 @@ const DesktopDeploymentPage: React.FC = () => {
 
   useEffect(() => {
     if (user) {
-      void postRequestVdi(VirtualMachineOs.WIN10);
+      void postRequestVdi(VirtualMachineOs.WIN11);
     }
   }, [user]);
 
@@ -94,7 +94,7 @@ const DesktopDeploymentPage: React.FC = () => {
 
   const handleReload = () => {
     void authenticate();
-    void postRequestVdi(VirtualMachineOs.WIN10);
+    void postRequestVdi(VirtualMachineOs.WIN11);
   };
 
   return (

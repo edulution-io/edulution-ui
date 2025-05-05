@@ -22,6 +22,7 @@ import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import PageTitle from '@/components/PageTitle';
 import getDisplayName from '@/utils/getDisplayName';
 import useLanguage from '@/hooks/useLanguage';
+import useUserAccounts from '@/hooks/useUserAccounts';
 
 const ForwardingPage: React.FC = () => {
   const { t } = useTranslation();
@@ -34,6 +35,7 @@ const ForwardingPage: React.FC = () => {
   const { appConfigs } = useAppConfigsStore();
 
   const rootPathName = getFromPathName(pathname, 1);
+  useUserAccounts(rootPathName);
 
   useEffect(() => {
     if (isForwarding) {

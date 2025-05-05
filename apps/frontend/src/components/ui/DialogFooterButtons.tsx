@@ -61,7 +61,7 @@ const DialogFooterButtons: React.FC<DialogFooterProps> = ({
           type={submitButtonType}
           onClick={handleSubmit}
         >
-          {t(submitButtonText ?? 'common.submit')}
+          {t(submitButtonText ?? 'common.save')}
         </Button>
       )}
     </div>

@@ -21,6 +21,7 @@ import TApps from '@libs/appconfig/types/appsType';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import useUserAccounts from '@/hooks/useUserAccounts';
 import useFileTableStore from '../Settings/AppConfig/components/useFileTableStore';
 
 const EmbeddedPage: React.FC = () => {
@@ -31,6 +32,8 @@ const EmbeddedPage: React.FC = () => {
   const { appConfigs } = useAppConfigsStore();
 
   const rootPathName = getFromPathName(pathname, 1);
+
+  useUserAccounts(rootPathName);
 
   useEffect(() => {
     void fetchTableContent(rootPathName as TApps);

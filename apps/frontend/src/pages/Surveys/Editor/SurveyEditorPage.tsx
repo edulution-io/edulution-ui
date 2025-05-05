@@ -17,7 +17,9 @@ import { useForm } from 'react-hook-form';
 import { MdClear } from 'react-icons/md';
 import { RiResetLeftLine } from 'react-icons/ri';
 import { zodResolver } from '@hookform/resolvers/zod';
+import useBeforeUnload from '@/hooks/useBeforeUnload';
 import { useTranslation } from 'react-i18next';
+import { TbTemplate } from 'react-icons/tb';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
@@ -29,14 +31,15 @@ import useUserStore from '@/store/UserStore/UserStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useLanguage from '@/hooks/useLanguage';
-import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
-import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import createSurveyCreatorComponent from '@/pages/Surveys/Editor/createSurveyCreatorObject';
-import useBeforeUnload from '@/hooks/useBeforeUnload';
+import TemplateDialog from '@/pages/Surveys/Editor/dialog/TemplateDialog';
+import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
+import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
+import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 
 const SurveyEditorPage = () => {
   const { fetchSelectedSurvey, isFetching, selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
@@ -45,12 +48,13 @@ const SurveyEditorPage = () => {
     setIsOpenSaveSurveyDialog,
     updateOrCreateSurvey,
     isLoading,
-    reset,
+    reset: resetEditorPage,
     storedSurvey,
     updateStoredSurvey,
     resetStoredSurvey,
     uploadImageFile,
   } = useSurveyEditorPageStore();
+  const { reset: resetTemplateStore, isOpenTemplateMenu, setIsOpenTemplateMenu } = useTemplateMenuStore();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -59,7 +63,8 @@ const SurveyEditorPage = () => {
   const { language } = useLanguage();
 
   useEffect(() => {
-    reset();
+    resetEditorPage();
+    resetTemplateStore();
     void fetchSelectedSurvey(surveyId, false);
   }, [surveyId]);
 
@@ -149,10 +154,16 @@ const SurveyEditorPage = () => {
     buttons: [
       SaveButton(() => setIsOpenSaveSurveyDialog(true)),
       {
+        icon: TbTemplate,
+        text: t('survey.editor.templates'),
+        onClick: () => setIsOpenTemplateMenu(!isOpenTemplateMenu),
+      },
+      {
         icon: MdClear,
         text: t('survey.editor.new'),
         onClick: () => {
-          reset();
+          resetEditorPage();
+          resetTemplateStore();
           resetStoredSurvey();
           form.reset(initialFormValues);
           if (creator) {
@@ -165,7 +176,8 @@ const SurveyEditorPage = () => {
         icon: RiResetLeftLine,
         text: t('survey.editor.reset'),
         onClick: () => {
-          reset();
+          resetEditorPage();
+          resetTemplateStore();
           resetStoredSurvey();
           form.reset(initialFormValues);
           if (creator) {
@@ -191,6 +203,12 @@ const SurveyEditorPage = () => {
         )}
       </div>
       <FloatingButtonsBar config={config} />
+      <TemplateDialog
+        form={form}
+        creator={creator}
+        isOpenTemplateMenu={isOpenTemplateMenu}
+        setIsOpenTemplateMenu={setIsOpenTemplateMenu}
+      />
       <SaveSurveyDialog
         form={form}
         isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
