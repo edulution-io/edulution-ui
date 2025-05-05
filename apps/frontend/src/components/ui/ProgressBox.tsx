@@ -19,6 +19,7 @@ interface ProgressBoxProps {
   percent: number;
   title?: string;
   description?: string;
+  statusDescription?: string;
   id: string;
   failed?: number;
   processed?: number;
@@ -26,7 +27,7 @@ interface ProgressBoxProps {
 }
 
 const ProgressBox: React.FC<{ data: ProgressBoxProps }> = ({ data }) => {
-  const { percent, title, description, failed, processed, total } = data;
+  const { percent, title, description, statusDescription, failed, processed, total } = data;
 
   return (
     <div className="flex flex-col gap-2">
@@ -39,9 +40,9 @@ const ProgressBox: React.FC<{ data: ProgressBoxProps }> = ({ data }) => {
 
       {description && <p className="text-sm text-background">{description}</p>}
 
-      {failed && processed && (
+      {statusDescription && failed && processed && (
         <p className="text-sm text-background">
-          {t('filesharing.progressBox.processedInfo', {
+          {t(statusDescription, {
             processed: processed - failed,
             total,
           })}

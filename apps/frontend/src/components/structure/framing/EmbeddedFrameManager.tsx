@@ -14,16 +14,20 @@ import React from 'react';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import useUserAccounts from '@/hooks/useUserAccounts';
 
 const EmbeddedFrameManager = () => {
   const { appConfigs } = useAppConfigsStore();
   const { loadedEmbeddedFrames, activeEmbeddedFrame } = useFrameStore();
+
+  useUserAccounts(activeEmbeddedFrame);
 
   return appConfigs
     .filter((appConfig) => appConfig.appType === APP_INTEGRATION_VARIANT.FRAMED)
     .map((appConfig) => {
       const isOpen = activeEmbeddedFrame === appConfig.name;
       const url = loadedEmbeddedFrames.includes(appConfig.name) ? appConfig.options.url : undefined;
+
       return (
         <iframe
           key={appConfig.name}

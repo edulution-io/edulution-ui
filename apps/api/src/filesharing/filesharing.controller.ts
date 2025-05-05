@@ -34,19 +34,25 @@ import { Request, Response } from 'express';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
-import FilesharingService from './filesharing.service';
+import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
+import FilesharingService from './filesharing.service';
+import WebdavService from '../webdav/webdav.service';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
 @Controller(FileSharingApiEndpoints.BASE)
 class FilesharingController {
-  constructor(private readonly filesharingService: FilesharingService) {}
+  private readonly baseurl = process.env.EDUI_WEBDAV_URL as string;
+
+  constructor(
+    private readonly filesharingService: FilesharingService,
+    private readonly webdavService: WebdavService,
+  ) {}
 
   @Get()
   async getFilesAtPath(
@@ -55,9 +61,9 @@ class FilesharingController {
     @GetCurrentUsername() username: string,
   ) {
     if (type.toUpperCase() === ContentType.FILE.valueOf()) {
-      return this.filesharingService.getFilesAtPath(username, path);
+      return this.webdavService.getFilesAtPath(username, path);
     }
-    return this.filesharingService.getDirAtPath(username, path);
+    return this.webdavService.getDirectoryAtPath(username, path);
   }
 
   @Post()
@@ -71,9 +77,9 @@ class FilesharingController {
     @GetCurrentUsername() username: string,
   ) {
     if (type.toUpperCase() === ContentType.DIRECTORY.toString()) {
-      return this.filesharingService.createFolder(username, path, body.newPath);
+      return this.webdavService.createFolder(username, path, body.newPath);
     }
-    return this.filesharingService.createFile(username, path, body.newPath, '');
+    return this.webdavService.createFile(username, path, body.newPath);
   }
 
   @Put()
@@ -84,19 +90,20 @@ class FilesharingController {
     @Body('name') name: string,
     @GetCurrentUsername() username: string,
   ) {
-    return this.filesharingService.uploadFile(username, path, file, name);
+    const fullPath = `${this.baseurl}${path}/${name}`;
+    return this.webdavService.uploadFile(username, fullPath, file);
   }
 
   @Delete()
   async deleteFile(
-    @Query('path') path: string,
+    @Body('paths') paths: string[],
     @Query('target') target: DeleteTargetType,
     @GetCurrentUsername() username: string,
   ) {
     if (target === DeleteTargetType.FILE_SERVER) {
-      return this.filesharingService.deleteFileAtPath(username, path);
+      return this.filesharingService.deleteFileAtPath(username, paths);
     }
-    return FilesystemService.deleteFile(PUBLIC_DOWNLOADS_PATH, path);
+    return FilesystemService.deleteFiles(PUBLIC_DOWNLOADS_PATH, paths);
   }
 
   @Patch()
@@ -109,7 +116,9 @@ class FilesharingController {
     @GetCurrentUsername() username: string,
   ) {
     const { path, newPath } = body;
-    return this.filesharingService.moveOrRenameResource(username, path, newPath);
+    const originFull = `${this.baseurl}${path}`;
+    const newFull = `${this.baseurl}${newPath}`;
+    return this.webdavService.moveOrRenameResource(username, originFull, newFull);
   }
 
   @Get(FileSharingApiEndpoints.FILE_STREAM)

@@ -110,6 +110,9 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
             type="button"
             onClick={async () => {
               await deleteBulletins([selectedBulletinToEdit]);
+              if (onSubmit) {
+                await onSubmit();
+              }
               setIsCreateBulletinDialogOpen(false);
               setSelectedBulletinToEdit(null);
             }}

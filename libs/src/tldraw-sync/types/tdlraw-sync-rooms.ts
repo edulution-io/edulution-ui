@@ -10,26 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import axios from 'axios';
-import https from 'https';
+import { TLSocketRoom } from '@tldraw/sync-core';
+import { UnknownRecord } from 'tldraw';
 
-class WebdavClientFactory {
-  static createWebdavClient(baseUrl: string, username: string, password: string) {
-    const token = Buffer.from(`${username}:${password}`).toString('base64');
-
-    const httpsAgent = new https.Agent({
-      rejectUnauthorized: false,
-    });
-
-    return axios.create({
-      baseURL: baseUrl,
-      headers: {
-        'Content-Type': 'application/xml',
-        Authorization: `Basic ${token}`,
-      },
-      httpsAgent,
-    });
-  }
+interface RoomState {
+  roomId: string;
+  room: TLSocketRoom<UnknownRecord, void>;
+  needsPersist: boolean;
 }
 
-export default WebdavClientFactory;
+export default RoomState;
