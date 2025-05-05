@@ -315,7 +315,11 @@ class SurveysService implements OnModuleInit {
       throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.NOT_FOUND);
     }
 
-    await this.attachmentService.deleteTemporaryDirectory(user.preferred_username);
+    try {
+      await this.attachmentService.deleteTemporaryDirectory(user.preferred_username);
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.NOT_MODIFIED, error);
+    }
 
     return savedSurvey;
   }

@@ -44,6 +44,10 @@ class AttachmentService {
 
   async deleteTemporaryDirectory(userId: string) {
     const destination = `${this.filePath}/${TEMPORARY_ATTACHMENT_DIRECTORY_NAME}/${userId}`;
+    const exists = await FilesystemService.checkIfFileExist(destination);
+    if (!exists) {
+      return;
+    }
     await this.fileSystemService.deleteDirectory(destination);
   }
 
