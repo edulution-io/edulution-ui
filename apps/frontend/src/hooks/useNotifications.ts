@@ -25,9 +25,10 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import UseBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
-import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import delay from '@libs/common/utils/delay';
 import useSseStore from '@/store/useSseStore';
+import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 
 const useNotifications = () => {
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
@@ -41,8 +42,20 @@ const useNotifications = () => {
   const isBulletinBoardActive = useIsAppActive(APPS.BULLETIN_BOARD);
   const { addBulletinBoardNotification } = UseBulletinBoardStore();
   const { setFilesharingProgress } = useLessonStore();
+  const { setFileOperationProgress } = useFileSharingStore();
   const isClassRoomManagementActive = useIsAppActive(APPS.CLASS_MANAGEMENT);
   const { eventSource } = useSseStore();
+  const isFileSharingActive = useIsAppActive(APPS.FILE_SHARING);
+
+  const clearProgressIfComplete = async (
+    data: FilesharingProgressDto,
+    clearFn: (value: FilesharingProgressDto | null) => void,
+  ) => {
+    if (data.percent === 100 && (!data.failedPaths || data.failedPaths.length === 0)) {
+      await delay(5000);
+      clearFn(null);
+    }
+  };
 
   useDockerContainerEvents();
 
@@ -116,25 +129,52 @@ const useNotifications = () => {
     };
   }, [isConferenceAppActivated]);
 
+  const handleFilesharingProgress =
+    (setter: (v: FilesharingProgressDto | null) => void) => async (e: MessageEvent<string>) => {
+      const data: FilesharingProgressDto = JSON.parse(e.data) as FilesharingProgressDto;
+      setter(data);
+      await clearProgressIfComplete(data, setter);
+    };
+
+  useEffect(() => {
+    if (!isFileSharingActive || !eventSource) {
+      return undefined;
+    }
+
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    const rawDelete = handleFilesharingProgress(setFileOperationProgress);
+
+    const handleDelete = (e: MessageEvent<string>) => {
+      void rawDelete(e);
+    };
+
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES, handleDelete, { signal });
+
+    return () => {
+      controller.abort();
+    };
+  }, [isFileSharingActive]);
+
   useEffect(() => {
     if (!isClassRoomManagementActive || !eventSource) {
       return undefined;
     }
+    const controller = new AbortController();
+    const { signal } = controller;
 
-    const handleFileSharingEvent = (e: MessageEvent<string>) => {
-      void (async () => {
-        const data: FilesharingProgressDto = JSON.parse(e.data) as FilesharingProgressDto;
-        setFilesharingProgress(data);
-        if (data.percent === 100 && data.failedPaths?.length === 0) {
-          await delay(5000).then(() => setFilesharingProgress(null));
-        }
-      })();
+    const rawCollectShare = handleFilesharingProgress(setFilesharingProgress);
+
+    const handleCollectOrShare = (e: MessageEvent<string>) => {
+      void rawCollectShare(e);
     };
 
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_PROGRESS, handleFileSharingEvent);
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_COLLECT_FILES, handleCollectOrShare, { signal });
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_SHARE_FILES, handleCollectOrShare, { signal });
 
     return () => {
-      eventSource.removeEventListener(SSE_MESSAGE_TYPE.FILESHARING_PROGRESS, handleFileSharingEvent);
+      controller.abort();
     };
   }, [isClassRoomManagementActive]);
 

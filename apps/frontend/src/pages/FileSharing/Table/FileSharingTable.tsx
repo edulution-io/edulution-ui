@@ -19,9 +19,11 @@ import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
 import useMedia from '@/hooks/useMedia';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/FileSharingTableColumns';
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
+import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 
 const FileSharingTable = () => {
   const { isMobileView, isTabletView } = useMedia();
+  const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const { setSelectedRows, setSelectedItems, selectedRows, files, isLoading } = useFileSharingStore();
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue =
@@ -38,13 +40,15 @@ const FileSharingTable = () => {
 
   const { appName } = useFileSharingMenuConfig();
 
+  const shouldHideColumns = !(isMobileView || isTabletView || (isFilePreviewVisible && isFilePreviewDocked));
+
   const initialColumnVisibility = useMemo(
     () => ({
-      [FILE_SHARING_TABLE_COLUMNS.LAST_MODIFIED]: !(isMobileView || isTabletView),
-      [FILE_SHARING_TABLE_COLUMNS.SIZE]: !(isMobileView || isTabletView),
-      [FILE_SHARING_TABLE_COLUMNS.TYPE]: !(isMobileView || isTabletView),
+      [FILE_SHARING_TABLE_COLUMNS.LAST_MODIFIED]: shouldHideColumns,
+      [FILE_SHARING_TABLE_COLUMNS.SIZE]: shouldHideColumns,
+      [FILE_SHARING_TABLE_COLUMNS.TYPE]: shouldHideColumns,
     }),
-    [isMobileView, isTabletView],
+    [shouldHideColumns],
   );
 
   return (

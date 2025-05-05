@@ -14,37 +14,44 @@ import { HttpMethods } from '@libs/common/types/http-methods';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import eduApi from '@/api/eduApi';
 import FileActionType from '@libs/filesharing/types/fileActionType';
-import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
+import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
 import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
+import { t } from 'i18next';
 
-const handleDeleteItems = async (data: PathChangeOrCreateProps[], endpoint: string, httpMethod: HttpMethods) => {
-  const promises = data
-    .map((item) => getPathWithoutWebdav(item.path))
-    .filter((filename) => filename !== undefined)
-    .map((filename) =>
-      eduApi[httpMethod](`${buildApiDeletePathUrl(endpoint, filename, DeleteTargetType.FILE_SERVER)}`),
-    );
+const handleDeleteItems = async (pathsToDelete: PathChangeOrCreateDto[], endpoint: string) => {
+  await eduApi.delete(buildApiDeletePathUrl(endpoint, DeleteTargetType.FILE_SERVER), {
+    data: {
+      paths: pathsToDelete.map((item) => getPathWithoutWebdav(item.path)),
+    },
+  });
+};
 
+const sendBatchRequests = async (
+  pathChangeOrCreateDtos: PathChangeOrCreateDto[],
+  endpoint: string,
+  httpMethod: HttpMethods,
+) => {
+  const promises = pathChangeOrCreateDtos.map((pathChangeOrCreateDto) =>
+    eduApi[httpMethod](endpoint, pathChangeOrCreateDto),
+  );
   return Promise.all(promises);
 };
 
-const handleArrayActions = async (data: PathChangeOrCreateProps[], endpoint: string, httpMethod: HttpMethods) => {
-  const promises = data.map((item) => eduApi[httpMethod](endpoint, item));
-  return Promise.all(promises);
-};
-
-const handleArrayData = async (
+const handleBulkFileOperations = async (
   action: FileActionType,
   endpoint: string,
   httpMethod: HttpMethods,
-  data: PathChangeOrCreateProps[],
+  itemsToProcess: PathChangeOrCreateDto[],
+  setFileOperationResult: (success: boolean | undefined, message: string, statusCode: number) => void,
 ) => {
   if (action === FileActionType.DELETE_FILE_FOLDER) {
-    await handleDeleteItems(data, endpoint, httpMethod);
+    await handleDeleteItems(itemsToProcess, endpoint);
+    setFileOperationResult(undefined, t('fileOperationSuccessful'), 200);
   } else if (action === FileActionType.MOVE_FILE_FOLDER || action === FileActionType.RENAME_FILE_FOLDER) {
-    await handleArrayActions(data, endpoint, httpMethod);
+    await sendBatchRequests(itemsToProcess, endpoint, httpMethod);
+    setFileOperationResult(true, t('fileOperationSuccessful'), 200);
   }
 };
 
-export default handleArrayData;
+export default handleBulkFileOperations;

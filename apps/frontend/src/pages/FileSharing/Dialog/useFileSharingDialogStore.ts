@@ -22,7 +22,7 @@ import FileActionType from '@libs/filesharing/types/fileActionType';
 import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
 import ContentType from '@libs/filesharing/types/contentType';
 import handleFileOrCreateFile from '@/pages/FileSharing/Dialog/handleFileAction/handleFileOrCreateFile';
-import handleArrayData from '@/pages/FileSharing/Dialog/handleFileAction/handleArrayData';
+import handleBulkFileOperations from '@/pages/FileSharing/Dialog/handleFileAction/handleBulkFileOperations';
 import handleSingleData from '@/pages/FileSharing/Dialog/handleFileAction/handleSingleData';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
 import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
@@ -56,7 +56,7 @@ interface FileSharingDialogStore {
   action: FileActionType;
   setAction: (action: FileActionType) => void;
   fileOperationResult: WebDavActionResult | undefined;
-  setFileOperationResult: (fileOperationSuccessful: boolean, message: string, status: number) => void;
+  setFileOperationResult: (fileOperationSuccessful: boolean | undefined, message: string, status: number) => void;
   setSubmitButtonIsDisabled: (isSubmitButtonActive: boolean) => void;
 }
 
@@ -109,8 +109,13 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
         await handleFileOrCreateFile(action, endpoint, httpMethod, type, data);
         get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
       } else if (Array.isArray(data)) {
-        await handleArrayData(action, endpoint, httpMethod, data as PathChangeOrCreateProps[]);
-        get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
+        await handleBulkFileOperations(
+          action,
+          endpoint,
+          httpMethod,
+          data as PathChangeOrCreateProps[],
+          get().setFileOperationResult,
+        );
       } else {
         await handleSingleData(action, endpoint, httpMethod, type, data);
         get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);

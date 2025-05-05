@@ -13,11 +13,11 @@
 import { Module } from '@nestjs/common';
 import LmnApiService from './lmnApi.service';
 import { LmnApiController } from './lmnApi.controller';
-import FilesharingModule from '../filesharing/filesharing.module';
+import WebDavModule from '../webdav/webdav.module';
 
 @Module({
   providers: [LmnApiService],
-  imports: [FilesharingModule],
+  imports: [WebDavModule],
   controllers: [LmnApiController],
   exports: [LmnApiService],
 })
