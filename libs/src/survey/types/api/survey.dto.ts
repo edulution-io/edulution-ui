@@ -19,7 +19,7 @@ interface SurveyDto {
   id?: string;
   formula: TSurveyFormula;
   backendLimiters?: {
-    questionId: string;
+    questionName: string;
     choices: ChoiceDto[];
   }[];
   saveNo: number;

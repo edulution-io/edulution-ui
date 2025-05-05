@@ -10,11 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { settings } from 'survey-core';
-import { editorLocalization, localization } from 'survey-creator-core';
-import { SurveyCreator } from 'survey-creator-react';
+import { settings, surveyLocalization } from 'survey-core';
+import { editorLocalization, SurveyCreator } from 'survey-creator-react';
+import 'survey-core/i18n/english';
+import 'survey-core/i18n/german';
+import 'survey-core/i18n/french';
 import 'survey-creator-core/i18n/english';
 import 'survey-creator-core/i18n/german';
+import 'survey-creator-core/i18n/french';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
@@ -24,8 +27,11 @@ import '@/pages/Surveys/theme/custom.creator.css';
 settings.lazyRender.enabled = true;
 
 const createSurveyCreatorComponent = (language = 'en') => {
+  surveyLocalization.supportedLocales = ['en', 'de', 'fr'];
+  surveyLocalization.defaultLocale = language;
+  surveyLocalization.currentLocale = language;
   editorLocalization.defaultLocale = language;
-  localization.currentLocale = language;
+  editorLocalization.currentLocale = language;
 
   const creatorOptions = {
     generateValidJSON: true,

@@ -10,17 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface SurveyElement {
-  type: string;
-  name: string;
-  title?: string;
-  description?: string;
-  choicesOrder?: string;
+import { ChoicesRestful, Question } from 'survey-core';
+
+interface TSurveyQuestion extends Question {
+  choicesByUrl: { url: string } | ChoicesRestful | null;
   choices: string[] | null;
-  choicesByUrl: { url: string } | null;
-  hideIfChoicesEmpty?: boolean;
-  showOtherItem: boolean | null;
-  showNoneItem?: boolean;
 }
 
-export default SurveyElement;
+export default TSurveyQuestion;

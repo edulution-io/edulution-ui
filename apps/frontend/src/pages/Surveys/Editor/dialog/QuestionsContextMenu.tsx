@@ -11,27 +11,43 @@
  */
 
 import React from 'react';
+import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import { SurveyCreatorModel } from 'survey-creator-core';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 import QuestionContextMenuBody from '@/pages/Surveys/Editor/dialog/QuestionsContextMenuBody';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 
 interface QuestionContextMenuProps {
+  form: UseFormReturn<SurveyDto>;
+  creator: SurveyCreatorModel;
   isOpenQuestionContextMenu: boolean;
   setIsOpenQuestionContextMenu: (state: boolean) => void;
+  isLoading: boolean;
   trigger?: React.ReactNode;
 }
 
 const QuestionContextMenu = (props: QuestionContextMenuProps) => {
-  const { trigger, isOpenQuestionContextMenu, setIsOpenQuestionContextMenu } = props;
+  const { form, trigger, isOpenQuestionContextMenu, setIsOpenQuestionContextMenu, creator, isLoading } = props;
 
   const { t } = useTranslation();
 
-  const getDialogBody = () => <QuestionContextMenuBody />;
+  const getDialogBody = () => (
+    <QuestionContextMenuBody
+      form={form}
+      creator={creator}
+    />
+  );
 
   const handleClose = () => setIsOpenQuestionContextMenu(!isOpenQuestionContextMenu);
 
-  const getFooter = () => <DialogFooterButtons handleClose={handleClose} />;
+  const getFooter = () => (
+    <DialogFooterButtons
+      handleClose={handleClose}
+      cancelButtonText="common.close"
+    />
+  );
 
   return (
     <AdaptiveDialog
@@ -39,9 +55,9 @@ const QuestionContextMenu = (props: QuestionContextMenuProps) => {
       trigger={trigger}
       handleOpenChange={() => setIsOpenQuestionContextMenu(!isOpenQuestionContextMenu)}
       title={t('survey.editor.questionSettings.title')}
-      body={getDialogBody()}
-      footer={getFooter()}
-      desktopContentClassName="max-w-[50%] max-h-[90%] overflow-auto"
+      body={!isLoading && getDialogBody()}
+      footer={!isLoading && getFooter()}
+      desktopContentClassName="w-[50%] max-w-[600px] min-w-[350px] max-h-[90%] overflow-auto"
     />
   );
 };
