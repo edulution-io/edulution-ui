@@ -160,7 +160,6 @@ class SurveysService implements OnModuleInit {
     return this.createSurvey(surveyDto, currentUser);
   }
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async createTemplate(surveyTemplateDto: SurveyTemplateDto): Promise<void> {
     let filename = surveyTemplateDto.fileName;
     if (!filename) {
@@ -168,7 +167,11 @@ class SurveysService implements OnModuleInit {
       filename = `${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}-${date.getHours()}:${date.getMinutes()}-${uuidv4()}.json`;
     }
     const templatePath = join(SURVEYS_TEMPLATE_PATH, filename);
-    await this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);
+    try {
+      await this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);
+    } catch (error) {
+      Logger.error(error, SurveysService.name);
+    }
     return FilesystemService.writeFile(templatePath, JSON.stringify(surveyTemplateDto.template, null, 2));
   }
 
