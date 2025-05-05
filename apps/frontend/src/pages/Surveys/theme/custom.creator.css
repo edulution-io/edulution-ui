@@ -3,6 +3,10 @@
     display: none !important;
   }
 
+  .svc-carry-forward-panel {
+    display: none;
+  }
+
   .svc-top-bar,
   .svc-tabbed-menu,
   .svc-tabbed-menu-wrapper,
