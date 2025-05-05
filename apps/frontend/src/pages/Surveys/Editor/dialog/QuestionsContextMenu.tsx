@@ -31,15 +31,7 @@ const QuestionContextMenu = (props: QuestionContextMenuProps) => {
 
   const handleClose = () => setIsOpenQuestionContextMenu(!isOpenQuestionContextMenu);
 
-  const getFooter = () => (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-      }}
-    >
-      <DialogFooterButtons handleClose={handleClose} />
-    </form>
-  );
+  const getFooter = () => <DialogFooterButtons handleClose={handleClose} />;
 
   return (
     <AdaptiveDialog
