@@ -44,7 +44,7 @@ import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 import CreateWorkingDirectoryDto from '@libs/classManagement/types/createWorkingDirectoryDto';
 import convertWindowsToUnixPath from '@libs/filesharing/utils/convertWindowsToUnixPath';
 import UsersService from '../users/users.service';
-import FilesharingService from '../filesharing/filesharing.service';
+import WebdavService from '../webdav/webdav.service';
 
 @Injectable()
 class LmnApiService {
@@ -56,7 +56,7 @@ class LmnApiService {
 
   constructor(
     private readonly userService: UsersService,
-    private readonly fileSharingService: FilesharingService,
+    private readonly webdavService: WebdavService,
   ) {
     const httpsAgent = new https.Agent({
       rejectUnauthorized: false,
@@ -705,7 +705,7 @@ class LmnApiService {
     await Promise.all(
       members.map(async (member) => {
         const unixPath = convertWindowsToUnixPath(member.homeDirectory);
-        return this.fileSharingService.createFolder(member.name, unixPath, teacher);
+        return this.webdavService.createFolder(member.name, unixPath, teacher);
       }),
     );
   }

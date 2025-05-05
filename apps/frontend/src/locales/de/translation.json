@@ -116,7 +116,9 @@
       "title": "Quotas",
       "globalQuota": "Cloudquota berechnet ",
       "mailQuota": "Mailquota berechnet",
-      "mibibyte": "MiB"
+      "mibibyte": "MiB",
+      "remainingLow": "Verbleibendes Quota gering – {{free}} %",
+      "remainingVeryLow": "Verbleibendes Quota sehr gering – {{free}} %"
     }
   },
   "auth": {
@@ -287,6 +289,15 @@
     "nosurveys": "Keine offenen Umfragen",
     "nobulletinboard": "Keine neuen Mitteilungen"
   },
+  "mountpoints": {
+    "home": "Home",
+    "examusers": "Klassenarbeiten",
+    "projects": "Projekte",
+    "iso": "ISO",
+    "programs": "Programme",
+    "shares": "Freigaben",
+    "students-home": "Schüler-Home"
+  },
   "filesharing": {
     "filterPlaceHolderText": "Suche nach Dateiname",
     "title": "FILESHARING",
@@ -327,9 +338,15 @@
     },
     "progressBox": {
       "info": "Info",
-      "title": "Dateien werden ausgeteilt",
-      "processedInfo": "{{processed}} von {{total}} Dateien erfolgreich ausgeteilt",
-      "fileInfo": "Datei {{filename}} wird an {{studentName}} ausgeteilt",
+      "titleSharing": "Dateien werden ausgeteilt",
+      "titleCollecting": "Dateien werden eingesammelt",
+      "titleDeleting": "Dateien werden gelöscht",
+      "processedSharingInfo": "{{processed}} von {{total}} Dateien erfolgreich ausgeteilt",
+      "processedCollectingInfo": "{{processed}} von {{total}} Dateien erfolgreich eingesammelt",
+      "processedDeletingInfo": "{{processed}} von {{total}} Dateien erfolgreich gelöscht",
+      "fileInfoSharing": "Datei {{filename}} wird an {{studentName}} ausgeteilt",
+      "fileInfoCollecting": "Datei {{filename}} wird von {{studentName}} eingesammelt",
+      "fileInfoDeleting": "Datei {{filename}} wird gelöscht",
       "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden"
     },
     "tooltips": {
@@ -469,7 +486,7 @@
     "copyOrCut": "Möchtest du die Dateien ausschneiden oder kopieren?",
     "filesShared": "Dateien geteilt",
     "filesSharingStarted": "Dateien werden geteilt",
-    "filesCollected": "Dateien eingesammelt",
+    "filesCollectingStarted": "Dateien werden eingesammelt",
     "failDialog": {
       "title": "Datei {{file}} konnte nicht geteilt werden",
       "reasonMissing": "Die Datei ist möglicherweise nicht mehr vorhanden oder wurde umbenannt.",
@@ -860,6 +877,8 @@
   "usersettings": {
     "title": "MEIN PROFIL",
     "sidebar": "Mein Profil",
+    "rowSelected": "{{selected}} von {{total}} Konten ausgewählt",
+    "rowsSelected": "{{selected}} von {{total}} Konten ausgewählt",
     "details": {
       "title": "Benutzerdetails",
       "description": "Hier können Sie Ihre Benutzerdaten einsehen und teilweise bearbeiten.",
@@ -892,7 +911,19 @@
         "confirmPassword": "Passwort bestätigen",
         "confirm": "Passwort ändern",
         "passwordChangedSuccessfully": "Passwort erfolgreich geändert"
-      }
+      },
+      "filterPlaceHolderText": "Suche nach Anwendung",
+      "passwordSafe": "Passwort-Tresor",
+      "passwordSafeInfo": "Hier kannst du deine Zugangsdaten für verschiedene Anwendungen speichern. Diese werden verschlüsselt und sind nur für dich sichtbar.",
+      "addUserAccount": "Konto hinzufügen",
+      "accountId": "Konto-ID",
+      "accountData": "Zugangsdaten",
+      "safePin": "Tresor-PIN",
+      "firstEnterSafePin": "Bitte Tresor-PIN festlegen.",
+      "enterSavePin": "Bitte Tresor-PIN eingeben.",
+      "wrongSafePin": "PIN ist falsch.",
+      "enterSafePin": "Bitte PIN zum Entschlüsseln eingeben.",
+      "safePinDescription": "Zur Verschlüsselung der Zugangsdaten wird eine PIN benötigt. Diese PIN ist für niemanden sichtbar und wird nicht gespeichert."
     },
     "mails": {
       "title": "E-Mail"
@@ -962,6 +993,11 @@
     "infoQrCodeExpired": "Zeit für Login mit edulution.io APP abgelaufen."
   },
   "common": {
+    "guest": "Gast",
+    "ok": "OK",
+    "next": "Weiter",
+    "back": "Zurück",
+    "confirm": "Bestätigen",
     "share": "Teilen",
     "savedToClipboard": "In die Zwischenablage kopiert.",
     "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden.",
@@ -1077,6 +1113,7 @@
     "required": "Erforderlich",
     "download": "Herunterladen",
     "template": "Vorlage",
+    "application": "Anwendung",
     "preview": "Vorschau",
     "format": "Formatieren",
     "upload": "Hochladen",
@@ -1113,6 +1150,7 @@
     }
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
+  "fileOperationStarted": "Dateioperation gestartet",
   "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
   "fileSharingTable": {
     "filename": "Dateiname",

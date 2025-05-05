@@ -10,30 +10,37 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useMemo } from 'react';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import useLanguage from '@/hooks/useLanguage';
-import COLOR_SCHEME from '@libs/ui/constants/colorScheme';
-import { Editor } from 'tldraw';
+import useUserStore from '@/store/UserStore/UserStore';
+import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/apiEndpoints';
+import EDU_API_WEBSOCKET_URL from '@libs/common/constants/eduApiWebsocketUrl';
+import ROOM_ID_PARAM from '@libs/tldraw-sync/constants/roomIdParam';
+import { useTranslation } from 'react-i18next';
 
-const TLDraw = lazy(() =>
-  Promise.all([import('tldraw'), import('tldraw/tldraw.css')]).then(([module]) => ({
-    default: module.Tldraw,
-  })),
-);
+const TldrawWithSync = lazy(() => import('./TLDrawWithSync'));
 
 const Whiteboard = () => {
   const { language } = useLanguage();
+  const { t } = useTranslation();
+  const { user } = useUserStore();
 
-  const handleMount = (editor: Editor) => {
-    editor.user.updateUserPreferences({ colorScheme: COLOR_SCHEME, locale: language });
-  };
+  const WS_BASE_URL = `${EDU_API_WEBSOCKET_URL}/${TLDRAW_SYNC_ENDPOINTS.BASE}`;
+
+  const roomId = user?.username;
+
+  const uri = useMemo(() => `${WS_BASE_URL}?${ROOM_ID_PARAM}=${roomId}`, [roomId]);
 
   return (
     <PageLayout isFullScreen>
-      <Suspense fallback={<CircleLoader className="m-auto" />}>
-        <TLDraw onMount={handleMount} />
+      <Suspense fallback={<CircleLoader className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />}>
+        <TldrawWithSync
+          uri={uri}
+          userLanguage={language}
+          userName={user?.lastName ?? t('common.guest')}
+        />
       </Suspense>
     </PageLayout>
   );

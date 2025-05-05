@@ -62,6 +62,7 @@ export default defineConfig(({ mode }) => {
         '/edu-api': {
           target: env.VITE_EDU_API_URL,
           changeOrigin: true,
+          ws: true,
           secure: false,
           headers: {
             Origin: env.VITE_EDU_API_URL,
