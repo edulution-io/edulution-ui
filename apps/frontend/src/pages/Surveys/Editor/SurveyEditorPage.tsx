@@ -73,6 +73,7 @@ const SurveyEditorPage = () => {
   const { language } = useLanguage();
 
   const handleReset = () => {
+    resetStoredSurvey();
     resetEditorPage();
     resetTemplateStore();
     resetQuestionsContextMenu();
@@ -166,6 +167,11 @@ const SurveyEditorPage = () => {
     });
   }, [creator, form, language]);
 
+  const handleNavigateToCreatedSurveys = () => {
+    navigate(`/${CREATED_SURVEYS_PAGE}`, { replace: false });
+    window.location.reload();
+  };
+
   const handleSaveSurvey = async () => {
     if (!creator) return;
 
@@ -183,7 +189,7 @@ const SurveyEditorPage = () => {
       resetStoredSurvey();
 
       toast.success(t('survey.editor.saveSurveySuccess'));
-      navigate(`/${CREATED_SURVEYS_PAGE}`);
+      handleNavigateToCreatedSurveys();
     }
   };
 
