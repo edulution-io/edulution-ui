@@ -17,9 +17,12 @@ import MoveContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveCo
 import ShareCollectDialogProps from '@libs/classManagement/types/shareCollectDialogProps';
 import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 
 const ShareFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
   const { homePath } = useUserPath();
+  const { moveOrCopyItemToPath } = useFileSharingDialogStore();
+
   const getDialogBody = () => (
     <MoveContentDialogBody
       showAllFiles
@@ -32,6 +35,7 @@ const ShareFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, on
       handleClose={onClose}
       handleSubmit={action}
       submitButtonText={`classmanagement.${title}`}
+      disableSubmit={moveOrCopyItemToPath?.filename === undefined}
     />
   );
 

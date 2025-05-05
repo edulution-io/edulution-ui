@@ -17,6 +17,7 @@ import PasswordChangeForm from '@/pages/UserSettings/Security/components/Passwor
 import Separator from '@/components/ui/Separator';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import AddMfaForm from './components/AddMfaForm';
+import UserAccountsTable from './components/UserAccountsTable';
 
 const UserSettingsSecurityPage: React.FC = () => {
   const { t } = useTranslation();
@@ -32,6 +33,8 @@ const UserSettingsSecurityPage: React.FC = () => {
       <PasswordChangeForm />
       <Separator className="my-1 bg-muted" />
       <AddMfaForm />
+      <Separator className="my-1 bg-muted" />
+      <UserAccountsTable />
     </PageLayout>
   );
 };

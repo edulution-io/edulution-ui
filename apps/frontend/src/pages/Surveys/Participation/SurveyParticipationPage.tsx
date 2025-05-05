@@ -34,7 +34,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
   const { isPublic = false } = props;
   const { surveyId } = useParams();
   const { selectedSurvey, fetchSelectedSurvey, isFetching } = useSurveyTablesPageStore();
- 
+
   // console.log('useParams', 'surveyId', surveyId)
   // console.log('useSurveyTablesPageStore', 'selectedSurvey', selectedSurvey)
 
@@ -54,22 +54,29 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
 
   console.log(surveyId);
   useEffect(() => {
-    console.log('eq?:', surveyId === selectedSurvey?._id?.toString(), '  surveyId:', surveyId, '  selectedSurvey:', selectedSurvey?._id?.toString())
+    console.log(
+      'eq?:',
+      surveyId === selectedSurvey?._id?.toString(),
+      '  surveyId:',
+      surveyId,
+      '  selectedSurvey:',
+      selectedSurvey?._id?.toString(),
+    );
     // console.log('useSurveyTablesPageStore', 'selectedSurvey', selectedSurvey?._id?.toString())
     if (surveyId !== selectedSurvey?._id?.toString()) {
-      fetchSelectedSurvey(surveyId, isPublic)
+      fetchSelectedSurvey(surveyId, isPublic);
     } else {
-      console.log('survey:', selectedSurvey)
+      console.log('survey:', selectedSurvey);
     }
   }, [surveyId]);
 
   const form = useForm<{ publicUserName: string; publicUserId?: string }>({
     mode: 'onSubmit',
     defaultValues: { publicUserName: '' },
-    errors: { publicUserName: undefined, publicUserId: undefined }, 
+    errors: { publicUserName: undefined, publicUserId: undefined },
   });
 
-/*
+  /*
   useEffect(() => {
     console.log('Error on publicUserName', form.formState.errors.publicUserName);
   }, [form.formState.errors.publicUserName]);
@@ -96,7 +103,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
     });
   }, [user]);
 */
-  
+
   /*
   useEffect(() => {
     if (selectedSurvey?.id && attendee && (user || attendee.publicUserId)) {
@@ -108,7 +115,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
   const handleAccessSurvey = () => {
     const isPublicUserNameValid = form.formState.errors.publicUserName === undefined;
     const isPublicUserIdValid = form.formState.errors.publicUserName === undefined;
-    
+
     if (!attendee || !selectedSurvey?.id || !isPublicUserNameValid || !isPublicUserIdValid) {
       setIsUserAuthenticated(false);
       return;
@@ -138,7 +145,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
         publicUserName: value,
         publicUserId: undefined,
         label: value,
-        value: value,
+        value,
       });
     } else if (publicUserId && uuidv4.valid(publicUserId)) {
       const username = createValidPublicUserId(value, publicUserId);
@@ -165,7 +172,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
       form.clearErrors('publicUserName');
     }
     form.setValue('publicUserName', value);
-  }
+  };
   const handleChangePublicUserId = (value: string) => {
     const { publicUserName } = form.getValues();
     if (!value) {
@@ -207,7 +214,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
     }
     form.setError('publicUserId', new Error(SurveyErrorMessages.MISSING_ID_ERROR));
     form.setValue('publicUserId', value);
-  } 
+  };
 
   if (publicUserLogin) {
     return (
