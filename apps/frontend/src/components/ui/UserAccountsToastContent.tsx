@@ -57,7 +57,10 @@ const UserAccountsToastContent: React.FC<UserAccountsToastContentProps> = ({
               value={userAccount.accountUser}
               readOnly
               className="cursor-pointer"
-              onClick={() => copyToClipboard(userAccount.accountUser)}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                copyToClipboard(userAccount.accountUser);
+              }}
               icon={<MdFileCopy />}
             />
             <PasswordCell
