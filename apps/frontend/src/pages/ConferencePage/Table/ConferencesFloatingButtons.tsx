@@ -24,6 +24,8 @@ import JoinButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConf
 import StartButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/startButton';
 import StopButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/stopButton';
 import { toast } from 'sonner';
+import delay from '@libs/common/utils/delay';
+
 import { useTranslation } from 'react-i18next';
 
 const ConferencesFloatingButtons: React.FC = () => {
@@ -52,7 +54,10 @@ const ConferencesFloatingButtons: React.FC = () => {
     }
 
     if (wasConferenceStateToggled) {
+      await delay(5000);
       toast.info(t(`conferences.${isRunning ? 'stopped' : 'started'}`));
+    } else {
+      setJoinConferenceUrl('');
     }
 
     await getConferences();
