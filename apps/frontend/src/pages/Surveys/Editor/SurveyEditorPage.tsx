@@ -46,13 +46,13 @@ const SurveyEditorPage = () => {
     setIsOpenSaveSurveyDialog,
     updateOrCreateSurvey,
     isLoading,
-    reset,
+    reset: resetEditorPage,
     storedSurvey,
     updateStoredSurvey,
     resetStoredSurvey,
     uploadImageFile,
   } = useSurveyEditorPageStore();
-  const { isOpenTemplateMenu, setIsOpenTemplateMenu } = useTemplateMenuStore();
+  const { reset: resetTemplateStore, isOpenTemplateMenu, setIsOpenTemplateMenu } = useTemplateMenuStore();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -61,7 +61,8 @@ const SurveyEditorPage = () => {
   const { language } = useLanguage();
 
   useEffect(() => {
-    reset();
+    resetEditorPage();
+    resetTemplateStore();
     void fetchSelectedSurvey(surveyId, false);
   }, [surveyId]);
 

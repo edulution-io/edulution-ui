@@ -19,7 +19,7 @@ import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
 
 interface TemplateMenuStore {
-  resetTemplateStore: () => void;
+  reset: () => void;
 
   isOpenTemplateMenu: boolean;
   setIsOpenTemplateMenu: (state: boolean) => void;
@@ -44,7 +44,7 @@ const TemplateMenuStoreInitialState = {
 
 const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
   ...TemplateMenuStoreInitialState,
-  resetTemplateStore: () => set(TemplateMenuStoreInitialState),
+  reset: () => set(TemplateMenuStoreInitialState),
 
   setIsOpenTemplateMenu: (state: boolean) => set({ isOpenTemplateMenu: state }),
 

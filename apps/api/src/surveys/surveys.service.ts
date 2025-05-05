@@ -169,10 +169,15 @@ class SurveysService implements OnModuleInit {
     const templatePath = join(SURVEYS_TEMPLATE_PATH, filename);
     try {
       await this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);
+      return await FilesystemService.writeFile(templatePath, JSON.stringify(surveyTemplateDto.template, null, 2));
     } catch (error) {
-      Logger.error(error, SurveysService.name);
+      throw new CustomHttpException(
+        CommonErrorMessages.FILE_WRITING_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        SurveysService.name,
+      );
     }
-    return FilesystemService.writeFile(templatePath, JSON.stringify(surveyTemplateDto.template, null, 2));
   }
 
   async serveTemplateNames(): Promise<string[]> {
