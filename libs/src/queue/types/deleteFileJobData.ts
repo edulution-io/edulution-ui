@@ -10,18 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import getFileExtension from '@libs/filesharing/utils/getFileExtension';
-import isImageExtension from '@libs/filesharing/utils/isImageExtension';
-import isVideoExtension from '@libs/filesharing/utils/isVideoExtension';
-import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
+interface DeleteFileJobData {
+  username: string;
+  originFilePath: string;
+  total: number;
+  processed: number;
+}
 
-const isFileValid = (file: DirectoryFileDTO | null): boolean => {
-  if (!file) {
-    return false;
-  }
-  const extension = getFileExtension(file.filename);
-  return isOnlyOfficeDocument(file.filename) || isImageExtension(extension) || isVideoExtension(extension);
-};
-
-export default isFileValid;
+export default DeleteFileJobData;

@@ -17,17 +17,32 @@ import APPS from '@libs/appconfig/constants/apps';
 import FilesharingController from './filesharing.controller';
 import FilesharingService from './filesharing.service';
 import OnlyofficeService from './onlyoffice.service';
-import FilesharingConsumer from './filesharing.consumer';
+import DuplicateFileConsumer from './consumers/duplicateFile.consumer';
+import QueueService from '../queue/queue.service';
+import CollectFileConsumer from './consumers/collectFile.consumer';
+import DeleteFileConsumer from './consumers/deleteFile.consumer';
+import WebdavService from '../webdav/webdav.service';
+import AppConfigModule from '../appconfig/appconfig.module';
 
 @Module({
   imports: [
     HttpModule,
+    AppConfigModule,
     BullModule.registerQueue({
       name: APPS.FILE_SHARING,
     }),
   ],
   controllers: [FilesharingController],
-  providers: [FilesharingService, OnlyofficeService, FilesharingConsumer],
+  providers: [
+    FilesharingService,
+
+    OnlyofficeService,
+    QueueService,
+    DuplicateFileConsumer,
+    CollectFileConsumer,
+    DeleteFileConsumer,
+    WebdavService,
+  ],
   exports: [FilesharingService],
 })
 export default class FilesharingModule {}

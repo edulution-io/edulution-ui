@@ -104,17 +104,8 @@ class FilesystemService {
       const response = await axios.get<ArrayBuffer>(url, { responseType: 'arraybuffer' });
       const filePath = join(PUBLIC_DOWNLOADS_PATH, filename);
 
-      try {
-        await fsPromises.mkdir(dirname(filePath), { recursive: true });
-      } catch (error) {
-        throw new CustomHttpException(CommonErrorMessages.DIRECTORY_CREATION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-
-      try {
-        await fsPromises.writeFile(filePath, new Uint8Array(response.data));
-      } catch (error) {
-        throw new CustomHttpException(CommonErrorMessages.FILE_WRITING_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
+      await fsPromises.mkdir(dirname(filePath), { recursive: true });
+      await fsPromises.writeFile(filePath, new Uint8Array(response.data));
 
       const fileBuffer = await fsPromises.readFile(filePath);
       const mimetype: string = (response.headers['content-type'] as string) || 'application/octet-stream';
@@ -149,6 +140,10 @@ class FilesystemService {
         filePath,
       );
     }
+  }
+
+  static async deleteFiles(path: string, fileNames: string[]): Promise<void> {
+    await Promise.all(fileNames.map((fileName) => FilesystemService.deleteFile(path, fileName)));
   }
 
   async fileLocation(
@@ -212,8 +207,7 @@ class FilesystemService {
       await fsPromises.writeFile(filePath, content);
       Logger.log(`${filePath} created.`, FilesystemService.name);
     } catch (error) {
-      Logger.error(`Error: ${filePath} is not created.`, FilesystemService.name);
-      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(CommonErrorMessages.FILE_WRITING_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

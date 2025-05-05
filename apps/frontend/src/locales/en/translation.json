@@ -83,6 +83,17 @@
       "attachmentDeletionFailed": "Failed to delete an attachment"
     }
   },
+
+  "mountpoints": {
+    "home": "Home",
+    "examusers": "Exams",
+    "projects": "Projects",
+    "iso": "ISO",
+    "programs": "Programs",
+    "shares": "Shares",
+    "students-home": "Students-Home"
+  },
+
   "appstore": {
     "title": "App Store",
     "description": "Here you can add {{ applicationName }} apps.",
@@ -116,7 +127,9 @@
       "title": "Quotas",
       "globalQuota": "Cloud quota calculated",
       "mailQuota": "Mail quota calculated",
-      "mibibyte": "MiB"
+      "mibibyte": "MiB",
+      "remainingLow": "Remaining quota low – {{free}} %",
+      "remainingVeryLow": "Remaining quota very low – {{free}} %"
     }
   },
   "auth": {
@@ -334,9 +347,15 @@
     },
     "progressBox": {
       "info": "Info",
-      "title": "Distributing files",
-      "processedInfo": "{{processed}} out of {{total}} files distributed successfully",
-      "fileInfo": "File {{filename}} is being distributed to {{studentName}}",
+      "titleSharing": "Distributing files",
+      "titleCollecting": "Collecting files",
+      "titleDeleting": "Files are being deleted",
+      "processedSharingInfo": "{{processed}} out of {{total}} files distributed successfully",
+      "processedCollectingInfo": "{{processed}} out of {{total}} files collected successfully",
+      "processedDeletingInfo": "{{processed}} out of {{total}} files deleted successfully",
+      "fileInfoSharing": "File {{filename}} is being distributed to {{studentName}}",
+      "fileInfoCollecting": "File {{filename}} is being collected to {{studentName}}",
+      "fileInfoDeleting": "File {{filename}} is being deleted",
       "errorInfo": "{{failed}} files could not be handed out"
     }
   },
@@ -489,7 +508,7 @@
     "copyOrCut": "Would you like to cut or copy the files?",
     "filesShared": "Files shared",
     "filesSharingStarted": "Sharing files started",
-    "filesCollected": "Files collected"
+    "filesCollectingStarted": "Collecting files started"
   },
   "select": "Select",
   "selectAll": "Select all",
@@ -523,9 +542,23 @@
       "uploadImageSuccess": "Saved the image successfully.",
       "uploadImageError": "Error on Image Upload, please retry later.",
       "saveSurveySuccess": "Saved the survey.",
-      "abort": "Revert all changes",
+      "reset": "Reset",
       "addDescription": "Add a description",
-      "expectingUserInput": "Expecting the user to answer here, ... "
+      "expectingUserInput": "Expecting the user to answer here, ... ",
+      "templates": "Templates",
+      "templateMenu": {
+        "fetch": "Choose one of the following templates.",
+        "submit": "Save Survey as template.",
+        "title": "Templates store/load"
+      },
+      "questionSettings": {
+        "settings": "Settings",
+        "title": "Question settings",
+        "questionTitle": "Title",
+        "addQuestionTitle": "Add a title",
+        "questionDescription": "Description",
+        "addQuestionDescription": "Add a description"
+      }
     },
     "participate": {
       "saveAnswerSuccess": "Saved the answer."
@@ -853,6 +886,8 @@
   "usersettings": {
     "title": "MY PROFILE",
     "sidebar": "My Profile",
+    "rowSelected": "{{selected}} of {{total}} accounts selected",
+    "rowsSelected": "{{selected}} of {{total}} accounts selected",
     "details": {
       "title": "User details",
       "description": "Here you see and edit some of your personal information.",
@@ -885,7 +920,19 @@
         "confirmPassword": "Confirm Password",
         "confirm": "Change Password",
         "passwordChangedSuccessfully": "Password changed successfully"
-      }
+      },
+      "filterPlaceHolderText": "Search for App",
+      "passwordSafe": "Password Safe",
+      "passwordSafeInfo": "Here you can save your access data for various applications. These are encrypted and are only visible to you.",
+      "addUserAccount": "Add account",
+      "accountId": "Account ID",
+      "accountData": "Login Data",
+      "safePin": "Safe PIN",
+      "firstEnterSafePin": "Please set the safe PIN.",
+      "enterSavePin": "Please enter your safe PIN.",
+      "wrongSafePin": "Wrong PIN Number",
+      "enterSafePin": "Please enter your PIN number for decryption",
+      "safePinDescription": "A PIN is required to encrypt the access data. This PIN isn't visible for anyone else and is not saved."
     },
     "mails": {
       "title": "Email"
@@ -956,6 +1003,11 @@
   },
   "edit": "Edit",
   "common": {
+    "guest": "Guest",
+    "ok": "OK",
+    "next": "Next",
+    "back": "Back",
+    "confirm": "Confirm",
     "share": "Share",
     "savedToClipboard": "Saved to clipboard.",
     "savedToClipboardError": "Unable to save into clipboard.",
@@ -1020,6 +1072,7 @@
     "login": "Login",
     "username": "Username",
     "password": "Password",
+    "load": "Load",
     "loading": "Loading...",
     "overview": "Overview",
     "create": "Create",
@@ -1074,7 +1127,8 @@
     "preview": "Preview",
     "format": "Format",
     "upload": "Upload",
-    "mode": "Mode"
+    "mode": "Mode",
+    "application": "Application"
   },
   "form": {
     "path": "Path",
@@ -1107,6 +1161,7 @@
     }
   },
   "fileOperationSuccessful": "File operation successful",
+  "fileOperationStarted": "File operation started",
   "unknownErrorOccurred": "An unknown error occurred",
   "fileSharingTable": {
     "filename": "Filename",

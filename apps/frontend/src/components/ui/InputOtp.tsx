@@ -43,8 +43,8 @@ InputOTPGroup.displayName = 'InputOTPGroup';
 
 const InputOTPSlot = React.forwardRef<
   React.ElementRef<'div'>,
-  React.ComponentPropsWithoutRef<'div'> & { index: number; variant?: 'default' | 'dialog' }
->(({ index, className, variant = 'default', ...props }, ref) => {
+  React.ComponentPropsWithoutRef<'div'> & { index: number; variant?: 'default' | 'dialog'; type?: 'default' | 'pin' }
+>(({ index, className, variant = 'default', type = 'default', ...props }, ref) => {
   const inputOTPContext = React.useContext(OTPInputContext);
   const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index];
 
@@ -60,7 +60,7 @@ const InputOTPSlot = React.forwardRef<
       )}
       {...props}
     >
-      {char}
+      {type === 'pin' && char ? '•' : char}
       {hasFakeCaret && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <div

@@ -10,18 +10,22 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { join } from 'path';
 import { Response } from 'express';
+import { v4 as uuidv4 } from 'uuid';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import SURVEYS_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplatePath';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import SurveyPage from '@libs/survey/types/TSurveyPage';
 import SurveyElement from '@libs/survey/types/TSurveyElement';
@@ -31,12 +35,14 @@ import GroupsService from '../groups/groups.service';
 import surveysMigrationsList from './migrations/surveysMigrationsList';
 import MigrationService from '../migration/migration.service';
 import { Survey, SurveyDocument } from './survey.schema';
+import FilesystemService from '../filesystem/filesystem.service';
 import AttachmentService from '../common/file-attachment/attachment.service';
 
 @Injectable()
 class SurveysService implements OnModuleInit {
   constructor(
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
+    private fileSystemService: FilesystemService,
     private readonly groupsService: GroupsService,
     private readonly sseService: SseService,
     private readonly attachmentService: AttachmentService,
@@ -223,6 +229,37 @@ class SurveysService implements OnModuleInit {
     return Promise.all(updatePromises);
   }
 
+  async createTemplate(surveyTemplateDto: SurveyTemplateDto): Promise<void> {
+    let filename = surveyTemplateDto.fileName;
+    if (!filename) {
+      const date = new Date();
+      filename = `${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}-${date.getHours()}:${date.getMinutes()}-${uuidv4()}.json`;
+    }
+    const templatePath = join(SURVEYS_TEMPLATE_PATH, filename);
+    try {
+      await this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);
+      return await FilesystemService.writeFile(templatePath, JSON.stringify(surveyTemplateDto.template, null, 2));
+    } catch (error) {
+      throw new CustomHttpException(
+        CommonErrorMessages.FILE_WRITING_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        SurveysService.name,
+      );
+    }
+  }
+
+  async serveTemplateNames(): Promise<string[]> {
+    return this.fileSystemService.getAllFilenamesInDirectory(SURVEYS_TEMPLATE_PATH);
+  }
+
+  async serveTemplate(fileName: string, res: Response): Promise<Response> {
+    const templatePath = join(SURVEYS_TEMPLATE_PATH, fileName);
+    const fileStream = await this.fileSystemService.createReadStream(templatePath);
+    fileStream.pipe(res);
+    return res;
+  }
+
   async updatePages(
     username: string,
     surveyId: string,
@@ -295,6 +332,7 @@ class SurveysService implements OnModuleInit {
     return this.attachmentService.servePersistentAttachment(pathWithIds, fileName, res);
   }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async onSurveyRemoval(surveyIds: string[]): Promise<void> {
     return this.attachmentService.deletePermanentDirectories(surveyIds);
   }

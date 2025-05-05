@@ -15,17 +15,30 @@ import UserDto from '@libs/user/types/user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import CustomHttpException from '@libs/error/CustomHttpException';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
+import UserAccountDto from '@libs/user/types/userAccount.dto';
+import { EDU_API_USERS_ENDPOINT, EDU_API_USER_ACCOUNTS_ENDPOINT } from '@libs/user/constants/usersApiEndpoints';
 import UsersService from './users.service';
 import UpdateUserDto from './dto/update-user.dto';
 import GetToken from '../common/decorators/getToken.decorator';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentSchool from '../common/decorators/getCurrentSchool.decorator';
 
-@ApiTags('users')
+@ApiTags(EDU_API_USERS_ENDPOINT)
 @ApiBearerAuth()
-@Controller('users')
+@Controller(EDU_API_USERS_ENDPOINT)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  static throwIfNotCurrentUser(username: string, currentUsername: string) {
+    if (username !== currentUsername) {
+      throw new CustomHttpException(
+        AuthErrorMessages.Unauthorized,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        UsersController.name,
+      );
+    }
+  }
 
   @Post()
   createOrUpdate(@Body() userDto: UserDto) {
@@ -39,9 +52,8 @@ export class UsersController {
 
   @Get(':username/key')
   async findOneKey(@Param('username') username: string, @GetCurrentUsername() currentUsername: string) {
-    if (username !== currentUsername) {
-      throw new CustomHttpException(AuthErrorMessages.Unauthorized, HttpStatus.FORBIDDEN);
-    }
+    UsersController.throwIfNotCurrentUser(username, currentUsername);
+
     const response = await this.usersService.getPassword(currentUsername);
 
     if (!response) {
@@ -68,6 +80,47 @@ export class UsersController {
     @GetCurrentSchool() school: string,
   ) {
     return this.usersService.searchUsersByName(token, school, searchString);
+  }
+
+  @Post(`:username/${EDU_API_USER_ACCOUNTS_ENDPOINT}`)
+  addUserAccount(
+    @Param('username') username: string,
+    @GetCurrentUsername() currentUsername: string,
+    @Body() userAccountDto: Omit<UserAccountDto, 'accountId'>,
+  ) {
+    UsersController.throwIfNotCurrentUser(username, currentUsername);
+
+    return this.usersService.addUserAccount(currentUsername, userAccountDto);
+  }
+
+  @Get(`:username/${EDU_API_USER_ACCOUNTS_ENDPOINT}`)
+  getUserAccounts(@Param('username') username: string, @GetCurrentUsername() currentUsername: string) {
+    UsersController.throwIfNotCurrentUser(username, currentUsername);
+
+    return this.usersService.getUserAccounts(currentUsername);
+  }
+
+  @Patch(`:username/${EDU_API_USER_ACCOUNTS_ENDPOINT}/:accountId`)
+  updateUserAccount(
+    @Param('username') username: string,
+    @Param('accountId') accountId: string,
+    @GetCurrentUsername() currentUsername: string,
+    @Body() userAccountDto: UserAccountDto,
+  ) {
+    UsersController.throwIfNotCurrentUser(username, currentUsername);
+
+    return this.usersService.updateUserAccount(currentUsername, accountId, userAccountDto);
+  }
+
+  @Delete(`:username/${EDU_API_USER_ACCOUNTS_ENDPOINT}/:accountId`)
+  deleteUserAccount(
+    @Param('username') username: string,
+    @Param('accountId') accountId: string,
+    @GetCurrentUsername() currentUsername: string,
+  ) {
+    UsersController.throwIfNotCurrentUser(username, currentUsername);
+
+    return this.usersService.deleteUserAccount(currentUsername, accountId);
   }
 }
 

@@ -12,11 +12,11 @@
 
 import React, { FC, useEffect } from 'react';
 import ImageComponent from '@/components/ui/ImageComponent';
-import VideoComponent from '@/components/ui/VideoComponent';
+import MediaComponent from '@/components/ui/MediaComponent';
 import OnlyOffice from '@/pages/FileSharing/FilePreview/OnlyOffice/OnlyOffice';
 import { t } from 'i18next';
 import isImageExtension from '@libs/filesharing/utils/isImageExtension';
-import isVideoExtension from '@libs/filesharing/utils/isVideoExtension';
+import isMediaExtension from '@libs/filesharing/utils/isMediaExtension';
 import useMedia from '@/hooks/useMedia';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
@@ -96,9 +96,9 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab }) => 
     );
   }
 
-  if (isVideoExtension(fileExtension)) {
+  if (isMediaExtension(fileExtension)) {
     return (
-      <VideoComponent
+      <MediaComponent
         key={fileUrl}
         url={fileUrl}
       />

@@ -33,9 +33,9 @@ import GroupColumn from '@libs/groups/types/groupColumn';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import SharingFilesFailedDialogBody from '@/pages/ClassManagement/components/Dialogs/SharingFilesFailedDialogBody';
-import { toast } from 'sonner';
-import ProgressBox from '@/components/ui/ProgressBox';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import QuotaLimitInfo from '@/pages/FileSharing/utilities/QuotaLimitInfo';
+import useQuotaInfo from '@/hooks/useQuotaInfo';
 
 const LessonPage = () => {
   const {
@@ -47,6 +47,8 @@ const LessonPage = () => {
     fetchSchoolClass,
     fetchUserSessions,
   } = useClassManagementStore();
+
+  const { percentageUsed } = useQuotaInfo();
 
   const navigate = useNavigate();
 
@@ -71,38 +73,6 @@ const LessonPage = () => {
   const [currentSelectedSession, setCurrentSelectedSession] = useState<LmnApiSession | null>(null);
 
   const [isFileSharingProgessInfoDialogOpen, setIsFileSharingProgessInfoDialogOpen] = useState(false);
-
-  useEffect(() => {
-    if (!filesharingProgress) return;
-
-    const percent = filesharingProgress.percent ?? 0;
-    const toasterData = {
-      percent,
-      title: t('filesharing.progressBox.title'),
-      id: filesharingProgress.currentFilePath,
-      description: t('filesharing.progressBox.fileInfo', {
-        filename: filesharingProgress.currentFilePath.split('/').pop(),
-        studentName: filesharingProgress.studentName,
-      }),
-      failed: filesharingProgress.failedPaths?.length || 0,
-      processed: filesharingProgress.processed,
-      total: filesharingProgress.total,
-    };
-
-    let toastDuration: number;
-    if (toasterData.failed > 0) {
-      toastDuration = Infinity;
-    } else if (percent >= 100) {
-      toastDuration = 5000;
-    } else {
-      toastDuration = Infinity;
-    }
-
-    toast(<ProgressBox data={toasterData} />, {
-      id: toasterData.id,
-      duration: toastDuration,
-    });
-  }, [filesharingProgress]);
 
   useEffect(() => {
     if (lmnApiToken) {
@@ -249,7 +219,7 @@ const LessonPage = () => {
           </div>
         ) : null}
       </div>
-
+      <QuotaLimitInfo percentageUsed={percentageUsed} />
       {groupNameParams || member.length ? <UserArea fetchData={fetchData} /> : <QuickAccess />}
       {openDialogType === UserGroups.Sessions && <GroupDialog item={sessionToSave} />}
 

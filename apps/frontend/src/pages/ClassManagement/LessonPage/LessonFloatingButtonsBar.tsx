@@ -39,6 +39,7 @@ interface FloatingButtonsBarProps {
   students: UserLmnInfo[];
   isMemberSelected: boolean;
   isVeyonEnabled: boolean;
+  isQuotaExceeded: boolean;
   fetchData: () => Promise<void>;
 }
 
@@ -47,6 +48,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
   isMemberSelected,
   isVeyonEnabled,
   fetchData,
+  isQuotaExceeded,
 }) => {
   const [whichDialogIsOpen, setWhichDialogIsOpen] = useState<string>('');
   const {
@@ -81,7 +83,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
     .map((student) => userConnectionUids.find((conn) => conn.veyonUsername === student.cn)?.connectionUid)
     .filter((uid): uid is string => Boolean(uid));
 
-  const buttons: {
+  const rawButtons: {
     icon: IconType;
     text: string;
     enableAction: () => Promise<void>;
@@ -174,6 +176,10 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
       disableText: 'common.stop',
     },
   ];
+
+  const buttons = isQuotaExceeded
+    ? rawButtons.filter((button) => button.text !== CLASSMGMT_OPTIONS.COLLECT)
+    : rawButtons;
 
   const config: FloatingButtonsBarConfig = {
     buttons: [

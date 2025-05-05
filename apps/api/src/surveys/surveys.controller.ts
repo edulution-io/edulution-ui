@@ -24,6 +24,7 @@ import {
   Query,
   UploadedFile,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -34,6 +35,7 @@ import {
   FIND_ONE,
   HAS_ANSWERS,
   IMAGES,
+  TEMPLATES,
   RESULT,
   SURVEYS,
 } from '@libs/survey/constants/surveys-endpoint';
@@ -41,6 +43,7 @@ import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
 import TEMPORARY_ATTACHMENT_DIRECTORY_NAME from '@libs/common/constants/temporaryAttachmentDirectoryName';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
 import AnswerDto from '@libs/survey/types/api/answer.dto';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
@@ -50,6 +53,7 @@ import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
 import { checkAttachmentFile, createAttachmentUploadOptions } from '../common/file-attachment/multer.utilities';
+import AppConfigGuard from '../appconfig/appconfig.guard';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
@@ -104,6 +108,23 @@ class SurveysController {
     const fileName = checkAttachmentFile(file);
     const imageUrl = this.surveyService.getTemporaryImageUrl(username, fileName);
     return res.status(HttpStatus.CREATED).json(imageUrl);
+  }
+
+  @UseGuards(AppConfigGuard)
+  @Post(TEMPLATES)
+  async createTemplate(@Body() surveyTemplateDto: SurveyTemplateDto) {
+    return this.surveyService.createTemplate(surveyTemplateDto);
+  }
+
+  @Get(TEMPLATES)
+  getTemplateNames() {
+    return this.surveyService.serveTemplateNames();
+  }
+
+  @Get(`${TEMPLATES}/:filename`)
+  getTemplate(@Param() params: { filename: string }, @Res() res: Response) {
+    const { filename } = params;
+    return this.surveyService.serveTemplate(filename, res);
   }
 
   @Post(ANSWER)
