@@ -14,8 +14,11 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { toast } from 'sonner';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { VscNewFile } from 'react-icons/vsc';
+import { RiResetLeftLine } from 'react-icons/ri';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
+import { TbTemplate } from 'react-icons/tb';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -29,15 +32,17 @@ import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPag
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useLanguage from '@/hooks/useLanguage';
 import useBeforeUnload from '@/hooks/useBeforeUnload';
-import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
-import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import createSurveyCreatorComponent from '@/pages/Surveys/Editor/createSurveyCreatorObject';
+import TemplateDialog from '@/pages/Surveys/Editor/dialog/TemplateDialog';
+import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
+import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
+import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import QuestionContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 
 const SurveyEditorPage = () => {
   const { fetchSelectedSurvey, isFetching, selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
@@ -46,14 +51,20 @@ const SurveyEditorPage = () => {
     setIsOpenSaveSurveyDialog,
     updateOrCreateSurvey,
     isLoading,
-    reset,
+    reset: resetEditorPage,
     storedSurvey,
     updateStoredSurvey,
     resetStoredSurvey,
     uploadImageFile,
   } = useSurveyEditorPageStore();
-  const { setIsOpenQuestionContextMenu, isOpenQuestionContextMenu, setSelectedQuestion, isUpdatingBackendLimiters } =
-    useQuestionsContextMenuStore();
+  const { reset: resetTemplateStore, isOpenTemplateMenu, setIsOpenTemplateMenu } = useTemplateMenuStore();
+  const {
+    reset: resetQuestionsContextMenu,
+    setIsOpenQuestionContextMenu,
+    isOpenQuestionContextMenu,
+    setSelectedQuestion,
+    isUpdatingBackendLimiters,
+  } = useQuestionsContextMenuStore();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -61,8 +72,14 @@ const SurveyEditorPage = () => {
   const { surveyId } = useParams();
   const { language } = useLanguage();
 
+  const handleReset = () => {
+    resetEditorPage();
+    resetTemplateStore();
+    resetQuestionsContextMenu();
+  };
+
   useEffect(() => {
-    reset();
+    handleReset();
     void fetchSelectedSurvey(surveyId, false);
   }, [surveyId]);
 
@@ -171,7 +188,40 @@ const SurveyEditorPage = () => {
   };
 
   const config: FloatingButtonsBarConfig = {
-    buttons: [SaveButton(() => setIsOpenSaveSurveyDialog(true))],
+    buttons: [
+      SaveButton(() => setIsOpenSaveSurveyDialog(true)),
+      {
+        icon: TbTemplate,
+        text: t('survey.editor.templates'),
+        onClick: () => setIsOpenTemplateMenu(!isOpenTemplateMenu),
+      },
+      {
+        icon: VscNewFile,
+        text: t('survey.editor.new'),
+        onClick: () => {
+          handleReset();
+          resetStoredSurvey();
+          form.reset(initialFormValues);
+          if (creator) {
+            creator.saveNo = 0;
+            creator.JSON = { title: t('survey.newTitle').toString() };
+          }
+        },
+      },
+      {
+        icon: RiResetLeftLine,
+        text: t('survey.editor.reset'),
+        onClick: () => {
+          handleReset();
+          resetStoredSurvey();
+          form.reset(initialFormValues);
+          if (creator) {
+            creator.saveNo = form.getValues('saveNo');
+            creator.JSON = form.getValues('formula');
+          }
+        },
+      },
+    ],
     keyPrefix: 'surveys-page-floating-button_',
   };
 
@@ -188,6 +238,12 @@ const SurveyEditorPage = () => {
         )}
       </div>
       <FloatingButtonsBar config={config} />
+      <TemplateDialog
+        form={form}
+        creator={creator}
+        isOpenTemplateMenu={isOpenTemplateMenu}
+        setIsOpenTemplateMenu={setIsOpenTemplateMenu}
+      />
       <SaveSurveyDialog
         form={form}
         isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}

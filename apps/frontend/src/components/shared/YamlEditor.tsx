@@ -20,9 +20,10 @@ type YamlEditorProps = {
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
+  className?: string;
 };
 
-const YamlEditor: React.FC<YamlEditorProps> = ({ value, onChange, disabled = false }) => {
+const YamlEditor: React.FC<YamlEditorProps> = ({ value, onChange, disabled = false, className }) => {
   const { t } = useTranslation();
   const [error, setError] = useState<string | null>(null);
 
@@ -74,6 +75,7 @@ const YamlEditor: React.FC<YamlEditorProps> = ({ value, onChange, disabled = fal
         className={cn(
           'overflow-y-auto bg-accent text-p text-secondary scrollbar-thin placeholder:text-p focus:outline-none',
           error ? 'border border-ciLightRed' : 'border border-accent',
+          className,
         )}
         disabled={disabled}
       />

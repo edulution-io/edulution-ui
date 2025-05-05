@@ -540,8 +540,15 @@
     "editor": {
       "new": "Neu (Leer)",
       "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
-      "abort": "Alle Änderungen verwerfen",
+      "reset": "Verwerfen",
       "addDescription": "Beschreibung hinzufügen",
+      "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
+      "templates": "Vorlagen",
+      "templateMenu": {
+        "fetch": "Wähle eine der verfügbaren Vorlagen.",
+        "submit": "Die Umfrage als Vorlage speichern.",
+        "title": "Vorlagen speichern/laden"
+      },
       "questionSettings": {
         "settings": "Einstellungen",
         "title": "Einstellungen zur Frage",
@@ -1071,6 +1078,7 @@
     "login": "Anmelden",
     "username": "Benutzername",
     "password": "Passwort",
+    "load": "Laden",
     "loading": "Laden...",
     "overview": "Übersicht",
     "create": "Erstellen",
