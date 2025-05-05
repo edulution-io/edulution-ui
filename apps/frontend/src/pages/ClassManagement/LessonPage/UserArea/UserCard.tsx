@@ -39,8 +39,10 @@ interface UserCardProps {
 const UserCard = ({ user, selectedMember, isTeacherInSameClass, setSelectedMember, isVeyonEnabled }: UserCardProps) => {
   const { t } = useTranslation();
   const { currentUser } = useLmnApiPasswordStore();
-  const { displayName, name, sophomorixAdminClass, school } = user;
   const { userConnectionsFeatureStates, userConnectionUids, authenticateVeyonClient, getFeatures } = useVeyonApiStore();
+  const { displayName, name, sophomorixAdminClass, school, examMode } = user;
+
+  const studentName = examMode ? `${name}-exam` : name;
 
   const isSelectable = user.sophomorixRole === SOPHOMORIX_STUDENT && isTeacherInSameClass;
   const isMemberSelected = !!selectedMember.find((m) => m.dn === user.dn) && isSelectable;
@@ -115,7 +117,7 @@ const UserCard = ({ user, selectedMember, isTeacherInSameClass, setSelectedMembe
             )}
             <div className={cn('text-md mt-1 h-8 w-44 font-bold', !isSelectable && 'ml-2')}>
               {displayName}
-              <span className="flex text-xs">{name}</span>
+              <span className="flex text-xs">{studentName}</span>
             </div>
           </div>
 

@@ -60,6 +60,8 @@ const useFileSharingPage = () => {
         if (fileOperationResult.success) {
           await fetchFiles(currentPath);
           toast.success(fileOperationResult.message);
+        } else {
+          toast.info(fileOperationResult.message);
         }
       }
     };
