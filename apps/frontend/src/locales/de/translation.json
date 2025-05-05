@@ -542,7 +542,13 @@
       "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
       "abort": "Alle Änderungen verwerfen",
       "addDescription": "Beschreibung hinzufügen",
-      "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
+      "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
+      "templates": "Vorlagen",
+      "templateMenu": {
+        "fetch": "Wähle eine der verfügbaren Vorlagen.",
+        "submit": "Die Umfrage als Vorlage speichern.",
+        "title": "Vorlagen speichern/laden"
+      }
     },
     "participate": {
       "saveAnswerSuccess": "Die Antwort wurde gespeichert."
@@ -1055,6 +1061,7 @@
     "login": "Anmelden",
     "username": "Benutzername",
     "password": "Passwort",
+    "load": "Laden",
     "loading": "Laden...",
     "overview": "Übersicht",
     "create": "Erstellen",
