@@ -14,6 +14,8 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { toast } from 'sonner';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { VscNewFile } from 'react-icons/vsc';
+import { RiResetLeftLine } from 'react-icons/ri';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useBeforeUnload from '@/hooks/useBeforeUnload';
 import { useTranslation } from 'react-i18next';
@@ -69,10 +71,14 @@ const SurveyEditorPage = () => {
   const { surveyId } = useParams();
   const { language } = useLanguage();
 
-  useEffect(() => {
+  const handleReset = () => {
     resetEditorPage();
     resetTemplateStore();
     resetQuestionsContextMenu();
+  };
+
+  useEffect(() => {
+    handleReset();
     void fetchSelectedSurvey(surveyId, false);
   }, [surveyId]);
 
@@ -188,6 +194,32 @@ const SurveyEditorPage = () => {
         icon: TbTemplate,
         text: t('survey.editor.templates'),
         onClick: () => setIsOpenTemplateMenu(!isOpenTemplateMenu),
+      },
+      {
+        icon: VscNewFile,
+        text: t('survey.editor.new'),
+        onClick: () => {
+          handleReset();
+          resetStoredSurvey();
+          form.reset(initialFormValues);
+          if (creator) {
+            creator.saveNo = 0;
+            creator.JSON = { title: t('survey.newTitle').toString() };
+          }
+        },
+      },
+      {
+        icon: RiResetLeftLine,
+        text: t('survey.editor.reset'),
+        onClick: () => {
+          handleReset();
+          resetStoredSurvey();
+          form.reset(initialFormValues);
+          if (creator) {
+            creator.saveNo = form.getValues('saveNo');
+            creator.JSON = form.getValues('formula');
+          }
+        },
       },
     ],
     keyPrefix: 'surveys-page-floating-button_',

@@ -540,7 +540,7 @@
     "editor": {
       "new": "Neu (Leer)",
       "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
-      "abort": "Alle Änderungen verwerfen",
+      "reset": "Verwerfen",
       "addDescription": "Beschreibung hinzufügen",
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
       "templates": "Vorlagen",
