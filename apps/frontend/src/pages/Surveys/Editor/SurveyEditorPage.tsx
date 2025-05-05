@@ -14,7 +14,7 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { toast } from 'sonner';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { MdClear } from 'react-icons/md';
+import { VscNewFile } from 'react-icons/vsc';
 import { RiResetLeftLine } from 'react-icons/ri';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useBeforeUnload from '@/hooks/useBeforeUnload';
@@ -62,9 +62,13 @@ const SurveyEditorPage = () => {
   const { surveyId } = useParams();
   const { language } = useLanguage();
 
-  useEffect(() => {
+  const handleReset = () => {
     resetEditorPage();
     resetTemplateStore();
+  };
+
+  useEffect(() => {
+    handleReset();
     void fetchSelectedSurvey(surveyId, false);
   }, [surveyId]);
 
@@ -159,11 +163,10 @@ const SurveyEditorPage = () => {
         onClick: () => setIsOpenTemplateMenu(!isOpenTemplateMenu),
       },
       {
-        icon: MdClear,
+        icon: VscNewFile,
         text: t('survey.editor.new'),
         onClick: () => {
-          resetEditorPage();
-          resetTemplateStore();
+          handleReset();
           resetStoredSurvey();
           form.reset(initialFormValues);
           if (creator) {
@@ -176,8 +179,7 @@ const SurveyEditorPage = () => {
         icon: RiResetLeftLine,
         text: t('survey.editor.reset'),
         onClick: () => {
-          resetEditorPage();
-          resetTemplateStore();
+          handleReset();
           resetStoredSurvey();
           form.reset(initialFormValues);
           if (creator) {
