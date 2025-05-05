@@ -27,9 +27,10 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 interface FileRendererProps {
   editMode: boolean;
   isOpenedInNewTab?: boolean;
+  closingRef?: React.MutableRefObject<boolean>;
 }
 
-const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab }) => {
+const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closingRef }) => {
   const { isMobileView } = useMedia();
   const {
     downloadLinkURL: fileUrl,
@@ -47,6 +48,15 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab }) => 
       void setFileIsCurrentlyDisabled(currentlyEditingFile.basename, false);
     }
   }, [isEditorLoading, isDownloadFileLoading, isGetDownloadLinkUrlLoading, currentlyEditingFile?.basename]);
+
+  useEffect(
+    () => () => {
+      if (!closingRef?.current && currentlyEditingFile) {
+        void setFileIsCurrentlyDisabled(currentlyEditingFile.basename, false);
+      }
+    },
+    [currentlyEditingFile?.basename],
+  );
 
   if (!currentlyEditingFile) return null;
   const fileExtension = getFileExtension(currentlyEditingFile.filename);

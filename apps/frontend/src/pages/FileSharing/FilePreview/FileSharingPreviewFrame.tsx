@@ -50,6 +50,7 @@ const FileSharingPreviewFrame = () => {
   const { setCurrentWindowedFrameSize } = useFrameStore();
   const windowSize = useWindowResize();
   const location = useLocation();
+  const closingRef = useRef(false);
 
   const [filePreviewRect, setFilePreviewRect] = useState<Pick<DOMRect, 'x' | 'y' | 'width' | 'height'> | null>(null);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
@@ -100,6 +101,7 @@ const FileSharingPreviewFrame = () => {
 
   const handleCloseFile = async () => {
     if (!currentlyEditingFile) return;
+    closingRef.current = true;
     const { basename } = currentlyEditingFile;
     setIsEditMode(false);
     resetPreview();
@@ -171,7 +173,10 @@ const FileSharingPreviewFrame = () => {
       stickToInitialSizeAndPositionWhenRestored={isFilePreviewDocked}
       additionalButtons={additionalButtons}
     >
-      <FileRenderer editMode={isEditMode} />
+      <FileRenderer
+        editMode={isEditMode}
+        closingRef={closingRef}
+      />
     </ResizableWindow>
   );
 };
