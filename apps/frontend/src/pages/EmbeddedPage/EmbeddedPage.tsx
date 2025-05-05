@@ -54,7 +54,7 @@ const EmbeddedPage: React.FC = () => {
           src={htmlContentUrl}
           title={pageTitle}
           className="h-full w-full border-0"
-          sandbox="allow-same-origin allow-scripts allow-forms"
+          sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
         />
       ) : (
         <div
