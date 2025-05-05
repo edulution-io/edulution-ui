@@ -115,7 +115,7 @@ const SurveyEditorPage = () => {
     creator.locale = language;
     creator.saveSurveyFunc = updateSurveyStorage;
 
-    creator.onDefineElementMenuItems.add((_creatorModel, options) => {
+    creator.onDefineElementMenuItems.add((creatorModel, options) => {
       const settingsItemIndex = options.items.findIndex((option) => option.id === 'settings');
       if (settingsItemIndex !== -1) {
         // eslint-disable-next-line no-param-reassign
@@ -124,9 +124,9 @@ const SurveyEditorPage = () => {
         options.items[settingsItemIndex].title = t('survey.editor.questionSettings.settings');
         // eslint-disable-next-line no-param-reassign
         options.items[settingsItemIndex].action = () => {
-          if (_creatorModel.isObjQuestion(_creatorModel.selectedElement)) {
+          if (creatorModel.isObjQuestion(creatorModel.selectedElement)) {
             setIsOpenQuestionContextMenu(true);
-            setSelectedQuestion(_creatorModel.selectedElement as unknown as Question);
+            setSelectedQuestion(creatorModel.selectedElement as unknown as Question);
           }
         };
 
