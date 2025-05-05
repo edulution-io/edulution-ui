@@ -252,9 +252,9 @@ class WebdavService {
       client,
       {
         method: HttpMethodsWebDav.MOVE,
-        url: originFullPath,
+        url: decodeURI(originFullPath),
         headers: {
-          Destination: destFullPath,
+          Destination: decodeURI(destFullPath),
           [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
         },
       },
