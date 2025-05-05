@@ -100,7 +100,7 @@
   "dashboard": {
     "pageTitle": "Dashboard",
     "mobileAccess": {
-      "title": "Mobiler Datenzugriff",
+      "title": "Mobiler Zugriff",
       "manual": "Anleitung",
       "manualSetup": "Manuelles Einrichten",
       "setupWithQrCode": "Einrichtung via QR-Code",
