@@ -113,7 +113,7 @@ const SurveyEditorPage = () => {
     creator.JSON = form.getValues('formula');
     creator.saveSurveyFunc = updateSurveyStorage;
 
-    creator.onDefineElementMenuItems.add((_, options) => {
+    creator.onDefineElementMenuItems.add((creatorModel, options) => {
       const settingsItemIndex = options.items.findIndex((option) => option.id === 'settings');
       if (settingsItemIndex !== -1) {
         // eslint-disable-next-line no-param-reassign
@@ -122,9 +122,9 @@ const SurveyEditorPage = () => {
         options.items[settingsItemIndex].title = t('survey.editor.questionSettings.settings');
         // eslint-disable-next-line no-param-reassign
         options.items[settingsItemIndex].action = () => {
-          if (_.isObjQuestion(_.selectedElement)) {
+          if (creatorModel.isObjQuestion(creatorModel.selectedElement)) {
             setIsOpenQuestionContextMenu(true);
-            setSelectedQuestion(_.selectedElement as unknown as TSurveyQuestion);
+            setSelectedQuestion(creatorModel.selectedElement as unknown as TSurveyQuestion);
           }
         };
 
@@ -136,7 +136,7 @@ const SurveyEditorPage = () => {
       }
     });
 
-    creator.onUploadFile.add(async (_, uploadFileEvent) => {
+    creator.onUploadFile.add(async (_creatorModel, uploadFileEvent) => {
       // TODO: 630 (https://github.com/edulution-io/edulution-ui/issues/630) -  Currently this can only work for already created surveys
       if (!surveyId) return;
       const promises = uploadFileEvent.files.map((file: File) => {
