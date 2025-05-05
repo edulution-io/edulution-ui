@@ -14,11 +14,11 @@ import { toast } from 'sonner';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
-import { Question } from 'survey-core';
 import { SurveyCreatorModel } from 'survey-creator-core';
 import cn from '@libs/common/utils/className';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import { SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -112,8 +112,8 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       form.setValue('formula', updatedFormula);
       toggleUseBackendLimits();
 
-      const questions: Question[] = creator.survey.getAllQuestions();
-      const question: Question | undefined = questions.find((q) => q.name === correspondingQuestion.name);
+      const questions: TSurveyQuestion[] = creator.survey.getAllQuestions() as TSurveyQuestion[];
+      const question: TSurveyQuestion | undefined = questions.find((q) => q.name === correspondingQuestion.name);
       setSelectedQuestion(question);
     } catch {
       toast.error(t('survey.errors.updateOrCreateError'));

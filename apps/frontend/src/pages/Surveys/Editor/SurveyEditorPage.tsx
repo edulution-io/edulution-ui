@@ -16,8 +16,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { Question } from 'survey-core';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
+import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyFormula from '@libs/survey/types/TSurveyFormula';
@@ -124,7 +124,7 @@ const SurveyEditorPage = () => {
         options.items[settingsItemIndex].action = () => {
           if (_.isObjQuestion(_.selectedElement)) {
             setIsOpenQuestionContextMenu(true);
-            setSelectedQuestion(_.selectedElement as unknown as Question);
+            setSelectedQuestion(_.selectedElement as unknown as TSurveyQuestion);
           }
         };
 
