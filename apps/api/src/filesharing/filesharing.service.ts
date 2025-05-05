@@ -21,15 +21,15 @@ import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileReques
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import JOB_NAMES from '@libs/queue/constants/jobNames';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
-import WebdavService from '../webdav/webdav.service';
-import OnlyofficeService from './onlyoffice.service';
-import FilesystemService from '../filesystem/filesystem.service';
-import QueueService from '../queue/queue.service';
 import archiver from 'archiver';
 import tmp from 'tmp-promise';
 import { once } from 'events';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { createReadStream, createWriteStream, statSync } from 'fs';
+import QueueService from '../queue/queue.service';
+import FilesystemService from '../filesystem/filesystem.service';
+import OnlyofficeService from './onlyoffice.service';
+import WebdavService from '../webdav/webdav.service';
 
 @Injectable()
 class FilesharingService {
