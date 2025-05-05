@@ -548,6 +548,14 @@
         "fetch": "Choose one of the following templates.",
         "submit": "Save Survey as template.",
         "title": "Templates store/load"
+      },
+      "questionSettings": {
+        "settings": "Settings",
+        "title": "Question settings",
+        "questionTitle": "Title",
+        "addQuestionTitle": "Add a title",
+        "questionDescription": "Description",
+        "addQuestionDescription": "Add a description"
       }
     },
     "participate": {

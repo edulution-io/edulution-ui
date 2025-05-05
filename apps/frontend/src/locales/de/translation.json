@@ -548,6 +548,14 @@
         "fetch": "Wähle eine der verfügbaren Vorlagen.",
         "submit": "Die Umfrage als Vorlage speichern.",
         "title": "Vorlagen speichern/laden"
+      },
+      "questionSettings": {
+        "settings": "Einstellungen",
+        "title": "Einstellungen zur Frage",
+        "questionTitle": "Titel",
+        "addQuestionTitle": "Titel hinzufügen",
+        "questionDescription": "Beschreibung",
+        "addQuestionDescription": "Beschreibung hinzufügen"
       }
     },
     "participate": {
