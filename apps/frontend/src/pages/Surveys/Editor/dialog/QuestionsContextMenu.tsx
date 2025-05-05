@@ -42,7 +42,12 @@ const QuestionContextMenu = (props: QuestionContextMenuProps) => {
 
   const handleClose = () => setIsOpenQuestionContextMenu(!isOpenQuestionContextMenu);
 
-  const getFooter = () => <DialogFooterButtons handleSubmit={handleClose} />;
+  const getFooter = () => (
+    <DialogFooterButtons
+      handleClose={handleClose}
+      cancelButtonText="common.close"
+    />
+  );
 
   return (
     <AdaptiveDialog
