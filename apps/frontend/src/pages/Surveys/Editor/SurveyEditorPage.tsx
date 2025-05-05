@@ -12,7 +12,7 @@
 
 import React, { useEffect, useMemo, useRef } from 'react';
 import { toast } from 'sonner';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { VscNewFile } from 'react-icons/vsc';
 import { RiResetLeftLine } from 'react-icons/ri';
@@ -67,7 +67,6 @@ const SurveyEditorPage = () => {
   } = useQuestionsContextMenuStore();
 
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { user } = useUserStore();
   const { surveyId } = useParams();
   const { language } = useLanguage();
@@ -168,8 +167,8 @@ const SurveyEditorPage = () => {
   }, [creator, form, language]);
 
   const handleNavigateToCreatedSurveys = () => {
-    navigate(`/${CREATED_SURVEYS_PAGE}`, { replace: false });
-    window.location.reload();
+    window.history.pushState(null, '', `/${CREATED_SURVEYS_PAGE}`);
+    window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
   const handleSaveSurvey = async () => {
