@@ -10,5 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const EDU_API_USERS_ENDPOINT = 'users';
-export const EDU_API_USERS_SEARCH_ENDPOINT = `${EDU_API_USERS_ENDPOINT}/search`;
+const QUEUE_CONSTANTS = {
+  PREFIX: 'queue-user-',
+} as const;
+
+export default QUEUE_CONSTANTS;

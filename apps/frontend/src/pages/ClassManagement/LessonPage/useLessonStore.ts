@@ -108,7 +108,7 @@ const useLessonStore = create<LessonStore>(
           await eduApi.post(`${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.COLLECT}/${queryParamString}`, {
             collectFileRequestDTO,
           });
-          toast.success(t('classmanagement.filesCollected'));
+          toast.info(t('classmanagement.filesCollectingStarted'));
         } catch (error) {
           handleApiError(error, set);
         } finally {
