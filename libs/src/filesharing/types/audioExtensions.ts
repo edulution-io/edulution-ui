@@ -14,13 +14,7 @@ const AUDIO_EXTENSIONS = {
   MP3: 'mp3',
   AAC: 'aac',
   M4A: 'm4a',
-  OGG: 'ogg',
-  OPUS: 'opus',
-  FLAC: 'flac',
-  ALAC: 'alac',
   WAV: 'wav',
-  AIFF: 'aiff',
-  WMA: 'wma',
 } as const;
 
 export default AUDIO_EXTENSIONS;
