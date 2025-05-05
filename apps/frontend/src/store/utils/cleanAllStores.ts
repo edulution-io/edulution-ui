@@ -31,6 +31,7 @@ import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPag
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useDeleteSurveyStore from '@/pages/Surveys/Tables/dialogs/useDeleteSurveyStore';
+import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/PublicConferenceStore';
@@ -70,6 +71,7 @@ const cleanAllStores = () => {
   useSidebarStore.getState().reset();
   useSurveyTablesPageStore.getState().reset();
   useSurveyEditorPageStore.getState().reset();
+  useTemplateMenuStore.getState().reset();
   useResultDialogStore.getState().reset();
   useSubmittedAnswersDialogStore.getState().reset();
   useDeleteSurveyStore.getState().reset();

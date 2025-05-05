@@ -542,6 +542,13 @@
       "saveSurveySuccess": "Saved the survey.",
       "abort": "Revert all changes",
       "addDescription": "Add a description",
+      "expectingUserInput": "Expecting the user to answer here, ... ",
+      "templates": "Templates",
+      "templateMenu": {
+        "fetch": "Choose one of the following templates.",
+        "submit": "Save Survey as template.",
+        "title": "Templates store/load"
+      },
       "questionSettings": {
         "settings": "Settings",
         "title": "Question settings",
@@ -1063,6 +1070,7 @@
     "login": "Login",
     "username": "Username",
     "password": "Password",
+    "load": "Load",
     "loading": "Loading...",
     "overview": "Overview",
     "create": "Create",
