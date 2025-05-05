@@ -73,7 +73,7 @@ class SurveyAnswersService {
 
     const filteredChoices = await Promise.all(
       possibleChoices.map(async (choice) => {
-        const isVisible = (await this.countChoiceSelections(surveyId, questionName, choice.name)) < choice.limit;
+        const isVisible = (await this.countChoiceSelections(surveyId, questionName, choice.title)) < choice.limit;
         return isVisible ? choice : null;
       }),
     );
