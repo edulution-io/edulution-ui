@@ -106,6 +106,7 @@ class WebdavService {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   getPathUntilFolder(fullPath: string, folderName: string): string {
     const segments = fullPath.split('/');
     const index = segments.indexOf(folderName);

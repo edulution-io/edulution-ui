@@ -26,7 +26,7 @@ import { PUBLIC_ROUTE_KEY } from '../common/decorators/public.decorator';
 class AuthenticationGuard implements CanActivate {
   private token: string;
 
-  private pubKey: string;
+  private readonly pubKey: string;
 
   constructor(
     private jwtService: JwtService,
