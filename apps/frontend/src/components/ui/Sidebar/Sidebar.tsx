@@ -62,7 +62,7 @@ const Sidebar: React.FC = () => {
       ? [
           {
             title: t('settings.sidebar'),
-            link: SETTINGS_PATH,
+            link: `/${SETTINGS_PATH}`,
             icon: SettingsIcon,
             color: 'bg-ciGreenToBlue',
           },

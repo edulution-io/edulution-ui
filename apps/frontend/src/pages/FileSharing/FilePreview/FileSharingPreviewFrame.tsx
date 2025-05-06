@@ -28,7 +28,7 @@ import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsVal
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import ContentType from '@libs/filesharing/types/contentType';
-import isFileValid from '@libs/filesharing/utils/isFileValid';
+import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
 import ToggleDockButton from '@/components/structure/framing/ResizableWindow/Buttons/ToggleDockButton';
 import { useLocation } from 'react-router-dom';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
@@ -50,6 +50,7 @@ const FileSharingPreviewFrame = () => {
   const { setCurrentWindowedFrameSize } = useFrameStore();
   const windowSize = useWindowResize();
   const location = useLocation();
+  const closingRef = useRef(false);
 
   const [filePreviewRect, setFilePreviewRect] = useState<Pick<DOMRect, 'x' | 'y' | 'width' | 'height'> | null>(null);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
@@ -100,10 +101,12 @@ const FileSharingPreviewFrame = () => {
 
   const handleCloseFile = async () => {
     if (!currentlyEditingFile) return;
+    closingRef.current = true;
     const { basename } = currentlyEditingFile;
     setIsEditMode(false);
     resetPreview();
     await setFileIsCurrentlyDisabled(basename, true, 5000);
+    closingRef.current = false;
   };
 
   const { isMobileView } = useMedia();
@@ -125,7 +128,7 @@ const FileSharingPreviewFrame = () => {
     APPS.FILE_SHARING,
     ExtendedOptionKeys.ONLY_OFFICE_URL,
   );
-  const isValidFile = currentlyEditingFile?.type === ContentType.FILE && isFileValid(currentlyEditingFile);
+  const isValidFile = currentlyEditingFile?.type === ContentType.FILE && isValidFileToPreview(currentlyEditingFile);
   const isFileReady = isValidFile && isDocumentServerConfigured && !isMobileView;
 
   const pathSegments = location.pathname.split('/').filter(Boolean);
@@ -171,7 +174,10 @@ const FileSharingPreviewFrame = () => {
       stickToInitialSizeAndPositionWhenRestored={isFilePreviewDocked}
       additionalButtons={additionalButtons}
     >
-      <FileRenderer editMode={isEditMode} />
+      <FileRenderer
+        editMode={isEditMode}
+        closingRef={closingRef}
+      />
     </ResizableWindow>
   );
 };

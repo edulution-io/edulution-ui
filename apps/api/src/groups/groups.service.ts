@@ -240,7 +240,7 @@ class GroupsService implements OnModuleInit {
       schoolNameToGroups.set(DEFAULT_SCHOOL, defaultSchoolGroups);
     }
 
-    const setGroupsPromises: Promise<void>[] = [];
+    const setGroupsPromises: Promise<Group[]>[] = [];
     schoolNameToGroups.forEach((groups, schoolName) => {
       setGroupsPromises.push(this.cacheManager.set(ALL_GROUPS_CACHE_KEY + schoolName, groups, GROUPS_CACHE_TTL_MS));
     });

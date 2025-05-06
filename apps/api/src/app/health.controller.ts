@@ -17,6 +17,7 @@ import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoi
 class HealthController {
   @Get()
   @HttpCode(HttpStatus.OK)
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   check() {}
 }
 

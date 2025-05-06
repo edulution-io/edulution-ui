@@ -49,12 +49,6 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({
 
   const isCurrentlySelectedItem = rootPathName === menuItem.link && pathname !== '/';
 
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!isInView) {
-      e.preventDefault();
-    }
-  };
-
   return (
     <div
       key={title}
@@ -63,7 +57,6 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({
     >
       {isCurrentlySelectedItem && <PageTitle translationId={title} />}
       <NavLink
-        onClick={handleClick}
         to={link}
         className={`group relative z-40 flex cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-2 ${isCurrentlySelectedItem ? menuItem.color : ''}`}
       >

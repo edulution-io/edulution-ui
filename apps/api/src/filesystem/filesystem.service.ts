@@ -92,17 +92,8 @@ class FilesystemService {
       const response = await axios.get<ArrayBuffer>(url, { responseType: 'arraybuffer' });
       const filePath = join(PUBLIC_DOWNLOADS_PATH, filename);
 
-      try {
-        await fsPromises.mkdir(dirname(filePath), { recursive: true });
-      } catch (error) {
-        throw new CustomHttpException(CommonErrorMessages.DIRECTORY_CREATION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-
-      try {
-        await fsPromises.writeFile(filePath, new Uint8Array(response.data));
-      } catch (error) {
-        throw new CustomHttpException(CommonErrorMessages.FILE_WRITING_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
+      await fsPromises.mkdir(dirname(filePath), { recursive: true });
+      await fsPromises.writeFile(filePath, new Uint8Array(response.data));
 
       const fileBuffer = await fsPromises.readFile(filePath);
       const mimetype: string =
@@ -138,6 +129,10 @@ class FilesystemService {
         filePath,
       );
     }
+  }
+
+  static async deleteFiles(path: string, fileNames: string[]): Promise<void> {
+    await Promise.all(fileNames.map((fileName) => FilesystemService.deleteFile(path, fileName)));
   }
 
   async fileLocation(
@@ -194,6 +189,23 @@ class FilesystemService {
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  static async writeFile(filePath: string, content: string) {
+    try {
+      await fsPromises.writeFile(filePath, content);
+      Logger.log(`${filePath} created.`, FilesystemService.name);
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getAllFilenamesInDirectory(directory: string): Promise<string[]> {
+    const exists = await FilesystemService.checkIfFileExist(directory);
+    if (!exists) {
+      return [];
+    }
+    return fsPromises.readdir(directory);
   }
 
   static async deleteDirectories(directories: string[]): Promise<void> {

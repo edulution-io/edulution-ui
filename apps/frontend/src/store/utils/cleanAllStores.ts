@@ -31,6 +31,7 @@ import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPag
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useDeleteSurveyStore from '@/pages/Surveys/Tables/dialogs/useDeleteSurveyStore';
+import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/PublicConferenceStore';
@@ -38,12 +39,14 @@ import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinbo
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
+import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import useSseStore from '../useSseStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetQrCodeSlice();
   UserStore.getState().resetTotpSlice();
   UserStore.getState().resetUserSlice();
+  UserStore.getState().resetUserAccountsSlice();
   useAppConfigsStore.getState().reset();
   useBulletinCategoryTableStore.getState().reset();
   useBulletinBoardEditorialStore.getState().reset();
@@ -68,10 +71,12 @@ const cleanAllStores = () => {
   useSidebarStore.getState().reset();
   useSurveyTablesPageStore.getState().reset();
   useSurveyEditorPageStore.getState().reset();
+  useTemplateMenuStore.getState().reset();
   useResultDialogStore.getState().reset();
   useSubmittedAnswersDialogStore.getState().reset();
   useDeleteSurveyStore.getState().reset();
   useParticipateSurveyStore.getState().reset();
+  useQuestionsContextMenuStore.getState().reset();
   useSseStore.getState().reset();
   localStorage.removeItem('i18nextLng');
 };

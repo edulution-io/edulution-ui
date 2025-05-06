@@ -29,6 +29,7 @@ import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
 import UpdateUserDto from './dto/update-user.dto';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';
+import { UserAccounts } from './account.schema';
 
 jest.mock('axios');
 const mockToken = 'token';
@@ -163,6 +164,10 @@ describe(UsersService.name, () => {
         UsersService,
         {
           provide: getModelToken(User.name),
+          useValue: userModelMock,
+        },
+        {
+          provide: getModelToken(UserAccounts.name),
           useValue: userModelMock,
         },
         { provide: GroupsService, useValue: mockGroupsService },

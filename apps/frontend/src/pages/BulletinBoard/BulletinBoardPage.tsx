@@ -39,7 +39,7 @@ const BulletinBoardPage = () => {
     setIsInitialLoading(false);
   }, [isEditorialModeEnabled, bulletinBoardNotifications]);
 
-  if (isLoading || isInitialLoading) {
+  if (isLoading && isInitialLoading) {
     return <LoadingIndicatorDialog isOpen />;
   }
 

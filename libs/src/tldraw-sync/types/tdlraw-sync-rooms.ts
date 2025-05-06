@@ -10,9 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import VideoExtensions from '@libs/filesharing/types/videoExtensions';
+import { TLSocketRoom } from '@tldraw/sync-core';
+import { UnknownRecord } from 'tldraw';
 
-const isVideoExtension = (extension: string | undefined): boolean =>
-  Object.values(VideoExtensions).includes(extension as VideoExtensions);
+interface RoomState {
+  roomId: string;
+  room: TLSocketRoom<UnknownRecord, void>;
+  needsPersist: boolean;
+}
 
-export default isVideoExtension;
+export default RoomState;

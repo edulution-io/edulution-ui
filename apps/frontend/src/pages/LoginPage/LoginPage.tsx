@@ -300,6 +300,7 @@ const LoginPage: React.FC = () => {
                 <FormControl>
                   <TotpInput
                     totp={field.value}
+                    title={t('login.enterMultiFactorCode')}
                     setTotp={field.onChange}
                     onComplete={onSubmit}
                   />

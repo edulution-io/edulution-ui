@@ -73,7 +73,7 @@ const AddMfaForm: React.FC = () => {
             }}
           />
         </div>
-        <div className="flex justify-end">
+        <div className="my-4 flex justify-end">
           <Button
             variant="btn-security"
             size="lg"

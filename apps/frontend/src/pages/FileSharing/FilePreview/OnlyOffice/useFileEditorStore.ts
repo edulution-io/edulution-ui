@@ -82,9 +82,11 @@ const useFileEditorStore = create<FileEditorStore>(
 
       deleteFileAfterEdit: async (url) => {
         try {
-          await eduApi.delete(
-            buildApiDeletePathUrl(FileSharingApiEndpoints.BASE, getLastPartOfUrl(url), DeleteTargetType.LOCAL),
-          );
+          await eduApi.delete(buildApiDeletePathUrl(FileSharingApiEndpoints.BASE, DeleteTargetType.LOCAL), {
+            data: {
+              paths: [getLastPartOfUrl(url)],
+            },
+          });
         } catch (error) {
           handleApiError(error, set);
         }

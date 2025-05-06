@@ -86,7 +86,9 @@
   "appstore": {
     "title": "App-Store",
     "description": "Hier kannst du {{ applicationName }} Apps hinzufügen.",
-    "chooseIcon": "Icon auswählen"
+    "chooseIcon": "Icon auswählen",
+    "uploadIcon": "Icon hochladen",
+    "dropIconDescription": "Ziehe ein Bild hierher oder klicke, um ein Bild auszuwählen. Unterstützte Formate: SVG, WEBP"
   },
   "forwarding": {
     "sidebar": "Weiterleitung"
@@ -100,7 +102,7 @@
   "dashboard": {
     "pageTitle": "Dashboard",
     "mobileAccess": {
-      "title": "Mobiler Datenzugriff",
+      "title": "Mobiler Zugriff",
       "manual": "Anleitung",
       "manualSetup": "Manuelles Einrichten",
       "setupWithQrCode": "Einrichtung via QR-Code",
@@ -116,7 +118,9 @@
       "title": "Quotas",
       "globalQuota": "Cloudquota berechnet ",
       "mailQuota": "Mailquota berechnet",
-      "mibibyte": "MiB"
+      "mibibyte": "MiB",
+      "remainingLow": "Verbleibendes Quota gering – {{free}} %",
+      "remainingVeryLow": "Verbleibendes Quota sehr gering – {{free}} %"
     }
   },
   "auth": {
@@ -287,6 +291,15 @@
     "nosurveys": "Keine offenen Umfragen",
     "nobulletinboard": "Keine neuen Mitteilungen"
   },
+  "mountpoints": {
+    "home": "Home",
+    "examusers": "Klassenarbeiten",
+    "projects": "Projekte",
+    "iso": "ISO",
+    "programs": "Programme",
+    "shares": "Freigaben",
+    "students-home": "Schüler-Home"
+  },
   "filesharing": {
     "filterPlaceHolderText": "Suche nach Dateiname",
     "title": "FILESHARING",
@@ -327,9 +340,15 @@
     },
     "progressBox": {
       "info": "Info",
-      "title": "Dateien werden ausgeteilt",
-      "processedInfo": "{{processed}} von {{total}} Dateien erfolgreich ausgeteilt",
-      "fileInfo": "Datei {{filename}} wird an {{studentName}} ausgeteilt",
+      "titleSharing": "Dateien werden ausgeteilt",
+      "titleCollecting": "Dateien werden eingesammelt",
+      "titleDeleting": "Dateien werden gelöscht",
+      "processedSharingInfo": "{{processed}} von {{total}} Dateien erfolgreich ausgeteilt",
+      "processedCollectingInfo": "{{processed}} von {{total}} Dateien erfolgreich eingesammelt",
+      "processedDeletingInfo": "{{processed}} von {{total}} Dateien erfolgreich gelöscht",
+      "fileInfoSharing": "Datei {{filename}} wird an {{studentName}} ausgeteilt",
+      "fileInfoCollecting": "Datei {{filename}} wird von {{studentName}} eingesammelt",
+      "fileInfoDeleting": "Datei {{filename}} wird gelöscht",
       "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden"
     },
     "tooltips": {
@@ -469,7 +488,7 @@
     "copyOrCut": "Möchtest du die Dateien ausschneiden oder kopieren?",
     "filesShared": "Dateien geteilt",
     "filesSharingStarted": "Dateien werden geteilt",
-    "filesCollected": "Dateien eingesammelt",
+    "filesCollectingStarted": "Dateien werden eingesammelt",
     "failDialog": {
       "title": "Datei {{file}} konnte nicht geteilt werden",
       "reasonMissing": "Die Datei ist möglicherweise nicht mehr vorhanden oder wurde umbenannt.",
@@ -523,9 +542,32 @@
     "editor": {
       "new": "Neu (Leer)",
       "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
-      "abort": "Alle Änderungen verwerfen",
+      "reset": "Verwerfen",
       "addDescription": "Beschreibung hinzufügen",
-      "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... "
+      "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
+      "templates": "Vorlagen",
+      "templateMenu": {
+        "fetch": "Wähle eine der verfügbaren Vorlagen.",
+        "submit": "Die Umfrage als Vorlage speichern.",
+        "title": "Vorlagen speichern/laden"
+      },
+      "questionSettings": {
+        "settings": "Einstellungen",
+        "title": "Einstellungen zur Frage",
+        "questionTitle": "Titel",
+        "addQuestionTitle": "Titel hinzufügen",
+        "questionDescription": "Beschreibung",
+        "addQuestionDescription": "Beschreibung hinzufügen",
+        "limit": "Grenzwert",
+        "nullLimit": "Ein Grenzwert von 0 bedeutet, dass die Option unbeschränkt verfügbar ist.",
+        "backendLimiters": "Auswahlmöglichkeiten begrenzen",
+        "addBackendLimiters": "Hier können Optionen mit Grenzwerten definiert werden. Dadurch lassen sich diese nur begrenzt oft auswählen.",
+        "useOtherItem": "Erlaube Nutzern eigene Optionen hinzuzufügen",
+        "addBackendLimiterForOtherItem": "Dies setzt einen Grenzwert, wie oft Teilnehmer diese Optionen auswählen können.",
+        "upperLimit": "Grenzwert",
+        "upperBackendLimiters": "Auswahlmöglichkeiten mit Obergrenze",
+        "addChoice": "Hinzufügen"
+      }
     },
     "participate": {
       "saveAnswerSuccess": "Die Antwort wurde gespeichert."
@@ -854,6 +896,8 @@
   "usersettings": {
     "title": "MEIN PROFIL",
     "sidebar": "Mein Profil",
+    "rowSelected": "{{selected}} von {{total}} Konten ausgewählt",
+    "rowsSelected": "{{selected}} von {{total}} Konten ausgewählt",
     "details": {
       "title": "Benutzerdetails",
       "description": "Hier können Sie Ihre Benutzerdaten einsehen und teilweise bearbeiten.",
@@ -886,7 +930,19 @@
         "confirmPassword": "Passwort bestätigen",
         "confirm": "Passwort ändern",
         "passwordChangedSuccessfully": "Passwort erfolgreich geändert"
-      }
+      },
+      "filterPlaceHolderText": "Suche nach Anwendung",
+      "passwordSafe": "Passwort-Tresor",
+      "passwordSafeInfo": "Hier kannst du deine Zugangsdaten für verschiedene Anwendungen speichern. Diese werden verschlüsselt und sind nur für dich sichtbar.",
+      "addUserAccount": "Konto hinzufügen",
+      "accountId": "Konto-ID",
+      "accountData": "Zugangsdaten",
+      "safePin": "Tresor-PIN",
+      "firstEnterSafePin": "Bitte Tresor-PIN festlegen.",
+      "enterSavePin": "Bitte Tresor-PIN eingeben.",
+      "wrongSafePin": "PIN ist falsch.",
+      "enterSafePin": "Bitte PIN zum Entschlüsseln eingeben.",
+      "safePinDescription": "Zur Verschlüsselung der Zugangsdaten wird eine PIN benötigt. Diese PIN ist für niemanden sichtbar und wird nicht gespeichert."
     },
     "mails": {
       "title": "E-Mail"
@@ -956,6 +1012,11 @@
     "infoQrCodeExpired": "Zeit für Login mit edulution.io APP abgelaufen."
   },
   "common": {
+    "guest": "Gast",
+    "ok": "OK",
+    "next": "Weiter",
+    "back": "Zurück",
+    "confirm": "Bestätigen",
     "share": "Teilen",
     "savedToClipboard": "In die Zwischenablage kopiert.",
     "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden.",
@@ -1019,6 +1080,7 @@
     "login": "Anmelden",
     "username": "Benutzername",
     "password": "Passwort",
+    "load": "Laden",
     "loading": "Laden...",
     "overview": "Übersicht",
     "create": "Erstellen",
@@ -1064,12 +1126,16 @@
     "update": "Update",
     "progress": "Fortschritt...",
     "pressInstall": "Drücke Installieren um zu Starten.",
+    "enable": "Einschalten",
+    "enabled": "Aktiviert",
+    "disable": "Ausschalten",
     "disabled": "Deaktiviert",
     "invalid_url": "Ungültige URL",
     "invalid_fqdn": "Ungültiger FQDN. Bitte nur den Hostnamen angeben.",
     "required": "Erforderlich",
     "download": "Herunterladen",
     "template": "Vorlage",
+    "application": "Anwendung",
     "preview": "Vorschau",
     "format": "Formatieren",
     "upload": "Hochladen",
@@ -1106,6 +1172,7 @@
     }
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich",
+  "fileOperationStarted": "Dateioperation gestartet",
   "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
   "fileSharingTable": {
     "filename": "Dateiname",
