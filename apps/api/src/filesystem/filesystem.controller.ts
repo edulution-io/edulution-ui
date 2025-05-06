@@ -65,10 +65,13 @@ class FileSystemController {
     return this.filesystemService.serveFiles(appName, FileSystemController.buildPathString(filename), res);
   }
 
-  @Delete(':appName/:filename')
+  @Delete(':appName/*filename')
   @UseGuards(AppConfigGuard)
   deleteFile(@Param('appName') appName: string, @Param('filename') filename: string) {
-    return FilesystemService.deleteFile(`${APPS_FILES_PATH}/${appName}`, filename);
+    return FilesystemService.deleteFile(
+      `${APPS_FILES_PATH}/${appName}`,
+      FileSystemController.buildPathString(filename),
+    );
   }
 }
 

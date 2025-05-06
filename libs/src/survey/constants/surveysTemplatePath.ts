@@ -10,17 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface SurveyElement {
-  type: string;
-  name: string;
-  title?: string;
-  description?: string;
-  choicesOrder?: string;
-  choices: string[] | null;
-  choicesByUrl: { url: string } | null;
-  hideIfChoicesEmpty?: boolean;
-  showOtherItem: boolean | null;
-  showNoneItem?: boolean;
-}
+import APPS from '@libs/appconfig/constants/apps';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import { TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
 
-export default SurveyElement;
+const SURVEYS_TEMPLATE_PATH = `${APPS_FILES_PATH}/${APPS.SURVEYS}/${TEMPLATES}`;
+
+export default SURVEYS_TEMPLATE_PATH;

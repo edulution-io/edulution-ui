@@ -10,17 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface SurveyElement {
-  type: string;
-  name: string;
-  title?: string;
-  description?: string;
-  choicesOrder?: string;
-  choices: string[] | null;
-  choicesByUrl: { url: string } | null;
-  hideIfChoicesEmpty?: boolean;
-  showOtherItem: boolean | null;
-  showNoneItem?: boolean;
-}
+const isQuestionTypeChoiceType = (questionType: string): boolean =>
+  questionType === 'radiogroup' || questionType === 'checkbox' || questionType === 'dropdown';
 
-export default SurveyElement;
+export default isQuestionTypeChoiceType;

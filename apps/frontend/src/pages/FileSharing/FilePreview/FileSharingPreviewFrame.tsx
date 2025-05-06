@@ -28,7 +28,7 @@ import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsVal
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import ContentType from '@libs/filesharing/types/contentType';
-import isFileValid from '@libs/filesharing/utils/isFileValid';
+import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
 import ToggleDockButton from '@/components/structure/framing/ResizableWindow/Buttons/ToggleDockButton';
 import { useLocation } from 'react-router-dom';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
@@ -128,7 +128,7 @@ const FileSharingPreviewFrame = () => {
     APPS.FILE_SHARING,
     ExtendedOptionKeys.ONLY_OFFICE_URL,
   );
-  const isValidFile = currentlyEditingFile?.type === ContentType.FILE && isFileValid(currentlyEditingFile);
+  const isValidFile = currentlyEditingFile?.type === ContentType.FILE && isValidFileToPreview(currentlyEditingFile);
   const isFileReady = isValidFile && isDocumentServerConfigured && !isMobileView;
 
   const pathSegments = location.pathname.split('/').filter(Boolean);

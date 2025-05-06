@@ -10,17 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface SurveyElement {
-  type: string;
-  name: string;
-  title?: string;
-  description?: string;
-  choicesOrder?: string;
-  choices: string[] | null;
-  choicesByUrl: { url: string } | null;
-  hideIfChoicesEmpty?: boolean;
-  showOtherItem: boolean | null;
-  showNoneItem?: boolean;
-}
+import VIDEO_EXTENSIONS from '@libs/filesharing/types/videoExtensions';
+import VideoExtensionType from '@libs/filesharing/types/videoExtensionType';
+import AudioExtensionsType from '@libs/filesharing/types/audioExtensionsType';
+import AUDIO_EXTENSIONS from '@libs/filesharing/types/audioExtensions';
 
-export default SurveyElement;
+const isMediaExtension = (extension: string | undefined): boolean =>
+  Object.values(VIDEO_EXTENSIONS).includes(extension as VideoExtensionType) ||
+  Object.values(AUDIO_EXTENSIONS).includes(extension as AudioExtensionsType);
+
+export default isMediaExtension;
