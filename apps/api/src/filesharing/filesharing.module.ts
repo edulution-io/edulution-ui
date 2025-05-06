@@ -23,6 +23,7 @@ import CollectFileConsumer from './consumers/collectFile.consumer';
 import DeleteFileConsumer from './consumers/deleteFile.consumer';
 import WebdavService from '../webdav/webdav.service';
 import AppConfigModule from '../appconfig/appconfig.module';
+import MoveOrRenameConsumer from './consumers/moveOrRename.consumer';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import AppConfigModule from '../appconfig/appconfig.module';
     DuplicateFileConsumer,
     CollectFileConsumer,
     DeleteFileConsumer,
+    MoveOrRenameConsumer,
     WebdavService,
   ],
   exports: [FilesharingService],

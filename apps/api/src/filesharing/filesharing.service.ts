@@ -21,6 +21,7 @@ import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileReques
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import JOB_NAMES from '@libs/queue/constants/jobNames';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
 import WebdavService from '../webdav/webdav.service';
 import OnlyofficeService from './onlyoffice.service';
 import FilesystemService from '../filesystem/filesystem.service';
@@ -67,6 +68,22 @@ export default class FilesharingService {
           item: collectFileRequest,
           operationType: type,
           total: collectFileRequestDTOs.length,
+          processed: (processedItems += 1),
+        });
+      }),
+    );
+  }
+
+  async moveOrRenameResource(username: string, pathChangeOrCreateDto: PathChangeOrCreateProps[]) {
+    let processedItems = 0;
+    return Promise.all(
+      pathChangeOrCreateDto.map(async (pathChange) => {
+        const { path, newPath } = pathChange;
+        await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.MOVE_OR_RENAME_JOB, {
+          username,
+          path,
+          newPath,
+          total: pathChangeOrCreateDto.length,
           processed: (processedItems += 1),
         });
       }),

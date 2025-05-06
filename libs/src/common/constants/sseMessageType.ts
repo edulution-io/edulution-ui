@@ -27,6 +27,7 @@ const SSE_MESSAGE_TYPE = {
   FILESHARING_SHARE_FILES: 'filesharing_share_files',
   FILESHARING_COLLECT_FILES: 'filesharing_collect_files',
   FILESHARING_DELETE_FILES: 'filesharing_delete_files',
+  FILESHARING_MOVE_OR_RENAME_FILES: 'filesharing_move_or_rename_files',
 } as const;
 
 export default SSE_MESSAGE_TYPE;

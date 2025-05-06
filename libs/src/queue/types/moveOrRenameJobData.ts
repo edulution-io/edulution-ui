@@ -10,11 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const JOB_NAMES = {
-  DUPLICATE_FILE_JOB: 'duplicate-file',
-  COLLECT_FILE_JOB: 'collect-file',
-  DELETE_FILE_JOB: 'delete-file',
-  MOVE_OR_RENAME_JOB: 'move-or-rename-file',
-} as const;
+interface MoveOrRenameJobData {
+  username: string;
+  path: string;
+  newPath: string;
+  total: number;
+  processed: number;
+  failedPaths?: string[];
+}
 
-export default JOB_NAMES;
+export default MoveOrRenameJobData;

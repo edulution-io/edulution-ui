@@ -190,10 +190,12 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
           ? `${String(form.getValues('filename')) + String(form.getValues('extension'))}`
           : form.getValues('filename');
       const cleanedPath = getPathWithoutWebdav(currentPath);
-      return Promise.resolve({
-        path: `${cleanedPath}/${selectedItems[0]?.basename}`,
-        newPath: `${cleanedPath}/${filename}`,
-      });
+      return Promise.resolve([
+        {
+          path: `${cleanedPath}/${selectedItems[0]?.basename}`,
+          newPath: `${cleanedPath}/${filename}`,
+        },
+      ]);
     },
   },
 

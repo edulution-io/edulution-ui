@@ -27,17 +27,6 @@ const handleDeleteItems = async (pathsToDelete: PathChangeOrCreateDto[], endpoin
   });
 };
 
-const sendBatchRequests = async (
-  pathChangeOrCreateDtos: PathChangeOrCreateDto[],
-  endpoint: string,
-  httpMethod: HttpMethods,
-) => {
-  const promises = pathChangeOrCreateDtos.map((pathChangeOrCreateDto) =>
-    eduApi[httpMethod](endpoint, pathChangeOrCreateDto),
-  );
-  return Promise.all(promises);
-};
-
 const handleBulkFileOperations = async (
   action: FileActionType,
   endpoint: string,
@@ -48,8 +37,11 @@ const handleBulkFileOperations = async (
   if (action === FileActionType.DELETE_FILE_FOLDER) {
     await handleDeleteItems(itemsToProcess, endpoint);
     setFileOperationResult(undefined, t('fileOperationSuccessful'), 200);
-  } else if (action === FileActionType.MOVE_FILE_FOLDER || action === FileActionType.RENAME_FILE_FOLDER) {
-    await sendBatchRequests(itemsToProcess, endpoint, httpMethod);
+  } else if (action === FileActionType.MOVE_FILE_FOLDER) {
+    await eduApi[httpMethod](endpoint, itemsToProcess);
+    setFileOperationResult(undefined, t('fileOperationSuccessful'), 200);
+  } else if (action === FileActionType.RENAME_FILE_FOLDER) {
+    await eduApi[httpMethod](endpoint, itemsToProcess);
     setFileOperationResult(true, t('fileOperationSuccessful'), 200);
   }
 };

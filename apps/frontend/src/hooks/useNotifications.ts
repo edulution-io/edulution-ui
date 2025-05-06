@@ -144,13 +144,14 @@ const useNotifications = () => {
     const controller = new AbortController();
     const { signal } = controller;
 
-    const rawDelete = handleFilesharingProgress(setFileOperationProgress);
+    const rawFileOperations = handleFilesharingProgress(setFileOperationProgress);
 
-    const handleDelete = (e: MessageEvent<string>) => {
-      void rawDelete(e);
+    const handleFileOperations = (e: MessageEvent<string>) => {
+      void rawFileOperations(e);
     };
 
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES, handleDelete, { signal });
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES, handleFileOperations, { signal });
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_MOVE_OR_RENAME_FILES, handleFileOperations, { signal });
 
     return () => {
       controller.abort();
