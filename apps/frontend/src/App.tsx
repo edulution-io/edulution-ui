@@ -55,6 +55,10 @@ const App = () => {
       window.history.pushState(null, '', '/');
       window.dispatchEvent(new PopStateEvent('popstate'));
     },
+    onSignoutCallback: () => {
+      window.history.pushState(null, '', '/login');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    },
   };
 
   return (
