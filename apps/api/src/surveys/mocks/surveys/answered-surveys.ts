@@ -157,7 +157,7 @@ export const surveyAnswerAnsweredSurvey03: SurveyAnswerDocument = {
 
 export const answeredSurvey03BackendLimiter = [
   {
-    questionId: 'Frage2',
+    questionName: 'Frage2',
     choices: [
       { name: 'choice0', title: 'CanBeSelected0times', limit: 0 },
       { name: 'choice1', title: 'CanBeSelected1times', limit: 1 },

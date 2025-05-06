@@ -62,7 +62,7 @@ export {
   idOfTheInvalidSurveyAnswerForThePublicSurvey02,
   mockedInvalidAnswerForPublicSurveys02,
   surveyInvalidAnswerPublicSurvey02,
-  publicSurvey02QuestionIdWithLimiters,
+  publicSurvey02QuestionNameWithLimiters,
   publicSurvey02BackendLimiter,
   filteredChoices,
   filteredChoicesAfterAddingValidAnswer,

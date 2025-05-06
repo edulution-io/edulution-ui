@@ -112,7 +112,9 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set, get) => (
       const response = await eduApi.get<VirtualMachines>(`${EDU_API_VDI_ENDPOINT}/virtualmachines`);
       set({ virtualMachines: response.data });
     } catch (error) {
-      handleApiError(error, set);
+      if (!isSilent) {
+        handleApiError(error, set);
+      }
     } finally {
       set({ isLoading: false });
     }

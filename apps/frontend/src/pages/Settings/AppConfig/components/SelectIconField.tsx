@@ -81,7 +81,7 @@ const iconsList = [
 
 const SelectIconField = ({ form }: { form: UseFormReturn<{ customAppName: string; customIcon: string }> }) => {
   const { t } = useTranslation();
-  const [isSelected, setIsSelected] = useState(ForwardIcon);
+  const [isSelected, setIsSelected] = useState('');
 
   useEffect(() => {
     if (isSelected) {
