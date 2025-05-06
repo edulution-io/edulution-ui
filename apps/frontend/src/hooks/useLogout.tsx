@@ -26,6 +26,7 @@ const useLogout = () => {
   const handleLogout = useCallback(async () => {
     await logout();
     await auth.removeUser();
+    await auth.signoutPopup();
     cleanAllStores();
     removeCookie('authToken');
     window.history.pushState(null, '', LOGIN_ROUTE);

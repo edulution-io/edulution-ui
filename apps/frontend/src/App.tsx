@@ -23,7 +23,7 @@ import lmnApi from '@/api/lmnApi';
 import useUserStore from '@/store/UserStore/UserStore';
 import Toaster from '@/components/ui/Toaster';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
-import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
 import GlobalHooksWrapper from './components/GlobalHooksWrapper';
 
 const App = () => {
@@ -43,14 +43,13 @@ const App = () => {
   }, [user?.language]);
 
   const oidcConfig: AuthProviderProps = {
-    authority: `${EDU_API_URL}/auth`,
+    authority: `${EDU_BASE_URL}/auth/realms/edulution`,
     client_id: 'edu-ui',
-    redirect_uri: `${window.location.origin}/authentication/login_callback`,
-    silent_redirect_uri: `${window.location.origin}/authentication/silent_callback`,
+    redirect_uri: `${EDU_BASE_URL}/login`,
     response_type: 'code',
-    scope: 'openid profile',
-    automaticSilentRenew: true,
+    scope: 'openid profile email',
     loadUserInfo: true,
+    automaticSilentRenew: true,
     userStore: new WebStorageStateStore({ store: localStorage }),
     onSigninCallback: (_user) => {
       window.history.pushState(null, '', '/');
