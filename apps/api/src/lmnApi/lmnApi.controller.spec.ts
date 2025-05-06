@@ -121,7 +121,7 @@ describe('LmnApiController', () => {
 
   describe('toggleSchoolClassJoined', () => {
     it('should call toggleSchoolClassJoined', async () => {
-      await controller.toggleSchoolClassJoined({ schoolClass: 'class1', action: 'join' }, 'mockToken', 'test');
+      await controller.toggleSchoolClassJoined({ schoolClass: 'class1', action: 'join' }, 'mockToken');
       expect(service.toggleSchoolClassJoined).toHaveBeenCalledWith('mockToken', 'class1', 'join', 'test');
     });
   });
