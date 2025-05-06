@@ -16,6 +16,10 @@ import { RawData, Server, WebSocket } from 'ws';
 import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/apiEndpoints';
 import ROOM_ID_PARAM from '@libs/tldraw-sync/constants/roomIdParam';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
+import { readFileSync } from 'fs';
+import { JwtService } from '@nestjs/jwt';
+import JwtUser from '@libs/user/types/jwt/jwtUser';
 import TldrawSyncService from './tldraw-sync.service';
 
 @WebSocketGateway({
@@ -25,7 +29,12 @@ import TldrawSyncService from './tldraw-sync.service';
 export default class TldrawSyncGateway implements OnGatewayConnection, OnModuleInit {
   @WebSocketServer() server: Server;
 
-  constructor(private readonly tldrawSyncService: TldrawSyncService) {}
+  private readonly pubKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
+
+  constructor(
+    private readonly tldrawSyncService: TldrawSyncService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   onModuleInit() {
@@ -33,24 +42,33 @@ export default class TldrawSyncGateway implements OnGatewayConnection, OnModuleI
   }
 
   async handleConnection(client: WebSocket, request: Request) {
-    if (!request.url) {
-      Logger.log('No URL in websocket request', TldrawSyncGateway.name);
-      client.close();
-      return;
-    }
-
     const url = new URL(request.url, 'http://localhost');
 
-    const roomId = url.searchParams.get(ROOM_ID_PARAM);
+    const token = url.searchParams.get('token');
     const sessionId = url.searchParams.get('sessionId');
-
-    if (!roomId || !sessionId) {
-      Logger.log('Missing roomId or sessionId, closing socket', TldrawSyncGateway.name);
+    if (!token || !sessionId) {
       client.close();
       return;
     }
 
-    Logger.log(`Client connected: roomId=${roomId}, sessionId=${sessionId}`, TldrawSyncGateway.name);
+    let user: JwtUser;
+    try {
+      user = await this.jwtService.verifyAsync<JwtUser>(token, {
+        publicKey: this.pubKey,
+        algorithms: ['RS256'],
+      });
+    } catch (err) {
+      client.close();
+      return;
+    }
+
+    const multiRoomId = url.searchParams.get(ROOM_ID_PARAM);
+    const roomId = multiRoomId ? `multi-${multiRoomId}` : `single-${user.preferred_username}`;
+
+    Logger.log(
+      `Client ${user.preferred_username} connected: roomId=${roomId}, sessionId=${sessionId}`,
+      TldrawSyncGateway.name,
+    );
 
     const caughtMessages: RawData[] = [];
     const collectMessagesListener = (message: RawData) => {
