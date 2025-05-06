@@ -32,5 +32,3 @@ export class UserAccounts {
 }
 
 export const UserAccountsSchema = SchemaFactory.createForClass(UserAccounts);
-
-export default UserAccountsSchema;
