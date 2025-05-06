@@ -23,8 +23,9 @@ import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceD
 import JoinButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/joinButton';
 import StartButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/startButton';
 import StopButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/stopButton';
-import delay from '@libs/common/utils/delay';
 import { toast } from 'sonner';
+import delay from '@libs/common/utils/delay';
+
 import { useTranslation } from 'react-i18next';
 
 const ConferencesFloatingButtons: React.FC = () => {
@@ -40,23 +41,26 @@ const ConferencesFloatingButtons: React.FC = () => {
   const isOnlyOneConferenceSelected = selectedConferenceIds.length === 1;
 
   const startOrStopConference = async () => {
-    if (firstSelectedConference) {
-      const { meetingID, isRunning } = firstSelectedConference;
-      const wasConferenceStateToggled = await toggleConferenceRunningState(meetingID, isRunning);
-      if (isRunning) {
-        void joinConference(meetingID);
-      } else if (joinConferenceUrl.includes(meetingID)) {
-        setJoinConferenceUrl('');
-      }
+    if (!firstSelectedConference) return;
 
-      if (wasConferenceStateToggled) {
-        await delay(5000);
-        toast.info(t(`conferences.${isRunning ? 'stopped' : 'started'}`));
-      } else {
-        setJoinConferenceUrl('');
-      }
-      await getConferences();
+    const { meetingID, isRunning } = firstSelectedConference;
+
+    const wasConferenceStateToggled = await toggleConferenceRunningState(meetingID, isRunning);
+
+    if (!isRunning) {
+      await joinConference(meetingID);
+    } else if (joinConferenceUrl.includes(meetingID)) {
+      setJoinConferenceUrl('');
     }
+
+    if (wasConferenceStateToggled) {
+      await delay(5000);
+      toast.info(t(`conferences.${isRunning ? 'stopped' : 'started'}`));
+    } else {
+      setJoinConferenceUrl('');
+    }
+
+    await getConferences();
   };
 
   const config: FloatingButtonsBarConfig = {

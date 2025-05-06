@@ -135,7 +135,10 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
             value={isVisible ? password : placeholder}
             readOnly
             className="min-w-64 cursor-pointer"
-            onClick={() => handleCopyPassword()}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              void handleCopyPassword();
+            }}
             icon={getCopyButton()}
           />
         ) : (
