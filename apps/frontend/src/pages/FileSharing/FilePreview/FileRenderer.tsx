@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { FC, useEffect } from 'react';
+import React, { FC, MutableRefObject, useEffect } from 'react';
 import ImageComponent from '@/components/ui/ImageComponent';
 import MediaComponent from '@/components/ui/MediaComponent';
 import OnlyOffice from '@/pages/FileSharing/FilePreview/OnlyOffice/OnlyOffice';
@@ -23,13 +23,13 @@ import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
-
 interface FileRendererProps {
   editMode: boolean;
   isOpenedInNewTab?: boolean;
+  closingRef?: MutableRefObject<boolean>;
 }
 
-const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab }) => {
+const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closingRef }) => {
   const { isMobileView } = useMedia();
   const {
     downloadLinkURL: fileUrl,
@@ -50,7 +50,7 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab }) => 
 
   useEffect(
     () => () => {
-      if (currentlyEditingFile) {
+      if (!closingRef?.current && currentlyEditingFile) {
         void setFileIsCurrentlyDisabled(currentlyEditingFile.basename, false);
       }
     },
