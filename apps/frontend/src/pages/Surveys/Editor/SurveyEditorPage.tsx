@@ -45,7 +45,8 @@ import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuest
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 
 const SurveyEditorPage = () => {
-  const { fetchSelectedSurvey, isFetching, selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
+  const { fetchSelectedSurvey, isFetching, selectedSurvey, selectSurvey, updateUsersSurveys } =
+    useSurveyTablesPageStore();
   const {
     isOpenSaveSurveyDialog,
     setIsOpenSaveSurveyDialog,
@@ -76,6 +77,7 @@ const SurveyEditorPage = () => {
     resetEditorPage();
     resetTemplateStore();
     resetQuestionsContextMenu();
+    selectSurvey(undefined);
   };
 
   useEffect(() => {
@@ -205,7 +207,6 @@ const SurveyEditorPage = () => {
         text: t('survey.editor.new'),
         onClick: () => {
           handleReset();
-          resetStoredSurvey();
           form.reset(initialFormValues);
           if (creator) {
             creator.saveNo = 0;
@@ -218,7 +219,6 @@ const SurveyEditorPage = () => {
         text: t('survey.editor.reset'),
         onClick: () => {
           handleReset();
-          resetStoredSurvey();
           form.reset(initialFormValues);
           if (creator) {
             creator.saveNo = form.getValues('saveNo');

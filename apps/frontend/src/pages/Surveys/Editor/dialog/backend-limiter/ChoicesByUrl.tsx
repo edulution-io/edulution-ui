@@ -104,6 +104,8 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
         correspondingQuestion.choices = null;
         correspondingQuestion.choicesByUrl = {
           url: `${EDU_API_URL}/${SURVEY_CHOICES}/${TEMPORAL_SURVEY_ID_STRING}/${selectedQuestion.name}`,
+          valueName: 'title',
+          titleName: 'title',
         };
         correspondingQuestion.hideIfChoicesEmpty = true;
       }

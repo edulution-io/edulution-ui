@@ -17,7 +17,11 @@ interface SurveyElement {
   description?: string;
   choicesOrder?: string;
   choices: string[] | null;
-  choicesByUrl: { url: string } | null;
+  choicesByUrl: {
+    url: string;
+    valueName?: string;
+    titleName?: string;
+  } | null;
   hideIfChoicesEmpty?: boolean;
   showOtherItem: boolean | null;
   showNoneItem?: boolean;

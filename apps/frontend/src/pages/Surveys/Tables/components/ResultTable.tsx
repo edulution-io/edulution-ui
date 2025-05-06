@@ -10,13 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { FC, useEffect, useRef } from 'react';
 import { SurveyModel } from 'survey-core';
 import { Tabulator } from 'survey-analytics/survey.analytics.tabulator';
 import 'tabulator-tables/dist/css/tabulator.min.css';
 import 'survey-analytics/survey.analytics.tabulator.css';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
-import '../dialogs/resultTableDialog.css';
 import useLanguage from '@/hooks/useLanguage';
 
 interface ResultTableDialogBodyProps {
@@ -24,40 +23,29 @@ interface ResultTableDialogBodyProps {
   result: JSON[];
 }
 
-const ResultTable = (props: ResultTableDialogBodyProps) => {
-  const { formula, result } = props;
-
+const ResultTable: FC<ResultTableDialogBodyProps> = ({ formula, result }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const { language } = useLanguage();
 
-  const [survey, setSurvey] = useState<SurveyModel | null>(null);
-  const [visuTable, setVisuTable] = useState<Tabulator | null>(null);
-
-  if (survey == null) {
-    const surveyModel = new SurveyModel(formula);
-    setSurvey(surveyModel);
-  }
-
-  if (visuTable == null && survey != null) {
-    const answers = result || [];
-    const surveyVisuTable = new Tabulator(survey, answers);
-    surveyVisuTable.locale = language;
-    setVisuTable(surveyVisuTable);
-  }
-
   useEffect(() => {
-    visuTable?.render('surveyDashboardContainer');
+    const surveyModel = new SurveyModel(formula);
+    const surveyTable = new Tabulator(surveyModel, result || []);
+    surveyTable.locale = language;
 
-    const component = document.getElementById('surveyDashboardContainer');
+    if (containerRef.current) {
+      surveyTable.render(containerRef.current);
+    }
+
     return () => {
-      if (component) {
-        component.innerHTML = '';
+      if (containerRef.current) {
+        containerRef.current.innerHTML = '';
       }
     };
-  }, [visuTable]);
+  }, [formula, result, language]);
 
   return (
     <div className="max-h-[75vh] rounded bg-secondary px-4 pb-4 text-background">
-      <div id="surveyDashboardContainer" />
+      <div ref={containerRef} />
     </div>
   );
 };
