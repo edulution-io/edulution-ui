@@ -41,7 +41,7 @@ export default class TldrawSyncGateway implements OnGatewayConnection, OnModuleI
     Logger.log(`WebSocket Gateway initialized at path: /${TLDRAW_SYNC_ENDPOINTS.BASE}`, TldrawSyncGateway.name);
   }
 
-  async handleConnection(client: WebSocket & { user?: JwtUser }, request: Request) {
+  async handleConnection(client: WebSocket, request: Request) {
     const url = new URL(request.url, 'http://localhost');
 
     const token = url.searchParams.get('token');
