@@ -12,16 +12,15 @@
 
 import React, { useEffect, useMemo, useRef } from 'react';
 import { toast } from 'sonner';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { VscNewFile } from 'react-icons/vsc';
 import { RiResetLeftLine } from 'react-icons/ri';
 import { zodResolver } from '@hookform/resolvers/zod';
-import useBeforeUnload from '@/hooks/useBeforeUnload';
 import { useTranslation } from 'react-i18next';
 import { TbTemplate } from 'react-icons/tb';
-import { Question } from 'survey-core/typings/src/question';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
+import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyFormula from '@libs/survey/types/TSurveyFormula';
@@ -32,6 +31,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useLanguage from '@/hooks/useLanguage';
+import useBeforeUnload from '@/hooks/useBeforeUnload';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import createSurveyCreatorComponent from '@/pages/Surveys/Editor/createSurveyCreatorObject';
@@ -45,7 +45,8 @@ import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuest
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 
 const SurveyEditorPage = () => {
-  const { fetchSelectedSurvey, isFetching, selectedSurvey, updateUsersSurveys } = useSurveyTablesPageStore();
+  const { fetchSelectedSurvey, isFetching, selectedSurvey, selectSurvey, updateUsersSurveys } =
+    useSurveyTablesPageStore();
   const {
     isOpenSaveSurveyDialog,
     setIsOpenSaveSurveyDialog,
@@ -63,18 +64,20 @@ const SurveyEditorPage = () => {
     setIsOpenQuestionContextMenu,
     isOpenQuestionContextMenu,
     setSelectedQuestion,
+    isUpdatingBackendLimiters,
   } = useQuestionsContextMenuStore();
 
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { user } = useUserStore();
   const { surveyId } = useParams();
   const { language } = useLanguage();
 
   const handleReset = () => {
+    resetStoredSurvey();
     resetEditorPage();
     resetTemplateStore();
     resetQuestionsContextMenu();
+    selectSurvey(undefined);
   };
 
   useEffect(() => {
@@ -92,7 +95,7 @@ const SurveyEditorPage = () => {
       label: `${user.firstName} ${user.lastName}`,
     };
     return getInitialSurveyFormValues(surveyCreator, selectedSurvey, storedSurvey);
-  }, [selectedSurvey]);
+  }, [storedSurvey, selectedSurvey]);
 
   const form = useForm<SurveyDto>({
     mode: 'onChange',
@@ -120,15 +123,13 @@ const SurveyEditorPage = () => {
       saveNo,
     });
   };
-
   useBeforeUnload('unload', updateSurveyStorage);
 
   useEffect(() => {
     if (!creator) return;
-
+    creator.locale = language;
     creator.saveNo = form.getValues('saveNo');
     creator.JSON = form.getValues('formula');
-    creator.locale = language;
     creator.saveSurveyFunc = updateSurveyStorage;
 
     creator.onDefineElementMenuItems.add((creatorModel, options) => {
@@ -142,7 +143,7 @@ const SurveyEditorPage = () => {
         options.items[settingsItemIndex].action = () => {
           if (creatorModel.isObjQuestion(creatorModel.selectedElement)) {
             setIsOpenQuestionContextMenu(true);
-            setSelectedQuestion(creatorModel.selectedElement as unknown as Question);
+            setSelectedQuestion(creatorModel.selectedElement as unknown as TSurveyQuestion);
           }
         };
 
@@ -154,21 +155,27 @@ const SurveyEditorPage = () => {
       }
     });
 
-    creator.onUploadFile.add(async (_creatorModel, options) => {
+    creator.onUploadFile.add(async (_creatorModel, uploadFileEvent) => {
       // TODO: 630 (https://github.com/edulution-io/edulution-ui/issues/630) -  Currently this can only work for already created surveys
       if (!surveyId) return;
-      const promises = options.files.map((file: File) => {
-        if (!options.question?.id) {
-          return uploadImageFile(surveyId, 'Header', file, options.callback);
+      const promises = uploadFileEvent.files.map((file: File) => {
+        if (!uploadFileEvent.question?.id) {
+          return uploadImageFile(surveyId, 'Header', file, uploadFileEvent.callback);
         }
-        return uploadImageFile(surveyId, options.question.id, file, options.callback);
+        return uploadImageFile(surveyId, uploadFileEvent.question.id, file, uploadFileEvent.callback);
       });
       await Promise.all(promises);
     });
   }, [creator, form, language]);
 
+  const handleNavigateToCreatedSurveys = () => {
+    window.history.pushState(null, '', `/${CREATED_SURVEYS_PAGE}`);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  };
+
   const handleSaveSurvey = async () => {
     if (!creator) return;
+
     const formula = creator.JSON as SurveyFormula;
     const saveNo = creator.saveNo || 0;
     const success = await updateOrCreateSurvey({
@@ -183,7 +190,7 @@ const SurveyEditorPage = () => {
       resetStoredSurvey();
 
       toast.success(t('survey.editor.saveSurveySuccess'));
-      navigate(`/${CREATED_SURVEYS_PAGE}`);
+      handleNavigateToCreatedSurveys();
     }
   };
 
@@ -200,7 +207,6 @@ const SurveyEditorPage = () => {
         text: t('survey.editor.new'),
         onClick: () => {
           handleReset();
-          resetStoredSurvey();
           form.reset(initialFormValues);
           if (creator) {
             creator.saveNo = 0;
@@ -213,7 +219,6 @@ const SurveyEditorPage = () => {
         text: t('survey.editor.reset'),
         onClick: () => {
           handleReset();
-          resetStoredSurvey();
           form.reset(initialFormValues);
           if (creator) {
             creator.saveNo = form.getValues('saveNo');
@@ -252,8 +257,11 @@ const SurveyEditorPage = () => {
         isSubmitting={isLoading}
       />
       <QuestionContextMenu
+        form={form}
+        creator={creator}
         isOpenQuestionContextMenu={isOpenQuestionContextMenu}
         setIsOpenQuestionContextMenu={setIsOpenQuestionContextMenu}
+        isLoading={isUpdatingBackendLimiters}
       />
     </PageLayout>
   );

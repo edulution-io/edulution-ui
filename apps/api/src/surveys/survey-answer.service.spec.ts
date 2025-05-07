@@ -56,7 +56,7 @@ import {
   publicSurvey01,
   publicSurvey02,
   publicSurvey02AfterAddingValidAnswer,
-  publicSurvey02QuestionIdWithLimiters,
+  publicSurvey02QuestionNameWithLimiters,
   saveNoAnsweredSurvey01,
   saveNoAnsweredSurvey02,
   saveNoAnsweredSurvey03,
@@ -133,13 +133,13 @@ describe('SurveyAnswerService', () => {
 
       const result = await service.getSelectableChoices(
         idOfPublicSurvey02.toString(),
-        publicSurvey02QuestionIdWithLimiters,
+        publicSurvey02QuestionNameWithLimiters,
       );
       expect(result).toEqual(filteredChoices);
 
       expect(service.getSelectableChoices).toHaveBeenCalledWith(
         idOfPublicSurvey02.toString(),
-        publicSurvey02QuestionIdWithLimiters,
+        publicSurvey02QuestionNameWithLimiters,
       );
       expect(model.countDocuments).toHaveBeenCalledTimes(4); // once for each possible choice
     });
@@ -159,13 +159,13 @@ describe('SurveyAnswerService', () => {
 
       const result = await service.getSelectableChoices(
         idOfPublicSurvey02.toString(),
-        publicSurvey02QuestionIdWithLimiters,
+        publicSurvey02QuestionNameWithLimiters,
       );
       expect(result).toEqual(filteredChoicesAfterAddingValidAnswer);
 
       expect(service.getSelectableChoices).toHaveBeenCalledWith(
         idOfPublicSurvey02.toString(),
-        publicSurvey02QuestionIdWithLimiters,
+        publicSurvey02QuestionNameWithLimiters,
       );
       expect(model.countDocuments).toHaveBeenCalledTimes(4); // once for each possible choice
     });
@@ -177,7 +177,7 @@ describe('SurveyAnswerService', () => {
       surveyModel.findById = jest.fn().mockReturnValue(publicSurvey01);
 
       try {
-        await service.getSelectableChoices(idOfPublicSurvey01.toString(), publicSurvey02QuestionIdWithLimiters);
+        await service.getSelectableChoices(idOfPublicSurvey01.toString(), publicSurvey02QuestionNameWithLimiters);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toBe(SurveyErrorMessages.NoBackendLimiters);
@@ -185,7 +185,7 @@ describe('SurveyAnswerService', () => {
 
       expect(service.getSelectableChoices).toHaveBeenCalledWith(
         idOfPublicSurvey01.toString(),
-        publicSurvey02QuestionIdWithLimiters,
+        publicSurvey02QuestionNameWithLimiters,
       );
     });
   });

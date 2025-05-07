@@ -9,15 +9,25 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
 import React from 'react';
+import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { SurveyCreatorModel } from 'survey-creator-core';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 import cn from '@libs/common/utils/className';
+import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
+import ChoicesByUrl from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesByUrl';
 import Label from '@/components/ui/Label';
 import Input from '@/components/shared/Input';
-import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 
-const QuestionContextMenuBody = () => {
+interface QuestionContextMenuBodyProps {
+  form: UseFormReturn<SurveyDto>;
+  creator: SurveyCreatorModel;
+}
+
+const QuestionContextMenuBody = (props: QuestionContextMenuBodyProps) => {
+  const { form, creator } = props;
+
   const { selectedQuestion, questionTitle, setQuestionTitle, questionDescription, setQuestionDescription } =
     useQuestionsContextMenuStore();
 
@@ -56,6 +66,10 @@ const QuestionContextMenuBody = () => {
           { 'text-muted-foreground': !questionDescription },
           { 'text-primary-foreground': questionDescription },
         )}
+      />
+      <ChoicesByUrl
+        form={form}
+        creator={creator}
       />
     </div>
   );

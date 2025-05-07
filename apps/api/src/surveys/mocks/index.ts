@@ -73,7 +73,7 @@ export {
   publicSurvey02BackendLimiter,
   filteredChoices,
   filteredChoicesAfterAddingValidAnswer,
-  publicSurvey02QuestionIdWithLimiters,
+  publicSurvey02QuestionNameWithLimiters,
 } from './surveys';
 export {
   firstUsername,

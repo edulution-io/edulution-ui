@@ -86,7 +86,9 @@
   "appstore": {
     "title": "App-Store",
     "description": "Hier kannst du {{ applicationName }} Apps hinzufügen.",
-    "chooseIcon": "Icon auswählen"
+    "chooseIcon": "Icon auswählen",
+    "uploadIcon": "Icon hochladen",
+    "dropIconDescription": "Ziehe ein Bild hierher oder klicke, um ein Bild auszuwählen. Unterstützte Formate: SVG, WEBP"
   },
   "forwarding": {
     "sidebar": "Weiterleitung"
@@ -100,7 +102,7 @@
   "dashboard": {
     "pageTitle": "Dashboard",
     "mobileAccess": {
-      "title": "Mobiler Datenzugriff",
+      "title": "Mobiler Zugriff",
       "manual": "Anleitung",
       "manualSetup": "Manuelles Einrichten",
       "setupWithQrCode": "Einrichtung via QR-Code",
@@ -554,7 +556,16 @@
         "questionTitle": "Titel",
         "addQuestionTitle": "Titel hinzufügen",
         "questionDescription": "Beschreibung",
-        "addQuestionDescription": "Beschreibung hinzufügen"
+        "addQuestionDescription": "Beschreibung hinzufügen",
+        "limit": "Grenzwert",
+        "nullLimit": "Ein Grenzwert von 0 bedeutet, dass die Option unbeschränkt verfügbar ist.",
+        "backendLimiters": "Auswahlmöglichkeiten begrenzen",
+        "addBackendLimiters": "Hier können Optionen mit Grenzwerten definiert werden. Dadurch lassen sich diese nur begrenzt oft auswählen.",
+        "useOtherItem": "Erlaube Nutzern eigene Optionen hinzuzufügen",
+        "addBackendLimiterForOtherItem": "Dies setzt einen Grenzwert, wie oft Teilnehmer diese Optionen auswählen können.",
+        "upperLimit": "Grenzwert",
+        "upperBackendLimiters": "Auswahlmöglichkeiten mit Obergrenze",
+        "addChoice": "Hinzufügen"
       }
     },
     "participate": {
@@ -1131,6 +1142,9 @@
     "update": "Update",
     "progress": "Fortschritt...",
     "pressInstall": "Drücke Installieren um zu Starten.",
+    "enable": "Einschalten",
+    "enabled": "Aktiviert",
+    "disable": "Ausschalten",
     "disabled": "Deaktiviert",
     "invalid_url": "Ungültige URL",
     "invalid_fqdn": "Ungültiger FQDN. Bitte nur den Hostnamen angeben.",
