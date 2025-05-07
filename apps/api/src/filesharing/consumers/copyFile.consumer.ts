@@ -13,7 +13,7 @@
 import { WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Injectable } from '@nestjs/common';
-
+import * as path from 'path';
 import DuplicateFileJobData from '@libs/queue/types/duplicateFileJobData';
 
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
@@ -22,6 +22,7 @@ import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJ
 import getStudentNameFromPath from '@libs/filesharing/utils/getStudentNameFromPath';
 import SseService from '../../sse/sse.service';
 import WebdavService from '../../webdav/webdav.service';
+import makeUniqueName from '@libs/filesharing/utils/makeUniqueName';
 
 @Injectable()
 class CopyFileConsumer extends WorkerHost {
@@ -36,8 +37,21 @@ class CopyFileConsumer extends WorkerHost {
     const { username, originFilePath, destinationFilePath, total, processed } = job.data as DuplicateFileJobData;
     const failedPaths: string[] = [];
 
+    const parsed = path.parse(destinationFilePath);
+    const targetFolderPath = parsed.dir;
+    const originalName = parsed.name;
+    const extension = parsed.ext;
+
+    const items = await this.webDavService.getFilesAtPath(username, targetFolderPath);
+
+    const uniqueFilename = makeUniqueName(originalName, extension, items);
+
     try {
-      await this.webDavService.copyFileViaWebDAV(username, originFilePath, destinationFilePath);
+      await this.webDavService.copyFileViaWebDAV(
+        username,
+        originFilePath,
+        path.join(targetFolderPath, '/', uniqueFilename),
+      );
     } catch {
       failedPaths.push(destinationFilePath);
     }
