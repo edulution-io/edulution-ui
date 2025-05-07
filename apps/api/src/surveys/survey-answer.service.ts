@@ -15,7 +15,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import SurveyStatus from '@libs/survey/survey-status-enum';
-import JwtUser from '@libs/user/types/jwt/jwtUser';
+import JWTUser from '@libs/user/types/jwt/jwtUser';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import createValidPublicUserId from '@libs/survey/utils/createValidPublicUserId';
@@ -96,7 +96,7 @@ class SurveyAnswersService {
     return createdSurveys || [];
   }
 
-  async getOpenSurveys(user: JwtUser, currentDate: Date = new Date()): Promise<Survey[]> {
+  async getOpenSurveys(user: JWTUser, currentDate: Date = new Date()): Promise<Survey[]> {
     const query = {
       $or: [
         {
@@ -144,7 +144,7 @@ class SurveyAnswersService {
     return answeredSurveys || [];
   }
 
-  async findUserSurveys(status: SurveyStatus, user: JwtUser): Promise<Survey[] | null> {
+  async findUserSurveys(status: SurveyStatus, user: JWTUser): Promise<Survey[] | null> {
     switch (status) {
       case SurveyStatus.OPEN:
         return this.getOpenSurveys(user);
@@ -214,23 +214,6 @@ class SurveyAnswersService {
       );
     }
     return newSurveyAnswer;
-  }
-
-  async checkIfPublicUserIsAuthenticated(surveyId: string, attendee: Attendee): Promise<boolean | undefined> {
-    const { username, publicUserName, publicUserId } = attendee;
-    if (publicUserName && publicUserId && username !== publicUserName) {
-      const publicUsername = createValidPublicUserId(publicUserName, publicUserId);
-      if (username === publicUsername) {
-        const existingUsersAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({
-          $and: [{ 'attendee.username': username }, { surveyId: new Types.ObjectId(surveyId) }],
-        });
-        if (existingUsersAnswer == null) {
-          return false;
-        }
-        return true;
-      }
-    }
-    return undefined;
   }
 
   async addAnswer(
@@ -350,8 +333,10 @@ class SurveyAnswersService {
       return false;
     }
     if (username === createValidPublicUserId(publicUserName, publicUserId)) {
-      const answer = await this.getAnswer(surveyId, username);
-      if (!answer) {
+      const existingUsersAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({
+        $and: [{ 'attendee.username': username }, { surveyId: new Types.ObjectId(surveyId) }],
+      });
+      if (existingUsersAnswer == null) {
         return false;
       }
       return true;
@@ -367,21 +352,16 @@ class SurveyAnswersService {
 
     const answers = surveyAnswers.filter((answer) => answer.answer != null);
     return answers.map((answer) => {
-      const { username, firstName, lastName, publicUserName } = answer.attendee;
-
-      const isLoggedInUserParticipation = !publicUserName;
-      const isPublicUserParticipation = !isLoggedInUserParticipation && !firstName && !lastName;
-
-      if (isLoggedInUserParticipation) {
+      const { username, firstName, lastName, publicUserName, publicUserId } = answer.attendee;
+      if (publicUserName) {
+        return { identification: publicUserName, ...answer.answer };
+      }
+      if (!publicUserId) {
         let identification = `(${username})`;
         identification = lastName ? `${lastName} ${identification}` : identification;
         identification = firstName ? `${firstName} ${identification}` : identification;
         return { identification, ...answer.answer };
       }
-      if (isPublicUserParticipation) {
-        return { identification: publicUserName, ...answer.answer };
-      }
-
       return answer.answer;
     });
   }

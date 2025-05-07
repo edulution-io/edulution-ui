@@ -21,9 +21,6 @@ class Attendee {
   lastName?: string;
 
   @Prop()
-  fullName?: string;
-
-  @Prop()
   publicUserName?: string;
 
   @Prop()

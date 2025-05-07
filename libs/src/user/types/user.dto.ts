@@ -21,8 +21,6 @@ class UserDto {
 
   lastName?: string;
 
-  fullName?: string;
-
   email: string;
 
   ldapGroups: LdapGroups;
