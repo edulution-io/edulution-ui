@@ -53,7 +53,7 @@ const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedIt
         onClick: () => openDialog(FileActionType.RENAME_FILE_FOLDER),
       },
       DownloadButton(
-        selectedItem ? () => startDownload(selectedItem.filename, selectedItem.basename) : () => {},
+        selectedItem ? () => startDownload(selectedItem?.filePath, selectedItem?.filename) : () => {},
         selectedItem?.type === ContentType.FILE && bytesToMegabytes(selectedItem?.size || 0) < MAX_FILE_UPLOAD_SIZE,
       ),
       CopyButton(() => openDialog(FileActionType.COPY_FILE_FOLDER)),

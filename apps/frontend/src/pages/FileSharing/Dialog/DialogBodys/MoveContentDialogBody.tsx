@@ -135,7 +135,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
             selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filePath]: true } : {}}
             onRowSelectionChange={handleRowSelectionChange}
             applicationName={APPS.FILE_SHARING}
-            getRowId={(row) => row.filename}
+            getRowId={(row) => row.filePath}
             showHeader={false}
             textColorClassname="text-background"
             showSelectedCount={false}

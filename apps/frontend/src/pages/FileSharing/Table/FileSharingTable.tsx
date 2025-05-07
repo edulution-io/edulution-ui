@@ -60,7 +60,7 @@ const FileSharingTable = () => {
       onRowSelectionChange={handleRowSelectionChange}
       isLoading={isLoading}
       selectedRows={selectedRows}
-      getRowId={(row) => row.filename}
+      getRowId={(row) => row.filePath}
       applicationName={appName}
       initialSorting={[
         { id: 'type', desc: false },
