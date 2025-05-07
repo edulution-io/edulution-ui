@@ -53,6 +53,22 @@ export default class FilesharingService {
     );
   }
 
+  async copyFileFolder(username: string, copyFileRequestDTOs: PathChangeOrCreateProps[]) {
+    let processedItems = 0;
+    return Promise.all(
+      copyFileRequestDTOs.map(async (copyFileRequest) => {
+        const { path, newPath } = copyFileRequest;
+        await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.COPY_FILE_JOB, {
+          username,
+          originFilePath: path,
+          destinationFilePath: newPath,
+          total: copyFileRequestDTOs.length,
+          processed: (processedItems += 1),
+        });
+      }),
+    );
+  }
+
   async collectFiles(
     username: string,
     collectFileRequestDTOs: CollectFileRequestDTO[],

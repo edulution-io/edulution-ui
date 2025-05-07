@@ -1227,6 +1227,10 @@
     "no-results": "No results",
     "usersAdded": "{{ count }} added"
   },
+  "copyItemDialog": {
+    "copyFilesToDirectory": "Dateien in Verzeichnis kopieren",
+    "copy": "Kopieren"
+  },
   "fileCategory": {
     "folder": "Folder",
     "document": "Document",
@@ -1311,7 +1315,8 @@
     "rename": "Rename",
     "move": "Move",
     "delete": "Delete",
-    "download": "Download"
+    "download": "Download",
+    "copy": "Copy"
   },
   "response": {
     "successfully": "Action was successful",

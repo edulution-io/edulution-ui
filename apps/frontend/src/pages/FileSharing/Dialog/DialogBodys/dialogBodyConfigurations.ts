@@ -223,6 +223,32 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     },
   },
 
+  copyFileFolder: {
+    Component: MoveDirectoryDialogBody,
+    titleKey: 'copyItemDialog.copyFilesToDirectory',
+    submitKey: 'copyItemDialog.copy',
+    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.COPY}`,
+    httpMethod: HttpMethods.POST,
+    type: ContentType.FILE || ContentType.DIRECTORY,
+    requiresForm: false,
+
+    getData: (_form, currentPath, inputValues) => {
+      const { moveOrCopyItemToPath, selectedItems } = inputValues;
+      if (!moveOrCopyItemToPath || !selectedItems) {
+        return Promise.resolve([]);
+      }
+      const sourceBase = getPathWithoutWebdav(currentPath);
+      const targetBase = getPathWithoutWebdav(moveOrCopyItemToPath.filename);
+
+      return Promise.resolve(
+        selectedItems.map((item) => ({
+          path: `${sourceBase}/${item.basename}`,
+          newPath: `${targetBase}/${item.basename}`,
+        })),
+      );
+    },
+  },
+
   moveFileFolder: {
     Component: MoveDirectoryDialogBody,
     titleKey: 'moveItemDialog.changeDirectory',

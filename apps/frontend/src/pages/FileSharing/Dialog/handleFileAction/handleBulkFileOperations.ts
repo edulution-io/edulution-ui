@@ -43,6 +43,9 @@ const handleBulkFileOperations = async (
   } else if (action === FileActionType.RENAME_FILE_FOLDER) {
     await eduApi[httpMethod](endpoint, itemsToProcess);
     setFileOperationResult(true, t('fileOperationSuccessful'), 200);
+  } else if (action === FileActionType.COPY_FILE_FOLDER) {
+    await eduApi[httpMethod](endpoint, itemsToProcess);
+    setFileOperationResult(true, t('fileOperationSuccessful'), 200);
   }
 };
 

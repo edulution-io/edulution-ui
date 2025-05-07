@@ -24,6 +24,7 @@ import DownloadButton from '@/components/shared/FloatingsButtonsBar/CommonButton
 import MoveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/moveButton';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
+import CopyButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/copyButton';
 
 const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItem }) => {
   const { downloadFile } = useFileEditorStore();
@@ -55,6 +56,7 @@ const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedIt
         selectedItem ? () => startDownload(selectedItem.filename, selectedItem.basename) : () => {},
         selectedItem?.type === ContentType.FILE && bytesToMegabytes(selectedItem?.size || 0) < MAX_FILE_UPLOAD_SIZE,
       ),
+      CopyButton(() => openDialog(FileActionType.COPY_FILE_FOLDER)),
     ],
     keyPrefix: 'file-sharing-page-floating-button_',
   };

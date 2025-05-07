@@ -152,6 +152,7 @@ const useNotifications = () => {
 
     eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES, handleFileOperations, { signal });
     eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_MOVE_OR_RENAME_FILES, handleFileOperations, { signal });
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_COPY_FILES, handleFileOperations, { signal });
 
     return () => {
       controller.abort();

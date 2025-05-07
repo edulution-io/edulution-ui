@@ -1269,6 +1269,11 @@
     "rename": "Umbenennen",
     "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
   },
+  "copyItemDialog": {
+    "copyFilesToDirectory": "Dateien in Verzeichnis kopieren",
+    "copy": "Kopieren"
+  },
+
   "moveItemDialog": {
     "changeDirectory": "Verzeichnis wechseln",
     "currentDirectory": "Aktuelles Verzeichnis",
@@ -1310,7 +1315,8 @@
     "rename": "Umbenennen",
     "move": "Verschieben",
     "delete": "Löschen",
-    "download": "Herunterladen"
+    "download": "Herunterladen",
+    "copy": "Kopieren"
   },
   "response": {
     "successfully": "Aktion war erfolgreich",

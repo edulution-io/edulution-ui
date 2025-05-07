@@ -166,6 +166,11 @@ class FilesharingController {
     return this.filesharingService.duplicateFile(username, duplicateFileRequestDto);
   }
 
+  @Post(FileSharingApiEndpoints.COPY)
+  async copyFile(@Body() pathChangeOrCreateDto: PathChangeOrCreateDto[], @GetCurrentUsername() username: string) {
+    return this.filesharingService.copyFileFolder(username, pathChangeOrCreateDto);
+  }
+
   @Post(FileSharingApiEndpoints.COLLECT)
   async collectFiles(
     @Body() body: { collectFileRequestDTO: CollectFileRequestDTO[] },

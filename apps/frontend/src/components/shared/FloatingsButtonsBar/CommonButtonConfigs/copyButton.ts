@@ -10,12 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const JOB_NAMES = {
-  DUPLICATE_FILE_JOB: 'duplicate-file',
-  COLLECT_FILE_JOB: 'collect-file',
-  DELETE_FILE_JOB: 'delete-file',
-  MOVE_OR_RENAME_JOB: 'move-or-rename-file',
-  COPY_FILE_JOB: 'copy-file',
-} as const;
+import { t } from 'i18next';
+import { MdContentCopy } from 'react-icons/md';
 
-export default JOB_NAMES;
+const CopyButton = (onClick: () => void) => ({
+  icon: MdContentCopy,
+  text: t('tooltip.copy'),
+  onClick,
+});
+
+export default CopyButton;
