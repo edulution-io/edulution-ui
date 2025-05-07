@@ -32,6 +32,7 @@ import mapToDirectories from '@libs/filesharing/utils/mapToDirectories';
 import mapToDirectoryFiles from '@libs/filesharing/utils/mapToDirectoryFiles';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
+import urlJoin from 'url-join';
 
 @Injectable()
 class WebdavService {
@@ -141,7 +142,7 @@ class WebdavService {
 
   async getFilesAtPath(username: string, path: string): Promise<DirectoryFileDTO[]> {
     const client = await this.getClient(username);
-    const url = this.baseUrl + getPathWithoutWebdav(path);
+    const url = urlJoin(this.baseUrl, getPathWithoutWebdav(path));
 
     return (await WebdavService.executeWebdavRequest<DirectoryFileDTO[]>(
       client,
@@ -157,7 +158,7 @@ class WebdavService {
 
   async getDirectoryAtPath(username: string, path: string): Promise<DirectoryFileDTO[]> {
     const client = await this.getClient(username);
-    const url = this.baseUrl + getPathWithoutWebdav(path);
+    const url = urlJoin(this.baseUrl, getPathWithoutWebdav(path));
 
     return (await WebdavService.executeWebdavRequest<DirectoryFileDTO[]>(
       client,
