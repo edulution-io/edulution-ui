@@ -30,17 +30,16 @@ const QRCodeWithCopyButton = ({ url, qrCodeSize, titleTranslationId }: QRCodeWit
   return (
     <>
       <p className="font-bold">{t(titleTranslationId)}</p>
-      <div className="flex flex-col items-center justify-center">
+      <div className="mt-4 flex flex-col items-center justify-center space-y-8">
         <QRCodeDisplay
           value={url}
           size={qrCodeSize}
-          className="m-14"
         />
         <Input
           type="text"
           value={url}
           readOnly
-          className="cursor-pointer"
+          className="w-fit min-w-[550px] cursor-pointer"
           onClick={() => copyToClipboard(url)}
           icon={<MdFileCopy />}
         />
