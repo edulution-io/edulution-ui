@@ -41,16 +41,16 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
   const getBody = () => {
     if (!surveyId) {
       return (
-        <div className="relative top-1/3">
-          <h4 className="flex justify-center">{t('survey.notFound')}</h4>
+        <div className="relative top-1/3 flex justify-center">
+          <h4>{t('survey.notFound')}</h4>
         </div>
       );
     }
     if (isFetching) return <CircleLoader className="mx-auto" />;
     if (!selectedSurvey) {
       return (
-        <div className="relative top-1/3">
-          <h4 className="flex justify-center">{t('survey.notFound')}</h4>
+        <div className="relative top-1/3 flex justify-center">
+          <h4>{t('survey.notFound')}</h4>
         </div>
       );
     }
