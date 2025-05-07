@@ -20,7 +20,6 @@ import {
   PUBLIC_SURVEYS,
   CHOICES,
 } from '@libs/survey/constants/surveys-endpoint';
-import AttendeeDto from '@libs/user/types/attendee.dto';
 import ParticipantDto from '@libs/survey/types/api/participant.dto';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
@@ -52,15 +51,15 @@ class PublicSurveysController {
 
   @Post(ANSWER)
   @Public()
-  async getSubmittedSurveyAnswers(@Body() body: { surveyId: string; attendee: AttendeeDto }) {
+  async getSubmittedSurveyAnswers(@Body() body: ParticipantDto) {
     const { surveyId, attendee } = body;
     return this.surveyAnswerService.getAnswerPublicParticipation(surveyId, attendee);
   }
 
   @Post(CHECK_EXISTING_PUBLIC_USER)
   @Public()
-  async checkPublicUserExistence(@Body() pushAnswerDto: ParticipantDto) {
-    const { surveyId, attendee } = pushAnswerDto;
+  async checkPublicUserExistence(@Body() participantDto: ParticipantDto) {
+    const { surveyId, attendee } = participantDto;
     return this.surveyAnswerService.checkPublicUserParticipation(surveyId, attendee);
   }
 
