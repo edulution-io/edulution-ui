@@ -47,13 +47,13 @@ const parseWebDAVResponse = (response: WebdavResponse) => {
   const decodedBasename = decode(String(displayName));
 
   return {
-    basename: decodedBasename,
+    filename: decodedBasename,
     etag,
-    filename: response[WebdavXmlAttributes.Href],
+    filePath: response[WebdavXmlAttributes.Href],
     lastmod,
     size: contentLength ? parseInt(contentLength, 10) : undefined,
     type: isCollection ? ContentType.DIRECTORY : ContentType.FILE,
-  };
+  } as DirectoryFileDTO;
 };
 
 export default parseWebDAVResponse;

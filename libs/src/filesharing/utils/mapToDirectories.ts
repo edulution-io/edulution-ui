@@ -20,7 +20,7 @@ const mapToDirectories = (xmlData: string) => {
     const responses = parseWebDAVMultiStatus(xmlData);
     return responses
       .map(parseWebDAVResponse)
-      .filter((file) => file && file.type === ContentType.DIRECTORY && file.basename !== '');
+      .filter((file) => file && file.type === ContentType.DIRECTORY && file.filename !== '');
   } catch (error) {
     Logger.error('Error parsing XML data:', error);
     return [];

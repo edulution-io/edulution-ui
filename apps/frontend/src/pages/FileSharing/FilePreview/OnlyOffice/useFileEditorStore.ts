@@ -121,11 +121,11 @@ const useFileEditorStore = create<FileEditorStore>(
             return;
           }
 
-          const downloadLink = await get().downloadFile(file.filename, signal);
+          const downloadLink = await get().downloadFile(file.filePath, signal);
           set({ downloadLinkURL: downloadLink });
 
-          if (isOnlyOfficeDocument(file.filename)) {
-            const publicLink = await get().getDownloadLinkURL(file.filename, file.basename, signal);
+          if (isOnlyOfficeDocument(file.filePath)) {
+            const publicLink = await get().getDownloadLinkURL(file.filePath, file.filename, signal);
             if (publicLink) {
               set({ publicDownloadLink: `${getFrontEndUrl()}/${EDU_API_ROOT}/downloads/${publicLink}` });
             }

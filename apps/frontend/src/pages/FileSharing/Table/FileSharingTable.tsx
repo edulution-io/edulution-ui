@@ -33,7 +33,7 @@ const FileSharingTable = () => {
     setSelectedRows(newValue);
     const selectedItemData = Object.keys(newValue)
       .filter((key) => newValue[key])
-      .map((rowId) => files.find((file) => file.filename === rowId))
+      .map((rowId) => files.find((file) => file.filePath === rowId))
       .filter(Boolean) as DirectoryFileDTO[];
     setSelectedItems(selectedItemData);
   };

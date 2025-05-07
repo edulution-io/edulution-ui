@@ -35,11 +35,56 @@ import UsersService from '../users/users.service';
 
 @Injectable()
 class WebdavService {
+  readonly defaultPropfindXml = `<?xml version="1.0"?>
+      <d:propfind xmlns:d="DAV:">
+        <d:prop>
+          <d:getlastmodified/>
+          <d:getetag/>
+          <d:getcontenttype/>
+          <d:getcontentlength/>
+          <d:displayname/>
+          <d:creationdate/>
+        </d:prop>
+      </d:propfind>
+  `;
+
   private readonly baseUrl = process.env.EDUI_WEBDAV_URL as string;
 
   private webdavClientCache = new Map<string, { client: AxiosInstance; timeout: NodeJS.Timeout }>();
 
   constructor(private readonly usersService: UsersService) {}
+
+  static async executeWebdavRequest<T>(
+    client: AxiosInstance,
+    config: {
+      method: string;
+      url?: string;
+      // eslint-disable-next-line
+      data?: string | Record<string, any> | Buffer;
+      headers?: Record<string, string | number>;
+    },
+    fileSharingErrorMessage: ErrorMessage,
+    // eslint-disable-next-line
+    transformer?: (data: any) => T,
+  ): Promise<T | WebdavStatusResponse> {
+    try {
+      const response = await client(config);
+      WebdavService.handleWebDAVError(response);
+      return transformer ? transformer(response.data) : (response.data as T);
+    } catch (error) {
+      throw new CustomHttpException(fileSharingErrorMessage, HttpStatus.INTERNAL_SERVER_ERROR, '', WebdavService.name);
+    }
+  }
+
+  private static handleWebDAVError(response: AxiosResponse) {
+    if (!response || response.status < 200 || response.status >= 300) {
+      throw new CustomHttpException(
+        FileSharingErrorMessage.WebDavError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        response?.statusText || 'WebDAV request failed',
+      );
+    }
+  }
 
   scheduleClientTimeout(token: string): NodeJS.Timeout {
     return setTimeout(
@@ -73,38 +118,6 @@ class WebdavService {
       );
     }
     return client;
-  }
-
-  static async executeWebdavRequest<T>(
-    client: AxiosInstance,
-    config: {
-      method: string;
-      url?: string;
-      // eslint-disable-next-line
-      data?: string | Record<string, any> | Buffer;
-      headers?: Record<string, string | number>;
-    },
-    fileSharingErrorMessage: ErrorMessage,
-    // eslint-disable-next-line
-    transformer?: (data: any) => T,
-  ): Promise<T | WebdavStatusResponse> {
-    try {
-      const response = await client(config);
-      WebdavService.handleWebDAVError(response);
-      return transformer ? transformer(response.data) : (response.data as T);
-    } catch (error) {
-      throw new CustomHttpException(fileSharingErrorMessage, HttpStatus.INTERNAL_SERVER_ERROR, '', WebdavService.name);
-    }
-  }
-
-  private static handleWebDAVError(response: AxiosResponse) {
-    if (!response || response.status < 200 || response.status >= 300) {
-      throw new CustomHttpException(
-        FileSharingErrorMessage.WebDavError,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        response?.statusText || 'WebDAV request failed',
-      );
-    }
   }
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
@@ -158,19 +171,6 @@ class WebdavService {
       mapToDirectories,
     )) as DirectoryFileDTO[];
   }
-
-  readonly defaultPropfindXml = `<?xml version="1.0"?>
-      <d:propfind xmlns:d="DAV:">
-        <d:prop>
-          <d:getlastmodified/>
-          <d:getetag/>
-          <d:getcontenttype/>
-          <d:getcontentlength/>
-          <d:displayname/>
-          <d:creationdate/>
-        </d:prop>
-      </d:propfind>
-  `;
 
   async createFolder(username: string, path: string, folderName: string): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
@@ -291,7 +291,7 @@ class WebdavService {
 
   async checkIfFolderExists(username: string, parentPath: string, name: string): Promise<boolean> {
     const directories = await this.getDirectoryAtPath(username, `${parentPath}/`);
-    return directories.some((item) => item.type === ContentType.DIRECTORY && item.basename === name);
+    return directories.some((item) => item.type === ContentType.DIRECTORY && item.filename === name);
   }
 
   async createCollectFolderIfNotExists(username: string, destinationPath: string) {

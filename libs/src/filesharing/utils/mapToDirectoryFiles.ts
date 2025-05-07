@@ -17,7 +17,7 @@ import parseWebDAVResponse from './parseWebDAVResponse';
 const mapToDirectoryFiles = (xmlData: string) => {
   try {
     const responses = parseWebDAVMultiStatus(xmlData);
-    return responses.map(parseWebDAVResponse).filter((file) => file && file.basename !== '');
+    return responses.map(parseWebDAVResponse).filter((file) => file && file.filename !== '');
   } catch (error) {
     Logger.error('Error parsing XML data:', error);
     return [];

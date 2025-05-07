@@ -17,7 +17,7 @@ const makeUniqueName = (base: string, ext: string, existingItems: DirectoryFileD
   let prefix = base;
   let counter = 0;
 
-  const existingNames = new Set(existingItems.map((item) => item.basename));
+  const existingNames = new Set(existingItems.map((item) => item.filename));
 
   if (existingNames.has(`${base}${ext}`)) {
     const match = base.match(suffixRe);

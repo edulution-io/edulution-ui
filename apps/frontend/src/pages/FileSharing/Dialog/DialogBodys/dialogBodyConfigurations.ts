@@ -160,7 +160,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
       const cleanedPath = getPathWithoutWebdav(currentPath);
       return Promise.resolve(
         selectedItems.map((item) => ({
-          path: `${cleanedPath}/${item.basename}`,
+          path: `${cleanedPath}/${item.filename}`,
         })),
       );
     },
@@ -192,7 +192,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
       const cleanedPath = getPathWithoutWebdav(currentPath);
       return Promise.resolve([
         {
-          path: `${cleanedPath}/${selectedItems[0]?.basename}`,
+          path: `${cleanedPath}/${selectedItems[0]?.filename}`,
           newPath: `${cleanedPath}/${filename}`,
         },
       ]);
@@ -238,12 +238,12 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
         return Promise.resolve([]);
       }
       const sourceBase = getPathWithoutWebdav(currentPath);
-      const targetBase = getPathWithoutWebdav(moveOrCopyItemToPath.filename);
+      const targetBase = getPathWithoutWebdav(moveOrCopyItemToPath.filePath);
 
       return Promise.resolve(
         selectedItems.map((item) => ({
-          path: `${sourceBase}/${item.basename}`,
-          newPath: `${targetBase}/${item.basename}`,
+          path: `${sourceBase}/${item.filename}`,
+          newPath: `${targetBase}/${item.filename}`,
         })),
       );
     },
@@ -263,13 +263,13 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
       if (!moveOrCopyItemToPath || !selectedItems) {
         return Promise.resolve([]);
       }
-      const newCleanedPath = getPathWithoutWebdav(moveOrCopyItemToPath.filename);
+      const newCleanedPath = getPathWithoutWebdav(moveOrCopyItemToPath.filePath);
       const cleanedPath = getPathWithoutWebdav(currentPath);
 
       return Promise.resolve(
         selectedItems.map((item) => ({
-          path: encodeURI(`${cleanedPath}/${item.basename}`),
-          newPath: encodeURI(`${newCleanedPath}/${item.basename}`),
+          path: encodeURI(`${cleanedPath}/${item.filename}`),
+          newPath: encodeURI(`${newCleanedPath}/${item.filename}`),
         })),
       );
     },

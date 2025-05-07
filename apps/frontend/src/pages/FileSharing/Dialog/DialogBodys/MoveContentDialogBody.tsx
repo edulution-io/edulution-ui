@@ -51,7 +51,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const selectionValue = typeof updaterOrValue === 'function' ? updaterOrValue({}) : updaterOrValue;
 
-    const fileMap = new Map(files.map((file) => [file.filename, file]));
+    const fileMap = new Map(files.map((file) => [file.filePath, file]));
 
     const selectedItems = Object.keys(selectionValue)
       .filter((key) => selectionValue[key])
@@ -68,9 +68,9 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
         newPath += '/';
       }
       if (newPath === '/') {
-        newPath += item.original.filename.replace('/webdav/', '').replace(`server/${user?.school}/`, '');
+        newPath += item.original.filePath.replace('/webdav/', '').replace(`server/${user?.school}/`, '');
       } else {
-        newPath += getFileNameFromPath(item.original.filename);
+        newPath += getFileNameFromPath(item.original.filePath);
       }
       setCurrentPath(newPath);
     } else {
@@ -100,9 +100,9 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 
   const footer = (
     <div className="bottom-0 justify-end bg-secondary p-4 text-sm text-foreground">
-      {moveOrCopyItemToPath?.basename && showSelectedFile ? (
+      {moveOrCopyItemToPath?.filename && showSelectedFile ? (
         <p className="bg-secondary">
-          {t('moveItemDialog.selectedItem')}: {moveOrCopyItemToPath.basename}
+          {t('moveItemDialog.selectedItem')}: {moveOrCopyItemToPath.filename}
         </p>
       ) : (
         <p className="bg-secondary">
@@ -132,7 +132,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
           <ScrollableTable
             columns={columns}
             data={files}
-            selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filename]: true } : {}}
+            selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filePath]: true } : {}}
             onRowSelectionChange={handleRowSelectionChange}
             applicationName={APPS.FILE_SHARING}
             getRowId={(row) => row.filename}
