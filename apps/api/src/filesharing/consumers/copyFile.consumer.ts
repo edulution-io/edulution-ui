@@ -61,9 +61,9 @@ class CopyFileConsumer extends WorkerHost {
 
     const progressDto: FilesharingProgressDto = {
       processID: Number(job.id),
-      title: 'filesharing.progressBox.titleSharing',
-      description: 'filesharing.progressBox.fileInfoSharing',
-      statusDescription: 'filesharing.progressBox.processedSharingInfo',
+      title: 'filesharing.progressBox.titleCopying',
+      description: 'filesharing.progressBox.fileInfoCopying',
+      statusDescription: 'filesharing.progressBox.processedCopyingInfo',
       processed,
       total,
       percent,
