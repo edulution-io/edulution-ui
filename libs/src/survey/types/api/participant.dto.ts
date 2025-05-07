@@ -10,10 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 
-interface SurveyAnswerDto extends PushAnswerDto {
-  id: string;
+interface ParticipantDto {
+  surveyId: string;
+
+  attendee: AttendeeDto;
 }
 
-export default SurveyAnswerDto;
+export default ParticipantDto;

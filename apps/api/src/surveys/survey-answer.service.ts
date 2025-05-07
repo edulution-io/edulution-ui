@@ -261,21 +261,18 @@ class SurveyAnswersService {
     if (isAnonymous) {
       user = { username: 'anonymous' };
     } else if (isFirstPublicUserParticipation && (canUpdateFormerAnswer || canSubmitMultipleAnswers)) {
-      const publicUserUsername = createValidPublicUserId(publicUserName, uuidv4());
-      user = { ...attendee, username: publicUserUsername };
+      const newPublicUserId = uuidv4();
+      const publicUserUsername = createValidPublicUserId(publicUserName, newPublicUserId);
+      user = { ...attendee, username: publicUserUsername, publicUserId: newPublicUserId };
     }
 
     if (isAnonymous || isFirstPublicUserParticipation || canSubmitMultipleAnswers) {
       const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(user, surveyId, saveNo, answer);
-
       return createdAnswer;
     }
 
     const isAuthenticatedPublicUserParticipation =
-      isPublic &&
-      isPublicUserParticipation &&
-      publicUserId &&
-      username === createValidPublicUserId(publicUserName, publicUserId);
+      isPublicUserParticipation && publicUserId && username === createValidPublicUserId(publicUserName, publicUserId);
     if (isLoggedInUserParticipation || isAuthenticatedPublicUserParticipation) {
       await this.throwErrorIfParticipationIsNotPossible(survey, username);
 
@@ -345,6 +342,21 @@ class SurveyAnswersService {
       throw new CustomHttpException(SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError, HttpStatus.NOT_FOUND);
     }
     return this.getAnswer(surveyId, username);
+  }
+
+  async checkPublicUserParticipation(surveyId: string, attendee: AttendeeDto): Promise<boolean> {
+    const { username, publicUserName, publicUserId } = attendee;
+    if (!publicUserName || !publicUserId) {
+      return false;
+    }
+    if (username === createValidPublicUserId(publicUserName, publicUserId)) {
+      const answer = await this.getAnswer(surveyId, username);
+      if (!answer) {
+        return false;
+      }
+      return true;
+    }
+    return false;
   }
 
   async getPublicAnswers(surveyId: string): Promise<JSON[] | null> {

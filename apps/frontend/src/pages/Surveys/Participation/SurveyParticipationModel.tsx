@@ -16,30 +16,28 @@ import { Model, Serializer } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
-import AttendeeDto from '@libs/user/types/attendee.dto';
 import useLanguage from '@/hooks/useLanguage';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import '../theme/custom.participation.css';
 import 'survey-core/i18n/french';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 
 interface SurveyParticipationModelProps {
-  attendee: AttendeeDto;
   isPublic: boolean;
 }
 
 Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
 
 const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.ReactNode => {
-  const { attendee, isPublic } = props;
+  const { isPublic } = props;
 
-  const { selectedSurvey, isFetching, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
+  const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 
-  const { answerSurvey, previousAnswer } = useParticipateSurveyStore();
+  const { fetchAnswer, isFetching, answerSurvey, previousAnswer } = useParticipateSurveyStore();
 
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -61,13 +59,11 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       if (!selectedSurvey.id) {
         throw new Error(SurveyErrorMessages.MISSING_ID_ERROR);
       }
-
       const success = await answerSurvey(
         {
           surveyId: selectedSurvey.id,
           saveNo: selectedSurvey.saveNo,
           answer: surveyModel.getData() as JSON,
-          attendee,
           isPublic,
         },
         surveyModel,
@@ -87,6 +83,13 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
   }, [selectedSurvey, language]);
 
   useEffect(() => {
+    if (!selectedSurvey?.id) {
+      return;
+    }
+    void fetchAnswer(selectedSurvey.id);
+  }, [selectedSurvey]);
+
+  useEffect(() => {
     if (surveyParticipationModel && previousAnswer) {
       surveyParticipationModel.data = previousAnswer.answer;
     }
@@ -95,7 +98,6 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
   if (isFetching) {
     return <LoadingIndicatorDialog isOpen />;
   }
-
   if (!surveyParticipationModel) {
     return (
       <div className="relative top-1/3">

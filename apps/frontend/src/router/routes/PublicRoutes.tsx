@@ -13,7 +13,7 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 import { PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
-import SurveyParticipationPage from '@/pages/Surveys/Participation/SurveyParticipationLevelOne';
+import SurveyParticipationPage from '@/pages/Surveys/Participation/SurveyParticipationPage';
 import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import PublicConferencePage from '@/pages/ConferencePage/PublicConference/PublicConferencePage';
 import PageTitle from '@/components/PageTitle';

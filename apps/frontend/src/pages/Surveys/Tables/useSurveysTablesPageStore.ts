@@ -24,7 +24,6 @@ import SurveyStatus from '@libs/survey/survey-status-enum';
 import { HttpStatus } from '@nestjs/common';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import { Form } from 'react-router-dom';
 
 interface SurveysTablesPageStore {
   selectedSurvey: SurveyDto | undefined;

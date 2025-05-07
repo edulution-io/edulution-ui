@@ -10,43 +10,48 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
+import React, { useEffect } from 'react';
 import useUserStore from '@/store/UserStore/UserStore';
-import SurveyParticipationPublicLogin from '@/pages/Surveys/Participation/SurveyParticipationLevelThree';
+import PublicSurveyAccessForm from '@/pages/Surveys/Participation/PublicSurveyAccessForm';
 import SurveyParticipationModel from '@/pages/Surveys/Participation/SurveyParticipationModel';
+import useParticipateSurveyStore from './useParticipateSurveyStore';
+import PublicSurveyParticipationId from './PublicSurveyParticipationId';
 
 interface SurveyParticipationProps {
   isPublic: boolean;
-  surveyId: string;
-  survey: SurveyDto
 }
 
 const SurveyParticipation = (props: SurveyParticipationProps): React.ReactNode => {
-  const { isPublic = false, survey } = props;
+  const { isPublic = false } = props;
   const { user } = useUserStore();
- 
-  if (user) {
-    const loggedInUser =  ({
-      username: user.username,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      publicUserName: undefined,
-      publicUserId: undefined,
-      label: `${user.firstName} ${user.lastName}`,
-      value: user.username,
-    });
-    return (
-      <SurveyParticipationModel
-        attendee={loggedInUser}
-        isPublic={isPublic}
-      />
-    );
+  const { attendee, setAttendee, publicUserLogin } = useParticipateSurveyStore();
+
+  useEffect(() => {
+    if (user) {
+      const loggedInUser = {
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        publicUserName: undefined,
+        publicUserId: undefined,
+        label: `${user.firstName} ${user.lastName}`,
+        value: user.username,
+      };
+      setAttendee(loggedInUser);
+    } else {
+      setAttendee(undefined);
+    }
+  }, [user]);
+
+  if (!attendee) {
+    return <PublicSurveyAccessForm />;
   }
-  
-  return (
-    <SurveyParticipationPublicLogin survey={survey} />
-  );
+
+  if (publicUserLogin) {
+    return <PublicSurveyParticipationId publicUserLogin={publicUserLogin} />;
+  }
+
+  return <SurveyParticipationModel isPublic={isPublic} />;
 };
 
 export default SurveyParticipation;

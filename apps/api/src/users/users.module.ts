@@ -15,6 +15,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import UsersService from './users.service';
 import { UsersController } from './users.controller';
 import { User, UserSchema } from './user.schema';
+// eslint-disable-next-line  import/no-named-as-default
 import UserAccountsSchema, { UserAccounts } from './account.schema';
 
 @Global()

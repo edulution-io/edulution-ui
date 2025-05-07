@@ -12,8 +12,9 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { MdFileCopy } from 'react-icons/md';
 import copyToClipboard from '@/utils/copyToClipboard';
-import { Button } from '@/components/shared/Button';
+import Input from '@/components/shared/Input';
 
 interface PublicSurveyParticipationIdProps {
   publicUserLogin?: { publicUserName: string; publicUserId: string };
@@ -22,32 +23,37 @@ interface PublicSurveyParticipationIdProps {
 const PublicSurveyParticipationId = ({ publicUserLogin }: PublicSurveyParticipationIdProps) => {
   const { t } = useTranslation();
 
-  const toasterTranslations = {
-    success: 'survey.participate.idCopySuccess',
-    error: 'survey.participate.idCopyError',
-  };
-
   if (!publicUserLogin) {
     return null;
   }
-  return (
-    <div className="mx-auto my-10 w-[90%] rounded-xl bg-white bg-opacity-5 p-5 md:w-[60%]">
-      <h4 className="my-4 mt-0 ">{t('survey.participate.idHeader')}</h4>
-      <p>{t('survey.participate.idText')}</p>
-      <div className="my-4 flex flex-row items-center justify-center">
-        <p className="mb-2 mt-2 rounded-xl bg-muted px-3 py-2 text-center">{publicUserLogin.publicUserName}</p>
 
-        <p className="mb-2 mt-2 rounded-xl bg-muted px-3 py-2 text-center">{publicUserLogin.publicUserId}</p>
-        <Button
-          size="md"
-          type="button"
-          variant="btn-collaboration"
-          onClick={() => copyToClipboard(JSON.stringify(publicUserLogin), toasterTranslations)}
-          className="mx-4"
-        >
-          {t('common.copy.doCopy')}
-        </Button>
+  const { publicUserName, publicUserId } = publicUserLogin;
+
+  return (
+    <div className="mx-auto my-10 w-[90%] max-w-[500px] rounded-xl bg-white bg-opacity-5 p-5 md:w-[60%]">
+      <h4 className="my-4 mt-0 ">{t('survey.participate.idHeader')}</h4>
+
+      <div className="mx-4">
+        <p>{t('survey.participate.idText')}</p>
+        <div className="mx-8 my-4 flex flex-row items-center justify-center">
+          <Input
+            type="text"
+            value={publicUserId}
+            readOnly
+            className="w-[400px] cursor-pointer"
+            onClick={() => copyToClipboard(publicUserId)}
+            icon={<MdFileCopy />}
+          />
+        </div>
       </div>
+
+      <div className="mx-4 mb-4">
+        <p>
+          {t('survey.participate.forUsername')}
+          <span className="mx-2 mb-2 w-fit rounded-xl bg-accent px-3 py-2">{`"${publicUserName}"`}</span>
+        </p>
+      </div>
+
       <p>{t('survey.participate.idFooter')}</p>
     </div>
   );
