@@ -20,9 +20,9 @@ import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressD
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJobData';
 import getStudentNameFromPath from '@libs/filesharing/utils/getStudentNameFromPath';
+import makeUniqueName from '@libs/filesharing/utils/makeUniqueName';
 import SseService from '../../sse/sse.service';
 import WebdavService from '../../webdav/webdav.service';
-import makeUniqueName from '@libs/filesharing/utils/makeUniqueName';
 
 @Injectable()
 class CopyFileConsumer extends WorkerHost {
