@@ -25,6 +25,7 @@ const getInitialSurveyFormValues = (
   return {
     id: storedSurvey?.id || selectedSurvey?.id,
     formula: storedSurvey?.formula || selectedSurvey?.formula || { title: i18next.t('survey.newTitle').toString() },
+    backendLimiters: storedSurvey?.backendLimiters || selectedSurvey?.backendLimiters || [],
     saveNo: storedSurvey?.saveNo || selectedSurvey?.saveNo || 0,
     creator,
     invitedAttendees: storedSurvey?.invitedAttendees || selectedSurvey?.invitedAttendees || [],

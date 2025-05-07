@@ -87,9 +87,8 @@ export class LmnApiController {
   async toggleSchoolClassJoined(
     @Param() params: { schoolClass: string; action: string },
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
-    @GetCurrentUsername() username: string,
   ) {
-    return this.lmnApiService.toggleSchoolClassJoined(lmnApiToken, params.schoolClass, params.action, username);
+    return this.lmnApiService.toggleSchoolClassJoined(lmnApiToken, params.schoolClass, params.action);
   }
 
   @Get('room')

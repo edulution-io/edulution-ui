@@ -10,23 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Global, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import UsersService from './users.service';
-import { UsersController } from './users.controller';
-import { User, UserSchema } from './user.schema';
-import { UserAccounts, UserAccountsSchema } from './account.schema';
+const isQuestionTypeChoiceType = (questionType: string): boolean =>
+  questionType === 'radiogroup' || questionType === 'checkbox' || questionType === 'dropdown';
 
-@Global()
-@Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: User.name, schema: UserSchema },
-      { name: UserAccounts.name, schema: UserAccountsSchema },
-    ]),
-  ],
-  controllers: [UsersController],
-  providers: [UsersService],
-  exports: [UsersService],
-})
-export default class UsersModule {}
+export default isQuestionTypeChoiceType;

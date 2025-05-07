@@ -232,12 +232,8 @@ class LmnApiService {
     lmnApiToken: string,
     schoolClass: string,
     action: string,
-    currentUsername: string,
   ): Promise<LmnApiSchoolClass> {
     const requestUrl = `${SCHOOL_CLASSES_LMN_API_ENDPOINT}/${schoolClass}/${action}`;
-    const schoolClassObject = await this.getSchoolClass(lmnApiToken, schoolClass);
-
-    await this.handleCreateWorkingDirectory({ teacher: currentUsername, schoolClass: schoolClassObject });
 
     const config = {
       headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },

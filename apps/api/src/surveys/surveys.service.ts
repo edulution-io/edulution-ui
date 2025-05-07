@@ -24,12 +24,14 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import CustomHttpException from '@libs/error/CustomHttpException';
+import SurveyElement from '@libs/survey/types/TSurveyElement';
+import SurveyPage from '@libs/survey/types/TSurveyPage';
+import SurveyFormula from '@libs/survey/types/TSurveyFormula';
+import SURVEYS_IMAGES_DOMAIN from '@libs/survey/constants/surveysImagesDomain';
+import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import SURVEYS_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplatePath';
-import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
-import SurveyPage from '@libs/survey/types/TSurveyPage';
-import SurveyElement from '@libs/survey/types/TSurveyElement';
-import SURVEYS_IMAGES_DOMAIN from '@libs/survey/constants/surveysImagesDomain';
+import isQuestionTypeChoiceType from '@libs/survey/utils/isQuestionTypeChoiceType';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
 import surveysMigrationsList from './migrations/surveysMigrationsList';
@@ -109,12 +111,11 @@ class SurveysService implements OnModuleInit {
 
     try {
       return await this.surveyModel
-        .findOneAndUpdate<Survey>({ _id: new Types.ObjectId(survey.id) }, survey, { new: true })
+        .findOneAndUpdate<SurveyDocument>({ _id: new Types.ObjectId(survey.id) }, survey, { new: true })
         .lean();
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.INTERNAL_SERVER_ERROR, error);
     } finally {
-      Logger.warn(survey.isPublic, SurveysService.name);
       if (survey.isPublic) {
         this.sseService.informAllUsers(survey, SSE_MESSAGE_TYPE.SURVEY_UPDATED);
       } else {
@@ -122,11 +123,8 @@ class SurveysService implements OnModuleInit {
           survey.invitedGroups,
           survey.invitedAttendees,
         );
-        Logger.warn(invitedMembersList, SurveysService.name);
 
-        const updatedSurvey = await this.surveyModel.findById(survey.id).exec();
-        Logger.warn(updatedSurvey, SurveysService.name);
-
+        const updatedSurvey = await this.surveyModel.findById(survey.id).lean();
         this.sseService.sendEventToUsers(invitedMembersList, updatedSurvey || survey, SSE_MESSAGE_TYPE.SURVEY_UPDATED);
       }
     }
@@ -155,78 +153,6 @@ class SurveysService implements OnModuleInit {
         this.sseService.sendEventToUsers(invitedMembersList, survey, SSE_MESSAGE_TYPE.SURVEY_CREATED);
       }
     }
-  }
-
-  async updateLink(username: string, pathWithIds: string, tempFiles: string[], link: string): Promise<string> {
-    const baseUrl = link.split(SURVEYS_IMAGES_DOMAIN)[0];
-    if (!baseUrl) {
-      return link;
-    }
-
-    const imagesFileName = link.split('/').pop();
-    if (!imagesFileName) {
-      return link;
-    }
-
-    if (tempFiles.includes(imagesFileName)) {
-      await this.attachmentService.moveTempFileIntoPermanentDirectory(username, pathWithIds, imagesFileName);
-      const url = this.attachmentService.getPersistentAttachmentUrl(pathWithIds, imagesFileName);
-      return `${baseUrl}${url}`;
-    }
-    return link;
-  }
-
-  async updateLogo(username: string, surveyId: string, tempFiles: string[], link: string): Promise<string | undefined> {
-    const pathWithIds = `${surveyId}/logo`;
-    return this.updateLink(username, pathWithIds, tempFiles, link);
-  }
-
-  async updateQuestion(
-    username: string,
-    surveyId: string,
-    tempFiles: string[],
-    question: SurveyElement,
-  ): Promise<SurveyElement> {
-    if (question.type === 'image' && question.imageLink) {
-      try {
-        const pathWithIds = `${surveyId}/${question.name}`;
-        const newImageLink = await this.updateLink(username, pathWithIds, tempFiles, question.imageLink);
-        return { ...question, imageLink: newImageLink };
-      } catch (error) {
-        Logger.error(error, SurveysService.name);
-        throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR, error);
-      }
-    }
-    if (question.type === 'imagepicker' && question.choices) {
-      try {
-        const pathWithIds = `${surveyId}/${question.name}`;
-        const choicePromises = question.choices.map(async (choice) => {
-          if (typeof choice !== 'string' && choice.imageLink) {
-            const newImageLink = await this.updateLink(username, pathWithIds, tempFiles, choice.imageLink);
-            return { ...choice, imageLink: newImageLink };
-          }
-          return choice;
-        });
-        const choices = await Promise.all(choicePromises);
-        return { ...question, choices };
-      } catch (error) {
-        Logger.error(error, SurveysService.name);
-        throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR, error);
-      }
-    }
-    return question;
-  }
-
-  async updateElements(
-    username: string,
-    surveyId: string,
-    tempFiles: string[],
-    elements: SurveyElement[],
-  ): Promise<SurveyElement[]> {
-    const updatePromises = elements?.map(async (question) =>
-      this.updateQuestion(username, surveyId, tempFiles, question),
-    );
-    return Promise.all(updatePromises);
   }
 
   async createTemplate(surveyTemplateDto: SurveyTemplateDto): Promise<void> {
@@ -260,6 +186,106 @@ class SurveysService implements OnModuleInit {
     return res;
   }
 
+  async updateTemporalImage(username: string, pathWithIds: string, tempFiles: string[], link: string): Promise<string> {
+    const baseUrl = link.split(SURVEYS_IMAGES_DOMAIN)[0];
+    if (!baseUrl) {
+      return link;
+    }
+
+    const imagesFileName = link.split('/').pop();
+    if (!imagesFileName) {
+      return link;
+    }
+
+    if (tempFiles.includes(imagesFileName)) {
+      await this.attachmentService.moveTempFileIntoPermanentDirectory(username, pathWithIds, imagesFileName);
+      const url = this.attachmentService.getPersistentAttachmentUrl(pathWithIds, imagesFileName);
+      return `${baseUrl}${url}`;
+    }
+    return link;
+  }
+
+  async updateTemporalImages(
+    username: string,
+    surveyId: string,
+    tempFiles: string[],
+    question: SurveyElement,
+  ): Promise<SurveyElement> {
+    if (question.type === 'image' && question.imageLink) {
+      try {
+        const pathWithIds = `${surveyId}/${question.name}`;
+        const newImageLink = await this.updateTemporalImage(username, pathWithIds, tempFiles, question.imageLink);
+        return { ...question, imageLink: newImageLink };
+      } catch (error) {
+        Logger.error(error, SurveysService.name);
+        throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      }
+    }
+    if (question.type === 'imagepicker' && question.choices) {
+      try {
+        const pathWithIds = `${surveyId}/${question.name}`;
+        const choicePromises = question.choices.map(async (choice) => {
+          if (choice != null && typeof choice !== 'string' && choice.imageLink) {
+            const newImageLink = await this.updateTemporalImage(username, pathWithIds, tempFiles, choice.imageLink);
+            return { ...choice, imageLink: newImageLink };
+          }
+          return choice;
+        });
+        const choices = await Promise.all(choicePromises);
+        return { ...question, choices };
+      } catch (error) {
+        Logger.error(error, SurveysService.name);
+        throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      }
+    }
+    return question;
+  }
+
+  static updateLinkForRestfulChoices(surveyId: string, question: SurveyElement): SurveyElement {
+    if (isQuestionTypeChoiceType(question.type) && question.choicesByUrl) {
+      const pathParts = question.choicesByUrl.url.split('/');
+      const temporalSurveyIdIndex = pathParts.findIndex((part: string) => part === TEMPORAL_SURVEY_ID_STRING);
+      if (temporalSurveyIdIndex !== -1) {
+        try {
+          pathParts[temporalSurveyIdIndex] = surveyId;
+          const newLink = pathParts.join('/');
+          return {
+            ...question,
+            choicesByUrl: {
+              ...question.choicesByUrl,
+              url: newLink,
+            },
+          };
+        } catch (error) {
+          throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR, error);
+        }
+      }
+    }
+    return question;
+  }
+
+  async updateQuestion(
+    username: string,
+    surveyId: string,
+    tempFiles: string[],
+    question: SurveyElement,
+  ): Promise<SurveyElement> {
+    const updatedQuestion = await this.updateTemporalImages(username, surveyId, tempFiles, question);
+    return SurveysService.updateLinkForRestfulChoices(surveyId, updatedQuestion);
+  }
+
+  async updateElements(
+    username: string,
+    surveyId: string,
+    tempFiles: string[],
+    elements: SurveyElement[],
+  ): Promise<SurveyElement[]> {
+    const updatePromises = elements?.map(async (question) =>
+      this.updateQuestion(username, surveyId, tempFiles, question),
+    );
+    return Promise.all(updatePromises);
+  }
+
   async updatePages(
     username: string,
     surveyId: string,
@@ -276,14 +302,24 @@ class SurveysService implements OnModuleInit {
     return Promise.all(updatePromises);
   }
 
-  async updateFormula(username: string, surveyId: string, formula: TSurveyFormula): Promise<TSurveyFormula> {
+  async updateTemporalLogo(
+    username: string,
+    surveyId: string,
+    tempFiles: string[],
+    link: string,
+  ): Promise<string | undefined> {
+    const pathWithIds = `${surveyId}/logo`;
+    return this.updateTemporalImage(username, pathWithIds, tempFiles, link);
+  }
+
+  async updateFormula(username: string, surveyId: string, formula: SurveyFormula): Promise<SurveyFormula> {
     const fileNames = await this.attachmentService.getAllFilenamesInTemporaryDirectory(username);
     if (fileNames.length === 0) {
       return formula;
     }
     const updatedFormula = { ...formula };
     if (formula.logo) {
-      updatedFormula.logo = await this.updateLogo(username, surveyId, fileNames, formula.logo);
+      updatedFormula.logo = await this.updateTemporalLogo(username, surveyId, fileNames, formula.logo);
     }
     if (formula.pages && formula.pages.length > 0) {
       updatedFormula.pages = await this.updatePages(username, surveyId, fileNames, formula.pages);
