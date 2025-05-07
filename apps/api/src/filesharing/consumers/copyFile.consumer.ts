@@ -14,7 +14,6 @@ import { WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Injectable } from '@nestjs/common';
 import * as path from 'path';
-import DuplicateFileJobData from '@libs/queue/types/duplicateFileJobData';
 
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
@@ -23,6 +22,7 @@ import getStudentNameFromPath from '@libs/filesharing/utils/getStudentNameFromPa
 import makeUniqueName from '@libs/filesharing/utils/makeUniqueName';
 import SseService from '../../sse/sse.service';
 import WebdavService from '../../webdav/webdav.service';
+import FileJobData from '@libs/queue/types/fileJobData';
 
 @Injectable()
 class CopyFileConsumer extends WorkerHost {
@@ -34,7 +34,7 @@ class CopyFileConsumer extends WorkerHost {
   }
 
   async process(job: Job<FileOperationQueueJobData>): Promise<void> {
-    const { username, originFilePath, destinationFilePath, total, processed } = job.data as DuplicateFileJobData;
+    const { username, originFilePath, destinationFilePath, total, processed } = job.data as FileJobData;
     const failedPaths: string[] = [];
 
     const parsed = path.parse(destinationFilePath);

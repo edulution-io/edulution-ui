@@ -14,7 +14,7 @@ import { WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Injectable } from '@nestjs/common';
 
-import DuplicateFileJobData from '@libs/queue/types/duplicateFileJobData';
+import FileJobData from '@libs/queue/types/fileJobData';
 
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
@@ -34,7 +34,7 @@ class DuplicateFileConsumer extends WorkerHost {
   }
 
   async process(job: Job<FileOperationQueueJobData>): Promise<void> {
-    const { username, originFilePath, destinationFilePath, total, processed } = job.data as DuplicateFileJobData;
+    const { username, originFilePath, destinationFilePath, total, processed } = job.data as FileJobData;
     const failedPaths: string[] = [];
 
     const pathUpToTransferFolder = this.webDavService.getPathUntilFolder(destinationFilePath, FILE_PATHS.TRANSFER);

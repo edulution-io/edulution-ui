@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface DuplicateFileJobData {
+interface FileJobData {
   username: string;
   originFilePath: string;
   destinationFilePath: string;
@@ -18,4 +18,4 @@ interface DuplicateFileJobData {
   processed: number;
 }
 
-export default DuplicateFileJobData;
+export default FileJobData;
