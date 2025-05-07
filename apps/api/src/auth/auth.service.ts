@@ -29,8 +29,8 @@ import type AuthRequestArgs from '@libs/auth/types/auth-request';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
+import fromBase64 from '@libs/filesharing/utils/decodeBase64';
 import { User, UserDocument } from '../users/user.schema';
-import { fromBase64 } from '../filesharing/filesharing.utilities';
 import SseService from '../sse/sse.service';
 
 const { KEYCLOAK_EDU_UI_SECRET, KEYCLOAK_EDU_UI_CLIENT_ID, KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API } = process.env;
