@@ -30,9 +30,9 @@ import ErrorMessage from '@libs/error/errorMessage';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import mapToDirectories from '@libs/filesharing/utils/mapToDirectories';
 import mapToDirectoryFiles from '@libs/filesharing/utils/mapToDirectoryFiles';
+import urlJoin from 'url-join';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
-import urlJoin from 'url-join';
 
 @Injectable()
 class WebdavService {
