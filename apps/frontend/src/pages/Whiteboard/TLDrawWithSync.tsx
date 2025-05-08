@@ -22,24 +22,24 @@ import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/htt
 import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
 import useUserStore from '@/store/UserStore/UserStore';
 
-type Props = {
+type TldrawWithSyncProps = {
   uri: string;
   userLanguage: string;
   userName: string;
 };
 
-const TldrawWithSync = ({ uri, userLanguage, userName }: Props) => {
+const TldrawWithSync = ({ uri, userLanguage, userName }: TldrawWithSyncProps) => {
   const { user } = useUserStore();
 
-  function applyUserPreferences(editor: Editor) {
+  const applyUserPreferences = (editor: Editor) => {
     editor.user.updateUserPreferences({
       colorScheme: COLOR_SCHEME,
       locale: userLanguage,
       name: userName,
     });
-  }
+  };
 
-  function registerAssetHandler(editor: Editor) {
+  const registerAssetHandler = (editor: Editor) => {
     editor.sideEffects.registerAfterChangeHandler('asset', (prev, next) => {
       if (prev.props.src || !next.props.src) return;
 
@@ -62,9 +62,9 @@ const TldrawWithSync = ({ uri, userLanguage, userName }: Props) => {
         })),
       );
     });
-  }
+  };
 
-  function registerDeleteHandler(editor: Editor) {
+  const registerDeleteHandler = (editor: Editor) => {
     editor.sideEffects.registerAfterDeleteHandler('shape', (shape, source) => {
       if (shape.type !== 'image' && shape.type !== 'video') return;
 
@@ -89,7 +89,7 @@ const TldrawWithSync = ({ uri, userLanguage, userName }: Props) => {
           console.error('Failed to delete file on server', err);
         });
     });
-  }
+  };
 
   const assetStore = useMemo<TLAssetStore>(
     () => ({
