@@ -40,8 +40,8 @@ import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardE
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
-import useSseStore from '../useSseStore';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
+import useSseStore from '../useSseStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetQrCodeSlice();
