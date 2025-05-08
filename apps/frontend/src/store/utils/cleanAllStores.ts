@@ -41,6 +41,7 @@ import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import useSseStore from '../useSseStore';
+import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetQrCodeSlice();
@@ -60,6 +61,7 @@ const cleanAllStores = () => {
   useFileEditorStore.getState().reset();
   useFileSharingDialogStore.getState().reset();
   useFileSharingStore.getState().reset();
+  useFileSharingDownloadStore.getState().reset();
   useFrameStore.getState().reset();
   useLessonStore.getState().reset();
   useLmnApiPasswordStore.getState().reset();
