@@ -19,20 +19,15 @@ import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFi
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import PageTitle from '@/components/PageTitle';
+import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 
 const FullScreenFileViewer = () => {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
-  const {
-    filesToOpenInNewTab,
-    fetchDownloadLinks,
-    currentlyEditingFile,
-    setCurrentlyEditingFile,
-    downloadLinkURL,
-    isEditorLoading,
-    isDownloadFileLoading,
-    isGetDownloadLinkUrlLoading,
-  } = useFileEditorStore();
+  const { fetchDownloadLinks, downloadLinkURL, isEditorLoading, isDownloadFileLoading, isGetDownloadLinkUrlLoading } =
+    useFileSharingDownloadStore();
+
+  const { filesToOpenInNewTab, currentlyEditingFile, setCurrentlyEditingFile } = useFileEditorStore();
   const [isLoading, setIsLoading] = useState(true);
   const fileETag = searchParams.get('file');
 

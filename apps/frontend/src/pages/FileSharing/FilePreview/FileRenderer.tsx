@@ -23,6 +23,7 @@ import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 
 interface FileRendererProps {
   editMode: boolean;
@@ -35,12 +36,13 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
   const {
     downloadLinkURL: fileUrl,
     publicDownloadLink,
-    currentlyEditingFile,
     isEditorLoading,
     isDownloadFileLoading,
     isGetDownloadLinkUrlLoading,
     error,
-  } = useFileEditorStore();
+  } = useFileSharingDownloadStore();
+
+  const { currentlyEditingFile } = useFileEditorStore();
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
 
   useEffect(() => {
