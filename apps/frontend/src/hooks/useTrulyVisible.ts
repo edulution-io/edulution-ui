@@ -12,7 +12,16 @@
 
 import { RefObject, useEffect, useState } from 'react';
 
-function useTrulyVisible(ref: RefObject<HTMLElement>, deps: unknown[] = []): boolean {
+interface UseTrulyVisibleOptions {
+  ignoreRight?: boolean;
+}
+
+function useTrulyVisible(
+  ref: RefObject<HTMLElement>,
+  deps: unknown[] = [],
+  options: UseTrulyVisibleOptions = {},
+): boolean {
+  const { ignoreRight = false } = options;
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -25,8 +34,12 @@ function useTrulyVisible(ref: RefObject<HTMLElement>, deps: unknown[] = []): boo
     const check = () => {
       const rect = el.getBoundingClientRect();
 
-      const inViewport =
-        rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth;
+      const topInView = rect.top >= 0;
+      const leftInView = rect.left >= 0;
+      const bottomInView = rect.bottom <= window.innerHeight;
+      const rightInView = ignoreRight || rect.right <= window.innerWidth;
+
+      const inViewport = topInView && leftInView && bottomInView && rightInView;
 
       if (!inViewport) {
         setIsVisible(false);
