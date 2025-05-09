@@ -10,18 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Logger } from '@nestjs/common';
 import parseWebDAVMultiStatus from '@libs/filesharing/utils/parseWebDAVMultiStatus';
 import parseWebDAVResponse from './parseWebDAVResponse';
 
 const mapToDirectoryFiles = (xmlData: string) => {
-  try {
-    const responses = parseWebDAVMultiStatus(xmlData);
-    return responses.map(parseWebDAVResponse).filter((file) => file && file.filename !== '');
-  } catch (error) {
-    Logger.error('Error parsing XML data:', error);
-    return [];
-  }
+  const responses = parseWebDAVMultiStatus(xmlData);
+  return responses.map(parseWebDAVResponse).filter((file) => file && file.filename !== '');
 };
 
 export default mapToDirectoryFiles;

@@ -13,6 +13,7 @@
 import { XMLParser } from 'fast-xml-parser';
 import WebdavXmlAttributes from '@libs/filesharing/types/webdavXmlAttributes';
 import WebdavMultiStatus from '@libs/filesharing/types/webdavMultiStatus';
+import { Logger } from '@nestjs/common';
 
 const xmlOptions = {
   ignoreAttributes: false,
@@ -25,20 +26,25 @@ const xmlOptions = {
 };
 
 const parseWebDAVMultiStatus = (xmlData: string) => {
-  const parser = new XMLParser(xmlOptions);
-  const jsonObj = parser.parse(xmlData) as WebdavMultiStatus;
+  try {
+    const parser = new XMLParser(xmlOptions);
+    const jsonObj = parser.parse(xmlData) as WebdavMultiStatus;
 
-  const multiStatus = jsonObj[WebdavXmlAttributes.MultiStatus];
-  if (!multiStatus) {
+    const multiStatus = jsonObj[WebdavXmlAttributes.MultiStatus];
+    if (!multiStatus) {
+      return [];
+    }
+
+    const responsesRaw = multiStatus[WebdavXmlAttributes.Response];
+    if (!responsesRaw) {
+      return [];
+    }
+
+    return Array.isArray(responsesRaw) ? responsesRaw : [responsesRaw];
+  } catch (error) {
+    Logger.error('Error parsing XML data:', error);
     return [];
   }
-
-  const responsesRaw = multiStatus[WebdavXmlAttributes.Response];
-  if (!responsesRaw) {
-    return [];
-  }
-
-  return Array.isArray(responsesRaw) ? responsesRaw : [responsesRaw];
 };
 
 export default parseWebDAVMultiStatus;

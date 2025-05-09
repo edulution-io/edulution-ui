@@ -10,15 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ContentType from '@libs/filesharing/types/contentType';
-import parseWebDAVMultiStatus from '@libs/filesharing/utils/parseWebDAVMultiStatus';
-import parseWebDAVResponse from '@libs/filesharing/utils/parseWebDAVResponse';
-
-const mapToDirectories = (xmlData: string) => {
-  const responses = parseWebDAVMultiStatus(xmlData);
-  return responses
-    .map(parseWebDAVResponse)
-    .filter((file) => file && file.type === ContentType.DIRECTORY && file.filename !== '');
+const buildUrl = (baseUrl: string, path: string) => {
+  const cleanedPath = path.replace(/\/{2,}/g, '/').replace(/^\/+/, '');
+  return new URL(cleanedPath, baseUrl).href;
 };
 
-export default mapToDirectories;
+export default buildUrl;

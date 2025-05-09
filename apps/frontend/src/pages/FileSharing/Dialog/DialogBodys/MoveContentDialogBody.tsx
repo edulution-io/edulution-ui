@@ -48,6 +48,8 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 
   const files = fileType === ContentType.DIRECTORY ? dialogShownDirs : dialogShownFiles;
 
+  const pathPrefixRegex = new RegExp(`(?:/webdav/|server/${user?.school}/)`, 'g');
+
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const selectionValue = typeof updaterOrValue === 'function' ? updaterOrValue({}) : updaterOrValue;
 
@@ -68,7 +70,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
         newPath += '/';
       }
       if (newPath === '/') {
-        newPath += item.original.filePath.replace('/webdav/', '').replace(`server/${user?.school}/`, '');
+        newPath += item.original.filePath.replace(pathPrefixRegex, '');
       } else {
         newPath += getFileNameFromPath(item.original.filePath);
       }

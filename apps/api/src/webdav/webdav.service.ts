@@ -30,9 +30,9 @@ import ErrorMessage from '@libs/error/errorMessage';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import mapToDirectories from '@libs/filesharing/utils/mapToDirectories';
 import mapToDirectoryFiles from '@libs/filesharing/utils/mapToDirectoryFiles';
-import urlJoin from 'url-join';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
+import buildUrl from '@libs/common/utils/buildUrl';
 
 @Injectable()
 class WebdavService {
@@ -73,7 +73,12 @@ class WebdavService {
       WebdavService.handleWebDAVError(response);
       return transformer ? transformer(response.data) : (response.data as T);
     } catch (error) {
-      throw new CustomHttpException(fileSharingErrorMessage, HttpStatus.INTERNAL_SERVER_ERROR, '', WebdavService.name);
+      throw new CustomHttpException(
+        fileSharingErrorMessage,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error,
+        WebdavService.name,
+      );
     }
   }
 
@@ -83,6 +88,7 @@ class WebdavService {
         FileSharingErrorMessage.WebDavError,
         HttpStatus.INTERNAL_SERVER_ERROR,
         response?.statusText || 'WebDAV request failed',
+        WebdavService.name,
       );
     }
   }
@@ -142,7 +148,7 @@ class WebdavService {
 
   async getFilesAtPath(username: string, path: string): Promise<DirectoryFileDTO[]> {
     const client = await this.getClient(username);
-    const url = urlJoin(this.baseUrl, getPathWithoutWebdav(path));
+    const url = buildUrl(this.baseUrl, getPathWithoutWebdav(path));
 
     return (await WebdavService.executeWebdavRequest<DirectoryFileDTO[]>(
       client,
@@ -158,7 +164,7 @@ class WebdavService {
 
   async getDirectoryAtPath(username: string, path: string): Promise<DirectoryFileDTO[]> {
     const client = await this.getClient(username);
-    const url = urlJoin(this.baseUrl, getPathWithoutWebdav(path));
+    const url = buildUrl(this.baseUrl, getPathWithoutWebdav(path));
 
     return (await WebdavService.executeWebdavRequest<DirectoryFileDTO[]>(
       client,

@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const fromBase64 = (str: string) => Buffer.from(str, 'base64').toString('utf-8');
+const decodeBase64Api = (str: string) => Buffer.from(str, 'base64').toString('utf-8');
 
-export default fromBase64;
+export default decodeBase64Api;
