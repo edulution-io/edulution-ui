@@ -90,11 +90,12 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  async getContainers(applicationNames?: string[]) {
+  async getContainers(applicationNames?: string | string[]) {
     try {
       let filters = {};
       if (applicationNames) {
-        const formattedNames = applicationNames.map((name) => `/${name}`);
+        const applicationNamesArray = Array.isArray(applicationNames) ? applicationNames : [applicationNames];
+        const formattedNames = applicationNamesArray.map((name) => `/${name}`);
         filters = {
           name: formattedNames,
         };
