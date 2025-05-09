@@ -14,14 +14,15 @@ import { RefObject, useEffect, useState } from 'react';
 
 interface UseTrulyVisibleOptions {
   ignoreRight?: boolean;
+  itemName?: string;
 }
 
-function useTrulyVisible(
+const useTrulyVisible = (
   ref: RefObject<HTMLElement>,
   deps: unknown[] = [],
   options: UseTrulyVisibleOptions = {},
-): boolean {
-  const { ignoreRight = false } = options;
+): boolean => {
+  const { ignoreRight = false, itemName } = options;
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -38,6 +39,21 @@ function useTrulyVisible(
       const leftInView = rect.left >= 0;
       const bottomInView = rect.bottom <= window.innerHeight;
       const rightInView = ignoreRight || rect.right <= window.innerWidth;
+
+      if (!topInView || !leftInView || !bottomInView || !rightInView)
+        console.log(
+          `({ topInView, leftInView, bottomInView, rightInView }) ${JSON.stringify(
+            {
+              itemName,
+              topInView,
+              leftInView,
+              bottomInView,
+              rightInView,
+            },
+            null,
+            2,
+          )}`,
+        );
 
       const inViewport = topInView && leftInView && bottomInView && rightInView;
 
@@ -59,6 +75,8 @@ function useTrulyVisible(
         return el.contains(topEl);
       });
 
+      if (!fullyUnoccluded) console.log(`fullyUnoccluded ${JSON.stringify(fullyUnoccluded, null, 2)}`);
+
       setIsVisible(fullyUnoccluded);
     };
 
@@ -74,6 +92,6 @@ function useTrulyVisible(
   }, [ref, ...deps]);
 
   return isVisible;
-}
+};
 
 export default useTrulyVisible;

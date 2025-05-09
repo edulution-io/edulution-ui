@@ -30,6 +30,7 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({
   const buttonRef = useRef<HTMLDivElement>(null);
   const isTrulyVisible = useTrulyVisible(buttonRef, [translate, isUpButtonVisible, isDownButtonVisible], {
     ignoreRight: true,
+    itemName: menuItem.title,
   });
   const { pathname } = useLocation();
 
