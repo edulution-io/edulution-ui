@@ -10,12 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { z } from 'zod';
 import React from 'react';
+import { z } from 'zod';
+import { validate } from 'uuid';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { zodResolver } from '@hookform/resolvers/zod';
-import createValidPublicUserId from '@libs/survey/utils/createValidPublicUserId';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import PublicSurveyAccess from '@/pages/Surveys/Participation/PublicSurveyAccess';
@@ -30,71 +30,49 @@ const PublicSurveyAccessForm = (): React.ReactNode => {
       publicUserName: z
         .string({ required_error: t('common.required') })
         .min(5, { message: t('login.username_too_short') })
-        .max(32, { message: t('login.username_too_long') }),
-      publicUserId: z.nullable(
-        z
-          .string()
-          .uuid({ message: t('login.publicUserId_noUUID') })
-          .optional(),
-      ),
+        .max(36, { message: t('login.username_too_long') }),
     });
 
-  const form = useForm<{ publicUserName: string; publicUserId: string | null }>({
+  const form = useForm<{ publicUserName: string }>({
     mode: 'onSubmit',
-    defaultValues: { publicUserName: '', publicUserId: null },
+    defaultValues: { publicUserName: '' },
     resolver: zodResolver(getPublicLoginFormSchema()),
   });
 
   const handleAccessSurvey = async () => {
-    const { publicUserName, publicUserId } = form.getValues();
+    const { publicUserName } = form.getValues();
     const isPublicUserNameValid = !form.formState.errors.publicUserName;
-    const isPublicUserIdValid = !form.formState.errors.publicUserId;
-
     if (!isPublicUserNameValid) {
       return;
     }
-
-    if (!publicUserId) {
-      form.clearErrors('publicUserId');
+    if (!validate(publicUserName)) {
       setAttendee({
-        username: publicUserName,
-        firstName: undefined,
+        username: undefined,
+        firstName: publicUserName,
         lastName: undefined,
-        publicUserName,
-        publicUserId: undefined,
         label: publicUserName,
-        value: publicUserName,
+        value: undefined,
       });
+      return;
     }
 
-    if (publicUserId && publicUserId !== '') {
-      if (!isPublicUserIdValid) {
-        return;
-      }
-      const publicUsername = createValidPublicUserId(publicUserName, publicUserId);
-      const publicUser = {
-        username: publicUsername,
-        firstName: undefined,
-        lastName: undefined,
-        publicUserName,
-        publicUserId,
-        label: publicUserName,
-        value: publicUsername,
-      };
-      // eslint-disable-next-line no-underscore-dangle
-      if (selectedSurvey?._id) {
-        const checkExistenceOfPublicUsername = await checkForMatchingUserNameAndPubliUserId(
-          // eslint-disable-next-line no-underscore-dangle
-          selectedSurvey?._id,
-          publicUser,
-        );
+    const publicUser = {
+      username: publicUserName,
+      firstName: undefined,
+      lastName: publicUserName,
+      label: undefined,
+      value: publicUserName,
+    };
+    // eslint-disable-next-line no-underscore-dangle
+    if (selectedSurvey?._id) {
+      const checkExistenceOfPublicUsername = await checkForMatchingUserNameAndPubliUserId(
+        // eslint-disable-next-line no-underscore-dangle
+        selectedSurvey?._id,
+        publicUser,
+      );
 
-        if (checkExistenceOfPublicUsername) {
-          setAttendee(publicUser);
-        } else {
-          form.setError('publicUserName', new Error(t('login.publicUsername_notExisting')));
-          form.setError('publicUserId', new Error(t('login.publicUsername_notExisting')));
-        }
+      if (!checkExistenceOfPublicUsername) {
+        form.setError('publicUserName', new Error(t('login.publicUsername_notExisting')));
       }
     }
   };
@@ -105,8 +83,6 @@ const PublicSurveyAccessForm = (): React.ReactNode => {
         form={form}
         publicUserName={form.watch('publicUserName')}
         setPublicUserName={(value) => form.setValue('publicUserName', value, { shouldValidate: true })}
-        publicUserId={form.watch('publicUserId')}
-        setPublicUserId={(value) => form.setValue('publicUserId', value, { shouldValidate: true })}
         accessSurvey={handleAccessSurvey}
       />
     </div>

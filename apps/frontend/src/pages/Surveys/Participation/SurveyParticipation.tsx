@@ -24,7 +24,7 @@ interface SurveyParticipationProps {
 const SurveyParticipation = (props: SurveyParticipationProps): React.ReactNode => {
   const { isPublic = false } = props;
   const { user } = useUserStore();
-  const { attendee, setAttendee, publicUserLogin } = useParticipateSurveyStore();
+  const { attendee, setAttendee, publicUserId } = useParticipateSurveyStore();
 
   useEffect(() => {
     if (user) {
@@ -32,8 +32,6 @@ const SurveyParticipation = (props: SurveyParticipationProps): React.ReactNode =
         username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,
-        publicUserName: undefined,
-        publicUserId: undefined,
         label: `${user.firstName} ${user.lastName}`,
         value: user.username,
       };
@@ -47,8 +45,8 @@ const SurveyParticipation = (props: SurveyParticipationProps): React.ReactNode =
     return <PublicSurveyAccessForm />;
   }
 
-  if (publicUserLogin) {
-    return <PublicSurveyParticipationId publicUserLogin={publicUserLogin} />;
+  if (publicUserId) {
+    return <PublicSurveyParticipationId publicUserId={publicUserId} />;
   }
 
   return <SurveyParticipationModel isPublic={isPublic} />;

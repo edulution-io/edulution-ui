@@ -15,7 +15,7 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 interface ParticipantDto {
   surveyId: string;
 
-  attendee: AttendeeDto;
+  attendee: Partial<AttendeeDto>;
 }
 
 export default ParticipantDto;

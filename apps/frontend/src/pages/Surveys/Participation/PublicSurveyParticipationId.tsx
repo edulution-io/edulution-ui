@@ -17,17 +17,15 @@ import copyToClipboard from '@/utils/copyToClipboard';
 import Input from '@/components/shared/Input';
 
 interface PublicSurveyParticipationIdProps {
-  publicUserLogin?: { publicUserName: string; publicUserId: string };
+  publicUserId: string;
 }
 
-const PublicSurveyParticipationId = ({ publicUserLogin }: PublicSurveyParticipationIdProps) => {
+const PublicSurveyParticipationId = ({ publicUserId }: PublicSurveyParticipationIdProps) => {
   const { t } = useTranslation();
 
-  if (!publicUserLogin) {
+  if (!publicUserId) {
     return null;
   }
-
-  const { publicUserName, publicUserId } = publicUserLogin;
 
   return (
     <div className="relative top-1/3 mx-auto my-10 w-[90%] max-w-[500px] rounded-xl bg-white bg-opacity-5 p-5 md:w-[60%]">
@@ -45,13 +43,6 @@ const PublicSurveyParticipationId = ({ publicUserLogin }: PublicSurveyParticipat
             icon={<MdFileCopy />}
           />
         </div>
-      </div>
-
-      <div className="mx-4 mb-4">
-        <p>
-          {t('survey.participate.forUsername')}
-          <span className="mx-2 mb-2 w-fit rounded-xl bg-accent px-3 py-2">{`"${publicUserName}"`}</span>
-        </p>
       </div>
 
       <p>{t('survey.participate.idFooter')}</p>
