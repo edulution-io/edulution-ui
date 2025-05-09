@@ -12,11 +12,9 @@
 
 import React from 'react';
 import { t } from 'i18next';
-import { HiTrash } from 'react-icons/hi2';
 import { ColumnDef } from '@tanstack/react-table';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
-import { Button } from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 
@@ -61,28 +59,6 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
           variant="dialog"
           className="p-2 text-primary-foreground"
         />
-      );
-    },
-  },
-  {
-    id: 'choice-delete-button',
-    header: () => <div className="flex items-center justify-center">{t('common.actions')}</div>,
-    meta: {
-      translationId: 'common.actions',
-    },
-    accessorFn: (row) => row.name,
-    cell: ({ row }) => {
-      const { removeChoice } = useQuestionsContextMenuStore();
-      return (
-        <div className="m-0 flex w-[85px] justify-center p-0">
-          <Button
-            type="button"
-            onClick={() => removeChoice(row.original.name)}
-            className="m-0 flex max-h-[2.25rem] w-[80px] items-center justify-center rounded-md p-0 text-ciRed"
-          >
-            <HiTrash className="h-[18px] w-[18px]" />
-          </Button>
-        </div>
       );
     },
   },

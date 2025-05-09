@@ -30,6 +30,9 @@ import ChoicesWithBackendLimitsShowOtherItem from '@/pages/Surveys/Editor/dialog
 import ChoicesWithBackendLimitTable from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitsTable';
 import ChoicesWithBackendLimitTableColumns from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitTableColumns';
 import Switch from '@/components/ui/Switch';
+import TableActionColumn from '@/components/ui/Table/TableActionColumn';
+import { HiTrash } from 'react-icons/hi';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
 
 interface ChoicesByUrlProps {
   form: UseFormReturn<SurveyDto>;
@@ -54,6 +57,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     setBackendLimiters,
     currentChoices,
     addNewChoice,
+    removeChoice,
     updateLimitersChoices,
     formerChoices,
   } = useQuestionsContextMenuStore();
@@ -129,6 +133,21 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
 
   if (!form) return null;
   if (!isQuestionTypeChoiceType(questionType)) return null;
+
+  const columns = [
+    ...ChoicesWithBackendLimitTableColumns,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    TableActionColumn<ChoiceDto, any>({
+      actions: {
+        icon: HiTrash,
+        translationId: 'common.delete',
+        onClick: (row) => removeChoice(row.original.name),
+        className: 'text-ciRed',
+      },
+      accessorFn: (row) => row.name,
+    }),
+  ];
+
   return (
     <>
       <p className="text-m font-bold text-primary-foreground">{t('survey.editor.questionSettings.backendLimiters')}</p>
@@ -155,7 +174,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
               // TODO: Replace custom table with ScrollableTable component (https://github.com/edulution-io/edulution-ui/issues/761)
             }
             <ChoicesWithBackendLimitTable
-              columns={ChoicesWithBackendLimitTableColumns}
+              columns={columns}
               data={currentChoices.filter((choice) => choice.name !== SHOW_OTHER_ITEM)}
               addNewChoice={addNewChoice}
             />
