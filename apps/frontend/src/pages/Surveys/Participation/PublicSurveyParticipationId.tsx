@@ -30,7 +30,7 @@ const PublicSurveyParticipationId = ({ publicUserLogin }: PublicSurveyParticipat
   const { publicUserName, publicUserId } = publicUserLogin;
 
   return (
-    <div className="mx-auto my-10 w-[90%] max-w-[500px] rounded-xl bg-white bg-opacity-5 p-5 md:w-[60%]">
+    <div className="relative top-1/3 mx-auto my-10 w-[90%] max-w-[500px] rounded-xl bg-white bg-opacity-5 p-5 md:w-[60%]">
       <h4 className="my-4 mt-0 ">{t('survey.participate.idHeader')}</h4>
 
       <div className="mx-4">
