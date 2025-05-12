@@ -21,9 +21,9 @@ import {
 } from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyStatus from '@libs/survey/survey-status-enum';
-import { HttpStatus } from '@nestjs/common';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
+import HttpStatus from '@libs/common/constants/httpStatus';
 
 interface SurveysTablesPageStore {
   selectedSurvey: SurveyDto | undefined;

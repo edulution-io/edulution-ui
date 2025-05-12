@@ -18,6 +18,7 @@ import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreatePro
 import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import { t } from 'i18next';
+import HttpStatus from '@libs/common/constants/httpStatus';
 
 async function handleDeleteItems(itemsToDelete: PathChangeOrCreateDto[], endpoint: string): Promise<void> {
   const cleanPaths = itemsToDelete.map((item) => getPathWithoutWebdav(item.path));
@@ -50,7 +51,7 @@ export default async function handleBulkFileOperations(
       ? true
       : undefined;
 
-    setResult(success, t('fileOperationSuccessful'), 200);
+    setResult(success, t('fileOperationSuccessful'), HttpStatus.OK);
   } catch (rawError: unknown) {
     const err = rawError as { message?: string; statusCode?: number };
 

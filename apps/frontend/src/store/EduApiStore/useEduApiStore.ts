@@ -14,7 +14,7 @@ import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import handleApiError from '@/utils/handleApiError';
-import { HttpStatus } from '@nestjs/common';
+import HttpStatus from '@libs/common/constants/httpStatus';
 
 type EduApiStore = {
   isEduApiHealthyLoading: boolean;
