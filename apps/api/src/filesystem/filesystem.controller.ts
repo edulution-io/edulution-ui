@@ -19,7 +19,7 @@ import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
-import { createAttachmentUploadOptions } from '../common/file-attachment/multer.utilities';
+import { createAttachmentUploadOptions } from './multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 import FilesystemService from './filesystem.service';
 
@@ -28,6 +28,10 @@ import FilesystemService from './filesystem.service';
 @Controller(EDU_API_CONFIG_ENDPOINTS.FILES)
 class FileSystemController {
   constructor(private readonly filesystemService: FilesystemService) {}
+
+  // @Get(':name/isTemp')
+  // getFiles(@Param('isTemp') isTemp: boolean | undefined)
+  // PROBLEM WITH THE USEGUARD BECAUSE NOT ONLY GLOBAL ADMIN CAN ADD FILES FOR SURVEYS
 
   @Post(':name')
   @UseGuards(AppConfigGuard)
