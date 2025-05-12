@@ -20,17 +20,20 @@ const useTokenEventListeners = () => {
   const auth = useAuth();
   const { t } = useTranslation();
   const handleLogout = useLogout();
+  const hasRunRef = useRef(false);
 
-  const handleTokenExpiredRef = useRef<() => void>(() => {});
-  handleTokenExpiredRef.current = () => {
-    if (auth.user?.expired) {
-      void handleLogout();
-      toast.error(t('auth.errors.TokenExpired'));
-    }
-  };
+  const handleTokenExpiredRef = useRef<() => void>(() => {
+    if (hasRunRef.current) return;
+    hasRunRef.current = true;
+
+    void handleLogout();
+    toast.error(t('auth.errors.TokenExpired'));
+  });
 
   useEffect(() => {
-    handleTokenExpiredRef.current();
+    if (auth.user?.expired) {
+      handleTokenExpiredRef.current();
+    }
   }, [auth.user?.expired]);
 
   useEffect(() => {
