@@ -17,7 +17,7 @@ import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import TemplateList from '@/pages/Surveys/Editor/dialog/TemplateList';
-import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 interface TemplateDialogBodyProps {
   form: UseFormReturn<SurveyDto>;
@@ -35,15 +35,17 @@ const TemplateDialogBody = (props: TemplateDialogBodyProps) => {
   }, []);
 
   if (isLoading) {
-    return <LoadingIndicatorDialog isOpen />;
+    return (
+      <div className="flex flex-col items-center ">
+        <CircleLoader />
+      </div>
+    );
   }
 
   if (templates.length === 0) {
     return (
       <div className="relative top-1/3">
-        <h4 className="flex justify-center text-p text-secondary">
-          - {t('survey.editor.templateMenu.emptyMessage')} -
-        </h4>
+        <h4 className="flex justify-center text-p text-secondary">{t('survey.editor.templateMenu.emptyMessage')}</h4>
       </div>
     );
   }
