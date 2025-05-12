@@ -56,7 +56,7 @@ const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedIt
         selectedItem ? () => startDownload(selectedItem.filename, selectedItem.basename) : () => {},
         selectedItem?.type === ContentType.FILE && bytesToMegabytes(selectedItem?.size || 0) < MAX_FILE_UPLOAD_SIZE,
       ),
-      CopyButton(() => openDialog(FileActionType.COPY_FILE_FOLDER)),
+      CopyButton(() => openDialog(FileActionType.COPY_FILE_OR_FOLDER)),
     ],
     keyPrefix: 'file-sharing-page-floating-button_',
   };

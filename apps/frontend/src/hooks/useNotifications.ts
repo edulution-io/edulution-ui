@@ -144,15 +144,22 @@ const useNotifications = () => {
     const controller = new AbortController();
     const { signal } = controller;
 
-    const rawFileOperations = handleFilesharingProgress(setFileOperationProgress);
+    const fileOperationHandler = handleFilesharingProgress(setFileOperationProgress);
 
-    const handleFileOperations = (e: MessageEvent<string>) => {
-      void rawFileOperations(e);
+    const listener = (ev: MessageEvent): void => {
+      const typedEvent = ev as MessageEvent<string>;
+      void fileOperationHandler(typedEvent).catch((err) => {
+        console.error('SSE-Error:', err);
+      });
     };
 
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES, handleFileOperations, { signal });
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_MOVE_OR_RENAME_FILES, handleFileOperations, { signal });
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_COPY_FILES, handleFileOperations, { signal });
+    [
+      SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES,
+      SSE_MESSAGE_TYPE.FILESHARING_MOVE_OR_RENAME_FILES,
+      SSE_MESSAGE_TYPE.FILESHARING_COPY_FILES,
+    ].forEach((type) => {
+      eventSource.addEventListener(type, listener, { signal });
+    });
 
     return () => {
       controller.abort();

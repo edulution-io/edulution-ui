@@ -111,15 +111,10 @@ class FilesharingController {
 
   @Patch()
   async moveOrRenameResource(
-    @Body() pathChangeOrCreateDto: PathChangeOrCreateDto[],
+    @Body() pathChangeOrCreateDtos: PathChangeOrCreateDto[],
     @GetCurrentUsername() username: string,
   ) {
-    if (pathChangeOrCreateDto.length === 1) {
-      const originFull = `${this.baseurl}${pathChangeOrCreateDto[0].path}`;
-      const newFull = `${this.baseurl}${pathChangeOrCreateDto[0].newPath}`;
-      return this.webdavService.moveOrRenameResource(username, originFull, newFull);
-    }
-    return this.filesharingService.moveOrRenameResource(username, pathChangeOrCreateDto);
+    return this.filesharingService.moveOrRenameResource(username, pathChangeOrCreateDtos);
   }
 
   @Get(FileSharingApiEndpoints.FILE_STREAM)
@@ -168,7 +163,7 @@ class FilesharingController {
 
   @Post(FileSharingApiEndpoints.COPY)
   async copyFile(@Body() pathChangeOrCreateDto: PathChangeOrCreateDto[], @GetCurrentUsername() username: string) {
-    return this.filesharingService.copyFileFolder(username, pathChangeOrCreateDto);
+    return this.filesharingService.copyFileOrFolder(username, pathChangeOrCreateDto);
   }
 
   @Post(FileSharingApiEndpoints.COLLECT)

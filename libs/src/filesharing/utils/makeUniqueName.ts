@@ -12,28 +12,32 @@
 
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 
-const makeUniqueName = (base: string, ext: string, existingItems: DirectoryFileDTO[]) => {
-  const suffixRe = /(.*)\((\d+)\)$/;
-  let prefix = base;
-  let counter = 0;
+const generateUniqueFilename = (baseName: string, extension: string, existingFiles: DirectoryFileDTO[]) => {
+  const suffixPattern = /(.*)\((\d+)\)$/;
+  let namePrefix = baseName;
+  let sequenceNumber = 0;
 
-  const existingNames = new Set(existingItems.map((item) => item.basename));
+  const existingFileNames = new Set(existingFiles.map((file) => file.basename));
 
-  if (existingNames.has(`${base}${ext}`)) {
-    const match = base.match(suffixRe);
-    if (match) {
-      prefix = match[1].trim();
-      counter = parseInt(match[2], 10);
-    }
+  const original = `${baseName}${extension}`;
+  if (!existingFileNames.has(original)) {
+    return original;
   }
 
-  let candidate: string;
+  if (existingFileNames.has(`${baseName}${extension}`)) {
+    const match = baseName.match(suffixPattern);
+    if (match) {
+      namePrefix = match[1].trim();
+      sequenceNumber = parseInt(match[2], 10);
+    }
+  }
+  let uniqueFileName: string;
   do {
-    counter += 1;
-    candidate = `${prefix}(${counter})${ext}`;
-  } while (existingNames.has(candidate));
+    sequenceNumber += 1;
+    uniqueFileName = `${namePrefix}(${sequenceNumber})${extension}`;
+  } while (existingFileNames.has(uniqueFileName));
 
-  return candidate;
+  return uniqueFileName;
 };
 
-export default makeUniqueName;
+export default generateUniqueFilename;

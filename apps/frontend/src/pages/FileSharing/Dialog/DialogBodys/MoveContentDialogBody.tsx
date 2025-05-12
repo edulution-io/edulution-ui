@@ -33,6 +33,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   showSelectedFile = true,
   showHome = true,
   fileType,
+  listCurrentDirectory = false,
 }) => {
   const { t } = useTranslation();
   const [currentPath, setCurrentPath] = useState(pathToFetch || '');
@@ -46,19 +47,26 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 
   const fetchMechanism = fileType === ContentType.DIRECTORY ? fetchDialogDirs : fetchDialogFiles;
 
-  const files = fileType === ContentType.DIRECTORY ? dialogShownDirs : dialogShownFiles;
+  const currentDirItem: DirectoryFileDTO = {
+    filename: currentPath,
+    etag: '',
+    basename: currentPath.split('/').pop() || '',
+    type: ContentType.DIRECTORY,
+  };
 
+  const files = fileType === ContentType.DIRECTORY ? dialogShownDirs : dialogShownFiles;
+  const filesToDisplay =
+    listCurrentDirectory && fileType === ContentType.DIRECTORY ? [currentDirItem, ...files] : files;
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const selectionValue = typeof updaterOrValue === 'function' ? updaterOrValue({}) : updaterOrValue;
 
-    const fileMap = new Map(files.map((file) => [file.filename, file]));
+    const fileMap = new Map(filesToDisplay.map((file) => [file.filename, file]));
 
-    const selectedItems = Object.keys(selectionValue)
-      .filter((key) => selectionValue[key])
-      .map((key) => fileMap.get(key))
-      .filter(Boolean) as DirectoryFileDTO[];
-
-    setMoveOrCopyItemToPath(selectedItems[0]);
+    const selectedKey = Object.keys(selectionValue).find((key) => selectionValue[key]);
+    const selectedItem = selectedKey ? fileMap.get(selectedKey) : undefined;
+    if (selectedItem) {
+      setMoveOrCopyItemToPath(selectedItem);
+    }
   };
 
   const onFilenameClick = (item: Row<DirectoryFileDTO>) => {
@@ -131,7 +139,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
         {!isLoading && (
           <ScrollableTable
             columns={columns}
-            data={files}
+            data={filesToDisplay}
             selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filename]: true } : {}}
             onRowSelectionChange={handleRowSelectionChange}
             applicationName={APPS.FILE_SHARING}

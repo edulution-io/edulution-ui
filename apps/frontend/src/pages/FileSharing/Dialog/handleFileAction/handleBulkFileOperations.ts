@@ -19,34 +19,44 @@ import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import { t } from 'i18next';
 
-const handleDeleteItems = async (pathsToDelete: PathChangeOrCreateDto[], endpoint: string) => {
-  await eduApi.delete(buildApiDeletePathUrl(endpoint, DeleteTargetType.FILE_SERVER), {
-    data: {
-      paths: pathsToDelete.map((item) => getPathWithoutWebdav(item.path)),
-    },
-  });
-};
+async function handleDeleteItems(itemsToDelete: PathChangeOrCreateDto[], endpoint: string): Promise<void> {
+  const cleanPaths = itemsToDelete.map((item) => getPathWithoutWebdav(item.path));
+  const url = buildApiDeletePathUrl(endpoint, DeleteTargetType.FILE_SERVER);
+  await eduApi.delete(url, { data: { paths: cleanPaths } });
+}
 
-const handleBulkFileOperations = async (
+export default async function handleBulkFileOperations(
   action: FileActionType,
   endpoint: string,
   httpMethod: HttpMethods,
-  itemsToProcess: PathChangeOrCreateDto[],
-  setFileOperationResult: (success: boolean | undefined, message: string, statusCode: number) => void,
-) => {
-  if (action === FileActionType.DELETE_FILE_FOLDER) {
-    await handleDeleteItems(itemsToProcess, endpoint);
-    setFileOperationResult(undefined, t('fileOperationSuccessful'), 200);
-  } else if (action === FileActionType.MOVE_FILE_FOLDER) {
-    await eduApi[httpMethod](endpoint, itemsToProcess);
-    setFileOperationResult(undefined, t('fileOperationSuccessful'), 200);
-  } else if (action === FileActionType.RENAME_FILE_FOLDER) {
-    await eduApi[httpMethod](endpoint, itemsToProcess);
-    setFileOperationResult(true, t('fileOperationSuccessful'), 200);
-  } else if (action === FileActionType.COPY_FILE_FOLDER) {
-    await eduApi[httpMethod](endpoint, itemsToProcess);
-    setFileOperationResult(true, t('fileOperationSuccessful'), 200);
-  }
-};
+  items: PathChangeOrCreateDto[],
+  setResult: (success: boolean | undefined, message: string, statusCode: number) => void,
+) {
+  try {
+    switch (action) {
+      case FileActionType.DELETE_FILE_FOLDER:
+        await handleDeleteItems(items, endpoint);
+        break;
 
-export default handleBulkFileOperations;
+      case FileActionType.MOVE_FILE_FOLDER:
+      case FileActionType.RENAME_FILE_FOLDER:
+      case FileActionType.COPY_FILE_OR_FOLDER:
+        await eduApi[httpMethod](endpoint, items);
+        break;
+      default:
+    }
+
+    const success = [FileActionType.RENAME_FILE_FOLDER, FileActionType.COPY_FILE_OR_FOLDER].includes(action)
+      ? true
+      : undefined;
+
+    setResult(success, t('fileOperationSuccessful'), 200);
+  } catch (rawError: unknown) {
+    const err = rawError as { message?: string; statusCode?: number };
+
+    const message = err.message ?? t('fileOperationFailed');
+    const statusCode = err.statusCode ?? 500;
+
+    setResult(false, message, statusCode);
+  }
+}

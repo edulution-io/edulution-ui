@@ -24,7 +24,7 @@ const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog }) => {
     buttons: [
       DeleteButton(() => openDialog(FileActionType.DELETE_FILE_FOLDER)),
       MoveButton(() => openDialog(FileActionType.MOVE_FILE_FOLDER)),
-      CopyButton(() => openDialog(FileActionType.COPY_FILE_FOLDER)),
+      CopyButton(() => openDialog(FileActionType.COPY_FILE_OR_FOLDER)),
     ],
     keyPrefix: 'file-sharing-page-floating-button_',
   };

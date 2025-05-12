@@ -10,15 +10,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import React from 'react';
+import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
+import MoveContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveContentDialogBody';
 import ContentType from '@libs/filesharing/types/contentType';
+import MoveContentDialogProps from '@libs/filesharing/types/moveContentDialogProps';
 
-interface MoveContentDialogBodyProps {
-  showAllFiles?: boolean;
-  pathToFetch?: string;
-  showSelectedFile?: boolean;
-  showHome?: boolean;
-  fileType?: ContentType;
-  listCurrentDirectory?: boolean;
-}
+const CopyContentDialogBody: React.FC<Omit<MoveContentDialogProps, 'pathToFetch'>> = (props) => {
+  const { homePath } = useUserPath();
 
-export default MoveContentDialogBodyProps;
+  return (
+    <MoveContentDialogBody
+      {...props}
+      showAllFiles
+      pathToFetch={homePath}
+      fileType={ContentType.DIRECTORY}
+      listCurrentDirectory
+    />
+  );
+};
+
+export default CopyContentDialogBody;

@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Injectable, HttpStatus } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { Readable } from 'stream';
 import { Request, Response } from 'express';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
@@ -53,7 +53,7 @@ export default class FilesharingService {
     );
   }
 
-  async copyFileFolder(username: string, copyFileRequestDTOs: PathChangeOrCreateProps[]) {
+  async copyFileOrFolder(username: string, copyFileRequestDTOs: PathChangeOrCreateProps[]) {
     let processedItems = 0;
     return Promise.all(
       copyFileRequestDTOs.map(async (copyFileRequest) => {
@@ -90,16 +90,16 @@ export default class FilesharingService {
     );
   }
 
-  async moveOrRenameResource(username: string, pathChangeOrCreateDto: PathChangeOrCreateProps[]) {
+  async moveOrRenameResource(username: string, pathChangeOrCreateDtos: PathChangeOrCreateProps[]) {
     let processedItems = 0;
     return Promise.all(
-      pathChangeOrCreateDto.map(async (pathChange) => {
+      pathChangeOrCreateDtos.map(async (pathChange) => {
         const { path, newPath } = pathChange;
         await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.MOVE_OR_RENAME_JOB, {
           username,
           path,
           newPath,
-          total: pathChangeOrCreateDto.length,
+          total: pathChangeOrCreateDtos.length,
           processed: (processedItems += 1),
         });
       }),

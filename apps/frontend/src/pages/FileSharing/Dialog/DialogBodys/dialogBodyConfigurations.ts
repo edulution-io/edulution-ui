@@ -33,6 +33,7 @@ import DocumentVendorsType from '@libs/filesharing/types/documentVendorsType';
 import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
 import MoveDirectoryDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveDirectoryDialogBody';
+import CopyContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/CopyContentDialogBody';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
@@ -224,7 +225,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
   },
 
   copyFileFolder: {
-    Component: MoveDirectoryDialogBody,
+    Component: CopyContentDialogBody,
     titleKey: 'copyItemDialog.copyFilesToDirectory',
     submitKey: 'copyItemDialog.copy',
     endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.COPY}`,
