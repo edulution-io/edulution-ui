@@ -33,7 +33,7 @@ import {
   publicSurvey01,
   publicSurvey02,
   publicSurvey02AfterAddingValidAnswer,
-  publicSurvey02QuestionIdWithLimiters,
+  publicSurvey02QuestionNameWithLimiters,
   saveNoPublicSurvey02,
   surveyValidAnswerPublicSurvey02,
 } from './mocks';
@@ -174,13 +174,13 @@ describe(PublicSurveysController.name, () => {
 
       const result = await controller.getChoices({
         surveyId: idOfPublicSurvey02.toString(),
-        questionId: publicSurvey02QuestionIdWithLimiters,
+        questionName: publicSurvey02QuestionNameWithLimiters,
       });
       expect(result).toEqual(filteredChoices);
 
       expect(surveyAnswerService.getSelectableChoices).toHaveBeenCalledWith(
         idOfPublicSurvey02.toString(),
-        publicSurvey02QuestionIdWithLimiters,
+        publicSurvey02QuestionNameWithLimiters,
       );
       expect(surveyAnswerService.countChoiceSelections).toHaveBeenCalledTimes(4);
     });
@@ -199,13 +199,13 @@ describe(PublicSurveysController.name, () => {
 
       const result = await controller.getChoices({
         surveyId: idOfPublicSurvey02.toString(),
-        questionId: publicSurvey02QuestionIdWithLimiters,
+        questionName: publicSurvey02QuestionNameWithLimiters,
       });
       expect(result).toEqual(filteredChoicesAfterAddingValidAnswer);
 
       expect(surveyAnswerService.getSelectableChoices).toHaveBeenCalledWith(
         idOfPublicSurvey02.toString(),
-        publicSurvey02QuestionIdWithLimiters,
+        publicSurvey02QuestionNameWithLimiters,
       );
       expect(surveyAnswerService.countChoiceSelections).toHaveBeenCalledTimes(4);
     });

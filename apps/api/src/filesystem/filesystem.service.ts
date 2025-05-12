@@ -11,7 +11,7 @@
  */
 
 /* eslint-disable @typescript-eslint/class-methods-use-this */
-import { createWriteStream, createReadStream, promises as fsPromises } from 'fs';
+import { createReadStream, createWriteStream, promises as fsPromises } from 'fs';
 import process from 'node:process';
 import { promisify } from 'util';
 import { createHash } from 'crypto';
@@ -206,6 +206,23 @@ class FilesystemService {
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  static async writeFile(filePath: string, content: string) {
+    try {
+      await fsPromises.writeFile(filePath, content);
+      Logger.log(`${filePath} created.`, FilesystemService.name);
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getAllFilenamesInDirectory(directory: string): Promise<string[]> {
+    const exists = await FilesystemService.checkIfFileExist(directory);
+    if (!exists) {
+      return [];
+    }
+    return fsPromises.readdir(directory);
   }
 
   static async deleteDirectories(directories: string[]): Promise<void> {

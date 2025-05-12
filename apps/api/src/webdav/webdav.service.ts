@@ -106,6 +106,7 @@ class WebdavService {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   getPathUntilFolder(fullPath: string, folderName: string): string {
     const segments = fullPath.split('/');
     const index = segments.indexOf(folderName);
@@ -252,9 +253,9 @@ class WebdavService {
       client,
       {
         method: HttpMethodsWebDav.MOVE,
-        url: originFullPath,
+        url: decodeURI(originFullPath),
         headers: {
-          Destination: destFullPath,
+          Destination: decodeURI(destFullPath),
           [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
         },
       },

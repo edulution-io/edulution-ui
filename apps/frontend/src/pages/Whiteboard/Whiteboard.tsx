@@ -25,22 +25,24 @@ const TldrawWithSync = lazy(() => import('./TLDrawWithSync'));
 const Whiteboard = () => {
   const { language } = useLanguage();
   const { t } = useTranslation();
-  const { user } = useUserStore();
+  const { user, eduApiToken } = useUserStore();
 
   const WS_BASE_URL = `${EDU_API_WEBSOCKET_URL}/${TLDRAW_SYNC_ENDPOINTS.BASE}`;
 
   const roomId = user?.username;
 
-  const uri = useMemo(() => `${WS_BASE_URL}?${ROOM_ID_PARAM}=${roomId}`, [roomId]);
+  const uri = useMemo(() => `${WS_BASE_URL}?${ROOM_ID_PARAM}=${roomId}&token=${eduApiToken}`, [roomId]);
 
   return (
     <PageLayout isFullScreen>
       <Suspense fallback={<CircleLoader className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />}>
-        <TldrawWithSync
-          uri={uri}
-          userLanguage={language}
-          userName={user?.lastName ?? t('common.guest')}
-        />
+        <div className="z-0 h-full w-full">
+          <TldrawWithSync
+            uri={uri}
+            userLanguage={language}
+            userName={user?.lastName ?? t('common.guest')}
+          />
+        </div>
       </Suspense>
     </PageLayout>
   );

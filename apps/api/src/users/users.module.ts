@@ -15,7 +15,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import UsersService from './users.service';
 import { UsersController } from './users.controller';
 import { User, UserSchema } from './user.schema';
-import UserAccountsSchema, { UserAccounts } from './account.schema';
+import { UserAccounts, UserAccountsSchema } from './account.schema';
 
 @Global()
 @Module({

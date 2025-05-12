@@ -97,7 +97,9 @@
   "appstore": {
     "title": "App Store",
     "description": "Here you can add {{ applicationName }} apps.",
-    "chooseIcon": "Choose icon"
+    "chooseIcon": "Choose icon",
+    "uploadIcon": "Upload icon",
+    "dropIconDescription": "Drag an image here or click to select an image. Supported formats: SVG, WEBP"
   },
   "forwarding": {
     "sidebar": "Forwarding"
@@ -111,7 +113,7 @@
   "dashboard": {
     "pageTitle": "Dashboard",
     "mobileAccess": {
-      "title": "Mobile File Access",
+      "title": "Mobile Access",
       "manual": "Setup",
       "manualSetup": "Manual setup",
       "setupWithQrCode": "Setup with QR code",
@@ -541,9 +543,32 @@
     "editor": {
       "new": "New (blank)",
       "saveSurveySuccess": "Saved the survey.",
-      "abort": "Revert all changes",
+      "reset": "Reset",
       "addDescription": "Add a description",
-      "expectingUserInput": "Expecting the user to answer here, ... "
+      "expectingUserInput": "Expecting the user to answer here, ... ",
+      "templates": "Templates",
+      "templateMenu": {
+        "fetch": "Choose one of the following templates.",
+        "submit": "Save Survey as template.",
+        "title": "Templates store/load"
+      },
+      "questionSettings": {
+        "settings": "Settings",
+        "title": "Question settings",
+        "questionTitle": "Title",
+        "addQuestionTitle": "Add a title",
+        "questionDescription": "Description",
+        "addQuestionDescription": "Add a description",
+        "limit": "Limit",
+        "nullLimit": "An upper limit of 0 means, that the option selectable, infinitely often",
+        "backendLimiters": "Option limits",
+        "addBackendLimiters": "Define options with limiters, to limit the number of times the option can be selected",
+        "useOtherItem": "Enable users to add user defined options",
+        "addBackendLimiterForOtherItem": "This is the limit, for how often the option will be selectable",
+        "upperLimit": "Limit",
+        "upperBackendLimiters": "Choices with an upper limit",
+        "addChoice": "Add"
+      }
     },
     "participate": {
       "saveAnswerSuccess": "Saved the answer."
@@ -1057,6 +1082,7 @@
     "login": "Login",
     "username": "Username",
     "password": "Password",
+    "load": "Load",
     "loading": "Loading...",
     "overview": "Overview",
     "create": "Create",
@@ -1102,6 +1128,9 @@
     "update": "Update",
     "progress": "Progress...",
     "pressInstall": "Press Install to start",
+    "enable": "Enable",
+    "enabled": "Enabled",
+    "disable": "Disable",
     "disabled": "Disabled",
     "invalid_url": "Invalid URL",
     "invalid_fqdn": "Invalid FQDN. Please only enter the hostname.",
