@@ -320,7 +320,7 @@ const LoginPage: React.FC = () => {
       <PageTitle translationId="login.pageTitle" />
       <Card
         variant="modal"
-        className="bg-background"
+        className="overflow-y-auto bg-background scrollbar-thin"
       >
         <img
           src={DesktopLogo}
