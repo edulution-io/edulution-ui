@@ -25,7 +25,6 @@ import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCatego
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import CustomHttpException from '../common/CustomHttpException';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 
@@ -281,7 +280,10 @@ class BulletinBoardService implements OnModuleInit {
 
       await this.bulletinModel.deleteMany({ _id: { $in: ids } }).exec();
     } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.ATTACHMENT_DELETION_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }
