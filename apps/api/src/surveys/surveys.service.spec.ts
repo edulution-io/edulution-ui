@@ -22,8 +22,6 @@ import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
-import AttachmentService from '../common/file-attachment/attachment.service';
-import mockAttachmentService from '../common/file-attachment/attachment.service.mock';
 
 describe('SurveyService', () => {
   let service: SurveysService;
@@ -39,7 +37,6 @@ describe('SurveyService', () => {
           useValue: jest.fn(),
         },
         { provide: GroupsService, useValue: mockGroupsService },
-        { provide: AttachmentService, useValue: mockAttachmentService },
         { provide: FilesystemService, useValue: mockFilesystemService },
       ],
     }).compile();

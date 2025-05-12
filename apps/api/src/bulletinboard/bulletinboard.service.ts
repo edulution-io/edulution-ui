@@ -33,6 +33,7 @@ import BulletinCategoryService from '../bulletin-category/bulletin-category.serv
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
 import FilesystemService from '../filesystem/filesystem.service';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 
 @Injectable()
 class BulletinBoardService implements OnModuleInit {
@@ -280,10 +281,7 @@ class BulletinBoardService implements OnModuleInit {
 
       await this.bulletinModel.deleteMany({ _id: { $in: ids } }).exec();
     } catch (error) {
-      throw new CustomHttpException(
-        BulletinBoardErrorMessage.ATTACHMENT_DELETION_FAILED,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

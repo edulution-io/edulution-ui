@@ -28,6 +28,9 @@ import SurveyElement from '@libs/survey/types/TSurveyElement';
 import SurveyPage from '@libs/survey/types/TSurveyPage';
 import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 import SURVEYS_IMAGES_DOMAIN from '@libs/survey/constants/surveysImagesDomain';
+import SURVEYS_IMAGES_TEMPORARY_DOMAIN from '@libs/survey/constants/surveysImagesTemporaryDomain';
+import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
+import SURVEYS_IMAGES_TEMPORARY_PATH from '@libs/survey/constants/surveysImagesTemporaryPath';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import SURVEYS_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplatePath';
@@ -38,7 +41,6 @@ import surveysMigrationsList from './migrations/surveysMigrationsList';
 import MigrationService from '../migration/migration.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import FilesystemService from '../filesystem/filesystem.service';
-import AttachmentService from '../common/file-attachment/attachment.service';
 
 @Injectable()
 class SurveysService implements OnModuleInit {
@@ -47,7 +49,6 @@ class SurveysService implements OnModuleInit {
     private fileSystemService: FilesystemService,
     private readonly groupsService: GroupsService,
     private readonly sseService: SseService,
-    private readonly attachmentService: AttachmentService,
   ) {}
 
   async onModuleInit() {
@@ -198,9 +199,31 @@ class SurveysService implements OnModuleInit {
     }
 
     if (tempFiles.includes(imagesFileName)) {
-      await this.attachmentService.moveTempFileIntoPermanentDirectory(username, pathWithIds, imagesFileName);
-      const url = this.attachmentService.getPersistentAttachmentUrl(pathWithIds, imagesFileName);
-      return `${baseUrl}${url}`;
+      const temporaryAttachmentPath = `${SURVEYS_IMAGES_TEMPORARY_PATH}/${username}/${imagesFileName}`;
+
+      const permanentDirectory = `${SURVEYS_IMAGES_PATH}/${pathWithIds}`;
+      try {
+        await this.fileSystemService.ensureDirectoryExists(permanentDirectory);
+      } catch (error) {
+        throw new CustomHttpException(
+          CommonErrorMessages.DIRECTORY_CREATION_FAILED,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          undefined,
+          SurveysService.name,
+        );
+      }
+      try {
+        const persistentAttachmentPath = `${permanentDirectory}/${imagesFileName}`;
+        await FilesystemService.moveFile(temporaryAttachmentPath, persistentAttachmentPath);
+      } catch (error) {
+        throw new CustomHttpException(
+          CommonErrorMessages.FILE_MOVING_FAILED,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          undefined,
+          SurveysService.name,
+        );
+      }
+      return `${baseUrl}${SURVEYS_IMAGES_DOMAIN}/${pathWithIds}/${imagesFileName}`;
     }
     return link;
   }
@@ -313,7 +336,9 @@ class SurveysService implements OnModuleInit {
   }
 
   async updateFormula(username: string, surveyId: string, formula: SurveyFormula): Promise<SurveyFormula> {
-    const fileNames = await this.attachmentService.getAllFilenamesInTemporaryDirectory(username);
+    const temporaryDirectoryPath = `${SURVEYS_IMAGES_TEMPORARY_PATH}/${username}`;
+    const fileNames = await this.fileSystemService.getAllFilenamesInDirectory(temporaryDirectoryPath);
+
     if (fileNames.length === 0) {
       return formula;
     }
@@ -341,8 +366,9 @@ class SurveysService implements OnModuleInit {
     }
     // eslint-disable-next-line no-underscore-dangle
     const surveyId = (survey._id as Types.ObjectId).toString();
+    const { preferred_username: username } = user;
 
-    const updatedFormula = await this.updateFormula(user.preferred_username, surveyId, survey.formula);
+    const updatedFormula = await this.updateFormula(username, surveyId, survey.formula);
 
     const updatedSurvey = { ...surveyDto, id: surveyId, formula: updatedFormula };
     const savedSurvey = await this.updateSurvey(updatedSurvey, user);
@@ -352,7 +378,12 @@ class SurveysService implements OnModuleInit {
     }
 
     try {
-      await this.attachmentService.deleteTemporaryDirectory(user.preferred_username);
+      const temporaryAttachmentPath = `${SURVEYS_IMAGES_TEMPORARY_PATH}/${username}`;
+      const exists = await FilesystemService.checkIfFileExist(temporaryAttachmentPath);
+      if (!exists) {
+        return savedSurvey;
+      }
+      await this.fileSystemService.deleteDirectory(temporaryAttachmentPath);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.NOT_MODIFIED, error);
     }
@@ -361,20 +392,26 @@ class SurveysService implements OnModuleInit {
   }
 
   getTemporaryImageUrl = (username: string, fileName: string): string =>
-    this.attachmentService.getTemporaryAttachmentUrl(username, fileName);
+    `${SURVEYS_IMAGES_TEMPORARY_DOMAIN}/${username}/${fileName}`;
 
   async serveTemporaryImage(userId: string, fileName: string, res: Response): Promise<Response> {
-    return this.attachmentService.serveTemporaryAttachment(userId, fileName, res);
+    const filePath = `${SURVEYS_IMAGES_TEMPORARY_PATH}/${userId}/${fileName}`;
+    const fileStream = await this.fileSystemService.createReadStream(filePath);
+    fileStream.pipe(res);
+    return res;
   }
 
   async servePermanentImage(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
-    const pathWithIds = `${surveyId}/${questionId}`;
-    return this.attachmentService.servePersistentAttachment(pathWithIds, fileName, res);
+    const filePath = `${SURVEYS_IMAGES_PATH}/${surveyId}/${questionId}/${fileName}`;
+    const fileStream = await this.fileSystemService.createReadStream(filePath);
+    fileStream.pipe(res);
+    return res;
   }
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async onSurveyRemoval(surveyIds: string[]): Promise<void> {
-    return this.attachmentService.deletePermanentDirectories(surveyIds);
+    const persistentAttachmentPath = surveyIds.map((surveyId) => join(SURVEYS_IMAGES_PATH, surveyId));
+    return await FilesystemService.deleteDirectories(persistentAttachmentPath);
   }
 }
 

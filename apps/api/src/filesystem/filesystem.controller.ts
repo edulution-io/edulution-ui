@@ -29,10 +29,6 @@ import FilesystemService from './filesystem.service';
 class FileSystemController {
   constructor(private readonly filesystemService: FilesystemService) {}
 
-  // @Get(':name/isTemp')
-  // getFiles(@Param('isTemp') isTemp: boolean | undefined)
-  // PROBLEM WITH THE USEGUARD BECAUSE NOT ONLY GLOBAL ADMIN CAN ADD FILES FOR SURVEYS
-
   @Post(':name')
   @UseGuards(AppConfigGuard)
   @ApiConsumes(RequestResponseContentType.MULTIPART_FORM_DATA)

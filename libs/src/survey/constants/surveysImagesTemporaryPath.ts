@@ -10,16 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum CommonErrorMessages {
-  DB_ACCESS_FAILED = 'common.errors.dbAccessFailed',
-  DIRECTORY_CREATION_FAILED = 'common.errors.directoryNotCreated',
-  FILE_UPLOAD_FAILED = 'common.errors.fileUploadFailed',
-  FILE_DELETION_FAILED = 'common.errors.fileDeletionFailed',
-  FILE_WRITING_FAILED = 'common.errors.fileWritingFailed',
-  FILE_MOVING_FAILED = 'common.errors.fileMovingFailed',
-  FILE_NOT_FOUND = 'common.errors.fileNotFound',
-  FILE_NOT_PROVIDED = 'common.errors.fileNotProvided',
-  INVALID_FILE_TYPE = 'common.errors.invalidFileType',
-}
+import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
+import TEMPORARY_ATTACHMENT_DIRECTORY_NAME from '@libs/common/constants/temporaryAttachmentDirectoryName';
 
-export default CommonErrorMessages;
+const SURVEYS_IMAGES_TEMPORARY_PATH = `${TEMPORARY_ATTACHMENT_DIRECTORY_NAME}/${SURVEYS_IMAGES_PATH}`;
+
+export default SURVEYS_IMAGES_TEMPORARY_PATH;
