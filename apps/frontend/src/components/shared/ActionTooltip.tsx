@@ -49,7 +49,7 @@ const ActionTooltip: React.FC<ActionTooltipProps> = ({
         </div>
       </TooltipTrigger>
       <TooltipContent
-        className={cn('rounded-lg bg-accent p-2', className)}
+        className={cn('rounded-lg bg-accent p-2 shadow-xl', className)}
         side={openOnSide}
         align="center"
       >
