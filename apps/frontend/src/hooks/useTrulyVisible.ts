@@ -13,8 +13,7 @@
 import { RefObject, useEffect, useState } from 'react';
 
 interface UseTrulyVisibleOptions {
-  ignoreRight?: boolean;
-  itemName?: string;
+  insetPixel?: number;
 }
 
 const useTrulyVisible = (
@@ -22,7 +21,7 @@ const useTrulyVisible = (
   deps: unknown[] = [],
   options: UseTrulyVisibleOptions = {},
 ): boolean => {
-  const { ignoreRight = false, itemName } = options;
+  const { insetPixel = 2 } = options;
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -33,49 +32,38 @@ const useTrulyVisible = (
     }
 
     const check = () => {
-      const rect = el.getBoundingClientRect();
+      const { left, top, right, bottom } = el.getBoundingClientRect();
 
-      const topInView = rect.top >= 0;
-      const leftInView = rect.left >= 0;
-      const bottomInView = rect.bottom <= window.innerHeight;
-      const rightInView = ignoreRight || rect.right <= window.innerWidth;
-
-      if (!topInView || !leftInView || !bottomInView || !rightInView)
-        console.log(
-          `({ topInView, leftInView, bottomInView, rightInView }) ${JSON.stringify(
-            {
-              itemName,
-              topInView,
-              leftInView,
-              bottomInView,
-              rightInView,
-            },
-            null,
-            2,
-          )}`,
-        );
-
-      const inViewport = topInView && leftInView && bottomInView && rightInView;
+      const inViewport =
+        Math.ceil(top) >= 0 &&
+        Math.ceil(left) >= 0 &&
+        Math.floor(bottom) <= window.innerHeight &&
+        Math.floor(right) <= window.innerWidth;
 
       if (!inViewport) {
         setIsVisible(false);
         return;
       }
 
-      const points = [
-        [rect.left + 1, rect.top + 1],
-        [rect.right - 1, rect.top + 1],
-        [rect.left + 1, rect.bottom - 1],
-        [rect.right - 1, rect.bottom - 1],
-        [(rect.left + rect.right) / 2, (rect.top + rect.bottom) / 2],
-      ] as [number, number][];
+      const x1f = left + insetPixel;
+      const y1f = top + insetPixel;
+      const x2f = right - insetPixel;
+      const y2f = bottom - insetPixel;
+      const cxf = (x1f + x2f) / 2;
+      const cyf = (y1f + y2f) / 2;
+
+      const points: [number, number][] = [
+        [Math.floor(x1f), Math.floor(y1f)],
+        [Math.ceil(x2f), Math.floor(y1f)],
+        [Math.floor(x1f), Math.ceil(y2f)],
+        [Math.ceil(x2f), Math.ceil(y2f)],
+        [Math.round(cxf), Math.round(cyf)],
+      ];
 
       const fullyUnoccluded = points.every(([x, y]) => {
         const topEl = document.elementFromPoint(x, y);
-        return el.contains(topEl);
+        return Boolean(topEl) && el.contains(topEl);
       });
-
-      if (!fullyUnoccluded) console.log(`fullyUnoccluded ${JSON.stringify(fullyUnoccluded, null, 2)}`);
 
       setIsVisible(fullyUnoccluded);
     };
@@ -89,7 +77,7 @@ const useTrulyVisible = (
       window.removeEventListener('scroll', check, true);
       window.removeEventListener('resize', check);
     };
-  }, [ref, ...deps]);
+  }, [ref, insetPixel, ...deps]);
 
   return isVisible;
 };
