@@ -25,7 +25,6 @@ import {
   USER_ROOM_LMN_API_ENDPOINT,
   USERS_LMN_API_ENDPOINT,
 } from '@libs/lmnApi/constants/lmnApiEndpoints';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import LmnApiErrorMessage from '@libs/lmnApi/types/lmnApiErrorMessage';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
@@ -43,6 +42,7 @@ import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 import CreateWorkingDirectoryDto from '@libs/classManagement/types/createWorkingDirectoryDto';
 import convertWindowsToUnixPath from '@libs/filesharing/utils/convertWindowsToUnixPath';
+import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
 import WebdavService from '../webdav/webdav.service';
 
