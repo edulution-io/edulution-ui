@@ -24,7 +24,7 @@ import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownl
 const FullScreenFileViewer = () => {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
-  const { fetchDownloadLinks, downloadLinkURL, isEditorLoading, isDownloadFileLoading, isGetDownloadLinkUrlLoading } =
+  const { fetchDownloadLink, downloadLinkURL, isEditorLoading, isDownloadFileLoading, isFetchDownloadLinkLoading } =
     useFileSharingDownloadStore();
 
   const { filesToOpenInNewTab, currentlyEditingFile, setCurrentlyEditingFile } = useFileEditorStore();
@@ -34,7 +34,7 @@ const FullScreenFileViewer = () => {
   const initializeFile = async () => {
     const fileToOpen = filesToOpenInNewTab.find((f) => f.etag === fileETag);
     if (fileToOpen) {
-      await fetchDownloadLinks(fileToOpen);
+      await fetchDownloadLink(fileToOpen);
       setCurrentlyEditingFile(fileToOpen);
       setIsLoading(false);
     }
@@ -46,7 +46,7 @@ const FullScreenFileViewer = () => {
 
   useBeforeUnload(t('closeEditingWindow'));
 
-  if (isLoading || isEditorLoading || isDownloadFileLoading || isGetDownloadLinkUrlLoading)
+  if (isLoading || isEditorLoading || isDownloadFileLoading || isFetchDownloadLinkLoading)
     return <LoadingIndicatorDialog isOpen />;
 
   if (!downloadLinkURL) return null;

@@ -25,12 +25,12 @@ type FileSharingDownloadStore = {
   isDownloadFileLoading: boolean;
   downloadLinkURL: string;
   publicDownloadLink: string | null;
-  isGetDownloadLinkUrlLoading: boolean;
+  isFetchDownloadLinkLoading: boolean;
   isEditorLoading: boolean;
   error: Error | null;
   downloadFile: (filePath: string, signal?: AbortSignal) => Promise<string | undefined>;
   getDownloadLinkURL: (filePath: string, filename: string, signal?: AbortSignal) => Promise<string | undefined>;
-  fetchDownloadLinks: (file: DirectoryFileDTO | null, signal?: AbortSignal) => Promise<void>;
+  fetchDownloadLink: (file: DirectoryFileDTO | null, signal?: AbortSignal) => Promise<void>;
   setPublicDownloadLink: (publicDownloadLink: string) => void;
   reset: () => void;
 };
@@ -40,7 +40,7 @@ const initialState = {
   isEditorLoading: false,
   downloadLinkURL: '',
   isDownloadFileLoading: false,
-  isGetDownloadLinkUrlLoading: false,
+  isFetchDownloadLinkLoading: false,
   error: null,
 };
 
@@ -51,7 +51,7 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
 
   setPublicDownloadLink: (publicDownloadLink) => set({ publicDownloadLink }),
 
-  fetchDownloadLinks: async (file, signal) => {
+  fetchDownloadLink: async (file, signal) => {
     try {
       set({ isEditorLoading: true, error: null, downloadLinkURL: undefined, publicDownloadLink: null });
 
@@ -98,7 +98,7 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
 
   getDownloadLinkURL: async (filePath, filename, signal) => {
     try {
-      set({ isGetDownloadLinkUrlLoading: true });
+      set({ isFetchDownloadLinkLoading: true });
       const response = await eduApi.get<WebdavStatusResponse>(
         `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_LOCATION}`,
         {
@@ -118,7 +118,7 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
       handleApiError(error, set);
       return '';
     } finally {
-      set({ isGetDownloadLinkUrlLoading: false });
+      set({ isFetchDownloadLinkLoading: false });
     }
   },
 }));

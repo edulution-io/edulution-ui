@@ -46,7 +46,7 @@ const FileSharingPreviewFrame = () => {
     isFilePreviewDocked,
     setIsFilePreviewDocked,
   } = useFileEditorStore();
-  const { fetchDownloadLinks } = useFileSharingDownloadStore();
+  const { fetchDownloadLink } = useFileSharingDownloadStore();
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
   const { setCurrentWindowedFrameSize } = useFrameStore();
   const windowSize = useWindowResize();
@@ -94,7 +94,7 @@ const FileSharingPreviewFrame = () => {
     abortControllerRef.current = controller;
 
     if (currentlyEditingFile) {
-      void fetchDownloadLinks(currentlyEditingFile, controller.signal);
+      void fetchDownloadLink(currentlyEditingFile, controller.signal);
     }
 
     return () => controller.abort();

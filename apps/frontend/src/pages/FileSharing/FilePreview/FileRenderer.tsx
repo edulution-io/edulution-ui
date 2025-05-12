@@ -38,7 +38,7 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
     publicDownloadLink,
     isEditorLoading,
     isDownloadFileLoading,
-    isGetDownloadLinkUrlLoading,
+    isFetchDownloadLinkLoading,
     error,
   } = useFileSharingDownloadStore();
 
@@ -46,10 +46,10 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
 
   useEffect(() => {
-    if (currentlyEditingFile && !isEditorLoading && !isDownloadFileLoading && !isGetDownloadLinkUrlLoading) {
+    if (currentlyEditingFile && !isEditorLoading && !isDownloadFileLoading && !isFetchDownloadLinkLoading) {
       void setFileIsCurrentlyDisabled(currentlyEditingFile.basename, false);
     }
-  }, [isEditorLoading, isDownloadFileLoading, isGetDownloadLinkUrlLoading, currentlyEditingFile?.basename]);
+  }, [isEditorLoading, isDownloadFileLoading, isFetchDownloadLinkLoading, currentlyEditingFile?.basename]);
 
   useEffect(
     () => () => {
