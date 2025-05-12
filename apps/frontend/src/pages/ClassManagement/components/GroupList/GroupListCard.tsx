@@ -15,8 +15,6 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/shared/Card';
 import cn from '@libs/common/utils/className';
 import Checkbox from '@/components/ui/Checkbox';
-import { TooltipProvider } from '@/components/ui/Tooltip';
-import ActionTooltip from '@/components/shared/ActionTooltip';
 import { MdLock } from 'react-icons/md';
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import getUserRegex from '@libs/lmnApi/constants/userRegex';
@@ -152,16 +150,9 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
                 ) : (
                   titleIcon
                 )}
-                <TooltipProvider>
-                  <ActionTooltip
-                    tooltipText={displayName || commonName}
-                    trigger={
-                      <div className="ml-2 overflow-hidden whitespace-nowrap text-nowrap text-lg font-bold">
-                        {displayName || removeSchoolPrefix(commonName, user.school)}
-                      </div>
-                    }
-                  />
-                </TooltipProvider>
+                <div className="ml-2 overflow-hidden whitespace-nowrap text-nowrap text-lg font-bold">
+                  {displayName || removeSchoolPrefix(commonName, user.school)}
+                </div>
               </div>
               <div className="ml-3 flex h-10 flex-row items-center">
                 {cardContentIcon}

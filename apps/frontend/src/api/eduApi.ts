@@ -15,6 +15,7 @@ import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 
 const eduApi = axios.create({
   baseURL: `${EDU_API_URL}/`,
+  paramsSerializer: { indexes: null },
 });
 
 export default eduApi;

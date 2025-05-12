@@ -10,15 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IsArray, IsString } from 'class-validator';
+const FILE_ENDPOINTS = {
+  FILE: 'file',
+} as const;
 
-class DuplicateFileRequestDto {
-  @IsString()
-  originFilePath: string;
-
-  @IsArray()
-  @IsString({ each: true })
-  destinationFilePaths: string[];
-}
-
-export default DuplicateFileRequestDto;
+export default FILE_ENDPOINTS;
