@@ -23,6 +23,7 @@ const mockFilesystemService = {
   writeFile: jest.fn(),
   deleteDirectories: jest.fn(),
   createReadStream: jest.fn(),
+  getAllFilenamesInDirectory: jest.fn().mockResolvedValue([]),
 };
 
 export default mockFilesystemService;
