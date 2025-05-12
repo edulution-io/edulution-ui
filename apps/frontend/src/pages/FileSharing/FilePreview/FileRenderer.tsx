@@ -34,11 +34,11 @@ interface FileRendererProps {
 const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closingRef }) => {
   const { isMobileView } = useMedia();
   const {
-    downloadLinkURL: fileUrl,
+    temporaryDownloadUrl: fileUrl,
     publicDownloadLink,
     isEditorLoading,
-    isDownloadFileLoading,
-    isFetchDownloadLinkLoading,
+    isCreatingBlobUrl,
+    isFetchingPublicUrl,
     error,
   } = useFileSharingDownloadStore();
 
@@ -46,10 +46,10 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
 
   useEffect(() => {
-    if (currentlyEditingFile && !isEditorLoading && !isDownloadFileLoading && !isFetchDownloadLinkLoading) {
+    if (currentlyEditingFile && !isEditorLoading && !isCreatingBlobUrl && !isFetchingPublicUrl) {
       void setFileIsCurrentlyDisabled(currentlyEditingFile.basename, false);
     }
-  }, [isEditorLoading, isDownloadFileLoading, isFetchDownloadLinkLoading, currentlyEditingFile?.basename]);
+  }, [isEditorLoading, isCreatingBlobUrl, isFetchingPublicUrl, currentlyEditingFile?.basename]);
 
   useEffect(
     () => () => {

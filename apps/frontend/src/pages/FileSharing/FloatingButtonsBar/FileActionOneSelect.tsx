@@ -26,10 +26,10 @@ import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonCo
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 
 const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItem }) => {
-  const { downloadFile } = useFileSharingDownloadStore();
+  const { createDownloadBlobUrl } = useFileSharingDownloadStore();
 
   const startDownload = async (filePath: string, filename: string) => {
-    const downloadLinkURL = await downloadFile(filePath);
+    const downloadLinkURL = await createDownloadBlobUrl(filePath);
     if (!downloadLinkURL) return;
     const link = document.createElement('a');
     link.href = downloadLinkURL;

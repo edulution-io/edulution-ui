@@ -22,25 +22,25 @@ import { ResponseType } from '@libs/common/types/http-methods';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
 
 type FileSharingDownloadStore = {
-  isDownloadFileLoading: boolean;
-  downloadLinkURL: string;
+  isCreatingBlobUrl: boolean;
+  isFetchingPublicUrl: boolean;
+  temporaryDownloadUrl: string;
   publicDownloadLink: string | null;
-  isFetchDownloadLinkLoading: boolean;
   isEditorLoading: boolean;
   error: Error | null;
-  downloadFile: (filePath: string, signal?: AbortSignal) => Promise<string | undefined>;
-  getDownloadLinkURL: (filePath: string, filename: string, signal?: AbortSignal) => Promise<string | undefined>;
-  fetchDownloadLink: (file: DirectoryFileDTO | null, signal?: AbortSignal) => Promise<void>;
+  createDownloadBlobUrl: (filePath: string, signal?: AbortSignal) => Promise<string | undefined>;
+  getPublicDownloadUrl: (filePath: string, filename: string, signal?: AbortSignal) => Promise<string | undefined>;
+  loadDownloadUrl: (file: DirectoryFileDTO | null, signal?: AbortSignal) => Promise<void>;
   setPublicDownloadLink: (publicDownloadLink: string) => void;
   reset: () => void;
 };
 
 const initialState = {
+  temporaryDownloadUrl: '',
   publicDownloadLink: null,
+  isCreatingBlobUrl: false,
+  isFetchingPublicUrl: false,
   isEditorLoading: false,
-  downloadLinkURL: '',
-  isDownloadFileLoading: false,
-  isFetchDownloadLinkLoading: false,
   error: null,
 };
 
@@ -48,37 +48,34 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
   ...initialState,
 
   reset: () => set(initialState),
-
   setPublicDownloadLink: (publicDownloadLink) => set({ publicDownloadLink }),
 
-  fetchDownloadLink: async (file, signal) => {
+  loadDownloadUrl: async (file, signal) => {
     try {
-      set({ isEditorLoading: true, error: null, downloadLinkURL: undefined, publicDownloadLink: null });
+      set({ isCreatingBlobUrl: true, error: null, temporaryDownloadUrl: '', publicDownloadLink: null });
 
-      if (!file) {
-        return;
-      }
+      if (!file) return;
 
-      const downloadLink = await get().downloadFile(file.filename, signal);
-      set({ downloadLinkURL: downloadLink });
+      const blobUrl = await get().createDownloadBlobUrl(file.filename, signal);
+      set({ temporaryDownloadUrl: blobUrl });
 
       if (isOnlyOfficeDocument(file.filename)) {
-        const publicLink = await get().getDownloadLinkURL(file.filename, file.basename, signal);
-        if (publicLink) {
-          set({ publicDownloadLink: `${getFrontEndUrl()}/${EDU_API_ROOT}/downloads/${publicLink}` });
+        const publicUrl = await get().getPublicDownloadUrl(file.filename, file.basename, signal);
+        if (publicUrl) {
+          set({ publicDownloadLink: `${getFrontEndUrl()}/${EDU_API_ROOT}/downloads/${publicUrl}` });
         }
       }
     } catch (error) {
       handleApiError(error, set);
     } finally {
-      set({ isEditorLoading: false });
+      set({ isCreatingBlobUrl: false });
     }
   },
 
-  downloadFile: async (filePath, signal) => {
+  createDownloadBlobUrl: async (filePath, signal) => {
     try {
-      set({ isDownloadFileLoading: true });
-      const fileStreamResponse = await eduApi.get<Blob>(
+      set({ isCreatingBlobUrl: true });
+      const response = await eduApi.get<Blob>(
         `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_STREAM}`,
         {
           params: { filePath },
@@ -86,39 +83,32 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
           signal,
         },
       );
-
-      return window.URL.createObjectURL(fileStreamResponse.data);
+      return window.URL.createObjectURL(response.data);
     } catch (error) {
       handleApiError(error, set);
       return '';
     } finally {
-      set({ isDownloadFileLoading: false });
+      set({ isCreatingBlobUrl: false });
     }
   },
 
-  getDownloadLinkURL: async (filePath, filename, signal) => {
+  getPublicDownloadUrl: async (filePath, filename, signal) => {
     try {
-      set({ isFetchDownloadLinkLoading: true });
+      set({ isFetchingPublicUrl: true });
       const response = await eduApi.get<WebdavStatusResponse>(
         `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_LOCATION}`,
         {
-          params: {
-            filePath,
-            fileName: filename,
-          },
+          params: { filePath, fileName: filename },
           signal,
         },
       );
       const { data, success } = response.data;
-      if (success && data) {
-        return data;
-      }
-      return '';
+      return success && data ? data : '';
     } catch (error) {
       handleApiError(error, set);
       return '';
     } finally {
-      set({ isFetchDownloadLinkLoading: false });
+      set({ isFetchingPublicUrl: false });
     }
   },
 }));
