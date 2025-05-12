@@ -551,7 +551,8 @@
       "templateMenu": {
         "fetch": "Choose one of the following templates.",
         "submit": "Save Survey as template.",
-        "title": "Templates store/load"
+        "title": "Templates store/load",
+        "emptyMessage": "There are no templates available, yet"
       },
       "questionSettings": {
         "settings": "Settings",

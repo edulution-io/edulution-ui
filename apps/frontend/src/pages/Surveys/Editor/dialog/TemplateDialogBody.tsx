@@ -11,11 +11,13 @@
  */
 
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import TemplateList from '@/pages/Surveys/Editor/dialog/TemplateList';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 interface TemplateDialogBodyProps {
   form: UseFormReturn<SurveyDto>;
@@ -24,11 +26,29 @@ interface TemplateDialogBodyProps {
 
 const TemplateDialogBody = (props: TemplateDialogBodyProps) => {
   const { form, surveyCreator } = props;
-  const { templates, fetchTemplates } = useTemplateMenuStore();
+  const { templates, fetchTemplates, isLoading } = useTemplateMenuStore();
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     void fetchTemplates();
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center ">
+        <CircleLoader />
+      </div>
+    );
+  }
+
+  if (templates.length === 0) {
+    return (
+      <div className="relative top-1/3">
+        <p className="flex justify-center">{t('survey.editor.templateMenu.emptyMessage')}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-2">
