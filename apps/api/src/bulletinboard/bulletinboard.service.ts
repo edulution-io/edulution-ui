@@ -26,6 +26,7 @@ import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCatego
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 
 import { BulletinCategory, BulletinCategoryDocument } from '../bulletin-category/bulletin-category.schema';
@@ -33,7 +34,6 @@ import BulletinCategoryService from '../bulletin-category/bulletin-category.serv
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
 import FilesystemService from '../filesystem/filesystem.service';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 
 @Injectable()
 class BulletinBoardService implements OnModuleInit {

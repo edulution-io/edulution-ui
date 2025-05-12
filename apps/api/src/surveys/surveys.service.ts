@@ -411,7 +411,7 @@ class SurveysService implements OnModuleInit {
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async onSurveyRemoval(surveyIds: string[]): Promise<void> {
     const persistentAttachmentPath = surveyIds.map((surveyId) => join(SURVEYS_IMAGES_PATH, surveyId));
-    return await FilesystemService.deleteDirectories(persistentAttachmentPath);
+    return FilesystemService.deleteDirectories(persistentAttachmentPath);
   }
 }
 
