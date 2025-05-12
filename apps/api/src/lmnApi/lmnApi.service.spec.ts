@@ -12,7 +12,6 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { AxiosInstance } from 'axios';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import PrintPasswordsFormat from '@libs/classManagement/types/printPasswordsFormat';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import {
@@ -24,6 +23,7 @@ import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import GroupForm from '@libs/groups/types/groupForm';
 import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
+import CustomHttpException from '../common/CustomHttpException';
 import LmnApiService from './lmnApi.service';
 import UsersService from '../users/users.service';
 import WebDavService from '../webdav/webdav.service';
