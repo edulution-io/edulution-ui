@@ -11,17 +11,15 @@
  */
 
 import { CompleteEvent } from 'survey-core';
+import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 
-interface SubmitAnswerDto {
-  surveyId: string;
+interface SubmitAnswerDto extends Omit<PushAnswerDto, 'attendee'> {
+  isPublic: boolean;
 
-  saveNo: number;
-
-  answer: JSON;
+  attendee?: AttendeeDto;
 
   surveyEditorCallbackOnSave?: CompleteEvent | undefined;
-
-  isPublic: boolean;
 }
 
 export default SubmitAnswerDto;

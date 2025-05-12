@@ -13,39 +13,41 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdFileCopy } from 'react-icons/md';
-import { Sizes } from '@libs/ui/types/sizes';
 import copyToClipboard from '@/utils/copyToClipboard';
 import Input from '@/components/shared/Input';
-import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 
-interface QRCodeWithCopyButtonProps {
-  url: string;
-  titleTranslationId: string;
-  qrCodeSize?: Sizes;
+interface PublicSurveyParticipationIdProps {
+  publicUserId: string;
 }
 
-const QRCodeWithCopyButton = ({ url, qrCodeSize, titleTranslationId }: QRCodeWithCopyButtonProps) => {
+const PublicSurveyParticipationId = ({ publicUserId }: PublicSurveyParticipationIdProps) => {
   const { t } = useTranslation();
 
+  if (!publicUserId) {
+    return null;
+  }
+
   return (
-    <>
-      <p className="font-bold">{t(titleTranslationId)}</p>
-      <div className="mt-4 flex flex-col items-center justify-center space-y-8">
-        <QRCodeDisplay
-          value={url}
-          size={qrCodeSize}
-        />
-        <Input
-          type="text"
-          value={url}
-          readOnly
-          className="w-fit min-w-[550px] cursor-pointer"
-          onClick={() => copyToClipboard(url)}
-          icon={<MdFileCopy />}
-        />
+    <div className="relative top-1/3 mx-auto my-10 w-[90%] max-w-[500px] rounded-xl bg-white bg-opacity-5 p-5 md:w-[60%]">
+      <h4 className="my-4 mt-0 ">{t('survey.participate.idHeader')}</h4>
+
+      <div className="mx-4">
+        <p>{t('survey.participate.idText')}</p>
+        <div className="mx-8 my-4 flex flex-row items-center justify-center">
+          <Input
+            type="text"
+            value={publicUserId}
+            readOnly
+            className="w-[400px] cursor-pointer"
+            onClick={() => copyToClipboard(publicUserId)}
+            icon={<MdFileCopy />}
+          />
+        </div>
       </div>
-    </>
+
+      <p>{t('survey.participate.idFooter')}</p>
+    </div>
   );
 };
 
-export default QRCodeWithCopyButton;
+export default PublicSurveyParticipationId;

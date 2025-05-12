@@ -137,7 +137,7 @@ class SurveysController {
   @Post(ANSWER)
   async getSubmittedSurveyAnswers(@Body() getAnswerDto: AnswerDto, @GetCurrentUsername() username: string) {
     const { surveyId, attendee } = getAnswerDto;
-    return this.surveyAnswerService.getPrivateAnswer(surveyId, attendee || username);
+    return this.surveyAnswerService.getAnswer(surveyId, attendee || username);
   }
 
   @Post()
@@ -154,9 +154,14 @@ class SurveysController {
   }
 
   @Patch()
-  async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUser() user: JWTUser) {
+  async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUser() currentUser: JWTUser) {
     const { surveyId, saveNo, answer } = pushAnswerDto;
-    return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, user);
+    const attendee = {
+      username: currentUser.preferred_username,
+      firstName: currentUser.given_name,
+      lastName: currentUser.family_name,
+    };
+    return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, attendee);
   }
 }
 

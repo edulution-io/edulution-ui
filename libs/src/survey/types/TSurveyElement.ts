@@ -16,14 +16,14 @@ interface SurveyElement {
   title?: string;
   description?: string;
   choicesOrder?: string;
-  choices: string[] | null;
-  choicesByUrl: {
+  choices?: string[] | null;
+  choicesByUrl?: {
     url: string;
     valueName?: string;
     titleName?: string;
   } | null;
   hideIfChoicesEmpty?: boolean;
-  showOtherItem: boolean | null;
+  showOtherItem?: boolean | null;
   showNoneItem?: boolean;
 }
 

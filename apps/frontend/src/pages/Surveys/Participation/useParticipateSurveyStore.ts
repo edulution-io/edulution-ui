@@ -10,70 +10,166 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { create } from 'zustand';
-import { toast } from 'sonner';
+import { validate } from 'uuid';
 import { t } from 'i18next';
+import { toast } from 'sonner';
+import { create } from 'zustand';
 import { Model, CompletingEvent } from 'survey-core';
-import { SURVEYS, PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
+import SurveyAnswerDto from '@libs/survey/types/api/survey-answer.dto';
 import SubmitAnswerDto from '@libs/survey/types/api/submit-answer.dto';
+import {
+  SURVEYS,
+  PUBLIC_SURVEYS,
+  SURVEY_ANSWER_ENDPOINT,
+  CHECK_EXISTING_PUBLIC_USER,
+} from '@libs/survey/constants/surveys-endpoint';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
 
 interface ParticipateSurveyStore {
-  answer: JSON;
-  setAnswer: (answer: JSON) => void;
-  pageNo: number;
-  setPageNo: (pageNo: number) => void;
-  answerSurvey: (answerDto: SubmitAnswerDto, sender: Model, options: CompletingEvent) => Promise<boolean>;
+  attendee: Partial<AttendeeDto> | undefined;
+  setAttendee: (attendee: Partial<AttendeeDto> | undefined) => void;
+
+  answerSurvey: (
+    answerDto: SubmitAnswerDto,
+    sender: Model,
+    options: CompletingEvent,
+  ) => Promise<SurveyAnswerDto | undefined>;
   isSubmitting: boolean;
+
+  checkForMatchingUserNameAndPubliUserId: (surveyId: string, attendee: Partial<AttendeeDto>) => Promise<boolean>;
+  setIsUserAuthenticated: (isUserAuthenticated: boolean) => void;
+  isUserAuthenticated: boolean;
+
+  fetchAnswer: (surveyId: string) => Promise<void>;
+  previousAnswer: SurveyAnswerDto | undefined;
+  isFetching: boolean;
+
+  publicUserId?: string;
+
   reset: () => void;
 }
 
 const ParticipateSurveyStoreInitialState: Partial<ParticipateSurveyStore> = {
-  pageNo: 0,
-  answer: {} as JSON,
+  attendee: undefined,
+
   isSubmitting: false,
+
+  isUserAuthenticated: false,
+
+  previousAnswer: undefined,
+  isFetching: false,
+
+  publicUserId: undefined,
 };
 
 const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => ({
   ...(ParticipateSurveyStoreInitialState as ParticipateSurveyStore),
   reset: () => set(ParticipateSurveyStoreInitialState),
 
-  setAnswer: (answer: JSON) => set({ answer }),
-  setPageNo: (pageNo: number) => set({ pageNo }),
+  setAttendee: (attendee: Partial<AttendeeDto> | undefined) => set({ attendee }),
 
-  answerSurvey: async (answerDto: SubmitAnswerDto, sender: Model, options: CompletingEvent): Promise<boolean> => {
+  answerSurvey: async (
+    answerDto: SubmitAnswerDto,
+    surveyModel: Model,
+    completingEvent: CompletingEvent,
+  ): Promise<SurveyAnswerDto | undefined> => {
     const { surveyId, saveNo, answer, isPublic = false } = answerDto;
-    const { isSubmitting } = get();
+    const { isSubmitting, attendee } = get();
     if (isSubmitting) {
-      return false;
+      return undefined;
     }
     set({ isSubmitting: true });
 
     // eslint-disable-next-line no-param-reassign
-    options.allow = false;
+    completingEvent.allow = false;
 
     try {
-      if (isPublic) {
-        await eduApi.post(PUBLIC_SURVEYS, { surveyId, saveNo, answer });
-      } else {
-        await eduApi.patch(SURVEYS, { surveyId, saveNo, answer });
-      }
+      const response = isPublic
+        ? await eduApi.post<SurveyAnswerDto>(PUBLIC_SURVEYS, {
+            surveyId,
+            saveNo,
+            answer,
+            attendee,
+          })
+        : await eduApi.patch<SurveyAnswerDto>(SURVEYS, {
+            surveyId,
+            saveNo,
+            answer,
+            attendee,
+          });
 
       // eslint-disable-next-line no-param-reassign
-      options.allow = true;
-      sender.doComplete();
+      completingEvent.allow = true;
+      surveyModel.doComplete();
 
-      return true;
+      const surveyAnswer: SurveyAnswerDto = response.data;
+      const { firstName, lastName } = surveyAnswer.attendee;
+      const isAuthenticatedPublicUser = firstName && lastName && validate(lastName);
+      if (isAuthenticatedPublicUser) {
+        set({ publicUserId: lastName, previousAnswer: surveyAnswer });
+      } else {
+        set({ publicUserId: undefined, previousAnswer: undefined });
+      }
+      return surveyAnswer;
     } catch (error) {
+      set({ publicUserId: undefined, previousAnswer: undefined });
       handleApiError(error, set);
       toast.error(t('survey.errors.submitAnswerError'));
-
-      return false;
+      return undefined;
     } finally {
       set({ isSubmitting: false });
     }
   },
+
+  fetchAnswer: async (surveyId: string): Promise<void> => {
+    const { attendee } = get();
+    if (!attendee) {
+      return;
+    }
+    const { username } = attendee;
+    if (!username || validate(username)) {
+      return;
+    }
+    set({ isFetching: true });
+    try {
+      const response = await eduApi.post<SurveyAnswerDto>(SURVEY_ANSWER_ENDPOINT, { surveyId, attendee });
+      const surveyAnswer: SurveyAnswerDto = response.data;
+      set({ previousAnswer: surveyAnswer });
+    } catch (error) {
+      set({ previousAnswer: undefined });
+    } finally {
+      set({ isFetching: false });
+    }
+  },
+
+  checkForMatchingUserNameAndPubliUserId: async (
+    surveyId: string,
+    attendee: Partial<AttendeeDto>,
+  ): Promise<boolean> => {
+    set({ isFetching: true });
+    try {
+      const response = await eduApi.post<SurveyAnswerDto>(`${PUBLIC_SURVEYS}/${CHECK_EXISTING_PUBLIC_USER}`, {
+        surveyId,
+        attendee,
+      });
+      if (!response.data) {
+        set({ attendee: undefined, previousAnswer: undefined });
+        return false;
+      }
+      const surveyAnswer: SurveyAnswerDto = response.data;
+      set({ attendee: surveyAnswer.attendee, previousAnswer: surveyAnswer });
+      return true;
+    } catch (error) {
+      set({ attendee: undefined, previousAnswer: undefined });
+      return false;
+    } finally {
+      set({ isFetching: false });
+    }
+  },
+
+  setIsUserAuthenticated: (isUserAuthenticated: boolean) => set({ isUserAuthenticated }),
 }));
 
 export default useParticipateSurveyStore;

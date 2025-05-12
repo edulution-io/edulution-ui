@@ -15,10 +15,12 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import getSurveyFormulaWithIdentificationQuestion from '@libs/survey/utils/getSurveyFormulaWithIdentificationQuestion';
 import ResultTable from '@/pages/Surveys/Tables/components/ResultTable';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import './resultTableDialog.css';
+import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 
 const ResultTableDialogBody = () => {
   const { selectedSurvey } = useSurveyTablesPageStore();
@@ -45,10 +47,17 @@ const ResultTableDialogBody = () => {
     return null;
   }
 
+  let formula: TSurveyFormula;
+  if (!selectedSurvey?.isAnonymous) {
+    formula = getSurveyFormulaWithIdentificationQuestion(selectedSurvey.formula);
+  } else {
+    formula = selectedSurvey.formula;
+  }
+
   return (
     <ScrollArea className="survey-result-table overflow-x-auto overflow-y-auto">
       <ResultTable
-        formula={selectedSurvey.formula}
+        formula={formula}
         result={result}
       />
     </ScrollArea>

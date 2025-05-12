@@ -11,30 +11,19 @@
  */
 
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
-import AttendeeDto from '@libs/user/types/attendee.dto';
-import ChoiceDto from '@libs/survey/types/api/choice.dto';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
-interface SurveyDto {
-  _id?: string;
-  id?: string;
-  formula: TSurveyFormula;
-  backendLimiters?: {
-    questionName: string;
-    choices: ChoiceDto[];
-  }[];
-  saveNo: number;
-  creator: AttendeeDto;
-  invitedAttendees: AttendeeDto[];
-  invitedGroups: MultipleSelectorGroup[];
-  participatedAttendees: AttendeeDto[];
-  answers: string[];
-  createdAt?: Date;
-  expires: Date | null;
-  isAnonymous?: boolean;
-  isPublic?: boolean;
-  canSubmitMultipleAnswers?: boolean;
-  canUpdateFormerAnswer?: boolean;
-}
+const getSurveyFormulaWithIdentificationQuestion = (formula: TSurveyFormula) => {
+  const identification = { type: 'text', name: 'identification' };
+  const updatedFormula = JSON.parse(JSON.stringify(formula)) as TSurveyFormula;
+  const { pages, elements } = updatedFormula;
+  if (updatedFormula.pages && pages && pages.length > 0) {
+    const existingElements = pages[0].elements || [];
+    updatedFormula.pages[0].elements = [identification, ...existingElements];
+  } else {
+    const existingElements = elements || [];
+    updatedFormula.elements = [identification, ...existingElements];
+  }
+  return updatedFormula;
+};
 
-export default SurveyDto;
+export default getSurveyFormulaWithIdentificationQuestion;

@@ -10,10 +10,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/shared/Button';
 
-interface SurveyAnswerDto extends PushAnswerDto {
-  id: string;
-}
+const PublicJoinButton = () => {
+  const { t } = useTranslation();
 
-export default SurveyAnswerDto;
+  return (
+    <div className="mb-2 mt-4 flex justify-end">
+      <Button
+        variant="btn-collaboration"
+        size="lg"
+        type="submit"
+      >
+        {t('common.join')}
+      </Button>
+    </div>
+  );
+};
+
+export default PublicJoinButton;
