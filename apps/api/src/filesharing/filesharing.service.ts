@@ -14,7 +14,6 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { Readable } from 'stream';
 import { Request, Response } from 'express';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
@@ -22,6 +21,7 @@ import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOpe
 import JOB_NAMES from '@libs/queue/constants/jobNames';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
+import CustomHttpException from '../common/CustomHttpException';
 import WebdavService from '../webdav/webdav.service';
 import OnlyofficeService from './onlyoffice.service';
 import FilesystemService from '../filesystem/filesystem.service';

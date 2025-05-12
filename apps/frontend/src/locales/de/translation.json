@@ -555,7 +555,8 @@
       "templateMenu": {
         "fetch": "Wähle eine der verfügbaren Vorlagen.",
         "submit": "Die Umfrage als Vorlage speichern.",
-        "title": "Vorlagen speichern/laden"
+        "title": "Vorlagen speichern/laden",
+        "emptyMessage": "Es sind noch keine Vorlagen vorhanden"
       },
       "questionSettings": {
         "settings": "Einstellungen",

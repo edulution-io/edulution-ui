@@ -65,6 +65,8 @@ const GroupCard = ({ icon, type, group }: GroupCardProps) => {
           <TooltipProvider>
             <ActionTooltip
               tooltipText={title}
+              openOnSide="bottom"
+              className="bg-muted"
               trigger={
                 <p className="overflow-hidden text-ellipsis text-nowrap text-lg font-bold">
                   {removeSchoolPrefix(title, user?.school)}

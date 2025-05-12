@@ -17,11 +17,11 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 import axios from 'axios';
 import { readFileSync } from 'fs';
 import { JwtService } from '@nestjs/jwt';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import { Group } from '@libs/groups/types/group';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
+import CustomHttpException from '../common/CustomHttpException';
 import GroupsService from './groups.service';
 
 jest.useFakeTimers();

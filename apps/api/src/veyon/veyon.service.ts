@@ -24,7 +24,6 @@ import type SuccessfullVeyonAuthResponse from '@libs/veyon/types/connectionUidRe
 import type VeyonFeaturesResponse from '@libs/veyon/types/veyonFeaturesResponse';
 import VEYON_AUTH_METHODS from '@libs/veyon/constants/veyonAuthMethods';
 import APPS from '@libs/appconfig/constants/apps';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import VeyonErrorMessages from '@libs/veyon/constants/veyonErrorMessages';
 import delay from '@libs/common/utils/delay';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
@@ -32,6 +31,7 @@ import VEYON_API_AUTH_RESPONSE_KEYS from '@libs/veyon/constants/veyonApiAuthResp
 import { VEYON_API_FEATURE_ENDPOINT, VEYON_API_FRAMEBUFFER_ENDPOINT } from '@libs/veyon/constants/veyonApiEndpoints';
 import { HTTP_HEADERS, ResponseType } from '@libs/common/types/http-methods';
 import type UserConnectionsFeatureStates from '@libs/veyon/types/userConnectionsFeatureState';
+import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
 import AppConfigService from '../appconfig/appconfig.service';
 
