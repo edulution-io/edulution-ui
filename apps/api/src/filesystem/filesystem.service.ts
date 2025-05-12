@@ -39,9 +39,9 @@ const pipelineAsync = promisify(pipeline);
 
 @Injectable()
 class FilesystemService {
-  constructor(private readonly userService: UsersService) {}
-
   private readonly baseurl = process.env.EDUI_WEBDAV_URL as string;
+
+  constructor(private readonly userService: UsersService) {}
 
   static async fetchFileStream(
     url: string,
@@ -52,7 +52,7 @@ class FilesystemService {
     try {
       const response = await firstValueFrom(from(client.get<Readable>(url, { responseType: ResponseType.STREAM })));
 
-      const contentLengthHeader = response.headers?.['content-length'] as string | undefined;
+      const contentLengthHeader = response.headers?.[HTTP_HEADERS.ContentLength] as string | undefined;
 
       const contentLength = contentLengthHeader && /^\d+$/.test(contentLengthHeader) ? Number(contentLengthHeader) : 0;
 
@@ -70,17 +70,6 @@ class FilesystemService {
       return isStreamFetching ? response : readStream;
     } catch (error) {
       throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, url);
-    }
-  }
-
-  async ensureDirectoryExists(directory: string): Promise<void> {
-    const exists = await FilesystemService.checkIfFileExist(directory);
-    if (!exists) {
-      try {
-        await fsPromises.mkdir(directory, { recursive: true });
-      } catch (error) {
-        throw new CustomHttpException(CommonErrorMessages.DIRECTORY_CREATION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
     }
   }
 
@@ -152,35 +141,6 @@ class FilesystemService {
     await Promise.all(fileNames.map((fileName) => FilesystemService.deleteFile(path, fileName)));
   }
 
-  async fileLocation(
-    username: string,
-    filePath: string,
-    filename: string,
-    client: AxiosInstance,
-  ): Promise<WebdavStatusResponse> {
-    const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
-    await this.ensureDirectoryExists(PUBLIC_DOWNLOADS_PATH);
-
-    try {
-      const user = await this.userService.findOne(username);
-      if (!user) {
-        return { success: false, status: HttpStatus.INTERNAL_SERVER_ERROR } as WebdavStatusResponse;
-      }
-      const responseStream = await FilesystemService.fetchFileStream(url, client);
-      const hashedFilename = FilesystemService.generateHashedFilename(filePath, filename);
-      const outputFilePath = FilesystemService.getOutputFilePath(PUBLIC_DOWNLOADS_PATH, hashedFilename);
-
-      await FilesystemService.saveFileStream(responseStream, outputFilePath);
-      return {
-        success: true,
-        status: HttpStatus.OK,
-        data: hashedFilename,
-      } as WebdavStatusResponse;
-    } catch (error) {
-      throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
-    }
-  }
-
   static async checkIfFileExist(filePath: string): Promise<boolean> {
     try {
       await fsPromises.access(filePath);
@@ -217,14 +177,6 @@ class FilesystemService {
     }
   }
 
-  async getAllFilenamesInDirectory(directory: string): Promise<string[]> {
-    const exists = await FilesystemService.checkIfFileExist(directory);
-    if (!exists) {
-      return [];
-    }
-    return fsPromises.readdir(directory);
-  }
-
   static async deleteDirectories(directories: string[]): Promise<void> {
     try {
       const deletionPromises = directories.map((directory) => fsPromises.rm(directory, { recursive: true }));
@@ -232,6 +184,54 @@ class FilesystemService {
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  async ensureDirectoryExists(directory: string): Promise<void> {
+    const exists = await FilesystemService.checkIfFileExist(directory);
+    if (!exists) {
+      try {
+        await fsPromises.mkdir(directory, { recursive: true });
+      } catch (error) {
+        throw new CustomHttpException(CommonErrorMessages.DIRECTORY_CREATION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
+  async fileLocation(
+    username: string,
+    filePath: string,
+    filename: string,
+    client: AxiosInstance,
+  ): Promise<WebdavStatusResponse> {
+    const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
+    await this.ensureDirectoryExists(PUBLIC_DOWNLOADS_PATH);
+
+    try {
+      const user = await this.userService.findOne(username);
+      if (!user) {
+        return { success: false, status: HttpStatus.INTERNAL_SERVER_ERROR } as WebdavStatusResponse;
+      }
+      const responseStream = await FilesystemService.fetchFileStream(url, client);
+      const hashedFilename = FilesystemService.generateHashedFilename(filePath, filename);
+      const outputFilePath = FilesystemService.getOutputFilePath(PUBLIC_DOWNLOADS_PATH, hashedFilename);
+
+      await FilesystemService.saveFileStream(responseStream, outputFilePath);
+      return {
+        success: true,
+        status: HttpStatus.OK,
+        data: hashedFilename,
+      } as WebdavStatusResponse;
+    } catch (error) {
+      throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+    }
+  }
+
+  async getAllFilenamesInDirectory(directory: string): Promise<string[]> {
+    const exists = await FilesystemService.checkIfFileExist(directory);
+    if (!exists) {
+      return [];
+    }
+    return fsPromises.readdir(directory);
   }
 
   async createReadStream(filePath: string): Promise<Readable> {

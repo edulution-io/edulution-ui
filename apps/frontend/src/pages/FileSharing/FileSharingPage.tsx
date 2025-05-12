@@ -22,17 +22,16 @@ import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import FILE_PREVIEW_ELEMENT_ID from '@libs/filesharing/constants/filePreviewElementId';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
-import { toast } from 'sonner';
-import ProgressBox from '@/components/ui/ProgressBox';
-import { t } from 'i18next';
 import QuotaLimitInfo from '@/pages/FileSharing/utilities/QuotaLimitInfo';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
+import useFileOperationToast from '@/hooks/useFileOperationToast';
+import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 
 const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const { fileOperationProgress, fetchFiles } = useFileSharingStore();
-
+  const { downloadProgress } = useFileEditorStore();
   useEffect(() => {
     const handleFileOperationProgress = async () => {
       if (!fileOperationProgress) return;
@@ -45,33 +44,20 @@ const FileSharingPage = () => {
     void handleFileOperationProgress();
   }, [fileOperationProgress]);
   const { percentageUsed } = useQuotaInfo();
-  const { downloadProgress } = useFileEditorStore();
 
-  useEffect(() => {
-    if (!downloadProgress) return;
+  const filesharingProgressDto: FilesharingProgressDto = {
+    title: downloadProgress?.fileName || '',
+    percent: downloadProgress?.percent || 0,
+    processID: 0,
+    description: '',
+    statusDescription: '',
+    processed: 0,
+    total: 0,
+    currentFilePath: '',
+    studentName: '',
+  };
 
-    const percent = downloadProgress.percent ?? 0;
-
-    const toasterData = {
-      percent,
-      title: t('filesharing.progressBox.downloadInfo', {
-        filename: downloadProgress.fileName,
-      }),
-      id: downloadProgress.fileName,
-    };
-
-    let toastDuration: number;
-    if (percent >= 100) {
-      toastDuration = 5000;
-    } else {
-      toastDuration = Infinity;
-    }
-
-    toast(<ProgressBox data={toasterData} />, {
-      id: toasterData.id,
-      duration: toastDuration,
-    });
-  }, [downloadProgress]);
+  useFileOperationToast(filesharingProgressDto, null);
 
   return (
     <PageLayout>

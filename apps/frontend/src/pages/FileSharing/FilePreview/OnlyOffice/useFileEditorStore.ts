@@ -175,7 +175,6 @@ const useFileEditorStore = create<FileEditorStore>(
               responseType: ResponseType.BLOB,
               signal,
               params: { filePath: files.map((f) => f.filename) },
-              paramsSerializer: { indexes: null },
               onDownloadProgress: (e: AxiosProgressEvent) => {
                 const total = e.total ?? totalBytes;
                 if (!total) return;
@@ -190,8 +189,8 @@ const useFileEditorStore = create<FileEditorStore>(
           );
 
           return URL.createObjectURL(data);
-        } catch (err) {
-          handleApiError(err, set);
+        } catch (error) {
+          handleApiError(error, set);
           return '';
         } finally {
           set({ isDownloadFileLoading: false });

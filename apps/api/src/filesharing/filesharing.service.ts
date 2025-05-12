@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Injectable, HttpStatus } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { Readable } from 'stream';
 import { Request, Response } from 'express';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
@@ -22,10 +22,10 @@ import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOpe
 import JOB_NAMES from '@libs/queue/constants/jobNames';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import archiver from 'archiver';
-import tmp from 'tmp-promise';
 import { once } from 'events';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { createReadStream, createWriteStream, statSync } from 'fs';
+import createTempFile from '@libs/filesystem/utils/createTempFile';
 import QueueService from '../queue/queue.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
@@ -130,7 +130,7 @@ class FilesharingService {
   }
 
   async streamFilesAsZipBuffered(username: string, paths: string[], res: Response) {
-    const { path: tmpPath, cleanup } = await tmp.file({ postfix: '.zip' });
+    const { path: tmpPath, cleanup } = await createTempFile('.zip');
 
     const output = createWriteStream(tmpPath);
     const zip = archiver('zip', { zlib: { level: 9 } });

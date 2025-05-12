@@ -40,10 +40,10 @@ const ProgressBox: React.FC<{ data: ProgressBoxProps }> = ({ data }) => {
 
       {description && <p className="text-sm text-background">{description}</p>}
 
-      {statusDescription && failed && processed && (
+      {statusDescription && (
         <p className="text-sm text-background">
           {t(statusDescription, {
-            processed: processed - failed,
+            processed: (processed || 0) - (failed || 0),
             total,
           })}
         </p>
