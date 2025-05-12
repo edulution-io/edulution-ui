@@ -10,12 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import axios from 'axios';
-import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+const FILE_ENDPOINTS = {
+  FILE: 'file',
+} as const;
 
-const eduApi = axios.create({
-  baseURL: `${EDU_API_URL}/`,
-  paramsSerializer: { indexes: null },
-});
-
-export default eduApi;
+export default FILE_ENDPOINTS;

@@ -62,13 +62,12 @@ export default class TldrawSyncGateway implements OnGatewayConnection, OnModuleI
       return;
     }
 
-    const multiRoomId = url.searchParams.get(ROOM_ID_PARAM);
-    const roomId = multiRoomId ? `multi-${multiRoomId}` : `single-${user.preferred_username}`;
+    const { preferred_username: username } = user;
 
-    Logger.log(
-      `Client ${user.preferred_username} connected: roomId=${roomId}, sessionId=${sessionId}`,
-      TldrawSyncGateway.name,
-    );
+    const multiRoomId = url.searchParams.get(ROOM_ID_PARAM);
+    const roomId = multiRoomId ? `multi-${multiRoomId}` : `single-${username}`;
+
+    Logger.log(`Client ${username} connected: roomId=${roomId}, sessionId=${sessionId}`, TldrawSyncGateway.name);
 
     const caughtMessages: RawData[] = [];
     const collectMessagesListener = (message: RawData) => {

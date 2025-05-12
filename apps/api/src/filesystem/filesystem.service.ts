@@ -11,7 +11,7 @@
  */
 
 /* eslint-disable @typescript-eslint/class-methods-use-this */
-import { createWriteStream, createReadStream, promises as fsPromises } from 'fs';
+import { createReadStream, createWriteStream, promises as fsPromises } from 'fs';
 import process from 'node:process';
 import { promisify } from 'util';
 import { createHash } from 'crypto';
