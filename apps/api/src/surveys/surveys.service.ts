@@ -23,7 +23,6 @@ import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyElement from '@libs/survey/types/TSurveyElement';
 import SurveyPage from '@libs/survey/types/TSurveyPage';
 import SurveyFormula from '@libs/survey/types/TSurveyFormula';
@@ -35,6 +34,7 @@ import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import SURVEYS_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplatePath';
 import isQuestionTypeChoiceType from '@libs/survey/utils/isQuestionTypeChoiceType';
+import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
 import surveysMigrationsList from './migrations/surveysMigrationsList';

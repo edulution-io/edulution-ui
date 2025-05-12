@@ -14,9 +14,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import type { Model, UpdateWriteOpResult } from 'mongoose';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import { GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
+import CustomHttpException from '../common/CustomHttpException';
 import GlobalSettingsService from './global-settings.service';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
 
