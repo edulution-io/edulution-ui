@@ -12,7 +12,6 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
@@ -24,6 +23,7 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import APPS from '@libs/appconfig/constants/apps';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import type PatchConfigDto from '@libs/common/types/patchConfigDto';
+import CustomHttpException from '../common/CustomHttpException';
 import AppConfigService from '../appconfig/appconfig.service';
 import FilesystemService from '../filesystem/filesystem.service';
 

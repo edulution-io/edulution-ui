@@ -17,7 +17,7 @@ import { existsSync, mkdirSync } from 'fs';
 import { HttpStatus } from '@nestjs/common';
 import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
-import CustomHttpException from './CustomHttpException';
+import CustomHttpException from '../common/CustomHttpException';
 
 /**
  * Generates a disk storage configuration that can dynamically

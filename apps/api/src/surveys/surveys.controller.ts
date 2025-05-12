@@ -40,6 +40,7 @@ import {
   SURVEYS,
 } from '@libs/survey/constants/surveys-endpoint';
 import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
+import SURVEYS_IMAGES_TEMPORARY_DOMAIN from '@libs/survey/constants/surveysImagesTemporaryDomain';
 import TEMPORARY_ATTACHMENT_DIRECTORY_NAME from '@libs/common/constants/temporaryAttachmentDirectoryName';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -106,7 +107,7 @@ class SurveysController {
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   uploadImage(@UploadedFile() file: Express.Multer.File, @Res() res: Response, @GetCurrentUsername() username: string) {
     const fileName = checkAttachmentFile(file);
-    const imageUrl = this.surveyService.getTemporaryImageUrl(username, fileName);
+    const imageUrl = `${SURVEYS_IMAGES_TEMPORARY_DOMAIN}/${username}/${fileName}`;
     return res.status(HttpStatus.CREATED).json(imageUrl);
   }
 

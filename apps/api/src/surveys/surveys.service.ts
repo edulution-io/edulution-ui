@@ -27,7 +27,6 @@ import SurveyElement from '@libs/survey/types/TSurveyElement';
 import SurveyPage from '@libs/survey/types/TSurveyPage';
 import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 import SURVEYS_IMAGES_DOMAIN from '@libs/survey/constants/surveysImagesDomain';
-import SURVEYS_IMAGES_TEMPORARY_DOMAIN from '@libs/survey/constants/surveysImagesTemporaryDomain';
 import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
 import SURVEYS_IMAGES_TEMPORARY_PATH from '@libs/survey/constants/surveysImagesTemporaryPath';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
@@ -390,9 +389,6 @@ class SurveysService implements OnModuleInit {
 
     return savedSurvey;
   }
-
-  getTemporaryImageUrl = (username: string, fileName: string): string =>
-    `${SURVEYS_IMAGES_TEMPORARY_DOMAIN}/${username}/${fileName}`;
 
   async serveTemporaryImage(userId: string, fileName: string, res: Response): Promise<Response> {
     const filePath = `${SURVEYS_IMAGES_TEMPORARY_PATH}/${userId}/${fileName}`;
