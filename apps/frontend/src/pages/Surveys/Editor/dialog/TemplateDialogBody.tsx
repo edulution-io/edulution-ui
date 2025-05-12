@@ -45,7 +45,7 @@ const TemplateDialogBody = (props: TemplateDialogBodyProps) => {
   if (templates.length === 0) {
     return (
       <div className="relative top-1/3">
-        <h4 className="flex justify-center text-p text-secondary">{t('survey.editor.templateMenu.emptyMessage')}</h4>
+        <p className="flex justify-center">{t('survey.editor.templateMenu.emptyMessage')}</p>
       </div>
     );
   }
