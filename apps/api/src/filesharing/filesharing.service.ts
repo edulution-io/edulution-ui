@@ -90,7 +90,7 @@ export default class FilesharingService {
     );
   }
 
-  async moveOrRenameResource(username: string, pathChangeOrCreateDtos: PathChangeOrCreateProps[]) {
+  async moveOrRenameResources(username: string, pathChangeOrCreateDtos: PathChangeOrCreateProps[]) {
     let processedItems = 0;
     return Promise.all(
       pathChangeOrCreateDtos.map(async (pathChange) => {

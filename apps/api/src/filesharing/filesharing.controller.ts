@@ -114,7 +114,7 @@ class FilesharingController {
     @Body() pathChangeOrCreateDtos: PathChangeOrCreateDto[],
     @GetCurrentUsername() username: string,
   ) {
-    return this.filesharingService.moveOrRenameResource(username, pathChangeOrCreateDtos);
+    return this.filesharingService.moveOrRenameResources(username, pathChangeOrCreateDtos);
   }
 
   @Get(FileSharingApiEndpoints.FILE_STREAM)

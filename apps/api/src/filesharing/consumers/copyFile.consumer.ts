@@ -19,7 +19,7 @@ import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressD
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJobData';
 import getStudentNameFromPath from '@libs/filesharing/utils/getStudentNameFromPath';
-import generateUniqueFilename from '@libs/filesharing/utils/makeUniqueName';
+import getNextAvailableFilename from '@libs/filesharing/utils/makeUniqueName';
 import FileJobData from '@libs/queue/types/fileJobData';
 import SseService from '../../sse/sse.service';
 import WebdavService from '../../webdav/webdav.service';
@@ -44,7 +44,7 @@ class CopyFileConsumer extends WorkerHost {
 
     const items = await this.webDavService.getFilesAtPath(username, targetFolderPath);
 
-    const uniqueFilename = generateUniqueFilename(originalName, extension, items);
+    const uniqueFilename = getNextAvailableFilename(originalName, extension, items);
 
     try {
       await this.webDavService.copyFileViaWebDAV(username, originFilePath, join(targetFolderPath, '/', uniqueFilename));

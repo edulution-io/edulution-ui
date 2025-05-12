@@ -53,11 +53,6 @@ export default async function handleBulkFileOperations(
 
     setResult(success, t('fileOperationSuccessful'), HttpStatus.OK);
   } catch (rawError: unknown) {
-    const err = rawError as { message?: string; statusCode?: number };
-
-    const message = err.message ?? t('fileOperationFailed');
-    const statusCode = err.statusCode ?? 500;
-
-    setResult(false, message, statusCode);
+    setResult(false, t('unknownErrorOccurred'), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

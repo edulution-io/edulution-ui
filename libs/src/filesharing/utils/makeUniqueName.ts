@@ -12,7 +12,7 @@
 
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 
-const generateUniqueFilename = (baseName: string, extension: string, existingFiles: DirectoryFileDTO[]) => {
+const getNextAvailableFilename = (baseName: string, extension: string, existingFiles: DirectoryFileDTO[]) => {
   const suffixPattern = /(.*)\((\d+)\)$/;
   let namePrefix = baseName;
   let sequenceNumber = 0;
@@ -40,4 +40,4 @@ const generateUniqueFilename = (baseName: string, extension: string, existingFil
   return uniqueFileName;
 };
 
-export default generateUniqueFilename;
+export default getNextAvailableFilename;

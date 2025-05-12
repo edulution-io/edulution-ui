@@ -59,6 +59,29 @@ const useNotifications = () => {
 
   useDockerContainerEvents();
 
+  const handleFilesharingProgress =
+    (setter: (v: FilesharingProgressDto | null) => void) => async (e: MessageEvent<string>) => {
+      const data: FilesharingProgressDto = JSON.parse(e.data) as FilesharingProgressDto;
+      setter(data);
+      await clearProgressIfComplete(data, setter);
+    };
+
+  const subscribeFilesharingProgress = (
+    types: string[],
+    setter: (filesharingProgressDto: FilesharingProgressDto | null) => void,
+    controller: AbortController,
+  ) => {
+    const asyncHandler = handleFilesharingProgress(setter);
+
+    const listener = (ev: Event) => {
+      void asyncHandler(ev as MessageEvent<string>).catch((err) => {
+        console.error('SSE-Error:', err);
+      });
+    };
+    types.forEach((t) => eventSource?.addEventListener(t, listener, { signal: controller.signal }));
+    return () => types.forEach(() => controller.abort());
+  };
+
   useEffect(() => {
     conferencesRef.current = conferences;
   }, [conferences]);
@@ -129,41 +152,21 @@ const useNotifications = () => {
     };
   }, [isConferenceAppActivated]);
 
-  const handleFilesharingProgress =
-    (setter: (v: FilesharingProgressDto | null) => void) => async (e: MessageEvent<string>) => {
-      const data: FilesharingProgressDto = JSON.parse(e.data) as FilesharingProgressDto;
-      setter(data);
-      await clearProgressIfComplete(data, setter);
-    };
-
   useEffect(() => {
     if (!isFileSharingActive || !eventSource) {
       return undefined;
     }
-
     const controller = new AbortController();
-    const { signal } = controller;
 
-    const fileOperationHandler = handleFilesharingProgress(setFileOperationProgress);
-
-    const listener = (ev: MessageEvent): void => {
-      const typedEvent = ev as MessageEvent<string>;
-      void fileOperationHandler(typedEvent).catch((err) => {
-        console.error('SSE-Error:', err);
-      });
-    };
-
-    [
-      SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES,
-      SSE_MESSAGE_TYPE.FILESHARING_MOVE_OR_RENAME_FILES,
-      SSE_MESSAGE_TYPE.FILESHARING_COPY_FILES,
-    ].forEach((type) => {
-      eventSource.addEventListener(type, listener, { signal });
-    });
-
-    return () => {
-      controller.abort();
-    };
+    return subscribeFilesharingProgress(
+      [
+        SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES,
+        SSE_MESSAGE_TYPE.FILESHARING_MOVE_OR_RENAME_FILES,
+        SSE_MESSAGE_TYPE.FILESHARING_COPY_FILES,
+      ],
+      setFileOperationProgress,
+      controller,
+    );
   }, [isFileSharingActive]);
 
   useEffect(() => {
@@ -171,20 +174,12 @@ const useNotifications = () => {
       return undefined;
     }
     const controller = new AbortController();
-    const { signal } = controller;
 
-    const rawCollectShare = handleFilesharingProgress(setFilesharingProgress);
-
-    const handleCollectOrShare = (e: MessageEvent<string>) => {
-      void rawCollectShare(e);
-    };
-
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_COLLECT_FILES, handleCollectOrShare, { signal });
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_SHARE_FILES, handleCollectOrShare, { signal });
-
-    return () => {
-      controller.abort();
-    };
+    return subscribeFilesharingProgress(
+      [SSE_MESSAGE_TYPE.FILESHARING_SHARE_FILES, SSE_MESSAGE_TYPE.FILESHARING_COLLECT_FILES],
+      setFilesharingProgress,
+      controller,
+    );
   }, [isClassRoomManagementActive]);
 
   useEffect(() => {
