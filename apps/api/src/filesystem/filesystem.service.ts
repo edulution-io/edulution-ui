@@ -271,6 +271,13 @@ class FilesystemService {
 
     return res;
   }
+
+  static buildPathString(path: string | string[]) {
+    if (Array.isArray(path)) {
+      return path.join('/');
+    }
+    return path;
+  }
 }
 
 export default FilesystemService;
