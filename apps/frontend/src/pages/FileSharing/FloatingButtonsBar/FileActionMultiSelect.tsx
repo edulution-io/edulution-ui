@@ -20,13 +20,13 @@ import DownloadButton from '@/components/shared/FloatingsButtonsBar/CommonButton
 import ContentType from '@libs/filesharing/types/contentType';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
-import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 
 const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItems }) => {
-  const { downloadFiles } = useFileEditorStore();
+  const { loadDownloadUrlMultipleFiles } = useFileSharingDownloadStore();
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
   let selectedFiles: DirectoryFileDTO[] = [];
 
@@ -39,7 +39,7 @@ const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog, selected
 
     await Promise.all(selectedFiles.map((file) => setFileIsCurrentlyDisabled(file.basename, true)));
 
-    const url = await downloadFiles(selectedFiles);
+    const url = await loadDownloadUrlMultipleFiles(selectedFiles);
     if (!url) return;
 
     const link = Object.assign(document.createElement('a'), {

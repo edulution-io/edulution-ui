@@ -13,7 +13,7 @@
 import { create, StateCreator } from 'zustand';
 import eduApi from '@/api/eduApi';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
-import { RequestResponseContentType, ResponseType } from '@libs/common/types/http-methods';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
 import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
@@ -21,17 +21,10 @@ import getLastPartOfUrl from '@libs/filesharing/utils/getLastPartOfUrl';
 import handleApiError from '@/utils/handleApiError';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
-import getFrontEndUrl from '@libs/common/utils/getFrontEndUrl';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import delay from '@libs/common/utils/delay';
-import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
-import { AxiosProgressEvent } from 'axios';
-import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 
 type FileEditorStore = {
   isFilePreviewDocked: boolean;
-  downloadProgress: DownloadFileDto | null;
   setIsFilePreviewDocked: (isFilePreviewDocked: boolean) => void;
   isFilePreviewVisible: boolean;
   setIsFilePreviewVisible: (isVisible: boolean) => void;
@@ -39,34 +32,18 @@ type FileEditorStore = {
   deleteFileAfterEdit: (url: string) => Promise<void>;
   reset: () => void;
   error: Error | null;
-  downloadFiles: (file: DirectoryFileDTO[], signal?: AbortSignal) => Promise<string | undefined>;
-  getDownloadLinkURL: (filePath: string, filename: string, signal?: AbortSignal) => Promise<string | undefined>;
-  fetchDownloadLinks: (file: DirectoryFileDTO | null, signal?: AbortSignal) => Promise<void>;
   currentlyEditingFile: DirectoryFileDTO | null;
   filesToOpenInNewTab: DirectoryFileDTO[];
   addFileToOpenInNewTab: (fileToPreview: DirectoryFileDTO) => void;
   setCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => void;
   resetCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => Promise<void>;
-  isEditorLoading: boolean;
-  isDownloadFileLoading: boolean;
-  downloadLinkURL: string;
-  publicDownloadLink: string | null;
-  isGetDownloadLinkUrlLoading: boolean;
-  setPublicDownloadLink: (publicDownloadLink: string) => void;
-  setDownloadProgress: (progress: DownloadFileDto | null) => void;
 };
 
 const initialState = {
   isFilePreviewDocked: true,
-  downloadProgress: null,
   isFilePreviewVisible: false,
-  publicDownloadLink: null,
-  isEditorLoading: false,
-  downloadLinkURL: '',
   currentlyEditingFile: null,
   filesToOpenInNewTab: [],
-  isDownloadFileLoading: false,
-  isGetDownloadLinkUrlLoading: false,
   error: null,
 };
 
@@ -82,10 +59,6 @@ const useFileEditorStore = create<FileEditorStore>(
       reset: () => set(initialState),
 
       setIsFilePreviewDocked: (isFilePreviewDocked) => set({ isFilePreviewDocked }),
-
-      setDownloadProgress: (progress) => {
-        set({ downloadProgress: progress });
-      },
 
       setIsFilePreviewVisible: (isFilePreviewVisible) => set({ isFilePreviewVisible }),
 
@@ -120,32 +93,6 @@ const useFileEditorStore = create<FileEditorStore>(
         return Promise.resolve('');
       },
 
-      setPublicDownloadLink: (publicDownloadLink) => set({ publicDownloadLink }),
-
-      fetchDownloadLinks: async (file, signal) => {
-        try {
-          set({ isEditorLoading: true, error: null, downloadLinkURL: undefined, publicDownloadLink: null });
-
-          if (!file) {
-            return;
-          }
-
-          const downloadLink = await get().downloadFiles([file], signal);
-          set({ downloadLinkURL: downloadLink });
-
-          if (isOnlyOfficeDocument(file.filename)) {
-            const publicLink = await get().getDownloadLinkURL(file.filename, file.basename, signal);
-            if (publicLink) {
-              set({ publicDownloadLink: `${getFrontEndUrl()}/${EDU_API_ROOT}/downloads/${publicLink}` });
-            }
-          }
-        } catch (error) {
-          handleApiError(error, set);
-        } finally {
-          set({ isEditorLoading: false });
-        }
-      },
-
       addFileToOpenInNewTab: (file) => {
         const filteredFiles = get().filesToOpenInNewTab.filter((f) => f.etag !== file?.etag);
         set({ filesToOpenInNewTab: [...filteredFiles, file] });
@@ -159,68 +106,6 @@ const useFileEditorStore = create<FileEditorStore>(
         set({ currentlyEditingFile: null });
         await delay(1);
         set({ currentlyEditingFile: file });
-      },
-
-      downloadFiles: async (files: DirectoryFileDTO[], signal?: AbortSignal) => {
-        try {
-          set({ isDownloadFileLoading: true });
-          const params = new URLSearchParams();
-          files.forEach((f) => params.append('filePath', f.filename));
-
-          const totalBytes = files.reduce((size, file) => size + (file.size ?? 0), 0);
-
-          const { data } = await eduApi.get<Blob>(
-            `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_STREAM}`,
-            {
-              responseType: ResponseType.BLOB,
-              signal,
-              params: { filePath: files.map((f) => f.filename) },
-              onDownloadProgress: (e: AxiosProgressEvent) => {
-                const total = e.total ?? totalBytes;
-                if (!total) return;
-                let percent = Math.round((e.loaded / total) * 100);
-                if (percent > 100) percent = 100;
-                get().setDownloadProgress({
-                  fileName: files.length > 1 ? 'download.zip' : files[0].basename,
-                  percent,
-                });
-              },
-            },
-          );
-
-          return URL.createObjectURL(data);
-        } catch (error) {
-          handleApiError(error, set);
-          return '';
-        } finally {
-          set({ isDownloadFileLoading: false });
-        }
-      },
-
-      getDownloadLinkURL: async (filePath, filename, signal) => {
-        try {
-          set({ isGetDownloadLinkUrlLoading: true });
-          const response = await eduApi.get<WebdavStatusResponse>(
-            `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_LOCATION}`,
-            {
-              params: {
-                filePath,
-                fileName: filename,
-              },
-              signal,
-            },
-          );
-          const { data, success } = response.data;
-          if (success && data) {
-            return data;
-          }
-          return '';
-        } catch (error) {
-          handleApiError(error, set);
-          return '';
-        } finally {
-          set({ isGetDownloadLinkUrlLoading: false });
-        }
       },
     }),
     {

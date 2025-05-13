@@ -16,10 +16,10 @@ import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { parse } from 'cookie';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
+import CustomHttpException from '../common/CustomHttpException';
 import { PUBLIC_ROUTE_KEY } from '../common/decorators/public.decorator';
 
 @Injectable()

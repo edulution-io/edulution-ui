@@ -26,12 +26,13 @@ import QuotaLimitInfo from '@/pages/FileSharing/utilities/QuotaLimitInfo';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
 import useFileOperationToast from '@/hooks/useFileOperationToast';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 
 const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const { fileOperationProgress, fetchFiles } = useFileSharingStore();
-  const { downloadProgress } = useFileEditorStore();
+  const { downloadProgress } = useFileSharingDownloadStore();
   useEffect(() => {
     const handleFileOperationProgress = async () => {
       if (!fileOperationProgress) return;
