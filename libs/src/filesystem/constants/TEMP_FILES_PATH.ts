@@ -10,8 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IMAGES, PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
+import TEMP_FILES from './TEMP_FILES';
 
-const SURVEYS_IMAGES_DOMAIN = `${PUBLIC_SURVEYS}/${IMAGES}`;
+const TEMP_FILES_PATH = `./data/${TEMP_FILES}`;
 
-export default SURVEYS_IMAGES_DOMAIN;
+export default TEMP_FILES_PATH;

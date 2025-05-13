@@ -10,9 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
-import TEMPORARY_ATTACHMENT_DIRECTORY_NAME from '@libs/common/constants/temporaryAttachmentDirectoryName';
+import APPS from '@libs/appconfig/constants/apps';
+import TEMP_FILES_PATH from '@libs/filesystem/constants/TEMP_FILES_PATH';
 
-const SURVEYS_IMAGES_TEMPORARY_PATH = `${TEMPORARY_ATTACHMENT_DIRECTORY_NAME}/${SURVEYS_IMAGES_PATH}`;
+const SURVEYS_TEMP_FILES_PATH = `${TEMP_FILES_PATH}/${APPS.SURVEYS}`;
 
-export default SURVEYS_IMAGES_TEMPORARY_PATH;
+export default SURVEYS_TEMP_FILES_PATH;

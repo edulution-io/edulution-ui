@@ -26,9 +26,12 @@ import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyElement from '@libs/survey/types/TSurveyElement';
 import SurveyPage from '@libs/survey/types/TSurveyPage';
 import SurveyFormula from '@libs/survey/types/TSurveyFormula';
-import SURVEYS_IMAGES_DOMAIN from '@libs/survey/constants/surveysImagesDomain';
-import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
-import SURVEYS_IMAGES_TEMPORARY_PATH from '@libs/survey/constants/surveysImagesTemporaryPath';
+import {
+  SURVEY_FILE_ATTACHMENT_ENDPOINT,
+  SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT,
+} from '@libs/survey/constants/surveys-endpoint';
+import SURVEYS_FILE_PATH from '@libs/survey/constants/SURVEYS_FILE_PATH';
+import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/SURVEYS_TEMP_FILES_PATH';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import SURVEYS_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplatePath';
@@ -187,7 +190,7 @@ class SurveysService implements OnModuleInit {
   }
 
   async updateTemporalImage(username: string, pathWithIds: string, tempFiles: string[], link: string): Promise<string> {
-    const baseUrl = link.split(SURVEYS_IMAGES_DOMAIN)[0];
+    const baseUrl = link.split(SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT)[0];
     if (!baseUrl) {
       return link;
     }
@@ -198,9 +201,9 @@ class SurveysService implements OnModuleInit {
     }
 
     if (tempFiles.includes(imagesFileName)) {
-      const temporaryAttachmentPath = `${SURVEYS_IMAGES_TEMPORARY_PATH}/${username}/${imagesFileName}`;
+      const temporaryAttachmentPath = `${SURVEYS_TEMP_FILES_PATH}/${username}/${imagesFileName}`;
 
-      const permanentDirectory = `${SURVEYS_IMAGES_PATH}/${pathWithIds}`;
+      const permanentDirectory = `${SURVEYS_FILE_PATH}/${pathWithIds}`;
       try {
         await this.fileSystemService.ensureDirectoryExists(permanentDirectory);
       } catch (error) {
@@ -222,7 +225,7 @@ class SurveysService implements OnModuleInit {
           SurveysService.name,
         );
       }
-      return `${baseUrl}${SURVEYS_IMAGES_DOMAIN}/${pathWithIds}/${imagesFileName}`;
+      return `${baseUrl}${SURVEY_FILE_ATTACHMENT_ENDPOINT}/${pathWithIds}/${imagesFileName}`;
     }
     return link;
   }
@@ -335,7 +338,7 @@ class SurveysService implements OnModuleInit {
   }
 
   async updateFormula(username: string, surveyId: string, formula: SurveyFormula): Promise<SurveyFormula> {
-    const temporaryDirectoryPath = `${SURVEYS_IMAGES_TEMPORARY_PATH}/${username}`;
+    const temporaryDirectoryPath = `${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}/${username}`;
     const fileNames = await this.fileSystemService.getAllFilenamesInDirectory(temporaryDirectoryPath);
 
     if (fileNames.length === 0) {
@@ -377,7 +380,7 @@ class SurveysService implements OnModuleInit {
     }
 
     try {
-      const temporaryAttachmentPath = `${SURVEYS_IMAGES_TEMPORARY_PATH}/${username}`;
+      const temporaryAttachmentPath = `${SURVEYS_TEMP_FILES_PATH}/${username}`;
       const exists = await FilesystemService.checkIfFileExist(temporaryAttachmentPath);
       if (!exists) {
         return savedSurvey;
@@ -391,14 +394,14 @@ class SurveysService implements OnModuleInit {
   }
 
   async serveTemporaryImage(userId: string, fileName: string, res: Response): Promise<Response> {
-    const filePath = `${SURVEYS_IMAGES_TEMPORARY_PATH}/${userId}/${fileName}`;
+    const filePath = `${SURVEYS_TEMP_FILES_PATH}/${userId}/${fileName}`;
     const fileStream = await this.fileSystemService.createReadStream(filePath);
     fileStream.pipe(res);
     return res;
   }
 
   async servePermanentImage(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
-    const filePath = `${SURVEYS_IMAGES_PATH}/${surveyId}/${questionId}/${fileName}`;
+    const filePath = `${SURVEYS_TEMP_FILES_PATH}/${surveyId}/${questionId}/${fileName}`;
     const fileStream = await this.fileSystemService.createReadStream(filePath);
     fileStream.pipe(res);
     return res;
@@ -406,7 +409,7 @@ class SurveysService implements OnModuleInit {
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async onSurveyRemoval(surveyIds: string[]): Promise<void> {
-    const persistentAttachmentPath = surveyIds.map((surveyId) => join(SURVEYS_IMAGES_PATH, surveyId));
+    const persistentAttachmentPath = surveyIds.map((surveyId) => join(SURVEYS_FILE_PATH, surveyId));
     return FilesystemService.deleteDirectories(persistentAttachmentPath);
   }
 }

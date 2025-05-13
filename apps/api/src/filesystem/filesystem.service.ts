@@ -11,17 +11,30 @@
  */
 
 /* eslint-disable @typescript-eslint/class-methods-use-this */
-import { createReadStream, createWriteStream, promises as fsPromises } from 'fs';
+import {
+  access,
+  createReadStream,
+  createWriteStream,
+  ensureDir,
+  move,
+  outputFile,
+  pathExists,
+  readdir,
+  readFile,
+  rm,
+  unlink,
+  stat as fsStat,
+} from 'fs-extra';
 import process from 'node:process';
 import { promisify } from 'util';
 import { createHash } from 'crypto';
 import { firstValueFrom, from } from 'rxjs';
-import { dirname, extname, join } from 'path';
+import { extname, join } from 'path';
 import { pipeline, Readable } from 'stream';
-import { lookup } from 'mime-types';
-import { type Response } from 'express';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { lookup } from 'mime-types';
+import { type Response } from 'express';
 import { HTTP_HEADERS, RequestResponseContentType, ResponseType } from '@libs/common/types/http-methods';
 import HashAlgorithm from '@libs/common/constants/hashAlgorithm';
 import CustomFile from '@libs/filesharing/types/customFile';
@@ -57,10 +70,10 @@ class FilesystemService {
   }
 
   async ensureDirectoryExists(directory: string): Promise<void> {
-    const exists = await FilesystemService.checkIfFileExist(directory);
+    const exists = await pathExists(directory);
     if (!exists) {
       try {
-        await fsPromises.mkdir(directory, { recursive: true });
+        await ensureDir(directory);
       } catch (error) {
         throw new CustomHttpException(CommonErrorMessages.DIRECTORY_CREATION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
       }
@@ -69,13 +82,14 @@ class FilesystemService {
 
   static async moveFile(oldFilePath: string, newFilePath: string): Promise<void> {
     try {
-      await this.throwErrorIfFileNotExists(oldFilePath);
-      await fsPromises.cp(oldFilePath, newFilePath);
-
-      await this.throwErrorIfFileNotExists(newFilePath);
-      await fsPromises.unlink(oldFilePath);
+      await move(oldFilePath, newFilePath, { overwrite: true });
     } catch (error) {
-      throw new CustomHttpException(FileSharingErrorMessage.RenameFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      throw new CustomHttpException(
+        FileSharingErrorMessage.MoveFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error,
+        FilesystemService.name,
+      );
     }
   }
 
@@ -104,11 +118,11 @@ class FilesystemService {
       const response = await axios.get<ArrayBuffer>(url, { responseType: 'arraybuffer' });
       const filePath = join(PUBLIC_DOWNLOADS_PATH, filename);
 
-      await fsPromises.mkdir(dirname(filePath), { recursive: true });
-      await fsPromises.writeFile(filePath, new Uint8Array(response.data));
+      await outputFile(filePath, new Uint8Array(response.data));
 
-      const fileBuffer = await fsPromises.readFile(filePath);
-      const mimetype: string = (response.headers['content-type'] as string) || 'application/octet-stream';
+      const fileBuffer = await readFile(filePath);
+      const mimetype: string =
+        (response.headers[HTTP_HEADERS.ContentType] as string) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
 
       return {
         fieldname: 'file',
@@ -131,7 +145,7 @@ class FilesystemService {
   static async deleteFile(path: string, fileName: string): Promise<void> {
     const filePath = join(path, fileName);
     try {
-      await fsPromises.unlink(filePath);
+      await unlink(filePath);
       Logger.log(`File deleted at ${filePath}`);
     } catch (error) {
       throw new CustomHttpException(
@@ -176,17 +190,12 @@ class FilesystemService {
   }
 
   static async checkIfFileExist(filePath: string): Promise<boolean> {
-    try {
-      await fsPromises.access(filePath);
-    } catch (error) {
-      return false;
-    }
-    return true;
+    return pathExists(filePath);
   }
 
   static async throwErrorIfFileNotExists(filePath: string): Promise<void> {
     try {
-      await fsPromises.access(filePath);
+      await access(filePath);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -195,7 +204,7 @@ class FilesystemService {
   static async checkIfFileExistAndDelete(filePath: string) {
     await FilesystemService.throwErrorIfFileNotExists(filePath);
     try {
-      await fsPromises.unlink(filePath);
+      await unlink(filePath);
       Logger.log(`${filePath} deleted.`, FilesystemService.name);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -204,7 +213,7 @@ class FilesystemService {
 
   static async writeFile(filePath: string, content: string) {
     try {
-      await fsPromises.writeFile(filePath, content);
+      await outputFile(filePath, content);
       Logger.log(`${filePath} created.`, FilesystemService.name);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_WRITING_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -212,16 +221,16 @@ class FilesystemService {
   }
 
   async getAllFilenamesInDirectory(directory: string): Promise<string[]> {
-    const exists = await FilesystemService.checkIfFileExist(directory);
+    const exists = await pathExists(directory);
     if (!exists) {
       return [];
     }
-    return fsPromises.readdir(directory);
+    return readdir(directory);
   }
 
   async deleteDirectory(directory: string): Promise<void> {
     try {
-      await fsPromises.rm(directory, { recursive: true });
+      await rm(directory, { recursive: true });
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -229,7 +238,7 @@ class FilesystemService {
 
   static async deleteDirectories(directories: string[]): Promise<void> {
     try {
-      const deletionPromises = directories.map((directory) => fsPromises.rm(directory, { recursive: true }));
+      const deletionPromises = directories.map((directory) => rm(directory, { recursive: true }));
       await Promise.all(deletionPromises);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -238,7 +247,7 @@ class FilesystemService {
 
   async createReadStream(filePath: string): Promise<Readable> {
     try {
-      await fsPromises.access(filePath);
+      await access(filePath);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -248,11 +257,11 @@ class FilesystemService {
   async getFilesInfo(path: string): Promise<FileInfoDto[]> {
     try {
       const folderPath = `${APPS_FILES_PATH}/${path}`;
-      const files = await fsPromises.readdir(folderPath);
+      const files = await readdir(folderPath);
 
       const fileDataPromises = files.map(async (fileName) => {
         const filePath = join(folderPath, fileName);
-        const stat = await fsPromises.stat(filePath);
+        const stat = await fsStat(filePath);
 
         let type: string;
         if (stat.isFile()) {

@@ -13,8 +13,7 @@
 import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Get, Post, Param, Res } from '@nestjs/common';
-import { IMAGES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
-import TEMPORARY_ATTACHMENT_DIRECTORY_NAME from '@libs/common/constants/temporaryAttachmentDirectoryName';
+import { FILES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SurveysService from './surveys.service';
@@ -43,14 +42,7 @@ class PublicSurveysController {
     return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer);
   }
 
-  @Get(`${IMAGES}/${TEMPORARY_ATTACHMENT_DIRECTORY_NAME}/:userId/:filename`)
-  @Public()
-  getTemporaryImage(@Param() params: { userId: string; filename: string }, @Res() res: Response) {
-    const { userId, filename } = params;
-    return this.surveyService.serveTemporaryImage(userId, filename, res);
-  }
-
-  @Get(`${IMAGES}/:surveyId/:questionId/:filename`)
+  @Get(`${FILES}/:surveyId/:questionId/:filename`)
   @Public()
   getPermanentImage(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
     const { surveyId, questionId, filename } = params;

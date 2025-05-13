@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const TEMPORARY_ATTACHMENT_DIRECTORY_NAME = 'TEMP';
+const TEMP_FILES = 'temp';
 
-export default TEMPORARY_ATTACHMENT_DIRECTORY_NAME;
+export default TEMP_FILES;

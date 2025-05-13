@@ -34,14 +34,13 @@ import {
   CAN_PARTICIPATE,
   FIND_ONE,
   HAS_ANSWERS,
-  IMAGES,
+  FILES,
   TEMPLATES,
   RESULT,
   SURVEYS,
+  SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT,
 } from '@libs/survey/constants/surveys-endpoint';
-import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
-import SURVEYS_IMAGES_TEMPORARY_DOMAIN from '@libs/survey/constants/surveysImagesTemporaryDomain';
-import TEMPORARY_ATTACHMENT_DIRECTORY_NAME from '@libs/common/constants/temporaryAttachmentDirectoryName';
+import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/SURVEYS_TEMP_FILES_PATH';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
@@ -94,21 +93,29 @@ class SurveysController {
     return this.surveyAnswerService.findUserSurveys(status, user);
   }
 
-  @Post(IMAGES)
+  @Post(FILES)
   @ApiConsumes(RequestResponseContentType.MULTIPART_FORM_DATA)
   @UseInterceptors(
     FileInterceptor(
       'file',
-      createAttachmentUploadOptions(
-        (req) => `${SURVEYS_IMAGES_PATH}/${TEMPORARY_ATTACHMENT_DIRECTORY_NAME}/${req.user?.preferred_username}`,
-      ),
+      createAttachmentUploadOptions((req) => `${SURVEYS_TEMP_FILES_PATH}/${req.user?.preferred_username}`),
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   uploadImage(@UploadedFile() file: Express.Multer.File, @Res() res: Response, @GetCurrentUsername() username: string) {
     const fileName = checkAttachmentFile(file);
-    const imageUrl = `${SURVEYS_IMAGES_TEMPORARY_DOMAIN}/${username}/${fileName}`;
+    const imageUrl = `${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}/${username}/${fileName}`;
     return res.status(HttpStatus.CREATED).json(imageUrl);
+  }
+
+  @Get(`${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}/:filename`)
+  getTemporaryImage(
+    @Param() params: { userId: string; filename: string },
+    @Res() res: Response,
+    @GetCurrentUsername() username: string,
+  ) {
+    const { filename } = params;
+    return this.surveyService.serveTemporaryImage(username, filename, res);
   }
 
   @UseGuards(AppConfigGuard)

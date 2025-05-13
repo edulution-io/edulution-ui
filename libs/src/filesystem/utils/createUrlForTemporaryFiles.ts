@@ -10,9 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SURVEYS_IMAGES_DOMAIN from '@libs/survey/constants/surveysImagesDomain';
-import TEMPORARY_ATTACHMENT_DIRECTORY_NAME from '@libs/common/constants/temporaryAttachmentDirectoryName';
+import TEMP_FILES from '@libs/filesystem/constants/TEMP_FILES';
 
-const SURVEYS_IMAGES_TEMPORARY_DOMAIN = `${SURVEYS_IMAGES_DOMAIN}/${TEMPORARY_ATTACHMENT_DIRECTORY_NAME}`;
+const createUrlForTemporaryFiles = (domain: string) => `${domain}/${TEMP_FILES}`;
 
-export default SURVEYS_IMAGES_TEMPORARY_DOMAIN;
+export default createUrlForTemporaryFiles;
