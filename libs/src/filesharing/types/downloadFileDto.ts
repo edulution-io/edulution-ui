@@ -11,6 +11,8 @@
  */
 
 class DownloadFileDto {
+  processId: number;
+
   fileName: string;
 
   percent: number;

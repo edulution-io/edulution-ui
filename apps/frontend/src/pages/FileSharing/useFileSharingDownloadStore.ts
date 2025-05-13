@@ -30,8 +30,8 @@ type FileSharingDownloadStore = {
   publicDownloadLink: string | null;
   isEditorLoading: boolean;
   error: Error | null;
-  downloadProgress: DownloadFileDto | null;
-  setDownloadProgress: (progress: DownloadFileDto | null) => void;
+  downloadProgress: DownloadFileDto;
+  setDownloadProgress: (progress: DownloadFileDto) => void;
   createDownloadBlobUrl: (filePath: string, signal?: AbortSignal) => Promise<string | undefined>;
   getPublicDownloadUrl: (filePath: string, filename: string, signal?: AbortSignal) => Promise<string | undefined>;
   loadDownloadUrl: (file: DirectoryFileDTO | null, signal?: AbortSignal) => Promise<void>;
@@ -42,7 +42,7 @@ type FileSharingDownloadStore = {
 
 const initialState = {
   temporaryDownloadUrl: '',
-  downloadProgress: null,
+  downloadProgress: {} as DownloadFileDto,
   publicDownloadLink: null,
   isCreatingBlobUrl: false,
   isFetchingPublicUrl: false,
@@ -144,6 +144,7 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
             get().setDownloadProgress({
               fileName: files.length > 1 ? 'download.zip' : files[0].basename,
               percent,
+              processId: Math.floor(Math.random() * 1_000_000),
             });
           },
         },

@@ -20,7 +20,7 @@ interface ProgressBoxProps {
   title?: string;
   description?: string;
   statusDescription?: string;
-  id: string;
+  id: string | number;
   failed?: number;
   processed?: number;
   total?: number;
