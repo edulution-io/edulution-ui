@@ -140,71 +140,75 @@ const AddUserAccountDialog: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowS
   const getDialogBody = () => (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className={cn('flex flex-col gap-4', enterSafePin ? 'hidden' : '')}>
-          <FormFieldSH
-            control={form.control}
-            name="appName"
-            defaultValue={initialFormValues.appName}
-            render={({ field }) => (
-              <FormItem>
-                <p className="font-bold">{t('common.application')}</p>
-                <FormControl>
-                  <DropdownSelect
-                    options={appNameOptions}
-                    selectedVal={field.value}
-                    handleChange={field.onChange}
-                    variant="dialog"
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            labelTranslationId={t('common.username')}
-            name="accountUser"
-            defaultValue={initialFormValues.accountUser}
-            form={form}
-            variant="dialog"
-          />
-          <FormField
-            labelTranslationId={t('common.password')}
-            name="accountPassword"
-            defaultValue={initialFormValues.accountPassword}
-            form={form}
-            variant="dialog"
-            type="password"
-          />
-        </div>
-        <div className={cn(enterSafePin ? '' : 'hidden')}>
-          <FormFieldSH
-            control={form.control}
-            name="safePin"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <TotpInput
-                    totp={field.value}
-                    maxLength={5}
-                    title={t(
-                      isFirstUserAccount
-                        ? 'usersettings.security.firstEnterSafePin'
-                        : 'usersettings.security.enterSavePin',
-                    )}
-                    setTotp={field.onChange}
-                    onComplete={isFirstUserAccount ? () => {} : form.handleSubmit(onSubmit)}
-                    type={isFirstUserAccount ? 'default' : 'pin'}
-                  />
-                </FormControl>
-                <FormMessage className={cn('text-p')} />
-                {isFirstUserAccount && (
-                  <FormDescription className={cn('text-p')}>
-                    {t('usersettings.security.safePinDescription')}
-                  </FormDescription>
-                )}
-              </FormItem>
-            )}
-          />
-        </div>
+        {!enterSafePin && (
+          <div className={'flex flex-col gap-4'}>
+            <FormFieldSH
+              control={form.control}
+              name="appName"
+              defaultValue={initialFormValues.appName}
+              render={({ field }) => (
+                <FormItem>
+                  <p className="font-bold">{t('common.application')}</p>
+                  <FormControl>
+                    <DropdownSelect
+                      options={appNameOptions}
+                      selectedVal={field.value}
+                      handleChange={field.onChange}
+                      variant="dialog"
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              labelTranslationId={t('common.username')}
+              name="accountUser"
+              defaultValue={initialFormValues.accountUser}
+              form={form}
+              variant="dialog"
+            />
+            <FormField
+              labelTranslationId={t('common.password')}
+              name="accountPassword"
+              defaultValue={initialFormValues.accountPassword}
+              form={form}
+              variant="dialog"
+              type="password"
+            />
+          </div>
+        )}
+        {enterSafePin && (
+          <div>
+            <FormFieldSH
+              control={form.control}
+              name="safePin"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <TotpInput
+                      totp={field.value}
+                      maxLength={5}
+                      title={t(
+                        isFirstUserAccount
+                          ? 'usersettings.security.firstEnterSafePin'
+                          : 'usersettings.security.enterSavePin',
+                      )}
+                      setTotp={field.onChange}
+                      onComplete={isFirstUserAccount ? () => {} : form.handleSubmit(onSubmit)}
+                      type={isFirstUserAccount ? 'default' : 'pin'}
+                    />
+                  </FormControl>
+                  <FormMessage className={cn('text-p')} />
+                  {isFirstUserAccount && (
+                    <FormDescription className={cn('text-p')}>
+                      {t('usersettings.security.safePinDescription')}
+                    </FormDescription>
+                  )}
+                </FormItem>
+              )}
+            />
+          </div>
+        )}
       </form>
     </Form>
   );
