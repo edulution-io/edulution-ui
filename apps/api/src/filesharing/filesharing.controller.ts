@@ -25,6 +25,7 @@ import {
   Req,
   Res,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -40,13 +41,16 @@ import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
+import APPS from '@libs/appconfig/constants/apps';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
 import FilesharingService from './filesharing.service';
 import WebdavService from '../webdav/webdav.service';
+import AccessGuard from '../auth/access.guard';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
+@UseGuards(AccessGuard(APPS.FILE_SHARING))
 @Controller(FileSharingApiEndpoints.BASE)
 class FilesharingController {
   private readonly baseurl = process.env.EDUI_WEBDAV_URL as string;
