@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Logger } from '@nestjs/common';
+import { Logger, LogLevel } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -24,8 +24,16 @@ import AppModule from './app/app.module';
 import AuthenticationGuard from './auth/auth.guard';
 
 async function bootstrap() {
+  const logLevels: LogLevel[] = ((): LogLevel[] => {
+    const level = process.env.EDUI_LOG_LEVEL || 'log';
+    const levels: LogLevel[] = ['error', 'warn', 'log', 'debug', 'verbose'];
+    const index = levels.indexOf(level as LogLevel);
+    return index >= 0 ? levels.slice(0, index + 1) : ['log'];
+  })();
+
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: { origin: process.env.EDUI_CORS_URL },
+    logger: logLevels,
   });
   const globalPrefix = EDU_API_ROOT;
   app.setGlobalPrefix(globalPrefix);

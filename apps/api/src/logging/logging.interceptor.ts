@@ -37,7 +37,7 @@ class LoggingInterceptor implements NestInterceptor {
 
         const { statusCode } = response;
 
-        this.logger.log(
+        this.logger.debug(
           `${statusCode} ${Date.now() - now}ms ${context.getClass().name}.${context.getHandler().name} ${method} ${url}`,
         );
       }),
