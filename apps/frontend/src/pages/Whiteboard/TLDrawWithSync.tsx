@@ -15,12 +15,12 @@ import { Editor, TLAssetStore, Tldraw, TLImageShapeProps } from 'tldraw';
 import { useSync } from '@tldraw/sync';
 import 'tldraw/tldraw.css';
 import COLOR_SCHEME from '@libs/ui/constants/colorScheme';
-import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import eduApi from '@/api/eduApi';
-import APPS from '@libs/appconfig/constants/apps';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
-import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
 import useUserStore from '@/store/UserStore/UserStore';
+import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/apiEndpoints';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import handleApiError from '@/utils/handleApiError';
 
 type TldrawWithSyncProps = {
   uri: string;
@@ -30,6 +30,8 @@ type TldrawWithSyncProps = {
 
 const TldrawWithSync = ({ uri, userLanguage, userName }: TldrawWithSyncProps) => {
   const { user } = useUserStore();
+
+  const assetBasePath = `/${TLDRAW_SYNC_ENDPOINTS.BASE}/${TLDRAW_SYNC_ENDPOINTS.ASSETS}`;
 
   const applyUserPreferences = (editor: Editor) => {
     editor.user.updateUserPreferences({
@@ -84,10 +86,8 @@ const TldrawWithSync = ({ uri, userLanguage, userName }: TldrawWithSyncProps) =>
       if (stillUsed) return;
 
       void eduApi
-        .delete(`/${EDU_API_CONFIG_ENDPOINTS.FILES}/${APPS.WHITEBOARD}/${encodeURIComponent(fileName)}`)
-        .catch((err) => {
-          console.error('Failed to delete file on server', err);
-        });
+        .delete(`${assetBasePath}/${encodeURIComponent(fileName)}`)
+        .catch((err) => handleApiError(err, () => {}));
     });
   };
 
@@ -99,15 +99,15 @@ const TldrawWithSync = ({ uri, userLanguage, userName }: TldrawWithSyncProps) =>
         const form = new FormData();
         form.append('file', file, filename);
 
-        await eduApi.post<string>(`/${EDU_API_CONFIG_ENDPOINTS.FILES}/${APPS.WHITEBOARD}`, form, {
+        const assetPath = `${assetBasePath}/${encodeURIComponent(filename)}`;
+
+        await eduApi.post<string>(assetPath, form, {
           headers: {
             [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA,
           },
         });
 
-        const url = `${eduApi.defaults.baseURL}${EDU_API_CONFIG_ENDPOINTS.FILES}/${FILE_ENDPOINTS.FILE}/${APPS.WHITEBOARD}/${encodeURIComponent(
-          filename,
-        )}`;
+        const url = `${EDU_API_URL}${assetPath}`;
 
         return { src: url, meta: { url } };
       },
