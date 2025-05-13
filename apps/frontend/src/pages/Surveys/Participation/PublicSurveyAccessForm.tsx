@@ -12,9 +12,9 @@
 
 import React from 'react';
 import { z } from 'zod';
-import { validate } from 'uuid';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import publicUserRegex, { publicUserSeperator } from '@libs/survey/utils/publicUserLoginRegex';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
@@ -30,7 +30,7 @@ const PublicSurveyAccessForm = (): React.ReactNode => {
       publicUserName: z
         .string({ required_error: t('common.required') })
         .min(5, { message: t('login.username_too_short') })
-        .max(36, { message: t('login.username_too_long') }),
+        .max(50, { message: t('login.username_too_long') }),
     });
 
   const form = useForm<{ publicUserName: string }>({
@@ -45,7 +45,10 @@ const PublicSurveyAccessForm = (): React.ReactNode => {
     if (!isPublicUserNameValid) {
       return;
     }
-    if (!validate(publicUserName)) {
+
+    console.log('is', publicUserName, 'regex', publicUserRegex.test(publicUserName));
+
+    if (!publicUserRegex.test(publicUserName)) {
       setAttendee({
         username: undefined,
         firstName: publicUserName,
@@ -56,13 +59,19 @@ const PublicSurveyAccessForm = (): React.ReactNode => {
       return;
     }
 
+    const publicUserNameParts = publicUserName.split(publicUserSeperator);
+    const publicUserId = publicUserNameParts.pop();
+    const publicUsername = publicUserNameParts.slice(1).join(publicUserSeperator);
     const publicUser = {
       username: publicUserName,
-      firstName: undefined,
-      lastName: publicUserName,
-      label: undefined,
+      firstName: publicUsername,
+      lastName: publicUserId,
+      label: publicUsername,
       value: publicUserName,
     };
+
+    console.log('publicUser', publicUser);
+
     // eslint-disable-next-line no-underscore-dangle
     if (selectedSurvey?._id) {
       const checkExistenceOfPublicUsername = await checkForMatchingUserNameAndPubliUserId(

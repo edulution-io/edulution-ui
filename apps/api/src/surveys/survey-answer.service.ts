@@ -19,10 +19,9 @@ import JWTUser from '@libs/user/types/jwt/jwtUser';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import { createNewPublicUserLogin } from '@libs/survey/utils/publicUserLoginRegex';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
-import ChoiceDto from '@libs/survey/types/api/choice.dto';
-import JWTUser from '@libs/user/types/jwt/jwtUser';
 import CustomHttpException from '../common/CustomHttpException';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
@@ -251,12 +250,19 @@ class SurveyAnswersService {
 
       if (canUpdateFormerAnswer || canSubmitMultipleAnswers) {
         const newPublicUserId = uuidv4();
-        const user: Attendee = { ...attendee, username: newPublicUserId, lastName: newPublicUserId };
+        const newPublicUserLogin = createNewPublicUserLogin(firstName, newPublicUserId);
+        const user: Attendee = { ...attendee, username: newPublicUserLogin, lastName: newPublicUserId };
+
+        Logger.log(`user: ${user}`, SurveyAnswersService.name);
+
         const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(user, surveyId, saveNo, answer);
         return createdAnswer;
       }
 
       const user: Attendee = { ...attendee, username: firstName };
+
+      Logger.log(`user: ${user}`, SurveyAnswersService.name);
+
       const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(user, surveyId, saveNo, answer);
       return createdAnswer;
     }
