@@ -11,20 +11,11 @@
  */
 
 import { HttpMethods } from '@libs/common/types/http-methods';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import eduApi from '@/api/eduApi';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
-import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
-import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import { t } from 'i18next';
 import { HttpStatusCode } from 'axios';
-
-async function handleDeleteItems(itemsToDelete: PathChangeOrCreateDto[], endpoint: string): Promise<void> {
-  const cleanPaths = itemsToDelete.map((item) => getPathWithoutWebdav(item.path));
-  const url = buildApiDeletePathUrl(endpoint, DeleteTargetType.FILE_SERVER);
-  await eduApi.delete(url, { data: { paths: cleanPaths } });
-}
 
 const handleBulkFileOperations = async (
   action: FileActionType,
@@ -32,6 +23,7 @@ const handleBulkFileOperations = async (
   httpMethod: HttpMethods,
   items: PathChangeOrCreateDto[],
   setResult: (success: boolean | undefined, message: string, statusCode: number) => void,
+  handleDeleteItems: (items: PathChangeOrCreateDto[], endpoint: string) => Promise<void>,
 ) => {
   try {
     switch (action) {

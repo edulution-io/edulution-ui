@@ -25,8 +25,13 @@ import handleFileOrCreateFile from '@/pages/FileSharing/Dialog/handleFileAction/
 import handleBulkFileOperations from '@/pages/FileSharing/Dialog/handleFileAction/handleBulkFileOperations';
 import handleSingleData from '@/pages/FileSharing/Dialog/handleFileAction/handleSingleData';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
+import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
 import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
 import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
+import eduApi from '@/api/eduApi';
+import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
+import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 
 interface FileSharingDialogStore {
   isDialogOpen: boolean;
@@ -58,6 +63,7 @@ interface FileSharingDialogStore {
   fileOperationResult: WebDavActionResult | undefined;
   setFileOperationResult: (fileOperationSuccessful: boolean | undefined, message: string, status: number) => void;
   setSubmitButtonIsDisabled: (isSubmitButtonActive: boolean) => void;
+  handleDeleteItems: (itemsToDelete: PathChangeOrCreateDto[], endpoint: string) => Promise<void>;
 }
 
 const initialState: Partial<FileSharingDialogStore> = {
@@ -115,6 +121,7 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
           httpMethod,
           data as PathChangeOrCreateProps[],
           get().setFileOperationResult,
+          get().handleDeleteItems,
         );
       } else {
         await handleSingleData(action, endpoint, httpMethod, type, data);
@@ -126,6 +133,12 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
     } finally {
       set({ isLoading: false, isDialogOpen: false, error: null });
     }
+  },
+
+  async handleDeleteItems(itemsToDelete: PathChangeOrCreateDto[], endpoint: string): Promise<void> {
+    const cleanPaths = itemsToDelete.map((item) => getPathWithoutWebdav(item.path));
+    const url = buildApiDeletePathUrl(endpoint, DeleteTargetType.FILE_SERVER);
+    await eduApi.delete(url, { data: { paths: cleanPaths } });
   },
 }));
 
