@@ -141,7 +141,7 @@ const AddUserAccountDialog: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowS
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         {!enterSafePin && (
-          <div className={'flex flex-col gap-4'}>
+          <div className="flex flex-col gap-4">
             <FormFieldSH
               control={form.control}
               name="appName"
