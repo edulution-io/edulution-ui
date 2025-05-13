@@ -136,7 +136,7 @@
       "EdulutionConnectionFailed": "Verbindung zum edulution Server fehlgeschlagen. Bitte versuche es später noch einmal."
     },
     "logout": {
-      "success": "Abmelden erfolgreich"
+      "success": "Erfolgreich abgemeldet"
     }
   },
   "lmnApi": {

@@ -17,11 +17,11 @@ import useLogout from './useLogout';
 const useTokenEventListeners = () => {
   const auth = useAuth();
   const handleLogout = useLogout();
-  const hasRunRef = useRef(false);
+  const alreadyLoggedOutRef = useRef(false);
 
   const handleTokenExpiredRef = useRef<() => void>(() => {
-    if (hasRunRef.current) return;
-    hasRunRef.current = true;
+    if (alreadyLoggedOutRef.current) return;
+    alreadyLoggedOutRef.current = true;
 
     void handleLogout();
   });
