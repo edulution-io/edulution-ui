@@ -25,7 +25,7 @@ const CopyContentDialogBody: React.FC<Omit<MoveContentDialogProps, 'pathToFetch'
       showAllFiles
       pathToFetch={homePath}
       fileType={ContentType.DIRECTORY}
-      listCurrentDirectory
+      isCurrentPathDefaultDestination
     />
   );
 };
