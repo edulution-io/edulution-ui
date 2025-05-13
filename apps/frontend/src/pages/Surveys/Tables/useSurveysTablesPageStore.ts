@@ -23,7 +23,7 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import HttpStatus from '@libs/common/constants/httpStatus';
+import { HttpStatusCode } from 'axios';
 
 interface SurveysTablesPageStore {
   selectedSurvey: SurveyDto | undefined;
@@ -116,7 +116,7 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
     try {
       const response = await eduApi.get<boolean>(`${SURVEY_CAN_PARTICIPATE_ENDPOINT}/${surveyId}`);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- it's a number
-      if (response.status === HttpStatus.OK) {
+      if (response.status === HttpStatusCode.Ok) {
         set({ canParticipate: response.data });
       }
     } catch (error) {
@@ -133,7 +133,7 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
     try {
       const response = await eduApi.get<boolean>(`${SURVEY_HAS_ANSWERS_ENDPOINT}/${surveyId}`);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- it's a number
-      if (response.status === HttpStatus.OK) {
+      if (response.status === HttpStatusCode.Ok) {
         set({ hasAnswers: response.data });
       }
     } catch (error) {

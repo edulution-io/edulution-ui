@@ -14,7 +14,7 @@ import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import handleApiError from '@/utils/handleApiError';
-import HttpStatus from '@libs/common/constants/httpStatus';
+import { HttpStatusCode } from 'axios';
 
 type EduApiStore = {
   isEduApiHealthyLoading: boolean;
@@ -34,7 +34,7 @@ const useEduApiStore = create<EduApiStore>((set) => ({
     set({ isEduApiHealthyLoading: true });
     try {
       const response = await eduApi.get<void>(EDU_API_CONFIG_ENDPOINTS.HEALTH_CHECK);
-      return response.status === Number(HttpStatus.OK);
+      return response.status === Number(HttpStatusCode.Ok);
     } catch (e) {
       handleApiError(e, set);
       return false;

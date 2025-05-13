@@ -18,7 +18,7 @@ import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreatePro
 import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import { t } from 'i18next';
-import HttpStatus from '@libs/common/constants/httpStatus';
+import { HttpStatusCode } from 'axios';
 
 async function handleDeleteItems(itemsToDelete: PathChangeOrCreateDto[], endpoint: string): Promise<void> {
   const cleanPaths = itemsToDelete.map((item) => getPathWithoutWebdav(item.path));
@@ -26,13 +26,13 @@ async function handleDeleteItems(itemsToDelete: PathChangeOrCreateDto[], endpoin
   await eduApi.delete(url, { data: { paths: cleanPaths } });
 }
 
-export default async function handleBulkFileOperations(
+const handleBulkFileOperations = async (
   action: FileActionType,
   endpoint: string,
   httpMethod: HttpMethods,
   items: PathChangeOrCreateDto[],
   setResult: (success: boolean | undefined, message: string, statusCode: number) => void,
-) {
+) => {
   try {
     switch (action) {
       case FileActionType.DELETE_FILE_FOLDER:
@@ -51,8 +51,10 @@ export default async function handleBulkFileOperations(
       ? true
       : undefined;
 
-    setResult(success, t('fileOperationSuccessful'), HttpStatus.OK);
+    setResult(success, t('fileOperationSuccessful'), HttpStatusCode.Ok);
   } catch (rawError: unknown) {
-    setResult(false, t('unknownErrorOccurred'), HttpStatus.INTERNAL_SERVER_ERROR);
+    setResult(false, t('unknownErrorOccurred'), HttpStatusCode.InternalServerError);
   }
-}
+};
+
+export default handleBulkFileOperations;

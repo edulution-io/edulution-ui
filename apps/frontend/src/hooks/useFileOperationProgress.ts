@@ -11,9 +11,8 @@
  */
 
 import { useEffect, useState } from 'react';
-import subscribeProgress from '@/hooks/subscribeProgress';
 
-const useProgress = <T>(
+const useFileOperationProgress = <T>(
   eventSource: EventSource | null,
   types: string[],
   clearIfComplete?: (data: T, setter: (d: T | null) => void) => Promise<void>,
@@ -22,18 +21,30 @@ const useProgress = <T>(
 
   useEffect(() => {
     if (!eventSource) {
-      return undefined;
+      return () => {};
     }
 
-    return subscribeProgress<T>(eventSource, types, async (data) => {
-      setProgress(data);
-      if (clearIfComplete) {
-        await clearIfComplete(data, setProgress);
+    const controller = new AbortController();
+    const handler = (evt: MessageEvent<string>) => {
+      try {
+        const data = JSON.parse(evt.data) as T;
+        setProgress(data);
+        clearIfComplete?.(data, setProgress).catch((err) => console.error('Error in progress handler:', err));
+      } catch (err) {
+        console.error('Invalid JSON in SSE event', err);
       }
-    });
+    };
+
+    types.forEach((type) =>
+      eventSource.addEventListener(type, handler as EventListener, {
+        signal: controller.signal,
+      }),
+    );
+
+    return () => controller.abort();
   }, [eventSource, types.join(',')]);
 
   return progress;
 };
 
-export default useProgress;
+export default useFileOperationProgress;

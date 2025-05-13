@@ -24,12 +24,11 @@ import useIsAppActive from '@/hooks/useIsAppActive';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import UseBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
-import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import delay from '@libs/common/utils/delay';
 import useSseStore from '@/store/useSseStore';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import subscribeProgress from '@/hooks/subscribeProgress';
+import useFileOperationProgress from '@/hooks/useFileOperationProgress';
 
 const useNotifications = () => {
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
@@ -42,7 +41,6 @@ const useNotifications = () => {
   const { updateOpenSurveys } = useSurveyTablesPageStore();
   const isBulletinBoardActive = useIsAppActive(APPS.BULLETIN_BOARD);
   const { addBulletinBoardNotification } = UseBulletinBoardStore();
-  const { setFilesharingProgress } = useLessonStore();
   const { setFileOperationProgress } = useFileSharingStore();
   const isClassRoomManagementActive = useIsAppActive(APPS.CLASS_MANAGEMENT);
   const { eventSource } = useSseStore();
@@ -57,6 +55,22 @@ const useNotifications = () => {
       clearFn(null);
     }
   };
+
+  const filessaringProgress = useFileOperationProgress<FilesharingProgressDto>(
+    isFileSharingActive ? eventSource : null,
+    [
+      SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES,
+      SSE_MESSAGE_TYPE.FILESHARING_MOVE_OR_RENAME_FILES,
+      SSE_MESSAGE_TYPE.FILESHARING_COPY_FILES,
+    ],
+    clearProgressIfComplete,
+  );
+
+  const classroomProgress = useFileOperationProgress<FilesharingProgressDto>(
+    isClassRoomManagementActive ? eventSource : null,
+    [SSE_MESSAGE_TYPE.FILESHARING_SHARE_FILES, SSE_MESSAGE_TYPE.FILESHARING_COLLECT_FILES],
+    clearProgressIfComplete,
+  );
 
   useDockerContainerEvents();
 
@@ -132,33 +146,13 @@ const useNotifications = () => {
 
   useEffect(() => {
     if (!isFileSharingActive || !eventSource) return;
-
-    subscribeProgress<FilesharingProgressDto>(
-      eventSource,
-      [
-        SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES,
-        SSE_MESSAGE_TYPE.FILESHARING_MOVE_OR_RENAME_FILES,
-        SSE_MESSAGE_TYPE.FILESHARING_COPY_FILES,
-      ],
-      async (data: FilesharingProgressDto) => {
-        setFileOperationProgress(data);
-        await clearProgressIfComplete(data, setFileOperationProgress);
-      },
-    );
-  }, [isFileSharingActive, eventSource]);
+    if (filessaringProgress) setFileOperationProgress(filessaringProgress);
+  }, [isFileSharingActive, eventSource, filessaringProgress]);
 
   useEffect(() => {
     if (!isClassRoomManagementActive || !eventSource) return;
-
-    subscribeProgress<FilesharingProgressDto>(
-      eventSource,
-      [SSE_MESSAGE_TYPE.FILESHARING_SHARE_FILES, SSE_MESSAGE_TYPE.FILESHARING_COLLECT_FILES],
-      async (data: FilesharingProgressDto) => {
-        setFilesharingProgress(data);
-        await clearProgressIfComplete(data, setFilesharingProgress);
-      },
-    );
-  }, [isClassRoomManagementActive, eventSource]);
+    if (classroomProgress) setFileOperationProgress(classroomProgress);
+  }, [isClassRoomManagementActive, eventSource, classroomProgress]);
 
   useEffect(() => {
     if (!isSurveysAppActivated || !eventSource) {
