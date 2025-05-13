@@ -23,14 +23,14 @@ import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/Floating
 import DownloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/downloadButton';
 import MoveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/moveButton';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
-import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
+import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import CopyButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/copyButton';
 
 const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItem }) => {
-  const { downloadFile } = useFileEditorStore();
+  const { createDownloadBlobUrl } = useFileSharingDownloadStore();
 
   const startDownload = async (filePath: string, filename: string) => {
-    const downloadLinkURL = await downloadFile(filePath);
+    const downloadLinkURL = await createDownloadBlobUrl(filePath);
     if (!downloadLinkURL) return;
     const link = document.createElement('a');
     link.href = downloadLinkURL;
