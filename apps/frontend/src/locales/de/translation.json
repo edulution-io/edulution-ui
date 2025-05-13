@@ -134,6 +134,9 @@
       "LmnConnectionFailed": "Verbindung zum Schulserver fehlgeschlagen.",
       "KeycloakConnectionFailed": "Verbindung zum Authentifizierungsserver fehlgeschlagen.",
       "EdulutionConnectionFailed": "Verbindung zum edulution Server fehlgeschlagen. Bitte versuche es später noch einmal."
+    },
+    "logout": {
+      "success": "Erfolgreich abgemeldet"
     }
   },
   "lmnApi": {
