@@ -24,9 +24,9 @@ import {
   LmnVdiResponse,
   VirtualMachines,
 } from '@libs/desktopdeployment/types';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import APPS from '@libs/appconfig/constants/apps';
+import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
 import AppConfigService from '../appconfig/appconfig.service';
 
