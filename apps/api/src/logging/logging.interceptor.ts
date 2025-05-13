@@ -68,6 +68,20 @@ class LoggingInterceptor implements NestInterceptor {
         const error = err instanceof Error ? err : new Error(String(err));
 
         switch (logLevel) {
+          case 'warn':
+            Logger.error(
+              JSON.stringify({
+                method,
+                url,
+                params,
+                query,
+                ip,
+                message: error.message,
+              }),
+              undefined,
+              'LoggingInterceptorError',
+            );
+            break;
           case 'debug':
             Logger.error(
               JSON.stringify({
@@ -80,20 +94,6 @@ class LoggingInterceptor implements NestInterceptor {
                 stack: error.stack,
               }),
               error.stack,
-              'LoggingInterceptorError',
-            );
-            break;
-          case 'warn':
-            Logger.error(
-              JSON.stringify({
-                method,
-                url,
-                params,
-                query,
-                ip,
-                message: error.message,
-              }),
-              undefined,
               'LoggingInterceptorError',
             );
             break;
