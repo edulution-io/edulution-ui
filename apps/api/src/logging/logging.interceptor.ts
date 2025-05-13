@@ -11,9 +11,11 @@
  */
 
 import { CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from '@nestjs/common';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Request, Response } from 'express';
+
+const logLevel = process.env.EDUI_LOG_LEVEL;
 
 @Injectable()
 class LoggingInterceptor implements NestInterceptor {
@@ -21,6 +23,7 @@ class LoggingInterceptor implements NestInterceptor {
     if (context.getType() !== 'http') {
       return next.handle();
     }
+
     const req = context.switchToHttp().getRequest<Request>();
     const res = context.switchToHttp().getResponse<Response>();
     const { method, url, params, query } = req;
@@ -32,39 +35,73 @@ class LoggingInterceptor implements NestInterceptor {
       tap(() => {
         const duration = Date.now() - start;
         const { statusCode } = res;
-        const contentLength = res.getHeader('content-length') || '-';
-        Logger.verbose(
-          JSON.stringify({
-            method,
-            url,
-            params,
-            query,
-            ip,
-            userAgent,
-            statusCode,
-            contentLength,
-            duration,
-            handler: `${context.getClass().name}.${context.getHandler().name}`,
-          }),
-          LoggingInterceptor.name,
-        );
+        const contentLength = res.getHeader('content-length') ?? '-';
+        const contextClassName = context.getClass().name;
+        const contextHandlerName = context.getHandler().name;
+
+        switch (logLevel) {
+          case 'debug':
+            Logger.debug(`${statusCode} ${duration}ms ${contextClassName}.${contextHandlerName} ${method} ${url}`);
+            break;
+          case 'verbose':
+            Logger.verbose(
+              JSON.stringify({
+                method,
+                url,
+                params,
+                query,
+                ip,
+                userAgent,
+                statusCode,
+                contentLength,
+                duration,
+                handler: `${contextClassName}.${contextHandlerName}`,
+              }),
+              LoggingInterceptor.name,
+            );
+            break;
+          default:
+            break;
+        }
       }),
       catchError((err: unknown) => {
         const error = err instanceof Error ? err : new Error(String(err));
 
-        Logger.debug(
-          JSON.stringify({
-            method,
-            url,
-            params,
-            query,
-            ip,
-            message: error.message,
-            stack: error.stack,
-          }),
-          'LoggingInterceptorError',
-        );
-        throw err;
+        switch (logLevel) {
+          case 'debug':
+            Logger.error(
+              JSON.stringify({
+                method,
+                url,
+                params,
+                query,
+                ip,
+                message: error.message,
+                stack: error.stack,
+              }),
+              error.stack,
+              'LoggingInterceptorError',
+            );
+            break;
+          case 'warn':
+            Logger.error(
+              JSON.stringify({
+                method,
+                url,
+                params,
+                query,
+                ip,
+                message: error.message,
+              }),
+              undefined,
+              'LoggingInterceptorError',
+            );
+            break;
+          default:
+            break;
+        }
+
+        return throwError(() => err);
       }),
     );
   }

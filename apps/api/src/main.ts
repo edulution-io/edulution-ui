@@ -25,7 +25,7 @@ import AuthenticationGuard from './auth/auth.guard';
 import getLogLevels from './logging/getLogLevels';
 
 async function bootstrap() {
-  const logLevels = getLogLevels(process.env.EDUI_LOG_LEVELS);
+  const logLevels = getLogLevels(process.env.EDUI_LOG_LEVEL);
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: { origin: process.env.EDUI_CORS_URL },
@@ -66,7 +66,13 @@ async function bootstrap() {
   }
 
   await app.listen(port);
-  Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
+  if (logLevels) {
+    Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
+    Logger.log(`Logging-Levels: ${logLevels.map((level) => level.toUpperCase()).join(', ')}`);
+  } else {
+    console.info(`Application is running on: http://localhost:${port}/${globalPrefix}`);
+    console.info('Logging off');
+  }
 }
 
 bootstrap().catch((e) => Logger.log(e));

@@ -11,16 +11,27 @@
  */
 
 import { LogLevel } from '@nestjs/common';
+import LOG_LEVELS from './log-levels';
 
-const getLogLevels = (envValue: string | undefined): LogLevel[] => {
-  const allLevels: LogLevel[] = ['error', 'warn', 'log', 'debug', 'verbose'];
+const getLogLevels = (envValue: string | undefined): LogLevel[] | false => {
+  const allLevels: LogLevel[] = Object.values(LOG_LEVELS);
+  const fallBackLevels = [LOG_LEVELS.ERROR, LOG_LEVELS.WARN, LOG_LEVELS.LOG];
   if (!envValue) {
-    return process.env.NODE_ENV === 'production' ? ['error', 'warn'] : ['log', 'error', 'warn', 'debug', 'verbose'];
+    return process.env.NODE_ENV === 'production' ? fallBackLevels : allLevels;
   }
 
-  const requested = envValue.split(',').map((l) => l.trim()) as LogLevel[];
-  const valid = requested.filter((l) => allLevels.includes(l));
-  return valid.length > 0 ? valid : ['log'];
+  if (envValue === 'off') {
+    return false;
+  }
+
+  const level = envValue.trim().toLowerCase() as LogLevel;
+  const index = allLevels.indexOf(level);
+
+  if (index === -1) {
+    return fallBackLevels;
+  }
+
+  return allLevels.slice(0, index + 1);
 };
 
 export default getLogLevels;
