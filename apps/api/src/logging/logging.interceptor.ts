@@ -14,6 +14,8 @@ import { CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } fr
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Request, Response } from 'express';
+import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import LOG_LEVELS from './log-levels';
 
 const logLevel = process.env.EDUI_LOG_LEVEL;
 
@@ -27,23 +29,23 @@ class LoggingInterceptor implements NestInterceptor {
     const req = context.switchToHttp().getRequest<Request>();
     const res = context.switchToHttp().getResponse<Response>();
     const { method, url, params, query } = req;
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-    const userAgent = req.headers['user-agent'];
+    const ip = req.headers[HTTP_HEADERS.XForwaredFor] || req.socket.remoteAddress;
+    const userAgent = req.headers[HTTP_HEADERS.UserAgent];
     const start = Date.now();
 
     return next.handle().pipe(
       tap(() => {
         const duration = Date.now() - start;
         const { statusCode } = res;
-        const contentLength = res.getHeader('content-length') ?? '-';
+        const contentLength = res.getHeader(HTTP_HEADERS.ContentLength) ?? '-';
         const contextClassName = context.getClass().name;
         const contextHandlerName = context.getHandler().name;
 
         switch (logLevel) {
-          case 'debug':
+          case LOG_LEVELS.DEBUG:
             Logger.debug(`${statusCode} ${duration}ms ${contextClassName}.${contextHandlerName} ${method} ${url}`);
             break;
-          case 'verbose':
+          case LOG_LEVELS.VERBOSE:
             Logger.verbose(
               JSON.stringify({
                 method,
@@ -68,7 +70,7 @@ class LoggingInterceptor implements NestInterceptor {
         const error = err instanceof Error ? err : new Error(String(err));
 
         switch (logLevel) {
-          case 'warn':
+          case LOG_LEVELS.WARN:
             Logger.error(
               JSON.stringify({
                 method,
@@ -79,10 +81,10 @@ class LoggingInterceptor implements NestInterceptor {
                 message: error.message,
               }),
               undefined,
-              'LoggingInterceptorError',
+              LoggingInterceptor.name,
             );
             break;
-          case 'debug':
+          case LOG_LEVELS.DEBUG:
             Logger.error(
               JSON.stringify({
                 method,
@@ -94,7 +96,7 @@ class LoggingInterceptor implements NestInterceptor {
                 stack: error.stack,
               }),
               error.stack,
-              'LoggingInterceptorError',
+              LoggingInterceptor.name,
             );
             break;
           default:
