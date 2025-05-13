@@ -19,6 +19,8 @@ import eduApi from '@/api/eduApi';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import useUserStore from '@/store/UserStore/UserStore';
 import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/apiEndpoints';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import handleApiError from '@/utils/handleApiError';
 
 type TldrawWithSyncProps = {
   uri: string;
@@ -83,9 +85,9 @@ const TldrawWithSync = ({ uri, userLanguage, userName }: TldrawWithSyncProps) =>
 
       if (stillUsed) return;
 
-      void eduApi.delete(`${assetBasePath}/${encodeURIComponent(fileName)}`).catch((err) => {
-        console.error('Failed to delete file on server', err);
-      });
+      void eduApi
+        .delete(`${assetBasePath}/${encodeURIComponent(fileName)}`)
+        .catch((err) => handleApiError(err, () => {}));
     });
   };
 
@@ -105,7 +107,7 @@ const TldrawWithSync = ({ uri, userLanguage, userName }: TldrawWithSyncProps) =>
           },
         });
 
-        const url = `${eduApi.defaults.baseURL}${assetPath}`;
+        const url = `${EDU_API_URL}${assetPath}`;
 
         return { src: url, meta: { url } };
       },
