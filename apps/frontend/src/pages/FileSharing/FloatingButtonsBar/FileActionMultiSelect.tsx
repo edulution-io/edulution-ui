@@ -22,36 +22,15 @@ import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtili
 import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
+import useStartWebdavFileDownload from '@/hooks/useStartWebdavFileDownload';
 
 const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItems }) => {
-  const { loadDownloadUrlMultipleFiles } = useFileSharingDownloadStore();
-  const { setFileIsCurrentlyDisabled } = useFileSharingStore();
+  const startDownload = useStartWebdavFileDownload();
   let selectedFiles: DirectoryFileDTO[] = [];
 
   if (selectedItems) {
     selectedFiles = Array.isArray(selectedItems) ? selectedItems : [selectedItems];
   }
-
-  const startDownload = async () => {
-    if (!selectedFiles.length) return;
-
-    await Promise.all(selectedFiles.map((file) => setFileIsCurrentlyDisabled(file.basename, true)));
-
-    const url = await loadDownloadUrlMultipleFiles(selectedFiles);
-    if (!url) return;
-
-    const link = Object.assign(document.createElement('a'), {
-      href: url,
-      download: selectedFiles.length > 1 ? 'download.zip' : selectedFiles[0].basename,
-    });
-    document.body.append(link);
-    link.click();
-    link.remove();
-
-    await Promise.all(selectedFiles.map((file) => setFileIsCurrentlyDisabled(file.basename, false)));
-  };
 
   const canDownload =
     selectedFiles.length > 0 &&
@@ -61,7 +40,11 @@ const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog, selected
     buttons: [
       DeleteButton(() => openDialog(FileActionType.DELETE_FILE_FOLDER)),
       MoveButton(() => openDialog(FileActionType.MOVE_FILE_FOLDER)),
-      DownloadButton(canDownload ? startDownload : () => {}, canDownload),
+      DownloadButton(async () => {
+        if (!selectedFiles) return;
+        const files = Array.isArray(selectedFiles) ? selectedFiles : [selectedFiles];
+        await startDownload(files);
+      }, canDownload),
     ],
     keyPrefix: 'file-sharing-page-floating-button_',
   };

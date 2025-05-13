@@ -17,6 +17,7 @@ import FileActionNonSelect from '@/pages/FileSharing/FloatingButtonsBar/FileActi
 import FileActionMultiSelect from '@/pages/FileSharing/FloatingButtonsBar/FileActionMultiSelect';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
 import QuotaThresholdPercent from '@libs/filesharing/constants/quotaThresholdPercent';
+import FileActionOneSelect from '@/pages/FileSharing/FloatingButtonsBar/FileActionOneSelect';
 
 const FileSharingFloatingButtonsBar = () => {
   const { openDialog } = useFileSharingDialogStore();
@@ -27,7 +28,13 @@ const FileSharingFloatingButtonsBar = () => {
     <>
       {showFileActionNonSelect && <FileActionNonSelect openDialog={openDialog} />}
 
-      {selectedItems.length > 0 && (
+      {selectedItems.length === 1 && (
+        <FileActionOneSelect
+          openDialog={openDialog}
+          selectedItems={selectedItems.at(0)}
+        />
+      )}
+      {selectedItems.length > 1 && (
         <FileActionMultiSelect
           openDialog={openDialog}
           selectedItems={selectedItems}
