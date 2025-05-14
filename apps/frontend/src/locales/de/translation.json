@@ -186,13 +186,15 @@
     "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
     "importer": {
       "filterPlaceHolderText": "Suche nach Benutzername",
-      "title": "E-Mail-Importer",
+      "title": "E-Mail-Sync",
       "provider": "E-Mail-Provider",
       "interval": "Sync-Intervall",
       "isActive": "Aktiv",
-      "syncJobsTable": "Importer Jobs",
+      "syncJobsTable": "Sync-Jobs",
       "mailAddress": "E-Mail-Adresse",
-      "noMailConfigured": "Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator."
+      "noMailConfigured": "Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator.",
+      "syncAccountAdded": "Konto für Sync-Job hinzugefügt.",
+      "syncAccountDeleted": "Konto für Sync-Job gelöscht."
     }
   },
   "chat": {

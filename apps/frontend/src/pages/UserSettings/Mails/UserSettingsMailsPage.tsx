@@ -73,7 +73,7 @@ const UserSettingsMailsPage: React.FC = () => {
   };
 
   const handleCreateSyncJob = () => {
-    const selectedProviderConfig = externalMailProviderConfig.filter((config) => config.name === option)[0];
+    const selectedProviderConfig = externalMailProviderConfig.filter((config) => config.id === option)[0];
 
     const createSyncJobDto = {
       ...syncjobDefaultConfig,
@@ -91,12 +91,12 @@ const UserSettingsMailsPage: React.FC = () => {
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
-      SaveButton(() => handleCreateSyncJob(), externalMailProviderConfig.length > 0),
+      SaveButton(handleCreateSyncJob, externalMailProviderConfig.length > 0),
       ReloadButton(() => {
         void getSyncJob();
         void getExternalMailProviderConfig();
       }),
-      DeleteButton(() => handleDeleteSyncJob(), Object.keys(selectedSyncJob).length > 0),
+      DeleteButton(handleDeleteSyncJob, Object.keys(selectedSyncJob).length > 0),
     ],
     keyPrefix: 'usersettings-mails-_',
   };
