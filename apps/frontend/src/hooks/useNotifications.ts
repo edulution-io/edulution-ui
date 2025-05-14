@@ -27,6 +27,7 @@ import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import useSseStore from '@/store/useSseStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileOperationProgress from '@/hooks/useFileOperationProgress';
+import useFileOperationToast from '@/hooks/useFileOperationToast';
 
 const useNotifications = () => {
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
@@ -47,6 +48,8 @@ const useNotifications = () => {
   useFileOperationProgress(isFileSharingActive || isClassRoomManagementActive, eventSource, setFileOperationProgress);
 
   useDockerContainerEvents();
+
+  useFileOperationToast();
 
   useEffect(() => {
     conferencesRef.current = conferences;

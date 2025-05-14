@@ -20,25 +20,32 @@ class FilesharingProgressDto {
   title: string;
 
   @IsString()
-  description: string;
+  @IsOptional()
+  description?: string;
 
   @IsString()
-  statusDescription: string;
+  @IsOptional()
+  statusDescription?: string;
 
   @IsNumber()
-  processed: number;
+  @IsOptional()
+  processed?: number;
 
   @IsNumber()
-  total: number;
+  @IsOptional()
+  total?: number;
 
   @IsNumber()
-  percent: number;
+  @IsOptional()
+  percent?: number;
 
   @IsString()
-  currentFilePath: string;
+  @IsOptional()
+  currentFilePath?: string;
 
   @IsString()
-  username: string;
+  @IsOptional()
+  studentName?: string;
 
   @IsOptional()
   @IsArray()

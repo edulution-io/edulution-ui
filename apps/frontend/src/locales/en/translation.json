@@ -365,6 +365,7 @@
       "fileInfoCopying": "File {{filename}} is being copied",
       "fileInfoMoving": "File {{filename}} is being moved",
       "fileInfoDeleting": "File {{filename}} is being deleted",
+      "downloadInfo": "Downloading {{filename}}",
       "errorInfo": "{{failed}} files could not be handed out"
     }
   },

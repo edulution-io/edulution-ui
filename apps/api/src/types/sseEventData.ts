@@ -15,6 +15,7 @@ import type CreateConferenceDto from '@libs/conferences/types/create-conference.
 import type SurveyDto from '@libs/survey/types/api/survey.dto';
 import type ConferenceDto from '@libs/conferences/types/conference.dto';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
+import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import { type Survey } from '../surveys/survey.schema';
 import { type Conference } from '../conferences/conference.schema';
@@ -31,6 +32,7 @@ type SseEventData =
   | FilesharingProgressDto
   | DockerEvent
   | ContainerInfo[]
+  | DownloadFileDto
   | BulletinDocument;
 
 export default SseEventData;

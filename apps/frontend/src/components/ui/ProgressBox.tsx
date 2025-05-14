@@ -20,10 +20,10 @@ interface ProgressBoxProps {
   title?: string;
   description?: string;
   statusDescription?: string;
-  id: string;
-  failed: number;
-  processed: number;
-  total: number;
+  id: string | number;
+  failed?: number;
+  processed?: number;
+  total?: number;
 }
 
 const ProgressBox: React.FC<{ data: ProgressBoxProps }> = ({ data }) => {
@@ -43,7 +43,7 @@ const ProgressBox: React.FC<{ data: ProgressBoxProps }> = ({ data }) => {
       {statusDescription && (
         <p className="text-sm text-background">
           {t(statusDescription, {
-            processed: processed - failed,
+            processed: (processed || 0) - (failed || 0),
             total,
           })}
         </p>

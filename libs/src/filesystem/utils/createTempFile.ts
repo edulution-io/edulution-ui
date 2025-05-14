@@ -10,12 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import FileActionType from '@libs/filesharing/types/fileActionType';
+import os from 'os';
+import path from 'path';
+import { promises as fs } from 'fs';
+import { randomUUID } from 'crypto';
 
-interface FileActionButtonProps {
-  openDialog: (action: FileActionType) => void;
-  selectedItems?: DirectoryFileDTO | DirectoryFileDTO[];
-}
+const createTempFile = async (postfix = '') => {
+  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'tmp-'));
+  const fileName = randomUUID() + postfix;
+  const filePath = path.join(tmpDir, fileName);
+  await fs.writeFile(filePath, '');
+  const cleanup = async () => {
+    await fs.rm(tmpDir, { recursive: true, force: true });
+  };
+  return { path: filePath, cleanup };
+};
 
-export default FileActionButtonProps;
+export default createTempFile;

@@ -358,7 +358,8 @@
       "fileInfoMoving": "Datei {{filename}} wird verschoben",
       "fileInfoDeleting": "Datei {{filename}} wird gelöscht",
       "fileInfoCopying": "Datei {{filename}} wird kopiert",
-      "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden"
+      "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden",
+      "downloadInfo": "Datei {{filename}} wird heruntergeladen"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
