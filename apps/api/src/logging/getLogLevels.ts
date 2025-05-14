@@ -13,7 +13,7 @@
 import { LogLevel } from '@nestjs/common';
 import LOG_LEVELS from './log-levels';
 
-const getLogLevels = (envValue: string | undefined): LogLevel[] | false => {
+const getLogLevels = (envValue: string | undefined): LogLevel[] | undefined => {
   const allLevels: LogLevel[] = Object.values(LOG_LEVELS);
   const fallBackLevels = [LOG_LEVELS.ERROR, LOG_LEVELS.WARN, LOG_LEVELS.LOG];
   if (!envValue) {
@@ -21,7 +21,7 @@ const getLogLevels = (envValue: string | undefined): LogLevel[] | false => {
   }
 
   if (envValue === 'off') {
-    return false;
+    return undefined;
   }
 
   const level = envValue.trim().toLowerCase() as LogLevel;
