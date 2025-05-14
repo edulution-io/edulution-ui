@@ -25,10 +25,9 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import UseBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import useSseStore from '@/store/useSseStore';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import useFileOperationProgress from '@/hooks/useFileOperationProgress';
-import useFileDownloadProgressToast from '@/hooks/useFileDownloadProgressToast';
-import useFileOperationToast from '@/hooks/useFileOperationToast';
+import useFileOperationProgress from '@/pages/FileSharing/hooks/useFileOperationProgress';
+import useFileDownloadProgressToast from '@/pages/FileSharing/hooks/useFileDownloadProgressToast';
+import useFileOperationToast from '@/pages/FileSharing/hooks/useFileOperationToast';
 
 const useNotifications = () => {
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
@@ -41,12 +40,9 @@ const useNotifications = () => {
   const { updateOpenSurveys } = useSurveyTablesPageStore();
   const isBulletinBoardActive = useIsAppActive(APPS.BULLETIN_BOARD);
   const { addBulletinBoardNotification } = UseBulletinBoardStore();
-  const { setFileOperationProgress } = useFileSharingStore();
-  const isClassRoomManagementActive = useIsAppActive(APPS.CLASS_MANAGEMENT);
   const { eventSource } = useSseStore();
-  const isFileSharingActive = useIsAppActive(APPS.FILE_SHARING);
 
-  useFileOperationProgress(isFileSharingActive || isClassRoomManagementActive, eventSource, setFileOperationProgress);
+  useFileOperationProgress();
 
   useDockerContainerEvents();
 

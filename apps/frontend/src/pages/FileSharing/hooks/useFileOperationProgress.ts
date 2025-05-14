@@ -13,13 +13,19 @@
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { useEffect, useState } from 'react';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import useIsAppActive from '@/hooks/useIsAppActive';
+import useSseStore from '@/store/useSseStore';
+import APPS from '@libs/appconfig/constants/apps';
+import useFileSharingStore from '../useFileSharingStore';
 
-const useFileOperationProgress = (
-  isActive: boolean,
-  eventSource: EventSource | null,
-  setFileOperationProgress: (d: FilesharingProgressDto | null) => void,
-) => {
+const useFileOperationProgress = () => {
   const [progress, setProgress] = useState<FilesharingProgressDto | null>(null);
+  const { setFileOperationProgress } = useFileSharingStore();
+  const isClassRoomManagementActive = useIsAppActive(APPS.CLASS_MANAGEMENT);
+  const { eventSource } = useSseStore();
+  const isFileSharingActive = useIsAppActive(APPS.FILE_SHARING);
+
+  const isActive = isFileSharingActive || isClassRoomManagementActive;
 
   useEffect(() => {
     if (!isActive || !eventSource) return () => {};
