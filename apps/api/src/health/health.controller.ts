@@ -36,6 +36,7 @@ class HealthController {
   @Get()
   @HealthCheck()
   @HttpCode(HttpStatus.OK)
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   check() {}
 
   @Get('readiness')
@@ -44,7 +45,7 @@ class HealthController {
     return this.health.check([
       () => this.mongoose.pingCheck('mongodb'),
       () => this.httpIndicator.pingCheck('authServer', KEYCLOAK_API || ''),
-      () => this.httpIndicator.pingCheck('lmnServer', EDUI_WEBDAV_URL || ''),
+      () => this.httpIndicator.pingCheck('lmnServer', new URL(EDUI_WEBDAV_URL || '').origin),
       () => this.disk.checkStorage('disk', { thresholdPercent: 0.8, path: '/' }),
     ]);
   }
