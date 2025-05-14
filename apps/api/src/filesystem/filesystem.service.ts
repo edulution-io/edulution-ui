@@ -186,6 +186,13 @@ class FilesystemService {
     }
   }
 
+  static buildPathString(path: string | string[]) {
+    if (Array.isArray(path)) {
+      return path.join('/');
+    }
+    return path;
+  }
+
   async ensureDirectoryExists(directory: string): Promise<void> {
     const exists = await FilesystemService.checkIfFileExist(directory);
     if (!exists) {
@@ -287,13 +294,6 @@ class FilesystemService {
     fileStream.pipe(res);
 
     return res;
-  }
-
-  static buildPathString(path: string | string[]) {
-    if (Array.isArray(path)) {
-      return path.join('/');
-    }
-    return path;
   }
 }
 
