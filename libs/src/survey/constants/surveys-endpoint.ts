@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import TEMP_FILES from '@libs/filesystem/constants/TEMP_FILES';
 import SurveysPageView from '@libs/survey/types/api/page-view';
 
 export const SURVEYS = 'surveys';
@@ -37,7 +36,7 @@ export const SURVEY_ANSWER_ENDPOINT = `${SURVEYS}/${ANSWER}`;
 export const SURVEY_CHOICES = `${PUBLIC_SURVEYS}/${CHOICES}`;
 export const SURVEY_RESULT_ENDPOINT = `${SURVEYS}/${RESULT}`;
 export const SURVEY_FILE_ATTACHMENT_ENDPOINT = `${PUBLIC_SURVEYS}/${FILES}`;
-export const SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT = `${SURVEYS}/${FILES}/${TEMP_FILES}`;
+export const SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT = `${SURVEYS}/${FILES}`;
 export const SURVEY_TEMPLATES_ENDPOINT = `${SURVEYS}/${TEMPLATES}`;
 export const SURVEY_CAN_PARTICIPATE_ENDPOINT = `${SURVEYS}/${CAN_PARTICIPATE}`;
 export const SURVEY_HAS_ANSWERS_ENDPOINT = `${SURVEYS}/${HAS_ANSWERS}`;

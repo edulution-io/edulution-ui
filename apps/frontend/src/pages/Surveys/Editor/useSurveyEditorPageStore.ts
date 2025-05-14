@@ -27,7 +27,7 @@ interface SurveyEditorPageStore {
   resetStoredSurvey: () => void;
 
   uploadFile: (file: File, callback: CallableFunction) => Promise<void>;
-  isUploadingImageFile: boolean;
+  isUploadingFile: boolean;
 
   isOpenSaveSurveyDialog: boolean;
   setIsOpenSaveSurveyDialog: (state: boolean) => void;
@@ -50,7 +50,7 @@ type PersistedSurveyEditorPageStore = (
 const initialState = {
   storedSurvey: undefined,
 
-  isUploadingImageFile: false,
+  isUploadingFile: false,
 
   isOpenSaveSurveyDialog: false,
   isLoading: false,
@@ -96,7 +96,7 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
       },
 
       uploadFile: async (file: File, callback: CallableFunction): Promise<void> => {
-        set({ isUploadingImageFile: true });
+        set({ isUploadingFile: true });
         try {
           const formData = new FormData();
           formData.append('file', file);
@@ -109,7 +109,7 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
           handleApiError(error, set);
           callback('error');
         } finally {
-          set({ isUploadingImageFile: false });
+          set({ isUploadingFile: false });
         }
       },
 

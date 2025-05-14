@@ -10,6 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { join } from 'path';
 import { Response } from 'express';
 import {
   Body,
@@ -38,7 +39,6 @@ import {
   TEMPLATES,
   RESULT,
   SURVEYS,
-  SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT,
 } from '@libs/survey/constants/surveys-endpoint';
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/SURVEYS_TEMP_FILES_PATH';
 import SurveyStatus from '@libs/survey/survey-status-enum';
@@ -102,9 +102,9 @@ class SurveysController {
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  fileUpload(@UploadedFile() file: Express.Multer.File, @Res() res: Response, @GetCurrentUsername() username: string) {
+  fileUpload(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
     const fileName = checkAttachmentFile(file);
-    const imageUrl = `${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}/${username}/${fileName}`;
+    const imageUrl = join(SURVEYS, FILES, fileName);
     return res.status(HttpStatus.CREATED).json(imageUrl);
   }
 
@@ -150,12 +150,8 @@ class SurveysController {
     return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, user);
   }
 
-  @Get(`${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}/:filename`)
-  serveTempFile(
-    @Param() params: { userId: string; filename: string },
-    @Res() res: Response,
-    @GetCurrentUsername() username: string,
-  ) {
+  @Get(`${FILES}/:filename`)
+  serveTempFile(@Param() params: { filename: string }, @Res() res: Response, @GetCurrentUsername() username: string) {
     const { filename } = params;
     return this.surveyService.serveTempFiles(username, filename, res);
   }

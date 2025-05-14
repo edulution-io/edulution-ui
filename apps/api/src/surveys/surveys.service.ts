@@ -27,7 +27,7 @@ import {
   SURVEY_FILE_ATTACHMENT_ENDPOINT,
   SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT,
 } from '@libs/survey/constants/surveys-endpoint';
-import SURVEYS_FILE_PATH from '@libs/survey/constants/SURVEYS_FILE_PATH';
+import SURVEYS_FILES_PATH from '@libs/survey/constants/SURVEYS_FILES_PATH';
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/SURVEYS_TEMP_FILES_PATH';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SurveyElement from '@libs/survey/types/TSurveyElement';
@@ -210,7 +210,7 @@ class SurveysService implements OnModuleInit {
   }
 
   async updateFormula(username: string, surveyId: string, formula: SurveyFormula): Promise<SurveyFormula> {
-    const temporaryDirectoryPath = `${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}/${username}`;
+    const temporaryDirectoryPath = `${SURVEYS_TEMP_FILES_PATH}/${username}`;
     const fileNames = await this.fileSystemService.getAllFilenamesInDirectory(temporaryDirectoryPath);
 
     if (fileNames.length === 0) {
@@ -297,7 +297,7 @@ class SurveysService implements OnModuleInit {
   }
 
   async serveFiles(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
-    const filePath = `${SURVEYS_TEMP_FILES_PATH}/${surveyId}/${questionId}/${fileName}`;
+    const filePath = `${SURVEYS_FILES_PATH}/${surveyId}/${questionId}/${fileName}`;
     const fileStream = await this.fileSystemService.createReadStream(filePath);
     fileStream.pipe(res);
     return res;
@@ -305,7 +305,7 @@ class SurveysService implements OnModuleInit {
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async onSurveyRemoval(surveyIds: string[]): Promise<void> {
-    const filePath = surveyIds.map((surveyId) => join(SURVEYS_FILE_PATH, surveyId));
+    const filePath = surveyIds.map((surveyId) => join(SURVEYS_FILES_PATH, surveyId));
     return FilesystemService.deleteDirectories(filePath);
   }
 
@@ -317,11 +317,7 @@ class SurveysService implements OnModuleInit {
   }
 
   async updateTempFilesUrls(username: string, pathWithIds: string, tempFiles: string[], link: string): Promise<string> {
-    const baseUrl = link.split(SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT)[0];
-
-    Logger.log(JSON.stringify(baseUrl, null, 2));
-
-    if (!baseUrl) {
+    if (!link) {
       return link;
     }
 
@@ -330,10 +326,15 @@ class SurveysService implements OnModuleInit {
       return link;
     }
 
+    const baseUrl = link.split(`/${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}`)[0];
+    if (!baseUrl) {
+      return link;
+    }
+
     if (tempFiles.includes(imagesFileName)) {
       const temporaryAttachmentPath = `${SURVEYS_TEMP_FILES_PATH}/${username}/${imagesFileName}`;
 
-      const permanentDirectory = `${SURVEYS_FILE_PATH}/${pathWithIds}`;
+      const permanentDirectory = `${SURVEYS_FILES_PATH}/${pathWithIds}`;
       try {
         await this.fileSystemService.ensureDirectoryExists(permanentDirectory);
       } catch (error) {
@@ -360,15 +361,16 @@ class SurveysService implements OnModuleInit {
     return link;
   }
 
-  async updateTemporalImages(
+  async updateTemporalUrls(
     username: string,
     surveyId: string,
     tempFiles: string[],
     question: SurveyElement,
   ): Promise<SurveyElement> {
+    const pathWithIds = `${surveyId}/${question.name}`;
+
     if (question.type === 'image' && question.imageLink) {
       try {
-        const pathWithIds = `${surveyId}/${question.name}`;
         const newImageLink = await this.updateTempFilesUrls(username, pathWithIds, tempFiles, question.imageLink);
         return { ...question, imageLink: newImageLink };
       } catch (error) {
@@ -378,7 +380,6 @@ class SurveysService implements OnModuleInit {
     }
     if (question.type === 'imagepicker' && question.choices) {
       try {
-        const pathWithIds = `${surveyId}/${question.name}`;
         const choicePromises = question.choices.map(async (choice) => {
           if (choice != null && typeof choice !== 'string' && choice.imageLink) {
             const newImageLink = await this.updateTempFilesUrls(username, pathWithIds, tempFiles, choice.imageLink);
@@ -395,7 +396,6 @@ class SurveysService implements OnModuleInit {
     }
     if (question.type === 'file') {
       try {
-        const pathWithIds = `${surveyId}/${question.name}`;
         const newFileLink = await this.updateTempFilesUrls(username, pathWithIds, tempFiles, question.value as string);
         return { ...question, value: newFileLink };
       } catch (error) {
@@ -412,7 +412,7 @@ class SurveysService implements OnModuleInit {
     tempFiles: string[],
     question: SurveyElement,
   ): Promise<SurveyElement> {
-    const updatedQuestion = await this.updateTemporalImages(username, surveyId, tempFiles, question);
+    const updatedQuestion = await this.updateTemporalUrls(username, surveyId, tempFiles, question);
     return SurveysService.updateLinkForRestfulChoices(surveyId, updatedQuestion);
   }
 
