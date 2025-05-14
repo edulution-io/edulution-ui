@@ -18,8 +18,8 @@ import { join, parse } from 'path';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJobData';
-import getStudentNameFromPath from '@libs/filesharing/utils/getStudentNameFromPath';
-import getNextAvailableFilename from '@libs/filesharing/utils/makeUniqueName';
+import getUsernameFromPath from '@libs/filesharing/utils/getUsernameFromPath';
+import getNextAvailableFilename from '@libs/filesharing/utils/getNextAvailableFilename';
 import FileJobData from '@libs/queue/types/fileJobData';
 import SseService from '../../sse/sse.service';
 import WebdavService from '../../webdav/webdav.service';
@@ -53,7 +53,6 @@ class CopyFileConsumer extends WorkerHost {
     }
 
     const percent = Math.round((processed / total) * 100);
-    const studentName = getStudentNameFromPath(destinationFilePath) || '';
 
     const progressDto: FilesharingProgressDto = {
       processID: Number(job.id),
@@ -64,7 +63,7 @@ class CopyFileConsumer extends WorkerHost {
       total,
       percent,
       currentFilePath: originFilePath,
-      studentName,
+      username: getUsernameFromPath(destinationFilePath) || '',
       failedPaths,
     };
 

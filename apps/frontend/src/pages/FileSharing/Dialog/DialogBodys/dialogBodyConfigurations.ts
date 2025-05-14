@@ -224,9 +224,9 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     },
   },
 
-  copyFileFolder: {
+  copyFileOrFolder: {
     Component: CopyContentDialogBody,
-    titleKey: 'copyItemDialog.copyFilesToDirectory',
+    titleKey: 'copyItemDialog.copyFilesOrDirectoriesToDirectory',
     submitKey: 'copyItemDialog.copy',
     endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.COPY}`,
     httpMethod: HttpMethods.POST,

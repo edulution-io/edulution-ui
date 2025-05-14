@@ -42,7 +42,7 @@ const useFileOperationToast = (
       id: progress.currentFilePath,
       description: t(progress.description || '', {
         filename,
-        studentName: progress.studentName,
+        studentName: progress.username,
       }),
       statusDescription: progress.statusDescription,
       failed: failedCount,

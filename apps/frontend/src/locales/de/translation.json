@@ -1277,7 +1277,7 @@
     "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
   },
   "copyItemDialog": {
-    "copyFilesToDirectory": "Dateien in Verzeichnis kopieren",
+    "copyFilesOrDirectoriesToDirectory": "Dateien in Verzeichnis kopieren",
     "copy": "Kopieren"
   },
 
