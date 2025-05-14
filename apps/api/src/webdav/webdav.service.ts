@@ -22,7 +22,6 @@ import {
   RequestResponseContentType,
 } from '@libs/common/types/http-methods';
 import CustomFile from '@libs/filesharing/types/customFile';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import ContentType from '@libs/filesharing/types/contentType';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import ErrorMessage from '@libs/error/errorMessage';
@@ -127,7 +126,7 @@ class WebdavService {
 
   async getFilesAtPath(username: string, path: string): Promise<DirectoryFileDTO[]> {
     const client = await this.getClient(username);
-    const url = this.baseUrl + getPathWithoutWebdav(path);
+    const url = new URL(path.replace(/^\/+/, ''), this.baseUrl).href;
 
     return (await WebdavService.executeWebdavRequest<DirectoryFileDTO[]>(
       client,
@@ -143,7 +142,7 @@ class WebdavService {
 
   async getDirectoryAtPath(username: string, path: string): Promise<DirectoryFileDTO[]> {
     const client = await this.getClient(username);
-    const url = this.baseUrl + getPathWithoutWebdav(path);
+    const url = new URL(path.replace(/^\/+/, ''), this.baseUrl).href;
 
     return (await WebdavService.executeWebdavRequest<DirectoryFileDTO[]>(
       client,
