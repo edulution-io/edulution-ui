@@ -69,7 +69,12 @@ class FilesystemService {
 
       return isStreamFetching ? response : readStream;
     } catch (error) {
-      throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, url);
+      throw new CustomHttpException(
+        FileSharingErrorMessage.DownloadFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        url,
+        FilesystemService.name,
+      );
     }
   }
 
