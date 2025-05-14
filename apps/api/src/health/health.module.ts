@@ -10,15 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
-import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
+import { Module } from '@nestjs/common';
+import { TerminusModule } from '@nestjs/terminus';
+import HealthController from './health.controller';
 
-@Controller(EDU_API_CONFIG_ENDPOINTS.HEALTH_CHECK)
-class HealthController {
-  @Get()
-  @HttpCode(HttpStatus.OK)
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  check() {}
-}
-
-export default HealthController;
+@Module({
+  imports: [TerminusModule],
+  controllers: [HealthController],
+})
+export default class HealthModule {}
