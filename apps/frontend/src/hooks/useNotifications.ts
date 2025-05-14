@@ -29,6 +29,7 @@ import delay from '@libs/common/utils/delay';
 import useSseStore from '@/store/useSseStore';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useFileOperationToast from '@/hooks/useFileOperationToast';
 
 const useNotifications = () => {
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
@@ -58,6 +59,8 @@ const useNotifications = () => {
   };
 
   useDockerContainerEvents();
+
+  useFileOperationToast();
 
   useEffect(() => {
     conferencesRef.current = conferences;
@@ -131,9 +134,13 @@ const useNotifications = () => {
 
   const handleFilesharingProgress =
     (setter: (v: FilesharingProgressDto | null) => void) => async (e: MessageEvent<string>) => {
-      const data: FilesharingProgressDto = JSON.parse(e.data) as FilesharingProgressDto;
-      setter(data);
-      await clearProgressIfComplete(data, setter);
+      try {
+        const data = JSON.parse(e.data) as FilesharingProgressDto;
+        setter(data);
+        await clearProgressIfComplete(data, setter);
+      } catch (err) {
+        console.error('Error parsing filesharing progress data:', err);
+      }
     };
 
   useEffect(() => {

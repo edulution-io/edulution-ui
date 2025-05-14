@@ -228,11 +228,11 @@ const LessonPage = () => {
           isOpen={isFileSharingProgessInfoDialogOpen}
           handleOpenChange={() => setIsFileSharingProgessInfoDialogOpen(!isFileSharingProgessInfoDialogOpen)}
           title={t('classmanagement.failDialog.title', {
-            file: filesharingProgress.currentFilePath.split('/').pop(),
+            file: filesharingProgress?.currentFilePath?.split('/').pop(),
           })}
           body={
             <SharingFilesFailedDialogBody
-              failedFilePath={filesharingProgress?.currentFilePath}
+              failedFilePath={filesharingProgress.currentFilePath || ''}
               affectedUsers={filesharingProgress?.failedPaths.map((path) => path.split('/').at(2) || '')}
               failedPaths={filesharingProgress?.failedPaths}
             />
