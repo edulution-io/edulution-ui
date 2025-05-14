@@ -15,6 +15,8 @@ type Choice = string | { value: string; imageLink: string };
 interface SurveyElement {
   type: string;
   name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any;
   title?: string;
   description?: string;
   choicesOrder?: string;

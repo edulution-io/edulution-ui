@@ -541,8 +541,8 @@
     "canSubmitMultiple": "Erlaube Mehrfachantworten.",
     "editor": {
       "new": "Neu (Leer)",
-      "uploadImageSuccess": "Das Bild wurde erfolgreich hochgeladen.",
-      "uploadImageError": "Das Bild konnte nicht hochgeladen werden, bitte versuche es später erneut.",
+      "fileUploadSuccess": "Die Datei wurde erfolgreich hochgeladen.",
+      "fileUploadError": "Die Datei konnte nicht hochgeladen werden, bitte versuche es später erneut.",
       "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
       "reset": "Verwerfen",
       "addDescription": "Beschreibung hinzufügen",

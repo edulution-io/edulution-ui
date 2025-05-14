@@ -102,20 +102,10 @@ class SurveysController {
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  uploadImage(@UploadedFile() file: Express.Multer.File, @Res() res: Response, @GetCurrentUsername() username: string) {
+  fileUpload(@UploadedFile() file: Express.Multer.File, @Res() res: Response, @GetCurrentUsername() username: string) {
     const fileName = checkAttachmentFile(file);
     const imageUrl = `${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}/${username}/${fileName}`;
     return res.status(HttpStatus.CREATED).json(imageUrl);
-  }
-
-  @Get(`${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}/:filename`)
-  serveTempFile(
-    @Param() params: { userId: string; filename: string },
-    @Res() res: Response,
-    @GetCurrentUsername() username: string,
-  ) {
-    const { filename } = params;
-    return this.surveyService.serveTempFiles(username, filename, res);
   }
 
   @UseGuards(AppConfigGuard)
@@ -158,6 +148,16 @@ class SurveysController {
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUser() user: JWTUser) {
     const { surveyId, saveNo, answer } = pushAnswerDto;
     return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, user);
+  }
+
+  @Get(`${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}/:filename`)
+  serveTempFile(
+    @Param() params: { userId: string; filename: string },
+    @Res() res: Response,
+    @GetCurrentUsername() username: string,
+  ) {
+    const { filename } = params;
+    return this.surveyService.serveTempFiles(username, filename, res);
   }
 }
 

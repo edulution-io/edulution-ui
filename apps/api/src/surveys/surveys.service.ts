@@ -158,83 +158,6 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  async updateTemporalImage(username: string, pathWithIds: string, tempFiles: string[], link: string): Promise<string> {
-    const baseUrl = link.split(SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT)[0];
-    if (!baseUrl) {
-      return link;
-    }
-
-    const imagesFileName = link.split('/').pop();
-    if (!imagesFileName) {
-      return link;
-    }
-
-    if (tempFiles.includes(imagesFileName)) {
-      const temporaryAttachmentPath = `${SURVEYS_TEMP_FILES_PATH}/${username}/${imagesFileName}`;
-
-      const permanentDirectory = `${SURVEYS_FILE_PATH}/${pathWithIds}`;
-      try {
-        await this.fileSystemService.ensureDirectoryExists(permanentDirectory);
-      } catch (error) {
-        throw new CustomHttpException(
-          CommonErrorMessages.DIRECTORY_CREATION_FAILED,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-          undefined,
-          SurveysService.name,
-        );
-      }
-      try {
-        const persistentAttachmentPath = `${permanentDirectory}/${imagesFileName}`;
-        await FilesystemService.moveFile(temporaryAttachmentPath, persistentAttachmentPath);
-      } catch (error) {
-        throw new CustomHttpException(
-          CommonErrorMessages.FILE_MOVE_FAILED,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-          undefined,
-          SurveysService.name,
-        );
-      }
-      return `${baseUrl}${SURVEY_FILE_ATTACHMENT_ENDPOINT}/${pathWithIds}/${imagesFileName}`;
-    }
-    return link;
-  }
-
-  async updateTemporalImages(
-    username: string,
-    surveyId: string,
-    tempFiles: string[],
-    question: SurveyElement,
-  ): Promise<SurveyElement> {
-    if (question.type === 'image' && question.imageLink) {
-      try {
-        const pathWithIds = `${surveyId}/${question.name}`;
-        const newImageLink = await this.updateTemporalImage(username, pathWithIds, tempFiles, question.imageLink);
-        return { ...question, imageLink: newImageLink };
-      } catch (error) {
-        Logger.error(error, SurveysService.name);
-        throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR, error);
-      }
-    }
-    if (question.type === 'imagepicker' && question.choices) {
-      try {
-        const pathWithIds = `${surveyId}/${question.name}`;
-        const choicePromises = question.choices.map(async (choice) => {
-          if (choice != null && typeof choice !== 'string' && choice.imageLink) {
-            const newImageLink = await this.updateTemporalImage(username, pathWithIds, tempFiles, choice.imageLink);
-            return { ...choice, imageLink: newImageLink };
-          }
-          return choice;
-        });
-        const choices = await Promise.all(choicePromises);
-        return { ...question, choices };
-      } catch (error) {
-        Logger.error(error, SurveysService.name);
-        throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR, error);
-      }
-    }
-    return question;
-  }
-
   static updateLinkForRestfulChoices(surveyId: string, question: SurveyElement): SurveyElement {
     if (isQuestionTypeChoiceType(question.type) && question.choicesByUrl) {
       const pathParts = question.choicesByUrl.url.split('/');
@@ -303,7 +226,7 @@ class SurveysService implements OnModuleInit {
     link: string,
   ): Promise<string | undefined> {
     const pathWithIds = `${surveyId}/logo`;
-    return this.updateTemporalImage(username, pathWithIds, tempFiles, link);
+    return this.updateTempFilesUrls(username, pathWithIds, tempFiles, link);
   }
 
   async updateFormula(username: string, surveyId: string, formula: SurveyFormula): Promise<SurveyFormula> {
@@ -393,13 +316,6 @@ class SurveysService implements OnModuleInit {
     return res;
   }
 
-  async serveTempFiles(userId: string, fileName: string, res: Response): Promise<Response> {
-    const filePath = `${SURVEYS_TEMP_FILES_PATH}/${userId}/${fileName}`;
-    const fileStream = await this.fileSystemService.createReadStream(filePath);
-    fileStream.pipe(res);
-    return res;
-  }
-
   async serveFiles(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
     const filePath = `${SURVEYS_TEMP_FILES_PATH}/${surveyId}/${questionId}/${fileName}`;
     const fileStream = await this.fileSystemService.createReadStream(filePath);
@@ -409,8 +325,102 @@ class SurveysService implements OnModuleInit {
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async onSurveyRemoval(surveyIds: string[]): Promise<void> {
-    const persistentAttachmentPath = surveyIds.map((surveyId) => join(SURVEYS_FILE_PATH, surveyId));
-    return FilesystemService.deleteDirectories(persistentAttachmentPath);
+    const filePath = surveyIds.map((surveyId) => join(SURVEYS_FILE_PATH, surveyId));
+    return FilesystemService.deleteDirectories(filePath);
+  }
+
+  async serveTempFiles(userId: string, fileName: string, res: Response): Promise<Response> {
+    const filePath = `${SURVEYS_TEMP_FILES_PATH}/${userId}/${fileName}`;
+    const fileStream = await this.fileSystemService.createReadStream(filePath);
+    fileStream.pipe(res);
+    return res;
+  }
+
+  async updateTempFilesUrls(username: string, pathWithIds: string, tempFiles: string[], link: string): Promise<string> {
+    const baseUrl = link.split(SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT)[0];
+    if (!baseUrl) {
+      return link;
+    }
+
+    const imagesFileName = link.split('/').pop();
+    if (!imagesFileName) {
+      return link;
+    }
+
+    if (tempFiles.includes(imagesFileName)) {
+      const temporaryAttachmentPath = `${SURVEYS_TEMP_FILES_PATH}/${username}/${imagesFileName}`;
+
+      const permanentDirectory = `${SURVEYS_FILE_PATH}/${pathWithIds}`;
+      try {
+        await this.fileSystemService.ensureDirectoryExists(permanentDirectory);
+      } catch (error) {
+        throw new CustomHttpException(
+          CommonErrorMessages.DIRECTORY_CREATION_FAILED,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          undefined,
+          SurveysService.name,
+        );
+      }
+      try {
+        const persistentAttachmentPath = `${permanentDirectory}/${imagesFileName}`;
+        await FilesystemService.moveFile(temporaryAttachmentPath, persistentAttachmentPath);
+      } catch (error) {
+        throw new CustomHttpException(
+          CommonErrorMessages.FILE_MOVE_FAILED,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          undefined,
+          SurveysService.name,
+        );
+      }
+      return `${baseUrl}/${SURVEY_FILE_ATTACHMENT_ENDPOINT}/${pathWithIds}/${imagesFileName}`;
+    }
+    return link;
+  }
+
+  async updateTemporalImages(
+    username: string,
+    surveyId: string,
+    tempFiles: string[],
+    question: SurveyElement,
+  ): Promise<SurveyElement> {
+    if (question.type === 'image' && question.imageLink) {
+      try {
+        const pathWithIds = `${surveyId}/${question.name}`;
+        const newImageLink = await this.updateTempFilesUrls(username, pathWithIds, tempFiles, question.imageLink);
+        return { ...question, imageLink: newImageLink };
+      } catch (error) {
+        Logger.error(error, SurveysService.name);
+        throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      }
+    }
+    if (question.type === 'imagepicker' && question.choices) {
+      try {
+        const pathWithIds = `${surveyId}/${question.name}`;
+        const choicePromises = question.choices.map(async (choice) => {
+          if (choice != null && typeof choice !== 'string' && choice.imageLink) {
+            const newImageLink = await this.updateTempFilesUrls(username, pathWithIds, tempFiles, choice.imageLink);
+            return { ...choice, imageLink: newImageLink };
+          }
+          return choice;
+        });
+        const choices = await Promise.all(choicePromises);
+        return { ...question, choices };
+      } catch (error) {
+        Logger.error(error, SurveysService.name);
+        throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      }
+    }
+    if (question.type === 'file') {
+      try {
+        const pathWithIds = `${surveyId}/${question.name}`;
+        const newFileLink = await this.updateTempFilesUrls(username, pathWithIds, tempFiles, question.value as string);
+        return { ...question, value: newFileLink };
+      } catch (error) {
+        Logger.error(error, SurveysService.name);
+        throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      }
+    }
+    return question;
   }
 }
 

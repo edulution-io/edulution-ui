@@ -541,8 +541,8 @@
     "canSubmitMultiple": "Allow multiple submission",
     "editor": {
       "new": "New (blank)",
-      "uploadImageSuccess": "Saved the image successfully.",
-      "uploadImageError": "Error on Image Upload, please retry later.",
+      "fileUploadSuccess": "Saved the image successfully.",
+      "fileUploadError": "Error on Image Upload, please retry later.",
       "saveSurveySuccess": "Saved the survey.",
       "reset": "Reset",
       "addDescription": "Add a description",

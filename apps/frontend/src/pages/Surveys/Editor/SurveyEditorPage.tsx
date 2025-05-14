@@ -26,6 +26,7 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 import getInitialSurveyFormValues from '@libs/survey/constants/initial-survey-form';
 import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
+import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
 import useUserStore from '@/store/UserStore/UserStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
@@ -56,7 +57,7 @@ const SurveyEditorPage = () => {
     storedSurvey,
     updateStoredSurvey,
     resetStoredSurvey,
-    uploadImageFile,
+    uploadFile,
   } = useSurveyEditorPageStore();
   const { reset: resetTemplateStore, isOpenTemplateMenu, setIsOpenTemplateMenu } = useTemplateMenuStore();
   const {
@@ -156,8 +157,25 @@ const SurveyEditorPage = () => {
     });
 
     creator.onUploadFile.add(async (_creatorModel, options) => {
-      const promises = options.files.map((file: File) => uploadImageFile(file, options.callback));
+      const promises = options.files.map((file: File) => uploadFile(file, options.callback));
       await Promise.all(promises);
+    });
+
+    creator.survey.onClearFiles.add((_creatorModel, options) => {
+      // eslint-disable-next-line no-console
+      console.log(
+        'surveyId:',
+        selectedSurvey?.id || TEMPORAL_SURVEY_ID_STRING,
+        'QuestionName:',
+        options.question.name,
+        'fileName:',
+        options.fileName,
+      );
+    });
+
+    creator.survey.onDownloadFile.add((_creatorModel, options) => {
+      // eslint-disable-next-line no-console
+      console.log('content:', options.content);
     });
   }, [creator, form, language]);
 

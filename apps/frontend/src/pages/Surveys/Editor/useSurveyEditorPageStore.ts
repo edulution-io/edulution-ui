@@ -16,7 +16,7 @@ import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import { SURVEY_FILE_ATTACHMENT_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
+import { SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import handleApiError from '@/utils/handleApiError';
@@ -26,7 +26,7 @@ interface SurveyEditorPageStore {
   updateStoredSurvey: (survey: SurveyDto) => void;
   resetStoredSurvey: () => void;
 
-  uploadImageFile: (file: File, callback: CallableFunction) => Promise<void>;
+  uploadFile: (file: File, callback: CallableFunction) => Promise<void>;
   isUploadingImageFile: boolean;
 
   isOpenSaveSurveyDialog: boolean;
@@ -95,15 +95,15 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
         }
       },
 
-      uploadImageFile: async (file: File, callback: CallableFunction): Promise<void> => {
+      uploadFile: async (file: File, callback: CallableFunction): Promise<void> => {
         set({ isUploadingImageFile: true });
         try {
           const formData = new FormData();
           formData.append('file', file);
-          const response = await eduApi.post<string>(`${SURVEY_FILE_ATTACHMENT_ENDPOINT}`, formData, {
+          const response = await eduApi.post<string>(`${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}`, formData, {
             headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
           });
-          toast.success(t('survey.editor.uploadImageSuccess'));
+          toast.success(t('survey.editor.fileUploadSuccess'));
           callback('success', `${EDU_API_URL}/${response.data}`);
         } catch (error) {
           handleApiError(error, set);
