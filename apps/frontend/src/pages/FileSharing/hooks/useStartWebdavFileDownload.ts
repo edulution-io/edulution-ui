@@ -14,9 +14,9 @@ import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 
-const useStartDownload = () => {
-  const loadDownloadUrlMultipleFiles = useFileSharingDownloadStore((s) => s.loadDownloadUrlMultipleFiles);
-  const setFileIsCurrentlyDisabled = useFileSharingStore((s) => s.setFileIsCurrentlyDisabled);
+const useStartWebdavFileDownload = () => {
+  const { loadDownloadUrlMultipleFiles } = useFileSharingDownloadStore();
+  const { setFileIsCurrentlyDisabled } = useFileSharingStore();
 
   return async (files: DirectoryFileDTO[]) => {
     if (!files.length) return;
@@ -41,4 +41,4 @@ const useStartDownload = () => {
   };
 };
 
-export default useStartDownload;
+export default useStartWebdavFileDownload;

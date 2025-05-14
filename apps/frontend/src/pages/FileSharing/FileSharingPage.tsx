@@ -24,17 +24,11 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import QuotaLimitInfo from '@/pages/FileSharing/utilities/QuotaLimitInfo';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
-import useFileOperationToast from '@/hooks/useFileOperationToast';
-import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
-import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
-import { useTranslation } from 'react-i18next';
 
 const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const { fileOperationProgress, fetchFiles } = useFileSharingStore();
-  const { downloadProgress } = useFileSharingDownloadStore();
-  const { t } = useTranslation();
   useEffect(() => {
     const handleFileOperationProgress = async () => {
       if (!fileOperationProgress) return;
@@ -47,14 +41,6 @@ const FileSharingPage = () => {
     void handleFileOperationProgress();
   }, [fileOperationProgress]);
   const { percentageUsed } = useQuotaInfo();
-
-  const filesharingProgressDto: FilesharingProgressDto = {
-    title: t('filesharing.progressBox.downloadInfo', { filename: downloadProgress?.fileName }),
-    percent: downloadProgress.percent,
-    processID: downloadProgress.processId,
-  };
-
-  useFileOperationToast(filesharingProgressDto, null);
 
   return (
     <PageLayout>

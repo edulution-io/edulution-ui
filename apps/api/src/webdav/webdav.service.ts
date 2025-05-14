@@ -27,10 +27,10 @@ import ContentType from '@libs/filesharing/types/contentType';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import ErrorMessage from '@libs/error/errorMessage';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
-import CustomHttpException from '../common/CustomHttpException';
 import mapToDirectories from '@libs/filesharing/utils/mapToDirectories';
 import mapToDirectoryFiles from '@libs/filesharing/utils/mapToDirectoryFiles';
 import buildUrl from '@libs/common/utils/buildUrl';
+import CustomHttpException from '../common/CustomHttpException';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
 

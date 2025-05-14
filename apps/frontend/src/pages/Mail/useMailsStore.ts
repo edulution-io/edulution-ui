@@ -11,13 +11,15 @@
  */
 
 import { create } from 'zustand';
-import { MailDto, MailsStore, MailProviderConfigDto, CreateSyncJobDto, SyncJobDto } from '@libs/mail/types';
+import { RowSelectionState } from '@tanstack/react-table';
+import { toast } from 'sonner';
+import i18n from '@/i18n';
+import type { MailDto, MailsStore, MailProviderConfigDto, CreateSyncJobDto, SyncJobDto } from '@libs/mail/types';
 import MAIL_ENDPOINT from '@libs/mail/constants/mail-endpoint';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import MailStoreInitialState from '@libs/mail/constants/mailsStoreInitialState';
 import { MAILS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
-import { RowSelectionState } from '@tanstack/react-table';
 
 const useMailsStore = create<MailsStore>((set) => ({
   ...MailStoreInitialState,
@@ -89,6 +91,7 @@ const useMailsStore = create<MailsStore>((set) => ({
     try {
       const response = await eduApi.post<SyncJobDto[]>(`${MAILS_PATH}/sync-job`, createSyncJobDto);
       set({ syncJobs: response.data });
+      toast.success(i18n.t('mail.importer.syncAccountAdded'));
     } catch (error) {
       handleApiError(error, set, 'mailProviderConfigError');
     } finally {
@@ -101,6 +104,7 @@ const useMailsStore = create<MailsStore>((set) => ({
     try {
       const response = await eduApi.delete<SyncJobDto[]>(`${MAILS_PATH}/sync-job`, { data: syncJobIds });
       set({ syncJobs: response.data });
+      toast.success(i18n.t('mail.importer.syncAccountDeleted'));
     } catch (error) {
       handleApiError(error, set, 'mailProviderConfigError');
     } finally {

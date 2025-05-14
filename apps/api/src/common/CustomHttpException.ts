@@ -22,7 +22,7 @@ class CustomHttpException extends HttpException {
   private static logError(message: ErrorMessage, status: HttpStatus, data?: unknown, domain?: string) {
     const domainFallback = message.slice(0, message.indexOf('.'));
     const error = message.slice(message.lastIndexOf('.') + 1, message.length);
-    Logger.error(
+    Logger.warn(
       `HttpStatus: ${status}, Error: ${error}${data ? `, Data: ${JSON.stringify(data)}` : ''}`,
       domain ?? domainFallback,
     );

@@ -15,17 +15,21 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import ProgressBox from '@/components/ui/ProgressBox';
+import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 
-const useFileOperationToast = (
-  fileOperationProgress: FilesharingProgressDto | null,
-  filesharingProgress: FilesharingProgressDto | null,
-) => {
+const useFileOperationToast = () => {
   const { t } = useTranslation();
-
+  const { downloadProgress } = useFileSharingDownloadStore();
   const lastProgressRef = useRef<number | null>(null);
 
+  const filesharingProgressDto: FilesharingProgressDto = {
+    title: t('filesharing.progressBox.downloadInfo', { filename: downloadProgress?.fileName }),
+    percent: downloadProgress.percent,
+    processID: downloadProgress.processId,
+  };
+
   useEffect(() => {
-    const progress = fileOperationProgress ?? filesharingProgress;
+    const progress = filesharingProgressDto;
     if (!progress) return;
 
     const percent = progress.percent ?? 0;
@@ -67,7 +71,7 @@ const useFileOperationToast = (
       id: toasterData.title,
       duration: toastDuration,
     });
-  }, [fileOperationProgress, filesharingProgress]);
+  }, [filesharingProgressDto]);
 };
 
 export default useFileOperationToast;
