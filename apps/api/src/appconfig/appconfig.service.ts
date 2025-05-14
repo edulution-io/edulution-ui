@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Connection, Model } from 'mongoose';
@@ -22,6 +22,7 @@ import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath'
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import CustomHttpException from '../common/CustomHttpException';
 import { AppConfig } from './appconfig.schema';
 import initializeCollection from './initializeCollection';
@@ -31,16 +32,41 @@ import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
 class AppConfigService implements OnModuleInit {
+  public appAccessMap = new Map<string, string[]>();
+
   constructor(
     @InjectConnection() private readonly connection: Connection,
     @InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>,
     private eventEmitter: EventEmitter2,
   ) {}
 
+  async updateAppAccessMap() {
+    try {
+      const appConfigs = await this.appConfigModel.find({}).lean();
+      this.appAccessMap = new Map(
+        appConfigs.map((config) => [
+          config.name,
+          config.accessGroups?.map((group: MultipleSelectorGroup) => group.path),
+        ]),
+      );
+
+      Logger.verbose(`App access map updated`, AppConfigService.name);
+    } catch (error) {
+      throw new CustomHttpException(
+        AppConfigErrorMessages.ReadAppConfigFailed,
+        HttpStatus.SERVICE_UNAVAILABLE,
+        undefined,
+        AppConfigService.name,
+      );
+    }
+  }
+
   async onModuleInit() {
     await initializeCollection(this.connection, this.appConfigModel);
 
     await MigrationService.runMigrations<AppConfig>(this.appConfigModel, appConfigMigrationsList);
+
+    await this.updateAppAccessMap();
   }
 
   async insertConfig(appConfigDto: AppConfigDto, ldapGroups: string[]) {
@@ -85,6 +111,9 @@ class AppConfigService implements OnModuleInit {
       );
     } finally {
       await AppConfigService.writeProxyConfigFile(appConfigDto);
+
+      await this.updateAppAccessMap();
+
       this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
     }
   }
