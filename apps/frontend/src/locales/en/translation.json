@@ -1179,7 +1179,7 @@
       }
     }
   },
-  "fileOperationSuccessful": "File operation successful",
+  "fileOperationSuccessful": "File operation successful started",
   "fileOperationStarted": "File operation started",
   "unknownErrorOccurred": "An unknown error occurred",
   "fileSharingTable": {
@@ -1232,7 +1232,7 @@
     "usersAdded": "{{ count }} added"
   },
   "copyItemDialog": {
-    "copyFilesOrDirectoriesToDirectory": "Copy files to directory",
+    "copyFilesOrDirectoriesToDirectory": "Copy files or directories into a directory",
     "copy": "Copy"
   },
   "fileCategory": {

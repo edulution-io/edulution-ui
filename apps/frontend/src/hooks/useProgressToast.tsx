@@ -35,7 +35,7 @@ const useProgressToast = (progress: FilesharingProgressDto | null | undefined) =
       id: progress.title ?? progress.processID,
       description: t(progress.description ?? '', {
         filename,
-        studentName: progress.username,
+        username: progress.username,
       }),
       statusDescription: progress.statusDescription,
       failed,
