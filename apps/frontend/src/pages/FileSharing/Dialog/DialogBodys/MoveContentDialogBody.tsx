@@ -116,7 +116,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
     <div className="bottom-0 justify-end bg-secondary p-4 text-sm text-foreground">
       {moveOrCopyItemToPath?.basename && showSelectedFile ? (
         <p className="bg-secondary">
-          {t('moveItemDialog.selectedItem')}: {moveOrCopyItemToPath.basename}
+          {t('moveItemDialog.selectedItem')}: {decodeURIComponent(moveOrCopyItemToPath.basename)}
         </p>
       ) : (
         <p className="bg-secondary">
