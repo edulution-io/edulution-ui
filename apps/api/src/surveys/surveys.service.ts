@@ -27,8 +27,8 @@ import {
   SURVEY_FILE_ATTACHMENT_ENDPOINT,
   SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT,
 } from '@libs/survey/constants/surveys-endpoint';
-import SURVEYS_FILES_PATH from '@libs/survey/constants/SURVEYS_FILES_PATH';
-import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/SURVEYS_TEMP_FILES_PATH';
+import SURVEYS_FILES_PATH from '@libs/survey/constants/surveysFilesPath';
+import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SurveyElement from '@libs/survey/types/TSurveyElement';
 import SurveyPage from '@libs/survey/types/TSurveyPage';

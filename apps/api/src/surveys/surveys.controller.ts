@@ -40,7 +40,7 @@ import {
   RESULT,
   SURVEYS,
 } from '@libs/survey/constants/surveys-endpoint';
-import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/SURVEYS_TEMP_FILES_PATH';
+import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyTemplateDto from '@libs/survey/types/api/template.dto';

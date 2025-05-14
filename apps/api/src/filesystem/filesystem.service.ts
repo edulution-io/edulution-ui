@@ -184,10 +184,12 @@ class FilesystemService {
   }
 
   static async checkIfFileExistAndDelete(filePath: string) {
-    await FilesystemService.throwErrorIfFileNotExists(filePath);
     try {
-      await unlink(filePath);
-      Logger.log(`${filePath} deleted.`, FilesystemService.name);
+      const exists = await pathExists(filePath);
+      if (exists) {
+        await unlink(filePath);
+        Logger.log(`${filePath} deleted.`, FilesystemService.name);
+      }
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }

@@ -11,7 +11,7 @@
  */
 
 import APPS from '@libs/appconfig/constants/apps';
-import TEMP_FILES_PATH from '@libs/filesystem/constants/TEMP_FILES_PATH';
+import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 
 const SURVEYS_TEMP_FILES_PATH = `${TEMP_FILES_PATH}/${APPS.SURVEYS}`;
 
