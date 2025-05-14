@@ -290,7 +290,7 @@ const LoginPage: React.FC = () => {
 
     return (
       <>
-        <div className={isEnterTotpVisible ? '' : 'hidden'}>
+        {isEnterTotpVisible && (
           <FormFieldSH
             control={form.control}
             name="totpValue"
@@ -308,7 +308,7 @@ const LoginPage: React.FC = () => {
               </FormItem>
             )}
           />
-        </div>
+        )}
         {renderFormField('username', t('common.username'), 'text', true)}
         {renderFormField('password', t('common.password'), 'password')}
       </>
