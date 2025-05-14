@@ -84,6 +84,7 @@ class LoggingInterceptor implements NestInterceptor {
               LoggingInterceptor.name,
             );
             break;
+          case LOG_LEVELS.VERBOSE:
           case LOG_LEVELS.DEBUG:
             Logger.error(
               JSON.stringify({
@@ -93,7 +94,6 @@ class LoggingInterceptor implements NestInterceptor {
                 query,
                 ip,
                 message: error.message,
-                stack: error.stack,
               }),
               error.stack,
               LoggingInterceptor.name,
