@@ -134,6 +134,9 @@
       "LmnConnectionFailed": "Verbindung zum Schulserver fehlgeschlagen.",
       "KeycloakConnectionFailed": "Verbindung zum Authentifizierungsserver fehlgeschlagen.",
       "EdulutionConnectionFailed": "Verbindung zum edulution Server fehlgeschlagen. Bitte versuche es später noch einmal."
+    },
+    "logout": {
+      "success": "Erfolgreich abgemeldet"
     }
   },
   "lmnApi": {
@@ -183,13 +186,15 @@
     "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
     "importer": {
       "filterPlaceHolderText": "Suche nach Benutzername",
-      "title": "E-Mail-Importer",
+      "title": "E-Mail-Sync",
       "provider": "E-Mail-Provider",
       "interval": "Sync-Intervall",
       "isActive": "Aktiv",
-      "syncJobsTable": "Importer Jobs",
+      "syncJobsTable": "Sync-Jobs",
       "mailAddress": "E-Mail-Adresse",
-      "noMailConfigured": "Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator."
+      "noMailConfigured": "Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator.",
+      "syncAccountAdded": "Konto für Sync-Job hinzugefügt.",
+      "syncAccountDeleted": "Konto für Sync-Job gelöscht."
     }
   },
   "chat": {
@@ -348,7 +353,8 @@
       "fileInfoSharing": "Datei {{filename}} wird an {{studentName}} ausgeteilt",
       "fileInfoCollecting": "Datei {{filename}} wird von {{studentName}} eingesammelt",
       "fileInfoDeleting": "Datei {{filename}} wird gelöscht",
-      "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden"
+      "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden",
+      "downloadInfo": "Datei {{filename}} wird heruntergeladen"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",

@@ -36,6 +36,7 @@ export enum ResponseType {
 
 export enum RequestResponseContentType {
   APPLICATION_JSON = 'application/json',
+  APPLICATION_ZIP = 'application/zip',
   APPLICATION_XML = 'application/xml',
   APPLICATION_PDF = 'application/pdf',
   APPLICATION_X_WWW_FORM_URLENCODED = 'application/x-www-form-urlencoded',
@@ -48,7 +49,10 @@ export enum RequestResponseContentType {
 export const HTTP_HEADERS = {
   ContentDisposition: 'Content-Disposition',
   ContentType: 'Content-Type',
+  ContentLength: 'Content-Length',
   Authorization: 'Authorization',
   XApiKey: 'x-api-key',
   CONNECTION_UID: 'Connection-Uid',
+  XForwaredFor: 'x-forwarded-for',
+  UserAgent: 'User-Agent',
 } as const;

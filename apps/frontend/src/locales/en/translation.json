@@ -145,6 +145,9 @@
       "LmnConnectionFailed": "Connection to school server failed.",
       "KeycloakConnectionFailed": "Connection to authentication server failed.",
       "EdulutionConnectionFailed": "Connection to edulution server failed. Please try again later."
+    },
+    "logout": {
+      "success": "Logout successful"
     }
   },
   "lmnApi": {
@@ -194,13 +197,15 @@
     "rowSelected": "{{selected}} of {{total}} job selected",
     "importer": {
       "filterPlaceHolderText": "Search for username",
-      "title": "Email Importer",
+      "title": "Email Sync",
       "provider": "Email Provider",
       "interval": "Sync Interval",
       "isActive": "Active",
-      "syncJobsTable": "Importer Jobs",
+      "syncJobsTable": "Sync Jobs",
       "mailAddress": "Email address",
-      "noMailConfigured": "Mail app is not active. Please contact your system administrator."
+      "noMailConfigured": "Mail app is not active. Please contact your system administrator.",
+      "syncAccountAdded": "Account for sync job added.",
+      "syncAccountDeleted": "Account for sync job deleted."
     }
   },
   "chat": {
@@ -357,6 +362,7 @@
       "fileInfoSharing": "File {{filename}} is being distributed to {{studentName}}",
       "fileInfoCollecting": "File {{filename}} is being collected to {{studentName}}",
       "fileInfoDeleting": "File {{filename}} is being deleted",
+      "downloadInfo": "Downloading {{filename}}",
       "errorInfo": "{{failed}} files could not be handed out"
     }
   },

@@ -10,12 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import FileActionType from '@libs/filesharing/types/fileActionType';
+const LOG_LEVELS = {
+  ERROR: 'error',
+  WARN: 'warn',
+  LOG: 'log',
+  DEBUG: 'debug',
+  VERBOSE: 'verbose',
+  FATAL: 'fatal',
+} as const;
 
-interface FileActionButtonProps {
-  openDialog: (action: FileActionType) => void;
-  selectedItems?: DirectoryFileDTO | DirectoryFileDTO[];
-}
-
-export default FileActionButtonProps;
+export default LOG_LEVELS;

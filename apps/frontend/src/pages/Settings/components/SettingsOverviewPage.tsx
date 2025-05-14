@@ -46,18 +46,20 @@ const SettingsOverviewPage: React.FC = () => {
   if (!isMobileView)
     return (
       <Tabs value={tabValue}>
-        <TabsList className="grid grid-cols-3 sm:w-fit">
-          {tabOptions.map((item) => (
-            <TabsTrigger
-              key={item.id}
-              value={item.id}
-              onClick={() => handleTabClick(item.id)}
-              className="min-w-20 text-[clamp(0.65rem,2vw,0.8rem)] lg:min-w-64 lg:text-p"
-            >
-              {item.name}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+        <div className="sticky top-0 z-20 backdrop-blur-xl">
+          <TabsList className="grid grid-cols-3 sm:w-fit">
+            {tabOptions.map((item) => (
+              <TabsTrigger
+                key={item.id}
+                value={item.id}
+                onClick={() => handleTabClick(item.id)}
+                className="min-w-20 text-[clamp(0.65rem,2vw,0.8rem)] lg:min-w-64 lg:text-p"
+              >
+                {item.name}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </div>
         <TabsContent value={tabOptions[0].id}>
           <PageTitle
             title={t('settings.sidebar')}
@@ -95,12 +97,14 @@ const SettingsOverviewPage: React.FC = () => {
 
   return (
     <>
-      <DropdownSelect
-        options={tabOptions}
-        selectedVal={option}
-        handleChange={handleDropdownSelect}
-        classname="w-[calc(100%-2.5rem)]"
-      />
+      <div className="sticky top-0 z-20 backdrop-blur-xl">
+        <DropdownSelect
+          options={tabOptions}
+          selectedVal={option}
+          handleChange={handleDropdownSelect}
+          classname="w-[calc(100%-2.5rem)]"
+        />
+      </div>
       <Separator className="my-2 " />
       {option === tabOptions[0].id && <DockerContainerTable />}
       {option === tabOptions[1].id && <GlobalSettings />}
