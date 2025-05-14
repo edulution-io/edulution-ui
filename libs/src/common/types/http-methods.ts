@@ -53,7 +53,6 @@ export const HTTP_HEADERS = {
   Authorization: 'Authorization',
   XApiKey: 'x-api-key',
   CONNECTION_UID: 'Connection-Uid',
-  ContentLength: 'Content-Length',
   XForwaredFor: 'x-forwarded-for',
   UserAgent: 'User-Agent',
 } as const;
