@@ -70,13 +70,10 @@ class FilesystemService {
   }
 
   async ensureDirectoryExists(directory: string): Promise<void> {
-    const exists = await pathExists(directory);
-    if (!exists) {
-      try {
-        await ensureDir(directory);
-      } catch (error) {
-        throw new CustomHttpException(CommonErrorMessages.DIRECTORY_CREATION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
+    try {
+      await ensureDir(directory);
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.DIRECTORY_CREATION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

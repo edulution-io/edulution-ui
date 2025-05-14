@@ -1030,7 +1030,7 @@
       "fileUploadFailed": "Die Datei konnte nicht hochgeladen werden",
       "fileDeletionFailed": "Löschen der Datei fehlgeschlagen",
       "fileWritingFailed": "Schreiben der Datei fehlgeschlagen",
-      "fileMovingFailed": "Verschieben der Datei fehlgeschlagen",
+      "fileMoveFailed": "Verschieben der Datei fehlgeschlagen",
       "fileNotFound": "Datei nicht gefunden",
       "fileNotProvided": "Datei wurde nicht bereitgestellt",
       "invalidFileType": "Ungültiger Dateityp",

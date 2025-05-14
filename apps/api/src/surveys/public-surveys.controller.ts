@@ -44,9 +44,9 @@ class PublicSurveysController {
 
   @Get(`${FILES}/:surveyId/:questionId/:filename`)
   @Public()
-  getPermanentImage(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
+  serveFile(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
     const { surveyId, questionId, filename } = params;
-    return this.surveyService.servePermanentImage(surveyId, questionId, filename, res);
+    return this.surveyService.serveFiles(surveyId, questionId, filename, res);
   }
 
   @Get(`${CHOICES}/:surveyId/:questionName`)

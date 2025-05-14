@@ -23,9 +23,6 @@ import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
-import SurveyElement from '@libs/survey/types/TSurveyElement';
-import SurveyPage from '@libs/survey/types/TSurveyPage';
-import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 import {
   SURVEY_FILE_ATTACHMENT_ENDPOINT,
   SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT,
@@ -33,6 +30,9 @@ import {
 import SURVEYS_FILE_PATH from '@libs/survey/constants/SURVEYS_FILE_PATH';
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/SURVEYS_TEMP_FILES_PATH';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
+import SurveyElement from '@libs/survey/types/TSurveyElement';
+import SurveyPage from '@libs/survey/types/TSurveyPage';
+import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import SURVEYS_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplatePath';
 import isQuestionTypeChoiceType from '@libs/survey/utils/isQuestionTypeChoiceType';
@@ -158,37 +158,6 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  async createTemplate(surveyTemplateDto: SurveyTemplateDto): Promise<void> {
-    let filename = surveyTemplateDto.fileName;
-    if (!filename) {
-      const date = new Date();
-      filename = `${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}-${date.getHours()}:${date.getMinutes()}-${uuidv4()}.json`;
-    }
-    const templatePath = join(SURVEYS_TEMPLATE_PATH, filename);
-    try {
-      await this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);
-      return await FilesystemService.writeFile(templatePath, JSON.stringify(surveyTemplateDto.template, null, 2));
-    } catch (error) {
-      throw new CustomHttpException(
-        CommonErrorMessages.FILE_WRITING_FAILED,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        undefined,
-        SurveysService.name,
-      );
-    }
-  }
-
-  async serveTemplateNames(): Promise<string[]> {
-    return this.fileSystemService.getAllFilenamesInDirectory(SURVEYS_TEMPLATE_PATH);
-  }
-
-  async serveTemplate(fileName: string, res: Response): Promise<Response> {
-    const templatePath = join(SURVEYS_TEMPLATE_PATH, fileName);
-    const fileStream = await this.fileSystemService.createReadStream(templatePath);
-    fileStream.pipe(res);
-    return res;
-  }
-
   async updateTemporalImage(username: string, pathWithIds: string, tempFiles: string[], link: string): Promise<string> {
     const baseUrl = link.split(SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT)[0];
     if (!baseUrl) {
@@ -219,7 +188,7 @@ class SurveysService implements OnModuleInit {
         await FilesystemService.moveFile(temporaryAttachmentPath, persistentAttachmentPath);
       } catch (error) {
         throw new CustomHttpException(
-          CommonErrorMessages.FILE_MOVING_FAILED,
+          CommonErrorMessages.FILE_MOVE_FAILED,
           HttpStatus.INTERNAL_SERVER_ERROR,
           undefined,
           SurveysService.name,
@@ -393,14 +362,45 @@ class SurveysService implements OnModuleInit {
     return savedSurvey;
   }
 
-  async serveTemporaryImage(userId: string, fileName: string, res: Response): Promise<Response> {
+  async createTemplate(surveyTemplateDto: SurveyTemplateDto): Promise<void> {
+    let filename = surveyTemplateDto.fileName;
+    if (!filename) {
+      const date = new Date();
+      filename = `${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}-${date.getHours()}:${date.getMinutes()}-${uuidv4()}.json`;
+    }
+    const templatePath = join(SURVEYS_TEMPLATE_PATH, filename);
+    try {
+      await this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);
+      return await FilesystemService.writeFile(templatePath, JSON.stringify(surveyTemplateDto.template, null, 2));
+    } catch (error) {
+      throw new CustomHttpException(
+        CommonErrorMessages.FILE_WRITING_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        SurveysService.name,
+      );
+    }
+  }
+
+  async serveTemplateNames(): Promise<string[]> {
+    return this.fileSystemService.getAllFilenamesInDirectory(SURVEYS_TEMPLATE_PATH);
+  }
+
+  async serveTemplate(fileName: string, res: Response): Promise<Response> {
+    const templatePath = join(SURVEYS_TEMPLATE_PATH, fileName);
+    const fileStream = await this.fileSystemService.createReadStream(templatePath);
+    fileStream.pipe(res);
+    return res;
+  }
+
+  async serveTempFiles(userId: string, fileName: string, res: Response): Promise<Response> {
     const filePath = `${SURVEYS_TEMP_FILES_PATH}/${userId}/${fileName}`;
     const fileStream = await this.fileSystemService.createReadStream(filePath);
     fileStream.pipe(res);
     return res;
   }
 
-  async servePermanentImage(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
+  async serveFiles(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
     const filePath = `${SURVEYS_TEMP_FILES_PATH}/${surveyId}/${questionId}/${fileName}`;
     const fileStream = await this.fileSystemService.createReadStream(filePath);
     fileStream.pipe(res);

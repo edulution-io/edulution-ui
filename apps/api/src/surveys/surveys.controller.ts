@@ -109,13 +109,13 @@ class SurveysController {
   }
 
   @Get(`${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}/:filename`)
-  getTemporaryImage(
+  serveTempFile(
     @Param() params: { userId: string; filename: string },
     @Res() res: Response,
     @GetCurrentUsername() username: string,
   ) {
     const { filename } = params;
-    return this.surveyService.serveTemporaryImage(username, filename, res);
+    return this.surveyService.serveTempFiles(username, filename, res);
   }
 
   @UseGuards(AppConfigGuard)
