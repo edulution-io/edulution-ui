@@ -114,11 +114,17 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
         await handleFileOrCreateFile(action, endpoint, httpMethod, type, data);
         get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
       } else if (Array.isArray(data)) {
+        const decodedFilenameData = (data as PathChangeOrCreateDto[]).map((d) => ({
+          ...d,
+          path: decodeURIComponent(d.path),
+          newPath: decodeURIComponent(d.newPath),
+        }));
+
         await handleBulkFileOperations(
           action,
           endpoint,
           httpMethod,
-          data as PathChangeOrCreateDto[],
+          decodedFilenameData,
           get().setFileOperationResult,
           get().handleDeleteItems,
         );
