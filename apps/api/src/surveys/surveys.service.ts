@@ -181,16 +181,6 @@ class SurveysService implements OnModuleInit {
     return question;
   }
 
-  async updateQuestion(
-    username: string,
-    surveyId: string,
-    tempFiles: string[],
-    question: SurveyElement,
-  ): Promise<SurveyElement> {
-    const updatedQuestion = await this.updateTemporalImages(username, surveyId, tempFiles, question);
-    return SurveysService.updateLinkForRestfulChoices(surveyId, updatedQuestion);
-  }
-
   async updateElements(
     username: string,
     surveyId: string,
@@ -217,16 +207,6 @@ class SurveysService implements OnModuleInit {
       return { ...page, elements: updatedElements };
     });
     return Promise.all(updatePromises);
-  }
-
-  async updateTemporalLogo(
-    username: string,
-    surveyId: string,
-    tempFiles: string[],
-    link: string,
-  ): Promise<string | undefined> {
-    const pathWithIds = `${surveyId}/logo`;
-    return this.updateTempFilesUrls(username, pathWithIds, tempFiles, link);
   }
 
   async updateFormula(username: string, surveyId: string, formula: SurveyFormula): Promise<SurveyFormula> {
@@ -338,6 +318,9 @@ class SurveysService implements OnModuleInit {
 
   async updateTempFilesUrls(username: string, pathWithIds: string, tempFiles: string[], link: string): Promise<string> {
     const baseUrl = link.split(SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT)[0];
+
+    Logger.log(JSON.stringify(baseUrl, null, 2));
+
     if (!baseUrl) {
       return link;
     }
@@ -421,6 +404,26 @@ class SurveysService implements OnModuleInit {
       }
     }
     return question;
+  }
+
+  async updateQuestion(
+    username: string,
+    surveyId: string,
+    tempFiles: string[],
+    question: SurveyElement,
+  ): Promise<SurveyElement> {
+    const updatedQuestion = await this.updateTemporalImages(username, surveyId, tempFiles, question);
+    return SurveysService.updateLinkForRestfulChoices(surveyId, updatedQuestion);
+  }
+
+  async updateTemporalLogo(
+    username: string,
+    surveyId: string,
+    tempFiles: string[],
+    link: string,
+  ): Promise<string | undefined> {
+    const pathWithIds = `${surveyId}/logo`;
+    return this.updateTempFilesUrls(username, pathWithIds, tempFiles, link);
   }
 }
 
