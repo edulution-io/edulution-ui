@@ -24,7 +24,6 @@ import ContentType from '@libs/filesharing/types/contentType';
 import handleFileOrCreateFile from '@/pages/FileSharing/Dialog/handleFileAction/handleFileOrCreateFile';
 import handleBulkFileOperations from '@/pages/FileSharing/Dialog/handleFileAction/handleBulkFileOperations';
 import handleSingleData from '@/pages/FileSharing/Dialog/handleFileAction/handleSingleData';
-import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
 import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
 import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
 import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
@@ -55,7 +54,7 @@ interface FileSharingDialogStore {
     endpoint: string,
     httpMethod: HttpMethods,
     type: ContentType,
-    data: PathChangeOrCreateProps | PathChangeOrCreateProps[] | FileUploadProps[] | DeleteFileProps[] | FormData,
+    data: PathChangeOrCreateDto | PathChangeOrCreateDto[] | FileUploadProps[] | DeleteFileProps[] | FormData,
   ) => Promise<void>;
   setFilesToUpload: React.Dispatch<React.SetStateAction<File[]>>;
   action: FileActionType;
@@ -106,7 +105,7 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
     endpoint: string,
     httpMethod: HttpMethods,
     type: ContentType,
-    data: PathChangeOrCreateProps | PathChangeOrCreateProps[] | FileUploadProps[] | DeleteFileProps[] | FormData,
+    data: PathChangeOrCreateDto | PathChangeOrCreateDto[] | FileUploadProps[] | DeleteFileProps[] | FormData,
   ) => {
     set({ isLoading: true });
 
@@ -119,7 +118,7 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
           action,
           endpoint,
           httpMethod,
-          data as PathChangeOrCreateProps[],
+          data as PathChangeOrCreateDto[],
           get().setFileOperationResult,
           get().handleDeleteItems,
         );

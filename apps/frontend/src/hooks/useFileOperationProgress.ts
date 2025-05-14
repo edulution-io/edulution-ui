@@ -10,39 +10,47 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { useEffect, useState } from 'react';
+import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 
-const useFileOperationProgress = <T>(
+const useFileOperationProgress = (
+  isActive: boolean,
   eventSource: EventSource | null,
-  types: string[],
-  clearIfComplete?: (data: T, setter: (d: T | null) => void) => Promise<void>,
-): T | null => {
-  const [progress, setProgress] = useState<T | null>(null);
+  setFileOperationProgress: (d: FilesharingProgressDto | null) => void,
+) => {
+  const [progress, setProgress] = useState<FilesharingProgressDto | null>(null);
 
   useEffect(() => {
-    if (!eventSource) {
-      return () => {};
-    }
+    if (!isActive || !eventSource) return;
 
     const controller = new AbortController();
+    const { signal } = controller;
+
     const handler = (evt: MessageEvent<string>) => {
       try {
-        const data = JSON.parse(evt.data) as T;
+        const data = JSON.parse(evt.data) as FilesharingProgressDto;
         setProgress(data);
-        clearIfComplete?.(data, setProgress).catch((err) => console.error('Error in progress handler:', err));
+        setFileOperationProgress(data);
+
+        if (data.percent === 100 && (!data.failedPaths || data.failedPaths.length === 0)) {
+          setTimeout(() => setFileOperationProgress(null), 5000);
+        }
       } catch (err) {
         console.error('Invalid JSON in SSE event', err);
       }
     };
 
-    types.forEach((type) =>
-      eventSource.addEventListener(type, handler as EventListener, {
-        signal: controller.signal,
-      }),
-    );
+    [
+      SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES,
+      SSE_MESSAGE_TYPE.FILESHARING_MOVE_OR_RENAME_FILES,
+      SSE_MESSAGE_TYPE.FILESHARING_COPY_FILES,
+      SSE_MESSAGE_TYPE.FILESHARING_SHARE_FILES,
+      SSE_MESSAGE_TYPE.FILESHARING_COLLECT_FILES,
+    ].forEach((type) => eventSource.addEventListener(type, handler, { signal }));
 
-    return () => controller.abort();
-  }, [eventSource, types.join(',')]);
+    controller.abort();
+  }, [isActive, eventSource]);
 
   return progress;
 };

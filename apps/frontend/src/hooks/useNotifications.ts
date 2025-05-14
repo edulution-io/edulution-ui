@@ -24,9 +24,7 @@ import useIsAppActive from '@/hooks/useIsAppActive';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import UseBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
-import delay from '@libs/common/utils/delay';
 import useSseStore from '@/store/useSseStore';
-import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileOperationProgress from '@/hooks/useFileOperationProgress';
 
@@ -46,31 +44,7 @@ const useNotifications = () => {
   const { eventSource } = useSseStore();
   const isFileSharingActive = useIsAppActive(APPS.FILE_SHARING);
 
-  const clearProgressIfComplete = async (
-    data: FilesharingProgressDto,
-    clearFn: (value: FilesharingProgressDto | null) => void,
-  ) => {
-    if (data.percent === 100 && (!data.failedPaths || data.failedPaths.length === 0)) {
-      await delay(5000);
-      clearFn(null);
-    }
-  };
-
-  const filessaringProgress = useFileOperationProgress<FilesharingProgressDto>(
-    isFileSharingActive ? eventSource : null,
-    [
-      SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES,
-      SSE_MESSAGE_TYPE.FILESHARING_MOVE_OR_RENAME_FILES,
-      SSE_MESSAGE_TYPE.FILESHARING_COPY_FILES,
-    ],
-    clearProgressIfComplete,
-  );
-
-  const classroomProgress = useFileOperationProgress<FilesharingProgressDto>(
-    isClassRoomManagementActive ? eventSource : null,
-    [SSE_MESSAGE_TYPE.FILESHARING_SHARE_FILES, SSE_MESSAGE_TYPE.FILESHARING_COLLECT_FILES],
-    clearProgressIfComplete,
-  );
+  useFileOperationProgress(isFileSharingActive || isClassRoomManagementActive, eventSource, setFileOperationProgress);
 
   useDockerContainerEvents();
 
@@ -143,16 +117,6 @@ const useNotifications = () => {
       controller.abort();
     };
   }, [isConferenceAppActivated]);
-
-  useEffect(() => {
-    if (!isFileSharingActive || !eventSource) return;
-    if (filessaringProgress) setFileOperationProgress(filessaringProgress);
-  }, [isFileSharingActive, eventSource, filessaringProgress]);
-
-  useEffect(() => {
-    if (!isClassRoomManagementActive || !eventSource) return;
-    if (classroomProgress) setFileOperationProgress(classroomProgress);
-  }, [isClassRoomManagementActive, eventSource, classroomProgress]);
 
   useEffect(() => {
     if (!isSurveysAppActivated || !eventSource) {
