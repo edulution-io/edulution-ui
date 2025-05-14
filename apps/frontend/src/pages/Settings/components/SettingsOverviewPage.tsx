@@ -97,12 +97,14 @@ const SettingsOverviewPage: React.FC = () => {
 
   return (
     <>
-      <DropdownSelect
-        options={tabOptions}
-        selectedVal={option}
-        handleChange={handleDropdownSelect}
-        classname="w-[calc(100%-2.5rem)]"
-      />
+      <div className="sticky top-0 z-20 backdrop-blur-xl">
+        <DropdownSelect
+          options={tabOptions}
+          selectedVal={option}
+          handleChange={handleDropdownSelect}
+          classname="w-[calc(100%-2.5rem)]"
+        />
+      </div>
       <Separator className="my-2 " />
       {option === tabOptions[0].id && <DockerContainerTable />}
       {option === tabOptions[1].id && <GlobalSettings />}
