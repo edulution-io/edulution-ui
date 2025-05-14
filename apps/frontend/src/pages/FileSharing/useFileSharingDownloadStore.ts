@@ -135,7 +135,7 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
         {
           responseType: ResponseType.BLOB,
           signal,
-          params: { filePath: files.map((file) => file.filename) },
+          params: { filePath: files.map((file) => file.filePath) },
           onDownloadProgress: (e: AxiosProgressEvent) => {
             const total = e.total ?? totalBytes;
             if (!total) return;
