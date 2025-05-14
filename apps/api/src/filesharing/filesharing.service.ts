@@ -58,7 +58,7 @@ class FilesharingService {
     );
   }
 
-  async copyFileFolder(username: string, copyFileRequestDTOs: PathChangeOrCreateProps[]) {
+  async copyFileOrFolder(username: string, copyFileRequestDTOs: PathChangeOrCreateProps[]) {
     let processedItems = 0;
     return Promise.all(
       copyFileRequestDTOs.map(async (copyFileRequest) => {
@@ -95,16 +95,16 @@ class FilesharingService {
     );
   }
 
-  async moveOrRenameResource(username: string, pathChangeOrCreateDto: PathChangeOrCreateProps[]) {
+  async moveOrRenameResources(username: string, pathChangeOrCreateDtos: PathChangeOrCreateProps[]) {
     let processedItems = 0;
     return Promise.all(
-      pathChangeOrCreateDto.map(async (pathChange) => {
+      pathChangeOrCreateDtos.map(async (pathChange) => {
         const { path, newPath } = pathChange;
         await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.MOVE_OR_RENAME_JOB, {
           username,
           path,
           newPath,
-          total: pathChangeOrCreateDto.length,
+          total: pathChangeOrCreateDtos.length,
           processed: (processedItems += 1),
         });
       }),

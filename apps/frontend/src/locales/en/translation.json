@@ -83,7 +83,6 @@
       "attachmentDeletionFailed": "Failed to delete an attachment"
     }
   },
-
   "mountpoints": {
     "home": "Home",
     "examusers": "Exams",
@@ -93,7 +92,6 @@
     "shares": "Shares",
     "students-home": "Students-Home"
   },
-
   "appstore": {
     "title": "App Store",
     "description": "Here you can add {{ applicationName }} apps.",
@@ -738,7 +736,6 @@
   "roombooking": {
     "sidebar": "Room booking"
   },
-
   "mobileAccessSetup": {
     "connectionTitle": "Configure Connection",
     "pleaseEnterCredentials": "Please enter your server credentials",
@@ -747,7 +744,6 @@
     "yourPassword": "Your Password",
     "addButton": "Add"
   },
-
   "settings": {
     "title": "SETTINGS",
     "sidebar": "Settings",
@@ -1185,7 +1181,7 @@
       }
     }
   },
-  "fileOperationSuccessful": "File operation successful",
+  "fileOperationSuccessful": "File operation successful started",
   "fileOperationStarted": "File operation started",
   "unknownErrorOccurred": "An unknown error occurred",
   "fileSharingTable": {
@@ -1238,8 +1234,8 @@
     "usersAdded": "{{ count }} added"
   },
   "copyItemDialog": {
-    "copyFilesToDirectory": "Dateien in Verzeichnis kopieren",
-    "copy": "Kopieren"
+    "copyFilesOrDirectoriesToDirectory": "Copy files or directories into a directory",
+    "copy": "Copy"
   },
   "fileCategory": {
     "folder": "Folder",

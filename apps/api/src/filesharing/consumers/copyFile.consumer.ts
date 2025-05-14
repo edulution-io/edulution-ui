@@ -13,13 +13,13 @@
 import { WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Injectable } from '@nestjs/common';
-import * as path from 'path';
+import { join, parse } from 'path';
 
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJobData';
-import getStudentNameFromPath from '@libs/filesharing/utils/getStudentNameFromPath';
-import makeUniqueName from '@libs/filesharing/utils/makeUniqueName';
+import getUsernameFromPath from '@libs/filesharing/utils/getUsernameFromPath';
+import getNextAvailableFilename from '@libs/filesharing/utils/getNextAvailableFilename';
 import FileJobData from '@libs/queue/types/fileJobData';
 import SseService from '../../sse/sse.service';
 import WebdavService from '../../webdav/webdav.service';
@@ -37,27 +37,22 @@ class CopyFileConsumer extends WorkerHost {
     const { username, originFilePath, destinationFilePath, total, processed } = job.data as FileJobData;
     const failedPaths: string[] = [];
 
-    const parsed = path.parse(destinationFilePath);
+    const parsed = parse(destinationFilePath);
     const targetFolderPath = parsed.dir;
     const originalName = parsed.name;
     const extension = parsed.ext;
 
     const items = await this.webDavService.getFilesAtPath(username, targetFolderPath);
 
-    const uniqueFilename = makeUniqueName(originalName, extension, items);
+    const uniqueFilename = getNextAvailableFilename(originalName, extension, items);
 
     try {
-      await this.webDavService.copyFileViaWebDAV(
-        username,
-        originFilePath,
-        path.join(targetFolderPath, '/', uniqueFilename),
-      );
+      await this.webDavService.copyFileViaWebDAV(username, originFilePath, join(targetFolderPath, '/', uniqueFilename));
     } catch {
       failedPaths.push(destinationFilePath);
     }
 
     const percent = Math.round((processed / total) * 100);
-    const studentName = getStudentNameFromPath(destinationFilePath) || '';
 
     const progressDto: FilesharingProgressDto = {
       processID: Number(job.id),
@@ -68,7 +63,7 @@ class CopyFileConsumer extends WorkerHost {
       total,
       percent,
       currentFilePath: originFilePath,
-      studentName,
+      username: getUsernameFromPath(destinationFilePath) || '',
       failedPaths,
     };
 

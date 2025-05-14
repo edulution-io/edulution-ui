@@ -355,8 +355,8 @@
       "processedDeletingInfo": "{{processed}} von {{total}} Dateien erfolgreich gelöscht",
       "processedMovingInfo": "{{processed}} von {{total}} Dateien erfolgreich verschoben",
       "processedCopyingInfo": "{{processed}} von {{total}} Dateien erfolgreich kopiert",
-      "fileInfoSharing": "Datei {{filename}} wird an {{studentName}} ausgeteilt",
-      "fileInfoCollecting": "Datei {{filename}} wird von {{studentName}} eingesammelt",
+      "fileInfoSharing": "Datei {{filename}} wird an {{username}} ausgeteilt",
+      "fileInfoCollecting": "Datei {{filename}} wird von {{username}} eingesammelt",
       "fileInfoMoving": "Datei {{filename}} wird verschoben",
       "fileInfoDeleting": "Datei {{filename}} wird gelöscht",
       "fileInfoCopying": "Datei {{filename}} wird kopiert",
@@ -1184,7 +1184,7 @@
       }
     }
   },
-  "fileOperationSuccessful": "Dateioperation erfolgreich",
+  "fileOperationSuccessful": "Dateioperation erfolgreich gestartet.",
   "fileOperationStarted": "Dateioperation gestartet",
   "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
   "fileSharingTable": {
@@ -1280,7 +1280,7 @@
     "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
   },
   "copyItemDialog": {
-    "copyFilesToDirectory": "Dateien in Verzeichnis kopieren",
+    "copyFilesOrDirectoriesToDirectory": "Dateien oder Verzeichnisse in ein Verzeichnis kopieren",
     "copy": "Kopieren"
   },
 

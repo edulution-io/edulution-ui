@@ -33,6 +33,7 @@ import DocumentVendorsType from '@libs/filesharing/types/documentVendorsType';
 import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
 import MoveDirectoryDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveDirectoryDialogBody';
+import CopyContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/CopyContentDialogBody';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
@@ -223,9 +224,9 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     },
   },
 
-  copyFileFolder: {
-    Component: MoveDirectoryDialogBody,
-    titleKey: 'copyItemDialog.copyFilesToDirectory',
+  copyFileOrFolder: {
+    Component: CopyContentDialogBody,
+    titleKey: 'copyItemDialog.copyFilesOrDirectoriesToDirectory',
     submitKey: 'copyItemDialog.copy',
     endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.COPY}`,
     httpMethod: HttpMethods.POST,
@@ -241,10 +242,13 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
       const targetBase = getPathWithoutWebdav(moveOrCopyItemToPath.filePath);
 
       return Promise.resolve(
-        selectedItems.map((item) => ({
-          path: `${sourceBase}/${item.filename}`,
-          newPath: `${targetBase}/${item.filename}`,
-        })),
+        selectedItems.map((item) => {
+          const encodedName = encodeURIComponent(item.filename);
+          return {
+            path: `${sourceBase}/${encodedName}`,
+            newPath: `${targetBase}/${encodedName}`,
+          };
+        }),
       );
     },
   },

@@ -24,9 +24,13 @@ import ContentType from '@libs/filesharing/types/contentType';
 import handleFileOrCreateFile from '@/pages/FileSharing/Dialog/handleFileAction/handleFileOrCreateFile';
 import handleBulkFileOperations from '@/pages/FileSharing/Dialog/handleFileAction/handleBulkFileOperations';
 import handleSingleData from '@/pages/FileSharing/Dialog/handleFileAction/handleSingleData';
-import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
+import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
 import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
 import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
+import eduApi from '@/api/eduApi';
+import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
+import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 
 interface FileSharingDialogStore {
   isDialogOpen: boolean;
@@ -50,7 +54,7 @@ interface FileSharingDialogStore {
     endpoint: string,
     httpMethod: HttpMethods,
     type: ContentType,
-    data: PathChangeOrCreateProps | PathChangeOrCreateProps[] | FileUploadProps[] | DeleteFileProps[] | FormData,
+    data: PathChangeOrCreateDto | PathChangeOrCreateDto[] | FileUploadProps[] | DeleteFileProps[] | FormData,
   ) => Promise<void>;
   setFilesToUpload: React.Dispatch<React.SetStateAction<File[]>>;
   action: FileActionType;
@@ -58,6 +62,7 @@ interface FileSharingDialogStore {
   fileOperationResult: WebDavActionResult | undefined;
   setFileOperationResult: (fileOperationSuccessful: boolean | undefined, message: string, status: number) => void;
   setSubmitButtonIsDisabled: (isSubmitButtonActive: boolean) => void;
+  handleDeleteItems: (itemsToDelete: PathChangeOrCreateDto[], endpoint: string) => Promise<void>;
 }
 
 const initialState: Partial<FileSharingDialogStore> = {
@@ -100,24 +105,31 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
     endpoint: string,
     httpMethod: HttpMethods,
     type: ContentType,
-    data: PathChangeOrCreateProps | PathChangeOrCreateProps[] | FileUploadProps[] | DeleteFileProps[] | FormData,
+    bulkDtos: PathChangeOrCreateDto | PathChangeOrCreateDto[] | FileUploadProps[] | DeleteFileProps[] | FormData,
   ) => {
     set({ isLoading: true });
 
     try {
-      if (data instanceof FormData) {
-        await handleFileOrCreateFile(action, endpoint, httpMethod, type, data);
+      if (bulkDtos instanceof FormData) {
+        await handleFileOrCreateFile(action, endpoint, httpMethod, type, bulkDtos);
         get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
-      } else if (Array.isArray(data)) {
+      } else if (Array.isArray(bulkDtos)) {
+        const decodedFilenameDtos = (bulkDtos as PathChangeOrCreateDto[]).map((dto) => ({
+          ...dto,
+          path: decodeURIComponent(dto.path),
+          newPath: decodeURIComponent(dto.newPath),
+        }));
+
         await handleBulkFileOperations(
           action,
           endpoint,
           httpMethod,
-          data as PathChangeOrCreateProps[],
+          decodedFilenameDtos,
           get().setFileOperationResult,
+          get().handleDeleteItems,
         );
       } else {
-        await handleSingleData(action, endpoint, httpMethod, type, data);
+        await handleSingleData(action, endpoint, httpMethod, type, bulkDtos);
         get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
       }
     } catch (error) {
@@ -126,6 +138,12 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
     } finally {
       set({ isLoading: false, isDialogOpen: false, error: null });
     }
+  },
+
+  async handleDeleteItems(itemsToDelete: PathChangeOrCreateDto[], endpoint: string): Promise<void> {
+    const cleanPaths = itemsToDelete.map((item) => getPathWithoutWebdav(item.path));
+    const url = buildApiDeletePathUrl(endpoint, DeleteTargetType.FILE_SERVER);
+    await eduApi.delete(url, { data: { paths: cleanPaths } });
   },
 }));
 

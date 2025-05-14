@@ -46,7 +46,7 @@ const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog, selected
         const files = Array.isArray(selectedFiles) ? selectedFiles : [selectedFiles];
         await startDownload(files);
       }, canDownload),
-      CopyButton(() => openDialog(FileActionType.COPY_FILE_FOLDER)),
+      CopyButton(() => openDialog(FileActionType.COPY_FILE_OR_FOLDER)),
     ],
     keyPrefix: 'file-sharing-page-floating-button_',
   };

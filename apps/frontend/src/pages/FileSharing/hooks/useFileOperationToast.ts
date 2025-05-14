@@ -10,12 +10,21 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const getStudentNameFromPath = (filePath: string): string | null => {
-  const parts = filePath.split('/');
-  if (parts.length < 3) {
-    return null;
-  }
-  return parts[2];
+import { useTranslation } from 'react-i18next';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useProgressToast from '../../../hooks/useProgressToast';
+
+const useFileOperationToast = () => {
+  const { t } = useTranslation();
+  const { fileOperationProgress } = useFileSharingStore();
+
+  useProgressToast(
+    fileOperationProgress && {
+      ...fileOperationProgress,
+      title: t(fileOperationProgress.title ?? ''),
+      description: t(fileOperationProgress.description ?? ''),
+    },
+  );
 };
 
-export default getStudentNameFromPath;
+export default useFileOperationToast;

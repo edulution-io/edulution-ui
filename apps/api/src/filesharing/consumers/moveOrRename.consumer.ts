@@ -50,7 +50,7 @@ class MoveOrRenameConsumer extends WorkerHost {
       total,
       percent,
       currentFilePath: path,
-      studentName: '',
+      username: '',
       failedPaths,
     };
     this.sseService.sendEventToUser(username, progressDto, SSE_MESSAGE_TYPE.FILESHARING_MOVE_OR_RENAME_FILES);
