@@ -79,8 +79,12 @@ class LicenseService implements OnModuleInit {
     const licenseInfo = await this.licenseModel.findOne<LicenseInfoDto>({}, 'licenseKey token isLicenseActive').lean();
 
     if (licenseInfo?.isLicenseActive && licenseInfo?.token) {
-      Logger.log('Checking license validity...', LicenseService.name);
-      await this.verifyToken(licenseInfo);
+      try {
+        Logger.log('Checking license validity...', LicenseService.name);
+        await this.verifyToken(licenseInfo);
+      } catch (error) {
+        Logger.error('License check failed', LicenseService.name);
+      }
     }
   }
 
