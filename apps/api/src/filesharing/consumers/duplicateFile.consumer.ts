@@ -50,7 +50,7 @@ class DuplicateFileConsumer extends WorkerHost {
     }
 
     const percent = Math.round((processed / total) * 100);
-    const studentName = getUsernameFromPath(destinationFilePath) || '';
+    const destinationUsername = getUsernameFromPath(destinationFilePath) || '';
 
     const progressDto: FilesharingProgressDto = {
       processID: Number(job.id),
@@ -61,7 +61,7 @@ class DuplicateFileConsumer extends WorkerHost {
       total,
       percent,
       currentFilePath: originFilePath,
-      username: studentName,
+      username: destinationUsername,
       failedPaths,
     };
 
