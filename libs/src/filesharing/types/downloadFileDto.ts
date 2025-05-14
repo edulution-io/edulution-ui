@@ -10,12 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import FileActionType from '@libs/filesharing/types/fileActionType';
+class DownloadFileDto {
+  processId: number;
 
-interface FileActionButtonProps {
-  openDialog: (action: FileActionType) => void;
-  selectedItems?: DirectoryFileDTO | DirectoryFileDTO[];
+  fileName: string;
+
+  percent: number;
 }
 
-export default FileActionButtonProps;
+export default DownloadFileDto;

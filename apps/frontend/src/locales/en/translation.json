@@ -361,6 +361,7 @@
       "fileInfoSharing": "File {{filename}} is being distributed to {{studentName}}",
       "fileInfoCollecting": "File {{filename}} is being collected to {{studentName}}",
       "fileInfoDeleting": "File {{filename}} is being deleted",
+      "downloadInfo": "Downloading {{filename}}",
       "errorInfo": "{{failed}} files could not be handed out"
     }
   },

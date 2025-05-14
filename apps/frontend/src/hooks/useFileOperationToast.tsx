@@ -15,20 +15,29 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import ProgressBox from '@/components/ui/ProgressBox';
+import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 
-const useFileOperationToast = (
-  fileOperationProgress: FilesharingProgressDto | null,
-  filesharingProgress: FilesharingProgressDto | null,
-) => {
+const useFileOperationToast = () => {
   const { t } = useTranslation();
-
+  const { downloadProgress } = useFileSharingDownloadStore();
   const lastProgressRef = useRef<number | null>(null);
 
+  const filesharingProgressDto: FilesharingProgressDto = {
+    title: t('filesharing.progressBox.downloadInfo', { filename: downloadProgress?.fileName }),
+    percent: downloadProgress.percent,
+    processID: downloadProgress.processId,
+  };
+
   useEffect(() => {
-    const progress = fileOperationProgress ?? filesharingProgress;
+    const progress = filesharingProgressDto;
     if (!progress) return;
 
     const percent = progress.percent ?? 0;
+
+    if (percent === 0) {
+      lastProgressRef.current = 0;
+      return;
+    }
 
     if (lastProgressRef.current === percent) return;
     lastProgressRef.current = percent;
@@ -39,7 +48,7 @@ const useFileOperationToast = (
     const toasterData = {
       percent,
       title: t(progress.title || ''),
-      id: progress.currentFilePath,
+      id: progress.currentFilePath || progress.processID,
       description: t(progress.description || '', {
         filename,
         studentName: progress.studentName,
@@ -50,20 +59,19 @@ const useFileOperationToast = (
       total: progress.total,
     };
 
-    let toastDuration: number;
-    if (toasterData.failed > 0) {
-      toastDuration = Infinity;
-    } else if (percent >= 100) {
-      toastDuration = 5000;
-    } else {
-      toastDuration = Infinity;
-    }
+    const getToastDuration = (failed: number, pct: number) => {
+      if (failed > 0) return Infinity;
+      if (pct >= 100) return 5000;
+      return Infinity;
+    };
+
+    const toastDuration = getToastDuration(failedCount, percent);
 
     toast(<ProgressBox data={toasterData} />, {
       id: toasterData.title,
       duration: toastDuration,
     });
-  }, [fileOperationProgress, filesharingProgress, t]);
+  }, [filesharingProgressDto]);
 };
 
 export default useFileOperationToast;

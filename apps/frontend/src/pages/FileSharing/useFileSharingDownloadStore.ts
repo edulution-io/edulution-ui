@@ -20,6 +20,8 @@ import eduApi from '@/api/eduApi';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import { ResponseType } from '@libs/common/types/http-methods';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
+import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
+import { AxiosProgressEvent } from 'axios';
 
 type FileSharingDownloadStore = {
   isCreatingBlobUrl: boolean;
@@ -28,15 +30,19 @@ type FileSharingDownloadStore = {
   publicDownloadLink: string | null;
   isEditorLoading: boolean;
   error: Error | null;
+  downloadProgress: DownloadFileDto;
+  setDownloadProgress: (progress: DownloadFileDto) => void;
   createDownloadBlobUrl: (filePath: string, signal?: AbortSignal) => Promise<string | undefined>;
   getPublicDownloadUrl: (filePath: string, filename: string, signal?: AbortSignal) => Promise<string | undefined>;
   loadDownloadUrl: (file: DirectoryFileDTO | null, signal?: AbortSignal) => Promise<void>;
+  loadDownloadUrlMultipleFiles: (file: DirectoryFileDTO[], signal?: AbortSignal) => Promise<string | undefined>;
   setPublicDownloadLink: (publicDownloadLink: string) => void;
   reset: () => void;
 };
 
 const initialState = {
   temporaryDownloadUrl: '',
+  downloadProgress: {} as DownloadFileDto,
   publicDownloadLink: null,
   isCreatingBlobUrl: false,
   isFetchingPublicUrl: false,
@@ -49,6 +55,10 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
 
   reset: () => set(initialState),
   setPublicDownloadLink: (publicDownloadLink) => set({ publicDownloadLink }),
+
+  setDownloadProgress: (progress) => {
+    set({ downloadProgress: progress });
+  },
 
   loadDownloadUrl: async (file, signal) => {
     try {
@@ -104,6 +114,43 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
       );
       const { data, success } = response.data;
       return success && data ? data : '';
+    } catch (error) {
+      handleApiError(error, set);
+      return '';
+    } finally {
+      set({ isFetchingPublicUrl: false });
+    }
+  },
+
+  loadDownloadUrlMultipleFiles: async (files: DirectoryFileDTO[], signal?: AbortSignal) => {
+    try {
+      set({ isFetchingPublicUrl: true });
+      const params = new URLSearchParams();
+      files.forEach((f) => params.append('filePath', f.filename));
+
+      const totalBytes = files.reduce((size, file) => size + (file.size ?? 0), 0);
+
+      const { data } = await eduApi.get<Blob>(
+        `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_STREAM}`,
+        {
+          responseType: ResponseType.BLOB,
+          signal,
+          params: { filePath: files.map((f) => f.filename) },
+          onDownloadProgress: (e: AxiosProgressEvent) => {
+            const total = e.total ?? totalBytes;
+            if (!total) return;
+            let percent = Math.round((e.loaded / total) * 100);
+            if (percent > 100) percent = 100;
+            get().setDownloadProgress({
+              fileName: files.length > 1 ? 'download.zip' : files[0].basename,
+              percent,
+              processId: Math.floor(Math.random() * 1_000_000),
+            });
+          },
+        },
+      );
+
+      return URL.createObjectURL(data);
     } catch (error) {
       handleApiError(error, set);
       return '';
