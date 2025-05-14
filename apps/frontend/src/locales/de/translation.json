@@ -134,6 +134,9 @@
       "LmnConnectionFailed": "Verbindung zum Schulserver fehlgeschlagen.",
       "KeycloakConnectionFailed": "Verbindung zum Authentifizierungsserver fehlgeschlagen.",
       "EdulutionConnectionFailed": "Verbindung zum edulution Server fehlgeschlagen. Bitte versuche es später noch einmal."
+    },
+    "logout": {
+      "success": "Erfolgreich abgemeldet"
     }
   },
   "lmnApi": {
@@ -349,7 +352,8 @@
       "fileInfoSharing": "Datei {{filename}} wird an {{studentName}} ausgeteilt",
       "fileInfoCollecting": "Datei {{filename}} wird von {{studentName}} eingesammelt",
       "fileInfoDeleting": "Datei {{filename}} wird gelöscht",
-      "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden"
+      "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden",
+      "downloadInfo": "Datei {{filename}} wird heruntergeladen"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",

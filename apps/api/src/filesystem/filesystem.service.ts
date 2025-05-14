@@ -52,28 +52,42 @@ const pipelineAsync = promisify(pipeline);
 
 @Injectable()
 class FilesystemService {
-  constructor(private readonly userService: UsersService) {}
-
   private readonly baseurl = process.env.EDUI_WEBDAV_URL as string;
+
+  constructor(private readonly userService: UsersService) {}
 
   static async fetchFileStream(
     url: string,
     client: AxiosInstance,
-    streamFetching = false,
+    isStreamFetching = false,
+    onProgress?: (percent: string) => void,
   ): Promise<AxiosResponse<Readable> | Readable> {
     try {
-      const fileStream = from(client.get<Readable>(url, { responseType: ResponseType.STREAM }));
-      return await firstValueFrom(fileStream).then((res) => (streamFetching ? res : res.data));
-    } catch (error) {
-      throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, url);
-    }
-  }
+      const response = await firstValueFrom(from(client.get<Readable>(url, { responseType: ResponseType.STREAM })));
 
-  async ensureDirectoryExists(directory: string): Promise<void> {
-    try {
-      await ensureDir(directory);
+      const contentLengthHeader = response.headers?.[HTTP_HEADERS.ContentLength] as string | undefined;
+
+      const contentLength = contentLengthHeader && /^\d+$/.test(contentLengthHeader) ? Number(contentLengthHeader) : 0;
+
+      const readStream = response.data;
+
+      if (contentLength > 0) {
+        let downloadedBytes = 0;
+        readStream.on('data', (chunk: Buffer) => {
+          downloadedBytes += chunk.length;
+          const percent = ((downloadedBytes / contentLength) * 100).toFixed(2);
+          if (onProgress) onProgress(percent);
+        });
+      }
+
+      return isStreamFetching ? response : readStream;
     } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.DIRECTORY_CREATION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(
+        FileSharingErrorMessage.DownloadFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        url,
+        FilesystemService.name,
+      );
     }
   }
 
@@ -157,6 +171,69 @@ class FilesystemService {
     await Promise.all(fileNames.map((fileName) => FilesystemService.deleteFile(path, fileName)));
   }
 
+  static async checkIfFileExist(filePath: string): Promise<boolean> {
+    return pathExists(filePath);
+  }
+
+  static async throwErrorIfFileNotExists(filePath: string): Promise<void> {
+    try {
+      await access(filePath);
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  static async checkIfFileExistAndDelete(filePath: string) {
+    await FilesystemService.throwErrorIfFileNotExists(filePath);
+    try {
+      await unlink(filePath);
+      Logger.log(`${filePath} deleted.`, FilesystemService.name);
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  static async writeFile(filePath: string, content: string) {
+    try {
+      await outputFile(filePath, content);
+      Logger.log(`${filePath} created.`, FilesystemService.name);
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async deleteDirectory(directory: string): Promise<void> {
+    try {
+      await rm(directory, { recursive: true });
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  static async deleteDirectories(directories: string[]): Promise<void> {
+    try {
+      const deletionPromises = directories.map((directory) => rm(directory, { recursive: true }));
+      await Promise.all(deletionPromises);
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  static buildPathString(path: string | string[]) {
+    if (Array.isArray(path)) {
+      return path.join('/');
+    }
+    return path;
+  }
+
+  async ensureDirectoryExists(directory: string): Promise<void> {
+    try {
+      await ensureDir(directory);
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.DIRECTORY_CREATION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   async fileLocation(
     username: string,
     filePath: string,
@@ -186,60 +263,12 @@ class FilesystemService {
     }
   }
 
-  static async checkIfFileExist(filePath: string): Promise<boolean> {
-    return pathExists(filePath);
-  }
-
-  static async throwErrorIfFileNotExists(filePath: string): Promise<void> {
-    try {
-      await access(filePath);
-    } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  static async checkIfFileExistAndDelete(filePath: string) {
-    await FilesystemService.throwErrorIfFileNotExists(filePath);
-    try {
-      await unlink(filePath);
-      Logger.log(`${filePath} deleted.`, FilesystemService.name);
-    } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  static async writeFile(filePath: string, content: string) {
-    try {
-      await outputFile(filePath, content);
-      Logger.log(`${filePath} created.`, FilesystemService.name);
-    } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_WRITING_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
   async getAllFilenamesInDirectory(directory: string): Promise<string[]> {
     const exists = await pathExists(directory);
     if (!exists) {
       return [];
     }
     return readdir(directory);
-  }
-
-  async deleteDirectory(directory: string): Promise<void> {
-    try {
-      await rm(directory, { recursive: true });
-    } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  static async deleteDirectories(directories: string[]): Promise<void> {
-    try {
-      const deletionPromises = directories.map((directory) => rm(directory, { recursive: true }));
-      await Promise.all(deletionPromises);
-    } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
   }
 
   async createReadStream(filePath: string): Promise<Readable> {
