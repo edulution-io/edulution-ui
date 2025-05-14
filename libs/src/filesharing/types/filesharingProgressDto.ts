@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IsNumber, IsString, IsOptional, IsArray } from 'class-validator';
+import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
 
 class FilesharingProgressDto {
   @IsNumber()
@@ -20,25 +20,32 @@ class FilesharingProgressDto {
   title: string;
 
   @IsString()
-  description: string;
+  @IsOptional()
+  description?: string;
 
   @IsString()
-  statusDescription: string;
+  @IsOptional()
+  statusDescription?: string;
 
   @IsNumber()
-  processed: number;
+  @IsOptional()
+  processed?: number;
 
   @IsNumber()
-  total: number;
+  @IsOptional()
+  total?: number;
 
   @IsNumber()
-  percent: number;
+  @IsOptional()
+  percent?: number;
 
   @IsString()
-  currentFilePath: string;
+  @IsOptional()
+  currentFilePath?: string;
 
   @IsString()
-  studentName: string;
+  @IsOptional()
+  studentName?: string;
 
   @IsOptional()
   @IsArray()

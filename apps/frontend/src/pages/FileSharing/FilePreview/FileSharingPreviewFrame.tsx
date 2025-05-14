@@ -33,19 +33,20 @@ import ToggleDockButton from '@/components/structure/framing/ResizableWindow/But
 import { useLocation } from 'react-router-dom';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import RESIZEABLE_WINDOW_DEFAULT_POSITION from '@libs/ui/constants/resizableWindowDefaultPosition';
+import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 
 const FileSharingPreviewFrame = () => {
   const { t } = useTranslation();
   const {
     addFileToOpenInNewTab,
     currentlyEditingFile,
-    fetchDownloadLinks,
     setCurrentlyEditingFile,
     setIsFilePreviewVisible,
     isFilePreviewVisible,
     isFilePreviewDocked,
     setIsFilePreviewDocked,
   } = useFileEditorStore();
+  const { loadDownloadUrl } = useFileSharingDownloadStore();
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
   const { setCurrentWindowedFrameSize } = useFrameStore();
   const windowSize = useWindowResize();
@@ -93,7 +94,7 @@ const FileSharingPreviewFrame = () => {
     abortControllerRef.current = controller;
 
     if (currentlyEditingFile) {
-      void fetchDownloadLinks(currentlyEditingFile, controller.signal);
+      void loadDownloadUrl(currentlyEditingFile, controller.signal);
     }
 
     return () => controller.abort();

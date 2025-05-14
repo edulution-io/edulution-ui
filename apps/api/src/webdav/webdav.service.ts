@@ -13,7 +13,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
 import {
@@ -28,6 +27,7 @@ import ContentType from '@libs/filesharing/types/contentType';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import ErrorMessage from '@libs/error/errorMessage';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
+import CustomHttpException from '../common/CustomHttpException';
 import mapToDirectories from '@libs/filesharing/utils/mapToDirectories';
 import mapToDirectoryFiles from '@libs/filesharing/utils/mapToDirectoryFiles';
 import buildUrl from '@libs/common/utils/buildUrl';

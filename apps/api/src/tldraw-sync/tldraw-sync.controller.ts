@@ -11,32 +11,30 @@
  */
 
 /* eslint-disable @typescript-eslint/class-methods-use-this */
-import { Controller, Delete, Get, Param, Post, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type Response } from 'express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
-import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
-import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
+import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/apiEndpoints';
+import APPS from '@libs/appconfig/constants/apps';
 import { createAttachmentUploadOptions } from '../common/multer.utilities';
-import AppConfigGuard from '../appconfig/appconfig.guard';
-import FilesystemService from './filesystem.service';
+import FilesystemService from '../filesystem/filesystem.service';
 
-@ApiTags(EDU_API_CONFIG_ENDPOINTS.FILES)
+@ApiTags(TLDRAW_SYNC_ENDPOINTS.BASE)
 @ApiBearerAuth()
-@Controller(EDU_API_CONFIG_ENDPOINTS.FILES)
-class FileSystemController {
+@Controller(TLDRAW_SYNC_ENDPOINTS.BASE)
+class TldrawSyncController {
   constructor(private readonly filesystemService: FilesystemService) {}
 
-  @Post(':name')
-  @UseGuards(AppConfigGuard)
+  @Post(`${TLDRAW_SYNC_ENDPOINTS.ASSETS}/:name`)
   @ApiConsumes(RequestResponseContentType.MULTIPART_FORM_DATA)
   @UseInterceptors(
     FileInterceptor(
       'file',
       createAttachmentUploadOptions(
-        (req) => `${APPS_FILES_PATH}/${req.params.name}`,
+        () => `${APPS_FILES_PATH}/${APPS.WHITEBOARD}`,
         false,
         (_req, file) => file.originalname,
       ),
@@ -46,24 +44,20 @@ class FileSystemController {
     return res.status(200).json(file.filename);
   }
 
-  @Get('info/*path')
-  getFiles(@Param('path') path: string | string[]) {
-    return this.filesystemService.getFilesInfo(FilesystemService.buildPathString(path));
-  }
-
-  @Get(`${FILE_ENDPOINTS.FILE}/:appName/*filename`) serveFiles(
-    @Param('appName') appName: string,
+  @Get(`${TLDRAW_SYNC_ENDPOINTS.ASSETS}/*filename`) serveFiles(
     @Param('filename') filename: string | string[],
     @Res() res: Response,
   ) {
-    return this.filesystemService.serveFiles(appName, FilesystemService.buildPathString(filename), res);
+    return this.filesystemService.serveFiles(APPS.WHITEBOARD, FilesystemService.buildPathString(filename), res);
   }
 
-  @Delete(':appName/*filename')
-  @UseGuards(AppConfigGuard)
-  deleteFile(@Param('appName') appName: string, @Param('filename') filename: string) {
-    return FilesystemService.deleteFile(`${APPS_FILES_PATH}/${appName}`, FilesystemService.buildPathString(filename));
+  @Delete(`${TLDRAW_SYNC_ENDPOINTS.ASSETS}/*filename`)
+  deleteFile(@Param('filename') filename: string) {
+    return FilesystemService.deleteFile(
+      `${APPS_FILES_PATH}/${APPS.WHITEBOARD}`,
+      FilesystemService.buildPathString(filename),
+    );
   }
 }
 
-export default FileSystemController;
+export default TldrawSyncController;

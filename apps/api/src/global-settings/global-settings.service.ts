@@ -13,9 +13,9 @@
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import GlobalSettingsErrorMessages from '@libs/global-settings/constants/globalSettingsErrorMessages';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
+import CustomHttpException from '../common/CustomHttpException';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
 
 @Injectable()

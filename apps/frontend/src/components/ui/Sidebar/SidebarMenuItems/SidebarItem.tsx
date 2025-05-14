@@ -10,14 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { useWindowSize } from 'usehooks-ts';
-import { SIDEBAR_ICON_WIDTH, SIDEBAR_TRANSLATE_AMOUNT } from '@libs/ui/constants';
+import { SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
 import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
 import { getRootPathName } from '@libs/common/utils';
 import SidebarItemNotification from '@/components/ui/Sidebar/SidebarMenuItems/SidebarItemNotification';
 import PageTitle from '@/components/PageTitle';
+import useTrulyVisible from '@/hooks/useTrulyVisible';
 
 const SidebarItem: React.FC<SidebarMenuItemProps> = ({
   menuItem,
@@ -28,24 +28,10 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({
 }) => {
   const { title, icon, color, link, notificationCounter } = menuItem;
   const buttonRef = useRef<HTMLDivElement>(null);
-  const [isInView, setIsInView] = useState(false);
-  const size = useWindowSize({ debounceDelay: 100 });
+  const isTrulyVisible = useTrulyVisible(buttonRef, [translate, isUpButtonVisible, isDownButtonVisible]);
   const { pathname } = useLocation();
 
   const rootPathName = getRootPathName(pathname);
-
-  useEffect(() => {
-    if (buttonRef.current == null) return;
-
-    const rect = buttonRef.current.getBoundingClientRect();
-
-    if (
-      rect.top > SIDEBAR_TRANSLATE_AMOUNT - 1 + (isUpButtonVisible ? 14 : 0) &&
-      rect.bottom < window.innerHeight - SIDEBAR_TRANSLATE_AMOUNT + 1 - (isDownButtonVisible ? 14 : 0)
-    ) {
-      setIsInView(true);
-    } else setIsInView(false);
-  }, [translate, size, buttonRef.current]);
 
   const isCurrentlySelectedItem = rootPathName === menuItem.link && pathname !== '/';
 
@@ -70,7 +56,7 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({
           />
           <SidebarItemNotification notificationCounter={notificationCounter} />
         </>
-        {isInView ? (
+        {isTrulyVisible ? (
           <div
             className={`${color} absolute left-full top-0 z-40 flex h-full items-center gap-4 rounded-l-[8px] pl-4 pr-[48px] ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
           >

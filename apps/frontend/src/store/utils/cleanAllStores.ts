@@ -40,6 +40,7 @@ import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardE
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
+import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import useSseStore from '../useSseStore';
 
 const cleanAllStores = () => {
@@ -60,6 +61,7 @@ const cleanAllStores = () => {
   useFileEditorStore.getState().reset();
   useFileSharingDialogStore.getState().reset();
   useFileSharingStore.getState().reset();
+  useFileSharingDownloadStore.getState().reset();
   useFrameStore.getState().reset();
   useLessonStore.getState().reset();
   useLmnApiPasswordStore.getState().reset();

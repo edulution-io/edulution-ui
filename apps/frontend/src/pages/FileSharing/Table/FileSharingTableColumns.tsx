@@ -34,6 +34,7 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
 import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
 import useMedia from '@/hooks/useMedia';
+import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
@@ -79,8 +80,8 @@ const getFileSharingTableColumns = (
       cell: ({ row }) => {
         const [searchParams, setSearchParams] = useSearchParams();
         const { currentlyDisabledFiles, setFileIsCurrentlyDisabled } = useFileSharingStore();
-        const { resetCurrentlyEditingFile, setPublicDownloadLink, setIsFilePreviewVisible, isFilePreviewDocked } =
-          useFileEditorStore();
+        const { resetCurrentlyEditingFile, setIsFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
+        const { setPublicDownloadLink } = useFileSharingDownloadStore();
         const isCurrentlyDisabled = currentlyDisabledFiles[row.original.filename];
         const { isMobileView } = useMedia();
         const handleFilenameClick = () => {

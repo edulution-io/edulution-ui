@@ -18,7 +18,6 @@ import { parseString } from 'xml2js';
 import { Model } from 'mongoose';
 import { createHash } from 'crypto';
 import { Interval } from '@nestjs/schedule';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import BbbResponseDto from '@libs/conferences/types/bbb-api/bbb-response.dto';
@@ -30,6 +29,7 @@ import CONFERENCES_SYNC_INTERVAL_MS from '@libs/conferences/constants/conference
 import stringToBoolean from '@libs/common/utils/stringToBoolean';
 import splitAtLastWhitespace from '@libs/common/utils/splitStringAtLastWhitespace';
 import JoinPublicConferenceDetails from '@libs/conferences/types/joinPublicConferenceDetails';
+import CustomHttpException from '../common/CustomHttpException';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
 import Attendee from './attendee.schema';

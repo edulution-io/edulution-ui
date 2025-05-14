@@ -23,6 +23,7 @@ import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 
 interface FileRendererProps {
   editMode: boolean;
@@ -33,21 +34,22 @@ interface FileRendererProps {
 const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closingRef }) => {
   const { isMobileView } = useMedia();
   const {
-    downloadLinkURL: fileUrl,
+    temporaryDownloadUrl: fileUrl,
     publicDownloadLink,
-    currentlyEditingFile,
     isEditorLoading,
-    isDownloadFileLoading,
-    isGetDownloadLinkUrlLoading,
+    isCreatingBlobUrl,
+    isFetchingPublicUrl,
     error,
-  } = useFileEditorStore();
+  } = useFileSharingDownloadStore();
+
+  const { currentlyEditingFile } = useFileEditorStore();
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
 
   useEffect(() => {
-    if (currentlyEditingFile && !isEditorLoading && !isDownloadFileLoading && !isGetDownloadLinkUrlLoading) {
+    if (currentlyEditingFile && !isEditorLoading && !isCreatingBlobUrl && !isFetchingPublicUrl) {
       void setFileIsCurrentlyDisabled(currentlyEditingFile.filename, false);
     }
-  }, [isEditorLoading, isDownloadFileLoading, isGetDownloadLinkUrlLoading, currentlyEditingFile?.filename]);
+  }, [isEditorLoading, isCreatingBlobUrl, isFetchingPublicUrl, currentlyEditingFile?.filename]);
 
   useEffect(
     () => () => {

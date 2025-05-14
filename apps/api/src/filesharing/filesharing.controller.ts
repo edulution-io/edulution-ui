@@ -15,9 +15,7 @@ import {
   Controller,
   Delete,
   Get,
-  Header,
   HttpStatus,
-  Logger,
   Patch,
   Post,
   Put,
@@ -28,7 +26,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
 import CustomFile from '@libs/filesharing/types/customFile';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
@@ -123,25 +121,21 @@ class FilesharingController {
   }
 
   @Get(FileSharingApiEndpoints.FILE_STREAM)
-  @Header('Content-Type', RequestResponseContentType.APPLICATION_OCTET_STREAM as string)
   async webDavFileStream(
-    @Query('filePath') filePath: string,
+    @Query('filePath') filePath: string | string[],
     @Res() res: Response,
     @GetCurrentUsername() username: string,
   ) {
-    const stream = await this.filesharingService.getWebDavFileStream(username, filePath);
+    const files = Array.isArray(filePath) ? filePath : [filePath];
+    if (files.length === 1) {
+      res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_OCTET_STREAM);
+      const stream = await this.filesharingService.getWebDavFileStream(username, files[0]);
+      res.setHeader(HTTP_HEADERS.ContentDisposition, `attachment; filename="${files[0].split('/').pop()}"`);
+      return stream.pipe(res);
+    }
 
-    stream.on('error', (err) => {
-      if (err.message !== 'Premature close') {
-        Logger.error(`${FilesharingController.name}: Unknown stream error:`, err);
-      }
-    });
-
-    const fileName = filePath.split('/').pop();
-
-    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
-
-    stream.pipe(res);
+    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_ZIP);
+    return this.filesharingService.streamFilesAsZipBuffered(username, files, res);
   }
 
   @Get(FileSharingApiEndpoints.FILE_LOCATION)
