@@ -22,7 +22,7 @@ const useFileOperationProgress = (
   const [progress, setProgress] = useState<FilesharingProgressDto | null>(null);
 
   useEffect(() => {
-    if (!isActive || !eventSource) return;
+    if (!isActive || !eventSource) return () => {};
 
     const controller = new AbortController();
     const { signal } = controller;
@@ -49,7 +49,7 @@ const useFileOperationProgress = (
       SSE_MESSAGE_TYPE.FILESHARING_COLLECT_FILES,
     ].forEach((type) => eventSource.addEventListener(type, handler, { signal }));
 
-    controller.abort();
+    return () => controller.abort();
   }, [isActive, eventSource]);
 
   return progress;
