@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Connection, Model } from 'mongoose';
@@ -32,7 +32,7 @@ import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
 class AppConfigService implements OnModuleInit {
-  public appAccessMap: Map<string, string[]> = new Map();
+  public appAccessMap = new Map<string, string[]>();
 
   constructor(
     @InjectConnection() private readonly connection: Connection,
@@ -40,15 +40,17 @@ class AppConfigService implements OnModuleInit {
     private eventEmitter: EventEmitter2,
   ) {}
 
-  async updateAccessList() {
+  async updateAppAccessMap() {
     try {
-      const appConfigs = await this.appConfigModel.find({});
+      const appConfigs = await this.appConfigModel.find({}).lean();
       this.appAccessMap = new Map(
         appConfigs.map((config) => [
           config.name,
-          config.accessGroups.map((group: MultipleSelectorGroup) => group.path),
+          config.accessGroups?.map((group: MultipleSelectorGroup) => group.path),
         ]),
       );
+
+      Logger.verbose(`App access map updated`, AppConfigService.name);
     } catch (error) {
       throw new CustomHttpException(
         AppConfigErrorMessages.ReadAppConfigFailed,
@@ -64,7 +66,7 @@ class AppConfigService implements OnModuleInit {
 
     await MigrationService.runMigrations<AppConfig>(this.appConfigModel, appConfigMigrationsList);
 
-    await this.updateAccessList();
+    await this.updateAppAccessMap();
   }
 
   async insertConfig(appConfigDto: AppConfigDto, ldapGroups: string[]) {
@@ -110,7 +112,7 @@ class AppConfigService implements OnModuleInit {
     } finally {
       await AppConfigService.writeProxyConfigFile(appConfigDto);
 
-      await this.updateAccessList();
+      await this.updateAppAccessMap();
 
       this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
     }
