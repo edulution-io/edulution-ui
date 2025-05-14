@@ -23,6 +23,7 @@ import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobal
 import useLdapGroups from '@/hooks/useLdapGroups';
 import { GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 
 const SetupMfaDialog: React.FC = () => {
   const { t } = useTranslation();
@@ -41,7 +42,7 @@ const SetupMfaDialog: React.FC = () => {
   const { ldapGroups } = useLdapGroups();
   const [totp, setTotp] = useState('');
 
-  const isRightAfterLogin = pathname === '/' || pathname === '/login';
+  const isRightAfterLogin = pathname === '/' || pathname === LOGIN_ROUTE;
 
   useEffect(() => {
     const handleCheckGlobalSettings = async () => {
