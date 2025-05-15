@@ -13,7 +13,7 @@
 import { useTranslation } from 'react-i18next';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
-import useProgressToast from '@/hooks/useProgressToast';
+import useFileOperationProgressToast from '@/hooks/useFileOperationProgressToast';
 
 const useFileDownloadProgressToast = () => {
   const { t } = useTranslation();
@@ -29,7 +29,7 @@ const useFileDownloadProgressToast = () => {
       }
     : null;
 
-  useProgressToast(progress);
+  useFileOperationProgressToast(progress);
 };
 
 export default useFileDownloadProgressToast;
