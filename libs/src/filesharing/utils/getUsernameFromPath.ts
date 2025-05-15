@@ -10,14 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileActionType {
-  MOVE_FILE_FOLDER = 'moveFileFolder',
-  CREATE_FOLDER = 'createFolder',
-  CREATE_FILE = 'createFile',
-  DELETE_FILE_FOLDER = 'deleteFileFolder',
-  UPLOAD_FILE = 'uploadFile',
-  RENAME_FILE_FOLDER = 'renameFileFolder',
-  COPY_FILE_OR_FOLDER = 'copyFileOrFolder',
-}
+const getUsernameFromPath = (filePath: string): string | null => {
+  const parts = filePath.split('/');
+  if (parts.length < 3) {
+    return null;
+  }
+  return parts[2];
+};
 
-export default FileActionType;
+export default getUsernameFromPath;

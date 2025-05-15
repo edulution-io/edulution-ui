@@ -24,12 +24,10 @@ import useIsAppActive from '@/hooks/useIsAppActive';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import UseBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
-import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
-import delay from '@libs/common/utils/delay';
 import useSseStore from '@/store/useSseStore';
-import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import useFileOperationToast from '@/hooks/useFileOperationToast';
+import useFileOperationProgress from '@/pages/FileSharing/hooks/useFileOperationProgress';
+import useFileDownloadProgressToast from '@/pages/FileSharing/hooks/useFileDownloadProgressToast';
+import useFileOperationToast from '@/pages/FileSharing/hooks/useFileOperationToast';
 
 const useNotifications = () => {
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
@@ -42,23 +40,13 @@ const useNotifications = () => {
   const { updateOpenSurveys } = useSurveyTablesPageStore();
   const isBulletinBoardActive = useIsAppActive(APPS.BULLETIN_BOARD);
   const { addBulletinBoardNotification } = UseBulletinBoardStore();
-  const { setFilesharingProgress } = useLessonStore();
-  const { setFileOperationProgress } = useFileSharingStore();
-  const isClassRoomManagementActive = useIsAppActive(APPS.CLASS_MANAGEMENT);
   const { eventSource } = useSseStore();
-  const isFileSharingActive = useIsAppActive(APPS.FILE_SHARING);
 
-  const clearProgressIfComplete = async (
-    data: FilesharingProgressDto,
-    clearFn: (value: FilesharingProgressDto | null) => void,
-  ) => {
-    if (data.percent === 100 && (!data.failedPaths || data.failedPaths.length === 0)) {
-      await delay(5000);
-      clearFn(null);
-    }
-  };
+  useFileOperationProgress();
 
   useDockerContainerEvents();
+
+  useFileDownloadProgressToast();
 
   useFileOperationToast();
 
@@ -131,59 +119,6 @@ const useNotifications = () => {
       controller.abort();
     };
   }, [isConferenceAppActivated]);
-
-  const handleFilesharingProgress =
-    (setter: (v: FilesharingProgressDto | null) => void) => async (e: MessageEvent<string>) => {
-      try {
-        const data = JSON.parse(e.data) as FilesharingProgressDto;
-        setter(data);
-        await clearProgressIfComplete(data, setter);
-      } catch (err) {
-        console.error('Error parsing filesharing progress data:', err);
-      }
-    };
-
-  useEffect(() => {
-    if (!isFileSharingActive || !eventSource) {
-      return undefined;
-    }
-
-    const controller = new AbortController();
-    const { signal } = controller;
-
-    const rawDelete = handleFilesharingProgress(setFileOperationProgress);
-
-    const handleDelete = (e: MessageEvent<string>) => {
-      void rawDelete(e);
-    };
-
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES, handleDelete, { signal });
-
-    return () => {
-      controller.abort();
-    };
-  }, [isFileSharingActive]);
-
-  useEffect(() => {
-    if (!isClassRoomManagementActive || !eventSource) {
-      return undefined;
-    }
-    const controller = new AbortController();
-    const { signal } = controller;
-
-    const rawCollectShare = handleFilesharingProgress(setFilesharingProgress);
-
-    const handleCollectOrShare = (e: MessageEvent<string>) => {
-      void rawCollectShare(e);
-    };
-
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_COLLECT_FILES, handleCollectOrShare, { signal });
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_SHARE_FILES, handleCollectOrShare, { signal });
-
-    return () => {
-      controller.abort();
-    };
-  }, [isClassRoomManagementActive]);
 
   useEffect(() => {
     if (!isSurveysAppActivated || !eventSource) {
