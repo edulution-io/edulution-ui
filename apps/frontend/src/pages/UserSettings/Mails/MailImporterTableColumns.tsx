@@ -18,10 +18,12 @@ import { ColumnDef } from '@tanstack/react-table';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import ActionTooltip from '@/components/shared/ActionTooltip';
 import i18n from '@/i18n';
+import MAIL_IMPORTER_TABLE_COLUMNS from '@libs/mail/constants/mailImporterTableColumns';
+import hideOnMobileClassName from '@libs/ui/constants/hideOnMobileClassName';
 
 const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
   {
-    id: 'hostname',
+    id: MAIL_IMPORTER_TABLE_COLUMNS.HOSTNAME,
     header: ({ table, column }) => (
       <SortableHeader<SyncJobDto, unknown>
         table={table}
@@ -40,7 +42,8 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
     ),
   },
   {
-    id: 'port',
+    id: MAIL_IMPORTER_TABLE_COLUMNS.PORT,
+    size: 60,
     header: ({ column }) => <SortableHeader<SyncJobDto, unknown> column={column} />,
     meta: {
       translationId: 'mail.port',
@@ -54,7 +57,8 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
     ),
   },
   {
-    id: 'encryption',
+    id: MAIL_IMPORTER_TABLE_COLUMNS.ENCRYPTION,
+    size: 115,
     header: ({ column }) => <SortableHeader<SyncJobDto, unknown> column={column} />,
     meta: {
       translationId: 'mail.encryption',
@@ -68,7 +72,7 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
     ),
   },
   {
-    id: 'username',
+    id: MAIL_IMPORTER_TABLE_COLUMNS.USERNAME,
     header: ({ column }) => <SortableHeader<SyncJobDto, unknown> column={column} />,
     meta: {
       translationId: 'common.username',
@@ -82,7 +86,8 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
     ),
   },
   {
-    id: 'sync-interval',
+    id: MAIL_IMPORTER_TABLE_COLUMNS.SYNC_INTERVAL,
+    size: 100,
     header: ({ column }) => <SortableHeader<SyncJobDto, unknown> column={column} />,
     meta: {
       translationId: 'mail.importer.interval',
@@ -96,8 +101,14 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
     ),
   },
   {
-    id: 'isActive',
-    header: ({ column }) => <SortableHeader<SyncJobDto, unknown> column={column} />,
+    id: MAIL_IMPORTER_TABLE_COLUMNS.IS_ACTIVE,
+    size: 80,
+    header: ({ column }) => (
+      <SortableHeader<SyncJobDto, unknown>
+        column={column}
+        className={hideOnMobileClassName}
+      />
+    ),
     meta: {
       translationId: 'mail.importer.isActive',
     },

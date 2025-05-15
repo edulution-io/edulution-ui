@@ -19,10 +19,15 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import { toast } from 'sonner';
 import { getFromPathName } from '@libs/common/utils';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
+import PageTitle from '@/components/PageTitle';
+import getDisplayName from '@/utils/getDisplayName';
+import useLanguage from '@/hooks/useLanguage';
+import useUserAccounts from '@/hooks/useUserAccounts';
 
 const ForwardingPage: React.FC = () => {
   const { t } = useTranslation();
   const { pathname } = useLocation();
+  const { language } = useLanguage();
 
   const [isForwarding, setIsForwarding] = useState(false);
   const [showIsForwarding, setShowIsForwarding] = useState(false);
@@ -30,6 +35,7 @@ const ForwardingPage: React.FC = () => {
   const { appConfigs } = useAppConfigsStore();
 
   const rootPathName = getFromPathName(pathname, 1);
+  useUserAccounts(rootPathName);
 
   useEffect(() => {
     if (isForwarding) {
@@ -51,8 +57,12 @@ const ForwardingPage: React.FC = () => {
 
   const currentAppConfig = findAppConfigByName(appConfigs, rootPathName);
 
+  if (!currentAppConfig) return null;
+  const pageTitle = getDisplayName(currentAppConfig, language);
+
   return (
-    <div className="grid h-[80%] items-center justify-center">
+    <div className="m-auto grid h-[80%] items-center justify-center">
+      <PageTitle translationId={pageTitle} />
       <h2 className="text-center text-background">{t('forwardingpage.action')}</h2>
       <div className="mt-20 flex justify-center">
         <img
@@ -71,8 +81,8 @@ const ForwardingPage: React.FC = () => {
         >
           <img
             className="m-10 w-[200px] md:m-[20] md:w-[200px]"
-            src={currentAppConfig?.icon}
-            alt={currentAppConfig?.name}
+            src={currentAppConfig.icon}
+            alt={currentAppConfig.name}
           />
         </Button>
       </div>

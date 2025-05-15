@@ -16,12 +16,13 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Connection, Model } from 'mongoose';
 import { readFileSync, writeFileSync } from 'fs';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import type PatchConfigDto from '@libs/common/types/patchConfigDto';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import CustomHttpException from '../common/CustomHttpException';
 import { AppConfig } from './appconfig.schema';
 import initializeCollection from './initializeCollection';
 import MigrationService from '../migration/migration.service';
@@ -54,7 +55,7 @@ class AppConfigService implements OnModuleInit {
         AppConfigService.name,
       );
     } finally {
-      AppConfigService.writeProxyConfigFile(appConfigDto);
+      await AppConfigService.writeProxyConfigFile(appConfigDto);
       this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
     }
   }
@@ -83,7 +84,7 @@ class AppConfigService implements OnModuleInit {
         AppConfigService.name,
       );
     } finally {
-      AppConfigService.writeProxyConfigFile(appConfigDto);
+      await AppConfigService.writeProxyConfigFile(appConfigDto);
       this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
     }
   }
@@ -104,7 +105,7 @@ class AppConfigService implements OnModuleInit {
     }
   }
 
-  static writeProxyConfigFile(appConfigDto: AppConfigDto) {
+  static async writeProxyConfigFile(appConfigDto: AppConfigDto) {
     if (appConfigDto?.options?.proxyConfig) {
       const { proxyConfig } = appConfigDto.options;
       if (proxyConfig !== '' && proxyConfig !== '""') {
@@ -113,9 +114,12 @@ class AppConfigService implements OnModuleInit {
           JSON.parse(appConfigDto?.options?.proxyConfig) as string,
         );
       } else {
-        const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appConfigDto?.name}.yml`;
-
-        FilesystemService.checkIfFileExistAndDelete(filePath);
+        const doesFileExist = await FilesystemService.checkIfFileExist(
+          `${TRAEFIK_CONFIG_FILES_PATH}/${appConfigDto?.name}.yml`,
+        );
+        if (doesFileExist) {
+          await FilesystemService.deleteFile(TRAEFIK_CONFIG_FILES_PATH, `${appConfigDto?.name}.yml`);
+        }
       }
     }
   }
@@ -179,9 +183,15 @@ class AppConfigService implements OnModuleInit {
         AppConfigService.name,
       );
     } finally {
-      const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${configName}.yml`;
+      const doesFileExist = await FilesystemService.checkIfFileExist(`${TRAEFIK_CONFIG_FILES_PATH}/${configName}.yml`);
+      if (doesFileExist) {
+        await FilesystemService.deleteFile(TRAEFIK_CONFIG_FILES_PATH, `${configName}.yml`);
+      }
 
-      FilesystemService.checkIfFileExistAndDelete(filePath);
+      const doesFolderExist = await FilesystemService.checkIfFileExist(`${APPS_FILES_PATH}/${configName}`);
+      if (doesFolderExist) {
+        await FilesystemService.deleteDirectories([`${APPS_FILES_PATH}/${configName}`]);
+      }
 
       this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
     }

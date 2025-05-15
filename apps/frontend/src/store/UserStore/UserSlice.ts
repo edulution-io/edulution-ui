@@ -18,7 +18,7 @@ import UserStore from '@libs/user/types/store/userStore';
 import UserSlice from '@libs/user/types/store/userSlice';
 import UserDto from '@libs/user/types/user.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import { EDU_API_USERS_ENDPOINT, EDU_API_USERS_SEARCH_ENDPOINT } from '@/api/endpoints/users';
+import { EDU_API_USERS_ENDPOINT, EDU_API_USERS_SEARCH_ENDPOINT } from '@libs/user/constants/usersApiEndpoints';
 import UserLanguageType from '@libs/user/types/userLanguageType';
 
 const initialState = {
@@ -36,7 +36,6 @@ const initialState = {
 const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) => ({
   ...initialState,
 
-  setIsAuthenticated: (isAuthenticated: boolean) => set({ isAuthenticated }),
   setEduApiToken: (eduApiToken) => set({ eduApiToken }),
 
   getWebdavKey: async () => {

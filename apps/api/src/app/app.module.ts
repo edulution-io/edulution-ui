@@ -10,19 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Logger, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CacheModule } from '@nestjs/cache-manager';
 import { JwtModule } from '@nestjs/jwt';
-import { redisStore } from 'cache-manager-redis-yet';
-import type { RedisClientOptions, RedisFunctions, RedisModules, RedisScripts } from 'redis';
+import KeyvRedis from '@keyv/redis';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
+import { BullModule } from '@nestjs/bullmq';
 import LoggingInterceptor from '../logging/logging.interceptor';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
@@ -39,6 +38,15 @@ import BulletinCategoryModule from '../bulletin-category/bulletin-category.modul
 import BulletinBoardModule from '../bulletinboard/bulletinboard.module';
 import DockerModule from '../docker/docker.module';
 import VeyonModule from '../veyon/veyon.module';
+import GlobalSettingsModule from '../global-settings/global-settings.module';
+import HealthController from './health.controller';
+import SseModule from '../sse/sse.module';
+import TldrawSyncModule from '../tldraw-sync/tldraw-sync.module';
+import FileSystemModule from '../filesystem/filesystem.module';
+import WebDavModule from '../webdav/webdav.module';
+
+const redisHost = process.env.REDIS_HOST ?? 'localhost';
+const redisPort = +(process.env.REDIS_PORT ?? 6379);
 
 @Module({
   imports: [
@@ -46,8 +54,21 @@ import VeyonModule from '../veyon/veyon.module';
       rootPath: PUBLIC_DOWNLOADS_PATH,
       serveRoot: `/${EDU_API_ROOT}/downloads`,
     }),
+
+    BullModule.forRoot({
+      connection: {
+        host: redisHost,
+        port: redisPort,
+      },
+      defaultJobOptions: {
+        removeOnComplete: true,
+        removeOnFail: true,
+      },
+    }),
+
     AuthModule,
     AppConfigModule,
+    FileSystemModule,
     UsersModule,
     GroupsModule,
     LmnApiModule,
@@ -61,6 +82,10 @@ import VeyonModule from '../veyon/veyon.module';
     BulletinBoardModule,
     DockerModule,
     VeyonModule,
+    GlobalSettingsModule,
+    WebDavModule,
+    SseModule,
+    TldrawSyncModule,
     JwtModule.register({
       global: true,
     }),
@@ -71,48 +96,16 @@ import VeyonModule from '../veyon/veyon.module';
 
     ScheduleModule.forRoot(),
 
-    CacheModule.registerAsync<RedisClientOptions>({
+    CacheModule.registerAsync({
       isGlobal: true,
-      useFactory: async () => {
-        const options: RedisClientOptions<RedisModules, RedisFunctions, RedisScripts> = {
-          socket: {
-            host: process.env.REDIS_HOST ?? 'localhost',
-            port: parseInt(process.env.REDIS_PORT ?? '6379', 10),
-            reconnectStrategy: (retries) => {
-              Logger.warn(`Trying to reconnect to redis: ${retries}`, AppModule.name);
-              return 3000;
-            },
-          },
-          disableOfflineQueue: true,
-        };
-
-        const store = await redisStore(options);
-        const redisClient = store.client;
-
-        const restartRedisService = async () => {
-          await redisClient.disconnect();
-          await redisClient.connect();
-        };
-
-        redisClient.on('connect', () => Logger.log('Connected to redis', AppModule.name));
-        redisClient.on('ready', () => Logger.log('Redis is ready', AppModule.name));
-        redisClient.on('error', (error: Error & { code?: string }) => {
-          Logger.error(`Redis connection error: ${error.code}`, AppModule.name);
-
-          if (!error.code) {
-            setTimeout(() => restartRedisService, 3000);
-          }
-        });
-
-        return {
-          store,
-          ttl: DEFAULT_CACHE_TTL_MS,
-        };
-      },
+      useFactory: () => ({
+        stores: [new KeyvRedis(`redis://${redisHost}:${redisPort}`)],
+      }),
     }),
 
     EventEmitterModule.forRoot(),
   ],
+  controllers: [HealthController],
   providers: [
     {
       provide: APP_INTERCEPTOR,

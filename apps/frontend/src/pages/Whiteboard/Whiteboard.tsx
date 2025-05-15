@@ -10,33 +10,41 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { Excalidraw, THEME } from '@excalidraw/excalidraw';
-import cn from '@libs/common/utils/className';
-import useFrameStore from '@/components/framing/FrameStore';
-import APPS from '@libs/appconfig/constants/apps';
+import React, { lazy, Suspense, useMemo } from 'react';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import PageLayout from '@/components/structure/layout/PageLayout';
 import useLanguage from '@/hooks/useLanguage';
+import useUserStore from '@/store/UserStore/UserStore';
+import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/apiEndpoints';
+import EDU_API_WEBSOCKET_URL from '@libs/common/constants/eduApiWebsocketUrl';
+import ROOM_ID_PARAM from '@libs/tldraw-sync/constants/roomIdParam';
+import { useTranslation } from 'react-i18next';
+
+const TldrawWithSync = lazy(() => import('./TLDrawWithSync'));
 
 const Whiteboard = () => {
-  const { activeEmbeddedFrame } = useFrameStore();
-  const { language: lang } = useLanguage();
+  const { language } = useLanguage();
+  const { t } = useTranslation();
+  const { user, eduApiToken } = useUserStore();
 
-  const getStyle = () => (activeEmbeddedFrame === APPS.WHITEBOARD ? 'block' : 'hidden');
+  const WS_BASE_URL = `${EDU_API_WEBSOCKET_URL}/${TLDRAW_SYNC_ENDPOINTS.BASE}`;
+
+  const roomId = user?.username;
+
+  const uri = useMemo(() => `${WS_BASE_URL}?${ROOM_ID_PARAM}=${roomId}&token=${eduApiToken}`, [roomId]);
 
   return (
-    <div
-      className={cn(
-        'absolute inset-y-0 left-0 ml-0 w-screen justify-center md:w-[calc(100%-var(--sidebar-width))]',
-        getStyle(),
-      )}
-    >
-      <div className="h-full w-full flex-grow">
-        <Excalidraw
-          theme={THEME.DARK}
-          langCode={`${lang}-${lang.toUpperCase()}`}
-        />
-      </div>
-    </div>
+    <PageLayout isFullScreen>
+      <Suspense fallback={<CircleLoader className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />}>
+        <div className="z-0 h-full w-full">
+          <TldrawWithSync
+            uri={uri}
+            userLanguage={language}
+            userName={user?.lastName ?? t('common.guest')}
+          />
+        </div>
+      </Suspense>
+    </PageLayout>
   );
 };
 

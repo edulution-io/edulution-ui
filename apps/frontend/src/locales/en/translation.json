@@ -2,8 +2,7 @@
   "welcome": "Welcome to the application",
   "changeLang": "Change Language",
   "heading": "Welcome {{givenName}} {{familyName}}",
-  "content": "Here is your personal edulution.io dashboard. The place where all your digital education operation applications are gathered.",
-  "preparing": "preparing...",
+  "content": "Here is your personal {{ applicationName }} dashboard. The place where all your applications for digital teaching are collected.",
   "closeEditingWindow": "Close editing window",
   "framebufferImage": "Framebuffer image",
   "previewImage": "Image preview",
@@ -72,11 +71,7 @@
     "errors": {
       "categoryNotFound": "Category not found",
       "categoryDeleteFailed": "Failed to delete category",
-      "attachmentUploadFailed": "Failed to upload attachment",
-      "fileNotProvided": "File not provided",
-      "fileNotFound": "File not found",
       "invalidCategory": "Invalid category",
-      "invalidFileType": "Invalid file type",
       "bulletinNotFound": "Bulletin not found",
       "unauthorizedUpdateBulletin": "Unauthorized to update this bulletin",
       "unauthorizedDeleteBulletin": "Unauthorized to delete this bulletin",
@@ -88,10 +83,21 @@
       "attachmentDeletionFailed": "Failed to delete an attachment"
     }
   },
+  "mountpoints": {
+    "home": "Home",
+    "examusers": "Exams",
+    "projects": "Projects",
+    "iso": "ISO",
+    "programs": "Programs",
+    "shares": "Shares",
+    "students-home": "Students-Home"
+  },
   "appstore": {
     "title": "App Store",
-    "description": "Here you can add edulution.io apps.",
-    "chooseIcon": "Choose icon"
+    "description": "Here you can add {{ applicationName }} apps.",
+    "chooseIcon": "Choose icon",
+    "uploadIcon": "Upload icon",
+    "dropIconDescription": "Drag an image here or click to select an image. Supported formats: SVG, WEBP"
   },
   "forwarding": {
     "sidebar": "Forwarding"
@@ -103,23 +109,27 @@
     "sidebar": "Embedded"
   },
   "dashboard": {
+    "pageTitle": "Dashboard",
     "mobileAccess": {
-      "title": "Mobile File Access",
-      "manual": "Manual",
+      "title": "Mobile Access",
+      "manual": "Setup",
+      "manualSetup": "Manual setup",
+      "setupWithQrCode": "Setup with QR code",
       "accessData": "Login data",
       "content": "You can access the school server from many mobile devices. Click on Manual to start.",
-      "scanAccessInfo": "To transfer the access data, please scan the following QR code with the edulution.io app.",
-      "scanAppStoreLink": "Scan the QR code with your mobile device to download the edultion-io app from the AppStore.",
+      "scanAccessInfo": "To transfer the access data, please scan the following QR code with the {{ applicationName }} app.",
+      "manualAccessInfo": "Enter your login details manually in the {{ applicationName }} app. The example below shows how to fill in each field.",
       "nextStepPreview": "In the next step you can transfer the access data.",
-      "copyCredentials": "Or enter manually:",
       "downloadDirect": "Or download the app directly:",
-      "downloadApp": "Download the edulution.io app here:"
+      "downloadApp": "Download the {{ applicationName }} app here:"
     },
     "quota": {
       "title": "Quotas",
       "globalQuota": "Cloud quota calculated",
       "mailQuota": "Mail quota calculated",
-      "mibibyte": "MiB"
+      "mibibyte": "MiB",
+      "remainingLow": "Remaining quota low – {{free}} %",
+      "remainingVeryLow": "Remaining quota very low – {{free}} %"
     }
   },
   "auth": {
@@ -129,7 +139,13 @@
       "Unauthorized": "You are not authorized.",
       "Unknown": "User not found.",
       "TotpMissing": "Totp missing.",
-      "TotpInvalid": "Totp invalid."
+      "TotpInvalid": "Totp invalid.",
+      "LmnConnectionFailed": "Connection to school server failed.",
+      "KeycloakConnectionFailed": "Connection to authentication server failed.",
+      "EdulutionConnectionFailed": "Connection to edulution server failed. Please try again later."
+    },
+    "logout": {
+      "success": "Logout successful"
     }
   },
   "lmnApi": {
@@ -173,18 +189,21 @@
     "configName": "Configuration name",
     "hostname": "Hostname",
     "port": "Port",
+    "portPlaceholder": "e.g. 993",
     "encryption": "Encryption",
     "rowsSelected": "{{selected}} of {{total}} jobs selected",
     "rowSelected": "{{selected}} of {{total}} job selected",
     "importer": {
-      "filterPlaceHolderText": "Search for importername",
-      "title": "Email Importer",
+      "filterPlaceHolderText": "Search for username",
+      "title": "Email Sync",
       "provider": "Email Provider",
       "interval": "Sync Interval",
       "isActive": "Active",
-      "syncJobsTable": "Importer Jobs",
+      "syncJobsTable": "Sync Jobs",
       "mailAddress": "Email address",
-      "noMailConfigured": "Mail app is not active. Please contact your system administrator."
+      "noMailConfigured": "Mail app is not active. Please contact your system administrator.",
+      "syncAccountAdded": "Account for sync job added.",
+      "syncAccountDeleted": "Account for sync job deleted."
     }
   },
   "chat": {
@@ -195,7 +214,8 @@
     "automaticLoginFailed": "Automatic login failed",
     "unexpectedError": "An unexpected error occurred",
     "uploadOrFetchAttachmentFailed": "Error uploading or fetching attachment",
-    "fileGenerationFailed": "File generation failed"
+    "fileGenerationFailed": "File generation failed",
+    "requestTooLarge": "Your request is too large. If you have attached media, try compressing or removing it"
   },
   "conferences": {
     "errors": {
@@ -211,6 +231,10 @@
       "WrongPassword": "The entered password is wrong",
       "ConferenceIsNotRunning": "Conference is not running",
       "MissingMandatoryParameters": "Request failed because of missing parameters"
+    },
+    "sharePublicDialog": {
+      "title": "Share Conference",
+      "description": "Here you can copy and share the link to the conference."
     },
     "joinThisConference": "Join this conference",
     "filterPlaceHolderText": "Search for conference name",
@@ -288,6 +312,8 @@
     "sidebar": "File Sharing",
     "previewTitle": "File Preview",
     "fileEditor": "File editor",
+    "selectFile": "Select file",
+    "filePreview": "File preview",
     "saveFile": "Save file",
     "loadingDocument": "Loading document...",
     "closeEditor": "Close editor",
@@ -308,19 +334,41 @@
       "WebDavError": "Data server access failed",
       "DownloadFailed": "Download failed",
       "FolderCreationFailed": "Folder creation failed",
+      "CreateCollectFolderForStudentFailed": "Creating the collect folder for student failed",
       "DeleteFromServerFailed": "Delete from server failed",
       "SaveFailed": "Save failed",
-      "DuplicateFailed": "Copy failed",
+      "DuplicateFailed": "Duplicate failed",
       "AppNotProperlyConfigured": "OnlyOffice is not properly configured, contact your system administrator.",
       "CollectingFailed": "Collecting files failed",
+      "MissingCallbackURL": "Missing callback URL",
       "SharingFailed": "Sharing files failed",
-      "MissingCallbackURL": "Missing callback URL"
+      "CopyFailed": "Copy failed"
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
       "FileNameRequired": "File name is required",
       "NewFileNameRequired": "New file name is required",
       "NameRequired": "Name is required"
+    },
+    "progressBox": {
+      "info": "Info",
+      "titleSharing": "Distributing files",
+      "titleCollecting": "Collecting files",
+      "titleMoving": "Moving files",
+      "titleDeleting": "Files are being deleted",
+      "titleCopying": "Copying files",
+      "processedSharingInfo": "{{processed}} out of {{total}} files distributed successfully",
+      "processedCollectingInfo": "{{processed}} out of {{total}} files collected successfully",
+      "processedDeletingInfo": "{{processed}} out of {{total}} files deleted successfully",
+      "processedMovingInfo": "{{processed}} out of {{total}} files moved successfully",
+      "processedCopyingInfo": "{{processed}} out of {{total}} files copied successfully",
+      "fileInfoSharing": "File {{filename}} is being distributed to {{username}}",
+      "fileInfoCollecting": "File {{filename}} is being collected to {{username}}",
+      "fileInfoCopying": "File {{filename}} is being copied",
+      "fileInfoMoving": "File {{filename}} is being moved",
+      "fileInfoDeleting": "File {{filename}} is being deleted",
+      "downloadInfo": "Downloading {{filename}}",
+      "errorInfo": "{{failed}} files could not be handed out"
     }
   },
   "forums": {
@@ -386,12 +434,12 @@
     "member": "Member",
     "noneAvailable": "None available",
     "isJoinable": "Users can join",
-    "joinclass": "Join class to share files",
+    "joinclass": "Join class",
     "hide": "Hide for other users",
     "teacher": "Teacher",
     "typeToSearchUsersGroupsProjects": "Type to add students, classes or projects",
     "typeToSearchUsersGroupsProjectsToNewSession": "Type to add students, classes or projects to a new session",
-    "itsNotPossibleToEditOtherTeacher": "At the moment it is not possible to create the directory for sharing in another teacher's home directory or to manage the administration groups.",
+    "itsNotPossibleToEditExternalStudents": "It is not possible to control students from other classes. Please join the student's class.",
     "itsNotPossibleToEditOtherSchoolStudents": "At the moment it is not possible to create the directory for sharing in a student's home directory of another school or to manage the administration groups.",
     "usersInThisSession": "Users in this session",
     "webfilter": "Webfilter",
@@ -448,6 +496,16 @@
     "myRoom": "My room",
     "sharedMailBox": "Shared mailbox",
     "enrolPageDescription": "Select the classes and projects that you want to enrol yourself by checking the checkboxes.",
+    "failDialog": {
+      "title": "The file {{file}} could not be shared",
+      "reasonMissing": "The file may no longer exist or has been renamed.",
+      "reasonAlreadyReceived": "The recipient already has the file.",
+      "reasonDuplicate": "The file name is duplicated.",
+      "affectedPersons": "The following persons did not receive the file:",
+      "affectedPerson": "The following person did not receive the file:",
+      "filenameAdvice": "If you try to share again, the file will be shared under the name {{filename}}",
+      "retryButton": "Retry"
+    },
     "veyonConfigTable": {
       "id": "ID",
       "subnet": "Subnet",
@@ -458,7 +516,11 @@
       "proxyAdressPlaceholder": "http://localhost:11080",
       "createConfig": "Create config",
       "editConfig": "Edit config"
-    }
+    },
+    "copyOrCut": "Would you like to cut or copy the files?",
+    "filesShared": "Files shared",
+    "filesSharingStarted": "Sharing files started",
+    "filesCollectingStarted": "Collecting files started"
   },
   "select": "Select",
   "selectAll": "Select all",
@@ -472,6 +534,7 @@
     "attendees": "Attendees",
     "filterPlaceHolderText": "Search for surveyname",
     "invitedAttendees": "Invited",
+    "publicSurvey": "Public survey",
     "isPublic": "Publicly displayed (?)",
     "isPublicTrue": "Public",
     "isPublicFalse": "Private",
@@ -488,13 +551,43 @@
     "canSubmitMultiple": "Allow multiple submission",
     "editor": {
       "new": "New (blank)",
-      "abort": "Revert all changes",
+      "saveSurveySuccess": "Saved the survey.",
+      "reset": "Reset",
       "addDescription": "Add a description",
-      "expectingUserInput": "Expecting the user to answer here, ... "
+      "expectingUserInput": "Expecting the user to answer here, ... ",
+      "templates": "Templates",
+      "templateMenu": {
+        "fetch": "Choose one of the following templates.",
+        "submit": "Save Survey as template.",
+        "title": "Templates store/load",
+        "emptyMessage": "There are no templates available, yet"
+      },
+      "questionSettings": {
+        "settings": "Settings",
+        "title": "Question settings",
+        "questionTitle": "Title",
+        "addQuestionTitle": "Add a title",
+        "questionDescription": "Description",
+        "addQuestionDescription": "Add a description",
+        "limit": "Limit",
+        "nullLimit": "An upper limit of 0 means, that the option selectable, infinitely often",
+        "backendLimiters": "Option limits",
+        "addBackendLimiters": "Define options with limiters, to limit the number of times the option can be selected",
+        "useOtherItem": "Enable users to add user defined options",
+        "addBackendLimiterForOtherItem": "This is the limit, for how often the option will be selectable",
+        "upperLimit": "Limit",
+        "upperBackendLimiters": "Choices with an upper limit",
+        "addChoice": "Add"
+      }
+    },
+    "participate": {
+      "saveAnswerSuccess": "Saved the answer."
     },
     "errors": {
+      "submitAnswerError": "The answer could not be submitted.",
       "updateOrCreateError": "Neither able to update a survey nor to create a new one.",
-      "deleteError": "Not able to delete the surveys.",
+      "deleteError": "The surveys could not be deleted.",
+      "imageDeletionFailed": "Not all images of the surveys could be deleted.",
       "noAnswerError": "No answers available jet.",
       "noFormulaError": "The formula of the survey is not readable.",
       "noBackendLimitersError": "In order to use this functionality you have to define limiters inside of the editor.",
@@ -533,7 +626,7 @@
       },
       "created": {
         "menu": "Own Surveys",
-        "title": "Own Surveys",
+        "title": "Self-created Surveys",
         "description": "Here you find the surveys that you have created by yourself."
       },
       "answered": {
@@ -563,9 +656,7 @@
     },
     "sharePublicSurveyDialog": {
       "title": "Share survey",
-      "description": "Here you can share the survey with external people. Please copy the link and send it to the participants.",
-      "savedToClipboard": "Saved to clipboard.",
-      "savedToClipboardError": "Unable to save into clipboard."
+      "description": "Here you can share the survey with external people. Please copy the link and send it to the participants."
     },
     "participateDialog": {
       "title": "Participate in the survey"
@@ -645,6 +736,14 @@
   "roombooking": {
     "sidebar": "Room booking"
   },
+  "mobileAccessSetup": {
+    "connectionTitle": "Configure Connection",
+    "pleaseEnterCredentials": "Please enter your server credentials",
+    "scanQrCode": "Scan QR Code",
+    "orText": "OR",
+    "yourPassword": "Your Password",
+    "addButton": "Add"
+  },
   "settings": {
     "title": "SETTINGS",
     "sidebar": "Settings",
@@ -683,7 +782,25 @@
       "aichat": "Here you can make all the settings.",
       "linuxmuster": "Here you can make all the settings.",
       "whiteboard": "Here you can make all the settings.",
-      "bulletinboard": "Configure the user groups that have access to the Bulletin Board app here. The categories can be used to control which messages are displayed to users."
+      "bulletinboard": "Configure the user groups that have access to the Bulletin Board app here. The categories can be used to control which messages are displayed to users.",
+      "forwarded": "Forwarding: Simply enter the link to the web application under URL.",
+      "framed": "Frame: Simply enter the link to the web application under URL.",
+      "embedded": "Embedded: Here you can create your own web application in the editor."
+    },
+    "globalSettings": {
+      "title": "Global Settings",
+      "security": "Security",
+      "multiFactorAuthentication": "Two-factor authentication",
+      "description": "Here you can specify the user groups for which two-factor authentication is to be enforced.",
+      "selectUserGroups": "Select user groups for which the MFA setup is enforced.",
+      "updateSuccessful": "Setting updated successfully",
+      "errors": {
+        "updateError": "Settings could not be updated.",
+        "notFoundError": "Settings could not be loaded."
+      }
+    },
+    "info": {
+      "title": "Info"
     },
     "appconfig": {
       "sections": {
@@ -717,6 +834,22 @@
           "filterPlaceHolderText": "Search for proxy",
           "invalidCidrFormat": "Invalid CIDR notation",
           "invalidUrlFormat": "Invalid URL"
+        },
+        "files": {
+          "title": "Files",
+          "description": "The files that are displayed in the app can be managed here.",
+          "uploadSuccess": "Upload successful",
+          "uploadFailed": "Upload failed",
+          "rowSelected": "{{selected}} of {{total}} files selected",
+          "rowsSelected": "{{selected}} of {{total}} files selected"
+        },
+        "editor": {
+          "title": "Editor",
+          "description": "Here in the editor you can design your own web applications or integrate existing content. You can create websites, format and customize content. Existing applications or external content can also be inserted and conveniently linked to your own content. This creates a flexible area in which you can easily display content or offer interactive applications. Start by selecting the mode in which the web application is to be launched.",
+          "sandboxMode": "Separate Layout",
+          "nativeMode": "Integrated Layout",
+          "sandboxModeDescription": "In “Sparate layout” mode, the content is displayed as a separate page, similar to a window within the application. In addition to the actual content, additional design elements or functions can also be loaded from other sources. This means that the design is independent of the application and could therefore look or behave differently. Here, the content must be uploaded as an HTML file.",
+          "nativeModeDescription": "In “Integrated layout” mode, on the other hand, the content is inserted directly into the user interface of the application. This means that the content looks exactly like the application itself and fits in seamlessly. However, no additional external design elements or functions can be added dynamically here. However, static elements such as images can be uploaded and used here."
         }
       },
       "update": {
@@ -748,11 +881,32 @@
       "placeholder": "Enter your Traefik config here"
     },
     "rowsSelected": "{{selected}} of {{total}} Container selected",
-    "rowSelected": "{{selected}} of {{total}} Container selected"
+    "rowSelected": "{{selected}} of {{total}} Container selected",
+    "license": {
+      "title": "License Overview",
+      "customerId": "Customer No",
+      "licenseId": "License ID",
+      "numberOfUsers": "Number of users",
+      "validFromUtc": "Valid from",
+      "validToUtc": "Valid to",
+      "licenseStatus": "License status",
+      "register": "Register",
+      "registerLicense": "Register license",
+      "licenseKey": "License key",
+      "licenseKeyDescription": "Enter the license key you received with your purchase.",
+      "licenseSignedSuccessfully": "License registered successfully",
+      "noLicenseRegistered": "No license registered",
+      "errors": {
+        "signingFailed": "Registration failed",
+        "verificationFailed": "Token verification failed"
+      }
+    }
   },
   "usersettings": {
     "title": "MY PROFILE",
     "sidebar": "My Profile",
+    "rowSelected": "{{selected}} of {{total}} accounts selected",
+    "rowsSelected": "{{selected}} of {{total}} accounts selected",
     "details": {
       "title": "User details",
       "description": "Here you see and edit some of your personal information.",
@@ -785,14 +939,26 @@
         "confirmPassword": "Confirm Password",
         "confirm": "Change Password",
         "passwordChangedSuccessfully": "Password changed successfully"
-      }
+      },
+      "filterPlaceHolderText": "Search for App",
+      "passwordSafe": "Password Safe",
+      "passwordSafeInfo": "Here you can save your access data for various applications. These are encrypted and are only visible to you.",
+      "addUserAccount": "Add account",
+      "accountId": "Account ID",
+      "accountData": "Login Data",
+      "safePin": "Safe PIN",
+      "firstEnterSafePin": "Please set the safe PIN.",
+      "enterSavePin": "Please enter your safe PIN.",
+      "wrongSafePin": "Wrong PIN Number",
+      "enterSafePin": "Please enter your PIN number for decryption",
+      "safePinDescription": "A PIN is required to encrypt the access data. This PIN isn't visible for anyone else and is not saved."
     },
     "mails": {
       "title": "Email"
     },
     "mobileAccess": {
       "title": "Mobile Access",
-      "description": "Here you can set up the edulution.io app for mobile access to your files. Currently only available for Apple iOS."
+      "description": "Here you can set up the {{ applicationName }} app for mobile access to your files. Currently only available for Apple iOS."
     },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
@@ -812,8 +978,11 @@
       "system": "System language"
     },
     "addTotp": {
-      "title": "QR-Code",
-      "description": "Please scan the QR-Code and enter the TOTP:"
+      "title": "Set up Two-Factor Authentication",
+      "qrCodeInstructions": "Scan the QR code with an authenticator app that supports TOTP (Time-based One-Time Password).",
+      "totpCodeInstructions": "Then enter the generated code here and save it:",
+      "mfaSetupRequired": "The global guidelines require two-factor authentication to be set up:",
+      "mfaSetupSuccess": "Two-factor authentication has been successfully set up."
     },
     "errors": {
       "currentPasswordRequired": "Current password is required",
@@ -841,20 +1010,40 @@
   "students": "Students",
   "user": "User",
   "login": {
+    "pageTitle": "Login",
     "username_too_long": "Username to long",
     "password_too_long": "Password to long",
     "forgot_password": "Forgot password?",
-    "remember_me": "Remember me"
+    "remember_me": "Remember me",
+    "enterMultiFactorCode": "Two-Factor Authentication",
+    "loginWithApp": "Login with QR-Login",
+    "loginWithQrDescription": "Open the edulution.io APP to simply log in with the QR code.",
+    "infoQrCodeExpired": "Time for login with edulution.io APP expired."
   },
   "edit": "Edit",
   "common": {
+    "guest": "Guest",
+    "ok": "OK",
+    "next": "Next",
+    "back": "Back",
+    "confirm": "Confirm",
+    "share": "Share",
+    "savedToClipboard": "Saved to clipboard.",
+    "savedToClipboardError": "Unable to save into clipboard.",
     "answers": "Answers",
     "error": "Error",
     "errors": {
-      "startDateBeforeEndDate": "The start date must be before the end date",
+      "attachmentUploadFailed": "Failed to upload attachment",
       "dbAccessFailed": "Database access failed",
-      "envAccessError": "Not able to read environment variables"
+      "directoryNotCreated": "Failed to create directory",
+      "fileDeletionFailed": "Failed to delete the file",
+      "fileWritingFailed": "Failed to write the file",
+      "fileNotFound": "File not found",
+      "fileNotProvided": "File not provided",
+      "invalidFileType": "Invalid file type",
+      "startDateBeforeEndDate": "The start date must be before the end date"
     },
+    "cut": "Cut",
     "sortOrder": "Sort order",
     "checking": "Checking",
     "options": "Options",
@@ -865,9 +1054,15 @@
       "success": "Successfully copied to clipboard",
       "error": "Copy to clipboard failed",
       "doCopy": "Copy",
-      "link": "Copy link"
+      "link": "Copy link",
+      "url": "Copy URL"
     },
     "openInNewTab": "Open in new tab",
+    "maximize": "Maximize",
+    "minimize": "Minimize",
+    "restore": "Restore",
+    "dock": "Dock",
+    "undock": "Undock",
     "from": "from",
     "youAreCurrentlyNotLoggedIn": "You are currently not logged in",
     "toLogin": "To login",
@@ -895,6 +1090,7 @@
     "login": "Login",
     "username": "Username",
     "password": "Password",
+    "load": "Load",
     "loading": "Loading...",
     "overview": "Overview",
     "create": "Create",
@@ -940,10 +1136,20 @@
     "update": "Update",
     "progress": "Progress...",
     "pressInstall": "Press Install to start",
+    "enable": "Enable",
+    "enabled": "Enabled",
+    "disable": "Disable",
     "disabled": "Disabled",
     "invalid_url": "Invalid URL",
     "invalid_fqdn": "Invalid FQDN. Please only enter the hostname.",
-    "required": "Required"
+    "required": "Required",
+    "download": "Download",
+    "template": "Template",
+    "preview": "Preview",
+    "format": "Format",
+    "upload": "Upload",
+    "mode": "Mode",
+    "application": "Application"
   },
   "form": {
     "path": "Path",
@@ -958,15 +1164,25 @@
     "apiKey": "API Key",
     "apiKeyDescription": "The API Key will be used for authentication",
     "proxyConfig": "Proxy Configuration",
-    "proxyConfigDescription": "YAML Editor for the Traefik proxy configuration",
+    "proxyConfigDescription": "You can store your own proxy configuration for Traefik here. You can either work via the input fields using a template or create a configuration in YAML format directly in expert mode. <br/><strong>Warning:</strong> A wrong configuration could lead to the application being unreachable.",
     "expertMode": "Expert mode",
     "proxyPath": "Proxy path",
     "proxyPathPlaceholder": "e.g. SOGo",
     "proxyDestination": "Proxy destination",
     "proxyDestinationPlaceholder": "e.g. http://localhost:1234/",
-    "stripPrefix": "Strip prefix"
+    "stripPrefix": "Strip prefix",
+    "embeddedPageEditor": "Editor",
+    "embeddedPageEditorModeDescription": "Here you can choose between sandbox and native rendering. Sandbox is the safest variant, native the original rendering. Please note that no security precautions can be taken with native rendering. In sandbox mode, the HTML file is read from memory. To do this, upload the file.",
+    "sandboxed": "Sandbox",
+    "input": {
+      "dateTimePicker": {
+        "timeSlot": "o'clock",
+        "placeholder": "MM/DD/YYYY HH:mm AM/PM"
+      }
+    }
   },
-  "fileOperationSuccessful": "File operation successful",
+  "fileOperationSuccessful": "File operation successful started",
+  "fileOperationStarted": "File operation started",
   "unknownErrorOccurred": "An unknown error occurred",
   "fileSharingTable": {
     "filename": "Filename",
@@ -985,7 +1201,13 @@
     "dragDropClick": "Drag files here or click to select files",
     "dropHere": "Drop here",
     "filesToUpload": "Files to upload",
-    "limitExceeded": "Reached the limit of 5 files"
+    "overwriteWarningTitleFile": "Warning: File already exists",
+    "overwriteWarningTitleFiles": "Warning: Files already exist",
+    "overwriteWarningDescriptionFile": "The following file will be overwritten:",
+    "overwriteWarningDescriptionFiles": "The following files will be overwritten:",
+    "oversizedFilesDetected": "Oversized files detected",
+    "oversizedFileDetected": "Oversized file detected!",
+    "cannotUploadOversized": "Cannot upload oversized files (more than 50 MB)."
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",
@@ -995,18 +1217,25 @@
     "title": "WHITEBOARD",
     "sidebar": "Whiteboard"
   },
+  "whiteboard-collaboration": {
+    "title": "WHITEBOARD",
+    "sidebar": "Collaborative Whiteboard"
+  },
   "table": {
     "noDataAvailable": "No data available"
   },
   "loadingIndicator": {
-    "message": "Please wait...",
-    "previewLoading": "Preview loading"
+    "message": "Please wait..."
   },
   "search": {
     "type-to-search": "Type to search",
     "loading": "Loading",
     "no-results": "No results",
     "usersAdded": "{{ count }} added"
+  },
+  "copyItemDialog": {
+    "copyFilesOrDirectoriesToDirectory": "Copy files or directories into a directory",
+    "copy": "Copy"
   },
   "fileCategory": {
     "folder": "Folder",
@@ -1017,7 +1246,8 @@
     "acrobat": "PDF",
     "presentation": "Presentation",
     "spreadsheet": "Table",
-    "vector": "Diagram"
+    "vector": "Diagram",
+    "compressed": "Archive"
   },
   "fileCreateNewContent": {
     "documentFile": "Create a new document",
@@ -1029,6 +1259,7 @@
     "directoryDialogTitle": "Create a new directory",
     "createButtonText": "Create",
     "min_3_chars": "Minimum 3 characters",
+    "max_30_chars": "Maximum 30 characters",
     "fileOperationSuccessful": "File creation successful",
     "noMessageAvailable": "No message available",
     "unknownErrorOccurred": "An unknown error occurred",
@@ -1090,7 +1321,8 @@
     "rename": "Rename",
     "move": "Move",
     "delete": "Delete",
-    "download": "Download"
+    "download": "Download",
+    "copy": "Copy"
   },
   "response": {
     "successfully": "Action was successful",
@@ -1175,7 +1407,7 @@
   "licensing": {
     "communityLicenseDialog": {
       "title": "Community Edition",
-      "description": "Free community edition of edulution.io UI.<br/>Visit us on <link1>{{link}}</link1>.<br/><strong>This version does not provide support.</strong>"
+      "description": "Free community edition of {{ applicationName }} UI.<br/>Visit us on <link1>{{link}}</link1>.<br/><strong>This version does not provide support.</strong>"
     }
   },
   "preview": {
@@ -1198,7 +1430,8 @@
     "imageName": "Image",
     "filterPlaceHolderText": "Search for container name",
     "port": "Port",
-    "created": "Created at"
+    "created": "Created at",
+    "container-view": "Container"
   },
   "docker": {
     "error": {
@@ -1230,11 +1463,23 @@
     }
   },
   "veyon": {
+    "lockScreen": "Lock screen",
+    "unlockScreen": "Unlock screen",
+    "lockInputDevices": "Lock input",
+    "unlockInputDevices": "Unlock input",
+    "rebootSystem": "Reboot system",
+    "powerDown": "Shutdown system",
     "errors": {
       "AppNotProperlyConfigured": "Veyon is not properly configured, contact the system administrator.",
       "VeyonAuthFailed": "Veyon authentication failed.",
       "GetUserFailed": "User could not be retrieved.",
       "VeyonApiNotReachable": "The external Veyon server is not reachable."
     }
-  }
+  },
+  "Invalid user credentials": "Username or password incorrect.",
+  "For more on this error consult the server log at the debug level.": "Connection to AD server failed. Please try again later.",
+  "Failed to fetch": "Connection to edulution server failed. Please try again later.",
+  "Invalid client or Invalid client credentials": "Invalid server configuration. Please check the client ID or the client secret.",
+  "Not Found (404)": "Connection to edulution server failed. Please try again later.",
+  "NetworkError when attempting to fetch resource.": "Network error when attempting to fetch resource."
 }

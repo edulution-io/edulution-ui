@@ -12,28 +12,57 @@
 
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { QRCodeSVG } from 'qrcode.react';
+import { useLocation } from 'react-router-dom';
+import { toast } from 'sonner';
 import useUserStore from '@/store/UserStore/UserStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { Button } from '@/components/shared/Button';
 import OtpInput from '@/components/shared/OtpInput';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
+import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
+import useLdapGroups from '@/hooks/useLdapGroups';
+import { GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 
-type SetupMfaDialogProps = {
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-const SetupMfaDialog: React.FC<SetupMfaDialogProps> = ({ isOpen, setIsOpen }) => {
+const SetupMfaDialog: React.FC = () => {
   const { t } = useTranslation();
-  const { qrCode, qrCodeIsLoading, totpIsLoading, getQrCode, setupTotp } = useUserStore();
+  const { pathname } = useLocation();
+  const { getGlobalSettings } = useGlobalSettingsApiStore();
+  const {
+    qrCode,
+    qrCodeIsLoading,
+    totpIsLoading,
+    isSetTotpDialogOpen,
+    user,
+    setIsSetTotpDialogOpen,
+    getQrCode,
+    setupTotp,
+  } = useUserStore();
+  const { ldapGroups } = useLdapGroups();
   const [totp, setTotp] = useState('');
 
+  const isRightAfterLogin = pathname === '/' || pathname === LOGIN_ROUTE;
+
   useEffect(() => {
-    if (isOpen) {
+    const handleCheckGlobalSettings = async () => {
+      const globalSettingsDto = await getGlobalSettings(GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH);
+      const { mfaEnforcedGroups } = globalSettingsDto.auth;
+      const isMfaRequired = mfaEnforcedGroups.some((group) => ldapGroups.includes(group.path));
+
+      if (isMfaRequired && !user?.mfaEnabled && isRightAfterLogin) {
+        setIsSetTotpDialogOpen(true);
+      }
+    };
+
+    void handleCheckGlobalSettings();
+  }, []);
+
+  useEffect(() => {
+    if (isSetTotpDialogOpen) {
       void getQrCode();
     }
-  }, [isOpen]);
+  }, [isSetTotpDialogOpen]);
 
   const getTotpSecret = () => {
     const urlObject = new URL(qrCode.replace('otpauth://', 'https://'));
@@ -42,16 +71,15 @@ const SetupMfaDialog: React.FC<SetupMfaDialogProps> = ({ isOpen, setIsOpen }) =>
   };
 
   const handleOpenChange = () => {
-    setIsOpen(!isOpen);
+    setIsSetTotpDialogOpen(!isSetTotpDialogOpen);
     setTotp('');
   };
 
   const handleSetMfaEnabled = async () => {
-    try {
-      await setupTotp(totp, getTotpSecret());
-    } catch (error) {
-      console.error(error);
-    } finally {
+    const setTotpSuccessful = await setupTotp(totp, getTotpSecret());
+
+    if (setTotpSuccessful) {
+      toast.success(t('usersettings.addTotp.mfaSetupSuccess'));
       handleOpenChange();
     }
   };
@@ -63,46 +91,46 @@ const SetupMfaDialog: React.FC<SetupMfaDialogProps> = ({ isOpen, setIsOpen }) =>
         void handleSetMfaEnabled();
       }}
     >
-      <div className="flex justify-center rounded-xl bg-background p-2">
+      {isRightAfterLogin && <p className="mb-3 font-bold">{t('usersettings.addTotp.mfaSetupRequired')}</p>}
+      <p>{t('usersettings.addTotp.qrCodeInstructions')}</p>
+      <div className="flex justify-center">
         {qrCodeIsLoading ? (
-          <div className="flex h-[200px] w-[200px] items-center justify-center">
-            <CircleLoader />
-          </div>
+          <CircleLoader />
         ) : (
-          <QRCodeSVG
+          <QRCodeDisplay
             value={qrCode}
-            size={200}
+            size="lg"
+            className="m-14"
           />
         )}
       </div>
+      <p className="mb-3">{t('usersettings.addTotp.totpCodeInstructions')}</p>
       <OtpInput
         totp={totp}
+        variant="dialog"
         setTotp={setTotp}
         onComplete={handleSetMfaEnabled}
       />
     </form>
   );
 
-  const getDialogFooter = () => (
-    <div className="mt-4 flex justify-center">
-      <Button
-        type="submit"
-        variant="btn-collaboration"
-        size="lg"
-        onClick={handleSetMfaEnabled}
-      >
-        {totpIsLoading ? t('common.loading') : t('common.save')}
-      </Button>
-    </div>
+  const getFooter = () => (
+    <DialogFooterButtons
+      handleClose={handleOpenChange}
+      handleSubmit={handleSetMfaEnabled}
+      submitButtonText="common.save"
+      submitButtonType="submit"
+      disableSubmit={totpIsLoading}
+    />
   );
 
   return (
     <AdaptiveDialog
-      isOpen={isOpen}
+      isOpen={isSetTotpDialogOpen}
       handleOpenChange={handleOpenChange}
       title={t('usersettings.addTotp.title')}
       body={getDialogBody()}
-      footer={getDialogFooter()}
+      footer={getFooter()}
     />
   );
 };

@@ -10,30 +10,46 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { create } from 'zustand';
+import { create, StateCreator } from 'zustand';
+import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import { SURVEYS } from '@libs/survey/constants/surveys-endpoint';
+import { SURVEY_IMAGES_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import eduApi from '@/api/eduApi';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import handleApiError from '@/utils/handleApiError';
 
 interface SurveyEditorPageStore {
-  survey: SurveyDto | undefined;
-  setSurvey: (survey: SurveyDto | undefined) => void;
+  storedSurvey: SurveyDto | undefined;
+  updateStoredSurvey: (survey: SurveyDto) => void;
+  resetStoredSurvey: () => void;
+
+  uploadImageFile: (surveyId: string, questionId: string, file: File, callback: CallableFunction) => Promise<void>;
+  isUploadingImageFile: boolean;
 
   isOpenSaveSurveyDialog: boolean;
   setIsOpenSaveSurveyDialog: (state: boolean) => void;
-  updateOrCreateSurvey: (survey: SurveyDto) => Promise<void>;
+  updateOrCreateSurvey: (survey: SurveyDto) => Promise<boolean>;
   isLoading: boolean;
 
   isOpenSharePublicSurveyDialog: boolean;
+  setIsOpenSharePublicSurveyDialog: (isOpen: boolean, publicSurveyId: string) => void;
   publicSurveyId: string;
   closeSharePublicSurveyDialog: () => void;
 
   reset: () => void;
 }
 
-const SurveyEditorPageStoreInitialState = {
-  survey: undefined,
+type PersistedSurveyEditorPageStore = (
+  survey: StateCreator<SurveyEditorPageStore>,
+  options: PersistOptions<Partial<SurveyEditorPageStore>>,
+) => StateCreator<SurveyEditorPageStore>;
+
+const initialState = {
+  storedSurvey: undefined,
+
+  isUploadingImageFile: false,
 
   isOpenSaveSurveyDialog: false,
   isLoading: false,
@@ -42,36 +58,76 @@ const SurveyEditorPageStoreInitialState = {
   publicSurveyId: '',
 };
 
-const useSurveyEditorPageStore = create<SurveyEditorPageStore>((set) => ({
-  ...SurveyEditorPageStoreInitialState,
-  reset: () => set(SurveyEditorPageStoreInitialState),
+const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
+  (persist as PersistedSurveyEditorPageStore)(
+    (set) => ({
+      ...initialState,
+      reset: () => set(initialState),
 
-  setSurvey: (survey: SurveyDto | undefined) => set({ survey }),
+      updateStoredSurvey: (survey: SurveyDto) => set({ storedSurvey: survey }),
+      resetStoredSurvey: () => set({ storedSurvey: undefined }),
 
-  setIsOpenSaveSurveyDialog: (state: boolean) => set({ isOpenSaveSurveyDialog: state }),
+      setIsOpenSaveSurveyDialog: (state: boolean) => set({ isOpenSaveSurveyDialog: state }),
 
-  updateOrCreateSurvey: async (survey: SurveyDto): Promise<void> => {
-    set({ isLoading: true });
-    try {
-      const result = await eduApi.post<SurveyDto>(SURVEYS, survey);
-      const resultingSurvey = result.data;
-      if (resultingSurvey && survey.isPublic) {
-        set({
-          isOpenSharePublicSurveyDialog: true,
-          publicSurveyId: resultingSurvey.id,
-        });
-      } else {
-        set({ isOpenSharePublicSurveyDialog: false, publicSurveyId: undefined });
-      }
-    } catch (error) {
-      handleApiError(error, set);
-    } finally {
-      set({ isLoading: false });
-    }
-  },
+      setIsOpenSharePublicSurveyDialog: (isOpenSharePublicSurveyDialog, publicSurveyId) =>
+        set({ isOpenSharePublicSurveyDialog, publicSurveyId }),
 
-  closeSharePublicSurveyDialog: () =>
-    set({ isOpenSaveSurveyDialog: false, publicSurveyId: SurveyEditorPageStoreInitialState.publicSurveyId }),
-}));
+      updateOrCreateSurvey: async (survey: SurveyDto): Promise<boolean> => {
+        set({ isLoading: true });
+        try {
+          const result = await eduApi.post<SurveyDto>(SURVEYS, survey);
+          const resultingSurvey = result.data;
+          if (resultingSurvey && survey.isPublic) {
+            set({
+              isOpenSharePublicSurveyDialog: true,
+              publicSurveyId: resultingSurvey.id,
+            });
+          } else {
+            set({ isOpenSharePublicSurveyDialog: false, publicSurveyId: undefined });
+          }
+          return true;
+        } catch (error) {
+          handleApiError(error, set);
+          return false;
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      uploadImageFile: async (
+        surveyId: string,
+        questionId: string,
+        file: File,
+        callback: CallableFunction,
+      ): Promise<void> => {
+        set({ isUploadingImageFile: true });
+        try {
+          const formData = new FormData();
+          formData.append('file', file);
+          const response = await eduApi.post<string>(`${SURVEY_IMAGES_ENDPOINT}/${surveyId}/${questionId}`, formData, {
+            headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
+          });
+          if (!response) {
+            throw new Error(CommonErrorMessages.FILE_NOT_PROVIDED);
+          }
+          callback('success', `${EDU_API_URL}/${response.data}`);
+        } catch (error) {
+          handleApiError(error, set);
+          callback('error');
+        } finally {
+          set({ isUploadingImageFile: false });
+        }
+      },
+
+      closeSharePublicSurveyDialog: () =>
+        set({ isOpenSaveSurveyDialog: false, publicSurveyId: initialState.publicSurveyId }),
+    }),
+    {
+      name: 'survey-editor-storage',
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({ storedSurvey: state.storedSurvey }),
+    },
+  ),
+);
 
 export default useSurveyEditorPageStore;

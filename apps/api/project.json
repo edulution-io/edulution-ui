@@ -12,23 +12,6 @@
         "fix": true
       }
     },
-
-    "build": {
-      "executor": "@nx/webpack:webpack",
-      "options": {
-        "webpackConfig": "apps/api/webpack.config.js",
-        "outputPath": "dist/apps/api"
-      },
-      "configurations": {
-        "development": {
-          "sourceMap": true
-        },
-        "production": {
-          "sourceMap": false
-        }
-      }
-    },
-
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",

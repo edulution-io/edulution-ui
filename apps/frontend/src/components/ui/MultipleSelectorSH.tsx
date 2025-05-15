@@ -23,6 +23,7 @@ import cn from '@libs/common/utils/className';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import { CommandGroup, CommandItem, CommandList, CommandSH } from '@/components/ui/CommandSH';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
+import { useDebounceValue } from 'usehooks-ts';
 
 interface GroupOption {
   [key: string]: MultipleSelectorOptionSH[];
@@ -82,20 +83,6 @@ interface MultipleSelectorProps {
 export interface MultipleSelectorRef {
   selectedValue: MultipleSelectorOptionSH[];
   input: HTMLInputElement;
-}
-
-export function useDebounce<T>(value: T, delay?: number): T {
-  const [debouncedValue, setDebouncedValue] = React.useState<T>(value);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedValue(value), delay || 500);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
 }
 
 function transToGroupOption(options: MultipleSelectorOptionSH[], groupBy?: string) {
@@ -201,7 +188,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
     const [selected, setSelected] = React.useState<MultipleSelectorOptionSH[]>(value || []);
     const [options, setOptions] = React.useState<GroupOption>(transToGroupOption(arrayDefaultOptions, groupBy));
     const [inputValue, setInputValue] = React.useState('');
-    const debouncedSearchTerm = useDebounce(inputValue, delay || 500);
+    const [debouncedSearchTerm] = useDebounceValue(inputValue, delay || 500);
 
     React.useImperativeHandle(
       ref,
@@ -279,7 +266,6 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
 
       // eslint-disable-next-line no-void
       void exec();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [debouncedSearchTerm, groupBy, open, triggerSearchOnFocus]);
 
     const CreatableItem = () => {
@@ -457,7 +443,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
           {open && (
             <CommandList
               className={cn(
-                'absolute top-0 z-50 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in',
+                'absolute top-0 z-50 max-h-28 w-full overflow-y-auto rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in scrollbar-thin',
                 variant === 'default' ? 'bg-accent text-secondary' : 'bg-muted',
               )}
             >

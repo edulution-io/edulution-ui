@@ -13,7 +13,8 @@
 import QrCodeSlice from '@libs/user/types/store/qrCodeSlice';
 import TotpSlice from '@libs/user/types/store/totpSlice';
 import UserSlice from '@libs/user/types/store/userSlice';
+import UserAccountsSlice from './userAccountsSlice';
 
-type UserStore = QrCodeSlice & TotpSlice & UserSlice;
+type UserStore = QrCodeSlice & TotpSlice & UserSlice & UserAccountsSlice;
 
 export default UserStore;

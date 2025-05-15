@@ -13,12 +13,14 @@
 import React, { FC } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Sizes } from '@libs/ui/types/sizes';
+import cn from '@libs/common/utils/className';
 
 interface QRCodeDisplayProps {
   value: string;
   size?: Sizes;
+  className?: string;
 }
-const QRCodeDisplay: FC<QRCodeDisplayProps> = ({ value, size }) => {
+const QRCodeDisplay: FC<QRCodeDisplayProps> = ({ value, size, className }) => {
   const getPixelSize = () => {
     switch (size) {
       case 'sm':
@@ -33,7 +35,7 @@ const QRCodeDisplay: FC<QRCodeDisplayProps> = ({ value, size }) => {
   };
 
   return (
-    <div className="m-14 flex flex-col items-center justify-center rounded-xl bg-background p-2">
+    <div className={cn(className, 'flex flex-col items-center justify-center rounded-xl bg-background p-2')}>
       <QRCodeSVG
         value={value}
         size={getPixelSize()}

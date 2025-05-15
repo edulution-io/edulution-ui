@@ -16,7 +16,7 @@ import QuickAccess from '@/pages/ClassManagement/LessonPage/QuickAccess/QuickAcc
 import UserProjectOrSchoolClassSearch from '@/pages/ClassManagement/LessonPage/UserProjectOrSchoolClassSearch';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import UserArea from '@/pages/ClassManagement/LessonPage/UserArea/UserArea';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import { MdClose, MdSave } from 'react-icons/md';
@@ -27,15 +27,33 @@ import GroupDialog from '@/pages/ClassManagement/components/GroupDialog/GroupDia
 import { FaAddressCard } from 'react-icons/fa';
 import getUniqueValues from '@libs/lmnApi/utils/getUniqueValues';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import { FILTER_BAR_ID } from '@libs/classManagement/constants/pageElementIds';
 import { UseFormReturn } from 'react-hook-form';
 import GroupForm from '@libs/groups/types/groupForm';
 import GroupColumn from '@libs/groups/types/groupColumn';
+import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
+import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import SharingFilesFailedDialogBody from '@/pages/ClassManagement/components/Dialogs/SharingFilesFailedDialogBody';
+import PageLayout from '@/components/structure/layout/PageLayout';
+import QuotaLimitInfo from '@/pages/FileSharing/utilities/QuotaLimitInfo';
+import useQuotaInfo from '@/hooks/useQuotaInfo';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 
 const LessonPage = () => {
-  const { userSessions, fetchProject, updateSession, createSession, removeSession, fetchSchoolClass } =
-    useClassManagementStore();
-  const { getOwnUser } = useLmnApiStore();
+  const {
+    userSessions,
+    fetchProject,
+    updateSession,
+    createSession,
+    removeSession,
+    fetchSchoolClass,
+    fetchUserSessions,
+  } = useClassManagementStore();
+
+  const { percentageUsed } = useQuotaInfo();
+
+  const navigate = useNavigate();
+
+  const { lmnApiToken, getOwnUser } = useLmnApiStore();
   const { groupType: groupTypeParams, groupName: groupNameParams } = useParams();
   const {
     isLoading,
@@ -49,34 +67,43 @@ const LessonPage = () => {
     groupNameFromStore,
     groupTypeFromStore,
   } = useLessonStore();
-  const navigate = useNavigate();
+
+  const { fileOperationProgress } = useFileSharingStore();
+
   const { t } = useTranslation();
   const [isPageLoading, setIsPageLoading] = useState(false);
+  const [currentSelectedSession, setCurrentSelectedSession] = useState<LmnApiSession | null>(null);
 
-  const currentSelectedSession = userSessions.find((session) => session.name === groupNameParams);
+  const [isFileSharingProgessInfoDialogOpen, setIsFileSharingProgessInfoDialogOpen] = useState(false);
 
   useEffect(() => {
-    void getOwnUser();
-  }, []);
+    if (lmnApiToken) {
+      void getOwnUser();
+    }
+  }, [lmnApiToken]);
 
   const fetchData = async () => {
-    if (!groupNameParams) return;
+    if (isPageLoading) return;
 
     setIsPageLoading(true);
 
     switch (groupTypeParams) {
       case UserGroups.Projects: {
-        const project = await fetchProject(groupNameParams);
+        const project = await fetchProject(groupNameParams!);
         if (project?.members) {
           setMember(getUniqueValues([...project.members, ...project.admins]));
         }
         break;
       }
-      case UserGroups.Sessions:
-        setMember(currentSelectedSession?.members || []);
+      case UserGroups.Sessions: {
+        await fetchUserSessions();
+        const session = userSessions.find((s) => s.name === groupNameParams);
+        setCurrentSelectedSession(session || null);
+        setMember(session?.members || []);
         break;
+      }
       case UserGroups.Classes: {
-        const schoolClass = await fetchSchoolClass(groupNameParams);
+        const schoolClass = await fetchSchoolClass(groupNameParams!);
         if (schoolClass?.members) {
           setMember(getUniqueValues([...schoolClass.members]));
         }
@@ -95,25 +122,22 @@ const LessonPage = () => {
       !groupNameParams
     );
 
-    const fetchInitialData =
-      !!(groupTypeParams && groupTypeParams !== groupTypeFromStore) ||
-      !!(groupNameParams && groupNameParams !== groupNameFromStore);
-
     if (restoreTemporarySession) {
       navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}/${groupTypeFromStore}/${groupNameFromStore}`, { replace: true });
-    } else if (fetchInitialData) {
+      return;
+    }
+
+    if (groupTypeParams && groupNameParams && lmnApiToken) {
       setGroupTypeInStore(groupTypeParams);
       setGroupNameInStore(groupNameParams);
       void fetchData();
     }
-  }, [groupTypeParams, groupNameParams]);
+  }, [groupTypeParams, groupNameParams, lmnApiToken]);
 
-  useEffect(() => {
-    setMember(currentSelectedSession?.members || []);
-    if (!isLoading) setIsPageLoading(false);
-  }, [userSessions]);
+  const sessionOptions = userSessions.map((s) => ({ id: s.name, name: s.name }));
 
-  const handleSessionSelect = (sessionName: string) => {
+  const handleSessionSelect = (sessionId: string) => {
+    const sessionName = sessionOptions.find((s) => s.id === sessionId)?.name;
     navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}/sessions/${sessionName}`);
   };
 
@@ -121,8 +145,6 @@ const LessonPage = () => {
     setOpenDialogType(UserGroups.Sessions);
     setUserGroupToEdit(currentSelectedSession || null);
   };
-
-  const sessionOptions = userSessions.map((s) => ({ id: s.sid, name: s.name }));
 
   const closeSession = () => {
     setMember([]);
@@ -156,22 +178,25 @@ const LessonPage = () => {
     groups: userSessions,
   };
 
+  useEffect(() => {
+    const hasProgressCompleted = (fileOperationProgress?.percent ?? 0) >= 100;
+    const hasFailedPaths = (fileOperationProgress?.failedPaths?.length ?? 0) > 0;
+    setIsFileSharingProgessInfoDialogOpen(hasProgressCompleted && hasFailedPaths);
+  }, [fileOperationProgress]);
+
   return (
-    <>
-      <div
-        className="my-2 flex flex-col gap-2 md:flex-row"
-        id={FILTER_BAR_ID}
-      >
-        <LoadingIndicator isOpen={isPageLoading || isLoading} />
+    <PageLayout>
+      <div className="mb-2 flex flex-none flex-col gap-2 md:flex-row">
+        <LoadingIndicatorDialog isOpen={isPageLoading || isLoading} />
         <UserProjectOrSchoolClassSearch />
         {sessionOptions && (
-          <div className="md:w-1/3">
-            <DropdownSelect
-              options={sessionOptions}
-              selectedVal={groupNameParams || t('classmanagement.selectSavedSession')}
-              handleChange={handleSessionSelect}
-            />
-          </div>
+          <DropdownSelect
+            options={sessionOptions}
+            selectedVal={groupNameParams || ''}
+            handleChange={handleSessionSelect}
+            placeholder={t('classmanagement.selectSavedSession')}
+            classname="md:w-1/3"
+          />
         )}
         {groupNameParams || member.length ? (
           <div className="flex flex-row justify-between gap-2">
@@ -196,9 +221,27 @@ const LessonPage = () => {
           </div>
         ) : null}
       </div>
-      <div>{groupNameParams || member.length ? <UserArea /> : <QuickAccess />}</div>
+      <QuotaLimitInfo percentageUsed={percentageUsed} />
+      {groupNameParams || member.length ? <UserArea fetchData={fetchData} /> : <QuickAccess />}
       {openDialogType === UserGroups.Sessions && <GroupDialog item={sessionToSave} />}
-    </>
+
+      {fileOperationProgress && fileOperationProgress.failedPaths && (
+        <AdaptiveDialog
+          isOpen={isFileSharingProgessInfoDialogOpen}
+          handleOpenChange={() => setIsFileSharingProgessInfoDialogOpen(!isFileSharingProgessInfoDialogOpen)}
+          title={t('classmanagement.failDialog.title', {
+            file: fileOperationProgress?.currentFilePath?.split('/').pop(),
+          })}
+          body={
+            <SharingFilesFailedDialogBody
+              failedFilePath={fileOperationProgress.currentFilePath || ''}
+              affectedUsers={fileOperationProgress?.failedPaths.map((path) => path.split('/').at(2) || '')}
+              failedPaths={fileOperationProgress?.failedPaths}
+            />
+          }
+        />
+      )}
+    </PageLayout>
   );
 };
 

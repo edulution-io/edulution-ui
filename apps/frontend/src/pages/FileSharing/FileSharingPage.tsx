@@ -10,46 +10,72 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import DirectoryBreadcrumb from '@/pages/FileSharing/breadcrumb/DirectoryBreadcrumb';
-import ActionContentDialog from '@/pages/FileSharing/dialog/ActionContentDialog';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import StateLoader from '@/pages/FileSharing/utilities/StateLoader';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import React, { useEffect } from 'react';
+import DirectoryBreadcrumb from '@/pages/FileSharing/Table/DirectoryBreadcrumb';
+import ActionContentDialog from '@/pages/FileSharing/Dialog/ActionContentDialog';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useFileSharingPage from '@/pages/FileSharing/hooks/useFileSharingPage';
-import FileSharingFloatingButtonsBar from '@/pages/FileSharing/buttonsBar/FileSharingFloatingButtonsBar';
-import FileSharingLayout from '@/pages/FileSharing/layout/FileSharingLayout';
+import FileSharingFloatingButtonsBar from '@/pages/FileSharing/FloatingButtonsBar/FileSharingFloatingButtonsBar';
+import FileSharingTable from '@/pages/FileSharing/Table/FileSharingTable';
+import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
+import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
+import FILE_PREVIEW_ELEMENT_ID from '@libs/filesharing/constants/filePreviewElementId';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import PageLayout from '@/components/structure/layout/PageLayout';
+import QuotaLimitInfo from '@/pages/FileSharing/utilities/QuotaLimitInfo';
+import useQuotaInfo from '@/hooks/useQuotaInfo';
 
 const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
-  const { files } = useFileSharingStore();
+  const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
+  const { fileOperationProgress, fetchFiles } = useFileSharingStore();
+  useEffect(() => {
+    const handleFileOperationProgress = async () => {
+      if (!fileOperationProgress) return;
+      const percent = fileOperationProgress.percent ?? 0;
+      if (percent >= 100) {
+        await fetchFiles(currentPath);
+      }
+    };
+
+    void handleFileOperationProgress();
+  }, [fileOperationProgress]);
+  const { percentageUsed } = useQuotaInfo();
+
   return (
-    <div className="w-full overflow-x-auto">
-      <div className="h-[calc(100vh-var(--floating-buttons-height))] flex-1 overflow-hidden">
-        <div className="flex w-full flex-col justify-between space-x-2 pb-2 pt-2">
-          <DirectoryBreadcrumb
-            path={currentPath}
-            onNavigate={(filenamePath) => {
-              searchParams.set('path', filenamePath);
-              setSearchParams(searchParams);
-            }}
-            style={{ color: 'white' }}
+    <PageLayout>
+      <LoadingIndicatorDialog isOpen={isLoading} />
+
+      <div className="flex w-full flex-row justify-between space-x-2 pb-2 pt-2">
+        <DirectoryBreadcrumb
+          path={currentPath}
+          onNavigate={(filenamePath) => {
+            searchParams.set('path', filenamePath);
+            setSearchParams(searchParams);
+          }}
+          style={{ color: 'white' }}
+        />
+        <QuotaLimitInfo percentageUsed={percentageUsed} />
+      </div>
+
+      <div className="flex h-full w-full flex-row overflow-hidden pb-6">
+        <div className={isFilePreviewVisible && isFilePreviewDocked ? 'w-1/2 2xl:w-2/3' : 'w-full'}>
+          {isFileProcessing ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}
+
+          <FileSharingTable />
+        </div>
+
+        {isFilePreviewVisible && (
+          <div
+            id={FILE_PREVIEW_ELEMENT_ID}
+            className={isFilePreviewDocked ? 'h-full w-1/2 2xl:w-1/3' : ''}
           />
-          <StateLoader isLoading={isFileProcessing} />
-        </div>
-        <LoadingIndicator isOpen={isLoading} />
-        <div
-          className="max-h[75vh] w-full md:w-auto md:max-w-7xl xl:max-w-full"
-          data-testid="test-id-file-sharing-page-data-table"
-        >
-          <FileSharingLayout files={files} />
-        </div>
+        )}
       </div>
-      <div className="fixed bottom-8 mt-10 flex flex-row space-x-24">
-        <ActionContentDialog />
-        <FileSharingFloatingButtonsBar />
-      </div>
-    </div>
+
+      <ActionContentDialog />
+      <FileSharingFloatingButtonsBar />
+    </PageLayout>
   );
 };
 

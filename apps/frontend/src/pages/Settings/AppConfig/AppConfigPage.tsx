@@ -11,7 +11,7 @@
  */
 
 import React, { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -22,7 +22,6 @@ import APP_CONFIG_OPTIONS from '@/pages/Settings/AppConfig/appConfigOptions';
 import type { AppConfigOptionsType } from '@libs/appconfig/types/appConfigOptionsType';
 import useLanguage from '@/hooks/useLanguage';
 import useGroupStore from '@/store/GroupStore';
-import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useMailsStore from '@/pages/Mail/useMailsStore';
@@ -37,16 +36,19 @@ import type MailProviderConfig from '@libs/appconfig/types/mailProviderConfig';
 import APPS from '@libs/appconfig/constants/apps';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import getDisplayName from '@/utils/getDisplayName';
+import PageLayout from '@/components/structure/layout/PageLayout';
+import type AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailImporterConfig from './mails/MailImporterConfig';
-import getAppConfigFormSchema from './getAppConfigFormSchema';
+import getAppConfigFormSchema from './schemas/getAppConfigFormSchema';
 import ProxyConfigForm from './components/ProxyConfigForm';
-import DockerContainerTable from './DockerIntegration/DockerContainerTable';
 
-const AppConfigPage: React.FC = () => {
-  const { settingLocation } = useParams<{ settingLocation: string }>();
+interface AppConfigPageProps {
+  settingLocation: string;
+}
 
+const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { appConfigs, getAppConfigs, setIsDeleteAppConfigDialogOpen, updateAppConfig, deleteAppConfigEntry } =
@@ -56,7 +58,7 @@ const AppConfigPage: React.FC = () => {
   const { language } = useLanguage();
 
   const form = useForm<{ [settingLocation: string]: AppConfigDto } | ProxyConfigFormType | MailProviderConfig>({
-    mode: 'onChange',
+    mode: 'onSubmit',
     resolver: zodResolver(getAppConfigFormSchema(t)),
   });
 
@@ -66,42 +68,36 @@ const AppConfigPage: React.FC = () => {
 
   const { control, handleSubmit, setValue, getValues, clearErrors } = form;
 
-  const isAnAppConfigSelected = !!settingLocation;
-
   const updateSettings = () => {
-    if (isAnAppConfigSelected) {
-      const currentConfig = findAppConfigByName(appConfigs, settingLocation);
-      if (!currentConfig) {
-        return;
-      }
+    const currentConfig = findAppConfigByName(appConfigs, settingLocation);
+    if (!currentConfig) {
+      return;
+    }
 
-      clearErrors();
+    clearErrors();
 
-      setValue(`${settingLocation}.appType`, currentConfig.appType);
-      setValue(`${settingLocation}.accessGroups`, currentConfig.accessGroups || []);
-      setValue(`${settingLocation}.extendedOptions`, currentConfig.extendedOptions || {});
+    setValue(`${settingLocation}.appType`, currentConfig.appType);
+    setValue(`${settingLocation}.accessGroups`, currentConfig.accessGroups || []);
+    setValue(`${settingLocation}.extendedOptions`, currentConfig.extendedOptions || {});
 
-      if (currentConfig.options) {
-        Object.keys(currentConfig.options).forEach((key) => {
-          if (key === APP_CONFIG_OPTION_KEYS.PROXYCONFIG) {
-            const proxyConfig = JSON.parse(currentConfig?.options[key] || JSON.stringify({})) as string;
-            setValue(`${settingLocation}.proxyConfig`, proxyConfig);
-          } else {
-            setValue(
-              `${settingLocation}.options.${key as AppConfigOptionsType}`,
-              currentConfig.options[key as AppConfigOptionsType],
-            );
-          }
-        });
-      }
+    if (currentConfig.options) {
+      Object.keys(currentConfig.options).forEach((key) => {
+        if (key === APP_CONFIG_OPTION_KEYS.PROXYCONFIG) {
+          const proxyConfig = JSON.parse(currentConfig?.options[key] || JSON.stringify({})) as string;
+          setValue(`${settingLocation}.proxyConfig`, proxyConfig);
+        } else {
+          setValue(
+            `${settingLocation}.options.${key as AppConfigOptionsType}`,
+            currentConfig.options[key as AppConfigOptionsType],
+          );
+        }
+      });
     }
   };
 
   useEffect(() => {
-    if (isAnAppConfigSelected) {
-      updateSettings();
-    }
-  }, [isAnAppConfigSelected, settingLocation, appConfigs]);
+    updateSettings();
+  }, [settingLocation, appConfigs]);
 
   const handleGroupsChange = (newGroups: MultipleSelectorGroup[], fieldName: string) => {
     const currentGroups = getValues(`${fieldName}.accessGroups`) || [];
@@ -119,126 +115,123 @@ const AppConfigPage: React.FC = () => {
   };
 
   const onSubmit = async () => {
-    if (isAnAppConfigSelected) {
-      const selectedAppConfig = findAppConfigByName(appConfigs, settingLocation);
-      if (!selectedAppConfig) {
-        return;
-      }
+    const selectedAppConfig = findAppConfigByName(appConfigs, settingLocation);
+    if (!selectedAppConfig) {
+      return;
+    }
 
-      const proxyConfig = JSON.stringify(getValues(`${settingLocation}.proxyConfig`)) || '""';
+    const proxyConfig = JSON.stringify(getValues(`${settingLocation}.proxyConfig`)) || '""';
 
-      const options = {
-        url: Object.keys(selectedAppConfig?.options).includes(APP_CONFIG_OPTION_KEYS.URL)
-          ? getValues(`${settingLocation}.options.url`)
-          : undefined,
-        apiKey: Object.keys(selectedAppConfig?.options).includes(APP_CONFIG_OPTION_KEYS.APIKEY)
-          ? getValues(`${settingLocation}.options.apiKey`)
-          : undefined,
-        proxyConfig: Object.keys(selectedAppConfig?.options).includes(APP_CONFIG_OPTION_KEYS.PROXYCONFIG)
-          ? proxyConfig
-          : undefined,
+    const options = {
+      url: Object.keys(selectedAppConfig?.options).includes(APP_CONFIG_OPTION_KEYS.URL)
+        ? getValues(`${settingLocation}.options.url`)
+        : undefined,
+      apiKey: Object.keys(selectedAppConfig?.options).includes(APP_CONFIG_OPTION_KEYS.APIKEY)
+        ? getValues(`${settingLocation}.options.apiKey`)
+        : undefined,
+      proxyConfig: Object.keys(selectedAppConfig?.options).includes(APP_CONFIG_OPTION_KEYS.PROXYCONFIG)
+        ? proxyConfig
+        : undefined,
+    };
+    const extendedOptions = form.getValues(`${settingLocation}.extendedOptions`) || {};
+
+    const newConfig = {
+      ...selectedAppConfig,
+      options,
+      extendedOptions,
+      accessGroups: getValues(`${settingLocation}.accessGroups`) || [],
+    };
+
+    await updateAppConfig(newConfig);
+
+    if (settingLocation === APPS.MAIL && getValues('mail.configName')) {
+      const mailProviderConfig: MailProviderConfigDto = {
+        id: getValues('mail.mailProviderId') || '',
+        name: getValues('mail.configName'),
+        label: getValues('mail.configName'),
+        host: getValues('mail.hostname'),
+        port: getValues('mail.port'),
+        encryption: getValues('mail.encryption'),
       };
-      const extendedOptions = form.getValues(`${settingLocation}.extendedOptions`) || {};
-
-      const newConfig = {
-        ...selectedAppConfig,
-        options,
-        extendedOptions,
-        accessGroups: getValues(`${settingLocation}.accessGroups`) || [],
-      };
-
-      await updateAppConfig(newConfig);
-
-      if (settingLocation === APPS.MAIL && getValues('mail.configName')) {
-        const mailProviderConfig: MailProviderConfigDto = {
-          id: getValues('mail.mailProviderId') || '',
-          name: getValues('mail.configName'),
-          label: getValues('mail.configName'),
-          host: getValues('mail.hostname'),
-          port: getValues('mail.port'),
-          encryption: getValues('mail.encryption'),
-        };
-        void postExternalMailProviderConfig(mailProviderConfig);
-      }
+      void postExternalMailProviderConfig(mailProviderConfig);
     }
   };
 
   const matchingConfig = appConfigs.find((item) => item.name === settingLocation);
+  const isSupportedAppType = (appType: AppIntegrationType): appType is 'native' | 'embedded' =>
+    ['native', 'embedded'].includes(appType);
 
-  const settingsForm = () => {
-    if (isAnAppConfigSelected) {
-      return (
-        <Form {...form}>
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="column max-w-screen-2xl space-y-6"
-          >
-            {matchingConfig && (
-              <div className="m-5 space-y-10">
+  const getSettingsForm = () => (
+    <Form {...form}>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="column max-w-screen-2xl space-y-6"
+      >
+        {matchingConfig && (
+          <div className="m-5 space-y-3">
+            <FormFieldSH
+              key={`${matchingConfig.name}.accessGroups`}
+              control={control}
+              name={`${matchingConfig.name}.accessGroups`}
+              render={() => (
+                <FormItem>
+                  <h4 className="text-background">{t(`permission.groups`)}</h4>
+                  <FormControl>
+                    <AsyncMultiSelect<MultipleSelectorGroup>
+                      value={getValues(`${matchingConfig.name}.accessGroups`)}
+                      onSearch={searchGroups}
+                      onChange={(groups) => handleGroupsChange(groups, `${matchingConfig.name}`)}
+                      placeholder={t('search.type-to-search')}
+                    />
+                  </FormControl>
+                  <p className="text-background">{t(`permission.selectGroupsDescription`)}</p>
+                  <FormMessage className="text-p" />
+                </FormItem>
+              )}
+            />
+            {matchingConfig.extendedOptions && isSupportedAppType(matchingConfig.appType) ? (
+              <ExtendedOptionsForm
+                extendedOptions={
+                  APP_CONFIG_OPTIONS.find((itm) => itm.id === settingLocation || itm.id === APPS.EMBEDDED)
+                    ?.extendedOptions
+                }
+                control={control}
+                settingLocation={settingLocation}
+                form={form}
+              />
+            ) : null}
+            {Object.keys(matchingConfig.options)
+              .filter((key) => key === APP_CONFIG_OPTION_KEYS.URL || key === APP_CONFIG_OPTION_KEYS.APIKEY)
+              .map((filteredKey) => (
                 <FormFieldSH
-                  key={`${matchingConfig.name}.accessGroups`}
+                  key={`${matchingConfig.name}.options.${filteredKey}`}
                   control={control}
-                  name={`${matchingConfig.name}.accessGroups`}
-                  render={() => (
+                  name={`${matchingConfig.name}.options.${filteredKey}`}
+                  defaultValue={filteredKey}
+                  render={({ field }) => (
                     <FormItem>
-                      <h4 className="text-background">{t(`permission.groups`)}</h4>
+                      <h4 className="text-background">{t(`form.${filteredKey}`)}</h4>
                       <FormControl>
-                        <AsyncMultiSelect<MultipleSelectorGroup>
-                          value={getValues(`${matchingConfig.name}.accessGroups`)}
-                          onSearch={searchGroups}
-                          onChange={(groups) => handleGroupsChange(groups, `${matchingConfig.name}`)}
-                          placeholder={t('search.type-to-search')}
-                        />
+                        <Input {...field} />
                       </FormControl>
-                      <p className="text-background">{t(`permission.selectGroupsDescription`)}</p>
                       <FormMessage className="text-p" />
                     </FormItem>
                   )}
                 />
-                {matchingConfig.appType === APP_INTEGRATION_VARIANT.NATIVE && matchingConfig.extendedOptions ? (
-                  <ExtendedOptionsForm
-                    extendedOptions={APP_CONFIG_OPTIONS.find((itm) => itm.id === settingLocation)?.extendedOptions}
-                    control={control}
-                    settingLocation={settingLocation}
-                  />
-                ) : null}
-                {Object.keys(matchingConfig.options)
-                  .filter((key) => key === APP_CONFIG_OPTION_KEYS.URL || key === APP_CONFIG_OPTION_KEYS.APIKEY)
-                  .map((filteredKey) => (
-                    <FormFieldSH
-                      key={`${matchingConfig.name}.options.${filteredKey}`}
-                      control={control}
-                      name={`${matchingConfig.name}.options.${filteredKey}`}
-                      defaultValue={filteredKey}
-                      render={({ field }) => (
-                        <FormItem>
-                          <h4 className="text-background">{t(`form.${filteredKey}`)}</h4>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage className="text-p" />
-                        </FormItem>
-                      )}
-                    />
-                  ))}
-                {APP_CONFIG_OPTION_KEYS.PROXYCONFIG in matchingConfig.options && (
-                  <ProxyConfigForm
-                    key={`${matchingConfig.name}.options.${APP_CONFIG_OPTION_KEYS.PROXYCONFIG}`}
-                    item={matchingConfig}
-                    form={form as UseFormReturn<ProxyConfigFormType>}
-                  />
-                )}
-                {settingLocation === APPS.MAIL && (
-                  <MailImporterConfig form={form as UseFormReturn<MailProviderConfig>} />
-                )}
-              </div>
+              ))}
+            {APP_CONFIG_OPTION_KEYS.PROXYCONFIG in matchingConfig.options && (
+              <ProxyConfigForm
+                key={`${matchingConfig.name}.options.${APP_CONFIG_OPTION_KEYS.PROXYCONFIG}`}
+                item={matchingConfig}
+                form={form as UseFormReturn<ProxyConfigFormType>}
+              />
             )}
-          </form>
-        </Form>
-      );
-    }
-    return null;
-  };
+            {settingLocation === APPS.MAIL && <MailImporterConfig form={form as UseFormReturn<MailProviderConfig>} />}
+          </div>
+        )}
+      </form>
+    </Form>
+  );
 
   const handleDeleteSettingsItem = async () => {
     const deleteOptionName = appConfigs.filter((item) => item.name === settingLocation)[0].name;
@@ -248,26 +241,33 @@ const AppConfigPage: React.FC = () => {
     await deleteAppConfigEntry(deleteOptionName);
   };
 
+  const getHeaderDescription = (config: AppConfigDto) => {
+    if (config.appType === APP_INTEGRATION_VARIANT.NATIVE) {
+      return t(`settings.description.${config.name}`);
+    }
+    return t(`settings.description.${config.appType}`);
+  };
+
   return (
-    <>
-      <div className="h-[calc(100vh-var(--floating-buttons-height))] overflow-y-auto scrollbar-thin">
-        {matchingConfig && (
-          <NativeAppHeader
-            key={matchingConfig.name}
-            title={getDisplayName(matchingConfig, language)}
-            iconSrc={matchingConfig.icon}
-          />
-        )}
-        {isAnAppConfigSelected ? settingsForm() : <DockerContainerTable />}
-      </div>
-      {isAnAppConfigSelected ? (
-        <AppConfigFloatingButtons
-          handleDeleteSettingsItem={() => setIsDeleteAppConfigDialogOpen(true)}
-          handleSaveSettingsItem={handleSubmit(onSubmit)}
-        />
-      ) : null}
+    <PageLayout
+      nativeAppHeader={
+        matchingConfig
+          ? {
+              title: getDisplayName(matchingConfig, language),
+              iconSrc: matchingConfig.icon,
+              description: getHeaderDescription(matchingConfig),
+            }
+          : undefined
+      }
+    >
+      {getSettingsForm()}
+
+      <AppConfigFloatingButtons
+        handleDeleteSettingsItem={() => setIsDeleteAppConfigDialogOpen(true)}
+        handleSaveSettingsItem={handleSubmit(onSubmit)}
+      />
       <DeleteAppConfigDialog handleDeleteSettingsItem={handleDeleteSettingsItem} />
-    </>
+    </PageLayout>
   );
 };
 

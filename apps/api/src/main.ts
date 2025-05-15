@@ -10,28 +10,41 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Logger } from '@nestjs/common';
+import { ConsoleLogger, Logger } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { existsSync, mkdirSync, writeFileSync, copyFileSync } from 'fs';
+import { copyFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
 import helmet from 'helmet';
 import { JwtService } from '@nestjs/jwt';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import folderPaths from '@libs/common/constants/folderPaths';
+import { WsAdapter } from '@nestjs/platform-ws';
 import AppModule from './app/app.module';
 import AuthenticationGuard from './auth/auth.guard';
+import getLogLevels from './logging/getLogLevels';
 
 async function bootstrap() {
+  const globalPrefix = EDU_API_ROOT;
+  const logLevels = getLogLevels(process.env.EDUI_LOG_LEVEL);
+  const logger = logLevels
+    ? new ConsoleLogger({
+        prefix: globalPrefix,
+        logLevels,
+      })
+    : false;
+
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: { origin: process.env.EDUI_CORS_URL },
+    logger,
   });
-  const globalPrefix = EDU_API_ROOT;
   app.setGlobalPrefix(globalPrefix);
   const port = process.env.EDUI_PORT || 3000;
   app.set('trust proxy', true);
 
   app.use(helmet());
+
+  app.useWebSocketAdapter(new WsAdapter(app));
 
   const reflector = new Reflector();
   app.useGlobalGuards(new AuthenticationGuard(new JwtService(), reflector));
@@ -59,7 +72,13 @@ async function bootstrap() {
   }
 
   await app.listen(port);
-  Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
+  if (logLevels) {
+    Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
+    Logger.log(`Logging-Levels: ${logLevels.map((level) => level.toUpperCase()).join(', ')}`);
+  } else {
+    console.info(`Application is running on: http://localhost:${port}/${globalPrefix}`);
+    console.info('Logging off');
+  }
 }
 
 bootstrap().catch((e) => Logger.log(e));

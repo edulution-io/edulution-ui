@@ -27,7 +27,12 @@ const getSurveyRoutes = () => [
   >
     <Route
       path=""
-      element={<Navigate to={SurveysPageView.OPEN} />}
+      element={
+        <Navigate
+          to={SurveysPageView.OPEN}
+          replace
+        />
+      }
     />
     <Route
       path={SurveysPageView.OPEN}

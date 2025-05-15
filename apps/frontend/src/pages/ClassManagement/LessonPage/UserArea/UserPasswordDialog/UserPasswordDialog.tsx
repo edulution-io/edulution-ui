@@ -17,12 +17,13 @@ import UserPasswordDialogForm from '@libs/classManagement/types/userPasswordDial
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import UserPasswordDialogBody from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/UserPasswordDialogBody';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import { Form } from '@/components/ui/Form';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 const UserPasswordDialog = () => {
   const { t } = useTranslation();
@@ -91,6 +92,8 @@ const UserPasswordDialog = () => {
     );
   };
 
+  const getFooter = () => <DialogFooterButtons handleClose={onClose} />;
+
   return (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
     <div onClick={(e) => e.stopPropagation()}>
@@ -100,7 +103,7 @@ const UserPasswordDialog = () => {
         title={t('classmanagement.userPasswordDialogTitle', { displayName: user?.displayName })}
         desktopContentClassName="max-w-4xl"
         body={getDialogBody()}
-        footer={null}
+        footer={getFooter()}
       />
     </div>
   );

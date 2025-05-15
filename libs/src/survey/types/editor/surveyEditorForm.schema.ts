@@ -11,9 +11,8 @@
  */
 
 import { z } from 'zod';
-import { TFunction } from 'i18next';
 
-const getSurveyEditorFormSchema = (t: TFunction<'translation', undefined>) =>
+const getSurveyEditorFormSchema = () =>
   z.object({
     id: z.number(),
     formula: z.object({
@@ -47,6 +46,20 @@ const getSurveyEditorFormSchema = (t: TFunction<'translation', undefined>) =>
         }),
       ),
     }),
+    backendLimiters: z
+      .array(
+        z.object({
+          questionName: z.string().optional(),
+          choices: z.array(
+            z.object({
+              name: z.string().optional(),
+              title: z.string().optional(),
+              limit: z.number().optional(),
+            }),
+          ),
+        }),
+      )
+      .optional(),
     saveNo: z.number().optional(),
     creator: z.intersection(
       z.object({
@@ -88,12 +101,7 @@ const getSurveyEditorFormSchema = (t: TFunction<'translation', undefined>) =>
     ),
     answers: z.any(),
     created: z.date().optional(),
-    expires: z
-      .string()
-      .nullable()
-      .optional()
-      .refine((val) => !val || !Number.isNaN(Date.parse(val)), { message: t('common.invalid_date') })
-      .transform((val) => (val ? new Date(val).toISOString() : null)),
+    expires: z.date().nullable().optional(),
     isAnonymous: z.boolean().optional(),
     isPublic: z.boolean().optional(),
     canSubmitMultipleAnswers: z.boolean().optional(),

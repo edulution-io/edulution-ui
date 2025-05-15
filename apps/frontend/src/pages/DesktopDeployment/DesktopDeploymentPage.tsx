@@ -11,17 +11,15 @@
  */
 
 import React, { useEffect } from 'react';
-import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import { DesktopDeploymentIcon } from '@/assets/icons';
 import { useTranslation } from 'react-i18next';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useUserStore from '@/store/UserStore/UserStore';
 import VirtualMachineOs from '@libs/desktopdeployment/types/virtual-machines.enum';
 import { VirtualMachines } from '@libs/desktopdeployment/types';
 import { VDI_SYNC_TIME_INTERVAL } from '@libs/desktopdeployment/constants';
 import { useInterval } from 'usehooks-ts';
-import useElementHeight from '@/hooks/useElementHeight';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
+import PageLayout from '@/components/structure/layout/PageLayout';
 import ConnectionErrorDialog from './components/ConnectionErrorDialog';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 import VdiCard from './components/VdiCard';
@@ -58,7 +56,7 @@ const DesktopDeploymentPage: React.FC = () => {
 
   useEffect(() => {
     if (user) {
-      void postRequestVdi(VirtualMachineOs.WIN10);
+      void postRequestVdi(VirtualMachineOs.WIN11);
     }
   }, [user]);
 
@@ -96,22 +94,18 @@ const DesktopDeploymentPage: React.FC = () => {
 
   const handleReload = () => {
     void authenticate();
-    void postRequestVdi(VirtualMachineOs.WIN10);
+    void postRequestVdi(VirtualMachineOs.WIN11);
   };
 
-  const pageBarsHeight = useElementHeight([NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 20;
-
   return (
-    <>
-      <NativeAppHeader
-        title={t('desktopdeployment.topic')}
-        description={t('desktopdeployment.description')}
-        iconSrc={DesktopDeploymentIcon}
-      />
-      <div
-        className="ml-4 flex w-full flex-1 flex-col gap-10 overflow-y-auto scrollbar-thin md:ml-0 md:flex-row"
-        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
-      >
+    <PageLayout
+      nativeAppHeader={{
+        title: t('desktopdeployment.topic'),
+        description: t('desktopdeployment.description'),
+        iconSrc: DesktopDeploymentIcon,
+      }}
+    >
+      <div className="flex w-full flex-1 flex-col items-start gap-10 md:ml-0 md:flex-row">
         {osConfigs.map(({ os, title }) => (
           <VdiCard
             key={os}
@@ -124,12 +118,12 @@ const DesktopDeploymentPage: React.FC = () => {
         ))}
       </div>
       <ConnectionErrorDialog handleReload={handleReload} />
-      <LoadingIndicator isOpen={isLoading} />
+      <LoadingIndicatorDialog isOpen={isLoading} />
       <DesktopDeploymentFloatingButtons
         handleConnect={handleConnect}
         handleReload={handleReload}
       />
-    </>
+    </PageLayout>
   );
 };
 

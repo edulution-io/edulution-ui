@@ -13,25 +13,36 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import ResultTableDialogBodyWrapper from '@/pages/Surveys/Tables/dialogs/ResultTableDialogBody';
 import './resultTableDialog.css';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 const ResultTableDialog = () => {
   const { isOpenPublicResultsTableDialog, setIsOpenPublicResultsTableDialog, isLoading } = useResultDialogStore();
 
   const { t } = useTranslation();
 
+  const handleClose = () => setIsOpenPublicResultsTableDialog(!isOpenPublicResultsTableDialog);
+
+  const getFooter = () => (
+    <DialogFooterButtons
+      handleClose={handleClose}
+      cancelButtonText="common.close"
+    />
+  );
+
   return isOpenPublicResultsTableDialog ? (
     <>
-      {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
+      {isLoading ? <LoadingIndicatorDialog isOpen={isLoading} /> : null}
       <AdaptiveDialog
         isOpen={isOpenPublicResultsTableDialog}
-        handleOpenChange={() => setIsOpenPublicResultsTableDialog(!isOpenPublicResultsTableDialog)}
+        handleOpenChange={handleClose}
         title={t('surveys.resultTableDialog.title')}
         body={<ResultTableDialogBodyWrapper />}
         desktopContentClassName="max-h-[75vh] max-w-[85%]"
+        footer={getFooter()}
       />
     </>
   ) : null;

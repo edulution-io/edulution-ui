@@ -14,11 +14,11 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { t } from 'i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import MoveContentDialogBody from '@/pages/FileSharing/dialog/DialogBodys/MoveContentDialogBody';
-import { Button } from '@/components/shared/Button';
+import MoveContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveContentDialogBody';
 import ShareCollectDialogProps from '@libs/classManagement/types/shareCollectDialogProps';
 import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 const ShowCollectedFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose }) => {
   const { homePath } = useUserPath();
@@ -35,18 +35,13 @@ const ShowCollectedFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, is
   );
 
   const getFooter = () => (
-    <div className="mt-4 flex justify-between space-x-4">
-      <Button
-        type="button"
-        size="lg"
-        variant="btn-collaboration"
-        onClick={() => {
-          navigate(`/filesharing?path=${collectedFilesPath}`);
-        }}
-      >
-        {t(`classmanagement.${title}`)}
-      </Button>
-    </div>
+    <DialogFooterButtons
+      handleClose={onClose}
+      handleSubmit={() => {
+        navigate(`/filesharing?path=${collectedFilesPath}`);
+      }}
+      submitButtonText={`classmanagement.${title}`}
+    />
   );
 
   return (

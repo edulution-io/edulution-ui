@@ -11,13 +11,15 @@
  */
 
 import { create, StateCreator } from 'zustand';
+import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
+import { toast } from 'sonner';
+import i18n from '@/i18n';
 import LICENSE_ENDPOINT from '@libs/license/constants/license-endpoints';
 import LicenseInfoDto from '@libs/license/types/license-info.dto';
 import CommunityLicenseStore from '@libs/license/types/communityLicenseStore';
 import communityLicenseStoreInitialValues from '@libs/license/constants/communityLicenseStoreInitialValues';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 
 type PersistedCommunityLicenseStore = (
   licenseData: StateCreator<CommunityLicenseStore>,
@@ -32,6 +34,8 @@ const useCommunityLicenseStore = create<CommunityLicenseStore>(
 
       close: () => set({ isOpen: false, wasViewedAlready: true }),
 
+      setIsRegisterDialogOpen: (isRegisterDialogOpen) => set({ isRegisterDialogOpen }),
+
       checkForActiveUserLicense: async () => {
         const { wasViewedAlready } = get();
         if (wasViewedAlready) {
@@ -41,14 +45,26 @@ const useCommunityLicenseStore = create<CommunityLicenseStore>(
 
         set({ isLoading: true });
         try {
-          const response = await eduApi.get<LicenseInfoDto>(LICENSE_ENDPOINT);
-          const licenseInfo = response.data;
-
+          const { data: licenseInfo } = await eduApi.get<LicenseInfoDto>(LICENSE_ENDPOINT);
+          set({ licenseInfo });
           if (!licenseInfo || !licenseInfo.isLicenseActive) {
             setTimeout(() => set({ isOpen: true }), 400);
             return;
           }
-          set({ isOpen: false, wasViewedAlready: true, isLicenseActive: licenseInfo.isLicenseActive });
+          set({ isOpen: false, wasViewedAlready: true });
+        } catch (error) {
+          handleApiError(error, set);
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      signLicense: async (licenseKey) => {
+        set({ isLoading: true });
+        try {
+          const { data: licenseInfo } = await eduApi.post<LicenseInfoDto>(LICENSE_ENDPOINT, { licenseKey });
+          set({ licenseInfo, isRegisterDialogOpen: false });
+          toast.success(i18n.t('settings.license.licenseSignedSuccessfully'));
         } catch (error) {
           handleApiError(error, set);
         } finally {
@@ -61,7 +77,7 @@ const useCommunityLicenseStore = create<CommunityLicenseStore>(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         wasViewedAlready: state.wasViewedAlready,
-        isLicenseActive: state.isLicenseActive,
+        licenseInfo: state.licenseInfo,
       }),
     },
   ),

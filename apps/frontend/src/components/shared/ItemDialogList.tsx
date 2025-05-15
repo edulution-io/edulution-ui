@@ -19,13 +19,13 @@ const ItemDialogList = ({
   items,
 }: {
   items: { id: string; name: string }[];
-  deleteWarningTranslationId: string;
+  deleteWarningTranslationId?: string;
 }) => {
   const { t } = useTranslation();
 
   return (
     <div className="text-background">
-      <p>{t(deleteWarningTranslationId)}</p>
+      {deleteWarningTranslationId && <p>{t(deleteWarningTranslationId)}</p>}
       <ScrollArea className="mt-2 h-64 w-96 max-w-full overflow-y-auto rounded border p-2">
         {items.map((item) => (
           <div

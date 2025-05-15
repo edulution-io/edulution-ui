@@ -13,7 +13,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/PublicConferenceStore';
 import useUserStore from '@/store/UserStore/UserStore';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
@@ -25,7 +25,8 @@ import PublicConferenceJoinForm from '@/pages/ConferencePage/PublicConference/Pu
 import ConferenceDto from '@libs/conferences/types/conference.dto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import delay from '@libs/common/utils/delay';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import PageLayout from '@/components/structure/layout/PageLayout';
 
 const PublicConferencePage = (): React.ReactNode => {
   const { t } = useTranslation();
@@ -96,22 +97,24 @@ const PublicConferencePage = (): React.ReactNode => {
         `/${EDU_API_ROOT}/${CONFERENCES_PUBLIC_SSE_EDU_API_ENDPOINT}?meetingID=${publicConference.meetingID}`,
       );
 
+      const controller = new AbortController();
+      const { signal } = controller;
+
       const updateConferenceHandler = (e: MessageEvent<string>) => {
         const { type, data } = e;
-        if (meetingId === data && type === SSE_MESSAGE_TYPE.STARTED) {
+        if (meetingId === data && type === SSE_MESSAGE_TYPE.CONFERENCE_STARTED) {
           void joinConference();
-        } else if (meetingId === data && type === SSE_MESSAGE_TYPE.STOPPED) {
+        } else if (meetingId === data && type === SSE_MESSAGE_TYPE.CONFERENCE_STOPPED) {
           setJoinConferenceUrl('');
           setWaitingForConferenceToStart(true);
         }
       };
 
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.STARTED, updateConferenceHandler);
-      eventSource.addEventListener(SSE_MESSAGE_TYPE.STOPPED, updateConferenceHandler);
+      eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_STARTED, updateConferenceHandler, { signal });
+      eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_STOPPED, updateConferenceHandler, { signal });
 
       return () => {
-        eventSource.removeEventListener(SSE_MESSAGE_TYPE.STARTED, updateConferenceHandler);
-        eventSource.removeEventListener(SSE_MESSAGE_TYPE.STOPPED, updateConferenceHandler);
+        controller.abort();
         eventSource.close();
       };
     }
@@ -148,7 +151,7 @@ const PublicConferencePage = (): React.ReactNode => {
   }, [user?.username, meetingId, publicConference, conferences, isWaitingForConferenceToStart]);
 
   if (isGetConferencesLoading || isGetJoinConferenceUrlLoading || isGetPublicConferenceLoading) {
-    return <LoadingIndicator isOpen />;
+    return <LoadingIndicatorDialog isOpen />;
   }
 
   if (!publicConference?.isPublic || !meetingId) {
@@ -160,7 +163,7 @@ const PublicConferencePage = (): React.ReactNode => {
   }
 
   return (
-    <div className="h-full overflow-y-auto scrollbar-thin">
+    <PageLayout>
       <div className="mx-auto w-[90%] md:w-[400px]">
         <div>{t('conferences.publicConference')}</div>
         <h3 className="mt-3">{publicConference.name}</h3>
@@ -182,7 +185,7 @@ const PublicConferencePage = (): React.ReactNode => {
           />
         )}
       </div>
-    </div>
+    </PageLayout>
   );
 };
 

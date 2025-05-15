@@ -20,15 +20,18 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Secret, TOTP } from 'otpauth';
 import { ErrorResponse, OidcMetadata, SigninResponse } from 'oidc-client-ts';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
 import AUTH_TOTP_CONFIG from '@libs/auth/constants/totp-config';
 import type AuthRequestArgs from '@libs/auth/types/auth-request';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
+import CustomHttpException from '../common/CustomHttpException';
 import { User, UserDocument } from '../users/user.schema';
 import { fromBase64 } from '../filesharing/filesharing.utilities';
+import SseService from '../sse/sse.service';
 
 const { KEYCLOAK_EDU_UI_SECRET, KEYCLOAK_EDU_UI_CLIENT_ID, KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API } = process.env;
 
@@ -36,10 +39,12 @@ const { KEYCLOAK_EDU_UI_SECRET, KEYCLOAK_EDU_UI_CLIENT_ID, KEYCLOAK_EDU_UI_REALM
 class AuthService {
   private keycloakApi: AxiosInstance;
 
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private readonly sseService: SseService,
+  ) {
     this.keycloakApi = axios.create({
       baseURL: `${KEYCLOAK_API}/realms/${KEYCLOAK_EDU_UI_REALM}`,
-      timeout: 5000,
     });
   }
 
@@ -54,7 +59,10 @@ class AuthService {
         return oidcConfig;
       }),
       catchError(() => {
-        throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.UNAUTHORIZED);
+        throw new HttpException(
+          { error: AuthErrorMessages.Unknown, error_description: AuthErrorMessages.KeycloakConnectionFailed },
+          HttpStatus.SERVICE_UNAVAILABLE,
+        );
       }),
     );
   }
@@ -80,11 +88,19 @@ class AuthService {
       });
       return response.data;
     } catch (error) {
-      if (error instanceof AxiosError && error.response?.data) {
+      if (error instanceof AxiosError && error.response?.data && error.response.status < 500) {
         const errorMessage: ErrorResponse = error.response.data as ErrorResponse;
         throw new HttpException(errorMessage, HttpStatus.UNAUTHORIZED);
       }
-      throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.UNAUTHORIZED, body);
+      if (error instanceof AxiosError && error.response && error.response.status === 503)
+        throw new HttpException(
+          { error: AuthErrorMessages.Unknown, error_description: AuthErrorMessages.KeycloakConnectionFailed },
+          error.response.status,
+        );
+      throw new HttpException(
+        { error: AuthErrorMessages.Unknown, error_description: AuthErrorMessages.LmnConnectionFailed },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -109,10 +125,17 @@ class AuthService {
         password = passwordString.slice(0, lastColonIndex);
         token = passwordString.slice(lastColonIndex + 1);
       } else {
-        throw new CustomHttpException(AuthErrorMessages.TotpMissing, HttpStatus.UNAUTHORIZED);
+        throw new HttpException(
+          { error: AuthErrorMessages.TotpMissing, error_description: AuthErrorMessages.TotpMissing },
+          HttpStatus.UNAUTHORIZED,
+        );
       }
 
-      if (!token) throw new CustomHttpException(AuthErrorMessages.TotpMissing, HttpStatus.UNAUTHORIZED);
+      if (!token)
+        throw new HttpException(
+          { error: AuthErrorMessages.TotpMissing, error_description: AuthErrorMessages.TotpMissing },
+          HttpStatus.UNAUTHORIZED,
+        );
 
       const isTotpValid = AuthService.checkTotp(token, username, totpSecret);
 
@@ -120,7 +143,10 @@ class AuthService {
         return this.signin(body, password);
       }
 
-      throw new CustomHttpException(AuthErrorMessages.TotpInvalid, HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        { error: AuthErrorMessages.TotpInvalid, error_description: AuthErrorMessages.TotpInvalid },
+        HttpStatus.UNAUTHORIZED,
+      );
     }
     return this.signin(body, passwordString);
   }
@@ -147,7 +173,7 @@ class AuthService {
         .lean();
       return user;
     }
-    throw new CustomHttpException(AuthErrorMessages.TotpInvalid, HttpStatus.UNAUTHORIZED);
+    throw new CustomHttpException(AuthErrorMessages.TotpInvalid, HttpStatus.UNAUTHORIZED, undefined, AuthService.name);
   }
 
   async getTotpInfo(username: string) {
@@ -171,8 +197,17 @@ class AuthService {
         .lean();
       return user;
     } catch (error) {
-      throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND, undefined, AuthService.name);
     }
+  }
+
+  loginViaApp(body: LoginQrSseDto, sessionId: string) {
+    const { username, password } = body;
+    const isConnectionActive = this.sseService.getUserConnection(sessionId);
+
+    if (!isConnectionActive) throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
+
+    this.sseService.sendEventToUser(sessionId, btoa(JSON.stringify({ username, password })), SSE_MESSAGE_TYPE.MESSAGE);
   }
 }
 

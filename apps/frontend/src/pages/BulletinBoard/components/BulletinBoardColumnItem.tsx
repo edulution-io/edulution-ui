@@ -16,7 +16,7 @@ import { Button } from '@/components/shared/Button';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import { PiDotsThreeVerticalBold } from 'react-icons/pi';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
-import { DropdownMenuItemType } from '@libs/ui/types/dropdownMenuItemType';
+import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
 import { useTranslation } from 'react-i18next';
 import { RowSelectionState } from '@tanstack/react-table';
 import useUserStore from '@/store/UserStore/UserStore';

@@ -12,7 +12,6 @@
 
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 
-const buildApiDeletePathUrl = (base: string, path: string, target: DeleteTargetType): string =>
-  `${base}?target=${target}&path=${path}`;
+const buildApiDeletePathUrl = (base: string, target: DeleteTargetType): string => `${base}?target=${target}`;
 
 export default buildApiDeletePathUrl;

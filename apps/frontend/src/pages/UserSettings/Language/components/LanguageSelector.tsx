@@ -15,7 +15,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import RadioGroupFormField from '@/components/shared/RadioGroupFormField';
 import UserLanguage from '@libs/user/constants/userLanguage';
 import useUserStore from '@/store/UserStore/UserStore';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import UserLanguageType from '@libs/user/types/userLanguageType';
 import { EnglishIcon, GermanIcon, SettingsIcon } from '@/assets/icons';
 
@@ -48,7 +48,7 @@ const LanguageSelector: React.FC<SelectLanguageProps> = ({ settingLocation }) =>
   const { user, updateUserLanguage } = useUserStore();
   const { control } = useFormContext();
 
-  const isMobileView = useIsMobileView();
+  const { isMobileView } = useMedia();
 
   const selectedLanguage = useWatch({
     control,
@@ -66,7 +66,6 @@ const LanguageSelector: React.FC<SelectLanguageProps> = ({ settingLocation }) =>
       <RadioGroupFormField
         control={control}
         name={`${settingLocation}.userLanguage`}
-        defaultValue={selectedLanguage}
         items={languageOptions}
         imageWidth={isMobileView ? 'small' : 'large'}
         fixedImageSize

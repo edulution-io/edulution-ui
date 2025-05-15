@@ -15,17 +15,18 @@ import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/c
 import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
-import CustomHttpException from '@libs/error/CustomHttpException';
+import { parse } from 'cookie';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
+import CustomHttpException from '../common/CustomHttpException';
 import { PUBLIC_ROUTE_KEY } from '../common/decorators/public.decorator';
 
 @Injectable()
 class AuthenticationGuard implements CanActivate {
   private token: string;
 
-  private pubKey: string;
+  private readonly pubKey: string;
 
   constructor(
     private jwtService: JwtService,
@@ -34,17 +35,22 @@ class AuthenticationGuard implements CanActivate {
     this.pubKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
   }
 
-  private static extractTokenFromHeader(request: Request): string {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : '';
-  }
-
-  private static extractTokenFromQuery(request: Request): string {
-    const { token } = request.query;
-    if (token) {
-      return token as string;
+  private static extractToken(request: Request): string {
+    const tokenFromQuery = request.query.token as string;
+    if (tokenFromQuery) {
+      return tokenFromQuery;
     }
-    return '';
+
+    const authHeader = request.headers.authorization;
+    if (authHeader) {
+      const [type, token] = authHeader.split(' ');
+      if (type === 'Bearer' && token) {
+        return token;
+      }
+    }
+
+    const cookies = parse(request.headers.cookie || '');
+    return cookies.authToken || '';
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -54,10 +60,7 @@ class AuthenticationGuard implements CanActivate {
     }
 
     const request: Request = context.switchToHttp().getRequest();
-    this.token = AuthenticationGuard.extractTokenFromQuery(request);
-    if (!this.token) {
-      this.token = AuthenticationGuard.extractTokenFromHeader(request);
-    }
+    this.token = AuthenticationGuard.extractToken(request);
 
     try {
       request.user = await this.jwtService.verifyAsync<JWTUser>(this.token, {

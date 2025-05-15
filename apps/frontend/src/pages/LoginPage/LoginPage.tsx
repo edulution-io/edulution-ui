@@ -13,21 +13,35 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { useForm } from 'react-hook-form';
 import CryptoJS from 'crypto-js';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
+import { v4 as uuidv4 } from 'uuid';
+import { MdOutlineQrCode } from 'react-icons/md';
+import { toast } from 'sonner';
 import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
 import useUserStore from '@/store/UserStore/UserStore';
-import useLmnApiStore from '@/store/useLmnApiStore';
-import UserDto from '@libs/user/types/user.dto';
+import type UserDto from '@libs/user/types/user.dto';
 import processLdapGroups from '@libs/user/utils/processLdapGroups';
-import OtpInput from '@/components/shared/OtpInput';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
+import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
+import PageTitle from '@/components/PageTitle';
+import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import delay from '@libs/common/utils/delay';
+import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
+import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
+import PageLayout from '@/components/structure/layout/PageLayout';
+import APPS from '@libs/appconfig/constants/apps';
+import getLoginFormSchema from './getLoginFormSchema';
+import TotpInput from './components/TotpInput';
+import useAppConfigsStore from '../Settings/AppConfig/appConfigsStore';
 
 type LocationState = {
   from: string;
@@ -38,38 +52,48 @@ const LoginPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { eduApiToken, totpIsLoading, createOrUpdateUser, setEduApiToken, getTotpStatus } = useUserStore();
+  const { eduApiToken, totpIsLoading, isAuthenticated, createOrUpdateUser, setEduApiToken, getTotpStatus } =
+    useUserStore();
+  const { appConfigs } = useAppConfigsStore();
 
   const { isLoading } = auth;
-  const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
-  const [loginComplete, setLoginComplete] = useState(false);
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
-  const [totp, setTotp] = useState('');
   const [webdavKey, setWebdavKey] = useState('');
   const [encryptKey, setEncryptKey] = useState('');
+  const [showQrCode, setShowQrCode] = useState(false);
+  const [sessionID, setSessionID] = useState<string | null>(null);
 
-  const formSchema: z.Schema = z.object({
-    username: z.string({ required_error: t('username.required') }).max(32, { message: t('login.username_too_long') }),
-    password: z.string({ required_error: t('password.required') }).max(32, { message: t('login.password_too_long') }),
-  });
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    mode: 'onChange',
-    resolver: zodResolver(formSchema),
+  const form = useForm({
+    mode: 'onSubmit',
+    resolver: zodResolver(getLoginFormSchema(t)),
+    defaultValues: {
+      username: '',
+      password: '',
+      totpValue: '',
+    },
   });
 
   useEffect(() => {
     if (auth.error) {
-      // NIEDUUI-322 Translate keycloak error messages
-      form.setError('password', { type: 'custom', message: auth.error.message });
+      if (auth.error.message.includes('Invalid response Content-Type:')) {
+        form.setError('password', { message: t('auth.errors.EdulutionConnectionFailed') });
+        return;
+      }
+      form.setError('password', { message: t(auth.error.message) });
+
+      if (showQrCode) {
+        toast.error(t(auth.error.message));
+      }
     }
   }, [auth.error]);
 
-  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {
+  const onSubmit = async () => {
     try {
-      const username = form.getValues('username') as string;
-      const password = form.getValues('password') as string;
-      const passwordHash = btoa(`${password}${isEnterTotpVisible ? `:${totp}` : ''}`);
+      const username = form.getValues('username');
+      const password = form.getValues('password');
+      const totpValue = form.getValues('totpValue');
+
+      const passwordHash = btoa(`${password}${isEnterTotpVisible || totpValue ? `:${totpValue}` : ''}`);
       const requestUser = await auth.signinResourceOwnerCredentials({
         username,
         password: passwordHash,
@@ -100,9 +124,7 @@ const LoginPage: React.FC = () => {
       password: webdavKey,
       encryptKey,
     };
-    const response = await createOrUpdateUser(newUser);
-
-    setIsEnterTotpVisible(!!response?.mfaEnabled);
+    await createOrUpdateUser(newUser);
   };
 
   useEffect(() => {
@@ -112,27 +134,89 @@ const LoginPage: React.FC = () => {
     }
     const registerUser = async () => {
       await handleRegisterUser();
-      if (!lmnApiToken) {
-        await setLmnApiToken(form.getValues('username') as string, form.getValues('password') as string);
-      }
-      setLoginComplete(true);
+
+      setIsEnterTotpVisible(false);
     };
 
     void registerUser();
   }, [auth.isAuthenticated, eduApiToken]);
 
+  const isAppConfigReady = appConfigs.some((appConfig) => appConfig.name !== APPS.NONE);
+  const isAuthenticatedAppReady = isAppConfigReady && isAuthenticated;
+
   useEffect(() => {
-    if (loginComplete) {
+    if (isAuthenticatedAppReady) {
       const { from } = (location?.state ?? { from: '/' }) as LocationState;
-      const toLocation = from === '/login' ? '/' : from;
+      const toLocation = from === LOGIN_ROUTE ? '/' : from;
       navigate(toLocation, {
         replace: true,
       });
     }
-  }, [loginComplete]);
+  }, [isAuthenticatedAppReady]);
+
+  useEffect(() => {
+    if (!showQrCode || !sessionID) {
+      return undefined;
+    }
+
+    const eventSource = new EventSource(
+      `${window.location.origin}/${EDU_API_ROOT}/${SSE_EDU_API_ENDPOINTS.SSE}/${AUTH_PATHS.AUTH_ENDPOINT}?sessionId=${sessionID}`,
+    );
+
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    const handleLoginEvent = (e: MessageEvent<string>) => {
+      try {
+        const { username, password } = JSON.parse(atob(e.data)) as LoginQrSseDto;
+
+        form.setValue('username', username);
+        form.setValue('password', password);
+      } catch (error) {
+        console.error('JSON parse error:', error);
+      }
+
+      const handleEnterMfa = () => {
+        setIsEnterTotpVisible(true);
+        setShowQrCode(false);
+      };
+
+      void getTotpStatus(form.getValues('username')).then((isMfaEnabled) =>
+        isMfaEnabled ? handleEnterMfa() : form.handleSubmit(onSubmit)(),
+      );
+    };
+
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.MESSAGE, handleLoginEvent, { signal });
+
+    const handleAbortConnection = () => {
+      controller.abort();
+      eventSource.close();
+    };
+
+    eventSource.onerror = async () => {
+      handleAbortConnection();
+      toast.error(t('auth.errors.EdulutionConnectionFailed'));
+      await delay(5000);
+      setShowQrCode(false);
+    };
+
+    const timeoutId = setTimeout(
+      () => {
+        handleAbortConnection();
+        toast.info(t('login.infoQrCodeExpired'));
+        setShowQrCode(false);
+      },
+      3 * 60 * 1000,
+    );
+
+    return () => {
+      clearTimeout(timeoutId);
+      handleAbortConnection();
+    };
+  }, [showQrCode, sessionID]);
 
   const handleCheckMfaStatus = async () => {
-    const isMfaEnabled = await getTotpStatus(form.getValues('username') as string);
+    const isMfaEnabled = await getTotpStatus(form.getValues('username'));
     if (!isMfaEnabled) {
       await form.handleSubmit(onSubmit)();
     } else {
@@ -140,92 +224,154 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  const renderFormField = (fieldName: string, label: string, type?: string, shouldTrim?: boolean) => (
-    <FormFieldSH
-      control={form.control}
-      name={fieldName}
-      defaultValue=""
-      render={({ field }) => (
-        <FormItem>
-          <p className="font-bold text-foreground">{label}</p>
-          <FormControl>
-            <Input
-              {...field}
-              type={type}
-              shouldTrim={shouldTrim}
-              disabled={isLoading}
-              placeholder={label}
-              variant="login"
-              data-testid={`test-id-login-page-${fieldName}-input`}
-            />
-          </FormControl>
-          <FormMessage className="text-p text-foreground" />
-        </FormItem>
-      )}
-    />
+  const onTotpCancelButtonClick = () => {
+    form.clearErrors();
+    form.setValue('totpValue', '');
+    setIsEnterTotpVisible(false);
+  };
+
+  const handleCancelOrToggleQrCode = () => {
+    if (isEnterTotpVisible) {
+      onTotpCancelButtonClick();
+    } else {
+      const newSessionID = uuidv4();
+      setSessionID(newSessionID);
+      setShowQrCode((prev) => !prev);
+    }
+  };
+
+  const renderFormField = (fieldName: 'username' | 'password', label: string, type?: string, shouldTrim?: boolean) => (
+    <div className={isEnterTotpVisible ? 'hidden' : ''}>
+      <FormFieldSH
+        control={form.control}
+        name={fieldName}
+        render={({ field }) => (
+          <FormItem>
+            <p className="font-bold text-foreground">{label}</p>
+            <FormControl>
+              <Input
+                {...field}
+                type={type}
+                shouldTrim={shouldTrim}
+                disabled={isLoading}
+                placeholder={label}
+                variant="login"
+                data-testid={`test-id-login-page-${fieldName}-input`}
+              />
+            </FormControl>
+            <FormMessage className="text-foreground" />
+          </FormItem>
+        )}
+      />
+    </div>
   );
 
+  const renderErrorMessage = () => {
+    const passwordError = form.getFieldState('password').error?.message;
+    return passwordError ? (
+      <p className="h-5">
+        <span>{t(passwordError)}</span>
+      </p>
+    ) : null;
+  };
+
+  const getMainContent = () => {
+    if (showQrCode && !isEnterTotpVisible) {
+      return (
+        <>
+          <QRCodeDisplay
+            value={`${window.location.origin}/${EDU_API_ROOT}/${AUTH_PATHS.AUTH_ENDPOINT}/${AUTH_PATHS.AUTH_VIA_APP}?sessionId=${sessionID}`}
+            size="lg"
+          />
+          <p className="font-bold">{t('login.loginWithQrDescription')}</p>
+        </>
+      );
+    }
+
+    return (
+      <>
+        {isEnterTotpVisible && (
+          <FormFieldSH
+            control={form.control}
+            name="totpValue"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <TotpInput
+                    totp={field.value}
+                    title={t('login.enterMultiFactorCode')}
+                    setTotp={field.onChange}
+                    onComplete={onSubmit}
+                  />
+                </FormControl>
+                {renderErrorMessage()}
+              </FormItem>
+            )}
+          />
+        )}
+        {renderFormField('username', t('common.username'), 'text', true)}
+        {renderFormField('password', t('common.password'), 'password')}
+      </>
+    );
+  };
+
   return (
-    <Card
-      variant="modal"
-      className="bg-background"
-    >
-      <img
-        src={DesktopLogo}
-        alt="edulution"
-        className="mx-auto w-[250px]"
-      />
-      <Form
-        {...form}
-        data-testid="test-id-login-page-form"
+    <PageLayout>
+      <PageTitle translationId="login.pageTitle" />
+      <Card
+        variant="modal"
+        className="overflow-y-auto bg-background scrollbar-thin"
       >
-        <form
-          onSubmit={form.handleSubmit(isEnterTotpVisible ? onSubmit : handleCheckMfaStatus)}
-          className="space-y-4"
+        <img
+          src={DesktopLogo}
+          alt="edulution"
+          className="mx-auto w-64"
+        />
+        <Form
+          {...form}
           data-testid="test-id-login-page-form"
         >
-          {isEnterTotpVisible ? (
-            <OtpInput
-              totp={totp}
-              setTotp={setTotp}
-              onComplete={form.handleSubmit(onSubmit)}
-            />
-          ) : (
-            <>
-              {renderFormField('username', t('common.username'), 'text', true)}
-              {renderFormField('password', t('common.password'), 'password')}
-            </>
-          )}
-          <div className="flex justify-between">
-            {/* TODO: Add valid Password reset page -> NIEDUUI-53 */}
-            {/* <div className="my-4 block font-bold text-gray-500">
-              <input
-                type="checkbox"
-                className="mr-2 leading-loose"
-              />
-              <span className="mr-4 text-p">{t('login.remember_me')}</span>
-            </div>
-            <div className="my-4 block font-bold text-gray-500">
-              <Link
-                to="/"
-                className="cursor-pointer border-b-2 border-gray-200 tracking-tighter text-black hover:border-gray-400"
-              >
-                <p>{t('login.forgot_password')}</p>
-              </Link>
-            </div> */}
-          </div>
-          <Button
-            className="mx-auto w-full justify-center pt-4 text-background shadow-xl"
-            type="submit"
-            variant="btn-security"
-            size="lg"
-            data-testid="test-id-login-page-submit-button"
+          <form
+            onSubmit={form.handleSubmit(isEnterTotpVisible ? onSubmit : handleCheckMfaStatus)}
+            className="space-y-4"
+            data-testid="test-id-login-page-form"
           >
-            {totpIsLoading || isLoading ? t('common.loading') : t('common.login')}
-          </Button>
-        </form>
-      </Form>
-    </Card>
+            {getMainContent()}
+            {!showQrCode && !form.getFieldState('password').error && <p className="flex h-3" />}
+
+            {!showQrCode && (
+              <Button
+                className="mx-auto w-full justify-center shadow-xl"
+                type="submit"
+                variant="btn-security"
+                size="lg"
+                data-testid="test-id-login-page-submit-button"
+                disabled={isLoading || totpIsLoading}
+              >
+                {totpIsLoading || isLoading ? t('common.loading') : t('common.login')}
+              </Button>
+            )}
+            <Button
+              className="mx-auto w-full justify-center shadow-xl hover:bg-ciGrey/10"
+              type="button"
+              variant="btn-outline"
+              size="lg"
+              disabled={isLoading || totpIsLoading}
+              onClick={handleCancelOrToggleQrCode}
+            >
+              {isEnterTotpVisible || showQrCode ? (
+                t('common.cancel')
+              ) : (
+                <>
+                  {t('login.loginWithApp')}
+                  <MdOutlineQrCode size={20} />
+                </>
+              )}
+            </Button>
+          </form>
+        </Form>
+      </Card>
+    </PageLayout>
   );
 };
 

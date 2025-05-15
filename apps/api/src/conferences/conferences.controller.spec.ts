@@ -14,7 +14,6 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { Response } from 'express';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import ConferencesService from './conferences.service';
@@ -38,7 +37,6 @@ const mockConferencesService = {
   update: jest.fn(),
   toggleConferenceIsRunning: jest.fn(),
   remove: jest.fn(),
-  subscribe: jest.fn(),
 };
 
 const jwtUser: JWTUser = {
@@ -59,6 +57,7 @@ const jwtUser: JWTUser = {
   given_name: '',
   family_name: '',
   email: '',
+  school: 'default-school',
   ldapGroups: [],
 };
 
@@ -165,15 +164,6 @@ describe(ConferencesController.name, () => {
       await controller.remove(meetingIDs, jwtUser);
       expect(service.remove).toHaveBeenCalledWith(meetingIDs, username);
       expect(service.findAllConferencesTheUserHasAccessTo).toHaveBeenCalledWith(jwtUser);
-    });
-  });
-
-  describe('sse', () => {
-    it('should call subscribe method of conferencesService with correct arguments', () => {
-      const username = 'testuser';
-      const mockResponse = { setHeader: jest.fn(), flushHeaders: jest.fn(), on: jest.fn() } as unknown as Response;
-      controller.sse(username, mockResponse);
-      expect(service.subscribe).toHaveBeenCalledWith(username, mockResponse);
     });
   });
 });

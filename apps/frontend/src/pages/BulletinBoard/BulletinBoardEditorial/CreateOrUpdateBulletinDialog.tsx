@@ -17,11 +17,12 @@ import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import getBulletinFormSchema from '@libs/bulletinBoard/constants/bulletinDialogFormSchema';
 import CreateOrUpdateBulletinDialogBody from '@/pages/BulletinBoard/BulletinBoardEditorial/CreateOrUpdateBulletinDialogBody';
-import { MdDelete, MdUpdate } from 'react-icons/md';
+import { MdDelete } from 'react-icons/md';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 interface BulletinCreateDialogProps {
   trigger?: React.ReactNode;
@@ -93,16 +94,25 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
     return <CreateOrUpdateBulletinDialogBody form={form} />;
   };
 
+  const handleClose = () => {
+    setIsCreateBulletinDialogOpen(false);
+    setSelectedBulletinToEdit(null);
+  };
+
   const getFooter = () => (
     <form onSubmit={handleFormSubmit}>
-      <div className="mt-4 flex justify-end space-x-2">
+      <div className="flex gap-4">
         {!isDialogLoading && selectedBulletinToEdit?.id && (
           <Button
+            className="mt-4"
             variant="btn-attention"
             size="lg"
             type="button"
             onClick={async () => {
               await deleteBulletins([selectedBulletinToEdit]);
+              if (onSubmit) {
+                await onSubmit();
+              }
               setIsCreateBulletinDialogOpen(false);
               setSelectedBulletinToEdit(null);
             }}
@@ -111,16 +121,12 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
             {t('common.delete')}
           </Button>
         )}
-
-        <Button
-          variant="btn-collaboration"
-          disabled={isDialogLoading}
-          size="lg"
-          type="submit"
-        >
-          <MdUpdate size={20} />
-          {t('common.save')}
-        </Button>
+        <DialogFooterButtons
+          handleClose={handleClose}
+          handleSubmit={handleFormSubmit}
+          submitButtonText="common.save"
+          disableSubmit={isDialogLoading}
+        />
       </div>
     </form>
   );
@@ -129,10 +135,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
     <AdaptiveDialog
       isOpen={isCreateBulletinDialogOpen}
       trigger={trigger}
-      handleOpenChange={() => {
-        setIsCreateBulletinDialogOpen(false);
-        setSelectedBulletinToEdit(null);
-      }}
+      handleOpenChange={handleClose}
       desktopContentClassName="max-w-2xl"
       title={t(`bulletinboard.${selectedBulletinToEdit?.id ? 'editBulletin' : 'createBulletin'}`)}
       body={getDialogBody()}

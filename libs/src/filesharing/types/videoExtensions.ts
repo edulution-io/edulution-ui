@@ -10,8 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum VideoExtensions {
-  MP4 = 'mp4',
-}
+const VIDEO_EXTENSIONS = {
+  MP4: 'mp4',
+  MOV: 'mov',
+  WEBM: 'webm',
+} as const;
 
-export default VideoExtensions;
+export default VIDEO_EXTENSIONS;

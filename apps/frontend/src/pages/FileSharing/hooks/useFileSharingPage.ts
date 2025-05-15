@@ -14,7 +14,7 @@ import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
+import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import userStore from '@/store/UserStore/UserStore';
 import useUserPath from './useUserPath';
 
@@ -60,6 +60,8 @@ const useFileSharingPage = () => {
         if (fileOperationResult.success) {
           await fetchFiles(currentPath);
           toast.success(fileOperationResult.message);
+        } else {
+          toast.info(fileOperationResult.message);
         }
       }
     };

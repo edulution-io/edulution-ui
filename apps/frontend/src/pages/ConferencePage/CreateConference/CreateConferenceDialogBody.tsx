@@ -17,7 +17,7 @@ import { UseFormReturn } from 'react-hook-form';
 import FormField from '@/components/shared/FormField';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import useUserStore from '@/store/UserStore/UserStore';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
@@ -92,7 +92,6 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
           name="isPublic"
           labelClassname="text-base font-bold text-background"
           titleTranslationId={t('conferences.isPublic')}
-          defaultValue={CONFERENCES_IS_PUBLIC_FORM_VALUES[0].value}
           items={CONFERENCES_IS_PUBLIC_FORM_VALUES}
           disabled={searchGroupsIsLoading}
         />

@@ -25,6 +25,9 @@ import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-erro
 import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
 import DockerErrorMessages from '@libs/docker/constants/dockerErrorMessages';
 import VeyonErrorMessages from '@libs/veyon/types/veyonErrorMessages';
+import LicenseErrorMessagesType from '@libs/license/types/licenseErrorMessagesType';
+import TGlobalSettingsErrorMessages from '@libs/global-settings/types/globalSettingsErrorMessagesTypes';
+import TLDrawSyncErrorMessagesType from '@libs/tldraw-sync/types/tLDrawSyncErrorMessagesType';
 
 type ErrorMessage =
   | CommonErrorMessages
@@ -41,6 +44,9 @@ type ErrorMessage =
   | BulletinBoardErrorMessage
   | SurveyAnswerErrorMessages
   | DockerErrorMessages
-  | VeyonErrorMessages;
+  | VeyonErrorMessages
+  | LicenseErrorMessagesType
+  | TLDrawSyncErrorMessagesType
+  | TGlobalSettingsErrorMessages;
 
 export default ErrorMessage;

@@ -33,11 +33,13 @@ type AppConfigsStore = {
   setIsDeleteAppConfigDialogOpen: (isDeleteAppConfigDialogOpen: boolean) => void;
   reset: () => void;
   createAppConfig: (appConfig: AppConfigDto) => Promise<void>;
-  getAppConfigs: () => Promise<boolean>;
+  getAppConfigs: () => Promise<void>;
+  isGetAppConfigsLoading: boolean;
   updateAppConfig: (appConfigs: AppConfigDto) => Promise<void>;
   patchSingleFieldInConfig: (name: string, patchConfigDto: PatchConfigDto) => Promise<void>;
   deleteAppConfigEntry: (name: string) => Promise<void>;
   getConfigFile: (filePath: string) => Promise<string>;
+  uploadFile: (appName: string, file: File) => Promise<string | undefined>;
 };
 
 type PersistedAppConfigsStore = (
@@ -59,13 +61,14 @@ const initialState = {
     },
   ],
   isLoading: false,
+  isGetAppConfigsLoading: false,
   isConfigFileLoading: false,
   error: null,
 };
 
 const useAppConfigsStore = create<AppConfigsStore>(
   (persist as PersistedAppConfigsStore)(
-    (set) => ({
+    (set, get) => ({
       ...initialState,
       reset: () => set(initialState),
 
@@ -91,16 +94,15 @@ const useAppConfigsStore = create<AppConfigsStore>(
       },
 
       getAppConfigs: async () => {
-        set({ isLoading: true, error: null });
+        if (get().isGetAppConfigsLoading) return;
+        set({ isGetAppConfigsLoading: true, error: null });
         try {
           const response = await eduApi.get<AppConfigDto[]>(EDU_API_CONFIG_ENDPOINTS.ROOT);
           set({ appConfigs: response.data });
-          return true;
         } catch (e) {
           handleApiError(e, set);
-          return false;
         } finally {
-          set({ isLoading: false });
+          set({ isGetAppConfigsLoading: false });
         }
       },
 
@@ -141,7 +143,7 @@ const useAppConfigsStore = create<AppConfigsStore>(
         try {
           const { data } = await eduApi.delete<AppConfigDto[]>(`${EDU_API_CONFIG_ENDPOINTS.ROOT}/${name}`);
           set({ appConfigs: data });
-          toast.success(`${i18n.t(`${name}.sidebar`)} - ${i18n.t('settings.appconfig.delete.success')}`);
+          toast.success(`${i18n.t('settings.appconfig.delete.success')}`);
         } catch (e) {
           handleApiError(e, set);
         } finally {
@@ -161,6 +163,21 @@ const useAppConfigsStore = create<AppConfigsStore>(
           return '';
         } finally {
           set({ isConfigFileLoading: false });
+        }
+      },
+
+      uploadFile: async (appName, file) => {
+        set({ isLoading: true, error: null });
+        try {
+          const formData = new FormData();
+          formData.append('file', file);
+          const response = await eduApi.post<string>(`files/${appName}`, formData);
+          return response.data;
+        } catch (e) {
+          handleApiError(e, set);
+          return undefined;
+        } finally {
+          set({ isLoading: false });
         }
       },
     }),

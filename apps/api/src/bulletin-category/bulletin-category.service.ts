@@ -16,16 +16,16 @@ import { InjectModel } from '@nestjs/mongoose';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
-import { GROUPS_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
+import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import { BulletinCategoryPermissionType } from '@libs/appconfig/types/bulletinCategoryPermissionType';
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
+import CustomHttpException from '../common/CustomHttpException';
 import { BulletinCategory, BulletinCategoryDocument } from './bulletin-category.schema';
 import MigrationService from '../migration/migration.service';
 import bulletinCategoryMigrationsList from './migrations/bulletinCategoryMigrationsList';
@@ -73,7 +73,7 @@ class BulletinCategoryService implements OnModuleInit {
       const usersInGroups = await Promise.all(
         groupsToCheck.map(async (group) => {
           const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
-            `${GROUPS_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
+            `${GROUP_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
           );
 
           return groupWithMembers?.members?.map((member) => member.username) || [];

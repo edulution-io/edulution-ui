@@ -13,13 +13,13 @@
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
+import CustomHttpException from '../common/CustomHttpException';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
 import Attendee from '../conferences/attendee.schema';
@@ -58,13 +58,13 @@ class SurveyAnswersService {
     return answers.length !== 0;
   };
 
-  public getSelectableChoices = async (surveyId: string, questionId: string): Promise<ChoiceDto[]> => {
+  public getSelectableChoices = async (surveyId: string, questionName: string): Promise<ChoiceDto[]> => {
     const survey = await this.surveyModel.findById(surveyId);
     if (!survey) {
       throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
     }
 
-    const limiter = survey.backendLimiters?.find((limit) => limit.questionId === questionId);
+    const limiter = survey.backendLimiters?.find((limit) => limit.questionName === questionName);
     if (!limiter?.choices?.length) {
       throw new CustomHttpException(SurveyErrorMessages.NoBackendLimiters, HttpStatus.NOT_FOUND);
     }
@@ -73,7 +73,7 @@ class SurveyAnswersService {
 
     const filteredChoices = await Promise.all(
       possibleChoices.map(async (choice) => {
-        const isVisible = (await this.countChoiceSelections(surveyId, questionId, choice.name)) < choice.limit;
+        const isVisible = (await this.countChoiceSelections(surveyId, questionName, choice.title)) < choice.limit;
         return isVisible ? choice : null;
       }),
     );
@@ -81,10 +81,10 @@ class SurveyAnswersService {
     return filteredChoices.filter((choice) => choice !== null);
   };
 
-  async countChoiceSelections(surveyId: string, questionId: string, choiceId: string): Promise<number> {
+  async countChoiceSelections(surveyId: string, questionName: string, choiceId: string): Promise<number> {
     return this.surveyAnswerModel.countDocuments({
       surveyId: new Types.ObjectId(surveyId),
-      [`answer.${questionId}`]: choiceId,
+      [`answer.${questionName}`]: choiceId,
     });
   }
 
@@ -93,8 +93,7 @@ class SurveyAnswersService {
     return createdSurveys || [];
   }
 
-  async getOpenSurveys(user: JWTUser): Promise<Survey[]> {
-    const currentDate = new Date();
+  async getOpenSurveys(user: JWTUser, currentDate: Date = new Date()): Promise<Survey[]> {
     const query = {
       $or: [
         {

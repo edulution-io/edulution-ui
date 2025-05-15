@@ -18,7 +18,7 @@ import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import BulletinBoardColumnHeader from '@/pages/BulletinBoard/components/BulletinBoardColumnHeader';
 import BulletinBoardColumnItem from '@/pages/BulletinBoard/components/BulletinBoardColumnItem';
-import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
+import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 import FullScreenImage from '@/components/ui/FullScreenImage';
 import { useTranslation } from 'react-i18next';
 
@@ -53,7 +53,7 @@ const BulletinBoardPageColumn = ({
   return (
     <div
       style={{ width }}
-      className="flex h-full w-full min-w-[400px] flex-shrink-0 flex-col rounded-lg px-2 md:ml-0 md:p-3"
+      className="flex max-h-full w-full min-w-[400px] flex-shrink-0 flex-col rounded-lg pr-2 md:ml-0 md:pr-3 md:pt-3"
     >
       <BulletinBoardColumnHeader
         category={category}

@@ -13,20 +13,18 @@
 import React, { useEffect } from 'react';
 import AppRouter from '@/router/AppRouter';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
+import { WebStorageStateStore } from 'oidc-client-ts';
+import { CookiesProvider } from 'react-cookie';
+import i18n from '@/i18n';
 import eduApi from '@/api/eduApi';
-import BBBFrame from '@/pages/ConferencePage/BBBIFrame';
-import EmbeddedIframes from '@/components/framing/EmbeddedIframes';
-import NativeFrames from '@/components/framing/Native/NativeFrames';
 import useLmnApiStore from '@/store/useLmnApiStore';
+import { HelmetProvider } from 'react-helmet-async';
 import lmnApi from '@/api/lmnApi';
 import useUserStore from '@/store/UserStore/UserStore';
-import Toaster from '@/components/ui/Sonner';
-import { WebStorageStateStore } from 'oidc-client-ts';
+import Toaster from '@/components/ui/Toaster';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import i18n from '@/i18n';
-import VDIFrame from './pages/DesktopDeployment/VDIFrame';
-import CommunityLicenseDialog from './pages/UserSettings/Info/CommunityLicenseDialog';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import GlobalHooksWrapper from './components/GlobalHooksWrapper';
 
 const App = () => {
   const { eduApiToken } = useUserStore();
@@ -45,7 +43,7 @@ const App = () => {
   }, [user?.language]);
 
   const oidcConfig: AuthProviderProps = {
-    authority: `${window.location.origin}/${EDU_API_ROOT}/auth`,
+    authority: `${EDU_API_URL}/auth`,
     client_id: ' ',
     client_secret: ' ',
     redirect_uri: '',
@@ -58,13 +56,14 @@ const App = () => {
 
   return (
     <AuthProvider {...oidcConfig}>
-      <BBBFrame />
-      <VDIFrame />
-      <AppRouter />
-      <EmbeddedIframes />
-      <NativeFrames />
-      <CommunityLicenseDialog />
-      <Toaster />
+      <CookiesProvider>
+        <GlobalHooksWrapper>
+          <HelmetProvider>
+            <AppRouter />
+          </HelmetProvider>
+          <Toaster />
+        </GlobalHooksWrapper>
+      </CookiesProvider>
     </AuthProvider>
   );
 };

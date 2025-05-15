@@ -9,7 +9,6 @@ export default defineConfig(({ mode }) => {
   const pkg = JSON.parse(readFileSync(resolve(__dirname, '../../package.json'), 'utf-8'));
 
   return {
-    // Exception needed for excalidraw
     define: {
       'process.env': {},
       APP_VERSION: JSON.stringify(pkg.version),
@@ -63,6 +62,7 @@ export default defineConfig(({ mode }) => {
         '/edu-api': {
           target: env.VITE_EDU_API_URL,
           changeOrigin: true,
+          ws: true,
           secure: false,
           headers: {
             Origin: env.VITE_EDU_API_URL,
@@ -94,7 +94,6 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: {
-            excalidraw: ['@excalidraw/excalidraw'],
             surveyjs: [
               'survey-analytics',
               'survey-core',

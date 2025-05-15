@@ -28,6 +28,7 @@ const contentFiletypes: ContentFileTypes = {
   '.mp4': 'video',
   '.mov': 'video',
   '.3g2': 'video',
+  '.webm': 'video',
   '.7z': 'compressed',
   '.pdf': 'acrobat',
   '.doc': 'document',
@@ -40,6 +41,7 @@ const contentFiletypes: ContentFileTypes = {
   '.jpg': 'image',
   '.jpeg': 'image',
   '.gif': 'image',
+  '.webp': 'image',
   '.svg': 'vector',
   '.js': 'code',
   '.java': 'code',
@@ -111,9 +113,3 @@ export function getElapsedTime(dateParam: Date): string {
   }
   return date.toLocaleDateString();
 }
-
-export default {
-  getElapsedTime,
-  parseDate,
-  getFileCategorie,
-};

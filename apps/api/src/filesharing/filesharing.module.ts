@@ -12,15 +12,41 @@
 
 import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
+import { BullModule } from '@nestjs/bullmq';
+import APPS from '@libs/appconfig/constants/apps';
 import FilesharingController from './filesharing.controller';
 import FilesharingService from './filesharing.service';
-import AppConfigModule from '../appconfig/appconfig.module';
-import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
+import DuplicateFileConsumer from './consumers/duplicateFile.consumer';
+import QueueService from '../queue/queue.service';
+import CollectFileConsumer from './consumers/collectFile.consumer';
+import DeleteFileConsumer from './consumers/deleteFile.consumer';
+import WebdavService from '../webdav/webdav.service';
+import AppConfigModule from '../appconfig/appconfig.module';
+import MoveOrRenameConsumer from './consumers/moveOrRename.consumer';
+import CopyFileConsumer from './consumers/copyFile.consumer';
 
 @Module({
-  imports: [HttpModule, AppConfigModule],
+  imports: [
+    HttpModule,
+    AppConfigModule,
+    BullModule.registerQueue({
+      name: APPS.FILE_SHARING,
+    }),
+  ],
   controllers: [FilesharingController],
-  providers: [FilesharingService, FilesystemService, OnlyofficeService],
+  providers: [
+    FilesharingService,
+
+    OnlyofficeService,
+    QueueService,
+    DuplicateFileConsumer,
+    CollectFileConsumer,
+    DeleteFileConsumer,
+    MoveOrRenameConsumer,
+    CopyFileConsumer,
+    WebdavService,
+  ],
+  exports: [FilesharingService],
 })
 export default class FilesharingModule {}

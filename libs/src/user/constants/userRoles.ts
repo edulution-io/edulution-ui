@@ -15,6 +15,7 @@ const UserRoles = {
   SCHOOL_ADMIN: 'schooladministrator',
   TEACHER: 'teacher',
   STUDENT: 'student',
+  EXAM_USER: 'examusers',
 } as const;
 
 export default UserRoles;

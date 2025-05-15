@@ -16,6 +16,8 @@ enum AuthErrorMessages {
   Unknown = 'auth.errors.Unknown',
   TotpMissing = 'auth.errors.TotpMissing',
   TotpInvalid = 'auth.errors.TotpInvalid',
+  LmnConnectionFailed = 'auth.errors.LmnConnectionFailed',
+  KeycloakConnectionFailed = 'auth.errors.KeycloakConnectionFailed',
 }
 
 export default AuthErrorMessages;

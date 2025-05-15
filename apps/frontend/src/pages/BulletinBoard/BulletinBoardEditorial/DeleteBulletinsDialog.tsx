@@ -13,10 +13,10 @@
 import React from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/shared/Button';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import ItemDialogList from '@/components/shared/ItemDialogList';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 interface DeleteBulletinsDialogProps {
   trigger?: React.ReactNode;
@@ -28,7 +28,6 @@ const DeleteBulletinsDialog = ({ trigger, onSubmit }: DeleteBulletinsDialogProps
     selectedRows,
     isDialogLoading,
     error,
-    reset,
     deleteBulletins,
     bulletins,
     isDeleteBulletinDialogOpen,
@@ -69,35 +68,21 @@ const DeleteBulletinsDialog = ({ trigger, onSubmit }: DeleteBulletinsDialogProps
     );
   };
 
-  const getFooter = () =>
-    !error ? (
-      <div className="mt-4 flex justify-end">
-        <Button
-          variant="btn-collaboration"
-          disabled={isDialogLoading}
-          size="lg"
-          onClick={handleSubmit}
-        >
-          {t('bulletinboard.delete')}
-        </Button>
-      </div>
-    ) : (
-      <div className="mt-4 flex justify-end">
-        <Button
-          variant="btn-collaboration"
-          size="lg"
-          onClick={() => reset()}
-        >
-          {t('bulletinboard.cancel')}
-        </Button>
-      </div>
-    );
+  const handleClose = () => setIsDeleteBulletinDialogOpen(false);
+
+  const getFooter = () => (
+    <DialogFooterButtons
+      handleClose={handleClose}
+      handleSubmit={handleSubmit}
+      submitButtonText="common.delete"
+    />
+  );
 
   return (
     <AdaptiveDialog
       isOpen={isDeleteBulletinDialogOpen}
       trigger={trigger}
-      handleOpenChange={() => setIsDeleteBulletinDialogOpen(!isDeleteBulletinDialogOpen)}
+      handleOpenChange={handleClose}
       title={t(isMultiDelete ? 'bulletinboard.deleteBulletins' : 'bulletinboard.deleteBulletin', {
         count: selectedBulletins.length,
       })}

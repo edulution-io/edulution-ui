@@ -16,30 +16,45 @@ import CreateConferenceDialog from '@/pages/ConferencePage/CreateConference/Crea
 import ConferencesTable from '@/pages/ConferencePage/Table/ConferencesTable';
 import ConferenceDetailsDialog from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialog';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
-import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import { ConferencesIcon } from '@/assets/icons';
 import DeleteConferencesDialog from '@/pages/ConferencePage/Table/DeleteConferencesDialog';
 import ConferencesFloatingButtons from '@/pages/ConferencePage/Table/ConferencesFloatingButtons';
+import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
+import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
+import useSharePublicConferenceStore from '@/pages/ConferencePage/useSharePublicConferenceStore';
+import PageLayout from '@/components/structure/layout/PageLayout';
+import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
 
 const ConferencePage: React.FC = () => {
   const { t } = useTranslation();
   const { selectedConference } = useConferenceDetailsDialogStore();
+  const { publicConferenceId, setSharePublicConferenceDialogId } = useSharePublicConferenceStore();
+  const sharePublicConferenceUrl = publicConferenceId
+    ? `${EDU_BASE_URL}/${CONFERENCES_PUBLIC_EDU_API_ENDPOINT}/${publicConferenceId}`
+    : '';
 
   return (
-    <div>
-      <NativeAppHeader
-        title={t('conferences.title')}
-        description={t('conferences.description')}
-        iconSrc={ConferencesIcon}
-      />
-
+    <PageLayout
+      nativeAppHeader={{
+        title: t('conferences.sidebar'),
+        description: t('conferences.description'),
+        iconSrc: ConferencesIcon,
+      }}
+    >
       <ConferencesTable />
 
       <ConferencesFloatingButtons />
       <CreateConferenceDialog />
       <DeleteConferencesDialog />
+      <SharePublicQRDialog
+        url={sharePublicConferenceUrl}
+        isOpen={!!sharePublicConferenceUrl}
+        handleClose={() => setSharePublicConferenceDialogId('')}
+        titleTranslationId="conferences.sharePublicDialog.title"
+        descriptionTranslationId="conferences.sharePublicDialog.description"
+      />
       {selectedConference ? <ConferenceDetailsDialog /> : null}
-    </div>
+    </PageLayout>
   );
 };
 

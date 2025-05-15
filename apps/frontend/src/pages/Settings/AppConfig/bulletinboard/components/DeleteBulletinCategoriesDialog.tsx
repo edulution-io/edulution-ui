@@ -13,9 +13,9 @@
 import React from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/shared/Button';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 interface DeleteBulletinsCategoriesDialogProps {
   trigger?: React.ReactNode;
@@ -73,29 +73,13 @@ const DeleteBulletinsCategoriesDialog = ({ trigger }: DeleteBulletinsCategoriesD
     );
   };
 
-  const getFooter = () =>
-    !error ? (
-      <div className="mt-4 flex justify-end">
-        <Button
-          variant="btn-collaboration"
-          disabled={isDeleteDialogLoading}
-          size="lg"
-          onClick={onSubmit}
-        >
-          {t('bulletinboard.delete')}
-        </Button>
-      </div>
-    ) : (
-      <div className="mt-4 flex justify-end">
-        <Button
-          variant="btn-collaboration"
-          size="lg"
-          onClick={handleClose}
-        >
-          {t('bulletinboard.cancel')}
-        </Button>
-      </div>
-    );
+  const getFooter = () => (
+    <DialogFooterButtons
+      handleClose={handleClose}
+      handleSubmit={onSubmit}
+      submitButtonText="common.delete"
+    />
+  );
 
   return (
     <AdaptiveDialog

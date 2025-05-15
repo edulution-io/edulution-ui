@@ -12,17 +12,18 @@
 
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import { Request, Response } from 'express';
-import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
+import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
 import CustomFile from '@libs/filesharing/types/customFile';
 import { JwtService } from '@nestjs/jwt';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import APPS from '@libs/appconfig/constants/apps';
 import type PatchConfigDto from '@libs/common/types/patchConfigDto';
+import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
+import CustomHttpException from '../common/CustomHttpException';
 import AppConfigService from '../appconfig/appconfig.service';
 import FilesystemService from '../filesystem/filesystem.service';
 
@@ -71,7 +72,7 @@ class OnlyofficeService implements OnModuleInit {
     path: string,
     filename: string,
     username: string,
-    uploadFile: (username: string, path: string, file: CustomFile, name: string) => Promise<WebdavStatusReplay>,
+    uploadFile: (username: string, path: string, file: CustomFile, name: string) => Promise<WebdavStatusResponse>,
   ) {
     const callbackData = req.body as OnlyOfficeCallbackData;
     const cleanedPath = getPathWithoutWebdav(path);
@@ -88,7 +89,7 @@ class OnlyofficeService implements OnModuleInit {
     }
 
     await uploadFile(username, cleanedPath, file, '');
-    await FilesystemService.deleteFile(uniqueFileName);
+    await FilesystemService.deleteFile(PUBLIC_DOWNLOADS_PATH, uniqueFileName);
 
     return res.status(HttpStatus.OK).json({ error: 0 });
   }

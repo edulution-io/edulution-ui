@@ -13,6 +13,8 @@
 const EDU_API_CONFIG_ENDPOINTS = {
   ROOT: 'appconfig',
   PROXYCONFIG: 'proxyconfig',
+  HEALTH_CHECK: 'health',
+  FILES: 'files',
 } as const;
 
 export default EDU_API_CONFIG_ENDPOINTS;

@@ -18,7 +18,6 @@
 import { Model, Types } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveysService from './surveys.service';
 import SurveyAnswersService from './survey-answer.service';
@@ -34,13 +33,15 @@ import {
   publicSurvey01,
   publicSurvey02,
   publicSurvey02AfterAddingValidAnswer,
-  publicSurvey02QuestionIdWithLimiters,
+  publicSurvey02QuestionNameWithLimiters,
   saveNoPublicSurvey02,
   surveyValidAnswerPublicSurvey02,
 } from './mocks';
-import cacheManagerMock from '../common/mocks/cacheManagerMock';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
+import SseService from '../sse/sse.service';
+import FilesystemService from '../filesystem/filesystem.service';
+import mockFilesystemService from '../filesystem/filesystem.service.mock';
 
 describe(PublicSurveysController.name, () => {
   let controller: PublicSurveysController;
@@ -55,6 +56,7 @@ describe(PublicSurveysController.name, () => {
       controllers: [PublicSurveysController],
       providers: [
         SurveysService,
+        SseService,
         {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
@@ -65,10 +67,7 @@ describe(PublicSurveysController.name, () => {
           provide: getModelToken(SurveyAnswer.name),
           useValue: jest.fn(),
         },
-        {
-          provide: CACHE_MANAGER,
-          useValue: cacheManagerMock,
-        },
+        { provide: FilesystemService, useValue: mockFilesystemService },
       ],
     }).compile();
 
@@ -101,14 +100,14 @@ describe(PublicSurveysController.name, () => {
     });
 
     it('throw an error when the survey with the given id does not exist', async () => {
-      surveysService.findPublicSurvey = jest.fn().mockRejectedValue(new Error(CommonErrorMessages.DBAccessFailed));
+      surveysService.findPublicSurvey = jest.fn().mockRejectedValue(new Error(CommonErrorMessages.DB_ACCESS_FAILED));
       const id = new Types.ObjectId().toString();
 
       try {
         await controller.find({ surveyId: id });
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toEqual(CommonErrorMessages.DBAccessFailed);
+        expect(e.message).toEqual(CommonErrorMessages.DB_ACCESS_FAILED);
       }
 
       expect(surveysService.findPublicSurvey).toHaveBeenCalledWith(id);
@@ -175,13 +174,13 @@ describe(PublicSurveysController.name, () => {
 
       const result = await controller.getChoices({
         surveyId: idOfPublicSurvey02.toString(),
-        questionId: publicSurvey02QuestionIdWithLimiters,
+        questionName: publicSurvey02QuestionNameWithLimiters,
       });
       expect(result).toEqual(filteredChoices);
 
       expect(surveyAnswerService.getSelectableChoices).toHaveBeenCalledWith(
         idOfPublicSurvey02.toString(),
-        publicSurvey02QuestionIdWithLimiters,
+        publicSurvey02QuestionNameWithLimiters,
       );
       expect(surveyAnswerService.countChoiceSelections).toHaveBeenCalledTimes(4);
     });
@@ -200,13 +199,13 @@ describe(PublicSurveysController.name, () => {
 
       const result = await controller.getChoices({
         surveyId: idOfPublicSurvey02.toString(),
-        questionId: publicSurvey02QuestionIdWithLimiters,
+        questionName: publicSurvey02QuestionNameWithLimiters,
       });
       expect(result).toEqual(filteredChoicesAfterAddingValidAnswer);
 
       expect(surveyAnswerService.getSelectableChoices).toHaveBeenCalledWith(
         idOfPublicSurvey02.toString(),
-        publicSurvey02QuestionIdWithLimiters,
+        publicSurvey02QuestionNameWithLimiters,
       );
       expect(surveyAnswerService.countChoiceSelections).toHaveBeenCalledTimes(4);
     });

@@ -14,21 +14,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Logger } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import SurveysService from './surveys.service';
 import { Survey } from './survey.schema';
-import { firstMockJWTUser, mockedSurveys } from './mocks';
+import { firstMockJWTUser, createdSurvey01 } from './mocks';
 import { surveyUpdateInitialSurveyDto } from './mocks/surveys/updated-survey';
-import UserConnections from '../types/userConnections';
-import cacheManagerMock from '../common/mocks/cacheManagerMock';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
-
-const mockSseConnections: UserConnections = new Map();
+import SseService from '../sse/sse.service';
+import FilesystemService from '../filesystem/filesystem.service';
+import mockFilesystemService from '../filesystem/filesystem.service.mock';
 
 describe('SurveyService', () => {
   let service: SurveysService;
-  // let surveyModel: Model<SurveyDocument>;
 
   beforeEach(async () => {
     Logger.error = jest.fn();
@@ -36,20 +33,17 @@ describe('SurveyService', () => {
       imports: [],
       providers: [
         SurveysService,
+        SseService,
         {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
         },
         { provide: GroupsService, useValue: mockGroupsService },
-        {
-          provide: CACHE_MANAGER,
-          useValue: cacheManagerMock,
-        },
+        { provide: FilesystemService, useValue: mockFilesystemService },
       ],
     }).compile();
 
     service = module.get<SurveysService>(SurveysService);
-    // surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
   });
 
   afterEach(() => {
@@ -95,7 +89,7 @@ describe('SurveyService', () => {
     //   surveyModel.deleteMany = jest.fn();
     //
     //   const surveyIds = [surveyUpdateSurveyId.toString()];
-    //   await service.deleteSurveys(surveyIds, mockSseConnections);
+    //   await service.deleteSurveys(surveyIds);
     //   expect(surveyModel.deleteMany).toHaveBeenCalledWith({ _id: { $in: surveyIds } });
     // });
     // it('should throw an error if the survey deletion fails', async () => {
@@ -105,7 +99,7 @@ describe('SurveyService', () => {
     //
     //   const surveyIds = [new Types.ObjectId().toString()];
     //   try {
-    //     await service.deleteSurveys(surveyIds, mockSseConnections);
+    //     await service.deleteSurveys(surveyIds);
     //   } catch (e) {
     //     const error = e as Error;
     //     expect(error.message).toEqual(SurveyErrorMessages.DeleteError);
@@ -119,7 +113,7 @@ describe('SurveyService', () => {
     //   surveyModel.create = jest.fn().mockReturnValueOnce(surveyUpdateInitialSurveyDto);
     //
     //   await service
-    //     .createSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser, mockSseConnections)
+    //     .createSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser)
     //     .then((data) => expect(data).toStrictEqual(surveyUpdateInitialSurveyDto))
     //     .catch(() => {});
     //
@@ -134,7 +128,7 @@ describe('SurveyService', () => {
     //     );
     //
     //   try {
-    //     await service.createSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser, mockSseConnections);
+    //     await service.createSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser);
     //   } catch (e) {
     //     const error = e as Error;
     //     expect(error.message).toEqual(CommonErrorMessages.DBAccessFailed);
@@ -148,7 +142,7 @@ describe('SurveyService', () => {
     //   surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
     //     exec: jest.fn().mockReturnValue(surveyUpdateInitialSurveyDto),
     //   });
-    //   const result = await service.updateSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser, mockSseConnections);
+    //   const result = await service.updateSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser);
     //
     //   expect(result).toStrictEqual(surveyUpdateInitialSurveyDto);
     //
@@ -166,7 +160,7 @@ describe('SurveyService', () => {
     //       ),
     //   });
     //   try {
-    //     await service.updateSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser, mockSseConnections);
+    //     await service.updateSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser);
     //   } catch (e) {
     //     const error = e as Error;
     //     expect(error.message).toBe(CommonErrorMessages.DBAccessFailed);
@@ -185,7 +179,6 @@ describe('SurveyService', () => {
     //   const result = await service.updateOrCreateSurvey(
     //     surveyUpdateInitialSurveyDto,
     //     firstMockJWTUser,
-    //     mockSseConnections,
     //   );
     //   expect(result).toStrictEqual(surveyUpdateInitialSurvey);
     //
@@ -204,7 +197,6 @@ describe('SurveyService', () => {
     //   const result = await service.updateOrCreateSurvey(
     //     surveyUpdateUpdatedSurveyDto,
     //     firstMockJWTUser,
-    //     mockSseConnections,
     //   );
     //   expect(result).toStrictEqual(surveyUpdateUpdatedSurvey);
     //
@@ -215,15 +207,12 @@ describe('SurveyService', () => {
     // });
 
     it('should create a survey if the update failed', async () => {
-      jest.spyOn(service, 'updateSurvey').mockResolvedValue(null);
-      jest.spyOn(service, 'createSurvey').mockResolvedValue(mockedSurveys[0]);
+      jest.spyOn(service, 'updateSurvey').mockResolvedValueOnce(null);
+      jest.spyOn(service, 'createSurvey').mockResolvedValue(createdSurvey01);
+      jest.spyOn(service, 'updateSurvey').mockResolvedValueOnce(createdSurvey01);
 
-      const result = await service.updateOrCreateSurvey(
-        surveyUpdateInitialSurveyDto,
-        firstMockJWTUser,
-        mockSseConnections,
-      );
-      expect(result).toBe(mockedSurveys[0]);
+      const result = await service.updateOrCreateSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser);
+      expect(result).toBe(createdSurvey01);
     });
   });
 });

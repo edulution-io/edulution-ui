@@ -30,18 +30,8 @@ const getBulletinFormSchema = (t: TFunction<'translation', undefined>) =>
         .optional()
         .refine((val) => val !== undefined, { message: t('bulletinboard.categoryIsRequired') }),
 
-      isVisibleStartDate: z
-        .string()
-        .nullable()
-        .optional()
-        .refine((val) => !val || !Number.isNaN(Date.parse(val)), { message: t('common.invalid_date') })
-        .transform((val) => (val ? new Date(val).toISOString() : null)),
-      isVisibleEndDate: z
-        .string()
-        .nullable()
-        .optional()
-        .refine((val) => !val || !Number.isNaN(Date.parse(val)), { message: t('common.invalid_date') })
-        .transform((val) => (val ? new Date(val).toISOString() : null)),
+      isVisibleStartDate: z.date().nullable().optional(),
+      isVisibleEndDate: z.date().nullable().optional(),
     })
     .refine(
       (data) => {

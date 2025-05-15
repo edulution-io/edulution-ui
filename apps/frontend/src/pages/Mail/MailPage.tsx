@@ -12,8 +12,8 @@
 
 import React from 'react';
 import APPS from '@libs/appconfig/constants/apps';
-import NativeIframeLayout from '@/components/framing/Native/NativeIframeLayout';
+import NativeFrame from '@/components/structure/framing/Native/NativeFrame';
 
-const MailPage: React.FC = () => <NativeIframeLayout appName={APPS.MAIL} />;
+const MailPage: React.FC = () => <NativeFrame appName={APPS.MAIL} />;
 
 export default MailPage;

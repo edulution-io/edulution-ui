@@ -14,8 +14,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import GROUPS_ID from '@libs/dashboard/constants/pageElementIds';
 import useUserStore from '@/store/UserStore/UserStore';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import Feed from '@/pages/Dashboard/Feed/Feed';
+import PageLayout from '@/components/structure/layout/PageLayout';
 import MobileFileAccessCard from './MobileFileAccess/MobileFileAccessCard';
 import AccountInformation from './AccountInformation';
 import QuotaCard from './QuotaCard';
@@ -24,7 +25,7 @@ import Groups from './Groups';
 const DashboardPage: React.FC = () => {
   const { t } = useTranslation();
 
-  const isMobileView = useIsMobileView();
+  const { isMobileView } = useMedia();
 
   const { user } = useUserStore();
 
@@ -59,17 +60,16 @@ const DashboardPage: React.FC = () => {
   );
 
   return (
-    <div className="h-full overflow-y-auto scrollbar-thin md:mx-4">
+    <PageLayout>
       <div>
         {isMobileView ? (
-          <h2>
+          <h3>
             {t('heading', {
               givenName: user?.firstName || '-',
               familyName: user?.lastName || '-',
             })}
-          </h2>
+          </h3>
         ) : null}
-        <p className="mt-4 text-background">{t('content')}</p>
       </div>
 
       <div className="md:my-17 my-10 flex flex-col-reverse gap-8 md:flex-row">
@@ -77,7 +77,7 @@ const DashboardPage: React.FC = () => {
         {column2}
         {column3}
       </div>
-    </div>
+    </PageLayout>
   );
 };
 

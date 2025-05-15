@@ -10,9 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IoAdd } from 'react-icons/io5';
+import { IoAdd, IoRemove } from 'react-icons/io5';
 import { type ContainerInfo } from 'dockerode';
 import { AppConfigTableConfig } from '@/pages/Settings/AppConfig/components/table/types/appConfigTableConfig';
 import getAppConfigTableConfig from '@/pages/Settings/AppConfig/components/table/getAppConfigTableConfig';
@@ -23,13 +23,18 @@ import type BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletin
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import type TApps from '@libs/appconfig/types/appsType';
+import useMedia from '@/hooks/useMedia';
+import { OnChangeFn, RowSelectionState, VisibilityState } from '@tanstack/react-table';
+import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
+import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 
 interface AppConfigTableProps {
   applicationName: string;
-  tableId: string;
+  tableId: ExtendedOptionKeysType;
 }
 
 const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableId }) => {
+  const { isMobileView, isTabletView } = useMedia();
   const { t } = useTranslation();
 
   const appConfigTableConfig = getAppConfigTableConfig(applicationName, tableId) as AppConfigTableConfig;
@@ -39,9 +44,27 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
   }
 
   const renderConfig = (config: AppConfigTableConfig) => {
-    const { columns, useStore, showAddButton, dialogBody, filterPlaceHolderText, filterKey, type } = config;
-    const { tableContentData, fetchTableContent } = useStore();
+    const {
+      columns,
+      hideColumnsInTabletView,
+      hideColumnsInMobileView,
+      useStore,
+      showAddButton,
+      showRemoveButton = false,
+      dialogBody,
+      filterPlaceHolderText,
+      filterKey,
+      type,
+    } = config;
+    const { tableContentData, fetchTableContent, selectedRows, setSelectedRows, deleteTableEntry } = useStore();
     const { setDialogOpen, isDialogOpen } = useAppConfigTableDialogStore();
+
+    const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
+      if (selectedRows && setSelectedRows) {
+        const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedRows) : updaterOrValue;
+        setSelectedRows(newValue);
+      }
+    };
 
     useEffect(() => {
       const fetchDataAsync = async () => {
@@ -57,6 +80,41 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
       setDialogOpen(tableId);
     };
 
+    const handleRemoveClick = async () => {
+      if (!selectedRows) return;
+
+      const selectedIndices = Object.keys(selectedRows)
+        .filter((key) => selectedRows[key])
+        .map(Number);
+
+      const deletePromises = selectedIndices.map((index) => {
+        const row = tableContentData[index];
+        if (row && 'filename' in row && row.filename && deleteTableEntry) {
+          return deleteTableEntry(applicationName, row.filename);
+        }
+        return Promise.resolve();
+      });
+
+      await Promise.all(deletePromises);
+      await fetchTableContent(applicationName as TApps);
+    };
+
+    const initialColumnVisibility = useMemo(() => {
+      let columnsToHide: string[] = [];
+      if (isMobileView) {
+        columnsToHide = hideColumnsInMobileView;
+      } else if (isTabletView) {
+        columnsToHide = hideColumnsInTabletView;
+      }
+
+      const visibility: VisibilityState = {};
+      columnsToHide.forEach((colKey) => {
+        visibility[colKey] = false;
+      });
+
+      return visibility;
+    }, [isMobileView, isTabletView, hideColumnsInMobileView, hideColumnsInTabletView]);
+
     const getScrollableTable = () => {
       switch (type) {
         case ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE: {
@@ -68,7 +126,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
               filterPlaceHolderText={filterPlaceHolderText}
               applicationName={applicationName}
               enableRowSelection={false}
-              tableIsUsedOnAppConfigPage
+              initialColumnVisibility={initialColumnVisibility}
             />
           );
         }
@@ -81,7 +139,22 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
               filterPlaceHolderText={filterPlaceHolderText}
               applicationName={applicationName}
               enableRowSelection={false}
-              tableIsUsedOnAppConfigPage
+              initialColumnVisibility={initialColumnVisibility}
+            />
+          );
+        }
+        case ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT: {
+          return (
+            <ScrollableTable
+              columns={columns}
+              data={tableContentData as FileInfoDto[]}
+              filterKey={filterKey}
+              filterPlaceHolderText={filterPlaceHolderText}
+              applicationName="settings.appconfig.sections.files"
+              enableRowSelection
+              initialColumnVisibility={initialColumnVisibility}
+              selectedRows={selectedRows}
+              onRowSelectionChange={handleRowSelectionChange}
             />
           );
         }
@@ -94,7 +167,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
               filterPlaceHolderText={filterPlaceHolderText}
               applicationName={applicationName}
               enableRowSelection={false}
-              tableIsUsedOnAppConfigPage
+              initialColumnVisibility={initialColumnVisibility}
             />
           );
         }
@@ -106,17 +179,30 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
     return (
       <div className="mb-8">
         {getScrollableTable()}
-        {showAddButton && (
-          <div className="flex w-full">
-            <Button
-              className="flex h-2 w-full items-center justify-center rounded-md border border-gray-500 hover:bg-accent"
-              onClick={handleAddClick}
-              type="button"
-            >
-              <IoAdd className="text-xl text-background" />
-            </Button>
-          </div>
-        )}
+        <div className="flex w-full items-center justify-between gap-2">
+          {showAddButton && (
+            <div className="flex w-full">
+              <Button
+                className="flex h-2 w-full items-center justify-center rounded-md border border-gray-500 hover:bg-accent"
+                onClick={handleAddClick}
+                type="button"
+              >
+                <IoAdd className="text-xl text-background" />
+              </Button>
+            </div>
+          )}
+          {showRemoveButton && (
+            <div className="flex w-full">
+              <Button
+                className="flex h-2 w-full items-center justify-center rounded-md border border-gray-500 hover:bg-accent"
+                onClick={handleRemoveClick}
+                type="button"
+              >
+                <IoRemove className="text-xl text-background" />
+              </Button>
+            </div>
+          )}
+        </div>
         {dialogBody}
       </div>
     );

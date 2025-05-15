@@ -11,67 +11,97 @@
  */
 
 import React, { useEffect, useMemo } from 'react';
+import { toast } from 'sonner';
+import { Model, Serializer } from 'survey-core';
+import { Survey } from 'survey-react-ui';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import cn from '@libs/common/utils/className';
+import useLanguage from '@/hooks/useLanguage';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import ParticipateSurvey from '@/pages/Surveys/Participation/components/ParticipateSurvey';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import { ScrollArea } from '@/components/ui/ScrollArea';
+import surveyTheme from '@/pages/Surveys/theme/theme';
+import '../theme/custom.participation.css';
+import PageLayout from '@/components/structure/layout/PageLayout';
 
 interface SurveyParticipationPageProps {
   isPublic: boolean;
 }
 
+Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
+
 const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.ReactNode => {
   const { isPublic = false } = props;
-  const { selectedSurvey, updateSelectedSurvey, isFetching } = useSurveyTablesPageStore();
-  const { answer, setAnswer, pageNo, setPageNo, answerSurvey, hasFinished, reset } = useParticipateSurveyStore();
+  const { selectedSurvey, fetchSelectedSurvey, isFetching, updateOpenSurveys, updateAnsweredSurveys } =
+    useSurveyTablesPageStore();
+  const { answerSurvey, reset } = useParticipateSurveyStore();
 
+  const { language } = useLanguage();
   const { t } = useTranslation();
 
   const { surveyId } = useParams();
 
   useEffect(() => {
     reset();
-    void updateSelectedSurvey(surveyId, isPublic);
+    void fetchSelectedSurvey(surveyId, isPublic);
   }, [surveyId]);
 
-  const content = useMemo(() => {
-    if (hasFinished) {
-      return (
-        <div className="relative top-1/3">
-          <h4 className="flex justify-center">{t('survey.finished')}</h4>
-          <h4 className="flex justify-center">{t('survey.thanks')}</h4>
-        </div>
-      );
-    }
+  const surveyModel = useMemo(() => {
     if (!selectedSurvey) {
-      return (
-        <div className="relative top-1/3">
-          <h4 className="flex justify-center">{t('survey.notFound')}</h4>
-        </div>
-      );
+      return undefined;
     }
-    return (
-      <ScrollArea>
-        <ParticipateSurvey
-          surveyId={selectedSurvey.id!}
-          saveNo={selectedSurvey.saveNo}
-          formula={selectedSurvey.formula}
-          answer={answer}
-          setAnswer={setAnswer}
-          pageNo={pageNo}
-          setPageNo={setPageNo}
-          submitAnswer={answerSurvey}
-          className="survey-participation"
-          isPublic={isPublic}
-        />
-      </ScrollArea>
-    );
-  }, [selectedSurvey, answer, pageNo, hasFinished]);
+    const surveyParticipationModel = new Model(selectedSurvey.formula);
+    surveyParticipationModel.applyTheme(surveyTheme);
+    surveyParticipationModel.locale = language;
+    if (surveyParticipationModel.pages.length > 3) {
+      surveyParticipationModel.showProgressBar = 'top';
+    }
 
-  return isFetching ? <LoadingIndicator isOpen={isFetching} /> : content;
+    surveyParticipationModel.onCompleting.add(async (sender, options) => {
+      const success = await answerSurvey(
+        {
+          surveyId: selectedSurvey.id || surveyId || '',
+          saveNo: selectedSurvey.saveNo,
+          answer: surveyParticipationModel.getData() as JSON,
+          isPublic,
+        },
+        sender,
+        options,
+      );
+
+      if (success) {
+        if (!isPublic) {
+          void updateOpenSurveys();
+          void updateAnsweredSurveys();
+        }
+
+        toast.success(t('survey.participate.saveAnswerSuccess'));
+      }
+    });
+
+    return surveyParticipationModel;
+  }, [selectedSurvey, language]);
+
+  if (isFetching) {
+    return <LoadingIndicatorDialog isOpen />;
+  }
+
+  if (!surveyModel) {
+    return (
+      <div className="relative top-1/3">
+        <h4 className="flex justify-center">{t('survey.notFound')}</h4>
+      </div>
+    );
+  }
+
+  return (
+    <PageLayout>
+      <div className={cn('survey-participation')}>
+        <Survey model={surveyModel} />
+      </div>
+    </PageLayout>
+  );
 };
 
 export default SurveyParticipationPage;

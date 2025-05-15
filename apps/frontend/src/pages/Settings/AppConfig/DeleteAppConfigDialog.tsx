@@ -13,9 +13,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { Button } from '@/components/shared/Button';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 interface AddAppConfigDialogProps {
   handleDeleteSettingsItem: () => void;
@@ -35,27 +35,24 @@ const DeleteAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ handleDelete
     setIsDeleteAppConfigDialogOpen(false);
   };
 
-  const dialogFooter = (
-    <div className="mt-4 flex justify-end text-background">
-      <Button
-        type="button"
-        variant="btn-collaboration"
-        size="lg"
-        onClick={handleDelete}
-        disabled={isLoading}
-      >
-        {t('common.delete')}
-      </Button>
-    </div>
+  const handleClose = () => setIsDeleteAppConfigDialogOpen(false);
+
+  const getFooter = () => (
+    <DialogFooterButtons
+      handleClose={handleClose}
+      submitButtonText="common.delete"
+      handleSubmit={handleDelete}
+      disableSubmit={isLoading}
+    />
   );
 
   return (
     <AdaptiveDialog
       isOpen={isDeleteAppConfigDialogOpen}
-      handleOpenChange={() => setIsDeleteAppConfigDialogOpen(false)}
+      handleOpenChange={handleClose}
       title={t('settings.deleteApp.title')}
       body={getDialogBody()}
-      footer={dialogFooter}
+      footer={getFooter()}
     />
   );
 };

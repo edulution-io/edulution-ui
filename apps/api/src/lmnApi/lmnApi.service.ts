@@ -25,7 +25,6 @@ import {
   USER_ROOM_LMN_API_ENDPOINT,
   USERS_LMN_API_ENDPOINT,
 } from '@libs/lmnApi/constants/lmnApiEndpoints';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import LmnApiErrorMessage from '@libs/lmnApi/types/lmnApiErrorMessage';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
@@ -41,7 +40,11 @@ import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
+import CreateWorkingDirectoryDto from '@libs/classManagement/types/createWorkingDirectoryDto';
+import convertWindowsToUnixPath from '@libs/filesharing/utils/convertWindowsToUnixPath';
+import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
+import WebdavService from '../webdav/webdav.service';
 
 @Injectable()
 class LmnApiService {
@@ -51,7 +54,10 @@ class LmnApiService {
 
   private queue: Promise<unknown> = Promise.resolve();
 
-  constructor(private readonly userService: UsersService) {
+  constructor(
+    private readonly userService: UsersService,
+    private readonly webdavService: WebdavService,
+  ) {
     const httpsAgent = new https.Agent({
       rejectUnauthorized: false,
     });
@@ -423,10 +429,14 @@ class LmnApiService {
     }
   }
 
-  public async searchUsersOrGroups(lmnApiToken: string, searchQuery: string): Promise<LmnApiSearchResult[]> {
+  public async searchUsersOrGroups(
+    lmnApiToken: string,
+    school: string,
+    searchQuery: string,
+  ): Promise<LmnApiSearchResult[]> {
     try {
       const response = await this.enqueue<LmnApiSearchResult[]>(() =>
-        this.lmnApi.get<LmnApiSearchResult[]>(`${QUERY_LMN_API_ENDPOINT}/global/${searchQuery}`, {
+        this.lmnApi.get<LmnApiSearchResult[]>(`${QUERY_LMN_API_ENDPOINT}/${school}/${searchQuery}`, {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
@@ -600,6 +610,7 @@ class LmnApiService {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
+
       return response.data;
     } catch (error) {
       throw new CustomHttpException(
@@ -681,6 +692,18 @@ class LmnApiService {
         LmnApiService.name,
       );
     }
+  }
+
+  async handleCreateWorkingDirectory(createWorkingDirectoryDto: CreateWorkingDirectoryDto): Promise<void> {
+    const { teacher } = createWorkingDirectoryDto;
+    const { members } = createWorkingDirectoryDto.schoolClass;
+
+    await Promise.all(
+      members.map(async (member) => {
+        const unixPath = convertWindowsToUnixPath(member.homeDirectory);
+        return this.webdavService.createFolder(member.name, unixPath, teacher);
+      }),
+    );
   }
 }
 

@@ -14,10 +14,11 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import SubmittedAnswersDialogBody from '@/pages/Surveys/Tables/dialogs/SubmittedAnswersDialogBody';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 const SubmittedAnswersDialog = () => {
   const { selectedSurvey: survey } = useSurveyTablesPageStore();
@@ -56,15 +57,25 @@ const SubmittedAnswersDialog = () => {
     );
   };
 
+  const handleClose = () => setIsOpenSubmittedAnswersDialog(!isOpenSubmittedAnswersDialog);
+
+  const getFooter = () => (
+    <DialogFooterButtons
+      handleClose={handleClose}
+      cancelButtonText="common.close"
+    />
+  );
+
   return (
     <>
-      {isLoading ? <LoadingIndicator isOpen={isLoading} /> : null}
+      {isLoading ? <LoadingIndicatorDialog isOpen={isLoading} /> : null}
       <AdaptiveDialog
         isOpen={isOpenSubmittedAnswersDialog}
-        handleOpenChange={() => setIsOpenSubmittedAnswersDialog(!isOpenSubmittedAnswersDialog)}
+        handleOpenChange={handleClose}
         title={t('surveys.submittedAnswersDialog.title')}
         body={getDialogBody()}
         desktopContentClassName="max-w-[75%]"
+        footer={getFooter()}
       />
     </>
   );

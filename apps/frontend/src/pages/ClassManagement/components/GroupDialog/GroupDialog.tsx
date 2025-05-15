@@ -30,12 +30,13 @@ import LmnApiProjectWithMembers from '@libs/lmnApi/types/lmnApiProjectWithMember
 import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import LmnApiPrinterWithMembers from '@libs/lmnApi/types/lmnApiPrinterWithMembers';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import parseSophomorixQuota from '@libs/lmnApi/utils/parseSophomorixQuota';
 import parseSophomorixMailQuota from '@libs/lmnApi/utils/parseSophomorixMailQuota';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 interface GroupDialogProps {
   item: GroupColumn;
@@ -226,10 +227,10 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
   };
 
   const getFooter = () => (
-    <div className="mt-4 flex">
+    <div className="flex gap-4">
       {userGroupToEdit ? (
         <Button
-          className="mr-4"
+          className="mt-4"
           variant="btn-attention"
           disabled={isDialogLoading}
           size="lg"
@@ -241,14 +242,12 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
       ) : null}
 
       <form onSubmit={handleFormSubmit}>
-        <Button
-          variant="btn-collaboration"
-          disabled={isDialogLoading}
-          size="lg"
-          type="submit"
-        >
-          {t(userGroupToEdit ? 'common.save' : 'common.create')}
-        </Button>
+        <DialogFooterButtons
+          handleClose={onClose}
+          handleSubmit={() => {}}
+          submitButtonType="submit"
+          submitButtonText={userGroupToEdit ? 'common.save' : 'common.create'}
+        />
       </form>
     </div>
   );

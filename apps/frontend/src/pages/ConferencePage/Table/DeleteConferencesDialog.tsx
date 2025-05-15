@@ -14,9 +14,9 @@ import React from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
 import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
-import { Button } from '@/components/shared/Button';
 import ItemDialogList from '@/components/shared/ItemDialogList';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 interface DeleteConferencesDialogProps {
   trigger?: React.ReactNode;
@@ -27,7 +27,6 @@ const DeleteConferencesDialog = ({ trigger }: DeleteConferencesDialogProps) => {
   const {
     isLoading,
     error,
-    reset,
     deleteConferences,
     conferences,
     isDeleteConferencesDialogOpen,
@@ -65,35 +64,21 @@ const DeleteConferencesDialog = ({ trigger }: DeleteConferencesDialogProps) => {
     );
   };
 
-  const getFooter = () =>
-    !error ? (
-      <div className="mt-4 flex justify-end">
-        <Button
-          variant="btn-collaboration"
-          disabled={isLoading}
-          size="lg"
-          onClick={onSubmit}
-        >
-          {t('conferences.delete')}
-        </Button>
-      </div>
-    ) : (
-      <div className="mt-4 flex justify-end">
-        <Button
-          variant="btn-collaboration"
-          size="lg"
-          onClick={() => reset()}
-        >
-          {t('conferences.cancel')}
-        </Button>
-      </div>
-    );
+  const handleClose = () => setIsDeleteConferencesDialogOpen(false);
+
+  const getFooter = () => (
+    <DialogFooterButtons
+      handleClose={handleClose}
+      handleSubmit={onSubmit}
+      submitButtonText="common.delete"
+    />
+  );
 
   return (
     <AdaptiveDialog
       isOpen={isDeleteConferencesDialogOpen}
       trigger={trigger}
-      handleOpenChange={() => setIsDeleteConferencesDialogOpen(!isDeleteConferencesDialogOpen)}
+      handleOpenChange={handleClose}
       title={t(isMultiDelete ? 'conferences.deleteConferences' : 'conferences.deleteConference', {
         count: selectedConferences.length,
       })}

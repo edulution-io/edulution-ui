@@ -10,20 +10,35 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import useUserStore from '@/store/UserStore/UserStore';
+import { useCallback } from 'react';
 import { useAuth } from 'react-oidc-context';
+import { useCookies } from 'react-cookie';
+import { useTranslation } from 'react-i18next';
+import useUserStore from '@/store/UserStore/UserStore';
 import cleanAllStores from '@/store/utils/cleanAllStores';
+import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
+import { toast } from 'sonner';
 
 const useLogout = () => {
+  const { t } = useTranslation();
   const auth = useAuth();
   const { logout } = useUserStore();
+  const [, , removeCookie] = useCookies(['authToken']);
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     await logout();
-    await auth.removeUser().then(() => {
-      cleanAllStores();
-    });
-  };
+    await auth.removeUser();
+    cleanAllStores();
+    removeCookie('authToken');
+    window.history.pushState(null, '', LOGIN_ROUTE);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    toast.dismiss();
+    if (auth.user?.expired) {
+      toast.error(t('auth.errors.TokenExpired'));
+    } else {
+      toast.success(t('auth.logout.success'));
+    }
+  }, [logout, auth]);
 
   return handleLogout;
 };

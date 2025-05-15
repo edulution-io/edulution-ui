@@ -19,22 +19,21 @@ import handleApiError from '@/utils/handleApiError';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import ContentType from '@libs/filesharing/types/contentType';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
-import { WebdavStatusReplay } from '@libs/filesharing/types/fileOperationResult';
 import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
-import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
-import getFrontEndUrl from '@libs/common/utils/getFrontEndUrl';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import delay from '@libs/common/utils/delay';
-import { ResponseType } from '@libs/common/types/http-methods';
+import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
+import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import UserRoles from '@libs/user/constants/userRoles';
 
 type UseFileSharingStore = {
   files: DirectoryFileDTO[];
   selectedItems: DirectoryFileDTO[];
   currentPath: string;
-  currentlyEditingFile: DirectoryFileDTO | null;
+  downloadProgressList: DownloadFileDto[];
   pathToRestoreSession: string;
-  setDirectorys: (files: DirectoryFileDTO[]) => void;
-  directorys: DirectoryFileDTO[];
+  fileOperationProgress: null | FilesharingProgressDto;
+  setDirectories: (files: DirectoryFileDTO[]) => void;
+  directories: DirectoryFileDTO[];
   selectedRows: RowSelectionState;
   setSelectedRows: (rows: RowSelectionState) => void;
   setCurrentPath: (path: string) => void;
@@ -47,22 +46,15 @@ type UseFileSharingStore = {
   reset: () => void;
   mountPoints: DirectoryFileDTO[];
   isLoading: boolean;
-  isEditorLoading: boolean;
-  downloadLinkURL: string;
-  publicDownloadLink: string | null;
-  setPublicDownloadLink: (publicDownloadLink: string) => void;
   isError: boolean;
   currentlyDisabledFiles: Record<string, boolean>;
-  startFileIsCurrentlyDisabled: (filename: string, isLocked: boolean, durationMs: number) => Promise<void>;
+  setFileIsCurrentlyDisabled: (filename: string, isLocked: boolean, durationMs?: number) => Promise<void>;
   setIsLoading: (isLoading: boolean) => void;
-  setCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => void;
-  resetCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => Promise<void>;
   setMountPoints: (mountPoints: DirectoryFileDTO[]) => void;
-  downloadFile: (filePath: string) => Promise<string | undefined>;
-  getDownloadLinkURL: (filePath: string, filename: string) => Promise<string | undefined>;
-  fetchDownloadLinks: (file: DirectoryFileDTO | null) => Promise<void>;
-  isFullScreenEditingEnabled: boolean;
-  setIsFullScreenEditingEnabled: (isFullScreenEditingEnabled: boolean) => void;
+  setFileOperationProgress: (progress: FilesharingProgressDto | null) => void;
+  setDownloadProgressList: (progressList: DownloadFileDto[]) => void;
+  updateDownloadProgress: (progress: DownloadFileDto) => void;
+  removeDownloadProgress: (fileName: string) => void;
 };
 
 const initialState = {
@@ -70,17 +62,14 @@ const initialState = {
   selectedItems: [],
   currentPath: `/`,
   pathToRestoreSession: `/`,
-  downloadLinkURL: '',
   selectedRows: {},
-  currentlyEditingFile: null,
   mountPoints: [],
-  directorys: [],
+  directories: [],
   isLoading: false,
   isError: false,
-  publicDownloadLink: null,
-  isEditorLoading: false,
-  isFullScreenEditingEnabled: false,
   currentlyDisabledFiles: {},
+  downloadProgressList: [],
+  fileOperationProgress: null,
 };
 
 type PersistedFileManagerStore = (
@@ -92,45 +81,35 @@ const useFileSharingStore = create<UseFileSharingStore>(
   (persist as PersistedFileManagerStore)(
     (set, get) => ({
       ...initialState,
-      setIsFullScreenEditingEnabled: (isFullScreenEditingEnabled) => set({ isFullScreenEditingEnabled }),
       setCurrentPath: (path: string) => {
         set({ currentPath: path });
       },
 
-      setPublicDownloadLink: (publicDownloadLink) => set({ publicDownloadLink }),
+      setFileOperationProgress: (progress: FilesharingProgressDto | null) => set({ fileOperationProgress: progress }),
 
-      fetchDownloadLinks: async (file: DirectoryFileDTO | null) => {
-        try {
-          set({ isEditorLoading: true, isError: false, downloadLinkURL: undefined, publicDownloadLink: null });
+      setDownloadProgressList: (progressList) => {
+        set({ downloadProgressList: progressList });
+      },
 
-          if (!file) {
-            set({ isEditorLoading: false });
-            return;
-          }
+      removeDownloadProgress: (fileName) => {
+        const { downloadProgressList } = get();
+        set({
+          downloadProgressList: downloadProgressList.filter((d) => d.fileName !== fileName),
+        });
+      },
 
-          const downloadLink = await get().downloadFile(file.filename);
-          set({ downloadLinkURL: downloadLink });
+      updateDownloadProgress: (progress) => {
+        const { downloadProgressList } = get();
+        const existingIndex = downloadProgressList.findIndex((d) => d.fileName === progress.fileName);
 
-          if (isOnlyOfficeDocument(file.filename)) {
-            const publicLink = await get().getDownloadLinkURL(file.filename, file.basename);
-            set({ publicDownloadLink: `${getFrontEndUrl()}/${EDU_API_ROOT}/downloads/${publicLink}` || ' ' });
-          }
+        if (existingIndex >= 0) {
+          const updatedList = [...downloadProgressList];
+          updatedList[existingIndex] = progress;
 
-          set({ isEditorLoading: false });
-        } catch (error) {
-          handleApiError(error, set);
-          set({ isError: true, isEditorLoading: false });
+          set({ downloadProgressList: updatedList });
+        } else {
+          set({ downloadProgressList: [...downloadProgressList, progress] });
         }
-      },
-
-      setCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => {
-        set({ currentlyEditingFile: fileToPreview });
-      },
-
-      resetCurrentlyEditingFile: async (fileToPreview: DirectoryFileDTO | null) => {
-        set({ currentlyEditingFile: null });
-        await delay(1);
-        set({ currentlyEditingFile: fileToPreview });
       },
 
       setPathToRestoreSession: (path: string) => {
@@ -144,8 +123,8 @@ const useFileSharingStore = create<UseFileSharingStore>(
         set({ mountPoints });
       },
 
-      setDirectorys: (directorys: DirectoryFileDTO[]) => {
-        set({ directorys });
+      setDirectories: (directories: DirectoryFileDTO[]) => {
+        set({ directories });
       },
 
       setIsLoading: (isLoading: boolean) => {
@@ -171,72 +150,45 @@ const useFileSharingStore = create<UseFileSharingStore>(
         }
       },
 
-      downloadFile: async (filePath: string) => {
-        try {
-          set({ isLoading: true });
-          const fileStreamResponse = await eduApi.get<Blob>(
-            `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_STREAM}`,
-            {
-              params: { filePath },
-              responseType: ResponseType.BLOB,
-            },
-          );
-
-          const fileStream = fileStreamResponse.data;
-          return window.URL.createObjectURL(fileStream);
-        } catch (error) {
-          handleApiError(error, set);
-          return '';
-        } finally {
-          set({ isLoading: false });
-        }
-      },
-
-      getDownloadLinkURL: async (filePath: string, filename: string) => {
-        try {
-          set({ isLoading: true });
-          const response = await eduApi.get<WebdavStatusReplay>(
-            `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_LOCATION}`,
-            {
-              params: {
-                filePath,
-                fileName: filename,
-              },
-            },
-          );
-          const { data, success } = response.data;
-          if (success && data) {
-            return data;
-          }
-          return '';
-        } catch (error) {
-          handleApiError(error, set);
-          return '';
-        } finally {
-          set({ isLoading: false });
-        }
-      },
-
-      startFileIsCurrentlyDisabled: async (filename, isLocked, durationMs) => {
-        set((state) => ({
+      setFileIsCurrentlyDisabled: async (filename, isLocked, durationMs) => {
+        set({
           currentlyDisabledFiles: {
-            ...state.currentlyDisabledFiles,
+            ...get().currentlyDisabledFiles,
             [filename]: isLocked,
           },
-        }));
+        });
         if (durationMs) {
           await delay(durationMs);
-          set({ currentlyDisabledFiles: { filename: !isLocked } });
+          set({
+            ...get().currentlyDisabledFiles,
+            currentlyDisabledFiles: { [filename]: !isLocked },
+          });
         }
       },
 
       fetchMountPoints: async () => {
         try {
           set({ isLoading: true });
-          const resp = await eduApi.get<DirectoryFileDTO[]>(
-            `${buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, '')}`,
+
+          const defaultMountPointsResponse = await eduApi.get<DirectoryFileDTO[]>(
+            buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, ''),
           );
-          set({ mountPoints: resp.data });
+
+          const additionalMountPointsResponse = await eduApi.get<DirectoryFileDTO[]>(
+            buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, '/'),
+          );
+
+          const combinedMountPoints = [...defaultMountPointsResponse.data];
+
+          const examusersItem = additionalMountPointsResponse.data.find(
+            (item) => item.basename === UserRoles.EXAM_USER,
+          );
+
+          if (examusersItem && !defaultMountPointsResponse.data.some((item) => item.basename === UserRoles.EXAM_USER)) {
+            combinedMountPoints.push(examusersItem);
+          }
+
+          set({ mountPoints: combinedMountPoints });
         } catch (error) {
           handleApiError(error, set);
         } finally {
@@ -249,7 +201,7 @@ const useFileSharingStore = create<UseFileSharingStore>(
           const directoryFiles = await eduApi.get<DirectoryFileDTO[]>(
             `${buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, getPathWithoutWebdav(path))}`,
           );
-          set({ directorys: directoryFiles.data });
+          set({ directories: directoryFiles.data });
         } catch (error) {
           handleApiError(error, set);
         }
@@ -265,7 +217,6 @@ const useFileSharingStore = create<UseFileSharingStore>(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         mountPoints: state.mountPoints,
-        currentlyEditingFile: state.currentlyEditingFile,
       }),
     },
   ),

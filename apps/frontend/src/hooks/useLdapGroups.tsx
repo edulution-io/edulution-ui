@@ -10,16 +10,30 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useAuth } from 'react-oidc-context';
+import useUserStore from '@/store/UserStore/UserStore';
+import getTokenPayload from '@libs/common/utils/getTokenPayload';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 
 const useLdapGroups = () => {
-  const auth = useAuth();
-  const ldapGroups = (auth.user?.profile.ldapGroups as string[]) || [];
-  const isAuthReady = !!auth.user;
+  const { isAuthenticated, eduApiToken } = useUserStore();
+
+  if (!isAuthenticated || !eduApiToken) {
+    return {
+      isSuperAdmin: false,
+      ldapGroups: [],
+      isAuthReady: false,
+    };
+  }
+
+  const payload = getTokenPayload(eduApiToken);
+  const ldapGroups = payload.ldapGroups ?? [];
   const isSuperAdmin = ldapGroups.includes(GroupRoles.SUPER_ADMIN);
 
-  return { isSuperAdmin, ldapGroups, isAuthReady };
+  return {
+    isSuperAdmin,
+    ldapGroups,
+    isAuthReady: true,
+  };
 };
 
 export default useLdapGroups;

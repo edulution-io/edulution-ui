@@ -19,18 +19,17 @@ import GroupColumn from '@libs/groups/types/groupColumn';
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import { MdGroups } from 'react-icons/md';
 import { FaPrint, FaUsersGear } from 'react-icons/fa6';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import Input from '@/components/shared/Input';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
-import { FILTER_BAR_ID } from '@libs/classManagement/constants/pageElementIds';
-import useElementHeight from '@/hooks/useElementHeight';
-import { FOOTER_ID } from '@libs/common/constants/pageElementIds';
+import PageLayout from '@/components/structure/layout/PageLayout';
+import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 
 const EnrolPage: React.FC = () => {
   const { t } = useTranslation();
-  const { getOwnUser, user } = useLmnApiStore();
+  const { getOwnUser, lmnApiToken } = useLmnApiStore();
   const {
     userProjects,
     userSchoolClasses,
@@ -43,15 +42,13 @@ const EnrolPage: React.FC = () => {
   const [filterKeyWord, setFilterKeyWord] = useState<string>('');
 
   useEffect(() => {
-    void getOwnUser();
-    void fetchUserProjects();
-    void fetchPrinters();
-    void fetchUserSchoolClasses();
-  }, []);
-
-  if (!user) {
-    return null;
-  }
+    if (lmnApiToken) {
+      void getOwnUser();
+      void fetchUserProjects();
+      void fetchPrinters();
+      void fetchUserSchoolClasses();
+    }
+  }, [lmnApiToken]);
 
   const filterGroups = (group: LmnApiProject | LmnApiSchoolClass | LmnApiPrinter) =>
     group.cn.includes(filterKeyWord) || group.displayName.includes(filterKeyWord);
@@ -77,37 +74,42 @@ const EnrolPage: React.FC = () => {
     },
   ];
 
-  const pageBarsHeight = useElementHeight([FILTER_BAR_ID, FOOTER_ID]) + 10;
-
   return (
-    <div className="mt-2">
+    <PageLayout>
       <Input
         name="filter"
         onChange={(e) => setFilterKeyWord(e.target.value)}
         placeholder={t('classmanagement.typeToFilter')}
-        id={FILTER_BAR_ID}
         className="mb-2"
       />
-      <div
-        className="flex max-w-full flex-row flex-wrap overflow-y-auto overflow-x-visible scrollbar-thin"
-        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
-      >
-        <div className="mt-2 min-w-full text-lg text-background">{t('classmanagement.enrolPageDescription')}</div>
+      <div className="flex max-h-full max-w-full flex-row flex-wrap overflow-y-auto scrollbar-thin">
+        <p className="mt-2 min-w-full">{t('classmanagement.enrolPageDescription')}</p>
         {groupRows.map((row) => (
           <div
             key={row.name}
-            className="mt-4 min-w-full text-background"
+            className="mt-4 min-w-full"
           >
-            <h4 className="text-background">{t(`classmanagement.${row.name}`)}</h4>
-            <GroupList
-              row={row}
-              isEnrolEnabled
-            />
+            <AccordionSH
+              type="multiple"
+              defaultValue={[row.name]}
+            >
+              <AccordionItem value={row.name}>
+                <AccordionTrigger>
+                  <h4>{t(`classmanagement.${row.name}`)}</h4>
+                </AccordionTrigger>
+                <AccordionContent className="space-y-2 px-1">
+                  <GroupList
+                    row={row}
+                    isEnrolEnabled
+                  />
+                </AccordionContent>
+              </AccordionItem>
+            </AccordionSH>
           </div>
         ))}
       </div>
-      <LoadingIndicator isOpen={isLoading} />
-    </div>
+      <LoadingIndicatorDialog isOpen={isLoading} />
+    </PageLayout>
   );
 };
 

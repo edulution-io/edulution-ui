@@ -14,11 +14,11 @@ import React from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import { Button } from '@/components/shared/Button';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useDeleteSurveyStore from '@/pages/Surveys/Tables/dialogs/useDeleteSurveyStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import ItemDialogList from '@/components/shared/ItemDialogList';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 interface DeleteSurveysDialogProps {
   surveys: SurveyDto[];
@@ -65,35 +65,25 @@ const DeleteSurveysDialog = ({ surveys, trigger }: DeleteSurveysDialogProps) => 
     );
   };
 
-  const getFooter = () =>
-    !error ? (
-      <div className="mt-4 flex justify-end">
-        <Button
-          variant="btn-collaboration"
-          disabled={isLoading}
-          size="lg"
-          onClick={onSubmit}
-        >
-          {t('common.delete')}
-        </Button>
-      </div>
-    ) : (
-      <div className="mt-4 flex justify-end">
-        <Button
-          variant="btn-collaboration"
-          size="lg"
-          onClick={() => reset()}
-        >
-          {t('common.cancel')}
-        </Button>
-      </div>
-    );
+  const handleClose = () => {
+    setIsDeleteSurveysDialogOpen(false);
+    reset();
+  };
+
+  const getFooter = () => (
+    <DialogFooterButtons
+      handleClose={handleClose}
+      handleSubmit={onSubmit}
+      disableSubmit={isLoading}
+      submitButtonText="common.delete"
+    />
+  );
 
   return (
     <AdaptiveDialog
       isOpen={isDeleteSurveysDialogOpen}
       trigger={trigger}
-      handleOpenChange={() => setIsDeleteSurveysDialogOpen(!isDeleteSurveysDialogOpen)}
+      handleOpenChange={handleClose}
       title={t(isMultiDelete ? 'surveys.deleteSurveys' : 'surveys.deleteSurvey', {
         count: selectedSurveys.length,
       })}

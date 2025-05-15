@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import GroupCard from '@/pages/ClassManagement/LessonPage/QuickAccess/GroupCard';
 import GroupColumn from '@libs/groups/types/groupColumn';
 import useUserStore from '@/store/UserStore/UserStore';
-import CircleLoader from '@/components/ui/CircleLoader';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
@@ -54,7 +54,7 @@ const GroupsColumn = ({ column }: GroupsColumnProps) => {
 
   return (
     <>
-      <p className="mb-4 text-center text-2xl">{t(`classmanagement.${translationId}`)}</p>
+      <h4 className="mb-4 whitespace-nowrap text-center">{t(`classmanagement.${translationId}`)}</h4>
       <div className="flex flex-wrap justify-center gap-4">{getContent()}</div>
       <div className="mt-1 flex justify-center" />
     </>

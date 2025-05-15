@@ -20,6 +20,11 @@ import {
 } from '@/assets/icons';
 import { useNavigate } from 'react-router-dom';
 import {
+  LANGUAGE_PATH,
+  MAILS_PATH,
+  MOBILE_ACCESS_PATH,
+  SECURITY_PATH,
+  USER_DETAILS_PATH,
   USER_SETTINGS_LANGUAGE_PATH,
   USER_SETTINGS_MAILS_PATH,
   USER_SETTINGS_MOBILE_ACCESS_PATH,
@@ -39,31 +44,31 @@ const useUserSettingsMenu = () => {
     color: 'hover:bg-ciGreenToBlue',
     menuItems: [
       {
-        id: 'security',
-        label: 'usersettings.security.title',
-        icon: SecurityIcon,
-        action: () => navigate(USER_SETTINGS_SECURITY_PATH),
-      },
-      {
-        id: 'details',
+        id: USER_DETAILS_PATH,
         label: 'usersettings.details.title',
         icon: UserDetailsSettingsIcon,
         action: () => navigate(USER_SETTINGS_USER_DETAILS_PATH),
       },
       {
-        id: 'mails',
+        id: SECURITY_PATH,
+        label: 'usersettings.security.title',
+        icon: SecurityIcon,
+        action: () => navigate(USER_SETTINGS_SECURITY_PATH),
+      },
+      {
+        id: MAILS_PATH,
         label: 'usersettings.mails.title',
         icon: MailIcon,
         action: () => navigate(USER_SETTINGS_MAILS_PATH),
       },
       {
-        id: 'language',
+        id: LANGUAGE_PATH,
         label: 'usersettings.language.title',
         icon: LanguageIcon,
         action: () => navigate(USER_SETTINGS_LANGUAGE_PATH),
       },
       {
-        id: 'mobileAccess',
+        id: MOBILE_ACCESS_PATH,
         label: 'usersettings.mobileAccess.title',
         icon: MobileDevicesIcon,
         action: () => navigate(USER_SETTINGS_MOBILE_ACCESS_PATH),

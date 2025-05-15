@@ -22,10 +22,12 @@ import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import i18next from 'i18next';
 import useUserStore from '@/store/UserStore/UserStore';
-import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import { toast } from 'sonner';
 import delay from '@libs/common/utils/delay';
-import CopyToClipboardTextCell from '@/components/ui/Table/CopyToClipboardTextCell';
+import OpenShareQRDialogTextCell from '@/components/ui/Table/OpenShareQRDialogTextCell';
+import useSharePublicConferenceStore from '@/pages/ConferencePage/useSharePublicConferenceStore';
+import CONFERENCES_TABLE_COLUMNS from '@libs/conferences/constants/conferencesTableColumns';
+import hideOnMobileClassName from '@libs/ui/constants/hideOnMobileClassName';
 
 function getRowAction(isRunning: boolean, isLoading: boolean, isUserTheCreator: boolean) {
   if (isLoading) {
@@ -55,11 +57,11 @@ function getRowAction(isRunning: boolean, isLoading: boolean, isUserTheCreator: 
   return { icon: undefined, text: '' };
 }
 
-const hideOnMobileClassName = 'hidden lg:flex min-w-24';
+const hideOnMobileClassNameMinWidth = `${hideOnMobileClassName} min-w-24`;
 
 const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
   {
-    id: 'conference-name',
+    id: CONFERENCES_TABLE_COLUMNS.CONFERENCE_NAME,
     header: ({ table, column }) => (
       <SortableHeader<ConferenceDto, unknown>
         className="min-w-32"
@@ -82,7 +84,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
         ? async () => {
             await joinConference(meetingID);
           }
-        : undefined;
+        : () => row.toggleSelected();
       return (
         <SelectableTextCell
           onClick={onClick}
@@ -97,13 +99,8 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     },
   },
   {
-    id: 'conference-creator',
-    header: ({ column }) => (
-      <SortableHeader<ConferenceDto, unknown>
-        className={hideOnMobileClassName}
-        column={column}
-      />
-    ),
+    id: CONFERENCES_TABLE_COLUMNS.CONFERENCE_CREATOR,
+    header: ({ column }) => <SortableHeader<ConferenceDto, unknown> column={column} />,
     meta: {
       translationId: 'conferences.creator',
     },
@@ -116,7 +113,6 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
       const { setSelectedConference } = useConferenceDetailsDialogStore();
       return (
         <SelectableTextCell
-          className={hideOnMobileClassName}
           onClick={
             isUserTheCreator
               ? () => {
@@ -131,11 +127,11 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     },
   },
   {
-    id: 'conference-isPublic',
+    id: CONFERENCES_TABLE_COLUMNS.CONFERENCE_IS_PUBLIC,
     header: ({ column }) => (
       <SortableHeader<ConferenceDto, unknown>
-        className={hideOnMobileClassName}
         column={column}
+        className={hideOnMobileClassNameMinWidth}
       />
     ),
     meta: {
@@ -145,26 +141,20 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     cell: ({ row }) => {
       const iconSize = 16;
       const { isPublic } = row.original;
-      const url = `${window.location.origin}/${CONFERENCES_PUBLIC_EDU_API_ENDPOINT}/${row.original.meetingID}`;
+      const { setSharePublicConferenceDialogId } = useSharePublicConferenceStore();
       return (
-        <CopyToClipboardTextCell
+        <OpenShareQRDialogTextCell
+          openDialog={() => setSharePublicConferenceDialogId(row.original.meetingID)}
           iconSize={iconSize}
-          className={hideOnMobileClassName}
           isPublic={isPublic}
-          url={url}
           textTranslationId="conferences"
         />
       );
     },
   },
   {
-    id: 'conference-password',
-    header: ({ column }) => (
-      <SortableHeader<ConferenceDto, unknown>
-        className={hideOnMobileClassName}
-        column={column}
-      />
-    ),
+    id: CONFERENCES_TABLE_COLUMNS.CONFERENCE_PASSWORD,
+    header: ({ column }) => <SortableHeader<ConferenceDto, unknown> column={column} />,
     meta: {
       translationId: 'conferences.password',
     },
@@ -178,7 +168,6 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
       const isUserTheCreator = user?.username === username;
       return (
         <SelectableTextCell
-          className={hideOnMobileClassName}
           onClick={
             isUserTheCreator
               ? () => {
@@ -201,13 +190,8 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     },
   },
   {
-    id: 'conference-invited-attendees',
-    header: ({ column }) => (
-      <SortableHeader<ConferenceDto, unknown>
-        className={hideOnMobileClassName}
-        column={column}
-      />
-    ),
+    id: CONFERENCES_TABLE_COLUMNS.CONFERENCE_INVITED_ATTENDEES,
+    header: ({ column }) => <SortableHeader<ConferenceDto, unknown> column={column} />,
     meta: {
       translationId: 'conferences.invitedAttendees',
     },
@@ -224,7 +208,6 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
       const groupsText = `${groupsCount ? `, ${groupsCount} ${t(groupsCount === 1 ? 'common.group' : 'common.groups')}` : ''}`;
       return (
         <SelectableTextCell
-          className={hideOnMobileClassName}
           onClick={
             isUserTheCreator
               ? () => {
@@ -239,26 +222,18 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     },
   },
   {
-    id: 'conference-joined-attendees',
-    header: ({ column }) => (
-      <SortableHeader<ConferenceDto, unknown>
-        className={hideOnMobileClassName}
-        column={column}
-      />
-    ),
+    id: CONFERENCES_TABLE_COLUMNS.CONFERENCE_JOINED_ATTENDEES,
+    size: 100,
+    header: ({ column }) => <SortableHeader<ConferenceDto, unknown> column={column} />,
     meta: {
       translationId: 'conferences.joinedAttendees',
     },
     accessorFn: (row) => row.joinedAttendees.length,
-    cell: ({ row }) => (
-      <SelectableTextCell
-        className={hideOnMobileClassName}
-        text={`${row.original.joinedAttendees.length || '-'}`}
-      />
-    ),
+    cell: ({ row }) => <SelectableTextCell text={`${row.original.joinedAttendees.length || '-'}`} />,
   },
   {
-    id: 'conference-action-button',
+    id: CONFERENCES_TABLE_COLUMNS.CONFERENCE_ACTION_BUTTON,
+    size: 130,
     header: ({ column }) => <SortableHeader<ConferenceDto, unknown> column={column} />,
     meta: {
       translationId: 'conferences.action',

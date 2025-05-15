@@ -65,7 +65,9 @@ const BadgeField = (props: BadgeFieldProps) => {
         </Label>
       )}
       <div className="flex flex-row flex-wrap gap-2">
-        {isEmpty && <BadgeSH className={cn('bg-secondary px-4', className)}>{t('common.none')}</BadgeSH>}
+        {isEmpty && (
+          <BadgeSH className={cn('bg-ciDarkGreyDisabled px-4 text-ciGrey', className)}>{t('common.none')}</BadgeSH>
+        )}
         {!isEmpty &&
           badges.map((listItem, index) => (
             <BadgeSH

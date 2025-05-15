@@ -14,7 +14,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import APPS from '@libs/appconfig/constants/apps';
 import { SettingsIcon } from '@/assets/icons';
-import useIsMobileView from '@/hooks/useIsMobileView';
+import useMedia from '@/hooks/useMedia';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useLanguage from '@/hooks/useLanguage';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
@@ -30,7 +30,7 @@ const Sidebar: React.FC = () => {
   const { t } = useTranslation();
   const { appConfigs } = useAppConfigsStore();
   const { isSuperAdmin } = useLdapGroups();
-  const isMobileView = useIsMobileView();
+  const { isMobileView } = useMedia();
   const { language } = useLanguage();
 
   const { mails } = useMailsStore();
@@ -62,7 +62,7 @@ const Sidebar: React.FC = () => {
       ? [
           {
             title: t('settings.sidebar'),
-            link: SETTINGS_PATH,
+            link: `/${SETTINGS_PATH}`,
             icon: SettingsIcon,
             color: 'bg-ciGreenToBlue',
           },

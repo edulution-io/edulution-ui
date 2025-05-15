@@ -21,9 +21,12 @@ interface AppConfigTableEntry<DataType, StoreType extends AppConfigTable<DataTyp
   useStore: UseBoundStore<StoreApi<StoreType>>;
   dialogBody: React.JSX.Element;
   showAddButton: boolean;
+  showRemoveButton?: boolean;
   filterKey: string;
   filterPlaceHolderText: string;
   type: ExtendedOptionKeysType;
+  hideColumnsInMobileView: string[];
+  hideColumnsInTabletView: string[];
 }
 
 export default AppConfigTableEntry;

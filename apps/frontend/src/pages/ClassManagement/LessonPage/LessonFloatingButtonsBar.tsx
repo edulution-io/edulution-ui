@@ -11,7 +11,6 @@
  */
 
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { MdSchool } from 'react-icons/md';
 import { t } from 'i18next';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
@@ -21,24 +20,36 @@ import { FaFileAlt, FaWifi } from 'react-icons/fa';
 import { TbFilterCode } from 'react-icons/tb';
 import { FiPrinter } from 'react-icons/fi';
 import { IconType } from 'react-icons';
+import { PiEyeFill } from 'react-icons/pi';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import ReloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/reloadButton';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
-import useFileSharingDialogStore from '@/pages/FileSharing/dialog/useFileSharingDialogStore';
+import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import buildShareDTO from '@libs/filesharing/utils/buildShareDTO';
 import CLASSMGMT_OPTIONS from '@libs/classManagement/constants/classmgmtOptions';
 import getDialogComponent from '@/pages/ClassManagement/LessonPage/getDialogComponent';
 import buildCollectDTO from '@libs/filesharing/utils/buildCollectDTO';
-import getUniqueValues from '@libs/lmnApi/utils/getUniqueValues';
-import useClassManagementStore from '../useClassManagementStore';
+import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
+import VEYON_FEATURE_ACTIONS from '@libs/veyon/constants/veyonFeatureActions';
+import useVeyonFeatures from './UserArea/useVeyonFeatures';
+import useVeyonApiStore from '../useVeyonApiStore';
 
 interface FloatingButtonsBarProps {
   students: UserLmnInfo[];
   isMemberSelected: boolean;
+  isVeyonEnabled: boolean;
+  isQuotaExceeded: boolean;
+  fetchData: () => Promise<void>;
 }
 
-const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students, isMemberSelected }) => {
+const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
+  students,
+  isMemberSelected,
+  isVeyonEnabled,
+  fetchData,
+  isQuotaExceeded,
+}) => {
   const [whichDialogIsOpen, setWhichDialogIsOpen] = useState<string>('');
   const {
     startExamMode,
@@ -52,9 +63,10 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students,
     groupNameFromStore,
   } = useLessonStore();
   const { fetchUser, user, schoolPrefix } = useLmnApiStore();
+  const { activeCollectionOperation } = useFileSharingMoveDialogStore();
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();
-  const { fetchSchoolClass } = useClassManagementStore();
-  const { groupName } = useParams();
+  const { userConnectionUids } = useVeyonApiStore();
+  const { handleSetVeyonFeature } = useVeyonFeatures();
 
   const updateStudents = async () => {
     const updatedStudents = await Promise.all(students.map((m) => fetchUser(m.cn)));
@@ -66,16 +78,12 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students,
     );
   };
 
-  const handleReload = async () => {
-    if (groupName) {
-      const schoolClass = await fetchSchoolClass(groupName);
-      if (schoolClass?.members) {
-        setMember(getUniqueValues([...schoolClass.members]));
-      }
-    }
-  };
+  const selectedStudents = students.map((m) => m.cn);
+  const connectionUids = students
+    .map((student) => userConnectionUids.find((conn) => conn.veyonUsername === student.cn)?.connectionUid)
+    .filter((uid): uid is string => Boolean(uid));
 
-  const buttons: {
+  const rawButtons: {
     icon: IconType;
     text: string;
     enableAction: () => Promise<void>;
@@ -104,7 +112,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students,
           user?.sophomorixIntrinsic2[0] || '',
         );
         if (!collectDTO) return;
-        await collectFiles(collectDTO, user?.sophomorixRole || '');
+        await collectFiles(collectDTO, user?.sophomorixRole || '', activeCollectionOperation);
       },
       disableAction: async () => {},
     },
@@ -118,85 +126,65 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students,
       icon: FaWifi,
       text: CLASSMGMT_OPTIONS.WIFI,
       enableAction: async () => {
-        await addManagementGroup(
-          `${schoolPrefix}${CLASSMGMT_OPTIONS.WIFI}`,
-          students.map((m) => m.cn),
-        );
+        await addManagementGroup(`${schoolPrefix}${CLASSMGMT_OPTIONS.WIFI}`, selectedStudents);
       },
 
       disableAction: async () => {
-        await removeManagementGroup(
-          `${schoolPrefix}${CLASSMGMT_OPTIONS.WIFI}`,
-          students.map((m) => m.cn),
-        );
+        await removeManagementGroup(`${schoolPrefix}${CLASSMGMT_OPTIONS.WIFI}`, selectedStudents);
       },
     },
     {
       icon: TbFilterCode,
       text: CLASSMGMT_OPTIONS.WEBFILTER,
       enableAction: async () => {
-        await addManagementGroup(
-          `${schoolPrefix}${CLASSMGMT_OPTIONS.WEBFILTER}`,
-          students.map((m) => m.cn),
-        );
+        await addManagementGroup(`${schoolPrefix}${CLASSMGMT_OPTIONS.WEBFILTER}`, selectedStudents);
       },
       disableAction: async () => {
-        await removeManagementGroup(
-          `${schoolPrefix}${CLASSMGMT_OPTIONS.WEBFILTER}`,
-          students.map((m) => m.cn),
-        );
+        await removeManagementGroup(`${schoolPrefix}${CLASSMGMT_OPTIONS.WEBFILTER}`, selectedStudents);
       },
     },
     {
       icon: FaEarthAmericas,
       text: CLASSMGMT_OPTIONS.INTERNET,
       enableAction: async () => {
-        await addManagementGroup(
-          `${schoolPrefix}${CLASSMGMT_OPTIONS.INTERNET}`,
-          students.map((m) => m.cn),
-        );
+        await addManagementGroup(`${schoolPrefix}${CLASSMGMT_OPTIONS.INTERNET}`, selectedStudents);
       },
       disableAction: async () => {
-        await removeManagementGroup(
-          `${schoolPrefix}${CLASSMGMT_OPTIONS.INTERNET}`,
-          students.map((m) => m.cn),
-        );
+        await removeManagementGroup(`${schoolPrefix}${CLASSMGMT_OPTIONS.INTERNET}`, selectedStudents);
       },
     },
     {
       icon: FiPrinter,
       text: CLASSMGMT_OPTIONS.PRINTING,
       enableAction: async () => {
-        await addManagementGroup(
-          `${schoolPrefix}${CLASSMGMT_OPTIONS.PRINTING}`,
-          students.map((m) => m.cn),
-        );
+        await addManagementGroup(`${schoolPrefix}${CLASSMGMT_OPTIONS.PRINTING}`, selectedStudents);
       },
       disableAction: async () => {
-        await removeManagementGroup(
-          `${schoolPrefix}${CLASSMGMT_OPTIONS.PRINTING}`,
-          students.map((m) => m.cn),
-        );
+        await removeManagementGroup(`${schoolPrefix}${CLASSMGMT_OPTIONS.PRINTING}`, selectedStudents);
       },
     },
     {
       icon: MdSchool,
       text: CLASSMGMT_OPTIONS.EXAMMODE,
       enableAction: async () => {
-        await startExamMode(students.map((m) => m.cn));
+        await startExamMode(selectedStudents);
       },
       disableAction: async () => {
-        await stopExamMode(students.map((m) => m.cn));
+        await stopExamMode(selectedStudents);
       },
       enableText: 'common.start',
       disableText: 'common.stop',
     },
   ];
 
+  const buttons = isQuotaExceeded
+    ? rawButtons.filter((button) => button.text !== CLASSMGMT_OPTIONS.COLLECT)
+    : rawButtons;
+
   const config: FloatingButtonsBarConfig = {
     buttons: [
       ReloadButton(() => {
-        void handleReload();
+        void fetchData();
       }),
       ...buttons.map((button) => ({
         icon: button.icon,
@@ -204,6 +192,40 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ students,
         onClick: () => setWhichDialogIsOpen(button.text),
         isVisible: isMemberSelected,
       })),
+      {
+        variant: 'dropdown',
+        icon: PiEyeFill,
+        text: t(`classmanagement.${CLASSMGMT_OPTIONS.VEYON}`),
+        isVisible: isMemberSelected && isVeyonEnabled && connectionUids.length > 0,
+        dropdownItems: [
+          {
+            label: t('veyon.lockScreen'),
+            onClick: () => handleSetVeyonFeature(connectionUids, VEYON_FEATURE_ACTIONS.SCREENLOCK, true),
+          },
+          {
+            label: t('veyon.unlockScreen'),
+            onClick: () => handleSetVeyonFeature(connectionUids, VEYON_FEATURE_ACTIONS.SCREENLOCK, false),
+          },
+          { label: 'veyonSeparator1', isSeparator: true },
+          {
+            label: t('veyon.lockInputDevices'),
+            onClick: () => handleSetVeyonFeature(connectionUids, VEYON_FEATURE_ACTIONS.INPUT_DEVICES_LOCK, true),
+          },
+          {
+            label: t('veyon.unlockInputDevices'),
+            onClick: () => handleSetVeyonFeature(connectionUids, VEYON_FEATURE_ACTIONS.INPUT_DEVICES_LOCK, false),
+          },
+          { label: 'veyonSeparator2', isSeparator: true },
+          {
+            label: t('veyon.rebootSystem'),
+            onClick: () => handleSetVeyonFeature(connectionUids, VEYON_FEATURE_ACTIONS.REBOOT, true),
+          },
+          {
+            label: t('veyon.powerDown'),
+            onClick: () => handleSetVeyonFeature(connectionUids, VEYON_FEATURE_ACTIONS.POWER_DOWN, true),
+          },
+        ],
+      },
     ],
     keyPrefix: 'class-management-page-floating-button_',
   };

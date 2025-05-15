@@ -12,7 +12,6 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { AxiosInstance } from 'axios';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import PrintPasswordsFormat from '@libs/classManagement/types/printPasswordsFormat';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import {
@@ -22,8 +21,12 @@ import {
 } from '@libs/lmnApi/constants/lmnApiEndpoints';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import GroupForm from '@libs/groups/types/groupForm';
+import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
+import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
+import CustomHttpException from '../common/CustomHttpException';
 import LmnApiService from './lmnApi.service';
 import UsersService from '../users/users.service';
+import WebDavService from '../webdav/webdav.service';
 
 jest.mock('axios');
 const mockedAxios = {
@@ -65,6 +68,13 @@ describe('LmnApiService', () => {
           provide: UsersService,
           useValue: {
             getPassword: jest.fn(),
+          },
+        },
+        {
+          provide: WebDavService,
+          useValue: {
+            uploadFile: jest.fn(),
+            createFile: jest.fn(),
           },
         },
       ],
@@ -155,7 +165,7 @@ describe('LmnApiService', () => {
     it('should return search results', async () => {
       mockedAxios.get.mockResolvedValue({ data: [{ id: user1, type: 'user' }] });
 
-      const result = await service.searchUsersOrGroups(mockToken, 'searchTerm');
+      const result = await service.searchUsersOrGroups(mockToken, SPECIAL_SCHOOLS.GLOBAL, 'searchTerm');
 
       expect(result).toEqual([{ id: user1, type: 'user' }]);
     });
@@ -163,7 +173,9 @@ describe('LmnApiService', () => {
     it('should throw CustomHttpException if search fails', async () => {
       mockedAxios.get.mockRejectedValue(new Error('Error'));
 
-      await expect(service.searchUsersOrGroups(mockToken, 'searchTerm')).rejects.toThrow(CustomHttpException);
+      await expect(service.searchUsersOrGroups(mockToken, SPECIAL_SCHOOLS.GLOBAL, 'searchTerm')).rejects.toThrow(
+        CustomHttpException,
+      );
     });
   });
 
@@ -234,6 +246,9 @@ describe('LmnApiService', () => {
 
   describe('toggleSchoolClassJoined', () => {
     it('should call toggleSchoolClassJoined endpoint and return data', async () => {
+      jest.spyOn(service, 'getSchoolClass').mockResolvedValue({} as LmnApiSchoolClass);
+      jest.spyOn(service, 'handleCreateWorkingDirectory').mockResolvedValue();
+
       const mockResponse = { data: { className: 'SchoolClass' } };
       mockedAxios.post.mockResolvedValue(mockResponse);
 

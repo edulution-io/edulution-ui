@@ -12,11 +12,12 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Guacamole from 'guacamole-common-js';
-import { WEBSOCKET_URL } from '@libs/desktopdeployment/constants';
-import ResizableWindow from '@/components/framing/ResizableWindow/ResizableWindow';
-import LoadingIndicator from '@/components/shared/LoadingIndicator';
-import useFrameStore from '@/components/framing/FrameStore';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import { MAXIMIZED_BAR_HEIGHT } from '@libs/ui/constants/resizableWindowElements';
+import RESIZABLE_WINDOW_DEFAULT_SIZE from '@libs/ui/constants/resizableWindowDefaultSize';
+import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
+import useFrameStore from '@/components/structure/framing/useFrameStore';
+import GUACAMOLE_WEBSOCKET_URL from '@libs/desktopdeployment/constants/guacamole-websocket-url';
 import useDesktopDeploymentStore from './DesktopDeploymentStore';
 
 const VDIFrame = () => {
@@ -38,7 +39,7 @@ const VDIFrame = () => {
   };
 
   const id = 'desktopdeployment.topic';
-  const width = currentWindowedFrameSizes[id]?.width;
+  const width = currentWindowedFrameSizes[id]?.width || RESIZABLE_WINDOW_DEFAULT_SIZE.width;
   const height = (currentWindowedFrameSizes[id]?.height || MAXIMIZED_BAR_HEIGHT) - MAXIMIZED_BAR_HEIGHT;
   const isMinimized = minimizedWindowedFrames.includes(id);
 
@@ -59,7 +60,7 @@ const VDIFrame = () => {
   useEffect(() => {
     if (guacToken === '' || !displayRef.current || !isVdiConnectionOpen || !hasCurrentFrameSizeLoaded) return () => {};
 
-    const tunnel = new Guacamole.WebSocketTunnel(WEBSOCKET_URL);
+    const tunnel = new Guacamole.WebSocketTunnel(GUACAMOLE_WEBSOCKET_URL);
     const guac = new Guacamole.Client(tunnel);
     guacRef.current = guac;
     const displayElement = displayRef.current;
@@ -163,7 +164,7 @@ const VDIFrame = () => {
         ref={displayRef}
         className="h-full w-full border-none bg-black"
       />
-      {clientState < 3 && <LoadingIndicator isOpen />}
+      {clientState < 3 && <LoadingIndicatorDialog isOpen />}
     </ResizableWindow>
   );
 };

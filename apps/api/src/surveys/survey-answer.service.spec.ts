@@ -18,7 +18,6 @@
 import { Model, Types } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import { Survey, SurveyDocument } from './survey.schema';
@@ -56,7 +55,7 @@ import {
   publicSurvey01,
   publicSurvey02,
   publicSurvey02AfterAddingValidAnswer,
-  publicSurvey02QuestionIdWithLimiters,
+  publicSurvey02QuestionNameWithLimiters,
   saveNoAnsweredSurvey01,
   saveNoAnsweredSurvey02,
   saveNoAnsweredSurvey03,
@@ -73,9 +72,11 @@ import {
   updatedSurveyAnswerAnsweredSurvey03,
 } from './mocks';
 import SurveysService from './surveys.service';
-import cacheManagerMock from '../common/mocks/cacheManagerMock';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
+import SseService from '../sse/sse.service';
+import FilesystemService from '../filesystem/filesystem.service';
+import mockFilesystemService from '../filesystem/filesystem.service.mock';
 
 describe('SurveyAnswerService', () => {
   let service: SurveyAnswersService;
@@ -87,6 +88,7 @@ describe('SurveyAnswerService', () => {
       imports: [],
       providers: [
         SurveysService,
+        SseService,
         {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
@@ -97,10 +99,7 @@ describe('SurveyAnswerService', () => {
           provide: getModelToken(SurveyAnswer.name),
           useValue: jest.fn(),
         },
-        {
-          provide: CACHE_MANAGER,
-          useValue: cacheManagerMock,
-        },
+        { provide: FilesystemService, useValue: mockFilesystemService },
       ],
     }).compile();
 
@@ -133,13 +132,13 @@ describe('SurveyAnswerService', () => {
 
       const result = await service.getSelectableChoices(
         idOfPublicSurvey02.toString(),
-        publicSurvey02QuestionIdWithLimiters,
+        publicSurvey02QuestionNameWithLimiters,
       );
       expect(result).toEqual(filteredChoices);
 
       expect(service.getSelectableChoices).toHaveBeenCalledWith(
         idOfPublicSurvey02.toString(),
-        publicSurvey02QuestionIdWithLimiters,
+        publicSurvey02QuestionNameWithLimiters,
       );
       expect(model.countDocuments).toHaveBeenCalledTimes(4); // once for each possible choice
     });
@@ -159,13 +158,13 @@ describe('SurveyAnswerService', () => {
 
       const result = await service.getSelectableChoices(
         idOfPublicSurvey02.toString(),
-        publicSurvey02QuestionIdWithLimiters,
+        publicSurvey02QuestionNameWithLimiters,
       );
       expect(result).toEqual(filteredChoicesAfterAddingValidAnswer);
 
       expect(service.getSelectableChoices).toHaveBeenCalledWith(
         idOfPublicSurvey02.toString(),
-        publicSurvey02QuestionIdWithLimiters,
+        publicSurvey02QuestionNameWithLimiters,
       );
       expect(model.countDocuments).toHaveBeenCalledTimes(4); // once for each possible choice
     });
@@ -177,7 +176,7 @@ describe('SurveyAnswerService', () => {
       surveyModel.findById = jest.fn().mockReturnValue(publicSurvey01);
 
       try {
-        await service.getSelectableChoices(idOfPublicSurvey01.toString(), publicSurvey02QuestionIdWithLimiters);
+        await service.getSelectableChoices(idOfPublicSurvey01.toString(), publicSurvey02QuestionNameWithLimiters);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toBe(SurveyErrorMessages.NoBackendLimiters);
@@ -185,7 +184,7 @@ describe('SurveyAnswerService', () => {
 
       expect(service.getSelectableChoices).toHaveBeenCalledWith(
         idOfPublicSurvey01.toString(),
-        publicSurvey02QuestionIdWithLimiters,
+        publicSurvey02QuestionNameWithLimiters,
       );
     });
   });
@@ -210,9 +209,9 @@ describe('SurveyAnswerService', () => {
       surveyModel.find = jest.fn().mockReturnValue([openSurvey01, openSurvey02]);
 
       const currentDate = new Date();
-      const result = await service.getOpenSurveys(firstMockJWTUser);
+      const result = await service.getOpenSurveys(firstMockJWTUser, currentDate);
       expect(result).toEqual([openSurvey01, openSurvey02]);
-      expect(service.getOpenSurveys).toHaveBeenCalledWith(firstMockJWTUser);
+      expect(service.getOpenSurveys).toHaveBeenCalledWith(firstMockJWTUser, currentDate);
 
       expect(surveyModel.find).toHaveBeenCalledWith({
         $or: [

@@ -19,10 +19,9 @@ import { Model } from 'mongoose';
 import { HttpStatus } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import CustomHttpException from '../common/CustomHttpException';
 import SurveysController from './surveys.controller';
 import SurveysService from './surveys.service';
 import SurveyAnswersService from './survey-answer.service';
@@ -52,12 +51,11 @@ import {
   surveyUpdateInitialSurvey,
   updatedSurveyAnswerAnsweredSurvey03,
 } from './mocks';
-import UserConnections from '../types/userConnections';
-import cacheManagerMock from '../common/mocks/cacheManagerMock';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
-
-const mockSseConnections: UserConnections = new Map();
+import SseService from '../sse/sse.service';
+import FilesystemService from '../filesystem/filesystem.service';
+import mockFilesystemService from '../filesystem/filesystem.service.mock';
 
 describe(SurveysController.name, () => {
   let controller: SurveysController;
@@ -72,6 +70,7 @@ describe(SurveysController.name, () => {
       controllers: [SurveysController],
       providers: [
         SurveysService,
+        SseService,
         {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
@@ -82,10 +81,7 @@ describe(SurveysController.name, () => {
           provide: getModelToken(SurveyAnswer.name),
           useValue: jest.fn(),
         },
-        {
-          provide: CACHE_MANAGER,
-          useValue: cacheManagerMock,
-        },
+        { provide: FilesystemService, useValue: mockFilesystemService },
       ],
     }).compile();
 
@@ -241,7 +237,7 @@ describe(SurveysController.name, () => {
     //   };
     //
     //   await controller.updateOrCreateSurvey(surveyUpdateUpdatedSurveyDto, firstMockJWTUser);
-    //   expect(surveyService.updateOrCreateSurvey).toHaveBeenCalledWith(createSurvey, mockSseConnections);
+    //   expect(surveyService.updateOrCreateSurvey).toHaveBeenCalledWith(createSurvey);
     // });
   });
 
@@ -250,12 +246,13 @@ describe(SurveysController.name, () => {
       jest.spyOn(surveyService, 'deleteSurveys');
       jest.spyOn(surveyAnswerService, 'onSurveyRemoval');
 
+      surveyService.onSurveyRemoval = jest.fn().mockImplementation(() => {});
       surveyModel.deleteMany = jest.fn().mockResolvedValueOnce(true);
       surveyAnswerModel.deleteMany = jest.fn().mockReturnValue(true);
 
       await controller.deleteSurvey({ surveyIds: [idOfAnsweredSurvey01.toString()] });
 
-      expect(surveyService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01.toString()], mockSseConnections);
+      expect(surveyService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01.toString()]);
       expect(surveyAnswerService.onSurveyRemoval).toHaveBeenCalledWith([idOfAnsweredSurvey01.toString()]);
       expect(surveyModel.deleteMany).toHaveBeenCalledWith({ _id: { $in: [idOfAnsweredSurvey01] } });
       expect(surveyAnswerModel.deleteMany).toHaveBeenCalledWith(
@@ -280,7 +277,7 @@ describe(SurveysController.name, () => {
         expect(e.message).toEqual(SurveyErrorMessages.DeleteError);
       }
 
-      expect(surveyService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01.toString()], mockSseConnections);
+      expect(surveyService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01.toString()]);
       expect(surveyAnswerService.onSurveyRemoval).toHaveBeenCalledTimes(0);
     });
   });

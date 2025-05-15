@@ -26,7 +26,7 @@ export class Survey {
 
   @Prop({ required: false })
   backendLimiters?: {
-    questionId: string;
+    questionName: string;
     choices: ChoiceDto[];
   }[];
 
@@ -49,7 +49,7 @@ export class Survey {
   answers: Types.ObjectId[];
 
   @Prop({ type: Date, required: false })
-  expires?: Date;
+  expires: Date | null;
 
   @Prop({ required: false })
   isAnonymous?: boolean;

@@ -21,28 +21,23 @@ import ClassList from '@/pages/ClassManagement/PasswordsPage/ClassList/ClassList
 import getUserRegex from '@libs/lmnApi/constants/userRegex';
 import Input from '@/components/shared/Input';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
-import { FILTER_BAR_ID } from '@libs/classManagement/constants/pageElementIds';
-import useElementHeight from '@/hooks/useElementHeight';
-
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID } from '@libs/common/constants/pageElementIds';
+import PageLayout from '@/components/structure/layout/PageLayout';
 
 const PrintPasswordsPage: React.FC = () => {
   const { t } = useTranslation();
-  const { getOwnUser, user } = useLmnApiStore();
+  const { getOwnUser, user, lmnApiToken } = useLmnApiStore();
   const { userSchoolClasses, fetchUserSchoolClasses } = useClassManagementStore();
   const [filterKeyWord, setFilterKeyWord] = useState<string>('');
   const [selectedClasses, setSelectedClasses] = useState<LmnApiSchoolClass[]>([]);
 
   useEffect(() => {
-    void getOwnUser();
-    void fetchUserSchoolClasses();
-  }, []);
+    if (lmnApiToken) {
+      void getOwnUser();
+      void fetchUserSchoolClasses();
+    }
+  }, [lmnApiToken]);
 
-  if (!user) {
-    return null;
-  }
-
-  const userRegex = getUserRegex(user.cn);
+  const userRegex = getUserRegex(user?.cn || '');
 
   const filterSchoolClasses = (schoolClass: LmnApiSchoolClass) =>
     schoolClass.member?.find((member) => userRegex.test(member)) &&
@@ -57,24 +52,16 @@ const PrintPasswordsPage: React.FC = () => {
     },
   ];
 
-  const pageBarsHeight = useElementHeight([FLOATING_BUTTONS_BAR_ID, FILTER_BAR_ID, FOOTER_ID], selectedClasses) + 10;
-
   return (
-    <div>
+    <PageLayout>
       <Input
         name="filter"
         onChange={(e) => setFilterKeyWord(e.target.value)}
         placeholder={t('classmanagement.typeToFilter')}
-        id={FILTER_BAR_ID}
-        className="my-2"
+        className="mb-2"
       />
-      <div
-        className="flex max-w-full flex-row flex-wrap overflow-y-auto overflow-x-visible scrollbar-thin"
-        style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
-      >
-        <div className="mt-2 min-w-full text-lg text-background">
-          {t('classmanagement.printPasswordsPageDescription')}
-        </div>
+      <div className="flex max-h-full max-w-full flex-row flex-wrap overflow-y-auto scrollbar-thin">
+        <p className="mt-2 min-w-full">{t('classmanagement.printPasswordsPageDescription')}</p>
         {groupRows.map((row) => (
           <div
             key={row.name}
@@ -89,7 +76,7 @@ const PrintPasswordsPage: React.FC = () => {
           </div>
         ))}
       </div>
-    </div>
+    </PageLayout>
   );
 };
 

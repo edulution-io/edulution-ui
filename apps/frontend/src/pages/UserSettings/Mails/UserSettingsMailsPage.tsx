@@ -15,7 +15,6 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { MailIcon } from '@/assets/icons';
 import { DropdownSelect } from '@/components';
-import NativeAppHeader from '@/components/layout/NativeAppHeader';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useUserStore from '@/store/UserStore/UserStore';
 import { Form } from '@/components/ui/Form';
@@ -28,17 +27,15 @@ import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/Floating
 import StateLoader from '@/pages/FileSharing/utilities/StateLoader';
 import replaceDiacritics from '@libs/common/utils/replaceDiacritics';
 import FormField from '@/components/shared/FormField';
-import useElementHeight from '@/hooks/useElementHeight';
-import { FLOATING_BUTTONS_BAR_ID, FOOTER_ID, NATIVE_APP_HEADER_ID } from '@libs/common/constants/pageElementIds';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import APPS from '@libs/appconfig/constants/apps';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
+import PageLayout from '@/components/structure/layout/PageLayout';
 import MailImporterTable from './MailImporterTable';
 
 const UserSettingsMailsPage: React.FC = () => {
   const { t } = useTranslation();
   const {
-    isGetSyncJobLoading,
     isEditSyncJobLoading,
     externalMailProviderConfig,
     getExternalMailProviderConfig,
@@ -54,8 +51,6 @@ const UserSettingsMailsPage: React.FC = () => {
   const { appConfigs } = useAppConfigsStore();
   const isMailConfigured = findAppConfigByName(appConfigs, APPS.MAIL);
 
-  const pageBarsHeight = useElementHeight([NATIVE_APP_HEADER_ID, FLOATING_BUTTONS_BAR_ID, FOOTER_ID]) + 10;
-
   useEffect(() => {
     if (isMailConfigured) {
       void getExternalMailProviderConfig();
@@ -64,7 +59,7 @@ const UserSettingsMailsPage: React.FC = () => {
 
   useEffect(() => {
     if (isMailConfigured && externalMailProviderConfig.length > 0) {
-      setOption(externalMailProviderConfig[0].name);
+      setOption(externalMailProviderConfig[0].id);
       void getSyncJob();
     }
   }, [externalMailProviderConfig.length]);
@@ -78,7 +73,7 @@ const UserSettingsMailsPage: React.FC = () => {
   };
 
   const handleCreateSyncJob = () => {
-    const selectedProviderConfig = externalMailProviderConfig.filter((config) => config.name === option)[0];
+    const selectedProviderConfig = externalMailProviderConfig.filter((config) => config.id === option)[0];
 
     const createSyncJobDto = {
       ...syncjobDefaultConfig,
@@ -96,12 +91,12 @@ const UserSettingsMailsPage: React.FC = () => {
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
-      SaveButton(() => handleCreateSyncJob(), externalMailProviderConfig.length > 0),
+      SaveButton(handleCreateSyncJob, externalMailProviderConfig.length > 0),
       ReloadButton(() => {
         void getSyncJob();
         void getExternalMailProviderConfig();
       }),
-      DeleteButton(() => handleDeleteSyncJob(), Object.keys(selectedSyncJob).length > 0),
+      DeleteButton(handleDeleteSyncJob, Object.keys(selectedSyncJob).length > 0),
     ],
     keyPrefix: 'usersettings-mails-_',
   };
@@ -118,26 +113,23 @@ const UserSettingsMailsPage: React.FC = () => {
   );
 
   return (
-    <div className="h-screen overflow-y-hidden">
-      <div className="flex flex-row justify-between">
-        <NativeAppHeader
-          title={t('mail.sidebar')}
-          iconSrc={MailIcon}
-        />
-        <StateLoader isLoading={isEditSyncJobLoading} />
-      </div>
+    <PageLayout
+      nativeAppHeader={{
+        title: t('mail.sidebar'),
+        iconSrc: MailIcon,
+      }}
+    >
+      <StateLoader isLoading={isEditSyncJobLoading} />
       {isMailConfigured ? (
-        <div
-          className="w-full flex-1 overflow-auto pl-3 pr-3.5 scrollbar-thin"
-          style={{ maxHeight: `calc(100vh - ${pageBarsHeight}px)` }}
-        >
+        <>
           <h3 className="text-background">{t('mail.importer.title')}</h3>
           <div className="space-y-4">
             <DropdownSelect
               options={externalMailProviderConfig}
-              selectedVal={isGetSyncJobLoading ? t('common.loading') : t(option)}
+              selectedVal={t(option)}
               handleChange={setOption}
               classname="md:w-1/3"
+              placeholder={t('common.loading')}
             />
             <Form {...form}>
               <form
@@ -155,11 +147,11 @@ const UserSettingsMailsPage: React.FC = () => {
             </div>
           </div>
           <FloatingButtonsBar config={config} />
-        </div>
+        </>
       ) : (
         <p>{t('mail.importer.noMailConfigured')}</p>
       )}
-    </div>
+    </PageLayout>
   );
 };
 
