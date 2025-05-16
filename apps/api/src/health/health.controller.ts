@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import {
   HealthCheck,
   HealthCheckService,
@@ -35,18 +35,12 @@ class HealthController {
   @Public()
   @Get()
   @HealthCheck()
-  @HttpCode(HttpStatus.OK)
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  check() {}
-
-  @Get('readiness')
-  @HealthCheck()
   readiness() {
     return this.health.check([
       () => this.mongoose.pingCheck('mongodb'),
       () => this.httpIndicator.pingCheck('authServer', KEYCLOAK_API || ''),
       () => this.httpIndicator.pingCheck('lmnServer', new URL(EDUI_WEBDAV_URL || '').origin),
-      () => this.disk.checkStorage('disk', { thresholdPercent: 0.8, path: '/' }),
+      () => this.disk.checkStorage('disk', { thresholdPercent: 0.9, path: '/' }),
     ]);
   }
 }
