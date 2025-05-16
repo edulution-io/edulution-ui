@@ -18,6 +18,7 @@ enum FileSharingApiEndpoints {
   ONLY_OFFICE_TOKEN = 'only-office',
   DUPLICATE = 'duplicate',
   COLLECT = 'collect',
+  COPY = 'copy',
 }
 
 export default FileSharingApiEndpoints;

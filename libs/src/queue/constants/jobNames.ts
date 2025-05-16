@@ -14,6 +14,8 @@ const JOB_NAMES = {
   DUPLICATE_FILE_JOB: 'duplicate-file',
   COLLECT_FILE_JOB: 'collect-file',
   DELETE_FILE_JOB: 'delete-file',
+  MOVE_OR_RENAME_JOB: 'move-or-rename-file',
+  COPY_FILE_JOB: 'copy-file',
 } as const;
 
 export default JOB_NAMES;

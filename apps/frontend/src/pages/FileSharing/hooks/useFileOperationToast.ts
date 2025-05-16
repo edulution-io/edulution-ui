@@ -10,12 +10,21 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface DuplicateFileJobData {
-  username: string;
-  originFilePath: string;
-  destinationFilePath: string;
-  total: number;
-  processed: number;
-}
+import { useTranslation } from 'react-i18next';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useFileOperationProgressToast from '../../../hooks/useFileOperationProgressToast';
 
-export default DuplicateFileJobData;
+const useFileOperationToast = () => {
+  const { t } = useTranslation();
+  const { fileOperationProgress } = useFileSharingStore();
+
+  useFileOperationProgressToast(
+    fileOperationProgress && {
+      ...fileOperationProgress,
+      title: t(fileOperationProgress.title ?? ''),
+      description: t(fileOperationProgress.description ?? ''),
+    },
+  );
+};
+
+export default useFileOperationToast;

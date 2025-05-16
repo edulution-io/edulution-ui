@@ -20,6 +20,7 @@ import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileReques
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import JOB_NAMES from '@libs/queue/constants/jobNames';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
 import archiver from 'archiver';
 import { once } from 'events';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
@@ -57,6 +58,22 @@ class FilesharingService {
     );
   }
 
+  async copyFileOrFolder(username: string, copyFileRequestDTOs: PathChangeOrCreateProps[]) {
+    let processedItems = 0;
+    return Promise.all(
+      copyFileRequestDTOs.map(async (copyFileRequest) => {
+        const { path, newPath } = copyFileRequest;
+        await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.COPY_FILE_JOB, {
+          username,
+          originFilePath: path,
+          destinationFilePath: newPath,
+          total: copyFileRequestDTOs.length,
+          processed: (processedItems += 1),
+        });
+      }),
+    );
+  }
+
   async collectFiles(
     username: string,
     collectFileRequestDTOs: CollectFileRequestDTO[],
@@ -72,6 +89,22 @@ class FilesharingService {
           item: collectFileRequest,
           operationType: type,
           total: collectFileRequestDTOs.length,
+          processed: (processedItems += 1),
+        });
+      }),
+    );
+  }
+
+  async moveOrRenameResources(username: string, pathChangeOrCreateDtos: PathChangeOrCreateProps[]) {
+    let processedItems = 0;
+    return Promise.all(
+      pathChangeOrCreateDtos.map(async (pathChange) => {
+        const { path, newPath } = pathChange;
+        await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.MOVE_OR_RENAME_JOB, {
+          username,
+          path,
+          newPath,
+          total: pathChangeOrCreateDtos.length,
           processed: (processedItems += 1),
         });
       }),

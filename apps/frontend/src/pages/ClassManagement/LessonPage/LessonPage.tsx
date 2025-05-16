@@ -36,6 +36,7 @@ import SharingFilesFailedDialogBody from '@/pages/ClassManagement/components/Dia
 import PageLayout from '@/components/structure/layout/PageLayout';
 import QuotaLimitInfo from '@/pages/FileSharing/utilities/QuotaLimitInfo';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 
 const LessonPage = () => {
   const {
@@ -65,8 +66,9 @@ const LessonPage = () => {
     setGroupTypeInStore,
     groupNameFromStore,
     groupTypeFromStore,
-    filesharingProgress,
   } = useLessonStore();
+
+  const { fileOperationProgress } = useFileSharingStore();
 
   const { t } = useTranslation();
   const [isPageLoading, setIsPageLoading] = useState(false);
@@ -177,10 +179,10 @@ const LessonPage = () => {
   };
 
   useEffect(() => {
-    const hasProgressCompleted = (filesharingProgress?.percent ?? 0) >= 100;
-    const hasFailedPaths = (filesharingProgress?.failedPaths?.length ?? 0) > 0;
+    const hasProgressCompleted = (fileOperationProgress?.percent ?? 0) >= 100;
+    const hasFailedPaths = (fileOperationProgress?.failedPaths?.length ?? 0) > 0;
     setIsFileSharingProgessInfoDialogOpen(hasProgressCompleted && hasFailedPaths);
-  }, [filesharingProgress]);
+  }, [fileOperationProgress]);
 
   return (
     <PageLayout>
@@ -223,18 +225,18 @@ const LessonPage = () => {
       {groupNameParams || member.length ? <UserArea fetchData={fetchData} /> : <QuickAccess />}
       {openDialogType === UserGroups.Sessions && <GroupDialog item={sessionToSave} />}
 
-      {filesharingProgress && filesharingProgress.failedPaths && (
+      {fileOperationProgress && fileOperationProgress.failedPaths && (
         <AdaptiveDialog
           isOpen={isFileSharingProgessInfoDialogOpen}
           handleOpenChange={() => setIsFileSharingProgessInfoDialogOpen(!isFileSharingProgessInfoDialogOpen)}
           title={t('classmanagement.failDialog.title', {
-            file: filesharingProgress?.currentFilePath?.split('/').pop(),
+            file: fileOperationProgress?.currentFilePath?.split('/').pop(),
           })}
           body={
             <SharingFilesFailedDialogBody
-              failedFilePath={filesharingProgress.currentFilePath || ''}
-              affectedUsers={filesharingProgress?.failedPaths.map((path) => path.split('/').at(2) || '')}
-              failedPaths={filesharingProgress?.failedPaths}
+              failedFilePath={fileOperationProgress.currentFilePath || ''}
+              affectedUsers={fileOperationProgress?.failedPaths.map((path) => path.split('/').at(2) || '')}
+              failedPaths={fileOperationProgress?.failedPaths}
             />
           }
         />

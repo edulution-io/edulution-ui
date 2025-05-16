@@ -13,15 +13,19 @@
 import { WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Injectable } from '@nestjs/common';
-import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJobData';
-import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
+import { join, parse } from 'path';
+
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import WebdavService from '../../webdav/webdav.service';
+import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJobData';
+import getUsernameFromPath from '@libs/filesharing/utils/getUsernameFromPath';
+import getNextAvailableFilename from '@libs/filesharing/utils/getNextAvailableFilename';
+import FileJobData from '@libs/queue/types/fileJobData';
 import SseService from '../../sse/sse.service';
+import WebdavService from '../../webdav/webdav.service';
 
 @Injectable()
-class DeleteFileConsumer extends WorkerHost {
+class CopyFileConsumer extends WorkerHost {
   constructor(
     private readonly webDavService: WebdavService,
     private readonly sseService: SseService,
@@ -30,31 +34,41 @@ class DeleteFileConsumer extends WorkerHost {
   }
 
   async process(job: Job<FileOperationQueueJobData>): Promise<void> {
-    const { username, originFilePath, processed, total } = job.data as DeleteFileJobData;
-
+    const { username, originFilePath, destinationFilePath, total, processed } = job.data as FileJobData;
     const failedPaths: string[] = [];
+
+    const parsed = parse(destinationFilePath);
+    const targetFolderPath = parsed.dir;
+    const originalName = parsed.name;
+    const extension = parsed.ext;
+
+    const items = await this.webDavService.getFilesAtPath(username, targetFolderPath);
+
+    const uniqueFilename = getNextAvailableFilename(originalName, extension, items);
+
     try {
-      await this.webDavService.deletePath(username, originFilePath);
-    } catch (error) {
-      failedPaths.push(originFilePath);
+      await this.webDavService.copyFileViaWebDAV(username, originFilePath, join(targetFolderPath, '/', uniqueFilename));
+    } catch {
+      failedPaths.push(destinationFilePath);
     }
 
     const percent = Math.round((processed / total) * 100);
 
     const progressDto: FilesharingProgressDto = {
       processID: Number(job.id),
-      title: 'filesharing.progressBox.titleDeleting',
-      description: 'filesharing.progressBox.fileInfoDeleting',
-      statusDescription: 'filesharing.progressBox.processedDeletingInfo',
+      title: 'filesharing.progressBox.titleCopying',
+      description: 'filesharing.progressBox.fileInfoCopying',
+      statusDescription: 'filesharing.progressBox.processedCopyingInfo',
       processed,
       total,
       percent,
       currentFilePath: originFilePath,
-      username: '',
+      username: getUsernameFromPath(destinationFilePath) || '',
       failedPaths,
     };
-    this.sseService.sendEventToUser(username, progressDto, SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES);
+
+    this.sseService.sendEventToUser(username, progressDto, SSE_MESSAGE_TYPE.FILESHARING_COPY_FILES);
   }
 }
 
-export default DeleteFileConsumer;
+export default CopyFileConsumer;
