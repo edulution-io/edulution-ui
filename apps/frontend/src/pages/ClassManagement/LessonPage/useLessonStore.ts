@@ -29,7 +29,6 @@ import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpo
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import { toast } from 'sonner';
 import { t } from 'i18next';
-import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 
 const { PROJECT, SCHOOL_CLASSES, EXAM_MODE, MANAGEMENT_GROUPS, PRINTERS } = LMN_API_EDU_API_ENDPOINTS;
 
@@ -41,7 +40,6 @@ const initialState = {
   member: [],
   groupTypeFromStore: undefined,
   groupNameFromStore: undefined,
-  filesharingProgress: null,
 };
 
 type PersistentLessonStore = (
@@ -53,8 +51,6 @@ const useLessonStore = create<LessonStore>(
   (persist as PersistentLessonStore)(
     (set) => ({
       ...initialState,
-
-      setFilesharingProgress: (progress: FilesharingProgressDto | null) => set({ filesharingProgress: progress }),
 
       setMember: (member) => set({ member }),
       setOpenDialogType: (type) => set({ openDialogType: type }),

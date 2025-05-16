@@ -348,12 +348,18 @@
       "titleSharing": "Dateien werden ausgeteilt",
       "titleCollecting": "Dateien werden eingesammelt",
       "titleDeleting": "Dateien werden gelöscht",
+      "titleMoving": "Dateien werden verschoben",
+      "titleCopying": "Dateien werden kopiert",
       "processedSharingInfo": "{{processed}} von {{total}} Dateien erfolgreich ausgeteilt",
       "processedCollectingInfo": "{{processed}} von {{total}} Dateien erfolgreich eingesammelt",
       "processedDeletingInfo": "{{processed}} von {{total}} Dateien erfolgreich gelöscht",
-      "fileInfoSharing": "Datei {{filename}} wird an {{studentName}} ausgeteilt",
-      "fileInfoCollecting": "Datei {{filename}} wird von {{studentName}} eingesammelt",
+      "processedMovingInfo": "{{processed}} von {{total}} Dateien erfolgreich verschoben",
+      "processedCopyingInfo": "{{processed}} von {{total}} Dateien erfolgreich kopiert",
+      "fileInfoSharing": "Datei {{filename}} wird an {{username}} ausgeteilt",
+      "fileInfoCollecting": "Datei {{filename}} wird von {{username}} eingesammelt",
+      "fileInfoMoving": "Datei {{filename}} wird verschoben",
       "fileInfoDeleting": "Datei {{filename}} wird gelöscht",
+      "fileInfoCopying": "Datei {{filename}} wird kopiert",
       "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden",
       "downloadInfo": "Datei {{filename}} wird heruntergeladen"
     },
@@ -1178,7 +1184,7 @@
       }
     }
   },
-  "fileOperationSuccessful": "Dateioperation erfolgreich",
+  "fileOperationSuccessful": "Dateioperation erfolgreich gestartet",
   "fileOperationStarted": "Dateioperation gestartet",
   "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
   "fileSharingTable": {
@@ -1273,6 +1279,11 @@
     "rename": "Umbenennen",
     "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
   },
+  "copyItemDialog": {
+    "copyFilesOrDirectoriesToDirectory": "Dateien oder Verzeichnisse in ein Verzeichnis kopieren",
+    "copy": "Kopieren"
+  },
+
   "moveItemDialog": {
     "changeDirectory": "Verzeichnis wechseln",
     "currentDirectory": "Aktuelles Verzeichnis",
@@ -1314,7 +1325,8 @@
     "rename": "Umbenennen",
     "move": "Verschieben",
     "delete": "Löschen",
-    "download": "Herunterladen"
+    "download": "Herunterladen",
+    "copy": "Kopieren"
   },
   "response": {
     "successfully": "Aktion war erfolgreich",

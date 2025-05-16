@@ -45,7 +45,7 @@ class FilesharingProgressDto {
 
   @IsString()
   @IsOptional()
-  studentName?: string;
+  username?: string;
 
   @IsOptional()
   @IsArray()

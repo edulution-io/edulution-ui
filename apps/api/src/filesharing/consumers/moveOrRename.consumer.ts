@@ -11,17 +11,17 @@
  */
 
 import { WorkerHost } from '@nestjs/bullmq';
-import { Job } from 'bullmq';
 import { Injectable } from '@nestjs/common';
 import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJobData';
-import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
+import { Job } from 'bullmq';
+import MoveOrRenameJobData from '@libs/queue/types/moveOrRenameJobData';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import WebdavService from '../../webdav/webdav.service';
 import SseService from '../../sse/sse.service';
+import WebdavService from '../../webdav/webdav.service';
 
 @Injectable()
-class DeleteFileConsumer extends WorkerHost {
+class MoveOrRenameConsumer extends WorkerHost {
   constructor(
     private readonly webDavService: WebdavService,
     private readonly sseService: SseService,
@@ -30,31 +30,31 @@ class DeleteFileConsumer extends WorkerHost {
   }
 
   async process(job: Job<FileOperationQueueJobData>): Promise<void> {
-    const { username, originFilePath, processed, total } = job.data as DeleteFileJobData;
-
+    const { username, path, newPath, total, processed } = job.data as MoveOrRenameJobData;
     const failedPaths: string[] = [];
+
     try {
-      await this.webDavService.deletePath(username, originFilePath);
+      await this.webDavService.moveOrRenameResource(username, path, newPath);
     } catch (error) {
-      failedPaths.push(originFilePath);
+      failedPaths.push(newPath);
     }
 
     const percent = Math.round((processed / total) * 100);
 
     const progressDto: FilesharingProgressDto = {
       processID: Number(job.id),
-      title: 'filesharing.progressBox.titleDeleting',
-      description: 'filesharing.progressBox.fileInfoDeleting',
-      statusDescription: 'filesharing.progressBox.processedDeletingInfo',
+      title: 'filesharing.progressBox.titleMoving',
+      description: 'filesharing.progressBox.fileInfoMoving',
+      statusDescription: 'filesharing.progressBox.processedMovingInfo',
       processed,
       total,
       percent,
-      currentFilePath: originFilePath,
+      currentFilePath: path,
       username: '',
       failedPaths,
     };
-    this.sseService.sendEventToUser(username, progressDto, SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES);
+    this.sseService.sendEventToUser(username, progressDto, SSE_MESSAGE_TYPE.FILESHARING_MOVE_OR_RENAME_FILES);
   }
 }
 
-export default DeleteFileConsumer;
+export default MoveOrRenameConsumer;

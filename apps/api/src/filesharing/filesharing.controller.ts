@@ -38,6 +38,7 @@ import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
+import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
 import FilesharingService from './filesharing.service';
@@ -108,17 +109,10 @@ class FilesharingController {
 
   @Patch()
   async moveOrRenameResource(
-    @Body()
-    body: {
-      path: string;
-      newPath: string;
-    },
+    @Body() pathChangeOrCreateDtos: PathChangeOrCreateDto[],
     @GetCurrentUsername() username: string,
   ) {
-    const { path, newPath } = body;
-    const originFull = `${this.baseurl}${path}`;
-    const newFull = `${this.baseurl}${newPath}`;
-    return this.webdavService.moveOrRenameResource(username, originFull, newFull);
+    return this.filesharingService.moveOrRenameResources(username, pathChangeOrCreateDtos);
   }
 
   @Get(FileSharingApiEndpoints.FILE_STREAM)
@@ -159,6 +153,11 @@ class FilesharingController {
     @GetCurrentUsername() username: string,
   ) {
     return this.filesharingService.duplicateFile(username, duplicateFileRequestDto);
+  }
+
+  @Post(FileSharingApiEndpoints.COPY)
+  async copyFile(@Body() pathChangeOrCreateDto: PathChangeOrCreateDto[], @GetCurrentUsername() username: string) {
+    return this.filesharingService.copyFileOrFolder(username, pathChangeOrCreateDto);
   }
 
   @Post(FileSharingApiEndpoints.COLLECT)
