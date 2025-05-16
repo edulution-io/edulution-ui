@@ -189,9 +189,15 @@ describe('AppConfigService', () => {
     it('should delete a config', async () => {
       mockAppConfigModel.updateOne.mockResolvedValue({});
       const configName = 'Test';
-      jest.spyOn(service, 'getAppConfigs').mockResolvedValue([mockAppConfig]);
 
-      FilesystemService.checkIfFileExistAndDelete = jest.fn().mockResolvedValue({});
+      jest.spyOn(FilesystemService, 'checkIfFileExist').mockResolvedValueOnce(false);
+      jest.spyOn(FilesystemService, 'deleteFile').mockResolvedValueOnce();
+
+      jest.spyOn(FilesystemService, 'checkIfFileExist').mockResolvedValueOnce(false);
+      jest.spyOn(FilesystemService, 'deleteDirectories').mockResolvedValueOnce();
+      jest.spyOn(FilesystemService, 'checkIfFileExistAndDelete').mockResolvedValueOnce();
+
+      jest.spyOn(service, 'getAppConfigs').mockResolvedValue([mockAppConfig]);
 
       const result = await service.deleteConfig(configName, mockLdapGroup);
 
