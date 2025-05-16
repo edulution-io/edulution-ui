@@ -12,13 +12,13 @@
 
 import { useTranslation } from 'react-i18next';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import useProgressToast from '../../../hooks/useProgressToast';
+import useFileOperationProgressToast from '../../../hooks/useFileOperationProgressToast';
 
 const useFileOperationToast = () => {
   const { t } = useTranslation();
   const { fileOperationProgress } = useFileSharingStore();
 
-  useProgressToast(
+  useFileOperationProgressToast(
     fileOperationProgress && {
       ...fileOperationProgress,
       title: t(fileOperationProgress.title ?? ''),
