@@ -50,7 +50,7 @@ class DeleteFileConsumer extends WorkerHost {
       total,
       percent,
       currentFilePath: originFilePath,
-      studentName: '',
+      username: '',
       failedPaths,
     };
     this.sseService.sendEventToUser(username, progressDto, SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES);

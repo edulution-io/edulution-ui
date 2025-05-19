@@ -11,46 +11,41 @@
  */
 
 import { HttpMethods } from '@libs/common/types/http-methods';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import eduApi from '@/api/eduApi';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
-import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
-import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import { t } from 'i18next';
-
-const handleDeleteItems = async (pathsToDelete: PathChangeOrCreateDto[], endpoint: string) => {
-  await eduApi.delete(buildApiDeletePathUrl(endpoint, DeleteTargetType.FILE_SERVER), {
-    data: {
-      paths: pathsToDelete.map((item) => getPathWithoutWebdav(item.path)),
-    },
-  });
-};
-
-const sendBatchRequests = async (
-  pathChangeOrCreateDtos: PathChangeOrCreateDto[],
-  endpoint: string,
-  httpMethod: HttpMethods,
-) => {
-  const promises = pathChangeOrCreateDtos.map((pathChangeOrCreateDto) =>
-    eduApi[httpMethod](endpoint, pathChangeOrCreateDto),
-  );
-  return Promise.all(promises);
-};
+import { HttpStatusCode } from 'axios';
 
 const handleBulkFileOperations = async (
   action: FileActionType,
   endpoint: string,
   httpMethod: HttpMethods,
-  itemsToProcess: PathChangeOrCreateDto[],
-  setFileOperationResult: (success: boolean | undefined, message: string, statusCode: number) => void,
+  items: PathChangeOrCreateDto[],
+  setResult: (success: boolean | undefined, message: string, statusCode: number) => void,
+  handleDeleteItems: (items: PathChangeOrCreateDto[], endpoint: string) => Promise<void>,
 ) => {
-  if (action === FileActionType.DELETE_FILE_FOLDER) {
-    await handleDeleteItems(itemsToProcess, endpoint);
-    setFileOperationResult(undefined, t('fileOperationSuccessful'), 200);
-  } else if (action === FileActionType.MOVE_FILE_FOLDER || action === FileActionType.RENAME_FILE_FOLDER) {
-    await sendBatchRequests(itemsToProcess, endpoint, httpMethod);
-    setFileOperationResult(true, t('fileOperationSuccessful'), 200);
+  try {
+    switch (action) {
+      case FileActionType.DELETE_FILE_FOLDER:
+        await handleDeleteItems(items, endpoint);
+        break;
+
+      case FileActionType.MOVE_FILE_FOLDER:
+      case FileActionType.RENAME_FILE_FOLDER:
+      case FileActionType.COPY_FILE_OR_FOLDER:
+        await eduApi[httpMethod](endpoint, items);
+        break;
+      default:
+    }
+
+    const success = [FileActionType.RENAME_FILE_FOLDER, FileActionType.COPY_FILE_OR_FOLDER].includes(action)
+      ? true
+      : undefined;
+
+    setResult(success, t('fileOperationSuccessful'), HttpStatusCode.Ok);
+  } catch (rawError: unknown) {
+    setResult(false, t('unknownErrorOccurred'), HttpStatusCode.InternalServerError);
   }
 };
 

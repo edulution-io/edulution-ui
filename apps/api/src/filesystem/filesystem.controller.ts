@@ -18,6 +18,7 @@ import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
+import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
 import { createAttachmentUploadOptions } from '../common/multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 import FilesystemService from './filesystem.service';
@@ -45,33 +46,23 @@ class FileSystemController {
     return res.status(200).json(file.filename);
   }
 
-  static buildPathString(path: string | string[]) {
-    if (Array.isArray(path)) {
-      return path.join('/');
-    }
-    return path;
-  }
-
   @Get('info/*path')
   getFiles(@Param('path') path: string | string[]) {
-    return this.filesystemService.getFilesInfo(FileSystemController.buildPathString(path));
+    return this.filesystemService.getFilesInfo(FilesystemService.buildPathString(path));
   }
 
-  @Get('file/:appName/*filename') serveFiles(
+  @Get(`${FILE_ENDPOINTS.FILE}/:appName/*filename`) serveFiles(
     @Param('appName') appName: string,
     @Param('filename') filename: string | string[],
     @Res() res: Response,
   ) {
-    return this.filesystemService.serveFiles(appName, FileSystemController.buildPathString(filename), res);
+    return this.filesystemService.serveFiles(appName, FilesystemService.buildPathString(filename), res);
   }
 
   @Delete(':appName/*filename')
   @UseGuards(AppConfigGuard)
   deleteFile(@Param('appName') appName: string, @Param('filename') filename: string) {
-    return FilesystemService.deleteFile(
-      `${APPS_FILES_PATH}/${appName}`,
-      FileSystemController.buildPathString(filename),
-    );
+    return FilesystemService.deleteFile(`${APPS_FILES_PATH}/${appName}`, FilesystemService.buildPathString(filename));
   }
 }
 

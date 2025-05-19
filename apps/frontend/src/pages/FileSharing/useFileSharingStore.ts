@@ -21,6 +21,7 @@ import ContentType from '@libs/filesharing/types/contentType';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
 import delay from '@libs/common/utils/delay';
+import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import UserRoles from '@libs/user/constants/userRoles';
 
@@ -28,6 +29,7 @@ type UseFileSharingStore = {
   files: DirectoryFileDTO[];
   selectedItems: DirectoryFileDTO[];
   currentPath: string;
+  downloadProgressList: DownloadFileDto[];
   pathToRestoreSession: string;
   fileOperationProgress: null | FilesharingProgressDto;
   setDirectories: (files: DirectoryFileDTO[]) => void;
@@ -50,6 +52,9 @@ type UseFileSharingStore = {
   setIsLoading: (isLoading: boolean) => void;
   setMountPoints: (mountPoints: DirectoryFileDTO[]) => void;
   setFileOperationProgress: (progress: FilesharingProgressDto | null) => void;
+  setDownloadProgressList: (progressList: DownloadFileDto[]) => void;
+  updateDownloadProgress: (progress: DownloadFileDto) => void;
+  removeDownloadProgress: (fileName: string) => void;
 };
 
 const initialState = {
@@ -63,6 +68,7 @@ const initialState = {
   isLoading: false,
   isError: false,
   currentlyDisabledFiles: {},
+  downloadProgressList: [],
   fileOperationProgress: null,
 };
 
@@ -80,6 +86,31 @@ const useFileSharingStore = create<UseFileSharingStore>(
       },
 
       setFileOperationProgress: (progress: FilesharingProgressDto | null) => set({ fileOperationProgress: progress }),
+
+      setDownloadProgressList: (progressList) => {
+        set({ downloadProgressList: progressList });
+      },
+
+      removeDownloadProgress: (fileName) => {
+        const { downloadProgressList } = get();
+        set({
+          downloadProgressList: downloadProgressList.filter((d) => d.fileName !== fileName),
+        });
+      },
+
+      updateDownloadProgress: (progress) => {
+        const { downloadProgressList } = get();
+        const existingIndex = downloadProgressList.findIndex((d) => d.fileName === progress.fileName);
+
+        if (existingIndex >= 0) {
+          const updatedList = [...downloadProgressList];
+          updatedList[existingIndex] = progress;
+
+          set({ downloadProgressList: updatedList });
+        } else {
+          set({ downloadProgressList: [...downloadProgressList, progress] });
+        }
+      },
 
       setPathToRestoreSession: (path: string) => {
         set({ pathToRestoreSession: path });

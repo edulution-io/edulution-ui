@@ -10,12 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const getStudentNameFromPath = (filePath: string): string | null => {
-  const parts = filePath.split('/');
-  if (parts.length < 3) {
-    return null;
-  }
-  return parts[2];
-};
+const LOG_LEVELS = {
+  ERROR: 'error',
+  WARN: 'warn',
+  LOG: 'log',
+  DEBUG: 'debug',
+  VERBOSE: 'verbose',
+  FATAL: 'fatal',
+} as const;
 
-export default getStudentNameFromPath;
+export default LOG_LEVELS;

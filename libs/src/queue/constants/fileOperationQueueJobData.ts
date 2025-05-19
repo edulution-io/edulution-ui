@@ -11,9 +11,10 @@
  */
 
 import CollectFileJobData from '@libs/queue/types/collectFileJobData';
-import DuplicateFileJobData from '@libs/queue/types/duplicateFileJobData';
+import FileJobData from '@libs/queue/types/fileJobData';
 import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
+import MoveOrRenameJobData from '@libs/queue/types/moveOrRenameJobData';
 
-type FileOperationQueueJobData = CollectFileJobData | DuplicateFileJobData | DeleteFileJobData;
+type FileOperationQueueJobData = CollectFileJobData | FileJobData | DeleteFileJobData | MoveOrRenameJobData;
 
 export default FileOperationQueueJobData;

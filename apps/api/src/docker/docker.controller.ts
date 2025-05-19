@@ -23,7 +23,7 @@ class DockerController {
   constructor(private readonly dockerService: DockerService) {}
 
   @Get(EDU_API_DOCKER_CONTAINER_ENDPOINT)
-  async getContainers(@Query('applicationNames') applicationNames?: string[] | undefined) {
+  async getContainers(@Query('applicationNames') applicationNames?: string | string[] | undefined) {
     return this.dockerService.getContainers(applicationNames);
   }
 

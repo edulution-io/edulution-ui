@@ -33,6 +33,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   showSelectedFile = true,
   showHome = true,
   fileType,
+  isCurrentPathDefaultDestination = false,
 }) => {
   const { t } = useTranslation();
   const [currentPath, setCurrentPath] = useState(pathToFetch || '');
@@ -45,6 +46,19 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
     useFileSharingMoveDialogStore();
 
   const fetchMechanism = fileType === ContentType.DIRECTORY ? fetchDialogDirs : fetchDialogFiles;
+
+  const currentDirItem: DirectoryFileDTO = {
+    filename: currentPath,
+    etag: '',
+    basename: currentPath.split('/').pop() || '',
+    type: ContentType.DIRECTORY,
+  };
+
+  useEffect(() => {
+    if (isCurrentPathDefaultDestination) {
+      setMoveOrCopyItemToPath(currentDirItem);
+    }
+  }, [isCurrentPathDefaultDestination, currentPath]);
 
   const files = fileType === ContentType.DIRECTORY ? dialogShownDirs : dialogShownFiles;
 
@@ -102,7 +116,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
     <div className="bottom-0 justify-end bg-secondary p-4 text-sm text-foreground">
       {moveOrCopyItemToPath?.basename && showSelectedFile ? (
         <p className="bg-secondary">
-          {t('moveItemDialog.selectedItem')}: {moveOrCopyItemToPath.basename}
+          {t('moveItemDialog.selectedItem')}: {decodeURIComponent(moveOrCopyItemToPath.basename)}
         </p>
       ) : (
         <p className="bg-secondary">

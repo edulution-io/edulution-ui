@@ -14,13 +14,13 @@ import { WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Injectable } from '@nestjs/common';
 
-import DuplicateFileJobData from '@libs/queue/types/duplicateFileJobData';
+import FileJobData from '@libs/queue/types/fileJobData';
 
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJobData';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
-import getStudentNameFromPath from '@libs/filesharing/utils/getStudentNameFromPath';
+import getUsernameFromPath from '@libs/filesharing/utils/getUsernameFromPath';
 import SseService from '../../sse/sse.service';
 import WebdavService from '../../webdav/webdav.service';
 
@@ -34,7 +34,7 @@ class DuplicateFileConsumer extends WorkerHost {
   }
 
   async process(job: Job<FileOperationQueueJobData>): Promise<void> {
-    const { username, originFilePath, destinationFilePath, total, processed } = job.data as DuplicateFileJobData;
+    const { username, originFilePath, destinationFilePath, total, processed } = job.data as FileJobData;
     const failedPaths: string[] = [];
 
     const pathUpToTransferFolder = this.webDavService.getPathUntilFolder(destinationFilePath, FILE_PATHS.TRANSFER);
@@ -50,7 +50,7 @@ class DuplicateFileConsumer extends WorkerHost {
     }
 
     const percent = Math.round((processed / total) * 100);
-    const studentName = getStudentNameFromPath(destinationFilePath) || '';
+    const destinationUsername = getUsernameFromPath(destinationFilePath) || '';
 
     const progressDto: FilesharingProgressDto = {
       processID: Number(job.id),
@@ -61,7 +61,7 @@ class DuplicateFileConsumer extends WorkerHost {
       total,
       percent,
       currentFilePath: originFilePath,
-      studentName,
+      username: destinationUsername,
       failedPaths,
     };
 

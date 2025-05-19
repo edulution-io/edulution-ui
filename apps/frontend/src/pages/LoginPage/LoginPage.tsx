@@ -240,31 +240,36 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  const renderFormField = (fieldName: 'username' | 'password', label: string, type?: string, shouldTrim?: boolean) => (
-    <div className={isEnterTotpVisible ? 'hidden' : ''}>
-      <FormFieldSH
-        control={form.control}
-        name={fieldName}
-        render={({ field }) => (
-          <FormItem>
-            <p className="font-bold text-foreground">{label}</p>
-            <FormControl>
-              <Input
-                {...field}
-                type={type}
-                shouldTrim={shouldTrim}
-                disabled={isLoading}
-                placeholder={label}
-                variant="login"
-                data-testid={`test-id-login-page-${fieldName}-input`}
-              />
-            </FormControl>
-            <FormMessage className="text-foreground" />
-          </FormItem>
-        )}
-      />
-    </div>
-  );
+  useEffect(() => {
+    form.setFocus('username');
+  }, [form.setFocus]);
+
+  const renderFormField = (fieldName: 'username' | 'password', label: string, type?: string, shouldTrim?: boolean) =>
+    !isEnterTotpVisible && (
+      <div>
+        <FormFieldSH
+          control={form.control}
+          name={fieldName}
+          render={({ field }) => (
+            <FormItem>
+              <p className="font-bold text-foreground">{label}</p>
+              <FormControl>
+                <Input
+                  {...field}
+                  type={type}
+                  shouldTrim={shouldTrim}
+                  disabled={isLoading}
+                  placeholder={label}
+                  variant="login"
+                  data-testid={`test-id-login-page-${fieldName}-input`}
+                />
+              </FormControl>
+              <FormMessage className="text-foreground" />
+            </FormItem>
+          )}
+        />
+      </div>
+    );
 
   const renderErrorMessage = () => {
     const passwordError = form.getFieldState('password').error?.message;
@@ -290,7 +295,7 @@ const LoginPage: React.FC = () => {
 
     return (
       <>
-        <div className={isEnterTotpVisible ? '' : 'hidden'}>
+        {isEnterTotpVisible && (
           <FormFieldSH
             control={form.control}
             name="totpValue"
@@ -308,7 +313,7 @@ const LoginPage: React.FC = () => {
               </FormItem>
             )}
           />
-        </div>
+        )}
         {renderFormField('username', t('common.username'), 'text', true)}
         {renderFormField('password', t('common.password'), 'password')}
       </>
@@ -320,7 +325,7 @@ const LoginPage: React.FC = () => {
       <PageTitle translationId="login.pageTitle" />
       <Card
         variant="modal"
-        className="bg-background"
+        className="overflow-y-auto bg-background scrollbar-thin"
       >
         <img
           src={DesktopLogo}

@@ -13,10 +13,10 @@
 import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post } from '@nestjs/common';
 import UserDto from '@libs/user/types/user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import UserAccountDto from '@libs/user/types/userAccount.dto';
 import { EDU_API_USERS_ENDPOINT, EDU_API_USER_ACCOUNTS_ENDPOINT } from '@libs/user/constants/usersApiEndpoints';
+import CustomHttpException from '../common/CustomHttpException';
 import UsersService from './users.service';
 import UpdateUserDto from './dto/update-user.dto';
 import GetToken from '../common/decorators/getToken.decorator';

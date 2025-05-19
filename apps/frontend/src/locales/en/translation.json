@@ -83,7 +83,6 @@
       "attachmentDeletionFailed": "Failed to delete an attachment"
     }
   },
-
   "mountpoints": {
     "home": "Home",
     "examusers": "Exams",
@@ -93,7 +92,6 @@
     "shares": "Shares",
     "students-home": "Students-Home"
   },
-
   "appstore": {
     "title": "App Store",
     "description": "Here you can add {{ applicationName }} apps.",
@@ -145,6 +143,9 @@
       "LmnConnectionFailed": "Connection to school server failed.",
       "KeycloakConnectionFailed": "Connection to authentication server failed.",
       "EdulutionConnectionFailed": "Connection to edulution server failed. Please try again later."
+    },
+    "logout": {
+      "success": "Logout successful"
     }
   },
   "lmnApi": {
@@ -194,13 +195,15 @@
     "rowSelected": "{{selected}} of {{total}} job selected",
     "importer": {
       "filterPlaceHolderText": "Search for username",
-      "title": "Email Importer",
+      "title": "Email Sync",
       "provider": "Email Provider",
       "interval": "Sync Interval",
       "isActive": "Active",
-      "syncJobsTable": "Importer Jobs",
+      "syncJobsTable": "Sync Jobs",
       "mailAddress": "Email address",
-      "noMailConfigured": "Mail app is not active. Please contact your system administrator."
+      "noMailConfigured": "Mail app is not active. Please contact your system administrator.",
+      "syncAccountAdded": "Account for sync job added.",
+      "syncAccountDeleted": "Account for sync job deleted."
     }
   },
   "chat": {
@@ -351,13 +354,20 @@
       "info": "Info",
       "titleSharing": "Distributing files",
       "titleCollecting": "Collecting files",
+      "titleMoving": "Moving files",
       "titleDeleting": "Files are being deleted",
+      "titleCopying": "Copying files",
       "processedSharingInfo": "{{processed}} out of {{total}} files distributed successfully",
       "processedCollectingInfo": "{{processed}} out of {{total}} files collected successfully",
       "processedDeletingInfo": "{{processed}} out of {{total}} files deleted successfully",
-      "fileInfoSharing": "File {{filename}} is being distributed to {{studentName}}",
-      "fileInfoCollecting": "File {{filename}} is being collected to {{studentName}}",
+      "processedMovingInfo": "{{processed}} out of {{total}} files moved successfully",
+      "processedCopyingInfo": "{{processed}} out of {{total}} files copied successfully",
+      "fileInfoSharing": "File {{filename}} is being distributed to {{username}}",
+      "fileInfoCollecting": "File {{filename}} is being collected to {{username}}",
+      "fileInfoCopying": "File {{filename}} is being copied",
+      "fileInfoMoving": "File {{filename}} is being moved",
       "fileInfoDeleting": "File {{filename}} is being deleted",
+      "downloadInfo": "Downloading {{filename}}",
       "errorInfo": "{{failed}} files could not be handed out"
     }
   },
@@ -549,7 +559,8 @@
       "templateMenu": {
         "fetch": "Choose one of the following templates.",
         "submit": "Save Survey as template.",
-        "title": "Templates store/load"
+        "title": "Templates store/load",
+        "emptyMessage": "There are no templates available, yet"
       },
       "questionSettings": {
         "settings": "Settings",
@@ -726,7 +737,6 @@
   "roombooking": {
     "sidebar": "Room booking"
   },
-
   "mobileAccessSetup": {
     "connectionTitle": "Configure Connection",
     "pleaseEnterCredentials": "Please enter your server credentials",
@@ -735,7 +745,6 @@
     "yourPassword": "Your Password",
     "addButton": "Add"
   },
-
   "settings": {
     "title": "SETTINGS",
     "sidebar": "Settings",
@@ -1173,7 +1182,7 @@
       }
     }
   },
-  "fileOperationSuccessful": "File operation successful",
+  "fileOperationSuccessful": "File operation successful started",
   "fileOperationStarted": "File operation started",
   "unknownErrorOccurred": "An unknown error occurred",
   "fileSharingTable": {
@@ -1224,6 +1233,10 @@
     "loading": "Loading",
     "no-results": "No results",
     "usersAdded": "{{ count }} added"
+  },
+  "copyItemDialog": {
+    "copyFilesOrDirectoriesToDirectory": "Copy files or directories into a directory",
+    "copy": "Copy"
   },
   "fileCategory": {
     "folder": "Folder",
@@ -1309,7 +1322,8 @@
     "rename": "Rename",
     "move": "Move",
     "delete": "Delete",
-    "download": "Download"
+    "download": "Download",
+    "copy": "Copy"
   },
   "response": {
     "successfully": "Action was successful",
