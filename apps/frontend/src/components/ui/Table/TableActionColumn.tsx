@@ -16,18 +16,21 @@ import { ColumnDef } from '@tanstack/react-table';
 import TableAction from '@libs/common/types/TableAction';
 import TableActionCell from './TableActionCell';
 
+export const TABLE_ACTION_COLUMN_ID = 'tableActionColumn';
+
 interface TableActionColumnProps<TData, TValue> {
   actions: TableAction<TData, TValue> | TableAction<TData, TValue>[];
   accessorFn: (originalRow: TData, index: number) => TValue;
+  id?: string;
 }
 
 const TableActionColumn = <TData, TValue>(props: TableActionColumnProps<TData, TValue>): ColumnDef<TData, TValue> => {
-  const { actions, accessorFn } = props;
+  const { actions, accessorFn, id } = props;
 
   const { t } = useTranslation();
 
   return {
-    id: 'tableActionColumn',
+    id: id || TABLE_ACTION_COLUMN_ID,
     header: () => <div className="flex items-center justify-center">{t('common.actions')}</div>,
     meta: {
       translationId: 'common.actions',

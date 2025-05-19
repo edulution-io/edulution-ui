@@ -38,25 +38,23 @@ const TableActionMenu = <TData, TValue>({ actions, row }: TableActionMenuProps<T
   }));
 
   return (
-    <div key="actionMenu">
-      <DropdownMenu
-        menuContentClassName="z-[600]"
-        trigger={
-          <div className="relative">
-            <Button
-              type="button"
-              variant="btn-outline"
-              className={cn('m-0 max-h-[2.25rem] w-[80px] rounded-md bg-opacity-90')}
-            >
-              <IconContext.Provider value={iconContextValue}>
-                <FaGear className="h-[18px] w-[18px]" />
-              </IconContext.Provider>
-            </Button>
-          </div>
-        }
-        items={contextMenuItems}
-      />
-    </div>
+    <DropdownMenu
+      menuContentClassName="z-[600]"
+      trigger={
+        <div className="relative">
+          <Button
+            type="button"
+            variant="btn-outline"
+            className={cn('m-0 max-h-[2.25rem] w-[80px] rounded-md bg-opacity-90')}
+          >
+            <IconContext.Provider value={iconContextValue}>
+              <FaGear className="h-[18px] w-[18px]" />
+            </IconContext.Provider>
+          </Button>
+        </div>
+      }
+      items={contextMenuItems}
+    />
   );
 };
 
