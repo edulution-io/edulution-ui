@@ -23,7 +23,7 @@ import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoi
 import LocalhostGuard from '../common/guards/localhost.guard';
 import { Public } from '../common/decorators/public.decorator';
 
-const { EDUI_WEBDAV_URL, KEYCLOAK_API } = process.env;
+const { EDUI_WEBDAV_URL, KEYCLOAK_API, EDUI_DISK_SPACE_THRESHOLD } = process.env;
 
 @Controller(EDU_API_CONFIG_ENDPOINTS.HEALTH_CHECK)
 class HealthController {
@@ -47,7 +47,7 @@ class HealthController {
         this.httpIndicator.pingCheck('lmnServer', new URL(EDUI_WEBDAV_URL || '').origin, {
           httpClient: this.httpService,
         }),
-      () => this.disk.checkStorage('disk', { thresholdPercent: 0.9, path: '/' }),
+      () => this.disk.checkStorage('disk', { thresholdPercent: Number(EDUI_DISK_SPACE_THRESHOLD) || 0.95, path: '/' }),
     ]);
   }
 }

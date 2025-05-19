@@ -33,8 +33,17 @@ const useEduApiStore = create<EduApiStore>((set) => ({
   getIsEduApiHealthy: async () => {
     set({ isEduApiHealthyLoading: true });
     try {
-      const response = await eduApi.get<void>(EDU_API_CONFIG_ENDPOINTS.HEALTH_CHECK);
-      return response.status === Number(HttpStatusCode.Ok);
+      const response = await eduApi.get<void>(EDU_API_CONFIG_ENDPOINTS.HEALTH_CHECK, {
+        validateStatus: () => true,
+      });
+
+      if (
+        response.status === Number(HttpStatusCode.Ok) ||
+        response.status === Number(HttpStatusCode.ServiceUnavailable)
+      ) {
+        return true;
+      }
+      return false;
     } catch (e) {
       handleApiError(e, set);
       return false;
