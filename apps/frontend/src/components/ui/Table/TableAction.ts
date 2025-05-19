@@ -17,7 +17,7 @@ import { Row } from '@tanstack/react-table';
 interface TableAction<TData, TValue> {
   icon: IconType;
   translationId: string;
-  onClick: (row: Row<TData>) => void;
+  onClick: (row?: Row<TData>) => void;
   className?: string;
 }
 

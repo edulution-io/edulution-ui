@@ -30,6 +30,8 @@ import Input from '@/components/shared/Input';
 import DEFAULT_TABLE_SORT_PROPERTY_KEY from '@libs/common/constants/defaultTableSortProperty';
 import SelectColumnsDropdown from '@/components/ui/Table/SelectCoumnsDropdown';
 import TABLE_DEFAULT_COLUMN_WIDTH from '@libs/ui/constants/tableDefaultColumnWidth';
+import TableAction from '@/components/ui/Table/TableAction';
+import TableActionRow from '@/components/ui/Table/TableActionRow';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -48,6 +50,7 @@ interface DataTableProps<TData, TValue> {
   showHeader?: boolean;
   showSelectedCount?: boolean;
   isDialog?: boolean;
+  actions?: TableAction<TData, TValue> | TableAction<TData, TValue>[];
 }
 
 const ScrollableTable = <TData, TValue>({
@@ -67,6 +70,7 @@ const ScrollableTable = <TData, TValue>({
   showSelectedCount = true,
   isDialog = false,
   initialColumnVisibility = {},
+  actions,
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(initialColumnVisibility);
@@ -194,6 +198,10 @@ const ScrollableTable = <TData, TValue>({
               </TableRow>
             )}
           </TableBody>
+          <TableActionRow
+            actions={actions}
+            columnLength={table.getAllColumns().length}
+          />
         </Table>
       </div>
     </>

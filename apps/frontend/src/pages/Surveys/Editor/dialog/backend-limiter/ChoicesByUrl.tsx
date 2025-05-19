@@ -15,8 +15,10 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { SurveyCreatorModel } from 'survey-creator-core';
+import { MdAddCircleOutline } from 'react-icons/md';
 import cn from '@libs/common/utils/className';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import APPS from '@libs/appconfig/constants/apps';
 import { SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
@@ -27,9 +29,9 @@ import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 import isQuestionTypeChoiceType from '@libs/survey/utils/isQuestionTypeChoiceType';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import ChoicesWithBackendLimitsShowOtherItem from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitsShowOtherItem';
-import ChoicesWithBackendLimitTable from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitsTable';
 import ChoicesWithBackendLimitTableColumns from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitTableColumns';
 import Switch from '@/components/ui/Switch';
+import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import TableActionColumn from '@/components/ui/Table/TableActionColumn';
 import { HiTrash } from 'react-icons/hi';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
@@ -138,12 +140,20 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     ...ChoicesWithBackendLimitTableColumns,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     TableActionColumn<ChoiceDto, any>({
-      actions: {
-        icon: HiTrash,
-        translationId: 'common.delete',
-        onClick: (row) => removeChoice(row.original.name),
-        className: 'text-ciRed',
-      },
+      actions: [
+        {
+          icon: HiTrash,
+          translationId: 'common.delete',
+          onClick: (row) => (row ? removeChoice(row.original.name) : null),
+          className: 'text-ciRed',
+        },
+        {
+          icon: HiTrash,
+          translationId: 'common.delete',
+          onClick: (row) => (row ? removeChoice(row.original.name) : null),
+          className: 'text-ciRed',
+        },
+      ],
       accessorFn: (row) => row.name,
     }),
   ];
@@ -170,13 +180,25 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       {useBackendLimits ? (
         <>
           <div className="ml-4 items-center text-foreground">
-            {
-              // TODO: Replace custom table with ScrollableTable component (https://github.com/edulution-io/edulution-ui/issues/761)
-            }
-            <ChoicesWithBackendLimitTable
+            <ScrollableTable
               columns={columns}
               data={currentChoices.filter((choice) => choice.name !== SHOW_OTHER_ITEM)}
-              addNewChoice={addNewChoice}
+              filterKey="choice-title"
+              filterPlaceHolderText={t('survey.editor.questionSettings.filterPlaceHolderText')}
+              applicationName={APPS.SURVEYS}
+              actions={[
+                {
+                  icon: MdAddCircleOutline,
+                  translationId: 'common.add',
+                  onClick: () => addNewChoice(),
+                },
+                {
+                  icon: MdAddCircleOutline,
+                  translationId: 'common.add',
+                  onClick: () => addNewChoice(),
+                },
+              ]}
+              showSelectedCount={false}
             />
           </div>
           <ChoicesWithBackendLimitsShowOtherItem />

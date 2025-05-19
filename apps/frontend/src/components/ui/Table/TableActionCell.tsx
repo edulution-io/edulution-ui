@@ -32,16 +32,26 @@ const TableActionCell = <TData, TValue>(props: TableActionCellProps<TData, TValu
   if (Array.isArray(actions)) {
     if (actions.length > 1) {
       return (
-        <TableActionMenu
-          actions={actions}
-          row={row}
-        />
+        <div className="flex items-center justify-center">
+          <TableActionMenu
+            actions={actions}
+            row={row}
+          />
+        </div>
       );
     }
+    if (actions.length === 0) {
+      return null;
+    }
+
     const [onlyAction] = actions;
     singleAction = onlyAction;
   } else {
     singleAction = actions;
+  }
+
+  if (!singleAction) {
+    return null;
   }
 
   const { icon: Icon, onClick, className } = singleAction;

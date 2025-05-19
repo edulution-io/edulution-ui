@@ -23,7 +23,7 @@ import TableAction from './TableAction';
 
 interface TableActionMenuProps<TData, TValue> {
   actions: TableAction<TData, TValue>[];
-  row: Row<TData>;
+  row?: Row<TData>;
 }
 
 const TableActionMenu = <TData, TValue>({ actions, row }: TableActionMenuProps<TData, TValue>) => {
@@ -46,7 +46,7 @@ const TableActionMenu = <TData, TValue>({ actions, row }: TableActionMenuProps<T
             <Button
               type="button"
               variant="btn-outline"
-              className={cn('m-0 max-h-[2.25rem] w-[80px] rounded-md bg-opacity-90 p-0')}
+              className={cn('m-0 max-h-[2.25rem] w-[80px] rounded-md bg-opacity-90')}
             >
               <IconContext.Provider value={iconContextValue}>
                 <FaGear className="h-[18px] w-[18px]" />
