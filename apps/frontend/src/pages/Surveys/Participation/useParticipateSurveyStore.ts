@@ -23,6 +23,7 @@ import {
   SURVEY_ANSWER_ENDPOINT,
   CHECK_EXISTING_PUBLIC_USER,
 } from '@libs/survey/constants/surveys-endpoint';
+import { publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
@@ -129,7 +130,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       return;
     }
     const { username } = attendee;
-    if (!username || validate(username)) {
+    if (!username || publicUserLoginRegex.test(username)) {
       return;
     }
     set({ isFetching: true });
