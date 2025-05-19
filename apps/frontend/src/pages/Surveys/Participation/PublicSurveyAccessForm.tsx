@@ -84,7 +84,7 @@ const PublicSurveyAccessForm = (): React.ReactNode => {
   };
 
   return (
-    <div className="relative top-1/3">
+    <div className="relative flex h-full w-full flex-col items-center justify-center">
       <PublicSurveyAccess
         form={form}
         publicUserName={form.watch('publicUserName')}
