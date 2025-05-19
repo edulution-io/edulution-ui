@@ -16,7 +16,7 @@ import { ArgumentMetadata, HttpStatus, Injectable, Logger, OnModuleInit } from '
 import { InjectModel } from '@nestjs/mongoose';
 import { OnEvent } from '@nestjs/event-emitter';
 import axios, { AxiosInstance } from 'axios';
-import https from 'https';
+import { Agent as HttpsAgent } from 'https';
 import { CreateSyncJobDto, MailDto, MailProviderConfigDto, SyncJobDto, SyncJobResponseDto } from '@libs/mail/types';
 import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 import APPS from '@libs/appconfig/constants/apps';
@@ -49,7 +49,7 @@ class MailsService implements OnModuleInit {
     @InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>,
     private readonly appConfigService: AppConfigService,
   ) {
-    const httpsAgent = new https.Agent({
+    const httpsAgent = new HttpsAgent({
       rejectUnauthorized: false,
     });
     this.mailcowApi = axios.create({
