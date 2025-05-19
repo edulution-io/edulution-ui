@@ -33,6 +33,7 @@ import DocumentVendorsType from '@libs/filesharing/types/documentVendorsType';
 import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
 import MoveDirectoryDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveDirectoryDialogBody';
+import CopyContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/CopyContentDialogBody';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
@@ -190,10 +191,12 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
           ? `${String(form.getValues('filename')) + String(form.getValues('extension'))}`
           : form.getValues('filename');
       const cleanedPath = getPathWithoutWebdav(currentPath);
-      return Promise.resolve({
-        path: `${cleanedPath}/${selectedItems[0]?.basename}`,
-        newPath: `${cleanedPath}/${filename}`,
-      });
+      return Promise.resolve([
+        {
+          path: `${cleanedPath}/${selectedItems[0]?.basename}`,
+          newPath: `${cleanedPath}/${filename}`,
+        },
+      ]);
     },
   },
 
@@ -217,6 +220,35 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
           name: file.name,
           file,
         })),
+      );
+    },
+  },
+
+  copyFileOrFolder: {
+    Component: CopyContentDialogBody,
+    titleKey: 'copyItemDialog.copyFilesOrDirectoriesToDirectory',
+    submitKey: 'copyItemDialog.copy',
+    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.COPY}`,
+    httpMethod: HttpMethods.POST,
+    type: ContentType.FILE || ContentType.DIRECTORY,
+    requiresForm: false,
+
+    getData: (_form, currentPath, inputValues) => {
+      const { moveOrCopyItemToPath, selectedItems } = inputValues;
+      if (!moveOrCopyItemToPath || !selectedItems) {
+        return Promise.resolve([]);
+      }
+      const sourceBase = getPathWithoutWebdav(currentPath);
+      const targetBase = getPathWithoutWebdav(moveOrCopyItemToPath.filename);
+
+      return Promise.resolve(
+        selectedItems.map((item) => {
+          const encodedName = encodeURIComponent(item.basename);
+          return {
+            path: `${sourceBase}/${encodedName}`,
+            newPath: `${targetBase}/${encodedName}`,
+          };
+        }),
       );
     },
   },

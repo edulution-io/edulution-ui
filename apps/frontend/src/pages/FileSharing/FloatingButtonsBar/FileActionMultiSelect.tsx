@@ -23,6 +23,7 @@ import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import useStartWebdavFileDownload from '@/pages/FileSharing/hooks/useStartWebdavFileDownload';
+import CopyButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/copyButton';
 
 const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItems }) => {
   const startDownload = useStartWebdavFileDownload();
@@ -45,6 +46,7 @@ const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog, selected
         const files = Array.isArray(selectedFiles) ? selectedFiles : [selectedFiles];
         await startDownload(files);
       }, canDownload),
+      CopyButton(() => openDialog(FileActionType.COPY_FILE_OR_FOLDER)),
     ],
     keyPrefix: 'file-sharing-page-floating-button_',
   };

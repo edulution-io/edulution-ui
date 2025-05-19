@@ -10,12 +10,4 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const getStudentNameFromPath = (filePath: string): string | null => {
-  const parts = filePath.split('/');
-  if (parts.length < 3) {
-    return null;
-  }
-  return parts[2];
-};
-
-export default getStudentNameFromPath;
+export type ProgressHandler<T> = (data: T) => void | Promise<void>;
