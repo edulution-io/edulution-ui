@@ -11,46 +11,20 @@
  */
 
 import { Controller, Get, UseGuards } from '@nestjs/common';
-import {
-  HealthCheck,
-  HealthCheckService,
-  MongooseHealthIndicator,
-  HttpHealthIndicator,
-  DiskHealthIndicator,
-} from '@nestjs/terminus';
-import { HttpService } from '@nestjs/axios';
+import { HealthCheck } from '@nestjs/terminus';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import LocalhostGuard from '../common/guards/localhost.guard';
 import { Public } from '../common/decorators/public.decorator';
-
-const { EDUI_WEBDAV_URL, KEYCLOAK_API, EDUI_DISK_SPACE_THRESHOLD } = process.env;
+import HealthService from './health.service';
 
 @Controller(EDU_API_CONFIG_ENDPOINTS.HEALTH_CHECK)
 class HealthController {
-  constructor(
-    private health: HealthCheckService,
-    private mongoose: MongooseHealthIndicator,
-    private httpIndicator: HttpHealthIndicator,
-    private disk: DiskHealthIndicator,
-    private httpService: HttpService,
-  ) {}
-
-  async checkApiHealth() {
-    return this.health.check([
-      () => this.mongoose.pingCheck('mongodb'),
-      () => this.httpIndicator.pingCheck('authServer', KEYCLOAK_API || ''),
-      () =>
-        this.httpIndicator.pingCheck('lmnServer', new URL(EDUI_WEBDAV_URL || '').origin, {
-          httpClient: this.httpService,
-        }),
-      () => this.disk.checkStorage('disk', { thresholdPercent: Number(EDUI_DISK_SPACE_THRESHOLD) || 0.95, path: '/' }),
-    ]);
-  }
+  constructor(private readonly healthService: HealthService) {}
 
   @Get()
   @HealthCheck()
   check() {
-    return this.checkApiHealth();
+    return this.healthService.checkApiHealth();
   }
 
   @Public()
@@ -58,7 +32,7 @@ class HealthController {
   @Get('check')
   @HealthCheck()
   readiness() {
-    return this.checkApiHealth();
+    return this.healthService.checkApiHealth();
   }
 }
 

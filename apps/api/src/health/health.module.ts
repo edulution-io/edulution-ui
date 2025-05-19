@@ -15,6 +15,7 @@ import { TerminusModule } from '@nestjs/terminus';
 import { HttpModule } from '@nestjs/axios';
 import { Agent as HttpsAgent } from 'https';
 import HealthController from './health.controller';
+import HealthService from './health.service';
 
 @Module({
   imports: [
@@ -26,5 +27,6 @@ import HealthController from './health.controller';
     }),
   ],
   controllers: [HealthController],
+  providers: [HealthService],
 })
 export default class HealthModule {}
