@@ -35,11 +35,7 @@ class HealthController {
     private httpService: HttpService,
   ) {}
 
-  @Public()
-  @UseGuards(LocalhostGuard)
-  @Get()
-  @HealthCheck()
-  readiness() {
+  async checkApiHealth() {
     return this.health.check([
       () => this.mongoose.pingCheck('mongodb'),
       () => this.httpIndicator.pingCheck('authServer', KEYCLOAK_API || ''),
@@ -49,6 +45,20 @@ class HealthController {
         }),
       () => this.disk.checkStorage('disk', { thresholdPercent: Number(EDUI_DISK_SPACE_THRESHOLD) || 0.95, path: '/' }),
     ]);
+  }
+
+  @Get()
+  @HealthCheck()
+  check() {
+    return this.checkApiHealth();
+  }
+
+  @Public()
+  @UseGuards(LocalhostGuard)
+  @Get('check')
+  @HealthCheck()
+  readiness() {
+    return this.checkApiHealth();
   }
 }
 
