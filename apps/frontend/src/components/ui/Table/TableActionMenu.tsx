@@ -15,11 +15,11 @@ import { IconContext } from 'react-icons';
 import { FaGear } from 'react-icons/fa6';
 import { useTranslation } from 'react-i18next';
 import { Row } from '@tanstack/react-table';
+import TableAction from '@libs/common/types/TableAction';
 import cn from '@libs/common/utils/className';
 import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import { Button } from '@/components/shared/Button';
-import TableAction from '../../../../../../libs/src/common/types/TableAction';
 
 interface TableActionMenuProps<TData, TValue> {
   actions: TableAction<TData, TValue>[];
