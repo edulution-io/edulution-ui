@@ -12,10 +12,19 @@
 
 import { Module } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
+import { HttpModule } from '@nestjs/axios';
+import { Agent as HttpsAgent } from 'https';
 import HealthController from './health.controller';
 
 @Module({
-  imports: [TerminusModule],
+  imports: [
+    TerminusModule,
+    HttpModule.register({
+      httpsAgent: new HttpsAgent({
+        rejectUnauthorized: false,
+      }),
+    }),
+  ],
   controllers: [HealthController],
 })
 export default class HealthModule {}

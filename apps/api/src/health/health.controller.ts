@@ -18,7 +18,7 @@ import {
   HttpHealthIndicator,
   DiskHealthIndicator,
 } from '@nestjs/terminus';
-import { Agent as HttpsAgent } from 'https';
+import { HttpService } from '@nestjs/axios';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import { Public } from '../common/decorators/public.decorator';
 
@@ -26,13 +26,12 @@ const { EDUI_WEBDAV_URL, KEYCLOAK_API } = process.env;
 
 @Controller(EDU_API_CONFIG_ENDPOINTS.HEALTH_CHECK)
 class HealthController {
-  private httpsAgent = new HttpsAgent({ rejectUnauthorized: false });
-
   constructor(
     private health: HealthCheckService,
     private mongoose: MongooseHealthIndicator,
     private httpIndicator: HttpHealthIndicator,
     private disk: DiskHealthIndicator,
+    private httpService: HttpService,
   ) {}
 
   @Public()
@@ -44,7 +43,7 @@ class HealthController {
       () => this.httpIndicator.pingCheck('authServer', KEYCLOAK_API || ''),
       () =>
         this.httpIndicator.pingCheck('lmnServer', new URL(EDUI_WEBDAV_URL || '').origin, {
-          httpAgent: this.httpsAgent,
+          httpClient: this.httpService,
         }),
       () => this.disk.checkStorage('disk', { thresholdPercent: 0.9, path: '/' }),
     ]);
