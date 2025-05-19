@@ -18,12 +18,12 @@ import { Button } from '@/components/shared/Button';
 import TableActionMenu from '@/components/ui/Table/TableActionMenu';
 import { IconContext } from 'react-icons';
 
-interface TableActionRowProps<TData, TValue> {
+interface TableActionFooterProps<TData, TValue> {
   actions?: TableAction<TData, TValue> | TableAction<TData, TValue>[];
   columnLength: number;
 }
 
-const TableActionRow = <TData, TValue>({ actions, columnLength }: TableActionRowProps<TData, TValue>) => {
+const TableActionFooter = <TData, TValue>({ actions, columnLength }: TableActionFooterProps<TData, TValue>) => {
   const iconContextValue = useMemo(() => ({ className: 'h-4 w-4' }), []);
 
   let singleAction: TableAction<TData, TValue> | undefined;
@@ -92,4 +92,4 @@ const TableActionRow = <TData, TValue>({ actions, columnLength }: TableActionRow
   );
 };
 
-export default TableActionRow;
+export default TableActionFooter;

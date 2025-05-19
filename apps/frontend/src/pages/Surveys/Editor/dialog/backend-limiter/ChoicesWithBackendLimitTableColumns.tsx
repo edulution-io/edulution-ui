@@ -18,9 +18,14 @@ import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuest
 import Input from '@/components/shared/Input';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 
+export const CHOICES_WITH_BACKEND_LIMIT_COLUMNS = {
+  title: 'choice-title',
+  upperLimit: 'choice-limit',
+} as const;
+
 const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
   {
-    id: 'choice-title',
+    id: CHOICES_WITH_BACKEND_LIMIT_COLUMNS.title,
     header: ({ column }) => <SortableHeader<ChoiceDto, unknown> column={column} />,
     meta: {
       translationId: 'common.title',
@@ -41,7 +46,7 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
     },
   },
   {
-    id: 'choice-limit',
+    id: CHOICES_WITH_BACKEND_LIMIT_COLUMNS.upperLimit,
     header: ({ column }) => <SortableHeader<ChoiceDto, unknown> column={column} />,
     meta: {
       translationId: 'survey.editor.questionSettings.upperLimit',

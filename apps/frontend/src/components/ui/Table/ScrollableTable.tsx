@@ -31,7 +31,7 @@ import Input from '@/components/shared/Input';
 import DEFAULT_TABLE_SORT_PROPERTY_KEY from '@libs/common/constants/defaultTableSortProperty';
 import SelectColumnsDropdown from '@/components/ui/Table/SelectCoumnsDropdown';
 import TABLE_DEFAULT_COLUMN_WIDTH from '@libs/ui/constants/tableDefaultColumnWidth';
-import TableActionRow from '@/components/ui/Table/TableActionRow';
+import TableActionFooter from '@/components/ui/Table/TableActionFooter';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -198,7 +198,7 @@ const ScrollableTable = <TData, TValue>({
               </TableRow>
             )}
           </TableBody>
-          <TableActionRow
+          <TableActionFooter
             actions={actions}
             columnLength={table.getAllColumns().length}
           />

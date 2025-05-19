@@ -15,12 +15,14 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { SurveyCreatorModel } from 'survey-creator-core';
+import { HiTrash } from 'react-icons/hi';
 import { MdAddCircleOutline } from 'react-icons/md';
 import cn from '@libs/common/utils/className';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import APPS from '@libs/appconfig/constants/apps';
 import { SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -29,12 +31,12 @@ import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 import isQuestionTypeChoiceType from '@libs/survey/utils/isQuestionTypeChoiceType';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import ChoicesWithBackendLimitsShowOtherItem from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitsShowOtherItem';
-import ChoicesWithBackendLimitTableColumns from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitTableColumns';
+import ChoicesWithBackendLimitTableColumns, {
+  CHOICES_WITH_BACKEND_LIMIT_COLUMNS,
+} from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitTableColumns';
 import Switch from '@/components/ui/Switch';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import TableActionColumn from '@/components/ui/Table/TableActionColumn';
-import { HiTrash } from 'react-icons/hi';
-import ChoiceDto from '@libs/survey/types/api/choice.dto';
 
 interface ChoicesByUrlProps {
   form: UseFormReturn<SurveyDto>;
@@ -158,6 +160,11 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     }),
   ];
 
+  const initialColumnVisibility = {
+    [CHOICES_WITH_BACKEND_LIMIT_COLUMNS.title]: true,
+    [CHOICES_WITH_BACKEND_LIMIT_COLUMNS.upperLimit]: true,
+  };
+
   return (
     <>
       <p className="text-m font-bold text-primary-foreground">{t('survey.editor.questionSettings.backendLimiters')}</p>
@@ -199,6 +206,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
                 },
               ]}
               showSelectedCount={false}
+              initialColumnVisibility={initialColumnVisibility}
             />
           </div>
           <ChoicesWithBackendLimitsShowOtherItem />
