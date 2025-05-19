@@ -13,9 +13,9 @@
 import React, { useMemo } from 'react';
 import { IconContext } from 'react-icons';
 import { Row } from '@tanstack/react-table';
-import { Button } from '@/components/shared/Button';
+import TableAction from '@libs/common/types/TableAction';
 import cn from '@libs/common/utils/className';
-import TableAction from './TableAction';
+import { Button } from '@/components/shared/Button';
 import TableActionMenu from './TableActionMenu';
 
 interface TableActionCellProps<TData, TValue> {

@@ -13,7 +13,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ColumnDef } from '@tanstack/react-table';
-import TableAction from './TableAction';
+import TableAction from '@libs/common/types/TableAction';
 import TableActionCell from './TableActionCell';
 
 interface TableActionColumnProps<TData, TValue> {
@@ -40,6 +40,7 @@ const TableActionColumn = <TData, TValue>(props: TableActionColumnProps<TData, T
         row={row}
       />
     ),
+    size: 100,
   };
 };
 

@@ -12,7 +12,7 @@
 
 import React, { useMemo } from 'react';
 import { TableCell, TableFooter, TableRow } from '@/components/ui/Table';
-import TableAction from '@/components/ui/Table/TableAction';
+import TableAction from '@libs/common/types/TableAction';
 import TableActionMenu from '@/components/ui/Table/TableActionMenu';
 import cn from '@libs/common/utils/className';
 import { Button } from '@/components/shared/Button';

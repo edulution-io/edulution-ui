@@ -13,8 +13,8 @@
 import { IconType } from 'react-icons';
 import { Row } from '@tanstack/react-table';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-interface TableAction<TData, TValue> {
+// eslint-disable-next-line @typescript-eslint/naming-convention
+interface TableAction<TData, _TValue> {
   icon: IconType;
   translationId: string;
   onClick: (row?: Row<TData>) => void;

@@ -24,13 +24,13 @@ import {
   VisibilityState,
 } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
+import TableAction from '@libs/common/types/TableAction';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import Input from '@/components/shared/Input';
 import DEFAULT_TABLE_SORT_PROPERTY_KEY from '@libs/common/constants/defaultTableSortProperty';
 import SelectColumnsDropdown from '@/components/ui/Table/SelectCoumnsDropdown';
 import TABLE_DEFAULT_COLUMN_WIDTH from '@libs/ui/constants/tableDefaultColumnWidth';
-import TableAction from '@/components/ui/Table/TableAction';
 import TableActionRow from '@/components/ui/Table/TableActionRow';
 
 interface DataTableProps<TData, TValue> {
