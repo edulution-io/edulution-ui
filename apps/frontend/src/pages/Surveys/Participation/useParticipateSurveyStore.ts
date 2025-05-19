@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { validate } from 'uuid';
 import { t } from 'i18next';
 import { toast } from 'sonner';
 import { create } from 'zustand';
@@ -106,8 +105,8 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       surveyModel.doComplete();
 
       const surveyAnswer: SurveyAnswerDto = response.data;
-      const { username, firstName, lastName } = surveyAnswer.attendee;
-      const isAuthenticatedPublicUser = firstName && lastName && validate(lastName);
+      const { username } = surveyAnswer.attendee;
+      const isAuthenticatedPublicUser = username && publicUserLoginRegex.test(username);
       if (isAuthenticatedPublicUser) {
         set({ publicUserId: username, previousAnswer: surveyAnswer });
       } else {
