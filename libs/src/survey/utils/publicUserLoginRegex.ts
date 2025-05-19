@@ -10,19 +10,23 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+export const usernameRegex = '[a-zA-Z0-9.-]{1,20}';
+
+export const publicUserNameRegex = new RegExp(`^${usernameRegex}$`);
+
 export const publicUserPrefix = 'publicUserLogin';
 
 export const publicUserSeperator = '_';
 
-export const publicUsernameRegex = /[a-zA-Z0-9.-]/;
+export const uuidRegex = '[a-f0-9.-]{1,36}';
 
-export const publicUserLoginRegex = /public_+[a-zA-Z0-9.-]+_+[a-z0-9]/;
+export const userLoginRegex = `^${publicUserPrefix}${publicUserSeperator}${usernameRegex}${publicUserSeperator}${uuidRegex}`;
+
+export const publicUserLoginRegex = new RegExp(`^${userLoginRegex}$`);
 
 export const createNewPublicUserLogin = (publicUserName: string, publicUserId: string) =>
   `${publicUserPrefix}${publicUserSeperator}${publicUserName}${publicUserSeperator}${publicUserId}`;
 
-const publicUserRegex = new RegExp(
-  `${publicUserPrefix}${publicUserSeperator}+[a-zA-Z0-9.-]+${publicUserSeperator}+[a-z0-9]`,
-);
+export const publicUserRegex = new RegExp(`${publicUserNameRegex.source}|${publicUserLoginRegex.source}`);
 
 export default publicUserRegex;

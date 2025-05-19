@@ -1020,6 +1020,7 @@
     "pageTitle": "Login",
     "username_too_long": "Username to long",
     "username_too_short": "Username to short",
+    "username_not_regex": "Invalid username",
     "publicUsername_notExisting": "There is no submission with the given participation-ID",
     "password_too_long": "Password to long",
     "forgot_password": "Forgot password?",

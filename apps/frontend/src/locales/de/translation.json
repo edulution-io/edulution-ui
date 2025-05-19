@@ -1020,6 +1020,7 @@
     "pageTitle": "Login",
     "username_too_long": "Benutzername zu lang",
     "username_too_short": "Benutzername zu kurz",
+    "username_not_regex": "Ungültiger Benutzername",
     "publicUsername_notExisting": "Es existiert keine Abgabe mit der gegebenen Teilnahme-ID",
     "password_too_long": "Passwort zu lang",
     "forgot_password": "Passwort vergessen?",

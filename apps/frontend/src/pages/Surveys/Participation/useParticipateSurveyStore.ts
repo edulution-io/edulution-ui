@@ -105,10 +105,10 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       surveyModel.doComplete();
 
       const surveyAnswer: SurveyAnswerDto = response.data;
-      const { firstName, lastName } = surveyAnswer.attendee;
+      const { username, firstName, lastName } = surveyAnswer.attendee;
       const isAuthenticatedPublicUser = firstName && lastName && validate(lastName);
       if (isAuthenticatedPublicUser) {
-        set({ publicUserId: lastName, previousAnswer: surveyAnswer });
+        set({ publicUserId: username, previousAnswer: surveyAnswer });
       } else {
         set({ publicUserId: undefined, previousAnswer: undefined });
       }

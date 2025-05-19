@@ -14,7 +14,7 @@ import React from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import publicUserRegex, { publicUserSeperator } from '@libs/survey/utils/publicUserLoginRegex';
+import { publicUserRegex, publicUserLoginRegex, publicUserSeperator } from '@libs/survey/utils/publicUserLoginRegex';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
@@ -30,7 +30,8 @@ const PublicSurveyAccessForm = (): React.ReactNode => {
       publicUserName: z
         .string({ required_error: t('common.required') })
         .min(5, { message: t('login.username_too_short') })
-        .max(50, { message: t('login.username_too_long') }),
+        .max(100, { message: t('login.username_too_long') })
+        .regex(publicUserRegex, { message: t('login.username_not_regex') }),
     });
 
   const form = useForm<{ publicUserName: string }>({
@@ -46,9 +47,7 @@ const PublicSurveyAccessForm = (): React.ReactNode => {
       return;
     }
 
-    console.log('is', publicUserName, 'regex', publicUserRegex.test(publicUserName));
-
-    if (!publicUserRegex.test(publicUserName)) {
+    if (!publicUserLoginRegex.test(publicUserName)) {
       setAttendee({
         username: undefined,
         firstName: publicUserName,
@@ -69,8 +68,6 @@ const PublicSurveyAccessForm = (): React.ReactNode => {
       label: publicUsername,
       value: publicUserName,
     };
-
-    console.log('publicUser', publicUser);
 
     // eslint-disable-next-line no-underscore-dangle
     if (selectedSurvey?._id) {

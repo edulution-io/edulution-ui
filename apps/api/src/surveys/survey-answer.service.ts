@@ -13,13 +13,13 @@
 import { Model, Types } from 'mongoose';
 import { v4 as uuidv4, validate } from 'uuid';
 import { InjectModel } from '@nestjs/mongoose';
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
-import { createNewPublicUserLogin } from '@libs/survey/utils/publicUserLoginRegex';
+import { createNewPublicUserLogin, publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import CustomHttpException from '../common/CustomHttpException';
@@ -201,8 +201,6 @@ class SurveyAnswersService {
     saveNo: number,
     answer: JSON,
   ): Promise<SurveyAnswerDocument> {
-    Logger.log(`createAnswer::attendee: ${JSON.stringify(attendee)}`, SurveyAnswersService.name);
-
     const newSurveyAnswer: SurveyAnswerDocument | null = await this.surveyAnswerModel.create({
       attendee,
       surveyId: new Types.ObjectId(surveyId),
@@ -241,19 +239,10 @@ class SurveyAnswersService {
 
     const isFirstPublicUserParticipation = !username && !!firstName;
     if (isFirstPublicUserParticipation) {
-      Logger.log(`isFirstPublicUserParticipation: ${isFirstPublicUserParticipation}`, SurveyAnswersService.name);
-
-      Logger.log(
-        `canUpdateFormerAnswer: ${canUpdateFormerAnswer}; canSubmitMultipleAnswers: ${canSubmitMultipleAnswers}`,
-        SurveyAnswersService.name,
-      );
-
       if (canUpdateFormerAnswer || canSubmitMultipleAnswers) {
         const newPublicUserId = uuidv4();
         const newPublicUserLogin = createNewPublicUserLogin(firstName, newPublicUserId);
         const user: Attendee = { ...attendee, username: newPublicUserLogin, lastName: newPublicUserId };
-
-        Logger.log(`user: ${user}`, SurveyAnswersService.name);
 
         const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(user, surveyId, saveNo, answer);
         return createdAnswer;
@@ -261,22 +250,13 @@ class SurveyAnswersService {
 
       const user: Attendee = { ...attendee, username: firstName };
 
-      Logger.log(`user: ${user}`, SurveyAnswersService.name);
-
       const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(user, surveyId, saveNo, answer);
       return createdAnswer;
     }
 
-    const isLoggedInUserParticipation = !!username && !validate(username);
+    const isLoggedInUserParticipation = !!username && !publicUserLoginRegex.test(username);
 
-    Logger.log(`isFirstPublicUserParticipation: ${isFirstPublicUserParticipation}`, SurveyAnswersService.name);
-
-    const isAuthenticatedPublicUserParticipation = !!username && !!firstName && validate(username);
-
-    Logger.log(
-      `isAuthenticatedPublicUserParticipation: ${isAuthenticatedPublicUserParticipation}`,
-      SurveyAnswersService.name,
-    );
+    const isAuthenticatedPublicUserParticipation = !!username && publicUserLoginRegex.test(username);
 
     if (isLoggedInUserParticipation || isAuthenticatedPublicUserParticipation) {
       await this.throwErrorIfParticipationIsNotPossible(survey, username);
@@ -286,8 +266,6 @@ class SurveyAnswersService {
       });
 
       if (existingUsersAnswer == null || canSubmitMultipleAnswers) {
-        Logger.log(`addAnswer::1::attendee: ${JSON.stringify(attendee)}`, SurveyAnswersService.name);
-
         const newSurveyAnswer = await this.createAnswer(attendee as Attendee, surveyId, saveNo, answer);
 
         if (newSurveyAnswer == null) {
@@ -324,8 +302,6 @@ class SurveyAnswersService {
       return updatedSurveyAnswer;
     }
 
-    Logger.log(`addAnswer::2::attendee: ${JSON.stringify(attendee)}`, SurveyAnswersService.name);
-
     throw new CustomHttpException(
       SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
       HttpStatus.INTERNAL_SERVER_ERROR,
@@ -358,7 +334,7 @@ class SurveyAnswersService {
     attendee: Partial<AttendeeDto>,
   ): Promise<SurveyAnswer | undefined> {
     const { username } = attendee;
-    const isAuthenticatedPublicUserParticipation = username && validate(username);
+    const isAuthenticatedPublicUserParticipation = username && publicUserLoginRegex.test(username);
     if (!isAuthenticatedPublicUserParticipation) {
       return undefined;
     }
