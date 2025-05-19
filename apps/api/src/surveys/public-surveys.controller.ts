@@ -13,13 +13,7 @@
 import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Get, Post, Param, Res } from '@nestjs/common';
-import {
-  ANSWER,
-  CHECK_EXISTING_PUBLIC_USER,
-  IMAGES,
-  PUBLIC_SURVEYS,
-  CHOICES,
-} from '@libs/survey/constants/surveys-endpoint';
+import { CHECK_EXISTING_PUBLIC_USER, IMAGES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import ParticipantDto from '@libs/survey/types/api/participant.dto';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
@@ -47,13 +41,6 @@ class PublicSurveysController {
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto) {
     const { surveyId, saveNo, answer, attendee } = pushAnswerDto;
     return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, attendee);
-  }
-
-  @Post(ANSWER)
-  @Public()
-  async getSubmittedSurveyAnswers(@Body() body: ParticipantDto) {
-    const { surveyId, attendee } = body;
-    return this.surveyAnswerService.getAnswerPublicParticipation(surveyId, attendee);
   }
 
   @Post(CHECK_EXISTING_PUBLIC_USER)

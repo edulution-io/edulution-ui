@@ -83,10 +83,6 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
 
   fetchSelectedSurvey: async (surveyId?: string, isPublic?: boolean): Promise<void> => {
-    const { isFetching } = get();
-    if (isFetching) {
-      return;
-    }
     if (!surveyId) {
       set({ selectedSurvey: undefined });
       return;

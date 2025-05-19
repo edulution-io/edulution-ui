@@ -75,7 +75,7 @@
     }
   }
 
-  .sd-completedpage {
+  .sd-completedpage h3 {
     color: var(--primary-foreground) !important;
   }
 }

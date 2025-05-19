@@ -195,27 +195,6 @@ class SurveyAnswersService {
     }
   };
 
-  async createAnswer(
-    attendee: Attendee,
-    surveyId: string,
-    saveNo: number,
-    answer: JSON,
-  ): Promise<SurveyAnswerDocument> {
-    const newSurveyAnswer: SurveyAnswerDocument | null = await this.surveyAnswerModel.create({
-      attendee,
-      surveyId: new Types.ObjectId(surveyId),
-      saveNo,
-      answer,
-    });
-    if (newSurveyAnswer == null) {
-      throw new CustomHttpException(
-        SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-    return newSurveyAnswer;
-  }
-
   async addAnswer(
     surveyId: string,
     saveNo: number,
@@ -321,32 +300,6 @@ class SurveyAnswersService {
     return usersLatestSurveyAnswer[0];
   }
 
-  async getAnswerPublicParticipation(surveyId: string, attendee: Partial<AttendeeDto>): Promise<SurveyAnswer> {
-    const { username } = attendee;
-    if (!username) {
-      throw new CustomHttpException(SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError, HttpStatus.NOT_FOUND);
-    }
-    return this.getAnswer(surveyId, username);
-  }
-
-  async checkPublicUserParticipation(
-    surveyId: string,
-    attendee: Partial<AttendeeDto>,
-  ): Promise<SurveyAnswer | undefined> {
-    const { username } = attendee;
-    const isAuthenticatedPublicUserParticipation = username && publicUserLoginRegex.test(username);
-    if (!isAuthenticatedPublicUserParticipation) {
-      return undefined;
-    }
-    const existingUsersAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({
-      $and: [{ 'attendee.username': username }, { surveyId: new Types.ObjectId(surveyId) }],
-    });
-    if (existingUsersAnswer == null) {
-      return undefined;
-    }
-    return existingUsersAnswer;
-  }
-
   async getPublicAnswers(surveyId: string): Promise<JSON[] | null> {
     const surveyAnswers = await this.surveyAnswerModel.find<SurveyAnswer>({ surveyId: new Types.ObjectId(surveyId) });
     if (surveyAnswers.length === 0) {
@@ -377,6 +330,45 @@ class SurveyAnswersService {
         error,
       );
     }
+  }
+
+  async checkPublicUserParticipation(
+    surveyId: string,
+    attendee: Partial<AttendeeDto>,
+  ): Promise<SurveyAnswer | undefined> {
+    const { username } = attendee;
+    const isAuthenticatedPublicUserParticipation = username && publicUserLoginRegex.test(username);
+    if (!isAuthenticatedPublicUserParticipation) {
+      return undefined;
+    }
+    const existingUsersAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({
+      $and: [{ 'attendee.username': username }, { surveyId: new Types.ObjectId(surveyId) }],
+    });
+    if (existingUsersAnswer == null) {
+      return undefined;
+    }
+    return existingUsersAnswer;
+  }
+
+  async createAnswer(
+    attendee: Attendee,
+    surveyId: string,
+    saveNo: number,
+    answer: JSON,
+  ): Promise<SurveyAnswerDocument> {
+    const newSurveyAnswer: SurveyAnswerDocument | null = await this.surveyAnswerModel.create({
+      attendee,
+      surveyId: new Types.ObjectId(surveyId),
+      saveNo,
+      answer,
+    });
+    if (newSurveyAnswer == null) {
+      throw new CustomHttpException(
+        SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+    return newSurveyAnswer;
   }
 }
 

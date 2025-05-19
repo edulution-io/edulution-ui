@@ -14,13 +14,13 @@ import React, { useEffect } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea';
+import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import getSurveyFormulaWithIdentificationQuestion from '@libs/survey/utils/getSurveyFormulaWithIdentificationQuestion';
 import ResultTable from '@/pages/Surveys/Tables/components/ResultTable';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import './resultTableDialog.css';
-import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 
 const ResultTableDialogBody = () => {
   const { selectedSurvey } = useSurveyTablesPageStore();

@@ -212,7 +212,10 @@ describe(SurveysController.name, () => {
       jest.spyOn(surveyAnswerService, 'getAnswer');
 
       const result = await controller.getSubmittedSurveyAnswers(
-        { surveyId: idOfAnsweredSurvey01.toString(), attendee: firstUsername },
+        {
+          surveyId: idOfAnsweredSurvey01.toString(),
+          attendee: { username: firstUsername, label: firstUsername, value: firstUsername },
+        },
         secondUsername,
       );
       expect(result).toEqual(firstUsersSurveyAnswerAnsweredSurvey01);
