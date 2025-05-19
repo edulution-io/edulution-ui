@@ -74,7 +74,7 @@ const TableActionFooter = <TData, TValue>({ actions, columnLength }: TableAction
           colSpan={1}
           className="m-0 p-0"
         >
-          <div className="flex justify-center">
+          <div className="mr-1 flex justify-center">
             <Button
               type="button"
               variant="btn-outline"

@@ -142,20 +142,12 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     ...ChoicesWithBackendLimitTableColumns,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     TableActionColumn<ChoiceDto, any>({
-      actions: [
-        {
-          icon: HiTrash,
-          translationId: 'common.delete',
-          onClick: (row) => (row ? removeChoice(row.original.name) : null),
-          className: 'text-ciRed',
-        },
-        {
-          icon: HiTrash,
-          translationId: 'common.delete',
-          onClick: (row) => (row ? removeChoice(row.original.name) : null),
-          className: 'text-ciRed',
-        },
-      ],
+      actions: {
+        icon: HiTrash,
+        translationId: 'common.delete',
+        onClick: (row) => (row ? removeChoice(row.original.name) : null),
+        className: 'text-ciRed',
+      },
       accessorFn: (row) => row.name,
     }),
   ];
@@ -193,18 +185,11 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
               filterKey="choice-title"
               filterPlaceHolderText={t('survey.editor.questionSettings.filterPlaceHolderText')}
               applicationName={APPS.SURVEYS}
-              actions={[
-                {
-                  icon: MdAddCircleOutline,
-                  translationId: 'common.add',
-                  onClick: () => addNewChoice(),
-                },
-                {
-                  icon: MdAddCircleOutline,
-                  translationId: 'common.add',
-                  onClick: () => addNewChoice(),
-                },
-              ]}
+              actions={{
+                icon: MdAddCircleOutline,
+                translationId: 'common.add',
+                onClick: () => addNewChoice(),
+              }}
               showSelectedCount={false}
               initialColumnVisibility={initialColumnVisibility}
             />
