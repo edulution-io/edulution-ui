@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import {
   HealthCheck,
   HealthCheckService,
@@ -20,6 +20,7 @@ import {
 } from '@nestjs/terminus';
 import { HttpService } from '@nestjs/axios';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
+import LocalhostGuard from '../common/guards/localhost.guard';
 import { Public } from '../common/decorators/public.decorator';
 
 const { EDUI_WEBDAV_URL, KEYCLOAK_API } = process.env;
@@ -35,6 +36,7 @@ class HealthController {
   ) {}
 
   @Public()
+  @UseGuards(LocalhostGuard)
   @Get()
   @HealthCheck()
   readiness() {
