@@ -25,6 +25,7 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
 import useGlobalSettingsApiStore from './useGlobalSettingsApiStore';
 import GlobalSettingsFloatingButtons from './GlobalSettingsFloatingButtons';
+import { GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 
 const GlobalSettings: React.FC = () => {
   const { t } = useTranslation();
@@ -82,7 +83,7 @@ const GlobalSettings: React.FC = () => {
       if (!acc.some((x) => x.value === g.value)) acc.push(g);
       return acc;
     }, []);
-    setValue('auth.mfaEnforcedGroups', uniqueGroups, { shouldValidate: true });
+    setValue(`auth.${GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS}`, uniqueGroups, { shouldValidate: true });
   };
 
   const onSubmit: SubmitHandler<GlobalSettingsDto> = (newGlobalSettings) => {
@@ -134,13 +135,13 @@ const GlobalSettings: React.FC = () => {
                 <p className="text-background">{t('settings.globalSettings.mfaDescription')}</p>
                 <FormFieldSH
                   control={control}
-                  name="auth.mfaEnforcedGroups"
+                  name={`auth.${GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS}`}
                   render={() => (
                     <FormItem>
                       <p className="font-bold">{t('permission.groups')}</p>
                       <FormControl>
                         <AsyncMultiSelect<MultipleSelectorGroup>
-                          value={getValues('auth.mfaEnforcedGroups')}
+                          value={getValues(`auth.${GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS}`)}
                           onSearch={searchGroups}
                           onChange={handleGroupsChange}
                           placeholder={t('search.type-to-search')}
