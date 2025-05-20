@@ -19,6 +19,7 @@ import { GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH } from '@libs/global-settings/con
 import CustomHttpException from '../common/CustomHttpException';
 import GlobalSettingsService from './global-settings.service';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
+import defaultValues from '@libs/global-settings/constants/defaultValues';
 
 class MockGlobalSettings {
   constructor(public data: any) {}
@@ -44,11 +45,7 @@ describe('GlobalSettingsService', () => {
     create?: jest.Mock;
   };
 
-  const mockGlobalSettingsDto: GlobalSettingsDto = {
-    auth: {
-      mfaEnforcedGroups: [],
-    },
-  };
+  const mockGlobalSettingsDto: GlobalSettingsDto = defaultValues;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -71,7 +68,7 @@ describe('GlobalSettingsService', () => {
 
   describe('getGlobalSettings', () => {
     it('should return settings with projection', async () => {
-      const mockData = { auth: { mfaEnforcedGroups: [] } };
+      const mockData = defaultValues;
       model.findOne?.mockReturnValue({ lean: () => Promise.resolve(mockData) });
 
       const result = await service.getGlobalSettings(GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH);

@@ -18,10 +18,9 @@ import { GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH } from '@libs/global-settings/con
 import GlobalSettingsController from './global-settings.controller';
 import GlobalSettingsService from './global-settings.service';
 import AppConfigGuard from '../appconfig/appconfig.guard';
+import defaultValues from '@libs/global-settings/constants/defaultValues';
 
-const mockedGlobalSettingsDto: GlobalSettingsDto = {
-  auth: { mfaEnforcedGroups: [] },
-};
+const mockedGlobalSettingsDto: GlobalSettingsDto = defaultValues;
 
 const mockedGlobalSettingsDbResponse = {
   _id: '123',
