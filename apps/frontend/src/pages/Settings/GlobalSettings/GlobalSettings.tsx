@@ -23,9 +23,9 @@ import AppConfigSwitch from '@/pages/Settings/AppConfig/components/booleanField/
 import AppDropdownSelectFormField from '@/components/ui/DropdownSelect/AppDropdownSelectFormField';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
+import { GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import useGlobalSettingsApiStore from './useGlobalSettingsApiStore';
 import GlobalSettingsFloatingButtons from './GlobalSettingsFloatingButtons';
-import { GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 
 const GlobalSettings: React.FC = () => {
   const { t } = useTranslation();

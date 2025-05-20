@@ -16,10 +16,10 @@ import { getModelToken } from '@nestjs/mongoose';
 import type { Model, UpdateWriteOpResult } from 'mongoose';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import { GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
+import defaultValues from '@libs/global-settings/constants/defaultValues';
 import CustomHttpException from '../common/CustomHttpException';
 import GlobalSettingsService from './global-settings.service';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
-import defaultValues from '@libs/global-settings/constants/defaultValues';
 
 class MockGlobalSettings {
   constructor(public data: any) {}
