@@ -34,7 +34,7 @@ const AppLayout = () => {
     (a) => a.name === pathname.split('/')[1] && a.appType === APP_INTEGRATION_VARIANT.FORWARDED,
   );
   const isAppHeaderVisible = isMainPage || isCurrentAppForwardingPage;
-  const isAppConfigReady = appConfigs.some((appConfig) => appConfig.name !== APPS.NONE);
+  const isAppConfigReady = !appConfigs.find((appConfig) => appConfig.name === APPS.NONE);
   const isAuthenticatedAppReady = isAppConfigReady && isAuthenticated;
 
   return (
