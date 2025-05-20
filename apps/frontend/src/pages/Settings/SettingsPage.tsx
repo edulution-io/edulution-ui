@@ -16,6 +16,7 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import AppConfigPage from './AppConfig/AppConfigPage';
 import SettingsOverviewPage from './components/SettingsOverviewPage';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 
 const SettingsPage: React.FC = () => {
   const { settingLocation } = useParams();
@@ -25,7 +26,7 @@ const SettingsPage: React.FC = () => {
 
   useEffect(() => {
     if (!isSuperAdmin) {
-      navigate('/');
+      navigate(DASHBOARD_ROUTE);
     }
   }, [isSuperAdmin]);
 

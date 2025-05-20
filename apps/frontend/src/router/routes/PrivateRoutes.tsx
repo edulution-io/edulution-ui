@@ -38,6 +38,7 @@ import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
 import DashboardPage from '../../pages/Dashboard/DashboardPage';
 import getEmbeddedRoutes from './EmbeddedAppRoutes';
 import ProtectedRoute from './ProtectedRoute';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 
 const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
   <>
@@ -47,7 +48,7 @@ const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
     {getEmbeddedRoutes(appConfigs)}
 
     <Route
-      path="/"
+      path={DASHBOARD_ROUTE}
       element={<DashboardPage />}
     />
 

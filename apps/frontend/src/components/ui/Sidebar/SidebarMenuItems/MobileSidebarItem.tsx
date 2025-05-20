@@ -16,13 +16,14 @@ import { SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
 import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
 import { getRootPathName } from '@libs/common/utils';
 import useSidebarStore from '../sidebarStore';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 
 const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem }) => {
   const { pathname } = useLocation();
   const { toggleMobileSidebar } = useSidebarStore();
 
   const rootPathName = getRootPathName(pathname);
-  const menuItemColor = rootPathName === menuItem.link && pathname !== '/' ? menuItem.color : '';
+  const menuItemColor = rootPathName === menuItem.link && pathname !== DASHBOARD_ROUTE ? menuItem.color : '';
 
   return (
     <div

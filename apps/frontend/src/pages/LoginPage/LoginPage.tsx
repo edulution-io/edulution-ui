@@ -42,6 +42,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 import useAppConfigsStore from '../Settings/AppConfig/appConfigsStore';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 
 type LocationState = {
   from: string;
@@ -146,8 +147,8 @@ const LoginPage: React.FC = () => {
 
   useEffect(() => {
     if (isAuthenticatedAppReady) {
-      const { from } = (location?.state ?? { from: '/' }) as LocationState;
-      const toLocation = from === LOGIN_ROUTE ? '/' : from;
+      const { from } = (location?.state ?? { from: DASHBOARD_ROUTE }) as LocationState;
+      const toLocation = from === LOGIN_ROUTE ? DASHBOARD_ROUTE : from;
       navigate(toLocation, {
         replace: true,
       });

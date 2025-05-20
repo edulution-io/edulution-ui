@@ -14,6 +14,7 @@ import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 
 const getAuthRoutes = (isAuthenticated: boolean) => [
   <Route
@@ -28,7 +29,7 @@ const getAuthRoutes = (isAuthenticated: boolean) => [
       isAuthenticated ? (
         <Navigate
           replace
-          to={window.location.pathname === LOGIN_ROUTE ? '/' : window.location.pathname}
+          to={DASHBOARD_ROUTE}
         />
       ) : (
         <Navigate
