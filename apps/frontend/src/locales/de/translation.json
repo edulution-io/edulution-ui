@@ -212,7 +212,7 @@
     "errors": {
       "MeetingNotFound": "Ein Meeting mit dieser ID wurde nicht gefunden",
       "BbbServerNotReachable": "Der externe BBB-Server ist nicht erreichbar",
-      "CouldNotStartConference": "Die Konference konnte nicht gestartet werden",
+      "CouldNotStartConference": "Die Konferenz konnte nicht gestartet werden",
       "CouldNotStopConference": "Die Konferenz konnte nicht gestoppt werden",
       "BbbUnauthorized": "Du bist nicht autorisiert auf den externen BBB-Server zuzugreifen",
       "AppNotProperlyConfigured": "Die Konferenz-App ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
