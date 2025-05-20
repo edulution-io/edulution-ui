@@ -12,95 +12,137 @@
 
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import useGroupStore from '@/store/GroupStore';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
-import {
-  GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS,
-  GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH,
-} from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
-import GlobalSettingsFloatingButtons from './GlobalSettingsFloatingButtons';
+import AppConfigSwitch from '@/pages/Settings/AppConfig/components/booleanField/AppConfigSwitch';
+import AppDropdownSelectFormField from '@/components/ui/DropdownSelect/AppDropdownSelectFormField';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import defaultValues from '@libs/global-settings/constants/defaultValues';
 import useGlobalSettingsApiStore from './useGlobalSettingsApiStore';
-
-interface FormData {
-  mfaEnforcedGroups: MultipleSelectorGroup[];
-}
+import GlobalSettingsFloatingButtons from './GlobalSettingsFloatingButtons';
 
 const GlobalSettings: React.FC = () => {
   const { t } = useTranslation();
   const { searchGroups } = useGroupStore();
+  const { appConfigs } = useAppConfigsStore();
   const { globalSettings, getGlobalSettings, setGlobalSettings } = useGlobalSettingsApiStore();
-  const { mfaEnforcedGroups } = globalSettings.auth;
 
-  const form = useForm<FormData>({
-    defaultValues: {
-      mfaEnforcedGroups: [],
-    },
-  });
+  const form = useForm<GlobalSettingsDto>({ defaultValues });
+
+  const {
+    watch,
+    setValue,
+    reset,
+    control,
+    handleSubmit,
+    formState: { isDirty },
+    getValues,
+  } = form;
 
   useEffect(() => {
-    void getGlobalSettings(GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH);
-  }, []);
+    void getGlobalSettings();
+  }, [getGlobalSettings]);
 
   useEffect(() => {
-    if (mfaEnforcedGroups) {
-      form.setValue(GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS, mfaEnforcedGroups);
+    if (globalSettings) {
+      reset({
+        auth: {
+          mfaEnforcedGroups: globalSettings.auth?.mfaEnforcedGroups || [],
+        },
+        general: {
+          defaultLandingPage: {
+            ...defaultValues.general.defaultLandingPage,
+            ...globalSettings.general?.defaultLandingPage,
+          },
+        },
+      });
     }
-  }, [mfaEnforcedGroups]);
+  }, [globalSettings, reset]);
+
+  const defaultLandingPageAppName = watch('general.defaultLandingPage.appName');
+  const isCustomLandingPageEnabled = watch('general.defaultLandingPage.isCustomLandingPageEnabled');
+
+  useEffect(() => {
+    if (!isDirty || !appConfigs.length) return;
+
+    if (isCustomLandingPageEnabled && !defaultLandingPageAppName) {
+      setValue('general.defaultLandingPage.appName', appConfigs[0].name);
+    } else if (!isCustomLandingPageEnabled) {
+      setValue('general.defaultLandingPage', defaultValues.general.defaultLandingPage);
+    }
+  }, [defaultLandingPageAppName, isCustomLandingPageEnabled, appConfigs, setValue]);
 
   const handleGroupsChange = (newGroups: MultipleSelectorGroup[]) => {
-    const currentGroups = form.getValues(GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS) || [];
-
-    const filteredCurrentGroups = currentGroups.filter((currentGroup) =>
-      newGroups.some((newGroup) => newGroup.value === currentGroup.value),
-    );
-    const combinedGroups = [
-      ...filteredCurrentGroups,
-      ...newGroups.filter(
-        (newGroup) => !filteredCurrentGroups.some((currentGroup) => currentGroup.value === newGroup.value),
-      ),
-    ];
-    form.setValue(GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS, combinedGroups, { shouldValidate: true });
+    const uniqueGroups = newGroups.reduce<MultipleSelectorGroup[]>((acc, g) => {
+      if (!acc.some((x) => x.value === g.value)) acc.push(g);
+      return acc;
+    }, []);
+    setValue('auth.mfaEnforcedGroups', uniqueGroups, { shouldValidate: true });
   };
 
-  const onSubmit: SubmitHandler<FormData> = (data) => {
-    const newGlobalSettingsDto: GlobalSettingsDto = { auth: { mfaEnforcedGroups: data.mfaEnforcedGroups } };
-
-    void setGlobalSettings(newGlobalSettingsDto);
+  const onSubmit: SubmitHandler<GlobalSettingsDto> = (newGlobalSettings) => {
+    void setGlobalSettings(newGlobalSettings);
   };
 
   return (
     <>
       <AccordionSH
         type="multiple"
-        defaultValue={['security']}
+        defaultValue={['general', 'security']}
       >
-        <AccordionItem value="security">
-          <AccordionTrigger className="flex text-h4">
-            <h4>{t('settings.globalSettings.multiFactorAuthentication')}</h4>
-          </AccordionTrigger>
-          <AccordionContent
-            style={{ overflow: 'visible' }}
-            className="space-y-2 px-1"
-          >
-            <p className="text-background">{t('settings.globalSettings.description')}</p>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)}>
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <AccordionItem value="general">
+              <AccordionTrigger className="flex text-h4">
+                <h4>{t('settings.globalSettings.general')}</h4>
+              </AccordionTrigger>
+              <AccordionContent
+                className="space-y-2 px-1 text-p"
+                style={{ overflow: 'visible' }}
+              >
+                <h4>{t('settings.globalSettings.defaultLandingPageTitle')}</h4>
+                <AppConfigSwitch
+                  fieldPath="general.defaultLandingPage.isCustomLandingPageEnabled"
+                  control={control}
+                  option={{
+                    title: t('settings.globalSettings.defaultLandingPageDescription'),
+                    description: t('settings.globalSettings.defaultLandingPageSwitchDescription'),
+                  }}
+                />
+                {isCustomLandingPageEnabled && (
+                  <AppDropdownSelectFormField
+                    appNamePath="general.defaultLandingPage.appName"
+                    form={form}
+                  />
+                )}
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="security">
+              <AccordionTrigger className="flex text-h4">
+                <h4>{t('settings.globalSettings.multiFactorAuthentication')}</h4>
+              </AccordionTrigger>
+              <AccordionContent
+                style={{ overflow: 'visible' }}
+                className="space-y-2 px-1"
+              >
+                <p className="text-background">{t('settings.globalSettings.mfaDescription')}</p>
                 <FormFieldSH
-                  control={form.control}
-                  name={GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS}
+                  control={control}
+                  name="auth.mfaEnforcedGroups"
                   render={() => (
                     <FormItem>
-                      <p className="font-bold">{t(`permission.groups`)}</p>
+                      <p className="font-bold">{t('permission.groups')}</p>
                       <FormControl>
                         <AsyncMultiSelect<MultipleSelectorGroup>
-                          value={form.getValues(GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS)}
+                          value={getValues('auth.mfaEnforcedGroups')}
                           onSearch={searchGroups}
-                          onChange={(groups) => handleGroupsChange(groups)}
+                          onChange={handleGroupsChange}
                           placeholder={t('search.type-to-search')}
                         />
                       </FormControl>
@@ -109,12 +151,12 @@ const GlobalSettings: React.FC = () => {
                     </FormItem>
                   )}
                 />
-              </form>
-            </Form>
-          </AccordionContent>
-        </AccordionItem>
+              </AccordionContent>
+            </AccordionItem>
+          </form>
+        </Form>
       </AccordionSH>
-      <GlobalSettingsFloatingButtons handleSave={form.handleSubmit(onSubmit)} />
+      <GlobalSettingsFloatingButtons handleSave={handleSubmit(onSubmit)} />
     </>
   );
 };

@@ -15,8 +15,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import GlobalSettingsErrorMessages from '@libs/global-settings/constants/globalSettingsErrorMessages';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
+import defaultValues from '@libs/global-settings/constants/defaultValues';
 import CustomHttpException from '../common/CustomHttpException';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
+import MigrationService from '../migration/migration.service';
+import globalSettingsMigrationsList from './migrations/globalSettingsMigrationsList';
 
 @Injectable()
 class GlobalSettingsService implements OnModuleInit {
@@ -26,12 +29,17 @@ class GlobalSettingsService implements OnModuleInit {
     const count = await this.globalSettingsModel.countDocuments();
 
     if (count !== 0) {
+      await MigrationService.runMigrations<GlobalSettingsDocument>(
+        this.globalSettingsModel,
+        globalSettingsMigrationsList,
+      );
+
       return;
     }
 
     await this.globalSettingsModel.create({
       singleton: true,
-      auth: { mfaEnforcedGroups: [] },
+      ...defaultValues,
       schemaVersion: 1,
     });
 

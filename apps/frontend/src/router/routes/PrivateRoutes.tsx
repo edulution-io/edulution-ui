@@ -35,9 +35,11 @@ import getFileSharingRoutes from '@/router/routes/FileSharingRoutes';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APPS from '@libs/appconfig/constants/apps';
 import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
-import DashboardPage from '../../pages/Dashboard/DashboardPage';
-import getEmbeddedRoutes from './EmbeddedAppRoutes';
+import DefaultLandingPageAfterLogin from '@/components/structure/DefaultLandingPageAfterLogin';
+import DashboardPage from '@/pages/Dashboard/DashboardPage';
+import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
 import ProtectedRoute from './ProtectedRoute';
+import getEmbeddedRoutes from './EmbeddedAppRoutes';
 
 const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
   <>
@@ -45,6 +47,11 @@ const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
     {getFramedRoutes(appConfigs)}
     {getNativeAppRoutes(appConfigs)}
     {getEmbeddedRoutes(appConfigs)}
+
+    <Route
+      path={LANDING_PAGE_ROUTE}
+      element={<DefaultLandingPageAfterLogin />}
+    />
 
     <Route
       path="/"

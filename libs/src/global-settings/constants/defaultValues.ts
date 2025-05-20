@@ -10,17 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Global, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import AppConfigController from './appconfig.controller';
-import AppConfigService from './appconfig.service';
-import { AppConfig, AppConfigSchema } from './appconfig.schema';
+import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 
-@Global()
-@Module({
-  imports: [MongooseModule.forFeature([{ name: AppConfig.name, schema: AppConfigSchema }])],
-  controllers: [AppConfigController],
-  providers: [AppConfigService],
-  exports: [AppConfigService],
-})
-export default class AppConfigModule {}
+const defaultValues: GlobalSettingsDto = {
+  auth: { mfaEnforcedGroups: [] },
+  general: {
+    defaultLandingPage: {
+      isCustomLandingPageEnabled: undefined,
+      appName: '',
+    },
+  },
+};
+
+export default defaultValues;
