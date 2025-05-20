@@ -32,6 +32,12 @@ class HealthService {
   ) {}
 
   async checkApiHealth() {
+    const rawThreshold = Number(EDUI_DISK_SPACE_THRESHOLD);
+
+    const isValidThreshold = !Number.isNaN(rawThreshold) && rawThreshold >= 0 && rawThreshold <= 1;
+
+    const thresholdPercent = isValidThreshold ? Math.round(rawThreshold * 100) / 100 : 0.95;
+
     return this.health.check([
       () => this.mongoose.pingCheck('mongodb'),
       () => this.httpIndicator.pingCheck('authServer', KEYCLOAK_API || ''),
@@ -39,7 +45,7 @@ class HealthService {
         this.httpIndicator.pingCheck('lmnServer', new URL(EDUI_WEBDAV_URL || '').origin, {
           httpClient: this.httpService,
         }),
-      () => this.disk.checkStorage('disk', { thresholdPercent: Number(EDUI_DISK_SPACE_THRESHOLD) || 0.95, path: '/' }),
+      () => this.disk.checkStorage('disk', { thresholdPercent, path: '/' }),
     ]);
   }
 }
