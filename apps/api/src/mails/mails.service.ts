@@ -76,9 +76,18 @@ class MailsService implements OnModuleInit {
 
     this.imapUrl = (appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_URL] as string) || '';
     this.imapPort = (appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_PORT] as number) || 0;
-    this.imapSecure = appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_SECURE] === 'true' || false;
-    this.imapRejectUnauthorized =
-      appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED] === 'true' || false;
+    this.imapSecure = !!appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_SECURE];
+    this.imapRejectUnauthorized = !!appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED];
+
+    Logger.verbose(
+      `IMAP config: ${JSON.stringify({
+        imapUrl: this.imapUrl,
+        imapPort: this.imapPort,
+        imapSecure: this.imapSecure,
+        imapRejectUnauthorized: this.imapRejectUnauthorized,
+      })}`,
+      MailsService.name,
+    );
   }
 
   async getMails(emailAddress: string, password: string): Promise<MailDto[]> {

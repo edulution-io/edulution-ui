@@ -141,7 +141,7 @@ const LoginPage: React.FC = () => {
     void registerUser();
   }, [auth.isAuthenticated, eduApiToken]);
 
-  const isAppConfigReady = appConfigs.some((appConfig) => appConfig.name !== APPS.NONE);
+  const isAppConfigReady = !appConfigs.find((appConfig) => appConfig.name === APPS.NONE);
   const isAuthenticatedAppReady = isAppConfigReady && isAuthenticated;
 
   useEffect(() => {
