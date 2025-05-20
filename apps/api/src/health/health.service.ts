@@ -16,6 +16,7 @@ import {
   HealthCheckService,
   HttpHealthIndicator,
   MongooseHealthIndicator,
+  HealthIndicatorResult,
 } from '@nestjs/terminus';
 import { HttpService } from '@nestjs/axios';
 
@@ -31,22 +32,48 @@ class HealthService {
     private httpService: HttpService,
   ) {}
 
-  async checkApiHealth() {
-    const rawThreshold = Number(EDUI_DISK_SPACE_THRESHOLD);
+  async checkEduApiHealth() {
+    return this.health.check([() => this.checkMongo(), () => this.checkDiskStorage()]);
+  }
 
-    const isValidThreshold = !Number.isNaN(rawThreshold) && rawThreshold >= 0 && rawThreshold <= 1;
-
-    const thresholdPercent = isValidThreshold ? Math.round(rawThreshold * 100) / 100 : 0.95;
-
+  async checkEduApiStats() {
     return this.health.check([
-      () => this.mongoose.pingCheck('mongodb'),
-      () => this.httpIndicator.pingCheck('authServer', KEYCLOAK_API || ''),
-      () =>
-        this.httpIndicator.pingCheck('lmnServer', new URL(EDUI_WEBDAV_URL || '').origin, {
-          httpClient: this.httpService,
-        }),
-      () => this.disk.checkStorage('disk', { thresholdPercent, path: '/' }),
+      () => this.checkMongo(),
+      () => this.checkAuthServer(),
+      () => this.checkWebDavServer(),
+      () => this.checkDiskStorage(),
     ]);
+  }
+
+  private checkMongo(): Promise<HealthIndicatorResult> {
+    return this.mongoose.pingCheck('mongodb');
+  }
+
+  private checkAuthServer(): Promise<HealthIndicatorResult> {
+    const url = KEYCLOAK_API || '';
+    return this.httpIndicator.pingCheck('authServer', url);
+  }
+
+  private checkWebDavServer(): Promise<HealthIndicatorResult> {
+    const { origin } = new URL(EDUI_WEBDAV_URL || '');
+    return this.httpIndicator.pingCheck('lmnServer', origin, {
+      httpClient: this.httpService,
+    });
+  }
+
+  private checkDiskStorage(): Promise<HealthIndicatorResult> {
+    return this.disk.checkStorage('disk', {
+      thresholdPercent: HealthService.getThresholdPercent(),
+      path: '/',
+    });
+  }
+
+  private static getThresholdPercent(): number {
+    const raw = Number(EDUI_DISK_SPACE_THRESHOLD);
+    if (!Number.isFinite(raw) || raw < 0 || raw > 1) {
+      return 0.95;
+    }
+    return Math.round(raw * 100) / 100;
   }
 }
 
