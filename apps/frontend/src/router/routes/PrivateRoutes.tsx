@@ -35,10 +35,10 @@ import getFileSharingRoutes from '@/router/routes/FileSharingRoutes';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APPS from '@libs/appconfig/constants/apps';
 import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import DashboardPage from '../../pages/Dashboard/DashboardPage';
 import getEmbeddedRoutes from './EmbeddedAppRoutes';
 import ProtectedRoute from './ProtectedRoute';
-import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 
 const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
   <>

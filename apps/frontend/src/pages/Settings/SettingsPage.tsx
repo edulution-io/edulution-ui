@@ -14,9 +14,9 @@ import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import useLdapGroups from '@/hooks/useLdapGroups';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import AppConfigPage from './AppConfig/AppConfigPage';
 import SettingsOverviewPage from './components/SettingsOverviewPage';
-import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 
 const SettingsPage: React.FC = () => {
   const { settingLocation } = useParams();

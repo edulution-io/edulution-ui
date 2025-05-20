@@ -15,8 +15,8 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
 import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
 import { getRootPathName } from '@libs/common/utils';
-import useSidebarStore from '../sidebarStore';
 import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
+import useSidebarStore from '../sidebarStore';
 
 const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem }) => {
   const { pathname } = useLocation();

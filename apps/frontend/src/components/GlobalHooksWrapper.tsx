@@ -18,12 +18,12 @@ import type UserDto from '@libs/user/types/user.dto';
 import useSseStore from '@/store/useSseStore';
 import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 import isDev from '@libs/common/constants/isDev';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import useAppConfigsStore from '../pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '../store/UserStore/UserStore';
 import useLogout from '../hooks/useLogout';
 import useNotifications from '../hooks/useNotifications';
 import useTokenEventListeners from '../hooks/useTokenEventListener';
-import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 
 const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const auth = useAuth();

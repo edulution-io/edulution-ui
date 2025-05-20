@@ -39,10 +39,10 @@ import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import APPS from '@libs/appconfig/constants/apps';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 import useAppConfigsStore from '../Settings/AppConfig/appConfigsStore';
-import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 
 type LocationState = {
   from: string;

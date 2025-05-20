@@ -15,8 +15,8 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { MobileLogoIcon } from '@/assets/icons';
 import { SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
-import useSidebarStore from '../sidebarStore';
 import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
+import useSidebarStore from '../sidebarStore';
 
 const HomeButton: React.FC = () => {
   const { t } = useTranslation();
