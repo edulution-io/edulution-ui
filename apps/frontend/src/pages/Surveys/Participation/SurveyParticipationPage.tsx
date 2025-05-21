@@ -13,7 +13,7 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import SurveyParticipation from '@/pages/Surveys/Participation/SurveyParticipation';
+import AccessAndParticipateSurvey from '@/pages/Surveys/Participation/AccessAndParticipateSurvey';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
@@ -54,7 +54,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
         </div>
       );
     }
-    return <SurveyParticipation isPublic={isPublic} />;
+    return <AccessAndParticipateSurvey isPublic={isPublic} />;
   };
 
   return <PageLayout>{getBody()}</PageLayout>;

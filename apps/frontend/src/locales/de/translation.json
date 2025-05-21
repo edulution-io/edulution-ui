@@ -590,7 +590,8 @@
       "invalidUsername": "Benutzername ist ungültig (erlaubt sind Buchstaben, Zahlen und [. -])",
       "idHeader": "Deine Teilnahme-ID",
       "idText": "Bitte notiere dir:",
-      "idFooter": "Um die vorherige Antwort zu überschreiben musst du bei der nächsten Teilnahme statt deinem Benutzernamen die Teilnahme-ID eingeben.",
+      "idParagraphCanUpdate": "Um die vorherige Antwort zu überschreiben, musst du bei der nächsten Teilnahme statt deinem Benutzernamen die Teilnahme-ID eingeben.",
+      "idParagraphIsMulti": "Damit zukuenftigen Antworten verknüpft werden können, musst du bei der nächsten Teilnahme statt deinem Benutzernamen die Teilnahme-ID eingeben.",
       "usernameRequired": "Der Benutzername ist erforderlich",
       "completeMessage": "Vielen Dank, dass du an der Umfrage Teilgenommen hast"
     },

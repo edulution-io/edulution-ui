@@ -341,13 +341,18 @@ class SurveyAnswersService {
     if (!isAuthenticatedPublicUserParticipation) {
       return undefined;
     }
-    const existingUsersAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({
-      $and: [{ 'attendee.username': username }, { surveyId: new Types.ObjectId(surveyId) }],
-    });
-    if (existingUsersAnswer == null) {
+
+    const latestUserAnswer = await this.surveyAnswerModel
+      .find<SurveyAnswer>({
+        $and: [{ 'attendee.username': username }, { surveyId: new Types.ObjectId(surveyId) }],
+      })
+      .sort({ updatedAt: -1 })
+      .limit(1);
+
+    if (latestUserAnswer.length === 0) {
       return undefined;
     }
-    return existingUsersAnswer;
+    return latestUserAnswer[0];
   }
 
   async createAnswer(

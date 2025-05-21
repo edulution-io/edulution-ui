@@ -28,5 +28,3 @@ export const createNewPublicUserLogin = (publicUserName: string, publicUserId: s
   `${publicUserPrefix}${publicUserSeperator}${publicUserName}${publicUserSeperator}${publicUserId}`;
 
 export const publicUserRegex = new RegExp(`${publicUserNameRegex.source}|${publicUserLoginRegex.source}`);
-
-export default publicUserRegex;

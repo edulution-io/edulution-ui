@@ -588,7 +588,8 @@
       "invalidUsername": "Username is invalid (permitted are letters, number, and [. -])",
       "idHeader": "Your participation ID (optional)",
       "idText": "Pls copy this for later",
-      "idFooter": "In order to overwrite your previous answer, please enter this participation-ID instead of the username.",
+      "idParagraphCanUpdate": "In order to overwrite your previous answer, please enter this participation-ID instead of the username.",
+      "idParagraphIsMulti": "Please enter this participation-ID instead of the username, so that the answers can be linked together.",
       "usernameRequired": "User name is required",
       "completeMessage": "Thank you very much for participating in this survey"
     },

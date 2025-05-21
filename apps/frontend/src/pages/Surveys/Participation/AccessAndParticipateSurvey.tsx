@@ -15,14 +15,17 @@ import useUserStore from '@/store/UserStore/UserStore';
 import PublicSurveyAccessForm from '@/pages/Surveys/Participation/PublicSurveyAccessForm';
 import SurveyParticipationModel from '@/pages/Surveys/Participation/SurveyParticipationModel';
 import useParticipateSurveyStore from './useParticipateSurveyStore';
-import PublicSurveyParticipationId from './PublicSurveyParticipationId';
+import PublicSurveyParticipiationIdDisplay from './PublicSurveyParticipationIdDisplay';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 
-interface SurveyParticipationProps {
+interface AccessAndParticipateSurveyProps {
   isPublic: boolean;
 }
 
-const SurveyParticipation = (props: SurveyParticipationProps): React.ReactNode => {
+const AccessAndParticipateSurvey = (props: AccessAndParticipateSurveyProps): React.ReactNode => {
   const { isPublic = false } = props;
+
+  const { selectedSurvey } = useSurveyTablesPageStore();
   const { user } = useUserStore();
   const { attendee, setAttendee, publicUserId } = useParticipateSurveyStore();
 
@@ -46,10 +49,16 @@ const SurveyParticipation = (props: SurveyParticipationProps): React.ReactNode =
   }
 
   if (publicUserId) {
-    return <PublicSurveyParticipationId publicUserId={publicUserId} />;
+    const { canUpdateFormerAnswer, canSubmitMultipleAnswers } = selectedSurvey || {};
+    return (
+      <PublicSurveyParticipiationIdDisplay
+        publicUserId={publicUserId}
+        isMulti={!canUpdateFormerAnswer && !!canSubmitMultipleAnswers}
+      />
+    );
   }
 
   return <SurveyParticipationModel isPublic={isPublic} />;
 };
 
-export default SurveyParticipation;
+export default AccessAndParticipateSurvey;
