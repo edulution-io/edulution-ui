@@ -21,6 +21,7 @@ const logLevel = process.env.EDUI_LOG_LEVEL;
 
 @Injectable()
 class LoggingInterceptor implements NestInterceptor {
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     if (context.getType() !== 'http') {
       return next.handle();
