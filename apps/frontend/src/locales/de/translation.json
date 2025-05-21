@@ -212,7 +212,7 @@
     "errors": {
       "MeetingNotFound": "Ein Meeting mit dieser ID wurde nicht gefunden",
       "BbbServerNotReachable": "Der externe BBB-Server ist nicht erreichbar",
-      "CouldNotStartConference": "Die Konference konnte nicht gestartet werden",
+      "CouldNotStartConference": "Die Konferenz konnte nicht gestartet werden",
       "CouldNotStopConference": "Die Konferenz konnte nicht gestoppt werden",
       "BbbUnauthorized": "Du bist nicht autorisiert auf den externen BBB-Server zuzugreifen",
       "AppNotProperlyConfigured": "Die Konferenz-App ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
@@ -878,7 +878,8 @@
       "forbiddenProxyPath": "Dieser Proxy-Pfad ist nicht erlaubt.",
       "fieldRequired": "Dieses Feld ist erforderlich",
       "maxChars": "Maximal {{count}} Zeichen",
-      "nameAlreadyExists": "App mit diesem Namen existiert bereits"
+      "nameAlreadyExists": "App mit diesem Namen existiert bereits",
+      "nameIsNotAllowed": "Dieser Appname ist nicht erlaubt"
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",

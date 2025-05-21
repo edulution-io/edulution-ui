@@ -18,6 +18,7 @@ import type UserDto from '@libs/user/types/user.dto';
 import useSseStore from '@/store/useSseStore';
 import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 import isDev from '@libs/common/constants/isDev';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import useAppConfigsStore from '../pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '../store/UserStore/UserStore';
 import useLogout from '../hooks/useLogout';
@@ -40,7 +41,7 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
       setEduApiToken(auth.user?.access_token);
 
       setCookie('authToken', auth.user?.access_token, {
-        path: '/',
+        path: DASHBOARD_ROUTE,
         domain: window.location.hostname,
         secure: !isDev,
         sameSite: isDev ? 'lax' : 'none',

@@ -874,7 +874,8 @@
       "forbiddenProxyPath": "Forbidden proxy path",
       "fieldRequired": "This field is required",
       "maxChars": "Maximum {{count}} characters",
-      "nameAlreadyExists": "App with this name already exists"
+      "nameAlreadyExists": "App with this name already exists",
+      "nameIsNotAllowed": "This app name is not allowed"
     },
     "yamleditor": {
       "invalidYaml": "Wrong YAML syntax",

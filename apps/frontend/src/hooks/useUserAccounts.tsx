@@ -16,6 +16,7 @@ import { toast } from 'sonner';
 import useUserStore from '@/store/UserStore/UserStore';
 import UserAccountsToastContent from '@/components/ui/UserAccountsToastContent';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 
 const useUserAccounts = (appName: string | null) => {
   const { appConfigs } = useAppConfigsStore();
@@ -51,7 +52,7 @@ const useUserAccounts = (appName: string | null) => {
   }, []);
 
   useEffect(() => {
-    if (!appName || appName === '/') return;
+    if (!appName || appName === DASHBOARD_ROUTE) return;
 
     if (!appConfig) return;
 
