@@ -99,10 +99,10 @@ const GlobalSettings: React.FC = () => {
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <AccordionItem value="general">
-              <AccordionTrigger className="peer flex">
+              <AccordionTrigger className="flex">
                 <h4>{t('settings.globalSettings.general')}</h4>
               </AccordionTrigger>
-              <AccordionContent className="space-y-2 overflow-hidden px-1 text-p peer-[data-state=open]:overflow-visible">
+              <AccordionContent className="space-y-2 px-1 text-p">
                 <p className="text-xl font-bold">{t('settings.globalSettings.defaultLandingPageTitle')}</p>
                 <AppConfigSwitch
                   fieldPath="general.defaultLandingPage.isCustomLandingPageEnabled"
@@ -123,10 +123,10 @@ const GlobalSettings: React.FC = () => {
             </AccordionItem>
 
             <AccordionItem value="security">
-              <AccordionTrigger className="peer flex">
+              <AccordionTrigger className="flex">
                 <h4>{t('settings.globalSettings.multiFactorAuthentication')}</h4>
               </AccordionTrigger>
-              <AccordionContent className="space-y-2 overflow-hidden px-1 peer-[data-state=open]:overflow-visible">
+              <AccordionContent className="space-y-2 px-1">
                 <p className="text-background">{t('settings.globalSettings.mfaDescription')}</p>
                 <FormFieldSH
                   control={control}
