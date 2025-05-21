@@ -1209,7 +1209,8 @@
     "oversizedFileDetected": "Oversized file detected!",
     "cannotUploadOversized": "Cannot upload oversized files (more than 50 MB).",
     "addFiles": "Add files",
-    "addFolder": "Add folder"
+    "addFolder": "Add folder",
+    "preparingFolder": "Preparing folder"
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",

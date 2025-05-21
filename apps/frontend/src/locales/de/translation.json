@@ -1213,7 +1213,8 @@
     "oversizedFileDetected": "Zu große Datei entdeckt!",
     "cannotUploadOversized": "Es können keine Dateien größer als 50MB hochgeladen werden.",
     "addFiles": "Dateien hinzufügen",
-    "addFolder": "Ordner hinzufügen"
+    "addFolder": "Ordner hinzufügen",
+    "preparingFolder": "Ordner wird vorbereitet"
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",
