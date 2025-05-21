@@ -11,7 +11,7 @@
  */
 
 import { Model, Types } from 'mongoose';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4, validate } from 'uuid';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import SurveyStatus from '@libs/survey/survey-status-enum';
@@ -309,7 +309,7 @@ class SurveyAnswersService {
     const answers = surveyAnswers.filter((answer) => answer.answer != null);
     return answers.map((answer) => {
       const { username, firstName, lastName } = answer.attendee;
-      if (!username || publicUserLoginRegex.test(username)) {
+      if (!username || publicUserLoginRegex.test(username) || (lastName && validate(lastName))) {
         return { identification: firstName, ...answer.answer };
       }
       let identification = `(${username})`;
@@ -332,7 +332,7 @@ class SurveyAnswersService {
     }
   }
 
-  async checkPublicUserParticipation(
+  async hasPublicUserAnsweredSurvey(
     surveyId: string,
     attendee: Partial<AttendeeDto>,
   ): Promise<SurveyAnswer | undefined> {

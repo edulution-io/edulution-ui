@@ -13,8 +13,8 @@
 import React, { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
-import PublicLoginButton from '@/pages/ConferencePage/PublicConference/PublicLoginButton';
-import PublicJoinButton from '@/pages/ConferencePage/PublicConference/PublicJoinButton';
+import PublicLoginButton from '@/components/shared/PublicLoginButton';
+import PublicJoinButton from '@/components/shared/PublicJoinButton';
 import useUserStore from '@/store/UserStore/UserStore';
 import FormField from '@/components/shared/FormField';
 import { Form } from '@/components/ui/Form';

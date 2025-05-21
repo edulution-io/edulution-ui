@@ -22,8 +22,8 @@ import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import PublicLoginButton from '@/pages/ConferencePage/PublicConference/PublicLoginButton';
-import PublicJoinButton from '@/pages/ConferencePage/PublicConference/PublicJoinButton';
+import PublicLoginButton from '@/components/shared/PublicLoginButton';
+import PublicJoinButton from '@/components/shared/PublicJoinButton';
 
 interface PublicConferenceJoinFormProps {
   meetingId: string;

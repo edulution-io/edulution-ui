@@ -13,7 +13,7 @@
 import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Get, Post, Param, Res } from '@nestjs/common';
-import { CHECK_EXISTING_PUBLIC_USER, IMAGES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import { HAS_PUBLIC_USER_ANSWERED, IMAGES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import ParticipantDto from '@libs/survey/types/api/participant.dto';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
@@ -43,11 +43,11 @@ class PublicSurveysController {
     return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, attendee);
   }
 
-  @Post(CHECK_EXISTING_PUBLIC_USER)
+  @Post(HAS_PUBLIC_USER_ANSWERED)
   @Public()
-  async checkPublicUserExistence(@Body() participantDto: ParticipantDto) {
+  async hasPublicUserAnswered(@Body() participantDto: ParticipantDto) {
     const { surveyId, attendee } = participantDto;
-    return this.surveyAnswerService.checkPublicUserParticipation(surveyId, attendee);
+    return this.surveyAnswerService.hasPublicUserAnsweredSurvey(surveyId, attendee);
   }
 
   @Get(`${IMAGES}/:surveyId/:questionId/:filename`)

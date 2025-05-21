@@ -20,7 +20,7 @@ import {
   SURVEYS,
   PUBLIC_SURVEYS,
   SURVEY_ANSWER_ENDPOINT,
-  CHECK_EXISTING_PUBLIC_USER,
+  HAS_PUBLIC_USER_ANSWERED,
 } from '@libs/survey/constants/surveys-endpoint';
 import { publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
 import AttendeeDto from '@libs/user/types/attendee.dto';
@@ -150,7 +150,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
   ): Promise<boolean> => {
     set({ isFetching: true });
     try {
-      const response = await eduApi.post<SurveyAnswerDto>(`${PUBLIC_SURVEYS}/${CHECK_EXISTING_PUBLIC_USER}`, {
+      const response = await eduApi.post<SurveyAnswerDto>(`${PUBLIC_SURVEYS}/${HAS_PUBLIC_USER_ANSWERED}`, {
         surveyId,
         attendee,
       });

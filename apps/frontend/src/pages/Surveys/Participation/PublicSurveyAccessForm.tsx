@@ -10,7 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { ChangeEvent } from 'react';
+import useUserStore from '@/store/UserStore/UserStore';
+import FormField from '@/components/shared/FormField';
+import { Form } from '@/components/ui/Form';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -18,10 +21,12 @@ import { publicUserRegex, publicUserLoginRegex, publicUserSeperator } from '@lib
 import { zodResolver } from '@hookform/resolvers/zod';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
-import PublicSurveyAccess from '@/pages/Surveys/Participation/PublicSurveyAccess';
+import PublicLoginButton from '@/components/shared/PublicLoginButton';
+import PublicJoinButton from '@/components/shared/PublicJoinButton';
 
 const PublicSurveyAccessForm = (): React.ReactNode => {
   const { t } = useTranslation();
+  const { user } = useUserStore();
   const { selectedSurvey } = useSurveyTablesPageStore();
   const { setAttendee, checkForMatchingUserNameAndPubliUserId } = useParticipateSurveyStore();
 
@@ -69,11 +74,9 @@ const PublicSurveyAccessForm = (): React.ReactNode => {
       value: publicUserName,
     };
 
-    // eslint-disable-next-line no-underscore-dangle
-    if (selectedSurvey?._id) {
+    if (selectedSurvey?.id) {
       const checkExistenceOfPublicUsername = await checkForMatchingUserNameAndPubliUserId(
-        // eslint-disable-next-line no-underscore-dangle
-        selectedSurvey?._id,
+        selectedSurvey?.id,
         publicUser,
       );
 
@@ -85,12 +88,32 @@ const PublicSurveyAccessForm = (): React.ReactNode => {
 
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center">
-      <PublicSurveyAccess
-        form={form}
-        publicUserName={form.watch('publicUserName')}
-        setPublicUserName={(value) => form.setValue('publicUserName', value, { shouldValidate: true })}
-        accessSurvey={handleAccessSurvey}
-      />
+      <div className="mx-auto my-10 w-[90%] rounded-xl bg-white bg-opacity-5 p-5 md:w-[400px]">
+        <PublicLoginButton />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleAccessSurvey)}>
+            {!user?.username && (
+              <div className="mb-2">
+                <div className="mb-2">
+                  {t('survey.participate.pleaseEnterYourFullName')}{' '}
+                  {t('survey.participate.pleaseEnterYourParticipationId')}
+                </div>
+                <FormField
+                  form={form}
+                  type="text"
+                  name="publicUserName"
+                  value={form.watch('publicUserName')}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    form.setValue('publicUserName', e.target.value, { shouldValidate: true })
+                  }
+                  variant="dialog"
+                />
+              </div>
+            )}
+            <PublicJoinButton />
+          </form>
+        </Form>
+      </div>
     </div>
   );
 };
