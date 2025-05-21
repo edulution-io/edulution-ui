@@ -106,7 +106,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
 
       const surveyAnswer: SurveyAnswerDto = response.data;
       const { username } = surveyAnswer.attendee;
-      const isAuthenticatedPublicUser = username && publicUserLoginRegex.test(username);
+      const isAuthenticatedPublicUser = !!username && publicUserLoginRegex.test(username);
       if (isAuthenticatedPublicUser) {
         set({ publicUserId: username, previousAnswer: surveyAnswer });
       } else {

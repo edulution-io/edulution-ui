@@ -48,8 +48,8 @@ const AccessAndParticipateSurvey = (props: AccessAndParticipateSurveyProps): Rea
     return <PublicSurveyAccessForm />;
   }
 
-  if (publicUserId) {
-    const { canUpdateFormerAnswer, canSubmitMultipleAnswers } = selectedSurvey || {};
+  const { canUpdateFormerAnswer = false, canSubmitMultipleAnswers = false } = selectedSurvey || {};
+  if (isPublic && publicUserId && (!!canUpdateFormerAnswer || !!canSubmitMultipleAnswers)) {
     return (
       <PublicSurveyParticipiationIdDisplay
         publicUserId={publicUserId}
