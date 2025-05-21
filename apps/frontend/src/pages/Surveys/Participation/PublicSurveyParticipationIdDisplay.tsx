@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { MdFileCopy } from 'react-icons/md';
 import copyToClipboard from '@/utils/copyToClipboard';
 import Input from '@/components/shared/Input';
+import Separator from '@/components/ui/Separator';
 
 interface PublicSurveyParticipiationIdDisplayProps {
   publicUserId: string;
@@ -32,29 +33,30 @@ const PublicSurveyParticipiationIdDisplay = ({
   }
 
   return (
-    <div className="relative top-1/4">
-      <div className="mb-32 flex flex-row items-center justify-center">
-        <h4>{t('survey.thanks')}</h4>
+    <div className="relative top-1/4 mx-auto my-10 w-[90%] max-w-[500px] rounded-xl bg-white bg-opacity-5 p-5 md:w-[60%]">
+      <div className="mb-6 mt-2 flex flex-row items-center justify-center">
+        <h3>{t('survey.thanks')}</h3>
       </div>
-      <div className="mx-auto my-10 w-[90%] max-w-[500px] rounded-xl bg-white bg-opacity-5 p-5 md:w-[60%]">
-        <h4 className="my-4 mt-0 ">{t('survey.participate.idHeader')}</h4>
 
-        <div className="mx-4">
-          <p>{t('survey.participate.idText')}</p>
-          <div className="mx-8 my-4 flex flex-row items-center justify-center">
-            <Input
-              type="text"
-              value={publicUserId}
-              readOnly
-              className="w-[400px] cursor-pointer"
-              onClick={() => copyToClipboard(publicUserId)}
-              icon={<MdFileCopy />}
-            />
-          </div>
+      <Separator className="my-4" />
+
+      <h4 className="my-4 mt-0 ">{t('survey.participate.idHeader')}</h4>
+
+      <div className="mx-4">
+        <p>{t('survey.participate.idText')}</p>
+        <div className="mx-8 my-4 flex flex-row items-center justify-center">
+          <Input
+            type="text"
+            value={publicUserId}
+            readOnly
+            className="w-[400px] cursor-pointer"
+            onClick={() => copyToClipboard(publicUserId)}
+            icon={<MdFileCopy />}
+          />
         </div>
-
-        <p>{isMulti ? t('survey.participate.idParagraphIsMulti') : t('survey.participate.idParagraphCanUpdate')}</p>
       </div>
+
+      <p>{isMulti ? t('survey.participate.idParagraphIsMulti') : t('survey.participate.idParagraphCanUpdate')}</p>
     </div>
   );
 };
