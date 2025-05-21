@@ -36,6 +36,10 @@ const SharePublicQRDialog = ({
     <QRCodeWithCopyButton
       url={url}
       titleTranslationId={t(descriptionTranslationId)}
+      toasterTranslationIds={{
+        success: 'common.savedToClipboard',
+        error: 'common.savedToClipboardError',
+      }}
     />
   );
 

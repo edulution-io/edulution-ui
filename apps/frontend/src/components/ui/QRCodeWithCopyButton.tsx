@@ -10,39 +10,47 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
+import { Button } from '@/components/shared/Button';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { MdFileCopy } from 'react-icons/md';
-import { Sizes } from '@libs/ui/types/sizes';
+import ToasterTranslationIds from '@libs/ui/types/toasterTranslationIds';
 import copyToClipboard from '@/utils/copyToClipboard';
-import Input from '@/components/shared/Input';
-import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
+import { Sizes } from '@libs/ui/types/sizes';
 
 interface QRCodeWithCopyButtonProps {
   url: string;
   titleTranslationId: string;
+  toasterTranslationIds?: ToasterTranslationIds;
   qrCodeSize?: Sizes;
 }
 
-const QRCodeWithCopyButton = ({ url, qrCodeSize, titleTranslationId }: QRCodeWithCopyButtonProps) => {
+const QRCodeWithCopyButton = ({
+  url,
+  qrCodeSize,
+  titleTranslationId,
+  toasterTranslationIds,
+}: QRCodeWithCopyButtonProps) => {
   const { t } = useTranslation();
 
   return (
     <>
       <p className="font-bold">{t(titleTranslationId)}</p>
-      <div className="mt-4 flex flex-col items-center justify-center space-y-8">
+      <div className="flex flex-col items-center justify-center">
         <QRCodeDisplay
           value={url}
           size={qrCodeSize}
+          className="m-14"
         />
-        <Input
-          type="text"
-          value={url}
-          readOnly
-          className="w-fit min-w-[550px] cursor-pointer"
-          onClick={() => copyToClipboard(url)}
-          icon={<MdFileCopy />}
-        />
+        <div className="mb-4 mt-4 rounded-xl bg-muted px-2 py-1 text-center">{url}</div>
+        <Button
+          size="lg"
+          type="button"
+          variant="btn-collaboration"
+          onClick={() => copyToClipboard(url, toasterTranslationIds)}
+        >
+          {t('common.copy.doCopy')}
+        </Button>
       </div>
     </>
   );
