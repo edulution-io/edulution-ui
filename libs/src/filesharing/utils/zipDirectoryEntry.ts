@@ -10,22 +10,17 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HTMLInputTypeAttribute } from 'react';
+import JSZip from 'jszip';
+import addEntryToZipFile from '@libs/filesharing/utils/addEntryToZipFile';
 
-interface InputProp<T> {
-  name: string;
-  label: string;
-  value: T;
-  type?: HTMLInputTypeAttribute;
-  readOnly?: boolean;
-}
+export const zipDirectoryEntry = async (dirEntry: FileSystemDirectoryEntry) => {
+  const zip = new JSZip();
+  await addEntryToZipFile(dirEntry, zip);
+  const blob = await zip.generateAsync({ type: 'blob' });
 
-declare module 'react' {
-  interface InputHTMLAttributes<T> extends React.HTMLAttributes<T> {
-    webkitdirectory?: string;
-    mozdirectory?: string;
-    directory?: string;
-  }
-}
-
-export default InputProp;
+  return Object.assign(new File([blob], `${dirEntry.name}.zip`, { type: 'application/zip' }), {
+    isZippedFolder: true,
+    originalFolderName: dirEntry.name,
+  });
+};
+export default zipDirectoryEntry;

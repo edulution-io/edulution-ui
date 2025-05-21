@@ -26,6 +26,8 @@ import ContentType from '@libs/filesharing/types/contentType';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import ErrorMessage from '@libs/error/errorMessage';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
+import { lookup } from 'mime-types';
+import { Open } from 'unzipper';
 import CustomHttpException from '../common/CustomHttpException';
 import { mapToDirectories, mapToDirectoryFiles } from '../filesharing/filesharing.utilities';
 import WebdavClientFactory from './webdav.client.factory';
@@ -33,11 +35,56 @@ import UsersService from '../users/users.service';
 
 @Injectable()
 class WebdavService {
+  readonly defaultPropfindXml = `<?xml version="1.0"?>
+      <d:propfind xmlns:d="DAV:">
+        <d:prop>
+          <d:getlastmodified/>
+          <d:getetag/>
+          <d:getcontenttype/>
+          <d:getcontentlength/>
+          <d:displayname/>
+          <d:creationdate/>
+        </d:prop>
+      </d:propfind>
+  `;
+
   private readonly baseUrl = process.env.EDUI_WEBDAV_URL as string;
 
   private webdavClientCache = new Map<string, { client: AxiosInstance; timeout: NodeJS.Timeout }>();
 
   constructor(private readonly usersService: UsersService) {}
+
+  static async executeWebdavRequest<T>(
+    client: AxiosInstance,
+    config: {
+      method: string;
+      url?: string;
+      // eslint-disable-next-line
+      data?: string | Record<string, any> | Buffer;
+      headers?: Record<string, string | number>;
+    },
+    fileSharingErrorMessage: ErrorMessage,
+    // eslint-disable-next-line
+    transformer?: (data: any) => T,
+  ): Promise<T | WebdavStatusResponse> {
+    try {
+      const response = await client(config);
+      WebdavService.handleWebDAVError(response);
+      return transformer ? transformer(response.data) : (response.data as T);
+    } catch (error) {
+      throw new CustomHttpException(fileSharingErrorMessage, HttpStatus.INTERNAL_SERVER_ERROR, '', WebdavService.name);
+    }
+  }
+
+  private static handleWebDAVError(response: AxiosResponse) {
+    if (!response || response.status < 200 || response.status >= 300) {
+      throw new CustomHttpException(
+        FileSharingErrorMessage.WebDavError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        response?.statusText || 'WebDAV request failed',
+      );
+    }
+  }
 
   scheduleClientTimeout(token: string): NodeJS.Timeout {
     return setTimeout(
@@ -71,38 +118,6 @@ class WebdavService {
       );
     }
     return client;
-  }
-
-  static async executeWebdavRequest<T>(
-    client: AxiosInstance,
-    config: {
-      method: string;
-      url?: string;
-      // eslint-disable-next-line
-      data?: string | Record<string, any> | Buffer;
-      headers?: Record<string, string | number>;
-    },
-    fileSharingErrorMessage: ErrorMessage,
-    // eslint-disable-next-line
-    transformer?: (data: any) => T,
-  ): Promise<T | WebdavStatusResponse> {
-    try {
-      const response = await client(config);
-      WebdavService.handleWebDAVError(response);
-      return transformer ? transformer(response.data) : (response.data as T);
-    } catch (error) {
-      throw new CustomHttpException(fileSharingErrorMessage, HttpStatus.INTERNAL_SERVER_ERROR, '', WebdavService.name);
-    }
-  }
-
-  private static handleWebDAVError(response: AxiosResponse) {
-    if (!response || response.status < 200 || response.status >= 300) {
-      throw new CustomHttpException(
-        FileSharingErrorMessage.WebDavError,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        response?.statusText || 'WebDAV request failed',
-      );
-    }
   }
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
@@ -157,19 +172,6 @@ class WebdavService {
     )) as DirectoryFileDTO[];
   }
 
-  readonly defaultPropfindXml = `<?xml version="1.0"?>
-      <d:propfind xmlns:d="DAV:">
-        <d:prop>
-          <d:getlastmodified/>
-          <d:getetag/>
-          <d:getcontenttype/>
-          <d:getcontentlength/>
-          <d:displayname/>
-          <d:creationdate/>
-        </d:prop>
-      </d:propfind>
-  `;
-
   async createFolder(username: string, path: string, folderName: string): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
     const fullPath = `${this.baseUrl}${path}/${folderName}`;
@@ -204,6 +206,35 @@ class WebdavService {
         status: resp.status,
       }),
     );
+  }
+
+  async uploadZippedFolder(
+    username: string,
+    parentPath: string,
+    folderName: string,
+    zipFile: CustomFile,
+  ): Promise<WebdavStatusResponse> {
+    await this.ensureFolderExists(username, `${parentPath}/`, folderName);
+
+    const directory = await Open.buffer(zipFile.buffer);
+
+    const entriesToUpload = directory.files.filter((f) => f.type !== 'Directory');
+    await entriesToUpload.reduce<Promise<void>>(async (_prev, fileEntry) => {
+      const buffer = await fileEntry.buffer();
+      const target = `${parentPath}/${folderName}/${fileEntry.path}`;
+      const mimeType = lookup(fileEntry.path) ?? RequestResponseContentType.APPLICATION_OCTET_STREAM;
+
+      const uploadFile: CustomFile = {
+        originalname: fileEntry.path,
+        buffer,
+        mimetype: mimeType,
+        size: buffer.length,
+      } as CustomFile;
+
+      await this.uploadFile(username, target, uploadFile);
+    }, Promise.resolve());
+
+    return { success: true, status: HttpStatus.CREATED };
   }
 
   async uploadFile(username: string, fullPath: string, file: CustomFile): Promise<WebdavStatusResponse> {

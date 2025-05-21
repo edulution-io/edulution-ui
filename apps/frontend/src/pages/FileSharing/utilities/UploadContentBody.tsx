@@ -11,8 +11,8 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { DropEvent, useDropzone } from 'react-dropzone';
 import { MdOutlineCloudUpload } from 'react-icons/md';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +24,10 @@ import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import WarningBox from '@/components/shared/WarningBox';
+import JSZip from 'jszip';
+import { TiDocumentAdd, TiFolderAdd } from 'react-icons/ti';
+import { zipDirectoryEntry } from '@libs/filesharing/utils/zipDirectoryEntry';
+import { UploadFile } from '@libs/filesharing/types/uploadFile';
 
 const UploadContentBody = () => {
   const { t } = useTranslation();
@@ -35,6 +39,33 @@ const UploadContentBody = () => {
 
   const { filesToUpload, setFilesToUpload } = useFileSharingDialogStore();
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const folderInputRef = useRef<HTMLInputElement>(null);
+
+  async function extractFilesFromEvent(event: DropEvent): Promise<File[]> {
+    if ('dataTransfer' in event && event.dataTransfer) {
+      const items = Array.from(event.dataTransfer.items ?? []);
+
+      const resolved = await Promise.all(
+        items.map(async (item) => {
+          const entry = item.webkitGetAsEntry?.();
+          if (entry && entry.isDirectory) {
+            return zipDirectoryEntry(entry as FileSystemDirectoryEntry);
+          }
+          return item.getAsFile();
+        }),
+      );
+
+      return resolved.filter((f): f is File => Boolean(f));
+    }
+
+    if ('target' in event && (event.target as HTMLInputElement).files) {
+      return Array.from((event.target as HTMLInputElement).files!);
+    }
+
+    return [];
+  }
+
   const splitFilesByMaxFileSize = (incomingFiles: File[], maxSizeMB: number): { oversize: File[]; normal: File[] } => {
     const oversize = incomingFiles.filter((f) => bytesToMegabytes(f.size) > maxSizeMB);
     const normal = incomingFiles.filter((f) => bytesToMegabytes(f.size) <= maxSizeMB);
@@ -43,12 +74,6 @@ const UploadContentBody = () => {
 
   const findDuplicateFiles = (incomingFiles: File[], existingFiles: { basename: string }[]): File[] =>
     incomingFiles.filter((file) => existingFiles.some((existing) => existing.basename === file.name));
-
-  const removeFile = (name: string) => {
-    setFilesToUpload((prev) => prev.filter((file) => file.name !== name));
-    setFilesThatWillBeOverwritten((prev) => prev.filter((file) => file.name !== name));
-    setOversizedFiles((prev) => prev.filter((file) => file.name !== name));
-  };
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -71,6 +96,39 @@ const UploadContentBody = () => {
     [files, setOversizedFiles, setFilesThatWillBeOverwritten, setFilesToUpload],
   );
 
+  const handleFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(e.target.files ?? []);
+    onDrop(selected);
+    e.target.value = '';
+  };
+
+  const handleFolderSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(e.target.files ?? []) as UploadFile[];
+    if (!selected.length) return;
+
+    const root = selected[0].webkitRelativePath.split('/')[0];
+    const zip = new JSZip();
+
+    selected.forEach((f) => {
+      zip.file(f.webkitRelativePath.replace(`${root}/`, ''), f);
+    });
+
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const zipFile: UploadFile = Object.assign(new File([blob], `${root}.zip`, { type: 'application/zip' }), {
+      isZippedFolder: true,
+      originalFolderName: root,
+    });
+
+    onDrop([zipFile]);
+    e.target.value = '';
+  };
+
+  const removeFile = (name: string) => {
+    setFilesToUpload((prev) => prev.filter((file) => file.name !== name));
+    setFilesThatWillBeOverwritten((prev) => prev.filter((file) => file.name !== name));
+    setOversizedFiles((prev) => prev.filter((file) => file.name !== name));
+  };
+
   useEffect(() => {
     setSubmitButtonIsDisabled(oversizedFiles.length !== 0);
   }, [oversizedFiles]);
@@ -79,7 +137,41 @@ const UploadContentBody = () => {
   const hasMultipleOversizedFiles = oversizedFiles.length > 1;
   const isAnyFileOversized = oversizedFiles.length > 0;
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    getFilesFromEvent: (event) => extractFilesFromEvent(event),
+    onDrop,
+  });
+
+  const renderPreview = (file: UploadFile) => {
+    if (file.isZippedFolder) {
+      return (
+        <div className="flex h-20 items-center justify-center">
+          <TiFolderAdd size={60} />
+        </div>
+      );
+    }
+
+    if (file.type.startsWith('image/')) {
+      return (
+        <img
+          src={URL.createObjectURL(file)}
+          alt={t('filesharingUpload.previewAlt', { filename: file.name })}
+          className="mb-2 aspect-square h-auto w-full object-cover"
+          onLoad={() => URL.revokeObjectURL(file.name)}
+        />
+      );
+    }
+
+    return (
+      <div className="flex h-20 items-center justify-center">
+        <FileIconComponent
+          size={60}
+          filename={file.name}
+        />
+      </div>
+    );
+  };
+
   const dropzoneStyle = `border-2 border-dashed border-gray-300 rounded-md p-10 mb-4 ${
     isDragActive ? 'bg-foreground' : 'bg-popover-foreground'
   }`;
@@ -95,6 +187,47 @@ const UploadContentBody = () => {
           </p>
           <MdOutlineCloudUpload className="h-12 w-12 text-muted" />
         </div>
+      </div>
+
+      <input
+        type="file"
+        multiple
+        hidden
+        ref={fileInputRef}
+        onChange={handleFilesSelected}
+      />
+      <input
+        type="file"
+        hidden
+        ref={folderInputRef}
+        webkitdirectory=""
+        onChange={handleFolderSelected}
+      />
+
+      <div className="flex w-full gap-2">
+        <Button
+          variant="btn-collaboration"
+          className="flex-1"
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <div className="flex flex-col items-center">
+            <TiDocumentAdd size={24} />
+            {t('filesharingUpload.addFiles')}
+          </div>
+        </Button>
+
+        <Button
+          variant="btn-collaboration"
+          className="flex-1"
+          type="button"
+          onClick={() => folderInputRef.current?.click()}
+        >
+          <div className="flex flex-col items-center">
+            <TiFolderAdd size={24} />
+            {t('filesharingUpload.addFolder')}
+          </div>
+        </Button>
       </div>
 
       {filesThatWillBeOverwritten.length > 0 && (
@@ -138,27 +271,12 @@ const UploadContentBody = () => {
           {filesToUpload.map((file) => (
             <li
               key={file.name}
-              className={`
-                  group relative overflow-hidden rounded-xl border p-2 shadow-lg 
-                  transition-all duration-200 hover:min-h-[80px] hover:overflow-visible
-                  ${bytesToMegabytes(file.size) < MAX_FILE_UPLOAD_SIZE ? 'border-accent' : 'border-ciRed  opacity-50'}
-                `}
+              className={
+                `group relative overflow-hidden rounded-xl border p-2 shadow-lg transition-all duration-200 hover:min-h-[80px] hover:overflow-visible ` +
+                `${bytesToMegabytes(file.size) < MAX_FILE_UPLOAD_SIZE ? 'border-accent' : 'border-ciRed  opacity-50'}`
+              }
             >
-              {file.type.startsWith('image/') ? (
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt={t('filesharingUpload.previewAlt', { filename: file.name })}
-                  className="mb-2 aspect-square h-auto w-full object-cover"
-                  onLoad={() => URL.revokeObjectURL(file.name)}
-                />
-              ) : (
-                <div className="flex h-20 items-center justify-center">
-                  <FileIconComponent
-                    size={60}
-                    filename={file.name}
-                  />
-                </div>
-              )}
+              {renderPreview(file)}
 
               <Button
                 onClick={() => removeFile(file.name)}
@@ -168,12 +286,10 @@ const UploadContentBody = () => {
               </Button>
 
               <div className="flex items-center justify-center">
-                <div
-                  className="truncate text-center text-xs text-neutral-500 underline transition-all duration-200
-                             group-hover:min-w-full group-hover:overflow-visible group-hover:whitespace-normal
-                             group-hover:break-words group-hover:p-1"
-                >
-                  {file.name}
+                <div className="truncate text-center text-xs text-neutral-500 underline transition-all duration-200 group-hover:min-w-full group-hover:overflow-visible group-hover:whitespace-normal group-hover:break-words group-hover:p-1">
+                  {'isZippedFolder' in file && file.isZippedFolder && 'originalFolderName' in file
+                    ? file.originalFolderName
+                    : file.name}
                 </div>
               </div>
             </li>
