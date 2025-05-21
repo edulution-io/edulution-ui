@@ -19,6 +19,7 @@ import { useLocation } from 'react-router-dom';
 import FLOATING_BUTTONS_BAR_ID from '@libs/ui/constants/floatingButtonsBarId';
 import useUserAccounts from '@/hooks/useUserAccounts';
 import { getFromPathName } from '@libs/common/utils';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 
 interface AppLayoutProps {
   nativeAppHeader?: NativeAppHeaderProps;
@@ -34,7 +35,7 @@ const PageLayout = ({ nativeAppHeader, children, isFullScreen }: AppLayoutProps)
 
   if (isFullScreen) return <main className="flex-1">{children}</main>;
 
-  const isMainPage = pathname === '/';
+  const isMainPage = pathname === DASHBOARD_ROUTE;
 
   return (
     <div className={cn('flex h-full w-full flex-col pl-4 pt-4', { 'px-4': isMainPage })}>

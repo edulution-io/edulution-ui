@@ -18,6 +18,7 @@ import { getRootPathName } from '@libs/common/utils';
 import SidebarItemNotification from '@/components/ui/Sidebar/SidebarMenuItems/SidebarItemNotification';
 import PageTitle from '@/components/PageTitle';
 import useTrulyVisible from '@/hooks/useTrulyVisible';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 
 const SidebarItem: React.FC<SidebarMenuItemProps> = ({
   menuItem,
@@ -33,7 +34,7 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({
 
   const rootPathName = getRootPathName(pathname);
 
-  const isCurrentlySelectedItem = rootPathName === menuItem.link && pathname !== '/';
+  const isCurrentlySelectedItem = rootPathName === menuItem.link && pathname !== DASHBOARD_ROUTE;
 
   return (
     <div
