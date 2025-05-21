@@ -32,11 +32,15 @@ class HealthService {
     private httpService: HttpService,
   ) {}
 
+  async checkEduApiResponding() {
+    return this.health.check([() => this.checkMongo()]);
+  }
+
   async checkEduApiHealth() {
     return this.health.check([() => this.checkMongo(), () => this.checkDiskStorage()]);
   }
 
-  async checkEduApiStats() {
+  async getEduApiStats() {
     return this.health.check([
       () => this.checkMongo(),
       () => this.checkAuthServer(),

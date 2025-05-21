@@ -24,7 +24,7 @@ class HealthController {
   @Get()
   @HealthCheck()
   check() {
-    return this.healthService.checkEduApiStats();
+    return this.healthService.checkEduApiResponding();
   }
 
   @Public()
@@ -33,6 +33,11 @@ class HealthController {
   @HealthCheck()
   readiness() {
     return this.healthService.checkEduApiHealth();
+  }
+
+  @Get('stats')
+  getStats() {
+    return this.healthService.getEduApiStats();
   }
 }
 
