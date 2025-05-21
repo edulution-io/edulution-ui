@@ -135,6 +135,7 @@ const AddUserAccountDialog: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowS
             <AppDropdownSelectFormField
               form={form}
               initialValue={initialFormValues.appName}
+              variant="dialog"
             />
             <FormField
               labelTranslationId={t('common.username')}

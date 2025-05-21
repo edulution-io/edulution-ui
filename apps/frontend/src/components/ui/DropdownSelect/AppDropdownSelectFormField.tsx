@@ -18,17 +18,20 @@ import { FormControl, FormFieldSH, FormItem } from '@/components/ui/Form';
 import { DropdownSelect } from '@/components';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import DropdownVariant from '@libs/ui/types/DropdownVariant';
 
 type AppDropdownSelectFormFieldProps<T extends FieldValues> = {
   form: UseFormReturn<T>;
   appNamePath?: Path<T>;
   initialValue?: PathValue<T, Path<T>>;
+  variant: DropdownVariant;
 };
 
 const AppDropdownSelectFormField = <T extends FieldValues>({
   form,
   appNamePath = 'appName' as Path<T>,
   initialValue,
+  variant,
 }: AppDropdownSelectFormFieldProps<T>) => {
   const { getAppConfigs, appConfigs } = useAppConfigsStore();
   const { t } = useTranslation();
@@ -56,7 +59,7 @@ const AppDropdownSelectFormField = <T extends FieldValues>({
               options={appNameOptions}
               selectedVal={field.value}
               handleChange={field.onChange}
-              variant="dialog"
+              variant={variant}
             />
           </FormControl>
         </FormItem>

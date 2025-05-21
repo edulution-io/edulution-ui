@@ -68,12 +68,11 @@ describe('GlobalSettingsService', () => {
 
   describe('getGlobalSettings', () => {
     it('should return settings with projection', async () => {
-      const mockData = defaultValues;
-      model.findOne?.mockReturnValue({ lean: () => Promise.resolve(mockData) });
+      model.findOne?.mockReturnValue({ lean: () => Promise.resolve(mockGlobalSettingsDto) });
 
       const result = await service.getGlobalSettings(GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH);
       expect(model.findOne).toHaveBeenCalledWith({}, GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH);
-      expect(result).toEqual(mockData);
+      expect(result).toEqual(mockGlobalSettingsDto);
     });
 
     it('should return null if error occurs', async () => {

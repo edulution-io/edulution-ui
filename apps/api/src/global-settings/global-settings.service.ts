@@ -40,7 +40,6 @@ class GlobalSettingsService implements OnModuleInit {
     await this.globalSettingsModel.create({
       singleton: true,
       ...defaultValues,
-      schemaVersion: 1,
     });
 
     Logger.log(`Imported default values`, GlobalSettings.name);

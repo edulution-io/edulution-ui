@@ -99,14 +99,11 @@ const GlobalSettings: React.FC = () => {
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <AccordionItem value="general">
-              <AccordionTrigger className="flex text-h4">
+              <AccordionTrigger className="peer flex">
                 <h4>{t('settings.globalSettings.general')}</h4>
               </AccordionTrigger>
-              <AccordionContent
-                className="space-y-2 px-1 text-p"
-                style={{ overflow: 'visible' }}
-              >
-                <h4>{t('settings.globalSettings.defaultLandingPageTitle')}</h4>
+              <AccordionContent className="space-y-2 overflow-hidden px-1 text-p peer-[data-state=open]:overflow-visible">
+                <p className="text-xl font-bold">{t('settings.globalSettings.defaultLandingPageTitle')}</p>
                 <AppConfigSwitch
                   fieldPath="general.defaultLandingPage.isCustomLandingPageEnabled"
                   control={control}
@@ -119,19 +116,17 @@ const GlobalSettings: React.FC = () => {
                   <AppDropdownSelectFormField
                     appNamePath="general.defaultLandingPage.appName"
                     form={form}
+                    variant="default"
                   />
                 )}
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="security">
-              <AccordionTrigger className="flex text-h4">
+              <AccordionTrigger className="peer flex">
                 <h4>{t('settings.globalSettings.multiFactorAuthentication')}</h4>
               </AccordionTrigger>
-              <AccordionContent
-                style={{ overflow: 'visible' }}
-                className="space-y-2 px-1"
-              >
+              <AccordionContent className="space-y-2 overflow-hidden px-1 peer-[data-state=open]:overflow-visible">
                 <p className="text-background">{t('settings.globalSettings.mfaDescription')}</p>
                 <FormFieldSH
                   control={control}
