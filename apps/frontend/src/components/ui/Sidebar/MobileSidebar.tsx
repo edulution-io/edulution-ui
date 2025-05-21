@@ -34,6 +34,8 @@ const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
 
   useOnClickOutside(sidebarRef, handleClickOutside);
 
+  const sidebarHeightWithoutSpecialButtons = 'h-[calc(100%-112px)]';
+
   return (
     <>
       <MobileMenuButton ref={buttonRef} />
@@ -46,7 +48,7 @@ const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
           className="fixed right-0 h-full min-w-[260px] border-l-[1px] border-muted bg-black md:bg-none"
         >
           <div className="relative right-0 top-0 h-14 bg-black pr-4 pt-4" />
-          <div className="h-[calc(100%-56px)] overflow-auto">
+          <div className={`${sidebarHeightWithoutSpecialButtons} overflow-auto`}>
             <HomeButton />
             {sidebarItems.map((item) => (
               <MobileSidebarItem

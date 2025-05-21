@@ -39,6 +39,7 @@ import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import APPS from '@libs/appconfig/constants/apps';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 import useAppConfigsStore from '../Settings/AppConfig/appConfigsStore';
@@ -141,13 +142,13 @@ const LoginPage: React.FC = () => {
     void registerUser();
   }, [auth.isAuthenticated, eduApiToken]);
 
-  const isAppConfigReady = appConfigs.some((appConfig) => appConfig.name !== APPS.NONE);
+  const isAppConfigReady = !appConfigs.find((appConfig) => appConfig.name === APPS.NONE);
   const isAuthenticatedAppReady = isAppConfigReady && isAuthenticated;
 
   useEffect(() => {
     if (isAuthenticatedAppReady) {
-      const { from } = (location?.state ?? { from: '/' }) as LocationState;
-      const toLocation = from === LOGIN_ROUTE ? '/' : from;
+      const { from } = (location?.state ?? { from: DASHBOARD_ROUTE }) as LocationState;
+      const toLocation = from === LOGIN_ROUTE ? DASHBOARD_ROUTE : from;
       navigate(toLocation, {
         replace: true,
       });
@@ -240,31 +241,36 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  const renderFormField = (fieldName: 'username' | 'password', label: string, type?: string, shouldTrim?: boolean) => (
-    <div className={isEnterTotpVisible ? 'hidden' : ''}>
-      <FormFieldSH
-        control={form.control}
-        name={fieldName}
-        render={({ field }) => (
-          <FormItem>
-            <p className="font-bold text-foreground">{label}</p>
-            <FormControl>
-              <Input
-                {...field}
-                type={type}
-                shouldTrim={shouldTrim}
-                disabled={isLoading}
-                placeholder={label}
-                variant="login"
-                data-testid={`test-id-login-page-${fieldName}-input`}
-              />
-            </FormControl>
-            <FormMessage className="text-foreground" />
-          </FormItem>
-        )}
-      />
-    </div>
-  );
+  useEffect(() => {
+    form.setFocus('username');
+  }, [form.setFocus]);
+
+  const renderFormField = (fieldName: 'username' | 'password', label: string, type?: string, shouldTrim?: boolean) =>
+    !isEnterTotpVisible && (
+      <div>
+        <FormFieldSH
+          control={form.control}
+          name={fieldName}
+          render={({ field }) => (
+            <FormItem>
+              <p className="font-bold text-foreground">{label}</p>
+              <FormControl>
+                <Input
+                  {...field}
+                  type={type}
+                  shouldTrim={shouldTrim}
+                  disabled={isLoading}
+                  placeholder={label}
+                  variant="login"
+                  data-testid={`test-id-login-page-${fieldName}-input`}
+                />
+              </FormControl>
+              <FormMessage className="text-foreground" />
+            </FormItem>
+          )}
+        />
+      </div>
+    );
 
   const renderErrorMessage = () => {
     const passwordError = form.getFieldState('password').error?.message;
@@ -290,7 +296,7 @@ const LoginPage: React.FC = () => {
 
     return (
       <>
-        <div className={isEnterTotpVisible ? '' : 'hidden'}>
+        {isEnterTotpVisible && (
           <FormFieldSH
             control={form.control}
             name="totpValue"
@@ -308,7 +314,7 @@ const LoginPage: React.FC = () => {
               </FormItem>
             )}
           />
-        </div>
+        )}
         {renderFormField('username', t('common.username'), 'text', true)}
         {renderFormField('password', t('common.password'), 'password')}
       </>
@@ -320,7 +326,7 @@ const LoginPage: React.FC = () => {
       <PageTitle translationId="login.pageTitle" />
       <Card
         variant="modal"
-        className="bg-background"
+        className="overflow-y-auto bg-background scrollbar-thin"
       >
         <img
           src={DesktopLogo}

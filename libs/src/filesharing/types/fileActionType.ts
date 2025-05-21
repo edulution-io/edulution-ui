@@ -17,6 +17,7 @@ enum FileActionType {
   DELETE_FILE_FOLDER = 'deleteFileFolder',
   UPLOAD_FILE = 'uploadFile',
   RENAME_FILE_FOLDER = 'renameFileFolder',
+  COPY_FILE_OR_FOLDER = 'copyFileOrFolder',
 }
 
 export default FileActionType;

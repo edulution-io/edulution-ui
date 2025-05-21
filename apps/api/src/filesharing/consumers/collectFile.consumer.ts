@@ -60,7 +60,7 @@ class CollectFileConsumer extends WorkerHost {
       statusDescription: 'filesharing.progressBox.processedCollectingInfo',
       processed,
       total,
-      studentName: username,
+      username,
       percent,
       currentFilePath: FILE_PATHS.COLLECT,
       failedPaths,

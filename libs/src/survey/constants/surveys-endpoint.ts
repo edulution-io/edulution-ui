@@ -30,7 +30,7 @@ export const TEMPLATES = 'templates';
 export const CHOICES = 'choices';
 export const CAN_PARTICIPATE = 'can-participate';
 export const HAS_ANSWERS = 'has-answers';
-export const CHECK_EXISTING_PUBLIC_USER = 'publicUser';
+export const HAS_PUBLIC_USER_ANSWERED = 'publicUser';
 
 export const SURVEY_FIND_ONE_ENDPOINT = `${SURVEYS}/${FIND_ONE}`;
 export const SURVEY_ANSWER_ENDPOINT = `${SURVEYS}/${ANSWER}`;

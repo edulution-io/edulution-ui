@@ -21,13 +21,13 @@ import axios, { AxiosInstance } from 'axios';
 import type LicenseInfoDto from '@libs/license/types/license-info.dto';
 import type SignLicenseDto from '@libs/license/types/sign-license.dto';
 import type TokenPayload from '@libs/license/types/token-payload';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import LICENSE_ENDPOINT from '@libs/license/constants/license-endpoints';
 import LICENSE_SERVER_URL from '@libs/license/constants/licenseServerUrl';
 import LicenseErrorMessages from '@libs/license/constants/licenseErrorMessages';
 import LICENSE_CHECK_INTERVAL from '@libs/license/constants/licenseCheckInterval';
+import CustomHttpException from '../common/CustomHttpException';
 import { License, LicenseDocument } from './license.schema';
 
 @Injectable()
@@ -79,8 +79,12 @@ class LicenseService implements OnModuleInit {
     const licenseInfo = await this.licenseModel.findOne<LicenseInfoDto>({}, 'licenseKey token isLicenseActive').lean();
 
     if (licenseInfo?.isLicenseActive && licenseInfo?.token) {
-      Logger.log('Checking license validity...', LicenseService.name);
-      await this.verifyToken(licenseInfo);
+      try {
+        Logger.log('Checking license validity...', LicenseService.name);
+        await this.verifyToken(licenseInfo);
+      } catch (error) {
+        Logger.error('License check failed', LicenseService.name);
+      }
     }
   }
 

@@ -10,6 +10,21 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const createValidPublicUserId = (username: string, uuid: string): string => `public_${username}_${uuid}`;
+import { useTranslation } from 'react-i18next';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useFileOperationProgressToast from '../../../hooks/useFileOperationProgressToast';
 
-export default createValidPublicUserId;
+const useFileOperationToast = () => {
+  const { t } = useTranslation();
+  const { fileOperationProgress } = useFileSharingStore();
+
+  useFileOperationProgressToast(
+    fileOperationProgress && {
+      ...fileOperationProgress,
+      title: t(fileOperationProgress.title ?? ''),
+      description: t(fileOperationProgress.description ?? ''),
+    },
+  );
+};
+
+export default useFileOperationToast;

@@ -23,11 +23,12 @@ import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobal
 import useLdapGroups from '@/hooks/useLdapGroups';
 import { GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 
 const SetupMfaDialog: React.FC = () => {
   const { t } = useTranslation();
   const { pathname } = useLocation();
-  const isDashboardPage = pathname === '/';
   const { getGlobalSettings } = useGlobalSettingsApiStore();
   const {
     qrCode,
@@ -42,12 +43,15 @@ const SetupMfaDialog: React.FC = () => {
   const { ldapGroups } = useLdapGroups();
   const [totp, setTotp] = useState('');
 
+  const isRightAfterLogin = pathname === DASHBOARD_ROUTE || pathname === LOGIN_ROUTE;
+
   useEffect(() => {
     const handleCheckGlobalSettings = async () => {
       const globalSettingsDto = await getGlobalSettings(GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH);
       const { mfaEnforcedGroups } = globalSettingsDto.auth;
       const isMfaRequired = mfaEnforcedGroups.some((group) => ldapGroups.includes(group.path));
-      if (isMfaRequired && !user?.mfaEnabled && isDashboardPage) {
+
+      if (isMfaRequired && !user?.mfaEnabled && isRightAfterLogin) {
         setIsSetTotpDialogOpen(true);
       }
     };
@@ -88,7 +92,7 @@ const SetupMfaDialog: React.FC = () => {
         void handleSetMfaEnabled();
       }}
     >
-      {isDashboardPage && <p className="mb-3 font-bold">{t('usersettings.addTotp.mfaSetupRequired')}</p>}
+      {isRightAfterLogin && <p className="mb-3 font-bold">{t('usersettings.addTotp.mfaSetupRequired')}</p>}
       <p>{t('usersettings.addTotp.qrCodeInstructions')}</p>
       <div className="flex justify-center">
         {qrCodeIsLoading ? (

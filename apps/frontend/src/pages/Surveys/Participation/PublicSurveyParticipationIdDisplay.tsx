@@ -15,22 +15,31 @@ import { useTranslation } from 'react-i18next';
 import { MdFileCopy } from 'react-icons/md';
 import copyToClipboard from '@/utils/copyToClipboard';
 import Input from '@/components/shared/Input';
+import Separator from '@/components/ui/Separator';
 
-interface PublicSurveyParticipationIdProps {
-  publicUserLogin?: { publicUserName: string; publicUserId: string };
+interface PublicSurveyParticipiationIdDisplayProps {
+  publicUserId: string;
+  isMulti?: boolean;
 }
 
-const PublicSurveyParticipationId = ({ publicUserLogin }: PublicSurveyParticipationIdProps) => {
+const PublicSurveyParticipiationIdDisplay = ({
+  publicUserId,
+  isMulti = false,
+}: PublicSurveyParticipiationIdDisplayProps) => {
   const { t } = useTranslation();
 
-  if (!publicUserLogin) {
+  if (!publicUserId) {
     return null;
   }
 
-  const { publicUserName, publicUserId } = publicUserLogin;
-
   return (
-    <div className="mx-auto my-10 w-[90%] max-w-[500px] rounded-xl bg-white bg-opacity-5 p-5 md:w-[60%]">
+    <div className="relative top-1/4 mx-auto my-10 w-[90%] max-w-[500px] rounded-xl bg-white bg-opacity-5 p-5 md:w-[60%]">
+      <div className="mb-6 mt-2 flex flex-row items-center justify-center">
+        <h3>{t('survey.thanks')}</h3>
+      </div>
+
+      <Separator className="my-4" />
+
       <h4 className="my-4 mt-0 ">{t('survey.participate.idHeader')}</h4>
 
       <div className="mx-4">
@@ -47,16 +56,9 @@ const PublicSurveyParticipationId = ({ publicUserLogin }: PublicSurveyParticipat
         </div>
       </div>
 
-      <div className="mx-4 mb-4">
-        <p>
-          {t('survey.participate.forUsername')}
-          <span className="mx-2 mb-2 w-fit rounded-xl bg-accent px-3 py-2">{`"${publicUserName}"`}</span>
-        </p>
-      </div>
-
-      <p>{t('survey.participate.idFooter')}</p>
+      <p>{isMulti ? t('survey.participate.idParagraphIsMulti') : t('survey.participate.idParagraphCanUpdate')}</p>
     </div>
   );
 };
 
-export default PublicSurveyParticipationId;
+export default PublicSurveyParticipiationIdDisplay;

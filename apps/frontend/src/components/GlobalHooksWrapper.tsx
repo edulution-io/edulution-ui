@@ -16,11 +16,9 @@ import { useCookies } from 'react-cookie';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import type UserDto from '@libs/user/types/user.dto';
 import useSseStore from '@/store/useSseStore';
-import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import useFileOperationToast from '@/hooks/useFileOperationToast';
 import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 import isDev from '@libs/common/constants/isDev';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import useAppConfigsStore from '../pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '../store/UserStore/UserStore';
 import useLogout from '../hooks/useLogout';
@@ -33,8 +31,6 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   const { getIsEduApiHealthy } = useEduApiStore();
   const { isAuthenticated, eduApiToken, setEduApiToken, user, getWebdavKey } = useUserStore();
   const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
-  const { filesharingProgress } = useLessonStore();
-  const { fileOperationProgress } = useFileSharingStore();
   const { eventSource, setEventSource } = useSseStore();
   const [, setCookie] = useCookies(['authToken']);
 
@@ -45,7 +41,7 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
       setEduApiToken(auth.user?.access_token);
 
       setCookie('authToken', auth.user?.access_token, {
-        path: '/',
+        path: DASHBOARD_ROUTE,
         domain: window.location.hostname,
         secure: !isDev,
         sameSite: isDev ? 'lax' : 'none',
@@ -90,8 +86,6 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [isAuthenticated]);
 
   useTokenEventListeners();
-
-  useFileOperationToast(fileOperationProgress, filesharingProgress);
 
   return children;
 };

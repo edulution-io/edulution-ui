@@ -21,9 +21,9 @@ import {
 } from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyStatus from '@libs/survey/survey-status-enum';
-import { HttpStatus } from '@nestjs/common';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
+import { HttpStatusCode } from 'axios';
 
 interface SurveysTablesPageStore {
   selectedSurvey: SurveyDto | undefined;
@@ -83,10 +83,6 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
 
   fetchSelectedSurvey: async (surveyId?: string, isPublic?: boolean): Promise<void> => {
-    const { isFetching } = get();
-    if (isFetching) {
-      return;
-    }
     if (!surveyId) {
       set({ selectedSurvey: undefined });
       return;
@@ -120,7 +116,7 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
     try {
       const response = await eduApi.get<boolean>(`${SURVEY_CAN_PARTICIPATE_ENDPOINT}/${surveyId}`);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- it's a number
-      if (response.status === HttpStatus.OK) {
+      if (response.status === HttpStatusCode.Ok) {
         set({ canParticipate: response.data });
       }
     } catch (error) {
@@ -137,7 +133,7 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
     try {
       const response = await eduApi.get<boolean>(`${SURVEY_HAS_ANSWERS_ENDPOINT}/${surveyId}`);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- it's a number
-      if (response.status === HttpStatus.OK) {
+      if (response.status === HttpStatusCode.Ok) {
         set({ hasAnswers: response.data });
       }
     } catch (error) {

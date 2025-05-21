@@ -15,8 +15,6 @@ import UserDto from '@libs/user/types/user.dto';
 type AttendeeDto = Pick<UserDto, 'firstName' | 'lastName' | 'username'> & {
   label: string;
   value: string;
-  publicUserName?: string;
-  publicUserId?: string;
 };
 
 export default AttendeeDto;

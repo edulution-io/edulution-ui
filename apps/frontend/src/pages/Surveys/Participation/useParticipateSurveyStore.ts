@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { AxiosResponse } from 'axios';
 import { t } from 'i18next';
 import { toast } from 'sonner';
 import { create } from 'zustand';
@@ -20,18 +19,17 @@ import SubmitAnswerDto from '@libs/survey/types/api/submit-answer.dto';
 import {
   SURVEYS,
   PUBLIC_SURVEYS,
-  ANSWER,
   SURVEY_ANSWER_ENDPOINT,
-  CHECK_EXISTING_PUBLIC_USER,
+  HAS_PUBLIC_USER_ANSWERED,
 } from '@libs/survey/constants/surveys-endpoint';
+import { publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
-import AttendeeDto from '@libs/user/types/attendee.dto';
-import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 
 interface ParticipateSurveyStore {
-  attendee: AttendeeDto | undefined;
-  setAttendee: (attendee: AttendeeDto | undefined) => void;
+  attendee: Partial<AttendeeDto> | undefined;
+  setAttendee: (attendee: Partial<AttendeeDto> | undefined) => void;
 
   answerSurvey: (
     answerDto: SubmitAnswerDto,
@@ -40,7 +38,7 @@ interface ParticipateSurveyStore {
   ) => Promise<SurveyAnswerDto | undefined>;
   isSubmitting: boolean;
 
-  checkForMatchingUserNameAndPubliUserId: (surveyId: string, attendee: AttendeeDto) => Promise<boolean>;
+  checkForMatchingUserNameAndPubliUserId: (surveyId: string, attendee: Partial<AttendeeDto>) => Promise<boolean>;
   setIsUserAuthenticated: (isUserAuthenticated: boolean) => void;
   isUserAuthenticated: boolean;
 
@@ -48,7 +46,7 @@ interface ParticipateSurveyStore {
   previousAnswer: SurveyAnswerDto | undefined;
   isFetching: boolean;
 
-  publicUserLogin?: { publicUserName: string; publicUserId: string };
+  publicUserId?: string;
 
   reset: () => void;
 }
@@ -63,14 +61,14 @@ const ParticipateSurveyStoreInitialState: Partial<ParticipateSurveyStore> = {
   previousAnswer: undefined,
   isFetching: false,
 
-  publicUserLogin: undefined,
+  publicUserId: undefined,
 };
 
 const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => ({
   ...(ParticipateSurveyStoreInitialState as ParticipateSurveyStore),
   reset: () => set(ParticipateSurveyStoreInitialState),
 
-  setAttendee: (attendee: AttendeeDto | undefined) => set({ attendee }),
+  setAttendee: (attendee: Partial<AttendeeDto> | undefined) => set({ attendee }),
 
   answerSurvey: async (
     answerDto: SubmitAnswerDto,
@@ -107,15 +105,16 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       surveyModel.doComplete();
 
       const surveyAnswer: SurveyAnswerDto = response.data;
-      const { publicUserName, publicUserId } = surveyAnswer.attendee;
-      if (publicUserName && publicUserId) {
-        set({ publicUserLogin: { publicUserName, publicUserId }, previousAnswer: surveyAnswer });
+      const { username } = surveyAnswer.attendee;
+      const isAuthenticatedPublicUser = !!username && publicUserLoginRegex.test(username);
+      if (isAuthenticatedPublicUser) {
+        set({ publicUserId: username, previousAnswer: surveyAnswer });
       } else {
-        set({ publicUserLogin: undefined, previousAnswer: undefined });
+        set({ publicUserId: undefined, previousAnswer: undefined });
       }
       return surveyAnswer;
     } catch (error) {
-      set({ publicUserLogin: undefined, previousAnswer: undefined });
+      set({ publicUserId: undefined, previousAnswer: undefined });
       handleApiError(error, set);
       toast.error(t('survey.errors.submitAnswerError'));
       return undefined;
@@ -126,17 +125,16 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
 
   fetchAnswer: async (surveyId: string): Promise<void> => {
     const { attendee } = get();
+    if (!attendee) {
+      return;
+    }
+    const { username } = attendee;
+    if (!username || publicUserLoginRegex.test(username)) {
+      return;
+    }
     set({ isFetching: true });
     try {
-      let response: AxiosResponse<SurveyAnswerDto> | undefined;
-      if (attendee?.publicUserName) {
-        if (!attendee?.publicUserId) {
-          throw new Error(SurveyErrorMessages.MISSING_ID_ERROR);
-        }
-        response = await eduApi.post<SurveyAnswerDto>(`${PUBLIC_SURVEYS}/${ANSWER}`, { surveyId, attendee });
-      } else {
-        response = await eduApi.post<SurveyAnswerDto>(SURVEY_ANSWER_ENDPOINT, { surveyId, attendee });
-      }
+      const response = await eduApi.post<SurveyAnswerDto>(SURVEY_ANSWER_ENDPOINT, { surveyId, attendee });
       const surveyAnswer: SurveyAnswerDto = response.data;
       set({ previousAnswer: surveyAnswer });
     } catch (error) {
@@ -146,18 +144,25 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
   },
 
-  checkForMatchingUserNameAndPubliUserId: async (surveyId: string, attendee: AttendeeDto): Promise<boolean> => {
+  checkForMatchingUserNameAndPubliUserId: async (
+    surveyId: string,
+    attendee: Partial<AttendeeDto>,
+  ): Promise<boolean> => {
     set({ isFetching: true });
     try {
-      const response = await eduApi.post<SurveyAnswerDto>(`${PUBLIC_SURVEYS}/${CHECK_EXISTING_PUBLIC_USER}`, {
+      const response = await eduApi.post<SurveyAnswerDto>(`${PUBLIC_SURVEYS}/${HAS_PUBLIC_USER_ANSWERED}`, {
         surveyId,
         attendee,
       });
+      if (!response.data) {
+        set({ attendee: undefined, previousAnswer: undefined });
+        return false;
+      }
       const surveyAnswer: SurveyAnswerDto = response.data;
-      set({ previousAnswer: surveyAnswer });
+      set({ attendee: surveyAnswer.attendee, previousAnswer: surveyAnswer });
       return true;
     } catch (error) {
-      set({ previousAnswer: undefined });
+      set({ attendee: undefined, previousAnswer: undefined });
       return false;
     } finally {
       set({ isFetching: false });

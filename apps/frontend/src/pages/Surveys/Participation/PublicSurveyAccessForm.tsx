@@ -10,18 +10,23 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import React, { ChangeEvent } from 'react';
+import useUserStore from '@/store/UserStore/UserStore';
+import FormField from '@/components/shared/FormField';
+import { Form } from '@/components/ui/Form';
 import { z } from 'zod';
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { publicUserRegex, publicUserLoginRegex, publicUserSeperator } from '@libs/survey/utils/publicUserLoginRegex';
 import { zodResolver } from '@hookform/resolvers/zod';
-import createValidPublicUserId from '@libs/survey/utils/createValidPublicUserId';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
-import PublicSurveyAccess from '@/pages/Surveys/Participation/PublicSurveyAccess';
+import PublicLoginButton from '@/components/shared/PublicLoginButton';
+import PublicJoinButton from '@/components/shared/PublicJoinButton';
 
 const PublicSurveyAccessForm = (): React.ReactNode => {
   const { t } = useTranslation();
+  const { user } = useUserStore();
   const { selectedSurvey } = useSurveyTablesPageStore();
   const { setAttendee, checkForMatchingUserNameAndPubliUserId } = useParticipateSurveyStore();
 
@@ -30,85 +35,85 @@ const PublicSurveyAccessForm = (): React.ReactNode => {
       publicUserName: z
         .string({ required_error: t('common.required') })
         .min(5, { message: t('login.username_too_short') })
-        .max(32, { message: t('login.username_too_long') }),
-      publicUserId: z.nullable(
-        z
-          .string()
-          .uuid({ message: t('login.publicUserId_noUUID') })
-          .optional(),
-      ),
+        .max(100, { message: t('login.username_too_long') })
+        .regex(publicUserRegex, { message: t('login.username_not_regex') }),
     });
 
-  const form = useForm<{ publicUserName: string; publicUserId: string | null }>({
+  const form = useForm<{ publicUserName: string }>({
     mode: 'onSubmit',
-    defaultValues: { publicUserName: '', publicUserId: null },
+    defaultValues: { publicUserName: '' },
     resolver: zodResolver(getPublicLoginFormSchema()),
   });
 
   const handleAccessSurvey = async () => {
-    const { publicUserName, publicUserId } = form.getValues();
+    const { publicUserName } = form.getValues();
     const isPublicUserNameValid = !form.formState.errors.publicUserName;
-    const isPublicUserIdValid = !form.formState.errors.publicUserId;
-
     if (!isPublicUserNameValid) {
       return;
     }
 
-    if (!publicUserId) {
-      form.clearErrors('publicUserId');
+    if (!publicUserLoginRegex.test(publicUserName)) {
       setAttendee({
-        username: publicUserName,
-        firstName: undefined,
+        username: undefined,
+        firstName: publicUserName,
         lastName: undefined,
-        publicUserName,
-        publicUserId: undefined,
         label: publicUserName,
-        value: publicUserName,
+        value: undefined,
       });
+      return;
     }
 
-    if (publicUserId && publicUserId !== '') {
-      if (!isPublicUserIdValid) {
-        return;
-      }
-      const publicUsername = createValidPublicUserId(publicUserName, publicUserId);
-      const publicUser = {
-        username: publicUsername,
-        firstName: undefined,
-        lastName: undefined,
-        publicUserName,
-        publicUserId,
-        label: publicUserName,
-        value: publicUsername,
-      };
-      // eslint-disable-next-line no-underscore-dangle
-      if (selectedSurvey?._id) {
-        const checkExistenceOfPublicUsername = await checkForMatchingUserNameAndPubliUserId(
-          // eslint-disable-next-line no-underscore-dangle
-          selectedSurvey?._id,
-          publicUser,
-        );
+    const publicUserNameParts = publicUserName.split(publicUserSeperator);
+    const publicUserId = publicUserNameParts.pop();
+    const publicUsername = publicUserNameParts.slice(1).join(publicUserSeperator);
+    const publicUser = {
+      username: publicUserName,
+      firstName: publicUsername,
+      lastName: publicUserId,
+      label: publicUsername,
+      value: publicUserName,
+    };
 
-        if (checkExistenceOfPublicUsername) {
-          setAttendee(publicUser);
-        } else {
-          form.setError('publicUserName', new Error(t('login.publicUsername_notExisting')));
-          form.setError('publicUserId', new Error(t('login.publicUsername_notExisting')));
-        }
+    if (selectedSurvey?.id) {
+      const checkExistenceOfPublicUsername = await checkForMatchingUserNameAndPubliUserId(
+        selectedSurvey?.id,
+        publicUser,
+      );
+
+      if (!checkExistenceOfPublicUsername) {
+        form.setError('publicUserName', new Error(t('login.publicUsername_notExisting')));
       }
     }
   };
 
   return (
-    <div className="relative top-1/3">
-      <PublicSurveyAccess
-        form={form}
-        publicUserName={form.watch('publicUserName')}
-        setPublicUserName={(value) => form.setValue('publicUserName', value, { shouldValidate: true })}
-        publicUserId={form.watch('publicUserId')}
-        setPublicUserId={(value) => form.setValue('publicUserId', value, { shouldValidate: true })}
-        accessSurvey={handleAccessSurvey}
-      />
+    <div className="relative flex h-full w-full flex-col items-center justify-center">
+      <div className="mx-auto my-10 w-[90%] rounded-xl bg-white bg-opacity-5 p-5 md:w-[400px]">
+        <PublicLoginButton />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleAccessSurvey)}>
+            {!user?.username && (
+              <div className="mb-2">
+                <div className="mb-2">
+                  {t('survey.participate.pleaseEnterYourFullName')}{' '}
+                  {t('survey.participate.pleaseEnterYourParticipationId')}
+                </div>
+                <FormField
+                  form={form}
+                  type="text"
+                  name="publicUserName"
+                  value={form.watch('publicUserName')}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    form.setValue('publicUserName', e.target.value, { shouldValidate: true })
+                  }
+                  variant="dialog"
+                />
+              </div>
+            )}
+            <PublicJoinButton />
+          </form>
+        </Form>
+      </div>
     </div>
   );
 };

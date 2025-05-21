@@ -83,7 +83,6 @@
       "attachmentDeletionFailed": "Failed to delete an attachment"
     }
   },
-
   "mountpoints": {
     "home": "Home",
     "examusers": "Exams",
@@ -93,7 +92,6 @@
     "shares": "Shares",
     "students-home": "Students-Home"
   },
-
   "appstore": {
     "title": "App Store",
     "description": "Here you can add {{ applicationName }} apps.",
@@ -145,6 +143,9 @@
       "LmnConnectionFailed": "Connection to school server failed.",
       "KeycloakConnectionFailed": "Connection to authentication server failed.",
       "EdulutionConnectionFailed": "Connection to edulution server failed. Please try again later."
+    },
+    "logout": {
+      "success": "Logout successful"
     }
   },
   "lmnApi": {
@@ -194,13 +195,15 @@
     "rowSelected": "{{selected}} of {{total}} job selected",
     "importer": {
       "filterPlaceHolderText": "Search for username",
-      "title": "Email Importer",
+      "title": "Email Sync",
       "provider": "Email Provider",
       "interval": "Sync Interval",
       "isActive": "Active",
-      "syncJobsTable": "Importer Jobs",
+      "syncJobsTable": "Sync Jobs",
       "mailAddress": "Email address",
-      "noMailConfigured": "Mail app is not active. Please contact your system administrator."
+      "noMailConfigured": "Mail app is not active. Please contact your system administrator.",
+      "syncAccountAdded": "Account for sync job added.",
+      "syncAccountDeleted": "Account for sync job deleted."
     }
   },
   "chat": {
@@ -350,13 +353,20 @@
       "info": "Info",
       "titleSharing": "Distributing files",
       "titleCollecting": "Collecting files",
+      "titleMoving": "Moving files",
       "titleDeleting": "Files are being deleted",
+      "titleCopying": "Copying files",
       "processedSharingInfo": "{{processed}} out of {{total}} files distributed successfully",
       "processedCollectingInfo": "{{processed}} out of {{total}} files collected successfully",
       "processedDeletingInfo": "{{processed}} out of {{total}} files deleted successfully",
-      "fileInfoSharing": "File {{filename}} is being distributed to {{studentName}}",
-      "fileInfoCollecting": "File {{filename}} is being collected to {{studentName}}",
+      "processedMovingInfo": "{{processed}} out of {{total}} files moved successfully",
+      "processedCopyingInfo": "{{processed}} out of {{total}} files copied successfully",
+      "fileInfoSharing": "File {{filename}} is being distributed to {{username}}",
+      "fileInfoCollecting": "File {{filename}} is being collected to {{username}}",
+      "fileInfoCopying": "File {{filename}} is being copied",
+      "fileInfoMoving": "File {{filename}} is being moved",
       "fileInfoDeleting": "File {{filename}} is being deleted",
+      "downloadInfo": "Downloading {{filename}}",
       "errorInfo": "{{failed}} files could not be handed out"
     }
   },
@@ -548,7 +558,8 @@
       "templateMenu": {
         "fetch": "Choose one of the following templates.",
         "submit": "Save Survey as template.",
-        "title": "Templates store/load"
+        "title": "Templates store/load",
+        "emptyMessage": "There are no templates available, yet"
       },
       "questionSettings": {
         "settings": "Settings",
@@ -571,17 +582,14 @@
     "participate": {
       "saveAnswerSuccess": "Saved the answer.",
       "username": "User name",
-      "pleaseEnterYourFullName": "To participate in the survey enter your full name.",
+      "pleaseEnterYourFullName": "You may participate in the survey by entering your full name.",
       "yourFullName": "Your full name",
-      "pleaseEnterYourParticipationId": "Enter a participation-ID if you have received one.",
-      "publicUserId": "Ypur participation-ID",
+      "pleaseEnterYourParticipationId": "Use the participation-ID if you want to change your submission.",
       "invalidUsername": "Username is invalid (permitted are letters, number, and [. -])",
       "idHeader": "Your participation ID (optional)",
-      "idText": "Pls copy the this ID for later participation",
-      "forUsername": "Linked to username:",
-      "idFooter": "In order to overwrite your previous answer, please enter this participation-ID next to your username.",
-      "idCopySuccess": "Successfully copied the ID to the clipboard",
-      "idCopyError": "Error copying the ID to the clipboard",
+      "idText": "Pls copy this for later",
+      "idParagraphCanUpdate": "In order to overwrite your previous answer, please enter this participation-ID instead of the username.",
+      "idParagraphIsMulti": "Please enter this participation-ID instead of the username, so that the answers can be linked together.",
       "usernameRequired": "User name is required",
       "completeMessage": "Thank you very much for participating in this survey"
     },
@@ -738,7 +746,6 @@
   "roombooking": {
     "sidebar": "Room booking"
   },
-
   "mobileAccessSetup": {
     "connectionTitle": "Configure Connection",
     "pleaseEnterCredentials": "Please enter your server credentials",
@@ -747,7 +754,6 @@
     "yourPassword": "Your Password",
     "addButton": "Add"
   },
-
   "settings": {
     "title": "SETTINGS",
     "sidebar": "Settings",
@@ -878,7 +884,8 @@
       "forbiddenProxyPath": "Forbidden proxy path",
       "fieldRequired": "This field is required",
       "maxChars": "Maximum {{count}} characters",
-      "nameAlreadyExists": "App with this name already exists"
+      "nameAlreadyExists": "App with this name already exists",
+      "nameIsNotAllowed": "This app name is not allowed"
     },
     "yamleditor": {
       "invalidYaml": "Wrong YAML syntax",
@@ -1017,8 +1024,8 @@
     "pageTitle": "Login",
     "username_too_long": "Username to long",
     "username_too_short": "Username to short",
-    "publicUserId_noUUID": "(optional) Participation-ID is no uuid",
-    "publicUsername_notExisting": "There is no public user with the given username and participation-ID",
+    "username_not_regex": "Invalid username/participation-ID",
+    "publicUsername_notExisting": "There is no submission with the given participation-ID",
     "password_too_long": "Password to long",
     "forgot_password": "Forgot password?",
     "remember_me": "Remember me",
@@ -1189,7 +1196,7 @@
       }
     }
   },
-  "fileOperationSuccessful": "File operation successful",
+  "fileOperationSuccessful": "File operation successful started",
   "fileOperationStarted": "File operation started",
   "unknownErrorOccurred": "An unknown error occurred",
   "fileSharingTable": {
@@ -1240,6 +1247,10 @@
     "loading": "Loading",
     "no-results": "No results",
     "usersAdded": "{{ count }} added"
+  },
+  "copyItemDialog": {
+    "copyFilesOrDirectoriesToDirectory": "Copy files or directories into a directory",
+    "copy": "Copy"
   },
   "fileCategory": {
     "folder": "Folder",
@@ -1325,7 +1336,8 @@
     "rename": "Rename",
     "move": "Move",
     "delete": "Delete",
-    "download": "Download"
+    "download": "Download",
+    "copy": "Copy"
   },
   "response": {
     "successfully": "Action was successful",

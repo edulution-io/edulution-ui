@@ -13,11 +13,11 @@
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import React from 'react';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
-import FileActionOneSelect from '@/pages/FileSharing/FloatingButtonsBar/FileActionOneSelect';
 import FileActionNonSelect from '@/pages/FileSharing/FloatingButtonsBar/FileActionNonSelect';
 import FileActionMultiSelect from '@/pages/FileSharing/FloatingButtonsBar/FileActionMultiSelect';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
 import QuotaThresholdPercent from '@libs/filesharing/constants/quotaThresholdPercent';
+import FileActionOneSelect from '@/pages/FileSharing/FloatingButtonsBar/FileActionOneSelect';
 
 const FileSharingFloatingButtonsBar = () => {
   const { openDialog } = useFileSharingDialogStore();
@@ -31,10 +31,15 @@ const FileSharingFloatingButtonsBar = () => {
       {selectedItems.length === 1 && (
         <FileActionOneSelect
           openDialog={openDialog}
-          selectedItem={selectedItems.at(0)}
+          selectedItems={selectedItems.at(0)}
         />
       )}
-      {selectedItems.length > 1 && <FileActionMultiSelect openDialog={openDialog} />}
+      {selectedItems.length > 1 && (
+        <FileActionMultiSelect
+          openDialog={openDialog}
+          selectedItems={selectedItems}
+        />
+      )}
     </>
   );
 };

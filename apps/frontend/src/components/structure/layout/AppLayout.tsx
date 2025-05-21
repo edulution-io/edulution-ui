@@ -21,6 +21,7 @@ import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVar
 import Overlays from '@/components/structure/layout/Overlays';
 import useUserStore from '@/store/UserStore/UserStore';
 import APPS from '@libs/appconfig/constants/apps';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 
 const AppLayout = () => {
   const { isAuthenticated } = useUserStore();
@@ -28,12 +29,12 @@ const AppLayout = () => {
   const menuBar = useMenuBarConfig();
   const { appConfigs } = useAppConfigsStore();
 
-  const isMainPage = pathname === '/';
+  const isMainPage = pathname === DASHBOARD_ROUTE;
   const isCurrentAppForwardingPage = appConfigs.find(
     (a) => a.name === pathname.split('/')[1] && a.appType === APP_INTEGRATION_VARIANT.FORWARDED,
   );
   const isAppHeaderVisible = isMainPage || isCurrentAppForwardingPage;
-  const isAppConfigReady = appConfigs.some((appConfig) => appConfig.name !== APPS.NONE);
+  const isAppConfigReady = !appConfigs.find((appConfig) => appConfig.name === APPS.NONE);
   const isAuthenticatedAppReady = isAppConfigReady && isAuthenticated;
 
   return (

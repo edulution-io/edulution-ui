@@ -19,10 +19,10 @@ import { Model } from 'mongoose';
 import { HttpStatus } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import CustomHttpException from '../common/CustomHttpException';
 import SurveysController from './surveys.controller';
 import SurveysService from './surveys.service';
 import SurveyAnswersService from './survey-answer.service';
@@ -212,7 +212,10 @@ describe(SurveysController.name, () => {
       jest.spyOn(surveyAnswerService, 'getAnswer');
 
       const result = await controller.getSubmittedSurveyAnswers(
-        { surveyId: idOfAnsweredSurvey01.toString(), attendee: firstUsername },
+        {
+          surveyId: idOfAnsweredSurvey01.toString(),
+          attendee: { username: firstUsername, label: firstUsername, value: firstUsername },
+        },
         secondUsername,
       );
       expect(result).toEqual(firstUsersSurveyAnswerAnsweredSurvey01);

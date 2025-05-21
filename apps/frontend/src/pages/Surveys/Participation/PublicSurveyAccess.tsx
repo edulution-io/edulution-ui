@@ -13,29 +13,20 @@
 import React, { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
-import PublicLoginButton from '@/pages/ConferencePage/PublicConference/PublicLoginButton';
-import PublicJoinButton from '@/pages/ConferencePage/PublicConference/PublicJoinButton';
+import PublicLoginButton from '@/components/shared/PublicLoginButton';
+import PublicJoinButton from '@/components/shared/PublicJoinButton';
 import useUserStore from '@/store/UserStore/UserStore';
 import FormField from '@/components/shared/FormField';
 import { Form } from '@/components/ui/Form';
 
 interface PublicSurveyAccessProps {
-  form: UseFormReturn<{ publicUserName: string; publicUserId: string | null }>;
+  form: UseFormReturn<{ publicUserName: string }>;
   publicUserName: string;
   setPublicUserName: (value: string) => void;
-  publicUserId: string | null;
-  setPublicUserId: (value: string | null) => void;
   accessSurvey: () => void;
 }
 
-const PublicSurveyAccess = ({
-  form,
-  publicUserName,
-  setPublicUserName,
-  publicUserId,
-  setPublicUserId,
-  accessSurvey,
-}: PublicSurveyAccessProps) => {
+const PublicSurveyAccess = ({ form, publicUserName, setPublicUserName, accessSurvey }: PublicSurveyAccessProps) => {
   const { t } = useTranslation();
   const { user } = useUserStore();
 
@@ -46,26 +37,16 @@ const PublicSurveyAccess = ({
         <form onSubmit={form.handleSubmit(accessSurvey)}>
           {!user?.username && (
             <div className="mb-2">
-              <div className="mb-4">
-                <div className="mb-2">{t('survey.participate.pleaseEnterYourFullName')}</div>
-                <FormField
-                  form={form}
-                  type="text"
-                  name="publicUserName"
-                  value={publicUserName}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => setPublicUserName(e.target.value)}
-                  variant="dialog"
-                />
+              <div className="mb-2">
+                {t('survey.participate.pleaseEnterYourFullName')}{' '}
+                {t('survey.participate.pleaseEnterYourParticipationId')}
               </div>
-              <div className="mb-2">{t('survey.participate.pleaseEnterYourParticipationId')}</div>
               <FormField
                 form={form}
                 type="text"
-                name="publicUserId"
-                value={publicUserId || ''}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setPublicUserId(e.target.value === '' ? null : e.target.value)
-                }
+                name="publicUserName"
+                value={publicUserName}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setPublicUserName(e.target.value)}
                 variant="dialog"
               />
             </div>

@@ -35,6 +35,7 @@ import getFileSharingRoutes from '@/router/routes/FileSharingRoutes';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APPS from '@libs/appconfig/constants/apps';
 import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import DashboardPage from '../../pages/Dashboard/DashboardPage';
 import getEmbeddedRoutes from './EmbeddedAppRoutes';
 import ProtectedRoute from './ProtectedRoute';
@@ -47,7 +48,7 @@ const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
     {getEmbeddedRoutes(appConfigs)}
 
     <Route
-      path="/"
+      path={DASHBOARD_ROUTE}
       element={<DashboardPage />}
     />
 

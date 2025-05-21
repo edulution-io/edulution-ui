@@ -12,25 +12,24 @@
 
 import { useEffect, useRef } from 'react';
 import { useAuth } from 'react-oidc-context';
-import { toast } from 'sonner';
-import { useTranslation } from 'react-i18next';
 import useLogout from './useLogout';
 
 const useTokenEventListeners = () => {
   const auth = useAuth();
-  const { t } = useTranslation();
   const handleLogout = useLogout();
+  const alreadyLoggedOutRef = useRef(false);
 
-  const handleTokenExpiredRef = useRef<() => void>(() => {});
-  handleTokenExpiredRef.current = () => {
-    if (auth.user?.expired) {
-      void handleLogout();
-      toast.error(t('auth.errors.TokenExpired'));
-    }
-  };
+  const handleTokenExpiredRef = useRef<() => void>(() => {
+    if (alreadyLoggedOutRef.current) return;
+    alreadyLoggedOutRef.current = true;
+
+    void handleLogout();
+  });
 
   useEffect(() => {
-    handleTokenExpiredRef.current();
+    if (auth.user?.expired) {
+      handleTokenExpiredRef.current();
+    }
   }, [auth.user?.expired]);
 
   useEffect(() => {

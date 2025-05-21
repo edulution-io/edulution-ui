@@ -18,6 +18,7 @@ interface MoveContentDialogBodyProps {
   showSelectedFile?: boolean;
   showHome?: boolean;
   fileType?: ContentType;
+  isCurrentPathDefaultDestination?: boolean;
 }
 
 export default MoveContentDialogBodyProps;
