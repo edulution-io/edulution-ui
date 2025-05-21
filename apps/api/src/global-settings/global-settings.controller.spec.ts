@@ -16,9 +16,11 @@ import type { UpdateWriteOpResult } from 'mongoose';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import { GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import GlobalSettingsController from './global-settings.controller';
 import GlobalSettingsService from './global-settings.service';
 import AppConfigGuard from '../appconfig/appconfig.guard';
+import cacheManagerMock from '../common/mocks/cacheManagerMock';
 
 const mockedGlobalSettingsDto: GlobalSettingsDto = defaultValues;
 
@@ -52,6 +54,10 @@ describe('GlobalSettingsController', () => {
             getGlobalSettings: jest.fn(),
             setGlobalSettings: jest.fn(),
           },
+        },
+        {
+          provide: CACHE_MANAGER,
+          useValue: cacheManagerMock,
         },
       ],
     })

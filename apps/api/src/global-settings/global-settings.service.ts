@@ -53,7 +53,11 @@ class GlobalSettingsService implements OnModuleInit {
   }
 
   async invalidateCache(): Promise<void> {
-    await this.cacheManager.del(`/${EDU_API_ROOT}/${GLOBAL_SETTINGS_ROOT_ENDPOINT}`);
+    try {
+      await this.cacheManager.del(`/${EDU_API_ROOT}/${GLOBAL_SETTINGS_ROOT_ENDPOINT}`);
+    } catch (error) {
+      Logger.warn(`Failed to invalidate cache for GlobalSettings: ${(error as Error).message}`, GlobalSettings.name);
+    }
   }
 
   async getGlobalSettings(projection?: string) {
