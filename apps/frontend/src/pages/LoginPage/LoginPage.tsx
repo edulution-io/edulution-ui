@@ -39,6 +39,7 @@ import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import APPS from '@libs/appconfig/constants/apps';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 import useAppConfigsStore from '../Settings/AppConfig/appConfigsStore';
@@ -141,13 +142,13 @@ const LoginPage: React.FC = () => {
     void registerUser();
   }, [auth.isAuthenticated, eduApiToken]);
 
-  const isAppConfigReady = appConfigs.some((appConfig) => appConfig.name !== APPS.NONE);
+  const isAppConfigReady = !appConfigs.find((appConfig) => appConfig.name === APPS.NONE);
   const isAuthenticatedAppReady = isAppConfigReady && isAuthenticated;
 
   useEffect(() => {
     if (isAuthenticatedAppReady) {
-      const { from } = (location?.state ?? { from: '/' }) as LocationState;
-      const toLocation = from === LOGIN_ROUTE ? '/' : from;
+      const { from } = (location?.state ?? { from: DASHBOARD_ROUTE }) as LocationState;
+      const toLocation = from === LOGIN_ROUTE ? DASHBOARD_ROUTE : from;
       navigate(toLocation, {
         replace: true,
       });

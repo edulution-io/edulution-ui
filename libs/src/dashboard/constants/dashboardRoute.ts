@@ -10,29 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import useLdapGroups from '@/hooks/useLdapGroups';
-import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
+const DASHBOARD_ROUTE = '/';
 
-const ProtectedRoute = ({ redirectTo = DASHBOARD_ROUTE }) => {
-  const { isSuperAdmin } = useLdapGroups();
-
-  if (isSuperAdmin === undefined) {
-    return <CircleLoader />;
-  }
-
-  if (!isSuperAdmin) {
-    return (
-      <Navigate
-        to={redirectTo}
-        replace
-      />
-    );
-  }
-
-  return <Outlet />;
-};
-
-export default ProtectedRoute;
+export default DASHBOARD_ROUTE;
