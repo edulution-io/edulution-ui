@@ -24,7 +24,7 @@ import {
   VisibilityState,
 } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
-import TableAction from '@libs/common/types/TableAction';
+import TableAction from '@libs/common/types/tableAction';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import Input from '@/components/shared/Input';
@@ -50,7 +50,7 @@ interface DataTableProps<TData, TValue> {
   showHeader?: boolean;
   showSelectedCount?: boolean;
   isDialog?: boolean;
-  actions?: TableAction<TData, TValue> | TableAction<TData, TValue>[];
+  actions?: TableAction<TData, TValue>[];
 }
 
 const ScrollableTable = <TData, TValue>({

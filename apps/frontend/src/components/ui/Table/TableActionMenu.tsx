@@ -10,16 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useMemo } from 'react';
-import { IconContext } from 'react-icons';
-import { FaGear } from 'react-icons/fa6';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { HiOutlineDotsHorizontal } from 'react-icons/hi';
 import { Row } from '@tanstack/react-table';
-import TableAction from '@libs/common/types/TableAction';
-import cn from '@libs/common/utils/className';
+import TableAction from '@libs/common/types/tableAction';
 import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
 import DropdownMenu from '@/components/shared/DropdownMenu';
-import { Button } from '@/components/shared/Button';
+import { ButtonSH } from '@/components/ui/ButtonSH';
 
 interface TableActionMenuProps<TData, TValue> {
   actions: TableAction<TData, TValue>[];
@@ -28,8 +26,6 @@ interface TableActionMenuProps<TData, TValue> {
 
 const TableActionMenu = <TData, TValue>({ actions, row }: TableActionMenuProps<TData, TValue>) => {
   const { t } = useTranslation();
-
-  const iconContextValue = useMemo(() => ({ className: 'h-4 w-4' }), []);
 
   const contextMenuItems: DropdownMenuItemType[] = actions.map((action) => ({
     icon: action.icon,
@@ -41,16 +37,13 @@ const TableActionMenu = <TData, TValue>({ actions, row }: TableActionMenuProps<T
     <DropdownMenu
       menuContentClassName="z-[600]"
       trigger={
-        <div className="relative">
-          <Button
+        <div className="relative flex w-full items-center justify-end">
+          <ButtonSH
+            className="flex h-2 w-[200px] items-center justify-center rounded-md border border-gray-500 hover:bg-accent"
             type="button"
-            variant="btn-outline"
-            className={cn('m-0 max-h-[2.25rem] w-[80px] rounded-md bg-opacity-90')}
           >
-            <IconContext.Provider value={iconContextValue}>
-              <FaGear className="h-[18px] w-[18px]" />
-            </IconContext.Provider>
-          </Button>
+            <HiOutlineDotsHorizontal className="h-[18px] w-[18px] text-xl text-background" />
+          </ButtonSH>
         </div>
       }
       items={contextMenuItems}

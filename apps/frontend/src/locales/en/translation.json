@@ -578,7 +578,7 @@
         "upperLimit": "Limit",
         "upperBackendLimiters": "Choices with an upper limit",
         "addChoice": "Add",
-        "filterPlaceHolderText": "Search for option title"
+        "filterPlaceHolderText": "Search for option"
       }
     },
     "participate": {

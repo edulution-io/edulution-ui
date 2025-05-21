@@ -10,81 +10,92 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { TableCell, TableFooter, TableRow } from '@/components/ui/Table';
-import TableAction from '@libs/common/types/TableAction';
-import cn from '@libs/common/utils/className';
-import { Button } from '@/components/shared/Button';
+import TableAction from '@libs/common/types/tableAction';
+import { ButtonSH } from '@/components/ui/ButtonSH';
+import { IoAdd, IoRemove } from 'react-icons/io5';
 import TableActionMenu from '@/components/ui/Table/TableActionMenu';
-import { IconContext } from 'react-icons';
+import { MdRemoveCircleOutline, MdAddCircleOutline } from 'react-icons/md';
 
 interface TableActionFooterProps<TData, TValue> {
-  actions?: TableAction<TData, TValue> | TableAction<TData, TValue>[];
+  actions?: TableAction<TData, TValue>[];
   columnLength: number;
 }
 
-const TableActionFooter = <TData, TValue>({ actions, columnLength }: TableActionFooterProps<TData, TValue>) => {
-  const iconContextValue = useMemo(() => ({ className: 'h-4 w-4' }), []);
+const TableActionFooter = <TData, TValue>(props: TableActionFooterProps<TData, TValue>) => {
+  const {
+    actions = [
+      {
+        icon: IoAdd,
+        translationId: 'common.add',
+        // eslint-disable-next-line no-console
+        onClick: () => console.log('Add'),
+      },
+      {
+        icon: IoRemove,
+        translationId: 'common.remove',
+        // eslint-disable-next-line no-console
+        onClick: () => console.log('REMOVE'),
+      },
+      {
+        icon: MdAddCircleOutline,
+        translationId: 'common.add',
+        // eslint-disable-next-line no-console
+        onClick: () => console.log('Add'),
+      },
+      {
+        icon: MdRemoveCircleOutline,
+        translationId: 'common.remove',
+        // eslint-disable-next-line no-console
+        onClick: () => console.log('REMOVE'),
+      },
+    ],
+    columnLength,
+  } = props;
 
-  let singleAction: TableAction<TData, TValue> | undefined;
-  if (Array.isArray(actions)) {
-    if (actions.length > 1) {
-      return (
-        <TableFooter>
-          <TableRow className="m-0 p-0 hover:bg-white/0">
-            <TableCell
-              colSpan={columnLength - 1}
-              className="m-0 p-0 hover:bg-white/0"
-            />
-            <TableCell
-              colSpan={1}
-              className="m-0 p-0"
-            >
-              <div className="flex items-center justify-center">
-                <TableActionMenu actions={actions} />
-              </div>
-            </TableCell>
-          </TableRow>
-        </TableFooter>
-      );
-    }
-    if (actions.length === 0) {
-      return null;
-    }
+  const actionButtons = actions.map((action) => {
+    const { icon: Icon, onClick, translationId } = action;
+    return (
+      <ButtonSH
+        key={translationId}
+        className="flex h-2 w-full items-center justify-center rounded-md border border-gray-500 hover:bg-accent"
+        onClick={() => onClick()}
+        type="button"
+      >
+        <Icon className="h-[18px] w-[18px] text-xl text-background" />
+      </ButtonSH>
+    );
+  });
 
-    const [onlyAction] = actions;
-    singleAction = onlyAction;
-  } else {
-    singleAction = actions;
-  }
-
-  if (!singleAction) {
+  if (actions.length < 1) {
     return null;
   }
 
-  const { icon: Icon, onClick, className } = singleAction;
+  if (actions.length < 3) {
+    return (
+      <TableFooter>
+        <TableRow className="m-0 p-0 hover:bg-black/0">
+          <TableCell
+            colSpan={columnLength}
+            className="m-0 p-0 hover:bg-black/0"
+          >
+            <div className="mx-0 my-1 flex w-full items-center justify-end gap-2 hover:bg-black/0">{actionButtons}</div>
+          </TableCell>
+        </TableRow>
+      </TableFooter>
+    );
+  }
+
   return (
     <TableFooter>
-      <TableRow className="m-0 p-0 hover:bg-white/0">
+      <TableRow className="m-0 p-0 hover:bg-black/0">
         <TableCell
-          colSpan={columnLength - 1}
-          className="m-0 p-0 hover:bg-white/0"
-        />
-        <TableCell
-          colSpan={1}
-          className="m-0 p-0"
+          colSpan={columnLength}
+          className="m-0 p-0 hover:bg-black/0"
         >
-          <div className="mr-1 flex justify-center">
-            <Button
-              type="button"
-              variant="btn-outline"
-              className={cn('m-0 max-h-[2.25rem] w-[80px] rounded-md bg-opacity-90 p-0', className)}
-              onClick={() => onClick()}
-            >
-              <IconContext.Provider value={iconContextValue}>
-                <Icon className="h-[18px] w-[18px]" />
-              </IconContext.Provider>
-            </Button>
+          <div className="mx-0 my-1 flex w-full items-center justify-end gap-2 hover:bg-black/0">
+            <TableActionMenu actions={actions} />
           </div>
         </TableCell>
       </TableRow>

@@ -15,14 +15,12 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { SurveyCreatorModel } from 'survey-creator-core';
-import { HiTrash } from 'react-icons/hi';
 import { MdAddCircleOutline } from 'react-icons/md';
 import cn from '@libs/common/utils/className';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import APPS from '@libs/appconfig/constants/apps';
 import { SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
-import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -36,7 +34,6 @@ import ChoicesWithBackendLimitTableColumns, {
 } from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitTableColumns';
 import Switch from '@/components/ui/Switch';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
-import TableActionColumn from '@/components/ui/Table/TableActionColumn';
 
 interface ChoicesByUrlProps {
   form: UseFormReturn<SurveyDto>;
@@ -61,7 +58,6 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     setBackendLimiters,
     currentChoices,
     addNewChoice,
-    removeChoice,
     updateLimitersChoices,
     formerChoices,
   } = useQuestionsContextMenuStore();
@@ -138,20 +134,6 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
   if (!form) return null;
   if (!isQuestionTypeChoiceType(questionType)) return null;
 
-  const columns = [
-    ...ChoicesWithBackendLimitTableColumns,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    TableActionColumn<ChoiceDto, any>({
-      actions: {
-        icon: HiTrash,
-        translationId: 'common.delete',
-        onClick: (row) => (row ? removeChoice(row.original.name) : null),
-        className: 'text-ciRed',
-      },
-      accessorFn: (row) => row.name,
-    }),
-  ];
-
   const initialColumnVisibility = {
     [CHOICES_WITH_BACKEND_LIMIT_COLUMNS.title]: true,
     [CHOICES_WITH_BACKEND_LIMIT_COLUMNS.upperLimit]: true,
@@ -180,18 +162,21 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
         <>
           <div className="ml-4 items-center text-foreground">
             <ScrollableTable
-              columns={columns}
+              columns={ChoicesWithBackendLimitTableColumns}
               data={currentChoices.filter((choice) => choice.name !== SHOW_OTHER_ITEM)}
               filterKey="choice-title"
               filterPlaceHolderText={t('survey.editor.questionSettings.filterPlaceHolderText')}
               applicationName={APPS.SURVEYS}
-              actions={{
-                icon: MdAddCircleOutline,
-                translationId: 'common.add',
-                onClick: () => addNewChoice(),
-              }}
+              actions={[
+                {
+                  icon: MdAddCircleOutline,
+                  translationId: 'common.add',
+                  onClick: () => addNewChoice(),
+                },
+              ]}
               showSelectedCount={false}
               initialColumnVisibility={initialColumnVisibility}
+              isDialog
             />
           </div>
           <ChoicesWithBackendLimitsShowOtherItem />

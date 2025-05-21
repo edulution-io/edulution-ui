@@ -580,7 +580,7 @@
         "upperLimit": "Grenzwert",
         "upperBackendLimiters": "Auswahlmöglichkeiten mit Obergrenze",
         "addChoice": "Hinzufügen",
-        "filterPlaceHolderText": "Suche nach Titel der Option"
+        "filterPlaceHolderText": "Option suchen"
       }
     },
     "participate": {

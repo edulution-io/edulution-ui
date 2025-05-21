@@ -12,11 +12,13 @@
 
 import React from 'react';
 import { t } from 'i18next';
+import { HiTrash } from 'react-icons/hi';
 import { ColumnDef } from '@tanstack/react-table';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import Input from '@/components/shared/Input';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
+import TableActionCell from '@/components/ui/Table/TableActionCell';
 
 export const CHOICES_WITH_BACKEND_LIMIT_COLUMNS = {
   title: 'choice-title',
@@ -66,6 +68,32 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
         />
       );
     },
+  },
+  {
+    id: 'actions',
+    header: () => <div className="flex items-center justify-center">{t('common.actions')}</div>,
+    meta: {
+      translationId: 'common.actions',
+    },
+    accessorFn: (row) => row.name,
+    cell: ({ row }) => {
+      const { removeChoice } = useQuestionsContextMenuStore();
+
+      return (
+        <TableActionCell
+          actions={[
+            {
+              icon: HiTrash,
+              translationId: 'common.delete',
+              onClick: () => (row ? removeChoice(row.original.name) : null),
+              className: 'text-ciRed',
+            },
+          ]}
+          row={row}
+        />
+      );
+    },
+    size: 100,
   },
 ];
 
