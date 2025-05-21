@@ -38,6 +38,7 @@ import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
 import DefaultLandingPageAfterLogin from '@/components/structure/DefaultLandingPageAfterLogin';
 import DashboardPage from '@/pages/Dashboard/DashboardPage';
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import ProtectedRoute from './ProtectedRoute';
 import getEmbeddedRoutes from './EmbeddedAppRoutes';
 
@@ -54,7 +55,7 @@ const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
     />
 
     <Route
-      path="/"
+      path={DASHBOARD_ROUTE}
       element={<DashboardPage />}
     />
 
