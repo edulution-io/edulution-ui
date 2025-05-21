@@ -14,9 +14,9 @@ import React, { useEffect } from 'react';
 import useUserStore from '@/store/UserStore/UserStore';
 import PublicSurveyAccessForm from '@/pages/Surveys/Participation/PublicSurveyAccessForm';
 import SurveyParticipationModel from '@/pages/Surveys/Participation/SurveyParticipationModel';
+import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from './useParticipateSurveyStore';
 import PublicSurveyParticipiationIdDisplay from './PublicSurveyParticipationIdDisplay';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 
 interface AccessAndParticipateSurveyProps {
   isPublic: boolean;
