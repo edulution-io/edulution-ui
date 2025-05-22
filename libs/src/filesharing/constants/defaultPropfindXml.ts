@@ -9,3 +9,18 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+
+const DEFAULT_PROPFIND_XML = `<?xml version="1.0"?>
+      <d:propfind xmlns:d="DAV:">
+        <d:prop>
+          <d:getlastmodified/>
+          <d:getetag/>
+          <d:getcontenttype/>
+          <d:getcontentlength/>
+          <d:displayname/>
+          <d:creationdate/>
+        </d:prop>
+      </d:propfind>
+  `;
+
+export default DEFAULT_PROPFIND_XML;
