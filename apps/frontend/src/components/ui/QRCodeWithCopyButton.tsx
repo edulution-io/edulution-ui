@@ -15,8 +15,8 @@ import { useTranslation } from 'react-i18next';
 import { MdFileCopy } from 'react-icons/md';
 import { Sizes } from '@libs/ui/types/sizes';
 import copyToClipboard from '@/utils/copyToClipboard';
-import Input from '@/components/shared/Input';
 import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
+import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 
 interface QRCodeWithCopyButtonProps {
   url: string;
@@ -36,13 +36,21 @@ const QRCodeWithCopyButton = ({ url, qrCodeSize, titleTranslationId }: QRCodeWit
           size={qrCodeSize}
           className="m-14"
         />
-        <Input
+        <InputWithActionIcons
           type="text"
           value={url}
           readOnly
           className="w-fit min-w-[550px] cursor-pointer"
-          onClick={() => copyToClipboard(url)}
-          icon={<MdFileCopy />}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            copyToClipboard(url);
+          }}
+          actionIcons={[
+            {
+              icon: MdFileCopy,
+              onClick: () => copyToClipboard(url),
+            },
+          ]}
         />
       </div>
     </>
