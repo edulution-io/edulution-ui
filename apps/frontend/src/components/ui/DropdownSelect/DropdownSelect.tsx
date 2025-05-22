@@ -103,7 +103,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
       </div>
       <div className={cn(styles.arrow, { [styles.open]: isOpen, [styles.up]: openToTop })} />
       <div
-        className={cn('scrollbar-thin', styles.options, {
+        className={cn('shadow-xl scrollbar-thin', styles.options, {
           [styles.open]: isOpen,
           [styles.up]: openToTop,
           'bg-background text-foreground': variant === 'default',

@@ -10,17 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Global, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import AppConfigController from './appconfig.controller';
-import AppConfigService from './appconfig.service';
-import { AppConfig, AppConfigSchema } from './appconfig.schema';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+import { DefaultLandingPage } from './global-settings.default-landing-page.schema';
 
-@Global()
-@Module({
-  imports: [MongooseModule.forFeature([{ name: AppConfig.name, schema: AppConfigSchema }])],
-  controllers: [AppConfigController],
-  providers: [AppConfigService],
-  exports: [AppConfigService],
-})
-export default class AppConfigModule {}
+export type GeneralSettingsDocument = GeneralSettings & Document;
+
+@Schema({ _id: false })
+export class GeneralSettings {
+  @Prop({ type: DefaultLandingPage })
+  defaultLandingPage: DefaultLandingPage;
+}
+
+export const GeneralSettingsSchema = SchemaFactory.createForClass(GeneralSettings);
