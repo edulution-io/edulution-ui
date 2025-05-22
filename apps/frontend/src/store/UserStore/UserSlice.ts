@@ -20,6 +20,7 @@ import UserDto from '@libs/user/types/user.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import { EDU_API_USERS_ENDPOINT, EDU_API_USERS_SEARCH_ENDPOINT } from '@libs/user/constants/usersApiEndpoints';
 import UserLanguageType from '@libs/user/types/userLanguageType';
+import Keycloak from 'keycloak-js';
 
 const initialState = {
   isAuthenticated: false,
@@ -31,6 +32,11 @@ const initialState = {
   searchError: null,
   searchIsLoading: false,
   encryptKey: '',
+  keycloak: new Keycloak({
+    url: `${window.location.origin}/auth`,
+    realm: 'edulution',
+    clientId: 'edu-ui',
+  }),
 };
 
 const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) => ({

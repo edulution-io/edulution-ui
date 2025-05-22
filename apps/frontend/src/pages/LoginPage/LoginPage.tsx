@@ -52,7 +52,7 @@ const LoginPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { state } = useLocation() as { state: LocationState };
-  const { eduApiToken, totpIsLoading, isAuthenticated, createOrUpdateUser, setEduApiToken, getTotpStatus } =
+  const { eduApiToken, totpIsLoading, isAuthenticated, keycloak, createOrUpdateUser, setEduApiToken, getTotpStatus } =
     useUserStore();
   const { appConfigs } = useAppConfigsStore();
 
@@ -103,6 +103,17 @@ const LoginPage: React.FC = () => {
         setEncryptKey(newEncryptKey);
         setEduApiToken(requestUser.access_token);
         setWebdavKey(CryptoJS.AES.encrypt(password, newEncryptKey).toString());
+
+        await keycloak.init({
+          onLoad: 'check-sso',
+          silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`,
+          checkLoginIframe: false,
+          responseMode: 'query',
+        });
+
+        await keycloak.login({
+          redirectUri: window.location.origin,
+        });
       }
     } catch (e) {
       console.error(e);

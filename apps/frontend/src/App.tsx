@@ -24,6 +24,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import Toaster from '@/components/ui/Toaster';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import GlobalHooksWrapper from './components/GlobalHooksWrapper';
 
 const App = () => {
@@ -43,10 +44,9 @@ const App = () => {
   }, [user?.language]);
 
   const oidcConfig: AuthProviderProps = {
-    authority: `${EDU_BASE_URL}/auth/realms/edulution`,
-    client_id: 'edu-ui',
+    authority: `${EDU_API_URL}/auth`,
+    client_id: ' ',
     redirect_uri: `${EDU_BASE_URL}/login`,
-    response_type: 'code',
     scope: 'openid profile email',
     loadUserInfo: true,
     automaticSilentRenew: true,
