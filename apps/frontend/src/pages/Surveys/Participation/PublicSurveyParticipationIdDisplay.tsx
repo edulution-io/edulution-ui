@@ -17,15 +17,15 @@ import copyToClipboard from '@/utils/copyToClipboard';
 import Input from '@/components/shared/Input';
 import Separator from '@/components/ui/Separator';
 
-interface PublicSurveyParticipiationIdDisplayProps {
+interface PublicSurveyParticipationIdDisplayProps {
   publicUserId: string;
   isMulti?: boolean;
 }
 
-const PublicSurveyParticipiationIdDisplay = ({
+const PublicSurveyParticipationIdDisplay = ({
   publicUserId,
   isMulti = false,
-}: PublicSurveyParticipiationIdDisplayProps) => {
+}: PublicSurveyParticipationIdDisplayProps) => {
   const { t } = useTranslation();
 
   if (!publicUserId) {
@@ -61,4 +61,4 @@ const PublicSurveyParticipiationIdDisplay = ({
   );
 };
 
-export default PublicSurveyParticipiationIdDisplay;
+export default PublicSurveyParticipationIdDisplay;

@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
-import getSurveyFormulaWithIdentificationQuestion from '@libs/survey/utils/getSurveyFormulaWithIdentificationQuestion';
+import getSurveyFormulaWithIdentificationPlaceholderQuestion from '@libs/survey/utils/getSurveyFormulaWithIdentificationPlaceholderQuestion';
 import ResultTable from '@/pages/Surveys/Tables/components/ResultTable';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
@@ -49,7 +49,7 @@ const ResultTableDialogBody = () => {
 
   let formula: TSurveyFormula;
   if (!selectedSurvey?.isAnonymous) {
-    formula = getSurveyFormulaWithIdentificationQuestion(selectedSurvey.formula);
+    formula = getSurveyFormulaWithIdentificationPlaceholderQuestion(selectedSurvey.formula);
   } else {
     formula = selectedSurvey.formula;
   }

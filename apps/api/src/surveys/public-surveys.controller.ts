@@ -15,7 +15,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Get, Post, Param, Res } from '@nestjs/common';
 import { HAS_PUBLIC_USER_ANSWERED, IMAGES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import ParticipantDto from '@libs/survey/types/api/participant.dto';
-import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
+import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
@@ -38,8 +38,8 @@ class PublicSurveysController {
 
   @Post()
   @Public()
-  async answerSurvey(@Body() pushAnswerDto: PushAnswerDto) {
-    const { surveyId, saveNo, answer, attendee } = pushAnswerDto;
+  async answerSurvey(@Body() postAnswerDto: PostSurveyAnswerDto) {
+    const { surveyId, saveNo, answer, attendee } = postAnswerDto;
     return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, attendee);
   }
 

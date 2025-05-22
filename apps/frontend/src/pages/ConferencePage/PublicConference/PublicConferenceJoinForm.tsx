@@ -22,8 +22,8 @@ import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import PublicLoginButton from '@/components/shared/PublicLoginButton';
-import PublicJoinButton from '@/components/shared/PublicJoinButton';
+import LoginButton from '@/components/shared/LoginButton';
+import JoinButton from '@/components/shared/JoinButton';
 
 interface PublicConferenceJoinFormProps {
   meetingId: string;
@@ -85,7 +85,7 @@ const PublicConferenceJoinForm = ({
 
   return (
     <div className="my-10 rounded-xl bg-white bg-opacity-5 p-5">
-      <PublicLoginButton />
+      <LoginButton />
       {isWaitingForConferenceToStart && !joinConferenceUrl ? (
         <>
           <div>{t('conferences.conferenceIsNotStartedYet')}</div>
@@ -142,7 +142,7 @@ const PublicConferenceJoinForm = ({
                 />
               </div>
             )}
-            <PublicJoinButton />
+            <JoinButton />
           </form>
         </Form>
       )}

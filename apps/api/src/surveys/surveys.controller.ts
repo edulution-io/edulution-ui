@@ -45,8 +45,8 @@ import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
-import AnswerDto from '@libs/survey/types/api/answer.dto';
-import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
+import RequestSurveyAnswerDto from '@libs/survey/types/api/request-survey-answer.dto';
+import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import SurveysService from './surveys.service';
@@ -135,7 +135,10 @@ class SurveysController {
   }
 
   @Post(ANSWER)
-  async getSubmittedSurveyAnswers(@Body() getAnswerDto: AnswerDto, @GetCurrentUsername() username: string) {
+  async getSubmittedSurveyAnswers(
+    @Body() getAnswerDto: RequestSurveyAnswerDto,
+    @GetCurrentUsername() username: string,
+  ) {
     const { surveyId, attendee } = getAnswerDto;
     return this.surveyAnswerService.getAnswer(surveyId, attendee?.username || username);
   }
@@ -154,8 +157,8 @@ class SurveysController {
   }
 
   @Patch()
-  async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUser() currentUser: JWTUser) {
-    const { surveyId, saveNo, answer } = pushAnswerDto;
+  async answerSurvey(@Body() postAnswerDto: PostSurveyAnswerDto, @GetCurrentUser() currentUser: JWTUser) {
+    const { surveyId, saveNo, answer } = postAnswerDto;
     const attendee = {
       username: currentUser.preferred_username,
       firstName: currentUser.given_name,

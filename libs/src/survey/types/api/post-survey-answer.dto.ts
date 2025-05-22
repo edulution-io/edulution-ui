@@ -12,10 +12,10 @@
 
 import ParticipantDto from '@libs/survey/types/api/participant.dto';
 
-interface PushAnswerDto extends ParticipantDto {
+interface PostSurveyAnswerDto extends ParticipantDto {
   saveNo: number;
 
   answer: JSON;
 }
 
-export default PushAnswerDto;
+export default PostSurveyAnswerDto;

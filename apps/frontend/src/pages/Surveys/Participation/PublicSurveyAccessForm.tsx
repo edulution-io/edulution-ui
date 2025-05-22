@@ -21,8 +21,8 @@ import { publicUserRegex, publicUserLoginRegex, publicUserSeperator } from '@lib
 import { zodResolver } from '@hookform/resolvers/zod';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
-import PublicLoginButton from '@/components/shared/PublicLoginButton';
-import PublicJoinButton from '@/components/shared/PublicJoinButton';
+import LoginButton from '@/components/shared/LoginButton';
+import JoinButton from '@/components/shared/JoinButton';
 
 const PublicSurveyAccessForm = (): React.ReactNode => {
   const { t } = useTranslation();
@@ -89,7 +89,7 @@ const PublicSurveyAccessForm = (): React.ReactNode => {
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center">
       <div className="mx-auto my-10 w-[90%] rounded-xl bg-white bg-opacity-5 p-5 md:w-[400px]">
-        <PublicLoginButton />
+        <LoginButton />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleAccessSurvey)}>
             {!user?.username && (
@@ -110,7 +110,7 @@ const PublicSurveyAccessForm = (): React.ReactNode => {
                 />
               </div>
             )}
-            <PublicJoinButton />
+            <JoinButton />
           </form>
         </Form>
       </div>

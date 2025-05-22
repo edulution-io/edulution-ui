@@ -14,8 +14,8 @@ import { t } from 'i18next';
 import { toast } from 'sonner';
 import { create } from 'zustand';
 import { Model, CompletingEvent } from 'survey-core';
-import SurveyAnswerDto from '@libs/survey/types/api/survey-answer.dto';
-import SubmitAnswerDto from '@libs/survey/types/api/submit-answer.dto';
+import SurveyAnswerResponseDto from '@libs/survey/types/api/survey-answer-response.dto';
+import AnswerSurvey from '@libs/survey/types/api/answer-survey';
 import {
   SURVEYS,
   PUBLIC_SURVEYS,
@@ -32,10 +32,10 @@ interface ParticipateSurveyStore {
   setAttendee: (attendee: Partial<AttendeeDto> | undefined) => void;
 
   answerSurvey: (
-    answerDto: SubmitAnswerDto,
+    answerDto: AnswerSurvey,
     sender: Model,
     options: CompletingEvent,
-  ) => Promise<SurveyAnswerDto | undefined>;
+  ) => Promise<SurveyAnswerResponseDto | undefined>;
   isSubmitting: boolean;
 
   checkForMatchingUserNameAndPubliUserId: (surveyId: string, attendee: Partial<AttendeeDto>) => Promise<boolean>;
@@ -43,7 +43,7 @@ interface ParticipateSurveyStore {
   isUserAuthenticated: boolean;
 
   fetchAnswer: (surveyId: string) => Promise<void>;
-  previousAnswer: SurveyAnswerDto | undefined;
+  previousAnswer: SurveyAnswerResponseDto | undefined;
   isFetching: boolean;
 
   publicUserId?: string;
@@ -71,10 +71,10 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
   setAttendee: (attendee: Partial<AttendeeDto> | undefined) => set({ attendee }),
 
   answerSurvey: async (
-    answerDto: SubmitAnswerDto,
+    answerDto: AnswerSurvey,
     surveyModel: Model,
     completingEvent: CompletingEvent,
-  ): Promise<SurveyAnswerDto | undefined> => {
+  ): Promise<SurveyAnswerResponseDto | undefined> => {
     const { surveyId, saveNo, answer, isPublic = false } = answerDto;
     const { isSubmitting, attendee } = get();
     if (isSubmitting) {
@@ -87,13 +87,13 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
 
     try {
       const response = isPublic
-        ? await eduApi.post<SurveyAnswerDto>(PUBLIC_SURVEYS, {
+        ? await eduApi.post<SurveyAnswerResponseDto>(PUBLIC_SURVEYS, {
             surveyId,
             saveNo,
             answer,
             attendee,
           })
-        : await eduApi.patch<SurveyAnswerDto>(SURVEYS, {
+        : await eduApi.patch<SurveyAnswerResponseDto>(SURVEYS, {
             surveyId,
             saveNo,
             answer,
@@ -104,8 +104,8 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       completingEvent.allow = true;
       surveyModel.doComplete();
 
-      const surveyAnswer: SurveyAnswerDto = response.data;
-      const { username } = surveyAnswer.attendee;
+      const surveyAnswer: SurveyAnswerResponseDto = response.data;
+      const { username = '' } = surveyAnswer.attendee || {};
       const isAuthenticatedPublicUser = !!username && publicUserLoginRegex.test(username);
       if (isAuthenticatedPublicUser) {
         set({ publicUserId: username, previousAnswer: surveyAnswer });
@@ -134,8 +134,8 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
     set({ isFetching: true });
     try {
-      const response = await eduApi.post<SurveyAnswerDto>(SURVEY_ANSWER_ENDPOINT, { surveyId, attendee });
-      const surveyAnswer: SurveyAnswerDto = response.data;
+      const response = await eduApi.post<SurveyAnswerResponseDto>(SURVEY_ANSWER_ENDPOINT, { surveyId, attendee });
+      const surveyAnswer: SurveyAnswerResponseDto = response.data;
       set({ previousAnswer: surveyAnswer });
     } catch (error) {
       set({ previousAnswer: undefined });
@@ -150,7 +150,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
   ): Promise<boolean> => {
     set({ isFetching: true });
     try {
-      const response = await eduApi.post<SurveyAnswerDto>(`${PUBLIC_SURVEYS}/${HAS_PUBLIC_USER_ANSWERED}`, {
+      const response = await eduApi.post<SurveyAnswerResponseDto>(`${PUBLIC_SURVEYS}/${HAS_PUBLIC_USER_ANSWERED}`, {
         surveyId,
         attendee,
       });
@@ -158,7 +158,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
         set({ attendee: undefined, previousAnswer: undefined });
         return false;
       }
-      const surveyAnswer: SurveyAnswerDto = response.data;
+      const surveyAnswer: SurveyAnswerResponseDto = response.data;
       set({ attendee: surveyAnswer.attendee, previousAnswer: surveyAnswer });
       return true;
     } catch (error) {

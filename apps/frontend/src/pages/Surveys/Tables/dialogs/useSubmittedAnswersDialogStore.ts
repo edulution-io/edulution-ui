@@ -13,7 +13,7 @@
 import { create } from 'zustand';
 import { SURVEY_ANSWER_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveyAnswerDto from '@libs/survey/types/api/survey-answer.dto';
+import SurveyAnswerResponseDto from '@libs/survey/types/api/survey-answer-response.dto';
 import SurveysPageView from '@libs/survey/types/api/page-view';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
@@ -53,7 +53,7 @@ const useSubmittedAnswersDialogStore = create<SubmittedAnswersDialogStore>((set)
   getSubmittedSurveyAnswers: async (surveyId: string, attendee?: string): Promise<void> => {
     set({ isLoading: true });
     try {
-      const response = await eduApi.post<SurveyAnswerDto>(SURVEY_ANSWER_ENDPOINT, { surveyId, attendee });
+      const response = await eduApi.post<SurveyAnswerResponseDto>(SURVEY_ANSWER_ENDPOINT, { surveyId, attendee });
       const surveyAnswer = response.data;
       const { answer } = surveyAnswer;
       set({ answer });

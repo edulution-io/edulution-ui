@@ -16,7 +16,7 @@ import PublicSurveyAccessForm from '@/pages/Surveys/Participation/PublicSurveyAc
 import SurveyParticipationModel from '@/pages/Surveys/Participation/SurveyParticipationModel';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from './useParticipateSurveyStore';
-import PublicSurveyParticipiationIdDisplay from './PublicSurveyParticipationIdDisplay';
+import PublicSurveyParticipationIdDisplay from './PublicSurveyParticipationIdDisplay';
 
 interface AccessAndParticipateSurveyProps {
   isPublic: boolean;
@@ -49,11 +49,11 @@ const AccessAndParticipateSurvey = (props: AccessAndParticipateSurveyProps): Rea
   }
 
   const { canUpdateFormerAnswer = false, canSubmitMultipleAnswers = false } = selectedSurvey || {};
-  if (isPublic && publicUserId && (!!canUpdateFormerAnswer || !!canSubmitMultipleAnswers)) {
+  if (isPublic && publicUserId && (canUpdateFormerAnswer || canSubmitMultipleAnswers)) {
     return (
-      <PublicSurveyParticipiationIdDisplay
+      <PublicSurveyParticipationIdDisplay
         publicUserId={publicUserId}
-        isMulti={!canUpdateFormerAnswer && !!canSubmitMultipleAnswers}
+        isMulti={!canUpdateFormerAnswer && canSubmitMultipleAnswers}
       />
     );
   }

@@ -17,7 +17,7 @@ import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import { Button } from '@/components/shared/Button';
 import useUserStore from '@/store/UserStore/UserStore';
 
-const PublicLoginButton = () => {
+const LoginButton = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
@@ -52,4 +52,4 @@ const PublicLoginButton = () => {
   );
 };
 
-export default PublicLoginButton;
+export default LoginButton;
