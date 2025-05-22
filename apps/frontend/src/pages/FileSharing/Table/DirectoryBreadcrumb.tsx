@@ -48,7 +48,13 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
 
   const segments = path
     .split('/')
-    .map((segment) => segment.replace(/%20/g, ' '))
+    .map((segment) => {
+      try {
+        return decodeURIComponent(segment);
+      } catch {
+        return segment;
+      }
+    })
     .filter(Boolean);
 
   const clearSegments = segments.filter((segment) => hiddenSegments?.includes(segment) !== true);

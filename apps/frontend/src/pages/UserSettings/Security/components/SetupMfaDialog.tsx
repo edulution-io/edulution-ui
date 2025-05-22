@@ -21,14 +21,13 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import { GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 
 const SetupMfaDialog: React.FC = () => {
   const { t } = useTranslation();
   const { pathname } = useLocation();
-  const isDashboardPage = pathname === '/';
-  const { getGlobalSettings } = useGlobalSettingsApiStore();
+  const { globalSettings } = useGlobalSettingsApiStore();
   const {
     qrCode,
     qrCodeIsLoading,
@@ -42,18 +41,16 @@ const SetupMfaDialog: React.FC = () => {
   const { ldapGroups } = useLdapGroups();
   const [totp, setTotp] = useState('');
 
-  useEffect(() => {
-    const handleCheckGlobalSettings = async () => {
-      const globalSettingsDto = await getGlobalSettings(GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH);
-      const { mfaEnforcedGroups } = globalSettingsDto.auth;
-      const isMfaRequired = mfaEnforcedGroups.some((group) => ldapGroups.includes(group.path));
-      if (isMfaRequired && !user?.mfaEnabled && isDashboardPage) {
-        setIsSetTotpDialogOpen(true);
-      }
-    };
+  const isRightAfterLogin = pathname === LOGIN_ROUTE;
 
-    void handleCheckGlobalSettings();
-  }, []);
+  useEffect(() => {
+    const mfaGroups = globalSettings.auth?.mfaEnforcedGroups || [];
+    const isMfaRequired = mfaGroups.some((g) => ldapGroups.includes(g.path));
+
+    if (isMfaRequired && !user?.mfaEnabled && isRightAfterLogin) {
+      setIsSetTotpDialogOpen(true);
+    }
+  }, [globalSettings.auth?.mfaEnforcedGroups, user?.mfaEnabled, isRightAfterLogin]);
 
   useEffect(() => {
     if (isSetTotpDialogOpen) {
@@ -88,7 +85,7 @@ const SetupMfaDialog: React.FC = () => {
         void handleSetMfaEnabled();
       }}
     >
-      {isDashboardPage && <p className="mb-3 font-bold">{t('usersettings.addTotp.mfaSetupRequired')}</p>}
+      {isRightAfterLogin && <p className="mb-3 font-bold">{t('usersettings.addTotp.mfaSetupRequired')}</p>}
       <p>{t('usersettings.addTotp.qrCodeInstructions')}</p>
       <div className="flex justify-center">
         {qrCodeIsLoading ? (

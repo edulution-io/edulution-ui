@@ -16,8 +16,8 @@ import { diskStorage } from 'multer';
 import { existsSync, mkdirSync } from 'fs';
 import { HttpStatus } from '@nestjs/common';
 import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import CustomHttpException from './CustomHttpException';
 
 /**
  * Generates a disk storage configuration that can dynamically

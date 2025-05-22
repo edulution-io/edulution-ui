@@ -29,7 +29,7 @@ const getCustomAppConfigFormSchema = (t: TFunction<'translation', undefined>, ap
       .string()
       .min(1, { message: t('settings.errors.fieldRequired') })
       .max(20, { message: t('settings.errors.maxChars', { count: 20 }) })
-      .refine((val) => !forbiddenRoutes.includes(val), { message: t('settings.errors.nameAlreadyExists') })
+      .refine((val) => !forbiddenRoutes.includes(val.toLowerCase()), { message: t('settings.errors.nameIsNotAllowed') })
       .refine((val) => !existingAppNames.includes(slugify(val)) && !existingDisplayNames.includes(val), {
         message: t('settings.errors.nameAlreadyExists'),
       }),

@@ -10,20 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit, HttpStatus } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import Docker from 'dockerode';
 import { fromEvent, Subscription } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import DockerErrorMessages from '@libs/docker/constants/dockerErrorMessages';
 import DOCKER_COMMANDS from '@libs/docker/constants/dockerCommands';
 import DOCKER_PROTECTED_CONTAINERS from '@libs/docker/constants/dockerProtectedContainer';
 import SPECIAL_USERS from '@libs/common/constants/specialUsers';
 import type TDockerProtectedContainer from '@libs/docker/types/TDockerProtectedContainer';
 import CONTAINER from '@libs/docker/constants/container';
+import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 
 @Injectable()
@@ -46,11 +46,18 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
   }
 
   private listenToDockerEvents() {
-    this.docker.getEvents((error, stream) => {
-      if (error || !stream) {
-        Logger.error('Docker stream error', DockerService.name);
+    this.docker.getEvents((error: Error, stream) => {
+      if (error) {
+        Logger.error(`Docker getEvents failed: ${error.stack || error.message}`, DockerService.name);
         return;
       }
+      if (!stream) {
+        Logger.error('Docker getEvents returned no stream object', DockerService.name);
+        return;
+      }
+      stream.on('error', (err: Error) =>
+        Logger.error(`Docker event‐stream error: ${err.stack || err.message}`, DockerService.name),
+      );
 
       const dockerEvents$ = fromEvent(stream, 'data').pipe(
         map((chunk) => JSON.parse((chunk as Buffer<ArrayBufferLike>).toString()) as DockerEvent),
@@ -90,11 +97,12 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  async getContainers(applicationNames?: string[]) {
+  async getContainers(applicationNames?: string | string[]) {
     try {
       let filters = {};
       if (applicationNames) {
-        const formattedNames = applicationNames.map((name) => `/${name}`);
+        const applicationNamesArray = Array.isArray(applicationNames) ? applicationNames : [applicationNames];
+        const formattedNames = applicationNamesArray.map((name) => `/${name}`);
         filters = {
           name: formattedNames,
         };

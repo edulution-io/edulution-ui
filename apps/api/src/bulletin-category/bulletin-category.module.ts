@@ -16,7 +16,6 @@ import BulletinCategoryController from './bulletin-category.controller';
 import BulletinCategoryService from './bulletin-category.service';
 import { BulletinCategory, BulletinCategorySchema } from './bulletin-category.schema';
 import { Bulletin, BulletinSchema } from '../bulletinboard/bulletin.schema';
-import MigrationService from '../migration/migration.service';
 
 @Module({
   imports: [
@@ -24,7 +23,7 @@ import MigrationService from '../migration/migration.service';
     MongooseModule.forFeature([{ name: BulletinCategory.name, schema: BulletinCategorySchema }]),
   ],
   controllers: [BulletinCategoryController],
-  providers: [BulletinCategoryService, MigrationService],
+  providers: [BulletinCategoryService],
   exports: [BulletinCategoryService],
 })
 export default class BulletinCategoryModule {}

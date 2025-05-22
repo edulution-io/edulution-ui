@@ -10,24 +10,30 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Injectable, HttpStatus } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { Readable } from 'stream';
 import { Request, Response } from 'express';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import JOB_NAMES from '@libs/queue/constants/jobNames';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
-import WebdavService from '../webdav/webdav.service';
-import OnlyofficeService from './onlyoffice.service';
-import FilesystemService from '../filesystem/filesystem.service';
+import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
+import archiver from 'archiver';
+import { once } from 'events';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import { createReadStream, createWriteStream, statSync } from 'fs';
+import createTempFile from '@libs/filesystem/utils/createTempFile';
+import CustomHttpException from '../common/CustomHttpException';
 import QueueService from '../queue/queue.service';
+import FilesystemService from '../filesystem/filesystem.service';
+import OnlyofficeService from './onlyoffice.service';
+import WebdavService from '../webdav/webdav.service';
 
 @Injectable()
-export default class FilesharingService {
+class FilesharingService {
   private readonly baseurl = process.env.EDUI_WEBDAV_URL as string;
 
   constructor(
@@ -52,6 +58,22 @@ export default class FilesharingService {
     );
   }
 
+  async copyFileOrFolder(username: string, copyFileRequestDTOs: PathChangeOrCreateProps[]) {
+    let processedItems = 0;
+    return Promise.all(
+      copyFileRequestDTOs.map(async (copyFileRequest) => {
+        const { path, newPath } = copyFileRequest;
+        await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.COPY_FILE_JOB, {
+          username,
+          originFilePath: path,
+          destinationFilePath: newPath,
+          total: copyFileRequestDTOs.length,
+          processed: (processedItems += 1),
+        });
+      }),
+    );
+  }
+
   async collectFiles(
     username: string,
     collectFileRequestDTOs: CollectFileRequestDTO[],
@@ -67,6 +89,22 @@ export default class FilesharingService {
           item: collectFileRequest,
           operationType: type,
           total: collectFileRequestDTOs.length,
+          processed: (processedItems += 1),
+        });
+      }),
+    );
+  }
+
+  async moveOrRenameResources(username: string, pathChangeOrCreateDtos: PathChangeOrCreateProps[]) {
+    let processedItems = 0;
+    return Promise.all(
+      pathChangeOrCreateDtos.map(async (pathChange) => {
+        const { path, newPath } = pathChange;
+        await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.MOVE_OR_RENAME_JOB, {
+          username,
+          path,
+          newPath,
+          total: pathChangeOrCreateDtos.length,
           processed: (processedItems += 1),
         });
       }),
@@ -123,4 +161,37 @@ export default class FilesharingService {
       this.webDavService.uploadFile(user, `${this.baseurl}${uploadPath}/${name}`, file),
     );
   }
+
+  async streamFilesAsZipBuffered(username: string, paths: string[], res: Response) {
+    const { path: tmpPath, cleanup } = await createTempFile('.zip');
+
+    const output = createWriteStream(tmpPath);
+    const zip = archiver('zip', { zlib: { level: 9 } });
+
+    zip.pipe(output);
+
+    const entries = await Promise.all(
+      paths.map(async (p) => ({
+        name: p.split('/').pop()!,
+        stream: await this.getWebDavFileStream(username, p),
+      })),
+    );
+
+    entries.forEach(({ stream, name }) => zip.append(stream, { name }));
+
+    await zip.finalize();
+    await once(output, 'close');
+
+    const { size } = statSync(tmpPath);
+    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_ZIP);
+    res.setHeader(HTTP_HEADERS.ContentLength, size);
+
+    createReadStream(tmpPath)
+      .pipe(res)
+      .on('finish', () => {
+        void cleanup();
+      });
+  }
 }
+
+export default FilesharingService;

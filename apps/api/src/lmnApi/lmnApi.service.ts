@@ -25,14 +25,13 @@ import {
   USER_ROOM_LMN_API_ENDPOINT,
   USERS_LMN_API_ENDPOINT,
 } from '@libs/lmnApi/constants/lmnApiEndpoints';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import LmnApiErrorMessage from '@libs/lmnApi/types/lmnApiErrorMessage';
 import UserLmnInfo from '@libs/lmnApi/types/userInfo';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiSearchResult from '@libs/lmnApi/types/lmnApiSearchResult';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
-import https from 'https';
+import { Agent as HttpsAgent } from 'https';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import LmnApiProjectWithMembers from '@libs/lmnApi/types/lmnApiProjectWithMembers';
 import GroupForm from '@libs/groups/types/groupForm';
@@ -43,6 +42,7 @@ import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 import CreateWorkingDirectoryDto from '@libs/classManagement/types/createWorkingDirectoryDto';
 import convertWindowsToUnixPath from '@libs/filesharing/utils/convertWindowsToUnixPath';
+import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
 import WebdavService from '../webdav/webdav.service';
 
@@ -58,7 +58,7 @@ class LmnApiService {
     private readonly userService: UsersService,
     private readonly webdavService: WebdavService,
   ) {
-    const httpsAgent = new https.Agent({
+    const httpsAgent = new HttpsAgent({
       rejectUnauthorized: false,
     });
     this.lmnApi = axios.create({

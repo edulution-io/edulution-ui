@@ -13,6 +13,7 @@
 const SSE_MESSAGE_TYPE = {
   MESSAGE: 'message',
   PING: 'ping',
+  UPDATED: 'updated',
   CONTAINER_STATUS: 'container_status',
   CONTAINER_UPDATE: 'container_update',
   CONTAINER_PROGRESS: 'container_progress',
@@ -27,6 +28,8 @@ const SSE_MESSAGE_TYPE = {
   FILESHARING_SHARE_FILES: 'filesharing_share_files',
   FILESHARING_COLLECT_FILES: 'filesharing_collect_files',
   FILESHARING_DELETE_FILES: 'filesharing_delete_files',
+  FILESHARING_MOVE_OR_RENAME_FILES: 'filesharing_move_or_rename_files',
+  FILESHARING_COPY_FILES: 'filesharing_copy_files',
 } as const;
 
 export default SSE_MESSAGE_TYPE;

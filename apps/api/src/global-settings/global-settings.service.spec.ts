@@ -14,11 +14,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import type { Model, UpdateWriteOpResult } from 'mongoose';
-import CustomHttpException from '@libs/error/CustomHttpException';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import { GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
+import defaultValues from '@libs/global-settings/constants/defaultValues';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import CustomHttpException from '../common/CustomHttpException';
 import GlobalSettingsService from './global-settings.service';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
+import cacheManagerMock from '../common/mocks/cacheManagerMock';
 
 class MockGlobalSettings {
   constructor(public data: any) {}
@@ -44,15 +47,18 @@ describe('GlobalSettingsService', () => {
     create?: jest.Mock;
   };
 
-  const mockGlobalSettingsDto: GlobalSettingsDto = {
-    auth: {
-      mfaEnforcedGroups: [],
-    },
-  };
+  const mockGlobalSettingsDto: GlobalSettingsDto = defaultValues;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [GlobalSettingsService, { provide: getModelToken(GlobalSettings.name), useValue: MockGlobalSettings }],
+      providers: [
+        GlobalSettingsService,
+        { provide: getModelToken(GlobalSettings.name), useValue: MockGlobalSettings },
+        {
+          provide: CACHE_MANAGER,
+          useValue: cacheManagerMock,
+        },
+      ],
     }).compile();
 
     service = module.get<GlobalSettingsService>(GlobalSettingsService);
@@ -71,12 +77,11 @@ describe('GlobalSettingsService', () => {
 
   describe('getGlobalSettings', () => {
     it('should return settings with projection', async () => {
-      const mockData = { auth: { mfaEnforcedGroups: [] } };
-      model.findOne?.mockReturnValue({ lean: () => Promise.resolve(mockData) });
+      model.findOne?.mockReturnValue({ lean: () => Promise.resolve(mockGlobalSettingsDto) });
 
       const result = await service.getGlobalSettings(GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH);
       expect(model.findOne).toHaveBeenCalledWith({}, GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH);
-      expect(result).toEqual(mockData);
+      expect(result).toEqual(mockGlobalSettingsDto);
     });
 
     it('should return null if error occurs', async () => {
