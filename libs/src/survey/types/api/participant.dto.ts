@@ -10,21 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface SurveyElement {
-  type: string;
-  name: string;
-  title?: string;
-  description?: string;
-  choicesOrder?: string;
-  choices?: string[] | null;
-  choicesByUrl?: {
-    url: string;
-    valueName?: string;
-    titleName?: string;
-  } | null;
-  hideIfChoicesEmpty?: boolean;
-  showOtherItem?: boolean | null;
-  showNoneItem?: boolean;
+import AttendeeDto from '@libs/user/types/attendee.dto';
+
+interface ParticipantDto {
+  surveyId: string;
+
+  attendee: Partial<AttendeeDto>;
 }
 
-export default SurveyElement;
+export default ParticipantDto;

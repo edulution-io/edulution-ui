@@ -21,6 +21,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 import CustomHttpException from '../common/CustomHttpException';
 import SurveysController from './surveys.controller';
 import SurveysService from './surveys.service';
@@ -79,7 +80,11 @@ describe(SurveysController.name, () => {
         SurveyAnswersService,
         {
           provide: getModelToken(SurveyAnswer.name),
-          useValue: jest.fn(),
+          useValue: {
+            find: jest.fn().mockReturnThis(),
+            sort: jest.fn().mockReturnThis(),
+            limit: jest.fn().mockResolvedValueOnce([firstUsersSurveyAnswerAnsweredSurvey01]),
+          },
         },
         { provide: FilesystemService, useValue: mockFilesystemService },
       ],
@@ -192,9 +197,7 @@ describe(SurveysController.name, () => {
 
   describe('getSubmittedSurveyAnswers', () => {
     it('should return the submitted answer of the current user', async () => {
-      jest.spyOn(surveyAnswerService, 'getPrivateAnswer');
-
-      surveyAnswerModel.findOne = jest.fn().mockReturnValue(firstUsersSurveyAnswerAnsweredSurvey01);
+      jest.spyOn(surveyAnswerService, 'getAnswer');
 
       const result = await controller.getSubmittedSurveyAnswers(
         { surveyId: idOfAnsweredSurvey01.toString(), attendee: undefined },
@@ -202,24 +205,22 @@ describe(SurveysController.name, () => {
       );
       expect(result).toEqual(firstUsersSurveyAnswerAnsweredSurvey01);
 
-      expect(surveyAnswerService.getPrivateAnswer).toHaveBeenCalledWith(idOfAnsweredSurvey01.toString(), firstUsername);
+      expect(surveyAnswerService.getAnswer).toHaveBeenCalledWith(idOfAnsweredSurvey01.toString(), firstUsername);
     });
 
     it('should return the submitted answer of a given user', async () => {
-      jest.spyOn(surveyAnswerService, 'getPrivateAnswer');
-
-      surveyAnswerModel.findOne = jest.fn().mockReturnValue(secondUsersSurveyAnswerAnsweredSurvey01);
+      jest.spyOn(surveyAnswerService, 'getAnswer');
 
       const result = await controller.getSubmittedSurveyAnswers(
-        { surveyId: idOfAnsweredSurvey01.toString(), attendee: secondUsername },
-        firstUsername,
-      );
-      expect(result).toEqual(secondUsersSurveyAnswerAnsweredSurvey01);
-
-      expect(surveyAnswerService.getPrivateAnswer).toHaveBeenCalledWith(
-        idOfAnsweredSurvey01.toString(),
+        {
+          surveyId: idOfAnsweredSurvey01.toString(),
+          attendee: { username: firstUsername, label: firstUsername, value: firstUsername },
+        },
         secondUsername,
       );
+      expect(result).toEqual(firstUsersSurveyAnswerAnsweredSurvey01);
+
+      expect(surveyAnswerService.getAnswer).toHaveBeenCalledWith(idOfAnsweredSurvey01.toString(), firstUsername);
     });
   });
 
@@ -296,11 +297,18 @@ describe(SurveysController.name, () => {
       surveyAnswerModel.findOne = jest.fn().mockResolvedValueOnce(surveyAnswerAnsweredSurvey03);
       surveyAnswerModel.findByIdAndUpdate = jest.fn().mockReturnValue(updatedSurveyAnswerAnsweredSurvey03);
 
+      const attendee = {
+        username: firstMockJWTUser.preferred_username,
+        firstName: firstMockJWTUser.given_name,
+        lastName: firstMockJWTUser.family_name,
+      } as AttendeeDto;
+
       await controller.answerSurvey(
         {
           surveyId: idOfAnsweredSurvey01.toString(),
           saveNo: saveNoAnsweredSurvey01,
           answer: firstUsersMockedAnswerForAnsweredSurveys01,
+          attendee,
         },
         firstMockJWTUser,
       );
@@ -309,7 +317,7 @@ describe(SurveysController.name, () => {
         idOfAnsweredSurvey01.toString(),
         saveNoAnsweredSurvey01,
         firstUsersMockedAnswerForAnsweredSurveys01,
-        firstMockJWTUser,
+        attendee,
       );
     });
   });

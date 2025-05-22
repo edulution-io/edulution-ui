@@ -10,18 +10,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { CompleteEvent } from 'survey-core';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/shared/Button';
 
-interface SubmitAnswerDto {
-  surveyId: string;
+const JoinButton = () => {
+  const { t } = useTranslation();
 
-  saveNo: number;
+  return (
+    <div className="mb-2 mt-4 flex justify-end">
+      <Button
+        variant="btn-collaboration"
+        size="lg"
+        type="submit"
+      >
+        {t('common.join')}
+      </Button>
+    </div>
+  );
+};
 
-  answer: JSON;
-
-  surveyEditorCallbackOnSave?: CompleteEvent | undefined;
-
-  isPublic: boolean;
-}
-
-export default SubmitAnswerDto;
+export default JoinButton;

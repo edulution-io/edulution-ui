@@ -247,7 +247,6 @@
     "changeUser": "Change user",
     "joinAgain": "Join again",
     "passwordOfConference": "Password of conference",
-    "orContinueWithoutAccount": "Or continue without account",
     "conferenceIsNotStartedYet": "The conference was not started. Currently you are in the waiting room and you will be automatically redirected once the conference starts.",
     "conferenceIsPasswordProtected": "This conference is password protected, please enter it to join.",
     "pleaseEnterYourFullName": "To join the conference enter your full name.",
@@ -581,7 +580,18 @@
       }
     },
     "participate": {
-      "saveAnswerSuccess": "Saved the answer."
+      "saveAnswerSuccess": "Saved the answer.",
+      "username": "User name",
+      "pleaseEnterYourFullName": "You may participate in the survey by entering your full name.",
+      "yourFullName": "Your full name",
+      "pleaseEnterYourParticipationId": "Use the participation-ID if you want to change your submission.",
+      "invalidUsername": "Username is invalid (permitted are letters, number, and [. -])",
+      "idHeader": "Your participation ID (optional)",
+      "idText": "Pls copy this for later",
+      "idParagraphCanUpdate": "In order to overwrite your previous answer, please enter this participation-ID instead of the username.",
+      "idParagraphIsMulti": "In order to link your answers, please enter this participation-ID instead of your username.",
+      "usernameRequired": "User name is required",
+      "completeMessage": "Thank you very much for participating in this survey"
     },
     "errors": {
       "submitAnswerError": "The answer could not be submitted.",
@@ -596,7 +606,7 @@
       "participationErrorUserNotAssigned": "User is no participant of the survey.",
       "participationErrorAlreadyParticipated": "User has already participated in the survey.",
       "participationErrorSurveyExpired": "Survey has already expired.",
-      "idTypeError": "Missing survey id.",
+      "missingIdError": "Missing survey ID.",
       "missingAnswerError": "Please provide an answer before submitting."
     }
   },
@@ -1017,6 +1027,9 @@
   "login": {
     "pageTitle": "Login",
     "username_too_long": "Username to long",
+    "username_too_short": "Username to short",
+    "username_not_regex": "Invalid username/participation-ID",
+    "publicUsername_notExisting": "There is no submission with the given participation-ID",
     "password_too_long": "Password to long",
     "forgot_password": "Forgot password?",
     "remember_me": "Remember me",
@@ -1154,6 +1167,7 @@
     "format": "Format",
     "upload": "Upload",
     "mode": "Mode",
+    "orContinueWithoutAccount": "Or continue without account",
     "application": "Application"
   },
   "form": {
