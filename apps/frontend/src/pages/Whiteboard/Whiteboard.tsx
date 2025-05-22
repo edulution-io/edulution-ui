@@ -10,39 +10,33 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { lazy, Suspense, useMemo } from 'react';
+import React, { lazy, Suspense, useEffect } from 'react';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import PageLayout from '@/components/structure/layout/PageLayout';
-import useLanguage from '@/hooks/useLanguage';
-import useUserStore from '@/store/UserStore/UserStore';
-import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/apiEndpoints';
-import EDU_API_WEBSOCKET_URL from '@libs/common/constants/eduApiWebsocketUrl';
-import ROOM_ID_PARAM from '@libs/tldraw-sync/constants/roomIdParam';
-import { useTranslation } from 'react-i18next';
+import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 
-const TldrawWithSync = lazy(() => import('./TLDrawWithSync'));
+const TLDrawWithSync = lazy(() => import('./TLDrawWithSync'));
+const TlDrawOffline = lazy(() => import('./TLDrawOffline'));
 
 const Whiteboard = () => {
-  const { language } = useLanguage();
-  const { t } = useTranslation();
-  const { user, eduApiToken } = useUserStore();
+  const { getIsEduApiHealthy, isEduApiHealthy } = useEduApiStore();
 
-  const WS_BASE_URL = `${EDU_API_WEBSOCKET_URL}/${TLDRAW_SYNC_ENDPOINTS.BASE}`;
+  useEffect(() => {
+    void getIsEduApiHealthy();
+  }, []);
 
-  const roomId = user?.username;
+  const loader = <CircleLoader className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />;
 
-  const uri = useMemo(() => `${WS_BASE_URL}?${ROOM_ID_PARAM}=${roomId}&token=${eduApiToken}`, [roomId]);
+  const getPageContent = () => {
+    if (isEduApiHealthy === undefined) return loader;
+    if (isEduApiHealthy) return <TLDrawWithSync />;
+    return <TlDrawOffline />;
+  };
 
   return (
     <PageLayout isFullScreen>
-      <Suspense fallback={<CircleLoader className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />}>
-        <div className="z-0 h-full w-full">
-          <TldrawWithSync
-            uri={uri}
-            userLanguage={language}
-            userName={user?.lastName ?? t('common.guest')}
-          />
-        </div>
+      <Suspense fallback={loader}>
+        <div className="z-0 h-full w-full">{getPageContent()}</div>
       </Suspense>
     </PageLayout>
   );
