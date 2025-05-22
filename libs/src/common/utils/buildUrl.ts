@@ -10,19 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import ItemDialogList from '@/components/shared/ItemDialogList';
-
-const DeleteContentDialogBody: React.FC = () => {
-  const { selectedItems } = useFileSharingStore();
-  const deleteWarningTranslationId = 'deleteDialog.actionCannotBeUndone';
-
-  return (
-    <ItemDialogList
-      deleteWarningTranslationId={deleteWarningTranslationId}
-      items={selectedItems.map((i) => ({ name: i.filename, id: i.etag }))}
-    />
-  );
+const buildUrl = (baseUrl: string, path: string) => {
+  const cleanedPath = path.replace(/\/{2,}/g, '/').replace(/^\/+/, '');
+  return new URL(cleanedPath, baseUrl).href;
 };
-export default DeleteContentDialogBody;
+
+export default buildUrl;
