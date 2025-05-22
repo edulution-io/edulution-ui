@@ -10,21 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useTranslation } from 'react-i18next';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import useFileOperationProgressToast from '../../../hooks/useFileOperationProgressToast';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+import { DefaultLandingPage } from './global-settings.default-landing-page.schema';
 
-const useFileOperationToast = () => {
-  const { t } = useTranslation();
-  const { fileOperationProgress } = useFileSharingStore();
+export type GeneralSettingsDocument = GeneralSettings & Document;
 
-  useFileOperationProgressToast(
-    fileOperationProgress && {
-      ...fileOperationProgress,
-      title: t(fileOperationProgress.title ?? ''),
-      description: t(fileOperationProgress.description ?? ''),
-    },
-  );
-};
+@Schema({ _id: false })
+export class GeneralSettings {
+  @Prop({ type: DefaultLandingPage })
+  defaultLandingPage: DefaultLandingPage;
+}
 
-export default useFileOperationToast;
+export const GeneralSettingsSchema = SchemaFactory.createForClass(GeneralSettings);

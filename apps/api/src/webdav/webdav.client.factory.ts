@@ -11,14 +11,14 @@
  */
 
 import axios from 'axios';
-import https from 'https';
+import { Agent as HttpsAgent } from 'https';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 
 class WebdavClientFactory {
   static createWebdavClient(baseUrl: string, username: string, password: string) {
     const token = Buffer.from(`${username}:${password}`).toString('base64');
 
-    const httpsAgent = new https.Agent({
+    const httpsAgent = new HttpsAgent({
       rejectUnauthorized: false,
     });
 

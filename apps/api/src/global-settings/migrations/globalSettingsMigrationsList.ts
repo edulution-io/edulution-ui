@@ -10,21 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useTranslation } from 'react-i18next';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import useFileOperationProgressToast from '../../../hooks/useFileOperationProgressToast';
+import migration000 from './migration000';
 
-const useFileOperationToast = () => {
-  const { t } = useTranslation();
-  const { fileOperationProgress } = useFileSharingStore();
+// Add new migrations here
+const globalSettingsMigrationsList = [migration000];
 
-  useFileOperationProgressToast(
-    fileOperationProgress && {
-      ...fileOperationProgress,
-      title: t(fileOperationProgress.title ?? ''),
-      description: t(fileOperationProgress.description ?? ''),
-    },
-  );
-};
-
-export default useFileOperationToast;
+export default globalSettingsMigrationsList;

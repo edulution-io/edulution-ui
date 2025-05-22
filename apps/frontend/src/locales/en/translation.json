@@ -362,8 +362,8 @@
       "processedDeletingInfo": "{{processed}} out of {{total}} files deleted successfully",
       "processedMovingInfo": "{{processed}} out of {{total}} files moved successfully",
       "processedCopyingInfo": "{{processed}} out of {{total}} files copied successfully",
-      "fileInfoSharing": "File {{filename}} is being distributed to {{studentName}}",
-      "fileInfoCollecting": "File {{filename}} is being collected to {{studentName}}",
+      "fileInfoSharing": "File {{filename}} is being distributed to {{username}}",
+      "fileInfoCollecting": "File {{filename}} is being collected to {{username}}",
       "fileInfoCopying": "File {{filename}} is being copied",
       "fileInfoMoving": "File {{filename}} is being moved",
       "fileInfoDeleting": "File {{filename}} is being deleted",
@@ -790,8 +790,12 @@
     "globalSettings": {
       "title": "Global Settings",
       "security": "Security",
+      "general": "General",
+      "defaultLandingPageTitle": "Standard application after login",
+      "defaultLandingPageDescription": "Here you can specify which application should be displayed to users by default after login.",
+      "defaultLandingPageSwitchDescription": "When enabled, users will be redirected upon successful login not to the dashboard, but to the application configured here.",
       "multiFactorAuthentication": "Two-factor authentication",
-      "description": "Here you can specify the user groups for which two-factor authentication is to be enforced.",
+      "mfaDescription": "Here you can specify the user groups for which two-factor authentication is to be enforced.",
       "selectUserGroups": "Select user groups for which the MFA setup is enforced.",
       "updateSuccessful": "Setting updated successfully",
       "errors": {
@@ -874,7 +878,8 @@
       "forbiddenProxyPath": "Forbidden proxy path",
       "fieldRequired": "This field is required",
       "maxChars": "Maximum {{count}} characters",
-      "nameAlreadyExists": "App with this name already exists"
+      "nameAlreadyExists": "App with this name already exists",
+      "nameIsNotAllowed": "This app name is not allowed"
     },
     "yamleditor": {
       "invalidYaml": "Wrong YAML syntax",

@@ -16,7 +16,7 @@ import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressD
 import ProgressBox from '@/components/ui/ProgressBox';
 import { t } from 'i18next';
 
-const useProgressToast = (progress: FilesharingProgressDto | null | undefined) => {
+const useFileOperationProgressToast = (progress: FilesharingProgressDto | null | undefined) => {
   const lastPercent = useRef<number | null>(null);
 
   useEffect(() => {
@@ -56,4 +56,4 @@ const useProgressToast = (progress: FilesharingProgressDto | null | undefined) =
   }, [progress]);
 };
 
-export default useProgressToast;
+export default useFileOperationProgressToast;
