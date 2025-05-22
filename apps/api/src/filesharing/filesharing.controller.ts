@@ -89,10 +89,15 @@ class FilesharingController {
     @UploadedFile() file: CustomFile,
     @Query('path') path: string,
     @Body('name') name: string,
+    @Body('isZippedFolder') isZippedFolder: string, //  ← neu
+    @Body('originalFolderName') originalFolderName: string, //  ← neu (optional)
     @GetCurrentUsername() username: string,
   ) {
     const fullPath = `${this.baseurl}${path}/${name}`;
-    return this.webdavService.uploadFile(username, fullPath, file);
+
+    return isZippedFolder === '1'
+      ? this.webdavService.uploadZippedFolder(username, path, originalFolderName, file)
+      : this.webdavService.uploadFile(username, fullPath, file);
   }
 
   @Delete()

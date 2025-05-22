@@ -116,6 +116,12 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
             formData.append('name', uploadItem.name);
             formData.append('currentPath', destinationPath);
 
+            if ('isZippedFolder' in uploadItem.file && uploadItem.file.isZippedFolder) {
+              formData.append('isZippedFolder', '1');
+              if ('originalFolderName' in uploadItem.file && uploadItem.file.originalFolderName) {
+                formData.append('originalFolderName', uploadItem.file.originalFolderName);
+              }
+            }
             return handleFileUploadAction(actionType, endpointUrl, method, requestContentType, formData);
           }
           return Promise.resolve();
