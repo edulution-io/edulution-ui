@@ -42,6 +42,7 @@ import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 import useAppConfigsStore from '../Settings/AppConfig/appConfigsStore';
+import useSilentLoginWithPassword from './useSilentKeycloakLogin';
 
 type LocationState = {
   from: string;
@@ -52,9 +53,10 @@ const LoginPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { state } = useLocation() as { state: LocationState };
-  const { eduApiToken, totpIsLoading, isAuthenticated, keycloak, createOrUpdateUser, setEduApiToken, getTotpStatus } =
+  const { eduApiToken, totpIsLoading, isAuthenticated, createOrUpdateUser, setEduApiToken, getTotpStatus } =
     useUserStore();
   const { appConfigs } = useAppConfigsStore();
+  const silentLogin = useSilentLoginWithPassword();
 
   const { isLoading } = auth;
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
@@ -104,16 +106,7 @@ const LoginPage: React.FC = () => {
         setEduApiToken(requestUser.access_token);
         setWebdavKey(CryptoJS.AES.encrypt(password, newEncryptKey).toString());
 
-        await keycloak.init({
-          onLoad: 'check-sso',
-          silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`,
-          checkLoginIframe: false,
-          responseMode: 'query',
-        });
-
-        await keycloak.login({
-          redirectUri: window.location.origin,
-        });
+        await silentLogin(username, password);
       }
     } catch (e) {
       console.error(e);
