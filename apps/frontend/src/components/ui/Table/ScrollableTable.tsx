@@ -50,7 +50,7 @@ interface DataTableProps<TData, TValue> {
   showHeader?: boolean;
   showSelectedCount?: boolean;
   isDialog?: boolean;
-  actions?: TableAction<TData, TValue>[];
+  actions?: TableAction<TData>[];
 }
 
 const ScrollableTable = <TData, TValue>({

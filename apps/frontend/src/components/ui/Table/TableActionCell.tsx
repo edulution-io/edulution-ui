@@ -11,18 +11,17 @@
  */
 
 import React from 'react';
+import { HiOutlineDotsHorizontal } from 'react-icons/hi';
 import { Row } from '@tanstack/react-table';
 import TableAction from '@libs/common/types/tableAction';
-import cn from '@libs/common/utils/className';
-import { Button } from '@/components/shared/Button';
 import TableActionMenu from './TableActionMenu';
 
-interface TableActionCellProps<TData, TValue> {
-  actions: TableAction<TData, TValue>[];
+interface TableActionCellProps<TData> {
+  actions: TableAction<TData>[];
   row: Row<TData>;
 }
 
-const TableActionCell = <TData, TValue>(props: TableActionCellProps<TData, TValue>) => {
+const TableActionCell = <TData,>(props: TableActionCellProps<TData>) => {
   const { actions = [], row } = props;
 
   if (actions.length < 1) {
@@ -31,16 +30,15 @@ const TableActionCell = <TData, TValue>(props: TableActionCellProps<TData, TValu
 
   if (actions.length === 1) {
     const singleAction = actions[0];
-    const { icon: Icon, onClick, className } = singleAction;
+    const { icon: Icon, onClick } = singleAction;
     return (
-      <Button
+      <button
         type="button"
-        variant="btn-outline"
-        className={cn('m-0 max-h-[2.25rem] w-[80px] rounded-md bg-opacity-90 p-0', className)}
+        className="m-0 flex w-full items-center justify-center p-0"
         onClick={() => onClick(row)}
       >
-        <Icon className="h-[18px] w-[18px]" />
-      </Button>
+        <Icon className="m-0 h-5 w-5 p-0" />
+      </button>
     );
   }
 
@@ -49,6 +47,16 @@ const TableActionCell = <TData, TValue>(props: TableActionCellProps<TData, TValu
       <TableActionMenu
         actions={actions}
         row={row}
+        trigger={
+          <div className="relative flex w-full items-center justify-end">
+            <button
+              type="button"
+              className="w-full"
+            >
+              <HiOutlineDotsHorizontal className="h-5 w-5" />
+            </button>
+          </div>
+        }
       />
     </div>
   );

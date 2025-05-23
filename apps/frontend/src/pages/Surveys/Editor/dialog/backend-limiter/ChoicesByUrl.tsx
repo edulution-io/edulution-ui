@@ -15,7 +15,7 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { SurveyCreatorModel } from 'survey-creator-core';
-import { MdAddCircleOutline } from 'react-icons/md';
+import { IoAdd } from 'react-icons/io5';
 import cn from '@libs/common/utils/className';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import APPS from '@libs/appconfig/constants/apps';
@@ -169,7 +169,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
               applicationName={APPS.SURVEYS}
               actions={[
                 {
-                  icon: MdAddCircleOutline,
+                  icon: IoAdd,
                   translationId: 'common.add',
                   onClick: () => addNewChoice(),
                 },

@@ -11,68 +11,39 @@
  */
 
 import React from 'react';
-import { TableCell, TableFooter, TableRow } from '@/components/ui/Table';
 import TableAction from '@libs/common/types/tableAction';
 import { ButtonSH } from '@/components/ui/ButtonSH';
-import { IoAdd, IoRemove } from 'react-icons/io5';
+import { TableCell, TableFooter, TableRow } from '@/components/ui/Table';
 import TableActionMenu from '@/components/ui/Table/TableActionMenu';
-import { MdRemoveCircleOutline, MdAddCircleOutline } from 'react-icons/md';
+import { HiOutlineDotsHorizontal } from 'react-icons/hi';
 
-interface TableActionFooterProps<TData, TValue> {
-  actions?: TableAction<TData, TValue>[];
+interface TableActionFooterProps<TData> {
+  actions?: TableAction<TData>[];
   columnLength: number;
 }
 
-const TableActionFooter = <TData, TValue>(props: TableActionFooterProps<TData, TValue>) => {
-  const {
-    actions = [
-      {
-        icon: IoAdd,
-        translationId: 'common.add',
-        // eslint-disable-next-line no-console
-        onClick: () => console.log('Add'),
-      },
-      {
-        icon: IoRemove,
-        translationId: 'common.remove',
-        // eslint-disable-next-line no-console
-        onClick: () => console.log('REMOVE'),
-      },
-      {
-        icon: MdAddCircleOutline,
-        translationId: 'common.add',
-        // eslint-disable-next-line no-console
-        onClick: () => console.log('Add'),
-      },
-      {
-        icon: MdRemoveCircleOutline,
-        translationId: 'common.remove',
-        // eslint-disable-next-line no-console
-        onClick: () => console.log('REMOVE'),
-      },
-    ],
-    columnLength,
-  } = props;
-
-  const actionButtons = actions.map((action) => {
-    const { icon: Icon, onClick, translationId } = action;
-    return (
-      <ButtonSH
-        key={translationId}
-        className="flex h-2 w-full items-center justify-center rounded-md border border-gray-500 hover:bg-accent"
-        onClick={() => onClick()}
-        type="button"
-      >
-        <Icon className="h-[18px] w-[18px] text-xl text-background" />
-      </ButtonSH>
-    );
-  });
+const TableActionFooter = <TData,>(props: TableActionFooterProps<TData>) => {
+  const { actions = [], columnLength } = props;
 
   if (actions.length < 1) {
     return null;
   }
 
   if (actions.length < 3) {
+    const actionButtons = actions.map((action) => {
+      const { icon: Icon, onClick, translationId } = action;
+      return (
+        <ButtonSH
+          key={translationId}
+          className="flex h-2 max-h-[2.25rem] min-h-[32px] w-full items-center justify-center rounded-md border border-gray-500"
+          onClick={() => onClick()}
+          type="button"
+        >
+          <Icon className="h-[18px] w-[18px] text-xl text-background" />
+        </ButtonSH>
+      );
+    });
+
     return (
       <TableFooter>
         <TableRow className="m-0 p-0 hover:bg-black/0">
@@ -95,7 +66,19 @@ const TableActionFooter = <TData, TValue>(props: TableActionFooterProps<TData, T
           className="m-0 p-0 hover:bg-black/0"
         >
           <div className="mx-0 my-1 flex w-full items-center justify-end gap-2 hover:bg-black/0">
-            <TableActionMenu actions={actions} />
+            <TableActionMenu
+              actions={actions}
+              trigger={
+                <div className="relative flex w-full items-center justify-end">
+                  <ButtonSH
+                    className="flex h-2 max-h-[2.25rem] min-h-[32px] w-[200px] items-center justify-center rounded-md border border-gray-500"
+                    type="button"
+                  >
+                    <HiOutlineDotsHorizontal className="h-[18px] w-[18px] text-xl text-background" />
+                  </ButtonSH>
+                </div>
+              }
+            />
           </div>
         </TableCell>
       </TableRow>

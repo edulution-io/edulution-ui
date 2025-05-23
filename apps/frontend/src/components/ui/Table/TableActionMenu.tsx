@@ -12,19 +12,18 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { HiOutlineDotsHorizontal } from 'react-icons/hi';
 import { Row } from '@tanstack/react-table';
 import TableAction from '@libs/common/types/tableAction';
 import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
 import DropdownMenu from '@/components/shared/DropdownMenu';
-import { ButtonSH } from '@/components/ui/ButtonSH';
 
-interface TableActionMenuProps<TData, TValue> {
-  actions: TableAction<TData, TValue>[];
+interface TableActionMenuProps<TData> {
+  actions: TableAction<TData>[];
   row?: Row<TData>;
+  trigger?: React.ReactNode;
 }
 
-const TableActionMenu = <TData, TValue>({ actions, row }: TableActionMenuProps<TData, TValue>) => {
+const TableActionMenu = <TData,>({ actions, row, trigger }: TableActionMenuProps<TData>) => {
   const { t } = useTranslation();
 
   const contextMenuItems: DropdownMenuItemType[] = actions.map((action) => ({
@@ -36,16 +35,7 @@ const TableActionMenu = <TData, TValue>({ actions, row }: TableActionMenuProps<T
   return (
     <DropdownMenu
       menuContentClassName="z-[600]"
-      trigger={
-        <div className="relative flex w-full items-center justify-end">
-          <ButtonSH
-            className="flex h-2 w-[200px] items-center justify-center rounded-md border border-gray-500 hover:bg-accent"
-            type="button"
-          >
-            <HiOutlineDotsHorizontal className="h-[18px] w-[18px] text-xl text-background" />
-          </ButtonSH>
-        </div>
-      }
+      trigger={trigger}
       items={contextMenuItems}
     />
   );
