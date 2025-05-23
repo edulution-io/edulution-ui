@@ -12,7 +12,6 @@
 
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import UserLanguageType from '@libs/user/types/userLanguageType';
-import Keycloak from 'keycloak-js';
 import UserDto from '../user.dto';
 
 type UserSlice = {
@@ -33,7 +32,6 @@ type UserSlice = {
   searchError: Error | null;
   searchIsLoading: boolean;
   resetUserSlice: () => void;
-  keycloak: Keycloak;
 };
 
 export default UserSlice;
