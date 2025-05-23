@@ -32,6 +32,7 @@ import { extname, join } from 'path';
 import { pipeline, Readable } from 'stream';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { lookup } from 'mime-types';
 import { type Response } from 'express';
 import { HTTP_HEADERS, RequestResponseContentType, ResponseType } from '@libs/common/types/http-methods';
@@ -44,6 +45,7 @@ import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
 import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
 
@@ -54,6 +56,15 @@ class FilesystemService {
   private readonly baseurl = process.env.EDUI_WEBDAV_URL as string;
 
   constructor(private readonly userService: UsersService) {}
+
+  @Cron('0 */45 0-5 * * 6-7', {
+    name: 'ClearTempFiles',
+    timeZone: 'UTC',
+  })
+  async handleCron() {
+    Logger.debug('CronJob: ClearTempFiles (running every 45min between 0am and 5am on Saturday and Sunday)');
+    await this.removeOldTempFiles(TEMP_FILES_PATH);
+  }
 
   static async fetchFileStream(
     url: string,
@@ -325,6 +336,38 @@ class FilesystemService {
     fileStream.pipe(res);
 
     return res;
+  }
+
+  async removeOldTempFiles(path: string): Promise<void> {
+    if (!path) {
+      return;
+    }
+    try {
+      const stat = await fsStat(path);
+      if (stat.isFile()) {
+        if (stat.birthtimeMs < Date.now() - 30 * 24 * 60 * 60 * 1000) {
+          await unlink(path);
+          Logger.log(`Deleted old temp file: ${path}`);
+          return;
+        }
+      }
+      if (stat.isDirectory()) {
+        const files = await readdir(path);
+        const promises = files.map((fileName) => {
+          const newPath = join(path, fileName);
+          return this.removeOldTempFiles(newPath);
+        });
+        await Promise.all(promises);
+
+        const remainingFiles = await readdir(path);
+        if (remainingFiles.length === 0) {
+          Logger.log(`Deleting empty temporary directory: ${path}`);
+          await rm(path, { recursive: true });
+        }
+      }
+    } catch (error) {
+      Logger.error(`Error removing old temp files: ${error}`);
+    }
   }
 }
 
