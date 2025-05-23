@@ -13,10 +13,12 @@
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import { SURVEY_TEMPLATES_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
+import { SURVEY_TEMPLATES_ENDPOINT, TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
 import handleApiError from '@/utils/handleApiError';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
+import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
+import APPS from '@libs/appconfig/constants/apps';
 
 interface TemplateMenuStore {
   reset: () => void;
@@ -110,7 +112,9 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
 
     set({ isSubmitting: true });
     try {
-      const result = await eduApi.delete<Partial<SurveyDto>>(`${SURVEY_TEMPLATES_ENDPOINT}/${templateName}`);
+      const result = await eduApi.delete<Partial<SurveyDto>>(
+        `${EDU_API_CONFIG_ENDPOINTS.FILES}/${APPS.SURVEYS}/${TEMPLATES}/${templateName}`,
+      );
       if (!result) {
         throw new Error(CommonErrorMessages.FILE_DELETION_FAILED);
       }
