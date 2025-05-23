@@ -134,6 +134,7 @@ class SurveysController {
     return this.surveyService.serveTemplate(filename, res);
   }
 
+  @UseGuards(AppConfigGuard)
   @Delete(`${TEMPLATES}/:filename`)
   deleteTemplate(@Param() params: { filename: string }) {
     const { filename } = params;
