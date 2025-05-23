@@ -57,12 +57,12 @@ class FilesystemService {
 
   constructor(private readonly userService: UsersService) {}
 
-  @Cron('0 */45 0-5 * * 6-7', {
+  @Cron('0 0 1-3 * * 6-7', {
     name: 'ClearTempFiles',
     timeZone: 'UTC',
   })
   async handleCron() {
-    Logger.debug('CronJob: ClearTempFiles (running every 45min between 0am and 5am on Saturday and Sunday)');
+    Logger.debug('CronJob: ClearTempFiles (running every hour between 1am and 3am on Saturdays and Sundays)');
     await this.removeOldTempFiles(TEMP_FILES_PATH);
   }
 
