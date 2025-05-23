@@ -134,6 +134,12 @@ class SurveysController {
     return this.surveyService.serveTemplate(filename, res);
   }
 
+  @Delete(`${TEMPLATES}/:filename`)
+  deleteTemplate(@Param() params: { filename: string }) {
+    const { filename } = params;
+    return this.surveyService.deleteTemplate(filename);
+  }
+
   @Post(ANSWER)
   async getSubmittedSurveyAnswers(@Body() getAnswerDto: AnswerDto, @GetCurrentUsername() username: string) {
     const { surveyId, attendee } = getAnswerDto;

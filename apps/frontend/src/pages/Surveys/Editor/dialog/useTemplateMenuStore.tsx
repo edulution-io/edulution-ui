@@ -27,6 +27,8 @@ interface TemplateMenuStore {
   uploadTemplate: (template: SurveyTemplateDto) => Promise<void>;
   isSubmitting: boolean;
 
+  deleteTemplate: (templateName: string) => Promise<void>;
+
   template?: SurveyTemplateDto;
   setTemplate: (template: SurveyTemplateDto) => void;
   templates: SurveyTemplateDto[];
@@ -93,6 +95,24 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
       const result = await eduApi.post<Partial<SurveyDto>>(SURVEY_TEMPLATES_ENDPOINT, template);
       if (!result) {
         throw new Error(CommonErrorMessages.FILE_NOT_PROVIDED);
+      }
+    } catch (error) {
+      handleApiError(error, set);
+    } finally {
+      set({ isSubmitting: false });
+    }
+  },
+
+  deleteTemplate: async (templateName: string): Promise<void> => {
+    if (!templateName) {
+      return;
+    }
+
+    set({ isSubmitting: true });
+    try {
+      const result = await eduApi.delete<Partial<SurveyDto>>(`${SURVEY_TEMPLATES_ENDPOINT}/${templateName}`);
+      if (!result) {
+        throw new Error(CommonErrorMessages.FILE_DELETION_FAILED);
       }
     } catch (error) {
       handleApiError(error, set);

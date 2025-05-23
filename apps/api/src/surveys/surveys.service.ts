@@ -256,6 +256,10 @@ class SurveysService implements OnModuleInit {
     return res;
   }
 
+  async deleteTemplate(fileName: string): Promise<void> {
+    return FilesystemService.deleteFile(SURVEYS_TEMPLATE_PATH, fileName);
+  }
+
   async serveImage(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
     const imagePath = join(SURVEYS_IMAGES_PATH, surveyId, questionId, fileName);
     const fileStream = await this.fileSystemService.createReadStream(imagePath);
