@@ -25,7 +25,6 @@ import {
   unlink,
   stat as fsStat,
 } from 'fs-extra';
-import process from 'node:process';
 import { promisify } from 'util';
 import { createHash } from 'crypto';
 import { firstValueFrom, from } from 'rxjs';

@@ -75,7 +75,12 @@ class SurveysService implements OnModuleInit {
       .exec();
 
     if (!survey) {
-      throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(
+        SurveyErrorMessages.NotFoundError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveysService.name,
+      );
     }
 
     return survey;
@@ -85,7 +90,12 @@ class SurveysService implements OnModuleInit {
     try {
       return await this.surveyModel.findOne<Survey>({ _id: new Types.ObjectId(surveyId), isPublic: true }).exec();
     } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      throw new CustomHttpException(
+        CommonErrorMessages.DB_ACCESS_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error,
+        SurveysService.name,
+      );
     }
   }
 
@@ -95,7 +105,12 @@ class SurveysService implements OnModuleInit {
       await this.surveyModel.deleteMany({ _id: { $in: surveyObjectIds } });
       Logger.log(`Deleted the surveys ${JSON.stringify(surveyIds)}`, SurveysService.name);
     } catch (error) {
-      throw new CustomHttpException(SurveyErrorMessages.DeleteError, HttpStatus.NOT_MODIFIED, error);
+      throw new CustomHttpException(
+        SurveyErrorMessages.DeleteError,
+        HttpStatus.NOT_MODIFIED,
+        error,
+        SurveysService.name,
+      );
     } finally {
       this.sseService.informAllUsers(surveyIds, SSE_MESSAGE_TYPE.SURVEY_DELETED);
     }
@@ -109,7 +124,12 @@ class SurveysService implements OnModuleInit {
 
     const isUserSuperAdmin = currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN);
     if (survey.creator.username !== currentUser.preferred_username && !isUserSuperAdmin) {
-      throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.UNAUTHORIZED);
+      throw new CustomHttpException(
+        SurveyErrorMessages.UpdateOrCreateError,
+        HttpStatus.UNAUTHORIZED,
+        undefined,
+        SurveysService.name,
+      );
     }
 
     try {
@@ -117,7 +137,12 @@ class SurveysService implements OnModuleInit {
         .findOneAndUpdate<SurveyDocument>({ _id: new Types.ObjectId(survey.id) }, survey, { new: true })
         .lean();
     } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      throw new CustomHttpException(
+        CommonErrorMessages.DB_ACCESS_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error,
+        SurveysService.name,
+      );
     } finally {
       if (survey.isPublic) {
         this.sseService.informAllUsers(survey, SSE_MESSAGE_TYPE.SURVEY_UPDATED);
@@ -144,7 +169,12 @@ class SurveysService implements OnModuleInit {
     try {
       return await this.surveyModel.create({ ...survey, creator });
     } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      throw new CustomHttpException(
+        CommonErrorMessages.DB_ACCESS_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error,
+        SurveysService.name,
+      );
     } finally {
       if (survey.isPublic) {
         this.sseService.informAllUsers(survey, SSE_MESSAGE_TYPE.SURVEY_CREATED);
@@ -174,7 +204,12 @@ class SurveysService implements OnModuleInit {
             },
           };
         } catch (error) {
-          throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR, error);
+          throw new CustomHttpException(
+            CommonErrorMessages.FILE_NOT_PROVIDED,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            error,
+            SurveysService.name,
+          );
         }
       }
     }
@@ -236,7 +271,12 @@ class SurveysService implements OnModuleInit {
       survey = await this.createSurvey(surveyDto, user);
     }
     if (survey == null) {
-      throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(
+        SurveyErrorMessages.UpdateOrCreateError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveysService.name,
+      );
     }
     // eslint-disable-next-line no-underscore-dangle
     const surveyId = (survey._id as Types.ObjectId).toString();
@@ -248,7 +288,12 @@ class SurveysService implements OnModuleInit {
     const savedSurvey = await this.updateSurvey(updatedSurvey, user);
 
     if (savedSurvey == null) {
-      throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(
+        SurveyErrorMessages.UpdateOrCreateError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveysService.name,
+      );
     }
 
     try {
@@ -259,7 +304,12 @@ class SurveysService implements OnModuleInit {
       }
       await this.fileSystemService.deleteDirectory(temporaryAttachmentPath);
     } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.NOT_MODIFIED, error);
+      throw new CustomHttpException(
+        CommonErrorMessages.FILE_DELETION_FAILED,
+        HttpStatus.NOT_MODIFIED,
+        error,
+        SurveysService.name,
+      );
     }
 
     return savedSurvey;
@@ -317,48 +367,32 @@ class SurveysService implements OnModuleInit {
   }
 
   async updateTempFilesUrls(username: string, pathWithIds: string, tempFiles: string[], link: string): Promise<string> {
-    if (!link) {
+    if (!link) return link;
+
+    const [baseUrl, tempSegment] = link.split(`/${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}`);
+    const imagesFileName = tempSegment?.split('/').pop();
+
+    if (!baseUrl || !imagesFileName || !tempFiles.includes(imagesFileName)) {
       return link;
     }
 
-    const imagesFileName = link.split('/').pop();
-    if (!imagesFileName) {
-      return link;
+    const temporaryAttachmentPath = join(SURVEYS_TEMP_FILES_PATH, username, imagesFileName);
+    const permanentDirectory = join(SURVEYS_FILES_PATH, pathWithIds);
+    const persistentAttachmentPath = join(permanentDirectory, imagesFileName);
+
+    try {
+      await this.fileSystemService.ensureDirectoryExists(permanentDirectory);
+      await FilesystemService.moveFile(temporaryAttachmentPath, persistentAttachmentPath);
+    } catch (error) {
+      throw new CustomHttpException(
+        CommonErrorMessages.FILE_MOVE_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        SurveysService.name,
+      );
     }
 
-    const baseUrl = link.split(`/${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}`)[0];
-    if (!baseUrl) {
-      return link;
-    }
-
-    if (tempFiles.includes(imagesFileName)) {
-      const temporaryAttachmentPath = `${SURVEYS_TEMP_FILES_PATH}/${username}/${imagesFileName}`;
-
-      const permanentDirectory = `${SURVEYS_FILES_PATH}/${pathWithIds}`;
-      try {
-        await this.fileSystemService.ensureDirectoryExists(permanentDirectory);
-      } catch (error) {
-        throw new CustomHttpException(
-          CommonErrorMessages.DIRECTORY_CREATION_FAILED,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-          undefined,
-          SurveysService.name,
-        );
-      }
-      try {
-        const persistentAttachmentPath = `${permanentDirectory}/${imagesFileName}`;
-        await FilesystemService.moveFile(temporaryAttachmentPath, persistentAttachmentPath);
-      } catch (error) {
-        throw new CustomHttpException(
-          CommonErrorMessages.FILE_MOVE_FAILED,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-          undefined,
-          SurveysService.name,
-        );
-      }
-      return `${baseUrl}/${SURVEY_FILE_ATTACHMENT_ENDPOINT}/${pathWithIds}/${imagesFileName}`;
-    }
-    return link;
+    return `${baseUrl}/${SURVEY_FILE_ATTACHMENT_ENDPOINT}/${pathWithIds}/${imagesFileName}`;
   }
 
   async updateTemporalUrls(
@@ -368,42 +402,39 @@ class SurveysService implements OnModuleInit {
     question: SurveyElement,
   ): Promise<SurveyElement> {
     const pathWithIds = `${surveyId}/${question.name}`;
-
-    if (question.type === 'image' && question.imageLink) {
-      try {
+    try {
+      if (question.type === 'image' && question.imageLink) {
         const newImageLink = await this.updateTempFilesUrls(username, pathWithIds, tempFiles, question.imageLink);
         return { ...question, imageLink: newImageLink };
-      } catch (error) {
-        Logger.error(error, SurveysService.name);
-        throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR, error);
       }
-    }
-    if (question.type === 'imagepicker' && question.choices) {
-      try {
-        const choicePromises = question.choices.map(async (choice) => {
-          if (choice != null && typeof choice !== 'string' && choice.imageLink) {
-            const newImageLink = await this.updateTempFilesUrls(username, pathWithIds, tempFiles, choice.imageLink);
-            return { ...choice, imageLink: newImageLink };
-          }
-          return choice;
-        });
-        const choices = await Promise.all(choicePromises);
+
+      if (question.type === 'imagepicker' && question.choices) {
+        const choices = await Promise.all(
+          question.choices.map(async (choice) => {
+            if (choice != null && typeof choice !== 'string' && choice.imageLink) {
+              const newImageLink = await this.updateTempFilesUrls(username, pathWithIds, tempFiles, choice.imageLink);
+              return { ...choice, imageLink: newImageLink };
+            }
+            return choice;
+          }),
+        );
         return { ...question, choices };
-      } catch (error) {
-        Logger.error(error, SurveysService.name);
-        throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR, error);
       }
-    }
-    if (question.type === 'file') {
-      try {
+
+      if (question.type === 'file') {
         const newFileLink = await this.updateTempFilesUrls(username, pathWithIds, tempFiles, question.value as string);
         return { ...question, value: newFileLink };
-      } catch (error) {
-        Logger.error(error, SurveysService.name);
-        throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.INTERNAL_SERVER_ERROR, error);
       }
+
+      return question;
+    } catch (error) {
+      throw new CustomHttpException(
+        CommonErrorMessages.FILE_NOT_PROVIDED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error,
+        SurveysService.name,
+      );
     }
-    return question;
   }
 
   async updateQuestion(
