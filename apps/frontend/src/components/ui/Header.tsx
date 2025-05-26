@@ -19,6 +19,7 @@ import useMedia from '@/hooks/useMedia';
 import useUserStore from '@/store/UserStore/UserStore';
 import PageTitle from '@/components/PageTitle';
 import APPLICATION_NAME from '@libs/common/constants/applicationName';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 
 interface HeaderProps {
   hideHeadingText?: boolean;
@@ -48,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({ hideHeadingText = false }: HeaderProps)
     <div className="ml-2 flex items-center pb-1 md:mb-3 md:ml-7">
       <PageTitle translationId="dashboard.pageTitle" />
       <div className={`rounded-b-[8px] ${isMobileView ? 'mt-3 w-[150px]' : 'mt-0 w-[250px] bg-white'}`}>
-        <Link to="/">
+        <Link to={DASHBOARD_ROUTE}>
           <img
             src={isMobileView ? MobileLogo : DesktopLogo}
             alt="edulution"
