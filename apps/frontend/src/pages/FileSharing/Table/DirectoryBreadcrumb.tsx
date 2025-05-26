@@ -22,22 +22,32 @@ import { useTranslation } from 'react-i18next';
 import { HiChevronDown } from 'react-icons/hi';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import useMedia from '@/hooks/useMedia';
+import { Button } from '@/components/shared/Button';
+import { MdArrowBack, MdArrowForward } from 'react-icons/md';
 import useUserPath from '../hooks/useUserPath';
 
 interface DirectoryBreadcrumbProps {
   path: string;
-  onNavigate: (path: string) => void;
   style?: React.CSSProperties;
   showHome?: boolean;
   hiddenSegments?: string[];
   showTitle?: boolean;
+  onNavigate: (path: string) => void;
+  onBack: () => void;
+  onForward: () => void;
+  canGoBack?: boolean;
+  canGoForward?: boolean;
 }
 
 const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
   path,
+  onNavigate,
+  onBack,
+  onForward,
+  canGoBack = false,
+  canGoForward = false,
   showHome = true,
   hiddenSegments,
-  onNavigate,
   style,
   showTitle = true,
 }) => {
@@ -74,6 +84,16 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
     <Breadcrumb style={style}>
       {showTitle && <p className="mr-2 text-background">{t('currentDirectory')}</p>}
       <BreadcrumbList>
+        <Button
+          onClick={() => {
+            onBack();
+          }}
+          disabled={!canGoBack}
+          className="mr-2"
+        >
+          <MdArrowBack size={20} />
+        </Button>
+
         {showHome && (
           <BreadcrumbItem key="home">
             <BreadcrumbLink
@@ -105,6 +125,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
                   }))}
               />
             </BreadcrumbItem>
+
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <span className="text-background">{segments[segments.length - 1]}</span>
@@ -132,6 +153,16 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
               ),
           )
         )}
+
+        <Button
+          onClick={() => {
+            onForward();
+          }}
+          disabled={!canGoForward}
+          className="ml-2"
+        >
+          <MdArrowForward size={20} />
+        </Button>
       </BreadcrumbList>
     </Breadcrumb>
   );

@@ -11,7 +11,7 @@
  */
 
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DirectoryBreadcrumb from '@/pages/FileSharing/Table/DirectoryBreadcrumb';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
@@ -26,6 +26,7 @@ import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMov
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/FileSharingTableColumns';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import { getFileNameFromPath } from '@/pages/FileSharing/utilities/filesharingUtilities';
+import useHistoryFileNavigationDialog from '@/pages/FileSharing/hooks/useHistoryFileNavigationDialog';
 
 const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   showAllFiles = false,
@@ -36,8 +37,9 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   isCurrentPathDefaultDestination = false,
 }) => {
   const { t } = useTranslation();
-  const [currentPath, setCurrentPath] = useState(pathToFetch || '');
-
+  const { present, past, future, navigate, goBack, goForward, setPresent } = useHistoryFileNavigationDialog(
+    pathToFetch || '/',
+  );
   const { user } = useLmnApiStore();
 
   const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
@@ -48,9 +50,9 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   const fetchMechanism = fileType === ContentType.DIRECTORY ? fetchDialogDirs : fetchDialogFiles;
 
   const currentDirItem: DirectoryFileDTO = {
-    filename: currentPath,
+    filename: present,
     etag: '',
-    basename: currentPath.split('/').pop() || '',
+    basename: present.split('/').pop() || '',
     type: ContentType.DIRECTORY,
   };
 
@@ -58,7 +60,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
     if (isCurrentPathDefaultDestination) {
       setMoveOrCopyItemToPath(currentDirItem);
     }
-  }, [isCurrentPathDefaultDestination, currentPath]);
+  }, [isCurrentPathDefaultDestination, present]);
 
   const files = fileType === ContentType.DIRECTORY ? dialogShownDirs : dialogShownFiles;
 
@@ -77,7 +79,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 
   const onFilenameClick = (item: Row<DirectoryFileDTO>) => {
     if (item.original.type === ContentType.DIRECTORY) {
-      let newPath = currentPath;
+      let newPath = present;
       if (!newPath.endsWith('/')) {
         newPath += '/';
       }
@@ -86,24 +88,19 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
       } else {
         newPath += getFileNameFromPath(item.original.filename);
       }
-      setCurrentPath(newPath);
+      setPresent(newPath);
     } else {
       item.toggleSelected();
     }
   };
 
   useEffect(() => {
-    if (!showAllFiles || !pathToFetch || currentPath.includes(pathToFetch)) {
-      void fetchMechanism(currentPath);
+    if (!showAllFiles || !pathToFetch || present.includes(pathToFetch)) {
+      void fetchMechanism(present);
     } else {
       void fetchMechanism(pathToFetch);
     }
-  }, [currentPath, showAllFiles, pathToFetch]);
-
-  const handleBreadcrumbNavigate = (path: string) => {
-    const newPath = path.replace('webdav/', '');
-    setCurrentPath(newPath);
-  };
+  }, [present, showAllFiles, pathToFetch]);
 
   const getHiddenSegments = (): string[] => {
     if (!pathToFetch) return [];
@@ -134,11 +131,15 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
       <div className="h-[60vh] flex-col overflow-auto text-background scrollbar-thin">
         <div className="pb-2">
           <DirectoryBreadcrumb
-            path={currentPath}
-            onNavigate={handleBreadcrumbNavigate}
+            path={present}
+            onNavigate={navigate}
+            onBack={goBack}
+            onForward={goForward}
             showHome={showHome}
             hiddenSegments={getHiddenSegments()}
             showTitle={false}
+            canGoBack={past.length > 0}
+            canGoForward={future.length > 0}
           />
         </div>
         <div className="w-full">{isLoading ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}</div>
