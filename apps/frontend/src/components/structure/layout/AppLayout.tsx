@@ -46,7 +46,7 @@ const AppLayout = () => {
         {isAppHeaderVisible && <Header hideHeadingText={!isMainPage} />}
 
         <div className="flex min-h-0 flex-1 flex-row">
-          {!isEduApiHealthy && <OfflineBanner />}
+          {isEduApiHealthy === false && <OfflineBanner />}
 
           {!menuBar.disabled && !isMainPage && <MenuBar />}
           <Outlet />
