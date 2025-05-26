@@ -20,7 +20,7 @@ type HistoryState = {
   setPresentPath?: (path: string) => void;
   goBack: () => void;
   goForward: () => void;
-  reset: (newInitial: string) => void;
+  reset: () => void;
 };
 
 const initialState = {
@@ -68,13 +68,10 @@ const useFileNavigationStore = create<HistoryState>((set, get) => ({
     });
   },
 
-  reset: (newInitial: string) => {
+  reset: () =>
     set({
-      pastFiles: [],
-      presentPath: newInitial,
-      futureFiles: [],
-    });
-  },
+      ...initialState,
+    }),
 }));
 
 export default useFileNavigationStore;

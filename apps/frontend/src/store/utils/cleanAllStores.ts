@@ -42,6 +42,7 @@ import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import useSseStore from '../useSseStore';
+import useFileNavigationStore from '@/pages/FileSharing/Table/useFileNavigationStore';
 
 const cleanAllStores = () => {
   UserStore.getState().resetQrCodeSlice();
@@ -79,6 +80,7 @@ const cleanAllStores = () => {
   useDeleteSurveyStore.getState().reset();
   useParticipateSurveyStore.getState().reset();
   useQuestionsContextMenuStore.getState().reset();
+  useFileNavigationStore.getState().reset();
   useSseStore.getState().reset();
   localStorage.removeItem('i18nextLng');
 };
