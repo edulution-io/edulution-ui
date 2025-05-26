@@ -52,7 +52,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
   showTitle = true,
 }) => {
   const { isMobileView } = useMedia();
-  const displaySegments = isMobileView ? 1 : 4;
+  const displaySegments = isMobileView ? 1 : 2;
   const { t } = useTranslation();
   const { homePath } = useUserPath();
 
