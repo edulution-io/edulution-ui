@@ -16,15 +16,40 @@ import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
 import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
 
 type AuthStore = {
-  keycloak: Keycloak;
+  keycloak: Keycloak | null;
+  initKeycloak: () => Promise<void>;
+  logoutKeycloak: () => Promise<void>;
 };
 
-const useAuthStore = create<AuthStore>(() => ({
-  keycloak: new Keycloak({
-    url: `${EDU_BASE_URL}/${AUTH_PATHS.AUTH_ENDPOINT}`,
-    realm: 'edulution',
-    clientId: 'edu-ui',
-  }),
+const useAuthStore = create<AuthStore>((set, get) => ({
+  keycloak: null,
+
+  initKeycloak: async () => {
+    if (get().keycloak) return;
+
+    if (typeof window === 'undefined') return;
+
+    const kc = new Keycloak({
+      url: `${EDU_BASE_URL}/${AUTH_PATHS.AUTH_ENDPOINT}`,
+      realm: 'edulution',
+      clientId: 'edu-ui',
+    });
+
+    await kc.init({
+      onLoad: 'check-sso',
+      silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`,
+      pkceMethod: 'S256',
+      checkLoginIframe: false,
+    });
+
+    set({ keycloak: kc });
+  },
+
+  logoutKeycloak: async () => {
+    const kc = get().keycloak;
+    if (!kc) throw new Error('Keycloak nicht initialisiert');
+    await kc.logout();
+  },
 }));
 
 export default useAuthStore;

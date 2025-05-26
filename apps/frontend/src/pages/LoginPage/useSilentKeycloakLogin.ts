@@ -20,18 +20,15 @@ interface SilentLoginFn {
 }
 
 const useSilentLoginWithPassword = (): SilentLoginFn => {
-  const { keycloak } = useAuthStore();
+  const { keycloak, initKeycloak } = useAuthStore();
   const silentRedirectUri = `${EDU_BASE_URL}/silent-check-sso.html`;
 
   const silentLogin = useCallback<SilentLoginFn>(async (username, password) => {
+    await initKeycloak();
+    if (!keycloak) {
+      return;
+    }
     try {
-      await keycloak.init({
-        onLoad: 'check-sso',
-        silentCheckSsoRedirectUri: silentRedirectUri,
-        pkceMethod: 'S256',
-        checkLoginIframe: false,
-      });
-
       const authUrl = await keycloak.createLoginUrl({
         prompt: 'login',
         redirectUri: silentRedirectUri,
