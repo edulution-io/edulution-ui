@@ -17,6 +17,7 @@ import 'tabulator-tables/dist/css/tabulator.min.css';
 import 'survey-analytics/survey.analytics.tabulator.css';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import useLanguage from '@/hooks/useLanguage';
+import '../dialogs/resultTableDialog.css';
 
 interface ResultTableDialogBodyProps {
   formula: TSurveyFormula;
@@ -43,11 +44,7 @@ const ResultTable: FC<ResultTableDialogBodyProps> = ({ formula, result }) => {
     };
   }, [formula, result, language]);
 
-  return (
-    <div className="max-h-[75vh] rounded bg-secondary px-4 pb-4 text-background">
-      <div ref={containerRef} />
-    </div>
-  );
+  return <div ref={containerRef} />;
 };
 
 export default ResultTable;
