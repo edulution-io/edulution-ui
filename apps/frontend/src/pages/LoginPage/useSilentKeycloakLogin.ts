@@ -12,7 +12,7 @@
 
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import { useCallback } from 'react';
-import useAuthStore from '@/store/useAuthStore';
+import Keycloak from 'keycloak-js';
 import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
 
 interface SilentLoginFn {
@@ -20,83 +20,67 @@ interface SilentLoginFn {
 }
 
 const useSilentLoginWithPassword = (): SilentLoginFn => {
-  const { keycloak, initKeycloak } = useAuthStore();
-  const silentRedirectUri = `${EDU_BASE_URL}/silent-check-sso.html`;
+  const redirectUri = `${EDU_BASE_URL}/silent-check-sso.html`;
+
+  const keycloak = new Keycloak({
+    url: `${EDU_BASE_URL}/auth`,
+    realm: 'edulution',
+    clientId: 'edu-ui',
+  });
 
   const silentLogin = useCallback<SilentLoginFn>(async (username, password) => {
-    await initKeycloak();
-    if (!keycloak) {
-      return;
-    }
-    try {
-      const authUrl = await keycloak.createLoginUrl({
-        prompt: 'login',
-        redirectUri: silentRedirectUri,
-      });
+    await keycloak.init({
+      onLoad: 'check-sso',
+      silentCheckSsoRedirectUri: redirectUri,
+      pkceMethod: 'S256',
+      checkLoginIframe: false,
+    });
 
-      await new Promise<void>((resolve, reject) => {
-        let iframe: HTMLIFrameElement;
+    const authUrl = await keycloak.createLoginUrl({
+      prompt: 'login',
+      redirectUri,
+    });
 
-        const cleanup = () => {
-          window.removeEventListener('message', onMessage);
-          iframe.onload = null;
-          iframe?.remove();
-        };
+    await new Promise<void>((resolve) => {
+      let iframe: HTMLIFrameElement;
 
-        const onMessage = (ev: MessageEvent) => {
-          if (ev.origin !== window.location.origin) {
-            return;
-          }
-          const href = typeof ev.data === 'string' ? ev.data : '';
-          let parsed: URL;
-          try {
-            parsed = new URL(href, window.location.origin);
-          } catch {
-            cleanup();
-            reject(new Error(`Invalid URL in message: ${href}`));
-            return;
-          }
-          const code = parsed.searchParams.get('code') ?? new URLSearchParams(parsed.hash.slice(1)).get('code');
-          if (!code) {
-            cleanup();
-            return;
-          }
+      const onMessage = (ev: MessageEvent) => {
+        if (ev.origin !== window.location.origin) return;
+        const href = typeof ev.data === 'string' ? ev.data : '';
+        const params = new URL(href || '').searchParams;
+        const hashParams = new URL(href).hash.slice(1);
+        const code = params.get('code') ?? new URLSearchParams(hashParams).get('code');
+        if (!code) {
           cleanup();
-          resolve();
-        };
+        }
+        cleanup();
+        resolve();
+      };
 
-        window.addEventListener('message', onMessage);
+      const cleanup = () => {
+        window.removeEventListener('message', onMessage);
+        iframe?.remove();
+      };
 
-        iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.src = authUrl;
-        document.body.appendChild(iframe);
+      window.addEventListener('message', onMessage);
 
-        iframe.onload = () => {
-          try {
-            const doc = iframe.contentDocument!;
-            const form = doc.querySelector<HTMLFormElement>('form');
-            const u = doc.querySelector<HTMLInputElement>('input[name="username"]');
-            const p = doc.querySelector<HTMLInputElement>('input[name="password"]');
-            if (form && u && p) {
-              u.value = username;
-              p.value = password;
-              form.submit();
-            }
-          } catch (err) {
-            cleanup();
-          }
-        };
-      });
+      iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = authUrl;
+      document.body.appendChild(iframe);
 
-      await keycloak.init({
-        onLoad: 'check-sso',
-        silentCheckSsoRedirectUri: undefined,
-        pkceMethod: 'S256',
-      });
-    } catch (error) {
-      console.error('Silent login failed', error);
-    }
+      iframe.onload = () => {
+        const doc = iframe.contentDocument;
+        const form = doc?.querySelector<HTMLFormElement>('form');
+        const u = doc?.querySelector<HTMLInputElement>('input[name="username"]');
+        const p = doc?.querySelector<HTMLInputElement>('input[name="password"]');
+        if (form && u && p) {
+          u.value = username;
+          p.value = password;
+          form.submit();
+        }
+      };
+    });
   }, []);
 
   return silentLogin;
