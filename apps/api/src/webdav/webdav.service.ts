@@ -280,12 +280,10 @@ class WebdavService {
         headers: { Destination: destFullPath },
       },
       FileSharingErrorMessage.DuplicateFailed,
-      (resp: WebdavStatusResponse) => {
-        return {
-          success: resp.status >= 200 && resp.status < 300,
-          status: resp.status,
-        };
-      },
+      (resp: WebdavStatusResponse) => ({
+        success: resp.status >= 200 && resp.status < 300,
+        status: resp.status,
+      }),
     );
   }
 

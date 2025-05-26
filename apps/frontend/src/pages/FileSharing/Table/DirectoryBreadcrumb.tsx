@@ -112,9 +112,9 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
             <BreadcrumbItem key="root">
               <BreadcrumbLink
                 href="#"
-                onClick={() => onNavigate(mountPoints[0].filename.replace('/webdav', ''))}
+                onClick={() => onNavigate(mountPoints[0]?.filename.replace('/webdav', ''))}
               >
-                {mountPoints[0].basename}
+                {mountPoints[0]?.basename}
               </BreadcrumbLink>
             </BreadcrumbItem>
           ))}
