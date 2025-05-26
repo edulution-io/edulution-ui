@@ -45,11 +45,11 @@ class CopyFileConsumer extends WorkerHost {
     const items = await this.webDavService.getFilesAtPath(username, targetFolderPath);
 
     const uniqueFilename = getNextAvailableFilename(originalName, extension, items);
-
+    const destinationPath = join(targetFolderPath, '/', uniqueFilename);
     try {
-      await this.webDavService.copyFileViaWebDAV(username, originFilePath, join(targetFolderPath, '/', uniqueFilename));
+      await this.webDavService.copyFileViaWebDAV(username, originFilePath, destinationPath);
     } catch {
-      failedPaths.push(destinationFilePath);
+      failedPaths.push(destinationPath);
     }
 
     const percent = Math.round((processed / total) * 100);

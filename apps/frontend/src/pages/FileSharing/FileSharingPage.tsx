@@ -26,14 +26,15 @@ import QuotaLimitInfo from '@/pages/FileSharing/utilities/QuotaLimitInfo';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
 import { useSearchParams } from 'react-router-dom';
 import useFileNavigationStore from '@/pages/FileSharing/Table/useFileNavigationStore';
+import useUserStore from '@/store/UserStore/UserStore';
 
 const FileSharingPage = () => {
   const { isFileProcessing, isLoading, currentPath } = useFileSharingPage();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
-  const { fileOperationProgress, fetchFiles } = useFileSharingStore();
+  const { user } = useUserStore();
+  const { fileOperationProgress, fetchFiles, mountPoints } = useFileSharingStore();
 
   const [searchParams, setSearchParams] = useSearchParams();
-
   const {
     presentPath,
     pastFiles,
@@ -43,6 +44,11 @@ const FileSharingPage = () => {
     goForward,
     setPresentPath,
   } = useFileNavigationStore();
+
+  useEffect(() => {
+    searchParams.set('path', presentPath);
+    setSearchParams(searchParams, { replace: true });
+  }, [presentPath, searchParams, setSearchParams]);
 
   useEffect(() => {
     const handleFileOperationProgress = async () => {
@@ -60,7 +66,7 @@ const FileSharingPage = () => {
     if (setPresentPath) {
       setPresentPath(currentPath);
     }
-  }, [currentPath, setPresentPath]);
+  }, [currentPath]);
 
   const navigate = useCallback(
     (newPath: string) => {
@@ -70,10 +76,6 @@ const FileSharingPage = () => {
     },
     [searchParams, setSearchParams, storeNavigate],
   );
-
-  useEffect(() => {
-    void fetchFiles(presentPath);
-  }, [presentPath, fetchFiles]);
 
   const { percentageUsed } = useQuotaInfo();
 
@@ -89,6 +91,12 @@ const FileSharingPage = () => {
           onForward={goForward}
           canGoBack={pastFiles.length > 0}
           canGoForward={futureFiles.length > 0}
+          showHome={false}
+          hiddenSegments={[
+            ...(user?.username ? [user.username.toLowerCase()] : []),
+            ...(user?.ldapGroups?.roles?.[0] ? [`${user.ldapGroups.roles[0]}s`] : []),
+          ]}
+          mountPoints={mountPoints}
           style={{ color: 'white' }}
         />
         <QuotaLimitInfo percentageUsed={percentageUsed} />

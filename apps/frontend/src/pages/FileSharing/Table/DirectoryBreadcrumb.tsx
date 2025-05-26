@@ -24,6 +24,7 @@ import DropdownMenu from '@/components/shared/DropdownMenu';
 import useMedia from '@/hooks/useMedia';
 import { Button } from '@/components/shared/Button';
 import { MdArrowBack, MdArrowForward } from 'react-icons/md';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import useUserPath from '../hooks/useUserPath';
 
 interface DirectoryBreadcrumbProps {
@@ -37,6 +38,7 @@ interface DirectoryBreadcrumbProps {
   onForward: () => void;
   canGoBack?: boolean;
   canGoForward?: boolean;
+  mountPoints?: DirectoryFileDTO[];
 }
 
 const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
@@ -50,6 +52,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
   hiddenSegments,
   style,
   showTitle = true,
+  mountPoints,
 }) => {
   const { isMobileView } = useMedia();
   const displaySegments = isMobileView ? 1 : 2;
@@ -84,26 +87,37 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
     <Breadcrumb style={style}>
       {showTitle && <p className="mr-2 text-background">{t('currentDirectory')}</p>}
       <BreadcrumbList>
-        <Button
-          onClick={() => {
-            onBack();
-          }}
-          disabled={!canGoBack}
-          className="mr-2"
-        >
-          <MdArrowBack size={20} />
-        </Button>
-
-        {showHome && (
-          <BreadcrumbItem key="home">
-            <BreadcrumbLink
-              href="#"
-              onClick={() => onNavigate(homePath)}
-            >
-              {t('home')}
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-        )}
+        <div className="flex flex-row">
+          <Button
+            onClick={() => {
+              onBack();
+            }}
+            disabled={!canGoBack}
+            className="mr-2"
+          >
+            <MdArrowBack size={20} />
+          </Button>
+          <Button
+            onClick={() => {
+              onForward();
+            }}
+            disabled={!canGoForward}
+            className="ml-2"
+          >
+            <MdArrowForward size={20} />
+          </Button>
+        </div>
+        {showHome ||
+          (path.includes(homePath) && mountPoints && (
+            <BreadcrumbItem key="root">
+              <BreadcrumbLink
+                href="#"
+                onClick={() => onNavigate(mountPoints[0].filename.replace('/webdav', ''))}
+              >
+                {mountPoints[0].basename}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          ))}
 
         {shouldShowDropdown ? (
           <>
@@ -153,16 +167,6 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
               ),
           )
         )}
-
-        <Button
-          onClick={() => {
-            onForward();
-          }}
-          disabled={!canGoForward}
-          className="ml-2"
-        >
-          <MdArrowForward size={20} />
-        </Button>
       </BreadcrumbList>
     </Breadcrumb>
   );
