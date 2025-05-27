@@ -10,19 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import ItemDialogList from '@/components/shared/ItemDialogList';
+import ContentType from '@libs/filesharing/types/contentType';
+import parseWebDAVMultiStatus from '@libs/filesharing/utils/parseWebDAVMultiStatus';
+import parseWebDAVResponse from '@libs/filesharing/utils/parseWebDAVResponse';
 
-const DeleteContentDialogBody: React.FC = () => {
-  const { selectedItems } = useFileSharingStore();
-  const deleteWarningTranslationId = 'deleteDialog.actionCannotBeUndone';
-
-  return (
-    <ItemDialogList
-      deleteWarningTranslationId={deleteWarningTranslationId}
-      items={selectedItems.map((i) => ({ name: i.filename, id: i.etag }))}
-    />
-  );
+const mapToDirectories = (xmlData: string) => {
+  const responses = parseWebDAVMultiStatus(xmlData);
+  return responses
+    .map(parseWebDAVResponse)
+    .filter((file) => file && file.type === ContentType.DIRECTORY && file.filename !== '');
 };
-export default DeleteContentDialogBody;
+
+export default mapToDirectories;
