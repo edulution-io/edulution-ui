@@ -26,10 +26,12 @@ import ContentType from '@libs/filesharing/types/contentType';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import ErrorMessage from '@libs/error/errorMessage';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
+import mapToDirectories from '@libs/filesharing/utils/mapToDirectories';
+import mapToDirectoryFiles from '@libs/filesharing/utils/mapToDirectoryFiles';
+import DEFAULT_PROPFIND_XML from '@libs/filesharing/constants/defaultPropfindXml';
 import { lookup } from 'mime-types';
 import { Open } from 'unzipper';
 import CustomHttpException from '../common/CustomHttpException';
-import { mapToDirectories, mapToDirectoryFiles } from '../filesharing/filesharing.utilities';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
 
@@ -148,7 +150,7 @@ class WebdavService {
       {
         method: HttpMethodsWebDav.PROPFIND,
         url,
-        data: this.defaultPropfindXml,
+        data: DEFAULT_PROPFIND_XML,
       },
       FileSharingErrorMessage.FileNotFound,
       mapToDirectoryFiles,
@@ -164,7 +166,7 @@ class WebdavService {
       {
         method: HttpMethodsWebDav.PROPFIND,
         url,
-        data: this.defaultPropfindXml,
+        data: DEFAULT_PROPFIND_XML,
         headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
       },
       FileSharingErrorMessage.FolderNotFound,
@@ -320,7 +322,7 @@ class WebdavService {
 
   async checkIfFolderExists(username: string, parentPath: string, name: string): Promise<boolean> {
     const directories = await this.getDirectoryAtPath(username, `${parentPath}/`);
-    return directories.some((item) => item.type === ContentType.DIRECTORY && item.basename === name);
+    return directories.some((item) => item.type === ContentType.DIRECTORY && item.filename === name);
   }
 
   async createCollectFolderIfNotExists(username: string, destinationPath: string) {
