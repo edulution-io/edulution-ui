@@ -38,6 +38,7 @@ import surveysMigrationsList from './migrations/surveysMigrationsList';
 import MigrationService from '../migration/migration.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import FilesystemService from '../filesystem/filesystem.service';
+import SafeOnModuleInit from '../common/decorators/safeOnModuleInit.decorator';
 
 @Injectable()
 class SurveysService implements OnModuleInit {
@@ -48,6 +49,7 @@ class SurveysService implements OnModuleInit {
     private readonly sseService: SseService,
   ) {}
 
+  @SafeOnModuleInit()
   async onModuleInit() {
     await MigrationService.runMigrations<SurveyDocument>(this.surveyModel, surveysMigrationsList);
   }

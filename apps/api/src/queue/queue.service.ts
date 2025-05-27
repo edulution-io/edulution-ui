@@ -21,6 +21,7 @@ import CollectFileConsumer from '../filesharing/consumers/collectFile.consumer';
 import DeleteFileConsumer from '../filesharing/consumers/deleteFile.consumer';
 import MoveOrRenameConsumer from '../filesharing/consumers/moveOrRename.consumer';
 import CopyFileConsumer from '../filesharing/consumers/copyFile.consumer';
+import SafeOnModuleInit from '../common/decorators/safeOnModuleInit.decorator';
 
 @Injectable()
 class QueueService implements OnModuleInit {
@@ -40,6 +41,7 @@ class QueueService implements OnModuleInit {
     private readonly copyFileConsumer: CopyFileConsumer,
   ) {}
 
+  @SafeOnModuleInit()
   async onModuleInit() {
     const redis = new Redis({ host: this.redisHost, port: this.redisPort });
 

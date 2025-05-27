@@ -29,6 +29,7 @@ import LicenseErrorMessages from '@libs/license/constants/licenseErrorMessages';
 import LICENSE_CHECK_INTERVAL from '@libs/license/constants/licenseCheckInterval';
 import CustomHttpException from '../common/CustomHttpException';
 import { License, LicenseDocument } from './license.schema';
+import SafeOnModuleInit from '../common/decorators/safeOnModuleInit.decorator';
 
 @Injectable()
 class LicenseService implements OnModuleInit {
@@ -46,6 +47,7 @@ class LicenseService implements OnModuleInit {
     });
   }
 
+  @SafeOnModuleInit()
   async onModuleInit() {
     const collections = await this.connection.db?.listCollections({ name: 'licenses' }).toArray();
 

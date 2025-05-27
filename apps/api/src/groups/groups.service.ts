@@ -44,6 +44,7 @@ import LINBO_DEVICE_GROUPS_PREFIX from '@libs/lmnApi/constants/prefixes/dPrefix'
 import ROLES_PREFIX from '@libs/lmnApi/constants/prefixes/rolesPrefix';
 import CustomHttpException from '../common/CustomHttpException';
 import Attendee from '../conferences/attendee.schema';
+import SafeOnModuleInit from '../common/decorators/safeOnModuleInit.decorator';
 
 const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API, KEYCLOAK_EDU_API_CLIENT_ID, KEYCLOAK_EDU_API_CLIENT_SECRET } =
   process.env as {
@@ -62,6 +63,7 @@ class GroupsService implements OnModuleInit {
 
   private accessTokenRefreshInterval: number = 5000;
 
+  @SafeOnModuleInit()
   onModuleInit() {
     this.scheduleTokenRefresh();
     void this.initializeService();

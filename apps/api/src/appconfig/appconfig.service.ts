@@ -28,6 +28,7 @@ import initializeCollection from './initializeCollection';
 import MigrationService from '../migration/migration.service';
 import appConfigMigrationsList from './migrations/appConfigMigrationsList';
 import FilesystemService from '../filesystem/filesystem.service';
+import SafeOnModuleInit from '../common/decorators/safeOnModuleInit.decorator';
 
 @Injectable()
 class AppConfigService implements OnModuleInit {
@@ -37,6 +38,7 @@ class AppConfigService implements OnModuleInit {
     private eventEmitter: EventEmitter2,
   ) {}
 
+  @SafeOnModuleInit()
   async onModuleInit() {
     await initializeCollection(this.connection, this.appConfigModel);
 

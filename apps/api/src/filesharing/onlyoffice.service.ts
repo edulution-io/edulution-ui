@@ -26,6 +26,7 @@ import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import CustomHttpException from '../common/CustomHttpException';
 import AppConfigService from '../appconfig/appconfig.service';
 import FilesystemService from '../filesystem/filesystem.service';
+import SafeOnModuleInit from '../common/decorators/safeOnModuleInit.decorator';
 
 const { EDULUTION_ONLYOFFICE_JWT_SECRET } = process.env;
 
@@ -36,6 +37,7 @@ class OnlyofficeService implements OnModuleInit {
     private jwtService: JwtService,
   ) {}
 
+  @SafeOnModuleInit()
   async onModuleInit() {
     const appConfig = await this.appConfigService.getAppConfigByName(APPS.FILE_SHARING);
 

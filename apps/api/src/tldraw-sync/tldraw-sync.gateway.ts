@@ -21,6 +21,7 @@ import { readFileSync } from 'fs';
 import { JwtService } from '@nestjs/jwt';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import TldrawSyncService from './tldraw-sync.service';
+import SafeOnModuleInit from '../common/decorators/safeOnModuleInit.decorator';
 
 @WebSocketGateway({
   path: `${EDU_API_ROOT}/${TLDRAW_SYNC_ENDPOINTS.BASE}`,
@@ -36,6 +37,7 @@ export default class TldrawSyncGateway implements OnGatewayConnection, OnModuleI
     private readonly jwtService: JwtService,
   ) {}
 
+  @SafeOnModuleInit()
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   onModuleInit() {
     Logger.log(`WebSocket Gateway initialized at path: /${TLDRAW_SYNC_ENDPOINTS.BASE}`, TldrawSyncGateway.name);

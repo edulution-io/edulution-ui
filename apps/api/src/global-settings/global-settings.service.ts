@@ -24,6 +24,7 @@ import CustomHttpException from '../common/CustomHttpException';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
 import MigrationService from '../migration/migration.service';
 import globalSettingsMigrationsList from './migrations/globalSettingsMigrationsList';
+import SafeOnModuleInit from '../common/decorators/safeOnModuleInit.decorator';
 
 @Injectable()
 class GlobalSettingsService implements OnModuleInit {
@@ -32,6 +33,7 @@ class GlobalSettingsService implements OnModuleInit {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
+  @SafeOnModuleInit()
   async onModuleInit() {
     const count = await this.globalSettingsModel.countDocuments();
 

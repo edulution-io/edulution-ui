@@ -34,6 +34,7 @@ import type UserConnectionsFeatureStates from '@libs/veyon/types/userConnections
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
 import AppConfigService from '../appconfig/appconfig.service';
+import SafeOnModuleInit from '../common/decorators/safeOnModuleInit.decorator';
 
 @Injectable()
 class VeyonService implements OnModuleInit {
@@ -44,6 +45,7 @@ class VeyonService implements OnModuleInit {
     private readonly appConfigService: AppConfigService,
   ) {}
 
+  @SafeOnModuleInit()
   onModuleInit() {
     void this.updateVeyonProxyConfig();
   }

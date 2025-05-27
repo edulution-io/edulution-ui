@@ -28,6 +28,7 @@ import CustomHttpException from '../common/CustomHttpException';
 import { MailProvider, MailProviderDocument } from './mail-provider.schema';
 import FilterUserPipe from '../common/pipes/filterUser.pipe';
 import AppConfigService from '../appconfig/appconfig.service';
+import SafeOnModuleInit from '../common/decorators/safeOnModuleInit.decorator';
 
 const { MAILCOW_API_URL, MAILCOW_API_TOKEN } = process.env;
 
@@ -62,6 +63,7 @@ class MailsService implements OnModuleInit {
     });
   }
 
+  @SafeOnModuleInit()
   onModuleInit() {
     void this.updateImapConfig();
   }

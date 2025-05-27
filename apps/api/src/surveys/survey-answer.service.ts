@@ -26,6 +26,7 @@ import Attendee from '../conferences/attendee.schema';
 import MigrationService from '../migration/migration.service';
 import surveyAnswersMigrationsList from './migrations/surveyAnswersMigrationsList';
 import GroupsService from '../groups/groups.service';
+import SafeOnModuleInit from '../common/decorators/safeOnModuleInit.decorator';
 
 @Injectable()
 class SurveyAnswersService {
@@ -35,6 +36,7 @@ class SurveyAnswersService {
     private readonly groupsService: GroupsService,
   ) {}
 
+  @SafeOnModuleInit()
   async onModuleInit() {
     await MigrationService.runMigrations<SurveyAnswerDocument>(this.surveyAnswerModel, surveyAnswersMigrationsList);
   }

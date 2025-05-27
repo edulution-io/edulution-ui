@@ -14,14 +14,14 @@ import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/com
 import { OnEvent } from '@nestjs/event-emitter';
 import axios, { AxiosInstance } from 'axios';
 import {
-  RDPConnection,
-  VdiErrorMessages,
-  Parameters,
   Attributes,
-  LmnVdiRequest,
   GuacamoleConnections,
   GuacamoleDto,
+  LmnVdiRequest,
   LmnVdiResponse,
+  Parameters,
+  RDPConnection,
+  VdiErrorMessages,
   VirtualMachines,
 } from '@libs/desktopdeployment/types';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
@@ -29,6 +29,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
 import AppConfigService from '../appconfig/appconfig.service';
+import SafeOnModuleInit from '../common/decorators/safeOnModuleInit.decorator';
 
 const { LMN_VDI_API_SECRET, LMN_VDI_API_URL, EDULUTION_GUACAMOLE_ADMIN_PASSWORD, EDULUTION_GUACAMOLE_ADMIN_USER } =
   process.env;
@@ -52,7 +53,7 @@ class VdiService implements OnModuleInit {
       },
     });
   }
-
+  @SafeOnModuleInit()
   onModuleInit() {
     void this.updateVdiConfig();
   }

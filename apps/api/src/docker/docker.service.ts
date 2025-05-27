@@ -25,6 +25,7 @@ import type TDockerProtectedContainer from '@libs/docker/types/TDockerProtectedC
 import CONTAINER from '@libs/docker/constants/container';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
+import SafeOnModuleInit from '../common/decorators/safeOnModuleInit.decorator';
 
 @Injectable()
 class DockerService implements OnModuleInit, OnModuleDestroy {
@@ -37,6 +38,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
   constructor(private readonly sseService: SseService) {}
 
+  @SafeOnModuleInit()
   onModuleInit() {
     this.listenToDockerEvents();
   }

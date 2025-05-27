@@ -29,6 +29,7 @@ import CustomHttpException from '../common/CustomHttpException';
 import { BulletinCategory, BulletinCategoryDocument } from './bulletin-category.schema';
 import MigrationService from '../migration/migration.service';
 import bulletinCategoryMigrationsList from './migrations/bulletinCategoryMigrationsList';
+import SafeOnModuleInit from '../common/decorators/safeOnModuleInit.decorator';
 
 @Injectable()
 class BulletinCategoryService implements OnModuleInit {
@@ -37,6 +38,7 @@ class BulletinCategoryService implements OnModuleInit {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
+  @SafeOnModuleInit()
   async onModuleInit() {
     await MigrationService.runMigrations<BulletinCategoryDocument>(
       this.bulletinCategoryModel,

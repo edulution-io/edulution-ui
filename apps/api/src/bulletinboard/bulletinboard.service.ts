@@ -33,6 +33,7 @@ import BulletinCategoryService from '../bulletin-category/bulletin-category.serv
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
 import FilesystemService from '../filesystem/filesystem.service';
+import SafeOnModuleInit from '../common/decorators/safeOnModuleInit.decorator';
 
 @Injectable()
 class BulletinBoardService implements OnModuleInit {
@@ -47,6 +48,7 @@ class BulletinBoardService implements OnModuleInit {
 
   private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
 
+  @SafeOnModuleInit()
   onModuleInit() {
     void this.fileSystemService.ensureDirectoryExists(this.attachmentsPath);
   }
