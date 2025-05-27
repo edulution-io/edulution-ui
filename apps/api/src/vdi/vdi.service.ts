@@ -53,6 +53,7 @@ class VdiService implements OnModuleInit {
       },
     });
   }
+
   @SafeOnModuleInit()
   onModuleInit() {
     void this.updateVdiConfig();
