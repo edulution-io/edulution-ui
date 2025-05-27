@@ -27,6 +27,7 @@ jobs:
 
       - name: Cache Node.js modules
         uses: actions/cache@v4.2.0
+        continue-on-error: true
         with:
           path: |
             **/node_modules
@@ -65,6 +66,7 @@ jobs:
 
       - name: Restore cached Node.js modules
         uses: actions/cache@v4.2.0
+        continue-on-error: true
         with:
           path: |
             **/node_modules
@@ -130,6 +132,7 @@ jobs:
 
       - name: Restore cached Node.js modules
         uses: actions/cache@v4.2.0
+        continue-on-error: true
         with:
           path: |
             **/node_modules
@@ -183,6 +186,7 @@ jobs:
 
       - name: Restore cached Node.js modules
         uses: actions/cache@v4.2.0
+        continue-on-error: true
         with:
           path: |
             **/node_modules
