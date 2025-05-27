@@ -65,9 +65,9 @@ const UploadContentBody = () => {
     return { oversize, normal };
   };
 
-  const findDuplicateFiles = (incoming: UploadFile[], existing: { basename: string }[]): { name: string }[] => {
+  const findDuplicateFiles = (incoming: UploadFile[], existing: { filename: string }[]): { name: string }[] => {
     const normalize = (filename: string) => decodeURIComponent(filename).trim().toLowerCase();
-    const existingFilenameSet = new Set(existing.map((existingFile) => normalize(existingFile.basename)));
+    const existingFilenameSet = new Set(existing.map((existingFile) => normalize(existingFile.filename)));
 
     return incoming
       .filter((filename) => existingFilenameSet.has(normalize(displayName(filename))))

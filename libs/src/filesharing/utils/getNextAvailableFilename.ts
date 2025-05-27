@@ -17,7 +17,7 @@ const getNextAvailableFilename = (baseName: string, extension: string, existingF
   let namePrefix = baseName;
   let sequenceNumber = 0;
 
-  const existingFileNames = new Set(existingFiles.map((file) => file.basename));
+  const existingFileNames = new Set(existingFiles.map((file) => file.filename));
 
   const original = `${baseName}${extension}`;
   if (!existingFileNames.has(original)) {

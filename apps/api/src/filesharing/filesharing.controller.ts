@@ -89,8 +89,8 @@ class FilesharingController {
     @UploadedFile() file: CustomFile,
     @Query('path') path: string,
     @Body('name') name: string,
-    @Body('isZippedFolder') isZippedFolder: string, //  ← neu
-    @Body('originalFolderName') originalFolderName: string, //  ← neu (optional)
+    @Body('isZippedFolder') isZippedFolder: string,
+    @Body('originalFolderName') originalFolderName: string,
     @GetCurrentUsername() username: string,
   ) {
     const fullPath = `${this.baseurl}${path}/${name}`;
