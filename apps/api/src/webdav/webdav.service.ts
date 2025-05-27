@@ -26,26 +26,15 @@ import ContentType from '@libs/filesharing/types/contentType';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import ErrorMessage from '@libs/error/errorMessage';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
+import mapToDirectories from '@libs/filesharing/utils/mapToDirectories';
+import mapToDirectoryFiles from '@libs/filesharing/utils/mapToDirectoryFiles';
+import DEFAULT_PROPFIND_XML from '@libs/filesharing/constants/defaultPropfindXml';
 import CustomHttpException from '../common/CustomHttpException';
-import { mapToDirectories, mapToDirectoryFiles } from '../filesharing/filesharing.utilities';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
 
 @Injectable()
 class WebdavService {
-  readonly defaultPropfindXml = `<?xml version="1.0"?>
-      <d:propfind xmlns:d="DAV:">
-        <d:prop>
-          <d:getlastmodified/>
-          <d:getetag/>
-          <d:getcontenttype/>
-          <d:getcontentlength/>
-          <d:displayname/>
-          <d:creationdate/>
-        </d:prop>
-      </d:propfind>
-  `;
-
   private readonly baseUrl = process.env.EDUI_WEBDAV_URL as string;
 
   private webdavClientCache = new Map<string, { client: AxiosInstance; timeout: NodeJS.Timeout }>();
@@ -57,20 +46,23 @@ class WebdavService {
     config: {
       method: string;
       url?: string;
-      // eslint-disable-next-line
-      data?: string | Record<string, any> | Buffer;
+      data?: string | Record<string, any> | Buffer; // eslint-disable-line @typescript-eslint/no-explicit-any
       headers?: Record<string, string | number>;
     },
     fileSharingErrorMessage: ErrorMessage,
-    // eslint-disable-next-line
-    transformer?: (data: any) => T,
+    transformer?: (data: any) => T, // eslint-disable-line @typescript-eslint/no-explicit-any
   ): Promise<T | WebdavStatusResponse> {
     try {
       const response = await client(config);
       WebdavService.handleWebDAVError(response);
       return transformer ? transformer(response.data) : (response.data as T);
     } catch (error) {
-      throw new CustomHttpException(fileSharingErrorMessage, HttpStatus.INTERNAL_SERVER_ERROR, '', WebdavService.name);
+      throw new CustomHttpException(
+        fileSharingErrorMessage,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error,
+        WebdavService.name,
+      );
     }
   }
 
@@ -80,6 +72,7 @@ class WebdavService {
         FileSharingErrorMessage.WebDavError,
         HttpStatus.INTERNAL_SERVER_ERROR,
         response?.statusText || 'WebDAV request failed',
+        WebdavService.name,
       );
     }
   }
@@ -146,7 +139,7 @@ class WebdavService {
       {
         method: HttpMethodsWebDav.PROPFIND,
         url,
-        data: this.defaultPropfindXml,
+        data: DEFAULT_PROPFIND_XML,
       },
       FileSharingErrorMessage.FileNotFound,
       mapToDirectoryFiles,
@@ -162,7 +155,7 @@ class WebdavService {
       {
         method: HttpMethodsWebDav.PROPFIND,
         url,
-        data: this.defaultPropfindXml,
+        data: DEFAULT_PROPFIND_XML,
         headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
       },
       FileSharingErrorMessage.FolderNotFound,
@@ -289,7 +282,7 @@ class WebdavService {
 
   async checkIfFolderExists(username: string, parentPath: string, name: string): Promise<boolean> {
     const directories = await this.getDirectoryAtPath(username, `${parentPath}/`);
-    return directories.some((item) => item.type === ContentType.DIRECTORY && item.basename === name);
+    return directories.some((item) => item.type === ContentType.DIRECTORY && item.filename === name);
   }
 
   async createCollectFolderIfNotExists(username: string, destinationPath: string) {
