@@ -45,7 +45,6 @@ import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
-import RequestSurveyAnswerDto from '@libs/survey/types/api/request-survey-answer.dto';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
@@ -134,13 +133,13 @@ class SurveysController {
     return this.surveyService.serveTemplate(filename, res);
   }
 
-  @Post(ANSWER)
+  @Get(`${ANSWER}/:surveyId/:username`)
   async getSubmittedSurveyAnswers(
-    @Body() getAnswerDto: RequestSurveyAnswerDto,
-    @GetCurrentUsername() username: string,
+    @Param() params: { surveyId: string; username: string },
+    @GetCurrentUsername() currentUsername: string,
   ) {
-    const { surveyId, attendee } = getAnswerDto;
-    return this.surveyAnswerService.getAnswer(surveyId, attendee?.username || username);
+    const { surveyId, username } = params;
+    return this.surveyAnswerService.getAnswer(surveyId, username || currentUsername);
   }
 
   @Post()

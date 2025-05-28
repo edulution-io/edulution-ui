@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import useUserStore from '@/store/UserStore/UserStore';
 import FormField from '@/components/shared/FormField';
 import { Form } from '@/components/ui/Form';
@@ -21,8 +21,9 @@ import { publicUserRegex, publicUserLoginRegex, publicUserSeperator } from '@lib
 import { zodResolver } from '@hookform/resolvers/zod';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
-import LoginButton from '@/components/shared/LoginButton';
-import JoinButton from '@/components/shared/JoinButton';
+import { Card } from '@/components/shared/Card';
+import PublicAccessFormHeader from '@/components/shared/PublicAccessFormHeader';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 const PublicSurveyAccessForm = (): React.ReactNode => {
   const { t } = useTranslation();
@@ -87,33 +88,30 @@ const PublicSurveyAccessForm = (): React.ReactNode => {
   };
 
   return (
-    <div className="relative flex h-full w-full flex-col items-center justify-center">
-      <div className="mx-auto my-10 w-[90%] rounded-xl bg-white bg-opacity-5 p-5 md:w-[400px]">
-        <LoginButton />
+    <div className="flex min-h-screen items-center justify-center">
+      <Card className="w-[450px] max-w-[450px] border-none bg-white bg-opacity-5 p-5 md:w-[60%]">
+        <PublicAccessFormHeader />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleAccessSurvey)}>
             {!user?.username && (
               <div className="mb-2">
-                <div className="mb-2">
-                  {t('survey.participate.pleaseEnterYourFullName')}{' '}
-                  {t('survey.participate.pleaseEnterYourParticipationId')}
-                </div>
+                <div className="mb-2">{t('survey.participate.pleaseEnterYourFullName')} </div>
                 <FormField
                   form={form}
                   type="text"
                   name="publicUserName"
-                  value={form.watch('publicUserName')}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    form.setValue('publicUserName', e.target.value, { shouldValidate: true })
-                  }
                   variant="dialog"
                 />
               </div>
             )}
-            <JoinButton />
+            <DialogFooterButtons
+              submitButtonText="common.join"
+              submitButtonType="submit"
+              handleSubmit={form.handleSubmit(handleAccessSurvey)}
+            />
           </form>
         </Form>
-      </div>
+      </Card>
     </div>
   );
 };

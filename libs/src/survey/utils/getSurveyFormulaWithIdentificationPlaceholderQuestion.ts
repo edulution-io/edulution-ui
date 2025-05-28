@@ -13,16 +13,15 @@
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 
 const getSurveyFormulaWithIdentificationPlaceholderQuestion = (formula: TSurveyFormula) => {
+  const updatedFormula = structuredClone(formula);
   const identification = { type: 'text', name: 'identification' };
-  const updatedFormula = JSON.parse(JSON.stringify(formula)) as TSurveyFormula;
-  const { pages, elements } = updatedFormula;
-  if (updatedFormula.pages && pages && pages.length > 0) {
-    const existingElements = pages[0].elements || [];
-    updatedFormula.pages[0].elements = [identification, ...existingElements];
+
+  if (Array.isArray(updatedFormula.pages) && updatedFormula.pages.length > 0) {
+    updatedFormula.pages[0].elements = [identification, ...(updatedFormula.pages[0].elements ?? [])];
   } else {
-    const existingElements = elements || [];
-    updatedFormula.elements = [identification, ...existingElements];
+    updatedFormula.elements = [identification, ...(updatedFormula.elements ?? [])];
   }
+
   return updatedFormula;
 };
 

@@ -582,9 +582,8 @@
     "participate": {
       "saveAnswerSuccess": "Saved the answer.",
       "username": "User name",
-      "pleaseEnterYourFullName": "You may participate in the survey by entering your full name.",
+      "pleaseEnterYourFullName": "You may participate in the survey by entering your full name, use the participation-ID if you want to change your submission.",
       "yourFullName": "Your full name",
-      "pleaseEnterYourParticipationId": "Use the participation-ID if you want to change your submission.",
       "invalidUsername": "Username is invalid (permitted are letters, number, and [. -])",
       "idHeader": "Your participation ID (optional)",
       "idText": "Pls copy this for later",

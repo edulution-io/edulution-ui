@@ -16,12 +16,7 @@ import { create } from 'zustand';
 import { Model, CompletingEvent } from 'survey-core';
 import SurveyAnswerResponseDto from '@libs/survey/types/api/survey-answer-response.dto';
 import AnswerSurvey from '@libs/survey/types/api/answer-survey';
-import {
-  SURVEYS,
-  PUBLIC_SURVEYS,
-  SURVEY_ANSWER_ENDPOINT,
-  HAS_PUBLIC_USER_ANSWERED,
-} from '@libs/survey/constants/surveys-endpoint';
+import { SURVEYS, PUBLIC_SURVEYS, SURVEY_ANSWER_ENDPOINT, PUBLIC_USER } from '@libs/survey/constants/surveys-endpoint';
 import { publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import handleApiError from '@/utils/handleApiError';
@@ -106,8 +101,8 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
 
       const surveyAnswer: SurveyAnswerResponseDto = response.data;
       const { username = '' } = surveyAnswer.attendee || {};
-      const isAuthenticatedPublicUser = !!username && publicUserLoginRegex.test(username);
-      if (isAuthenticatedPublicUser) {
+      const isPublicUser = !!username && publicUserLoginRegex.test(username);
+      if (isPublicUser) {
         set({ publicUserId: username, previousAnswer: surveyAnswer });
       } else {
         set({ publicUserId: undefined, previousAnswer: undefined });
@@ -124,12 +119,8 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
   },
 
   fetchAnswer: async (surveyId: string): Promise<void> => {
-    const { attendee } = get();
-    if (!attendee) {
-      return;
-    }
-    const { username } = attendee;
-    if (!username || publicUserLoginRegex.test(username)) {
+    const attendee = get().attendee;
+    if (!attendee || !attendee.username || publicUserLoginRegex.test(attendee.username)) {
       return;
     }
     set({ isFetching: true });
@@ -150,10 +141,9 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
   ): Promise<boolean> => {
     set({ isFetching: true });
     try {
-      const response = await eduApi.post<SurveyAnswerResponseDto>(`${PUBLIC_SURVEYS}/${HAS_PUBLIC_USER_ANSWERED}`, {
-        surveyId,
-        attendee,
-      });
+      const response = await eduApi.get<SurveyAnswerResponseDto>(
+        `${PUBLIC_SURVEYS}/${PUBLIC_USER}/${surveyId}/${attendee.username}`,
+      );
       if (!response.data) {
         set({ attendee: undefined, previousAnswer: undefined });
         return false;

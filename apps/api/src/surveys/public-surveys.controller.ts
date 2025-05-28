@@ -13,8 +13,7 @@
 import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Get, Post, Param, Res } from '@nestjs/common';
-import { HAS_PUBLIC_USER_ANSWERED, IMAGES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
-import ParticipantDto from '@libs/survey/types/api/participant.dto';
+import { PUBLIC_USER, IMAGES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SurveysService from './surveys.service';
@@ -43,11 +42,12 @@ class PublicSurveysController {
     return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, attendee);
   }
 
-  @Post(HAS_PUBLIC_USER_ANSWERED)
+  @Get(`${PUBLIC_USER}/:surveyId/:publicUserName`)
   @Public()
-  async hasPublicUserAnswered(@Body() participantDto: ParticipantDto) {
-    const { surveyId, attendee } = participantDto;
-    return this.surveyAnswerService.hasPublicUserAnsweredSurvey(surveyId, attendee);
+  async hasPublicUserAnswered(@Param() params: { surveyId: string; publicUserName: string }) {
+    const { surveyId, publicUserName } = params;
+    const response = await this.surveyAnswerService.hasPublicUserAnsweredSurvey(surveyId, publicUserName);
+    return response;
   }
 
   @Get(`${IMAGES}/:surveyId/:questionId/:filename`)

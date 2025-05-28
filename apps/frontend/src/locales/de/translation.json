@@ -584,9 +584,8 @@
     "participate": {
       "saveAnswerSuccess": "Die Antwort wurde gespeichert.",
       "username": "Benutzername",
-      "pleaseEnterYourFullName": "Gib entweder deinen vollständigen Namen ein, um an der Umfrage teilzunehmen.",
+      "pleaseEnterYourFullName": "Gib entweder deinen vollständigen Namen ein, um an der Umfrage teilzunehmen. Oder benutze die Teilnahme-ID, um deine Abgabe zu überarbeiten.",
       "yourFullName": "Name",
-      "pleaseEnterYourParticipationId": "Oder benutze die Teilnahme-ID, um deine Abgabe zu überarbeiten.",
       "invalidUsername": "Benutzername ist ungültig (erlaubt sind Buchstaben, Zahlen und [. -])",
       "idHeader": "Deine Teilnahme-ID",
       "idText": "Bitte notiere dir:",

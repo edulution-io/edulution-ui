@@ -14,6 +14,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdFileCopy } from 'react-icons/md';
 import copyToClipboard from '@/utils/copyToClipboard';
+import { Card } from '@/components/shared/Card';
 import Input from '@/components/shared/Input';
 import Separator from '@/components/ui/Separator';
 
@@ -28,35 +29,36 @@ const PublicSurveyParticipationIdDisplay = ({
 }: PublicSurveyParticipationIdDisplayProps) => {
   const { t } = useTranslation();
 
-  if (!publicUserId) {
-    return null;
-  }
-
   return (
-    <div className="relative top-1/4 mx-auto my-10 w-[90%] max-w-[500px] rounded-xl bg-white bg-opacity-5 p-5 md:w-[60%]">
-      <div className="mb-6 mt-2 flex flex-row items-center justify-center">
-        <h3>{t('survey.thanks')}</h3>
-      </div>
-
-      <Separator className="my-4" />
-
-      <h4 className="my-4 mt-0 ">{t('survey.participate.idHeader')}</h4>
-
-      <div className="mx-4">
-        <p>{t('survey.participate.idText')}</p>
-        <div className="mx-8 my-4 flex flex-row items-center justify-center">
-          <Input
-            type="text"
-            value={publicUserId}
-            readOnly
-            className="w-[400px] cursor-pointer"
-            onClick={() => copyToClipboard(publicUserId)}
-            icon={<MdFileCopy />}
-          />
+    <div className="flex min-h-screen items-center justify-center">
+      <Card
+        variant="text"
+        className="w-[660px] max-w-[660px] border-none bg-white bg-opacity-5 p-5 md:w-[60%]"
+      >
+        <div className="mb-6 mt-2 flex flex-row items-center justify-center">
+          <h3>{t('survey.thanks')}</h3>
         </div>
-      </div>
 
-      <p>{isMulti ? t('survey.participate.idParagraphIsMulti') : t('survey.participate.idParagraphCanUpdate')}</p>
+        <Separator className="my-4" />
+
+        <h4 className="my-4 mt-0 ">{t('survey.participate.idHeader')}</h4>
+
+        <div className="mx-4">
+          <p>{t('survey.participate.idText')}</p>
+          <div className="mx-8 my-4 flex flex-row items-center justify-center">
+            <Input
+              type="text"
+              value={publicUserId}
+              readOnly
+              className="w-[560px] cursor-pointer"
+              onClick={() => copyToClipboard(publicUserId)}
+              icon={<MdFileCopy />}
+            />
+          </div>
+        </div>
+
+        <p>{isMulti ? t('survey.participate.idParagraphIsMulti') : t('survey.participate.idParagraphCanUpdate')}</p>
+      </Card>
     </div>
   );
 };

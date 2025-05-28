@@ -22,8 +22,8 @@ import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import LoginButton from '@/components/shared/LoginButton';
-import JoinButton from '@/components/shared/JoinButton';
+import PublicAccessFormHeader from '@/components/shared/PublicAccessFormHeader';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 interface PublicConferenceJoinFormProps {
   meetingId: string;
@@ -85,7 +85,7 @@ const PublicConferenceJoinForm = ({
 
   return (
     <div className="my-10 rounded-xl bg-white bg-opacity-5 p-5">
-      <LoginButton />
+      <PublicAccessFormHeader />
       {isWaitingForConferenceToStart && !joinConferenceUrl ? (
         <>
           <div>{t('conferences.conferenceIsNotStartedYet')}</div>
@@ -142,7 +142,11 @@ const PublicConferenceJoinForm = ({
                 />
               </div>
             )}
-            <JoinButton />
+            <DialogFooterButtons
+              submitButtonText="common.join"
+              submitButtonType="submit"
+              handleSubmit={form.handleSubmit(joinConferenceManually)}
+            />
           </form>
         </Form>
       )}

@@ -46,18 +46,18 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
     setValue('invitedGroups', groups, { shouldValidate: true });
   };
 
-  const checkboxOptions: { name: keyof SurveyDto; label: string; shouldDisable?: () => boolean }[] = [
+  const checkboxOptions: { name: keyof SurveyDto; label: string; shouldDisable?: boolean }[] = [
     { name: 'isAnonymous', label: 'surveys.saveDialog.isAnonymous' },
     { name: 'isPublic', label: 'surveys.saveDialog.isPublic' },
     {
       name: 'canSubmitMultipleAnswers',
       label: 'surveys.saveDialog.canSubmitMultipleAnswers',
-      shouldDisable: () => !!watch('canUpdateFormerAnswer'),
+      shouldDisable: !!watch('canUpdateFormerAnswer'),
     },
     {
       name: 'canUpdateFormerAnswer',
       label: 'surveys.saveDialog.canUpdateFormerAnswer',
-      shouldDisable: () => !!watch('canSubmitMultipleAnswers'),
+      shouldDisable: !!watch('canSubmitMultipleAnswers'),
     },
   ];
 
@@ -85,7 +85,7 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
           label={t(label)}
           checked={Boolean(watch(name))}
           onCheckedChange={(value: boolean) => setValue(name, value, { shouldValidate: true })}
-          disabled={shouldDisable ? shouldDisable() : false}
+          disabled={shouldDisable}
           aria-label={t(`survey.${name}`)}
           className="text-background"
         />
