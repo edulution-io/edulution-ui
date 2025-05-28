@@ -46,6 +46,7 @@ import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResul
 import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
+import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
 
@@ -57,12 +58,12 @@ class FilesystemService {
 
   constructor(private readonly userService: UsersService) {}
 
-  @Cron('0 0 1-3 * * 6-7', {
+  @Cron('0 0 4 * * *', {
     name: 'ClearTempFiles',
     timeZone: 'UTC',
   })
   async handleCron() {
-    Logger.debug('CronJob: ClearTempFiles (running every hour between 1am and 3am on Saturdays and Sundays)');
+    Logger.debug('CronJob: ClearTempFiles (running once every morning at 04:00 UTC)');
     await this.removeOldTempFiles(TEMP_FILES_PATH);
   }
 
@@ -338,31 +339,36 @@ class FilesystemService {
     return res;
   }
 
-  async removeOldTempFiles(path: string): Promise<void> {
+  async removeOldTempFiles(path: string, currentTimeMs?: number): Promise<void> {
     if (!path) {
       return;
     }
     try {
       const stat = await fsStat(path);
+      const now = currentTimeMs || Date.now();
+
       if (stat.isFile()) {
-        if (stat.birthtimeMs < Date.now() - 30 * 24 * 60 * 60 * 1000) {
+        if (stat.mtimeMs < now - THIRTY_DAYS) {
           await unlink(path);
           Logger.log(`Deleted old temp file: ${path}`);
           return;
         }
       }
+
       if (stat.isDirectory()) {
         const files = await readdir(path);
         const promises = files.map((fileName) => {
           const newPath = join(path, fileName);
-          return this.removeOldTempFiles(newPath);
+          return this.removeOldTempFiles(newPath, currentTimeMs);
         });
         await Promise.all(promises);
 
-        const remainingFiles = await readdir(path);
-        if (remainingFiles.length === 0) {
-          Logger.log(`Deleting empty temporary directory: ${path}`);
-          await rm(path, { recursive: true });
+        if (path !== TEMP_FILES_PATH) {
+          const remainingFiles = await readdir(path);
+          if (remainingFiles.length === 0) {
+            Logger.log(`Deleting empty temporary directory: ${path}`);
+            await rm(path, { recursive: true });
+          }
         }
       }
     } catch (error) {
