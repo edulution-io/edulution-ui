@@ -41,6 +41,7 @@ import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
+import useFileNavigationStore from '@/pages/FileSharing/Table/useFileNavigationStore';
 import useSseStore from '../useSseStore';
 
 const cleanAllStores = () => {
@@ -79,6 +80,7 @@ const cleanAllStores = () => {
   useDeleteSurveyStore.getState().reset();
   useParticipateSurveyStore.getState().reset();
   useQuestionsContextMenuStore.getState().reset();
+  useFileNavigationStore.getState().reset();
   useSseStore.getState().reset();
   localStorage.removeItem('i18nextLng');
 };
