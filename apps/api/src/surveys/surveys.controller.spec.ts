@@ -199,8 +199,10 @@ describe(SurveysController.name, () => {
     it('should return the submitted answer of the current user', async () => {
       jest.spyOn(surveyAnswerService, 'getAnswer');
 
+      surveyAnswerModel.findOne = jest.fn().mockReturnValue(firstUsersSurveyAnswerAnsweredSurvey01);
+
       const result = await controller.getSubmittedSurveyAnswers(
-        { surveyId: idOfAnsweredSurvey01.toString(), attendee: undefined },
+        { surveyId: idOfAnsweredSurvey01.toString(), username: undefined },
         firstUsername,
       );
       expect(result).toEqual(firstUsersSurveyAnswerAnsweredSurvey01);
@@ -211,16 +213,35 @@ describe(SurveysController.name, () => {
     it('should return the submitted answer of a given user', async () => {
       jest.spyOn(surveyAnswerService, 'getAnswer');
 
+      surveyAnswerModel.findOne = jest.fn().mockReturnValue(firstUsersSurveyAnswerAnsweredSurvey01);
+
       const result = await controller.getSubmittedSurveyAnswers(
         {
           surveyId: idOfAnsweredSurvey01.toString(),
-          attendee: { username: firstUsername, label: firstUsername, value: firstUsername },
+          username: firstUsername,
         },
         secondUsername,
       );
       expect(result).toEqual(firstUsersSurveyAnswerAnsweredSurvey01);
 
       expect(surveyAnswerService.getAnswer).toHaveBeenCalledWith(idOfAnsweredSurvey01.toString(), firstUsername);
+    });
+
+    it('should return the submitted answer of the current user if no username is given', async () => {
+      jest.spyOn(surveyAnswerService, 'getAnswer');
+
+      surveyAnswerModel.findOne = jest.fn().mockReturnValue(secondUsersSurveyAnswerAnsweredSurvey01);
+
+      const result = await controller.getSubmittedSurveyAnswers(
+        {
+          surveyId: idOfAnsweredSurvey01.toString(),
+          username: undefined,
+        },
+        secondUsername,
+      );
+      expect(result).toEqual(secondUsersSurveyAnswerAnsweredSurvey01);
+
+      expect(surveyAnswerService.getAnswer).toHaveBeenCalledWith(idOfAnsweredSurvey01.toString(), secondUsername);
     });
   });
 

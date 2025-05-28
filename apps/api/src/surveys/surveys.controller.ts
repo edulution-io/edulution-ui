@@ -135,7 +135,7 @@ class SurveysController {
 
   @Get(`${ANSWER}/:surveyId/:username`)
   async getSubmittedSurveyAnswers(
-    @Param() params: { surveyId: string; username: string },
+    @Param() params: { surveyId: string; username?: string },
     @GetCurrentUsername() currentUsername: string,
   ) {
     const { surveyId, username } = params;
