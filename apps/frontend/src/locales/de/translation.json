@@ -803,8 +803,12 @@
     "globalSettings": {
       "title": "Globale Einstellungen",
       "security": "Sicherheit",
+      "general": "Allgemein",
+      "defaultLandingPageTitle": "Standardanwendung nach dem Login",
+      "defaultLandingPageDescription": "Hier kann festgelegt werden, welche Anwendung für Nutzer standardmäßig nach dem Login angezeigt werden soll.",
+      "defaultLandingPageSwitchDescription": "Bei Aktivierung erfolgt die Weiterleitung der Nutzer nach erfolgreichem Login nicht zum Dashboard, sondern zu der an dieser Stelle konfigurierten Anwendung.",
       "multiFactorAuthentication": "Zwei-Faktor-Authentisierung",
-      "description": "Hier kann festgelegt werden, für welche Nutzergruppen die Zwei-Faktor-Authentisierung erzwungen werden soll.",
+      "mfaDescription": "Hier kann festgelegt werden, für welche Nutzergruppen die Zwei-Faktor-Authentisierung erzwungen werden soll.",
       "selectUserGroups": "Nutzergruppen auswählen, für welche das MFA-Setup erzwungen wird.",
       "updateSuccessful": "Einstellung erfolgreich aktualisiert.",
       "errors": {

@@ -20,6 +20,14 @@ type GlobalSettingsAuth = {
 class GlobalSettingsDto {
   @ValidateNested()
   auth: GlobalSettingsAuth;
+
+  @ValidateNested()
+  general: {
+    defaultLandingPage: {
+      isCustomLandingPageEnabled: boolean | undefined;
+      appName: string;
+    };
+  };
 }
 
 export default GlobalSettingsDto;

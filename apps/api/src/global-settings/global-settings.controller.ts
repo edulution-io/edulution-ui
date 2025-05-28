@@ -10,13 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Body, Controller, Get, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Put, Query, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import {
   GLOBAL_SETTINGS_PROJECTION_QUERY_PARAM,
   GLOBAL_SETTINGS_ROOT_ENDPOINT,
 } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
+import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 import GlobalSettingsService from './global-settings.service';
 
@@ -27,6 +29,8 @@ class GlobalSettingsController {
   constructor(private readonly globalSettingsService: GlobalSettingsService) {}
 
   @Get()
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(DEFAULT_CACHE_TTL_MS)
   async getGlobalSettings(@Query(GLOBAL_SETTINGS_PROJECTION_QUERY_PARAM) projection?: string) {
     return this.globalSettingsService.getGlobalSettings(projection);
   }
