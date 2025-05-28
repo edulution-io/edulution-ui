@@ -119,7 +119,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
   },
 
   fetchAnswer: async (surveyId: string): Promise<void> => {
-    const attendee = get().attendee;
+    const { attendee } = get();
     if (!attendee || !attendee.username || publicUserLoginRegex.test(attendee.username)) {
       return;
     }
