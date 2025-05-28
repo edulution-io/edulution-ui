@@ -184,7 +184,7 @@ const useFileSharingStore = create<UseFileSharingStore>(
             (item) => item.filename === UserRoles.EXAM_USER,
           );
 
-          if (examusersItem && !defaultMountPointsResponse.data.some((item) => item.basename === UserRoles.EXAM_USER)) {
+          if (examusersItem && !defaultMountPointsResponse.data.some((item) => item.filename === UserRoles.EXAM_USER)) {
             combinedMountPoints.push(examusersItem);
           }
 

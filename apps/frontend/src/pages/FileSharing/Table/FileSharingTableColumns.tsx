@@ -146,9 +146,12 @@ const getFileSharingTableColumns = (
         }
         return <span className="overflow-hidden text-ellipsis">{formattedDate}</span>;
       },
-      sortingFn: (rowA, rowB, columnId) => {
-        const dateA = parseDate(rowA.original[columnId]);
-        const dateB = parseDate(rowB.original[columnId]);
+      sortingFn: (rowA, rowB) => {
+        const valueA = rowA.original.lastmod;
+        const valueB = rowB.original.lastmod;
+
+        const dateA = parseDate(valueA);
+        const dateB = parseDate(valueB);
 
         if (!dateA || !dateB) {
           return !dateA ? -1 : 1;
