@@ -31,6 +31,7 @@ import eduApi from '@/api/eduApi';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
+import { UploadFile } from '@libs/filesharing/types/uploadFile';
 
 interface FileSharingDialogStore {
   isDialogOpen: boolean;
@@ -38,7 +39,7 @@ interface FileSharingDialogStore {
   closeDialog: () => void;
   isLoading: boolean;
   userInput: string;
-  filesToUpload: File[];
+  filesToUpload: UploadFile[];
   moveOrCopyItemToPath: DirectoryFileDTO;
   selectedFileType: TAvailableFileTypes | '';
   setMoveOrCopyItemToPath: (item: DirectoryFileDTO) => void;
@@ -56,7 +57,7 @@ interface FileSharingDialogStore {
     type: ContentType,
     data: PathChangeOrCreateDto | PathChangeOrCreateDto[] | FileUploadProps[] | DeleteFileProps[] | FormData,
   ) => Promise<void>;
-  setFilesToUpload: React.Dispatch<React.SetStateAction<File[]>>;
+  setFilesToUpload: React.Dispatch<React.SetStateAction<UploadFile[]>>;
   action: FileActionType;
   setAction: (action: FileActionType) => void;
   fileOperationResult: WebDavActionResult | undefined;
@@ -87,7 +88,11 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
   setIsLoading: (isLoading) => set({ isLoading }),
   setError: (error: AxiosError) => set({ error }),
   reset: () => set(initialState),
-  setFilesToUpload: (files) => set({ filesToUpload: typeof files === 'function' ? files(get().filesToUpload) : files }),
+  setFilesToUpload: (update) =>
+    set({
+      filesToUpload:
+        typeof update === 'function' ? (update as (prev: UploadFile[]) => UploadFile[])(get().filesToUpload) : update,
+    }),
   setMoveOrCopyItemToPath: (path) => set({ moveOrCopyItemToPath: path }),
   setSubmitButtonIsDisabled: (isSubmitButtonDisabled) => set({ isSubmitButtonDisabled }),
   setSelectedFileType: (fileType) => set({ selectedFileType: fileType }),

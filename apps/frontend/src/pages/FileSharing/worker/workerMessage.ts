@@ -10,22 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HTMLInputTypeAttribute } from 'react';
+import ProgressMessage from '@/pages/FileSharing/worker/progressMessage';
+import BlobMessage from '@/pages/FileSharing/worker/blobMessage';
 
-interface InputProp<T> {
-  name: string;
-  label: string;
-  value: T;
-  type?: HTMLInputTypeAttribute;
-  readOnly?: boolean;
-}
-
-declare module 'react' {
-  interface InputHTMLAttributes<T> extends React.HTMLAttributes<T> {
-    webkitdirectory?: string;
-    mozdirectory?: string;
-    directory?: string;
-  }
-}
-
-export default InputProp;
+export type WorkerMessage = ProgressMessage | BlobMessage;

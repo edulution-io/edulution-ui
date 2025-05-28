@@ -10,22 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HTMLInputTypeAttribute } from 'react';
+import JSZip from 'jszip';
 
-interface InputProp<T> {
-  name: string;
-  label: string;
-  value: T;
-  type?: HTMLInputTypeAttribute;
-  readOnly?: boolean;
-}
+globalThis.onmessage = async (e: MessageEvent<{ files: File[]; root: string }>) => {
+  const { files, root } = e.data;
 
-declare module 'react' {
-  interface InputHTMLAttributes<T> extends React.HTMLAttributes<T> {
-    webkitdirectory?: string;
-    mozdirectory?: string;
-    directory?: string;
-  }
-}
+  const zip = new JSZip();
 
-export default InputProp;
+  files.forEach((file) => {
+    zip.file(file.webkitRelativePath.replace(`${root}/`, ''), file);
+  });
+
+  const blob = await zip.generateAsync({ type: 'blob' }, (meta) => globalThis.postMessage({ progress: meta.percent }));
+
+  globalThis.postMessage({ blob, root });
+};

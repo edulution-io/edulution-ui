@@ -10,22 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HTMLInputTypeAttribute } from 'react';
-
-interface InputProp<T> {
-  name: string;
-  label: string;
-  value: T;
-  type?: HTMLInputTypeAttribute;
-  readOnly?: boolean;
+interface ProgressMessage {
+  progress: number;
 }
 
-declare module 'react' {
-  interface InputHTMLAttributes<T> extends React.HTMLAttributes<T> {
-    webkitdirectory?: string;
-    mozdirectory?: string;
-    directory?: string;
-  }
-}
-
-export default InputProp;
+export default ProgressMessage;
