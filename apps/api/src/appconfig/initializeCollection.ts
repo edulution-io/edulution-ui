@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Model, Connection } from 'mongoose';
+import { Connection, Model } from 'mongoose';
 import defaultAppConfig from '@libs/appconfig/constants/defaultAppConfig';
 import { AppConfig } from './appconfig.schema';
 

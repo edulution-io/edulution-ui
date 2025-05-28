@@ -10,11 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Migration } from './migration.type';
 
-@Injectable()
 class MigrationService {
   static async runMigrations<MigrationModel>(model: Model<MigrationModel>, migrations: Migration<MigrationModel>[]) {
     Logger.log(`Executing ${model.modelName}: ${migrations.length} migrations`, MigrationService.name);
