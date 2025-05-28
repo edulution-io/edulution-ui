@@ -11,11 +11,12 @@
  */
 
 import React from 'react';
-import { Outlet, Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useLdapGroups from '@/hooks/useLdapGroups';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 
-const ProtectedRoute = ({ redirectTo = '/' }) => {
+const ProtectedRoute = ({ redirectTo = DASHBOARD_ROUTE }) => {
   const { isSuperAdmin } = useLdapGroups();
 
   if (isSuperAdmin === undefined) {
