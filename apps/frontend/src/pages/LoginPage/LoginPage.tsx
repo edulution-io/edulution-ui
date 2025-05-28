@@ -36,10 +36,9 @@ import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import delay from '@libs/common/utils/delay';
 import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
-import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import APPS from '@libs/appconfig/constants/apps';
-import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
+import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 import useAppConfigsStore from '../Settings/AppConfig/appConfigsStore';
@@ -52,7 +51,7 @@ const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
+  const { state } = useLocation() as { state: LocationState };
   const { eduApiToken, totpIsLoading, isAuthenticated, createOrUpdateUser, setEduApiToken, getTotpStatus } =
     useUserStore();
   const { appConfigs } = useAppConfigsStore();
@@ -146,14 +145,15 @@ const LoginPage: React.FC = () => {
   const isAuthenticatedAppReady = isAppConfigReady && isAuthenticated;
 
   useEffect(() => {
-    if (isAuthenticatedAppReady) {
-      const { from } = (location?.state ?? { from: DASHBOARD_ROUTE }) as LocationState;
-      const toLocation = from === LOGIN_ROUTE ? DASHBOARD_ROUTE : from;
-      navigate(toLocation, {
-        replace: true,
-      });
+    if (!isAuthenticatedAppReady) return;
+
+    if (state?.from) {
+      navigate(state.from, { replace: true });
+      return;
     }
-  }, [isAuthenticatedAppReady]);
+
+    navigate(LANDING_PAGE_ROUTE, { replace: true });
+  }, [isAuthenticatedAppReady, state?.from]);
 
   useEffect(() => {
     if (!showQrCode || !sessionID) {

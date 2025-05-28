@@ -13,7 +13,7 @@
 import { Model, Types } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import { InjectModel } from '@nestjs/mongoose';
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import AttendeeDto from '@libs/user/types/attendee.dto';
@@ -31,7 +31,7 @@ import surveyAnswersMigrationsList from './migrations/surveyAnswersMigrationsLis
 import GroupsService from '../groups/groups.service';
 
 @Injectable()
-class SurveyAnswersService {
+class SurveyAnswersService implements OnModuleInit {
   constructor(
     @InjectModel(SurveyAnswer.name) private surveyAnswerModel: Model<SurveyAnswerDocument>,
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,

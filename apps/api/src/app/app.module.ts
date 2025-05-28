@@ -39,11 +39,11 @@ import BulletinBoardModule from '../bulletinboard/bulletinboard.module';
 import DockerModule from '../docker/docker.module';
 import VeyonModule from '../veyon/veyon.module';
 import GlobalSettingsModule from '../global-settings/global-settings.module';
-import HealthController from './health.controller';
 import SseModule from '../sse/sse.module';
 import TldrawSyncModule from '../tldraw-sync/tldraw-sync.module';
 import FileSystemModule from '../filesystem/filesystem.module';
 import WebDavModule from '../webdav/webdav.module';
+import HealthModule from '../health/health.module';
 
 const redisHost = process.env.REDIS_HOST ?? 'localhost';
 const redisPort = +(process.env.REDIS_PORT ?? 6379);
@@ -65,7 +65,7 @@ const redisPort = +(process.env.REDIS_PORT ?? 6379);
         removeOnFail: true,
       },
     }),
-
+    HealthModule,
     AuthModule,
     AppConfigModule,
     FileSystemModule,
@@ -105,7 +105,6 @@ const redisPort = +(process.env.REDIS_PORT ?? 6379);
 
     EventEmitterModule.forRoot(),
   ],
-  controllers: [HealthController],
   providers: [
     {
       provide: APP_INTERCEPTOR,
