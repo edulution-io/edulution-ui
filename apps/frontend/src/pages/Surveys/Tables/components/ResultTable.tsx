@@ -30,7 +30,10 @@ const ResultTable: FC<ResultTableDialogBodyProps> = ({ formula, result }) => {
 
   useEffect(() => {
     const surveyModel = new SurveyModel(formula);
-    const surveyTable = new Tabulator(surveyModel, result || []);
+    const surveyTable = new Tabulator(surveyModel, result || [], {
+      height: '100%',
+      width: '100%',
+    });
     surveyTable.locale = language;
 
     if (containerRef.current) {

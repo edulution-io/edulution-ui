@@ -25,12 +25,6 @@ const ResultTableDialog = () => {
 
   const handleClose = () => setIsOpenPublicResultsTableDialog(!isOpenPublicResultsTableDialog);
 
-  const getBody = () => (
-    <div className="h-full w-full overflow-x-auto overflow-y-auto scrollbar-thin">
-      <ResultTableDialogBodyWrapper />
-    </div>
-  );
-
   const getFooter = () => (
     <DialogFooterButtons
       handleClose={handleClose}
@@ -45,7 +39,7 @@ const ResultTableDialog = () => {
         isOpen={isOpenPublicResultsTableDialog}
         handleOpenChange={handleClose}
         title={t('surveys.resultTableDialog.title')}
-        body={getBody()}
+        body={<ResultTableDialogBodyWrapper />}
         footer={getFooter()}
         desktopContentClassName="max-h-[75vh] max-w-[85%]"
       />

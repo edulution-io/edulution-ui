@@ -7,6 +7,7 @@
   font-size: 16px;
   font-family: "Lato", sans-serif;
   color: var(--primary-foreground) !important;
+  display: contents;
 }
 span {
   color: var(--primary-foreground) !important;
@@ -134,4 +135,46 @@ span {
 .sa-tabulator .tabulator .tabulator-row.tabulator-row-odd {
   background: var(--muted-light) !important;
   background-color: var(--muted-light) !important;
+}
+
+.sa-tabulator__header {
+  width: fit-content !important;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: space-between;
+}
+.sa-table__header-extension {
+  padding: 0 2px;
+  margin: 0 8px;
+}
+
+.sa-tabulator__pagination-container {
+  padding: 0 2px;
+  margin: 0 8px;
+  max-width: 240px;
+  min-width: 120px;
+}
+.sa-table__entries {
+  padding: 0 2px;
+  margin: 0 8px;
+}
+
+.sa-table__global-filter {
+  padding: 0 2px;
+  margin: 0 8px;
+  justify-self: flex-end;
+}
+
+.tabulator {
+  height: fit-content;
+  width: fit-content;
+}
+.tabulator-table {
+  position: relative;
+  display: block;
+
+  overflow-x: auto;
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
