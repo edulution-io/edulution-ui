@@ -365,7 +365,7 @@ class SurveyAnswersService implements OnModuleInit {
     if (!isPublicUserParticipation) {
       return undefined;
     }
-    return await this.getAnswer(surveyId, username);
+    return this.getAnswer(surveyId, username);
   }
 
   async createAnswer(
