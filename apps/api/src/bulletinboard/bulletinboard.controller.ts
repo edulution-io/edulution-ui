@@ -22,7 +22,7 @@ import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import BulletinBoardService from './bulletinboard.service';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
 import GetToken from '../common/decorators/getToken.decorator';
-import { checkAttachmentFile, createAttachmentUploadOptions } from '../common/multer.utilities';
+import { checkAttachmentFile, createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 
 @ApiTags(APPS.BULLETIN_BOARD)
 @ApiBearerAuth()

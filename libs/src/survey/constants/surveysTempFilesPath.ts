@@ -10,21 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SurveyPage from '@libs/survey/types/TSurveyPage';
-import SurveyElement from '@libs/survey/types/TSurveyElement';
+import APPS from '@libs/appconfig/constants/apps';
+import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 
-class SurveyFormula {
-  title: string;
+const SURVEYS_TEMP_FILES_PATH = `${TEMP_FILES_PATH}/${APPS.SURVEYS}`;
 
-  logo?: string;
-
-  description?: string;
-
-  // only defined in page mode
-  pages?: SurveyPage[];
-
-  // only defined in page-less mode
-  elements?: SurveyElement[];
-}
-
-export default SurveyFormula;
+export default SURVEYS_TEMP_FILES_PATH;

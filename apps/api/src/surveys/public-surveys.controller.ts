@@ -13,7 +13,7 @@
 import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Get, Post, Param, Res } from '@nestjs/common';
-import { IMAGES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import { FILES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SurveysService from './surveys.service';
@@ -42,11 +42,11 @@ class PublicSurveysController {
     return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer);
   }
 
-  @Get(`${IMAGES}/:surveyId/:questionId/:filename`)
+  @Get(`${FILES}/:surveyId/:questionId/:filename`)
   @Public()
-  getImage(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
+  serveFile(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
     const { surveyId, questionId, filename } = params;
-    return this.surveyService.serveImage(surveyId, questionId, filename, res);
+    return this.surveyService.serveFiles(surveyId, questionId, filename, res);
   }
 
   @Get(`${CHOICES}/:surveyId/:questionName`)

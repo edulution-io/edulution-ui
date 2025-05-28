@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-// import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Logger } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
@@ -30,7 +29,6 @@ describe('SurveyService', () => {
   beforeEach(async () => {
     Logger.error = jest.fn();
     const module: TestingModule = await Test.createTestingModule({
-      imports: [],
       providers: [
         SurveysService,
         SseService,
