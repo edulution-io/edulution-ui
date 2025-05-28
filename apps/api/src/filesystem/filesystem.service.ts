@@ -359,7 +359,7 @@ class FilesystemService {
         const files = await readdir(path);
         const promises = files.map((fileName) => {
           const newPath = join(path, fileName);
-          return this.removeOldTempFiles(newPath, currentTimeMs);
+          return this.removeOldTempFiles(newPath, now);
         });
         await Promise.all(promises);
 
