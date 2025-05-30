@@ -226,6 +226,8 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     await updateGroupsAndCloseDialog();
   };
 
+  const disableDialogButtons = isDialogLoading || isFetching;
+
   const getFooter = () => (
     <div className="flex gap-4">
       {userGroupToEdit ? (
@@ -246,8 +248,8 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
           handleClose={onClose}
           handleSubmit={() => {}}
           submitButtonType="submit"
-          disableSubmit={isDialogLoading}
-          disableCancel={isDialogLoading || isFetching}
+          disableSubmit={disableDialogButtons}
+          disableCancel={disableDialogButtons}
           submitButtonText={userGroupToEdit ? 'common.save' : 'common.create'}
         />
       </form>
