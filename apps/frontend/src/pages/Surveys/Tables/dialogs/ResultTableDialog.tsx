@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
-import ResultTableDialogBodyWrapper from '@/pages/Surveys/Tables/dialogs/ResultTableDialogBody';
+import ResultTableDialogBody from '@/pages/Surveys/Tables/dialogs/ResultTableDialogBody';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 const ResultTableDialog = () => {
@@ -27,7 +27,7 @@ const ResultTableDialog = () => {
 
   const getBody = () => (
     <div className="h-full w-full overflow-x-auto overflow-y-auto scrollbar-thin">
-      <ResultTableDialogBodyWrapper />
+      <ResultTableDialogBody />
     </div>
   );
 

@@ -44,12 +44,10 @@ const ResultTableDialogBody = () => {
   }
 
   return (
-    <div className="h-fit w-fit">
-      <ResultTable
-        formula={selectedSurvey.formula}
-        result={result}
-      />
-    </div>
+    <ResultTable
+      formula={selectedSurvey.formula}
+      result={result}
+    />
   );
 };
 

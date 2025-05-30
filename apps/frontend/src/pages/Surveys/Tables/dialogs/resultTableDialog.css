@@ -7,6 +7,7 @@
   font-size: 16px;
   font-family: "Lato", sans-serif;
   color: var(--primary-foreground) !important;
+  display: contents;
 }
 span {
   color: var(--primary-foreground) !important;
@@ -110,28 +111,83 @@ span {
 }
 
 /* Fix tables background color: Remove the white backtgrounds */
-.tabulator,
-.sa-tabulator,
-.tabulator-header,
+.sa-tabulator {
+  background: transparent !important;
+  background-color: transparent !important;
+}
 .sa-tabulator__header {
+  width: fit-content !important;
+  position: sticky;
+  top: 0;
+  left: 0;
+  background: transparent !important;
+  background-color: transparent !important;
+  display: inline-flex;
+  flex-direction: row-reverse;
+}
+.sa-table__btn {
+  padding: 0 2px;
+  margin: 0 16px;
+}
+.sa-table__entries {
+  padding: 0 2px;
+  margin: 0 16px;
+}
+.sa-table__global-filter {
+  padding: 0 2px;
+  margin: 0 16px;
+}
+.sa-tabulator__pagination-container {
+  padding: 0 2px;
+  margin: 0 16px;
+  max-width: 240px;
+  min-width: 120px;
+}
+
+.tabulator {
+  height: fit-content;
+  width: fit-content;
+  margin-top: 8px !important;
+  margin-bottom: 8px !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  border: none !important;
   background: transparent !important;
   background-color: transparent !important;
 }
-.sa-tabulator .tabulator .tabulator-header,
-.sa-tabulator .tabulator .tabulator-header .tabulator-col {
+.tabulator-header {
   background: transparent !important;
   background-color: transparent !important;
 }
-.tabulator-row,
-.sa-tabulator .tabulator .tabulator-row {
+.tabulator-col {
+  border: none !important;
+  border-bottom: 1px solid var(--secondary) !important;
   background: transparent !important;
   background-color: transparent !important;
 }
-.sa-tabulator .tabulator .tabulator-row.tabulator-row-even {
-  background: var(--muted) !important;
-  background-color: var(--muted) !important;
+.tabulator-cell {
+  border: none !important;
 }
-.sa-tabulator .tabulator .tabulator-row.tabulator-row-odd {
-  background: var(--muted-light) !important;
-  background-color: var(--muted-light) !important;
+.tabulator-row {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.tabulator {
+  height: fit-content;
+  width: fit-content;
+}
+.tabulator-table {
+  position: relative;
+  display: block;
+  overflow-x: auto;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.sa-table__svg-button[title="in Details verschieben"] {
+  display: none;
+}
+.sa-table__svg-button[title="Move to Detail"] {
+  display: none;
 }
