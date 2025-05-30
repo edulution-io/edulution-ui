@@ -46,7 +46,7 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
   const {
     selectedSurvey,
     selectSurvey,
-    updateUsersSurveys,
+    // updateUsersSurveys,
     selectedRows,
     hasAnswers,
     canParticipateSelectedSurvey,
@@ -79,7 +79,7 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
   const handleDeleteSurvey = () => {
     if (Object.keys(selectedRows).length > 0) {
       void setIsDeleteSurveysDialogOpen(true);
-      void updateUsersSurveys();
+      // void updateUsersSurveys();
     }
   };
 

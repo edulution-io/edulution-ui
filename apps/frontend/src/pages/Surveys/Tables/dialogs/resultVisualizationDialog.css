@@ -70,10 +70,10 @@ text {
   background-color: var(--muted-light) !important;
 }
 
-.modebar-btn[data-val="zoom"],
+/* .modebar-btn[data-val="zoom"],
 .modebar-btn[data-val="reset"],
 .modebar-btn[data-val="pan"],
 .modebar-btn[data-val="lasso"],
 .modebar-btn[data-val="select"] {
   display: none;
-}
+} */
