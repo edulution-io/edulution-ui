@@ -16,7 +16,7 @@ import { VisualizationPanel } from 'survey-analytics';
 import 'survey-analytics/survey.analytics.min.css';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import useLanguage from '@/hooks/useLanguage';
-import '../../theme/custom.visualizer.css';
+import '../dialogs/resultVisualizationDialog.css';
 
 const visuPanelOptions = {
   haveCommercialLicense: true,
@@ -65,7 +65,7 @@ const ResultVisualization = (props: ResultVisualizationDialogBodyProps) => {
   }, [visuPanel]);
 
   return (
-    <div className="rounded bg-secondary">
+    <div className="rounded">
       <div id="surveyVisuPanel" />
     </div>
   );
