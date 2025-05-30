@@ -246,6 +246,8 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
           handleClose={onClose}
           handleSubmit={() => {}}
           submitButtonType="submit"
+          disableSubmit={isDialogLoading}
+          disableCancel={isDialogLoading || isFetching}
           submitButtonText={userGroupToEdit ? 'common.save' : 'common.create'}
         />
       </form>
@@ -262,7 +264,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     <AdaptiveDialog
       isOpen
       trigger={trigger}
-      handleOpenChange={onClose}
+      handleOpenChange={isDialogLoading ? () => {} : onClose}
       title={t(getTitle())}
       desktopContentClassName="max-w-4xl"
       body={getDialogBody()}
