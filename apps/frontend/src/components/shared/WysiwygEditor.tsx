@@ -19,6 +19,7 @@ import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
+import DOCUMENT_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/documentUploadAllowedMimeTypes';
 
 interface WysiwygEditorProps {
   value: string;
@@ -58,6 +59,30 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
     };
   };
 
+  const handleFile = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.setAttribute('accept', DOCUMENT_UPLOAD_ALLOWED_MIME_TYPES.join(', '));
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      try {
+        const filename = await onUpload(file);
+        const url = `/uploads/${filename}`;
+
+        const editor = quillRef.current!.getEditor();
+        const range = editor.getSelection() || { index: 0, length: 0 };
+        editor.insertText(range.index, file.name, 'link', url);
+        editor.setSelection(range.index + file.name.length, 0);
+      } catch (err) {
+        console.error(err);
+        toast.error('File upload failed');
+      }
+    };
+  };
+
   const modules = useMemo(
     () => ({
       toolbar: {
@@ -65,11 +90,12 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
           [{ header: [1, 2, false] }],
           ['bold', 'italic', 'underline', 'strike', 'blockquote'],
           [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
-          ['link', 'image'],
+          ['link', 'image', 'file'],
           ['clean'],
         ],
         handlers: {
           image: handleImage,
+          file: handleFile,
         },
       },
     }),

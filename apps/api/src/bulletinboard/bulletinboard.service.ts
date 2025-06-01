@@ -11,6 +11,7 @@
  */
 
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { lookup as lookupMime } from 'mime-types';
 import { InjectModel } from '@nestjs/mongoose';
 import { Response } from 'express';
 import { Model, Types } from 'mongoose';
@@ -25,6 +26,7 @@ import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCatego
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import CustomHttpException from '../common/CustomHttpException';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 
@@ -55,6 +57,14 @@ class BulletinBoardService implements OnModuleInit {
     const filePath = join(this.attachmentsPath, filename);
 
     await FilesystemService.throwErrorIfFileNotExists(filePath);
+
+    const mimeType = lookupMime(filename) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
+
+    res.set({
+      [HTTP_HEADERS.ContentType]: mimeType,
+      [HTTP_HEADERS.ContentDisposition]: `inline; filename="${filename}"`,
+    });
+
     const fileStream = await this.fileSystemService.createReadStream(filePath);
     fileStream.pipe(res);
 

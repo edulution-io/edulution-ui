@@ -21,6 +21,8 @@ import BulletinBoardColumnItem from '@/pages/BulletinBoard/components/BulletinBo
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 import FullScreenImage from '@/components/ui/FullScreenImage';
 import { useTranslation } from 'react-i18next';
+import FullScreenPdfRenderer from '@/components/ui/FullScreenPdfRenderer';
+import useUserStore from '@/store/UserStore/UserStore';
 
 const BulletinBoardPageColumn = ({
   bulletins,
@@ -35,17 +37,21 @@ const BulletinBoardPageColumn = ({
 }) => {
   const { t } = useTranslation();
   const { getBulletinsByCategories } = useBulletinBoardStore();
-  const [isImagePreviewModalOpen, setIsImagePreviewModalOpen] = useState(false);
-  const [selectedImageForPreview, setSelectedImageForPreview] = useState<string | null>(null);
+  const { eduApiToken } = useUserStore();
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewType, setPreviewType] = useState<'image' | 'pdf' | null>(null);
 
-  const handleImagePreviewClick = (imageUrl: string) => {
-    setSelectedImageForPreview(imageUrl);
-    setIsImagePreviewModalOpen(true);
+  const handlePreviewClick = (url: string, type: 'image' | 'pdf') => {
+    if (type === 'image') {
+      setPreviewType('image');
+    } else {
+      setPreviewType('pdf');
+    }
+    setPreviewUrl(url);
   };
-
-  const closeImagePreviewModal = () => {
-    setSelectedImageForPreview(null);
-    setIsImagePreviewModalOpen(false);
+  const closePreviewModal = () => {
+    setPreviewUrl(null);
+    setPreviewType(null);
   };
 
   const width = `${100 / categoryCount}%`;
@@ -65,19 +71,23 @@ const BulletinBoardPageColumn = ({
             key={bulletin.id}
             bulletin={bulletin}
             canManageBulletins={canEditCategory}
-            handleImageClick={handleImagePreviewClick}
+            handlePreviewClick={handlePreviewClick}
           />
         ))}
       </div>
 
-      {selectedImageForPreview && isImagePreviewModalOpen && (
+      {previewUrl && previewType && (
         <ResizableWindow
           disableMinimizeWindow
           disableToggleMaximizeWindow
           titleTranslationId={t('preview.image')}
-          handleClose={closeImagePreviewModal}
+          handleClose={closePreviewModal}
         >
-          <FullScreenImage imageSrc={selectedImageForPreview} />
+          {previewType === 'image' ? (
+            <FullScreenImage imageSrc={previewUrl} />
+          ) : (
+            <FullScreenPdfRenderer fileSrc={`/edu-api${previewUrl.replace('/uploads', '')}?token=${eduApiToken}`} />
+          )}
         </ResizableWindow>
       )}
 

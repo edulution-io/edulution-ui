@@ -26,15 +26,18 @@ import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import { useParams } from 'react-router-dom';
 import cn from '@libs/common/utils/className';
+import { MdFileCopy } from 'react-icons/md';
 
-const BulletinBoardColumnItem = ({
-  bulletin,
-  canManageBulletins,
-  handleImageClick,
-}: {
+interface BulletinBoardColumnItemProps {
   bulletin: BulletinResponseDto;
   canManageBulletins: boolean;
-  handleImageClick: (imageUrl: string) => void;
+  handlePreviewClick: (url: string, type: 'image' | 'pdf') => void;
+}
+
+const BulletinBoardColumnItem: React.FC<BulletinBoardColumnItemProps> = ({
+  bulletin,
+  canManageBulletins,
+  handlePreviewClick,
 }) => {
   const { t } = useTranslation();
   const { bulletinId } = useParams();
@@ -145,33 +148,44 @@ const BulletinBoardColumnItem = ({
     return items;
   };
 
-  const getProcessedBulletinContent = (content: string) => {
-    if (content.match(/<img[^>]*src="([^"]*)"[^>]*>/)) {
-      const srcMatch = content.match(/src="([^"]*)"/);
-      let src = srcMatch ? srcMatch[1] : '';
-
-      if (!src.startsWith('http') && !src.startsWith(`/${EDU_API_ROOT}`)) {
-        src = `/${src}`;
-      }
-
+  const getProcessedBulletinContent = (content: string, index: number) => {
+    if (/^<img/.test(content)) {
+      const src = (content.match(/src="([^"]+)"/) || [])[1] || '';
+      const url = !src.startsWith('http') && !src.startsWith(`/${EDU_API_ROOT}`) ? `/${src}` : src;
       return (
         <button
-          key={`image-${content}`}
-          type="button"
-          className="max-w-full cursor-pointer border-none bg-transparent p-0"
-          onClick={() => handleImageClick(src)}
+          key={index}
+          type={'button'}
+          className="border-none bg-transparent p-0"
+          onClick={() => handlePreviewClick(url, 'image')}
         >
           <img
-            src={src}
+            src={url}
             alt="attachment"
             className="max-w-full"
           />
         </button>
       );
     }
+    const pdf = content.match(/<a[^>]*href="([^"]+\.pdf)"[^>]*>(.*?)<\/a>/i);
+    if (pdf) {
+      const [, url, text] = pdf;
+      return (
+        <button
+          key={index}
+          type={'button'}
+          className="block w-full text-right text-blue-400 hover:underline"
+          onClick={() => handlePreviewClick(url, 'pdf')}
+        >
+          <MdFileCopy className="mr-1 inline-block h-4 w-4" />
+          {text}
+        </button>
+      );
+    }
+
     return (
       <span
-        key={`text-${content}`}
+        key={index}
         dangerouslySetInnerHTML={{ __html: content }}
       />
     );
@@ -181,18 +195,16 @@ const BulletinBoardColumnItem = ({
     <div
       id={bulletin.id}
       key={bulletin.id}
-      className={cn('relative mx-1 flex items-center justify-between break-all rounded-lg bg-white bg-opacity-5 p-4', {
-        ring: isCurrentBulletin,
-      })}
+      className={cn('relative flex items-start rounded-lg bg-white bg-opacity-5 p-4', { ring: isCurrentBulletin })}
     >
       <div className="flex-1">
-        <h4 className="w-[calc(100%-20px)] overflow-x-hidden text-ellipsis break-normal text-lg font-bold text-background">
-          {bulletin.title}
-        </h4>
-        <div className="mt-2 text-gray-100">
-          {bulletin.content.split(/(<img[^>]*>)/g).map((part) => getProcessedBulletinContent(part))}
+        <h4 className="truncate text-lg font-bold text-background">{bulletin.title}</h4>
+        <div className="mt-2 flex flex-col gap-2 text-gray-100">
+          {bulletin.content
+            .split(/(<img[^>]*>|<a[^>]*href="[^"]+\.pdf"[^>]*>.*?<\/a>)/g)
+            .map(getProcessedBulletinContent)}
+          {getAuthorDescription()}
         </div>
-        {getAuthorDescription()}
       </div>
       <DropdownMenu
         trigger={
