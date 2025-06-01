@@ -155,7 +155,7 @@ const BulletinBoardColumnItem: React.FC<BulletinBoardColumnItemProps> = ({
       return (
         <button
           key={index}
-          type={'button'}
+          type="button"
           className="border-none bg-transparent p-0"
           onClick={() => handlePreviewClick(url, 'image')}
         >
@@ -173,7 +173,7 @@ const BulletinBoardColumnItem: React.FC<BulletinBoardColumnItemProps> = ({
       return (
         <button
           key={index}
-          type={'button'}
+          type="button"
           className="block w-full text-right text-blue-400 hover:underline"
           onClick={() => handlePreviewClick(url, 'pdf')}
         >
