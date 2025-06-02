@@ -17,7 +17,7 @@ import { existsSync, mkdirSync } from 'fs';
 import { HttpStatus } from '@nestjs/common';
 import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
-import CustomHttpException from './CustomHttpException';
+import CustomHttpException from '../common/CustomHttpException';
 
 /**
  * Generates a disk storage configuration that can dynamically
@@ -73,7 +73,7 @@ export const checkAttachmentFile = (file: Express.Multer.File): string => {
     throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
   }
   if (!IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-    throw new CustomHttpException(CommonErrorMessages.ATTACHMENT_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
+    throw new CustomHttpException(CommonErrorMessages.FILE_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
   }
   return file.filename;
 };

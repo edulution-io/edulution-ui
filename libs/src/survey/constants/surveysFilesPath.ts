@@ -12,8 +12,7 @@
 
 import APPS from '@libs/appconfig/constants/apps';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
-import { IMAGES } from '@libs/survey/constants/surveys-endpoint';
 
-const SURVEYS_IMAGES_PATH = `${APPS_FILES_PATH}/${APPS.SURVEYS}/${IMAGES}`;
+const SURVEYS_FILES_PATH = `${APPS_FILES_PATH}/${APPS.SURVEYS}`;
 
-export default SURVEYS_IMAGES_PATH;
+export default SURVEYS_FILES_PATH;
