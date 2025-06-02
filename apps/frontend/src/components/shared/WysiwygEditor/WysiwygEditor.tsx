@@ -25,12 +25,13 @@ import DOCUMENT_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/documentU
 
 interface WysiwygEditorProps {
   value: string;
+  isEditMode?: boolean;
   onChange: (value: string) => void;
   onUpload: (file: File) => Promise<string>;
   onRemove: (filename: string) => void;
 }
 
-const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onUpload, onRemove }) => {
+const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onUpload, onRemove, isEditMode }) => {
   const { eduApiToken } = useUserStore();
   const { t } = useTranslation();
 
@@ -54,6 +55,7 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
   };
 
   useEffect(() => {
+    if (!isEditMode) return;
     if (!value.trim() || !onRemove) {
       previousHtml.current = value;
       return;

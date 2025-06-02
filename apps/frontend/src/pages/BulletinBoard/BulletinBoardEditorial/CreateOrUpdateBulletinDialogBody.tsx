@@ -25,9 +25,10 @@ import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerFi
 
 interface CreateOrUpdateBulletinDialogBodyProps {
   form: UseFormReturn<CreateBulletinDto>;
+  isEditMode?: boolean;
 }
 
-const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialogBodyProps) => {
+const CreateOrUpdateBulletinDialogBody = ({ form, isEditMode }: CreateOrUpdateBulletinDialogBodyProps) => {
   const { t } = useTranslation();
   const {
     uploadAttachment,
@@ -152,6 +153,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
           <div className="mb-1 font-bold">{t('bulletinboard.content')}</div>
           <WysiwygEditor
             value={watch('content')}
+            isEditMode={isEditMode}
             onChange={(value) => setValue('content', value)}
             onUpload={handleUpload}
             onRemove={handleEditorRemove}
