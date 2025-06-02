@@ -13,6 +13,6 @@
 import APPS from '@libs/appconfig/constants/apps';
 import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 
-const BULLETIN_TEMP_FILES_PATH = `${TEMP_FILES_PATH}/${APPS.BULLETIN_BOARD}`;
+const BULLETIN_TEMP_FILES_PATH = `${TEMP_FILES_PATH}/${APPS.BULLETIN_BOARD}/attachments`;
 
 export default BULLETIN_TEMP_FILES_PATH;

@@ -60,6 +60,11 @@ class BulletinBoardController {
     return this.bulletinBoardService.removeAllBulletinsByCategory(currentUser, categoryId);
   }
 
+  @Delete('attachments/:filename')
+  deleteBulletinAttachment(@Param('filename') filename: string) {
+    return this.bulletinBoardService.deleteBulletinAttachment(filename);
+  }
+
   @Get('attachments/:filename')
   serveBulletinAttachment(@Param('filename') filename: string, @Res() res: Response) {
     return this.bulletinBoardService.serveBulletinAttachment(filename, res);

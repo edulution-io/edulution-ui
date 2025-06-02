@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/node_modules/quill/dist/quill.snow.css';
 import './WysiwygEditor.css';
@@ -26,13 +26,47 @@ interface WysiwygEditorProps {
   value: string;
   onChange: (value: string) => void;
   onUpload: (file: File) => Promise<string>;
+  onRemove: (filename: string) => void;
 }
 
-const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onUpload }) => {
+const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onUpload, onRemove }) => {
   const { eduApiToken } = useUserStore();
   const { t } = useTranslation();
 
   const quillRef = useRef<ReactQuill | null>(null);
+
+  const previousHtml = useRef<string>(value);
+  const extractFilenames = (html: string) => {
+    const filenames = new Set<string>();
+
+    const imagePattern = /<img [^>]*src="[^"]*\/([^"/?]+\.(?:png|jpe?g|gif))(?:\?[^"]*)?"/gi;
+    Array.from(html.matchAll(imagePattern)).forEach(([, file]) => {
+      filenames.add(file);
+    });
+
+    const linkPattern = /<a [^>]*href="[^"]*\/([^"/?]+\.pdf)(?:\?[^"]*)?"/gi;
+    Array.from(html.matchAll(linkPattern)).forEach(([, file]) => {
+      filenames.add(file);
+    });
+
+    return filenames;
+  };
+
+  useEffect(() => {
+    if (!value.trim() || !onRemove) {
+      previousHtml.current = value;
+      return;
+    }
+
+    const before = extractFilenames(previousHtml.current || '');
+    const after = extractFilenames(value);
+
+    before.forEach((file) => {
+      if (!after.has(file)) onRemove(file);
+    });
+
+    previousHtml.current = value;
+  }, [value, onRemove]);
 
   const handleImage = () => {
     const input = document.createElement('input');
@@ -45,7 +79,7 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
       if (file) {
         try {
           const uploadedFilename = await onUpload(file);
-          const fetchImageUrl = `${EDU_API_ROOT}/${uploadedFilename}?token=${eduApiToken}`;
+          const fetchImageUrl = `${EDU_API_ROOT}/files/file/temp/${uploadedFilename}?token=${eduApiToken}`;
 
           const quillInstance = quillRef.current?.getEditor();
           if (quillInstance) {

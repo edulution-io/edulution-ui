@@ -27,6 +27,9 @@ import GroupRoles from '@libs/groups/types/group-roles.enum';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import normalizeBulletinContent from '@libs/bulletinBoard/utils/normalizeBulletinContent';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import APPS from '@libs/appconfig/constants/apps';
 import CustomHttpException from '../common/CustomHttpException';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 
@@ -159,6 +162,8 @@ class BulletinBoardService implements OnModuleInit {
       throw new CustomHttpException(BulletinBoardErrorMessage.INVALID_CATEGORY, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    const { cleanedContent } = await normalizeBulletinContent(dto.content);
+
     const hasUserPermission = await this.bulletinCategoryService.hasUserPermission(
       currentUser.preferred_username,
       dto.category.id,
@@ -179,7 +184,7 @@ class BulletinBoardService implements OnModuleInit {
       creator,
       title: dto.title,
       attachmentFileNames: dto.attachmentFileNames,
-      content: BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content),
+      content: BulletinBoardService.replaceContentTokenWithPlaceholder(cleanedContent),
       category: new Types.ObjectId(dto.category.id),
       isVisibleStartDate: dto.isVisibleStartDate,
       isVisibleEndDate: dto.isVisibleEndDate,
@@ -226,14 +231,18 @@ class BulletinBoardService implements OnModuleInit {
       username: currentUser.preferred_username,
     };
 
-    bulletin.title = dto.title;
-    bulletin.isActive = dto.isActive;
-    bulletin.content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content);
-    bulletin.category = new Types.ObjectId(dto.category.id);
-    bulletin.isVisibleStartDate = dto.isVisibleStartDate;
-    bulletin.attachmentFileNames = dto.attachmentFileNames;
-    bulletin.isVisibleEndDate = dto.isVisibleEndDate;
-    bulletin.updatedBy = updatedBy;
+    const { cleanedContent } = await normalizeBulletinContent(dto.content);
+
+    Object.assign(bulletin, {
+      title: dto.title,
+      isActive: dto.isActive,
+      attachmentFileNames: dto.attachmentFileNames,
+      content: BulletinBoardService.replaceContentTokenWithPlaceholder(cleanedContent),
+      category: new Types.ObjectId(dto.category.id),
+      isVisibleStartDate: dto.isVisibleStartDate,
+      isVisibleEndDate: dto.isVisibleEndDate,
+      updatedBy,
+    });
 
     const updatedBulletin = await bulletin.save();
 
@@ -295,6 +304,11 @@ class BulletinBoardService implements OnModuleInit {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  async deleteBulletinAttachment(filename: string) {
+    await FilesystemService.deleteFile(join(APPS_FILES_PATH, APPS.BULLETIN_BOARD, 'attachments'), filename);
+    return { success: true };
   }
 }
 

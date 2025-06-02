@@ -51,6 +51,14 @@ class FileSystemController {
     return this.filesystemService.getFilesInfo(FilesystemService.buildPathString(path));
   }
 
+  @Get(`${FILE_ENDPOINTS.FILE}/temp/:appName/*filename`) serveTempFiles(
+    @Param('appName') appName: string,
+    @Param('filename') filename: string | string[],
+    @Res() res: Response,
+  ) {
+    return this.filesystemService.serveFiles(appName, FilesystemService.buildPathString(filename), res, true);
+  }
+
   @Get(`${FILE_ENDPOINTS.FILE}/:appName/*filename`) serveFiles(
     @Param('appName') appName: string,
     @Param('filename') filename: string | string[],
