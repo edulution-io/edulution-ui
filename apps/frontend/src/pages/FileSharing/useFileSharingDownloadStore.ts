@@ -66,11 +66,11 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
 
       if (!file) return;
 
-      const blobUrl = await get().createDownloadBlobUrl(file.filePath, signal);
+      const blobUrl = await get().createDownloadBlobUrl(file.filename, signal);
       set({ temporaryDownloadUrl: blobUrl });
 
       if (isOnlyOfficeDocument(file.filename)) {
-        const publicUrl = await get().getPublicDownloadUrl(file.filePath, file.filePath, signal);
+        const publicUrl = await get().getPublicDownloadUrl(file.filename, file.basename, signal);
         if (publicUrl) {
           set({ publicDownloadLink: `${getFrontEndUrl()}/${EDU_API_ROOT}/downloads/${publicUrl}` });
         }
@@ -135,14 +135,14 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
         {
           responseType: ResponseType.BLOB,
           signal,
-          params: { filePath: files.map((file) => file.filePath) },
+          params: { filePath: files.map((f) => f.filename) },
           onDownloadProgress: (e: AxiosProgressEvent) => {
             const total = e.total ?? totalBytes;
             if (!total) return;
             let percent = Math.round((e.loaded / total) * 100);
             if (percent > 100) percent = 100;
             get().setDownloadProgress({
-              fileName: files.length > 1 ? 'download.zip' : files[0].filename,
+              fileName: files.length > 1 ? 'download.zip' : files[0].basename,
               percent,
               processId: Math.floor(Math.random() * 1_000_000),
             });

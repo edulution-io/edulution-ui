@@ -51,7 +51,7 @@ const renderFileIcon = (item: DirectoryFileDTO, isCurrentlyDisabled: boolean) =>
   if (item.type === ContentType.FILE) {
     return (
       <FileIconComponent
-        filename={item.filePath}
+        filename={item.filename}
         size={Number(TABLE_ICON_SIZE)}
       />
     );
@@ -76,13 +76,13 @@ const getFileSharingTableColumns = (
       meta: {
         translationId: 'fileSharingTable.filename',
       },
-      accessorFn: (row) => row.type + row.filePath,
+      accessorFn: (row) => row.type + row.filename,
       cell: ({ row }) => {
         const [searchParams, setSearchParams] = useSearchParams();
         const { currentlyDisabledFiles, setFileIsCurrentlyDisabled } = useFileSharingStore();
         const { resetCurrentlyEditingFile, setIsFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
         const { setPublicDownloadLink } = useFileSharingDownloadStore();
-        const isCurrentlyDisabled = currentlyDisabledFiles[row.original.filename];
+        const isCurrentlyDisabled = currentlyDisabledFiles[row.original.basename];
         const { isMobileView } = useMedia();
         const handleFilenameClick = () => {
           if (onFilenameClick) {
@@ -97,23 +97,23 @@ const getFileSharingTableColumns = (
           setPublicDownloadLink('');
           if (row.original.type === ContentType.DIRECTORY) {
             if (isFilePreviewDocked) setIsFilePreviewVisible(false);
-            searchParams.set('path', getPathWithoutWebdav(row.original.filePath));
+            searchParams.set('path', getPathWithoutWebdav(row.original.filename));
             setSearchParams(searchParams);
           } else if (isValidFileToPreview(row.original) && !isMobileView) {
-            void setFileIsCurrentlyDisabled(row.original.filename, true);
+            void setFileIsCurrentlyDisabled(row.original.basename, true);
             setIsFilePreviewVisible(true);
             void resetCurrentlyEditingFile(row.original);
           }
         };
 
-        const isSaving = currentlyDisabledFiles[row.original.filename];
+        const isSaving = currentlyDisabledFiles[row.original.basename];
 
         return (
           <div className={`w-full ${isSaving ? 'pointer-events-none opacity-50' : ''}`}>
             <SelectableTextCell
               icon={renderFileIcon(row.original, isCurrentlyDisabled)}
               row={row}
-              text={row.original.filename}
+              text={row.original.basename}
               onClick={handleFilenameClick}
             />
           </div>
@@ -121,8 +121,8 @@ const getFileSharingTableColumns = (
       },
 
       sortingFn: (rowA, rowB) => {
-        const valueA = rowA.original.type + rowA.original.filePath;
-        const valueB = rowB.original.type + rowB.original.filePath;
+        const valueA = rowA.original.type + rowA.original.filename;
+        const valueB = rowB.original.type + rowB.original.filename;
         return valueA.localeCompare(valueB);
       },
     },
@@ -146,12 +146,9 @@ const getFileSharingTableColumns = (
         }
         return <span className="overflow-hidden text-ellipsis">{formattedDate}</span>;
       },
-      sortingFn: (rowA, rowB) => {
-        const valueA = rowA.original.lastmod;
-        const valueB = rowB.original.lastmod;
-
-        const dateA = parseDate(valueA);
-        const dateB = parseDate(valueB);
+      sortingFn: (rowA, rowB, columnId) => {
+        const dateA = parseDate(rowA.original[columnId]);
+        const dateB = parseDate(rowB.original[columnId]);
 
         if (!dateA || !dateB) {
           return !dateA ? -1 : 1;
@@ -193,7 +190,7 @@ const getFileSharingTableColumns = (
 
         const renderFileCategorize = (item: DirectoryFileDTO) => {
           if (row.original.type === ContentType.FILE) {
-            return t(`fileCategory.${getFileCategorie(item.filePath)}`);
+            return t(`fileCategory.${getFileCategorie(item.filename)}`);
           }
           return t('fileCategory.folder');
         };

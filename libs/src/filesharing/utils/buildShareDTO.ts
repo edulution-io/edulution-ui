@@ -24,11 +24,11 @@ const buildShareDTO = (
   if (!students) return undefined;
 
   const destinationFilePaths = students
-    .map((student) => buildSharePath(userName || '', fileName.filePath, student))
+    .map((student) => buildSharePath(userName || '', fileName.filename, student))
     .filter(Boolean);
 
   return {
-    originFilePath: getPathWithoutWebdav(fileName.filePath),
+    originFilePath: getPathWithoutWebdav(fileName.filename),
     destinationFilePaths,
   };
 };

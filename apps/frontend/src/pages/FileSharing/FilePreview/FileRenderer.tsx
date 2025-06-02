@@ -47,21 +47,21 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
 
   useEffect(() => {
     if (currentlyEditingFile && !isEditorLoading && !isCreatingBlobUrl && !isFetchingPublicUrl) {
-      void setFileIsCurrentlyDisabled(currentlyEditingFile.filename, false);
+      void setFileIsCurrentlyDisabled(currentlyEditingFile.basename, false);
     }
-  }, [isEditorLoading, isCreatingBlobUrl, isFetchingPublicUrl, currentlyEditingFile?.filename]);
+  }, [isEditorLoading, isCreatingBlobUrl, isFetchingPublicUrl, currentlyEditingFile?.basename]);
 
   useEffect(
     () => () => {
       if (!closingRef?.current && currentlyEditingFile) {
-        void setFileIsCurrentlyDisabled(currentlyEditingFile.filename, false);
+        void setFileIsCurrentlyDisabled(currentlyEditingFile.basename, false);
       }
     },
-    [currentlyEditingFile?.filename],
+    [currentlyEditingFile?.basename],
   );
 
   if (!currentlyEditingFile) return null;
-  const fileExtension = getFileExtension(currentlyEditingFile.filePath);
+  const fileExtension = getFileExtension(currentlyEditingFile.filename);
 
   if (isEditorLoading || error || !fileUrl) {
     return (
@@ -82,12 +82,12 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
   }
 
   const isDocumentReady = publicDownloadLink && currentlyEditingFile;
-  if (isOnlyOfficeDocument(currentlyEditingFile.filePath)) {
+  if (isOnlyOfficeDocument(currentlyEditingFile.filename)) {
     return isDocumentReady ? (
       <OnlyOffice
         url={publicDownloadLink}
-        fileName={currentlyEditingFile.filename}
-        filePath={currentlyEditingFile.filePath}
+        fileName={currentlyEditingFile.basename}
+        filePath={currentlyEditingFile.filename}
         mode={editMode ? 'edit' : 'view'}
         type={isMobileView ? 'mobile' : 'desktop'}
         isOpenedInNewTab={isOpenedInNewTab}

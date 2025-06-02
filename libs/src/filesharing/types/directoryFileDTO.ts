@@ -11,10 +11,12 @@
  */
 
 export interface DirectoryFileDTO {
-  filename: string;
+  basename: string;
   etag: string;
-  filePath: string;
+  filename: string;
   lastmod?: string;
   size?: number;
   type?: string;
+
+  [key: string]: string | number | boolean | undefined;
 }

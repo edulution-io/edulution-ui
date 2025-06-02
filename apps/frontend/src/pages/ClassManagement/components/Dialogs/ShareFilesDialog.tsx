@@ -35,7 +35,7 @@ const ShareFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, on
       handleClose={onClose}
       handleSubmit={action}
       submitButtonText={`classmanagement.${title}`}
-      disableSubmit={moveOrCopyItemToPath?.filePath === undefined}
+      disableSubmit={moveOrCopyItemToPath?.filename === undefined}
     />
   );
 

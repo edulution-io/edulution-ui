@@ -33,7 +33,7 @@ const FileSharingTable = () => {
     setSelectedRows(newValue);
     const selectedItemData = Object.keys(newValue)
       .filter((key) => newValue[key])
-      .map((rowId) => files.find((file) => file.filePath === rowId))
+      .map((rowId) => files.find((file) => file.filename === rowId))
       .filter(Boolean) as DirectoryFileDTO[];
     setSelectedItems(selectedItemData);
   };
@@ -60,7 +60,7 @@ const FileSharingTable = () => {
       onRowSelectionChange={handleRowSelectionChange}
       isLoading={isLoading}
       selectedRows={selectedRows}
-      getRowId={(row) => row.filePath}
+      getRowId={(row) => row.filename}
       applicationName={appName}
       initialSorting={[
         { id: 'type', desc: false },

@@ -54,7 +54,7 @@ const FullScreenFileViewer = () => {
   return (
     <PageLayout isFullScreen>
       <PageTitle
-        title={currentlyEditingFile?.filename}
+        title={currentlyEditingFile?.basename}
         translationId="filesharing.sidebar"
       />
       <FileRenderer

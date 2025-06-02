@@ -63,25 +63,25 @@ const useFileSharingMenuConfig = () => {
   useEffect(() => {
     const menuBarItems: MenuItem[] = mountPoints.map((mountPoint: DirectoryFileDTO) => {
       const isHome =
-        mountPoint.filePath.includes(`${user?.ldapGroups?.roles?.at(0)}s`) &&
-        mountPoint.filePath.includes(`${user?.username}`);
-      let translationKey = `mountpoints.${mountPoint.filename?.toLowerCase()}`;
+        mountPoint.filename.includes(`${user?.ldapGroups?.roles?.at(0)}s`) &&
+        mountPoint.filename.includes(`${user?.username}`);
+      let translationKey = `mountpoints.${mountPoint.basename?.toLowerCase()}`;
 
       if (isHome) {
         translationKey = 'mountpoints.home';
       }
-      const baseName = mountPoint.filename ?? '';
+      const baseName = mountPoint.basename ?? '';
 
       const defaultLabel = baseName ? baseName.charAt(0).toUpperCase() + baseName.slice(1) : '';
 
       const label = t(translationKey, { defaultValue: defaultLabel });
 
       return {
-        id: mountPoint.filename,
+        id: mountPoint.basename,
         label,
-        icon: findCorrespondingMountPointIcon(mountPoint.filePath),
+        icon: findCorrespondingMountPointIcon(mountPoint.filename),
         color: 'hover:bg-ciGreenToBlue',
-        action: () => handlePathChange(getPathWithoutWebdav(mountPoint.filePath), mountPoint.filename),
+        action: () => handlePathChange(getPathWithoutWebdav(mountPoint.filename), mountPoint.basename),
       };
     });
 

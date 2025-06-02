@@ -12,20 +12,20 @@
 
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 
-const getNextAvailableFilename = (filename: string, extension: string, existingFiles: DirectoryFileDTO[]) => {
+const getNextAvailableFilename = (baseName: string, extension: string, existingFiles: DirectoryFileDTO[]) => {
   const suffixPattern = /(.*)\((\d+)\)$/;
-  let namePrefix = filename;
+  let namePrefix = baseName;
   let sequenceNumber = 0;
 
-  const existingFileNames = new Set(existingFiles.map((file) => file.filename));
+  const existingFileNames = new Set(existingFiles.map((file) => file.basename));
 
-  const original = `${filename}${extension}`;
+  const original = `${baseName}${extension}`;
   if (!existingFileNames.has(original)) {
     return original;
   }
 
-  if (existingFileNames.has(`${filename}${extension}`)) {
-    const match = filename.match(suffixPattern);
+  if (existingFileNames.has(`${baseName}${extension}`)) {
+    const match = baseName.match(suffixPattern);
     if (match) {
       namePrefix = match[1].trim();
       sequenceNumber = parseInt(match[2], 10);

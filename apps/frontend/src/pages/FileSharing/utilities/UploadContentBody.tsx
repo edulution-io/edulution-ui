@@ -41,8 +41,8 @@ const UploadContentBody = () => {
     return { oversize, normal };
   };
 
-  const findDuplicateFiles = (incomingFiles: File[], existingFiles: { filename: string }[]): File[] =>
-    incomingFiles.filter((file) => existingFiles.some((existing) => existing.filename === file.name));
+  const findDuplicateFiles = (incomingFiles: File[], existingFiles: { basename: string }[]): File[] =>
+    incomingFiles.filter((file) => existingFiles.some((existing) => existing.basename === file.name));
 
   const removeFile = (name: string) => {
     setFilesToUpload((prev) => prev.filter((file) => file.name !== name));

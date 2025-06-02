@@ -48,9 +48,9 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   const fetchMechanism = fileType === ContentType.DIRECTORY ? fetchDialogDirs : fetchDialogFiles;
 
   const currentDirItem: DirectoryFileDTO = {
-    filePath: currentPath,
+    filename: currentPath,
     etag: '',
-    filename: currentPath.split('/').pop() || '',
+    basename: currentPath.split('/').pop() || '',
     type: ContentType.DIRECTORY,
   };
 
@@ -62,12 +62,10 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 
   const files = fileType === ContentType.DIRECTORY ? dialogShownDirs : dialogShownFiles;
 
-  const pathPrefixRegex = new RegExp(`(?:/webdav/|server/${user?.school}/)`, 'g');
-
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const selectionValue = typeof updaterOrValue === 'function' ? updaterOrValue({}) : updaterOrValue;
 
-    const fileMap = new Map(files.map((file) => [file.filePath, file]));
+    const fileMap = new Map(files.map((file) => [file.filename, file]));
 
     const selectedItems = Object.keys(selectionValue)
       .filter((key) => selectionValue[key])
@@ -84,9 +82,9 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
         newPath += '/';
       }
       if (newPath === '/') {
-        newPath += item.original.filePath.replace(pathPrefixRegex, '');
+        newPath += item.original.filename.replace('/webdav/', '').replace(`server/${user?.school}/`, '');
       } else {
-        newPath += getFileNameFromPath(item.original.filePath);
+        newPath += getFileNameFromPath(item.original.filename);
       }
       setCurrentPath(newPath);
     } else {
@@ -116,9 +114,9 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 
   const footer = (
     <div className="bottom-0 justify-end bg-secondary p-4 text-sm text-foreground">
-      {moveOrCopyItemToPath?.filename && showSelectedFile ? (
+      {moveOrCopyItemToPath?.basename && showSelectedFile ? (
         <p className="bg-secondary">
-          {t('moveItemDialog.selectedItem')}: {decodeURIComponent(moveOrCopyItemToPath.filename)}
+          {t('moveItemDialog.selectedItem')}: {decodeURIComponent(moveOrCopyItemToPath.basename)}
         </p>
       ) : (
         <p className="bg-secondary">
@@ -148,10 +146,10 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
           <ScrollableTable
             columns={columns}
             data={files}
-            selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filePath]: true } : {}}
+            selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filename]: true } : {}}
             onRowSelectionChange={handleRowSelectionChange}
             applicationName={APPS.FILE_SHARING}
-            getRowId={(row) => row.filePath}
+            getRowId={(row) => row.filename}
             showHeader={false}
             textColorClassname="text-background"
             showSelectedCount={false}

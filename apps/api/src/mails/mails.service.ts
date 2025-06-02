@@ -22,6 +22,7 @@ import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import GroupRoles from '@libs/groups/types/group-roles.enum';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import CustomHttpException from '../common/CustomHttpException';
 import { MailProvider, MailProviderDocument } from './mail-provider.schema';
@@ -67,8 +68,8 @@ class MailsService implements OnModuleInit {
 
   @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
   async updateImapConfig() {
-    const appConfig = await this.appConfigService.getAppConfigByName(APPS.MAIL);
-
+    const appConfigs = await this.appConfigService.getAppConfigs([GroupRoles.SUPER_ADMIN]);
+    const appConfig = appConfigs.find((config) => config.name === APPS.MAIL);
     if (!appConfig || typeof appConfig.extendedOptions !== 'object') {
       return;
     }
