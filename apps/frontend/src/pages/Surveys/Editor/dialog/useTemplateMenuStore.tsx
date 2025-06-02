@@ -29,7 +29,7 @@ interface TemplateMenuStore {
   uploadTemplate: (template: SurveyTemplateDto) => Promise<void>;
   isSubmitting: boolean;
 
-  deleteTemplate: (templateName: string) => Promise<void>;
+  deleteTemplate: (templateFileName: string) => Promise<void>;
 
   template?: SurveyTemplateDto;
   setTemplate: (template: SurveyTemplateDto) => void;
@@ -105,15 +105,15 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
     }
   },
 
-  deleteTemplate: async (templateName: string): Promise<void> => {
-    if (!templateName) {
+  deleteTemplate: async (templateFileName: string): Promise<void> => {
+    if (!templateFileName) {
       return;
     }
 
     set({ isSubmitting: true });
     try {
       const result = await eduApi.delete<Partial<SurveyDto>>(
-        `${EDU_API_CONFIG_ENDPOINTS.FILES}/${APPS.SURVEYS}/${TEMPLATES}/${templateName}`,
+        `${EDU_API_CONFIG_ENDPOINTS.FILES}/${APPS.SURVEYS}/${TEMPLATES}/${templateFileName}`,
       );
       if (!result) {
         throw new Error(CommonErrorMessages.FILE_DELETION_FAILED);
