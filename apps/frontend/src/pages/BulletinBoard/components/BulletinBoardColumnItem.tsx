@@ -23,10 +23,10 @@ import useUserStore from '@/store/UserStore/UserStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import { useParams } from 'react-router-dom';
 import cn from '@libs/common/utils/className';
 import { MdFileCopy } from 'react-icons/md';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 
 interface BulletinBoardColumnItemProps {
   bulletin: BulletinResponseDto;
@@ -148,15 +148,15 @@ const BulletinBoardColumnItem: React.FC<BulletinBoardColumnItemProps> = ({
     return items;
   };
 
-  const getProcessedBulletinContent = (content: string, index: number) => {
-    if (/^<img/.test(content)) {
-      const src = (content.match(/src="([^"]+)"/) || [])[1] || '';
+  const getProcessedBulletinContent = (chunk: string, index: number) => {
+    if (/<img\b/i.test(chunk)) {
+      const src = chunk.match(/src="([^"]*)"/i)?.[1].replace(/^\/(?!\/)/, '/') ?? '';
       const url = !src.startsWith('http') && !src.startsWith(`/${EDU_API_ROOT}`) ? `/${src}` : src;
       return (
         <button
-          key={index}
+          key={`img-${src}`}
           type="button"
-          className="border-none bg-transparent p-0"
+          className="border-0 bg-transparent p-0"
           onClick={() => handlePreviewClick(url, 'image')}
         >
           <img
@@ -167,7 +167,33 @@ const BulletinBoardColumnItem: React.FC<BulletinBoardColumnItemProps> = ({
         </button>
       );
     }
-    const pdf = content.match(/<a[^>]*href="([^"]+\.pdf)"[^>]*>(.*?)<\/a>/i);
+
+    if (/<a\b/i.test(chunk)) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(chunk, 'text/html');
+      const a = doc.querySelector('a');
+
+      if (a) {
+        const href = a.getAttribute('href') ?? '#';
+        const text = a.textContent ?? href;
+        const isPdf = href.toLowerCase().endsWith('.pdf');
+
+        return (
+          <a
+            key={`link-${href}`}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={isPdf ? 'text-red-400 underline' : 'text-blue-400 underline'}
+          >
+            {text}
+            {isPdf && ' 📄'}
+          </a>
+        );
+      }
+    }
+
+    const pdf = chunk.match(/<a[^>]*href="([^"]+\.pdf)"[^>]*>(.*?)<\/a>/i);
     if (pdf) {
       const [, url, text] = pdf;
       return (
@@ -185,8 +211,8 @@ const BulletinBoardColumnItem: React.FC<BulletinBoardColumnItemProps> = ({
 
     return (
       <span
-        key={index}
-        dangerouslySetInnerHTML={{ __html: content }}
+        key={`html-${chunk}`}
+        dangerouslySetInnerHTML={{ __html: chunk }}
       />
     );
   };
