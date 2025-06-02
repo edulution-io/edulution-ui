@@ -1419,6 +1419,7 @@
   },
   "preview": {
     "image": "Image preview",
+    "pdf": "PDF preview",
     "failedToLoadImage": "Failed to load image"
   },
   "containerApplication": {

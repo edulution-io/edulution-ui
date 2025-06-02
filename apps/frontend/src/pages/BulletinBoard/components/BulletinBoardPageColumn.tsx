@@ -54,6 +54,8 @@ const BulletinBoardPageColumn = ({
 
   const width = `${100 / categoryCount}%`;
 
+  const isPreviewTypeImage = previewType === 'image';
+
   return (
     <div
       style={{ width }}
@@ -78,10 +80,10 @@ const BulletinBoardPageColumn = ({
         <ResizableWindow
           disableMinimizeWindow
           disableToggleMaximizeWindow
-          titleTranslationId={t('preview.image')}
+          titleTranslationId={t(isPreviewTypeImage ? 'preview.image' : 'preview.pdf')}
           handleClose={closePreviewModal}
         >
-          {previewType === 'image' ? (
+          {isPreviewTypeImage ? (
             <FullScreenImage imageSrc={previewUrl} />
           ) : (
             <FullScreenPdfRenderer fileSrc={previewUrl} />
