@@ -21,11 +21,11 @@ import {
   Param,
   Patch,
   Post,
-  Res,
   Query,
+  Res,
   UploadedFile,
-  UseInterceptors,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -33,15 +33,14 @@ import JWTUser from '@libs/user/types/jwt/jwtUser';
 import {
   ANSWER,
   CAN_PARTICIPATE,
+  FILES,
   FIND_ONE,
   HAS_ANSWERS,
-  IMAGES,
-  TEMPLATES,
-  PUBLIC_SURVEYS,
   RESULT,
   SURVEYS,
+  TEMPLATES,
 } from '@libs/survey/constants/surveys-endpoint';
-import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
+import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
@@ -53,7 +52,7 @@ import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
-import { checkAttachmentFile, createAttachmentUploadOptions } from '../common/multer.utilities';
+import { checkAttachmentFile, createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 
 @ApiTags(SURVEYS)
@@ -94,27 +93,19 @@ class SurveysController {
     return this.surveyAnswerService.findUserSurveys(status, user);
   }
 
-  @Post(`${IMAGES}/:surveyId/:questionId`)
+  @Post(FILES)
   @ApiConsumes(RequestResponseContentType.MULTIPART_FORM_DATA)
   @UseInterceptors(
     FileInterceptor(
       'file',
-      createAttachmentUploadOptions((req) => {
-        const { surveyId, questionId } = req.params;
-        return `${SURVEYS_IMAGES_PATH}/${surveyId}/${questionId}`;
-      }),
+      createAttachmentUploadOptions((req) => `${SURVEYS_TEMP_FILES_PATH}/${req.user?.preferred_username}`),
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  uploadImage(
-    @Param() param: { surveyId: string; questionId: string },
-    @UploadedFile() file: Express.Multer.File,
-    @Res() res: Response,
-  ) {
-    const { surveyId, questionId } = param;
+  fileUpload(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
     const fileName = checkAttachmentFile(file);
-    const imageUrl = join(PUBLIC_SURVEYS, IMAGES, surveyId, questionId, fileName);
-    return res.status(HttpStatus.CREATED).json(imageUrl);
+    const fileUrl = join(SURVEYS, FILES, fileName);
+    return res.status(HttpStatus.CREATED).json(fileUrl);
   }
 
   @UseGuards(AppConfigGuard)
@@ -158,6 +149,12 @@ class SurveysController {
   async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUser() user: JWTUser) {
     const { surveyId, saveNo, answer } = pushAnswerDto;
     return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, user);
+  }
+
+  @Get(`${FILES}/:filename`)
+  serveTempFile(@Param() params: { filename: string }, @Res() res: Response, @GetCurrentUsername() username: string) {
+    const { filename } = params;
+    return this.surveyService.serveTempFiles(username, filename, res);
   }
 }
 
