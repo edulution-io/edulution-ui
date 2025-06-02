@@ -10,21 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SurveyPage from '@libs/survey/types/TSurveyPage';
-import SurveyElement from '@libs/survey/types/TSurveyElement';
+import ContentType from '@libs/filesharing/types/contentType';
+import parseWebDAVMultiStatus from '@libs/filesharing/utils/parseWebDAVMultiStatus';
+import parseWebDAVResponse from '@libs/filesharing/utils/parseWebDAVResponse';
 
-class SurveyFormula {
-  title: string;
+const mapToDirectories = (xmlData: string) => {
+  const responses = parseWebDAVMultiStatus(xmlData);
+  return responses
+    .map(parseWebDAVResponse)
+    .filter((file) => file && file.type === ContentType.DIRECTORY && file.filename !== '');
+};
 
-  logo?: string;
-
-  description?: string;
-
-  // only defined in page mode
-  pages?: SurveyPage[];
-
-  // only defined in page-less mode
-  elements?: SurveyElement[];
-}
-
-export default SurveyFormula;
+export default mapToDirectories;

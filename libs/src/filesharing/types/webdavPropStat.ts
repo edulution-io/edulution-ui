@@ -10,21 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SurveyPage from '@libs/survey/types/TSurveyPage';
-import SurveyElement from '@libs/survey/types/TSurveyElement';
+import WebdavProperty from '@libs/filesharing/types/webdavProperty';
+import WebdavXmlAttributes from '@libs/filesharing/types/webdavXmlAttributes';
 
-class SurveyFormula {
-  title: string;
-
-  logo?: string;
-
-  description?: string;
-
-  // only defined in page mode
-  pages?: SurveyPage[];
-
-  // only defined in page-less mode
-  elements?: SurveyElement[];
+interface WebdavPropStat {
+  [WebdavXmlAttributes.Prop]: WebdavProperty;
+  [WebdavXmlAttributes.Status]: string;
 }
 
-export default SurveyFormula;
+export default WebdavPropStat;
