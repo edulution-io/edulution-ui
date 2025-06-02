@@ -42,6 +42,7 @@ import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 import useAppConfigsStore from '../Settings/AppConfig/appConfigsStore';
+import useSilentLoginWithPassword from './useSilentKeycloakLogin';
 
 type LocationState = {
   from: string;
@@ -55,6 +56,7 @@ const LoginPage: React.FC = () => {
   const { eduApiToken, totpIsLoading, isAuthenticated, createOrUpdateUser, setEduApiToken, getTotpStatus } =
     useUserStore();
   const { appConfigs } = useAppConfigsStore();
+  const silentLogin = useSilentLoginWithPassword();
 
   const { isLoading } = auth;
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
@@ -103,6 +105,8 @@ const LoginPage: React.FC = () => {
         setEncryptKey(newEncryptKey);
         setEduApiToken(requestUser.access_token);
         setWebdavKey(CryptoJS.AES.encrypt(password, newEncryptKey).toString());
+
+        await silentLogin(username, password);
       }
     } catch (e) {
       console.error(e);
