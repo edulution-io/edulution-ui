@@ -10,92 +10,82 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { create, StateCreator } from 'zustand';
+import { create } from 'zustand';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
 import {
   GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH,
+  GLOBAL_SETTINGS_PROJECTION_PARAM_GENERAL,
   GLOBAL_SETTINGS_ROOT_ENDPOINT,
 } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
-import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
+import defaultValues from '@libs/global-settings/constants/defaultValues';
 
 type GlobalSettingsStore = {
   isSetGlobalSettingLoading: boolean;
   isGetGlobalSettingsLoading: boolean;
   globalSettings: GlobalSettingsDto;
   reset: () => void;
-  getGlobalSettings: (projection?: typeof GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH) => Promise<GlobalSettingsDto>;
+  getGlobalSettings: (
+    projection?: typeof GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH | typeof GLOBAL_SETTINGS_PROJECTION_PARAM_GENERAL,
+  ) => Promise<void>;
   setGlobalSettings: (globalSettingsDto: GlobalSettingsDto) => Promise<void>;
-};
-
-type PersistedGlobalSettingsStore = (
-  globalSettingsState: StateCreator<GlobalSettingsStore>,
-  options: PersistOptions<Partial<GlobalSettingsStore>>,
-) => StateCreator<GlobalSettingsStore>;
-
-const initialGlobalSettings: GlobalSettingsDto = {
-  auth: {
-    mfaEnforcedGroups: [],
-  },
 };
 
 const initialValues = {
   isSetGlobalSettingLoading: false,
   isGetGlobalSettingsLoading: false,
   mfaEnforcedGroups: [],
-  globalSettings: initialGlobalSettings,
+  globalSettings: defaultValues,
 };
 
-const useGlobalSettingsApiStore = create<GlobalSettingsStore>(
-  (persist as PersistedGlobalSettingsStore)(
-    (set) => ({
-      ...initialValues,
+const useGlobalSettingsApiStore = create<GlobalSettingsStore>((set, get) => ({
+  ...initialValues,
 
-      getGlobalSettings: async (projection?) => {
-        set({ isGetGlobalSettingsLoading: true });
-        try {
-          const { data } = await eduApi.get<GlobalSettingsDto>(GLOBAL_SETTINGS_ROOT_ENDPOINT, {
-            params: { projection },
-          });
+  getGlobalSettings: async (projection?) => {
+    if (get().isGetGlobalSettingsLoading) return;
 
-          if (data) {
-            set({ globalSettings: data });
-            return data;
-          }
+    set({ isGetGlobalSettingsLoading: true });
+    try {
+      const { data } = await eduApi.get<GlobalSettingsDto>(GLOBAL_SETTINGS_ROOT_ENDPOINT, {
+        params: { projection },
+      });
 
-          return initialGlobalSettings;
-        } catch (error) {
-          handleApiError(error, set);
-          return initialGlobalSettings;
-        } finally {
-          set({ isGetGlobalSettingsLoading: false });
+      if (data) {
+        if (projection) {
+          set((state) => ({
+            globalSettings: {
+              ...state.globalSettings,
+              ...data,
+            },
+          }));
+        } else {
+          set({ globalSettings: data });
         }
-      },
+      }
+    } catch (error) {
+      handleApiError(error, set);
+    } finally {
+      set({ isGetGlobalSettingsLoading: false });
+    }
+  },
 
-      setGlobalSettings: async (globalSettingsDto) => {
-        set({ isSetGlobalSettingLoading: true });
-        try {
-          await eduApi.put(GLOBAL_SETTINGS_ROOT_ENDPOINT, globalSettingsDto);
-          set({ globalSettings: globalSettingsDto });
-          toast.success(i18n.t('settings.globalSettings.updateSuccessful'));
-        } catch (error) {
-          handleApiError(error, set);
-        } finally {
-          set({ isSetGlobalSettingLoading: false });
-        }
-      },
+  setGlobalSettings: async (globalSettingsDto) => {
+    set({ isSetGlobalSettingLoading: true });
+    try {
+      await eduApi.put(GLOBAL_SETTINGS_ROOT_ENDPOINT, globalSettingsDto);
+      set({ globalSettings: globalSettingsDto });
+      toast.success(i18n.t('settings.globalSettings.updateSuccessful'));
+    } catch (error) {
+      handleApiError(error, set);
+    } finally {
+      set({ isSetGlobalSettingLoading: false });
+    }
+  },
 
-      reset: () => set(initialValues),
-    }),
-    {
-      name: 'global-settings-storage',
-      storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ globalSettings: state.globalSettings }),
-    },
-  ),
-);
+  reset: () => set(initialValues),
+}));
 
 export default useGlobalSettingsApiStore;

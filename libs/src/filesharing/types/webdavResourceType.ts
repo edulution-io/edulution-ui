@@ -10,10 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
-import { IMAGES } from '@libs/survey/constants/surveys-endpoint';
+import WebdavXmlAttributes from '@libs/filesharing/types/webdavXmlAttributes';
 
-const SURVEYS_IMAGES_PATH = `${APPS_FILES_PATH}/${APPS.SURVEYS}/${IMAGES}`;
+interface WebdavResourceType {
+  [WebdavXmlAttributes.Collection]?: string | null;
+}
 
-export default SURVEYS_IMAGES_PATH;
+export default WebdavResourceType;
