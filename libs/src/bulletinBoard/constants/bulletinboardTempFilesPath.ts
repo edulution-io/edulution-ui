@@ -10,19 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as React from 'react';
+import APPS from '@libs/appconfig/constants/apps';
+import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 
-interface FullScreenPdfRendererProps {
-  fileSrc: string;
-}
+const BULLETIN_TEMP_FILES_PATH = `${TEMP_FILES_PATH}/${APPS.BULLETIN_BOARD}`;
 
-const FullScreenPdfRenderer: React.FC<FullScreenPdfRendererProps> = ({ fileSrc }) => (
-  <iframe
-    src={fileSrc}
-    className="h-full min-h-screen w-full border-0"
-    title="PDF"
-    loading="lazy"
-  />
-);
-
-export default FullScreenPdfRenderer;
+export default BULLETIN_TEMP_FILES_PATH;
