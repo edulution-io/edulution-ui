@@ -33,8 +33,6 @@ class PdfBlot extends BlockEmbed {
 
   static tagName = 'div';
 
-  static className = 'ql-embed-pdf';
-
   static create(src: string) {
     /* eslint-disable
      @typescript-eslint/no-unsafe-call,
