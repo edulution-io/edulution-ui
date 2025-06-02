@@ -14,6 +14,7 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/node_modules/quill/dist/quill.snow.css';
 import './WysiwygEditor.css';
+import './pdfBlot';
 import BULLETIN_EDITOR_FORMATS from '@libs/bulletinBoard/constants/bulletinEditorFormats';
 import useUserStore from '@/store/UserStore/UserStore';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
@@ -105,15 +106,17 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
       if (!file) return;
       try {
         const filename = await onUpload(file);
-        const url = `/uploads/${filename}`;
+        const pdfTempUrl = `${EDU_API_ROOT}/files/file/temp/${filename}?token=${eduApiToken}`;
 
-        const editor = quillRef.current!.getEditor();
-        const range = editor.getSelection() || { index: 0, length: 0 };
-        editor.insertText(range.index, file.name, 'link', url);
-        editor.setSelection(range.index + file.name.length, 0);
+        const quill = quillRef.current!.getEditor();
+        const range = quill.getSelection() || { index: 0, length: 0 };
+
+        quill.insertText(range.index, file.name, 'link', pdfTempUrl);
+        quill.insertEmbed(range.index, 'pdf', pdfTempUrl);
+        quill.setSelection(range.index + 1, 0);
       } catch (err) {
         console.error(err);
-        toast.error('File upload failed');
+        toast.error(t('errors.uploadOrFetchAttachmentFailed'));
       }
     };
   };
@@ -128,6 +131,7 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
           ['link', 'image', 'file'],
           ['clean'],
         ],
+        formats: BULLETIN_EDITOR_FORMATS,
         handlers: {
           image: handleImage,
           file: handleFile,

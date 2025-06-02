@@ -36,8 +36,13 @@ const normalizeBulletinContent = async (originalHtml: string) => {
 
   await Promise.all(relocationTasks);
 
+  const finalLinkPattern = /edu-api\/files\/file\/bulletinboard\/attachments\/([^"?]+\.(?:png|jpe?g|gif|pdf))/gi;
+
+  const fileNames = Array.from(cleanedHtml.matchAll(finalLinkPattern), (match) => match[1]);
+
   return {
     cleanedContent: cleanedHtml,
+    filenames: fileNames,
   };
 };
 

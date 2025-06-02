@@ -22,7 +22,6 @@ import ResizableWindow from '@/components/structure/framing/ResizableWindow/Resi
 import FullScreenImage from '@/components/ui/FullScreenImage';
 import { useTranslation } from 'react-i18next';
 import FullScreenPdfRenderer from '@/components/ui/FullScreenPdfRenderer';
-import useUserStore from '@/store/UserStore/UserStore';
 
 const BulletinBoardPageColumn = ({
   bulletins,
@@ -37,7 +36,6 @@ const BulletinBoardPageColumn = ({
 }) => {
   const { t } = useTranslation();
   const { getBulletinsByCategories } = useBulletinBoardStore();
-  const { eduApiToken } = useUserStore();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewType, setPreviewType] = useState<'image' | 'pdf' | null>(null);
 
@@ -86,7 +84,7 @@ const BulletinBoardPageColumn = ({
           {previewType === 'image' ? (
             <FullScreenImage imageSrc={previewUrl} />
           ) : (
-            <FullScreenPdfRenderer fileSrc={`/edu-api${previewUrl.replace('/uploads', '')}?token=${eduApiToken}`} />
+            <FullScreenPdfRenderer fileSrc={previewUrl} />
           )}
         </ResizableWindow>
       )}

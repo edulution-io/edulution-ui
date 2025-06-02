@@ -25,8 +25,8 @@ import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardE
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import { useParams } from 'react-router-dom';
 import cn from '@libs/common/utils/className';
-import { MdFileCopy } from 'react-icons/md';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import PdfRenderer from '@/components/ui/FullScreenPdfRenderer';
 
 interface BulletinBoardColumnItemProps {
   bulletin: BulletinResponseDto;
@@ -149,69 +149,71 @@ const BulletinBoardColumnItem: React.FC<BulletinBoardColumnItemProps> = ({
   };
 
   const getProcessedBulletinContent = (chunk: string, index: number) => {
+    /* ---------- 1. Bilder ------------------------------------------------ */
     if (/<img\b/i.test(chunk)) {
-      const src = chunk.match(/src="([^"]*)"/i)?.[1].replace(/^\/(?!\/)/, '/') ?? '';
-      const url = !src.startsWith('http') && !src.startsWith(`/${EDU_API_ROOT}`) ? `/${src}` : src;
+      const srcAttr = chunk.match(/src="([^"]*)"/i)?.[1] ?? '';
+      const cleaned = srcAttr.replace(/^\/?(?:files\/file)?/, '/');
+      const absolute = cleaned.startsWith('http') || cleaned.startsWith(`/${EDU_API_ROOT}`) ? cleaned : `/${cleaned}`;
+
       return (
         <button
-          key={`img-${src}`}
+          key={`img-${absolute}`}
           type="button"
           className="border-0 bg-transparent p-0"
-          onClick={() => handlePreviewClick(url, 'image')}
+          onClick={() => handlePreviewClick(absolute, 'image')}
         >
           <img
-            src={url}
+            src={absolute}
             alt="attachment"
             className="max-w-full"
           />
         </button>
       );
     }
-
     if (/<a\b/i.test(chunk)) {
       const parser = new DOMParser();
       const doc = parser.parseFromString(chunk, 'text/html');
-      const a = doc.querySelector('a');
+      const aTag = doc.querySelector('a');
+      if (!aTag) return null;
 
-      if (a) {
-        const href = a.getAttribute('href') ?? '#';
-        const text = a.textContent ?? href;
-        const isPdf = href.toLowerCase().endsWith('.pdf');
+      const rawHref = aTag.getAttribute('href') ?? '#';
+      const linkWithoutFilePrefix = rawHref.replace('/files/file', '');
 
+      const href = linkWithoutFilePrefix.split('?')[0];
+
+      const linkText = aTag.textContent ?? href;
+      const isPdf = href.toLowerCase().endsWith('.pdf');
+
+      if (isPdf) {
         return (
-          <a
-            key={`link-${href}`}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={isPdf ? 'text-red-400 underline' : 'text-blue-400 underline'}
+          <button
+            key={`pdf-${linkWithoutFilePrefix}`}
+            type="button"
+            className="block w-full text-right text-red-400 hover:underline"
+            onClick={() => handlePreviewClick(linkWithoutFilePrefix, 'pdf')}
           >
-            {text}
-            {isPdf && ' 📄'}
-          </a>
+            {` 📄${linkText}`}
+            <PdfRenderer fileSrc={linkWithoutFilePrefix} />
+          </button>
         );
       }
-    }
 
-    const pdf = chunk.match(/<a[^>]*href="([^"]+\.pdf)"[^>]*>(.*?)<\/a>/i);
-    if (pdf) {
-      const [, url, text] = pdf;
       return (
-        <button
-          key={index}
-          type="button"
-          className="block w-full text-right text-blue-400 hover:underline"
-          onClick={() => handlePreviewClick(url, 'pdf')}
+        <a
+          key={`link-${linkWithoutFilePrefix}`}
+          href={linkWithoutFilePrefix}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-400 underline"
         >
-          <MdFileCopy className="mr-1 inline-block h-4 w-4" />
-          {text}
-        </button>
+          {linkText}
+        </a>
       );
     }
 
     return (
       <span
-        key={`html-${chunk}`}
+        key={`html-${index}`}
         dangerouslySetInnerHTML={{ __html: chunk }}
       />
     );

@@ -21,6 +21,7 @@ const BULLETIN_EDITOR_FORMATS = [
   'indent',
   'link',
   'image',
+  'pdf',
 ];
 
 export default BULLETIN_EDITOR_FORMATS;
