@@ -30,7 +30,7 @@ const QRCodeWithCopyButton = ({ url, qrCodeSize, titleTranslationId }: QRCodeWit
   return (
     <>
       <p className="font-bold">{t(titleTranslationId)}</p>
-      <div className="mt-4 flex flex-col items-center justify-center space-y-8">
+      <div className="flex flex-col items-center justify-center">
         <QRCodeDisplay
           value={url}
           size={qrCodeSize}

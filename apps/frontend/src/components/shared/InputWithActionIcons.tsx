@@ -41,11 +41,7 @@ const InputWithActionIcons = React.forwardRef<HTMLInputElement, InputProps>(
           >
             <div className="absolute inset-y-0 right-0 flex items-center pr-3">
               <ButtonIcon
-                className={cn(
-                  { 'text-muted': disabled },
-                  'h-[16px] max-h-[20px] w-[16px] max-w-[20px] cursor-pointer',
-                  buttonsClassName,
-                )}
+                className={cn({ 'text-muted': disabled }, 'h-4 max-h-5 w-4 max-w-5 cursor-pointer', buttonsClassName)}
               />
             </div>
           </button>
