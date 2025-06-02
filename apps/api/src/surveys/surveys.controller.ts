@@ -21,11 +21,11 @@ import {
   Param,
   Patch,
   Post,
-  Res,
   Query,
+  Res,
   UploadedFile,
-  UseInterceptors,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -33,12 +33,12 @@ import JWTUser from '@libs/user/types/jwt/jwtUser';
 import {
   ANSWER,
   CAN_PARTICIPATE,
+  FILES,
   FIND_ONE,
   HAS_ANSWERS,
-  FILES,
-  TEMPLATES,
   RESULT,
   SURVEYS,
+  TEMPLATES,
 } from '@libs/survey/constants/surveys-endpoint';
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import SurveyStatus from '@libs/survey/survey-status-enum';
@@ -104,8 +104,8 @@ class SurveysController {
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   fileUpload(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
     const fileName = checkAttachmentFile(file);
-    const imageUrl = join(SURVEYS, FILES, fileName);
-    return res.status(HttpStatus.CREATED).json(imageUrl);
+    const fileUrl = join(SURVEYS, FILES, fileName);
+    return res.status(HttpStatus.CREATED).json(fileUrl);
   }
 
   @UseGuards(AppConfigGuard)
