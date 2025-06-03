@@ -10,6 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const TEMP_FILES = 'temp';
+import WebdavXmlAttributes from '@libs/filesharing/types/webdavXmlAttributes';
 
-export default TEMP_FILES;
+interface WebdavResourceType {
+  [WebdavXmlAttributes.Collection]?: string | null;
+}
+
+export default WebdavResourceType;

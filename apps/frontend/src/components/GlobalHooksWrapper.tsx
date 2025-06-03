@@ -18,6 +18,8 @@ import type UserDto from '@libs/user/types/user.dto';
 import useSseStore from '@/store/useSseStore';
 import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 import isDev from '@libs/common/constants/isDev';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
+import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import useAppConfigsStore from '../pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '../store/UserStore/UserStore';
 import useLogout from '../hooks/useLogout';
@@ -27,6 +29,7 @@ import useTokenEventListeners from '../hooks/useTokenEventListener';
 const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const auth = useAuth();
   const { getAppConfigs } = useAppConfigsStore();
+  const { getGlobalSettings } = useGlobalSettingsApiStore();
   const { getIsEduApiHealthy } = useEduApiStore();
   const { isAuthenticated, eduApiToken, setEduApiToken, user, getWebdavKey } = useUserStore();
   const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
@@ -40,7 +43,7 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
       setEduApiToken(auth.user?.access_token);
 
       setCookie('authToken', auth.user?.access_token, {
-        path: '/',
+        path: DASHBOARD_ROUTE,
         domain: window.location.hostname,
         secure: !isDev,
         sameSite: isDev ? 'lax' : 'none',
@@ -59,9 +62,10 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   useNotifications();
 
   useEffect(() => {
-    const handleGetAppConfigs = async () => {
+    const getInitialAppData = async () => {
       const isApiResponding = await getIsEduApiHealthy();
       if (isApiResponding) {
+        void getGlobalSettings();
         void getAppConfigs();
         return;
       }
@@ -69,7 +73,7 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
     };
 
     if (isAuthenticated) {
-      void handleGetAppConfigs();
+      void getInitialAppData();
     }
   }, [isAuthenticated]);
 

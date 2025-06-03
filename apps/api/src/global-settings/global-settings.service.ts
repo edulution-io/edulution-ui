@@ -12,30 +12,52 @@
 
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import GlobalSettingsErrorMessages from '@libs/global-settings/constants/globalSettingsErrorMessages';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
+import defaultValues from '@libs/global-settings/constants/defaultValues';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import { GLOBAL_SETTINGS_ROOT_ENDPOINT } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 import CustomHttpException from '../common/CustomHttpException';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
+import MigrationService from '../migration/migration.service';
+import globalSettingsMigrationsList from './migrations/globalSettingsMigrationsList';
 
 @Injectable()
 class GlobalSettingsService implements OnModuleInit {
-  constructor(@InjectModel(GlobalSettings.name) private globalSettingsModel: Model<GlobalSettingsDocument>) {}
+  constructor(
+    @InjectModel(GlobalSettings.name) private globalSettingsModel: Model<GlobalSettingsDocument>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   async onModuleInit() {
     const count = await this.globalSettingsModel.countDocuments();
 
     if (count !== 0) {
+      await MigrationService.runMigrations<GlobalSettingsDocument>(
+        this.globalSettingsModel,
+        globalSettingsMigrationsList,
+      );
+
       return;
     }
 
     await this.globalSettingsModel.create({
       singleton: true,
-      auth: { mfaEnforcedGroups: [] },
-      schemaVersion: 1,
+      ...defaultValues,
     });
 
     Logger.log(`Imported default values`, GlobalSettings.name);
+  }
+
+  async invalidateCache(): Promise<void> {
+    try {
+      await this.cacheManager.del(`/${EDU_API_ROOT}/${GLOBAL_SETTINGS_ROOT_ENDPOINT}`);
+    } catch (error) {
+      Logger.warn(`Failed to invalidate cache for GlobalSettings: ${(error as Error).message}`, GlobalSettings.name);
+    }
   }
 
   async getGlobalSettings(projection?: string) {
@@ -61,6 +83,8 @@ class GlobalSettingsService implements OnModuleInit {
       if (updateWriteResult.modifiedCount === 0) {
         throw new Error();
       }
+
+      await this.invalidateCache();
 
       return updateWriteResult;
     } catch (error) {

@@ -13,14 +13,16 @@
 import React from 'react';
 import { Control, FieldValues, Path } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import { FormControl, FormDescription, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Switch from '@/components/ui/Switch';
 
 type AppConfigSwitchProps<T extends FieldValues> = {
   fieldPath: Path<T>;
   control: Control<T>;
-  option: AppConfigExtendedOption;
+  option: {
+    title: string;
+    description: string;
+  };
 };
 
 const AppConfigSwitch = <T extends FieldValues>({ fieldPath, control, option }: AppConfigSwitchProps<T>) => {

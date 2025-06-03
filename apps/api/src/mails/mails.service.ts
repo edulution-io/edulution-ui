@@ -16,13 +16,12 @@ import { ArgumentMetadata, HttpStatus, Injectable, Logger, OnModuleInit } from '
 import { InjectModel } from '@nestjs/mongoose';
 import { OnEvent } from '@nestjs/event-emitter';
 import axios, { AxiosInstance } from 'axios';
-import https from 'https';
+import { Agent as HttpsAgent } from 'https';
 import { CreateSyncJobDto, MailDto, MailProviderConfigDto, SyncJobDto, SyncJobResponseDto } from '@libs/mail/types';
 import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
-import GroupRoles from '@libs/groups/types/group-roles.enum';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import CustomHttpException from '../common/CustomHttpException';
 import { MailProvider, MailProviderDocument } from './mail-provider.schema';
@@ -49,7 +48,7 @@ class MailsService implements OnModuleInit {
     @InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>,
     private readonly appConfigService: AppConfigService,
   ) {
-    const httpsAgent = new https.Agent({
+    const httpsAgent = new HttpsAgent({
       rejectUnauthorized: false,
     });
     this.mailcowApi = axios.create({
@@ -68,17 +67,26 @@ class MailsService implements OnModuleInit {
 
   @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
   async updateImapConfig() {
-    const appConfigs = await this.appConfigService.getAppConfigs([GroupRoles.SUPER_ADMIN]);
-    const appConfig = appConfigs.find((config) => config.name === APPS.MAIL);
+    const appConfig = await this.appConfigService.getAppConfigByName(APPS.MAIL);
+
     if (!appConfig || typeof appConfig.extendedOptions !== 'object') {
       return;
     }
 
     this.imapUrl = (appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_URL] as string) || '';
     this.imapPort = (appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_PORT] as number) || 0;
-    this.imapSecure = appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_SECURE] === 'true' || false;
-    this.imapRejectUnauthorized =
-      appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED] === 'true' || false;
+    this.imapSecure = !!appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_SECURE];
+    this.imapRejectUnauthorized = !!appConfig.extendedOptions[ExtendedOptionKeys.MAIL_IMAP_TLS_REJECT_UNAUTHORIZED];
+
+    Logger.verbose(
+      `IMAP config: ${JSON.stringify({
+        imapUrl: this.imapUrl,
+        imapPort: this.imapPort,
+        imapSecure: this.imapSecure,
+        imapRejectUnauthorized: this.imapRejectUnauthorized,
+      })}`,
+      MailsService.name,
+    );
   }
 
   async getMails(emailAddress: string, password: string): Promise<MailDto[]> {

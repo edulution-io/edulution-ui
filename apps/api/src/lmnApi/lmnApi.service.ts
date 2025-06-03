@@ -31,7 +31,7 @@ import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiSearchResult from '@libs/lmnApi/types/lmnApiSearchResult';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
-import https from 'https';
+import { Agent as HttpsAgent } from 'https';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import LmnApiProjectWithMembers from '@libs/lmnApi/types/lmnApiProjectWithMembers';
 import GroupForm from '@libs/groups/types/groupForm';
@@ -58,7 +58,7 @@ class LmnApiService {
     private readonly userService: UsersService,
     private readonly webdavService: WebdavService,
   ) {
-    const httpsAgent = new https.Agent({
+    const httpsAgent = new HttpsAgent({
       rejectUnauthorized: false,
     });
     this.lmnApi = axios.create({

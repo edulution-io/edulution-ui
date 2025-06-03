@@ -212,7 +212,7 @@
     "errors": {
       "MeetingNotFound": "Ein Meeting mit dieser ID wurde nicht gefunden",
       "BbbServerNotReachable": "Der externe BBB-Server ist nicht erreichbar",
-      "CouldNotStartConference": "Die Konference konnte nicht gestartet werden",
+      "CouldNotStartConference": "Die Konferenz konnte nicht gestartet werden",
       "CouldNotStopConference": "Die Konferenz konnte nicht gestoppt werden",
       "BbbUnauthorized": "Du bist nicht autorisiert auf den externen BBB-Server zuzugreifen",
       "AppNotProperlyConfigured": "Die Konferenz-App ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
@@ -795,8 +795,12 @@
     "globalSettings": {
       "title": "Globale Einstellungen",
       "security": "Sicherheit",
+      "general": "Allgemein",
+      "defaultLandingPageTitle": "Standardanwendung nach dem Login",
+      "defaultLandingPageDescription": "Hier kann festgelegt werden, welche Anwendung für Nutzer standardmäßig nach dem Login angezeigt werden soll.",
+      "defaultLandingPageSwitchDescription": "Bei Aktivierung erfolgt die Weiterleitung der Nutzer nach erfolgreichem Login nicht zum Dashboard, sondern zu der an dieser Stelle konfigurierten Anwendung.",
       "multiFactorAuthentication": "Zwei-Faktor-Authentisierung",
-      "description": "Hier kann festgelegt werden, für welche Nutzergruppen die Zwei-Faktor-Authentisierung erzwungen werden soll.",
+      "mfaDescription": "Hier kann festgelegt werden, für welche Nutzergruppen die Zwei-Faktor-Authentisierung erzwungen werden soll.",
       "selectUserGroups": "Nutzergruppen auswählen, für welche das MFA-Setup erzwungen wird.",
       "updateSuccessful": "Einstellung erfolgreich aktualisiert.",
       "errors": {
@@ -879,7 +883,8 @@
       "forbiddenProxyPath": "Dieser Proxy-Pfad ist nicht erlaubt.",
       "fieldRequired": "Dieses Feld ist erforderlich",
       "maxChars": "Maximal {{count}} Zeichen",
-      "nameAlreadyExists": "App mit diesem Namen existiert bereits"
+      "nameAlreadyExists": "App mit diesem Namen existiert bereits",
+      "nameIsNotAllowed": "Dieser Appname ist nicht erlaubt"
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",

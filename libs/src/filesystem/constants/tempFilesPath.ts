@@ -10,8 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import TEMP_FILES from './tempFiles';
-
-const TEMP_FILES_PATH = `./data/${TEMP_FILES}`;
+const TEMP_FILES_PATH = `./data/temp`;
 
 export default TEMP_FILES_PATH;

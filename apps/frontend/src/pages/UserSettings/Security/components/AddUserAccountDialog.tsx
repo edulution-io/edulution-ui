@@ -21,14 +21,11 @@ import { Form, FormControl, FormDescription, FormFieldSH, FormItem, FormMessage 
 import { zodResolver } from '@hookform/resolvers/zod';
 import useUserStore from '@/store/UserStore/UserStore';
 import { decryptPassword, deriveKey, encryptPassword } from '@libs/common/utils/encryptPassword';
-import { DropdownSelect } from '@/components';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import getDisplayName from '@/utils/getDisplayName';
-import useLanguage from '@/hooks/useLanguage';
 import { decodeBase64, encodeBase64 } from '@libs/common/utils/getBase64String';
 import TotpInput from '@/pages/LoginPage/components/TotpInput';
 import cn from '@libs/common/utils/className';
 import type EncryptedPasswordObject from '@libs/common/types/encryptPasswordObject';
+import AppDropdownSelectFormField from '@/components/ui/DropdownSelect/AppDropdownSelectFormField';
 import getUserAccountFormSchema from './getUserAccountSchema';
 
 interface AddUserAccountDialogProps {
@@ -47,9 +44,7 @@ type UserAccountFormValues = {
 
 const AddUserAccountDialog: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowSelected, keys, handleOpenChange }) => {
   const { t } = useTranslation();
-  const { language } = useLanguage();
   const { userAccounts, addUserAccount, updateUserAccount } = useUserStore();
-  const { appConfigs } = useAppConfigsStore();
   const [enterSafePin, setEnterSafePin] = useState(false);
   const idx = isOneRowSelected ? Number(keys[0]) : undefined;
   const isFirstUserAccount = userAccounts.length === 0;
@@ -69,7 +64,7 @@ const AddUserAccountDialog: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowS
           safePin: '',
         };
 
-  const form = useForm({
+  const form = useForm<UserAccountFormValues>({
     mode: 'onSubmit',
     resolver: zodResolver(getUserAccountFormSchema(t)),
     defaultValues: initialFormValues,
@@ -132,33 +127,15 @@ const AddUserAccountDialog: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowS
     handleClose();
   };
 
-  const appNameOptions = appConfigs.map((appConfig) => ({
-    id: appConfig.name,
-    name: getDisplayName(appConfig, language),
-  }));
-
   const getDialogBody = () => (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         {!enterSafePin && (
           <div className="flex flex-col gap-4">
-            <FormFieldSH
-              control={form.control}
-              name="appName"
-              defaultValue={initialFormValues.appName}
-              render={({ field }) => (
-                <FormItem>
-                  <p className="font-bold">{t('common.application')}</p>
-                  <FormControl>
-                    <DropdownSelect
-                      options={appNameOptions}
-                      selectedVal={field.value}
-                      handleChange={field.onChange}
-                      variant="dialog"
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
+            <AppDropdownSelectFormField
+              form={form}
+              initialValue={initialFormValues.appName}
+              variant="dialog"
             />
             <FormField
               labelTranslationId={t('common.username')}
