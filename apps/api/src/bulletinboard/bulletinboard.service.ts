@@ -214,6 +214,8 @@ class BulletinBoardService implements OnModuleInit {
 
     const pathToAttachments = join(APPS_FILES_PATH, APPS.BULLETIN_BOARD, 'attachments', id);
 
+    const { cleanedContent } = await normalizeBulletinContent(dto.content, id);
+
     await Promise.all(filesToDelete.map((filename) => FilesystemService.deleteFile(pathToAttachments, filename)));
 
     if (!bulletin) {
@@ -245,8 +247,6 @@ class BulletinBoardService implements OnModuleInit {
       lastName: currentUser.family_name,
       username: currentUser.preferred_username,
     };
-
-    const { cleanedContent } = await normalizeBulletinContent(dto.content, id);
 
     Object.assign(bulletin, {
       title: dto.title,
