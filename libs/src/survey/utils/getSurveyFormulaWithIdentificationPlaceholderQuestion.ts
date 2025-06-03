@@ -14,7 +14,7 @@ import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 
 const getSurveyFormulaWithIdentificationPlaceholderQuestion = (formula: TSurveyFormula) => {
   const updatedFormula = structuredClone(formula);
-  const identification = { type: 'text', name: 'identification' };
+  const identification = { type: 'text', name: 'identification', value: '' };
 
   if (Array.isArray(updatedFormula.pages) && updatedFormula.pages.length > 0) {
     updatedFormula.pages[0].elements = [identification, ...(updatedFormula.pages[0].elements ?? [])];
