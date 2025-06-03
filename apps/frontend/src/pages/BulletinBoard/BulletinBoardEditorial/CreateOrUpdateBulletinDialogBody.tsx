@@ -25,18 +25,12 @@ import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerFi
 
 interface CreateOrUpdateBulletinDialogBodyProps {
   form: UseFormReturn<CreateBulletinDto>;
-  isEditMode?: boolean;
 }
 
-const CreateOrUpdateBulletinDialogBody = ({ form, isEditMode }: CreateOrUpdateBulletinDialogBodyProps) => {
+const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialogBodyProps) => {
   const { t } = useTranslation();
-  const {
-    uploadAttachment,
-    categoriesWithEditPermission,
-    isCreateBulletinDialogOpen,
-    isGetCategoriesLoading,
-    deleteBulletinAttachment,
-  } = useBulletinBoardEditorialStore();
+  const { uploadAttachment, categoriesWithEditPermission, isCreateBulletinDialogOpen, isGetCategoriesLoading } =
+    useBulletinBoardEditorialStore();
   const { setValue, watch, formState } = form;
 
   const isVisibilityDateSet = !!watch('isVisibleStartDate') || !!watch('isVisibleEndDate');
@@ -74,7 +68,6 @@ const CreateOrUpdateBulletinDialogBody = ({ form, isEditMode }: CreateOrUpdateBu
       'attachmentFileNames',
       current.filter((f) => f !== filename),
     );
-    void deleteBulletinAttachment(filename);
   };
 
   const isActive = watch('isActive');
@@ -153,7 +146,6 @@ const CreateOrUpdateBulletinDialogBody = ({ form, isEditMode }: CreateOrUpdateBu
           <div className="mb-1 font-bold">{t('bulletinboard.content')}</div>
           <WysiwygEditor
             value={watch('content')}
-            isEditMode={isEditMode}
             onChange={(value) => setValue('content', value)}
             onUpload={handleUpload}
             onRemove={handleEditorRemove}

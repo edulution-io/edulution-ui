@@ -201,6 +201,18 @@ class BulletinBoardService implements OnModuleInit {
 
   async updateBulletin(currentUser: JwtUser, id: string, dto: CreateBulletinDto) {
     const bulletin = await this.bulletinModel.findById(id).exec();
+
+    const bulletinNames: string[] = bulletin?.attachmentFileNames ?? [];
+    const dtoNames: string[] = dto.attachmentFileNames ?? [];
+
+    const dtoSet = new Set(dtoNames);
+
+    const filesToDelete = bulletinNames.filter((name) => !dtoSet.has(name));
+
+    const pathToAttachments = join(APPS_FILES_PATH, APPS.BULLETIN_BOARD, 'attachments');
+
+    await Promise.all(filesToDelete.map((filename) => FilesystemService.deleteFile(pathToAttachments, filename)));
+
     if (!bulletin) {
       throw new CustomHttpException(BulletinBoardErrorMessage.BULLETIN_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
     }

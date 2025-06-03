@@ -19,15 +19,31 @@ class PdfBlot extends EmbedBlot {
 
   static create(src: string) {
     const node = super.create() as HTMLElement;
-    const cleanSrc = src.includes('#') ? src : `${src}#toolbar=0&navpanes=0&scrollbar=0`;
+    let filename: string;
+    let url = src;
 
+    if (src.startsWith('/filename=')) {
+      const [, name, rest] = src.match(/^\/filename=([^/]+?)(\/.+)$/)!;
+      filename = decodeURIComponent(name);
+      url = rest;
+    } else {
+      const [fileWithQuery] = src.split('/').slice(-1);
+      [filename] = fileWithQuery.split('?');
+    }
     const iframe = document.createElement('iframe');
-    iframe.src = cleanSrc;
+    iframe.src = url.includes('#') ? url : `${url}#toolbar=0&navpanes=0&scrollbar=0`;
     iframe.width = '100%';
     iframe.height = '450';
     iframe.style.border = 'none';
+    const a = document.createElement('a');
+    a.href = url;
+    a.textContent = filename;
+    a.download = filename;
+    a.setAttribute('aria-hidden', 'true');
+    a.style.display = 'none';
+    node.setAttribute('data-filename', filename);
 
-    node.appendChild(iframe);
+    node.append(iframe, a);
     return node;
   }
 

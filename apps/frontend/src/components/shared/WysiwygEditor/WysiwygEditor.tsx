@@ -30,13 +30,12 @@ icons.file = fileIconSvg;
 
 interface WysiwygEditorProps {
   value: string;
-  isEditMode?: boolean;
   onChange: (value: string) => void;
   onUpload: (file: File) => Promise<string>;
   onRemove: (filename: string) => void;
 }
 
-const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onUpload, onRemove, isEditMode }) => {
+const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onUpload, onRemove }) => {
   const { eduApiToken } = useUserStore();
   const { t } = useTranslation();
 
@@ -60,7 +59,6 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
   };
 
   useEffect(() => {
-    if (!isEditMode) return;
     if (!value.trim() || !onRemove) {
       previousHtml.current = value;
       return;
@@ -117,9 +115,8 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
 
         const quill = quillRef.current!.getEditor();
         const range = quill.getSelection() || { index: 0, length: 0 };
-
-        quill.insertText(range.index, file.name, 'link', pdfTempUrl);
-        quill.insertEmbed(range.index, 'pdf', pdfTempUrl);
+        quill.insertText(range.index + 1, '\n', 'user');
+        quill.insertEmbed(range.index, 'pdf', `/filename=${file.name}/${pdfTempUrl}`);
         quill.setSelection(range.index + 1, 0);
       } catch (err) {
         console.error(err);

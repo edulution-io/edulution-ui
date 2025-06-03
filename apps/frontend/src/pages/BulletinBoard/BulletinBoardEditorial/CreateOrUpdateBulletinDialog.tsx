@@ -91,12 +91,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
 
   const getDialogBody = () => {
     if (isDialogLoading) return <CircleLoader className="mx-auto" />;
-    return (
-      <CreateOrUpdateBulletinDialogBody
-        form={form}
-        isEditMode={selectedBulletinToEdit?.id !== undefined}
-      />
-    );
+    return <CreateOrUpdateBulletinDialogBody form={form} />;
   };
 
   const handleClose = () => {
