@@ -41,12 +41,15 @@ class PdfBlot extends BlockEmbed {
     /* eslint-enable
      @typescript-eslint/no-unsafe-call,
      @typescript-eslint/no-unsafe-member-access */
+    const cleanSrc = src.includes('#') ? src : `${src}#toolbar=0&navpanes=0&scrollbar=0`;
+
     const iframe = document.createElement('iframe');
-    iframe.src = src;
+    iframe.src = cleanSrc;
     iframe.width = '100%';
     iframe.height = '450';
-    iframe.frameBorder = '0';
+    iframe.style.border = 'none';
     node.appendChild(iframe);
+
     return node;
   }
 

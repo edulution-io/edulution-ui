@@ -21,7 +21,7 @@ import BulletinBoardColumnItem from '@/pages/BulletinBoard/components/BulletinBo
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 import FullScreenImage from '@/components/ui/FullScreenImage';
 import { useTranslation } from 'react-i18next';
-import FullScreenPdfRenderer from '@/components/ui/FullScreenPdfRenderer';
+import PdfRenderer from '@/components/ui/PdfRenderer';
 
 const BulletinBoardPageColumn = ({
   bulletins,
@@ -83,11 +83,7 @@ const BulletinBoardPageColumn = ({
           titleTranslationId={t(isPreviewTypeImage ? 'preview.image' : 'preview.pdf')}
           handleClose={closePreviewModal}
         >
-          {isPreviewTypeImage ? (
-            <FullScreenImage imageSrc={previewUrl} />
-          ) : (
-            <FullScreenPdfRenderer fileSrc={previewUrl} />
-          )}
+          {isPreviewTypeImage ? <FullScreenImage imageSrc={previewUrl} /> : <PdfRenderer fileSrc={previewUrl} />}
         </ResizableWindow>
       )}
 

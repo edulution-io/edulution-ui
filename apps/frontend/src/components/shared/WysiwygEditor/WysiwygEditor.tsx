@@ -22,6 +22,11 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import DOCUMENT_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/documentUploadAllowedMimeTypes';
+import fileIconSvg from '@/components/shared/WysiwygEditor/customSvgIcons/file-icon.svg?raw';
+
+const { Quill } = ReactQuill;
+const icons = Quill.import('ui/icons') as Record<string, string>;
+icons.file = fileIconSvg;
 
 interface WysiwygEditorProps {
   value: string;

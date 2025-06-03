@@ -12,17 +12,28 @@
 
 import * as React from 'react';
 
-interface FullScreenPdfRendererProps {
+interface PdfRendererProps {
   fileSrc: string;
+  preview?: boolean;
 }
 
-const FullScreenPdfRenderer: React.FC<FullScreenPdfRendererProps> = ({ fileSrc }) => (
-  <iframe
-    src={fileSrc}
-    className="h-full min-h-screen w-full border-0"
-    title="PDF"
-    loading="lazy"
-  />
-);
+const TOOLBAR_OFF_PARAMS = '#toolbar=0&navpanes=0&scrollbar=0';
 
-export default FullScreenPdfRenderer;
+const PdfRenderer: React.FC<PdfRendererProps> = ({ fileSrc, preview = false }) => {
+  let finalSrc = fileSrc;
+
+  if (preview) {
+    const hasFragment = fileSrc.includes('#');
+    finalSrc = hasFragment ? fileSrc : `${fileSrc}${TOOLBAR_OFF_PARAMS}`;
+  }
+
+  return (
+    <iframe
+      src={finalSrc}
+      title="PDF"
+      loading="lazy"
+      className="h-full min-h-screen w-full border-0"
+    />
+  );
+};
+export default PdfRenderer;

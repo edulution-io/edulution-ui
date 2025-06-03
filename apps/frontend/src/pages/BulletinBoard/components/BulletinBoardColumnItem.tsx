@@ -26,7 +26,8 @@ import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import { useParams } from 'react-router-dom';
 import cn from '@libs/common/utils/className';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import PdfRenderer from '@/components/ui/FullScreenPdfRenderer';
+import PdfRenderer from '@/components/ui/PdfRenderer';
+import { FaRegFilePdf } from 'react-icons/fa';
 
 interface BulletinBoardColumnItemProps {
   bulletin: BulletinResponseDto;
@@ -149,7 +150,6 @@ const BulletinBoardColumnItem: React.FC<BulletinBoardColumnItemProps> = ({
   };
 
   const getProcessedBulletinContent = (chunk: string, index: number) => {
-    /* ---------- 1. Bilder ------------------------------------------------ */
     if (/<img\b/i.test(chunk)) {
       const srcAttr = chunk.match(/src="([^"]*)"/i)?.[1] ?? '';
       const cleaned = srcAttr.replace(/^\/?(?:files\/file)?/, '/');
@@ -189,11 +189,17 @@ const BulletinBoardColumnItem: React.FC<BulletinBoardColumnItemProps> = ({
           <button
             key={`pdf-${linkWithoutFilePrefix}`}
             type="button"
-            className="block w-full text-right text-red-400 hover:underline"
+            className="flex flex-col  gap-1 text-red-400 hover:underline"
             onClick={() => handlePreviewClick(linkWithoutFilePrefix, 'pdf')}
           >
-            {` 📄${linkText}`}
-            <PdfRenderer fileSrc={linkWithoutFilePrefix} />
+            <div className="flex justify-end">
+              <FaRegFilePdf className="h-5 w-5" />
+              <span className="text-sm">{linkText}</span>
+            </div>
+            <PdfRenderer
+              fileSrc={linkWithoutFilePrefix}
+              preview
+            />
           </button>
         );
       }

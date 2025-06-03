@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { resolve } from 'path';
 import { readFileSync } from 'fs';
+import svgr from 'vite-plugin-svgr';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
@@ -86,7 +87,7 @@ export default defineConfig(({ mode }) => {
       port: 4300,
       host: 'localhost',
     },
-    plugins: [react(), nxViteTsPaths()],
+    plugins: [react(), nxViteTsPaths(), svgr()],
     build: {
       outDir: '../../dist/apps/frontend',
       emptyOutDir: true,

@@ -50,3 +50,19 @@
   fill: var(--background) !important;
   stroke: var(--background) !important;
 }
+
+.ql-toolbar svg,
+.ql-toolbar svg * {
+  stroke: var(--background) !important;
+  color: var(--background) !important;
+}
+
+.ql-toolbar .ql-file svg {
+  width: 18px;
+  height: 18px;
+}
+
+.ql-toolbar .ql-file svg * {
+  fill: var(--background) !important;
+  stroke: var(--background) !important;
+}
