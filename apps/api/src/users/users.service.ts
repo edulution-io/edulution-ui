@@ -112,15 +112,6 @@ class UsersService {
 
     return users
       .filter((user) => {
-        const matchesName =
-          user.firstName?.toLowerCase().includes(searchString) ||
-          user.lastName?.toLowerCase().includes(searchString) ||
-          user.username?.toLowerCase().includes(searchString);
-
-        if (!matchesName) {
-          return false;
-        }
-
         if (schoolName !== SPECIAL_SCHOOLS.GLOBAL) {
           return user.attributes.school?.[0] === schoolName;
         }
