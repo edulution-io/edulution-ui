@@ -37,9 +37,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   isCurrentPathDefaultDestination = false,
 }) => {
   const { t } = useTranslation();
-  const { present, past, future, navigate, goBack, goForward, setPresent } = useHistoryFileNavigationDialog(
-    pathToFetch || '/',
-  );
+  const { present, past, future, navigate, goBack, goForward } = useHistoryFileNavigationDialog(pathToFetch || '/');
   const { user } = useLmnApiStore();
 
   const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
@@ -90,7 +88,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
       } else {
         newPath += getFileNameFromPath(item.original.filePath);
       }
-      setPresent(newPath);
+      navigate(newPath);
     } else {
       item.toggleSelected();
     }

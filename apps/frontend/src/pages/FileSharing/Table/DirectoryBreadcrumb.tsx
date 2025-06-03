@@ -87,13 +87,13 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
     <Breadcrumb style={style}>
       {showTitle && <p className="mr-2 text-background">{t('currentDirectory')}</p>}
       <BreadcrumbList>
-        <div className="flex flex-row">
+        <div className="flex flex-row gap-4">
           <Button
             onClick={() => {
               onBack();
             }}
             disabled={!canGoBack}
-            className="mr-2"
+            className="h-fit py-2"
           >
             <MdArrowBack size={20} />
           </Button>
@@ -102,7 +102,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
               onForward();
             }}
             disabled={!canGoForward}
-            className="ml-2"
+            className="h-fit py-2"
           >
             <MdArrowForward size={20} />
           </Button>
@@ -112,7 +112,11 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
             <BreadcrumbItem key="root">
               <BreadcrumbLink
                 href="#"
-                onClick={() => onNavigate(mountPoints[0]?.filename.replace('/webdav', ''))}
+                onClick={() =>
+                  onNavigate(
+                    mountPoints[0]?.filename === 'Home' ? homePath : mountPoints[0]?.filename.replace('/webdav', ''),
+                  )
+                }
               >
                 {mountPoints[0]?.filename}
               </BreadcrumbLink>

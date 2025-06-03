@@ -10,59 +10,64 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
-const useHistoryFileNavigationDialog = (initialPath: string) => {
-  const [pastFiles, setPastFiles] = useState<string[]>([]);
-  const [presentPath, setPresentPath] = useState(initialPath);
-  const [futureFiles, setFutureFiles] = useState<string[]>([]);
+const useHistoryFileNavigationDialog = (initialPath: string = '/') => {
+  const initRef = useRef(initialPath || '/');
 
-  const navigate = useCallback(
-    (newPath: string) => {
-      if (newPath === presentPath) return;
-      setPastFiles((past) => [...past, presentPath]);
-      setPresentPath(newPath);
-      setFutureFiles([]);
-    },
-    [presentPath],
+  const [{ past, present, future }, setState] = useState(() => ({
+    past: [] as string[],
+    present: initRef.current,
+    future: [] as string[],
+  }));
+
+  const setPresent = useCallback(
+    (next: string = '/', clearFuture = true) =>
+      setState((s) =>
+        !next || next === s.present
+          ? s
+          : {
+              past: s.present ? [...s.past, s.present] : s.past,
+              present: next,
+              future: clearFuture ? [] : s.future,
+            },
+      ),
+    [],
   );
 
-  const goBack = useCallback(() => {
-    setPastFiles((past) => {
-      if (past.length === 0) return past;
-      const previousFile = past[past.length - 1];
-      setFutureFiles((future) => [presentPath, ...future]);
-      setPresentPath(previousFile);
-      return past.slice(0, -1);
-    });
-  }, [presentPath]);
+  const navigate = useCallback((next: string) => setPresent(next, true), [setPresent]);
+  const goBack = useCallback(
+    () =>
+      setState((s) =>
+        s.past.length
+          ? {
+              past: s.past.slice(0, -1),
+              present: s.past[s.past.length - 1],
+              future: [s.present, ...s.future],
+            }
+          : s,
+      ),
+    [],
+  );
+  const goForward = useCallback(
+    () =>
+      setState((s) =>
+        s.future.length
+          ? {
+              past: [...s.past, s.present],
+              present: s.future[0],
+              future: s.future.slice(1),
+            }
+          : s,
+      ),
+    [],
+  );
+  const reset = useCallback(
+    (newInitial: string = '/') => setState({ past: [], present: newInitial || '/', future: [] }),
+    [],
+  );
 
-  const goForward = useCallback(() => {
-    setFutureFiles((future) => {
-      if (future.length === 0) return future;
-      const [next, ...rest] = future;
-      setPastFiles((past) => [...past, presentPath]);
-      setPresentPath(next);
-      return rest;
-    });
-  }, [presentPath]);
-
-  const reset = useCallback((newInitial: string) => {
-    setPastFiles([]);
-    setPresentPath(newInitial);
-    setFutureFiles([]);
-  }, []);
-
-  return {
-    past: pastFiles,
-    present: presentPath,
-    future: futureFiles,
-    navigate,
-    goBack,
-    goForward,
-    reset,
-    setPresent: setPresentPath,
-  };
+  return { past, present, future, navigate, goBack, goForward, reset, setPresent };
 };
 
 export default useHistoryFileNavigationDialog;

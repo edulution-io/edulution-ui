@@ -68,7 +68,7 @@ const FileSharingPage = () => {
     }
   }, [currentPath]);
 
-  const navigate = useCallback(
+  const onNavigate = useCallback(
     (newPath: string) => {
       searchParams.set('path', newPath);
       setSearchParams(searchParams);
@@ -86,7 +86,7 @@ const FileSharingPage = () => {
       <div className="flex w-full flex-row justify-between space-x-2 pb-2 pt-2">
         <DirectoryBreadcrumb
           path={presentPath}
-          onNavigate={navigate}
+          onNavigate={onNavigate}
           onBack={goBack}
           onForward={goForward}
           canGoBack={pastFiles.length > 0}

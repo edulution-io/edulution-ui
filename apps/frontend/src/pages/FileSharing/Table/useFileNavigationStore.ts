@@ -12,7 +12,7 @@
 
 import { create } from 'zustand';
 
-type HistoryState = {
+type FileNavigationStore = {
   pastFiles: string[];
   presentPath: string;
   futureFiles: string[];
@@ -29,7 +29,7 @@ const initialState = {
   futureFiles: [],
 };
 
-const useFileNavigationStore = create<HistoryState>((set, get) => ({
+const useFileNavigationStore = create<FileNavigationStore>((set, get) => ({
   ...initialState,
 
   navigate: (newPath: string) => {
