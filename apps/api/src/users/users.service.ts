@@ -112,11 +112,11 @@ class UsersService {
 
     return users
       .filter((user) => {
-        if (schoolName !== SPECIAL_SCHOOLS.GLOBAL) {
-          return user.attributes.school?.[0] === schoolName;
+        if (schoolName === SPECIAL_SCHOOLS.GLOBAL) {
+          return true;
         }
 
-        return true;
+        return user.attributes.school?.[0] === schoolName;
       })
       .map((u) => ({
         firstName: u.firstName,
