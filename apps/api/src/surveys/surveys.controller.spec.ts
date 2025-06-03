@@ -56,6 +56,7 @@ import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
+import { surveyUpdateUpdatedSurveyDto } from 'apps/api/src/surveys/mocks/surveys/updated-survey';
 
 describe(SurveysController.name, () => {
   let controller: SurveysController;
@@ -224,21 +225,13 @@ describe(SurveysController.name, () => {
   });
 
   describe('updateOrCreateSurvey', () => {
-    // it('should call the updateOrCreateSurvey() function of the surveyService', async () => {
-    //   jest.spyOn(surveyService, 'updateOrCreateSurvey');
-    //   surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
-    //     exec: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
-    //   });
-    //
-    //   const { id } = surveyUpdateUpdatedSurveyDto;
-    //   const createSurvey = {
-    //     ...surveyUpdateUpdatedSurveyDto,
-    //     _id: new mongoose.Types.ObjectId(id),
-    //   };
-    //
-    //   await controller.updateOrCreateSurvey(surveyUpdateUpdatedSurveyDto, firstMockJWTUser);
-    //   expect(surveyService.updateOrCreateSurvey).toHaveBeenCalledWith(createSurvey);
-    // });
+    it('should call the updateOrCreateSurvey() function of the surveyService', async () => {
+      surveyService.updateOrCreateSurvey = jest.fn().mockReturnValue(surveyUpdateUpdatedSurveyDto);
+
+      await controller.updateOrCreateSurvey(surveyUpdateUpdatedSurveyDto, firstMockJWTUser);
+
+      expect(surveyService.updateOrCreateSurvey).toHaveBeenCalledWith(surveyUpdateUpdatedSurveyDto, firstMockJWTUser);
+    });
   });
 
   describe('deleteSurvey', () => {
