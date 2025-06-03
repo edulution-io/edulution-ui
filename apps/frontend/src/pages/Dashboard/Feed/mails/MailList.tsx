@@ -48,7 +48,7 @@ const MailList = ({ items, className }: MailListProps) => {
         key={`${item.id}-BadgeSH-${label}`}
         variant={getBadgeVariantFromLabel(label)}
       >
-        {/* {label} */}
+        {label}
       </BadgeSH>
     ));
 
