@@ -9,39 +9,16 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+import { EmbedBlot } from 'parchment';
+import { Quill } from 'react-quill-new';
 
-import ReactQuill from 'react-quill-new';
-
-const Quill = ReactQuill.Quill as unknown as {
-  import: (path: string) => unknown;
-  register: (...args: unknown[]) => void;
-};
-
-type BlockEmbedCtor = {
-  new (...args: unknown[]): unknown;
-  create(value: unknown): HTMLElement;
-  value(node: HTMLElement): unknown;
-  blotName: string;
-  tagName: string;
-  className: string;
-};
-
-const BlockEmbed = Quill.import('blots/block/embed') as BlockEmbedCtor;
-/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
-// @ts-expect-error
-class PdfBlot extends BlockEmbed {
+class PdfBlot extends EmbedBlot {
   static blotName = 'pdf';
 
   static tagName = 'div';
 
   static create(src: string) {
-    /* eslint-disable
-     @typescript-eslint/no-unsafe-call,
-     @typescript-eslint/no-unsafe-member-access */
     const node = super.create() as HTMLElement;
-    /* eslint-enable
-     @typescript-eslint/no-unsafe-call,
-     @typescript-eslint/no-unsafe-member-access */
     const cleanSrc = src.includes('#') ? src : `${src}#toolbar=0&navpanes=0&scrollbar=0`;
 
     const iframe = document.createElement('iframe');
@@ -49,8 +26,8 @@ class PdfBlot extends BlockEmbed {
     iframe.width = '100%';
     iframe.height = '450';
     iframe.style.border = 'none';
-    node.appendChild(iframe);
 
+    node.appendChild(iframe);
     return node;
   }
 
