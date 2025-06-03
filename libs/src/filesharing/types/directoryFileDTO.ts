@@ -17,6 +17,4 @@ export interface DirectoryFileDTO {
   lastmod?: string;
   size?: number;
   type?: string;
-
-  [key: string]: string | number | boolean | undefined;
 }
