@@ -21,6 +21,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import { surveyUpdateUpdatedSurveyDto } from 'apps/api/src/surveys/mocks/surveys/updated-survey';
 import CustomHttpException from '../common/CustomHttpException';
 import SurveysController from './surveys.controller';
 import SurveysService from './surveys.service';
@@ -56,7 +57,6 @@ import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
-import { surveyUpdateUpdatedSurveyDto } from 'apps/api/src/surveys/mocks/surveys/updated-survey';
 
 describe(SurveysController.name, () => {
   let controller: SurveysController;

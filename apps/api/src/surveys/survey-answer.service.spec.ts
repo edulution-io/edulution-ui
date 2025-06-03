@@ -24,6 +24,7 @@ import { Survey, SurveyDocument } from './survey.schema';
 import SurveyAnswersService from './survey-answer.service';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
 import {
+  thirdMockJWTUser,
   answeredSurvey01,
   answeredSurvey02,
   answeredSurvey03,
@@ -37,6 +38,7 @@ import {
   firstUsername,
   firstUsersMockedAnswerForAnsweredSurveys01,
   firstUsersSurveyAnswerAnsweredSurvey01,
+  secondUsersSurveyAnswerAnsweredSurvey01,
   idOfAnsweredSurvey01,
   idOfAnsweredSurvey02,
   idOfAnsweredSurvey03,
@@ -376,32 +378,60 @@ describe('SurveyAnswerService', () => {
       );
     });
 
+    it('should return an error if the user has already participated', async () => {
+      jest.spyOn(service, 'addAnswer');
+
+      surveyModel.findOne = jest.fn().mockReturnValue(answeredSurvey02);
+      surveyModel.findById = jest.fn().mockReturnValue(answeredSurvey02);
+      surveyModel.create = jest.fn().mockReturnValue(answeredSurvey02);
+      model.findOne = jest.fn().mockReturnValue(surveyAnswerAnsweredSurvey02);
+
+      try {
+        await service.addAnswer(
+          idOfAnsweredSurvey02.toString(),
+          saveNoAnsweredSurvey02,
+          mockedAnswerForAnsweredSurveys02,
+          firstMockJWTUser,
+        );
+      } catch (e) {
+        expect(e).toBeInstanceOf(Error);
+        expect(e.message).toBe(SurveyErrorMessages.ParticipationErrorAlreadyParticipated);
+      }
+
+      expect(service.addAnswer).toHaveBeenCalledWith(
+        idOfAnsweredSurvey02.toString(),
+        saveNoAnsweredSurvey02,
+        mockedAnswerForAnsweredSurveys02,
+        firstMockJWTUser,
+      );
+    });
+
     it('should return an error if the user is no participant (or creator)', async () => {
-      // jest.spyOn(service, 'addAnswer');
-      //
-      // surveyModel.findOne = jest.fn().mockReturnValue(answeredSurvey02);
-      // surveyModel.findById = jest.fn().mockReturnValue(answeredSurvey02);
-      // surveyModel.create = jest.fn().mockReturnValue(answeredSurvey02);
-      // model.findOne = jest.fn().mockReturnValue(surveyAnswerAnsweredSurvey02);
-      //
-      // try {
-      //   await service.addAnswer(
-      //     idOfAnsweredSurvey02.toString(),
-      //     saveNoAnsweredSurvey02,
-      //     mockedAnswerForAnsweredSurveys02,
-      //     firstMockJWTUser,
-      //   );
-      // } catch (e) {
-      //   expect(e).toBeInstanceOf(Error);
-      //   expect(e.message).toBe(SurveyErrorMessages.ParticipationErrorUserNotAssigned);
-      // }
-      //
-      // expect(service.addAnswer).toHaveBeenCalledWith(
-      //   idOfAnsweredSurvey02.toString(),
-      //   saveNoAnsweredSurvey02,
-      //   mockedAnswerForAnsweredSurveys02,
-      //   firstMockJWTUser,
-      // );
+      jest.spyOn(service, 'addAnswer');
+
+      surveyModel.findOne = jest.fn().mockReturnValue(answeredSurvey02);
+      surveyModel.findById = jest.fn().mockReturnValue(answeredSurvey02);
+      surveyModel.create = jest.fn().mockReturnValue(answeredSurvey02);
+      model.findOne = jest.fn().mockReturnValue(surveyAnswerAnsweredSurvey02);
+
+      try {
+        await service.addAnswer(
+          idOfAnsweredSurvey02.toString(),
+          saveNoAnsweredSurvey02,
+          mockedAnswerForAnsweredSurveys02,
+          thirdMockJWTUser,
+        );
+      } catch (e) {
+        expect(e).toBeInstanceOf(Error);
+        expect(e.message).toBe(SurveyErrorMessages.ParticipationErrorUserNotAssigned);
+      }
+
+      expect(service.addAnswer).toHaveBeenCalledWith(
+        idOfAnsweredSurvey02.toString(),
+        saveNoAnsweredSurvey02,
+        mockedAnswerForAnsweredSurveys02,
+        thirdMockJWTUser,
+      );
     });
 
     it(
@@ -514,46 +544,46 @@ describe('SurveyAnswerService', () => {
   });
 
   describe('getPrivateAnswer', () => {
-    // it('should return the submitted answer of a given user', async () => {
-    //   jest.spyOn(service, 'getPrivateAnswer');
-    //
-    //   model.findOne = jest.fn().mockReturnValue(secondUsersSurveyAnswerAnsweredSurvey01);
-    //
-    //   const result = await service.getPrivateAnswer(idOfAnsweredSurvey01.toString(), secondUsername);
-    //   expect(result).toEqual(secondUsersSurveyAnswerAnsweredSurvey01);
-    //
-    //   expect(service.getPrivateAnswer).toHaveBeenCalledWith(idOfAnsweredSurvey01, secondUsername);
-    // });
+    it('should return the submitted answer of a given user', async () => {
+      jest.spyOn(service, 'getPrivateAnswer');
+
+      model.findOne = jest.fn().mockReturnValue(firstUsersSurveyAnswerAnsweredSurvey01);
+
+      const result = await service.getPrivateAnswer(idOfAnsweredSurvey01.toString(), firstUsername);
+      expect(result).toEqual(firstUsersSurveyAnswerAnsweredSurvey01);
+
+      expect(service.getPrivateAnswer).toHaveBeenCalledWith(idOfAnsweredSurvey01.toString(), firstUsername);
+    });
   });
 
   describe('getPublicAnswers', () => {
-    // it('should return the public answers the users submitted', async () => {
-    //   jest.spyOn(service, 'getPublicAnswers');
-    //
-    //   model.find = jest
-    //     .fn()
-    //     .mockReturnValue([firstUsersSurveyAnswerAnsweredSurvey01, secondUsersSurveyAnswerAnsweredSurvey01]);
-    //
-    //   const result = await service.getPublicAnswers(idOfAnsweredSurvey01.toString());
-    //   expect(result).toEqual([
-    //     firstUsersSurveyAnswerAnsweredSurvey01.answer,
-    //     secondUsersSurveyAnswerAnsweredSurvey01.answer,
-    //   ]);
-    //
-    //   expect(service.getPublicAnswers).toHaveBeenCalledWith(idOfAnsweredSurvey01.toString());
-    // });
+    it('should return the public answers the users submitted', async () => {
+      jest.spyOn(service, 'getPublicAnswers');
+
+      model.find = jest
+        .fn()
+        .mockReturnValue([firstUsersSurveyAnswerAnsweredSurvey01, secondUsersSurveyAnswerAnsweredSurvey01]);
+
+      const result = await service.getPublicAnswers(idOfAnsweredSurvey01.toString());
+      expect(result).toEqual([
+        firstUsersSurveyAnswerAnsweredSurvey01.answer,
+        secondUsersSurveyAnswerAnsweredSurvey01.answer,
+      ]);
+
+      expect(service.getPublicAnswers).toHaveBeenCalledWith(idOfAnsweredSurvey01.toString());
+    });
   });
 
   describe('onSurveyRemoval', () => {
-    // it('should also remove the survey answers that are stored', async () => {
-    //   jest.spyOn(service, 'onSurveyRemoval');
-    //
-    //   model.deleteMany = jest.fn().mockResolvedValueOnce(true);
-    //
-    //   await service.onSurveyRemoval([idOfAnsweredSurvey01.toString()]);
-    //
-    //   expect(service.onSurveyRemoval).toHaveBeenCalledWith([idOfAnsweredSurvey01]);
-    //   expect(model.deleteMany).toHaveBeenCalledWith({ surveyId: { $in: [idOfAnsweredSurvey01] } }, { ordered: false });
-    // });
+    it('should also remove the survey answers that are stored', async () => {
+      jest.spyOn(service, 'onSurveyRemoval');
+
+      model.deleteMany = jest.fn().mockResolvedValueOnce(true);
+
+      await service.onSurveyRemoval([idOfAnsweredSurvey01.toString()]);
+
+      expect(service.onSurveyRemoval).toHaveBeenCalledWith([idOfAnsweredSurvey01.toString()]);
+      expect(model.deleteMany).toHaveBeenCalledWith({ surveyId: { $in: [idOfAnsweredSurvey01] } }, { ordered: false });
+    });
   });
 });

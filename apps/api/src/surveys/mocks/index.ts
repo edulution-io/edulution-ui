@@ -85,4 +85,5 @@ export {
   secondMockUser,
   firstMockJWTUser,
   secondMockJWTUser,
+  thirdMockJWTUser,
 } from './user';
