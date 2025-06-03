@@ -286,6 +286,35 @@ describe(UsersService.name, () => {
       const ldapUsers: LDAPUser[] = [
         {
           id: '1',
+          username: 'cacheduser',
+          firstName: 'Cached',
+          lastName: 'User',
+          email: 'cacheduser@example.com',
+          emailVerified: true,
+          attributes: {
+            LDAP_ENTRY_DN: ['dn'],
+            LDAP_ID: ['id'],
+            modifyTimestamp: ['timestamp'],
+            createTimestamp: ['timestamp'],
+            school: ['agy'],
+          },
+          createdTimestamp: Date.now(),
+          enabled: true,
+          totp: false,
+          federationLink: 'link',
+          disableableCredentialTypes: [],
+          requiredActions: [],
+          notBefore: 0,
+          access: {
+            manageGroupMembership: false,
+            view: true,
+            mapRoles: false,
+            impersonate: false,
+            manage: false,
+          },
+        },
+        {
+          id: '3',
           username: 'john',
           firstName: 'John',
           lastName: 'Doe',
@@ -314,14 +343,12 @@ describe(UsersService.name, () => {
           },
         },
       ];
-      const searchString = 'john';
-      const school = 'agy';
 
-      const fetchSpy = jest.spyOn(GroupsService, 'fetchAllUsers').mockResolvedValue(ldapUsers);
+      jest.spyOn(service, 'findAllCachedUsers').mockResolvedValue(ldapUsers);
 
-      const result = await service.searchUsersByName(mockToken, school, searchString);
-      expect(fetchSpy).toHaveBeenCalledWith(mockToken, searchString);
+      const result = await service.searchUsersByName(mockToken, 'agy', 'john');
       expect(result).toEqual([{ username: 'john', firstName: 'John', lastName: 'Doe' }]);
+      expect(service.findAllCachedUsers).toHaveBeenCalledWith(mockToken, 'agy');
     });
   });
 
