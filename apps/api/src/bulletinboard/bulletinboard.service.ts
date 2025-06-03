@@ -164,7 +164,7 @@ class BulletinBoardService implements OnModuleInit {
 
     const bulletinId: Types.ObjectId = new Types.ObjectId();
 
-    const { cleanedContent } = await normalizeBulletinContent(dto.content, bulletinId);
+    const { cleanedContent } = await normalizeBulletinContent(dto.content, bulletinId.toString());
 
     const hasUserPermission = await this.bulletinCategoryService.hasUserPermission(
       currentUser.preferred_username,
