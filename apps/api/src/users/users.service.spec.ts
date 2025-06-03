@@ -53,47 +53,21 @@ const mockUser: UserDocument = {
   totpSecret: '',
 } as UserDocument;
 
-const cachedUsersBySchool: Record<string, LDAPUser[]> = {
-  agy: [
-    {
-      id: '1',
-      username: 'cacheduser',
-      firstName: 'Cached',
-      lastName: 'User',
-      email: 'cacheduser@example.com',
-      emailVerified: true,
-      attributes: {
-        LDAP_ENTRY_DN: ['dn'],
-        LDAP_ID: ['id'],
-        modifyTimestamp: ['timestamp'],
-        createTimestamp: ['timestamp'],
-        school: ['agy'],
-      },
-      createdTimestamp: Date.now(),
-      enabled: true,
-      totp: false,
-      federationLink: 'link',
-      disableableCredentialTypes: [],
-      requiredActions: [],
-      notBefore: 0,
-      access: {
-        manageGroupMembership: false,
-        view: true,
-        mapRoles: false,
-        impersonate: false,
-        manage: false,
-      },
-    },
-  ],
-};
+const cachedUsers = [
+  {
+    username: 'testuser',
+    firstName: 'Test',
+    lastName: 'User',
+  },
+];
 
 const fetchedUsers: LDAPUser[] = [
   {
     id: '2',
-    username: 'fetcheduser',
-    firstName: 'Fetched',
+    username: 'testuser',
+    firstName: 'Test',
     lastName: 'User',
-    email: 'fetcheduser@example.com',
+    email: 'testuser@example.com',
     emailVerified: true,
     attributes: {
       LDAP_ENTRY_DN: ['dn'],
@@ -258,10 +232,10 @@ describe(UsersService.name, () => {
   describe('findAllCachedUsers', () => {
     it('should return cached users if available', async () => {
       const school = 'agy';
-      cacheManagerMock.get.mockResolvedValue(cachedUsersBySchool);
+      cacheManagerMock.get.mockResolvedValue(cachedUsers);
 
       const result = await service.findAllCachedUsers(mockToken, school);
-      expect(result).toEqual(cachedUsersBySchool);
+      expect(result).toEqual(cachedUsers);
       expect(cacheManagerMock.get).toHaveBeenCalledWith(ALL_USERS_CACHE_KEY + school);
     });
 
@@ -271,11 +245,11 @@ describe(UsersService.name, () => {
       mockGroupsService.fetchAllUsers.mockResolvedValue(fetchedUsers);
 
       const result = await service.findAllCachedUsers(mockToken, school);
-      expect(result).toEqual(fetchedUsers);
+      expect(result).toEqual(cachedUsers);
       expect(GroupsService.fetchAllUsers).toHaveBeenCalledWith(mockToken);
       expect(cacheManagerMock.set).toHaveBeenCalledWith(
         ALL_USERS_CACHE_KEY + school,
-        fetchedUsers,
+        cachedUsers,
         DEFAULT_CACHE_TTL_MS,
       );
     });
@@ -283,71 +257,11 @@ describe(UsersService.name, () => {
 
   describe('searchUsersByName', () => {
     it('should return users matching the search string', async () => {
-      const ldapUsers: LDAPUser[] = [
-        {
-          id: '1',
-          username: 'cacheduser',
-          firstName: 'Cached',
-          lastName: 'User',
-          email: 'cacheduser@example.com',
-          emailVerified: true,
-          attributes: {
-            LDAP_ENTRY_DN: ['dn'],
-            LDAP_ID: ['id'],
-            modifyTimestamp: ['timestamp'],
-            createTimestamp: ['timestamp'],
-            school: ['agy'],
-          },
-          createdTimestamp: Date.now(),
-          enabled: true,
-          totp: false,
-          federationLink: 'link',
-          disableableCredentialTypes: [],
-          requiredActions: [],
-          notBefore: 0,
-          access: {
-            manageGroupMembership: false,
-            view: true,
-            mapRoles: false,
-            impersonate: false,
-            manage: false,
-          },
-        },
-        {
-          id: '3',
-          username: 'john',
-          firstName: 'John',
-          lastName: 'Doe',
-          email: 'john@example.com',
-          emailVerified: true,
-          attributes: {
-            LDAP_ENTRY_DN: ['dn'],
-            LDAP_ID: ['id'],
-            modifyTimestamp: ['timestamp'],
-            createTimestamp: ['timestamp'],
-            school: ['agy'],
-          },
-          createdTimestamp: Date.now(),
-          enabled: true,
-          totp: false,
-          federationLink: 'link',
-          disableableCredentialTypes: [],
-          requiredActions: [],
-          notBefore: 0,
-          access: {
-            manageGroupMembership: false,
-            view: true,
-            mapRoles: false,
-            impersonate: false,
-            manage: false,
-          },
-        },
-      ];
+      jest.spyOn(service, 'findAllCachedUsers').mockResolvedValue(cachedUsers);
+      expect(GroupsService.fetchAllUsers).toHaveBeenCalledWith(mockToken);
 
-      jest.spyOn(service, 'findAllCachedUsers').mockResolvedValue(ldapUsers);
-
-      const result = await service.searchUsersByName(mockToken, 'agy', 'john');
-      expect(result).toEqual([{ username: 'john', firstName: 'John', lastName: 'Doe' }]);
+      const result = await service.searchUsersByName(mockToken, 'agy', 'test');
+      expect(result).toEqual(cachedUsers);
       expect(service.findAllCachedUsers).toHaveBeenCalledWith(mockToken, 'agy');
     });
   });

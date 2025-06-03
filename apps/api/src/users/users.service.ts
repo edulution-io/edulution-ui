@@ -31,6 +31,8 @@ import { User, UserDocument } from './user.schema';
 import GroupsService from '../groups/groups.service';
 import { UserAccounts, UserAccountsDocument } from './account.schema';
 
+type CachedUser = Partial<User>;
+
 @Injectable()
 class UsersService {
   constructor(
@@ -71,8 +73,15 @@ class UsersService {
     return result.deletedCount > 0;
   }
 
-  async findAllCachedUsers(token: string, schoolName: string): Promise<LDAPUser[]> {
-    const cachedUsers = await this.cacheManager.get<LDAPUser[]>(ALL_USERS_CACHE_KEY + schoolName);
+  async findAllCachedUsers(token: string, schoolName: string): Promise<CachedUser[]> {
+    const mapToCachedUser = (user: LDAPUser): CachedUser => ({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
+    });
+
+    const cacheKey = ALL_USERS_CACHE_KEY + schoolName;
+    const cachedUsers = await this.cacheManager.get<CachedUser[]>(cacheKey);
     if (cachedUsers) {
       return cachedUsers;
     }
@@ -94,33 +103,30 @@ class UsersService {
     );
 
     await Promise.all(
-      Object.entries(usersBySchool).map(([school, userList]) =>
-        this.cacheManager.set(ALL_USERS_CACHE_KEY + school, userList, DEFAULT_CACHE_TTL_MS),
-      ),
+      Object.entries(usersBySchool).map(async ([school, userList]) => {
+        const cachedList: CachedUser[] = userList.map(mapToCachedUser);
+        const key = ALL_USERS_CACHE_KEY + school;
+        await this.cacheManager.set(key, cachedList, DEFAULT_CACHE_TTL_MS);
+      }),
     );
 
-    await this.cacheManager.set(ALL_USERS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, fetchedUsers, DEFAULT_CACHE_TTL_MS);
+    const allAsCached: CachedUser[] = fetchedUsers.map(mapToCachedUser);
+    await this.cacheManager.set(ALL_USERS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, allAsCached, DEFAULT_CACHE_TTL_MS);
 
-    return usersBySchool[schoolName] || [];
+    return usersBySchool[schoolName] ? usersBySchool[schoolName].map(mapToCachedUser) : [];
   }
 
-  async searchUsersByName(token: string, schoolName: string, name: string): Promise<Partial<User>[]> {
+  async searchUsersByName(token: string, schoolName: string, name: string): Promise<CachedUser[]> {
     const searchString = name.toLowerCase();
 
     const users = await this.findAllCachedUsers(token, schoolName);
 
-    return users
-      .filter(
-        (user) =>
-          user.firstName?.toLowerCase().includes(searchString) ||
-          user.lastName?.toLowerCase().includes(searchString) ||
-          user.username?.toLowerCase().includes(searchString),
-      )
-      .map((u) => ({
-        firstName: u.firstName,
-        lastName: u.lastName,
-        username: u.username,
-      }));
+    return users.filter(
+      (user) =>
+        user.firstName?.toLowerCase().includes(searchString) ||
+        user.lastName?.toLowerCase().includes(searchString) ||
+        user.username?.toLowerCase().includes(searchString),
+    );
   }
 
   async getPassword(username: string): Promise<string> {
