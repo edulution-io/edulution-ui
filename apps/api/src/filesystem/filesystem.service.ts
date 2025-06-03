@@ -22,8 +22,8 @@ import {
   readdir,
   readFile,
   rm,
-  unlink,
   stat as fsStat,
+  unlink,
 } from 'fs-extra';
 import { promisify } from 'util';
 import { createHash } from 'crypto';
@@ -44,6 +44,7 @@ import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
 import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
 
@@ -313,9 +314,13 @@ class FilesystemService {
     }
   }
 
-  async serveFiles(name: string, filename: string, res: Response) {
-    const filePath = join(APPS_FILES_PATH, name, filename);
-
+  async serveFiles(name: string, filename: string, res: Response, temp = false): Promise<Response> {
+    let filePath;
+    if (temp) {
+      filePath = join(TEMP_FILES_PATH, name, filename);
+    } else {
+      filePath = join(APPS_FILES_PATH, name, filename);
+    }
     await FilesystemService.throwErrorIfFileNotExists(filePath);
 
     const contentType = lookup(filePath) || RequestResponseContentType.APPLICATION_OCTET_STREAM;

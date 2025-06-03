@@ -10,18 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const BULLETIN_EDITOR_FORMATS = [
-  'header',
-  'bold',
-  'italic',
-  'underline',
-  'strike',
-  'blockquote',
-  'list',
-  'indent',
-  'link',
-  'image',
-  'pdf',
-];
-
-export default BULLETIN_EDITOR_FORMATS;
+declare module '*.svg?raw' {
+  const content: string;
+  export default content;
+}

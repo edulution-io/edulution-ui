@@ -10,18 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const BULLETIN_EDITOR_FORMATS = [
-  'header',
-  'bold',
-  'italic',
-  'underline',
-  'strike',
-  'blockquote',
-  'list',
-  'indent',
-  'link',
-  'image',
-  'pdf',
-];
+import APPS from '@libs/appconfig/constants/apps';
+import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 
-export default BULLETIN_EDITOR_FORMATS;
+const BULLETIN_TEMP_FILES_PATH = `${TEMP_FILES_PATH}/${APPS.BULLETIN_BOARD}/attachments`;
+
+export default BULLETIN_TEMP_FILES_PATH;

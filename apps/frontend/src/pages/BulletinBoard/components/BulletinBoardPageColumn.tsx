@@ -21,6 +21,7 @@ import BulletinBoardColumnItem from '@/pages/BulletinBoard/components/BulletinBo
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 import FullScreenImage from '@/components/ui/FullScreenImage';
 import { useTranslation } from 'react-i18next';
+import PdfRenderer from '@/components/ui/PdfRenderer';
 
 const BulletinBoardPageColumn = ({
   bulletins,
@@ -35,20 +36,25 @@ const BulletinBoardPageColumn = ({
 }) => {
   const { t } = useTranslation();
   const { getBulletinsByCategories } = useBulletinBoardStore();
-  const [isImagePreviewModalOpen, setIsImagePreviewModalOpen] = useState(false);
-  const [selectedImageForPreview, setSelectedImageForPreview] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewType, setPreviewType] = useState<'image' | 'pdf' | null>(null);
 
-  const handleImagePreviewClick = (imageUrl: string) => {
-    setSelectedImageForPreview(imageUrl);
-    setIsImagePreviewModalOpen(true);
+  const handlePreviewClick = (url: string, type: 'image' | 'pdf') => {
+    if (type === 'image') {
+      setPreviewType('image');
+    } else {
+      setPreviewType('pdf');
+    }
+    setPreviewUrl(url);
   };
-
-  const closeImagePreviewModal = () => {
-    setSelectedImageForPreview(null);
-    setIsImagePreviewModalOpen(false);
+  const closePreviewModal = () => {
+    setPreviewUrl(null);
+    setPreviewType(null);
   };
 
   const width = `${100 / categoryCount}%`;
+
+  const isPreviewTypeImage = previewType === 'image';
 
   return (
     <div
@@ -65,19 +71,19 @@ const BulletinBoardPageColumn = ({
             key={bulletin.id}
             bulletin={bulletin}
             canManageBulletins={canEditCategory}
-            handleImageClick={handleImagePreviewClick}
+            handlePreviewClick={handlePreviewClick}
           />
         ))}
       </div>
 
-      {selectedImageForPreview && isImagePreviewModalOpen && (
+      {previewUrl && previewType && (
         <ResizableWindow
           disableMinimizeWindow
           disableToggleMaximizeWindow
-          titleTranslationId={t('preview.image')}
-          handleClose={closeImagePreviewModal}
+          titleTranslationId={t(isPreviewTypeImage ? 'preview.image' : 'preview.pdf')}
+          handleClose={closePreviewModal}
         >
-          <FullScreenImage imageSrc={selectedImageForPreview} />
+          {isPreviewTypeImage ? <FullScreenImage imageSrc={previewUrl} /> : <PdfRenderer fileSrc={previewUrl} />}
         </ResizableWindow>
       )}
 

@@ -10,18 +10,30 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const BULLETIN_EDITOR_FORMATS = [
-  'header',
-  'bold',
-  'italic',
-  'underline',
-  'strike',
-  'blockquote',
-  'list',
-  'indent',
-  'link',
-  'image',
-  'pdf',
-];
+import * as React from 'react';
 
-export default BULLETIN_EDITOR_FORMATS;
+interface PdfRendererProps {
+  fileSrc: string;
+  preview?: boolean;
+}
+
+const TOOLBAR_OFF_PARAMS = '#toolbar=0&navpanes=0&scrollbar=0';
+
+const PdfRenderer: React.FC<PdfRendererProps> = ({ fileSrc, preview = false }) => {
+  let finalSrc = fileSrc;
+
+  if (preview) {
+    const hasFragment = fileSrc.includes('#');
+    finalSrc = hasFragment ? fileSrc : `${fileSrc}${TOOLBAR_OFF_PARAMS}`;
+  }
+
+  return (
+    <iframe
+      src={finalSrc}
+      title="PDF"
+      loading="lazy"
+      className="h-full min-h-screen w-full border-0"
+    />
+  );
+};
+export default PdfRenderer;

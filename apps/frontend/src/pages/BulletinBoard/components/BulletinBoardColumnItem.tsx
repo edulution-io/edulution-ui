@@ -25,15 +25,20 @@ import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardE
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import { useParams } from 'react-router-dom';
 import cn from '@libs/common/utils/className';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import PdfRenderer from '@/components/ui/PdfRenderer';
+import { FaRegFilePdf } from 'react-icons/fa';
 
-const BulletinBoardColumnItem = ({
-  bulletin,
-  canManageBulletins,
-  handleImageClick,
-}: {
+interface BulletinBoardColumnItemProps {
   bulletin: BulletinResponseDto;
   canManageBulletins: boolean;
-  handleImageClick: (imageUrl: string) => void;
+  handlePreviewClick: (url: string, type: 'image' | 'pdf') => void;
+}
+
+const BulletinBoardColumnItem: React.FC<BulletinBoardColumnItemProps> = ({
+  bulletin,
+  canManageBulletins,
+  handlePreviewClick,
 }) => {
   const { t } = useTranslation();
   const { bulletinId } = useParams();
@@ -144,53 +149,77 @@ const BulletinBoardColumnItem = ({
     return items;
   };
 
-  const getProcessedBulletinContent = (chunk: string) => {
+  const getProcessedBulletinContent = (chunk: string, index: number) => {
     if (/<img\b/i.test(chunk)) {
-      const src = chunk.match(/src="([^"]*)"/i)?.[1].replace(/^\/(?!\/)/, '/') ?? '';
+      const srcAttr = chunk.match(/src="([^"]*)"/i)?.[1] ?? '';
+      const cleaned = srcAttr.replace(/^\/?(?:files\/file)?/, '/');
+      const absolute = cleaned.startsWith('http') || cleaned.startsWith(`/${EDU_API_ROOT}`) ? cleaned : `/${cleaned}`;
+
       return (
         <button
-          key={`img-${src}`}
+          key={`img-${absolute}`}
           type="button"
-          className="max-w-full cursor-pointer border-0 bg-transparent p-0"
-          onClick={() => handleImageClick(src)}
+          className="border-0 bg-transparent p-0"
+          onClick={() => handlePreviewClick(absolute, 'image')}
         >
           <img
-            src={src}
+            src={absolute}
             alt="attachment"
             className="max-w-full"
           />
         </button>
       );
     }
-
     if (/<a\b/i.test(chunk)) {
       const parser = new DOMParser();
       const doc = parser.parseFromString(chunk, 'text/html');
-      const a = doc.querySelector('a');
+      const aTag = doc.querySelector('a');
+      if (!aTag) return null;
 
-      if (a) {
-        const href = a.getAttribute('href') ?? '#';
-        const text = a.textContent ?? href;
-        const isPdf = href.toLowerCase().endsWith('.pdf');
+      const rawHref = aTag.getAttribute('href') ?? '#';
+      const linkWithoutFilePrefix = rawHref.replace('/files/file', '');
 
+      const href = linkWithoutFilePrefix.split('?')[0];
+
+      const linkText = aTag.textContent ?? href;
+      const isPdf = href.toLowerCase().endsWith('.pdf');
+
+      if (isPdf) {
         return (
-          <a
-            key={`link-${href}`}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={isPdf ? 'text-red-400 underline' : 'text-blue-400 underline'}
+          <button
+            key={`pdf-${linkWithoutFilePrefix}`}
+            type="button"
+            className="flex flex-col  gap-1 text-red-400 hover:underline"
+            onClick={() => handlePreviewClick(linkWithoutFilePrefix, 'pdf')}
           >
-            {text}
-            {isPdf && ' 📄'}
-          </a>
+            <div className="flex justify-end">
+              <FaRegFilePdf className="h-5 w-5" />
+              <span className="text-sm">{linkText}</span>
+            </div>
+            <PdfRenderer
+              fileSrc={linkWithoutFilePrefix}
+              preview
+            />
+          </button>
         );
       }
+
+      return (
+        <a
+          key={`link-${linkWithoutFilePrefix}`}
+          href={linkWithoutFilePrefix}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-400 underline"
+        >
+          {linkText}
+        </a>
+      );
     }
 
     return (
       <span
-        key={`html-${chunk}`}
+        key={`html-${index}`}
         dangerouslySetInnerHTML={{ __html: chunk }}
       />
     );
@@ -200,18 +229,16 @@ const BulletinBoardColumnItem = ({
     <div
       id={bulletin.id}
       key={bulletin.id}
-      className={cn('relative mx-1 flex items-center justify-between break-all rounded-lg bg-white bg-opacity-5 p-4', {
-        ring: isCurrentBulletin,
-      })}
+      className={cn('relative flex items-start rounded-lg bg-white bg-opacity-5 p-4', { ring: isCurrentBulletin })}
     >
       <div className="flex-1">
-        <h4 className="w-[calc(100%-20px)] overflow-x-hidden text-ellipsis break-normal text-lg font-bold text-background">
-          {bulletin.title}
-        </h4>
-        <div className="mt-2 text-gray-100">
-          {bulletin.content.split(/(<img[^>]*>)/g).map((part) => getProcessedBulletinContent(part))}
+        <h4 className="truncate text-lg font-bold text-background">{bulletin.title}</h4>
+        <div className="mt-2 flex flex-col gap-2 text-gray-100">
+          {bulletin.content
+            .split(/(<img[^>]*>|<a[^>]*href="[^"]+\.pdf"[^>]*>.*?<\/a>)/g)
+            .map(getProcessedBulletinContent)}
+          {getAuthorDescription()}
         </div>
-        {getAuthorDescription()}
       </div>
       <DropdownMenu
         trigger={

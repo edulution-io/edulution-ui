@@ -24,7 +24,6 @@ import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
-import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 
@@ -143,9 +142,7 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
     formData.append('file', file);
 
     try {
-      const response = await eduApi.post<string>(BULLETIN_BOARD_UPLOAD_EDU_API_ENDPOINT, formData, {
-        headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
-      });
+      const response = await eduApi.post<string>(BULLETIN_BOARD_UPLOAD_EDU_API_ENDPOINT, formData);
 
       return response.data;
     } catch (error) {

@@ -10,28 +10,69 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/node_modules/quill/dist/quill.snow.css';
 import './WysiwygEditor.css';
+import './pdfBlot';
 import BULLETIN_EDITOR_FORMATS from '@libs/bulletinBoard/constants/bulletinEditorFormats';
 import useUserStore from '@/store/UserStore/UserStore';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
+import DOCUMENT_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/documentUploadAllowedMimeTypes';
+import fileIconSvg from '@/components/shared/WysiwygEditor/customSvgIcons/file-icon.svg?raw';
+
+const { Quill } = ReactQuill;
+const icons = Quill.import('ui/icons') as Record<string, string>;
+icons.file = fileIconSvg;
 
 interface WysiwygEditorProps {
   value: string;
   onChange: (value: string) => void;
   onUpload: (file: File) => Promise<string>;
+  onRemove: (filename: string) => void;
 }
 
-const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onUpload }) => {
+const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onUpload, onRemove }) => {
   const { eduApiToken } = useUserStore();
   const { t } = useTranslation();
 
   const quillRef = useRef<ReactQuill | null>(null);
+
+  const previousHtml = useRef<string>(value);
+  const extractFilenames = (html: string) => {
+    const filenames = new Set<string>();
+
+    const imagePattern = /<img [^>]*src="[^"]*\/([^"/?]+\.(?:png|jpe?g|gif))(?:\?[^"]*)?"/gi;
+    Array.from(html.matchAll(imagePattern)).forEach(([, file]) => {
+      filenames.add(file);
+    });
+
+    const linkPattern = /<a [^>]*href="[^"]*\/([^"/?]+\.pdf)(?:\?[^"]*)?"/gi;
+    Array.from(html.matchAll(linkPattern)).forEach(([, file]) => {
+      filenames.add(file);
+    });
+
+    return filenames;
+  };
+
+  useEffect(() => {
+    if (!value.trim() || !onRemove) {
+      previousHtml.current = value;
+      return;
+    }
+
+    const before = extractFilenames(previousHtml.current || '');
+    const after = extractFilenames(value);
+
+    before.forEach((file) => {
+      if (!after.has(file)) onRemove(file);
+    });
+
+    previousHtml.current = value;
+  }, [value, onRemove]);
 
   const handleImage = () => {
     const input = document.createElement('input');
@@ -44,7 +85,7 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
       if (file) {
         try {
           const uploadedFilename = await onUpload(file);
-          const fetchImageUrl = `${EDU_API_ROOT}/${uploadedFilename}?token=${eduApiToken}`;
+          const fetchImageUrl = `${EDU_API_ROOT}/files/file/temp/${uploadedFilename}?token=${eduApiToken}`;
 
           const quillInstance = quillRef.current?.getEditor();
           if (quillInstance) {
@@ -59,6 +100,31 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
     };
   };
 
+  const handleFile = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.setAttribute('accept', DOCUMENT_UPLOAD_ALLOWED_MIME_TYPES.join(', '));
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      try {
+        const filename = await onUpload(file);
+        const pdfTempUrl = `${EDU_API_ROOT}/files/file/temp/${filename}?token=${eduApiToken}`;
+
+        const quill = quillRef.current!.getEditor();
+        const range = quill.getSelection() || { index: 0, length: 0 };
+        quill.insertText(range.index + 1, '\n', 'user');
+        quill.insertEmbed(range.index, 'pdf', `/filename=${file.name}/${pdfTempUrl}`);
+        quill.setSelection(range.index + 1, 0);
+      } catch (err) {
+        console.error(err);
+        toast.error(t('errors.uploadOrFetchAttachmentFailed'));
+      }
+    };
+  };
+
   const modules = useMemo(
     () => ({
       toolbar: {
@@ -66,11 +132,13 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
           [{ header: [1, 2, false] }],
           ['bold', 'italic', 'underline', 'strike', 'blockquote'],
           [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
-          ['link', 'image'],
+          ['link', 'image', 'file'],
           ['clean'],
         ],
+        formats: BULLETIN_EDITOR_FORMATS,
         handlers: {
           image: handleImage,
+          file: handleFile,
         },
       },
     }),

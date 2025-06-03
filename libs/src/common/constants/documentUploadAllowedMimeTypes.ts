@@ -10,18 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const BULLETIN_EDITOR_FORMATS = [
-  'header',
-  'bold',
-  'italic',
-  'underline',
-  'strike',
-  'blockquote',
-  'list',
-  'indent',
-  'link',
-  'image',
-  'pdf',
-];
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
 
-export default BULLETIN_EDITOR_FORMATS;
+const DOCUMENT_UPLOAD_ALLOWED_MIME_TYPES = [RequestResponseContentType.APPLICATION_PDF];
+
+export default DOCUMENT_UPLOAD_ALLOWED_MIME_TYPES;

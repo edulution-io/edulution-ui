@@ -29,7 +29,8 @@ interface CreateOrUpdateBulletinDialogBodyProps {
 
 const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialogBodyProps) => {
   const { t } = useTranslation();
-  const { uploadAttachment, categoriesWithEditPermission, isGetCategoriesLoading } = useBulletinBoardEditorialStore();
+  const { uploadAttachment, categoriesWithEditPermission, isCreateBulletinDialogOpen, isGetCategoriesLoading } =
+    useBulletinBoardEditorialStore();
   const { setValue, watch, formState } = form;
 
   const isVisibilityDateSet = !!watch('isVisibleStartDate') || !!watch('isVisibleEndDate');
@@ -58,6 +59,15 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
     const filenames = form.getValues('attachmentFileNames') || [];
     form.setValue('attachmentFileNames', [...filenames, filePath]);
     return `${BULLETIN_BOARD_ATTACHMENT_EDU_API_ENDPOINT}/${filePath}`;
+  };
+
+  const handleEditorRemove = (filename: string) => {
+    if (!isCreateBulletinDialogOpen) return;
+    const current = form.getValues('attachmentFileNames') ?? [];
+    setValue(
+      'attachmentFileNames',
+      current.filter((f) => f !== filename),
+    );
   };
 
   const isActive = watch('isActive');
@@ -138,6 +148,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
             value={watch('content')}
             onChange={(value) => setValue('content', value)}
             onUpload={handleUpload}
+            onRemove={handleEditorRemove}
           />
           <div>
             {formState.errors.content && (

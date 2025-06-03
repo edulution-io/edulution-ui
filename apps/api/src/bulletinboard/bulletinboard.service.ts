@@ -11,6 +11,7 @@
  */
 
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { lookup as lookupMime } from 'mime-types';
 import { InjectModel } from '@nestjs/mongoose';
 import { Response } from 'express';
 import { Model, Types } from 'mongoose';
@@ -25,6 +26,10 @@ import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCatego
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import normalizeBulletinContent from '@libs/bulletinBoard/utils/normalizeBulletinContent';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import APPS from '@libs/appconfig/constants/apps';
 import CustomHttpException from '../common/CustomHttpException';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 
@@ -51,10 +56,18 @@ class BulletinBoardService implements OnModuleInit {
     void this.fileSystemService.ensureDirectoryExists(this.attachmentsPath);
   }
 
-  async serveBulletinAttachment(filename: string, res: Response) {
-    const filePath = join(this.attachmentsPath, filename);
+  async serveBulletinAttachment(id: string, filename: string, res: Response) {
+    const filePath = join(this.attachmentsPath, id, filename);
 
     await FilesystemService.throwErrorIfFileNotExists(filePath);
+
+    const mimeType = lookupMime(filename) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
+
+    res.set({
+      [HTTP_HEADERS.ContentType]: mimeType,
+      [HTTP_HEADERS.ContentDisposition]: `inline; filename="${filename}"`,
+    });
+
     const fileStream = await this.fileSystemService.createReadStream(filePath);
     fileStream.pipe(res);
 
@@ -149,6 +162,10 @@ class BulletinBoardService implements OnModuleInit {
       throw new CustomHttpException(BulletinBoardErrorMessage.INVALID_CATEGORY, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    const bulletinId: Types.ObjectId = new Types.ObjectId();
+
+    const { cleanedContent } = await normalizeBulletinContent(dto.content, bulletinId.toString());
+
     const hasUserPermission = await this.bulletinCategoryService.hasUserPermission(
       currentUser.preferred_username,
       dto.category.id,
@@ -166,10 +183,11 @@ class BulletinBoardService implements OnModuleInit {
     };
 
     const createdBulletin = await this.bulletinModel.create({
+      _id: bulletinId,
       creator,
       title: dto.title,
       attachmentFileNames: dto.attachmentFileNames,
-      content: BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content),
+      content: BulletinBoardService.replaceContentTokenWithPlaceholder(cleanedContent),
       category: new Types.ObjectId(dto.category.id),
       isVisibleStartDate: dto.isVisibleStartDate,
       isVisibleEndDate: dto.isVisibleEndDate,
@@ -186,6 +204,20 @@ class BulletinBoardService implements OnModuleInit {
 
   async updateBulletin(currentUser: JwtUser, id: string, dto: CreateBulletinDto) {
     const bulletin = await this.bulletinModel.findById(id).exec();
+
+    const bulletinNames: string[] = bulletin?.attachmentFileNames ?? [];
+    const dtoNames: string[] = dto.attachmentFileNames ?? [];
+
+    const dtoSet = new Set(dtoNames);
+
+    const filesToDelete = bulletinNames.filter((name) => !dtoSet.has(name));
+
+    const pathToAttachments = join(APPS_FILES_PATH, APPS.BULLETIN_BOARD, 'attachments', id);
+
+    const { cleanedContent } = await normalizeBulletinContent(dto.content, id);
+
+    await Promise.all(filesToDelete.map((filename) => FilesystemService.deleteFile(pathToAttachments, filename)));
+
     if (!bulletin) {
       throw new CustomHttpException(BulletinBoardErrorMessage.BULLETIN_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -216,14 +248,16 @@ class BulletinBoardService implements OnModuleInit {
       username: currentUser.preferred_username,
     };
 
-    bulletin.title = dto.title;
-    bulletin.isActive = dto.isActive;
-    bulletin.content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content);
-    bulletin.category = new Types.ObjectId(dto.category.id);
-    bulletin.isVisibleStartDate = dto.isVisibleStartDate;
-    bulletin.attachmentFileNames = dto.attachmentFileNames;
-    bulletin.isVisibleEndDate = dto.isVisibleEndDate;
-    bulletin.updatedBy = updatedBy;
+    Object.assign(bulletin, {
+      title: dto.title,
+      isActive: dto.isActive,
+      attachmentFileNames: dto.attachmentFileNames,
+      content: BulletinBoardService.replaceContentTokenWithPlaceholder(cleanedContent),
+      category: new Types.ObjectId(dto.category.id),
+      isVisibleStartDate: dto.isVisibleStartDate,
+      isVisibleEndDate: dto.isVisibleEndDate,
+      updatedBy,
+    });
 
     const updatedBulletin = await bulletin.save();
 

@@ -17,8 +17,8 @@ import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import { Response } from 'express';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import APPS from '@libs/appconfig/constants/apps';
-import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import BULLETIN_TEMP_FILES_PATH from '@libs/bulletinBoard/constants/bulletinboardTempFilesPath';
 import BulletinBoardService from './bulletinboard.service';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
 import GetToken from '../common/decorators/getToken.decorator';
@@ -60,9 +60,9 @@ class BulletinBoardController {
     return this.bulletinBoardService.removeAllBulletinsByCategory(currentUser, categoryId);
   }
 
-  @Get('attachments/:filename')
-  serveBulletinAttachment(@Param('filename') filename: string, @Res() res: Response) {
-    return this.bulletinBoardService.serveBulletinAttachment(filename, res);
+  @Get(':id/attachments/:filename')
+  serveBulletinAttachment(@Param('id') id: string, @Param('filename') filename: string, @Res() res: Response) {
+    return this.bulletinBoardService.serveBulletinAttachment(id, filename, res);
   }
 
   @Post('files')
@@ -70,7 +70,7 @@ class BulletinBoardController {
   @UseInterceptors(
     FileInterceptor(
       'file',
-      createAttachmentUploadOptions(() => BULLETIN_ATTACHMENTS_PATH),
+      createAttachmentUploadOptions(() => BULLETIN_TEMP_FILES_PATH),
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this

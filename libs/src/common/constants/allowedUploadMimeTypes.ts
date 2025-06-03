@@ -10,18 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const BULLETIN_EDITOR_FORMATS = [
-  'header',
-  'bold',
-  'italic',
-  'underline',
-  'strike',
-  'blockquote',
-  'list',
-  'indent',
-  'link',
-  'image',
-  'pdf',
-];
+import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
+import DOCUMENT_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/documentUploadAllowedMimeTypes';
 
-export default BULLETIN_EDITOR_FORMATS;
+const ALLOWED_UPLOAD_MIME_TYPES = [...IMAGE_UPLOAD_ALLOWED_MIME_TYPES, ...DOCUMENT_UPLOAD_ALLOWED_MIME_TYPES];
+
+export default ALLOWED_UPLOAD_MIME_TYPES;
