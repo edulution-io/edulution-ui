@@ -38,7 +38,6 @@ interface BulletinBoardEditorialStore {
   error: Error | null;
   getBulletins: (isLoading?: boolean) => Promise<void>;
   deleteBulletins: (bulletins: BulletinResponseDto[]) => Promise<void>;
-  deleteBulletinAttachment: (filename: string) => Promise<void>;
   isDeleteBulletinDialogOpen: boolean;
   setIsDeleteBulletinDialogOpen: (isOpen: boolean) => void;
   createBulletin: (bulletin: CreateBulletinDto) => Promise<void>;
@@ -120,17 +119,6 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
       handleApiError(error, set);
     } finally {
       set({ isDialogLoading: false });
-    }
-  },
-
-  deleteBulletinAttachment: async (filename: string): Promise<void> => {
-    set({ isAttachmentUploadLoading: true, error: null });
-    try {
-      await eduApi.delete(`${BULLETIN_BOARD_EDU_API_ENDPOINT}/attachments/${encodeURIComponent(filename)}`);
-    } catch (error) {
-      handleApiError(error, set);
-    } finally {
-      set({ isAttachmentUploadLoading: false });
     }
   },
 

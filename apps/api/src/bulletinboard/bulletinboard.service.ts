@@ -56,8 +56,8 @@ class BulletinBoardService implements OnModuleInit {
     void this.fileSystemService.ensureDirectoryExists(this.attachmentsPath);
   }
 
-  async serveBulletinAttachment(filename: string, res: Response) {
-    const filePath = join(this.attachmentsPath, filename);
+  async serveBulletinAttachment(id: string, filename: string, res: Response) {
+    const filePath = join(this.attachmentsPath, id, filename);
 
     await FilesystemService.throwErrorIfFileNotExists(filePath);
 
@@ -162,7 +162,9 @@ class BulletinBoardService implements OnModuleInit {
       throw new CustomHttpException(BulletinBoardErrorMessage.INVALID_CATEGORY, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    const { cleanedContent } = await normalizeBulletinContent(dto.content);
+    const bulletinId: Types.ObjectId = new Types.ObjectId();
+
+    const { cleanedContent } = await normalizeBulletinContent(dto.content, bulletinId);
 
     const hasUserPermission = await this.bulletinCategoryService.hasUserPermission(
       currentUser.preferred_username,
@@ -181,6 +183,7 @@ class BulletinBoardService implements OnModuleInit {
     };
 
     const createdBulletin = await this.bulletinModel.create({
+      _id: bulletinId,
       creator,
       title: dto.title,
       attachmentFileNames: dto.attachmentFileNames,
@@ -209,7 +212,7 @@ class BulletinBoardService implements OnModuleInit {
 
     const filesToDelete = bulletinNames.filter((name) => !dtoSet.has(name));
 
-    const pathToAttachments = join(APPS_FILES_PATH, APPS.BULLETIN_BOARD, 'attachments');
+    const pathToAttachments = join(APPS_FILES_PATH, APPS.BULLETIN_BOARD, 'attachments', id);
 
     await Promise.all(filesToDelete.map((filename) => FilesystemService.deleteFile(pathToAttachments, filename)));
 
@@ -243,7 +246,7 @@ class BulletinBoardService implements OnModuleInit {
       username: currentUser.preferred_username,
     };
 
-    const { cleanedContent } = await normalizeBulletinContent(dto.content);
+    const { cleanedContent } = await normalizeBulletinContent(dto.content, id);
 
     Object.assign(bulletin, {
       title: dto.title,
@@ -316,11 +319,6 @@ class BulletinBoardService implements OnModuleInit {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-  }
-
-  async deleteBulletinAttachment(filename: string) {
-    await FilesystemService.deleteFile(join(APPS_FILES_PATH, APPS.BULLETIN_BOARD, 'attachments'), filename);
-    return { success: true };
   }
 }
 

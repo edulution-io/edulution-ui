@@ -17,33 +17,29 @@ import BULLETIN_TEMP_FILES_PATH from '@libs/bulletinBoard/constants/bulletinboar
 import APPS from '@libs/appconfig/constants/apps';
 import { Logger } from '@nestjs/common';
 
-const normalizeBulletinContent = async (originalHtml: string) => {
-  const TEMP_PREFIX_HTML = 'edu-api/files/file/temp/bulletinboard/attachments/';
-  const FINAL_PREFIX_HTML = 'edu-api/files/file/bulletinboard/attachments/';
-  const tempLinkPattern = /edu-api\/files\/file\/temp\/bulletinboard\/attachments\/([^"?]+\.(?:png|jpe?g|gif|pdf))/gi;
+const normalizeBulletinContent = async (originalHtml: string, bulletinId: string) => {
+  const TEMP_PREFIX = 'edu-api/files/file/temp/bulletinboard/attachments/';
+  const FINAL_PREFIX = `edu-api/bulletinboard/${bulletinId}/attachments/`;
 
-  const relocationTasks = Array.from(originalHtml.matchAll(tempLinkPattern)).map(([, relativePath]) => {
-    const sourcePath = join(BULLETIN_TEMP_FILES_PATH, relativePath);
-    const destinationPath = join(APPS_FILES_PATH, APPS.BULLETIN_BOARD, 'attachments', relativePath);
+  const tempLinkRx = new RegExp(`${TEMP_PREFIX}([^"?]+\\.(?:png|jpe?g|gif|pdf))`, 'gi');
+  const finalLinkRx = new RegExp(`${FINAL_PREFIX}([^"?]+\\.(?:png|jpe?g|gif|pdf))`, 'gi');
+  const relocationTasks = Array.from(originalHtml.matchAll(tempLinkRx)).map(([, relPath]) => {
+    const source = join(BULLETIN_TEMP_FILES_PATH, relPath);
+    const destination = join(APPS_FILES_PATH, APPS.BULLETIN_BOARD, 'attachments', bulletinId, relPath);
 
     return fs
-      .mkdir(dirname(destinationPath), { recursive: true })
-      .then(() => fs.rename(sourcePath, destinationPath))
+      .mkdir(dirname(destination), { recursive: true })
+      .then(() => fs.rename(source, destination))
       .catch((error) => Logger.verbose(error));
   });
 
-  const cleanedHtml = originalHtml.replaceAll(TEMP_PREFIX_HTML, FINAL_PREFIX_HTML);
+  const cleanedHtml = originalHtml.replaceAll(TEMP_PREFIX, FINAL_PREFIX);
 
   await Promise.all(relocationTasks);
 
-  const finalLinkPattern = /edu-api\/files\/file\/bulletinboard\/attachments\/([^"?]+\.(?:png|jpe?g|gif|pdf))/gi;
+  const fileNames = Array.from(cleanedHtml.matchAll(finalLinkRx), (m) => m[1]);
 
-  const fileNames = Array.from(cleanedHtml.matchAll(finalLinkPattern), (match) => match[1]);
-
-  return {
-    cleanedContent: cleanedHtml,
-    filenames: fileNames,
-  };
+  return { cleanedContent: cleanedHtml, filenames: fileNames };
 };
 
 export default normalizeBulletinContent;
