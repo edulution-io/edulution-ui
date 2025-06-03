@@ -27,7 +27,8 @@ type BlockEmbedCtor = {
 };
 
 const BlockEmbed = Quill.import('blots/block/embed') as BlockEmbedCtor;
-
+/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
+// @ts-expect-error
 class PdfBlot extends BlockEmbed {
   static blotName = 'pdf';
 
