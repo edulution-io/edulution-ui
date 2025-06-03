@@ -343,12 +343,14 @@ describe(UsersService.name, () => {
           },
         },
       ];
+      const searchString = 'john';
+      const school = 'agy';
 
-      jest.spyOn(service, 'findAllCachedUsers').mockResolvedValue(ldapUsers);
+      const fetchSpy = jest.spyOn(GroupsService, 'fetchAllUsers').mockResolvedValue(ldapUsers);
 
-      const result = await service.searchUsersByName(mockToken, 'agy', 'john');
+      const result = await service.searchUsersByName(mockToken, school, searchString);
+      expect(fetchSpy).toHaveBeenCalledWith(mockToken, searchString);
       expect(result).toEqual([{ username: 'john', firstName: 'John', lastName: 'Doe' }]);
-      expect(service.findAllCachedUsers).toHaveBeenCalledWith(mockToken, 'agy');
     });
   });
 

@@ -142,9 +142,14 @@ class GroupsService implements OnModuleInit {
     return response.data;
   }
 
-  static async fetchAllUsers(token: string): Promise<LDAPUser[]> {
+  static async fetchAllUsers(token: string, searchParam?: string | undefined): Promise<LDAPUser[]> {
     try {
-      return await GroupsService.makeAuthorizedRequest<LDAPUser[]>(HttpMethods.GET, 'users', token);
+      return await GroupsService.makeAuthorizedRequest<LDAPUser[]>(
+        HttpMethods.GET,
+        'users',
+        token,
+        searchParam ? `search=*${searchParam}*` : '',
+      );
     } catch (error) {
       throw new CustomHttpException(
         GroupsErrorMessage.CouldNotGetUsers,

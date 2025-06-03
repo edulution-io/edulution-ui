@@ -104,18 +104,29 @@ class UsersService {
     return usersBySchool[schoolName] || [];
   }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async searchUsersByName(token: string, schoolName: string, name: string): Promise<Partial<User>[]> {
     const searchString = name.toLowerCase();
 
-    const users = await this.findAllCachedUsers(token, schoolName);
+    const users = await GroupsService.fetchAllUsers(token, searchString);
 
     return users
-      .filter(
-        (user) =>
+      .filter((user) => {
+        const matchesName =
           user.firstName?.toLowerCase().includes(searchString) ||
           user.lastName?.toLowerCase().includes(searchString) ||
-          user.username?.toLowerCase().includes(searchString),
-      )
+          user.username?.toLowerCase().includes(searchString);
+
+        if (!matchesName) {
+          return false;
+        }
+
+        if (schoolName !== SPECIAL_SCHOOLS.GLOBAL) {
+          return user.attributes.school?.[0] === schoolName;
+        }
+
+        return true;
+      })
       .map((u) => ({
         firstName: u.firstName,
         lastName: u.lastName,
