@@ -19,8 +19,18 @@ import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import SurveysService from './surveys.service';
 import { Survey, SurveyDocument } from './survey.schema';
-import { firstMockJWTUser, createdSurvey01, publicSurvey01, idOfPublicSurvey01, surveyUpdateSurveyId } from './mocks';
-import { surveyUpdateInitialSurveyDto } from './mocks/surveys/updated-survey';
+import {
+  firstMockJWTUser,
+  createdSurvey01,
+  publicSurvey01,
+  idOfPublicSurvey01,
+  surveyUpdateSurveyId,
+  surveyUpdateInitialSurvey,
+  surveyUpdateInitialSurveyDto,
+  // surveyUpdateUpdatedSurvey,
+  surveyUpdateUpdatedSurveyDto,
+} from './mocks';
+import {} from './mocks/surveys/updated-survey';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
@@ -112,102 +122,120 @@ describe('SurveyService', () => {
   });
 
   describe('createSurvey', () => {
-    // it('should create a survey', async () => {
-    //   surveyModel.create = jest.fn().mockReturnValueOnce(surveyUpdateInitialSurveyDto);
-    //
-    //   await service
-    //     .createSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser)
-    //     .then((data) => expect(data).toStrictEqual(surveyUpdateInitialSurveyDto))
-    //     .catch(() => {});
-    //
-    //   expect(surveyModel.create).toHaveBeenCalledWith(surveyUpdateInitialSurveyDto);
-    // });
-    // it('should throw an error if the survey creation fails', async () => {
-    //   surveyModel.findOneAndUpdate = jest.fn().mockResolvedValue(null);
-    //   surveyModel.create = jest
-    //     .fn()
-    //     .mockRejectedValueOnce(
-    //       new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR),
-    //     );
-    //
-    //   try {
-    //     await service.createSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser);
-    //   } catch (e) {
-    //     const error = e as Error;
-    //     expect(error.message).toEqual(CommonErrorMessages.DBAccessFailed);
-    //   }
-    //   expect(surveyModel.create).toHaveBeenCalledWith(surveyUpdateInitialSurveyDto);
-    // });
+    it('should create a survey', async () => {
+      surveyModel.create = jest.fn().mockReturnValueOnce(surveyUpdateInitialSurveyDto);
+
+      await service
+        .createSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser)
+        .then((data) => expect(data).toStrictEqual(surveyUpdateInitialSurveyDto))
+        .catch(() => {});
+
+      expect(surveyModel.create).toHaveBeenCalledWith(surveyUpdateInitialSurveyDto);
+    });
+    it('should throw an error if the survey creation fails', async () => {
+      surveyModel.findOneAndUpdate = jest.fn().mockResolvedValue(null);
+      surveyModel.create = jest
+        .fn()
+        .mockRejectedValueOnce(
+          new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.INTERNAL_SERVER_ERROR),
+        );
+
+      try {
+        await service.createSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser);
+      } catch (e) {
+        const error = e as Error;
+        expect(error.message).toEqual(CommonErrorMessages.DB_ACCESS_FAILED);
+      }
+      expect(surveyModel.create).toHaveBeenCalledWith(surveyUpdateInitialSurveyDto);
+    });
   });
 
   describe('updateSurvey', () => {
-    // it('should update a survey', async () => {
-    //   surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
-    //     exec: jest.fn().mockReturnValue(surveyUpdateInitialSurveyDto),
-    //   });
-    //   const result = await service.updateSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser);
-    //
-    //   expect(result).toStrictEqual(surveyUpdateInitialSurveyDto);
-    //
-    //   expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith(
-    //     { id: surveyUpdateSurveyId },
-    //     surveyUpdateInitialSurveyDto,
-    //   );
-    // });
-    // it('should throw an error if the survey update fails', async () => {
-    //   surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
-    //     exec: jest
-    //       .fn()
-    //       .mockRejectedValue(
-    //         new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR),
-    //       ),
-    //   });
-    //   try {
-    //     await service.updateSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser);
-    //   } catch (e) {
-    //     const error = e as Error;
-    //     expect(error.message).toBe(CommonErrorMessages.DBAccessFailed);
-    //   }
-    // });
+    it('should update a survey', async () => {
+      surveyModel.findById = jest.fn().mockReturnValue({
+        lean: jest.fn().mockReturnValue(surveyUpdateInitialSurveyDto),
+        exec: jest.fn().mockReturnValue(surveyUpdateInitialSurveyDto),
+      });
+      surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
+        lean: jest.fn().mockReturnValue(surveyUpdateInitialSurveyDto),
+      });
+      const result = await service.updateSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser);
+
+      expect(result).toStrictEqual(surveyUpdateInitialSurveyDto);
+
+      expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith(
+        { _id: surveyUpdateSurveyId },
+        surveyUpdateInitialSurveyDto,
+        { new: true },
+      );
+    });
+    it('should throw an error if the survey update fails', async () => {
+      surveyModel.findById = jest.fn().mockReturnValue({
+        lean: jest.fn().mockReturnValue(surveyUpdateInitialSurveyDto),
+        exec: jest.fn().mockReturnValue(surveyUpdateInitialSurveyDto),
+      });
+      surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
+        lean: jest
+          .fn()
+          .mockRejectedValue(
+            new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.INTERNAL_SERVER_ERROR),
+          ),
+      });
+      try {
+        await service.updateSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser);
+      } catch (e) {
+        const error = e as Error;
+        expect(error.message).toBe(CommonErrorMessages.DB_ACCESS_FAILED);
+      }
+    });
     // TODO: NIEDUUI-405: Survey: Update backendLimiters on question removal or name change of a question
   });
 
   describe('updateOrCreateSurvey', () => {
-    // it('should create a survey if it does not exist', async () => {
-    //   surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
-    //     exec: jest.fn().mockReturnValue(null),
-    //   });
-    //   surveyModel.create = jest.fn().mockReturnValue(surveyUpdateInitialSurvey);
-    //
-    //   const result = await service.updateOrCreateSurvey(
-    //     surveyUpdateInitialSurveyDto,
-    //     firstMockJWTUser,
-    //   );
-    //   expect(result).toStrictEqual(surveyUpdateInitialSurvey);
-    //
-    //   expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith(
-    //     { id: surveyUpdateSurveyId },
-    //     surveyUpdateInitialSurveyDto,
-    //   );
-    //   expect(surveyModel.create).toHaveBeenCalledWith(surveyUpdateInitialSurveyDto);
-    // });
+    it('should create a survey if it does not exist', async () => {
+      surveyModel.findById = jest.fn().mockReturnValue({
+        lean: jest.fn().mockReturnValue(surveyUpdateInitialSurvey),
+        exec: jest.fn().mockReturnValue(surveyUpdateInitialSurvey),
+      });
+      surveyModel.findOneAndUpdate = jest
+        .fn()
+        .mockReturnValueOnce({
+          lean: jest.fn().mockReturnValue(null),
+        })
+        .mockReturnValueOnce({
+          lean: jest.fn().mockReturnValue(surveyUpdateInitialSurvey),
+        });
+      surveyModel.create = jest.fn().mockReturnValueOnce(surveyUpdateInitialSurvey);
 
-    // it('should update a survey', async () => {
-    //   surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
-    //     exec: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
-    //   });
-    //
-    //   const result = await service.updateOrCreateSurvey(
-    //     surveyUpdateUpdatedSurveyDto,
-    //     firstMockJWTUser,
-    //   );
-    //   expect(result).toStrictEqual(surveyUpdateUpdatedSurvey);
-    //
-    //   expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith(
-    //     { id: surveyUpdateSurveyId },
-    //     surveyUpdateUpdatedSurveyDto,
-    //   );
-    // });
+      const result = await service.updateOrCreateSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser);
+      expect(result).toStrictEqual(surveyUpdateInitialSurvey);
+
+      expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith(
+        { _id: surveyUpdateSurveyId },
+        surveyUpdateInitialSurveyDto,
+        { new: true },
+      );
+      expect(surveyModel.create).toHaveBeenCalledWith(surveyUpdateInitialSurveyDto);
+    });
+
+    it('should update a survey', async () => {
+      surveyModel.findById = jest.fn().mockReturnValue({
+        lean: jest.fn().mockReturnValue(surveyUpdateUpdatedSurveyDto),
+        exec: jest.fn().mockReturnValue(surveyUpdateUpdatedSurveyDto),
+      });
+      surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
+        lean: jest.fn().mockReturnValue(surveyUpdateUpdatedSurveyDto),
+      });
+
+      const result = await service.updateOrCreateSurvey(surveyUpdateUpdatedSurveyDto, firstMockJWTUser);
+      expect(result).toStrictEqual(surveyUpdateUpdatedSurveyDto);
+
+      expect(surveyModel.findOneAndUpdate).toHaveBeenCalledWith(
+        { _id: surveyUpdateSurveyId },
+        surveyUpdateUpdatedSurveyDto,
+        { new: true },
+      );
+    });
 
     it('should create a survey if the update failed', async () => {
       jest.spyOn(service, 'updateSurvey').mockResolvedValueOnce(null);
