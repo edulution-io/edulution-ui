@@ -93,8 +93,7 @@ const TemplateItem = (props: TemplateItemProps) => {
           {isSuperAdmin && (
             <Button
               onClick={handleRemoveTemplate}
-              variant="btn-collaboration"
-              className="m-2 h-[24px] bg-destructive"
+              variant="btn-attention"
               size="sm"
             >
               {t('common.delete')}
@@ -103,7 +102,6 @@ const TemplateItem = (props: TemplateItemProps) => {
           <Button
             onClick={handleLoadTemplate}
             variant="btn-collaboration"
-            className="m-2 h-[24px]"
             size="sm"
           >
             {t('common.load')}

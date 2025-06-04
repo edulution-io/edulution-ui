@@ -112,12 +112,7 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
 
     set({ isSubmitting: true });
     try {
-      const result = await eduApi.delete<Partial<SurveyDto>>(
-        `${EDU_API_CONFIG_ENDPOINTS.FILES}/${APPS.SURVEYS}/${TEMPLATES}/${templateFileName}`,
-      );
-      if (!result) {
-        throw new Error(CommonErrorMessages.FILE_DELETION_FAILED);
-      }
+      await eduApi.delete(`${EDU_API_CONFIG_ENDPOINTS.FILES}/${APPS.SURVEYS}/${TEMPLATES}/${templateFileName}`);
     } catch (error) {
       handleApiError(error, set);
     } finally {
