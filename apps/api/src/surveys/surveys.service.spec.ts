@@ -10,21 +10,26 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Logger } from '@nestjs/common';
+import { HttpStatus, Logger } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import SurveysService from './surveys.service';
-import { Survey } from './survey.schema';
-import { firstMockJWTUser, createdSurvey01 } from './mocks';
+import { Survey, SurveyDocument } from './survey.schema';
+import { firstMockJWTUser, createdSurvey01, publicSurvey01, idOfPublicSurvey01, surveyUpdateSurveyId } from './mocks';
 import { surveyUpdateInitialSurveyDto } from './mocks/surveys/updated-survey';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import CustomHttpException from 'apps/api/src/common/CustomHttpException';
+import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 
 describe('SurveyService', () => {
   let service: SurveysService;
+  let surveyModel: Model<SurveyDocument>;
 
   beforeEach(async () => {
     Logger.error = jest.fn();
@@ -42,6 +47,7 @@ describe('SurveyService', () => {
     }).compile();
 
     service = module.get<SurveysService>(SurveysService);
+    surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
   });
 
   afterEach(() => {
@@ -53,57 +59,56 @@ describe('SurveyService', () => {
   });
 
   describe('findPublicSurvey', () => {
-    // it('should search for public survey given an id', async () => {
-    //   surveyModel.findOne = jest.fn().mockReturnValue({
-    //     exec: jest.fn().mockReturnValue(publicSurvey01),
-    //   });
-    //
-    //   const result = await service.findPublicSurvey(idOfPublicSurvey01.toString());
-    //   expect(result).toEqual(publicSurvey01);
-    //
-    //   expect(surveyModel.findOne).toHaveBeenCalledWith({ id: idOfPublicSurvey01, isPublic: true });
-    // });
-    // it('should throw an error if the database access fails', async () => {
-    //   surveyModel.findOne = jest.fn().mockReturnValue({
-    //     exec: jest
-    //       .fn()
-    //       .mockRejectedValue(
-    //         new CustomHttpException(CommonErrorMessages.DBAccessFailed, HttpStatus.INTERNAL_SERVER_ERROR),
-    //       ),
-    //   });
-    //
-    //   try {
-    //     await service.findPublicSurvey(idOfPublicSurvey01.toString());
-    //   } catch (e) {
-    //     const error = e as Error;
-    //     expect(error.message).toEqual(CommonErrorMessages.DBAccessFailed);
-    //   }
-    //   expect(surveyModel.findOne).toHaveBeenCalledWith({ id: idOfPublicSurvey01, isPublic: true });
-    // });
+    it('should search for public survey given an id', async () => {
+      surveyModel.findOne = jest.fn().mockReturnValue({
+        exec: jest.fn().mockReturnValue(publicSurvey01),
+      });
+
+      const result = await service.findPublicSurvey(idOfPublicSurvey01.toString());
+      expect(result).toEqual(publicSurvey01);
+
+      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: idOfPublicSurvey01, isPublic: true });
+    });
+
+    it('should throw an error if the database access fails', async () => {
+      surveyModel.findOne = jest.fn().mockReturnValue({
+        exec: jest
+          .fn()
+          .mockRejectedValue(
+            new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.INTERNAL_SERVER_ERROR),
+          ),
+      });
+
+      try {
+        await service.findPublicSurvey(idOfPublicSurvey01.toString());
+      } catch (e) {
+        const error = e as Error;
+        expect(error.message).toEqual(CommonErrorMessages.DB_ACCESS_FAILED);
+      }
+      expect(surveyModel.findOne).toHaveBeenCalledWith({ _id: idOfPublicSurvey01, isPublic: true });
+    });
   });
 
   describe('deleteSurveys', () => {
-    // it('should delete a survey', async () => {
-    //   surveyModel.deleteMany = jest.fn();
-    //
-    //   const surveyIds = [surveyUpdateSurveyId.toString()];
-    //   await service.deleteSurveys(surveyIds);
-    //   expect(surveyModel.deleteMany).toHaveBeenCalledWith({ _id: { $in: surveyIds } });
-    // });
-    // it('should throw an error if the survey deletion fails', async () => {
-    //   surveyModel.deleteMany = jest
-    //     .fn()
-    //     .mockRejectedValueOnce(new CustomHttpException(SurveyErrorMessages.DeleteError, HttpStatus.NOT_MODIFIED));
-    //
-    //   const surveyIds = [new Types.ObjectId().toString()];
-    //   try {
-    //     await service.deleteSurveys(surveyIds);
-    //   } catch (e) {
-    //     const error = e as Error;
-    //     expect(error.message).toEqual(SurveyErrorMessages.DeleteError);
-    //   }
-    //   expect(surveyModel.deleteMany).toHaveBeenCalledWith({ _id: { $in: surveyIds } });
-    // });
+    it('should delete a survey', async () => {
+      surveyModel.deleteMany = jest.fn();
+      await service.deleteSurveys([surveyUpdateSurveyId.toString()]);
+      expect(surveyModel.deleteMany).toHaveBeenCalledWith({ _id: { $in: [surveyUpdateSurveyId] } });
+    });
+
+    it('should throw an error if the survey deletion fails', async () => {
+      surveyModel.deleteMany = jest
+        .fn()
+        .mockRejectedValueOnce(new CustomHttpException(SurveyErrorMessages.DeleteError, HttpStatus.NOT_MODIFIED));
+
+      try {
+        await service.deleteSurveys([surveyUpdateSurveyId.toString()]);
+      } catch (e) {
+        const error = e as Error;
+        expect(error.message).toEqual(SurveyErrorMessages.DeleteError);
+      }
+      expect(surveyModel.deleteMany).toHaveBeenCalledWith({ _id: { $in: [surveyUpdateSurveyId] } });
+    });
   });
 
   describe('createSurvey', () => {
