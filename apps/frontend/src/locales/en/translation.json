@@ -579,7 +579,8 @@
         "addBackendLimiterForOtherItem": "This is the limit, for how often the option will be selectable",
         "upperLimit": "Limit",
         "upperBackendLimiters": "Choices with an upper limit",
-        "addChoice": "Add"
+        "addChoice": "Add",
+        "filterPlaceHolderText": "Search for option"
       }
     },
     "participate": {
