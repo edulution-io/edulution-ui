@@ -10,6 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const WHITEBOARD_COLLABORATION_PERSISTENCE_KEY = 'whiteboardCollaborationPersistenceKey';
+const clearTLDrawPersistence = async (key: string) => {
+  localStorage.removeItem('TLDRAW_USER_DATA_v3');
+  localStorage.removeItem('TLDRAW_DB_NAME_INDEX_v2');
 
-export default WHITEBOARD_COLLABORATION_PERSISTENCE_KEY;
+  const dbs = await indexedDB.databases();
+
+  dbs
+    .filter((db) => db.name?.includes(key))
+    .forEach((db) => {
+      if (db.name) {
+        indexedDB.deleteDatabase(db.name);
+      }
+    });
+};
+
+export default clearTLDrawPersistence;

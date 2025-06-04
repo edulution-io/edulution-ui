@@ -1031,6 +1031,7 @@
     "infoQrCodeExpired": "Zeit für Login mit edulution.io APP abgelaufen."
   },
   "common": {
+    "offline": "Offline",
     "guest": "Gast",
     "ok": "OK",
     "next": "Weiter",
