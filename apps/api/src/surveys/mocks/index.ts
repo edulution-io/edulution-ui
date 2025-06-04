@@ -17,7 +17,9 @@ export {
   createdSurvey02,
   surveyUpdateSurveyId,
   surveyUpdateInitialSurvey,
+  surveyUpdateInitialSurveyDto,
   surveyUpdateUpdatedSurvey,
+  surveyUpdateUpdatedSurveyDto,
   openSurveyId01,
   openSurvey01,
   openSurveyId02,
@@ -85,4 +87,5 @@ export {
   secondMockUser,
   firstMockJWTUser,
   secondMockJWTUser,
+  thirdMockJWTUser,
 } from './user';
