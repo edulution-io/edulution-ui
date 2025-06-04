@@ -13,7 +13,6 @@
 import { zip as zipArchive } from 'fflate';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 
-/* ----------------------------- Typen ----------------------------- */
 interface WorkerInputMessage {
   files: File[];
   root: string;

@@ -29,6 +29,7 @@ import { HttpMethods } from '@libs/common/types/http-methods';
 import MAX_UPLOAD_CHUNK_SIZE from '@libs/ui/constants/maxUploadChunkSize';
 import splitArrayIntoChunks from '@libs/common/utils/splitArrayIntoChunks';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import UploadFileDto from '@libs/filesharing/types/uploadFileDto';
 import getFileSharingFormSchema from '../formSchema';
 
 interface CreateContentDialogProps {
@@ -104,29 +105,30 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   }: BatchUploadOptions) => {
     const batches = splitArrayIntoChunks(uploads, batchSize);
 
-    await batches.reduce<Promise<void>>(async (prevPromise, batch) => {
-      await prevPromise;
+    await batches.reduce<Promise<void>>(async (previousBatch, batch) => {
+      await previousBatch;
+      const uploadPromises = batch
+        .filter((item): item is typeof item & { file: File } => 'file' in item && item.file instanceof File)
+        .map((uploadItem) => {
+          /* ---------- DTO zusammenstellen ------------------------ */
+          const uploadDto: UploadFileDto = {
+            name: uploadItem.name,
+            isZippedFolder: 'isZippedFolder' in uploadItem.file && uploadItem.file.isZippedFolder,
+            ...(uploadItem.file.originalFolderName && {
+              originalFolderName: uploadItem.file.originalFolderName,
+            }),
+          };
 
-      await Promise.all(
-        batch.map(async (uploadItem) => {
-          if ('file' in uploadItem && uploadItem.file instanceof File) {
-            const formData = new FormData();
-            formData.append('file', uploadItem.file);
-            formData.append('path', uploadItem.path);
-            formData.append('name', uploadItem.name);
-            formData.append('currentPath', destinationPath);
+          const formData = new FormData();
+          formData.append('currentPath', destinationPath);
+          formData.append('file', uploadItem.file);
+          formData.append('path', uploadItem.path);
+          formData.append('uploadFileDto', JSON.stringify(uploadDto));
 
-            if ('isZippedFolder' in uploadItem.file && uploadItem.file.isZippedFolder) {
-              formData.append('isZippedFolder', '1');
-              if ('originalFolderName' in uploadItem.file && uploadItem.file.originalFolderName) {
-                formData.append('originalFolderName', uploadItem.file.originalFolderName);
-              }
-            }
-            return handleFileUploadAction(actionType, endpointUrl, method, requestContentType, formData);
-          }
-          return Promise.resolve();
-        }),
-      );
+          return handleFileUploadAction(actionType, endpointUrl, method, requestContentType, formData);
+        });
+
+      await Promise.all(uploadPromises);
     }, Promise.resolve());
   };
 

@@ -204,8 +204,8 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     Component: UploadContentBody,
     titleKey: 'filesharingUpload.title',
     submitKey: 'filesharingUpload.upload',
-    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
-    httpMethod: HttpMethods.PUT,
+    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.UPLOAD}`,
+    httpMethod: HttpMethods.POST,
     type: ContentType.FILE || ContentType.DIRECTORY,
     requiresForm: false,
     getData: (_form, currentPath, inputValues) => {
