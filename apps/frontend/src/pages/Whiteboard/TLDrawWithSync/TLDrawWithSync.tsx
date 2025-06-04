@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Editor, TLAssetStore, Tldraw, TLImageShapeProps } from 'tldraw';
 import { useSync } from '@tldraw/sync';
 import 'tldraw/tldraw.css';
@@ -22,29 +22,81 @@ import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/apiEndpoints';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import handleApiError from '@/utils/handleApiError';
 import useLanguage from '@/hooks/useLanguage';
-import { useTranslation } from 'react-i18next';
 import EDU_API_WEBSOCKET_URL from '@libs/common/constants/eduApiWebsocketUrl';
 import ROOM_ID_PARAM from '@libs/tldraw-sync/constants/roomIdParam';
+import { DropdownSelect } from '@/components';
+import useTLDRawHistoryStore from '@/pages/Whiteboard/TLDrawWithSync/useTLDRawHistoryStore';
+import useLmnApiStore from '@/store/useLmnApiStore';
+import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
+import { useTranslation } from 'react-i18next';
+import TLDrawHistory from '@/pages/Whiteboard/TLDrawWithSync/TLDrawHistory';
 
-const TldrawWithSync = () => {
-  const { user, eduApiToken } = useUserStore();
-  const { language } = useLanguage();
+const TLDrawWithSync = () => {
   const { t } = useTranslation();
-  const userName = user?.lastName ?? t('common.guest');
+  const { user, eduApiToken } = useUserStore();
+  const { user: lmnApiUser, getOwnUser } = useLmnApiStore();
+  const { language } = useLanguage();
+  const { setSelectedRoomId, selectedRoomId, initRoomHistory } = useTLDRawHistoryStore();
 
   const WS_BASE_URL = `${EDU_API_WEBSOCKET_URL}/${TLDRAW_SYNC_ENDPOINTS.BASE}`;
 
-  const roomId = user?.username;
+  useEffect(() => {
+    void getOwnUser();
+  }, []);
 
-  const uri = useMemo(() => `${WS_BASE_URL}?${ROOM_ID_PARAM}=${roomId}&token=${eduApiToken}`, [roomId]);
+  useEffect(() => {
+    if (selectedRoomId) {
+      void initRoomHistory(selectedRoomId, 5);
+    }
+  }, [selectedRoomId, initRoomHistory]);
+
+  const uri = useMemo(() => {
+    const params = new URLSearchParams({ token: eduApiToken });
+
+    if (selectedRoomId) {
+      params.set(ROOM_ID_PARAM, selectedRoomId);
+    }
+
+    return `${WS_BASE_URL}?${params.toString()}`;
+  }, [selectedRoomId, eduApiToken]);
+
+  const assetStore = useMemo<TLAssetStore>(
+    () => ({
+      async upload(asset, file) {
+        const filename = `${user?.username}_${asset.id}`;
+
+        const form = new FormData();
+        form.append('file', file, filename);
+
+        const assetPath = `${assetBasePath}/${encodeURIComponent(filename)}`;
+
+        await eduApi.post<string>(assetPath, form, {
+          headers: {
+            [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA,
+          },
+        });
+
+        const url = `${EDU_API_URL}${assetPath}`;
+
+        return { src: url, meta: { url } };
+      },
+
+      resolve(asset) {
+        return asset.props.src;
+      },
+    }),
+    [user?.username],
+  );
 
   const assetBasePath = `/${TLDRAW_SYNC_ENDPOINTS.BASE}/${TLDRAW_SYNC_ENDPOINTS.ASSETS}`;
+
+  if (!user) return null;
 
   const applyUserPreferences = (editor: Editor) => {
     editor.user.updateUserPreferences({
       colorScheme: COLOR_SCHEME,
       locale: language,
-      name: userName,
+      name: user.firstName + ' ' + user.lastName + '(' + user.username + ')',
     });
   };
 
@@ -98,46 +150,41 @@ const TldrawWithSync = () => {
     });
   };
 
-  const assetStore = useMemo<TLAssetStore>(
-    () => ({
-      async upload(asset, file) {
-        const filename = `${user?.username}_${asset.id}`;
-
-        const form = new FormData();
-        form.append('file', file, filename);
-
-        const assetPath = `${assetBasePath}/${encodeURIComponent(filename)}`;
-
-        await eduApi.post<string>(assetPath, form, {
-          headers: {
-            [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA,
-          },
-        });
-
-        const url = `${EDU_API_URL}${assetPath}`;
-
-        return { src: url, meta: { url } };
-      },
-
-      resolve(asset) {
-        return asset.props.src;
-      },
-    }),
-    [user?.username],
-  );
-
   const store = useSync({ uri, assets: assetStore });
 
+  const projects =
+    lmnApiUser?.projects?.map((p) => ({ id: p, name: removeSchoolPrefix(p, `p_${lmnApiUser.school}`) })) || [];
+  const schoolClasses =
+    lmnApiUser?.schoolclasses?.map((c) => ({ id: c, name: removeSchoolPrefix(c, lmnApiUser.school) })) || [];
+  const sessions =
+    lmnApiUser?.lmnsessions?.map((s) => ({ id: s.sid, name: removeSchoolPrefix(s.name, `p_${lmnApiUser.school}`) })) ||
+    [];
+  const roomIdOptions = [...projects, ...schoolClasses, ...sessions];
+
   return (
-    <Tldraw
-      onMount={(editor) => {
-        applyUserPreferences(editor);
-        registerAssetHandler(editor);
-        registerDeleteHandler(editor);
-      }}
-      store={store}
-    />
+    <div className="flex h-full flex-col">
+      <DropdownSelect
+        placeholder={t('whiteboard-collaboration.dropdownPlaceholder')}
+        options={[{ id: '', name: 'whiteboard-collaboration.privateRoom' }].concat(roomIdOptions)}
+        selectedVal={selectedRoomId}
+        handleChange={setSelectedRoomId}
+        variant="default"
+        classname="z-[400]"
+      />
+
+      {selectedRoomId && <TLDrawHistory />}
+
+      <Tldraw
+        className="z-10"
+        onMount={(editor) => {
+          applyUserPreferences(editor);
+          registerAssetHandler(editor);
+          registerDeleteHandler(editor);
+        }}
+        store={store}
+      />
+    </div>
   );
 };
 
-export default TldrawWithSync;
+export default TLDrawWithSync;

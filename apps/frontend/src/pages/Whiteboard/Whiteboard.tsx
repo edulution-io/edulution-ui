@@ -15,8 +15,8 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 
-const TLDrawWithSync = lazy(() => import('./TLDrawWithSync'));
-const TlDrawOffline = lazy(() => import('./TLDrawOffline'));
+const TLDrawWithSync = lazy(() => import('./TLDrawWithSync/TLDrawWithSync'));
+const TlDrawOffline = lazy(() => import('./TLDrawOffline/TLDrawOffline'));
 
 const Whiteboard = () => {
   const { getIsEduApiHealthy, isEduApiHealthy } = useEduApiStore();

@@ -1,0 +1,3 @@
+const TLDRAW_MULTI_USER_ROOM_PREFIX = 'multi-';
+
+export default TLDRAW_MULTI_USER_ROOM_PREFIX;

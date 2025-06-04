@@ -36,6 +36,8 @@ interface ResizableWindowProps {
   disableToggleMaximizeWindow?: boolean;
   initialPosition?: Position;
   initialSize?: RectangleSize;
+  minimalSize?: Partial<RectangleSize>;
+  maximalSize?: Partial<RectangleSize>;
   openMaximized?: boolean;
   stickToInitialSizeAndPositionWhenRestored?: boolean;
   additionalButtons?: (ReactElement | null)[];
@@ -50,6 +52,8 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
   openMaximized = true,
   initialPosition,
   initialSize,
+  minimalSize,
+  maximalSize,
   stickToInitialSizeAndPositionWhenRestored = false,
   additionalButtons = [],
 }) => {
@@ -187,8 +191,10 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
   return createPortal(
     <Rnd
       dragHandleClassName="drag-handle"
-      minHeight={isMinimized ? DEFAULT_MINIMIZED_BAR_HEIGHT : 300}
-      minWidth={isMinimized ? minimizedWidth : undefined}
+      minHeight={isMinimized ? DEFAULT_MINIMIZED_BAR_HEIGHT : minimalSize?.height}
+      minWidth={isMinimized ? minimizedWidth : minimalSize?.width}
+      maxHeight={maximalSize?.height}
+      maxWidth={maximalSize?.width}
       size={{
         width: currentWindowedFrameSizes[titleTranslationId]?.width || RESIZABLE_WINDOW_DEFAULT_SIZE.width,
         height: currentWindowedFrameSizes[titleTranslationId]?.height || RESIZABLE_WINDOW_DEFAULT_SIZE.height,

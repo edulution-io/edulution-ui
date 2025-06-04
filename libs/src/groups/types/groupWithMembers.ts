@@ -11,11 +11,9 @@
  */
 
 import GroupMemberDto from './groupMember.dto';
+import { Group } from '@libs/groups/types/group';
 
-type GroupWithMembers = {
-  id: string;
-  name: string;
-  path: string;
+type GroupWithMembers = Group & {
   members: GroupMemberDto[];
 };
 

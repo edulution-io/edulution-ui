@@ -177,10 +177,6 @@ class GroupsService implements OnModuleInit {
     }
   }
 
-  private static sanitizeGroup(group: Group) {
-    return { id: group.id, name: group.name, path: group.path };
-  }
-
   private static sanitizeGroupMembers(members: LDAPUser[]): GroupMemberDto[] {
     return Array.isArray(members)
       ? members.map((member: LDAPUser) => ({
@@ -293,12 +289,11 @@ class GroupsService implements OnModuleInit {
     }
 
     const sanitizedMembers = GroupsService.sanitizeGroupMembers(members);
-    const sanitizedGroup = GroupsService.sanitizeGroup(group);
 
     await cacheManager.set(
       `${GROUP_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
       {
-        ...sanitizedGroup,
+        ...group,
         members: sanitizedMembers,
       },
       GROUPS_CACHE_TTL_MS,
@@ -360,7 +355,12 @@ class GroupsService implements OnModuleInit {
 
   static async fetchAllGroups(token: string): Promise<Group[]> {
     try {
-      const groups = await GroupsService.makeAuthorizedRequest<Group[]>(HttpMethods.GET, 'groups', token, 'search');
+      const groups = await GroupsService.makeAuthorizedRequest<Group[]>(
+        HttpMethods.GET,
+        'groups',
+        token,
+        'briefRepresentation=false&search',
+      );
       return GroupsService.flattenGroups(groups);
     } catch (error) {
       throw new CustomHttpException(

@@ -43,8 +43,9 @@ import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuest
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 import TLDRAW_PERSISTENCE_KEY from '@libs/whiteboard/constants/tldrawPersistenceKey';
-import clearTLDrawPersistence from '@/pages/Whiteboard/clearTLDrawPersitence';
+import clearTLDrawPersistence from '@/pages/Whiteboard/TLDrawOffline/clearTLDrawPersitence';
 import useSseStore from '../useSseStore';
+import useTLDRawHistoryStore from '@/pages/Whiteboard/TLDrawWithSync/useTLDRawHistoryStore';
 
 const cleanAllStores = async () => {
   UserStore.getState().resetQrCodeSlice();
@@ -84,6 +85,7 @@ const cleanAllStores = async () => {
   useParticipateSurveyStore.getState().reset();
   useQuestionsContextMenuStore.getState().reset();
   useSseStore.getState().reset();
+  useTLDRawHistoryStore.getState().reset();
   localStorage.removeItem('i18nextLng');
   await clearTLDrawPersistence(TLDRAW_PERSISTENCE_KEY);
 };

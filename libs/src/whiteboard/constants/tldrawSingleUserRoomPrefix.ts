@@ -1,0 +1,3 @@
+const TLDRAW_SINGLE_USER_ROOM_PREFIX = 'single-';
+
+export default TLDRAW_SINGLE_USER_ROOM_PREFIX;

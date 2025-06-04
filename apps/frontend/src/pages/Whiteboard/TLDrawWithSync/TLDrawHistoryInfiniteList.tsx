@@ -1,0 +1,101 @@
+import React, { useEffect, useRef } from 'react';
+import useTLDRawHistoryStore from '@/pages/Whiteboard/TLDrawWithSync/useTLDRawHistoryStore';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import { useTranslation } from 'react-i18next';
+import HistoryEntryDto from '@libs/whiteboard/types/historyEntryDto';
+import useFrameStore from '@/components/structure/framing/useFrameStore';
+import { MAXIMIZED_BAR_HEIGHT } from '@libs/ui/constants/resizableWindowElements';
+
+const TLDrawHistoryInfiniteList: React.FC = () => {
+  const { t } = useTranslation();
+  const { currentRoomHistory, isHistoryLoading, historyHasMoreItemsToLoad, fetchNextHistoryPage } =
+    useTLDRawHistoryStore();
+  const { currentWindowedFrameSizes } = useFrameStore();
+  const height =
+    (currentWindowedFrameSizes['whiteboard-collaboration.historyTitle']?.height || 150) - MAXIMIZED_BAR_HEIGHT;
+
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!historyHasMoreItemsToLoad) return;
+    const container = scrollContainerRef.current;
+    const sentinel = loadMoreRef.current;
+    if (!container || !sentinel) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          void fetchNextHistoryPage(5);
+        }
+      },
+      {
+        root: container,
+        rootMargin: '0px',
+        threshold: 0.5,
+      },
+    );
+
+    observer.observe(sentinel);
+    return () => {
+      observer.disconnect();
+    };
+  }, [historyHasMoreItemsToLoad, fetchNextHistoryPage]);
+
+  if (isHistoryLoading && currentRoomHistory?.page === 1) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <CircleLoader />
+      </div>
+    );
+  }
+
+  const items = currentRoomHistory?.items || [];
+
+  if (!items.length) return null;
+
+  return (
+    <div className="flex h-full flex-col">
+      <div
+        ref={scrollContainerRef}
+        className="divide-y divide-slate-500 overflow-y-auto"
+        style={{ height }}
+      >
+        <ul>
+          {items.map((entry: HistoryEntryDto) => (
+            <li
+              key={entry.id}
+              className="flex flex-row items-center justify-between px-2 py-1 hover:bg-muted"
+            >
+              <div className="flex flex-1 space-x-2">
+                <span className="font-medium">
+                  {entry.attendee.firstName} {entry.attendee.lastName}
+                </span>
+              </div>
+              <div className="text-xs text-muted-foreground">{new Date(entry.createdAt).toLocaleTimeString()}</div>
+            </li>
+          ))}
+        </ul>
+
+        <div
+          ref={loadMoreRef}
+          className="h-4"
+        />
+
+        {isHistoryLoading && (
+          <div className="flex justify-center py-2">
+            <CircleLoader />
+          </div>
+        )}
+
+        {!historyHasMoreItemsToLoad && (
+          <div className="py-2 text-center text-sm text-muted-foreground">
+            {t('whiteboard-collaboration.historyNoMore')}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default TLDrawHistoryInfiniteList;

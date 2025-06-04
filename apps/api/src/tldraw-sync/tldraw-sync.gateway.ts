@@ -1,15 +1,3 @@
-/*
- * LICENSE
- *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
- */
-
 import { Logger, OnModuleInit } from '@nestjs/common';
 import { OnGatewayConnection, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { RawData, Server, WebSocket } from 'ws';
@@ -20,67 +8,88 @@ import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
 import { readFileSync } from 'fs';
 import { JwtService } from '@nestjs/jwt';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
-import TldrawSyncService from './tldraw-sync.service';
+import TLDrawSyncService from './tldraw-sync.service';
+import Attendee from '../conferences/attendee.schema';
+import TLDRAW_MULTI_USER_ROOM_PREFIX from '@libs/whiteboard/constants/tldrawMultiUserRoomPrefix';
+import TLDRAW_SINGLE_USER_ROOM_PREFIX from '@libs/whiteboard/constants/tldrawSingleUserRoomPrefix';
+import GroupMemberDto from '@libs/groups/types/groupMember.dto';
 
 @WebSocketGateway({
   path: `${EDU_API_ROOT}/${TLDRAW_SYNC_ENDPOINTS.BASE}`,
   cors: { origin: '*' },
 })
-export default class TldrawSyncGateway implements OnGatewayConnection, OnModuleInit {
+export default class TLDrawSyncGateway implements OnGatewayConnection, OnModuleInit {
   @WebSocketServer() server: Server;
 
   private readonly pubKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
 
   constructor(
-    private readonly tldrawSyncService: TldrawSyncService,
+    private readonly tldrawSyncService: TLDrawSyncService,
     private readonly jwtService: JwtService,
   ) {}
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   onModuleInit() {
-    Logger.log(`WebSocket Gateway initialized at path: /${TLDRAW_SYNC_ENDPOINTS.BASE}`, TldrawSyncGateway.name);
+    Logger.log(`TLDrawSyncGateway initialized at path: /${TLDRAW_SYNC_ENDPOINTS.BASE}`, TLDrawSyncGateway.name);
   }
 
   async handleConnection(client: WebSocket, request: Request) {
-    const url = new URL(request.url, 'http://localhost');
+    const { attendee, roomId, sessionId, isMultiUserRoom, permittedUsers } = await this.authenticate(request, client);
+    if (!attendee || !roomId || !sessionId) return;
 
-    const token = url.searchParams.get('token');
-    const sessionId = url.searchParams.get('sessionId');
-    if (!token || !sessionId) {
-      client.close();
-      return;
-    }
+    Logger.log(
+      `Authenticated user ${attendee.username} connected: roomId=${roomId}, sessionId=${sessionId}`,
+      TLDrawSyncGateway.name,
+    );
 
-    let user: JwtUser;
-    try {
-      user = await this.jwtService.verifyAsync<JwtUser>(token, {
-        publicKey: this.pubKey,
-        algorithms: ['RS256'],
+    const batch: Record<string, unknown>[] = [];
+    let debounceTimer: NodeJS.Timeout | undefined;
+
+    if (isMultiUserRoom && permittedUsers?.length) {
+      const flushBatch = async () => {
+        if (batch.length === 0) return;
+        try {
+          await this.tldrawSyncService.logRoomMessage(
+            {
+              roomId,
+              attendee,
+              message: batch[batch.length - 1],
+            },
+            permittedUsers,
+          );
+        } catch (err) {
+          Logger.error(`Error flushing batch: ${(err as Error).message}`, TLDrawSyncGateway.name);
+        }
+        batch.length = 0;
+        debounceTimer = undefined;
+      };
+
+      const logListener = (message: RawData) => {
+        const parsed = this.parseDiff(message);
+        if (!parsed) return;
+
+        batch.push(parsed);
+        if (debounceTimer) clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(flushBatch, 1000);
+      };
+
+      client.on('message', logListener);
+      client.on('close', () => {
+        if (debounceTimer) clearTimeout(debounceTimer);
+        void flushBatch();
       });
-    } catch (err) {
-      client.close();
-      return;
     }
 
-    const { preferred_username: username } = user;
-
-    const multiRoomId = url.searchParams.get(ROOM_ID_PARAM);
-    const roomId = multiRoomId ? `multi-${multiRoomId}` : `single-${username}`;
-
-    Logger.log(`Client ${username} connected: roomId=${roomId}, sessionId=${sessionId}`, TldrawSyncGateway.name);
-
-    const caughtMessages: RawData[] = [];
-    const collectMessagesListener = (message: RawData) => {
-      caughtMessages.push(message);
-    };
-    client.on('message', collectMessagesListener);
+    const caught: RawData[] = [];
+    const collectListener = (msg: RawData) => caught.push(msg);
+    client.on('message', collectListener);
 
     let room;
     try {
       room = await this.tldrawSyncService.makeOrLoadRoom(roomId);
     } catch (err) {
-      Logger.error(`Error loading room ${roomId}: ${(err as Error).message}`, TldrawSyncGateway.name);
-      client.off('message', collectMessagesListener);
+      client.off('message', collectListener);
+      Logger.error(`Error loading room ${roomId}: ${(err as Error).message}`, TLDrawSyncGateway.name);
       client.close();
       return;
     }
@@ -88,13 +97,83 @@ export default class TldrawSyncGateway implements OnGatewayConnection, OnModuleI
     try {
       room.handleSocketConnect({ sessionId, socket: client });
     } catch (err) {
-      Logger.error(`Error connecting to room ${roomId}: ${(err as Error).message}`, TldrawSyncGateway.name);
-      client.off('message', collectMessagesListener);
+      client.off('message', collectListener);
+      Logger.error(
+        `Error in handleSocketConnect for room ${roomId}: ${(err as Error).message}`,
+        TLDrawSyncGateway.name,
+      );
       client.close();
       return;
     }
 
-    client.off('message', collectMessagesListener);
-    caughtMessages.forEach((message) => client.emit('message', message));
+    client.off('message', collectListener);
+    for (const msg of caught) {
+      client.emit('message', msg);
+    }
+  }
+
+  private async authenticate(
+    request: Request,
+    client: WebSocket,
+  ): Promise<{
+    attendee?: Attendee;
+    roomId?: string;
+    sessionId?: string;
+    isMultiUserRoom?: boolean;
+    permittedUsers?: GroupMemberDto[];
+  }> {
+    const url = new URL(request.url, 'http://localhost');
+    const token = url.searchParams.get('token');
+    const sessionId = url.searchParams.get('sessionId')!;
+
+    if (!token || !sessionId) {
+      client.close();
+      return {};
+    }
+
+    try {
+      const user = await this.jwtService.verifyAsync<JwtUser>(token, {
+        publicKey: this.pubKey,
+        algorithms: ['RS256'],
+      });
+
+      const { preferred_username: username, family_name: lastName, given_name: firstName } = user;
+
+      const multiUserRoomId = url.searchParams.get(ROOM_ID_PARAM);
+      const roomId = multiUserRoomId
+        ? `${TLDRAW_MULTI_USER_ROOM_PREFIX}${multiUserRoomId}`
+        : `${TLDRAW_SINGLE_USER_ROOM_PREFIX}${username}`;
+
+      let permittedUsers;
+      if (multiUserRoomId) {
+        permittedUsers = await this.tldrawSyncService.getPermittedUsers(roomId);
+
+        if (!permittedUsers.some((user) => user.username === username)) {
+          return {};
+        }
+      }
+
+      return {
+        attendee: { username, firstName, lastName },
+        roomId,
+        sessionId,
+        isMultiUserRoom: !!multiUserRoomId,
+        permittedUsers,
+      };
+    } catch {
+      client.close();
+
+      return {};
+    }
+  }
+
+  private parseDiff(message: RawData): Record<string, unknown> | null {
+    let msg: any;
+    try {
+      msg = JSON.parse(message.toString());
+    } catch {
+      return null;
+    }
+    return msg.diff === undefined ? null : msg;
   }
 }
