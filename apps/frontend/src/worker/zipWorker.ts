@@ -12,20 +12,9 @@
 
 import { zip as zipArchive } from 'fflate';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
-
-interface WorkerInputMessage {
-  files: File[];
-  root: string;
-}
-
-interface WorkerProgressMessage {
-  progress: number;
-}
-
-interface WorkerOutputMessage {
-  blob: Blob;
-  root: string;
-}
+import WorkerOutputMessage from '@/worker/workerOutputMessage';
+import WorkerProgressMessage from '@/worker/workerProgressMessage';
+import WorkerInputMessage from '@/worker/workerInputMessage';
 
 export {};
 

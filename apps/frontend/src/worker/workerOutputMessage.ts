@@ -10,8 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface ProgressMessage {
-  progress: number;
+interface WorkerOutputMessage {
+  blob: Blob;
+  root: string;
 }
 
-export default ProgressMessage;
+export default WorkerOutputMessage;

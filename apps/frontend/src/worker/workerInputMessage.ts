@@ -10,9 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface BlobMessage {
-  blob: Blob;
+interface WorkerInputMessage {
+  files: File[];
   root: string;
 }
 
-export default BlobMessage;
+export default WorkerInputMessage;

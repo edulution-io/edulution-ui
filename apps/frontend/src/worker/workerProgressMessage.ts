@@ -10,7 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ProgressMessage from '@/pages/FileSharing/worker/progressMessage';
-import BlobMessage from '@/pages/FileSharing/worker/blobMessage';
+interface WorkerProgressMessage {
+  progress: number;
+}
 
-export type WorkerMessage = ProgressMessage | BlobMessage;
+export default WorkerProgressMessage;

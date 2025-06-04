@@ -100,7 +100,7 @@ class FilesystemService {
     }
 
     try {
-      const response = await axios.get<ArrayBuffer>(url, { responseType: 'arraybuffer' });
+      const response = await axios.get<ArrayBuffer>(url, { responseType: ResponseType.ARRAYBUFFER });
       const filePath = join(PUBLIC_DOWNLOADS_PATH, filename);
 
       await fsPromises.mkdir(dirname(filePath), { recursive: true });

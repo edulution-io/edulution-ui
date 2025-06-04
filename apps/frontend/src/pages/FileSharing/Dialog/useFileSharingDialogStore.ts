@@ -13,7 +13,6 @@
 import { AxiosError } from 'axios';
 import { create } from 'zustand';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import React from 'react';
 import handleApiError from '@/utils/handleApiError';
 import { WebDavActionResult } from '@libs/filesharing/types/fileActionStatus';
 import { t } from 'i18next';
@@ -57,13 +56,14 @@ interface FileSharingDialogStore {
     type: ContentType,
     data: PathChangeOrCreateDto | PathChangeOrCreateDto[] | FileUploadProps[] | DeleteFileProps[] | FormData,
   ) => Promise<void>;
-  setFilesToUpload: React.Dispatch<React.SetStateAction<UploadFile[]>>;
+  setFilesToUpload: (files: UploadFile[]) => void;
   action: FileActionType;
   setAction: (action: FileActionType) => void;
   fileOperationResult: WebDavActionResult | undefined;
   setFileOperationResult: (fileOperationSuccessful: boolean | undefined, message: string, status: number) => void;
   setSubmitButtonIsDisabled: (isSubmitButtonActive: boolean) => void;
   handleDeleteItems: (itemsToDelete: PathChangeOrCreateDto[], endpoint: string) => Promise<void>;
+  updateFilesToUpload: (updater: (files: UploadFile[]) => UploadFile[]) => void;
 }
 
 const initialState: Partial<FileSharingDialogStore> = {
@@ -88,11 +88,8 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
   setIsLoading: (isLoading) => set({ isLoading }),
   setError: (error: AxiosError) => set({ error }),
   reset: () => set(initialState),
-  setFilesToUpload: (update) =>
-    set({
-      filesToUpload:
-        typeof update === 'function' ? (update as (prev: UploadFile[]) => UploadFile[])(get().filesToUpload) : update,
-    }),
+  setFilesToUpload: (files) => set({ filesToUpload: files }),
+  updateFilesToUpload: (updater) => set((state) => ({ filesToUpload: updater(state.filesToUpload) })),
   setMoveOrCopyItemToPath: (path) => set({ moveOrCopyItemToPath: path }),
   setSubmitButtonIsDisabled: (isSubmitButtonDisabled) => set({ isSubmitButtonDisabled }),
   setSelectedFileType: (fileType) => set({ selectedFileType: fileType }),

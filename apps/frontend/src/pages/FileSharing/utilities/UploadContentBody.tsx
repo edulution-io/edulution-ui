@@ -27,10 +27,11 @@ import WarningBox from '@/components/shared/WarningBox';
 import { TiDocumentAdd, TiFolder, TiFolderAdd } from 'react-icons/ti';
 import { UploadFile } from '@libs/filesharing/types/uploadFile';
 import Progress from '@/components/ui/Progress';
-import { WorkerMessage } from '@/pages/FileSharing/worker/workerMessage';
-import ProgressMessage from '@/pages/FileSharing/worker/progressMessage';
-import BlobMessage from '@/pages/FileSharing/worker/blobMessage';
+import { WorkerMessage } from '@/worker/workerMessage';
+import WorkerProgressMessage from '@/worker/workerProgressMessage';
+import WorkerOutputMessage from '@/worker/workerOutputMessage';
 import zipDirectoryEntry from '@libs/filesharing/utils/zipDirectoryEntry';
+import { RequestResponseContentType, ResponseType } from '@libs/common/types/http-methods';
 
 const UploadContentBody = () => {
   const { t } = useTranslation();
@@ -39,11 +40,13 @@ const UploadContentBody = () => {
   const [zipProgress, setZipProgress] = useState(0);
   const { setSubmitButtonIsDisabled } = useFileSharingDialogStore();
 
+  const supportsWebkitDirectory = 'webkitdirectory' in document.createElement('input');
+
   const zipWorker = useRef<Worker>();
 
   const [filesThatWillBeOverwritten, setFilesThatWillBeOverwritten] = useState<string[]>([]);
 
-  const { filesToUpload, setFilesToUpload } = useFileSharingDialogStore();
+  const { filesToUpload, setFilesToUpload, updateFilesToUpload } = useFileSharingDialogStore();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
@@ -85,7 +88,10 @@ const UploadContentBody = () => {
 
       const duplicates = findDuplicateFiles(normal, files);
 
-      setOversizedFiles((prev) => [...prev, ...oversize.filter((f) => !prev.some((x) => x.name === f.name))]);
+      setOversizedFiles((prev) => [
+        ...prev,
+        ...oversize.filter((file) => !prev.some((prevFile) => prevFile.name === file.name)),
+      ]);
 
       setFilesThatWillBeOverwritten((prev) => {
         const seen = new Set(prev);
@@ -93,7 +99,7 @@ const UploadContentBody = () => {
         return [...prev, ...fresh];
       });
 
-      setFilesToUpload((prevFiles) => {
+      updateFilesToUpload((prevFiles) => {
         const allNewFiles = acceptedFiles.filter((file) => !prevFiles.some((f) => f.name === file.name));
         return [...prevFiles, ...allNewFiles];
       });
@@ -101,11 +107,11 @@ const UploadContentBody = () => {
     [files, setOversizedFiles, setFilesThatWillBeOverwritten, setFilesToUpload],
   );
 
-  const isZipProgress = (m: WorkerMessage): m is ProgressMessage => 'progress' in m;
-  const isBlob = (m: WorkerMessage): m is BlobMessage => 'blob' in m;
+  const isZipProgress = (m: WorkerMessage): m is WorkerProgressMessage => 'progress' in m;
+  const isBlob = (m: WorkerMessage): m is WorkerOutputMessage => ResponseType.BLOB in m;
 
   useEffect(() => {
-    zipWorker.current = new Worker(new URL('../worker/zipWorker.ts', import.meta.url), { type: 'module' });
+    zipWorker.current = new Worker(new URL('../../../worker/zipWorker.ts', import.meta.url), { type: 'module' });
 
     zipWorker.current.onmessage = (ev: MessageEvent<WorkerMessage>) => {
       const { data } = ev;
@@ -118,10 +124,13 @@ const UploadContentBody = () => {
       if (isBlob(data)) {
         const { blob, root } = data;
 
-        const zipFile: UploadFile = Object.assign(new File([blob], `${root}.zip`, { type: 'application/zip' }), {
-          isZippedFolder: true,
-          originalFolderName: root,
-        });
+        const zipFile: UploadFile = Object.assign(
+          new File([blob], `${root}.zip`, { type: RequestResponseContentType.APPLICATION_ZIP }),
+          {
+            isZippedFolder: true,
+            originalFolderName: root,
+          },
+        );
 
         onDrop([zipFile]);
       }
@@ -138,10 +147,9 @@ const UploadContentBody = () => {
     }
   }, [zipProgress]);
 
-  async function extractFilesFromEvent(event: DropEvent): Promise<File[]> {
+  const extractFilesFromEvent = async (event: DropEvent): Promise<File[]> => {
     if ('dataTransfer' in event && event.dataTransfer) {
       const items = Array.from(event.dataTransfer.items ?? []);
-
       const resolved = await Promise.all(
         items.map(async (item) => {
           const entry = item.webkitGetAsEntry?.();
@@ -160,7 +168,7 @@ const UploadContentBody = () => {
     }
 
     return [];
-  }
+  };
 
   const handleFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(e.target.files ?? []);
@@ -177,7 +185,7 @@ const UploadContentBody = () => {
   };
 
   const removeFile = (name: string) => {
-    setFilesToUpload((prev) => prev.filter((f) => f.name !== name));
+    updateFilesToUpload((prev) => prev.filter((file) => file.name !== name));
     setOversizedFiles((prev) => prev.filter((f) => f.name !== name));
     const key = duplicateKey({ name } as UploadFile);
     setFilesThatWillBeOverwritten((prev) => prev.filter((k) => k !== key));
@@ -274,17 +282,19 @@ const UploadContentBody = () => {
           </div>
         </Button>
 
-        <Button
-          variant="btn-collaboration"
-          className="flex-1"
-          type="button"
-          onClick={() => folderInputRef.current?.click()}
-        >
-          <div className="flex flex-col items-center">
-            <TiFolderAdd size={24} />
-            {t('filesharingUpload.addFolder')}
-          </div>
-        </Button>
+        {supportsWebkitDirectory && (
+          <Button
+            variant="btn-collaboration"
+            className="flex-1"
+            type="button"
+            onClick={() => folderInputRef.current?.click()}
+          >
+            <div className="flex flex-col items-center">
+              <TiFolderAdd size={24} />
+              {t('filesharingUpload.addFolder')}
+            </div>
+          </Button>
+        )}
       </div>
 
       {filesThatWillBeOverwritten.length > 0 && (
