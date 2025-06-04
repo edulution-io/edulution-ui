@@ -126,8 +126,8 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     titleKey: 'fileCreateNewContent.fileDialogTitle',
     submitKey: 'fileCreateNewContent.createButtonText',
     initialValues: initialFormValues,
-    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
-    httpMethod: HttpMethods.PUT,
+    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.UPLOAD}`,
+    httpMethod: HttpMethods.POST,
     type: ContentType.FILE,
     requiresForm: true,
     getData: async (form, currentPath, { documentVendor, selectedFileType }) => {

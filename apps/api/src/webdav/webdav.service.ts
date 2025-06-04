@@ -59,12 +59,12 @@ class WebdavService {
     config: {
       method: string;
       url?: string;
-      // eslint-disable-next-line
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       data?: string | Record<string, any> | Buffer;
       headers?: Record<string, string | number>;
     },
     fileSharingErrorMessage: ErrorMessage,
-    // eslint-disable-next-line
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     transformer?: (data: any) => T,
   ): Promise<T | WebdavStatusResponse> {
     try {
