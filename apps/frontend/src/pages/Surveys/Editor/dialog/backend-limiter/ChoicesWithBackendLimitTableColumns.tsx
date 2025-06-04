@@ -14,20 +14,16 @@ import React from 'react';
 import { t } from 'i18next';
 import { HiTrash } from 'react-icons/hi';
 import { ColumnDef } from '@tanstack/react-table';
+import ID_ACTION_TABLE_COLUMN from '@libs/common/constants/idActionTableColumn';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import Input from '@/components/shared/Input';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
 
-export const CHOICES_WITH_BACKEND_LIMIT_COLUMNS = {
-  title: 'choice-title',
-  upperLimit: 'choice-limit',
-} as const;
-
 const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
   {
-    id: CHOICES_WITH_BACKEND_LIMIT_COLUMNS.title,
+    id: 'choice-title',
     header: ({ column }) => <SortableHeader<ChoiceDto, unknown> column={column} />,
     meta: {
       translationId: 'common.title',
@@ -48,7 +44,7 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
     },
   },
   {
-    id: CHOICES_WITH_BACKEND_LIMIT_COLUMNS.upperLimit,
+    id: 'choice-limit',
     header: ({ column }) => <SortableHeader<ChoiceDto, unknown> column={column} />,
     meta: {
       translationId: 'survey.editor.questionSettings.upperLimit',
@@ -70,7 +66,7 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
     },
   },
   {
-    id: 'actions',
+    id: ID_ACTION_TABLE_COLUMN,
     header: () => <div className="flex items-center justify-center">{t('common.actions')}</div>,
     meta: {
       translationId: 'common.actions',

@@ -51,7 +51,7 @@ const TableActionCell = <TData,>(props: TableActionCellProps<TData>) => {
           <div className="relative flex w-full items-center justify-end">
             <button
               type="button"
-              className="w-full"
+              className="flex w-full justify-center"
             >
               <HiOutlineDotsHorizontal className="h-5 w-5" />
             </button>

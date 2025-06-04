@@ -29,9 +29,7 @@ import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 import isQuestionTypeChoiceType from '@libs/survey/utils/isQuestionTypeChoiceType';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import ChoicesWithBackendLimitsShowOtherItem from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitsShowOtherItem';
-import ChoicesWithBackendLimitTableColumns, {
-  CHOICES_WITH_BACKEND_LIMIT_COLUMNS,
-} from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitTableColumns';
+import ChoicesWithBackendLimitTableColumns from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitTableColumns';
 import Switch from '@/components/ui/Switch';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 
@@ -134,11 +132,6 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
   if (!form) return null;
   if (!isQuestionTypeChoiceType(questionType)) return null;
 
-  const initialColumnVisibility = {
-    [CHOICES_WITH_BACKEND_LIMIT_COLUMNS.title]: true,
-    [CHOICES_WITH_BACKEND_LIMIT_COLUMNS.upperLimit]: true,
-  };
-
   return (
     <>
       <p className="text-m font-bold text-primary-foreground">{t('survey.editor.questionSettings.backendLimiters')}</p>
@@ -175,7 +168,6 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
                 },
               ]}
               showSelectedCount={false}
-              initialColumnVisibility={initialColumnVisibility}
               isDialog
             />
           </div>

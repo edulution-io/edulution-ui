@@ -13,7 +13,6 @@
 import { IconType } from 'react-icons';
 import { Row } from '@tanstack/react-table';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 interface TableAction<TData> {
   icon: IconType;
   translationId: string;
