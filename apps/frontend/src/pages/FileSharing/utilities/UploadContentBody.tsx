@@ -32,6 +32,7 @@ import WorkerProgressMessage from '@/worker/workerProgressMessage';
 import WorkerOutputMessage from '@/worker/workerOutputMessage';
 import zipDirectoryEntry from '@libs/filesharing/utils/zipDirectoryEntry';
 import { RequestResponseContentType, ResponseType } from '@libs/common/types/http-methods';
+import ZIP_PROCESS_TIMEOUT from '@libs/filesharing/constants/zipProcessTimeout';
 
 const UploadContentBody = () => {
   const { t } = useTranslation();
@@ -143,7 +144,7 @@ const UploadContentBody = () => {
     if (zipProgress === 100 || isAnyFileOversized) {
       setTimeout(() => {
         setZipProgress(0);
-      }, 3000);
+      }, ZIP_PROCESS_TIMEOUT);
     }
   }, [zipProgress]);
 
