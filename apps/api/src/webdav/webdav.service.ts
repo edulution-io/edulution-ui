@@ -29,8 +29,6 @@ import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileReques
 import mapToDirectories from '@libs/filesharing/utils/mapToDirectories';
 import mapToDirectoryFiles from '@libs/filesharing/utils/mapToDirectoryFiles';
 import DEFAULT_PROPFIND_XML from '@libs/filesharing/constants/defaultPropfindXml';
-import { lookup } from 'mime-types';
-import { Open } from 'unzipper';
 import CustomHttpException from '../common/CustomHttpException';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
@@ -208,35 +206,6 @@ class WebdavService {
         status: resp.status,
       }),
     );
-  }
-
-  async uploadZippedFolder(
-    username: string,
-    parentPath: string,
-    folderName: string,
-    zipFile: CustomFile,
-  ): Promise<WebdavStatusResponse> {
-    await this.ensureFolderExists(username, `${parentPath}/`, folderName);
-
-    const directory = await Open.buffer(zipFile.buffer);
-
-    const entriesToUpload = directory.files.filter((f) => f.type !== 'Directory');
-    await entriesToUpload.reduce<Promise<void>>(async (_prev, fileEntry) => {
-      const buffer = await fileEntry.buffer();
-      const target = `${parentPath}/${folderName}/${fileEntry.path}`;
-      const mimeType = lookup(fileEntry.path) ?? RequestResponseContentType.APPLICATION_OCTET_STREAM;
-
-      const uploadFile: CustomFile = {
-        originalname: fileEntry.path,
-        buffer,
-        mimetype: mimeType,
-        size: buffer.length,
-      } as CustomFile;
-
-      await this.uploadFile(username, target, uploadFile);
-    }, Promise.resolve());
-
-    return { success: true, status: HttpStatus.CREATED };
   }
 
   async uploadFile(username: string, fullPath: string, file: CustomFile): Promise<WebdavStatusResponse> {

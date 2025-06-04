@@ -96,7 +96,7 @@ class FilesharingController {
     const fullPath = `${this.baseurl}${path}/${name}`;
 
     return isZippedFolder === '1'
-      ? this.webdavService.uploadZippedFolder(username, path, originalFolderName, file)
+      ? this.filesharingService.uploadZippedFolder(username, path, originalFolderName, file)
       : this.webdavService.uploadFile(username, fullPath, file);
   }
 

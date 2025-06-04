@@ -10,19 +10,23 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import CollectFileJobData from '@libs/queue/types/collectFileJobData';
-import FileJobData from '@libs/queue/types/fileJobData';
-import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
-import MoveOrRenameJobData from '@libs/queue/types/moveOrRenameJobData';
-import UploadFileJobData from '@libs/queue/types/uploadFileJobData';
+import { WorkerHost } from '@nestjs/bullmq';
+import { Injectable } from '@nestjs/common';
+import { Job } from 'bullmq';
+import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJobData';
 import CreateFolderJobData from '@libs/queue/types/createFolderJobData';
+import WebdavService from '../../webdav/webdav.service';
 
-type FileOperationQueueJobData =
-  | CollectFileJobData
-  | FileJobData
-  | DeleteFileJobData
-  | MoveOrRenameJobData
-  | CreateFolderJobData
-  | UploadFileJobData;
+@Injectable()
+class CreateFolderConsumer extends WorkerHost {
+  constructor(private readonly webDavService: WebdavService) {
+    super();
+  }
 
-export default FileOperationQueueJobData;
+  async process(job: Job<FileOperationQueueJobData>): Promise<void> {
+    const { username, basePath, folderPath } = job.data as CreateFolderJobData;
+    await this.webDavService.ensureFolderExists(username, basePath, folderPath);
+  }
+}
+
+export default CreateFolderConsumer;

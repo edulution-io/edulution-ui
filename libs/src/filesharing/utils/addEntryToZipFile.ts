@@ -10,25 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import JSZip from 'jszip';
+import { zipSync } from 'fflate';
+import { collectEntries } from '@libs/filesharing/utils/collectEntries';
 
-const addEntryToZip = async (entry: FileSystemEntry, zip: JSZip, parentPath = '') => {
-  if (entry.isFile) {
-    await new Promise<File>((resolve) => {
-      (entry as FileSystemFileEntry).file(resolve);
-    }).then((file) => {
-      zip.file(parentPath + file.name, file);
-    });
-  } else if (entry.isDirectory) {
-    const dirReader = (entry as FileSystemDirectoryEntry).createReader();
-    const entries = await new Promise<FileSystemEntry[]>((resolve) => {
-      dirReader.readEntries(resolve);
-    });
+const addEntryToZipFile = async (rootEntry: FileSystemEntry): Promise<Uint8Array> =>
+  zipSync(await collectEntries(rootEntry), { level: 9 });
 
-    void entries.map(async (file) => {
-      await addEntryToZip(file, zip, `${parentPath}${entry.name}/`);
-    });
-  }
-};
-
-export default addEntryToZip;
+export default addEntryToZipFile;

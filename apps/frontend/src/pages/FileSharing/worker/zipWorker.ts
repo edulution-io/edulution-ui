@@ -10,18 +10,78 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import JSZip from 'jszip';
+import { zip as zipArchive } from 'fflate';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
 
-globalThis.onmessage = async (e: MessageEvent<{ files: File[]; root: string }>) => {
-  const { files, root } = e.data;
+/* ----------------------------- Typen ----------------------------- */
+interface WorkerInputMessage {
+  files: File[];
+  root: string;
+}
 
-  const zip = new JSZip();
+interface WorkerProgressMessage {
+  progress: number;
+}
 
-  files.forEach((file) => {
-    zip.file(file.webkitRelativePath.replace(`${root}/`, ''), file);
+interface WorkerOutputMessage {
+  blob: Blob;
+  root: string;
+}
+
+export {};
+
+const workerContext = globalThis as unknown as DedicatedWorkerGlobalScope;
+
+workerContext.onmessage = async (event: MessageEvent<WorkerInputMessage>): Promise<void> => {
+  const { files, root } = event.data;
+
+  const zipEntries: Record<string, Uint8Array> = {};
+  const directoryPlaceholderSet = new Set<string>();
+
+  const totalBytesToProcess = files.reduce((aggregate, currentFile) => aggregate + currentFile.size, 0);
+  let processedBytes = 0;
+
+  await Promise.all(
+    files
+      .filter((file) => !file.name.startsWith('.'))
+      .map(async (file) => {
+        const unixStylePath = file.webkitRelativePath.replaceAll('\\', '/');
+
+        const relativePath = unixStylePath.split('/').slice(1).join('/');
+
+        const pathParts = relativePath.split('/').slice(0, -1);
+        let cumulativeDirectoryPath = '';
+        pathParts.forEach((segment) => {
+          cumulativeDirectoryPath += `${segment}/`;
+          directoryPlaceholderSet.add(cumulativeDirectoryPath);
+        });
+
+        zipEntries[relativePath] = new Uint8Array(await file.arrayBuffer());
+
+        processedBytes += file.size;
+        const progressPercentage = Math.round((processedBytes / totalBytesToProcess) * 90);
+        workerContext.postMessage({
+          progress: progressPercentage,
+        } as WorkerProgressMessage);
+      }),
+  );
+
+  directoryPlaceholderSet.forEach((directoryPath) => {
+    zipEntries[directoryPath] = zipEntries[directoryPath] ?? new Uint8Array(0);
   });
 
-  const blob = await zip.generateAsync({ type: 'blob' }, (meta) => globalThis.postMessage({ progress: meta.percent }));
+  zipArchive(zipEntries, { level: 6 }, (error, zippedData) => {
+    if (error) {
+      workerContext.postMessage({ error: error.message });
+      return;
+    }
 
-  globalThis.postMessage({ blob, root });
+    workerContext.postMessage({ progress: 100 } as WorkerProgressMessage);
+
+    const zipBlob = new Blob([zippedData], {
+      type: RequestResponseContentType.APPLICATION_ZIP,
+    });
+
+    workerContext.postMessage({ blob: zipBlob, root } as WorkerOutputMessage);
+  });
 };

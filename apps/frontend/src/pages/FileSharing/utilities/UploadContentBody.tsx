@@ -25,12 +25,12 @@ import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import WarningBox from '@/components/shared/WarningBox';
 import { TiDocumentAdd, TiFolder, TiFolderAdd } from 'react-icons/ti';
-import { zipDirectoryEntry } from '@libs/filesharing/utils/zipDirectoryEntry';
 import { UploadFile } from '@libs/filesharing/types/uploadFile';
 import Progress from '@/components/ui/Progress';
 import { WorkerMessage } from '@/pages/FileSharing/worker/workerMessage';
 import ProgressMessage from '@/pages/FileSharing/worker/progressMessage';
 import BlobMessage from '@/pages/FileSharing/worker/blobMessage';
+import zipDirectoryEntry from '@libs/filesharing/utils/zipDirectoryEntry';
 
 const UploadContentBody = () => {
   const { t } = useTranslation();
