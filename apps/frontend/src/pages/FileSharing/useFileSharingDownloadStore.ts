@@ -13,7 +13,7 @@
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import { create } from 'zustand';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
-import getFrontEndUrl from '@libs/common/utils/getFrontEndUrl';
+import getFrontEndUrl from '@libs/common/utils/URL/getFrontEndUrl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
