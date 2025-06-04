@@ -205,7 +205,10 @@ class FilesystemService {
 
   async deleteDirectory(directory: string): Promise<void> {
     try {
-      await rm(directory, { recursive: true });
+      const exists = await pathExists(directory);
+      if (exists) {
+        await rm(directory, { recursive: true });
+      }
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -213,7 +216,12 @@ class FilesystemService {
 
   static async deleteDirectories(directories: string[]): Promise<void> {
     try {
-      const deletionPromises = directories.map((directory) => rm(directory, { recursive: true }));
+      const deletionPromises = directories.map(async (directory) => {
+        const exists = await pathExists(directory);
+        if (exists) {
+          await rm(directory, { recursive: true });
+        }
+      });
       await Promise.all(deletionPromises);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_DELETION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
