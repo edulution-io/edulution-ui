@@ -41,9 +41,9 @@ import GroupsService from '../groups/groups.service';
 
 @Injectable()
 class ConferencesService implements OnModuleInit {
-  private BBB_API_URL: string;
+  BBB_API_URL: string;
 
-  private BBB_SECRET: string;
+  BBB_SECRET: string;
 
   constructor(
     @InjectModel(Conference.name) private conferenceModel: Model<ConferenceDocument>,
