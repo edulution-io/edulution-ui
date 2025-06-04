@@ -16,6 +16,7 @@ import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import CustomHttpException from '../CustomHttpException';
 
 @Injectable()
+// eslint-disable-next-line @typescript-eslint/class-methods-use-this
 class LocalhostGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<Request>();
