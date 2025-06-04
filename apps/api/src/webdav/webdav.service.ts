@@ -35,19 +35,6 @@ import UsersService from '../users/users.service';
 
 @Injectable()
 class WebdavService {
-  readonly defaultPropfindXml = `<?xml version="1.0"?>
-      <d:propfind xmlns:d="DAV:">
-        <d:prop>
-          <d:getlastmodified/>
-          <d:getetag/>
-          <d:getcontenttype/>
-          <d:getcontentlength/>
-          <d:displayname/>
-          <d:creationdate/>
-        </d:prop>
-      </d:propfind>
-  `;
-
   private readonly baseUrl = process.env.EDUI_WEBDAV_URL as string;
 
   private webdavClientCache = new Map<string, { client: AxiosInstance; timeout: NodeJS.Timeout }>();
