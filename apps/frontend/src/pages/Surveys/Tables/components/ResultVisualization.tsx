@@ -16,6 +16,7 @@ import { VisualizationPanel } from 'survey-analytics';
 import 'survey-analytics/survey.analytics.min.css';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import useLanguage from '@/hooks/useLanguage';
+import '../../theme/custom.visualizer.css';
 
 const visuPanelOptions = {
   haveCommercialLicense: true,

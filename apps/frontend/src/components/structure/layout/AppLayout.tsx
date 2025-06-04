@@ -21,19 +21,23 @@ import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVar
 import Overlays from '@/components/structure/layout/Overlays';
 import useUserStore from '@/store/UserStore/UserStore';
 import APPS from '@libs/appconfig/constants/apps';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
+import OfflineBanner from '@/components/shared/OfflineBanner';
+import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 
 const AppLayout = () => {
   const { isAuthenticated } = useUserStore();
   const { pathname } = useLocation();
   const menuBar = useMenuBarConfig();
   const { appConfigs } = useAppConfigsStore();
+  const { isEduApiHealthy } = useEduApiStore();
 
-  const isMainPage = pathname === '/';
+  const isMainPage = pathname === DASHBOARD_ROUTE;
   const isCurrentAppForwardingPage = appConfigs.find(
     (a) => a.name === pathname.split('/')[1] && a.appType === APP_INTEGRATION_VARIANT.FORWARDED,
   );
   const isAppHeaderVisible = isMainPage || isCurrentAppForwardingPage;
-  const isAppConfigReady = appConfigs.some((appConfig) => appConfig.name !== APPS.NONE);
+  const isAppConfigReady = !appConfigs.find((appConfig) => appConfig.name === APPS.NONE);
   const isAuthenticatedAppReady = isAppConfigReady && isAuthenticated;
 
   return (
@@ -42,6 +46,8 @@ const AppLayout = () => {
         {isAppHeaderVisible && <Header hideHeadingText={!isMainPage} />}
 
         <div className="flex min-h-0 flex-1 flex-row">
+          {isEduApiHealthy === false && <OfflineBanner />}
+
           {!menuBar.disabled && !isMainPage && <MenuBar />}
           <Outlet />
           {isAuthenticatedAppReady && <Overlays />}

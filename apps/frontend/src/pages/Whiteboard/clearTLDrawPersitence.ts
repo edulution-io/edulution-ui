@@ -10,15 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
-import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
+const clearTLDrawPersistence = async (key: string) => {
+  localStorage.removeItem('TLDRAW_USER_DATA_v3');
+  localStorage.removeItem('TLDRAW_DB_NAME_INDEX_v2');
 
-@Controller(EDU_API_CONFIG_ENDPOINTS.HEALTH_CHECK)
-class HealthController {
-  @Get()
-  @HttpCode(HttpStatus.OK)
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  check() {}
-}
+  const dbs = await indexedDB.databases();
 
-export default HealthController;
+  dbs
+    .filter((db) => db.name?.includes(key))
+    .forEach((db) => {
+      if (db.name) {
+        indexedDB.deleteDatabase(db.name);
+      }
+    });
+};
+
+export default clearTLDrawPersistence;

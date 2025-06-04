@@ -13,5 +13,6 @@
 export const GLOBAL_SETTINGS_ROOT_ENDPOINT = 'global-settings';
 export const GLOBAL_SETTINGS_PROJECTION_QUERY_PARAM = 'projection';
 export const GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH = 'auth';
+export const GLOBAL_SETTINGS_PROJECTION_PARAM_GENERAL = 'general';
 
 export const GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS = 'mfaEnforcedGroups';

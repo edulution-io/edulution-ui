@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Connection, Model } from 'mongoose';
@@ -163,10 +163,11 @@ class AppConfigService implements OnModuleInit {
     }
   }
 
-  async getAppConfigByName(name: string): Promise<AppConfigDto> {
+  async getAppConfigByName(name: string): Promise<AppConfigDto | undefined> {
     const appConfig = await this.appConfigModel.findOne({ name }).lean();
     if (!appConfig) {
-      throw new HttpException(`AppConfig with name ${name} not found`, HttpStatus.NOT_FOUND);
+      Logger.debug(`AppConfig with name ${name} not found`, AppConfigService.name);
+      return undefined;
     }
     return appConfig;
   }

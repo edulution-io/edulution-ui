@@ -10,6 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const WHITEBOARD_COLLABORATION_PERSISTENCE_KEY = 'whiteboardCollaborationPersistenceKey';
+import WebdavXmlAttributes from '@libs/filesharing/types/webdavXmlAttributes';
+import WebdavResourceType from './webdavResourceType';
 
-export default WHITEBOARD_COLLABORATION_PERSISTENCE_KEY;
+interface WebdavProperty {
+  [WebdavXmlAttributes.GetContentLength]?: string;
+  [WebdavXmlAttributes.DisplayName]?: string;
+  [WebdavXmlAttributes.CreationDate]?: string;
+  [WebdavXmlAttributes.GetLastModified]?: string;
+  [WebdavXmlAttributes.GetETag]?: string;
+  [WebdavXmlAttributes.ResourceType]?: WebdavResourceType;
+}
+
+export default WebdavProperty;
