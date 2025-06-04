@@ -21,22 +21,29 @@ import useUserStore from '@/store/UserStore/UserStore';
 import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/apiEndpoints';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import handleApiError from '@/utils/handleApiError';
+import useLanguage from '@/hooks/useLanguage';
+import { useTranslation } from 'react-i18next';
+import EDU_API_WEBSOCKET_URL from '@libs/common/constants/eduApiWebsocketUrl';
+import ROOM_ID_PARAM from '@libs/tldraw-sync/constants/roomIdParam';
 
-type TldrawWithSyncProps = {
-  uri: string;
-  userLanguage: string;
-  userName: string;
-};
+const TldrawWithSync = () => {
+  const { user, eduApiToken } = useUserStore();
+  const { language } = useLanguage();
+  const { t } = useTranslation();
+  const userName = user?.lastName ?? t('common.guest');
 
-const TldrawWithSync = ({ uri, userLanguage, userName }: TldrawWithSyncProps) => {
-  const { user } = useUserStore();
+  const WS_BASE_URL = `${EDU_API_WEBSOCKET_URL}/${TLDRAW_SYNC_ENDPOINTS.BASE}`;
+
+  const roomId = user?.username;
+
+  const uri = useMemo(() => `${WS_BASE_URL}?${ROOM_ID_PARAM}=${roomId}&token=${eduApiToken}`, [roomId]);
 
   const assetBasePath = `/${TLDRAW_SYNC_ENDPOINTS.BASE}/${TLDRAW_SYNC_ENDPOINTS.ASSETS}`;
 
   const applyUserPreferences = (editor: Editor) => {
     editor.user.updateUserPreferences({
       colorScheme: COLOR_SCHEME,
-      locale: userLanguage,
+      locale: language,
       name: userName,
     });
   };
