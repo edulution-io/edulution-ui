@@ -13,10 +13,12 @@
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import { SURVEY_TEMPLATES_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
+import { SURVEY_TEMPLATES_ENDPOINT, TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
 import handleApiError from '@/utils/handleApiError';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
+import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
+import APPS from '@libs/appconfig/constants/apps';
 
 interface TemplateMenuStore {
   reset: () => void;
@@ -26,6 +28,8 @@ interface TemplateMenuStore {
 
   uploadTemplate: (template: SurveyTemplateDto) => Promise<void>;
   isSubmitting: boolean;
+
+  deleteTemplate: (templateFileName: string) => Promise<void>;
 
   template?: SurveyTemplateDto;
   setTemplate: (template: SurveyTemplateDto) => void;
@@ -94,6 +98,21 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
       if (!result) {
         throw new Error(CommonErrorMessages.FILE_NOT_PROVIDED);
       }
+    } catch (error) {
+      handleApiError(error, set);
+    } finally {
+      set({ isSubmitting: false });
+    }
+  },
+
+  deleteTemplate: async (templateFileName: string): Promise<void> => {
+    if (!templateFileName) {
+      return;
+    }
+
+    set({ isSubmitting: true });
+    try {
+      await eduApi.delete(`${EDU_API_CONFIG_ENDPOINTS.FILES}/${APPS.SURVEYS}/${TEMPLATES}/${templateFileName}`);
     } catch (error) {
       handleApiError(error, set);
     } finally {
