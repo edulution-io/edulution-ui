@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.sa-visualizer,
+.sa-visualizer__content {
+  color: var(--foreground);
+}
+
+/* Fix tables background color: Remove the white backgrounds */
+.sa-question,
+.sa-question__title {
+  background: transparent !important;
+  color: var(--primary-foreground) !important;
+}
+.sa-question__select {
+  color: var(--secondary) !important;
+  background-color: var(--muted) !important;
+}
+.sa-question__select:hover,
+.sa-question__select:focus {
+  color: var(--primary-foreground) !important;
+}
+
+.sa-question__content {
+  background: transparent !important;
+}
+
+/* FIX SVG PLOT STYLING */
+.main-svg,
+.svg-container,
+.user-select-none {
+  background: transparent !important;
+
+  text {
+    color: var(--primary-foreground) !important;
+    fill: var(--primary-foreground) !important;
+  }
+}
+
+.modebar:hover,
+.modebar--hover {
+  background: var(--muted-light) !important;
+}
+
+.modebar-btn .icon path {
+  fill: var(--primary-foreground) !important;
+}
+.modebar-btn .icon path:hover,
+.modebar-btn .icon path:focus {
+  fill: var(--primary) !important;
+}
+
+.modebar-container,
+.modebar,
+.modebar-group {
+  background: transparent !important;
+}
+
+.modebar-container:hover,
+.modebar-container--hover {
+  background: var(--muted-light) !important;
+}
+
+.modebar-btn[data-val="zoom"],
+.modebar-btn[data-val="reset"],
+.modebar-btn[data-val="pan"],
+.modebar-btn[data-val="lasso"],
+.modebar-btn[data-val="select"] {
+  display: none;
+}
