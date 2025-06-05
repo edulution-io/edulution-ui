@@ -618,7 +618,9 @@
     "confirmMultiDelete": "Sollen diese Umfragen wirklich gelöscht werden?",
     "confirmSingleDelete": "Soll die Umfrage wirklich gelöscht werden?",
     "deleteSurveys": "Lösche {{count}} Umfragen",
+    "deletedSurveys": "{{count}} Umfragen erfolgreich gelöscht",
     "deleteSurvey": "Umfrage Löschen",
+    "deletedSurvey": "Umfrage erfolgreich gelöscht",
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
     "view": {
