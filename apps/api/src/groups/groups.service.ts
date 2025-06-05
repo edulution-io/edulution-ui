@@ -144,7 +144,18 @@ class GroupsService implements OnModuleInit {
 
   static async fetchAllUsers(token: string): Promise<LDAPUser[]> {
     try {
-      return await GroupsService.makeAuthorizedRequest<LDAPUser[]>(HttpMethods.GET, 'users', token);
+      const usersCount = await GroupsService.makeAuthorizedRequest<number>(HttpMethods.GET, 'users/count', token);
+
+      if (!usersCount) {
+        Logger.warn('No users found.', GroupsService.name);
+      }
+
+      return await GroupsService.makeAuthorizedRequest<LDAPUser[]>(
+        HttpMethods.GET,
+        'users',
+        token,
+        `max=${usersCount}`,
+      );
     } catch (error) {
       throw new CustomHttpException(
         GroupsErrorMessage.CouldNotGetUsers,
