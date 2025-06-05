@@ -131,6 +131,9 @@ describe(ConferencesService.name, () => {
 
     service = module.get<ConferencesService>(ConferencesService);
     model = module.get<Model<ConferenceDocument>>(getModelToken(Conference.name));
+
+    service.BBB_API_URL = 'http://bbb-123-456.test/';
+    service.BBB_SECRET = 'test-secret';
   });
 
   it('should be defined', () => {
