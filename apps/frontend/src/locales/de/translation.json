@@ -581,7 +581,8 @@
         "addBackendLimiterForOtherItem": "Dies setzt einen Grenzwert, wie oft Teilnehmer diese Optionen auswählen können.",
         "upperLimit": "Grenzwert",
         "upperBackendLimiters": "Auswahlmöglichkeiten mit Obergrenze",
-        "addChoice": "Hinzufügen"
+        "addChoice": "Hinzufügen",
+        "filterPlaceHolderText": "Option suchen"
       }
     },
     "participate": {

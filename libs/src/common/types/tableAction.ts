@@ -10,16 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ID_ACTION_TABLE_COLUMN from '@libs/common/constants/idActionTableColumn';
+import { IconType } from 'react-icons';
+import { Row } from '@tanstack/react-table';
 
-const CONFERENCES_TABLE_COLUMNS = {
-  CONFERENCE_NAME: 'conference-name',
-  CONFERENCE_CREATOR: 'conference-creator',
-  CONFERENCE_IS_PUBLIC: 'conference-isPublic',
-  CONFERENCE_PASSWORD: 'conference-password',
-  CONFERENCE_INVITED_ATTENDEES: 'conference-invited-attendees',
-  CONFERENCE_JOINED_ATTENDEES: 'conference-joined-attendees',
-  CONFERENCE_ACTION_BUTTON: ID_ACTION_TABLE_COLUMN,
-} as const;
+interface TableAction<TData> {
+  icon: IconType;
+  translationId: string;
+  onClick: (row?: Row<TData>) => void;
+  className?: string;
+}
 
-export default CONFERENCES_TABLE_COLUMNS;
+export default TableAction;
