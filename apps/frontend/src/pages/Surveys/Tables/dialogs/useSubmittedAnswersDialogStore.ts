@@ -53,7 +53,9 @@ const useSubmittedAnswersDialogStore = create<SubmittedAnswersDialogStore>((set)
   getSubmittedSurveyAnswers: async (surveyId: string, attendee?: string): Promise<void> => {
     set({ isLoading: true });
     try {
-      const response = await eduApi.post<SurveyAnswerResponseDto>(SURVEY_ANSWER_ENDPOINT, { surveyId, attendee });
+      const response = await eduApi.get<SurveyAnswerResponseDto>(
+        `${SURVEY_ANSWER_ENDPOINT}/${surveyId}${attendee ? `/${attendee}` : ''}`,
+      );
       const surveyAnswer = response.data;
       const { answer } = surveyAnswer;
       set({ answer });

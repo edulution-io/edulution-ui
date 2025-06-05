@@ -20,13 +20,9 @@ import Separator from '@/components/ui/Separator';
 
 interface PublicSurveyParticipationIdDisplayProps {
   publicUserId: string;
-  isMulti?: boolean;
 }
 
-const PublicSurveyParticipationIdDisplay = ({
-  publicUserId,
-  isMulti = false,
-}: PublicSurveyParticipationIdDisplayProps) => {
+const PublicSurveyParticipationIdDisplay = ({ publicUserId }: PublicSurveyParticipationIdDisplayProps) => {
   const { t } = useTranslation();
 
   return (
@@ -57,7 +53,7 @@ const PublicSurveyParticipationIdDisplay = ({
           </div>
         </div>
 
-        <p>{isMulti ? t('survey.participate.idParagraphIsMulti') : t('survey.participate.idParagraphCanUpdate')}</p>
+        <p>{t('survey.participate.idParagraph')}</p>
       </Card>
     </div>
   );

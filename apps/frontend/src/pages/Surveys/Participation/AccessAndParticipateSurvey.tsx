@@ -50,12 +50,7 @@ const AccessAndParticipateSurvey = (props: AccessAndParticipateSurveyProps): Rea
 
   const { canUpdateFormerAnswer = false, canSubmitMultipleAnswers = false } = selectedSurvey || {};
   if (isPublic && publicUserId && (canUpdateFormerAnswer || canSubmitMultipleAnswers)) {
-    return (
-      <PublicSurveyParticipationIdDisplay
-        publicUserId={publicUserId}
-        isMulti={!canUpdateFormerAnswer && canSubmitMultipleAnswers}
-      />
-    );
+    return <PublicSurveyParticipationIdDisplay publicUserId={publicUserId} />;
   }
 
   return <SurveyParticipationModel isPublic={isPublic} />;

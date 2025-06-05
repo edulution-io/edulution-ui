@@ -125,9 +125,15 @@ class SurveysController {
     return this.surveyService.serveTemplate(filename, res);
   }
 
+  @Get(`${ANSWER}/:surveyId`)
+  async getSubmittedSurveyAnswer(@Param() params: { surveyId: string }, @GetCurrentUsername() currentUsername: string) {
+    const { surveyId } = params;
+    return this.surveyAnswerService.getAnswer(surveyId, currentUsername);
+  }
+
   @Get(`${ANSWER}/:surveyId/:username`)
   async getSubmittedSurveyAnswers(
-    @Param() params: { surveyId: string; username?: string },
+    @Param() params: { surveyId: string; username: string },
     @GetCurrentUsername() currentUsername: string,
   ) {
     const { surveyId, username } = params;
