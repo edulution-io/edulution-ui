@@ -8,10 +8,12 @@
   font-family: "Lato", sans-serif;
   color: var(--primary-foreground) !important;
   display: contents;
+
+  span {
+    color: var(--primary-foreground) !important;
+  }
 }
-span {
-  color: var(--primary-foreground) !important;
-}
+
 .sa-table__entries-label,
 .sa-table__entries-label--right,
 .sa-table__entries-label--left {
