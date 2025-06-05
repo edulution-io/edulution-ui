@@ -11,7 +11,6 @@
 .sa-question,
 .sa-question__title {
   background: transparent !important;
-  background-color: transparent !important;
   color: var(--primary-foreground) !important;
 }
 .sa-question__select {
@@ -25,7 +24,6 @@
 
 .sa-question__content {
   background: transparent !important;
-  background-color: transparent !important;
 }
 
 /* FIX SVG PLOT STYLING */
@@ -33,26 +31,23 @@
 .svg-container,
 .user-select-none {
   background: transparent !important;
-  background-color: transparent !important;
-}
-text {
-  color: var(--primary-foreground) !important;
-  fill: var(--primary-foreground) !important;
+
+  text {
+    color: var(--primary-foreground) !important;
+    fill: var(--primary-foreground) !important;
+  }
 }
 
 .modebar:hover,
 .modebar--hover {
   background: var(--muted-light) !important;
-  background-color: var(--muted-light) !important;
 }
 
 .modebar-btn .icon path {
-  color: var(--primary-foreground) !important;
   fill: var(--primary-foreground) !important;
 }
 .modebar-btn .icon path:hover,
 .modebar-btn .icon path:focus {
-  color: var(--primary) !important;
   fill: var(--primary) !important;
 }
 
@@ -60,13 +55,11 @@ text {
 .modebar,
 .modebar-group {
   background: transparent !important;
-  background-color: transparent !important;
 }
 
 .modebar-container:hover,
 .modebar-container--hover {
   background: var(--muted-light) !important;
-  background-color: var(--muted-light) !important;
 }
 
 .modebar-btn[data-val="zoom"],
