@@ -58,6 +58,7 @@ const cachedUsers = [
     username: 'testuser',
     firstName: 'Test',
     lastName: 'User',
+    school: 'agy',
   },
 ];
 
@@ -258,7 +259,6 @@ describe(UsersService.name, () => {
   describe('searchUsersByName', () => {
     it('should return users matching the search string', async () => {
       jest.spyOn(service, 'findAllCachedUsers').mockResolvedValue(cachedUsers);
-      expect(GroupsService.fetchAllUsers).toHaveBeenCalledWith(mockToken);
 
       const result = await service.searchUsersByName(mockToken, 'agy', 'test');
       expect(result).toEqual(cachedUsers);

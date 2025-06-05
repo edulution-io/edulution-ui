@@ -147,7 +147,7 @@ class GroupsService implements OnModuleInit {
       const usersCount = await GroupsService.makeAuthorizedRequest<number>(HttpMethods.GET, 'users/count', token);
 
       if (!usersCount) {
-        return [];
+        Logger.warn('No users found.', GroupsService.name);
       }
 
       return await GroupsService.makeAuthorizedRequest<LDAPUser[]>(
