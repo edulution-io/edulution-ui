@@ -44,7 +44,12 @@ class SurveyAnswersService implements OnModuleInit {
   public canUserParticipateSurvey = async (surveyId: string, username: string): Promise<boolean> => {
     const survey = await this.surveyModel.findById<Survey>(surveyId);
     if (!survey) {
-      throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND, SurveyAnswersService.name);
+      throw new CustomHttpException(
+        SurveyErrorMessages.NotFoundError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveyAnswersService.name,
+      );
     }
 
     try {
@@ -63,7 +68,12 @@ class SurveyAnswersService implements OnModuleInit {
   public getSelectableChoices = async (surveyId: string, questionName: string): Promise<ChoiceDto[]> => {
     const survey = await this.surveyModel.findById(surveyId);
     if (!survey) {
-      throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND, SurveyAnswersService.name);
+      throw new CustomHttpException(
+        SurveyErrorMessages.NotFoundError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveyAnswersService.name,
+      );
     }
 
     const limiter = survey.backendLimiters?.find((limit) => limit.questionName === questionName);
@@ -71,6 +81,7 @@ class SurveyAnswersService implements OnModuleInit {
       throw new CustomHttpException(
         SurveyErrorMessages.NoBackendLimiters,
         HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
         SurveyAnswersService.name,
       );
     }
@@ -174,6 +185,7 @@ class SurveyAnswersService implements OnModuleInit {
       throw new CustomHttpException(
         SurveyErrorMessages.ParticipationErrorSurveyExpired,
         HttpStatus.UNAUTHORIZED,
+        undefined,
         SurveyAnswersService.name,
       );
     }
@@ -182,6 +194,7 @@ class SurveyAnswersService implements OnModuleInit {
       throw new CustomHttpException(
         SurveyErrorMessages.ParticipationErrorUserNotAssigned,
         HttpStatus.UNAUTHORIZED,
+        undefined,
         SurveyAnswersService.name,
       );
     }
@@ -191,6 +204,7 @@ class SurveyAnswersService implements OnModuleInit {
       throw new CustomHttpException(
         SurveyErrorMessages.ParticipationErrorAlreadyParticipated,
         HttpStatus.FORBIDDEN,
+        undefined,
         SurveyAnswersService.name,
       );
     }
@@ -209,6 +223,7 @@ class SurveyAnswersService implements OnModuleInit {
       throw new CustomHttpException(
         SurveyErrorMessages.ParticipationErrorUserNotAssigned,
         HttpStatus.UNAUTHORIZED,
+        undefined,
         SurveyAnswersService.name,
       );
     }
@@ -222,7 +237,12 @@ class SurveyAnswersService implements OnModuleInit {
   ): Promise<SurveyAnswer | undefined> {
     const survey = await this.surveyModel.findById<Survey>(surveyId);
     if (!survey) {
-      throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND, SurveyAnswersService.name);
+      throw new CustomHttpException(
+        SurveyErrorMessages.NotFoundError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveyAnswersService.name,
+      );
     }
 
     const { isAnonymous = false, canUpdateFormerAnswer = false, canSubmitMultipleAnswers = false } = survey;
@@ -263,6 +283,7 @@ class SurveyAnswersService implements OnModuleInit {
           throw new CustomHttpException(
             SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
             HttpStatus.INTERNAL_SERVER_ERROR,
+            undefined,
             SurveyAnswersService.name,
           );
         }
@@ -277,6 +298,7 @@ class SurveyAnswersService implements OnModuleInit {
           throw new CustomHttpException(
             UserErrorMessages.UpdateError,
             HttpStatus.INTERNAL_SERVER_ERROR,
+            undefined,
             SurveyAnswersService.name,
           );
         }
@@ -288,6 +310,7 @@ class SurveyAnswersService implements OnModuleInit {
         throw new CustomHttpException(
           SurveyErrorMessages.ParticipationErrorAlreadyParticipated,
           HttpStatus.FORBIDDEN,
+          undefined,
           SurveyAnswersService.name,
         );
       }
@@ -300,6 +323,7 @@ class SurveyAnswersService implements OnModuleInit {
         throw new CustomHttpException(
           SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError,
           HttpStatus.NOT_FOUND,
+          undefined,
           SurveyAnswersService.name,
         );
       }
@@ -309,6 +333,7 @@ class SurveyAnswersService implements OnModuleInit {
     throw new CustomHttpException(
       SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
       HttpStatus.INTERNAL_SERVER_ERROR,
+      undefined,
       SurveyAnswersService.name,
     );
   }
@@ -328,6 +353,7 @@ class SurveyAnswersService implements OnModuleInit {
       throw new CustomHttpException(
         SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError,
         HttpStatus.NOT_FOUND,
+        undefined,
         SurveyAnswersService.name,
       );
     }
@@ -384,6 +410,7 @@ class SurveyAnswersService implements OnModuleInit {
       throw new CustomHttpException(
         SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
         HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
         SurveyAnswersService.name,
       );
     }

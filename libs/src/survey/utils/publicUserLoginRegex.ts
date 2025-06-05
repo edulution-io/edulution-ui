@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const usernameRegex = '[ÄÖÜäöüa-zA-Z0-9.\\-\\s]{1,20}';
+export const usernameRegex = '[ßÄÖÜäöüa-zA-Z0-9.\\-\\s]{1,20}';
 
 export const publicUserNameRegex = new RegExp(`^${usernameRegex}$`);
 

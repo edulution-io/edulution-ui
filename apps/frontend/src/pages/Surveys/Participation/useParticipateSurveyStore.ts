@@ -125,7 +125,9 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
     set({ isFetching: true });
     try {
-      const response = await eduApi.post<SurveyAnswerResponseDto>(SURVEY_ANSWER_ENDPOINT, { surveyId, attendee });
+      const response = await eduApi.get<SurveyAnswerResponseDto>(
+        `${SURVEY_ANSWER_ENDPOINT}/${surveyId}/${attendee.username}`,
+      );
       const surveyAnswer: SurveyAnswerResponseDto = response.data;
       set({ previousAnswer: surveyAnswer });
     } catch (error) {
