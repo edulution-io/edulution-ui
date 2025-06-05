@@ -617,7 +617,9 @@
     "confirmMultiDelete": "Should these surveys really be deleted?",
     "confirmSingleDelete": "Should this survey really be deleted?",
     "deleteSurveys": "Delete {{count}} surveys",
+    "deletedSurveys": "Deleted {{count}} surveys",
     "deleteSurvey": "Delete survey",
+    "deletedSurvey": "Survey deleted",
     "title": "SURVEYS",
     "sidebar": "Surveys",
     "view": {
