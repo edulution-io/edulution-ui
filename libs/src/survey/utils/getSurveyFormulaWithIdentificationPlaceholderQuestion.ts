@@ -10,18 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { CompleteEvent } from 'survey-core';
+import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 
-interface SubmitAnswerDto {
-  surveyId: string;
+const getSurveyFormulaWithIdentificationPlaceholderQuestion = (formula: TSurveyFormula) => {
+  const updatedFormula = structuredClone(formula);
+  const identification = { type: 'text', name: 'identification', value: '' };
 
-  saveNo: number;
+  if (Array.isArray(updatedFormula.pages) && updatedFormula.pages.length > 0) {
+    updatedFormula.pages[0].elements = [identification, ...(updatedFormula.pages[0].elements ?? [])];
+  } else {
+    updatedFormula.elements = [identification, ...(updatedFormula.elements ?? [])];
+  }
 
-  answer: JSON;
+  return updatedFormula;
+};
 
-  surveyEditorCallbackOnSave?: CompleteEvent | undefined;
-
-  isPublic: boolean;
-}
-
-export default SubmitAnswerDto;
+export default getSurveyFormulaWithIdentificationPlaceholderQuestion;

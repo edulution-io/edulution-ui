@@ -10,27 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type Choice = string | { value: string; imageLink: string };
+import AttendeeDto from '@libs/user/types/attendee.dto';
 
-interface SurveyElement {
-  type: string;
-  name: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any;
-  title?: string;
-  description?: string;
-  choicesOrder?: string;
-  choices?: Choice[] | null;
-  choicesByUrl?: {
-    url: string;
-    valueName?: string;
-    titleName?: string;
-    imageLink?: string;
-  } | null;
-  hideIfChoicesEmpty?: boolean;
-  imageLink?: string;
-  showOtherItem?: boolean | null;
-  showNoneItem?: boolean;
+interface ParticipantDto {
+  surveyId: string;
+
+  attendee: Partial<AttendeeDto>;
 }
 
-export default SurveyElement;
+export default ParticipantDto;
