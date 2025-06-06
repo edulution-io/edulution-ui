@@ -201,8 +201,8 @@ describe(SurveysController.name, () => {
 
       surveyAnswerModel.findOne = jest.fn().mockReturnValue(firstUsersSurveyAnswerAnsweredSurvey01);
 
-      const result = await controller.getSubmittedSurveyAnswers(
-        { surveyId: idOfAnsweredSurvey01.toString(), username: undefined },
+      const result = await controller.getSubmittedSurveyAnswerCurrentUser(
+        { surveyId: idOfAnsweredSurvey01.toString() },
         firstUsername,
       );
       expect(result).toEqual(firstUsersSurveyAnswerAnsweredSurvey01);
@@ -225,23 +225,6 @@ describe(SurveysController.name, () => {
       expect(result).toEqual(firstUsersSurveyAnswerAnsweredSurvey01);
 
       expect(surveyAnswerService.getAnswer).toHaveBeenCalledWith(idOfAnsweredSurvey01.toString(), firstUsername);
-    });
-
-    it('should return the submitted answer of the current user if no username is given', async () => {
-      jest.spyOn(surveyAnswerService, 'getAnswer');
-
-      surveyAnswerModel.findOne = jest.fn().mockReturnValue(secondUsersSurveyAnswerAnsweredSurvey01);
-
-      const result = await controller.getSubmittedSurveyAnswers(
-        {
-          surveyId: idOfAnsweredSurvey01.toString(),
-          username: undefined,
-        },
-        secondUsername,
-      );
-      expect(result).toEqual(secondUsersSurveyAnswerAnsweredSurvey01);
-
-      expect(surveyAnswerService.getAnswer).toHaveBeenCalledWith(idOfAnsweredSurvey01.toString(), secondUsername);
     });
   });
 
