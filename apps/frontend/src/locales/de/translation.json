@@ -1304,6 +1304,12 @@
     "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
     "selectedItem": "Ausgewähltes Element"
   },
+
+  "shareDialog": {
+    "shareFilesOrDirectories": "Dateien teilen",
+    "share": "Teilen"
+  },
+
   "deleteDialog": {
     "areYouSure": "Sind Sie sich absolut sicher?",
     "actionCannotBeUndone": "Diese Aktion kann nicht rückgängig gemacht werden. Dies wird die Dateien dauerhaft löschen:",

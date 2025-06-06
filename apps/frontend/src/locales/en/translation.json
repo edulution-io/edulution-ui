@@ -1300,6 +1300,12 @@
     "unknownErrorOccurred": "An unknown error occurred",
     "selectedItem": "selected item"
   },
+
+  "shareDialog": {
+    "shareFilesOrDirectories": "Share files",
+    "share": "Share"
+  },
+
   "deleteDialog": {
     "areYouSure": "Are you absolutely sure?",
     "actionCannotBeUndone": "This action cannot be undone. This will permanently delete the files:",
