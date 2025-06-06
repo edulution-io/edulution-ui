@@ -13,7 +13,7 @@
 import { FaShareFromSquare } from 'react-icons/fa6';
 import { t } from 'i18next';
 
-const ShareButton = (onClick: () => Promise<void>, isVisible?: boolean) => ({
+const ShareButton = (onClick: () => void, isVisible?: boolean) => ({
   icon: FaShareFromSquare,
   text: t('tooltip.share'),
   onClick,

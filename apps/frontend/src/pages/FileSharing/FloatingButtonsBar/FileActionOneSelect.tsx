@@ -41,7 +41,7 @@ const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedIt
         await startDownload(files);
       }, true),
       CopyButton(() => openDialog(FileActionType.COPY_FILE_OR_FOLDER)),
-      ShareButton(() => Promise.resolve(), true),
+      ShareButton(() => openDialog(FileActionType.SHARE_FILE_OR_FOLDER)),
     ],
     keyPrefix: 'file-sharing-page-floating-button_',
   };

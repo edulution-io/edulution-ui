@@ -34,6 +34,7 @@ import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
 import MoveDirectoryDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveDirectoryDialogBody';
 import CopyContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/CopyContentDialogBody';
+import ShareFileFolderDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/ShareFileFolderDialogBody';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
@@ -83,13 +84,18 @@ interface MoveDialogBodyConfiguration extends DialogBodyConfigurationBase {
   Component: React.ComponentType<MoveContentDialogBodyProps>;
 }
 
+interface ShareDialogBodyConfiguration extends DialogBodyConfigurationBase {
+  Component: React.ComponentType;
+}
+
 type DialogBodyConfiguration =
   | CreateFolderDialogBodyConfiguration
   | CreateFileDialogBodyConfiguration
   | RenameDialogBodyConfiguration
   | DeleteDialogBodyConfiguration
   | UploadFileDialogBodyConfiguration
-  | MoveDialogBodyConfiguration;
+  | MoveDialogBodyConfiguration
+  | ShareDialogBodyConfiguration;
 
 const initialFormValues: FileSharingFormValues = {
   filename: '',
@@ -274,6 +280,28 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
         selectedItems.map((item) => ({
           path: encodeURI(`${cleanedPath}/${item.filename}`),
           newPath: encodeURI(`${newCleanedPath}/${item.filename}`),
+        })),
+      );
+    },
+  },
+
+  shareFileOrFolder: {
+    Component: ShareFileFolderDialogBody,
+    titleKey: 'shareDialog.shareFilesOrDirectories',
+    submitKey: 'shareDialog.share',
+    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
+    httpMethod: HttpMethods.POST,
+    type: ContentType.FILE || ContentType.DIRECTORY,
+    requiresForm: false,
+    getData: (_form, currentPath, inputValues) => {
+      const { selectedItems } = inputValues;
+      if (!selectedItems || selectedItems.length === 0) {
+        return Promise.resolve([]);
+      }
+      const cleanedPath = getPathWithoutWebdav(currentPath);
+      return Promise.resolve(
+        selectedItems.map((item) => ({
+          path: `${cleanedPath}/${item.filename}`,
         })),
       );
     },
