@@ -13,7 +13,6 @@
 import { AxiosError } from 'axios';
 import { create } from 'zustand';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import React from 'react';
 import handleApiError from '@/utils/handleApiError';
 import { WebDavActionResult } from '@libs/filesharing/types/fileActionStatus';
 import { t } from 'i18next';
@@ -31,6 +30,7 @@ import eduApi from '@/api/eduApi';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
+import { UploadFile } from '@libs/filesharing/types/uploadFile';
 
 interface FileSharingDialogStore {
   isDialogOpen: boolean;
@@ -38,7 +38,7 @@ interface FileSharingDialogStore {
   closeDialog: () => void;
   isLoading: boolean;
   userInput: string;
-  filesToUpload: File[];
+  filesToUpload: UploadFile[];
   moveOrCopyItemToPath: DirectoryFileDTO;
   selectedFileType: TAvailableFileTypes | '';
   setMoveOrCopyItemToPath: (item: DirectoryFileDTO) => void;
@@ -56,13 +56,14 @@ interface FileSharingDialogStore {
     type: ContentType,
     data: PathChangeOrCreateDto | PathChangeOrCreateDto[] | FileUploadProps[] | DeleteFileProps[] | FormData,
   ) => Promise<void>;
-  setFilesToUpload: React.Dispatch<React.SetStateAction<File[]>>;
+  setFilesToUpload: (files: UploadFile[]) => void;
   action: FileActionType;
   setAction: (action: FileActionType) => void;
   fileOperationResult: WebDavActionResult | undefined;
   setFileOperationResult: (fileOperationSuccessful: boolean | undefined, message: string, status: number) => void;
   setSubmitButtonIsDisabled: (isSubmitButtonActive: boolean) => void;
   handleDeleteItems: (itemsToDelete: PathChangeOrCreateDto[], endpoint: string) => Promise<void>;
+  updateFilesToUpload: (updater: (files: UploadFile[]) => UploadFile[]) => void;
 }
 
 const initialState: Partial<FileSharingDialogStore> = {
@@ -87,7 +88,8 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
   setIsLoading: (isLoading) => set({ isLoading }),
   setError: (error: AxiosError) => set({ error }),
   reset: () => set(initialState),
-  setFilesToUpload: (files) => set({ filesToUpload: typeof files === 'function' ? files(get().filesToUpload) : files }),
+  setFilesToUpload: (files) => set({ filesToUpload: files }),
+  updateFilesToUpload: (updater) => set((state) => ({ filesToUpload: updater(state.filesToUpload) })),
   setMoveOrCopyItemToPath: (path) => set({ moveOrCopyItemToPath: path }),
   setSubmitButtonIsDisabled: (isSubmitButtonDisabled) => set({ isSubmitButtonDisabled }),
   setSelectedFileType: (fileType) => set({ selectedFileType: fileType }),

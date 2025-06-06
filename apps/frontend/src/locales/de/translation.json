@@ -361,7 +361,9 @@
       "fileInfoDeleting": "Datei {{filename}} wird gelöscht",
       "fileInfoCopying": "Datei {{filename}} wird kopiert",
       "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden",
-      "downloadInfo": "Datei {{filename}} wird heruntergeladen"
+      "downloadInfo": "Datei {{filename}} wird heruntergeladen",
+      "fileStructureIsCreating": "Dateistruktur wird erstellt",
+      "zipFilesAreUploading": "Dateien werden in Ordnerstruktur hochgeladen"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
@@ -1218,7 +1220,10 @@
     "overwriteWarningDescriptionFiles": "Die folgenden Dateien werden überschrieben:",
     "oversizedFilesDetected": "Zu große Dateien entdeckt",
     "oversizedFileDetected": "Zu große Datei entdeckt!",
-    "cannotUploadOversized": "Es können keine Dateien größer als 50MB hochgeladen werden."
+    "cannotUploadOversized": "Es können keine Dateien größer als 50MB hochgeladen werden.",
+    "addFiles": "Dateien hinzufügen",
+    "addFolder": "Ordner hinzufügen",
+    "preparingFolder": "Ordner wird vorbereitet"
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",

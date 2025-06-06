@@ -368,7 +368,9 @@
       "fileInfoMoving": "File {{filename}} is being moved",
       "fileInfoDeleting": "File {{filename}} is being deleted",
       "downloadInfo": "Downloading {{filename}}",
-      "errorInfo": "{{failed}} files could not be handed out"
+      "errorInfo": "{{failed}} files could not be handed out",
+      "fileStructureIsCreating": "File structure is creating",
+      "zipFilesAreUploading": "Files are uploading"
     }
   },
   "forums": {
@@ -1214,7 +1216,10 @@
     "overwriteWarningDescriptionFiles": "The following files will be overwritten:",
     "oversizedFilesDetected": "Oversized files detected",
     "oversizedFileDetected": "Oversized file detected!",
-    "cannotUploadOversized": "Cannot upload oversized files (more than 50 MB)."
+    "cannotUploadOversized": "Cannot upload oversized files (more than 50 MB).",
+    "addFiles": "Add files",
+    "addFolder": "Add folder",
+    "preparingFolder": "Preparing folder"
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",
