@@ -38,6 +38,7 @@ class UsersService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(UserAccounts.name) private userAccountModel: Model<UserAccountsDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private readonly groupsService: GroupsService,
   ) {}
 
   async createOrUpdate(userDto: UserDto): Promise<User | null> {
@@ -72,7 +73,7 @@ class UsersService {
     return result.deletedCount > 0;
   }
 
-  async findAllCachedUsers(token: string, schoolName: string): Promise<CachedUser[]> {
+  async findAllCachedUsers(schoolName: string): Promise<CachedUser[]> {
     const mapToCachedUser = (user: LDAPUser): CachedUser => ({
       firstName: user.firstName,
       lastName: user.lastName,
@@ -87,7 +88,7 @@ class UsersService {
       return cachedUsers;
     }
 
-    const fetchedUsers = await GroupsService.fetchAllUsers(token);
+    const fetchedUsers = await this.groupsService.fetchAllUsers();
     const cachedUserList: CachedUser[] = fetchedUsers.map(mapToCachedUser);
 
     const usersBySchool = cachedUserList.reduce(
@@ -116,10 +117,10 @@ class UsersService {
     return usersBySchool[schoolName] ?? [];
   }
 
-  async searchUsersByName(token: string, schoolName: string, name: string): Promise<CachedUser[]> {
+  async searchUsersByName(schoolName: string, name: string): Promise<CachedUser[]> {
     const searchString = name.toLowerCase();
 
-    const users = await this.findAllCachedUsers(token, schoolName);
+    const users = await this.findAllCachedUsers(schoolName);
 
     return users.filter(
       (user) =>
