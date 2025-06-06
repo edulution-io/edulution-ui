@@ -361,7 +361,9 @@
       "fileInfoDeleting": "Datei {{filename}} wird gelöscht",
       "fileInfoCopying": "Datei {{filename}} wird kopiert",
       "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden",
-      "downloadInfo": "Datei {{filename}} wird heruntergeladen"
+      "downloadInfo": "Datei {{filename}} wird heruntergeladen",
+      "fileStructureIsCreating": "Dateistruktur wird erstellt",
+      "zipFilesAreUploading": "Dateien werden in Ordnerstruktur hochgeladen"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",

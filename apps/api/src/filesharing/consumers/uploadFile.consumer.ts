@@ -16,24 +16,31 @@ import { Injectable } from '@nestjs/common';
 import { Job } from 'bullmq';
 import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJobData';
 import CustomFile from '@libs/filesharing/types/customFile';
+import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import WebdavService from '../../webdav/webdav.service';
+import SseService from '../../sse/sse.service';
 
 @Injectable()
 class UploadFileConsumer extends WorkerHost {
-  constructor(private readonly webDavService: WebdavService) {
+  constructor(
+    private readonly webDavService: WebdavService,
+    private readonly sseService: SseService,
+  ) {
     super();
   }
 
   async process(job: Job<FileOperationQueueJobData>): Promise<void> {
-    const { username, fullPath, file, mimeType, size, base64 } = job.data as UploadFileJobData;
+    const { username, fullPath, file, mimeType, size, base64, processed, total } = job.data as UploadFileJobData;
     let buffer: Buffer;
     if (file.buffer) {
       buffer = Buffer.isBuffer(file.buffer) ? file.buffer : Buffer.from(file.buffer);
     } else if (base64) {
       buffer = Buffer.from(base64, 'base64');
     } else {
-      throw new Error('Upload job contains neither buffer nor base64 data.');
+      return;
     }
+    const percent = Math.round((processed / total) * 100);
 
     const uploadFile: CustomFile = {
       ...file,
@@ -43,6 +50,16 @@ class UploadFileConsumer extends WorkerHost {
     } as CustomFile;
 
     await this.webDavService.uploadFile(username, fullPath, uploadFile);
+
+    const progressDto: FilesharingProgressDto = {
+      processID: Number(job.id),
+      title: 'filesharing.progressBox.zipFilesAreUploading',
+      processed,
+      total,
+      percent,
+    };
+
+    this.sseService.sendEventToUser(username, progressDto, SSE_MESSAGE_TYPE.FILESHARING_FILE_UPLOAD);
   }
 }
 

@@ -57,7 +57,7 @@ class FilesharingService {
     const directory = await Open.buffer(zipFile.buffer);
     const explicitDirs = directory.files.filter((f) => f.type === 'Directory');
     const fileEntries = directory.files.filter((f) => f.type === 'File');
-
+    const totalFiles = fileEntries.length;
     const dirSet = new Set<string>();
 
     explicitDirs.forEach((d) => dirSet.add(d.path));
@@ -75,14 +75,22 @@ class FilesharingService {
 
     const allDirs = Array.from(dirSet).sort((a, b) => a.length - b.length);
 
+    const totalDirs = allDirs.length;
+
+    let processedZipContent = 0;
+
     await allDirs.reduce<Promise<void>>(async (prev, dirPath) => {
       await prev;
-      return this.dynamicQueueService.addJobForUser(username, JOB_NAMES.CREATE_FOLDER_JOB, {
+      await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.CREATE_FOLDER_JOB, {
         username,
         basePath: `${parentPath}/${folderName}`,
         folderPath: dirPath,
+        total: totalDirs,
+        processed: (processedZipContent += 1),
       });
     }, Promise.resolve());
+
+    processedZipContent = 0;
 
     await Promise.all(
       fileEntries.map(async (entry) => {
@@ -106,6 +114,8 @@ class FilesharingService {
           mimeType,
           size: buffer.length,
           base64,
+          total: totalFiles,
+          processed: (processedZipContent += 1),
         });
       }),
     );

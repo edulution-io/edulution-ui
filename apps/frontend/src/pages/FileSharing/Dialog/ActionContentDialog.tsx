@@ -110,7 +110,6 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       const uploadPromises = batch
         .filter((item): item is typeof item & { file: File } => 'file' in item && item.file instanceof File)
         .map((uploadItem) => {
-          /* ---------- DTO zusammenstellen ------------------------ */
           const uploadDto: UploadFileDto = {
             name: uploadItem.name,
             isZippedFolder: 'isZippedFolder' in uploadItem.file && uploadItem.file.isZippedFolder,

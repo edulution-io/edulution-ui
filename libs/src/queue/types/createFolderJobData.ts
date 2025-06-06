@@ -14,6 +14,8 @@ interface CreateFolderJobData {
   username: string;
   basePath: string;
   folderPath: string;
+  total: number;
+  processed: number;
 }
 
 export default CreateFolderJobData;

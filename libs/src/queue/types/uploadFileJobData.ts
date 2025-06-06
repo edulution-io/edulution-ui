@@ -19,6 +19,8 @@ interface UploadFileJobData {
   mimeType: string | false;
   size: number;
   base64?: string;
+  total: number;
+  processed: number;
 }
 
 export default UploadFileJobData;
