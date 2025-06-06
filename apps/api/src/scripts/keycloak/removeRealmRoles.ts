@@ -55,21 +55,21 @@ const removeRealmRoles: Scripts = {
 
       const { data: realmRoles } = await axios.get<RealmRolesResponse[]>(keycloakRolesEndpoint, { headers });
 
-      const hasRolesToDelete = realmRoles.filter((role: { name: string }) => rolesToDelete.includes(role.name));
+      const rolesToDelet = realmRoles.filter((role: { name: string }) => rolesToDelete.includes(role.name));
 
-      if (hasRolesToDelete.length === 0) {
+      if (rolesToDelet.length === 0) {
         Logger.log('No roles to delete found.', removeRealmRoles.name);
         return;
       }
 
-      Logger.debug(`Has roles to delete: ${JSON.stringify(hasRolesToDelete)}`, removeRealmRoles.name);
+      Logger.debug(`Has roles to delete: ${JSON.stringify(rolesToDelet)}`, removeRealmRoles.name);
 
       const response = await axios.delete(keycloakRolesEndpoint, {
         headers: {
           [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_JSON,
           [HTTP_HEADERS.Authorization]: `Bearer ${keycloakAccessToken}`,
         },
-        data: hasRolesToDelete,
+        data: rolesToDelet,
       });
 
       Logger.log(`Roles deleted successfully: Status ${response.status}`, removeRealmRoles.name);

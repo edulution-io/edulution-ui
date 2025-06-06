@@ -22,12 +22,11 @@ class ScriptService implements OnModuleInit {
   static async runScripts(scripts: Scripts[]) {
     Logger.log(`Executing Scripts: ${scripts.length} scripts`, ScriptService.name);
 
-    await scripts.reduce(async (prevPromise, script) => {
-      await prevPromise;
+    for (const script of scripts) {
       Logger.log(`Starting script "${script.name}"`, ScriptService.name);
       await script.execute();
       Logger.log(`Script "${script.name}" completed`, ScriptService.name);
-    }, Promise.resolve());
+    }
   }
 }
 
