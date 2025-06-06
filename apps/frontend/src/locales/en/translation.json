@@ -1329,7 +1329,8 @@
     "move": "Move",
     "delete": "Delete",
     "download": "Download",
-    "copy": "Copy"
+    "copy": "Copy",
+    "share": "Share"
   },
   "response": {
     "successfully": "Action was successful",

@@ -1333,7 +1333,8 @@
     "move": "Verschieben",
     "delete": "Löschen",
     "download": "Herunterladen",
-    "copy": "Kopieren"
+    "copy": "Kopieren",
+    "share": "Teilen"
   },
   "response": {
     "successfully": "Aktion war erfolgreich",
