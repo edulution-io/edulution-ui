@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const WHITEBOARD_COLLABORATION_PERSISTENCE_KEY = 'whiteboardCollaborationPersistenceKey';
+const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
 
-export default WHITEBOARD_COLLABORATION_PERSISTENCE_KEY;
+export default THIRTY_DAYS;
