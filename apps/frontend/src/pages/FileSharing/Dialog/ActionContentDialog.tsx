@@ -29,7 +29,6 @@ import { HttpMethods } from '@libs/common/types/http-methods';
 import MAX_UPLOAD_CHUNK_SIZE from '@libs/ui/constants/maxUploadChunkSize';
 import splitArrayIntoChunks from '@libs/common/utils/splitArrayIntoChunks';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
-import getFileSharingFormSchema from '../formSchema';
 
 interface CreateContentDialogProps {
   trigger?: React.ReactNode;
@@ -78,7 +77,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     getDialogBodySetup(action);
 
   const form = useForm<FileSharingFormValues>({
-    resolver: schema ? zodResolver(getFileSharingFormSchema(t)) : undefined,
+    resolver: schema ? zodResolver(schema) : undefined,
     mode: 'onChange',
     defaultValues: initialValues || {},
   });

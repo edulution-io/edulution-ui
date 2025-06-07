@@ -19,7 +19,6 @@ import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import generateFile from '@/pages/FileSharing/utilities/generateFile';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import { HttpMethods } from '@libs/common/types/http-methods';
-import { t } from 'i18next';
 
 import { FilesharingDialogProps, FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
 import FileActionType from '@libs/filesharing/types/fileActionType';
@@ -35,19 +34,22 @@ import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialo
 import MoveDirectoryDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveDirectoryDialogBody';
 import CopyContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/CopyContentDialogBody';
 import ShareFileFolderDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/ShareFileFolderDialogBody';
+import fileSharingFromSchema from '@libs/filesharing/types/fileSharingFromSchema';
+import ShareFilesDialogProps, { SharingFilesFormValues } from '@libs/filesharing/types/shareFilesDialogProps';
+import shareFilesFormSchema from '@libs/filesharing/types/shareFileFromSchema';
 
 interface DialogBodyConfigurationBase {
-  schema?: z.ZodSchema<FileSharingFormValues>;
+  schema?: z.ZodSchema<FileSharingFormValues | SharingFilesFormValues>;
   isRenaming?: boolean;
   titleKey: string;
   submitKey: string;
-  initialValues?: FileSharingFormValues;
+  initialValues?: Record<string, unknown>;
   endpoint: string;
   type: ContentType;
   httpMethod: HttpMethods;
   componentProps?: Record<string, unknown>;
   getData: (
-    form: UseFormReturn<FileSharingFormValues>,
+    form: UseFormReturn<FileSharingFormValues | SharingFilesFormValues>,
     currentPath: string,
     inputValues: {
       selectedItems?: DirectoryFileDTO[];
@@ -63,29 +65,23 @@ interface DialogBodyConfigurationBase {
 interface CreateFolderDialogBodyConfiguration extends DialogBodyConfigurationBase {
   Component: React.ComponentType<FilesharingDialogProps>;
 }
-
 interface CreateFileDialogBodyConfiguration extends DialogBodyConfigurationBase {
   Component: React.ComponentType<FilesharingDialogProps>;
 }
-
 interface RenameDialogBodyConfiguration extends DialogBodyConfigurationBase {
   Component: React.ComponentType<FilesharingDialogProps>;
 }
-
 interface DeleteDialogBodyConfiguration extends DialogBodyConfigurationBase {
   Component: React.ComponentType;
 }
-
 interface UploadFileDialogBodyConfiguration extends DialogBodyConfigurationBase {
   Component: React.ComponentType;
 }
-
 interface MoveDialogBodyConfiguration extends DialogBodyConfigurationBase {
   Component: React.ComponentType<MoveContentDialogBodyProps>;
 }
-
 interface ShareDialogBodyConfiguration extends DialogBodyConfigurationBase {
-  Component: React.ComponentType;
+  Component: React.ComponentType<ShareFilesDialogProps>;
 }
 
 type DialogBodyConfiguration =
@@ -97,50 +93,45 @@ type DialogBodyConfiguration =
   | MoveDialogBodyConfiguration
   | ShareDialogBodyConfiguration;
 
-const initialFormValues: FileSharingFormValues = {
+const initialFormValues = {
   filename: '',
   extension: '',
+};
+
+const initialShareFileFormValues = {
+  expires: '7d',
 };
 
 const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
   createFolder: {
     Component: CreateOrRenameContentDialogBody,
-    schema: z.object({
-      filename: z.string().min(1, t('filesharing.tooltips.folderNameRequired')),
-      extension: z.string(),
-    }),
+    schema: fileSharingFromSchema,
     titleKey: 'fileCreateNewContent.directoryDialogTitle',
     submitKey: 'fileCreateNewContent.createButtonText',
     initialValues: initialFormValues,
-    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
+    endpoint: FileSharingApiEndpoints.FILESHARING_ACTIONS,
     httpMethod: HttpMethods.POST,
     type: ContentType.DIRECTORY,
     requiresForm: true,
-    getData: (form, currentPath: string) => {
+    getData: (form, currentPath) => {
       const filename = String(form.getValues('filename'));
       const cleanedPath = getPathWithoutWebdav(currentPath);
       return Promise.resolve({ path: cleanedPath, newPath: filename });
     },
   },
-
   createFile: {
     Component: CreateOrRenameContentDialogBody,
-    schema: z.object({
-      filename: z.string().min(1, t('filesharing.tooltips.FileNameRequired')),
-      extension: z.string(),
-    }),
+    schema: fileSharingFromSchema,
     titleKey: 'fileCreateNewContent.fileDialogTitle',
     submitKey: 'fileCreateNewContent.createButtonText',
     initialValues: initialFormValues,
-    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
+    endpoint: FileSharingApiEndpoints.FILESHARING_ACTIONS,
     httpMethod: HttpMethods.PUT,
     type: ContentType.FILE,
     requiresForm: true,
-    getData: async (form, currentPath, { documentVendor, selectedFileType }) => {
+    async getData(form, currentPath, { documentVendor, selectedFileType }) {
       const filename = form.getValues('filename');
-
       const { file, extension } = await generateFile(selectedFileType, filename, documentVendor);
-
       return [
         {
           path: getPathWithoutWebdav(currentPath),
@@ -155,51 +146,37 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     Component: DeleteContentDialogBody,
     titleKey: 'deleteDialog.deleteFiles',
     submitKey: 'deleteDialog.continue',
-    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
+    endpoint: FileSharingApiEndpoints.FILESHARING_ACTIONS,
     httpMethod: HttpMethods.DELETE,
     type: ContentType.FILE || ContentType.DIRECTORY,
     requiresForm: false,
-    getData: (_form, currentPath, inputValues) => {
-      const { selectedItems } = inputValues;
-      if (!selectedItems || selectedItems.length === 0) {
-        return Promise.resolve([]);
-      }
+    getData: (_form, currentPath, { selectedItems }) => {
+      if (!selectedItems?.length) return Promise.resolve([]);
       const cleanedPath = getPathWithoutWebdav(currentPath);
-      return Promise.resolve(
-        selectedItems.map((item) => ({
-          path: `${cleanedPath}/${item.filename}`,
-        })),
-      );
+      return Promise.resolve(selectedItems.map((item) => ({ path: `${cleanedPath}/${item.filename}` })));
     },
   },
 
   renameFileFolder: {
     Component: CreateOrRenameContentDialogBody,
-    schema: z.object({
-      filename: z.string().min(1, t('filesharing.tooltips.NewFileNameRequired')),
-      extension: z.string(),
-    }),
+    schema: fileSharingFromSchema,
     titleKey: 'fileRenameContent.rename',
     submitKey: 'fileRenameContent.rename',
     initialValues: initialFormValues,
-    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
+    endpoint: FileSharingApiEndpoints.FILESHARING_ACTIONS,
     httpMethod: HttpMethods.PATCH,
     type: ContentType.FILE || ContentType.DIRECTORY,
     requiresForm: true,
     isRenaming: true,
-    getData: async (form, currentPath, inputValues) => {
-      const { selectedItems } = inputValues;
-      if (!selectedItems || selectedItems.length === 0) {
-        return Promise.resolve([]);
-      }
-      const filename =
-        form.getValues('extension') !== undefined
-          ? `${String(form.getValues('filename')) + String(form.getValues('extension'))}`
-          : form.getValues('filename');
+    async getData(form, currentPath, { selectedItems }) {
+      if (!selectedItems?.length) return Promise.resolve([]);
+      const filename = form.getValues('extension')
+        ? `${String(form.getValues('filename'))}${String(form.getValues('extension'))}`
+        : form.getValues('filename');
       const cleanedPath = getPathWithoutWebdav(currentPath);
       return Promise.resolve([
         {
-          path: `${cleanedPath}/${selectedItems[0]?.filename}`,
+          path: `${cleanedPath}/${selectedItems[0].filename}`,
           newPath: `${cleanedPath}/${filename}`,
         },
       ]);
@@ -210,23 +187,14 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     Component: UploadContentBody,
     titleKey: 'filesharingUpload.title',
     submitKey: 'filesharingUpload.upload',
-    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
+    endpoint: FileSharingApiEndpoints.FILESHARING_ACTIONS,
     httpMethod: HttpMethods.PUT,
     type: ContentType.FILE || ContentType.DIRECTORY,
     requiresForm: false,
-    getData: (_form, currentPath, inputValues) => {
-      const { filesToUpload } = inputValues;
+    getData: (_form, currentPath, { filesToUpload }) => {
       const cleanedPath = getPathWithoutWebdav(currentPath);
-      if (!filesToUpload || filesToUpload.length === 0) {
-        return Promise.resolve([]);
-      }
-      return Promise.resolve(
-        filesToUpload.map((file: File) => ({
-          path: cleanedPath,
-          name: file.name,
-          file,
-        })),
-      );
+      if (!filesToUpload?.length) return Promise.resolve([]);
+      return Promise.resolve(filesToUpload.map((file) => ({ path: cleanedPath, name: file.name, file })));
     },
   },
 
@@ -238,22 +206,14 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     httpMethod: HttpMethods.POST,
     type: ContentType.FILE || ContentType.DIRECTORY,
     requiresForm: false,
-
-    getData: (_form, currentPath, inputValues) => {
-      const { moveOrCopyItemToPath, selectedItems } = inputValues;
-      if (!moveOrCopyItemToPath || !selectedItems) {
-        return Promise.resolve([]);
-      }
+    getData: (_form, currentPath, { moveOrCopyItemToPath, selectedItems }) => {
+      if (!moveOrCopyItemToPath || !selectedItems) return Promise.resolve([]);
       const sourceBase = getPathWithoutWebdav(currentPath);
       const targetBase = getPathWithoutWebdav(moveOrCopyItemToPath.filePath);
-
       return Promise.resolve(
         selectedItems.map((item) => {
           const encodedName = encodeURIComponent(item.filename);
-          return {
-            path: `${sourceBase}/${encodedName}`,
-            newPath: `${targetBase}/${encodedName}`,
-          };
+          return { path: `${sourceBase}/${encodedName}`, newPath: `${targetBase}/${encodedName}` };
         }),
       );
     },
@@ -263,19 +223,14 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     Component: MoveDirectoryDialogBody,
     titleKey: 'moveItemDialog.changeDirectory',
     submitKey: 'moveItemDialog.move',
-    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
+    endpoint: FileSharingApiEndpoints.FILESHARING_ACTIONS,
     httpMethod: HttpMethods.PATCH,
     type: ContentType.FILE || ContentType.DIRECTORY,
     requiresForm: false,
-
-    getData: (_form, currentPath, inputValues) => {
-      const { moveOrCopyItemToPath, selectedItems } = inputValues;
-      if (!moveOrCopyItemToPath || !selectedItems) {
-        return Promise.resolve([]);
-      }
+    getData: (_form, currentPath, { moveOrCopyItemToPath, selectedItems }) => {
+      if (!moveOrCopyItemToPath || !selectedItems) return Promise.resolve([]);
       const newCleanedPath = getPathWithoutWebdav(moveOrCopyItemToPath.filePath);
       const cleanedPath = getPathWithoutWebdav(currentPath);
-
       return Promise.resolve(
         selectedItems.map((item) => ({
           path: encodeURI(`${cleanedPath}/${item.filename}`),
@@ -287,28 +242,19 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
 
   shareFileOrFolder: {
     Component: ShareFileFolderDialogBody,
+    schema: shareFilesFormSchema,
+    initialValues: initialShareFileFormValues,
     titleKey: 'shareDialog.shareFilesOrDirectories',
     submitKey: 'shareDialog.share',
-    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
+    endpoint: FileSharingApiEndpoints.FILESHARING_ACTIONS,
     httpMethod: HttpMethods.POST,
     type: ContentType.FILE || ContentType.DIRECTORY,
-    requiresForm: false,
-    getData: (_form, currentPath, inputValues) => {
-      const { selectedItems } = inputValues;
-      if (!selectedItems || selectedItems.length === 0) {
-        return Promise.resolve([]);
-      }
-      const cleanedPath = getPathWithoutWebdav(currentPath);
-      return Promise.resolve(
-        selectedItems.map((item) => ({
-          path: `${cleanedPath}/${item.filename}`,
-        })),
-      );
-    },
+    requiresForm: true,
+    getData: (_form, _currentPath, _inputValues) => Promise.resolve([]),
   },
 };
 
-function getDialogBodySetup(action: FileActionType) {
+function getDialogBodySetup(action: FileActionType): DialogBodyConfiguration {
   return dialogBodyConfigurations[action] || dialogBodyConfigurations.deleteFileFolder;
 }
 
