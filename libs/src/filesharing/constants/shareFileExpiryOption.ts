@@ -10,15 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileActionType {
-  MOVE_FILE_FOLDER = 'moveFileFolder',
-  CREATE_FOLDER = 'createFolder',
-  CREATE_FILE = 'createFile',
-  DELETE_FILE_FOLDER = 'deleteFileFolder',
-  UPLOAD_FILE = 'uploadFile',
-  RENAME_FILE_FOLDER = 'renameFileFolder',
-  COPY_FILE_OR_FOLDER = 'copyFileOrFolder',
-  SHARE_FILE_OR_FOLDER = 'shareFileOrFolder',
-}
+const SHARE_FILE_EXPIRY_OPTION = [
+  { label: '24 Stunden', value: '24h' },
+  { label: '7 Tage', value: '7d' },
+  { label: '30 Tage', value: '30d' },
+] as const; // ← behält Literal-Typen
 
-export default FileActionType;
+export default SHARE_FILE_EXPIRY_OPTION;

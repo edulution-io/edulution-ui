@@ -10,15 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileActionType {
-  MOVE_FILE_FOLDER = 'moveFileFolder',
-  CREATE_FOLDER = 'createFolder',
-  CREATE_FILE = 'createFile',
-  DELETE_FILE_FOLDER = 'deleteFileFolder',
-  UPLOAD_FILE = 'uploadFile',
-  RENAME_FILE_FOLDER = 'renameFileFolder',
-  COPY_FILE_OR_FOLDER = 'copyFileOrFolder',
-  SHARE_FILE_OR_FOLDER = 'shareFileOrFolder',
-}
+import { z } from 'zod';
+import { t } from 'i18next';
+import EXPIRY_VALUES from '@libs/filesharing/constants/expiryValues';
 
-export default FileActionType;
+const shareFilesFormSchema = z.object({
+  expire: z.enum(EXPIRY_VALUES, {
+    required_error: t('filesharing.tooltips.expiryRequired'),
+    invalid_type_error: t('filesharing.tooltips.expiryInvalid'),
+  }),
+});
+
+export default shareFilesFormSchema;
