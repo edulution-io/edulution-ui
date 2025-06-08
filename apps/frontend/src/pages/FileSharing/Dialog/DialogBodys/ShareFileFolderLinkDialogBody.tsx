@@ -44,10 +44,12 @@ const ShareFileFolderLinkDialogBody: React.FC<FilesharingDialogProps> = ({ form 
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="truncate text-sm text-muted-foreground">{selectedItems.at(0)?.filename}</p>
+      <p className="truncate text-muted-foreground">
+        {selectedItems.length ? t('filesharing.expiry.selectedItem', { filename: selectedItems[0].filename }) : ''}
+      </p>
 
       <div className="flex items-center gap-2">
-        <span className="text-sm font-medium text-foreground">{t('shareDialog.expiryLabel')}</span>
+        <span className="font-medium text-background">{t('filesharing.expiry.select')}</span>
         <DropdownMenu
           trigger={
             <Button
@@ -63,6 +65,7 @@ const ShareFileFolderLinkDialogBody: React.FC<FilesharingDialogProps> = ({ form 
           menuContentClassName="min-w-[10rem]"
         />
       </div>
+      <p className="text-warning-foreground pt-8">{t('filesharing.expiry.linkWarning')}</p>
     </div>
   );
 };

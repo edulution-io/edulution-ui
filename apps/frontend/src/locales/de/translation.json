@@ -368,6 +368,14 @@
       "FileNameRequired": "Dateiname ist erforderlich",
       "NewFileNameRequired": "Neuer Dateiname ist erforderlich",
       "NameRequired": "Name erforderlich"
+    },
+    "expiry": {
+      "select": "Ablaufdatum auswählen",
+      "24h": "24 Stunden",
+      "7d": "7 Tage",
+      "30d": "30 Tage",
+      "selectedItem": "Ausgewählte Datei, die geteilt wird: {{filename}}",
+      "linkWarning": "⚠️  WARNUNG: Jeder, der den Link besitzt, kann diese Datei herunterladen."
     }
   },
   "forums": {

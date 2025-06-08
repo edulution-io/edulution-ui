@@ -369,6 +369,15 @@
       "fileInfoDeleting": "File {{filename}} is being deleted",
       "downloadInfo": "Downloading {{filename}}",
       "errorInfo": "{{failed}} files could not be handed out"
+    },
+
+    "expiry": {
+      "select": "Select expiry time",
+      "24h": "24 hours",
+      "7d": "7 days",
+      "30d": "30 days",
+      "selectedItem": "Selected file to share: {{filename}}",
+      "linkWarning": "⚠️  WARNING: Anyone with the link will be able to download this file."
     }
   },
   "forums": {
