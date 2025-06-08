@@ -33,7 +33,7 @@ import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
 import MoveDirectoryDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveDirectoryDialogBody';
 import CopyContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/CopyContentDialogBody';
-import ShareFileFolderDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/ShareFileFolderDialogBody';
+import ShareFileFolderLinkDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/ShareFileFolderLinkDialogBody';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
@@ -231,7 +231,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
   },
 
   shareFileOrFolder: {
-    Component: ShareFileFolderDialogBody,
+    Component: ShareFileFolderLinkDialogBody,
     initialValues: initialFormValues,
     titleKey: 'shareDialog.shareFilesOrDirectories',
     submitKey: 'shareDialog.share',

@@ -11,8 +11,11 @@
  */
 
 import SHARE_FILE_EXPIRY_OPTION from '@libs/filesharing/constants/shareFileExpiryOption';
-import { ShareExpiryValue } from '@libs/filesharing/constants/shareExpiryValue';
+import { ShareFileLinkExpiryValue } from './shareFileLinkExpiryValue';
 
-const EXPIRY_VALUES = SHARE_FILE_EXPIRY_OPTION.map((o) => o.value) as [ShareExpiryValue, ...ShareExpiryValue[]];
+const FILE_LINK_EXPIRY_VALUES = SHARE_FILE_EXPIRY_OPTION.map((o) => o.value) as [
+  ShareFileLinkExpiryValue,
+  ...ShareFileLinkExpiryValue[],
+];
 
-export default EXPIRY_VALUES;
+export default FILE_LINK_EXPIRY_VALUES;

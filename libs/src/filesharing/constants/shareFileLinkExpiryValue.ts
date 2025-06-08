@@ -12,4 +12,4 @@
 
 import SHARE_FILE_EXPIRY_OPTION from '@libs/filesharing/constants/shareFileExpiryOption';
 
-export type ShareExpiryValue = (typeof SHARE_FILE_EXPIRY_OPTION)[number]['value'];
+export type ShareFileLinkExpiryValue = (typeof SHARE_FILE_EXPIRY_OPTION)[number]['value'];

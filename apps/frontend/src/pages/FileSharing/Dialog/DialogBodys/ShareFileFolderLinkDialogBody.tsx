@@ -11,7 +11,7 @@
  */
 
 import React, { useEffect } from 'react';
-import EXPIRY_VALUES from '@libs/filesharing/constants/expiryValues';
+import FILE_LINK_EXPIRY_VALUES from '@libs/filesharing/constants/fileLinkExpiryValues';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
@@ -20,7 +20,7 @@ import { ChevronDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { FilesharingDialogProps } from '@libs/filesharing/types/filesharingDialogProps';
 
-const ShareFileFolderDialogBody: React.FC<FilesharingDialogProps> = ({ form }) => {
+const ShareFileFolderLinkDialogBody: React.FC<FilesharingDialogProps> = ({ form }) => {
   const { t } = useTranslation();
   const { selectedItems } = useFileSharingStore();
   const currentExpiry = form.watch('expires');
@@ -29,11 +29,11 @@ const ShareFileFolderDialogBody: React.FC<FilesharingDialogProps> = ({ form }) =
     form.register('expires');
   }, [form]);
 
-  const handleSelectExpiry = (value: (typeof EXPIRY_VALUES)[number]) => {
+  const handleSelectExpiry = (value: (typeof FILE_LINK_EXPIRY_VALUES)[number]) => {
     form.setValue('expires', value, { shouldDirty: true, shouldValidate: true });
   };
 
-  const expiryItems: DropdownMenuItemType[] = EXPIRY_VALUES.map((value) => ({
+  const expiryItems: DropdownMenuItemType[] = FILE_LINK_EXPIRY_VALUES.map((value) => ({
     label: t(`filesharing.expiry.${value}`),
     isCheckbox: true,
     checked: currentExpiry === value,
@@ -67,4 +67,4 @@ const ShareFileFolderDialogBody: React.FC<FilesharingDialogProps> = ({ form }) =
   );
 };
 
-export default ShareFileFolderDialogBody;
+export default ShareFileFolderLinkDialogBody;

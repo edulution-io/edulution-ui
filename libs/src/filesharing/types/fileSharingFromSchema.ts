@@ -12,12 +12,12 @@
 
 import { z } from 'zod';
 import { t } from 'i18next';
-import EXPIRY_VALUES from '@libs/filesharing/constants/expiryValues';
+import FILE_LINK_EXPIRY_VALUES from '@libs/filesharing/constants/fileLinkExpiryValues';
 
 const fileSharingFromSchema = z.object({
   filename: z.string({ required_error: t('filesharing.tooltips.folderNameRequired') }),
   extension: z.string(),
-  expires: z.enum(EXPIRY_VALUES, {
+  expires: z.enum(FILE_LINK_EXPIRY_VALUES, {
     required_error: t('filesharing.tooltips.expiryRequired'),
     invalid_type_error: t('filesharing.tooltips.expiryInvalid'),
   }),
