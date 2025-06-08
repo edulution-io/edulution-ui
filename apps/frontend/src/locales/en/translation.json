@@ -371,6 +371,19 @@
       "errorInfo": "{{failed}} files could not be handed out"
     },
 
+    "publicShareFilesPage": {
+      "title": "Publicly Shared Files",
+      "description": "Here you can find all files that have been shared publicly. Anyone with the link can download these files."
+    },
+
+    "publicFileSharing": {
+      "fileName": "Filename",
+      "createdAt": "Created at",
+      "validUntil": "Valid until",
+      "isActive": "Active",
+      "fileLink": "File link"
+    },
+
     "expiry": {
       "select": "Select expiry time",
       "24h": "24 hours",

@@ -343,6 +343,12 @@
       "SharingFailed": "Austeilen der Dateien fehlgeschlagen",
       "CopyFailed": "Kopieren fehlgeschlagen"
     },
+
+    "publicShareFilesPage": {
+      "title": "Öffentlich geteilte Dateien",
+      "description": "Hier findest du alle Dateien, die öffentlich geteilt wurden. Jeder, der den Link hat, kann diese Dateien herunterladen."
+    },
+
     "progressBox": {
       "info": "Info",
       "titleSharing": "Dateien werden ausgeteilt",
@@ -369,6 +375,15 @@
       "NewFileNameRequired": "Neuer Dateiname ist erforderlich",
       "NameRequired": "Name erforderlich"
     },
+
+    "publicFileSharing": {
+      "fileName": "Dateiname",
+      "createdAt": "Erstellt am",
+      "validUntil": "Gültig bis",
+      "isActive": "Aktiv",
+      "fileLink": "Datei-Link"
+    },
+
     "expiry": {
       "select": "Ablaufdatum auswählen",
       "24h": "24 Stunden",
