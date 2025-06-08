@@ -10,15 +10,59 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import EXPIRY_VALUES from '@libs/filesharing/constants/expiryValues';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import DropdownMenu from '@/components/shared/DropdownMenu';
+import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
+import { Button } from '@/components/shared/Button';
+import { ChevronDown } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { FilesharingDialogProps } from '@libs/filesharing/types/filesharingDialogProps';
 
-const ShareFileFolderDialogBody: React.FC = () => {
+const ShareFileFolderDialogBody: React.FC<FilesharingDialogProps> = ({ form }) => {
+  const { t } = useTranslation();
   const { selectedItems } = useFileSharingStore();
+  const currentExpiry = form.watch('expires');
+
+  useEffect(() => {
+    form.register('expires');
+  }, [form]);
+
+  const handleSelectExpiry = (value: (typeof EXPIRY_VALUES)[number]) => {
+    form.setValue('expires', value, { shouldDirty: true, shouldValidate: true });
+  };
+
+  const expiryItems: DropdownMenuItemType[] = EXPIRY_VALUES.map((value) => ({
+    label: t(`filesharing.expiry.${value}`),
+    isCheckbox: true,
+    checked: currentExpiry === value,
+    onCheckedChange: () => handleSelectExpiry(value),
+  }));
+
+  const displayLabel = currentExpiry ? t(`filesharing.expiry.${currentExpiry}`) : t('filesharing.expiry.select');
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-sm text-muted-foreground">{selectedItems.at(0)?.filePath}</p>
+      <p className="truncate text-sm text-muted-foreground">{selectedItems.at(0)?.filename}</p>
+
+      <div className="flex items-center gap-2">
+        <span className="text-sm font-medium text-foreground">{t('shareDialog.expiryLabel')}</span>
+        <DropdownMenu
+          trigger={
+            <Button
+              type="button"
+              variant="btn-small"
+              className="w-full justify-between bg-muted text-secondary"
+              title={t('filesharing.tooltips.expiry')}
+            >
+              {displayLabel} <ChevronDown className="ml-1 h-4 w-4" />
+            </Button>
+          }
+          items={expiryItems}
+          menuContentClassName="min-w-[10rem]"
+        />
+      </div>
     </div>
   );
 };

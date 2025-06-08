@@ -34,12 +34,9 @@ import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialo
 import MoveDirectoryDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveDirectoryDialogBody';
 import CopyContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/CopyContentDialogBody';
 import ShareFileFolderDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/ShareFileFolderDialogBody';
-import fileSharingFromSchema from '@libs/filesharing/types/fileSharingFromSchema';
-import ShareFilesDialogProps, { SharingFilesFormValues } from '@libs/filesharing/types/shareFilesDialogProps';
-import shareFilesFormSchema from '@libs/filesharing/types/shareFileFromSchema';
 
 interface DialogBodyConfigurationBase {
-  schema?: z.ZodSchema<FileSharingFormValues | SharingFilesFormValues>;
+  schema?: z.ZodSchema<FileSharingFormValues>;
   isRenaming?: boolean;
   titleKey: string;
   submitKey: string;
@@ -49,7 +46,7 @@ interface DialogBodyConfigurationBase {
   httpMethod: HttpMethods;
   componentProps?: Record<string, unknown>;
   getData: (
-    form: UseFormReturn<FileSharingFormValues | SharingFilesFormValues>,
+    form: UseFormReturn<FileSharingFormValues>,
     currentPath: string,
     inputValues: {
       selectedItems?: DirectoryFileDTO[];
@@ -81,7 +78,7 @@ interface MoveDialogBodyConfiguration extends DialogBodyConfigurationBase {
   Component: React.ComponentType<MoveContentDialogBodyProps>;
 }
 interface ShareDialogBodyConfiguration extends DialogBodyConfigurationBase {
-  Component: React.ComponentType<ShareFilesDialogProps>;
+  Component: React.ComponentType<FilesharingDialogProps>;
 }
 
 type DialogBodyConfiguration =
@@ -98,14 +95,9 @@ const initialFormValues = {
   extension: '',
 };
 
-const initialShareFileFormValues = {
-  expires: '7d',
-};
-
 const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
   createFolder: {
     Component: CreateOrRenameContentDialogBody,
-    schema: fileSharingFromSchema,
     titleKey: 'fileCreateNewContent.directoryDialogTitle',
     submitKey: 'fileCreateNewContent.createButtonText',
     initialValues: initialFormValues,
@@ -121,7 +113,6 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
   },
   createFile: {
     Component: CreateOrRenameContentDialogBody,
-    schema: fileSharingFromSchema,
     titleKey: 'fileCreateNewContent.fileDialogTitle',
     submitKey: 'fileCreateNewContent.createButtonText',
     initialValues: initialFormValues,
@@ -159,7 +150,6 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
 
   renameFileFolder: {
     Component: CreateOrRenameContentDialogBody,
-    schema: fileSharingFromSchema,
     titleKey: 'fileRenameContent.rename',
     submitKey: 'fileRenameContent.rename',
     initialValues: initialFormValues,
@@ -242,8 +232,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
 
   shareFileOrFolder: {
     Component: ShareFileFolderDialogBody,
-    schema: shareFilesFormSchema,
-    initialValues: initialShareFileFormValues,
+    initialValues: initialFormValues,
     titleKey: 'shareDialog.shareFilesOrDirectories',
     submitKey: 'shareDialog.share',
     endpoint: FileSharingApiEndpoints.FILESHARING_ACTIONS,

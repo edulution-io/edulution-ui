@@ -18,7 +18,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import getDialogBodySetup from '@/pages/FileSharing/Dialog/DialogBodys/dialogBodyConfigurations';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import { FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
@@ -29,6 +28,7 @@ import { HttpMethods } from '@libs/common/types/http-methods';
 import MAX_UPLOAD_CHUNK_SIZE from '@libs/ui/constants/maxUploadChunkSize';
 import splitArrayIntoChunks from '@libs/common/utils/splitArrayIntoChunks';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import { FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
 
 interface CreateContentDialogProps {
   trigger?: React.ReactNode;
@@ -79,7 +79,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   const form = useForm<FileSharingFormValues>({
     resolver: schema ? zodResolver(schema) : undefined,
     mode: 'onChange',
-    defaultValues: initialValues || {},
+    defaultValues: initialValues,
   });
 
   const clearAllSelectedItems = () => {
