@@ -18,9 +18,9 @@ import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
 import { Button } from '@/components/shared/Button';
 import { ChevronDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { FilesharingDialogProps } from '@libs/filesharing/types/filesharingDialogProps';
+import { PublicShareFilesDialogProps } from '@libs/filesharing/types/publicShareFilesDialogProps';
 
-const ShareFileFolderLinkDialogBody: React.FC<FilesharingDialogProps> = ({ form }) => {
+const ShareFileFolderLinkDialogBody: React.FC<PublicShareFilesDialogProps> = ({ form }) => {
   const { t } = useTranslation();
   const { selectedItems } = useFileSharingStore();
   const currentExpiry = form.watch('expires');

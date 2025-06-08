@@ -10,16 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import DocumentVendorsType from '@libs/filesharing/types/documentVendorsType';
-import { TAvailableFileTypes } from './availableFileTypesType';
-import { DirectoryFileDTO } from './directoryFileDTO';
+import FILE_LINK_EXPIRY_VALUES from '@libs/filesharing/constants/fileLinkExpiryValues';
+import { z } from 'zod';
+import { t } from 'i18next';
 
-interface DialogInputValues {
-  selectedItems?: DirectoryFileDTO[];
-  moveOrCopyItemToPath?: DirectoryFileDTO;
-  selectedFileType: TAvailableFileTypes | '';
-  filesToUpload?: File[];
-  documentVendor: DocumentVendorsType;
-}
+const publicShareFilesFormSchema = z.object({
+  expires: z.enum(FILE_LINK_EXPIRY_VALUES, {
+    required_error: t('filesharing.tooltips.expiryRequired'),
+    invalid_type_error: t('filesharing.tooltips.expiryInvalid'),
+  }),
+});
 
-export default DialogInputValues;
+export default publicShareFilesFormSchema;

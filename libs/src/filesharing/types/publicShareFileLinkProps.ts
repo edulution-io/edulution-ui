@@ -10,16 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import DocumentVendorsType from '@libs/filesharing/types/documentVendorsType';
-import { TAvailableFileTypes } from './availableFileTypesType';
-import { DirectoryFileDTO } from './directoryFileDTO';
+import { ShareFileLinkExpiryValue } from '@libs/filesharing/constants/shareFileLinkExpiryValue';
 
-interface DialogInputValues {
-  selectedItems?: DirectoryFileDTO[];
-  moveOrCopyItemToPath?: DirectoryFileDTO;
-  selectedFileType: TAvailableFileTypes | '';
-  filesToUpload?: File[];
-  documentVendor: DocumentVendorsType;
+interface PublicShareFileLinkProps {
+  expires: ShareFileLinkExpiryValue;
 }
 
-export default DialogInputValues;
+export default PublicShareFileLinkProps;

@@ -17,18 +17,23 @@ import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePat
 import eduApi from '@/api/eduApi';
 import buildApiFilePathUrl from '@libs/filesharing/utils/buildApiFilePathUrl';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
+import PublicShareFileLinkProps from '@libs/filesharing/types/publicShareFileLinkProps';
 
 const handleSingleData = async (
   action: FileActionType,
   endpoint: string,
   httpMethod: HttpMethods,
   type: ContentType,
-  data: PathChangeOrCreateProps,
+  data: PathChangeOrCreateProps | PublicShareFileLinkProps,
 ) => {
-  if (action === FileActionType.CREATE_FOLDER) {
-    await eduApi[httpMethod](buildApiFileTypePathUrl(endpoint, type, data.path), data);
-  } else if (action === FileActionType.MOVE_FILE_FOLDER || action === FileActionType.RENAME_FILE_FOLDER) {
-    await eduApi[httpMethod](buildApiFilePathUrl(endpoint, data.path), data);
+  if ('path' in data) {
+    if (action === FileActionType.CREATE_FOLDER) {
+      await eduApi[httpMethod](buildApiFileTypePathUrl(endpoint, type, data.path), data);
+    } else if (action === FileActionType.MOVE_FILE_FOLDER || action === FileActionType.RENAME_FILE_FOLDER) {
+      await eduApi[httpMethod](buildApiFilePathUrl(endpoint, data.path), data);
+    }
+  } else if (action === FileActionType.SHARE_FILE_OR_FOLDER) {
+    await eduApi[httpMethod](buildApiFilePathUrl(endpoint, data.expires), data);
   }
 };
 

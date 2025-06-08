@@ -16,7 +16,7 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
-import getDialogBodySetup from '@/pages/FileSharing/Dialog/DialogBodys/dialogBodyConfigurations';
+import { getDialogBodySetup } from '@/pages/FileSharing/Dialog/DialogBodys/dialogBodyConfigurations';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileActionType from '@libs/filesharing/types/fileActionType';
@@ -28,7 +28,8 @@ import { HttpMethods } from '@libs/common/types/http-methods';
 import MAX_UPLOAD_CHUNK_SIZE from '@libs/ui/constants/maxUploadChunkSize';
 import splitArrayIntoChunks from '@libs/common/utils/splitArrayIntoChunks';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
-import { FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
+import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
+import AnyFileDialogValues from '@libs/filesharing/types/anyFileDialogValues';
 
 interface CreateContentDialogProps {
   trigger?: React.ReactNode;
@@ -73,10 +74,10 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   const { currentPath, selectedItems } = useFileSharingStore();
   const { appConfigs } = useAppConfigsStore();
 
-  const { Component, schema, titleKey, submitKey, initialValues, endpoint, httpMethod, type, getData } =
+  const { Component, schema, titleKey, submitKey, initialValues, endpoint, httpMethod, requiresForm, type, getData } =
     getDialogBodySetup(action);
 
-  const form = useForm<FileSharingFormValues>({
+  const form = useForm<AnyFileDialogValues>({
     resolver: schema ? zodResolver(schema) : undefined,
     mode: 'onChange',
     defaultValues: initialValues,
@@ -150,7 +151,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       });
     } else {
       setSubmitButtonIsDisabled(false);
-      await handleItemAction(action, endpoint, httpMethod, type, uploadPayload);
+      await handleItemAction(action, endpoint, httpMethod, type, uploadPayload as PathChangeOrCreateProps);
     }
 
     clearAllSelectedItems();
@@ -204,6 +205,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
                 disableSubmit={
                   isLoading ||
                   isSubmitButtonDisabled ||
+                  (requiresForm && !form.formState.isValid) ||
                   (action === FileActionType.MOVE_FILE_FOLDER && moveOrCopyItemToPath?.filePath === undefined)
                 }
               />

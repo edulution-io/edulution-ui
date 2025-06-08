@@ -31,6 +31,7 @@ import eduApi from '@/api/eduApi';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
+import PublicShareFileLinkProps from '@libs/filesharing/types/publicShareFileLinkProps';
 
 interface FileSharingDialogStore {
   isDialogOpen: boolean;
@@ -105,10 +106,15 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
     endpoint: string,
     httpMethod: HttpMethods,
     type: ContentType,
-    bulkDtos: PathChangeOrCreateDto | PathChangeOrCreateDto[] | FileUploadProps[] | DeleteFileProps[] | FormData,
+    bulkDtos:
+      | PathChangeOrCreateDto
+      | PathChangeOrCreateDto[]
+      | FileUploadProps[]
+      | DeleteFileProps[]
+      | PublicShareFileLinkProps
+      | FormData,
   ) => {
     set({ isLoading: true });
-
     try {
       if (bulkDtos instanceof FormData) {
         await handleFileOrCreateFile(action, endpoint, httpMethod, type, bulkDtos);
