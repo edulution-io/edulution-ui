@@ -171,6 +171,14 @@ class FilesharingController {
     return this.filesharingService.collectFiles(username, collectFileRequestDTO, userRole, type);
   }
 
+  @Post(FileSharingApiEndpoints.PUBLIC_SHARE)
+  async publicShareFile(
+    @Body() body: { expires: string; filePath: string; filename: string },
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.filesharingService.generatePublicFileLink(username, body.filePath, body.filename);
+  }
+
   @Post('callback')
   async handleCallback(
     @Req() req: Request,

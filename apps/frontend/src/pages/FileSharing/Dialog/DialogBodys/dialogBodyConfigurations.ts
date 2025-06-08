@@ -102,6 +102,10 @@ const initialFormValues = {
   extension: '',
 };
 
+const initialFormValuesWithExpiration: PublicFileSharingFormValues = {
+  expires: FILE_LINK_EXPIRY_VALUES[0],
+};
+
 const createFolderConfig: CreateFolderDialogBodyConfiguration = {
   Component: CreateOrRenameContentDialogBody,
   titleKey: 'fileCreateNewContent.directoryDialogTitle',
@@ -247,18 +251,20 @@ const shareFileOrFolderConfig: ShareDialogBodyConfiguration = {
   Component: ShareFileFolderLinkDialogBody,
   titleKey: 'shareDialog.shareFilesOrDirectories',
   submitKey: 'shareDialog.share',
-  initialValues: { expires: FILE_LINK_EXPIRY_VALUES[0] },
+  initialValues: initialFormValuesWithExpiration,
   schema: publicShareFilesFormSchema,
-  endpoint: FileSharingApiEndpoints.FILESHARING_ACTIONS,
+  endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.PUBLIC_SHARE}`,
   httpMethod: HttpMethods.POST,
   type: ContentType.FILE,
   requiresForm: true,
-  getData(form, _currentPath, { selectedItems }: DialogInputValues) {
+  async getData(form, _currentPath, { selectedItems }: DialogInputValues) {
     if (!selectedItems?.length) return [];
 
-    return {
+    return Promise.resolve({
       expires: form.getValues('expires'),
-    };
+      filePath: selectedItems[0].filePath,
+      filename: selectedItems[0].filename,
+    });
   },
 };
 
@@ -273,12 +279,8 @@ const dialogBodyConfigurations: Record<FileActionType, DialogBodyConfiguration> 
   shareFileOrFolder: shareFileOrFolderConfig,
 };
 
-type DialogConfigMap = typeof dialogBodyConfigurations;
-
-export type DialogConfigOf<A extends FileActionType> = DialogConfigMap[A];
-
-export function getDialogBodySetup<K extends keyof DialogConfigMap>(action: K): DialogConfigMap[K] {
-  return dialogBodyConfigurations[action];
+function getDialogBodySetup(action: FileActionType) {
+  return dialogBodyConfigurations[action] || dialogBodyConfigurations.deleteFileFolder;
 }
 
 export default getDialogBodySetup;

@@ -26,11 +26,14 @@ import { once } from 'events';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { createReadStream, createWriteStream, statSync } from 'fs';
 import createTempFile from '@libs/filesystem/utils/createTempFile';
+import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import CustomHttpException from '../common/CustomHttpException';
 import QueueService from '../queue/queue.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import OnlyofficeService from './onlyoffice.service';
 import WebdavService from '../webdav/webdav.service';
+import UsersService from '../users/users.service';
 
 @Injectable()
 class FilesharingService {
@@ -41,6 +44,7 @@ class FilesharingService {
     private readonly fileSystemService: FilesystemService,
     private readonly dynamicQueueService: QueueService,
     private readonly webDavService: WebdavService,
+    private readonly userService: UsersService,
   ) {}
 
   async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
@@ -191,6 +195,36 @@ class FilesharingService {
       .on('finish', () => {
         void cleanup();
       });
+  }
+
+  async generatePublicFileLink(username: string, filePath: string, filename: string): Promise<WebdavStatusResponse> {
+    const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
+    await this.fileSystemService.ensureDirectoryExists(`${PUBLIC_DOWNLOADS_PATH}/sharedFiles`);
+    const client = await this.webDavService.getClient(username);
+
+    try {
+      const user = await this.userService.findOne(username);
+      if (!user) {
+        return { success: false, status: HttpStatus.INTERNAL_SERVER_ERROR } as WebdavStatusResponse;
+      }
+      const responseStream = await FilesystemService.fetchFileStream(url, client);
+      const hashedFilename = FilesystemService.generateHashedFilename(filePath, filename);
+      const outputFilePath = FilesystemService.getOutputFilePath(
+        `${PUBLIC_DOWNLOADS_PATH}/sharedFiles`,
+        hashedFilename,
+      );
+      await FilesystemService.saveFileStream(responseStream, outputFilePath);
+
+      const link = `${EDU_API_ROOT}/downloads/sharedFiles/${hashedFilename}`;
+
+      return {
+        success: true,
+        status: HttpStatus.OK,
+        data: link,
+      } as WebdavStatusResponse;
+    } catch (error) {
+      throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+    }
   }
 }
 

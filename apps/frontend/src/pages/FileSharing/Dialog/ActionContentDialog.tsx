@@ -16,7 +16,7 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
-import { getDialogBodySetup } from '@/pages/FileSharing/Dialog/DialogBodys/dialogBodyConfigurations';
+import getDialogBodySetup from '@/pages/FileSharing/Dialog/DialogBodys/dialogBodyConfigurations';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileActionType from '@libs/filesharing/types/fileActionType';

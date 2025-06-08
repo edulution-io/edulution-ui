@@ -13,6 +13,6 @@
 import { PublicFileSharingFormValues } from '@libs/filesharing/types/publicShareFilesDialogProps';
 import { FileSharingFormValues } from './filesharingDialogProps';
 
-type AnyFileDialogValues = (FileSharingFormValues & 'extension') | PublicFileSharingFormValues;
+type AnyFileDialogValues = FileSharingFormValues | PublicFileSharingFormValues;
 
 export default AnyFileDialogValues;

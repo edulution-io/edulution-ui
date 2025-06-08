@@ -10,16 +10,31 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileSharingApiEndpoints {
-  FILESHARING_ACTIONS = '/filesharing',
-  BASE = 'filesharing',
-  FILE_STREAM = 'file-stream',
-  FILE_LOCATION = 'file-location',
-  ONLY_OFFICE_TOKEN = 'only-office',
-  DUPLICATE = 'duplicate',
-  COLLECT = 'collect',
-  COPY = 'copy',
-  PUBLIC_SHARE = 'public-share',
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+
+export type PublicShareDocument = PublicFileShare & Document;
+
+@Schema({ timestamps: true, strict: true })
+export class PublicFileShare {
+  @Prop({ required: true })
+  sharedFileId: string;
+
+  @Prop({ required: true })
+  filename: string;
+
+  @Prop({ required: false })
+  validUntil: Date;
+
+  @Prop({ required: true })
+  createdAt: Date;
+
+  @Prop({ required: false })
+  fileLink?: string;
 }
 
-export default FileSharingApiEndpoints;
+export const PublicFileShareSchema = SchemaFactory.createForClass(PublicFileShare);
+
+PublicFileShareSchema.set('toJSON', {
+  virtuals: true,
+});

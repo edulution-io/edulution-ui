@@ -22,8 +22,8 @@ import {
   readdir,
   readFile,
   rm,
-  unlink,
   stat as fsStat,
+  unlink,
 } from 'fs-extra';
 import { promisify } from 'util';
 import { createHash } from 'crypto';
