@@ -10,14 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import AttendeeDto from '@libs/user/types/attendee.dto';
+import UserDto from './user.dto';
 
-interface SurveyAnswerDto {
-  id: string;
-  attendee: AttendeeDto;
-  surveyId: string;
-  saveNo: number;
-  answer: JSON;
-}
+type CachedUser = Pick<UserDto, 'firstName' | 'lastName' | 'username'> & { school?: string };
 
-export default SurveyAnswerDto;
+export default CachedUser;

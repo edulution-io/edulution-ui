@@ -10,10 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface AnswerDto {
-  surveyId: string;
+import WebdavXmlAttributes from '@libs/filesharing/types/webdavXmlAttributes';
+import WebdavResourceType from './webdavResourceType';
 
-  attendee?: string;
+interface WebdavProperty {
+  [WebdavXmlAttributes.GetContentLength]?: string;
+  [WebdavXmlAttributes.DisplayName]?: string;
+  [WebdavXmlAttributes.CreationDate]?: string;
+  [WebdavXmlAttributes.GetLastModified]?: string;
+  [WebdavXmlAttributes.GetETag]?: string;
+  [WebdavXmlAttributes.ResourceType]?: WebdavResourceType;
 }
 
-export default AnswerDto;
+export default WebdavProperty;

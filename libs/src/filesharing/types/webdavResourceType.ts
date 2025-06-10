@@ -10,18 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { CompleteEvent } from 'survey-core';
+import WebdavXmlAttributes from '@libs/filesharing/types/webdavXmlAttributes';
 
-interface SubmitAnswerDto {
-  surveyId: string;
-
-  saveNo: number;
-
-  answer: JSON;
-
-  surveyEditorCallbackOnSave?: CompleteEvent | undefined;
-
-  isPublic: boolean;
+interface WebdavResourceType {
+  [WebdavXmlAttributes.Collection]?: string | null;
 }
 
-export default SubmitAnswerDto;
+export default WebdavResourceType;

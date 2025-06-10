@@ -21,7 +21,7 @@ const DeleteContentDialogBody: React.FC = () => {
   return (
     <ItemDialogList
       deleteWarningTranslationId={deleteWarningTranslationId}
-      items={selectedItems.map((i) => ({ name: i.basename, id: i.etag }))}
+      items={selectedItems.map((i) => ({ name: i.filename, id: i.etag }))}
     />
   );
 };

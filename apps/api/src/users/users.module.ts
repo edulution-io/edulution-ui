@@ -16,6 +16,7 @@ import UsersService from './users.service';
 import { UsersController } from './users.controller';
 import { User, UserSchema } from './user.schema';
 import { UserAccounts, UserAccountsSchema } from './account.schema';
+import GroupsModule from '../groups/groups.module';
 
 @Global()
 @Module({
@@ -24,6 +25,7 @@ import { UserAccounts, UserAccountsSchema } from './account.schema';
       { name: User.name, schema: UserSchema },
       { name: UserAccounts.name, schema: UserAccountsSchema },
     ]),
+    GroupsModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],

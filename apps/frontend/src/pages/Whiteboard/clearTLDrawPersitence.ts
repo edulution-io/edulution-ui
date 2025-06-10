@@ -10,10 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
-import { IMAGES } from '@libs/survey/constants/surveys-endpoint';
+const clearTLDrawPersistence = async (key: string) => {
+  localStorage.removeItem('TLDRAW_USER_DATA_v3');
+  localStorage.removeItem('TLDRAW_DB_NAME_INDEX_v2');
 
-const SURVEYS_IMAGES_PATH = `${APPS_FILES_PATH}/${APPS.SURVEYS}/${IMAGES}`;
+  const dbs = await indexedDB.databases();
 
-export default SURVEYS_IMAGES_PATH;
+  dbs
+    .filter((db) => db.name?.includes(key))
+    .forEach((db) => {
+      if (db.name) {
+        indexedDB.deleteDatabase(db.name);
+      }
+    });
+};
+
+export default clearTLDrawPersistence;

@@ -10,98 +10,54 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useMemo } from 'react';
-import { toast } from 'sonner';
-import { Model, Serializer } from 'survey-core';
-import { Survey } from 'survey-react-ui';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import cn from '@libs/common/utils/className';
-import useLanguage from '@/hooks/useLanguage';
-import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
+import AccessAndParticipateSurvey from '@/pages/Surveys/Participation/AccessAndParticipateSurvey';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import surveyTheme from '@/pages/Surveys/theme/theme';
-import '../theme/custom.participation.css';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import '../theme/custom.participation.css';
 
 interface SurveyParticipationPageProps {
   isPublic: boolean;
 }
 
-Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
-
 const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.ReactNode => {
   const { isPublic = false } = props;
-  const { selectedSurvey, fetchSelectedSurvey, isFetching, updateOpenSurveys, updateAnsweredSurveys } =
-    useSurveyTablesPageStore();
-  const { answerSurvey, reset } = useParticipateSurveyStore();
+  const { surveyId } = useParams();
+  const { reset, selectedSurvey, fetchSelectedSurvey, isFetching } = useSurveyTablesPageStore();
 
-  const { language } = useLanguage();
   const { t } = useTranslation();
 
-  const { surveyId } = useParams();
-
   useEffect(() => {
-    reset();
-    void fetchSelectedSurvey(surveyId, isPublic);
+    if (surveyId) {
+      void fetchSelectedSurvey(surveyId, isPublic);
+    } else {
+      reset();
+    }
   }, [surveyId]);
 
-  const surveyModel = useMemo(() => {
-    if (!selectedSurvey) {
-      return undefined;
-    }
-    const surveyParticipationModel = new Model(selectedSurvey.formula);
-    surveyParticipationModel.applyTheme(surveyTheme);
-    surveyParticipationModel.locale = language;
-    if (surveyParticipationModel.pages.length > 3) {
-      surveyParticipationModel.showProgressBar = 'top';
-    }
-
-    surveyParticipationModel.onCompleting.add(async (sender, options) => {
-      const success = await answerSurvey(
-        {
-          surveyId: selectedSurvey.id || surveyId || '',
-          saveNo: selectedSurvey.saveNo,
-          answer: surveyParticipationModel.getData() as JSON,
-          isPublic,
-        },
-        sender,
-        options,
+  const getBody = () => {
+    if (!surveyId) {
+      return (
+        <div className="relative top-1/3 flex justify-center">
+          <h4>{t('survey.notFound')}</h4>
+        </div>
       );
+    }
+    if (isFetching) return <CircleLoader className="mx-auto" />;
+    if (!selectedSurvey) {
+      return (
+        <div className="relative top-1/3 flex justify-center">
+          <h4>{t('survey.notFound')}</h4>
+        </div>
+      );
+    }
+    return <AccessAndParticipateSurvey isPublic={isPublic} />;
+  };
 
-      if (success) {
-        if (!isPublic) {
-          void updateOpenSurveys();
-          void updateAnsweredSurveys();
-        }
-
-        toast.success(t('survey.participate.saveAnswerSuccess'));
-      }
-    });
-
-    return surveyParticipationModel;
-  }, [selectedSurvey, language]);
-
-  if (isFetching) {
-    return <LoadingIndicatorDialog isOpen />;
-  }
-
-  if (!surveyModel) {
-    return (
-      <div className="relative top-1/3">
-        <h4 className="flex justify-center">{t('survey.notFound')}</h4>
-      </div>
-    );
-  }
-
-  return (
-    <PageLayout>
-      <div className={cn('survey-participation')}>
-        <Survey model={surveyModel} />
-      </div>
-    </PageLayout>
-  );
+  return <PageLayout>{getBody()}</PageLayout>;
 };
 
 export default SurveyParticipationPage;

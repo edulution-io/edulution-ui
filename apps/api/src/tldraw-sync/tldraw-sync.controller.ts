@@ -19,7 +19,7 @@ import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/apiEndpoints';
 import APPS from '@libs/appconfig/constants/apps';
-import { createAttachmentUploadOptions } from '../common/multer.utilities';
+import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import FilesystemService from '../filesystem/filesystem.service';
 
 @ApiTags(TLDRAW_SYNC_ENDPOINTS.BASE)

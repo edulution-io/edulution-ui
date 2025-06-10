@@ -16,6 +16,8 @@ import SurveyElement from '@libs/survey/types/TSurveyElement';
 class SurveyFormula {
   title: string;
 
+  logo?: string;
+
   description?: string;
 
   // only defined in page mode

@@ -27,6 +27,7 @@ import PublicSurveysController from './public-surveys.controller';
 import {
   filteredChoices,
   filteredChoicesAfterAddingValidAnswer,
+  firstMockUser,
   idOfPublicSurvey01,
   idOfPublicSurvey02,
   mockedValidAnswerForPublicSurveys02,
@@ -118,21 +119,29 @@ describe(PublicSurveysController.name, () => {
     it('should call the addAnswerToPublicSurvey() function of the surveyAnswerService', async () => {
       jest.spyOn(surveyAnswerService, 'addAnswer');
 
+      surveyAnswerModel.findOne = jest.fn().mockResolvedValueOnce(null);
       surveyModel.findById = jest.fn().mockResolvedValueOnce(publicSurvey02);
 
       surveyAnswerModel.create = jest.fn().mockResolvedValueOnce(surveyValidAnswerPublicSurvey02);
+
+      surveyAnswerModel.findByIdAndUpdate = jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValue(surveyValidAnswerPublicSurvey02),
+      });
+
       surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue(publicSurvey02AfterAddingValidAnswer);
 
       await controller.answerSurvey({
         surveyId: idOfPublicSurvey02.toString(),
         saveNo: saveNoPublicSurvey02,
         answer: mockedValidAnswerForPublicSurveys02,
+        attendee: firstMockUser,
       });
 
       expect(surveyAnswerService.addAnswer).toHaveBeenCalledWith(
         idOfPublicSurvey02.toString(),
         saveNoPublicSurvey02,
         mockedValidAnswerForPublicSurveys02,
+        firstMockUser,
       );
     });
 
