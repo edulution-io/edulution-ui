@@ -48,19 +48,18 @@ const DeleteSurveysDialog = ({ surveys, trigger }: DeleteSurveysDialogProps) => 
 
     return (
       <div className="text-foreground">
+        <ItemDialogList
+          deleteWarningTranslationId={isMultiDelete ? 'surveys.confirmMultiDelete' : 'surveys.confirmSingleDelete'}
+          items={selectedSurveys.map((survey) => ({
+            name: `${survey.formula.title}`,
+            id: survey.id!,
+          }))}
+        />
         {error ? (
           <>
             {t('common.error')}: {error.message}
           </>
-        ) : (
-          <ItemDialogList
-            deleteWarningTranslationId={isMultiDelete ? 'surveys.confirmMultiDelete' : 'surveys.confirmSingleDelete'}
-            items={selectedSurveys.map((survey) => ({
-              name: `${survey.formula.title}`,
-              id: survey.id!,
-            }))}
-          />
-        )}
+        ) : null}
       </div>
     );
   };
