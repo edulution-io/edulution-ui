@@ -24,7 +24,6 @@ const ResultTableDialog = () => {
   const { t } = useTranslation();
 
   const handleClose = () => setIsOpenPublicResultsTableDialog(!isOpenPublicResultsTableDialog);
-
   const getBody = () => (
     <div className="h-full w-full overflow-x-auto overflow-y-auto scrollbar-thin">
       <ResultTableDialogBody />
