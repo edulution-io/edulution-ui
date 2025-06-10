@@ -11,7 +11,13 @@
  */
 
 export { createdSurveyId01, createdSurvey01, createdSurveyId02, createdSurvey02 } from './created-surveys';
-export { surveyUpdateSurveyId, surveyUpdateInitialSurvey, surveyUpdateUpdatedSurvey } from './updated-survey';
+export {
+  surveyUpdateSurveyId,
+  surveyUpdateInitialSurvey,
+  surveyUpdateInitialSurveyDto,
+  surveyUpdateUpdatedSurvey,
+  surveyUpdateUpdatedSurveyDto,
+} from './updated-survey';
 export { openSurveyId01, openSurvey01, openSurveyId02, openSurvey02 } from './open-surveys';
 export {
   idOfAnsweredSurvey01,
