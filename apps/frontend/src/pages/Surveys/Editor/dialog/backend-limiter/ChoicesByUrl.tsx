@@ -82,7 +82,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     try {
       const surveyFormula = form.watch('formula');
       const currentPage = creator?.currentPage;
-      const updatedFormula: SurveyFormula = JSON.parse(JSON.stringify(surveyFormula, null, 2)) as SurveyFormula;
+      const updatedFormula: SurveyFormula = structuredClone(surveyFormula);
 
       let correspondingQuestion: SurveyElement | undefined;
       if (currentPage.isPage) {

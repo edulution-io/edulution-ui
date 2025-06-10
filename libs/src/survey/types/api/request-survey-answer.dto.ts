@@ -12,12 +12,10 @@
 
 import AttendeeDto from '@libs/user/types/attendee.dto';
 
-interface SurveyAnswerDto {
-  id: string;
-  attendee: AttendeeDto;
+interface RequestSurveyAnswerDto {
   surveyId: string;
-  saveNo: number;
-  answer: JSON;
+
+  attendee?: AttendeeDto;
 }
 
-export default SurveyAnswerDto;
+export default RequestSurveyAnswerDto;
