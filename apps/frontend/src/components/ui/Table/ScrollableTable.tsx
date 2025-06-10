@@ -24,12 +24,14 @@ import {
   VisibilityState,
 } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
+import TableAction from '@libs/common/types/tableAction';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import Input from '@/components/shared/Input';
 import DEFAULT_TABLE_SORT_PROPERTY_KEY from '@libs/common/constants/defaultTableSortProperty';
 import SelectColumnsDropdown from '@/components/ui/Table/SelectCoumnsDropdown';
 import TABLE_DEFAULT_COLUMN_WIDTH from '@libs/ui/constants/tableDefaultColumnWidth';
+import TableActionFooter from '@/components/ui/Table/TableActionFooter';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -48,6 +50,7 @@ interface DataTableProps<TData, TValue> {
   showHeader?: boolean;
   showSelectedCount?: boolean;
   isDialog?: boolean;
+  actions?: TableAction<TData>[];
 }
 
 const ScrollableTable = <TData, TValue>({
@@ -67,6 +70,7 @@ const ScrollableTable = <TData, TValue>({
   showSelectedCount = true,
   isDialog = false,
   initialColumnVisibility = {},
+  actions,
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(initialColumnVisibility);
@@ -194,6 +198,10 @@ const ScrollableTable = <TData, TValue>({
               </TableRow>
             )}
           </TableBody>
+          <TableActionFooter
+            actions={actions}
+            columnLength={table.getAllColumns().length}
+          />
         </Table>
       </div>
     </>

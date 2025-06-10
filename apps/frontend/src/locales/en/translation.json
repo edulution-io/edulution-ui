@@ -578,7 +578,8 @@
         "addBackendLimiterForOtherItem": "This is the limit, for how often the option will be selectable",
         "upperLimit": "Limit",
         "upperBackendLimiters": "Choices with an upper limit",
-        "addChoice": "Add"
+        "addChoice": "Add",
+        "filterPlaceHolderText": "Search for option"
       }
     },
     "participate": {
@@ -624,7 +625,9 @@
     "confirmMultiDelete": "Should these surveys really be deleted?",
     "confirmSingleDelete": "Should this survey really be deleted?",
     "deleteSurveys": "Delete {{count}} surveys",
+    "deletedSurveys": "Deleted {{count}} surveys",
     "deleteSurvey": "Delete survey",
+    "deletedSurvey": "Survey deleted",
     "title": "SURVEYS",
     "sidebar": "Surveys",
     "view": {
@@ -1039,14 +1042,13 @@
   },
   "edit": "Edit",
   "common": {
+    "offline": "Offline",
     "guest": "Guest",
     "ok": "OK",
     "next": "Next",
     "back": "Back",
     "confirm": "Confirm",
     "share": "Share",
-    "savedToClipboard": "Saved to clipboard.",
-    "savedToClipboardError": "Unable to save into clipboard.",
     "answers": "Answers",
     "error": "Error",
     "errors": {

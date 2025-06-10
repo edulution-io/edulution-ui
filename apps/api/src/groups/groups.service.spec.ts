@@ -103,14 +103,14 @@ describe('GroupsService', () => {
       const mockGroups = [{ id: '1', name: 'Group 1' }];
       (axios.request as jest.Mock).mockResolvedValue({ data: mockGroups });
 
-      const result = await GroupsService.fetchAllGroups('mockToken');
+      const result = await service.fetchAllGroups();
       expect(result).toEqual(mockGroups);
     });
 
     it('should throw an error on failure', async () => {
       (axios.request as jest.Mock).mockRejectedValue(new Error('API error'));
 
-      await expect(GroupsService.fetchAllGroups('mockToken')).rejects.toThrow(CustomHttpException);
+      await expect(service.fetchAllGroups()).rejects.toThrow(CustomHttpException);
     });
   });
 
@@ -119,14 +119,14 @@ describe('GroupsService', () => {
       const mockUsers = [{ id: '1', username: 'user1' }];
       (axios.request as jest.Mock).mockResolvedValue({ data: mockUsers });
 
-      const result = await GroupsService.fetchAllUsers('mockToken');
+      const result = await service.fetchAllUsers();
       expect(result).toEqual(mockUsers);
     });
 
     it('should throw an error if unable to fetch users', async () => {
       (axios.request as jest.Mock).mockRejectedValue(new Error('API error'));
 
-      await expect(GroupsService.fetchAllUsers('mockToken')).rejects.toThrow(CustomHttpException);
+      await expect(service.fetchAllUsers()).rejects.toThrow(CustomHttpException);
     });
   });
 
@@ -149,14 +149,14 @@ describe('GroupsService', () => {
   describe('fetchGroupMembers', () => {
     it('should throw an error if unable to fetch group members', async () => {
       (axios.request as jest.Mock).mockRejectedValue(new Error('API error'));
-      await expect(GroupsService.fetchGroupMembers('mockToken', 'groupId')).rejects.toThrow(Error);
+      await expect(service.fetchGroupMembers('groupId')).rejects.toThrow(Error);
     });
 
     it('should fetch members of a group successfully', async () => {
       const mockMembers = [{ id: 'user1', username: 'member1' }];
       (axios.request as jest.Mock).mockResolvedValue({ data: mockMembers });
 
-      const result = await GroupsService.fetchGroupMembers('mockToken', 'groupId');
+      const result = await service.fetchGroupMembers('groupId');
       expect(result).toEqual(mockMembers);
     });
   });
@@ -165,8 +165,8 @@ describe('GroupsService', () => {
     it('should update groups and members in cache', async () => {
       const mockGroups = [{ id: '1', path: 'group1' }];
       const mockMembers = [{ id: 'user1', username: 'member1' }];
-      jest.spyOn(GroupsService as any, 'fetchAllGroups').mockResolvedValue(mockGroups as Group[]);
-      jest.spyOn(GroupsService as any, 'fetchGroupMembers').mockResolvedValue(mockMembers as LDAPUser[]);
+      jest.spyOn(service, 'fetchAllGroups').mockResolvedValue(mockGroups as Group[]);
+      jest.spyOn(service, 'fetchGroupMembers').mockResolvedValue(mockMembers as LDAPUser[]);
 
       await service.updateGroupsAndMembersInCache();
 
@@ -216,7 +216,7 @@ describe('GroupsService', () => {
       const mockMembers = [{ id: 'user1', username: 'member1' }];
       (axios.request as jest.Mock).mockResolvedValue({ data: mockMembers });
 
-      const result = await GroupsService.fetchGroupMembers('mockToken', 'groupId');
+      const result = await service.fetchGroupMembers('groupId');
       expect(result).toEqual(mockMembers);
     });
   });
