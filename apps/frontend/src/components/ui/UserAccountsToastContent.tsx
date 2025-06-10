@@ -18,7 +18,7 @@ import copyToClipboard from '@/utils/copyToClipboard';
 import cn from '@libs/common/utils/className';
 import { IoChevronDown } from 'react-icons/io5';
 import PasswordCell from '@/pages/UserSettings/Security/components/PasswordCell';
-import Input from '../shared/Input';
+import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 
 interface UserAccountsToastContentProps {
   userAccounts: UserAccountDto[];
@@ -51,8 +51,7 @@ const UserAccountsToastContent: React.FC<UserAccountsToastContentProps> = ({
             key={userAccount.accountId}
             className="m-1 flex flex-col gap-2"
           >
-            <Input
-              title={t('common.username')}
+            <InputWithActionIcons
               type="text"
               value={userAccount.accountUser}
               readOnly
@@ -61,7 +60,12 @@ const UserAccountsToastContent: React.FC<UserAccountsToastContentProps> = ({
                 e.preventDefault();
                 copyToClipboard(userAccount.accountUser);
               }}
-              icon={<MdFileCopy />}
+              actionIcons={[
+                {
+                  icon: MdFileCopy,
+                  onClick: () => copyToClipboard(userAccount.accountUser),
+                },
+              ]}
             />
             <PasswordCell
               accountPassword={userAccount.accountPassword}

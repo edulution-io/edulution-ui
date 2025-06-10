@@ -29,7 +29,7 @@ interface SurveyElement {
   } | null;
   hideIfChoicesEmpty?: boolean;
   imageLink?: string;
-  showOtherItem: boolean | null;
+  showOtherItem?: boolean | null;
   showNoneItem?: boolean;
 }
 
