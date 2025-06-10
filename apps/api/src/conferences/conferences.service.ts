@@ -139,6 +139,8 @@ class ConferencesService implements OnModuleInit {
   }
 
   async create(createConferenceDto: CreateConferenceDto, currentUser: JWTUser): Promise<Conference | undefined> {
+    this.throwIfAppIsNotProperlyConfigured();
+
     const creator = {
       firstName: currentUser.given_name,
       lastName: currentUser.family_name,
@@ -410,7 +412,7 @@ class ConferencesService implements OnModuleInit {
     return true;
   }
 
-  createChecksum(method = '', query = '') {
+  throwIfAppIsNotProperlyConfigured() {
     if (!this.BBB_API_URL || !this.BBB_SECRET) {
       throw new CustomHttpException(
         ConferencesErrorMessage.AppNotProperlyConfigured,
@@ -419,6 +421,10 @@ class ConferencesService implements OnModuleInit {
         ConferencesService.name,
       );
     }
+  }
+
+  createChecksum(method = '', query = '') {
+    this.throwIfAppIsNotProperlyConfigured();
 
     const string = method + query + this.BBB_SECRET;
 
