@@ -242,7 +242,7 @@ class FilesystemService {
 
   static buildPathString(path: string | string[]) {
     if (Array.isArray(path)) {
-      return path.join('/');
+      return join(...path);
     }
     return path;
   }
