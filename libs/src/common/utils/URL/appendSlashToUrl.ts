@@ -10,17 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
-import getFrontEndUrl from '@libs/common/utils/URL/getFrontEndUrl';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+const appendSlashToUrl = (url: string): string => {
+  if (!url) return '';
 
-interface CallbackBaseUrlProps {
-  fileName: string;
-  filePath: string;
-  token: string;
-}
+  if (url.endsWith('/')) {
+    return url;
+  }
 
-const callbackBaseUrl = ({ fileName, filePath, token }: CallbackBaseUrlProps): string =>
-  `${getFrontEndUrl()}/${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/callback?path=${filePath}&filename=${fileName}&token=${token}`;
+  return `${url}/`;
+};
 
-export default callbackBaseUrl;
+export default appendSlashToUrl;
