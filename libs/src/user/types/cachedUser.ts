@@ -10,18 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { CompleteEvent } from 'survey-core';
+import UserDto from './user.dto';
 
-interface SubmitAnswerDto {
-  surveyId: string;
+type CachedUser = Pick<UserDto, 'firstName' | 'lastName' | 'username'> & { school?: string };
 
-  saveNo: number;
-
-  answer: JSON;
-
-  surveyEditorCallbackOnSave?: CompleteEvent | undefined;
-
-  isPublic: boolean;
-}
-
-export default SubmitAnswerDto;
+export default CachedUser;

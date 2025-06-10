@@ -10,12 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface PushAnswerDto {
-  surveyId: string;
+import removeRealmRoles from './removeRealmRoles';
 
-  saveNo: number;
+// Add new scripts here
+const keycloakConfigScripts = [removeRealmRoles];
 
-  answer: JSON;
-}
-
-export default PushAnswerDto;
+export default keycloakConfigScripts;

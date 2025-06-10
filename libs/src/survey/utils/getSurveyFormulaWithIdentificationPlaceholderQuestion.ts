@@ -10,10 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface AnswerDto {
-  surveyId: string;
+import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 
-  attendee?: string;
-}
+const getSurveyFormulaWithIdentificationPlaceholderQuestion = (formula: TSurveyFormula) => {
+  const updatedFormula = structuredClone(formula);
+  const identification = { type: 'text', name: 'identification', value: '' };
 
-export default AnswerDto;
+  if (Array.isArray(updatedFormula.pages) && updatedFormula.pages.length > 0) {
+    updatedFormula.pages[0].elements = [identification, ...(updatedFormula.pages[0].elements ?? [])];
+  } else {
+    updatedFormula.elements = [identification, ...(updatedFormula.elements ?? [])];
+  }
+
+  return updatedFormula;
+};
+
+export default getSurveyFormulaWithIdentificationPlaceholderQuestion;

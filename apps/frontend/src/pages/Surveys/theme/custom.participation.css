@@ -32,6 +32,11 @@
     max-width: 100%;
     width: 100%;
   }
+  .sd-body.sd-body--empty,
+  .sd-body.sd-completedpage {
+    font-size: 16pt;
+    color: var(--primary-foreground) !important;
+  }
 
   .sd-page {
     .sd-page__title .sv-string-viewer {
@@ -75,9 +80,5 @@
     .sd-navigation__complete-btn {
       color: var(--primary-foreground);
     }
-  }
-
-  .sd-completedpage h3 {
-    color: var(--primary-foreground) !important;
   }
 }
