@@ -17,6 +17,7 @@ import CustomHttpException from '../CustomHttpException';
 
 @Injectable()
 class LocalhostGuard implements CanActivate {
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<Request>();
     const ip = request.ip || request.socket.remoteAddress;
