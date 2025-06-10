@@ -13,16 +13,16 @@
 import { firstUsername, secondUsername } from './usernames';
 
 export const firstMockUser = {
-  firstName: 'first',
-  lastName: 'participant',
+  firstName: 'firstName',
+  lastName: 'lastName',
   username: firstUsername,
   value: 'first-participant',
   label: 'first participant',
 };
 
 export const secondMockUser = {
-  firstName: 'second',
-  lastName: 'participant',
+  firstName: 'secondName',
+  lastName: 'lastName',
   username: secondUsername,
   value: 'second-participant',
   label: 'second participant',

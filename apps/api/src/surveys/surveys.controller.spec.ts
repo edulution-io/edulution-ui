@@ -21,6 +21,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import { surveyUpdateUpdatedSurveyDto } from 'apps/api/src/surveys/mocks/surveys/updated-survey';
 import CustomHttpException from '../common/CustomHttpException';
 import SurveysController from './surveys.controller';
 import SurveysService from './surveys.service';
@@ -224,21 +225,13 @@ describe(SurveysController.name, () => {
   });
 
   describe('updateOrCreateSurvey', () => {
-    // it('should call the updateOrCreateSurvey() function of the surveyService', async () => {
-    //   jest.spyOn(surveyService, 'updateOrCreateSurvey');
-    //   surveyModel.findOneAndUpdate = jest.fn().mockReturnValue({
-    //     exec: jest.fn().mockReturnValue(surveyUpdateUpdatedSurvey),
-    //   });
-    //
-    //   const { id } = surveyUpdateUpdatedSurveyDto;
-    //   const createSurvey = {
-    //     ...surveyUpdateUpdatedSurveyDto,
-    //     _id: new mongoose.Types.ObjectId(id),
-    //   };
-    //
-    //   await controller.updateOrCreateSurvey(surveyUpdateUpdatedSurveyDto, firstMockJWTUser);
-    //   expect(surveyService.updateOrCreateSurvey).toHaveBeenCalledWith(createSurvey);
-    // });
+    it('should call the updateOrCreateSurvey() function of the surveyService', async () => {
+      surveyService.updateOrCreateSurvey = jest.fn().mockReturnValue(surveyUpdateUpdatedSurveyDto);
+
+      await controller.updateOrCreateSurvey(surveyUpdateUpdatedSurveyDto, firstMockJWTUser);
+
+      expect(surveyService.updateOrCreateSurvey).toHaveBeenCalledWith(surveyUpdateUpdatedSurveyDto, firstMockJWTUser);
+    });
   });
 
   describe('deleteSurvey', () => {
