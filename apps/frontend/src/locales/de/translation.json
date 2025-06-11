@@ -1234,6 +1234,9 @@
     "oversizedFileDetected": "Zu große Datei entdeckt!",
     "cannotUploadOversized": "Es können keine Dateien größer als 50MB hochgeladen werden."
   },
+  "warnings": {
+    "colorMayConflictWithTheme": "Manuelle Einstellung der Farbe kann zu Problemen mit anderen Themes (hell/dunkel) führen."
+  },
   "linuxmuster": {
     "title": "LINUXMUSTER",
     "sidebar": "Linuxmuster"

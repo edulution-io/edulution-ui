@@ -1230,6 +1230,9 @@
     "oversizedFileDetected": "Oversized file detected!",
     "cannotUploadOversized": "Cannot upload oversized files (more than 50 MB)."
   },
+  "warnings": {
+    "colorMayConflictWithTheme": "Manual setting of the color can lead to problems with other themes (light/dark)."
+  },
   "linuxmuster": {
     "title": "LINUXMUSTER",
     "sidebar": "Linuxmuster"
