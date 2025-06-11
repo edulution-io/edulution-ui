@@ -10,17 +10,22 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileSharingApiEndpoints {
-  FILESHARING_ACTIONS = '/filesharing',
-  BASE = 'filesharing',
-  FILE_STREAM = 'file-stream',
-  FILE_LOCATION = 'file-location',
-  ONLY_OFFICE_TOKEN = 'only-office',
-  DUPLICATE = 'duplicate',
-  COLLECT = 'collect',
-  COPY = 'copy',
-  FILE_SHARE = 'file-share',
-  PUBLIC_FILE_SHARE = 'public-share',
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import { ShareFileLinkExpiryValue } from '@libs/filesharing/constants/shareFileLinkExpiryValue';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+
+interface PublicFileShareDto {
+  _id: string;
+  expires: ShareFileLinkExpiryValue;
+  sharedFileId: string;
+  filename: string;
+  filePath: string;
+  createdAt: Date;
+  fileLink: string;
+  validUntil: string;
+  password: string;
+  invitedAttendees: AttendeeDto[];
+  invitedGroups: MultipleSelectorGroup[];
 }
 
-export default FileSharingApiEndpoints;
+export default PublicFileShareDto;

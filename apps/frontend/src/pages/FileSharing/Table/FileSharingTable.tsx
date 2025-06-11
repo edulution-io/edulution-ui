@@ -20,11 +20,13 @@ import useMedia from '@/hooks/useMedia';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/FileSharingTableColumns';
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
+import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
 
 const FileSharingTable = () => {
   const { isMobileView, isTabletView } = useMedia();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const { setSelectedRows, setSelectedItems, selectedRows, files, isLoading } = useFileSharingStore();
+  const { publicShareFiles } = usePublicShareFilesStore();
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue =
       typeof updaterOrValue === 'function'
@@ -48,12 +50,14 @@ const FileSharingTable = () => {
       [FILE_SHARING_TABLE_COLUMNS.SIZE]: shouldHideColumns,
       [FILE_SHARING_TABLE_COLUMNS.TYPE]: shouldHideColumns,
     }),
-    [shouldHideColumns],
+    [shouldHideColumns, publicShareFiles],
   );
+
+  const columns = useMemo(() => getFileSharingTableColumns(undefined, undefined, publicShareFiles), []);
 
   return (
     <ScrollableTable
-      columns={getFileSharingTableColumns()}
+      columns={columns}
       data={files}
       filterKey={FILE_SHARING_TABLE_COLUMNS.SELECT_FILENAME}
       filterPlaceHolderText="filesharing.filterPlaceHolderText"

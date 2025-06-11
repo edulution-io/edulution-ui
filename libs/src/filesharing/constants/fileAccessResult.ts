@@ -10,31 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+const FILE_ACCESS_RESULT = {
+  PUBLIC: 'PUBLIC',
+  USER_MATCH: 'USER_MATCH',
+  GROUP_MATCH: 'GROUP_MATCH',
+  DENIED: 'DENIED',
+  NO_TOKEN: 'NO_TOKEN',
+  INVALID_TOKEN: 'INVALID_TOKEN',
+} as const;
 
-export type PublicShareDocument = PublicFileShare & Document;
-
-@Schema({ timestamps: true, strict: true })
-export class PublicFileShare {
-  @Prop({ required: true })
-  sharedFileId: string;
-
-  @Prop({ required: true })
-  filename: string;
-
-  @Prop({ required: false })
-  validUntil: Date;
-
-  @Prop({ required: true })
-  createdAt: Date;
-
-  @Prop({ required: false })
-  fileLink?: string;
-}
-
-export const PublicFileShareSchema = SchemaFactory.createForClass(PublicFileShare);
-
-PublicFileShareSchema.set('toJSON', {
-  virtuals: true,
-});
+export default FILE_ACCESS_RESULT;

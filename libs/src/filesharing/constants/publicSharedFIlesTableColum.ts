@@ -15,7 +15,8 @@ const PUBLIC_SHARED_FILES_TABLE_COLUMN = {
   FILE_CREATED_AT: 'public-shared-file-created-at',
   FILE_VALID_UNTIL: 'public-shared-file-valid-until',
   FILE_LINK: 'public-shared-file-link',
-  IS_ACTIVE: 'public-shared-file-is-active',
+  IS_PASSWORD_PROTECTED: 'public-shared-file-is-password-protected',
+  FILE_IS_ACCESSIBLE_BY: 'public-shared-file-is-accessible-by',
 };
 
 export default PUBLIC_SHARED_FILES_TABLE_COLUMN;

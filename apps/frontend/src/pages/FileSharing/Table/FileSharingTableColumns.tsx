@@ -35,6 +35,8 @@ import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingT
 import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
 import useMedia from '@/hooks/useMedia';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
+import { MdOutlineCloudDone } from 'react-icons/md';
+import PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
@@ -62,6 +64,7 @@ const renderFileIcon = (item: DirectoryFileDTO, isCurrentlyDisabled: boolean) =>
 const getFileSharingTableColumns = (
   visibleColumns?: string[],
   onFilenameClick?: (item: Row<DirectoryFileDTO>) => void,
+  publicShareFiles: PublicFileShareDto[] = [],
 ): ColumnDef<DirectoryFileDTO>[] => {
   const allColumns: ColumnDef<DirectoryFileDTO>[] = [
     {
@@ -124,6 +127,33 @@ const getFileSharingTableColumns = (
         const valueA = rowA.original.type + rowA.original.filePath;
         const valueB = rowB.original.type + rowB.original.filePath;
         return valueA.localeCompare(valueB);
+      },
+    },
+    {
+      accessorKey: FILE_SHARING_TABLE_COLUMNS.IS_SHARED,
+      size: 10,
+      header: ({ column }) => <SortableHeader<DirectoryFileDTO, unknown> column={column} />,
+      meta: {
+        translationId: 'fileSharingTable.isShared',
+      },
+      cell: ({ row }) => {
+        const matchedFile = publicShareFiles.find(
+          (file): file is PublicFileShareDto => file.filePath === row.original.filePath,
+        );
+        const isShared = Boolean(matchedFile);
+
+        return (
+          <div className="flex items-center justify-center">
+            {isShared && (
+              <div>
+                <MdOutlineCloudDone
+                  size={20}
+                  className="text-blue-600"
+                />
+              </div>
+            )}
+          </div>
+        );
       },
     },
     {

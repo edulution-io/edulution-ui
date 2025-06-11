@@ -14,7 +14,10 @@ import { useTranslation } from 'react-i18next';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import React from 'react';
 import { FilesharingIcon } from '@libs/assets';
-import PublicShareFilesTable from '@/pages/FileSharing/publicShareFiles/PublicShareFilesTable';
+import PublicShareFilesTable from '@/pages/FileSharing/publicShareFiles/table/PublicShareFilesTable';
+import PublicShareFilesFloatingButtonsBar from '@/pages/FileSharing/FloatingButtonsBar/PublicShareFilesFloatingButtonsBar';
+import DeletePublicFileDialog from '@/pages/FileSharing/publicShareFiles/dialog/DeletePublicFileDialog';
+import EditPublicShareFileDialog from '@/pages/FileSharing/publicShareFiles/dialog/EditPublicShareFileDialog';
 
 const PublicShareFilesPage = () => {
   const { t } = useTranslation();
@@ -27,6 +30,9 @@ const PublicShareFilesPage = () => {
       }}
     >
       <PublicShareFilesTable />
+      <DeletePublicFileDialog />
+      <EditPublicShareFileDialog />
+      <PublicShareFilesFloatingButtonsBar />
     </PageLayout>
   );
 };

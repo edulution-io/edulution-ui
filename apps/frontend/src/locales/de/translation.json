@@ -381,7 +381,28 @@
       "createdAt": "Erstellt am",
       "validUntil": "Gültig bis",
       "isActive": "Aktiv",
-      "fileLink": "Datei-Link"
+      "fileLink": "Datei-Link",
+      "invitedAttendees": "Eingeladen",
+      "confirmMultiDelete": "Sollen diese Datei-Links wirklich zu den folgenden Dateien wirklich gelöscht werden?",
+      "confirmSingleDelete": "Soll dieser Datei-Link zur folgenden Datei wirklich gelöscht werden?",
+      "deleteFileLink": "Datei-Link löschen",
+      "deleteFileLinks": "Datei-Links löschen",
+      "selectPersonsOrGroupsWhoCanAccess": "Beschränke Personen oder Gruppen, die Zugriff auf diese Datei haben",
+      "isAccessibleBy": "Zugänglich für",
+      "isPasswordProtected": "Passwort",
+      "publiclyAccessible": "Öffentlich zugänglich",
+      "errors": {
+        "PublicFileDeletionFailed": "Öffentlicher Freigabelink konnte nicht gelöscht werden.",
+        "PublicFileIsOnlyDeletableByOwner": "Der öffentliche Freigabelink kann nur vom Besitzer gelöscht werden.",
+        "PublicFileNotFound": "Öffentlicher Freigabelink nicht gefunden.",
+        "PublicFileIsRestricted": "Der öffentliche Freigabelink ist auf bestimmte Nutzer oder Gruppen beschränkt.",
+        "PublicIsRestrictedByInvalidToken": "Der öffentliche Freigabelink ist durch ein ungültiges Token eingeschränkt."
+      },
+      "success": {
+        "PublicFileLinkCreated": "Öffentlicher Freigabelink erfolgreich erstellt.",
+        "PublicFileLinkDeleted": "Öffentlicher Freigabelink erfolgreich gelöscht.",
+        "PublicFileLinkUpdated": "Öffentlicher Freigabelink erfolgreich aktualisiert."
+      }
     },
 
     "expiry": {
@@ -389,8 +410,9 @@
       "24h": "24 Stunden",
       "7d": "7 Tage",
       "30d": "30 Tage",
-      "selectedItem": "Ausgewählte Datei, die geteilt wird: {{filename}}",
-      "linkWarning": "⚠️  WARNUNG: Jeder, der den Link besitzt, kann diese Datei herunterladen."
+      "selectedItemPrefix": "Ausgewählte Datei, die geteilt wird:",
+      "noInviteesWarning": "⚠️  WARNUNG: Jeder, der den Link besitzt, kann diese Datei herunterladen.",
+      "inviteesWarning": "⚠️ WARNUNG: Jeder, der zu den ausgewählten Gruppen oder Benutzern gehört, kann diese Datei herunterladen."
     }
   },
   "forums": {
@@ -1222,6 +1244,7 @@
     "size": "Größe",
     "lastModified": "Zuletzt geändert",
     "type": "Typ",
+    "isShared": "Geteilt",
     "filesOrFoldersSelected": "{{selected}} von {{total}} Dateien/Ordnern ausgewählt"
   },
   "currentDirectory": "Aktuelles Verzeichnis",

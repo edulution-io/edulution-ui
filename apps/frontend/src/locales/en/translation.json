@@ -381,7 +381,28 @@
       "createdAt": "Created at",
       "validUntil": "Valid until",
       "isActive": "Active",
-      "fileLink": "File link"
+      "fileLink": "File link",
+      "selectPersonsOrGroupsWhoCanAccess": "Restrict persons or groups who can access the file",
+      "invitedAttendees": "Invited",
+      "isAccessibleBy": "Accessible by",
+      "publiclyAccessible": "Publicly accessible",
+      "confirmMultiDelete": "Should these file links for the following files really be deleted?",
+      "confirmSingleDelete": "Should this file link for the following file really be deleted?",
+      "deleteFileLink": "Delete file link",
+      "deleteFileLinks": "Delete file links",
+      "isPasswordProtected": "Password",
+      "errors": {
+        "PublicFileDeletionFailed": "Failed to delete public file link",
+        "PublicFileIsOnlyDeletableByOwner": "The public file link can only be deleted by the owner of the file.",
+        "PublicFileNotFound": "Public file link not found",
+        "PublicFileIsRestricted": "The public file link is restricted to specific users or groups.",
+        "PublicIsRestrictedByInvalidToken": "The public file link is restricted by an invalid token."
+      },
+      "success": {
+        "PublicFileLinkCreated": "Public file link created successfully",
+        "PublicFileLinkDeleted": "Public file link deleted successfully",
+        "PublicFileLinkUpdated": "Public file link updated successfully"
+      }
     },
 
     "expiry": {
@@ -389,8 +410,9 @@
       "24h": "24 hours",
       "7d": "7 days",
       "30d": "30 days",
-      "selectedItem": "Selected file to share: {{filename}}",
-      "linkWarning": "⚠️  WARNING: Anyone with the link will be able to download this file."
+      "selectedItemPrefix": "Selected file that is shared:",
+      "noInviteesWarning": "⚠️  WARNING: Anyone with the link will be able to download this file.",
+      "inviteesWarning": "⚠️  WARNING: Anyone within the selected groups or users will be able to download this file."
     }
   },
   "forums": {
@@ -1218,6 +1240,7 @@
     "size": "Size",
     "lastModified": "Last Modified",
     "type": "Type",
+    "isShared": "Shared",
     "filesOrFoldersSelected": "{{selected}} of {{total}} file(s)/folder(s) were selected"
   },
   "filesharingUpload": {

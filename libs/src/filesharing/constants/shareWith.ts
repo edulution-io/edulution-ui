@@ -10,17 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileSharingApiEndpoints {
-  FILESHARING_ACTIONS = '/filesharing',
-  BASE = 'filesharing',
-  FILE_STREAM = 'file-stream',
-  FILE_LOCATION = 'file-location',
-  ONLY_OFFICE_TOKEN = 'only-office',
-  DUPLICATE = 'duplicate',
-  COLLECT = 'collect',
-  COPY = 'copy',
-  FILE_SHARE = 'file-share',
-  PUBLIC_FILE_SHARE = 'public-share',
-}
+const SHARE_WITH = 'shareWith';
 
-export default FileSharingApiEndpoints;
+export default SHARE_WITH;

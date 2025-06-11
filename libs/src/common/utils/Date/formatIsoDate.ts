@@ -10,17 +10,23 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileSharingApiEndpoints {
-  FILESHARING_ACTIONS = '/filesharing',
-  BASE = 'filesharing',
-  FILE_STREAM = 'file-stream',
-  FILE_LOCATION = 'file-location',
-  ONLY_OFFICE_TOKEN = 'only-office',
-  DUPLICATE = 'duplicate',
-  COLLECT = 'collect',
-  COPY = 'copy',
-  FILE_SHARE = 'file-share',
-  PUBLIC_FILE_SHARE = 'public-share',
-}
+const formatIsoDate = (iso: string, withTime = true, locale: string | undefined = 'de-DE') => {
+  const date = new Date(iso);
 
-export default FileSharingApiEndpoints;
+  const datePart = date.toLocaleDateString(locale, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+
+  if (!withTime) return datePart;
+
+  const timePart = date.toLocaleTimeString(locale, {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
+  return `${datePart} ${timePart}`;
+};
+
+export default formatIsoDate;

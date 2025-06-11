@@ -31,6 +31,11 @@ enum FileSharingErrorMessage {
   CollectingFailed = 'filesharing.errors.CollectingFailed',
   SharingFailed = 'filesharing.errors.SharingFailed',
   MissingCallbackURL = 'filesharing.errors.MissingCallbackURL',
+  PublicFileDeletionFailed = 'filesharing.publicFileSharing.errors.PublicFileDeletionFailed',
+  PublicFileIsOnlyDeletableByOwner = 'filesharing.publicFileSharing.errors.PublicFileIsOnlyDeletableByOwner',
+  PublicFileNotFound = 'filesharing.publicFileSharing.errors.PublicFileNotFound',
+  PublicFileIsRestricted = 'filesharing.publicFileSharing.errors.PublicFileIsRestricted',
+  PublicIsRestrictedByInvalidToken = 'filesharing.publicFileSharing.errors.PublicIsRestrictedByInvalidToken',
 }
 
 export default FileSharingErrorMessage;

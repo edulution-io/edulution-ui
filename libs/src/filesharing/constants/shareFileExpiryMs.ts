@@ -10,17 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileSharingApiEndpoints {
-  FILESHARING_ACTIONS = '/filesharing',
-  BASE = 'filesharing',
-  FILE_STREAM = 'file-stream',
-  FILE_LOCATION = 'file-location',
-  ONLY_OFFICE_TOKEN = 'only-office',
-  DUPLICATE = 'duplicate',
-  COLLECT = 'collect',
-  COPY = 'copy',
-  FILE_SHARE = 'file-share',
-  PUBLIC_FILE_SHARE = 'public-share',
-}
+import { ShareFileLinkExpiryValue } from './shareFileLinkExpiryValue';
 
-export default FileSharingApiEndpoints;
+const SHARE_FILE_EXPIRY_MS: Record<ShareFileLinkExpiryValue, number> = {
+  '24h': 24 * 60 * 60 * 1_000,
+  '7d': 7 * 24 * 60 * 60 * 1_000,
+  '30d': 30 * 24 * 60 * 60 * 1_000,
+} as const;
+
+export default SHARE_FILE_EXPIRY_MS;

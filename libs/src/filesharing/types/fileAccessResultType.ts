@@ -10,16 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export interface PublicSharedFileDto {
-  sharedFileId: string;
+import FILE_ACCESS_RESULT from '../constants/fileAccessResult';
 
-  filename: string;
-
-  createdAt: Date;
-
-  validUntil?: Date;
-
-  fileLink: string;
-}
-
-export default PublicSharedFileDto;
+export type FileAccessResultType = (typeof FILE_ACCESS_RESULT)[keyof typeof FILE_ACCESS_RESULT];

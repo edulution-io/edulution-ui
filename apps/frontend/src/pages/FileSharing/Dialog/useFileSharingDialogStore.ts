@@ -118,7 +118,7 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
     try {
       if (bulkDtos instanceof FormData) {
         await handleFileOrCreateFile(action, endpoint, httpMethod, type, bulkDtos);
-        get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
+        get().setFileOperationResult(true, t('fileCreateNewContent.fileOperationSuccessful'), 200);
       } else if (Array.isArray(bulkDtos)) {
         const decodedFilenameDtos = (bulkDtos as PathChangeOrCreateDto[]).map((dto) => ({
           ...dto,
@@ -136,7 +136,11 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
         );
       } else {
         await handleSingleData(action, endpoint, httpMethod, type, bulkDtos);
-        get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
+        if (action === FileActionType.SHARE_FILE_OR_FOLDER) {
+          get().setFileOperationResult(true, t('filesharing.publicFileSharing.success.PublicFileLinkCreated'), 200);
+        } else {
+          get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
+        }
       }
     } catch (error) {
       handleApiError(error, set);

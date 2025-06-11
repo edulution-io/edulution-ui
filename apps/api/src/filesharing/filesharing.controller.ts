@@ -16,12 +16,14 @@ import {
   Delete,
   Get,
   HttpStatus,
+  Param,
   Patch,
   Post,
   Put,
   Query,
   Req,
   Res,
+  StreamableFile,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -39,10 +41,13 @@ import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOpe
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
+import CreatePublicFileShareDto from '@libs/filesharing/types/createPublicFileShareDto';
+import PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
 import FilesharingService from './filesharing.service';
 import WebdavService from '../webdav/webdav.service';
+import { Public } from '../common/decorators/public.decorator';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
@@ -171,12 +176,17 @@ class FilesharingController {
     return this.filesharingService.collectFiles(username, collectFileRequestDTO, userRole, type);
   }
 
-  @Post(FileSharingApiEndpoints.PUBLIC_SHARE)
+  @Post(FileSharingApiEndpoints.PUBLIC_FILE_SHARE)
   async publicShareFile(
-    @Body() body: { expires: string; filePath: string; filename: string },
+    @Body() createPublicFileShareDto: CreatePublicFileShareDto,
     @GetCurrentUsername() username: string,
   ) {
-    return this.filesharingService.generatePublicFileLink(username, body.filePath, body.filename);
+    return this.filesharingService.generateFileLink(username, createPublicFileShareDto);
+  }
+
+  @Get(FileSharingApiEndpoints.PUBLIC_FILE_SHARE)
+  async listPublicShares(@GetCurrentUsername() username: string) {
+    return this.filesharingService.listOwnPublicShares(username);
   }
 
   @Post('callback')
@@ -197,6 +207,36 @@ class FilesharingController {
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 1 });
     }
+  }
+
+  @Delete(FileSharingApiEndpoints.PUBLIC_FILE_SHARE)
+  async deleteManyPublicShares(@Body() publicFiles: PublicFileShareDto[], @GetCurrentUsername() username: string) {
+    return this.filesharingService.deletePublicShares(username, publicFiles);
+  }
+
+  @Patch(FileSharingApiEndpoints.PUBLIC_FILE_SHARE)
+  async editPublicShareFile(@Body() publicFileShareDto: PublicFileShareDto, @GetCurrentUsername() username: string) {
+    return this.filesharingService.editPublicShareFile(username, publicFileShareDto);
+  }
+
+  @Public()
+  @Get(`${FileSharingApiEndpoints.PUBLIC_FILE_SHARE}/:shareId`)
+  async getPublicFileShareInfo(@Param('shareId') shareId: string, @Req() req: Request) {
+    const { authorization } = req.headers;
+    const token = authorization?.replace(/^Bearer\s+/i, '').trim() || undefined;
+    return this.filesharingService.getPublicFileShareInfo(shareId, token);
+  }
+
+  @Public()
+  @Get(`${FileSharingApiEndpoints.PUBLIC_FILE_SHARE}/:shareId`)
+  async getPublicFile(@Param('shareId') shareId: string, @Res({ passthrough: true }) res: Response) {
+    const { stream, filename } = await this.filesharingService.getPublicFileShare(shareId);
+    res.set({
+      'Content-Type': 'application/octet-stream',
+      'Content-Disposition': `attachment; filename="${encodeURIComponent(filename)}`,
+    });
+
+    return new StreamableFile(stream);
   }
 }
 

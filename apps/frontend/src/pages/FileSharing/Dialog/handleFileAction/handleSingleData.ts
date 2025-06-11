@@ -17,14 +17,14 @@ import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePat
 import eduApi from '@/api/eduApi';
 import buildApiFilePathUrl from '@libs/filesharing/utils/buildApiFilePathUrl';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
-import PublicSharedFileDto from '@libs/filesharing/types/publicSharedFileDto';
+import PublicShareFileLinkProps from '@libs/filesharing/types/publicShareFileLinkProps';
 
 const handleSingleData = async (
   action: FileActionType,
   endpoint: string,
   httpMethod: HttpMethods,
   type: ContentType,
-  data: PathChangeOrCreateProps | PublicSharedFileDto,
+  data: PathChangeOrCreateProps | PublicShareFileLinkProps,
 ) => {
   if ('path' in data) {
     if (action === FileActionType.CREATE_FOLDER) {

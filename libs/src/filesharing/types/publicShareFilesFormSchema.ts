@@ -13,12 +13,33 @@
 import FILE_LINK_EXPIRY_VALUES from '@libs/filesharing/constants/fileLinkExpiryValues';
 import { z } from 'zod';
 import { t } from 'i18next';
+import groupSchema from '@libs/common/constants/groupSchema';
 
 const publicShareFilesFormSchema = z.object({
   expires: z.enum(FILE_LINK_EXPIRY_VALUES, {
     required_error: t('filesharing.tooltips.expiryRequired'),
     invalid_type_error: t('filesharing.tooltips.expiryInvalid'),
   }),
+  invitedAttendees: z
+    .array(
+      z.intersection(
+        z.object({
+          firstName: z.string().optional(),
+          lastName: z.string().optional(),
+          username: z.string(),
+        }),
+        z.object({
+          value: z.string(),
+          label: z.string(),
+        }),
+      ),
+    )
+    .optional(),
+  invitedGroups: z.array(groupSchema).optional(),
+  password: z
+    .string()
+    .max(64, { message: t('filesharing.tooltips.passwordMaxLength') })
+    .optional(),
 });
 
 export default publicShareFilesFormSchema;

@@ -10,17 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileSharingApiEndpoints {
-  FILESHARING_ACTIONS = '/filesharing',
-  BASE = 'filesharing',
-  FILE_STREAM = 'file-stream',
-  FILE_LOCATION = 'file-location',
-  ONLY_OFFICE_TOKEN = 'only-office',
-  DUPLICATE = 'duplicate',
-  COLLECT = 'collect',
-  COPY = 'copy',
-  FILE_SHARE = 'file-share',
-  PUBLIC_FILE_SHARE = 'public-share',
-}
+import { z } from 'zod';
 
-export default FileSharingApiEndpoints;
+const groupSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  path: z.string(),
+  label: z.string(),
+  value: z.string(),
+});
+
+export default groupSchema;

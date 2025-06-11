@@ -41,6 +41,7 @@ import {
 import FILE_LINK_EXPIRY_VALUES from '@libs/filesharing/constants/fileLinkExpiryValues';
 import AnyFileDialogValues from '@libs/filesharing/types/anyFileDialogValues';
 import DialogInputValues from '@libs/filesharing/types/dialogInputValues';
+import { FILESHARING_SHARED_FILES_API_ENDPOINT } from '@libs/filesharing/constants/apiEndpoints';
 
 interface DialogBodyConfigurationBase<T extends AnyFileDialogValues = AnyFileDialogValues> {
   schema?: z.ZodSchema<T>;
@@ -104,6 +105,9 @@ const initialFormValues = {
 
 const initialFormValuesWithExpiration: PublicFileSharingFormValues = {
   expires: FILE_LINK_EXPIRY_VALUES[0],
+  invitedAttendees: [],
+  invitedGroups: [],
+  password: '',
 };
 
 const createFolderConfig: CreateFolderDialogBodyConfiguration = {
@@ -253,18 +257,24 @@ const shareFileOrFolderConfig: ShareDialogBodyConfiguration = {
   submitKey: 'shareDialog.share',
   initialValues: initialFormValuesWithExpiration,
   schema: publicShareFilesFormSchema,
-  endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.PUBLIC_SHARE}`,
+  endpoint: FILESHARING_SHARED_FILES_API_ENDPOINT,
   httpMethod: HttpMethods.POST,
   type: ContentType.FILE,
   requiresForm: true,
   async getData(form, _currentPath, { selectedItems }: DialogInputValues) {
     if (!selectedItems?.length) return [];
 
-    return Promise.resolve({
-      expires: form.getValues('expires'),
-      filePath: selectedItems[0].filePath,
+    const createPublicFileShareDto = {
+      etag: selectedItems[0].etag,
       filename: selectedItems[0].filename,
-    });
+      filePath: selectedItems[0].filePath,
+      expires: form.getValues('expires'),
+      invitedAttendees: form.getValues('invitedAttendees') || [],
+      invitedGroups: form.getValues('invitedGroups') || [],
+      password: form.getValues('password') || '',
+    };
+
+    return Promise.resolve(createPublicFileShareDto);
   },
 };
 
