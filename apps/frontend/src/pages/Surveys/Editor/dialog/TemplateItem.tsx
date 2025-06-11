@@ -41,7 +41,7 @@ const TemplateItem = (props: TemplateItemProps) => {
     canSubmitMultipleAnswers,
     canUpdateFormerAnswer,
   } = template.template;
-  const { setTemplate, setIsOpenTemplateMenu, deleteTemplate, fetchTemplates } = useTemplateMenuStore();
+  const { setTemplate, setIsOpenTemplateMenu, setIsOpenTemplateConfirmDeletion } = useTemplateMenuStore();
 
   const { isSuperAdmin } = useLdapGroups();
 
@@ -65,9 +65,9 @@ const TemplateItem = (props: TemplateItemProps) => {
     setIsOpenTemplateMenu(false);
   };
 
-  const handleRemoveTemplate = async () => {
-    await deleteTemplate(template.fileName || '');
-    await fetchTemplates();
+  const handleRemoveTemplate = () => {
+    setTemplate(template);
+    setIsOpenTemplateConfirmDeletion(true);
   };
 
   return (
@@ -89,7 +89,7 @@ const TemplateItem = (props: TemplateItemProps) => {
           style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '12pt' }}
           disabled
         />
-        <div className="flex flex-row justify-end">
+        <div className="mt-2 flex flex-row justify-end">
           {isSuperAdmin && (
             <Button
               onClick={handleRemoveTemplate}
