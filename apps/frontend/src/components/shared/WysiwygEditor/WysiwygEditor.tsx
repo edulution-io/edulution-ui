@@ -33,6 +33,18 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
 
   const quillRef = useRef<ReactQuill | null>(null);
 
+  const handleFormatChange = (format: 'color' | 'background') => (colorValue: string) => {
+    if (colorValue) {
+      toast.warning(t('warnings.colorMayConflictWithTheme'));
+    }
+
+    const quill = quillRef.current?.getEditor();
+
+    if (quill) {
+      quill.format(format, colorValue);
+    }
+  };
+
   const handleImage = () => {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
@@ -67,10 +79,13 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
           ['bold', 'italic', 'underline', 'strike', 'blockquote'],
           [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
           ['link', 'image'],
+          [{ color: [] }, { background: [] }],
           ['clean'],
         ],
         handlers: {
           image: handleImage,
+          color: handleFormatChange('color'),
+          background: handleFormatChange('background'),
         },
       },
     }),

@@ -50,3 +50,8 @@
   fill: var(--background) !important;
   stroke: var(--background) !important;
 }
+
+.quill-content span {
+  font-size: inherit;
+  letter-spacing: inherit;
+}
