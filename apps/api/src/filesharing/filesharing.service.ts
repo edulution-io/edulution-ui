@@ -39,6 +39,7 @@ import FILE_ACCESS_RESULT from '@libs/filesharing/constants/fileAccessResult';
 import checkFileAccessRights from '@libs/filesharing/utils/checkFileAccessRights';
 import CreatePublicFileShareDto from '@libs/filesharing/types/createPublicFileShareDto';
 import PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto';
+import { v4 as uuidv4 } from 'uuid';
 import { PublicFileShare, PublicFileShareDocument } from './publicFileShare.schema';
 import UsersService from '../users/users.service';
 import WebdavService from '../webdav/webdav.service';
@@ -226,23 +227,23 @@ class FilesharingService {
       if (!user) {
         return { success: false, status: HttpStatus.INTERNAL_SERVER_ERROR } as WebdavStatusResponse;
       }
-      const fileLink = `${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.FILE_SHARE}/${etag}`;
 
-      const share = await this.shareModel.create({
+      const shareId = uuidv4();
+      const fileLink = `${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.FILE_SHARE}/${shareId}`;
+
+      await this.shareModel.create({
+        _id: shareId,
         etag,
         filename,
         filePath,
         validUntil,
         creator: username,
-        invitedAttendees,
-        invitedGroups,
+        accessibleByUser: invitedAttendees,
+        accessibleByGroup: invitedGroups,
         password,
         expires,
+        fileLink,
       });
-
-      share.fileLink = `${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.FILE_SHARE}/${share.id}`;
-
-      await share.save();
 
       return {
         success: true,
@@ -250,7 +251,7 @@ class FilesharingService {
         data: fileLink,
       };
     } catch (error) {
-      throw new CustomHttpException(FileSharingErrorMessage.DownloadFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
+      throw new CustomHttpException(FileSharingErrorMessage.SharingFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     }
   }
 
@@ -378,7 +379,7 @@ class FilesharingService {
   async editPublicShareFile(username: string, dto: PublicFileShareDto) {
     const { _id: id, expires, invitedGroups, invitedAttendees, password } = dto;
 
-    const share = await this.shareModel.findOne({ id, creator: username });
+    const share = await this.shareModel.findById(id).where({ creator: username });
     if (!share)
       throw new CustomHttpException(
         FileSharingErrorMessage.PublicFileNotFound,
