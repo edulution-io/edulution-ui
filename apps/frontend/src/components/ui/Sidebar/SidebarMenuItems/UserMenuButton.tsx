@@ -35,37 +35,30 @@ const UserMenuButton: React.FC = () => {
   };
 
   return (
-    <div
-      key="usermenu"
-      className="fixed bottom-0 right-0 min-w-[260px] bg-black md:min-w-0"
-    >
-      <div className="flex max-h-14 cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-2">
-        <DropdownMenu
-          menuContentClassName="z-[600]"
-          trigger={
-            <div className="group flex items-center gap-4">
-              <p className="text-md font-bold md:hidden">
-                {auth?.user?.profile?.given_name ?? ''} {auth?.user?.profile?.family_name ?? ''}
-              </p>
-              <Avatar
-                user={{ username: user?.username || '', firstName: user?.firstName, lastName: user?.lastName }}
-                imageSrc={thumbnailPhoto}
-              />
-            </div>
-          }
-          items={[
-            { label: t('usersettings.sidebar'), onClick: handleUserSettingsClick },
-            { label: 'logoutSeparator', isSeparator: true },
-            {
-              label: t('common.logout'),
-              onClick: () => {
-                void handleLogout();
-              },
-            },
-          ]}
-        />
-      </div>
-    </div>
+    <DropdownMenu
+      menuContentClassName="z-[600]"
+      trigger={
+        <div className="group flex items-center gap-4">
+          <p className="text-md font-bold md:hidden">
+            {auth?.user?.profile?.given_name ?? ''} {auth?.user?.profile?.family_name ?? ''}
+          </p>
+          <Avatar
+            user={{ username: user?.username || '', firstName: user?.firstName, lastName: user?.lastName }}
+            imageSrc={thumbnailPhoto}
+          />
+        </div>
+      }
+      items={[
+        { label: t('usersettings.sidebar'), onClick: handleUserSettingsClick },
+        { label: 'logoutSeparator', isSeparator: true },
+        {
+          label: t('common.logout'),
+          onClick: () => {
+            void handleLogout();
+          },
+        },
+      ]}
+    />
   );
 };
 

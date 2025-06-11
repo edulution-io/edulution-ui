@@ -10,26 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useRef } from 'react';
+import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
+import { SIDEBAR_ICON_WIDTH_PX } from '@libs/ui/constants';
 import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
 import { getRootPathName } from '@libs/common/utils';
 import SidebarItemNotification from '@/components/ui/Sidebar/SidebarMenuItems/SidebarItemNotification';
 import PageTitle from '@/components/PageTitle';
-import useTrulyVisible from '@/hooks/useTrulyVisible';
 import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
+import { CNavItem } from '@coreui/react';
 
-const SidebarItem: React.FC<SidebarMenuItemProps> = ({
-  menuItem,
-  isDesktop,
-  translate,
-  isUpButtonVisible,
-  isDownButtonVisible,
-}) => {
-  const { title, icon, color, link, notificationCounter } = menuItem;
-  const buttonRef = useRef<HTMLDivElement>(null);
-  const isTrulyVisible = useTrulyVisible(buttonRef, [translate, isUpButtonVisible, isDownButtonVisible]);
+const SidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem }) => {
+  const { title, icon, link, notificationCounter } = menuItem;
   const { pathname } = useLocation();
 
   const rootPathName = getRootPathName(pathname);
@@ -37,40 +29,27 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({
   const isCurrentlySelectedItem = rootPathName === menuItem.link && pathname !== DASHBOARD_ROUTE;
 
   return (
-    <div
+    <CNavItem
       key={title}
-      className="relative"
-      ref={buttonRef}
+      className={`h-[56px] min-h-[56px] hover:bg-popover-foreground ${isCurrentlySelectedItem ? menuItem.color : ''}`}
     >
       {isCurrentlySelectedItem && <PageTitle translationId={title} />}
+
       <NavLink
         to={link}
-        className={`group relative z-40 flex cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-2 ${isCurrentlySelectedItem ? menuItem.color : ''}`}
+        className="group flex h-full items-center justify-end pr-3"
       >
-        <p className="md:hidden">{title}</p>
+        <p className="whitespace-nowrap pr-4 font-bold">{title}</p>
         <>
           <img
             src={icon}
-            width={SIDEBAR_ICON_WIDTH}
-            className="relative z-0"
+            width={SIDEBAR_ICON_WIDTH_PX}
             alt={`${title}-icon`}
           />
           <SidebarItemNotification notificationCounter={notificationCounter} />
         </>
-        {isTrulyVisible ? (
-          <div
-            className={`${color} absolute left-full top-0 z-40 flex h-full items-center gap-4 rounded-l-[8px] pl-4 pr-[48px] ${isDesktop ? 'ease-out group-hover:-translate-x-full' : ''}`}
-          >
-            <p className="whitespace-nowrap font-bold">{title}</p>
-            <img
-              src={icon}
-              width={SIDEBAR_ICON_WIDTH}
-              alt={`${title}-icon`}
-            />
-          </div>
-        ) : null}
       </NavLink>
-    </div>
+    </CNavItem>
   );
 };
 

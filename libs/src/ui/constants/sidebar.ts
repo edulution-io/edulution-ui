@@ -11,5 +11,6 @@
  */
 
 export const SIDEBAR_TRANSLATE_AMOUNT = 56;
-export const SIDEBAR_ICON_WIDTH = '40px';
-export const SIDEBAR_WIDTH = 56;
+export const SIDEBAR_ICON_WIDTH = 40;
+export const SIDEBAR_ICON_WIDTH_PX = `${SIDEBAR_ICON_WIDTH}px`;
+export const SIDEBAR_WIDTH = 64;

@@ -15,5 +15,7 @@ export type SidebarMenuItem = {
   link: string;
   icon: string;
   color: string;
+  isActive?: boolean;
   notificationCounter?: number;
+  subItems?: SidebarMenuItem[];
 };

@@ -12,7 +12,7 @@
 
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
+import { SIDEBAR_ICON_WIDTH_PX } from '@libs/ui/constants';
 import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
 import { getRootPathName } from '@libs/common/utils';
 import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
@@ -38,7 +38,7 @@ const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem }) => {
         <p className="md:hidden">{menuItem.title}</p>
         <img
           src={menuItem.icon}
-          width={SIDEBAR_ICON_WIDTH}
+          width={SIDEBAR_ICON_WIDTH_PX}
           className="relative"
           alt={`${menuItem.title}-icon`}
         />

@@ -24,6 +24,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import OfflineBanner from '@/components/shared/OfflineBanner';
 import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
+import { SIDEBAR_WIDTH } from '@libs/ui/constants/sidebar';
 
 const AppLayout = () => {
   const { isAuthenticated } = useUserStore();
@@ -42,7 +43,10 @@ const AppLayout = () => {
 
   return (
     <div className="flex h-screen flex-row">
-      <div className="flex h-screen flex-1 flex-col overflow-hidden">
+      <div
+        className="flex h-screen flex-col overflow-hidden"
+        style={{ width: `calc(100% - ${SIDEBAR_WIDTH}px)` }}
+      >
         {isAppHeaderVisible && <Header hideHeadingText={!isMainPage} />}
 
         <div className="flex min-h-0 flex-1 flex-row">

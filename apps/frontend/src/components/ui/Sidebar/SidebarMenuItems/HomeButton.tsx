@@ -12,32 +12,29 @@
 
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { MobileLogoIcon } from '@/assets/icons';
-import { SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
+import { SIDEBAR_ICON_WIDTH_PX } from '@libs/ui/constants';
 import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import useSidebarStore from '../sidebarStore';
 
 const HomeButton: React.FC = () => {
-  const { t } = useTranslation();
-  const { pathname } = useLocation();
   const { toggleMobileSidebar } = useSidebarStore();
+  const { pathname } = useLocation();
+
+  const isCurrentlySelectedItem = pathname === DASHBOARD_ROUTE;
 
   return (
-    <div key="home">
-      <NavLink
-        to={DASHBOARD_ROUTE}
-        onClick={toggleMobileSidebar}
-        className={`group relative right-0 top-0 z-50 flex max-h-14 cursor-pointer items-center justify-end gap-4 bg-black px-4 py-2 hover:bg-black hover:opacity-90 md:block md:px-2 ${pathname === DASHBOARD_ROUTE ? 'bg-black' : ''}`}
-      >
-        <p className="text-md font-bold md:hidden">{t('home')}</p>
-        <img
-          src={MobileLogoIcon}
-          width={SIDEBAR_ICON_WIDTH}
-          alt="edulution-mobile-logo"
-        />
-      </NavLink>
-    </div>
+    <NavLink
+      to={DASHBOARD_ROUTE}
+      onClick={toggleMobileSidebar}
+      className={`flex h-14 cursor-pointer text-center hover:opacity-90  ${isCurrentlySelectedItem ? 'border border-gray-700' : ''}`}
+    >
+      <img
+        src={MobileLogoIcon}
+        width={SIDEBAR_ICON_WIDTH_PX}
+        alt="edulution-mobile-logo"
+      />
+    </NavLink>
   );
 };
 

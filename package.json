@@ -34,6 +34,10 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
+    "@coreui/coreui": "^5.4.0",
+    "@coreui/icons": "^3.0.1",
+    "@coreui/icons-react": "^2.3.0",
+    "@coreui/react": "^5.7.0",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@hookform/resolvers": "^3.3.4",
