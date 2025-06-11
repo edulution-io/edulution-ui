@@ -13,7 +13,9 @@
 import React, { useEffect } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import getSurveyFormulaWithIdentificationPlaceholderQuestion from '@libs/survey/utils/getSurveyFormulaWithIdentificationPlaceholderQuestion';
 import ResultTable from '@/pages/Surveys/Tables/components/ResultTable';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
@@ -43,9 +45,15 @@ const ResultTableDialogBody = () => {
     return null;
   }
 
+  let formula: TSurveyFormula;
+  if (!selectedSurvey?.isAnonymous) {
+    formula = getSurveyFormulaWithIdentificationPlaceholderQuestion(selectedSurvey.formula);
+  } else {
+    formula = selectedSurvey.formula;
+  }
   return (
     <ResultTable
-      formula={selectedSurvey.formula}
+      formula={formula}
       result={result}
     />
   );

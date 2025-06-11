@@ -10,10 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface AnswerDto {
-  surveyId: string;
+import removeRealmRoles from './removeRealmRoles';
 
-  attendee?: string;
-}
+// Add new scripts here
+const keycloakConfigScripts = [removeRealmRoles];
 
-export default AnswerDto;
+export default keycloakConfigScripts;

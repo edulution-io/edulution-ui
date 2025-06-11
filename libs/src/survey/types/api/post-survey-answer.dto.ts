@@ -10,17 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
-import getFrontEndUrl from '@libs/common/utils/URL/getFrontEndUrl';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import ParticipantDto from '@libs/survey/types/api/participant.dto';
 
-interface CallbackBaseUrlProps {
-  fileName: string;
-  filePath: string;
-  token: string;
+interface PostSurveyAnswerDto extends ParticipantDto {
+  saveNo: number;
+
+  answer: JSON;
 }
 
-const callbackBaseUrl = ({ fileName, filePath, token }: CallbackBaseUrlProps): string =>
-  `${getFrontEndUrl()}/${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/callback?path=${filePath}&filename=${fileName}&token=${token}`;
-
-export default callbackBaseUrl;
+export default PostSurveyAnswerDto;

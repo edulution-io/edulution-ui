@@ -120,16 +120,11 @@ class GroupsService implements OnModuleInit {
     this.scheduleTokenRefresh();
   }
 
-  private static async makeAuthorizedRequest<T>(
-    method: HttpMethods,
-    urlPath: string,
-    token: string,
-    queryParams: string = '',
-  ): Promise<T> {
+  private async makeAuthorizedRequest<T>(method: HttpMethods, urlPath: string, queryParams: string = ''): Promise<T> {
     const url = `${KEYCLOAK_API}/admin/realms/${KEYCLOAK_EDU_UI_REALM}/${urlPath}?${queryParams}`;
     const headers = {
       [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
-      [HTTP_HEADERS.Authorization]: `Bearer ${token}`,
+      [HTTP_HEADERS.Authorization]: `Bearer ${this.keycloakAccessToken}`,
     };
     const config = {
       method: method as string,
@@ -142,20 +137,15 @@ class GroupsService implements OnModuleInit {
     return response.data;
   }
 
-  static async fetchAllUsers(token: string): Promise<LDAPUser[]> {
+  async fetchAllUsers(): Promise<LDAPUser[]> {
     try {
-      const usersCount = await GroupsService.makeAuthorizedRequest<number>(HttpMethods.GET, 'users/count', token);
+      const usersCount = await this.makeAuthorizedRequest<number>(HttpMethods.GET, 'users/count');
 
       if (!usersCount) {
         Logger.warn('No users found.', GroupsService.name);
       }
 
-      return await GroupsService.makeAuthorizedRequest<LDAPUser[]>(
-        HttpMethods.GET,
-        'users',
-        token,
-        `max=${usersCount}`,
-      );
+      return await this.makeAuthorizedRequest<LDAPUser[]>(HttpMethods.GET, 'users', `max=${usersCount}`);
     } catch (error) {
       throw new CustomHttpException(
         GroupsErrorMessage.CouldNotGetUsers,
@@ -205,7 +195,7 @@ class GroupsService implements OnModuleInit {
   }
 
   private async fetchAndCacheAllGroups(): Promise<Group[]> {
-    const groups = await GroupsService.fetchAllGroups(this.keycloakAccessToken);
+    const groups = await this.fetchAllGroups();
 
     await this.cacheManager.set(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, groups, GROUPS_CACHE_TTL_MS);
 
@@ -275,9 +265,7 @@ class GroupsService implements OnModuleInit {
   }
 
   private async tryUpdateGroupsInCache(groups: Group[], attempt: number): Promise<Group[]> {
-    const results = await Promise.allSettled(
-      groups.map((group) => GroupsService.updateGroupInCache(this.cacheManager, this.keycloakAccessToken, group)),
-    );
+    const results = await Promise.allSettled(groups.map((group) => this.updateGroupInCache(this.cacheManager, group)));
 
     const failedGroups: Group[] = [];
     results.forEach((result, index) => {
@@ -293,12 +281,8 @@ class GroupsService implements OnModuleInit {
     return failedGroups;
   }
 
-  private static async updateGroupInCache(
-    cacheManager: Cache,
-    keycloakAccessToken: string,
-    group: Group,
-  ): Promise<void> {
-    const members = await GroupsService.fetchGroupMembers(keycloakAccessToken, group.id);
+  private async updateGroupInCache(cacheManager: Cache, group: Group): Promise<void> {
+    const members = await this.fetchGroupMembers(group.id);
     if (!members?.length) {
       return;
     }
@@ -369,9 +353,9 @@ class GroupsService implements OnModuleInit {
     return flatGroups;
   }
 
-  static async fetchAllGroups(token: string): Promise<Group[]> {
+  async fetchAllGroups(): Promise<Group[]> {
     try {
-      const groups = await GroupsService.makeAuthorizedRequest<Group[]>(HttpMethods.GET, 'groups', token, 'search');
+      const groups = await this.makeAuthorizedRequest<Group[]>(HttpMethods.GET, 'groups', 'search');
       return GroupsService.flattenGroups(groups);
     } catch (error) {
       throw new CustomHttpException(
@@ -383,11 +367,10 @@ class GroupsService implements OnModuleInit {
     }
   }
 
-  static async fetchGroupMembers(token: string, groupId: string): Promise<LDAPUser[] | undefined> {
-    return GroupsService.makeAuthorizedRequest<LDAPUser[]>(
+  async fetchGroupMembers(groupId: string): Promise<LDAPUser[] | undefined> {
+    return this.makeAuthorizedRequest<LDAPUser[]>(
       HttpMethods.GET,
       `groups/${groupId}/members`,
-      token,
       'briefRepresentation=true',
     );
   }
