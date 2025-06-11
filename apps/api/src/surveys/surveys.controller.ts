@@ -98,7 +98,11 @@ class SurveysController {
   @UseInterceptors(
     FileInterceptor(
       'file',
-      createAttachmentUploadOptions((req) => `${SURVEYS_TEMP_FILES_PATH}/${req.user?.preferred_username}`),
+      createAttachmentUploadOptions((req) =>
+        req.user?.preferred_username
+          ? join(SURVEYS_TEMP_FILES_PATH, req.user?.preferred_username)
+          : SURVEYS_TEMP_FILES_PATH,
+      ),
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this

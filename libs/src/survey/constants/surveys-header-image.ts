@@ -10,27 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import TSurveyQuestionChoice from '@libs/survey/types/TSurveyQuestionChoice';
+const SURVEYS_HEADER_IMAGE = 'logo';
 
-interface SurveyElement {
-  type: string;
-  name: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any;
-  title?: string;
-  description?: string;
-  choicesOrder?: string;
-  choices?: TSurveyQuestionChoice[] | null;
-  choicesByUrl?: {
-    url: string;
-    valueName?: string;
-    titleName?: string;
-    imageLink?: string;
-  } | null;
-  hideIfChoicesEmpty?: boolean;
-  imageLink?: string;
-  showOtherItem: boolean | null;
-  showNoneItem?: boolean;
-}
-
-export default SurveyElement;
+export default SURVEYS_HEADER_IMAGE;
