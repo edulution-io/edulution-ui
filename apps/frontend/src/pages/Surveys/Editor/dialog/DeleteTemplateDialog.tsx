@@ -89,7 +89,6 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
       title={t('survey.editor.templateMenu.deletion.title')}
       body={getDialogBody()}
       footer={getFooter()}
-      zIndex="z-[500]"
     />
   );
 };

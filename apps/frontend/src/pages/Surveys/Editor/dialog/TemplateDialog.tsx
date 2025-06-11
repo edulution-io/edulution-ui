@@ -21,6 +21,7 @@ import TemplateDialogBody from '@/pages/Surveys/Editor/dialog/TemplateDialogBody
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import DeleteTemplateDialog from '@/pages/Surveys/Editor/dialog/DeleteTemplateDialog';
 
 interface TemplateDialogProps {
   form: UseFormReturn<SurveyDto>;
@@ -35,17 +36,24 @@ interface TemplateDialogProps {
 const TemplateDialog = (props: TemplateDialogProps) => {
   const { trigger, form, creator, isOpenTemplateMenu, setIsOpenTemplateMenu } = props;
 
-  const { template, uploadTemplate } = useTemplateMenuStore();
+  const { template, uploadTemplate, isOpenTemplateConfirmDeletion, setIsOpenTemplateConfirmDeletion } =
+    useTemplateMenuStore();
 
   const { isSuperAdmin } = useLdapGroups();
 
   const { t } = useTranslation();
 
   const getDialogBody = () => (
-    <TemplateDialogBody
-      form={form}
-      surveyCreator={creator}
-    />
+    <>
+      <TemplateDialogBody
+        form={form}
+        surveyCreator={creator}
+      />
+      <DeleteTemplateDialog
+        isOpenTemplateConfirmDeletion={isOpenTemplateConfirmDeletion}
+        setIsOpenTemplateConfirmDeletion={setIsOpenTemplateConfirmDeletion}
+      />
+    </>
   );
 
   const handleClose = () => setIsOpenTemplateMenu(!isOpenTemplateMenu);

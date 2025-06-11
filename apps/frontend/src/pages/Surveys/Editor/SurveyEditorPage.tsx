@@ -43,7 +43,6 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 import QuestionContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import DeleteTemplateDialog from '@/pages/Surveys/Editor/dialog/DeleteTemplateDialog';
 
 const SurveyEditorPage = () => {
   const { fetchSelectedSurvey, isFetching, selectedSurvey, selectSurvey, updateUsersSurveys } =
@@ -59,13 +58,7 @@ const SurveyEditorPage = () => {
     resetStoredSurvey,
     uploadFile,
   } = useSurveyEditorPageStore();
-  const {
-    reset: resetTemplateStore,
-    isOpenTemplateMenu,
-    setIsOpenTemplateMenu,
-    isOpenTemplateConfirmDeletion,
-    setIsOpenTemplateConfirmDeletion,
-  } = useTemplateMenuStore();
+  const { reset: resetTemplateStore, isOpenTemplateMenu, setIsOpenTemplateMenu } = useTemplateMenuStore();
   const {
     reset: resetQuestionsContextMenu,
     setIsOpenQuestionContextMenu,
@@ -248,10 +241,6 @@ const SurveyEditorPage = () => {
         creator={creator}
         isOpenTemplateMenu={isOpenTemplateMenu}
         setIsOpenTemplateMenu={setIsOpenTemplateMenu}
-      />
-      <DeleteTemplateDialog
-        isOpenTemplateConfirmDeletion={isOpenTemplateConfirmDeletion}
-        setIsOpenTemplateConfirmDeletion={setIsOpenTemplateConfirmDeletion}
       />
       <SaveSurveyDialog
         form={form}

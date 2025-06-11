@@ -47,24 +47,19 @@ const DialogContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
     showCloseButton?: boolean;
     variant?: 'primary' | 'secondary' | 'tertiary' | 'loadingSpinner';
-    zIndex?: string;
   }
->(({ className, children, showCloseButton = true, variant, zIndex, ...props }, ref) => (
+>(({ className, children, showCloseButton = true, variant, ...props }, ref) => (
   <DialogPortal>
-    <DialogOverlay
-      className={cn({ 'bg-black/50': variant === 'primary' }, { 'z-50': !zIndex }, { [zIndex || '']: zIndex })}
-    />{' '}
+    <DialogOverlay className={cn({ 'bg-black/50': variant === 'primary' })} />{' '}
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed left-[50%] top-[50%] grid max-h-[90vh] w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 overflow-auto rounded-xl p-6 shadow-lg duration-200 scrollbar-thin',
+        'fixed left-[50%] top-[50%] z-50 grid max-h-[90vh] w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 overflow-auto rounded-xl p-6 shadow-lg duration-200 scrollbar-thin',
         { 'bg-overlay text-background': variant === 'primary' },
         { 'color-white text-background': variant === 'secondary' || variant === 'tertiary' },
         { 'bg-ciGray': variant === 'secondary' },
         { 'bg-foreground': variant === 'tertiary' },
         { 'w-40 bg-foreground': variant === 'loadingSpinner' },
-        { 'z-50': !zIndex },
-        { [zIndex || '']: zIndex },
         className,
       )}
       {...props}
