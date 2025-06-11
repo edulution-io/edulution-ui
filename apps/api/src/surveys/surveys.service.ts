@@ -233,31 +233,30 @@ class SurveysService implements OnModuleInit {
     }
     const updatedFormula = { ...formula };
 
-    const tempIndex = tempFileNames.indexOf(SURVEYS_HEADER_IMAGE);
-    const permaIndex = permanentFileNames.indexOf(SURVEYS_HEADER_IMAGE);
     if (formula.logo) {
-      if (tempIndex !== -1) {
-        const pathWithIds = join(surveyId, SURVEYS_HEADER_IMAGE);
-        updatedFormula.logo = await this.updateTempFilesUrls(username, pathWithIds, formula.logo);
-        tempFileNames.splice(tempIndex, 1);
+      Logger.log(`Updating logo: ${formula.logo}`);
+
+      const logosFileName = formula.logo?.split('/').pop();
+
+      Logger.log(`file name: ${logosFileName}`);
+
+      if (logosFileName) {
+        const tempIndex = tempFileNames.indexOf(logosFileName);
+
+        if (tempIndex !== -1) {
+          const pathWithIds = join(surveyId, SURVEYS_HEADER_IMAGE);
+          updatedFormula.logo = await this.updateTempFilesUrls(username, pathWithIds, formula.logo);
+          tempFileNames.splice(tempIndex, 1);
+
+          Logger.log(`Updated logo: ${updatedFormula.logo}`);
+        }
       }
     } else {
-      if (permaIndex !== -1) {
-        const path = join(SURVEYS_FILES_PATH, username, surveyId, SURVEYS_HEADER_IMAGE);
-        const exists = await FilesystemService.checkIfFileExist(path);
-        if (exists) {
-          await FilesystemService.deleteFile(path, SURVEYS_HEADER_IMAGE);
-        }
-        permanentFileNames.splice(permaIndex, 1);
-      }
-      if (tempIndex !== -1) {
-        const path = join(SURVEYS_TEMP_FILES_PATH, username, SURVEYS_HEADER_IMAGE);
-        const exists = await FilesystemService.checkIfFileExist(path);
-        if (exists) {
-          await FilesystemService.deleteFile(path, SURVEYS_HEADER_IMAGE);
-        }
-        tempFileNames.splice(tempIndex, 1);
-      }
+      const tempPath = join(SURVEYS_TEMP_FILES_PATH, username, SURVEYS_HEADER_IMAGE);
+      await this.fileSystemService.deleteDirectory(tempPath);
+
+      const path = join(SURVEYS_FILES_PATH, username, surveyId, SURVEYS_HEADER_IMAGE);
+      await this.fileSystemService.deleteDirectory(path);
     }
 
     if (formula.pages && formula.pages.length > 0) {

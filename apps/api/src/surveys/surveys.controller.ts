@@ -26,6 +26,7 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  Logger,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -138,6 +139,8 @@ class SurveysController {
 
   @Post()
   async updateOrCreateSurvey(@Body() surveyDto: SurveyDto, @GetCurrentUser() user: JWTUser) {
+    Logger.log('Received surveyDto:', JSON.stringify(surveyDto, null, 2));
+
     return this.surveyService.updateOrCreateSurvey(surveyDto, user);
   }
 
