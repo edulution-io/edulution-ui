@@ -24,6 +24,7 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import QuotaLimitInfo from '@/pages/FileSharing/utilities/QuotaLimitInfo';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
+import DownloadPublicFileDialog from '@/pages/FileSharing/publicShareFiles/dialog/DownloadPublicFileDialog';
 
 const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
@@ -75,6 +76,7 @@ const FileSharingPage = () => {
       </div>
 
       <ActionContentDialog />
+      <DownloadPublicFileDialog />
       <FileSharingFloatingButtonsBar />
     </PageLayout>
   );

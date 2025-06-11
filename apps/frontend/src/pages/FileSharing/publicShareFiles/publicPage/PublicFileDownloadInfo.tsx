@@ -11,14 +11,13 @@
  */
 
 import React from 'react';
-import PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto';
+import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
 
-interface PublicFileDownloadInfoProps {
-  publicFileShareDto: PublicFileShareDto;
-}
+const PublicFileDownloadInfo = () => {
+  const { publicShareFile } = usePublicShareFilesStore();
+  if (!publicShareFile) return null;
+  const { filename, fileLink, validUntil, createdAt, creator } = publicShareFile;
 
-const PublicFileDownloadInfo: React.FC<PublicFileDownloadInfoProps> = ({ publicFileShareDto }) => {
-  const { filename, fileLink, validUntil, createdAt, creator } = publicFileShareDto;
   const apiPath = fileLink.startsWith('/') ? fileLink.slice(1) : fileLink;
 
   return (

@@ -317,9 +317,13 @@ class FilesharingService {
     }
 
     let jwtUser: JwtUser | null = null;
-    if (jwt) {
+
+    const token = jwt?.replace(/^Bearer\s*/i, '').trim();
+    const jwtToken = token || undefined;
+
+    if (jwtToken) {
       try {
-        jwtUser = await this.jwtService.verifyAsync<JwtUser>(jwt, {
+        jwtUser = await this.jwtService.verifyAsync<JwtUser>(jwtToken, {
           publicKey: this.publicKey,
           algorithms: ['RS256'],
         });

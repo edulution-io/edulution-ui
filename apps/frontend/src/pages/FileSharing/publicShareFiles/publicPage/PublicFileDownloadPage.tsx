@@ -20,9 +20,13 @@ import { useTranslation } from 'react-i18next';
 import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
 import PublicFileDownloadInfo from '@/pages/FileSharing/publicShareFiles/publicPage/PublicFileDownloadInfo';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import usePublicShareFilePageStore from '@/pages/FileSharing/publicShareFiles/publicPage/usePublicShareFilePageStore';
+import APPS from '@libs/appconfig/constants/apps';
 
 const PublicFileDownloadPage: React.FC = () => {
   const { eduApiToken } = useUserStore();
+  const { openDialog } = usePublicShareFilePageStore();
+
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { fetchPublicShareFilesById, publicShareFile, isAccessRestricted, isFileAvailable, isLoading } =
@@ -32,15 +36,21 @@ const PublicFileDownloadPage: React.FC = () => {
   const id = location.pathname.split('/').pop() ?? '';
 
   useEffect(() => {
-    if (id) void fetchPublicShareFilesById(id, eduApiToken);
-  }, [id, eduApiToken, fetchPublicShareFilesById]);
+    if (!id) return;
+    if (eduApiToken) {
+      openDialog(id);
+      navigate(`/${APPS.FILE_SHARING}`);
+    } else {
+      void fetchPublicShareFilesById(id, eduApiToken);
+    }
+  }, [id, eduApiToken]);
 
   let content: React.ReactNode = null;
 
   if (isLoading) {
     content = <LoadingIndicatorDialog isOpen={isLoading} />;
   } else if (publicShareFile) {
-    content = <PublicFileDownloadInfo publicFileShareDto={publicShareFile} />;
+    content = <PublicFileDownloadInfo />;
   } else if (isAccessRestricted) {
     content = (
       <div className="space-y-6 text-center">

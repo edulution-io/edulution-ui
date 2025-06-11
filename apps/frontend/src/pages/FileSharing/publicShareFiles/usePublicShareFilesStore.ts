@@ -91,6 +91,7 @@ export const usePublicShareFilesStore = create<PublicShareFilesStore>((set, get)
           set({ isFileAvailable: false, publicShareFile: null });
           break;
         case 401:
+        case 403:
           set({ isAccessRestricted: true, publicShareFile: null });
           break;
         default:
