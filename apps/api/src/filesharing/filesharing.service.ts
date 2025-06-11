@@ -229,7 +229,7 @@ class FilesharingService {
       }
 
       const shareId = uuidv4();
-      const fileLink = `${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.FILE_SHARE}/${shareId}`;
+      const fileLink = `${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.PUBLIC_FILE_SHARE_DOWNLOAD}/${shareId}`;
 
       await this.shareModel.create({
         _id: shareId,
@@ -306,7 +306,7 @@ class FilesharingService {
 
     const filename = fileType === ContentType.FILE ? share.filename : `${share.filename}.zip`;
 
-    return { stream, filename };
+    return { stream, filename, fileType };
   }
 
   async getPublicFileShareInfo(shareId: string, jwt?: string) {

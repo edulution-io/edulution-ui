@@ -18,15 +18,16 @@ interface PublicFileDownloadInfoProps {
 }
 
 const PublicFileDownloadInfo: React.FC<PublicFileDownloadInfoProps> = ({ publicFileShareDto }) => {
-  const { filename, fileLink, validUntil, createdAt } = publicFileShareDto;
+  const { filename, fileLink, validUntil, createdAt, creator } = publicFileShareDto;
+  const apiPath = fileLink.startsWith('/') ? fileLink.slice(1) : fileLink;
 
   return (
     <section className="flex items-start justify-center px-4 py-12 sm:px-10 lg:px-32">
       <article className="w-full max-w-2xl space-y-6 rounded-2xl bg-accent p-8 shadow-2xl backdrop-blur-md">
         <h2 className="truncate text-2xl font-semibold">{filename}</h2>
-
+        <h3>{creator}</h3>
         <a
-          href={fileLink.startsWith('/') ? fileLink : `/${fileLink}`}
+          href={fileLink.startsWith('/') ? apiPath : `/${apiPath}`}
           target="_blank"
           download={filename}
           rel="noopener noreferrer"

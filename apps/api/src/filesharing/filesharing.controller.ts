@@ -228,14 +228,11 @@ class FilesharingController {
   }
 
   @Public()
-  @Get(`${FileSharingApiEndpoints.PUBLIC_FILE_SHARE}/:shareId`)
+  @Get(`${FileSharingApiEndpoints.PUBLIC_FILE_SHARE_DOWNLOAD}/:shareId`)
   async getPublicFile(@Param('shareId') shareId: string, @Res({ passthrough: true }) res: Response) {
-    const { stream, filename } = await this.filesharingService.getPublicFileShare(shareId);
-    res.set({
-      'Content-Type': 'application/octet-stream',
-      'Content-Disposition': `attachment; filename="${encodeURIComponent(filename)}`,
-    });
-
+    const { stream, filename, fileType } = await this.filesharingService.getPublicFileShare(shareId);
+    res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`);
+    res.setHeader('Content-Type', fileType === ContentType.FILE ? 'application/octet-stream' : 'application/zip');
     return new StreamableFile(stream);
   }
 }

@@ -21,6 +21,7 @@ interface PublicFileShareDto {
   filename: string;
   filePath: string;
   createdAt: Date;
+  creator: string;
   fileLink: string;
   validUntil: string;
   password: string;
