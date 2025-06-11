@@ -2,33 +2,201 @@
 @tailwind components;
 @tailwind utilities;
 
-.survey-result-table {
-  .sa-commercial {
-    visibility: hidden;
-    height: 0px;
-  }
+/* GENERAL TABLE SETTINGS */
+.sa-table {
+  font-size: 16px;
+  font-family: "Lato", sans-serif;
+  color: var(--primary-foreground) !important;
+  display: contents;
 
-  .sa-table__entries-label,
-  .sa-table__entries-label--right,
-  .sa-table__global-filter {
-    color: var(--foreground) !important;
+  span {
+    color: var(--primary-foreground) !important;
   }
+}
 
-  .sa-table select {
-    color: var(--foreground) !important;
-  }
+.sa-table__entries-label,
+.sa-table__entries-label--right,
+.sa-table__entries-label--left {
+  color: var(--secondary) !important;
+}
 
-  .sa-visualizer__content {
-    color: var(--foreground);
-  }
+/* Remove commerical */
+.sa-commercial {
+  display: none;
+  visibility: hidden;
+  height: 0px;
+}
 
-  .surveyDashboardContainer {
-    overflow-x: auto;
-    overflow-y: auto;
-    width: 100%;
-  }
+/* Fix input color */
+.sa-table input {
+  border-radius: var(--radius);
+  background-color: var(--muted) !important;
+  color: var(--background) !important;
+  justify-content: center;
+  border-color: var(--background) !important;
+}
+.sa-table input:focus {
+  border-color: none !important;
+}
 
-  .tabulator-cell {
-    color: var(--foreground) !important;
-  }
+/* Fix button and border color */
+.sa-table button {
+  fill: var(--secondary) !important;
+  color: var(--secondary) !important;
+  border-color: var(--secondary) !important;
+}
+.sa-table button:hover {
+  fill: var(--primary) !important;
+  color: var(--primary) !important;
+  border-color: var(--secondary) !important;
+  background-color: transparent !important;
+}
+.sa-table button:focus,
+.sa-table button:active {
+  fill: var(--primary) !important;
+  color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  background-color: transparent !important;
+}
+
+.sa-table__svg-button use {
+  fill: var(--secondary) !important;
+  color: var(--secondary) !important;
+}
+.sa-table__svg-button:hover use {
+  fill: var(--primary) !important;
+  color: var(--primary) !important;
+}
+.sa-table__svg-button:focus use,
+.sa-table__svg-button:active use {
+  fill: var(--primary) !important;
+}
+
+.sa-table__action-container .sa-table__drag-button use {
+  fill: var(--secondary) !important;
+  color: var(--secondary) !important;
+}
+.sa-table__action-container .sa-table__drag-button:hover use {
+  fill: var(--primary) !important;
+  color: var(--primary) !important;
+}
+
+/* Fix dropdown chevron color: Remove the green from surveyjs (replace with primary) */
+.sa-table select {
+  color: var(--secondary) !important;
+  background-image: url("data:image/svg+xml,%3C%3Fxml version=%271.0%27 encoding=%27utf-8%27%3F%3E%3C%21-- Generator: Adobe Illustrator 21.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0%29 --%3E%3Csvg version=%271.1%27 id=%27Layer_1%27 xmlns=%27http://www.w3.org/2000/svg%27 xmlns:xlink=%27http://www.w3.org/1999/xlink%27 x=%270px%27 y=%270px%27 viewBox=%270 0 10 10%27 style=%27enable-background:new 0 0 10 10;%27 xml:space=%27preserve%27%3E%3Cstyle type=%27text/css%27%3E .st0%7Bfill:%23d1d5db;%7D%0A%3C/style%3E%3Cpolygon class=%27st0%27 points=%272,2 0,4 5,9 10,4 8,2 5,5 %27/%3E%3C/svg%3E%0A");
+  background-color: var(--muted) !important;
+}
+.sa-table select:hover {
+  color: var(--primary-foreground) !important;
+  background-image: url("data:image/svg+xml,%3C%3Fxml version=%271.0%27 encoding=%27utf-8%27%3F%3E%3C%21-- Generator: Adobe Illustrator 21.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0%29 --%3E%3Csvg version=%271.1%27 id=%27Layer_1%27 xmlns=%27http://www.w3.org/2000/svg%27 xmlns:xlink=%27http://www.w3.org/1999/xlink%27 x=%270px%27 y=%270px%27 viewBox=%270 0 10 10%27 style=%27enable-background:new 0 0 10 10;%27 xml:space=%27preserve%27%3E%3Cstyle type=%27text/css%27%3E .st0%7Bfill:%230281c7;%7D%0A%3C/style%3E%3Cpolygon class=%27st0%27 points=%272,2 0,4 5,9 10,4 8,2 5,5 %27/%3E%3C/svg%3E%0A");
+}
+.sa-table select:focus {
+  background-image: url("data:image/svg+xml,%3C%3Fxml version=%271.0%27 encoding=%27utf-8%27%3F%3E%3C%21-- Generator: Adobe Illustrator 21.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0%29 --%3E%3Csvg version=%271.1%27 id=%27Layer_1%27 xmlns=%27http://www.w3.org/2000/svg%27 xmlns:xlink=%27http://www.w3.org/1999/xlink%27 x=%270px%27 y=%270px%27 viewBox=%270 0 10 10%27 style=%27enable-background:new 0 0 10 10;%27 xml:space=%27preserve%27%3E%3Cstyle type=%27text/css%27%3E .st0%7Bfill:%230281c7;%7D%0A%3C/style%3E%3Cpolygon class=%27st0%27 points=%272,2 0,4 5,9 10,4 8,2 5,5 %27/%3E%3C/svg%3E%0A");
+}
+
+.sa-table__show-column.sa-table__show-column {
+  color: var(--secondary) !important;
+  background-image:
+    url("data:image/svg+xml,%3C%3Fxml version=%271.0%27 encoding=%27utf-8%27%3F%3E%3C%21-- Generator: Adobe Illustrator 24.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0%29 --%3E%3Csvg version=%271.1%27 id=%27Layer_1%27 xmlns=%27http://www.w3.org/2000/svg%27 xmlns:xlink=%27http://www.w3.org/1999/xlink%27 x=%270px%27 y=%270px%27 viewBox=%270 0 16 16%27 style=%27enable-background:new 0 0 16 16;%27 xml:space=%27preserve%27%3E%3Cstyle type=%27text/css%27%3E .st0%7Bfill:rgba%28159, 159, 159, 0.5%29;%7D .st1%7Bfill:rgba%28159, 159, 159, 0.5%29;%7D%0A%3C/style%3E%3Cg%3E%3Cpath class=%27st1%27 d=%27M8,2.03C3.63,2.03,0,8,0,8s3.63,6.03,8,6.03s8-6,8-6S12.37,2.03,8,2.03z M8,12c-2.58,0-5.13-2.81-6-4 c1.07-1.47,3.61-4,6-4c2.58,0,5.13,2.81,6,4C12.93,9.47,10.39,12,8,12z%27/%3E%3Ccircle class=%27st1%27 cx=%278%27 cy=%278%27 r=%273%27/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3C%3Fxml version=%271.0%27 encoding=%27utf-8%27%3F%3E%3C%21-- Generator: Adobe Illustrator 21.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0%29 --%3E%3Csvg version=%271.1%27 id=%27Layer_1%27 xmlns=%27http://www.w3.org/2000/svg%27 xmlns:xlink=%27http://www.w3.org/1999/xlink%27 x=%270px%27 y=%270px%27 viewBox=%270 0 10 10%27 style=%27enable-background:new 0 0 10 10;%27 xml:space=%27preserve%27%3E%3Cstyle type=%27text/css%27%3E .st0%7Bfill:%23d1d5db;%7D%0A%3C/style%3E%3Cpolygon class=%27st0%27 points=%272,2 0,4 5,9 10,4 8,2 5,5 %27/%3E%3C/svg%3E%0A");
+}
+.sa-table__show-column.sa-table__show-column:hover {
+  color: var(--primary-foreground) !important;
+  background-image: url("data:image/svg+xml,%3C%3Fxml version=%271.0%27 encoding=%27utf-8%27%3F%3E%3C%21-- Generator: Adobe Illustrator 21.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0%29 --%3E%3Csvg version=%271.1%27 id=%27Layer_1%27 xmlns=%27http://www.w3.org/2000/svg%27 xmlns:xlink=%27http://www.w3.org/1999/xlink%27 x=%270px%27 y=%270px%27 viewBox=%270 0 10 10%27 style=%27enable-background:new 0 0 10 10;%27 xml:space=%27preserve%27%3E%3Cstyle type=%27text/css%27%3E .st0%7Bfill:%230281c7;%7D%0A%3C/style%3E%3Cpolygon class=%27st0%27 points=%272,2 0,4 5,9 10,4 8,2 5,5 %27/%3E%3C/svg%3E%0A");
+}
+.sa-table__show-column.sa-table__show-column:focus {
+  color: var(--primary) !important;
+  background-image:
+    url("data:image/svg+xml,%3C%3Fxml version=%271.0%27 encoding=%27utf-8%27%3F%3E%3C%21-- Generator: Adobe Illustrator 24.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0%29 --%3E%3Csvg version=%271.1%27 id=%27Layer_1%27 xmlns=%27http://www.w3.org/2000/svg%27 xmlns:xlink=%27http://www.w3.org/1999/xlink%27 x=%270px%27 y=%270px%27 viewBox=%270 0 16 16%27 style=%27enable-background:new 0 0 16 16;%27 xml:space=%27preserve%27%3E%3Cstyle type=%27text/css%27%3E .st0%7Bfill:%230281c7;%7D .st1%7Bfill:%230281c7;%29;%7D%0A%3C/style%3E%3Cg%3E%3Cpath class=%27st1%27 d=%27M8,2.03C3.63,2.03,0,8,0,8s3.63,6.03,8,6.03s8-6,8-6S12.37,2.03,8,2.03z M8,12c-2.58,0-5.13-2.81-6-4 c1.07-1.47,3.61-4,6-4c2.58,0,5.13,2.81,6,4C12.93,9.47,10.39,12,8,12z%27/%3E%3Ccircle class=%27st1%27 cx=%278%27 cy=%278%27 r=%273%27/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3C%3Fxml version=%271.0%27 encoding=%27utf-8%27%3F%3E%3C%21-- Generator: Adobe Illustrator 21.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0%29 --%3E%3Csvg version=%271.1%27 id=%27Layer_1%27 xmlns=%27http://www.w3.org/2000/svg%27 xmlns:xlink=%27http://www.w3.org/1999/xlink%27 x=%270px%27 y=%270px%27 viewBox=%270 0 10 10%27 style=%27enable-background:new 0 0 10 10;%27 xml:space=%27preserve%27%3E%3Cstyle type=%27text/css%27%3E .st0%7Bfill:%230281c7;%7D%0A%3C/style%3E%3Cpolygon class=%27st0%27 points=%272,2 0,4 5,9 10,4 8,2 5,5 %27/%3E%3C/svg%3E%0A") !important;
+}
+
+/* Fix tables background color: Remove the white backtgrounds */
+.sa-tabulator {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+.sa-tabulator__header {
+  width: fit-content !important;
+  position: sticky;
+  top: 0;
+  left: 0;
+  background: transparent !important;
+  background-color: transparent !important;
+  display: inline-flex;
+  flex-direction: row-reverse;
+}
+.sa-table__btn {
+  padding: 0 2px;
+  margin: 0 16px;
+}
+.sa-table__entries {
+  padding: 0 2px;
+  margin: 0 16px;
+}
+.sa-table__global-filter {
+  padding: 0 2px;
+  margin: 0 16px;
+}
+.sa-tabulator__pagination-container {
+  padding: 0 2px;
+  margin: 0 16px;
+  max-width: 240px;
+  min-width: 120px;
+}
+
+.tabulator {
+  height: fit-content;
+  width: fit-content;
+  margin-top: 8px !important;
+  margin-bottom: 8px !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  border: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+.tabulator-header {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+.tabulator-col {
+  border: none !important;
+  border-bottom: 1px solid var(--secondary) !important;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+.tabulator-cell {
+  border: none !important;
+}
+.tabulator-row {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.tabulator {
+  height: fit-content;
+  width: fit-content;
+}
+.tabulator-table {
+  position: relative;
+  display: block;
+  overflow-x: auto;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.sa-table__svg-button[title="in Details verschieben"] {
+  display: none;
+}
+.sa-table__svg-button[title="Move to Detail"] {
+  display: none;
+}
+
+.tabulator-header .tabulator-col:first-child {
+  display: none !important;
+}
+.tabulator-table .tabulator-row .tabulator-cell:first-child {
+  display: none !important;
 }
