@@ -10,13 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import isDev from '../constants/isDev';
+import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 
-const getFrontEndUrl = (): string => {
-  if (isDev) {
-    return `${window.location.protocol}//host.docker.internal:5173`;
+const getSurveyFormulaWithIdentificationPlaceholderQuestion = (formula: TSurveyFormula) => {
+  const updatedFormula = structuredClone(formula);
+  const identification = { type: 'text', name: 'identification', value: '' };
+
+  if (Array.isArray(updatedFormula.pages) && updatedFormula.pages.length > 0) {
+    updatedFormula.pages[0].elements = [identification, ...(updatedFormula.pages[0].elements ?? [])];
+  } else {
+    updatedFormula.elements = [identification, ...(updatedFormula.elements ?? [])];
   }
-  return `${window.location.protocol}//${window.location.host}`;
+
+  return updatedFormula;
 };
 
-export default getFrontEndUrl;
+export default getSurveyFormulaWithIdentificationPlaceholderQuestion;

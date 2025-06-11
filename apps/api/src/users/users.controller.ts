@@ -19,7 +19,6 @@ import { EDU_API_USERS_ENDPOINT, EDU_API_USER_ACCOUNTS_ENDPOINT } from '@libs/us
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from './users.service';
 import UpdateUserDto from './dto/update-user.dto';
-import GetToken from '../common/decorators/getToken.decorator';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentSchool from '../common/decorators/getCurrentSchool.decorator';
 
@@ -74,12 +73,8 @@ export class UsersController {
   }
 
   @Get('search/:searchString')
-  async search(
-    @GetToken() token: string,
-    @Param('searchString') searchString: string,
-    @GetCurrentSchool() school: string,
-  ) {
-    return this.usersService.searchUsersByName(token, school, searchString);
+  async search(@Param('searchString') searchString: string, @GetCurrentSchool() school: string) {
+    return this.usersService.searchUsersByName(school, searchString);
   }
 
   @Post(`:username/${EDU_API_USER_ACCOUNTS_ENDPOINT}`)

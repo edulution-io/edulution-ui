@@ -10,10 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface AnswerDto {
-  surveyId: string;
+const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
 
-  attendee?: string;
-}
-
-export default AnswerDto;
+export default THIRTY_DAYS;

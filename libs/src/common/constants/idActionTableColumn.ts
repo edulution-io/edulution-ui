@@ -10,14 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import AttendeeDto from '@libs/user/types/attendee.dto';
+const ID_ACTION_TABLE_COLUMN = 'id-action-table-column';
 
-interface SurveyAnswerDto {
-  id: string;
-  attendee: AttendeeDto;
-  surveyId: string;
-  saveNo: number;
-  answer: JSON;
-}
-
-export default SurveyAnswerDto;
+export default ID_ACTION_TABLE_COLUMN;
