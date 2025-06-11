@@ -41,6 +41,7 @@ interface AdaptiveDialogProps {
   variant?: 'primary' | 'secondary' | 'tertiary';
   mobileContentClassName?: string;
   desktopContentClassName?: string;
+  zIndex?: string;
 }
 
 const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
@@ -53,6 +54,7 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
   variant = 'primary',
   mobileContentClassName,
   desktopContentClassName,
+  zIndex,
 }) => {
   const { isMobileView } = useMedia();
 
@@ -84,6 +86,7 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
       <DialogContent
         variant={variant}
         className={desktopContentClassName}
+        zIndex={zIndex}
       >
         <DialogTitle>{title}</DialogTitle>
         {body}

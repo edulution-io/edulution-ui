@@ -11,6 +11,7 @@
  */
 
 import { create } from 'zustand';
+import { toast } from 'sonner';
 import eduApi from '@/api/eduApi';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { SURVEY_TEMPLATES_ENDPOINT, TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
@@ -29,7 +30,10 @@ interface TemplateMenuStore {
   uploadTemplate: (template: SurveyTemplateDto) => Promise<void>;
   isSubmitting: boolean;
 
+  isOpenTemplateConfirmDeletion: boolean;
+  setIsOpenTemplateConfirmDeletion: (state: boolean) => void;
   deleteTemplate: (templateFileName: string) => Promise<void>;
+  error?: Error;
 
   template?: SurveyTemplateDto;
   setTemplate: (template: SurveyTemplateDto) => void;
@@ -40,10 +44,12 @@ interface TemplateMenuStore {
 
 const TemplateMenuStoreInitialState = {
   isOpenTemplateMenu: false,
+  isOpenTemplateConfirmDeletion: false,
   template: undefined,
   templates: [],
   isSubmitting: false,
   isLoading: false,
+  error: undefined,
 };
 
 const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
@@ -105,6 +111,8 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
     }
   },
 
+  setIsOpenTemplateConfirmDeletion: (state: boolean) => set({ isOpenTemplateConfirmDeletion: state }),
+
   deleteTemplate: async (templateFileName: string): Promise<void> => {
     if (!templateFileName) {
       return;
@@ -113,6 +121,7 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
     set({ isSubmitting: true });
     try {
       await eduApi.delete(`${EDU_API_CONFIG_ENDPOINTS.FILES}/${APPS.SURVEYS}/${TEMPLATES}/${templateFileName}`);
+      toast.success('survey.editor.templateMenu.deletion.success');
     } catch (error) {
       handleApiError(error, set);
     } finally {
