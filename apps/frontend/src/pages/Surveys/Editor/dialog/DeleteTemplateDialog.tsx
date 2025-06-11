@@ -35,7 +35,8 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
   const handleRemoveTemplate = async () => {
     if (template?.fileName) {
       await deleteTemplate(template?.fileName);
-      await fetchTemplates();
+      void fetchTemplates();
+      setIsOpenTemplateConfirmDeletion(false);
     }
   };
 
