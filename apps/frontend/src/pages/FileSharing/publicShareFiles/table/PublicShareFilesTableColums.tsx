@@ -24,6 +24,7 @@ import { Globe, QrCodeIcon } from 'lucide-react';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 import copyToClipboard from '@/utils/copyToClipboard';
 import { MdFileCopy } from 'react-icons/md';
+import usePublicShareFilesStore from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
 
 const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
   {
@@ -179,6 +180,7 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
     accessorFn: (row) => row.fileLink,
     cell: ({ row }) => {
       const { origin } = window.location;
+      const { setPublicShareFile, setIsShareFileQrCodeDialogOpen } = usePublicShareFilesStore();
       const { publicFileLink } = row.original;
       const url = `${origin}/${publicFileLink}`;
       return (
@@ -199,7 +201,10 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
           />
           <QrCodeIcon
             size={BUTTONS_ICON_WIDTH}
-            onClick={() => copyToClipboard(url)}
+            onClick={() => {
+              setPublicShareFile(row.original);
+              setIsShareFileQrCodeDialogOpen(true);
+            }}
           />
         </div>
       );

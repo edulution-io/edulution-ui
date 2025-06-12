@@ -18,6 +18,7 @@ import PublicShareFilesTable from '@/pages/FileSharing/publicShareFiles/table/Pu
 import PublicShareFilesFloatingButtonsBar from '@/pages/FileSharing/FloatingButtonsBar/PublicShareFilesFloatingButtonsBar';
 import DeletePublicFileDialog from '@/pages/FileSharing/publicShareFiles/dialog/DeletePublicFileDialog';
 import EditPublicShareFileDialog from '@/pages/FileSharing/publicShareFiles/dialog/EditPublicShareFileDialog';
+import QRCodePublicFileDialog from '@/pages/FileSharing/publicShareFiles/dialog/QRCodePublicFileDialog';
 
 const PublicShareFilesPage = () => {
   const { t } = useTranslation();
@@ -32,6 +33,7 @@ const PublicShareFilesPage = () => {
       <PublicShareFilesTable />
       <DeletePublicFileDialog />
       <EditPublicShareFileDialog />
+      <QRCodePublicFileDialog />
       <PublicShareFilesFloatingButtonsBar />
     </PageLayout>
   );
