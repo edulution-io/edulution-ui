@@ -46,11 +46,13 @@ class WebdavService {
     config: {
       method: string;
       url?: string;
-      data?: string | Record<string, any> | Buffer; // eslint-disable-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data?: string | Record<string, any> | Buffer;
       headers?: Record<string, string | number>;
     },
     fileSharingErrorMessage: ErrorMessage,
-    transformer?: (data: any) => T, // eslint-disable-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    transformer?: (data: any) => T,
   ): Promise<T | WebdavStatusResponse> {
     try {
       const response = await client(config);
@@ -72,7 +74,6 @@ class WebdavService {
         FileSharingErrorMessage.WebDavError,
         HttpStatus.INTERNAL_SERVER_ERROR,
         response?.statusText || 'WebDAV request failed',
-        WebdavService.name,
       );
     }
   }

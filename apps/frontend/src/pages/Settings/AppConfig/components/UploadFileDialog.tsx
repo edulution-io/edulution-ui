@@ -42,7 +42,7 @@ const UploadFileDialog: React.FC<UploadFileDialogProps> = ({ settingLocation, ta
     </>
   );
 
-  const handleUplaod = async () => {
+  const handleUpload = async () => {
     try {
       await Promise.all(
         filesToUpload.map(async (file) => {
@@ -78,7 +78,7 @@ const UploadFileDialog: React.FC<UploadFileDialogProps> = ({ settingLocation, ta
         variant="btn-collaboration"
         size="lg"
         type="button"
-        onClick={handleUplaod}
+        onClick={handleUpload}
         disabled={isLoading || filesToUpload.length === 0}
       >
         {t('common.upload')}

@@ -15,7 +15,7 @@ import React from 'react';
 interface WarningBoxProps {
   title: string;
   description: string;
-  items: File[];
+  filenames: string[];
   borderColor: string;
   backgroundColor: string;
   textColor: string;
@@ -25,13 +25,13 @@ interface WarningBoxProps {
 const WarningBox: React.FC<WarningBoxProps> = ({
   title,
   description,
-  items,
+  filenames,
   borderColor,
   backgroundColor,
   textColor,
   icon,
 }: WarningBoxProps) => {
-  if (!items.length) return null;
+  if (!filenames.length) return null;
   return (
     <div
       className={`
@@ -43,8 +43,8 @@ const WarningBox: React.FC<WarningBoxProps> = ({
       <p className="font-bold">{title}</p>
       <p className="text-sm">{description}</p>
       <ul className="ml-4 list-disc">
-        {items.map((file) => (
-          <li key={file.name}>{file.name}</li>
+        {filenames.map((filename) => (
+          <li key={filename}>{filename}</li>
         ))}
       </ul>
     </div>

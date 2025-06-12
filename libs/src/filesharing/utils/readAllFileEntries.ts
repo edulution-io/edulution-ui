@@ -10,19 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import CollectFileJobData from '@libs/queue/types/collectFileJobData';
-import FileJobData from '@libs/queue/types/fileJobData';
-import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
-import MoveOrRenameJobData from '@libs/queue/types/moveOrRenameJobData';
-import UploadFileJobData from '@libs/queue/types/uploadFileJobData';
-import CreateFolderJobData from '@libs/queue/types/createFolderJobData';
+const readAllFileEntries = (reader: FileSystemDirectoryReader): Promise<FileSystemEntry[]> =>
+  new Promise<FileSystemEntry[]>((resolve, reject) => {
+    const all: FileSystemEntry[] = [];
 
-type FileOperationQueueJobData =
-  | CollectFileJobData
-  | FileJobData
-  | DeleteFileJobData
-  | MoveOrRenameJobData
-  | CreateFolderJobData
-  | UploadFileJobData;
+    const step = () => {
+      reader.readEntries((entries) => {
+        if (!entries.length) return resolve(all);
+        all.push(...entries);
+        step();
+        return resolve;
+      }, reject);
+    };
+    step();
+  });
 
-export default FileOperationQueueJobData;
+export default readAllFileEntries;

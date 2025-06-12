@@ -25,6 +25,8 @@ import WebdavService from '../webdav/webdav.service';
 import AppConfigModule from '../appconfig/appconfig.module';
 import MoveOrRenameConsumer from './consumers/moveOrRename.consumer';
 import CopyFileConsumer from './consumers/copyFile.consumer';
+import CreateFolderConsumer from './consumers/createFolder.consumer';
+import UploadFileConsumer from './consumers/uploadFile.consumer';
 
 @Module({
   imports: [
@@ -46,6 +48,8 @@ import CopyFileConsumer from './consumers/copyFile.consumer';
     MoveOrRenameConsumer,
     CopyFileConsumer,
     WebdavService,
+    CreateFolderConsumer,
+    UploadFileConsumer,
   ],
   exports: [FilesharingService],
 })

@@ -10,19 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import CollectFileJobData from '@libs/queue/types/collectFileJobData';
-import FileJobData from '@libs/queue/types/fileJobData';
-import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
-import MoveOrRenameJobData from '@libs/queue/types/moveOrRenameJobData';
-import UploadFileJobData from '@libs/queue/types/uploadFileJobData';
-import CreateFolderJobData from '@libs/queue/types/createFolderJobData';
+import { zipSync } from 'fflate';
+import { collectEntries } from '@libs/filesharing/utils/collectEntries';
 
-type FileOperationQueueJobData =
-  | CollectFileJobData
-  | FileJobData
-  | DeleteFileJobData
-  | MoveOrRenameJobData
-  | CreateFolderJobData
-  | UploadFileJobData;
+const addEntryToZipFile = async (rootEntry: FileSystemEntry): Promise<Uint8Array> =>
+  zipSync(await collectEntries(rootEntry), { level: 9 });
 
-export default FileOperationQueueJobData;
+export default addEntryToZipFile;

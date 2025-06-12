@@ -19,6 +19,7 @@ enum FileSharingApiEndpoints {
   DUPLICATE = 'duplicate',
   COLLECT = 'collect',
   COPY = 'copy',
+  UPLOAD = 'upload',
 }
 
 export default FileSharingApiEndpoints;

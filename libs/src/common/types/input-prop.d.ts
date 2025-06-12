@@ -20,4 +20,12 @@ interface InputProp<T> {
   readOnly?: boolean;
 }
 
+declare module 'react' {
+  interface InputHTMLAttributes<T> extends React.HTMLAttributes<T> {
+    webkitdirectory?: string;
+    mozdirectory?: string;
+    directory?: string;
+  }
+}
+
 export default InputProp;

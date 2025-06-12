@@ -26,6 +26,9 @@ import { once } from 'events';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { createReadStream, createWriteStream, statSync } from 'fs';
 import createTempFile from '@libs/filesystem/utils/createTempFile';
+import CustomFile from '@libs/filesharing/types/customFile';
+import { Open } from 'unzipper';
+import { lookup } from 'mime-types';
 import CustomHttpException from '../common/CustomHttpException';
 import QueueService from '../queue/queue.service';
 import FilesystemService from '../filesystem/filesystem.service';
@@ -42,6 +45,83 @@ class FilesharingService {
     private readonly dynamicQueueService: QueueService,
     private readonly webDavService: WebdavService,
   ) {}
+
+  async uploadZippedFolder(
+    username: string,
+    parentPath: string,
+    folderName: string,
+    zipFile: CustomFile,
+  ): Promise<WebdavStatusResponse> {
+    await this.webDavService.ensureFolderExists(username, `${parentPath}/`, folderName);
+
+    const directory = await Open.buffer(zipFile.buffer);
+    const explicitDirs = directory.files.filter((f) => f.type === 'Directory');
+    const fileEntries = directory.files.filter((f) => f.type === 'File');
+    const totalFiles = fileEntries.length;
+    const dirSet = new Set<string>();
+
+    explicitDirs.forEach((d) => dirSet.add(d.path));
+    fileEntries.forEach(({ path }) => {
+      const segments = path.split('/').filter(Boolean);
+      segments.pop();
+
+      let cumulativePath = '';
+
+      segments.forEach((segment) => {
+        cumulativePath += `${segment}/`;
+        dirSet.add(cumulativePath);
+      });
+    });
+
+    const allDirs = Array.from(dirSet).sort((a, b) => a.length - b.length);
+
+    const totalDirs = allDirs.length;
+
+    let processedZipContent = 0;
+
+    await allDirs.reduce<Promise<void>>(async (prev, dirPath) => {
+      await prev;
+      await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.CREATE_FOLDER_JOB, {
+        username,
+        basePath: `${parentPath}/${folderName}`,
+        folderPath: dirPath,
+        total: totalDirs,
+        processed: (processedZipContent += 1),
+      });
+    }, Promise.resolve());
+
+    processedZipContent = 0;
+
+    await Promise.all(
+      fileEntries.map(async (entry) => {
+        if (entry.path.startsWith('__MACOSX') || entry.path.endsWith('.DS_Store')) return;
+
+        const buffer = Buffer.from(await entry.buffer());
+        const base64 = buffer.toString('base64');
+        const fileName = entry.path.split('/').pop()!;
+        const mimeType = lookup(fileName);
+
+        await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.FILE_UPLOAD_JOB, {
+          username,
+          fullPath: `${parentPath}/${folderName}/${entry.path}`,
+          file: {
+            fieldname: 'file',
+            originalname: fileName,
+            encoding: 'binary',
+            buffer,
+          } as CustomFile,
+
+          mimeType,
+          size: buffer.length,
+          base64,
+          total: totalFiles,
+          processed: (processedZipContent += 1),
+        });
+      }),
+    );
+
+    return { success: true, status: HttpStatus.CREATED };
+  }
 
   async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
     let i = 0;
