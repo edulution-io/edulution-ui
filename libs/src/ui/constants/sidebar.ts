@@ -12,4 +12,5 @@
 
 export const SIDEBAR_TRANSLATE_AMOUNT = 56;
 export const SIDEBAR_ICON_WIDTH = '40px';
+export const SIDEBAR_ICON_HEIGHT = '40px';
 export const SIDEBAR_WIDTH = 66;
