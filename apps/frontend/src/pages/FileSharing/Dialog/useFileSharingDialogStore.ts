@@ -32,6 +32,7 @@ import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import PublicShareFileLinkProps from '@libs/filesharing/types/publicShareFileLinkProps';
+import usePublicShareFilesStore from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
 
 interface FileSharingDialogStore {
   isDialogOpen: boolean;
@@ -138,6 +139,8 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
         await handleSingleData(action, endpoint, httpMethod, type, bulkDtos);
         if (action === FileActionType.SHARE_FILE_OR_FOLDER) {
           get().setFileOperationResult(true, t('filesharing.publicFileSharing.success.PublicFileLinkCreated'), 200);
+          const { fetchPublicShareFiles } = usePublicShareFilesStore.getState();
+          await fetchPublicShareFiles();
         } else {
           get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
         }

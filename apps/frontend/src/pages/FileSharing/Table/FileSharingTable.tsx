@@ -53,7 +53,7 @@ const FileSharingTable = () => {
     [shouldHideColumns, publicShareFiles],
   );
 
-  const columns = useMemo(() => getFileSharingTableColumns(undefined, undefined, publicShareFiles), []);
+  const columns = useMemo(() => getFileSharingTableColumns(undefined, undefined, publicShareFiles), [publicShareFiles]);
 
   return (
     <ScrollableTable
