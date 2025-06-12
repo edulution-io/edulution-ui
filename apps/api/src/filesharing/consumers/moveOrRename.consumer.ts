@@ -17,12 +17,12 @@ import { Job } from 'bullmq';
 import MoveOrRenameJobData from '@libs/queue/types/moveOrRenameJobData';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import SseService from '../../sse/sse.service';
-import WebdavService from '../../webdav/webdav.service';
 import { InjectModel } from '@nestjs/mongoose';
-import { PublicFileShare } from '../publicFileShare.schema';
 import { Model } from 'mongoose';
 import normalizeWebdavPath from '@libs/filesharing/utils/buildNormalizedWebdavPath';
+import SseService from '../../sse/sse.service';
+import WebdavService from '../../webdav/webdav.service';
+import { PublicFileShare } from '../publicFileShare.schema';
 
 @Injectable()
 class MoveOrRenameConsumer extends WorkerHost {
