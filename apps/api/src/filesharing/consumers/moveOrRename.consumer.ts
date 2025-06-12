@@ -19,12 +19,18 @@ import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressD
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import SseService from '../../sse/sse.service';
 import WebdavService from '../../webdav/webdav.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { PublicFileShare } from '../publicFileShare.schema';
+import { Model } from 'mongoose';
+import normalizeWebdavPath from '@libs/filesharing/utils/buildNormalizedWebdavPath';
 
 @Injectable()
 class MoveOrRenameConsumer extends WorkerHost {
   constructor(
     private readonly webDavService: WebdavService,
     private readonly sseService: SseService,
+    @InjectModel(PublicFileShare.name)
+    private readonly shareModel: Model<PublicFileShare>,
   ) {
     super();
   }
@@ -32,9 +38,13 @@ class MoveOrRenameConsumer extends WorkerHost {
   async process(job: Job<FileOperationQueueJobData>): Promise<void> {
     const { username, path, newPath, total, processed } = job.data as MoveOrRenameJobData;
     const failedPaths: string[] = [];
-
+    const share = await this.shareModel.findOne({ filePath: normalizeWebdavPath(path) });
     try {
       await this.webDavService.moveOrRenameResource(username, path, newPath);
+      if (share) {
+        const { _id: id } = share;
+        await this.shareModel.findByIdAndUpdate(id, { filePath: normalizeWebdavPath(newPath) });
+      }
     } catch (error) {
       failedPaths.push(newPath);
     }
