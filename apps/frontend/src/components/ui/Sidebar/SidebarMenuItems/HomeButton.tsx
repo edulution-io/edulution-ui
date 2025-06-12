@@ -28,7 +28,7 @@ const HomeButton: React.FC = () => {
       <NavLink
         to={DASHBOARD_ROUTE}
         onClick={toggleMobileSidebar}
-        className={`group relative right-0 top-0 z-50 flex max-h-14 cursor-pointer items-center justify-end gap-4 bg-black px-4 py-2 hover:bg-black hover:opacity-90 md:block md:px-2 ${pathname === DASHBOARD_ROUTE ? 'bg-black' : ''}`}
+        className={`group relative right-0 top-0 z-50 flex max-h-14 cursor-pointer items-center justify-end gap-4 bg-black px-4 py-2 hover:bg-black hover:opacity-90 md:block md:px-3 ${pathname === DASHBOARD_ROUTE ? 'bg-black' : ''}`}
       >
         <p className="text-md font-bold md:hidden">{t('home')}</p>
         <img
