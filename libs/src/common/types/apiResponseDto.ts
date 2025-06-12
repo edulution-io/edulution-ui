@@ -12,6 +12,7 @@
 
 interface ApiResponseDto<T> {
   status: number;
+  requiresPassword?: boolean;
   data?: T;
 }
 export default ApiResponseDto;

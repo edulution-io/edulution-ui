@@ -14,7 +14,7 @@ import React from 'react';
 import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
 
 const PublicFileDownloadInfo = () => {
-  const { publicShareFile } = usePublicShareFilesStore();
+  const { publicShareFile, isPasswordRequired } = usePublicShareFilesStore();
   if (!publicShareFile) return null;
   const { filename, fileLink, validUntil, createdAt, creator } = publicShareFile;
 
@@ -35,6 +35,11 @@ const PublicFileDownloadInfo = () => {
           Datei herunterladen
         </a>
 
+        {isPasswordRequired && (
+          <p className="text-red-500">
+            Diese Datei ist passwortgeschützt. Bitte geben Sie das Passwort ein, um die Datei herunterzuladen.
+          </p>
+        )}
         <ul className="space-y-1 text-sm">
           <li>
             <strong>Erstellt:</strong> {new Date(createdAt).toLocaleString('de-DE')}

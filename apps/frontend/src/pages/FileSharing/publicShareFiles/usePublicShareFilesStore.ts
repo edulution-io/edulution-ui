@@ -26,6 +26,7 @@ interface PublicShareFilesStore {
   selectedFilesToShareRows: PublicFileShareDto[];
   isShareFileDeleteDialogOpen: boolean;
   isShareFileEditDialogOpen: boolean;
+  isPasswordRequired: boolean;
 
   setIsShareFileDeleteDialogOpen: (open: boolean) => void;
   setIsShareFileEditDialogOpen: (open: boolean) => void;
@@ -55,6 +56,7 @@ const initialState = {
   error: null,
   isShareFileDeleteDialogOpen: false,
   isShareFileEditDialogOpen: false,
+  isPasswordRequired: false,
 };
 
 export const usePublicShareFilesStore = create<PublicShareFilesStore>((set, get) => ({
@@ -84,7 +86,12 @@ export const usePublicShareFilesStore = create<PublicShareFilesStore>((set, get)
         },
       );
 
-      set({ publicShareFile: data.data, isAccessRestricted: false, isLoading: false });
+      set({
+        publicShareFile: data.data,
+        isPasswordRequired: data.requiresPassword,
+        isAccessRestricted: false,
+        isLoading: false,
+      });
 
       switch (data.status) {
         case 404:

@@ -310,11 +310,15 @@ class FilesharingService {
   }
 
   async getPublicFileShareInfo(shareId: string, jwt?: string) {
-    const data = await this.shareModel.findById(shareId).lean().select('-password').exec();
+    const doc = await this.shareModel.findById(shareId).lean().exec();
 
-    if (!data) {
+    if (!doc) {
       return { status: HttpStatus.NOT_FOUND };
     }
+    const requiresPassword = !!doc.password?.trim();
+
+    const data = { ...doc };
+    delete data.password;
 
     let jwtUser: JwtUser | null = null;
 
@@ -338,7 +342,7 @@ class FilesharingService {
       case FILE_ACCESS_RESULT.PUBLIC:
       case FILE_ACCESS_RESULT.USER_MATCH:
       case FILE_ACCESS_RESULT.GROUP_MATCH:
-        return { success: true, status: HttpStatus.OK, data };
+        return { success: true, status: HttpStatus.OK, requiresPassword, data };
 
       case FILE_ACCESS_RESULT.NO_TOKEN:
         return { success: false, status: HttpStatus.FORBIDDEN };
