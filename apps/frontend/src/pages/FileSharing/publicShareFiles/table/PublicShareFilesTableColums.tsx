@@ -20,7 +20,10 @@ import formatIsoDate from '@libs/common/utils/Date/formatIsoDate';
 import { LockClosedIcon } from '@radix-ui/react-icons';
 import { BUTTONS_ICON_WIDTH } from '@libs/ui/constants';
 import { useTranslation } from 'react-i18next';
-import { Globe } from 'lucide-react';
+import { Globe, QrCodeIcon } from 'lucide-react';
+import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
+import copyToClipboard from '@/utils/copyToClipboard';
+import { MdFileCopy } from 'react-icons/md';
 
 const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
   {
@@ -94,29 +97,6 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
     },
   },
   {
-    accessorKey: PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_LINK,
-    header: ({ column }) => (
-      <SortableHeader<PublicFileShareDto, unknown>
-        className="min-w-32"
-        column={column}
-      />
-    ),
-    meta: {
-      translationId: 'filesharing.publicFileSharing.fileLink',
-    },
-    accessorFn: (row) => row.fileLink,
-    cell: ({ row }) => {
-      const { origin } = window.location;
-      const { publicFileLink } = row.original;
-      return (
-        <SelectableTextCell
-          text={`${origin}/${publicFileLink}`}
-          className="min-w-32"
-        />
-      );
-    },
-  },
-  {
     accessorKey: PUBLIC_SHARED_FILES_TABLE_COLUMN.IS_PASSWORD_PROTECTED,
     header: ({ column }) => (
       <SortableHeader<PublicFileShareDto, unknown>
@@ -182,6 +162,46 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
           text={`${attendeeText}${groupsText}`}
           onClick={() => {}}
         />
+      );
+    },
+  },
+  {
+    accessorKey: PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_LINK,
+    header: ({ column }) => (
+      <SortableHeader<PublicFileShareDto, unknown>
+        className="min-w-32"
+        column={column}
+      />
+    ),
+    meta: {
+      translationId: 'filesharing.publicFileSharing.fileLink',
+    },
+    accessorFn: (row) => row.fileLink,
+    cell: ({ row }) => {
+      const { origin } = window.location;
+      const { publicFileLink } = row.original;
+      const url = `${origin}/${publicFileLink}`;
+      return (
+        <div className="flex flex-row items-center space-x-2">
+          <InputWithActionIcons
+            type="text"
+            value={url}
+            readOnly
+            className="w-fit cursor-pointer"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              copyToClipboard(url);
+            }}
+          />
+          <MdFileCopy
+            size={BUTTONS_ICON_WIDTH}
+            onClick={() => copyToClipboard(url)}
+          />
+          <QrCodeIcon
+            size={BUTTONS_ICON_WIDTH}
+            onClick={() => copyToClipboard(url)}
+          />
+        </div>
       );
     },
   },
