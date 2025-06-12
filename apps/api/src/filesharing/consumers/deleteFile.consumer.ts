@@ -17,24 +17,34 @@ import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJ
 import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import normalizeWebdavPath from '@libs/filesharing/utils/buildNormalizedWebdavPath';
 import WebdavService from '../../webdav/webdav.service';
 import SseService from '../../sse/sse.service';
+import { PublicFileShare } from '../publicFileShare.schema';
 
 @Injectable()
 class DeleteFileConsumer extends WorkerHost {
   constructor(
     private readonly webDavService: WebdavService,
     private readonly sseService: SseService,
+    @InjectModel(PublicFileShare.name)
+    private readonly shareModel: Model<PublicFileShare>,
   ) {
     super();
   }
 
   async process(job: Job<FileOperationQueueJobData>): Promise<void> {
-    const { username, originFilePath, processed, total } = job.data as DeleteFileJobData;
-
+    const { username, originFilePath, processed, total, webdavFilePath } = job.data as DeleteFileJobData;
+    const share = await this.shareModel.findOne({ filePath: normalizeWebdavPath(webdavFilePath) });
     const failedPaths: string[] = [];
     try {
       await this.webDavService.deletePath(username, originFilePath);
+      if (share) {
+        const { _id: id } = share;
+        await this.shareModel.findByIdAndDelete(id);
+      }
     } catch (error) {
       failedPaths.push(originFilePath);
     }

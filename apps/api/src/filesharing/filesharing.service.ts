@@ -141,6 +141,7 @@ class FilesharingService {
         await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.DELETE_FILE_JOB, {
           username,
           originFilePath: fullPath,
+          webdavFilePath: path,
           total: paths.length,
           processed: (processedItems += 1),
         });

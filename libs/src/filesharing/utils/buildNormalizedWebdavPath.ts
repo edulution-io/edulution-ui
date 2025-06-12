@@ -10,12 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface DeleteFileJobData {
-  username: string;
-  originFilePath: string;
-  webdavFilePath: string;
-  total: number;
-  processed: number;
-}
+import { posix } from 'path';
 
-export default DeleteFileJobData;
+const normalizeWebdavPath = (filePath: string): string => {
+  const normalized = posix.normalize(filePath);
+  return `/webdav/${normalized.split('/').map(encodeURIComponent).join('/')}`;
+};
+
+export default normalizeWebdavPath;
