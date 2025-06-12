@@ -18,6 +18,7 @@ import eduApi from '@/api/eduApi';
 import buildApiFilePathUrl from '@libs/filesharing/utils/buildApiFilePathUrl';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
 import PublicShareFileLinkProps from '@libs/filesharing/types/publicShareFileLinkProps';
+import { AxiosResponse } from 'axios';
 
 const handleSingleData = async (
   action: FileActionType,
@@ -25,16 +26,22 @@ const handleSingleData = async (
   httpMethod: HttpMethods,
   type: ContentType,
   data: PathChangeOrCreateProps | PublicShareFileLinkProps,
-) => {
+): Promise<AxiosResponse | void> => {
   if ('path' in data) {
     if (action === FileActionType.CREATE_FOLDER) {
-      await eduApi[httpMethod](buildApiFileTypePathUrl(endpoint, type, data.path), data);
-    } else if (action === FileActionType.MOVE_FILE_FOLDER || action === FileActionType.RENAME_FILE_FOLDER) {
-      await eduApi[httpMethod](buildApiFilePathUrl(endpoint, data.path), data);
+      return eduApi[httpMethod](buildApiFileTypePathUrl(endpoint, type, data.path), data);
+    }
+    if (action === FileActionType.MOVE_FILE_FOLDER || action === FileActionType.RENAME_FILE_FOLDER) {
+      return eduApi[httpMethod](buildApiFilePathUrl(endpoint, data.path), data);
     }
   } else if (action === FileActionType.SHARE_FILE_OR_FOLDER) {
-    await eduApi[httpMethod](endpoint, data);
+    return eduApi[httpMethod](endpoint, data);
   }
+  throw new Error(
+    `handleSingleData: unsupported combination (action: "${action}", payload type: "${
+      'path' in data ? 'PathChangeOrCreateProps' : 'PublicShareFileLinkProps'
+    }").`,
+  );
 };
 
 export default handleSingleData;

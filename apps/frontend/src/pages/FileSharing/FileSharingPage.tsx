@@ -25,7 +25,8 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 import QuotaLimitInfo from '@/pages/FileSharing/utilities/QuotaLimitInfo';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
 import DownloadPublicFileDialog from '@/pages/FileSharing/publicShareFiles/dialog/DownloadPublicFileDialog';
-import usePublicShareFilesStore from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
+import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
+import QRCodePublicFileDialog from '@/pages/FileSharing/publicShareFiles/dialog/QRCodePublicFileDialog';
 
 const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
@@ -80,6 +81,7 @@ const FileSharingPage = () => {
 
       <ActionContentDialog />
       <DownloadPublicFileDialog />
+      <QRCodePublicFileDialog />
       <FileSharingFloatingButtonsBar />
     </PageLayout>
   );

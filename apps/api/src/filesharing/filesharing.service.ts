@@ -250,7 +250,7 @@ class FilesharingService {
       return {
         success: true,
         status: HttpStatus.OK,
-        data: fileLink,
+        data: shareId,
       };
     } catch (error) {
       throw new CustomHttpException(FileSharingErrorMessage.SharingFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);

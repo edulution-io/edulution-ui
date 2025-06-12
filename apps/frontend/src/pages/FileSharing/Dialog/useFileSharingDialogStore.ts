@@ -32,7 +32,9 @@ import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import PublicShareFileLinkProps from '@libs/filesharing/types/publicShareFileLinkProps';
-import usePublicShareFilesStore from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
+import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
+import useUserStore from '@/store/UserStore/UserStore';
+import ApiResponseDto from '@libs/common/types/apiResponseDto';
 
 interface FileSharingDialogStore {
   isDialogOpen: boolean;
@@ -136,11 +138,15 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
           get().handleDeleteItems,
         );
       } else {
-        await handleSingleData(action, endpoint, httpMethod, type, bulkDtos);
+        const response = await handleSingleData(action, endpoint, httpMethod, type, bulkDtos);
         if (action === FileActionType.SHARE_FILE_OR_FOLDER) {
+          const responseData = response as ApiResponseDto<string>;
+          const shareId = responseData.data;
+          const { fetchPublicShareFilesById, setIsShareFileQrCodeDialogOpen } = usePublicShareFilesStore.getState();
+          const { eduApiToken } = useUserStore.getState();
+          await fetchPublicShareFilesById(shareId || '', eduApiToken);
+          setIsShareFileQrCodeDialogOpen(true);
           get().setFileOperationResult(true, t('filesharing.publicFileSharing.success.PublicFileLinkCreated'), 200);
-          const { fetchPublicShareFiles } = usePublicShareFilesStore.getState();
-          await fetchPublicShareFiles();
         } else {
           get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
         }

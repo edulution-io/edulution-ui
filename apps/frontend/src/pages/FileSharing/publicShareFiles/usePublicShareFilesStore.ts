@@ -25,11 +25,14 @@ interface PublicShareFilesStore {
   publicShareFile: PublicFileShareDto | null;
   selectedFilesToShareRows: PublicFileShareDto[];
   isShareFileDeleteDialogOpen: boolean;
+  isShareFileQrCodeDialogOpen: boolean;
   isShareFileEditDialogOpen: boolean;
   isPasswordRequired: boolean;
 
   setIsShareFileDeleteDialogOpen: (open: boolean) => void;
   setIsShareFileEditDialogOpen: (open: boolean) => void;
+  setIsShareFileQrCodeDialogOpen: (open: boolean) => void;
+  setPublicShareFile: (file: PublicFileShareDto | null) => void;
   selectedRows: RowSelectionState;
   setSelectedRows: (sel: RowSelectionState) => void;
   isLoading: boolean;
@@ -56,6 +59,7 @@ const initialState = {
   error: null,
   isShareFileDeleteDialogOpen: false,
   isShareFileEditDialogOpen: false,
+  isShareFileQrCodeDialogOpen: false,
   isPasswordRequired: false,
 };
 
@@ -145,12 +149,14 @@ export const usePublicShareFilesStore = create<PublicShareFilesStore>((set, get)
     }
   },
 
+  setPublicShareFile: (file) => set({ publicShareFile: file }),
+
   setSelectedFilesToShareRows: (files) => set({ selectedFilesToShareRows: files }),
   setSelectedRows: (rows) => set({ selectedRows: rows }),
 
   setIsShareFileDeleteDialogOpen: (open) => set({ isShareFileDeleteDialogOpen: open }),
   setIsShareFileEditDialogOpen: (open) => set({ isShareFileEditDialogOpen: open }),
-
+  setIsShareFileQrCodeDialogOpen: (open) => set({ isShareFileQrCodeDialogOpen: open }),
   reset: () => set(initialState),
 }));
 
