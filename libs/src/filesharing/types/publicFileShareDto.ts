@@ -23,6 +23,7 @@ interface PublicFileShareDto {
   createdAt: Date;
   creator: string;
   fileLink: string;
+  publicFileLink: string;
   validUntil: string;
   password: string;
   invitedAttendees: AttendeeDto[];

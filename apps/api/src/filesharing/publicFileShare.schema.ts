@@ -35,6 +35,8 @@ export class PublicFileShare {
 
   @Prop({ required: true }) fileLink!: string;
 
+  @Prop({ required: true }) publicFileLink!: string;
+
   @Prop({ required: true }) creator!: string;
 
   @Prop({

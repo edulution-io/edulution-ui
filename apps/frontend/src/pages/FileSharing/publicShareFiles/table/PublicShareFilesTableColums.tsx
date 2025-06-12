@@ -107,10 +107,10 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
     accessorFn: (row) => row.fileLink,
     cell: ({ row }) => {
       const { origin } = window.location;
-      const { fileLink } = row.original;
+      const { publicFileLink } = row.original;
       return (
         <SelectableTextCell
-          text={`${origin}/${fileLink}`}
+          text={`${origin}/${publicFileLink}`}
           className="min-w-32"
         />
       );

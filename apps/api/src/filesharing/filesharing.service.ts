@@ -230,19 +230,20 @@ class FilesharingService {
 
       const shareId = uuidv4();
       const fileLink = `${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.PUBLIC_FILE_SHARE_DOWNLOAD}/${shareId}`;
-
+      const publicFileLink = `${FileSharingApiEndpoints.PUBLIC_FILE_SHARE}/${shareId}`;
       await this.shareModel.create({
         _id: shareId,
-        etag,
-        filename,
-        filePath,
-        validUntil,
+        etag: etag,
+        filename: filename,
+        filePath: filePath,
+        validUntil: validUntil,
         creator: username,
         accessibleByUser: invitedAttendees,
         accessibleByGroup: invitedGroups,
-        password,
-        expires,
-        fileLink,
+        publicFileLink: publicFileLink,
+        password: password,
+        expires: expires,
+        fileLink: fileLink,
       });
 
       return {
