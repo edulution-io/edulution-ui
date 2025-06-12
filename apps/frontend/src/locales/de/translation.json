@@ -237,7 +237,6 @@
     "changeUser": "Benutzer wechseln",
     "joinAgain": "Erneut teilnehmen",
     "passwordOfConference": "Passwort der Konferenz",
-    "orContinueWithoutAccount": "Oder fahre ohne Account fort",
     "conferenceIsNotStartedYet": "Die Konferenz wurde noch nicht gestartet. Du befindest dich derzeit im Warteraum und wirst automatisch weitergeleitet, sobald die Konferenz beginnt.",
     "conferenceIsPasswordProtected": "Diese Konferenz ist passwortgeschützt. Bitte gib das Passwort ein, um teilzunehmen.",
     "pleaseEnterYourFullName": "Gib deinen vollständigen Namen ein, um der Konferenz beizutreten.",
@@ -631,7 +630,16 @@
       }
     },
     "participate": {
-      "saveAnswerSuccess": "Die Antwort wurde gespeichert."
+      "saveAnswerSuccess": "Die Antwort wurde gespeichert.",
+      "username": "Benutzername",
+      "pleaseEnterYourFullName": "Gib entweder deinen vollständigen Namen ein, um an der Umfrage teilzunehmen. Oder benutze die Teilnahme-ID, um deine Abgabe zu überarbeiten.",
+      "yourFullName": "Name",
+      "invalidUsername": "Benutzername ist ungültig (erlaubt sind Buchstaben, Zahlen und [. -])",
+      "idHeader": "Deine Teilnahme-ID",
+      "idText": "Bitte notiere dir:",
+      "idParagraph": "Um deine Antwort einzusehen oder, falls konfiguriert, nochmals zu bearbeiten, kannst du die Teilnahme-ID hier benutzen.",
+      "usernameRequired": "Der Benutzername ist erforderlich",
+      "completeMessage": "Vielen Dank, dass du an der Umfrage Teilgenommen hast"
     },
     "errors": {
       "submitAnswerError": "Die Antwort konnte nicht gespeichert werden.",
@@ -645,7 +653,7 @@
       "participationErrorUserNotAssigned": "Du bist zu dieser Umfrage nicht eingeladen.",
       "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
       "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",
-      "idTypeError": "Ungültige Umfrage-ID.",
+      "missingIdError": "Fehlende Umfrage-ID.",
       "missingAnswerError": "Bitte fülle die Umfrage aus, bevor du deine Antwort abschickst."
     }
   },
@@ -664,7 +672,9 @@
     "confirmMultiDelete": "Sollen diese Umfragen wirklich gelöscht werden?",
     "confirmSingleDelete": "Soll die Umfrage wirklich gelöscht werden?",
     "deleteSurveys": "Lösche {{count}} Umfragen",
+    "deletedSurveys": "{{count}} Umfragen erfolgreich gelöscht",
     "deleteSurvey": "Umfrage Löschen",
+    "deletedSurvey": "Umfrage erfolgreich gelöscht",
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
     "view": {
@@ -1068,6 +1078,9 @@
   "login": {
     "pageTitle": "Login",
     "username_too_long": "Benutzername zu lang",
+    "username_too_short": "Benutzername zu kurz",
+    "username_not_regex": "Ungültiger Benutzername/Teilnahme-ID",
+    "publicUsername_notExisting": "Es existiert keine Abgabe mit der gegebenen Teilnahme-ID",
     "password_too_long": "Passwort zu lang",
     "forgot_password": "Passwort vergessen?",
     "remember_me": "Merken",
@@ -1204,7 +1217,8 @@
     "preview": "Vorschau",
     "format": "Formatieren",
     "upload": "Hochladen",
-    "mode": "Modus"
+    "mode": "Modus",
+    "orContinueWithoutAccount": "Oder fahre ohne Account fort"
   },
   "form": {
     "path": "Link",

@@ -107,7 +107,7 @@ function transToGroupOption(options: MultipleSelectorOptionSH[], groupBy?: strin
 }
 
 function removePickedOption(groupOption: GroupOption, picked: MultipleSelectorOptionSH[]) {
-  const cloneOption = JSON.parse(JSON.stringify(groupOption)) as GroupOption;
+  const cloneOption = structuredClone(groupOption);
 
   // eslint-disable-next-line no-restricted-syntax
   for (const [key, value] of Object.entries(cloneOption)) {

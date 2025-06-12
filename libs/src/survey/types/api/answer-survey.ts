@@ -10,10 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface AnswerDto {
-  surveyId: string;
+import { CompleteEvent } from 'survey-core';
+import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 
-  attendee?: string;
+interface AnswerSurvey extends Omit<PostSurveyAnswerDto, 'attendee'> {
+  isPublic: boolean;
+
+  attendee?: AttendeeDto;
+
+  surveyEditorCallbackOnSave?: CompleteEvent | undefined;
 }
 
-export default AnswerDto;
+export default AnswerSurvey;
