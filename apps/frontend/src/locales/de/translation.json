@@ -395,7 +395,8 @@
         "PublicFileIsOnlyDeletableByOwner": "Der öffentliche Freigabelink kann nur vom Besitzer gelöscht werden.",
         "PublicFileNotFound": "Öffentlicher Freigabelink nicht gefunden.",
         "PublicFileIsRestricted": "Der öffentliche Freigabelink ist auf bestimmte Nutzer oder Gruppen beschränkt.",
-        "PublicIsRestrictedByInvalidToken": "Der öffentliche Freigabelink ist durch ein ungültiges Token eingeschränkt."
+        "PublicIsRestrictedByInvalidToken": "Der öffentliche Freigabelink ist durch ein ungültiges Token eingeschränkt.",
+        "PublicFileWrongPassword": "Das eingegebene Passwort ist falsch."
       },
       "success": {
         "PublicFileLinkCreated": "Öffentlicher Freigabelink erfolgreich erstellt.",

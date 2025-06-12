@@ -36,6 +36,7 @@ enum FileSharingErrorMessage {
   PublicFileNotFound = 'filesharing.publicFileSharing.errors.PublicFileNotFound',
   PublicFileIsRestricted = 'filesharing.publicFileSharing.errors.PublicFileIsRestricted',
   PublicIsRestrictedByInvalidToken = 'filesharing.publicFileSharing.errors.PublicIsRestrictedByInvalidToken',
+  PublicFileWrongPassword = 'filesharing.publicFileSharing.errors.PublicFileWrongPassword',
 }
 
 export default FileSharingErrorMessage;
