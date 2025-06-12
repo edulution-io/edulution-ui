@@ -233,17 +233,17 @@ class FilesharingService {
       const publicFileLink = `${FileSharingApiEndpoints.PUBLIC_FILE_SHARE}/${shareId}`;
       await this.shareModel.create({
         _id: shareId,
-        etag: etag,
-        filename: filename,
-        filePath: filePath,
-        validUntil: validUntil,
+        etag,
+        filename,
+        filePath,
+        validUntil,
         creator: username,
         accessibleByUser: invitedAttendees,
         accessibleByGroup: invitedGroups,
-        publicFileLink: publicFileLink,
-        password: password,
-        expires: expires,
-        fileLink: fileLink,
+        publicFileLink,
+        password,
+        expires,
+        fileLink,
       });
 
       return {
