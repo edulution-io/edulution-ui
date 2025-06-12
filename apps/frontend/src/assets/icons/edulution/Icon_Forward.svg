@@ -1,20 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="Ebene_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: none;
-        stroke: #fff;
-        stroke-miterlimit: 10;
-        stroke-width: 3px;
-      }
-    </style>
-  </defs>
-  <path class="cls-1" d="M25.083,42.744l10.744-2.075s7.077,40.528,52.487,38.284l-12.98-10.525,6.469-8.875,27.113,20.763-20.754,29.016-9.067-6.582,9.619-12.834s-52.09,5.057-63.632-47.172Z"/>
-  <rect class="cls-1" x="12.573" y="28.721" width="125.175" height="92.35" rx="5.551" ry="5.551"/>
-  <line class="cls-1" x1="122.781" y1="121.071" x2="122.781" y2="28.29"/>
-  <line class="cls-1" x1="122.224" y1="55.609" x2="137.926" y2="55.609"/>
-  <line class="cls-1" x1="122.032" y1="70.354" x2="137.734" y2="70.354"/>
-  <line class="cls-1" x1="123.372" y1="85.673" x2="139.075" y2="85.673"/>
-  <line class="cls-1" x1="122.032" y1="100.992" x2="137.734" y2="100.992"/>
-</svg>
+<svg stroke="currentColor" fill="currentColor" stroke-width="0" version="1" viewBox="0 0 48 48" enable-background="new 0 0 48 48" height="200px" width="200px" xmlns="http://www.w3.org/2000/svg"><polygon fill="#3F51B5" points="44,29 30,17.3 30,40.7"></polygon><path fill="#3F51B5" d="M6,21V8h8v13c0,2.2,1.8,4,4,4h17v8H18C11.4,33,6,27.6,6,21z"></path></svg>

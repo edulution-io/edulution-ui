@@ -1,27 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="Ebene_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: none;
-        stroke: #fff;
-        stroke-miterlimit: 10;
-        stroke-width: 3px;
-      }
-    </style>
-  </defs>
-  <rect class="cls-1" x="12.413" y="28.825" width="125.175" height="92.35" rx="5.551" ry="5.551"/>
-  <line class="cls-1" x1="122.621" y1="121.175" x2="122.621" y2="28.393"/>
-  <line class="cls-1" x1="39.447" y1="120.965" x2="39.447" y2="28.184"/>
-  <line class="cls-1" x1="12.149" y1="55.936" x2="40.872" y2="55.936"/>
-  <line class="cls-1" x1="11.83" y1="70.904" x2="40.553" y2="70.904"/>
-  <line class="cls-1" x1="12.021" y1="85.904" x2="40.745" y2="85.904"/>
-  <line class="cls-1" x1="11.543" y1="101.319" x2="40.266" y2="101.319"/>
-  <line class="cls-1" x1="121.968" y1="55.67" x2="137.671" y2="55.67"/>
-  <line class="cls-1" x1="121.776" y1="70.415" x2="137.479" y2="70.415"/>
-  <line class="cls-1" x1="123.117" y1="85.734" x2="138.819" y2="85.734"/>
-  <line class="cls-1" x1="121.776" y1="101.053" x2="137.479" y2="101.053"/>
-  <line class="cls-1" x1="49.505" y1="55.902" x2="112.699" y2="55.902"/>
-  <line class="cls-1" x1="49.583" y1="70.708" x2="112.485" y2="70.708"/>
-  <line class="cls-1" x1="49.848" y1="86.047" x2="81.348" y2="86.047"/>
-</svg>
+<svg stroke="currentColor" fill="currentColor" stroke-width="0" version="1" viewBox="0 0 48 48" enable-background="new 0 0 48 48" height="200px" width="200px" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="7" fill="#BBDEFB" width="40" height="34"></rect><rect x="9" y="12" fill="#3F51B5" width="30" height="5"></rect><g fill="#2196F3"><rect x="9" y="21" width="13" height="16"></rect><rect x="26" y="21" width="13" height="16"></rect></g></svg>
