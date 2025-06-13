@@ -397,13 +397,18 @@
       "createNewFileLink": "Neuen Datei-Link erstellen",
       "editPublicShareFile": "Freigabelink bearbeiten",
       "sharePublicFile": "Öffentliche Freigabelinks",
+      "searchSharedFiles": "Suche nach geteilten Dateien",
+      "sharedBy": "Geteilt von: ",
+      "getFileAccess": "Bitte gib das Kennwort für diese Freigabe ein, um Zugriff auf die Inhalte zu erhalten.",
+      "downloadPublicFile": "Datei herunterladen",
       "errors": {
         "PublicFileDeletionFailed": "Öffentlicher Freigabelink konnte nicht gelöscht werden.",
         "PublicFileIsOnlyDeletableByOwner": "Der öffentliche Freigabelink kann nur vom Besitzer gelöscht werden.",
         "PublicFileNotFound": "Öffentlicher Freigabelink nicht gefunden.",
         "PublicFileIsRestricted": "Der öffentliche Freigabelink ist auf bestimmte Nutzer oder Gruppen beschränkt.",
         "PublicIsRestrictedByInvalidToken": "Der öffentliche Freigabelink ist durch ein ungültiges Token eingeschränkt.",
-        "PublicFileWrongPassword": "Das eingegebene Passwort ist falsch."
+        "PublicFileWrongPassword": "Das eingegebene Passwort ist falsch.",
+        "FileCouldNotBeFound": "Die angeorderte Datei konnte nicht gefunden werden. Bitte überprüfe den Link oder wende dich an den Ersteller."
       },
       "success": {
         "PublicFileLinkCreated": "Öffentlicher Freigabelink erfolgreich erstellt.",

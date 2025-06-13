@@ -47,7 +47,7 @@ const PublicShareFilesTable = () => {
       columns={PublicShareFilesTableColumns}
       data={publicShareFiles}
       filterKey={PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME}
-      filterPlaceHolderText="fileSharing.filterPlaceHolderText"
+      filterPlaceHolderText="filesharing.publicFileSharing.searchSharedFiles"
       onRowSelectionChange={handleRowSelectionChange}
       isLoading={isLoading}
       selectedRows={selectedRows}

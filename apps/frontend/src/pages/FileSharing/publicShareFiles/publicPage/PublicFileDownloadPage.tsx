@@ -22,6 +22,7 @@ import PublicFileDownloadInfo from '@/pages/FileSharing/publicShareFiles/publicP
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import usePublicShareFilePageStore from '@/pages/FileSharing/publicShareFiles/publicPage/usePublicShareFilePageStore';
 import APPS from '@libs/appconfig/constants/apps';
+import buildAbsolutePublicDownloadUrl from '@libs/filesharing/utils/buildAbsolutePublicDownloadUrl';
 
 const PublicFileDownloadPage: React.FC = () => {
   const { eduApiToken } = useUserStore();
@@ -29,8 +30,14 @@ const PublicFileDownloadPage: React.FC = () => {
 
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { fetchPublicShareFilesById, publicShareFile, isAccessRestricted, isFileAvailable, isLoading } =
-    usePublicShareFilesStore();
+  const {
+    fetchPublicShareFilesById,
+    publicShareFile,
+    isAccessRestricted,
+    isFileAvailable,
+    isLoading,
+    isPasswordRequired,
+  } = usePublicShareFilesStore();
 
   const location = useLocation();
   const id = location.pathname.split('/').pop() ?? '';
@@ -49,12 +56,25 @@ const PublicFileDownloadPage: React.FC = () => {
 
   if (isLoading) {
     content = <LoadingIndicatorDialog isOpen={isLoading} />;
-  } else if (publicShareFile) {
-    content = <PublicFileDownloadInfo />;
+  }
+  if (publicShareFile) {
+    const { filename, creator, expires, fileLink } = publicShareFile;
+
+    const absoluteUrl = buildAbsolutePublicDownloadUrl(fileLink);
+
+    content = (
+      <PublicFileDownloadInfo
+        filename={filename}
+        creator={creator}
+        expires={new Date(expires)}
+        absoluteUrl={absoluteUrl}
+        isPasswordRequired={isPasswordRequired}
+      />
+    );
   } else if (isAccessRestricted) {
     content = (
       <div className="space-y-6 text-center">
-        <h3 className="text-xl font-semibold">{t('common.restrictedAccess')}</h3>
+        <h3 className="text-xl font-semibold">{t('filesharing.publicFileSharing.errors.PublicFileIsRestricted')}</h3>
 
         <Button
           className="mx-auto w-52 justify-center shadow-xl"
@@ -67,7 +87,11 @@ const PublicFileDownloadPage: React.FC = () => {
       </div>
     );
   } else if (!isFileAvailable) {
-    content = <h3 className="text-center text-xl font-semibold">{t('common.fileNotFound')}</h3>;
+    content = (
+      <h3 className="text-center text-xl font-semibold">
+        {t('filesharing.publicFileSharing.errors.FileCouldNotBeFound')}
+      </h3>
+    );
   }
 
   return (

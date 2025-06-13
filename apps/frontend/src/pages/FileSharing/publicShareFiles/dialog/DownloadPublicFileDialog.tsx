@@ -18,21 +18,34 @@ import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import usePublicShareFilePageStore from '@/pages/FileSharing/publicShareFiles/publicPage/usePublicShareFilePageStore';
 import useUserStore from '@/store/UserStore/UserStore';
+import PublicFileDownloadInfo from '@/pages/FileSharing/publicShareFiles/publicPage/PublicFileDownloadInfo';
+import buildAbsolutePublicDownloadUrl from '@libs/filesharing/utils/buildAbsolutePublicDownloadUrl';
 
 interface DeletePublicFileDialoggProps {
   trigger?: React.ReactNode;
 }
 
 const DownloadPublicFileDialog: React.FC<DeletePublicFileDialoggProps> = ({ trigger }) => {
-  const { isLoading, setIsShareFileDeleteDialogOpen, fetchPublicShareFilesById, publicShareFile } =
-    usePublicShareFilesStore();
+  const {
+    isLoading,
+    setIsShareFileDeleteDialogOpen,
+    fetchPublicShareFilesById,
+    publicShareFile,
+    isPasswordRequired,
+    isAccessRestricted,
+  } = usePublicShareFilesStore();
   const { openShareInfoDialog, closeDialog, shareId } = usePublicShareFilePageStore();
   const { eduApiToken } = useUserStore();
 
   useEffect(() => {
     if (!shareId) return;
-    void fetchPublicShareFilesById(shareId, eduApiToken);
-  }, [shareId, eduApiToken]);
+
+    const load = async () => {
+      await fetchPublicShareFilesById(shareId, eduApiToken);
+    };
+
+    void load();
+  }, [shareId, eduApiToken, fetchPublicShareFilesById]);
 
   const onSubmit = () => {
     setIsShareFileDeleteDialogOpen(false);
@@ -43,21 +56,34 @@ const DownloadPublicFileDialog: React.FC<DeletePublicFileDialoggProps> = ({ trig
 
   const getDialogBody = () => {
     if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
-    return (
-      <div className="text-background">
-        <p>{publicShareFile?.creator}</p>
-        <p>{publicShareFile?.creator}</p>
-        <p>{publicShareFile?.creator}</p>
-        <p>{publicShareFile?.creator}</p>
-      </div>
-    );
+
+    if (isAccessRestricted || !publicShareFile) {
+      return (
+        <div className="text-center">
+          <p>{t('filesharing.publicFileSharing.errors.PublicFileIsRestricted')}</p>
+        </div>
+      );
+    } else {
+      const { filename, creator, expires, fileLink } = publicShareFile;
+      const absoluteUrl = buildAbsolutePublicDownloadUrl(fileLink);
+      return (
+        <PublicFileDownloadInfo
+          filename={filename}
+          creator={creator}
+          expires={new Date(expires)}
+          absoluteUrl={absoluteUrl}
+          isPasswordRequired={isPasswordRequired}
+          authToken={eduApiToken}
+        />
+      );
+    }
   };
 
   const getFooter = () => (
     <DialogFooterButtons
       handleClose={handleClose}
       handleSubmit={onSubmit}
-      submitButtonText="common.delete"
+      hideSubmitButton={true}
     />
   );
 
@@ -66,7 +92,7 @@ const DownloadPublicFileDialog: React.FC<DeletePublicFileDialoggProps> = ({ trig
       isOpen={openShareInfoDialog}
       trigger={trigger}
       handleOpenChange={handleClose}
-      title={t('filesharing.publicFileSharing.deleteDialogTitle')}
+      title={t('filesharing.publicFileSharing.downloadPublicFile')}
       body={getDialogBody()}
       footer={getFooter()}
     />
