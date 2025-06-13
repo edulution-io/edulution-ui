@@ -342,6 +342,12 @@
       "SharingFailed": "Austeilen der Dateien fehlgeschlagen",
       "CopyFailed": "Kopieren fehlgeschlagen"
     },
+
+    "publicShareFilesPage": {
+      "title": "Öffentlich geteilte Dateien",
+      "description": "Hier findest du alle Dateien, die öffentlich geteilt wurden. Jeder, der den Link hat, kann diese Dateien herunterladen."
+    },
+
     "progressBox": {
       "info": "Info",
       "titleSharing": "Dateien werden ausgeteilt",
@@ -367,6 +373,61 @@
       "FileNameRequired": "Dateiname ist erforderlich",
       "NewFileNameRequired": "Neuer Dateiname ist erforderlich",
       "NameRequired": "Name erforderlich"
+    },
+
+    "publicFileSharing": {
+      "fileName": "Dateiname",
+      "selectedFile": "Ausgewählte Datei: ",
+      "actions": "Aktionen",
+      "createdAt": "Erstellt am",
+      "validUntil": "Gültig bis",
+      "isActive": "Aktiv",
+      "fileLink": "Neuer Datei-Link",
+      "newFileLink": "New File Link",
+      "invitedAttendees": "Eingeladen",
+      "confirmMultiDelete": "Sollen diese Datei-Links wirklich zu den folgenden Dateien wirklich gelöscht werden?",
+      "confirmSingleDelete": "Soll dieser Datei-Link zur folgenden Datei wirklich gelöscht werden?",
+      "deleteFileLink": "Datei-Link löschen",
+      "deleteFileLinks": "Datei-Links löschen",
+      "selectPersonsOrGroupsWhoCanAccess": "Beschränke Personen oder Gruppen, die Zugriff auf diese Datei haben",
+      "isAccessibleBy": "Zugänglich für",
+      "isPasswordProtected": "Passwort",
+      "publiclyAccessible": "Öffentlich zugänglich",
+      "qrCodePublicShareFile": "QR-Code für öffentlichen Freigabelink",
+      "createNewFileLink": "Neuen Datei-Link erstellen",
+      "editPublicShareFile": "Freigabelink bearbeiten",
+      "sharePublicFile": "Öffentliche Freigabelinks",
+      "searchSharedFiles": "Suche nach geteilten Dateien",
+      "sharedBy": "Geteilt von: ",
+      "getFileAccess": "Bitte gib das Kennwort für diese Freigabe ein, um Zugriff auf die Inhalte zu erhalten.",
+      "downloadPublicFile": "Datei herunterladen",
+      "errors": {
+        "PublicFileDeletionFailed": "Öffentlicher Freigabelink konnte nicht gelöscht werden.",
+        "PublicFileIsOnlyDeletableByOwner": "Der öffentliche Freigabelink kann nur vom Besitzer gelöscht werden.",
+        "PublicFileNotFound": "Öffentlicher Freigabelink nicht gefunden.",
+        "PublicFileIsRestricted": "Der öffentliche Freigabelink ist auf bestimmte Nutzer oder Gruppen beschränkt.",
+        "PublicIsRestrictedByInvalidToken": "Der öffentliche Freigabelink ist durch ein ungültiges Token eingeschränkt.",
+        "PublicFileWrongPassword": "Das eingegebene Passwort ist falsch.",
+        "FileCouldNotBeFound": "Die angeorderte Datei konnte nicht gefunden werden. Bitte überprüfe den Link oder wende dich an den Ersteller."
+      },
+      "success": {
+        "PublicFileLinkCreated": "Öffentlicher Freigabelink erfolgreich erstellt.",
+        "PublicFileLinkDeleted": "Öffentlicher Freigabelink erfolgreich gelöscht.",
+        "PublicFileLinkUpdated": "Öffentlicher Freigabelink erfolgreich aktualisiert."
+      },
+      "scope": {
+        "public": "Öffentlich",
+        "publicHint": "Jeder, der den Link hat, kann diese Datei herunterladen.",
+        "restricted": "Eingeschränkt",
+        "restrictedHint": "Nur die ausgewählten Gruppen oder Benutzer können diese Datei herunterladen."
+      }
+    },
+
+    "expiry": {
+      "select": "Ablaufdatum auswählen",
+      "selectedItemPrefix": "Ausgewählte Datei, die geteilt wird:",
+      "noInviteesWarning": "⚠️  WARNUNG: Jeder, der den Link besitzt, kann diese Datei herunterladen.",
+      "inviteesWarning": "⚠️ WARNUNG: Jeder, der zu den ausgewählten Gruppen oder Benutzern gehört, kann diese Datei herunterladen."
     }
   },
   "forums": {
@@ -1203,6 +1264,11 @@
         "timeSlot": "Uhr",
         "placeholder": "DD/MM/YYYY HH:mm"
       }
+    },
+    "errors": {
+      "dateRequired": "Datum ist erforderlich",
+      "dateInvalid": "Ungültiges Datumsformat",
+      "datePast": "Datum muss in der Zukunft liegen"
     }
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich gestartet",
@@ -1213,6 +1279,7 @@
     "size": "Größe",
     "lastModified": "Zuletzt geändert",
     "type": "Typ",
+    "isShared": "Geteilt",
     "filesOrFoldersSelected": "{{selected}} von {{total}} Dateien/Ordnern ausgewählt"
   },
   "currentDirectory": "Aktuelles Verzeichnis",
@@ -1318,6 +1385,12 @@
     "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
     "selectedItem": "Ausgewähltes Element"
   },
+
+  "shareDialog": {
+    "shareFilesOrDirectories": "Dateien teilen",
+    "share": "Teilen"
+  },
+
   "deleteDialog": {
     "areYouSure": "Sind Sie sich absolut sicher?",
     "actionCannotBeUndone": "Diese Aktion kann nicht rückgängig gemacht werden. Dies wird die Dateien dauerhaft löschen:",
@@ -1347,7 +1420,8 @@
     "move": "Verschieben",
     "delete": "Löschen",
     "download": "Herunterladen",
-    "copy": "Kopieren"
+    "copy": "Kopieren",
+    "share": "Teilen"
   },
   "response": {
     "successfully": "Aktion war erfolgreich",

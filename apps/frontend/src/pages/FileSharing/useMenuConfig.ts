@@ -85,7 +85,14 @@ const useFileSharingMenuConfig = () => {
       };
     });
 
-    setMenuItems(menuBarItems);
+    const sharedItem: MenuItem = {
+      id: 'shared',
+      label: t('mountpoints.shared', { defaultValue: 'Geteilte Dateien' }),
+      icon: ShareIcon,
+      action: () => handlePathChange('/shared', 'shared'),
+    };
+
+    setMenuItems([...menuBarItems, sharedItem]);
   }, [mountPoints, user?.ldapGroups?.roles, user?.ldapGroups?.schools, searchParams, setSearchParams, t]);
 
   return {

@@ -12,12 +12,12 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '../shared/Button';
-import { type ButtonProps } from '../shared/Button';
+import { Button, type ButtonProps } from '../shared/Button';
 
 interface DialogFooterProps {
   disableSubmit?: boolean;
   disableCancel?: boolean;
+  hideSubmitButton?: boolean;
   cancelButtonText?: string;
   submitButtonText?: string;
   submitButtonType?: 'submit' | 'button';
@@ -37,6 +37,7 @@ const DialogFooterButtons: React.FC<DialogFooterProps> = ({
   submitButtonVariant = 'btn-collaboration',
   handleSubmit,
   handleClose,
+  hideSubmitButton = false,
 }) => {
   const { t } = useTranslation();
 
@@ -53,7 +54,7 @@ const DialogFooterButtons: React.FC<DialogFooterProps> = ({
           {t(cancelButtonText ?? 'common.cancel')}
         </Button>
       )}
-      {handleSubmit && (
+      {handleSubmit && !hideSubmitButton && (
         <Button
           variant={submitButtonVariant}
           disabled={disableSubmit}
