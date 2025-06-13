@@ -15,11 +15,11 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import downloadPublicFile from '@libs/filesharing/utils/downloadPublicFile';
-import FileHeader from './components/FileHeader';
 import PublicFilePasswordInput from '@/pages/FileSharing/publicShareFiles/publicPage/components/PublicFilePasswordInput';
 import DownloadPublicFile from '@/pages/FileSharing/publicShareFiles/publicPage/components/DownloadPublicFile';
 import FileMetaList from '@/pages/FileSharing/publicShareFiles/publicPage/components/FileMetaList';
 import { useTranslation } from 'react-i18next';
+import FileHeader from './components/FileHeader';
 
 const schema = z.object({ password: z.string() });
 type FormValues = z.infer<typeof schema>;

@@ -63,27 +63,26 @@ const DownloadPublicFileDialog: React.FC<DeletePublicFileDialoggProps> = ({ trig
           <p>{t('filesharing.publicFileSharing.errors.PublicFileIsRestricted')}</p>
         </div>
       );
-    } else {
-      const { filename, creator, expires, fileLink } = publicShareFile;
-      const absoluteUrl = buildAbsolutePublicDownloadUrl(fileLink);
-      return (
-        <PublicFileDownloadInfo
-          filename={filename}
-          creator={creator}
-          expires={new Date(expires)}
-          absoluteUrl={absoluteUrl}
-          isPasswordRequired={isPasswordRequired}
-          authToken={eduApiToken}
-        />
-      );
     }
+    const { filename, creator, expires, fileLink } = publicShareFile;
+    const absoluteUrl = buildAbsolutePublicDownloadUrl(fileLink);
+    return (
+      <PublicFileDownloadInfo
+        filename={filename}
+        creator={creator}
+        expires={new Date(expires)}
+        absoluteUrl={absoluteUrl}
+        isPasswordRequired={isPasswordRequired}
+        authToken={eduApiToken}
+      />
+    );
   };
 
   const getFooter = () => (
     <DialogFooterButtons
       handleClose={handleClose}
       handleSubmit={onSubmit}
-      hideSubmitButton={true}
+      hideSubmitButton
     />
   );
 
