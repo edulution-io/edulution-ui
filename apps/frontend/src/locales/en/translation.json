@@ -377,8 +377,11 @@
 
     "publicFileSharing": {
       "fileName": "Filename",
+      "selectedFile": "Selected File: ",
+      "actions": "Actions",
       "createdAt": "Created at",
       "validUntil": "Valid until",
+      "newFileLink": "New File Link",
       "isActive": "Active",
       "fileLink": "File link",
       "selectPersonsOrGroupsWhoCanAccess": "Restrict persons or groups who can access the file",
@@ -390,6 +393,10 @@
       "deleteFileLink": "Delete file link",
       "deleteFileLinks": "Delete file links",
       "isPasswordProtected": "Password",
+      "qrCodePublicShareFile": "QR Code for public file link",
+      "createNewFileLink": "Create new file link",
+      "editPublicShareFile": "Edit file link",
+      "sharePublicFile": "Share public files",
       "errors": {
         "PublicFileDeletionFailed": "Failed to delete public file link",
         "PublicFileIsOnlyDeletableByOwner": "The public file link can only be deleted by the owner of the file.",
@@ -402,14 +409,17 @@
         "PublicFileLinkCreated": "Public file link created successfully",
         "PublicFileLinkDeleted": "Public file link deleted successfully",
         "PublicFileLinkUpdated": "Public file link updated successfully"
+      },
+      "scope": {
+        "public": "Public",
+        "publicHint": "Anyone with the link can access this file.",
+        "restricted": "Restricted",
+        "restrictedHint": "Only selected users or groups can access this file."
       }
     },
 
     "expiry": {
       "select": "Select expiry time",
-      "24h": "24 hours",
-      "7d": "7 days",
-      "30d": "30 days",
       "selectedItemPrefix": "Selected file that is shared:",
       "noInviteesWarning": "⚠️  WARNING: Anyone with the link will be able to download this file.",
       "inviteesWarning": "⚠️  WARNING: Anyone within the selected groups or users will be able to download this file."
@@ -1245,6 +1255,11 @@
         "timeSlot": "o'clock",
         "placeholder": "MM/DD/YYYY HH:mm AM/PM"
       }
+    },
+    "errors": {
+      "dateRequired": "Date is required",
+      "dateInvalid": "Invalid date format",
+      "datePast": "Date must be in the future"
     }
   },
   "fileOperationSuccessful": "File operation successful started",

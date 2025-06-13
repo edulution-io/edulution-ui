@@ -27,7 +27,6 @@ import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/htt
 import { createReadStream, createWriteStream, readFileSync, statSync } from 'fs';
 import createTempFile from '@libs/filesystem/utils/createTempFile';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import SHARE_FILE_EXPIRY_MS from '@libs/filesharing/constants/shareFileExpiryMs';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
@@ -37,7 +36,7 @@ import JwtUser from '@libs/user/types/jwt/jwtUser';
 import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
 import FILE_ACCESS_RESULT from '@libs/filesharing/constants/fileAccessResult';
 import checkFileAccessRights from '@libs/filesharing/utils/checkFileAccessRights';
-import CreatePublicFileShareDto from '@libs/filesharing/types/createPublicFileShareDto';
+import CreateEditPublicFileShareDto from '@libs/filesharing/types/createEditPublicFileShareDto';
 import PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto';
 import { v4 as uuidv4 } from 'uuid';
 import { PublicFileShare, PublicFileShareDocument } from './publicFileShare.schema';
@@ -218,11 +217,11 @@ class FilesharingService {
 
   async generateFileLink(
     username: string,
-    createPublicFileShareDto: CreatePublicFileShareDto,
+    createPublicFileShareDto: CreateEditPublicFileShareDto,
   ): Promise<WebdavStatusResponse> {
     const { etag, filename, filePath, invitedAttendees, invitedGroups, password, expires } = createPublicFileShareDto;
 
-    const validUntil = new Date(Date.now() + SHARE_FILE_EXPIRY_MS[expires]);
+    const validUntil = expires;
     try {
       const user = await this.userService.findOne(username);
       if (!user) {
@@ -407,7 +406,6 @@ class FilesharingService {
 
     if (expires) {
       share.expires = expires;
-      share.validUntil = new Date(Date.now() + SHARE_FILE_EXPIRY_MS[expires]);
     }
 
     if (invitedAttendees) share.invitedAttendees = invitedAttendees;

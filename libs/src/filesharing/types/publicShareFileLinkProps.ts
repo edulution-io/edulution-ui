@@ -10,10 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ShareFileLinkExpiryValue } from '@libs/filesharing/constants/shareFileLinkExpiryValue';
-
 interface PublicShareFileLinkProps {
-  expires: ShareFileLinkExpiryValue;
+  expires: Date;
 }
 
 export default PublicShareFileLinkProps;

@@ -10,12 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SHARE_FILE_EXPIRY_OPTION from '@libs/filesharing/constants/shareFileExpiryOption';
-import { ShareFileLinkExpiryValue } from './shareFileLinkExpiryValue';
+const DEFAULT_FILE_LINK_EXPIRY = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-const FILE_LINK_EXPIRY_VALUES = SHARE_FILE_EXPIRY_OPTION.map((o) => o.value) as [
-  ShareFileLinkExpiryValue,
-  ...ShareFileLinkExpiryValue[],
-];
-
-export default FILE_LINK_EXPIRY_VALUES;
+export default DEFAULT_FILE_LINK_EXPIRY;

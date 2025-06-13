@@ -10,14 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IsArray, IsEnum, IsOptional, IsString } from 'class-validator';
-import FILE_LINK_EXPIRY_VALUES from '@libs/filesharing/constants/fileLinkExpiryValues';
+import { IsArray, IsDate, IsOptional, IsString } from 'class-validator';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import { Type } from 'class-transformer';
+import ShareFileLinkScope from '@libs/filesharing/constants/shareFileLinkScope';
 
-class CreatePublicFileShareDto {
-  @IsEnum(FILE_LINK_EXPIRY_VALUES)
-  expires!: (typeof FILE_LINK_EXPIRY_VALUES)[number];
+class CreateEditPublicFileShareDto {
+  @IsDate()
+  @Type(() => Date)
+  expires: Date = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
   @IsString()
   filePath!: string;
@@ -39,6 +41,8 @@ class CreatePublicFileShareDto {
   @IsString()
   @IsOptional()
   password?: string;
+
+  scope: ShareFileLinkScope;
 }
 
-export default CreatePublicFileShareDto;
+export default CreateEditPublicFileShareDto;

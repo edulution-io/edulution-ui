@@ -23,8 +23,10 @@ import { useTranslation } from 'react-i18next';
 import { Globe, QrCodeIcon } from 'lucide-react';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 import copyToClipboard from '@/utils/copyToClipboard';
-import { MdFileCopy } from 'react-icons/md';
-import usePublicShareFilesStore from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
+import { MdDelete, MdEdit, MdFileCopy } from 'react-icons/md';
+import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
+import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
+import { Button } from '@/components/shared/Button';
 
 const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
   {
@@ -86,12 +88,17 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
     meta: {
       translationId: 'filesharing.publicFileSharing.validUntil',
     },
-    accessorFn: (row) => row.validUntil,
+    accessorFn: (row) => row.expires,
     cell: ({ row }) => {
-      const { validUntil } = row.original;
+      const { expires } = row.original;
+      const validUntil = new Date(expires).toLocaleString('de-DE', {
+        timeZone: 'Europe/Berlin',
+        dateStyle: 'short',
+        timeStyle: 'short',
+      });
       return (
         <SelectableTextCell
-          text={formatIsoDate(validUntil.toLocaleString())}
+          text={validUntil}
           className="min-w-32"
         />
       );
@@ -206,6 +213,57 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
               setIsShareFileQrCodeDialogOpen(true);
             }}
           />
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_ACTIONS,
+    header: ({ column }) => (
+      <SortableHeader<PublicFileShareDto, unknown>
+        className="min-w-32"
+        column={column}
+      />
+    ),
+    meta: {
+      translationId: 'filesharing.publicFileSharing.actions',
+    },
+    cell: ({ row }) => {
+      const { setEditMultipleFiles, setIsShareFileEditDialogOpen, deletePublicShareFiles } = usePublicShareFilesStore();
+      const { closeDialog } = useFileSharingDialogStore();
+      const { original } = row;
+
+      return (
+        <div className="flex items-center space-x-2 ">
+          <Button
+            type="button"
+            variant="btn-small"
+            className="bg-transparent"
+            onClick={() => {
+              setEditMultipleFiles([original]);
+              closeDialog();
+              setIsShareFileEditDialogOpen(true);
+            }}
+          >
+            <MdEdit
+              className="text-background"
+              size={BUTTONS_ICON_WIDTH}
+            />
+          </Button>
+          <Button
+            type="button"
+            variant="btn-small"
+            className="bg-transparent"
+            onClick={() => {
+              void deletePublicShareFiles([original]);
+              closeDialog();
+            }}
+          >
+            <MdDelete
+              className="text-background"
+              size={BUTTONS_ICON_WIDTH}
+            />
+          </Button>
         </div>
       );
     },

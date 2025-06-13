@@ -377,10 +377,13 @@
 
     "publicFileSharing": {
       "fileName": "Dateiname",
+      "selectedFile": "Ausgewählte Datei: ",
+      "actions": "Aktionen",
       "createdAt": "Erstellt am",
       "validUntil": "Gültig bis",
       "isActive": "Aktiv",
-      "fileLink": "Datei-Link",
+      "fileLink": "Neuer Datei-Link",
+      "newFileLink": "New File Link",
       "invitedAttendees": "Eingeladen",
       "confirmMultiDelete": "Sollen diese Datei-Links wirklich zu den folgenden Dateien wirklich gelöscht werden?",
       "confirmSingleDelete": "Soll dieser Datei-Link zur folgenden Datei wirklich gelöscht werden?",
@@ -390,6 +393,10 @@
       "isAccessibleBy": "Zugänglich für",
       "isPasswordProtected": "Passwort",
       "publiclyAccessible": "Öffentlich zugänglich",
+      "qrCodePublicShareFile": "QR-Code für öffentlichen Freigabelink",
+      "createNewFileLink": "Neuen Datei-Link erstellen",
+      "editPublicShareFile": "Freigabelink bearbeiten",
+      "sharePublicFile": "Öffentliche Freigabelinks",
       "errors": {
         "PublicFileDeletionFailed": "Öffentlicher Freigabelink konnte nicht gelöscht werden.",
         "PublicFileIsOnlyDeletableByOwner": "Der öffentliche Freigabelink kann nur vom Besitzer gelöscht werden.",
@@ -402,14 +409,17 @@
         "PublicFileLinkCreated": "Öffentlicher Freigabelink erfolgreich erstellt.",
         "PublicFileLinkDeleted": "Öffentlicher Freigabelink erfolgreich gelöscht.",
         "PublicFileLinkUpdated": "Öffentlicher Freigabelink erfolgreich aktualisiert."
+      },
+      "scope": {
+        "public": "Öffentlich",
+        "publicHint": "Jeder, der den Link hat, kann diese Datei herunterladen.",
+        "restricted": "Eingeschränkt",
+        "restrictedHint": "Nur die ausgewählten Gruppen oder Benutzer können diese Datei herunterladen."
       }
     },
 
     "expiry": {
       "select": "Ablaufdatum auswählen",
-      "24h": "24 Stunden",
-      "7d": "7 Tage",
-      "30d": "30 Tage",
       "selectedItemPrefix": "Ausgewählte Datei, die geteilt wird:",
       "noInviteesWarning": "⚠️  WARNUNG: Jeder, der den Link besitzt, kann diese Datei herunterladen.",
       "inviteesWarning": "⚠️ WARNUNG: Jeder, der zu den ausgewählten Gruppen oder Benutzern gehört, kann diese Datei herunterladen."
@@ -1249,6 +1259,11 @@
         "timeSlot": "Uhr",
         "placeholder": "DD/MM/YYYY HH:mm"
       }
+    },
+    "errors": {
+      "dateRequired": "Datum ist erforderlich",
+      "dateInvalid": "Ungültiges Datumsformat",
+      "datePast": "Datum muss in der Zukunft liegen"
     }
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich gestartet",

@@ -29,7 +29,7 @@ import MAX_UPLOAD_CHUNK_SIZE from '@libs/ui/constants/maxUploadChunkSize';
 import splitArrayIntoChunks from '@libs/common/utils/splitArrayIntoChunks';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
-import AnyFileDialogValues from '@libs/filesharing/types/anyFileDialogValues';
+import { FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
 
 interface CreateContentDialogProps {
   trigger?: React.ReactNode;
@@ -71,13 +71,26 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     isSubmitButtonDisabled,
     setSubmitButtonIsDisabled,
   } = useFileSharingDialogStore();
-  const { currentPath, selectedItems } = useFileSharingStore();
+  const { currentPath, selectedItems, setSelectedItems, setSelectedRows } = useFileSharingStore();
   const { appConfigs } = useAppConfigsStore();
 
-  const { Component, schema, titleKey, submitKey, initialValues, endpoint, httpMethod, requiresForm, type, getData } =
-    getDialogBodySetup(action);
+  const {
+    Component,
+    schema,
+    titleKey,
+    submitKey,
+    initialValues,
+    endpoint,
+    httpMethod,
+    requiresForm,
+    type,
+    getData,
+    desktopComponentClassName,
+    mobileComponentClassName,
+    disableSubmitButton = false,
+  } = getDialogBodySetup(action);
 
-  const form = useForm<AnyFileDialogValues>({
+  const form = useForm<FileSharingFormValues>({
     resolver: schema ? zodResolver(schema) : undefined,
     mode: 'onChange',
     defaultValues: initialValues,
@@ -88,6 +101,8 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     setMoveOrCopyItemToPath({} as DirectoryFileDTO);
     setSelectedFileType('');
     setFilesToUpload([]);
+    setSelectedItems([]);
+    setSelectedRows({});
     closeDialog();
     form.reset();
   };
@@ -126,7 +141,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
 
   const onSubmit = async () => {
     const documentVendor = getDocumentVendor(appConfigs);
-
+    if (!getData) return;
     const uploadPayload = await getData(form, currentPath, {
       selectedItems,
       moveOrCopyItemToPath,
@@ -180,6 +195,8 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       handleOpenChange={handelOpenChange}
       trigger={trigger}
       title={t(title)}
+      desktopContentClassName={desktopComponentClassName}
+      mobileContentClassName={mobileComponentClassName}
       body={
         <div
           role="presentation"
@@ -202,7 +219,9 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
                 handleSubmit={handleFormSubmit}
                 submitButtonText={submitKey}
                 submitButtonType="submit"
+                hideSubmitButton={disableSubmitButton}
                 disableSubmit={
+                  disableSubmitButton ||
                   isLoading ||
                   isSubmitButtonDisabled ||
                   (requiresForm && !form.formState.isValid) ||

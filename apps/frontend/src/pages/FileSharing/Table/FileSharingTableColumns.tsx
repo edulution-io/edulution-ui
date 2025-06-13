@@ -24,7 +24,7 @@ import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
-import { TABLE_ICON_SIZE } from '@libs/ui/constants';
+import { BUTTONS_ICON_WIDTH, TABLE_ICON_SIZE } from '@libs/ui/constants';
 import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
@@ -37,6 +37,10 @@ import useMedia from '@/hooks/useMedia';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import { MdOutlineCloudDone } from 'react-icons/md';
 import PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto';
+import IconWithCount from '@/components/shared/IconWithCount';
+import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
+import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
+import FileActionType from '@libs/filesharing/types/fileActionType';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
@@ -64,7 +68,7 @@ const renderFileIcon = (item: DirectoryFileDTO, isCurrentlyDisabled: boolean) =>
 const getFileSharingTableColumns = (
   visibleColumns?: string[],
   onFilenameClick?: (item: Row<DirectoryFileDTO>) => void,
-  publicShareFiles: PublicFileShareDto[] = [],
+  shares: Map<string, PublicFileShareDto[]> = new Map(),
 ): ColumnDef<DirectoryFileDTO>[] => {
   const allColumns: ColumnDef<DirectoryFileDTO>[] = [
     {
@@ -137,18 +141,26 @@ const getFileSharingTableColumns = (
         translationId: 'fileSharingTable.isShared',
       },
       cell: ({ row }) => {
-        const matchedFile = publicShareFiles.find(
-          (file): file is PublicFileShareDto => file.filePath === row.original.filePath,
-        );
-        const isShared = Boolean(matchedFile);
+        const matched = shares.get(row.original.filePath) ?? [];
+        const matchCount = matched.length;
+        const isShared = matchCount > 0;
+
+        const { setEditMultipleFiles } = usePublicShareFilesStore();
+        const { openDialog } = useFileSharingDialogStore();
 
         return (
           <div className="flex items-center justify-center">
             {isShared && (
               <div>
-                <MdOutlineCloudDone
-                  size={20}
-                  className="text-blue-600"
+                <IconWithCount
+                  Icon={MdOutlineCloudDone}
+                  size={BUTTONS_ICON_WIDTH}
+                  className="text-background"
+                  count={matchCount}
+                  onClick={() => {
+                    setEditMultipleFiles(matched);
+                    openDialog(FileActionType.SHARE_FILE_OR_FOLDER);
+                  }}
                 />
               </div>
             )}

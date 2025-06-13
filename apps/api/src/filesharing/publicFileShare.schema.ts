@@ -11,11 +11,10 @@
  */
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import FILE_LINK_EXPIRY_VALUES from '@libs/filesharing/constants/fileLinkExpiryValues';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import DEFAULT_FILE_LINK_EXPIRY from '@libs/filesharing/constants/defaultFileLinkExpiry';
 
 export type PublicFileShareDocument = PublicFileShare & Document & { _id: string };
 
@@ -40,11 +39,12 @@ export class PublicFileShare {
   @Prop({ required: true }) creator!: string;
 
   @Prop({
-    type: String,
-    enum: FILE_LINK_EXPIRY_VALUES,
+    type: Date,
     required: true,
+    index: { expireAfterSeconds: 0 },
+    default: () => DEFAULT_FILE_LINK_EXPIRY,
   })
-  expires!: (typeof FILE_LINK_EXPIRY_VALUES)[number];
+  expires!: Date;
 
   @Prop() password?: string;
 
@@ -53,12 +53,6 @@ export class PublicFileShare {
 
   @Prop({ required: true, type: [Object] })
   invitedGroups!: MultipleSelectorGroup[];
-
-  @Prop({
-    required: true,
-    index: { expireAfterSeconds: 0 },
-  })
-  validUntil!: Date;
 }
 
 export const PublicFileShareSchema = SchemaFactory.createForClass(PublicFileShare).set('toJSON', { virtuals: true });

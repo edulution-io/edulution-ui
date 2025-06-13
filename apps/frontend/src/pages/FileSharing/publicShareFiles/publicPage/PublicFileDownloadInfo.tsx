@@ -29,7 +29,7 @@ type FormValues = z.infer<typeof schema>;
 const PublicFileDownloadInfo = () => {
   const { publicShareFile, isPasswordRequired } = usePublicShareFilesStore();
   if (!publicShareFile) return null;
-  const { filename, fileLink, validUntil, createdAt, creator } = publicShareFile;
+  const { filename, fileLink, expires, createdAt, creator } = publicShareFile;
 
   const apiPath = fileLink.startsWith('/') ? fileLink.slice(1) : fileLink;
 
@@ -107,7 +107,7 @@ const PublicFileDownloadInfo = () => {
             <strong>Erstellt:</strong> {new Date(createdAt).toLocaleString('de-DE')}
           </li>
           <li>
-            <strong>Gültig bis:</strong> {new Date(validUntil).toLocaleString('de-DE')}
+            <strong>Gültig bis:</strong> {new Date(expires).toLocaleString('de-DE')}
           </li>
         </ul>
       </article>

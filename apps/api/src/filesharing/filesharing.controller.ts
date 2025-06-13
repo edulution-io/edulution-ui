@@ -41,7 +41,7 @@ import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOpe
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
-import CreatePublicFileShareDto from '@libs/filesharing/types/createPublicFileShareDto';
+import CreateEditPublicFileShareDto from '@libs/filesharing/types/createEditPublicFileShareDto';
 import PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
@@ -178,7 +178,7 @@ class FilesharingController {
 
   @Post(FileSharingApiEndpoints.PUBLIC_FILE_SHARE)
   async publicShareFile(
-    @Body() createPublicFileShareDto: CreatePublicFileShareDto,
+    @Body() createPublicFileShareDto: CreateEditPublicFileShareDto,
     @GetCurrentUsername() username: string,
   ) {
     return this.filesharingService.generateFileLink(username, createPublicFileShareDto);

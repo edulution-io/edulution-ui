@@ -18,11 +18,11 @@ import { t } from 'i18next';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 
-interface DeletePublicFileDialoggProps {
+interface DeletePublicFileDialogProps {
   trigger?: React.ReactNode;
 }
 
-const DeletePublicFileDialog: React.FC<DeletePublicFileDialoggProps> = ({ trigger }) => {
+const DeletePublicFileDialog: React.FC<DeletePublicFileDialogProps> = ({ trigger }) => {
   const {
     selectedFilesToShareRows,
     isLoading,

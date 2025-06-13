@@ -30,31 +30,27 @@ import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
 import MoveDirectoryDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveDirectoryDialogBody';
 import CopyContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/CopyContentDialogBody';
-import ShareFileFolderLinkDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/ShareFileFolderLinkDialogBody';
+import ShareFileLinkDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/ShareFileLinkDialogBody';
 import PublicShareFileLinkProps from '@libs/filesharing/types/publicShareFileLinkProps';
 import fileSharingFromSchema from '@libs/filesharing/types/fileSharingFromSchema';
-import publicShareFilesFormSchema from '@libs/filesharing/types/publicShareFilesFormSchema';
-import {
-  PublicFileSharingFormValues,
-  PublicShareFilesDialogProps,
-} from '@libs/filesharing/types/publicShareFilesDialogProps';
-import FILE_LINK_EXPIRY_VALUES from '@libs/filesharing/constants/fileLinkExpiryValues';
-import AnyFileDialogValues from '@libs/filesharing/types/anyFileDialogValues';
 import DialogInputValues from '@libs/filesharing/types/dialogInputValues';
 import { FILESHARING_SHARED_FILES_API_ENDPOINT } from '@libs/filesharing/constants/apiEndpoints';
 
-interface DialogBodyConfigurationBase<T extends AnyFileDialogValues = AnyFileDialogValues> {
-  schema?: z.ZodSchema<T>;
+interface DialogBodyConfigurationBase {
+  schema?: z.ZodSchema<FileSharingFormValues>;
   isRenaming?: boolean;
   titleKey: string;
   submitKey: string;
-  initialValues?: T;
+  initialValues?: FileSharingFormValues;
   endpoint: string;
   type: ContentType;
   httpMethod: HttpMethods;
   componentProps?: Record<string, unknown>;
-  getData: (
-    form: UseFormReturn<T>,
+  disableSubmitButton?: boolean;
+  desktopComponentClassName?: string;
+  mobileComponentClassName?: string;
+  getData?: (
+    form: UseFormReturn<FileSharingFormValues>,
     currentPath: string,
     inputValues: DialogInputValues,
   ) => Promise<
@@ -67,26 +63,26 @@ interface DialogBodyConfigurationBase<T extends AnyFileDialogValues = AnyFileDia
   requiresForm?: boolean;
 }
 
-interface CreateFolderDialogBodyConfiguration extends DialogBodyConfigurationBase<FileSharingFormValues> {
+interface CreateFolderDialogBodyConfiguration extends DialogBodyConfigurationBase {
   Component: React.ComponentType<FilesharingDialogProps>;
 }
-interface CreateFileDialogBodyConfiguration extends DialogBodyConfigurationBase<FileSharingFormValues> {
+interface CreateFileDialogBodyConfiguration extends DialogBodyConfigurationBase {
   Component: React.ComponentType<FilesharingDialogProps>;
 }
-interface RenameDialogBodyConfiguration extends DialogBodyConfigurationBase<FileSharingFormValues> {
+interface RenameDialogBodyConfiguration extends DialogBodyConfigurationBase {
   Component: React.ComponentType<FilesharingDialogProps>;
 }
-interface DeleteDialogBodyConfiguration extends DialogBodyConfigurationBase<FileSharingFormValues> {
+interface DeleteDialogBodyConfiguration extends DialogBodyConfigurationBase {
   Component: React.ComponentType;
 }
-interface UploadFileDialogBodyConfiguration extends DialogBodyConfigurationBase<FileSharingFormValues> {
+interface UploadFileDialogBodyConfiguration extends DialogBodyConfigurationBase {
   Component: React.ComponentType;
 }
-interface MoveDialogBodyConfiguration extends DialogBodyConfigurationBase<FileSharingFormValues> {
+interface MoveDialogBodyConfiguration extends DialogBodyConfigurationBase {
   Component: React.ComponentType<MoveContentDialogBodyProps>;
 }
-interface ShareDialogBodyConfiguration extends DialogBodyConfigurationBase<PublicFileSharingFormValues> {
-  Component: React.ComponentType<PublicShareFilesDialogProps>;
+interface ShareDialogBodyConfiguration extends DialogBodyConfigurationBase {
+  Component: React.ComponentType;
 }
 
 type DialogBodyConfiguration =
@@ -101,13 +97,6 @@ type DialogBodyConfiguration =
 const initialFormValues = {
   filename: '',
   extension: '',
-};
-
-const initialFormValuesWithExpiration: PublicFileSharingFormValues = {
-  expires: FILE_LINK_EXPIRY_VALUES[0],
-  invitedAttendees: [],
-  invitedGroups: [],
-  password: '',
 };
 
 const createFolderConfig: CreateFolderDialogBodyConfiguration = {
@@ -252,30 +241,15 @@ const moveFileFolderConfig: MoveDialogBodyConfiguration = {
 };
 
 const shareFileOrFolderConfig: ShareDialogBodyConfiguration = {
-  Component: ShareFileFolderLinkDialogBody,
-  titleKey: 'shareDialog.shareFilesOrDirectories',
+  Component: ShareFileLinkDialogBody,
+  titleKey: 'filesharing.publicFileSharing.sharePublicFile',
   submitKey: 'shareDialog.share',
-  initialValues: initialFormValuesWithExpiration,
-  schema: publicShareFilesFormSchema,
   endpoint: FILESHARING_SHARED_FILES_API_ENDPOINT,
   httpMethod: HttpMethods.POST,
   type: ContentType.FILE,
-  requiresForm: true,
-  async getData(form, _currentPath, { selectedItems }: DialogInputValues) {
-    if (!selectedItems?.length) return [];
-
-    const createPublicFileShareDto = {
-      etag: selectedItems[0].etag,
-      filename: selectedItems[0].filename,
-      filePath: selectedItems[0].filePath,
-      expires: form.getValues('expires'),
-      invitedAttendees: form.getValues('invitedAttendees') || [],
-      invitedGroups: form.getValues('invitedGroups') || [],
-      password: form.getValues('password') || '',
-    };
-
-    return Promise.resolve(createPublicFileShareDto);
-  },
+  disableSubmitButton: true,
+  desktopComponentClassName: 'max-w-[60%] max-h-[75%] min-h-fit-content',
+  requiresForm: false,
 };
 
 const dialogBodyConfigurations: Record<FileActionType, DialogBodyConfiguration> = {

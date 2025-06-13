@@ -11,12 +11,12 @@
  */
 
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import { ShareFileLinkExpiryValue } from '@libs/filesharing/constants/shareFileLinkExpiryValue';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import ShareFileLinkScope from '@libs/filesharing/constants/shareFileLinkScope';
 
 interface PublicFileShareDto {
   _id: string;
-  expires: ShareFileLinkExpiryValue;
+  expires: Date;
   sharedFileId: string;
   filename: string;
   filePath: string;
@@ -24,10 +24,11 @@ interface PublicFileShareDto {
   creator: string;
   fileLink: string;
   publicFileLink: string;
-  validUntil: string;
+  etag: string;
   password: string;
   invitedAttendees: AttendeeDto[];
   invitedGroups: MultipleSelectorGroup[];
+  scope: ShareFileLinkScope;
 }
 
 export default PublicFileShareDto;

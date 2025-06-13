@@ -17,31 +17,20 @@ import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePat
 import eduApi from '@/api/eduApi';
 import buildApiFilePathUrl from '@libs/filesharing/utils/buildApiFilePathUrl';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
-import PublicShareFileLinkProps from '@libs/filesharing/types/publicShareFileLinkProps';
-import { AxiosResponse } from 'axios';
 
 const handleSingleData = async (
   action: FileActionType,
   endpoint: string,
   httpMethod: HttpMethods,
   type: ContentType,
-  data: PathChangeOrCreateProps | PublicShareFileLinkProps,
-): Promise<AxiosResponse | void> => {
-  if ('path' in data) {
-    if (action === FileActionType.CREATE_FOLDER) {
-      return eduApi[httpMethod](buildApiFileTypePathUrl(endpoint, type, data.path), data);
-    }
-    if (action === FileActionType.MOVE_FILE_FOLDER || action === FileActionType.RENAME_FILE_FOLDER) {
-      return eduApi[httpMethod](buildApiFilePathUrl(endpoint, data.path), data);
-    }
-  } else if (action === FileActionType.SHARE_FILE_OR_FOLDER) {
-    return eduApi[httpMethod](endpoint, data);
+  data: PathChangeOrCreateProps,
+): Promise<void> => {
+  if (action === FileActionType.CREATE_FOLDER) {
+    await eduApi[httpMethod](buildApiFileTypePathUrl(endpoint, type, data.path), data);
   }
-  throw new Error(
-    `handleSingleData: unsupported combination (action: "${action}", payload type: "${
-      'path' in data ? 'PathChangeOrCreateProps' : 'PublicShareFileLinkProps'
-    }").`,
-  );
+  if (action === FileActionType.MOVE_FILE_FOLDER || action === FileActionType.RENAME_FILE_FOLDER) {
+    await eduApi[httpMethod](buildApiFilePathUrl(endpoint, data.path), data);
+  }
 };
 
 export default handleSingleData;

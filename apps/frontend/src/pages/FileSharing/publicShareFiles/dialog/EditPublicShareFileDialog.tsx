@@ -11,77 +11,96 @@
  */
 
 import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import ShareFileFolderLinkDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/ShareFileFolderLinkDialogBody';
-import { z } from 'zod';
-import publicShareFilesFormSchema from '@libs/filesharing/types/publicShareFilesFormSchema';
+import { useForm, UseFormReturn } from 'react-hook-form';
 import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto';
+import CreateEditNewFileLinkDialogBody from '@/pages/FileSharing/publicShareFiles/dialog/CreateEditNewFileLinkDialogBody';
+import type PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto';
+import DEFAULT_FILE_LINK_EXPIRY from '@libs/filesharing/constants/defaultFileLinkExpiry';
+import CreateEditPublicFileShareDto from '@libs/filesharing/types/createEditPublicFileShareDto';
+import { useTranslation } from 'react-i18next';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 
-type FormValues = z.infer<typeof publicShareFilesFormSchema>;
-
-const EditPublicShareFileDialog = () => {
+const EditPublicShareFileDialog: React.FC = () => {
   const {
+    setSelectedFilesToShareRows,
     selectedFilesToShareRows,
     isShareFileEditDialogOpen,
     isLoading,
     setIsShareFileEditDialogOpen,
+    editMultipleFiles,
+    setEditMultipleFiles,
     updatePublicShareFile,
+    setSelectedRows: setShareRows,
   } = usePublicShareFilesStore();
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(publicShareFilesFormSchema),
+  const { setSelectedRows: setTableRows, setSelectedItems } = useFileSharingStore();
+
+  const { t } = useTranslation();
+
+  const form: UseFormReturn<CreateEditPublicFileShareDto> = useForm<CreateEditPublicFileShareDto>({
+    mode: 'onChange',
     defaultValues: {
-      expires: undefined,
+      scope: 'public',
+      expires: DEFAULT_FILE_LINK_EXPIRY,
       invitedAttendees: [],
       invitedGroups: [],
       password: '',
     },
   });
 
+  const currentFile = editMultipleFiles[0] ?? selectedFilesToShareRows[0];
+
+  const isFileRestricted = currentFile?.invitedAttendees.length > 0 || currentFile?.invitedGroups.length > 0;
+
+  useEffect(() => {
+    if (currentFile) {
+      form.reset({
+        scope: isFileRestricted ? 'restricted' : 'public',
+        expires: new Date(currentFile.expires),
+        invitedAttendees: currentFile.invitedAttendees,
+        invitedGroups: currentFile.invitedGroups,
+        password: currentFile?.password,
+      });
+    }
+  }, [editMultipleFiles, form]);
+
   const onSubmit = async () => {
-    const original = selectedFilesToShareRows[0];
-    const values = form.getValues();
+    const { scope, expires, invitedAttendees = [], invitedGroups = [], password = '' } = form.getValues();
 
     const dto: PublicFileShareDto = {
-      ...original,
-      expires: values.expires,
-      invitedAttendees: values.invitedAttendees ?? [],
-      invitedGroups: values.invitedGroups ?? [],
-      password: values.password || '',
+      ...currentFile,
+      expires,
+      invitedAttendees,
+      invitedGroups,
+      password,
+      scope,
     };
 
     await updatePublicShareFile(dto);
     setIsShareFileEditDialogOpen(false);
   };
 
-  const handleClose = () => setIsShareFileEditDialogOpen(false);
-
-  useEffect(() => {
-    if (selectedFilesToShareRows.length === 1) {
-      form.reset({
-        expires: selectedFilesToShareRows[0].expires,
-        invitedAttendees: selectedFilesToShareRows[0].invitedAttendees,
-        invitedGroups: selectedFilesToShareRows[0].invitedGroups,
-        password: selectedFilesToShareRows[0].password ?? '',
-      });
-    }
-  }, [selectedFilesToShareRows]);
-
-  const getDialogBody = () => {
-    if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
-    return <ShareFileFolderLinkDialogBody form={form} />;
+  const handleClose = () => {
+    setEditMultipleFiles([]);
+    setSelectedFilesToShareRows([]);
+    setShareRows({});
+    setTableRows({});
+    setSelectedItems([]);
+    setIsShareFileEditDialogOpen(false);
+    form.reset();
   };
 
-  const getFooter = () => (
+  const body = isLoading ? <CircleLoader className="mx-auto mt-5" /> : <CreateEditNewFileLinkDialogBody form={form} />;
+
+  const footer = (
     <DialogFooterButtons
       handleClose={handleClose}
       handleSubmit={onSubmit}
       submitButtonText="common.update"
+      disableSubmit={form.formState.isSubmitting || !form.formState.isValid || form.formState.isLoading}
     />
   );
 
@@ -89,9 +108,9 @@ const EditPublicShareFileDialog = () => {
     <AdaptiveDialog
       isOpen={isShareFileEditDialogOpen}
       handleOpenChange={handleClose}
-      title="filesharing.publicFileSharing.editPublicShareFile"
-      body={getDialogBody()}
-      footer={getFooter()}
+      title={t('filesharing.publicFileSharing.editPublicShareFile')}
+      body={body}
+      footer={footer}
     />
   );
 };

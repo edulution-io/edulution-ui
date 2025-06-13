@@ -46,18 +46,13 @@ const QRCodePublicFileDialog = () => {
     );
   };
 
-  const getFooter = () => (
-    <DialogFooterButtons
-      handleClose={handleClose}
-      submitButtonText="common.update"
-    />
-  );
+  const getFooter = () => <DialogFooterButtons handleClose={handleClose} />;
 
   return (
     <AdaptiveDialog
       isOpen={isShareFileQrCodeDialogOpen}
       handleOpenChange={handleClose}
-      title="filesharing.publicFileSharing.editPublicShareFile"
+      title="filesharing.publicFileSharing.qrCodePublicShareFile"
       body={getDialogBody()}
       footer={getFooter()}
       desktopContentClassName="max-w-[60%] max-h-[75%] min-h-fit-content"

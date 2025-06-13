@@ -51,6 +51,7 @@ const useFileSharingPage = () => {
         }
       } else {
         void fetchFiles(path);
+        void fetchPublicShareFiles();
         setPathToRestoreSession(path);
       }
     }

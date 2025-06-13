@@ -19,19 +19,25 @@ import { FILESHARING_SHARED_FILES_API_ENDPOINT } from '@libs/filesharing/constan
 import ApiResponseDto from '@libs/common/types/apiResponseDto';
 import { toast } from 'sonner';
 import { t } from 'i18next';
+import CreateEditPublicFileShareDto from '@libs/filesharing/types/createEditPublicFileShareDto';
 
 interface PublicShareFilesStore {
   publicShareFiles: PublicFileShareDto[];
   publicShareFile: PublicFileShareDto | null;
   selectedFilesToShareRows: PublicFileShareDto[];
+  editMultipleFiles: PublicFileShareDto[];
   isShareFileDeleteDialogOpen: boolean;
   isShareFileQrCodeDialogOpen: boolean;
   isShareFileEditDialogOpen: boolean;
+  isCreateNewFileLinkDialogOpen: boolean;
   isPasswordRequired: boolean;
 
+  setEditMultipleFiles: (files: PublicFileShareDto[]) => void;
+  setPublicShareFiles: (files: PublicFileShareDto[]) => void;
   setIsShareFileDeleteDialogOpen: (open: boolean) => void;
   setIsShareFileEditDialogOpen: (open: boolean) => void;
   setIsShareFileQrCodeDialogOpen: (open: boolean) => void;
+  setIsCreateNewFileLinkDialogOpen: (isOpen: boolean) => void;
   setPublicShareFile: (file: PublicFileShareDto | null) => void;
   selectedRows: RowSelectionState;
   setSelectedRows: (sel: RowSelectionState) => void;
@@ -43,13 +49,16 @@ interface PublicShareFilesStore {
   fetchPublicShareFiles: () => Promise<void>;
   deletePublicShareFiles: (files: PublicFileShareDto[]) => Promise<void>;
   updatePublicShareFile: (files: PublicFileShareDto) => Promise<void>;
+  createPublicShareFile: (file: CreateEditPublicFileShareDto) => Promise<void>;
   setSelectedFilesToShareRows: (files: PublicFileShareDto[]) => void;
   reset: () => void;
 }
 
 const initialState = {
   publicShareFiles: [],
+  editMultipleFiles: [],
   openShareFileDialog: false,
+  isCreateNewFileLinkDialogOpen: false,
   publicShareFile: null,
   selectedFilesToShareRows: [],
   selectedRows: {},
@@ -149,6 +158,21 @@ export const usePublicShareFilesStore = create<PublicShareFilesStore>((set, get)
     }
   },
 
+  createPublicShareFile: async (publicFile: CreateEditPublicFileShareDto) => {
+    set({ isLoading: true, error: null });
+
+    try {
+      await eduApi.post(FILESHARING_SHARED_FILES_API_ENDPOINT, publicFile);
+      set({ selectedFilesToShareRows: [], isLoading: true });
+      toast.success(t('filesharing.publicFileSharing.success.PublicFileLinkCreated'));
+    } catch (error) {
+      handleApiError(error, set);
+    } finally {
+      void get().fetchPublicShareFiles();
+      set({ isLoading: false, selectedRows: {} });
+    }
+  },
+
   setPublicShareFile: (file) => set({ publicShareFile: file }),
 
   setSelectedFilesToShareRows: (files) => set({ selectedFilesToShareRows: files }),
@@ -157,6 +181,11 @@ export const usePublicShareFilesStore = create<PublicShareFilesStore>((set, get)
   setIsShareFileDeleteDialogOpen: (open) => set({ isShareFileDeleteDialogOpen: open }),
   setIsShareFileEditDialogOpen: (open) => set({ isShareFileEditDialogOpen: open }),
   setIsShareFileQrCodeDialogOpen: (open) => set({ isShareFileQrCodeDialogOpen: open }),
+  setIsCreateNewFileLinkDialogOpen: (isOpen) => set({ isCreateNewFileLinkDialogOpen: isOpen }),
+
+  setPublicShareFiles: (files: PublicFileShareDto[]) => set({ publicShareFiles: files }),
+
+  setEditMultipleFiles: (files: PublicFileShareDto[]) => set({ editMultipleFiles: files }),
   reset: () => set(initialState),
 }));
 
