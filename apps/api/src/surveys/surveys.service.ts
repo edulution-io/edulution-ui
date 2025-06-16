@@ -256,7 +256,6 @@ class SurveysService implements OnModuleInit {
     const tempFileNames = await this.fileSystemService.getAllFilenamesInDirectory(temporaryDirectoryPath);
 
     const updatedFormula = { ...formula };
-
     if (formula.logo) {
       updatedFormula.logo = await this.updateLogo(username, surveyId, formula, tempFileNames);
     }
@@ -266,7 +265,6 @@ class SurveysService implements OnModuleInit {
     if (formula.elements && formula.elements.length > 0) {
       updatedFormula.elements = await this.updateElements(username, surveyId, formula.elements, tempFileNames);
     }
-
     return updatedFormula;
   }
 
@@ -284,10 +282,10 @@ class SurveysService implements OnModuleInit {
         SurveysService.name,
       );
     }
-
     // eslint-disable-next-line no-underscore-dangle
     const surveyId = (survey._id as Types.ObjectId).toString();
     const { preferred_username: username } = user;
+
     try {
       const updatedFormula = await this.updateFormula(username, surveyId, survey.formula);
       const updatedSurvey = { ...surveyDto, id: surveyId, formula: updatedFormula };
@@ -311,13 +309,6 @@ class SurveysService implements OnModuleInit {
         SurveysService.name,
       );
     }
-  }
-
-  removeTemporaryFilesFolder(username: string): void {
-    setTimeout((): void => {
-      const temporaryAttachmentPath = join(SURVEYS_TEMP_FILES_PATH, username);
-      void this.fileSystemService.deleteDirectory(temporaryAttachmentPath);
-    }, 500000);
   }
 
   async createTemplate(surveyTemplateDto: SurveyTemplateDto): Promise<void> {
@@ -400,7 +391,8 @@ class SurveysService implements OnModuleInit {
     return `${baseUrl}/${SURVEY_FILE_ATTACHMENT_ENDPOINT}/${pathWithIds}/${imagesFileName}`;
   }
 
-  async updateAttachments(
+  // TODO: Rename to 'updateAttachments', AFTER THE REVIEW (to not break the view for the reviewer)
+  async updateTemporalUrls(
     username: string,
     surveyId: string,
     questionUpdate: SurveyQuestionUpdate,
@@ -431,9 +423,7 @@ class SurveysService implements OnModuleInit {
       temporalFileNames: tempFiles,
     };
 
-    await this.updateAttachments(username, surveyId, updatedQuestion);
-
-    await this.removeTemporaryAttachments(username);
+    await this.updateTemporalUrls(username, surveyId, updatedQuestion);
 
     updatedQuestion.question = SurveysService.updateRestfulChoicesQuestionLink(surveyId, updatedQuestion.question);
 
@@ -668,9 +658,11 @@ class SurveysService implements OnModuleInit {
     await this.fileSystemService.deleteDirectory(permaDirectory);
   }
 
-  async removeTemporaryAttachments(username: string) {
-    const tempDirectory = join(SURVEYS_TEMP_FILES_PATH, username);
-    await this.fileSystemService.deleteDirectory(tempDirectory);
+  removeTemporaryFilesFolder(username: string): void {
+    setTimeout((): void => {
+      const temporaryAttachmentPath = join(SURVEYS_TEMP_FILES_PATH, username);
+      void this.fileSystemService.deleteDirectory(temporaryAttachmentPath);
+    }, 500000);
   }
 
   static async deleteOldFilesPromises(
