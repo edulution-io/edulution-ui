@@ -232,7 +232,7 @@ class SurveysService implements OnModuleInit {
       return formula.logo;
     }
 
-    let logo: string | undefined = formula.logo;
+    let { logo } = formula;
     if (formula.logo) {
       const logosFileName = formula.logo?.split('/').pop();
       if (logosFileName) {
@@ -720,7 +720,7 @@ class SurveysService implements OnModuleInit {
     let updatedQuestion: SurveyQuestionUpdate = {
       question,
       temporalFileNames: tempFiles,
-      permanentFileNames: permanentFileNames,
+      permanentFileNames,
     };
 
     updatedQuestion = await this.updateImageQuestionImageLink(username, surveyId, updatedQuestion);
