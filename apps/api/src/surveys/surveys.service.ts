@@ -508,7 +508,7 @@ class SurveysService implements OnModuleInit {
       }
     }
 
-    await this.removeQuestionAttachment(username, surveyId, SURVEYS_HEADER_IMAGE);
+    await this.removeQuestionAttachment(surveyId, SURVEYS_HEADER_IMAGE);
     return undefined;
   }
 
@@ -543,7 +543,7 @@ class SurveysService implements OnModuleInit {
     }
     let { imageLink } = question;
     if (!imageLink) {
-      await this.removeQuestionAttachment(username, surveyId, question.name);
+      await this.removeQuestionAttachment(surveyId, question.name);
       return { question, temporalFileNames };
     }
     const linkedFileName = imageLink.split('/').pop();
@@ -608,7 +608,7 @@ class SurveysService implements OnModuleInit {
     }
     const { choices } = question;
     if (!choices || choices.length === 0) {
-      await this.removeQuestionAttachment(username, surveyId, question.name);
+      await this.removeQuestionAttachment(surveyId, question.name);
       return { question, temporalFileNames };
     }
     const permanentDirectoryPath = join(SURVEYS_FILES_PATH, surveyId, question.name);
@@ -664,13 +664,13 @@ class SurveysService implements OnModuleInit {
 
     let questionValue = question.value as string;
     if (!questionValue) {
-      await this.removeQuestionAttachment(username, surveyId, question.name);
+      await this.removeQuestionAttachment(surveyId, question.name);
       return { question, temporalFileNames };
     }
 
     const linkedFileName = questionValue.split('/').pop();
     if (!linkedFileName) {
-      await this.removeQuestionAttachment(username, surveyId, question.name);
+      await this.removeQuestionAttachment(surveyId, question.name);
       return { question, temporalFileNames };
     }
 
@@ -687,21 +687,17 @@ class SurveysService implements OnModuleInit {
     return { question: { ...question, value: questionValue }, temporalFileNames };
   }
 
-  async removeAttachmentForOtherQuestionTypes(
-    username: string,
-    surveyId: string,
-    questionUpdate: SurveyQuestionUpdate,
-  ): Promise<void> {
+  async removeAttachmentForOtherQuestionTypes(surveyId: string, questionUpdate: SurveyQuestionUpdate): Promise<void> {
     const { question } = questionUpdate;
     const { type } = question;
     if (type === 'image' || type === 'imagepicker' || type === 'file') {
       return;
     }
-    await this.removeQuestionAttachment(username, surveyId, question.name);
+    await this.removeQuestionAttachment(surveyId, question.name);
   }
 
-  async removeQuestionAttachment(username: string, surveyId: string, questionName: string) {
-    const permaDirectory = join(SURVEYS_FILES_PATH, username, surveyId, questionName);
+  async removeQuestionAttachment(surveyId: string, questionName: string) {
+    const permaDirectory = join(SURVEYS_FILES_PATH, surveyId, questionName);
     await this.fileSystemService.deleteDirectory(permaDirectory);
   }
 
