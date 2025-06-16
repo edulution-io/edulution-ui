@@ -46,7 +46,7 @@ const getPublicRoutes = () => [
     path={`${PUBLIC_FILE_DOWNLOAD}/:fileId`}
     element={
       <>
-        <PageTitle translationId="filesharing.publicFileDownload" />
+        <PageTitle translationId="filesharing.publicFileSharing.downloadPublicFile" />
         <PublicFileDownloadPage />
       </>
     }
