@@ -15,7 +15,7 @@ import SurveyElement from '@libs/survey/types/TSurveyElement';
 interface TSurveyQuestionUpdate {
   question: SurveyElement;
   temporalFileNames: string[];
-  permanentFileNames: string[];
+  permanentFileNames?: string[];
 }
 
 export default TSurveyQuestionUpdate;

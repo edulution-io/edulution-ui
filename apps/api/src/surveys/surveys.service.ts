@@ -196,10 +196,9 @@ class SurveysService implements OnModuleInit {
     surveyId: string,
     elements: SurveyElement[],
     tempFiles: string[],
-    permanentFiles: string[],
   ): Promise<SurveyElement[]> {
     const updatePromises = elements?.map(async (question) =>
-      this.updateQuestion(username, surveyId, question, tempFiles, permanentFiles),
+      this.updateQuestion(username, surveyId, question, tempFiles),
     );
     return Promise.all(updatePromises);
   }
@@ -209,47 +208,55 @@ class SurveysService implements OnModuleInit {
     surveyId: string,
     pages: SurveyPage[],
     tempFiles: string[],
-    permanentFiles: string[],
   ): Promise<SurveyPage[]> {
     const updatePromises = pages.map(async (page) => {
       if (!page.elements || page.elements?.length === 0) {
         return page;
       }
-      const updatedElements = await this.updateElements(username, surveyId, page.elements, tempFiles, permanentFiles);
+      const updatedElements = await this.updateElements(username, surveyId, page.elements, tempFiles);
       return { ...page, elements: updatedElements };
     });
     return Promise.all(updatePromises);
   }
 
-  async updateFormula(username: string, surveyId: string, formula: SurveyFormula): Promise<SurveyFormula> {
-    const temporaryDirectoryPath = join(SURVEYS_TEMP_FILES_PATH, username);
-    const tempFileNames = await this.fileSystemService.getAllFilenamesInDirectory(temporaryDirectoryPath);
-
-    const permanentDirectoryPath = join(SURVEYS_FILES_PATH, surveyId);
+  async updateLogo(
+    username: string,
+    surveyId: string,
+    formula: SurveyFormula,
+    tempFileNames: string[],
+  ): Promise<string | undefined> {
+    const permanentDirectoryPath = join(SURVEYS_FILES_PATH, surveyId, SURVEYS_HEADER_IMAGE);
     const permanentFileNames = await this.fileSystemService.getAllFilenamesInDirectory(permanentDirectoryPath);
 
     if (tempFileNames.length === 0 && permanentFileNames.length === 0) {
-      return formula;
+      return formula.logo;
     }
-    const updatedFormula = { ...formula };
 
+    let logo: string | undefined = formula.logo;
     if (formula.logo) {
-      Logger.log(`Updating logo: ${formula.logo}`);
-
       const logosFileName = formula.logo?.split('/').pop();
-
-      Logger.log(`file name: ${logosFileName}`);
-
       if (logosFileName) {
         const tempIndex = tempFileNames.indexOf(logosFileName);
-
         if (tempIndex !== -1) {
-          const pathWithIds = join(surveyId, SURVEYS_HEADER_IMAGE);
-          updatedFormula.logo = await this.updateTempFilesUrls(username, pathWithIds, formula.logo);
           tempFileNames.splice(tempIndex, 1);
-
-          Logger.log(`Updated logo: ${updatedFormula.logo}`);
+          const pathWithIds = join(surveyId, SURVEYS_HEADER_IMAGE);
+          logo = await this.updateTempFilesUrls(username, pathWithIds, formula.logo);
         }
+
+        const deleteOldFilesPromises = permanentFileNames.map(async (fileName) => {
+          if (fileName !== logosFileName) {
+            const path = join(SURVEYS_FILES_PATH, username, surveyId, SURVEYS_HEADER_IMAGE);
+            const filePath = join(path, fileName);
+
+            Logger.log(`Deleting permanent logo file: ${filePath}`);
+
+            const exists = await FilesystemService.checkIfFileExist(filePath);
+            if (exists) {
+              await FilesystemService.deleteFile(path, fileName);
+            }
+          }
+        });
+        await Promise.all(deleteOldFilesPromises);
       }
     } else {
       const tempPath = join(SURVEYS_TEMP_FILES_PATH, username, SURVEYS_HEADER_IMAGE);
@@ -259,23 +266,24 @@ class SurveysService implements OnModuleInit {
       await this.fileSystemService.deleteDirectory(path);
     }
 
+    return logo;
+  }
+
+  async updateFormula(username: string, surveyId: string, formula: SurveyFormula): Promise<SurveyFormula> {
+    const temporaryDirectoryPath = join(SURVEYS_TEMP_FILES_PATH, username);
+    const tempFileNames = await this.fileSystemService.getAllFilenamesInDirectory(temporaryDirectoryPath);
+
+    const updatedFormula = { ...formula };
+
+    if (formula.logo) {
+      updatedFormula.logo = await this.updateLogo(username, surveyId, formula, tempFileNames);
+    }
+
     if (formula.pages && formula.pages.length > 0) {
-      updatedFormula.pages = await this.updatePages(
-        username,
-        surveyId,
-        formula.pages,
-        tempFileNames,
-        permanentFileNames,
-      );
+      updatedFormula.pages = await this.updatePages(username, surveyId, formula.pages, tempFileNames);
     }
     if (formula.elements && formula.elements.length > 0) {
-      updatedFormula.elements = await this.updateElements(
-        username,
-        surveyId,
-        formula.elements,
-        tempFileNames,
-        permanentFileNames,
-      );
+      updatedFormula.elements = await this.updateElements(username, surveyId, formula.elements, tempFileNames);
     }
 
     return updatedFormula;
@@ -304,9 +312,6 @@ class SurveysService implements OnModuleInit {
 
     try {
       const updatedFormula = await this.updateFormula(username, surveyId, survey.formula);
-
-      Logger.log(`formula \n ${JSON.stringify(updatedFormula, null, 2)}`, SurveysService.name);
-
       const updatedSurvey = { ...surveyDto, id: surveyId, formula: updatedFormula };
       const savedSurvey = await this.updateSurvey(updatedSurvey, user);
       if (savedSurvey == null) {
@@ -317,9 +322,6 @@ class SurveysService implements OnModuleInit {
           SurveysService.name,
         );
       }
-
-      Logger.log(`Updated survey \n ${JSON.stringify(savedSurvey, null, 2)}`, SurveysService.name);
-
       this.removeTemporaryFilesFolder(username);
 
       return savedSurvey;
@@ -337,10 +339,6 @@ class SurveysService implements OnModuleInit {
     setTimeout((): void => {
       const temporaryAttachmentPath = join(SURVEYS_TEMP_FILES_PATH, username);
       void this.fileSystemService.deleteDirectory(temporaryAttachmentPath);
-
-      Logger.log('DELETE TEMP FILE FOLDER', SurveysService.name);
-      Logger.log('DELETE TEMP FILE FOLDER', SurveysService.name);
-      Logger.log('DELETE TEMP FILE FOLDER', SurveysService.name);
     }, 500000);
   }
 
@@ -588,139 +586,141 @@ class SurveysService implements OnModuleInit {
     return question;
   }
 
-  async updateTemporalUrls(
-    username: string,
-    surveyId: string,
-    question: SurveyElement,
-    temporalFileNames: string[],
-    permanentFileNames: string[],
-  ): Promise<SurveyQuestionUpdate> {
-    const pathWithIds = `${surveyId}/${question.name}`;
+  // async updateTemporalUrls(
+  //   username: string,
+  //   surveyId: string,
+  //   question: SurveyElement,
+  //   temporalFileNames: string[],
+  //   permanentFileNames: string[],
+  // ): Promise<SurveyQuestionUpdate> {
+  //   const pathWithIds = `${surveyId}/${question.name}`;
 
-    Logger.log(`Updating files after survey was updated`, SurveysService.name);
-    Logger.log(
-      `Updating question: '${question.name}' in survey: '${surveyId}' for user: '${username}'`,
-      SurveysService.name,
-    );
-    Logger.log(`Permanent files: '${permanentFileNames.join(', ')}'`, SurveysService.name);
-    Logger.log(`Temporal files: '${temporalFileNames.join(', ')}'`, SurveysService.name);
-    const tempIndex = temporalFileNames.indexOf(question.name);
-    const permaIndex = permanentFileNames.indexOf(question.name);
+  //   Logger.log(`Updating files after survey was updated`, SurveysService.name);
+  //   Logger.log(
+  //     `Updating question: '${question.name}' in survey: '${surveyId}' for user: '${username}'`,
+  //     SurveysService.name,
+  //   );
+  //   Logger.log(`Permanent files: '${permanentFileNames.join(', ')}'`, SurveysService.name);
+  //   Logger.log(`Temporal files: '${temporalFileNames.join(', ')}'`, SurveysService.name);
+  //   const tempIndex = temporalFileNames.indexOf(question.name);
+  //   const permaIndex = permanentFileNames.indexOf(question.name);
 
-    Logger.log(`permaIndex: '${permaIndex}'${tempIndex !== -1 ? ' found permanent file' : ''}`, SurveysService.name);
-    Logger.log(`tempIndex: '${tempIndex}'${tempIndex !== -1 ? ' found temp file' : ''}`, SurveysService.name);
+  //   Logger.log(`permaIndex: '${permaIndex}'${tempIndex !== -1 ? ' found permanent file' : ''}`, SurveysService.name);
+  //   Logger.log(`tempIndex: '${tempIndex}'${tempIndex !== -1 ? ' found temp file' : ''}`, SurveysService.name);
 
-    if (tempIndex !== -1) {
-      const tempFileName = temporalFileNames[tempIndex];
-      temporalFileNames.splice(tempIndex, 1);
+  //   if (tempIndex !== -1) {
+  //     const tempFileName = temporalFileNames[tempIndex];
+  //     temporalFileNames.splice(tempIndex, 1);
 
-      Logger.log(`Updating tempFile: '${tempFileName}' for a '${question.type}' question`, SurveysService.name);
+  //     Logger.log(`Updating tempFile: '${tempFileName}' for a '${question.type}' question`, SurveysService.name);
 
-      if (question.type === 'image' && question.imageLink) {
-        Logger.log(`Has image link: '${question.imageLink}' for a '${question.type}' question`, SurveysService.name);
+  //     if (question.type === 'image' && question.imageLink) {
+  //       Logger.log(`Has image link: '${question.imageLink}' for a '${question.type}' question`, SurveysService.name);
 
-        const newImageLink = await this.updateTempFilesUrls(username, pathWithIds, question.imageLink);
-        return { question: { ...question, imageLink: newImageLink }, temporalFileNames, permanentFileNames };
-      }
-      if (question.type === 'imagepicker' && question.choices) {
-        const choices = await Promise.all(
-          question.choices.map(async (choice) => {
-            if (choice != null && typeof choice !== 'string' && choice.imageLink) {
-              Logger.log(`Choice has image link: '${choice.imageLink}'`, SurveysService.name);
+  //       const newImageLink = await this.updateTempFilesUrls(username, pathWithIds, question.imageLink);
+  //       return { question: { ...question, imageLink: newImageLink }, temporalFileNames, permanentFileNames };
+  //     }
+  //     if (question.type === 'imagepicker' && question.choices) {
+  //       const choices = await Promise.all(
+  //         question.choices.map(async (choice) => {
+  //           if (choice != null && typeof choice !== 'string' && choice.imageLink) {
+  //             Logger.log(`Choice has image link: '${choice.imageLink}'`, SurveysService.name);
 
-              const newImageLink = await this.updateTempFilesUrls(username, pathWithIds, choice.imageLink);
-              return { ...choice, imageLink: newImageLink };
-            }
-            return choice;
-          }),
-        );
-        return { question: { ...question, choices }, temporalFileNames, permanentFileNames };
-      }
-      if (question.type === 'file') {
-        const newFileLink = await this.updateTempFilesUrls(username, pathWithIds, question.value as string);
+  //             const newImageLink = await this.updateTempFilesUrls(username, pathWithIds, choice.imageLink);
+  //             return { ...choice, imageLink: newImageLink };
+  //           }
+  //           return choice;
+  //         }),
+  //       );
+  //       return { question: { ...question, choices }, temporalFileNames, permanentFileNames };
+  //     }
+  //     if (question.type === 'file') {
+  //       const newFileLink = await this.updateTempFilesUrls(username, pathWithIds, question.value as string);
 
-        Logger.log(`File has link: '${question.value}' for a '${question.type}' question`, SurveysService.name);
+  //       Logger.log(`File has link: '${question.value}' for a '${question.type}' question`, SurveysService.name);
 
-        return { question: { ...question, value: newFileLink }, temporalFileNames, permanentFileNames };
-      }
-      const directory = join(SURVEYS_TEMP_FILES_PATH, username, question.name);
-      const filePath = join(directory, tempFileName);
-      const exists = await FilesystemService.checkIfFileExist(filePath);
-      if (exists) {
-        await FilesystemService.deleteFile(directory, tempFileName);
-      }
-    }
+  //       return { question: { ...question, value: newFileLink }, temporalFileNames, permanentFileNames };
+  //     }
+  //     const directory = join(SURVEYS_TEMP_FILES_PATH, username, question.name);
+  //     const filePath = join(directory, tempFileName);
+  //     const exists = await FilesystemService.checkIfFileExist(filePath);
+  //     if (exists) {
+  //       await FilesystemService.deleteFile(directory, tempFileName);
+  //     }
+  //   }
 
-    if (permaIndex !== -1) {
-      const permaFileName = permanentFileNames[permaIndex];
-      const directory = join(SURVEYS_FILES_PATH, username, surveyId, question.name);
-      const filePath = join(directory, permaFileName);
+  //   if (permaIndex !== -1) {
+  //     const permaFileName = permanentFileNames[permaIndex];
+  //     const directory = join(SURVEYS_FILES_PATH, username, surveyId, question.name);
+  //     const filePath = join(directory, permaFileName);
 
-      Logger.log(`Updating tempFile: '${permaFileName}' for a '${question.type}' question`, SurveysService.name);
+  //     Logger.log(`Updating tempFile: '${permaFileName}' for a '${question.type}' question`, SurveysService.name);
 
-      if (question.type === 'image' && !question.imageLink) {
-        Logger.log(
-          `Has NO image link -> deleting file: '${filePath}' for a '${question.type}' question`,
-          SurveysService.name,
-        );
+  //     if (question.type === 'image' && !question.imageLink) {
+  //       Logger.log(
+  //         `Has NO image link -> deleting file: '${filePath}' for a '${question.type}' question`,
+  //         SurveysService.name,
+  //       );
 
-        const exists = await FilesystemService.checkIfFileExist(filePath);
-        if (exists) {
-          await FilesystemService.deleteFile(directory, permaFileName);
-        }
-      } else if (question.type === 'imagepicker' && question.choices) {
-        const choices = await Promise.all(
-          question.choices.map(async (choice) => {
-            if (choice != null && typeof choice !== 'string' && !choice.imageLink) {
-              Logger.log(
-                `Choice has NO image link -> deleting file: '${filePath}' for a '${question.type}' question`,
-                SurveysService.name,
-              );
+  //       const exists = await FilesystemService.checkIfFileExist(filePath);
+  //       if (exists) {
+  //         await FilesystemService.deleteFile(directory, permaFileName);
+  //       }
+  //     } else if (question.type === 'imagepicker' && question.choices) {
+  //       const choices = await Promise.all(
+  //         question.choices.map(async (choice) => {
+  //           if (choice != null && typeof choice !== 'string' && !choice.imageLink) {
+  //             Logger.log(
+  //               `Choice has NO image link -> deleting file: '${filePath}' for a '${question.type}' question`,
+  //               SurveysService.name,
+  //             );
 
-              const exists = await FilesystemService.checkIfFileExist(filePath);
-              if (exists) {
-                await FilesystemService.deleteFile(directory, permaFileName);
-              }
-            }
-            return choice;
-          }),
-        );
+  //             const exists = await FilesystemService.checkIfFileExist(filePath);
+  //             if (exists) {
+  //               await FilesystemService.deleteFile(directory, permaFileName);
+  //             }
+  //           }
+  //           return choice;
+  //         }),
+  //       );
 
-        permanentFileNames.splice(permaIndex, 1);
-        return { question: { ...question, choices }, temporalFileNames, permanentFileNames };
-      } else if (question.type === 'file' && !question.value) {
-        Logger.log(
-          `File has NO link -> deleting file: '${filePath}' for a '${question.type}' question`,
-          SurveysService.name,
-        );
+  //       permanentFileNames.splice(permaIndex, 1);
+  //       return { question: { ...question, choices }, temporalFileNames, permanentFileNames };
+  //     } else if (question.type === 'file' && !question.value) {
+  //       Logger.log(
+  //         `File has NO link -> deleting file: '${filePath}' for a '${question.type}' question`,
+  //         SurveysService.name,
+  //       );
 
-        const exists = await FilesystemService.checkIfFileExist(filePath);
-        if (exists) {
-          await FilesystemService.deleteFile(directory, permaFileName);
-        }
-      }
-      permanentFileNames.splice(permaIndex, 1);
-    }
+  //       const exists = await FilesystemService.checkIfFileExist(filePath);
+  //       if (exists) {
+  //         await FilesystemService.deleteFile(directory, permaFileName);
+  //       }
+  //     }
+  //     permanentFileNames.splice(permaIndex, 1);
+  //   }
 
-    return { question, temporalFileNames, permanentFileNames };
-  }
+  //   return { question, temporalFileNames, permanentFileNames };
+  // }
 
   async updateQuestion(
     username: string,
     surveyId: string,
     question: SurveyElement,
     tempFiles: string[],
-    permanentFiles: string[],
   ): Promise<SurveyElement> {
     Logger.log(
       `updateQuestion: '${question.name}' in survey: '${surveyId}' for user: '${username}'`,
       SurveysService.name,
     );
 
+    const permanentDirectoryPath = join(SURVEYS_FILES_PATH, surveyId, question.name);
+    const permanentFileNames = await this.fileSystemService.getAllFilenamesInDirectory(permanentDirectoryPath);
+
     let updatedQuestion: SurveyQuestionUpdate = {
       question,
       temporalFileNames: tempFiles,
-      permanentFileNames: permanentFiles,
+      permanentFileNames: permanentFileNames,
     };
 
     updatedQuestion = await this.updateImageQuestionImageLink(username, surveyId, updatedQuestion);
@@ -748,8 +748,84 @@ class SurveysService implements OnModuleInit {
 
     updatedQuestion.question = SurveysService.updateRestfulChoicesQuestionLink(surveyId, updatedQuestion.question);
 
+    const deleteNewFilesPromises = updatedQuestion.temporalFileNames?.map(async (fileName) => {
+      const path = join(SURVEYS_FILES_PATH, username, surveyId, question.name);
+      const filePath = join(path, fileName);
+
+      Logger.log(`Deleting permanent attachment file: ${filePath}`);
+
+      await FilesystemService.deleteFile(path, fileName);
+    });
+    if (deleteNewFilesPromises) {
+      await Promise.all(deleteNewFilesPromises);
+    }
+
+    const deleteOldFilesPromises = updatedQuestion.permanentFileNames?.map(async (fileName) => {
+      const path = join(SURVEYS_FILES_PATH, username, surveyId, question.name);
+      const filePath = join(path, fileName);
+
+      Logger.log(`Deleting permanent attachment file: ${filePath}`);
+
+      await FilesystemService.deleteFile(path, fileName);
+    });
+    if (deleteOldFilesPromises) {
+      await Promise.all(deleteOldFilesPromises);
+    }
+
     return updatedQuestion.question;
   }
+
+  // async updateQuestionNew(username: string, surveyId: string, formula: SurveyFormula, question: SurveyElement, tempFileNames: string[]): Promise<string | undefined> {
+  //   const permanentDirectoryPath = join(SURVEYS_FILES_PATH, surveyId, question.name);
+  //   const permanentFileNames = await this.fileSystemService.getAllFilenamesInDirectory(permanentDirectoryPath);
+
+  //   if (tempFileNames.length === 0 && permanentFileNames.length === 0) {
+  //     return formula.logo;
+  //   }
+
+  //   let image: string | undefined = formula.logo;
+  //   if (formula.logo) {
+  //     Logger.log(`Updating image: ${formula.logo}`);
+
+  //     const logosFileName = formula.logo?.split('/').pop();
+
+  //     Logger.log(`file name: ${logosFileName}`);
+
+  //     if (logosFileName) {
+  //       const tempIndex = tempFileNames.indexOf(logosFileName);
+
+  //       if (tempIndex !== -1) {
+  //         tempFileNames.splice(tempIndex, 1);
+  //         const pathWithIds = join(surveyId, SURVEYS_HEADER_IMAGE);
+  //         image = await this.updateTempFilesUrls(username, pathWithIds, formula.logo);
+
+  //         Logger.log(`Updated image: ${image}`);
+  //       }
+  //       const deleteOldFilesPromises = permanentFileNames.map(async (fileName) => {
+  //         if (fileName !== logosFileName) {
+  //           const path = join(SURVEYS_FILES_PATH, username, surveyId, SURVEYS_HEADER_IMAGE);
+  //           const filePath = join(path, fileName);
+
+  //           Logger.log(`Deleting permanent image file: ${filePath}`);
+
+  //           const exists = await FilesystemService.checkIfFileExist(filePath);
+  //           if (exists) {
+  //             await FilesystemService.deleteFile(path, fileName);
+  //           }
+  //         }
+  //       });
+  //       await Promise.all(deleteOldFilesPromises);
+  //     }
+  //   } else {
+  //     const tempPath = join(SURVEYS_TEMP_FILES_PATH, username, SURVEYS_HEADER_IMAGE);
+  //     await this.fileSystemService.deleteDirectory(tempPath);
+
+  //     const path = join(SURVEYS_FILES_PATH, username, surveyId, SURVEYS_HEADER_IMAGE);
+  //     await this.fileSystemService.deleteDirectory(path);
+  //   }
+
+  //   return image;
+  // }
 }
 
 export default SurveysService;
