@@ -145,7 +145,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     },
   },
 
-  deleteFileFolder: {
+  deleteFileOrFolder: {
     Component: DeleteContentDialogBody,
     titleKey: 'deleteDialog.deleteFiles',
     submitKey: 'deleteDialog.continue',
@@ -167,7 +167,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     },
   },
 
-  renameFileFolder: {
+  renameFileOrFolder: {
     Component: CreateOrRenameContentDialogBody,
     schema: z.object({
       filename: z.string().min(1, t('filesharing.tooltips.NewFileNameRequired')),
@@ -253,7 +253,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     },
   },
 
-  moveFileFolder: {
+  moveFileOrFolder: {
     Component: MoveDirectoryDialogBody,
     titleKey: 'moveItemDialog.changeDirectory',
     submitKey: 'moveItemDialog.move',
@@ -281,7 +281,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
 };
 
 function getDialogBodySetup(action: FileActionType) {
-  return dialogBodyConfigurations[action] || dialogBodyConfigurations.deleteFileFolder;
+  return dialogBodyConfigurations[action] || dialogBodyConfigurations.deleteFileOrFolder;
 }
 
 export default getDialogBodySetup;

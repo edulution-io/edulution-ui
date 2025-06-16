@@ -69,7 +69,7 @@ class FilesharingController {
   }
 
   @Post()
-  async createFileFolder(
+  async createFileOrFolder(
     @Query('path') path: string,
     @Query('type') type: string,
     @Body()

@@ -212,7 +212,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
                 disableSubmit={
                   isLoading ||
                   isSubmitButtonDisabled ||
-                  (action === FileActionType.MOVE_FILE_FOLDER && moveOrCopyItemToPath?.filePath === undefined)
+                  (action === FileActionType.MOVE_FILE_OR_FOLDER && moveOrCopyItemToPath?.filePath === undefined)
                 }
               />
             </form>

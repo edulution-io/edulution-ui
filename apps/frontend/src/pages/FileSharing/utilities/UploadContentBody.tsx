@@ -24,7 +24,7 @@ import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import WarningBox from '@/components/shared/WarningBox';
-import { TiDocumentAdd, TiFolder, TiFolderAdd } from 'react-icons/ti';
+import { TiDocumentAdd, TiFolderAdd } from 'react-icons/ti';
 import { UploadFile } from '@libs/filesharing/types/uploadFile';
 import Progress from '@/components/ui/Progress';
 import { WorkerMessage } from '@/worker/workerMessage';
@@ -33,6 +33,7 @@ import WorkerOutputMessage from '@/worker/workerOutputMessage';
 import zipDirectoryEntry from '@libs/filesharing/utils/zipDirectoryEntry';
 import { RequestResponseContentType, ResponseType } from '@libs/common/types/http-methods';
 import ZIP_PROCESS_TIMEOUT from '@libs/filesharing/constants/zipProcessTimeout';
+import { FcFolder } from 'react-icons/fc';
 
 const UploadContentBody = () => {
   const { t } = useTranslation();
@@ -205,7 +206,7 @@ const UploadContentBody = () => {
     if (file.isZippedFolder) {
       return (
         <div className="flex h-20 items-center justify-center">
-          <TiFolder size={60} />
+          <FcFolder size={60} />
         </div>
       );
     }

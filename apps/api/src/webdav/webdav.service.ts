@@ -41,23 +41,21 @@ class WebdavService {
 
   constructor(private readonly usersService: UsersService) {}
 
-  static async executeWebdavRequest<T>(
+  static async executeWebdavRequest<Raw = unknown, Result = Raw>(
     client: AxiosInstance,
     config: {
       method: string;
       url?: string;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      data?: string | Record<string, any> | Buffer;
+      data?: string | Record<string, unknown> | Buffer;
       headers?: Record<string, string | number>;
     },
     fileSharingErrorMessage: ErrorMessage,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    transformer?: (data: any) => T,
-  ): Promise<T | WebdavStatusResponse> {
+    transformer?: (data: Raw) => Result,
+  ): Promise<Result | WebdavStatusResponse> {
     try {
-      const response = await client(config);
+      const response = await client.request<Raw>(config);
       WebdavService.handleWebDAVError(response);
-      return transformer ? transformer(response.data) : (response.data as T);
+      return transformer ? transformer(response.data) : (response.data as unknown as Result);
     } catch (error) {
       throw new CustomHttpException(
         fileSharingErrorMessage,
@@ -135,8 +133,7 @@ class WebdavService {
   async getFilesAtPath(username: string, path: string): Promise<DirectoryFileDTO[]> {
     const client = await this.getClient(username);
     const url = new URL(path.replace(/^\/+/, ''), this.baseUrl).href;
-
-    return (await WebdavService.executeWebdavRequest<DirectoryFileDTO[]>(
+    return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
       client,
       {
         method: HttpMethodsWebDav.PROPFIND,
@@ -152,7 +149,7 @@ class WebdavService {
     const client = await this.getClient(username);
     const url = new URL(path.replace(/^\/+/, ''), this.baseUrl).href;
 
-    return (await WebdavService.executeWebdavRequest<DirectoryFileDTO[]>(
+    return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
       client,
       {
         method: HttpMethodsWebDav.PROPFIND,
