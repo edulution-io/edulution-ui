@@ -10,18 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { CompleteEvent } from 'survey-core';
+const clearTLDrawPersistence = async (key: string) => {
+  localStorage.removeItem('TLDRAW_USER_DATA_v3');
+  localStorage.removeItem('TLDRAW_DB_NAME_INDEX_v2');
 
-interface SubmitAnswerDto {
-  surveyId: string;
+  const dbs = await indexedDB.databases();
 
-  saveNo: number;
+  dbs
+    .filter((db) => db.name?.includes(key))
+    .forEach((db) => {
+      if (db.name) {
+        indexedDB.deleteDatabase(db.name);
+      }
+    });
+};
 
-  answer: JSON;
-
-  surveyEditorCallbackOnSave?: CompleteEvent | undefined;
-
-  isPublic: boolean;
-}
-
-export default SubmitAnswerDto;
+export default clearTLDrawPersistence;

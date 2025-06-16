@@ -15,8 +15,10 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { SurveyCreatorModel } from 'survey-creator-core';
+import { IoAdd } from 'react-icons/io5';
 import cn from '@libs/common/utils/className';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import APPS from '@libs/appconfig/constants/apps';
 import { SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
@@ -27,9 +29,9 @@ import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 import isQuestionTypeChoiceType from '@libs/survey/utils/isQuestionTypeChoiceType';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import ChoicesWithBackendLimitsShowOtherItem from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitsShowOtherItem';
-import ChoicesWithBackendLimitTable from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitsTable';
 import ChoicesWithBackendLimitTableColumns from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitTableColumns';
 import Switch from '@/components/ui/Switch';
+import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 
 interface ChoicesByUrlProps {
   form: UseFormReturn<SurveyDto>;
@@ -80,7 +82,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     try {
       const surveyFormula = form.watch('formula');
       const currentPage = creator?.currentPage;
-      const updatedFormula: SurveyFormula = JSON.parse(JSON.stringify(surveyFormula, null, 2)) as SurveyFormula;
+      const updatedFormula: SurveyFormula = structuredClone(surveyFormula);
 
       let correspondingQuestion: SurveyElement | undefined;
       if (currentPage.isPage) {
@@ -129,6 +131,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
 
   if (!form) return null;
   if (!isQuestionTypeChoiceType(questionType)) return null;
+
   return (
     <>
       <p className="text-m font-bold text-primary-foreground">{t('survey.editor.questionSettings.backendLimiters')}</p>
@@ -151,13 +154,21 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       {useBackendLimits ? (
         <>
           <div className="ml-4 items-center text-foreground">
-            {
-              // TODO: Replace custom table with ScrollableTable component (https://github.com/edulution-io/edulution-ui/issues/761)
-            }
-            <ChoicesWithBackendLimitTable
+            <ScrollableTable
               columns={ChoicesWithBackendLimitTableColumns}
               data={currentChoices.filter((choice) => choice.name !== SHOW_OTHER_ITEM)}
-              addNewChoice={addNewChoice}
+              filterKey="choice-title"
+              filterPlaceHolderText={t('survey.editor.questionSettings.filterPlaceHolderText')}
+              applicationName={APPS.SURVEYS}
+              actions={[
+                {
+                  icon: IoAdd,
+                  translationId: 'common.add',
+                  onClick: () => addNewChoice(),
+                },
+              ]}
+              showSelectedCount={false}
+              isDialog
             />
           </div>
           <ChoicesWithBackendLimitsShowOtherItem />

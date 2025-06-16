@@ -10,6 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const WHITEBOARD_COLLABORATION_PERSISTENCE_KEY = 'whiteboardCollaborationPersistenceKey';
+import UserDto from './user.dto';
 
-export default WHITEBOARD_COLLABORATION_PERSISTENCE_KEY;
+type CachedUser = Pick<UserDto, 'firstName' | 'lastName' | 'username'> & { school?: string };
+
+export default CachedUser;

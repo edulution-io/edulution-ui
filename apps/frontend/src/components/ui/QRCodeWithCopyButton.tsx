@@ -10,27 +10,21 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
-import { Button } from '@/components/shared/Button';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import ToasterTranslationIds from '@libs/ui/types/toasterTranslationIds';
-import copyToClipboard from '@/utils/copyToClipboard';
+import { MdFileCopy } from 'react-icons/md';
 import { Sizes } from '@libs/ui/types/sizes';
+import copyToClipboard from '@/utils/copyToClipboard';
+import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
+import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 
 interface QRCodeWithCopyButtonProps {
   url: string;
   titleTranslationId: string;
-  toasterTranslationIds?: ToasterTranslationIds;
   qrCodeSize?: Sizes;
 }
 
-const QRCodeWithCopyButton = ({
-  url,
-  qrCodeSize,
-  titleTranslationId,
-  toasterTranslationIds,
-}: QRCodeWithCopyButtonProps) => {
+const QRCodeWithCopyButton = ({ url, qrCodeSize, titleTranslationId }: QRCodeWithCopyButtonProps) => {
   const { t } = useTranslation();
 
   return (
@@ -42,15 +36,22 @@ const QRCodeWithCopyButton = ({
           size={qrCodeSize}
           className="m-14"
         />
-        <div className="mb-4 mt-4 rounded-xl bg-muted px-2 py-1 text-center">{url}</div>
-        <Button
-          size="lg"
-          type="button"
-          variant="btn-collaboration"
-          onClick={() => copyToClipboard(url, toasterTranslationIds)}
-        >
-          {t('common.copy.doCopy')}
-        </Button>
+        <InputWithActionIcons
+          type="text"
+          value={url}
+          readOnly
+          className="w-fit min-w-[550px] cursor-pointer"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            copyToClipboard(url);
+          }}
+          actionIcons={[
+            {
+              icon: MdFileCopy,
+              onClick: () => copyToClipboard(url),
+            },
+          ]}
+        />
       </div>
     </>
   );
