@@ -527,7 +527,7 @@ class SurveysService implements OnModuleInit {
       case 'file':
         return this.updateFileQuestionFileLink(username, surveyId, questionUpdate);
       default:
-        await this.removeAttachmentForOtherQuestionTypes(username, surveyId, questionUpdate);
+        await this.removeAttachmentForOtherQuestionTypes(surveyId, questionUpdate);
         return questionUpdate;
     }
   }
