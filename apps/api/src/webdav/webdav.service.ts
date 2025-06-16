@@ -74,6 +74,7 @@ class WebdavService {
         FileSharingErrorMessage.WebDavError,
         HttpStatus.INTERNAL_SERVER_ERROR,
         response?.statusText || 'WebDAV request failed',
+        WebdavService.name,
       );
     }
   }
