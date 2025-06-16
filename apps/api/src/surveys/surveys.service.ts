@@ -419,26 +419,6 @@ class SurveysService implements OnModuleInit {
     return `${baseUrl}/${SURVEY_FILE_ATTACHMENT_ENDPOINT}/${pathWithIds}/${imagesFileName}`;
   }
 
-  async updateAttachments(
-    username: string,
-    surveyId: string,
-    questionUpdate: SurveyQuestionUpdate,
-  ): Promise<SurveyQuestionUpdate> {
-    const { question } = questionUpdate;
-    const { type } = question;
-    switch (type) {
-      case 'image':
-        return this.updateImageQuestionImageLink(username, surveyId, questionUpdate);
-      case 'imagepicker':
-        return this.updateImagePickerQuestionChoicesImageLinks(username, surveyId, questionUpdate);
-      case 'file':
-        return this.updateFileQuestionFileLink(username, surveyId, questionUpdate);
-      default:
-        await this.removeAttachmentForOtherQuestionTypes(username, surveyId, questionUpdate);
-        return questionUpdate;
-    }
-  }
-
   async updateQuestion(
     username: string,
     surveyId: string,
@@ -486,6 +466,26 @@ class SurveysService implements OnModuleInit {
 
     await this.removeQuestionAttachment(username, surveyId, SURVEYS_HEADER_IMAGE);
     return undefined;
+  }
+
+  async updateAttachments(
+    username: string,
+    surveyId: string,
+    questionUpdate: SurveyQuestionUpdate,
+  ): Promise<SurveyQuestionUpdate> {
+    const { question } = questionUpdate;
+    const { type } = question;
+    switch (type) {
+      case 'image':
+        return this.updateImageQuestionImageLink(username, surveyId, questionUpdate);
+      case 'imagepicker':
+        return this.updateImagePickerQuestionChoicesImageLinks(username, surveyId, questionUpdate);
+      case 'file':
+        return this.updateFileQuestionFileLink(username, surveyId, questionUpdate);
+      default:
+        await this.removeAttachmentForOtherQuestionTypes(username, surveyId, questionUpdate);
+        return questionUpdate;
+    }
   }
 
   async updateImageQuestionImageLink(
