@@ -22,7 +22,6 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import { BullModule } from '@nestjs/bullmq';
-import { join } from 'path';
 import LoggingInterceptor from '../logging/logging.interceptor';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
@@ -52,16 +51,10 @@ const redisPort = +(process.env.REDIS_PORT ?? 6379);
 
 @Module({
   imports: [
-    ServeStaticModule.forRoot(
-      {
-        rootPath: PUBLIC_DOWNLOADS_PATH,
-        serveRoot: `/${EDU_API_ROOT}/downloads`,
-      },
-      {
-        rootPath: join(PUBLIC_DOWNLOADS_PATH, 'sharedFiles'),
-        serveRoot: `/${EDU_API_ROOT}/downloads/sharedFiles`,
-      },
-    ),
+    ServeStaticModule.forRoot({
+      rootPath: PUBLIC_DOWNLOADS_PATH,
+      serveRoot: `/${EDU_API_ROOT}/downloads`,
+    }),
 
     BullModule.forRoot({
       connection: {

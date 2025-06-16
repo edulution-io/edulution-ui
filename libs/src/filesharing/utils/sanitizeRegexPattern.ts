@@ -10,14 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { z } from 'zod';
+const sanitizeRegexPattern = (input: string, escapeSlash = false): string => {
+  const meta = escapeSlash ? /[.*+?^${}()|[\]\\/]/g : /[.*+?^${}()|[\]\\]/g;
+  return input.replace(meta, '\\$&');
+};
 
-const groupSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  path: z.string(),
-  label: z.string(),
-  value: z.string(),
-});
-
-export default groupSchema;
+export default sanitizeRegexPattern;

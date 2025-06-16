@@ -260,7 +260,7 @@ class FilesharingService {
     return this.shareModel.find({ creator: username }).sort({ validUntil: 1 }).lean().exec();
   }
 
-  async getPublicFileShare(fileId: string, jwt?: string, password?: string) {
+  async getPublicFileShare(fileId: string, jwt?: string, password?: string | undefined) {
     const share = await this.shareModel.findById(fileId).lean().exec();
     if (!share) {
       throw new CustomHttpException(
@@ -269,13 +269,14 @@ class FilesharingService {
         `${fileId} not found}`,
       );
     }
-
     if (share.password !== password) {
-      throw new CustomHttpException(
-        FileSharingErrorMessage.PublicFileWrongPassword,
-        HttpStatus.FORBIDDEN,
-        `${fileId} wrong password}`,
-      );
+      if (share.password) {
+        throw new CustomHttpException(
+          FileSharingErrorMessage.PublicFileWrongPassword,
+          HttpStatus.FORBIDDEN,
+          `${fileId} wrong password}`,
+        );
+      }
     }
 
     let jwtUser: JwtUser | null = null;

@@ -20,6 +20,7 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import normalizeWebdavPath from '@libs/filesharing/utils/buildNormalizedWebdavPath';
+import sanitizeRegexPattern from '@libs/filesharing/utils/sanitizeRegexPattern';
 import SseService from '../../sse/sse.service';
 import WebdavService from '../../webdav/webdav.service';
 import { PublicFileShare } from '../publicFileShare.schema';
@@ -36,16 +37,35 @@ class MoveOrRenameConsumer extends WorkerHost {
   }
 
   async process(job: Job<FileOperationQueueJobData>): Promise<void> {
-    const { username, path, newPath, total, processed } = job.data as MoveOrRenameJobData;
+    const { username, path, newPath, processed, total } = job.data as MoveOrRenameJobData;
     const failedPaths: string[] = [];
-    const share = await this.shareModel.findOne({ filePath: normalizeWebdavPath(path) });
+
+    const oldPathNorm = normalizeWebdavPath(path);
+    const newPathNorm = normalizeWebdavPath(newPath);
+
     try {
       await this.webDavService.moveOrRenameResource(username, path, newPath);
-      if (share) {
-        const { _id: id } = share;
-        await this.shareModel.findByIdAndUpdate(id, { filePath: normalizeWebdavPath(newPath) });
-      }
-    } catch (error) {
+      const escaped = sanitizeRegexPattern(oldPathNorm);
+      const folderRx = new RegExp(`^${escaped}(\\/|$)`);
+
+      await this.shareModel.updateMany(
+        { filePath: folderRx },
+        [
+          {
+            $set: {
+              filePath: {
+                $replaceOne: {
+                  input: '$filePath',
+                  find: oldPathNorm,
+                  replacement: newPathNorm,
+                },
+              },
+            },
+          },
+        ],
+        { strict: false },
+      );
+    } catch (err) {
       failedPaths.push(newPath);
     }
 

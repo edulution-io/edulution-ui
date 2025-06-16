@@ -240,8 +240,11 @@ class FilesharingController {
     const { stream, filename, fileType } = await this.filesharingService.getPublicFileShare(shareId, token, password);
 
     res.set({
-      'Content-Disposition': `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`,
-      'Content-Type': fileType === ContentType.FILE ? 'application/octet-stream' : 'application/zip',
+      [HTTP_HEADERS.ContentDisposition]: `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`,
+      [HTTP_HEADERS.ContentType]:
+        fileType === ContentType.FILE
+          ? RequestResponseContentType.APPLICATION_OCTET_STREAM
+          : RequestResponseContentType.APPLICATION_ZIP,
     });
 
     return new StreamableFile(stream);
