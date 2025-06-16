@@ -419,37 +419,35 @@ class SurveysService implements OnModuleInit {
     return `${baseUrl}/${SURVEY_FILE_ATTACHMENT_ENDPOINT}/${pathWithIds}/${imagesFileName}`;
   }
 
-  static /* async */ updateTemporalUrls(
-    // username: string,
-    // surveyId: string,
-    // tempFiles: string[],
+  /* // TODO: REMOVE THIS METHOD AFTER REVIEW (the review preview would get messy)
+  async updateTemporalUrls(
+    username: string,
+    surveyId: string,
+    tempFiles: string[],
     question: SurveyElement,
-  ): /* Promise< */ SurveyElement /* > */ {
-    // const pathWithIds = `${surveyId}/${question.name}`;
+  ): Promise<SurveyElement> {
+    const pathWithIds = `${surveyId}/${question.name}`;
     try {
       if (question.type === 'image' && question.imageLink) {
-        const newImageLink = 'await this.updateTempFilesUrls(username, pathWithIds, tempFiles, question.imageLink)';
+        const newImageLink = await this.updateTempFilesUrls(username, pathWithIds, tempFiles, question.imageLink);
         return { ...question, imageLink: newImageLink };
       }
 
       if (question.type === 'imagepicker' && question.choices) {
-        const choices = // await Promise.all(
-          question.choices.map(
-            /* async */ (choice) => {
-              if (choice != null && typeof choice !== 'string' && choice.imageLink) {
-                const newImageLink =
-                  'await this.updateTempFilesUrls(username, pathWithIds, tempFiles, choice.imageLink)';
-                return { ...choice, imageLink: newImageLink };
-              }
-              return choice;
-            }, // ),
-          );
+        const choices = await Promise.all(
+          question.choices.map(async (choice) => {
+            if (choice != null && typeof choice !== 'string' && choice.imageLink) {
+              const newImageLink = await this.updateTempFilesUrls(username, pathWithIds, tempFiles, choice.imageLink);
+              return { ...choice, imageLink: newImageLink };
+            }
+            return choice;
+          }),
+        );
         return { ...question, choices };
       }
 
       if (question.type === 'file') {
-        const newFileLink =
-          'await this.updateTempFilesUrls(username, pathWithIds, tempFiles, question.value as string)';
+        const newFileLink = await this.updateTempFilesUrls(username, pathWithIds, tempFiles, question.value as string);
         return { ...question, value: newFileLink };
       }
 
@@ -463,6 +461,7 @@ class SurveysService implements OnModuleInit {
       );
     }
   }
+  */
 
   async updateQuestion(
     username: string,
