@@ -726,21 +726,6 @@ class SurveysService implements OnModuleInit {
     });
     await Promise.all(promises);
   }
-
-  static async deleteOldQuestionFiles(
-    surveyId: string,
-    questionName: string,
-    linkedFileNames: string[],
-    fileNames: string[],
-  ): Promise<void> {
-    const promises = fileNames.map(async (fileName) => {
-      if (!linkedFileNames.includes(fileName)) {
-        const path = join(SURVEYS_FILES_PATH, surveyId, questionName);
-        await FilesystemService.deleteFile(path, fileName);
-      }
-    });
-    await Promise.all(promises);
-  }
 }
 
 export default SurveysService;
