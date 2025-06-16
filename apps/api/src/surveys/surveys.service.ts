@@ -400,14 +400,81 @@ class SurveysService implements OnModuleInit {
     return `${baseUrl}/${SURVEY_FILE_ATTACHMENT_ENDPOINT}/${pathWithIds}/${imagesFileName}`;
   }
 
-  async removeQuestionAttachment(username: string, surveyId: string, questionName: string) {
-    const permaDirectory = join(SURVEYS_FILES_PATH, username, surveyId, questionName);
-    await this.fileSystemService.deleteDirectory(permaDirectory);
+  async updateAttachments(
+    username: string,
+    surveyId: string,
+    questionUpdate: SurveyQuestionUpdate,
+  ): Promise<SurveyQuestionUpdate> {
+    const { question } = questionUpdate;
+    const { type } = question;
+    switch (type) {
+      case 'image':
+        return this.updateImageQuestionImageLink(username, surveyId, questionUpdate);
+      case 'imagepicker':
+        return this.updateImagePickerQuestionChoicesImageLinks(username, surveyId, questionUpdate);
+      case 'file':
+        return this.updateFileQuestionFileLink(username, surveyId, questionUpdate);
+      default:
+        await this.removeAttachmentForOtherQuestionTypes(username, surveyId, questionUpdate);
+        return questionUpdate;
+    }
   }
 
-  async removeTemporaryAttachments(username: string) {
-    const tempDirectory = join(SURVEYS_TEMP_FILES_PATH, username);
-    await this.fileSystemService.deleteDirectory(tempDirectory);
+  async updateQuestion(
+    username: string,
+    surveyId: string,
+    question: SurveyElement,
+    tempFiles: string[],
+  ): Promise<SurveyElement> {
+    let updatedQuestion: SurveyQuestionUpdate = {
+      question,
+      temporalFileNames: tempFiles,
+    };
+
+    await this.updateAttachments(username, surveyId, updatedQuestion);
+
+    await this.removeTemporaryAttachments(username);
+
+    updatedQuestion.question = SurveysService.updateRestfulChoicesQuestionLink(surveyId, updatedQuestion.question);
+
+    return updatedQuestion.question;
+  }
+
+  async updateLogo(
+    username: string,
+    surveyId: string,
+    formula: SurveyFormula,
+    tempFileNames: string[],
+  ): Promise<string | undefined> {
+    const permanentDirectoryPath = join(SURVEYS_FILES_PATH, surveyId, SURVEYS_HEADER_IMAGE);
+    const permanentFileNames = await this.fileSystemService.getAllFilenamesInDirectory(permanentDirectoryPath);
+
+    if (tempFileNames.length === 0 && permanentFileNames.length === 0) {
+      return formula.logo;
+    }
+
+    let { logo } = formula;
+    if (logo) {
+      const logosFileName = logo?.split('/').pop();
+      if (logosFileName) {
+        const tempIndex = tempFileNames.indexOf(logosFileName);
+        if (tempIndex !== -1) {
+          tempFileNames.splice(tempIndex, 1);
+          const pathWithIds = join(surveyId, SURVEYS_HEADER_IMAGE);
+          logo = await this.updateTempFilesUrls(username, pathWithIds, logo, logosFileName);
+        }
+        await SurveysService.deleteOldFilesPromises(
+          surveyId,
+          SURVEYS_HEADER_IMAGE,
+          [logosFileName],
+          permanentFileNames,
+        );
+      }
+    } else {
+      await this.removeQuestionAttachment(username, surveyId, SURVEYS_HEADER_IMAGE);
+    }
+
+    return logo;
   }
 
   async updateImageQuestionImageLink(
@@ -447,13 +514,7 @@ class SurveysService implements OnModuleInit {
       question.imageLink = imageLink;
     }
 
-    const deleteOldFilesPromises = fileNames.map(async (fileName) => {
-      if (fileName !== linkedFileName) {
-        const path = join(SURVEYS_FILES_PATH, surveyId, question.name);
-        await FilesystemService.deleteFile(path, fileName);
-      }
-    });
-    await Promise.all(deleteOldFilesPromises);
+    await SurveysService.deleteOldFilesPromises(surveyId, question.name, [linkedFileName], fileNames);
 
     return { question, temporalFileNames, permanentFileNames: fileNames };
   }
@@ -532,13 +593,7 @@ class SurveysService implements OnModuleInit {
       includedFileNames.push(fileName);
     });
 
-    const deleteOldFilesPromises = fileNames.map(async (fileName) => {
-      if (!includedFileNames.includes(fileName)) {
-        const path = join(SURVEYS_FILES_PATH, surveyId, question.name);
-        await FilesystemService.deleteFile(path, fileName);
-      }
-    });
-    await Promise.all(deleteOldFilesPromises);
+    await SurveysService.deleteOldFilesPromises(surveyId, question.name, includedFileNames, fileNames);
 
     return {
       question: { ...question, choices: updatedChoices },
@@ -586,13 +641,7 @@ class SurveysService implements OnModuleInit {
       question.value = questionValue;
     }
 
-    const deleteOldFilesPromises = fileNames.map(async (fileName) => {
-      if (fileName !== linkedFileName) {
-        const path = join(SURVEYS_FILES_PATH, surveyId, question.name);
-        await FilesystemService.deleteFile(path, fileName);
-      }
-    });
-    await Promise.all(deleteOldFilesPromises);
+    await SurveysService.deleteOldFilesPromises(surveyId, question.name, [linkedFileName], fileNames);
 
     return { question: { ...question, value: questionValue }, temporalFileNames, permanentFileNames };
   }
@@ -614,76 +663,29 @@ class SurveysService implements OnModuleInit {
     await this.removeQuestionAttachment(username, surveyId, question.name);
   }
 
-  async updateQuestion(
-    username: string,
-    surveyId: string,
-    question: SurveyElement,
-    tempFiles: string[],
-  ): Promise<SurveyElement> {
-    let updatedQuestion: SurveyQuestionUpdate = {
-      question,
-      temporalFileNames: tempFiles,
-    };
-
-    switch (question.type) {
-      case 'image':
-        updatedQuestion = await this.updateImageQuestionImageLink(username, surveyId, updatedQuestion);
-        break;
-      case 'imagepicker':
-        updatedQuestion = await this.updateImagePickerQuestionChoicesImageLinks(username, surveyId, updatedQuestion);
-        break;
-      case 'file':
-        updatedQuestion = await this.updateFileQuestionFileLink(username, surveyId, updatedQuestion);
-        break;
-      default:
-        await this.removeAttachmentForOtherQuestionTypes(username, surveyId, updatedQuestion);
-        break;
-    }
-
-    await this.removeTemporaryAttachments(username);
-
-    updatedQuestion.question = SurveysService.updateRestfulChoicesQuestionLink(surveyId, updatedQuestion.question);
-
-    return updatedQuestion.question;
+  async removeQuestionAttachment(username: string, surveyId: string, questionName: string) {
+    const permaDirectory = join(SURVEYS_FILES_PATH, username, surveyId, questionName);
+    await this.fileSystemService.deleteDirectory(permaDirectory);
   }
 
-  async updateLogo(
-    username: string,
+  async removeTemporaryAttachments(username: string) {
+    const tempDirectory = join(SURVEYS_TEMP_FILES_PATH, username);
+    await this.fileSystemService.deleteDirectory(tempDirectory);
+  }
+
+  static async deleteOldFilesPromises(
     surveyId: string,
-    formula: SurveyFormula,
-    tempFileNames: string[],
-  ): Promise<string | undefined> {
-    const permanentDirectoryPath = join(SURVEYS_FILES_PATH, surveyId, SURVEYS_HEADER_IMAGE);
-    const permanentFileNames = await this.fileSystemService.getAllFilenamesInDirectory(permanentDirectoryPath);
-
-    if (tempFileNames.length === 0 && permanentFileNames.length === 0) {
-      return formula.logo;
-    }
-
-    let { logo } = formula;
-    if (logo) {
-      const logosFileName = logo?.split('/').pop();
-      if (logosFileName) {
-        const tempIndex = tempFileNames.indexOf(logosFileName);
-        if (tempIndex !== -1) {
-          tempFileNames.splice(tempIndex, 1);
-          const pathWithIds = join(surveyId, SURVEYS_HEADER_IMAGE);
-          logo = await this.updateTempFilesUrls(username, pathWithIds, logo, logosFileName);
-        }
-
-        const deleteOldFilesPromises = permanentFileNames.map(async (fileName) => {
-          if (fileName !== logosFileName) {
-            const path = join(SURVEYS_FILES_PATH, surveyId, SURVEYS_HEADER_IMAGE);
-            await FilesystemService.deleteFile(path, fileName);
-          }
-        });
-        await Promise.all(deleteOldFilesPromises);
+    questionName: string,
+    linkedFileNames: string[],
+    fileNames: string[],
+  ): Promise<void> {
+    const promises = fileNames.map(async (fileName) => {
+      if (!linkedFileNames.includes(fileName)) {
+        const path = join(SURVEYS_FILES_PATH, surveyId, questionName);
+        await FilesystemService.deleteFile(path, fileName);
       }
-    } else {
-      await this.removeQuestionAttachment(username, surveyId, SURVEYS_HEADER_IMAGE);
-    }
-
-    return logo;
+    });
+    await Promise.all(promises);
   }
 }
 
