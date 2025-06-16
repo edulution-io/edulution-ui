@@ -426,7 +426,7 @@ class SurveysService implements OnModuleInit {
     question: SurveyElement,
     tempFiles: string[],
   ): Promise<SurveyElement> {
-    let updatedQuestion: SurveyQuestionUpdate = {
+    const updatedQuestion: SurveyQuestionUpdate = {
       question,
       temporalFileNames: tempFiles,
     };
