@@ -1235,7 +1235,7 @@
     "cannotUploadOversized": "Es können keine Dateien größer als 50MB hochgeladen werden."
   },
   "warnings": {
-    "colorMayConflictWithTheme": "Manuelle Einstellung der Farbe kann zu Problemen mit anderen Themes (hell/dunkel) führen."
+    "colorMayConflictWithTheme": "Manuelle Einstellung der Farbe kann zukünftig zu Problemen mit anderen Themes (hell/dunkel) führen. Es wird empfohlen, die Farbe der Schrift immer gleichzeitig mit der Hintergrundfarbe zu setzen."
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",

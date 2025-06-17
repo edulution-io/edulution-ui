@@ -1231,7 +1231,7 @@
     "cannotUploadOversized": "Cannot upload oversized files (more than 50 MB)."
   },
   "warnings": {
-    "colorMayConflictWithTheme": "Manual setting of the color can lead to problems with other themes (light/dark)."
+    "colorMayConflictWithTheme": "Manual setting of the color can lead to problems with other themes (light/dark) in the future. It is recommended to always set the color of the font at the same time as the background color."
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",
