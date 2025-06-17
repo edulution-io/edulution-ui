@@ -208,7 +208,7 @@ const BulletinBoardColumnItem = ({
         <h4 className="w-[calc(100%-20px)] overflow-x-hidden text-ellipsis break-normal text-lg font-bold text-background">
           {bulletin.title}
         </h4>
-        <div className="mt-2 text-gray-100">
+        <div className="quill-content mt-2 break-normal text-white">
           {bulletin.content.split(/(<img[^>]*>)/g).map((part) => getProcessedBulletinContent(part))}
         </div>
         {getAuthorDescription()}
