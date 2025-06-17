@@ -10,15 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HTMLInputTypeAttribute } from 'react';
-
-interface InputProp<T> {
-  name: string;
-  label: string;
-  value: T;
-  type?: HTMLInputTypeAttribute;
-  readOnly?: boolean;
-}
+import InputProp from '@/types/inputProp';
 
 declare module 'react' {
   interface InputHTMLAttributes<T> extends React.HTMLAttributes<T> {

@@ -10,18 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
+import { HTMLInputTypeAttribute } from 'react';
 
-@Injectable()
-// @typescript-eslint/class-methods-use-this
-class ParseJsonPipe<T = unknown> implements PipeTransform<string, T> {
-  transform(value: string): T {
-    try {
-      return JSON.parse(value) as T;
-    } catch {
-      throw new BadRequestException('Invalid JSON in dto field');
-    }
-  }
+interface InputProp<T> {
+  name: string;
+  label: string;
+  value: T;
+  type?: HTMLInputTypeAttribute;
+  readOnly?: boolean;
 }
 
-export default ParseJsonPipe;
+export default InputProp;
