@@ -13,7 +13,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import APPS from '@libs/appconfig/constants/apps';
-import { Home, SettingsIcon } from '@/assets/icons';
+import { Dashboard, SettingsIcon } from '@/assets/icons';
 import useMedia from '@/hooks/useMedia';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useLanguage from '@/hooks/useLanguage';
@@ -53,9 +53,9 @@ const Sidebar: React.FC = () => {
 
   const sidebarItems = [
     {
-      title: t('home'),
+      title: t('dashboard.pageTitle'),
       link: `${DASHBOARD_ROUTE}`,
-      icon: Home,
+      icon: Dashboard,
       color: 'bg-ciGreenToBlue',
     },
     ...appConfigs.map((item) => ({
