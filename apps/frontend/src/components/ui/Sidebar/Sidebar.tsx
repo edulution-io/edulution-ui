@@ -13,7 +13,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import APPS from '@libs/appconfig/constants/apps';
-import { SettingsIcon } from '@/assets/icons';
+import { Home, SettingsIcon } from '@/assets/icons';
 import useMedia from '@/hooks/useMedia';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useLanguage from '@/hooks/useLanguage';
@@ -23,6 +23,7 @@ import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import getDisplayName from '@/utils/getDisplayName';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import DesktopSidebar from './DesktopSidebar';
 import MobileSidebar from './MobileSidebar';
 
@@ -51,6 +52,12 @@ const Sidebar: React.FC = () => {
   };
 
   const sidebarItems = [
+    {
+      title: t('home'),
+      link: `${DASHBOARD_ROUTE}`,
+      icon: Home,
+      color: 'bg-ciGreenToBlue',
+    },
     ...appConfigs.map((item) => ({
       title: getDisplayName(item, language),
       link: `/${item.name}`,
