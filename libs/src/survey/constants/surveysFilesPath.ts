@@ -10,12 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface PushAnswerDto {
-  surveyId: string;
+import APPS from '@libs/appconfig/constants/apps';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 
-  saveNo: number;
+const SURVEYS_FILES_PATH = `${APPS_FILES_PATH}/${APPS.SURVEYS}`;
 
-  answer: JSON;
-}
-
-export default PushAnswerDto;
+export default SURVEYS_FILES_PATH;

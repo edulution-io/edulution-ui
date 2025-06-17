@@ -10,13 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import isDev from '../constants/isDev';
+const ID_ACTION_TABLE_COLUMN = 'id-action-table-column';
 
-const getFrontEndUrl = (): string => {
-  if (isDev) {
-    return `${window.location.protocol}//host.docker.internal:5173`;
-  }
-  return `${window.location.protocol}//${window.location.host}`;
-};
-
-export default getFrontEndUrl;
+export default ID_ACTION_TABLE_COLUMN;

@@ -15,9 +15,8 @@ import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
-import ResultTableDialogBodyWrapper from '@/pages/Surveys/Tables/dialogs/ResultTableDialogBody';
-import './resultTableDialog.css';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import ResultTableDialogBody from '@/pages/Surveys/Tables/dialogs/ResultTableDialogBody';
 
 const ResultTableDialog = () => {
   const { isOpenPublicResultsTableDialog, setIsOpenPublicResultsTableDialog, isLoading } = useResultDialogStore();
@@ -25,6 +24,11 @@ const ResultTableDialog = () => {
   const { t } = useTranslation();
 
   const handleClose = () => setIsOpenPublicResultsTableDialog(!isOpenPublicResultsTableDialog);
+  const getBody = () => (
+    <div className="h-full w-full overflow-x-auto overflow-y-auto scrollbar-thin">
+      <ResultTableDialogBody />
+    </div>
+  );
 
   const getFooter = () => (
     <DialogFooterButtons
@@ -40,9 +44,9 @@ const ResultTableDialog = () => {
         isOpen={isOpenPublicResultsTableDialog}
         handleOpenChange={handleClose}
         title={t('surveys.resultTableDialog.title')}
-        body={<ResultTableDialogBodyWrapper />}
-        desktopContentClassName="max-h-[75vh] max-w-[85%]"
+        body={getBody()}
         footer={getFooter()}
+        desktopContentClassName="max-h-[75vh] max-w-[85%]"
       />
     </>
   ) : null;

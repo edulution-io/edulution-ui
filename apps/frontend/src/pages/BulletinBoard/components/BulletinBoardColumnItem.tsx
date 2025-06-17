@@ -23,7 +23,6 @@ import useUserStore from '@/store/UserStore/UserStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import { useParams } from 'react-router-dom';
 import cn from '@libs/common/utils/className';
 
@@ -145,20 +144,14 @@ const BulletinBoardColumnItem = ({
     return items;
   };
 
-  const getProcessedBulletinContent = (content: string) => {
-    if (content.match(/<img[^>]*src="([^"]*)"[^>]*>/)) {
-      const srcMatch = content.match(/src="([^"]*)"/);
-      let src = srcMatch ? srcMatch[1] : '';
-
-      if (!src.startsWith('http') && !src.startsWith(`/${EDU_API_ROOT}`)) {
-        src = `/${src}`;
-      }
-
+  const getProcessedBulletinContent = (chunk: string) => {
+    if (/<img\b/i.test(chunk)) {
+      const src = chunk.match(/src="([^"]*)"/i)?.[1].replace(/^\/(?!\/)/, '/') ?? '';
       return (
         <button
-          key={`image-${content}`}
+          key={`img-${src}`}
           type="button"
-          className="max-w-full cursor-pointer border-none bg-transparent p-0"
+          className="max-w-full cursor-pointer border-0 bg-transparent p-0"
           onClick={() => handleImageClick(src)}
         >
           <img
@@ -169,10 +162,36 @@ const BulletinBoardColumnItem = ({
         </button>
       );
     }
+
+    if (/<a\b/i.test(chunk)) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(chunk, 'text/html');
+      const a = doc.querySelector('a');
+
+      if (a) {
+        const href = a.getAttribute('href') ?? '#';
+        const text = a.textContent ?? href;
+        const isPdf = href.toLowerCase().endsWith('.pdf');
+
+        return (
+          <a
+            key={`link-${href}`}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={isPdf ? 'text-red-400 underline' : 'text-blue-400 underline'}
+          >
+            {text}
+            {isPdf && ' 📄'}
+          </a>
+        );
+      }
+    }
+
     return (
       <span
-        key={`text-${content}`}
-        dangerouslySetInnerHTML={{ __html: content }}
+        key={`html-${chunk}`}
+        dangerouslySetInnerHTML={{ __html: chunk }}
       />
     );
   };
@@ -189,7 +208,7 @@ const BulletinBoardColumnItem = ({
         <h4 className="w-[calc(100%-20px)] overflow-x-hidden text-ellipsis break-normal text-lg font-bold text-background">
           {bulletin.title}
         </h4>
-        <div className="mt-2 text-gray-100">
+        <div className="quill-content mt-2 break-normal text-white">
           {bulletin.content.split(/(<img[^>]*>)/g).map((part) => getProcessedBulletinContent(part))}
         </div>
         {getAuthorDescription()}

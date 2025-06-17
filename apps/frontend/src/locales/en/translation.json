@@ -20,9 +20,9 @@
     "isActiveOrExpired": "Active/Expired",
     "activeFrom": "Active from",
     "activeUntil": "Active until",
-    "appTitle": "Bulletin Board",
+    "appTitle": "Info Board",
     "description": "Here you find your latest bulletins",
-    "sidebar": "Bulletin Board",
+    "sidebar": "Info Board",
     "newCategorie": "New category",
     "category": "Category",
     "categoryPositionChanged": "Position of the category changed",
@@ -65,7 +65,7 @@
     "categories": {
       "visibleByUsersAndGroups": "This category with its bulletins is visible to users and groups on the homepage",
       "visibleByUsersAndGroupsTitle": "Homepage",
-      "editableByUsersAndGroups": "This category is editable by users and groups in the Bulletin Board app",
+      "editableByUsersAndGroups": "This category is editable by users and groups in the Info Board app",
       "editableByUsersAndGroupsTitle": "Manage Bulletins"
     },
     "errors": {
@@ -126,7 +126,7 @@
     "quota": {
       "title": "Quotas",
       "globalQuota": "Cloud quota calculated",
-      "mailQuota": "Mail quota calculated",
+      "mailQuota": "E-Mail quota calculated",
       "mibibyte": "MiB",
       "remainingLow": "Remaining quota low – {{free}} %",
       "remainingVeryLow": "Remaining quota very low – {{free}} %"
@@ -180,12 +180,12 @@
     }
   },
   "ticketsystem": {
-    "title": "TICKET SYSTEM",
-    "sidebar": "Ticket System"
+    "title": "TICKETS",
+    "sidebar": "Tickets"
   },
   "mail": {
-    "title": "MAIL",
-    "sidebar": "Mail",
+    "title": "E-MAILS",
+    "sidebar": "E-Mails",
     "configName": "Configuration name",
     "hostname": "Hostname",
     "port": "Port",
@@ -195,13 +195,13 @@
     "rowSelected": "{{selected}} of {{total}} job selected",
     "importer": {
       "filterPlaceHolderText": "Search for username",
-      "title": "Email Sync",
-      "provider": "Email Provider",
+      "title": "E-Mail Sync",
+      "provider": "E-Mail Provider",
       "interval": "Sync Interval",
       "isActive": "Active",
       "syncJobsTable": "Sync Jobs",
-      "mailAddress": "Email address",
-      "noMailConfigured": "Mail app is not active. Please contact your system administrator.",
+      "mailAddress": "E-Mail address",
+      "noMailConfigured": "E-Mail app is not active. Please contact your system administrator.",
       "syncAccountAdded": "Account for sync job added.",
       "syncAccountDeleted": "Account for sync job deleted."
     }
@@ -247,7 +247,6 @@
     "changeUser": "Change user",
     "joinAgain": "Join again",
     "passwordOfConference": "Password of conference",
-    "orContinueWithoutAccount": "Or continue without account",
     "conferenceIsNotStartedYet": "The conference was not started. Currently you are in the waiting room and you will be automatically redirected once the conference starts.",
     "conferenceIsPasswordProtected": "This conference is password protected, please enter it to join.",
     "pleaseEnterYourFullName": "To join the conference enter your full name.",
@@ -308,8 +307,8 @@
   },
   "filesharing": {
     "filterPlaceHolderText": "Search for filename",
-    "title": "FILE SHARING",
-    "sidebar": "File Sharing",
+    "title": "FILES",
+    "sidebar": "Files",
     "previewTitle": "File Preview",
     "fileEditor": "File editor",
     "selectFile": "Select file",
@@ -399,11 +398,11 @@
   "classmanagement": {
     "title": "CLASS ROOM",
     "sidebar": "Class Room",
-    "invalidProxyAddresses": "Proxy Email-Addresses must be written comma separated without spaces",
+    "invalidProxyAddresses": "Proxy E-Mail-Addresses must be written comma separated without spaces",
     "invalidQuota": "The quota must be specified according to the documentation",
-    "invalidMailQuota": "The mail quota must be specified as a number in MB",
-    "mailQuota": "Mail Quota (MB)",
-    "proxyAddresses": "Proxy Email-Adresses",
+    "invalidMailQuota": "The E-Mail quota must be specified as a number in MB",
+    "mailQuota": "E-Mail Quota (MB)",
+    "proxyAddresses": "Proxy E-Mail-Adresses",
     "descriptionPlaceholder": "Short description of the project",
     "proxyAddressesPlaceholder": "info@email1.de,kontakt@email2.com",
     "quotaPlaceholder": "[{\"share\":\"default-school\",\"quota\":50}]",
@@ -553,6 +552,8 @@
     "canSubmitMultiple": "Allow multiple submission",
     "editor": {
       "new": "New (blank)",
+      "fileUploadSuccess": "Saved the image successfully.",
+      "fileUploadError": "Error on Image Upload, please retry later.",
       "saveSurveySuccess": "Saved the survey.",
       "reset": "Reset",
       "addDescription": "Add a description",
@@ -579,17 +580,26 @@
         "addBackendLimiterForOtherItem": "This is the limit, for how often the option will be selectable",
         "upperLimit": "Limit",
         "upperBackendLimiters": "Choices with an upper limit",
-        "addChoice": "Add"
+        "addChoice": "Add",
+        "filterPlaceHolderText": "Search for option"
       }
     },
     "participate": {
-      "saveAnswerSuccess": "Saved the answer."
+      "saveAnswerSuccess": "Saved the answer.",
+      "username": "User name",
+      "pleaseEnterYourFullName": "You may participate in the survey by entering your full name, use the participation-ID if you want to change your submission.",
+      "yourFullName": "Your full name",
+      "invalidUsername": "Username is invalid (permitted are letters, number, and [. -])",
+      "idHeader": "Your participation ID (optional)",
+      "idText": "Pls copy this for later",
+      "idParagraph": "To view your former answer or to edit it, if configured, you can use the participation-ID here.",
+      "usernameRequired": "User name is required",
+      "completeMessage": "Thank you very much for participating in this survey"
     },
     "errors": {
       "submitAnswerError": "The answer could not be submitted.",
       "updateOrCreateError": "Neither able to update a survey nor to create a new one.",
       "deleteError": "The surveys could not be deleted.",
-      "imageDeletionFailed": "Not all images of the surveys could be deleted.",
       "noAnswerError": "No answers available jet.",
       "noFormulaError": "The formula of the survey is not readable.",
       "noBackendLimitersError": "In order to use this functionality you have to define limiters inside of the editor.",
@@ -598,7 +608,7 @@
       "participationErrorUserNotAssigned": "User is no participant of the survey.",
       "participationErrorAlreadyParticipated": "User has already participated in the survey.",
       "participationErrorSurveyExpired": "Survey has already expired.",
-      "idTypeError": "Missing survey id.",
+      "missingIdError": "Missing survey ID.",
       "missingAnswerError": "Please provide an answer before submitting."
     }
   },
@@ -617,7 +627,9 @@
     "confirmMultiDelete": "Should these surveys really be deleted?",
     "confirmSingleDelete": "Should this survey really be deleted?",
     "deleteSurveys": "Delete {{count}} surveys",
+    "deletedSurveys": "Deleted {{count}} surveys",
     "deleteSurvey": "Delete survey",
+    "deletedSurvey": "Survey deleted",
     "title": "SURVEYS",
     "sidebar": "Surveys",
     "view": {
@@ -784,7 +796,7 @@
       "aichat": "Here you can make all the settings.",
       "linuxmuster": "Here you can make all the settings.",
       "whiteboard": "Here you can make all the settings.",
-      "bulletinboard": "Configure the user groups that have access to the Bulletin Board app here. The categories can be used to control which messages are displayed to users.",
+      "bulletinboard": "Configure the user groups that have access to the Info Board app here. The categories can be used to control which messages are displayed to users.",
       "forwarded": "Forwarding: Simply enter the link to the web application under URL.",
       "framed": "Frame: Simply enter the link to the web application under URL.",
       "embedded": "Embedded: Here you can create your own web application in the editor."
@@ -927,7 +939,7 @@
       "schoolSubjects": "School subjects",
       "sophomorixState": "Status",
       "quotas": "Quotas",
-      "proxyAddresses": "Mail Proxies",
+      "proxyAddresses": "E-Mail Proxies",
       "addNew": "Type to add",
       "badgeAlreadyExists": "This entry exists already",
       "sophomorixCustom1_teacher": "Schoolsubject 1",
@@ -961,7 +973,7 @@
       "safePinDescription": "A PIN is required to encrypt the access data. This PIN isn't visible for anyone else and is not saved."
     },
     "mails": {
-      "title": "Email"
+      "title": "E-Mail"
     },
     "mobileAccess": {
       "title": "Mobile Access",
@@ -1019,6 +1031,9 @@
   "login": {
     "pageTitle": "Login",
     "username_too_long": "Username to long",
+    "username_too_short": "Username to short",
+    "username_not_regex": "Invalid username/participation-ID",
+    "publicUsername_notExisting": "There is no submission with the given participation-ID",
     "password_too_long": "Password to long",
     "forgot_password": "Forgot password?",
     "remember_me": "Remember me",
@@ -1029,22 +1044,22 @@
   },
   "edit": "Edit",
   "common": {
+    "offline": "Offline",
     "guest": "Guest",
     "ok": "OK",
     "next": "Next",
     "back": "Back",
     "confirm": "Confirm",
     "share": "Share",
-    "savedToClipboard": "Saved to clipboard.",
-    "savedToClipboardError": "Unable to save into clipboard.",
     "answers": "Answers",
     "error": "Error",
     "errors": {
-      "attachmentUploadFailed": "Failed to upload attachment",
       "dbAccessFailed": "Database access failed",
       "directoryNotCreated": "Failed to create directory",
+      "fileUploadFailed": "Failed to upload the file",
       "fileDeletionFailed": "Failed to delete the file",
       "fileWritingFailed": "Failed to write the file",
+      "fileMoveFailed": "Failed to move the file",
       "fileNotFound": "File not found",
       "fileNotProvided": "File not provided",
       "invalidFileType": "Invalid file type",
@@ -1156,6 +1171,7 @@
     "format": "Format",
     "upload": "Upload",
     "mode": "Mode",
+    "orContinueWithoutAccount": "Or continue without account",
     "application": "Application"
   },
   "form": {
@@ -1218,6 +1234,9 @@
     "addFiles": "Add files",
     "addFolder": "Add folder",
     "preparingFolder": "Preparing folder"
+  },
+  "warnings": {
+    "colorMayConflictWithTheme": "Manual setting of the color can lead to problems with other themes (light/dark) in the future. It is recommended to always set the color of the font at the same time as the background color."
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",
@@ -1354,13 +1373,13 @@
   "accountData": {
     "account_info": "Account Information",
     "name": "Name",
-    "email": "Email",
+    "email": "E-Mail",
     "school": "School",
     "role": "Role",
     "classes": "Classes",
     "change_password": "Change Password",
     "my_information": "My Information",
-    "mail_alias": "Mail-Alias",
+    "mail_alias": "E-Mail-Alias",
     "change_my_data": "Change my data",
     "school_classes": "School Classes"
   },
@@ -1408,7 +1427,7 @@
       "NotAbleToLockMailboxError": "Could not lock on to the mailbox",
       "NotAbleToFetchMailsError": "Could not fetch mails",
       "NotValidPortTypeError": "The port must be specified as a number",
-      "MailProviderNotFound": "Email provider not found",
+      "MailProviderNotFound": "E-Mail provider not found",
       "MailcowApiGetSyncJobsFailed": "Not able to get sync jobs",
       "MailcowApiCreateSyncJobFailed": "Not able to create sync job",
       "MailcowApiDeleteSyncJobsFailed": "Not able to delete sync jobs"

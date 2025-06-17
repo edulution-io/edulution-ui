@@ -13,6 +13,7 @@
 import React, { useMemo, useRef } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/node_modules/quill/dist/quill.snow.css';
+import './WysiwygEditor.css';
 import BULLETIN_EDITOR_FORMATS from '@libs/bulletinBoard/constants/bulletinEditorFormats';
 import useUserStore from '@/store/UserStore/UserStore';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
@@ -31,6 +32,18 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
   const { t } = useTranslation();
 
   const quillRef = useRef<ReactQuill | null>(null);
+
+  const handleFormatChange = (format: 'color' | 'background') => (colorValue: string) => {
+    if (colorValue) {
+      toast.warning(t('warnings.colorMayConflictWithTheme'));
+    }
+
+    const quill = quillRef.current?.getEditor();
+
+    if (quill) {
+      quill.format(format, colorValue);
+    }
+  };
 
   const handleImage = () => {
     const input = document.createElement('input');
@@ -66,10 +79,13 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
           ['bold', 'italic', 'underline', 'strike', 'blockquote'],
           [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
           ['link', 'image'],
+          [{ color: [] }, { background: [] }],
           ['clean'],
         ],
         handlers: {
           image: handleImage,
+          color: handleFormatChange('color'),
+          background: handleFormatChange('background'),
         },
       },
     }),

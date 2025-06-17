@@ -11,6 +11,7 @@
  */
 
 /* eslint-disable @typescript-eslint/class-methods-use-this */
+import { join } from 'path';
 import { Controller, Delete, Get, Param, Post, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type Response } from 'express';
@@ -19,7 +20,7 @@ import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
-import { createAttachmentUploadOptions } from '../common/multer.utilities';
+import { createAttachmentUploadOptions } from './multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 import FilesystemService from './filesystem.service';
 
@@ -62,7 +63,8 @@ class FileSystemController {
   @Delete(':appName/*filename')
   @UseGuards(AppConfigGuard)
   deleteFile(@Param('appName') appName: string, @Param('filename') filename: string) {
-    return FilesystemService.deleteFile(`${APPS_FILES_PATH}/${appName}`, FilesystemService.buildPathString(filename));
+    const appsPath = join(APPS_FILES_PATH, appName);
+    return FilesystemService.deleteFile(appsPath, FilesystemService.buildPathString(filename));
   }
 }
 

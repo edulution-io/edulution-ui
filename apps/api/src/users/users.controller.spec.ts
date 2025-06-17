@@ -130,11 +130,10 @@ describe(UsersController.name, () => {
 
   describe('search', () => {
     it('should call searchUsersByName method of usersService with correct arguments', async () => {
-      const token = 'testtoken';
       const searchString = 'test';
       const school = 'testschool';
-      await controller.search(token, searchString, school);
-      expect(service.searchUsersByName).toHaveBeenCalledWith(token, school, searchString);
+      await controller.search(searchString, school);
+      expect(service.searchUsersByName).toHaveBeenCalledWith(school, searchString);
     });
   });
 });

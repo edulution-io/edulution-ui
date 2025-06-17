@@ -13,30 +13,37 @@
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
-import handleApiError from '@/utils/handleApiError';
 import { HttpStatusCode } from 'axios';
 
 type EduApiStore = {
+  isEduApiHealthy: boolean | undefined;
+  getIsEduApiHealthy: () => Promise<boolean>;
   isEduApiHealthyLoading: boolean;
   error: Error | null;
-  getIsEduApiHealthy: () => Promise<boolean>;
+  reset: () => void;
 };
 
 const initialState = {
+  isEduApiHealthy: undefined,
   isEduApiHealthyLoading: false,
   error: null,
 };
 
 const useEduApiStore = create<EduApiStore>((set) => ({
   ...initialState,
+  reset: () => set(initialState),
 
   getIsEduApiHealthy: async () => {
     set({ isEduApiHealthyLoading: true });
     try {
       const response = await eduApi.get<void>(EDU_API_CONFIG_ENDPOINTS.HEALTH_CHECK);
-      return response.status === Number(HttpStatusCode.Ok);
-    } catch (e) {
-      handleApiError(e, set);
+
+      const isEduApiHealthy = response.status === Number(HttpStatusCode.Ok);
+
+      set({ isEduApiHealthy });
+      return isEduApiHealthy;
+    } catch (_e) {
+      set({ isEduApiHealthy: false });
       return false;
     } finally {
       set({ isEduApiHealthyLoading: false });
