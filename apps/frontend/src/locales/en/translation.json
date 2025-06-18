@@ -819,6 +819,10 @@
       "title": "Info"
     },
     "appconfig": {
+      "position": {
+        "title": "Sorting",
+        "description": "At which position should the app be displayed in the app bar and in the settings?"
+      },
       "sections": {
         "onlyOffice": {
           "title": "Only Office Integration",

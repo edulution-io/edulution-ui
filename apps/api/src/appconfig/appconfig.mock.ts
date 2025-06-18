@@ -50,6 +50,7 @@ export const mockAppConfig: AppConfigDto = {
     [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/2/',
     [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
   },
+  position: 1,
 };
 
 export const mockAppConfigModel = {

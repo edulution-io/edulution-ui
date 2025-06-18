@@ -823,6 +823,10 @@
       "title": "Info"
     },
     "appconfig": {
+      "position": {
+        "title": "Sortierung",
+        "description": "An welcher Position soll die App in der App-Leiste und in den Einstellungen angezeigt werden?"
+      },
       "sections": {
         "onlyOffice": {
           "title": "Only Office Integration",

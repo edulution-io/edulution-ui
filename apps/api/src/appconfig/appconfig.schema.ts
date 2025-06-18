@@ -11,7 +11,7 @@
  */
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Model } from 'mongoose';
 import { type AppConfigOptions } from '@libs/appconfig/types/appConfigOptionsType';
 import type AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
@@ -41,8 +41,20 @@ export class AppConfig extends Document {
   @Prop({ type: Array, default: [] })
   accessGroups: MultipleSelectorGroup[];
 
+  @Prop({ type: Number, required: true })
+  position: number;
+
   @Prop({ default: 4 })
   schemaVersion: number;
 }
 
 export const AppConfigSchema = SchemaFactory.createForClass(AppConfig);
+
+AppConfigSchema.pre<AppConfig>('save', async function countPosition(next) {
+  if (this.isNew) {
+    const model = this.constructor as Model<AppConfig>;
+    const count = await model.countDocuments();
+    this.position = count + 1;
+  }
+  next();
+});
