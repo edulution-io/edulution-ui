@@ -20,10 +20,10 @@
     "isActiveOrExpired": "Aktiv/Abgelaufen",
     "activeFrom": "Aktiv von",
     "activeUntil": "Aktiv bis",
-    "appTitle": "Schwarzes Brett",
+    "appTitle": "Info Board",
     "description": "Hier findest du deine aktuelle Mitteilungen",
     "filterPlaceHolderText": "Suche nach Kategoriename",
-    "sidebar": "Schwarzes Brett",
+    "sidebar": "Info Board",
     "newCategorie": "Neue Kategorie",
     "category": "Kategorie",
     "categoryPositionChanged": "Position der Kategorie geändert",
@@ -65,7 +65,7 @@
     "categories": {
       "visibleByUsersAndGroups": "Diese Kategorie mit ihren Mitteilungen ist sichtbar für Nutzer und Gruppen auf der Startseite",
       "visibleByUsersAndGroupsTitle": "Startseite",
-      "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen in der Bulletin Board App",
+      "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen in der Info Board App",
       "editableByUsersAndGroupsTitle": "Mitteilungen verwalten"
     },
     "errors": {
@@ -117,7 +117,7 @@
     "quota": {
       "title": "Quotas",
       "globalQuota": "Cloudquota berechnet ",
-      "mailQuota": "Mailquota berechnet",
+      "mailQuota": "E-Mailquota berechnet",
       "mibibyte": "MiB",
       "remainingLow": "Verbleibendes Quota gering – {{free}} %",
       "remainingVeryLow": "Verbleibendes Quota sehr gering – {{free}} %"
@@ -171,12 +171,12 @@
     }
   },
   "ticketsystem": {
-    "title": "TICKETSYSTEM",
-    "sidebar": "Ticketsystem"
+    "title": "TICKETS",
+    "sidebar": "Tickets"
   },
   "mail": {
-    "title": "MAIL",
-    "sidebar": "Mail",
+    "title": "E-MAILS",
+    "sidebar": "E-Mails",
     "configName": "Name der Konfiguration",
     "hostname": "Hostname",
     "port": "Port",
@@ -192,7 +192,7 @@
       "isActive": "Aktiv",
       "syncJobsTable": "Sync-Jobs",
       "mailAddress": "E-Mail-Adresse",
-      "noMailConfigured": "Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator.",
+      "noMailConfigured": "E-Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator.",
       "syncAccountAdded": "Konto für Sync-Job hinzugefügt.",
       "syncAccountDeleted": "Konto für Sync-Job gelöscht."
     }
@@ -291,7 +291,7 @@
   "feed": {
     "title": "Aktuelles",
     "noconferences": "Keine laufende Konferenz",
-    "nomail": "Keine ungelesenen Mails",
+    "nomail": "Keine ungelesenen E-Mails",
     "nosurveys": "Keine offenen Umfragen",
     "nobulletinboard": "Keine neuen Mitteilungen"
   },
@@ -306,9 +306,9 @@
   },
   "filesharing": {
     "filterPlaceHolderText": "Suche nach Dateiname",
-    "title": "FILESHARING",
+    "title": "DATEIEN",
     "selectFile": "Datei auswählen",
-    "sidebar": "Filesharing",
+    "sidebar": "Dateien",
     "previewTitle": "Dateivorschau",
     "saveFile": "Datei speichern",
     "fileEditor": "Datei Editor",
@@ -394,14 +394,14 @@
   "server": "Server",
   "loginname": "Loginname",
   "classmanagement": {
-    "title": "KLASSENZIMMER",
-    "sidebar": "Klassenzimmer",
-    "invalidProxyAddresses": "Proxy Email-Adressen müssen Komma-separiert ohne Leerzeichen angegebn werden",
+    "title": "KLASSENRAUM",
+    "sidebar": "Klassenraum",
+    "invalidProxyAddresses": "Proxy E-Mail-Adressen müssen Komma-separiert ohne Leerzeichen angegebn werden",
     "invalidQuota": "Die Quota muss der Dokumentation entsprechend angegeben werden",
-    "invalidMailQuota": "Die Mailquota muss als Zahl in MB angegeben werden",
+    "invalidMailQuota": "Die E-Mailquota muss als Zahl in MB angegeben werden",
     "name": "Name",
-    "mailQuota": "Mail Quota (MB)",
-    "proxyAddresses": "Proxy Email-Adressen",
+    "mailQuota": "E-Mail Quota (MB)",
+    "proxyAddresses": "Proxy E-Mail-Adressen",
     "descriptionPlaceholder": "Kurze Beschreibung des Projekts",
     "proxyAddressesPlaceholder": "info@email1.de,kontakt@email2.com",
     "quotaPlaceholder": "[{\"share\":\"default-school\",\"quota\":50}]",
@@ -798,7 +798,7 @@
       "aichat": "Hier kannst du alle Einstellungen vornehmen.",
       "linuxmuster": "Hier kannst du alle Einstellungen vornehmen.",
       "whiteboard": "Hier kannst du alle Einstellungen vornehmen.",
-      "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Schwarzes Brett haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden.",
+      "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Info Board haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden.",
       "forwarded": "Weiterleitungs: Einfach den Link zur Webanwendung unter URL eintragen.",
       "framed": "Frame: Einfach den Link zur Webanwendung unter URL eintragen.",
       "embedded": "Eingebettet: Hier kann eine eigene Webanwendung im Editor erstellt werden."
@@ -1136,7 +1136,7 @@
     "type": "Typ",
     "creationDate": "Erstelldatum",
     "schoolName": "Schulname",
-    "mailList": "Email Verteiler",
+    "mailList": "E-Mail Verteiler",
     "invalid_chars": "Enthält ungültige Zeichen",
     "clearSelection": "Auswahl löschen",
     "start": "Starten",
@@ -1233,6 +1233,9 @@
     "oversizedFilesDetected": "Zu große Dateien entdeckt",
     "oversizedFileDetected": "Zu große Datei entdeckt!",
     "cannotUploadOversized": "Es können keine Dateien größer als 50MB hochgeladen werden."
+  },
+  "warnings": {
+    "colorMayConflictWithTheme": "Manuelle Einstellung der Farbe kann zukünftig zu Problemen mit anderen Themes (hell/dunkel) führen. Es wird empfohlen, die Farbe der Schrift immer gleichzeitig mit der Hintergrundfarbe zu setzen."
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",
@@ -1375,7 +1378,7 @@
     "classes": "Klassen",
     "change_password": "Passwort ändern",
     "my_information": "Meine Informationen",
-    "mail_alias": "Mail Alias",
+    "mail_alias": "E-Mail Alias",
     "change_my_data": "Daten ändern",
     "school_classes": "Schulklassen"
   },
