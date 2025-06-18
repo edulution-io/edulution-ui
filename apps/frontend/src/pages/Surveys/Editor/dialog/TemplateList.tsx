@@ -32,21 +32,19 @@ const TemplateList = (props: TemplateListProps) => {
   }
 
   return (
-    <>
-      <AccordionSH
-        type="multiple"
-        className="px-4"
-      >
-        {templates.map((template: SurveyTemplateDto) => (
-          <TemplateItem
-            key={template.fileName}
-            form={form}
-            creator={creator}
-            template={template}
-          />
-        ))}
-      </AccordionSH>
-    </>
+    <AccordionSH
+      type="multiple"
+      className="px-4"
+    >
+      {templates.map((template: SurveyTemplateDto) => (
+        <TemplateItem
+          key={template.fileName}
+          form={form}
+          creator={creator}
+          template={template}
+        />
+      ))}
+    </AccordionSH>
   );
 };
 
