@@ -190,28 +190,17 @@ class SurveysService implements OnModuleInit {
 
   static updateLinkForRestfulChoices(surveyId: string, question: SurveyElement): SurveyElement {
     if (isQuestionTypeChoiceType(question.type) && question.choicesByUrl) {
-      const pathParts = question.choicesByUrl.url.split('/');
-      const temporalSurveyIdIndex = pathParts.findIndex((part: string) => part === TEMPORAL_SURVEY_ID_STRING);
-      if (temporalSurveyIdIndex !== -1) {
-        try {
-          pathParts[temporalSurveyIdIndex] = surveyId;
-          const newLink = pathParts.join('/');
-          return {
-            ...question,
-            choicesByUrl: {
-              ...question.choicesByUrl,
-              url: newLink,
-            },
-          };
-        } catch (error) {
-          throw new CustomHttpException(
-            CommonErrorMessages.FILE_NOT_PROVIDED,
-            HttpStatus.INTERNAL_SERVER_ERROR,
-            error,
-            SurveysService.name,
-          );
-        }
+      const [baseUrl, tempSegment] = question.choicesByUrl.url.split(`/${TEMPORAL_SURVEY_ID_STRING}/`);
+      if (!baseUrl || !surveyId || !tempSegment) {
+        return question;
       }
+      return {
+        ...question,
+        choicesByUrl: {
+          ...question.choicesByUrl,
+          url: `${baseUrl}/${surveyId}/${tempSegment}`,
+        },
+      };
     }
     return question;
   }
@@ -225,7 +214,8 @@ class SurveysService implements OnModuleInit {
     const updatePromises = elements?.map(async (question) =>
       this.updateQuestion(username, surveyId, tempFiles, question),
     );
-    return Promise.all(updatePromises);
+    const updatedElements = await Promise.all(updatePromises);
+    return updatedElements;
   }
 
   async updatePages(
@@ -241,16 +231,14 @@ class SurveysService implements OnModuleInit {
       const updatedElements = await this.updateElements(username, surveyId, tempFiles, page.elements);
       return { ...page, elements: updatedElements };
     });
-    return Promise.all(updatePromises);
+    const updatedPages = await Promise.all(updatePromises);
+    return updatedPages;
   }
 
   async updateFormula(username: string, surveyId: string, formula: SurveyFormula): Promise<SurveyFormula> {
     const temporaryDirectoryPath = `${SURVEYS_TEMP_FILES_PATH}/${username}`;
     const fileNames = await this.fileSystemService.getAllFilenamesInDirectory(temporaryDirectoryPath);
 
-    if (fileNames.length === 0) {
-      return formula;
-    }
     const updatedFormula = { ...formula };
     if (formula.logo) {
       updatedFormula.logo = await this.updateTemporalLogo(username, surveyId, fileNames, formula.logo);
@@ -283,7 +271,6 @@ class SurveysService implements OnModuleInit {
     const { preferred_username: username } = user;
 
     const updatedFormula = await this.updateFormula(username, surveyId, survey.formula);
-
     const updatedSurvey = { ...surveyDto, id: surveyId, formula: updatedFormula };
     const savedSurvey = await this.updateSurvey(updatedSurvey, user);
 
@@ -443,8 +430,12 @@ class SurveysService implements OnModuleInit {
     tempFiles: string[],
     question: SurveyElement,
   ): Promise<SurveyElement> {
-    const updatedQuestion = await this.updateTemporalUrls(username, surveyId, tempFiles, question);
-    return SurveysService.updateLinkForRestfulChoices(surveyId, updatedQuestion);
+    let updatedQuestion = SurveysService.updateLinkForRestfulChoices(surveyId, question);
+    if (tempFiles.length === 0) {
+      return updatedQuestion;
+    }
+    updatedQuestion = await this.updateTemporalUrls(username, surveyId, tempFiles, updatedQuestion);
+    return updatedQuestion;
   }
 
   async updateTemporalLogo(
@@ -453,6 +444,9 @@ class SurveysService implements OnModuleInit {
     tempFiles: string[],
     link: string,
   ): Promise<string | undefined> {
+    if (tempFiles.length === 0 || !link) {
+      return link;
+    }
     const pathWithIds = `${surveyId}/logo`;
     return this.updateTempFilesUrls(username, pathWithIds, tempFiles, link);
   }
