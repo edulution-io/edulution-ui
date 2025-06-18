@@ -53,15 +53,16 @@ export const mockAppConfig: AppConfigDto = {
   position: 1,
 };
 
+const makeMockQuery = <T>(result: T) => ({
+  sort: jest.fn().mockReturnThis(),
+  lean: jest.fn().mockResolvedValue(result),
+});
+
 export const mockAppConfigModel = {
   create: jest.fn(),
-  bulkWrite: jest.fn(),
-  find: jest.fn().mockReturnValue({
-    lean: jest.fn(),
-  }),
-  findOne: jest.fn().mockReturnValue({
-    lean: jest.fn(),
-  }),
+  bulkWrite: jest.fn().mockResolvedValue({}),
+  find: jest.fn().mockImplementation(() => makeMockQuery([mockAppConfig])),
+  findOne: jest.fn().mockImplementation(() => makeMockQuery({ ...mockAppConfig })),
   updateOne: jest.fn(),
   deleteOne: jest.fn(),
 };
