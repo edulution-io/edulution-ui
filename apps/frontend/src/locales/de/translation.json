@@ -761,7 +761,15 @@
     "yourPassword": "Dein Passwort",
     "addButton": "Hinzufügen"
   },
-
+  "ctrlKey": "STRG",
+  "enterKey": "Enter",
+  "launcher": {
+    "title": "App Launcher",
+    "searchApps": "Tippen um Apps zu filtern...",
+    "pressShortKey": "Launcher öffnen mit",
+    "pressEnterToStartApp": "Erste App öffnen mit",
+    "noSearchResults": "Keine Ergebnisse für diese Sucheingabe"
+  },
   "settings": {
     "title": "EINSTELLUNGEN",
     "sidebar": "Einstellungen",
