@@ -18,6 +18,7 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import TemplateList from '@/pages/Surveys/Editor/dialog/TemplateList';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import useLdapGroups from '@/hooks/useLdapGroups';
 
 interface TemplateDialogBodyProps {
   form: UseFormReturn<SurveyDto>;
@@ -29,6 +30,8 @@ const TemplateDialogBody = (props: TemplateDialogBodyProps) => {
   const { templates, fetchTemplates, isLoading } = useTemplateMenuStore();
 
   const { t } = useTranslation();
+
+  const { isSuperAdmin } = useLdapGroups();
 
   useEffect(() => {
     void fetchTemplates();
@@ -42,16 +45,14 @@ const TemplateDialogBody = (props: TemplateDialogBodyProps) => {
     );
   }
 
-  if (templates.length === 0) {
-    return (
-      <div className="relative top-1/3">
-        <p className="flex justify-center">{t('survey.editor.templateMenu.emptyMessage')}</p>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-2">
+      <p className="mb-4 flex justify-center">
+        {isSuperAdmin ? t('survey.editor.templateMenu.adminMessage') : t('survey.editor.templateMenu.userMessage')}
+      </p>
+      {templates.length === 0 ? (
+        <p className="flex justify-center text-secondary">{t('survey.editor.templateMenu.emptyMessage')}</p>
+      ) : null}
       <TemplateList
         form={form}
         creator={surveyCreator}

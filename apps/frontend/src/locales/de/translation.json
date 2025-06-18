@@ -560,9 +560,11 @@
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
       "templates": "Vorlagen",
       "templateMenu": {
-        "fetch": "Wähle eine der verfügbaren Vorlagen.",
+        "fetch": "Vorlagen:",
         "submit": "Die Umfrage als Vorlage speichern.",
-        "title": "Vorlagen speichern/laden",
+        "title": "Vorlagen",
+        "userMessage": "Hier kannst du eine Vorlage laden, die dir zur Verfügung steht.",
+        "adminMessage": "Hier kannst du entweder eine Vorlage laden oder die Vorlage der aktuellen Umfrage für die spätere Verwendung aktualisieren/erstellen.",
         "emptyMessage": "Es sind noch keine Vorlagen vorhanden",
         "deletion": {
           "title": "Vorlage löschen",

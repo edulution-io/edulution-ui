@@ -12,12 +12,10 @@
 
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
 import TemplateItem from '@/pages/Surveys/Editor/dialog/TemplateItem';
-import Label from '@/components/ui/Label';
 import { AccordionSH } from '@/components/ui/AccordionSH';
 
 interface TemplateListProps {
@@ -28,13 +26,13 @@ interface TemplateListProps {
 
 const TemplateList = (props: TemplateListProps) => {
   const { form, creator, templates } = props;
-  const { t } = useTranslation();
+
+  if (templates.length === 0) {
+    return null;
+  }
 
   return (
     <>
-      <Label>
-        <p className="font-bold">{t('survey.editor.templateMenu.fetch')}</p>
-      </Label>
       <AccordionSH
         type="multiple"
         className="px-4"
