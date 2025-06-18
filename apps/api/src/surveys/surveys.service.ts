@@ -29,7 +29,7 @@ import {
   SURVEY_FILE_ATTACHMENT_ENDPOINT,
   SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT,
 } from '@libs/survey/constants/surveys-endpoint';
-import SURVEYS_FILES_PATH from '@libs/survey/constants/surveysFilesPath';
+import SURVEYS_ATTACHMENT_PATH from '@libs/survey/constants/surveysAttachmentPath';
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SURVEYS_HEADER_IMAGE from '@libs/survey/constants/surveys-header-image';
@@ -226,8 +226,8 @@ class SurveysService implements OnModuleInit {
   async updateElements(
     username: string,
     surveyId: string,
-    elements: SurveyElement[],
     tempFiles: string[],
+    elements: SurveyElement[],
   ): Promise<SurveyElement[]> {
     const updatePromises = elements?.map(async (question) =>
       this.updateQuestion(username, surveyId, question, tempFiles),
@@ -238,14 +238,14 @@ class SurveysService implements OnModuleInit {
   async updatePages(
     username: string,
     surveyId: string,
-    pages: SurveyPage[],
     tempFiles: string[],
+    pages: SurveyPage[],
   ): Promise<SurveyPage[]> {
     const updatePromises = pages.map(async (page) => {
       if (!page.elements || page.elements?.length === 0) {
         return page;
       }
-      const updatedElements = await this.updateElements(username, surveyId, page.elements, tempFiles);
+      const updatedElements = await this.updateElements(username, surveyId, tempFiles, page.elements);
       return { ...page, elements: updatedElements };
     });
     return Promise.all(updatePromises);
@@ -255,7 +255,7 @@ class SurveysService implements OnModuleInit {
     const temporaryDirectoryPath = join(SURVEYS_TEMP_FILES_PATH, username);
     const tempFileNames = await this.fileSystemService.getAllFilenamesInDirectory(temporaryDirectoryPath);
 
-    const permanentDirectoryPath = join(SURVEYS_FILES_PATH, surveyId);
+    const permanentDirectoryPath = join(SURVEYS_ATTACHMENT_PATH, surveyId);
     const oldQuestionNames = await this.fileSystemService.getAllFilenamesInDirectory(permanentDirectoryPath);
 
     const updatedFormula = { ...formula };
@@ -271,18 +271,18 @@ class SurveysService implements OnModuleInit {
       formula.pages.forEach((page) => {
         includedQuestions = includedQuestions.concat(page.elements || []);
       });
-      updatedFormula.pages = await this.updatePages(username, surveyId, formula.pages, tempFileNames);
+      updatedFormula.pages = await this.updatePages(username, surveyId, tempFileNames, formula.pages);
     }
     if (formula.elements && formula.elements.length > 0) {
       includedQuestions = includedQuestions.concat(formula.elements || []);
-      updatedFormula.elements = await this.updateElements(username, surveyId, formula.elements, tempFileNames);
+      updatedFormula.elements = await this.updateElements(username, surveyId, tempFileNames, formula.elements);
     }
 
     const includedQuestionNames = includedQuestions.map((question) => question.name);
 
     oldQuestionNames.forEach((questionName) => {
       if (!includedQuestionNames.includes(questionName)) {
-        this.fileSystemService.deleteDirectory(join(SURVEYS_FILES_PATH, surveyId, questionName)).catch((error) => {
+        this.fileSystemService.deleteDirectory(join(SURVEYS_ATTACHMENT_PATH, surveyId, questionName)).catch((error) => {
           throw new CustomHttpException(
             CommonErrorMessages.FILE_DELETION_FAILED,
             HttpStatus.NOT_MODIFIED,
@@ -310,25 +310,35 @@ class SurveysService implements OnModuleInit {
         SurveysService.name,
       );
     }
+
     // eslint-disable-next-line no-underscore-dangle
     const surveyId = (survey._id as Types.ObjectId).toString();
     const { preferred_username: username } = user;
 
+    let savedSurvey: SurveyDocument | null = null;
     try {
       const updatedFormula = await this.updateFormula(username, surveyId, survey.formula);
-      const updatedSurvey = { ...surveyDto, id: surveyId, formula: updatedFormula };
-      const savedSurvey = await this.updateSurvey(updatedSurvey, user);
-      if (savedSurvey == null) {
-        throw new CustomHttpException(
-          SurveyErrorMessages.UpdateOrCreateError,
-          HttpStatus.NOT_FOUND,
-          undefined,
-          SurveysService.name,
-        );
-      }
-      this.removeTemporaryFilesFolder(username);
+      savedSurvey = await this.updateSurvey({ ...surveyDto, id: surveyId, formula: updatedFormula }, user);
+    } catch (error) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.UpdateOrCreateError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveysService.name,
+      );
+    }
 
-      return savedSurvey;
+    if (savedSurvey == null) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.UpdateOrCreateError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveysService.name,
+      );
+    }
+
+    try {
+      this.removeTemporaryFilesFolder(username);
     } catch (error) {
       throw new CustomHttpException(
         CommonErrorMessages.FILE_DELETION_FAILED,
@@ -337,6 +347,8 @@ class SurveysService implements OnModuleInit {
         SurveysService.name,
       );
     }
+
+    return savedSurvey;
   }
 
   async createTemplate(surveyTemplateDto: SurveyTemplateDto): Promise<void> {
@@ -371,7 +383,7 @@ class SurveysService implements OnModuleInit {
   }
 
   async serveFiles(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
-    const filePath = `${SURVEYS_FILES_PATH}/${surveyId}/${questionId}/${fileName}`;
+    const filePath = join(SURVEYS_ATTACHMENT_PATH, surveyId, questionId, fileName);
     const fileStream = await this.fileSystemService.createReadStream(filePath);
     fileStream.pipe(res);
     return res;
@@ -379,7 +391,7 @@ class SurveysService implements OnModuleInit {
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async onSurveyRemoval(surveyIds: string[]): Promise<void> {
-    const filePath = surveyIds.map((surveyId) => join(SURVEYS_FILES_PATH, surveyId));
+    const filePath = surveyIds.map((surveyId) => join(SURVEYS_ATTACHMENT_PATH, surveyId));
     return FilesystemService.deleteDirectories(filePath);
   }
 
@@ -401,7 +413,7 @@ class SurveysService implements OnModuleInit {
     }
 
     const temporaryAttachmentPath = join(SURVEYS_TEMP_FILES_PATH, username, imagesFileName);
-    const permanentDirectory = join(SURVEYS_FILES_PATH, pathWithIds);
+    const permanentDirectory = join(SURVEYS_ATTACHMENT_PATH, pathWithIds);
     const persistentAttachmentPath = join(permanentDirectory, imagesFileName);
 
     try {
@@ -487,7 +499,7 @@ class SurveysService implements OnModuleInit {
     formula: SurveyFormula,
     tempFileNames: string[],
   ): Promise<string | undefined> {
-    const permanentDirectoryPath = join(SURVEYS_FILES_PATH, surveyId, SURVEYS_HEADER_IMAGE);
+    const permanentDirectoryPath = join(SURVEYS_ATTACHMENT_PATH, surveyId, SURVEYS_HEADER_IMAGE);
     const permanentFileNames = await this.fileSystemService.getAllFilenamesInDirectory(permanentDirectoryPath);
     if (permanentFileNames.length === 0 && tempFileNames.length === 0) {
       return formula.logo;
@@ -550,7 +562,7 @@ class SurveysService implements OnModuleInit {
     if (!linkedFileName) {
       return { question, temporalFileNames };
     }
-    const permanentDirectoryPath = join(SURVEYS_FILES_PATH, surveyId, question.name);
+    const permanentDirectoryPath = join(SURVEYS_ATTACHMENT_PATH, surveyId, question.name);
     const permanentFileNames = await this.fileSystemService.getAllFilenamesInDirectory(permanentDirectoryPath);
     if (permanentFileNames.length === 0 && temporalFileNames.length === 0) {
       return { question, temporalFileNames };
@@ -611,7 +623,7 @@ class SurveysService implements OnModuleInit {
       await this.removeQuestionAttachment(surveyId, question.name);
       return { question, temporalFileNames };
     }
-    const permanentDirectoryPath = join(SURVEYS_FILES_PATH, surveyId, question.name);
+    const permanentDirectoryPath = join(SURVEYS_ATTACHMENT_PATH, surveyId, question.name);
     const permanentFileNames = await this.fileSystemService.getAllFilenamesInDirectory(permanentDirectoryPath);
     if (permanentFileNames.length === 0 && temporalFileNames.length === 0) {
       return { question, temporalFileNames };
@@ -656,7 +668,7 @@ class SurveysService implements OnModuleInit {
       return { question, temporalFileNames };
     }
 
-    const permanentDirectoryPath = join(SURVEYS_FILES_PATH, surveyId, question.name);
+    const permanentDirectoryPath = join(SURVEYS_ATTACHMENT_PATH, surveyId, question.name);
     const permanentFileNames = await this.fileSystemService.getAllFilenamesInDirectory(permanentDirectoryPath);
     if (permanentFileNames.length === 0 && temporalFileNames.length === 0) {
       return { question, temporalFileNames };
@@ -697,7 +709,7 @@ class SurveysService implements OnModuleInit {
   }
 
   async removeQuestionAttachment(surveyId: string, questionName: string) {
-    const permaDirectory = join(SURVEYS_FILES_PATH, surveyId, questionName);
+    const permaDirectory = join(SURVEYS_ATTACHMENT_PATH, surveyId, questionName);
     await this.fileSystemService.deleteDirectory(permaDirectory);
   }
 
@@ -716,7 +728,7 @@ class SurveysService implements OnModuleInit {
   ): Promise<void> {
     const promises = fileNames.map(async (fileName) => {
       if (!linkedFileNames.includes(fileName)) {
-        const path = join(SURVEYS_FILES_PATH, surveyId, questionName);
+        const path = join(SURVEYS_ATTACHMENT_PATH, surveyId, questionName);
         await FilesystemService.deleteFile(path, fileName);
       }
     });
