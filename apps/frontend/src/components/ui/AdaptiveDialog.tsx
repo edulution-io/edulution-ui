@@ -11,7 +11,7 @@
  */
 
 /* eslint-disable react/require-default-props */
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import {
   Sheet,
   SheetContent,
@@ -30,6 +30,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/Dialog';
 import useMedia from '@/hooks/useMedia';
+import { IconBaseProps, IconContext } from 'react-icons';
 
 interface AdaptiveDialogProps {
   isOpen: boolean;
@@ -41,6 +42,8 @@ interface AdaptiveDialogProps {
   variant?: 'primary' | 'secondary' | 'tertiary';
   mobileContentClassName?: string;
   desktopContentClassName?: string;
+  TitleIcon?: React.ComponentType<IconBaseProps>;
+  persistent?: boolean;
 }
 
 const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
@@ -53,13 +56,30 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
   variant = 'primary',
   mobileContentClassName,
   desktopContentClassName,
+  TitleIcon,
+  persistent = false,
 }) => {
   const { isMobileView } = useMedia();
+
+  const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
+
+  const dialogTitle = (
+    <div className={`flex items-center gap-1 font-bold ${isMobileView ? 'flex-col' : 'flex-row'}`}>
+      {TitleIcon && (
+        <IconContext.Provider value={iconContextValue}>
+          <TitleIcon />
+        </IconContext.Provider>
+      )}
+      <p>{title}</p>
+    </div>
+  );
 
   return isMobileView ? (
     <Sheet
       open={isOpen}
-      onOpenChange={handleOpenChange}
+      onOpenChange={() => {
+        if (!persistent) handleOpenChange();
+      }}
     >
       <SheetTrigger asChild>{trigger}</SheetTrigger>
       <SheetContent
@@ -68,7 +88,7 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
         className={mobileContentClassName}
       >
         <SheetHeader variant={variant}>
-          <SheetTitle>{title}</SheetTitle>
+          <SheetTitle>{dialogTitle}</SheetTitle>
         </SheetHeader>
         {body}
         {footer ? <SheetFooter>{footer}</SheetFooter> : null}
@@ -78,14 +98,16 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
   ) : (
     <Dialog
       open={isOpen}
-      onOpenChange={handleOpenChange}
+      onOpenChange={() => {
+        if (!persistent) handleOpenChange();
+      }}
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
         variant={variant}
         className={desktopContentClassName}
       >
-        <DialogTitle>{title}</DialogTitle>
+        <DialogTitle>{dialogTitle}</DialogTitle>
         {body}
         {footer ? <DialogFooter>{footer}</DialogFooter> : null}
         <DialogDescription aria-disabled />

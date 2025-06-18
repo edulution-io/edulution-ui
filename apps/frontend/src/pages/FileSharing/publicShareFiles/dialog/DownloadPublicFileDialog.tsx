@@ -20,6 +20,7 @@ import usePublicShareFilePageStore from '@/pages/FileSharing/publicShareFiles/pu
 import useUserStore from '@/store/UserStore/UserStore';
 import PublicFileDownloadInfo from '@/pages/FileSharing/publicShareFiles/publicPage/PublicFileDownloadInfo';
 import buildAbsolutePublicDownloadUrl from '@libs/filesharing/utils/buildAbsolutePublicDownloadUrl';
+import { FileText } from 'lucide-react';
 
 interface DeletePublicFileDialoggProps {
   trigger?: React.ReactNode;
@@ -94,6 +95,7 @@ const DownloadPublicFileDialog: React.FC<DeletePublicFileDialoggProps> = ({ trig
       title={t('filesharing.publicFileSharing.downloadPublicFile')}
       body={getDialogBody()}
       footer={getFooter()}
+      TitleIcon={FileText}
     />
   );
 };
