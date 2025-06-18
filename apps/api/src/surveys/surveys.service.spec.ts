@@ -210,6 +210,7 @@ describe('SurveyService', () => {
       jest.spyOn(service, 'updateSurvey').mockResolvedValueOnce(createdSurvey01);
       jest.spyOn(service, 'updateFormula').mockResolvedValueOnce(createdSurvey01.formula);
       jest.spyOn(service, 'updateSurvey').mockResolvedValueOnce(createdSurvey01);
+      jest.spyOn(service, 'removeTemporaryFilesFolder').mockReturnValue();
 
       const result = await service.updateOrCreateSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser);
       expect(result).toBe(createdSurvey01);
