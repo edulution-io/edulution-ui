@@ -15,7 +15,7 @@ import { Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -106,6 +106,7 @@ class SurveysService implements OnModuleInit {
     try {
       const surveyObjectIds = surveyIds.map((s) => new Types.ObjectId(s));
       await this.surveyModel.deleteMany({ _id: { $in: surveyObjectIds } });
+      Logger.log(`Deleted the surveys ${JSON.stringify(surveyIds)}`, SurveysService.name);
     } catch (error) {
       throw new CustomHttpException(
         SurveyErrorMessages.DeleteError,
