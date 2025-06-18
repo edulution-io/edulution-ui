@@ -231,7 +231,7 @@ class SurveysService implements OnModuleInit {
     elements: SurveyElement[],
   ): Promise<SurveyElement[]> {
     const updatePromises = elements?.map(async (question) =>
-      this.updateQuestion(username, surveyId, question, tempFiles),
+      this.updateQuestion(username, surveyId, tempFiles, question),
     );
     return Promise.all(updatePromises);
   }
@@ -479,8 +479,8 @@ class SurveysService implements OnModuleInit {
   async updateQuestion(
     username: string,
     surveyId: string,
-    question: SurveyElement,
     tempFiles: string[],
+    question: SurveyElement,
   ): Promise<SurveyElement> {
     let updatedQuestion: SurveyQuestionUpdate = {
       question,
@@ -715,10 +715,8 @@ class SurveysService implements OnModuleInit {
   }
 
   removeTemporaryFilesFolder(username: string): void {
-    setTimeout((): void => {
-      const temporaryAttachmentPath = join(SURVEYS_TEMP_FILES_PATH, username);
-      void this.fileSystemService.deleteDirectory(temporaryAttachmentPath);
-    }, 500000);
+    const temporaryAttachmentPath = join(SURVEYS_TEMP_FILES_PATH, username);
+    void this.fileSystemService.deleteDirectory(temporaryAttachmentPath);
   }
 
   static async deleteOldFiles(
