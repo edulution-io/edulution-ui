@@ -61,10 +61,16 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
                   {`"${template?.template.formula?.title}"`}
                 </p>
               )}
-              {template?.fileName && (
+              {template?.template.createdAt && (
                 <p>
-                  <Label className="mr-4 inline-block min-w-[80px] font-bold">{t('common.filename')}:</Label>
-                  {`"${template?.fileName}"`}
+                  <Label className="mr-4 inline-block min-w-[80px] font-bold">{t('common.createdAt')}:</Label>
+                  {`"${template?.template.createdAt.toDateString()}"`}
+                </p>
+              )}
+              {template?.template.creator && (
+                <p>
+                  <Label className="mr-4 inline-block min-w-[80px] font-bold">{t('common.creator')}:</Label>
+                  {`"${template?.template.creator.username}"`}
                 </p>
               )}
             </div>

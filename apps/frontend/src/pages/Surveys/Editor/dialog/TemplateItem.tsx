@@ -75,10 +75,10 @@ const TemplateItem = (props: TemplateItemProps) => {
       key={template.fileName}
       value={formula?.title || ''}
     >
-      <AccordionTrigger className="px-4 py-2 text-h4">
+      <AccordionTrigger className="px-4 pt-2 text-h4">
         <p className="font-bold ">{`${formula?.title}`}</p>
       </AccordionTrigger>
-      <AccordionContent className="mt-0 px-4 pt-0">
+      <AccordionContent className="my-0 px-4 py-0">
         <Textarea
           value={JSON.stringify(template.template, null, 2)}
           onChange={() => {}}
@@ -89,7 +89,7 @@ const TemplateItem = (props: TemplateItemProps) => {
           style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '12pt' }}
           disabled
         />
-        <div className="mt-2 flex flex-row justify-end">
+        <div className="mt-2 flex flex-row justify-end space-x-2">
           {isSuperAdmin && (
             <Button
               onClick={handleRemoveTemplate}
