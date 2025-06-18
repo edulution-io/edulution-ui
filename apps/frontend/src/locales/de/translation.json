@@ -400,6 +400,7 @@
       "sharedBy": "Geteilt von: ",
       "getFileAccess": "Bitte gib das Kennwort für diese Freigabe ein, um Zugriff auf die Inhalte zu erhalten.",
       "downloadPublicFile": "Inhalt herunterladen",
+      "nameOfContent": "Name des Inhalts:",
       "errors": {
         "PublicFileDeletionFailed": "Öffentlicher Freigabelink konnte nicht gelöscht werden.",
         "PublicFileIsOnlyDeletableByOwner": "Der öffentliche Freigabelink kann nur vom Besitzer gelöscht werden.",

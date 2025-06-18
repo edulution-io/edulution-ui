@@ -12,32 +12,20 @@
 
 import PageLayout from '@/components/structure/layout/PageLayout';
 import React, { useEffect } from 'react';
-import { Button } from '@/components/shared/Button';
-import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import useUserStore from '@/store/UserStore/UserStore';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
-import PublicFileDownloadInfo from '@/pages/FileSharing/publicShareFiles/publicPage/PublicFileDownloadInfo';
+import DownloadPublicFileDialog from '@/pages/FileSharing/publicShareFiles/dialog/DownloadPublicFileDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import usePublicShareFilePageStore from '@/pages/FileSharing/publicShareFiles/publicPage/usePublicShareFilePageStore';
 import APPS from '@libs/appconfig/constants/apps';
-import buildAbsolutePublicDownloadUrl from '@libs/filesharing/utils/buildAbsolutePublicDownloadUrl';
 
 const PublicFileDownloadPage: React.FC = () => {
   const { eduApiToken } = useUserStore();
   const { openDialog } = usePublicShareFilePageStore();
 
   const navigate = useNavigate();
-  const { t } = useTranslation();
-  const {
-    fetchPublicShareFilesById,
-    publicShareFile,
-    isAccessRestricted,
-    isFileAvailable,
-    isLoading,
-    isPasswordRequired,
-  } = usePublicShareFilesStore();
+  const { fetchPublicShareFilesById, isLoading } = usePublicShareFilesStore();
 
   const location = useLocation();
   const id = location.pathname.split('/').pop() ?? '';
@@ -52,46 +40,12 @@ const PublicFileDownloadPage: React.FC = () => {
     }
   }, [id, eduApiToken]);
 
-  let content: React.ReactNode = null;
+  let content: React.ReactNode;
 
   if (isLoading) {
     content = <LoadingIndicatorDialog isOpen={isLoading} />;
-  }
-  if (publicShareFile) {
-    const { filename, creator, expires, fileLink } = publicShareFile;
-
-    const absoluteUrl = buildAbsolutePublicDownloadUrl(fileLink);
-
-    content = (
-      <PublicFileDownloadInfo
-        filename={filename}
-        creator={creator}
-        expires={new Date(expires)}
-        absoluteUrl={absoluteUrl}
-        isPasswordRequired={isPasswordRequired}
-      />
-    );
-  } else if (isAccessRestricted) {
-    content = (
-      <div className="space-y-6 text-center">
-        <h3 className="text-xl font-semibold">{t('filesharing.publicFileSharing.errors.PublicFileIsRestricted')}</h3>
-
-        <Button
-          className="mx-auto w-52 justify-center shadow-xl"
-          variant="btn-security"
-          size="lg"
-          onClick={() => navigate(LOGIN_ROUTE, { state: { from: location.pathname } })}
-        >
-          {t('common.toLogin')}
-        </Button>
-      </div>
-    );
-  } else if (!isFileAvailable) {
-    content = (
-      <h3 className="text-center text-xl font-semibold">
-        {t('filesharing.publicFileSharing.errors.FileCouldNotBeFound')}
-      </h3>
-    );
+  } else {
+    content = <DownloadPublicFileDialog />;
   }
 
   return (

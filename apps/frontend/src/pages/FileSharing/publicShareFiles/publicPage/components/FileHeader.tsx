@@ -11,7 +11,6 @@
  */
 
 import React from 'react';
-import { FileText } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface FileHeaderProps {
@@ -24,11 +23,11 @@ const FileHeader: React.FC<FileHeaderProps> = ({ filename, creator }) => {
   return (
     <>
       <header className="flex items-start gap-3">
-        <FileText className="h-10 w-10 flex-shrink-0 text-blue-400" />
-        <h2 className="truncate text-xl font-semibold text-white">{filename}</h2>
+        <p>{t('filesharing.publicFileSharing.nameOfContent')} </p>
+        <p className="truncate text-background">{filename}</p>
       </header>
 
-      <div className="mt-4 flex items-center gap-2 text-white">
+      <div className="mt-4 flex items-center gap-2 text-background">
         <p>{t('filesharing.publicFileSharing.sharedBy')} </p>
         <p className="truncate">{creator}</p>
       </div>

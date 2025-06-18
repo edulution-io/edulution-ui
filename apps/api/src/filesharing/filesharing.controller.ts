@@ -222,7 +222,7 @@ class FilesharingController {
 
   @Public()
   @Get(`${FileSharingApiEndpoints.PUBLIC_FILE_SHARE}/:shareId`)
-  async getPublicFileShareInfo(@Param('shareId') shareId: string, @GetToken() token: string) {
+  async getPublicFileShareInfo(@Param('shareId') shareId: string, @GetToken({ required: false }) token?: string) {
     return this.filesharingService.getPublicFileShareInfo(shareId, token);
   }
 
@@ -231,8 +231,8 @@ class FilesharingController {
   async downloadPublicFile(
     @Param('shareId') shareId: string,
     @Body('password') password: string | undefined,
-    @GetToken() token: string,
     @Res({ passthrough: true }) res: Response,
+    @GetToken({ required: false }) token: string,
   ) {
     const { stream, filename, fileType } = await this.filesharingService.getPublicFileShare(shareId, token, password);
 

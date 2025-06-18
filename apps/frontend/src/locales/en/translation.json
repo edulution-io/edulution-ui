@@ -399,7 +399,8 @@
       "sharePublicFile": "Share public content",
       "sharedBy": "Shared by: ",
       "getFileAccess": "Please enter the password for this share to access the contents.",
-      "downloadPublicFile": "Download file",
+      "downloadPublicFile": "Download content",
+      "nameOfContent": "Content name:",
       "errors": {
         "PublicFileDeletionFailed": "Failed to delete public sharing link",
         "PublicFileIsOnlyDeletableByOwner": "The public file link can only be deleted by the owner of this conent.",
