@@ -54,7 +54,7 @@
     // TypeScript cares abput prop-types
     "react/prop-types": "off",
     "react/require-default-props": "off",
-    // Allow the use of _id
+    // Allow the use of _id in order to access MongoDB ObjectId
     "no-underscore-dangle": ["error", { "allow": ["_id"] }],
     // Issue with react-hook-form -> https://github.com/orgs/react-hook-form/discussions/8622
     "@typescript-eslint/no-misused-promises": [
