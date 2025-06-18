@@ -10,18 +10,23 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { MobileLogoIcon } from '@/assets/icons';
-import { SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-const HomeButton: React.FC = () => (
-  <div className="group relative right-0 top-0 z-50 flex max-h-14 items-center justify-end gap-4 bg-black px-4 py-2 md:block md:px-3">
-    <img
-      src={MobileLogoIcon}
-      width={SIDEBAR_ICON_WIDTH}
-      alt="edulution-mobile-logo"
-    />
-  </div>
-);
+export default function useModKeyLabel() {
+  const { t } = useTranslation();
+  const [label, setLabel] = useState<string>('STRG');
 
-export default HomeButton;
+  useEffect(() => {
+    const platform = navigator.platform || navigator.userAgent || '';
+    const isMac = /Mac/i.test(platform);
+
+    if (isMac) {
+      setLabel('⌘');
+    } else {
+      setLabel(t('ctrlKey'));
+    }
+  }, []);
+
+  return label;
+}
