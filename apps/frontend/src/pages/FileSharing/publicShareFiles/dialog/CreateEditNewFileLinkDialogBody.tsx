@@ -12,7 +12,7 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { FormProvider, UseFormReturn } from 'react-hook-form';
+import { Controller, FormProvider, UseFormReturn } from 'react-hook-form';
 import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import FormField from '@/components/shared/FormField';
@@ -23,7 +23,6 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import CreateEditPublicFileShareDto from '@libs/filesharing/types/createEditPublicFileShareDto';
 import ShareLinkScopeSelector from '@/pages/FileSharing/utilities/ShareLinkScopeSelector';
-import ShareFileLinkScope from '@libs/filesharing/constants/shareFileLinkScope';
 import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
 
 interface Props {
@@ -52,14 +51,6 @@ const CreateEditNewFileLinkDialogBody: React.FC<Props> = ({ form }) => {
   const onAttendeesSearch = async (query: string) =>
     (await searchAttendees(query)).filter((u) => u.username !== user?.username);
 
-  const handleScopeChange = (scope: ShareFileLinkScope) => {
-    setValue('scope', scope, { shouldValidate: true });
-    if (scope === 'public') {
-      setValue('invitedAttendees', [], { shouldValidate: true });
-      setValue('invitedGroups', [], { shouldValidate: true });
-    }
-  };
-
   const scope = watch('scope');
 
   return (
@@ -68,9 +59,16 @@ const CreateEditNewFileLinkDialogBody: React.FC<Props> = ({ form }) => {
         {t('filesharing.expiry.selectedItemPrefix')}
         <span className="block truncate">{currentFile?.filename}</span>
       </p>
-      <ShareLinkScopeSelector
-        value={scope}
-        onValueChange={handleScopeChange}
+      <Controller
+        name="scope"
+        control={form.control}
+        defaultValue="public"
+        render={({ field }) => (
+          <ShareLinkScopeSelector
+            value={field.value}
+            onValueChange={field.onChange}
+          />
+        )}
       />
 
       {scope === 'restricted' && (

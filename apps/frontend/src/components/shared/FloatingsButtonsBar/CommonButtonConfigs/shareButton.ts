@@ -10,11 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { FaShareFromSquare } from 'react-icons/fa6';
+import { VscShare } from 'react-icons/vsc';
 import { t } from 'i18next';
 
 const ShareButton = (onClick: () => void, isVisible?: boolean) => ({
-  icon: FaShareFromSquare,
+  icon: VscShare,
   text: t('tooltip.share'),
   onClick,
   isVisible,

@@ -10,9 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const sanitizeRegexPattern = (input: string, escapeSlash = false): string => {
+const toSanitizedPathRegex = (input: string, flags: string = '', escapeSlash: boolean = false): RegExp => {
   const meta = escapeSlash ? /[.*+?^${}()|[\]\\/]/g : /[.*+?^${}()|[\]\\]/g;
-  return input.replace(meta, '\\$&');
+
+  return new RegExp(input.replace(meta, '\\$&'), flags);
 };
 
-export default sanitizeRegexPattern;
+export default toSanitizedPathRegex;

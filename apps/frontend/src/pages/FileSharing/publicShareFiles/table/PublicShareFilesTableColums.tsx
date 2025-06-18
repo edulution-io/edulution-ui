@@ -26,7 +26,7 @@ import copyToClipboard from '@/utils/copyToClipboard';
 import { MdDelete, MdEdit, MdFileCopy } from 'react-icons/md';
 import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
-import { Button } from '@/components/shared/Button';
+import TableActionCell from '@/components/ui/Table/TableActionCell';
 
 const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
   {
@@ -204,10 +204,12 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
           />
           <MdFileCopy
             size={BUTTONS_ICON_WIDTH}
+            className="cursor-pointer"
             onClick={() => copyToClipboard(url)}
           />
           <QrCodeIcon
             size={BUTTONS_ICON_WIDTH}
+            className="cursor-pointer"
             onClick={() => {
               setPublicShareFile(row.original);
               setIsShareFileQrCodeDialogOpen(true);
@@ -234,37 +236,27 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
       const { original } = row;
 
       return (
-        <div className="flex items-center space-x-2 ">
-          <Button
-            type="button"
-            variant="btn-small"
-            className="bg-transparent"
-            onClick={() => {
-              setEditMultipleFiles([original]);
-              closeDialog();
-              setIsShareFileEditDialogOpen(true);
-            }}
-          >
-            <MdEdit
-              className="text-background"
-              size={BUTTONS_ICON_WIDTH}
-            />
-          </Button>
-          <Button
-            type="button"
-            variant="btn-small"
-            className="bg-transparent"
-            onClick={() => {
-              void deletePublicShareFiles([original]);
-              closeDialog();
-            }}
-          >
-            <MdDelete
-              className="text-background"
-              size={BUTTONS_ICON_WIDTH}
-            />
-          </Button>
-        </div>
+        <TableActionCell
+          actions={[
+            {
+              icon: MdEdit,
+              translationId: 'common.edit',
+              onClick: () => {
+                setEditMultipleFiles([original]);
+                closeDialog();
+                setIsShareFileEditDialogOpen(true);
+              },
+            },
+            {
+              icon: MdDelete,
+              translationId: 'common.delete',
+              onClick: async () => {
+                await deletePublicShareFiles([original]);
+              },
+            },
+          ]}
+          row={row}
+        />
       );
     },
   },

@@ -17,13 +17,14 @@ import PUBLIC_SHARED_FILES_TABLE_COLUMN from '@libs/filesharing/constants/public
 import APPS from '@libs/appconfig/constants/apps';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
-import { Button } from '@/components/shared/Button';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
+import { IoAdd } from 'react-icons/io5';
 
 const ShareFileLinkDialogBody = () => {
   const { t } = useTranslation();
-  const { editMultipleFiles, isLoading, selectedRows, setIsCreateNewFileLinkDialogOpen } = usePublicShareFilesStore();
+  const { editMultipleFiles, isLoading, selectedRows, setIsCreateNewFileLinkDialogOpen, deletePublicShareFiles } =
+    usePublicShareFilesStore();
   const { selectedItems } = useFileSharingStore();
   const { closeDialog } = useFileSharingDialogStore();
 
@@ -31,7 +32,7 @@ const ShareFileLinkDialogBody = () => {
     () => ({
       [PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME]: false,
     }),
-    [selectedRows],
+    [selectedRows, deletePublicShareFiles],
   );
 
   return (
@@ -51,18 +52,17 @@ const ShareFileLinkDialogBody = () => {
         applicationName={APPS.FILE_SHARING}
         initialColumnVisibility={initialColumnVisibility}
         showSearchBar={false}
+        actions={[
+          {
+            icon: IoAdd,
+            translationId: 'common.add',
+            onClick: () => {
+              closeDialog();
+              setIsCreateNewFileLinkDialogOpen(true);
+            },
+          },
+        ]}
       />
-      <Button
-        type="button"
-        variant="btn-small"
-        className="w-full justify-center bg-primary text-secondary"
-        onClick={() => {
-          closeDialog();
-          setIsCreateNewFileLinkDialogOpen(true);
-        }}
-      >
-        {t('filesharing.publicFileSharing.fileLink')}
-      </Button>
     </div>
   );
 };

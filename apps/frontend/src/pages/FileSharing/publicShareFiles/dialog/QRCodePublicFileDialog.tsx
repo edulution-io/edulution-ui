@@ -17,6 +17,7 @@ import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/u
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import { useTranslation } from 'react-i18next';
 
 const QRCodePublicFileDialog = () => {
   const { isMobileView } = useMedia();
@@ -29,6 +30,8 @@ const QRCodePublicFileDialog = () => {
   } = usePublicShareFilesStore();
 
   const { origin } = window.location;
+
+  const { t } = useTranslation();
 
   const handleClose = () => {
     setPublicShareFile(null);
@@ -52,7 +55,7 @@ const QRCodePublicFileDialog = () => {
     <AdaptiveDialog
       isOpen={isShareFileQrCodeDialogOpen}
       handleOpenChange={handleClose}
-      title="filesharing.publicFileSharing.qrCodePublicShareFile"
+      title={t('filesharing.publicFileSharing.qrCodePublicShareFile')}
       body={getDialogBody()}
       footer={getFooter()}
       desktopContentClassName="max-w-[60%] max-h-[75%] min-h-fit-content"

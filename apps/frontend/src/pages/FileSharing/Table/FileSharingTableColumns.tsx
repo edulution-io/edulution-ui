@@ -135,7 +135,7 @@ const getFileSharingTableColumns = (
     },
     {
       accessorKey: FILE_SHARING_TABLE_COLUMNS.IS_SHARED,
-      size: 10,
+      size: 50,
       header: ({ column }) => <SortableHeader<DirectoryFileDTO, unknown> column={column} />,
       meta: {
         translationId: 'fileSharingTable.isShared',

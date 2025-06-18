@@ -48,6 +48,7 @@ import FilesystemService from '../filesystem/filesystem.service';
 import FilesharingService from './filesharing.service';
 import WebdavService from '../webdav/webdav.service';
 import { Public } from '../common/decorators/public.decorator';
+import GetToken from '../common/decorators/getToken.decorator';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
@@ -221,9 +222,7 @@ class FilesharingController {
 
   @Public()
   @Get(`${FileSharingApiEndpoints.PUBLIC_FILE_SHARE}/:shareId`)
-  async getPublicFileShareInfo(@Param('shareId') shareId: string, @Req() req: Request) {
-    const { authorization } = req.headers;
-    const token = authorization?.replace(/^Bearer\s+/i, '').trim() || undefined;
+  async getPublicFileShareInfo(@Param('shareId') shareId: string, @GetToken() token: string) {
     return this.filesharingService.getPublicFileShareInfo(shareId, token);
   }
 
@@ -232,11 +231,9 @@ class FilesharingController {
   async downloadPublicFile(
     @Param('shareId') shareId: string,
     @Body('password') password: string | undefined,
-    @Req() req: Request,
+    @GetToken() token: string,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const token = req.headers.authorization?.replace(/^Bearer\s*/i, '').trim() || undefined;
-
     const { stream, filename, fileType } = await this.filesharingService.getPublicFileShare(shareId, token, password);
 
     res.set({

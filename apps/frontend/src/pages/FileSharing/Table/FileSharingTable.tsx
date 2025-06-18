@@ -69,6 +69,7 @@ const FileSharingTable = () => {
       [FILE_SHARING_TABLE_COLUMNS.LAST_MODIFIED]: shouldHideColumns,
       [FILE_SHARING_TABLE_COLUMNS.SIZE]: shouldHideColumns,
       [FILE_SHARING_TABLE_COLUMNS.TYPE]: shouldHideColumns,
+      [FILE_SHARING_TABLE_COLUMNS.IS_SHARED]: shouldHideColumns,
     }),
     [shouldHideColumns, publicShareFiles],
   );

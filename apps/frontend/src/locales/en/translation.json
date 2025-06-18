@@ -382,33 +382,32 @@
       "actions": "Actions",
       "createdAt": "Created at",
       "validUntil": "Valid until",
-      "newFileLink": "New File Link",
       "isActive": "Active",
-      "fileLink": "File link",
+      "fileLink": "Sharing link",
       "selectPersonsOrGroupsWhoCanAccess": "Restrict persons or groups who can access the file",
       "invitedAttendees": "Invited",
       "isAccessibleBy": "Accessible by",
       "publiclyAccessible": "Publicly accessible",
-      "confirmMultiDelete": "Should these file links for the following files really be deleted?",
-      "confirmSingleDelete": "Should this file link for the following file really be deleted?",
-      "deleteFileLink": "Delete file link",
-      "deleteFileLinks": "Delete file links",
+      "confirmMultiDelete": "Should these sharing links for the following contents really be deleted?",
+      "confirmSingleDelete": "Should this sharing link for the following content really be deleted?",
+      "deleteFileLink": "Delete sharing link",
+      "deleteFileLinks": "Delete sharing links",
       "isPasswordProtected": "Password",
-      "qrCodePublicShareFile": "QR Code for public file link",
-      "createNewFileLink": "Create new file link",
-      "editPublicShareFile": "Edit file link",
-      "sharePublicFile": "Share public files",
+      "qrCodePublicShareFile": "QR Code for public sharing link",
+      "createNewFileLink": "Create new sharing link",
+      "editPublicShareFile": "Edit sharing link",
+      "sharePublicFile": "Share public content",
       "sharedBy": "Shared by: ",
       "getFileAccess": "Please enter the password for this share to access the contents.",
       "downloadPublicFile": "Download file",
       "errors": {
-        "PublicFileDeletionFailed": "Failed to delete public file link",
-        "PublicFileIsOnlyDeletableByOwner": "The public file link can only be deleted by the owner of the file.",
-        "PublicFileNotFound": "Public file link not found",
-        "PublicFileIsRestricted": "The public file link is restricted to specific users or groups.",
-        "PublicIsRestrictedByInvalidToken": "The public file link is restricted by an invalid token.",
-        "PublicFileWrongPassword": "The password for the file link is incorrect.",
-        "FileCouldNotBeFound": "The requested file could not be found. Please check the link or contact the owner of the file."
+        "PublicFileDeletionFailed": "Failed to delete public sharing link",
+        "PublicFileIsOnlyDeletableByOwner": "The public file link can only be deleted by the owner of this conent.",
+        "PublicFileNotFound": "Public sharing link not found",
+        "PublicFileIsRestricted": "This public sharing link is restricted to specific users or groups.",
+        "PublicIsRestrictedByInvalidToken": "This public sharing link is restricted by an invalid token.",
+        "PublicFileWrongPassword": "The password for the public sharing is incorrect.",
+        "FileCouldNotBeFound": "The requested content could not be found. Please check the link or contact the owner of this content."
       },
       "success": {
         "PublicFileLinkCreated": "Public file link created successfully",
@@ -417,17 +416,17 @@
       },
       "scope": {
         "public": "Public",
-        "publicHint": "Anyone with the link can access this file.",
+        "publicHint": "Anyone with the link can access this content.",
         "restricted": "Restricted",
-        "restrictedHint": "Only selected users or groups can access this file."
+        "restrictedHint": "Only selected users or groups can access this content."
       }
     },
 
     "expiry": {
       "select": "Select expiry time",
       "selectedItemPrefix": "Selected file that is shared:",
-      "noInviteesWarning": "⚠️  WARNING: Anyone with the link will be able to download this file.",
-      "inviteesWarning": "⚠️  WARNING: Anyone within the selected groups or users will be able to download this file."
+      "noInviteesWarning": "⚠️  WARNING: Anyone with the link will be able to download this content.",
+      "inviteesWarning": "⚠️  WARNING: Anyone within the selected groups or users will be able to download this content."
     }
   },
   "forums": {

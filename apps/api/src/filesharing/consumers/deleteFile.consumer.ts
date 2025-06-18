@@ -20,7 +20,7 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import normalizeWebdavPath from '@libs/filesharing/utils/buildNormalizedWebdavPath';
-import sanitizeRegexPattern from '@libs/filesharing/utils/sanitizeRegexPattern';
+import toSanitizedPathRegex from '@libs/filesharing/utils/toSanitizedPathRegex';
 import WebdavService from '../../webdav/webdav.service';
 import SseService from '../../sse/sse.service';
 import { PublicFileShare } from '../publicFileShare.schema';
@@ -39,13 +39,12 @@ class DeleteFileConsumer extends WorkerHost {
   async process(job: Job<FileOperationQueueJobData>): Promise<void> {
     const { username, originFilePath, processed, total, webdavFilePath } = job.data as DeleteFileJobData;
     const targetPath = normalizeWebdavPath(webdavFilePath);
-    const escaped = sanitizeRegexPattern(targetPath);
-    const pathRegex = new RegExp(`^${escaped}(\\/|$)`);
+    const sanitizedPathRegex = toSanitizedPathRegex(targetPath, 'g');
 
     const failedPaths: string[] = [];
     try {
       await this.webDavService.deletePath(username, originFilePath);
-      await this.shareModel.deleteMany({ filePath: pathRegex });
+      await this.shareModel.deleteMany({ filePath: sanitizedPathRegex });
     } catch (error) {
       failedPaths.push(originFilePath);
     }

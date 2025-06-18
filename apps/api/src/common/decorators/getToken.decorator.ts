@@ -14,11 +14,13 @@ import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@
 import { Request } from 'express';
 
 const GetToken = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
-  const request: Request = ctx.switchToHttp().getRequest();
-  if (!request.token) {
-    throw new UnauthorizedException('Auth Token is missing');
+  const request: Request = ctx.switchToHttp().getRequest<Request & { token?: string }>();
+  if (request.token) return request.token;
+  const auth = request.headers.authorization;
+  if (auth?.startsWith('Bearer ')) {
+    return auth.slice(7).trim();
   }
-  return request.token;
+  throw new UnauthorizedException('Auth Token is missing');
 });
 
 export default GetToken;

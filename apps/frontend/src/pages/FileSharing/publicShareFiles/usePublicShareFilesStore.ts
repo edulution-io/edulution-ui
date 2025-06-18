@@ -124,15 +124,24 @@ export const usePublicShareFilesStore = create<PublicShareFilesStore>((set, get)
     }
   },
 
-  deletePublicShareFiles: async (publicFiles: PublicFileShareDto[]) => {
+  deletePublicShareFiles: async (filesToDelete: PublicFileShareDto[]) => {
     set({ isLoading: true, error: null });
 
     try {
       await eduApi.delete(FILESHARING_SHARED_FILES_API_ENDPOINT, {
-        data: publicFiles,
+        data: filesToDelete,
       });
 
-      set({ selectedFilesToShareRows: [], isLoading: true });
+      const removedIds = new Set(filesToDelete.map((file) => file._id));
+
+      set((state) => ({
+        ...state,
+        publicShareFiles: state.publicShareFiles.filter((file) => !removedIds.has(file._id)),
+        editMultipleFiles: state.editMultipleFiles.filter((file) => !removedIds.has(file._id)),
+        selectedFilesToShareRows: [],
+        selectedRows: {},
+      }));
+
       toast.success(t('filesharing.publicFileSharing.success.PublicFileLinkDeleted'));
     } catch (error) {
       handleApiError(error, set);

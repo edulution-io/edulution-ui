@@ -50,6 +50,10 @@ const FileSharingPage = () => {
   }, [fileOperationProgress]);
   const { percentageUsed } = useQuotaInfo();
 
+  useEffect(() => {
+    void fetchPublicShareFiles();
+  }, [currentPath, fetchFiles]);
+
   return (
     <PageLayout>
       <LoadingIndicatorDialog isOpen={isLoading} />
