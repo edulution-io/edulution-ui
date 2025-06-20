@@ -14,8 +14,8 @@ import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import ShareFileLinkScope from '@libs/filesharing/constants/shareFileLinkScope';
 
-interface PublicFileShareDto {
-  _id: string;
+interface PublicShareDto {
+  publicShareId: string;
   expires: Date;
   sharedFileId: string;
   filename: string;
@@ -31,4 +31,4 @@ interface PublicFileShareDto {
   scope: ShareFileLinkScope;
 }
 
-export default PublicFileShareDto;
+export default PublicShareDto;

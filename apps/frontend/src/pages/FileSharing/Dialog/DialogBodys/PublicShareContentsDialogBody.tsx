@@ -69,7 +69,7 @@ const PublicShareContentsDialogBody = () => {
           filterPlaceHolderText={t('fileSharing.filterPlaceHolderText')}
           isLoading={false}
           selectedRows={selectedRows}
-          getRowId={({ _id: id }) => id}
+          getRowId={({ publicShareId }) => publicShareId}
           applicationName={APPS.FILE_SHARING}
           initialColumnVisibility={initialColumnVisibility}
           showSearchBar={false}

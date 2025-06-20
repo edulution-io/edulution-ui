@@ -51,9 +51,9 @@ const DeletePublicShareDialog: React.FC<DeletePublicFileDialogProps> = ({ trigge
               ? 'filesharing.publicFileSharing.confirmMultiDelete'
               : 'filesharing.publicFileSharing.confirmSingleDelete'
           }
-          items={selectedContentToShareRows.map(({ _id: id, filename }) => ({
+          items={selectedContentToShareRows.map(({ publicShareId, filename }) => ({
             name: filename,
-            id,
+            id: publicShareId,
           }))}
         />
       </div>

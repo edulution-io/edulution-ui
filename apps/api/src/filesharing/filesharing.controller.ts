@@ -41,7 +41,7 @@ import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
 import CreateEditPublicFileShareDto from '@libs/filesharing/types/createEditPublicFileShareDto';
-import PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto';
+import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import UploadFileDto from '@libs/filesharing/types/uploadFileDto';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
@@ -216,30 +216,37 @@ class FilesharingController {
   }
 
   @Delete(FileSharingApiEndpoints.PUBLIC_FILE_SHARE)
-  async deletePublicShares(@Body() publicFiles: PublicFileShareDto[], @GetCurrentUsername() username: string) {
+  async deletePublicShares(@Body() publicFiles: PublicShareDto[], @GetCurrentUsername() username: string) {
     return this.filesharingService.deletePublicShares(username, publicFiles);
   }
 
   @Patch(FileSharingApiEndpoints.PUBLIC_FILE_SHARE)
-  async editPublicShare(@Body() publicFileShareDto: PublicFileShareDto, @GetCurrentUsername() username: string) {
+  async editPublicShare(@Body() publicFileShareDto: PublicShareDto, @GetCurrentUsername() username: string) {
     return this.filesharingService.editPublicShare(username, publicFileShareDto);
   }
 
   @Public()
-  @Get(`${FileSharingApiEndpoints.PUBLIC_FILE_SHARE}/:shareId`)
-  async getPublicShareInfo(@Param('shareId') shareId: string, @GetToken({ required: false }) token?: string) {
-    return this.filesharingService.getPublicShareInfo(shareId, token);
+  @Get(`${FileSharingApiEndpoints.PUBLIC_FILE_SHARE}/:publicShareId`)
+  async getPublicShareInfo(
+    @Param('publicShareId') publicShareId: string,
+    @GetToken({ required: false }) token?: string,
+  ) {
+    return this.filesharingService.getPublicShareInfo(publicShareId, token);
   }
 
   @Public()
-  @Post(`${FileSharingApiEndpoints.PUBLIC_FILE_SHARE_DOWNLOAD}/:shareId`)
+  @Post(`${FileSharingApiEndpoints.PUBLIC_FILE_SHARE_DOWNLOAD}/:publicShareId`)
   async downloadSharedContent(
-    @Param('shareId') shareId: string,
+    @Param('publicShareId') publicShareId: string,
     @Body('password') password: string | undefined,
     @Res({ passthrough: true }) res: Response,
     @GetToken({ required: false }) token: string,
   ) {
-    const { stream, filename, fileType } = await this.filesharingService.getPublicFileShare(shareId, token, password);
+    const { stream, filename, fileType } = await this.filesharingService.getPublicFileShare(
+      publicShareId,
+      token,
+      password,
+    );
 
     res.set({
       [HTTP_HEADERS.ContentDisposition]: `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`,

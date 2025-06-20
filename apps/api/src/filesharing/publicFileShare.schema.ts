@@ -12,19 +12,22 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { v4 as uuidv4 } from 'uuid';
+import { Document, Types } from 'mongoose';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import DEFAULT_FILE_LINK_EXPIRY from '@libs/filesharing/constants/defaultFileLinkExpiry';
 
-export type PublicFileShareDocument = PublicFileShare & Document & { _id: string };
+export type PublicFileShareDocument = PublicFileShare & Document & { _id: Types.ObjectId };
 
 @Schema({
   timestamps: { createdAt: true, updatedAt: true },
   strict: true,
 })
 export class PublicFileShare {
-  @Prop({ type: String, default: uuidv4 })
-  _id!: string;
+  _id!: Types.ObjectId;
+
+  @Prop({ type: String, default: uuidv4, index: true, unique: true })
+  publicShareId!: string;
 
   @Prop({ required: true }) etag!: string;
 
@@ -57,7 +60,6 @@ export class PublicFileShare {
 
 export const PublicFileShareSchema = SchemaFactory.createForClass(PublicFileShare).set('toJSON', { virtuals: true });
 
-PublicFileShareSchema.virtual('id').get(function getId(this: PublicFileShareDocument) {
-  const { _id: id } = this;
-  return id;
+PublicFileShareSchema.virtual('id').get(function (this: PublicFileShareDocument) {
+  return this._id.toString();
 });

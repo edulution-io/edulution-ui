@@ -16,7 +16,7 @@ import PublicShareFilesTableColumns from '@/pages/FileSharing/publicShare/table/
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import APPS from '@libs/appconfig/constants/apps';
 import PUBLIC_SHARED_FILES_TABLE_COLUMN from '@libs/filesharing/constants/publicSharedFIlesTableColum';
-import PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto';
+import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 
 const PublicShareTable = () => {
   const {
@@ -33,8 +33,8 @@ const PublicShareTable = () => {
     setSelectedRows(newValue);
     const selectedItemData = Object.keys(newValue)
       .filter((key) => newValue[key])
-      .map((rowId) => publicShareContents.find(({ _id: id }) => id === rowId))
-      .filter(Boolean) as PublicFileShareDto[];
+      .map((rowId) => publicShareContents.find(({ publicShareId }) => publicShareId === rowId))
+      .filter(Boolean) as PublicShareDto[];
     setSelectedPublicShareRows(selectedItemData);
   };
 
@@ -51,7 +51,7 @@ const PublicShareTable = () => {
       onRowSelectionChange={handleRowSelectionChange}
       isLoading={isLoading}
       selectedRows={selectedRows}
-      getRowId={({ _id: id }) => id}
+      getRowId={({ publicShareId }) => publicShareId}
       applicationName={APPS.FILE_SHARING}
     />
   );

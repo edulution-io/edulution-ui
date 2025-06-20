@@ -20,7 +20,7 @@ import getFileSharingTableColumns from '@/pages/FileSharing/Table/FileSharingTab
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
-import PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto';
+import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 
 const FileSharingTable = () => {
   const { isMobileView, isTabletView } = useMedia();
@@ -29,7 +29,7 @@ const FileSharingTable = () => {
   const { publicShareContents, setEditMultipleContent } = usePublicShareStore();
 
   const sharedMap = useMemo(() => {
-    const map = new Map<string, PublicFileShareDto[]>();
+    const map = new Map<string, PublicShareDto[]>();
 
     publicShareContents.forEach((file) => {
       const list = map.get(file.filePath) ?? [];

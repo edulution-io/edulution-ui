@@ -36,7 +36,7 @@ import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
 import useMedia from '@/hooks/useMedia';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import { MdOutlineCloudDone } from 'react-icons/md';
-import PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto';
+import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import IconWithCount from '@/components/shared/IconWithCount';
 import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
@@ -68,7 +68,7 @@ const renderFileIcon = (item: DirectoryFileDTO, isCurrentlyDisabled: boolean) =>
 const getFileSharingTableColumns = (
   visibleColumns?: string[],
   onFilenameClick?: (item: Row<DirectoryFileDTO>) => void,
-  shares: Map<string, PublicFileShareDto[]> = new Map(),
+  shares: Map<string, PublicShareDto[]> = new Map(),
 ): ColumnDef<DirectoryFileDTO>[] => {
   const allColumns: ColumnDef<DirectoryFileDTO>[] = [
     {

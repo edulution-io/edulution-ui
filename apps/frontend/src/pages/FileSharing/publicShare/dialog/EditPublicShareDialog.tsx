@@ -17,7 +17,7 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import CreateEditNewPublicShareDialogBody from '@/pages/FileSharing/publicShare/dialog/CreateEditNewPublicShareDialogBody';
-import type PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto';
+import type PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import DEFAULT_FILE_LINK_EXPIRY from '@libs/filesharing/constants/defaultFileLinkExpiry';
 import CreateEditPublicFileShareDto from '@libs/filesharing/types/createEditPublicFileShareDto';
 import { useTranslation } from 'react-i18next';
@@ -63,8 +63,7 @@ const EditPublicShareDialog: React.FC = () => {
 
   const onSubmit = async () => {
     const { scope, expires, invitedAttendees = [], invitedGroups = [], password = '' } = form.getValues();
-
-    const dto: PublicFileShareDto = {
+    const dto: PublicShareDto = {
       ...currentFile,
       expires,
       invitedAttendees,
