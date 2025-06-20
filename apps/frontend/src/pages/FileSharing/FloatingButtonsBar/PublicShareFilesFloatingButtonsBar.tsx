@@ -11,7 +11,7 @@
  */
 
 import React, { useMemo } from 'react';
-import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
+import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
@@ -19,24 +19,24 @@ import EditButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConf
 import type FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 
 const PublicShareFilesFloatingButtonsBar: React.FC = () => {
-  const { selectedFilesToShareRows, setIsShareFileDeleteDialogOpen, setIsShareFileEditDialogOpen } =
-    usePublicShareFilesStore();
+  const { selectedContentToShareRows, setIsPublicShareDeleteDialogOpen, setIsPublicShareEditDialogOpen } =
+    usePublicShareStore();
 
   const config: FloatingButtonsBarConfig | null = useMemo(() => {
-    const count = selectedFilesToShareRows.length;
+    const count = selectedContentToShareRows.length;
     if (count === 0) return null;
 
-    const buttons = [DeleteButton(() => setIsShareFileDeleteDialogOpen(true))];
+    const buttons = [DeleteButton(() => setIsPublicShareDeleteDialogOpen(true))];
 
     if (count === 1) {
-      buttons.push(EditButton(() => setIsShareFileEditDialogOpen(true)));
+      buttons.push(EditButton(() => setIsPublicShareEditDialogOpen(true)));
     }
 
     return {
       buttons,
       keyPrefix: `public-file-share_btn_${count}_`,
     };
-  }, [selectedFilesToShareRows, setIsShareFileDeleteDialogOpen, setIsShareFileEditDialogOpen]);
+  }, [selectedContentToShareRows, setIsPublicShareDeleteDialogOpen, setIsPublicShareEditDialogOpen]);
 
   if (!config) return null;
 

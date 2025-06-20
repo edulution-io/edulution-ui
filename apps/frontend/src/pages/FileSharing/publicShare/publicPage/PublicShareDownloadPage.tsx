@@ -14,18 +14,18 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 import React, { useEffect } from 'react';
 import useUserStore from '@/store/UserStore/UserStore';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
-import DownloadPublicFileDialog from '@/pages/FileSharing/publicShareFiles/dialog/DownloadPublicFileDialog';
+import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import DownloadPublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DownloadPublicShareDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import usePublicShareFilePageStore from '@/pages/FileSharing/publicShareFiles/publicPage/usePublicShareFilePageStore';
+import usePublicShareFilePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
 import APPS from '@libs/appconfig/constants/apps';
 
-const PublicFileDownloadPage: React.FC = () => {
+const PublicShareDownloadPage: React.FC = () => {
   const { eduApiToken } = useUserStore();
-  const { openDialog } = usePublicShareFilePageStore();
+  const { setOpenPublicShareDialog } = usePublicShareFilePageStore();
 
   const navigate = useNavigate();
-  const { fetchPublicShareFilesById, isLoading } = usePublicShareFilesStore();
+  const { fetchPublicShareContentById, isLoading } = usePublicShareStore();
 
   const location = useLocation();
   const id = location.pathname.split('/').pop() ?? '';
@@ -33,10 +33,10 @@ const PublicFileDownloadPage: React.FC = () => {
   useEffect(() => {
     if (!id) return;
     if (eduApiToken) {
-      openDialog(id);
+      setOpenPublicShareDialog(id);
       navigate(`/${APPS.FILE_SHARING}`);
     } else {
-      void fetchPublicShareFilesById(id, eduApiToken);
+      void fetchPublicShareContentById(id, eduApiToken);
     }
   }, [id, eduApiToken]);
 
@@ -45,7 +45,7 @@ const PublicFileDownloadPage: React.FC = () => {
   if (isLoading) {
     content = <LoadingIndicatorDialog isOpen={isLoading} />;
   } else {
-    content = <DownloadPublicFileDialog />;
+    content = <DownloadPublicShareDialog />;
   }
 
   return (
@@ -55,4 +55,4 @@ const PublicFileDownloadPage: React.FC = () => {
   );
 };
 
-export default PublicFileDownloadPage;
+export default PublicShareDownloadPage;

@@ -14,7 +14,7 @@ import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
 import APPS from '@libs/appconfig/constants/apps';
-import PublicShareFilesPage from '@/pages/FileSharing/publicShareFiles/PublicShareFilesPage';
+import PublicShareFilesPage from '@/pages/FileSharing/publicShare/PublicShareFilesPage';
 
 const getFileSharingRoutes = () => [
   <Route

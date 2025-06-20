@@ -13,27 +13,27 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
-import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
+import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import CreateEditPublicFileShareDto from '@libs/filesharing/types/createEditPublicFileShareDto';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import DEFAULT_FILE_LINK_EXPIRY from '@libs/filesharing/constants/defaultFileLinkExpiry';
-import CreateEditNewFileLinkDialogBody from './CreateEditNewFileLinkDialogBody';
+import CreateEditNewPublicShareDialogBody from './CreateEditNewPublicShareDialogBody';
 
 interface CreateNewPublicFileLinkDialogProps {
   trigger?: React.ReactNode;
 }
 
-const CreateEditNewFileLinkDialog: React.FC<CreateNewPublicFileLinkDialogProps> = ({ trigger }) => {
+const CreateEditNewPublicShareDialog: React.FC<CreateNewPublicFileLinkDialogProps> = ({ trigger }) => {
   const { t } = useTranslation();
   const { selectedItems } = useFileSharingStore();
-  const { editMultipleFiles, setEditMultipleFiles, setSelectedFilesToShareRows } = usePublicShareFilesStore();
+  const { editMultipleContent, setEditMultipleContent, setSelectedPublicShareRows } = usePublicShareStore();
   const { setSelectedRows, setSelectedItems } = useFileSharingStore();
-  const currentFile = editMultipleFiles[0] ?? selectedItems[0];
+  const currentFile = editMultipleContent[0] ?? selectedItems[0];
 
-  const { setIsCreateNewFileLinkDialogOpen, isCreateNewFileLinkDialogOpen, createPublicShareFile } =
-    usePublicShareFilesStore();
+  const { setIsCreateNewPublicShareLinkDialogOpen, isCreateNewPublicShareLinkDialogOpen, createPublicShare } =
+    usePublicShareStore();
 
   const form = useForm<CreateEditPublicFileShareDto>({
     defaultValues: {
@@ -49,11 +49,11 @@ const CreateEditNewFileLinkDialog: React.FC<CreateNewPublicFileLinkDialogProps> 
   const { reset } = form;
 
   const handleClose = () => {
-    setEditMultipleFiles([]);
-    setSelectedFilesToShareRows([]);
+    setEditMultipleContent([]);
+    setSelectedPublicShareRows([]);
     setSelectedRows({});
     setSelectedItems([]);
-    setIsCreateNewFileLinkDialogOpen(false);
+    setIsCreateNewPublicShareLinkDialogOpen(false);
     reset({
       expires: DEFAULT_FILE_LINK_EXPIRY,
       invitedAttendees: [],
@@ -76,11 +76,11 @@ const CreateEditNewFileLinkDialog: React.FC<CreateNewPublicFileLinkDialogProps> 
       password: password || undefined,
     };
 
-    void createPublicShareFile(dto);
-    setIsCreateNewFileLinkDialogOpen(false);
+    void createPublicShare(dto);
+    setIsCreateNewPublicShareLinkDialogOpen(false);
   };
 
-  const getDialogBody = () => <CreateEditNewFileLinkDialogBody form={form} />;
+  const getDialogBody = () => <CreateEditNewPublicShareDialogBody form={form} />;
 
   const getFooter = () => (
     <DialogFooterButtons
@@ -98,7 +98,7 @@ const CreateEditNewFileLinkDialog: React.FC<CreateNewPublicFileLinkDialogProps> 
 
   return (
     <AdaptiveDialog
-      isOpen={isCreateNewFileLinkDialogOpen}
+      isOpen={isCreateNewPublicShareLinkDialogOpen}
       trigger={trigger}
       handleOpenChange={handleClose}
       title={t('filesharing.publicFileSharing.createNewFileLink')}
@@ -108,4 +108,4 @@ const CreateEditNewFileLinkDialog: React.FC<CreateNewPublicFileLinkDialogProps> 
   );
 };
 
-export default CreateEditNewFileLinkDialog;
+export default CreateEditNewPublicShareDialog;

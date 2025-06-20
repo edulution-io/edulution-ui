@@ -38,7 +38,7 @@ import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownl
 import { MdOutlineCloudDone } from 'react-icons/md';
 import PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto';
 import IconWithCount from '@/components/shared/IconWithCount';
-import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
+import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 
@@ -145,7 +145,7 @@ const getFileSharingTableColumns = (
         const matchCount = matched.length;
         const isShared = matchCount > 0;
 
-        const { setEditMultipleFiles } = usePublicShareFilesStore();
+        const { setEditMultipleContent } = usePublicShareStore();
         const { openDialog } = useFileSharingDialogStore();
 
         return (
@@ -158,7 +158,7 @@ const getFileSharingTableColumns = (
                   className="text-background"
                   count={matchCount}
                   onClick={() => {
-                    setEditMultipleFiles(matched);
+                    setEditMultipleContent(matched);
                     openDialog(FileActionType.SHARE_FILE_OR_FOLDER);
                   }}
                 />

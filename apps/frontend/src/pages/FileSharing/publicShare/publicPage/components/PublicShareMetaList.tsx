@@ -18,7 +18,7 @@ interface FileMetaListProps {
   expires: Date;
 }
 
-const FileMetaList: React.FC<FileMetaListProps> = ({ expires }) => {
+const PublicShareMetaList: React.FC<FileMetaListProps> = ({ expires }) => {
   const { t } = useTranslation();
 
   return (
@@ -33,4 +33,4 @@ const FileMetaList: React.FC<FileMetaListProps> = ({ expires }) => {
   );
 };
 
-export default FileMetaList;
+export default PublicShareMetaList;

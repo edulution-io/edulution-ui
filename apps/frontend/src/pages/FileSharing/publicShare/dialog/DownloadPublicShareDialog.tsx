@@ -27,18 +27,18 @@ import downloadPublicFile from '@libs/filesharing/utils/downloadPublicFile';
 import buildAbsolutePublicDownloadUrl from '@libs/filesharing/utils/buildAbsolutePublicDownloadUrl';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 
-import usePublicShareFilePageStore from '@/pages/FileSharing/publicShareFiles/publicPage/usePublicShareFilePageStore';
-import usePublicShareFilesStore from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
+import usePublicShareFilePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useUserStore from '@/store/UserStore/UserStore';
-import FileMetaList from '../publicPage/components/FileMetaList';
-import DownloadPublicFileButton from '../publicPage/components/DownloadPublicFile';
-import PublicFilePasswordInput from '../publicPage/components/PublicFilePasswordInput';
-import FileHeader from '../publicPage/components/FileHeader';
+import PublicShareMetaList from '../publicPage/components/PublicShareMetaList';
+import DownloadPublicFileButton from '../publicPage/components/DownloadPublicShare';
+import PublicSharePasswordInput from '../publicPage/components/PublicSharePasswordInput';
+import FileHeader from '../publicPage/components/PublicShareHeader';
 
 const schema = z.object({ password: z.string().optional() });
 type FormValues = z.infer<typeof schema>;
 
-const DownloadPublicFileDialog = () => {
+const DownloadPublicShareDialog = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -47,10 +47,10 @@ const DownloadPublicFileDialog = () => {
 
   const isAuthenticated = Boolean(eduApiToken);
 
-  const { openShareInfoDialog, closeDialog, shareId } = usePublicShareFilePageStore();
+  const { isPublicShareInfoDialogOpen, closePublicShareDialog, publicShareId } = usePublicShareFilePageStore();
 
-  const { fetchPublicShareFilesById, publicShareFile, isPasswordRequired, isAccessRestricted } =
-    usePublicShareFilesStore();
+  const { fetchPublicShareContentById, publicShareContent, isPasswordRequired, isAccessRestricted } =
+    usePublicShareStore();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -58,14 +58,14 @@ const DownloadPublicFileDialog = () => {
   });
 
   useEffect(() => {
-    if (!shareId) return;
-    void fetchPublicShareFilesById(shareId, eduApiToken);
-  }, [shareId, fetchPublicShareFilesById]);
+    if (!publicShareId) return;
+    void fetchPublicShareContentById(publicShareId, eduApiToken);
+  }, [publicShareId, fetchPublicShareContentById]);
 
   const onDownload = form.handleSubmit(async ({ password }) => {
-    if (!publicShareFile) return;
+    if (!publicShareContent) return;
 
-    const { filename, fileLink } = publicShareFile;
+    const { filename, fileLink } = publicShareContent;
     const absoluteUrl = buildAbsolutePublicDownloadUrl(fileLink);
 
     await downloadPublicFile(
@@ -81,7 +81,7 @@ const DownloadPublicFileDialog = () => {
     );
   });
 
-  const handleClose = () => closeDialog();
+  const handleClose = () => closePublicShareDialog();
 
   if (isAccessRestricted) {
     const restrictedBody = (
@@ -103,8 +103,8 @@ const DownloadPublicFileDialog = () => {
 
     return (
       <AdaptiveDialog
-        isOpen={isAuthenticated ? openShareInfoDialog : true}
-        handleOpenChange={isAuthenticated ? closeDialog : () => {}}
+        isOpen={isAuthenticated ? isPublicShareInfoDialogOpen : true}
+        handleOpenChange={isAuthenticated ? closePublicShareDialog : () => {}}
         title={t('filesharing.publicFileSharing.downloadPublicFile')}
         body={restrictedBody}
         footer={null}
@@ -112,18 +112,18 @@ const DownloadPublicFileDialog = () => {
     );
   }
 
-  if (!publicShareFile) {
+  if (!publicShareContent) {
     return (
       <AdaptiveDialog
-        isOpen={isAuthenticated ? openShareInfoDialog : true}
-        handleOpenChange={isAuthenticated ? closeDialog : () => {}}
+        isOpen={isAuthenticated ? isPublicShareInfoDialogOpen : true}
+        handleOpenChange={isAuthenticated ? closePublicShareDialog : () => {}}
         title={t('filesharing.publicFileSharing.downloadPublicFile')}
         body={<h3 className="text-xl font-semibold">{t('filesharing.publicFileSharing.errors.PublicFileNotFound')}</h3>}
       />
     );
   }
 
-  const { filename, creator, expires } = publicShareFile;
+  const { filename, creator, expires } = publicShareContent;
 
   const accessBody = (
     <div className="space-y-4">
@@ -134,7 +134,7 @@ const DownloadPublicFileDialog = () => {
 
       {isPasswordRequired && (
         <FormProvider {...form}>
-          <PublicFilePasswordInput placeholder={t('conferences.password')} />
+          <PublicSharePasswordInput placeholder={t('conferences.password')} />
         </FormProvider>
       )}
 
@@ -143,7 +143,7 @@ const DownloadPublicFileDialog = () => {
         label={t('filesharing.publicFileSharing.downloadPublicFile')}
       />
 
-      <FileMetaList expires={expires} />
+      <PublicShareMetaList expires={expires} />
     </div>
   );
 
@@ -156,8 +156,8 @@ const DownloadPublicFileDialog = () => {
 
   return (
     <AdaptiveDialog
-      isOpen={isAuthenticated ? openShareInfoDialog : true}
-      handleOpenChange={isAuthenticated ? closeDialog : () => {}}
+      isOpen={isAuthenticated ? isPublicShareInfoDialogOpen : true}
+      handleOpenChange={isAuthenticated ? closePublicShareDialog : () => {}}
       title={t('filesharing.publicFileSharing.downloadPublicFile')}
       body={accessBody}
       footer={isAuthenticated ? footer : null}
@@ -165,4 +165,4 @@ const DownloadPublicFileDialog = () => {
   );
 };
 
-export default DownloadPublicFileDialog;
+export default DownloadPublicShareDialog;

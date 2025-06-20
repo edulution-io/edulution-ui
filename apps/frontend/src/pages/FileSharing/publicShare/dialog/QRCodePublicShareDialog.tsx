@@ -13,29 +13,29 @@
 import QRCodeWithCopyButton from '@/components/ui/QRCodeWithCopyButton';
 import React from 'react';
 import useMedia from '@/hooks/useMedia';
-import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
+import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
 
-const QRCodePublicFileDialog = () => {
+const QRCodePublicShareDialog = () => {
   const { isMobileView } = useMedia();
   const {
-    setIsShareFileQrCodeDialogOpen,
-    isShareFileQrCodeDialogOpen,
+    setIsPublicShareQrCodeDialogOpen,
+    isPublicShareQrCodeDialogOpen,
     isLoading,
-    publicShareFile,
-    setPublicShareFile,
-  } = usePublicShareFilesStore();
+    publicShareContent,
+    setPublicShareContent,
+  } = usePublicShareStore();
 
   const { origin } = window.location;
 
   const { t } = useTranslation();
 
   const handleClose = () => {
-    setPublicShareFile(null);
-    setIsShareFileQrCodeDialogOpen(false);
+    setPublicShareContent(null);
+    setIsPublicShareQrCodeDialogOpen(false);
   };
 
   const getDialogBody = () => {
@@ -43,7 +43,7 @@ const QRCodePublicFileDialog = () => {
     return (
       <QRCodeWithCopyButton
         qrCodeSize={isMobileView ? 'md' : 'lg'}
-        url={`${origin}/${publicShareFile?.publicFileLink}`}
+        url={`${origin}/${publicShareContent?.publicFileLink}`}
         titleTranslationId="conferences.joinUrl"
       />
     );
@@ -53,7 +53,7 @@ const QRCodePublicFileDialog = () => {
 
   return (
     <AdaptiveDialog
-      isOpen={isShareFileQrCodeDialogOpen}
+      isOpen={isPublicShareQrCodeDialogOpen}
       handleOpenChange={handleClose}
       title={t('filesharing.publicFileSharing.qrCodePublicShareFile')}
       body={getDialogBody()}
@@ -63,4 +63,4 @@ const QRCodePublicFileDialog = () => {
   );
 };
 
-export default QRCodePublicFileDialog;
+export default QRCodePublicShareDialog;

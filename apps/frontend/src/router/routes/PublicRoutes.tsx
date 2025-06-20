@@ -18,7 +18,7 @@ import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants
 import PublicConferencePage from '@/pages/ConferencePage/PublicConference/PublicConferencePage';
 import PageTitle from '@/components/PageTitle';
 import { PUBLIC_FILE_DOWNLOAD } from '@libs/filesharing/constants/apiEndpoints';
-import PublicFileDownloadPage from '@/pages/FileSharing/publicShareFiles/publicPage/PublicFileDownloadPage';
+import PublicShareDownloadPage from '@/pages/FileSharing/publicShare/publicPage/PublicShareDownloadPage';
 
 const getPublicRoutes = () => [
   <Route
@@ -47,7 +47,7 @@ const getPublicRoutes = () => [
     element={
       <>
         <PageTitle translationId="filesharing.publicFileSharing.downloadPublicFile" />
-        <PublicFileDownloadPage />
+        <PublicShareDownloadPage />
       </>
     }
   />,

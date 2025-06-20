@@ -12,23 +12,23 @@
 
 import { create } from 'zustand';
 
-interface UsePublicShareFilePageStore {
-  openShareInfoDialog: boolean;
-  shareId: string | null;
-  openDialog: (id: string) => void;
-  closeDialog: () => void;
+interface UsePublicSharePageStore {
+  isPublicShareInfoDialogOpen: boolean;
+  publicShareId: string | null;
+  setOpenPublicShareDialog: (id: string) => void;
+  closePublicShareDialog: () => void;
   reset: () => void;
 }
 
 const initialState = {
-  openShareInfoDialog: false,
-  shareId: null,
+  isPublicShareInfoDialogOpen: false,
+  publicShareId: null,
 };
 
-const usePublicShareFilePageStore = create<UsePublicShareFilePageStore>((set) => ({
+const usePublicShareFilePageStore = create<UsePublicSharePageStore>((set) => ({
   ...initialState,
-  openDialog: (id) => set({ openShareInfoDialog: true, shareId: id }),
-  closeDialog: () => set({ openShareInfoDialog: false, shareId: null }),
+  setOpenPublicShareDialog: (id) => set({ isPublicShareInfoDialogOpen: true, publicShareId: id }),
+  closePublicShareDialog: () => set({ isPublicShareInfoDialogOpen: false, publicShareId: null }),
   reset: () => set({ ...initialState }),
 }));
 

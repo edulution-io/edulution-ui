@@ -24,7 +24,7 @@ import { Globe, QrCodeIcon } from 'lucide-react';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 import copyToClipboard from '@/utils/copyToClipboard';
 import { MdDelete, MdEdit, MdFileCopy } from 'react-icons/md';
-import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
+import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
 
@@ -187,7 +187,7 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
     accessorFn: (row) => row.fileLink,
     cell: ({ row }) => {
       const { origin } = window.location;
-      const { setPublicShareFile, setIsShareFileQrCodeDialogOpen } = usePublicShareFilesStore();
+      const { setPublicShareContent, setIsPublicShareQrCodeDialogOpen } = usePublicShareStore();
       const { publicFileLink } = row.original;
       const url = `${origin}/${publicFileLink}`;
       return (
@@ -211,8 +211,8 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
             size={BUTTONS_ICON_WIDTH}
             className="cursor-pointer"
             onClick={() => {
-              setPublicShareFile(row.original);
-              setIsShareFileQrCodeDialogOpen(true);
+              setPublicShareContent(row.original);
+              setIsPublicShareQrCodeDialogOpen(true);
             }}
           />
         </div>
@@ -231,7 +231,7 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
       translationId: 'filesharing.publicFileSharing.actions',
     },
     cell: ({ row }) => {
-      const { setEditMultipleFiles, setIsShareFileEditDialogOpen, deletePublicShareFiles } = usePublicShareFilesStore();
+      const { setEditMultipleContent, setIsPublicShareEditDialogOpen, deletePublicShares } = usePublicShareStore();
       const { closeDialog } = useFileSharingDialogStore();
       const { original } = row;
 
@@ -242,16 +242,16 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
               icon: MdEdit,
               translationId: 'common.edit',
               onClick: () => {
-                setEditMultipleFiles([original]);
+                setEditMultipleContent([original]);
                 closeDialog();
-                setIsShareFileEditDialogOpen(true);
+                setIsPublicShareEditDialogOpen(true);
               },
             },
             {
               icon: MdDelete,
               translationId: 'common.delete',
               onClick: async () => {
-                await deletePublicShareFiles([original]);
+                await deletePublicShares([original]);
               },
             },
           ]}

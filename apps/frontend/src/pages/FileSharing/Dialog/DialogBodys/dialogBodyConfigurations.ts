@@ -30,7 +30,7 @@ import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
 import MoveDirectoryDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveDirectoryDialogBody';
 import CopyContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/CopyContentDialogBody';
-import ShareFileLinkDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/ShareFileLinkDialogBody';
+import PublicShareContentsDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/PublicShareContentsDialogBody';
 import PublicShareFileLinkProps from '@libs/filesharing/types/publicShareFileLinkProps';
 import fileSharingFromSchema from '@libs/filesharing/types/fileSharingFromSchema';
 import DialogInputValues from '@libs/filesharing/types/dialogInputValues';
@@ -276,7 +276,7 @@ const moveFileFolderConfig: MoveDialogBodyConfiguration = {
 };
 
 const shareFileOrFolderConfig: ShareDialogBodyConfiguration = {
-  Component: ShareFileLinkDialogBody,
+  Component: PublicShareContentsDialogBody,
   titleKey: 'filesharing.publicFileSharing.sharePublicFile',
   submitKey: 'shareDialog.share',
   endpoint: FILESHARING_SHARED_FILES_API_ENDPOINT,

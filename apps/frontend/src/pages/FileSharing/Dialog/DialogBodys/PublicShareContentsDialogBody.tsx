@@ -12,19 +12,19 @@
 
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import PublicShareFilesTableColumns from '@/pages/FileSharing/publicShareFiles/table/PublicShareFilesTableColums';
+import PublicShareFilesTableColumns from '@/pages/FileSharing/publicShare/table/PublicShareTableColums';
 import PUBLIC_SHARED_FILES_TABLE_COLUMN from '@libs/filesharing/constants/publicSharedFIlesTableColum';
 import APPS from '@libs/appconfig/constants/apps';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
-import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
+import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import { IoAdd } from 'react-icons/io5';
 
-const ShareFileLinkDialogBody = () => {
+const PublicShareContentsDialogBody = () => {
   const { t } = useTranslation();
-  const { editMultipleFiles, isLoading, selectedRows, setIsCreateNewFileLinkDialogOpen, deletePublicShareFiles } =
-    usePublicShareFilesStore();
+  const { editMultipleContent, isLoading, selectedRows, setIsCreateNewPublicShareLinkDialogOpen, deletePublicShares } =
+    usePublicShareStore();
   const { selectedItems } = useFileSharingStore();
   const { closeDialog } = useFileSharingDialogStore();
 
@@ -32,18 +32,18 @@ const ShareFileLinkDialogBody = () => {
     () => ({
       [PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME]: false,
     }),
-    [selectedRows, deletePublicShareFiles],
+    [selectedRows, deletePublicShares],
   );
 
   return (
     <div className="flex flex-col gap-4">
       <p>
         {t('filesharing.publicFileSharing.selectedFile')}{' '}
-        {(selectedItems?.[0]?.filename ?? editMultipleFiles?.[0]?.filename) || ''}
+        {(selectedItems?.[0]?.filename ?? editMultipleContent?.[0]?.filename) || ''}
       </p>
       <ScrollableTable
         columns={PublicShareFilesTableColumns}
-        data={editMultipleFiles}
+        data={editMultipleContent}
         filterKey={PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME}
         filterPlaceHolderText={t('fileSharing.filterPlaceHolderText')}
         isLoading={isLoading}
@@ -58,7 +58,7 @@ const ShareFileLinkDialogBody = () => {
             translationId: 'common.add',
             onClick: () => {
               closeDialog();
-              setIsCreateNewFileLinkDialogOpen(true);
+              setIsCreateNewPublicShareLinkDialogOpen(true);
             },
           },
         ]}
@@ -67,4 +67,4 @@ const ShareFileLinkDialogBody = () => {
   );
 };
 
-export default ShareFileLinkDialogBody;
+export default PublicShareContentsDialogBody;

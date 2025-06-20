@@ -18,7 +18,7 @@ interface PasswordInputProps {
   placeholder: string;
 }
 
-const PublicFilePasswordInput: React.FC<PasswordInputProps> = ({ placeholder }) => {
+const PublicSharePasswordInput: React.FC<PasswordInputProps> = ({ placeholder }) => {
   const {
     register,
     formState: { errors },
@@ -45,4 +45,4 @@ const PublicFilePasswordInput: React.FC<PasswordInputProps> = ({ placeholder }) 
   );
 };
 
-export default PublicFilePasswordInput;
+export default PublicSharePasswordInput;

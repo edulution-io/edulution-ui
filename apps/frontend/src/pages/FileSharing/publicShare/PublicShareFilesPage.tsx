@@ -14,11 +14,11 @@ import { useTranslation } from 'react-i18next';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import React from 'react';
 import { FilesharingIcon } from '@libs/assets';
-import PublicShareFilesTable from '@/pages/FileSharing/publicShareFiles/table/PublicShareFilesTable';
+import PublicShareTable from '@/pages/FileSharing/publicShare/table/PublicShareTable';
 import PublicShareFilesFloatingButtonsBar from '@/pages/FileSharing/FloatingButtonsBar/PublicShareFilesFloatingButtonsBar';
-import DeletePublicFileDialog from '@/pages/FileSharing/publicShareFiles/dialog/DeletePublicFileDialog';
-import EditPublicShareFileDialog from '@/pages/FileSharing/publicShareFiles/dialog/EditPublicShareFileDialog';
-import QRCodePublicFileDialog from '@/pages/FileSharing/publicShareFiles/dialog/QRCodePublicFileDialog';
+import DeletePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DeletePublicShareDialog';
+import EditPublicShareDialog from '@/pages/FileSharing/publicShare/dialog/EditPublicShareDialog';
+import QRCodePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/QRCodePublicShareDialog';
 
 const PublicShareFilesPage = () => {
   const { t } = useTranslation();
@@ -30,10 +30,10 @@ const PublicShareFilesPage = () => {
         iconSrc: FilesharingIcon,
       }}
     >
-      <PublicShareFilesTable />
-      <DeletePublicFileDialog />
-      <EditPublicShareFileDialog />
-      <QRCodePublicFileDialog />
+      <PublicShareTable />
+      <DeletePublicShareDialog />
+      <EditPublicShareDialog />
+      <QRCodePublicShareDialog />
       <PublicShareFilesFloatingButtonsBar />
     </PageLayout>
   );

@@ -16,7 +16,7 @@ import { toast } from 'sonner';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import userStore from '@/store/UserStore/UserStore';
-import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
+import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useUserPath from './useUserPath';
 
 const useFileSharingPage = () => {
@@ -29,7 +29,7 @@ const useFileSharingPage = () => {
     isLoading: isFileProcessing,
   } = useFileSharingStore();
   const { isLoading, fileOperationResult } = useFileSharingDialogStore();
-  const { fetchPublicShareFiles } = usePublicShareFilesStore();
+  const { fetchPublicShares } = usePublicShareStore();
   const { user } = userStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const { homePath } = useUserPath();
@@ -51,7 +51,7 @@ const useFileSharingPage = () => {
         }
       } else {
         void fetchFiles(path);
-        void fetchPublicShareFiles();
+        void fetchPublicShares();
         setPathToRestoreSession(path);
       }
     }
@@ -62,7 +62,7 @@ const useFileSharingPage = () => {
       if (fileOperationResult && !isLoading) {
         if (fileOperationResult.success) {
           await fetchFiles(currentPath);
-          await fetchPublicShareFiles();
+          await fetchPublicShares();
           toast.success(fileOperationResult.message);
         } else {
           toast.info(fileOperationResult.message);
