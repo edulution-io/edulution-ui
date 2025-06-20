@@ -11,7 +11,7 @@
  */
 
 /* eslint-disable react/require-default-props */
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import {
   Sheet,
   SheetContent,
@@ -30,6 +30,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/Dialog';
 import useMedia from '@/hooks/useMedia';
+import { IconBaseProps, IconContext } from 'react-icons';
 
 interface AdaptiveDialogProps {
   isOpen: boolean;
@@ -41,6 +42,7 @@ interface AdaptiveDialogProps {
   variant?: 'primary' | 'secondary' | 'tertiary';
   mobileContentClassName?: string;
   desktopContentClassName?: string;
+  titleIcon?: React.ComponentType<IconBaseProps>;
 }
 
 const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
@@ -53,8 +55,26 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
   variant = 'primary',
   mobileContentClassName,
   desktopContentClassName,
+  titleIcon: TitleIcon,
 }) => {
   const { isMobileView } = useMedia();
+
+  const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
+
+  const isHandleChangesEmpty = (fn?: (() => void) | undefined) => !fn || fn.toString() === '() => {}';
+
+  const closable = isHandleChangesEmpty(handleOpenChange);
+
+  const dialogTitle = (
+    <div className={`flex items-center gap-1 font-bold ${isMobileView ? 'flex-col' : 'flex-row'}`}>
+      {TitleIcon && (
+        <IconContext.Provider value={iconContextValue}>
+          <TitleIcon />
+        </IconContext.Provider>
+      )}
+      <p>{title}</p>
+    </div>
+  );
 
   return isMobileView ? (
     <Sheet
@@ -66,9 +86,10 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
         side="bottom"
         variant={variant}
         className={mobileContentClassName}
+        showCloseButton={closable}
       >
         <SheetHeader variant={variant}>
-          <SheetTitle>{title}</SheetTitle>
+          <SheetTitle>{dialogTitle}</SheetTitle>
         </SheetHeader>
         {body}
         {footer ? <SheetFooter>{footer}</SheetFooter> : null}
@@ -84,8 +105,9 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
       <DialogContent
         variant={variant}
         className={desktopContentClassName}
+        showCloseButton={closable}
       >
-        <DialogTitle>{title}</DialogTitle>
+        <DialogTitle>{dialogTitle}</DialogTitle>
         {body}
         {footer ? <DialogFooter>{footer}</DialogFooter> : null}
         <DialogDescription aria-disabled />
