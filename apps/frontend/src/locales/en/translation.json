@@ -427,7 +427,7 @@
 
     "expiry": {
       "select": "Select expiry time",
-      "selectedItemPrefix": "Selected file that is shared:",
+      "selectedItemPrefix": "Selected content that is shared:",
       "noInviteesWarning": "⚠️  WARNING: Anyone with the link will be able to download this content.",
       "inviteesWarning": "⚠️  WARNING: Anyone within the selected groups or users will be able to download this content."
     }

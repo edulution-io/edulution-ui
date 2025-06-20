@@ -427,7 +427,7 @@
 
     "expiry": {
       "select": "Ablaufdatum auswählen",
-      "selectedItemPrefix": "Ausgewählte Datei, die geteilt wird:",
+      "selectedItemPrefix": "Ausgewählter Inhalt, welcher geteilt wird:",
       "noInviteesWarning": "⚠️  WARNUNG: Jeder, der den Link besitzt, kann diesen Inhalt herunterladen.",
       "inviteesWarning": "⚠️ WARNUNG: Jeder, der zu den ausgewählten Gruppen oder Benutzern gehört, kann diesen Inhalt herunterladen."
     }
