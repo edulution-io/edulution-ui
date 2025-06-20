@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type Choice = string | { value: string; imageLink: string };
+import TSurveyQuestionChoice from '@libs/survey/types/TSurveyQuestionChoice';
 
 interface SurveyElement {
   type: string;
@@ -20,7 +20,7 @@ interface SurveyElement {
   title?: string;
   description?: string;
   choicesOrder?: string;
-  choices?: Choice[] | null;
+  choices?: TSurveyQuestionChoice[] | null;
   choicesByUrl?: {
     url: string;
     valueName?: string;

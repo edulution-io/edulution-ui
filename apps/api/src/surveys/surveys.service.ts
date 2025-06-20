@@ -19,17 +19,20 @@ import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import SurveyQuestionUpdate from '@libs/survey/types/TSurveyQuestionUpdate';
 import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import TSurveyQuestionChoice from '@libs/survey/types/TSurveyQuestionChoice';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import {
   SURVEY_FILE_ATTACHMENT_ENDPOINT,
   SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT,
 } from '@libs/survey/constants/surveys-endpoint';
-import SURVEYS_FILES_PATH from '@libs/survey/constants/surveysFilesPath';
+import SURVEYS_ATTACHMENT_PATH from '@libs/survey/constants/surveysAttachmentPath';
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
+import SURVEYS_HEADER_IMAGE from '@libs/survey/constants/surveys-header-image';
 import SurveyElement from '@libs/survey/types/TSurveyElement';
 import SurveyPage from '@libs/survey/types/TSurveyPage';
 import SurveyFormula from '@libs/survey/types/TSurveyFormula';
@@ -188,29 +191,34 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  static updateLinkForRestfulChoices(surveyId: string, question: SurveyElement): SurveyElement {
-    if (isQuestionTypeChoiceType(question.type) && question.choicesByUrl) {
-      const pathParts = question.choicesByUrl.url.split('/');
-      const temporalSurveyIdIndex = pathParts.findIndex((part: string) => part === TEMPORAL_SURVEY_ID_STRING);
-      if (temporalSurveyIdIndex !== -1) {
-        try {
-          pathParts[temporalSurveyIdIndex] = surveyId;
-          const newLink = pathParts.join('/');
-          return {
-            ...question,
-            choicesByUrl: {
-              ...question.choicesByUrl,
-              url: newLink,
-            },
-          };
-        } catch (error) {
-          throw new CustomHttpException(
-            CommonErrorMessages.FILE_NOT_PROVIDED,
-            HttpStatus.INTERNAL_SERVER_ERROR,
-            error,
-            SurveysService.name,
-          );
-        }
+  static updateRestfulChoicesQuestionLink(surveyId: string, question: SurveyElement): SurveyElement {
+    if (!isQuestionTypeChoiceType(question.type)) {
+      return question;
+    }
+    if (!question.choicesByUrl) {
+      return question;
+    }
+
+    const pathParts = question.choicesByUrl.url.split('/');
+    const temporalSurveyIdIndex = pathParts.findIndex((part: string) => part === TEMPORAL_SURVEY_ID_STRING);
+    if (temporalSurveyIdIndex !== -1) {
+      try {
+        pathParts[temporalSurveyIdIndex] = surveyId;
+        const newLink = pathParts.join('/');
+        return {
+          ...question,
+          choicesByUrl: {
+            ...question.choicesByUrl,
+            url: newLink,
+          },
+        };
+      } catch (error) {
+        throw new CustomHttpException(
+          CommonErrorMessages.FILE_NOT_PROVIDED,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          error,
+          SurveysService.name,
+        );
       }
     }
     return question;
@@ -245,22 +253,47 @@ class SurveysService implements OnModuleInit {
   }
 
   async updateFormula(username: string, surveyId: string, formula: SurveyFormula): Promise<SurveyFormula> {
-    const temporaryDirectoryPath = `${SURVEYS_TEMP_FILES_PATH}/${username}`;
-    const fileNames = await this.fileSystemService.getAllFilenamesInDirectory(temporaryDirectoryPath);
+    const temporaryDirectoryPath = join(SURVEYS_TEMP_FILES_PATH, username);
+    const tempFileNames = await this.fileSystemService.getAllFilenamesInDirectory(temporaryDirectoryPath);
 
-    if (fileNames.length === 0) {
-      return formula;
-    }
+    const permanentDirectoryPath = join(SURVEYS_ATTACHMENT_PATH, surveyId);
+    const oldQuestionNames = await this.fileSystemService.getAllFilenamesInDirectory(permanentDirectoryPath);
+
     const updatedFormula = { ...formula };
+
+    let includedQuestions: SurveyElement[] = [];
     if (formula.logo) {
-      updatedFormula.logo = await this.updateTemporalLogo(username, surveyId, fileNames, formula.logo);
+      includedQuestions = includedQuestions.concat([
+        { name: SURVEYS_HEADER_IMAGE, type: 'image', value: formula.logo },
+      ]);
+      updatedFormula.logo = await this.updateLogo(username, surveyId, formula, tempFileNames);
     }
     if (formula.pages && formula.pages.length > 0) {
-      updatedFormula.pages = await this.updatePages(username, surveyId, fileNames, formula.pages);
+      formula.pages.forEach((page) => {
+        includedQuestions = includedQuestions.concat(page.elements || []);
+      });
+      updatedFormula.pages = await this.updatePages(username, surveyId, tempFileNames, formula.pages);
     }
     if (formula.elements && formula.elements.length > 0) {
-      updatedFormula.elements = await this.updateElements(username, surveyId, fileNames, formula.elements);
+      includedQuestions = includedQuestions.concat(formula.elements || []);
+      updatedFormula.elements = await this.updateElements(username, surveyId, tempFileNames, formula.elements);
     }
+
+    const includedQuestionNames = includedQuestions.map((question) => question.name);
+
+    oldQuestionNames.forEach((questionName) => {
+      if (!includedQuestionNames.includes(questionName)) {
+        this.fileSystemService.deleteDirectory(join(SURVEYS_ATTACHMENT_PATH, surveyId, questionName)).catch((error) => {
+          throw new CustomHttpException(
+            CommonErrorMessages.FILE_DELETION_FAILED,
+            HttpStatus.NOT_MODIFIED,
+            error,
+            SurveysService.name,
+          );
+        });
+      }
+    });
+
     return updatedFormula;
   }
 
@@ -278,14 +311,23 @@ class SurveysService implements OnModuleInit {
         SurveysService.name,
       );
     }
+
     // eslint-disable-next-line no-underscore-dangle
     const surveyId = (survey._id as Types.ObjectId).toString();
     const { preferred_username: username } = user;
 
-    const updatedFormula = await this.updateFormula(username, surveyId, survey.formula);
-
-    const updatedSurvey = { ...surveyDto, id: surveyId, formula: updatedFormula };
-    const savedSurvey = await this.updateSurvey(updatedSurvey, user);
+    let savedSurvey: SurveyDocument | null = null;
+    try {
+      const updatedFormula = await this.updateFormula(username, surveyId, survey.formula);
+      savedSurvey = await this.updateSurvey({ ...surveyDto, id: surveyId, formula: updatedFormula }, user);
+    } catch (error) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.UpdateOrCreateError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveysService.name,
+      );
+    }
 
     if (savedSurvey == null) {
       throw new CustomHttpException(
@@ -297,12 +339,7 @@ class SurveysService implements OnModuleInit {
     }
 
     try {
-      const temporaryAttachmentPath = `${SURVEYS_TEMP_FILES_PATH}/${username}`;
-      const exists = await FilesystemService.checkIfFileExist(temporaryAttachmentPath);
-      if (!exists) {
-        return savedSurvey;
-      }
-      await this.fileSystemService.deleteDirectory(temporaryAttachmentPath);
+      this.removeTemporaryFilesFolder(username);
     } catch (error) {
       throw new CustomHttpException(
         CommonErrorMessages.FILE_DELETION_FAILED,
@@ -347,7 +384,7 @@ class SurveysService implements OnModuleInit {
   }
 
   async serveFiles(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
-    const filePath = `${SURVEYS_FILES_PATH}/${surveyId}/${questionId}/${fileName}`;
+    const filePath = join(SURVEYS_ATTACHMENT_PATH, surveyId, questionId, fileName);
     const fileStream = await this.fileSystemService.createReadStream(filePath);
     fileStream.pipe(res);
     return res;
@@ -355,7 +392,7 @@ class SurveysService implements OnModuleInit {
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async onSurveyRemoval(surveyIds: string[]): Promise<void> {
-    const filePath = surveyIds.map((surveyId) => join(SURVEYS_FILES_PATH, surveyId));
+    const filePath = surveyIds.map((surveyId) => join(SURVEYS_ATTACHMENT_PATH, surveyId));
     return FilesystemService.deleteDirectories(filePath);
   }
 
@@ -366,18 +403,18 @@ class SurveysService implements OnModuleInit {
     return res;
   }
 
-  async updateTempFilesUrls(username: string, pathWithIds: string, tempFiles: string[], link: string): Promise<string> {
+  async updateTempFilesUrls(username: string, pathWithIds: string, link: string, fileName?: string): Promise<string> {
     if (!link) return link;
 
     const [baseUrl, tempSegment] = link.split(`/${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}`);
-    const imagesFileName = tempSegment?.split('/').pop();
+    const imagesFileName = fileName || tempSegment?.split('/').pop();
 
-    if (!baseUrl || !imagesFileName || !tempFiles.includes(imagesFileName)) {
+    if (!baseUrl || !imagesFileName) {
       return link;
     }
 
     const temporaryAttachmentPath = join(SURVEYS_TEMP_FILES_PATH, username, imagesFileName);
-    const permanentDirectory = join(SURVEYS_FILES_PATH, pathWithIds);
+    const permanentDirectory = join(SURVEYS_ATTACHMENT_PATH, pathWithIds);
     const persistentAttachmentPath = join(permanentDirectory, imagesFileName);
 
     try {
@@ -395,6 +432,7 @@ class SurveysService implements OnModuleInit {
     return `${baseUrl}/${SURVEY_FILE_ATTACHMENT_ENDPOINT}/${pathWithIds}/${imagesFileName}`;
   }
 
+  /* // TODO: REMOVE THIS METHOD AFTER REVIEW (the review preview would get messy)
   async updateTemporalUrls(
     username: string,
     surveyId: string,
@@ -436,6 +474,7 @@ class SurveysService implements OnModuleInit {
       );
     }
   }
+  */
 
   async updateQuestion(
     username: string,
@@ -443,18 +482,256 @@ class SurveysService implements OnModuleInit {
     tempFiles: string[],
     question: SurveyElement,
   ): Promise<SurveyElement> {
-    const updatedQuestion = await this.updateTemporalUrls(username, surveyId, tempFiles, question);
-    return SurveysService.updateLinkForRestfulChoices(surveyId, updatedQuestion);
+    let updatedQuestion: SurveyQuestionUpdate = {
+      question,
+      temporalFileNames: tempFiles,
+    };
+
+    updatedQuestion = await this.updateAttachments(username, surveyId, updatedQuestion);
+
+    updatedQuestion.question = SurveysService.updateRestfulChoicesQuestionLink(surveyId, updatedQuestion.question);
+
+    return updatedQuestion.question;
   }
 
-  async updateTemporalLogo(
+  async updateLogo(
     username: string,
     surveyId: string,
-    tempFiles: string[],
-    link: string,
+    formula: SurveyFormula,
+    tempFileNames: string[],
   ): Promise<string | undefined> {
-    const pathWithIds = `${surveyId}/logo`;
-    return this.updateTempFilesUrls(username, pathWithIds, tempFiles, link);
+    const permanentDirectoryPath = join(SURVEYS_ATTACHMENT_PATH, surveyId, SURVEYS_HEADER_IMAGE);
+    const permanentFileNames = await this.fileSystemService.getAllFilenamesInDirectory(permanentDirectoryPath);
+    if (permanentFileNames.length === 0 && tempFileNames.length === 0) {
+      return formula.logo;
+    }
+
+    let { logo } = formula;
+    if (logo) {
+      const logosFileName = logo?.split('/').pop();
+      if (logosFileName) {
+        const tempIndex = tempFileNames.indexOf(logosFileName);
+        if (tempIndex !== -1) {
+          tempFileNames.splice(tempIndex, 1);
+          const pathWithIds = join(surveyId, SURVEYS_HEADER_IMAGE);
+          logo = await this.updateTempFilesUrls(username, pathWithIds, logo, logosFileName);
+        }
+        await SurveysService.deleteOldFiles(surveyId, SURVEYS_HEADER_IMAGE, [logosFileName], permanentFileNames);
+        return logo;
+      }
+    }
+
+    await this.removeQuestionAttachment(surveyId, SURVEYS_HEADER_IMAGE);
+    return undefined;
+  }
+
+  async updateAttachments(
+    username: string,
+    surveyId: string,
+    questionUpdate: SurveyQuestionUpdate,
+  ): Promise<SurveyQuestionUpdate> {
+    const { question } = questionUpdate;
+    const { type } = question;
+    switch (type) {
+      case 'image':
+        return this.updateImageQuestionImageLink(username, surveyId, questionUpdate);
+      case 'imagepicker':
+        return this.updateImagePickerQuestionChoicesImageLinks(username, surveyId, questionUpdate);
+      case 'file':
+        return this.updateFileQuestionFileLink(username, surveyId, questionUpdate);
+      default:
+        await this.removeAttachmentForOtherQuestionTypes(surveyId, questionUpdate);
+        return questionUpdate;
+    }
+  }
+
+  async updateImageQuestionImageLink(
+    username: string,
+    surveyId: string,
+    questionUpdate: SurveyQuestionUpdate,
+  ): Promise<SurveyQuestionUpdate> {
+    const { question, temporalFileNames } = questionUpdate;
+    if (question.type !== 'image') {
+      return { question, temporalFileNames };
+    }
+    let { imageLink } = question;
+    if (!imageLink) {
+      await this.removeQuestionAttachment(surveyId, question.name);
+      return { question, temporalFileNames };
+    }
+    const linkedFileName = imageLink.split('/').pop();
+    if (!linkedFileName) {
+      return { question, temporalFileNames };
+    }
+    const permanentDirectoryPath = join(SURVEYS_ATTACHMENT_PATH, surveyId, question.name);
+    const permanentFileNames = await this.fileSystemService.getAllFilenamesInDirectory(permanentDirectoryPath);
+    if (permanentFileNames.length === 0 && temporalFileNames.length === 0) {
+      return { question, temporalFileNames };
+    }
+
+    const tempIndex = temporalFileNames.indexOf(linkedFileName);
+    if (tempIndex !== -1) {
+      temporalFileNames.splice(tempIndex, 1);
+      const pathWithIds = join(surveyId, question.name);
+      imageLink = await this.updateTempFilesUrls(username, pathWithIds, imageLink, linkedFileName);
+      question.imageLink = imageLink;
+    }
+
+    await SurveysService.deleteOldFiles(surveyId, question.name, [linkedFileName], permanentFileNames);
+
+    return { question, temporalFileNames };
+  }
+
+  async updateImagePickerQuestionChoiceImageLink(
+    username: string,
+    surveyId: string,
+    question: SurveyElement,
+    choice: TSurveyQuestionChoice,
+    temporalFileNames: string[],
+  ): Promise<TSurveyQuestionChoice> {
+    if (typeof choice === 'string') {
+      return choice;
+    }
+    let { imageLink } = choice;
+    if (!imageLink) {
+      return choice;
+    }
+    const linkedFileName = imageLink.split('/').pop();
+    if (!linkedFileName) {
+      return choice;
+    }
+
+    const tempIndex = temporalFileNames.indexOf(linkedFileName);
+    if (tempIndex !== -1) {
+      temporalFileNames.splice(tempIndex, 1);
+      const pathWithIds = join(surveyId, question.name);
+      imageLink = await this.updateTempFilesUrls(username, pathWithIds, imageLink, linkedFileName);
+    }
+    return { ...choice, imageLink };
+  }
+
+  async updateImagePickerQuestionChoicesImageLinks(
+    username: string,
+    surveyId: string,
+    questionUpdate: SurveyQuestionUpdate,
+  ): Promise<SurveyQuestionUpdate> {
+    const { question, temporalFileNames } = questionUpdate;
+    if (question.type !== 'imagepicker') {
+      return { question, temporalFileNames };
+    }
+    const { choices } = question;
+    if (!choices || choices.length === 0) {
+      await this.removeQuestionAttachment(surveyId, question.name);
+      return { question, temporalFileNames };
+    }
+    const permanentDirectoryPath = join(SURVEYS_ATTACHMENT_PATH, surveyId, question.name);
+    const permanentFileNames = await this.fileSystemService.getAllFilenamesInDirectory(permanentDirectoryPath);
+    if (permanentFileNames.length === 0 && temporalFileNames.length === 0) {
+      return { question, temporalFileNames };
+    }
+
+    const promises = choices.map(async (choice) =>
+      this.updateImagePickerQuestionChoiceImageLink(username, surveyId, question, choice, temporalFileNames),
+    );
+    const updatedChoices = await Promise.all(promises);
+
+    const includedFileNames: string[] = [];
+    updatedChoices.forEach((choice) => {
+      if (typeof choice === 'string') {
+        return;
+      }
+      const { imageLink } = choice;
+      if (!imageLink) {
+        return;
+      }
+      const fileName = imageLink.split('/').pop();
+      if (!fileName) {
+        return;
+      }
+      includedFileNames.push(fileName);
+    });
+
+    await SurveysService.deleteOldFiles(surveyId, question.name, includedFileNames, permanentFileNames);
+
+    return {
+      question: { ...question, choices: updatedChoices },
+      temporalFileNames,
+    };
+  }
+
+  async updateFileQuestionFileLink(
+    username: string,
+    surveyId: string,
+    questionUpdate: SurveyQuestionUpdate,
+  ): Promise<SurveyQuestionUpdate> {
+    const { question, temporalFileNames } = questionUpdate;
+    if (question.type !== 'file') {
+      return { question, temporalFileNames };
+    }
+
+    const permanentDirectoryPath = join(SURVEYS_ATTACHMENT_PATH, surveyId, question.name);
+    const permanentFileNames = await this.fileSystemService.getAllFilenamesInDirectory(permanentDirectoryPath);
+    if (permanentFileNames.length === 0 && temporalFileNames.length === 0) {
+      return { question, temporalFileNames };
+    }
+
+    let questionValue = question.value as string;
+    if (!questionValue) {
+      await this.removeQuestionAttachment(surveyId, question.name);
+      return { question, temporalFileNames };
+    }
+
+    const linkedFileName = questionValue.split('/').pop();
+    if (!linkedFileName) {
+      await this.removeQuestionAttachment(surveyId, question.name);
+      return { question, temporalFileNames };
+    }
+
+    const tempIndex = temporalFileNames.indexOf(linkedFileName);
+    if (tempIndex !== -1) {
+      temporalFileNames.splice(tempIndex, 1);
+      const pathWithIds = join(surveyId, question.name);
+      questionValue = await this.updateTempFilesUrls(username, pathWithIds, questionValue, linkedFileName);
+      question.value = questionValue;
+    }
+
+    await SurveysService.deleteOldFiles(surveyId, question.name, [linkedFileName], permanentFileNames);
+
+    return { question: { ...question, value: questionValue }, temporalFileNames };
+  }
+
+  async removeAttachmentForOtherQuestionTypes(surveyId: string, questionUpdate: SurveyQuestionUpdate): Promise<void> {
+    const { question } = questionUpdate;
+    const { type } = question;
+    if (type === 'image' || type === 'imagepicker' || type === 'file') {
+      return;
+    }
+    await this.removeQuestionAttachment(surveyId, question.name);
+  }
+
+  async removeQuestionAttachment(surveyId: string, questionName: string) {
+    const permaDirectory = join(SURVEYS_ATTACHMENT_PATH, surveyId, questionName);
+    await this.fileSystemService.deleteDirectory(permaDirectory);
+  }
+
+  removeTemporaryFilesFolder(username: string): void {
+    const temporaryAttachmentPath = join(SURVEYS_TEMP_FILES_PATH, username);
+    void this.fileSystemService.deleteDirectory(temporaryAttachmentPath);
+  }
+
+  static async deleteOldFiles(
+    surveyId: string,
+    questionName: string,
+    linkedFileNames: string[],
+    fileNames: string[],
+  ): Promise<void> {
+    const promises = fileNames.map(async (fileName) => {
+      if (!linkedFileNames.includes(fileName)) {
+        const path = join(SURVEYS_ATTACHMENT_PATH, surveyId, questionName);
+        await FilesystemService.deleteFile(path, fileName);
+      }
+    });
+    await Promise.all(promises);
   }
 }
 
