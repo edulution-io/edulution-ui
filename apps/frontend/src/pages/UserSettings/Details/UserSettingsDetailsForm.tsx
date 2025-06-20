@@ -13,13 +13,13 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import InputProp from '@libs/common/types/input-prop';
 import { SOPHOMORIX_TEACHER } from '@libs/lmnApi/constants/sophomorixRoles';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import BadgeFormField from '@/components/shared/BadgeFormField';
 import FormField from '@/components/shared/FormField';
 import { Button } from '@/components/shared/Button';
 import { Form } from '@/components/ui/Form';
+import InputProp from '@/types/input-prop';
 
 const UserSettingsDetailsForm = () => {
   const { user, patchUserDetails } = useLmnApiStore();
