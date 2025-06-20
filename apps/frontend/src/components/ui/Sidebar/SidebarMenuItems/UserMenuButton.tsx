@@ -37,7 +37,7 @@ const UserMenuButton: React.FC = () => {
   return (
     <div
       key="usermenu"
-      className="fixed bottom-0 right-0 min-w-[260px] bg-black md:min-w-0"
+      className="fixed bottom-0 right-0 min-w-[260px] bg-black md:min-w-[var(--sidebar-width)]"
     >
       <div className="flex max-h-14 cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-3">
         <DropdownMenu
