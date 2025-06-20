@@ -30,11 +30,11 @@ import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import usePublicSharePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useUserStore from '@/store/UserStore/UserStore';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import PublicShareMetaList from '../publicPage/components/PublicShareMetaList';
 import DownloadPublicFileButton from '../publicPage/components/DownloadPublicShare';
 import PublicSharePasswordInput from '../publicPage/components/PublicSharePasswordInput';
 import FileHeader from '../publicPage/components/PublicShareHeader';
-import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 
 const schema = z.object({ password: z.string().optional() });
 type FormValues = z.infer<typeof schema>;
