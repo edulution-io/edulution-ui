@@ -47,7 +47,7 @@ interface PublicShareFilesStore {
   isAccessRestricted: boolean;
   isFileAvailable: boolean;
   error: Error | null;
-  fetchPublicShareContentById: (id: string) => Promise<void>;
+  fetchPublicShareContentById: (id: string) => Promise<PublicShareDto | undefined>;
   fetchPublicShares: () => Promise<void>;
   deletePublicShares: (files: PublicShareDto[]) => Promise<void>;
   updatePublicShare: (files: PublicShareDto) => Promise<void>;
@@ -117,9 +117,11 @@ export const usePublicShareStore = create<PublicShareFilesStore>((set, get) => (
           set({ isLoading: false });
           break;
       }
+      return data.data;
     } catch (err) {
       handleApiError(err, set);
       set({ isLoading: false, isAccessRestricted: false, publicShareContent: null });
+      return undefined;
     }
   },
 
@@ -170,10 +172,12 @@ export const usePublicShareStore = create<PublicShareFilesStore>((set, get) => (
     set({ isLoading: true, error: null });
 
     try {
-      const data = await eduApi.post(FILESHARING_SHARED_FILES_API_ENDPOINT, publicFile);
-      const created = data.data as PublicShareDto;
+      const response = await eduApi.post(FILESHARING_SHARED_FILES_API_ENDPOINT, publicFile);
+      const data = response.data as ApiResponseDto<string>;
+      const publicShare = data.data || '';
+      await get().fetchPublicShareContentById(publicShare);
       set({ selectedContentToShareRows: [], isLoading: true });
-      set({ editMultipleContent: [...get().editMultipleContent, created] });
+      set({ editMultipleContent: [...get().editMultipleContent] });
 
       toast.success(t('filesharing.publicFileSharing.success.PublicFileLinkCreated'));
     } catch (error) {

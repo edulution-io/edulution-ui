@@ -28,7 +28,7 @@ import buildAbsolutePublicDownloadUrl from '@libs/filesharing/utils/buildAbsolut
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 
 import usePublicSharePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
-import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useUserStore from '@/store/UserStore/UserStore';
 import PublicShareMetaList from '../publicPage/components/PublicShareMetaList';
 import DownloadPublicFileButton from '../publicPage/components/DownloadPublicShare';
