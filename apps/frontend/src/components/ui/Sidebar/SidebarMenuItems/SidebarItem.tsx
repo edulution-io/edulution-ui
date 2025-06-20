@@ -15,7 +15,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { SIDEBAR_ICON_WIDTH, SIDEBAR_WIDTH } from '@libs/ui/constants';
 import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
 import { getRootPathName } from '@libs/common/utils';
-import SidebarItemNotification from '@/components/ui/Sidebar/SidebarMenuItems/SidebarItemNotification';
+import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import PageTitle from '@/components/PageTitle';
 import useTrulyVisible from '@/hooks/useTrulyVisible';
 import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
@@ -29,7 +29,7 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({
   isUpButtonVisible,
   isDownButtonVisible,
 }) => {
-  const { title, icon, color, link, notificationCounter } = menuItem;
+  const { title, icon, color, link, notificationCounter = 0 } = menuItem;
   const buttonRef = useRef<HTMLDivElement>(null);
   const isTrulyVisible = useTrulyVisible(buttonRef, [translate, isUpButtonVisible, isDownButtonVisible]);
   const { pathname } = useLocation();
@@ -73,7 +73,7 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({
         >
           {iconElement}
 
-          <SidebarItemNotification notificationCounter={notificationCounter} />
+          <NotificationCounter count={notificationCounter} />
 
           <div className="-mt-[0.15rem] hidden h-5 text-center md:block">
             <DynamicEllipsis
