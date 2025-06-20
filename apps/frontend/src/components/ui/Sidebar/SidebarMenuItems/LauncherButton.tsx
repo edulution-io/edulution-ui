@@ -15,10 +15,15 @@ import { MobileLogoIcon } from '@/assets/icons';
 import { SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
 import { useTranslation } from 'react-i18next';
 import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
+import useSidebarItems from '@/hooks/useSidebarItems';
+import SidebarItemNotification from '@/components/ui/Sidebar/SidebarMenuItems/SidebarItemNotification';
 
 const LauncherButton: React.FC = () => {
   const { t } = useTranslation();
   const { toggleLauncher } = useLauncherStore();
+  const sidebarItems = useSidebarItems();
+
+  const totalNotifications = sidebarItems.reduce((sum, item) => sum + (item.notificationCounter ?? 0), 0);
 
   return (
     <button
@@ -27,12 +32,15 @@ const LauncherButton: React.FC = () => {
       className="group relative z-50 flex max-h-14 w-full items-center justify-end gap-4 bg-black px-4 py-2 md:block md:px-3"
     >
       <p className="text-md font-bold md:hidden">{t('launcher.title')}</p>
+
       <img
         src={MobileLogoIcon}
         className="g transform rounded-full transition-transform duration-200 group-hover:scale-[1.3]"
         width={SIDEBAR_ICON_WIDTH}
         alt="edulution-mobile-logo"
       />
+
+      <SidebarItemNotification notificationCounter={totalNotifications} />
     </button>
   );
 };

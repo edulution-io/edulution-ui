@@ -27,7 +27,7 @@ const SidebarItemNotification = (props: SidebarItemNotificationProps) => {
   return (
     <FaStarOfLife
       size={12}
-      className="absolute right-1 top-1 text-ciLightGreen"
+      className="absolute right-[20%] top-[10%] text-ciLightGreen"
     />
   );
 };
