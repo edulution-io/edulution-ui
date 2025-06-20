@@ -36,10 +36,11 @@ type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
   VariantProps<typeof originInputVariants> & {
     shouldTrim?: boolean;
     icon?: React.ReactNode;
+    wFull?: boolean;
   };
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type = 'text', variant, shouldTrim = false, onChange, icon, ...props }, ref) => {
+  ({ className, type = 'text', variant, shouldTrim = false, onChange, icon, wFull = false, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,11 +72,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const closedIcon = variant === 'login' ? EyeDarkIcon : EyeLightIcon;
     const openedIcon = variant === 'login' ? EyeDarkSlashIcon : EyeLightSlashIcon;
     return (
-      <div className="relative">
+      <div className={cn('relative', { 'w-full': wFull })}>
         <SHInput
           type={showPassword ? 'text' : type}
           inputMode={type === 'number' ? 'numeric' : undefined}
-          className={cn(originInputVariants({ variant, className }))}
+          className={cn(originInputVariants({ variant, className }), { 'w-full': wFull })}
           ref={ref}
           onChange={handleChange}
           {...props}

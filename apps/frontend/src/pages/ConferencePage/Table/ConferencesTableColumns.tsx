@@ -102,7 +102,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     id: CONFERENCES_TABLE_COLUMNS.CONFERENCE_CREATOR,
     header: ({ column }) => <SortableHeader<ConferenceDto, unknown> column={column} />,
     meta: {
-      translationId: 'conferences.creator',
+      translationId: 'common.creator',
     },
     accessorFn: (row) => row.creator,
     cell: ({ row }) => {

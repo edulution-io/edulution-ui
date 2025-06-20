@@ -16,9 +16,11 @@ import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns/format';
 import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
 import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
+import UserLanguage from '@libs/user/constants/userLanguage';
 import APPS from '@libs/appconfig/constants/apps';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import cn from '@libs/common/utils/className';
+import useUserStore from '@/store/UserStore/UserStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FallbackText from '@/components/shared/FallbackText';
@@ -30,11 +32,12 @@ interface SurveysListProps {
 
 const SurveysList = (props: SurveysListProps) => {
   const { items, className } = props;
+  const { user } = useUserStore();
   const { t } = useTranslation();
 
   const { selectSurvey } = useSurveyTablesPageStore();
 
-  const locale = getLocaleDateFormat();
+  const locale = getLocaleDateFormat(user?.language === UserLanguage.SYSTEM ? navigator.language : user?.language);
 
   const getSurveyInfo = (survey: SurveyDto) => (
     <div className="flex w-full flex-col gap-1">
