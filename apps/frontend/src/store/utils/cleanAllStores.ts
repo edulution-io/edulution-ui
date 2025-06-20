@@ -44,6 +44,8 @@ import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownl
 import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 import TLDRAW_PERSISTENCE_KEY from '@libs/whiteboard/constants/tldrawPersistenceKey';
 import clearTLDrawPersistence from '@/pages/Whiteboard/clearTLDrawPersitence';
+import usePublicSharePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useSseStore from '../useSseStore';
 
 const cleanAllStores = async () => {
@@ -84,6 +86,8 @@ const cleanAllStores = async () => {
   useParticipateSurveyStore.getState().reset();
   useQuestionsContextMenuStore.getState().reset();
   useSseStore.getState().reset();
+  usePublicSharePageStore.getState().reset();
+  usePublicShareStore.getState().reset();
   localStorage.removeItem('i18nextLng');
   await clearTLDrawPersistence(TLDRAW_PERSISTENCE_KEY);
 };

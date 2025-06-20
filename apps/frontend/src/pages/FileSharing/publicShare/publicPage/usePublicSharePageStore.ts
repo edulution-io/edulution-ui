@@ -25,11 +25,11 @@ const initialState = {
   publicShareId: null,
 };
 
-const usePublicShareFilePageStore = create<UsePublicSharePageStore>((set) => ({
+const usePublicSharePageStore = create<UsePublicSharePageStore>((set) => ({
   ...initialState,
   setOpenPublicShareDialog: (id) => set({ isPublicShareInfoDialogOpen: true, publicShareId: id }),
   closePublicShareDialog: () => set({ isPublicShareInfoDialogOpen: false, publicShareId: null }),
   reset: () => set({ ...initialState }),
 }));
 
-export default usePublicShareFilePageStore;
+export default usePublicSharePageStore;

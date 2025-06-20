@@ -404,18 +404,18 @@
       "downloadPublicFile": "Inhalt herunterladen",
       "nameOfContent": "Name des Inhalts:",
       "errors": {
-        "PublicFileDeletionFailed": "Öffentlicher Freigabelink konnte nicht gelöscht werden.",
-        "PublicFileIsOnlyDeletableByOwner": "Der öffentliche Freigabelink kann nur vom Besitzer gelöscht werden.",
-        "PublicFileNotFound": "Öffentlicher Freigabelink nicht gefunden.",
-        "PublicFileIsRestricted": "Der öffentliche Freigabelink ist auf bestimmte Nutzer oder Gruppen beschränkt.",
-        "PublicIsRestrictedByInvalidToken": "Der öffentliche Freigabelink ist durch ein ungültiges Token eingeschränkt.",
+        "PublicFileDeletionFailed": "Freigabelink konnte nicht gelöscht werden.",
+        "PublicFileIsOnlyDeletableByOwner": "Der Freigabelink kann nur vom Besitzer gelöscht werden.",
+        "PublicFileNotFound": "Freigabelink nicht gefunden.",
+        "PublicFileIsRestricted": "Der Freigabelink ist auf bestimmte Nutzer oder Gruppen beschränkt.",
+        "PublicIsRestrictedByInvalidToken": "Der Freigabelink ist durch ein ungültiges Token eingeschränkt.",
         "PublicFileWrongPassword": "Das eingegebene Passwort ist falsch.",
         "FileCouldNotBeFound": "Die angeorderte Datei konnte nicht gefunden werden. Bitte überprüfe den Link oder wende dich an den Ersteller."
       },
       "success": {
-        "PublicFileLinkCreated": "Öffentlicher Freigabelink erfolgreich erstellt.",
-        "PublicFileLinkDeleted": "Öffentlicher Freigabelink erfolgreich gelöscht.",
-        "PublicFileLinkUpdated": "Öffentlicher Freigabelink erfolgreich aktualisiert."
+        "PublicFileLinkCreated": "Freigabelink erfolgreich erstellt.",
+        "PublicFileLinkDeleted": "Freigabelink erfolgreich gelöscht.",
+        "PublicFileLinkUpdated": "Freigabelink erfolgreich aktualisiert."
       },
       "scope": {
         "public": "Öffentlich",

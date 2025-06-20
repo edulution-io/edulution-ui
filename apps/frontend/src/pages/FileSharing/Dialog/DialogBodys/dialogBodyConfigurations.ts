@@ -283,7 +283,7 @@ const shareFileOrFolderConfig: ShareDialogBodyConfiguration = {
   httpMethod: HttpMethods.POST,
   type: ContentType.FILE,
   disableSubmitButton: true,
-  desktopComponentClassName: 'max-w-[80%] max-h-screen min-h-fit-content overflow-visible',
+  desktopComponentClassName: 'max-w-[85%] min-w-[10%] max-h-full',
   requiresForm: false,
 };
 

@@ -21,22 +21,16 @@ import type PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto'
 import DEFAULT_FILE_LINK_EXPIRY from '@libs/filesharing/constants/defaultFileLinkExpiry';
 import CreateEditPublicFileShareDto from '@libs/filesharing/types/createEditPublicFileShareDto';
 import { useTranslation } from 'react-i18next';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 
 const EditPublicShareDialog: React.FC = () => {
   const {
-    setSelectedPublicShareRows,
     selectedContentToShareRows,
     isPublicShareEditDialogOpen,
     isLoading,
     setIsPublicShareEditDialogOpen,
-    editMultipleContent,
-    setEditMultipleContent,
+    editContent,
     updatePublicShare,
-    setSelectedRows: setShareRows,
   } = usePublicShareStore();
-
-  const { setSelectedRows: setTableRows, setSelectedItems } = useFileSharingStore();
 
   const { t } = useTranslation();
 
@@ -51,9 +45,9 @@ const EditPublicShareDialog: React.FC = () => {
     },
   });
 
-  const currentFile = editMultipleContent[0] ?? selectedContentToShareRows[0];
+  const currentFile = editContent ?? selectedContentToShareRows[0];
 
-  const isFileRestricted = currentFile?.invitedAttendees.length > 0 || currentFile?.invitedGroups.length > 0;
+  const isFileRestricted = currentFile?.invitedAttendees?.length > 0 || currentFile?.invitedGroups?.length > 0;
 
   useEffect(() => {
     if (currentFile) {
@@ -65,7 +59,7 @@ const EditPublicShareDialog: React.FC = () => {
         password: currentFile?.password,
       });
     }
-  }, [editMultipleContent, form]);
+  }, [editContent, form]);
 
   const onSubmit = async () => {
     const { scope, expires, invitedAttendees = [], invitedGroups = [], password = '' } = form.getValues();
@@ -84,11 +78,6 @@ const EditPublicShareDialog: React.FC = () => {
   };
 
   const handleClose = () => {
-    setEditMultipleContent([]);
-    setSelectedPublicShareRows([]);
-    setShareRows({});
-    setTableRows({});
-    setSelectedItems([]);
     setIsPublicShareEditDialogOpen(false);
     form.reset();
   };

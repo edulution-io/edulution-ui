@@ -17,12 +17,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import DownloadPublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DownloadPublicShareDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import usePublicShareFilePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
+import usePublicSharePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
 import APPS from '@libs/appconfig/constants/apps';
 
 const PublicShareDownloadPage: React.FC = () => {
   const { eduApiToken } = useUserStore();
-  const { setOpenPublicShareDialog } = usePublicShareFilePageStore();
+  const { setOpenPublicShareDialog } = usePublicSharePageStore();
 
   const navigate = useNavigate();
   const { fetchPublicShareContentById, isLoading } = usePublicShareStore();
@@ -36,7 +36,7 @@ const PublicShareDownloadPage: React.FC = () => {
       setOpenPublicShareDialog(id);
       navigate(`/${APPS.FILE_SHARING}`);
     } else {
-      void fetchPublicShareContentById(id, eduApiToken);
+      void fetchPublicShareContentById(id);
     }
   }, [id, eduApiToken]);
 

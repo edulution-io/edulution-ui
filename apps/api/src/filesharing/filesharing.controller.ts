@@ -191,7 +191,7 @@ class FilesharingController {
   }
 
   @Get(FileSharingApiEndpoints.PUBLIC_FILE_SHARE)
-  async listPublicShares(@GetCurrentUsername() username: string) {
+  async listOwnPublicShares(@GetCurrentUsername() username: string) {
     return this.filesharingService.listOwnPublicShares(username);
   }
 
@@ -216,24 +216,24 @@ class FilesharingController {
   }
 
   @Delete(FileSharingApiEndpoints.PUBLIC_FILE_SHARE)
-  async deleteManyPublicShares(@Body() publicFiles: PublicFileShareDto[], @GetCurrentUsername() username: string) {
+  async deletePublicShares(@Body() publicFiles: PublicFileShareDto[], @GetCurrentUsername() username: string) {
     return this.filesharingService.deletePublicShares(username, publicFiles);
   }
 
   @Patch(FileSharingApiEndpoints.PUBLIC_FILE_SHARE)
-  async editPublicShareFile(@Body() publicFileShareDto: PublicFileShareDto, @GetCurrentUsername() username: string) {
-    return this.filesharingService.editPublicShareFile(username, publicFileShareDto);
+  async editPublicShare(@Body() publicFileShareDto: PublicFileShareDto, @GetCurrentUsername() username: string) {
+    return this.filesharingService.editPublicShare(username, publicFileShareDto);
   }
 
   @Public()
   @Get(`${FileSharingApiEndpoints.PUBLIC_FILE_SHARE}/:shareId`)
-  async getPublicFileShareInfo(@Param('shareId') shareId: string, @GetToken({ required: false }) token?: string) {
-    return this.filesharingService.getPublicFileShareInfo(shareId, token);
+  async getPublicShareInfo(@Param('shareId') shareId: string, @GetToken({ required: false }) token?: string) {
+    return this.filesharingService.getPublicShareInfo(shareId, token);
   }
 
   @Public()
   @Post(`${FileSharingApiEndpoints.PUBLIC_FILE_SHARE_DOWNLOAD}/:shareId`)
-  async downloadPublicFile(
+  async downloadSharedContent(
     @Param('shareId') shareId: string,
     @Body('password') password: string | undefined,
     @Res({ passthrough: true }) res: Response,

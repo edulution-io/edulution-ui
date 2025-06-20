@@ -28,8 +28,7 @@ interface CreateNewPublicFileLinkDialogProps {
 const CreateEditNewPublicShareDialog: React.FC<CreateNewPublicFileLinkDialogProps> = ({ trigger }) => {
   const { t } = useTranslation();
   const { selectedItems } = useFileSharingStore();
-  const { editMultipleContent, setEditMultipleContent, setSelectedPublicShareRows } = usePublicShareStore();
-  const { setSelectedRows, setSelectedItems } = useFileSharingStore();
+  const { editMultipleContent } = usePublicShareStore();
   const currentFile = editMultipleContent[0] ?? selectedItems[0];
 
   const { setIsCreateNewPublicShareLinkDialogOpen, isCreateNewPublicShareLinkDialogOpen, createPublicShare } =
@@ -49,10 +48,6 @@ const CreateEditNewPublicShareDialog: React.FC<CreateNewPublicFileLinkDialogProp
   const { reset } = form;
 
   const handleClose = () => {
-    setEditMultipleContent([]);
-    setSelectedPublicShareRows([]);
-    setSelectedRows({});
-    setSelectedItems([]);
     setIsCreateNewPublicShareLinkDialogOpen(false);
     reset({
       expires: DEFAULT_FILE_LINK_EXPIRY,
@@ -64,19 +59,19 @@ const CreateEditNewPublicShareDialog: React.FC<CreateNewPublicFileLinkDialogProp
 
   const { expires, invitedAttendees, invitedGroups, password, scope } = form.getValues();
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const dto: CreateEditPublicFileShareDto = {
       scope,
       expires,
-      filePath: currentFile.filePath,
-      filename: currentFile.filename,
-      etag: currentFile.etag,
+      filePath: currentFile?.filePath,
+      filename: currentFile?.filename,
+      etag: currentFile?.etag,
       invitedAttendees,
       invitedGroups,
-      password: password || undefined,
+      password: password || '',
     };
 
-    void createPublicShare(dto);
+    await createPublicShare(dto);
     setIsCreateNewPublicShareLinkDialogOpen(false);
   };
 

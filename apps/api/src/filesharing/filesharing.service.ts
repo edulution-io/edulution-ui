@@ -401,7 +401,7 @@ class FilesharingService {
     return { stream, filename, fileType };
   }
 
-  async getPublicFileShareInfo(shareId: string, jwt?: string) {
+  async getPublicShareInfo(shareId: string, jwt?: string) {
     const doc = await this.shareModel.findById(shareId).lean().exec();
 
     if (!doc) {
@@ -476,7 +476,7 @@ class FilesharingService {
     return { success: true, deletedCount };
   }
 
-  async editPublicShareFile(username: string, dto: PublicFileShareDto) {
+  async editPublicShare(username: string, dto: PublicFileShareDto) {
     const { _id: id, expires, invitedGroups, invitedAttendees, password } = dto;
 
     const share = await this.shareModel.findById(id).where({ creator: username });

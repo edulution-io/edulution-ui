@@ -27,7 +27,7 @@ import downloadPublicFile from '@libs/filesharing/utils/downloadPublicFile';
 import buildAbsolutePublicDownloadUrl from '@libs/filesharing/utils/buildAbsolutePublicDownloadUrl';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 
-import usePublicShareFilePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
+import usePublicSharePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useUserStore from '@/store/UserStore/UserStore';
 import PublicShareMetaList from '../publicPage/components/PublicShareMetaList';
@@ -47,7 +47,7 @@ const DownloadPublicShareDialog = () => {
 
   const isAuthenticated = Boolean(eduApiToken);
 
-  const { isPublicShareInfoDialogOpen, closePublicShareDialog, publicShareId } = usePublicShareFilePageStore();
+  const { isPublicShareInfoDialogOpen, closePublicShareDialog, publicShareId } = usePublicSharePageStore();
 
   const { fetchPublicShareContentById, publicShareContent, isPasswordRequired, isAccessRestricted } =
     usePublicShareStore();
@@ -59,7 +59,7 @@ const DownloadPublicShareDialog = () => {
 
   useEffect(() => {
     if (!publicShareId) return;
-    void fetchPublicShareContentById(publicShareId, eduApiToken);
+    void fetchPublicShareContentById(publicShareId);
   }, [publicShareId, fetchPublicShareContentById]);
 
   const onDownload = form.handleSubmit(async ({ password }) => {
