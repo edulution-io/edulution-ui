@@ -87,7 +87,12 @@ const CreateEditNewFileLinkDialog: React.FC<CreateNewPublicFileLinkDialogProps> 
       handleClose={handleClose}
       handleSubmit={onSubmit}
       submitButtonText="common.create"
-      disableSubmit={form.formState.isSubmitting || !form.formState.isValid || form.formState.isLoading}
+      disableSubmit={
+        form.formState.isSubmitting ||
+        !form.formState.isValid ||
+        form.formState.isLoading ||
+        (scope === 'restricted' && !invitedAttendees?.length && !invitedGroups?.length)
+      }
     />
   );
 
