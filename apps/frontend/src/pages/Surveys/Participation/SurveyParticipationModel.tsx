@@ -12,7 +12,7 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
-import { Model, Serializer } from 'survey-core';
+import { ClearFilesEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
@@ -37,7 +37,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 
-  const { fetchAnswer, isFetching, answerSurvey, previousAnswer } = useParticipateSurveyStore();
+  const { fetchAnswer, isFetching, answerSurvey, previousAnswer, uploadFile, deleteFile } = useParticipateSurveyStore();
 
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -76,6 +76,52 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
           if (updateAnsweredSurveys) void updateAnsweredSurveys();
         }
         toast.success(t('survey.participate.saveAnswerSuccess'));
+      }
+    });
+
+    newModel.storeDataAsText = false;
+    newModel.onUploadFiles.add((_: SurveyModel, options: UploadFilesEvent) => {
+      console.log('onUploadFile added', options);
+      console.log('onUploadFile added', options);
+      console.log('onUploadFile added', options);
+
+      const formData = new FormData();
+      options.files.forEach((file) => {
+        formData.append(file.name, file);
+      });
+      uploadFile(formData, options.callback);
+    });
+
+    newModel.onClearFiles.add(async (_surveyModel: SurveyModel, options: ClearFilesEvent) => {
+      console.log('onClearFiles added', options);
+      console.log('onClearFiles added', options);
+      console.log('onClearFiles added', options);
+
+      if (!options.value || options.value.length === 0) {
+        return options.callback('success');
+      }
+      const filesToDelete = options.fileName
+        ? options.value.filter((item: File) => item.name === options.fileName)
+        : options.value;
+
+      if (filesToDelete.length === 0) {
+        console.error(`File with name ${options.fileName} is not found`);
+        return options.callback('error');
+      }
+
+      const results = await Promise.all(
+        filesToDelete.map((file: File) => {
+          if (!selectedSurvey || !selectedSurvey.id) {
+            return;
+          }
+          deleteFile(file, selectedSurvey.id, options.name, options.callback);
+        }),
+      );
+
+      if (results.every((res) => res === 'success')) {
+        options.callback('success');
+      } else {
+        options.callback('error');
       }
     });
 
