@@ -38,6 +38,7 @@ import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVar
 import getDisplayName from '@/utils/getDisplayName';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import type AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
+import AppConfigDropdownSelect from '@/pages/Settings/AppConfig/components/AppConfigDropdownSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailImporterConfig from './mails/MailImporterConfig';
@@ -77,6 +78,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
     clearErrors();
 
     setValue(`${settingLocation}.appType`, currentConfig.appType);
+    setValue(`${settingLocation}.position`, currentConfig.position);
     setValue(`${settingLocation}.accessGroups`, currentConfig.accessGroups || []);
     setValue(`${settingLocation}.extendedOptions`, currentConfig.extendedOptions || {});
 
@@ -140,6 +142,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
       options,
       extendedOptions,
       accessGroups: getValues(`${settingLocation}.accessGroups`) || [],
+      position: getValues(`${settingLocation}.position`),
     };
 
     await updateAppConfig(newConfig);
@@ -169,6 +172,10 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
       >
         {matchingConfig && (
           <div className="m-5 space-y-3">
+            <AppConfigDropdownSelect
+              form={form}
+              appConfig={matchingConfig}
+            />
             <FormFieldSH
               key={`${matchingConfig.name}.accessGroups`}
               control={control}

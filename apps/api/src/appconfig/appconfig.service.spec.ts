@@ -15,7 +15,6 @@ import { getConnectionToken, getModelToken } from '@nestjs/mongoose';
 import { readFileSync } from 'fs';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
@@ -63,6 +62,7 @@ describe('AppConfigService', () => {
 
   describe('insertConfig', () => {
     it('should successfully insert configs', async () => {
+      jest.spyOn(service, 'getAppConfigs').mockResolvedValue([mockAppConfig]);
       await service.insertConfig(mockAppConfig, mockLdapGroup);
       expect(mockAppConfigModel.create).toHaveBeenCalledWith(mockAppConfig);
     });
@@ -75,18 +75,26 @@ describe('AppConfigService', () => {
 
       const result = await service.updateConfig(mockAppConfig.name, mockAppConfig, mockLdapGroup);
 
-      expect(mockAppConfigModel.updateOne).toHaveBeenCalledWith(
-        { name: mockAppConfig.name },
-        {
-          $set: {
-            icon: mockAppConfig.icon,
-            appType: mockAppConfig.appType,
-            options: mockAppConfig.options,
-            accessGroups: mockAppConfig.accessGroups,
-            extendedOptions: mockAppConfig.extendedOptions,
+      expect(mockAppConfigModel.bulkWrite).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          {
+            updateOne: {
+              filter: { name: mockAppConfig.name },
+              update: {
+                $set: {
+                  icon: mockAppConfig.icon,
+                  appType: mockAppConfig.appType,
+                  options: mockAppConfig.options,
+                  accessGroups: mockAppConfig.accessGroups,
+                  extendedOptions: mockAppConfig.extendedOptions,
+                  position: mockAppConfig.position,
+                },
+              },
+              upsert: true,
+            },
           },
-        },
-        { upsert: true },
+        ]),
+        { ordered: true },
       );
       expect(service.getAppConfigs).toHaveBeenCalledWith(mockLdapGroup);
       expect(result).toEqual([mockAppConfig]);
@@ -130,27 +138,21 @@ describe('AppConfigService', () => {
 
   describe('getAppConfigs', () => {
     it('should return app configs', async () => {
-      const appConfigs: AppConfigDto[] = [mockAppConfig];
-
-      const expectedConfigs = appConfigs.map((config) => ({
-        name: config.name,
-        icon: config.icon,
-        appType: config.appType,
-        options: { url: config.options.url },
-        accessGroups: [],
-        extendedOptions: config.extendedOptions,
-      }));
-
       const ldapGroups = ['group1', 'group2'];
-      jest.spyOn(mockAppConfigModel, 'find').mockReturnValueOnce({
-        lean: jest.fn().mockResolvedValue(appConfigs),
-      });
-
-      mockAppConfigModel.find.mockResolvedValue(appConfigs);
+      const expected = [
+        {
+          name: mockAppConfig.name,
+          icon: mockAppConfig.icon,
+          appType: mockAppConfig.appType,
+          options: { url: mockAppConfig.options.url },
+          accessGroups: [],
+          extendedOptions: mockAppConfig.extendedOptions,
+          position: mockAppConfig.position,
+        },
+      ];
 
       const configs = await service.getAppConfigs(ldapGroups);
-
-      expect(configs).toEqual(expectedConfigs);
+      expect(configs).toEqual(expected);
     });
   });
 
@@ -176,8 +178,6 @@ describe('AppConfigService', () => {
         lean: jest.fn().mockResolvedValue(expectedConfig),
       });
 
-      mockAppConfigModel.findOne.mockResolvedValue(expectedConfig);
-
       const config = await service.getAppConfigByName(appConfigName);
 
       expect(config).toEqual(expectedConfig);
@@ -187,21 +187,26 @@ describe('AppConfigService', () => {
 
   describe('deleteConfig', () => {
     it('should delete a config', async () => {
-      mockAppConfigModel.updateOne.mockResolvedValue({});
       const configName = 'Test';
-
-      jest.spyOn(FilesystemService, 'checkIfFileExist').mockResolvedValueOnce(false);
-      jest.spyOn(FilesystemService, 'deleteFile').mockResolvedValueOnce();
-
-      jest.spyOn(FilesystemService, 'checkIfFileExist').mockResolvedValueOnce(false);
-      jest.spyOn(FilesystemService, 'deleteDirectories').mockResolvedValueOnce();
-      jest.spyOn(FilesystemService, 'checkIfFileExistAndDelete').mockResolvedValueOnce();
-
       jest.spyOn(service, 'getAppConfigs').mockResolvedValue([mockAppConfig]);
+
+      mockAppConfigModel.bulkWrite.mockResolvedValue({});
+
+      jest.spyOn(FilesystemService, 'checkIfFileExist').mockResolvedValueOnce(false).mockResolvedValueOnce(false);
+      jest.spyOn(FilesystemService, 'deleteFile').mockResolvedValue();
+      jest.spyOn(FilesystemService, 'deleteDirectories').mockResolvedValue();
 
       const result = await service.deleteConfig(configName, mockLdapGroup);
 
-      expect(mockAppConfigModel.deleteOne).toHaveBeenCalledWith({ name: configName });
+      expect(mockAppConfigModel.bulkWrite).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          { deleteOne: { filter: { name: configName } } },
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          expect.objectContaining({ updateMany: expect.any(Object) }),
+        ]),
+        { ordered: true },
+      );
+
       expect(result).toEqual([mockAppConfig]);
     });
   });

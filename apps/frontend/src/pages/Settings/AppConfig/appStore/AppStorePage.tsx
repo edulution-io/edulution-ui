@@ -64,6 +64,7 @@ const AppStorePage: React.FC = () => {
         },
         accessGroups: [],
         extendedOptions: newExtendedOptions,
+        position: 0,
       };
 
       void createAppConfig(newConfig);

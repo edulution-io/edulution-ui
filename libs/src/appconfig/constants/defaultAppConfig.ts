@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ClassManagementIcon, FilesharingIcon, SurveysIcon, WhiteboardIcon, BulletinBoardIcon } from '@libs/assets';
+import { BulletinBoardIcon, ClassManagementIcon, FilesharingIcon, SurveysIcon, WhiteboardIcon } from '@libs/assets';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APPS from './apps';
 import APP_INTEGRATION_VARIANT from './appIntegrationVariants';
@@ -28,6 +28,7 @@ const defaultAppConfig: AppConfigDto[] = [
     options: {},
     accessGroups: [],
     extendedOptions: {},
+    position: 1,
   },
   {
     name: FILE_SHARING,
@@ -38,6 +39,7 @@ const defaultAppConfig: AppConfigDto[] = [
     },
     accessGroups: [],
     extendedOptions: {},
+    position: 2,
   },
   {
     name: SURVEYS,
@@ -46,6 +48,7 @@ const defaultAppConfig: AppConfigDto[] = [
     options: {},
     accessGroups: [],
     extendedOptions: {},
+    position: 3,
   },
   {
     name: CLASS_MANAGEMENT,
@@ -54,6 +57,7 @@ const defaultAppConfig: AppConfigDto[] = [
     options: {},
     accessGroups: [],
     extendedOptions: {},
+    position: 4,
   },
   {
     name: WHITEBOARD,
@@ -62,6 +66,7 @@ const defaultAppConfig: AppConfigDto[] = [
     options: {},
     accessGroups: [],
     extendedOptions: {},
+    position: 5,
   },
 ];
 
