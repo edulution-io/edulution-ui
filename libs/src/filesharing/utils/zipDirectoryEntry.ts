@@ -10,12 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import addEntryToZipFile from '@libs/filesharing/utils/addEntryToZipFile';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import { UploadFile } from '@libs/filesharing/types/uploadFile';
 
-interface FileUploadProps {
-  path: string;
-  name: string;
-  file: UploadFile;
-}
+const zipDirectoryEntry = async (dirEntry: FileSystemDirectoryEntry): Promise<UploadFile> => {
+  const bytes = await addEntryToZipFile(dirEntry);
+  const blob = new Blob([bytes], { type: RequestResponseContentType.APPLICATION_ZIP });
 
-export default FileUploadProps;
+  return Object.assign(new File([blob], `${dirEntry.name}.zip`, { type: RequestResponseContentType.APPLICATION_ZIP }), {
+    isZippedFolder: true as const,
+    originalFolderName: dirEntry.name,
+  }) as UploadFile;
+};
+
+export default zipDirectoryEntry;

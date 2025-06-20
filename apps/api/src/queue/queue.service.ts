@@ -21,6 +21,8 @@ import CollectFileConsumer from '../filesharing/consumers/collectFile.consumer';
 import DeleteFileConsumer from '../filesharing/consumers/deleteFile.consumer';
 import MoveOrRenameConsumer from '../filesharing/consumers/moveOrRename.consumer';
 import CopyFileConsumer from '../filesharing/consumers/copyFile.consumer';
+import CreateFolderConsumer from '../filesharing/consumers/createFolder.consumer';
+import UploadFileConsumer from '../filesharing/consumers/uploadFile.consumer';
 
 @Injectable()
 class QueueService implements OnModuleInit {
@@ -38,6 +40,8 @@ class QueueService implements OnModuleInit {
     private readonly deleteFileConsumer: DeleteFileConsumer,
     private readonly moveOrRenameFileConsumer: MoveOrRenameConsumer,
     private readonly copyFileConsumer: CopyFileConsumer,
+    private readonly createFolderConsumer: CreateFolderConsumer,
+    private readonly uploadFileConsumer: UploadFileConsumer,
   ) {}
 
   async onModuleInit() {
@@ -125,7 +129,12 @@ class QueueService implements OnModuleInit {
       case JOB_NAMES.COPY_FILE_JOB:
         await this.copyFileConsumer.process(job);
         break;
-
+      case JOB_NAMES.CREATE_FOLDER_JOB:
+        await this.createFolderConsumer.process(job);
+        break;
+      case JOB_NAMES.FILE_UPLOAD_JOB:
+        await this.uploadFileConsumer.process(job);
+        break;
       default:
     }
   }

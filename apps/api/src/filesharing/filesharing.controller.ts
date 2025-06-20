@@ -18,7 +18,6 @@ import {
   HttpStatus,
   Patch,
   Post,
-  Put,
   Query,
   Req,
   Res,
@@ -39,10 +38,12 @@ import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOpe
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
+import UploadFileDto from '@libs/filesharing/types/uploadFileDto';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
 import FilesharingService from './filesharing.service';
 import WebdavService from '../webdav/webdav.service';
+import ParseJsonPipe from '../common/pipes/parseJson.pipe';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
@@ -68,7 +69,7 @@ class FilesharingController {
   }
 
   @Post()
-  async createFileFolder(
+  async createFileOrFolder(
     @Query('path') path: string,
     @Query('type') type: string,
     @Body()
@@ -83,16 +84,20 @@ class FilesharingController {
     return this.webdavService.createFile(username, path, body.newPath);
   }
 
-  @Put()
+  @Post(FileSharingApiEndpoints.UPLOAD)
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @UploadedFile() file: CustomFile,
     @Query('path') path: string,
-    @Body('name') name: string,
+    @Body('uploadFileDto', ParseJsonPipe<UploadFileDto>) uploadFileDto: UploadFileDto,
     @GetCurrentUsername() username: string,
   ) {
+    const { originalFolderName, isZippedFolder, name } = uploadFileDto;
     const fullPath = `${this.baseurl}${path}/${name}`;
-    return this.webdavService.uploadFile(username, fullPath, file);
+
+    return isZippedFolder && originalFolderName
+      ? this.filesharingService.uploadZippedFolder(username, path, originalFolderName, file)
+      : this.webdavService.uploadFile(username, fullPath, file);
   }
 
   @Delete()
