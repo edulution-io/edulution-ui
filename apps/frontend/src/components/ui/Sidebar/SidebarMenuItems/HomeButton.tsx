@@ -15,15 +15,13 @@ import { MobileLogoIcon } from '@/assets/icons';
 import { SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
 
 const HomeButton: React.FC = () => (
-    <div
-      className="group relative right-0 top-0 z-50 mb-2 flex max-h-14 items-center justify-end gap-4 bg-black px-4 py-2 md:block md:px-3"
-    >
-      <img
-        src={MobileLogoIcon}
-        width={SIDEBAR_ICON_WIDTH}
-        alt="edulution-mobile-logo"
-      />
-    </div>
-  );
+  <div className="group relative right-0 top-0 z-50 flex max-h-14 items-center justify-end gap-4 bg-black px-4 py-2 md:block md:px-3">
+    <img
+      src={MobileLogoIcon}
+      width={SIDEBAR_ICON_WIDTH}
+      alt="edulution-mobile-logo"
+    />
+  </div>
+);
 
 export default HomeButton;
