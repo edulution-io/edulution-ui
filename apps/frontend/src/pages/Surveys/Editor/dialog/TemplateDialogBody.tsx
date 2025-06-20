@@ -47,7 +47,7 @@ const TemplateDialogBody = (props: TemplateDialogBodyProps) => {
 
   return (
     <div className="space-y-2">
-      <p className="mb-4 flex justify-center">
+      <p className="mb-4 flex justify-start">
         {isSuperAdmin ? t('survey.editor.templateMenu.adminMessage') : t('survey.editor.templateMenu.userMessage')}
       </p>
       {templates.length === 0 ? (

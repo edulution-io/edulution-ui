@@ -557,9 +557,8 @@
       "expectingUserInput": "Expecting the user to answer here, ... ",
       "templates": "Templates",
       "templateMenu": {
-        "fetch": "Templates:",
         "submit": "Save Survey as template.",
-        "title": "Templates",
+        "title": "Templates:",
         "userMessage": "Here you can load a template that is available to you.",
         "adminMessage": "Here you can either load a template or update/create the template of the current survey, for later usage.",
         "emptyMessage": "There are no templates available yet",

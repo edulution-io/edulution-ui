@@ -11,8 +11,13 @@
  */
 
 import React from 'react';
+import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
+import UserLanguage from '@libs/user/constants/userLanguage';
+import useUserStore from '@/store/UserStore/UserStore';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
+import Input from '@/components/shared/Input';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
@@ -30,7 +35,11 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
 
   const { template, error, isSubmitting, deleteTemplate, fetchTemplates } = useTemplateMenuStore();
 
+  const { user } = useUserStore();
+
   const { t } = useTranslation();
+
+  const locale = getLocaleDateFormat(user?.language === UserLanguage.SYSTEM ? navigator.language : user?.language);
 
   const handleRemoveTemplate = async () => {
     if (template?.fileName) {
@@ -54,23 +63,44 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
             <p>{t('survey.editor.templateMenu.deletion.message')}</p>
             <div className="mx-8 mt-2 space-y-2">
               {template?.template.formula?.title && (
-                <p>
+                <p className="inline-flex w-full items-center">
                   <Label className="mr-4 inline-block min-w-[80px] font-bold text-background">
                     {t('common.title')}:
                   </Label>
-                  {`"${template?.template.formula?.title}"`}
-                </p>
-              )}
-              {template?.template.createdAt && (
-                <p>
-                  <Label className="mr-4 inline-block min-w-[80px] font-bold">{t('common.createdAt')}:</Label>
-                  {`"${template?.template.createdAt.toDateString()}"`}
+                  <Input
+                    type="text"
+                    value={template?.template.formula?.title}
+                    readOnly
+                    disabled
+                    wFull
+                    className="min-w-[100px] cursor-pointer"
+                  />
                 </p>
               )}
               {template?.template.creator && (
-                <p>
+                <p className="inline-flex w-full items-center">
                   <Label className="mr-4 inline-block min-w-[80px] font-bold">{t('common.creator')}:</Label>
-                  {`"${template?.template.creator.username}"`}
+                  <Input
+                    type="text"
+                    value={template?.template.creator.username}
+                    readOnly
+                    disabled
+                    wFull
+                    className="min-w-[100px] cursor-pointer"
+                  />
+                </p>
+              )}
+              {template?.template.createdAt && (
+                <p className="inline-flex w-full items-center">
+                  <Label className="mr-4 inline-block min-w-[80px] font-bold">{t('common.createdAt')}:</Label>
+                  <Input
+                    type="text"
+                    value={format(template?.template.createdAt, 'PPP', { locale })}
+                    readOnly
+                    disabled
+                    wFull
+                    className="min-w-[100px] cursor-pointer"
+                  />
                 </p>
               )}
             </div>
