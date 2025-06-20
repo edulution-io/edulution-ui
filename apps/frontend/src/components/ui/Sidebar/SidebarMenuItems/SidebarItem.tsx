@@ -75,12 +75,12 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({
 
           <SidebarItemNotification notificationCounter={notificationCounter} />
 
-          <p className="-mt-[0.15rem] hidden h-5 text-center md:block">
+          <div className="-mt-[0.15rem] hidden h-5 text-center md:block">
             <DynamicEllipsis
               text={title}
               className="text-[10px]"
             />
-          </p>
+          </div>
         </div>
 
         {isTrulyVisible ? (
