@@ -11,22 +11,17 @@
  */
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { v4 as uuidv4 } from 'uuid';
 import { Document, Types } from 'mongoose';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import AttendeeDto from '@libs/user/types/attendee.dto';
+import { v4 as uuidv4 } from 'uuid';
 import DEFAULT_FILE_LINK_EXPIRY from '@libs/filesharing/constants/defaultFileLinkExpiry';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
 export type PublicFileShareDocument = PublicFileShare & Document & { _id: Types.ObjectId };
 
-@Schema({
-  timestamps: { createdAt: true, updatedAt: true },
-  strict: true,
-})
+@Schema({ timestamps: true, strict: true })
 export class PublicFileShare {
-  _id!: Types.ObjectId;
-
-  @Prop({ type: String, default: uuidv4, index: true, unique: true })
+  @Prop({ type: String, default: uuidv4, unique: true, index: true })
   publicShareId!: string;
 
   @Prop({ required: true }) etag!: string;
@@ -51,15 +46,9 @@ export class PublicFileShare {
 
   @Prop() password?: string;
 
-  @Prop({ required: true, type: [Object] })
-  invitedAttendees!: AttendeeDto[];
+  @Prop({ type: [Object], required: true }) invitedAttendees!: AttendeeDto[];
 
-  @Prop({ required: true, type: [Object] })
-  invitedGroups!: MultipleSelectorGroup[];
+  @Prop({ type: [Object], required: true }) invitedGroups!: MultipleSelectorGroup[];
 }
 
 export const PublicFileShareSchema = SchemaFactory.createForClass(PublicFileShare).set('toJSON', { virtuals: true });
-
-PublicFileShareSchema.virtual('id').get(function (this: PublicFileShareDocument) {
-  return this._id.toString();
-});

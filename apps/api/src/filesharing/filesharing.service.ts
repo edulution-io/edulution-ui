@@ -340,13 +340,13 @@ class FilesharingService {
     return this.shareModel.find({ creator: username }).sort({ validUntil: 1 }).lean().exec();
   }
 
-  async getPublicFileShare(fileId: string, jwt?: string, password?: string | undefined) {
-    const share = await this.shareModel.findById(fileId).lean().exec();
+  async getPublicFileShare(publicFileId: string, jwt?: string, password?: string | undefined) {
+    const share = await this.shareModel.findOne({ publicShareId: publicFileId }).lean().exec();
     if (!share) {
       throw new CustomHttpException(
         FileSharingErrorMessage.DownloadFailed,
         HttpStatus.NOT_FOUND,
-        `${fileId} not found}`,
+        `${publicFileId} not found}`,
       );
     }
     if (share.password !== password) {
@@ -354,7 +354,7 @@ class FilesharingService {
         throw new CustomHttpException(
           FileSharingErrorMessage.PublicFileWrongPassword,
           HttpStatus.FORBIDDEN,
-          `${fileId} wrong password}`,
+          `${publicFileId} wrong password}`,
         );
       }
     }
@@ -372,7 +372,7 @@ class FilesharingService {
         throw new CustomHttpException(
           FileSharingErrorMessage.PublicIsRestrictedByInvalidToken,
           HttpStatus.INTERNAL_SERVER_ERROR,
-          `${fileId} not found}`,
+          `${publicFileId} not found}`,
         );
       }
     }
@@ -385,7 +385,7 @@ class FilesharingService {
       throw new CustomHttpException(
         FileSharingErrorMessage.PublicFileIsRestricted,
         HttpStatus.FORBIDDEN,
-        `${fileId} not found}`,
+        `${publicFileId} not found}`,
       );
     }
 
@@ -401,8 +401,8 @@ class FilesharingService {
     return { stream, filename, fileType };
   }
 
-  async getPublicShareInfo(shareId: string, jwt?: string) {
-    const doc = await this.shareModel.findById(shareId).lean().exec();
+  async getPublicShareInfo(publicFileId: string, jwt?: string) {
+    const doc = await this.shareModel.findOne({ publicShareId: publicFileId }).lean().exec();
 
     if (!doc) {
       return { status: HttpStatus.NOT_FOUND };
