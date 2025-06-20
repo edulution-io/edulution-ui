@@ -11,7 +11,7 @@
  */
 
 export { default as DownButton } from './DownButton';
-export { default as HomeButton } from './HomeButton';
+export { default as HomeButton } from './LauncherButton';
 export { default as MobileMenuButton } from './MobileMenuButton';
 export { default as MobileSidebarItem } from './MobileSidebarItem';
 export { default as SidebarItem } from './SidebarItem';
