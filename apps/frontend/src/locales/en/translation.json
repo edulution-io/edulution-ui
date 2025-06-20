@@ -367,7 +367,9 @@
       "fileInfoMoving": "File {{filename}} is being moved",
       "fileInfoDeleting": "File {{filename}} is being deleted",
       "downloadInfo": "Downloading {{filename}}",
-      "errorInfo": "{{failed}} files could not be handed out"
+      "errorInfo": "{{failed}} files could not be handed out",
+      "fileStructureIsCreating": "File structure is creating",
+      "zipFilesAreUploading": "Files are uploading"
     },
 
     "publicShareFilesPage": {
@@ -1294,7 +1296,10 @@
     "overwriteWarningDescriptionFiles": "The following files will be overwritten:",
     "oversizedFilesDetected": "Oversized files detected",
     "oversizedFileDetected": "Oversized file detected!",
-    "cannotUploadOversized": "Cannot upload oversized files (more than 50 MB)."
+    "cannotUploadOversized": "Files larger than 50 MB cannot be uploaded.",
+    "addFiles": "Add files",
+    "addFolder": "Add folder",
+    "preparingFolder": "Preparing folder"
   },
   "warnings": {
     "colorMayConflictWithTheme": "Manual setting of the color can lead to problems with other themes (light/dark) in the future. It is recommended to always set the color of the font at the same time as the background color."

@@ -10,19 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileSharingApiEndpoints {
-  FILESHARING_ACTIONS = '/filesharing',
-  BASE = 'filesharing',
-  FILE_STREAM = 'file-stream',
-  FILE_LOCATION = 'file-location',
-  ONLY_OFFICE_TOKEN = 'only-office',
-  DUPLICATE = 'duplicate',
-  COLLECT = 'collect',
-  COPY = 'copy',
-  FILE_SHARE = 'file-share',
-  PUBLIC_FILE_SHARE = 'public-share',
-  PUBLIC_FILE_SHARE_DOWNLOAD = 'public-share/download',
-  UPLOAD = 'upload',
+import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
+
+@Injectable()
+// @typescript-eslint/class-methods-use-this
+class ParseJsonPipe<T = unknown> implements PipeTransform<string, T> {
+  transform(value: string): T {
+    try {
+      return JSON.parse(value) as T;
+    } catch {
+      throw new BadRequestException('Invalid JSON in dto field');
+    }
+  }
 }
 
-export default FileSharingApiEndpoints;
+export default ParseJsonPipe;
