@@ -16,7 +16,7 @@ import { SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
 import { useTranslation } from 'react-i18next';
 import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
 import useSidebarItems from '@/hooks/useSidebarItems';
-import SidebarItemNotification from '@/components/ui/Sidebar/SidebarMenuItems/SidebarItemNotification';
+import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 
 const LauncherButton: React.FC = () => {
   const { t } = useTranslation();
@@ -40,7 +40,7 @@ const LauncherButton: React.FC = () => {
         alt="edulution-mobile-logo"
       />
 
-      <SidebarItemNotification notificationCounter={totalNotifications} />
+      <NotificationCounter count={totalNotifications} />
     </button>
   );
 };

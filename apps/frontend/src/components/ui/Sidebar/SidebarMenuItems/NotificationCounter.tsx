@@ -11,25 +11,35 @@
  */
 
 import React from 'react';
-import { FaStarOfLife } from 'react-icons/fa';
 
 interface SidebarItemNotificationProps {
-  notificationCounter?: number;
+  count: number;
+  maxCount?: number;
+  className?: string;
 }
 
-const SidebarItemNotification = (props: SidebarItemNotificationProps) => {
-  const { notificationCounter } = props;
+const NotificationCounter = (props: SidebarItemNotificationProps) => {
+  const { count, maxCount = 9, className } = props;
 
-  if (!notificationCounter || notificationCounter === 0) {
+  if (!count || count === 0) {
     return null;
   }
 
+  const displayCount = count > maxCount ? `${maxCount}+` : `${count}`;
+
   return (
-    <FaStarOfLife
-      size={12}
-      className="absolute right-[20%] top-[10%] text-ciLightGreen"
-    />
+    <span
+      className={
+        `absolute right-[10px] top-[2px] inline-flex items-center justify-center ` +
+        `rounded-full bg-red-600 text-xs font-bold text-white ` +
+        `h-5 min-w-[1.25rem] transform px-0 ${ 
+        className}`
+      }
+      aria-label={`${displayCount} new notifications`}
+    >
+      {displayCount}
+    </span>
   );
 };
 
-export default SidebarItemNotification;
+export default NotificationCounter;

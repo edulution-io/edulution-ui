@@ -22,7 +22,7 @@ import Input from '@/components/shared/Input';
 import isSubsequence from '@libs/common/utils/string/isSubsequence';
 import useMedia from '@/hooks/useMedia';
 import cn from '@libs/common/utils/className';
-import SidebarItemNotification from '@/components/ui/Sidebar/SidebarMenuItems/SidebarItemNotification';
+import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
 
 const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
@@ -115,7 +115,10 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
 
                 <p>{app.title}</p>
 
-                <SidebarItemNotification notificationCounter={app.notificationCounter} />
+                <NotificationCounter
+                  count={app.notificationCounter || 0}
+                  className="top-[10px]"
+                />
               </Card>
             </NavLink>
           ))
