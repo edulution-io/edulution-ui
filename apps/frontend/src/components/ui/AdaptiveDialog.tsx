@@ -42,8 +42,7 @@ interface AdaptiveDialogProps {
   variant?: 'primary' | 'secondary' | 'tertiary';
   mobileContentClassName?: string;
   desktopContentClassName?: string;
-  TitleIcon?: React.ComponentType<IconBaseProps>;
-  persistent?: boolean;
+  titleIcon?: React.ComponentType<IconBaseProps>;
 }
 
 const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
@@ -56,12 +55,15 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
   variant = 'primary',
   mobileContentClassName,
   desktopContentClassName,
-  TitleIcon,
-  persistent = false,
+  titleIcon: TitleIcon,
 }) => {
   const { isMobileView } = useMedia();
 
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
+
+  const isHandleChangesEmpty = (fn?: (() => void) | undefined) => !fn || fn.toString() === '() => {}';
+
+  const closable = isHandleChangesEmpty(handleOpenChange);
 
   const dialogTitle = (
     <div className={`flex items-center gap-1 font-bold ${isMobileView ? 'flex-col' : 'flex-row'}`}>
@@ -77,15 +79,14 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
   return isMobileView ? (
     <Sheet
       open={isOpen}
-      onOpenChange={() => {
-        if (!persistent) handleOpenChange();
-      }}
+      onOpenChange={handleOpenChange}
     >
       <SheetTrigger asChild>{trigger}</SheetTrigger>
       <SheetContent
         side="bottom"
         variant={variant}
         className={mobileContentClassName}
+        showCloseButton={closable}
       >
         <SheetHeader variant={variant}>
           <SheetTitle>{dialogTitle}</SheetTitle>
@@ -98,14 +99,13 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
   ) : (
     <Dialog
       open={isOpen}
-      onOpenChange={() => {
-        if (!persistent) handleOpenChange();
-      }}
+      onOpenChange={handleOpenChange}
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
         variant={variant}
         className={desktopContentClassName}
+        showCloseButton={closable}
       >
         <DialogTitle>{dialogTitle}</DialogTitle>
         {body}
