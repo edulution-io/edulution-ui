@@ -22,6 +22,7 @@ import Input from '@/components/shared/Input';
 import isSubsequence from '@libs/common/utils/string/isSubsequence';
 import useMedia from '@/hooks/useMedia';
 import cn from '@libs/common/utils/className';
+import SidebarItemNotification from '@/components/ui/Sidebar/SidebarMenuItems/SidebarItemNotification';
 
 const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
   const { toggleMobileSidebar } = useSidebarStore();
@@ -94,7 +95,7 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
             >
               <Card
                 className={cn(
-                  'h-26 flex w-full flex-col items-center overflow-hidden border border-muted-light bg-muted-dialog p-5 hover:bg-primary',
+                  'h-26 relative flex w-full flex-col items-center overflow-hidden border border-muted-light bg-muted-dialog p-5 hover:bg-primary',
                   {
                     'bg-muted': index === 0,
                   },
@@ -106,7 +107,10 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
                   alt={app.title}
                   className="h-10 w-10 md:h-14 md:w-14"
                 />
+
                 <p>{app.title}</p>
+
+                <SidebarItemNotification notificationCounter={app.notificationCounter} />
               </Card>
             </NavLink>
           ))
