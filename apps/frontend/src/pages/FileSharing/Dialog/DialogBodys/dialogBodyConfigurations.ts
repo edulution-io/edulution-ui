@@ -30,11 +30,12 @@ import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
 import MoveDirectoryDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveDirectoryDialogBody';
 import CopyContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/CopyContentDialogBody';
-import ShareFileLinkDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/ShareFileLinkDialogBody';
+import PublicShareContentsDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/PublicShareContentsDialogBody';
 import PublicShareFileLinkProps from '@libs/filesharing/types/publicShareFileLinkProps';
 import fileSharingFromSchema from '@libs/filesharing/types/fileSharingFromSchema';
 import DialogInputValues from '@libs/filesharing/types/dialogInputValues';
 import { FILESHARING_SHARED_FILES_API_ENDPOINT } from '@libs/filesharing/constants/apiEndpoints';
+import { t } from 'i18next';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
@@ -122,17 +123,22 @@ const createFolderConfig: CreateFolderDialogBodyConfiguration = {
 
 const createFileConfig: CreateFileDialogBodyConfiguration = {
   Component: CreateOrRenameContentDialogBody,
+  schema: z.object({
+    filename: z.string().min(1, t('filesharing.tooltips.FileNameRequired')),
+    extension: z.string(),
+  }),
   titleKey: 'fileCreateNewContent.fileDialogTitle',
   submitKey: 'fileCreateNewContent.createButtonText',
   initialValues: initialFormValues,
-  schema: fileSharingFromSchema,
-  endpoint: FileSharingApiEndpoints.FILESHARING_ACTIONS,
-  httpMethod: HttpMethods.PUT,
+  endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.UPLOAD}`,
+  httpMethod: HttpMethods.POST,
   type: ContentType.FILE,
   requiresForm: true,
-  async getData(form, currentPath, { documentVendor, selectedFileType }: DialogInputValues) {
+  getData: async (form, currentPath, { documentVendor, selectedFileType }) => {
     const filename = form.getValues('filename');
+
     const { file, extension } = await generateFile(selectedFileType, filename, documentVendor);
+
     return [
       {
         path: getPathWithoutWebdav(currentPath),
@@ -147,39 +153,54 @@ const deleteFileFolderConfig: DeleteDialogBodyConfiguration = {
   Component: DeleteContentDialogBody,
   titleKey: 'deleteDialog.deleteFiles',
   submitKey: 'deleteDialog.continue',
-  endpoint: FileSharingApiEndpoints.FILESHARING_ACTIONS,
+  endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
   httpMethod: HttpMethods.DELETE,
   type: ContentType.FILE || ContentType.DIRECTORY,
   requiresForm: false,
-  getData: (_form, currentPath, { selectedItems }: DialogInputValues) => {
-    if (!selectedItems?.length) return Promise.resolve([]);
-    const base = getPathWithoutWebdav(currentPath);
-    return Promise.resolve(selectedItems.map((i) => ({ path: `${base}/${i.filename}` })));
+  getData: (_form, currentPath, inputValues) => {
+    const { selectedItems } = inputValues;
+    if (!selectedItems || selectedItems.length === 0) {
+      return Promise.resolve([]);
+    }
+    const cleanedPath = getPathWithoutWebdav(currentPath);
+    return Promise.resolve(
+      selectedItems.map((item) => ({
+        path: `${cleanedPath}/${item.filename}`,
+      })),
+    );
   },
 };
 
 const renameFileFolderConfig: RenameDialogBodyConfiguration = {
   Component: CreateOrRenameContentDialogBody,
+  schema: z.object({
+    filename: z.string().min(1, t('filesharing.tooltips.NewFileNameRequired')),
+    extension: z.string(),
+  }),
   titleKey: 'fileRenameContent.rename',
   submitKey: 'fileRenameContent.rename',
   initialValues: initialFormValues,
-  endpoint: FileSharingApiEndpoints.FILESHARING_ACTIONS,
+  endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
   httpMethod: HttpMethods.PATCH,
   type: ContentType.FILE || ContentType.DIRECTORY,
   requiresForm: true,
   isRenaming: true,
-  async getData(form, currentPath, { selectedItems }: DialogInputValues) {
-    if (!selectedItems?.length) return Promise.resolve([]);
-    const filename = form.getValues('extension')
-      ? `${form.getValues('filename')}${form.getValues('extension')}`
-      : form.getValues('filename');
-    const base = getPathWithoutWebdav(currentPath);
-    return [
+  getData: async (form, currentPath, inputValues) => {
+    const { selectedItems } = inputValues;
+    if (!selectedItems || selectedItems.length === 0) {
+      return Promise.resolve([]);
+    }
+    const filename =
+      form.getValues('extension') !== undefined
+        ? `${String(form.getValues('filename')) + String(form.getValues('extension'))}`
+        : form.getValues('filename');
+    const cleanedPath = getPathWithoutWebdav(currentPath);
+    return Promise.resolve([
       {
-        path: `${base}/${selectedItems[0].filename}`,
-        newPath: `${base}/${filename}`,
+        path: `${cleanedPath}/${selectedItems[0]?.filename}`,
+        newPath: `${cleanedPath}/${filename}`,
       },
-    ];
+    ]);
   },
 };
 
@@ -187,14 +208,23 @@ const uploadFileConfig: UploadFileDialogBodyConfiguration = {
   Component: UploadContentBody,
   titleKey: 'filesharingUpload.title',
   submitKey: 'filesharingUpload.upload',
-  endpoint: FileSharingApiEndpoints.FILESHARING_ACTIONS,
-  httpMethod: HttpMethods.PUT,
+  endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.UPLOAD}`,
+  httpMethod: HttpMethods.POST,
   type: ContentType.FILE || ContentType.DIRECTORY,
   requiresForm: false,
-  getData: (_f, currentPath, { filesToUpload }: DialogInputValues) => {
-    const base = getPathWithoutWebdav(currentPath);
-    if (!filesToUpload?.length) return Promise.resolve([]);
-    return Promise.resolve(filesToUpload.map((f) => ({ path: base, name: f.name, file: f })));
+  getData: (_form, currentPath, inputValues) => {
+    const { filesToUpload } = inputValues;
+    const cleanedPath = getPathWithoutWebdav(currentPath);
+    if (!filesToUpload || filesToUpload.length === 0) {
+      return Promise.resolve([]);
+    }
+    return Promise.resolve(
+      filesToUpload.map((file: File) => ({
+        path: cleanedPath,
+        name: file.name,
+        file,
+      })),
+    );
   },
 };
 
@@ -223,48 +253,53 @@ const moveFileFolderConfig: MoveDialogBodyConfiguration = {
   Component: MoveDirectoryDialogBody,
   titleKey: 'moveItemDialog.changeDirectory',
   submitKey: 'moveItemDialog.move',
-  endpoint: FileSharingApiEndpoints.FILESHARING_ACTIONS,
+  endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
   httpMethod: HttpMethods.PATCH,
   type: ContentType.FILE || ContentType.DIRECTORY,
   requiresForm: false,
-  getData: (_f, currentPath, { moveOrCopyItemToPath, selectedItems }: DialogInputValues) => {
-    if (!moveOrCopyItemToPath || !selectedItems) return Promise.resolve([]);
-    const dst = getPathWithoutWebdav(moveOrCopyItemToPath.filePath);
-    const src = getPathWithoutWebdav(currentPath);
+
+  getData: (_form, currentPath, inputValues) => {
+    const { moveOrCopyItemToPath, selectedItems } = inputValues;
+    if (!moveOrCopyItemToPath || !selectedItems) {
+      return Promise.resolve([]);
+    }
+    const newCleanedPath = getPathWithoutWebdav(moveOrCopyItemToPath.filePath);
+    const cleanedPath = getPathWithoutWebdav(currentPath);
+
     return Promise.resolve(
-      selectedItems.map((i) => ({
-        path: encodeURI(`${src}/${i.filename}`),
-        newPath: encodeURI(`${dst}/${i.filename}`),
+      selectedItems.map((item) => ({
+        path: encodeURI(`${cleanedPath}/${item.filename}`),
+        newPath: encodeURI(`${newCleanedPath}/${item.filename}`),
       })),
     );
   },
 };
 
 const shareFileOrFolderConfig: ShareDialogBodyConfiguration = {
-  Component: ShareFileLinkDialogBody,
+  Component: PublicShareContentsDialogBody,
   titleKey: 'filesharing.publicFileSharing.sharePublicFile',
   submitKey: 'shareDialog.share',
   endpoint: FILESHARING_SHARED_FILES_API_ENDPOINT,
   httpMethod: HttpMethods.POST,
   type: ContentType.FILE,
   disableSubmitButton: true,
-  desktopComponentClassName: 'max-w-[80%] max-h-screen min-h-fit-content overflow-visible',
+  desktopComponentClassName: 'max-w-[85%] min-w-[10%] max-h-full',
   requiresForm: false,
 };
 
 const dialogBodyConfigurations: Record<FileActionType, DialogBodyConfiguration> = {
   createFolder: createFolderConfig,
   createFile: createFileConfig,
-  deleteFileFolder: deleteFileFolderConfig,
-  renameFileFolder: renameFileFolderConfig,
+  deleteFileOrFolder: deleteFileFolderConfig,
+  renameFileOrFolder: renameFileFolderConfig,
   uploadFile: uploadFileConfig,
   copyFileOrFolder: copyFileOrFolderConfig,
-  moveFileFolder: moveFileFolderConfig,
+  moveFileOrFolder: moveFileFolderConfig,
   shareFileOrFolder: shareFileOrFolderConfig,
 };
 
 function getDialogBodySetup(action: FileActionType) {
-  return dialogBodyConfigurations[action] || dialogBodyConfigurations.deleteFileFolder;
+  return dialogBodyConfigurations[action] || dialogBodyConfigurations.deleteFileOrFolder;
 }
 
 export default getDialogBodySetup;

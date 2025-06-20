@@ -28,12 +28,12 @@ const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedIt
   const startDownload = useStartWebdavFileDownload();
   const config: FloatingButtonsBarConfig = {
     buttons: [
-      DeleteButton(() => openDialog(FileActionType.DELETE_FILE_FOLDER)),
-      MoveButton(() => openDialog(FileActionType.MOVE_FILE_FOLDER)),
+      DeleteButton(() => openDialog(FileActionType.DELETE_FILE_OR_FOLDER)),
+      MoveButton(() => openDialog(FileActionType.MOVE_FILE_OR_FOLDER)),
       {
         icon: MdDriveFileRenameOutline,
         text: t('tooltip.rename'),
-        onClick: () => openDialog(FileActionType.RENAME_FILE_FOLDER),
+        onClick: () => openDialog(FileActionType.RENAME_FILE_OR_FOLDER),
       },
       DownloadButton(async () => {
         if (!selectedItems) return;

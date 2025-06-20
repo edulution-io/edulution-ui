@@ -12,31 +12,25 @@
 
 import React, { useEffect } from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
-import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
+import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import CreateEditNewFileLinkDialogBody from '@/pages/FileSharing/publicShareFiles/dialog/CreateEditNewFileLinkDialogBody';
-import type PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto';
+import CreateEditNewPublicShareDialogBody from '@/pages/FileSharing/publicShare/dialog/CreateEditNewPublicShareDialogBody';
+import type PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import DEFAULT_FILE_LINK_EXPIRY from '@libs/filesharing/constants/defaultFileLinkExpiry';
 import CreateEditPublicFileShareDto from '@libs/filesharing/types/createEditPublicFileShareDto';
 import { useTranslation } from 'react-i18next';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 
-const EditPublicShareFileDialog: React.FC = () => {
+const EditPublicShareDialog: React.FC = () => {
   const {
-    setSelectedFilesToShareRows,
-    selectedFilesToShareRows,
-    isShareFileEditDialogOpen,
+    selectedContentToShareRows,
+    isPublicShareEditDialogOpen,
     isLoading,
-    setIsShareFileEditDialogOpen,
-    editMultipleFiles,
-    setEditMultipleFiles,
-    updatePublicShareFile,
-    setSelectedRows: setShareRows,
-  } = usePublicShareFilesStore();
-
-  const { setSelectedRows: setTableRows, setSelectedItems } = useFileSharingStore();
+    setIsPublicShareEditDialogOpen,
+    editContent,
+    updatePublicShare,
+  } = usePublicShareStore();
 
   const { t } = useTranslation();
 
@@ -51,9 +45,9 @@ const EditPublicShareFileDialog: React.FC = () => {
     },
   });
 
-  const currentFile = editMultipleFiles[0] ?? selectedFilesToShareRows[0];
+  const currentFile = editContent ?? selectedContentToShareRows[0];
 
-  const isFileRestricted = currentFile?.invitedAttendees.length > 0 || currentFile?.invitedGroups.length > 0;
+  const isFileRestricted = currentFile?.invitedAttendees?.length > 0 || currentFile?.invitedGroups?.length > 0;
 
   useEffect(() => {
     if (currentFile) {
@@ -65,12 +59,11 @@ const EditPublicShareFileDialog: React.FC = () => {
         password: currentFile?.password,
       });
     }
-  }, [editMultipleFiles, form]);
+  }, [editContent, form]);
 
   const onSubmit = async () => {
     const { scope, expires, invitedAttendees = [], invitedGroups = [], password = '' } = form.getValues();
-
-    const dto: PublicFileShareDto = {
+    const dto: PublicShareDto = {
       ...currentFile,
       expires,
       invitedAttendees,
@@ -79,34 +72,40 @@ const EditPublicShareFileDialog: React.FC = () => {
       scope,
     };
 
-    await updatePublicShareFile(dto);
-    setIsShareFileEditDialogOpen(false);
+    await updatePublicShare(dto);
+    setIsPublicShareEditDialogOpen(false);
   };
 
   const handleClose = () => {
-    setEditMultipleFiles([]);
-    setSelectedFilesToShareRows([]);
-    setShareRows({});
-    setTableRows({});
-    setSelectedItems([]);
-    setIsShareFileEditDialogOpen(false);
+    setIsPublicShareEditDialogOpen(false);
     form.reset();
   };
 
-  const body = isLoading ? <CircleLoader className="mx-auto mt-5" /> : <CreateEditNewFileLinkDialogBody form={form} />;
+  const body = isLoading ? (
+    <CircleLoader className="mx-auto mt-5" />
+  ) : (
+    <CreateEditNewPublicShareDialogBody form={form} />
+  );
 
   const footer = (
     <DialogFooterButtons
       handleClose={handleClose}
       handleSubmit={onSubmit}
       submitButtonText="common.update"
-      disableSubmit={form.formState.isSubmitting || !form.formState.isValid || form.formState.isLoading}
+      disableSubmit={
+        form.formState.isSubmitting ||
+        !form.formState.isValid ||
+        form.formState.isLoading ||
+        (form.getValues('scope') === 'restricted' &&
+          !form.getValues('invitedAttendees')?.length &&
+          !form.getValues('invitedGroups')?.length)
+      }
     />
   );
 
   return (
     <AdaptiveDialog
-      isOpen={isShareFileEditDialogOpen}
+      isOpen={isPublicShareEditDialogOpen}
       handleOpenChange={handleClose}
       title={t('filesharing.publicFileSharing.editPublicShareFile')}
       body={body}
@@ -115,4 +114,4 @@ const EditPublicShareFileDialog: React.FC = () => {
   );
 };
 
-export default EditPublicShareFileDialog;
+export default EditPublicShareDialog;

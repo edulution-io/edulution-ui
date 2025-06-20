@@ -366,7 +366,9 @@
       "fileInfoDeleting": "Datei {{filename}} wird gelöscht",
       "fileInfoCopying": "Datei {{filename}} wird kopiert",
       "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden",
-      "downloadInfo": "Datei {{filename}} wird heruntergeladen"
+      "downloadInfo": "Datei {{filename}} wird heruntergeladen",
+      "fileStructureIsCreating": "Dateistruktur wird erstellt",
+      "zipFilesAreUploading": "Dateien werden in Ordnerstruktur hochgeladen"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
@@ -400,19 +402,20 @@
       "sharedBy": "Geteilt von: ",
       "getFileAccess": "Bitte gib das Kennwort für diese Freigabe ein, um Zugriff auf die Inhalte zu erhalten.",
       "downloadPublicFile": "Inhalt herunterladen",
+      "nameOfContent": "Name des Inhalts:",
       "errors": {
-        "PublicFileDeletionFailed": "Öffentlicher Freigabelink konnte nicht gelöscht werden.",
-        "PublicFileIsOnlyDeletableByOwner": "Der öffentliche Freigabelink kann nur vom Besitzer gelöscht werden.",
-        "PublicFileNotFound": "Öffentlicher Freigabelink nicht gefunden.",
-        "PublicFileIsRestricted": "Der öffentliche Freigabelink ist auf bestimmte Nutzer oder Gruppen beschränkt.",
-        "PublicIsRestrictedByInvalidToken": "Der öffentliche Freigabelink ist durch ein ungültiges Token eingeschränkt.",
+        "PublicFileDeletionFailed": "Freigabelink konnte nicht gelöscht werden.",
+        "PublicFileIsOnlyDeletableByOwner": "Der Freigabelink kann nur vom Besitzer gelöscht werden.",
+        "PublicFileNotFound": "Freigabelink nicht gefunden.",
+        "PublicFileIsRestricted": "Der Freigabelink ist auf bestimmte Nutzer oder Gruppen beschränkt.",
+        "PublicIsRestrictedByInvalidToken": "Der Freigabelink ist durch ein ungültiges Token eingeschränkt.",
         "PublicFileWrongPassword": "Das eingegebene Passwort ist falsch.",
         "FileCouldNotBeFound": "Die angeorderte Datei konnte nicht gefunden werden. Bitte überprüfe den Link oder wende dich an den Ersteller."
       },
       "success": {
-        "PublicFileLinkCreated": "Öffentlicher Freigabelink erfolgreich erstellt.",
-        "PublicFileLinkDeleted": "Öffentlicher Freigabelink erfolgreich gelöscht.",
-        "PublicFileLinkUpdated": "Öffentlicher Freigabelink erfolgreich aktualisiert."
+        "PublicFileLinkCreated": "Freigabelink erfolgreich erstellt.",
+        "PublicFileLinkDeleted": "Freigabelink erfolgreich gelöscht.",
+        "PublicFileLinkUpdated": "Freigabelink erfolgreich aktualisiert."
       },
       "scope": {
         "public": "Öffentlich",
@@ -424,7 +427,7 @@
 
     "expiry": {
       "select": "Ablaufdatum auswählen",
-      "selectedItemPrefix": "Ausgewählte Datei, die geteilt wird:",
+      "selectedItemPrefix": "Ausgewählter Inhalt, welcher geteilt wird:",
       "noInviteesWarning": "⚠️  WARNUNG: Jeder, der den Link besitzt, kann diesen Inhalt herunterladen.",
       "inviteesWarning": "⚠️ WARNUNG: Jeder, der zu den ausgewählten Gruppen oder Benutzern gehört, kann diesen Inhalt herunterladen."
     }
@@ -1298,7 +1301,10 @@
     "overwriteWarningDescriptionFiles": "Die folgenden Dateien werden überschrieben:",
     "oversizedFilesDetected": "Zu große Dateien entdeckt",
     "oversizedFileDetected": "Zu große Datei entdeckt!",
-    "cannotUploadOversized": "Es können keine Dateien größer als 50MB hochgeladen werden."
+    "cannotUploadOversized": "Dateien, die größer als 50 MB sind, können nicht hochgeladen werden.",
+    "addFiles": "Dateien hinzufügen",
+    "addFolder": "Ordner hinzufügen",
+    "preparingFolder": "Ordner wird vorbereitet"
   },
   "warnings": {
     "colorMayConflictWithTheme": "Manuelle Einstellung der Farbe kann zukünftig zu Problemen mit anderen Themes (hell/dunkel) führen. Es wird empfohlen, die Farbe der Schrift immer gleichzeitig mit der Hintergrundfarbe zu setzen."

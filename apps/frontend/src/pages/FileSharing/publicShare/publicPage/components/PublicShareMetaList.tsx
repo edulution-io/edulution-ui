@@ -10,30 +10,27 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { CalendarClock } from 'lucide-react';
 import React from 'react';
-import { FileText } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-interface FileHeaderProps {
-  filename: string;
-  creator: string;
+interface FileMetaListProps {
+  expires: Date;
 }
 
-const FileHeader: React.FC<FileHeaderProps> = ({ filename, creator }) => {
+const PublicShareMetaList: React.FC<FileMetaListProps> = ({ expires }) => {
   const { t } = useTranslation();
-  return (
-    <>
-      <header className="flex items-start gap-3">
-        <FileText className="h-10 w-10 flex-shrink-0 text-blue-400" />
-        <h2 className="truncate text-xl font-semibold text-white">{filename}</h2>
-      </header>
 
-      <div className="mt-4 flex items-center gap-2 text-white">
-        <p>{t('filesharing.publicFileSharing.sharedBy')} </p>
-        <p className="truncate">{creator}</p>
-      </div>
-    </>
+  return (
+    <ul className="mt-6 space-y-1 text-sm text-white/80">
+      <li className="flex items-center gap-2">
+        <CalendarClock className="h-4 w-4" />
+        <span>
+          <strong>{t('filesharing.publicFileSharing.validUntil')}:</strong> {expires.toLocaleString('de-DE')}
+        </span>
+      </li>
+    </ul>
   );
 };
 
-export default FileHeader;
+export default PublicShareMetaList;

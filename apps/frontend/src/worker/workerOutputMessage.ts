@@ -10,25 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import AttendeeDto from '@libs/user/types/attendee.dto';
-import ShareFileLinkScope from '@libs/filesharing/constants/shareFileLinkScope';
-
-interface PublicFileShareDto {
-  _id: string;
-  expires: Date;
-  sharedFileId: string;
-  filename: string;
-  filePath: string;
-  createdAt: Date;
-  creator: string;
-  fileLink: string;
-  publicFileLink: string;
-  etag: string;
-  password: string;
-  invitedAttendees: AttendeeDto[];
-  invitedGroups: MultipleSelectorGroup[];
-  scope: ShareFileLinkScope;
+interface WorkerOutputMessage {
+  blob: Blob;
+  root: string;
 }
 
-export default PublicFileShareDto;
+export default WorkerOutputMessage;

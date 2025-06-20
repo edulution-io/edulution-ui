@@ -26,6 +26,9 @@ import { once } from 'events';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { createReadStream, createWriteStream, readFileSync, statSync } from 'fs';
 import createTempFile from '@libs/filesystem/utils/createTempFile';
+import CustomFile from '@libs/filesharing/types/customFile';
+import { Open } from 'unzipper';
+import { lookup } from 'mime-types';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -37,7 +40,7 @@ import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
 import FILE_ACCESS_RESULT from '@libs/filesharing/constants/fileAccessResult';
 import checkFileAccessRights from '@libs/filesharing/utils/checkFileAccessRights';
 import CreateEditPublicFileShareDto from '@libs/filesharing/types/createEditPublicFileShareDto';
-import PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto';
+import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import { v4 as uuidv4 } from 'uuid';
 import { PublicFileShare, PublicFileShareDocument } from './publicFileShare.schema';
 import UsersService from '../users/users.service';
@@ -63,6 +66,83 @@ class FilesharingService {
     private readonly userService: UsersService,
     private readonly jwtService: JwtService,
   ) {}
+
+  async uploadZippedFolder(
+    username: string,
+    parentPath: string,
+    folderName: string,
+    zipFile: CustomFile,
+  ): Promise<WebdavStatusResponse> {
+    await this.webDavService.ensureFolderExists(username, `${parentPath}/`, folderName);
+
+    const directory = await Open.buffer(zipFile.buffer);
+    const explicitDirs = directory.files.filter((f) => f.type === 'Directory');
+    const fileEntries = directory.files.filter((f) => f.type === 'File');
+    const totalFiles = fileEntries.length;
+    const dirSet = new Set<string>();
+
+    explicitDirs.forEach((d) => dirSet.add(d.path));
+    fileEntries.forEach(({ path }) => {
+      const segments = path.split('/').filter(Boolean);
+      segments.pop();
+
+      let cumulativePath = '';
+
+      segments.forEach((segment) => {
+        cumulativePath += `${segment}/`;
+        dirSet.add(cumulativePath);
+      });
+    });
+
+    const allDirs = Array.from(dirSet).sort((a, b) => a.length - b.length);
+
+    const totalDirs = allDirs.length;
+
+    let processedZipContent = 0;
+
+    await allDirs.reduce<Promise<void>>(async (prev, dirPath) => {
+      await prev;
+      await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.CREATE_FOLDER_JOB, {
+        username,
+        basePath: `${parentPath}/${folderName}`,
+        folderPath: dirPath,
+        total: totalDirs,
+        processed: (processedZipContent += 1),
+      });
+    }, Promise.resolve());
+
+    processedZipContent = 0;
+
+    await Promise.all(
+      fileEntries.map(async (entry) => {
+        if (entry.path.startsWith('__MACOSX') || entry.path.endsWith('.DS_Store')) return;
+
+        const buffer = Buffer.from(await entry.buffer());
+        const base64 = buffer.toString('base64');
+        const fileName = entry.path.split('/').pop()!;
+        const mimeType = lookup(fileName);
+
+        await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.FILE_UPLOAD_JOB, {
+          username,
+          fullPath: `${parentPath}/${folderName}/${entry.path}`,
+          file: {
+            fieldname: 'file',
+            originalname: fileName,
+            encoding: 'binary',
+            buffer,
+          } as CustomFile,
+
+          mimeType,
+          size: buffer.length,
+          base64,
+          total: totalFiles,
+          processed: (processedZipContent += 1),
+        });
+      }),
+    );
+
+    return { success: true, status: HttpStatus.CREATED };
+  }
 
   async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
     let i = 0;
@@ -228,11 +308,11 @@ class FilesharingService {
         return { success: false, status: HttpStatus.INTERNAL_SERVER_ERROR } as WebdavStatusResponse;
       }
 
-      const shareId = uuidv4();
-      const fileLink = `${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.PUBLIC_FILE_SHARE_DOWNLOAD}/${shareId}`;
-      const publicFileLink = `${FileSharingApiEndpoints.PUBLIC_FILE_SHARE}/${shareId}`;
+      const publicShareId = uuidv4();
+      const fileLink = `${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.PUBLIC_FILE_SHARE_DOWNLOAD}/${publicShareId}`;
+      const publicFileLink = `${FileSharingApiEndpoints.PUBLIC_FILE_SHARE}/${publicShareId}`;
       await this.shareModel.create({
-        _id: shareId,
+        publicShareId,
         etag,
         filename,
         filePath,
@@ -249,7 +329,7 @@ class FilesharingService {
       return {
         success: true,
         status: HttpStatus.OK,
-        data: shareId,
+        data: publicShareId,
       };
     } catch (error) {
       throw new CustomHttpException(FileSharingErrorMessage.SharingFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
@@ -321,7 +401,7 @@ class FilesharingService {
     return { stream, filename, fileType };
   }
 
-  async getPublicFileShareInfo(shareId: string, jwt?: string) {
+  async getPublicShareInfo(shareId: string, jwt?: string) {
     const doc = await this.shareModel.findById(shareId).lean().exec();
 
     if (!doc) {
@@ -365,20 +445,20 @@ class FilesharingService {
     }
   }
 
-  async deletePublicShares(username: string, publicFiles: PublicFileShareDto[]) {
-    const ids = publicFiles.map(({ _id: id }) => id);
+  async deletePublicShares(username: string, publicFiles: PublicShareDto[]) {
+    const publicShareIds = publicFiles.map((file) => file.publicShareId);
 
     const docs = await this.shareModel
-      .find({ _id: { $in: ids } })
+      .find({ publicShareId: { $in: publicShareIds } })
       .select('creator')
       .lean()
       .exec();
 
-    if (docs.length !== ids.length) {
+    if (docs.length !== publicShareIds.length) {
       throw new CustomHttpException(
         FileSharingErrorMessage.PublicFileNotFound,
         HttpStatus.NOT_FOUND,
-        `${username} ${ids.join(', ')}`,
+        `${username} ${publicShareIds.join(', ')}`,
       );
     }
 
@@ -387,19 +467,21 @@ class FilesharingService {
       throw new CustomHttpException(
         FileSharingErrorMessage.PublicFileIsOnlyDeletableByOwner,
         HttpStatus.FORBIDDEN,
-        `${username} ${ids.join(', ')}`,
+        `${username} ${publicShareIds.join(', ')}`,
       );
     }
 
-    const { deletedCount } = await this.shareModel.deleteMany({ _id: { $in: ids }, creator: username }).exec();
+    const { deletedCount } = await this.shareModel
+      .deleteMany({ publicShareId: { $in: publicShareIds }, creator: username })
+      .exec();
 
     return { success: true, deletedCount };
   }
 
-  async editPublicShareFile(username: string, dto: PublicFileShareDto) {
-    const { _id: id, expires, invitedGroups, invitedAttendees, password } = dto;
+  async editPublicShare(username: string, dto: PublicShareDto) {
+    const { publicShareId, expires, invitedGroups, invitedAttendees, password } = dto;
 
-    const share = await this.shareModel.findById(id).where({ creator: username });
+    const share = await this.shareModel.findOne({ publicShareId }).where({ creator: username });
     if (!share)
       throw new CustomHttpException(
         FileSharingErrorMessage.PublicFileNotFound,

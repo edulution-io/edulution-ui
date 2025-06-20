@@ -15,7 +15,7 @@ import PUBLIC_SHARED_FILES_TABLE_COLUMN from '@libs/filesharing/constants/public
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import React from 'react';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
-import PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto';
+import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import formatIsoDate from '@libs/common/utils/Date/formatIsoDate';
 import { LockClosedIcon } from '@radix-ui/react-icons';
 import { BUTTONS_ICON_WIDTH } from '@libs/ui/constants';
@@ -24,15 +24,14 @@ import { Globe, QrCodeIcon } from 'lucide-react';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 import copyToClipboard from '@/utils/copyToClipboard';
 import { MdDelete, MdEdit, MdFileCopy } from 'react-icons/md';
-import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
-import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
+import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
 
-const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
+const PublicShareFilesTableColumns: ColumnDef<PublicShareDto>[] = [
   {
     id: PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME,
     header: ({ table, column }) => (
-      <SortableHeader<PublicFileShareDto, unknown>
+      <SortableHeader<PublicShareDto, unknown>
         className="min-w-32"
         table={table}
         column={column}
@@ -58,7 +57,7 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
   {
     accessorKey: PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_CREATED_AT,
     header: ({ column }) => (
-      <SortableHeader<PublicFileShareDto, unknown>
+      <SortableHeader<PublicShareDto, unknown>
         className="min-w-32"
         column={column}
       />
@@ -71,7 +70,7 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
       const { createdAt } = row.original;
       return (
         <SelectableTextCell
-          text={formatIsoDate(createdAt.toLocaleString())}
+          text={formatIsoDate(createdAt?.toLocaleString())}
           className="min-w-32"
         />
       );
@@ -80,7 +79,7 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
   {
     accessorKey: PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_VALID_UNTIL,
     header: ({ column }) => (
-      <SortableHeader<PublicFileShareDto, unknown>
+      <SortableHeader<PublicShareDto, unknown>
         className="min-w-32"
         column={column}
       />
@@ -91,7 +90,7 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
     accessorFn: (row) => row.expires,
     cell: ({ row }) => {
       const { expires } = row.original;
-      const validUntil = new Date(expires).toLocaleString('de-DE', {
+      const validUntil = new Date(expires)?.toLocaleString('de-DE', {
         timeZone: 'Europe/Berlin',
         dateStyle: 'short',
         timeStyle: 'short',
@@ -107,7 +106,7 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
   {
     accessorKey: PUBLIC_SHARED_FILES_TABLE_COLUMN.IS_PASSWORD_PROTECTED,
     header: ({ column }) => (
-      <SortableHeader<PublicFileShareDto, unknown>
+      <SortableHeader<PublicShareDto, unknown>
         className="min-w-32"
         column={column}
       />
@@ -120,7 +119,7 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
       const { password } = row.original;
       return (
         <SelectableTextCell
-          className="min-w-32"
+          className="min-w-20"
           text={'*'.repeat(password?.length || 0)}
           icon={
             password ? (
@@ -136,7 +135,7 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
   },
   {
     id: PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_IS_ACCESSIBLE_BY,
-    header: ({ column }) => <SortableHeader<PublicFileShareDto, unknown> column={column} />,
+    header: ({ column }) => <SortableHeader<PublicShareDto, unknown> column={column} />,
     meta: {
       translationId: 'filesharing.publicFileSharing.isAccessibleBy',
     },
@@ -176,7 +175,7 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
   {
     accessorKey: PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_LINK,
     header: ({ column }) => (
-      <SortableHeader<PublicFileShareDto, unknown>
+      <SortableHeader<PublicShareDto, unknown>
         className="min-w-32"
         column={column}
       />
@@ -187,16 +186,16 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
     accessorFn: (row) => row.fileLink,
     cell: ({ row }) => {
       const { origin } = window.location;
-      const { setPublicShareFile, setIsShareFileQrCodeDialogOpen } = usePublicShareFilesStore();
+      const { setPublicShareContent, setIsPublicShareQrCodeDialogOpen } = usePublicShareStore();
       const { publicFileLink } = row.original;
       const url = `${origin}/${publicFileLink}`;
       return (
-        <div className="flex flex-row items-center space-x-2">
+        <div className="flex w-full min-w-0 items-center gap-2">
           <InputWithActionIcons
             type="text"
             value={url}
             readOnly
-            className="w-fit cursor-pointer"
+            className="min-w-0 flex-1 cursor-pointer truncate"
             onMouseDown={(e) => {
               e.preventDefault();
               copyToClipboard(url);
@@ -204,15 +203,15 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
           />
           <MdFileCopy
             size={BUTTONS_ICON_WIDTH}
-            className="cursor-pointer"
+            className=" flex-none cursor-pointer"
             onClick={() => copyToClipboard(url)}
           />
           <QrCodeIcon
             size={BUTTONS_ICON_WIDTH}
-            className="cursor-pointer"
+            className=" flex-none cursor-pointer"
             onClick={() => {
-              setPublicShareFile(row.original);
-              setIsShareFileQrCodeDialogOpen(true);
+              setPublicShareContent(row.original);
+              setIsPublicShareQrCodeDialogOpen(true);
             }}
           />
         </div>
@@ -222,8 +221,8 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
   {
     accessorKey: PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_ACTIONS,
     header: ({ column }) => (
-      <SortableHeader<PublicFileShareDto, unknown>
-        className="min-w-32"
+      <SortableHeader<PublicShareDto, unknown>
+        className="min-w-20"
         column={column}
       />
     ),
@@ -231,8 +230,7 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
       translationId: 'filesharing.publicFileSharing.actions',
     },
     cell: ({ row }) => {
-      const { setEditMultipleFiles, setIsShareFileEditDialogOpen, deletePublicShareFiles } = usePublicShareFilesStore();
-      const { closeDialog } = useFileSharingDialogStore();
+      const { setEditContent, setIsPublicShareEditDialogOpen, deletePublicShares } = usePublicShareStore();
       const { original } = row;
 
       return (
@@ -242,16 +240,15 @@ const PublicShareFilesTableColumns: ColumnDef<PublicFileShareDto>[] = [
               icon: MdEdit,
               translationId: 'common.edit',
               onClick: () => {
-                setEditMultipleFiles([original]);
-                closeDialog();
-                setIsShareFileEditDialogOpen(true);
+                setEditContent(original);
+                setIsPublicShareEditDialogOpen(true);
               },
             },
             {
               icon: MdDelete,
               translationId: 'common.delete',
               onClick: async () => {
-                await deletePublicShareFiles([original]);
+                await deletePublicShares([original]);
               },
             },
           ]}

@@ -367,7 +367,9 @@
       "fileInfoMoving": "File {{filename}} is being moved",
       "fileInfoDeleting": "File {{filename}} is being deleted",
       "downloadInfo": "Downloading {{filename}}",
-      "errorInfo": "{{failed}} files could not be handed out"
+      "errorInfo": "{{failed}} files could not be handed out",
+      "fileStructureIsCreating": "File structure is creating",
+      "zipFilesAreUploading": "Files are uploading"
     },
 
     "publicShareFilesPage": {
@@ -399,20 +401,21 @@
       "sharePublicFile": "Share public content",
       "sharedBy": "Shared by: ",
       "getFileAccess": "Please enter the password for this share to access the contents.",
-      "downloadPublicFile": "Download file",
+      "downloadPublicFile": "Download content",
+      "nameOfContent": "Content name:",
       "errors": {
-        "PublicFileDeletionFailed": "Failed to delete public sharing link",
-        "PublicFileIsOnlyDeletableByOwner": "The public file link can only be deleted by the owner of this conent.",
-        "PublicFileNotFound": "Public sharing link not found",
-        "PublicFileIsRestricted": "This public sharing link is restricted to specific users or groups.",
-        "PublicIsRestrictedByInvalidToken": "This public sharing link is restricted by an invalid token.",
-        "PublicFileWrongPassword": "The password for the public sharing is incorrect.",
+        "PublicFileDeletionFailed": "Failed to delete sharing link",
+        "PublicFileIsOnlyDeletableByOwner": "The file link can only be deleted by the owner of this conent.",
+        "PublicFileNotFound": "Sharing link not found",
+        "PublicFileIsRestricted": "This sharing link is restricted to specific users or groups.",
+        "PublicIsRestrictedByInvalidToken": "This sharing link is restricted by an invalid token.",
+        "PublicFileWrongPassword": "The password for the sharing is incorrect.",
         "FileCouldNotBeFound": "The requested content could not be found. Please check the link or contact the owner of this content."
       },
       "success": {
-        "PublicFileLinkCreated": "Public file link created successfully",
-        "PublicFileLinkDeleted": "Public file link deleted successfully",
-        "PublicFileLinkUpdated": "Public file link updated successfully"
+        "PublicFileLinkCreated": "File link created successfully",
+        "PublicFileLinkDeleted": "File link deleted successfully",
+        "PublicFileLinkUpdated": "File link updated successfully"
       },
       "scope": {
         "public": "Public",
@@ -424,7 +427,7 @@
 
     "expiry": {
       "select": "Select expiry time",
-      "selectedItemPrefix": "Selected file that is shared:",
+      "selectedItemPrefix": "Selected content that is shared:",
       "noInviteesWarning": "⚠️  WARNING: Anyone with the link will be able to download this content.",
       "inviteesWarning": "⚠️  WARNING: Anyone within the selected groups or users will be able to download this content."
     }
@@ -1293,7 +1296,10 @@
     "overwriteWarningDescriptionFiles": "The following files will be overwritten:",
     "oversizedFilesDetected": "Oversized files detected",
     "oversizedFileDetected": "Oversized file detected!",
-    "cannotUploadOversized": "Cannot upload oversized files (more than 50 MB)."
+    "cannotUploadOversized": "Files larger than 50 MB cannot be uploaded.",
+    "addFiles": "Add files",
+    "addFolder": "Add folder",
+    "preparingFolder": "Preparing folder"
   },
   "warnings": {
     "colorMayConflictWithTheme": "Manual setting of the color can lead to problems with other themes (light/dark) in the future. It is recommended to always set the color of the font at the same time as the background color."

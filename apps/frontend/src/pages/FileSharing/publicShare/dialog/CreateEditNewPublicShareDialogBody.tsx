@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Controller, FormProvider, UseFormReturn } from 'react-hook-form';
 import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
@@ -23,21 +23,21 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import CreateEditPublicFileShareDto from '@libs/filesharing/types/createEditPublicFileShareDto';
 import ShareLinkScopeSelector from '@/pages/FileSharing/utilities/ShareLinkScopeSelector';
-import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
+import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
 
-interface Props {
+interface CreateEditNewPublicShareDialogBodyProps {
   form: UseFormReturn<CreateEditPublicFileShareDto>;
 }
 
-const CreateEditNewFileLinkDialogBody: React.FC<Props> = ({ form }) => {
+const CreateEditNewPublicShareDialogBody: React.FC<CreateEditNewPublicShareDialogBodyProps> = ({ form }) => {
   const { t } = useTranslation();
   const { selectedItems } = useFileSharingStore();
   const { user, searchAttendees } = useUserStore();
   const { searchGroups, searchGroupsIsLoading } = useGroupStore();
-  const { editMultipleFiles } = usePublicShareFilesStore();
+  const { editMultipleContent } = usePublicShareStore();
   const { watch, setValue } = form;
 
-  const currentFile = editMultipleFiles[0] ?? selectedItems[0];
+  const currentFile = editMultipleContent[0] ?? selectedItems[0];
 
   const invitedAttendees = watch('invitedAttendees') ?? [];
   const invitedGroups = watch('invitedGroups') ?? [];
@@ -52,6 +52,13 @@ const CreateEditNewFileLinkDialogBody: React.FC<Props> = ({ form }) => {
     (await searchAttendees(query)).filter((u) => u.username !== user?.username);
 
   const scope = watch('scope');
+
+  useEffect(() => {
+    if (scope !== 'restricted') {
+      setValue('invitedAttendees', [], { shouldValidate: true, shouldDirty: false });
+      setValue('invitedGroups', [], { shouldValidate: true, shouldDirty: false });
+    }
+  }, [scope, setValue]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -93,18 +100,20 @@ const CreateEditNewFileLinkDialogBody: React.FC<Props> = ({ form }) => {
       />
 
       <FormProvider {...form}>
-        <FormField
-          name="password"
-          defaultValue={watch('password') ?? ''}
-          form={form}
-          labelTranslationId={t('conferences.password')}
-          type="password"
-          disabled={searchGroupsIsLoading}
-          variant="dialog"
-        />
+        <form id="public-share-form">
+          <FormField
+            name="password"
+            form={form}
+            labelTranslationId={t('conferences.password')}
+            type="password"
+            value={form.watch('password')}
+            disabled={searchGroupsIsLoading}
+            variant="dialog"
+          />
+        </form>
       </FormProvider>
     </div>
   );
 };
 
-export default CreateEditNewFileLinkDialogBody;
+export default CreateEditNewPublicShareDialogBody;

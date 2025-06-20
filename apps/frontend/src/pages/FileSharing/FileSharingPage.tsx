@@ -24,17 +24,17 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import QuotaLimitInfo from '@/pages/FileSharing/utilities/QuotaLimitInfo';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
-import DownloadPublicFileDialog from '@/pages/FileSharing/publicShareFiles/dialog/DownloadPublicFileDialog';
-import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
-import QRCodePublicFileDialog from '@/pages/FileSharing/publicShareFiles/dialog/QRCodePublicFileDialog';
-import EditPublicShareFileDialog from '@/pages/FileSharing/publicShareFiles/dialog/EditPublicShareFileDialog';
-import CreateEditNewFileLinkDialog from '@/pages/FileSharing/publicShareFiles/dialog/CreateEditNewFileLinkDialog';
+import DownloadPublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DownloadPublicShareDialog';
+import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import QRCodePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/QRCodePublicShareDialog';
+import EditPublicShareDialog from '@/pages/FileSharing/publicShare/dialog/EditPublicShareDialog';
+import CreateEditNewPublicShareDialog from '@/pages/FileSharing/publicShare/dialog/CreateEditNewPublicShareDialog';
 
 const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const { fileOperationProgress, fetchFiles } = useFileSharingStore();
-  const { fetchPublicShareFiles } = usePublicShareFilesStore();
+  const { fetchPublicShares } = usePublicShareStore();
 
   useEffect(() => {
     const handleFileOperationProgress = async () => {
@@ -42,7 +42,7 @@ const FileSharingPage = () => {
       const percent = fileOperationProgress.percent ?? 0;
       if (percent >= 100) {
         await fetchFiles(currentPath);
-        await fetchPublicShareFiles();
+        await fetchPublicShares();
       }
     };
 
@@ -51,7 +51,7 @@ const FileSharingPage = () => {
   const { percentageUsed } = useQuotaInfo();
 
   useEffect(() => {
-    void fetchPublicShareFiles();
+    void fetchPublicShares();
   }, [currentPath, fetchFiles]);
 
   return (
@@ -86,10 +86,10 @@ const FileSharingPage = () => {
       </div>
 
       <ActionContentDialog />
-      <DownloadPublicFileDialog />
-      <QRCodePublicFileDialog />
-      <EditPublicShareFileDialog />
-      <CreateEditNewFileLinkDialog />
+      <DownloadPublicShareDialog />
+      <QRCodePublicShareDialog />
+      <EditPublicShareDialog />
+      <CreateEditNewPublicShareDialog />
       <FileSharingFloatingButtonsBar />
     </PageLayout>
   );

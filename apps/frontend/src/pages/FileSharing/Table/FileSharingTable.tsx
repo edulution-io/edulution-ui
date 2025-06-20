@@ -19,26 +19,26 @@ import useMedia from '@/hooks/useMedia';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/FileSharingTableColumns';
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
-import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
-import PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto';
+import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 
 const FileSharingTable = () => {
   const { isMobileView, isTabletView } = useMedia();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const { setSelectedRows, setSelectedItems, selectedRows, files, isLoading } = useFileSharingStore();
-  const { publicShareFiles, setEditMultipleFiles } = usePublicShareFilesStore();
+  const { publicShareContents, setEditMultipleContent } = usePublicShareStore();
 
   const sharedMap = useMemo(() => {
-    const map = new Map<string, PublicFileShareDto[]>();
+    const map = new Map<string, PublicShareDto[]>();
 
-    publicShareFiles.forEach((file) => {
+    publicShareContents.forEach((file) => {
       const list = map.get(file.filePath) ?? [];
       list.push(file);
       map.set(file.filePath, list);
     });
 
     return map;
-  }, [publicShareFiles]);
+  }, [publicShareContents]);
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue =
@@ -57,7 +57,7 @@ const FileSharingTable = () => {
       });
     setSelectedItems(selectedItemData.map((item) => item.file));
     const allShares = selectedItemData.flatMap((item) => item.shares);
-    setEditMultipleFiles(allShares);
+    setEditMultipleContent(allShares);
   };
 
   const { appName } = useFileSharingMenuConfig();
@@ -71,7 +71,7 @@ const FileSharingTable = () => {
       [FILE_SHARING_TABLE_COLUMNS.TYPE]: shouldHideColumns,
       [FILE_SHARING_TABLE_COLUMNS.IS_SHARED]: shouldHideColumns,
     }),
-    [shouldHideColumns, publicShareFiles],
+    [shouldHideColumns, publicShareContents],
   );
 
   const columns = useMemo(() => getFileSharingTableColumns(undefined, undefined, sharedMap), [sharedMap]);

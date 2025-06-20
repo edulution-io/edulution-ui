@@ -36,9 +36,9 @@ import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
 import useMedia from '@/hooks/useMedia';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import { MdOutlineCloudDone } from 'react-icons/md';
-import PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto';
+import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import IconWithCount from '@/components/shared/IconWithCount';
-import { usePublicShareFilesStore } from '@/pages/FileSharing/publicShareFiles/usePublicShareFilesStore';
+import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 
@@ -68,7 +68,7 @@ const renderFileIcon = (item: DirectoryFileDTO, isCurrentlyDisabled: boolean) =>
 const getFileSharingTableColumns = (
   visibleColumns?: string[],
   onFilenameClick?: (item: Row<DirectoryFileDTO>) => void,
-  shares: Map<string, PublicFileShareDto[]> = new Map(),
+  shares: Map<string, PublicShareDto[]> = new Map(),
 ): ColumnDef<DirectoryFileDTO>[] => {
   const allColumns: ColumnDef<DirectoryFileDTO>[] = [
     {
@@ -145,7 +145,7 @@ const getFileSharingTableColumns = (
         const matchCount = matched.length;
         const isShared = matchCount > 0;
 
-        const { setEditMultipleFiles } = usePublicShareFilesStore();
+        const { setEditMultipleContent } = usePublicShareStore();
         const { openDialog } = useFileSharingDialogStore();
 
         return (
@@ -158,7 +158,7 @@ const getFileSharingTableColumns = (
                   className="text-background"
                   count={matchCount}
                   onClick={() => {
-                    setEditMultipleFiles(matched);
+                    setEditMultipleContent(matched);
                     openDialog(FileActionType.SHARE_FILE_OR_FOLDER);
                   }}
                 />

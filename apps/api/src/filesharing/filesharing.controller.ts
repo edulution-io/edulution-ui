@@ -19,7 +19,6 @@ import {
   Param,
   Patch,
   Post,
-  Put,
   Query,
   Req,
   Res,
@@ -42,13 +41,15 @@ import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
 import CreateEditPublicFileShareDto from '@libs/filesharing/types/createEditPublicFileShareDto';
-import PublicFileShareDto from '@libs/filesharing/types/publicFileShareDto';
+import PublicShareDto from '@libs/filesharing/types/publicShareDto';
+import UploadFileDto from '@libs/filesharing/types/uploadFileDto';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
 import FilesharingService from './filesharing.service';
 import WebdavService from '../webdav/webdav.service';
 import { Public } from '../common/decorators/public.decorator';
 import GetToken from '../common/decorators/getToken.decorator';
+import ParseJsonPipe from '../common/pipes/parseJson.pipe';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
@@ -74,7 +75,7 @@ class FilesharingController {
   }
 
   @Post()
-  async createFileFolder(
+  async createFileOrFolder(
     @Query('path') path: string,
     @Query('type') type: string,
     @Body()
@@ -89,16 +90,20 @@ class FilesharingController {
     return this.webdavService.createFile(username, path, body.newPath);
   }
 
-  @Put()
+  @Post(FileSharingApiEndpoints.UPLOAD)
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @UploadedFile() file: CustomFile,
     @Query('path') path: string,
-    @Body('name') name: string,
+    @Body('uploadFileDto', ParseJsonPipe<UploadFileDto>) uploadFileDto: UploadFileDto,
     @GetCurrentUsername() username: string,
   ) {
+    const { originalFolderName, isZippedFolder, name } = uploadFileDto;
     const fullPath = `${this.baseurl}${path}/${name}`;
-    return this.webdavService.uploadFile(username, fullPath, file);
+
+    return isZippedFolder && originalFolderName
+      ? this.filesharingService.uploadZippedFolder(username, path, originalFolderName, file)
+      : this.webdavService.uploadFile(username, fullPath, file);
   }
 
   @Delete()
@@ -186,7 +191,7 @@ class FilesharingController {
   }
 
   @Get(FileSharingApiEndpoints.PUBLIC_FILE_SHARE)
-  async listPublicShares(@GetCurrentUsername() username: string) {
+  async listOwnPublicShares(@GetCurrentUsername() username: string) {
     return this.filesharingService.listOwnPublicShares(username);
   }
 
@@ -211,30 +216,37 @@ class FilesharingController {
   }
 
   @Delete(FileSharingApiEndpoints.PUBLIC_FILE_SHARE)
-  async deleteManyPublicShares(@Body() publicFiles: PublicFileShareDto[], @GetCurrentUsername() username: string) {
+  async deletePublicShares(@Body() publicFiles: PublicShareDto[], @GetCurrentUsername() username: string) {
     return this.filesharingService.deletePublicShares(username, publicFiles);
   }
 
   @Patch(FileSharingApiEndpoints.PUBLIC_FILE_SHARE)
-  async editPublicShareFile(@Body() publicFileShareDto: PublicFileShareDto, @GetCurrentUsername() username: string) {
-    return this.filesharingService.editPublicShareFile(username, publicFileShareDto);
+  async editPublicShare(@Body() publicFileShareDto: PublicShareDto, @GetCurrentUsername() username: string) {
+    return this.filesharingService.editPublicShare(username, publicFileShareDto);
   }
 
   @Public()
-  @Get(`${FileSharingApiEndpoints.PUBLIC_FILE_SHARE}/:shareId`)
-  async getPublicFileShareInfo(@Param('shareId') shareId: string, @GetToken() token: string) {
-    return this.filesharingService.getPublicFileShareInfo(shareId, token);
-  }
-
-  @Public()
-  @Post(`${FileSharingApiEndpoints.PUBLIC_FILE_SHARE_DOWNLOAD}/:shareId`)
-  async downloadPublicFile(
-    @Param('shareId') shareId: string,
-    @Body('password') password: string | undefined,
-    @GetToken() token: string,
-    @Res({ passthrough: true }) res: Response,
+  @Get(`${FileSharingApiEndpoints.PUBLIC_FILE_SHARE}/:publicShareId`)
+  async getPublicShareInfo(
+    @Param('publicShareId') publicShareId: string,
+    @GetToken({ required: false }) token?: string,
   ) {
-    const { stream, filename, fileType } = await this.filesharingService.getPublicFileShare(shareId, token, password);
+    return this.filesharingService.getPublicShareInfo(publicShareId, token);
+  }
+
+  @Public()
+  @Post(`${FileSharingApiEndpoints.PUBLIC_FILE_SHARE_DOWNLOAD}/:publicShareId`)
+  async downloadSharedContent(
+    @Param('publicShareId') publicShareId: string,
+    @Body('password') password: string | undefined,
+    @Res({ passthrough: true }) res: Response,
+    @GetToken({ required: false }) token: string,
+  ) {
+    const { stream, filename, fileType } = await this.filesharingService.getPublicFileShare(
+      publicShareId,
+      token,
+      password,
+    );
 
     res.set({
       [HTTP_HEADERS.ContentDisposition]: `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`,
