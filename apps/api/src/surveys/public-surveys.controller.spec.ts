@@ -43,6 +43,7 @@ import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
+import SurveysAttachmentService from 'apps/api/src/surveys/surveys-attachment.service';
 
 describe(PublicSurveysController.name, () => {
   let controller: PublicSurveysController;
@@ -63,6 +64,7 @@ describe(PublicSurveysController.name, () => {
           useValue: jest.fn(),
         },
         SurveyAnswersService,
+        SurveysAttachmentService,
         { provide: GroupsService, useValue: mockGroupsService },
         {
           provide: getModelToken(SurveyAnswer.name),

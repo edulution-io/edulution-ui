@@ -18,6 +18,7 @@ import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
+import SurveyAttachmentService from './surveys-attachment.service';
 import { Public } from '../common/decorators/public.decorator';
 
 @ApiTags(PUBLIC_SURVEYS)
@@ -26,6 +27,7 @@ class PublicSurveysController {
   constructor(
     private readonly surveyService: SurveysService,
     private readonly surveyAnswerService: SurveyAnswerService,
+    private readonly surveyAttachmentService: SurveyAttachmentService,
   ) {}
 
   @Get(`/:surveyId`)
@@ -54,7 +56,7 @@ class PublicSurveysController {
   @Public()
   serveFile(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
     const { surveyId, questionId, filename } = params;
-    return this.surveyService.serveFiles(surveyId, questionId, filename, res);
+    return this.surveyAttachmentService.serveFiles(surveyId, questionId, filename, res);
   }
 
   @Get(`${CHOICES}/:surveyId/:questionName`)

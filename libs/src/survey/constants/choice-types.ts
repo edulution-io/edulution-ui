@@ -10,9 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ChoiceTypes from '@libs/survey/constants/choice-types';
+enum ChoiceTypes {
+  RADIO_GROUP = 'radiogroup',
+  CHECKBOX = 'checkbox',
+  DROPDOWN = 'dropdown',
+}
 
-const isQuestionTypeChoiceType = (questionType: string): boolean =>
-  Object.values(ChoiceTypes).includes(questionType as ChoiceTypes);
-
-export default isQuestionTypeChoiceType;
+export default ChoiceTypes;

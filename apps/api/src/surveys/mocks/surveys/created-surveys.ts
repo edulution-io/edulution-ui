@@ -13,23 +13,27 @@
 import { Types } from 'mongoose';
 import { SurveyDocument } from '../../survey.schema';
 import { firstMockUser, secondMockUser } from '../user';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 
 export const createdSurveyId01 = new Types.ObjectId();
-export const createdSurvey01: SurveyDocument = {
-  _id: createdSurveyId01,
-  id: createdSurveyId01,
-  creator: firstMockUser,
-  formula: {
-    title: 'Created Survey 01',
-    description: 'This is a test survey',
-    elements: [
-      {
-        type: 'rating',
-        name: 'Frage1',
-        title: 'How likely is it, that you will recommend this product to a friend?',
-      },
-    ],
+
+export const createdSurvey01Questions = [
+  {
+    type: 'rating',
+    name: 'Frage1',
+    title: 'How likely is it, that you will recommend this product to a friend?',
   },
+];
+
+export const createdSurvey01Formula = {
+  title: 'Created Survey 01',
+  description: 'This is a test survey',
+  elements: createdSurvey01Questions,
+};
+
+export const createSurvey01: SurveyDto = {
+  creator: firstMockUser,
+  formula: createdSurvey01Formula,
   invitedAttendees: [firstMockUser, secondMockUser],
   invitedGroups: [],
   participatedAttendees: [],
@@ -40,6 +44,12 @@ export const createdSurvey01: SurveyDocument = {
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
   canUpdateFormerAnswer: false,
+} as unknown as SurveyDto;
+
+export const createdSurvey01: SurveyDocument = {
+  _id: createdSurveyId01,
+  id: createdSurveyId01,
+  ...createSurvey01,
 } as unknown as SurveyDocument;
 
 export const createdSurveyId02 = new Types.ObjectId();

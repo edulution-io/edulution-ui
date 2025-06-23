@@ -10,9 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ChoiceTypes from '@libs/survey/constants/choice-types';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import JwtUser from '@libs/user/types/jwt/jwtUser';
 
-const isQuestionTypeChoiceType = (questionType: string): boolean =>
-  Object.values(ChoiceTypes).includes(questionType as ChoiceTypes);
+const prepareCreator = (creatorDto: AttendeeDto, user: JwtUser): AttendeeDto => ({
+  ...creatorDto,
+  firstName: user.given_name,
+  lastName: user.family_name,
+  username: user.preferred_username,
+});
 
-export default isQuestionTypeChoiceType;
+export default prepareCreator;
