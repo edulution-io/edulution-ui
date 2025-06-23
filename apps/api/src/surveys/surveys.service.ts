@@ -16,7 +16,6 @@ import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import AttendeeDto from '@libs/user/types/attendee.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
@@ -102,104 +101,6 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  // async updateSurvey(survey: SurveyDto, currentUser: JwtUser): Promise<SurveyDocument | null> {
-  //   const existingSurvey = await this.surveyModel.findById(survey.id).exec();
-  //   if (!existingSurvey) {
-  //     return null;
-  //   }
-
-  //   SurveysService.assertUserIsAuthorized(existingSurvey.creator.username, currentUser);
-
-  //   try {
-  //     return await this.surveyModel
-  //       .findOneAndUpdate<SurveyDocument>({ _id: new Types.ObjectId(survey.id) }, survey, { new: true })
-  //       .lean();
-  //   } catch (error) {
-  //     throw new CustomHttpException(
-  //       CommonErrorMessages.DB_ACCESS_FAILED,
-  //       HttpStatus.INTERNAL_SERVER_ERROR,
-  //       error,
-  //       SurveysService.name,
-  //     );
-  //   }
-  // }
-
-  async createSurvey(survey: SurveyDto, currentUser: JwtUser): Promise<SurveyDocument> {
-    const creator: AttendeeDto = prepareCreator(survey.creator, currentUser);
-    try {
-      return await this.surveyModel.create({ ...survey, creator });
-    } catch (error) {
-      throw new CustomHttpException(
-        CommonErrorMessages.DB_ACCESS_FAILED,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
-        SurveysService.name,
-      );
-    }
-  }
-
-  // async updateOrCreateSurvey(surveyDto: SurveyDto, user: JwtUser): Promise<SurveyDocument | null> {
-  //   let document: SurveyDocument | null = null;
-  //   if (!surveyDto.id) {
-  //     document = await this.createSurvey(surveyDto, user);
-  //   } else {
-  //     document = await this.surveyModel.findByIdAndUpdate(surveyDto.id, surveyDto, { new: true }).exec();
-  //   }
-  //   if (document === null) {
-  //     throw new CustomHttpException(
-  //       SurveyErrorMessages.UpdateOrCreateError,
-  //       HttpStatus.INTERNAL_SERVER_ERROR,
-  //       undefined,
-  //       SurveysAttachmentService.name,
-  //     );
-  //   }
-
-  //   assertUserIsAuthorized(document.creator.username, user);
-
-  //   const processedFormula = await this.surveysAttachmentService.preProcessFormula(document, user);
-  //   if (processedFormula === null) {
-  //     throw new CustomHttpException(
-  //       SurveyErrorMessages.UpdateOrCreateError,
-  //       HttpStatus.INTERNAL_SERVER_ERROR,
-  //       undefined,
-  //       SurveysAttachmentService.name,
-  //     );
-  //   }
-
-  //   Logger.log(`Processed Survey: ${JSON.stringify(processedFormula, null, 2)}`, SurveysService.name);
-
-  //   let savedSurvey: SurveyDocument | null = null;
-  //   try {
-
-  //     savedSurvey = await this.surveyModel.findByIdAndUpdate(document.id, { ...surveyDto, formula: processedFormula }, { new: true }).exec();
-  //     savedSurvey = await this.surveyModel.findByIdAndUpdate(document._id, processedFormula, { new: true }).lean();
-  //     if (savedSurvey === null) {
-  //       throw new CustomHttpException(
-  //         SurveyErrorMessages.UpdateOrCreateError,
-  //         HttpStatus.INTERNAL_SERVER_ERROR,
-  //         undefined,
-  //         SurveysAttachmentService.name,
-  //       );
-  //     }
-  //   } catch (error) {
-  //     throw new CustomHttpException(
-  //       CommonErrorMessages.DB_ACCESS_FAILED,
-  //       HttpStatus.INTERNAL_SERVER_ERROR,
-  //       error,
-  //       SurveysAttachmentService.name,
-  //     );
-  //   } finally {
-  //     if (savedSurvey !== null) {
-  //       notifySurveyChange(savedSurvey, this.groupsService, this.sseService, SSE_MESSAGE_TYPE.SURVEY_UPDATED);
-  //     }
-  //   }
-
-  //   Logger.log(`Saved Survey: ${JSON.stringify(savedSurvey, null, 2)}`, SurveysService.name);
-
-  //   // await this.surveysAttachmentService.cleanupTemporaryFiles(user.preferred_username);
-
-  //   return savedSurvey;
-  // }
   async updateOrCreateSurvey(surveyDto: SurveyDto, user: JwtUser): Promise<SurveyDocument> {
     const isCreating = !surveyDto.id;
 
@@ -221,9 +122,6 @@ class SurveysService implements OnModuleInit {
       SurveysService.assertUserIsAuthorized(existingSurvey.creator.username, user);
     }
 
-    const creator = isCreating ? prepareCreator(surveyDto.creator, user) : surveyDto.creator;
-
-    // const processedFormula = await this.surveysAttachmentService.preProcessFormula(surveyId, surveyDto, user);
     const processedFormula = await this.surveysAttachmentService.preProcessFormula(
       surveyId,
       surveyDto.formula,
@@ -238,15 +136,13 @@ class SurveysService implements OnModuleInit {
       );
     }
 
-    Logger.log(`Formula: ${JSON.stringify(processedFormula, null, 2)}`, SurveysService.name);
-
+    const creator = isCreating ? prepareCreator(surveyDto.creator, user) : surveyDto.creator;
     const surveyDataToSave = {
       ...surveyDto,
       _id: surveyId,
       creator,
       formula: processedFormula,
     };
-
     const savedSurvey = await this.surveyModel
       .findByIdAndUpdate(surveyId, surveyDataToSave, { new: true, upsert: true })
       .exec();
@@ -259,7 +155,7 @@ class SurveysService implements OnModuleInit {
       isCreating ? SSE_MESSAGE_TYPE.SURVEY_CREATED : SSE_MESSAGE_TYPE.SURVEY_UPDATED,
     );
 
-    // await this.surveysAttachmentService.cleanupTemporaryFiles(user.preferred_username);
+    this.surveysAttachmentService.cleanupTemporaryFiles(user.preferred_username);
 
     return savedSurvey as SurveyDocument;
   }

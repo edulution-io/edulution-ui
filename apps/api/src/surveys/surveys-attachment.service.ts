@@ -13,7 +13,6 @@
 import { join } from 'path';
 import { Response } from 'express';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-// import JwtUser from '@libs/user/types/jwt/jwtUser';
 import {
   SURVEY_FILE_ATTACHMENT_ENDPOINT,
   SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT,
@@ -23,13 +22,9 @@ import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SURVEYS_HEADER_IMAGE from '@libs/survey/constants/surveys-header-image';
 import SurveyElement from '@libs/survey/types/TSurveyElement';
-import SurveyPage from '@libs/survey/types/TSurveyPage';
 import QuestionsType from '@libs/survey/constants/question-types';
-// import QuestionTypes from '@libs/survey/types/TSurveyQuestionTypes';
 import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
 import SurveyFormula from '@libs/survey/types/TSurveyFormula';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
-import { SurveyDocument } from 'apps/api/src/surveys/survey.schema';
 import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
@@ -42,44 +37,9 @@ class SurveysAttachmentService implements OnModuleInit {
     void this.fileSystemService.ensureDirectoryExists(this.attachmentsPath);
   }
 
-  // preProcessFormula = async (survey: SurveyDocument, user: JwtUser): Promise<SurveyFormula> => {
-  //   const allQuestions = await SurveysAttachmentService.getAllQuestions(survey);
-  //   const currentQuestionNames = allQuestions.map(question => question.name);
-  //   await this.cleanupOrphanedQuestionFolders(survey.id, currentQuestionNames);
-
-  //   const { formula } = survey;
-  //   const processedFormula = { ...formula };
-  //   const { logo, elements, pages } = processedFormula || {};
-
-  //   const includedFileNames: Set<string> = new Set();
-
-  //   if (logo) {
-  //     const processedLogo = logo ? await this.processUrl(logo, user.preferred_username, survey.id, SURVEYS_HEADER_IMAGE) : undefined;
-  //     processedFormula.logo = processedLogo?.newUrl;
-  //   }
-
-  //   if (elements && elements.length > 0) {
-  //     const processingElements = elements?.map(async (element: SurveyElement) => await this.processElement(element, user.preferred_username, survey.id, includedFileNames));
-  //     const processedElements = await Promise.all(processingElements || []);
-  //     processedFormula.elements = processedElements;
-  //   }
-
-  //   if (pages && pages.length > 0) {
-  //     const processingPages = pages?.map(async (page: SurveyPage) => {
-  //       const { elements: pageElements } = page;
-  //       const processingPageElements = pageElements?.map(async (element: SurveyElement) => await this.processElement(element, user.preferred_username, survey.id, includedFileNames));
-  //       const processedPageElements = await Promise.all(processingPageElements || []);
-  //       return { ...page, elements: processedPageElements };
-  //     });
-  //     const processedPages = await Promise.all(processingPages || []);
-  //     processedFormula.pages = processedPages;
-  //   }
-
-  //   return processedFormula;
-  // }
   preProcessFormula = async (surveyId: string, formula: SurveyFormula, username: string): Promise<SurveyFormula> => {
     const processedFormula = { ...formula };
-    const allAttachmentNames: Set<string> = new Set();
+    const includedFileNames: Set<string> = new Set();
 
     if (processedFormula.logo) {
       const { newUrl, filename } = await this.processUrl(
@@ -89,14 +49,14 @@ class SurveysAttachmentService implements OnModuleInit {
         SURVEYS_HEADER_IMAGE,
       );
       processedFormula.logo = newUrl;
-      if (filename) allAttachmentNames.add(join(SURVEYS_HEADER_IMAGE, filename));
+      if (filename) includedFileNames.add(join(SURVEYS_HEADER_IMAGE, filename));
     }
 
     if (processedFormula.pages) {
       processedFormula.pages = await Promise.all(
         processedFormula.pages.map(async (page) => ({
           ...page,
-          elements: await this.processElements(page.elements, username, surveyId, allAttachmentNames),
+          elements: await this.processElements(page.elements, username, surveyId, includedFileNames),
         })),
       );
     }
@@ -106,51 +66,15 @@ class SurveysAttachmentService implements OnModuleInit {
         processedFormula.elements,
         username,
         surveyId,
-        allAttachmentNames,
+        includedFileNames,
       );
     }
 
-    // After processing all attachments, clean up any that are no longer referenced.
-    await this.cleanupOrphanedAttachments(surveyId, allAttachmentNames);
+    await this.cleanupOrphanedAttachments(surveyId, includedFileNames);
 
     return processedFormula;
   };
 
-  static getAllQuestions = (survey: SurveyDocument | SurveyDto): SurveyElement[] => {
-    const { formula } = survey;
-    const { logo, elements, pages } = formula;
-
-    const questions: SurveyElement[] = logo
-      ? [{ name: SURVEYS_HEADER_IMAGE, type: QuestionsType.IMAGE, value: logo }]
-      : [];
-
-    questions.concat(elements || []);
-
-    pages?.forEach((page: SurveyPage) => {
-      const { elements: pageElements } = page;
-      questions.concat(pageElements || []);
-    });
-    return questions;
-  };
-
-  // cleanupOrphanedQuestionFolders = async (surveyId: string, questionNames: string[]): Promise<void> => {
-  //   const permanentDirectoryPath = join(SURVEYS_ATTACHMENT_PATH, surveyId);
-  //   const oldQuestionNames = await this.fileSystemService.getAllFilenamesInDirectory(permanentDirectoryPath);
-  //   questionNames.forEach((questionName) => {
-  //     if (oldQuestionNames.includes(questionName)) {
-  //       oldQuestionNames.splice(oldQuestionNames.indexOf(questionName), 1);
-  //     }
-  //   });
-  //   const promises = oldQuestionNames.map((questionName) => {
-  //     const questionPath = join(SURVEYS_ATTACHMENT_PATH, surveyId, questionName);
-  //     return this.fileSystemService.deleteDirectory(questionPath);
-  //   });
-  //   try {
-  //     await Promise.all(promises);
-  //   } catch (error) {
-  //     Logger.warn(`Failed to delete the deprecated questions folders for survey ${surveyId}`, error.stack, SurveysAttachmentService.name);
-  //   }
-  // }
   private async cleanupOrphanedAttachments(surveyId: string, referencedAttachments: Set<string>): Promise<void> {
     const allQuestionFolders = await this.fileSystemService.getAllFilenamesInDirectory(
       join(SURVEYS_ATTACHMENT_PATH, surveyId),
@@ -173,6 +97,11 @@ class SurveysAttachmentService implements OnModuleInit {
       .filter((file) => !referencedAttachments.has(join(questionFolder, file)))
       .map((fileToDelete) => FilesystemService.deleteFile(questionPath, fileToDelete));
     await Promise.all(deletePromises);
+
+    const remainingFiles = await this.fileSystemService.getAllFilenamesInDirectory(questionPath);
+    if (remainingFiles.length === 0) {
+      await this.fileSystemService.deleteDirectory(questionPath);
+    }
   }
 
   cleanupTemporaryFiles = (username: string): void => {
@@ -306,11 +235,7 @@ class SurveysAttachmentService implements OnModuleInit {
     if (isQuestionTypeImageType(type)) {
       return;
     }
-    await this.removeQuestionAttachment(surveyId, question.name);
-  }
-
-  async removeQuestionAttachment(surveyId: string, questionName: string) {
-    const permaDirectory = join(SURVEYS_ATTACHMENT_PATH, surveyId, questionName);
+    const permaDirectory = join(SURVEYS_ATTACHMENT_PATH, surveyId, question.name);
     await this.fileSystemService.deleteDirectory(permaDirectory);
   }
 
