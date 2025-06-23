@@ -63,9 +63,7 @@ import SurveysTemplateService from './surveys-template.service';
 describe(SurveysController.name, () => {
   let controller: SurveysController;
   let surveyService: SurveysService;
-  // let surveysAttachmentService: SurveysAttachmentService;
   let surveyAnswerService: SurveyAnswersService;
-  // let surveysTemplateService: SurveysTemplateService;
   let surveyModel: Model<SurveyDocument>;
   let surveyAnswerModel: Model<SurveyAnswerDocument>;
 
@@ -98,9 +96,7 @@ describe(SurveysController.name, () => {
 
     controller = module.get<SurveysController>(SurveysController);
     surveyService = module.get<SurveysService>(SurveysService);
-    // surveysAttachmentService = module.get<SurveysAttachmentService>(SurveysAttachmentService);
     surveyAnswerService = module.get<SurveyAnswersService>(SurveyAnswersService);
-    // surveysTemplateService = module.get<SurveysTemplateService>(SurveysTemplateService);
     surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
     surveyAnswerModel = module.get<Model<SurveyAnswerDocument>>(getModelToken(SurveyAnswer.name));
   });
