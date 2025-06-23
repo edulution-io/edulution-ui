@@ -72,7 +72,7 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
                     value={template?.template.formula?.title}
                     readOnly
                     disabled
-                    wFull
+                    useFullWidth
                     className="min-w-[100px] cursor-pointer"
                   />
                 </p>
@@ -85,7 +85,7 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
                     value={template?.template.creator.username}
                     readOnly
                     disabled
-                    wFull
+                    useFullWidth
                     className="min-w-[100px] cursor-pointer"
                   />
                 </p>
@@ -98,7 +98,7 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
                     value={format(template?.template.createdAt, 'PPP', { locale })}
                     readOnly
                     disabled
-                    wFull
+                    useFullWidth
                     className="min-w-[100px] cursor-pointer"
                   />
                 </p>
