@@ -11,9 +11,9 @@
  */
 
 import { Types } from 'mongoose';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { SurveyDocument } from '../../survey.schema';
 import { firstMockUser, secondMockUser } from '../user';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
 
 export const createdSurveyId01 = new Types.ObjectId();
 

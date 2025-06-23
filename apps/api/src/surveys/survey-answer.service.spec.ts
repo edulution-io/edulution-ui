@@ -20,6 +20,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyStatus from '@libs/survey/survey-status-enum';
+import SurveysAttachmentService from 'apps/api/src/surveys/surveys-attachment.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import SurveyAnswersService from './survey-answer.service';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
@@ -78,7 +79,6 @@ import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
-import SurveysAttachmentService from 'apps/api/src/surveys/surveys-attachment.service';
 
 describe('SurveyAnswerService', () => {
   let service: SurveyAnswersService;

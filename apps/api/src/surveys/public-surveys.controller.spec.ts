@@ -19,6 +19,7 @@ import { Model, Types } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import SurveysAttachmentService from 'apps/api/src/surveys/surveys-attachment.service';
 import SurveysService from './surveys.service';
 import SurveyAnswersService from './survey-answer.service';
 import { Survey, SurveyDocument } from './survey.schema';
@@ -43,7 +44,6 @@ import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
-import SurveysAttachmentService from 'apps/api/src/surveys/surveys-attachment.service';
 
 describe(PublicSurveysController.name, () => {
   let controller: PublicSurveysController;
