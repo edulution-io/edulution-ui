@@ -28,19 +28,19 @@ const migration004: Migration<AppConfig> = {
     }
     Logger.log(`${unprocessedDocuments?.length} documents to update...`);
 
-    const bulkOps = unprocessedDocuments.map((doc, idx) => ({
+    const bulkOperations = unprocessedDocuments.map((document, index) => ({
       updateOne: {
-        filter: { _id: doc._id },
+        filter: { _id: document._id },
         update: {
           $set: {
-            position: idx + 1,
+            position: index + 1,
             schemaVersion: newSchemaVersion,
           },
         },
       },
     }));
 
-    const result = await model.bulkWrite(bulkOps);
+    const result = await model.bulkWrite(bulkOperations);
     Logger.log(`Migration completed: ${result.modifiedCount} documents updated`);
   },
 };

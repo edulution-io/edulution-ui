@@ -19,6 +19,8 @@ import type MailProviderConfig from '@libs/appconfig/types/mailProviderConfig';
 import { useTranslation } from 'react-i18next';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import DropdownSelect from '../../../../components/ui/DropdownSelect/DropdownSelect';
+import getDisplayName from '@/utils/getDisplayName';
+import useLanguage from '@/hooks/useLanguage';
 
 interface AppConfigFormProps {
   form: UseFormReturn<{ [settingLocation: string]: AppConfigDto } | ProxyConfigFormType | MailProviderConfig>;
@@ -28,6 +30,7 @@ interface AppConfigFormProps {
 const AppConfigDropdownSelect = ({ form, appConfig }: AppConfigFormProps) => {
   const { setValue, control, getValues } = form;
   const { t } = useTranslation();
+  const { language } = useLanguage();
   const { appConfigs } = useAppConfigsStore();
 
   return (
@@ -39,9 +42,9 @@ const AppConfigDropdownSelect = ({ form, appConfig }: AppConfigFormProps) => {
           <h4>{t('settings.appconfig.position.title')}</h4>
           <FormControl>
             <DropdownSelect
-              options={Array.from({ length: appConfigs.length }).map((_, i) => ({
-                id: `${i + 1}`,
-                name: `${i + 1}`,
+              options={Array.from({ length: appConfigs.length }).map((_, index) => ({
+                id: `${index + 1}`,
+                name: `${index + 1}. (${getDisplayName(appConfigs[index], language)})`,
               }))}
               selectedVal={getValues(`${appConfig.name}.position`)?.toString()}
               handleChange={(value: string) => setValue(`${appConfig.name}.position`, Number(value))}
