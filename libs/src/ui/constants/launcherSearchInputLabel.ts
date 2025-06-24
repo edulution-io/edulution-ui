@@ -10,18 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const isSubsequence = (pattern: string, text: string): boolean => {
-  let patternIndex = 0;
-  let textIndex = 0;
+const SEARCH_INPUT_LABEL = 'launcher.searchApps';
 
-  while (patternIndex < pattern.length && textIndex < text.length) {
-    if (pattern[patternIndex] === text[textIndex]) {
-      patternIndex += 1;
-    }
-    textIndex += 1;
-  }
-
-  return patternIndex === pattern.length;
-};
-
-export default isSubsequence;
+export default SEARCH_INPUT_LABEL;
