@@ -29,6 +29,14 @@ const removeRealmRoles: Scripts = {
   name: '000-removeRealmRoles',
   version: 1,
   execute: async () => {
+    if (!KEYCLOAK_ADMIN || !KEYCLOAK_ADMIN_PASSWORD) {
+      Logger.error(
+        'KEYCLOAK_ADMIN and KEYCLOAK_ADMIN_PASSWORD environment variables must be set.',
+        removeRealmRoles.name,
+      );
+      return;
+    }
+
     const keycloakBaseUrl = `${KEYCLOAK_API}/admin/realms/${KEYCLOAK_EDU_UI_REALM}`;
     const tokenEndpoint = `${KEYCLOAK_API}/realms/master/${AUTH_PATHS.AUTH_OIDC_TOKEN_PATH}`;
     const keycloakRolesEndpoint = `${keycloakBaseUrl}/roles/default-roles-${KEYCLOAK_EDU_UI_REALM}/composites`;
