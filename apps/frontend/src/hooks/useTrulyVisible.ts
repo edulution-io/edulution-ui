@@ -69,11 +69,15 @@ const useTrulyVisible = (
     };
 
     check();
+
+    const raf = window.requestAnimationFrame(check);
+
     window.addEventListener('scroll', check, true);
     window.addEventListener('resize', check);
 
     // eslint-disable-next-line consistent-return
     return () => {
+      window.cancelAnimationFrame(raf);
       window.removeEventListener('scroll', check, true);
       window.removeEventListener('resize', check);
     };
