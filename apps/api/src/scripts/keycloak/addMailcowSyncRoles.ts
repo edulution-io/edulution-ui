@@ -12,23 +12,10 @@
 
 import { Logger } from '@nestjs/common';
 import { Scripts } from '../../scripts/script.type';
-import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
-import axios from 'axios';
-import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import createKeycloakAxiosClient from './utilities/createKeycloakAxiosClient';
+import getKeycloakToken from './utilities/getKeycloakToken';
 
-const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API, KEYCLOAK_ADMIN, KEYCLOAK_ADMIN_PASSWORD } = process.env as Record<
-  string,
-  string
->;
-
-const createAdminClient = (token: string) =>
-  axios.create({
-    baseURL: `${KEYCLOAK_API}/admin/realms/${KEYCLOAK_EDU_UI_REALM}`,
-    headers: {
-      [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_JSON,
-      [HTTP_HEADERS.Authorization]: `Bearer ${token}`,
-    },
-  });
+const { KEYCLOAK_ADMIN, KEYCLOAK_ADMIN_PASSWORD } = process.env as Record<string, string>;
 
 const addMailcowSyncRoles: Scripts = {
   name: '001-addMailcowSyncRoles',
@@ -44,20 +31,8 @@ const addMailcowSyncRoles: Scripts = {
 
     try {
       Logger.debug('Fetching Keycloak access token...', addMailcowSyncRoles.name);
-      const tokenEndpoint = `${KEYCLOAK_API}/realms/master/${AUTH_PATHS.AUTH_OIDC_TOKEN_PATH}`;
-
-      const params = {
-        grant_type: 'password',
-        client_id: 'admin-cli',
-        username: KEYCLOAK_ADMIN,
-        password: KEYCLOAK_ADMIN_PASSWORD,
-      };
-      const { data: tokenData } = await axios.post<{ access_token: string }>(tokenEndpoint, params, {
-        headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
-      });
-
-      const keycloakAccessToken = tokenData.access_token;
-      const keycloakClient = createAdminClient(keycloakAccessToken);
+      const keycloakAccessToken = await getKeycloakToken();
+      const keycloakClient = createKeycloakAxiosClient(keycloakAccessToken);
 
       Logger.debug('Fetching client IDs...', addMailcowSyncRoles.name);
       const [eduMailcowClient, realmMgmtClient] = await Promise.all([
