@@ -22,6 +22,7 @@ import Input from '@/components/shared/Input';
 import isSubsequence from '@libs/common/utils/string/isSubsequence';
 import useMedia from '@/hooks/useMedia';
 import cn from '@libs/common/utils/className';
+import SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
 
 const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
   const { toggleMobileSidebar } = useSidebarStore();
@@ -50,30 +51,34 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
     toggleLauncher();
   }, [toggleMobileSidebar, toggleLauncher]);
 
-  const searchInputLabel = 'launcher.searchApps';
-
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
       if (event.key !== 'Enter') return;
 
       const active = document.activeElement;
-
-      if (active instanceof HTMLInputElement && active.getAttribute('aria-label') === searchInputLabel) {
+      if (active instanceof HTMLInputElement && active.getAttribute('aria-label') === SEARCH_INPUT_LABEL) {
         event.preventDefault();
         onClose();
-        navigate(filteredApps[0].link);
+        if (filteredApps.length > 0) {
+          navigate(filteredApps[0].link);
+        }
       }
-    };
+    },
+    [filteredApps, navigate, onClose],
+  );
 
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [filteredApps, navigate, onClose]);
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleKeyDown]);
 
   return (
     <>
       <Input
-        placeholder={t(searchInputLabel)}
-        aria-label={searchInputLabel}
+        placeholder={t(SEARCH_INPUT_LABEL)}
+        aria-label={SEARCH_INPUT_LABEL}
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         variant="dialog"
@@ -88,7 +93,7 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
         {filteredApps.length ? (
           filteredApps.map((app, index) => (
             <NavLink
-              key={app.title}
+              key={app.link}
               to={app.link}
               onClick={onClose}
             >
