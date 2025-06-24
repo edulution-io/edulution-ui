@@ -12,5 +12,5 @@
 
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 
-export const FILESHARING_SHARED_FILES_API_ENDPOINT = `${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.PUBLIC_FILE_SHARE}`;
-export const PUBLIC_FILE_DOWNLOAD = FileSharingApiEndpoints.PUBLIC_FILE_SHARE;
+export const FILESHARING_SHARED_FILES_API_ENDPOINT = `${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.PUBLIC_SHARE}`;
+export const PUBLIC_FILE_DOWNLOAD = FileSharingApiEndpoints.PUBLIC_SHARE;

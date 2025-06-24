@@ -295,7 +295,7 @@ class FilesharingService {
       });
   }
 
-  async generateFileLink(
+  async publicShareFile(
     username: string,
     createPublicFileShareDto: CreateEditPublicFileShareDto,
   ): Promise<WebdavStatusResponse> {
@@ -309,8 +309,8 @@ class FilesharingService {
       }
 
       const publicShareId = uuidv4();
-      const fileLink = `${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.PUBLIC_FILE_SHARE_DOWNLOAD}/${publicShareId}`;
-      const publicFileLink = `${FileSharingApiEndpoints.PUBLIC_FILE_SHARE}/${publicShareId}`;
+      const fileLink = `${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.PUBLIC_SHARE_DOWNLOAD}/${publicShareId}`;
+      const publicFileLink = `${FileSharingApiEndpoints.PUBLIC_SHARE}/${publicShareId}`;
       await this.shareModel.create({
         publicShareId,
         etag,

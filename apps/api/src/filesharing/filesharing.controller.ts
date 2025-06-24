@@ -182,15 +182,15 @@ class FilesharingController {
     return this.filesharingService.collectFiles(username, collectFileRequestDTO, userRole, type);
   }
 
-  @Post(FileSharingApiEndpoints.PUBLIC_FILE_SHARE)
+  @Post(FileSharingApiEndpoints.PUBLIC_SHARE)
   async publicShareFile(
     @Body() createPublicFileShareDto: CreateEditPublicFileShareDto,
     @GetCurrentUsername() username: string,
   ) {
-    return this.filesharingService.generateFileLink(username, createPublicFileShareDto);
+    return this.filesharingService.publicShareFile(username, createPublicFileShareDto);
   }
 
-  @Get(FileSharingApiEndpoints.PUBLIC_FILE_SHARE)
+  @Get(FileSharingApiEndpoints.PUBLIC_SHARE)
   async listOwnPublicShares(@GetCurrentUsername() username: string) {
     return this.filesharingService.listOwnPublicShares(username);
   }
@@ -215,18 +215,18 @@ class FilesharingController {
     }
   }
 
-  @Delete(FileSharingApiEndpoints.PUBLIC_FILE_SHARE)
+  @Delete(FileSharingApiEndpoints.PUBLIC_SHARE)
   async deletePublicShares(@Body() publicFiles: PublicShareDto[], @GetCurrentUsername() username: string) {
     return this.filesharingService.deletePublicShares(username, publicFiles);
   }
 
-  @Patch(FileSharingApiEndpoints.PUBLIC_FILE_SHARE)
+  @Patch(FileSharingApiEndpoints.PUBLIC_SHARE)
   async editPublicShare(@Body() publicFileShareDto: PublicShareDto, @GetCurrentUsername() username: string) {
     return this.filesharingService.editPublicShare(username, publicFileShareDto);
   }
 
   @Public()
-  @Get(`${FileSharingApiEndpoints.PUBLIC_FILE_SHARE}/:publicShareId`)
+  @Get(`${FileSharingApiEndpoints.PUBLIC_SHARE}/:publicShareId`)
   async getPublicShareInfo(
     @Param('publicShareId') publicShareId: string,
     @GetToken({ required: false }) token?: string,
@@ -235,7 +235,7 @@ class FilesharingController {
   }
 
   @Public()
-  @Post(`${FileSharingApiEndpoints.PUBLIC_FILE_SHARE_DOWNLOAD}/:publicShareId`)
+  @Post(`${FileSharingApiEndpoints.PUBLIC_SHARE_DOWNLOAD}/:publicShareId`)
   async downloadSharedContent(
     @Param('publicShareId') publicShareId: string,
     @Body('password') password: string | undefined,
