@@ -39,8 +39,8 @@ const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog, selected
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
-      DeleteButton(() => openDialog(FileActionType.DELETE_FILE_FOLDER)),
-      MoveButton(() => openDialog(FileActionType.MOVE_FILE_FOLDER)),
+      DeleteButton(() => openDialog(FileActionType.DELETE_FILE_OR_FOLDER)),
+      MoveButton(() => openDialog(FileActionType.MOVE_FILE_OR_FOLDER)),
       DownloadButton(async () => {
         if (!selectedFiles) return;
         const files = Array.isArray(selectedFiles) ? selectedFiles : [selectedFiles];

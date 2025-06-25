@@ -10,13 +10,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import isDev from '../constants/isDev';
+import React from 'react';
 
-const getFrontEndUrl = (): string => {
-  if (isDev) {
-    return `${window.location.protocol}//host.docker.internal:5173`;
-  }
-  return `${window.location.protocol}//${window.location.host}`;
-};
+interface LinkWrapperProps {
+  href: string;
+  isPdf: boolean;
+  children: React.ReactNode;
+}
 
-export default getFrontEndUrl;
+const LinkWrapper: React.FC<LinkWrapperProps> = ({ href, isPdf, children }) => (
+  <a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    className={isPdf ? 'text-ciRed underline' : 'text-ciLightBlue underline'}
+  >
+    {children}
+    {isPdf && ' 📄'}
+  </a>
+);
+
+export default LinkWrapper;

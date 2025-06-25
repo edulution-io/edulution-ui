@@ -10,12 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface PushAnswerDto {
-  surveyId: string;
-
-  saveNo: number;
-
-  answer: JSON;
-}
-
-export default PushAnswerDto;
+export type UploadFile = File & {
+  isZippedFolder?: boolean;
+  originalFolderName?: string;
+};

@@ -25,6 +25,7 @@ import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardE
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import { useParams } from 'react-router-dom';
 import cn from '@libs/common/utils/className';
+import BulletinContent from '@/pages/BulletinBoard/components/BulletinContent/BulletinContent';
 
 const BulletinBoardColumnItem = ({
   bulletin,
@@ -144,58 +145,6 @@ const BulletinBoardColumnItem = ({
     return items;
   };
 
-  const getProcessedBulletinContent = (chunk: string) => {
-    if (/<img\b/i.test(chunk)) {
-      const src = chunk.match(/src="([^"]*)"/i)?.[1].replace(/^\/(?!\/)/, '/') ?? '';
-      return (
-        <button
-          key={`img-${src}`}
-          type="button"
-          className="max-w-full cursor-pointer border-0 bg-transparent p-0"
-          onClick={() => handleImageClick(src)}
-        >
-          <img
-            src={src}
-            alt="attachment"
-            className="max-w-full"
-          />
-        </button>
-      );
-    }
-
-    if (/<a\b/i.test(chunk)) {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(chunk, 'text/html');
-      const a = doc.querySelector('a');
-
-      if (a) {
-        const href = a.getAttribute('href') ?? '#';
-        const text = a.textContent ?? href;
-        const isPdf = href.toLowerCase().endsWith('.pdf');
-
-        return (
-          <a
-            key={`link-${href}`}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={isPdf ? 'text-red-400 underline' : 'text-blue-400 underline'}
-          >
-            {text}
-            {isPdf && ' 📄'}
-          </a>
-        );
-      }
-    }
-
-    return (
-      <span
-        key={`html-${chunk}`}
-        dangerouslySetInnerHTML={{ __html: chunk }}
-      />
-    );
-  };
-
   return (
     <div
       id={bulletin.id}
@@ -208,8 +157,11 @@ const BulletinBoardColumnItem = ({
         <h4 className="w-[calc(100%-20px)] overflow-x-hidden text-ellipsis break-normal text-lg font-bold text-background">
           {bulletin.title}
         </h4>
-        <div className="mt-2 text-gray-100">
-          {bulletin.content.split(/(<img[^>]*>)/g).map((part) => getProcessedBulletinContent(part))}
+        <div className="quill-content mt-2 break-normal text-white">
+          <BulletinContent
+            html={bulletin.content}
+            handleImageClick={handleImageClick}
+          />
         </div>
         {getAuthorDescription()}
       </div>
