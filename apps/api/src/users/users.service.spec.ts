@@ -32,7 +32,6 @@ import cacheManagerMock from '../common/mocks/cacheManagerMock';
 import { UserAccounts } from './account.schema';
 
 jest.mock('axios');
-const mockToken = 'token';
 
 const mockUser: UserDocument = {
   username: 'testuser',
@@ -93,10 +92,6 @@ const fetchedUsers: LDAPUser[] = [
     },
   },
 ];
-
-jest.mock('../groups/groups.service', () => ({
-  fetchAllUsers: jest.fn(() => fetchedUsers),
-}));
 
 const userModelMock = {
   create: jest.fn().mockResolvedValue(mockUser),
@@ -235,7 +230,7 @@ describe(UsersService.name, () => {
       const school = 'agy';
       cacheManagerMock.get.mockResolvedValue(cachedUsers);
 
-      const result = await service.findAllCachedUsers(mockToken, school);
+      const result = await service.findAllCachedUsers(school);
       expect(result).toEqual(cachedUsers);
       expect(cacheManagerMock.get).toHaveBeenCalledWith(ALL_USERS_CACHE_KEY + school);
     });
@@ -245,9 +240,8 @@ describe(UsersService.name, () => {
       cacheManagerMock.get.mockResolvedValue(null);
       mockGroupsService.fetchAllUsers.mockResolvedValue(fetchedUsers);
 
-      const result = await service.findAllCachedUsers(mockToken, school);
+      const result = await service.findAllCachedUsers(school);
       expect(result).toEqual(cachedUsers);
-      expect(GroupsService.fetchAllUsers).toHaveBeenCalledWith(mockToken);
       expect(cacheManagerMock.set).toHaveBeenCalledWith(
         ALL_USERS_CACHE_KEY + school,
         cachedUsers,
@@ -260,9 +254,9 @@ describe(UsersService.name, () => {
     it('should return users matching the search string', async () => {
       jest.spyOn(service, 'findAllCachedUsers').mockResolvedValue(cachedUsers);
 
-      const result = await service.searchUsersByName(mockToken, 'agy', 'test');
+      const result = await service.searchUsersByName('agy', 'test');
       expect(result).toEqual(cachedUsers);
-      expect(service.findAllCachedUsers).toHaveBeenCalledWith(mockToken, 'agy');
+      expect(service.findAllCachedUsers).toHaveBeenCalledWith('agy');
     });
   });
 

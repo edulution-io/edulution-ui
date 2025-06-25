@@ -10,12 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface PushAnswerDto {
-  surveyId: string;
+const ZIP_PROCESS_TIMEOUT = 5000;
 
-  saveNo: number;
-
-  answer: JSON;
-}
-
-export default PushAnswerDto;
+export default ZIP_PROCESS_TIMEOUT;

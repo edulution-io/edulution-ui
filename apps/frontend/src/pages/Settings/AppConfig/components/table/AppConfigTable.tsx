@@ -14,11 +14,11 @@ import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IoAdd, IoRemove } from 'react-icons/io5';
 import { type ContainerInfo } from 'dockerode';
+import TableAction from '@libs/common/types/tableAction';
 import { AppConfigTableConfig } from '@/pages/Settings/AppConfig/components/table/types/appConfigTableConfig';
 import getAppConfigTableConfig from '@/pages/Settings/AppConfig/components/table/getAppConfigTableConfig';
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
-import { Button } from '@/components/shared/Button';
 import type BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
@@ -116,6 +116,23 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
     }, [isMobileView, isTabletView, hideColumnsInMobileView, hideColumnsInTabletView]);
 
     const getScrollableTable = () => {
+      const tableActions: TableAction<BulletinCategoryResponseDto | ContainerInfo | FileInfoDto | VeyonProxyItem>[] =
+        [];
+      if (showAddButton) {
+        tableActions.push({
+          icon: IoAdd,
+          translationId: 'common.add',
+          onClick: handleAddClick,
+        });
+      }
+      if (showRemoveButton) {
+        tableActions.push({
+          icon: IoRemove,
+          translationId: 'common.remove',
+          onClick: handleRemoveClick,
+        });
+      }
+
       switch (type) {
         case ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE: {
           return (
@@ -127,6 +144,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
               applicationName={applicationName}
               enableRowSelection={false}
               initialColumnVisibility={initialColumnVisibility}
+              actions={tableActions as TableAction<BulletinCategoryResponseDto>[]}
             />
           );
         }
@@ -140,6 +158,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
               applicationName={applicationName}
               enableRowSelection={false}
               initialColumnVisibility={initialColumnVisibility}
+              actions={tableActions as TableAction<ContainerInfo>[]}
             />
           );
         }
@@ -155,6 +174,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
               initialColumnVisibility={initialColumnVisibility}
               selectedRows={selectedRows}
               onRowSelectionChange={handleRowSelectionChange}
+              actions={tableActions as TableAction<FileInfoDto>[]}
             />
           );
         }
@@ -168,6 +188,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
               applicationName={applicationName}
               enableRowSelection={false}
               initialColumnVisibility={initialColumnVisibility}
+              actions={tableActions as TableAction<VeyonProxyItem>[]}
             />
           );
         }
@@ -179,30 +200,6 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
     return (
       <div className="mb-8">
         {getScrollableTable()}
-        <div className="flex w-full items-center justify-between gap-2">
-          {showAddButton && (
-            <div className="flex w-full">
-              <Button
-                className="flex h-2 w-full items-center justify-center rounded-md border border-gray-500 hover:bg-accent"
-                onClick={handleAddClick}
-                type="button"
-              >
-                <IoAdd className="text-xl text-background" />
-              </Button>
-            </div>
-          )}
-          {showRemoveButton && (
-            <div className="flex w-full">
-              <Button
-                className="flex h-2 w-full items-center justify-center rounded-md border border-gray-500 hover:bg-accent"
-                onClick={handleRemoveClick}
-                type="button"
-              >
-                <IoRemove className="text-xl text-background" />
-              </Button>
-            </div>
-          )}
-        </div>
         {dialogBody}
       </div>
     );
