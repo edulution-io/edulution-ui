@@ -311,25 +311,45 @@ class SurveysService implements OnModuleInit {
     return savedSurvey as SurveyDocument;
   }
 
+  notifySurveyChange = async (survey: SurveyDocument, eventType: SseMessageType): Promise<void> => {
+    if (survey.isPublic) {
+      this.sseService.informAllUsers(survey, eventType);
+    } else {
+      const invitedMembersList = await this.groupsService.getInvitedMembers(
+        survey.invitedGroups,
+        survey.invitedAttendees,
+      );
+      this.sseService.sendEventToUsers(invitedMembersList, survey, eventType);
+    }
+  };
+
+  static assertUserIsAuthorized = (creatorUsername: string, currentUser: JwtUser): void => {
+    const isOwner = creatorUsername === currentUser.preferred_username;
+    const isSuperAdmin = currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN);
+    if (!isOwner && !isSuperAdmin) {
+      throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.UNAUTHORIZED);
+    }
+  };
+
   // TODO: REMOVE AFTER REVIEW ONLY INCLUDED TO NOT BREAK THE REVIEW VIEW
   /*
   async createTemplate(surveyTemplateDto: SurveyTemplateDto): Promise<void> {
     let filename = surveyTemplateDto.fileName;
     if (!filename) {
-      const date = new Date();	
-      filename = `${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}-${date.getHours()}:${date.getMinutes()}-${uuidv4()}.json`;	
+      const date = new Date();
+      filename = `${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}-${date.getHours()}:${date.getMinutes()}-${uuidv4()}.json`;
     }
     const templatePath = join(SURVEYS_TEMPLATE_PATH, filename);	
     try {	
-      await this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);	
-      return await FilesystemService.writeFile(templatePath, JSON.stringify(surveyTemplateDto.template, null, 2));	
+      await this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);
+      return await FilesystemService.writeFile(templatePath, JSON.stringify(surveyTemplateDto.template, null, 2));
     } catch (error) {
       throw new CustomHttpException(
         CommonErrorMessages.FILE_WRITING_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
-        SurveysService.name,	
-      );	
+        SurveysService.name,
+      );
     }
   }
         
@@ -357,33 +377,13 @@ class SurveysService implements OnModuleInit {
     return FilesystemService.deleteDirectories(filePath);	
   }	
 
-  async serveTempFiles(userId: string, fileName: string, res: Response): Promise<Response> {	
-    const filePath = `${SURVEYS_TEMP_FILES_PATH}/${userId}/${fileName}`;	
-    const fileStream = await this.fileSystemService.createReadStream(filePath);	
-    fileStream.pipe(res);	
-    return res;	
+  async serveTempFiles(userId: string, fileName: string, res: Response): Promise<Response> {
+    const filePath = `${SURVEYS_TEMP_FILES_PATH}/${userId}/${fileName}`;
+    const fileStream = await this.fileSystemService.createReadStream(filePath);
+    fileStream.pipe(res);
+    return res;
   }
   */
-
-  notifySurveyChange = async (survey: SurveyDocument, eventType: SseMessageType): Promise<void> => {
-    if (survey.isPublic) {
-      this.sseService.informAllUsers(survey, eventType);
-    } else {
-      const invitedMembersList = await this.groupsService.getInvitedMembers(
-        survey.invitedGroups,
-        survey.invitedAttendees,
-      );
-      this.sseService.sendEventToUsers(invitedMembersList, survey, eventType);
-    }
-  };
-
-  static assertUserIsAuthorized = (creatorUsername: string, currentUser: JwtUser): void => {
-    const isOwner = creatorUsername === currentUser.preferred_username;
-    const isSuperAdmin = currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN);
-    if (!isOwner && !isSuperAdmin) {
-      throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.UNAUTHORIZED);
-    }
-  };
 }
 
 export default SurveysService;
