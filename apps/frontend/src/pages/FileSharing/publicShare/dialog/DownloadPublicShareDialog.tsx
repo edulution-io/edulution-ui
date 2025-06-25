@@ -13,7 +13,7 @@
  * LICENSE … (wie gehabt)
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -30,6 +30,7 @@ import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import usePublicSharePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
 import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useUserStore from '@/store/UserStore/UserStore';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import PublicShareMetaList from '../publicPage/components/PublicShareMetaList';
 import DownloadPublicFileButton from '../publicPage/components/DownloadPublicShare';
 import PublicSharePasswordInput from '../publicPage/components/PublicSharePasswordInput';
@@ -42,6 +43,8 @@ const DownloadPublicShareDialog = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const { eduApiToken } = useUserStore();
 
@@ -65,20 +68,25 @@ const DownloadPublicShareDialog = () => {
   const onDownload = form.handleSubmit(async ({ password }) => {
     if (!publicShareContent) return;
 
-    const { filename, fileLink } = publicShareContent;
-    const absoluteUrl = buildAbsolutePublicDownloadUrl(fileLink);
+    try {
+      setIsDownloading(true);
+      const { filename, fileLink } = publicShareContent;
+      const absoluteUrl = buildAbsolutePublicDownloadUrl(fileLink);
 
-    await downloadPublicFile(
-      absoluteUrl,
-      filename,
-      password,
-      () =>
-        form.setError('password', {
-          type: 'server',
-          message: t('filesharing.publicFileSharing.errors.PublicFileWrongPassword'),
-        }),
-      eduApiToken,
-    );
+      await downloadPublicFile(
+        absoluteUrl,
+        filename,
+        password,
+        () =>
+          form.setError('password', {
+            type: 'server',
+            message: t('filesharing.publicFileSharing.errors.PublicFileWrongPassword'),
+          }),
+        eduApiToken,
+      );
+    } finally {
+      setIsDownloading(false);
+    }
   });
 
   const handleClose = () => closePublicShareDialog();
@@ -140,6 +148,7 @@ const DownloadPublicShareDialog = () => {
 
       <DownloadPublicFileButton
         onClick={onDownload}
+        isLoading={isDownloading}
         label={t('filesharing.publicFileSharing.downloadPublicFile')}
       />
 
@@ -155,13 +164,17 @@ const DownloadPublicShareDialog = () => {
   );
 
   return (
-    <AdaptiveDialog
-      isOpen={isAuthenticated ? isPublicShareInfoDialogOpen : true}
-      handleOpenChange={isAuthenticated ? closePublicShareDialog : () => {}}
-      title={t('filesharing.publicFileSharing.downloadPublicFile')}
-      body={accessBody}
-      footer={isAuthenticated ? footer : null}
-    />
+    <>
+      {isDownloading && <LoadingIndicatorDialog isOpen />}
+
+      <AdaptiveDialog
+        isOpen={isAuthenticated ? isPublicShareInfoDialogOpen : true}
+        handleOpenChange={isAuthenticated ? closePublicShareDialog : () => {}}
+        title={t('filesharing.publicFileSharing.downloadPublicFile')}
+        body={accessBody}
+        footer={isAuthenticated ? footer : null}
+      />
+    </>
   );
 };
 

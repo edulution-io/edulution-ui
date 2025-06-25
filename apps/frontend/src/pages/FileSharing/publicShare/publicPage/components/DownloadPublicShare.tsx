@@ -17,12 +17,14 @@ import { Button } from '@/components/shared/Button';
 interface DownloadPublicProps {
   onClick: () => void;
   label: string;
+  isLoading?: boolean;
 }
 
-const DownloadPublic: React.FC<DownloadPublicProps> = ({ onClick, label }) => (
+const DownloadPublic: React.FC<DownloadPublicProps> = ({ onClick, label, isLoading }) => (
   <Button
     onClick={onClick}
     variant="btn-security"
+    disabled={isLoading}
     className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl"
   >
     <ArrowDownToLine className="h-5 w-5" />
