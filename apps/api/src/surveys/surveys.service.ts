@@ -101,6 +101,157 @@ class SurveysService implements OnModuleInit {
     }
   }
 
+  // TODO: REMOVE AFTER REVIEW ONLY INCLUDED TO NOT BREAK THE REVIEW VIEW
+  /*
+    async updateSurvey(survey: SurveyDto, currentUser: JwtUser): Promise<SurveyDocument | null> {
+    const existingSurvey = await this.surveyModel.findById(survey.id).exec();
+    if (!existingSurvey) {
+      return null;
+    }
+
+    const isUserSuperAdmin = currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN);
+    if (survey.creator.username !== currentUser.preferred_username && !isUserSuperAdmin) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.UpdateOrCreateError,
+        HttpStatus.UNAUTHORIZED,
+        undefined,
+        SurveysService.name,
+      );
+    }
+
+    try {
+      return await this.surveyModel
+        .findOneAndUpdate<SurveyDocument>({ _id: new Types.ObjectId(survey.id) }, survey, { new: true })
+        .lean();
+    } catch (error) {
+      throw new CustomHttpException(
+        CommonErrorMessages.DB_ACCESS_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error,
+        SurveysService.name,
+      );
+    } finally {
+      if (survey.isPublic) {
+        this.sseService.informAllUsers(survey, SSE_MESSAGE_TYPE.SURVEY_UPDATED);
+      } else {
+        const invitedMembersList = await this.groupsService.getInvitedMembers(
+          survey.invitedGroups,
+          survey.invitedAttendees,
+        );
+
+        const updatedSurvey = await this.surveyModel.findById(survey.id).lean();
+        this.sseService.sendEventToUsers(invitedMembersList, updatedSurvey || survey, SSE_MESSAGE_TYPE.SURVEY_UPDATED);
+      }
+    }
+  }
+
+  async createSurvey(survey: SurveyDto, currentUser: JwtUser): Promise<SurveyDocument> {
+    const creator: AttendeeDto = {
+      ...survey.creator,
+      firstName: currentUser.given_name,
+      lastName: currentUser.family_name,
+      username: currentUser.preferred_username,
+    };
+
+    try {
+      return await this.surveyModel.create({ ...survey, creator });
+    } catch (error) {
+      throw new CustomHttpException(
+        CommonErrorMessages.DB_ACCESS_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error,
+        SurveysService.name,
+      );
+    } finally {
+      if (survey.isPublic) {
+        this.sseService.informAllUsers(survey, SSE_MESSAGE_TYPE.SURVEY_CREATED);
+      } else {
+        const invitedMembersList = await this.groupsService.getInvitedMembers(
+          survey.invitedGroups,
+          survey.invitedAttendees,
+        );
+        this.sseService.sendEventToUsers(invitedMembersList, survey, SSE_MESSAGE_TYPE.SURVEY_CREATED);
+      }
+    }
+  }
+
+  static updateLinkForRestfulChoices(surveyId: string, question: SurveyElement): SurveyElement {
+    if (isQuestionTypeChoiceType(question.type) && question.choicesByUrl) {
+      const pathParts = question.choicesByUrl.url.split('/');
+      const temporalSurveyIdIndex = pathParts.findIndex((part: string) => part === TEMPORAL_SURVEY_ID_STRING);
+      if (temporalSurveyIdIndex !== -1) {
+        try {
+          pathParts[temporalSurveyIdIndex] = surveyId;
+          const newLink = pathParts.join('/');
+          return {
+            ...question,
+            choicesByUrl: {
+              ...question.choicesByUrl,
+              url: newLink,
+            },
+          };
+        } catch (error) {
+          throw new CustomHttpException(
+            CommonErrorMessages.FILE_NOT_PROVIDED,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            error,
+            SurveysService.name,
+          );
+        }
+      }
+    }
+    return question;
+  }
+
+  async updateElements(
+    username: string,
+    surveyId: string,
+    tempFiles: string[],
+    elements: SurveyElement[],
+  ): Promise<SurveyElement[]> {
+    const updatePromises = elements?.map(async (question) =>
+      this.updateQuestion(username, surveyId, tempFiles, question),
+    );
+    return Promise.all(updatePromises);
+  }
+
+  async updatePages(
+    username: string,
+    surveyId: string,
+    tempFiles: string[],
+    pages: SurveyPage[],
+  ): Promise<SurveyPage[]> {
+    const updatePromises = pages.map(async (page) => {
+      if (!page.elements || page.elements?.length === 0) {
+        return page;
+      }
+      const updatedElements = await this.updateElements(username, surveyId, tempFiles, page.elements);
+      return { ...page, elements: updatedElements };
+    });
+    return Promise.all(updatePromises);
+  }
+
+  async updateFormula(username: string, surveyId: string, formula: SurveyFormula): Promise<SurveyFormula> {
+    const temporaryDirectoryPath = `${SURVEYS_TEMP_FILES_PATH}/${username}`;
+    const fileNames = await this.fileSystemService.getAllFilenamesInDirectory(temporaryDirectoryPath);
+
+    if (fileNames.length === 0) {
+      return formula;
+    }
+    const updatedFormula = { ...formula };
+    if (formula.logo) {
+      updatedFormula.logo = await this.updateTemporalLogo(username, surveyId, fileNames, formula.logo);
+    }
+    if (formula.pages && formula.pages.length > 0) {
+      updatedFormula.pages = await this.updatePages(username, surveyId, fileNames, formula.pages);
+    }
+    if (formula.elements && formula.elements.length > 0) {
+      updatedFormula.elements = await this.updateElements(username, surveyId, fileNames, formula.elements);
+    }
+    return updatedFormula;
+  }
+  */
+
   async updateOrCreateSurvey(surveyDto: SurveyDto, user: JwtUser): Promise<SurveyDocument> {
     const isCreating = !surveyDto.id;
 
