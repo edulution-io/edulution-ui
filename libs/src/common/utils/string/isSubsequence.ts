@@ -10,26 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { FaStarOfLife } from 'react-icons/fa';
+const isSubsequence = (pattern: string, text: string): boolean => {
+  let patternIndex = 0;
+  let textIndex = 0;
 
-interface SidebarItemNotificationProps {
-  notificationCounter?: number;
-}
-
-const SidebarItemNotification = (props: SidebarItemNotificationProps) => {
-  const { notificationCounter } = props;
-
-  if (!notificationCounter || notificationCounter === 0) {
-    return null;
+  while (patternIndex < pattern.length && textIndex < text.length) {
+    if (pattern[patternIndex] === text[textIndex]) {
+      patternIndex += 1;
+    }
+    textIndex += 1;
   }
 
-  return (
-    <FaStarOfLife
-      size={12}
-      className="absolute right-1 top-1 text-ciLightGreen"
-    />
-  );
+  return patternIndex === pattern.length;
 };
 
-export default SidebarItemNotification;
+export default isSubsequence;

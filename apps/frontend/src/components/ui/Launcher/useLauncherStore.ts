@@ -10,18 +10,22 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { MobileLogoIcon } from '@/assets/icons';
-import { SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
+import { create } from 'zustand';
 
-const HomeButton: React.FC = () => (
-  <div className="group relative right-0 top-0 z-50 flex max-h-14 items-center justify-end gap-4 bg-black px-4 py-2 md:block md:px-3">
-    <img
-      src={MobileLogoIcon}
-      width={SIDEBAR_ICON_WIDTH}
-      alt="edulution-mobile-logo"
-    />
-  </div>
-);
+interface LauncherStore {
+  isLauncherOpen: boolean;
+  reset: () => void;
+  toggleLauncher: () => void;
+}
 
-export default HomeButton;
+const initialState = {
+  isLauncherOpen: false,
+};
+
+const useLauncherStore = create<LauncherStore>((set) => ({
+  ...initialState,
+  reset: () => set(initialState),
+  toggleLauncher: () => set((state) => ({ isLauncherOpen: !state.isLauncherOpen })),
+}));
+
+export default useLauncherStore;

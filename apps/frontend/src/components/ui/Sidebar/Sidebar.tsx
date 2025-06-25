@@ -11,71 +11,15 @@
  */
 
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import APPS from '@libs/appconfig/constants/apps';
-import { Dashboard, SettingsIcon } from '@/assets/icons';
 import useMedia from '@/hooks/useMedia';
-import useLdapGroups from '@/hooks/useLdapGroups';
-import useLanguage from '@/hooks/useLanguage';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import useMailsStore from '@/pages/Mail/useMailsStore';
-import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
-import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
-import getDisplayName from '@/utils/getDisplayName';
-import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
-import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
+import useSidebarItems from '@/hooks/useSidebarItems';
 import DesktopSidebar from './DesktopSidebar';
 import MobileSidebar from './MobileSidebar';
 
 const Sidebar: React.FC = () => {
-  const { t } = useTranslation();
-  const { appConfigs } = useAppConfigsStore();
-  const { isSuperAdmin } = useLdapGroups();
   const { isMobileView } = useMedia();
-  const { language } = useLanguage();
 
-  const { mails } = useMailsStore();
-  const { runningConferences } = useConferenceStore();
-  const { bulletinBoardNotifications } = useBulletinBoardStore();
-
-  const getNotificationCounter = (app: string): number | undefined => {
-    switch (app) {
-      case APPS.MAIL:
-        return mails.length || 0;
-      case APPS.CONFERENCES:
-        return runningConferences.length;
-      case APPS.BULLETIN_BOARD:
-        return bulletinBoardNotifications.length;
-      default:
-        return undefined;
-    }
-  };
-
-  const sidebarItems = [
-    {
-      title: t('dashboard.pageTitle'),
-      link: `${DASHBOARD_ROUTE}`,
-      icon: Dashboard,
-      color: 'bg-ciGreenToBlue',
-    },
-    ...appConfigs.map((item) => ({
-      title: getDisplayName(item, language),
-      link: `/${item.name}`,
-      icon: item.icon,
-      color: 'bg-ciGreenToBlue',
-      notificationCounter: getNotificationCounter(item.name),
-    })),
-    ...(isSuperAdmin
-      ? [
-          {
-            title: t('settings.sidebar'),
-            link: `/${SETTINGS_PATH}`,
-            icon: SettingsIcon,
-            color: 'bg-ciGreenToBlue',
-          },
-        ]
-      : []),
-  ];
+  const sidebarItems = useSidebarItems();
 
   const sidebarProps = {
     sidebarItems,
