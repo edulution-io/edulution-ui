@@ -23,7 +23,7 @@ const LinkWrapper: React.FC<LinkWrapperProps> = ({ href, isPdf, children }) => (
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className={isPdf ? 'text-red-400 underline' : 'text-blue-400 underline'}
+    className={isPdf ? 'text-ciRed underline' : 'text-ciLightBlue underline'}
   >
     {children}
     {isPdf && ' 📄'}

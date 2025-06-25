@@ -58,7 +58,7 @@ const createParserOptions = (handleImageClick: (url: string) => void): HTMLReact
 const BulletinContent: React.FC<BulletinContentProps> = ({ html, handleImageClick }) => {
   const options = useMemo(() => createParserOptions(handleImageClick), [handleImageClick]);
 
-  return <div className="quill-content mt-2 break-normal text-white">{parse(html, options)}</div>;
+  return <div className="quill-content mt-2 break-normal text-background">{parse(html, options)}</div>;
 };
 
 export default BulletinContent;
