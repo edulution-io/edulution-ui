@@ -64,7 +64,7 @@ class PublicSurveysController {
     if (surveyId === TEMPORAL_SURVEY_ID_STRING) {
       return [];
     }
-    return await this.surveyAnswerService.getSelectableChoices(surveyId, questionName);
+    return this.surveyAnswerService.getSelectableChoices(surveyId, questionName);
   }
 }
 
