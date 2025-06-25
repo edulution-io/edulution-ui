@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import getDisplayName from '@/utils/getDisplayName';
 import useLanguage from '@/hooks/useLanguage';
-import DropdownSelect from '../../../../components/ui/DropdownSelect/DropdownSelect';
+import DropdownSelect from '@/components/ui/DropdownSelect/DropdownSelect';
 
 interface AppConfigFormProps {
   form: UseFormReturn<{ [settingLocation: string]: AppConfigDto } | ProxyConfigFormType | MailProviderConfig>;
