@@ -383,6 +383,97 @@ class SurveysService implements OnModuleInit {
     fileStream.pipe(res);
     return res;
   }
+  
+    async updateTempFilesUrls(username: string, pathWithIds: string, tempFiles: string[], link: string): Promise<string> {
+    if (!link) return link;
+
+    const [baseUrl, tempSegment] = link.split(`/${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}`);
+    const imagesFileName = tempSegment?.split('/').pop();
+
+    if (!baseUrl || !imagesFileName || !tempFiles.includes(imagesFileName)) {
+      return link;
+    }
+
+    const temporaryAttachmentPath = join(SURVEYS_TEMP_FILES_PATH, username, imagesFileName);
+    const permanentDirectory = join(SURVEYS_FILES_PATH, pathWithIds);
+    const persistentAttachmentPath = join(permanentDirectory, imagesFileName);
+
+    try {
+      await this.fileSystemService.ensureDirectoryExists(permanentDirectory);
+      await FilesystemService.moveFile(temporaryAttachmentPath, persistentAttachmentPath);
+    } catch (error) {
+      throw new CustomHttpException(
+        CommonErrorMessages.FILE_MOVE_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        SurveysService.name,
+      );
+    }
+
+    return `${baseUrl}/${SURVEY_FILE_ATTACHMENT_ENDPOINT}/${pathWithIds}/${imagesFileName}`;
+  }
+
+  async updateTemporalUrls(
+    username: string,
+    surveyId: string,
+    tempFiles: string[],
+    question: SurveyElement,
+  ): Promise<SurveyElement> {
+    const pathWithIds = `${surveyId}/${question.name}`;
+    try {
+      if (question.type === 'image' && question.imageLink) {
+        const newImageLink = await this.updateTempFilesUrls(username, pathWithIds, tempFiles, question.imageLink);
+        return { ...question, imageLink: newImageLink };
+      }
+
+      if (question.type === 'imagepicker' && question.choices) {
+        const choices = await Promise.all(
+          question.choices.map(async (choice) => {
+            if (choice != null && typeof choice !== 'string' && choice.imageLink) {
+              const newImageLink = await this.updateTempFilesUrls(username, pathWithIds, tempFiles, choice.imageLink);
+              return { ...choice, imageLink: newImageLink };
+            }
+            return choice;
+          }),
+        );
+        return { ...question, choices };
+      }
+
+      if (question.type === 'file') {
+        const newFileLink = await this.updateTempFilesUrls(username, pathWithIds, tempFiles, question.value as string);
+        return { ...question, value: newFileLink };
+      }
+
+      return question;
+    } catch (error) {
+      throw new CustomHttpException(
+        CommonErrorMessages.FILE_NOT_PROVIDED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error,
+        SurveysService.name,
+      );
+    }
+  }
+
+  async updateQuestion(
+    username: string,
+    surveyId: string,
+    tempFiles: string[],
+    question: SurveyElement,
+  ): Promise<SurveyElement> {
+    const updatedQuestion = await this.updateTemporalUrls(username, surveyId, tempFiles, question);
+    return SurveysService.updateLinkForRestfulChoices(surveyId, updatedQuestion);
+  }
+
+  async updateTemporalLogo(
+    username: string,
+    surveyId: string,
+    tempFiles: string[],
+    link: string,
+  ): Promise<string | undefined> {
+    const pathWithIds = `${surveyId}/logo`;
+    return this.updateTempFilesUrls(username, pathWithIds, tempFiles, link);
+  }
   */
 }
 
