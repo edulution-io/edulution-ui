@@ -58,6 +58,7 @@ const initialState = {
       options: {},
       accessGroups: [],
       extendedOptions: {},
+      position: 0,
     },
   ],
   isLoading: false,

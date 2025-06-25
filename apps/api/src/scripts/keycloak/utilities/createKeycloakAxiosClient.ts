@@ -10,13 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import migration000 from './migration000';
-import migration001 from './migration001';
-import migration002 from './migration002';
-import migration003 from './migration003';
-import migration004 from './migration004';
+import axios from 'axios';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 
-// Add new migrations here
-const appConfigMigrationsList = [migration000, migration001, migration002, migration003, migration004];
+const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API } = process.env as Record<string, string>;
 
-export default appConfigMigrationsList;
+const createKeycloakAxiosClient = (token: string) =>
+  axios.create({
+    baseURL: `${KEYCLOAK_API}/admin/realms/${KEYCLOAK_EDU_UI_REALM}`,
+    headers: {
+      [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_JSON,
+      [HTTP_HEADERS.Authorization]: `Bearer ${token}`,
+    },
+  });
+
+export default createKeycloakAxiosClient;

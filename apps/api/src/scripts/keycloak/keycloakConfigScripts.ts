@@ -11,8 +11,9 @@
  */
 
 import removeRealmRoles from './removeRealmRoles';
+import addMailcowSyncRoles from './addMailcowSyncRoles';
 
 // Add new scripts here
-const keycloakConfigScripts = [removeRealmRoles];
+const keycloakConfigScripts = [removeRealmRoles, addMailcowSyncRoles];
 
 export default keycloakConfigScripts;
