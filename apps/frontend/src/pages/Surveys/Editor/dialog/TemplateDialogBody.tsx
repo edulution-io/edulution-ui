@@ -52,12 +52,13 @@ const TemplateDialogBody = (props: TemplateDialogBodyProps) => {
       </p>
       {templates.length === 0 ? (
         <p className="flex justify-center text-secondary">{t('survey.editor.templateMenu.emptyMessage')}</p>
-      ) : null}
-      <TemplateList
-        form={form}
-        creator={surveyCreator}
-        templates={templates}
-      />
+      ) : (
+        <TemplateList
+          form={form}
+          creator={surveyCreator}
+          templates={templates}
+        />
+      )}
     </div>
   );
 };

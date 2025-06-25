@@ -27,10 +27,6 @@ interface TemplateListProps {
 const TemplateList = (props: TemplateListProps) => {
   const { form, creator, templates } = props;
 
-  if (templates.length === 0) {
-    return null;
-  }
-
   return (
     <AccordionSH
       type="multiple"

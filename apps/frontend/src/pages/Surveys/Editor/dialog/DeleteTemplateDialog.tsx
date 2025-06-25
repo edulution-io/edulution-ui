@@ -14,8 +14,7 @@ import React from 'react';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
-import UserLanguage from '@libs/user/constants/userLanguage';
-import useUserStore from '@/store/UserStore/UserStore';
+import useLanguage from '@/hooks/useLanguage';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import Input from '@/components/shared/Input';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
@@ -35,11 +34,11 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
 
   const { template, error, isSubmitting, deleteTemplate, fetchTemplates } = useTemplateMenuStore();
 
-  const { user } = useUserStore();
+  const { language } = useLanguage();
 
   const { t } = useTranslation();
 
-  const locale = getLocaleDateFormat(user?.language === UserLanguage.SYSTEM ? navigator.language : user?.language);
+  const locale = getLocaleDateFormat(language);
 
   const handleRemoveTemplate = async () => {
     if (template?.fileName) {
@@ -72,7 +71,7 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
                     value={template?.template.formula?.title}
                     readOnly
                     disabled
-                    useFullWidth
+                    width="dialog"
                     className="min-w-[100px] cursor-pointer"
                   />
                 </p>
@@ -85,7 +84,7 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
                     value={template?.template.creator.username}
                     readOnly
                     disabled
-                    useFullWidth
+                    width="dialog"
                     className="min-w-[100px] cursor-pointer"
                   />
                 </p>
@@ -98,7 +97,7 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
                     value={format(template?.template.createdAt, 'PPP', { locale })}
                     readOnly
                     disabled
-                    useFullWidth
+                    width="dialog"
                     className="min-w-[100px] cursor-pointer"
                   />
                 </p>
