@@ -248,6 +248,9 @@ class SurveysService implements OnModuleInit {
     const temporaryDirectoryPath = `${SURVEYS_TEMP_FILES_PATH}/${username}`;
     const fileNames = await this.fileSystemService.getAllFilenamesInDirectory(temporaryDirectoryPath);
 
+    if (fileNames.length === 0) {
+      return formula;
+    }
     const updatedFormula = { ...formula };
     if (formula.logo) {
       updatedFormula.logo = await this.updateTemporalLogo(username, surveyId, fileNames, formula.logo);
@@ -280,6 +283,7 @@ class SurveysService implements OnModuleInit {
     const { preferred_username: username } = user;
 
     const updatedFormula = await this.updateFormula(username, surveyId, survey.formula);
+
     const updatedSurvey = { ...surveyDto, id: surveyId, formula: updatedFormula };
     const savedSurvey = await this.updateSurvey(updatedSurvey, user);
 
@@ -439,12 +443,8 @@ class SurveysService implements OnModuleInit {
     tempFiles: string[],
     question: SurveyElement,
   ): Promise<SurveyElement> {
-    let updatedQuestion = SurveysService.updateLinkForRestfulChoices(surveyId, question);
-    if (tempFiles.length === 0) {
-      return updatedQuestion;
-    }
-    updatedQuestion = await this.updateTemporalUrls(username, surveyId, tempFiles, updatedQuestion);
-    return updatedQuestion;
+    const updatedQuestion = await this.updateTemporalUrls(username, surveyId, tempFiles, question);
+    return SurveysService.updateLinkForRestfulChoices(surveyId, updatedQuestion);
   }
 
   async updateTemporalLogo(
@@ -453,9 +453,6 @@ class SurveysService implements OnModuleInit {
     tempFiles: string[],
     link: string,
   ): Promise<string | undefined> {
-    if (tempFiles.length === 0 || !link) {
-      return link;
-    }
     const pathWithIds = `${surveyId}/logo`;
     return this.updateTempFilesUrls(username, pathWithIds, tempFiles, link);
   }

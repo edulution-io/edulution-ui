@@ -88,21 +88,36 @@ class SurveyAnswersService implements OnModuleInit {
 
     const possibleChoices = limiter.choices;
 
-    const filteredChoices = await Promise.all(
-      possibleChoices.map(async (choice) => {
-        const isVisible = (await this.countChoiceSelections(surveyId, questionName, choice.title)) < choice.limit;
-        return isVisible ? choice : null;
-      }),
-    );
+    const filteredChoices: ChoiceDto[] = [];
+    const filteringPromises = possibleChoices.map(async (choice) => {
+      const counter = await this.countChoiceSelections(surveyId, questionName, choice.name);
+      if (!counter || counter === 0 || counter < choice.limit) {
+        filteredChoices.push(choice);
+      }
+    });
+    await Promise.all(filteringPromises);
 
-    return filteredChoices.filter((choice) => choice !== null);
+    return filteredChoices;
   };
 
   async countChoiceSelections(surveyId: string, questionName: string, choiceId: string): Promise<number> {
-    return this.surveyAnswerModel.countDocuments({
-      surveyId: new Types.ObjectId(surveyId),
-      [`answer.${questionName}`]: choiceId,
+    const documents = await this.surveyAnswerModel
+      .find<SurveyAnswerDocument>({ surveyId: new Types.ObjectId(surveyId) })
+      .exec();
+    const filteredAnswers: string[] = [];
+    documents.forEach((document) => {
+      try {
+        const answer: { [key: string]: string | object } = JSON.parse(JSON.stringify(document.answer)) as {
+          [key: string]: string | object;
+        };
+        if (answer[questionName] === choiceId) {
+          filteredAnswers.push(choiceId);
+        }
+      } catch (error) {
+        // Do Nothing - Handles the case where answer is not a valid JSON or does not contain the expected structure
+      }
     });
+    return filteredAnswers.length || 0;
   }
 
   async getCreatedSurveys(username: string): Promise<Survey[]> {
