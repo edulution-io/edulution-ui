@@ -10,19 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import CollectFileJobData from '@libs/queue/types/collectFileJobData';
-import FileJobData from '@libs/queue/types/fileJobData';
-import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
-import MoveOrRenameJobData from '@libs/queue/types/moveOrRenameJobData';
-import UploadFileJobData from '@libs/queue/types/uploadFileJobData';
-import CreateFolderJobData from '@libs/queue/types/createFolderJobData';
+class UploadFileDto {
+  name: string;
 
-type FileOperationQueueJobData =
-  | CollectFileJobData
-  | FileJobData
-  | DeleteFileJobData
-  | MoveOrRenameJobData
-  | CreateFolderJobData
-  | UploadFileJobData;
+  isZippedFolder?: boolean;
 
-export default FileOperationQueueJobData;
+  originalFolderName?: string;
+}
+
+export default UploadFileDto;
