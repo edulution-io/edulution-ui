@@ -13,9 +13,9 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export default function useModKeyLabel() {
+const useModKeyLabel = () => {
   const { t } = useTranslation();
-  const [label, setLabel] = useState<string>('STRG');
+  const [label, setLabel] = useState<string>(t('ctrlKey'));
 
   useEffect(() => {
     const platform = navigator.platform || navigator.userAgent || '';
@@ -29,4 +29,6 @@ export default function useModKeyLabel() {
   }, []);
 
   return label;
-}
+};
+
+export default useModKeyLabel;

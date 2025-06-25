@@ -765,7 +765,7 @@
     "searchApps": "Type to filter apps...",
     "pressShortKey": "To open launcher press",
     "pressEnterToStartApp": "To launch first app press",
-    "noSearchResults": "No results for your search term"
+    "noSearchResults": "No app found"
   },
   "settings": {
     "title": "SETTINGS",

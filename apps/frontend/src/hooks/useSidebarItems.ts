@@ -24,7 +24,7 @@ import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import getDisplayName from '@/utils/getDisplayName';
 import { SidebarMenuItem } from '@libs/ui/types/sidebar';
 
-export default function useSidebarItems(): SidebarMenuItem[] {
+const useSidebarItems = (): SidebarMenuItem[] => {
   const { t } = useTranslation();
   const { appConfigs } = useAppConfigsStore();
   const { isSuperAdmin } = useLdapGroups();
@@ -72,4 +72,6 @@ export default function useSidebarItems(): SidebarMenuItem[] {
         ]
       : []),
   ];
-}
+};
+
+export default useSidebarItems;
