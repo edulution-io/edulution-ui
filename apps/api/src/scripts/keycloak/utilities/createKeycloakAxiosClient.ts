@@ -10,10 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import removeRealmRoles from './removeRealmRoles';
-import addMailcowSyncRoles from './addMailcowSyncRoles';
+import axios from 'axios';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 
-// Add new scripts here
-const keycloakConfigScripts = [removeRealmRoles, addMailcowSyncRoles];
+const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API } = process.env as Record<string, string>;
 
-export default keycloakConfigScripts;
+const createKeycloakAxiosClient = (token: string) =>
+  axios.create({
+    baseURL: `${KEYCLOAK_API}/admin/realms/${KEYCLOAK_EDU_UI_REALM}`,
+    headers: {
+      [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_JSON,
+      [HTTP_HEADERS.Authorization]: `Bearer ${token}`,
+    },
+  });
+
+export default createKeycloakAxiosClient;
