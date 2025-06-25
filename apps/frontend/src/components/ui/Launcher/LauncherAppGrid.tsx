@@ -22,6 +22,7 @@ import Input from '@/components/shared/Input';
 import isSubsequence from '@libs/common/utils/string/isSubsequence';
 import useMedia from '@/hooks/useMedia';
 import cn from '@libs/common/utils/className';
+import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
 
 const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
@@ -87,7 +88,7 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
 
       <div
         className="mx-auto grid max-h-[full] w-full grid-cols-[repeat(auto-fit,minmax(8rem,auto))] justify-center
-        gap-x-3 gap-y-2 overflow-auto overflow-y-auto pb-10 scrollbar-thin md:max-h-full
+        gap-x-3 gap-y-2 overflow-auto pb-10 scrollbar-thin md:max-h-full
         md:w-[95%] md:grid-cols-[repeat(auto-fit,minmax(12rem,auto))] md:gap-x-6 md:gap-y-5 md:pb-4"
       >
         {filteredApps.length ? (
@@ -99,7 +100,7 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
             >
               <Card
                 className={cn(
-                  'h-26 flex w-full flex-col items-center overflow-hidden border border-muted-light bg-muted-dialog p-5 hover:bg-primary',
+                  'h-26 relative flex w-full flex-col items-center overflow-hidden border border-muted-light bg-muted-dialog p-5 hover:bg-primary',
                   {
                     'bg-muted': index === 0,
                   },
@@ -111,7 +112,13 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
                   alt={app.title}
                   className="h-10 w-10 md:h-14 md:w-14"
                 />
+
                 <p>{app.title}</p>
+
+                <NotificationCounter
+                  count={app.notificationCounter || 0}
+                  className="top-[10px]"
+                />
               </Card>
             </NavLink>
           ))
