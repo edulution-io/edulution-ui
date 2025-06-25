@@ -383,8 +383,8 @@ class SurveysService implements OnModuleInit {
     fileStream.pipe(res);
     return res;
   }
-  
-    async updateTempFilesUrls(username: string, pathWithIds: string, tempFiles: string[], link: string): Promise<string> {
+
+  async updateTempFilesUrls(username: string, pathWithIds: string, tempFiles: string[], link: string): Promise<string> {
     if (!link) return link;
 
     const [baseUrl, tempSegment] = link.split(`/${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}`);
