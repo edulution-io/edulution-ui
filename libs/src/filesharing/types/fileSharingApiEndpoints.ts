@@ -19,6 +19,9 @@ enum FileSharingApiEndpoints {
   DUPLICATE = 'duplicate',
   COLLECT = 'collect',
   COPY = 'copy',
+  FILE_SHARE = 'file-share',
+  PUBLIC_SHARE = 'public-share',
+  PUBLIC_SHARE_DOWNLOAD = 'public-share/download',
   UPLOAD = 'upload',
 }
 

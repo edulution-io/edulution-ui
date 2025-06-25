@@ -15,6 +15,7 @@ const FILE_SHARING_TABLE_COLUMNS = {
   LAST_MODIFIED: 'lastmod',
   SIZE: 'size',
   TYPE: 'type',
+  IS_SHARED: 'is-shared',
 } as const;
 
 export default FILE_SHARING_TABLE_COLUMNS;
