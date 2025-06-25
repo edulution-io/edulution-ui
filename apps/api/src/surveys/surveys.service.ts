@@ -190,17 +190,28 @@ class SurveysService implements OnModuleInit {
 
   static updateLinkForRestfulChoices(surveyId: string, question: SurveyElement): SurveyElement {
     if (isQuestionTypeChoiceType(question.type) && question.choicesByUrl) {
-      const [baseUrl, tempSegment] = question.choicesByUrl.url.split(`/${TEMPORAL_SURVEY_ID_STRING}/`);
-      if (!baseUrl || !surveyId || !tempSegment) {
-        return question;
+      const pathParts = question.choicesByUrl.url.split('/');
+      const temporalSurveyIdIndex = pathParts.findIndex((part: string) => part === TEMPORAL_SURVEY_ID_STRING);
+      if (temporalSurveyIdIndex !== -1) {
+        try {
+          pathParts[temporalSurveyIdIndex] = surveyId;
+          const newLink = pathParts.join('/');
+          return {
+            ...question,
+            choicesByUrl: {
+              ...question.choicesByUrl,
+              url: newLink,
+            },
+          };
+        } catch (error) {
+          throw new CustomHttpException(
+            CommonErrorMessages.FILE_NOT_PROVIDED,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            error,
+            SurveysService.name,
+          );
+        }
       }
-      return {
-        ...question,
-        choicesByUrl: {
-          ...question.choicesByUrl,
-          url: `${baseUrl}/${surveyId}/${tempSegment}`,
-        },
-      };
     }
     return question;
   }
@@ -214,8 +225,7 @@ class SurveysService implements OnModuleInit {
     const updatePromises = elements?.map(async (question) =>
       this.updateQuestion(username, surveyId, tempFiles, question),
     );
-    const updatedElements = await Promise.all(updatePromises);
-    return updatedElements;
+    return Promise.all(updatePromises);
   }
 
   async updatePages(
@@ -231,8 +241,7 @@ class SurveysService implements OnModuleInit {
       const updatedElements = await this.updateElements(username, surveyId, tempFiles, page.elements);
       return { ...page, elements: updatedElements };
     });
-    const updatedPages = await Promise.all(updatePromises);
-    return updatedPages;
+    return Promise.all(updatePromises);
   }
 
   async updateFormula(username: string, surveyId: string, formula: SurveyFormula): Promise<SurveyFormula> {
