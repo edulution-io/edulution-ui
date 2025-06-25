@@ -339,8 +339,8 @@ class SurveysService implements OnModuleInit {
       const date = new Date();
       filename = `${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}-${date.getHours()}:${date.getMinutes()}-${uuidv4()}.json`;
     }
-    const templatePath = join(SURVEYS_TEMPLATE_PATH, filename);	
-    try {	
+    const templatePath = join(SURVEYS_TEMPLATE_PATH, filename);
+    try {
       await this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);
       return await FilesystemService.writeFile(templatePath, JSON.stringify(surveyTemplateDto.template, null, 2));
     } catch (error) {
@@ -352,30 +352,30 @@ class SurveysService implements OnModuleInit {
       );
     }
   }
-        
-  async serveTemplateNames(): Promise<string[]> {	
-    return this.fileSystemService.getAllFilenamesInDirectory(SURVEYS_TEMPLATE_PATH);	
-  }	
 
-  async serveTemplate(fileName: string, res: Response): Promise<Response> {	
-    const templatePath = join(SURVEYS_TEMPLATE_PATH, fileName);	
-    const fileStream = await this.fileSystemService.createReadStream(templatePath);	
-    fileStream.pipe(res);	
-    return res;	
-  }	
+  async serveTemplateNames(): Promise<string[]> {
+    return this.fileSystemService.getAllFilenamesInDirectory(SURVEYS_TEMPLATE_PATH);
+  }
 
-  async serveFiles(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {	
-    const filePath = `${SURVEYS_FILES_PATH}/${surveyId}/${questionId}/${fileName}`;	
-    const fileStream = await this.fileSystemService.createReadStream(filePath);	
-    fileStream.pipe(res);	
-    return res;	
-  }	
+  async serveTemplate(fileName: string, res: Response): Promise<Response> {
+    const templatePath = join(SURVEYS_TEMPLATE_PATH, fileName);
+    const fileStream = await this.fileSystemService.createReadStream(templatePath);
+    fileStream.pipe(res);
+    return res;
+  }
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this	
-  async onSurveyRemoval(surveyIds: string[]): Promise<void> {	
-    const filePath = surveyIds.map((surveyId) => join(SURVEYS_FILES_PATH, surveyId));	
-    return FilesystemService.deleteDirectories(filePath);	
-  }	
+  async serveFiles(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
+    const filePath = `${SURVEYS_FILES_PATH}/${surveyId}/${questionId}/${fileName}`;
+    const fileStream = await this.fileSystemService.createReadStream(filePath);
+    fileStream.pipe(res);
+    return res;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  async onSurveyRemoval(surveyIds: string[]): Promise<void> {
+    const filePath = surveyIds.map((surveyId) => join(SURVEYS_FILES_PATH, surveyId));
+    return FilesystemService.deleteDirectories(filePath);
+  }
 
   async serveTempFiles(userId: string, fileName: string, res: Response): Promise<Response> {
     const filePath = `${SURVEYS_TEMP_FILES_PATH}/${userId}/${fileName}`;
