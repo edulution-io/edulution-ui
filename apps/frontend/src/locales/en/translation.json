@@ -374,7 +374,7 @@
 
     "publicShareFilesPage": {
       "title": "Publicly Shared Files",
-      "description": "Here you can find all the publicly shared files and their matching passwords. Anyone with the share link can download these files."
+      "description": "Here you will find all files that have been shared publicly. Anyone who has the share link and the corresponding password can download these files."
     },
 
     "publicFileSharing": {
@@ -408,7 +408,7 @@
         "PublicFileIsOnlyDeletableByOwner": "The share link can only be deleted by the owner of this conent.",
         "PublicFileNotFound": "Share link not found",
         "PublicFileIsRestricted": "This share link is restricted to specific users or groups.",
-        "PublicIsRestrictedByInvalidToken": "This share link is restricted by an invalid token.",
+        "PublicIsRestrictedByInvalidToken": "The share link cannot be accessed because the token is invalid.",
         "PublicFileWrongPassword": "The password for the sharing is incorrect.",
         "FileCouldNotBeFound": "The requested content could not be found. Please check the share link or contact the owner of this content."
       },

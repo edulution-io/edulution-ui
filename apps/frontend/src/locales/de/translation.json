@@ -345,7 +345,7 @@
 
     "publicShareFilesPage": {
       "title": "Öffentlich geteilte Dateien",
-      "description": "Hier findest du alle Dateien und das dazugehörige Passwort, die öffentlich geteilt wurden. Jeder, der den Freigabe-Link hat, kann diese Dateien herunterladen."
+      "description": "Hier findest du alle Dateien, die öffentlich geteilt wurden. Jeder, der den Freigabe-Link und das dazugehörige Passwort hat, kann diese Dateien herunterladen."
     },
 
     "progressBox": {
@@ -386,7 +386,7 @@
       "isActive": "Aktiv",
       "fileLink": "Freigabe-Link",
       "invitedAttendees": "Eingeladen",
-      "confirmMultiDelete": "Sollen diese Freigabe-Links wirklich zu den folgenden Inhalten gelöscht werden?",
+      "confirmMultiDelete": "Sollen diese Freigabe-Links zu den folgenden Inhalten wirklich gelöscht werden?",
       "confirmSingleDelete": "Soll dieser Freigabe-Link zu folgendem Inhalt wirklich gelöscht werden?",
       "deleteFileLink": "Freigabe-Link löschen",
       "deleteFileLinks": "Freigabe-Links löschen",
@@ -408,7 +408,7 @@
         "PublicFileIsOnlyDeletableByOwner": "Der Freigabe-Link kann nur vom Besitzer gelöscht werden.",
         "PublicFileNotFound": "Freigabe-Link nicht gefunden.",
         "PublicFileIsRestricted": "Der Freigabe-Link ist nur für bestimmte Nutzer oder Gruppen zugänglich.",
-        "PublicIsRestrictedByInvalidToken": "Auf deb Freigabelink kann nicht zugegriffen werden, da der Token ungültig ist.",
+        "PublicIsRestrictedByInvalidToken": "Auf den Freigabelink kann nicht zugegriffen werden, da der Token ungültig ist.",
         "PublicFileWrongPassword": "Das eingegebene Passwort ist falsch.",
         "FileCouldNotBeFound": "Der angefordert Freigabe-Link konnte nicht gefunden werden. Bitte überprüfe den Link oder wende dich an den Ersteller."
       },
