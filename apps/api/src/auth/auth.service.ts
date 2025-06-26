@@ -31,6 +31,7 @@ import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
 import decodeBase64Api from '@libs/common/utils/decodeBase64Api';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import UserRoles from '@libs/user/constants/userRoles';
+import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../common/CustomHttpException';
 import { User, UserDocument } from '../users/user.schema';
 import SseService from '../sse/sse.service';
@@ -221,9 +222,8 @@ class AuthService {
       const updateUser = await this.userModel.findOne<User>({ username }).lean();
       const updateUserRoles = updateUser?.ldapGroups;
       const userHasPermission =
-        (ldapGroups.includes(GroupRoles.TEACHER) && !!updateUserRoles?.roles.includes(UserRoles.STUDENT)) ||
-        ldapGroups.includes(GroupRoles.ADMIN) ||
-        ldapGroups.includes(GroupRoles.SUPER_ADMIN);
+        getIsAdmin(ldapGroups) ||
+        (ldapGroups.includes(GroupRoles.TEACHER) && !!updateUserRoles?.roles.includes(UserRoles.STUDENT));
 
       if (!userHasPermission) {
         throw new Error();
