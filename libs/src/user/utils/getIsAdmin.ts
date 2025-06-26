@@ -13,6 +13,6 @@
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 
 const getIsAdmin = (ldapGroups: string[]) =>
-  ldapGroups.includes(GroupRoles.ADMIN as string) || ldapGroups.includes(GroupRoles.SUPER_ADMIN);
+  ldapGroups.includes(GroupRoles.SUPER_ADMIN) || ldapGroups.includes(GroupRoles.ADMIN);
 
 export default getIsAdmin;
