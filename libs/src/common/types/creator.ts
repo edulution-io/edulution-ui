@@ -10,18 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
+type Creator = {
+  firstName: string;
+  lastName: string;
+  username: string;
+};
 
-@Injectable()
-class ParseJsonPipe<T = unknown> implements PipeTransform<string, T> {
-  // @typescript-eslint/class-methods-use-this
-  transform(value: string): T {
-    try {
-      return JSON.parse(value) as T;
-    } catch {
-      throw new BadRequestException('Invalid JSON in dto field');
-    }
-  }
-}
-
-export default ParseJsonPipe;
+export default Creator;

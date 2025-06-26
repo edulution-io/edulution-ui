@@ -13,12 +13,12 @@
 import { useTranslation } from 'react-i18next';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import React from 'react';
-import { FilesharingIcon } from '@libs/assets';
 import PublicShareTable from '@/pages/FileSharing/publicShare/table/PublicShareTable';
 import PublicShareFilesFloatingButtonsBar from '@/pages/FileSharing/FloatingButtonsBar/PublicShareFilesFloatingButtonsBar';
 import DeletePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DeletePublicShareDialog';
 import EditPublicShareDialog from '@/pages/FileSharing/publicShare/dialog/EditPublicShareDialog';
 import QRCodePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/QRCodePublicShareDialog';
+import { CloudIcon } from '@/assets/icons';
 
 const PublicShareFilesPage = () => {
   const { t } = useTranslation();
@@ -27,7 +27,7 @@ const PublicShareFilesPage = () => {
       nativeAppHeader={{
         title: t('filesharing.publicShareFilesPage.title'),
         description: t('filesharing.publicShareFilesPage.description'),
-        iconSrc: FilesharingIcon,
+        iconSrc: CloudIcon,
       }}
     >
       <PublicShareTable />

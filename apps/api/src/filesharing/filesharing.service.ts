@@ -379,8 +379,6 @@ class FilesharingService {
   async getPublicShareInfo(publicFileId: string, jwtUser: JwtUser | undefined) {
     const shareDocument = await this.shareModel.findOne({ publicShareId: publicFileId }).lean().exec();
 
-    console.log(`getPublicShareInfo: ${publicFileId} - ${JSON.stringify(shareDocument)}`);
-
     if (!shareDocument) {
       return { status: HttpStatus.NOT_FOUND, success: false };
     }

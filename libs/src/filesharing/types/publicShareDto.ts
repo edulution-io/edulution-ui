@@ -13,6 +13,7 @@
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import ShareFileLinkScope from '@libs/filesharing/constants/shareFileLinkScope';
+import Creator from '@libs/common/types/creator';
 
 interface PublicShareDto {
   publicShareId: string;
@@ -21,7 +22,7 @@ interface PublicShareDto {
   filename: string;
   filePath: string;
   createdAt: Date;
-  creator: string;
+  creator: Creator;
   etag: string;
   password: string;
   invitedAttendees: AttendeeDto[];

@@ -14,6 +14,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import {
+  CloudIcon,
   FileSharingIcon,
   IsoIcon,
   ProgrammIcon,
@@ -88,7 +89,7 @@ const useFileSharingMenuConfig = () => {
     const sharedItem: MenuItem = {
       id: 'shared',
       label: t('mountpoints.shared', { defaultValue: 'Geteilte Dateien' }),
-      icon: ShareIcon,
+      icon: CloudIcon,
       action: () => handlePathChange('/shared', 'shared'),
     };
 

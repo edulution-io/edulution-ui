@@ -12,10 +12,11 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import Creator from '@libs/common/types/creator';
 
 interface FileHeaderProps {
   filename: string;
-  creator: string;
+  creator: Creator;
 }
 
 const FileHeader: React.FC<FileHeaderProps> = ({ filename, creator }) => {
@@ -29,7 +30,7 @@ const FileHeader: React.FC<FileHeaderProps> = ({ filename, creator }) => {
 
       <div className="mt-4 flex items-center gap-2 text-background">
         <p>{t('filesharing.publicFileSharing.sharedBy')} </p>
-        <p className="truncate">{creator}</p>
+        <p className="truncate">{`${creator.firstName} ${creator.lastName} (${creator.username}`})</p>
       </div>
     </>
   );
