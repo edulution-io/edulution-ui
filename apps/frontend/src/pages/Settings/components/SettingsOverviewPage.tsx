@@ -23,10 +23,11 @@ import PageTitle from '@/components/PageTitle';
 import DockerContainerTable from '../AppConfig/DockerIntegration/DockerContainerTable';
 import LicenseOverview from './LicenseOverview';
 import GlobalSettings from '../GlobalSettings/GlobalSettings';
+import UserAdministration from './UserAdministration';
 
 const SettingsOverviewPage: React.FC = () => {
   const { t } = useTranslation();
-  const { isMobileView } = useMedia();
+  const { isMobileView, isTabletView } = useMedia();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -40,14 +41,15 @@ const SettingsOverviewPage: React.FC = () => {
   const tabOptions = [
     { id: CONTAINER, name: t('dockerOverview.container-view') },
     { id: GLOBAL_SETTINGS_ROOT_ENDPOINT, name: t('settings.globalSettings.title') },
+    { id: 'user-administration', name: t('settings.userAdministration.title') },
     { id: 'info', name: t('settings.info.title') },
   ];
 
-  if (!isMobileView)
+  if (!isMobileView && !isTabletView)
     return (
       <Tabs value={tabValue}>
         <div className="sticky top-0 z-20 backdrop-blur-xl">
-          <TabsList className="grid grid-cols-3 sm:w-fit">
+          <TabsList className="grid grid-cols-4 sm:w-fit">
             {tabOptions.map((item) => (
               <TabsTrigger
                 key={item.id}
@@ -82,6 +84,14 @@ const SettingsOverviewPage: React.FC = () => {
             translationId={tabOptions[2].name}
           />
           <Separator />
+          <UserAdministration />
+        </TabsContent>
+        <TabsContent value={tabOptions[3].id}>
+          <PageTitle
+            title={t('settings.sidebar')}
+            translationId={tabOptions[3].name}
+          />
+          <Separator />
           <LicenseOverview />
         </TabsContent>
       </Tabs>
@@ -108,7 +118,8 @@ const SettingsOverviewPage: React.FC = () => {
       <Separator className="my-2 " />
       {option === tabOptions[0].id && <DockerContainerTable />}
       {option === tabOptions[1].id && <GlobalSettings />}
-      {option === tabOptions[2].id && <LicenseOverview />}
+      {option === tabOptions[2].id && <UserAdministration />}
+      {option === tabOptions[3].id && <LicenseOverview />}
     </>
   );
 };

@@ -829,6 +829,14 @@
         "notFoundError": "Einstellungen konnten nicht geladen werden."
       }
     },
+    "userAdministration": {
+      "title": "Benutzerverwaltung",
+      "resetMfaForm": "Zwei-Faktor-Authentisierung zurücksetzen",
+      "resetMfaFormDescription": "Hier kannst du die Zwei-Faktor-Authentisierung für einen oder mehrere Nutzer zurücksetzen.",
+      "selectUsersTitle": "Nutzer auswählen",
+      "selectUsersDescription": "Wähle hier die Nutzer aus, für welche die Zwei-Faktor-Authentisierung zurückgesetzt werden soll.",
+      "totpResetSuccess": "TOTP für {{username}} wurde erfolgreich zurückgesetzt."
+    },
     "info": {
       "title": "Info"
     },
@@ -1187,7 +1195,8 @@
     "format": "Formatieren",
     "upload": "Hochladen",
     "mode": "Modus",
-    "orContinueWithoutAccount": "Oder fahre ohne Account fort"
+    "orContinueWithoutAccount": "Oder fahre ohne Account fort",
+    "reset": "Zurücksetzen"
   },
   "form": {
     "path": "Link",
