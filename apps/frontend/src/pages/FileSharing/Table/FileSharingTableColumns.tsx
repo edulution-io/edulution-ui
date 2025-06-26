@@ -38,7 +38,7 @@ import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownl
 import { MdOutlineCloudDone } from 'react-icons/md';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import IconWithCount from '@/components/shared/IconWithCount';
-import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 
@@ -145,24 +145,22 @@ const getFileSharingTableColumns = (
         const matchCount = matched.length;
         const isShared = matchCount > 0;
 
-        const { setEditMultipleContent } = usePublicShareStore();
+        const { setContentsToShare } = usePublicShareStore();
         const { openDialog } = useFileSharingDialogStore();
 
         return (
           <div className="flex items-center justify-center">
             {isShared && (
-              <div>
-                <IconWithCount
-                  Icon={MdOutlineCloudDone}
-                  size={BUTTONS_ICON_WIDTH}
-                  className="text-background"
-                  count={matchCount}
-                  onClick={() => {
-                    setEditMultipleContent(matched);
-                    openDialog(FileActionType.SHARE_FILE_OR_FOLDER);
-                  }}
-                />
-              </div>
+              <IconWithCount
+                Icon={MdOutlineCloudDone}
+                size={BUTTONS_ICON_WIDTH}
+                className="text-background"
+                count={matchCount}
+                onClick={() => {
+                  setContentsToShare(matched);
+                  openDialog(FileActionType.SHARE_FILE_OR_FOLDER);
+                }}
+              />
             )}
           </div>
         );

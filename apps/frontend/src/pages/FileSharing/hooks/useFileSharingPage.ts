@@ -16,7 +16,7 @@ import { toast } from 'sonner';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import userStore from '@/store/UserStore/UserStore';
-import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useUserPath from './useUserPath';
 
 const useFileSharingPage = () => {

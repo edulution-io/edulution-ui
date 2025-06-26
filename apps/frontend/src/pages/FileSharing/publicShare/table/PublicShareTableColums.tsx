@@ -24,8 +24,9 @@ import { Globe, QrCodeIcon } from 'lucide-react';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 import copyToClipboard from '@/utils/copyToClipboard';
 import { MdDelete, MdEdit, MdFileCopy } from 'react-icons/md';
-import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 
 const PublicShareFilesTableColumns: ColumnDef<PublicShareDto>[] = [
   {
@@ -183,12 +184,11 @@ const PublicShareFilesTableColumns: ColumnDef<PublicShareDto>[] = [
     meta: {
       translationId: 'filesharing.publicFileSharing.fileLink',
     },
-    accessorFn: (row) => row.fileLink,
     cell: ({ row }) => {
       const { origin } = window.location;
-      const { setPublicShareContent, setIsPublicShareQrCodeDialogOpen } = usePublicShareStore();
-      const { publicFileLink } = row.original;
-      const url = `${origin}/${publicFileLink}`;
+      const { setShare, setIsPublicShareQrCodeDialogOpen } = usePublicShareStore();
+      const { publicShareId } = row.original;
+      const url = `${origin}/${FileSharingApiEndpoints.PUBLIC_SHARE}/${publicShareId}`;
       return (
         <div className="flex w-full min-w-0 items-center gap-2">
           <InputWithActionIcons
@@ -210,7 +210,7 @@ const PublicShareFilesTableColumns: ColumnDef<PublicShareDto>[] = [
             size={BUTTONS_ICON_WIDTH}
             className=" flex-none cursor-pointer"
             onClick={() => {
-              setPublicShareContent(row.original);
+              setShare(row.original);
               setIsPublicShareQrCodeDialogOpen(true);
             }}
           />
@@ -230,7 +230,7 @@ const PublicShareFilesTableColumns: ColumnDef<PublicShareDto>[] = [
       translationId: 'filesharing.publicFileSharing.actions',
     },
     cell: ({ row }) => {
-      const { setEditContent, setIsPublicShareEditDialogOpen, deletePublicShares } = usePublicShareStore();
+      const { setContentToShare, setIsPublicShareEditDialogOpen, deletePublicShares } = usePublicShareStore();
       const { original } = row;
 
       return (
@@ -240,7 +240,7 @@ const PublicShareFilesTableColumns: ColumnDef<PublicShareDto>[] = [
               icon: MdEdit,
               translationId: 'common.edit',
               onClick: () => {
-                setEditContent(original);
+                setContentToShare(original);
                 setIsPublicShareEditDialogOpen(true);
               },
             },

@@ -22,8 +22,6 @@ interface PublicShareDto {
   filePath: string;
   createdAt: Date;
   creator: string;
-  fileLink: string;
-  publicFileLink: string;
   etag: string;
   password: string;
   invitedAttendees: AttendeeDto[];

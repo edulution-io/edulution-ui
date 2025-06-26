@@ -345,7 +345,7 @@
 
     "publicShareFilesPage": {
       "title": "Öffentlich geteilte Dateien",
-      "description": "Hier findest du alle Dateien, die öffentlich geteilt wurden. Jeder, der den Link hat, kann diese Dateien herunterladen."
+      "description": "Hier findest du alle Dateien und das dazugehörige Passwort, die öffentlich geteilt wurden. Jeder, der den Freigabe-Link hat, kann diese Dateien herunterladen."
     },
 
     "progressBox": {
@@ -386,40 +386,40 @@
       "isActive": "Aktiv",
       "fileLink": "Freigabe-Link",
       "invitedAttendees": "Eingeladen",
-      "confirmMultiDelete": "Sollen diese Freigabe-Links wirklich zu den folgenden Inhalten wirklich gelöscht werden?",
+      "confirmMultiDelete": "Sollen diese Freigabe-Links wirklich zu den folgenden Inhalten gelöscht werden?",
       "confirmSingleDelete": "Soll dieser Freigabe-Link zu folgendem Inhalt wirklich gelöscht werden?",
       "deleteFileLink": "Freigabe-Link löschen",
-      "deleteFileLinks": "Freigabe-Link löschen",
+      "deleteFileLinks": "Freigabe-Links löschen",
       "selectPersonsOrGroupsWhoCanAccess": "Beschränke Personen oder Gruppen, die Zugriff auf diesen Inhalt haben",
       "isAccessibleBy": "Zugänglich für",
       "isPasswordProtected": "Passwort",
       "publiclyAccessible": "Öffentlich zugänglich",
-      "qrCodePublicShareFile": "QR-Code für öffentlichen Freigabelink",
+      "qrCodePublicShareFile": "QR-Code für öffentlichen Freigabelinks",
       "createNewFileLink": "Neuen Freigabe-Link erstellen",
-      "editPublicShareFile": "Freigabelink bearbeiten",
-      "sharePublicFile": "Öffentliche Freigabelinks",
+      "editPublicShareFile": "Freigabe-Link bearbeiten",
+      "sharePublicFile": "Öffentliche Freigabe-Links",
       "searchSharedFiles": "Suche nach geteilten Freigabe-Links",
       "sharedBy": "Geteilt von: ",
-      "getFileAccess": "Bitte gib das Kennwort für diese Freigabe ein, um Zugriff auf die Inhalte zu erhalten.",
+      "getFileAccess": "Bitte gib das Passwort für diese Freigabe ein, um Zugriff auf die Inhalte zu erhalten.",
       "downloadPublicFile": "Inhalt herunterladen",
       "nameOfContent": "Name des Inhalts:",
       "errors": {
-        "PublicFileDeletionFailed": "Freigabelink konnte nicht gelöscht werden.",
-        "PublicFileIsOnlyDeletableByOwner": "Der Freigabelink kann nur vom Besitzer gelöscht werden.",
-        "PublicFileNotFound": "Freigabelink nicht gefunden.",
-        "PublicFileIsRestricted": "Der Freigabelink ist auf bestimmte Nutzer oder Gruppen beschränkt.",
-        "PublicIsRestrictedByInvalidToken": "Der Freigabelink ist durch ein ungültiges Token eingeschränkt.",
+        "PublicFileDeletionFailed": "Freigabe-Link konnte nicht gelöscht werden.",
+        "PublicFileIsOnlyDeletableByOwner": "Der Freigabe-Link kann nur vom Besitzer gelöscht werden.",
+        "PublicFileNotFound": "Freigabe-Link nicht gefunden.",
+        "PublicFileIsRestricted": "Der Freigabe-Link ist nur für bestimmte Nutzer oder Gruppen zugänglich.",
+        "PublicIsRestrictedByInvalidToken": "Auf deb Freigabelink kann nicht zugegriffen werden, da der Token ungültig ist.",
         "PublicFileWrongPassword": "Das eingegebene Passwort ist falsch.",
-        "FileCouldNotBeFound": "Die angeorderte Datei konnte nicht gefunden werden. Bitte überprüfe den Link oder wende dich an den Ersteller."
+        "FileCouldNotBeFound": "Der angefordert Freigabe-Link konnte nicht gefunden werden. Bitte überprüfe den Link oder wende dich an den Ersteller."
       },
       "success": {
-        "PublicFileLinkCreated": "Freigabelink erfolgreich erstellt.",
-        "PublicFileLinkDeleted": "Freigabelink erfolgreich gelöscht.",
-        "PublicFileLinkUpdated": "Freigabelink erfolgreich aktualisiert."
+        "PublicFileLinkCreated": "Freigabe-Link erfolgreich erstellt.",
+        "PublicFileLinkDeleted": "Freigabe-Link erfolgreich gelöscht.",
+        "PublicFileLinkUpdated": "Freigabe-Link erfolgreich aktualisiert."
       },
       "scope": {
         "public": "Öffentlich",
-        "publicHint": "Jeder, der den Link hat, kann diesen Inhalt herunterladen.",
+        "publicHint": "Jeder, der den Freigabe-Link hat, kann diesen Inhalt herunterladen.",
         "restricted": "Eingeschränkt",
         "restrictedHint": "Nur die ausgewählten Gruppen oder Benutzer können diesen Inhalt herunterladen."
       }

@@ -16,13 +16,14 @@ import { v4 as uuidv4 } from 'uuid';
 import DEFAULT_FILE_LINK_EXPIRY from '@libs/filesharing/constants/defaultFileLinkExpiry';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import Attendee from '../conferences/attendee.schema';
 
 export type PublicFileShareDocument = PublicFileShare & Document & { _id: Types.ObjectId };
 
 @Schema({ timestamps: true, strict: true })
 export class PublicFileShare {
   @Prop({ type: String, default: uuidv4, unique: true, index: true })
-  publicShareId!: string;
+  publicShareId: string;
 
   @Prop({ required: true }) etag!: string;
 
@@ -30,11 +31,7 @@ export class PublicFileShare {
 
   @Prop({ required: true }) filePath!: string;
 
-  @Prop({ required: true }) fileLink!: string;
-
-  @Prop({ required: true }) publicFileLink!: string;
-
-  @Prop({ required: true }) creator!: string;
+  @Prop({ required: true }) creator!: Attendee;
 
   @Prop({
     type: Date,
@@ -42,7 +39,7 @@ export class PublicFileShare {
     index: { expireAfterSeconds: 0 },
     default: () => DEFAULT_FILE_LINK_EXPIRY,
   })
-  expires!: Date;
+  expires: Date;
 
   @Prop() password?: string;
 

@@ -19,26 +19,26 @@ import useMedia from '@/hooks/useMedia';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/FileSharingTableColumns';
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
-import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 
 const FileSharingTable = () => {
   const { isMobileView, isTabletView } = useMedia();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const { setSelectedRows, setSelectedItems, selectedRows, files, isLoading } = useFileSharingStore();
-  const { publicShareContents, setEditMultipleContent } = usePublicShareStore();
+  const { shares, setContentsToShare } = usePublicShareStore();
 
   const sharedMap = useMemo(() => {
     const map = new Map<string, PublicShareDto[]>();
 
-    publicShareContents.forEach((file) => {
+    shares.forEach((file) => {
       const list = map.get(file.filePath) ?? [];
       list.push(file);
       map.set(file.filePath, list);
     });
 
     return map;
-  }, [publicShareContents]);
+  }, [shares]);
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue =
@@ -57,7 +57,7 @@ const FileSharingTable = () => {
       });
     setSelectedItems(selectedItemData.map((item) => item.file));
     const allShares = selectedItemData.flatMap((item) => item.shares);
-    setEditMultipleContent(allShares);
+    setContentsToShare(allShares);
   };
 
   const { appName } = useFileSharingMenuConfig();
@@ -71,7 +71,7 @@ const FileSharingTable = () => {
       [FILE_SHARING_TABLE_COLUMNS.TYPE]: shouldHideColumns,
       [FILE_SHARING_TABLE_COLUMNS.IS_SHARED]: shouldHideColumns,
     }),
-    [shouldHideColumns, publicShareContents],
+    [shouldHideColumns],
   );
 
   const columns = useMemo(() => getFileSharingTableColumns(undefined, undefined, sharedMap), [sharedMap]);

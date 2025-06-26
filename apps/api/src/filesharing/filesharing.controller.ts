@@ -43,13 +43,14 @@ import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreatePro
 import CreateEditPublicFileShareDto from '@libs/filesharing/types/createEditPublicFileShareDto';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import UploadFileDto from '@libs/filesharing/types/uploadFileDto';
+import JWTUser from '@libs/user/types/jwt/jwtUser';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
 import FilesharingService from './filesharing.service';
 import WebdavService from '../webdav/webdav.service';
 import { Public } from '../common/decorators/public.decorator';
-import GetToken from '../common/decorators/getToken.decorator';
 import ParseJsonPipe from '../common/pipes/parseJson.pipe';
+import GetCurrentUser from '../common/decorators/getUser.decorator';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
@@ -183,11 +184,11 @@ class FilesharingController {
   }
 
   @Post(FileSharingApiEndpoints.PUBLIC_SHARE)
-  async publicShareFile(
+  async createPublicShare(
     @Body() createPublicFileShareDto: CreateEditPublicFileShareDto,
-    @GetCurrentUsername() username: string,
+    @GetCurrentUser() currentUser: JWTUser,
   ) {
-    return this.filesharingService.publicShareFile(username, createPublicFileShareDto);
+    return this.filesharingService.createPublicShare(currentUser, createPublicFileShareDto);
   }
 
   @Get(FileSharingApiEndpoints.PUBLIC_SHARE)
@@ -229,9 +230,9 @@ class FilesharingController {
   @Get(`${FileSharingApiEndpoints.PUBLIC_SHARE}/:publicShareId`)
   async getPublicShareInfo(
     @Param('publicShareId') publicShareId: string,
-    @GetToken({ required: false }) token?: string,
+    @GetCurrentUser({ required: false }) currentUser?: JWTUser,
   ) {
-    return this.filesharingService.getPublicShareInfo(publicShareId, token);
+    return this.filesharingService.getPublicShareInfo(publicShareId, currentUser);
   }
 
   @Public()
@@ -240,11 +241,11 @@ class FilesharingController {
     @Param('publicShareId') publicShareId: string,
     @Body('password') password: string | undefined,
     @Res({ passthrough: true }) res: Response,
-    @GetToken({ required: false }) token: string,
+    @GetCurrentUser({ required: false }) currentUser?: JWTUser,
   ) {
-    const { stream, filename, fileType } = await this.filesharingService.getPublicFileShare(
+    const { stream, filename, fileType } = await this.filesharingService.getPublicShare(
       publicShareId,
-      token,
+      currentUser,
       password,
     );
 

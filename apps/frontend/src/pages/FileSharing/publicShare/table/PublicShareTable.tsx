@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 import React, { useEffect } from 'react';
-import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import PublicShareFilesTableColumns from '@/pages/FileSharing/publicShare/table/PublicShareTableColums';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
@@ -19,21 +19,15 @@ import PUBLIC_SHARED_FILES_TABLE_COLUMN from '@libs/filesharing/constants/public
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 
 const PublicShareTable = () => {
-  const {
-    selectedRows,
-    setSelectedRows,
-    publicShareContents,
-    isLoading,
-    fetchPublicShares,
-    setSelectedPublicShareRows,
-  } = usePublicShareStore();
+  const { selectedRows, setSelectedRows, shares, isLoading, fetchPublicShares, setSelectedPublicShareRows } =
+    usePublicShareStore();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedRows) : updaterOrValue;
     setSelectedRows(newValue);
     const selectedItemData = Object.keys(newValue)
       .filter((key) => newValue[key])
-      .map((rowId) => publicShareContents.find(({ publicShareId }) => publicShareId === rowId))
+      .map((rowId) => shares.find(({ publicShareId }) => publicShareId === rowId))
       .filter(Boolean) as PublicShareDto[];
     setSelectedPublicShareRows(selectedItemData);
   };
@@ -45,7 +39,7 @@ const PublicShareTable = () => {
   return (
     <ScrollableTable
       columns={PublicShareFilesTableColumns}
-      data={publicShareContents}
+      data={shares}
       filterKey={PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME}
       filterPlaceHolderText="filesharing.publicFileSharing.searchSharedFiles"
       onRowSelectionChange={handleRowSelectionChange}

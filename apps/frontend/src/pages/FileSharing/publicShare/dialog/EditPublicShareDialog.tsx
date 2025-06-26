@@ -12,7 +12,7 @@
 
 import React, { useEffect } from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
-import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
@@ -28,7 +28,7 @@ const EditPublicShareDialog: React.FC = () => {
     isPublicShareEditDialogOpen,
     isLoading,
     setIsPublicShareEditDialogOpen,
-    editContent,
+    contentToShare,
     updatePublicShare,
   } = usePublicShareStore();
 
@@ -45,7 +45,7 @@ const EditPublicShareDialog: React.FC = () => {
     },
   });
 
-  const currentFile = editContent ?? selectedContentToShareRows[0];
+  const currentFile = contentToShare ?? selectedContentToShareRows[0];
 
   const isFileRestricted = currentFile?.invitedAttendees?.length > 0 || currentFile?.invitedGroups?.length > 0;
 
@@ -59,7 +59,7 @@ const EditPublicShareDialog: React.FC = () => {
         password: currentFile?.password,
       });
     }
-  }, [editContent, form]);
+  }, [contentToShare, form]);
 
   const onSubmit = async () => {
     const { scope, expires, invitedAttendees = [], invitedGroups = [], password = '' } = form.getValues();

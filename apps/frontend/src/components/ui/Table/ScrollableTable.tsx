@@ -51,7 +51,7 @@ interface DataTableProps<TData, TValue> {
   showSelectedCount?: boolean;
   isDialog?: boolean;
   actions?: TableAction<TData>[];
-  showSearchBar?: boolean;
+  showSearchBarAndColumnSelect?: boolean;
 }
 
 const ScrollableTable = <TData, TValue>({
@@ -72,7 +72,7 @@ const ScrollableTable = <TData, TValue>({
   isDialog = false,
   initialColumnVisibility = {},
   actions,
-  showSearchBar = true,
+  showSearchBarAndColumnSelect = true,
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(initialColumnVisibility);
@@ -131,7 +131,7 @@ const ScrollableTable = <TData, TValue>({
       )}
 
       <div className="h-full w-full flex-1 overflow-auto scrollbar-thin">
-        {!!data.length && showSearchBar && (
+        {!!data.length && showSearchBarAndColumnSelect && (
           <div className="flex items-center gap-2 py-4 pl-1">
             <div className="min-w-0 flex-1">
               <Input

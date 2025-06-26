@@ -374,52 +374,52 @@
 
     "publicShareFilesPage": {
       "title": "Publicly Shared Files",
-      "description": "Here you can find all files that have been shared publicly. Anyone with the link can download these files."
+      "description": "Here you can find all the publicly shared files and their matching passwords. Anyone with the share link can download these files."
     },
 
     "publicFileSharing": {
       "fileName": "Filename",
-      "selectedFile": "Selected File: ",
+      "selectedFile": "Selected file: ",
       "searchSharedFiles": "Search for shared files",
       "actions": "Actions",
       "createdAt": "Created at",
       "validUntil": "Valid until",
       "isActive": "Active",
-      "fileLink": "Sharing link",
+      "fileLink": "Share link",
       "selectPersonsOrGroupsWhoCanAccess": "Restrict persons or groups who can access the file",
       "invitedAttendees": "Invited",
       "isAccessibleBy": "Accessible by",
       "publiclyAccessible": "Publicly accessible",
-      "confirmMultiDelete": "Should these sharing links for the following contents really be deleted?",
-      "confirmSingleDelete": "Should this sharing link for the following content really be deleted?",
-      "deleteFileLink": "Delete sharing link",
-      "deleteFileLinks": "Delete sharing links",
+      "confirmMultiDelete": "Should these share links for the following contents really be deleted?",
+      "confirmSingleDelete": "Should this share link for the following content really be deleted?",
+      "deleteFileLink": "Delete share links",
+      "deleteFileLinks": "Delete share links",
       "isPasswordProtected": "Password",
-      "qrCodePublicShareFile": "QR Code for public sharing link",
-      "createNewFileLink": "Create new sharing link",
-      "editPublicShareFile": "Edit sharing link",
+      "qrCodePublicShareFile": "QR Code for public share link",
+      "createNewFileLink": "Create new share link",
+      "editPublicShareFile": "Edit share link",
       "sharePublicFile": "Share public content",
       "sharedBy": "Shared by: ",
       "getFileAccess": "Please enter the password for this share to access the contents.",
       "downloadPublicFile": "Download content",
       "nameOfContent": "Content name:",
       "errors": {
-        "PublicFileDeletionFailed": "Failed to delete sharing link",
-        "PublicFileIsOnlyDeletableByOwner": "The file link can only be deleted by the owner of this conent.",
-        "PublicFileNotFound": "Sharing link not found",
-        "PublicFileIsRestricted": "This sharing link is restricted to specific users or groups.",
-        "PublicIsRestrictedByInvalidToken": "This sharing link is restricted by an invalid token.",
+        "PublicFileDeletionFailed": "Failed to delete share links",
+        "PublicFileIsOnlyDeletableByOwner": "The share link can only be deleted by the owner of this conent.",
+        "PublicFileNotFound": "Share link not found",
+        "PublicFileIsRestricted": "This share link is restricted to specific users or groups.",
+        "PublicIsRestrictedByInvalidToken": "This share link is restricted by an invalid token.",
         "PublicFileWrongPassword": "The password for the sharing is incorrect.",
-        "FileCouldNotBeFound": "The requested content could not be found. Please check the link or contact the owner of this content."
+        "FileCouldNotBeFound": "The requested content could not be found. Please check the share link or contact the owner of this content."
       },
       "success": {
-        "PublicFileLinkCreated": "File link created successfully",
-        "PublicFileLinkDeleted": "File link deleted successfully",
-        "PublicFileLinkUpdated": "File link updated successfully"
+        "PublicFileLinkCreated": "Share link created successfully",
+        "PublicFileLinkDeleted": "Share link deleted successfully",
+        "PublicFileLinkUpdated": "Share link updated successfully"
       },
       "scope": {
         "public": "Public",
-        "publicHint": "Anyone with the link can access this content.",
+        "publicHint": "Anyone with the share link can access this content.",
         "restricted": "Restricted",
         "restrictedHint": "Only selected users or groups can access this content."
       }
@@ -428,7 +428,7 @@
     "expiry": {
       "select": "Select expiry time",
       "selectedItemPrefix": "Selected content that is shared:",
-      "noInviteesWarning": "⚠️  WARNING: Anyone with the link will be able to download this content.",
+      "noInviteesWarning": "⚠️  WARNING: Anyone with the share link will be able to download this content.",
       "inviteesWarning": "⚠️  WARNING: Anyone within the selected groups or users will be able to download this content."
     }
   },

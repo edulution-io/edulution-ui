@@ -16,7 +16,7 @@ import PublicShareFilesTableColumns from '@/pages/FileSharing/publicShare/table/
 import PUBLIC_SHARED_FILES_TABLE_COLUMN from '@libs/filesharing/constants/publicSharedFIlesTableColum';
 import APPS from '@libs/appconfig/constants/apps';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
-import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { IoAdd } from 'react-icons/io5';
 import useMedia from '@/hooks/useMedia';
@@ -25,25 +25,25 @@ import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDial
 const PublicShareContentsDialogBody = () => {
   const { t } = useTranslation();
   const {
-    editMultipleContent,
+    contentsToShare,
     isLoading,
-    setEditMultipleContent,
+    setContentsToShare,
     selectedRows,
     setIsCreateNewPublicShareLinkDialogOpen,
     deletePublicShares,
-    publicShareContents,
+    shares,
   } = usePublicShareStore();
   const { selectedItems } = useFileSharingStore();
   const { isMobileView, isTabletView } = useMedia();
 
-  const currentFile = editMultipleContent[0] ?? selectedItems[0];
+  const currentFile = contentsToShare[0] ?? selectedItems[0];
 
   const shouldHideColumns = isMobileView || isTabletView;
 
   useEffect(() => {
-    const listForDialog = publicShareContents.filter((file) => file.filename === currentFile?.filename);
-    setEditMultipleContent(listForDialog);
-  }, [publicShareContents]);
+    const sharesForCurrentFile = shares.filter((file) => file.filename === currentFile?.filename);
+    setContentsToShare(sharesForCurrentFile);
+  }, [shares]);
 
   const initialColumnVisibility = useMemo(
     () => ({
@@ -59,12 +59,12 @@ const PublicShareContentsDialogBody = () => {
     <div className="scrollable relative flex w-full min-w-0 flex-col gap-4">
       <p>
         {t('filesharing.publicFileSharing.selectedFile')}{' '}
-        {(selectedItems?.[0]?.filename ?? editMultipleContent?.[0]?.filename) || ''}
+        {(selectedItems?.[0]?.filename ?? contentsToShare?.[0]?.filename) || ''}
       </p>
       <div className="max-h-[60vh] overflow-y-auto">
         <ScrollableTable
           columns={PublicShareFilesTableColumns}
-          data={editMultipleContent}
+          data={contentsToShare}
           filterKey={PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME}
           filterPlaceHolderText={t('fileSharing.filterPlaceHolderText')}
           isLoading={false}
@@ -72,7 +72,7 @@ const PublicShareContentsDialogBody = () => {
           getRowId={({ publicShareId }) => publicShareId}
           applicationName={APPS.FILE_SHARING}
           initialColumnVisibility={initialColumnVisibility}
-          showSearchBar={false}
+          showSearchBarAndColumnSelect={false}
           actions={[
             {
               icon: IoAdd,

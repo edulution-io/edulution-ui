@@ -226,7 +226,6 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
                 handleSubmit={handleFormSubmit}
                 submitButtonText={submitKey}
                 submitButtonType="submit"
-                hideSubmitButton={disableSubmitButton}
                 disableSubmit={
                   disableSubmitButton ||
                   isLoading ||

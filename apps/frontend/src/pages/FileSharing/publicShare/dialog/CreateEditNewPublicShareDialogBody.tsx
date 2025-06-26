@@ -23,7 +23,7 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import CreateEditPublicFileShareDto from '@libs/filesharing/types/createEditPublicFileShareDto';
 import ShareLinkScopeSelector from '@/pages/FileSharing/utilities/ShareLinkScopeSelector';
-import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 
 interface CreateEditNewPublicShareDialogBodyProps {
   form: UseFormReturn<CreateEditPublicFileShareDto>;
@@ -34,10 +34,10 @@ const CreateEditNewPublicShareDialogBody: React.FC<CreateEditNewPublicShareDialo
   const { selectedItems } = useFileSharingStore();
   const { user, searchAttendees } = useUserStore();
   const { searchGroups, searchGroupsIsLoading } = useGroupStore();
-  const { editMultipleContent } = usePublicShareStore();
+  const { contentsToShare } = usePublicShareStore();
   const { watch, setValue } = form;
 
-  const currentFile = editMultipleContent[0] ?? selectedItems[0];
+  const currentFile = contentsToShare[0] ?? selectedItems[0];
 
   const invitedAttendees = watch('invitedAttendees') ?? [];
   const invitedGroups = watch('invitedGroups') ?? [];

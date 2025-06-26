@@ -43,7 +43,7 @@ const TableActionCell = <TData,>(props: TableActionCellProps<TData>) => {
   }
 
   return (
-    <div className="flex w-full items-center justify-center">
+    <div className="flex items-center justify-center">
       <TableActionMenu
         actions={actions}
         row={row}

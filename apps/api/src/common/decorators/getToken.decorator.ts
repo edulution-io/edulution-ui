@@ -13,23 +13,12 @@
 import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Request } from 'express';
 
-interface GetTokenOptions {
-  required?: boolean;
-}
-
-const GetToken = createParamDecorator((options: GetTokenOptions | undefined, ctx: ExecutionContext) => {
-  const { required = true } = options ?? {};
-  const request: Request = ctx.switchToHttp().getRequest<Request & { token?: string }>();
-  const { token } = request;
-  if (token) return token;
-  const auth = request.headers.authorization;
-  if (auth?.startsWith('Bearer ')) {
-    return auth.slice(7).trim();
-  }
-  if (required && !token) {
+const GetToken = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
+  const request: Request = ctx.switchToHttp().getRequest();
+  if (!request.token) {
     throw new UnauthorizedException('Auth Token is missing');
   }
-  return token;
+  return request.token;
 });
 
 export default GetToken;

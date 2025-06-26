@@ -24,19 +24,15 @@ import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateP
 import archiver from 'archiver';
 import { once } from 'events';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
-import { createReadStream, createWriteStream, readFileSync, statSync } from 'fs';
+import { createReadStream, createWriteStream, statSync } from 'fs';
 import createTempFile from '@libs/filesystem/utils/createTempFile';
 import CustomFile from '@libs/filesharing/types/customFile';
 import { Open } from 'unzipper';
 import { lookup } from 'mime-types';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import ContentType from '@libs/filesharing/types/contentType';
-import { JwtService } from '@nestjs/jwt';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
-import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
 import FILE_ACCESS_RESULT from '@libs/filesharing/constants/fileAccessResult';
 import checkFileAccessRights from '@libs/filesharing/utils/checkFileAccessRights';
 import CreateEditPublicFileShareDto from '@libs/filesharing/types/createEditPublicFileShareDto';
@@ -54,8 +50,6 @@ import CustomHttpException from '../common/CustomHttpException';
 class FilesharingService {
   private readonly baseurl = process.env.EDUI_WEBDAV_URL as string;
 
-  private readonly publicKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
-
   constructor(
     @InjectModel(PublicFileShare.name)
     private readonly shareModel: Model<PublicFileShareDocument>,
@@ -64,7 +58,6 @@ class FilesharingService {
     private readonly dynamicQueueService: QueueService,
     private readonly webDavService: WebdavService,
     private readonly userService: UsersService,
-    private readonly jwtService: JwtService,
   ) {}
 
   async uploadZippedFolder(
@@ -295,35 +288,33 @@ class FilesharingService {
       });
   }
 
-  async publicShareFile(
-    username: string,
+  async createPublicShare(
+    currentUser: JwtUser,
     createPublicFileShareDto: CreateEditPublicFileShareDto,
   ): Promise<WebdavStatusResponse> {
     const { etag, filename, filePath, invitedAttendees, invitedGroups, password, expires } = createPublicFileShareDto;
 
-    const validUntil = expires;
     try {
-      const user = await this.userService.findOne(username);
+      const user = await this.userService.findOne(currentUser.preferred_username);
       if (!user) {
         return { success: false, status: HttpStatus.INTERNAL_SERVER_ERROR } as WebdavStatusResponse;
       }
 
       const publicShareId = uuidv4();
-      const fileLink = `${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.PUBLIC_SHARE_DOWNLOAD}/${publicShareId}`;
-      const publicFileLink = `${FileSharingApiEndpoints.PUBLIC_SHARE}/${publicShareId}`;
       await this.shareModel.create({
         publicShareId,
         etag,
         filename,
         filePath,
-        validUntil,
-        creator: username,
+        creator: {
+          firstName: currentUser.given_name,
+          lastName: currentUser.family_name,
+          username: currentUser.preferred_username,
+        },
         invitedAttendees,
         invitedGroups,
-        publicFileLink,
         password,
         expires,
-        fileLink,
       });
 
       return {
@@ -337,44 +328,24 @@ class FilesharingService {
   }
 
   async listOwnPublicShares(username: string) {
-    return this.shareModel.find({ creator: username }).sort({ validUntil: 1 }).lean().exec();
+    return this.shareModel.find({ 'creator.username': username }).sort({ validUntil: 1 }).lean().exec();
   }
 
-  async getPublicFileShare(publicFileId: string, jwt?: string, password?: string | undefined) {
+  async getPublicShare(publicFileId: string, jwtUser: JwtUser | undefined, password?: string | undefined) {
     const share = await this.shareModel.findOne({ publicShareId: publicFileId }).lean().exec();
     if (!share) {
       throw new CustomHttpException(
         FileSharingErrorMessage.DownloadFailed,
         HttpStatus.NOT_FOUND,
-        `${publicFileId} not found}`,
+        `${publicFileId} not found`,
       );
     }
-    if (share.password !== password) {
-      if (share.password) {
-        throw new CustomHttpException(
-          FileSharingErrorMessage.PublicFileWrongPassword,
-          HttpStatus.FORBIDDEN,
-          `${publicFileId} wrong password}`,
-        );
-      }
-    }
-
-    let jwtUser: JwtUser | null = null;
-    const token = jwt?.replace(/^Bearer\s*/i, '').trim();
-    const jwtToken = token || undefined;
-    if (jwtToken) {
-      try {
-        jwtUser = await this.jwtService.verifyAsync<JwtUser>(jwtToken, {
-          publicKey: this.publicKey,
-          algorithms: ['RS256'],
-        });
-      } catch {
-        throw new CustomHttpException(
-          FileSharingErrorMessage.PublicIsRestrictedByInvalidToken,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-          `${publicFileId} not found}`,
-        );
-      }
+    if (share.password && share.password !== password) {
+      throw new CustomHttpException(
+        FileSharingErrorMessage.PublicFileWrongPassword,
+        HttpStatus.FORBIDDEN,
+        `${publicFileId} wrong password}`,
+      );
     }
 
     const { invitedAttendees, invitedGroups } = share;
@@ -385,76 +356,71 @@ class FilesharingService {
       throw new CustomHttpException(
         FileSharingErrorMessage.PublicFileIsRestricted,
         HttpStatus.FORBIDDEN,
-        `${publicFileId} not found}`,
+        `${publicFileId} not found`,
       );
     }
 
     const webDavUrl = `${this.baseurl}${getPathWithoutWebdav(share.filePath)}`;
-    const client = await this.webDavService.getClient(share.creator);
+    const client = await this.webDavService.getClient(share.creator.username);
 
     const stream = (await FilesystemService.fetchFileStream(webDavUrl, client, false)) as Readable;
 
-    const fileType = await this.webDavService.getFileTypeFromWebdavPath(share.creator, webDavUrl, share.filePath);
+    const fileType = await this.webDavService.getFileTypeFromWebdavPath(
+      share.creator.username,
+      webDavUrl,
+      share.filePath,
+    );
 
     const filename = fileType === ContentType.FILE ? share.filename : `${share.filename}.zip`;
 
     return { stream, filename, fileType };
   }
 
-  async getPublicShareInfo(publicFileId: string, jwt?: string) {
-    const doc = await this.shareModel.findOne({ publicShareId: publicFileId }).lean().exec();
+  async getPublicShareInfo(publicFileId: string, jwtUser: JwtUser | undefined) {
+    const shareDocument = await this.shareModel.findOne({ publicShareId: publicFileId }).lean().exec();
 
-    if (!doc) {
-      return { status: HttpStatus.NOT_FOUND };
+    console.log(`getPublicShareInfo: ${publicFileId} - ${JSON.stringify(shareDocument)}`);
+
+    if (!shareDocument) {
+      return { status: HttpStatus.NOT_FOUND, success: false };
     }
-    const requiresPassword = !!doc.password?.trim();
 
-    const data = { ...doc };
+    const requiresPassword = !!shareDocument.password?.trim();
+
+    const data = { ...shareDocument };
     delete data.password;
-
-    let jwtUser: JwtUser | null = null;
-
-    const token = jwt?.replace(/^Bearer\s*/i, '').trim();
-    const jwtToken = token || undefined;
-
-    if (jwtToken) {
-      try {
-        jwtUser = await this.jwtService.verifyAsync<JwtUser>(jwtToken, {
-          publicKey: this.publicKey,
-          algorithms: ['RS256'],
-        });
-      } catch {
-        return { success: false, status: HttpStatus.UNAUTHORIZED };
-      }
-    }
-
     const { invitedAttendees, invitedGroups } = data;
 
     switch (checkFileAccessRights(invitedAttendees, invitedGroups, jwtUser)) {
       case FILE_ACCESS_RESULT.PUBLIC:
       case FILE_ACCESS_RESULT.USER_MATCH:
       case FILE_ACCESS_RESULT.GROUP_MATCH:
-        return { success: true, status: HttpStatus.OK, requiresPassword, data };
+        return {
+          success: true,
+          status: HttpStatus.OK,
+          requiresPassword,
+          publicShare: data,
+        };
 
       case FILE_ACCESS_RESULT.NO_TOKEN:
-        return { success: false, status: HttpStatus.FORBIDDEN };
-
       case FILE_ACCESS_RESULT.DENIED:
       default:
-        return { success: false, status: HttpStatus.FORBIDDEN };
+        return {
+          success: false,
+          status: HttpStatus.FORBIDDEN,
+        };
     }
   }
 
   async deletePublicShares(username: string, publicFiles: PublicShareDto[]) {
     const publicShareIds = publicFiles.map((file) => file.publicShareId);
 
-    const docs = await this.shareModel
-      .find({ publicShareId: { $in: publicShareIds } })
-      .select('creator')
+    const documentsToDelete = await this.shareModel
+      .find({ publicShareId: { $in: publicShareIds }, 'creator.username': username })
       .lean()
       .exec();
 
-    if (docs.length !== publicShareIds.length) {
+    if (documentsToDelete.length !== publicShareIds.length) {
       throw new CustomHttpException(
         FileSharingErrorMessage.PublicFileNotFound,
         HttpStatus.NOT_FOUND,
@@ -462,7 +428,7 @@ class FilesharingService {
       );
     }
 
-    const foreignShare = docs.find((d) => d.creator !== username);
+    const foreignShare = documentsToDelete.find((d) => d.creator.username !== username);
     if (foreignShare) {
       throw new CustomHttpException(
         FileSharingErrorMessage.PublicFileIsOnlyDeletableByOwner,
@@ -472,16 +438,22 @@ class FilesharingService {
     }
 
     const { deletedCount } = await this.shareModel
-      .deleteMany({ publicShareId: { $in: publicShareIds }, creator: username })
+      .deleteMany({ publicShareId: { $in: publicShareIds }, 'creator.username': username })
       .exec();
 
     return { success: true, deletedCount };
   }
 
-  async editPublicShare(username: string, dto: PublicShareDto) {
-    const { publicShareId, expires, invitedGroups, invitedAttendees, password } = dto;
+  async editPublicShare(username: string, publicShareDto: PublicShareDto) {
+    const { publicShareId, expires, invitedGroups, invitedAttendees, password } = publicShareDto;
 
-    const share = await this.shareModel.findOne({ publicShareId }).where({ creator: username });
+    const share = await this.shareModel
+      .findOne({
+        publicShareId,
+        'creator.username': username,
+      })
+      .exec();
+
     if (!share)
       throw new CustomHttpException(
         FileSharingErrorMessage.PublicFileNotFound,

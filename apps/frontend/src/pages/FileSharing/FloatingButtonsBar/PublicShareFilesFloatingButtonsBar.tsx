@@ -10,8 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useMemo } from 'react';
-import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import React, {useMemo} from 'react';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';

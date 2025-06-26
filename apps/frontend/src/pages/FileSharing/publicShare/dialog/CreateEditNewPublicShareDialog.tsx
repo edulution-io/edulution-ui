@@ -13,7 +13,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
-import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import CreateEditPublicFileShareDto from '@libs/filesharing/types/createEditPublicFileShareDto';
@@ -28,8 +28,8 @@ interface CreateNewPublicFileLinkDialogProps {
 const CreateEditNewPublicShareDialog: React.FC<CreateNewPublicFileLinkDialogProps> = ({ trigger }) => {
   const { t } = useTranslation();
   const { selectedItems } = useFileSharingStore();
-  const { editMultipleContent } = usePublicShareStore();
-  const currentFile = editMultipleContent[0] ?? selectedItems[0];
+  const { contentsToShare } = usePublicShareStore();
+  const currentFile = contentsToShare[0] ?? selectedItems[0];
 
   const { setIsCreateNewPublicShareLinkDialogOpen, isCreateNewPublicShareLinkDialogOpen, createPublicShare } =
     usePublicShareStore();

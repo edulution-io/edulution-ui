@@ -9,9 +9,6 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-/*
- * LICENSE … (wie gehabt)
- */
 
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -28,12 +25,14 @@ import buildAbsolutePublicDownloadUrl from '@libs/filesharing/utils/buildAbsolut
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 
 import usePublicSharePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
-import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useUserStore from '@/store/UserStore/UserStore';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import PublicShareMetaList from '../publicPage/components/PublicShareMetaList';
 import DownloadPublicFileButton from '../publicPage/components/DownloadPublicShare';
 import PublicSharePasswordInput from '../publicPage/components/PublicSharePasswordInput';
 import FileHeader from '../publicPage/components/PublicShareHeader';
+import usePublicShareStore from '../usePublicShareStore';
 
 const schema = z.object({ password: z.string().optional() });
 type FormValues = z.infer<typeof schema>;
@@ -43,14 +42,11 @@ const DownloadPublicShareDialog = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { eduApiToken } = useUserStore();
-
-  const isAuthenticated = Boolean(eduApiToken);
+  const { isAuthenticated, eduApiToken } = useUserStore();
 
   const { isPublicShareInfoDialogOpen, closePublicShareDialog, publicShareId } = usePublicSharePageStore();
 
-  const { fetchPublicShareContentById, publicShareContent, isPasswordRequired, isAccessRestricted } =
-    usePublicShareStore();
+  const { fetchPublicShareContentById, share, isPasswordRequired, isAccessRestricted } = usePublicShareStore();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -63,10 +59,12 @@ const DownloadPublicShareDialog = () => {
   }, [publicShareId, fetchPublicShareContentById]);
 
   const onDownload = form.handleSubmit(async ({ password }) => {
-    if (!publicShareContent) return;
+    if (!share) return;
 
-    const { filename, fileLink } = publicShareContent;
-    const absoluteUrl = buildAbsolutePublicDownloadUrl(fileLink);
+    const { filename } = share;
+    const absoluteUrl = buildAbsolutePublicDownloadUrl(
+      `${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.PUBLIC_SHARE_DOWNLOAD}/${publicShareId}`,
+    );
 
     await downloadPublicFile(
       absoluteUrl,
@@ -112,7 +110,7 @@ const DownloadPublicShareDialog = () => {
     );
   }
 
-  if (!publicShareContent) {
+  if (!share) {
     return (
       <AdaptiveDialog
         isOpen={isAuthenticated ? isPublicShareInfoDialogOpen : true}
@@ -123,7 +121,7 @@ const DownloadPublicShareDialog = () => {
     );
   }
 
-  const { filename, creator, expires } = publicShareContent;
+  const { filename, creator, expires } = share;
 
   const accessBody = (
     <div className="space-y-4">
@@ -147,12 +145,7 @@ const DownloadPublicShareDialog = () => {
     </div>
   );
 
-  const footer = (
-    <DialogFooterButtons
-      handleClose={handleClose}
-      hideSubmitButton
-    />
-  );
+  const footer = <DialogFooterButtons handleClose={handleClose} />;
 
   return (
     <AdaptiveDialog
