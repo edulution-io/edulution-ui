@@ -24,8 +24,6 @@ import { PUBLIC_ROUTE_KEY } from '../common/decorators/public.decorator';
 
 @Injectable()
 class AuthenticationGuard implements CanActivate {
-  private token: string;
-
   private readonly pubKey: string;
 
   constructor(
@@ -60,24 +58,40 @@ class AuthenticationGuard implements CanActivate {
     }
 
     const request: Request = context.switchToHttp().getRequest();
-    this.token = AuthenticationGuard.extractToken(request);
+    const token = AuthenticationGuard.extractToken(request);
 
-    try {
-      request.user = await this.jwtService.verifyAsync<JWTUser>(this.token, {
-        publicKey: this.pubKey,
-        algorithms: ['RS256'],
-      });
-      request.token = this.token;
-
-      return true;
-    } catch (error) {
-      throw new CustomHttpException(
-        AuthErrorMessages.TokenExpired,
-        HttpStatus.UNAUTHORIZED,
-        error,
-        AuthenticationGuard.name,
-      );
+    if (token) {
+      try {
+        request.user = await this.jwtService.verifyAsync<JWTUser>(token, {
+          publicKey: this.pubKey,
+          algorithms: ['RS256'],
+        });
+        request.token = token;
+      } catch (err) {
+        if (!isPublic) {
+          throw new CustomHttpException(
+            AuthErrorMessages.TokenExpired,
+            HttpStatus.UNAUTHORIZED,
+            err,
+            AuthenticationGuard.name,
+          );
+        }
+      }
     }
+
+    if (isPublic) {
+      return true;
+    }
+    if (request.user) {
+      return true;
+    }
+
+    throw new CustomHttpException(
+      AuthErrorMessages.TokenExpired,
+      HttpStatus.UNAUTHORIZED,
+      'No JWT provided',
+      AuthenticationGuard.name,
+    );
   }
 }
 
