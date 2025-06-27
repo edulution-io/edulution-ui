@@ -16,7 +16,7 @@ import { type VariantProps } from 'class-variance-authority';
 import cn from '@libs/common/utils/className';
 import Input, { originInputVariants } from '@/components/shared/Input';
 
-type ActionIcon = { icon: IconType; onClick: () => void };
+type ActionIcon = { icon: IconType; onClick: () => void; className?: string };
 
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
   VariantProps<typeof originInputVariants> & { actionIcons?: ActionIcon[] };
@@ -30,8 +30,8 @@ const InputWithActionIcons = React.forwardRef<HTMLInputElement, InputProps>(
         ref={ref}
         readOnly={readOnly}
       />
-      <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5 text-background">
-        {actionIcons?.map(({ icon: ButtonIcon, onClick }, index) => (
+      <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5">
+        {actionIcons?.map(({ icon: ButtonIcon, onClick, className: buttonsClassName }, index) => (
           <button
             // eslint-disable-next-line react/no-array-index-key
             key={`input-buttons-${index}`}
@@ -39,7 +39,11 @@ const InputWithActionIcons = React.forwardRef<HTMLInputElement, InputProps>(
             onClickCapture={onClick}
             disabled={disabled}
           >
-            <ButtonIcon className={cn({ 'text-muted': disabled }, 'h-[24px] w-[24px]')} />
+            <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+              <ButtonIcon
+                className={cn({ 'text-muted': disabled }, 'h-4 max-h-5 w-4 max-w-5 cursor-pointer', buttonsClassName)}
+              />
+            </div>
           </button>
         ))}
       </div>

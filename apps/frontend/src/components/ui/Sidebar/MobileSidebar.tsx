@@ -40,16 +40,16 @@ const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
     <>
       <MobileMenuButton ref={buttonRef} />
       <div
-        className="fixed right-0 top-0 z-[40] h-full w-full transform transition-transform duration-300 ease-in-out"
+        className="fixed right-0 top-0 z-[400] h-full w-full transform transition-transform duration-300 ease-in-out"
         style={{ transform: `translateX(${isMobileSidebarOpen ? '0%' : '100%'})` }}
       >
         <div
           ref={sidebarRef}
           className="fixed right-0 h-full min-w-[260px] border-l-[1px] border-muted bg-black md:bg-none"
         >
-          <div className="relative right-0 top-0 h-14 bg-black pr-4 pt-4" />
+          <div className="h-4" />
+          <HomeButton />
           <div className={`${sidebarHeightWithoutSpecialButtons} overflow-auto`}>
-            <HomeButton />
             {sidebarItems.map((item) => (
               <MobileSidebarItem
                 key={item.link}

@@ -28,9 +28,9 @@ import type AuthRequestArgs from '@libs/auth/types/auth-request';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
+import decodeBase64Api from '@libs/common/utils/decodeBase64Api';
 import CustomHttpException from '../common/CustomHttpException';
 import { User, UserDocument } from '../users/user.schema';
-import { fromBase64 } from '../filesharing/filesharing.utilities';
 import SseService from '../sse/sse.service';
 
 const { KEYCLOAK_EDU_UI_SECRET, KEYCLOAK_EDU_UI_CLIENT_ID, KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API } = process.env;
@@ -46,6 +46,11 @@ class AuthService {
     this.keycloakApi = axios.create({
       baseURL: `${KEYCLOAK_API}/realms/${KEYCLOAK_EDU_UI_REALM}`,
     });
+  }
+
+  static checkTotp(token: string, username: string, secret: string): boolean {
+    const newTotp = new TOTP({ ...AUTH_TOTP_CONFIG, label: username, secret });
+    return newTotp.validate({ token }) !== null;
   }
 
   authconfig(req: Request): Observable<OidcMetadata> {
@@ -65,11 +70,6 @@ class AuthService {
         );
       }),
     );
-  }
-
-  static checkTotp(token: string, username: string, secret: string): boolean {
-    const newTotp = new TOTP({ ...AUTH_TOTP_CONFIG, label: username, secret });
-    return newTotp.validate({ token }) !== null;
   }
 
   async signin(body: AuthRequestArgs, password?: string) {
@@ -110,7 +110,7 @@ class AuthService {
       return this.signin(body);
     }
     const { password: passwordHash } = body;
-    const passwordString = fromBase64(passwordHash);
+    const passwordString = decodeBase64Api(passwordHash);
     const { username } = body;
     const user = (await this.userModel.findOne({ username }, 'mfaEnabled totpSecret').lean()) || ({} as User);
     const { mfaEnabled = false, totpSecret = '' } = user;

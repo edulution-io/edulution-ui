@@ -25,6 +25,7 @@ import USER_DB_PROJECTION from '@libs/user/constants/user-db-projections';
 import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
 import { ALL_USERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import type UserAccountDto from '@libs/user/types/userAccount.dto';
+import type CachedUser from '@libs/user/types/cachedUser';
 import CustomHttpException from '../common/CustomHttpException';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
@@ -37,6 +38,7 @@ class UsersService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(UserAccounts.name) private userAccountModel: Model<UserAccountsDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private readonly groupsService: GroupsService,
   ) {}
 
   async createOrUpdate(userDto: UserDto): Promise<User | null> {
@@ -71,17 +73,27 @@ class UsersService {
     return result.deletedCount > 0;
   }
 
-  async findAllCachedUsers(token: string, schoolName: string): Promise<LDAPUser[]> {
-    const cachedUsers = await this.cacheManager.get<LDAPUser[]>(ALL_USERS_CACHE_KEY + schoolName);
+  async findAllCachedUsers(schoolName: string): Promise<CachedUser[]> {
+    const mapToCachedUser = (user: LDAPUser): CachedUser => ({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
+      school: user.attributes.school?.[0] || SPECIAL_SCHOOLS.GLOBAL,
+    });
+
+    const cacheKey = ALL_USERS_CACHE_KEY + schoolName;
+    const cachedUsers = await this.cacheManager.get<CachedUser[]>(cacheKey);
+
     if (cachedUsers) {
       return cachedUsers;
     }
 
-    const fetchedUsers = await GroupsService.fetchAllUsers(token);
+    const fetchedUsers = await this.groupsService.fetchAllUsers();
+    const cachedUserList: CachedUser[] = fetchedUsers.map(mapToCachedUser);
 
-    const usersBySchool = fetchedUsers.reduce(
+    const usersBySchool = cachedUserList.reduce(
       (acc, user) => {
-        const userSchool = user.attributes.school?.[0];
+        const userSchool = user.school;
         if (userSchool) {
           if (!acc[userSchool]) {
             acc[userSchool] = [];
@@ -90,37 +102,32 @@ class UsersService {
         }
         return acc;
       },
-      {} as Record<string, LDAPUser[]>,
+      {} as Record<string, CachedUser[]>,
     );
 
     await Promise.all(
-      Object.entries(usersBySchool).map(([school, userList]) =>
-        this.cacheManager.set(ALL_USERS_CACHE_KEY + school, userList, DEFAULT_CACHE_TTL_MS),
-      ),
+      Object.entries(usersBySchool).map(async ([school, userList]) => {
+        const key = ALL_USERS_CACHE_KEY + school;
+        await this.cacheManager.set(key, userList, DEFAULT_CACHE_TTL_MS);
+      }),
     );
 
-    await this.cacheManager.set(ALL_USERS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, fetchedUsers, DEFAULT_CACHE_TTL_MS);
+    await this.cacheManager.set(ALL_USERS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, cachedUserList, DEFAULT_CACHE_TTL_MS);
 
-    return usersBySchool[schoolName] || [];
+    return usersBySchool[schoolName] ?? [];
   }
 
-  async searchUsersByName(token: string, schoolName: string, name: string): Promise<Partial<User>[]> {
+  async searchUsersByName(schoolName: string, name: string): Promise<CachedUser[]> {
     const searchString = name.toLowerCase();
 
-    const users = await this.findAllCachedUsers(token, schoolName);
+    const users = await this.findAllCachedUsers(schoolName);
 
-    return users
-      .filter(
-        (user) =>
-          user.firstName?.toLowerCase().includes(searchString) ||
-          user.lastName?.toLowerCase().includes(searchString) ||
-          user.username?.toLowerCase().includes(searchString),
-      )
-      .map((u) => ({
-        firstName: u.firstName,
-        lastName: u.lastName,
-        username: u.username,
-      }));
+    return users.filter(
+      (user) =>
+        user.firstName?.toLowerCase().includes(searchString) ||
+        user.lastName?.toLowerCase().includes(searchString) ||
+        user.username?.toLowerCase().includes(searchString),
+    );
   }
 
   async getPassword(username: string): Promise<string> {

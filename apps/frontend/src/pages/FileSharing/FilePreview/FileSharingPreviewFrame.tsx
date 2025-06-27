@@ -103,10 +103,10 @@ const FileSharingPreviewFrame = () => {
   const handleCloseFile = async () => {
     if (!currentlyEditingFile) return;
     closingRef.current = true;
-    const { basename } = currentlyEditingFile;
+    const { filename } = currentlyEditingFile;
     setIsEditMode(false);
     resetPreview();
-    await setFileIsCurrentlyDisabled(basename, true, 5000);
+    await setFileIsCurrentlyDisabled(filename, true, 5000);
     closingRef.current = false;
   };
 
@@ -137,7 +137,7 @@ const FileSharingPreviewFrame = () => {
 
   if (!isFilePreviewVisible || !isFileReady || !filePreviewRect || hidePreviewOnOtherPages) return null;
 
-  const windowTitle = currentlyEditingFile?.basename || t(`filesharing.filePreview`);
+  const windowTitle = currentlyEditingFile?.filename || t(`filesharing.filePreview`);
 
   const isEditButtonVisible = !isEditMode && isOnlyOfficeDocument(currentlyEditingFile.filename);
   const additionalButtons = [

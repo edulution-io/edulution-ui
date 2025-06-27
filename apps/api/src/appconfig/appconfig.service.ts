@@ -10,10 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Connection, Model } from 'mongoose';
+import { AnyBulkWriteOperation, Connection, Model } from 'mongoose';
 import { readFileSync, writeFileSync } from 'fs';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
@@ -60,21 +60,51 @@ class AppConfigService implements OnModuleInit {
     }
   }
 
-  async updateConfig(name: string, appConfigDto: AppConfigDto, ldapGroups: string[]) {
+  async updateConfig(name: string, appConfigDto: AppConfigDto, ldapGroups: string[]): Promise<AppConfigDto[]> {
     try {
-      await this.appConfigModel.updateOne(
-        { name },
-        {
-          $set: {
-            icon: appConfigDto.icon,
-            appType: appConfigDto.appType,
-            options: appConfigDto.options,
-            accessGroups: appConfigDto.accessGroups,
-            extendedOptions: appConfigDto.extendedOptions,
+      const existingAppConfig = await this.appConfigModel.findOne({ name }).lean();
+      const oldPosition = existingAppConfig?.position;
+      const newPosition = appConfigDto.position;
+
+      const bulkOperations: AnyBulkWriteOperation<AppConfig>[] = [];
+
+      if (existingAppConfig && oldPosition !== newPosition) {
+        if (oldPosition! < newPosition) {
+          bulkOperations.push({
+            updateMany: {
+              filter: { position: { $gt: oldPosition, $lte: newPosition } },
+              update: { $inc: { position: -1 } },
+            },
+          });
+        } else {
+          bulkOperations.push({
+            updateMany: {
+              filter: { position: { $gte: newPosition, $lt: oldPosition } },
+              update: { $inc: { position: 1 } },
+            },
+          });
+        }
+      }
+
+      bulkOperations.push({
+        updateOne: {
+          filter: { name },
+          update: {
+            $set: {
+              icon: appConfigDto.icon,
+              appType: appConfigDto.appType,
+              options: appConfigDto.options,
+              accessGroups: appConfigDto.accessGroups,
+              extendedOptions: appConfigDto.extendedOptions,
+              position: newPosition,
+            },
           },
+          upsert: true,
         },
-        { upsert: true },
-      );
+      });
+
+      await this.appConfigModel.bulkWrite(bulkOperations, { ordered: true });
+
       return await this.getAppConfigs(ldapGroups);
     } catch (error) {
       throw new CustomHttpException(
@@ -129,16 +159,16 @@ class AppConfigService implements OnModuleInit {
       let appConfigDto: AppConfigDto[];
       if (ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
         appConfigDto = await this.appConfigModel
-          .find({}, 'name translations icon appType options accessGroups extendedOptions')
+          .find({}, 'name translations icon appType options accessGroups extendedOptions position')
+          .sort({ position: 1 })
           .lean();
       } else {
         const appConfigObjects = await this.appConfigModel
           .find(
-            {
-              'accessGroups.path': { $in: ldapGroups },
-            },
-            'name translations icon appType options extendedOptions',
+            { 'accessGroups.path': { $in: ldapGroups } },
+            'name translations icon appType options extendedOptions position',
           )
+          .sort({ position: 1 })
           .lean();
 
         appConfigDto = appConfigObjects.map((config) => ({
@@ -149,6 +179,7 @@ class AppConfigService implements OnModuleInit {
           options: { url: config.options.url ?? '' },
           accessGroups: [],
           extendedOptions: config.extendedOptions,
+          position: config.position,
         }));
       }
 
@@ -163,17 +194,39 @@ class AppConfigService implements OnModuleInit {
     }
   }
 
-  async getAppConfigByName(name: string): Promise<AppConfigDto> {
+  async getAppConfigByName(name: string): Promise<AppConfigDto | undefined> {
     const appConfig = await this.appConfigModel.findOne({ name }).lean();
     if (!appConfig) {
-      throw new HttpException(`AppConfig with name ${name} not found`, HttpStatus.NOT_FOUND);
+      Logger.debug(`AppConfig with name ${name} not found`, AppConfigService.name);
+      return undefined;
     }
     return appConfig;
   }
 
-  async deleteConfig(configName: string, ldapGroups: string[]) {
+  async deleteConfig(configName: string, ldapGroups: string[]): Promise<AppConfigDto[]> {
     try {
-      await this.appConfigModel.deleteOne({ name: configName });
+      const appConfigToDelete = await this.appConfigModel.findOne({ name: configName }).lean();
+      const deletedPosition = appConfigToDelete?.position;
+
+      const bulkOperations: AnyBulkWriteOperation<AppConfig>[] = [];
+
+      bulkOperations.push({
+        deleteOne: {
+          filter: { name: configName },
+        },
+      });
+
+      if (typeof deletedPosition === 'number') {
+        bulkOperations.push({
+          updateMany: {
+            filter: { position: { $gt: deletedPosition } },
+            update: { $inc: { position: -1 } },
+          },
+        });
+      }
+
+      await this.appConfigModel.bulkWrite(bulkOperations, { ordered: true });
+
       return await this.getAppConfigs(ldapGroups);
     } catch (error) {
       throw new CustomHttpException(
@@ -194,22 +247,6 @@ class AppConfigService implements OnModuleInit {
       }
 
       this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
-    }
-  }
-
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  writeConfigFile(appName: string, content: string) {
-    try {
-      const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appName}.yml`;
-
-      writeFileSync(filePath, JSON.parse(content) as string);
-    } catch (error) {
-      throw new CustomHttpException(
-        AppConfigErrorMessages.WriteTraefikConfigFailed,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        undefined,
-        AppConfigService.name,
-      );
     }
   }
 

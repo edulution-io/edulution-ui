@@ -41,9 +41,13 @@ import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
+import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
+import TLDRAW_PERSISTENCE_KEY from '@libs/whiteboard/constants/tldrawPersistenceKey';
+import clearTLDrawPersistence from '@/pages/Whiteboard/clearTLDrawPersitence';
+import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
 import useSseStore from '../useSseStore';
 
-const cleanAllStores = () => {
+const cleanAllStores = async () => {
   UserStore.getState().resetQrCodeSlice();
   UserStore.getState().resetTotpSlice();
   UserStore.getState().resetUserSlice();
@@ -58,11 +62,13 @@ const cleanAllStores = () => {
   useConferenceStore.getState().reset();
   useCreateConferenceDialogStore.getState().reset();
   useDesktopDeploymentStore.getState().reset();
+  useEduApiStore.getState().reset();
   useFileEditorStore.getState().reset();
   useFileSharingDialogStore.getState().reset();
   useFileSharingStore.getState().reset();
   useFileSharingDownloadStore.getState().reset();
   useFrameStore.getState().reset();
+  useLauncherStore.getState().reset();
   useLessonStore.getState().reset();
   useLmnApiPasswordStore.getState().reset();
   useLmnApiStore.getState().reset();
@@ -81,6 +87,7 @@ const cleanAllStores = () => {
   useQuestionsContextMenuStore.getState().reset();
   useSseStore.getState().reset();
   localStorage.removeItem('i18nextLng');
+  await clearTLDrawPersistence(TLDRAW_PERSISTENCE_KEY);
 };
 
 export default cleanAllStores;

@@ -13,11 +13,11 @@
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { Types } from 'mongoose';
 import { firstMockUser, firstUsername, mockedParticipants, secondMockUser } from '../user';
-import { Survey, SurveyDocument } from '../../survey.schema';
+import { SurveyDocument } from '../../survey.schema';
 
 export const surveyUpdateSurveyId = new Types.ObjectId();
 
-export const surveyUpdateInitialSurvey: Survey = {
+export const surveyUpdateInitialSurvey: SurveyDocument = {
   _id: surveyUpdateSurveyId,
   id: surveyUpdateSurveyId,
   creator: firstMockUser,
@@ -60,7 +60,7 @@ export const surveyUpdateInitialSurveyDto: SurveyDto = {
   isPublic: false,
 };
 
-export const surveyUpdateUpdatedSurvey: Survey = {
+export const surveyUpdateUpdatedSurvey: SurveyDocument = {
   _id: surveyUpdateSurveyId,
   id: surveyUpdateSurveyId,
   creator: firstMockUser,

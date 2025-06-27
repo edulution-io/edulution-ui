@@ -20,10 +20,10 @@
     "isActiveOrExpired": "Aktiv/Abgelaufen",
     "activeFrom": "Aktiv von",
     "activeUntil": "Aktiv bis",
-    "appTitle": "Schwarzes Brett",
+    "appTitle": "Info Board",
     "description": "Hier findest du deine aktuelle Mitteilungen",
     "filterPlaceHolderText": "Suche nach Kategoriename",
-    "sidebar": "Schwarzes Brett",
+    "sidebar": "Info Board",
     "newCategorie": "Neue Kategorie",
     "category": "Kategorie",
     "categoryPositionChanged": "Position der Kategorie geändert",
@@ -65,7 +65,7 @@
     "categories": {
       "visibleByUsersAndGroups": "Diese Kategorie mit ihren Mitteilungen ist sichtbar für Nutzer und Gruppen auf der Startseite",
       "visibleByUsersAndGroupsTitle": "Startseite",
-      "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen in der Bulletin Board App",
+      "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen in der Info Board App",
       "editableByUsersAndGroupsTitle": "Mitteilungen verwalten"
     },
     "errors": {
@@ -117,7 +117,7 @@
     "quota": {
       "title": "Quotas",
       "globalQuota": "Cloudquota berechnet ",
-      "mailQuota": "Mailquota berechnet",
+      "mailQuota": "E-Mailquota berechnet",
       "mibibyte": "MiB",
       "remainingLow": "Verbleibendes Quota gering – {{free}} %",
       "remainingVeryLow": "Verbleibendes Quota sehr gering – {{free}} %"
@@ -171,12 +171,12 @@
     }
   },
   "ticketsystem": {
-    "title": "TICKETSYSTEM",
-    "sidebar": "Ticketsystem"
+    "title": "TICKETS",
+    "sidebar": "Tickets"
   },
   "mail": {
-    "title": "MAIL",
-    "sidebar": "Mail",
+    "title": "E-MAILS",
+    "sidebar": "E-Mails",
     "configName": "Name der Konfiguration",
     "hostname": "Hostname",
     "port": "Port",
@@ -192,7 +192,7 @@
       "isActive": "Aktiv",
       "syncJobsTable": "Sync-Jobs",
       "mailAddress": "E-Mail-Adresse",
-      "noMailConfigured": "Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator.",
+      "noMailConfigured": "E-Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator.",
       "syncAccountAdded": "Konto für Sync-Job hinzugefügt.",
       "syncAccountDeleted": "Konto für Sync-Job gelöscht."
     }
@@ -237,7 +237,6 @@
     "changeUser": "Benutzer wechseln",
     "joinAgain": "Erneut teilnehmen",
     "passwordOfConference": "Passwort der Konferenz",
-    "orContinueWithoutAccount": "Oder fahre ohne Account fort",
     "conferenceIsNotStartedYet": "Die Konferenz wurde noch nicht gestartet. Du befindest dich derzeit im Warteraum und wirst automatisch weitergeleitet, sobald die Konferenz beginnt.",
     "conferenceIsPasswordProtected": "Diese Konferenz ist passwortgeschützt. Bitte gib das Passwort ein, um teilzunehmen.",
     "pleaseEnterYourFullName": "Gib deinen vollständigen Namen ein, um der Konferenz beizutreten.",
@@ -292,7 +291,7 @@
   "feed": {
     "title": "Aktuelles",
     "noconferences": "Keine laufende Konferenz",
-    "nomail": "Keine ungelesenen Mails",
+    "nomail": "Keine ungelesenen E-Mails",
     "nosurveys": "Keine offenen Umfragen",
     "nobulletinboard": "Keine neuen Mitteilungen"
   },
@@ -307,9 +306,9 @@
   },
   "filesharing": {
     "filterPlaceHolderText": "Suche nach Dateiname",
-    "title": "FILESHARING",
+    "title": "DATEIEN",
     "selectFile": "Datei auswählen",
-    "sidebar": "Filesharing",
+    "sidebar": "Dateien",
     "previewTitle": "Dateivorschau",
     "saveFile": "Datei speichern",
     "fileEditor": "Datei Editor",
@@ -361,7 +360,9 @@
       "fileInfoDeleting": "Datei {{filename}} wird gelöscht",
       "fileInfoCopying": "Datei {{filename}} wird kopiert",
       "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden",
-      "downloadInfo": "Datei {{filename}} wird heruntergeladen"
+      "downloadInfo": "Datei {{filename}} wird heruntergeladen",
+      "fileStructureIsCreating": "Dateistruktur wird erstellt",
+      "zipFilesAreUploading": "Dateien werden in Ordnerstruktur hochgeladen"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
@@ -395,14 +396,14 @@
   "server": "Server",
   "loginname": "Loginname",
   "classmanagement": {
-    "title": "KLASSENZIMMER",
-    "sidebar": "Klassenzimmer",
-    "invalidProxyAddresses": "Proxy Email-Adressen müssen Komma-separiert ohne Leerzeichen angegebn werden",
+    "title": "KLASSENRAUM",
+    "sidebar": "Klassenraum",
+    "invalidProxyAddresses": "Proxy E-Mail-Adressen müssen Komma-separiert ohne Leerzeichen angegebn werden",
     "invalidQuota": "Die Quota muss der Dokumentation entsprechend angegeben werden",
-    "invalidMailQuota": "Die Mailquota muss als Zahl in MB angegeben werden",
+    "invalidMailQuota": "Die E-Mailquota muss als Zahl in MB angegeben werden",
     "name": "Name",
-    "mailQuota": "Mail Quota (MB)",
-    "proxyAddresses": "Proxy Email-Adressen",
+    "mailQuota": "E-Mail Quota (MB)",
+    "proxyAddresses": "Proxy E-Mail-Adressen",
     "descriptionPlaceholder": "Kurze Beschreibung des Projekts",
     "proxyAddressesPlaceholder": "info@email1.de,kontakt@email2.com",
     "quotaPlaceholder": "[{\"share\":\"default-school\",\"quota\":50}]",
@@ -553,6 +554,8 @@
     "canSubmitMultiple": "Erlaube Mehrfachantworten.",
     "editor": {
       "new": "Neu (Leer)",
+      "fileUploadSuccess": "Die Datei wurde erfolgreich hochgeladen.",
+      "fileUploadError": "Die Datei konnte nicht hochgeladen werden, bitte versuche es später erneut.",
       "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
       "reset": "Verwerfen",
       "addDescription": "Beschreibung hinzufügen",
@@ -579,17 +582,26 @@
         "addBackendLimiterForOtherItem": "Dies setzt einen Grenzwert, wie oft Teilnehmer diese Optionen auswählen können.",
         "upperLimit": "Grenzwert",
         "upperBackendLimiters": "Auswahlmöglichkeiten mit Obergrenze",
-        "addChoice": "Hinzufügen"
+        "addChoice": "Hinzufügen",
+        "filterPlaceHolderText": "Option suchen"
       }
     },
     "participate": {
-      "saveAnswerSuccess": "Die Antwort wurde gespeichert."
+      "saveAnswerSuccess": "Die Antwort wurde gespeichert.",
+      "username": "Benutzername",
+      "pleaseEnterYourFullName": "Gib entweder deinen vollständigen Namen ein, um an der Umfrage teilzunehmen. Oder benutze die Teilnahme-ID, um deine Abgabe zu überarbeiten.",
+      "yourFullName": "Name",
+      "invalidUsername": "Benutzername ist ungültig (erlaubt sind Buchstaben, Zahlen und [. -])",
+      "idHeader": "Deine Teilnahme-ID",
+      "idText": "Bitte notiere dir:",
+      "idParagraph": "Um deine Antwort einzusehen oder, falls konfiguriert, nochmals zu bearbeiten, kannst du die Teilnahme-ID hier benutzen.",
+      "usernameRequired": "Der Benutzername ist erforderlich",
+      "completeMessage": "Vielen Dank, dass du an der Umfrage Teilgenommen hast"
     },
     "errors": {
       "submitAnswerError": "Die Antwort konnte nicht gespeichert werden.",
       "updateOrCreateError": "Umfrage konnte weder aktualisiert noch erstellt werden.",
       "deleteError": "Die Umfragen konnten nicht gelöscht werden.",
-      "imageDeletionFailed": "Nicht alle Bilder der Umfragen konnten gelöscht werden.",
       "noAnswerError": "Bisher ist noch keine Antwort abgegeben worden.",
       "noFormulaError": "Das Formular der Umfrage ist nicht lesbar.",
       "noBackendLimitersError": "Um diese Funktion nutzen zu können müssen im Editor die Grenzwerte definiert werden.",
@@ -598,7 +610,7 @@
       "participationErrorUserNotAssigned": "Du bist zu dieser Umfrage nicht eingeladen.",
       "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
       "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",
-      "idTypeError": "Ungültige Umfrage-ID.",
+      "missingIdError": "Fehlende Umfrage-ID.",
       "missingAnswerError": "Bitte fülle die Umfrage aus, bevor du deine Antwort abschickst."
     }
   },
@@ -617,7 +629,9 @@
     "confirmMultiDelete": "Sollen diese Umfragen wirklich gelöscht werden?",
     "confirmSingleDelete": "Soll die Umfrage wirklich gelöscht werden?",
     "deleteSurveys": "Lösche {{count}} Umfragen",
+    "deletedSurveys": "{{count}} Umfragen erfolgreich gelöscht",
     "deleteSurvey": "Umfrage Löschen",
+    "deletedSurvey": "Umfrage erfolgreich gelöscht",
     "title": "UMFRAGEN",
     "sidebar": "Umfragen",
     "view": {
@@ -747,7 +761,15 @@
     "yourPassword": "Dein Passwort",
     "addButton": "Hinzufügen"
   },
-
+  "ctrlKey": "STRG",
+  "enterKey": "Enter",
+  "launcher": {
+    "title": "App Launcher",
+    "searchApps": "Tippen um Apps zu filtern...",
+    "pressShortKey": "Launcher öffnen mit",
+    "pressEnterToStartApp": "Erste App öffnen mit",
+    "noSearchResults": "Keine App gefunden"
+  },
   "settings": {
     "title": "EINSTELLUNGEN",
     "sidebar": "Einstellungen",
@@ -786,7 +808,7 @@
       "aichat": "Hier kannst du alle Einstellungen vornehmen.",
       "linuxmuster": "Hier kannst du alle Einstellungen vornehmen.",
       "whiteboard": "Hier kannst du alle Einstellungen vornehmen.",
-      "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Schwarzes Brett haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden.",
+      "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Info Board haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden.",
       "forwarded": "Weiterleitungs: Einfach den Link zur Webanwendung unter URL eintragen.",
       "framed": "Frame: Einfach den Link zur Webanwendung unter URL eintragen.",
       "embedded": "Eingebettet: Hier kann eine eigene Webanwendung im Editor erstellt werden."
@@ -811,6 +833,10 @@
       "title": "Info"
     },
     "appconfig": {
+      "position": {
+        "title": "Sortierung",
+        "description": "An welcher Position soll die App in der App-Leiste und in den Einstellungen angezeigt werden?"
+      },
       "sections": {
         "onlyOffice": {
           "title": "Only Office Integration",
@@ -1021,6 +1047,9 @@
   "login": {
     "pageTitle": "Login",
     "username_too_long": "Benutzername zu lang",
+    "username_too_short": "Benutzername zu kurz",
+    "username_not_regex": "Ungültiger Benutzername/Teilnahme-ID",
+    "publicUsername_notExisting": "Es existiert keine Abgabe mit der gegebenen Teilnahme-ID",
     "password_too_long": "Passwort zu lang",
     "forgot_password": "Passwort vergessen?",
     "remember_me": "Merken",
@@ -1030,22 +1059,22 @@
     "infoQrCodeExpired": "Zeit für Login mit edulution.io APP abgelaufen."
   },
   "common": {
+    "offline": "Offline",
     "guest": "Gast",
     "ok": "OK",
     "next": "Weiter",
     "back": "Zurück",
     "confirm": "Bestätigen",
     "share": "Teilen",
-    "savedToClipboard": "In die Zwischenablage kopiert.",
-    "savedToClipboardError": "Konnte nicht in die Zwischenablage kopiert werden.",
     "answers": "Antworten",
     "error": "Fehler",
     "errors": {
-      "attachmentUploadFailed": "Anhang konnte nicht hochgeladen werden",
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "directoryNotCreated": "Erstellen des Verzeichnisses fehlgeschlagen",
+      "fileUploadFailed": "Die Datei konnte nicht hochgeladen werden",
       "fileDeletionFailed": "Löschen der Datei fehlgeschlagen",
       "fileWritingFailed": "Schreiben der Datei fehlgeschlagen",
+      "fileMoveFailed": "Verschieben der Datei fehlgeschlagen",
       "fileNotFound": "Datei nicht gefunden",
       "fileNotProvided": "Datei wurde nicht bereitgestellt",
       "invalidFileType": "Ungültiger Dateityp",
@@ -1121,7 +1150,7 @@
     "type": "Typ",
     "creationDate": "Erstelldatum",
     "schoolName": "Schulname",
-    "mailList": "Email Verteiler",
+    "mailList": "E-Mail Verteiler",
     "invalid_chars": "Enthält ungültige Zeichen",
     "clearSelection": "Auswahl löschen",
     "start": "Starten",
@@ -1157,7 +1186,8 @@
     "preview": "Vorschau",
     "format": "Formatieren",
     "upload": "Hochladen",
-    "mode": "Modus"
+    "mode": "Modus",
+    "orContinueWithoutAccount": "Oder fahre ohne Account fort"
   },
   "form": {
     "path": "Link",
@@ -1216,7 +1246,13 @@
     "overwriteWarningDescriptionFiles": "Die folgenden Dateien werden überschrieben:",
     "oversizedFilesDetected": "Zu große Dateien entdeckt",
     "oversizedFileDetected": "Zu große Datei entdeckt!",
-    "cannotUploadOversized": "Es können keine Dateien größer als 50MB hochgeladen werden."
+    "cannotUploadOversized": "Dateien, die größer als 50 MB sind, können nicht hochgeladen werden.",
+    "addFiles": "Dateien hinzufügen",
+    "addFolder": "Ordner hinzufügen",
+    "preparingFolder": "Ordner wird vorbereitet"
+  },
+  "warnings": {
+    "colorMayConflictWithTheme": "Manuelle Einstellung der Farbe kann zukünftig zu Problemen mit anderen Themes (hell/dunkel) führen. Es wird empfohlen, die Farbe der Schrift immer gleichzeitig mit der Hintergrundfarbe zu setzen."
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",
@@ -1359,7 +1395,7 @@
     "classes": "Klassen",
     "change_password": "Passwort ändern",
     "my_information": "Meine Informationen",
-    "mail_alias": "Mail Alias",
+    "mail_alias": "E-Mail Alias",
     "change_my_data": "Daten ändern",
     "school_classes": "Schulklassen"
   },

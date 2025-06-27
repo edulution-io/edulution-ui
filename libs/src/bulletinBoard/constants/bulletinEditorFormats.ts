@@ -21,6 +21,8 @@ const BULLETIN_EDITOR_FORMATS = [
   'indent',
   'link',
   'image',
+  'color',
+  'background',
 ];
 
 export default BULLETIN_EDITOR_FORMATS;

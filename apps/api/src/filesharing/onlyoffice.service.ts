@@ -39,6 +39,8 @@ class OnlyofficeService implements OnModuleInit {
   async onModuleInit() {
     const appConfig = await this.appConfigService.getAppConfigByName(APPS.FILE_SHARING);
 
+    if (!appConfig) return;
+
     if (
       EDULUTION_ONLYOFFICE_JWT_SECRET &&
       appConfig.extendedOptions &&
@@ -59,7 +61,7 @@ class OnlyofficeService implements OnModuleInit {
 
   async generateOnlyOfficeToken(payload: string): Promise<string> {
     const appConfig = await this.appConfigService.getAppConfigByName(APPS.FILE_SHARING);
-    if (!appConfig.extendedOptions || !appConfig.extendedOptions[ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]) {
+    if (!appConfig?.extendedOptions || !appConfig.extendedOptions[ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]) {
       throw new CustomHttpException(FileSharingErrorMessage.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     const jwtSecret = appConfig?.extendedOptions[ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET] as string;

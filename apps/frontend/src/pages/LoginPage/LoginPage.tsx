@@ -81,6 +81,10 @@ const LoginPage: React.FC = () => {
         form.setError('password', { message: t('auth.errors.EdulutionConnectionFailed') });
         return;
       }
+      if (auth.error.source.includes('renewSilent')) {
+        form.setError('password', { message: t('auth.errors.TokenExpired') });
+        return;
+      }
       form.setError('password', { message: t(auth.error.message) });
 
       if (showQrCode) {

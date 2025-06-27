@@ -86,7 +86,7 @@ const FormField = <T extends FieldValues>({
               variant={variant}
             />
           </FormControl>
-          <FormMessage className={cn('text-p')} />
+          <FormMessage className={cn('text-p text-destructive')} />
           {description ? <FormDescription>{description}</FormDescription> : null}
         </FormItem>
       )}

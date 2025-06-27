@@ -1,0 +1,57 @@
+.quill-container {
+  position: relative;
+}
+
+.quill-container .ql-tooltip {
+  position: absolute !important;
+  top: 0 !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  max-width: 80%;
+  background: var(--muted-dialog) !important;
+  color: var(--background) !important;
+  padding: 8px 12px !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+  box-sizing: border-box;
+}
+
+.ql-snow .ql-tooltip input {
+  background: var(--muted) !important;
+  color: var(--background) !important;
+  padding: 6px 8px !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 4px !important;
+}
+.ql-snow .ql-tooltip input::placeholder {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.ql-snow .ql-picker-label {
+  background: var(--muted-dialog) !important;
+  color: var(--background) !important;
+  border: 1px solid #555 !important;
+}
+.ql-snow .ql-picker.ql-expanded .ql-picker-options {
+  background: var(--muted-dialog) !important;
+  border: 1px solid #555 !important;
+}
+.ql-snow .ql-picker-item {
+  color: #ddd !important;
+}
+.ql-snow .ql-picker-item:hover,
+.ql-snow .ql-picker .ql-selected {
+  background: var(--muted-dialog) !important;
+  color: var(--background) !important;
+}
+
+.ql-snow .ql-toolbar button svg *,
+.ql-snow .ql-toolbar .ql-picker-label svg * {
+  fill: var(--background) !important;
+  stroke: var(--background) !important;
+}
+
+.quill-content span {
+  font-size: inherit;
+  letter-spacing: inherit;
+}

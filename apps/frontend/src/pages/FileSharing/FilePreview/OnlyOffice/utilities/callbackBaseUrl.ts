@@ -11,7 +11,7 @@
  */
 
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
-import getFrontEndUrl from '@libs/common/utils/getFrontEndUrl';
+import getFrontEndUrl from '@libs/common/utils/URL/getFrontEndUrl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 
 interface CallbackBaseUrlProps {

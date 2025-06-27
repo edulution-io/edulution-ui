@@ -17,6 +17,7 @@ import { SurveyCreator } from 'survey-creator-react';
 import cn from '@libs/common/utils/className';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
+import useLdapGroups from '@/hooks/useLdapGroups';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import { Button } from '@/components/shared/Button';
 import { Textarea } from '@/components/ui/Textarea';
@@ -40,7 +41,9 @@ const TemplateItem = (props: TemplateItemProps) => {
     canSubmitMultipleAnswers,
     canUpdateFormerAnswer,
   } = template.template;
-  const { setTemplate, setIsOpenTemplateMenu } = useTemplateMenuStore();
+  const { setTemplate, setIsOpenTemplateMenu, deleteTemplate, fetchTemplates } = useTemplateMenuStore();
+
+  const { isSuperAdmin } = useLdapGroups();
 
   const { t } = useTranslation();
 
@@ -62,10 +65,15 @@ const TemplateItem = (props: TemplateItemProps) => {
     setIsOpenTemplateMenu(false);
   };
 
+  const handleRemoveTemplate = async () => {
+    await deleteTemplate(template.fileName || '');
+    await fetchTemplates();
+  };
+
   return (
     <AccordionItem
       key={template.fileName}
-      value={formula?.title || ''}
+      value={template.fileName || ''}
     >
       <AccordionTrigger className="px-4 py-2 text-h4">
         <p className="font-bold ">{`${formula?.title}`}</p>
@@ -82,10 +90,18 @@ const TemplateItem = (props: TemplateItemProps) => {
           disabled
         />
         <div className="flex flex-row justify-end">
+          {isSuperAdmin && (
+            <Button
+              onClick={handleRemoveTemplate}
+              variant="btn-attention"
+              size="sm"
+            >
+              {t('common.delete')}
+            </Button>
+          )}
           <Button
             onClick={handleLoadTemplate}
             variant="btn-collaboration"
-            className="m-2 h-[24px]"
             size="sm"
           >
             {t('common.load')}

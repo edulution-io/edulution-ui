@@ -28,7 +28,7 @@ const useLogout = () => {
   const handleLogout = useCallback(async () => {
     await logout();
     await auth.removeUser();
-    cleanAllStores();
+    await cleanAllStores();
     removeCookie('authToken');
     window.history.pushState(null, '', LOGIN_ROUTE);
     window.dispatchEvent(new PopStateEvent('popstate'));
@@ -36,9 +36,11 @@ const useLogout = () => {
     if (auth.user?.expired) {
       toast.error(t('auth.errors.TokenExpired'));
     } else {
-      toast.success(t('auth.logout.success'));
+      toast.success(t('auth.logout.success'), {
+        id: 'logout-success',
+      });
     }
-  }, [logout, auth]);
+  }, [auth]);
 
   return handleLogout;
 };

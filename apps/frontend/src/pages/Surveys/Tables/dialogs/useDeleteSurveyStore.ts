@@ -10,6 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { t } from 'i18next';
+import { toast } from 'sonner';
 import { create } from 'zustand';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { SURVEYS } from '@libs/survey/constants/surveys-endpoint';
@@ -35,13 +37,16 @@ const useDeleteSurveyStore = create<DeleteSurveyStore>((set) => ({
   ...(DeleteSurveyStoreInitialState as DeleteSurveyStore),
   reset: () => set(DeleteSurveyStoreInitialState),
 
-  setIsDeleteSurveysDialogOpen: (isOpen) => set({ isDeleteSurveysDialogOpen: isOpen }),
+  setIsDeleteSurveysDialogOpen: (isOpen) => set({ isDeleteSurveysDialogOpen: isOpen, error: undefined }),
   deleteSurveys: async (surveys: SurveyDto[]) => {
-    set({ isLoading: true });
+    set({ isLoading: true, error: undefined });
     try {
       await eduApi.delete(SURVEYS, {
         data: { surveyIds: surveys.map((survey) => survey.id) },
       });
+      toast.success(
+        `${surveys.length > 1 ? t('surveys.deletedSurveys', { count: surveys.length }) : t('surveys.deletedSurvey')}`,
+      );
     } catch (error) {
       handleApiError(error, set);
     } finally {

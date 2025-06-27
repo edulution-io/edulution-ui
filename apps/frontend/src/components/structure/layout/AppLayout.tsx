@@ -22,12 +22,15 @@ import Overlays from '@/components/structure/layout/Overlays';
 import useUserStore from '@/store/UserStore/UserStore';
 import APPS from '@libs/appconfig/constants/apps';
 import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
+import OfflineBanner from '@/components/shared/OfflineBanner';
+import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 
 const AppLayout = () => {
   const { isAuthenticated } = useUserStore();
   const { pathname } = useLocation();
   const menuBar = useMenuBarConfig();
   const { appConfigs } = useAppConfigsStore();
+  const { isEduApiHealthy } = useEduApiStore();
 
   const isMainPage = pathname === DASHBOARD_ROUTE;
   const isCurrentAppForwardingPage = appConfigs.find(
@@ -43,6 +46,8 @@ const AppLayout = () => {
         {isAppHeaderVisible && <Header hideHeadingText={!isMainPage} />}
 
         <div className="flex min-h-0 flex-1 flex-row">
+          {isEduApiHealthy === false && <OfflineBanner />}
+
           {!menuBar.disabled && !isMainPage && <MenuBar />}
           <Outlet />
           {isAuthenticatedAppReady && <Overlays />}

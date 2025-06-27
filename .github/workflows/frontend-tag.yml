@@ -33,7 +33,6 @@ jobs:
     steps:
       - run: echo Use docker tags ${{ needs.prepare.outputs.docker-tags }}
 
-      # checkout the repository content to github runner
       - name: Checkout
         uses: actions/checkout@v4.2.2
         with:
@@ -44,11 +43,10 @@ jobs:
         uses: actions/setup-node@v4.1.0
         with:
           node-version: 20.x
-          cache: 'npm'
 
-      # cache the dependencies to speed up the build
       - name: Cache Node.js modules
         uses: actions/cache@v4.2.0
+        continue-on-error: true
         with:
           path: |
             **/node_modules

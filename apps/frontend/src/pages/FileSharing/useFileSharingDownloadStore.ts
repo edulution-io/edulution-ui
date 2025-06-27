@@ -13,7 +13,7 @@
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import { create } from 'zustand';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
-import getFrontEndUrl from '@libs/common/utils/getFrontEndUrl';
+import getFrontEndUrl from '@libs/common/utils/URL/getFrontEndUrl';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
@@ -66,11 +66,11 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
 
       if (!file) return;
 
-      const blobUrl = await get().createDownloadBlobUrl(file.filename, signal);
+      const blobUrl = await get().createDownloadBlobUrl(file.filePath, signal);
       set({ temporaryDownloadUrl: blobUrl });
 
       if (isOnlyOfficeDocument(file.filename)) {
-        const publicUrl = await get().getPublicDownloadUrl(file.filename, file.basename, signal);
+        const publicUrl = await get().getPublicDownloadUrl(file.filePath, file.filePath, signal);
         if (publicUrl) {
           set({ publicDownloadLink: `${getFrontEndUrl()}/${EDU_API_ROOT}/downloads/${publicUrl}` });
         }
@@ -135,14 +135,14 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
         {
           responseType: ResponseType.BLOB,
           signal,
-          params: { filePath: files.map((f) => f.filename) },
+          params: { filePath: files.map((file) => file.filePath) },
           onDownloadProgress: (e: AxiosProgressEvent) => {
             const total = e.total ?? totalBytes;
             if (!total) return;
             let percent = Math.round((e.loaded / total) * 100);
             if (percent > 100) percent = 100;
             get().setDownloadProgress({
-              fileName: files.length > 1 ? 'download.zip' : files[0].basename,
+              fileName: files.length > 1 ? 'download.zip' : files[0].filename,
               percent,
               processId: Math.floor(Math.random() * 1_000_000),
             });
