@@ -367,7 +367,9 @@
       "fileInfoMoving": "File {{filename}} is being moved",
       "fileInfoDeleting": "File {{filename}} is being deleted",
       "downloadInfo": "Downloading {{filename}}",
-      "errorInfo": "{{failed}} files could not be handed out"
+      "errorInfo": "{{failed}} files could not be handed out",
+      "fileStructureIsCreating": "File structure is creating",
+      "zipFilesAreUploading": "Files are uploading"
     }
   },
   "forums": {
@@ -756,6 +758,15 @@
     "yourPassword": "Your Password",
     "addButton": "Add"
   },
+  "ctrlKey": "Ctrl",
+  "enterKey": "Enter",
+  "launcher": {
+    "title": "App Launcher",
+    "searchApps": "Type to filter apps...",
+    "pressShortKey": "To open launcher press",
+    "pressEnterToStartApp": "To launch first app press",
+    "noSearchResults": "No app found"
+  },
   "settings": {
     "title": "SETTINGS",
     "sidebar": "Settings",
@@ -819,6 +830,10 @@
       "title": "Info"
     },
     "appconfig": {
+      "position": {
+        "title": "Sorting",
+        "description": "At which position should the app be displayed in the app bar and in the settings?"
+      },
       "sections": {
         "onlyOffice": {
           "title": "Only Office Integration",
@@ -1228,7 +1243,10 @@
     "overwriteWarningDescriptionFiles": "The following files will be overwritten:",
     "oversizedFilesDetected": "Oversized files detected",
     "oversizedFileDetected": "Oversized file detected!",
-    "cannotUploadOversized": "Cannot upload oversized files (more than 50 MB)."
+    "cannotUploadOversized": "Files larger than 50 MB cannot be uploaded.",
+    "addFiles": "Add files",
+    "addFolder": "Add folder",
+    "preparingFolder": "Preparing folder"
   },
   "warnings": {
     "colorMayConflictWithTheme": "Manual setting of the color can lead to problems with other themes (light/dark) in the future. It is recommended to always set the color of the font at the same time as the background color."

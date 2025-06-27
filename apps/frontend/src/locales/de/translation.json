@@ -360,7 +360,9 @@
       "fileInfoDeleting": "Datei {{filename}} wird gelöscht",
       "fileInfoCopying": "Datei {{filename}} wird kopiert",
       "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden",
-      "downloadInfo": "Datei {{filename}} wird heruntergeladen"
+      "downloadInfo": "Datei {{filename}} wird heruntergeladen",
+      "fileStructureIsCreating": "Dateistruktur wird erstellt",
+      "zipFilesAreUploading": "Dateien werden in Ordnerstruktur hochgeladen"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
@@ -759,7 +761,15 @@
     "yourPassword": "Dein Passwort",
     "addButton": "Hinzufügen"
   },
-
+  "ctrlKey": "STRG",
+  "enterKey": "Enter",
+  "launcher": {
+    "title": "App Launcher",
+    "searchApps": "Tippen um Apps zu filtern...",
+    "pressShortKey": "Launcher öffnen mit",
+    "pressEnterToStartApp": "Erste App öffnen mit",
+    "noSearchResults": "Keine App gefunden"
+  },
   "settings": {
     "title": "EINSTELLUNGEN",
     "sidebar": "Einstellungen",
@@ -823,6 +833,10 @@
       "title": "Info"
     },
     "appconfig": {
+      "position": {
+        "title": "Sortierung",
+        "description": "An welcher Position soll die App in der App-Leiste und in den Einstellungen angezeigt werden?"
+      },
       "sections": {
         "onlyOffice": {
           "title": "Only Office Integration",
@@ -1232,7 +1246,10 @@
     "overwriteWarningDescriptionFiles": "Die folgenden Dateien werden überschrieben:",
     "oversizedFilesDetected": "Zu große Dateien entdeckt",
     "oversizedFileDetected": "Zu große Datei entdeckt!",
-    "cannotUploadOversized": "Es können keine Dateien größer als 50MB hochgeladen werden."
+    "cannotUploadOversized": "Dateien, die größer als 50 MB sind, können nicht hochgeladen werden.",
+    "addFiles": "Dateien hinzufügen",
+    "addFolder": "Ordner hinzufügen",
+    "preparingFolder": "Ordner wird vorbereitet"
   },
   "warnings": {
     "colorMayConflictWithTheme": "Manuelle Einstellung der Farbe kann zukünftig zu Problemen mit anderen Themes (hell/dunkel) führen. Es wird empfohlen, die Farbe der Schrift immer gleichzeitig mit der Hintergrundfarbe zu setzen."
