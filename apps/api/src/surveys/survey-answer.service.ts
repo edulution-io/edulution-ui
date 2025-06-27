@@ -10,8 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { join } from 'path';
 import { Model, Types } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
+import { Response } from 'express';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import SurveyStatus from '@libs/survey/survey-status-enum';
@@ -19,6 +21,7 @@ import JWTUser from '@libs/user/types/jwt/jwtUser';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import { createNewPublicUserLogin, publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import CustomHttpException from '../common/CustomHttpException';
@@ -28,12 +31,14 @@ import Attendee from '../conferences/attendee.schema';
 import MigrationService from '../migration/migration.service';
 import surveyAnswersMigrationsList from './migrations/surveyAnswersMigrationsList';
 import GroupsService from '../groups/groups.service';
+import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
 class SurveyAnswersService implements OnModuleInit {
   constructor(
     @InjectModel(SurveyAnswer.name) private surveyAnswerModel: Model<SurveyAnswerDocument>,
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
+    private readonly fileSystemService: FilesystemService,
     private readonly groupsService: GroupsService,
   ) {}
 
@@ -415,6 +420,18 @@ class SurveyAnswersService implements OnModuleInit {
       );
     }
     return newSurveyAnswer;
+  }
+
+  static async onSurveyRemoval(surveyIds: string[]): Promise<void> {
+    const filePath = surveyIds.map((surveyId) => join(APPS_FILES_PATH, 'survey-answer', surveyId));
+    return FilesystemService.deleteDirectories(filePath);
+  }
+
+  async serveFileFromAnswer(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
+    const filePath = join(APPS_FILES_PATH, 'survey-answer', surveyId, questionId, fileName);
+    const fileStream = await this.fileSystemService.createReadStream(filePath);
+    fileStream.pipe(res);
+    return res;
   }
 }
 

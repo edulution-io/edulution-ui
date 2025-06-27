@@ -12,7 +12,7 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
-import { ClearFilesEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
+import { ClearFilesEvent, Model, Serializer, SurveyModel, UploadFilesEvent, DownloadFileEvent } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
@@ -31,6 +31,10 @@ interface SurveyParticipationModelProps {
 }
 
 Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
+
+Serializer.getProperty('file', 'storeDataAsText').defaultValue = false;
+Serializer.getProperty('file', 'waitForUpload').defaultValue = true;
+Serializer.getProperty('file', 'showPreview').defaultValue = true;
 
 const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.ReactNode => {
   const { isPublic } = props;
@@ -79,22 +83,25 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       }
     });
 
-    newModel.storeDataAsText = false;
-    newModel.onUploadFiles.add((_: SurveyModel, options: UploadFilesEvent) => {
-      console.log('onUploadFile added', options);
-      console.log('onUploadFile added', options);
+    newModel.onUploadFiles.add(async (_: SurveyModel, options: UploadFilesEvent) => {
       console.log('onUploadFile added', options);
 
-      const formData = new FormData();
-      options.files.forEach((file) => {
-        formData.append(file.name, file);
+      const uploadPromises = options.files.map(async (file) => {
+        if (!selectedSurvey || !selectedSurvey.id) {
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+        await uploadFile(selectedSurvey.id, formData, options.callback);
       });
-      uploadFile(formData, options.callback);
+      await Promise.all(uploadPromises);
+
+      console.log(`uploaded files: ${JSON.stringify(options.files)}`);
+      console.log(`updated answer: ${JSON.stringify(_.data)}`);
     });
 
     newModel.onClearFiles.add(async (_surveyModel: SurveyModel, options: ClearFilesEvent) => {
-      console.log('onClearFiles added', options);
-      console.log('onClearFiles added', options);
       console.log('onClearFiles added', options);
 
       if (!options.value || options.value.length === 0) {
@@ -109,20 +116,10 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         return options.callback('error');
       }
 
-      const results = await Promise.all(
-        filesToDelete.map((file: File) => {
-          if (!selectedSurvey || !selectedSurvey.id) {
-            return;
-          }
-          deleteFile(file, selectedSurvey.id, options.name, options.callback);
-        }),
-      );
-
-      if (results.every((res) => res === 'success')) {
-        options.callback('success');
-      } else {
-        options.callback('error');
+      if (!selectedSurvey || !selectedSurvey.id) {
+        return;
       }
+      await deleteFile(selectedSurvey.id, filesToDelete, options.callback);
     });
 
     return newModel;

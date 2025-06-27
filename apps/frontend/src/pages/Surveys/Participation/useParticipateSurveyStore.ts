@@ -21,7 +21,7 @@ import {
   PUBLIC_SURVEYS,
   SURVEY_ANSWER_ENDPOINT,
   PUBLIC_USER,
-  SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT,
+  SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT,
 } from '@libs/survey/constants/surveys-endpoint';
 import { publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
 import AttendeeDto from '@libs/user/types/attendee.dto';
@@ -51,9 +51,10 @@ interface ParticipateSurveyStore {
 
   publicUserId?: string;
 
-  uploadFile: (files: FormData, callback: CallableFunction) => Promise<void>;
-  deleteFile: (file: File, surveyId: string, questionName: string, callback: CallableFunction) => Promise<void>;
+  uploadFile: (surveyId: string, file: FormData, callback: CallableFunction) => Promise<void>;
   isUploadingFile?: boolean;
+  deleteFile: (surveyId: string, file: File, callback: CallableFunction) => Promise<void>;
+  isDeletingFile?: boolean;
 
   reset: () => void;
 }
@@ -71,6 +72,7 @@ const ParticipateSurveyStoreInitialState: Partial<ParticipateSurveyStore> = {
   publicUserId: undefined,
 
   isUploadingFile: false,
+  isDeletingFile: false,
 };
 
 const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => ({
@@ -175,14 +177,18 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
   },
 
-  uploadFile: async (files: FormData, callback: CallableFunction): Promise<void> => {
-    console.log('Uploading files:', files);
-
+  uploadFile: async (surveyId: string, file: FormData, callback: CallableFunction): Promise<void> => {
+    console.log('Uploading file:', file);
+    const { attendee } = get();
     set({ isUploadingFile: true });
     try {
-      const response = await eduApi.post<string>(`${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}`, files, {
-        headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
-      });
+      const response = await eduApi.post<string>(
+        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}`,
+        file,
+        {
+          headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
+        },
+      );
       toast.success(t('survey.editor.fileUploadSuccess'));
       callback('success', `${EDU_API_URL}/${response.data}`);
     } catch (error) {
@@ -193,19 +199,21 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
   },
 
-  deleteFile: async (file: File, surveyId: string, questionName: string, callback: CallableFunction): Promise<void> => {
-    console.log('Deleting files:', file);
-
-    set({ isUploadingFile: true });
+  deleteFile: async (surveyId: string, file: File, callback: CallableFunction): Promise<void> => {
+    console.log('Deleting file:', file);
+    const { attendee } = get();
+    set({ isDeletingFile: true });
     try {
-      const response = await eduApi.delete<string>(`${SURVEYS}/attachments/${surveyId}/${questionName}/${file.name}`);
+      const response = await eduApi.delete<string>(
+        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${file.name}`,
+      );
       toast.success(t('survey.editor.fileDeleteSuccess'));
       callback('success', `${EDU_API_URL}/${response.data}`);
     } catch (error) {
       handleApiError(error, set);
       callback('error');
     } finally {
-      set({ isUploadingFile: false });
+      set({ isDeletingFile: false });
     }
   },
 
