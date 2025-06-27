@@ -826,6 +826,14 @@
         "notFoundError": "Settings could not be loaded."
       }
     },
+    "userAdministration": {
+      "title": "User Administration",
+      "resetMfaForm": "Reset Two-Factor Authentication",
+      "resetMfaFormDescription": "Here you can reset the two-factor authentication for users.",
+      "selectUsersTitle": "Select Users",
+      "selectUsersDescription": "Select the users for whom you want to reset the two-factor authentication.",
+      "totpResetSuccess": "TOTP for user {{username}} has been disabled successfully."
+    },
     "info": {
       "title": "Info"
     },
@@ -1185,7 +1193,8 @@
     "upload": "Upload",
     "mode": "Mode",
     "orContinueWithoutAccount": "Or continue without account",
-    "application": "Application"
+    "application": "Application",
+    "reset": "Reset"
   },
   "form": {
     "path": "Path",

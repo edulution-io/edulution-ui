@@ -17,11 +17,11 @@ import { AnyBulkWriteOperation, Connection, Model } from 'mongoose';
 import { readFileSync, writeFileSync } from 'fs';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
-import GroupRoles from '@libs/groups/types/group-roles.enum';
 import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../common/CustomHttpException';
 import { AppConfig } from './appconfig.schema';
 import initializeCollection from './initializeCollection';
@@ -157,7 +157,7 @@ class AppConfigService implements OnModuleInit {
   async getAppConfigs(ldapGroups: string[]): Promise<AppConfigDto[]> {
     try {
       let appConfigDto: AppConfigDto[];
-      if (ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
+      if (getIsAdmin(ldapGroups)) {
         appConfigDto = await this.appConfigModel
           .find({}, 'name translations icon appType options accessGroups extendedOptions position')
           .sort({ position: 1 })

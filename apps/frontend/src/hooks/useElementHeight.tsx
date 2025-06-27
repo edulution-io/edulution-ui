@@ -13,7 +13,7 @@
 import { useEffect, useState } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const useElementsTotalHeight = (elementIds: string[], trigger?: any) => {
+const useElementHeight = (elementIds: string[], trigger?: any) => {
   const [totalHeight, setTotalHeight] = useState(0);
 
   useEffect(() => {
@@ -42,4 +42,4 @@ const useElementsTotalHeight = (elementIds: string[], trigger?: any) => {
   return totalHeight;
 };
 
-export default useElementsTotalHeight;
+export default useElementHeight;

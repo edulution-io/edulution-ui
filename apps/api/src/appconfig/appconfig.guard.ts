@@ -13,7 +13,7 @@
 import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/common';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import { Request } from 'express';
-import GroupRoles from '@libs/groups/types/group-roles.enum';
+import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../common/CustomHttpException';
 
 @Injectable()
@@ -29,7 +29,7 @@ class AppConfigGuard implements CanActivate {
 
     const ldapGroups = user.ldapGroups || [];
 
-    if (ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
+    if (getIsAdmin(ldapGroups)) {
       return true;
     }
     throw new CustomHttpException(

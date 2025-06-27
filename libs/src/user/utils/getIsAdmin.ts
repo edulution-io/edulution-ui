@@ -10,16 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type TotpSlice = {
-  setupTotp: (totp: string, totpSecret: string) => Promise<boolean>;
-  getTotpStatus: (username: string) => Promise<boolean>;
-  disableTotp: () => Promise<void>;
-  disableTotpForUser: (username: string) => Promise<void>;
-  isSetTotpDialogOpen: boolean;
-  setIsSetTotpDialogOpen: (isSetTotpDialogOpen: boolean) => void;
-  totpIsLoading: boolean;
-  totpError: Error | null;
-  resetTotpSlice: () => void;
-};
+import GroupRoles from '@libs/groups/types/group-roles.enum';
 
-export default TotpSlice;
+const getIsAdmin = (ldapGroups: string[]) =>
+  ldapGroups.includes(GroupRoles.SUPER_ADMIN) || ldapGroups.includes(GroupRoles.ADMIN);
+
+export default getIsAdmin;

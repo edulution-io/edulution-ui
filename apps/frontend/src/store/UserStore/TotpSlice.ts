@@ -17,6 +17,8 @@ import UserStore from '@libs/user/types/store/userStore';
 import TotpSlice from '@libs/user/types/store/totpSlice';
 import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
 import UserDto from '@libs/user/types/user.dto';
+import { toast } from 'sonner';
+import i18n from '@/i18n';
 
 const initialState = {
   totpError: null,
@@ -72,6 +74,22 @@ const createTotpSlice: StateCreator<UserStore, [], [], TotpSlice> = (set) => ({
     try {
       const { data } = await eduApi.put<UserDto>(`${AUTH_PATHS.AUTH_ENDPOINT}/${AUTH_PATHS.AUTH_CHECK_TOTP}`);
       set({ user: { ...data } });
+    } catch (e) {
+      handleApiError(e, set);
+    } finally {
+      set({ totpIsLoading: false });
+    }
+  },
+
+  disableTotpForUser: async (username: string) => {
+    set({ totpIsLoading: true });
+    try {
+      const { data } = await eduApi.put<{ success: boolean; status: number }>(
+        `${AUTH_PATHS.AUTH_ENDPOINT}/${AUTH_PATHS.AUTH_CHECK_TOTP}/${username}`,
+      );
+      if (data.status === 200) {
+        toast.success(i18n.t('settings.userAdministration.totpResetSuccess', { username }));
+      }
     } catch (e) {
       handleApiError(e, set);
     } finally {
