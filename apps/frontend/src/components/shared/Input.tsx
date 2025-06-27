@@ -76,8 +76,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     const closedIcon = variant === 'login' ? EyeDarkIcon : EyeLightIcon;
     const openedIcon = variant === 'login' ? EyeDarkSlashIcon : EyeLightSlashIcon;
+    const inputWidth = variant === 'login' ? 'w-full' : originInputVariants({ width });
     return (
-      <div className={cn('relative', originInputVariants({ width }))}>
+      <div className={cn('relative', inputWidth)}>
         <SHInput
           type={showPassword ? 'text' : type}
           inputMode={type === 'number' ? 'numeric' : undefined}
