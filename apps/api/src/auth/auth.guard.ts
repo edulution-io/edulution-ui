@@ -71,10 +71,20 @@ class AuthenticationGuard implements CanActivate {
 
       return true;
     } catch (error) {
-      Logger.verbose(
-        `AuthenticationGuard: Token verification failed for request ${request.method} ${request.url}, ${JSON.stringify(request)}`,
-        AuthenticationGuard.name,
-      );
+      const safeRequest = {
+        method: request.method,
+        url: request.url,
+        headers: {
+          authorization: request.headers.authorization,
+          cookie: request.headers.cookie,
+          'content-type': request.headers['content-type'],
+        },
+        params: request.params,
+        query: request.query,
+        body: JSON.stringify(request.body),
+      };
+      Logger.verbose(`Auth failed for request: ${JSON.stringify(safeRequest)}`, AuthenticationGuard.name);
+
       throw new CustomHttpException(
         AuthErrorMessages.TokenExpired,
         HttpStatus.UNAUTHORIZED,
