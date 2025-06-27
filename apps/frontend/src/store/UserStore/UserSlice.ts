@@ -30,7 +30,6 @@ const initialState = {
   userIsLoading: false,
   searchError: null,
   searchIsLoading: false,
-  encryptKey: '',
 };
 
 const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) => ({
