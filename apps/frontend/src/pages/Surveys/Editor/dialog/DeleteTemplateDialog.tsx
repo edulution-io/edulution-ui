@@ -16,11 +16,10 @@ import { useTranslation } from 'react-i18next';
 import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
 import useLanguage from '@/hooks/useLanguage';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
-import Input from '@/components/shared/Input';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
-import Label from '@/components/ui/Label';
+import PropertyDialogList from '@/components/shared/PropertyDialogList';
 
 interface DeleteTemplateDialogProps {
   isOpenTemplateConfirmDeletion: boolean;
@@ -48,6 +47,16 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
     }
   };
 
+  const propertyList = [
+    { id: 'title', value: template?.template.formula?.title, translationId: 'common.title' },
+    { id: 'creator', value: template?.template.creator?.username, translationId: 'common.creator' },
+    {
+      id: 'createdAt',
+      value: template?.template.createdAt ? format(template?.template.createdAt, 'PPP', { locale }) : '',
+      translationId: 'common.createdAt',
+    },
+  ];
+
   const getDialogBody = () => {
     if (isSubmitting) return <CircleLoader className="mx-auto mt-5" />;
 
@@ -58,52 +67,10 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
             {t('survey.editor.templateMenu.deletion.error')}: {error.message}
           </>
         ) : (
-          <div className="text-background">
-            <p>{t('survey.editor.templateMenu.deletion.message')}</p>
-            <div className="mx-8 mt-2 space-y-2">
-              {template?.template.formula?.title && (
-                <p className="inline-flex w-full items-center">
-                  <Label className="mr-4 inline-block min-w-[80px] font-bold text-background">
-                    {t('common.title')}:
-                  </Label>
-                  <Input
-                    type="text"
-                    value={template?.template.formula?.title}
-                    readOnly
-                    disabled
-                    width="dialog"
-                    className="min-w-[100px] cursor-pointer"
-                  />
-                </p>
-              )}
-              {template?.template.creator && (
-                <p className="inline-flex w-full items-center">
-                  <Label className="mr-4 inline-block min-w-[80px] font-bold">{t('common.creator')}:</Label>
-                  <Input
-                    type="text"
-                    value={template?.template.creator.username}
-                    readOnly
-                    disabled
-                    width="dialog"
-                    className="min-w-[100px] cursor-pointer"
-                  />
-                </p>
-              )}
-              {template?.template.createdAt && (
-                <p className="inline-flex w-full items-center">
-                  <Label className="mr-4 inline-block min-w-[80px] font-bold">{t('common.createdAt')}:</Label>
-                  <Input
-                    type="text"
-                    value={format(template?.template.createdAt, 'PPP', { locale })}
-                    readOnly
-                    disabled
-                    width="dialog"
-                    className="min-w-[100px] cursor-pointer"
-                  />
-                </p>
-              )}
-            </div>
-          </div>
+          <PropertyDialogList
+            deleteWarningTranslationId="survey.editor.templateMenu.deletion.message"
+            items={propertyList}
+          />
         )}
       </div>
     );
