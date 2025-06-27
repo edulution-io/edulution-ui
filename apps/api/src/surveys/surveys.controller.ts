@@ -47,6 +47,7 @@ import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import getUsernameFromRequest from '@libs/common/utils/api/getUsernameFromRequest';
 import SurveysService from './surveys.service';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysTemplateService from './surveys-template.service';
@@ -101,11 +102,10 @@ class SurveysController {
   @UseInterceptors(
     FileInterceptor(
       'file',
-      createAttachmentUploadOptions((req) =>
-        req.user?.preferred_username
-          ? join(SURVEYS_TEMP_FILES_PATH, req.user?.preferred_username)
-          : SURVEYS_TEMP_FILES_PATH,
-      ),
+      createAttachmentUploadOptions((req) => {
+        const username = getUsernameFromRequest(req);
+        return join(SURVEYS_TEMP_FILES_PATH, username);
+      }),
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
