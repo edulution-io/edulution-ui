@@ -11,7 +11,7 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
-import Guacamole from 'guacamole-common-js';
+import { Client, WebSocketTunnel, Mouse, Touch, Keyboard } from '@glokon/guacamole-common-js';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import { MAXIMIZED_BAR_HEIGHT } from '@libs/ui/constants/resizableWindowElements';
 import RESIZABLE_WINDOW_DEFAULT_SIZE from '@libs/ui/constants/resizableWindowDefaultSize';
@@ -22,7 +22,7 @@ import useDesktopDeploymentStore from './DesktopDeploymentStore';
 
 const VDIFrame = () => {
   const displayRef = useRef<HTMLDivElement>(null);
-  const guacRef = useRef<Guacamole.Client | null>(null);
+  const guacRef = useRef<Client | null>(null);
   const { error, guacToken, dataSource, guacId, isVdiConnectionOpen, setIsVdiConnectionOpen } =
     useDesktopDeploymentStore();
   const [clientState, setClientState] = useState(0);
@@ -60,8 +60,8 @@ const VDIFrame = () => {
   useEffect(() => {
     if (guacToken === '' || !displayRef.current || !isVdiConnectionOpen || !hasCurrentFrameSizeLoaded) return () => {};
 
-    const tunnel = new Guacamole.WebSocketTunnel(GUACAMOLE_WEBSOCKET_URL);
-    const guac = new Guacamole.Client(tunnel);
+    const tunnel = new WebSocketTunnel(GUACAMOLE_WEBSOCKET_URL);
+    const guac = new Client(tunnel);
     guacRef.current = guac;
     const displayElement = displayRef.current;
     displayElement.tabIndex = 0;
@@ -92,22 +92,22 @@ const VDIFrame = () => {
 
     const guacSendMouseState = guac.sendMouseState.bind(guac);
 
-    const mouse = new Guacamole.Mouse(displayElement);
+    const mouse = new Mouse(displayElement);
     mouse.onmousedown = guacSendMouseState;
     mouse.onmouseup = guacSendMouseState;
     mouse.onmousemove = guacSendMouseState;
 
-    const touchscreen = new Guacamole.Mouse.Touchscreen(displayElement);
+    const touchscreen = new Mouse.Touchscreen(displayElement);
     touchscreen.onmousedown = guacSendMouseState;
     touchscreen.onmouseup = guacSendMouseState;
     touchscreen.onmousemove = guacSendMouseState;
 
-    const touch = new Guacamole.Touch(displayElement);
+    const touch = new Touch(displayElement);
     touch.ontouchstart = guac.sendTouchState.bind(guac);
     touch.ontouchend = guac.sendTouchState.bind(guac);
     touch.ontouchmove = guac.sendTouchState.bind(guac);
 
-    const keyboard = new Guacamole.Keyboard(displayElement);
+    const keyboard = new Keyboard(displayElement);
     keyboard.onkeydown = (keysym) => guac.sendKeyEvent(1, keysym);
     keyboard.onkeyup = (keysym) => guac.sendKeyEvent(0, keysym);
 
@@ -132,7 +132,7 @@ const VDIFrame = () => {
       console.info(`Guacamole changed the state to ${stateMap[state]}`);
       setClientState(state);
 
-      if (state === 5) {
+      if (state === (5 as Client.State)) {
         handleDisconnect();
       }
     };
