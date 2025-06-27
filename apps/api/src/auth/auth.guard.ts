@@ -11,7 +11,7 @@
  */
 
 import { readFileSync } from 'fs';
-import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
@@ -71,6 +71,10 @@ class AuthenticationGuard implements CanActivate {
 
       return true;
     } catch (error) {
+      Logger.verbose(
+        `AuthenticationGuard: Token verification failed for request ${request.method} ${request.url}, ${JSON.stringify(request)}`,
+        AuthenticationGuard.name,
+      );
       throw new CustomHttpException(
         AuthErrorMessages.TokenExpired,
         HttpStatus.UNAUTHORIZED,
