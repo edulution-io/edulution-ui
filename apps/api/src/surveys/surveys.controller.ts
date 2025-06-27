@@ -47,7 +47,10 @@ import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import getUsernameFromRequest from '@libs/common/utils/api/getUsernameFromRequest';
 import SurveysService from './surveys.service';
+import SurveysAttachmentService from './surveys-attachment.service';
+import SurveysTemplateService from './surveys-template.service';
 import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
@@ -60,6 +63,8 @@ import AppConfigGuard from '../appconfig/appconfig.guard';
 class SurveysController {
   constructor(
     private readonly surveyService: SurveysService,
+    private readonly surveysAttachmentService: SurveysAttachmentService,
+    private readonly surveysTemplateService: SurveysTemplateService,
     private readonly surveyAnswerService: SurveyAnswerService,
   ) {}
 
@@ -97,7 +102,10 @@ class SurveysController {
   @UseInterceptors(
     FileInterceptor(
       'file',
-      createAttachmentUploadOptions((req) => `${SURVEYS_TEMP_FILES_PATH}/${req.user?.preferred_username}`),
+      createAttachmentUploadOptions((req) => {
+        const username = getUsernameFromRequest(req);
+        return join(SURVEYS_TEMP_FILES_PATH, username);
+      }),
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
@@ -110,19 +118,19 @@ class SurveysController {
   @UseGuards(AppConfigGuard)
   @Post(TEMPLATES)
   async createTemplate(@Body() surveyTemplateDto: SurveyTemplateDto) {
-    return this.surveyService.createTemplate(surveyTemplateDto);
+    return this.surveysTemplateService.createTemplate(surveyTemplateDto);
   }
 
   @Get(TEMPLATES)
   getTemplateNames() {
-    return this.surveyService.serveTemplateNames();
+    return this.surveysTemplateService.serveTemplateNames();
   }
 
   @Get(`${TEMPLATES}/:filename`)
   getTemplate(@Param() params: { filename: string }, @Res() res: Response) {
     const { filename } = params;
     res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_JSON);
-    return this.surveyService.serveTemplate(filename, res);
+    return this.surveysTemplateService.serveTemplate(filename, res);
   }
 
   @Get(`${ANSWER}/:surveyId`)
@@ -153,7 +161,7 @@ class SurveysController {
     const { surveyIds } = deleteSurveyDto;
     await this.surveyService.deleteSurveys(surveyIds);
     await this.surveyAnswerService.onSurveyRemoval(surveyIds);
-    await this.surveyService.onSurveyRemoval(surveyIds);
+    await SurveysAttachmentService.onSurveyRemoval(surveyIds);
   }
 
   @Patch()
@@ -170,7 +178,7 @@ class SurveysController {
   @Get(`${FILES}/:filename`)
   serveTempFile(@Param() params: { filename: string }, @Res() res: Response, @GetCurrentUsername() username: string) {
     const { filename } = params;
-    return this.surveyService.serveTempFiles(username, filename, res);
+    return this.surveysAttachmentService.serveTempFiles(username, filename, res);
   }
 }
 

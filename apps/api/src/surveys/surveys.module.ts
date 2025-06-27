@@ -19,6 +19,8 @@ import SurveysController from './surveys.controller';
 import SurveyAnswersService from './survey-answer.service';
 import PublicSurveysController from './public-surveys.controller';
 import GroupsModule from '../groups/groups.module';
+import SurveysAttachmentService from './surveys-attachment.service';
+import SurveysTemplateService from './surveys-template.service';
 
 @Module({
   imports: [
@@ -27,6 +29,6 @@ import GroupsModule from '../groups/groups.module';
     GroupsModule,
   ],
   controllers: [SurveysController, PublicSurveysController],
-  providers: [SurveysService, SurveyAnswersService],
+  providers: [SurveysService, SurveyAnswersService, SurveysTemplateService, SurveysAttachmentService],
 })
 export default class SurveysModule {}

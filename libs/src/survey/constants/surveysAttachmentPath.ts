@@ -11,10 +11,9 @@
  */
 
 import { join } from 'path';
-import APPS from '@libs/appconfig/constants/apps';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
+import APPS_FILES_PATH from '@libs/survey/constants/surveysFilesPath';
 
-const BULLETIN_ATTACHMENTS_PATH = join(APPS_FILES_PATH, APPS.BULLETIN_BOARD, ATTACHMENT_FOLDER);
+const SURVEYS_ATTACHMENT_PATH = join(APPS_FILES_PATH, ATTACHMENT_FOLDER);
 
-export default BULLETIN_ATTACHMENTS_PATH;
+export default SURVEYS_ATTACHMENT_PATH;

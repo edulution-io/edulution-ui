@@ -10,11 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { join } from 'path';
-import APPS from '@libs/appconfig/constants/apps';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
-import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import JwtUser from '@libs/user/types/jwt/jwtUser';
 
-const BULLETIN_ATTACHMENTS_PATH = join(APPS_FILES_PATH, APPS.BULLETIN_BOARD, ATTACHMENT_FOLDER);
+const prepareCreator = (creatorDto: AttendeeDto, user: JwtUser): AttendeeDto => ({
+  ...creatorDto,
+  firstName: user.given_name,
+  lastName: user.family_name,
+  username: user.preferred_username,
+});
 
-export default BULLETIN_ATTACHMENTS_PATH;
+export default prepareCreator;
