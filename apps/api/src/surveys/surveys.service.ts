@@ -315,7 +315,7 @@ class SurveysService implements OnModuleInit {
     return savedSurvey;
   }
 
-  async createTemplate(surveyTemplateDto: SurveyTemplateDto): Promise<void> {
+  async createTemplate(surveyTemplateDto: SurveyTemplateDto): Promise<string> {
     let filename = surveyTemplateDto.fileName;
     if (!filename) {
       const date = new Date();
@@ -324,7 +324,8 @@ class SurveysService implements OnModuleInit {
     const templatePath = join(SURVEYS_TEMPLATE_PATH, filename);
     try {
       await this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);
-      return await FilesystemService.writeFile(templatePath, JSON.stringify(surveyTemplateDto.template, null, 2));
+      await FilesystemService.writeFile(templatePath, JSON.stringify(surveyTemplateDto.template, null, 2));
+      return filename;
     } catch (error) {
       throw new CustomHttpException(
         CommonErrorMessages.FILE_WRITING_FAILED,
