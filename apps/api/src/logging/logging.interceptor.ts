@@ -29,7 +29,7 @@ class LoggingInterceptor implements NestInterceptor {
 
     const req = context.switchToHttp().getRequest<Request>();
     const res = context.switchToHttp().getResponse<Response>();
-    const { method, url, params, query } = req;
+    const { method, url, params, query, path } = req;
     const ip = req.headers[HTTP_HEADERS.XForwaredFor] || req.socket.remoteAddress;
     const userAgent = req.headers[HTTP_HEADERS.UserAgent];
     const start = Date.now();
@@ -44,7 +44,7 @@ class LoggingInterceptor implements NestInterceptor {
 
         switch (logLevel) {
           case LOG_LEVELS.DEBUG:
-            Logger.debug(`${statusCode} ${duration}ms ${contextClassName}.${contextHandlerName} ${method} ${url}`);
+            Logger.debug(`${statusCode} ${duration}ms ${contextClassName}.${contextHandlerName} ${method} ${path}`);
             break;
           case LOG_LEVELS.VERBOSE:
             Logger.verbose(
