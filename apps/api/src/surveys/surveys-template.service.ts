@@ -16,6 +16,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
 import SURVEYS_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplatePath';
 import CustomHttpException from '../common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
@@ -27,8 +28,8 @@ class SurveysTemplateService {
   async createTemplate(surveyTemplateDto: SurveyTemplateDto): Promise<void> {
     let filename = surveyTemplateDto.fileName;
     if (!filename) {
-      const date = new Date();
-      filename = `${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}-${date.getHours()}:${date.getMinutes()}-${uuidv4()}.json`;
+      const dateTimeString = getCurrentDateTimeString();
+      filename = `${dateTimeString}_-_${uuidv4()}.json`;
     }
     const templatePath = join(SURVEYS_TEMPLATE_PATH, filename);
     try {
