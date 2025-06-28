@@ -29,6 +29,7 @@ import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import MenuItem from '@libs/menubar/menuItem';
 import APPS from '@libs/appconfig/constants/apps';
 import { t } from 'i18next';
+import SHARED from '@libs/filesharing/constants/share';
 
 const iconMap = {
   teachers: TeacherIcon,
@@ -90,7 +91,7 @@ const useFileSharingMenuConfig = () => {
       id: 'shared',
       label: t('mountpoints.shared', { defaultValue: 'Geteilte Dateien' }),
       icon: CloudIcon,
-      action: () => handlePathChange('/shared', 'shared'),
+      action: () => handlePathChange(`/${SHARED}`, SHARED),
     };
 
     setMenuItems([...menuBarItems, sharedItem]);

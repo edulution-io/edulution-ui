@@ -31,10 +31,9 @@ import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialo
 import MoveDirectoryDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveDirectoryDialogBody';
 import CopyContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/CopyContentDialogBody';
 import PublicShareContentsDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/PublicShareContentsDialogBody';
-import PublicShareFileLinkProps from '@libs/filesharing/types/publicShareFileLinkProps';
 import fileSharingFromSchema from '@libs/filesharing/types/fileSharingFromSchema';
 import DialogInputValues from '@libs/filesharing/types/dialogInputValues';
-import { FILESHARING_SHARED_FILES_API_ENDPOINT } from '@libs/filesharing/constants/apiEndpoints';
+import FILESHARING_SHARED_FILES_API_ENDPOINT from '@libs/filesharing/constants/apiEndpoints';
 import { t } from 'i18next';
 
 interface DialogBodyConfigurationBase {
@@ -47,21 +46,19 @@ interface DialogBodyConfigurationBase {
   type: ContentType;
   httpMethod: HttpMethods;
   componentProps?: Record<string, unknown>;
-  disableSubmitButton?: boolean;
+  hideSubmitButton?: boolean;
   desktopComponentClassName?: string;
   mobileComponentClassName?: string;
   getData?: (
     form: UseFormReturn<FileSharingFormValues>,
     currentPath: string,
     inputValues: DialogInputValues,
-  ) => Promise<
-    | PathChangeOrCreateProps
-    | PathChangeOrCreateProps[]
-    | FileUploadProps[]
-    | DeleteFileProps[]
-    | PublicShareFileLinkProps
-  >;
+  ) => Promise<PathChangeOrCreateProps | PathChangeOrCreateProps[] | FileUploadProps[] | DeleteFileProps[]>;
   requiresForm?: boolean;
+}
+
+interface PlainDialogBodyConfiguration extends DialogBodyConfigurationBase {
+  Component: React.ComponentType;
 }
 
 interface CreateFolderDialogBodyConfiguration extends DialogBodyConfigurationBase {
@@ -73,27 +70,16 @@ interface CreateFileDialogBodyConfiguration extends DialogBodyConfigurationBase 
 interface RenameDialogBodyConfiguration extends DialogBodyConfigurationBase {
   Component: React.ComponentType<FilesharingDialogProps>;
 }
-interface DeleteDialogBodyConfiguration extends DialogBodyConfigurationBase {
-  Component: React.ComponentType;
-}
-interface UploadFileDialogBodyConfiguration extends DialogBodyConfigurationBase {
-  Component: React.ComponentType;
-}
 interface MoveDialogBodyConfiguration extends DialogBodyConfigurationBase {
   Component: React.ComponentType<MoveContentDialogBodyProps>;
-}
-interface ShareDialogBodyConfiguration extends DialogBodyConfigurationBase {
-  Component: React.ComponentType;
 }
 
 type DialogBodyConfiguration =
   | CreateFolderDialogBodyConfiguration
   | CreateFileDialogBodyConfiguration
   | RenameDialogBodyConfiguration
-  | DeleteDialogBodyConfiguration
-  | UploadFileDialogBodyConfiguration
   | MoveDialogBodyConfiguration
-  | ShareDialogBodyConfiguration;
+  | PlainDialogBodyConfiguration;
 
 const initialFormValues = {
   filename: '',
@@ -149,7 +135,7 @@ const createFileConfig: CreateFileDialogBodyConfiguration = {
   },
 };
 
-const deleteFileFolderConfig: DeleteDialogBodyConfiguration = {
+const deleteFileFolderConfig: PlainDialogBodyConfiguration = {
   Component: DeleteContentDialogBody,
   titleKey: 'deleteDialog.deleteFiles',
   submitKey: 'deleteDialog.continue',
@@ -204,7 +190,7 @@ const renameFileFolderConfig: RenameDialogBodyConfiguration = {
   },
 };
 
-const uploadFileConfig: UploadFileDialogBodyConfiguration = {
+const uploadFileConfig: PlainDialogBodyConfiguration = {
   Component: UploadContentBody,
   titleKey: 'filesharingUpload.title',
   submitKey: 'filesharingUpload.upload',
@@ -228,7 +214,7 @@ const uploadFileConfig: UploadFileDialogBodyConfiguration = {
   },
 };
 
-const copyFileOrFolderConfig: UploadFileDialogBodyConfiguration = {
+const copyFileOrFolderConfig: PlainDialogBodyConfiguration = {
   Component: CopyContentDialogBody,
   titleKey: 'copyItemDialog.copyFilesOrDirectoriesToDirectory',
   submitKey: 'copyItemDialog.copy',
@@ -238,12 +224,12 @@ const copyFileOrFolderConfig: UploadFileDialogBodyConfiguration = {
   requiresForm: false,
   getData: (_f, currentPath, { moveOrCopyItemToPath, selectedItems }: DialogInputValues) => {
     if (!moveOrCopyItemToPath || !selectedItems) return Promise.resolve([]);
-    const srcBase = getPathWithoutWebdav(currentPath);
-    const tgtBase = getPathWithoutWebdav(moveOrCopyItemToPath.filePath);
+    const sourceBase = getPathWithoutWebdav(currentPath);
+    const targetBase = getPathWithoutWebdav(moveOrCopyItemToPath.filePath);
     return Promise.resolve(
       selectedItems.map((i) => {
         const name = encodeURIComponent(i.filename);
-        return { path: `${srcBase}/${name}`, newPath: `${tgtBase}/${name}` };
+        return { path: `${sourceBase}/${name}`, newPath: `${targetBase}/${name}` };
       }),
     );
   },
@@ -275,14 +261,14 @@ const moveFileFolderConfig: MoveDialogBodyConfiguration = {
   },
 };
 
-const shareFileOrFolderConfig: ShareDialogBodyConfiguration = {
+const shareFileOrFolderConfig: PlainDialogBodyConfiguration = {
   Component: PublicShareContentsDialogBody,
   titleKey: 'filesharing.publicFileSharing.sharePublicFile',
   submitKey: 'shareDialog.share',
   endpoint: FILESHARING_SHARED_FILES_API_ENDPOINT,
   httpMethod: HttpMethods.POST,
   type: ContentType.FILE,
-  disableSubmitButton: true,
+  hideSubmitButton: true,
   desktopComponentClassName: 'max-w-[85%] min-w-[10%] max-h-full',
   requiresForm: false,
 };

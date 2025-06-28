@@ -10,12 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type RadioGroupItem = {
-  value: string;
-  translationId: string;
-  disabled: boolean;
-  descriptionTranslationId?: string;
-  icon?: string;
+import DEFAULT_FILE_LINK_EXPIRY from '@libs/filesharing/constants/defaultFileLinkExpiry';
+import CreateOrEditPublicFileShareDto from '@libs/filesharing/types/createOrEditPublicFileShareDto';
+
+const SHARE_FORM_DEFAULTS: Partial<CreateOrEditPublicFileShareDto> = {
+  scope: 'public',
+  expires: DEFAULT_FILE_LINK_EXPIRY,
+  invitedAttendees: [],
+  invitedGroups: [],
+  password: '',
 };
 
-export default RadioGroupItem;
+export default SHARE_FORM_DEFAULTS;

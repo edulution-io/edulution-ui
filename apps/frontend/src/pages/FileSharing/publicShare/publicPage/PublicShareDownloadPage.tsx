@@ -13,45 +13,49 @@
 import PageLayout from '@/components/structure/layout/PageLayout';
 import React, { useEffect } from 'react';
 import useUserStore from '@/store/UserStore/UserStore';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import DownloadPublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DownloadPublicShareDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import usePublicSharePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
 import APPS from '@libs/appconfig/constants/apps';
+import PageTitle from '@/components/PageTitle';
 
 const PublicShareDownloadPage: React.FC = () => {
   const { eduApiToken } = useUserStore();
   const { setOpenPublicShareDialog } = usePublicSharePageStore();
+  const { setPublicShareId } = usePublicSharePageStore();
 
   const navigate = useNavigate();
-  const { fetchPublicShareContentById, isLoading } = usePublicShareStore();
+  const { fetchShareById, isLoading } = usePublicShareStore();
 
-  const location = useLocation();
-  const id = location.pathname.split('/').pop() ?? '';
+  const { fileId } = useParams<{ fileId: string }>();
 
   useEffect(() => {
-    if (!id) return;
+    if (fileId) {
+      setPublicShareId(fileId);
+    }
+  }, [fileId, setPublicShareId]);
+
+  useEffect(() => {
+    if (!fileId) return;
     if (eduApiToken) {
-      setOpenPublicShareDialog(id);
+      setOpenPublicShareDialog(fileId);
       navigate(`/${APPS.FILE_SHARING}`);
     } else {
-      void fetchPublicShareContentById(id);
+      void fetchShareById(fileId);
     }
-  }, [id, eduApiToken]);
-
-  let content: React.ReactNode;
-
-  if (isLoading) {
-    content = <LoadingIndicatorDialog isOpen={isLoading} />;
-  } else {
-    content = <DownloadPublicShareDialog />;
-  }
+  }, [fileId, eduApiToken]);
 
   return (
-    <PageLayout>
-      <div className="items-center rounded-xl  p-8">{content}</div>
-    </PageLayout>
+    <>
+      <PageTitle translationId="filesharing.publicFileSharing.downloadPublicFile" />
+      <PageLayout>
+        <div className="flex justify-center p-8">
+          {isLoading ? <LoadingIndicatorDialog isOpen /> : <DownloadPublicShareDialog publicOpened />}
+        </div>
+      </PageLayout>
+    </>
   );
 };
 

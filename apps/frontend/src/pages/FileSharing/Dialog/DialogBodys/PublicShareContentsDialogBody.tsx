@@ -12,7 +12,7 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import PublicShareFilesTableColumns from '@/pages/FileSharing/publicShare/table/PublicShareTableColums';
+import publicShareTableColumns from '@/pages/FileSharing/publicShare/table/PublicShareTableColums';
 import PUBLIC_SHARED_FILES_TABLE_COLUMN from '@libs/filesharing/constants/publicSharedFIlesTableColum';
 import APPS from '@libs/appconfig/constants/apps';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
@@ -21,28 +21,21 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { IoAdd } from 'react-icons/io5';
 import useMedia from '@/hooks/useMedia';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
 
 const PublicShareContentsDialogBody = () => {
   const { t } = useTranslation();
-  const {
-    contentsToShare,
-    isLoading,
-    setContentsToShare,
-    selectedRows,
-    setIsCreateNewPublicShareLinkDialogOpen,
-    deletePublicShares,
-    shares,
-  } = usePublicShareStore();
-  const { selectedItems } = useFileSharingStore();
+  const { isLoading, shares, setSelectedShares, selectedShares, openDialog } = usePublicShareStore();
+  const { selectedItems, selectedRows } = useFileSharingStore();
   const { isMobileView, isTabletView } = useMedia();
 
-  const currentFile = contentsToShare[0] ?? selectedItems[0];
+  const currentFile = selectedItems[0];
 
   const shouldHideColumns = isMobileView || isTabletView;
 
   useEffect(() => {
     const sharesForCurrentFile = shares.filter((file) => file.filename === currentFile?.filename);
-    setContentsToShare(sharesForCurrentFile);
+    setSelectedShares(sharesForCurrentFile);
   }, [shares]);
 
   const initialColumnVisibility = useMemo(
@@ -52,19 +45,19 @@ const PublicShareContentsDialogBody = () => {
       [PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_IS_ACCESSIBLE_BY]: !shouldHideColumns,
       [PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME]: false,
     }),
-    [selectedRows, deletePublicShares, isTabletView, isMobileView, shouldHideColumns],
+    [isTabletView, isMobileView, shouldHideColumns],
   );
 
   return (
     <div className="scrollable relative flex w-full min-w-0 flex-col gap-4">
       <p>
         {t('filesharing.publicFileSharing.selectedFile')}{' '}
-        {(selectedItems?.[0]?.filename ?? contentsToShare?.[0]?.filename) || ''}
+        {(selectedItems?.[0]?.filename ?? selectedShares?.[0]?.filename) || ''}
       </p>
       <div className="max-h-[60vh] overflow-y-auto">
         <ScrollableTable
-          columns={PublicShareFilesTableColumns}
-          data={contentsToShare}
+          columns={publicShareTableColumns}
+          data={selectedShares}
           filterKey={PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME}
           filterPlaceHolderText={t('fileSharing.filterPlaceHolderText')}
           isLoading={false}
@@ -77,7 +70,7 @@ const PublicShareContentsDialogBody = () => {
             {
               icon: IoAdd,
               translationId: 'common.add',
-              onClick: () => setIsCreateNewPublicShareLinkDialogOpen(true),
+              onClick: () => openDialog(PUBLIC_SHARE_DIALOG_NAMES.CREATE_LINK),
             },
           ]}
         />

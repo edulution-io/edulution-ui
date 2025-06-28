@@ -11,36 +11,50 @@
  */
 
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
+import { Controller, useFormContext, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import FormField from '@/components/shared/FormField';
 
-interface PasswordInputProps {
+interface PublicSharePasswordInputProps {
   placeholder: string;
+  onChanged?: (value: string) => void;
+  disabled?: boolean;
+  form: UseFormReturn<{ password?: string }>;
 }
 
-const PublicSharePasswordInput: React.FC<PasswordInputProps> = ({ placeholder }) => {
-  const {
-    register,
-    formState: { errors },
-    clearErrors,
-  } = useFormContext<{ password: string }>();
-
+const PublicSharePasswordInput: React.FC<PublicSharePasswordInputProps> = ({
+  placeholder,
+  onChanged,
+  disabled = false,
+  form,
+}) => {
   const { t } = useTranslation();
+  const { control } = useFormContext<{ password: string }>();
 
   return (
     <div className="space-y-2">
-      <div className="flex flex-col gap-2 pt-4">
-        <p>{t('filesharing.publicFileSharing.getFileAccess')}</p>
-        <input
-          {...register('password', {
-            onChange: () => errors.password && clearErrors('password'),
-          })}
-          type="password"
-          placeholder={placeholder}
-          className="w-full rounded-md bg-white/10 px-3 py-2 text-white placeholder:text-white/50"
-        />
-      </div>
-      {errors.password && <p className="text-sm text-red-400">{errors.password.message}</p>}
+      <p>{t('filesharing.publicFileSharing.getFileAccess')}</p>
+
+      <Controller
+        name="password"
+        control={control}
+        rules={{ required: t('common.min_chars', { count: 1 }) }}
+        render={({ field }) => (
+          <FormField
+            name={field.name}
+            form={form}
+            type="password"
+            value={field.value || ''}
+            onChange={(e) => {
+              field.onChange(e);
+              onChanged?.(e.target.value);
+            }}
+            placeholder={placeholder}
+            disabled={disabled}
+            variant="dialog"
+          />
+        )}
+      />
     </div>
   );
 };

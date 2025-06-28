@@ -16,7 +16,7 @@ import SortableHeader from '@/components/ui/Table/SortableHeader';
 import React from 'react';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
-import formatIsoDate from '@libs/common/utils/Date/formatIsoDate';
+import formatIsoDateToLocaleString from '@libs/common/utils/Date/formatIsoDateToLocaleString';
 import { LockClosedIcon } from '@radix-ui/react-icons';
 import { BUTTONS_ICON_WIDTH } from '@libs/ui/constants';
 import { useTranslation } from 'react-i18next';
@@ -27,8 +27,9 @@ import { MdDelete, MdEdit, MdFileCopy } from 'react-icons/md';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
+import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
 
-const PublicShareFilesTableColumns: ColumnDef<PublicShareDto>[] = [
+const publicShareTableColumns: ColumnDef<PublicShareDto>[] = [
   {
     id: PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME,
     header: ({ table, column }) => (
@@ -71,7 +72,7 @@ const PublicShareFilesTableColumns: ColumnDef<PublicShareDto>[] = [
       const { createdAt } = row.original;
       return (
         <SelectableTextCell
-          text={formatIsoDate(createdAt?.toLocaleString())}
+          text={formatIsoDateToLocaleString(createdAt?.toLocaleString())}
           className="min-w-32"
         />
       );
@@ -186,7 +187,7 @@ const PublicShareFilesTableColumns: ColumnDef<PublicShareDto>[] = [
     },
     cell: ({ row }) => {
       const { origin } = window.location;
-      const { setShare, setIsPublicShareQrCodeDialogOpen } = usePublicShareStore();
+      const { setShare, openDialog } = usePublicShareStore();
       const { publicShareId } = row.original;
       const url = `${origin}/${FileSharingApiEndpoints.PUBLIC_SHARE}/${publicShareId}`;
       return (
@@ -211,7 +212,7 @@ const PublicShareFilesTableColumns: ColumnDef<PublicShareDto>[] = [
             className=" flex-none cursor-pointer"
             onClick={() => {
               setShare(row.original);
-              setIsPublicShareQrCodeDialogOpen(true);
+              openDialog(PUBLIC_SHARE_DIALOG_NAMES.QR_CODE);
             }}
           />
         </div>
@@ -230,7 +231,7 @@ const PublicShareFilesTableColumns: ColumnDef<PublicShareDto>[] = [
       translationId: 'filesharing.publicFileSharing.actions',
     },
     cell: ({ row }) => {
-      const { setContentToShare, setIsPublicShareEditDialogOpen, deletePublicShares } = usePublicShareStore();
+      const { setShare, openDialog, deleteShares } = usePublicShareStore();
       const { original } = row;
 
       return (
@@ -240,15 +241,15 @@ const PublicShareFilesTableColumns: ColumnDef<PublicShareDto>[] = [
               icon: MdEdit,
               translationId: 'common.edit',
               onClick: () => {
-                setContentToShare(original);
-                setIsPublicShareEditDialogOpen(true);
+                setShare(original);
+                openDialog(PUBLIC_SHARE_DIALOG_NAMES.EDIT);
               },
             },
             {
               icon: MdDelete,
               translationId: 'common.delete',
               onClick: async () => {
-                await deletePublicShares([original]);
+                await deleteShares([original]);
               },
             },
           ]}
@@ -259,4 +260,4 @@ const PublicShareFilesTableColumns: ColumnDef<PublicShareDto>[] = [
   },
 ];
 
-export default PublicShareFilesTableColumns;
+export default publicShareTableColumns;

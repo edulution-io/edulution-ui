@@ -23,15 +23,15 @@ import normalizeWebdavPath from '@libs/filesharing/utils/buildNormalizedWebdavPa
 import toSanitizedPathRegex from '@libs/filesharing/utils/toSanitizedPathRegex';
 import SseService from '../../sse/sse.service';
 import WebdavService from '../../webdav/webdav.service';
-import { PublicFileShare } from '../publicFileShare.schema';
+import { PublicShare } from '../publicFileShare.schema';
 
 @Injectable()
 class MoveOrRenameConsumer extends WorkerHost {
   constructor(
     private readonly webDavService: WebdavService,
     private readonly sseService: SseService,
-    @InjectModel(PublicFileShare.name)
-    private readonly shareModel: Model<PublicFileShare>,
+    @InjectModel(PublicShare.name)
+    private readonly shareModel: Model<PublicShare>,
   ) {
     super();
   }

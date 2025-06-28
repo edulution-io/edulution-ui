@@ -12,41 +12,39 @@
 
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Controller, FormProvider, UseFormReturn } from 'react-hook-form';
+import { FormProvider, UseFormReturn } from 'react-hook-form';
 import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import FormField from '@/components/shared/FormField';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useUserStore from '@/store/UserStore/UserStore';
 import useGroupStore from '@/store/GroupStore';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import CreateEditPublicFileShareDto from '@libs/filesharing/types/createEditPublicFileShareDto';
+import CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPublicFileShareDto';
 import ShareLinkScopeSelector from '@/pages/FileSharing/utilities/ShareLinkScopeSelector';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import ShareFileLinkScope from '@libs/filesharing/constants/shareFileLinkScope';
 
-interface CreateEditNewPublicShareDialogBodyProps {
-  form: UseFormReturn<CreateEditPublicFileShareDto>;
+interface CreateOrEditPublicShareDialogBodyProps {
+  form: UseFormReturn<CreateOrEditPublicShareDto>;
 }
 
-const CreateEditNewPublicShareDialogBody: React.FC<CreateEditNewPublicShareDialogBodyProps> = ({ form }) => {
+const CreateOrEditPublicShareDialogBody: React.FC<CreateOrEditPublicShareDialogBodyProps> = ({ form }) => {
   const { t } = useTranslation();
-  const { selectedItems } = useFileSharingStore();
   const { user, searchAttendees } = useUserStore();
   const { searchGroups, searchGroupsIsLoading } = useGroupStore();
-  const { contentsToShare } = usePublicShareStore();
-  const { watch, setValue } = form;
+  const { share } = usePublicShareStore();
 
-  const currentFile = contentsToShare[0] ?? selectedItems[0];
+  const { watch, setValue } = form;
 
   const invitedAttendees = watch('invitedAttendees') ?? [];
   const invitedGroups = watch('invitedGroups') ?? [];
 
-  const handleAttendeesChange = (attendee: AttendeeDto[]) =>
-    setValue('invitedAttendees', attendee, { shouldValidate: true });
+  const handleAttendeesChange = (attendees: AttendeeDto[]) =>
+    setValue('invitedAttendees', attendees, { shouldValidate: true });
 
-  const handleGroupsChange = (group: MultipleSelectorGroup[]) =>
-    setValue('invitedGroups', group, { shouldValidate: true });
+  const handleGroupsChange = (groups: MultipleSelectorGroup[]) =>
+    setValue('invitedGroups', groups, { shouldValidate: true });
 
   const onAttendeesSearch = async (query: string) =>
     (await searchAttendees(query)).filter((u) => u.username !== user?.username);
@@ -54,66 +52,57 @@ const CreateEditNewPublicShareDialogBody: React.FC<CreateEditNewPublicShareDialo
   const scope = watch('scope');
 
   useEffect(() => {
-    if (scope !== 'restricted') {
+    if (scope !== ShareFileLinkScope.RESTRICTED) {
       setValue('invitedAttendees', [], { shouldValidate: true, shouldDirty: false });
       setValue('invitedGroups', [], { shouldValidate: true, shouldDirty: false });
     }
   }, [scope, setValue]);
 
   return (
-    <div className="flex flex-col gap-4">
-      <p className="max-w-[25rem] text-muted-foreground">
-        {t('filesharing.expiry.selectedItemPrefix')}
-        <span className="block truncate">{currentFile?.filename}</span>
-      </p>
-      <Controller
-        name="scope"
-        control={form.control}
-        defaultValue="public"
-        render={({ field }) => (
-          <ShareLinkScopeSelector
-            value={field.value}
-            onValueChange={field.onChange}
+    <FormProvider {...form}>
+      <div className="flex flex-col gap-4">
+        <p className="max-w-[25rem] text-muted-foreground">
+          {t('filesharing.expiry.selectedItemPrefix')}
+          <span className="block truncate">{share?.filename}</span>
+        </p>
+
+        <ShareLinkScopeSelector form={form} />
+
+        {scope === 'restricted' && (
+          <SearchUsersOrGroups
+            users={invitedAttendees}
+            groups={invitedGroups}
+            onSearch={onAttendeesSearch}
+            onUserChange={handleAttendeesChange}
+            onGroupSearch={searchGroups}
+            onGroupsChange={handleGroupsChange}
+            variant="dialog"
           />
         )}
-      />
 
-      {scope === 'restricted' && (
-        <SearchUsersOrGroups
-          users={invitedAttendees}
-          onSearch={onAttendeesSearch}
-          onUserChange={handleAttendeesChange}
-          groups={invitedGroups}
-          onGroupSearch={searchGroups}
-          onGroupsChange={handleGroupsChange}
+        <DateTimePickerField
+          form={form}
+          path="expires"
+          translationId="survey.expirationDate"
           variant="dialog"
+          isDateRequired
+          allowPast={false}
         />
-      )}
 
-      <DateTimePickerField
-        form={form}
-        path="expires"
-        translationId="survey.expirationDate"
-        variant="dialog"
-        isDateRequired
-        allowPast={false}
-      />
-
-      <FormProvider {...form}>
         <form id="public-share-form">
           <FormField
             name="password"
             form={form}
-            labelTranslationId={t('conferences.password')}
+            defaultValue={share.password}
+            labelTranslationId={t('common.password')}
             type="password"
-            value={form.watch('password')}
             disabled={searchGroupsIsLoading}
             variant="dialog"
           />
         </form>
-      </FormProvider>
-    </div>
+      </div>
+    </FormProvider>
   );
 };
 
-export default CreateEditNewPublicShareDialogBody;
+export default CreateOrEditPublicShareDialogBody;

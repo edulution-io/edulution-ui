@@ -10,66 +10,29 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { FC } from 'react';
-import { Globe, User } from 'lucide-react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import ShareFileLinkScope from '@libs/filesharing/constants/shareFileLinkScope';
-import cn from '@libs/common/utils/className';
-import { RadioGroupItemSH, RadioGroupSH } from '@/components/ui/RadioGroupSH';
+import RadioGroupFormField from '@/components/shared/RadioGroupFormField';
+import PUBLIC_SHARE_SCOPE_FORM_VALUES from '@libs/filesharing/constants/publicShareScopeValues';
+import { UseFormReturn } from 'react-hook-form';
+import CreateOrEditPublicFileShareDto from '@libs/filesharing/types/createOrEditPublicFileShareDto';
 
-interface ShareScopeSelectorProps {
-  value: ShareFileLinkScope;
-  onValueChange: (value: ShareFileLinkScope) => void;
+interface ShareLinkScopeSelectorProps {
+  form: UseFormReturn<CreateOrEditPublicFileShareDto>;
 }
 
-const optionStyle =
-  'flex w-full items-center justify-between gap-4 rounded-lg border p-4 hover:bg-muted data-[state=checked]:border-primary';
-
-const ShareScopeSelector: FC<ShareScopeSelectorProps> = ({ value, onValueChange }) => {
+const ShareScopeSelector: React.FC<ShareLinkScopeSelectorProps> = ({ form }) => {
   const { t } = useTranslation();
 
   return (
-    <RadioGroupSH
-      value={value}
-      onValueChange={(v) => onValueChange(v as ShareFileLinkScope)}
-      className="flex flex-col gap-3"
-    >
-      <label
-        className={cn(optionStyle)}
-        htmlFor="public"
-      >
-        <div className="flex items-start gap-3">
-          <Globe className="h-8 w-8 text-green-600" />
-          <div>
-            <p className="font-semibold">{t('filesharing.publicFileSharing.scope.public')}</p>
-            <p className="text-sm text-muted-foreground">{t('filesharing.publicFileSharing.scope.publicHint')}</p>
-          </div>
-        </div>
-
-        <RadioGroupItemSH
-          id="public"
-          value="public"
-        />
-      </label>
-
-      <label
-        className={cn(optionStyle)}
-        htmlFor="restricted"
-      >
-        <div className="flex items-start gap-3">
-          <User className="h-8 w-8 text-amber-600" />
-          <div>
-            <p className="font-semibold">{t('filesharing.publicFileSharing.scope.restricted')}</p>
-            <p className="text-sm text-muted-foreground">{t('filesharing.publicFileSharing.scope.restrictedHint')}</p>
-          </div>
-        </div>
-
-        <RadioGroupItemSH
-          id="restricted"
-          value="restricted"
-        />
-      </label>
-    </RadioGroupSH>
+    <RadioGroupFormField
+      control={form.control}
+      name="scope"
+      labelClassname="text-base font-bold text-background"
+      titleTranslationId={t('conferences.isPublic')}
+      items={PUBLIC_SHARE_SCOPE_FORM_VALUES}
+      imageWidth="small"
+    />
   );
 };
 

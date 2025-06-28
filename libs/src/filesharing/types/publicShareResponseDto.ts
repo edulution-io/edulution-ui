@@ -15,9 +15,10 @@ import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 interface PublicShareResponseDto {
   success: boolean;
   status: number;
+  isAccessRestricted?: boolean;
   requiresPassword?: boolean;
   deletedCount?: number;
-  publicShare?: PublicShareDto | undefined;
+  publicShare?: PublicShareDto | PublicShareDto[] | undefined;
 }
 
 export default PublicShareResponseDto;

@@ -10,24 +10,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { ArrowDownToLine } from 'lucide-react';
-import { Button } from '@/components/shared/Button';
+import type RadioGroupItem from '@libs/ui/types/radioGroupItem';
+import { GlobeIcon, UserIcon } from '@libs/assets';
 
-interface DownloadPublicProps {
-  onClick: () => void;
-  label: string;
-}
+const PUBLIC_SHARE_SCOPE_FORM_VALUES: RadioGroupItem[] = [
+  {
+    value: 'public',
+    translationId: 'filesharing.publicFileSharing.scope.public',
+    descriptionTranslationId: 'filesharing.publicFileSharing.scope.publicHint',
+    disabled: false,
+    icon: UserIcon,
+  },
+  {
+    value: 'restricted',
+    translationId: 'filesharing.publicFileSharing.scope.restricted',
+    descriptionTranslationId: 'filesharing.publicFileSharing.scope.restrictedHint',
+    disabled: false,
+    icon: GlobeIcon,
+  },
+];
 
-const DownloadPublic: React.FC<DownloadPublicProps> = ({ onClick, label }) => (
-  <Button
-    onClick={onClick}
-    variant="btn-security"
-    className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl"
-  >
-    <ArrowDownToLine className="h-5 w-5" />
-    {label}
-  </Button>
-);
-
-export default DownloadPublic;
+export default PUBLIC_SHARE_SCOPE_FORM_VALUES;

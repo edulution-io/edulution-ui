@@ -10,23 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const formatIsoDate = (iso: string, withTime = true, locale: string | undefined = 'de-DE') => {
-  const date = new Date(iso);
+const PUBLIC_SHARE_DIALOG_NAMES = {
+  DELETE: 'delete',
+  EDIT: 'edit',
+  QR_CODE: 'qrCode',
+  CREATE_LINK: 'createLink',
+} as const;
 
-  const datePart = date.toLocaleDateString(locale, {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  });
-
-  if (!withTime) return datePart;
-
-  const timePart = date.toLocaleTimeString(locale, {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-
-  return `${datePart} ${timePart}`;
-};
-
-export default formatIsoDate;
+export default PUBLIC_SHARE_DIALOG_NAMES;

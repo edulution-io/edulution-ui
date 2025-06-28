@@ -20,7 +20,6 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import { Button } from '@/components/shared/Button';
 
-import downloadPublicFile from '@libs/filesharing/utils/downloadPublicFile';
 import buildAbsolutePublicDownloadUrl from '@libs/filesharing/utils/buildAbsolutePublicDownloadUrl';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 
@@ -28,16 +27,19 @@ import usePublicSharePageStore from '@/pages/FileSharing/publicShare/publicPage/
 import useUserStore from '@/store/UserStore/UserStore';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
-import PublicShareMetaList from '../publicPage/components/PublicShareMetaList';
-import DownloadPublicFileButton from '../publicPage/components/DownloadPublicShare';
+import { ArrowDownToLine } from 'lucide-react';
 import PublicSharePasswordInput from '../publicPage/components/PublicSharePasswordInput';
-import FileHeader from '../publicPage/components/PublicShareHeader';
+import PublicShareMetaDetails from '../publicPage/components/PublicShareMetaDetails';
 import usePublicShareStore from '../usePublicShareStore';
 
 const schema = z.object({ password: z.string().optional() });
 type FormValues = z.infer<typeof schema>;
 
-const DownloadPublicShareDialog = () => {
+interface DownloadPublicShareDialogProps {
+  publicOpened?: boolean;
+}
+
+const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ publicOpened }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -46,17 +48,20 @@ const DownloadPublicShareDialog = () => {
 
   const { isPublicShareInfoDialogOpen, closePublicShareDialog, publicShareId } = usePublicSharePageStore();
 
-  const { fetchPublicShareContentById, share, isPasswordRequired, isAccessRestricted } = usePublicShareStore();
+  const { downloadFileWithPassword, fetchedShareByIdResult, fetchShareById } = usePublicShareStore();
 
+  const { isAccessRestricted, requiresPassword, publicShare } = fetchedShareByIdResult;
+
+  const share = publicShare && Array.isArray(publicShare) ? publicShare[0] : publicShare;
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { password: '' },
   });
 
   useEffect(() => {
-    if (!publicShareId) return;
-    void fetchPublicShareContentById(publicShareId);
-  }, [publicShareId, fetchPublicShareContentById]);
+    if (!publicShareId || publicOpened) return;
+    void fetchShareById(publicShareId);
+  }, [publicShareId]);
 
   const onDownload = form.handleSubmit(async ({ password }) => {
     if (!share) return;
@@ -65,8 +70,7 @@ const DownloadPublicShareDialog = () => {
     const absoluteUrl = buildAbsolutePublicDownloadUrl(
       `${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.PUBLIC_SHARE_DOWNLOAD}/${publicShareId}`,
     );
-
-    await downloadPublicFile(
+    await downloadFileWithPassword(
       absoluteUrl,
       filename,
       password,
@@ -125,23 +129,29 @@ const DownloadPublicShareDialog = () => {
 
   const accessBody = (
     <div className="space-y-4">
-      <FileHeader
+      <PublicShareMetaDetails
         filename={filename}
         creator={creator}
+        expires={expires}
       />
 
-      {isPasswordRequired && (
+      {requiresPassword && (
         <FormProvider {...form}>
-          <PublicSharePasswordInput placeholder={t('conferences.password')} />
+          <PublicSharePasswordInput
+            placeholder={t('conferences.password')}
+            form={form}
+          />
         </FormProvider>
       )}
 
-      <DownloadPublicFileButton
+      <Button
         onClick={onDownload}
-        label={t('filesharing.publicFileSharing.downloadPublicFile')}
-      />
-
-      <PublicShareMetaList expires={expires} />
+        variant="btn-security"
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl"
+      >
+        <ArrowDownToLine className="h-5 w-5" />
+        {t('filesharing.publicFileSharing.downloadPublicFile')}
+      </Button>
     </div>
   );
 

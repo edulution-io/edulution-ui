@@ -36,7 +36,6 @@ import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
 import useMedia from '@/hooks/useMedia';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import { MdOutlineCloudDone } from 'react-icons/md';
-import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import IconWithCount from '@/components/shared/IconWithCount';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
@@ -68,7 +67,6 @@ const renderFileIcon = (item: DirectoryFileDTO, isCurrentlyDisabled: boolean) =>
 const getFileSharingTableColumns = (
   visibleColumns?: string[],
   onFilenameClick?: (item: Row<DirectoryFileDTO>) => void,
-  shares: Map<string, PublicShareDto[]> = new Map(),
 ): ColumnDef<DirectoryFileDTO>[] => {
   const allColumns: ColumnDef<DirectoryFileDTO>[] = [
     {
@@ -141,12 +139,14 @@ const getFileSharingTableColumns = (
         translationId: 'fileSharingTable.isShared',
       },
       cell: ({ row }) => {
-        const matched = shares.get(row.original.filePath) ?? [];
-        const matchCount = matched.length;
-        const isShared = matchCount > 0;
-
-        const { setContentsToShare } = usePublicShareStore();
+        const { shares } = usePublicShareStore();
         const { openDialog } = useFileSharingDialogStore();
+        const { setSelectedItems } = useFileSharingStore();
+
+        const matchedShares = shares.filter((share) => share.filePath === row.original.filePath);
+
+        const matchCount = matchedShares.length;
+        const isShared = matchCount > 0;
 
         return (
           <div className="flex items-center justify-center">
@@ -157,7 +157,7 @@ const getFileSharingTableColumns = (
                 className="text-background"
                 count={matchCount}
                 onClick={() => {
-                  setContentsToShare(matched);
+                  setSelectedItems([row.original]);
                   openDialog(FileActionType.SHARE_FILE_OR_FOLDER);
                 }}
               />

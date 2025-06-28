@@ -10,8 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface PublicShareFileLinkProps {
-  expires: Date;
-}
+import SHARE_FILE_LINK_SCOPE from '@libs/filesharing/constants/shareFileLinkScope';
 
-export default PublicShareFileLinkProps;
+export type ShareFileLinkScopeType = (typeof SHARE_FILE_LINK_SCOPE)[keyof typeof SHARE_FILE_LINK_SCOPE];

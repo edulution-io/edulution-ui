@@ -23,22 +23,16 @@ interface DeletePublicFileDialogProps {
 }
 
 const DeletePublicShareDialog: React.FC<DeletePublicFileDialogProps> = ({ trigger }) => {
-  const {
-    selectedContentToShareRows,
-    isLoading,
-    isPublicShareDeleteDialogOpen,
-    deletePublicShares,
-    setIsPublicShareDeleteDialogOpen,
-  } = usePublicShareStore();
+  const { isLoading, deleteShares, selectedShares, closeDialog, dialog } = usePublicShareStore();
 
-  const isMultiDelete = selectedContentToShareRows.length > 1;
+  const isMultiDelete = selectedShares.length > 1;
+
+  const handleClose = () => closeDialog('delete');
 
   const onSubmit = async () => {
-    await deletePublicShares(selectedContentToShareRows);
-    setIsPublicShareDeleteDialogOpen(false);
+    await deleteShares(selectedShares);
+    handleClose();
   };
-
-  const handleClose = () => setIsPublicShareDeleteDialogOpen(false);
 
   const getDialogBody = () => {
     if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
@@ -51,7 +45,7 @@ const DeletePublicShareDialog: React.FC<DeletePublicFileDialogProps> = ({ trigge
               ? 'filesharing.publicFileSharing.confirmMultiDelete'
               : 'filesharing.publicFileSharing.confirmSingleDelete'
           }
-          items={selectedContentToShareRows.map(({ publicShareId, filename }) => ({
+          items={selectedShares.map(({ publicShareId, filename }) => ({
             name: filename,
             id: publicShareId,
           }))}
@@ -70,7 +64,7 @@ const DeletePublicShareDialog: React.FC<DeletePublicFileDialogProps> = ({ trigge
 
   return (
     <AdaptiveDialog
-      isOpen={isPublicShareDeleteDialogOpen}
+      isOpen={dialog.delete}
       trigger={trigger}
       handleOpenChange={handleClose}
       title={t(
@@ -78,7 +72,7 @@ const DeletePublicShareDialog: React.FC<DeletePublicFileDialogProps> = ({ trigge
           ? 'filesharing.publicFileSharing.deleteFileLinks'
           : 'filesharing.publicFileSharing.deleteFileLink',
         {
-          count: selectedContentToShareRows.length,
+          count: selectedShares.length,
         },
       )}
       body={getDialogBody()}

@@ -13,13 +13,16 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Creator from '@libs/common/types/creator';
+import { CalendarClock } from 'lucide-react';
+import formatIsoDateToLocaleString from '@libs/common/utils/Date/formatIsoDateToLocaleString';
 
-interface FileHeaderProps {
+interface PublicShareMetaDetailsProps {
   filename: string;
   creator: Creator;
+  expires: Date;
 }
 
-const FileHeader: React.FC<FileHeaderProps> = ({ filename, creator }) => {
+const PublicShareMetaDetails: React.FC<PublicShareMetaDetailsProps> = ({ filename, creator, expires }) => {
   const { t } = useTranslation();
   return (
     <>
@@ -30,10 +33,20 @@ const FileHeader: React.FC<FileHeaderProps> = ({ filename, creator }) => {
 
       <div className="mt-4 flex items-center gap-2 text-background">
         <p>{t('filesharing.publicFileSharing.sharedBy')} </p>
-        <p className="truncate">{`${creator.firstName} ${creator.lastName} (${creator.username}`})</p>
+        <p className="truncate">{`${creator?.firstName} ${creator?.lastName}`}</p>
       </div>
+
+      <ul className="mt-6 space-y-1 text-sm text-white/80">
+        <li className="flex items-center gap-2">
+          <CalendarClock className="h-4 w-4" />
+          <span>
+            <strong>{t('filesharing.publicFileSharing.validUntil')}:</strong>{' '}
+            {formatIsoDateToLocaleString(expires.toLocaleString())}
+          </span>
+        </li>
+      </ul>
     </>
   );
 };
 
-export default FileHeader;
+export default PublicShareMetaDetails;

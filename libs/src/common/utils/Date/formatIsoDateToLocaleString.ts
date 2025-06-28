@@ -10,27 +10,23 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { CalendarClock } from 'lucide-react';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
+const formatIsoDateToLocaleString = (iso: string, withTime = true, locale: string | undefined = 'de-DE') => {
+  const date = new Date(iso);
 
-interface FileMetaListProps {
-  expires: Date;
-}
+  const datePart = date.toLocaleDateString(locale, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
 
-const PublicShareMetaList: React.FC<FileMetaListProps> = ({ expires }) => {
-  const { t } = useTranslation();
+  if (!withTime) return datePart;
 
-  return (
-    <ul className="mt-6 space-y-1 text-sm text-white/80">
-      <li className="flex items-center gap-2">
-        <CalendarClock className="h-4 w-4" />
-        <span>
-          <strong>{t('filesharing.publicFileSharing.validUntil')}:</strong> {expires.toLocaleString('de-DE')}
-        </span>
-      </li>
-    </ul>
-  );
+  const timePart = date.toLocaleTimeString(locale, {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
+  return `${datePart} ${timePart}`;
 };
 
-export default PublicShareMetaList;
+export default formatIsoDateToLocaleString;

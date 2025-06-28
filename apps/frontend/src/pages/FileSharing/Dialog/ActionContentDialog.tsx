@@ -88,7 +88,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     getData,
     desktopComponentClassName,
     mobileComponentClassName,
-    disableSubmitButton = false,
+    hideSubmitButton = false,
   } = getDialogBodySetup(action);
 
   const form = useForm<FileSharingFormValues>({
@@ -223,11 +223,10 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
             <form onSubmit={handleFormSubmit}>
               <DialogFooterButtons
                 handleClose={handelOpenChange}
-                handleSubmit={handleFormSubmit}
+                handleSubmit={hideSubmitButton ? undefined : handleFormSubmit}
                 submitButtonText={submitKey}
                 submitButtonType="submit"
                 disableSubmit={
-                  disableSubmitButton ||
                   isLoading ||
                   isSubmitButtonDisabled ||
                   (requiresForm && !form.formState.isValid) ||

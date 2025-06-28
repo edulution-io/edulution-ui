@@ -9,36 +9,42 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
-import PublicShareFilesTableColumns from '@/pages/FileSharing/publicShare/table/PublicShareTableColums';
+import publicShareTableColumns from '@/pages/FileSharing/publicShare/table/PublicShareTableColums';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import APPS from '@libs/appconfig/constants/apps';
 import PUBLIC_SHARED_FILES_TABLE_COLUMN from '@libs/filesharing/constants/publicSharedFIlesTableColum';
-import PublicShareDto from '@libs/filesharing/types/publicShareDto';
+import useMedia from '@/hooks/useMedia';
 
 const PublicShareTable = () => {
-  const { selectedRows, setSelectedRows, shares, isLoading, fetchPublicShares, setSelectedPublicShareRows } =
-    usePublicShareStore();
+  const { shares, isLoading, fetchShares, setSelectedRows, selectedRows } = usePublicShareStore();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedRows) : updaterOrValue;
     setSelectedRows(newValue);
-    const selectedItemData = Object.keys(newValue)
-      .filter((key) => newValue[key])
-      .map((rowId) => shares.find(({ publicShareId }) => publicShareId === rowId))
-      .filter(Boolean) as PublicShareDto[];
-    setSelectedPublicShareRows(selectedItemData);
   };
 
   useEffect(() => {
-    void fetchPublicShares();
+    void fetchShares();
   }, []);
+
+  const { isMobileView, isTabletView } = useMedia();
+
+  const initialColumnVisibility = useMemo(
+    () => ({
+      [PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_VALID_UNTIL]: !isMobileView,
+      [PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_IS_ACCESSIBLE_BY]: !isMobileView,
+      [PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_CREATED_AT]: !(isMobileView || isTabletView),
+      [PUBLIC_SHARED_FILES_TABLE_COLUMN.IS_PASSWORD_PROTECTED]: !(isMobileView || isTabletView),
+    }),
+    [isMobileView, isTabletView],
+  );
 
   return (
     <ScrollableTable
-      columns={PublicShareFilesTableColumns}
+      columns={publicShareTableColumns}
       data={shares}
       filterKey={PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME}
       filterPlaceHolderText="filesharing.publicFileSharing.searchSharedFiles"
@@ -47,6 +53,7 @@ const PublicShareTable = () => {
       selectedRows={selectedRows}
       getRowId={({ publicShareId }) => publicShareId}
       applicationName={APPS.FILE_SHARING}
+      initialColumnVisibility={initialColumnVisibility}
     />
   );
 };

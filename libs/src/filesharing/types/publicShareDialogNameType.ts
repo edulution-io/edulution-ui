@@ -10,12 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type RadioGroupItem = {
-  value: string;
-  translationId: string;
-  disabled: boolean;
-  descriptionTranslationId?: string;
-  icon?: string;
-};
+import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
 
-export default RadioGroupItem;
+export type PublicShareDialogNameType = (typeof PUBLIC_SHARE_DIALOG_NAMES)[keyof typeof PUBLIC_SHARE_DIALOG_NAMES];

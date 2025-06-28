@@ -28,7 +28,7 @@ import MoveOrRenameConsumer from './consumers/moveOrRename.consumer';
 import CopyFileConsumer from './consumers/copyFile.consumer';
 import CreateFolderConsumer from './consumers/createFolder.consumer';
 import UploadFileConsumer from './consumers/uploadFile.consumer';
-import { PublicFileShare, PublicFileShareSchema } from './publicFileShare.schema';
+import { PublicFileShareSchema, PublicShare } from './publicFileShare.schema';
 
 @Module({
   imports: [
@@ -37,7 +37,7 @@ import { PublicFileShare, PublicFileShareSchema } from './publicFileShare.schema
     BullModule.registerQueue({
       name: APPS.FILE_SHARING,
     }),
-    MongooseModule.forFeature([{ name: PublicFileShare.name, schema: PublicFileShareSchema }]),
+    MongooseModule.forFeature([{ name: PublicShare.name, schema: PublicFileShareSchema }]),
   ],
   controllers: [FilesharingController],
   providers: [

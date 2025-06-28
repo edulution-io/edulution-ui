@@ -12,8 +12,8 @@
 
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import ShareFileLinkScope from '@libs/filesharing/constants/shareFileLinkScope';
 import Creator from '@libs/common/types/creator';
+import { ShareFileLinkScopeType } from '@libs/filesharing/types/shareFileLinkScopeType';
 
 interface PublicShareDto {
   publicShareId: string;
@@ -27,7 +27,7 @@ interface PublicShareDto {
   password: string;
   invitedAttendees: AttendeeDto[];
   invitedGroups: MultipleSelectorGroup[];
-  scope: ShareFileLinkScope;
+  scope: ShareFileLinkScopeType;
 }
 
 export default PublicShareDto;

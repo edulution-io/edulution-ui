@@ -18,10 +18,10 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import Attendee from '../conferences/attendee.schema';
 
-export type PublicFileShareDocument = PublicFileShare & Document & { _id: Types.ObjectId };
+export type PublicShareDocument = PublicShare & Document & { _id: Types.ObjectId; createdAt: Date; updatedAt: Date };
 
 @Schema({ timestamps: true, strict: true })
-export class PublicFileShare {
+export class PublicShare {
   @Prop({ type: String, default: uuidv4, unique: true, index: true })
   publicShareId: string;
 
@@ -43,9 +43,9 @@ export class PublicFileShare {
 
   @Prop() password?: string;
 
-  @Prop({ type: [Object], required: true }) invitedAttendees!: AttendeeDto[];
+  @Prop({ type: [Object], required: true }) invitedAttendees: AttendeeDto[];
 
-  @Prop({ type: [Object], required: true }) invitedGroups!: MultipleSelectorGroup[];
+  @Prop({ type: [Object], required: true }) invitedGroups: MultipleSelectorGroup[];
 }
 
-export const PublicFileShareSchema = SchemaFactory.createForClass(PublicFileShare).set('toJSON', { virtuals: true });
+export const PublicFileShareSchema = SchemaFactory.createForClass(PublicShare).set('toJSON', { virtuals: true });

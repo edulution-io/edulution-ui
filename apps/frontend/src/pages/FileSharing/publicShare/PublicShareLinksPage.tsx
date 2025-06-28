@@ -16,12 +16,24 @@ import React from 'react';
 import PublicShareTable from '@/pages/FileSharing/publicShare/table/PublicShareTable';
 import PublicShareFilesFloatingButtonsBar from '@/pages/FileSharing/FloatingButtonsBar/PublicShareFilesFloatingButtonsBar';
 import DeletePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DeletePublicShareDialog';
-import EditPublicShareDialog from '@/pages/FileSharing/publicShare/dialog/EditPublicShareDialog';
-import QRCodePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/QRCodePublicShareDialog';
 import { CloudIcon } from '@/assets/icons';
+import CreateOrEditPublicShareDialog from '@/pages/FileSharing/publicShare/dialog/CreateOrEditPublicShareDialog';
+import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import PublicShareDto from '@libs/filesharing/types/publicShareDto';
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 
-const PublicShareFilesPage = () => {
+const PublicShareLinksPage = () => {
   const { t } = useTranslation();
+  const { share, setShare, closeDialog, dialog } = usePublicShareStore();
+  const { origin } = window.location;
+  const url = `${origin}/${FileSharingApiEndpoints.PUBLIC_SHARE}/${share?.publicShareId}`;
+
+  const handleClose = () => {
+    setShare({} as PublicShareDto);
+    closeDialog('qrCode');
+  };
+
   return (
     <PageLayout
       nativeAppHeader={{
@@ -32,11 +44,17 @@ const PublicShareFilesPage = () => {
     >
       <PublicShareTable />
       <DeletePublicShareDialog />
-      <EditPublicShareDialog />
-      <QRCodePublicShareDialog />
+      <CreateOrEditPublicShareDialog />
+      <SharePublicQRDialog
+        isOpen={dialog.qrCode}
+        handleClose={handleClose}
+        url={url}
+        titleTranslationId="filesharing.publicFileSharing.qrCodePublicShareFile"
+        descriptionTranslationId=""
+      />
       <PublicShareFilesFloatingButtonsBar />
     </PageLayout>
   );
 };
 
-export default PublicShareFilesPage;
+export default PublicShareLinksPage;

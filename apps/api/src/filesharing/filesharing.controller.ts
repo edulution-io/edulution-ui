@@ -40,7 +40,7 @@ import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOpe
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
-import CreateEditPublicFileShareDto from '@libs/filesharing/types/createEditPublicFileShareDto';
+import CreateOrEditPublicFileShareDto from '@libs/filesharing/types/createOrEditPublicFileShareDto';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import UploadFileDto from '@libs/filesharing/types/uploadFileDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
@@ -185,7 +185,7 @@ class FilesharingController {
 
   @Post(FileSharingApiEndpoints.PUBLIC_SHARE)
   async createPublicShare(
-    @Body() createPublicFileShareDto: CreateEditPublicFileShareDto,
+    @Body() createPublicFileShareDto: CreateOrEditPublicFileShareDto,
     @GetCurrentUser() currentUser: JWTUser,
   ) {
     return this.filesharingService.createPublicShare(currentUser, createPublicFileShareDto);

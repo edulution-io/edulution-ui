@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
@@ -20,25 +20,17 @@ import getFileSharingTableColumns from '@/pages/FileSharing/Table/FileSharingTab
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
-import PublicShareDto from '@libs/filesharing/types/publicShareDto';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 
 const FileSharingTable = () => {
   const { isMobileView, isTabletView } = useMedia();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const { setSelectedRows, setSelectedItems, selectedRows, files, isLoading } = useFileSharingStore();
-  const { shares, setContentsToShare } = usePublicShareStore();
+  const { fetchShares } = usePublicShareStore();
 
-  const sharedMap = useMemo(() => {
-    const map = new Map<string, PublicShareDto[]>();
-
-    shares.forEach((file) => {
-      const list = map.get(file.filePath) ?? [];
-      list.push(file);
-      map.set(file.filePath, list);
-    });
-
-    return map;
-  }, [shares]);
+  useEffect(() => {
+    void fetchShares();
+  }, []);
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue =
@@ -48,16 +40,9 @@ const FileSharingTable = () => {
     setSelectedRows(newValue);
     const selectedItemData = Object.keys(newValue)
       .filter((key) => newValue[key])
-      .map((rowId) => {
-        const file = files.find((item) => item.filePath === rowId)!;
-        return {
-          file,
-          shares: sharedMap.get(rowId) ?? [],
-        };
-      });
-    setSelectedItems(selectedItemData.map((item) => item.file));
-    const allShares = selectedItemData.flatMap((item) => item.shares);
-    setContentsToShare(allShares);
+      .map((rowId) => files.find((file) => file.filePath === rowId))
+      .filter(Boolean) as DirectoryFileDTO[];
+    setSelectedItems(selectedItemData);
   };
 
   const { appName } = useFileSharingMenuConfig();
@@ -74,11 +59,9 @@ const FileSharingTable = () => {
     [shouldHideColumns],
   );
 
-  const columns = useMemo(() => getFileSharingTableColumns(undefined, undefined, sharedMap), [sharedMap]);
-
   return (
     <ScrollableTable
-      columns={columns}
+      columns={getFileSharingTableColumns()}
       data={files}
       filterKey={FILE_SHARING_TABLE_COLUMNS.SELECT_FILENAME}
       filterPlaceHolderText="filesharing.filterPlaceHolderText"

@@ -29,7 +29,7 @@ const useFileSharingPage = () => {
     isLoading: isFileProcessing,
   } = useFileSharingStore();
   const { isLoading, fileOperationResult } = useFileSharingDialogStore();
-  const { fetchPublicShares } = usePublicShareStore();
+  const { fetchShares } = usePublicShareStore();
   const { user } = userStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const { homePath } = useUserPath();
@@ -51,7 +51,7 @@ const useFileSharingPage = () => {
         }
       } else {
         void fetchFiles(path);
-        void fetchPublicShares();
+        void fetchShares();
         setPathToRestoreSession(path);
       }
     }
@@ -62,7 +62,7 @@ const useFileSharingPage = () => {
       if (fileOperationResult && !isLoading) {
         if (fileOperationResult.success) {
           await fetchFiles(currentPath);
-          await fetchPublicShares();
+          await fetchShares();
           toast.success(fileOperationResult.message);
         } else {
           toast.info(fileOperationResult.message);
