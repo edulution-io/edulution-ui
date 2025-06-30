@@ -144,7 +144,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
   checkForMatchingUserNameAndPubliUserId: async (
     surveyId: string,
     attendee: Partial<AttendeeDto>,
-    canUpdateFormerAnswer?: boolean = true,
+    canUpdateFormerAnswer: boolean = false,
   ): Promise<boolean> => {
     set({ isFetching: true });
     try {
