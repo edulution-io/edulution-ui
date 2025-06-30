@@ -15,6 +15,7 @@ import { Response } from 'express';
 import {
   Body,
   Controller,
+  Req,
   Get,
   Post,
   Delete,
@@ -28,11 +29,14 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ANSWER, PUBLIC_USER, FILES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveysAnswersTemporaryAttachmentPaths';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import FilesystemService from 'apps/api/src/filesystem/filesystem.service';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import CustomHttpException from 'apps/api/src/common/CustomHttpException';
+import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
+import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import { Public } from '../common/decorators/public.decorator';
@@ -57,7 +61,24 @@ class PublicSurveysController {
   @Public()
   async answerSurvey(@Body() postAnswerDto: PostSurveyAnswerDto) {
     const { surveyId, saveNo, answer, attendee } = postAnswerDto;
-    return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, attendee);
+
+    Logger.debug(`answer: ${JSON.stringify(answer, null, 2)}`, PublicSurveysController.name);
+
+    const savedAnswer = await this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, attendee);
+    if (!savedAnswer) {
+      throw new CustomHttpException(
+        SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        PublicSurveysController.name,
+      );
+    }
+
+    // Logger.debug(`Moving attachments for survey answer with ID: ${surveyId}`, PublicSurveysController.name);
+
+    // await this.surveyAnswerService.moveAttachmentsToPermanentStorage(attendee, surveyId, savedAnswer.answer);
+
+    return savedAnswer;
   }
 
   @Get(`${PUBLIC_USER}/:surveyId/:publicUserName`)
@@ -75,17 +96,8 @@ class PublicSurveysController {
     return this.surveyService.serveFiles(surveyId, questionId, filename, res);
   }
 
-  @Get(`${ANSWER}/${FILES}/:surveyId/:questionId/:filename`)
-  @Public()
-  serveFileFromAnswer(
-    @Param() params: { surveyId: string; questionId: string; filename: string },
-    @Res() res: Response,
-  ) {
-    const { surveyId, questionId, filename } = params;
-    return this.surveyAnswerService.serveFileFromAnswer(surveyId, questionId, filename, res);
-  }
-
   @Post(`${ANSWER}/${FILES}/:userName/:surveyId`)
+  @Public()
   @ApiConsumes(RequestResponseContentType.MULTIPART_FORM_DATA)
   @UseInterceptors(
     FileInterceptor(
@@ -96,7 +108,7 @@ class PublicSurveysController {
         if (!userName || !surveyId) {
           throw new Error('INVALID_REQUEST_DATA');
         }
-        return join(APPS_FILES_PATH, 'survey-answer', userName, surveyId);
+        return join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
       }),
     ),
   )
@@ -110,17 +122,9 @@ class PublicSurveysController {
     if (!userName || !surveyId || !file) {
       throw new Error('INVALID_REQUEST_DATA');
     }
-    const filePath = join(APPS_FILES_PATH, 'survey-answer', userName, surveyId, file.filename);
-
-    await FilesystemService.checkIfFileExist(filePath);
-
+    const filePath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, file.filename);
     const fileUrl = `${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${file.filename}`;
-
-    Logger.log(
-      `Created file: ${file.filename} in ${filePath} serving on: ${fileUrl} (url)`,
-      PublicSurveysController.name,
-    );
-
+    await FilesystemService.checkIfFileExist(filePath);
     return res.status(HttpStatus.CREATED).json(fileUrl);
   }
 
@@ -131,15 +135,35 @@ class PublicSurveysController {
     if (!userName || !surveyId || !fileName) {
       throw new Error('INVALID_REQUEST_DATA');
     }
-    const path = join(APPS_FILES_PATH, 'survey-answer', userName, surveyId);
+    await this.surveyAnswerService.deleteFileFromAnswer(userName, surveyId, fileName);
+  }
 
-    Logger.log(`Deleting file: ${fileName} from path: ${path}`, PublicSurveysController.name);
+  @Get(`${ANSWER}/${FILES}/:surveyId/:filename`)
+  @Public()
+  serveFileFromAnswer(
+    @Param() params: { surveyId: string; filename: string },
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const { surveyId, filename } = params;
 
-    const response = await FilesystemService.deleteFile(path, FilesystemService.buildPathString(fileName));
+    if (!surveyId || !filename) {
+      throw new Error('INVALID_REQUEST_DATA');
+    }
 
-    Logger.log(`File deleted: ${fileName} -> response: ${JSON.stringify(response)}`, PublicSurveysController.name);
+    // TODO: use getUsernameFormRequest() from issue #900 PR
+    const request = req as Request & { user?: { preferred_username?: string } };
+    if (!request.user?.preferred_username) {
+      throw new CustomHttpException(
+        FileSharingErrorMessage.DownloadFailed,
+        HttpStatus.UNAUTHORIZED,
+        undefined,
+        PublicSurveysController.name,
+      );
+    }
+    const userName = request.user.preferred_username;
 
-    return response;
+    return this.surveyAnswerService.serveFileFromAnswer(userName, surveyId, filename, res);
   }
 
   @Get(`${CHOICES}/:surveyId/:questionName`)

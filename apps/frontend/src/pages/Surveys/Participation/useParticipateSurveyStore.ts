@@ -178,7 +178,6 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
   },
 
   uploadFile: async (surveyId: string, file: File): Promise<{ fileName: string; data: string }> => {
-    console.log('Uploading file:', file);
     const { attendee } = get();
     set({ isUploadingFile: true });
 
@@ -196,15 +195,19 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     return { fileName: file.name, data: response.data };
   },
 
-  deleteFile: async (surveyId: string, file: File, callback: CallableFunction): Promise<void> => {
-    console.log('Deleting file:', file);
+  deleteFile: async (
+    surveyId: string,
+    file: File & { content?: string },
+    callback: CallableFunction,
+  ): Promise<void> => {
     const { attendee } = get();
     set({ isDeletingFile: true });
     try {
+      const fileName = file.name || file.content?.split('/').pop();
       const response = await eduApi.delete<string>(
-        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${file.name}`,
+        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${fileName}`,
       );
-      toast.success(t('survey.editor.fileDeleteSuccess'));
+      toast.success(t('survey.editor.fileDeletionSuccess'));
       callback('success', `${EDU_API_URL}/${response.data}`);
     } catch (error) {
       handleApiError(error, set);

@@ -26,14 +26,12 @@ import 'survey-core/i18n/french';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
-import path from 'path';
 
 interface SurveyParticipationModelProps {
   isPublic: boolean;
 }
 
 Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
-
 Serializer.getProperty('file', 'storeDataAsText').defaultValue = false;
 Serializer.getProperty('file', 'waitForUpload').defaultValue = true;
 Serializer.getProperty('file', 'showPreview').defaultValue = true;
@@ -85,42 +83,31 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       }
     });
 
-    newModel.onUploadFiles.add(async (_: SurveyModel, options: UploadFilesEvent) => {
-      console.log('onUploadFile added', options);
-
+    newModel.onUploadFiles.add(async (_: SurveyModel, options: UploadFilesEvent): Promise<void> => {
       const { files, callback } = options;
-      const fileNames = files.map((file) => file.name);
-
       if (!files || files.length === 0) {
-        console.error('No files to upload');
-        return callback([]);
+        callback([]);
+        return;
       }
-
-      if (files.some((file) => file.size > 10 * 1024 * 1024)) {
-        console.error('File size exceeds the limit of 10MB');
-        return callback([]);
-      }
-
       if (files.some((file) => !file.name || file.name.length === 0)) {
-        console.error('File name is empty');
-        return callback([]);
+        callback([]);
+        return;
+      }
+      if (files.some((file) => file.size > 10 * 1024 * 1024)) {
+        callback([]);
+        return;
       }
 
-      console.log(`uploaded files: ${JSON.stringify(fileNames)}`);
-
-      const uploadPromises = files.map(async (file) => {
+      const fileNames = files.map((file) => file.name);
+      const uploadPromises: Promise<{ fileName: string; data: string }>[] = files.map(async (file) => {
         if (!selectedSurvey || !selectedSurvey.id) {
-          return;
+          return Promise.resolve({ fileName: file.name, data: '' });
         }
         return uploadFile(selectedSurvey.id, file);
       });
       const data = await Promise.all(uploadPromises);
-
-      console.log(`uploaded files: ${JSON.stringify(fileNames)}`);
-      console.log(`updated answer: ${JSON.stringify(data)}`);
-
       callback(
-        fileNames.map((fileName) => {
+        fileNames.map((fileName): { file: string; content: string } => {
           const suffix = data.find((item) => item?.fileName === fileName);
           return {
             file: suffix?.fileName || fileName,
@@ -130,29 +117,31 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       );
     });
 
-    newModel.onClearFiles.add(async (_surveyModel: SurveyModel, options: ClearFilesEvent) => {
-      console.log('onClearFiles added', options);
-
-      if (!options.value || options.value.length === 0) {
-        return options.callback('success');
+    newModel.onClearFiles.add(async (_surveyModel: SurveyModel, options: ClearFilesEvent): Promise<void> => {
+      if (!options.value) {
+        options.callback('success');
+        return;
       }
-      const filesToDelete = options.fileName
-        ? options.value.filter((item: File) => item.name === options.fileName)
-        : options.value;
+      if (Array.isArray(options.value) && options.value.length === 0) {
+        options.callback('success');
+        return;
+      }
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const filesToDelete: File[] = options.fileName
+        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+          options.value.filter((item: File) => item.name === options.fileName)
+        : options.value;
       if (filesToDelete.length === 0) {
         console.error(`File with name ${options.fileName} is not found`);
-        return options.callback('error');
+        options.callback('error');
+        return;
       }
-
-      if (!selectedSurvey || !selectedSurvey.id) {
-        return options.callback('error');
-      }
-
       const results = await Promise.all(
         filesToDelete.map((file: File) => {
           if (!selectedSurvey || !selectedSurvey.id) {
-            return options.callback('error');
+            options.callback('error');
+            return Promise.resolve('error');
           }
           return deleteFile(selectedSurvey.id, file, options.callback);
         }),

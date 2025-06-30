@@ -57,7 +57,6 @@ const SurveyEditorPage = () => {
     updateStoredSurvey,
     resetStoredSurvey,
     uploadFile,
-    deleteFile,
   } = useSurveyEditorPageStore();
   const { reset: resetTemplateStore, isOpenTemplateMenu, setIsOpenTemplateMenu } = useTemplateMenuStore();
   const {
@@ -158,20 +157,6 @@ const SurveyEditorPage = () => {
 
     creator.onUploadFile.add(async (_creatorModel, options) => {
       const promises = options.files.map((file: File) => uploadFile(file, options.callback));
-      await Promise.all(promises);
-    });
-
-    creator.onUploadFile.remove(async (_creatorModel, options) => {
-      console.log('onUploadFile removed', options);
-      console.log('onUploadFile removed', options);
-      console.log('onUploadFile removed', options);
-
-      const promises = options.files.map((file: File) => {
-        if (!selectedSurvey || !selectedSurvey.id) {
-          return;
-        }
-        deleteFile(file, selectedSurvey.id, options.question.name, options.callback);
-      });
       await Promise.all(promises);
     });
   }, [creator, form, language]);

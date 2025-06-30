@@ -27,7 +27,6 @@ interface SurveyEditorPageStore {
   resetStoredSurvey: () => void;
 
   uploadFile: (file: File, callback: CallableFunction) => Promise<void>;
-  deleteFile: (file: File, surveyId: string, questionName: string, callback: CallableFunction) => Promise<void>;
   isUploadingFile: boolean;
 
   isOpenSaveSurveyDialog: boolean;
@@ -105,29 +104,6 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
             headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
           });
           toast.success(t('survey.editor.fileUploadSuccess'));
-          callback('success', `${EDU_API_URL}/${response.data}`);
-        } catch (error) {
-          handleApiError(error, set);
-          callback('error');
-        } finally {
-          set({ isUploadingFile: false });
-        }
-      },
-
-      deleteFile: async (
-        file: File,
-        surveyId: string,
-        questionName: string,
-        callback: CallableFunction,
-      ): Promise<void> => {
-        console.log('Deleting files:', file);
-
-        set({ isUploadingFile: true });
-        try {
-          const response = await eduApi.delete<string>(
-            `${SURVEYS}/attachments/${surveyId}/${questionName}/${file.name}`,
-          );
-          toast.success(t('survey.editor.fileDeleteSuccess'));
           callback('success', `${EDU_API_URL}/${response.data}`);
         } catch (error) {
           handleApiError(error, set);
