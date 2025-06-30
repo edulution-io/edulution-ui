@@ -13,7 +13,7 @@
 import { Model, Types } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import { InjectModel } from '@nestjs/mongoose';
-import { HttpStatus, Injectable, OnModuleInit, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
@@ -104,9 +104,6 @@ class SurveyAnswersService implements OnModuleInit {
     const documents = await this.surveyAnswerModel
       .find<SurveyAnswerDocument>({ surveyId: new Types.ObjectId(surveyId) })
       .exec();
-
-    Logger.log(JSON.stringify(documents, null, 2), SurveyAnswersService.name);
-
     const filteredAnswers: string[] = [];
     documents.forEach((document) => {
       try {
@@ -125,9 +122,6 @@ class SurveyAnswersService implements OnModuleInit {
         );
       }
     });
-
-    Logger.log(JSON.stringify(filteredAnswers, null, 2), SurveyAnswersService.name);
-
     return filteredAnswers.length || 0;
   }
 
