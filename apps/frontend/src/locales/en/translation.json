@@ -616,7 +616,8 @@
       "notAbleToFindSurveyAnswerError": "Survey answers not found.",
       "notAbleToUpdateSurveyAnswerError": "Not able to update the submitted survey answer.",
       "notAbleToCreateSurveyAnswerError": "Not able to create the users survey answer.",
-      "notAbleToDeleteSurveyAnswerError": "Not able to delete the users survey answer."
+      "notAbleToDeleteSurveyAnswerError": "Not able to delete the users survey answer.",
+      "notAbleToCountChoices": "Not able to count the choices."
     }
   },
   "surveys": {

@@ -91,7 +91,7 @@ class SurveyAnswersService implements OnModuleInit {
     const filteredChoices: ChoiceDto[] = [];
     const filteringPromises = possibleChoices.map(async (choice) => {
       const counter = await this.countChoiceSelections(surveyId, questionName, choice.name);
-      if (choice.limit === 0 || !counter || counter === 0 || counter < choice.limit) {
+      if (choice.limit === 0 || !counter || counter < choice.limit) {
         filteredChoices.push(choice);
       }
     });
@@ -114,7 +114,12 @@ class SurveyAnswersService implements OnModuleInit {
           filteredAnswers.push(choiceId);
         }
       } catch (error) {
-        // Do Nothing - Handles the case where answer is not a valid JSON or does not contain the expected structure
+        throw new CustomHttpException(
+          SurveyAnswerErrorMessages.NotAbleToCountChoices,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          error,
+          SurveyAnswersService.name,
+        );
       }
     });
     return filteredAnswers.length || 0;

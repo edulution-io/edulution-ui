@@ -142,7 +142,7 @@ describe('SurveyAnswerService', () => {
         idOfPublicSurvey02.toString(),
         publicSurvey02QuestionNameWithLimiters,
       );
-      expect(service.countChoiceSelections).toHaveBeenCalledTimes(4); // once for each possible choice
+      expect(service.countChoiceSelections).toHaveBeenCalledTimes(4);
     });
 
     it('Should return those choices that are still selectable even after adding a new answer (backend limit was not reached)', async () => {
@@ -167,7 +167,7 @@ describe('SurveyAnswerService', () => {
         idOfPublicSurvey02.toString(),
         publicSurvey02QuestionNameWithLimiters,
       );
-      expect(service.countChoiceSelections).toHaveBeenCalledTimes(4); // once for each possible choice
+      expect(service.countChoiceSelections).toHaveBeenCalledTimes(4);
     });
 
     it('Throw error when the backendLimit is not set', async () => {
