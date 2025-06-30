@@ -11,10 +11,11 @@
  */
 
 import DEFAULT_FILE_LINK_EXPIRY from '@libs/filesharing/constants/defaultFileLinkExpiry';
-import CreateOrEditPublicFileShareDto from '@libs/filesharing/types/createOrEditPublicFileShareDto';
+import CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPublicShareDto';
+import PUBLIC_SHARE_LINK_SCOPE from '@libs/filesharing/constants/publicShareLinkScope';
 
-const SHARE_FORM_DEFAULTS: Partial<CreateOrEditPublicFileShareDto> = {
-  scope: 'public',
+const SHARE_FORM_DEFAULTS: Partial<CreateOrEditPublicShareDto> = {
+  scope: PUBLIC_SHARE_LINK_SCOPE.PUBLIC,
   expires: DEFAULT_FILE_LINK_EXPIRY,
   invitedAttendees: [],
   invitedGroups: [],

@@ -10,9 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const SHARE_FILE_LINK_SCOPE = {
+const PUBLIC_SHARE_LINK_SCOPE = {
   PUBLIC: 'public',
   RESTRICTED: 'restricted',
 };
 
-export default SHARE_FILE_LINK_SCOPE;
+export default PUBLIC_SHARE_LINK_SCOPE;

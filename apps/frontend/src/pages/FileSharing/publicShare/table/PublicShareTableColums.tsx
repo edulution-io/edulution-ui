@@ -64,6 +64,7 @@ const publicShareTableColumns: ColumnDef<PublicShareDto>[] = [
         column={column}
       />
     ),
+    size: 130,
     meta: {
       translationId: 'filesharing.publicFileSharing.createdAt',
     },
@@ -89,6 +90,7 @@ const publicShareTableColumns: ColumnDef<PublicShareDto>[] = [
     meta: {
       translationId: 'filesharing.publicFileSharing.validUntil',
     },
+    size: 130,
     accessorFn: (row) => row.expires,
     cell: ({ row }) => {
       const { expires } = row.original;
@@ -201,19 +203,19 @@ const publicShareTableColumns: ColumnDef<PublicShareDto>[] = [
               e.preventDefault();
               copyToClipboard(url);
             }}
-          />
-          <MdFileCopy
-            size={BUTTONS_ICON_WIDTH}
-            className=" flex-none cursor-pointer"
-            onClick={() => copyToClipboard(url)}
-          />
-          <QrCodeIcon
-            size={BUTTONS_ICON_WIDTH}
-            className=" flex-none cursor-pointer"
-            onClick={() => {
-              setShare(row.original);
-              openDialog(PUBLIC_SHARE_DIALOG_NAMES.QR_CODE);
-            }}
+            actionIcons={[
+              {
+                icon: MdFileCopy,
+                onClick: () => copyToClipboard(url),
+              },
+              {
+                icon: QrCodeIcon,
+                onClick: () => {
+                  setShare(row.original);
+                  openDialog(PUBLIC_SHARE_DIALOG_NAMES.QR_CODE);
+                },
+              },
+            ]}
           />
         </div>
       );
@@ -230,6 +232,7 @@ const publicShareTableColumns: ColumnDef<PublicShareDto>[] = [
     meta: {
       translationId: 'filesharing.publicFileSharing.actions',
     },
+    size: 100,
     cell: ({ row }) => {
       const { setShare, openDialog, deleteShares } = usePublicShareStore();
       const { original } = row;

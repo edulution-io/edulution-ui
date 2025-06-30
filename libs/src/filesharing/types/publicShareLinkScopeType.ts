@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SHARE_FILE_LINK_SCOPE from '@libs/filesharing/constants/shareFileLinkScope';
+import PUBLIC_SHARE_LINK_SCOPE from '@libs/filesharing/constants/publicShareLinkScope';
 
-export type ShareFileLinkScopeType = (typeof SHARE_FILE_LINK_SCOPE)[keyof typeof SHARE_FILE_LINK_SCOPE];
+export type PublicShareLinkScopeType = (typeof PUBLIC_SHARE_LINK_SCOPE)[keyof typeof PUBLIC_SHARE_LINK_SCOPE];

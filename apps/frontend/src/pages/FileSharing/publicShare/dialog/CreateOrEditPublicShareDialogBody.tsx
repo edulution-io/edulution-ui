@@ -12,7 +12,7 @@
 
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FormProvider, UseFormReturn } from 'react-hook-form';
+import { Controller, FormProvider, UseFormReturn } from 'react-hook-form';
 import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import FormField from '@/components/shared/FormField';
@@ -20,10 +20,10 @@ import useUserStore from '@/store/UserStore/UserStore';
 import useGroupStore from '@/store/GroupStore';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPublicFileShareDto';
+import CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPublicShareDto';
 import ShareLinkScopeSelector from '@/pages/FileSharing/utilities/ShareLinkScopeSelector';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
-import ShareFileLinkScope from '@libs/filesharing/constants/shareFileLinkScope';
+import PUBLIC_SHARE_LINK_SCOPE from '@libs/filesharing/constants/publicShareLinkScope';
 
 interface CreateOrEditPublicShareDialogBodyProps {
   form: UseFormReturn<CreateOrEditPublicShareDto>;
@@ -52,7 +52,7 @@ const CreateOrEditPublicShareDialogBody: React.FC<CreateOrEditPublicShareDialogB
   const scope = watch('scope');
 
   useEffect(() => {
-    if (scope !== ShareFileLinkScope.RESTRICTED) {
+    if (scope !== PUBLIC_SHARE_LINK_SCOPE.RESTRICTED) {
       setValue('invitedAttendees', [], { shouldValidate: true, shouldDirty: false });
       setValue('invitedGroups', [], { shouldValidate: true, shouldDirty: false });
     }
@@ -66,9 +66,19 @@ const CreateOrEditPublicShareDialogBody: React.FC<CreateOrEditPublicShareDialogB
           <span className="block truncate">{share?.filename}</span>
         </p>
 
-        <ShareLinkScopeSelector form={form} />
+        <Controller
+          name="scope"
+          control={form.control}
+          defaultValue={PUBLIC_SHARE_LINK_SCOPE.PUBLIC}
+          render={({ field }) => (
+            <ShareLinkScopeSelector
+              value={field.value}
+              onValueChange={field.onChange}
+            />
+          )}
+        />
 
-        {scope === 'restricted' && (
+        {scope === PUBLIC_SHARE_LINK_SCOPE.RESTRICTED && (
           <SearchUsersOrGroups
             users={invitedAttendees}
             groups={invitedGroups}

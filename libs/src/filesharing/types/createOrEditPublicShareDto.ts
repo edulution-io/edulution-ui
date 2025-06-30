@@ -14,9 +14,9 @@ import { IsArray, IsDate, IsOptional, IsString } from 'class-validator';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { Type } from 'class-transformer';
-import { ShareFileLinkScopeType } from '@libs/filesharing/types/shareFileLinkScopeType';
+import { PublicShareLinkScopeType } from '@libs/filesharing/types/publicShareLinkScopeType';
 
-class CreateOrEditPublicFileShareDto {
+class CreateOrEditPublicShareDto {
   @IsDate()
   @Type(() => Date)
   expires: Date = new Date(Date.now() + 24 * 60 * 60 * 1000);
@@ -42,7 +42,7 @@ class CreateOrEditPublicFileShareDto {
   @IsOptional()
   password?: string;
 
-  scope: ShareFileLinkScopeType;
+  scope: PublicShareLinkScopeType;
 }
 
-export default CreateOrEditPublicFileShareDto;
+export default CreateOrEditPublicShareDto;

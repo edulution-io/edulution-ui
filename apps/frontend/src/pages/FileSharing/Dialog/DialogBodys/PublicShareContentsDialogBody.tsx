@@ -45,39 +45,38 @@ const PublicShareContentsDialogBody = () => {
       [PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_IS_ACCESSIBLE_BY]: !shouldHideColumns,
       [PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME]: false,
     }),
-    [isTabletView, isMobileView, shouldHideColumns],
+    [shouldHideColumns],
   );
 
   return (
-    <div className="scrollable relative flex w-full min-w-0 flex-col gap-4">
+    <>
       <p>
         {t('filesharing.publicFileSharing.selectedFile')}{' '}
         {(selectedItems?.[0]?.filename ?? selectedShares?.[0]?.filename) || ''}
       </p>
-      <div className="max-h-[60vh] overflow-y-auto">
-        <ScrollableTable
-          columns={publicShareTableColumns}
-          data={selectedShares}
-          filterKey={PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME}
-          filterPlaceHolderText={t('fileSharing.filterPlaceHolderText')}
-          isLoading={false}
-          selectedRows={selectedRows}
-          getRowId={({ publicShareId }) => publicShareId}
-          applicationName={APPS.FILE_SHARING}
-          initialColumnVisibility={initialColumnVisibility}
-          showSearchBarAndColumnSelect={false}
-          actions={[
-            {
-              icon: IoAdd,
-              translationId: 'common.add',
-              onClick: () => openDialog(PUBLIC_SHARE_DIALOG_NAMES.CREATE_LINK),
-            },
-          ]}
-        />
-      </div>
+      <ScrollableTable
+        columns={publicShareTableColumns}
+        data={selectedShares}
+        filterKey={PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME}
+        filterPlaceHolderText={t('fileSharing.filterPlaceHolderText')}
+        isLoading={false}
+        isDialog
+        selectedRows={selectedRows}
+        getRowId={({ publicShareId }) => publicShareId}
+        applicationName={APPS.FILE_SHARING}
+        initialColumnVisibility={initialColumnVisibility}
+        showSearchBarAndColumnSelect={false}
+        actions={[
+          {
+            icon: IoAdd,
+            translationId: 'common.add',
+            onClick: () => openDialog(PUBLIC_SHARE_DIALOG_NAMES.CREATE_LINK),
+          },
+        ]}
+      />
 
       {isLoading && <LoadingIndicatorDialog isOpen />}
-    </div>
+    </>
   );
 };
 

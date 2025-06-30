@@ -12,17 +12,18 @@
 
 import type RadioGroupItem from '@libs/ui/types/radioGroupItem';
 import { GlobeIcon, UserIcon } from '@libs/assets';
+import PUBLIC_SHARE_LINK_SCOPE from '@libs/filesharing/constants/publicShareLinkScope';
 
 const PUBLIC_SHARE_SCOPE_FORM_VALUES: RadioGroupItem[] = [
   {
-    value: 'public',
+    value: PUBLIC_SHARE_LINK_SCOPE.PUBLIC,
     translationId: 'filesharing.publicFileSharing.scope.public',
     descriptionTranslationId: 'filesharing.publicFileSharing.scope.publicHint',
     disabled: false,
     icon: UserIcon,
   },
   {
-    value: 'restricted',
+    value: PUBLIC_SHARE_LINK_SCOPE.RESTRICTED,
     translationId: 'filesharing.publicFileSharing.scope.restricted',
     descriptionTranslationId: 'filesharing.publicFileSharing.scope.restrictedHint',
     disabled: false,

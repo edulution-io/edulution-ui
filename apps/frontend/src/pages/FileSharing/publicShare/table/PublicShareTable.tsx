@@ -17,9 +17,11 @@ import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import APPS from '@libs/appconfig/constants/apps';
 import PUBLIC_SHARED_FILES_TABLE_COLUMN from '@libs/filesharing/constants/publicSharedFIlesTableColum';
 import useMedia from '@/hooks/useMedia';
+import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 
 const PublicShareTable = () => {
   const { shares, isLoading, fetchShares, setSelectedRows, selectedRows } = usePublicShareStore();
+  const { setIsFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedRows) : updaterOrValue;
@@ -27,6 +29,10 @@ const PublicShareTable = () => {
   };
 
   useEffect(() => {
+    if (isFilePreviewDocked) {
+      setIsFilePreviewVisible(false);
+    }
+
     void fetchShares();
   }, []);
 

@@ -20,9 +20,10 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
-import type CreateOrEditPublicFileShareDto from '@libs/filesharing/types/createOrEditPublicFileShareDto';
+import type CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPublicShareDto';
 import SHARE_FORM_DEFAULTS from '@libs/filesharing/constants/shareFormDefaults';
 import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
+import PUBLIC_SHARE_LINK_SCOPE from '@libs/filesharing/constants/publicShareLinkScope';
 import CreateOrEditPublicShareDialogBody from './CreateOrEditPublicShareDialogBody';
 
 interface Props {
@@ -37,7 +38,7 @@ const CreateOrEditPublicShareDialog: React.FC<Props> = ({ trigger }) => {
 
   const currentFile = dialog.createLink ? selectedItems[0] : share;
 
-  const form = useForm<CreateOrEditPublicFileShareDto>({
+  const form = useForm<CreateOrEditPublicShareDto>({
     defaultValues: SHARE_FORM_DEFAULTS,
     mode: 'onChange',
   });
@@ -62,8 +63,8 @@ const CreateOrEditPublicShareDialog: React.FC<Props> = ({ trigger }) => {
     form.reset();
   };
 
-  const onSubmit = async (values: CreateOrEditPublicFileShareDto) => {
-    const dto: CreateOrEditPublicFileShareDto = {
+  const onSubmit = async (values: CreateOrEditPublicShareDto) => {
+    const dto: CreateOrEditPublicShareDto = {
       ...values,
       filePath: currentFile.filePath,
       filename: currentFile.filename,
@@ -99,7 +100,7 @@ const CreateOrEditPublicShareDialog: React.FC<Props> = ({ trigger }) => {
             form.formState.isSubmitting ||
             !form.formState.isValid ||
             form.formState.isLoading ||
-            (form.watch('scope') === 'restricted' &&
+            (form.watch('scope') === PUBLIC_SHARE_LINK_SCOPE.RESTRICTED &&
               !form?.watch('invitedAttendees')?.length &&
               !form?.watch('invitedGroups')?.length)
           }

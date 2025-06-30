@@ -35,11 +35,11 @@ import ContentType from '@libs/filesharing/types/contentType';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import FILE_ACCESS_RESULT from '@libs/filesharing/constants/fileAccessResult';
 import checkFileAccessRights from '@libs/filesharing/utils/checkFileAccessRights';
-import CreateOrEditPublicFileShareDto from '@libs/filesharing/types/createOrEditPublicFileShareDto';
+import CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPublicShareDto';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import { v4 as uuidv4 } from 'uuid';
 import PublicShareResponseDto from '@libs/filesharing/types/publicShareResponseDto';
-import SHARE_FILE_LINK_SCOPE from '@libs/filesharing/constants/shareFileLinkScope';
+import PUBLIC_SHARE_LINK_SCOPE from '@libs/filesharing/constants/publicShareLinkScope';
 import { PublicShare, PublicShareDocument } from './publicFileShare.schema';
 import UsersService from '../users/users.service';
 import WebdavService from '../webdav/webdav.service';
@@ -292,9 +292,10 @@ class FilesharingService {
 
   async createPublicShare(
     currentUser: JwtUser,
-    createPublicFileShareDto: CreateOrEditPublicFileShareDto,
+    createPublicShareDto: CreateOrEditPublicShareDto,
   ): Promise<PublicShareResponseDto> {
-    const { etag, filename, filePath, invitedAttendees, invitedGroups, password, expires } = createPublicFileShareDto;
+    const { etag, filename, filePath, invitedAttendees, invitedGroups, password, expires, scope } =
+      createPublicShareDto;
 
     try {
       const user = await this.userService.findOne(currentUser.preferred_username);
@@ -319,12 +320,8 @@ class FilesharingService {
         expires,
       });
 
-      const scope =
-        newShare.invitedAttendees?.length > 0 || newShare.invitedGroups?.length > 0 ? 'restricted' : 'public';
-
       const publicShare: PublicShareDto = {
-        ...(newShare as Omit<PublicShareDto, 'sharedFileId' | 'scope'>),
-        sharedFileId: publicShareId,
+        ...(newShare as Omit<PublicShareDto, 'scope'>),
         scope,
       };
 
@@ -347,13 +344,14 @@ class FilesharingService {
 
     const publicShare: PublicShareDto[] = publicShares.map((share) => {
       const scope =
-        (share.invitedAttendees?.length ?? 0) > 0 || (share.invitedGroups?.length ?? 0) > 0 ? 'restricted' : 'public';
+        (share.invitedAttendees?.length ?? 0) > 0 || (share.invitedGroups?.length ?? 0) > 0
+          ? PUBLIC_SHARE_LINK_SCOPE.RESTRICTED
+          : PUBLIC_SHARE_LINK_SCOPE.PUBLIC;
 
       return {
-        ...share,
-        sharedFileId: share.publicShareId,
+        ...(share as Omit<PublicShareDto, 'scope'>),
         scope,
-      } as unknown as PublicShareDto;
+      };
     });
 
     return {
@@ -424,8 +422,8 @@ class FilesharingService {
 
     const scope =
       invitedAttendees.length > 0 || invitedGroups.length > 0
-        ? SHARE_FILE_LINK_SCOPE.RESTRICTED
-        : SHARE_FILE_LINK_SCOPE.PUBLIC;
+        ? PUBLIC_SHARE_LINK_SCOPE.RESTRICTED
+        : PUBLIC_SHARE_LINK_SCOPE.PUBLIC;
 
     switch (checkFileAccessRights(invitedAttendees, invitedGroups, jwtUser)) {
       case FILE_ACCESS_RESULT.PUBLIC:
@@ -491,7 +489,7 @@ class FilesharingService {
   }
 
   async editPublicShare(username: string, dto: PublicShareDto): Promise<PublicShareResponseDto> {
-    const { publicShareId, expires, invitedGroups, invitedAttendees, password } = dto;
+    const { publicShareId, expires, invitedGroups, invitedAttendees, password, scope } = dto;
 
     const updates: Record<string, unknown> = {};
     if (expires) updates.expires = expires;
@@ -512,14 +510,10 @@ class FilesharingService {
       );
     }
 
-    const scope =
-      (share.invitedAttendees?.length ?? 0) > 0 || (share.invitedGroups?.length ?? 0) > 0 ? 'restricted' : 'public';
-
     const publicShare: PublicShareDto = {
-      ...share,
-      sharedFileId: share.publicShareId,
+      ...(share as Omit<PublicShareDto, 'scope'>),
       scope,
-    } as unknown as PublicShareDto;
+    };
 
     return { success: true, status: HttpStatus.OK, publicShare };
   }

@@ -25,13 +25,17 @@ export class PublicShare {
   @Prop({ type: String, default: uuidv4, unique: true, index: true })
   publicShareId: string;
 
-  @Prop({ required: true }) etag!: string;
+  @Prop({ required: true })
+  etag: string;
 
-  @Prop({ required: true }) filename!: string;
+  @Prop({ required: true })
+  filename: string;
 
-  @Prop({ required: true }) filePath!: string;
+  @Prop({ required: true })
+  filePath: string;
 
-  @Prop({ required: true }) creator!: Attendee;
+  @Prop({ required: true })
+  creator: Attendee;
 
   @Prop({
     type: Date,
@@ -41,11 +45,14 @@ export class PublicShare {
   })
   expires: Date;
 
-  @Prop() password?: string;
+  @Prop()
+  password?: string;
 
-  @Prop({ type: [Object], required: true }) invitedAttendees: AttendeeDto[];
+  @Prop({ type: [Object], required: true })
+  invitedAttendees: AttendeeDto[];
 
-  @Prop({ type: [Object], required: true }) invitedGroups: MultipleSelectorGroup[];
+  @Prop({ type: [Object], required: true })
+  invitedGroups: MultipleSelectorGroup[];
 }
 
 export const PublicFileShareSchema = SchemaFactory.createForClass(PublicShare).set('toJSON', { virtuals: true });
