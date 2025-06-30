@@ -14,7 +14,15 @@ import CollectFileJobData from '@libs/queue/types/collectFileJobData';
 import FileJobData from '@libs/queue/types/fileJobData';
 import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
 import MoveOrRenameJobData from '@libs/queue/types/moveOrRenameJobData';
+import UploadFileJobData from '@libs/queue/types/uploadFileJobData';
+import CreateFolderJobData from '@libs/queue/types/createFolderJobData';
 
-type FileOperationQueueJobData = CollectFileJobData | FileJobData | DeleteFileJobData | MoveOrRenameJobData;
+type FileOperationQueueJobData =
+  | CollectFileJobData
+  | FileJobData
+  | DeleteFileJobData
+  | MoveOrRenameJobData
+  | CreateFolderJobData
+  | UploadFileJobData;
 
 export default FileOperationQueueJobData;

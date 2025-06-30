@@ -81,7 +81,7 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
             {
               icon: HiTrash,
               translationId: 'common.delete',
-              onClick: () => (row ? removeChoice(row.original.name) : null),
+              onClick: () => (row ? removeChoice(row.original.name) : undefined),
             },
           ]}
           row={row}

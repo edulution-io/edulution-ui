@@ -36,9 +36,11 @@ const useLogout = () => {
     if (auth.user?.expired) {
       toast.error(t('auth.errors.TokenExpired'));
     } else {
-      toast.success(t('auth.logout.success'));
+      toast.success(t('auth.logout.success'), {
+        id: 'logout-success',
+      });
     }
-  }, [logout, auth]);
+  }, [auth]);
 
   return handleLogout;
 };

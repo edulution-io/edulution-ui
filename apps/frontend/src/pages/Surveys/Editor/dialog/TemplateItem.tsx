@@ -73,7 +73,7 @@ const TemplateItem = (props: TemplateItemProps) => {
   return (
     <AccordionItem
       key={template.fileName}
-      value={formula?.title || ''}
+      value={template.fileName || ''}
     >
       <AccordionTrigger className="px-4 pt-2 text-h4">
         <p className="font-bold ">{`${formula?.title}`}</p>

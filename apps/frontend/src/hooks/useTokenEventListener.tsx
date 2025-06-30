@@ -12,9 +12,12 @@
 
 import { useEffect, useRef } from 'react';
 import { useAuth } from 'react-oidc-context';
+import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import useLogout from './useLogout';
 
 const useTokenEventListeners = () => {
+  const { t } = useTranslation();
   const auth = useAuth();
   const handleLogout = useLogout();
   const alreadyLoggedOutRef = useRef(false);
@@ -32,18 +35,21 @@ const useTokenEventListeners = () => {
     }
   }, [auth.user?.expired]);
 
-  useEffect(() => {
-    if (auth.isAuthenticated) {
-      auth.events.addSilentRenewError(handleLogout);
-      auth.events.addAccessTokenExpired(handleTokenExpiredRef.current);
+  const onSilentRenewError = () => {
+    if (alreadyLoggedOutRef.current) return;
 
-      return () => {
-        auth.events.removeSilentRenewError(handleLogout);
-        auth.events.removeAccessTokenExpired(handleTokenExpiredRef.current);
-      };
-    }
-    return () => {};
-  }, [auth.events, auth.isAuthenticated]);
+    toast.warning(t('auth.errors.SessionExpiring'));
+  };
+
+  useEffect(() => {
+    auth.events.addSilentRenewError(onSilentRenewError);
+    auth.events.addAccessTokenExpired(handleTokenExpiredRef.current);
+
+    return () => {
+      auth.events.removeSilentRenewError(onSilentRenewError);
+      auth.events.removeAccessTokenExpired(handleTokenExpiredRef.current);
+    };
+  }, []);
 };
 
 export default useTokenEventListeners;

@@ -401,7 +401,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                     <X
                       className={
                         variant === 'default'
-                          ? 'h-3 w-3 text-secondary hover:bg-muted-foreground'
+                          ? 'h-3 w-3 text-secondary hover:bg-muted-foreground hover:text-secondary-foreground'
                           : 'h-3 w-3 text-secondary '
                       }
                     />
