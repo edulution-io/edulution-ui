@@ -11,8 +11,7 @@
  */
 
 import React from 'react';
-import { SIDEBAR_ICON_HEIGHT } from '@libs/ui/constants/sidebar';
-import { SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
+import { SIDEBAR_ICON_HEIGHT, SIDEBAR_ICON_WIDTH } from '@libs/ui/constants/sidebar';
 
 const SidebarItemIcon = ({ isHovered, iconSrc, title }: { isHovered: boolean; iconSrc: string; title: string }) => (
   <div

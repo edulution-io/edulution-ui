@@ -10,8 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useMemo } from 'react';
-import { IconContext } from 'react-icons';
+import React from 'react';
 import { MdArrowDropDown, MdArrowDropUp } from 'react-icons/md';
 import { SidebarArrowButtonProps } from '@libs/ui/types/sidebar/sidebarArrowButtonProps';
 import { SIDEBAR_ARROW_BUTTON_HEIGHT } from '@libs/ui/constants/sidebar';
@@ -23,8 +22,6 @@ export interface ArrowButtonProps extends SidebarArrowButtonProps {
 const SidebarArrowButton: React.FC<ArrowButtonProps> = ({ direction, onClick }) => {
   const ArrowIcon = direction === 'up' ? MdArrowDropUp : MdArrowDropDown;
 
-  const iconContextValue = useMemo(() => ({ className: 'h-8 w-8' }), []);
-
   const borderClass = direction === 'up' ? 'border-b-2' : 'border-t-2';
 
   return (
@@ -35,9 +32,7 @@ const SidebarArrowButton: React.FC<ArrowButtonProps> = ({ direction, onClick }) 
       onClick={onClick}
     >
       <div className="absolute inset-0 flex items-center justify-center">
-        <IconContext.Provider value={iconContextValue}>
-          <ArrowIcon />
-        </IconContext.Provider>
+        <ArrowIcon className="h-8 w-8" />
       </div>
     </button>
   );
