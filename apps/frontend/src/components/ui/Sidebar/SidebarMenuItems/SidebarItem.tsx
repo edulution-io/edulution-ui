@@ -104,7 +104,6 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({
           color={color}
           title={title}
           iconSrc={icon}
-          iconAlt={`${title}-icon`}
           isHovered={isHovered}
         />
       )}

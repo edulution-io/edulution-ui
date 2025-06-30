@@ -174,7 +174,7 @@ const DesktopSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
     }
 
     setTranslate(clampTranslateToPositiveValue(target));
-  }, [root, sidebarItems]);
+  }, [pathname, sidebarItems]);
 
   return (
     <div className="relative h-screen w-[var(--sidebar-width)]">
