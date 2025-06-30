@@ -99,7 +99,7 @@ const SettingsOverviewPage: React.FC = () => {
         />
       </div>
       <Separator className="my-2" />
-      {tabOptions.find((opt) => opt.id === option)?.component ?? tabOptions[0].component}
+      {tabOptions.find((opt) => opt.id === option)?.component}
     </>
   );
 };
