@@ -13,7 +13,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
-import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { useForm } from 'react-hook-form';
 import useUserStore from '@/store/UserStore/UserStore';
@@ -56,46 +55,35 @@ const ResetMfaForm: React.FC = () => {
   };
 
   return (
-    <AccordionSH
-      type="multiple"
-      defaultValue={['reset-mfa']}
-    >
-      <Form {...form}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <AccordionItem value="reset-mfa">
-            <AccordionTrigger className="flex">
-              <h4>{t('settings.userAdministration.resetMfaForm')}</h4>
-            </AccordionTrigger>
-            <AccordionContent className="space-y-2 px-1">
-              <FormFieldSH
-                control={control}
-                name="selectedUsers"
-                render={() => (
-                  <FormItem>
-                    <p className="font-bold">{t('settings.userAdministration.selectUsersTitle')}</p>
-                    <FormControl>
-                      <AsyncMultiSelect
-                        value={getValues('selectedUsers')}
-                        onSearch={onUsersSearch}
-                        onChange={(usr) => form.setValue('selectedUsers', usr)}
-                        placeholder={t('search.type-to-search')}
-                      />
-                    </FormControl>
-                    <p className="text-background">{t('settings.userAdministration.selectUsersDescription')}</p>
-                    <FormMessage className="text-p" />
-                  </FormItem>
-                )}
-              />
-            </AccordionContent>
-          </AccordionItem>
-          <DialogFooterButtons
-            submitButtonText={t('common.reset')}
-            handleSubmit={handleSubmit(onSubmit)}
-            submitButtonVariant="btn-security"
-          />
-        </form>
-      </Form>
-    </AccordionSH>
+    <Form {...form}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <FormFieldSH
+          control={control}
+          name="selectedUsers"
+          render={() => (
+            <FormItem>
+              <p className="font-bold">{t('settings.userAdministration.selectUsersTitle')}</p>
+              <FormControl>
+                <AsyncMultiSelect
+                  value={getValues('selectedUsers')}
+                  onSearch={onUsersSearch}
+                  onChange={(usr) => form.setValue('selectedUsers', usr)}
+                  placeholder={t('search.type-to-search')}
+                />
+              </FormControl>
+              <p className="text-background">{t('settings.userAdministration.selectUsersDescription')}</p>
+              <FormMessage className="text-p" />
+            </FormItem>
+          )}
+        />
+        <DialogFooterButtons
+          submitButtonText={t('common.reset')}
+          handleSubmit={() => {}}
+          submitButtonVariant="btn-security"
+          submitButtonType="submit"
+        />
+      </form>
+    </Form>
   );
 };
 

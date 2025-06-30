@@ -11,8 +11,28 @@
  */
 
 import React from 'react';
+import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
+import { useTranslation } from 'react-i18next';
 import ResetMfaForm from './ResetMfaForm';
 
-const UserAdministration: React.FC = () => <ResetMfaForm />;
+const UserAdministration: React.FC = () => {
+  const { t } = useTranslation();
+
+  return (
+    <AccordionSH
+      type="multiple"
+      defaultValue={['reset-mfa']}
+    >
+      <AccordionItem value="reset-mfa">
+        <AccordionTrigger className="flex">
+          <h4>{t('settings.userAdministration.resetMfaForm')}</h4>
+        </AccordionTrigger>
+        <AccordionContent>
+          <ResetMfaForm />
+        </AccordionContent>
+      </AccordionItem>
+    </AccordionSH>
+  );
+};
 
 export default UserAdministration;

@@ -47,7 +47,8 @@ const SettingsOverviewPage: React.FC = () => {
   const tabValue = location.pathname.split('/').pop() || CONTAINER;
   const [option, setOption] = useState(tabValue);
 
-  const tabOptions = useMemo(() => TAB_OPTIONS.map((opt) => ({ ...opt, name: t(opt.nameKey) })), []);
+  const tabOptions = useMemo(() => TAB_OPTIONS.map((opt) => ({ ...opt, name: t(opt.nameKey) })), [t]);
+  const gridCols = `grid-cols-${TAB_OPTIONS.length}`;
 
   useEffect(() => {
     setOption(tabValue);
@@ -59,7 +60,7 @@ const SettingsOverviewPage: React.FC = () => {
     return (
       <Tabs value={tabValue}>
         <div className="sticky top-0 z-20 backdrop-blur-xl">
-          <TabsList className={cn('grid sm:w-fit', `grid-cols-${TAB_OPTIONS.length}`)}>
+          <TabsList className={cn('grid sm:w-fit', gridCols)}>
             {tabOptions.map((item) => (
               <TabsTrigger
                 key={item.id}
