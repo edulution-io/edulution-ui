@@ -199,10 +199,6 @@ const publicShareTableColumns: ColumnDef<PublicShareDto>[] = [
             value={url}
             readOnly
             className="min-w-0 flex-1 cursor-pointer truncate"
-            onMouseDown={(e) => {
-              e.preventDefault();
-              copyToClipboard(url);
-            }}
             actionIcons={[
               {
                 icon: MdFileCopy,
