@@ -11,17 +11,23 @@
  */
 
 import React from 'react';
-import useMedia from '@/hooks/useMedia';
-import useSidebarItems from '@/hooks/useSidebarItems';
-import DesktopSidebar from './DesktopSidebar';
-import MobileSidebar from './MobileSidebar';
+import { SIDEBAR_ICON_HEIGHT, SIDEBAR_ICON_WIDTH } from '@libs/ui/constants/sidebar';
 
-const Sidebar: React.FC = () => {
-  const { isMobileView } = useMedia();
+const SidebarItemIcon = ({ isHovered, iconSrc, title }: { isHovered: boolean; iconSrc: string; title: string }) => (
+  <div
+    style={{ height: SIDEBAR_ICON_HEIGHT, width: SIDEBAR_ICON_WIDTH }}
+    className="relative z-0 -mt-2 ml-[0.8rem] flex items-center justify-center"
+  >
+    <img
+      src={iconSrc}
+      height={SIDEBAR_ICON_HEIGHT}
+      width={SIDEBAR_ICON_WIDTH}
+      className={`max-h-full max-w-full origin-top transform transition-transform duration-200 ${
+        isHovered ? 'scale-[1.17]' : 'scale-100'
+      }`}
+      alt={`${title}-icon`}
+    />
+  </div>
+);
 
-  const sidebarItems = useSidebarItems();
-
-  return isMobileView ? <MobileSidebar sidebarItems={sidebarItems} /> : <DesktopSidebar sidebarItems={sidebarItems} />;
-};
-
-export default Sidebar;
+export default SidebarItemIcon;
