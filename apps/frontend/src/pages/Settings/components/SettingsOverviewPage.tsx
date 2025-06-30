@@ -39,10 +39,11 @@ const SettingsOverviewPage: React.FC = () => {
   };
 
   const tabOptions = [
-    { id: CONTAINER, name: t('dockerOverview.container-view') },
-    { id: GLOBAL_SETTINGS_ROOT_ENDPOINT, name: t('settings.globalSettings.title') },
-    { id: 'user-administration', name: t('settings.userAdministration.title') },
-    { id: 'info', name: t('settings.info.title') },
+    { id: CONTAINER, name: t('dockerOverview.container-view'), component: <DockerContainerTable /> },
+
+    { id: GLOBAL_SETTINGS_ROOT_ENDPOINT, name: t('settings.globalSettings.title'), component: <GlobalSettings /> },
+    { id: 'user-administration', name: t('settings.userAdministration.title'), component: <UserAdministration /> },
+    { id: 'info', name: t('settings.info.title'), component: <LicenseOverview /> },
   ];
 
   if (!isMobileView && !isTabletView)
@@ -62,38 +63,19 @@ const SettingsOverviewPage: React.FC = () => {
             ))}
           </TabsList>
         </div>
-        <TabsContent value={tabOptions[0].id}>
-          <PageTitle
-            title={t('settings.sidebar')}
-            translationId={tabOptions[0].name}
-          />
-          <Separator />
-          <DockerContainerTable />
-        </TabsContent>
-        <TabsContent value={tabOptions[1].id}>
-          <PageTitle
-            title={t('settings.sidebar')}
-            translationId={tabOptions[1].name}
-          />
-          <Separator />
-          <GlobalSettings />
-        </TabsContent>
-        <TabsContent value={tabOptions[2].id}>
-          <PageTitle
-            title={t('settings.sidebar')}
-            translationId={tabOptions[2].name}
-          />
-          <Separator />
-          <UserAdministration />
-        </TabsContent>
-        <TabsContent value={tabOptions[3].id}>
-          <PageTitle
-            title={t('settings.sidebar')}
-            translationId={tabOptions[3].name}
-          />
-          <Separator />
-          <LicenseOverview />
-        </TabsContent>
+        {tabOptions.map((opt) => (
+          <TabsContent
+            key={opt.id}
+            value={opt.id}
+          >
+            <PageTitle
+              title={t('settings.sidebar')}
+              translationId={opt.name}
+            />
+            <Separator />
+            {opt.component}
+          </TabsContent>
+        ))}
       </Tabs>
     );
 
@@ -116,10 +98,7 @@ const SettingsOverviewPage: React.FC = () => {
         />
       </div>
       <Separator className="my-2 " />
-      {option === tabOptions[0].id && <DockerContainerTable />}
-      {option === tabOptions[1].id && <GlobalSettings />}
-      {option === tabOptions[2].id && <UserAdministration />}
-      {option === tabOptions[3].id && <LicenseOverview />}
+      {tabOptions.filter((opt) => opt.id === option)[0].component}
     </>
   );
 };
