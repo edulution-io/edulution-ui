@@ -33,7 +33,11 @@ interface ParticipateSurveyStore {
   ) => Promise<SurveyAnswerResponseDto | undefined>;
   isSubmitting: boolean;
 
-  checkForMatchingUserNameAndPubliUserId: (surveyId: string, attendee: Partial<AttendeeDto>) => Promise<boolean>;
+  checkForMatchingUserNameAndPubliUserId: (
+    surveyId: string,
+    attendee: Partial<AttendeeDto>,
+    canUpdateFormerAnswer?: boolean,
+  ) => Promise<boolean>;
   setIsUserAuthenticated: (isUserAuthenticated: boolean) => void;
   isUserAuthenticated: boolean;
 
@@ -140,6 +144,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
   checkForMatchingUserNameAndPubliUserId: async (
     surveyId: string,
     attendee: Partial<AttendeeDto>,
+    canUpdateFormerAnswer?: boolean = true,
   ): Promise<boolean> => {
     set({ isFetching: true });
     try {
@@ -151,7 +156,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
         return false;
       }
       const surveyAnswer: SurveyAnswerResponseDto = response.data;
-      set({ attendee: surveyAnswer.attendee, previousAnswer: surveyAnswer });
+      set({ attendee: surveyAnswer.attendee, previousAnswer: canUpdateFormerAnswer ? surveyAnswer : undefined });
       return true;
     } catch (error) {
       set({ attendee: undefined, previousAnswer: undefined });
