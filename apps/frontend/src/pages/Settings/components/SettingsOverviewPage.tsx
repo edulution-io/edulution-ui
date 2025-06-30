@@ -20,7 +20,6 @@ import useMedia from '@/hooks/useMedia';
 import { GLOBAL_SETTINGS_ROOT_ENDPOINT } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import CONTAINER from '@libs/docker/constants/container';
 import PageTitle from '@/components/PageTitle';
-import cn from '@libs/common/utils/className';
 import DockerContainerTable from '../AppConfig/DockerIntegration/DockerContainerTable';
 import LicenseOverview from './LicenseOverview';
 import GlobalSettings from '../GlobalSettings/GlobalSettings';
@@ -48,7 +47,6 @@ const SettingsOverviewPage: React.FC = () => {
   const [option, setOption] = useState(tabValue);
 
   const tabOptions = useMemo(() => TAB_OPTIONS.map((opt) => ({ ...opt, name: t(opt.nameKey) })), [t]);
-  const gridCols = `grid-cols-${TAB_OPTIONS.length}`;
 
   useEffect(() => {
     setOption(tabValue);
@@ -60,7 +58,10 @@ const SettingsOverviewPage: React.FC = () => {
     return (
       <Tabs value={tabValue}>
         <div className="sticky top-0 z-20 backdrop-blur-xl">
-          <TabsList className={cn('grid sm:w-fit', gridCols)}>
+          <TabsList
+            className="grid sm:w-fit"
+            style={{ gridTemplateColumns: `repeat(${TAB_OPTIONS.length}, minmax(0, 1fr))` }}
+          >
             {tabOptions.map((item) => (
               <TabsTrigger
                 key={item.id}
