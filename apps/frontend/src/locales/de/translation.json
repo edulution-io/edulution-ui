@@ -822,7 +822,15 @@
     "yourPassword": "Dein Passwort",
     "addButton": "Hinzufügen"
   },
-
+  "ctrlKey": "STRG",
+  "enterKey": "Enter",
+  "launcher": {
+    "title": "App Launcher",
+    "searchApps": "Tippen um Apps zu filtern...",
+    "pressShortKey": "Launcher öffnen mit",
+    "pressEnterToStartApp": "Erste App öffnen mit",
+    "noSearchResults": "Keine App gefunden"
+  },
   "settings": {
     "title": "EINSTELLUNGEN",
     "sidebar": "Einstellungen",
@@ -886,6 +894,10 @@
       "title": "Info"
     },
     "appconfig": {
+      "position": {
+        "title": "Sortierung",
+        "description": "An welcher Position soll die App in der App-Leiste und in den Einstellungen angezeigt werden?"
+      },
       "sections": {
         "onlyOffice": {
           "title": "Only Office Integration",

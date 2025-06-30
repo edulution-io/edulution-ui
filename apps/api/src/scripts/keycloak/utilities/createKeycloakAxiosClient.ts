@@ -10,8 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const INPUT_VARIANT_DEFAULT = 'bg-accent text-secondary placeholder:text-p focus:outline-none';
-export const INPUT_VARIANT_DIALOG = 'bg-muted placeholder:text-p focus:outline-none text-background';
+import axios from 'axios';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 
-export const INPUT_DEFAULT =
-  'flex h-9 rounded-md px-3 py-1 text-p text-background shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50';
+const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API } = process.env as Record<string, string>;
+
+const createKeycloakAxiosClient = (token: string) =>
+  axios.create({
+    baseURL: `${KEYCLOAK_API}/admin/realms/${KEYCLOAK_EDU_UI_REALM}`,
+    headers: {
+      [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_JSON,
+      [HTTP_HEADERS.Authorization]: `Bearer ${token}`,
+    },
+  });
+
+export default createKeycloakAxiosClient;

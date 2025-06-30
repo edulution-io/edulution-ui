@@ -818,6 +818,15 @@
     "yourPassword": "Your Password",
     "addButton": "Add"
   },
+  "ctrlKey": "Ctrl",
+  "enterKey": "Enter",
+  "launcher": {
+    "title": "App Launcher",
+    "searchApps": "Type to filter apps...",
+    "pressShortKey": "To open launcher press",
+    "pressEnterToStartApp": "To launch first app press",
+    "noSearchResults": "No app found"
+  },
   "settings": {
     "title": "SETTINGS",
     "sidebar": "Settings",
@@ -881,6 +890,10 @@
       "title": "Info"
     },
     "appconfig": {
+      "position": {
+        "title": "Sorting",
+        "description": "At which position should the app be displayed in the app bar and in the settings?"
+      },
       "sections": {
         "onlyOffice": {
           "title": "Only Office Integration",

@@ -11,15 +11,21 @@
  */
 
 import { Logger, OnModuleInit } from '@nestjs/common';
+import { Timeout } from '@nestjs/schedule';
 import { Scripts } from './script.type';
 import keycloakConfigScripts from './keycloak/keycloakConfigScripts';
 
 class ScriptService implements OnModuleInit {
   async onModuleInit() {
-    await ScriptService.runScripts(keycloakConfigScripts);
+    Logger.log('ScriptService initialized. Wait 60s for Keycloak to be ready', ScriptService.name);
   }
 
-  static async runScripts(scripts: Scripts[]) {
+  @Timeout(60_000)
+  handleTimeout() {
+    this.runScripts(keycloakConfigScripts);
+  }
+
+  private async runScripts(scripts: Scripts[]) {
     Logger.log(`Executing Scripts: ${scripts.length} scripts`, ScriptService.name);
 
     for (const script of scripts) {

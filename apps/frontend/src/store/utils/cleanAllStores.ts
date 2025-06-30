@@ -46,6 +46,7 @@ import TLDRAW_PERSISTENCE_KEY from '@libs/whiteboard/constants/tldrawPersistence
 import clearTLDrawPersistence from '@/pages/Whiteboard/clearTLDrawPersitence';
 import usePublicSharePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
 import useSseStore from '../useSseStore';
 
 const cleanAllStores = async () => {
@@ -69,6 +70,7 @@ const cleanAllStores = async () => {
   useFileSharingStore.getState().reset();
   useFileSharingDownloadStore.getState().reset();
   useFrameStore.getState().reset();
+  useLauncherStore.getState().reset();
   useLessonStore.getState().reset();
   useLmnApiPasswordStore.getState().reset();
   useLmnApiStore.getState().reset();

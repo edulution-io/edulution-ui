@@ -11,25 +11,23 @@
  */
 
 import React from 'react';
-import { FaStarOfLife } from 'react-icons/fa';
 
-interface SidebarItemNotificationProps {
-  notificationCounter?: number;
+interface LinkWrapperProps {
+  href: string;
+  isPdf: boolean;
+  children: React.ReactNode;
 }
 
-const SidebarItemNotification = (props: SidebarItemNotificationProps) => {
-  const { notificationCounter } = props;
+const LinkWrapper: React.FC<LinkWrapperProps> = ({ href, isPdf, children }) => (
+  <a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    className={isPdf ? 'text-ciRed underline' : 'text-ciLightBlue underline'}
+  >
+    {children}
+    {isPdf && ' 📄'}
+  </a>
+);
 
-  if (!notificationCounter || notificationCounter === 0) {
-    return null;
-  }
-
-  return (
-    <FaStarOfLife
-      size={12}
-      className="absolute right-1 top-1 text-ciLightGreen"
-    />
-  );
-};
-
-export default SidebarItemNotification;
+export default LinkWrapper;

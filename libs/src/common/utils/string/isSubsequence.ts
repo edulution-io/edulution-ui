@@ -10,8 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const INPUT_VARIANT_DEFAULT = 'bg-accent text-secondary placeholder:text-p focus:outline-none';
-export const INPUT_VARIANT_DIALOG = 'bg-muted placeholder:text-p focus:outline-none text-background';
+const isSubsequence = (pattern: string, text: string): boolean => {
+  let patternIndex = 0;
+  let textIndex = 0;
 
-export const INPUT_DEFAULT =
-  'flex h-9 rounded-md px-3 py-1 text-p text-background shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50';
+  while (patternIndex < pattern.length && textIndex < text.length) {
+    if (pattern[patternIndex] === text[textIndex]) {
+      patternIndex += 1;
+    }
+    textIndex += 1;
+  }
+
+  return patternIndex === pattern.length;
+};
+
+export default isSubsequence;
