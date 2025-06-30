@@ -13,7 +13,7 @@
 import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 
 @Injectable()
-// @typescript-eslint/class-methods-use-this
+// @eslint-ignore-next-line @typescript-eslint/class-methods-use-this
 class ParseJsonPipe<T = unknown> implements PipeTransform<string, T> {
   transform(value: string): T {
     try {

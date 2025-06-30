@@ -31,12 +31,12 @@ import { ANSWER, PUBLIC_USER, FILES, PUBLIC_SURVEYS, CHOICES } from '@libs/surve
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import FilesystemService from 'apps/api/src/filesystem/filesystem.service';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import { Public } from '../common/decorators/public.decorator';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
-import FilesystemService from 'apps/api/src/filesystem/filesystem.service';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 
 @ApiTags(PUBLIC_SURVEYS)
 @Controller(PUBLIC_SURVEYS)
@@ -101,7 +101,7 @@ class PublicSurveysController {
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  fileUpload(
+  async fileUpload(
     @UploadedFile() file: Express.Multer.File,
     @Res() res: Response,
     @Param() params: { userName: string; surveyId: string },
@@ -112,7 +112,7 @@ class PublicSurveysController {
     }
     const filePath = join(APPS_FILES_PATH, 'survey-answer', userName, surveyId, file.filename);
 
-    FilesystemService.checkIfFileExist(filePath);
+    await FilesystemService.checkIfFileExist(filePath);
 
     const fileUrl = `${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${file.filename}`;
 

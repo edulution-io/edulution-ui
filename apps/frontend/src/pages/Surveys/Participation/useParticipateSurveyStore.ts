@@ -51,7 +51,7 @@ interface ParticipateSurveyStore {
 
   publicUserId?: string;
 
-  uploadFile: (surveyId: string, file: FormData, callback: CallableFunction) => Promise<void>;
+  uploadFile: (surveyId: string, file: File) => Promise<{ fileName: string; data: string }>;
   isUploadingFile?: boolean;
   deleteFile: (surveyId: string, file: File, callback: CallableFunction) => Promise<void>;
   isDeletingFile?: boolean;
@@ -177,26 +177,23 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
   },
 
-  uploadFile: async (surveyId: string, file: FormData, callback: CallableFunction): Promise<void> => {
+  uploadFile: async (surveyId: string, file: File): Promise<{ fileName: string; data: string }> => {
     console.log('Uploading file:', file);
     const { attendee } = get();
     set({ isUploadingFile: true });
-    try {
-      const response = await eduApi.post<string>(
-        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}`,
-        file,
-        {
-          headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
-        },
-      );
-      toast.success(t('survey.editor.fileUploadSuccess'));
-      callback('success', `${EDU_API_URL}/${response.data}`);
-    } catch (error) {
-      handleApiError(error, set);
-      callback('error');
-    } finally {
-      set({ isUploadingFile: false });
-    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await eduApi.post<string>(
+      `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}`,
+      formData,
+      {
+        headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
+      },
+    );
+
+    set({ isUploadingFile: false });
+    return { fileName: file.name, data: response.data };
   },
 
   deleteFile: async (surveyId: string, file: File, callback: CallableFunction): Promise<void> => {

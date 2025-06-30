@@ -12,7 +12,7 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
-import { ClearFilesEvent, Model, Serializer, SurveyModel, UploadFilesEvent, DownloadFileEvent } from 'survey-core';
+import { ClearFilesEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
@@ -25,6 +25,8 @@ import '../theme/custom.participation.css';
 import 'survey-core/i18n/french';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import path from 'path';
 
 interface SurveyParticipationModelProps {
   isPublic: boolean;
@@ -86,19 +88,46 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
     newModel.onUploadFiles.add(async (_: SurveyModel, options: UploadFilesEvent) => {
       console.log('onUploadFile added', options);
 
-      const uploadPromises = options.files.map(async (file) => {
+      const { files, callback } = options;
+      const fileNames = files.map((file) => file.name);
+
+      if (!files || files.length === 0) {
+        console.error('No files to upload');
+        return callback([]);
+      }
+
+      if (files.some((file) => file.size > 10 * 1024 * 1024)) {
+        console.error('File size exceeds the limit of 10MB');
+        return callback([]);
+      }
+
+      if (files.some((file) => !file.name || file.name.length === 0)) {
+        console.error('File name is empty');
+        return callback([]);
+      }
+
+      console.log(`uploaded files: ${JSON.stringify(fileNames)}`);
+
+      const uploadPromises = files.map(async (file) => {
         if (!selectedSurvey || !selectedSurvey.id) {
           return;
         }
-
-        const formData = new FormData();
-        formData.append('file', file);
-        await uploadFile(selectedSurvey.id, formData, options.callback);
+        return uploadFile(selectedSurvey.id, file);
       });
-      await Promise.all(uploadPromises);
+      const data = await Promise.all(uploadPromises);
 
-      console.log(`uploaded files: ${JSON.stringify(options.files)}`);
-      console.log(`updated answer: ${JSON.stringify(_.data)}`);
+      console.log(`uploaded files: ${JSON.stringify(fileNames)}`);
+      console.log(`updated answer: ${JSON.stringify(data)}`);
+
+      callback(
+        fileNames.map((fileName) => {
+          const suffix = data.find((item) => item?.fileName === fileName);
+          return {
+            file: suffix?.fileName || fileName,
+            content: `${EDU_API_URL}/${suffix?.data}`,
+          };
+        }),
+      );
     });
 
     newModel.onClearFiles.add(async (_surveyModel: SurveyModel, options: ClearFilesEvent) => {
@@ -117,9 +146,23 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       }
 
       if (!selectedSurvey || !selectedSurvey.id) {
-        return;
+        return options.callback('error');
       }
-      await deleteFile(selectedSurvey.id, filesToDelete, options.callback);
+
+      const results = await Promise.all(
+        filesToDelete.map((file: File) => {
+          if (!selectedSurvey || !selectedSurvey.id) {
+            return options.callback('error');
+          }
+          return deleteFile(selectedSurvey.id, file, options.callback);
+        }),
+      );
+
+      if (results.every((res) => res === 'success')) {
+        options.callback('success');
+      } else {
+        options.callback('error');
+      }
     });
 
     return newModel;
