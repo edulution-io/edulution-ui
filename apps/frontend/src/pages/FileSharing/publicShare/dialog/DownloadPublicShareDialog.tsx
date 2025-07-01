@@ -12,7 +12,7 @@
 
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FormProvider, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -28,7 +28,8 @@ import useUserStore from '@/store/UserStore/UserStore';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import { ArrowDownToLine } from 'lucide-react';
-import PublicSharePasswordInput from '../publicPage/components/PublicSharePasswordInput';
+import FormField from '@/components/shared/FormField';
+import { Form } from '@/components/ui/Form';
 import PublicShareMetaDetails from '../publicPage/components/PublicShareMetaDetails';
 import usePublicShareStore from '../usePublicShareStore';
 
@@ -136,12 +137,15 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
       />
 
       {requiresPassword && (
-        <FormProvider {...form}>
-          <PublicSharePasswordInput
-            placeholder={t('conferences.password')}
+        <Form {...form}>
+          <FormField
+            name="password"
             form={form}
+            type="password"
+            placeholder={t('conferences.password')}
+            variant="dialog"
           />
-        </FormProvider>
+        </Form>
       )}
 
       <Button
