@@ -373,8 +373,8 @@
     },
 
     "publicShareFilesPage": {
-      "title": "Publicly Shared Files",
-      "description": "Here you will find all files that have been shared publicly. Anyone who has the share link and the corresponding password can download these files."
+      "title": "Shared Files",
+      "description": "Here you will find all the files you have shared. Please note: Anyone who has the share link and the corresponding password can download these files."
     },
 
     "publicFileSharing": {

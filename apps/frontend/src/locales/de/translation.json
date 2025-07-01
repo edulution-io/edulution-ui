@@ -344,8 +344,8 @@
     },
 
     "publicShareFilesPage": {
-      "title": "Öffentlich geteilte Dateien",
-      "description": "Hier findest du alle Dateien, die öffentlich geteilt wurden. Jeder, der den Freigabe-Link und das dazugehörige Passwort hat, kann diese Dateien herunterladen."
+      "title": "Geteilte Dateien",
+      "description": "Hier findest du alle Dateien, die du geteilt hast. Beachte: Jeder, der den Freigabe-Link und ggf. das dazugehörige Passwort hat, kann diese Dateien herunterladen."
     },
 
     "progressBox": {

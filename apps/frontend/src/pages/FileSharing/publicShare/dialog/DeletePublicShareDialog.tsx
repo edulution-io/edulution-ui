@@ -17,6 +17,7 @@ import React from 'react';
 import { t } from 'i18next';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
 
 interface DeletePublicFileDialogProps {
   trigger?: React.ReactNode;
@@ -28,7 +29,7 @@ const DeletePublicShareDialog: React.FC<DeletePublicFileDialogProps> = ({ trigge
   const sharesToDelete = shares.filter((share) => Object.keys(selectedRows).includes(share.publicShareId));
   const isMultiDelete = sharesToDelete.length > 1;
 
-  const handleClose = () => closeDialog('delete');
+  const handleClose = () => closeDialog(PUBLIC_SHARE_DIALOG_NAMES.DELETE);
 
   const onSubmit = async () => {
     await deleteShares(sharesToDelete);

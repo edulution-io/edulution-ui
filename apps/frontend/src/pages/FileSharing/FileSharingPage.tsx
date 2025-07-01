@@ -30,6 +30,7 @@ import CreateOrEditPublicShareDialog from '@/pages/FileSharing/publicShare/dialo
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
+import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
 
 const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
@@ -61,7 +62,7 @@ const FileSharingPage = () => {
 
   const handleClose = () => {
     setShare({} as PublicShareDto);
-    closeDialog('qrCode');
+    closeDialog(PUBLIC_SHARE_DIALOG_NAMES.QR_CODE);
   };
 
   return (

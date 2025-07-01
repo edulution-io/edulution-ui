@@ -10,9 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const buildAbsolutePublicDownloadUrl = (apiPath: string) => {
-  const clean = apiPath.startsWith('/') ? apiPath.slice(1) : apiPath;
-  return `${window.location.origin}/${clean}`;
-};
+const buildAbsolutePublicDownloadUrl = (apiPath: string) => new URL(apiPath, window.location.origin).href;
 
 export default buildAbsolutePublicDownloadUrl;

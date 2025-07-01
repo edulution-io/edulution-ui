@@ -32,6 +32,7 @@ interface PublicShareStoreState {
   selectedShares: PublicShareDto[];
   dialog: Record<PublicShareDialogNameType, boolean>;
   isLoading: boolean;
+  isPreparingFileDownload: boolean;
   error: Error | null;
   selectedRows: RowSelectionState;
   fetchShares: () => Promise<void>;
@@ -70,6 +71,7 @@ const initialState = {
     createLink: false,
   },
   isLoading: false,
+  isPreparingFileDownload: false,
   error: null,
 };
 
@@ -157,6 +159,7 @@ const usePublicShareStore = create<PublicShareStoreState>((set, get) => ({
   },
 
   async downloadFileWithPassword(url, filename, password, onWrongPassword, authToken) {
+    set({ isPreparingFileDownload: true });
     try {
       const res = await axios.post(
         url,
@@ -184,6 +187,8 @@ const usePublicShareStore = create<PublicShareStoreState>((set, get) => ({
       URL.revokeObjectURL(blobUrl);
     } catch (err) {
       handleApiError(err, set);
+    } finally {
+      set({ isPreparingFileDownload: false });
     }
   },
 

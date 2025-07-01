@@ -30,6 +30,7 @@ import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpo
 import { ArrowDownToLine } from 'lucide-react';
 import FormField from '@/components/shared/FormField';
 import { Form } from '@/components/ui/Form';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import PublicShareMetaDetails from '../publicPage/components/PublicShareMetaDetails';
 import usePublicShareStore from '../usePublicShareStore';
 
@@ -49,7 +50,8 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
 
   const { isPublicShareInfoDialogOpen, closePublicShareDialog, publicShareId } = usePublicSharePageStore();
 
-  const { downloadFileWithPassword, fetchedShareByIdResult, fetchShareById } = usePublicShareStore();
+  const { downloadFileWithPassword, fetchedShareByIdResult, fetchShareById, isPreparingFileDownload } =
+    usePublicShareStore();
 
   const { isAccessRestricted, requiresPassword, publicShare } = fetchedShareByIdResult;
 
@@ -152,9 +154,16 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
         onClick={onDownload}
         variant="btn-security"
         className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl"
+        disabled={isPreparingFileDownload}
       >
         <ArrowDownToLine className="h-5 w-5" />
         {t('filesharing.publicFileSharing.downloadPublicFile')}
+        {isPreparingFileDownload && (
+          <CircleLoader
+            width="w-8"
+            height="h-8"
+          />
+        )}
       </Button>
     </div>
   );

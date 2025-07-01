@@ -22,6 +22,7 @@ import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
+import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
 
 const PublicShareLinksPage = () => {
   const { t } = useTranslation();
@@ -31,7 +32,7 @@ const PublicShareLinksPage = () => {
 
   const handleClose = () => {
     setShare({} as PublicShareDto);
-    closeDialog('qrCode');
+    closeDialog(PUBLIC_SHARE_DIALOG_NAMES.QR_CODE);
   };
 
   return (
