@@ -10,11 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum GroupRoles {
-  STUDENT = '/role-student',
-  TEACHER = '/role-teacher',
-  SCHOOL_ADMIN = '/role-schooladministrator',
-  SUPER_ADMIN = '/role-globaladministrator',
-}
+import GroupRoles from '@libs/groups/types/group-roles.enum';
 
-export default GroupRoles;
+const getIsAdmin = (ldapGroups: string[]) =>
+  ldapGroups.includes(GroupRoles.SUPER_ADMIN) || ldapGroups.includes(GroupRoles.SCHOOL_ADMIN);
+
+export default getIsAdmin;
