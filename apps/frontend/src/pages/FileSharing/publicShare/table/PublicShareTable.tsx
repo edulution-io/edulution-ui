@@ -12,7 +12,7 @@
 import React, { useEffect, useMemo } from 'react';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
-import publicShareTableColumns from '@/pages/FileSharing/publicShare/table/PublicShareTableColums';
+import getPublicShareTableColumns from '@/pages/FileSharing/publicShare/table/getPublicShareTableColumns';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import APPS from '@libs/appconfig/constants/apps';
 import PUBLIC_SHARED_FILES_TABLE_COLUMN from '@libs/filesharing/constants/publicSharedFIlesTableColum';
@@ -50,7 +50,7 @@ const PublicShareTable = () => {
 
   return (
     <ScrollableTable
-      columns={publicShareTableColumns}
+      columns={getPublicShareTableColumns(false)}
       data={shares}
       filterKey={PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME}
       filterPlaceHolderText="filesharing.publicFileSharing.searchSharedFiles"

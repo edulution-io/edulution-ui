@@ -29,7 +29,7 @@ import TableActionCell from '@/components/ui/Table/TableActionCell';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
 
-const publicShareTableColumns: ColumnDef<PublicShareDto>[] = [
+const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDto>[] => [
   {
     id: PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME,
     header: ({ table, column }) => (
@@ -198,6 +198,7 @@ const publicShareTableColumns: ColumnDef<PublicShareDto>[] = [
             type="text"
             value={url}
             readOnly
+            variant={isDialog ? 'dialog' : 'default'}
             className="min-w-0 flex-1 cursor-pointer truncate"
             actionIcons={[
               {
@@ -259,4 +260,4 @@ const publicShareTableColumns: ColumnDef<PublicShareDto>[] = [
   },
 ];
 
-export default publicShareTableColumns;
+export default getPublicShareTableColumns;
