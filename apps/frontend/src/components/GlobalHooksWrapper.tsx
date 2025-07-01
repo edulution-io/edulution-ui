@@ -24,7 +24,7 @@ import useAppConfigsStore from '../pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '../store/UserStore/UserStore';
 import useLogout from '../hooks/useLogout';
 import useNotifications from '../hooks/useNotifications';
-import useTokenEventListeners from '../hooks/useTokenEventListener';
+import useTokenEventListeners from '../hooks/useTokenEventListeners';
 
 const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const auth = useAuth();

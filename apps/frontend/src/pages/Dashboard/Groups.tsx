@@ -13,7 +13,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import GROUPS_ID from '@libs/dashboard/constants/pageElementIds';
-import useElementHeight from '@/hooks/useElementHeight';
+import useElementHeight from '@/hooks/useElementsTotalHeight';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import { Card, CardContent } from '@/components/shared/Card';
 import BadgeField from '@/components/shared/BadgeField';

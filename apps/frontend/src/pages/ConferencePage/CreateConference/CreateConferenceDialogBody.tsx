@@ -20,7 +20,7 @@ import useUserStore from '@/store/UserStore/UserStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
+import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/useCreateConferenceDialogStore';
 import useGroupStore from '@/store/GroupStore';
 import RadioGroupFormField from '@/components/shared/RadioGroupFormField';
 import CONFERENCES_IS_PUBLIC_FORM_VALUES from '@libs/conferences/constants/isPublicFormValues';

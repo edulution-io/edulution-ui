@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { RowSelectionState } from '@tanstack/react-table';
 import useUserStore from '@/store/UserStore/UserStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialStore';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import { useParams } from 'react-router-dom';
 import cn from '@libs/common/utils/className';

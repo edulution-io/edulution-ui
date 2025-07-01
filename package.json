@@ -28,7 +28,7 @@
     "format": "pretty-quick --staged",
     "check-translations": "tsx ./scripts/checkTranslations.ts",
     "check-error-message-translations": "tsx scripts/checkErrorMessages.ts",
-    "check-filenames": "tsx ./scripts/check-filenames.ts",
+    "check-filenames": "git diff --name-only --cached --relative | xargs tsx scripts/checkFilenames.ts",
     "addLicenseHeader": "tsx ./scripts/addLicenseHeader.ts"
   },
   "engines": {

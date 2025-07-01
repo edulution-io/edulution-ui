@@ -11,13 +11,13 @@
  */
 
 import useLmnApiStore from '@/store/useLmnApiStore';
-import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
-import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
-import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
+import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/useCreateConferenceDialogStore';
+import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
+import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/useConferenceDetailsDialogStore';
 import UserStore from '@/store/UserStore/UserStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import useSidebarStore from '@/components/ui/Sidebar/sidebarStore';
+import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
 import useDesktopDeploymentStore from '@/pages/DesktopDeployment/DesktopDeploymentStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
@@ -34,9 +34,9 @@ import useDeleteSurveyStore from '@/pages/Surveys/Tables/dialogs/useDeleteSurvey
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
-import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/PublicConferenceStore';
+import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/usePublicConferenceStore';
 import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialStore';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';

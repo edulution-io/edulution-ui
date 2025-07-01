@@ -11,7 +11,7 @@
  */
 
 import React, { useEffect, useMemo } from 'react';
-import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
+import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import ConferencesTableColumns from '@/pages/ConferencePage/Table/ConferencesTableColumns';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
