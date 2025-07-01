@@ -183,7 +183,7 @@ const usePublicShareStore = create<PublicShareStoreState>((set, get) => ({
       document.body.removeChild(a);
       URL.revokeObjectURL(blobUrl);
     } catch (err) {
-      toast.error(t('common.error'));
+      handleApiError(err, set);
     }
   },
 

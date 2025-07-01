@@ -23,14 +23,16 @@ interface DeletePublicFileDialogProps {
 }
 
 const DeletePublicShareDialog: React.FC<DeletePublicFileDialogProps> = ({ trigger }) => {
-  const { isLoading, deleteShares, selectedShares, closeDialog, dialog } = usePublicShareStore();
+  const { isLoading, deleteShares, shares, selectedRows, setSelectedRows, closeDialog, dialog } = usePublicShareStore();
 
-  const isMultiDelete = selectedShares.length > 1;
+  const sharesToDelete = shares.filter((share) => Object.keys(selectedRows).includes(share.publicShareId));
+  const isMultiDelete = sharesToDelete.length > 1;
 
   const handleClose = () => closeDialog('delete');
 
   const onSubmit = async () => {
-    await deleteShares(selectedShares);
+    await deleteShares(sharesToDelete);
+    setSelectedRows({});
     handleClose();
   };
 
@@ -45,7 +47,7 @@ const DeletePublicShareDialog: React.FC<DeletePublicFileDialogProps> = ({ trigge
               ? 'filesharing.publicFileSharing.confirmMultiDelete'
               : 'filesharing.publicFileSharing.confirmSingleDelete'
           }
-          items={selectedShares.map(({ publicShareId, filename }) => ({
+          items={sharesToDelete.map(({ publicShareId, filename }) => ({
             name: filename,
             id: publicShareId,
           }))}
@@ -72,7 +74,7 @@ const DeletePublicShareDialog: React.FC<DeletePublicFileDialogProps> = ({ trigge
           ? 'filesharing.publicFileSharing.deleteFileLinks'
           : 'filesharing.publicFileSharing.deleteFileLink',
         {
-          count: selectedShares.length,
+          count: sharesToDelete.length,
         },
       )}
       body={getDialogBody()}

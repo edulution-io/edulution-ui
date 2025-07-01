@@ -10,15 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { Request } from 'express';
-import extractToken from '../utils/extractToken';
+const COOKIE_DESCRIPTORS = {
+  AUTH_TOKEN: 'authToken',
+} as const;
 
-const GetToken = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
-  const request: Request = ctx.switchToHttp().getRequest();
-
-  const token = extractToken(request);
-  return token;
-});
-
-export default GetToken;
+export default COOKIE_DESCRIPTORS;

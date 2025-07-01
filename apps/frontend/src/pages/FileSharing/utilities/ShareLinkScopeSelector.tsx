@@ -38,8 +38,8 @@ const ShareScopeSelector: FC<ShareScopeSelectorProps> = ({ value, onValueChange 
         className={cn(optionStyle)}
         htmlFor="public"
       >
-        <div className="flex items-start gap-3">
-          <Globe className="h-8 w-8 text-green-600" />
+        <div className="flex cursor-pointer items-start gap-3">
+          <Globe className="h-8 w-8 text-ciLightBlue" />
           <div>
             <p className="font-semibold">{t('filesharing.publicFileSharing.scope.public')}</p>
             <p className="text-sm text-muted-foreground">{t('filesharing.publicFileSharing.scope.publicHint')}</p>
@@ -56,8 +56,8 @@ const ShareScopeSelector: FC<ShareScopeSelectorProps> = ({ value, onValueChange 
         className={cn(optionStyle)}
         htmlFor="restricted"
       >
-        <div className="flex items-start gap-3">
-          <User className="h-8 w-8 text-amber-600" />
+        <div className="flex cursor-pointer items-start gap-3">
+          <User className="h-8 w-8 text-ciLightYellow" />
           <div>
             <p className="font-semibold">{t('filesharing.publicFileSharing.scope.restricted')}</p>
             <p className="text-sm text-muted-foreground">{t('filesharing.publicFileSharing.scope.restrictedHint')}</p>

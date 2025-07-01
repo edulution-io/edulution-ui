@@ -15,12 +15,12 @@ import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/c
 import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
-import { parse } from 'cookie';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import CustomHttpException from '../common/CustomHttpException';
 import { PUBLIC_ROUTE_KEY } from '../common/decorators/public.decorator';
+import extractToken from '../common/utils/extractToken';
 
 @Injectable()
 class AuthenticationGuard implements CanActivate {
@@ -33,24 +33,6 @@ class AuthenticationGuard implements CanActivate {
     this.pubKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
   }
 
-  private static extractToken(request: Request): string {
-    const tokenFromQuery = request.query.token as string;
-    if (tokenFromQuery) {
-      return tokenFromQuery;
-    }
-
-    const authHeader = request.headers.authorization;
-    if (authHeader) {
-      const [type, token] = authHeader.split(' ');
-      if (type === 'Bearer' && token) {
-        return token;
-      }
-    }
-
-    const cookies = parse(request.headers.cookie || '');
-    return cookies.authToken || '';
-  }
-
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.get<boolean>(PUBLIC_ROUTE_KEY, context.getHandler());
     if (isPublic) {
@@ -58,7 +40,7 @@ class AuthenticationGuard implements CanActivate {
     }
 
     const request: Request = context.switchToHttp().getRequest();
-    const token = AuthenticationGuard.extractToken(request);
+    const token = extractToken(request);
 
     if (token) {
       try {
