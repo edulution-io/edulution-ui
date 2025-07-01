@@ -12,7 +12,7 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import publicShareTableColumns from '@/pages/FileSharing/publicShare/table/PublicShareTableColums';
+import getPublicShareTableColumns from '@/pages/FileSharing/publicShare/table/getPublicShareTableColumns';
 import PUBLIC_SHARED_FILES_TABLE_COLUMN from '@libs/filesharing/constants/publicSharedFIlesTableColum';
 import APPS from '@libs/appconfig/constants/apps';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
@@ -55,7 +55,7 @@ const PublicShareContentsDialogBody = () => {
         {(selectedItems?.[0]?.filename ?? selectedShares?.[0]?.filename) || ''}
       </p>
       <ScrollableTable
-        columns={publicShareTableColumns}
+        columns={getPublicShareTableColumns(true)}
         data={selectedShares}
         filterKey={PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME}
         filterPlaceHolderText={t('fileSharing.filterPlaceHolderText')}
