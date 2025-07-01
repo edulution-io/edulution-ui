@@ -13,12 +13,12 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import type { FieldValues, UseFormReturn } from 'react-hook-form';
+import type { Path, UseFormReturn } from 'react-hook-form';
 import { ErrorContext } from 'react-oidc-context';
 
-const useAuthErrorHandler = (
+const useAuthErrorHandler = <TFormValues extends Record<'password', unknown>>(
   authError: ErrorContext | undefined,
-  form: UseFormReturn<FieldValues>,
+  form: UseFormReturn<TFormValues>,
   showQrCode: boolean,
 ) => {
   const { t } = useTranslation();
@@ -27,21 +27,21 @@ const useAuthErrorHandler = (
     if (!authError) return;
 
     if (authError.message.includes('Invalid response Content-Type:')) {
-      form.setError('password', { message: t('auth.errors.EdulutionConnectionFailed') });
+      form.setError('password' as Path<TFormValues>, { message: t('auth.errors.EdulutionConnectionFailed') });
       return;
     }
 
     if (authError.message.includes('Token is not active')) {
-      form.setError('password', { message: t('auth.errors.tokenIsNotActive') });
+      form.setError('password' as Path<TFormValues>, { message: t('auth.errors.tokenIsNotActive') });
       return;
     }
 
     if (authError.source?.includes('renewSilent')) {
-      form.setError('password', { message: t('auth.errors.TokenExpired') });
+      form.setError('password' as Path<TFormValues>, { message: t('auth.errors.TokenExpired') });
       return;
     }
 
-    form.setError('password', { message: t(authError.message) });
+    form.setError('password' as Path<TFormValues>, { message: t(authError.message) });
 
     if (showQrCode) {
       toast.error(t(authError.message));
