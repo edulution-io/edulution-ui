@@ -15,12 +15,20 @@ import { Request } from 'express';
 
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 
-const GetCurrentUser = createParamDecorator((_data: unknown, ctx: ExecutionContext): JWTUser => {
-  const request: Request = ctx.switchToHttp().getRequest();
-  if (!request.user) {
-    throw new UnauthorizedException('JWT is missing');
-  }
-  return request.user;
-});
+interface GetCurrentUserOptions {
+  required?: boolean;
+}
+
+const GetCurrentUser = createParamDecorator(
+  (options: GetCurrentUserOptions | undefined, ctx: ExecutionContext): JWTUser | undefined => {
+    const { required = true } = options ?? {};
+
+    const request: Request = ctx.switchToHttp().getRequest();
+    if (required && !request.user) {
+      throw new UnauthorizedException('JWT is missing');
+    }
+    return request.user;
+  },
+);
 
 export default GetCurrentUser;

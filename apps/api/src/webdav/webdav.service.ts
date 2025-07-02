@@ -330,6 +330,16 @@ class WebdavService {
       throw new CustomHttpException(FileSharingErrorMessage.SharingFailed, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  async getFileTypeFromWebdavPath(
+    username: string,
+    fullPath: string,
+    filepath: string,
+  ): Promise<ContentType | undefined> {
+    const files = await this.getFilesAtPath(username, fullPath);
+    const matchedFile = files.find((file) => file.filePath === filepath);
+    return matchedFile?.type === ContentType.FILE ? ContentType.FILE : ContentType.DIRECTORY;
+  }
 }
 
 export default WebdavService;

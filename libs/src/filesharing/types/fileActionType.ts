@@ -18,6 +18,7 @@ enum FileActionType {
   UPLOAD_FILE = 'uploadFile',
   RENAME_FILE_OR_FOLDER = 'renameFileOrFolder',
   COPY_FILE_OR_FOLDER = 'copyFileOrFolder',
+  SHARE_FILE_OR_FOLDER = 'shareFileOrFolder',
 }
 
 export default FileActionType;
