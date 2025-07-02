@@ -142,7 +142,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         return;
       }
 
-      const results = await Promise.all(
+      await Promise.all(
         filesToDelete.map((file: File) => {
           if (!selectedSurvey || !selectedSurvey.id) {
             options.callback('error');
@@ -151,12 +151,6 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
           return deleteFile(selectedSurvey.id, file, options.callback);
         }),
       );
-
-      if (results.every((res) => res === 'success')) {
-        options.callback('success');
-      } else {
-        options.callback('error');
-      }
     });
 
     return newModel;

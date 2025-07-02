@@ -490,8 +490,8 @@ class SurveyAnswersService implements OnModuleInit {
     if (tempExistence) {
       return tempFilesPath;
     }
-    const exsistence = await FilesystemService.checkIfFileExist(join(filesPath, fileName));
-    if (exsistence) {
+    const existence = await FilesystemService.checkIfFileExist(join(filesPath, fileName));
+    if (existence) {
       return filesPath;
     }
     return '';
