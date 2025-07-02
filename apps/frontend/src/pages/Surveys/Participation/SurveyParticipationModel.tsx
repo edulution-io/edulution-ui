@@ -118,25 +118,30 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
     });
 
     newModel.onClearFiles.add(async (_surveyModel: SurveyModel, options: ClearFilesEvent): Promise<void> => {
-      if (!options.value) {
-        options.callback('success');
-        return;
+      let filesToDelete: File[] = [];
+      if (Array.isArray(options.value)) {
+        if (options.value.length === 0) {
+          options.callback('success');
+          return;
+        }
+        const files = options.value as File[];
+        filesToDelete = files.filter((item: File) =>
+          options.fileName === null ? true : item.name === options.fileName,
+        );
+      } else {
+        if (!options.value) {
+          options.callback('success');
+          return;
+        }
+        const file = options.value as File;
+        filesToDelete = [file];
       }
-      if (Array.isArray(options.value) && options.value.length === 0) {
-        options.callback('success');
-        return;
-      }
-
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const filesToDelete: File[] = options.fileName
-        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-          options.value.filter((item: File) => item.name === options.fileName)
-        : options.value;
       if (filesToDelete.length === 0) {
         toast.error(t('common.errors.fileDeletionFailed'));
         options.callback('error');
         return;
       }
+
       const results = await Promise.all(
         filesToDelete.map((file: File) => {
           if (!selectedSurvey || !selectedSurvey.id) {
