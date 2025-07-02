@@ -19,6 +19,7 @@ import { Model, Types } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import SurveysAttachmentService from 'apps/api/src/surveys/surveys-attachment.service';
 import SurveysService from './surveys.service';
 import SurveyAnswersService from './survey-answer.service';
 import { Survey, SurveyDocument } from './survey.schema';
@@ -63,6 +64,7 @@ describe(PublicSurveysController.name, () => {
           useValue: jest.fn(),
         },
         SurveyAnswersService,
+        SurveysAttachmentService,
         { provide: GroupsService, useValue: mockGroupsService },
         {
           provide: getModelToken(SurveyAnswer.name),

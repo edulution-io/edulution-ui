@@ -40,6 +40,7 @@ import FilesystemService from 'apps/api/src/filesystem/filesystem.service';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
+import SurveysAttachmentService from './surveys-attachment.service';
 import { Public } from '../common/decorators/public.decorator';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 
@@ -49,6 +50,7 @@ class PublicSurveysController {
   constructor(
     private readonly surveyService: SurveysService,
     private readonly surveyAnswerService: SurveyAnswerService,
+    private readonly surveysAttachmentService: SurveysAttachmentService,
   ) {}
 
   @Get(`/:surveyId`)
@@ -86,7 +88,7 @@ class PublicSurveysController {
   @Public()
   serveFile(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
     const { surveyId, questionId, filename } = params;
-    return this.surveyService.serveFiles(surveyId, questionId, filename, res);
+    return this.surveysAttachmentService.serveFiles(surveyId, questionId, filename, res);
   }
 
   @Post(`${ANSWER}/${FILES}/:userName/:surveyId`)
