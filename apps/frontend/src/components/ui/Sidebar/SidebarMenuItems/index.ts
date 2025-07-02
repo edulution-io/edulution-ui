@@ -10,10 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { default as DownButton } from './DownButton';
+export { default as DownButton } from './SidebarArrowButton';
 export { default as HomeButton } from './LauncherButton';
 export { default as MobileMenuButton } from './MobileMenuButton';
 export { default as MobileSidebarItem } from './MobileSidebarItem';
 export { default as SidebarItem } from './SidebarItem';
-export { default as UpButton } from './UpButton';
 export { default as UserMenuButton } from './UserMenuButton';
