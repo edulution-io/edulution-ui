@@ -11,9 +11,10 @@
  */
 
 import { join } from 'path';
+import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
+import SURVEY_ANSWER_FOLDER from '@libs/survey/constants/surveysAnswerFolder';
 import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 
-// TODO: Use attachments folder name from PR:900
-const SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH = join(TEMP_FILES_PATH, 'survey-answer', 'attachments');
+const SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH = join(TEMP_FILES_PATH, SURVEY_ANSWER_FOLDER, ATTACHMENT_FOLDER);
 
 export default SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH;

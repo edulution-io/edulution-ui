@@ -133,7 +133,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
           options.value.filter((item: File) => item.name === options.fileName)
         : options.value;
       if (filesToDelete.length === 0) {
-        console.error(`File with name ${options.fileName} is not found`);
+        toast.error(t('common.errors.fileDeletionFailed'));
         options.callback('error');
         return;
       }

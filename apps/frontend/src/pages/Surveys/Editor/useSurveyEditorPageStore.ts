@@ -116,7 +116,6 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
       closeSharePublicSurveyDialog: () =>
         set({ isOpenSaveSurveyDialog: false, publicSurveyId: initialState.publicSurveyId }),
     }),
-
     {
       name: 'survey-editor-storage',
       storage: createJSONStorage(() => localStorage),

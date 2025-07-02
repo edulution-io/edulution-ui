@@ -11,7 +11,7 @@
  */
 
 import { join } from 'path';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import {
   Body,
   Controller,
@@ -24,7 +24,6 @@ import {
   UploadedFile,
   UseInterceptors,
   HttpStatus,
-  Logger,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -33,9 +32,9 @@ import SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/su
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import getUsernameFromRequest from '@libs/common/utils/api/getUsernameFromRequest';
 import FilesystemService from 'apps/api/src/filesystem/filesystem.service';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
-import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
@@ -61,9 +60,6 @@ class PublicSurveysController {
   @Public()
   async answerSurvey(@Body() postAnswerDto: PostSurveyAnswerDto) {
     const { surveyId, saveNo, answer, attendee } = postAnswerDto;
-
-    Logger.debug(`answer: ${JSON.stringify(answer, null, 2)}`, PublicSurveysController.name);
-
     const savedAnswer = await this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, attendee);
     if (!savedAnswer) {
       throw new CustomHttpException(
@@ -73,11 +69,6 @@ class PublicSurveysController {
         PublicSurveysController.name,
       );
     }
-
-    // Logger.debug(`Moving attachments for survey answer with ID: ${surveyId}`, PublicSurveysController.name);
-
-    // await this.surveyAnswerService.moveAttachmentsToPermanentStorage(attendee, surveyId, savedAnswer.answer);
-
     return savedAnswer;
   }
 
@@ -151,17 +142,7 @@ class PublicSurveysController {
       throw new Error('INVALID_REQUEST_DATA');
     }
 
-    // TODO: use getUsernameFormRequest() from issue #900 PR
-    const request = req as Request & { user?: { preferred_username?: string } };
-    if (!request.user?.preferred_username) {
-      throw new CustomHttpException(
-        FileSharingErrorMessage.DownloadFailed,
-        HttpStatus.UNAUTHORIZED,
-        undefined,
-        PublicSurveysController.name,
-      );
-    }
-    const userName = request.user.preferred_username;
+    const userName = getUsernameFromRequest(req);
 
     return this.surveyAnswerService.serveFileFromAnswer(userName, surveyId, filename, res);
   }

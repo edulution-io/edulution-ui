@@ -22,6 +22,7 @@ import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import { createNewPublicUserLogin, publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import SURVEY_ANSWER_FOLDER from '@libs/survey/constants/surveysAnswerFolder';
 import SURVEYS_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveysAnswersAttachmentPath';
 import SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveysAnswersTemporaryAttachmentPaths';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
@@ -478,7 +479,7 @@ class SurveyAnswersService implements OnModuleInit {
   }
 
   static async onSurveyRemoval(surveyIds: string[]): Promise<void> {
-    const filePath = surveyIds.map((surveyId) => join(APPS_FILES_PATH, 'survey-answer', surveyId));
+    const filePath = surveyIds.map((surveyId) => join(APPS_FILES_PATH, SURVEY_ANSWER_FOLDER, surveyId));
     return FilesystemService.deleteDirectories(filePath);
   }
 
