@@ -60,7 +60,7 @@ class WebdavService {
       throw new CustomHttpException(
         fileSharingErrorMessage,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
+        (error as Error).message,
         WebdavService.name,
       );
     }
