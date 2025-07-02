@@ -10,11 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { join } from 'path';
-import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
-import SURVEY_ANSWER_FOLDER from '@libs/survey/constants/surveysAnswerFolder';
-import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
+const surveyAnswerMaximumFileSize = 10 * 1024 * 1024;
 
-const SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH = join(TEMP_FILES_PATH, SURVEY_ANSWER_FOLDER, ATTACHMENT_FOLDER);
-
-export default SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH;
+export default surveyAnswerMaximumFileSize;

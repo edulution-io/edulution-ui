@@ -24,18 +24,20 @@ import {
   UploadedFile,
   UseInterceptors,
   HttpStatus,
+  ParseFilePipeBuilder,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ANSWER, PUBLIC_USER, FILES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
-import SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveysAnswersTemporaryAttachmentPaths';
+import SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveysAnswersTemporaryAttachmentPath';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import getUsernameFromRequest from '@libs/common/utils/api/getUsernameFromRequest';
+import surveyAnswerMaximumFileSize from '@libs/survey/constants/survey-answer-max-file-size';
+import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import FilesystemService from 'apps/api/src/filesystem/filesystem.service';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
-import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import { Public } from '../common/decorators/public.decorator';
@@ -105,7 +107,16 @@ class PublicSurveysController {
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async fileUpload(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addMaxSizeValidator({
+          maxSize: surveyAnswerMaximumFileSize,
+        })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    file: Express.Multer.File,
     @Res() res: Response,
     @Param() params: { userName: string; surveyId: string },
   ) {
@@ -114,7 +125,7 @@ class PublicSurveysController {
       throw new Error('INVALID_REQUEST_DATA');
     }
     const filePath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, file.filename);
-    const fileUrl = `${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${file.filename}`;
+    const fileUrl = `${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${surveyId}/${file.filename}`;
     await FilesystemService.checkIfFileExist(filePath);
     return res.status(HttpStatus.CREATED).json(fileUrl);
   }

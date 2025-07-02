@@ -53,7 +53,7 @@ interface ParticipateSurveyStore {
 
   uploadFile: (surveyId: string, file: File) => Promise<{ fileName: string; data: string }>;
   isUploadingFile?: boolean;
-  deleteFile: (surveyId: string, file: File, callback: CallableFunction) => Promise<void>;
+  deleteFile: (surveyId: string, file: File, callback: CallableFunction) => Promise<string | undefined>;
   isDeletingFile?: boolean;
 
   reset: () => void;
@@ -199,7 +199,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     surveyId: string,
     file: File & { content?: string },
     callback: CallableFunction,
-  ): Promise<void> => {
+  ): Promise<string | undefined> => {
     const { attendee } = get();
     set({ isDeletingFile: true });
     try {
@@ -209,9 +209,11 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       );
       toast.success(t('survey.editor.fileDeletionSuccess'));
       callback('success', `${EDU_API_URL}/${response.data}`);
+      return 'success';
     } catch (error) {
       handleApiError(error, set);
       callback('error');
+      return undefined;
     } finally {
       set({ isDeletingFile: false });
     }

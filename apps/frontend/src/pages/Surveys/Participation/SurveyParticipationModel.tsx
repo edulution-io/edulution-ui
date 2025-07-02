@@ -15,6 +15,8 @@ import { toast } from 'sonner';
 import { ClearFilesEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import surveyAnswerMaximumFileSize from '@libs/survey/constants/survey-answer-max-file-size';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import useLanguage from '@/hooks/useLanguage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
@@ -25,7 +27,6 @@ import '../theme/custom.participation.css';
 import 'survey-core/i18n/french';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
-import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 
 interface SurveyParticipationModelProps {
   isPublic: boolean;
@@ -93,7 +94,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         callback([]);
         return;
       }
-      if (files.some((file) => file.size > 10 * 1024 * 1024)) {
+      if (files.some((file) => file.size > surveyAnswerMaximumFileSize)) {
         callback([]);
         return;
       }
@@ -142,7 +143,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         return;
       }
 
-      await Promise.all(
+      const result = await Promise.all(
         filesToDelete.map((file: File) => {
           if (!selectedSurvey || !selectedSurvey.id) {
             options.callback('error');
@@ -151,6 +152,11 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
           return deleteFile(selectedSurvey.id, file, options.callback);
         }),
       );
+      if (result.every((res: string | undefined) => res === 'success')) {
+        options.callback('success');
+      } else {
+        options.callback('error');
+      }
     });
 
     return newModel;
