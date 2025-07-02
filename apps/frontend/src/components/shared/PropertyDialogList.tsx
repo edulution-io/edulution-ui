@@ -28,10 +28,10 @@ const PropertyDialogList = ({ deleteWarningTranslationId, items }: PropertyDialo
   return (
     <div className="text-background">
       {deleteWarningTranslationId && <p>{t(deleteWarningTranslationId)}</p>}
-      <ScrollArea className="mt-2 h-64 h-fit max-h-[calc(100vh-400px)] min-h-[100px] w-96 max-w-full overflow-y-auto rounded">
+      <ScrollArea className="mt-2 h-fit max-h-[calc(100vh-400px)] min-h-[100px] w-96 max-w-full overflow-y-auto rounded">
         <div className="flex flex-col gap-2">
           {items.map(({ id, value, translationId }: DialogProperty) => (
-            <p
+            <div
               key={`deletion-dialog-properties-${id}`}
               className="inline-flex w-full items-center p-0"
             >
@@ -46,7 +46,7 @@ const PropertyDialogList = ({ deleteWarningTranslationId, items }: PropertyDialo
                 width="dialog"
                 className="min-w-[100px] cursor-pointer"
               />
-            </p>
+            </div>
           ))}
         </div>
       </ScrollArea>

@@ -17,7 +17,6 @@ import eduApi from '@/api/eduApi';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { SURVEY_TEMPLATES_ENDPOINT, TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
 import handleApiError from '@/utils/handleApiError';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import APPS from '@libs/appconfig/constants/apps';
@@ -102,13 +101,11 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
     set({ isSubmitting: true });
     try {
       const result = await eduApi.post<string>(SURVEY_TEMPLATES_ENDPOINT, template);
-      if (!result) {
-        throw new Error(CommonErrorMessages.FILE_NOT_PROVIDED);
-      }
       const newTemplate = { ...template, fileName: result.data };
       set({ template: newTemplate });
     } catch (error) {
       handleApiError(error, set);
+      set({ template: undefined });
     } finally {
       set({ isSubmitting: false });
     }
