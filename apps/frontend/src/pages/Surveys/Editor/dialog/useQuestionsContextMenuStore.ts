@@ -59,6 +59,11 @@ interface QuestionsContextMenuStore {
   setChoiceName: (choiceName: string, newName: string) => void;
   setChoiceTitle: (choiceName: string, newTitle: string) => void;
   setChoiceLimit: (choiceName: string, newLimit: number) => void;
+
+  setMaxFileSize: (newMaxFileSize: number) => void;
+  maxFileSize: number;
+  toggleAllowMultiple: () => void;
+  allowMultiple: boolean;
 }
 
 const QuestionsContextMenuStoreInitialState = {
@@ -74,6 +79,8 @@ const QuestionsContextMenuStoreInitialState = {
   currentBackendLimiters: [],
   formerChoices: [],
   currentChoices: [],
+  maxFileSize: 0,
+  allowMultiple: false,
 };
 
 const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get) => ({
@@ -246,6 +253,21 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
       set({ showOtherItem: false });
       removeChoice(SHOW_OTHER_ITEM);
     }
+  },
+
+  setMaxFileSize: (newMaxFileSize: number) => {
+    const { selectedQuestion } = get();
+    if (!selectedQuestion) return;
+
+    set({ maxFileSize: newMaxFileSize });
+    selectedQuestion.maxFileSize = newMaxFileSize;
+  },
+  toggleAllowMultiple: () => {
+    const { selectedQuestion, allowMultiple } = get();
+    if (!selectedQuestion) {
+      return;
+    }
+    set({ allowMultiple: !allowMultiple });
   },
 }));
 
