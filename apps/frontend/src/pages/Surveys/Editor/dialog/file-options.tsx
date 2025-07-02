@@ -29,11 +29,12 @@ const FileQuestion = () => {
         <p className="font-bold">{t('survey.editor.questionSettings.maxFileSize')}</p>
       </Label>
       <Input
-        placeholder={t('survey.editor.questionSettings.addMaxFileSize')}
         type="number"
+        min="0"
+        placeholder={t('survey.editor.questionSettings.addMaxFileSize')}
         variant="dialog"
-        value={maxFileSize}
-        onChange={(e) => setMaxFileSize(Number(e.target.value) * 1024 * 1024)}
+        value={maxFileSize || 0}
+        onChange={(e) => setMaxFileSize(Math.max(Number(e.target.value), 0) * 1024 * 1024)}
         className={cn('mb-4', { 'text-muted-foreground': !maxFileSize }, { 'text-primary-foreground': maxFileSize })}
       />
       <Label>

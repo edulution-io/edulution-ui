@@ -39,6 +39,7 @@ const QuestionContextMenuBody = (props: QuestionContextMenuBodyProps) => {
   if (questionType === 'file') {
     options.add(<FileQuestion />);
   }
+
   if (isQuestionTypeChoiceType(questionType)) {
     options.add(
       <ChoicesByUrl
