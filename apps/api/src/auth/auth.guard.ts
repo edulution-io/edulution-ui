@@ -35,9 +35,6 @@ class AuthenticationGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.get<boolean>(PUBLIC_ROUTE_KEY, context.getHandler());
-    if (isPublic) {
-      return true;
-    }
 
     const request: Request = context.switchToHttp().getRequest();
     const token = extractToken(request);
@@ -61,10 +58,7 @@ class AuthenticationGuard implements CanActivate {
       }
     }
 
-    if (isPublic) {
-      return true;
-    }
-    if (request.user) {
+    if (isPublic || request.user) {
       return true;
     }
 

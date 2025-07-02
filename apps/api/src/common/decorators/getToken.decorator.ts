@@ -10,15 +10,17 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Request } from 'express';
-import extractToken from '../utils/extractToken';
 
 const GetToken = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
   const request: Request = ctx.switchToHttp().getRequest();
 
-  const token = extractToken(request);
-  return token;
+  if (!request.token) {
+    throw new UnauthorizedException('Auth Token is missing');
+  }
+
+  return request.token;
 });
 
 export default GetToken;

@@ -44,7 +44,6 @@ import CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPubl
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import UploadFileDto from '@libs/filesharing/types/uploadFileDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
-import getTokenPayload from '@libs/common/utils/getTokenPayload';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
 import FilesharingService from './filesharing.service';
@@ -52,7 +51,6 @@ import WebdavService from '../webdav/webdav.service';
 import { Public } from '../common/decorators/public.decorator';
 import ParseJsonPipe from '../common/pipes/parseJson.pipe';
 import GetCurrentUser from '../common/decorators/getUser.decorator';
-import GetToken from '../common/decorators/getToken.decorator';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
@@ -230,12 +228,11 @@ class FilesharingController {
 
   @Public()
   @Get(`${FileSharingApiEndpoints.PUBLIC_SHARE}/:publicShareId`)
-  async getPublicShareInfo(@Param('publicShareId') publicShareId: string, @GetToken() token?: string) {
-    let user: JWTUser | undefined;
-    if (token) {
-      user = getTokenPayload(token);
-    }
-    return this.filesharingService.getPublicShareInfo(publicShareId, user);
+  async getPublicShareInfo(
+    @Param('publicShareId') publicShareId: string,
+    @GetCurrentUser({ required: false }) currentUser?: JWTUser,
+  ) {
+    return this.filesharingService.getPublicShareInfo(publicShareId, currentUser);
   }
 
   @Public()
@@ -244,13 +241,13 @@ class FilesharingController {
     @Param('publicShareId') publicShareId: string,
     @Body('password') password: string | undefined,
     @Res({ passthrough: true }) res: Response,
-    @GetToken() token?: string,
+    @GetCurrentUser({ required: false }) currentUser?: JWTUser,
   ) {
-    let user: JWTUser | undefined;
-    if (token) {
-      user = getTokenPayload(token);
-    }
-    const { stream, filename, fileType } = await this.filesharingService.getPublicShare(publicShareId, user, password);
+    const { stream, filename, fileType } = await this.filesharingService.getPublicShare(
+      publicShareId,
+      currentUser,
+      password,
+    );
 
     res.set({
       [HTTP_HEADERS.ContentDisposition]: `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`,
