@@ -2,7 +2,6 @@
   "welcome": "Willkommen in der Anwendung",
   "changeLang": "Sprache ändern",
   "heading": "Herzlich Willkommen {{givenName}} {{familyName}}",
-  "content": "Hier ist ihr persönliches {{ applicationName }} Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Unterricht gesammelt sind.",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
   "framebufferImage": "Framebuffer-Bild",
   "previewImage": "Bildvorschau",
@@ -101,6 +100,7 @@
   },
   "dashboard": {
     "pageTitle": "Dashboard",
+    "description": "Hier ist ihr persönliches {{ applicationName }} Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Unterricht gesammelt sind.",
     "mobileAccess": {
       "title": "Mobiler Zugriff",
       "manual": "Anleitung",
