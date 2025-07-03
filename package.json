@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "1.3.2",
+  "version": "1.3.7",
   "scripts": {
     "test": "nx run-many --target=test --projects=api",
     "test:api": "nx run api:test --detectOpenHandles",
@@ -28,7 +28,7 @@
     "format": "pretty-quick --staged",
     "check-translations": "tsx ./scripts/checkTranslations.ts",
     "check-error-message-translations": "tsx scripts/checkErrorMessages.ts",
-    "check-filenames": "git diff --name-only --cached --relative | xargs tsx scripts/checkFilenames.ts",
+    "check-filenames": "git diff --name-only --cached --relative -- '*.ts' '*.tsx' | xargs --no-run-if-empty tsx scripts/checkFilenames.ts",
     "addLicenseHeader": "tsx ./scripts/addLicenseHeader.ts"
   },
   "engines": {

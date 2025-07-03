@@ -10,6 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const USER_DB_PROJECTION = { _id: 0, __v: 0, password: 0, totpSecret: 0, encryptKey: 0 };
+import DEFAULT_FILE_LINK_EXPIRY from '@libs/filesharing/constants/defaultFileLinkExpiry';
+import CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPublicShareDto';
+import PUBLIC_SHARE_LINK_SCOPE from '@libs/filesharing/constants/publicShareLinkScope';
 
-export default USER_DB_PROJECTION;
+const SHARE_FORM_DEFAULTS: Partial<CreateOrEditPublicShareDto> = {
+  scope: PUBLIC_SHARE_LINK_SCOPE.PUBLIC,
+  expires: DEFAULT_FILE_LINK_EXPIRY,
+  invitedAttendees: [],
+  invitedGroups: [],
+  password: '',
+};
+
+export default SHARE_FORM_DEFAULTS;

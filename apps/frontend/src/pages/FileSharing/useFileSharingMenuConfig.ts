@@ -14,6 +14,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import {
+  CloudIcon,
   FileSharingIcon,
   IsoIcon,
   ProgrammIcon,
@@ -22,12 +23,13 @@ import {
   StudentsIcon,
   TeacherIcon,
 } from '@/assets/icons';
-import userStore from '@/store/UserStore/UserStore';
+import userStore from '@/store/UserStore/useUserStore';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import MenuItem from '@libs/menubar/menuItem';
 import APPS from '@libs/appconfig/constants/apps';
 import { t } from 'i18next';
+import SHARED from '@libs/filesharing/constants/shared';
 
 const iconMap = {
   teachers: TeacherIcon,
@@ -85,7 +87,14 @@ const useFileSharingMenuConfig = () => {
       };
     });
 
-    setMenuItems(menuBarItems);
+    const sharedItem: MenuItem = {
+      id: 'shared',
+      label: t('mountpoints.shared', { defaultValue: 'Geteilte Dateien' }),
+      icon: CloudIcon,
+      action: () => handlePathChange(`/${SHARED}`, SHARED),
+    };
+
+    setMenuItems([...menuBarItems, sharedItem]);
   }, [mountPoints, user?.ldapGroups?.roles, user?.ldapGroups?.schools, searchParams, setSearchParams, t]);
 
   return {

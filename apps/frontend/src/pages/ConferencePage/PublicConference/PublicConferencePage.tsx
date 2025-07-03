@@ -15,7 +15,7 @@ import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/usePublicConferenceStore';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/useConferenceDetailsDialogStore';
 import { useForm } from 'react-hook-form';

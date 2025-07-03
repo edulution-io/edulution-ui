@@ -14,22 +14,26 @@ import { useCallback } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { useCookies } from 'react-cookie';
 import { useTranslation } from 'react-i18next';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import cleanAllStores from '@/store/utils/cleanAllStores';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import { toast } from 'sonner';
+import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
+import COOKIE_DESCRIPTORS from '@libs/common/constants/cookieDescriptors';
 
 const useLogout = () => {
   const { t } = useTranslation();
   const auth = useAuth();
   const { logout } = useUserStore();
-  const [, , removeCookie] = useCookies(['authToken']);
+  const [, , removeCookie] = useCookies([COOKIE_DESCRIPTORS.AUTH_TOKEN]);
 
   const handleLogout = useCallback(async () => {
     await logout();
     await auth.removeUser();
     await cleanAllStores();
-    removeCookie('authToken');
+    removeCookie(COOKIE_DESCRIPTORS.AUTH_TOKEN, {
+      path: DASHBOARD_ROUTE,
+    });
     window.history.pushState(null, '', LOGIN_ROUTE);
     window.dispatchEvent(new PopStateEvent('popstate'));
     toast.dismiss();

@@ -16,7 +16,7 @@ import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
 import { toast } from 'sonner';
 import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/usePublicConferenceStore';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/useConferenceDetailsDialogStore';

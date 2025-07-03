@@ -21,7 +21,7 @@ import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/useConferenceDetailsDialogStore';
 import i18next from 'i18next';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import { toast } from 'sonner';
 import delay from '@libs/common/utils/delay';
 import OpenShareQRDialogTextCell from '@/components/ui/Table/OpenShareQRDialogTextCell';

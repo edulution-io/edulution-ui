@@ -17,7 +17,7 @@ import chalk from 'chalk';
 const IGNORED_EXTENSIONS = ['.spec.ts', '.mock.ts', '.d.ts'];
 const IGNORED_FILENAMES = ['vite.config.ts'];
 const IGNORED_PREFIXES = ['migration'];
-const ALLOWED_SUFFIXES = ['decorator', 'schema', 'module', 'service'];
+const ALLOWED_SUFFIXES = ['decorator', 'schema', 'module', 'service', 'enum'];
 
 function getFiles(dir: string, fileList: string[] = []): string[] {
   const entries = fs.readdirSync(dir);
@@ -79,6 +79,12 @@ function checkFile(filePath: string): boolean {
 
 function main(): void {
   const args = process.argv.slice(2);
+
+  if (args.length === 0) {
+    console.log(chalk.yellow('No files staged for rename-check — skipping.'));
+    process.exit(0);
+  }
+
   const allFiles = args.length
     ? args.filter((file) => file.endsWith('.ts') || file.endsWith('.tsx'))
     : [...getFiles('apps'), ...getFiles('libs')];

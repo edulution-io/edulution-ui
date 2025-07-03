@@ -10,17 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@nestjs/common';
-import { Request } from 'express';
+import GroupRoles from '@libs/groups/types/group-roles.enum';
 
-import JWTUser from '@libs/user/types/jwt/jwtUser';
+const getIsAdmin = (ldapGroups: string[]) =>
+  ldapGroups.includes(GroupRoles.SUPER_ADMIN) || ldapGroups.includes(GroupRoles.SCHOOL_ADMIN);
 
-const GetCurrentUser = createParamDecorator((_data: unknown, ctx: ExecutionContext): JWTUser => {
-  const request: Request = ctx.switchToHttp().getRequest();
-  if (!request.user) {
-    throw new UnauthorizedException('JWT is missing');
-  }
-  return request.user;
-});
-
-export default GetCurrentUser;
+export default getIsAdmin;

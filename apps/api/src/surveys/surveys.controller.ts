@@ -50,7 +50,7 @@ import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/htt
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
-import GetCurrentUser from '../common/decorators/getUser.decorator';
+import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import { checkAttachmentFile, createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 

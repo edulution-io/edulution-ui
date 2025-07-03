@@ -19,7 +19,7 @@ import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
 import { useTranslation } from 'react-i18next';
 import { RowSelectionState } from '@tanstack/react-table';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialStore';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';

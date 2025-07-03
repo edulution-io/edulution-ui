@@ -15,7 +15,8 @@ import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
-import userStore from '@/store/UserStore/UserStore';
+import userStore from '@/store/UserStore/useUserStore';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useUserPath from './useUserPath';
 
 const useFileSharingPage = () => {
@@ -28,6 +29,7 @@ const useFileSharingPage = () => {
     isLoading: isFileProcessing,
   } = useFileSharingStore();
   const { isLoading, fileOperationResult } = useFileSharingDialogStore();
+  const { fetchShares } = usePublicShareStore();
   const { user } = userStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const { homePath } = useUserPath();
@@ -49,6 +51,7 @@ const useFileSharingPage = () => {
         }
       } else {
         void fetchFiles(path);
+        void fetchShares();
         setPathToRestoreSession(path);
       }
     }
@@ -59,6 +62,7 @@ const useFileSharingPage = () => {
       if (fileOperationResult && !isLoading) {
         if (fileOperationResult.success) {
           await fetchFiles(currentPath);
+          await fetchShares();
           toast.success(fileOperationResult.message);
         } else {
           toast.info(fileOperationResult.message);

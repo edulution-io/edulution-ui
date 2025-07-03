@@ -10,30 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { Navigate, Route } from 'react-router-dom';
-import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
-import APPS from '@libs/appconfig/constants/apps';
+import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 
-const getFileSharingRoutes = () => [
-  <Route
-    key={APPS.FILE_SHARING}
-    path={APPS.FILE_SHARING}
-  >
-    <Route
-      index
-      element={
-        <Navigate
-          to="Home"
-          replace
-        />
-      }
-    />
-    <Route
-      path=":mointPoint/*"
-      element={<FileSharingPage />}
-    />
-  </Route>,
-];
+interface PublicShareResponseDto {
+  success: boolean;
+  status: number;
+  isAccessRestricted?: boolean;
+  requiresPassword?: boolean;
+  deletedCount?: number;
+  publicShare?: PublicShareDto | PublicShareDto[] | undefined;
+}
 
-export default getFileSharingRoutes;
+export default PublicShareResponseDto;
