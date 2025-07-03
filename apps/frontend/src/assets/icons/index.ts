@@ -25,6 +25,7 @@ export { default as PrinterIcon } from '@/assets/icons/edulution/Drucker.svg';
 export { default as RoomBookingIcon } from '@/assets/icons/edulution/Raumbuchung.svg';
 export { default as ForumsIcon } from '@/assets/icons/edulution/Foren.svg';
 export { default as ChatIcon } from '@/assets/icons/edulution/Chat.svg';
+export { default as CloudIcon } from '@/assets/icons/edulution/Cloud.svg';
 export { default as WlanIcon } from '@/assets/icons/edulution/Wlan.svg';
 export { default as KnowledgeBaseIcon } from '@/assets/icons/edulution/Wissensdatenbank.svg';
 export { default as Home } from '@/assets/icons/edulution/home.svg';
