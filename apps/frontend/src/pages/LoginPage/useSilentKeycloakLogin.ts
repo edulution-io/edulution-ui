@@ -20,12 +20,13 @@ interface SilentLoginFn {
 }
 
 const useSilentLoginWithPassword = (): SilentLoginFn => {
-  const redirectUri = `${EDU_BASE_URL}/silent-check-sso.html`;
+  const url = new URL('auth', EDU_BASE_URL).href;
+  const redirectUri = new URL('silent-check-sso.html', EDU_BASE_URL).href;
 
   const keycloak = new Keycloak({
-    url: `${EDU_BASE_URL}/auth`,
+    url,
     realm: 'edulution',
-    clientId: 'edu-ui',
+    clientId: 'edu-auth',
   });
 
   const silentLogin = useCallback<SilentLoginFn>(async (username, password) => {
