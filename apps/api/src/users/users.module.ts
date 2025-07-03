@@ -12,6 +12,7 @@
 
 import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import UsersService from './users.service';
 import { UsersController } from './users.controller';
 import { User, UserSchema } from './user.schema';
@@ -26,6 +27,7 @@ import GroupsModule from '../groups/groups.module';
       { name: UserAccounts.name, schema: UserAccountsSchema },
     ]),
     GroupsModule,
+    EventEmitterModule.forRoot(),
   ],
   controllers: [UsersController],
   providers: [UsersService],

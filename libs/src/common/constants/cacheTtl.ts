@@ -10,7 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+const oneDay = 24 * 60 * 60 * 1000;
+
 export const DEFAULT_CACHE_TTL_MS = 3600000;
+export const USERS_CACHE_TTL_MS = 31 * oneDay;
 export const KEYCLOACK_SYNC_MS = Number(process.env['KEYCLOACK_SYNC_MS']) || 60000;
-export const GROUPS_CACHE_TTL_MS = KEYCLOACK_SYNC_MS <= 60000 ? 120000 : KEYCLOACK_SYNC_MS * 2;
+export const GROUPS_CACHE_TTL_MS = 31 * oneDay;
 export const AUTH_CACHE_TTL_MS = 3600000;

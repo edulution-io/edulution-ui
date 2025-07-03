@@ -12,6 +12,7 @@
 
 const QUEUE_CONSTANTS = {
   PREFIX: 'queue-user-',
+  USERS_CACHE_REFRESH: 'USERS_CACHE_REFRESH',
 } as const;
 
 export default QUEUE_CONSTANTS;
