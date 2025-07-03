@@ -31,7 +31,8 @@
     "addLicenseHeader": "tsx ./scripts/addLicenseHeader.ts"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": "^20.19.3",
+    "npm": "^10.8.2"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
