@@ -137,7 +137,7 @@ class MailsService implements OnModuleInit {
       for await (const mail of fetchMail) {
         const mailDto: MailDto = {
           id: mail.uid,
-          subject: mail.envelope.subject,
+          subject: mail.envelope?.subject,
           labels: mail.labels,
         };
         mails.push(mailDto);
