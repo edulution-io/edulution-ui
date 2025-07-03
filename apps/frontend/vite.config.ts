@@ -43,11 +43,11 @@ export default defineConfig(({ mode }) => {
       fs: { strict: false },
       proxy: {
         '/auth': {
-          target: env.VITE_LMN_URL,
+          target: env.VITE_KEYCLOAK_URL,
           changeOrigin: true,
           secure: true,
           headers: {
-            Origin: env.VITE_LMN_URL,
+            Origin: env.VITE_KEYCLOAK_URL,
           },
         },
         '/webdav': {

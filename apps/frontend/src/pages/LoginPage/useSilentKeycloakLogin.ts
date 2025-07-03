@@ -26,13 +26,14 @@ const useSilentLoginWithPassword = (): SilentLoginFn => {
   const keycloak = new Keycloak({
     url,
     realm: 'edulution',
-    clientId: 'edu-auth',
+    clientId: 'edu-ui',
   });
 
   const silentLogin = useCallback<SilentLoginFn>(async (username, password) => {
     await keycloak.init({
       onLoad: 'check-sso',
       silentCheckSsoRedirectUri: redirectUri,
+      // silentCheckSsoFallback: false,
       pkceMethod: 'S256',
       checkLoginIframe: false,
     });
@@ -47,14 +48,17 @@ const useSilentLoginWithPassword = (): SilentLoginFn => {
 
       const onMessage = (ev: MessageEvent) => {
         if (ev.origin !== window.location.origin) return;
-        const href = typeof ev.data === 'string' ? ev.data : '';
-        const params = new URL(href || '').searchParams;
+        const href = typeof ev.data === 'string' ? ev.data : window.location.href;
+        const params = new URL(href).searchParams;
         const hashParams = new URL(href).hash.slice(1);
         const code = params.get('code') ?? new URLSearchParams(hashParams).get('code');
+
         if (!code) {
           cleanup();
         }
         cleanup();
+
+        console.info('Login successful');
         resolve();
       };
 
