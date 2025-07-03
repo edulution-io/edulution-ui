@@ -46,7 +46,11 @@ const useAuthErrorHandler = <TFormValues extends Record<'password', unknown>>(
     if (showQrCode) {
       toast.error(t(authError.message));
     }
-  }, [authError, form, showQrCode]);
+  }, [authError, form]);
+
+  useEffect(() => {
+    form.clearErrors();
+  }, [showQrCode]);
 };
 
 export default useAuthErrorHandler;
