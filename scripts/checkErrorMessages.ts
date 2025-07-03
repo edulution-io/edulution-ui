@@ -20,11 +20,11 @@ const localesDir = 'apps/frontend/src/locales/';
 const deTranslationFilePath = join(localesDir, 'de/translation.json');
 const enTranslationFilePath = join(localesDir, 'en/translation.json');
 
-function readJsonFile(filePath: string) {
+const readJsonFile = (filePath: string) => {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
-}
+};
 
-function buildJsonKeySet(obj: any, prefix = ''): Set<string> {
+const buildJsonKeySet = (obj: any, prefix = ''): Set<string> => {
   const result = new Set<string>();
   for (const [key, value] of Object.entries(obj)) {
     const full = prefix ? `${prefix}.${key}` : key;
@@ -35,11 +35,11 @@ function buildJsonKeySet(obj: any, prefix = ''): Set<string> {
     }
   }
   return result;
-}
+};
 
-function getEnumFullPaths(sourceFile: ts.SourceFile): string[] {
+const getEnumFullPaths = (sourceFile: ts.SourceFile): string[] => {
   const paths: string[] = [];
-  function visit(node: ts.Node) {
+  const visit = (node: ts.Node) => {
     if (ts.isEnumDeclaration(node)) {
       for (const member of node.members) {
         if (member.initializer && ts.isStringLiteral(member.initializer)) {
@@ -48,12 +48,12 @@ function getEnumFullPaths(sourceFile: ts.SourceFile): string[] {
       }
     }
     ts.forEachChild(node, visit);
-  }
+  };
   visit(sourceFile);
   return paths;
-}
+};
 
-function parseErrorMessageFile(filePath: string): string[] {
+const parseErrorMessageFile = (filePath: string): string[] => {
   const content = fs.readFileSync(filePath, 'utf-8');
   const sourceFile = ts.createSourceFile(filePath, content, ts.ScriptTarget.Latest, true);
   const importPaths: string[] = [];
@@ -63,9 +63,9 @@ function parseErrorMessageFile(filePath: string): string[] {
     }
   }
   return importPaths.map((importPath) => resolve(importPath.replace('@libs', 'libs/src') + '.ts'));
-}
+};
 
-function checkFilePaths(enumImportPaths: string[], keySet: Set<string>) {
+const checkFilePaths = (enumImportPaths: string[], keySet: Set<string>) => {
   for (const importPath of enumImportPaths) {
     const content = fs.readFileSync(importPath, 'utf-8');
     const sourceFile = ts.createSourceFile(importPath, content, ts.ScriptTarget.Latest, true);
@@ -77,9 +77,9 @@ function checkFilePaths(enumImportPaths: string[], keySet: Set<string>) {
       }
     }
   }
-}
+};
 
-function main() {
+const main = () => {
   const enumImportPaths = parseErrorMessageFile(errorMessageFilePath);
   const deJson = readJsonFile(deTranslationFilePath);
   const enJson = readJsonFile(enTranslationFilePath);
@@ -91,6 +91,6 @@ function main() {
   console.log('Checking English translation file...');
   checkFilePaths(enumImportPaths, enKeySet);
   console.log(chalk.green('✔ EN is awesome!'));
-}
+};
 
 main();
