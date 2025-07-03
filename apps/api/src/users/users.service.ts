@@ -15,9 +15,10 @@ import { Model } from 'mongoose';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectModel } from '@nestjs/mongoose';
 import { getDecryptedPassword } from '@libs/common/utils';
-import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
+import { USERS_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
@@ -26,6 +27,7 @@ import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
 import { ALL_USERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import type UserAccountDto from '@libs/user/types/userAccount.dto';
 import type CachedUser from '@libs/user/types/cachedUser';
+import QUEUE_CONSTANTS from '@libs/queue/constants/queueConstants';
 import CustomHttpException from '../common/CustomHttpException';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
@@ -39,6 +41,7 @@ class UsersService {
     @InjectModel(UserAccounts.name) private userAccountModel: Model<UserAccountsDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly groupsService: GroupsService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async createOrUpdate(userDto: UserDto): Promise<User | null> {
@@ -74,6 +77,19 @@ class UsersService {
   }
 
   async findAllCachedUsers(schoolName: string): Promise<CachedUser[]> {
+    const cacheKey = ALL_USERS_CACHE_KEY + schoolName;
+    const cachedUsers = await this.cacheManager.get<CachedUser[]>(cacheKey);
+
+    if (cachedUsers?.length) {
+      return cachedUsers;
+    }
+
+    await this.refreshUsersCache();
+
+    return (await this.cacheManager.get<CachedUser[]>(cacheKey)) ?? [];
+  }
+
+  async refreshUsersCache(): Promise<void> {
     const mapToCachedUser = (user: LDAPUser): CachedUser => ({
       firstName: user.firstName,
       lastName: user.lastName,
@@ -81,46 +97,36 @@ class UsersService {
       school: user.attributes.school?.[0] || SPECIAL_SCHOOLS.GLOBAL,
     });
 
-    const cacheKey = ALL_USERS_CACHE_KEY + schoolName;
-    const cachedUsers = await this.cacheManager.get<CachedUser[]>(cacheKey);
-
-    if (cachedUsers) {
-      return cachedUsers;
-    }
-
     const fetchedUsers = await this.groupsService.fetchAllUsers();
     const cachedUserList: CachedUser[] = fetchedUsers.map(mapToCachedUser);
 
-    const usersBySchool = cachedUserList.reduce(
-      (acc, user) => {
-        const userSchool = user.school;
-        if (userSchool) {
-          if (!acc[userSchool]) {
-            acc[userSchool] = [];
-          }
-          acc[userSchool].push(user);
+    const usersBySchool = cachedUserList.reduce<Record<string, CachedUser[]>>((acc, user) => {
+      const userSchool = user.school;
+      if (userSchool) {
+        if (!acc[userSchool]) {
+          acc[userSchool] = [];
         }
-        return acc;
-      },
-      {} as Record<string, CachedUser[]>,
-    );
+        acc[userSchool].push(user);
+      }
+      return acc;
+    }, {});
 
     await Promise.all(
       Object.entries(usersBySchool).map(async ([school, userList]) => {
         const key = ALL_USERS_CACHE_KEY + school;
-        await this.cacheManager.set(key, userList, DEFAULT_CACHE_TTL_MS);
+        await this.cacheManager.set(key, userList, USERS_CACHE_TTL_MS);
       }),
     );
 
-    await this.cacheManager.set(ALL_USERS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, cachedUserList, DEFAULT_CACHE_TTL_MS);
-
-    return usersBySchool[schoolName] ?? [];
+    await this.cacheManager.set(ALL_USERS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, cachedUserList, USERS_CACHE_TTL_MS);
   }
 
   async searchUsersByName(schoolName: string, name: string): Promise<CachedUser[]> {
     const searchString = name.toLowerCase();
 
     const users = await this.findAllCachedUsers(schoolName);
+
+    this.eventEmitter.emit(QUEUE_CONSTANTS.USERS_CACHE_REFRESH);
 
     return users.filter(
       (user) =>
