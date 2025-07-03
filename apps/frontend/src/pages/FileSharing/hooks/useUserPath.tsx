@@ -16,6 +16,9 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 const useUserPath = () => {
   const { user: lmnUser } = useLmnApiStore();
   const { isSuperAdmin } = useLdapGroups();
+
+  if (!lmnUser?.sophomorixIntrinsic2?.length) return { homePath: '' };
+
   const homePath = isSuperAdmin
     ? `/global/${lmnUser?.sophomorixIntrinsic2[0]}`
     : lmnUser?.sophomorixIntrinsic2[0] || '';
