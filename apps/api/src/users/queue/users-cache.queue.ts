@@ -15,6 +15,7 @@ import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import QUEUE_CONSTANTS from '@libs/queue/constants/queueConstants';
 import JOB_NAMES from '@libs/queue/constants/jobNames';
+import USERS_CACHE_UPDATE_LIMIT from '@libs/user/constants/usersCacheUpdateLimit';
 import UsersService from '../users.service';
 
 @Injectable()
@@ -55,7 +56,7 @@ class UsersCacheQueue implements OnModuleInit, OnModuleDestroy {
         },
         limiter: {
           max: 1,
-          duration: 2 * 60 * 1000,
+          duration: USERS_CACHE_UPDATE_LIMIT,
         },
       },
     );

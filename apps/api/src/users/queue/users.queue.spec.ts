@@ -15,6 +15,7 @@ import { EventEmitter2, EventEmitterModule } from '@nestjs/event-emitter';
 import { Queue as BullQueue, Worker as BullWorker } from 'bullmq';
 import QUEUE_CONSTANTS from '@libs/queue/constants/queueConstants';
 import JOB_NAMES from '@libs/queue/constants/jobNames';
+import USERS_CACHE_UPDATE_LIMIT from '@libs/user/constants/usersCacheUpdateLimit';
 import UsersCacheQueue from './users-cache.queue';
 import UsersService from '../users.service';
 
@@ -89,7 +90,7 @@ describe('UsersCacheQueue', () => {
         },
         limiter: {
           max: 1,
-          duration: 2 * 60 * 1000,
+          duration: USERS_CACHE_UPDATE_LIMIT,
         },
       }),
     );
