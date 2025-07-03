@@ -370,6 +370,66 @@
       "errorInfo": "{{failed}} files could not be handed out",
       "fileStructureIsCreating": "File structure is creating",
       "zipFilesAreUploading": "Files are uploading"
+    },
+
+    "publicShareFilesPage": {
+      "title": "Shared Files",
+      "description": "Here you will find all the files you have shared. Please note: Anyone who has the share link and the corresponding password can download these files."
+    },
+
+    "publicFileSharing": {
+      "fileName": "Filename",
+      "selectedFile": "Selected file: ",
+      "searchSharedFiles": "Search for shared files",
+      "actions": "Actions",
+      "createdAt": "Created at",
+      "validUntil": "Valid until",
+      "isActive": "Active",
+      "fileLink": "Share link",
+      "selectPersonsOrGroupsWhoCanAccess": "Restrict persons or groups who can access the file",
+      "invitedAttendees": "Invited",
+      "isAccessibleBy": "Accessible by",
+      "publiclyAccessible": "Publicly accessible",
+      "confirmMultiDelete": "Should these share links for the following contents really be deleted?",
+      "confirmSingleDelete": "Should this share link for the following content really be deleted?",
+      "deleteFileLink": "Delete share links",
+      "deleteFileLinks": "Delete share links",
+      "isPasswordProtected": "Password",
+      "qrCodePublicShareFile": "QR Code for public share link",
+      "createNewFileLink": "Create new share link",
+      "editPublicShareFile": "Edit share link",
+      "sharePublicFile": "Share public content",
+      "sharedBy": "Shared by: ",
+      "getFileAccess": "Please enter the password for this share to access the contents.",
+      "downloadPublicFile": "Download content",
+      "nameOfContent": "Content name:",
+      "errors": {
+        "PublicFileDeletionFailed": "Failed to delete share links",
+        "PublicFileIsOnlyDeletableByOwner": "The share link can only be deleted by the owner of this conent.",
+        "PublicFileNotFound": "Share link not found",
+        "PublicFileIsRestricted": "This share link is restricted to specific users or groups.",
+        "PublicIsRestrictedByInvalidToken": "The share link cannot be accessed because the token is invalid.",
+        "PublicFileWrongPassword": "The password for the sharing is incorrect.",
+        "FileCouldNotBeFound": "The requested content could not be found. Please check the share link or contact the owner of this content."
+      },
+      "success": {
+        "PublicFileLinkCreated": "Share link created successfully",
+        "PublicFileLinkDeleted": "Share link deleted successfully",
+        "PublicFileLinkUpdated": "Share link updated successfully"
+      },
+      "scope": {
+        "public": "Public",
+        "publicHint": "Anyone with the share link can access this content.",
+        "restricted": "Restricted",
+        "restrictedHint": "Only selected users or groups can access this content."
+      }
+    },
+
+    "expiry": {
+      "select": "Select expiry time",
+      "selectedItemPrefix": "Selected content that is shared:",
+      "noInviteesWarning": "⚠️  WARNING: Anyone with the share link will be able to download this content.",
+      "inviteesWarning": "⚠️  WARNING: Anyone within the selected groups or users will be able to download this content."
     }
   },
   "forums": {
@@ -826,6 +886,14 @@
         "notFoundError": "Settings could not be loaded."
       }
     },
+    "userAdministration": {
+      "title": "User Administration",
+      "resetMfaForm": "Reset Two-Factor Authentication",
+      "resetMfaFormDescription": "Here you can reset the two-factor authentication for users.",
+      "selectUsersTitle": "Select Users",
+      "selectUsersDescription": "Select the users for whom you want to reset the two-factor authentication.",
+      "totpResetSuccess": "TOTP for user {{username}} has been disabled successfully."
+    },
     "info": {
       "title": "Info"
     },
@@ -1185,7 +1253,8 @@
     "upload": "Upload",
     "mode": "Mode",
     "orContinueWithoutAccount": "Or continue without account",
-    "application": "Application"
+    "application": "Application",
+    "reset": "Reset"
   },
   "form": {
     "path": "Path",
@@ -1215,6 +1284,11 @@
         "timeSlot": "o'clock",
         "placeholder": "MM/DD/YYYY HH:mm AM/PM"
       }
+    },
+    "errors": {
+      "dateRequired": "Date is required",
+      "dateInvalid": "Invalid date format",
+      "datePast": "Date must be in the future"
     }
   },
   "fileOperationSuccessful": "File operation successful started",
@@ -1225,6 +1299,7 @@
     "size": "Size",
     "lastModified": "Last Modified",
     "type": "Type",
+    "isShared": "Shared",
     "filesOrFoldersSelected": "{{selected}} of {{total}} file(s)/folder(s) were selected"
   },
   "filesharingUpload": {
@@ -1335,6 +1410,12 @@
     "unknownErrorOccurred": "An unknown error occurred",
     "selectedItem": "selected item"
   },
+
+  "shareDialog": {
+    "shareFilesOrDirectories": "Share files",
+    "share": "Share"
+  },
+
   "deleteDialog": {
     "areYouSure": "Are you absolutely sure?",
     "actionCannotBeUndone": "This action cannot be undone. This will permanently delete the files:",
@@ -1364,7 +1445,8 @@
     "move": "Move",
     "delete": "Delete",
     "download": "Download",
-    "copy": "Copy"
+    "copy": "Copy",
+    "share": "Share"
   },
   "response": {
     "successfully": "Action was successful",
