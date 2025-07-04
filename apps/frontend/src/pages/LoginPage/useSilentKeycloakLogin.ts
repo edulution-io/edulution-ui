@@ -15,11 +15,12 @@ import { useCallback } from 'react';
 import Keycloak from 'keycloak-js';
 import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
 
-interface SilentLoginFn {
-  (username: string, password: string): Promise<void>;
+interface UseSilentLoginWithPasswordReturn {
+  silentLogin: (username: string, password: string) => Promise<void>;
+  silentLogout: () => Promise<void>;
 }
 
-const useSilentLoginWithPassword = (): SilentLoginFn => {
+const useSilentLoginWithPassword = (): UseSilentLoginWithPasswordReturn => {
   const url = new URL('auth', EDU_BASE_URL).href;
   const redirectUri = new URL('silent-check-sso.html', EDU_BASE_URL).href;
 
@@ -29,11 +30,10 @@ const useSilentLoginWithPassword = (): SilentLoginFn => {
     clientId: 'edu-ui',
   });
 
-  const silentLogin = useCallback<SilentLoginFn>(async (username, password) => {
+  const silentLogin = useCallback(async (username: string, password: string) => {
     await keycloak.init({
       onLoad: 'check-sso',
       silentCheckSsoRedirectUri: redirectUri,
-      // silentCheckSsoFallback: false,
       pkceMethod: 'S256',
       checkLoginIframe: false,
     });
@@ -88,7 +88,15 @@ const useSilentLoginWithPassword = (): SilentLoginFn => {
     });
   }, []);
 
-  return silentLogin;
+  const silentLogout = useCallback(async () => {
+    if (keycloak.authenticated) {
+      await keycloak.logout({
+        redirectUri: EDU_BASE_URL,
+      });
+    }
+  }, []);
+
+  return { silentLogin, silentLogout };
 };
 
 export default useSilentLoginWithPassword;

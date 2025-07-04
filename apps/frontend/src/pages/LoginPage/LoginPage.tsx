@@ -56,7 +56,7 @@ const LoginPage: React.FC = () => {
   const { eduApiToken, totpIsLoading, isAuthenticated, createOrUpdateUser, setEduApiToken, getTotpStatus } =
     useUserStore();
   const { appConfigs } = useAppConfigsStore();
-  const silentLogin = useSilentLoginWithPassword();
+  const { silentLogin } = useSilentLoginWithPassword();
 
   const { isLoading } = auth;
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
