@@ -22,6 +22,7 @@ const mockFilesystemService = {
   checkIfFileExistAndDelete: jest.fn().mockResolvedValue({}),
   readFile: jest.fn(),
   writeFile: jest.fn(),
+  deleteDirectory: jest.fn().mockResolvedValue({}),
   deleteDirectories: jest.fn().mockResolvedValue({}),
   createReadStream: jest.fn(),
   getAllFilenamesInDirectory: jest.fn().mockResolvedValue([]),

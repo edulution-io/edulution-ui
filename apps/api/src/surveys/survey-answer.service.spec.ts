@@ -20,6 +20,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyStatus from '@libs/survey/survey-status-enum';
+import SurveysAttachmentService from 'apps/api/src/surveys/surveys-attachment.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import SurveyAnswersService from './survey-answer.service';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
@@ -95,6 +96,7 @@ describe('SurveyAnswerService', () => {
           useValue: jest.fn(),
         },
         SurveyAnswersService,
+        SurveysAttachmentService,
         { provide: GroupsService, useValue: mockGroupsService },
         {
           provide: getModelToken(SurveyAnswer.name),

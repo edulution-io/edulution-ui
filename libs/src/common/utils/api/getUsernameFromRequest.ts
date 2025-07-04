@@ -10,11 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { join } from 'path';
-import APPS from '@libs/appconfig/constants/apps';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
-import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
+import { UnauthorizedException } from '@nestjs/common';
+import { Request } from 'express';
 
-const BULLETIN_ATTACHMENTS_PATH = join(APPS_FILES_PATH, APPS.BULLETIN_BOARD, ATTACHMENT_FOLDER);
+const getUsernameFromRequest = (req: Request): string => {
+  const request = req as Request & { user?: { preferred_username?: string } };
+  if (!request.user?.preferred_username) {
+    throw new UnauthorizedException('preferred_username in JWT is missing');
+  }
+  return request.user.preferred_username;
+};
 
-export default BULLETIN_ATTACHMENTS_PATH;
+export default getUsernameFromRequest;

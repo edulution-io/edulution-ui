@@ -10,15 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { Request } from 'express';
+import getUsernameFromRequest from '@libs/common/utils/api/getUsernameFromRequest';
 
 const GetCurrentUsername = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
   const request: Request = ctx.switchToHttp().getRequest();
-  if (!request.user?.preferred_username) {
-    throw new UnauthorizedException('preferred_username in JWT is missing');
-  }
-  return request.user.preferred_username;
+  return getUsernameFromRequest(request);
 });
 
 export default GetCurrentUsername;

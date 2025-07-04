@@ -10,7 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import ChoiceTypes from '@libs/survey/constants/choice-types';
+
 const isQuestionTypeChoiceType = (questionType: string): boolean =>
-  questionType === 'radiogroup' || questionType === 'checkbox' || questionType === 'dropdown';
+  Object.values(ChoiceTypes).includes(questionType as ChoiceTypes);
 
 export default isQuestionTypeChoiceType;

@@ -10,21 +10,23 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Logger } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import SurveysService from './surveys.service';
-import { Survey } from './survey.schema';
-import { firstMockJWTUser, createdSurvey01 } from './mocks';
-import { surveyUpdateInitialSurveyDto } from './mocks/surveys/updated-survey';
+import { Survey, SurveyDocument } from './survey.schema';
+import { firstMockJWTUser, createSurvey01, createdSurvey01 } from './mocks';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
+import SurveysAttachmentService from './surveys-attachment.service';
 
 describe('SurveyService', () => {
   let service: SurveysService;
+  let surveyModel: Model<SurveyDocument>;
 
   beforeEach(async () => {
     Logger.error = jest.fn();
@@ -36,12 +38,14 @@ describe('SurveyService', () => {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
         },
+        SurveysAttachmentService,
         { provide: GroupsService, useValue: mockGroupsService },
         { provide: FilesystemService, useValue: mockFilesystemService },
       ],
     }).compile();
 
     service = module.get<SurveysService>(SurveysService);
+    surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
   });
 
   afterEach(() => {
@@ -205,11 +209,15 @@ describe('SurveyService', () => {
     // });
 
     it('should create a survey if the update failed', async () => {
-      jest.spyOn(service, 'updateSurvey').mockResolvedValueOnce(null);
-      jest.spyOn(service, 'createSurvey').mockResolvedValue(createdSurvey01);
-      jest.spyOn(service, 'updateSurvey').mockResolvedValueOnce(createdSurvey01);
+      surveyModel.findById = jest.fn().mockReturnValue({
+        lean: jest.fn().mockResolvedValueOnce(null),
+      });
+      surveyModel.create = jest.fn().mockResolvedValue(createdSurvey01);
+      surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValueOnce(createdSurvey01),
+      });
 
-      const result = await service.updateOrCreateSurvey(surveyUpdateInitialSurveyDto, firstMockJWTUser);
+      const result = await service.updateOrCreateSurvey(createSurvey01, firstMockJWTUser);
       expect(result).toBe(createdSurvey01);
     });
   });
