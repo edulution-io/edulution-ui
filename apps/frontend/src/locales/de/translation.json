@@ -126,6 +126,7 @@
   "auth": {
     "errors": {
       "TokenExpired": "Sitzung abgelaufen.",
+      "tokenIsNotActive": "Sitzung ist nicht mehr aktiv.",
       "SessionExpiring": "Du wirst in weniger als einer Minute abgemeldet.",
       "Unauthorized": "Du bist nicht autorisiert.",
       "Unknown": "Nutzer nicht gefunden.",

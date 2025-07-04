@@ -135,6 +135,7 @@
   "auth": {
     "errors": {
       "TokenExpired": "Session expired.",
+      "tokenIsNotActive": "Session is no longer active.",
       "SessionExpiring": "You will be logged off in less than a minute.",
       "Unauthorized": "You are not authorized.",
       "Unknown": "User not found.",
