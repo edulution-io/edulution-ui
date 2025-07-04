@@ -17,7 +17,6 @@ import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
-import GroupRoles from '@libs/groups/types/group-roles.enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
@@ -36,6 +35,7 @@ import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import SURVEYS_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplatePath';
 import isQuestionTypeChoiceType from '@libs/survey/utils/isQuestionTypeChoiceType';
+import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
@@ -122,7 +122,7 @@ class SurveysService implements OnModuleInit {
       return null;
     }
 
-    const isUserSuperAdmin = currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN);
+    const isUserSuperAdmin = getIsAdmin(currentUser.ldapGroups);
     if (survey.creator.username !== currentUser.preferred_username && !isUserSuperAdmin) {
       throw new CustomHttpException(
         SurveyErrorMessages.UpdateOrCreateError,
