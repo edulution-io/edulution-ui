@@ -22,6 +22,7 @@ import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonCo
 import DownloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/downloadButton';
 import useStartWebdavFileDownload from '@/pages/FileSharing/hooks/useStartWebdavFileDownload';
 import CopyButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/copyButton';
+import ShareButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/shareButton';
 
 const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItems }) => {
   const startDownload = useStartWebdavFileDownload();
@@ -40,6 +41,7 @@ const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedIt
         await startDownload(files);
       }, true),
       CopyButton(() => openDialog(FileActionType.COPY_FILE_OR_FOLDER)),
+      ShareButton(() => openDialog(FileActionType.SHARE_FILE_OR_FOLDER)),
     ],
     keyPrefix: 'file-sharing-page-floating-button_',
   };
