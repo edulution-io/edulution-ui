@@ -11,6 +11,9 @@
  */
 
 enum GroupRoles {
+  STUDENT = '/role-student',
+  TEACHER = '/role-teacher',
+  SCHOOL_ADMIN = '/role-schooladministrator',
   SUPER_ADMIN = '/role-globaladministrator',
 }
 

@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IsString, ValidateNested } from 'class-validator';
+import { IsNumber, IsString, ValidateNested } from 'class-validator';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import type ExtendedOptionKeysDto from '@libs/appconfig/types/extendedOptionKeysDto';
 import { type AppConfigOptions } from './appConfigOptionsType';
@@ -38,6 +38,9 @@ class AppConfigDto {
 
   @ValidateNested()
   extendedOptions?: ExtendedOptionKeysDto;
+
+  @IsNumber()
+  position: number;
 }
 
 export default AppConfigDto;

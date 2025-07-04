@@ -11,13 +11,14 @@
  */
 
 enum FileActionType {
-  MOVE_FILE_FOLDER = 'moveFileFolder',
+  MOVE_FILE_OR_FOLDER = 'moveFileOrFolder',
   CREATE_FOLDER = 'createFolder',
   CREATE_FILE = 'createFile',
-  DELETE_FILE_FOLDER = 'deleteFileFolder',
+  DELETE_FILE_OR_FOLDER = 'deleteFileOrFolder',
   UPLOAD_FILE = 'uploadFile',
-  RENAME_FILE_FOLDER = 'renameFileFolder',
+  RENAME_FILE_OR_FOLDER = 'renameFileOrFolder',
   COPY_FILE_OR_FOLDER = 'copyFileOrFolder',
+  SHARE_FILE_OR_FOLDER = 'shareFileOrFolder',
 }
 
 export default FileActionType;

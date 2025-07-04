@@ -14,6 +14,7 @@ import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { BullModule } from '@nestjs/bullmq';
 import APPS from '@libs/appconfig/constants/apps';
+import { MongooseModule } from '@nestjs/mongoose';
 import FilesharingController from './filesharing.controller';
 import FilesharingService from './filesharing.service';
 import OnlyofficeService from './onlyoffice.service';
@@ -25,6 +26,9 @@ import WebdavService from '../webdav/webdav.service';
 import AppConfigModule from '../appconfig/appconfig.module';
 import MoveOrRenameConsumer from './consumers/moveOrRename.consumer';
 import CopyFileConsumer from './consumers/copyFile.consumer';
+import CreateFolderConsumer from './consumers/createFolder.consumer';
+import UploadFileConsumer from './consumers/uploadFile.consumer';
+import { PublicFileShareSchema, PublicShare } from './publicFileShare.schema';
 
 @Module({
   imports: [
@@ -33,6 +37,7 @@ import CopyFileConsumer from './consumers/copyFile.consumer';
     BullModule.registerQueue({
       name: APPS.FILE_SHARING,
     }),
+    MongooseModule.forFeature([{ name: PublicShare.name, schema: PublicFileShareSchema }]),
   ],
   controllers: [FilesharingController],
   providers: [
@@ -46,6 +51,8 @@ import CopyFileConsumer from './consumers/copyFile.consumer';
     MoveOrRenameConsumer,
     CopyFileConsumer,
     WebdavService,
+    CreateFolderConsumer,
+    UploadFileConsumer,
   ],
   exports: [FilesharingService],
 })

@@ -2,7 +2,6 @@
   "welcome": "Willkommen in der Anwendung",
   "changeLang": "Sprache ändern",
   "heading": "Herzlich Willkommen {{givenName}} {{familyName}}",
-  "content": "Hier ist ihr persönliches {{ applicationName }} Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Unterricht gesammelt sind.",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
   "framebufferImage": "Framebuffer-Bild",
   "previewImage": "Bildvorschau",
@@ -20,10 +19,10 @@
     "isActiveOrExpired": "Aktiv/Abgelaufen",
     "activeFrom": "Aktiv von",
     "activeUntil": "Aktiv bis",
-    "appTitle": "Schwarzes Brett",
+    "appTitle": "Info Board",
     "description": "Hier findest du deine aktuelle Mitteilungen",
     "filterPlaceHolderText": "Suche nach Kategoriename",
-    "sidebar": "Schwarzes Brett",
+    "sidebar": "Info Board",
     "newCategorie": "Neue Kategorie",
     "category": "Kategorie",
     "categoryPositionChanged": "Position der Kategorie geändert",
@@ -65,7 +64,7 @@
     "categories": {
       "visibleByUsersAndGroups": "Diese Kategorie mit ihren Mitteilungen ist sichtbar für Nutzer und Gruppen auf der Startseite",
       "visibleByUsersAndGroupsTitle": "Startseite",
-      "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen in der Bulletin Board App",
+      "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen in der Info Board App",
       "editableByUsersAndGroupsTitle": "Mitteilungen verwalten"
     },
     "errors": {
@@ -101,6 +100,7 @@
   },
   "dashboard": {
     "pageTitle": "Dashboard",
+    "description": "Hier ist ihr persönliches {{ applicationName }} Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Unterricht gesammelt sind.",
     "mobileAccess": {
       "title": "Mobiler Zugriff",
       "manual": "Anleitung",
@@ -117,7 +117,7 @@
     "quota": {
       "title": "Quotas",
       "globalQuota": "Cloudquota berechnet ",
-      "mailQuota": "Mailquota berechnet",
+      "mailQuota": "E-Mailquota berechnet",
       "mibibyte": "MiB",
       "remainingLow": "Verbleibendes Quota gering – {{free}} %",
       "remainingVeryLow": "Verbleibendes Quota sehr gering – {{free}} %"
@@ -126,6 +126,7 @@
   "auth": {
     "errors": {
       "TokenExpired": "Sitzung abgelaufen.",
+      "tokenIsNotActive": "Sitzung ist nicht mehr aktiv.",
       "SessionExpiring": "Du wirst in weniger als einer Minute abgemeldet.",
       "Unauthorized": "Du bist nicht autorisiert.",
       "Unknown": "Nutzer nicht gefunden.",
@@ -171,12 +172,12 @@
     }
   },
   "ticketsystem": {
-    "title": "TICKETSYSTEM",
-    "sidebar": "Ticketsystem"
+    "title": "TICKETS",
+    "sidebar": "Tickets"
   },
   "mail": {
-    "title": "MAIL",
-    "sidebar": "Mail",
+    "title": "E-MAILS",
+    "sidebar": "E-Mails",
     "configName": "Name der Konfiguration",
     "hostname": "Hostname",
     "port": "Port",
@@ -192,7 +193,7 @@
       "isActive": "Aktiv",
       "syncJobsTable": "Sync-Jobs",
       "mailAddress": "E-Mail-Adresse",
-      "noMailConfigured": "Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator.",
+      "noMailConfigured": "E-Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator.",
       "syncAccountAdded": "Konto für Sync-Job hinzugefügt.",
       "syncAccountDeleted": "Konto für Sync-Job gelöscht."
     }
@@ -251,7 +252,6 @@
     "description": "Das Konferenz Tool ermöglicht Audio- und Videokonferenzen und unterstützt Präsentationen mit erweiterten Whiteboard-Funktionen.",
     "sidebar": "Konferenzen",
     "create": "Konferenz erstellen",
-    "creator": "Ersteller",
     "delete": "Löschen",
     "deleteConference": "Konferenz löschen",
     "deleteConferences": "{{count}} Konferenzen löschen",
@@ -291,7 +291,7 @@
   "feed": {
     "title": "Aktuelles",
     "noconferences": "Keine laufende Konferenz",
-    "nomail": "Keine ungelesenen Mails",
+    "nomail": "Keine ungelesenen E-Mails",
     "nosurveys": "Keine offenen Umfragen",
     "nobulletinboard": "Keine neuen Mitteilungen"
   },
@@ -306,9 +306,9 @@
   },
   "filesharing": {
     "filterPlaceHolderText": "Suche nach Dateiname",
-    "title": "FILESHARING",
+    "title": "DATEIEN",
     "selectFile": "Datei auswählen",
-    "sidebar": "Filesharing",
+    "sidebar": "Dateien",
     "previewTitle": "Dateivorschau",
     "saveFile": "Datei speichern",
     "fileEditor": "Datei Editor",
@@ -342,6 +342,12 @@
       "SharingFailed": "Austeilen der Dateien fehlgeschlagen",
       "CopyFailed": "Kopieren fehlgeschlagen"
     },
+
+    "publicShareFilesPage": {
+      "title": "Geteilte Dateien",
+      "description": "Hier findest du alle Dateien, die du geteilt hast. Beachte: Jeder, der den Freigabe-Link und ggf. das dazugehörige Passwort hat, kann diese Dateien herunterladen."
+    },
+
     "progressBox": {
       "info": "Info",
       "titleSharing": "Dateien werden ausgeteilt",
@@ -360,13 +366,70 @@
       "fileInfoDeleting": "Datei {{filename}} wird gelöscht",
       "fileInfoCopying": "Datei {{filename}} wird kopiert",
       "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden",
-      "downloadInfo": "Datei {{filename}} wird heruntergeladen"
+      "downloadInfo": "Datei {{filename}} wird heruntergeladen",
+      "fileStructureIsCreating": "Dateistruktur wird erstellt",
+      "zipFilesAreUploading": "Dateien werden in Ordnerstruktur hochgeladen"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
       "FileNameRequired": "Dateiname ist erforderlich",
       "NewFileNameRequired": "Neuer Dateiname ist erforderlich",
       "NameRequired": "Name erforderlich"
+    },
+
+    "publicFileSharing": {
+      "fileName": "Dateiname",
+      "selectedFile": "Ausgewählter Inhalt: ",
+      "actions": "Aktionen",
+      "createdAt": "Erstellt am",
+      "validUntil": "Gültig bis",
+      "isActive": "Aktiv",
+      "fileLink": "Freigabe-Link",
+      "invitedAttendees": "Eingeladen",
+      "confirmMultiDelete": "Sollen diese Freigabe-Links zu den folgenden Inhalten wirklich gelöscht werden?",
+      "confirmSingleDelete": "Soll dieser Freigabe-Link zu folgendem Inhalt wirklich gelöscht werden?",
+      "deleteFileLink": "Freigabe-Link löschen",
+      "deleteFileLinks": "Freigabe-Links löschen",
+      "selectPersonsOrGroupsWhoCanAccess": "Beschränke Personen oder Gruppen, die Zugriff auf diesen Inhalt haben",
+      "isAccessibleBy": "Zugänglich für",
+      "isPasswordProtected": "Passwort",
+      "publiclyAccessible": "Öffentlich zugänglich",
+      "qrCodePublicShareFile": "QR-Code für öffentlichen Freigabelinks",
+      "createNewFileLink": "Neuen Freigabe-Link erstellen",
+      "editPublicShareFile": "Freigabe-Link bearbeiten",
+      "sharePublicFile": "Öffentliche Freigabe-Links",
+      "searchSharedFiles": "Suche nach geteilten Freigabe-Links",
+      "sharedBy": "Geteilt von: ",
+      "getFileAccess": "Bitte gib das Passwort für diese Freigabe ein, um Zugriff auf die Inhalte zu erhalten.",
+      "downloadPublicFile": "Inhalt herunterladen",
+      "nameOfContent": "Name des Inhalts:",
+      "errors": {
+        "PublicFileDeletionFailed": "Freigabe-Link konnte nicht gelöscht werden.",
+        "PublicFileIsOnlyDeletableByOwner": "Der Freigabe-Link kann nur vom Besitzer gelöscht werden.",
+        "PublicFileNotFound": "Freigabe-Link nicht gefunden.",
+        "PublicFileIsRestricted": "Der Freigabe-Link ist nur für bestimmte Nutzer oder Gruppen zugänglich.",
+        "PublicIsRestrictedByInvalidToken": "Auf den Freigabelink kann nicht zugegriffen werden, da der Token ungültig ist.",
+        "PublicFileWrongPassword": "Das eingegebene Passwort ist falsch.",
+        "FileCouldNotBeFound": "Der angefordert Freigabe-Link konnte nicht gefunden werden. Bitte überprüfe den Link oder wende dich an den Ersteller."
+      },
+      "success": {
+        "PublicFileLinkCreated": "Freigabe-Link erfolgreich erstellt.",
+        "PublicFileLinkDeleted": "Freigabe-Link erfolgreich gelöscht.",
+        "PublicFileLinkUpdated": "Freigabe-Link erfolgreich aktualisiert."
+      },
+      "scope": {
+        "public": "Öffentlich",
+        "publicHint": "Jeder, der den Freigabe-Link hat, kann diesen Inhalt herunterladen.",
+        "restricted": "Eingeschränkt",
+        "restrictedHint": "Nur die ausgewählten Gruppen oder Benutzer können diesen Inhalt herunterladen."
+      }
+    },
+
+    "expiry": {
+      "select": "Ablaufdatum auswählen",
+      "selectedItemPrefix": "Ausgewählter Inhalt, welcher geteilt wird:",
+      "noInviteesWarning": "⚠️  WARNUNG: Jeder, der den Link besitzt, kann diesen Inhalt herunterladen.",
+      "inviteesWarning": "⚠️ WARNUNG: Jeder, der zu den ausgewählten Gruppen oder Benutzern gehört, kann diesen Inhalt herunterladen."
     }
   },
   "forums": {
@@ -394,14 +457,14 @@
   "server": "Server",
   "loginname": "Loginname",
   "classmanagement": {
-    "title": "KLASSENZIMMER",
-    "sidebar": "Klassenzimmer",
-    "invalidProxyAddresses": "Proxy Email-Adressen müssen Komma-separiert ohne Leerzeichen angegebn werden",
+    "title": "KLASSENRAUM",
+    "sidebar": "Klassenraum",
+    "invalidProxyAddresses": "Proxy E-Mail-Adressen müssen Komma-separiert ohne Leerzeichen angegebn werden",
     "invalidQuota": "Die Quota muss der Dokumentation entsprechend angegeben werden",
-    "invalidMailQuota": "Die Mailquota muss als Zahl in MB angegeben werden",
+    "invalidMailQuota": "Die E-Mailquota muss als Zahl in MB angegeben werden",
     "name": "Name",
-    "mailQuota": "Mail Quota (MB)",
-    "proxyAddresses": "Proxy Email-Adressen",
+    "mailQuota": "E-Mail Quota (MB)",
+    "proxyAddresses": "Proxy E-Mail-Adressen",
     "descriptionPlaceholder": "Kurze Beschreibung des Projekts",
     "proxyAddressesPlaceholder": "info@email1.de,kontakt@email2.com",
     "quotaPlaceholder": "[{\"share\":\"default-school\",\"quota\":50}]",
@@ -560,10 +623,17 @@
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
       "templates": "Vorlagen",
       "templateMenu": {
-        "fetch": "Wähle eine der verfügbaren Vorlagen.",
         "submit": "Die Umfrage als Vorlage speichern.",
-        "title": "Vorlagen speichern/laden",
-        "emptyMessage": "Es sind noch keine Vorlagen vorhanden"
+        "title": "Vorlagen:",
+        "userMessage": "Zur Verfügung stehende Vorlagen können hier geladen werden.",
+        "adminMessage": "Um deine aktuelle Umfrage als Vorlage zu veröffentlichen, klicke auf 'Speichern'. Vorhandene Vorlagen können hier gelöscht oder geladen werden.",
+        "emptyMessage": "Es sind noch keine Vorlagen vorhanden",
+        "deletion": {
+          "title": "Vorlage löschen",
+          "message": "Soll die Vorlage wirklich gelöscht werden?",
+          "success": "Vorlage erfolgreich gelöscht",
+          "error": "Die Vorlage konnte nicht gelöscht werden"
+        }
       },
       "questionSettings": {
         "settings": "Einstellungen",
@@ -759,7 +829,15 @@
     "yourPassword": "Dein Passwort",
     "addButton": "Hinzufügen"
   },
-
+  "ctrlKey": "STRG",
+  "enterKey": "Enter",
+  "launcher": {
+    "title": "App Launcher",
+    "searchApps": "Tippen um Apps zu filtern...",
+    "pressShortKey": "Launcher öffnen mit",
+    "pressEnterToStartApp": "Erste App öffnen mit",
+    "noSearchResults": "Keine App gefunden"
+  },
   "settings": {
     "title": "EINSTELLUNGEN",
     "sidebar": "Einstellungen",
@@ -798,7 +876,7 @@
       "aichat": "Hier kannst du alle Einstellungen vornehmen.",
       "linuxmuster": "Hier kannst du alle Einstellungen vornehmen.",
       "whiteboard": "Hier kannst du alle Einstellungen vornehmen.",
-      "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Schwarzes Brett haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden.",
+      "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Info Board haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden.",
       "forwarded": "Weiterleitungs: Einfach den Link zur Webanwendung unter URL eintragen.",
       "framed": "Frame: Einfach den Link zur Webanwendung unter URL eintragen.",
       "embedded": "Eingebettet: Hier kann eine eigene Webanwendung im Editor erstellt werden."
@@ -819,10 +897,22 @@
         "notFoundError": "Einstellungen konnten nicht geladen werden."
       }
     },
+    "userAdministration": {
+      "title": "Benutzerverwaltung",
+      "resetMfaForm": "Zwei-Faktor-Authentisierung zurücksetzen",
+      "resetMfaFormDescription": "Hier kannst du die Zwei-Faktor-Authentisierung für einen oder mehrere Nutzer zurücksetzen.",
+      "selectUsersTitle": "Nutzer auswählen",
+      "selectUsersDescription": "Wähle hier die Nutzer aus, für welche die Zwei-Faktor-Authentisierung zurückgesetzt werden soll.",
+      "totpResetSuccess": "TOTP für {{username}} wurde erfolgreich zurückgesetzt."
+    },
     "info": {
       "title": "Info"
     },
     "appconfig": {
+      "position": {
+        "title": "Sortierung",
+        "description": "An welcher Position soll die App in der App-Leiste und in den Einstellungen angezeigt werden?"
+      },
       "sections": {
         "onlyOffice": {
           "title": "Only Office Integration",
@@ -1051,6 +1141,7 @@
     "next": "Weiter",
     "back": "Zurück",
     "confirm": "Bestätigen",
+    "creator": "Ersteller",
     "share": "Teilen",
     "answers": "Antworten",
     "error": "Fehler",
@@ -1102,6 +1193,7 @@
     "yes": "Ja",
     "no": "Nein",
     "title": "Titel",
+    "filename": "Dateiname",
     "add": "Hinzufügen",
     "reload": "Neu laden",
     "logout": "Abmelden",
@@ -1136,7 +1228,7 @@
     "type": "Typ",
     "creationDate": "Erstelldatum",
     "schoolName": "Schulname",
-    "mailList": "Email Verteiler",
+    "mailList": "E-Mail Verteiler",
     "invalid_chars": "Enthält ungültige Zeichen",
     "clearSelection": "Auswahl löschen",
     "start": "Starten",
@@ -1173,7 +1265,8 @@
     "format": "Formatieren",
     "upload": "Hochladen",
     "mode": "Modus",
-    "orContinueWithoutAccount": "Oder fahre ohne Account fort"
+    "orContinueWithoutAccount": "Oder fahre ohne Account fort",
+    "reset": "Zurücksetzen"
   },
   "form": {
     "path": "Link",
@@ -1203,6 +1296,11 @@
         "timeSlot": "Uhr",
         "placeholder": "DD/MM/YYYY HH:mm"
       }
+    },
+    "errors": {
+      "dateRequired": "Datum ist erforderlich",
+      "dateInvalid": "Ungültiges Datumsformat",
+      "datePast": "Datum muss in der Zukunft liegen"
     }
   },
   "fileOperationSuccessful": "Dateioperation erfolgreich gestartet",
@@ -1213,6 +1311,7 @@
     "size": "Größe",
     "lastModified": "Zuletzt geändert",
     "type": "Typ",
+    "isShared": "Geteilt",
     "filesOrFoldersSelected": "{{selected}} von {{total}} Dateien/Ordnern ausgewählt"
   },
   "currentDirectory": "Aktuelles Verzeichnis",
@@ -1232,7 +1331,13 @@
     "overwriteWarningDescriptionFiles": "Die folgenden Dateien werden überschrieben:",
     "oversizedFilesDetected": "Zu große Dateien entdeckt",
     "oversizedFileDetected": "Zu große Datei entdeckt!",
-    "cannotUploadOversized": "Es können keine Dateien größer als 50MB hochgeladen werden."
+    "cannotUploadOversized": "Dateien, die größer als 50 MB sind, können nicht hochgeladen werden.",
+    "addFiles": "Dateien hinzufügen",
+    "addFolder": "Ordner hinzufügen",
+    "preparingFolder": "Ordner wird vorbereitet"
+  },
+  "warnings": {
+    "colorMayConflictWithTheme": "Manuelle Einstellung der Farbe kann zukünftig zu Problemen mit anderen Themes (hell/dunkel) führen. Es wird empfohlen, die Farbe der Schrift immer gleichzeitig mit der Hintergrundfarbe zu setzen."
   },
   "linuxmuster": {
     "title": "LINUXMUSTER",
@@ -1318,6 +1423,12 @@
     "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten",
     "selectedItem": "Ausgewähltes Element"
   },
+
+  "shareDialog": {
+    "shareFilesOrDirectories": "Dateien teilen",
+    "share": "Teilen"
+  },
+
   "deleteDialog": {
     "areYouSure": "Sind Sie sich absolut sicher?",
     "actionCannotBeUndone": "Diese Aktion kann nicht rückgängig gemacht werden. Dies wird die Dateien dauerhaft löschen:",
@@ -1347,7 +1458,8 @@
     "move": "Verschieben",
     "delete": "Löschen",
     "download": "Herunterladen",
-    "copy": "Kopieren"
+    "copy": "Kopieren",
+    "share": "Teilen"
   },
   "response": {
     "successfully": "Aktion war erfolgreich",
@@ -1375,7 +1487,7 @@
     "classes": "Klassen",
     "change_password": "Passwort ändern",
     "my_information": "Meine Informationen",
-    "mail_alias": "Mail Alias",
+    "mail_alias": "E-Mail Alias",
     "change_my_data": "Daten ändern",
     "school_classes": "Schulklassen"
   },
