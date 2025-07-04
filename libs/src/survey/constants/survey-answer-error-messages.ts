@@ -16,6 +16,7 @@ enum SurveyAnswerErrorMessages {
   NotAbleToUpdateSurveyAnswerError = 'survey-answer.errors.notAbleToUpdateSurveyAnswerError',
   NotAbleToCreateSurveyAnswerError = 'survey-answer.errors.notAbleToCreateSurveyAnswerError',
   NotAbleToDeleteSurveyAnswerError = 'survey-answer.errors.notAbleToDeleteSurveyAnswerError',
+  NotAbleToCountChoices = 'survey-answer.errors.notAbleToCountChoices',
 }
 
 export default SurveyAnswerErrorMessages;

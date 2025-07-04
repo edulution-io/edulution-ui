@@ -79,6 +79,7 @@ const PublicSurveyAccessForm = (): React.ReactNode => {
       const checkExistenceOfPublicUsername = await checkForMatchingUserNameAndPubliUserId(
         selectedSurvey?.id,
         publicUser,
+        !!selectedSurvey?.canUpdateFormerAnswer,
       );
 
       if (!checkExistenceOfPublicUsername) {
