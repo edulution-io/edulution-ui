@@ -37,7 +37,7 @@ class SurveysAttachmentService implements OnModuleInit {
     void this.fileSystemService.ensureDirectoryExists(this.attachmentsPath);
   }
 
-  preProcessFormula = async (surveyId: string, formula: SurveyFormula, username: string): Promise<SurveyFormula> => {
+  async preProcessFormula(surveyId: string, formula: SurveyFormula, username: string): Promise<SurveyFormula> {
     const processedFormula = { ...formula };
     const includedFileNames: Set<string> = new Set();
 
@@ -104,27 +104,27 @@ class SurveysAttachmentService implements OnModuleInit {
     }
   }
 
-  cleanupTemporaryFiles = (username: string): void => {
+  cleanupTemporaryFiles(username: string): void {
     const temporaryAttachmentPath = join(SURVEYS_TEMP_FILES_PATH, username);
     void this.fileSystemService.deleteDirectory(temporaryAttachmentPath);
-  };
+  }
 
-  processElements = async (
+  async processElements(
     elements: SurveyElement[] | undefined,
     username: string,
     surveyId: string,
     includedFileNames: Set<string>,
-  ) => {
+  ) {
     if (!elements) return [];
     return Promise.all(elements.map(async (el) => this.processElement(el, username, surveyId, includedFileNames)));
   };
 
-  processElement = async (
+  async processElement(
     element: SurveyElement,
     username: string,
     surveyId: string,
     includedFileNames: Set<string>,
-  ): Promise<SurveyElement> => {
+  ): Promise<SurveyElement> {
     const processedElement = { ...element };
     switch (element.type) {
       case QuestionsType.CHECKBOX:
@@ -190,12 +190,12 @@ class SurveysAttachmentService implements OnModuleInit {
     return question;
   }
 
-  processUrl = async (
+  async processUrl(
     url: string,
     username: string,
     surveyId: string,
     subfolder: string,
-  ): Promise<{ newUrl: string; filename: string | null }> => {
+  ): Promise<{ newUrl: string; filename: string | null }> {
     if (!url || !url.includes(`/${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}`)) {
       const filename = url.split('/').pop() || null;
       return { newUrl: url, filename };
