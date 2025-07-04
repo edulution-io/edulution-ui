@@ -14,7 +14,7 @@ import React, { useCallback, useRef } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
 import { SidebarProps } from '@libs/ui/types/sidebar';
 import { HomeButton, MobileMenuButton, MobileSidebarItem, UserMenuButton } from './SidebarMenuItems';
-import useSidebarStore from './sidebarStore';
+import useSidebarStore from './useSidebarStore';
 
 const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
   const sidebarRef = useRef<HTMLDivElement>(null);

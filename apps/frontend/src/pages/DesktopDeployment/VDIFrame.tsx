@@ -18,7 +18,7 @@ import RESIZABLE_WINDOW_DEFAULT_SIZE from '@libs/ui/constants/resizableWindowDef
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import GUACAMOLE_WEBSOCKET_URL from '@libs/desktopdeployment/constants/guacamole-websocket-url';
-import useDesktopDeploymentStore from './DesktopDeploymentStore';
+import useDesktopDeploymentStore from './useDesktopDeploymentStore';
 
 const VDIFrame = () => {
   const displayRef = useRef<HTMLDivElement>(null);

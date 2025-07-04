@@ -15,7 +15,7 @@ import { LanguageIcon } from '@/assets/icons';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import UserLanguage from '@libs/user/constants/userLanguage';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import LanguageSelector from './components/LanguageSelector';
 

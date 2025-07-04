@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import CreateConferenceDialog from '@/pages/ConferencePage/CreateConference/CreateConferenceDialog';
 import ConferencesTable from '@/pages/ConferencePage/Table/ConferencesTable';
 import ConferenceDetailsDialog from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialog';
-import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
+import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/useConferenceDetailsDialogStore';
 import { ConferencesIcon } from '@/assets/icons';
 import DeleteConferencesDialog from '@/pages/ConferencePage/Table/DeleteConferencesDialog';
 import ConferencesFloatingButtons from '@/pages/ConferencePage/Table/ConferencesFloatingButtons';

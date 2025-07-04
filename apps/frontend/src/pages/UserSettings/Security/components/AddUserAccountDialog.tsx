@@ -19,7 +19,7 @@ import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import FormField from '@/components/shared/FormField';
 import { Form, FormControl, FormDescription, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import { decryptPassword, deriveKey, encryptPassword } from '@libs/common/utils/encryptPassword';
 import { decodeBase64, encodeBase64 } from '@libs/common/utils/getBase64String';
 import TotpInput from '@/pages/LoginPage/components/TotpInput';

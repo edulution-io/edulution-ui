@@ -11,7 +11,7 @@
  */
 
 import { useMemo } from 'react';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 
 const useLanguage = () => {
   const { language: userLanguage } = useUserStore().user || {};

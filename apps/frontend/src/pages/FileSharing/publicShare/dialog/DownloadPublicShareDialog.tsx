@@ -24,7 +24,7 @@ import buildAbsolutePublicDownloadUrl from '@libs/filesharing/utils/buildAbsolut
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 
 import usePublicSharePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import { ArrowDownToLine } from 'lucide-react';

@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { useForm } from 'react-hook-form';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 

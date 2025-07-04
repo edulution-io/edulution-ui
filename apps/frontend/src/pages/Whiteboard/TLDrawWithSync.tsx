@@ -17,7 +17,7 @@ import 'tldraw/tldraw.css';
 import COLOR_SCHEME from '@libs/ui/constants/colorScheme';
 import eduApi from '@/api/eduApi';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/apiEndpoints';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import handleApiError from '@/utils/handleApiError';

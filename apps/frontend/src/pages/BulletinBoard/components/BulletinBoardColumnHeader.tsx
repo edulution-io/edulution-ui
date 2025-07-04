@@ -21,7 +21,7 @@ import { Card } from '@/components/shared/Card';
 import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
 import { useNavigate } from 'react-router-dom';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialStore';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import useLdapGroups from '@/hooks/useLdapGroups';
 

@@ -14,7 +14,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
-import useDesktopDeploymentStore from '../DesktopDeploymentStore';
+import useDesktopDeploymentStore from '../useDesktopDeploymentStore';
 
 type ConnectionErrorProps = {
   handleReload: () => void;

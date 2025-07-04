@@ -11,7 +11,7 @@
  */
 
 import { ColumnDef } from '@tanstack/react-table';
-import PUBLIC_SHARED_FILES_TABLE_COLUMN from '@libs/filesharing/constants/publicSharedFIlesTableColum';
+import PUBLIC_SHARED_FILES_TABLE_COLUMN from '@libs/filesharing/constants/publicSharedFilesTableColumn';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import React from 'react';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';

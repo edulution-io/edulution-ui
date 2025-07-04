@@ -11,9 +11,9 @@
  */
 
 import { Module } from '@nestjs/common';
-import ScriptService from './scripts.service';
+import ScriptsService from './scripts.service';
 
 @Module({
-  providers: [ScriptService],
+  providers: [ScriptsService],
 })
-export default class ScriptModule {}
+export default class ScriptsModule {}

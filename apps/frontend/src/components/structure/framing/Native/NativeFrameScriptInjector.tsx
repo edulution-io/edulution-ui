@@ -11,7 +11,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import type TApps from '@libs/appconfig/types/appsType';
 import NativeFrame from '@/components/structure/framing/Native/NativeFrame';
 

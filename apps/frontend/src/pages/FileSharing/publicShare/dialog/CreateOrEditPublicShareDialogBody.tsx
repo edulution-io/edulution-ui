@@ -16,7 +16,7 @@ import { Controller, FormProvider, UseFormReturn } from 'react-hook-form';
 import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import FormField from '@/components/shared/FormField';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import useGroupStore from '@/store/GroupStore';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';

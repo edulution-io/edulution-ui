@@ -16,7 +16,7 @@ import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import AppConfigService from './appconfig.service';
-import GetCurrentUserGroups from '../common/decorators/getUserGroups.decorator';
+import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
 import AppConfigGuard from './appconfig.guard';
 
 @ApiTags(EDU_API_CONFIG_ENDPOINTS.ROOT)

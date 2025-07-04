@@ -20,7 +20,7 @@ import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import LdapGroups from '@libs/groups/types/ldapGroups';
-import USER_DB_PROJECTION from '@libs/user/constants/user-db-projections';
+import USER_DB_PROJECTION from '@libs/user/constants/user-db-projection';
 import { getDecryptedPassword } from '@libs/common/utils';
 import { ALL_USERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import { User, UserDocument } from './user.schema';

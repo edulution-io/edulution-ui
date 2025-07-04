@@ -16,7 +16,7 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
-import getDialogBodySetup from '@/pages/FileSharing/Dialog/DialogBodys/dialogBodyConfigurations';
+import getDialogBodyConfigurations from '@/pages/FileSharing/Dialog/DialogBodys/getDialogBodyConfigurations';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileActionType from '@libs/filesharing/types/fileActionType';
@@ -89,7 +89,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     desktopComponentClassName,
     mobileComponentClassName,
     hideSubmitButton = false,
-  } = getDialogBodySetup(action);
+  } = getDialogBodyConfigurations(action);
 
   const form = useForm<FileSharingFormValues>({
     resolver: schema ? zodResolver(schema) : undefined,

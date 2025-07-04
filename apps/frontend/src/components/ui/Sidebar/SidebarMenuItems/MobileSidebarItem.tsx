@@ -17,7 +17,7 @@ import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
 import { getRootPathName } from '@libs/common/utils';
 import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
-import useSidebarStore from '../sidebarStore';
+import useSidebarStore from '../useSidebarStore';
 
 const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem }) => {
   const { pathname } = useLocation();

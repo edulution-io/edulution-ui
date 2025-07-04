@@ -19,7 +19,7 @@ import { Calendar as CalendarIcon } from 'lucide-react';
 import cn from '@libs/common/utils/className';
 import { Calendar } from '@/components/ui/Calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
 import UserLanguage from '@libs/user/constants/userLanguage';
 import { Button } from '@/components/shared/Button';

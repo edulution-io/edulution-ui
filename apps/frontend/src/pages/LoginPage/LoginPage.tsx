@@ -25,7 +25,7 @@ import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/compone
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import type UserDto from '@libs/user/types/user.dto';
 import processLdapGroups from '@libs/user/utils/processLdapGroups';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';

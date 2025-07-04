@@ -13,7 +13,7 @@
 import React from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
-import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
+import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import ItemDialogList from '@/components/shared/ItemDialogList';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';

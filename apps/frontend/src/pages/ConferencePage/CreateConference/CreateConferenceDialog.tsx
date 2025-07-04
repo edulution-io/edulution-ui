@@ -12,13 +12,13 @@
 
 import React from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
+import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/useCreateConferenceDialogStore';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import CreateConferenceDialogBody from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogBody';
 import ConferencesForm from '@libs/conferences/types/conferencesForm';
-import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
+import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import getConferencesFormSchema from '@libs/conferences/constants/formSchema';
 import stringToBoolean from '@libs/common/utils/stringToBoolean';
 import CONFERENCES_IS_PUBLIC_FORM_VALUES from '@libs/conferences/constants/isPublicFormValues';

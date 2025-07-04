@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IoAdd, IoRemove } from 'react-icons/io5';
 import { FiEdit } from 'react-icons/fi';
@@ -19,7 +19,7 @@ import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import APPS from '@libs/appconfig/constants/apps';
 import TableAction from '@libs/common/types/tableAction';
 import UserAccountDto from '@libs/user/types/userAccount.dto';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import UserAccountsTableColumns from './UserAccountsTableColumns';
 import AddUserAccountDialog from './AddUserAccountDialog';
 

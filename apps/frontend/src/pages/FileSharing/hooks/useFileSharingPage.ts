@@ -15,7 +15,7 @@ import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
-import userStore from '@/store/UserStore/UserStore';
+import userStore from '@/store/UserStore/useUserStore';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useUserPath from './useUserPath';
 

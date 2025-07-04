@@ -21,7 +21,7 @@ import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
-import USER_DB_PROJECTION from '@libs/user/constants/user-db-projections';
+import USER_DB_PROJECTION from '@libs/user/constants/user-db-projection';
 import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
 import { ALL_USERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import type UserAccountDto from '@libs/user/types/userAccount.dto';

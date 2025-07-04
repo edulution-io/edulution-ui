@@ -19,7 +19,7 @@ import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressD
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import normalizeWebdavPath from '@libs/filesharing/utils/buildNormalizedWebdavPath';
+import buildNormalizedWebdavPath from '@libs/filesharing/utils/buildNormalizedWebdavPath';
 import toSanitizedPathRegex from '@libs/filesharing/utils/toSanitizedPathRegex';
 import SseService from '../../sse/sse.service';
 import WebdavService from '../../webdav/webdav.service';
@@ -40,8 +40,8 @@ class MoveOrRenameConsumer extends WorkerHost {
     const { username, path, newPath, processed, total } = job.data as MoveOrRenameJobData;
     const failedPaths: string[] = [];
 
-    const oldNormalizedPath = normalizeWebdavPath(path);
-    const newNormalizedPath = normalizeWebdavPath(newPath);
+    const oldNormalizedPath = buildNormalizedWebdavPath(path);
+    const newNormalizedPath = buildNormalizedWebdavPath(newPath);
 
     try {
       await this.webDavService.moveOrRenameResource(username, path, newPath);

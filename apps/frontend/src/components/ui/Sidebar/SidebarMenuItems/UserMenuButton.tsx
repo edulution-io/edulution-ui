@@ -18,7 +18,7 @@ import { USER_SETTINGS_USER_DETAILS_PATH } from '@libs/userSettings/constants/us
 import Avatar from '@/components/shared/Avatar';
 import useLogout from '@/hooks/useLogout';
 import DropdownMenu from '@/components/shared/DropdownMenu';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import useLmnApiStore from '@/store/useLmnApiStore';
 
 const UserMenuButton: React.FC = () => {

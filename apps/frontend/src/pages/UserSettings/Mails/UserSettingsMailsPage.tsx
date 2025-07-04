@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { MailIcon } from '@/assets/icons';
 import { DropdownSelect } from '@/components';
 import useMailsStore from '@/pages/Mail/useMailsStore';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import { Form } from '@/components/ui/Form';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';

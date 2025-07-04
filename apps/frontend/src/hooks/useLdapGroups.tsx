@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import getTokenPayload from '@libs/common/utils/getTokenPayload';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 

@@ -22,7 +22,7 @@ import {
   CONFERENCES_JOIN_EDU_API_ENDPOINT,
 } from '@libs/conferences/constants/apiEndpoints';
 
-interface ConferenceDetailsDialogStore {
+interface UseConferenceDetailsDialogStore {
   selectedConference: ConferenceDto | null;
   setSelectedConference: (conference: ConferenceDto | null) => void;
   isLoading: boolean;
@@ -43,7 +43,7 @@ const initialState = {
   joinConferenceUrl: '',
 };
 
-const useConferenceDetailsDialogStore = create<ConferenceDetailsDialogStore>((set, get) => ({
+const useConferenceDetailsDialogStore = create<UseConferenceDetailsDialogStore>((set, get) => ({
   ...initialState,
   setSelectedConference: (conference) => set({ selectedConference: conference }),
   setIsLoading: (isLoading) => set({ isLoading }),

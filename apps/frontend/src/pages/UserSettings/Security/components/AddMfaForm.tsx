@@ -13,7 +13,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import Switch from '@/components/ui/Switch';
 
 const AddMfaForm: React.FC = () => {

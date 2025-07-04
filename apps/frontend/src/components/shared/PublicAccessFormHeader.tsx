@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import { Button } from '@/components/shared/Button';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 
 const PublicAccessFormHeader = () => {
   const { t } = useTranslation();

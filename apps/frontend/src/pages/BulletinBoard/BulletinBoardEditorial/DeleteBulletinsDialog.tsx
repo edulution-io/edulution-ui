@@ -13,7 +13,7 @@
 import React from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import ItemDialogList from '@/components/shared/ItemDialogList';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';

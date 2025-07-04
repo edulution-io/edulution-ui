@@ -13,7 +13,7 @@
 import React from 'react';
 import { t } from 'i18next';
 import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import { MdOutlineFileDownload } from 'react-icons/md';
 import { NavLink } from 'react-router-dom';
 import useMedia from '@/hooks/useMedia';

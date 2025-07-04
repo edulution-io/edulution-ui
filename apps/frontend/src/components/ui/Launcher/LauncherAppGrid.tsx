@@ -13,7 +13,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Card } from '@/components/shared/Card';
 import { NavLink, useNavigate } from 'react-router-dom';
-import useSidebarStore from '@/components/ui/Sidebar/sidebarStore';
+import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
 import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
 import useLanguage from '@/hooks/useLanguage';
 import { useTranslation } from 'react-i18next';

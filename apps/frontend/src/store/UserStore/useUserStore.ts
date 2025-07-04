@@ -13,10 +13,10 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import UserStore from '@libs/user/types/store/userStore';
-import createUserSlice from './UserSlice';
-import createTotpSlice from './TotpSlice';
-import createQrCodeSlice from './QrCodeSlice';
-import createUserAccountsSlice from './UserAccountsSlice';
+import createUserSlice from './createUserSlice';
+import createTotpSlice from './createTotpSlice';
+import createQrCodeSlice from './createQrCodeSlice';
+import createUserAccountsSlice from './createUserAccountsSlice';
 
 const useUserStore = create<UserStore>()(
   persist(

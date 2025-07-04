@@ -11,7 +11,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
+import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/useConferenceDetailsDialogStore';
 import { createPortal } from 'react-dom';
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 import { useTranslation } from 'react-i18next';

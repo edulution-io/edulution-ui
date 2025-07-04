@@ -12,9 +12,9 @@
 
 import { posix } from 'path';
 
-const normalizeWebdavPath = (filePath: string): string => {
+const buildNormalizedWebdavPath = (filePath: string): string => {
   const normalized = posix.normalize(filePath);
   return `/webdav/${normalized.split('/').map(encodeURIComponent).join('/')}`;
 };
 
-export default normalizeWebdavPath;
+export default buildNormalizedWebdavPath;
