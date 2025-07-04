@@ -73,7 +73,7 @@ class SurveysAttachmentService implements OnModuleInit {
     await this.cleanupOrphanedAttachments(surveyId, includedFileNames);
 
     return processedFormula;
-  };
+  }
 
   private async cleanupOrphanedAttachments(surveyId: string, referencedAttachments: Set<string>): Promise<void> {
     const allQuestionFolders = await this.fileSystemService.getAllFilenamesInDirectory(
@@ -83,6 +83,12 @@ class SurveysAttachmentService implements OnModuleInit {
       this.cleanupQuestionFolder(surveyId, questionFolder, referencedAttachments),
     );
     await Promise.all(cleanupPromises);
+
+    const surveyPath = join(SURVEYS_ATTACHMENT_PATH, surveyId);
+    const remainingQuestionFolders = await this.fileSystemService.getAllFilenamesInDirectory(surveyPath);
+    if (remainingQuestionFolders.length === 0) {
+      await this.fileSystemService.deleteDirectory(surveyPath);
+    }
   }
 
   private async cleanupQuestionFolder(
@@ -117,7 +123,7 @@ class SurveysAttachmentService implements OnModuleInit {
   ) {
     if (!elements) return [];
     return Promise.all(elements.map(async (el) => this.processElement(el, username, surveyId, includedFileNames)));
-  };
+  }
 
   async processElement(
     element: SurveyElement,
@@ -175,7 +181,7 @@ class SurveysAttachmentService implements OnModuleInit {
     }
 
     return processedElement;
-  };
+  }
 
   static updateLinkForRestfulChoices(surveyId: string, question: SurveyElement): SurveyElement {
     if (question.choicesByUrl && question.choicesByUrl?.url.includes(TEMPORAL_SURVEY_ID_STRING)) {
@@ -228,7 +234,7 @@ class SurveysAttachmentService implements OnModuleInit {
       Logger.error(`Failed to move temp file ${tempPath} to ${permanentPath}`, SurveysAttachmentService.name);
       return { newUrl: url, filename: null };
     }
-  };
+  }
 
   async removeAttachmentForOtherQuestionTypes(surveyId: string, question: SurveyElement): Promise<void> {
     const { type } = question;
