@@ -653,7 +653,9 @@
         "allowMultiple": "Allow the participant to upload multiple files at the same time",
         "addAllowMultiple": "Allow multiple files",
         "maxFileSize": "Max file size",
-        "addMaxFileSize": "[mB] (0 means that the file size is not limited.)"
+        "addMaxFileSize": "[mB] (0 means that the file size is not limited.)",
+        "imageWidth": "Width of the image",
+        "addImageWidth": "[px] (0 means that the width is not limited.)"
       }
     },
     "participate": {

@@ -656,7 +656,9 @@
         "allowMultiple": "Es können mehrere Dateien gleichzeitig ausgewählt und hochgeladen werden.",
         "addAllowMultiple": "Erlaube mehrere Dateien",
         "maxFileSize": "Maximale Dateigröße",
-        "addMaxFileSize": "[mB] (0 bedeutet, dass die Dateigröße nicht begrenzt ist.)"
+        "addMaxFileSize": "[mB] (0 bedeutet, dass die Dateigröße nicht begrenzt ist.)",
+        "imageWidth": "Breite des Bildes",
+        "addImageWidth": "[px] (0 bedeutet, dass die Breite nicht begrenzt ist.)"
       }
     },
     "participate": {

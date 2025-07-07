@@ -17,41 +17,26 @@ import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuest
 import Label from '@/components/ui/Label';
 import Input from '@/components/shared/Input';
 
-const AllQuestions = () => {
+const ImageQuestions = () => {
   const { t } = useTranslation();
 
-  const { questionTitle, setQuestionTitle, questionDescription, setQuestionDescription } =
-    useQuestionsContextMenuStore();
+  const { imageWidth, setImageWidth } = useQuestionsContextMenuStore();
 
   return (
     <div className="my-2 flex flex-col gap-2">
       <Label>
-        <p className="font-bold">{t('survey.editor.questionSettings.questionTitle')}</p>
+        <p className="font-bold">{t('survey.editor.questionSettings.imageWidth')}</p>
       </Label>
       <Input
-        placeholder={t('survey.editor.questionSettings.addQuestionTitle')}
-        type="text"
+        placeholder={t('survey.editor.questionSettings.addImageWidth')}
+        type="number"
         variant="dialog"
-        value={questionTitle}
-        onChange={(e) => setQuestionTitle(e.target.value)}
-        className={cn({ 'text-muted-foreground': !questionTitle }, { 'text-primary-foreground': questionTitle })}
-      />
-      <Label>
-        <p className="font-bold">{t('survey.editor.questionSettings.questionDescription')}</p>
-      </Label>
-      <Input
-        placeholder={t('survey.editor.questionSettings.addQuestionDescription')}
-        type="text"
-        variant="dialog"
-        value={questionDescription}
-        onChange={(e) => setQuestionDescription(e.target.value)}
-        className={cn(
-          { 'text-muted-foreground': !questionDescription },
-          { 'text-primary-foreground': questionDescription },
-        )}
+        value={imageWidth}
+        onChange={(e) => setImageWidth(Number(e.target.value))}
+        className={cn({ 'text-muted-foreground': !imageWidth }, { 'text-primary-foreground': imageWidth })}
       />
     </div>
   );
 };
 
-export default AllQuestions;
+export default ImageQuestions;

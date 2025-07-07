@@ -10,16 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ChoicesRestful, Question } from 'survey-core';
+const isQuestionTypeImageType = (questionType: string): boolean =>
+  questionType === 'image' || questionType === 'imagepicker';
 
-interface TSurveyQuestion extends Question {
-  choicesByUrl: { url: string } | ChoicesRestful | null;
-  choices: string[] | null;
-  maxFileSize: number;
-  allowMultiple: boolean;
-
-  imageWidth: number;
-  imageHeight: number;
-}
-
-export default TSurveyQuestion;
+export default isQuestionTypeImageType;

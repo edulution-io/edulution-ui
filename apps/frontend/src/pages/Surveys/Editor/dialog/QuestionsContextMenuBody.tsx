@@ -16,9 +16,10 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import ChoicesByUrl from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesByUrl';
 import isQuestionTypeChoiceType from '@libs/survey/utils/isQuestionTypeChoiceType';
-
+import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
 import AllQuestions from '@/pages/Surveys/Editor/dialog/default-options';
 import FileQuestion from '@/pages/Surveys/Editor/dialog/file-options';
+import ImageQuestions from '@/pages/Surveys/Editor/dialog/image-options';
 
 interface QuestionContextMenuBodyProps {
   form: UseFormReturn<SurveyDto>;
@@ -33,13 +34,15 @@ const QuestionContextMenuBody = (props: QuestionContextMenuBodyProps) => {
   if (!selectedQuestion) return null;
 
   const options = new Set<React.JSX.Element>();
-  options.add(<AllQuestions />);
-
   const questionType = selectedQuestion.getType();
+
+  options.add(<AllQuestions />);
   if (questionType === 'file') {
     options.add(<FileQuestion />);
   }
-
+  if (isQuestionTypeImageType(questionType)) {
+    options.add(<ImageQuestions />);
+  }
   if (isQuestionTypeChoiceType(questionType)) {
     options.add(
       <ChoicesByUrl

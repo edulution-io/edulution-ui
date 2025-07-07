@@ -24,7 +24,7 @@ const FileQuestion = () => {
   const { maxFileSize, setMaxFileSize, allowMultiple, toggleAllowMultiple } = useQuestionsContextMenuStore();
 
   return (
-    <>
+    <div className="my-2 flex flex-col gap-2">
       <Label>
         <p className="font-bold">{t('survey.editor.questionSettings.maxFileSize')}</p>
       </Label>
@@ -35,7 +35,7 @@ const FileQuestion = () => {
         variant="dialog"
         value={maxFileSize || 0}
         onChange={(e) => setMaxFileSize(Math.max(Number(e.target.value), 0) * 1024 * 1024)}
-        className={cn('mb-4', { 'text-muted-foreground': !maxFileSize }, { 'text-primary-foreground': maxFileSize })}
+        className={cn({ 'text-muted-foreground': !maxFileSize }, { 'text-primary-foreground': maxFileSize })}
       />
       <Label>
         <p className="font-bold">{t('survey.editor.questionSettings.allowMultiple')}</p>
@@ -46,7 +46,7 @@ const FileQuestion = () => {
         onCheckedChange={() => toggleAllowMultiple()}
         className="text-background"
       />
-    </>
+    </div>
   );
 };
 
