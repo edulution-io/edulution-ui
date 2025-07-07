@@ -31,16 +31,17 @@ const QuestionContextMenuBody = (props: QuestionContextMenuBodyProps) => {
 
   if (!selectedQuestion) return null;
 
-  const options = new Set<React.JSX.Element>();
+  const options: React.JSX.Element[] = [];
   const questionType = selectedQuestion.getType();
 
-  options.add(<AllQuestions />);
+  options.push(<AllQuestions key="all-questions" />);
   if (questionType === 'file') {
-    options.add(<FileQuestion />);
+    options.push(<FileQuestion key="file-question" />);
   }
   if (isQuestionTypeChoiceType(questionType)) {
-    options.add(
+    options.push(
       <ChoicesByUrl
+        key="choices-by-url"
         form={form}
         creator={creator}
       />,
