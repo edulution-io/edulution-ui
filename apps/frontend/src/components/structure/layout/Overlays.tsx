@@ -18,6 +18,7 @@ import VDIFrame from '@/pages/DesktopDeployment/VDIFrame';
 import SetupMfaDialog from '@/pages/UserSettings/Security/components/SetupMfaDialog';
 import NativeFrameManager from '@/components/structure/framing/Native/NativeFrameManager';
 import EmbeddedFrameManager from '@/components/structure/framing/EmbeddedFrameManager';
+import Launcher from '@/components/ui/Launcher/Launcher';
 
 const Overlays = () => (
   <>
@@ -28,6 +29,7 @@ const Overlays = () => (
     <NativeFrameManager />
     <CommunityLicenseDialog />
     <SetupMfaDialog />
+    <Launcher />
   </>
 );
 

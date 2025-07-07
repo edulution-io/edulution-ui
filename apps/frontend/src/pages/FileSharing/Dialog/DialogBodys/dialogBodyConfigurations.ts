@@ -126,8 +126,8 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     titleKey: 'fileCreateNewContent.fileDialogTitle',
     submitKey: 'fileCreateNewContent.createButtonText',
     initialValues: initialFormValues,
-    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
-    httpMethod: HttpMethods.PUT,
+    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.UPLOAD}`,
+    httpMethod: HttpMethods.POST,
     type: ContentType.FILE,
     requiresForm: true,
     getData: async (form, currentPath, { documentVendor, selectedFileType }) => {
@@ -145,7 +145,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     },
   },
 
-  deleteFileFolder: {
+  deleteFileOrFolder: {
     Component: DeleteContentDialogBody,
     titleKey: 'deleteDialog.deleteFiles',
     submitKey: 'deleteDialog.continue',
@@ -167,7 +167,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     },
   },
 
-  renameFileFolder: {
+  renameFileOrFolder: {
     Component: CreateOrRenameContentDialogBody,
     schema: z.object({
       filename: z.string().min(1, t('filesharing.tooltips.NewFileNameRequired')),
@@ -204,8 +204,8 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     Component: UploadContentBody,
     titleKey: 'filesharingUpload.title',
     submitKey: 'filesharingUpload.upload',
-    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
-    httpMethod: HttpMethods.PUT,
+    endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.UPLOAD}`,
+    httpMethod: HttpMethods.POST,
     type: ContentType.FILE || ContentType.DIRECTORY,
     requiresForm: false,
     getData: (_form, currentPath, inputValues) => {
@@ -253,7 +253,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
     },
   },
 
-  moveFileFolder: {
+  moveFileOrFolder: {
     Component: MoveDirectoryDialogBody,
     titleKey: 'moveItemDialog.changeDirectory',
     submitKey: 'moveItemDialog.move',
@@ -281,7 +281,7 @@ const dialogBodyConfigurations: Record<string, DialogBodyConfiguration> = {
 };
 
 function getDialogBodySetup(action: FileActionType) {
-  return dialogBodyConfigurations[action] || dialogBodyConfigurations.deleteFileFolder;
+  return dialogBodyConfigurations[action] || dialogBodyConfigurations.deleteFileOrFolder;
 }
 
 export default getDialogBodySetup;

@@ -12,13 +12,13 @@
 
 import { Logger } from '@nestjs/common';
 import { Scripts } from '../../scripts/script.type';
-import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
-import axios from 'axios';
-import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import getKeycloakToken from './utilities/getKeycloakToken';
+import createKeycloakAxiosClient from './utilities/createKeycloakAxiosClient';
 
-const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API, KEYCLOAK_ADMIN, KEYCLOAK_ADMIN_PASSWORD } = process.env as {
-  [key: string]: string;
-};
+const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API, KEYCLOAK_ADMIN, KEYCLOAK_ADMIN_PASSWORD } = process.env as Record<
+  string,
+  string
+>;
 
 type RealmRolesResponse = {
   id: string;
@@ -29,48 +29,35 @@ const removeRealmRoles: Scripts = {
   name: '000-removeRealmRoles',
   version: 1,
   execute: async () => {
+    if (!KEYCLOAK_ADMIN || !KEYCLOAK_ADMIN_PASSWORD) {
+      Logger.error(
+        'KEYCLOAK_ADMIN and KEYCLOAK_ADMIN_PASSWORD environment variables must be set.',
+        removeRealmRoles.name,
+      );
+      return;
+    }
+
     const keycloakBaseUrl = `${KEYCLOAK_API}/admin/realms/${KEYCLOAK_EDU_UI_REALM}`;
-    const tokenEndpoint = `${KEYCLOAK_API}/realms/master/${AUTH_PATHS.AUTH_OIDC_TOKEN_PATH}`;
     const keycloakRolesEndpoint = `${keycloakBaseUrl}/roles/default-roles-${KEYCLOAK_EDU_UI_REALM}/composites`;
-    const params = {
-      grant_type: 'password',
-      client_id: 'admin-cli',
-      username: KEYCLOAK_ADMIN,
-      password: KEYCLOAK_ADMIN_PASSWORD,
-    };
     const rolesToDelete = ['query-users', 'view-users', 'query-groups'];
 
     try {
       Logger.debug('Fetching Keycloak access token...', removeRealmRoles.name);
-      const { data: tokenData } = await axios.post<{ access_token: string }>(tokenEndpoint, params, {
-        headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
-      });
+      const keycloakAccessToken = await getKeycloakToken();
+      const keycloakClient = createKeycloakAxiosClient(keycloakAccessToken);
 
-      const keycloakAccessToken = tokenData.access_token;
+      const { data: realmRoles } = await keycloakClient.get<RealmRolesResponse[]>(keycloakRolesEndpoint);
 
-      const headers = {
-        [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
-        [HTTP_HEADERS.Authorization]: `Bearer ${keycloakAccessToken}`,
-      };
+      const realmRolesToDelete = realmRoles.filter((role: { name: string }) => rolesToDelete.includes(role.name));
 
-      const { data: realmRoles } = await axios.get<RealmRolesResponse[]>(keycloakRolesEndpoint, { headers });
-
-      const rolesToDelet = realmRoles.filter((role: { name: string }) => rolesToDelete.includes(role.name));
-
-      if (rolesToDelet.length === 0) {
+      if (realmRolesToDelete.length === 0) {
         Logger.log('No roles to delete found.', removeRealmRoles.name);
         return;
       }
 
-      Logger.debug(`Has roles to delete: ${JSON.stringify(rolesToDelet)}`, removeRealmRoles.name);
+      Logger.debug(`Has roles to delete: ${JSON.stringify(realmRolesToDelete)}`, removeRealmRoles.name);
 
-      const response = await axios.delete(keycloakRolesEndpoint, {
-        headers: {
-          [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_JSON,
-          [HTTP_HEADERS.Authorization]: `Bearer ${keycloakAccessToken}`,
-        },
-        data: rolesToDelet,
-      });
+      const response = await keycloakClient.delete(keycloakRolesEndpoint, { data: realmRolesToDelete });
 
       Logger.log(`Roles deleted successfully: Status ${response.status}`, removeRealmRoles.name);
     } catch (error) {
