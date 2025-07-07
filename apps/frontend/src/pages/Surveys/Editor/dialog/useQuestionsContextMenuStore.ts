@@ -113,8 +113,8 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
       currentChoices: [],
       showOtherItem: !!question?.showOtherItem,
 
-      maxFileSize: question?.maxFileSize || 0,
-      allowMultiple: question?.allowMultiple || false,
+      maxFileSize: question?.maxSize ? Math.max(Number(question.maxSize), 0) / (1024 * 1024) : 0,
+      allowMultiple: !!question?.allowMultiple,
 
       imageWidth: question?.imageWidth || 0,
     });
@@ -270,15 +270,19 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     const { selectedQuestion } = get();
     if (!selectedQuestion) return;
 
-    set({ maxFileSize: newMaxFileSize });
-    selectedQuestion.maxFileSize = newMaxFileSize;
+    const entry = Math.max(Number(newMaxFileSize), 0);
+    const value = entry * (1024 * 1024) || 0;
+    set({ maxFileSize: entry });
+    selectedQuestion.maxSize = value;
   },
+
   toggleAllowMultiple: () => {
     const { selectedQuestion, allowMultiple } = get();
     if (!selectedQuestion) {
       return;
     }
     set({ allowMultiple: !allowMultiple });
+    selectedQuestion.allowMultiple = !allowMultiple;
   },
 
   setImageWidth: (newWidth: number) => {

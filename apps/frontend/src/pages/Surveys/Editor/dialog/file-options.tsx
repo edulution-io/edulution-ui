@@ -26,6 +26,15 @@ const FileQuestion = () => {
   return (
     <div className="my-2 flex flex-col gap-2">
       <Label>
+        <p className="font-bold">{t('survey.editor.questionSettings.allowMultiple')}</p>
+      </Label>
+      <Checkbox
+        label={t('survey.editor.questionSettings.addAllowMultiple')}
+        checked={allowMultiple}
+        onCheckedChange={() => toggleAllowMultiple()}
+        className="text-background"
+      />
+      <Label>
         <p className="font-bold">{t('survey.editor.questionSettings.maxFileSize')}</p>
       </Label>
       <Input
@@ -34,17 +43,8 @@ const FileQuestion = () => {
         placeholder={t('survey.editor.questionSettings.addMaxFileSize')}
         variant="dialog"
         value={maxFileSize || 0}
-        onChange={(e) => setMaxFileSize(Math.max(Number(e.target.value), 0) * 1024 * 1024)}
+        onChange={(e) => setMaxFileSize(Number(e.target.value))}
         className={cn({ 'text-muted-foreground': !maxFileSize }, { 'text-primary-foreground': maxFileSize })}
-      />
-      <Label>
-        <p className="font-bold">{t('survey.editor.questionSettings.allowMultiple')}</p>
-      </Label>
-      <Checkbox
-        label={t('survey.editor.questionSettings.addAllowMultiple')}
-        checked={allowMultiple}
-        onCheckedChange={() => toggleAllowMultiple()}
-        className="text-background"
       />
     </div>
   );

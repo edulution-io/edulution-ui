@@ -640,6 +640,8 @@
         "addQuestionTitle": "Add a title",
         "questionDescription": "Description",
         "addQuestionDescription": "Add a description",
+        "correctAnswer": "Correct answers",
+        "addCorrectAnswer": "Add correct answer",
         "limit": "Limit",
         "nullLimit": "An upper limit of 0 means, that the option selectable, infinitely often",
         "backendLimiters": "Option limits",
@@ -652,10 +654,10 @@
         "filterPlaceHolderText": "Search for option",
         "allowMultiple": "Allow the participant to upload multiple files at the same time",
         "addAllowMultiple": "Allow multiple files",
-        "maxFileSize": "Max file size",
-        "addMaxFileSize": "[mB] (0 means that the file size is not limited.)",
-        "imageWidth": "Width of the image",
-        "addImageWidth": "[px] (0 means that the width is not limited.)"
+        "maxFileSize": "Max file size [mB]",
+        "addMaxFileSize": "0 means that the file size is not limited.",
+        "imageWidth": "Width of the image [px]",
+        "addImageWidth": "0 means that the width is not limited."
       }
     },
     "participate": {

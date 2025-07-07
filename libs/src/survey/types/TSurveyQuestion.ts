@@ -15,7 +15,8 @@ import { ChoicesRestful, Question } from 'survey-core';
 interface TSurveyQuestion extends Question {
   choicesByUrl: { url: string } | ChoicesRestful | null;
   choices: string[] | null;
-  maxFileSize: number;
+
+  maxSize: number;
   allowMultiple: boolean;
 
   imageWidth: number;

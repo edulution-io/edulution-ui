@@ -643,6 +643,8 @@
         "addQuestionTitle": "Titel hinzufügen",
         "questionDescription": "Beschreibung",
         "addQuestionDescription": "Beschreibung hinzufügen",
+        "correctAnswer": "Richtige Antworten",
+        "addCorrectAnswer": "Richtige Antwort hinzufügen",
         "limit": "Grenzwert",
         "nullLimit": "Ein Grenzwert von 0 bedeutet, dass die Option unbeschränkt verfügbar ist.",
         "backendLimiters": "Auswahlmöglichkeiten begrenzen",
@@ -655,10 +657,10 @@
         "filterPlaceHolderText": "Option suchen",
         "allowMultiple": "Es können mehrere Dateien gleichzeitig ausgewählt und hochgeladen werden.",
         "addAllowMultiple": "Erlaube mehrere Dateien",
-        "maxFileSize": "Maximale Dateigröße",
-        "addMaxFileSize": "[mB] (0 bedeutet, dass die Dateigröße nicht begrenzt ist.)",
-        "imageWidth": "Breite des Bildes",
-        "addImageWidth": "[px] (0 bedeutet, dass die Breite nicht begrenzt ist.)"
+        "maxFileSize": "Maximale Dateigröße [mB]",
+        "addMaxFileSize": "0 bedeutet, dass die Dateigröße nicht begrenzt ist.",
+        "imageWidth": "Breite des Bildes [px]",
+        "addImageWidth": "0 bedeutet, dass die Breite nicht begrenzt ist."
       }
     },
     "participate": {
