@@ -64,9 +64,6 @@ interface QuestionsContextMenuStore {
   maxFileSize: number;
   toggleAllowMultiple: () => void;
   allowMultiple: boolean;
-
-  setImageWidth: (newWidth: number) => void;
-  imageWidth: number;
 }
 
 const QuestionsContextMenuStoreInitialState = {
@@ -85,8 +82,6 @@ const QuestionsContextMenuStoreInitialState = {
 
   maxFileSize: 0,
   allowMultiple: false,
-
-  imageWidth: 0,
 };
 
 const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get) => ({
@@ -115,8 +110,6 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
 
       maxFileSize: question?.maxSize ? Math.max(Number(question.maxSize), 0) / (1024 * 1024) : 0,
       allowMultiple: !!question?.allowMultiple,
-
-      imageWidth: question?.imageWidth || 0,
     });
   },
 
@@ -283,15 +276,6 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     }
     set({ allowMultiple: !allowMultiple });
     selectedQuestion.allowMultiple = !allowMultiple;
-  },
-
-  setImageWidth: (newWidth: number) => {
-    const { selectedQuestion } = get();
-    if (!selectedQuestion) return;
-
-    const width = Math.max(newWidth, 0);
-    set({ imageWidth: width });
-    selectedQuestion.imageWidth = width;
   },
 }));
 
