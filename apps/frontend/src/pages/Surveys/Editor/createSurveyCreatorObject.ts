@@ -57,6 +57,7 @@ const createSurveyCreatorComponent = (language = 'en') => {
       'matrix',
       'matrixdropdown',
       'image',
+      'signaturepad',
     ],
   };
 
