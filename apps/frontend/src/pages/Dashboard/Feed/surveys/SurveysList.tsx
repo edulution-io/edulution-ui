@@ -19,6 +19,7 @@ import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
 import APPS from '@libs/appconfig/constants/apps';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import cn from '@libs/common/utils/className';
+import useLanguage from '@/hooks/useLanguage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FallbackText from '@/components/shared/FallbackText';
@@ -30,11 +31,12 @@ interface SurveysListProps {
 
 const SurveysList = (props: SurveysListProps) => {
   const { items, className } = props;
+  const { language } = useLanguage();
   const { t } = useTranslation();
 
   const { selectSurvey } = useSurveyTablesPageStore();
 
-  const locale = getLocaleDateFormat();
+  const locale = getLocaleDateFormat(language);
 
   const getSurveyInfo = (survey: SurveyDto) => (
     <div className="flex w-full flex-col gap-1">

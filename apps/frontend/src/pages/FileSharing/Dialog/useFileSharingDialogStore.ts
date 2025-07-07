@@ -110,11 +110,10 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
     bulkDtos: PathChangeOrCreateDto | PathChangeOrCreateDto[] | FileUploadProps[] | DeleteFileProps[] | FormData,
   ) => {
     set({ isLoading: true });
-
     try {
       if (bulkDtos instanceof FormData) {
         await handleFileOrCreateFile(action, endpoint, httpMethod, type, bulkDtos);
-        get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
+        get().setFileOperationResult(true, t('fileCreateNewContent.fileOperationSuccessful'), 200);
       } else if (Array.isArray(bulkDtos)) {
         const decodedFilenameDtos = (bulkDtos as PathChangeOrCreateDto[]).map((dto) => ({
           ...dto,

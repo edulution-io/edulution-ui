@@ -17,6 +17,8 @@ import SurveyParticipationPage from '@/pages/Surveys/Participation/SurveyPartici
 import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import PublicConferencePage from '@/pages/ConferencePage/PublicConference/PublicConferencePage';
 import PageTitle from '@/components/PageTitle';
+import PublicShareDownloadPage from '@/pages/FileSharing/publicShare/publicPage/PublicShareDownloadPage';
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 
 const getPublicRoutes = () => [
   <Route
@@ -38,6 +40,11 @@ const getPublicRoutes = () => [
         <SurveyParticipationPage isPublic />
       </>
     }
+  />,
+  <Route
+    key={FileSharingApiEndpoints.PUBLIC_SHARE}
+    path={`${FileSharingApiEndpoints.PUBLIC_SHARE}/:fileId`}
+    element={<PublicShareDownloadPage />}
   />,
 ];
 

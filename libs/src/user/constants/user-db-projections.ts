@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const USER_DB_PROJECTION = { _id: 0, __v: 0, password: 0, totpSecret: 0, encryptKey: 0 };
+const USER_DB_PROJECTION = { _id: 0, __v: 0, password: 0, totpSecret: 0, encryptKey: 0 } as const;
 
 export default USER_DB_PROJECTION;

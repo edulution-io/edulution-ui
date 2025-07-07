@@ -14,7 +14,7 @@ import React from 'react';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { MdRemoveCircleOutline, MdAddCircleOutline } from 'react-icons/md';
+import { MdAddCircleOutline, MdRemoveCircleOutline } from 'react-icons/md';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 import { FormControl, FormFieldSH, FormItem, FormLabel } from '@/components/ui/Form';
 import { BadgeSH } from '@/components/ui/BadgeSH';
@@ -101,7 +101,7 @@ const BadgeFormField = <T extends FieldValues>({
               ))}
               {!readOnly && (
                 <InputWithActionIcons
-                  className="h-[36px] min-w-[250px] rounded-md"
+                  className="h-[36px] w-[250px] rounded-md"
                   placeholder={placeholder}
                   value={newLabel}
                   onChange={(e) => setNewLabel(e.target.value)}

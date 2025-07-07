@@ -102,6 +102,13 @@ const RadioGroupFormField = <T extends FieldValues>({
                         >
                           {t(item.translationId)}
                         </p>
+                        <p
+                          className={cn('text-sm text-muted-foreground', {
+                            'opacity-60': field.value !== item.value,
+                          })}
+                        >
+                          {t(item?.descriptionTranslationId ?? '')}
+                        </p>
                       </>
                     </FormControl>
                   </FormLabel>

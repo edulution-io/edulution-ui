@@ -10,17 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@nestjs/common';
-import { Request } from 'express';
+import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 
-import JWTUser from '@libs/user/types/jwt/jwtUser';
+interface PublicShareResponseDto {
+  success: boolean;
+  status: number;
+  isAccessRestricted?: boolean;
+  requiresPassword?: boolean;
+  deletedCount?: number;
+  publicShare?: PublicShareDto | PublicShareDto[] | undefined;
+}
 
-const GetCurrentUser = createParamDecorator((_data: unknown, ctx: ExecutionContext): JWTUser => {
-  const request: Request = ctx.switchToHttp().getRequest();
-  if (!request.user) {
-    throw new UnauthorizedException('JWT is missing');
-  }
-  return request.user;
-});
-
-export default GetCurrentUser;
+export default PublicShareResponseDto;
