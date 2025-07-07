@@ -72,6 +72,8 @@ const MailList = ({ items, className }: MailListProps) => {
                 <p className="absolute h-2 w-2 rounded-full bg-ciLightGreen" />
               </div>
             </div>
+            <p className="break-all text-sm">{item.subject}</p>
+            <p className="line-clamp-2 break-all text-xs text-muted-foreground">{item.text?.substring(0, 300)}</p>
             {renderLabelBadges(item)}
           </NavLink>
         ))}
