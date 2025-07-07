@@ -62,8 +62,15 @@
     "editCategory": "Kategorie bearbeiten",
     "createNewCategory": "Kategorie erstellen",
     "categories": {
-      "visibleByUsersAndGroups": "Diese Kategorie mit ihren Mitteilungen ist sichtbar für Nutzer und Gruppen auf der Startseite",
-      "visibleByUsersAndGroupsTitle": "Startseite",
+      "visibilityState": "Standardsichtbarkeit der Mitteilungen",
+      "FULLY_VISIBLE": "Vollständig sichtbar",
+      "FULLY_VISIBLE-short": "Vollständig",
+      "PREVIEW": "Vorschau anzeigen",
+      "PREVIEW-short": "Vorschau",
+      "ONLY_TITLE": "Nur Titel anzeigen",
+      "ONLY_TITLE-short": "Nur Titel",
+      "visibleByUsersAndGroups": "Diese Kategorie mit ihren Mitteilungen ist sichtbar für Nutzer und Gruppen in der Info Board App",
+      "visibleByUsersAndGroupsTitle": "Info Board App",
       "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen in der Info Board App",
       "editableByUsersAndGroupsTitle": "Mitteilungen verwalten"
     },
@@ -1128,6 +1135,8 @@
     "infoQrCodeExpired": "Zeit für Login mit edulution.io APP abgelaufen."
   },
   "common": {
+    "showMore": "Mehr anzeigen",
+    "visibility": "Sichtbarkeit",
     "offline": "Offline",
     "guest": "Gast",
     "ok": "OK",

@@ -23,6 +23,8 @@ import DEFAULT_TABLE_SORT_PROPERTY_KEY from '@libs/common/constants/defaultTable
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import BULLETIN_BOARD_TABLE_COLUMNS from '@libs/appconfig/constants/bulletinBoardCategoryTableColumns';
 import hideOnMobileClassName from '@libs/ui/constants/hideOnMobileClassName';
+import BULLETIN_VISIBILITY_STATES from '@libs/bulletinBoard/constants/bulletinVisibilityStates';
+import { useTranslation } from 'react-i18next';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 
 const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
@@ -81,6 +83,32 @@ const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDt
         <SelectableTextCell
           onClick={handleRowClick}
           text={row.original.name}
+        />
+      );
+    },
+  },
+  {
+    id: BULLETIN_BOARD_TABLE_COLUMNS.BULLETIN_VISIBILITY,
+    size: 105,
+    header: ({ column }) => <SortableHeader<BulletinCategoryResponseDto, unknown> column={column} />,
+    meta: {
+      translationId: 'common.visibility',
+    },
+    accessorFn: (row) => row.createdAt,
+    cell: ({ row }) => {
+      const { t } = useTranslation();
+      const { setSelectedCategory } = useBulletinCategoryTableStore();
+      const { setDialogOpen } = useAppConfigTableDialogStore();
+      const handleRowClick = () => {
+        setSelectedCategory(row.original);
+        setDialogOpen(ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE);
+      };
+      return (
+        <SelectableTextCell
+          onClick={handleRowClick}
+          text={t(
+            `bulletinboard.categories.${BULLETIN_VISIBILITY_STATES[row.original.bulletinVisibility || BULLETIN_VISIBILITY_STATES.FULLY_VISIBLE]}-short`,
+          )}
         />
       );
     },
