@@ -584,7 +584,11 @@
         "upperLimit": "Grenzwert",
         "upperBackendLimiters": "Auswahlmöglichkeiten mit Obergrenze",
         "addChoice": "Hinzufügen",
-        "filterPlaceHolderText": "Option suchen"
+        "filterPlaceHolderText": "Option suchen",
+        "allowMultiple": "Es können mehrere Dateien gleichzeitig ausgewählt und hochgeladen werden.",
+        "addAllowMultiple": "Erlaube mehrere Dateien",
+        "maxFileSize": "Maximale Dateigröße [mB]",
+        "addMaxFileSize": "0 bedeutet, dass die Dateigröße nicht begrenzt ist."
       }
     },
     "participate": {
