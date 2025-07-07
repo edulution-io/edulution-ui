@@ -12,8 +12,7 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '../shared/Button';
-import { type ButtonProps } from '../shared/Button';
+import { Button, type ButtonProps } from '../shared/Button';
 
 interface DialogFooterProps {
   disableSubmit?: boolean;

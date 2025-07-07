@@ -82,8 +82,8 @@ const DesktopSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
       setTranslate((prevTranslate) => {
         let next = prevTranslate;
 
-        if (deltaY > 0) next = prevTranslate - SIDEBAR_TRANSLATE_AMOUNT / 3;
-        else if (deltaY < 0) next = prevTranslate + SIDEBAR_TRANSLATE_AMOUNT / 3;
+        if (deltaY > 0) next = prevTranslate + SIDEBAR_TRANSLATE_AMOUNT / 3;
+        else if (deltaY < 0) next = prevTranslate - SIDEBAR_TRANSLATE_AMOUNT / 3;
 
         return clampTranslateToPositiveValue(next);
       });

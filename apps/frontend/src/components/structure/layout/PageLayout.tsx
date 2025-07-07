@@ -14,12 +14,10 @@ import React from 'react';
 import NativeAppHeader from '@/components/structure/layout/NativeAppHeader';
 import Footer from '@/components/ui/Footer';
 import NativeAppHeaderProps from '@libs/ui/types/NativeAppHeaderProps';
-import cn from '@libs/common/utils/className';
 import { useLocation } from 'react-router-dom';
 import FLOATING_BUTTONS_BAR_ID from '@libs/ui/constants/floatingButtonsBarId';
 import useUserAccounts from '@/hooks/useUserAccounts';
 import { getFromPathName } from '@libs/common/utils';
-import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 
 interface AppLayoutProps {
   nativeAppHeader?: NativeAppHeaderProps;
@@ -35,10 +33,8 @@ const PageLayout = ({ nativeAppHeader, children, isFullScreen }: AppLayoutProps)
 
   if (isFullScreen) return <main className="flex-1">{children}</main>;
 
-  const isMainPage = pathname === DASHBOARD_ROUTE;
-
   return (
-    <div className={cn('flex h-full w-full flex-col pl-4 pt-4', { 'px-4': isMainPage })}>
+    <div className="flex h-full w-full flex-col pl-4 pt-4">
       {nativeAppHeader && (
         <NativeAppHeader
           title={nativeAppHeader.title}
@@ -47,11 +43,7 @@ const PageLayout = ({ nativeAppHeader, children, isFullScreen }: AppLayoutProps)
         />
       )}
 
-      <main
-        className={cn('flex flex-1 flex-col overflow-y-auto overflow-x-hidden pl-2 pr-6 scrollbar-thin', {
-          'px-4': isMainPage,
-        })}
-      >
+      <main className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden pl-2 pr-6 scrollbar-thin">
         {children}
       </main>
 

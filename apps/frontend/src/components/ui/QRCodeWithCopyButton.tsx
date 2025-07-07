@@ -40,7 +40,7 @@ const QRCodeWithCopyButton = ({ url, qrCodeSize, titleTranslationId }: QRCodeWit
           type="text"
           value={url}
           readOnly
-          className="w-fit min-w-[550px] cursor-pointer"
+          className="max-w-[620px]"
           onMouseDown={(e) => {
             e.preventDefault();
             copyToClipboard(url);

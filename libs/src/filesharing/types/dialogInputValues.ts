@@ -10,13 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
+import DocumentVendorsType from '@libs/filesharing/types/documentVendorsType';
+import { TAvailableFileTypes } from './availableFileTypesType';
+import { DirectoryFileDTO } from './directoryFileDTO';
 
 interface DialogInputValues {
   selectedItems?: DirectoryFileDTO[];
-  moveItemsToPath?: DirectoryFileDTO;
-  selectedFileType?: { extension: string; generate: string };
+  moveOrCopyItemToPath?: DirectoryFileDTO;
+  selectedFileType: TAvailableFileTypes | '';
   filesToUpload?: File[];
+  documentVendor: DocumentVendorsType;
 }
 
 export default DialogInputValues;

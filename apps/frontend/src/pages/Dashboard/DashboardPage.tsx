@@ -13,10 +13,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import GROUPS_ID from '@libs/dashboard/constants/pageElementIds';
-import useUserStore from '@/store/UserStore/UserStore';
-import useMedia from '@/hooks/useMedia';
 import Feed from '@/pages/Dashboard/Feed/Feed';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import { Dashboard } from '@/assets/icons';
+import APPLICATION_NAME from '@libs/common/constants/applicationName';
+import PageTitle from '@/components/PageTitle';
 import MobileFileAccessCard from './MobileFileAccess/MobileFileAccessCard';
 import AccountInformation from './AccountInformation';
 import QuotaCard from './QuotaCard';
@@ -24,10 +25,6 @@ import Groups from './Groups';
 
 const DashboardPage: React.FC = () => {
   const { t } = useTranslation();
-
-  const { isMobileView } = useMedia();
-
-  const { user } = useUserStore();
 
   const column1 = (
     <div className="basis-1/4">
@@ -60,19 +57,16 @@ const DashboardPage: React.FC = () => {
   );
 
   return (
-    <PageLayout>
-      <div>
-        {isMobileView ? (
-          <h3>
-            {t('heading', {
-              givenName: user?.firstName || '-',
-              familyName: user?.lastName || '-',
-            })}
-          </h3>
-        ) : null}
-      </div>
+    <PageLayout
+      nativeAppHeader={{
+        title: t('dashboard.pageTitle'),
+        description: t('dashboard.description', { applicationName: APPLICATION_NAME }),
+        iconSrc: Dashboard,
+      }}
+    >
+      <PageTitle translationId="dashboard.pageTitle" />
 
-      <div className="md:my-17 my-10 flex flex-col-reverse gap-8 md:flex-row">
+      <div className="mt-3 flex flex-col-reverse gap-8 md:flex-row">
         {column1}
         {column2}
         {column3}

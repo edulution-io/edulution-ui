@@ -24,7 +24,7 @@ import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
-import { TABLE_ICON_SIZE } from '@libs/ui/constants';
+import { BUTTONS_ICON_WIDTH, TABLE_ICON_SIZE } from '@libs/ui/constants';
 import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
@@ -35,6 +35,11 @@ import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingT
 import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
 import useMedia from '@/hooks/useMedia';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
+import { MdOutlineCloudDone } from 'react-icons/md';
+import IconWithCount from '@/components/shared/IconWithCount';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
+import FileActionType from '@libs/filesharing/types/fileActionType';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
@@ -124,6 +129,41 @@ const getFileSharingTableColumns = (
         const valueA = rowA.original.type + rowA.original.filePath;
         const valueB = rowB.original.type + rowB.original.filePath;
         return valueA.localeCompare(valueB);
+      },
+    },
+    {
+      accessorKey: FILE_SHARING_TABLE_COLUMNS.IS_SHARED,
+      size: 50,
+      header: ({ column }) => <SortableHeader<DirectoryFileDTO, unknown> column={column} />,
+      meta: {
+        translationId: 'fileSharingTable.isShared',
+      },
+      cell: ({ row }) => {
+        const { shares } = usePublicShareStore();
+        const { openDialog } = useFileSharingDialogStore();
+        const { setSelectedItems } = useFileSharingStore();
+
+        const matchedShares = shares.filter((share) => share.filePath === row.original.filePath);
+
+        const matchCount = matchedShares.length;
+        const isShared = matchCount > 0;
+
+        return (
+          <div className="flex items-center justify-center">
+            {isShared && (
+              <IconWithCount
+                Icon={MdOutlineCloudDone}
+                size={BUTTONS_ICON_WIDTH}
+                className="text-background"
+                count={matchCount}
+                onClick={() => {
+                  setSelectedItems([row.original]);
+                  openDialog(FileActionType.SHARE_FILE_OR_FOLDER);
+                }}
+              />
+            )}
+          </div>
+        );
       },
     },
     {

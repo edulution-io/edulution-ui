@@ -26,6 +26,7 @@ import OpenShareQRDialogTextCell from '@/components/ui/Table/OpenShareQRDialogTe
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import hideOnMobileClassName from '@libs/ui/constants/hideOnMobileClassName';
 import SURVEY_TABLE_COLUMNS from '@libs/survey/constants/surveyTableColumns';
+import useLanguage from '@/hooks/useLanguage';
 
 const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
   {
@@ -55,7 +56,8 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       translationId: 'survey.creationDate',
     },
     cell: ({ row }) => {
-      const localDateFormat = getLocaleDateFormat();
+      const { language } = useLanguage();
+      const localDateFormat = getLocaleDateFormat(language);
       const text = row.original?.createdAt
         ? format(row.original.createdAt, 'PPP', { locale: localDateFormat })
         : i18next.t('common.not-available');
@@ -78,7 +80,8 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       translationId: 'survey.expirationDate',
     },
     cell: ({ row }) => {
-      const localDateFormat = getLocaleDateFormat();
+      const { language } = useLanguage();
+      const localDateFormat = getLocaleDateFormat(language);
       const text = row.original?.expires
         ? format(row.original.expires, 'PPP', { locale: localDateFormat })
         : i18next.t('common.not-available');

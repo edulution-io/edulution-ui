@@ -15,7 +15,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import { BulletinCategoryPermissionType } from '@libs/appconfig/types/bulletinCategoryPermissionType';
-import GetCurrentUser from '../common/decorators/getUser.decorator';
+import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import BulletinCategoryService from './bulletin-category.service';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 
