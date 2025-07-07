@@ -102,6 +102,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
       options: getOptions(),
       accessGroups: [],
       extendedOptions: getExtendedOptions(),
+      position: 0,
     };
 
     await createAppConfig(newConfig);

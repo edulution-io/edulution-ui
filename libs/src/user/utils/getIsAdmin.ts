@@ -10,26 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { FaStarOfLife } from 'react-icons/fa';
+import GroupRoles from '@libs/groups/types/group-roles.enum';
 
-interface SidebarItemNotificationProps {
-  notificationCounter?: number;
-}
+const getIsAdmin = (ldapGroups: string[]) =>
+  ldapGroups.includes(GroupRoles.SUPER_ADMIN) || ldapGroups.includes(GroupRoles.SCHOOL_ADMIN);
 
-const SidebarItemNotification = (props: SidebarItemNotificationProps) => {
-  const { notificationCounter } = props;
-
-  if (!notificationCounter || notificationCounter === 0) {
-    return null;
-  }
-
-  return (
-    <FaStarOfLife
-      size={12}
-      className="absolute right-1 top-1 text-ciLightGreen"
-    />
-  );
-};
-
-export default SidebarItemNotification;
+export default getIsAdmin;

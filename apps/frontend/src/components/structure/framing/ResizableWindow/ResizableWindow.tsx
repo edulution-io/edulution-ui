@@ -234,7 +234,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
         role="button"
         tabIndex={0}
         style={{ height: isMinimized ? DEFAULT_MINIMIZED_BAR_HEIGHT : MAXIMIZED_BAR_HEIGHT }}
-        className={cn('sticky top-0 flex items-center justify-between bg-gray-900 text-white', {
+        className={cn('sticky top-0 flex items-center justify-between bg-gray-900 text-background', {
           'cursor-default': disableDragging,
           'cursor-move hover:bg-gray-800': isMinimized && !isMobileView,
         })}

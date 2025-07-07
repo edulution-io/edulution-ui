@@ -37,7 +37,7 @@ class SurveysAttachmentService implements OnModuleInit {
     void this.fileSystemService.ensureDirectoryExists(this.attachmentsPath);
   }
 
-  preProcessFormula = async (surveyId: string, formula: SurveyFormula, username: string): Promise<SurveyFormula> => {
+  async preProcessFormula(surveyId: string, formula: SurveyFormula, username: string): Promise<SurveyFormula> {
     const processedFormula = { ...formula };
     const includedFileNames: Set<string> = new Set();
 
@@ -73,7 +73,7 @@ class SurveysAttachmentService implements OnModuleInit {
     await this.cleanupOrphanedAttachments(surveyId, includedFileNames);
 
     return processedFormula;
-  };
+  }
 
   private async cleanupOrphanedAttachments(surveyId: string, referencedAttachments: Set<string>): Promise<void> {
     const allQuestionFolders = await this.fileSystemService.getAllFilenamesInDirectory(
@@ -83,6 +83,12 @@ class SurveysAttachmentService implements OnModuleInit {
       this.cleanupQuestionFolder(surveyId, questionFolder, referencedAttachments),
     );
     await Promise.all(cleanupPromises);
+
+    const surveyPath = join(SURVEYS_ATTACHMENT_PATH, surveyId);
+    const remainingQuestionFolders = await this.fileSystemService.getAllFilenamesInDirectory(surveyPath);
+    if (remainingQuestionFolders.length === 0) {
+      await this.fileSystemService.deleteDirectory(surveyPath);
+    }
   }
 
   private async cleanupQuestionFolder(
@@ -104,27 +110,27 @@ class SurveysAttachmentService implements OnModuleInit {
     }
   }
 
-  cleanupTemporaryFiles = (username: string): void => {
+  cleanupTemporaryFiles(username: string): void {
     const temporaryAttachmentPath = join(SURVEYS_TEMP_FILES_PATH, username);
     void this.fileSystemService.deleteDirectory(temporaryAttachmentPath);
-  };
+  }
 
-  processElements = async (
+  async processElements(
     elements: SurveyElement[] | undefined,
     username: string,
     surveyId: string,
     includedFileNames: Set<string>,
-  ) => {
+  ) {
     if (!elements) return [];
     return Promise.all(elements.map(async (el) => this.processElement(el, username, surveyId, includedFileNames)));
-  };
+  }
 
-  processElement = async (
+  async processElement(
     element: SurveyElement,
     username: string,
     surveyId: string,
     includedFileNames: Set<string>,
-  ): Promise<SurveyElement> => {
+  ): Promise<SurveyElement> {
     const processedElement = { ...element };
     switch (element.type) {
       case QuestionsType.CHECKBOX:
@@ -175,7 +181,7 @@ class SurveysAttachmentService implements OnModuleInit {
     }
 
     return processedElement;
-  };
+  }
 
   static updateLinkForRestfulChoices(surveyId: string, question: SurveyElement): SurveyElement {
     if (question.choicesByUrl && question.choicesByUrl?.url.includes(TEMPORAL_SURVEY_ID_STRING)) {
@@ -190,12 +196,12 @@ class SurveysAttachmentService implements OnModuleInit {
     return question;
   }
 
-  processUrl = async (
+  async processUrl(
     url: string,
     username: string,
     surveyId: string,
     subfolder: string,
-  ): Promise<{ newUrl: string; filename: string | null }> => {
+  ): Promise<{ newUrl: string; filename: string | null }> {
     if (!url || !url.includes(`/${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}`)) {
       const filename = url.split('/').pop() || null;
       return { newUrl: url, filename };
@@ -228,7 +234,7 @@ class SurveysAttachmentService implements OnModuleInit {
       Logger.error(`Failed to move temp file ${tempPath} to ${permanentPath}`, SurveysAttachmentService.name);
       return { newUrl: url, filename: null };
     }
-  };
+  }
 
   async removeAttachmentForOtherQuestionTypes(surveyId: string, question: SurveyElement): Promise<void> {
     const { type } = question;
