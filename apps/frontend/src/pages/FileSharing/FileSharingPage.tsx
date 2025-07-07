@@ -24,23 +24,46 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import QuotaLimitInfo from '@/pages/FileSharing/utilities/QuotaLimitInfo';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
+import DownloadPublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DownloadPublicShareDialog';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import CreateOrEditPublicShareDialog from '@/pages/FileSharing/publicShare/dialog/CreateOrEditPublicShareDialog';
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
+import PublicShareDto from '@libs/filesharing/types/publicShareDto';
+import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
+import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
 
 const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const { fileOperationProgress, fetchFiles } = useFileSharingStore();
+  const { fetchShares } = usePublicShareStore();
+
   useEffect(() => {
     const handleFileOperationProgress = async () => {
       if (!fileOperationProgress) return;
       const percent = fileOperationProgress.percent ?? 0;
       if (percent >= 100) {
         await fetchFiles(currentPath);
+        await fetchShares();
       }
     };
 
     void handleFileOperationProgress();
   }, [fileOperationProgress]);
   const { percentageUsed } = useQuotaInfo();
+
+  useEffect(() => {
+    void fetchShares();
+  }, [currentPath, fetchFiles, fetchShares]);
+
+  const { share, setShare, closeDialog, dialog } = usePublicShareStore();
+  const { origin } = window.location;
+  const url = `${origin}/${FileSharingApiEndpoints.PUBLIC_SHARE}/${share?.publicShareId}`;
+
+  const handleClose = () => {
+    setShare({} as PublicShareDto);
+    closeDialog(PUBLIC_SHARE_DIALOG_NAMES.QR_CODE);
+  };
 
   return (
     <PageLayout>
@@ -74,6 +97,15 @@ const FileSharingPage = () => {
       </div>
 
       <ActionContentDialog />
+      <DownloadPublicShareDialog />
+      <SharePublicQRDialog
+        isOpen={dialog.qrCode}
+        handleClose={handleClose}
+        url={url}
+        titleTranslationId="filesharing.publicFileSharing.qrCodePublicShareFile"
+        descriptionTranslationId=""
+      />
+      <CreateOrEditPublicShareDialog />
       <FileSharingFloatingButtonsBar />
     </PageLayout>
   );
