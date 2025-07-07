@@ -14,6 +14,7 @@ import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
 import APPS from '@libs/appconfig/constants/apps';
+import PublicShareLinksPage from '@/pages/FileSharing/publicShare/PublicShareLinksPage';
 
 const getFileSharingRoutes = () => [
   <Route
@@ -32,6 +33,10 @@ const getFileSharingRoutes = () => [
     <Route
       path=":mointPoint/*"
       element={<FileSharingPage />}
+    />
+    <Route
+      path="shared"
+      element={<PublicShareLinksPage />}
     />
   </Route>,
 ];
