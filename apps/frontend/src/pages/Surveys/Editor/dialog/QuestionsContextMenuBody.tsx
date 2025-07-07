@@ -11,14 +11,14 @@
  */
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { SurveyCreatorModel } from 'survey-creator-core';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import cn from '@libs/common/utils/className';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import ChoicesByUrl from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesByUrl';
-import AllQuestions from '@/pages/Surveys/Editor/dialog/default-options';
-import FileQuestion from '@/pages/Surveys/Editor/dialog/file-options';
-import isQuestionTypeChoiceType from '@libs/survey/utils/isQuestionTypeChoiceType';
-import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
+import Label from '@/components/ui/Label';
+import Input from '@/components/shared/Input';
 
 interface QuestionContextMenuBodyProps {
   form: UseFormReturn<SurveyDto>;
@@ -28,37 +28,51 @@ interface QuestionContextMenuBodyProps {
 const QuestionContextMenuBody = (props: QuestionContextMenuBodyProps) => {
   const { form, creator } = props;
 
-  const { selectedQuestion } = useQuestionsContextMenuStore();
+  const { selectedQuestion, questionTitle, setQuestionTitle, questionDescription, setQuestionDescription } =
+    useQuestionsContextMenuStore();
+
+  const { t } = useTranslation();
 
   if (!selectedQuestion) return null;
 
-  const options = new Set<React.JSX.Element>();
-  options.add(<AllQuestions />);
-
-  const questionType = selectedQuestion.getType();
-  if (questionType === 'file') {
-    options.add(<FileQuestion />);
-  }
-
-  if (isQuestionTypeChoiceType(questionType)) {
-    options.add(
+  return (
+    <div className="flex flex-col gap-2">
+      <Label>
+        <p className="font-bold">{t('survey.editor.questionSettings.questionTitle')}</p>
+      </Label>
+      <Input
+        placeholder={t('survey.editor.questionSettings.addQuestionTitle')}
+        type="text"
+        variant="dialog"
+        value={questionTitle}
+        onChange={(e) => setQuestionTitle(e.target.value)}
+        className={cn(
+          'mb-4',
+          { 'text-muted-foreground': !questionTitle },
+          { 'text-primary-foreground': questionTitle },
+        )}
+      />
+      <Label>
+        <p className="font-bold">{t('survey.editor.questionSettings.questionDescription')}</p>
+      </Label>
+      <Input
+        placeholder={t('survey.editor.questionSettings.addQuestionDescription')}
+        type="text"
+        variant="dialog"
+        value={questionDescription}
+        onChange={(e) => setQuestionDescription(e.target.value)}
+        className={cn(
+          'mb-4',
+          { 'text-muted-foreground': !questionDescription },
+          { 'text-primary-foreground': questionDescription },
+        )}
+      />
       <ChoicesByUrl
         form={form}
         creator={creator}
-      />,
-    );
-  }
-
-  if (isQuestionTypeImageType(questionType)) {
-    options.add(
-      <ChoicesByUrl
-        form={form}
-        creator={creator}
-      />,
-    );
-  }
-
-  return <div className="flex flex-col gap-2">{options}</div>;
+      />
+    </div>
+  );
 };
 
 export default QuestionContextMenuBody;

@@ -33,7 +33,7 @@ import SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/su
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
-import getUsernameFromRequest from '@libs/common/utils/api/getUsernameFromRequest';
+import getUsernameFromRequest from 'apps/api/src/common/utils/getUsernameFromRequest';
 import surveyAnswerMaximumFileSize from '@libs/survey/constants/survey-answer-max-file-size';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import FilesystemService from 'apps/api/src/filesystem/filesystem.service';
