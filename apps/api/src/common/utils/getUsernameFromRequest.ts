@@ -10,9 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ChoiceTypes from '@libs/survey/constants/choice-types';
+import { UnauthorizedException } from '@nestjs/common';
+import { Request } from 'express';
 
-const isQuestionTypeChoiceType = (questionType: string): boolean =>
-  Object.values(ChoiceTypes).includes(questionType as ChoiceTypes);
+const getUsernameFromRequest = (req: Request): string => {
+  const request = req as Request & { user?: { preferred_username?: string } };
+  if (!request.user?.preferred_username) {
+    throw new UnauthorizedException('preferred_username in JWT is missing');
+  }
+  return request.user.preferred_username;
+};
 
-export default isQuestionTypeChoiceType;
+export default getUsernameFromRequest;

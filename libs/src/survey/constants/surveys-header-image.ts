@@ -10,9 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ChoiceTypes from '@libs/survey/constants/choice-types';
+const SURVEYS_HEADER_IMAGE = 'logo';
 
-const isQuestionTypeChoiceType = (questionType: string): boolean =>
-  Object.values(ChoiceTypes).includes(questionType as ChoiceTypes);
-
-export default isQuestionTypeChoiceType;
+export default SURVEYS_HEADER_IMAGE;

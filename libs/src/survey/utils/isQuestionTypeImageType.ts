@@ -10,7 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import ImageTypes from '@libs/survey/constants/image-types';
+
 const isQuestionTypeImageType = (questionType: string): boolean =>
-  questionType === 'image' || questionType === 'imagepicker';
+  Object.values(ImageTypes).includes(questionType as ImageTypes);
 
 export default isQuestionTypeImageType;

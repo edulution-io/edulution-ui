@@ -22,9 +22,9 @@ import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import { createNewPublicUserLogin, publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
-import SURVEY_ANSWER_FOLDER from '@libs/survey/constants/surveys-answer-folder';
-import SURVEYS_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveysAnswersAttachmentPath';
-import SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveysAnswersTemporaryAttachmentPath';
+import SURVEYS_ANSWER_FOLDER from '@libs/survey/constants/surveys-answer-folder';
+import SURVEYS_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveysAnswerAttachmentPath';
+import SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveysAnswerTemporaryAttachmentPath';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import CustomHttpException from '../common/CustomHttpException';
@@ -41,8 +41,8 @@ class SurveyAnswersService implements OnModuleInit {
   constructor(
     @InjectModel(SurveyAnswer.name) private surveyAnswerModel: Model<SurveyAnswerDocument>,
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
-    private readonly fileSystemService: FilesystemService,
     private readonly groupsService: GroupsService,
+    private readonly fileSystemService: FilesystemService,
   ) {}
 
   async onModuleInit() {
@@ -312,9 +312,7 @@ class SurveyAnswersService implements OnModuleInit {
             SurveyAnswersService.name,
           );
         }
-
         await this.moveAttachmentsToPermanentStorage(attendee, surveyId, answer);
-
         return newSurveyAnswer;
       }
 
@@ -341,7 +339,6 @@ class SurveyAnswersService implements OnModuleInit {
       }
 
       await this.moveAttachmentsToPermanentStorage(attendee, surveyId, answer);
-
       return updatedSurveyAnswer;
     }
 
@@ -445,6 +442,9 @@ class SurveyAnswersService implements OnModuleInit {
         SurveyAnswersService.name,
       );
     }
+
+    const filePath = surveyIds.map((surveyId) => join(APPS_FILES_PATH, SURVEYS_ANSWER_FOLDER, surveyId));
+    return FilesystemService.deleteDirectories(filePath);
   }
 
   async hasPublicUserAnsweredSurvey(surveyId: string, username: string): Promise<SurveyAnswer | undefined> {
@@ -479,7 +479,7 @@ class SurveyAnswersService implements OnModuleInit {
   }
 
   static async onSurveyRemoval(surveyIds: string[]): Promise<void> {
-    const filePath = surveyIds.map((surveyId) => join(APPS_FILES_PATH, SURVEY_ANSWER_FOLDER, surveyId));
+    const filePath = surveyIds.map((surveyId) => join(APPS_FILES_PATH, SURVEYS_ANSWER_FOLDER, surveyId));
     return FilesystemService.deleteDirectories(filePath);
   }
 
@@ -507,7 +507,7 @@ class SurveyAnswersService implements OnModuleInit {
     return res;
   }
 
-  async deleteFileFromAnswer(userName: string, surveyId: string, fileName: string): Promise<void> {
+  static async deleteFileFromAnswer(userName: string, surveyId: string, fileName: string): Promise<void> {
     const filePath = await SurveyAnswersService.getFilePathForFileFromAnswer(userName, surveyId, fileName);
     if (!filePath) {
       return;

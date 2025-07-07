@@ -10,31 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { join } from 'path';
-import { Response } from 'express';
-import { v4 as uuidv4 } from 'uuid';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
-import AttendeeDto from '@libs/user/types/attendee.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
-import {
-  SURVEY_FILE_ATTACHMENT_ENDPOINT,
-  SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT,
-} from '@libs/survey/constants/surveys-endpoint';
-import SURVEYS_FILES_PATH from '@libs/survey/constants/surveysFilesPath';
-import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
-import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
-import SurveyElement from '@libs/survey/types/TSurveyElement';
-import SurveyPage from '@libs/survey/types/TSurveyPage';
-import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import SURVEYS_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplatePath';
-import isQuestionTypeChoiceType from '@libs/survey/utils/isQuestionTypeChoiceType';
+import prepareCreator from '@libs/survey/utils/prepareCreator';
+import SseMessageType from '@libs/common/types/sseMessageType';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
@@ -42,13 +27,13 @@ import GroupsService from '../groups/groups.service';
 import surveysMigrationsList from './migrations/surveysMigrationsList';
 import MigrationService from '../migration/migration.service';
 import { Survey, SurveyDocument } from './survey.schema';
-import FilesystemService from '../filesystem/filesystem.service';
+import SurveysAttachmentService from './surveys-attachment.service';
 
 @Injectable()
 class SurveysService implements OnModuleInit {
   constructor(
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
-    private fileSystemService: FilesystemService,
+    private surveysAttachmentService: SurveysAttachmentService,
     private readonly groupsService: GroupsService,
     private readonly sseService: SseService,
   ) {}
@@ -116,7 +101,9 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  async updateSurvey(survey: SurveyDto, currentUser: JwtUser): Promise<SurveyDocument | null> {
+  // TODO: REMOVE AFTER REVIEW ONLY INCLUDED TO NOT BREAK THE REVIEW VIEW
+  /*
+    async updateSurvey(survey: SurveyDto, currentUser: JwtUser): Promise<SurveyDocument | null> {
     const existingSurvey = await this.surveyModel.findById(survey.id).exec();
     if (!existingSurvey) {
       return null;
@@ -263,59 +250,90 @@ class SurveysService implements OnModuleInit {
     }
     return updatedFormula;
   }
+  */
 
-  async updateOrCreateSurvey(surveyDto: SurveyDto, user: JwtUser): Promise<SurveyDocument | null> {
-    let survey: SurveyDocument | null;
-    survey = await this.updateSurvey(surveyDto, user);
-    if (survey == null) {
-      survey = await this.createSurvey(surveyDto, user);
-    }
-    if (survey == null) {
+  async updateOrCreateSurvey(surveyDto: SurveyDto, user: JwtUser): Promise<SurveyDocument> {
+    const isCreating = !surveyDto.id;
+
+    const surveyId = isCreating ? new Types.ObjectId().toString() : surveyDto.id;
+    if (!surveyId) {
       throw new CustomHttpException(
-        SurveyErrorMessages.UpdateOrCreateError,
-        HttpStatus.NOT_FOUND,
+        SurveyErrorMessages.MISSING_ID_ERROR,
+        HttpStatus.BAD_REQUEST,
         undefined,
-        SurveysService.name,
-      );
-    }
-    // eslint-disable-next-line no-underscore-dangle
-    const surveyId = (survey._id as Types.ObjectId).toString();
-    const { preferred_username: username } = user;
-
-    const updatedFormula = await this.updateFormula(username, surveyId, survey.formula);
-
-    const updatedSurvey = { ...surveyDto, id: surveyId, formula: updatedFormula };
-    const savedSurvey = await this.updateSurvey(updatedSurvey, user);
-
-    if (savedSurvey == null) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.UpdateOrCreateError,
-        HttpStatus.NOT_FOUND,
-        undefined,
-        SurveysService.name,
+        SurveysAttachmentService.name,
       );
     }
 
-    try {
-      const temporaryAttachmentPath = `${SURVEYS_TEMP_FILES_PATH}/${username}`;
-      const exists = await FilesystemService.checkIfFileExist(temporaryAttachmentPath);
-      if (!exists) {
-        return savedSurvey;
+    if (!isCreating) {
+      const existingSurvey = await this.surveyModel.findById(surveyId).lean();
+      if (!existingSurvey) {
+        throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
       }
-      await this.fileSystemService.deleteDirectory(temporaryAttachmentPath);
-    } catch (error) {
+      SurveysService.assertUserIsAuthorized(existingSurvey.creator.username, user);
+    }
+
+    const processedFormula = await this.surveysAttachmentService.preProcessFormula(
+      surveyId,
+      surveyDto.formula,
+      user.preferred_username,
+    );
+    if (processedFormula === null) {
       throw new CustomHttpException(
-        CommonErrorMessages.FILE_DELETION_FAILED,
-        HttpStatus.NOT_MODIFIED,
-        error,
-        SurveysService.name,
+        SurveyErrorMessages.UpdateOrCreateError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        SurveysAttachmentService.name,
       );
     }
 
-    return savedSurvey;
+    const creator = isCreating ? prepareCreator(surveyDto.creator, user) : surveyDto.creator;
+    const surveyDataToSave = {
+      ...surveyDto,
+      _id: surveyId,
+      creator,
+      formula: processedFormula,
+    };
+    const savedSurvey = await this.surveyModel
+      .findByIdAndUpdate(surveyId, surveyDataToSave, { new: true, upsert: true })
+      .exec();
+    if (!savedSurvey) {
+      throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    await this.notifySurveyChange(
+      savedSurvey,
+      isCreating ? SSE_MESSAGE_TYPE.SURVEY_CREATED : SSE_MESSAGE_TYPE.SURVEY_UPDATED,
+    );
+
+    this.surveysAttachmentService.cleanupTemporaryFiles(user.preferred_username);
+
+    return savedSurvey as SurveyDocument;
   }
 
-  async createTemplate(surveyTemplateDto: SurveyTemplateDto): Promise<string> {
+  notifySurveyChange = async (survey: SurveyDocument, eventType: SseMessageType): Promise<void> => {
+    if (survey.isPublic) {
+      this.sseService.informAllUsers(survey, eventType);
+    } else {
+      const invitedMembersList = await this.groupsService.getInvitedMembers(
+        survey.invitedGroups,
+        survey.invitedAttendees,
+      );
+      this.sseService.sendEventToUsers(invitedMembersList, survey, eventType);
+    }
+  };
+
+  static assertUserIsAuthorized = (creatorUsername: string, currentUser: JwtUser): void => {
+    const isOwner = creatorUsername === currentUser.preferred_username;
+    const isSuperAdmin = getIsAdmin(currentUser.ldapGroups);
+    if (!isOwner && !isSuperAdmin) {
+      throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.UNAUTHORIZED);
+    }
+  };
+
+  // TODO: REMOVE AFTER REVIEW ONLY INCLUDED TO NOT BREAK THE REVIEW VIEW
+  /*
+  async createTemplate(surveyTemplateDto: SurveyTemplateDto): Promise<void> {
     let filename = surveyTemplateDto.fileName;
     if (!filename) {
       const date = new Date();
@@ -457,6 +475,7 @@ class SurveysService implements OnModuleInit {
     const pathWithIds = `${surveyId}/logo`;
     return this.updateTempFilesUrls(username, pathWithIds, tempFiles, link);
   }
+  */
 }
 
 export default SurveysService;

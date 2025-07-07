@@ -11,8 +11,13 @@
  */
 
 import ChoiceTypes from '@libs/survey/constants/choice-types';
+import ImageTypes from '@libs/survey/constants/image-types';
+import OtherTypes from '@libs/survey/constants/other-types';
 
-const isQuestionTypeChoiceType = (questionType: string): boolean =>
-  Object.values(ChoiceTypes).includes(questionType as ChoiceTypes);
+const QuestionsType = {
+  ...ChoiceTypes,
+  ...ImageTypes,
+  ...OtherTypes,
+};
 
-export default isQuestionTypeChoiceType;
+export default QuestionsType;

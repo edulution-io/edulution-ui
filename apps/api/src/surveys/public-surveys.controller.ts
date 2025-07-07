@@ -29,17 +29,18 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ANSWER, PUBLIC_USER, FILES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
-import SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveysAnswersTemporaryAttachmentPath';
+import SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveysAnswerTemporaryAttachmentPath';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
-import getUsernameFromRequest from '@libs/common/utils/api/getUsernameFromRequest';
+import getUsernameFromRequest from 'apps/api/src/common/utils/getUsernameFromRequest';
 import surveyAnswerMaximumFileSize from '@libs/survey/constants/survey-answer-max-file-size';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import FilesystemService from 'apps/api/src/filesystem/filesystem.service';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
+import SurveysAttachmentService from './surveys-attachment.service';
 import { Public } from '../common/decorators/public.decorator';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 
@@ -49,6 +50,7 @@ class PublicSurveysController {
   constructor(
     private readonly surveyService: SurveysService,
     private readonly surveyAnswerService: SurveyAnswerService,
+    private readonly surveysAttachmentService: SurveysAttachmentService,
   ) {}
 
   @Get(`/:surveyId`)
@@ -86,7 +88,7 @@ class PublicSurveysController {
   @Public()
   serveFile(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
     const { surveyId, questionId, filename } = params;
-    return this.surveyService.serveFiles(surveyId, questionId, filename, res);
+    return this.surveysAttachmentService.serveFiles(surveyId, questionId, filename, res);
   }
 
   @Post(`${ANSWER}/${FILES}/:userName/:surveyId`)
@@ -132,12 +134,12 @@ class PublicSurveysController {
 
   @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:fileName`)
   @Public()
-  async deleteFiles(@Param() params: { userName: string; surveyId: string; fileName: string }) {
+  static async deleteFiles(@Param() params: { userName: string; surveyId: string; fileName: string }) {
     const { userName, surveyId, fileName } = params;
     if (!userName || !surveyId || !fileName) {
       throw new Error('INVALID_REQUEST_DATA');
     }
-    await this.surveyAnswerService.deleteFileFromAnswer(userName, surveyId, fileName);
+    await SurveyAnswerService.deleteFileFromAnswer(userName, surveyId, fileName);
   }
 
   @Get(`${ANSWER}/${FILES}/:surveyId/:filename`)
