@@ -24,10 +24,11 @@ const handleSingleData = async (
   httpMethod: HttpMethods,
   type: ContentType,
   data: PathChangeOrCreateProps,
-) => {
+): Promise<void> => {
   if (action === FileActionType.CREATE_FOLDER) {
     await eduApi[httpMethod](buildApiFileTypePathUrl(endpoint, type, data.path), data);
-  } else if (action === FileActionType.MOVE_FILE_OR_FOLDER || action === FileActionType.RENAME_FILE_OR_FOLDER) {
+  }
+  if (action === FileActionType.MOVE_FILE_OR_FOLDER || action === FileActionType.RENAME_FILE_OR_FOLDER) {
     await eduApi[httpMethod](buildApiFilePathUrl(endpoint, data.path), data);
   }
 };
