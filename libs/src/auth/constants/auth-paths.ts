@@ -18,6 +18,8 @@ const AUTH_PATHS = {
   AUTH_QRCODE: 'qrcode',
   AUTH_CHECK_TOTP: 'totp',
   AUTH_VIA_APP: 'edu-app',
+  KEYCLOAK_REALM: 'edulution',
+  KEYCLOAK_CLIENT_ID: 'edu-ui',
 } as const;
 
 export default AUTH_PATHS;
