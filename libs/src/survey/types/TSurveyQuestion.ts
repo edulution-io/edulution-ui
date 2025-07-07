@@ -18,6 +18,8 @@ interface TSurveyQuestion extends Question {
 
   maxSize: number;
   allowMultiple: boolean;
+
+  imageWidth: number;
 }
 
 export default TSurveyQuestion;
