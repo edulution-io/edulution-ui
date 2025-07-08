@@ -12,12 +12,12 @@
 
 import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 import UsersService from './users.service';
 import { UsersController } from './users.controller';
 import { User, UserSchema } from './user.schema';
 import { UserAccounts, UserAccountsSchema } from './account.schema';
 import GroupsModule from '../groups/groups.module';
+import UsersCacheQueue from './queue/users-cache.queue';
 
 @Global()
 @Module({
@@ -27,10 +27,9 @@ import GroupsModule from '../groups/groups.module';
       { name: UserAccounts.name, schema: UserAccountsSchema },
     ]),
     GroupsModule,
-    EventEmitterModule.forRoot(),
   ],
   controllers: [UsersController],
-  providers: [UsersService],
+  providers: [UsersService, UsersCacheQueue],
   exports: [UsersService],
 })
 export default class UsersModule {}

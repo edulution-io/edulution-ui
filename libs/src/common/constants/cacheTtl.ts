@@ -10,10 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const oneDay = 24 * 60 * 60 * 1000;
+import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
 
 export const DEFAULT_CACHE_TTL_MS = 3600000;
-export const USERS_CACHE_TTL_MS = 31 * oneDay;
+export const USERS_CACHE_TTL_MS = THIRTY_DAYS;
 export const KEYCLOACK_SYNC_MS = Number(process.env['KEYCLOACK_SYNC_MS']) || 60000;
-export const GROUPS_CACHE_TTL_MS = 31 * oneDay;
+export const GROUPS_CACHE_TTL_MS = THIRTY_DAYS;
 export const AUTH_CACHE_TTL_MS = 3600000;
