@@ -25,7 +25,7 @@ import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/compone
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import type UserDto from '@libs/user/types/user.dto';
 import processLdapGroups from '@libs/user/utils/processLdapGroups';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
@@ -42,6 +42,7 @@ import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 import useAppConfigsStore from '../Settings/AppConfig/appConfigsStore';
+import useAuthErrorHandler from './useAuthErrorHandler';
 
 type LocationState = {
   from: string;
@@ -73,23 +74,7 @@ const LoginPage: React.FC = () => {
     },
   });
 
-  useEffect(() => {
-    if (auth.error) {
-      if (auth.error.message.includes('Invalid response Content-Type:')) {
-        form.setError('password', { message: t('auth.errors.EdulutionConnectionFailed') });
-        return;
-      }
-      if (auth.error.source.includes('renewSilent')) {
-        form.setError('password', { message: t('auth.errors.TokenExpired') });
-        return;
-      }
-      form.setError('password', { message: t(auth.error.message) });
-
-      if (showQrCode) {
-        toast.error(t(auth.error.message));
-      }
-    }
-  }, [auth.error]);
+  useAuthErrorHandler(auth.error, form, showQrCode);
 
   const onSubmit = async () => {
     try {
@@ -266,6 +251,7 @@ const LoginPage: React.FC = () => {
                   disabled={isLoading}
                   placeholder={label}
                   variant="login"
+                  width="full"
                   data-testid={`test-id-login-page-${fieldName}-input`}
                 />
               </FormControl>

@@ -23,7 +23,7 @@ import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialo
 import ContentType from '@libs/filesharing/types/contentType';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
-import getFileSharingTableColumns from '@/pages/FileSharing/Table/FileSharingTableColumns';
+import getFileSharingTableColumns from '@/pages/FileSharing/Table/getFileSharingTableColumns';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import { getFileNameFromPath } from '@/pages/FileSharing/utilities/filesharingUtilities';
 

@@ -50,7 +50,7 @@ import FilesharingService from './filesharing.service';
 import WebdavService from '../webdav/webdav.service';
 import { Public } from '../common/decorators/public.decorator';
 import ParseJsonPipe from '../common/pipes/parseJson.pipe';
-import GetCurrentUser from '../common/decorators/getUser.decorator';
+import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()

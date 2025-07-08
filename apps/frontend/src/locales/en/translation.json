@@ -2,7 +2,6 @@
   "welcome": "Welcome to the application",
   "changeLang": "Change Language",
   "heading": "Welcome {{givenName}} {{familyName}}",
-  "content": "Here is your personal {{ applicationName }} dashboard. The place where all your applications for digital teaching are collected.",
   "closeEditingWindow": "Close editing window",
   "framebufferImage": "Framebuffer image",
   "previewImage": "Image preview",
@@ -109,6 +108,7 @@
     "sidebar": "Embedded"
   },
   "dashboard": {
+    "description": "Here is your personal {{ applicationName }} dashboard. The place where all your applications for digital teaching are collected.",
     "pageTitle": "Dashboard",
     "mobileAccess": {
       "title": "Mobile Access",
@@ -135,6 +135,7 @@
   "auth": {
     "errors": {
       "TokenExpired": "Session expired.",
+      "tokenIsNotActive": "Session is no longer active.",
       "SessionExpiring": "You will be logged off in less than a minute.",
       "Unauthorized": "You are not authorized.",
       "Unknown": "User not found.",
@@ -261,7 +262,6 @@
     "description": "The conference tool enables audio and video conferencing and supports presentations with advanced whiteboard functions.",
     "sidebar": "Conferences",
     "create": "Create conference",
-    "creator": "Creator",
     "delete": "Delete",
     "deleteConference": "Delete conference",
     "deleteConferences": "Delete {count}} conferences",
@@ -620,10 +620,17 @@
       "expectingUserInput": "Expecting the user to answer here, ... ",
       "templates": "Templates",
       "templateMenu": {
-        "fetch": "Choose one of the following templates.",
         "submit": "Save Survey as template.",
-        "title": "Templates store/load",
-        "emptyMessage": "There are no templates available, yet"
+        "title": "Templates:",
+        "userMessage": "Here you can load a template that is available to you.",
+        "adminMessage": "Here you can either load a template or update/create the template of the current survey, for later usage.",
+        "emptyMessage": "There are no templates available yet",
+        "deletion": {
+          "title": "Delete template",
+          "message": "Are you sure you want to delete this template?",
+          "success": "Template deleted successfully",
+          "error": "Failed to delete template"
+        }
       },
       "questionSettings": {
         "settings": "Settings",
@@ -1131,6 +1138,7 @@
     "next": "Next",
     "back": "Back",
     "confirm": "Confirm",
+    "creator": "Creator",
     "share": "Share",
     "answers": "Answers",
     "error": "Error",
@@ -1182,6 +1190,7 @@
     "yes": "Yes",
     "no": "No",
     "title": "Title",
+    "filename": "File name",
     "add": "Add",
     "reload": "Reload",
     "stop": "Stop",

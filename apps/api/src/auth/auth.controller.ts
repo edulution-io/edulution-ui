@@ -15,13 +15,13 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Logger,
   Param,
   Post,
   Put,
   Query,
   Req,
   UseInterceptors,
-  Logger,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
@@ -35,7 +35,7 @@ import CustomHttpException from '../common/CustomHttpException';
 import { Public } from '../common/decorators/public.decorator';
 import AuthService from './auth.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
-import GetCurrentUserGroups from '../common/decorators/getUserGroups.decorator';
+import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
 
 @ApiTags(AUTH_PATHS.AUTH_ENDPOINT)
 @Controller(AUTH_PATHS.AUTH_ENDPOINT)

@@ -20,7 +20,7 @@ import ConferenceDto from '@libs/conferences/types/conference.dto';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 
-interface CreateConferenceDialogStore {
+interface UseCreateConferenceDialogStore {
   isCreateConferenceDialogOpen: boolean;
   openCreateConferenceDialog: () => void;
   closeCreateConferenceDialog: () => void;
@@ -33,15 +33,15 @@ interface CreateConferenceDialogStore {
   createdConference: ConferenceDto | null;
 }
 
-const initialState: Partial<CreateConferenceDialogStore> = {
+const initialState: Partial<UseCreateConferenceDialogStore> = {
   isCreateConferenceDialogOpen: false,
   isLoading: false,
   error: null,
   createdConference: null,
 };
 
-const useCreateConferenceDialogStore = create<CreateConferenceDialogStore>((set) => ({
-  ...(initialState as CreateConferenceDialogStore),
+const useCreateConferenceDialogStore = create<UseCreateConferenceDialogStore>((set) => ({
+  ...(initialState as UseCreateConferenceDialogStore),
   openCreateConferenceDialog: () => set({ isCreateConferenceDialogOpen: true }),
   closeCreateConferenceDialog: () => set({ isCreateConferenceDialogOpen: false }),
   setIsLoading: (isLoading) => set({ isLoading }),

@@ -10,11 +10,22 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { posix } from 'path';
+import { create } from 'zustand';
 
-const buildNormalizedWebdavPath = (filePath: string): string => {
-  const normalized = posix.normalize(filePath);
-  return `/webdav/${normalized.split('/').map(encodeURIComponent).join('/')}`;
+interface UseSidebarStore {
+  isMobileSidebarOpen: boolean;
+  reset: () => void;
+  toggleMobileSidebar: () => void;
+}
+
+const initialState = {
+  isMobileSidebarOpen: false,
 };
 
-export default buildNormalizedWebdavPath;
+const useSidebarStore = create<UseSidebarStore>((set) => ({
+  ...initialState,
+  reset: () => set(initialState),
+  toggleMobileSidebar: () => set((state) => ({ isMobileSidebarOpen: !state.isMobileSidebarOpen })),
+}));
+
+export default useSidebarStore;

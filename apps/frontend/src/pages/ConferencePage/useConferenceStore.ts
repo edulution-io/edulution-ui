@@ -19,7 +19,7 @@ import { CONFERENCES_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEnd
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 
-interface ConferencesStore {
+interface UseConferenceStore {
   selectedRows: RowSelectionState;
   setSelectedRows: (selectedRows: RowSelectionState) => void;
   setConferences: (conferences: ConferenceDto[]) => void;
@@ -48,7 +48,7 @@ const initialValues = {
   isDeleteConferencesDialogOpen: false,
 };
 
-const useConferenceStore = create<ConferencesStore>((set, get) => ({
+const useConferenceStore = create<UseConferenceStore>((set, get) => ({
   ...initialValues,
 
   setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),

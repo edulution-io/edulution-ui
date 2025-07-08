@@ -23,7 +23,7 @@ import { PUBLIC_ROUTE_KEY } from '../common/decorators/public.decorator';
 import extractToken from '../common/utils/extractToken';
 
 @Injectable()
-class AuthenticationGuard implements CanActivate {
+class AuthGuard implements CanActivate {
   private readonly pubKey: string;
 
   constructor(
@@ -48,12 +48,7 @@ class AuthenticationGuard implements CanActivate {
         request.token = token;
       } catch (err) {
         if (!isPublic) {
-          throw new CustomHttpException(
-            AuthErrorMessages.TokenExpired,
-            HttpStatus.UNAUTHORIZED,
-            err,
-            AuthenticationGuard.name,
-          );
+          throw new CustomHttpException(AuthErrorMessages.TokenExpired, HttpStatus.UNAUTHORIZED, err, AuthGuard.name);
         }
       }
     }
@@ -66,9 +61,9 @@ class AuthenticationGuard implements CanActivate {
       AuthErrorMessages.TokenExpired,
       HttpStatus.UNAUTHORIZED,
       'No JWT provided',
-      AuthenticationGuard.name,
+      AuthGuard.name,
     );
   }
 }
 
-export default AuthenticationGuard;
+export default AuthGuard;

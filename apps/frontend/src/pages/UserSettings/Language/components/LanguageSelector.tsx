@@ -14,7 +14,7 @@ import React, { useEffect } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import RadioGroupFormField from '@/components/shared/RadioGroupFormField';
 import UserLanguage from '@libs/user/constants/userLanguage';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import useMedia from '@/hooks/useMedia';
 import UserLanguageType from '@libs/user/types/userLanguageType';
 import { EnglishIcon, GermanIcon, SettingsIcon } from '@/assets/icons';
