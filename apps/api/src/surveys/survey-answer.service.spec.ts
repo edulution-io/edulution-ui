@@ -22,7 +22,7 @@ import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveysAttachmentService from 'apps/api/src/surveys/surveys-attachment.service';
 import { Survey, SurveyDocument } from './survey.schema';
-import SurveyAnswersService from './survey-answer.service';
+import SurveyAnswerService from './survey-answer.service';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
 import {
   answeredSurvey01,
@@ -81,7 +81,7 @@ import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
 
 describe('SurveyAnswerService', () => {
-  let service: SurveyAnswersService;
+  let service: SurveyAnswerService;
   let model: Model<SurveyAnswerDocument>;
   let surveyModel: Model<SurveyDocument>;
 
@@ -95,7 +95,7 @@ describe('SurveyAnswerService', () => {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
         },
-        SurveyAnswersService,
+        SurveyAnswerService,
         SurveysAttachmentService,
         { provide: GroupsService, useValue: mockGroupsService },
         {
@@ -106,7 +106,7 @@ describe('SurveyAnswerService', () => {
       ],
     }).compile();
 
-    service = module.get<SurveyAnswersService>(SurveyAnswersService);
+    service = module.get<SurveyAnswerService>(SurveyAnswerService);
     model = module.get<Model<SurveyAnswerDocument>>(getModelToken(SurveyAnswer.name));
     surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
   });
