@@ -12,7 +12,7 @@
 
 import PageLayout from '@/components/structure/layout/PageLayout';
 import React, { useEffect } from 'react';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import { useNavigate, useParams } from 'react-router-dom';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import DownloadPublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DownloadPublicShareDialog';
