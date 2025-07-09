@@ -21,7 +21,7 @@ import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import folderPaths from '@libs/common/constants/folderPaths';
 import { WsAdapter } from '@nestjs/platform-ws';
 import AppModule from './app/app.module';
-import AuthenticationGuard from './auth/auth.guard';
+import AuthGuard from './auth/auth.guard';
 import getLogLevels from './logging/getLogLevels';
 
 async function bootstrap() {
@@ -47,7 +47,7 @@ async function bootstrap() {
   app.useWebSocketAdapter(new WsAdapter(app));
 
   const reflector = new Reflector();
-  app.useGlobalGuards(new AuthenticationGuard(new JwtService(), reflector));
+  app.useGlobalGuards(new AuthGuard(new JwtService(), reflector));
 
   folderPaths.forEach((path) => {
     if (!existsSync(path)) {

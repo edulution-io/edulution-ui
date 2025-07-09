@@ -23,6 +23,9 @@ const useFileOperationProgressToast = (progress: FilesharingProgressDto | null |
     if (!progress) return;
 
     const pct = progress.percent ?? 0;
+    if (pct === 100) {
+      lastPercent.current = null;
+    }
     if (pct === 0 || pct === lastPercent.current) return;
     lastPercent.current = pct;
 
@@ -44,7 +47,7 @@ const useFileOperationProgressToast = (progress: FilesharingProgressDto | null |
     };
 
     const getToastDuration = (failedOperations: number, precent: number): number | undefined => {
-      if (failedOperations > 0) return Infinity;
+      if (failedOperations > 0) return 10000;
       if (precent >= 100) return 5000;
       return Infinity;
     };

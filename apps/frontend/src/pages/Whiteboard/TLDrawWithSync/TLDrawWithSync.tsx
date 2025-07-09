@@ -17,7 +17,7 @@ import 'tldraw/tldraw.css';
 import COLOR_SCHEME from '@libs/ui/constants/colorScheme';
 import eduApi from '@/api/eduApi';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/apiEndpoints';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import handleApiError from '@/utils/handleApiError';
@@ -39,6 +39,7 @@ const TLDrawWithSync = () => {
   const { setSelectedRoomId, selectedRoomId, initRoomHistory } = useTLDRawHistoryStore();
 
   const WS_BASE_URL = `${EDU_API_WEBSOCKET_URL}/${TLDRAW_SYNC_ENDPOINTS.BASE}`;
+  const assetBasePath = `/${TLDRAW_SYNC_ENDPOINTS.BASE}/${TLDRAW_SYNC_ENDPOINTS.ASSETS}`;
 
   useEffect(() => {
     void getOwnUser();
@@ -88,15 +89,13 @@ const TLDrawWithSync = () => {
     [user?.username],
   );
 
-  const assetBasePath = `/${TLDRAW_SYNC_ENDPOINTS.BASE}/${TLDRAW_SYNC_ENDPOINTS.ASSETS}`;
-
   if (!user) return null;
 
   const applyUserPreferences = (editor: Editor) => {
     editor.user.updateUserPreferences({
       colorScheme: COLOR_SCHEME,
       locale: language,
-      name: user.firstName + ' ' + user.lastName + '(' + user.username + ')',
+      name: `${user.firstName} ${user.lastName}(${user.username})`,
     });
   };
 

@@ -12,7 +12,6 @@
 
 import React, { useState } from 'react';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
-import CreateOrUpdateBulletinDialog from '@/pages/BulletinBoard/BulletinBoardEditorial/CreateOrUpdateBulletinDialog';
 import DeleteBulletinsDialog from '@/pages/BulletinBoard/BulletinBoardEditorial/DeleteBulletinsDialog';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
@@ -81,7 +80,6 @@ const BulletinBoardPageColumn = ({
         </ResizableWindow>
       )}
 
-      <CreateOrUpdateBulletinDialog onSubmit={getBulletinsByCategories} />
       <DeleteBulletinsDialog onSubmit={getBulletinsByCategories} />
     </div>
   );

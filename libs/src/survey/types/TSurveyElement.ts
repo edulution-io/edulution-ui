@@ -10,20 +10,27 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import TSurveyQuestionChoice from '@libs/survey/types/TSurveyQuestionChoice';
+import QuestionTypes from '@libs/survey/types/TSurveyQuestionTypes';
+
 interface SurveyElement {
-  type: string;
+  type: QuestionTypes;
   name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any;
   title?: string;
   description?: string;
   choicesOrder?: string;
-  choices: string[] | null;
-  choicesByUrl: {
+  choices?: TSurveyQuestionChoice[] | null;
+  choicesByUrl?: {
     url: string;
     valueName?: string;
     titleName?: string;
+    imageLink?: string;
   } | null;
   hideIfChoicesEmpty?: boolean;
-  showOtherItem: boolean | null;
+  imageLink?: string;
+  showOtherItem?: boolean | null;
   showNoneItem?: boolean;
 }
 

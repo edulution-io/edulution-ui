@@ -18,8 +18,9 @@ import BulletinBoardEditorialPage from '@/pages/BulletinBoard/BulletinBoardEdito
 import BulletinBoardEditorialFloatingButtonsBar from '@/pages/BulletinBoard/BulletinBoardEditorial/BulletinBoardEditorialFloatingButtonsBar';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import BulletinBoardPageColumn from '@/pages/BulletinBoard/components/BulletinBoardPageColumn';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import CreateOrUpdateBulletinDialog from '@/pages/BulletinBoard/BulletinBoardEditorial/CreateOrUpdateBulletinDialog';
 
 const BulletinBoardPage = () => {
   const { t } = useTranslation();
@@ -67,6 +68,8 @@ const BulletinBoardPage = () => {
             <div>{t('bulletinboard.noBulletinsToShow')}</div>
           </div>
         )}
+
+        <CreateOrUpdateBulletinDialog onSubmit={getBulletinsByCategories} />
       </div>
     );
   };

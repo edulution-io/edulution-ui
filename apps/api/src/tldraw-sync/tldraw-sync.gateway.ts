@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { Logger, OnModuleInit } from '@nestjs/common';
 import { OnGatewayConnection, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { RawData, Server, WebSocket } from 'ws';
@@ -8,11 +20,11 @@ import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
 import { readFileSync } from 'fs';
 import { JwtService } from '@nestjs/jwt';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
-import TLDrawSyncService from './tldraw-sync.service';
-import Attendee from '../conferences/attendee.schema';
 import TLDRAW_MULTI_USER_ROOM_PREFIX from '@libs/whiteboard/constants/tldrawMultiUserRoomPrefix';
 import TLDRAW_SINGLE_USER_ROOM_PREFIX from '@libs/whiteboard/constants/tldrawSingleUserRoomPrefix';
 import GroupMemberDto from '@libs/groups/types/groupMember.dto';
+import Attendee from '../conferences/attendee.schema';
+import TLDrawSyncService from './tldraw-sync.service';
 
 @WebSocketGateway({
   path: `${EDU_API_ROOT}/${TLDRAW_SYNC_ENDPOINTS.BASE}`,
@@ -65,12 +77,14 @@ export default class TLDrawSyncGateway implements OnGatewayConnection, OnModuleI
       };
 
       const logListener = (message: RawData) => {
-        const parsed = this.parseDiff(message);
+        const parsed = TLDrawSyncGateway.parseDiff(message);
         if (!parsed) return;
 
         batch.push(parsed);
         if (debounceTimer) clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(flushBatch, 1000);
+        debounceTimer = setTimeout(() => {
+          void flushBatch();
+        }, 1000);
       };
 
       client.on('message', logListener);
@@ -107,9 +121,9 @@ export default class TLDrawSyncGateway implements OnGatewayConnection, OnModuleI
     }
 
     client.off('message', collectListener);
-    for (const msg of caught) {
+    caught.forEach((msg) => {
       client.emit('message', msg);
-    }
+    });
   }
 
   private async authenticate(
@@ -148,7 +162,7 @@ export default class TLDrawSyncGateway implements OnGatewayConnection, OnModuleI
       if (multiUserRoomId) {
         permittedUsers = await this.tldrawSyncService.getPermittedUsers(roomId);
 
-        if (!permittedUsers.some((user) => user.username === username)) {
+        if (!permittedUsers.some((u) => u.username === username)) {
           return {};
         }
       }
@@ -167,13 +181,26 @@ export default class TLDrawSyncGateway implements OnGatewayConnection, OnModuleI
     }
   }
 
-  private parseDiff(message: RawData): Record<string, unknown> | null {
-    let msg: any;
+  private static parseDiff(message: RawData): Record<string, unknown> | null {
+    let payload: string;
+
+    if (Buffer.isBuffer(message)) {
+      payload = message.toString('utf-8');
+    } else if (message instanceof ArrayBuffer) {
+      payload = Buffer.from(message).toString('utf-8');
+    } else if (Array.isArray(message)) {
+      payload = Buffer.concat(message).toString('utf-8');
+    } else {
+      return null;
+    }
+
+    let msg: Record<string, unknown>;
     try {
-      msg = JSON.parse(message.toString());
+      msg = JSON.parse(payload) as Record<string, unknown>;
     } catch {
       return null;
     }
+
     return msg.diff === undefined ? null : msg;
   }
 }

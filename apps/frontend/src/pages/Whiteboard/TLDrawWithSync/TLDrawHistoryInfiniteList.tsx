@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useEffect, useRef } from 'react';
 import useTLDRawHistoryStore from '@/pages/Whiteboard/TLDrawWithSync/useTLDRawHistoryStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
@@ -18,27 +30,28 @@ const TLDrawHistoryInfiniteList: React.FC = () => {
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (!historyHasMoreItemsToLoad) return;
+    let observer: IntersectionObserver | null = null;
     const container = scrollContainerRef.current;
     const sentinel = loadMoreRef.current;
-    if (!container || !sentinel) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          void fetchNextHistoryPage(5);
-        }
-      },
-      {
-        root: container,
-        rootMargin: '0px',
-        threshold: 0.5,
-      },
-    );
+    if (historyHasMoreItemsToLoad && container && sentinel) {
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            void fetchNextHistoryPage(5);
+          }
+        },
+        {
+          root: container,
+          rootMargin: '0px',
+          threshold: 0.5,
+        },
+      );
+      observer.observe(sentinel);
+    }
 
-    observer.observe(sentinel);
     return () => {
-      observer.disconnect();
+      observer?.disconnect();
     };
   }, [historyHasMoreItemsToLoad, fetchNextHistoryPage]);
 

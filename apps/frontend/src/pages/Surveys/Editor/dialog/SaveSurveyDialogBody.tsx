@@ -16,7 +16,7 @@ import { UseFormReturn } from 'react-hook-form';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import useGroupStore from '@/store/GroupStore';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import Checkbox from '@/components/ui/Checkbox';
@@ -46,11 +46,19 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
     setValue('invitedGroups', groups, { shouldValidate: true });
   };
 
-  const checkboxOptions: { name: keyof SurveyDto; label: string }[] = [
+  const checkboxOptions: { name: keyof SurveyDto; label: string; shouldDisable?: boolean }[] = [
     { name: 'isAnonymous', label: 'surveys.saveDialog.isAnonymous' },
     { name: 'isPublic', label: 'surveys.saveDialog.isPublic' },
-    { name: 'canSubmitMultipleAnswers', label: 'surveys.saveDialog.canSubmitMultipleAnswers' },
-    { name: 'canUpdateFormerAnswer', label: 'surveys.saveDialog.canUpdateFormerAnswer' },
+    {
+      name: 'canSubmitMultipleAnswers',
+      label: 'surveys.saveDialog.canSubmitMultipleAnswers',
+      shouldDisable: !!watch('canUpdateFormerAnswer'),
+    },
+    {
+      name: 'canUpdateFormerAnswer',
+      label: 'surveys.saveDialog.canUpdateFormerAnswer',
+      shouldDisable: !!watch('canSubmitMultipleAnswers'),
+    },
   ];
 
   return (
@@ -71,12 +79,13 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
         variant="dialog"
       />
       <p className="text-m font-bold text-background">{t('surveys.saveDialog.settingsFlags')}</p>
-      {checkboxOptions.map(({ name, label }) => (
+      {checkboxOptions.map(({ name, label, shouldDisable }) => (
         <Checkbox
           key={name}
           label={t(label)}
           checked={Boolean(watch(name))}
           onCheckedChange={(value: boolean) => setValue(name, value, { shouldValidate: true })}
+          disabled={shouldDisable}
           aria-label={t(`survey.${name}`)}
           className="text-background"
         />

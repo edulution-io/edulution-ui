@@ -10,21 +10,28 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
-import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
+import useFileSharingMenuConfig from '@/pages/FileSharing/useFileSharingMenuConfig';
 import useMedia from '@/hooks/useMedia';
-import getFileSharingTableColumns from '@/pages/FileSharing/Table/FileSharingTableColumns';
+import getFileSharingTableColumns from '@/pages/FileSharing/Table/getFileSharingTableColumns';
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 
 const FileSharingTable = () => {
   const { isMobileView, isTabletView } = useMedia();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const { setSelectedRows, setSelectedItems, selectedRows, files, isLoading } = useFileSharingStore();
+  const { fetchShares } = usePublicShareStore();
+
+  useEffect(() => {
+    void fetchShares();
+  }, []);
+
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue =
       typeof updaterOrValue === 'function'
@@ -33,7 +40,7 @@ const FileSharingTable = () => {
     setSelectedRows(newValue);
     const selectedItemData = Object.keys(newValue)
       .filter((key) => newValue[key])
-      .map((rowId) => files.find((file) => file.filename === rowId))
+      .map((rowId) => files.find((file) => file.filePath === rowId))
       .filter(Boolean) as DirectoryFileDTO[];
     setSelectedItems(selectedItemData);
   };
@@ -47,6 +54,7 @@ const FileSharingTable = () => {
       [FILE_SHARING_TABLE_COLUMNS.LAST_MODIFIED]: shouldHideColumns,
       [FILE_SHARING_TABLE_COLUMNS.SIZE]: shouldHideColumns,
       [FILE_SHARING_TABLE_COLUMNS.TYPE]: shouldHideColumns,
+      [FILE_SHARING_TABLE_COLUMNS.IS_SHARED]: shouldHideColumns,
     }),
     [shouldHideColumns],
   );
@@ -60,7 +68,7 @@ const FileSharingTable = () => {
       onRowSelectionChange={handleRowSelectionChange}
       isLoading={isLoading}
       selectedRows={selectedRows}
-      getRowId={(row) => row.filename}
+      getRowId={(row) => row.filePath}
       applicationName={appName}
       initialSorting={[
         { id: 'type', desc: false },

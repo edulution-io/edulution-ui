@@ -18,16 +18,16 @@ import { RoomSnapshot, TLSocketRoom } from '@tldraw/sync-core';
 import TLDRAW_PERSISTENCE_INTERVAL from '@libs/tldraw-sync/constants/persistenceInterval';
 import RoomState from '@libs/tldraw-sync/types/tdlraw-sync-rooms';
 import { UnknownRecord } from 'tldraw';
-import { TldrawSyncRoom, TldrawSyncRoomDocument } from './tldraw-sync-room.schema';
-import { TLDrawSyncLog, TLDrawSyncLogDocument } from './tldraw-sync-log.schema';
 import TLDRAW_MULTI_USER_ROOM_PREFIX from '@libs/whiteboard/constants/tldrawMultiUserRoomPrefix';
 import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
 import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import SseService from '../sse/sse.service';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import GroupMemberDto from '@libs/groups/types/groupMember.dto';
+import SseService from '../sse/sse.service';
+import { TLDrawSyncLog, TLDrawSyncLogDocument } from './tldraw-sync-log.schema';
+import { TldrawSyncRoom, TldrawSyncRoomDocument } from './tldraw-sync-room.schema';
 
 @Injectable()
 export default class TLDrawSyncService {
@@ -153,7 +153,7 @@ export default class TLDrawSyncService {
 
   async getHistory(roomIdWithPrefix: string, page: number, limit: number, username: string) {
     const permittedUsers = await this.getPermittedUsers(roomIdWithPrefix);
-    if (!permittedUsers.some((user) => user.username === username)) return;
+    if (!permittedUsers.some((user) => user.username === username)) return undefined;
 
     const skip = (page - 1) * limit;
 

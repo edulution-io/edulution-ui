@@ -21,11 +21,11 @@ import {
   Param,
   Patch,
   Post,
-  Res,
   Query,
+  Res,
   UploadedFile,
-  UseInterceptors,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -33,27 +33,28 @@ import JWTUser from '@libs/user/types/jwt/jwtUser';
 import {
   ANSWER,
   CAN_PARTICIPATE,
+  FILES,
   FIND_ONE,
   HAS_ANSWERS,
-  IMAGES,
-  TEMPLATES,
-  PUBLIC_SURVEYS,
   RESULT,
   SURVEYS,
+  TEMPLATES,
 } from '@libs/survey/constants/surveys-endpoint';
-import SURVEYS_IMAGES_PATH from '@libs/survey/constants/surveysImagesPaths';
+import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
-import AnswerDto from '@libs/survey/types/api/answer.dto';
-import PushAnswerDto from '@libs/survey/types/api/push-answer.dto';
+import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
-import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import getUsernameFromRequest from 'apps/api/src/common/utils/getUsernameFromRequest';
 import SurveysService from './surveys.service';
+import SurveysAttachmentService from './surveys-attachment.service';
+import SurveysTemplateService from './surveys-template.service';
 import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
-import GetCurrentUser from '../common/decorators/getUser.decorator';
-import { checkAttachmentFile, createAttachmentUploadOptions } from '../common/multer.utilities';
+import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
+import { checkAttachmentFile, createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 
 @ApiTags(SURVEYS)
@@ -62,6 +63,8 @@ import AppConfigGuard from '../appconfig/appconfig.guard';
 class SurveysController {
   constructor(
     private readonly surveyService: SurveysService,
+    private readonly surveysAttachmentService: SurveysAttachmentService,
+    private readonly surveysTemplateService: SurveysTemplateService,
     private readonly surveyAnswerService: SurveyAnswerService,
   ) {}
 
@@ -94,50 +97,58 @@ class SurveysController {
     return this.surveyAnswerService.findUserSurveys(status, user);
   }
 
-  @Post(`${IMAGES}/:surveyId/:questionId`)
+  @Post(FILES)
   @ApiConsumes(RequestResponseContentType.MULTIPART_FORM_DATA)
   @UseInterceptors(
     FileInterceptor(
       'file',
       createAttachmentUploadOptions((req) => {
-        const { surveyId, questionId } = req.params;
-        return `${SURVEYS_IMAGES_PATH}/${surveyId}/${questionId}`;
+        const username = getUsernameFromRequest(req);
+        return join(SURVEYS_TEMP_FILES_PATH, username);
       }),
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  uploadImage(
-    @Param() param: { surveyId: string; questionId: string },
-    @UploadedFile() file: Express.Multer.File,
-    @Res() res: Response,
-  ) {
-    const { surveyId, questionId } = param;
+  fileUpload(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
     const fileName = checkAttachmentFile(file);
-    const imageUrl = join(PUBLIC_SURVEYS, IMAGES, surveyId, questionId, fileName);
-    return res.status(HttpStatus.CREATED).json(imageUrl);
+    const fileUrl = join(SURVEYS, FILES, fileName);
+    return res.status(HttpStatus.CREATED).json(fileUrl);
   }
 
   @UseGuards(AppConfigGuard)
   @Post(TEMPLATES)
   async createTemplate(@Body() surveyTemplateDto: SurveyTemplateDto) {
-    return this.surveyService.createTemplate(surveyTemplateDto);
+    return this.surveysTemplateService.createTemplate(surveyTemplateDto);
   }
 
   @Get(TEMPLATES)
   getTemplateNames() {
-    return this.surveyService.serveTemplateNames();
+    return this.surveysTemplateService.serveTemplateNames();
   }
 
   @Get(`${TEMPLATES}/:filename`)
   getTemplate(@Param() params: { filename: string }, @Res() res: Response) {
     const { filename } = params;
-    return this.surveyService.serveTemplate(filename, res);
+    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_JSON);
+    return this.surveysTemplateService.serveTemplate(filename, res);
   }
 
-  @Post(ANSWER)
-  async getSubmittedSurveyAnswers(@Body() getAnswerDto: AnswerDto, @GetCurrentUsername() username: string) {
-    const { surveyId, attendee } = getAnswerDto;
-    return this.surveyAnswerService.getPrivateAnswer(surveyId, attendee || username);
+  @Get(`${ANSWER}/:surveyId`)
+  async getSubmittedSurveyAnswerCurrentUser(
+    @Param() params: { surveyId: string },
+    @GetCurrentUsername() currentUsername: string,
+  ) {
+    const { surveyId } = params;
+    return this.surveyAnswerService.getAnswer(surveyId, currentUsername);
+  }
+
+  @Get(`${ANSWER}/:surveyId/:username`)
+  async getSubmittedSurveyAnswers(
+    @Param() params: { surveyId: string; username: string },
+    @GetCurrentUsername() currentUsername: string,
+  ) {
+    const { surveyId, username } = params;
+    return this.surveyAnswerService.getAnswer(surveyId, username || currentUsername);
   }
 
   @Post()
@@ -150,13 +161,24 @@ class SurveysController {
     const { surveyIds } = deleteSurveyDto;
     await this.surveyService.deleteSurveys(surveyIds);
     await this.surveyAnswerService.onSurveyRemoval(surveyIds);
-    await this.surveyService.onSurveyRemoval(surveyIds);
+    await SurveysAttachmentService.onSurveyRemoval(surveyIds);
   }
 
   @Patch()
-  async answerSurvey(@Body() pushAnswerDto: PushAnswerDto, @GetCurrentUser() user: JWTUser) {
-    const { surveyId, saveNo, answer } = pushAnswerDto;
-    return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, user);
+  async answerSurvey(@Body() postAnswerDto: PostSurveyAnswerDto, @GetCurrentUser() currentUser: JWTUser) {
+    const { surveyId, saveNo, answer } = postAnswerDto;
+    const attendee = {
+      username: currentUser.preferred_username,
+      firstName: currentUser.given_name,
+      lastName: currentUser.family_name,
+    };
+    return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, attendee);
+  }
+
+  @Get(`${FILES}/:filename`)
+  serveTempFile(@Param() params: { filename: string }, @Res() res: Response, @GetCurrentUsername() username: string) {
+    const { filename } = params;
+    return this.surveysAttachmentService.serveTempFiles(username, filename, res);
   }
 }
 

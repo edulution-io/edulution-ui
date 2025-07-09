@@ -20,11 +20,11 @@ import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
-import GroupRoles from '@libs/groups/types/group-roles.enum';
 import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import { BulletinCategoryPermissionType } from '@libs/appconfig/types/bulletinCategoryPermissionType';
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
+import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../common/CustomHttpException';
 import { BulletinCategory, BulletinCategoryDocument } from './bulletin-category.schema';
 import MigrationService from '../migration/migration.service';
@@ -113,7 +113,7 @@ class BulletinCategoryService implements OnModuleInit {
       .find<BulletinCategoryResponseDto>(filter)
       .exec();
 
-    if (currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
+    if (getIsAdmin(currentUser.ldapGroups)) {
       return bulletinCategories;
     }
     const accessibleCategories = await Promise.all(

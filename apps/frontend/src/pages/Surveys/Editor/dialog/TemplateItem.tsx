@@ -17,6 +17,7 @@ import { SurveyCreator } from 'survey-creator-react';
 import cn from '@libs/common/utils/className';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
+import useLdapGroups from '@/hooks/useLdapGroups';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import { Button } from '@/components/shared/Button';
 import { Textarea } from '@/components/ui/Textarea';
@@ -40,7 +41,9 @@ const TemplateItem = (props: TemplateItemProps) => {
     canSubmitMultipleAnswers,
     canUpdateFormerAnswer,
   } = template.template;
-  const { setTemplate, setIsOpenTemplateMenu } = useTemplateMenuStore();
+  const { setTemplate, setIsOpenTemplateMenu, setIsOpenTemplateConfirmDeletion } = useTemplateMenuStore();
+
+  const { isSuperAdmin } = useLdapGroups();
 
   const { t } = useTranslation();
 
@@ -62,15 +65,20 @@ const TemplateItem = (props: TemplateItemProps) => {
     setIsOpenTemplateMenu(false);
   };
 
+  const handleRemoveTemplate = () => {
+    setTemplate(template);
+    setIsOpenTemplateConfirmDeletion(true);
+  };
+
   return (
     <AccordionItem
       key={template.fileName}
-      value={formula?.title || ''}
+      value={template.fileName || ''}
     >
-      <AccordionTrigger className="px-4 py-2 text-h4">
+      <AccordionTrigger className="px-4 pt-2 text-h4">
         <p className="font-bold ">{`${formula?.title}`}</p>
       </AccordionTrigger>
-      <AccordionContent className="mt-0 px-4 pt-0">
+      <AccordionContent className="my-0 px-4 py-0">
         <Textarea
           value={JSON.stringify(template.template, null, 2)}
           onChange={() => {}}
@@ -81,11 +89,19 @@ const TemplateItem = (props: TemplateItemProps) => {
           style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '12pt' }}
           disabled
         />
-        <div className="flex flex-row justify-end">
+        <div className="mt-2 flex flex-row justify-end space-x-2">
+          {isSuperAdmin && (
+            <Button
+              onClick={handleRemoveTemplate}
+              variant="btn-attention"
+              size="sm"
+            >
+              {t('common.delete')}
+            </Button>
+          )}
           <Button
             onClick={handleLoadTemplate}
             variant="btn-collaboration"
-            className="m-2 h-[24px]"
             size="sm"
           >
             {t('common.load')}

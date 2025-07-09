@@ -19,12 +19,12 @@ import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/apiEndpoints';
 import APPS from '@libs/appconfig/constants/apps';
-import { createAttachmentUploadOptions } from '../common/multer.utilities';
+import HistoryPageDto from '@libs/whiteboard/types/historyPageDto';
+import TLDRAW_MULTI_USER_ROOM_PREFIX from '@libs/whiteboard/constants/tldrawMultiUserRoomPrefix';
+import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import FilesystemService from '../filesystem/filesystem.service';
 import TLDrawSyncService from './tldraw-sync.service';
-import HistoryPageDto from '@libs/whiteboard/types/historyPageDto';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
-import TLDRAW_MULTI_USER_ROOM_PREFIX from '@libs/whiteboard/constants/tldrawMultiUserRoomPrefix';
 
 @ApiTags(TLDRAW_SYNC_ENDPOINTS.BASE)
 @ApiBearerAuth()
@@ -72,9 +72,9 @@ class TLDrawSyncController {
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
   async getHistory(
     @Param('roomId') roomId: string,
+    @GetCurrentUsername() username: string,
     @Query('page') page = '1',
     @Query('limit') limit = '20',
-    @GetCurrentUsername() username: string,
   ) {
     const p = Math.max(1, parseInt(page, 10));
     const l = Math.min(50, Math.max(1, parseInt(limit, 10)));

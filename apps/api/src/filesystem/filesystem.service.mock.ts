@@ -15,15 +15,17 @@ const mockFilesystemService = {
   ensureDirectoryExists: jest.fn(),
   generateHashedFilename: jest.fn(),
   saveFileStream: jest.fn(),
-  getOutputFilePath: jest.fn(),
   retrieveAndSaveFile: jest.fn(),
-  deleteFile: jest.fn(),
+  deleteFile: jest.fn().mockResolvedValue({}),
   fileLocation: jest.fn(),
-  checkIfFileExistAndDelete: jest.fn(),
+  checkIfFileExist: jest.fn().mockResolvedValue(false),
+  checkIfFileExistAndDelete: jest.fn().mockResolvedValue({}),
   readFile: jest.fn(),
   writeFile: jest.fn(),
-  deleteDirectories: jest.fn(),
+  deleteDirectory: jest.fn().mockResolvedValue({}),
+  deleteDirectories: jest.fn().mockResolvedValue({}),
   createReadStream: jest.fn(),
+  getAllFilenamesInDirectory: jest.fn().mockResolvedValue([]),
 };
 
 export default mockFilesystemService;

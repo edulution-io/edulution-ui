@@ -50,17 +50,19 @@ export const mockAppConfig: AppConfigDto = {
     [ExtendedOptionKeys.ONLY_OFFICE_URL]: 'https://example.com/2/',
     [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: 'secret-key',
   },
+  position: 1,
 };
+
+const makeMockQuery = <T>(result: T) => ({
+  sort: jest.fn().mockReturnThis(),
+  lean: jest.fn().mockResolvedValue(result),
+});
 
 export const mockAppConfigModel = {
   create: jest.fn(),
-  bulkWrite: jest.fn(),
-  find: jest.fn().mockReturnValue({
-    lean: jest.fn(),
-  }),
-  findOne: jest.fn().mockReturnValue({
-    lean: jest.fn(),
-  }),
+  bulkWrite: jest.fn().mockResolvedValue({}),
+  find: jest.fn().mockImplementation(() => makeMockQuery([mockAppConfig])),
+  findOne: jest.fn().mockImplementation(() => makeMockQuery({ ...mockAppConfig })),
   updateOne: jest.fn(),
   deleteOne: jest.fn(),
 };

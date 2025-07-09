@@ -14,6 +14,7 @@ type RadioGroupItem = {
   value: string;
   translationId: string;
   disabled: boolean;
+  descriptionTranslationId?: string;
   icon?: string;
 };
 

@@ -10,12 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { toast } from 'sonner';
+import { t } from 'i18next';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import { SURVEY_IMAGES_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import { SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import handleApiError from '@/utils/handleApiError';
@@ -25,8 +26,8 @@ interface SurveyEditorPageStore {
   updateStoredSurvey: (survey: SurveyDto) => void;
   resetStoredSurvey: () => void;
 
-  uploadImageFile: (surveyId: string, questionId: string, file: File, callback: CallableFunction) => Promise<void>;
-  isUploadingImageFile: boolean;
+  uploadFile: (file: File, callback: CallableFunction) => Promise<void>;
+  isUploadingFile: boolean;
 
   isOpenSaveSurveyDialog: boolean;
   setIsOpenSaveSurveyDialog: (state: boolean) => void;
@@ -49,7 +50,7 @@ type PersistedSurveyEditorPageStore = (
 const initialState = {
   storedSurvey: undefined,
 
-  isUploadingImageFile: false,
+  isUploadingFile: false,
 
   isOpenSaveSurveyDialog: false,
   isLoading: false,
@@ -94,28 +95,21 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
         }
       },
 
-      uploadImageFile: async (
-        surveyId: string,
-        questionId: string,
-        file: File,
-        callback: CallableFunction,
-      ): Promise<void> => {
-        set({ isUploadingImageFile: true });
+      uploadFile: async (file: File, callback: CallableFunction): Promise<void> => {
+        set({ isUploadingFile: true });
         try {
           const formData = new FormData();
           formData.append('file', file);
-          const response = await eduApi.post<string>(`${SURVEY_IMAGES_ENDPOINT}/${surveyId}/${questionId}`, formData, {
+          const response = await eduApi.post<string>(`${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}`, formData, {
             headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
           });
-          if (!response) {
-            throw new Error(CommonErrorMessages.FILE_NOT_PROVIDED);
-          }
+          toast.success(t('survey.editor.fileUploadSuccess'));
           callback('success', `${EDU_API_URL}/${response.data}`);
         } catch (error) {
           handleApiError(error, set);
           callback('error');
         } finally {
-          set({ isUploadingImageFile: false });
+          set({ isUploadingFile: false });
         }
       },
 

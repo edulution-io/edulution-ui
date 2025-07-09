@@ -20,8 +20,8 @@ const isValidFileToPreview = (file: DirectoryFileDTO | null): boolean => {
   if (!file) {
     return false;
   }
-  const extension = getFileExtension(file.filename);
-  return isOnlyOfficeDocument(file.filename) || isImageExtension(extension) || isMediaExtension(extension);
+  const extension = getFileExtension(file.filePath);
+  return isOnlyOfficeDocument(file.filePath) || isImageExtension(extension) || isMediaExtension(extension);
 };
 
 export default isValidFileToPreview;

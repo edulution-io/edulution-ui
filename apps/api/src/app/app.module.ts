@@ -44,6 +44,7 @@ import TLDrawSyncModule from '../tldraw-sync/tldraw-sync.module';
 import FileSystemModule from '../filesystem/filesystem.module';
 import WebDavModule from '../webdav/webdav.module';
 import HealthModule from '../health/health.module';
+import ScriptsModule from '../scripts/scripts.module';
 
 const redisHost = process.env.REDIS_HOST ?? 'localhost';
 const redisPort = +(process.env.REDIS_PORT ?? 6379);
@@ -104,6 +105,7 @@ const redisPort = +(process.env.REDIS_PORT ?? 6379);
     }),
 
     EventEmitterModule.forRoot(),
+    ScriptsModule,
   ],
   providers: [
     {

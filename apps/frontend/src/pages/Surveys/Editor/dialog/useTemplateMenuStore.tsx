@@ -11,12 +11,15 @@
  */
 
 import { create } from 'zustand';
+import { toast } from 'sonner';
+import { t } from 'i18next';
 import eduApi from '@/api/eduApi';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import { SURVEY_TEMPLATES_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
+import { SURVEY_TEMPLATES_ENDPOINT, TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
 import handleApiError from '@/utils/handleApiError';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
+import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
+import APPS from '@libs/appconfig/constants/apps';
 
 interface TemplateMenuStore {
   reset: () => void;
@@ -27,6 +30,11 @@ interface TemplateMenuStore {
   uploadTemplate: (template: SurveyTemplateDto) => Promise<void>;
   isSubmitting: boolean;
 
+  isOpenTemplateConfirmDeletion: boolean;
+  setIsOpenTemplateConfirmDeletion: (state: boolean) => void;
+  deleteTemplate: (templateFileName: string) => Promise<void>;
+  error?: Error;
+
   template?: SurveyTemplateDto;
   setTemplate: (template: SurveyTemplateDto) => void;
   templates: SurveyTemplateDto[];
@@ -36,10 +44,12 @@ interface TemplateMenuStore {
 
 const TemplateMenuStoreInitialState = {
   isOpenTemplateMenu: false,
+  isOpenTemplateConfirmDeletion: false,
   template: undefined,
   templates: [],
   isSubmitting: false,
   isLoading: false,
+  error: undefined,
 };
 
 const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
@@ -90,10 +100,28 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
   uploadTemplate: async (template: SurveyTemplateDto): Promise<void> => {
     set({ isSubmitting: true });
     try {
-      const result = await eduApi.post<Partial<SurveyDto>>(SURVEY_TEMPLATES_ENDPOINT, template);
-      if (!result) {
-        throw new Error(CommonErrorMessages.FILE_NOT_PROVIDED);
-      }
+      const result = await eduApi.post<string>(SURVEY_TEMPLATES_ENDPOINT, template);
+      const newTemplate = { ...template, fileName: result.data };
+      set({ template: newTemplate });
+    } catch (error) {
+      handleApiError(error, set);
+      set({ template: undefined });
+    } finally {
+      set({ isSubmitting: false });
+    }
+  },
+
+  setIsOpenTemplateConfirmDeletion: (state: boolean) => set({ isOpenTemplateConfirmDeletion: state }),
+
+  deleteTemplate: async (templateFileName: string): Promise<void> => {
+    if (!templateFileName) {
+      return;
+    }
+
+    set({ isSubmitting: true });
+    try {
+      await eduApi.delete(`${EDU_API_CONFIG_ENDPOINTS.FILES}/${APPS.SURVEYS}/${TEMPLATES}/${templateFileName}`);
+      toast.success(t('survey.editor.templateMenu.deletion.success'));
     } catch (error) {
       handleApiError(error, set);
     } finally {

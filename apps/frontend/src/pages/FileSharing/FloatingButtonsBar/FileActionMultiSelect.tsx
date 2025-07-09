@@ -22,8 +22,8 @@ import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtili
 import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import useStartWebdavFileDownload from '@/pages/FileSharing/hooks/useStartWebdavFileDownload';
 import CopyButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/copyButton';
+import useStartWebdavFileDownload from '@/pages/FileSharing/hooks/useStartWebdavFileDownload';
 
 const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItems }) => {
   const startDownload = useStartWebdavFileDownload();
@@ -39,8 +39,8 @@ const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog, selected
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
-      DeleteButton(() => openDialog(FileActionType.DELETE_FILE_FOLDER)),
-      MoveButton(() => openDialog(FileActionType.MOVE_FILE_FOLDER)),
+      DeleteButton(() => openDialog(FileActionType.DELETE_FILE_OR_FOLDER)),
+      MoveButton(() => openDialog(FileActionType.MOVE_FILE_OR_FOLDER)),
       DownloadButton(async () => {
         if (!selectedFiles) return;
         const files = Array.isArray(selectedFiles) ? selectedFiles : [selectedFiles];

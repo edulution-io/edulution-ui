@@ -1,3 +1,15 @@
+/*
+ * LICENSE
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import React, { useState } from 'react';
 import useTLDRawHistoryStore from '@/pages/Whiteboard/TLDrawWithSync/useTLDRawHistoryStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
@@ -38,7 +50,8 @@ const TLDrawHistory = () => {
       style={{ left: isMobileView ? 166 : 347 }}
     >
       <button
-        className={`m-[4px] flex flex-row items-center space-x-2 rounded-lg p-[6px] hover:bg-secondary-foreground`}
+        type="button"
+        className="m-[4px] flex flex-row items-center space-x-2 rounded-lg p-[6px] hover:bg-secondary-foreground"
         onClick={() => setIsOpen(true)}
       >
         <GoHistory /> <span>{t('whiteboard-collaboration.historyTitle')}</span>
@@ -51,7 +64,7 @@ const TLDrawHistory = () => {
           minimalSize={{ height: 100 }}
           disableToggleMaximizeWindow
           openMaximized={false}
-          titleTranslationId={'whiteboard-collaboration.historyTitle'}
+          titleTranslationId="whiteboard-collaboration.historyTitle"
           handleClose={() => setIsOpen(false)}
         >
           <TLDrawHistoryInfiniteList />

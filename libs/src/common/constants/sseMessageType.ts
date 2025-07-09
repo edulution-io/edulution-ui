@@ -31,6 +31,8 @@ const SSE_MESSAGE_TYPE = {
   FILESHARING_MOVE_OR_RENAME_FILES: 'filesharing_move_or_rename_files',
   FILESHARING_COPY_FILES: 'filesharing_copy_files',
   TLDRAW_SYNC_ROOM_LOG_MESSAGE: 'tldraw_sync_room_log_message',
+  FILESHARING_CREATE_FOLDER: 'filesharing_create_folder',
+  FILESHARING_FILE_UPLOAD: 'filesharing_file_upload',
 } as const;
 
 export default SSE_MESSAGE_TYPE;

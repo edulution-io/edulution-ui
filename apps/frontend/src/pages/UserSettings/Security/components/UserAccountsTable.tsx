@@ -10,15 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IoAdd, IoRemove } from 'react-icons/io5';
 import { FiEdit } from 'react-icons/fi';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import APPS from '@libs/appconfig/constants/apps';
-import { Button } from '@/components/shared/Button';
-import useUserStore from '@/store/UserStore/UserStore';
+import TableAction from '@libs/common/types/tableAction';
+import UserAccountDto from '@libs/user/types/userAccount.dto';
+import useUserStore from '@/store/UserStore/useUserStore';
 import UserAccountsTableColumns from './UserAccountsTableColumns';
 import AddUserAccountDialog from './AddUserAccountDialog';
 
@@ -61,6 +62,29 @@ const UserAccountsTable: React.FC = () => {
     setSelectedRows({});
   };
 
+  const tableActions: TableAction<UserAccountDto>[] = useMemo(() => {
+    const actions: TableAction<UserAccountDto>[] = [];
+    if (isOneRowSelected) {
+      actions.push({
+        icon: FiEdit,
+        translationId: 'common.edit',
+        onClick: handleAddClick,
+      });
+    } else {
+      actions.push({
+        icon: IoAdd,
+        translationId: 'common.add',
+        onClick: handleAddClick,
+      });
+    }
+    actions.push({
+      icon: IoRemove,
+      translationId: 'common.remove',
+      onClick: handleRemoveClick,
+    });
+    return actions;
+  }, [isOneRowSelected]);
+
   return (
     <>
       <div>
@@ -77,31 +101,8 @@ const UserAccountsTable: React.FC = () => {
             onRowSelectionChange={handleRowSelectionChange}
             selectedRows={selectedRows}
             isLoading={userAccountsIsLoading}
+            actions={tableActions}
           />
-          <div className="flex w-full items-center justify-between gap-2">
-            <div className="flex w-full">
-              <Button
-                className="flex h-2 w-full items-center justify-center rounded-md border border-gray-500 hover:bg-accent"
-                onClick={handleAddClick}
-                type="button"
-              >
-                {isOneRowSelected ? (
-                  <FiEdit className="text-xl text-background" />
-                ) : (
-                  <IoAdd className="text-xl text-background" />
-                )}
-              </Button>
-            </div>
-            <div className="flex w-full">
-              <Button
-                className="flex h-2 w-full items-center justify-center rounded-md border border-gray-500 hover:bg-accent"
-                onClick={handleRemoveClick}
-                type="button"
-              >
-                <IoRemove className="text-xl text-background" />
-              </Button>
-            </div>
-          </div>
         </div>
       </div>
       <AddUserAccountDialog

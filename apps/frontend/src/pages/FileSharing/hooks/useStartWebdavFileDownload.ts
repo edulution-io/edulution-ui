@@ -21,23 +21,23 @@ const useStartWebdavFileDownload = () => {
   return async (files: DirectoryFileDTO[]) => {
     if (!files.length) return;
 
-    await Promise.all(files.map((f) => setFileIsCurrentlyDisabled(f.basename, true)));
+    await Promise.all(files.map((file) => setFileIsCurrentlyDisabled(file.filename, true)));
 
     const url = await loadDownloadUrlMultipleFiles(files);
     if (!url) {
-      await Promise.all(files.map((f) => setFileIsCurrentlyDisabled(f.basename, false)));
+      await Promise.all(files.map((file) => setFileIsCurrentlyDisabled(file.filename, false)));
       return;
     }
 
     const link = Object.assign(document.createElement('a'), {
       href: url,
-      download: files.length > 1 ? 'download.zip' : files[0].basename,
+      download: files.length > 1 ? 'download.zip' : files[0].filename,
     });
     document.body.append(link);
     link.click();
     link.remove();
 
-    await Promise.all(files.map((f) => setFileIsCurrentlyDisabled(f.basename, false)));
+    await Promise.all(files.map((file) => setFileIsCurrentlyDisabled(file.filename, false)));
   };
 };
 

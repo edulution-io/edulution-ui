@@ -22,17 +22,18 @@ import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonCo
 import DownloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/downloadButton';
 import useStartWebdavFileDownload from '@/pages/FileSharing/hooks/useStartWebdavFileDownload';
 import CopyButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/copyButton';
+import ShareButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/shareButton';
 
 const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItems }) => {
   const startDownload = useStartWebdavFileDownload();
   const config: FloatingButtonsBarConfig = {
     buttons: [
-      DeleteButton(() => openDialog(FileActionType.DELETE_FILE_FOLDER)),
-      MoveButton(() => openDialog(FileActionType.MOVE_FILE_FOLDER)),
+      DeleteButton(() => openDialog(FileActionType.DELETE_FILE_OR_FOLDER)),
+      MoveButton(() => openDialog(FileActionType.MOVE_FILE_OR_FOLDER)),
       {
         icon: MdDriveFileRenameOutline,
         text: t('tooltip.rename'),
-        onClick: () => openDialog(FileActionType.RENAME_FILE_FOLDER),
+        onClick: () => openDialog(FileActionType.RENAME_FILE_OR_FOLDER),
       },
       DownloadButton(async () => {
         if (!selectedItems) return;
@@ -40,6 +41,7 @@ const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedIt
         await startDownload(files);
       }, true),
       CopyButton(() => openDialog(FileActionType.COPY_FILE_OR_FOLDER)),
+      ShareButton(() => openDialog(FileActionType.SHARE_FILE_OR_FOLDER)),
     ],
     keyPrefix: 'file-sharing-page-floating-button_',
   };

@@ -14,11 +14,11 @@ import React from 'react';
 import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import FILE_PREVIEW_ROUTE from '@libs/filesharing/constants/routes';
-import getPublicRoutes from '@/router/routes/PublicRoutes';
+import getPublicRoutes from '@/router/routes/getPublicRoutes';
 import FullScreenFileViewer from '@/pages/FileSharing/FilePreview/FullScreenFileViewer';
 import AppLayout from '@/components/structure/layout/AppLayout';
-import getAuthRoutes from '@/router/routes/AuthRoutes';
-import getPrivateRoutes from '@/router/routes/PrivateRoutes';
+import getAuthRoutes from '@/router/routes/getAuthRoutes';
+import getPrivateRoutes from '@/router/routes/getPrivateRoutes';
 
 const createRouter = (isAuthenticated: boolean, appConfigs: AppConfigDto[]) =>
   createBrowserRouter(
