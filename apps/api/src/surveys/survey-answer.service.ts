@@ -27,6 +27,7 @@ import SURVEYS_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveysAnswe
 import SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveysAnswerTemporaryAttachmentPath';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
+import { ANSWER, FILES, PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import CustomHttpException from '../common/CustomHttpException';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
@@ -256,9 +257,10 @@ class SurveyAnswersService implements OnModuleInit {
     const { isAnonymous = false, canUpdateFormerAnswer = false, canSubmitMultipleAnswers = false } = survey;
 
     if (isAnonymous) {
-      const user: Attendee = { username: 'anonymous' };
-      const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(user, surveyId, saveNo, answer);
-      await this.moveAttachmentsToPermanentStorage(user, surveyId, answer);
+      const username = 'anonymous';
+      const user: Attendee = { username };
+      const updatedAnswer = await this.moveAttachmentsToPermanentStorage(username, surveyId, answer);
+      const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(user, surveyId, saveNo, updatedAnswer);
       return createdAnswer;
     }
 
@@ -270,8 +272,8 @@ class SurveyAnswersService implements OnModuleInit {
       const newPublicUserLogin = createNewPublicUserLogin(firstName, newPublicUserId);
       const user: Attendee = { ...attendee, username: newPublicUserLogin, lastName: newPublicUserId };
 
-      const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(user, surveyId, saveNo, answer);
-      await this.moveAttachmentsToPermanentStorage(user, surveyId, answer);
+      const updatedAnswer = await this.moveAttachmentsToPermanentStorage(firstName, surveyId, answer);
+      const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(user, surveyId, saveNo, updatedAnswer);
       return createdAnswer;
     }
 
@@ -286,9 +288,10 @@ class SurveyAnswersService implements OnModuleInit {
         $and: [{ 'attendee.username': username }, { surveyId: new Types.ObjectId(surveyId) }],
       });
 
+      const userName = isAuthenticatedPublicUserParticipation ? firstName : username;
       if (existingUsersAnswer == null || canSubmitMultipleAnswers) {
-        const newSurveyAnswer = await this.createAnswer(attendee as Attendee, surveyId, saveNo, answer);
-
+        const updatedAnswer = await this.moveAttachmentsToPermanentStorage(userName || '', surveyId, answer);
+        const newSurveyAnswer = await this.createAnswer(attendee as Attendee, surveyId, saveNo, updatedAnswer);
         if (newSurveyAnswer == null) {
           throw new CustomHttpException(
             SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
@@ -312,7 +315,6 @@ class SurveyAnswersService implements OnModuleInit {
             SurveyAnswersService.name,
           );
         }
-        await this.moveAttachmentsToPermanentStorage(attendee, surveyId, answer);
         return newSurveyAnswer;
       }
 
@@ -325,8 +327,9 @@ class SurveyAnswersService implements OnModuleInit {
         );
       }
 
+      const updatedAnswer = await this.moveAttachmentsToPermanentStorage(userName || '', surveyId, answer);
       const updatedSurveyAnswer = await this.surveyAnswerModel.findByIdAndUpdate<SurveyAnswer>(existingUsersAnswer, {
-        answer,
+        answer: updatedAnswer,
         saveNo,
       });
       if (updatedSurveyAnswer == null) {
@@ -337,7 +340,6 @@ class SurveyAnswersService implements OnModuleInit {
           SurveyAnswersService.name,
         );
       }
-      await this.moveAttachmentsToPermanentStorage(attendee, surveyId, answer);
       return updatedSurveyAnswer;
     }
 
@@ -349,9 +351,16 @@ class SurveyAnswersService implements OnModuleInit {
     );
   }
 
-  async moveAttachmentsToPermanentStorage(attendee: Partial<Attendee>, surveyId: string, answer: JSON): Promise<JSON> {
-    const username = attendee.username || attendee.firstName || 'undefined';
-    const path = join(SURVEYS_ANSWERS_ATTACHMENT_PATH, username, surveyId);
+  async moveAttachmentsToPermanentStorage(username: string, surveyId: string, answer: JSON): Promise<JSON> {
+    if (!username) {
+      throw new CustomHttpException(
+        SurveyAnswerErrorMessages.NotAbleToUpdateSurveyAnswerError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        SurveyAnswersService.name,
+      );
+    }
+    const path = join(SURVEYS_ANSWERS_ATTACHMENT_PATH, surveyId);
     const tempPath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, username, surveyId);
 
     const tempFileNames = await this.fileSystemService.getAllFilenamesInDirectory(tempPath);
@@ -371,13 +380,28 @@ class SurveyAnswersService implements OnModuleInit {
       const fileNames: string[] = [];
       if (Array.isArray(questionAnswer)) {
         questionAnswer.forEach((item) => {
-          const fileName = item.content?.split('/').pop();
+          const filePathParts = item.content?.split(`/${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/`);
+          const baseUrl = filePathParts[0];
+          const fileName = filePathParts[1].split('/').pop();
+          if (!baseUrl || !fileName) {
+            return;
+          }
+          const newUrl = `${baseUrl}/${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${surveyId}/${fileName}`;
+          // eslint-disable-next-line no-param-reassign
+          item.content = newUrl;
           if (fileName) {
             fileNames.push(fileName);
           }
         });
       } else {
-        const fileName = questionAnswer.content?.split('/').pop();
+        const filePathParts = questionAnswer.content?.split(`/${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/`);
+        const baseUrl = filePathParts[0];
+        const fileName = filePathParts[1].split('/').pop();
+        if (!baseUrl || !fileName) {
+          return;
+        }
+        const newUrl = `${baseUrl}/${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${surveyId}/${fileName}`;
+        questionAnswer.content = newUrl;
         if (fileName) {
           fileNames.push(fileName);
         }
@@ -385,14 +409,14 @@ class SurveyAnswersService implements OnModuleInit {
       fileNames.forEach((fileName) => {
         if (tempFileNames.includes(fileName)) {
           const oldPath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, username, surveyId, fileName);
-          const newPath = join(SURVEYS_ANSWERS_ATTACHMENT_PATH, username, surveyId, fileName);
+          const newPath = join(SURVEYS_ANSWERS_ATTACHMENT_PATH, surveyId, fileName);
           movingPromises.add(FilesystemService.moveFile(oldPath, newPath));
         }
       });
     });
     await Promise.all(movingPromises);
 
-    return answer;
+    return JSON.parse(JSON.stringify(surveyAnswer)) as JSON;
   }
 
   async getAnswer(surveyId: string, username: string): Promise<SurveyAnswer | undefined> {
@@ -477,36 +501,40 @@ class SurveyAnswersService implements OnModuleInit {
     return newSurveyAnswer;
   }
 
-  static async getFilePathForFileFromAnswer(userName: string, surveyId: string, fileName: string): Promise<string> {
-    const filesPath = join(SURVEYS_ANSWERS_ATTACHMENT_PATH, userName, surveyId);
-    const tempFilesPath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
-    const tempExistence = await FilesystemService.checkIfFileExist(join(tempFilesPath, fileName));
-    if (tempExistence) {
-      return tempFilesPath;
-    }
+  async serveFileFromAnswer(surveyId: string, fileName: string, res: Response): Promise<Response> {
+    const filesPath = join(SURVEYS_ANSWERS_ATTACHMENT_PATH, surveyId);
     const existence = await FilesystemService.checkIfFileExist(join(filesPath, fileName));
-    if (existence) {
-      return filesPath;
-    }
-    return '';
-  }
-
-  async serveFileFromAnswer(userName: string, surveyId: string, fileName: string, res: Response): Promise<Response> {
-    const filePath = await SurveyAnswersService.getFilePathForFileFromAnswer(userName, surveyId, fileName);
-    if (!filePath) {
+    if (!existence) {
       return res.status(HttpStatus.NOT_FOUND).send('File not found');
     }
-    const fileStream = await this.fileSystemService.createReadStream(filePath);
+    const fileStream = await this.fileSystemService.createReadStream(join(filesPath, fileName));
     fileStream.pipe(res);
     return res;
   }
 
-  static async deleteFileFromAnswer(userName: string, surveyId: string, fileName: string): Promise<void> {
-    const filePath = await SurveyAnswersService.getFilePathForFileFromAnswer(userName, surveyId, fileName);
-    if (!filePath) {
+  async serveTempFileFromAnswer(
+    userName: string,
+    surveyId: string,
+    fileName: string,
+    res: Response,
+  ): Promise<Response> {
+    const tempFilesPath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
+    const tempExistence = await FilesystemService.checkIfFileExist(join(tempFilesPath, fileName));
+    if (!tempExistence) {
+      return res.status(HttpStatus.NOT_FOUND).send('File not found');
+    }
+    const fileStream = await this.fileSystemService.createReadStream(join(tempFilesPath, fileName));
+    fileStream.pipe(res);
+    return res;
+  }
+
+  static async deleteTempFileFromAnswer(userName: string, surveyId: string, fileName: string): Promise<void> {
+    const tempFilesPath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
+    const tempExistence = await FilesystemService.checkIfFileExist(join(tempFilesPath, fileName));
+    if (!tempExistence) {
       return;
     }
-    await FilesystemService.deleteFile(filePath, fileName);
+    await FilesystemService.deleteFile(tempFilesPath, fileName);
   }
 }
 

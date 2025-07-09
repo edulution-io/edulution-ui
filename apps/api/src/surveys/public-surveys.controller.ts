@@ -11,11 +11,10 @@
  */
 
 import { join } from 'path';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import {
   Body,
   Controller,
-  Req,
   Get,
   Post,
   Delete,
@@ -33,9 +32,9 @@ import SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/su
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
-import getUsernameFromRequest from 'apps/api/src/common/utils/getUsernameFromRequest';
 import surveyAnswerMaximumFileSize from '@libs/survey/constants/survey-answer-max-file-size';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import FilesystemService from 'apps/api/src/filesystem/filesystem.service';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import SurveysService from './surveys.service';
@@ -101,14 +100,19 @@ class PublicSurveysController {
         const userName = req.params?.userName;
         const surveyId = req.params?.surveyId;
         if (!userName || !surveyId) {
-          throw new Error('INVALID_REQUEST_DATA');
+          throw new CustomHttpException(
+            CommonErrorMessages.INVALID_REQUEST_DATA,
+            HttpStatus.UNPROCESSABLE_ENTITY,
+            undefined,
+            PublicSurveysController.name,
+          );
         }
         return join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
       }),
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  async fileUpload(
+  async tempFileUpload(
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addMaxSizeValidator({
@@ -124,40 +128,65 @@ class PublicSurveysController {
   ) {
     const { userName, surveyId } = params;
     if (!userName || !surveyId || !file) {
-      throw new Error('INVALID_REQUEST_DATA');
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+        undefined,
+        PublicSurveysController.name,
+      );
     }
     const filePath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, file.filename);
-    const fileUrl = `${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${surveyId}/${file.filename}`;
+    const fileUrl = `${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${userName}/${surveyId}/${file.filename}`;
     await FilesystemService.checkIfFileExist(filePath);
     return res.status(HttpStatus.CREATED).json(fileUrl);
   }
 
   @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:fileName`)
   @Public()
-  async deleteFiles(@Param() params: { userName: string; surveyId: string; fileName: string }) {
+  static async deleteTempFiles(@Param() params: { userName: string; surveyId: string; fileName: string }) {
     const { userName, surveyId, fileName } = params;
     if (!userName || !surveyId || !fileName) {
-      throw new Error('INVALID_REQUEST_DATA');
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+        undefined,
+        PublicSurveysController.name,
+      );
     }
-    await SurveyAnswerService.deleteFileFromAnswer(userName, surveyId, fileName);
+    await SurveyAnswerService.deleteTempFileFromAnswer(userName, surveyId, fileName);
   }
 
   @Get(`${ANSWER}/${FILES}/:surveyId/:filename`)
   @Public()
-  serveFileFromAnswer(
-    @Param() params: { surveyId: string; filename: string },
-    @Req() req: Request,
+  serveFileFromAnswer(@Param() params: { surveyId: string; filename: string }, @Res() res: Response) {
+    const { surveyId, filename } = params;
+    if (!surveyId || !filename) {
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+        undefined,
+        PublicSurveysController.name,
+      );
+    }
+    return this.surveyAnswerService.serveFileFromAnswer(surveyId, filename, res);
+  }
+
+  @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:filename`)
+  @Public()
+  serveTempFileFromAnswer(
+    @Param() params: { userName: string; surveyId: string; filename: string },
     @Res() res: Response,
   ) {
-    const { surveyId, filename } = params;
-
-    if (!surveyId || !filename) {
-      throw new Error('INVALID_REQUEST_DATA');
+    const { userName, surveyId, filename } = params;
+    if (!userName || !surveyId || !filename) {
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+        undefined,
+        PublicSurveysController.name,
+      );
     }
-
-    const userName = getUsernameFromRequest(req);
-
-    return this.surveyAnswerService.serveFileFromAnswer(userName, surveyId, filename, res);
+    return this.surveyAnswerService.serveTempFileFromAnswer(userName, surveyId, filename, res);
   }
 
   @Get(`${CHOICES}/:surveyId/:questionName`)

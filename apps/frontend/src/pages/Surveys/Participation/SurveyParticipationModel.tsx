@@ -42,7 +42,8 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 
-  const { fetchAnswer, isFetching, answerSurvey, previousAnswer, uploadFile, deleteFile } = useParticipateSurveyStore();
+  const { fetchAnswer, isFetching, answerSurvey, previousAnswer, uploadTempFile, deleteTempFile } =
+    useParticipateSurveyStore();
 
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -104,7 +105,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         if (!selectedSurvey || !selectedSurvey.id) {
           return Promise.resolve({ fileName: file.name, data: '' });
         }
-        return uploadFile(selectedSurvey.id, file);
+        return uploadTempFile(selectedSurvey.id, file);
       });
       const data = await Promise.all(uploadPromises);
       callback(
@@ -149,7 +150,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
             options.callback('error');
             return Promise.resolve('error');
           }
-          return deleteFile(selectedSurvey.id, file, options.callback);
+          return deleteTempFile(selectedSurvey.id, file, options.callback);
         }),
       );
       if (result.every((res: string | undefined) => res === 'success')) {

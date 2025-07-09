@@ -51,9 +51,9 @@ interface ParticipateSurveyStore {
 
   publicUserId?: string;
 
-  uploadFile: (surveyId: string, file: File) => Promise<{ fileName: string; data: string }>;
+  uploadTempFile: (surveyId: string, file: File) => Promise<{ fileName: string; data: string }>;
   isUploadingFile?: boolean;
-  deleteFile: (surveyId: string, file: File, callback: CallableFunction) => Promise<string | undefined>;
+  deleteTempFile: (surveyId: string, file: File, callback: CallableFunction) => Promise<string | undefined>;
   isDeletingFile?: boolean;
 
   reset: () => void;
@@ -177,25 +177,30 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
   },
 
-  uploadFile: async (surveyId: string, file: File): Promise<{ fileName: string; data: string }> => {
+  uploadTempFile: async (surveyId: string, file: File): Promise<{ fileName: string; data: string }> => {
     const { attendee } = get();
     set({ isUploadingFile: true });
 
-    const formData = new FormData();
-    formData.append('file', file);
-    const response = await eduApi.post<string>(
-      `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}`,
-      formData,
-      {
-        headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
-      },
-    );
-
-    set({ isUploadingFile: false });
-    return { fileName: file.name, data: response.data };
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const response = await eduApi.post<string>(
+        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}`,
+        formData,
+        {
+          headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
+        },
+      );
+      return { fileName: file.name, data: response.data };
+    } catch (error) {
+      handleApiError(error, set);
+      return { fileName: '', data: '' };
+    } finally {
+      set({ isUploadingFile: false });
+    }
   },
 
-  deleteFile: async (
+  deleteTempFile: async (
     surveyId: string,
     file: File & { content?: string },
     callback: CallableFunction,
