@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { settings, surveyLocalization } from 'survey-core';
+import { surveyLocalization } from 'survey-core';
 import { editorLocalization, SurveyCreator } from 'survey-creator-react';
 import 'survey-core/i18n/english';
 import 'survey-core/i18n/german';
@@ -23,8 +23,6 @@ import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
 import '@/pages/Surveys/theme/custom.survey.css';
 import '@/pages/Surveys/theme/custom.creator.css';
-
-settings.lazyRender.enabled = false;
 
 const createSurveyCreatorObject = (language = 'en') => {
   surveyLocalization.supportedLocales = ['en', 'de', 'fr'];
