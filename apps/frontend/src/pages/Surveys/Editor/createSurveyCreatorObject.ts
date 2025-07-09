@@ -24,9 +24,9 @@ import '@/pages/Surveys/theme/creator.min.css';
 import '@/pages/Surveys/theme/custom.survey.css';
 import '@/pages/Surveys/theme/custom.creator.css';
 
-settings.lazyRender.enabled = true;
+settings.lazyRender.enabled = false;
 
-const createSurveyCreatorComponent = (language = 'en') => {
+const createSurveyCreatorObject = (language = 'en') => {
   surveyLocalization.supportedLocales = ['en', 'de', 'fr'];
   surveyLocalization.defaultLocale = language;
   surveyLocalization.currentLocale = language;
@@ -88,4 +88,4 @@ const createSurveyCreatorComponent = (language = 'en') => {
   return creator;
 };
 
-export default createSurveyCreatorComponent;
+export default createSurveyCreatorObject;
