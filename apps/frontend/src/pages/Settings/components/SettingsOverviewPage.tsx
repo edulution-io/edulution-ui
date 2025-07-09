@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
@@ -23,36 +23,50 @@ import PageTitle from '@/components/PageTitle';
 import DockerContainerTable from '../AppConfig/DockerIntegration/DockerContainerTable';
 import LicenseOverview from './LicenseOverview';
 import GlobalSettings from '../GlobalSettings/GlobalSettings';
+import UserAdministration from './UserAdministration';
+
+interface TabOption {
+  id: string;
+  nameKey: string;
+  component: React.ReactNode;
+}
+const TAB_OPTIONS: TabOption[] = [
+  { id: CONTAINER, nameKey: 'dockerOverview.container-view', component: <DockerContainerTable /> },
+  { id: GLOBAL_SETTINGS_ROOT_ENDPOINT, nameKey: 'settings.globalSettings.title', component: <GlobalSettings /> },
+  { id: 'user-administration', nameKey: 'settings.userAdministration.title', component: <UserAdministration /> },
+  { id: 'info', nameKey: 'settings.info.title', component: <LicenseOverview /> },
+];
 
 const SettingsOverviewPage: React.FC = () => {
   const { t } = useTranslation();
-  const { isMobileView } = useMedia();
+  const { isMobileView, isTabletView } = useMedia();
   const location = useLocation();
   const navigate = useNavigate();
 
   const tabValue = location.pathname.split('/').pop() || CONTAINER;
   const [option, setOption] = useState(tabValue);
 
-  const handleTabClick = (to: string) => {
-    navigate(`/settings/tabs/${to}`);
-  };
+  const tabOptions = useMemo(() => TAB_OPTIONS.map((opt) => ({ ...opt, name: t(opt.nameKey) })), [t]);
 
-  const tabOptions = [
-    { id: CONTAINER, name: t('dockerOverview.container-view') },
-    { id: GLOBAL_SETTINGS_ROOT_ENDPOINT, name: t('settings.globalSettings.title') },
-    { id: 'info', name: t('settings.info.title') },
-  ];
+  useEffect(() => {
+    setOption(tabValue);
+  }, [tabValue]);
 
-  if (!isMobileView)
+  const goToTab = (id: string) => navigate(`/settings/tabs/${id}`);
+
+  if (!isMobileView && !isTabletView)
     return (
       <Tabs value={tabValue}>
         <div className="sticky top-0 z-20 backdrop-blur-xl">
-          <TabsList className="grid grid-cols-3 sm:w-fit">
+          <TabsList
+            className="grid sm:w-fit"
+            style={{ gridTemplateColumns: `repeat(${TAB_OPTIONS.length}, minmax(0, 1fr))` }}
+          >
             {tabOptions.map((item) => (
               <TabsTrigger
                 key={item.id}
                 value={item.id}
-                onClick={() => handleTabClick(item.id)}
+                onClick={() => goToTab(item.id)}
                 className="min-w-20 text-[clamp(0.65rem,2vw,0.8rem)] lg:min-w-64 lg:text-p"
               >
                 {item.name}
@@ -60,40 +74,21 @@ const SettingsOverviewPage: React.FC = () => {
             ))}
           </TabsList>
         </div>
-        <TabsContent value={tabOptions[0].id}>
-          <PageTitle
-            title={t('settings.sidebar')}
-            translationId={tabOptions[0].name}
-          />
-          <Separator />
-          <DockerContainerTable />
-        </TabsContent>
-        <TabsContent value={tabOptions[1].id}>
-          <PageTitle
-            title={t('settings.sidebar')}
-            translationId={tabOptions[1].name}
-          />
-          <Separator />
-          <GlobalSettings />
-        </TabsContent>
-        <TabsContent value={tabOptions[2].id}>
-          <PageTitle
-            title={t('settings.sidebar')}
-            translationId={tabOptions[2].name}
-          />
-          <Separator />
-          <LicenseOverview />
-        </TabsContent>
+        {tabOptions.map((opt) => (
+          <TabsContent
+            key={opt.id}
+            value={opt.id}
+          >
+            <PageTitle
+              title={t('settings.sidebar')}
+              translationId={opt.name}
+            />
+            <Separator />
+            {opt.component}
+          </TabsContent>
+        ))}
       </Tabs>
     );
-
-  const handleDropdownSelect = (value: string) => {
-    const selectedOption = tabOptions.find((opt) => opt.id === value);
-    if (selectedOption) {
-      setOption(selectedOption.id);
-      navigate(`/settings/tabs/${selectedOption.id}`);
-    }
-  };
 
   return (
     <>
@@ -101,14 +96,12 @@ const SettingsOverviewPage: React.FC = () => {
         <DropdownSelect
           options={tabOptions}
           selectedVal={option}
-          handleChange={handleDropdownSelect}
+          handleChange={goToTab}
           classname="w-[calc(100%-2.5rem)]"
         />
       </div>
-      <Separator className="my-2 " />
-      {option === tabOptions[0].id && <DockerContainerTable />}
-      {option === tabOptions[1].id && <GlobalSettings />}
-      {option === tabOptions[2].id && <LicenseOverview />}
+      <Separator className="my-2" />
+      {tabOptions.find((opt) => opt.id === option)?.component}
     </>
   );
 };

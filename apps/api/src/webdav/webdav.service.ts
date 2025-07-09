@@ -41,26 +41,26 @@ class WebdavService {
 
   constructor(private readonly usersService: UsersService) {}
 
-  static async executeWebdavRequest<T>(
+  static async executeWebdavRequest<Raw = unknown, Result = Raw>(
     client: AxiosInstance,
     config: {
       method: string;
       url?: string;
-      data?: string | Record<string, any> | Buffer; // eslint-disable-line @typescript-eslint/no-explicit-any
+      data?: string | Record<string, unknown> | Buffer;
       headers?: Record<string, string | number>;
     },
     fileSharingErrorMessage: ErrorMessage,
-    transformer?: (data: any) => T, // eslint-disable-line @typescript-eslint/no-explicit-any
-  ): Promise<T | WebdavStatusResponse> {
+    transformer?: (data: Raw) => Result,
+  ): Promise<Result | WebdavStatusResponse> {
     try {
-      const response = await client(config);
+      const response = await client.request<Raw>(config);
       WebdavService.handleWebDAVError(response);
-      return transformer ? transformer(response.data) : (response.data as T);
+      return transformer ? transformer(response.data) : (response.data as unknown as Result);
     } catch (error) {
       throw new CustomHttpException(
         fileSharingErrorMessage,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
+        (error as Error).message,
         WebdavService.name,
       );
     }
@@ -133,8 +133,7 @@ class WebdavService {
   async getFilesAtPath(username: string, path: string): Promise<DirectoryFileDTO[]> {
     const client = await this.getClient(username);
     const url = new URL(path.replace(/^\/+/, ''), this.baseUrl).href;
-
-    return (await WebdavService.executeWebdavRequest<DirectoryFileDTO[]>(
+    return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
       client,
       {
         method: HttpMethodsWebDav.PROPFIND,
@@ -150,7 +149,7 @@ class WebdavService {
     const client = await this.getClient(username);
     const url = new URL(path.replace(/^\/+/, ''), this.baseUrl).href;
 
-    return (await WebdavService.executeWebdavRequest<DirectoryFileDTO[]>(
+    return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
       client,
       {
         method: HttpMethodsWebDav.PROPFIND,
@@ -330,6 +329,16 @@ class WebdavService {
     } catch (error) {
       throw new CustomHttpException(FileSharingErrorMessage.SharingFailed, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  async getFileTypeFromWebdavPath(
+    username: string,
+    fullPath: string,
+    filepath: string,
+  ): Promise<ContentType | undefined> {
+    const files = await this.getFilesAtPath(username, fullPath);
+    const matchedFile = files.find((file) => file.filePath === filepath);
+    return matchedFile?.type === ContentType.FILE ? ContentType.FILE : ContentType.DIRECTORY;
   }
 }
 

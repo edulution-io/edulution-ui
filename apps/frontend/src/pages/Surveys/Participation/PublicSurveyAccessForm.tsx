@@ -11,13 +11,13 @@
  */
 
 import React from 'react';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import FormField from '@/components/shared/FormField';
 import { Form } from '@/components/ui/Form';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { publicUserRegex, publicUserLoginRegex, publicUserSeperator } from '@libs/survey/utils/publicUserLoginRegex';
+import { publicUserLoginRegex, publicUserRegex, publicUserSeperator } from '@libs/survey/utils/publicUserLoginRegex';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';

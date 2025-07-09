@@ -19,7 +19,7 @@ import JoinPublicConferenceDetails from '@libs/conferences/types/joinPublicConfe
 import ConferencesService from './conferences.service';
 import { Conference } from './conference.schema';
 import { Public } from '../common/decorators/public.decorator';
-import GetCurrentUser from '../common/decorators/getUser.decorator';
+import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 
 @ApiTags(CONFERENCES_EDU_API_ENDPOINT)
 @ApiBearerAuth()

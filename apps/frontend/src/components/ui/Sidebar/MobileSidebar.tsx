@@ -14,7 +14,7 @@ import React, { useCallback, useRef } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
 import { SidebarProps } from '@libs/ui/types/sidebar';
 import { HomeButton, MobileMenuButton, MobileSidebarItem, UserMenuButton } from './SidebarMenuItems';
-import useSidebarStore from './sidebarStore';
+import useSidebarStore from './useSidebarStore';
 
 const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -47,9 +47,9 @@ const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
           ref={sidebarRef}
           className="fixed right-0 h-full min-w-[260px] border-l-[1px] border-muted bg-black md:bg-none"
         >
-          <div className="relative right-0 top-0 h-14 bg-black pr-4 pt-4" />
+          <div className="h-4" />
+          <HomeButton />
           <div className={`${sidebarHeightWithoutSpecialButtons} overflow-auto`}>
-            <HomeButton />
             {sidebarItems.map((item) => (
               <MobileSidebarItem
                 key={item.link}

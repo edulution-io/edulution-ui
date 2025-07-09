@@ -47,13 +47,13 @@ import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
-import getUsernameFromRequest from '@libs/common/utils/api/getUsernameFromRequest';
+import getUsernameFromRequest from 'apps/api/src/common/utils/getUsernameFromRequest';
 import SurveysService from './surveys.service';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysTemplateService from './surveys-template.service';
 import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
-import GetCurrentUser from '../common/decorators/getUser.decorator';
+import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import { checkAttachmentFile, createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 
