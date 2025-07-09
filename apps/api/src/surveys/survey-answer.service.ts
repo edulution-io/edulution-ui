@@ -261,6 +261,7 @@ class SurveyAnswersService implements OnModuleInit {
       const user: Attendee = { username };
       const updatedAnswer = await this.moveAttachmentsToPermanentStorage(username, surveyId, answer);
       const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(user, surveyId, saveNo, updatedAnswer);
+      void this.clearUpTempFiles(username, surveyId);
       return createdAnswer;
     }
 
@@ -274,6 +275,7 @@ class SurveyAnswersService implements OnModuleInit {
 
       const updatedAnswer = await this.moveAttachmentsToPermanentStorage(firstName, surveyId, answer);
       const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(user, surveyId, saveNo, updatedAnswer);
+      void this.clearUpTempFiles(firstName, surveyId);
       return createdAnswer;
     }
 
@@ -289,8 +291,16 @@ class SurveyAnswersService implements OnModuleInit {
       });
 
       const userName = isAuthenticatedPublicUserParticipation ? firstName : username;
+      if (!userName) {
+        throw new CustomHttpException(
+          SurveyAnswerErrorMessages.NotAbleToFindOrCreateSurveyAnswerError,
+          HttpStatus.UNAUTHORIZED,
+          undefined,
+          SurveyAnswersService.name,
+        );
+      }
       if (existingUsersAnswer == null || canSubmitMultipleAnswers) {
-        const updatedAnswer = await this.moveAttachmentsToPermanentStorage(userName || '', surveyId, answer);
+        const updatedAnswer = await this.moveAttachmentsToPermanentStorage(userName, surveyId, answer);
         const newSurveyAnswer = await this.createAnswer(attendee as Attendee, surveyId, saveNo, updatedAnswer);
         if (newSurveyAnswer == null) {
           throw new CustomHttpException(
@@ -300,6 +310,7 @@ class SurveyAnswersService implements OnModuleInit {
             SurveyAnswersService.name,
           );
         }
+        void this.clearUpTempFiles(userName, surveyId);
 
         const updateSurvey = await this.surveyModel.findByIdAndUpdate<Survey>(surveyId, {
           participatedAttendees: username
@@ -327,7 +338,7 @@ class SurveyAnswersService implements OnModuleInit {
         );
       }
 
-      const updatedAnswer = await this.moveAttachmentsToPermanentStorage(userName || '', surveyId, answer);
+      const updatedAnswer = await this.moveAttachmentsToPermanentStorage(userName, surveyId, answer);
       const updatedSurveyAnswer = await this.surveyAnswerModel.findByIdAndUpdate<SurveyAnswer>(existingUsersAnswer, {
         answer: updatedAnswer,
         saveNo,
@@ -340,6 +351,7 @@ class SurveyAnswersService implements OnModuleInit {
           SurveyAnswersService.name,
         );
       }
+      void this.clearUpTempFiles(userName, surveyId);
       return updatedSurveyAnswer;
     }
 
@@ -535,6 +547,13 @@ class SurveyAnswersService implements OnModuleInit {
       return;
     }
     await FilesystemService.deleteFile(tempFilesPath, fileName);
+  }
+
+  async clearUpTempFiles(userName: string, surveyId: string): Promise<void> {
+    const tempSurveyPath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
+    await this.fileSystemService.deleteEmptyFolder(tempSurveyPath);
+    const tempFilesPath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName);
+    await this.fileSystemService.deleteEmptyFolder(tempFilesPath);
   }
 }
 
