@@ -117,10 +117,8 @@ class SurveyAnswerService implements OnModuleInit {
           if (choice) {
             filteredAnswers.push(choice);
           }
-        } else {
-          if (updatedAnswer[questionName] === choiceId) {
-            filteredAnswers.push(choiceId);
-          }
+        } else if (updatedAnswer[questionName] === choiceId) {
+          filteredAnswers.push(choiceId);
         }
       } catch (error) {
         throw new CustomHttpException(
