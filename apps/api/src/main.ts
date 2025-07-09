@@ -23,6 +23,7 @@ import { WsAdapter } from '@nestjs/platform-ws';
 import AppModule from './app/app.module';
 import AuthGuard from './auth/auth.guard';
 import getLogLevels from './logging/getLogLevels';
+import * as rootPackage from '../../../package.json';
 
 async function bootstrap() {
   const globalPrefix = EDU_API_ROOT;
@@ -74,6 +75,7 @@ async function bootstrap() {
   await app.listen(port);
   if (logLevels) {
     Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
+    Logger.debug(`Application Version: ${rootPackage.version}`);
     Logger.log(`Logging-Levels: ${logLevels.map((level) => level.toUpperCase()).join(', ')}`);
   } else {
     console.info(`Application is running on: http://localhost:${port}/${globalPrefix}`);
