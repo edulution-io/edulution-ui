@@ -88,6 +88,8 @@ class SurveyAnswersService implements OnModuleInit {
 
     const possibleChoices = limiter.choices;
 
+    console.log(possibleChoices);
+
     const filteredChoices: ChoiceDto[] = [];
     const filteringPromises = possibleChoices.map(async (choice) => {
       const counter = await this.countChoiceSelections(surveyId, questionName, choice.title);
@@ -96,6 +98,10 @@ class SurveyAnswersService implements OnModuleInit {
       }
     });
     await Promise.all(filteringPromises);
+
+    console.log(possibleChoices);
+
+    filteredChoices.sort((a, b) => a.title.localeCompare(b.title));
 
     return filteredChoices;
   };
@@ -107,10 +113,8 @@ class SurveyAnswersService implements OnModuleInit {
     const filteredAnswers: string[] = [];
     documents.forEach((document) => {
       try {
-        const answer: { [key: string]: string | object } = JSON.parse(JSON.stringify(document.answer)) as {
-          [key: string]: string | object;
-        };
-        if (answer[questionName] === choiceId) {
+        const updatedAnswer = structuredClone(document.answer) as unknown as {[key: string]: string | object;};
+        if (updatedAnswer[questionName] === choiceId) {
           filteredAnswers.push(choiceId);
         }
       } catch (error) {
@@ -122,6 +126,9 @@ class SurveyAnswersService implements OnModuleInit {
         );
       }
     });
+
+    console.log(`Counted ${filteredAnswers.length} selections for choice ${choiceId} in question ${questionName} of survey ${surveyId}`);
+
     return filteredAnswers.length || 0;
   }
 
