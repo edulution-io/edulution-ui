@@ -10,11 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { join } from 'path';
-import APPS from '@libs/appconfig/constants/apps';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
-import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
+import ImageTypes from '@libs/survey/constants/image-types';
 
-const BULLETIN_ATTACHMENTS_PATH = join(APPS_FILES_PATH, APPS.BULLETIN_BOARD, ATTACHMENT_FOLDER);
+const isQuestionTypeImageType = (questionType: string): boolean =>
+  Object.values(ImageTypes).includes(questionType as ImageTypes);
 
-export default BULLETIN_ATTACHMENTS_PATH;
+export default isQuestionTypeImageType;
