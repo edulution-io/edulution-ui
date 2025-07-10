@@ -35,9 +35,10 @@ const addMailcowSyncRoles: Scripts = {
       const keycloakClient = createKeycloakAxiosClient(keycloakAccessToken);
 
       Logger.debug('Fetching client IDs...', addMailcowSyncRoles.name);
-      const [eduMailcowClient, realmMgmtClient] = await Promise.all([
+      const [eduMailcowClient, realmMgmtClient, accountClient] = await Promise.all([
         keycloakClient.get('/clients', { params: { clientId: 'edu-mailcow-sync' } }),
         keycloakClient.get('/clients', { params: { clientId: 'realm-management' } }),
+        keycloakClient.get('/clients', { params: { clientId: 'account' } }),
       ]);
 
       const eduMailcowClientData = eduMailcowClient.data[0];
@@ -48,6 +49,8 @@ const addMailcowSyncRoles: Scripts = {
       const { id: eduMailcowClientId } = eduMailcowClientData;
       const realmMgmtClientData = realmMgmtClient.data[0];
       const { id: realmMgmtClientId } = realmMgmtClientData;
+      const accountMgmtClientData = accountClient.data[0];
+      const { id: accountMgmtClientId } = accountMgmtClientData;
 
       Logger.debug('Fetching service account user ID for edu-mailcow-sync client...', addMailcowSyncRoles.name);
       const { data: serviceAccountUser } = await keycloakClient.get(
@@ -60,19 +63,33 @@ const addMailcowSyncRoles: Scripts = {
       const serviceAccountUserId = serviceAccountUser?.id;
 
       Logger.debug('Fetching roles...', addMailcowSyncRoles.name);
-      const [queryUsers, queryGroups] = await Promise.all([
+      const [queryUsers, queryGroups, viewUsers, viewGroups] = await Promise.all([
         keycloakClient.get(`/clients/${realmMgmtClientId}/roles/query-users`),
         keycloakClient.get(`/clients/${realmMgmtClientId}/roles/query-groups`),
+        keycloakClient.get(`/clients/${realmMgmtClientId}/roles/view-users`),
+        keycloakClient.get(`/clients/${accountMgmtClientId}/roles/view-groups`),
       ]);
-      const rolesToAdd = [queryUsers.data, queryGroups.data].map(({ id, name }) => ({ id, name }));
+      const rolesToAdd = [queryUsers.data, queryGroups.data, viewUsers.data].map(({ id, name }) => ({ id, name }));
 
-      Logger.debug(`Assigning roles ${rolesToAdd.map((role) => role.name).join(', ')}`, addMailcowSyncRoles.name);
+      Logger.debug(
+        `Assigning realm mgmt roles ${rolesToAdd.map((role) => role.name).join(', ')}`,
+        addMailcowSyncRoles.name,
+      );
       const response = await keycloakClient.post(
         `/users/${serviceAccountUserId}/role-mappings/clients/${realmMgmtClientId}`,
         rolesToAdd,
       );
 
-      Logger.log(`Roles added successfully: Status ${response.status}`, addMailcowSyncRoles.name);
+      Logger.debug(`Assigning account roles ${viewGroups.data.name}`, addMailcowSyncRoles.name);
+      const responseAccount = await keycloakClient.post(
+        `/users/${serviceAccountUserId}/role-mappings/clients/${accountMgmtClientId}`,
+        [{ id: viewGroups.data.id, name: viewGroups.data.name }],
+      );
+
+      Logger.log(
+        `Roles added successfully: Status ${response.status} and ${responseAccount.status} `,
+        addMailcowSyncRoles.name,
+      );
     } catch (error) {
       Logger.error(error.message, addMailcowSyncRoles.name);
     }
