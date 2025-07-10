@@ -20,7 +20,7 @@ import CustomHttpException from '../common/CustomHttpException';
 import UsersService from './users.service';
 import UpdateUserDto from './dto/update-user.dto';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
-import GetCurrentSchool from '../common/decorators/getCurrentSchool.decorator';
+import GetCurrentOrganisationPrefix from '../common/decorators/getCurrentOrganisationPrefix.decorator';
 
 @ApiTags(EDU_API_USERS_ENDPOINT)
 @ApiBearerAuth()
@@ -73,7 +73,7 @@ export class UsersController {
   }
 
   @Get('search/:searchString')
-  async search(@Param('searchString') searchString: string, @GetCurrentSchool() school: string) {
+  async search(@Param('searchString') searchString: string, @GetCurrentOrganisationPrefix() school: string) {
     return this.usersService.searchUsersByName(school, searchString);
   }
 
