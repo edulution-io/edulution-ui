@@ -43,7 +43,7 @@ const PropertyDialogList = ({ deleteWarningTranslationId, items }: PropertyDialo
                 value={value || t('common.not-available')}
                 readOnly
                 disabled
-                width="dialog"
+                widthVariant="dialog"
                 className="min-w-[100px] cursor-pointer"
               />
             </div>
