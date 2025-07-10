@@ -23,6 +23,7 @@ const xmlOptions = {
   parseNodeValue: true,
   parseAttributeValue: false,
   trimValues: true,
+  transformTagName: (tagName: string) => tagName.toLowerCase(),
 };
 
 const parseWebDAVMultiStatus = (xmlData: string) => {
