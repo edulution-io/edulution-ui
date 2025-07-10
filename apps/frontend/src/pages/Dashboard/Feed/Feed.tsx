@@ -83,7 +83,7 @@ const Feed = () => {
           <ScrollArea className="scrollbar-thin">
             <AccordionSH
               type="multiple"
-              defaultValue={[APPS.MAIL, APPS.CONFERENCES, APPS.SURVEYS, APPS.BULLETIN_BOARD]}
+              defaultValue={[APPS.CONFERENCES, APPS.SURVEYS, APPS.BULLETIN_BOARD]}
             >
               {...feed}
             </AccordionSH>

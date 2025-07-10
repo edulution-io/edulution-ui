@@ -10,15 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@nestjs/common';
-import { Request } from 'express';
+const SURVEYS_HEADER_IMAGE = 'logo';
 
-const GetCurrentSchool = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
-  const request: Request = ctx.switchToHttp().getRequest();
-  if (!request.user?.school) {
-    throw new UnauthorizedException('school in JWT is missing');
-  }
-  return request.user.school;
-});
-
-export default GetCurrentSchool;
+export default SURVEYS_HEADER_IMAGE;
