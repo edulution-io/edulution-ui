@@ -14,7 +14,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import OtpInput from '@/components/shared/OtpInput';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';

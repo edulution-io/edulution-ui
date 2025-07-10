@@ -18,7 +18,7 @@ import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants
 import ConferenceDto from '@libs/conferences/types/conference.dto';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 
-interface PublicConferenceStore {
+interface UsePublicConferenceStore {
   reset: () => void;
   publicUserId: string;
   publicUserFullName: string;
@@ -42,11 +42,11 @@ const initialState = {
 };
 
 type PersistentPublicConferenceStore = (
-  lessonData: StateCreator<PublicConferenceStore>,
-  options: PersistOptions<PublicConferenceStore>,
-) => StateCreator<PublicConferenceStore>;
+  lessonData: StateCreator<UsePublicConferenceStore>,
+  options: PersistOptions<UsePublicConferenceStore>,
+) => StateCreator<UsePublicConferenceStore>;
 
-const usePublicConferenceStore = create<PublicConferenceStore>(
+const usePublicConferenceStore = create<UsePublicConferenceStore>(
   (persist as PersistentPublicConferenceStore)(
     (set, get) => ({
       ...initialState,
@@ -106,7 +106,7 @@ const usePublicConferenceStore = create<PublicConferenceStore>(
         publicUserFullName: state.publicUserFullName,
         storedPasswordsByMeetingIds: state.storedPasswordsByMeetingIds,
       }),
-    } as PersistOptions<PublicConferenceStore>,
+    } as PersistOptions<UsePublicConferenceStore>,
   ),
 );
 
