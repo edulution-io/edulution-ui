@@ -1086,6 +1086,7 @@
       "description": "Bitte wähle die Sprache für die Benutzeroberfläche aus.",
       "german": "Deutsch",
       "english": "Englisch",
+      "french": "Französisch",
       "system": "Systemsprache"
     },
     "addTotp": {
