@@ -10,14 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const AUTH_PATHS = {
-  AUTH_ENDPOINT: 'auth',
-  AUTH_OIDC_CONFIG_PATH: '/.well-known/openid-configuration',
-  AUTH_OIDC_TOKEN_PATH: '/protocol/openid-connect/token',
-  AUTH_OIDC_USERINFO_PATH: '/protocol/openid-connect/userinfo',
-  AUTH_QRCODE: 'qrcode',
-  AUTH_CHECK_TOTP: 'totp',
-  AUTH_VIA_APP: 'edu-app',
+const AUTH_CONFIG = {
+  KEYCLOAK_REALM: 'edulution',
+  KEYCLOAK_CLIENT_ID: 'edu-ui',
 } as const;
 
-export default AUTH_PATHS;
+export default AUTH_CONFIG;

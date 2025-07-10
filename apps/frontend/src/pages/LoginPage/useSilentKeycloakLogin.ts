@@ -14,7 +14,7 @@
 import { useCallback } from 'react';
 import Keycloak from 'keycloak-js';
 import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
-import AUTH_PATHS from '@libs/auth/constants/auth-paths';
+import AUTH_CONFIG from '@libs/auth/constants/auth-config';
 
 interface UseSilentLoginWithPasswordReturn {
   silentLogin: (username: string, password: string) => Promise<void>;
@@ -27,8 +27,8 @@ const useSilentLoginWithPassword = (): UseSilentLoginWithPasswordReturn => {
 
   const keycloak = new Keycloak({
     url,
-    realm: AUTH_PATHS.KEYCLOAK_REALM,
-    clientId: AUTH_PATHS.KEYCLOAK_CLIENT_ID,
+    realm: AUTH_CONFIG.KEYCLOAK_REALM,
+    clientId: AUTH_CONFIG.KEYCLOAK_CLIENT_ID,
   });
 
   const silentLogin = useCallback(async (username: string, password: string) => {
@@ -91,9 +91,9 @@ const useSilentLoginWithPassword = (): UseSilentLoginWithPasswordReturn => {
 
   const silentLogout = useCallback(async () => {
     const logoutUrl =
-      `${url}/realms/${AUTH_PATHS.KEYCLOAK_REALM}/protocol/openid-connect/logout` +
+      `${url}/realms/${AUTH_CONFIG.KEYCLOAK_REALM}/protocol/openid-connect/logout` +
       `?post_logout_redirect_uri=${EDU_BASE_URL}` +
-      `&client_id=${AUTH_PATHS.KEYCLOAK_CLIENT_ID}`;
+      `&client_id=${AUTH_CONFIG.KEYCLOAK_CLIENT_ID}`;
 
     await new Promise<void>((resolve) => {
       const iframe = document.createElement('iframe');
