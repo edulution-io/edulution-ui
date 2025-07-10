@@ -12,6 +12,7 @@
 
 export {
   createdSurveyId01,
+  createSurvey01,
   createdSurvey01,
   createdSurveyId02,
   createdSurvey02,

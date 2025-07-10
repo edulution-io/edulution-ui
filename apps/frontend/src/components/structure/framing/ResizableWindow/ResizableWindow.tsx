@@ -20,7 +20,7 @@ import { createPortal } from 'react-dom';
 import useWindowResize from '@/hooks/useWindowResize';
 import { SIDEBAR_WIDTH } from '@libs/ui/constants';
 import { DEFAULT_MINIMIZED_BAR_HEIGHT, MAXIMIZED_BAR_HEIGHT } from '@libs/ui/constants/resizableWindowElements';
-import MinimizeButton from '@/components/structure/framing/ResizableWindow/Buttons/MinimizedButton';
+import MinimizeButton from '@/components/structure/framing/ResizableWindow/Buttons/MinimizeButton';
 import ToggleMaximizeButton from '@/components/structure/framing/ResizableWindow/Buttons/ToggleMaximizeButton';
 import CloseButton from '@/components/structure/framing/ResizableWindow/Buttons/CloseButton';
 import RectangleSize from '@libs/ui/types/rectangleSize';

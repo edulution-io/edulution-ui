@@ -17,7 +17,7 @@ import cn from '@libs/common/utils/className';
 import { RadioGroupItemSH, RadioGroupSH } from '@/components/ui/RadioGroupSH';
 import { PublicShareLinkScopeType } from '@libs/filesharing/types/publicShareLinkScopeType';
 
-interface ShareScopeSelectorProps {
+interface ShareLinkScopeSelectorProps {
   value: PublicShareLinkScopeType;
   onValueChange: (value: PublicShareLinkScopeType) => void;
 }
@@ -25,7 +25,7 @@ interface ShareScopeSelectorProps {
 const optionStyle =
   'flex w-full items-center justify-between gap-4 rounded-lg border p-4 hover:bg-muted data-[state=checked]:border-primary';
 
-const ShareScopeSelector: FC<ShareScopeSelectorProps> = ({ value, onValueChange }) => {
+const ShareLinkScopeSelector: FC<ShareLinkScopeSelectorProps> = ({ value, onValueChange }) => {
   const { t } = useTranslation();
 
   return (
@@ -73,4 +73,4 @@ const ShareScopeSelector: FC<ShareScopeSelectorProps> = ({ value, onValueChange 
   );
 };
 
-export default ShareScopeSelector;
+export default ShareLinkScopeSelector;

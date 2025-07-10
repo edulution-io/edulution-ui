@@ -29,7 +29,7 @@ import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDial
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import Input from '@/components/shared/Input';
 import DEFAULT_TABLE_SORT_PROPERTY_KEY from '@libs/common/constants/defaultTableSortProperty';
-import SelectColumnsDropdown from '@/components/ui/Table/SelectCoumnsDropdown';
+import SelectColumnsDropdown from '@/components/ui/Table/SelectColumnsDropdown';
 import TABLE_DEFAULT_COLUMN_WIDTH from '@libs/ui/constants/tableDefaultColumnWidth';
 import TableActionFooter from '@/components/ui/Table/TableActionFooter';
 

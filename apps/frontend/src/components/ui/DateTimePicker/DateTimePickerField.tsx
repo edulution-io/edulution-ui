@@ -30,8 +30,8 @@ import { Calendar } from '@/components/ui/Calendar';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
-import MinuteButton from '@/components/ui/DateTimePicker/MinuteButtons';
-import HourButton from '@/components/ui/DateTimePicker/HourButtons';
+import MinuteButton from '@/components/ui/DateTimePicker/MinuteButton';
+import HourButton from '@/components/ui/DateTimePicker/HourButton';
 
 interface DateTimePickerFieldProps<T extends FieldValues> {
   form: UseFormReturn<T>;
