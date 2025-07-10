@@ -11,11 +11,11 @@
  */
 
 import React, { useEffect, useMemo } from 'react';
-import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
+import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import ConferencesTableColumns from '@/pages/ConferencePage/Table/ConferencesTableColumns';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import APPS from '@libs/appconfig/constants/apps';
 import useMedia from '@/hooks/useMedia';
 import CONFERENCES_TABLE_COLUMNS from '@libs/conferences/constants/conferencesTableColumns';

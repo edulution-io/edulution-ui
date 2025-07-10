@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "1.3.12",
+  "version": "1.3.20",
   "scripts": {
     "test": "nx run-many --target=test --projects=api",
     "test:api": "nx run api:test --detectOpenHandles",
@@ -21,6 +21,7 @@
     "push:docker:api": "docker push ghcr.io/edulution-io/edulution-api:preview",
     "lint": "nx run-many --target=lint --projects=frontend,api,libs",
     "lint:fix": "nx run-many --target=lint --projects=frontend,api,libs --fix",
+    "lint:staged": "lint-staged",
     "preview": "nx preview frontend",
     "prepare": "husky install",
     "precommit": "npm run test && npm run build:all",
@@ -28,6 +29,7 @@
     "format": "pretty-quick --staged",
     "check-translations": "tsx ./scripts/checkTranslations.ts",
     "check-error-message-translations": "tsx scripts/checkErrorMessages.ts",
+    "check-filenames": "git diff --name-only --cached --relative -- '*.ts' '*.tsx' | xargs --no-run-if-empty tsx scripts/checkFilenames.ts",
     "addLicenseHeader": "tsx ./scripts/addLicenseHeader.ts"
   },
   "engines": {
@@ -224,11 +226,13 @@
     "@vitejs/plugin-react": "^4.2.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.17",
+    "chalk": "^5.4.1",
     "eslint": "^8.57.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^18.0.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-filenames": "^1.3.2",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-prettier": "^5.1.3",
@@ -237,6 +241,7 @@
     "jest-environment-node": "^29.7.0",
     "jest-transform-stub": "^2.0.0",
     "jsdom": "^25.0.0",
+    "lint-staged": "^16.1.2",
     "madge": "^7.0.0",
     "nx": "18.3.5",
     "postcss": "^8.4.35",
