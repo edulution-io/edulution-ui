@@ -10,11 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { join } from 'path';
-import APPS from '@libs/appconfig/constants/apps';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
-import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
+enum OtherTypes {
+  TEXT = 'text',
+  BOOLEAN = 'boolean',
+  DATE = 'date',
+  DATETIME = 'datetime',
+  DROPDOWN = 'dropdown',
+  MATRIX = 'matrix',
+  RANKING = 'ranking',
+}
 
-const BULLETIN_ATTACHMENTS_PATH = join(APPS_FILES_PATH, APPS.BULLETIN_BOARD, ATTACHMENT_FOLDER);
-
-export default BULLETIN_ATTACHMENTS_PATH;
+export default OtherTypes;

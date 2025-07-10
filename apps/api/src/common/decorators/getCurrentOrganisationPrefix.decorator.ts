@@ -10,11 +10,22 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { join } from 'path';
-import APPS from '@libs/appconfig/constants/apps';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
-import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
+import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { Request } from 'express';
 
-const BULLETIN_ATTACHMENTS_PATH = join(APPS_FILES_PATH, APPS.BULLETIN_BOARD, ATTACHMENT_FOLDER);
+const GetCurrentOrganisationPrefix = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
+  const request: Request = ctx.switchToHttp().getRequest();
+  const target = process.env.EDUI_DEPLOYMENT_TARGET || 'school';
 
-export default BULLETIN_ATTACHMENTS_PATH;
+  if (target === 'business') {
+    return 'global';
+  }
+
+  if (target === 'school' && request.user?.school) {
+    return request.user.school;
+  }
+
+  throw new UnauthorizedException('school in JWT is missing');
+});
+
+export default GetCurrentOrganisationPrefix;
