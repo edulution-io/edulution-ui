@@ -655,9 +655,9 @@
         "filterPlaceHolderText": "Option suchen",
         "allowMultiple": "Es können mehrere Dateien gleichzeitig ausgewählt und hochgeladen werden.",
         "addAllowMultiple": "Erlaube mehrere Dateien",
-        "maxFileSize": "Maximale Dateigröße [mB]",
-        "addMaxFileSize": "0 bedeutet, dass die Dateigröße nicht begrenzt ist.",
-        "imageWidth": "Breite des Bildes [px]",
+        "maxFileSize": "Maximale Dateigröße in Megabyte [MB]",
+        "addMaxFileSize": "0 bedeutet, dass die Dateigröße nur durch das Backend begrenzt ist ({{size}} MB).",
+        "imageWidth": "Breite des Bildes in Pixel [px]",
         "addImageWidth": "0 bedeutet, dass die Breite nicht begrenzt ist."
       }
     },

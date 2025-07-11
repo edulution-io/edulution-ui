@@ -17,6 +17,7 @@ import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuest
 import Label from '@/components/ui/Label';
 import Input from '@/components/shared/Input';
 import Checkbox from '@/components/ui/Checkbox';
+import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 
 const FileQuestion = () => {
   const { t } = useTranslation();
@@ -40,9 +41,10 @@ const FileQuestion = () => {
       <Input
         type="number"
         min="0"
-        placeholder={t('survey.editor.questionSettings.addMaxFileSize')}
+        max={MAX_FILE_UPLOAD_SIZE}
+        placeholder={t('survey.editor.questionSettings.addMaxFileSize', { size: MAX_FILE_UPLOAD_SIZE })}
         variant="dialog"
-        value={maxFileSize || 0}
+        value={maxFileSize === 0 ? '' : maxFileSize}
         onChange={(e) => setMaxFileSize(Number(e.target.value))}
         className={cn({ 'text-muted-foreground': !maxFileSize }, { 'text-primary-foreground': maxFileSize })}
       />
