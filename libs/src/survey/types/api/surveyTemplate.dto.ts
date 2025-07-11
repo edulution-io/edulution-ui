@@ -10,11 +10,21 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
+import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import SurveyDto from './survey.dto';
 
 interface SurveyTemplateDto {
+  template: Partial<SurveyDto> & { formula: TSurveyFormula };
+  backendLimiters?: { questionName: string; choices: ChoiceDto[] }[];
   fileName?: string;
-  template: Partial<SurveyDto>;
+  title?: string;
+  description?: string;
+  author?: string;
+  isActive?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+  icon?: string;
 }
 
 export default SurveyTemplateDto;

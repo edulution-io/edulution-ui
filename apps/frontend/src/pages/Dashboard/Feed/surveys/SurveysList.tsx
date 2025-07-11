@@ -20,7 +20,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import cn from '@libs/common/utils/className';
 import useLanguage from '@/hooks/useLanguage';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FallbackText from '@/components/shared/FallbackText';
 
@@ -34,7 +34,7 @@ const SurveysList = (props: SurveysListProps) => {
   const { language } = useLanguage();
   const { t } = useTranslation();
 
-  const { selectSurvey } = useSurveyTablesPageStore();
+  const { selectSurvey } = useSurveysTablesPageStore();
 
   const locale = getLocaleDateFormat(language);
 

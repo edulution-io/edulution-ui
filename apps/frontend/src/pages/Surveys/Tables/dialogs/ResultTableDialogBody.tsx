@@ -17,11 +17,11 @@ import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import getSurveyFormulaWithIdentificationPlaceholderQuestion from '@libs/survey/utils/getSurveyFormulaWithIdentificationPlaceholderQuestion';
 import ResultTable from '@/pages/Surveys/Tables/components/ResultTable';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 
 const ResultTableDialogBody = () => {
-  const { selectedSurvey } = useSurveyTablesPageStore();
+  const { selectedSurvey } = useSurveysTablesPageStore();
   const { setIsOpenPublicResultsTableDialog, getSurveyResult, result } = useResultDialogStore();
 
   const { t } = useTranslation();

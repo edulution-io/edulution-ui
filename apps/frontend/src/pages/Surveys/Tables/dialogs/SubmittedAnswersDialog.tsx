@@ -16,12 +16,12 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import SubmittedAnswersDialogBody from '@/pages/Surveys/Tables/dialogs/SubmittedAnswersDialogBody';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 const SubmittedAnswersDialog = () => {
-  const { selectedSurvey: survey } = useSurveyTablesPageStore();
+  const { selectedSurvey: survey } = useSurveysTablesPageStore();
 
   const {
     isOpenSubmittedAnswersDialog,

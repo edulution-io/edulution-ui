@@ -17,7 +17,7 @@ import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import useLanguage from '@/hooks/useLanguage';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
@@ -35,7 +35,7 @@ Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
 const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.ReactNode => {
   const { isPublic } = props;
 
-  const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
+  const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveysTablesPageStore();
 
   const { fetchAnswer, isFetching, answerSurvey, previousAnswer } = useParticipateSurveyStore();
 
