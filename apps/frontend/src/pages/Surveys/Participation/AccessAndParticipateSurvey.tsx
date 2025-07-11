@@ -14,7 +14,7 @@ import React, { useEffect } from 'react';
 import useUserStore from '@/store/UserStore/useUserStore';
 import PublicSurveyAccessForm from '@/pages/Surveys/Participation/PublicSurveyAccessForm';
 import SurveyParticipationModel from '@/pages/Surveys/Participation/SurveyParticipationModel';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from './useParticipateSurveyStore';
 import PublicSurveyParticipationIdDisplay from './PublicSurveyParticipationIdDisplay';
 
@@ -25,7 +25,7 @@ interface AccessAndParticipateSurveyProps {
 const AccessAndParticipateSurvey = (props: AccessAndParticipateSurveyProps): React.ReactNode => {
   const { isPublic = false } = props;
 
-  const { selectedSurvey } = useSurveyTablesPageStore();
+  const { selectedSurvey } = useSurveysTablesPageStore();
   const { user } = useUserStore();
   const { attendee, setAttendee, publicUserId } = useParticipateSurveyStore();
 

@@ -14,10 +14,9 @@ import { create } from 'zustand';
 import { toast } from 'sonner';
 import { t } from 'i18next';
 import eduApi from '@/api/eduApi';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { SURVEY_TEMPLATES_ENDPOINT, TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
 import handleApiError from '@/utils/handleApiError';
-import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
+import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import APPS from '@libs/appconfig/constants/apps';
 
@@ -36,7 +35,7 @@ interface TemplateMenuStore {
   error?: Error;
 
   template?: SurveyTemplateDto;
-  setTemplate: (template: SurveyTemplateDto) => void;
+  setTemplate: (template?: SurveyTemplateDto) => void;
   templates: SurveyTemplateDto[];
   fetchTemplates: () => Promise<void>;
   isLoading: boolean;
@@ -74,15 +73,16 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
     let templateDocuments: SurveyTemplateDto[] = [];
     const promises = templateNames?.map(async (fileName) => {
       try {
-        const result = await eduApi.get<SurveyDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${fileName}`);
+        const result = await eduApi.get<SurveyTemplateDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${fileName}`);
         if (result) {
-          const newTemplate = { fileName, template: result.data };
+          const newTemplate = { ...result.data, fileName };
           templateDocuments = [...templateDocuments, newTemplate];
         }
       } catch (error) {
         handleApiError(error, set);
       }
     });
+
     if (promises) {
       try {
         await Promise.all(promises);
@@ -95,7 +95,7 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
     set({ isLoading: false });
   },
 
-  setTemplate: (template: SurveyTemplateDto) => set({ template }),
+  setTemplate: (template?: SurveyTemplateDto) => set({ template }),
 
   uploadTemplate: async (template: SurveyTemplateDto): Promise<void> => {
     set({ isSubmitting: true });
