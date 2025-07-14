@@ -103,12 +103,12 @@ const SurveyEditorLoadingPage = () => {
           <p>{t('survey.editor.new')}</p>
         </Card>
 
-        {templates.length ? (
-          templates.map((template, index) => (
+        {filteredTemplates.length ? (
+          filteredTemplates.map((template) => (
             <SurveyEditorLoadingTemplate
+              key={template.fileName}
               creator={surveyCreator}
               template={template}
-              key={`template-${index}`}
             />
           ))
         ) : (
