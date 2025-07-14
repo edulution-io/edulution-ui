@@ -1596,7 +1596,7 @@
     }
   },
   "version": {
-    "newVersionAvailable": "A new version of {{ appName }} is available.\n\nClick on “Refresh” to reload the page in the browser and avoid problems.\n\nUnsaved changes may be lost.",
+    "newVersionAvailable": "A new version of {{ appName }} is available.",
     "update": "Refresh"
   },
   "veyon": {

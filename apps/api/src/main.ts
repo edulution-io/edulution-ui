@@ -74,8 +74,7 @@ async function bootstrap() {
 
   await app.listen(port);
   if (logLevels) {
-    Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
-    Logger.debug(`Application Version: ${rootPackage.version}`);
+    Logger.log(`🚀 Application Version ${rootPackage.version} is running on: http://localhost:${port}/${globalPrefix}`);
     Logger.log(`Logging-Levels: ${logLevels.map((level) => level.toUpperCase()).join(', ')}`);
   } else {
     console.info(`Application is running on: http://localhost:${port}/${globalPrefix}`);

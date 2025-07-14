@@ -1600,7 +1600,7 @@
     }
   },
   "version": {
-    "newVersionAvailable": "Es ist eine neue Version von {{ appName }} verfügbar.\n\nKlicke auf \"Aktualisieren\" um die Seite im Browser neu zu laden und Probleme zu vermeiden.\n\nUngespeicherte Änderungen können verloren gehen.",
+    "newVersionAvailable": "Es ist eine neue Version von {{ appName }} verfügbar.",
     "update": "Aktualisieren"
   },
   "veyon": {

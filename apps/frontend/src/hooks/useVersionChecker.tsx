@@ -54,11 +54,11 @@ const useVersionChecker = () => {
 
   useEffect(() => {
     if (hasNewVersion) {
-      toast(t('version.newVersionAvailable', { appName: APPLICATION_NAME }), {
+      toast.info(t('version.newVersionAvailable', { appName: APPLICATION_NAME }), {
         id: `version-${currentVersion.current}`,
         duration: Infinity,
-        position: 'top-center',
-        icon: <GrUpgrade />,
+        position: 'top-right',
+        icon: <GrUpgrade color="green" />,
         action: {
           label: t('version.update'),
           onClick: () => window.location.reload(),
