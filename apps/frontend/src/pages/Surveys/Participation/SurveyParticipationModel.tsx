@@ -31,6 +31,7 @@ interface SurveyParticipationModelProps {
 }
 
 Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
+Serializer.getProperty('text', 'textUpdateMode').defaultValue = 'onTyping';
 
 const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.ReactNode => {
   const { isPublic } = props;
