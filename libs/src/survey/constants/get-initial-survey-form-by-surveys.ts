@@ -15,7 +15,7 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import getFirstValidDateOfArray from '@libs/common/utils/Date/getFirstValidDateOfArray';
 
-const getInitialSurveyFormValues = (
+const getInitialSurveyFormBySurveys = (
   creator: AttendeeDto,
   selectedSurvey?: SurveyDto,
   storedSurvey?: SurveyDto,
@@ -42,4 +42,4 @@ const getInitialSurveyFormValues = (
   };
 };
 
-export default getInitialSurveyFormValues;
+export default getInitialSurveyFormBySurveys;

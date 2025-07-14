@@ -20,8 +20,20 @@ import { SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT, SURVEYS } from '@libs/survey/cons
 import eduApi from '@/api/eduApi';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import handleApiError from '@/utils/handleApiError';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
+import fetchSelectedSurvey from '@/pages/Surveys/utils/fetchSelectedSurvey';
+import getInitialSurveyFormBySurveys from '@libs/survey/constants/get-initial-survey-form-by-surveys';
+import getInitialSurveyFormByTemplate from '@libs/survey/constants/get-initial-survey-form-by-template';
 
 interface SurveyEditorPageStore {
+  assignTemplateToSelectedSurvey: (creator: AttendeeDto, template?: SurveyTemplateDto) => void;
+  fetchSelectedSurvey: (creator: AttendeeDto, surveyId: string, isPublic?: boolean) => Promise<void>;
+  isFetching: boolean;
+
+  initialSurvey: SurveyDto | undefined;
+  setInitialSurvey: (survey: SurveyDto | undefined) => void;
+
   storedSurvey: SurveyDto | undefined;
   updateStoredSurvey: (survey: SurveyDto) => void;
   resetStoredSurvey: () => void;
@@ -48,6 +60,9 @@ type PersistedSurveyEditorPageStore = (
 ) => StateCreator<SurveyEditorPageStore>;
 
 const initialState = {
+  isFetching: false,
+  initialSurvey: undefined,
+
   storedSurvey: undefined,
 
   isUploadingFile: false,
@@ -64,6 +79,27 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
     (set) => ({
       ...initialState,
       reset: () => set(initialState),
+
+      assignTemplateToSelectedSurvey: (creator: AttendeeDto, template?: SurveyTemplateDto): void => {
+        const newSurvey = getInitialSurveyFormByTemplate(creator, template);
+        set({ initialSurvey: newSurvey });
+      },
+
+      fetchSelectedSurvey: async (creator: AttendeeDto, surveyId?: string, isPublic?: boolean): Promise<void> => {
+        set({ isFetching: true, initialSurvey: undefined });
+        try {
+          const survey = await fetchSelectedSurvey(surveyId, isPublic);
+          const initialValues = getInitialSurveyFormBySurveys(creator, survey);
+          set({ initialSurvey: initialValues });
+        } catch (error) {
+          set({ initialSurvey: undefined });
+          handleApiError(error, set);
+        } finally {
+          set({ isFetching: false });
+        }
+      },
+
+      setInitialSurvey: (survey: SurveyDto | undefined) => set({ initialSurvey: survey }),
 
       updateStoredSurvey: (survey: SurveyDto) => set({ storedSurvey: survey }),
       resetStoredSurvey: () => set({ storedSurvey: undefined }),

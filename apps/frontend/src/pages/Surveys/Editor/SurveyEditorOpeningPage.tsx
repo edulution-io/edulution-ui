@@ -12,13 +12,10 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import getInitialSurveyFormValues from '@libs/survey/constants/initial-survey-form';
 import useUserStore from '@/store/UserStore/useUserStore';
 import SurveyEditorPage from '@/pages/Surveys/Editor/SurveyEditorPage';
 import SurveyEditorLoadingPage from '@/pages/Surveys/Editor/SurveyEditorLoadingPage';
-import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
@@ -37,8 +34,7 @@ const SurveyEditorOpeningPage = () => {
     [user],
   );
 
-  const { fetchSelectedSurvey, selectedSurvey } = useSurveysTablesPageStore();
-  const { reset: resetEditorPage, storedSurvey, resetStoredSurvey } = useSurveyEditorPageStore();
+  const { reset: resetEditorPage, fetchSelectedSurvey, initialSurvey, resetStoredSurvey } = useSurveyEditorPageStore();
   const { reset: resetTemplateStore } = useTemplateMenuStore();
   const { reset: resetQuestionsContextMenu } = useQuestionsContextMenuStore();
 
@@ -46,37 +42,22 @@ const SurveyEditorOpeningPage = () => {
 
   useEffect(() => {
     resetEditorPage();
-    resetStoredSurvey();
-    resetTemplateStore();
-    resetQuestionsContextMenu();
-    void fetchSelectedSurvey(surveyId, false);
-  }, [surveyId]);
-
-  const [initialValues, setInitialValues] = React.useState<SurveyDto | undefined>(undefined);
+  }, []);
 
   useEffect(() => {
-    if (!user) {
+    if (!surveyId) {
       return;
     }
-
-    if (!selectedSurvey) {
-      return;
-    }
-
+    resetEditorPage();
     resetStoredSurvey();
     resetTemplateStore();
     resetQuestionsContextMenu();
-
-    if (!surveyCreator) {
-      return;
-    }
-    const initialFormValues = getInitialSurveyFormValues(surveyCreator, selectedSurvey, storedSurvey);
-    setInitialValues(initialFormValues);
-  }, [selectedSurvey, storedSurvey, user]);
+    void fetchSelectedSurvey(surveyCreator, surveyId, false);
+  }, [surveyId]);
 
   return (
     <PageLayout>
-      {!initialValues ? <SurveyEditorLoadingPage /> : <SurveyEditorPage initialFormValues={initialValues} />}
+      {!initialSurvey ? <SurveyEditorLoadingPage /> : <SurveyEditorPage initialFormValues={initialSurvey} />}
     </PageLayout>
   );
 };
