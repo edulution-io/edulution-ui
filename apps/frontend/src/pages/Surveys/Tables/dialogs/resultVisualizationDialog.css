@@ -37,6 +37,20 @@
     fill: var(--primary-foreground) !important;
   }
 }
+.sa-visualizer__content {
+  color: var(--muted-foreground);
+}
+.sa-visualizer__footer-title {
+  color: var(--primary-foreground);
+}
+.sa-toolbar__button {
+  color: var(--muted-foreground);
+  background-color: var(--muted);
+}
+.sa-toolbar__button:hover {
+  color: var(--primary);
+  background-color: var(--muted-light);
+}
 
 .modebar:hover,
 .modebar--hover {

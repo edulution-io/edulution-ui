@@ -35,7 +35,7 @@ const PublicSurveyAccessForm = (): React.ReactNode => {
     z.object({
       publicUserName: z
         .string({ required_error: t('common.required') })
-        .min(5, { message: t('login.username_too_short') })
+        .min(3, { message: t('login.username_too_short') })
         .max(100, { message: t('login.username_too_long') })
         .regex(publicUserRegex, { message: t('login.username_not_regex') }),
     });
