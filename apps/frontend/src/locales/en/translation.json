@@ -619,6 +619,7 @@
       "addDescription": "Add a description",
       "expectingUserInput": "Expecting the user to answer here, ... ",
       "templates": "Templates",
+      "noSearchResults": "No templates found",
       "templateMenu": {
         "submit": "Save Survey as template.",
         "title": "Templates:",

@@ -13,6 +13,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Card } from '@/components/shared/Card';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { GRID_CARD, GRID_FIELD, GRID_SEARCH } from '@libs/ui/constants/commonClassNames';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
 import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
 import useLanguage from '@/hooks/useLanguage';
@@ -83,14 +84,10 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         variant="dialog"
-        className="mx-auto my-3 block w-[80%] min-w-[250px] rounded-xl border border-ring px-3 py-2 md:mb-2 md:mt-0 md:w-[400px]"
+        className={GRID_SEARCH}
       />
 
-      <div
-        className="mx-auto grid max-h-[full] w-full grid-cols-[repeat(auto-fit,minmax(8rem,auto))] justify-center
-        gap-x-3 gap-y-2 overflow-auto pb-10 scrollbar-thin md:max-h-full
-        md:w-[95%] md:grid-cols-[repeat(auto-fit,minmax(12rem,auto))] md:gap-x-6 md:gap-y-5 md:pb-4"
-      >
+      <div className={GRID_FIELD}>
         {filteredApps.length ? (
           filteredApps.map((app, index) => (
             <NavLink
@@ -99,12 +96,7 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
               onClick={onClose}
             >
               <Card
-                className={cn(
-                  'h-26 relative flex w-full flex-col items-center overflow-hidden border border-muted-light bg-muted-dialog p-5 hover:bg-primary',
-                  {
-                    'bg-muted': index === 0,
-                  },
-                )}
+                className={cn(GRID_CARD, { 'bg-muted': index === 0 })}
                 variant="text"
               >
                 <img
