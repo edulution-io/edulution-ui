@@ -10,9 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const QUEUE_CONSTANTS = {
-  PREFIX: 'queue-user-',
-  USERS_CACHE_REFRESH: 'USERS_CACHE_REFRESH',
-} as const;
+const USERS_CACHE_UPDATE_LIMIT = 2 * 60 * 1000;
 
-export default QUEUE_CONSTANTS;
+export default USERS_CACHE_UPDATE_LIMIT;
