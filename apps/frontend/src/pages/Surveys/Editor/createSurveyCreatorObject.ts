@@ -55,6 +55,7 @@ const createSurveyCreatorObject = (language = 'en') => {
       'matrix',
       'matrixdropdown',
       'image',
+      'signaturepad',
     ],
   };
 

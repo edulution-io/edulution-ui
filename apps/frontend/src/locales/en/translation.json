@@ -1596,6 +1596,10 @@
       "dead": "dead"
     }
   },
+  "version": {
+    "newVersionAvailable": "A new version of {{ appName }} is available.",
+    "update": "Refresh"
+  },
   "veyon": {
     "lockScreen": "Lock screen",
     "unlockScreen": "Unlock screen",
