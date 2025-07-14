@@ -43,7 +43,7 @@ import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 import useAppConfigsStore from '../Settings/AppConfig/appConfigsStore';
 import useAuthErrorHandler from './useAuthErrorHandler';
-import useSilentLoginWithPassword from './useSilentKeycloakLogin';
+import useSilentLoginWithPassword from './useSilentLoginWithPassword';
 
 type LocationState = {
   from: string;

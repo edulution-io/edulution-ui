@@ -20,7 +20,7 @@ import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import { toast } from 'sonner';
 import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import COOKIE_DESCRIPTORS from '@libs/common/constants/cookieDescriptors';
-import useSilentLoginWithPassword from '@/pages/LoginPage/useSilentKeycloakLogin';
+import useSilentLoginWithPassword from '@/pages/LoginPage/useSilentLoginWithPassword';
 
 const useLogout = () => {
   const { t } = useTranslation();

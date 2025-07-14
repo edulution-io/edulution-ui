@@ -54,10 +54,10 @@ const useSilentLoginWithPassword = (): UseSilentLoginWithPasswordReturn => {
 
         const onMessage = (ev: MessageEvent) => {
           if (ev.origin !== window.location.origin) return;
-          const href = typeof ev.data === 'string' ? ev.data : window.location.href;
-          const params = new URL(href).searchParams;
-          const hashParams = new URL(href).hash.slice(1);
-          const code = params.get('code') ?? new URLSearchParams(hashParams).get('code');
+          const href = new URL(typeof ev.data === 'string' ? ev.data : window.location.href);
+          const params = href.searchParams;
+          const hashParams = new URLSearchParams(href.hash.slice(1));
+          const code = params.get('code') ?? hashParams.get('code');
 
           if (!code) {
             cleanup();
