@@ -19,7 +19,7 @@ import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressD
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import normalizeWebdavPath from '@libs/filesharing/utils/buildNormalizedWebdavPath';
+import buildNormalizedWebdavPath from '@libs/filesharing/utils/buildNormalizedWebdavPath';
 import toSanitizedPathRegex from '@libs/filesharing/utils/toSanitizedPathRegex';
 import WebdavService from '../../webdav/webdav.service';
 import SseService from '../../sse/sse.service';
@@ -38,7 +38,7 @@ class DeleteFileConsumer extends WorkerHost {
 
   async process(job: Job<FileOperationQueueJobData>): Promise<void> {
     const { username, originFilePath, processed, total, webdavFilePath } = job.data as DeleteFileJobData;
-    const targetPath = normalizeWebdavPath(webdavFilePath);
+    const targetPath = buildNormalizedWebdavPath(webdavFilePath);
     const sanitizedPathRegex = toSanitizedPathRegex(targetPath, 'g');
 
     const failedPaths: string[] = [];

@@ -10,22 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { create } from 'zustand';
+const SURVEYS_HEADER_IMAGE = 'logo';
 
-interface SidebarStore {
-  isMobileSidebarOpen: boolean;
-  reset: () => void;
-  toggleMobileSidebar: () => void;
-}
-
-const initialState = {
-  isMobileSidebarOpen: false,
-};
-
-const useSidebarStore = create<SidebarStore>((set) => ({
-  ...initialState,
-  reset: () => set(initialState),
-  toggleMobileSidebar: () => set((state) => ({ isMobileSidebarOpen: !state.isMobileSidebarOpen })),
-}));
-
-export default useSidebarStore;
+export default SURVEYS_HEADER_IMAGE;

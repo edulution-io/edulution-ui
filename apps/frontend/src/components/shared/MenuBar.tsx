@@ -53,7 +53,7 @@ const MenuBar: React.FC = () => {
 
   const renderMenuBarContent = () => (
     <div
-      className="max-w-[var(--menubar-max-width)]"
+      className="flex h-full max-w-[var(--menubar-max-width)] flex-col"
       ref={menubarRef}
     >
       <div className="flex flex-col items-center justify-center py-6">
@@ -74,35 +74,37 @@ const MenuBar: React.FC = () => {
         </button>
       </div>
       <MenubarMenu>
-        {menuBarEntries.menuItems.map((item) => (
-          <React.Fragment key={item.label}>
-            {isSelected === item.id && (
-              <PageTitle
-                title={t(`${menuBarEntries.appName}.sidebar`)}
-                translationId={item.label}
-              />
-            )}
-            <MenubarTrigger
-              className={cn(
-                'flex w-full cursor-pointer items-center gap-3 py-1 pl-3 pr-10 transition-colors',
-                menuBarEntries.color,
-                isSelected === item.id ? menuBarEntries.color.split(':')[1] : '',
+        <div className="flex-1 overflow-y-auto pb-10 scrollbar-thin">
+          {menuBarEntries.menuItems.map((item) => (
+            <React.Fragment key={item.label}>
+              {isSelected === item.id && (
+                <PageTitle
+                  title={t(`${menuBarEntries.appName}.sidebar`)}
+                  translationId={item.label}
+                />
               )}
-              onClick={() => {
-                setIsSelected(item.id);
-                toggle();
-                item.action();
-              }}
-            >
-              <img
-                src={item.icon}
-                alt={item.label}
-                className="h-12 w-12 object-contain"
-              />
-              <p className="text-left">{item.label}</p>
-            </MenubarTrigger>
-          </React.Fragment>
-        ))}
+              <MenubarTrigger
+                className={cn(
+                  'flex w-full cursor-pointer items-center gap-3 py-1 pl-3 pr-10 transition-colors',
+                  menuBarEntries.color,
+                  isSelected === item.id ? menuBarEntries.color.split(':')[1] : '',
+                )}
+                onClick={() => {
+                  setIsSelected(item.id);
+                  toggle();
+                  item.action();
+                }}
+              >
+                <img
+                  src={item.icon}
+                  alt={item.label}
+                  className="h-12 w-12 object-contain"
+                />
+                <p className="text-left">{item.label}</p>
+              </MenubarTrigger>
+            </React.Fragment>
+          ))}
+        </div>
       </MenubarMenu>
     </div>
   );
@@ -120,7 +122,7 @@ const MenuBar: React.FC = () => {
 
       <VerticalMenubar
         className={cn(
-          'fixed top-0 z-50 h-full overflow-y-scroll bg-gray-700 duration-300 ease-in-out',
+          'fixed top-0 z-50 h-full bg-gray-700 duration-300 ease-in-out',
           !isOpen ? 'w-0' : 'w-64',
           'bg-foreground',
         )}
@@ -142,9 +144,7 @@ const MenuBar: React.FC = () => {
     </>
   ) : (
     <div className="relative flex h-screen">
-      <VerticalMenubar className="w-64 overflow-y-auto bg-foreground bg-opacity-40 scrollbar-thin">
-        {renderMenuBarContent()}
-      </VerticalMenubar>
+      <VerticalMenubar className="w-64 bg-foreground bg-opacity-40">{renderMenuBarContent()}</VerticalMenubar>
     </div>
   );
 };

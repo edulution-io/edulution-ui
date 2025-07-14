@@ -27,14 +27,14 @@ import SurveyFormula from '@libs/survey/types/TSurveyFormula';
 import getInitialSurveyFormValues from '@libs/survey/constants/initial-survey-form';
 import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useLanguage from '@/hooks/useLanguage';
 import useBeforeUnload from '@/hooks/useBeforeUnload';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
-import createSurveyCreatorComponent from '@/pages/Surveys/Editor/createSurveyCreatorObject';
+import createSurveyCreatorObject from '@/pages/Surveys/Editor/createSurveyCreatorObject';
 import TemplateDialog from '@/pages/Surveys/Editor/dialog/TemplateDialog';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
@@ -109,7 +109,7 @@ const SurveyEditorPage = () => {
 
   const creatorRef = useRef<SurveyCreator | null>(null);
   if (!creatorRef.current) {
-    creatorRef.current = createSurveyCreatorComponent(language);
+    creatorRef.current = createSurveyCreatorObject(language);
   }
   const creator = creatorRef.current;
 

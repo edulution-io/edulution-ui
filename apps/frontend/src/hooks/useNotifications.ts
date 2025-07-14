@@ -15,7 +15,7 @@ import { useInterval } from 'usehooks-ts';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import FEED_PULL_TIME_INTERVAL_SLOW from '@libs/dashboard/constants/pull-time-interval';
 import useMailsStore from '@/pages/Mail/useMailsStore';
-import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
+import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import APPS from '@libs/appconfig/constants/apps';
 import ConferenceDto from '@libs/conferences/types/conference.dto';

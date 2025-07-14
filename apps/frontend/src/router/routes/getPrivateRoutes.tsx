@@ -12,9 +12,9 @@
 
 import React from 'react';
 import { Navigate, Outlet, Route } from 'react-router-dom';
-import getForwardedAppRoutes from '@/router/routes/ForwardedAppRoutes';
-import getFramedRoutes from '@/router/routes/FramedRoutes';
-import getNativeAppRoutes from '@/router/routes/NativeAppRoutes';
+import getForwardedAppRoutes from '@/router/routes/getForwardedAppRoutes';
+import getFramedRoutes from '@/router/routes/getFramedRoutes';
+import getNativeAppRoutes from '@/router/routes/getNativeAppRoutes';
 import {
   LANGUAGE_PATH,
   MAILS_PATH,
@@ -27,11 +27,11 @@ import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettings
 import UserSettingsDetailsPage from '@/pages/UserSettings/Details/UserSettingsDetailsPage';
 import UserSettingsMailsPage from '@/pages/UserSettings/Mails/UserSettingsMailsPage';
 import LanguageSettingsPage from '@/pages/UserSettings/Language/LanguageSettingsPage';
-import UserSettingsMobileAccess from '@/pages/UserSettings/MobileAccess/UserSettingsMobileAccess';
-import getSettingsRoutes from '@/router/routes/SettingsRoutes';
-import getClassManagementRoutes from '@/router/routes/ClassManagementRoutes';
-import getSurveyRoutes from '@/router/routes/SurveyRoutes';
-import getFileSharingRoutes from '@/router/routes/FileSharingRoutes';
+import UserSettingsMobileAccess from '@/pages/UserSettings/MobileAccess/MobileFileAccessSetupBox';
+import getSettingsRoutes from '@/router/routes/getSettingsRoutes';
+import getClassManagementRoutes from '@/router/routes/getClassManagementRoutes';
+import getSurveyRoutes from '@/router/routes/getSurveyRoutes';
+import getFileSharingRoutes from '@/router/routes/getFileSharingRoutes';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APPS from '@libs/appconfig/constants/apps';
 import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
@@ -40,7 +40,7 @@ import DashboardPage from '@/pages/Dashboard/DashboardPage';
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
 import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import ProtectedRoute from './ProtectedRoute';
-import getEmbeddedRoutes from './EmbeddedAppRoutes';
+import getEmbeddedRoutes from './getEmbeddedRoutes';
 
 const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
   <>
