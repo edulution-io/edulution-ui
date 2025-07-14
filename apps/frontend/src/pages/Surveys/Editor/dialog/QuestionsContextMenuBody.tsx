@@ -14,10 +14,12 @@ import { UseFormReturn } from 'react-hook-form';
 import { SurveyCreatorModel } from 'survey-creator-core';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import isQuestionTypeChoiceType from '@libs/survey/utils/isQuestionTypeChoiceType';
+import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import ChoicesByUrl from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesByUrl';
 import AllQuestions from '@/pages/Surveys/Editor/dialog/default-options';
-import FileQuestion from '@/pages/Surveys/Editor/dialog/file-options';
+import FileQuestionOptions from '@/pages/Surveys/Editor/dialog/file-question-options';
+import ImageQuestionOptions from '@/pages/Surveys/Editor/dialog/image-question-options';
 
 interface QuestionContextMenuBodyProps {
   form: UseFormReturn<SurveyDto>;
@@ -36,7 +38,10 @@ const QuestionContextMenuBody = (props: QuestionContextMenuBodyProps) => {
 
   options.push(<AllQuestions key="all-questions" />);
   if (questionType === 'file') {
-    options.push(<FileQuestion key="file-question" />);
+    options.push(<FileQuestionOptions key="file-question" />);
+  }
+  if (isQuestionTypeImageType(questionType)) {
+    options.push(<ImageQuestionOptions key="image-questions" />);
   }
   if (isQuestionTypeChoiceType(questionType)) {
     options.push(

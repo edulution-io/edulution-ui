@@ -13,13 +13,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
+import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import Label from '@/components/ui/Label';
 import Input from '@/components/shared/Input';
 import Checkbox from '@/components/ui/Checkbox';
-import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 
-const FileQuestion = () => {
+const FileQuestionOptions = () => {
   const { t } = useTranslation();
 
   const { maxFileSize, setMaxFileSize, allowMultiple, toggleAllowMultiple } = useQuestionsContextMenuStore();
@@ -30,7 +30,7 @@ const FileQuestion = () => {
         <p className="font-bold">{t('survey.editor.questionSettings.allowMultiple')}</p>
       </Label>
       <Checkbox
-        label={t('survey.editor.questionSettings.addAllowMultiple')}
+        label={t('survey.editor.questionSettings.allowMultipleText')}
         checked={allowMultiple}
         onCheckedChange={() => toggleAllowMultiple()}
         className="text-background"
@@ -39,17 +39,17 @@ const FileQuestion = () => {
         <p className="font-bold">{t('survey.editor.questionSettings.maxFileSize')}</p>
       </Label>
       <Input
-        type="number"
-        min="0"
-        max={MAX_FILE_UPLOAD_SIZE}
-        placeholder={t('survey.editor.questionSettings.addMaxFileSize', { size: MAX_FILE_UPLOAD_SIZE })}
+        placeholder={t('survey.editor.questionSettings.maxFileSizePlaceholder', { size: MAX_FILE_UPLOAD_SIZE })}
         variant="dialog"
         value={maxFileSize === 0 ? '' : maxFileSize}
-        onChange={(e) => setMaxFileSize(Number(e.target.value))}
+        onChange={(e) => {
+          const inputSize = e.target.value.replace(/\D/g, '');
+          setMaxFileSize(inputSize ? Number(inputSize) : 0);
+        }}
         className={cn({ 'text-muted-foreground': !maxFileSize }, { 'text-primary-foreground': maxFileSize })}
       />
     </div>
   );
 };
 
-export default FileQuestion;
+export default FileQuestionOptions;
