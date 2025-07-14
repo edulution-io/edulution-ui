@@ -23,6 +23,8 @@ import { Card } from '@/components/shared/Card';
 import useUserStore from '@/store/UserStore/useUserStore';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import { GRID_CARD, GRID_FIELD, GRID_SEARCH } from '@libs/ui/constants/commonClassNames';
+import SurveyEditorLoadingTemplate from '@/pages/Surveys/Editor/SurveyEditorLoadingTemplate';
 
 const SurveyEditorLoadingPage = () => {
   const { user } = useUserStore();
@@ -89,18 +91,11 @@ const SurveyEditorLoadingPage = () => {
         onChange={(event) => setSearch(event.target.value)}
         variant="default"
         width="auto"
-        className="mx-auto my-3 block w-[80%] min-w-[250px] rounded-xl border border-ring bg-none px-3 py-2 md:mb-2 md:mt-0 md:w-[400px]"
+        className={GRID_SEARCH}
       />
-      <div
-        className="mx-auto grid max-h-[full] w-full grid-cols-[repeat(auto-fit,minmax(8rem,auto))] justify-center
-        gap-x-3 gap-y-2 overflow-auto px-2 pb-10 scrollbar-thin md:max-h-full
-        md:w-[95%] md:grid-cols-[repeat(auto-fit,minmax(12rem,auto))] md:gap-x-6 md:gap-y-5 md:pb-4"
-      >
+      <div className={GRID_FIELD}>
         <Card
-          className={cn(
-            'h-26 relative flex w-full flex-col items-center overflow-hidden border border-muted-light bg-muted-dialog p-5 hover:bg-primary',
-            'bg-muted',
-          )}
+          className={cn(GRID_CARD, 'bg-muted')}
           variant="text"
           onClick={() => assignTemplateToSelectedSurvey(surveyCreator, undefined)}
         >
@@ -110,28 +105,14 @@ const SurveyEditorLoadingPage = () => {
 
         {templates.length ? (
           templates.map((template, index) => (
-            <Card
-              key={index}
-              className={cn(
-                'h-26 relative flex w-full flex-col items-center overflow-hidden border border-muted-light bg-muted-dialog p-5 hover:bg-primary',
-                'bg-muted',
-              )}
-              variant="text"
-              onClick={() => assignTemplateToSelectedSurvey(surveyCreator, template)}
-            >
-              <img
-                src={template.icon}
-                alt={template.title}
-                className="h-10 w-10 md:h-14 md:w-14"
-              />
-
-              <p>{template.title}</p>
-
-              <p>{template.description}</p>
-            </Card>
+            <SurveyEditorLoadingTemplate
+              creator={surveyCreator}
+              template={template}
+              key={`template-${index}`}
+            />
           ))
         ) : (
-          <div className="py-16">{t('launcher.noSearchResults')}</div>
+          <div className="py-16">{t('survey.editor.noSearchResults')}</div>
         )}
       </div>
     </>
