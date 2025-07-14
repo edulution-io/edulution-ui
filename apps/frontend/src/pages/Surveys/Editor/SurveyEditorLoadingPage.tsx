@@ -18,15 +18,13 @@ import isSubsequence from '@libs/common/utils/string/isSubsequence';
 import SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
 import useLanguage from '@/hooks/useLanguage';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
-import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-
 import Input from '@/components/shared/Input';
 import { Card } from '@/components/shared/Card';
 import useUserStore from '@/store/UserStore/useUserStore';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-const SurveyEditorLoadingPage = () => {
-  const { templates, fetchTemplates } = useTemplateMenuStore();
+import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 
+const SurveyEditorLoadingPage = () => {
   const { user } = useUserStore();
   const surveyCreator: AttendeeDto | undefined = useMemo(
     () => ({
@@ -39,11 +37,12 @@ const SurveyEditorLoadingPage = () => {
     [user],
   );
 
-  const { assignTemplateToSelectedSurvey } = useSurveysTablesPageStore();
-
   const { language } = useLanguage();
-
   const { t } = useTranslation();
+
+  const { templates, fetchTemplates } = useTemplateMenuStore();
+
+  const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
 
   const [search, setSearch] = useState('');
 
@@ -94,7 +93,7 @@ const SurveyEditorLoadingPage = () => {
       />
       <div
         className="mx-auto grid max-h-[full] w-full grid-cols-[repeat(auto-fit,minmax(8rem,auto))] justify-center
-        gap-x-3 gap-y-2 overflow-auto pb-10 scrollbar-thin md:max-h-full
+        gap-x-3 gap-y-2 overflow-auto px-2 pb-10 scrollbar-thin md:max-h-full
         md:w-[95%] md:grid-cols-[repeat(auto-fit,minmax(12rem,auto))] md:gap-x-6 md:gap-y-5 md:pb-4"
       >
         <Card
