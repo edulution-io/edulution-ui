@@ -51,6 +51,7 @@ const patchEduUiClient: Scripts = {
         },
       };
 
+      Logger.debug('Patching edu-ui client...', patchEduUiClient.name);
       const response = await keycloakClient.put(`/clients/${eduUiClientId}`, newEduUiClientData);
 
       if (response.status === 204) {
