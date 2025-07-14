@@ -13,30 +13,43 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
+import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import Label from '@/components/ui/Label';
 import Input from '@/components/shared/Input';
+import Checkbox from '@/components/ui/Checkbox';
 
-const ImageQuestions = () => {
+const FileQuestionOptions = () => {
   const { t } = useTranslation();
 
-  const { imageWidth, setImageWidth } = useQuestionsContextMenuStore();
+  const { maxFileSize, setMaxFileSize, allowMultiple, toggleAllowMultiple } = useQuestionsContextMenuStore();
 
   return (
     <div className="my-2 flex flex-col gap-2">
       <Label>
-        <p className="font-bold">{t('survey.editor.questionSettings.imageWidth')}</p>
+        <p className="font-bold">{t('survey.editor.questionSettings.allowMultiple')}</p>
+      </Label>
+      <Checkbox
+        label={t('survey.editor.questionSettings.allowMultipleText')}
+        checked={allowMultiple}
+        onCheckedChange={() => toggleAllowMultiple()}
+        className="text-background"
+      />
+      <Label>
+        <p className="font-bold">{t('survey.editor.questionSettings.maxFileSize')}</p>
       </Label>
       <Input
-        placeholder={t('survey.editor.questionSettings.addImageWidth')}
-        type="number"
+        placeholder={t('survey.editor.questionSettings.maxFileSizePlaceholder', { size: MAX_FILE_UPLOAD_SIZE })}
         variant="dialog"
-        value={imageWidth}
-        onChange={(e) => setImageWidth(Number(e.target.value))}
-        className={cn({ 'text-muted-foreground': !imageWidth }, { 'text-primary-foreground': imageWidth })}
+        value={maxFileSize === 0 ? '' : maxFileSize}
+        onChange={(e) => {
+          const inputSize = e.target.value.replace(/\D/g, '');
+          setMaxFileSize(inputSize ? Number(inputSize) : 0);
+        }}
+        className={cn({ 'text-muted-foreground': !maxFileSize }, { 'text-primary-foreground': maxFileSize })}
       />
     </div>
   );
 };
 
-export default ImageQuestions;
+export default FileQuestionOptions;

@@ -16,6 +16,7 @@ import { ChoicesRestful } from 'survey-core';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
+import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 
 interface QuestionsContextMenuStore {
   reset: () => void;
@@ -60,13 +61,13 @@ interface QuestionsContextMenuStore {
   setChoiceTitle: (choiceName: string, newTitle: string) => void;
   setChoiceLimit: (choiceName: string, newLimit: number) => void;
 
-  setMaxFileSize: (newMaxFileSize: number) => void;
-  maxFileSize: number;
+  setMaxFileSize: (newMaxFileSize: number | undefined) => void;
+  maxFileSize: number | undefined;
   toggleAllowMultiple: () => void;
   allowMultiple: boolean;
 
-  setImageWidth: (newWidth: number) => void;
-  imageWidth: number;
+  setImageWidth: (newWidth: number | undefined) => void;
+  imageWidth: number | undefined;
 }
 
 const QuestionsContextMenuStoreInitialState = {
@@ -264,13 +265,13 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     }
   },
 
-  setMaxFileSize: (newMaxFileSize: number) => {
+  setMaxFileSize: (newMaxFileSize: number | undefined) => {
     const { selectedQuestion } = get();
     if (!selectedQuestion) return;
 
-    const entry = Math.max(Number(newMaxFileSize), 0);
-    const value = entry * (1024 * 1024) || 0;
-    set({ maxFileSize: entry });
+    const inputValue = newMaxFileSize ? Math.min(MAX_FILE_UPLOAD_SIZE, Math.max(newMaxFileSize, 0)) : 0;
+    set({ maxFileSize: inputValue });
+    const value = inputValue * (1024 * 1024) || 0;
     selectedQuestion.maxSize = value;
   },
 
@@ -283,13 +284,12 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     selectedQuestion.allowMultiple = !allowMultiple;
   },
 
-  setImageWidth: (newWidth: number) => {
+  setImageWidth: (newWidth: number | undefined) => {
     const { selectedQuestion } = get();
     if (!selectedQuestion) return;
 
-    const width = Math.max(newWidth, 0);
-    set({ imageWidth: width });
-    selectedQuestion.imageWidth = width;
+    set({ imageWidth: newWidth || 0 });
+    selectedQuestion.imageWidth = newWidth ? Math.max(100, newWidth) : 0;
   },
 }));
 

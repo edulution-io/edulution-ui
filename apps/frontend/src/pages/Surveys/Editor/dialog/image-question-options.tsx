@@ -16,40 +16,29 @@ import cn from '@libs/common/utils/className';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import Label from '@/components/ui/Label';
 import Input from '@/components/shared/Input';
-import Checkbox from '@/components/ui/Checkbox';
-import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 
-const FileQuestion = () => {
+const ImageQuestionOptions = () => {
   const { t } = useTranslation();
 
-  const { maxFileSize, setMaxFileSize, allowMultiple, toggleAllowMultiple } = useQuestionsContextMenuStore();
+  const { imageWidth, setImageWidth } = useQuestionsContextMenuStore();
 
   return (
     <div className="my-2 flex flex-col gap-2">
       <Label>
-        <p className="font-bold">{t('survey.editor.questionSettings.allowMultiple')}</p>
-      </Label>
-      <Checkbox
-        label={t('survey.editor.questionSettings.addAllowMultiple')}
-        checked={allowMultiple}
-        onCheckedChange={() => toggleAllowMultiple()}
-        className="text-background"
-      />
-      <Label>
-        <p className="font-bold">{t('survey.editor.questionSettings.maxFileSize')}</p>
+        <p className="font-bold">{t('survey.editor.questionSettings.imageWidth')}</p>
       </Label>
       <Input
-        type="number"
-        min="0"
-        max={MAX_FILE_UPLOAD_SIZE}
-        placeholder={t('survey.editor.questionSettings.addMaxFileSize', { size: MAX_FILE_UPLOAD_SIZE })}
+        placeholder={t('survey.editor.questionSettings.imageWidthPlaceholder')}
         variant="dialog"
-        value={maxFileSize === 0 ? '' : maxFileSize}
-        onChange={(e) => setMaxFileSize(Number(e.target.value))}
-        className={cn({ 'text-muted-foreground': !maxFileSize }, { 'text-primary-foreground': maxFileSize })}
+        value={imageWidth === 0 ? '' : imageWidth}
+        onChange={(e) => {
+          const inputWidth = e.target.value.replace(/\D/g, '');
+          setImageWidth(Number(inputWidth));
+        }}
+        className={cn({ 'text-muted-foreground': !imageWidth }, { 'text-primary-foreground': imageWidth })}
       />
     </div>
   );
 };
 
-export default FileQuestion;
+export default ImageQuestionOptions;

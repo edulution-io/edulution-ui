@@ -13,7 +13,6 @@
 enum ImageTypes {
   IMAGE = 'image',
   IMAGE_PICKER = 'imagepicker',
-  FILE = 'file',
 }
 
 export default ImageTypes;

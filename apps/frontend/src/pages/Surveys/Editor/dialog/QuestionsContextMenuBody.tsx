@@ -18,8 +18,8 @@ import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType'
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import ChoicesByUrl from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesByUrl';
 import AllQuestions from '@/pages/Surveys/Editor/dialog/default-options';
-import FileQuestion from '@/pages/Surveys/Editor/dialog/file-options';
-import ImageQuestions from '@/pages/Surveys/Editor/dialog/image-options';
+import FileQuestionOptions from '@/pages/Surveys/Editor/dialog/file-question-options';
+import ImageQuestionOptions from '@/pages/Surveys/Editor/dialog/image-question-options';
 
 interface QuestionContextMenuBodyProps {
   form: UseFormReturn<SurveyDto>;
@@ -38,10 +38,10 @@ const QuestionContextMenuBody = (props: QuestionContextMenuBodyProps) => {
 
   options.push(<AllQuestions key="all-questions" />);
   if (questionType === 'file') {
-    options.push(<FileQuestion key="file-question" />);
+    options.push(<FileQuestionOptions key="file-question" />);
   }
   if (isQuestionTypeImageType(questionType)) {
-    options.push(<ImageQuestions key="image-questions" />);
+    options.push(<ImageQuestionOptions key="image-questions" />);
   }
   if (isQuestionTypeChoiceType(questionType)) {
     options.push(

@@ -651,11 +651,11 @@
         "addChoice": "Add",
         "filterPlaceHolderText": "Search for option",
         "allowMultiple": "Allow the participant to upload multiple files at the same time",
-        "addAllowMultiple": "Allow multiple files",
+        "allowMultipleText": "Allow multiple files",
         "maxFileSize": "Max file size  in Megabyte [MB]",
-        "addMaxFileSize": "0 means that the file size is only limited by the backend ({{size}} MB).",
+        "maxFileSizePlaceholder": "0 means that the file size is only limited by the backend ({{size}} MB).",
         "imageWidth": "Width of the image in Pixel [px]",
-        "addImageWidth": "0 means that the width is not limited."
+        "imageWidthPlaceholder": "0 means that the width is only limited by the available space."
       }
     },
     "participate": {
