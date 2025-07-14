@@ -22,10 +22,9 @@ const fetchSelectedSurvey = async (surveyId?: string, isPublic?: boolean): Promi
     if (isPublic) {
       const response = await eduApi.get<SurveyDto>(`${PUBLIC_SURVEYS}/${surveyId}`);
       return response.data;
-    } else {
-      const response = await eduApi.get<SurveyDto>(`${SURVEY_FIND_ONE_ENDPOINT}/${surveyId}`);
-      return response.data;
     }
+    const response = await eduApi.get<SurveyDto>(`${SURVEY_FIND_ONE_ENDPOINT}/${surveyId}`);
+    return response.data;
   } catch (error) {
     return Promise.reject(error);
   }

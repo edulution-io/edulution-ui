@@ -15,24 +15,22 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
 
-const getInitialSurveyFormByTemplate = (creator: AttendeeDto, template?: SurveyTemplateDto): SurveyDto => {
-  return {
-    id: undefined,
-    formula: template?.template.formula || { title: i18next.t('survey.newTitle').toString() },
-    backendLimiters: template?.backendLimiters || [],
-    creator,
-    invitedAttendees: template?.template.invitedAttendees || [],
-    invitedGroups: template?.template.invitedGroups || [],
-    participatedAttendees: template?.template.participatedAttendees || [],
-    saveNo: 0,
-    answers: [],
-    createdAt: new Date(),
-    expires: null,
-    isAnonymous: template?.template.isAnonymous ?? false,
-    canSubmitMultipleAnswers: template?.template.canSubmitMultipleAnswers ?? false,
-    isPublic: template?.template.isPublic ?? false,
-    canUpdateFormerAnswer: template?.template.canUpdateFormerAnswer ?? false,
-  };
-};
+const getInitialSurveyFormByTemplate = (creator: AttendeeDto, template?: SurveyTemplateDto): SurveyDto => ({
+  id: undefined,
+  formula: template?.template.formula || { title: i18next.t('survey.newTitle').toString() },
+  backendLimiters: template?.backendLimiters || [],
+  creator,
+  invitedAttendees: template?.template.invitedAttendees || [],
+  invitedGroups: template?.template.invitedGroups || [],
+  participatedAttendees: template?.template.participatedAttendees || [],
+  saveNo: 0,
+  answers: [],
+  createdAt: new Date(),
+  expires: null,
+  isAnonymous: template?.template.isAnonymous ?? false,
+  canSubmitMultipleAnswers: template?.template.canSubmitMultipleAnswers ?? false,
+  isPublic: template?.template.isPublic ?? false,
+  canUpdateFormerAnswer: template?.template.canUpdateFormerAnswer ?? false,
+});
 
 export default getInitialSurveyFormByTemplate;

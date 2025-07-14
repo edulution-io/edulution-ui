@@ -21,7 +21,7 @@ import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPage
 interface SurveyEditorLoadingTemplateProps {
   creator: AttendeeDto;
   template: SurveyTemplateDto;
-  key: string;
+  key?: string;
 }
 
 const SurveyEditorLoadingTemplate = ({ creator, template, key }: SurveyEditorLoadingTemplateProps): JSX.Element => {
