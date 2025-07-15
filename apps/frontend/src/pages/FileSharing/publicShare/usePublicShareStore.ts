@@ -16,7 +16,7 @@ import { t } from 'i18next';
 
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import FILESHARING_SHARED_FILES_API_ENDPOINT from '@libs/filesharing/constants/apiEndpoints';
+import FILESHARING_SHARED_FILES_API_ENDPOINT from '@libs/filesharing/constants/filesharingSharedFilesApiEndpoint';
 import type PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import type CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPublicShareDto';
 import type PublicShareResponseDto from '@libs/filesharing/types/publicShareResponseDto';

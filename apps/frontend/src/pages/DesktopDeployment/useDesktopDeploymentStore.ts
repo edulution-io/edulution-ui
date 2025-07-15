@@ -12,7 +12,7 @@
 
 import { create } from 'zustand';
 import handleApiError from '@/utils/handleApiError';
-import userStore from '@/store/UserStore/UserStore';
+import userStore from '@/store/UserStore/useUserStore';
 import eduApi from '@/api/eduApi';
 import { DesktopDeploymentStore, GuacamoleDto, LmnVdiResponse, VirtualMachines } from '@libs/desktopdeployment/types';
 

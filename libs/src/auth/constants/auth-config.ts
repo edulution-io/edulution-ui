@@ -10,22 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { create } from 'zustand';
+const AUTH_CONFIG = {
+  KEYCLOAK_REALM: 'edulution',
+  KEYCLOAK_CLIENT_ID: 'edu-ui',
+} as const;
 
-interface SidebarStore {
-  isMobileSidebarOpen: boolean;
-  reset: () => void;
-  toggleMobileSidebar: () => void;
-}
-
-const initialState = {
-  isMobileSidebarOpen: false,
-};
-
-const useSidebarStore = create<SidebarStore>((set) => ({
-  ...initialState,
-  reset: () => set(initialState),
-  toggleMobileSidebar: () => set((state) => ({ isMobileSidebarOpen: !state.isMobileSidebarOpen })),
-}));
-
-export default useSidebarStore;
+export default AUTH_CONFIG;

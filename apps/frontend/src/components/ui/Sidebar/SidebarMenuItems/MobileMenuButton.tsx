@@ -13,7 +13,7 @@
 import React, { useMemo, forwardRef } from 'react';
 import { MdMenu } from 'react-icons/md';
 import { IconContext } from 'react-icons';
-import useSidebarStore from '../sidebarStore';
+import useSidebarStore from '../useSidebarStore';
 
 const MobileMenuButton = forwardRef<HTMLButtonElement>((_props, ref) => {
   const { isMobileSidebarOpen, toggleMobileSidebar } = useSidebarStore();

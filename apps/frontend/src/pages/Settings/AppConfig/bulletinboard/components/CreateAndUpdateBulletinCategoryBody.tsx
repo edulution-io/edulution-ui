@@ -18,7 +18,7 @@ import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import { useTranslation } from 'react-i18next';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import useGroupStore from '@/store/GroupStore';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import { DropdownSelect } from '@/components';

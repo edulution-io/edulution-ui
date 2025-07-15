@@ -17,7 +17,7 @@ import useLdapGroups from '@/hooks/useLdapGroups';
 import useLanguage from '@/hooks/useLanguage';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
-import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
+import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
