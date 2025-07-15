@@ -32,6 +32,7 @@ class SseService {
       JSON.stringify({
         timestamp: new Date().toISOString(),
         version: rootPackage.version,
+        target: process.env.EDUI_DEPLOYMENT_TARGET || 'school',
       }),
       SSE_MESSAGE_TYPE.PING,
     );
