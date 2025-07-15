@@ -94,7 +94,7 @@ const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDt
     meta: {
       translationId: 'common.visibility',
     },
-    accessorFn: (row) => row.createdAt,
+    accessorFn: (row) => row.bulletinVisibility,
     cell: ({ row }) => {
       const { t } = useTranslation();
       const { setSelectedCategory } = useBulletinCategoryTableStore();

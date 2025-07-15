@@ -11,10 +11,10 @@
  */
 
 /* eslint-disable react/no-danger */
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@/components/shared/Button';
 import DropdownMenu from '@/components/shared/DropdownMenu';
-import { PiCaretRightBold, PiDotsThreeVerticalBold } from 'react-icons/pi';
+import { PiDotsThreeVerticalBold } from 'react-icons/pi';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
 import { useTranslation } from 'react-i18next';
@@ -27,27 +27,20 @@ import cn from '@libs/common/utils/className';
 import BulletinContent from '@/pages/BulletinBoard/components/BulletinContent/BulletinContent';
 import BULLETIN_VISIBILITY_STATES from '@libs/bulletinBoard/constants/bulletinVisibilityStates';
 import BulletinVisibilityStatesType from '@libs/bulletinBoard/types/bulletinVisibilityStatesType';
-
-const COLLAPSE_HEIGHT = 100;
-const CLAMP_CLASSES_WHEN_COLLAPSED: Record<BulletinVisibilityStatesType, string> = {
-  FULLY_VISIBLE: 'hidden',
-  PREVIEW: 'max-h-[100px] overflow-hidden',
-  ONLY_TITLE: 'hidden',
-};
+import { ChevronRightIcon } from '@radix-ui/react-icons';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const BulletinBoardColumnItem = ({
   bulletin,
   canManageBulletins,
   handleImageClick,
-  bulletinVisibility,
+  initialBulletinVisibility,
 }: {
   bulletin: BulletinResponseDto;
   canManageBulletins: boolean;
   handleImageClick: (imageUrl: string) => void;
-  bulletinVisibility?: BulletinVisibilityStatesType;
+  initialBulletinVisibility?: BulletinVisibilityStatesType;
 }) => {
-  const contentRef = useRef<HTMLDivElement>(null);
-
   const { t } = useTranslation();
   const { bulletinId } = useParams();
   const { user } = useUserStore();
@@ -59,20 +52,19 @@ const BulletinBoardColumnItem = ({
     setSelectedBulletinToEdit,
     getBulletins,
   } = useBulletinBoardEditorialStore();
-  const {
-    resetBulletinBoardNotifications,
-    setIsEditorialModeEnabled,
-    collapsedMap,
-    setCollapsed,
-    toggleCollapsed,
-    overflowMap,
-    setOverflowing,
-  } = useBulletinBoardStore();
+  const { collapsedMap, setCollapsed, toggleCollapsed, resetBulletinBoardNotifications, setIsEditorialModeEnabled } =
+    useBulletinBoardStore();
 
-  const isOverflowing = overflowMap[bulletin.id] ?? false;
-  const collapsed = Object.prototype.hasOwnProperty.call(collapsedMap, bulletin.id)
-    ? collapsedMap[bulletin.id]
-    : bulletinVisibility === BULLETIN_VISIBILITY_STATES.PREVIEW && isOverflowing;
+  useEffect(() => {
+    if (collapsedMap[bulletin.id] === undefined) {
+      const shouldBeCollapsed =
+        (initialBulletinVisibility ?? BULLETIN_VISIBILITY_STATES.FULLY_VISIBLE) !==
+        BULLETIN_VISIBILITY_STATES.FULLY_VISIBLE;
+      setCollapsed(bulletin.id, shouldBeCollapsed);
+    }
+  }, [bulletin.id, collapsedMap, initialBulletinVisibility, setCollapsed]);
+
+  const isCollapsed = collapsedMap[bulletin.id];
 
   useEffect(() => {
     if (bulletinId !== bulletin.id) return undefined;
@@ -167,38 +159,6 @@ const BulletinBoardColumnItem = ({
     return items;
   };
 
-  useEffect(() => {
-    if (bulletinVisibility !== BULLETIN_VISIBILITY_STATES.PREVIEW || !contentRef.current) {
-      return undefined;
-    }
-    const el = contentRef.current;
-
-    const observer = new ResizeObserver((entries) => {
-      const entry = entries[0];
-      const isCurrentlyOverflowing = entry.target.scrollHeight > COLLAPSE_HEIGHT;
-
-      setOverflowing(bulletin.id, isCurrentlyOverflowing);
-
-      if (isCurrentlyOverflowing) {
-        observer.disconnect();
-      }
-    });
-
-    observer.observe(el);
-
-    return () => observer.disconnect();
-  }, [bulletin.id, bulletinVisibility, setOverflowing]);
-
-  const clampClass = useMemo(() => {
-    if (!collapsed || !bulletinVisibility) return '';
-
-    if (bulletinVisibility === BULLETIN_VISIBILITY_STATES.PREVIEW && !isOverflowing) {
-      return CLAMP_CLASSES_WHEN_COLLAPSED[BULLETIN_VISIBILITY_STATES.ONLY_TITLE];
-    }
-
-    return CLAMP_CLASSES_WHEN_COLLAPSED[bulletinVisibility];
-  }, [bulletinVisibility, collapsed, isOverflowing]);
-
   return (
     <div
       id={bulletin.id}
@@ -210,50 +170,39 @@ const BulletinBoardColumnItem = ({
       )}
     >
       <div className="flex-1">
-        <h4 className="w-[calc(100%-20px)] break-normal">
+        <h4 className="mb-2 w-[calc(100%-20px)] break-normal">
           <button
             type="button"
             className="flex items-start space-x-2 text-left hover:opacity-75"
             onClick={() => toggleCollapsed(bulletin.id)}
           >
-            <PiCaretRightBold
+            <ChevronRightIcon
               className={cn('mt-1 h-3 w-3 flex-shrink-0 transition-transform duration-200', {
-                'rotate-90': !collapsed,
+                'rotate-90': !isCollapsed,
               })}
             />
             <span className="break-words text-lg font-bold leading-tight text-background">{bulletin.title}</span>
           </button>
         </h4>
 
-        <div className="quill-content relative mt-2 break-normal text-background">
-          <div
-            ref={contentRef}
-            className={cn(clampClass, 'transition-[max-height] duration-300 ease-in-out')}
-            style={{
-              maxHeight: collapsed ? `${COLLAPSE_HEIGHT}px` : `${contentRef.current?.scrollHeight || 100}px`,
-            }}
-          >
-            <BulletinContent
-              html={bulletin.content}
-              handleImageClick={handleImageClick}
-            />
-
-            {getAuthorDescription()}
-          </div>
-
-          {collapsed && isOverflowing && bulletinVisibility === BULLETIN_VISIBILITY_STATES.PREVIEW && (
-            <>
-              <div className="pointer-events-none absolute left-0 top-0 h-full w-full bg-gradient-to-t from-ciDarkGreyDisabled to-transparent" />
-              <Button
-                size="sm"
-                variant="btn-transparent"
-                onClick={() => setCollapsed(bulletin.id, false)}
-              >
-                {t('common.showMore')}
-              </Button>
-            </>
+        <AnimatePresence initial={false}>
+          {!isCollapsed && (
+            <motion.div
+              key="content"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="quill-content overflow-hidden break-normal text-background"
+            >
+              <BulletinContent
+                html={bulletin.content}
+                handleImageClick={handleImageClick}
+              />
+              {getAuthorDescription()}
+            </motion.div>
           )}
-        </div>
+        </AnimatePresence>
       </div>
 
       <DropdownMenu

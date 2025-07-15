@@ -22,10 +22,8 @@ export interface BulletinBoardTableStore {
   isLoading: boolean;
   error: Error | null;
   collapsedMap: Record<string, boolean>;
-  overflowMap: Record<string, boolean>;
   setCollapsed: (bulletinId: string, collapsed: boolean) => void;
   toggleCollapsed: (bulletinId: string) => void;
-  setOverflowing: (bulletinId: string, isOverflowing: boolean) => void;
   getBulletinsByCategories: (isLoading?: boolean) => Promise<void>;
   bulletinsByCategories: BulletinsByCategories | null;
   isEditorialModeEnabled: boolean;
@@ -42,7 +40,6 @@ const initialValues = {
   isEditorialModeEnabled: false,
   bulletinBoardNotifications: [],
   collapsedMap: {},
-  overflowMap: {},
 };
 
 const useBulletinBoardStore = create<BulletinBoardTableStore>((set, get) => ({
@@ -59,9 +56,6 @@ const useBulletinBoardStore = create<BulletinBoardTableStore>((set, get) => ({
       const current = state.collapsedMap[bulletinId];
       return { collapsedMap: { ...state.collapsedMap, [bulletinId]: !current } };
     }),
-
-  setOverflowing: (bulletinId, isOverflowing) =>
-    set((state) => ({ overflowMap: { ...state.overflowMap, [bulletinId]: isOverflowing } })),
 
   setIsEditorialModeEnabled: (isEditorialModeEnabled) => set({ isEditorialModeEnabled }),
 

@@ -65,7 +65,7 @@ const BulletinBoardPageColumn = ({
             bulletin={bulletin}
             canManageBulletins={canEditCategory}
             handleImageClick={handleImagePreviewClick}
-            bulletinVisibility={category.bulletinVisibility}
+            initialBulletinVisibility={category.bulletinVisibility}
           />
         ))}
       </div>

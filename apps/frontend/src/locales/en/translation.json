@@ -66,8 +66,6 @@
       "FULLY_VISIBLE-short": "Visible",
       "ONLY_TITLE": "Show titles only",
       "ONLY_TITLE-short": "Titles only",
-      "PREVIEW": "Show preview",
-      "PREVIEW-short": "Preview",
       "visibilityState": "Default visibility of bulletins",
       "visibleByUsersAndGroups": "This category with its bulletins is visible to users and groups in the Info Board app",
       "visibleByUsersAndGroupsTitle": "Info Board app",
