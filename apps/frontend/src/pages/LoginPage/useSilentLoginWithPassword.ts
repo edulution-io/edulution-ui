@@ -35,89 +35,92 @@ const useSilentLoginWithPassword = (): UseSilentLoginWithPasswordReturn => {
   }
   const keycloak = keycloakRef.current;
 
-  const silentLogin = useCallback(async (username: string, password: string) => {
-    try {
-      await keycloak.init({
-        onLoad: 'check-sso',
-        silentCheckSsoRedirectUri: redirectUri,
-        pkceMethod: 'S256',
-        checkLoginIframe: false,
-      });
+  const silentLogin = useCallback(
+    async (username: string, password: string) => {
+      try {
+        await keycloak.init({
+          onLoad: 'check-sso',
+          silentCheckSsoRedirectUri: redirectUri,
+          pkceMethod: 'S256',
+          checkLoginIframe: false,
+        });
 
-      const authUrl = await keycloak.createLoginUrl({
-        prompt: 'login',
-        redirectUri,
-      });
+        const authUrl = await keycloak.createLoginUrl({
+          prompt: 'login',
+          redirectUri,
+        });
 
-      await new Promise<void>((resolve) => {
-        let iframe: HTMLIFrameElement;
+        await new Promise<void>((resolve) => {
+          let iframe: HTMLIFrameElement;
 
-        const onMessage = (ev: MessageEvent) => {
-          if (ev.origin !== window.location.origin) return;
-          const href = new URL(typeof ev.data === 'string' ? ev.data : window.location.href);
-          const params = href.searchParams;
-          const hashParams = new URLSearchParams(href.hash.slice(1));
-          const code = params.get('code') ?? hashParams.get('code');
+          const cleanup = () => {
+            iframe?.remove();
+          };
 
-          if (!code) {
+          const onMessage = (ev: MessageEvent) => {
+            if (ev.origin !== window.location.origin) return;
+
             cleanup();
-          }
-          cleanup();
+            resolve();
+          };
 
-          console.info('Login successful');
-          resolve();
-        };
+          window.addEventListener('message', onMessage, { once: true });
 
-        const cleanup = () => {
-          window.removeEventListener('message', onMessage);
-          iframe?.remove();
-        };
+          iframe = document.createElement('iframe');
+          iframe.style.display = 'none';
+          iframe.src = authUrl;
+          document.body.appendChild(iframe);
 
-        window.addEventListener('message', onMessage);
+          iframe.onload = () => {
+            const doc = iframe.contentDocument;
+            const form = doc?.querySelector<HTMLFormElement>('form');
+            const u = doc?.querySelector<HTMLInputElement>('input[name="username"]');
+            const p = doc?.querySelector<HTMLInputElement>('input[name="password"]');
+            if (form && u && p) {
+              u.value = username;
+              p.value = password;
+              form.submit();
+            }
+          };
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [keycloak],
+  );
 
-        iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.src = authUrl;
-        document.body.appendChild(iframe);
-
-        iframe.onload = () => {
-          const doc = iframe.contentDocument;
-          const form = doc?.querySelector<HTMLFormElement>('form');
-          const u = doc?.querySelector<HTMLInputElement>('input[name="username"]');
-          const p = doc?.querySelector<HTMLInputElement>('input[name="password"]');
-          if (form && u && p) {
-            u.value = username;
-            p.value = password;
-            form.submit();
-          }
-        };
-      });
-    } catch (error) {
-      console.error('Silent login failed');
-    }
-  }, []);
-
-  const silentLogout = useCallback(async () => {
-    const logoutUrl =
-      `${url}/realms/${AUTH_CONFIG.KEYCLOAK_REALM}/protocol/openid-connect/logout` +
-      `?post_logout_redirect_uri=${EDU_BASE_URL}` +
-      `&client_id=${AUTH_CONFIG.KEYCLOAK_CLIENT_ID}`;
-    try {
-      await new Promise<void>((resolve) => {
+  const silentLogout = useCallback(
+    () =>
+      new Promise<void>((resolve) => {
+        const logoutUrl = `${url}/realms/${AUTH_CONFIG.KEYCLOAK_REALM}/protocol/openid-connect/logout`;
         const iframe = document.createElement('iframe');
+        let hasClicked = false;
+
         iframe.style.display = 'none';
         iframe.src = logoutUrl;
-        document.body.appendChild(iframe);
+
         iframe.onload = () => {
-          iframe.remove();
-          console.info('Logout successful');
-          resolve();
+          if (!hasClicked) {
+            hasClicked = true;
+            try {
+              const doc = iframe.contentDocument;
+              const btn = doc?.getElementById('kc-logout') as HTMLElement | null;
+              btn?.click();
+            } catch {
+              console.warn('Logout button not found, proceeding with logout');
+            }
+          } else {
+            keycloak.clearToken();
+            document.body.removeChild(iframe);
+            resolve();
+          }
         };
-      });
-    } catch (error) {
-      console.error('Silent logout failed');
-    }
-  }, [keycloak]);
+
+        document.body.appendChild(iframe);
+      }),
+    [keycloak],
+  );
 
   return { silentLogin, silentLogout };
 };
