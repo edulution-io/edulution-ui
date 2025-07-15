@@ -11,7 +11,7 @@
  */
 
 import axios from 'axios';
-import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
+import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 
 const { KEYCLOAK_API, KEYCLOAK_ADMIN, KEYCLOAK_ADMIN_PASSWORD } = process.env as Record<string, string>;
