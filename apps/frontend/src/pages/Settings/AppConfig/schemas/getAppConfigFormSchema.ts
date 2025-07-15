@@ -14,7 +14,7 @@ import { z } from 'zod';
 import { TFunction } from 'i18next';
 import APPS from '@libs/appconfig/constants/apps';
 import TApps from '@libs/appconfig/types/appsType';
-import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
+import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 // import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 

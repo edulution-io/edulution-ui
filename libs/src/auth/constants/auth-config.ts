@@ -10,11 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import removeRealmRoles from './removeRealmRoles';
-import addMailcowSyncRoles from './addMailcowSyncRoles';
-import patchEduUiClient from './patchEduUiClient';
+const AUTH_CONFIG = {
+  KEYCLOAK_REALM: 'edulution',
+  KEYCLOAK_CLIENT_ID: 'edu-ui',
+} as const;
 
-// Add new scripts here
-const keycloakConfigScripts = [removeRealmRoles, addMailcowSyncRoles, patchEduUiClient];
-
-export default keycloakConfigScripts;
+export default AUTH_CONFIG;

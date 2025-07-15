@@ -77,6 +77,12 @@
     {
       "files": ["index.ts"],
       "rules": { "import/prefer-default-export": "off" }
+    },
+    {
+      "files": ["libs/**/*.ts", "libs/**/*.tsx"],
+      "parserOptions": {
+        "project": ["libs/tsconfig.lib.json"]
+      }
     }
   ]
 }
