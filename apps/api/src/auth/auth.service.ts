@@ -22,7 +22,7 @@ import { ErrorResponse, OidcMetadata, SigninResponse } from 'oidc-client-ts';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
-import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
+import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import AUTH_TOTP_CONFIG from '@libs/auth/constants/totp-config';
 import type AuthRequestArgs from '@libs/auth/types/auth-request';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
