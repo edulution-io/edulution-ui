@@ -23,10 +23,9 @@ import { Card } from '@/components/shared/Card';
 interface SurveyEditorLoadingTemplateProps {
   creator: AttendeeDto;
   template: SurveyTemplateDto;
-  key?: string;
 }
 
-const SurveyEditorLoadingTemplate = ({ creator, template, key }: SurveyEditorLoadingTemplateProps): JSX.Element => {
+const SurveyEditorLoadingTemplate = ({ creator, template }: SurveyEditorLoadingTemplateProps): JSX.Element => {
   const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
 
   const { setTemplate } = useTemplateMenuStore();
@@ -35,7 +34,6 @@ const SurveyEditorLoadingTemplate = ({ creator, template, key }: SurveyEditorLoa
 
   return (
     <Card
-      key={key}
       className={cn(GRID_CARD, { 'bg-muted': isActive }, { 'bg-muted-transparent': !isActive })}
       variant="text"
       onClick={() => {
