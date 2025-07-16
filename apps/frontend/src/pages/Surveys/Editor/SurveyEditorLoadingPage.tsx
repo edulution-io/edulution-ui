@@ -28,7 +28,7 @@ import { Card } from '@/components/shared/Card';
 
 const SurveyEditorLoadingPage = () => {
   const { user } = useUserStore();
-  const surveyCreator: AttendeeDto | undefined = useMemo(
+  const creator: AttendeeDto | undefined = useMemo(
     () => ({
       firstName: user?.firstName || '',
       lastName: user?.lastName || '',
@@ -99,7 +99,7 @@ const SurveyEditorLoadingPage = () => {
           variant="text"
           onClick={() => {
             setTemplate(undefined);
-            assignTemplateToSelectedSurvey(surveyCreator, undefined);
+            assignTemplateToSelectedSurvey(creator, undefined);
           }}
         >
           <VscNewFile className="h-10 w-10 md:h-14 md:w-14" />
@@ -110,7 +110,7 @@ const SurveyEditorLoadingPage = () => {
           filteredTemplates.map((template) => (
             <div key={template.fileName} className="relative">
               <SurveyEditorLoadingTemplate
-                creator={surveyCreator}
+                creator={creator}
                 template={template}
               />
             </div>

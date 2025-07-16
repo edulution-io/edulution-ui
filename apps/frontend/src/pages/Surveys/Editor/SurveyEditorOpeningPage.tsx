@@ -46,6 +46,10 @@ const SurveyEditorOpeningPage = () => {
   }, []);
 
   useEffect(() => {
+    console.log('initialSurvey', initialSurvey);
+  }, [initialSurvey]);
+
+  useEffect(() => {
     if (!surveyId) {
       return;
     }

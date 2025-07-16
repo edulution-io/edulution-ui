@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { MdOutlineOpenInNew } from 'react-icons/md';
 import { HiTrash } from 'react-icons/hi';
 import cn from '@libs/common/utils/className';
@@ -22,6 +22,7 @@ import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPage
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
+import SurveyEditorLoadingPreview from '@/pages/Surveys/Editor/SurveyEditorLoadingPreview';
 
 interface SurveyEditorLoadingTemplateProps {
   creator: AttendeeDto;
@@ -34,6 +35,12 @@ const SurveyEditorLoadingTemplate = ({ creator, template }: SurveyEditorLoadingT
   const { setTemplate, setIsOpenTemplateConfirmDeletion } = useTemplateMenuStore();
 
   const { isSuperAdmin } = useLdapGroups();
+
+  const [openPreview, setOpenPreview] = useState(false);
+
+  const togglePreviewIsOpen = () => {
+    setOpenPreview((prev) => !prev);
+  };
 
   const { title, description, isActive } = template;
 
@@ -51,7 +58,16 @@ const SurveyEditorLoadingTemplate = ({ creator, template }: SurveyEditorLoadingT
         assignTemplateToSelectedSurvey(creator, template);
       }}
     >
-      <MdOutlineOpenInNew className="h-10 w-10 md:h-14 md:w-14" />
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+          togglePreviewIsOpen();
+        }}
+      >
+        <MdOutlineOpenInNew
+          className="h-10 w-10 md:h-14 md:w-14"
+        />
+      </div>
 
       <p>{title}</p>
 
@@ -70,6 +86,13 @@ const SurveyEditorLoadingTemplate = ({ creator, template }: SurveyEditorLoadingT
         >
           <HiTrash className="h-4 w-4" />
         </Button>
+      )}
+
+      {openPreview && (
+        <SurveyEditorLoadingPreview
+          setOpenPreview={setOpenPreview}
+          surveyTemplateDto={template}
+        />
       )}
     </Card>
   );
