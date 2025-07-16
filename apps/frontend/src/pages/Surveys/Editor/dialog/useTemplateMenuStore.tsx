@@ -23,8 +23,8 @@ import APPS from '@libs/appconfig/constants/apps';
 interface TemplateMenuStore {
   reset: () => void;
 
-  isOpenTemplateMenu: boolean;
-  setIsOpenTemplateMenu: (state: boolean) => void;
+  isOpenSaveTemplateMenu: boolean;
+  setIsOpenSaveTemplateMenu: (state: boolean) => void;
 
   uploadTemplate: (template: SurveyTemplateDto) => Promise<void>;
   isSubmitting: boolean;
@@ -42,7 +42,7 @@ interface TemplateMenuStore {
 }
 
 const TemplateMenuStoreInitialState = {
-  isOpenTemplateMenu: false,
+  isOpenSaveTemplateMenu: false,
   isOpenTemplateConfirmDeletion: false,
   template: undefined,
   templates: [],
@@ -55,7 +55,7 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
   ...TemplateMenuStoreInitialState,
   reset: () => set(TemplateMenuStoreInitialState),
 
-  setIsOpenTemplateMenu: (state: boolean) => set({ isOpenTemplateMenu: state }),
+  setIsOpenSaveTemplateMenu: (state: boolean) => set({ isOpenSaveTemplateMenu: state }),
 
   fetchTemplates: async (): Promise<void> => {
     set({ isLoading: true });

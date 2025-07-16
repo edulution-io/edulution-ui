@@ -12,103 +12,63 @@
 
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
-import cn from '@libs/common/utils/className';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
-import useLdapGroups from '@/hooks/useLdapGroups';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
-import { Button } from '@/components/shared/Button';
-import { Textarea } from '@/components/ui/Textarea';
-import { AccordionTrigger, AccordionItem, AccordionContent } from '@/components/ui/AccordionSH';
+import PropertyDialogList from '@/components/shared/PropertyDialogList';
 
 interface TemplateItemProps {
   form: UseFormReturn<SurveyDto>;
   creator: SurveyCreator;
-  template: SurveyTemplateDto;
+  surveyTemplateDto: SurveyTemplateDto;
 }
 
 const TemplateItem = (props: TemplateItemProps) => {
-  const { form, creator, template } = props;
+
+  const { setTemplate } = useTemplateMenuStore();
+
+  const { form, creator, surveyTemplateDto } = props;
+
   const {
-    formula,
+    template,
     backendLimiters,
-    invitedAttendees,
-    invitedGroups,
-    isAnonymous,
-    isPublic,
-    canSubmitMultipleAnswers,
-    canUpdateFormerAnswer,
-  } = template.template;
-  const { setTemplate, setIsOpenTemplateMenu, setIsOpenTemplateConfirmDeletion } = useTemplateMenuStore();
+    fileName,
+    title,
+    description,
+    isActive,
+    createdAt,
+    updatedAt,
+    icon,
+  } = surveyTemplateDto;
 
-  const { isSuperAdmin } = useLdapGroups();
+  // const {
+  //   formula,
+  //   backendLimiters: surveysBackendLimiters,
+  //   invitedAttendees: surveyInvitedAttendees,
+  //   invitedGroups: surveyInvitedGroups,
+  //   isAnonymous: surveyIsAnonymous,
+  //   isPublic: surveyIsPublic,
+  //   canSubmitMultipleAnswers: surveyCanSubmitMultipleAnswers,
+  //   canUpdateFormerAnswer: surveyCanUpdateFormerAnswer,
+  // } = template;
+  
+  // const {
+  //   title: surveyTitle,
+  // } = formula || {};
 
-  const { t } = useTranslation();
-
-  const handleLoadTemplate = () => {
-    form.setValue('backendLimiters', backendLimiters || []);
-    form.setValue('invitedAttendees', invitedAttendees || []);
-    form.setValue('invitedGroups', invitedGroups || []);
-    form.setValue('isAnonymous', isAnonymous);
-    form.setValue('isPublic', isPublic);
-    form.setValue('canSubmitMultipleAnswers', canSubmitMultipleAnswers);
-    form.setValue('canUpdateFormerAnswer', canUpdateFormerAnswer);
-
-    if (formula) {
-      form.setValue('formula', formula);
-      creator.JSON = formula;
-    }
-
-    setTemplate(template);
-    setIsOpenTemplateMenu(false);
-  };
-
-  const handleRemoveTemplate = () => {
-    setTemplate(template);
-    setIsOpenTemplateConfirmDeletion(true);
-  };
+  const propertyList = [
+    { id: 'title', value: title, translationId: 'common.title' },
+    { id: 'description', value: description, translationId: 'common.description' },
+    { id: 'isActive', value: isActive ? 'Yes' : 'No', translationId: 'common.is-active' },
+    { id: 'icon', value: icon, translationId: 'common.icon' },
+  ];
 
   return (
-    <AccordionItem
-      key={template.fileName}
-      value={template.fileName || ''}
-    >
-      <AccordionTrigger className="px-4 pt-2 text-h4">
-        <p className="font-bold ">{`${formula?.title}`}</p>
-      </AccordionTrigger>
-      <AccordionContent className="my-0 px-4 py-0">
-        <Textarea
-          value={JSON.stringify(template.template, null, 2)}
-          onChange={() => {}}
-          className={cn(
-            'overflow-y-auto bg-accent text-secondary transition-[max-height,opacity] duration-300 ease-in-out scrollbar-thin placeholder:text-p focus:outline-none',
-            'max-h-80 overflow-visible opacity-100',
-          )}
-          style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '12pt' }}
-          disabled
-        />
-        <div className="mt-2 flex flex-row justify-end space-x-2">
-          {isSuperAdmin && (
-            <Button
-              onClick={handleRemoveTemplate}
-              variant="btn-attention"
-              size="sm"
-            >
-              {t('common.delete')}
-            </Button>
-          )}
-          <Button
-            onClick={handleLoadTemplate}
-            variant="btn-collaboration"
-            size="sm"
-          >
-            {t('common.load')}
-          </Button>
-        </div>
-      </AccordionContent>
-    </AccordionItem>
+    <PropertyDialogList
+      deleteWarningTranslationId="survey.editor.templateMenu.deletion.message"
+      items={propertyList}
+    />
   );
 };
 
