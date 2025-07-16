@@ -70,6 +70,7 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
           <PropertyDialogList
             deleteWarningTranslationId="survey.editor.templateMenu.deletion.message"
             items={propertyList}
+            disabled={true}
           />
         )}
       </div>

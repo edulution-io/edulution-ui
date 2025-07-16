@@ -37,7 +37,7 @@ const TemplateList = (props: TemplateListProps) => {
           key={template.fileName}
           form={form}
           creator={creator}
-          template={template}
+          surveyTemplateDto={template}
         />
       ))}
     </AccordionSH>

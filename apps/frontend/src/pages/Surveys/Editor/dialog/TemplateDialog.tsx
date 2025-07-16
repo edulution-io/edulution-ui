@@ -21,22 +21,22 @@ import TemplateDialogBody from '@/pages/Surveys/Editor/dialog/TemplateDialogBody
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
-import DeleteTemplateDialog from '@/pages/Surveys/Editor/dialog/DeleteTemplateDialog';
+// import DeleteTemplateDialog from '@/pages/Surveys/Editor/dialog/DeleteTemplateDialog';
 
 interface TemplateDialogProps {
   form: UseFormReturn<SurveyDto>;
   creator: SurveyCreator;
 
-  isOpenTemplateMenu: boolean;
-  setIsOpenTemplateMenu: (state: boolean) => void;
+  isOpenSaveTemplateMenu: boolean;
+  setIsOpenSaveTemplateMenu: (state: boolean) => void;
 
   trigger?: React.ReactNode;
 }
 
 const TemplateDialog = (props: TemplateDialogProps) => {
-  const { trigger, form, creator, isOpenTemplateMenu, setIsOpenTemplateMenu } = props;
+  const { trigger, form, creator, isOpenSaveTemplateMenu, setIsOpenSaveTemplateMenu } = props;
 
-  const { template, uploadTemplate, isOpenTemplateConfirmDeletion, setIsOpenTemplateConfirmDeletion } =
+  const { template, uploadTemplate /* , isOpenTemplateConfirmDeletion, setIsOpenTemplateConfirmDeletion */ } =
     useTemplateMenuStore();
 
   const { isSuperAdmin } = useLdapGroups();
@@ -49,14 +49,17 @@ const TemplateDialog = (props: TemplateDialogProps) => {
         form={form}
         surveyCreator={creator}
       />
-      <DeleteTemplateDialog
-        isOpenTemplateConfirmDeletion={isOpenTemplateConfirmDeletion}
-        setIsOpenTemplateConfirmDeletion={setIsOpenTemplateConfirmDeletion}
-      />
+      {/*
+        // TODO: This moves to the `SurveyEditorLoadingPage` PR: 1065
+        <DeleteTemplateDialog
+          isOpenTemplateConfirmDeletion={isOpenTemplateConfirmDeletion}
+          setIsOpenTemplateConfirmDeletion={setIsOpenTemplateConfirmDeletion}
+        />
+       */}
     </>
   );
 
-  const handleClose = () => setIsOpenTemplateMenu(!isOpenTemplateMenu);
+  const handleClose = () => setIsOpenSaveTemplateMenu(!isOpenSaveTemplateMenu);
 
   const handleSaveTemplate = async () => {
     const values = form.getValues();
@@ -67,7 +70,7 @@ const TemplateDialog = (props: TemplateDialogProps) => {
       fileName: template?.fileName,
       template: { formula: creator.JSON as SurveyFormula, createdAt: creationDate, ...remainingSurvey },
     });
-    setIsOpenTemplateMenu(false);
+    setIsOpenSaveTemplateMenu(false);
   };
 
   const getFooter = () => {
@@ -84,7 +87,7 @@ const TemplateDialog = (props: TemplateDialogProps) => {
 
   return (
     <AdaptiveDialog
-      isOpen={isOpenTemplateMenu}
+      isOpen={isOpenSaveTemplateMenu}
       trigger={trigger}
       handleOpenChange={handleClose}
       title={t('survey.editor.templateMenu.title')}

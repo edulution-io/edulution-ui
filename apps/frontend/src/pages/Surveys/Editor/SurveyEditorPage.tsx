@@ -26,6 +26,7 @@ import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
 import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import useLdapGroups from '@/hooks/useLdapGroups';
 import useLanguage from '@/hooks/useLanguage';
 import useBeforeUnload from '@/hooks/useBeforeUnload';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
@@ -55,7 +56,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     resetStoredSurvey,
     uploadFile,
   } = useSurveyEditorPageStore();
-  const { reset: resetTemplateStore, isOpenTemplateMenu, setIsOpenTemplateMenu } = useTemplateMenuStore();
+  const { reset: resetTemplateStore, isOpenSaveTemplateMenu, setIsOpenSaveTemplateMenu } = useTemplateMenuStore();
   const {
     reset: resetQuestionsContextMenu,
     setIsOpenQuestionContextMenu,
@@ -64,8 +65,11 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     isUpdatingBackendLimiters,
   } = useQuestionsContextMenuStore();
 
+
   const { t } = useTranslation();
   const { language } = useLanguage();
+
+  const { isSuperAdmin } = useLdapGroups();
 
   const handleReset = () => {
     resetStoredSurvey();
@@ -170,7 +174,8 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
       {
         icon: TbTemplate,
         text: t('survey.editor.templates'),
-        onClick: () => setIsOpenTemplateMenu(!isOpenTemplateMenu),
+        onClick: () => setIsOpenSaveTemplateMenu(!isOpenSaveTemplateMenu),
+        isVisible: !!isSuperAdmin
       },
       {
         icon: VscNewFile,
@@ -216,8 +221,8 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
       <TemplateDialog
         form={form}
         creator={creator}
-        isOpenTemplateMenu={isOpenTemplateMenu}
-        setIsOpenTemplateMenu={setIsOpenTemplateMenu}
+        isOpenSaveTemplateMenu={isOpenSaveTemplateMenu}
+        setIsOpenSaveTemplateMenu={setIsOpenSaveTemplateMenu}
       />
       <SaveSurveyDialog
         form={form}

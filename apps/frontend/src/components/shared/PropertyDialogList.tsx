@@ -20,9 +20,10 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 interface PropertyDialogListProps {
   deleteWarningTranslationId?: string;
   items: DialogProperty[];
+  disabled?: boolean;
 }
 
-const PropertyDialogList = ({ deleteWarningTranslationId, items }: PropertyDialogListProps) => {
+const PropertyDialogList = ({ deleteWarningTranslationId, items, disabled }: PropertyDialogListProps) => {
   const { t } = useTranslation();
 
   return (
@@ -41,8 +42,8 @@ const PropertyDialogList = ({ deleteWarningTranslationId, items }: PropertyDialo
               <Input
                 type="text"
                 value={value || t('common.not-available')}
-                readOnly
-                disabled
+                readOnly={disabled}
+                disabled={disabled}
                 widthVariant="dialog"
                 className="min-w-[100px] cursor-pointer"
               />
