@@ -15,7 +15,7 @@ import handleApiError from '@/utils/handleApiError';
 import { StateCreator } from 'zustand';
 import QrCodeSlice from '@libs/user/types/store/qrCodeSlice';
 import UserStore from '@libs/user/types/store/userStore';
-import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
+import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 
 const initialState = {
   qrCode: '',

@@ -17,6 +17,7 @@ const loadFile = (path: string): Record<string, unknown> =>
 
 const deTranslations = loadFile('./apps/frontend/src/locales/de/translation.json');
 const enTranslations = loadFile('./apps/frontend/src/locales/en/translation.json');
+const frTranslations = loadFile('./apps/frontend/src/locales/fr/translation.json');
 
 const flattenKeys = (obj: Record<string, unknown>): string[] => {
   const keys: string[] = [];
@@ -35,9 +36,11 @@ const flattenKeys = (obj: Record<string, unknown>): string[] => {
 
 const enNestedKeys = flattenKeys(enTranslations);
 const deNestedKeys = flattenKeys(deTranslations);
+const frNestedKeys = flattenKeys(frTranslations);
 
 const missingNestedInEN = deNestedKeys.filter((key) => !enNestedKeys.includes(key));
 const missingNestedInDE = enNestedKeys.filter((key) => !deNestedKeys.includes(key));
+const missingNestedInFR = deNestedKeys.filter((key) => !frNestedKeys.includes(key));
 
 if (missingNestedInEN.length > 0 || missingNestedInDE.length > 0) {
   console.error('Translation files do not contain the same keys!');
@@ -47,6 +50,9 @@ if (missingNestedInEN.length > 0 || missingNestedInDE.length > 0) {
   }
   if (missingNestedInDE.length > 0) {
     console.error(`Missing nested keys in DE translation: ${missingNestedInDE.join(', ')}`);
+  }
+  if (missingNestedInFR.length > 0) {
+    console.info(`Missing nested keys in FR translation: ${missingNestedInFR.join(', ')}`);
   }
   process.exit(1);
 }

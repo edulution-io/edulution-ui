@@ -18,11 +18,12 @@ import { Model } from 'mongoose';
 import CryptoJS from 'crypto-js';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
-import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
+import { USERS_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import LdapGroups from '@libs/groups/types/ldapGroups';
 import USER_DB_PROJECTION from '@libs/user/constants/user-db-projection';
 import { getDecryptedPassword } from '@libs/common/utils';
 import { ALL_USERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { User, UserDocument } from './user.schema';
 import UsersService from './users.service';
 import GroupsService from '../groups/groups.service';
@@ -145,6 +146,12 @@ describe(UsersService.name, () => {
           provide: CACHE_MANAGER,
           useValue: cacheManagerMock,
         },
+        {
+          provide: EventEmitter2,
+          useValue: {
+            emit: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -237,16 +244,12 @@ describe(UsersService.name, () => {
 
     it('should fetch users from external API if not cached', async () => {
       const school = 'agy';
-      cacheManagerMock.get.mockResolvedValue(null);
+      cacheManagerMock.get.mockResolvedValueOnce(null).mockResolvedValueOnce(cachedUsers);
       mockGroupsService.fetchAllUsers.mockResolvedValue(fetchedUsers);
 
       const result = await service.findAllCachedUsers(school);
       expect(result).toEqual(cachedUsers);
-      expect(cacheManagerMock.set).toHaveBeenCalledWith(
-        ALL_USERS_CACHE_KEY + school,
-        cachedUsers,
-        DEFAULT_CACHE_TTL_MS,
-      );
+      expect(cacheManagerMock.set).toHaveBeenCalledWith(ALL_USERS_CACHE_KEY + school, cachedUsers, USERS_CACHE_TTL_MS);
     });
   });
 

@@ -10,9 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const QUEUE_CONSTANTS = {
-  PREFIX: 'queue-user-',
-  USERS_CACHE_REFRESH: 'USERS_CACHE_REFRESH',
+const AUTH_CONFIG = {
+  KEYCLOAK_REALM: 'edulution',
+  KEYCLOAK_CLIENT_ID: 'edu-ui',
 } as const;
 
-export default QUEUE_CONSTANTS;
+export default AUTH_CONFIG;
