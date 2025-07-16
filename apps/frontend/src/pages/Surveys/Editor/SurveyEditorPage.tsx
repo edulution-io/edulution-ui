@@ -65,10 +65,8 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     isUpdatingBackendLimiters,
   } = useQuestionsContextMenuStore();
 
-
   const { t } = useTranslation();
   const { language } = useLanguage();
-
   const { isSuperAdmin } = useLdapGroups();
 
   const handleReset = () => {
