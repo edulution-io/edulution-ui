@@ -19,6 +19,7 @@ import SurveyEditorLoadingPage from '@/pages/Surveys/Editor/SurveyEditorLoadingP
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
+import DeleteTemplateDialog from '@/pages/Surveys/Editor/dialog/DeleteTemplateDialog';
 import PageLayout from '@/components/structure/layout/PageLayout';
 
 const SurveyEditorOpeningPage = () => {
@@ -58,6 +59,7 @@ const SurveyEditorOpeningPage = () => {
   return (
     <PageLayout>
       {!initialSurvey ? <SurveyEditorLoadingPage /> : <SurveyEditorPage initialFormValues={initialSurvey} />}
+      <DeleteTemplateDialog />
     </PageLayout>
   );
 };
