@@ -97,11 +97,11 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
 
   setTemplate: (template?: SurveyTemplateDto) => set({ template }),
 
-  uploadTemplate: async (template: SurveyTemplateDto): Promise<void> => {
+  uploadTemplate: async (surveyTemplateDto: SurveyTemplateDto): Promise<void> => {
     set({ isSubmitting: true });
     try {
-      const result = await eduApi.post<string>(SURVEY_TEMPLATES_ENDPOINT, template);
-      const newTemplate = { ...template, fileName: result.data };
+      const result = await eduApi.post<string>(SURVEY_TEMPLATES_ENDPOINT, surveyTemplateDto);
+      const newTemplate = { ...surveyTemplateDto, fileName: result.data };
       set({ template: newTemplate });
     } catch (error) {
       handleApiError(error, set);

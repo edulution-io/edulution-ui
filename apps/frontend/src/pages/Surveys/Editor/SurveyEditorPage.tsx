@@ -173,7 +173,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
         icon: TbTemplate,
         text: t('survey.editor.templates'),
         onClick: () => setIsOpenSaveTemplateMenu(!isOpenSaveTemplateMenu),
-        isVisible: !!isSuperAdmin
+        isVisible: !!isSuperAdmin,
       },
       {
         icon: VscNewFile,
@@ -218,6 +218,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
       <FloatingButtonsBar config={config} />
       <TemplateDialog
         editorForm={form}
+        surveyCreatorModel={creator}
         isOpenSaveTemplateMenu={isOpenSaveTemplateMenu}
         setIsOpenSaveTemplateMenu={setIsOpenSaveTemplateMenu}
       />

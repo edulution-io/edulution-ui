@@ -34,7 +34,7 @@ class SurveysTemplateService {
     const templatePath = join(SURVEYS_TEMPLATE_PATH, filename);
     try {
       await this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);
-      return await FilesystemService.writeFile(templatePath, JSON.stringify(surveyTemplateDto.template, null, 2));
+      return await FilesystemService.writeFile(templatePath, JSON.stringify(surveyTemplateDto, null, 2));
     } catch (error) {
       throw new CustomHttpException(
         CommonErrorMessages.FILE_WRITING_FAILED,

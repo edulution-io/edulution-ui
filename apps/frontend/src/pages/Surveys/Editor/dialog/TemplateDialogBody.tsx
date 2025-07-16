@@ -26,7 +26,7 @@ const TemplateDialogBody = (props: TemplateDialogBodyProps) => {
   const { form } = props;
 
   const { t } = useTranslation();
-  
+
   return (
     <Form {...form}>
       <form
@@ -36,7 +36,6 @@ const TemplateDialogBody = (props: TemplateDialogBodyProps) => {
         }}
       >
         <div className="space-y-2">
-          
           <FormField
             name="title"
             defaultValue={form.getValues('title')}
@@ -44,7 +43,7 @@ const TemplateDialogBody = (props: TemplateDialogBodyProps) => {
             labelTranslationId={t('survey.editor.templateMenu.templateTitle')}
             variant="dialog"
           />
-          
+
           <FormField
             name="description"
             defaultValue={form.getValues('description')}
@@ -55,12 +54,11 @@ const TemplateDialogBody = (props: TemplateDialogBodyProps) => {
 
           <DialogSwitch
             translationId="survey.editor.templateMenu.templateIsActive"
-            checked={!!form.getValues('isActive')}
+            checked={!!form.watch('isActive')}
             onCheckedChange={(isChecked) => {
               form.setValue('isActive', isChecked);
             }}
           />
-
         </div>
       </form>
     </Form>
