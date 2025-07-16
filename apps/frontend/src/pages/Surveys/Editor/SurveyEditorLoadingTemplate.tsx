@@ -12,13 +12,16 @@
 
 import React from 'react';
 import { MdOutlineOpenInNew } from 'react-icons/md';
+import { HiTrash } from 'react-icons/hi';
 import cn from '@libs/common/utils/className';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
 import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
+import useLdapGroups from '@/hooks/useLdapGroups';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import { Card } from '@/components/shared/Card';
+import { Button } from '@/components/shared/Button';
 
 interface SurveyEditorLoadingTemplateProps {
   creator: AttendeeDto;
@@ -29,14 +32,21 @@ interface SurveyEditorLoadingTemplateProps {
 const SurveyEditorLoadingTemplate = ({ creator, template, key }: SurveyEditorLoadingTemplateProps): JSX.Element => {
   const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
 
-  const { setTemplate } = useTemplateMenuStore();
+  const { setTemplate, setIsOpenTemplateConfirmDeletion } = useTemplateMenuStore();
+
+  const { isSuperAdmin } = useLdapGroups();
 
   const { title, description, isActive } = template;
 
   return (
     <Card
       key={key}
-      className={cn(GRID_CARD, { 'bg-muted': isActive }, { 'bg-muted-transparent': !isActive })}
+      className={cn(
+        GRID_CARD,
+        { 'bg-muted': isActive },
+        { 'bg-muted-transparent': !isActive },
+        { 'pb-10': isSuperAdmin },
+      )}
       variant="text"
       onClick={() => {
         setTemplate(template);
@@ -48,6 +58,23 @@ const SurveyEditorLoadingTemplate = ({ creator, template, key }: SurveyEditorLoa
       <p>{title}</p>
 
       <p>{description}</p>
+
+      {isSuperAdmin && (
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+
+            if (!isSuperAdmin) return;
+            setTemplate(template);
+            setIsOpenTemplateConfirmDeletion(true);
+          }}
+          variant="btn-attention"
+          size="sm"
+          className="absolute bottom-2 right-2 p-2"
+        >
+          <HiTrash className="h-4 w-4" />
+        </Button>
+      )}
     </Card>
   );
 };

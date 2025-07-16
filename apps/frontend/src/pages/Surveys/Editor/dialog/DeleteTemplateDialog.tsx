@@ -21,17 +21,16 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import PropertyDialogList from '@/components/shared/PropertyDialogList';
 
-interface DeleteTemplateDialogProps {
-  isOpenTemplateConfirmDeletion: boolean;
-  setIsOpenTemplateConfirmDeletion: (state: boolean) => void;
-
-  trigger?: React.ReactNode;
-}
-
-const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
-  const { isOpenTemplateConfirmDeletion, setIsOpenTemplateConfirmDeletion, trigger } = props;
-
-  const { template, error, isSubmitting, deleteTemplate, fetchTemplates } = useTemplateMenuStore();
+const DeleteTemplateDialog = () => {
+  const {
+    template,
+    error,
+    isSubmitting,
+    deleteTemplate,
+    fetchTemplates,
+    isOpenTemplateConfirmDeletion,
+    setIsOpenTemplateConfirmDeletion,
+  } = useTemplateMenuStore();
 
   const { language } = useLanguage();
 
@@ -48,12 +47,17 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
   };
 
   const propertyList = [
-    { id: 'title', value: template?.template.formula?.title, translationId: 'common.title' },
-    { id: 'creator', value: template?.template.creator?.username, translationId: 'common.creator' },
+    { id: 'title', value: template?.title, translationId: 'common.title' },
+    { id: 'description', value: template?.description, translationId: 'common.description' },
     {
       id: 'createdAt',
-      value: template?.template.createdAt ? format(template?.template.createdAt, 'PPP', { locale }) : '',
+      value: template?.createdAt ? format(template?.createdAt, 'PPP', { locale }) : '',
       translationId: 'common.createdAt',
+    },
+    {
+      id: 'updatedAt',
+      value: template?.updatedAt ? format(template?.updatedAt, 'PPP', { locale }) : '',
+      translationId: 'common.updatedAt',
     },
   ];
 
@@ -87,7 +91,6 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
   return (
     <AdaptiveDialog
       isOpen={isOpenTemplateConfirmDeletion}
-      trigger={trigger}
       handleOpenChange={() => setIsOpenTemplateConfirmDeletion(!isOpenTemplateConfirmDeletion)}
       title={t('survey.editor.templateMenu.deletion.title')}
       body={getDialogBody()}
