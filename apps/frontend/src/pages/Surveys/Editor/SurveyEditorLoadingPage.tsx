@@ -23,7 +23,7 @@ import { Card } from '@/components/shared/Card';
 import useUserStore from '@/store/UserStore/useUserStore';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
-import { GRID_CARD, GRID_FIELD, GRID_SEARCH } from '@libs/ui/constants/commonClassNames';
+import { GRID_CARD, GRID_SEARCH } from '@libs/ui/constants/commonClassNames';
 import SurveyEditorLoadingTemplate from '@/pages/Surveys/Editor/SurveyEditorLoadingTemplate';
 
 const SurveyEditorLoadingPage = () => {
@@ -93,7 +93,7 @@ const SurveyEditorLoadingPage = () => {
         width="auto"
         className={GRID_SEARCH}
       />
-      <div className={GRID_FIELD}>
+      <div className="mx-auto grid max-h-full w-full grid-cols-[repeat(auto-fit,minmax(8rem,auto))] justify-center gap-x-3 gap-y-2 overflow-auto px-2 pb-10 scrollbar-thin md:max-h-full md:w-[95%] md:grid-cols-[repeat(auto-fit,minmax(12rem,auto))] md:gap-x-6 md:gap-y-5 md:pb-4">
         <Card
           className={cn(GRID_CARD, 'bg-muted')}
           variant="text"
