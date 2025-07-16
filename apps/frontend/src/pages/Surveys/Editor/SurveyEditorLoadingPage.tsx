@@ -95,7 +95,7 @@ const SurveyEditorLoadingPage = () => {
       />
       <div className="mx-auto grid max-h-full w-full grid-cols-[repeat(auto-fit,minmax(8rem,auto))] justify-center gap-x-3 gap-y-2 overflow-auto px-2 pb-10 scrollbar-thin md:max-h-full md:w-[95%] md:grid-cols-[repeat(auto-fit,minmax(12rem,auto))] md:gap-x-6 md:gap-y-5 md:pb-4">
         <Card
-          className={cn(GRID_CARD, 'items-center justify-center bg-muted')}
+          className={cn(GRID_CARD, 'flex items-center justify-center bg-muted')}
           variant="text"
           onClick={() => {
             setTemplate(undefined);
@@ -108,11 +108,12 @@ const SurveyEditorLoadingPage = () => {
 
         {filteredTemplates.length ? (
           filteredTemplates.map((template) => (
-            <SurveyEditorLoadingTemplate
-              key={template.fileName}
-              creator={surveyCreator}
-              template={template}
-            />
+            <div key={template.fileName} className="relative">
+              <SurveyEditorLoadingTemplate
+                creator={surveyCreator}
+                template={template}
+              />
+            </div>
           ))
         ) : (
           <div className="py-16">{t('survey.editor.noSearchResults')}</div>
