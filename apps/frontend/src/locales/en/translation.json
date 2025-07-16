@@ -621,8 +621,11 @@
       "templates": "Templates",
       "noSearchResults": "No templates found",
       "templateMenu": {
+        "templateTitle": "Title of the template",
+        "templateDescription": "Description for the template",
+        "templateIsActive": "Show/Hide template",
         "submit": "Save Survey as template.",
-        "title": "Templates:",
+        "title": "Save survey as template:",
         "userMessage": "Here you can load a template that is available to you.",
         "adminMessage": "Here you can either load a template or update/create the template of the current survey, for later usage.",
         "emptyMessage": "There are no templates available yet",

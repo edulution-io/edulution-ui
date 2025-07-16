@@ -23,7 +23,6 @@ interface SurveyTemplateDto {
   isActive?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
-  icon?: string;
 }
 
 export default SurveyTemplateDto;

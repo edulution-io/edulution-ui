@@ -11,12 +11,13 @@
  */
 
 import React from 'react';
+import { MdOutlineOpenInNew } from 'react-icons/md';
 import cn from '@libs/common/utils/className';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
 import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
-import { Card } from '@/components/shared/Card';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import { Card } from '@/components/shared/Card';
 
 interface SurveyEditorLoadingTemplateProps {
   creator: AttendeeDto;
@@ -27,7 +28,7 @@ interface SurveyEditorLoadingTemplateProps {
 const SurveyEditorLoadingTemplate = ({ creator, template, key }: SurveyEditorLoadingTemplateProps): JSX.Element => {
   const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
 
-  const { icon, title, description, isActive } = template;
+  const { title, description, isActive } = template;
 
   return (
     <Card
@@ -36,9 +37,7 @@ const SurveyEditorLoadingTemplate = ({ creator, template, key }: SurveyEditorLoa
       variant="text"
       onClick={() => assignTemplateToSelectedSurvey(creator, template)}
     >
-      <img
-        src={icon}
-        alt={title}
+      <MdOutlineOpenInNew
         className="h-10 w-10 md:h-14 md:w-14"
       />
 

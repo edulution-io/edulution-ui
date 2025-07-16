@@ -219,8 +219,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
       </div>
       <FloatingButtonsBar config={config} />
       <TemplateDialog
-        form={form}
-        creator={creator}
+        editorForm={form}
         isOpenSaveTemplateMenu={isOpenSaveTemplateMenu}
         setIsOpenSaveTemplateMenu={setIsOpenSaveTemplateMenu}
       />
