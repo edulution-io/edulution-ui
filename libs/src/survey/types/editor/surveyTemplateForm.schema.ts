@@ -64,7 +64,7 @@ const getSurveyTemplateFormSchema = () =>
       isPublic: z.boolean().optional(),
       canSubmitMultipleAnswers: z.boolean().optional(),
       canUpdateFormerAnswer: z.boolean().optional(),
-    }),
+    }).optional(),
     icon: z.string().optional(),
     title: z.string(),
     description: z.string(),

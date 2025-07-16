@@ -58,7 +58,10 @@ const TemplateDialog = (props: TemplateDialogProps) => {
     defaultValues: initialFormValues,
   });
 
-  const handleClose = () => setIsOpenSaveTemplateMenu(!isOpenSaveTemplateMenu);
+  const handleClose = () => {
+    templateForm.reset(initialFormValues);
+    setIsOpenSaveTemplateMenu(!isOpenSaveTemplateMenu);
+  };
 
   const handleSaveTemplate = async () => {
     const survey = editorForm.getValues();
