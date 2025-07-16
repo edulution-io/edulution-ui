@@ -15,8 +15,6 @@ export const INPUT_VARIANT_DIALOG = 'bg-muted placeholder:text-p focus:outline-n
 export const INPUT_DEFAULT =
   'flex h-9 rounded-md px-3 py-1 text-p text-background shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50';
 
-export const GRID_FIELD =
-  'mx-auto grid max-h-full w-full grid-cols-[repeat(auto-fit,minmax(8rem,auto))] justify-center gap-x-3 gap-y-2 overflow-auto pb-10 scrollbar-thin md:max-h-full md:w-[95%] md:grid-cols-[repeat(auto-fit,minmax(12rem,auto))] md:gap-x-6 md:gap-y-5 md:pb-4';
 export const GRID_SEARCH =
   'mx-auto my-3 block w-[80%] min-w-[250px] rounded-xl border border-ring px-3 py-2 md:mb-2 md:mt-0 md:w-[400px]';
 export const GRID_CARD =
