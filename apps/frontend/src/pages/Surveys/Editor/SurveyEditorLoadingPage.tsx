@@ -15,16 +15,16 @@ import { useTranslation } from 'react-i18next';
 import { VscNewFile } from 'react-icons/vsc';
 import cn from '@libs/common/utils/className';
 import isSubsequence from '@libs/common/utils/string/isSubsequence';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 import SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
+import { GRID_CARD, GRID_SEARCH } from '@libs/ui/constants/commonClassNames';
 import useLanguage from '@/hooks/useLanguage';
+import useUserStore from '@/store/UserStore/useUserStore';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
+import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import SurveyEditorLoadingTemplate from '@/pages/Surveys/Editor/SurveyEditorLoadingTemplate';
 import Input from '@/components/shared/Input';
 import { Card } from '@/components/shared/Card';
-import useUserStore from '@/store/UserStore/useUserStore';
-import AttendeeDto from '@libs/user/types/attendee.dto';
-import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
-import { GRID_CARD, GRID_SEARCH } from '@libs/ui/constants/commonClassNames';
-import SurveyEditorLoadingTemplate from '@/pages/Surveys/Editor/SurveyEditorLoadingTemplate';
 
 const SurveyEditorLoadingPage = () => {
   const { user } = useUserStore();
@@ -42,7 +42,7 @@ const SurveyEditorLoadingPage = () => {
   const { language } = useLanguage();
   const { t } = useTranslation();
 
-  const { templates, fetchTemplates } = useTemplateMenuStore();
+  const { templates, fetchTemplates, setTemplate } = useTemplateMenuStore();
 
   const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
 
@@ -97,7 +97,10 @@ const SurveyEditorLoadingPage = () => {
         <Card
           className={cn(GRID_CARD, 'bg-muted')}
           variant="text"
-          onClick={() => assignTemplateToSelectedSurvey(surveyCreator, undefined)}
+          onClick={() => {
+            setTemplate(undefined);
+            assignTemplateToSelectedSurvey(surveyCreator, undefined);
+          }}
         >
           <VscNewFile className="h-10 w-10 md:h-14 md:w-14" />
           <p>{t('survey.editor.new')}</p>

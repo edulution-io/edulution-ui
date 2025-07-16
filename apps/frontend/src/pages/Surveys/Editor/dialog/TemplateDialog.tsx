@@ -10,24 +10,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveyFormula from '@libs/survey/types/SurveyFormula';
+import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
+import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
+import getSurveyTemplateFormSchema from '@libs/survey/types/editor/surveyTemplateForm.schema';
+import { zodResolver } from '@hookform/resolvers/zod';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import TemplateDialogBody from '@/pages/Surveys/Editor/dialog/TemplateDialogBody';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
-import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
-import { zodResolver } from '@hookform/resolvers/zod';
-import getSurveyTemplateFormSchema from '@libs/survey/types/editor/surveyTemplateForm.schema';
-import getInitialTemplateFormBySurvey from '@libs/survey/constants/get-initial-template-form-by-survey';
-// import DeleteTemplateDialog from '@/pages/Surveys/Editor/dialog/DeleteTemplateDialog';
 
 interface TemplateDialogProps {
   editorForm: UseFormReturn<SurveyDto>;
+  surveyCreatorModel: SurveyCreator;
 
   isOpenSaveTemplateMenu: boolean;
   setIsOpenSaveTemplateMenu: (state: boolean) => void;
@@ -36,15 +36,21 @@ interface TemplateDialogProps {
 }
 
 const TemplateDialog = (props: TemplateDialogProps) => {
-  const { trigger, editorForm, isOpenSaveTemplateMenu, setIsOpenSaveTemplateMenu } = props;
+  const { trigger, surveyCreatorModel, editorForm, isOpenSaveTemplateMenu, setIsOpenSaveTemplateMenu } = props;
 
-  const { uploadTemplate } = useTemplateMenuStore();
-
-  const { isSuperAdmin } = useLdapGroups();
+  const { template, uploadTemplate } = useTemplateMenuStore();
 
   const { t } = useTranslation();
+  const { isSuperAdmin } = useLdapGroups();
 
-  const initialFormValues: SurveyTemplateDto = useMemo(() => getInitialTemplateFormBySurvey(editorForm.getValues()), [editorForm]);
+  const initialFormValues = {
+    fileName: template?.fileName || undefined,
+    title: template?.title || undefined,
+    description: template?.description || undefined,
+    isActive: template?.isActive ?? true,
+    createdAt: template?.createdAt || new Date(),
+    updatedAt: new Date(),
+  };
 
   const templateForm = useForm<SurveyTemplateDto>({
     mode: 'onChange',
@@ -52,44 +58,30 @@ const TemplateDialog = (props: TemplateDialogProps) => {
     defaultValues: initialFormValues,
   });
 
-  useEffect(() => {
-    templateForm.reset(initialFormValues);
-  }, [initialFormValues]);
-
-  const getDialogBody = () => (
-    <>
-      <TemplateDialogBody
-        form={templateForm}
-      />
-      {/*
-        // TODO: This moves to the `SurveyEditorLoadingPage` PR: 1065
-        <DeleteTemplateDialog
-          isOpenTemplateConfirmDeletion={isOpenTemplateConfirmDeletion}
-          setIsOpenTemplateConfirmDeletion={setIsOpenTemplateConfirmDeletion}
-        />
-       */}
-    </>
-  );
-
   const handleClose = () => setIsOpenSaveTemplateMenu(!isOpenSaveTemplateMenu);
 
   const handleSaveTemplate = async () => {
-    const template = templateForm.getValues();
-    await uploadTemplate(template);
+    const survey = editorForm.getValues();
+
+    const surveyTemplateDto = templateForm.getValues();
+    surveyTemplateDto.template = {
+      formula: surveyCreatorModel.JSON as TSurveyFormula || surveyCreatorModel.survey.toJSON() as TSurveyFormula,
+      invitedAttendees: survey.invitedAttendees,
+      invitedGroups: survey.invitedGroups,
+      isPublic: survey.isPublic,
+      isAnonymous: survey.isAnonymous,
+      canSubmitMultipleAnswers: survey.canSubmitMultipleAnswers,
+      canUpdateFormerAnswer: survey.canUpdateFormerAnswer,
+    };
+    surveyTemplateDto.backendLimiters = survey?.backendLimiters;
+
+    await uploadTemplate(surveyTemplateDto);
     setIsOpenSaveTemplateMenu(false);
   };
 
-  const getFooter = () => {
-    if (isSuperAdmin) {
-      return (
-        <DialogFooterButtons
-          handleClose={handleClose}
-          handleSubmit={handleSaveTemplate}
-        />
-      );
-    }
-    return <DialogFooterButtons handleClose={handleClose} />;
-  };
+  if (!isSuperAdmin) {
+    return null;
+  }
 
   return (
     <AdaptiveDialog
@@ -97,8 +89,8 @@ const TemplateDialog = (props: TemplateDialogProps) => {
       trigger={trigger}
       handleOpenChange={handleClose}
       title={t('survey.editor.templateMenu.title')}
-      body={getDialogBody()}
-      footer={getFooter()}
+      body={<TemplateDialogBody form={templateForm} />}
+      footer={<DialogFooterButtons handleClose={handleClose} handleSubmit={handleSaveTemplate} />}
       desktopContentClassName="max-w-[50%] min-h-[200px] max-h-[90%] overflow-auto"
     />
   );

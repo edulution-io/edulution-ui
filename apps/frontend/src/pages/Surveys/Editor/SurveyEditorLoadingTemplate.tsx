@@ -17,6 +17,7 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
 import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import { Card } from '@/components/shared/Card';
 
 interface SurveyEditorLoadingTemplateProps {
@@ -28,6 +29,8 @@ interface SurveyEditorLoadingTemplateProps {
 const SurveyEditorLoadingTemplate = ({ creator, template, key }: SurveyEditorLoadingTemplateProps): JSX.Element => {
   const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
 
+  const { setTemplate } = useTemplateMenuStore();
+
   const { title, description, isActive } = template;
 
   return (
@@ -35,11 +38,12 @@ const SurveyEditorLoadingTemplate = ({ creator, template, key }: SurveyEditorLoa
       key={key}
       className={cn(GRID_CARD, { 'bg-muted': isActive }, { 'bg-muted-transparent': !isActive })}
       variant="text"
-      onClick={() => assignTemplateToSelectedSurvey(creator, template)}
+      onClick={() => {
+        setTemplate(template);
+        assignTemplateToSelectedSurvey(creator, template);
+      }}
     >
-      <MdOutlineOpenInNew
-        className="h-10 w-10 md:h-14 md:w-14"
-      />
+      <MdOutlineOpenInNew className="h-10 w-10 md:h-14 md:w-14" />
 
       <p>{title}</p>
 
