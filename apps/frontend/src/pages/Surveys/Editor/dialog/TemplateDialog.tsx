@@ -10,10 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import React, { useEffect, useMemo } from 'react';
+import { useForm, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import useLdapGroups from '@/hooks/useLdapGroups';
@@ -21,11 +20,14 @@ import TemplateDialogBody from '@/pages/Surveys/Editor/dialog/TemplateDialogBody
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
+import { zodResolver } from '@hookform/resolvers/zod';
+import getSurveyTemplateFormSchema from '@libs/survey/types/editor/surveyTemplateForm.schema';
+import getInitialTemplateFormBySurvey from '@libs/survey/constants/get-initial-template-form-by-survey';
 // import DeleteTemplateDialog from '@/pages/Surveys/Editor/dialog/DeleteTemplateDialog';
 
 interface TemplateDialogProps {
-  form: UseFormReturn<SurveyDto>;
-  creator: SurveyCreator;
+  editorForm: UseFormReturn<SurveyDto>;
 
   isOpenSaveTemplateMenu: boolean;
   setIsOpenSaveTemplateMenu: (state: boolean) => void;
@@ -34,20 +36,30 @@ interface TemplateDialogProps {
 }
 
 const TemplateDialog = (props: TemplateDialogProps) => {
-  const { trigger, form, creator, isOpenSaveTemplateMenu, setIsOpenSaveTemplateMenu } = props;
+  const { trigger, editorForm, isOpenSaveTemplateMenu, setIsOpenSaveTemplateMenu } = props;
 
-  const { template, uploadTemplate /* , isOpenTemplateConfirmDeletion, setIsOpenTemplateConfirmDeletion */ } =
-    useTemplateMenuStore();
+  const { uploadTemplate } = useTemplateMenuStore();
 
   const { isSuperAdmin } = useLdapGroups();
 
   const { t } = useTranslation();
 
+  const initialFormValues: SurveyTemplateDto = useMemo(() => getInitialTemplateFormBySurvey(editorForm.getValues()), [editorForm]);
+
+  const templateForm = useForm<SurveyTemplateDto>({
+    mode: 'onChange',
+    resolver: zodResolver(getSurveyTemplateFormSchema()),
+    defaultValues: initialFormValues,
+  });
+
+  useEffect(() => {
+    templateForm.reset(initialFormValues);
+  }, [initialFormValues]);
+
   const getDialogBody = () => (
     <>
       <TemplateDialogBody
-        form={form}
-        surveyCreator={creator}
+        form={templateForm}
       />
       {/*
         // TODO: This moves to the `SurveyEditorLoadingPage` PR: 1065
@@ -62,14 +74,8 @@ const TemplateDialog = (props: TemplateDialogProps) => {
   const handleClose = () => setIsOpenSaveTemplateMenu(!isOpenSaveTemplateMenu);
 
   const handleSaveTemplate = async () => {
-    const values = form.getValues();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id, formula, createdAt, saveNo, expires, answers, ...remainingSurvey } = values;
-    const creationDate = template?.template.createdAt || new Date();
-    await uploadTemplate({
-      fileName: template?.fileName,
-      template: { formula: creator.JSON as SurveyFormula, createdAt: creationDate, ...remainingSurvey },
-    });
+    const template = templateForm.getValues();
+    await uploadTemplate(template);
     setIsOpenSaveTemplateMenu(false);
   };
 
