@@ -11,6 +11,7 @@
  */
 
 import React from 'react';
+import { MdOutlineOpenInNew } from 'react-icons/md';
 import cn from '@libs/common/utils/className';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
@@ -21,26 +22,20 @@ import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPage
 interface SurveyEditorLoadingTemplateProps {
   creator: AttendeeDto;
   template: SurveyTemplateDto;
-  key?: string;
 }
 
-const SurveyEditorLoadingTemplate = ({ creator, template, key }: SurveyEditorLoadingTemplateProps): JSX.Element => {
+const SurveyEditorLoadingTemplate = ({ creator, template }: SurveyEditorLoadingTemplateProps): JSX.Element => {
   const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
 
-  const { icon, title, description, isActive } = template;
+  const { title, description, isActive } = template;
 
   return (
     <Card
-      key={key}
       className={cn(GRID_CARD, { 'bg-muted': isActive }, { 'bg-muted-transparent': !isActive })}
       variant="text"
       onClick={() => assignTemplateToSelectedSurvey(creator, template)}
     >
-      <img
-        src={icon}
-        alt={title}
-        className="h-10 w-10 md:h-14 md:w-14"
-      />
+      <MdOutlineOpenInNew className="h-10 w-10 md:h-14 md:w-14" />
 
       <p>{title}</p>
 

@@ -105,11 +105,12 @@ const SurveyEditorLoadingPage = () => {
 
         {filteredTemplates.length ? (
           filteredTemplates.map((template) => (
-            <SurveyEditorLoadingTemplate
-              key={template.fileName}
-              creator={surveyCreator}
-              template={template}
-            />
+            <div key={template.fileName}>
+              <SurveyEditorLoadingTemplate
+                creator={surveyCreator}
+                template={template}
+              />
+            </div>
           ))
         ) : (
           <div className="py-16">{t('survey.editor.noSearchResults')}</div>
