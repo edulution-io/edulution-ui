@@ -26,10 +26,9 @@ import { Button } from '@/components/shared/Button';
 interface SurveyEditorLoadingTemplateProps {
   creator: AttendeeDto;
   template: SurveyTemplateDto;
-  key?: string;
 }
 
-const SurveyEditorLoadingTemplate = ({ creator, template, key }: SurveyEditorLoadingTemplateProps): JSX.Element => {
+const SurveyEditorLoadingTemplate = ({ creator, template }: SurveyEditorLoadingTemplateProps): JSX.Element => {
   const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
 
   const { setTemplate, setIsOpenTemplateConfirmDeletion } = useTemplateMenuStore();
@@ -40,7 +39,6 @@ const SurveyEditorLoadingTemplate = ({ creator, template, key }: SurveyEditorLoa
 
   return (
     <Card
-      key={key}
       className={cn(
         GRID_CARD,
         { 'bg-muted': isActive },
@@ -63,8 +61,6 @@ const SurveyEditorLoadingTemplate = ({ creator, template, key }: SurveyEditorLoa
         <Button
           onClick={(e) => {
             e.stopPropagation();
-
-            if (!isSuperAdmin) return;
             setTemplate(template);
             setIsOpenTemplateConfirmDeletion(true);
           }}
