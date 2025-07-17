@@ -12,6 +12,8 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import type DeploymentTarget from '@libs/common/types/deployment-target';
+import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import { DefaultLandingPage } from './global-settings.default-landing-page.schema';
 
 export type GeneralSettingsDocument = GeneralSettings & Document;
@@ -20,6 +22,9 @@ export type GeneralSettingsDocument = GeneralSettings & Document;
 export class GeneralSettings {
   @Prop({ type: DefaultLandingPage })
   defaultLandingPage: DefaultLandingPage;
+
+  @Prop({ type: String, enum: DEPLOYMENT_TARGET, default: DEPLOYMENT_TARGET.LINUXMUSTER })
+  deploymentTarget: DeploymentTarget;
 }
 
 export const GeneralSettingsSchema = SchemaFactory.createForClass(GeneralSettings);
