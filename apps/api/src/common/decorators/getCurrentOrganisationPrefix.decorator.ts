@@ -13,19 +13,14 @@
 import { createParamDecorator, ExecutionContext, HttpStatus } from '@nestjs/common';
 import { Request } from 'express';
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
-import type DeploymentTarget from '@libs/common/types/deployment-target';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
+import getDeploymentTarget from '@libs/common/utils/getDeploymentTarget';
 import CustomHttpException from '../CustomHttpException';
-
-const VALID_TARGETS = new Set<DeploymentTarget>(Object.values(DEPLOYMENT_TARGET));
 
 const GetCurrentOrganisationPrefix = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
   const request: Request = ctx.switchToHttp().getRequest();
-  const envTarget = process.env.EDUI_DEPLOYMENT_TARGET ?? DEPLOYMENT_TARGET.LINUXMUSTER;
-  const target: DeploymentTarget = VALID_TARGETS.has(envTarget as DeploymentTarget)
-    ? (envTarget as DeploymentTarget)
-    : DEPLOYMENT_TARGET.LINUXMUSTER;
+  const target = getDeploymentTarget();
 
   switch (target) {
     case DEPLOYMENT_TARGET.GENERIC:
@@ -45,7 +40,7 @@ const GetCurrentOrganisationPrefix = createParamDecorator((_data: unknown, ctx: 
       throw new CustomHttpException(
         CommonErrorMessages.WRONG_CONFIG,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        `Unsupported deployment target: ${envTarget}`,
+        `Unsupported deployment target`,
       );
   }
 });
