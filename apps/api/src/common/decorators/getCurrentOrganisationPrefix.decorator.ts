@@ -13,26 +13,41 @@
 import { createParamDecorator, ExecutionContext, HttpStatus } from '@nestjs/common';
 import { Request } from 'express';
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
+import type DeploymentTarget from '@libs/common/types/deployment-target';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
 import CustomHttpException from '../CustomHttpException';
+
+const VALID_TARGETS = new Set<DeploymentTarget>(Object.values(DEPLOYMENT_TARGET));
 
 const GetCurrentOrganisationPrefix = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
   const request: Request = ctx.switchToHttp().getRequest();
-  const target = process.env.EDUI_DEPLOYMENT_TARGET || DEPLOYMENT_TARGET.LINUXMUSTER;
+  const envTarget = process.env.EDUI_DEPLOYMENT_TARGET ?? DEPLOYMENT_TARGET.LINUXMUSTER;
+  const target: DeploymentTarget = VALID_TARGETS.has(envTarget as DeploymentTarget)
+    ? (envTarget as DeploymentTarget)
+    : DEPLOYMENT_TARGET.LINUXMUSTER;
 
-  if (target === DEPLOYMENT_TARGET.GENERIC) {
-    return 'global';
+  switch (target) {
+    case DEPLOYMENT_TARGET.GENERIC:
+      return SPECIAL_SCHOOLS.GLOBAL;
+
+    case DEPLOYMENT_TARGET.LINUXMUSTER:
+      if (!request.user?.school) {
+        throw new CustomHttpException(
+          CommonErrorMessages.WRONG_CONFIG,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          `Missing school in JWT`,
+        );
+      }
+      return request.user.school;
+
+    default:
+      throw new CustomHttpException(
+        CommonErrorMessages.WRONG_CONFIG,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        `Unsupported deployment target: ${envTarget}`,
+      );
   }
-
-  if (target === DEPLOYMENT_TARGET.LINUXMUSTER && request.user?.school) {
-    return request.user.school;
-  }
-
-  throw new CustomHttpException(
-    CommonErrorMessages.WRONG_CONFIG,
-    HttpStatus.INTERNAL_SERVER_ERROR,
-    `Missing school in JWT`,
-  );
 });
 
 export default GetCurrentOrganisationPrefix;
