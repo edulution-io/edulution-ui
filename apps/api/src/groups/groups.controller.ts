@@ -10,12 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { EDU_API_GROUPS_ENDPOINT } from '@libs/groups/constants/eduApiEndpoints';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import GroupsService from './groups.service';
 import GetToken from '../common/decorators/getToken.decorator';
 import GetCurrentOrganisationPrefix from '../common/decorators/getCurrentOrganisationPrefix.decorator';
+import DeploymentTargetGuard from '../common/guards/deploymentTarget.guard';
 
 @ApiTags(EDU_API_GROUPS_ENDPOINT)
 @ApiBearerAuth()
@@ -23,9 +24,13 @@ import GetCurrentOrganisationPrefix from '../common/decorators/getCurrentOrganis
 export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}
 
+  @UseGuards(DeploymentTargetGuard)
   @Get()
-  async searchGroups(@Query('groupName') groupName: string, @GetCurrentOrganisationPrefix() school: string) {
-    return this.groupsService.searchGroups(school, groupName);
+  async searchGroups(
+    @Query('groupName') groupName: string,
+    @GetCurrentOrganisationPrefix() currentOrganisationPrefix: string,
+  ) {
+    return this.groupsService.searchGroups(currentOrganisationPrefix, groupName);
   }
 
   @Get('user')

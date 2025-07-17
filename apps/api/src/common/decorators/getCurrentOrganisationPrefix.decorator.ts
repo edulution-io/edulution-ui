@@ -15,12 +15,12 @@ import { Request } from 'express';
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
-import getDeploymentTarget from '@libs/common/utils/getDeploymentTarget';
+import type DeploymentTarget from '@libs/common/types/deployment-target';
 import CustomHttpException from '../CustomHttpException';
 
 const GetCurrentOrganisationPrefix = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
-  const request: Request = ctx.switchToHttp().getRequest();
-  const target = getDeploymentTarget();
+  const request: Request & { deploymentTarget: DeploymentTarget } = ctx.switchToHttp().getRequest();
+  const target = request.deploymentTarget;
 
   switch (target) {
     case DEPLOYMENT_TARGET.GENERIC:

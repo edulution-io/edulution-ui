@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Put, Query, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Put, Query, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
@@ -21,6 +21,7 @@ import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import LmnApiService from './lmnApi.service';
 import GetCurrentOrganisationPrefix from '../common/decorators/getCurrentOrganisationPrefix.decorator';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
+import DeploymentTargetGuard from '../common/guards/deploymentTarget.guard';
 
 const { ROOT, USERS_QUOTA } = LMN_API_EDU_API_ENDPOINTS;
 
@@ -168,13 +169,14 @@ export class LmnApiController {
     return this.lmnApiService.getUsersQuota(lmnApiToken, params.username);
   }
 
+  @UseGuards(DeploymentTargetGuard)
   @Get('search')
   async searchUsersOrGroups(
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
     @Query('searchQuery') searchQuery: string,
-    @GetCurrentOrganisationPrefix() school: string,
+    @GetCurrentOrganisationPrefix() currentOrganisationPrefix: string,
   ) {
-    return this.lmnApiService.searchUsersOrGroups(lmnApiToken, school, searchQuery);
+    return this.lmnApiService.searchUsersOrGroups(lmnApiToken, currentOrganisationPrefix, searchQuery);
   }
 
   @Post('projects')

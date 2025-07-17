@@ -17,9 +17,9 @@ const VALID_TARGETS = new Set<DeploymentTarget>(Object.values(DEPLOYMENT_TARGET)
 
 const { EDUI_DEPLOYMENT_TARGET = DEPLOYMENT_TARGET.LINUXMUSTER } = process.env;
 
-const getDeploymentTarget = () =>
+const getDeploymentTarget = (): DeploymentTarget =>
   VALID_TARGETS.has(EDUI_DEPLOYMENT_TARGET as DeploymentTarget)
-    ? EDUI_DEPLOYMENT_TARGET
+    ? (EDUI_DEPLOYMENT_TARGET as DeploymentTarget)
     : DEPLOYMENT_TARGET.LINUXMUSTER;
 
 export default getDeploymentTarget;

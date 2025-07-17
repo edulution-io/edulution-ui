@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
+import getDeploymentTarget from '@libs/common/utils/getDeploymentTarget';
 import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 
 const defaultValues: GlobalSettingsDto = {
@@ -20,7 +20,7 @@ const defaultValues: GlobalSettingsDto = {
       isCustomLandingPageEnabled: undefined,
       appName: '',
     },
-    deploymentTarget: DEPLOYMENT_TARGET.LINUXMUSTER,
+    deploymentTarget: getDeploymentTarget(),
   },
 };
 
