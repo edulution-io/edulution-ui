@@ -1156,7 +1156,8 @@
       "fileNotFound": "Datei nicht gefunden",
       "fileNotProvided": "Datei wurde nicht bereitgestellt",
       "invalidFileType": "Ungültiger Dateityp",
-      "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen"
+      "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
+      "wrongConfig": "Fehlerhafte Serverkonfiguration"
     },
     "cut": "Ausschneiden",
     "sortOrder": "Sortierung",

@@ -10,22 +10,29 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext, HttpStatus } from '@nestjs/common';
 import { Request } from 'express';
+import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import CustomHttpException from '../CustomHttpException';
 
 const GetCurrentOrganisationPrefix = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
   const request: Request = ctx.switchToHttp().getRequest();
-  const target = process.env.EDUI_DEPLOYMENT_TARGET || 'school';
+  const target = process.env.EDUI_DEPLOYMENT_TARGET || DEPLOYMENT_TARGET.LINUXMUSTER;
 
-  if (target === 'business') {
+  if (target === DEPLOYMENT_TARGET.GENERIC) {
     return 'global';
   }
 
-  if (target === 'school' && request.user?.school) {
+  if (target === DEPLOYMENT_TARGET.LINUXMUSTER && request.user?.school) {
     return request.user.school;
   }
 
-  throw new UnauthorizedException('school in JWT is missing');
+  throw new CustomHttpException(
+    CommonErrorMessages.WRONG_CONFIG,
+    HttpStatus.INTERNAL_SERVER_ERROR,
+    `Missing school in JWT`,
+  );
 });
 
 export default GetCurrentOrganisationPrefix;
