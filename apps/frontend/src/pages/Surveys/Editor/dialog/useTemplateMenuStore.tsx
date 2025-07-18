@@ -23,6 +23,9 @@ import APPS from '@libs/appconfig/constants/apps';
 interface TemplateMenuStore {
   reset: () => void;
 
+  isOpenTemplatePreview: boolean;
+  setIsOpenTemplatePreview: (state: boolean) => void;
+
   isOpenSaveTemplateMenu: boolean;
   setIsOpenSaveTemplateMenu: (state: boolean) => void;
 
@@ -42,6 +45,7 @@ interface TemplateMenuStore {
 }
 
 const TemplateMenuStoreInitialState = {
+  isOpenTemplatePreview: false,
   isOpenSaveTemplateMenu: false,
   isOpenTemplateConfirmDeletion: false,
   template: undefined,
@@ -54,6 +58,8 @@ const TemplateMenuStoreInitialState = {
 const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
   ...TemplateMenuStoreInitialState,
   reset: () => set(TemplateMenuStoreInitialState),
+
+  setIsOpenTemplatePreview: (state: boolean) => set({ isOpenTemplatePreview: state }),
 
   setIsOpenSaveTemplateMenu: (state: boolean) => set({ isOpenSaveTemplateMenu: state }),
 

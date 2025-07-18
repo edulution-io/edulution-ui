@@ -13,22 +13,22 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Model, Survey } from 'survey-react-ui';
-import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
 import useLanguage from '@/hooks/useLanguage';
 import surveyTheme from '@/pages/Surveys/theme/theme';
+import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 
-interface SurveyEditorLoadingPreviewProps {
-  setOpenPreview: (isOpen: boolean) => void;
-  surveyTemplateDto: SurveyTemplateDto;
-}
+const SurveyEditorLoadingPreview = (): JSX.Element | null => {
+  const { template: surveyTemplateDto, setIsOpenTemplatePreview } = useTemplateMenuStore();
 
-const SurveyEditorLoadingPreview = ({ setOpenPreview, surveyTemplateDto }: SurveyEditorLoadingPreviewProps): JSX.Element => {
   const { t } = useTranslation();
-  
   const { language } = useLanguage();
 
-  const surveyParticipationModel = new Model(surveyTemplateDto.template.formula);
+  if (!surveyTemplateDto?.template.formula) {
+    return null;
+  }
+
+  const surveyParticipationModel = new Model(surveyTemplateDto?.template.formula);
   surveyParticipationModel.applyTheme(surveyTheme);
   surveyParticipationModel.locale = language;
   if (surveyParticipationModel.pages.length > 3) {
@@ -38,13 +38,11 @@ const SurveyEditorLoadingPreview = ({ setOpenPreview, surveyTemplateDto }: Surve
   return (
     <ResizableWindow
       titleTranslationId={t('common.preview')}
-      handleClose={() => setOpenPreview(false)}
+      handleClose={() => setIsOpenTemplatePreview(false)}
       openMaximized={false}
       disableToggleMaximizeWindow
     >
-      <div
-        className="h-full w-full pb-10"
-      >
+      <div className="h-full w-full pb-10">
         <div className="survey-participation">
           <Survey model={surveyParticipationModel} />
         </div>
