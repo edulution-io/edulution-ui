@@ -63,17 +63,22 @@ class GlobalSettingsService implements OnModuleInit {
     }
   }
 
-  async updateCache(): Promise<void> {
+  async updateCache() {
     try {
       const globalSetting = await this.getGlobalSettings('general.deploymentTarget');
       if (!globalSetting?.general) {
         Logger.warn(`Global settings not found`, GlobalSettings.name);
-        return;
+        return null;
       }
+
       const { deploymentTarget } = globalSetting.general;
+
       await this.cacheManager.set(DEPLOYMENT_TARGET_CACHE_KEY, deploymentTarget);
+
+      return deploymentTarget;
     } catch (error) {
       Logger.warn(`Failed to update cache: ${(error as Error).message}`, GlobalSettings.name);
+      return null;
     }
   }
 

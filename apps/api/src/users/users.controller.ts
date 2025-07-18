@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 import UserDto from '@libs/user/types/user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
@@ -21,7 +21,7 @@ import UsersService from './users.service';
 import UpdateUserDto from './dto/update-user.dto';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentOrganisationPrefix from '../common/decorators/getCurrentOrganisationPrefix.decorator';
-import DeploymentTargetGuard from '../common/guards/deploymentTarget.guard';
+import DeploymentTargetInterceptor from '../common/interceptors/deploymentTarget.interceptor';
 
 @ApiTags(EDU_API_USERS_ENDPOINT)
 @ApiBearerAuth()
@@ -73,7 +73,7 @@ export class UsersController {
     return this.usersService.remove(username);
   }
 
-  @UseGuards(DeploymentTargetGuard)
+  @UseInterceptors(DeploymentTargetInterceptor)
   @Get('search/:searchString')
   async search(
     @Param('searchString') searchString: string,
