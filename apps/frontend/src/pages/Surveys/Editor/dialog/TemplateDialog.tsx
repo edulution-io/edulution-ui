@@ -15,7 +15,7 @@ import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveyFormula from '@libs/survey/types/TSurveyFormula';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import TemplateDialogBody from '@/pages/Surveys/Editor/dialog/TemplateDialogBody';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';

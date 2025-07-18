@@ -10,14 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
 interface SurveyDto {
   id?: string;
-  formula: TSurveyFormula;
+  formula: SurveyFormula;
   backendLimiters?: {
     questionName: string;
     choices: ChoiceDto[];
