@@ -11,7 +11,7 @@
  */
 
 import { Logger } from '@nestjs/common';
-import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
+import getDeploymentTarget from '@libs/common/utils/getDeploymentTarget';
 import { Migration } from '../../migration/migration.type';
 import { GlobalSettingsDocument } from '../global-settings.schema';
 
@@ -35,7 +35,7 @@ const migration001: Migration<GlobalSettingsDocument> = {
       { _id: { $in: ids } },
       {
         $set: {
-          'general.deploymentTarget': DEPLOYMENT_TARGET.LINUXMUSTER,
+          'general.deploymentTarget': getDeploymentTarget(),
           schemaVersion: newSchemaVersion,
         },
       },
