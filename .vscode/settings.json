@@ -8,11 +8,6 @@
   "files.associations": {
     "*.scss": "tailwindcss"
   },
-  "eslint.workingDirectories": [
-    {
-      "pattern": "libs"
-    }
-  ],
   "javascript.inlayHints.functionLikeReturnTypes.enabled": true,
   "javascript.inlayHints.parameterNames.enabled": "all",
   "javascript.inlayHints.parameterTypes.enabled": true,
@@ -24,5 +19,7 @@
   "typescript.inlayHints.parameterNames.enabled": "all",
   "typescript.inlayHints.parameterTypes.enabled": true,
   "typescript.inlayHints.variableTypes.enabled": true,
-  "CodeGPT.apiKey": "Ollama"
+  "CodeGPT.apiKey": "Ollama",
+  "i18n-ally.localesPaths": ["apps/frontend/src/locales"],
+  "i18n-ally.keystyle": "nested"
 }

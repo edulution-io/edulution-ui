@@ -21,7 +21,7 @@ import { BulletinBoardIcon, ConferencesIcon, MailIcon, SurveysMenuIcon } from '@
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinList from '@/pages/Dashboard/Feed/bulletinboard/BulletinList';
 import ConferencesList from '@/pages/Dashboard/Feed/conferences/ConferencesList';
-import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
+import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import MailList from '@/pages/Dashboard/Feed/mails/MailList';
@@ -83,7 +83,7 @@ const Feed = () => {
           <ScrollArea className="scrollbar-thin">
             <AccordionSH
               type="multiple"
-              defaultValue={[APPS.MAIL, APPS.CONFERENCES, APPS.SURVEYS, APPS.BULLETIN_BOARD]}
+              defaultValue={[APPS.CONFERENCES, APPS.SURVEYS, APPS.BULLETIN_BOARD]}
             >
               {...feed}
             </AccordionSH>

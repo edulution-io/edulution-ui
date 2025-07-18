@@ -22,12 +22,11 @@ import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
-import GroupRoles from '@libs/groups/types/group-roles.enum';
-import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
+import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPath';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../common/CustomHttpException';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
-
 import { BulletinCategory, BulletinCategoryDocument } from '../bulletin-category/bulletin-category.schema';
 import BulletinCategoryService from '../bulletin-category/bulletin-category.service';
 import SseService from '../sse/sse.service';
@@ -109,7 +108,7 @@ class BulletinBoardService implements OnModuleInit {
 
     if (filterOnlyActiveBulletins !== undefined) {
       filter.isActive = filterOnlyActiveBulletins;
-    } else if (!currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
+    } else if (!getIsAdmin(currentUser.ldapGroups)) {
       filter['creator.username'] = currentUser.preferred_username;
     }
     const bulletins = await this.bulletinModel.find(filter).populate('category').sort({ updatedAt: -1 }).exec();
@@ -153,7 +152,7 @@ class BulletinBoardService implements OnModuleInit {
       currentUser.preferred_username,
       dto.category.id,
       BulletinCategoryPermission.EDIT,
-      currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN),
+      getIsAdmin(currentUser.ldapGroups),
     );
     if (!hasUserPermission) {
       throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_CREATE_BULLETIN, HttpStatus.FORBIDDEN);
@@ -190,7 +189,7 @@ class BulletinBoardService implements OnModuleInit {
       throw new CustomHttpException(BulletinBoardErrorMessage.BULLETIN_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    const isUserSuperAdmin = currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN);
+    const isUserSuperAdmin = getIsAdmin(currentUser.ldapGroups);
     if (bulletin.creator.username !== currentUser.preferred_username && !isUserSuperAdmin) {
       throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_BULLETIN, HttpStatus.UNAUTHORIZED);
     }
@@ -259,7 +258,7 @@ class BulletinBoardService implements OnModuleInit {
       (bulletin) => bulletin.creator.username !== currentUser.preferred_username,
     );
 
-    const isUserSuperAdmin = currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN);
+    const isUserSuperAdmin = getIsAdmin(currentUser.ldapGroups);
     if (!isUserSuperAdmin && unauthorizedBulletins.length > 0) {
       throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_DELETE_BULLETIN, HttpStatus.UNAUTHORIZED);
     }

@@ -50,7 +50,7 @@ class LoggingInterceptor implements NestInterceptor {
             Logger.verbose(
               JSON.stringify({
                 method,
-                url,
+                path,
                 params,
                 query,
                 ip,

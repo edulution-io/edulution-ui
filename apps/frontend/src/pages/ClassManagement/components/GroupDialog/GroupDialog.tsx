@@ -230,7 +230,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
 
   const getFooter = () => (
     <div className="flex gap-4">
-      {userGroupToEdit ? (
+      {item.createFunction && userGroupToEdit && (
         <Button
           className="mt-4"
           variant="btn-attention"
@@ -241,15 +241,16 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
         >
           {t('delete')}
         </Button>
-      ) : null}
+      )}
 
       <form onSubmit={handleFormSubmit}>
         <DialogFooterButtons
           handleClose={onClose}
-          handleSubmit={() => {}}
+          handleSubmit={item.createFunction ? () => {} : undefined}
           submitButtonType="submit"
           disableSubmit={disableDialogButtons}
           disableCancel={disableDialogButtons}
+          cancelButtonText={item.createFunction ? 'cancel' : 'common.close'}
           submitButtonText={userGroupToEdit ? 'common.save' : 'common.create'}
         />
       </form>
@@ -270,7 +271,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
       title={t(getTitle())}
       desktopContentClassName="max-w-4xl"
       body={getDialogBody()}
-      footer={item.createFunction ? getFooter() : null}
+      footer={getFooter()}
     />
   );
 };

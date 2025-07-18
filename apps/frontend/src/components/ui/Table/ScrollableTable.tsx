@@ -29,7 +29,7 @@ import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDial
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import Input from '@/components/shared/Input';
 import DEFAULT_TABLE_SORT_PROPERTY_KEY from '@libs/common/constants/defaultTableSortProperty';
-import SelectColumnsDropdown from '@/components/ui/Table/SelectCoumnsDropdown';
+import SelectColumnsDropdown from '@/components/ui/Table/SelectColumnsDropdown';
 import TABLE_DEFAULT_COLUMN_WIDTH from '@libs/ui/constants/tableDefaultColumnWidth';
 import TableActionFooter from '@/components/ui/Table/TableActionFooter';
 
@@ -51,6 +51,7 @@ interface DataTableProps<TData, TValue> {
   showSelectedCount?: boolean;
   isDialog?: boolean;
   actions?: TableAction<TData>[];
+  showSearchBarAndColumnSelect?: boolean;
 }
 
 const ScrollableTable = <TData, TValue>({
@@ -71,6 +72,7 @@ const ScrollableTable = <TData, TValue>({
   isDialog = false,
   initialColumnVisibility = {},
   actions,
+  showSearchBarAndColumnSelect = true,
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(initialColumnVisibility);
@@ -129,7 +131,7 @@ const ScrollableTable = <TData, TValue>({
       )}
 
       <div className="h-full w-full flex-1 overflow-auto scrollbar-thin">
-        {!!data.length && (
+        {!!data.length && showSearchBarAndColumnSelect && (
           <div className="flex items-center gap-2 py-4 pl-1">
             <div className="min-w-0 flex-1">
               <Input

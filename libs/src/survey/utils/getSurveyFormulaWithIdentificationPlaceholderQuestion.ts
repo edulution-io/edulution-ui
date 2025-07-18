@@ -10,11 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import QuestionsType from '@libs/survey/constants/questions-type';
 import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 
 const getSurveyFormulaWithIdentificationPlaceholderQuestion = (formula: TSurveyFormula) => {
   const updatedFormula = structuredClone(formula);
-  const identification = { type: 'text', name: 'identification', value: '' };
+  const identification = { type: QuestionsType.TEXT, name: 'identification', value: '' };
 
   if (Array.isArray(updatedFormula.pages) && updatedFormula.pages.length > 0) {
     updatedFormula.pages[0].elements = [identification, ...(updatedFormula.pages[0].elements ?? [])];

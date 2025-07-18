@@ -10,12 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SurveyElement from '@libs/survey/types/TSurveyElement';
+import TSurveyElement from '@libs/survey/types/TSurveyElement';
 
 interface SurveyPage {
   name: string;
   description?: string;
-  elements?: SurveyElement[];
+  elements?: TSurveyElement[];
 }
 
 export default SurveyPage;

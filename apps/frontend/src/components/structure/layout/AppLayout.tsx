@@ -12,44 +12,35 @@
 
 import React from 'react';
 import { Sidebar } from '@/components';
-import Header from '@/components/ui/Header';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import MenuBar from '@/components/shared/MenuBar';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import Overlays from '@/components/structure/layout/Overlays';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import APPS from '@libs/appconfig/constants/apps';
-import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import OfflineBanner from '@/components/shared/OfflineBanner';
 import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 
 const AppLayout = () => {
   const { isAuthenticated } = useUserStore();
-  const { pathname } = useLocation();
   const menuBar = useMenuBarConfig();
   const { appConfigs } = useAppConfigsStore();
   const { isEduApiHealthy } = useEduApiStore();
 
-  const isMainPage = pathname === DASHBOARD_ROUTE;
-  const isCurrentAppForwardingPage = appConfigs.find(
-    (a) => a.name === pathname.split('/')[1] && a.appType === APP_INTEGRATION_VARIANT.FORWARDED,
-  );
-  const isAppHeaderVisible = isMainPage || isCurrentAppForwardingPage;
   const isAppConfigReady = !appConfigs.find((appConfig) => appConfig.name === APPS.NONE);
   const isAuthenticatedAppReady = isAppConfigReady && isAuthenticated;
 
   return (
     <div className="flex h-screen flex-row">
       <div className="flex h-screen flex-1 flex-col overflow-hidden">
-        {isAppHeaderVisible && <Header hideHeadingText={!isMainPage} />}
-
         <div className="flex min-h-0 flex-1 flex-row">
           {isEduApiHealthy === false && <OfflineBanner />}
 
-          {!menuBar.disabled && !isMainPage && <MenuBar />}
+          {!menuBar.disabled && <MenuBar />}
+
           <Outlet />
+
           {isAuthenticatedAppReady && <Overlays />}
         </div>
       </div>

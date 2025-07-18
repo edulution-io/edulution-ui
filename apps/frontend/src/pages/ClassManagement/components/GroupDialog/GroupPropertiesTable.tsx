@@ -168,7 +168,7 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
                 <td className="w-1/2 border p-2">
                   {getComponent(groupProperty)}
                   {formState.errors[groupProperty.name] && (
-                    <FormMessage className="text-[0.8rem] font-medium text-foreground">
+                    <FormMessage className="text-[0.8rem] font-medium text-background">
                       {formState.errors[groupProperty.name]?.message?.toString()}
                     </FormMessage>
                   )}

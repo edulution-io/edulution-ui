@@ -21,8 +21,9 @@ import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import folderPaths from '@libs/common/constants/folderPaths';
 import { WsAdapter } from '@nestjs/platform-ws';
 import AppModule from './app/app.module';
-import AuthenticationGuard from './auth/auth.guard';
+import AuthGuard from './auth/auth.guard';
 import getLogLevels from './logging/getLogLevels';
+import * as rootPackage from '../../../package.json';
 
 async function bootstrap() {
   const globalPrefix = EDU_API_ROOT;
@@ -47,7 +48,7 @@ async function bootstrap() {
   app.useWebSocketAdapter(new WsAdapter(app));
 
   const reflector = new Reflector();
-  app.useGlobalGuards(new AuthenticationGuard(new JwtService(), reflector));
+  app.useGlobalGuards(new AuthGuard(new JwtService(), reflector));
 
   folderPaths.forEach((path) => {
     if (!existsSync(path)) {
@@ -73,7 +74,7 @@ async function bootstrap() {
 
   await app.listen(port);
   if (logLevels) {
-    Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
+    Logger.log(`🚀 Application Version ${rootPackage.version} is running on: http://localhost:${port}/${globalPrefix}`);
     Logger.log(`Logging-Levels: ${logLevels.map((level) => level.toUpperCase()).join(', ')}`);
   } else {
     console.info(`Application is running on: http://localhost:${port}/${globalPrefix}`);

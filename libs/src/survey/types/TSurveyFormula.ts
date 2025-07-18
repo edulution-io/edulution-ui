@@ -11,7 +11,7 @@
  */
 
 import SurveyPage from '@libs/survey/types/TSurveyPage';
-import SurveyElement from '@libs/survey/types/TSurveyElement';
+import TSurveyElement from '@libs/survey/types/TSurveyElement';
 
 class SurveyFormula {
   title: string;
@@ -24,7 +24,7 @@ class SurveyFormula {
   pages?: SurveyPage[];
 
   // only defined in page-less mode
-  elements?: SurveyElement[];
+  elements?: TSurveyElement[];
 }
 
 export default SurveyFormula;

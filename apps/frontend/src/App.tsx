@@ -20,7 +20,7 @@ import eduApi from '@/api/eduApi';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import { HelmetProvider } from 'react-helmet-async';
 import lmnApi from '@/api/lmnApi';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import Toaster from '@/components/ui/Toaster';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';

@@ -21,11 +21,7 @@ const Sidebar: React.FC = () => {
 
   const sidebarItems = useSidebarItems();
 
-  const sidebarProps = {
-    sidebarItems,
-  };
-
-  return isMobileView ? <MobileSidebar {...sidebarProps} /> : <DesktopSidebar {...sidebarProps} />;
+  return isMobileView ? <MobileSidebar sidebarItems={sidebarItems} /> : <DesktopSidebar sidebarItems={sidebarItems} />;
 };
 
 export default Sidebar;
