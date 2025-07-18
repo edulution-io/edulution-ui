@@ -15,7 +15,7 @@ import { TFunction } from 'i18next';
 import APPS from '@libs/appconfig/constants/apps';
 import AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import slugify from '@libs/common/utils/slugify';
-import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
+import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 
 const forbiddenRoutes = [...Object.values(APPS), AUTH_PATHS.AUTH_ENDPOINT, EDU_API_ROOT];
