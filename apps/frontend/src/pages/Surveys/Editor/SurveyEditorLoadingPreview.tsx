@@ -24,11 +24,11 @@ const SurveyEditorLoadingPreview = (): JSX.Element | null => {
   const { t } = useTranslation();
   const { language } = useLanguage();
 
-  if (!surveyTemplateDto?.template.formula) {
+  if (!surveyTemplateDto || !surveyTemplateDto.template.formula) {
     return null;
   }
 
-  const surveyParticipationModel = new Model(surveyTemplateDto?.template.formula);
+  const surveyParticipationModel = new Model(surveyTemplateDto.template.formula);
   surveyParticipationModel.applyTheme(surveyTheme);
   surveyParticipationModel.locale = language;
   if (surveyParticipationModel.pages.length > 3) {

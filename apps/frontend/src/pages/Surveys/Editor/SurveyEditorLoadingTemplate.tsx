@@ -57,7 +57,7 @@ const SurveyEditorLoadingTemplate = ({ creator, template }: SurveyEditorLoadingT
       >
         <MdOutlineOpenInNew className="h-10 w-10" />
       </Button>
-      <h4>{title}</h4>
+      <h4 aria-label={`Template title: ${title}`}>{title}</h4>
       <p>{description}</p>
       {isSuperAdmin && (
         <div className="flex w-full justify-end">
