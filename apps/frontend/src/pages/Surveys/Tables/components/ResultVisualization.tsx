@@ -14,7 +14,7 @@ import React, { useEffect, useState } from 'react';
 import { SurveyModel } from 'survey-core';
 import { VisualizationPanel } from 'survey-analytics';
 import 'survey-analytics/survey.analytics.min.css';
-import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import useLanguage from '@/hooks/useLanguage';
 import '../dialogs/resultVisualizationDialog.css';
 
@@ -27,7 +27,7 @@ const visuPanelOptions = {
 };
 
 interface ResultVisualizationDialogBodyProps {
-  formula?: TSurveyFormula;
+  formula?: SurveyFormula;
   result?: JSON[];
 }
 

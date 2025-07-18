@@ -17,7 +17,7 @@ import UserLanguage from '@libs/user/constants/userLanguage';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useMedia from '@/hooks/useMedia';
 import UserLanguageType from '@libs/user/types/userLanguageType';
-import { EnglishIcon, GermanIcon, SettingsIcon } from '@/assets/icons';
+import { EnglishIcon, GermanIcon, FranceIcon, SettingsIcon } from '@/assets/icons';
 
 interface SelectLanguageProps {
   settingLocation: string;
@@ -42,6 +42,12 @@ const LanguageSelector: React.FC<SelectLanguageProps> = ({ settingLocation }) =>
       translationId: `${settingLocation}.language.english`,
       disabled: false,
       icon: EnglishIcon,
+    },
+    {
+      value: UserLanguage.FRENCH,
+      translationId: `${settingLocation}.language.french`,
+      disabled: false,
+      icon: FranceIcon,
     },
   ];
 

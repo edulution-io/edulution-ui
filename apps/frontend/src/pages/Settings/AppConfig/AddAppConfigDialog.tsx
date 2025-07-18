@@ -96,6 +96,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
       translations: {
         de: newAppName,
         en: newAppName,
+        fr: newAppName,
       },
       icon: newAppIcon,
       appType: getAppType(),

@@ -1090,6 +1090,7 @@
       "description": "Bitte wähle die Sprache für die Benutzeroberfläche aus.",
       "german": "Deutsch",
       "english": "Englisch",
+      "french": "Französisch",
       "system": "Systemsprache"
     },
     "addTotp": {
@@ -1602,6 +1603,10 @@
       "exited": "gestoppt",
       "dead": "tot"
     }
+  },
+  "version": {
+    "newVersionAvailable": "Es ist eine neue Version von {{ appName }} verfügbar.",
+    "update": "Aktualisieren"
   },
   "veyon": {
     "lockScreen": "Bildschirm sperren",
