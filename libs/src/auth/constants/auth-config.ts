@@ -10,21 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SurveyPage from '@libs/survey/types/TSurveyPage';
-import SurveyElement from '@libs/survey/types/TSurveyElement';
+const AUTH_CONFIG = {
+  KEYCLOAK_REALM: 'edulution',
+  KEYCLOAK_CLIENT_ID: 'edu-ui',
+} as const;
 
-class SurveyFormula {
-  title: string;
-
-  logo?: string;
-
-  description?: string;
-
-  // only defined in page mode
-  pages?: SurveyPage[];
-
-  // only defined in page-less mode
-  elements?: SurveyElement[];
-}
-
-export default SurveyFormula;
+export default AUTH_CONFIG;

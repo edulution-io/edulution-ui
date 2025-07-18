@@ -10,10 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import QuestionsType from '@libs/survey/constants/question-types';
-import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
+import QuestionsType from '@libs/survey/constants/questions-type';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
 
-const getSurveyFormulaWithIdentificationPlaceholderQuestion = (formula: TSurveyFormula) => {
+const getSurveyFormulaWithIdentificationPlaceholderQuestion = (formula: SurveyFormula) => {
   const updatedFormula = structuredClone(formula);
   const identification = { type: QuestionsType.TEXT, name: 'identification', value: '' };
 
