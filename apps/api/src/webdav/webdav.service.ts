@@ -29,6 +29,7 @@ import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileReques
 import mapToDirectories from '@libs/filesharing/utils/mapToDirectories';
 import mapToDirectoryFiles from '@libs/filesharing/utils/mapToDirectoryFiles';
 import DEFAULT_PROPFIND_XML from '@libs/filesharing/constants/defaultPropfindXml';
+import { createReadStream, ReadStream } from 'fs';
 import CustomHttpException from '../common/CustomHttpException';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
@@ -46,8 +47,10 @@ class WebdavService {
     config: {
       method: string;
       url?: string;
-      data?: string | Record<string, unknown> | Buffer;
+      data?: string | Record<string, unknown> | ReadStream | Buffer;
       headers?: Record<string, string | number>;
+      maxContentLength?: number;
+      maxBodyLength?: number;
     },
     fileSharingErrorMessage: ErrorMessage,
     transformer?: (data: Raw) => Result,
@@ -200,13 +203,16 @@ class WebdavService {
 
   async uploadFile(username: string, fullPath: string, file: CustomFile): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
+    const fileStream = createReadStream(file.path);
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethods.PUT,
         url: fullPath,
         headers: { [HTTP_HEADERS.ContentType]: file.mimetype },
-        data: file.buffer,
+        data: fileStream,
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity,
       },
       FileSharingErrorMessage.UploadFailed,
       (resp: WebdavStatusResponse) => ({

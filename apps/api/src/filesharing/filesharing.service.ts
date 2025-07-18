@@ -120,6 +120,7 @@ class FilesharingService {
         await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.FILE_UPLOAD_JOB, {
           username,
           fullPath: `${parentPath}/${folderName}/${entry.path}`,
+          path: entry.path,
           file: {
             fieldname: 'file',
             originalname: fileName,

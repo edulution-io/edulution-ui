@@ -44,6 +44,7 @@ import CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPubl
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import UploadFileDto from '@libs/filesharing/types/uploadFileDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
+import { diskStorage } from 'multer';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
 import FilesharingService from './filesharing.service';
@@ -92,7 +93,16 @@ class FilesharingController {
   }
 
   @Post(FileSharingApiEndpoints.UPLOAD)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileInterceptor('uploadedFile', {
+      storage: diskStorage({
+        destination: './temp/file-uploads',
+        filename: (_request, incomingFile, done) => {
+          done(null, incomingFile.originalname);
+        },
+      }),
+    }),
+  )
   async uploadFile(
     @UploadedFile() file: CustomFile,
     @Query('path') path: string,
