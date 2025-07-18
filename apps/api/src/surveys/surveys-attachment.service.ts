@@ -21,10 +21,10 @@ import SURVEYS_ATTACHMENT_PATH from '@libs/survey/constants/surveysAttachmentPat
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SURVEYS_HEADER_IMAGE from '@libs/survey/constants/surveys-header-image';
-import SurveyElement from '@libs/survey/types/TSurveyElement';
-import QuestionsType from '@libs/survey/constants/question-types';
+import TSurveyElement from '@libs/survey/types/TSurveyElement';
+import QuestionsType from '@libs/survey/constants/questions-type';
 import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
-import SurveyFormula from '@libs/survey/types/TSurveyFormula';
+import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
@@ -37,7 +37,7 @@ class SurveysAttachmentService implements OnModuleInit {
     void this.fileSystemService.ensureDirectoryExists(this.attachmentsPath);
   }
 
-  async preProcessFormula(surveyId: string, formula: SurveyFormula, username: string): Promise<SurveyFormula> {
+  async preProcessFormula(surveyId: string, formula: TSurveyFormula, username: string): Promise<TSurveyFormula> {
     const processedFormula = { ...formula };
     const includedFileNames: Set<string> = new Set();
 
@@ -116,7 +116,7 @@ class SurveysAttachmentService implements OnModuleInit {
   }
 
   async processElements(
-    elements: SurveyElement[] | undefined,
+    elements: TSurveyElement[] | undefined,
     username: string,
     surveyId: string,
     includedFileNames: Set<string>,
@@ -126,11 +126,11 @@ class SurveysAttachmentService implements OnModuleInit {
   }
 
   async processElement(
-    element: SurveyElement,
+    element: TSurveyElement,
     username: string,
     surveyId: string,
     includedFileNames: Set<string>,
-  ): Promise<SurveyElement> {
+  ): Promise<TSurveyElement> {
     const processedElement = { ...element };
     switch (element.type) {
       case QuestionsType.CHECKBOX:
@@ -183,7 +183,7 @@ class SurveysAttachmentService implements OnModuleInit {
     return processedElement;
   }
 
-  static updateLinkForRestfulChoices(surveyId: string, question: SurveyElement): SurveyElement {
+  static updateLinkForRestfulChoices(surveyId: string, question: TSurveyElement): TSurveyElement {
     if (question.choicesByUrl && question.choicesByUrl?.url.includes(TEMPORAL_SURVEY_ID_STRING)) {
       return {
         ...question,
@@ -236,7 +236,7 @@ class SurveysAttachmentService implements OnModuleInit {
     }
   }
 
-  async removeAttachmentForOtherQuestionTypes(surveyId: string, question: SurveyElement): Promise<void> {
+  async removeAttachmentForOtherQuestionTypes(surveyId: string, question: TSurveyElement): Promise<void> {
     const { type } = question;
     if (isQuestionTypeImageType(type)) {
       return;

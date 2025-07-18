@@ -11,13 +11,13 @@
  */
 
 import { t } from 'i18next';
-import SurveyFormula from '@libs/survey/types/TSurveyFormula';
+import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import { toast } from 'sonner';
 import isSurveyPage from '@libs/survey/utils/isSurveyPage';
 import isSurveyElement from '@libs/survey/utils/isSurveyElement';
 
-const isValidSurveyFormula = (surveyFormula: SurveyFormula): boolean => {
+const isValidSurveyFormula = (surveyFormula: TSurveyFormula): boolean => {
   const { title, pages, elements } = surveyFormula;
   if (pages) {
     return pages.every(isSurveyPage);
@@ -28,9 +28,9 @@ const isValidSurveyFormula = (surveyFormula: SurveyFormula): boolean => {
   return !!title;
 };
 
-const getSurveyFormulaFromJSON = (formula: JSON): SurveyFormula => {
+const getSurveyFormulaFromJSON = (formula: JSON): TSurveyFormula => {
   try {
-    const typedFormula = formula as unknown as SurveyFormula;
+    const typedFormula = formula as unknown as TSurveyFormula;
 
     const isValidFormula = isValidSurveyFormula(typedFormula);
     if (isValidFormula) {
