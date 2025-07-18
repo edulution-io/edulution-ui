@@ -24,7 +24,7 @@ import SURVEYS_HEADER_IMAGE from '@libs/survey/constants/surveys-header-image';
 import TSurveyElement from '@libs/survey/types/TSurveyElement';
 import QuestionsType from '@libs/survey/constants/questions-type';
 import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
-import SurveyFormula from '@libs/survey/types/TSurveyFormula';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()

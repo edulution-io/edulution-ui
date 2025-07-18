@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SurveyPage from '@libs/survey/types/TSurveyPage';
+import TSurveyPage from '@libs/survey/types/TSurveyPage';
 import TSurveyElement from '@libs/survey/types/TSurveyElement';
 
 class SurveyFormula {
@@ -21,7 +21,7 @@ class SurveyFormula {
   description?: string;
 
   // only defined in page mode
-  pages?: SurveyPage[];
+  pages?: TSurveyPage[];
 
   // only defined in page-less mode
   elements?: TSurveyElement[];

@@ -12,10 +12,10 @@
 
 import TSurveyElement from '@libs/survey/types/TSurveyElement';
 
-interface SurveyPage {
+interface TSurveyPage {
   name: string;
   description?: string;
   elements?: TSurveyElement[];
 }
 
-export default SurveyPage;
+export default TSurveyPage;
