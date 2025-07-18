@@ -13,7 +13,7 @@
 import TSurveyPage from '@libs/survey/types/TSurveyPage';
 import TSurveyElement from '@libs/survey/types/TSurveyElement';
 
-class TSurveyFormula {
+class SurveyFormula {
   title: string;
 
   logo?: string;
@@ -27,4 +27,4 @@ class TSurveyFormula {
   elements?: TSurveyElement[];
 }
 
-export default TSurveyFormula;
+export default SurveyFormula;
