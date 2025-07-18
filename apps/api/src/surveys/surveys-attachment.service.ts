@@ -267,7 +267,15 @@ class SurveysAttachmentService implements OnModuleInit {
     return res;
   }
 
-  async serveDefaultIcon(filename: string, res: Response): Promise<Response> {
+  async serveDefaultFile(filename: string, res: Response): Promise<Response> {
+    if (filename.includes('/')) {
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_FILE_NAME,
+        HttpStatus.BAD_REQUEST,
+        undefined,
+        SurveysAttachmentService.name,
+      );
+    }
     const defaultIconPath = join(SURVEYS_DEFAULT_FILES_PATH, filename);
     const exists = await FilesystemService.checkIfFileExist(defaultIconPath);
     if (!exists) {
