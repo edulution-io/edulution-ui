@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { MdOutlineOpenInNew } from 'react-icons/md';
 import { HiTrash } from 'react-icons/hi';
 import cn from '@libs/common/utils/className';
@@ -22,7 +22,6 @@ import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPage
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
-import SurveyEditorLoadingPreview from '@/pages/Surveys/Editor/SurveyEditorLoadingPreview';
 
 interface SurveyEditorLoadingTemplateProps {
   creator: AttendeeDto;
@@ -32,67 +31,49 @@ interface SurveyEditorLoadingTemplateProps {
 const SurveyEditorLoadingTemplate = ({ creator, template }: SurveyEditorLoadingTemplateProps): JSX.Element => {
   const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
 
-  const { setTemplate, setIsOpenTemplateConfirmDeletion } = useTemplateMenuStore();
+  const { setTemplate, setIsOpenTemplateConfirmDeletion, setIsOpenTemplatePreview } = useTemplateMenuStore();
 
   const { isSuperAdmin } = useLdapGroups();
-
-  const [openPreview, setOpenPreview] = useState(false);
-
-  const togglePreviewIsOpen = () => {
-    setOpenPreview((prev) => !prev);
-  };
 
   const { title, description, isActive } = template;
 
   return (
     <Card
-      className={cn(
-        GRID_CARD,
-        { 'bg-muted': isActive },
-        { 'bg-muted-transparent': !isActive },
-        { 'pb-10': isSuperAdmin },
-      )}
+      className={cn(GRID_CARD, { 'bg-muted': isActive }, { 'bg-muted-transparent': !isActive })}
       variant="text"
       onClick={() => {
         setTemplate(template);
         assignTemplateToSelectedSurvey(creator, template);
       }}
     >
-      <div
+      <Button
+        variant="btn-outline"
         onClick={(e) => {
           e.stopPropagation();
-          togglePreviewIsOpen();
+          setTemplate(template);
+          setIsOpenTemplatePreview(true);
         }}
+        className="h-14 w-14 p-2"
       >
-        <MdOutlineOpenInNew
-          className="h-10 w-10 md:h-14 md:w-14"
-        />
-      </div>
-
-      <p>{title}</p>
-
+        <MdOutlineOpenInNew className="h-10 w-10" />
+      </Button>
+      <h4>{title}</h4>
       <p>{description}</p>
-
       {isSuperAdmin && (
-        <Button
-          onClick={(e) => {
-            e.stopPropagation();
-            setTemplate(template);
-            setIsOpenTemplateConfirmDeletion(true);
-          }}
-          variant="btn-attention"
-          size="sm"
-          className="absolute bottom-2 right-2 p-2"
-        >
-          <HiTrash className="h-4 w-4" />
-        </Button>
-      )}
-
-      {openPreview && (
-        <SurveyEditorLoadingPreview
-          setOpenPreview={setOpenPreview}
-          surveyTemplateDto={template}
-        />
+        <div className="flex w-full justify-end">
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              setTemplate(template);
+              setIsOpenTemplateConfirmDeletion(true);
+            }}
+            variant="btn-attention"
+            size="sm"
+            className="p-2"
+          >
+            <HiTrash className="h-4 w-4" />
+          </Button>
+        </div>
       )}
     </Card>
   );

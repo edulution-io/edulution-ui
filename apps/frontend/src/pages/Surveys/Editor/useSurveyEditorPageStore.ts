@@ -81,17 +81,11 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
       reset: () => set(initialState),
 
       assignTemplateToSelectedSurvey: (creator: AttendeeDto, template?: SurveyTemplateDto): void => {
-
-        console.log('assignTemplateToSelectedSurvey', template);
-
         const newSurvey = getInitialSurveyFormByTemplate(creator, template);
         set({ initialSurvey: newSurvey });
       },
 
       fetchSelectedSurvey: async (creator: AttendeeDto, surveyId?: string, isPublic?: boolean): Promise<void> => {
-
-        console.log('fetchSelectedSurvey', surveyId, isPublic);
-
         set({ isFetching: true, initialSurvey: undefined });
         try {
           const survey = await fetchSelectedSurvey(surveyId, isPublic);
