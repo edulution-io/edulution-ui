@@ -22,14 +22,16 @@ type DeploymentTargetDropdownSelectFormFieldProps<T extends FieldValues> = {
   form: UseFormReturn<T>;
 };
 
+const DEPLOYMENT_TARGET_IDS = Object.values(DEPLOYMENT_TARGET);
+
 const DeploymentTargetDropdownSelectFormField = <T extends FieldValues>({
   form,
 }: DeploymentTargetDropdownSelectFormFieldProps<T>) => {
   const { t } = useTranslation();
 
-  const deploymentTargetOptions = Object.values(DEPLOYMENT_TARGET).map((target) => ({
-    id: target,
-    name: t(`deploymentTarget.${target}`),
+  const deploymentTargetOptions = DEPLOYMENT_TARGET_IDS.map((id) => ({
+    id,
+    name: t(`deploymentTarget.${id}`),
   }));
 
   return (

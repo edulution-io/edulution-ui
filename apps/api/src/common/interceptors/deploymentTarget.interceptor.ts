@@ -30,10 +30,9 @@ class DeploymentTargetInterceptor implements NestInterceptor {
     }>();
 
     let deploymentTarget = await this.cache.get<string>(DEPLOYMENT_TARGET_CACHE_KEY);
-    Logger.debug(deploymentTarget, DeploymentTargetInterceptor.name);
-    if (!deploymentTarget) {
-      Logger.debug('DB call', DeploymentTargetInterceptor.name);
 
+    if (!deploymentTarget) {
+      Logger.verbose('deploymentTarget missing in redis cache, refreshing via DB', DeploymentTargetInterceptor.name);
       deploymentTarget = await this.globalSettingsService.updateCache();
     }
 
