@@ -19,7 +19,7 @@ import { Model } from 'mongoose';
 import APPS from '@libs/appconfig/constants/apps';
 import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
 import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
-import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
+import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import CustomHttpException from '../common/CustomHttpException';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import SseService from './sse.service';
