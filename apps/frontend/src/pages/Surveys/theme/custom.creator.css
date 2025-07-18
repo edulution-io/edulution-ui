@@ -7,6 +7,11 @@
     display: none;
   }
 
+  .sv-action.svc-dropdown-action--convertTo-last,
+  .sv-action.svc-dropdown-action--convertTo.svc-dropdown-action--convertTo-last {
+    display: none;
+  }
+
   .svc-top-bar,
   .svc-tabbed-menu,
   .svc-tabbed-menu-wrapper,
