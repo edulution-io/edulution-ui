@@ -23,7 +23,7 @@ const getDisplayName = (item: AppConfigDto, language: string) => {
     displayName = item.translations[language];
   }
 
-  return i18n.t(displayName);
+  return i18n.t(displayName) || item.name;
 };
 
 export default getDisplayName;
