@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
-import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import getSurveyTemplateFormSchema from '@libs/survey/types/editor/surveyTemplateForm.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useLdapGroups from '@/hooks/useLdapGroups';
@@ -68,7 +68,7 @@ const TemplateDialog = (props: TemplateDialogProps) => {
 
     const surveyTemplateDto = templateForm.getValues();
     surveyTemplateDto.template = {
-      formula: surveyCreatorModel.JSON as TSurveyFormula || surveyCreatorModel.survey.toJSON() as TSurveyFormula,
+      formula: (surveyCreatorModel.JSON as SurveyFormula) || (surveyCreatorModel.survey.toJSON() as SurveyFormula),
       invitedAttendees: survey.invitedAttendees,
       invitedGroups: survey.invitedGroups,
       isPublic: survey.isPublic,
@@ -93,7 +93,12 @@ const TemplateDialog = (props: TemplateDialogProps) => {
       handleOpenChange={handleClose}
       title={t('survey.editor.templateMenu.title')}
       body={<TemplateDialogBody form={templateForm} />}
-      footer={<DialogFooterButtons handleClose={handleClose} handleSubmit={handleSaveTemplate} />}
+      footer={
+        <DialogFooterButtons
+          handleClose={handleClose}
+          handleSubmit={handleSaveTemplate}
+        />
+      }
       desktopContentClassName="max-w-[50%] min-h-[200px] max-h-[90%] overflow-auto"
     />
   );

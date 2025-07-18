@@ -29,7 +29,7 @@ const Toaster = ({ ...props }: ToasterProps) => (
       duration: SHOW_TOASTER_DURATION,
       classNames: {
         toast: 'group toast group-[.toaster]:bg-overlay group-[.toaster]:border-border group-[.toaster]:shadow-lg',
-        content: 'group-[.toaster]:text-background',
+        content: 'whitespace-pre-line group-[.toaster]:text-background',
       },
     }}
     richColors

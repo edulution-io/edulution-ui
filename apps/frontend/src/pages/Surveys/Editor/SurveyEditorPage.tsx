@@ -21,7 +21,7 @@ import { TbTemplate } from 'react-icons/tb';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveyFormula from '@libs/survey/types/TSurveyFormula';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
 import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
