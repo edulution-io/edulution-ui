@@ -12,7 +12,7 @@
 
 import { useMemo } from 'react';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import type { QuotaInfo } from '@libs/lmnApi/types/lmnApiQuotas';
 
 const useQuotaInfo = (): {

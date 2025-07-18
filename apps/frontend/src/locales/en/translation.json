@@ -1083,6 +1083,7 @@
       "description": "Please select the language for the user interface.",
       "german": "German",
       "english": "English",
+      "french": "French",
       "system": "System language"
     },
     "addTotp": {
@@ -1596,6 +1597,10 @@
       "exited": "exited",
       "dead": "dead"
     }
+  },
+  "version": {
+    "newVersionAvailable": "A new version of {{ appName }} is available.",
+    "update": "Refresh"
   },
   "veyon": {
     "lockScreen": "Lock screen",

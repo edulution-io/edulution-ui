@@ -13,12 +13,19 @@
 import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Request } from 'express';
 
-const GetCurrentSchool = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
+const GetCurrentOrganisationPrefix = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
   const request: Request = ctx.switchToHttp().getRequest();
-  if (!request.user?.school) {
-    throw new UnauthorizedException('school in JWT is missing');
+  const target = process.env.EDUI_DEPLOYMENT_TARGET || 'school';
+
+  if (target === 'business') {
+    return 'global';
   }
-  return request.user.school;
+
+  if (target === 'school' && request.user?.school) {
+    return request.user.school;
+  }
+
+  throw new UnauthorizedException('school in JWT is missing');
 });
 
-export default GetCurrentSchool;
+export default GetCurrentOrganisationPrefix;

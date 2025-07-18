@@ -4,6 +4,7 @@
 npm run check-circular-deps
 npm run check-translations
 npm run check-error-message-translations
+npm run check-filenames
 npm run addLicenseHeader
 npm run format
-npm run lint
+npm run lint:staged

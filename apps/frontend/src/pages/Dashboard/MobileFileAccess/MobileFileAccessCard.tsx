@@ -18,7 +18,7 @@ import { Card, CardContent } from '@/components/shared/Card';
 import { useNavigate } from 'react-router-dom';
 import { USER_SETTINGS_MOBILE_ACCESS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
 
-const MobileFileAccess: React.FC = () => {
+const MobileFileAccessCard: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   return (
@@ -47,4 +47,4 @@ const MobileFileAccess: React.FC = () => {
   );
 };
 
-export default MobileFileAccess;
+export default MobileFileAccessCard;

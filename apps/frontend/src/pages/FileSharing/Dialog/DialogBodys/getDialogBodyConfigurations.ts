@@ -33,7 +33,7 @@ import CopyContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/CopyCo
 import PublicShareContentsDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/PublicShareContentsDialogBody';
 import fileSharingFromSchema from '@libs/filesharing/types/fileSharingFromSchema';
 import DialogInputValues from '@libs/filesharing/types/dialogInputValues';
-import FILESHARING_SHARED_FILES_API_ENDPOINT from '@libs/filesharing/constants/apiEndpoints';
+import FILESHARING_SHARED_FILES_API_ENDPOINT from '@libs/filesharing/constants/filesharingSharedFilesApiEndpoint';
 import { t } from 'i18next';
 
 interface DialogBodyConfigurationBase {
@@ -284,8 +284,8 @@ const dialogBodyConfigurations: Record<FileActionType, DialogBodyConfiguration> 
   shareFileOrFolder: shareFileOrFolderConfig,
 };
 
-function getDialogBodySetup(action: FileActionType) {
+function getDialogBodyConfigurations(action: FileActionType) {
   return dialogBodyConfigurations[action] || dialogBodyConfigurations.deleteFileOrFolder;
 }
 
-export default getDialogBodySetup;
+export default getDialogBodyConfigurations;

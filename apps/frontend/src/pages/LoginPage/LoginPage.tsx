@@ -25,11 +25,11 @@ import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/compone
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import type UserDto from '@libs/user/types/user.dto';
 import processLdapGroups from '@libs/user/utils/processLdapGroups';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
+import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import PageTitle from '@/components/PageTitle';
 import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
@@ -43,6 +43,7 @@ import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 import useAppConfigsStore from '../Settings/AppConfig/appConfigsStore';
 import useAuthErrorHandler from './useAuthErrorHandler';
+import useSilentLoginWithPassword from './useSilentLoginWithPassword';
 
 type LocationState = {
   from: string;
@@ -56,6 +57,7 @@ const LoginPage: React.FC = () => {
   const { eduApiToken, totpIsLoading, isAuthenticated, createOrUpdateUser, setEduApiToken, getTotpStatus } =
     useUserStore();
   const { appConfigs } = useAppConfigsStore();
+  const { silentLogin } = useSilentLoginWithPassword();
 
   const { isLoading } = auth;
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
@@ -92,6 +94,8 @@ const LoginPage: React.FC = () => {
         setEncryptKey(newEncryptKey);
         setEduApiToken(requestUser.access_token);
         setWebdavKey(CryptoJS.AES.encrypt(password, newEncryptKey).toString());
+
+        await silentLogin(username, password);
       }
     } catch (e) {
       console.error(e);
@@ -251,7 +255,7 @@ const LoginPage: React.FC = () => {
                   disabled={isLoading}
                   placeholder={label}
                   variant="login"
-                  width="full"
+                  widthVariant="full"
                   data-testid={`test-id-login-page-${fieldName}-input`}
                 />
               </FormControl>

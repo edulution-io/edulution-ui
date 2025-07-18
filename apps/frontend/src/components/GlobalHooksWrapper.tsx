@@ -21,11 +21,12 @@ import isDev from '@libs/common/constants/isDev';
 import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import COOKIE_DESCRIPTORS from '@libs/common/constants/cookieDescriptors';
+import useVersionChecker from '@/hooks/useVersionChecker';
 import useAppConfigsStore from '../pages/Settings/AppConfig/appConfigsStore';
-import useUserStore from '../store/UserStore/UserStore';
+import useUserStore from '../store/UserStore/useUserStore';
 import useLogout from '../hooks/useLogout';
 import useNotifications from '../hooks/useNotifications';
-import useTokenEventListeners from '../hooks/useTokenEventListener';
+import useTokenEventListeners from '../hooks/useTokenEventListeners';
 
 const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const auth = useAuth();
@@ -61,6 +62,8 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [eduApiToken]);
 
   useNotifications();
+
+  useVersionChecker();
 
   useEffect(() => {
     const getInitialAppData = async () => {
