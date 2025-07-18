@@ -94,12 +94,10 @@ class FilesharingController {
 
   @Post(FileSharingApiEndpoints.UPLOAD)
   @UseInterceptors(
-    FileInterceptor('uploadedFile', {
+    FileInterceptor('file', {
       storage: diskStorage({
-        destination: './temp/file-uploads',
-        filename: (_request, incomingFile, done) => {
-          done(null, incomingFile.originalname);
-        },
+        destination: './tmp/uploads',
+        filename: (_request, file, done) => done(null, file.originalname),
       }),
     }),
   )
@@ -111,7 +109,6 @@ class FilesharingController {
   ) {
     const { originalFolderName, isZippedFolder, name } = uploadFileDto;
     const fullPath = `${this.baseurl}${path}/${name}`;
-
     return isZippedFolder && originalFolderName
       ? this.filesharingService.uploadZippedFolder(username, path, originalFolderName, file)
       : this.webdavService.uploadFile(username, fullPath, file);
