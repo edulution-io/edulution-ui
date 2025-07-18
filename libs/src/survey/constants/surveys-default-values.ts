@@ -12,14 +12,15 @@
 
 import i18next from 'i18next';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveyFormula from '@libs/survey/types/TSurveyFormula';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import { DEFAULT_FILES, PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
+import surveysDefaultLogoFilename from '@libs/survey/constants/surveys-default-logo-filename';
 
 const surveysDefaultValues: Partial<SurveyDto> & { formula: SurveyFormula } = {
   formula: {
     title: i18next.t('survey.newTitle').toString(),
-    logo: `${EDU_API_URL}/${PUBLIC_SURVEYS}/${DEFAULT_FILES}/surveys-default-logo-without-bg.png`,
+    logo: `${EDU_API_URL}/${PUBLIC_SURVEYS}/${DEFAULT_FILES}/${surveysDefaultLogoFilename}`,
   },
   isAnonymous: false,
   canSubmitMultipleAnswers: false,
