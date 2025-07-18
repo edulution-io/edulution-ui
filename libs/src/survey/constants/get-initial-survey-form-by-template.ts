@@ -10,14 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import i18next from 'i18next';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
+import surveysDefaultValues from '@libs/survey/constants/surveys-default-values';
 
 const getInitialSurveyFormByTemplate = (creator: AttendeeDto, template?: SurveyTemplateDto): SurveyDto => ({
   id: undefined,
-  formula: template?.template.formula || { title: i18next.t('survey.newTitle').toString() },
+  formula: template?.template.formula || surveysDefaultValues.formula,
   backendLimiters: template?.backendLimiters || [],
   creator,
   invitedAttendees: template?.template.invitedAttendees || [],
@@ -27,10 +27,11 @@ const getInitialSurveyFormByTemplate = (creator: AttendeeDto, template?: SurveyT
   answers: [],
   createdAt: new Date(),
   expires: null,
-  isAnonymous: template?.template.isAnonymous ?? false,
-  canSubmitMultipleAnswers: template?.template.canSubmitMultipleAnswers ?? false,
-  isPublic: template?.template.isPublic ?? false,
-  canUpdateFormerAnswer: template?.template.canUpdateFormerAnswer ?? false,
+  isAnonymous: template?.template.isAnonymous ?? surveysDefaultValues.isAnonymous,
+  canSubmitMultipleAnswers:
+    template?.template.canSubmitMultipleAnswers ?? surveysDefaultValues.canSubmitMultipleAnswers,
+  isPublic: template?.template.isPublic ?? surveysDefaultValues.isPublic,
+  canUpdateFormerAnswer: template?.template.canUpdateFormerAnswer ?? surveysDefaultValues.canUpdateFormerAnswer,
 });
 
 export default getInitialSurveyFormByTemplate;

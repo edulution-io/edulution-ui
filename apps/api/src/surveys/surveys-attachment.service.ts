@@ -12,11 +12,12 @@
 
 import { join } from 'path';
 import { Response } from 'express';
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import {
   SURVEY_FILE_ATTACHMENT_ENDPOINT,
   SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT,
 } from '@libs/survey/constants/surveys-endpoint';
+import SURVEYS_DEFAULT_FILES_PATH from '@libs/survey/constants/surveysDefaultFilesPath';
 import SURVEYS_ATTACHMENT_PATH from '@libs/survey/constants/surveysAttachmentPath';
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
@@ -25,6 +26,8 @@ import SurveyElement from '@libs/survey/types/TSurveyElement';
 import QuestionsType from '@libs/survey/constants/question-types';
 import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
 import SurveyFormula from '@libs/survey/types/TSurveyFormula';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
@@ -260,6 +263,22 @@ class SurveysAttachmentService implements OnModuleInit {
   async serveTempFiles(userId: string, fileName: string, res: Response): Promise<Response> {
     const filePath = `${SURVEYS_TEMP_FILES_PATH}/${userId}/${fileName}`;
     const fileStream = await this.fileSystemService.createReadStream(filePath);
+    fileStream.pipe(res);
+    return res;
+  }
+
+  async serveDefaultIcon(filename: string, res: Response): Promise<Response> {
+    const defaultIconPath = join(SURVEYS_DEFAULT_FILES_PATH, filename);
+    const exists = await FilesystemService.checkIfFileExist(defaultIconPath);
+    if (!exists) {
+      throw new CustomHttpException(
+        CommonErrorMessages.FILE_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveysAttachmentService.name,
+      );
+    }
+    const fileStream = await this.fileSystemService.createReadStream(defaultIconPath);
     fileStream.pipe(res);
     return res;
   }

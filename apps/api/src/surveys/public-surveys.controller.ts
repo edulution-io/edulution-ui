@@ -13,7 +13,7 @@
 import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Get, Post, Param, Res } from '@nestjs/common';
-import { PUBLIC_USER, FILES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import { PUBLIC_USER, FILES, PUBLIC_SURVEYS, CHOICES, DEFAULT_FILES } from '@libs/survey/constants/surveys-endpoint';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SurveysService from './surveys.service';
@@ -50,6 +50,12 @@ class PublicSurveysController {
     const { surveyId, publicUserName } = params;
     const response = await this.surveyAnswerService.hasPublicUserAnsweredSurvey(surveyId, publicUserName);
     return response;
+  }
+
+  @Get(`${DEFAULT_FILES}/:filename`)
+  @Public()
+  serveDefaultIcon(@Param() params: { filename: string }, @Res() res: Response) {
+    return this.surveysAttachmentService.serveDefaultIcon(params.filename, res);
   }
 
   @Get(`${FILES}/:surveyId/:questionId/:filename`)
