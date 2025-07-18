@@ -15,12 +15,12 @@ import { Survey } from 'survey-react-ui';
 import { Model } from 'survey-core';
 import * as SurveyThemes from 'survey-core/themes';
 import { useTranslation } from 'react-i18next';
-import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import '@/pages/Surveys/theme/creator.min.css';
 import '@/pages/Surveys/theme/default2.min.css';
 
 interface SurveySubmissionProps {
-  formula: TSurveyFormula;
+  formula: SurveyFormula;
   answer: JSON;
 }
 

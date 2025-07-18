@@ -13,7 +13,7 @@
 import React, { useEffect } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import getSurveyFormulaWithIdentificationPlaceholderQuestion from '@libs/survey/utils/getSurveyFormulaWithIdentificationPlaceholderQuestion';
 import ResultVisualization from '@/pages/Surveys/Tables/components/ResultVisualization';
@@ -45,7 +45,7 @@ const ResultVisualizationDialogBody = () => {
     return null;
   }
 
-  let formula: TSurveyFormula;
+  let formula: SurveyFormula;
   if (!selectedSurvey?.isAnonymous) {
     formula = getSurveyFormulaWithIdentificationPlaceholderQuestion(selectedSurvey.formula);
   } else {

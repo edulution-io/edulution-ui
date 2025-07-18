@@ -21,6 +21,7 @@ import isDev from '@libs/common/constants/isDev';
 import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import COOKIE_DESCRIPTORS from '@libs/common/constants/cookieDescriptors';
+import useVersionChecker from '@/hooks/useVersionChecker';
 import useAppConfigsStore from '../pages/Settings/AppConfig/appConfigsStore';
 import useUserStore from '../store/UserStore/useUserStore';
 import useLogout from '../hooks/useLogout';
@@ -61,6 +62,8 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [eduApiToken]);
 
   useNotifications();
+
+  useVersionChecker();
 
   useEffect(() => {
     const getInitialAppData = async () => {

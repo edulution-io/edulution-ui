@@ -11,11 +11,11 @@
  */
 
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
-import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import SurveyDto from './survey.dto';
 
 interface SurveyTemplateDto {
-  template: Partial<SurveyDto> & { formula: TSurveyFormula };
+  template: Partial<SurveyDto> & { formula: SurveyFormula };
   backendLimiters?: { questionName: string; choices: ChoiceDto[] }[];
   fileName?: string;
   title?: string;
