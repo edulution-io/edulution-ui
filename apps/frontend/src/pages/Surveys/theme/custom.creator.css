@@ -7,9 +7,9 @@
     display: none;
   }
 
-  .sv-action.svc-dropdown-action--convertTo-last,
-  .sv-action.svc-dropdown-action--convertTo.svc-dropdown-action--convertTo-last {
-    display: none;
+  .sv-action.svc-dropdown-action--convertTo-last:nth-child(2) {
+    visibility: hidden;
+    width: 0;
   }
 
   .svc-top-bar,
