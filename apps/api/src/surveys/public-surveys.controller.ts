@@ -58,12 +58,6 @@ class PublicSurveysController {
     return response;
   }
 
-  @Get(`${DEFAULT_FILES}/:filename`)
-  @Public()
-  serveDefaultIcon(@Param() params: { filename: string }, @Res() res: Response) {
-    return this.surveysAttachmentService.serveDefaultIcon(params.filename, res);
-  }
-
   @Get(`${FILES}/:surveyId/:questionId/:filename`)
   @Public()
   serveFile(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
