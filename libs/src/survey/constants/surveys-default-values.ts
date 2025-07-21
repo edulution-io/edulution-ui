@@ -26,6 +26,6 @@ const surveysDefaultValues: Partial<SurveyDto> & { formula: SurveyFormula } = {
   canSubmitMultipleAnswers: false,
   isPublic: false,
   canUpdateFormerAnswer: false,
-};
+} as Partial<SurveyDto> & { formula: SurveyFormula };
 
 export default surveysDefaultValues;
