@@ -12,7 +12,7 @@
 
 import i18next from 'i18next';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveyFormula from '@libs/survey/types/TSurveyFormula';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import { DEFAULT_FILES, PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 
@@ -25,6 +25,6 @@ const surveysDefaultValues: Partial<SurveyDto> & { formula: SurveyFormula } = {
   canSubmitMultipleAnswers: false,
   isPublic: false,
   canUpdateFormerAnswer: false,
-};
+} as Partial<SurveyDto> & { formula: SurveyFormula };
 
 export default surveysDefaultValues;
