@@ -27,8 +27,6 @@ import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/htt
 import { createReadStream, createWriteStream, statSync } from 'fs';
 import createTempFile from '@libs/filesystem/utils/createTempFile';
 import CustomFile from '@libs/filesharing/types/customFile';
-import { Open } from 'unzipper';
-import { lookup } from 'mime-types';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import ContentType from '@libs/filesharing/types/contentType';
@@ -40,6 +38,10 @@ import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import { v4 as uuidv4 } from 'uuid';
 import PublicShareResponseDto from '@libs/filesharing/types/publicShareResponseDto';
 import PUBLIC_SHARE_LINK_SCOPE from '@libs/filesharing/constants/publicShareLinkScope';
+import { mkdir, stat } from 'fs-extra';
+import { basename, dirname, join } from 'path';
+import * as unzipper from 'unzipper';
+import { lookup } from 'mime-types';
 import { PublicShare, PublicShareDocument } from './publicFileShare.schema';
 import UsersService from '../users/users.service';
 import WebdavService from '../webdav/webdav.service';
@@ -70,7 +72,7 @@ class FilesharingService {
   ): Promise<WebdavStatusResponse> {
     await this.webDavService.ensureFolderExists(username, `${parentPath}/`, folderName);
 
-    const directory = await Open.buffer(zipFile.buffer);
+    const directory = await unzipper.Open.file(zipFile.path);
     const explicitDirs = directory.files.filter((f) => f.type === 'Directory');
     const fileEntries = directory.files.filter((f) => f.type === 'File');
     const totalFiles = fileEntries.length;
@@ -112,10 +114,21 @@ class FilesharingService {
       fileEntries.map(async (entry) => {
         if (entry.path.startsWith('__MACOSX') || entry.path.endsWith('.DS_Store')) return;
 
-        const buffer = Buffer.from(await entry.buffer());
-        const base64 = buffer.toString('base64');
-        const fileName = entry.path.split('/').pop()!;
-        const mimeType = lookup(fileName);
+        const fileName = basename(entry.path);
+
+        const tempFilePath = join('./tmp/uploads', username, parentPath.replace(/^\/+/, ''), folderName, entry.path);
+
+        await mkdir(dirname(tempFilePath), { recursive: true });
+
+        await new Promise<void>((resolve) => {
+          entry
+            .stream()
+            .pipe(createWriteStream(tempFilePath))
+            .on('finish', () => resolve());
+        });
+
+        const stats = await stat(tempFilePath);
+        const mimeType = lookup(fileName) || 'application/octet-stream';
 
         await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.FILE_UPLOAD_JOB, {
           username,
@@ -125,12 +138,11 @@ class FilesharingService {
             fieldname: 'file',
             originalname: fileName,
             encoding: 'binary',
-            buffer,
+            path: tempFilePath,
+            size: stats.size,
           } as CustomFile,
-
           mimeType,
-          size: buffer.length,
-          base64,
+          size: stats.size,
           total: totalFiles,
           processed: (processedZipContent += 1),
         });
