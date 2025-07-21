@@ -10,22 +10,39 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext, HttpStatus } from '@nestjs/common';
 import { Request } from 'express';
+import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
+import type DeploymentTarget from '@libs/common/types/deployment-target';
+import CustomHttpException from '../CustomHttpException';
 
 const GetCurrentOrganisationPrefix = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
-  const request: Request = ctx.switchToHttp().getRequest();
-  const target = process.env.EDUI_DEPLOYMENT_TARGET || 'school';
+  const request: Request & { deploymentTarget: DeploymentTarget } = ctx.switchToHttp().getRequest();
+  const target = request.deploymentTarget;
 
-  if (target === 'business') {
-    return 'global';
+  switch (target) {
+    case DEPLOYMENT_TARGET.GENERIC:
+      return SPECIAL_SCHOOLS.GLOBAL;
+
+    case DEPLOYMENT_TARGET.LINUXMUSTER:
+      if (!request.user?.school) {
+        throw new CustomHttpException(
+          CommonErrorMessages.WRONG_CONFIG,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          `Missing school in JWT`,
+        );
+      }
+      return request.user.school;
+
+    default:
+      throw new CustomHttpException(
+        CommonErrorMessages.WRONG_CONFIG,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        `Unsupported deployment target`,
+      );
   }
-
-  if (target === 'school' && request.user?.school) {
-    return request.user.school;
-  }
-
-  throw new UnauthorizedException('school in JWT is missing');
 });
 
 export default GetCurrentOrganisationPrefix;

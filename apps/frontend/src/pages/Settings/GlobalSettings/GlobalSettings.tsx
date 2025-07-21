@@ -26,6 +26,7 @@ import defaultValues from '@libs/global-settings/constants/defaultValues';
 import { GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import useGlobalSettingsApiStore from './useGlobalSettingsApiStore';
 import GlobalSettingsFloatingButtons from './GlobalSettingsFloatingButtons';
+import DeploymentTargetDropdownSelectFormField from './DeploymentTargetDropdownSelectFormField';
 
 const GlobalSettings: React.FC = () => {
   const { t } = useTranslation();
@@ -60,6 +61,7 @@ const GlobalSettings: React.FC = () => {
             ...defaultValues.general.defaultLandingPage,
             ...globalSettings.general?.defaultLandingPage,
           },
+          deploymentTarget: globalSettings.general?.deploymentTarget,
         },
       });
     }
@@ -102,6 +104,10 @@ const GlobalSettings: React.FC = () => {
               <AccordionTrigger className="flex">
                 <h4>{t('settings.globalSettings.general')}</h4>
               </AccordionTrigger>
+              <AccordionContent className="space-y-2 px-1 text-p">
+                <p className="text-xl font-bold">{t('settings.globalSettings.deploymentTarget')}</p>
+                <DeploymentTargetDropdownSelectFormField form={form} />
+              </AccordionContent>
               <AccordionContent className="space-y-2 px-1 text-p">
                 <p className="text-xl font-bold">{t('settings.globalSettings.defaultLandingPageTitle')}</p>
                 <AppConfigSwitch

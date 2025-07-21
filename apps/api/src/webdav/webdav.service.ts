@@ -142,6 +142,9 @@ class WebdavService {
         method: HttpMethodsWebDav.PROPFIND,
         url,
         data: DEFAULT_PROPFIND_XML,
+        headers: {
+          Depth: '1',
+        },
       },
       FileSharingErrorMessage.FileNotFound,
       mapToDirectoryFiles,
@@ -158,7 +161,9 @@ class WebdavService {
         method: HttpMethodsWebDav.PROPFIND,
         url,
         data: DEFAULT_PROPFIND_XML,
-        headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
+        headers: {
+          Depth: '1',
+        },
       },
       FileSharingErrorMessage.FolderNotFound,
       mapToDirectories,
