@@ -17,7 +17,7 @@ import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import getSurveyTemplateFormSchema from '@libs/survey/types/editor/surveyTemplateForm.schema';
+import surveyTemplateFormSchema from '@libs/survey/types/editor/surveyTemplateForm.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import TemplateDialogBody from '@/pages/Surveys/Editor/dialog/TemplateDialogBody';
@@ -47,14 +47,14 @@ const TemplateDialog = (props: TemplateDialogProps) => {
     fileName: template?.fileName || undefined,
     title: template?.title || undefined,
     description: template?.description || undefined,
-    isActive: template?.isActive ?? true,
+    disabled: template?.disabled ?? true,
     createdAt: template?.createdAt || new Date(),
     updatedAt: new Date(),
   };
 
   const templateForm = useForm<SurveyTemplateDto>({
     mode: 'onChange',
-    resolver: zodResolver(getSurveyTemplateFormSchema()),
+    resolver: zodResolver(surveyTemplateFormSchema()),
     defaultValues: initialFormValues,
   });
 

@@ -23,7 +23,7 @@ import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
-import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
+import surveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
 import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
@@ -78,7 +78,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
 
   const form = useForm<SurveyDto>({
     mode: 'onChange',
-    resolver: zodResolver(getSurveyEditorFormSchema()),
+    resolver: zodResolver(surveyEditorFormSchema()),
     defaultValues: initialFormValues,
   });
 

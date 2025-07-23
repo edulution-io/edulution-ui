@@ -18,6 +18,8 @@ import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
 import SURVEYS_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplatePath';
+// import SURVEYS_DEFAULT_TEMPLATE_PATH from '@libs/survey/constants/surveysDefaultTemplatePath';
+import { surveyTemplate01, surveyTemplate02, surveyTemplate03, surveyTemplate04 } from "./assets/templates";
 import CustomHttpException from '../common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
 
@@ -29,7 +31,7 @@ class SurveysTemplateService {
     let filename = surveyTemplateDto.fileName;
     if (!filename) {
       const dateTimeString = getCurrentDateTimeString();
-      filename = `${dateTimeString}_-_${uuidv4()}.json`;
+      filename = `${dateTimeString}_-_${uuidv4()}.SurveyTemplate.json`;
     }
     const templatePath = join(SURVEYS_TEMPLATE_PATH, filename);
     try {
@@ -54,6 +56,36 @@ class SurveysTemplateService {
     const fileStream = await this.fileSystemService.createReadStream(templatePath);
     fileStream.pipe(res);
     return res;
+  }
+
+  // async ensureDefaultTemplatesExist(): Promise<void> {
+  //   const defaultTemplateFilenames = await this.fileSystemService.getAllFilenamesInDirectory(
+  //     SURVEYS_DEFAULT_TEMPLATE_PATH
+  //   );
+  //   const defaultTemplates = await Promise.all(
+  //     defaultTemplateFilenames.map(async (filename) => {
+  //       const filePath = join(SURVEYS_DEFAULT_TEMPLATE_PATH, filename);
+  //       const content = await FilesystemService.readFile(filePath);
+  //       return JSON.parse(JSON.stringify(content.toString())) as SurveyTemplateDto;
+  //     })
+  //   );
+  //   const activeDefaultTemplates = defaultTemplates.filter((template) => !template.disabled);
+  //   const promises = activeDefaultTemplates.map((template) =>
+  //     template.fileName
+  //       ? FilesystemService.writeFile(join(SURVEYS_TEMPLATE_PATH, template.fileName), JSON.stringify(template, null, 2))
+  //       : Promise.resolve(),
+  //   );
+  //   await Promise.all(promises);
+  // }
+
+  serveDefaultTemplates(): SurveyTemplateDto[] {
+    const defaultTemplates: SurveyTemplateDto[] = [
+      surveyTemplate01 as unknown as SurveyTemplateDto,
+      surveyTemplate02 as unknown as SurveyTemplateDto,
+      surveyTemplate03 as unknown as SurveyTemplateDto,
+      surveyTemplate04 as unknown as SurveyTemplateDto,
+    ];
+    return defaultTemplates.filter((template) => !template.disabled);
   }
 }
 

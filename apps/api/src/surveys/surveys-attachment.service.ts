@@ -12,8 +12,7 @@
 
 import { join } from 'path';
 import { Response } from 'express';
-import { Readable } from 'stream';
-import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import {
   SURVEY_FILE_ATTACHMENT_ENDPOINT,
   SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT,
@@ -27,9 +26,7 @@ import TSurveyElement from '@libs/survey/types/TSurveyElement';
 import QuestionsType from '@libs/survey/constants/questions-type';
 import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
-import CustomHttpException from 'apps/api/src/common/CustomHttpException';
-import { SURVEYS_DEFAULT_LOGO } from 'apps/api/public/images/surveys-default-logo-without-bg.png';
+import { SurveysDefaultLogo } from 'apps/api/src/surveys/assets/images/index';
 import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
@@ -269,25 +266,8 @@ class SurveysAttachmentService implements OnModuleInit {
     return res;
   }
 
-  async serveDefaultIcon(filename: string, res: Response): Promise<Response> {
-    const defaultIconPath = `${SURVEYS_DEFAULT_FILES_PATH}/${filename}`;
-    const exists = await FilesystemService.checkIfFileExist(defaultIconPath);
-    if (!exists) {
-      Logger.warn(
-        `Default icon file ${defaultIconPath} does not exist. Attempting to create it.`,
-        SurveysAttachmentService.name,
-      );
-      await FilesystemService.saveFileStream(SURVEYS_DEFAULT_LOGO as Readable, defaultIconPath);
-    }
-    const existsNow = await FilesystemService.checkIfFileExist(defaultIconPath);
-    if (!existsNow) {
-      throw new CustomHttpException(
-        CommonErrorMessages.FILE_NOT_FOUND,
-        HttpStatus.NOT_FOUND,
-        undefined,
-        SurveysAttachmentService.name,
-      );
-    }
+  async serveDefaultIcon(res: Response): Promise<Response> {
+    const defaultIconPath = join(SURVEYS_DEFAULT_FILES_PATH, SurveysDefaultLogo);
     const fileStream = await this.fileSystemService.createReadStream(defaultIconPath);
     fileStream.pipe(res);
     return res;

@@ -1,0 +1,51 @@
+{
+  "template": {
+    "formula": {
+      "title": "23.06 Newest Template",
+      "pages": [
+        {
+          "name": "page1",
+          "elements": [
+            {
+              "type": "text",
+              "name": "template2 question1"
+            },
+            {
+              "type": "text",
+              "name": "template2 question2"
+            },
+            {
+              "type": "text",
+              "name": "template2 question3"
+            }
+          ]
+        }
+      ]
+    },
+    "backendLimiters": [],
+    "creator": {
+      "firstName": "Global",
+      "lastName": "Admin",
+      "username": "global-admin",
+      "value": "global-admin",
+      "label": "Global Admin"
+    },
+    "invitedAttendees": [],
+    "invitedGroups": [],
+    "participatedAttendees": [],
+    "createdAt": "2025-06-23T14:43:43.626Z",
+    "isAnonymous": false,
+    "canSubmitMultipleAnswers": false,
+    "isPublic": false,
+    "canUpdateFormerAnswer": false
+  },
+  "backendLimiters": [],
+  "fileName": "2025626-19:31-asdfasg-1a6e-4b85-adf1-27ac049f2c20_-_SurveyTemplate.json",
+  "title": "newest template",
+  "description": "This is a description of the newest template.",
+  "author": "Global Admin",
+  "disabled": true,
+  "createdAt": "2025-06-26T10:06:21.593Z",
+  "updatedAt": "2025-06-26T10:06:21.593Z",
+  "icon": "default-icon.png"
+}

@@ -33,6 +33,7 @@ import JWTUser from '@libs/user/types/jwt/jwtUser';
 import {
   ANSWER,
   CAN_PARTICIPATE,
+  DEFAULT_FILES,
   FILES,
   FIND_ONE,
   HAS_ANSWERS,
@@ -173,6 +174,11 @@ class SurveysController {
       lastName: currentUser.family_name,
     };
     return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, attendee);
+  }
+
+  @Get(`${DEFAULT_FILES}/:filename`)
+  serveDefaultTemplates() {
+    return this.surveysTemplateService.serveDefaultTemplates();
   }
 
   @Get(`${FILES}/:filename`)

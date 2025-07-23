@@ -11,5 +11,5 @@
     "declaration": true
   },
   "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"],
-  "include": ["./**/*", "../../libs/**/*", "../../package.json"]
+  "include": ["./**/*", "../../libs/**/*", "../../package.json", "src/**/*.json"]
 }
