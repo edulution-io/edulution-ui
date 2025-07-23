@@ -10,6 +10,4 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const SURVEYS_DEFAULT_FILES_PATH = './dist/apps/api/surveys/default-files';
-
-export default SURVEYS_DEFAULT_FILES_PATH;
+export { default as SurveysDefaultLogo } from './surveys-default-logo.png';

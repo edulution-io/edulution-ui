@@ -12,65 +12,67 @@
 
 import { z } from 'zod';
 
-const getSurveyTemplateFormSchema = () =>
+const surveyTemplateFormSchema = () =>
   z.object({
-    template: z.object({
-      formula: z.object({
-        title: z.string(),
-        description: z.string().optional(),
-        pages: z.array(
-          z.object({
-            name: z.string(),
-            description: z.string().optional(),
-            elements: z.array(
+    template: z
+      .object({
+        formula: z.object({
+          title: z.string(),
+          description: z.string().optional(),
+          pages: z.array(
             z.object({
-              type: z.string(),
               name: z.string(),
               description: z.string().optional(),
-              isRequired: z.boolean().optional(),
-              choices: z
-                .array(
-                  z.object({
-                    value: z.string(),
-                    label: z.string(),
-                  }),
-                )
-                .optional(),
-              choicesByUrl: z
-                .object({
-                  url: z.string(),
-                })
-                .optional(),
+              elements: z.array(
+                z.object({
+                  type: z.string(),
+                  name: z.string(),
+                  description: z.string().optional(),
+                  isRequired: z.boolean().optional(),
+                  choices: z
+                    .array(
+                      z.object({
+                        value: z.string(),
+                        label: z.string(),
+                      }),
+                    )
+                    .optional(),
+                  choicesByUrl: z
+                    .object({
+                      url: z.string(),
+                    })
+                    .optional(),
+                }),
+              ),
             }),
           ),
         }),
+        invitedAttendees: z.array(
+          z.intersection(
+            z.object({
+              firstName: z.string().optional(),
+              lastName: z.string().optional(),
+              username: z.string(),
+            }),
+            z.object({
+              value: z.string(),
+              label: z.string(),
+            }),
+          ),
         ),
-      }),
-      invitedAttendees: z.array(
-        z.intersection(
-          z.object({
-            firstName: z.string().optional(),
-            lastName: z.string().optional(),
-            username: z.string(),
-          }),
-          z.object({
-            value: z.string(),
-            label: z.string(),
-          }),
-        ),
-      ),
-      invitedGroups: z.array(z.object({})),
-      isAnonymous: z.boolean().optional(),
-      isPublic: z.boolean().optional(),
-      canSubmitMultipleAnswers: z.boolean().optional(),
-      canUpdateFormerAnswer: z.boolean().optional(),
-    }).optional(),
+        invitedGroups: z.array(z.object({})),
+        isAnonymous: z.boolean().optional(),
+        isPublic: z.boolean().optional(),
+        canSubmitMultipleAnswers: z.boolean().optional(),
+        canUpdateFormerAnswer: z.boolean().optional(),
+      })
+      .optional(),
     icon: z.string().optional(),
     title: z.string(),
     description: z.string(),
-    isActive: z.boolean(),
+    disabled: z.boolean(),
     createdAt: z.date().optional(),
     updatedAt: z.date().optional(),
   });
 
-export default getSurveyTemplateFormSchema;
+export default surveyTemplateFormSchema;

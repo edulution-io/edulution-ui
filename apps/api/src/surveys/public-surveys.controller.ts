@@ -30,12 +30,6 @@ class PublicSurveysController {
     private readonly surveysAttachmentService: SurveysAttachmentService,
   ) {}
 
-  @Get(DEFAULT_FILES)
-  @Public()
-  serveDefaultIcon(@Res() res: Response) {
-    return this.surveysAttachmentService.serveDefaultIcon(res);
-  }
-
   @Get(`/:surveyId`)
   @Public()
   async find(@Param() params: { surveyId: string }) {
@@ -56,6 +50,12 @@ class PublicSurveysController {
     const { surveyId, publicUserName } = params;
     const response = await this.surveyAnswerService.hasPublicUserAnsweredSurvey(surveyId, publicUserName);
     return response;
+  }
+
+  @Get(`${DEFAULT_FILES}/:filename`)
+  @Public()
+  serveDefaultIcon(@Res() res: Response) {
+    return this.surveysAttachmentService.serveDefaultIcon(res);
   }
 
   @Get(`${FILES}/:surveyId/:questionId/:filename`)

@@ -12,7 +12,7 @@
 
 import { z } from 'zod';
 
-const getSurveyEditorFormSchema = () =>
+const surveyEditorFormSchema = () =>
   z.object({
     id: z.number(),
     formula: z.object({
@@ -108,4 +108,4 @@ const getSurveyEditorFormSchema = () =>
     canUpdateFormerAnswer: z.boolean().optional(),
   });
 
-export default getSurveyEditorFormSchema;
+export default surveyEditorFormSchema;

@@ -11,9 +11,9 @@
  */
 
 import { join } from 'path';
-import { Response } from 'express';
 import { Readable } from 'stream';
-import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Response } from 'express';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import {
   SURVEY_FILE_ATTACHMENT_ENDPOINT,
   SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT,
@@ -31,7 +31,7 @@ import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import SURVEYS_CUSTOM_LOGO from '@libs/survey/constants/surveys-custom-logo';
 import SURVEYS_DEFAULT_LOGO from '@libs/survey/constants/surveys-default-logo';
-import { SURVEYS_DEFAULT_LOGO_IMAGE } from 'apps/api/public/images/surveys-default-logo-without-bg.png';
+import { SurveysDefaultLogo } from 'apps/api/src/surveys/assets/images/index';
 import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
@@ -263,7 +263,10 @@ class SurveysAttachmentService implements OnModuleInit {
   }
 
   async serveTempFiles(userId: string, fileName: string, res: Response): Promise<Response> {
-    return this.fileSystemService.getResponseWithFileStream(res, join(SURVEYS_TEMP_FILES_PATH, userId, fileName));
+    const filePath = `${SURVEYS_TEMP_FILES_PATH}/${userId}/${fileName}`;
+    const fileStream = await this.fileSystemService.createReadStream(filePath);
+    fileStream.pipe(res);
+    return res;
   }
 
   async serveDefaultIcon(res: Response): Promise<Response> {
@@ -281,21 +284,8 @@ class SurveysAttachmentService implements OnModuleInit {
       fileStream.pipe(res);
       return res;
     }
-    Logger.warn(
-      `Default icon file ${defaultIconPath} does not exist. Attempting to create it.`,
-      SurveysAttachmentService.name,
-    );
-    await FilesystemService.saveFileStream(SURVEYS_DEFAULT_LOGO_IMAGE as Readable, defaultIconPath);
-    const defaultLogoExistsNow = await FilesystemService.checkIfFileExist(defaultIconPath);
-    if (!defaultLogoExistsNow) {
-      throw new CustomHttpException(
-        CommonErrorMessages.FILE_NOT_FOUND,
-        HttpStatus.NOT_FOUND,
-        undefined,
-        SurveysAttachmentService.name,
-      );
-    }
-    const fileStream = await this.fileSystemService.createReadStream(defaultIconPath);
+    const defaultIcon = join(SURVEYS_DEFAULT_FILES_PATH, SurveysDefaultLogo);
+    const fileStream = await this.fileSystemService.createReadStream(defaultIcon);
     fileStream.pipe(res);
     return res;
   }

@@ -54,9 +54,9 @@ const TemplateDialogBody = (props: TemplateDialogBodyProps) => {
 
           <DialogSwitch
             translationId="survey.editor.templateMenu.templateIsActive"
-            checked={!!form.watch('isActive')}
+            checked={!!form.watch('disabled')}
             onCheckedChange={(isChecked) => {
-              form.setValue('isActive', isChecked);
+              form.setValue('disabled', isChecked);
             }}
           />
         </div>

@@ -20,7 +20,7 @@ interface SurveyTemplateDto {
   fileName?: string;
   title?: string;
   description?: string;
-  isActive?: boolean;
+  disabled?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }

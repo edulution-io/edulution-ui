@@ -18,6 +18,7 @@ enum FileSharingErrorMessage {
   DeletionFailed = 'filesharing.errors.DeletionFailed',
   RenameFailed = 'filesharing.errors.RenameFailed',
   MoveFailed = 'filesharing.errors.MoveFailed',
+  CopyFailed = 'filesharing.errors.CopyFailed',
   FolderCreationFailed = 'filesharing.errors.FolderCreationFailed',
   CreateCollectFolderForStudentFailed = 'filesharing.errors.CreateCollectFolderForStudentFailed',
   CreationFailed = 'filesharing.errors.CreationFailed',
