@@ -7,7 +7,7 @@
     "jsx": "preserve",
     "types": ["vite/client"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "../../libs/src/**/*", "../../libs/**/*"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "../../libs/src/**/*", "../../libs/**/*", "../api/src/surveys/assets"],
   "exclude": [
     "vite.config.ts",
     "vitest.config.ts",

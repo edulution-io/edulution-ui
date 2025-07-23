@@ -13,19 +13,24 @@
 import { join } from 'path';
 import { Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
 import SURVEYS_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplatePath';
-// import SURVEYS_DEFAULT_TEMPLATE_PATH from '@libs/survey/constants/surveysDefaultTemplatePath';
-import { surveyTemplate01, surveyTemplate02, surveyTemplate03, surveyTemplate04 } from "./assets/templates";
 import CustomHttpException from '../common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
+import { surveyTemplate01, surveyTemplate02, surveyTemplate03, surveyTemplate04 } from './assets/templates';
 
 @Injectable()
-class SurveysTemplateService {
+class SurveysTemplateService implements OnModuleInit {
   constructor(private fileSystemService: FilesystemService) {}
+
+  private readonly templatePath = SURVEYS_TEMPLATE_PATH;
+
+  onModuleInit() {
+    void this.fileSystemService.ensureDirectoryExists(this.templatePath);
+  }
 
   async createTemplate(surveyTemplateDto: SurveyTemplateDto): Promise<void> {
     let filename = surveyTemplateDto.fileName;
@@ -47,10 +52,6 @@ class SurveysTemplateService {
     }
   }
 
-  async serveTemplateNames(): Promise<string[]> {
-    return this.fileSystemService.getAllFilenamesInDirectory(SURVEYS_TEMPLATE_PATH);
-  }
-
   async serveTemplate(fileName: string, res: Response): Promise<Response> {
     const templatePath = join(SURVEYS_TEMPLATE_PATH, fileName);
     const fileStream = await this.fileSystemService.createReadStream(templatePath);
@@ -58,34 +59,18 @@ class SurveysTemplateService {
     return res;
   }
 
-  // async ensureDefaultTemplatesExist(): Promise<void> {
-  //   const defaultTemplateFilenames = await this.fileSystemService.getAllFilenamesInDirectory(
-  //     SURVEYS_DEFAULT_TEMPLATE_PATH
-  //   );
-  //   const defaultTemplates = await Promise.all(
-  //     defaultTemplateFilenames.map(async (filename) => {
-  //       const filePath = join(SURVEYS_DEFAULT_TEMPLATE_PATH, filename);
-  //       const content = await FilesystemService.readFile(filePath);
-  //       return JSON.parse(JSON.stringify(content.toString())) as SurveyTemplateDto;
-  //     })
-  //   );
-  //   const activeDefaultTemplates = defaultTemplates.filter((template) => !template.disabled);
-  //   const promises = activeDefaultTemplates.map((template) =>
-  //     template.fileName
-  //       ? FilesystemService.writeFile(join(SURVEYS_TEMPLATE_PATH, template.fileName), JSON.stringify(template, null, 2))
-  //       : Promise.resolve(),
-  //   );
-  //   await Promise.all(promises);
-  // }
+  async serveTemplates(): Promise<SurveyTemplateDto[]> {
+    Logger.log(`_ensureWebpackBundlesTheFile: ${JSON.stringify(surveyTemplate01)}`, SurveysTemplateService.name);
+    Logger.log(`_ensureWebpackBundlesTheFile: ${JSON.stringify(surveyTemplate02)}`, SurveysTemplateService.name);
+    Logger.log(`_ensureWebpackBundlesTheFile: ${JSON.stringify(surveyTemplate03)}`, SurveysTemplateService.name);
+    Logger.log(`_ensureWebpackBundlesTheFile: ${JSON.stringify(surveyTemplate04)}`, SurveysTemplateService.name);
 
-  serveDefaultTemplates(): SurveyTemplateDto[] {
-    const defaultTemplates: SurveyTemplateDto[] = [
-      surveyTemplate01 as unknown as SurveyTemplateDto,
-      surveyTemplate02 as unknown as SurveyTemplateDto,
-      surveyTemplate03 as unknown as SurveyTemplateDto,
-      surveyTemplate04 as unknown as SurveyTemplateDto,
-    ];
-    return defaultTemplates.filter((template) => !template.disabled);
+    const existingFiles = await this.fileSystemService.getAllFilenamesInDirectory(SURVEYS_TEMPLATE_PATH);
+    const existingTemplates = existingFiles.map(
+      async (filename) => FilesystemService.readFile<SurveyTemplateDto>(join(SURVEYS_TEMPLATE_PATH, filename)),
+    );
+    const templates = await Promise.all(existingTemplates);
+    return templates.filter((template) => !template.disabled);
   }
 }
 

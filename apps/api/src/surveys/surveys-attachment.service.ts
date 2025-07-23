@@ -27,12 +27,10 @@ import TSurveyElement from '@libs/survey/types/TSurveyElement';
 import QuestionsType from '@libs/survey/constants/questions-type';
 import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
-import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import SURVEYS_CUSTOM_LOGO from '@libs/survey/constants/surveys-custom-logo';
 import SURVEYS_DEFAULT_LOGO from '@libs/survey/constants/surveys-default-logo';
-import { SurveysDefaultLogo } from 'apps/api/src/surveys/assets/images/index';
 import FilesystemService from '../filesystem/filesystem.service';
+import { SurveysDefaultLogo } from './assets/images/index';
 
 @Injectable()
 class SurveysAttachmentService implements OnModuleInit {

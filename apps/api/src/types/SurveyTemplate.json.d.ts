@@ -10,9 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
-
 declare module '*.SurveyTemplate.json' {
-  const value: SurveyTemplateDto;
+  const value: string;
   export default value;
 }
