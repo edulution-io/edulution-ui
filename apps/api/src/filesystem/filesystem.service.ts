@@ -292,6 +292,17 @@ class FilesystemService {
     return readdir(directory);
   }
 
+  async deleteEmptyFolder(directory: string): Promise<void> {
+    const exists = await pathExists(directory);
+    if (!exists) {
+      return;
+    }
+    const files = await readdir(directory);
+    if (files.length === 0) {
+      await rm(directory, { recursive: false, force: false });
+    }
+  }
+
   async createReadStream(filePath: string): Promise<Readable> {
     try {
       await access(filePath);

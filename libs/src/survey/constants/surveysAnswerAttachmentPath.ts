@@ -10,17 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum CommonErrorMessages {
-  DB_ACCESS_FAILED = 'common.errors.dbAccessFailed',
-  DIRECTORY_CREATION_FAILED = 'common.errors.directoryNotCreated',
-  FILE_UPLOAD_FAILED = 'common.errors.fileUploadFailed',
-  FILE_DELETION_FAILED = 'common.errors.fileDeletionFailed',
-  FILE_WRITING_FAILED = 'common.errors.fileWritingFailed',
-  FILE_MOVE_FAILED = 'common.errors.fileMoveFailed',
-  FILE_NOT_FOUND = 'common.errors.fileNotFound',
-  FILE_NOT_PROVIDED = 'common.errors.fileNotProvided',
-  INVALID_FILE_TYPE = 'common.errors.invalidFileType',
-  INVALID_REQUEST_DATA = 'common.errors.invalidRequestData',
-}
+import { join } from 'path';
+import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
+import SURVEYS_ANSWER_FOLDER from '@libs/survey/constants/surveys-answer-folder';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 
-export default CommonErrorMessages;
+const SURVEYS_ANSWERS_ATTACHMENT_PATH = join(APPS_FILES_PATH, SURVEYS_ANSWER_FOLDER, ATTACHMENT_FOLDER);
+
+export default SURVEYS_ANSWERS_ATTACHMENT_PATH;

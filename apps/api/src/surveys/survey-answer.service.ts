@@ -10,8 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { join } from 'path';
 import { Model, Types } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
+import { Response } from 'express';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import SurveyStatus from '@libs/survey/survey-status-enum';
@@ -19,8 +21,13 @@ import JWTUser from '@libs/user/types/jwt/jwtUser';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import { createNewPublicUserLogin, publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import SURVEYS_ANSWER_FOLDER from '@libs/survey/constants/surveys-answer-folder';
+import SURVEYS_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveysAnswerAttachmentPath';
+import SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveysAnswerTemporaryAttachmentPath';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
+import { ANSWER, FILES, PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import CustomHttpException from '../common/CustomHttpException';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
@@ -28,6 +35,7 @@ import Attendee from '../conferences/attendee.schema';
 import MigrationService from '../migration/migration.service';
 import surveyAnswersMigrationsList from './migrations/surveyAnswersMigrationsList';
 import GroupsService from '../groups/groups.service';
+import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
 class SurveyAnswersService implements OnModuleInit {
@@ -35,6 +43,7 @@ class SurveyAnswersService implements OnModuleInit {
     @InjectModel(SurveyAnswer.name) private surveyAnswerModel: Model<SurveyAnswerDocument>,
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
     private readonly groupsService: GroupsService,
+    private readonly fileSystemService: FilesystemService,
   ) {}
 
   async onModuleInit() {
@@ -248,8 +257,11 @@ class SurveyAnswersService implements OnModuleInit {
     const { isAnonymous = false, canUpdateFormerAnswer = false, canSubmitMultipleAnswers = false } = survey;
 
     if (isAnonymous) {
-      const user: Attendee = { username: 'anonymous' };
-      const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(user, surveyId, saveNo, answer);
+      const username = 'anonymous';
+      const user: Attendee = { username };
+      const updatedAnswer = await this.moveAttachmentsToPermanentStorage(username, surveyId, answer);
+      const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(user, surveyId, saveNo, updatedAnswer);
+      void this.clearUpTempFiles(username, surveyId);
       return createdAnswer;
     }
 
@@ -261,7 +273,9 @@ class SurveyAnswersService implements OnModuleInit {
       const newPublicUserLogin = createNewPublicUserLogin(firstName, newPublicUserId);
       const user: Attendee = { ...attendee, username: newPublicUserLogin, lastName: newPublicUserId };
 
-      const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(user, surveyId, saveNo, answer);
+      const updatedAnswer = await this.moveAttachmentsToPermanentStorage(firstName, surveyId, answer);
+      const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(user, surveyId, saveNo, updatedAnswer);
+      void this.clearUpTempFiles(firstName, surveyId);
       return createdAnswer;
     }
 
@@ -276,9 +290,18 @@ class SurveyAnswersService implements OnModuleInit {
         $and: [{ 'attendee.username': username }, { surveyId: new Types.ObjectId(surveyId) }],
       });
 
+      const userName = isAuthenticatedPublicUserParticipation ? firstName : username;
+      if (!userName) {
+        throw new CustomHttpException(
+          SurveyAnswerErrorMessages.NotAbleToFindOrCreateSurveyAnswerError,
+          HttpStatus.UNAUTHORIZED,
+          undefined,
+          SurveyAnswersService.name,
+        );
+      }
       if (existingUsersAnswer == null || canSubmitMultipleAnswers) {
-        const newSurveyAnswer = await this.createAnswer(attendee as Attendee, surveyId, saveNo, answer);
-
+        const updatedAnswer = await this.moveAttachmentsToPermanentStorage(userName, surveyId, answer);
+        const newSurveyAnswer = await this.createAnswer(attendee as Attendee, surveyId, saveNo, updatedAnswer);
         if (newSurveyAnswer == null) {
           throw new CustomHttpException(
             SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
@@ -287,6 +310,7 @@ class SurveyAnswersService implements OnModuleInit {
             SurveyAnswersService.name,
           );
         }
+        void this.clearUpTempFiles(userName, surveyId);
 
         const updateSurvey = await this.surveyModel.findByIdAndUpdate<Survey>(surveyId, {
           participatedAttendees: username
@@ -302,7 +326,6 @@ class SurveyAnswersService implements OnModuleInit {
             SurveyAnswersService.name,
           );
         }
-
         return newSurveyAnswer;
       }
 
@@ -315,8 +338,9 @@ class SurveyAnswersService implements OnModuleInit {
         );
       }
 
+      const updatedAnswer = await this.moveAttachmentsToPermanentStorage(userName, surveyId, answer);
       const updatedSurveyAnswer = await this.surveyAnswerModel.findByIdAndUpdate<SurveyAnswer>(existingUsersAnswer, {
-        answer,
+        answer: updatedAnswer,
         saveNo,
       });
       if (updatedSurveyAnswer == null) {
@@ -327,6 +351,7 @@ class SurveyAnswersService implements OnModuleInit {
           SurveyAnswersService.name,
         );
       }
+      void this.clearUpTempFiles(userName, surveyId);
       return updatedSurveyAnswer;
     }
 
@@ -336,6 +361,74 @@ class SurveyAnswersService implements OnModuleInit {
       undefined,
       SurveyAnswersService.name,
     );
+  }
+
+  async moveAttachmentsToPermanentStorage(username: string, surveyId: string, answer: JSON): Promise<JSON> {
+    if (!username) {
+      throw new CustomHttpException(
+        SurveyAnswerErrorMessages.NotAbleToUpdateSurveyAnswerError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        SurveyAnswersService.name,
+      );
+    }
+    const path = join(SURVEYS_ANSWERS_ATTACHMENT_PATH, surveyId);
+    const tempPath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, username, surveyId);
+
+    const tempFileNames = await this.fileSystemService.getAllFilenamesInDirectory(tempPath);
+    if (tempFileNames.length === 0) {
+      return answer;
+    }
+    await this.fileSystemService.ensureDirectoryExists(path);
+
+    const surveyAnswer = answer as unknown as Record<
+      string,
+      (object & { content: string }) | (object & { content: string })[]
+    >;
+    const movingPromises = new Set<Promise<void>>();
+
+    Object.keys(surveyAnswer).forEach((questionName) => {
+      const questionAnswer = surveyAnswer[questionName];
+      const fileNames: string[] = [];
+      if (Array.isArray(questionAnswer)) {
+        questionAnswer.forEach((item) => {
+          const filePathParts = item.content?.split(`/${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/`);
+          const baseUrl = filePathParts[0];
+          const fileName = filePathParts[1].split('/').pop();
+          if (!baseUrl || !fileName) {
+            return;
+          }
+          const newUrl = `${baseUrl}/${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${surveyId}/${fileName}`;
+          // eslint-disable-next-line no-param-reassign
+          item.content = newUrl;
+          if (fileName) {
+            fileNames.push(fileName);
+          }
+        });
+      } else {
+        const filePathParts = questionAnswer.content?.split(`/${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/`);
+        const baseUrl = filePathParts[0];
+        const fileName = filePathParts[1].split('/').pop();
+        if (!baseUrl || !fileName) {
+          return;
+        }
+        const newUrl = `${baseUrl}/${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${surveyId}/${fileName}`;
+        questionAnswer.content = newUrl;
+        if (fileName) {
+          fileNames.push(fileName);
+        }
+      }
+      fileNames.forEach((fileName) => {
+        if (tempFileNames.includes(fileName)) {
+          const oldPath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, username, surveyId, fileName);
+          const newPath = join(SURVEYS_ANSWERS_ATTACHMENT_PATH, surveyId, fileName);
+          movingPromises.add(FilesystemService.moveFile(oldPath, newPath));
+        }
+      });
+    });
+    await Promise.all(movingPromises);
+
+    return JSON.parse(JSON.stringify(surveyAnswer)) as JSON;
   }
 
   async getAnswer(surveyId: string, username: string): Promise<SurveyAnswer | undefined> {
@@ -384,6 +477,9 @@ class SurveyAnswersService implements OnModuleInit {
         SurveyAnswersService.name,
       );
     }
+
+    const filePath = surveyIds.map((surveyId) => join(APPS_FILES_PATH, SURVEYS_ANSWER_FOLDER, surveyId));
+    return FilesystemService.deleteDirectories(filePath);
   }
 
   async hasPublicUserAnsweredSurvey(surveyId: string, username: string): Promise<SurveyAnswer | undefined> {
@@ -415,6 +511,49 @@ class SurveyAnswersService implements OnModuleInit {
       );
     }
     return newSurveyAnswer;
+  }
+
+  async serveFileFromAnswer(surveyId: string, fileName: string, res: Response): Promise<Response> {
+    const filesPath = join(SURVEYS_ANSWERS_ATTACHMENT_PATH, surveyId);
+    const existence = await FilesystemService.checkIfFileExist(join(filesPath, fileName));
+    if (!existence) {
+      return res.status(HttpStatus.NOT_FOUND).send('File not found');
+    }
+    const fileStream = await this.fileSystemService.createReadStream(join(filesPath, fileName));
+    fileStream.pipe(res);
+    return res;
+  }
+
+  async serveTempFileFromAnswer(
+    userName: string,
+    surveyId: string,
+    fileName: string,
+    res: Response,
+  ): Promise<Response> {
+    const tempFilesPath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
+    const tempExistence = await FilesystemService.checkIfFileExist(join(tempFilesPath, fileName));
+    if (!tempExistence) {
+      return res.status(HttpStatus.NOT_FOUND).send('File not found');
+    }
+    const fileStream = await this.fileSystemService.createReadStream(join(tempFilesPath, fileName));
+    fileStream.pipe(res);
+    return res;
+  }
+
+  static async deleteTempFileFromAnswer(userName: string, surveyId: string, fileName: string): Promise<void> {
+    const tempFilesPath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
+    const tempExistence = await FilesystemService.checkIfFileExist(join(tempFilesPath, fileName));
+    if (!tempExistence) {
+      return;
+    }
+    await FilesystemService.deleteFile(tempFilesPath, fileName);
+  }
+
+  async clearUpTempFiles(userName: string, surveyId: string): Promise<void> {
+    const tempSurveyPath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
+    await this.fileSystemService.deleteEmptyFolder(tempSurveyPath);
+    const tempFilesPath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName);
+    await this.fileSystemService.deleteEmptyFolder(tempFilesPath);
   }
 }
 
