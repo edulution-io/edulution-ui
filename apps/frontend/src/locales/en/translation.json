@@ -1155,7 +1155,7 @@
       "fileNotProvided": "File not provided",
       "invalidFileType": "Invalid file type",
       "startDateBeforeEndDate": "The start date must be before the end date",
-      "wrongConfig": "Incorrect server configuration"
+      "wrongServerConfig": "Incorrect server configuration"
     },
     "cut": "Cut",
     "sortOrder": "Sort order",

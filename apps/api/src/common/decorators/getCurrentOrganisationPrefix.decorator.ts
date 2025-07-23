@@ -29,7 +29,7 @@ const GetCurrentOrganisationPrefix = createParamDecorator((_data: unknown, ctx: 
     case DEPLOYMENT_TARGET.LINUXMUSTER:
       if (!request.user?.school) {
         throw new CustomHttpException(
-          CommonErrorMessages.WRONG_CONFIG,
+          CommonErrorMessages.WRONG_SEVER_CONFIG,
           HttpStatus.INTERNAL_SERVER_ERROR,
           `Missing school in JWT`,
         );
@@ -38,7 +38,7 @@ const GetCurrentOrganisationPrefix = createParamDecorator((_data: unknown, ctx: 
 
     default:
       throw new CustomHttpException(
-        CommonErrorMessages.WRONG_CONFIG,
+        CommonErrorMessages.WRONG_SEVER_CONFIG,
         HttpStatus.INTERNAL_SERVER_ERROR,
         `Unsupported deployment target`,
       );
