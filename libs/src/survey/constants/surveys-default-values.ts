@@ -19,7 +19,7 @@ import { DEFAULT_FILES, PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-en
 const surveysDefaultValues: Partial<SurveyDto> & { formula: SurveyFormula } = {
   formula: {
     title: i18next.t('survey.newTitle').toString(),
-    logo: `${EDU_API_URL}/${PUBLIC_SURVEYS}/${DEFAULT_FILES}/surveys-default-logo.png`,
+    logo: `${EDU_API_URL}/${PUBLIC_SURVEYS}/${DEFAULT_FILES}`,
   },
   isAnonymous: false,
   canSubmitMultipleAnswers: false,

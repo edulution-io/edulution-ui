@@ -21,13 +21,14 @@ import SURVEYS_DEFAULT_FILES_PATH from '@libs/survey/constants/surveysDefaultFil
 import SURVEYS_ATTACHMENT_PATH from '@libs/survey/constants/surveysAttachmentPath';
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
+import defaultLogo from '@libs/survey/constants/default-logo';
 import SURVEYS_HEADER_IMAGE from '@libs/survey/constants/surveys-header-image';
 import TSurveyElement from '@libs/survey/types/TSurveyElement';
 import QuestionsType from '@libs/survey/constants/questions-type';
 import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import { SurveysDefaultLogo } from 'apps/api/src/surveys/assets/images/index';
 import FilesystemService from '../filesystem/filesystem.service';
+import { SurveysDefaultLogo } from './assets/images/index';
 
 @Injectable()
 class SurveysAttachmentService implements OnModuleInit {
@@ -267,7 +268,9 @@ class SurveysAttachmentService implements OnModuleInit {
   }
 
   async serveDefaultIcon(res: Response): Promise<Response> {
-    const defaultIconPath = join(SURVEYS_DEFAULT_FILES_PATH, SurveysDefaultLogo);
+    Logger.log(`_ensureWebpackBundlesTheFile: ${SurveysDefaultLogo}`, SurveysAttachmentService.name);
+
+    const defaultIconPath = join(SURVEYS_DEFAULT_FILES_PATH, defaultLogo);
     const fileStream = await this.fileSystemService.createReadStream(defaultIconPath);
     fileStream.pipe(res);
     return res;

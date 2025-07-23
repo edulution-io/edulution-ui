@@ -1,7 +1,7 @@
 {
   "template": {
     "formula": {
-      "title": "oldest template",
+      "title": "oldest template copy",
       "pages": [
         {
           "name": "page1",
@@ -40,7 +40,7 @@
   "title": "oldest template",
   "description": "This is a description of the oldest template.",
   "author": "Global Admin",
-  "disabled": false,
+  "disabled": true,
   "createdAt": "2025-06-20T10:06:21.593Z",
   "updatedAt": "2025-06-20T10:06:21.593Z",
   "icon": "default-icon.png"

@@ -65,39 +65,13 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
 
   fetchTemplates: async (): Promise<void> => {
     set({ isLoading: true });
-
-    let templateNames: string[] | undefined;
     try {
-      const result = await eduApi.get<string[]>(SURVEY_TEMPLATES_ENDPOINT);
-      if (result) {
-        templateNames = result.data;
-      }
+      const result = await eduApi.get<SurveyTemplateDto[]>(SURVEY_TEMPLATES_ENDPOINT);
+      set({ templates: result.data });
     } catch (error) {
       handleApiError(error, set);
+      set({ templates: [] });
     }
-
-    let templateDocuments: SurveyTemplateDto[] = [];
-    const promises = templateNames?.map(async (fileName) => {
-      try {
-        const result = await eduApi.get<SurveyTemplateDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${fileName}`);
-        if (result) {
-          const newTemplate = { ...result.data, fileName };
-          templateDocuments = [...templateDocuments, newTemplate];
-        }
-      } catch (error) {
-        handleApiError(error, set);
-      }
-    });
-
-    if (promises) {
-      try {
-        await Promise.all(promises);
-        set({ templates: templateDocuments });
-      } catch (error) {
-        set({ templates: [] });
-      }
-    }
-
     set({ isLoading: false });
   },
 

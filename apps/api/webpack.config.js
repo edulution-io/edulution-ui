@@ -13,12 +13,12 @@ module.exports = {
       },
       {
         test: /\.SurveyTemplate\.json$/,
-        type: 'asset/source',
+        type: 'asset/inline',
         use: {
           loader: 'file-loader',
           options: {
             name: '[name].json',
-            outputPath: `surveys/default-templates/`,
+            outputPath: '../../../data/apps/surveys/templates/',
             emitFile: true,
           },
         },
@@ -30,7 +30,7 @@ module.exports = {
           loader: 'file-loader',
           options: {
             name: 'surveys-default-logo.png',
-            outputPath: `surveys/default-files/`,
+            outputPath: '../../../data/apps/surveys/default-files/',
             emitFile: true,
           },
         },
