@@ -11,10 +11,10 @@
  */
 
 import TSurveyQuestionChoice from '@libs/survey/types/TSurveyQuestionChoice';
-import QuestionTypes from '@libs/survey/types/TSurveyQuestionTypes';
+import TSurveyQuestionTypes from '@libs/survey/types/TSurveyQuestionTypes';
 
-interface SurveyElement {
-  type: QuestionTypes;
+interface TSurveyElement {
+  type: TSurveyQuestionTypes;
   name: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
@@ -34,4 +34,4 @@ interface SurveyElement {
   showNoneItem?: boolean;
 }
 
-export default SurveyElement;
+export default TSurveyElement;

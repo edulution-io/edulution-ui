@@ -18,6 +18,6 @@ type ChoiceType = (typeof ChoiceTypes)[keyof typeof ChoiceTypes];
 type ImageType = (typeof ImageTypes)[keyof typeof ImageTypes];
 type OtherType = (typeof OtherTypes)[keyof typeof OtherTypes];
 
-type QuestionTypes = ChoiceType | ImageType | OtherType;
+type TSurveyQuestionTypes = ChoiceType | ImageType | OtherType;
 
-export default QuestionTypes;
+export default TSurveyQuestionTypes;
