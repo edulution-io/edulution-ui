@@ -14,13 +14,23 @@ import React, { FC } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Sizes } from '@libs/ui/types/sizes';
 import cn from '@libs/common/utils/className';
+import CircleLoader from './Loading/CircleLoader';
 
 interface QRCodeDisplayProps {
   value: string;
   size?: Sizes;
   className?: string;
+  isLoading?: boolean;
 }
-const QRCodeDisplay: FC<QRCodeDisplayProps> = ({ value, size, className }) => {
+
+const sizeClassMap = {
+  sm: 'w-[64px] h-[64px]',
+  md: 'w-[128px] h-[128px]',
+  lg: 'w-[200px] h-[200px]',
+  default: 'w-[256px] h-[256px]',
+};
+
+const QRCodeDisplay: FC<QRCodeDisplayProps> = ({ value, size, className, isLoading = false }) => {
   const getPixelSize = () => {
     switch (size) {
       case 'sm':
@@ -34,12 +44,29 @@ const QRCodeDisplay: FC<QRCodeDisplayProps> = ({ value, size, className }) => {
     }
   };
 
+  const getSizeClass = () => {
+    switch (size) {
+      case 'sm':
+        return sizeClassMap.sm;
+      case 'md':
+        return sizeClassMap.md;
+      case 'lg':
+        return sizeClassMap.lg;
+      default:
+        return sizeClassMap.default;
+    }
+  };
+
   return (
     <div className={cn(className, 'flex flex-col items-center justify-center rounded-xl bg-background p-2')}>
-      <QRCodeSVG
-        value={value}
-        size={getPixelSize()}
-      />
+      {isLoading ? (
+        <CircleLoader className={getSizeClass()} />
+      ) : (
+        <QRCodeSVG
+          value={value}
+          size={getPixelSize()}
+        />
+      )}
     </div>
   );
 };
