@@ -262,8 +262,5 @@
     "vite-tsconfig-paths": "^4.3.1",
     "vitest": "^1.6.1",
     "webpack-cli": "^5.1.4"
-  },
-  "overrides": {
-    "stylus": "github:stylus/stylus#0.59.0"
   }
 }
