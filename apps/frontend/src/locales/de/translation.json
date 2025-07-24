@@ -895,7 +895,8 @@
       "errors": {
         "updateError": "Einstellungen konnten nicht aktualisiert werden.",
         "notFoundError": "Einstellungen konnten nicht geladen werden."
-      }
+      },
+      "deploymentTarget": "Plattform"
     },
     "userAdministration": {
       "title": "Benutzerverwaltung",
@@ -1157,7 +1158,8 @@
       "fileNotFound": "Datei nicht gefunden",
       "fileNotProvided": "Datei wurde nicht bereitgestellt",
       "invalidFileType": "Ungültiger Dateityp",
-      "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen"
+      "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
+      "wrongServerConfig": "Fehlerhafte Serverkonfiguration"
     },
     "cut": "Ausschneiden",
     "sortOrder": "Sortierung",
@@ -1624,5 +1626,11 @@
   "Failed to fetch": "Verbindung zum edulution Server fehlgeschlagen. Bitte versuche es später noch einmal.",
   "Invalid client or Invalid client credentials": "Ungültige Serverkonfiguration. Bitte überprüfe die Client-ID oder das Client-Secret.",
   "Not Found (404)": "Verbindung zum edulution Server fehlgeschlagen. Bitte versuche es später noch einmal.",
-  "NetworkError when attempting to fetch resource.": "Netzwerkfehler beim Abrufen der Website."
+  "NetworkError when attempting to fetch resource.": "Netzwerkfehler beim Abrufen der Website.",
+  "deploymentTarget": {
+    "title": "Auswahl",
+    "description": "Hier kann die Plattform ausgewählt werden, an welche {{ appName }} angebunden wird.",
+    "linuxmuster": "Linuxmuster",
+    "generic": "Generisch"
+  }
 }
