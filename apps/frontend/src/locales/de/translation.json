@@ -1092,6 +1092,7 @@
     "addTotp": {
       "title": "Zwei-Faktor-Authentisierung einrichten",
       "qrCodeInstructions": "Den QR-Code mit einer Authenticator App scannen, die TOTP (Time-based One-Time Password) unterstützt.",
+      "copyTotpSecretInstructions": "Falls keine Kamera vorhanden ist, kann hier das Secret kopiert werden:",
       "totpCodeInstructions": "Danach das generierte Passwort hier eintragen und speichern:",
       "mfaSetupRequired": "Die globalen Richtlinien erfordern die Eintrichtung der Zwei-Faktor-Authentisierungs:",
       "mfaSetupSuccess": "Die Zwei-Faktor-Authentisierungs wurde erfolgreich eingerichtet."
