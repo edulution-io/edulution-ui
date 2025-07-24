@@ -11,17 +11,20 @@
  */
 
 import useLdapGroups from '@/hooks/useLdapGroups';
+import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import useLmnApiStore from '@/store/useLmnApiStore';
+import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 
 const useUserPath = () => {
   const { user: lmnUser } = useLmnApiStore();
   const { isSuperAdmin } = useLdapGroups();
+  const { globalSettings } = useGlobalSettingsApiStore();
 
-  if (!lmnUser?.sophomorixIntrinsic2?.length) return { homePath: '' };
+  let homePath: string = '//';
 
-  const homePath = isSuperAdmin
-    ? `/global/${lmnUser?.sophomorixIntrinsic2[0]}`
-    : lmnUser?.sophomorixIntrinsic2[0] || '';
+  if (globalSettings.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER) {
+    homePath = isSuperAdmin ? `/global/${lmnUser?.sophomorixIntrinsic2[0]}` : lmnUser?.sophomorixIntrinsic2[0] || '//';
+  }
 
   return { homePath };
 };

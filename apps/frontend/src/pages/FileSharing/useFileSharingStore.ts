@@ -36,7 +36,6 @@ type UseFileSharingStore = {
   directories: DirectoryFileDTO[];
   selectedRows: RowSelectionState;
   setSelectedRows: (rows: RowSelectionState) => void;
-  setCurrentPath: (path: string) => void;
   setPathToRestoreSession: (path: string) => void;
   setFiles: (files: DirectoryFileDTO[]) => void;
   setSelectedItems: (items: DirectoryFileDTO[]) => void;
@@ -81,9 +80,6 @@ const useFileSharingStore = create<UseFileSharingStore>(
   (persist as PersistedFileManagerStore)(
     (set, get) => ({
       ...initialState,
-      setCurrentPath: (path: string) => {
-        set({ currentPath: path });
-      },
 
       setFileOperationProgress: (progress: FilesharingProgressDto | null) => set({ fileOperationProgress: progress }),
 
