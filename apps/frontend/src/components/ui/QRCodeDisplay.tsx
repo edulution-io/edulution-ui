@@ -10,61 +10,43 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Sizes } from '@libs/ui/types/sizes';
 import cn from '@libs/common/utils/className';
 import CircleLoader from './Loading/CircleLoader';
 
+type QRSizeKey = Sizes | 'default';
+
+const SIZE_CONFIG = {
+  sm: { px: 64, cls: 'w-[64px]  h-[64px]' },
+  md: { px: 128, cls: 'w-[128px] h-[128px]' },
+  lg: { px: 200, cls: 'w-[200px] h-[200px]' },
+  xl: { px: 256, cls: 'w-[256px] h-[256px]' },
+  default: { px: 256, cls: 'w-[256px] h-[256px]' },
+} as const satisfies Record<QRSizeKey, { px: number; cls: string }>;
+
 interface QRCodeDisplayProps {
   value: string;
-  size?: Sizes;
+  size?: QRSizeKey;
   className?: string;
   isLoading?: boolean;
 }
 
-const sizeClassMap = {
-  sm: 'w-[64px] h-[64px]',
-  md: 'w-[128px] h-[128px]',
-  lg: 'w-[200px] h-[200px]',
-  default: 'w-[256px] h-[256px]',
-};
-
-const QRCodeDisplay: FC<QRCodeDisplayProps> = ({ value, size, className, isLoading = false }) => {
-  const getPixelSize = () => {
-    switch (size) {
-      case 'sm':
-        return 64;
-      case 'md':
-        return 128;
-      case 'lg':
-        return 200;
-      default:
-        return 256;
-    }
-  };
-
-  const getSizeClass = () => {
-    switch (size) {
-      case 'sm':
-        return sizeClassMap.sm;
-      case 'md':
-        return sizeClassMap.md;
-      case 'lg':
-        return sizeClassMap.lg;
-      default:
-        return sizeClassMap.default;
-    }
-  };
+const QRCodeDisplay: FC<QRCodeDisplayProps> = ({ value, size = 'default', className = '', isLoading = false }) => {
+  const { px: pixelSize, cls: sizeClass } = useMemo<{
+    px: number;
+    cls: string;
+  }>(() => SIZE_CONFIG[size], [size]);
 
   return (
-    <div className={cn(className, 'flex flex-col items-center justify-center rounded-xl bg-background p-2')}>
+    <div className={cn('flex flex-col items-center justify-center rounded-xl bg-background p-2', sizeClass, className)}>
       {isLoading ? (
-        <CircleLoader className={getSizeClass()} />
+        <CircleLoader className={sizeClass} />
       ) : (
         <QRCodeSVG
           value={value}
-          size={getPixelSize()}
+          size={pixelSize}
         />
       )}
     </div>
