@@ -34,7 +34,7 @@ const useFileSharingPage = () => {
   const { user } = userStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const { homePath } = useUserPath();
-  const path = searchParams.get(URL_SEARCH_PARAMS.PATH) || '/';
+  const path = searchParams.get(URL_SEARCH_PARAMS.PATH) || homePath;
 
   useEffect(() => {
     if (user) {

@@ -14,16 +14,22 @@ import useLdapGroups from '@/hooks/useLdapGroups';
 import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
+import { useLocation } from 'react-router-dom';
 
 const useUserPath = () => {
   const { user: lmnUser } = useLmnApiStore();
   const { isSuperAdmin } = useLdapGroups();
   const { globalSettings } = useGlobalSettingsApiStore();
+  const { pathname } = useLocation();
 
-  let homePath: string = '//';
-
+  let homePath: string;
+  const fallbackPath = `${pathname.split('/').at(-1)}/`;
   if (globalSettings.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER) {
-    homePath = isSuperAdmin ? `/global/${lmnUser?.sophomorixIntrinsic2[0]}` : lmnUser?.sophomorixIntrinsic2[0] || '//';
+    homePath = isSuperAdmin
+      ? `/global/${lmnUser?.sophomorixIntrinsic2[0]}`
+      : lmnUser?.sophomorixIntrinsic2[0] || fallbackPath;
+  } else {
+    homePath = fallbackPath;
   }
 
   return { homePath };

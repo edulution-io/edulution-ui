@@ -24,6 +24,8 @@ import delay from '@libs/common/utils/delay';
 import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import UserRoles from '@libs/user/constants/userRoles';
+import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
+import useGlobalSettingsApiStore from '../Settings/GlobalSettings/useGlobalSettingsApiStore';
 
 type UseFileSharingStore = {
   files: DirectoryFileDTO[];
@@ -36,11 +38,12 @@ type UseFileSharingStore = {
   directories: DirectoryFileDTO[];
   selectedRows: RowSelectionState;
   setSelectedRows: (rows: RowSelectionState) => void;
+  setCurrentPath: (path: string) => void;
   setPathToRestoreSession: (path: string) => void;
   setFiles: (files: DirectoryFileDTO[]) => void;
   setSelectedItems: (items: DirectoryFileDTO[]) => void;
   fetchFiles: (path?: string) => Promise<void>;
-  fetchMountPoints: () => Promise<void>;
+  fetchMountPoints: () => Promise<DirectoryFileDTO[]>;
   fetchDirs: (path: string) => Promise<void>;
   reset: () => void;
   mountPoints: DirectoryFileDTO[];
@@ -80,6 +83,9 @@ const useFileSharingStore = create<UseFileSharingStore>(
   (persist as PersistedFileManagerStore)(
     (set, get) => ({
       ...initialState,
+      setCurrentPath: (path: string) => {
+        set({ currentPath: path });
+      },
 
       setFileOperationProgress: (progress: FilesharingProgressDto | null) => set({ fileOperationProgress: progress }),
 
@@ -166,27 +172,27 @@ const useFileSharingStore = create<UseFileSharingStore>(
         try {
           set({ isLoading: true });
 
-          const defaultMountPointsResponse = await eduApi.get<DirectoryFileDTO[]>(
-            buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, ''),
-          );
-
-          const additionalMountPointsResponse = await eduApi.get<DirectoryFileDTO[]>(
+          const { data } = await eduApi.get<DirectoryFileDTO[]>(
             buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, '/'),
           );
 
-          const combinedMountPoints = [...defaultMountPointsResponse.data];
+          const mountPoints = data.sort((a, b) => a.filename.localeCompare(b.filename));
 
-          const examusersItem = additionalMountPointsResponse.data.find(
-            (item) => item.filename === UserRoles.EXAM_USER,
-          );
+          const { deploymentTarget } = useGlobalSettingsApiStore.getState().globalSettings.general;
 
-          if (examusersItem && !defaultMountPointsResponse.data.some((item) => item.filename === UserRoles.EXAM_USER)) {
-            combinedMountPoints.push(examusersItem);
+          if (deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER) {
+            const examusersItem = mountPoints.find((item) => item.filename === UserRoles.EXAM_USER);
+
+            if (examusersItem && !mountPoints.some((item) => item.filename === UserRoles.EXAM_USER)) {
+              mountPoints.push(examusersItem);
+            }
           }
 
-          set({ mountPoints: combinedMountPoints });
+          set({ mountPoints });
+          return mountPoints;
         } catch (error) {
           handleApiError(error, set);
+          return [];
         } finally {
           set({ isLoading: false });
         }
