@@ -23,9 +23,6 @@ import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePat
 import delay from '@libs/common/utils/delay';
 import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
-import UserRoles from '@libs/user/constants/userRoles';
-import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
-import useGlobalSettingsApiStore from '../Settings/GlobalSettings/useGlobalSettingsApiStore';
 
 type UseFileSharingStore = {
   files: DirectoryFileDTO[];
@@ -178,21 +175,11 @@ const useFileSharingStore = create<UseFileSharingStore>(
 
           const mountPoints = data.sort((a, b) => a.filename.localeCompare(b.filename));
 
-          const { deploymentTarget } = useGlobalSettingsApiStore.getState().globalSettings.general;
-
-          if (deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER) {
-            const examusersItem = mountPoints.find((item) => item.filename === UserRoles.EXAM_USER);
-
-            if (examusersItem && !mountPoints.some((item) => item.filename === UserRoles.EXAM_USER)) {
-              mountPoints.push(examusersItem);
-            }
-          }
-
           set({ mountPoints });
           return mountPoints;
         } catch (error) {
           handleApiError(error, set);
-          return [];
+          return get().mountPoints;
         } finally {
           set({ isLoading: false });
         }

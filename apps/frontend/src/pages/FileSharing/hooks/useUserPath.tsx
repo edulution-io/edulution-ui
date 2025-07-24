@@ -10,24 +10,30 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import useLdapGroups from '@/hooks/useLdapGroups';
-import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
-import useLmnApiStore from '@/store/useLmnApiStore';
-import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import { useLocation } from 'react-router-dom';
+import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
+import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
+import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import useFileSharingStore from '../useFileSharingStore';
 
 const useUserPath = () => {
-  const { user: lmnUser } = useLmnApiStore();
-  const { isSuperAdmin } = useLdapGroups();
+  const { mountPoints } = useFileSharingStore();
   const { globalSettings } = useGlobalSettingsApiStore();
   const { pathname } = useLocation();
 
   let homePath: string;
   const fallbackPath = `${pathname.split('/').at(-1)}/`;
   if (globalSettings.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER) {
-    homePath = isSuperAdmin
-      ? `/global/${lmnUser?.sophomorixIntrinsic2[0]}`
-      : lmnUser?.sophomorixIntrinsic2[0] || fallbackPath;
+    const getFallbackPath = () => {
+      const filtered = mountPoints.filter((mp) => mp.filename === fallbackPath.split('/')[0]);
+      if (filtered.length !== 0) {
+        return getPathWithoutWebdav(filtered[0]?.filePath);
+      }
+
+      return fallbackPath;
+    };
+
+    homePath = getFallbackPath();
   } else {
     homePath = fallbackPath;
   }

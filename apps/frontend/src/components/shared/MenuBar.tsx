@@ -24,6 +24,7 @@ import PageTitle from '@/components/PageTitle';
 import { useTranslation } from 'react-i18next';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
 
 const MenuBar: React.FC = () => {
   const { t } = useTranslation();
@@ -33,6 +34,7 @@ const MenuBar: React.FC = () => {
   const menuBarEntries = useMenuBarConfig();
   const [searchParams, setSearchParams] = useSearchParams();
   const { setCurrentPath, setPathToRestoreSession } = useFileSharingStore();
+  const { homePath } = useUserPath();
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
   const { isMobileView } = useMedia();
@@ -56,15 +58,25 @@ const MenuBar: React.FC = () => {
   }, [pathParts]);
 
   const handleHeaderIconClick = () => {
-    if (pathParts[0] === APPS.FILE_SHARING) {
-      setCurrentPath(firstMenuBarItem);
-      setPathToRestoreSession(firstMenuBarItem);
-      const newParams = new URLSearchParams(searchParams);
-      newParams.set(URL_SEARCH_PARAMS.PATH, firstMenuBarItem);
-      setSearchParams(newParams);
+    switch (pathParts[0]) {
+      case APPS.FILE_SHARING: {
+        setCurrentPath(homePath);
+        setPathToRestoreSession(homePath);
+        const newParams = new URLSearchParams(searchParams);
+        newParams.set(URL_SEARCH_PARAMS.PATH, homePath);
+        setSearchParams(newParams);
+        navigate(pathParts[0]);
+        break;
+      }
+      case APPS.SETTINGS: {
+        navigate(pathParts[0]);
+        setIsSelected('');
+        break;
+      }
+      default:
+        navigate(pathParts[0]);
+        setIsSelected(firstMenuBarItem);
     }
-    navigate(pathParts[0]);
-    setIsSelected(pathParts[0] === APPS.SETTINGS ? '' : firstMenuBarItem);
   };
 
   const renderMenuBarContent = () => (
