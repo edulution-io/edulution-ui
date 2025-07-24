@@ -50,6 +50,7 @@ const App = () => {
     redirect_uri: '',
     loadUserInfo: true,
     automaticSilentRenew: true,
+    silent_redirect_uri: window.location.origin,
     userStore: new WebStorageStateStore({
       store: localStorage,
     }),
