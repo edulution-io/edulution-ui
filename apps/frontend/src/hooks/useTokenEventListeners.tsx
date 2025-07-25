@@ -10,10 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import delay from '@libs/common/utils/delay';
 import useLogout from './useLogout';
 
 const useTokenEventListeners = () => {
@@ -41,12 +42,31 @@ const useTokenEventListeners = () => {
     toast.warning(t('auth.errors.SessionExpiring'));
   };
 
+  const onExpiring = useCallback(async () => {
+    if (alreadyLoggedOutRef.current) return;
+
+    if (!auth.user?.expired) {
+      await delay(2000);
+      const response = await auth.signinSilent();
+
+      if (!response) {
+        await onExpiring();
+      }
+    } else {
+      alreadyLoggedOutRef.current = true;
+      toast.error(t('auth.errors.TokenExpired'));
+      await handleLogout();
+    }
+  }, [auth, handleLogout, t]);
+
   useEffect(() => {
     auth.events.addSilentRenewError(onSilentRenewError);
+    auth.events.addAccessTokenExpiring(onExpiring);
     auth.events.addAccessTokenExpired(handleTokenExpiredRef.current);
 
     return () => {
       auth.events.removeSilentRenewError(onSilentRenewError);
+      auth.events.removeAccessTokenExpiring(onExpiring);
       auth.events.removeAccessTokenExpired(handleTokenExpiredRef.current);
     };
   }, []);

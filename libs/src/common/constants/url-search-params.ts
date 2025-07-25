@@ -10,17 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum CommonErrorMessages {
-  DB_ACCESS_FAILED = 'common.errors.dbAccessFailed',
-  DIRECTORY_CREATION_FAILED = 'common.errors.directoryNotCreated',
-  FILE_UPLOAD_FAILED = 'common.errors.fileUploadFailed',
-  FILE_DELETION_FAILED = 'common.errors.fileDeletionFailed',
-  FILE_WRITING_FAILED = 'common.errors.fileWritingFailed',
-  FILE_MOVE_FAILED = 'common.errors.fileMoveFailed',
-  FILE_NOT_FOUND = 'common.errors.fileNotFound',
-  FILE_NOT_PROVIDED = 'common.errors.fileNotProvided',
-  INVALID_FILE_TYPE = 'common.errors.invalidFileType',
-  WRONG_SEVER_CONFIG = 'common.errors.wrongServerConfig',
-}
+const URL_SEARCH_PARAMS = {
+  PATH: 'path',
+} as const;
 
-export default CommonErrorMessages;
+export default URL_SEARCH_PARAMS;
