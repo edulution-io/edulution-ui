@@ -47,7 +47,7 @@ const parseMultipartUpload = (req: IncomingMessage) =>
       }
     });
 
-    busboy.on('file', (_field: string, stream: Readable, filename: string, _enc: string, mimetype: string) => {
+    busboy.on('file', (_field: string, stream: Readable, filename: string, _fileEncoding: string, mimetype: string) => {
       const mimeType = mimetype || lookup(filename) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
       const finalName = explicitName ?? filename;
 

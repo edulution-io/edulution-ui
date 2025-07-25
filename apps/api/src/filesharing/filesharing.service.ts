@@ -71,41 +71,41 @@ class FilesharingService {
     folderName: string,
     zipStream: Readable,
   ): Promise<WebdavStatusResponse> {
-    const basePath = `${parentPath}/${folderName}`;
+    const destinationFolderPath = `${parentPath}/${folderName}`;
     await this.webDavService.ensureFolderExists(username, parentPath, folderName);
 
-    const entryStream = zipStream.pipe(unzipper.Parse());
-    const dirPaths = new Set<string>();
+    const zipEntryStream = zipStream.pipe(unzipper.Parse());
+    const directoryPaths = new Set<string>();
     const fileJobPromises: Promise<void>[] = [];
 
     await new Promise<void>((resolve, reject) => {
-      entryStream
-        .on('entry', (entry: Entry) => {
-          if (entry.type === 'Directory') {
-            dirPaths.add(entry.path);
-            entry.autodrain();
+      zipEntryStream
+        .on('entry', (zipEntry: Entry) => {
+          if (zipEntry.type === 'Directory') {
+            directoryPaths.add(zipEntry.path);
+            zipEntry.autodrain();
             return;
           }
-          entry.path
+          zipEntry.path
             .split('/')
             .slice(0, -1)
-            .reduce((acc, seg) => {
-              const next = `${acc}${seg}/`;
-              dirPaths.add(next);
-              return next;
+            .reduce((accumulatedPath, pathSegment) => {
+              const nextDirectoryPath = `${accumulatedPath}${pathSegment}/`;
+              directoryPaths.add(nextDirectoryPath);
+              return nextDirectoryPath;
             }, '');
 
-          const fullPath = `${basePath}/${entry.path}`;
-          const mimeType = lookup(entry.path) || 'application/octet-stream';
+          const fullWebDavFilePath = `${destinationFolderPath}/${zipEntry.path}`;
+          const detectedMimeType = lookup(zipEntry.path) || 'application/octet-stream';
           const tmpPath = join(tmpdir(), crypto.randomUUID());
-          const writePromise = pipeline(entry, createWriteStream(tmpPath));
+          const writePromise = pipeline(zipEntry, createWriteStream(tmpPath));
           fileJobPromises.push(
             writePromise.then(() =>
               this.dynamicQueueService.addJobForUser(username, JOB_NAMES.FILE_UPLOAD_JOB, {
                 username,
-                fullPath,
+                fullPath: fullWebDavFilePath,
                 tempPath: tmpPath,
-                mimeType,
+                mimeType: detectedMimeType,
                 total: 0,
                 processed: 0,
               }),
@@ -115,12 +115,12 @@ class FilesharingService {
         .once('error', (err) => reject(err))
         .once('close', () => resolve());
     });
-    const sortedDirs = Array.from(dirPaths).sort((a, b) => a.length - b.length);
+    const sortedDirs = Array.from(directoryPaths).sort((a, b) => a.length - b.length);
     await Promise.all(
       sortedDirs.map((folderPath, idx) =>
         this.dynamicQueueService.addJobForUser(username, JOB_NAMES.CREATE_FOLDER_JOB, {
           username,
-          basePath,
+          basePath: destinationFolderPath,
           folderPath,
           total: sortedDirs.length,
           processed: idx + 1,
