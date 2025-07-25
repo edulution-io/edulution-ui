@@ -25,9 +25,9 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import CustomHttpException from '../common/CustomHttpException';
 import SurveysController from './surveys.controller';
 import SurveysService from './surveys.service';
-import SurveyAnswersService from './survey-answer.service';
+import SurveyAnswersService from './survey-answers.service';
 import { Survey, SurveyDocument } from './survey.schema';
-import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
+import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
 import {
   answeredSurvey01,
   answeredSurvey02,
@@ -315,7 +315,6 @@ describe(SurveysController.name, () => {
       await controller.answerSurvey(
         {
           surveyId: idOfAnsweredSurvey01.toString(),
-          saveNo: saveNoAnsweredSurvey01,
           answer: firstUsersMockedAnswerForAnsweredSurveys01,
           attendee,
         },

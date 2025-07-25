@@ -297,8 +297,8 @@ class FilesystemService {
     if (!exists) {
       return;
     }
-    const files = await readdir(directory);
-    if (files.length === 0) {
+    const filesNames = await readdir(directory);
+    if (filesNames.length === 0) {
       await rm(directory, { recursive: false, force: false });
     }
   }

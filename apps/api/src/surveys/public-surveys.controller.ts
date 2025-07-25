@@ -28,17 +28,16 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ANSWER, PUBLIC_USER, FILES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
-import SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveysAnswerTemporaryAttachmentPath';
+import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
-import surveyAnswerMaximumFileSize from '@libs/survey/constants/survey-answer-max-file-size';
-import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
+import SurveyAnswersMaximumFileSize from '@libs/survey/constants/survey-answers-maximum-file-size';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import FilesystemService from 'apps/api/src/filesystem/filesystem.service';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import SurveysService from './surveys.service';
-import SurveyAnswerService from './survey-answer.service';
+import SurveyAnswerService from './survey-answers.service';
 import SurveysAttachmentService from './surveys-attachment.service';
 import { Public } from '../common/decorators/public.decorator';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
@@ -62,16 +61,8 @@ class PublicSurveysController {
   @Post()
   @Public()
   async answerSurvey(@Body() postAnswerDto: PostSurveyAnswerDto) {
-    const { surveyId, saveNo, answer, attendee } = postAnswerDto;
-    const savedAnswer = await this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, attendee);
-    if (!savedAnswer) {
-      throw new CustomHttpException(
-        SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        undefined,
-        PublicSurveysController.name,
-      );
-    }
+    const { surveyId, answer, attendee } = postAnswerDto;
+    const savedAnswer = await this.surveyAnswerService.addAnswer(surveyId, answer, attendee);
     return savedAnswer;
   }
 
@@ -107,7 +98,7 @@ class PublicSurveysController {
             PublicSurveysController.name,
           );
         }
-        return join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
+        return join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
       }),
     ),
   )
@@ -116,7 +107,7 @@ class PublicSurveysController {
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addMaxSizeValidator({
-          maxSize: surveyAnswerMaximumFileSize,
+          maxSize: SurveyAnswersMaximumFileSize,
         })
         .build({
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -135,7 +126,7 @@ class PublicSurveysController {
         PublicSurveysController.name,
       );
     }
-    const filePath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, file.filename);
+    const filePath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, file.filename);
     const fileUrl = `${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${userName}/${surveyId}/${file.filename}`;
     await FilesystemService.checkIfFileExist(filePath);
     return res.status(HttpStatus.CREATED).json(fileUrl);
@@ -143,7 +134,8 @@ class PublicSurveysController {
 
   @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:fileName`)
   @Public()
-  static async deleteTempFiles(@Param() params: { userName: string; surveyId: string; fileName: string }) {
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  async deleteTempFiles(@Param() params: { userName: string; surveyId: string; fileName: string }) {
     const { userName, surveyId, fileName } = params;
     if (!userName || !surveyId || !fileName) {
       throw new CustomHttpException(

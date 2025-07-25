@@ -12,9 +12,9 @@
 
 import { join } from 'path';
 import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
-import SURVEYS_ANSWER_FOLDER from '@libs/survey/constants/surveys-answer-folder';
+import SURVEYS_ANSWER_FOLDER from '@libs/survey/constants/surveyAnswersFolder';
 import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 
-const SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH = join(TEMP_FILES_PATH, SURVEYS_ANSWER_FOLDER, ATTACHMENT_FOLDER);
+const SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH = join(TEMP_FILES_PATH, SURVEYS_ANSWER_FOLDER, ATTACHMENT_FOLDER);
 
-export default SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH;
+export default SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH;

@@ -11,10 +11,12 @@
  */
 
 import { create } from 'zustand';
+import { RowSelectionState } from '@tanstack/react-table';
 import { SURVEY_ANSWER_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyAnswerResponseDto from '@libs/survey/types/api/survey-answer-response.dto';
 import SurveysPageView from '@libs/survey/types/api/page-view';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
@@ -31,6 +33,15 @@ interface SubmittedAnswersDialogStore {
   answer: JSON;
   isLoading: boolean;
 
+  fetchAttachments: (surveyId: string, attendee?: string) => Promise<void>;
+  attachments: DirectoryFileDTO[];
+  isFilePreviewDocked: boolean;
+  isFilePreviewVisible: boolean;
+  setSelectedRows: (selectedRows: RowSelectionState) => void;
+  selectedRows: RowSelectionState;
+  setSelectedItems: (items: DirectoryFileDTO[]) => void;
+  selectedItems: DirectoryFileDTO[];
+
   reset: () => void;
 }
 
@@ -40,6 +51,12 @@ const SubmittedAnswersDialogStoreInitialState: Partial<SubmittedAnswersDialogSto
   user: undefined,
   answer: {} as JSON,
   isLoading: false,
+
+  attachments: [],
+  isFilePreviewDocked: false,
+  isFilePreviewVisible: false,
+  selectedRows: {},
+  selectedItems: [],
 };
 
 const useSubmittedAnswersDialogStore = create<SubmittedAnswersDialogStore>((set) => ({
@@ -66,6 +83,29 @@ const useSubmittedAnswersDialogStore = create<SubmittedAnswersDialogStore>((set)
       set({ isLoading: false });
     }
   },
+
+  async fetchAttachments(surveyId: string, attendee?: string) {
+    set({ isLoading: true });
+    try {
+      const response = await eduApi.get<DirectoryFileDTO[]>(
+        `${SURVEY_ANSWER_ENDPOINT}/${surveyId}${attendee ? `/${attendee}` : ''}`,
+      );
+      set({ attachments: response.data });
+    } catch (err) {
+      handleApiError(err, set);
+      set({ attachments: [] });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  setIsFilePreviewDocked: (isFilePreviewDocked: boolean) => set({ isFilePreviewDocked }),
+
+  setIsFilePreviewVisible: (isFilePreviewVisible: boolean) => set({ isFilePreviewVisible }),
+
+  setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
+
+  setSelectedItems: (items: DirectoryFileDTO[]) => set({ selectedItems: items }),
 }));
 
 export default useSubmittedAnswersDialogStore;

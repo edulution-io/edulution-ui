@@ -22,26 +22,27 @@ import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import { createNewPublicUserLogin, publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
-import SURVEYS_ANSWER_FOLDER from '@libs/survey/constants/surveys-answer-folder';
-import SURVEYS_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveysAnswerAttachmentPath';
-import SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveysAnswerTemporaryAttachmentPath';
+import SURVEY_ANSWERS_FOLDER from '@libs/survey/constants/surveyAnswersFolder';
+import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersAttachmentPath';
+import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
-import { ANSWER, FILES, PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import CustomHttpException from '../common/CustomHttpException';
 import { Survey, SurveyDocument } from './survey.schema';
-import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
+import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
 import Attendee from '../conferences/attendee.schema';
 import MigrationService from '../migration/migration.service';
 import surveyAnswersMigrationsList from './migrations/surveyAnswersMigrationsList';
 import GroupsService from '../groups/groups.service';
 import FilesystemService from '../filesystem/filesystem.service';
+import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 
 @Injectable()
 class SurveyAnswersService implements OnModuleInit {
   constructor(
     @InjectModel(SurveyAnswer.name) private surveyAnswerModel: Model<SurveyAnswerDocument>,
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
+    private readonly surveyAnswerAttachmentsService: SurveyAnswerAttachmentsService,
     private readonly groupsService: GroupsService,
     private readonly fileSystemService: FilesystemService,
   ) {}
@@ -238,13 +239,8 @@ class SurveyAnswersService implements OnModuleInit {
     }
   };
 
-  async addAnswer(
-    surveyId: string,
-    saveNo: number,
-    answer: JSON,
-    attendee: Partial<Attendee>,
-  ): Promise<SurveyAnswer | undefined> {
-    const survey = await this.surveyModel.findById<Survey>(surveyId);
+  async addAnswer(surveyId: string, answer: JSON, attendee: Partial<Attendee>): Promise<SurveyAnswer | null> {
+    const survey = await this.surveyModel.findById<SurveyDocument>(surveyId).exec();
     if (!survey) {
       throw new CustomHttpException(
         SurveyErrorMessages.NotFoundError,
@@ -254,181 +250,196 @@ class SurveyAnswersService implements OnModuleInit {
       );
     }
 
-    const { isAnonymous = false, canUpdateFormerAnswer = false, canSubmitMultipleAnswers = false } = survey;
+    const existingUsersAnswer = attendee.username
+      ? await this.surveyAnswerModel
+          .findOne<SurveyAnswerDocument>({
+            $and: [{ 'attendee.username': attendee.username }, { surveyId: new Types.ObjectId(surveyId) }],
+          })
+          .exec()
+      : undefined;
 
-    if (isAnonymous) {
-      const username = 'anonymous';
-      const user: Attendee = { username };
-      const updatedAnswer = await this.moveAttachmentsToPermanentStorage(username, surveyId, answer);
-      const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(user, surveyId, saveNo, updatedAnswer);
-      void this.clearUpTempFiles(username, surveyId);
-      return createdAnswer;
-    }
+    return this.selectStrategy(survey, attendee, answer, String(existingUsersAnswer?.id));
+  }
 
-    const { username, firstName } = attendee;
-
-    const isFirstPublicUserParticipation = !username && !!firstName;
-    if (isFirstPublicUserParticipation) {
-      const newPublicUserId = uuidv4();
-      const newPublicUserLogin = createNewPublicUserLogin(firstName, newPublicUserId);
-      const user: Attendee = { ...attendee, username: newPublicUserLogin, lastName: newPublicUserId };
-
-      const updatedAnswer = await this.moveAttachmentsToPermanentStorage(firstName, surveyId, answer);
-      const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(user, surveyId, saveNo, updatedAnswer);
-      void this.clearUpTempFiles(firstName, surveyId);
-      return createdAnswer;
-    }
-
-    const isLoggedInUserParticipation = !!username && !publicUserLoginRegex.test(username);
-
-    const isAuthenticatedPublicUserParticipation = !!username && publicUserLoginRegex.test(username);
-
-    if (isLoggedInUserParticipation || isAuthenticatedPublicUserParticipation) {
-      await this.throwErrorIfParticipationIsNotPossible(survey, username);
-
-      const existingUsersAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>({
-        $and: [{ 'attendee.username': username }, { surveyId: new Types.ObjectId(surveyId) }],
-      });
-
-      const userName = isAuthenticatedPublicUserParticipation ? firstName : username;
-      if (!userName) {
-        throw new CustomHttpException(
-          SurveyAnswerErrorMessages.NotAbleToFindOrCreateSurveyAnswerError,
-          HttpStatus.UNAUTHORIZED,
-          undefined,
-          SurveyAnswersService.name,
-        );
-      }
-      if (existingUsersAnswer == null || canSubmitMultipleAnswers) {
-        const updatedAnswer = await this.moveAttachmentsToPermanentStorage(userName, surveyId, answer);
-        const newSurveyAnswer = await this.createAnswer(attendee as Attendee, surveyId, saveNo, updatedAnswer);
-        if (newSurveyAnswer == null) {
-          throw new CustomHttpException(
-            SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
-            HttpStatus.INTERNAL_SERVER_ERROR,
-            undefined,
-            SurveyAnswersService.name,
-          );
-        }
-        void this.clearUpTempFiles(userName, surveyId);
-
-        const updateSurvey = await this.surveyModel.findByIdAndUpdate<Survey>(surveyId, {
-          participatedAttendees: username
-            ? [...survey.participatedAttendees, { username }]
-            : survey.participatedAttendees,
-          answers: [...survey.answers, new Types.ObjectId(String(newSurveyAnswer.id))],
-        });
-        if (updateSurvey == null) {
-          throw new CustomHttpException(
-            UserErrorMessages.UpdateError,
-            HttpStatus.INTERNAL_SERVER_ERROR,
-            undefined,
-            SurveyAnswersService.name,
-          );
-        }
-        return newSurveyAnswer;
-      }
-
-      if (!canUpdateFormerAnswer) {
-        throw new CustomHttpException(
-          SurveyErrorMessages.ParticipationErrorAlreadyParticipated,
-          HttpStatus.FORBIDDEN,
-          undefined,
-          SurveyAnswersService.name,
-        );
-      }
-
-      const updatedAnswer = await this.moveAttachmentsToPermanentStorage(userName, surveyId, answer);
-      const updatedSurveyAnswer = await this.surveyAnswerModel.findByIdAndUpdate<SurveyAnswer>(existingUsersAnswer, {
-        answer: updatedAnswer,
-        saveNo,
-      });
-      if (updatedSurveyAnswer == null) {
-        throw new CustomHttpException(
-          SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError,
-          HttpStatus.NOT_FOUND,
-          undefined,
-          SurveyAnswersService.name,
-        );
-      }
-      void this.clearUpTempFiles(userName, surveyId);
-      return updatedSurveyAnswer;
-    }
-
+  selectStrategy = (
+    survey: SurveyDocument,
+    attendee: Partial<Attendee>,
+    answer: JSON,
+    existingUsersAnswerId?: string,
+  ): Promise<SurveyAnswer | null> => {
+    if (survey.isAnonymous) return this.anonymousStrategy(survey, answer);
+    if (!attendee.username && attendee.firstName) return this.publicFirstStrategy(survey, answer, attendee);
+    if (!existingUsersAnswerId || survey.canSubmitMultipleAnswers)
+      return this.loggedOrPublicStrategy(survey, answer, attendee);
+    if (existingUsersAnswerId && survey.canUpdateFormerAnswer)
+      return this.updatingStrategy(survey, answer, attendee, existingUsersAnswerId);
     throw new CustomHttpException(
       SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
       HttpStatus.INTERNAL_SERVER_ERROR,
       undefined,
       SurveyAnswersService.name,
     );
+  };
+
+  async anonymousStrategy(survey: SurveyDocument, answer: JSON): Promise<SurveyAnswerDocument | null> {
+    const username = 'anonymous';
+    const user: Attendee = { username };
+    const updatedAnswer = await this.surveyAnswerAttachmentsService.moveAnswersAttachmentsToPermanentStorage(
+      username,
+      String(survey.id),
+      answer,
+    );
+    const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(
+      user,
+      String(survey.id),
+      survey.saveNo,
+      updatedAnswer,
+    );
+    void this.surveyAnswerAttachmentsService.clearUpSurveyAnswersTempFiles(username, String(survey.id));
+    return createdAnswer;
   }
 
-  async moveAttachmentsToPermanentStorage(username: string, surveyId: string, answer: JSON): Promise<JSON> {
-    if (!username) {
+  async publicFirstStrategy(
+    survey: SurveyDocument,
+    answer: JSON,
+    attendee: Partial<Attendee>,
+  ): Promise<SurveyAnswerDocument | null> {
+    const { firstName } = attendee;
+    if (!firstName) {
       throw new CustomHttpException(
-        SurveyAnswerErrorMessages.NotAbleToUpdateSurveyAnswerError,
+        SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
         SurveyAnswersService.name,
       );
     }
-    const path = join(SURVEYS_ANSWERS_ATTACHMENT_PATH, surveyId);
-    const tempPath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, username, surveyId);
 
-    const tempFileNames = await this.fileSystemService.getAllFilenamesInDirectory(tempPath);
-    if (tempFileNames.length === 0) {
-      return answer;
+    const newPublicUserId = uuidv4();
+    const newPublicUserLogin = createNewPublicUserLogin(firstName, newPublicUserId);
+    const user: Attendee = { ...attendee, username: newPublicUserLogin, lastName: newPublicUserId };
+
+    const updatedAnswer = await this.surveyAnswerAttachmentsService.moveAnswersAttachmentsToPermanentStorage(
+      firstName,
+      String(survey.id),
+      answer,
+    );
+    const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(
+      user,
+      String(survey.id),
+      survey.saveNo,
+      updatedAnswer,
+    );
+    void this.surveyAnswerAttachmentsService.clearUpSurveyAnswersTempFiles(firstName, String(survey.id));
+
+    if (createdAnswer) {
+      await this.updateSurveyParticipations(survey, String(createdAnswer.id), firstName);
     }
-    await this.fileSystemService.ensureDirectoryExists(path);
 
-    const surveyAnswer = answer as unknown as Record<
-      string,
-      (object & { content: string }) | (object & { content: string })[]
-    >;
-    const movingPromises = new Set<Promise<void>>();
+    return createdAnswer;
+  }
 
-    Object.keys(surveyAnswer).forEach((questionName) => {
-      const questionAnswer = surveyAnswer[questionName];
-      const fileNames: string[] = [];
-      if (Array.isArray(questionAnswer)) {
-        questionAnswer.forEach((item) => {
-          const filePathParts = item.content?.split(`/${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/`);
-          const baseUrl = filePathParts[0];
-          const fileName = filePathParts[1].split('/').pop();
-          if (!baseUrl || !fileName) {
-            return;
-          }
-          const newUrl = `${baseUrl}/${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${surveyId}/${fileName}`;
-          // eslint-disable-next-line no-param-reassign
-          item.content = newUrl;
-          if (fileName) {
-            fileNames.push(fileName);
-          }
-        });
-      } else {
-        const filePathParts = questionAnswer.content?.split(`/${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/`);
-        const baseUrl = filePathParts[0];
-        const fileName = filePathParts[1].split('/').pop();
-        if (!baseUrl || !fileName) {
-          return;
-        }
-        const newUrl = `${baseUrl}/${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${surveyId}/${fileName}`;
-        questionAnswer.content = newUrl;
-        if (fileName) {
-          fileNames.push(fileName);
-        }
-      }
-      fileNames.forEach((fileName) => {
-        if (tempFileNames.includes(fileName)) {
-          const oldPath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, username, surveyId, fileName);
-          const newPath = join(SURVEYS_ANSWERS_ATTACHMENT_PATH, surveyId, fileName);
-          movingPromises.add(FilesystemService.moveFile(oldPath, newPath));
-        }
-      });
+  async loggedOrPublicStrategy(
+    survey: SurveyDocument,
+    answer: JSON,
+    attendee: Partial<Attendee>,
+  ): Promise<SurveyAnswerDocument | null> {
+    const isAuthenticatedPublicUserParticipation = !!attendee.username && publicUserLoginRegex.test(attendee.username);
+
+    const userName = isAuthenticatedPublicUserParticipation ? attendee.firstName : attendee.username;
+    if (!userName) {
+      throw new CustomHttpException(
+        SurveyAnswerErrorMessages.NotAbleToFindOrCreateSurveyAnswerError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        SurveyAnswersService.name,
+      );
+    }
+
+    await this.throwErrorIfParticipationIsNotPossible(survey, userName);
+
+    const updatedAnswer = await this.surveyAnswerAttachmentsService.moveAnswersAttachmentsToPermanentStorage(
+      userName,
+      String(survey.id),
+      answer,
+    );
+    const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(
+      attendee as Attendee,
+      String(survey.id),
+      survey.saveNo,
+      updatedAnswer,
+    );
+    void this.surveyAnswerAttachmentsService.clearUpSurveyAnswersTempFiles(userName, String(survey.id));
+
+    if (createdAnswer) {
+      await this.updateSurveyParticipations(survey, String(createdAnswer.id), userName);
+    }
+
+    return createdAnswer;
+  }
+
+  async updatingStrategy(
+    survey: SurveyDocument,
+    answer: JSON,
+    attendee: Partial<Attendee>,
+    existingUsersAnswerId: string,
+  ): Promise<SurveyAnswerDocument | null> {
+    const isAuthenticatedPublicUserParticipation = !!attendee.username && publicUserLoginRegex.test(attendee.username);
+    const userName = isAuthenticatedPublicUserParticipation ? attendee.firstName : attendee.username;
+    if (!userName) {
+      throw new CustomHttpException(
+        UserErrorMessages.UpdateError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        SurveyAnswersService.name,
+      );
+    }
+
+    await this.throwErrorIfParticipationIsNotPossible(survey, userName);
+
+    const updatedAnswer = await this.surveyAnswerAttachmentsService.moveAnswersAttachmentsToPermanentStorage(
+      userName,
+      String(survey.id),
+      answer,
+    );
+    const updatedSurveyAnswer = await this.surveyAnswerModel.findByIdAndUpdate<SurveyAnswerDocument>(
+      existingUsersAnswerId,
+      {
+        answer: updatedAnswer,
+        saveNo: survey.saveNo,
+        attendee: attendee as Attendee,
+      },
+    );
+    if (updatedSurveyAnswer == null) {
+      throw new CustomHttpException(
+        SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveyAnswersService.name,
+      );
+    }
+    void this.surveyAnswerAttachmentsService.clearUpSurveyAnswersTempFiles(userName, String(survey.id));
+    return updatedSurveyAnswer;
+  }
+
+  async updateSurveyParticipations(
+    survey: SurveyDocument,
+    surveyAnswerId: string,
+    userName: string | undefined,
+  ): Promise<void> {
+    const updateSurvey = await this.surveyModel.findByIdAndUpdate<Survey>(String(survey.id), {
+      participatedAttendees: userName
+        ? [...survey.participatedAttendees, { username: userName }]
+        : survey.participatedAttendees,
+      answers: [...survey.answers, new Types.ObjectId(String(surveyAnswerId))],
     });
-    await Promise.all(movingPromises);
-
-    return JSON.parse(JSON.stringify(surveyAnswer)) as JSON;
+    if (updateSurvey == null) {
+      throw new CustomHttpException(
+        UserErrorMessages.UpdateError,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        SurveyAnswersService.name,
+      );
+    }
   }
 
   async getAnswer(surveyId: string, username: string): Promise<SurveyAnswer | undefined> {
@@ -478,7 +489,7 @@ class SurveyAnswersService implements OnModuleInit {
       );
     }
 
-    const filePath = surveyIds.map((surveyId) => join(APPS_FILES_PATH, SURVEYS_ANSWER_FOLDER, surveyId));
+    const filePath = surveyIds.map((surveyId) => join(APPS_FILES_PATH, SURVEY_ANSWERS_FOLDER, surveyId));
     return FilesystemService.deleteDirectories(filePath);
   }
 
@@ -514,7 +525,7 @@ class SurveyAnswersService implements OnModuleInit {
   }
 
   async serveFileFromAnswer(surveyId: string, fileName: string, res: Response): Promise<Response> {
-    const filesPath = join(SURVEYS_ANSWERS_ATTACHMENT_PATH, surveyId);
+    const filesPath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId);
     const existence = await FilesystemService.checkIfFileExist(join(filesPath, fileName));
     if (!existence) {
       return res.status(HttpStatus.NOT_FOUND).send('File not found');
@@ -530,7 +541,7 @@ class SurveyAnswersService implements OnModuleInit {
     fileName: string,
     res: Response,
   ): Promise<Response> {
-    const tempFilesPath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
+    const tempFilesPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
     const tempExistence = await FilesystemService.checkIfFileExist(join(tempFilesPath, fileName));
     if (!tempExistence) {
       return res.status(HttpStatus.NOT_FOUND).send('File not found');
@@ -541,19 +552,12 @@ class SurveyAnswersService implements OnModuleInit {
   }
 
   static async deleteTempFileFromAnswer(userName: string, surveyId: string, fileName: string): Promise<void> {
-    const tempFilesPath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
+    const tempFilesPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
     const tempExistence = await FilesystemService.checkIfFileExist(join(tempFilesPath, fileName));
     if (!tempExistence) {
       return;
     }
     await FilesystemService.deleteFile(tempFilesPath, fileName);
-  }
-
-  async clearUpTempFiles(userName: string, surveyId: string): Promise<void> {
-    const tempSurveyPath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
-    await this.fileSystemService.deleteEmptyFolder(tempSurveyPath);
-    const tempFilesPath = join(SURVEYS_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName);
-    await this.fileSystemService.deleteEmptyFolder(tempFilesPath);
   }
 }
 

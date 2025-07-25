@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const SURVEYS_ANSWER_FOLDER = 'survey-answer';
+const SurveyAnswersMaximumFileSize = 50 * 1024 * 1024;
 
-export default SURVEYS_ANSWER_FOLDER;
+export default SurveyAnswersMaximumFileSize;

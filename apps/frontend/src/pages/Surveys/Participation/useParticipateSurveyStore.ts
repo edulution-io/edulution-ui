@@ -86,7 +86,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     surveyModel: Model,
     completingEvent: CompletingEvent,
   ): Promise<SurveyAnswerResponseDto | undefined> => {
-    const { surveyId, saveNo, answer, isPublic = false } = answerDto;
+    const { surveyId, answer, isPublic = false } = answerDto;
     const { isSubmitting, attendee } = get();
     if (isSubmitting) {
       return undefined;
@@ -100,13 +100,11 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       const response = isPublic
         ? await eduApi.post<SurveyAnswerResponseDto>(PUBLIC_SURVEYS, {
             surveyId,
-            saveNo,
             answer,
             attendee,
           })
         : await eduApi.patch<SurveyAnswerResponseDto>(SURVEYS, {
             surveyId,
-            saveNo,
             answer,
             attendee,
           });

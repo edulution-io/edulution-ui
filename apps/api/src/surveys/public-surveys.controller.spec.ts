@@ -21,9 +21,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveysAttachmentService from 'apps/api/src/surveys/surveys-attachment.service';
 import SurveysService from './surveys.service';
-import SurveyAnswersService from './survey-answer.service';
+import SurveyAnswersService from './survey-answers.service';
 import { Survey, SurveyDocument } from './survey.schema';
-import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
+import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
 import PublicSurveysController from './public-surveys.controller';
 import {
   filteredChoices,

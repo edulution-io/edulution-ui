@@ -22,8 +22,8 @@ import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveysAttachmentService from 'apps/api/src/surveys/surveys-attachment.service';
 import { Survey, SurveyDocument } from './survey.schema';
-import SurveyAnswersService from './survey-answer.service';
-import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
+import SurveyAnswersService from './survey-answers.service';
+import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
 import {
   answeredSurvey01,
   answeredSurvey02,
@@ -58,11 +58,6 @@ import {
   publicSurvey02,
   publicSurvey02AfterAddingValidAnswer,
   publicSurvey02QuestionNameWithLimiters,
-  saveNoAnsweredSurvey01,
-  saveNoAnsweredSurvey02,
-  saveNoAnsweredSurvey03,
-  saveNoAnsweredSurvey04,
-  saveNoAnsweredSurvey05,
   secondMockUser,
   secondParticipant,
   surveyAnswerAnsweredSurvey02,
@@ -80,7 +75,7 @@ import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
 
-describe('SurveyAnswerService', () => {
+describe('SurveyAnswersService', () => {
   let service: SurveyAnswersService;
   let model: Model<SurveyAnswerDocument>;
   let surveyModel: Model<SurveyDocument>;
@@ -341,7 +336,7 @@ describe('SurveyAnswerService', () => {
       const id = new Types.ObjectId().toString();
 
       try {
-        await service.addAnswer(id, 1, {} as JSON, firstParticipant);
+        await service.addAnswer(id, {} as JSON, firstParticipant);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toBe(SurveyErrorMessages.NotFoundError);
@@ -362,7 +357,6 @@ describe('SurveyAnswerService', () => {
       try {
         await service.addAnswer(
           idOfAnsweredSurvey01.toString(),
-          saveNoAnsweredSurvey01,
           firstUsersMockedAnswerForAnsweredSurveys01,
           firstParticipant,
         );
@@ -373,7 +367,6 @@ describe('SurveyAnswerService', () => {
 
       expect(service.addAnswer).toHaveBeenCalledWith(
         idOfAnsweredSurvey01.toString(),
-        saveNoAnsweredSurvey01,
         firstUsersMockedAnswerForAnsweredSurveys01,
         firstParticipant,
       );
@@ -416,12 +409,7 @@ describe('SurveyAnswerService', () => {
         surveyModel.findById = jest.fn().mockReturnValue(answeredSurvey02);
 
         try {
-          await service.addAnswer(
-            idOfAnsweredSurvey02.toString(),
-            saveNoAnsweredSurvey02,
-            mockedAnswerForAnsweredSurveys02,
-            secondParticipant,
-          );
+          await service.addAnswer(idOfAnsweredSurvey02.toString(), mockedAnswerForAnsweredSurveys02, secondParticipant);
         } catch (e) {
           expect(e).toBeInstanceOf(Error);
           expect(e.message).toBe(SurveyErrorMessages.ParticipationErrorAlreadyParticipated);
@@ -429,7 +417,6 @@ describe('SurveyAnswerService', () => {
 
         expect(service.addAnswer).toHaveBeenCalledWith(
           idOfAnsweredSurvey02.toString(),
-          saveNoAnsweredSurvey02,
           mockedAnswerForAnsweredSurveys02,
           secondParticipant,
         );
@@ -445,7 +432,6 @@ describe('SurveyAnswerService', () => {
 
       const result = await service.addAnswer(
         idOfAnsweredSurvey03.toString(),
-        saveNoAnsweredSurvey03,
         updatedMockedAnswerForAnsweredSurveys03,
         firstParticipant,
       );
@@ -453,7 +439,6 @@ describe('SurveyAnswerService', () => {
 
       expect(service.addAnswer).toHaveBeenCalledWith(
         idOfAnsweredSurvey03.toString(),
-        saveNoAnsweredSurvey03,
         updatedMockedAnswerForAnsweredSurveys03,
         firstParticipant,
       );
@@ -473,7 +458,6 @@ describe('SurveyAnswerService', () => {
 
       const result = await service.addAnswer(
         idOfAnsweredSurvey04.toString(),
-        saveNoAnsweredSurvey04,
         mockedAnswerForAnsweredSurveys04,
         firstParticipant,
       );
@@ -481,7 +465,6 @@ describe('SurveyAnswerService', () => {
 
       expect(service.addAnswer).toHaveBeenCalledWith(
         idOfAnsweredSurvey04.toString(),
-        saveNoAnsweredSurvey04,
         mockedAnswerForAnsweredSurveys04,
         firstParticipant,
       );
@@ -501,7 +484,6 @@ describe('SurveyAnswerService', () => {
 
       const result = await service.addAnswer(
         idOfAnsweredSurvey05.toString(),
-        saveNoAnsweredSurvey05,
         newMockedAnswerForAnsweredSurveys05,
         firstParticipant,
       );
@@ -509,7 +491,6 @@ describe('SurveyAnswerService', () => {
 
       expect(service.addAnswer).toHaveBeenCalledWith(
         idOfAnsweredSurvey05.toString(),
-        saveNoAnsweredSurvey05,
         newMockedAnswerForAnsweredSurveys05,
         firstParticipant,
       );

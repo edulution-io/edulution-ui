@@ -16,7 +16,7 @@ import { ClearFilesEvent, Model, Serializer, SurveyModel, UploadFilesEvent } fro
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
-import surveyAnswerMaximumFileSize from '@libs/survey/constants/survey-answer-max-file-size';
+import SurveyAnswersMaximumFileSize from '@libs/survey/constants/survey-answers-maximum-file-size';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import useLanguage from '@/hooks/useLanguage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
@@ -71,7 +71,6 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       const success = await answerSurvey(
         {
           surveyId: selectedSurvey.id,
-          saveNo: selectedSurvey.saveNo,
           answer: surveyModel.getData() as JSON,
           isPublic,
         },
@@ -90,17 +89,12 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
     newModel.onUploadFiles.add(async (_: SurveyModel, options: UploadFilesEvent): Promise<void> => {
       const { files, callback } = options;
-      if (!files || files.length === 0) {
-        callback([]);
-        return;
-      }
-      if (files.some((file) => !file.name || file.name.length === 0)) {
-        callback([]);
-        return;
-      }
-      if (files.some((file) => file.size > surveyAnswerMaximumFileSize)) {
-        callback([]);
-        return;
+      if (
+        !files?.length ||
+        files.some((file) => !file.name?.length) ||
+        files.some((file) => file.size > SurveyAnswersMaximumFileSize)
+      ) {
+        return callback([]);
       }
 
       const fileNames = files.map((file) => file.name);
@@ -111,7 +105,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         return uploadTempFile(selectedSurvey.id, file);
       });
       const data = await Promise.all(uploadPromises);
-      callback(
+      return callback(
         fileNames.map((fileName): { file: string; content: string } => {
           const suffix = data.find((item) => item?.fileName === fileName);
           return {
