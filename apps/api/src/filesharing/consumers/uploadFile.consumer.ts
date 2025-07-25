@@ -14,10 +14,10 @@ import { WorkerHost } from '@nestjs/bullmq';
 import UploadFileJobData from '@libs/queue/types/uploadFileJobData';
 import { Injectable } from '@nestjs/common';
 import { Job } from 'bullmq';
-import CustomFile from '@libs/filesharing/types/customFile';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import { createReadStream } from 'fs-extra';
 import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJobData';
+import { createReadStream } from 'fs';
+import { unlink } from 'fs-extra';
 import WebdavService from '../../webdav/webdav.service';
 import SseService from '../../sse/sse.service';
 
@@ -31,37 +31,10 @@ class UploadFileConsumer extends WorkerHost {
   }
 
   async process(job: Job<FileOperationQueueJobData>): Promise<void> {
-    const { username, fullPath, file, mimeType, size, base64, processed, total } = job.data as UploadFileJobData;
-
-    let uploadFile: CustomFile;
-
-    if (file.path) {
-      uploadFile = {
-        ...file,
-        mimetype: mimeType,
-        size,
-        stream: createReadStream(file.path),
-      } as CustomFile;
-    } else if (file.buffer) {
-      const buffer = Buffer.isBuffer(file.buffer) ? file.buffer : Buffer.from(file.buffer);
-      uploadFile = {
-        ...file,
-        buffer,
-        mimetype: mimeType,
-        size,
-      } as CustomFile;
-    } else if (base64) {
-      const buffer = Buffer.from(base64, 'base64');
-      uploadFile = {
-        ...file,
-        buffer,
-        mimetype: mimeType,
-        size,
-      } as CustomFile;
-    } else {
-      return;
-    }
-    await this.webDavService.uploadFile(username, fullPath, uploadFile);
+    const { username, fullPath, tempPath, mimeType, processed, total } = job.data as UploadFileJobData;
+    const fileStream = createReadStream(tempPath);
+    await this.webDavService.uploadFile(username, fullPath, fileStream, mimeType);
+    await unlink(tempPath);
     const percent = Math.round((processed / total) * 100);
     this.sseService.sendEventToUser(
       username,

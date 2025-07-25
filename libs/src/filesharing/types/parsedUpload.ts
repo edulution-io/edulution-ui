@@ -10,14 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface UploadFileJobData {
-  username: string;
-  fullPath: string;
-  tempPath: string;
+import { Readable } from 'stream';
+
+interface ParsedUpload {
+  basePath: string;
+  isZippedFolder: boolean;
+  originalFolderName?: string;
+  name: string;
+  stream: Readable;
   mimeType: string;
-  base64?: string;
-  total: number;
-  processed: number;
 }
 
-export default UploadFileJobData;
+export default ParsedUpload;

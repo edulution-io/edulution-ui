@@ -23,13 +23,9 @@ import {
   Req,
   Res,
   StreamableFile,
-  UploadedFile,
-  UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
-import CustomFile from '@libs/filesharing/types/customFile';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import { Request, Response } from 'express';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
@@ -42,23 +38,20 @@ import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileReques
 import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
 import CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPublicShareDto';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
-import UploadFileDto from '@libs/filesharing/types/uploadFileDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
-import { diskStorage } from 'multer';
+import { IncomingMessage } from 'http';
+import parseMultipartUpload from '@libs/filesharing/utils/parseMultipartUpload';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
 import FilesharingService from './filesharing.service';
 import WebdavService from '../webdav/webdav.service';
 import { Public } from '../common/decorators/public.decorator';
-import ParseJsonPipe from '../common/pipes/parseJson.pipe';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
 @Controller(FileSharingApiEndpoints.BASE)
 class FilesharingController {
-  private readonly baseurl = process.env.EDUI_WEBDAV_URL as string;
-
   constructor(
     private readonly filesharingService: FilesharingService,
     private readonly webdavService: WebdavService,
@@ -93,25 +86,14 @@ class FilesharingController {
   }
 
   @Post(FileSharingApiEndpoints.UPLOAD)
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './tmp/uploads',
-        filename: (_request, file, done) => done(null, file.originalname),
-      }),
-    }),
-  )
-  async uploadFile(
-    @UploadedFile() file: CustomFile,
-    @Query('path') path: string,
-    @Body('uploadFileDto', ParseJsonPipe<UploadFileDto>) uploadFileDto: UploadFileDto,
-    @GetCurrentUsername() username: string,
-  ) {
-    const { originalFolderName, isZippedFolder, name } = uploadFileDto;
-    const fullPath = `${this.baseurl}${path}/${name}`;
-    return isZippedFolder && originalFolderName
-      ? this.filesharingService.uploadZippedFolder(username, path, originalFolderName, file)
-      : this.webdavService.uploadFile(username, fullPath, file);
+  async uploadFile(@Req() req: IncomingMessage, @GetCurrentUsername() username: string) {
+    const { basePath, isZippedFolder, originalFolderName, name, stream, mimeType } = await parseMultipartUpload(req);
+
+    if (isZippedFolder && originalFolderName) {
+      return this.filesharingService.uploadZippedFolderStream(username, basePath, originalFolderName, stream);
+    }
+    const fullPath = `${basePath}/${name}`;
+    return this.webdavService.uploadFile(username, fullPath, stream, mimeType);
   }
 
   @Delete()

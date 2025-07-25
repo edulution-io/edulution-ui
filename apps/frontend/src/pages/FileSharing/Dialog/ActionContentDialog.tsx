@@ -134,10 +134,10 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
           };
 
           const formData = new FormData();
+          formData.append('uploadFileDto', JSON.stringify(uploadDto));
           formData.append('currentPath', destinationPath);
           formData.append('file', uploadItem.file);
           formData.append('path', uploadItem.path);
-          formData.append('uploadFileDto', JSON.stringify(uploadDto));
 
           return handleFileUploadAction(actionType, endpointUrl, method, requestContentType, formData);
         });

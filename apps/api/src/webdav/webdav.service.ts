@@ -22,7 +22,6 @@ import {
   RequestResponseContentType,
   WebdavRequestDepth,
 } from '@libs/common/types/http-methods';
-import CustomFile from '@libs/filesharing/types/customFile';
 import ContentType from '@libs/filesharing/types/contentType';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import ErrorMessage from '@libs/error/errorMessage';
@@ -30,8 +29,7 @@ import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileReques
 import mapToDirectories from '@libs/filesharing/utils/mapToDirectories';
 import mapToDirectoryFiles from '@libs/filesharing/utils/mapToDirectoryFiles';
 import DEFAULT_PROPFIND_XML from '@libs/filesharing/constants/defaultPropfindXml';
-import { createReadStream, ReadStream } from 'fs';
-import { stat } from 'fs-extra';
+import { Readable } from 'stream';
 import CustomHttpException from '../common/CustomHttpException';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
@@ -49,7 +47,7 @@ class WebdavService {
     config: {
       method: string;
       url?: string;
-      data?: string | Record<string, unknown> | ReadStream | Buffer;
+      data?: string | Record<string, unknown> | Readable | Buffer;
       headers?: Record<string, string | number>;
       maxContentLength?: number;
       maxBodyLength?: number;
@@ -209,20 +207,21 @@ class WebdavService {
     );
   }
 
-  async uploadFile(username: string, fullPath: string, file: CustomFile): Promise<WebdavStatusResponse> {
-    const totalSize = (await stat(file.path)).size;
-
-    const fileStream = createReadStream(file.path);
-
+  async uploadFile(
+    username: string,
+    fullPath: string,
+    fileStream: Readable,
+    contentType: string,
+  ): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
+
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethods.PUT,
         url: fullPath,
         headers: {
-          [HTTP_HEADERS.ContentType]: file.mimetype,
-          [HTTP_HEADERS.ContentLength]: totalSize.toString(),
+          [HTTP_HEADERS.ContentType]: contentType,
         },
         data: fileStream,
         maxContentLength: Infinity,
@@ -232,7 +231,7 @@ class WebdavService {
       FileSharingErrorMessage.UploadFailed,
       (response) => ({
         success: response.status === 201 || response.status === 200,
-        filename: file.originalname,
+        filename: fullPath.split('/').pop() || '',
         status: response.status,
       }),
     );
