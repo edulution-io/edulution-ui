@@ -41,7 +41,7 @@ const TemplateItem = (props: TemplateItemProps) => {
     canSubmitMultipleAnswers,
     canUpdateFormerAnswer,
   } = template.template;
-  const { setTemplate, setIsOpenTemplateMenu, deleteTemplate, fetchTemplates } = useTemplateMenuStore();
+  const { setTemplate, setIsOpenTemplateMenu, setIsOpenTemplateConfirmDeletion } = useTemplateMenuStore();
 
   const { isSuperAdmin } = useLdapGroups();
 
@@ -65,9 +65,9 @@ const TemplateItem = (props: TemplateItemProps) => {
     setIsOpenTemplateMenu(false);
   };
 
-  const handleRemoveTemplate = async () => {
-    await deleteTemplate(template.fileName || '');
-    await fetchTemplates();
+  const handleRemoveTemplate = () => {
+    setTemplate(template);
+    setIsOpenTemplateConfirmDeletion(true);
   };
 
   return (
@@ -75,10 +75,10 @@ const TemplateItem = (props: TemplateItemProps) => {
       key={template.fileName}
       value={template.fileName || ''}
     >
-      <AccordionTrigger className="px-4 py-2 text-h4">
+      <AccordionTrigger className="px-4 pt-2 text-h4">
         <p className="font-bold ">{`${formula?.title}`}</p>
       </AccordionTrigger>
-      <AccordionContent className="mt-0 px-4 pt-0">
+      <AccordionContent className="my-0 px-4 py-0">
         <Textarea
           value={JSON.stringify(template.template, null, 2)}
           onChange={() => {}}
@@ -89,7 +89,7 @@ const TemplateItem = (props: TemplateItemProps) => {
           style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '12pt' }}
           disabled
         />
-        <div className="flex flex-row justify-end">
+        <div className="mt-2 flex flex-row justify-end space-x-2">
           {isSuperAdmin && (
             <Button
               onClick={handleRemoveTemplate}

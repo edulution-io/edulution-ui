@@ -47,12 +47,12 @@ const DynamicEllipsis: React.FC<DynamicEllipsisProps> = ({ text, className = '' 
     }
 
     let left = 0;
-      let right = text.length;
+    let right = text.length;
     while (left < right) {
       const mid = Math.ceil((left + right) / 2);
       const headCount = Math.ceil(mid / 2);
       const tailCount = mid - headCount;
-      const candidate = `${text.slice(0, headCount)  }…${  text.slice(-tailCount)}`;
+      const candidate = `${text.slice(0, headCount)}…${text.slice(-tailCount)}`;
       if (measureText(candidate) > availableWidth) {
         right = mid - 1;
       } else {
@@ -69,7 +69,7 @@ const DynamicEllipsis: React.FC<DynamicEllipsisProps> = ({ text, className = '' 
 
     const head = Math.ceil(totalVisible / 2);
     const tail = totalVisible - head;
-    setTruncatedTextToDisplay(`${text.slice(0, head)  }…${  text.slice(-tail)}`);
+    setTruncatedTextToDisplay(`${text.slice(0, head)}…${text.slice(-tail)}`);
   }, [text, className]);
 
   return (

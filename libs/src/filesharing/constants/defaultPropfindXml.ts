@@ -19,6 +19,7 @@ const DEFAULT_PROPFIND_XML = `<?xml version="1.0"?>
           <d:getcontentlength/>
           <d:displayname/>
           <d:creationdate/>
+          <d:resourcetype />
         </d:prop>
       </d:propfind>
   `;

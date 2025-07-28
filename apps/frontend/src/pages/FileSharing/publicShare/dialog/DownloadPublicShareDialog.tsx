@@ -9,13 +9,9 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-/*
- * LICENSE … (wie gehabt)
- */
-
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FormProvider, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -23,57 +19,66 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import { Button } from '@/components/shared/Button';
 
-import downloadPublicFile from '@libs/filesharing/utils/downloadPublicFile';
 import buildAbsolutePublicDownloadUrl from '@libs/filesharing/utils/buildAbsolutePublicDownloadUrl';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 
 import usePublicSharePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
+import { ArrowDownToLine } from 'lucide-react';
+import FormField from '@/components/shared/FormField';
+import { Form } from '@/components/ui/Form';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
-import useUserStore from '@/store/UserStore/UserStore';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import PublicShareMetaList from '../publicPage/components/PublicShareMetaList';
-import DownloadPublicFileButton from '../publicPage/components/DownloadPublicShare';
-import PublicSharePasswordInput from '../publicPage/components/PublicSharePasswordInput';
-import FileHeader from '../publicPage/components/PublicShareHeader';
+import useUserStore from '@/store/UserStore/useUserStore';
+import { toast } from 'sonner';
+import PublicShareMetaDetails from '../publicPage/components/PublicShareMetaDetails';
 
 const schema = z.object({ password: z.string().optional() });
 type FormValues = z.infer<typeof schema>;
 
-const DownloadPublicShareDialog = () => {
+interface DownloadPublicShareDialogProps {
+  publicOpened?: boolean;
+}
+
+const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ publicOpened }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
   const [isDownloading, setIsDownloading] = useState(false);
 
-  const { eduApiToken } = useUserStore();
-
-  const isAuthenticated = Boolean(eduApiToken);
+  const { isAuthenticated, eduApiToken } = useUserStore();
 
   const { isPublicShareInfoDialogOpen, closePublicShareDialog, publicShareId } = usePublicSharePageStore();
 
-  const { fetchPublicShareContentById, publicShareContent, isPasswordRequired, isAccessRestricted } =
+  const { downloadFileWithPassword, fetchedShareByIdResult, fetchShareById, isPreparingFileDownload } =
     usePublicShareStore();
 
+  const { isAccessRestricted, requiresPassword, publicShare } = fetchedShareByIdResult;
+
+  const share = publicShare && Array.isArray(publicShare) ? publicShare[0] : publicShare;
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { password: '' },
   });
 
   useEffect(() => {
-    if (!publicShareId) return;
-    void fetchPublicShareContentById(publicShareId);
-  }, [publicShareId, fetchPublicShareContentById]);
+    if (!publicShareId || publicOpened) return;
+    void fetchShareById(publicShareId);
+  }, [publicShareId]);
 
   const onDownload = form.handleSubmit(async ({ password }) => {
-    if (!publicShareContent) return;
+    if (!share) return;
 
     try {
       setIsDownloading(true);
-      const { filename, fileLink } = publicShareContent;
-      const absoluteUrl = buildAbsolutePublicDownloadUrl(fileLink);
-
-      await downloadPublicFile(
+      const { filename } = share;
+      const absoluteUrl = buildAbsolutePublicDownloadUrl(
+        `${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.PUBLIC_SHARE_DOWNLOAD}/${publicShareId}`,
+      );
+      await downloadFileWithPassword(
         absoluteUrl,
         filename,
         password,
@@ -84,6 +89,12 @@ const DownloadPublicShareDialog = () => {
           }),
         eduApiToken,
       );
+    } catch (error) {
+      form.setError('password', {
+        type: 'server',
+        message: t('filesharing.publicFileSharing.errors.PublicFileDownloadFailed'),
+      });
+      toast.error(t('filesharing.publicFileSharing.errors.PublicFileDownloadFailed'));
     } finally {
       setIsDownloading(false);
     }
@@ -120,7 +131,7 @@ const DownloadPublicShareDialog = () => {
     );
   }
 
-  if (!publicShareContent) {
+  if (!share) {
     return (
       <AdaptiveDialog
         isOpen={isAuthenticated ? isPublicShareInfoDialogOpen : true}
@@ -131,37 +142,47 @@ const DownloadPublicShareDialog = () => {
     );
   }
 
-  const { filename, creator, expires } = publicShareContent;
+  const { filename, creator, expires } = share;
 
   const accessBody = (
     <div className="space-y-4">
-      <FileHeader
+      <PublicShareMetaDetails
         filename={filename}
         creator={creator}
+        expires={expires}
       />
 
-      {isPasswordRequired && (
-        <FormProvider {...form}>
-          <PublicSharePasswordInput placeholder={t('conferences.password')} />
-        </FormProvider>
+      {requiresPassword && (
+        <Form {...form}>
+          <FormField
+            name="password"
+            form={form}
+            type="password"
+            placeholder={t('conferences.password')}
+            variant="dialog"
+          />
+        </Form>
       )}
 
-      <DownloadPublicFileButton
+      <Button
         onClick={onDownload}
-        isLoading={isDownloading}
-        label={t('filesharing.publicFileSharing.downloadPublicFile')}
-      />
-
-      <PublicShareMetaList expires={expires} />
+        variant="btn-security"
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl"
+        disabled={isPreparingFileDownload}
+      >
+        <ArrowDownToLine className="h-5 w-5" />
+        {t('filesharing.publicFileSharing.downloadPublicFile')}
+        {isPreparingFileDownload && (
+          <CircleLoader
+            width="w-8"
+            height="h-8"
+          />
+        )}
+      </Button>
     </div>
   );
 
-  const footer = (
-    <DialogFooterButtons
-      handleClose={handleClose}
-      hideSubmitButton
-    />
-  );
+  const footer = <DialogFooterButtons handleClose={handleClose} />;
 
   return (
     <>

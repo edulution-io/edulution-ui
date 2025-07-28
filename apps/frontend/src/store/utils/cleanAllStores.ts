@@ -11,14 +11,14 @@
  */
 
 import useLmnApiStore from '@/store/useLmnApiStore';
-import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/CreateConferenceDialogStore';
-import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
-import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
-import UserStore from '@/store/UserStore/UserStore';
+import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/useCreateConferenceDialogStore';
+import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
+import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/useConferenceDetailsDialogStore';
+import UserStore from '@/store/UserStore/useUserStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import useSidebarStore from '@/components/ui/Sidebar/sidebarStore';
-import useDesktopDeploymentStore from '@/pages/DesktopDeployment/DesktopDeploymentStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
+import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
+import useDesktopDeploymentStore from '@/pages/DesktopDeployment/useDesktopDeploymentStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
@@ -34,9 +34,9 @@ import useDeleteSurveyStore from '@/pages/Surveys/Tables/dialogs/useDeleteSurvey
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
-import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/PublicConferenceStore';
+import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/usePublicConferenceStore';
 import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialStore';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
@@ -46,6 +46,7 @@ import TLDRAW_PERSISTENCE_KEY from '@libs/whiteboard/constants/tldrawPersistence
 import clearTLDrawPersistence from '@/pages/Whiteboard/clearTLDrawPersitence';
 import usePublicSharePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
 import useSseStore from '../useSseStore';
 
 const cleanAllStores = async () => {
@@ -69,6 +70,7 @@ const cleanAllStores = async () => {
   useFileSharingStore.getState().reset();
   useFileSharingDownloadStore.getState().reset();
   useFrameStore.getState().reset();
+  useLauncherStore.getState().reset();
   useLessonStore.getState().reset();
   useLmnApiPasswordStore.getState().reset();
   useLmnApiStore.getState().reset();

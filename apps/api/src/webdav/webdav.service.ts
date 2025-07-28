@@ -20,6 +20,7 @@ import {
   HttpMethods,
   HttpMethodsWebDav,
   RequestResponseContentType,
+  WebdavRequestDepth,
 } from '@libs/common/types/http-methods';
 import CustomFile from '@libs/filesharing/types/customFile';
 import ContentType from '@libs/filesharing/types/contentType';
@@ -60,7 +61,7 @@ class WebdavService {
       throw new CustomHttpException(
         fileSharingErrorMessage,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
+        (error as Error).message,
         WebdavService.name,
       );
     }
@@ -139,6 +140,9 @@ class WebdavService {
         method: HttpMethodsWebDav.PROPFIND,
         url,
         data: DEFAULT_PROPFIND_XML,
+        headers: {
+          [HTTP_HEADERS.Depth]: WebdavRequestDepth.ONE_LEVEL,
+        },
       },
       FileSharingErrorMessage.FileNotFound,
       mapToDirectoryFiles,
@@ -155,7 +159,9 @@ class WebdavService {
         method: HttpMethodsWebDav.PROPFIND,
         url,
         data: DEFAULT_PROPFIND_XML,
-        headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
+        headers: {
+          [HTTP_HEADERS.Depth]: WebdavRequestDepth.ONE_LEVEL,
+        },
       },
       FileSharingErrorMessage.FolderNotFound,
       mapToDirectories,

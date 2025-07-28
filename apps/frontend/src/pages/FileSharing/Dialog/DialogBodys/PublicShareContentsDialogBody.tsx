@@ -12,38 +12,31 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import PublicShareFilesTableColumns from '@/pages/FileSharing/publicShare/table/PublicShareTableColums';
-import PUBLIC_SHARED_FILES_TABLE_COLUMN from '@libs/filesharing/constants/publicSharedFIlesTableColum';
+import getPublicShareTableColumns from '@/pages/FileSharing/publicShare/table/getPublicShareTableColumns';
+import PUBLIC_SHARED_FILES_TABLE_COLUMN from '@libs/filesharing/constants/publicSharedFilesTableColumn';
 import APPS from '@libs/appconfig/constants/apps';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
-import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { IoAdd } from 'react-icons/io5';
 import useMedia from '@/hooks/useMedia';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
 
 const PublicShareContentsDialogBody = () => {
   const { t } = useTranslation();
-  const {
-    editMultipleContent,
-    isLoading,
-    setEditMultipleContent,
-    selectedRows,
-    setIsCreateNewPublicShareLinkDialogOpen,
-    deletePublicShares,
-    publicShareContents,
-  } = usePublicShareStore();
-  const { selectedItems } = useFileSharingStore();
+  const { isLoading, shares, setSelectedShares, selectedShares, openDialog } = usePublicShareStore();
+  const { selectedItems, selectedRows } = useFileSharingStore();
   const { isMobileView, isTabletView } = useMedia();
 
-  const currentFile = editMultipleContent[0] ?? selectedItems[0];
+  const currentFile = selectedItems[0];
 
   const shouldHideColumns = isMobileView || isTabletView;
 
   useEffect(() => {
-    const listForDialog = publicShareContents.filter((file) => file.filename === currentFile?.filename);
-    setEditMultipleContent(listForDialog);
-  }, [publicShareContents]);
+    const sharesForCurrentFile = shares.filter((file) => file.filename === currentFile?.filename);
+    setSelectedShares(sharesForCurrentFile);
+  }, [shares]);
 
   const initialColumnVisibility = useMemo(
     () => ({
@@ -52,39 +45,38 @@ const PublicShareContentsDialogBody = () => {
       [PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_IS_ACCESSIBLE_BY]: !shouldHideColumns,
       [PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME]: false,
     }),
-    [selectedRows, deletePublicShares, isTabletView, isMobileView, shouldHideColumns],
+    [shouldHideColumns],
   );
 
   return (
-    <div className="scrollable relative flex w-full min-w-0 flex-col gap-4">
+    <>
       <p>
         {t('filesharing.publicFileSharing.selectedFile')}{' '}
-        {(selectedItems?.[0]?.filename ?? editMultipleContent?.[0]?.filename) || ''}
+        {(selectedItems?.[0]?.filename ?? selectedShares?.[0]?.filename) || ''}
       </p>
-      <div className="max-h-[60vh] overflow-y-auto">
-        <ScrollableTable
-          columns={PublicShareFilesTableColumns}
-          data={editMultipleContent}
-          filterKey={PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME}
-          filterPlaceHolderText={t('fileSharing.filterPlaceHolderText')}
-          isLoading={false}
-          selectedRows={selectedRows}
-          getRowId={({ publicShareId }) => publicShareId}
-          applicationName={APPS.FILE_SHARING}
-          initialColumnVisibility={initialColumnVisibility}
-          showSearchBar={false}
-          actions={[
-            {
-              icon: IoAdd,
-              translationId: 'common.add',
-              onClick: () => setIsCreateNewPublicShareLinkDialogOpen(true),
-            },
-          ]}
-        />
-      </div>
+      <ScrollableTable
+        columns={getPublicShareTableColumns(true)}
+        data={selectedShares}
+        filterKey={PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME}
+        filterPlaceHolderText={t('fileSharing.filterPlaceHolderText')}
+        isLoading={false}
+        isDialog
+        selectedRows={selectedRows}
+        getRowId={({ publicShareId }) => publicShareId}
+        applicationName={APPS.FILE_SHARING}
+        initialColumnVisibility={initialColumnVisibility}
+        showSearchBarAndColumnSelect={false}
+        actions={[
+          {
+            icon: IoAdd,
+            translationId: 'common.add',
+            onClick: () => openDialog(PUBLIC_SHARE_DIALOG_NAMES.CREATE_LINK),
+          },
+        ]}
+      />
 
       {isLoading && <LoadingIndicatorDialog isOpen />}
-    </div>
+    </>
   );
 };
 

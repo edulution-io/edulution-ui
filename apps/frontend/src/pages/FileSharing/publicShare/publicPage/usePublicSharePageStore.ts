@@ -16,6 +16,7 @@ interface UsePublicSharePageStore {
   isPublicShareInfoDialogOpen: boolean;
   publicShareId: string | null;
   setOpenPublicShareDialog: (id: string) => void;
+  setPublicShareId: (id: string) => void;
   closePublicShareDialog: () => void;
   reset: () => void;
 }
@@ -29,6 +30,7 @@ const usePublicSharePageStore = create<UsePublicSharePageStore>((set) => ({
   ...initialState,
   setOpenPublicShareDialog: (id) => set({ isPublicShareInfoDialogOpen: true, publicShareId: id }),
   closePublicShareDialog: () => set({ isPublicShareInfoDialogOpen: false, publicShareId: null }),
+  setPublicShareId: (id) => set({ publicShareId: id }),
   reset: () => set({ ...initialState }),
 }));
 

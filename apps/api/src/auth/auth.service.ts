@@ -22,13 +22,16 @@ import { ErrorResponse, OidcMetadata, SigninResponse } from 'oidc-client-ts';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
-import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
+import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import AUTH_TOTP_CONFIG from '@libs/auth/constants/totp-config';
 import type AuthRequestArgs from '@libs/auth/types/auth-request';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
 import decodeBase64Api from '@libs/common/utils/decodeBase64Api';
+import GroupRoles from '@libs/groups/types/group-roles.enum';
+import UserRoles from '@libs/user/constants/userRoles';
+import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../common/CustomHttpException';
 import { User, UserDocument } from '../users/user.schema';
 import SseService from '../sse/sse.service';
@@ -199,6 +202,44 @@ class AuthService {
     } catch (error) {
       throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND, undefined, AuthService.name);
     }
+  }
+
+  async disableTotpForUser(username: string, ldapGroups: string[]) {
+    if (!username) {
+      throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND, undefined, AuthService.name);
+    }
+
+    if (ldapGroups.includes(GroupRoles.STUDENT)) {
+      throw new CustomHttpException(
+        AuthErrorMessages.Unauthorized,
+        HttpStatus.UNAUTHORIZED,
+        undefined,
+        AuthService.name,
+      );
+    }
+
+    try {
+      const updateUser = await this.userModel.findOne<User>({ username }).lean();
+      const updateUserRoles = updateUser?.ldapGroups;
+      const userHasPermission =
+        getIsAdmin(ldapGroups) ||
+        (ldapGroups.includes(GroupRoles.TEACHER) && !!updateUserRoles?.roles.includes(UserRoles.STUDENT));
+
+      if (!userHasPermission) {
+        throw new Error();
+      }
+    } catch (error) {
+      throw new CustomHttpException(
+        AuthErrorMessages.Unauthorized,
+        HttpStatus.UNAUTHORIZED,
+        undefined,
+        AuthService.name,
+      );
+    }
+
+    await this.disableTotp(username);
+
+    return { success: true, status: HttpStatus.OK };
   }
 
   loginViaApp(body: LoginQrSseDto, sessionId: string) {

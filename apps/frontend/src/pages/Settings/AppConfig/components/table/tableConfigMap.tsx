@@ -31,7 +31,7 @@ import DockerContainerTableColumns from '../../DockerIntegration/DockerContainer
 import CreateDockerContainerDialog from '../../DockerIntegration/CreateDockerContainerDialog';
 import useDockerApplicationStore from '../../DockerIntegration/useDockerApplicationStore';
 import VeyonConfigTableColumns from '../../classmanagement/VeyonConfigTableColumns';
-import useVeyonConfigTableStore from '../../classmanagement/useVeyonTableStore';
+import useVeyonConfigTableStore from '../../classmanagement/useVeyonConfigTableStore';
 import AddVeyonProxyDialog from '../../classmanagement/AddVeyonProxyDialog';
 
 const DOCKER_CONTAINER_TABLE_COLUMS = {

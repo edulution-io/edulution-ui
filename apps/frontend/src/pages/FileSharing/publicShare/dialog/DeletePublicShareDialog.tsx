@@ -10,35 +10,32 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import ItemDialogList from '@/components/shared/ItemDialogList';
 import React from 'react';
 import { t } from 'i18next';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
 
 interface DeletePublicFileDialogProps {
   trigger?: React.ReactNode;
 }
 
 const DeletePublicShareDialog: React.FC<DeletePublicFileDialogProps> = ({ trigger }) => {
-  const {
-    selectedContentToShareRows,
-    isLoading,
-    isPublicShareDeleteDialogOpen,
-    deletePublicShares,
-    setIsPublicShareDeleteDialogOpen,
-  } = usePublicShareStore();
+  const { isLoading, deleteShares, shares, selectedRows, setSelectedRows, closeDialog, dialog } = usePublicShareStore();
 
-  const isMultiDelete = selectedContentToShareRows.length > 1;
+  const sharesToDelete = shares.filter((share) => Object.keys(selectedRows).includes(share.publicShareId));
+  const isMultiDelete = sharesToDelete.length > 1;
+
+  const handleClose = () => closeDialog(PUBLIC_SHARE_DIALOG_NAMES.DELETE);
 
   const onSubmit = async () => {
-    await deletePublicShares(selectedContentToShareRows);
-    setIsPublicShareDeleteDialogOpen(false);
+    await deleteShares(sharesToDelete);
+    setSelectedRows({});
+    handleClose();
   };
-
-  const handleClose = () => setIsPublicShareDeleteDialogOpen(false);
 
   const getDialogBody = () => {
     if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
@@ -51,7 +48,7 @@ const DeletePublicShareDialog: React.FC<DeletePublicFileDialogProps> = ({ trigge
               ? 'filesharing.publicFileSharing.confirmMultiDelete'
               : 'filesharing.publicFileSharing.confirmSingleDelete'
           }
-          items={selectedContentToShareRows.map(({ publicShareId, filename }) => ({
+          items={sharesToDelete.map(({ publicShareId, filename }) => ({
             name: filename,
             id: publicShareId,
           }))}
@@ -70,7 +67,7 @@ const DeletePublicShareDialog: React.FC<DeletePublicFileDialogProps> = ({ trigge
 
   return (
     <AdaptiveDialog
-      isOpen={isPublicShareDeleteDialogOpen}
+      isOpen={dialog.delete}
       trigger={trigger}
       handleOpenChange={handleClose}
       title={t(
@@ -78,7 +75,7 @@ const DeletePublicShareDialog: React.FC<DeletePublicFileDialogProps> = ({ trigge
           ? 'filesharing.publicFileSharing.deleteFileLinks'
           : 'filesharing.publicFileSharing.deleteFileLink',
         {
-          count: selectedContentToShareRows.length,
+          count: sharesToDelete.length,
         },
       )}
       body={getDialogBody()}

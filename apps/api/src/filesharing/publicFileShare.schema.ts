@@ -16,25 +16,26 @@ import { v4 as uuidv4 } from 'uuid';
 import DEFAULT_FILE_LINK_EXPIRY from '@libs/filesharing/constants/defaultFileLinkExpiry';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import Attendee from '../conferences/attendee.schema';
 
-export type PublicFileShareDocument = PublicFileShare & Document & { _id: Types.ObjectId };
+export type PublicShareDocument = PublicShare & Document & { _id: Types.ObjectId; createdAt: Date; updatedAt: Date };
 
 @Schema({ timestamps: true, strict: true })
-export class PublicFileShare {
+export class PublicShare {
   @Prop({ type: String, default: uuidv4, unique: true, index: true })
-  publicShareId!: string;
+  publicShareId: string;
 
-  @Prop({ required: true }) etag!: string;
+  @Prop({ required: true })
+  etag: string;
 
-  @Prop({ required: true }) filename!: string;
+  @Prop({ required: true })
+  filename: string;
 
-  @Prop({ required: true }) filePath!: string;
+  @Prop({ required: true })
+  filePath: string;
 
-  @Prop({ required: true }) fileLink!: string;
-
-  @Prop({ required: true }) publicFileLink!: string;
-
-  @Prop({ required: true }) creator!: string;
+  @Prop({ required: true })
+  creator: Attendee;
 
   @Prop({
     type: Date,
@@ -42,13 +43,16 @@ export class PublicFileShare {
     index: { expireAfterSeconds: 0 },
     default: () => DEFAULT_FILE_LINK_EXPIRY,
   })
-  expires!: Date;
+  expires: Date;
 
-  @Prop() password?: string;
+  @Prop()
+  password?: string;
 
-  @Prop({ type: [Object], required: true }) invitedAttendees!: AttendeeDto[];
+  @Prop({ type: [Object], required: true })
+  invitedAttendees: AttendeeDto[];
 
-  @Prop({ type: [Object], required: true }) invitedGroups!: MultipleSelectorGroup[];
+  @Prop({ type: [Object], required: true })
+  invitedGroups: MultipleSelectorGroup[];
 }
 
-export const PublicFileShareSchema = SchemaFactory.createForClass(PublicFileShare).set('toJSON', { virtuals: true });
+export const PublicFileShareSchema = SchemaFactory.createForClass(PublicShare).set('toJSON', { virtuals: true });

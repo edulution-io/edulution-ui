@@ -16,6 +16,5 @@ export type SidebarMenuItemProps = {
   menuItem: SidebarMenuItem;
   isUpButtonVisible?: boolean;
   isDownButtonVisible?: boolean;
-  isDesktop?: boolean;
   translate?: number;
 };

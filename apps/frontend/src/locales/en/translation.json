@@ -2,7 +2,6 @@
   "welcome": "Welcome to the application",
   "changeLang": "Change Language",
   "heading": "Welcome {{givenName}} {{familyName}}",
-  "content": "Here is your personal {{ applicationName }} dashboard. The place where all your applications for digital teaching are collected.",
   "closeEditingWindow": "Close editing window",
   "framebufferImage": "Framebuffer image",
   "previewImage": "Image preview",
@@ -109,6 +108,7 @@
     "sidebar": "Embedded"
   },
   "dashboard": {
+    "description": "Here is your personal {{ applicationName }} dashboard. The place where all your applications for digital teaching are collected.",
     "pageTitle": "Dashboard",
     "mobileAccess": {
       "title": "Mobile Access",
@@ -135,6 +135,7 @@
   "auth": {
     "errors": {
       "TokenExpired": "Session expired.",
+      "tokenIsNotActive": "Session is no longer active.",
       "SessionExpiring": "You will be logged off in less than a minute.",
       "Unauthorized": "You are not authorized.",
       "Unknown": "User not found.",
@@ -261,7 +262,6 @@
     "description": "The conference tool enables audio and video conferencing and supports presentations with advanced whiteboard functions.",
     "sidebar": "Conferences",
     "create": "Create conference",
-    "creator": "Creator",
     "delete": "Delete",
     "deleteConference": "Delete conference",
     "deleteConferences": "Delete {count}} conferences",
@@ -373,53 +373,54 @@
     },
 
     "publicShareFilesPage": {
-      "title": "Publicly Shared Files",
-      "description": "Here you can find all files that have been shared publicly. Anyone with the link can download these files."
+      "title": "Shared Files",
+      "description": "Here you will find all the files you have shared. Please note: Anyone who has the share link and the corresponding password can download these files."
     },
 
     "publicFileSharing": {
       "fileName": "Filename",
-      "selectedFile": "Selected File: ",
+      "selectedFile": "Selected file: ",
       "searchSharedFiles": "Search for shared files",
       "actions": "Actions",
       "createdAt": "Created at",
       "validUntil": "Valid until",
       "isActive": "Active",
-      "fileLink": "Sharing link",
+      "fileLink": "Share link",
       "selectPersonsOrGroupsWhoCanAccess": "Restrict persons or groups who can access the file",
       "invitedAttendees": "Invited",
       "isAccessibleBy": "Accessible by",
       "publiclyAccessible": "Publicly accessible",
-      "confirmMultiDelete": "Should these sharing links for the following contents really be deleted?",
-      "confirmSingleDelete": "Should this sharing link for the following content really be deleted?",
-      "deleteFileLink": "Delete sharing link",
-      "deleteFileLinks": "Delete sharing links",
+      "confirmMultiDelete": "Should these share links for the following contents really be deleted?",
+      "confirmSingleDelete": "Should this share link for the following content really be deleted?",
+      "deleteFileLink": "Delete share links",
+      "deleteFileLinks": "Delete share links",
       "isPasswordProtected": "Password",
-      "qrCodePublicShareFile": "QR Code for public sharing link",
-      "createNewFileLink": "Create new sharing link",
-      "editPublicShareFile": "Edit sharing link",
+      "qrCodePublicShareFile": "QR Code for public share link",
+      "createNewFileLink": "Create new share link",
+      "editPublicShareFile": "Edit share link",
       "sharePublicFile": "Share public content",
       "sharedBy": "Shared by: ",
       "getFileAccess": "Please enter the password for this share to access the contents.",
       "downloadPublicFile": "Download content",
       "nameOfContent": "Content name:",
       "errors": {
-        "PublicFileDeletionFailed": "Failed to delete sharing link",
-        "PublicFileIsOnlyDeletableByOwner": "The file link can only be deleted by the owner of this conent.",
-        "PublicFileNotFound": "Sharing link not found",
-        "PublicFileIsRestricted": "This sharing link is restricted to specific users or groups.",
-        "PublicIsRestrictedByInvalidToken": "This sharing link is restricted by an invalid token.",
+        "PublicFileDeletionFailed": "Failed to delete share links",
+        "PublicFileIsOnlyDeletableByOwner": "The share link can only be deleted by the owner of this conent.",
+        "PublicFileNotFound": "Share link not found",
+        "PublicFileIsRestricted": "This share link is restricted to specific users or groups.",
+        "PublicIsRestrictedByInvalidToken": "The share link cannot be accessed because the token is invalid.",
         "PublicFileWrongPassword": "The password for the sharing is incorrect.",
-        "FileCouldNotBeFound": "The requested content could not be found. Please check the link or contact the owner of this content."
+        "FileCouldNotBeFound": "The requested content could not be found. Please check the share link or contact the owner of this content.",
+        "PublicFileDownloadFailed": "Downloading the file failed. Please try again later."
       },
       "success": {
-        "PublicFileLinkCreated": "File link created successfully",
-        "PublicFileLinkDeleted": "File link deleted successfully",
-        "PublicFileLinkUpdated": "File link updated successfully"
+        "PublicFileLinkCreated": "Share link created successfully",
+        "PublicFileLinkDeleted": "Share link deleted successfully",
+        "PublicFileLinkUpdated": "Share link updated successfully"
       },
       "scope": {
         "public": "Public",
-        "publicHint": "Anyone with the link can access this content.",
+        "publicHint": "Anyone with the share link can access this content.",
         "restricted": "Restricted",
         "restrictedHint": "Only selected users or groups can access this content."
       }
@@ -428,7 +429,7 @@
     "expiry": {
       "select": "Select expiry time",
       "selectedItemPrefix": "Selected content that is shared:",
-      "noInviteesWarning": "⚠️  WARNING: Anyone with the link will be able to download this content.",
+      "noInviteesWarning": "⚠️  WARNING: Anyone with the share link will be able to download this content.",
       "inviteesWarning": "⚠️  WARNING: Anyone within the selected groups or users will be able to download this content."
     }
   },
@@ -620,10 +621,17 @@
       "expectingUserInput": "Expecting the user to answer here, ... ",
       "templates": "Templates",
       "templateMenu": {
-        "fetch": "Choose one of the following templates.",
         "submit": "Save Survey as template.",
-        "title": "Templates store/load",
-        "emptyMessage": "There are no templates available, yet"
+        "title": "Templates:",
+        "userMessage": "Here you can load a template that is available to you.",
+        "adminMessage": "Here you can either load a template or update/create the template of the current survey, for later usage.",
+        "emptyMessage": "There are no templates available yet",
+        "deletion": {
+          "title": "Delete template",
+          "message": "Are you sure you want to delete this template?",
+          "success": "Template deleted successfully",
+          "error": "Failed to delete template"
+        }
       },
       "questionSettings": {
         "settings": "Settings",
@@ -818,6 +826,15 @@
     "yourPassword": "Your Password",
     "addButton": "Add"
   },
+  "ctrlKey": "Ctrl",
+  "enterKey": "Enter",
+  "launcher": {
+    "title": "App Launcher",
+    "searchApps": "Type to filter apps...",
+    "pressShortKey": "To open launcher press",
+    "pressEnterToStartApp": "To launch first app press",
+    "noSearchResults": "No app found"
+  },
   "settings": {
     "title": "SETTINGS",
     "sidebar": "Settings",
@@ -875,12 +892,25 @@
       "errors": {
         "updateError": "Settings could not be updated.",
         "notFoundError": "Settings could not be loaded."
-      }
+      },
+      "deploymentTarget": "Target platform"
+    },
+    "userAdministration": {
+      "title": "User Administration",
+      "resetMfaForm": "Reset Two-Factor Authentication",
+      "resetMfaFormDescription": "Here you can reset the two-factor authentication for users.",
+      "selectUsersTitle": "Select Users",
+      "selectUsersDescription": "Select the users for whom you want to reset the two-factor authentication.",
+      "totpResetSuccess": "TOTP for user {{username}} has been disabled successfully."
     },
     "info": {
       "title": "Info"
     },
     "appconfig": {
+      "position": {
+        "title": "Sorting",
+        "description": "At which position should the app be displayed in the app bar and in the settings?"
+      },
       "sections": {
         "onlyOffice": {
           "title": "Only Office Integration",
@@ -1054,11 +1084,13 @@
       "description": "Please select the language for the user interface.",
       "german": "German",
       "english": "English",
+      "french": "French",
       "system": "System language"
     },
     "addTotp": {
       "title": "Set up Two-Factor Authentication",
       "qrCodeInstructions": "Scan the QR code with an authenticator app that supports TOTP (Time-based One-Time Password).",
+      "copyTotpSecretInstructions": "If no camera is available, the secret can be copied here:",
       "totpCodeInstructions": "Then enter the generated code here and save it:",
       "mfaSetupRequired": "The global guidelines require two-factor authentication to be set up:",
       "mfaSetupSuccess": "Two-factor authentication has been successfully set up."
@@ -1110,6 +1142,7 @@
     "next": "Next",
     "back": "Back",
     "confirm": "Confirm",
+    "creator": "Creator",
     "share": "Share",
     "answers": "Answers",
     "error": "Error",
@@ -1123,7 +1156,8 @@
       "fileNotFound": "File not found",
       "fileNotProvided": "File not provided",
       "invalidFileType": "Invalid file type",
-      "startDateBeforeEndDate": "The start date must be before the end date"
+      "startDateBeforeEndDate": "The start date must be before the end date",
+      "wrongServerConfig": "Incorrect server configuration"
     },
     "cut": "Cut",
     "sortOrder": "Sort order",
@@ -1161,6 +1195,7 @@
     "yes": "Yes",
     "no": "No",
     "title": "Title",
+    "filename": "File name",
     "add": "Add",
     "reload": "Reload",
     "stop": "Stop",
@@ -1232,7 +1267,8 @@
     "upload": "Upload",
     "mode": "Mode",
     "orContinueWithoutAccount": "Or continue without account",
-    "application": "Application"
+    "application": "Application",
+    "reset": "Reset"
   },
   "form": {
     "path": "Path",
@@ -1564,6 +1600,10 @@
       "dead": "dead"
     }
   },
+  "version": {
+    "newVersionAvailable": "A new version of {{ appName }} is available.",
+    "update": "Refresh"
+  },
   "veyon": {
     "lockScreen": "Lock screen",
     "unlockScreen": "Unlock screen",
@@ -1583,5 +1623,11 @@
   "Failed to fetch": "Connection to edulution server failed. Please try again later.",
   "Invalid client or Invalid client credentials": "Invalid server configuration. Please check the client ID or the client secret.",
   "Not Found (404)": "Connection to edulution server failed. Please try again later.",
-  "NetworkError when attempting to fetch resource.": "Network error when attempting to fetch resource."
+  "NetworkError when attempting to fetch resource.": "Network error when attempting to fetch resource.",
+  "deploymentTarget": {
+    "title": "Selection",
+    "description": "Here you can select the platform to which {{ appName }} will be connected.",
+    "linuxmuster": "Linuxmuster",
+    "generic": "Generic"
+  }
 }

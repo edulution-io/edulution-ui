@@ -20,7 +20,7 @@ import { createPortal } from 'react-dom';
 import useWindowResize from '@/hooks/useWindowResize';
 import { SIDEBAR_WIDTH } from '@libs/ui/constants';
 import { DEFAULT_MINIMIZED_BAR_HEIGHT, MAXIMIZED_BAR_HEIGHT } from '@libs/ui/constants/resizableWindowElements';
-import MinimizeButton from '@/components/structure/framing/ResizableWindow/Buttons/MinimizedButton';
+import MinimizeButton from '@/components/structure/framing/ResizableWindow/Buttons/MinimizeButton';
 import ToggleMaximizeButton from '@/components/structure/framing/ResizableWindow/Buttons/ToggleMaximizeButton';
 import CloseButton from '@/components/structure/framing/ResizableWindow/Buttons/CloseButton';
 import RectangleSize from '@libs/ui/types/rectangleSize';
@@ -234,7 +234,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
         role="button"
         tabIndex={0}
         style={{ height: isMinimized ? DEFAULT_MINIMIZED_BAR_HEIGHT : MAXIMIZED_BAR_HEIGHT }}
-        className={cn('sticky top-0 flex items-center justify-between bg-gray-900 text-white', {
+        className={cn('sticky top-0 flex items-center justify-between bg-gray-900 text-background', {
           'cursor-default': disableDragging,
           'cursor-move hover:bg-gray-800': isMinimized && !isMobileView,
         })}

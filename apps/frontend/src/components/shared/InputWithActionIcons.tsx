@@ -14,6 +14,7 @@ import React from 'react';
 import { IconType } from 'react-icons';
 import { type VariantProps } from 'class-variance-authority';
 import cn from '@libs/common/utils/className';
+import { v4 as uuidv4 } from 'uuid';
 import Input, { originInputVariants } from '@/components/shared/Input';
 
 type ActionIcon = { icon: IconType; onClick: () => void; className?: string };
@@ -22,34 +23,42 @@ type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
   VariantProps<typeof originInputVariants> & { actionIcons?: ActionIcon[] };
 
 const InputWithActionIcons = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ actionIcons, className, variant, disabled, readOnly, ...props }, ref) => (
-    <div className="relative">
-      <Input
-        {...props}
-        className={cn(originInputVariants({ variant, className }))}
-        ref={ref}
-        readOnly={readOnly}
-      />
-      <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5">
-        {actionIcons?.map(({ icon: ButtonIcon, onClick, className: buttonsClassName }, index) => (
-          <button
-            // eslint-disable-next-line react/no-array-index-key
-            key={`input-buttons-${index}`}
-            type="button"
-            onClickCapture={onClick}
-            disabled={disabled}
-          >
-            <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-              <ButtonIcon
-                className={cn({ 'text-muted': disabled }, 'h-4 max-h-5 w-4 max-w-5 cursor-pointer', buttonsClassName)}
-              />
-            </div>
-          </button>
-        ))}
+  ({ actionIcons = [], className, variant, disabled, readOnly, style, ...props }, ref) => {
+    const iconCount = actionIcons.length;
+    const paddingRight = iconCount > 0 ? iconCount * 24 + 8 : undefined;
+
+    return (
+      <div className={cn('relative w-full', className)}>
+        <Input
+          {...props}
+          ref={ref}
+          className={cn(originInputVariants({ variant }), 'overflow-hidden text-ellipsis whitespace-nowrap', {
+            'cursor-pointer': props.onMouseDown,
+          })}
+          style={{ ...style, paddingRight }}
+          readOnly={readOnly}
+          disabled={disabled}
+        />
+        {iconCount > 0 && (
+          <div className="absolute inset-y-0 right-0 flex items-center space-x-2 pr-2">
+            {actionIcons.map(({ icon: ButtonIcon, onClick, className: btnClass }) => (
+              <button
+                key={uuidv4()}
+                type="button"
+                onClick={onClick}
+                disabled={disabled}
+                className="flex items-center justify-center hover:opacity-60"
+              >
+                <ButtonIcon className={cn('h-4 w-4 cursor-pointer', disabled && 'text-muted', btnClass)} />
+              </button>
+            ))}
+          </div>
+        )}
       </div>
-    </div>
-  ),
+    );
+  },
 );
-InputWithActionIcons.displayName = 'Input';
+
+InputWithActionIcons.displayName = 'InputWithActionIcons';
 
 export default InputWithActionIcons;
