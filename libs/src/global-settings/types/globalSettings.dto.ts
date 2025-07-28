@@ -11,7 +11,8 @@
  */
 
 import { ValidateNested } from 'class-validator';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import type DeploymentTarget from '@libs/common/types/deployment-target';
 
 type GlobalSettingsAuth = {
   mfaEnforcedGroups: MultipleSelectorGroup[];
@@ -27,6 +28,7 @@ class GlobalSettingsDto {
       isCustomLandingPageEnabled: boolean | undefined;
       appName: string;
     };
+    deploymentTarget: DeploymentTarget;
   };
 }
 

@@ -17,6 +17,7 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import userStore from '@/store/UserStore/useUserStore';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import useUserPath from './useUserPath';
 
 const useFileSharingPage = () => {
@@ -33,7 +34,7 @@ const useFileSharingPage = () => {
   const { user } = userStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const { homePath } = useUserPath();
-  const path = searchParams.get('path') || '/';
+  const path = searchParams.get(URL_SEARCH_PARAMS.PATH) || homePath;
 
   useEffect(() => {
     if (user) {
@@ -45,7 +46,9 @@ const useFileSharingPage = () => {
     if (!isFileProcessing) {
       if (path === '/') {
         if (pathToRestoreSession !== '/') {
-          setSearchParams(pathToRestoreSession);
+          const newSearchParams = new URLSearchParams(searchParams);
+          newSearchParams.set(URL_SEARCH_PARAMS.PATH, pathToRestoreSession);
+          setSearchParams(newSearchParams);
         } else {
           void fetchFiles(homePath);
         }

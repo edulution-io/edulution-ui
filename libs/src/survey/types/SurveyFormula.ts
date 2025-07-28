@@ -10,8 +10,21 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const ALL_GROUPS_CACHE_KEY = 'allGroups-';
-export const GROUP_WITH_MEMBERS_CACHE_KEY = 'groupWithMembers';
-export const ALL_USERS_CACHE_KEY = 'allUsers-';
-export const ALL_SCHOOLS_CACHE_KEY = 'allSchools';
-export const DEPLOYMENT_TARGET_CACHE_KEY = 'deployment-target';
+import TSurveyPage from '@libs/survey/types/TSurveyPage';
+import TSurveyElement from '@libs/survey/types/TSurveyElement';
+
+class SurveyFormula {
+  title: string;
+
+  logo?: string;
+
+  description?: string;
+
+  // only defined in page mode
+  pages?: TSurveyPage[];
+
+  // only defined in page-less mode
+  elements?: TSurveyElement[];
+}
+
+export default SurveyFormula;

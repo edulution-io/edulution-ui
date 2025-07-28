@@ -14,7 +14,7 @@ import { Document, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Group } from '@libs/groups/types/group';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
-import TSurveyFormula from '@libs/survey/types/TSurveyFormula';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import Attendee from '../conferences/attendee.schema';
 
 export type SurveyDocument = Survey & Document;
@@ -22,7 +22,7 @@ export type SurveyDocument = Survey & Document;
 @Schema({ timestamps: true, strict: true })
 export class Survey {
   @Prop({ required: true })
-  formula: TSurveyFormula;
+  formula: SurveyFormula;
 
   @Prop({ required: false })
   backendLimiters?: {
