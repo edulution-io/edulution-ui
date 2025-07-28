@@ -11,8 +11,8 @@
  */
 
 import APPS from '@libs/appconfig/constants/apps';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import SURVEYS_FILES_PATH from '@libs/survey/constants/surveysFilesPath';
 
-const SURVEYS_DEFAULT_FILES_PATH = `${APPS_FILES_PATH}/${APPS.SURVEYS}/default-files`;
+const SURVEYS_DEFAULT_FILES_PATH = join(SURVEYS_FILES_PATH, 'default-files');
 
 export default SURVEYS_DEFAULT_FILES_PATH;

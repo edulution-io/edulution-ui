@@ -12,7 +12,7 @@
 
 import { join } from 'path';
 import { Response } from 'express';
-import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import {
   SURVEY_FILE_ATTACHMENT_ENDPOINT,
   SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT,
@@ -25,6 +25,7 @@ import defaultLogo from '@libs/survey/constants/default-logo';
 import SURVEYS_HEADER_IMAGE from '@libs/survey/constants/surveys-header-image';
 import TSurveyElement from '@libs/survey/types/TSurveyElement';
 import QuestionsType from '@libs/survey/constants/questions-type';
+import defaultLogo from '@libs/survey/constants/default-logo';
 import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import { SurveysDefaultLogo } from '@libs/survey/assets/images/index';

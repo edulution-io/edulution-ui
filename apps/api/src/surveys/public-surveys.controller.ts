@@ -30,7 +30,7 @@ class PublicSurveysController {
     private readonly surveysAttachmentService: SurveysAttachmentService,
   ) {}
 
-  @Get(`${DEFAULT_FILES}`)
+  @Get(DEFAULT_FILES)
   @Public()
   serveDefaultIcon(@Res() res: Response) {
     return this.surveysAttachmentService.serveDefaultIcon(res);
