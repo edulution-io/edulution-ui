@@ -892,7 +892,8 @@
       "errors": {
         "updateError": "Settings could not be updated.",
         "notFoundError": "Settings could not be loaded."
-      }
+      },
+      "deploymentTarget": "Target platform"
     },
     "userAdministration": {
       "title": "User Administration",
@@ -1083,11 +1084,13 @@
       "description": "Please select the language for the user interface.",
       "german": "German",
       "english": "English",
+      "french": "French",
       "system": "System language"
     },
     "addTotp": {
       "title": "Set up Two-Factor Authentication",
       "qrCodeInstructions": "Scan the QR code with an authenticator app that supports TOTP (Time-based One-Time Password).",
+      "copyTotpSecretInstructions": "If no camera is available, the secret can be copied here:",
       "totpCodeInstructions": "Then enter the generated code here and save it:",
       "mfaSetupRequired": "The global guidelines require two-factor authentication to be set up:",
       "mfaSetupSuccess": "Two-factor authentication has been successfully set up."
@@ -1153,7 +1156,8 @@
       "fileNotFound": "File not found",
       "fileNotProvided": "File not provided",
       "invalidFileType": "Invalid file type",
-      "startDateBeforeEndDate": "The start date must be before the end date"
+      "startDateBeforeEndDate": "The start date must be before the end date",
+      "wrongServerConfig": "Incorrect server configuration"
     },
     "cut": "Cut",
     "sortOrder": "Sort order",
@@ -1596,6 +1600,10 @@
       "dead": "dead"
     }
   },
+  "version": {
+    "newVersionAvailable": "A new version of {{ appName }} is available.",
+    "update": "Refresh"
+  },
   "veyon": {
     "lockScreen": "Lock screen",
     "unlockScreen": "Unlock screen",
@@ -1615,5 +1623,11 @@
   "Failed to fetch": "Connection to edulution server failed. Please try again later.",
   "Invalid client or Invalid client credentials": "Invalid server configuration. Please check the client ID or the client secret.",
   "Not Found (404)": "Connection to edulution server failed. Please try again later.",
-  "NetworkError when attempting to fetch resource.": "Network error when attempting to fetch resource."
+  "NetworkError when attempting to fetch resource.": "Network error when attempting to fetch resource.",
+  "deploymentTarget": {
+    "title": "Selection",
+    "description": "Here you can select the platform to which {{ appName }} will be connected.",
+    "linuxmuster": "Linuxmuster",
+    "generic": "Generic"
+  }
 }

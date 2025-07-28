@@ -11,8 +11,9 @@
  */
 
 import migration000 from './migration000';
+import migration001 from './migration001';
 
 // Add new migrations here
-const globalSettingsMigrationsList = [migration000];
+const globalSettingsMigrationsList = [migration000, migration001];
 
 export default globalSettingsMigrationsList;

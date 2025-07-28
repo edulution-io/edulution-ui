@@ -12,8 +12,9 @@
 
 import removeRealmRoles from './removeRealmRoles';
 import addMailcowSyncRoles from './addMailcowSyncRoles';
+import patchEduUiClient from './patchEduUiClient';
 
 // Add new scripts here
-const keycloakConfigScripts = [removeRealmRoles, addMailcowSyncRoles];
+const keycloakConfigScripts = [removeRealmRoles, addMailcowSyncRoles, patchEduUiClient];
 
 export default keycloakConfigScripts;

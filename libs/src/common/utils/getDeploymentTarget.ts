@@ -10,15 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@nestjs/common';
-import { Request } from 'express';
+import DEPLOYMENT_TARGET from '../constants/deployment-target';
+import type DeploymentTarget from '../types/deployment-target';
 
-const GetCurrentSchool = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
-  const request: Request = ctx.switchToHttp().getRequest();
-  if (!request.user?.school) {
-    throw new UnauthorizedException('school in JWT is missing');
-  }
-  return request.user.school;
-});
+const VALID_TARGETS = new Set<DeploymentTarget>(Object.values(DEPLOYMENT_TARGET));
 
-export default GetCurrentSchool;
+const { EDUI_DEPLOYMENT_TARGET = DEPLOYMENT_TARGET.LINUXMUSTER } = process.env;
+
+const getDeploymentTarget = (): DeploymentTarget =>
+  VALID_TARGETS.has(EDUI_DEPLOYMENT_TARGET as DeploymentTarget)
+    ? (EDUI_DEPLOYMENT_TARGET as DeploymentTarget)
+    : DEPLOYMENT_TARGET.LINUXMUSTER;
+
+export default getDeploymentTarget;

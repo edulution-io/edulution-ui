@@ -13,12 +13,14 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import UserDto from '@libs/user/types/user.dto';
 import LdapGroups from '@libs/groups/types/ldapGroups';
 import { UsersController } from './users.controller';
 import UsersService from './users.service';
 import { User } from './user.schema';
 import UpdateUserDto from './dto/update-user.dto';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 const mockUserModel = {
   insertMany: jest.fn(),
@@ -47,6 +49,14 @@ const mockLdapGroups: LdapGroups = {
   others: ['group1', 'group2'],
 };
 
+const cacheManagerMock = {
+  get: jest.fn(),
+  set: jest.fn(),
+  del: jest.fn(),
+};
+
+const globalSettingsServiceMock = { updateCache: jest.fn() };
+
 describe(UsersController.name, () => {
   let controller: UsersController;
   let service: UsersService;
@@ -63,6 +73,8 @@ describe(UsersController.name, () => {
           provide: getModelToken(User.name),
           useValue: mockUserModel,
         },
+        { provide: CACHE_MANAGER, useValue: cacheManagerMock },
+        { provide: GlobalSettingsService, useValue: globalSettingsServiceMock },
       ],
     }).compile();
 

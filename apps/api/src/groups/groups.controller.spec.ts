@@ -13,9 +13,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { GroupsController } from './groups.controller';
 import GroupsService from './groups.service';
 import mockGroupsService from './groups.service.mock';
+import GlobalSettingsService from '../global-settings/global-settings.service';
+
+const cacheManagerMock = {
+  get: jest.fn(),
+  set: jest.fn(),
+  del: jest.fn(),
+};
+
+const globalSettingsServiceMock = { updateCache: jest.fn() };
 
 describe(GroupsController.name, () => {
   let controller: GroupsController;
@@ -29,6 +39,8 @@ describe(GroupsController.name, () => {
           provide: GroupsService,
           useValue: mockGroupsService,
         },
+        { provide: CACHE_MANAGER, useValue: cacheManagerMock },
+        { provide: GlobalSettingsService, useValue: globalSettingsServiceMock },
       ],
     }).compile();
 
