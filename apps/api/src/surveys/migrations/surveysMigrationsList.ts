@@ -11,7 +11,7 @@
  */
 
 import migration000 from './surveysMigration000SurveyIds';
-import migration001 from './surveysMigration001MoveAttachmentsIntoAttachmentFolder';
+import migration001 from './surveysMigration001Attachments';
 
 // Add new migrations here
 const surveysMigrationsList = [migration000, migration001];

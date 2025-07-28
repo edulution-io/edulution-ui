@@ -16,9 +16,9 @@ import SURVEYS_FILES_PATH from '@libs/survey/constants/surveysFilesPath';
 import SURVEYS_FILE_FOLDERS from '@libs/survey/constants/surveysFileFolders';
 import SURVEYS_ATTACHMENT_PATH from '@libs/survey/constants/surveysAttachmentPath';
 
-const name = '001-move-survey-attachments-into-the-dedicated-attachment-folder';
+const name = '001-move-survey-attachments-into-attachment-folder';
 
-const surveysMigration001MoveAttachmentsIntoAttachmentFolder = {
+const surveysMigration001Attachments = {
   name,
   version: 1,
   execute: async () => {
@@ -27,20 +27,23 @@ const surveysMigration001MoveAttachmentsIntoAttachmentFolder = {
       try {
         await ensureDir(SURVEYS_ATTACHMENT_PATH);
       } catch (error) {
-        Logger.error(`Failed to create directory ${SURVEYS_ATTACHMENT_PATH}`, 'migration001');
+        Logger.error(`Failed to create directory ${SURVEYS_ATTACHMENT_PATH}`, surveysMigration001Attachments.name);
       }
     }
     includedFolders.forEach((folder) => {
       if (!SURVEYS_FILE_FOLDERS.includes(folder)) {
         try {
           moveSync(`${SURVEYS_FILES_PATH}/${folder}`, `${SURVEYS_ATTACHMENT_PATH}/${folder}`);
-          Logger.log(`Moved folder ${folder} to ${SURVEYS_ATTACHMENT_PATH}`, 'migration001');
+          Logger.log(`Moved folder ${folder} to ${SURVEYS_ATTACHMENT_PATH}`, surveysMigration001Attachments.name);
         } catch (error) {
-          Logger.error(`Failed to move folder ${folder} to ${SURVEYS_ATTACHMENT_PATH}`, 'migration001');
+          Logger.error(
+            `Failed to move folder ${folder} to ${SURVEYS_ATTACHMENT_PATH}`,
+            surveysMigration001Attachments.name,
+          );
         }
       }
     });
   },
 };
 
-export default surveysMigration001MoveAttachmentsIntoAttachmentFolder;
+export default surveysMigration001Attachments;
