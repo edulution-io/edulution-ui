@@ -121,7 +121,7 @@ class SurveysController {
     return this.surveysTemplateService.createTemplate(surveyTemplateDto);
   }
 
-  @Get(`${TEMPLATES}`)
+  @Get(TEMPLATES)
   getTemplates() {
     return this.surveysTemplateService.serveTemplates();
   }

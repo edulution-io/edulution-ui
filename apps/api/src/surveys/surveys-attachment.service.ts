@@ -223,11 +223,17 @@ class SurveysAttachmentService implements OnModuleInit {
       await this.fileSystemService.ensureDirectoryExists(permanentDir);
       await FilesystemService.moveFile(tempPath, permanentPath);
       const baseUrl = url.substring(0, url.indexOf(`/${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}`));
+      Logger.log(`Moved temp file ${tempPath} to ${permanentPath}`, SurveysAttachmentService.name);
+      Logger.log(
+        `filename: ${filename}; newUrl: ${baseUrl}/${SURVEY_FILE_ATTACHMENT_ENDPOINT}/${pathForUrl}`,
+        SurveysAttachmentService.name,
+      );
       return {
         newUrl: `${baseUrl}/${SURVEY_FILE_ATTACHMENT_ENDPOINT}/${pathForUrl}`,
         filename,
       };
     } catch (error) {
+      Logger.error(`Failed to move temp file ${tempPath} to ${permanentPath}`, SurveysAttachmentService.name);
       return { newUrl: url, filename: null };
     }
   }
@@ -262,6 +268,7 @@ class SurveysAttachmentService implements OnModuleInit {
 
   async serveDefaultIcon(res: Response): Promise<Response> {
     const defaultIconPath = join(SURVEYS_DEFAULT_FILES_PATH, defaultLogo);
+    await FilesystemService.checkIfFileExist(defaultIconPath);
     const fileStream = await this.fileSystemService.createReadStream(defaultIconPath);
     fileStream.pipe(res);
     return res;
