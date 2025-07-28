@@ -12,7 +12,7 @@
 
 import { join } from 'path';
 import { Response } from 'express';
-import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import {
   SURVEY_FILE_ATTACHMENT_ENDPOINT,
   SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT,
@@ -25,6 +25,7 @@ import SURVEYS_HEADER_IMAGE from '@libs/survey/constants/surveys-header-image';
 import defaultLogo from '@libs/survey/constants/default-logo';
 import TSurveyElement from '@libs/survey/types/TSurveyElement';
 import QuestionsType from '@libs/survey/constants/questions-type';
+import defaultLogo from '@libs/survey/constants/default-logo';
 import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import FilesystemService from '../filesystem/filesystem.service';
@@ -266,6 +267,9 @@ class SurveysAttachmentService implements OnModuleInit {
 
   async serveDefaultIcon(res: Response): Promise<Response> {
     const defaultIconPath = join(SURVEYS_DEFAULT_FILES_PATH, defaultLogo);
+
+    Logger.debug(`Serving default icon from: ${defaultIconPath}`, SurveysAttachmentService.name);
+
     await FilesystemService.checkIfFileExist(defaultIconPath);
     const fileStream = await this.fileSystemService.createReadStream(defaultIconPath);
     fileStream.pipe(res);
