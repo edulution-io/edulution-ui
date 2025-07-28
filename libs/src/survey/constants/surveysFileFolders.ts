@@ -10,10 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import migration000 from './surveysMigration000SurveyIds';
-import migration001 from './surveysMigration001MoveAttachmentsIntoAttachmentFolder';
+import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
+import { TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
 
-// Add new migrations here
-const surveysMigrationsList = [migration000, migration001];
+// TODO: The default-files folder will be introduced in issue #1086 -> replace magic string with constant
+const SURVEYS_FILE_FOLDERS = [TEMPLATES, ATTACHMENT_FOLDER, 'default-files'];
 
-export default surveysMigrationsList;
+export default SURVEYS_FILE_FOLDERS;
