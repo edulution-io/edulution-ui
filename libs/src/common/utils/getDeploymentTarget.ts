@@ -10,8 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const ALL_GROUPS_CACHE_KEY = 'allGroups-';
-export const GROUP_WITH_MEMBERS_CACHE_KEY = 'groupWithMembers';
-export const ALL_USERS_CACHE_KEY = 'allUsers-';
-export const ALL_SCHOOLS_CACHE_KEY = 'allSchools';
-export const DEPLOYMENT_TARGET_CACHE_KEY = 'deployment-target';
+import DEPLOYMENT_TARGET from '../constants/deployment-target';
+import type DeploymentTarget from '../types/deployment-target';
+
+const VALID_TARGETS = new Set<DeploymentTarget>(Object.values(DEPLOYMENT_TARGET));
+
+const { EDUI_DEPLOYMENT_TARGET = DEPLOYMENT_TARGET.LINUXMUSTER } = process.env;
+
+const getDeploymentTarget = (): DeploymentTarget =>
+  VALID_TARGETS.has(EDUI_DEPLOYMENT_TARGET as DeploymentTarget)
+    ? (EDUI_DEPLOYMENT_TARGET as DeploymentTarget)
+    : DEPLOYMENT_TARGET.LINUXMUSTER;
+
+export default getDeploymentTarget;

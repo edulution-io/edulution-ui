@@ -20,6 +20,7 @@ import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import { GLOBAL_SETTINGS_ROOT_ENDPOINT } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { DEPLOYMENT_TARGET_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import CustomHttpException from '../common/CustomHttpException';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
 import MigrationService from '../migration/migration.service';
@@ -41,6 +42,8 @@ class GlobalSettingsService implements OnModuleInit {
         globalSettingsMigrationsList,
       );
 
+      await this.updateCache();
+
       return;
     }
 
@@ -57,6 +60,25 @@ class GlobalSettingsService implements OnModuleInit {
       await this.cacheManager.del(`/${EDU_API_ROOT}/${GLOBAL_SETTINGS_ROOT_ENDPOINT}`);
     } catch (error) {
       Logger.warn(`Failed to invalidate cache for GlobalSettings: ${(error as Error).message}`, GlobalSettings.name);
+    }
+  }
+
+  async updateCache() {
+    try {
+      const globalSetting = await this.getGlobalSettings('general.deploymentTarget');
+      if (!globalSetting?.general) {
+        Logger.warn(`Global settings not found`, GlobalSettings.name);
+        return null;
+      }
+
+      const { deploymentTarget } = globalSetting.general;
+
+      await this.cacheManager.set(DEPLOYMENT_TARGET_CACHE_KEY, deploymentTarget);
+
+      return deploymentTarget;
+    } catch (error) {
+      Logger.warn(`Failed to update cache: ${(error as Error).message}`, GlobalSettings.name);
+      return null;
     }
   }
 
@@ -85,6 +107,8 @@ class GlobalSettingsService implements OnModuleInit {
       }
 
       await this.invalidateCache();
+
+      await this.updateCache();
 
       return updateWriteResult;
     } catch (error) {
