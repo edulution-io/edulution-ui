@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import '@/pages/Surveys/theme/creator.min.css';
 import '@/pages/Surveys/theme/default2.min.css';
-import AttachmentsTable from '@/pages/Surveys/Tables/components/AttachmentsTable';
+// import AttachmentsTable from '@/pages/Surveys/Tables/components/AttachmentsTable';
 
 interface SurveySubmissionProps {
   formula: SurveyFormula;
@@ -44,7 +44,7 @@ const SubmittedAnswersDialogBody = (props: SurveySubmissionProps) => {
   return (
     <div className="max-h-[75vh] overflow-y-scroll rounded bg-gray-600 p-4">
       <Survey model={surveyModel} />
-      <AttachmentsTable />
+      {/* <AttachmentsTable /> */}
     </div>
   );
 };
