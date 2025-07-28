@@ -84,12 +84,11 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       if (!surveyFormula) {
         surveyFormula = creator.JSON as SurveyFormula;
       }
-      const currentPage = creator?.currentPage;
       const updatedFormula = JSON.parse(JSON.stringify(surveyFormula)) as SurveyFormula;
 
       let correspondingQuestion: SurveyElement | undefined;
-      if (currentPage.isPage) {
-        const correspondingPage = updatedFormula?.pages?.find((page) => page.name === currentPage.name);
+      if (selectedQuestion?.page.name) {
+        const correspondingPage = updatedFormula?.pages?.find((page) => page.name === selectedQuestion.page.name);
         correspondingQuestion = correspondingPage?.elements?.find(
           (question) => question.name === selectedQuestion.name,
         );
