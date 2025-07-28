@@ -21,7 +21,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import { useLocation } from 'react-router-dom';
 import useUserStore from '@/store/UserStore/useUserStore';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
-import getRootPathName from '@libs/common/utils/getRootPathName';
+import getFromPathName from '@libs/common/utils/getFromPathName';
 
 const isActiveNativeFrame = (appConfig: AppConfigDto, loadedFrames: string[]) => {
   const { appType } = appConfig;
@@ -31,7 +31,7 @@ const isActiveNativeFrame = (appConfig: AppConfigDto, loadedFrames: string[]) =>
 
 const NativeFrameManager = () => {
   const { pathname } = useLocation();
-  const rootPathName = getRootPathName(pathname);
+  const rootPathName = getFromPathName(pathname, 1);
 
   const { appConfigs } = useAppConfigsStore();
   const { isAuthenticated } = useUserStore();
