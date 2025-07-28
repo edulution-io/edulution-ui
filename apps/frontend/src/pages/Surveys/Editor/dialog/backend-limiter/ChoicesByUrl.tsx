@@ -80,13 +80,15 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     setIsUpdatingBackendLimiters(true);
 
     try {
-      const surveyFormula = form.watch('formula');
-      const currentPage = creator?.currentPage;
-      const updatedFormula: SurveyFormula = structuredClone(surveyFormula);
+      let surveyFormula = form.watch('formula');
+      if (!surveyFormula) {
+        surveyFormula = creator.JSON as SurveyFormula;
+      }
+      const updatedFormula = JSON.parse(JSON.stringify(surveyFormula)) as SurveyFormula;
 
       let correspondingQuestion: SurveyElement | undefined;
-      if (currentPage.isPage) {
-        const correspondingPage = updatedFormula?.pages?.find((page) => page.name === currentPage.name);
+      if (selectedQuestion?.page.name) {
+        const correspondingPage = updatedFormula?.pages?.find((page) => page.name === selectedQuestion.page.name);
         correspondingQuestion = correspondingPage?.elements?.find(
           (question) => question.name === selectedQuestion.name,
         );
@@ -112,14 +114,15 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
         correspondingQuestion.hideIfChoicesEmpty = true;
       }
 
-      creator.JSON = updatedFormula;
       form.setValue('formula', updatedFormula);
+      creator.JSON = updatedFormula;
       toggleUseBackendLimits();
 
       const questions: TSurveyQuestion[] = creator.survey.getAllQuestions() as TSurveyQuestion[];
       const question: TSurveyQuestion | undefined = questions.find((q) => q.name === correspondingQuestion.name);
       setSelectedQuestion(question);
-    } catch {
+    } catch (error) {
+      console.error('Error toggling backend limits:', error);
       toast.error(t('survey.errors.updateOrCreateError'));
     } finally {
       setIsUpdatingBackendLimiters(false);
