@@ -120,6 +120,9 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         const file = new File([content], options.fileValue.name, {
             type: options.fileValue.type
         });
+
+        console.log('File to read:', file);
+
         const reader = new FileReader();
         reader.onload = (e) => {
             options.callback("success", e.target?.result);

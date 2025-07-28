@@ -15,7 +15,7 @@ import { Model, Types } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import { Response } from 'express';
 import { InjectModel } from '@nestjs/mongoose';
-import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
@@ -259,7 +259,7 @@ class SurveyAnswersService implements OnModuleInit {
           .exec()
       : undefined;
 
-    return this.selectStrategy(survey, attendee, answer, String(existingUsersAnswer?.id));
+    return this.selectStrategy(survey, attendee, answer, existingUsersAnswer?.id ? String(existingUsersAnswer?.id) : undefined);
   }
 
   selectStrategy = (
@@ -268,9 +268,11 @@ class SurveyAnswersService implements OnModuleInit {
     answer: JSON,
     existingUsersAnswerId?: string,
   ): Promise<SurveyAnswer | null> => {
+    Logger.log(`Selecting strategy for survey ${survey.id} with attendee ${attendee.username}, existingUsersAnswerId: ${existingUsersAnswerId}`, SurveyAnswersService.name)
+
     if (survey.isAnonymous) return this.anonymousStrategy(survey, answer);
     if (!attendee.username && attendee.firstName) return this.publicFirstStrategy(survey, answer, attendee);
-    if (!existingUsersAnswerId || survey.canSubmitMultipleAnswers)
+    if (!existingUsersAnswerId || existingUsersAnswerId === undefined || survey.canSubmitMultipleAnswers)
       return this.loggedOrPublicStrategy(survey, answer, attendee);
     if (existingUsersAnswerId && survey.canUpdateFormerAnswer)
       return this.updatingStrategy(survey, answer, attendee, existingUsersAnswerId);
@@ -344,22 +346,19 @@ class SurveyAnswersService implements OnModuleInit {
     answer: JSON,
     attendee: Partial<Attendee>,
   ): Promise<SurveyAnswerDocument | null> {
-    const isAuthenticatedPublicUserParticipation = !!attendee.username && publicUserLoginRegex.test(attendee.username);
-
-    const userName = isAuthenticatedPublicUserParticipation ? attendee.firstName : attendee.username;
-    if (!userName) {
+    if (!attendee.username) {
       throw new CustomHttpException(
-        SurveyAnswerErrorMessages.NotAbleToFindOrCreateSurveyAnswerError,
+        SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
         SurveyAnswersService.name,
       );
     }
 
-    await this.throwErrorIfParticipationIsNotPossible(survey, userName);
+    await this.throwErrorIfParticipationIsNotPossible(survey, attendee.username);
 
     const updatedAnswer = await this.surveyAnswerAttachmentsService.moveAnswersAttachmentsToPermanentStorage(
-      userName,
+      attendee.username,
       String(survey.id),
       answer,
     );
@@ -369,10 +368,10 @@ class SurveyAnswersService implements OnModuleInit {
       survey.saveNo,
       updatedAnswer,
     );
-    void this.surveyAnswerAttachmentsService.clearUpSurveyAnswersTempFiles(userName, String(survey.id));
+    void this.surveyAnswerAttachmentsService.clearUpSurveyAnswersTempFiles(attendee.username, String(survey.id));
 
     if (createdAnswer) {
-      await this.updateSurveyParticipations(survey, String(createdAnswer.id), userName);
+      await this.updateSurveyParticipations(survey, String(createdAnswer.id), attendee.username);
     }
 
     return createdAnswer;
@@ -384,9 +383,7 @@ class SurveyAnswersService implements OnModuleInit {
     attendee: Partial<Attendee>,
     existingUsersAnswerId: string,
   ): Promise<SurveyAnswerDocument | null> {
-    const isAuthenticatedPublicUserParticipation = !!attendee.username && publicUserLoginRegex.test(attendee.username);
-    const userName = isAuthenticatedPublicUserParticipation ? attendee.firstName : attendee.username;
-    if (!userName) {
+    if (!attendee.username) {
       throw new CustomHttpException(
         UserErrorMessages.UpdateError,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -395,13 +392,16 @@ class SurveyAnswersService implements OnModuleInit {
       );
     }
 
-    await this.throwErrorIfParticipationIsNotPossible(survey, userName);
+    await this.throwErrorIfParticipationIsNotPossible(survey, attendee.username);
 
     const updatedAnswer = await this.surveyAnswerAttachmentsService.moveAnswersAttachmentsToPermanentStorage(
-      userName,
+      attendee.username,
       String(survey.id),
       answer,
     );
+
+    Logger.log(`Updating survey answer with ID: ${existingUsersAnswerId}`, SurveyAnswersService.name);
+
     const updatedSurveyAnswer = await this.surveyAnswerModel.findByIdAndUpdate<SurveyAnswerDocument>(
       existingUsersAnswerId,
       {
@@ -418,7 +418,7 @@ class SurveyAnswersService implements OnModuleInit {
         SurveyAnswersService.name,
       );
     }
-    void this.surveyAnswerAttachmentsService.clearUpSurveyAnswersTempFiles(userName, String(survey.id));
+    void this.surveyAnswerAttachmentsService.clearUpSurveyAnswersTempFiles(attendee.username, String(survey.id));
     return updatedSurveyAnswer;
   }
 
@@ -444,6 +444,9 @@ class SurveyAnswersService implements OnModuleInit {
   }
 
   async getAnswer(surveyId: string, username: string): Promise<SurveyAnswer | undefined> {
+
+    Logger.log(`Retrieving answer for surveyId: ${surveyId}, username: ${username}`, SurveyAnswersService.name);
+
     const latestUserAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>(
       { 'attendee.username': username, surveyId: new Types.ObjectId(surveyId) },
       null,
@@ -452,28 +455,28 @@ class SurveyAnswersService implements OnModuleInit {
     return latestUserAnswer || undefined;
   }
 
-  // async getAnsweredFiles(surveyId: string, username: string): Promise<AnsweredFile[]> {
-  //   const filesPath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, username);
+  async getAnsweredFiles(surveyId: string, username: string): Promise<{ name: string; path: string; content: Buffer }[]> {
+    const filesPath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, username);
 
-  //   Logger.log(`filesPath: ${filesPath}`, SurveyAnswersService.name);
+    Logger.log(`filesPath: ${filesPath}`, SurveyAnswersService.name);
 
-  //   const existence = await FilesystemService.checkIfFileExist(filesPath);
+    const existence = await FilesystemService.checkIfFileExist(filesPath);
 
-  //   Logger.log(`existence: ${existence}`, SurveyAnswersService.name);
+    Logger.log(`existence: ${existence}`, SurveyAnswersService.name);
 
-  //   if (!existence) {
-  //     return [];
-  //   }
+    if (!existence) {
+      return [];
+    }
 
-  //   const fileNames = await this.fileSystemService.getAllFilenamesInDirectory(filesPath);
+    const fileNames = await this.fileSystemService.getAllFilenamesInDirectory(filesPath);
     
-  //   Logger.log(`Checking if directory exists: ${fileNames}`, SurveyAnswersService.name);
+    Logger.log(`Checking if directory exists: ${fileNames}`, SurveyAnswersService.name);
 
-  //   const filePromises = fileNames.map(async (name) => {
-  //     return { name, path: join(filesPath, name), content: await FilesystemService.readFile(join(filesPath, name)) };
-  //   });
-  //   return Promise.all(filePromises);
-  // }
+    const filePromises = fileNames.map(async (name) => {
+      return { name, path: join(filesPath, name), content: await FilesystemService.readFile(join(filesPath, name)) };
+    });
+    return Promise.all(filePromises);
+  }
 
   async getPublicAnswers(surveyId: string): Promise<JSON[] | null> {
     const surveyAnswers = await this.surveyAnswerModel.find<SurveyAnswer>({ surveyId: new Types.ObjectId(surveyId) });

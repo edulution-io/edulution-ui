@@ -26,6 +26,7 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  Logger,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -196,6 +197,9 @@ class SurveysController {
       firstName: currentUser.given_name,
       lastName: currentUser.family_name,
     };
+
+    Logger.debug(`Answering survey with ID: ${surveyId}`, SurveysController.name);
+
     return this.surveyAnswerService.addAnswer(surveyId, answer, attendee);
   }
 
