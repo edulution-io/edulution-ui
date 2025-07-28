@@ -12,7 +12,7 @@
 
 import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
-import { Body, Controller, Get, Post, Param, Res, Logger } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, Res } from '@nestjs/common';
 import { PUBLIC_USER, FILES, PUBLIC_SURVEYS, CHOICES, DEFAULT_FILES } from '@libs/survey/constants/surveys-endpoint';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
@@ -40,9 +40,6 @@ class PublicSurveysController {
   @Public()
   async find(@Param() params: { surveyId: string }) {
     const { surveyId } = params;
-
-    Logger.debug('Should be serving default survey icon');
-
     return this.surveyService.findPublicSurvey(surveyId);
   }
 
