@@ -17,7 +17,6 @@ import {
   createWriteStream,
   ensureDir,
   move,
-  copyFile,
   outputFile,
   pathExists,
   readdir,
@@ -117,19 +116,6 @@ class FilesystemService {
     }
   }
 
-  static async copyFile(oldFilePath: string, newFilePath: string): Promise<void> {
-    try {
-      await copyFile(oldFilePath, newFilePath);
-    } catch (error) {
-      throw new CustomHttpException(
-        FileSharingErrorMessage.CopyFailed,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
-        FilesystemService.name,
-      );
-    }
-  }
-
   static async moveFile(oldFilePath: string, newFilePath: string): Promise<void> {
     try {
       await move(oldFilePath, newFilePath, { overwrite: true });
@@ -211,11 +197,7 @@ class FilesystemService {
   }
 
   static async checkIfFileExist(filePath: string): Promise<boolean> {
-    try {
-      return await pathExists(filePath);
-    } catch (error) {
-      return false;
-    }
+    return pathExists(filePath);
   }
 
   static async throwErrorIfFileNotExists(filePath: string): Promise<void> {
