@@ -11,9 +11,8 @@
  */
 
 import { join } from 'path';
-import { Readable } from 'stream';
 import { Response } from 'express';
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import {
   SURVEY_FILE_ATTACHMENT_ENDPOINT,
   SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT,
@@ -29,8 +28,8 @@ import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType'
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import SURVEYS_CUSTOM_LOGO from '@libs/survey/constants/surveys-custom-logo';
 import SURVEYS_DEFAULT_LOGO from '@libs/survey/constants/surveys-default-logo';
+import { SurveysDefaultLogo } from '@libs/survey/assets/images/index';
 import FilesystemService from '../filesystem/filesystem.service';
-import { SurveysDefaultLogo } from './assets/images/index';
 
 @Injectable()
 class SurveysAttachmentService implements OnModuleInit {
@@ -224,17 +223,11 @@ class SurveysAttachmentService implements OnModuleInit {
       await this.fileSystemService.ensureDirectoryExists(permanentDir);
       await FilesystemService.moveFile(tempPath, permanentPath);
       const baseUrl = url.substring(0, url.indexOf(`/${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}`));
-      Logger.log(`Moved temp file ${tempPath} to ${permanentPath}`, SurveysAttachmentService.name);
-      Logger.log(
-        `filename: ${filename}; newUrl: ${baseUrl}/${SURVEY_FILE_ATTACHMENT_ENDPOINT}/${pathForUrl}`,
-        SurveysAttachmentService.name,
-      );
       return {
         newUrl: `${baseUrl}/${SURVEY_FILE_ATTACHMENT_ENDPOINT}/${pathForUrl}`,
         filename,
       };
     } catch (error) {
-      Logger.error(`Failed to move temp file ${tempPath} to ${permanentPath}`, SurveysAttachmentService.name);
       return { newUrl: url, filename: null };
     }
   }
