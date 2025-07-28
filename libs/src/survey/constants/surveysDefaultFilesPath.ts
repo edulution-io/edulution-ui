@@ -13,6 +13,6 @@
 import { join } from 'path';
 import SURVEYS_FILES_PATH from '@libs/survey/constants/surveysFilesPath';
 
-const SURVEYS_DEFAULT_FILES_PATH = join(SURVEYS_FILES_PATH, 'defaults');
+const SURVEYS_DEFAULT_FILES_PATH = join(SURVEYS_FILES_PATH, 'default-files');
 
 export default SURVEYS_DEFAULT_FILES_PATH;
