@@ -26,10 +26,8 @@ import FilesystemService from '../filesystem/filesystem.service';
 class SurveysTemplateService implements OnModuleInit {
   constructor(private fileSystemService: FilesystemService) {}
 
-  private readonly templatePath = SURVEYS_TEMPLATE_PATH;
-
   onModuleInit() {
-    void this.fileSystemService.ensureDirectoryExists(this.templatePath);
+    void this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);
     Logger.log(`_ensureWebpackBundlesTheFile: ${JSON.stringify(surveyTemplate01)}`, SurveysTemplateService.name);
   }
 
@@ -62,9 +60,6 @@ class SurveysTemplateService implements OnModuleInit {
 
   async serveTemplates(): Promise<SurveyTemplateDto[]> {
     const existingFiles = await this.fileSystemService.getAllFilenamesInDirectory(SURVEYS_TEMPLATE_PATH);
-
-    Logger.debug(`Existing survey templates: ${existingFiles.join(', ')}`, SurveysTemplateService.name);
-
     const existingTemplates = existingFiles.map(async (filename) =>
       FilesystemService.readFile<SurveyTemplateDto>(join(SURVEYS_TEMPLATE_PATH, filename)),
     );

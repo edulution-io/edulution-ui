@@ -108,7 +108,7 @@ class FilesystemService {
       return JSON.parse(fileContent) as T;
     } catch (error) {
       throw new CustomHttpException(
-        FileSharingErrorMessage.CopyFailed,
+        FileSharingErrorMessage.ReadingFileFailed,
         HttpStatus.INTERNAL_SERVER_ERROR,
         error,
         FilesystemService.name,
