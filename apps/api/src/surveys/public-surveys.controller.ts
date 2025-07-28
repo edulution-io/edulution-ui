@@ -33,7 +33,7 @@ import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/sur
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
-import SurveyAnswersMaximumFileSize from '@libs/survey/constants/survey-answers-maximum-file-size';
+import SURVEY_ANSWERS_MAXIMUM_FILE_SIZE from '@libs/survey/constants/survey-answers-maximum-file-size';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import FilesystemService from 'apps/api/src/filesystem/filesystem.service';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
@@ -111,7 +111,7 @@ class PublicSurveysController {
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addMaxSizeValidator({
-          maxSize: SurveyAnswersMaximumFileSize,
+          maxSize: SURVEY_ANSWERS_MAXIMUM_FILE_SIZE,
         })
         .build({
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -156,9 +156,11 @@ class PublicSurveysController {
   @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:filename`)
   @Public()
   serveFileFromAnswer(@Param() params: { userName: string; surveyId: string; filename: string }, @Res() res: Response) {
-    
-    Logger.debug(`Serving file from answer for user: ${params.userName}, surveyId: ${params.surveyId}, filename: ${params.filename}`, PublicSurveysController.name);
-    
+    Logger.debug(
+      `Serving file from answer for user: ${params.userName}, surveyId: ${params.surveyId}, filename: ${params.filename}`,
+      PublicSurveysController.name,
+    );
+
     const { userName, surveyId, filename } = params;
     if (!userName || !surveyId || !filename) {
       throw new CustomHttpException(
@@ -177,8 +179,10 @@ class PublicSurveysController {
     @Param() params: { userName: string; surveyId: string; filename: string },
     @Res() res: Response,
   ) {
- 
-    Logger.debug(`Serving file from answer for user: ${params.userName}, surveyId: ${params.surveyId}, filename: ${params.filename}`, PublicSurveysController.name);
+    Logger.debug(
+      `Serving file from answer for user: ${params.userName}, surveyId: ${params.surveyId}, filename: ${params.filename}`,
+      PublicSurveysController.name,
+    );
 
     const { userName, surveyId, filename } = params;
     if (!userName || !surveyId || !filename) {

@@ -16,7 +16,7 @@ import { ClearFilesEvent, Model, Serializer, SurveyModel, UploadFilesEvent } fro
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
-import SurveyAnswersMaximumFileSize from '@libs/survey/constants/survey-answers-maximum-file-size';
+import SURVEY_ANSWERS_MAXIMUM_FILE_SIZE from '@libs/survey/constants/survey-answers-maximum-file-size';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import useLanguage from '@/hooks/useLanguage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
@@ -93,7 +93,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         !selectedSurvey.id ||
         !files?.length ||
         files.some((file) => !file.name?.length) ||
-        files.some((file) => file.size > SurveyAnswersMaximumFileSize)
+        files.some((file) => file.size > SURVEY_ANSWERS_MAXIMUM_FILE_SIZE)
       ) {
         return callback([]);
       }
@@ -105,12 +105,12 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       const results = await Promise.all(uploadPromises);
       return callback(results);
     });
-    
+
     newModel.onDownloadFile.add(async (_, options) => {
       if (!selectedSurvey || !selectedSurvey.id) {
         return;
       }
-      
+
       console.log('Download file options:', options);
 
       try {
@@ -118,19 +118,19 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         const content = response.data[options.fileValue.name];
 
         const file = new File([content], options.fileValue.name, {
-            type: options.fileValue.type
+          type: options.fileValue.type,
         });
 
         console.log('File to read:', file);
 
         const reader = new FileReader();
         reader.onload = (e) => {
-            options.callback("success", e.target?.result);
+          options.callback('success', e.target?.result);
         };
         reader.readAsDataURL(file);
       } catch (error) {
-        console.error("Error: ", error);
-        options.callback("error");
+        console.error('Error: ', error);
+        options.callback('error');
       }
     });
 
