@@ -328,7 +328,7 @@ const UploadContentBody = () => {
               : t('filesharingUpload.oversizedFileDetected')
           }
           description={t('filesharingUpload.cannotUploadOversized')}
-          filenames={filesThatWillBeOverwritten}
+          filenames={oversizedFiles.map((file) => file.name)}
           borderColor="border-ciLightRed"
           backgroundColor="bg-background"
           textColor="text-ciLightRed"
