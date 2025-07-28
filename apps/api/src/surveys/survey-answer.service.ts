@@ -30,7 +30,7 @@ import surveyAnswersMigrationsList from './migrations/surveyAnswersMigrationsLis
 import GroupsService from '../groups/groups.service';
 
 @Injectable()
-class SurveyAnswersService implements OnModuleInit {
+class SurveyAnswerService implements OnModuleInit {
   constructor(
     @InjectModel(SurveyAnswer.name) private surveyAnswerModel: Model<SurveyAnswerDocument>,
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
@@ -48,7 +48,7 @@ class SurveyAnswersService implements OnModuleInit {
         SurveyErrorMessages.NotFoundError,
         HttpStatus.NOT_FOUND,
         undefined,
-        SurveyAnswersService.name,
+        SurveyAnswerService.name,
       );
     }
 
@@ -72,7 +72,7 @@ class SurveyAnswersService implements OnModuleInit {
         SurveyErrorMessages.NotFoundError,
         HttpStatus.NOT_FOUND,
         undefined,
-        SurveyAnswersService.name,
+        SurveyAnswerService.name,
       );
     }
 
@@ -82,27 +82,54 @@ class SurveyAnswersService implements OnModuleInit {
         SurveyErrorMessages.NoBackendLimiters,
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
-        SurveyAnswersService.name,
+        SurveyAnswerService.name,
       );
     }
 
     const possibleChoices = limiter.choices;
 
-    const filteredChoices = await Promise.all(
-      possibleChoices.map(async (choice) => {
-        const isVisible = (await this.countChoiceSelections(surveyId, questionName, choice.title)) < choice.limit;
-        return isVisible ? choice : null;
-      }),
-    );
+    const filteredChoices: ChoiceDto[] = [];
+    const filteringPromises = possibleChoices.map(async (choice) => {
+      const counter = await this.countChoiceSelections(surveyId, questionName, choice.title);
+      if (choice.limit === 0 || !counter || counter < choice.limit) {
+        filteredChoices.push(choice);
+      }
+    });
+    await Promise.all(filteringPromises);
 
-    return filteredChoices.filter((choice) => choice !== null);
+    filteredChoices.sort((a, b) => a.title.localeCompare(b.title));
+
+    return filteredChoices;
   };
 
   async countChoiceSelections(surveyId: string, questionName: string, choiceId: string): Promise<number> {
-    return this.surveyAnswerModel.countDocuments({
-      surveyId: new Types.ObjectId(surveyId),
-      [`answer.${questionName}`]: choiceId,
+    const documents = await this.surveyAnswerModel
+      .find<SurveyAnswerDocument>({ surveyId: new Types.ObjectId(surveyId) })
+      .exec();
+    const filteredAnswers: string[] = [];
+    documents.forEach((document) => {
+      try {
+        const updatedAnswer = structuredClone(document.answer) as unknown as { [key: string]: string | object };
+
+        if (Array.isArray(updatedAnswer[questionName])) {
+          const choices = updatedAnswer[questionName] as string[];
+          const choice = choices.find((c) => c === choiceId);
+          if (choice) {
+            filteredAnswers.push(choice);
+          }
+        } else if (updatedAnswer[questionName] === choiceId) {
+          filteredAnswers.push(choiceId);
+        }
+      } catch (error) {
+        throw new CustomHttpException(
+          SurveyAnswerErrorMessages.NotAbleToCountChoices,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          error,
+          SurveyAnswerService.name,
+        );
+      }
     });
+    return filteredAnswers.length || 0;
   }
 
   async getCreatedSurveys(username: string): Promise<Survey[]> {
@@ -186,7 +213,7 @@ class SurveyAnswersService implements OnModuleInit {
         SurveyErrorMessages.ParticipationErrorSurveyExpired,
         HttpStatus.UNAUTHORIZED,
         undefined,
-        SurveyAnswersService.name,
+        SurveyAnswerService.name,
       );
     }
 
@@ -195,7 +222,7 @@ class SurveyAnswersService implements OnModuleInit {
         SurveyErrorMessages.ParticipationErrorUserNotAssigned,
         HttpStatus.UNAUTHORIZED,
         undefined,
-        SurveyAnswersService.name,
+        SurveyAnswerService.name,
       );
     }
 
@@ -205,7 +232,7 @@ class SurveyAnswersService implements OnModuleInit {
         SurveyErrorMessages.ParticipationErrorAlreadyParticipated,
         HttpStatus.FORBIDDEN,
         undefined,
-        SurveyAnswersService.name,
+        SurveyAnswerService.name,
       );
     }
 
@@ -224,7 +251,7 @@ class SurveyAnswersService implements OnModuleInit {
         SurveyErrorMessages.ParticipationErrorUserNotAssigned,
         HttpStatus.UNAUTHORIZED,
         undefined,
-        SurveyAnswersService.name,
+        SurveyAnswerService.name,
       );
     }
   };
@@ -241,7 +268,7 @@ class SurveyAnswersService implements OnModuleInit {
         SurveyErrorMessages.NotFoundError,
         HttpStatus.NOT_FOUND,
         undefined,
-        SurveyAnswersService.name,
+        SurveyAnswerService.name,
       );
     }
 
@@ -284,7 +311,7 @@ class SurveyAnswersService implements OnModuleInit {
             SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
             HttpStatus.INTERNAL_SERVER_ERROR,
             undefined,
-            SurveyAnswersService.name,
+            SurveyAnswerService.name,
           );
         }
 
@@ -299,7 +326,7 @@ class SurveyAnswersService implements OnModuleInit {
             UserErrorMessages.UpdateError,
             HttpStatus.INTERNAL_SERVER_ERROR,
             undefined,
-            SurveyAnswersService.name,
+            SurveyAnswerService.name,
           );
         }
 
@@ -311,7 +338,7 @@ class SurveyAnswersService implements OnModuleInit {
           SurveyErrorMessages.ParticipationErrorAlreadyParticipated,
           HttpStatus.FORBIDDEN,
           undefined,
-          SurveyAnswersService.name,
+          SurveyAnswerService.name,
         );
       }
 
@@ -324,7 +351,7 @@ class SurveyAnswersService implements OnModuleInit {
           SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError,
           HttpStatus.NOT_FOUND,
           undefined,
-          SurveyAnswersService.name,
+          SurveyAnswerService.name,
         );
       }
       return updatedSurveyAnswer;
@@ -334,7 +361,7 @@ class SurveyAnswersService implements OnModuleInit {
       SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
       HttpStatus.INTERNAL_SERVER_ERROR,
       undefined,
-      SurveyAnswersService.name,
+      SurveyAnswerService.name,
     );
   }
 
@@ -354,7 +381,7 @@ class SurveyAnswersService implements OnModuleInit {
         SurveyAnswerErrorMessages.NotAbleToFindSurveyAnswerError,
         HttpStatus.NOT_FOUND,
         undefined,
-        SurveyAnswersService.name,
+        SurveyAnswerService.name,
       );
     }
 
@@ -381,7 +408,7 @@ class SurveyAnswersService implements OnModuleInit {
         SurveyAnswerErrorMessages.NotAbleToDeleteSurveyAnswerError,
         HttpStatus.NOT_MODIFIED,
         error,
-        SurveyAnswersService.name,
+        SurveyAnswerService.name,
       );
     }
   }
@@ -411,11 +438,11 @@ class SurveyAnswersService implements OnModuleInit {
         SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
-        SurveyAnswersService.name,
+        SurveyAnswerService.name,
       );
     }
     return newSurveyAnswer;
   }
 }
 
-export default SurveyAnswersService;
+export default SurveyAnswerService;

@@ -57,8 +57,14 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
       filterKey: DOCKER_CONTAINER_TABLE_COLUMNS.NAME,
       filterPlaceHolderText: 'bulletinboard.filterPlaceHolderText',
       type: ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE,
-      hideColumnsInMobileView: [BULLETIN_BOARD_TABLE_COLUMNS.CREATED_AT],
-      hideColumnsInTabletView: [BULLETIN_BOARD_TABLE_COLUMNS.CREATED_AT],
+      hideColumnsInMobileView: [
+        BULLETIN_BOARD_TABLE_COLUMNS.CREATED_AT,
+        BULLETIN_BOARD_TABLE_COLUMNS.BULLETIN_VISIBILITY,
+      ],
+      hideColumnsInTabletView: [
+        BULLETIN_BOARD_TABLE_COLUMNS.CREATED_AT,
+        BULLETIN_BOARD_TABLE_COLUMNS.BULLETIN_VISIBILITY,
+      ],
     }),
   ],
   [APPS.CLASS_MANAGEMENT]: [

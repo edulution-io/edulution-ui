@@ -61,10 +61,11 @@ const BulletinBoardPageColumn = ({
       <div className="mb-2 flex flex-col gap-4 overflow-y-auto pb-20 text-background scrollbar-thin">
         {bulletins.map((bulletin) => (
           <BulletinBoardColumnItem
-            key={bulletin.id}
+            key={`${bulletin.id}:${category.bulletinVisibility}`}
             bulletin={bulletin}
             canManageBulletins={canEditCategory}
             handleImageClick={handleImagePreviewClick}
+            initialBulletinVisibility={category.bulletinVisibility}
           />
         ))}
       </div>

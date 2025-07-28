@@ -35,14 +35,14 @@ const BulletinBoardPage = () => {
   const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    void getBulletinsByCategories(false);
-    void getCategoriesWithEditPermission();
-    setIsInitialLoading(false);
-  }, [isEditorialModeEnabled, bulletinBoardNotifications]);
+    const fetchData = async () => {
+      void getCategoriesWithEditPermission();
+      await getBulletinsByCategories(false);
+      setIsInitialLoading(false);
+    };
 
-  if (isLoading && isInitialLoading) {
-    return <LoadingIndicatorDialog isOpen />;
-  }
+    void fetchData();
+  }, [isEditorialModeEnabled, bulletinBoardNotifications]);
 
   const getPageContent = () => {
     if (isEditorialModeEnabled) {
@@ -51,7 +51,9 @@ const BulletinBoardPage = () => {
 
     return (
       <div className="flex h-full max-h-full overflow-x-auto overflow-y-hidden scrollbar-thin">
-        {bulletinsByCategories?.length ? (
+        {(isLoading || isInitialLoading) && <LoadingIndicatorDialog isOpen />}
+
+        {bulletinsByCategories?.length &&
           bulletinsByCategories
             .sort((a, b) => a.category.position - b.category.position)
             .map(({ bulletins, category, canEditCategory }) => (
@@ -62,8 +64,9 @@ const BulletinBoardPage = () => {
                 category={category}
                 bulletins={bulletins}
               />
-            ))
-        ) : (
+            ))}
+
+        {!(isLoading || isInitialLoading) && !bulletinsByCategories?.length && (
           <div className="flex h-full min-h-full w-full items-center justify-center">
             <div>{t('bulletinboard.noBulletinsToShow')}</div>
           </div>
