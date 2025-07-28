@@ -267,9 +267,6 @@ class SurveysAttachmentService implements OnModuleInit {
 
   async serveDefaultIcon(res: Response): Promise<Response> {
     const defaultIconPath = join(SURVEYS_DEFAULT_FILES_PATH, defaultLogo);
-
-    Logger.debug(`Serving default icon from: ${defaultIconPath}`, SurveysAttachmentService.name);
-
     await FilesystemService.checkIfFileExist(defaultIconPath);
     const fileStream = await this.fileSystemService.createReadStream(defaultIconPath);
     fileStream.pipe(res);
