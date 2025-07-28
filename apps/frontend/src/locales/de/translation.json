@@ -326,6 +326,7 @@
       "UploadFailed": "Datei konnte nicht hinzugefügt werden",
       "DeletionFailed": "Löschen fehlgeschlagen",
       "RenameFailed": "Umbenennen fehlgeschlagen",
+      "ReadingFileFailed": "Datei konnte nicht gelesen werden",
       "MoveFailed": "Verschieben fehlgeschlagen",
       "CreationFailed": "Erstellen fehlgeschlagen",
       "DbAccessFailed": "Datenbankzugriff fehlgeschlagen",

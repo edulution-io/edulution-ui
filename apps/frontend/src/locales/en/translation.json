@@ -327,6 +327,7 @@
       "UploadFailed": "File could not be added",
       "DeletionFailed": "Deletion failed",
       "RenameFailed": "Rename failed",
+      "ReadingFileFailed": "Reading file failed",
       "MoveFailed": "Move failed",
       "CreationFailed": "Creation failed",
       "DbAccessFailed": "Database access failed",
