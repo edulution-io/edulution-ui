@@ -86,7 +86,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
       fileNames.forEach((fileName) => {
         if (tempFileNames.includes(fileName)) {
           const oldPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, username, surveyId, fileName);
-          const newPath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, fileName);
+          const newPath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, username, fileName);
           movingPromises.add(FilesystemService.moveFile(oldPath, newPath));
         }
       });

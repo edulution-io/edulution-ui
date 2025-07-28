@@ -51,10 +51,11 @@ interface ParticipateSurveyStore {
 
   publicUserId?: string;
 
-  uploadTempFile: (surveyId: string, file: File) => Promise<{ fileName: string; data: string }>;
+  uploadTempFile: (surveyId: string, file: File) => Promise<{ name: string; url: string; content: Buffer<ArrayBufferLike> }>;
   isUploadingFile?: boolean;
   deleteTempFile: (surveyId: string, file: File, callback: CallableFunction) => Promise<string | undefined>;
   isDeletingFile?: boolean;
+  fetchTempFile: (surveyId: string, fileName: string) => Promise<Record<string, string>>;
 
   reset: () => void;
 }
@@ -175,24 +176,43 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
   },
 
-  uploadTempFile: async (surveyId: string, file: File): Promise<{ fileName: string; data: string }> => {
+  uploadTempFile: async (surveyId: string, file: File): Promise<{ name: string; url: string; content: Buffer<ArrayBufferLike> }> => {
     const { attendee } = get();
     set({ isUploadingFile: true });
 
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const response = await eduApi.post<string>(
+      const response = await eduApi.post<{ name: string; url: string; content: Buffer<ArrayBufferLike> }>(
         `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}`,
         formData,
         {
           headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
         },
       );
-      return { fileName: file.name, data: response.data };
+      return response.data;
     } catch (error) {
       handleApiError(error, set);
-      return { fileName: '', data: '' };
+      return { name: '', url: '', content: Buffer.from('') };
+    } finally {
+      set({ isUploadingFile: false });
+    }
+  },
+
+  fetchTempFile: async (surveyId: string, fileName: string): Promise<any> => {
+    const { attendee } = get();
+    set({ isUploadingFile: true });
+
+    try {
+      const response = await eduApi.get<any>(
+        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${fileName}`,
+        {
+          headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
+        },
+      );
+      return response;
+    } catch (error) {
+      handleApiError(error, set);
     } finally {
       set({ isUploadingFile: false });
     }

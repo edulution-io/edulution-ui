@@ -15,7 +15,7 @@ import { Model, Types } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import { Response } from 'express';
 import { InjectModel } from '@nestjs/mongoose';
-import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
@@ -27,6 +27,7 @@ import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswers
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
+import AnsweredFile from '@libs/survey/types/api/answered-file';
 import CustomHttpException from '../common/CustomHttpException';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
@@ -451,6 +452,29 @@ class SurveyAnswersService implements OnModuleInit {
     return latestUserAnswer || undefined;
   }
 
+  async getAnsweredFiles(surveyId: string, username: string): Promise<AnsweredFile[]> {
+    const filesPath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, username);
+
+    Logger.log(`filesPath: ${filesPath}`, SurveyAnswersService.name);
+
+    const existence = await FilesystemService.checkIfFileExist(filesPath);
+
+    Logger.log(`existence: ${existence}`, SurveyAnswersService.name);
+
+    if (!existence) {
+      return [];
+    }
+
+    const fileNames = await this.fileSystemService.getAllFilenamesInDirectory(filesPath);
+    
+    Logger.log(`Checking if directory exists: ${fileNames}`, SurveyAnswersService.name);
+
+    const filePromises = fileNames.map(async (name) => {
+      return { name, path: join(filesPath, name), content: await FilesystemService.readFile(join(filesPath, name)) };
+    });
+    return Promise.all(filePromises);
+  }
+
   async getPublicAnswers(surveyId: string): Promise<JSON[] | null> {
     const surveyAnswers = await this.surveyAnswerModel.find<SurveyAnswer>({ surveyId: new Types.ObjectId(surveyId) });
     if (surveyAnswers.length === 0) {
@@ -524,8 +548,8 @@ class SurveyAnswersService implements OnModuleInit {
     return newSurveyAnswer;
   }
 
-  async serveFileFromAnswer(surveyId: string, fileName: string, res: Response): Promise<Response> {
-    const filesPath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId);
+  async serveFileFromAnswer(userName: string, surveyId: string, fileName: string, res: Response): Promise<Response> {
+    const filesPath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName);
     const existence = await FilesystemService.checkIfFileExist(join(filesPath, fileName));
     if (!existence) {
       return res.status(HttpStatus.NOT_FOUND).send('File not found');

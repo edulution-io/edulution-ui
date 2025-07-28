@@ -133,6 +133,30 @@ class SurveysController {
     return this.surveysTemplateService.serveTemplate(filename, res);
   }
 
+  // @Get(`${ANSWER}/${FILES}/:surveyId`)
+  // async getFilesFromSubmittedSurveyAnswerCurrentUser(
+  //   @Param() params: { surveyId: string },
+  //   @GetCurrentUsername() currentUsername: string,
+  // ) {
+  //   const { surveyId } = params;
+
+  //   Logger.log(`Getting files for survey ${surveyId} for user ${currentUsername}`, SurveysController.name);
+
+  //   return this.surveyAnswerService.getAnsweredFiles(surveyId, currentUsername);
+  // }
+
+  // @Get(`${ANSWER}/${FILES}/:surveyId/:username`)
+  // async getFilesFromSubmittedSurveyAnswer(
+  //   @Param() params: { surveyId: string; username: string },
+  //   @GetCurrentUsername() currentUsername: string,
+  // ) {
+  //   const { surveyId, username } = params;
+
+  //   Logger.log(`Getting files for survey ${surveyId} for user ${username}`, SurveysController.name);
+
+  //   return this.surveyAnswerService.getAnsweredFiles(surveyId, username || currentUsername);
+  // }
+
   @Get(`${ANSWER}/:surveyId`)
   async getSubmittedSurveyAnswerCurrentUser(
     @Param() params: { surveyId: string },

@@ -15,7 +15,6 @@ import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import AttachmentsTable from '@/pages/Surveys/Tables/components/AttachmentsTable';
 import SubmittedAnswersDialogBody from '@/pages/Surveys/Tables/dialogs/SubmittedAnswersDialogBody';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
@@ -80,7 +79,6 @@ const SubmittedAnswersDialog = () => {
         desktopContentClassName="max-w-[75%]"
         footer={getFooter()}
       />
-      <AttachmentsTable />
     </>
   );
 };

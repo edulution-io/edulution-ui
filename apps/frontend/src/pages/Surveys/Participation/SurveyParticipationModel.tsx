@@ -45,7 +45,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 
-  const { fetchAnswer, isFetching, answerSurvey, previousAnswer, uploadTempFile, deleteTempFile } =
+  const { fetchAnswer, isFetching, answerSurvey, previousAnswer, uploadTempFile, fetchTempFile, deleteTempFile } =
     useParticipateSurveyStore();
 
   const { t } = useTranslation();
@@ -90,6 +90,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
     newModel.onUploadFiles.add(async (_: SurveyModel, options: UploadFilesEvent): Promise<void> => {
       const { files, callback } = options;
       if (
+        !selectedSurvey.id ||
         !files?.length ||
         files.some((file) => !file.name?.length) ||
         files.some((file) => file.size > SurveyAnswersMaximumFileSize)
@@ -97,23 +98,37 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         return callback([]);
       }
 
-      const fileNames = files.map((file) => file.name);
-      const uploadPromises: Promise<{ fileName: string; data: string }>[] = files.map(async (file) => {
-        if (!selectedSurvey || !selectedSurvey.id) {
-          return Promise.resolve({ fileName: file.name, data: '' });
-        }
-        return uploadTempFile(selectedSurvey.id, file);
+      const uploadPromises = files.map(async (file) => {
+        const data = await uploadTempFile(selectedSurvey.id!, file);
+        return { file: { ...file, originalName: file.name, name: data.name }, content: `${EDU_API_URL}/${data.url}` };
       });
-      const data = await Promise.all(uploadPromises);
-      return callback(
-        fileNames.map((fileName): { file: string; content: string } => {
-          const suffix = data.find((item) => item?.fileName === fileName);
-          return {
-            file: suffix?.fileName || fileName,
-            content: `${EDU_API_URL}/${suffix?.data}`,
-          };
-        }),
-      );
+      const results = await Promise.all(uploadPromises);
+      return callback(results);
+    });
+    
+    newModel.onDownloadFile.add(async (_, options) => {
+      if (!selectedSurvey || !selectedSurvey.id) {
+        return;
+      }
+      
+      console.log('Download file options:', options);
+
+      try {
+        const response = await fetchTempFile(selectedSurvey.id, options.fileValue.name);
+        const content = response.data[options.fileValue.name];
+
+        const file = new File([content], options.fileValue.name, {
+            type: options.fileValue.type
+        });
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            options.callback("success", e.target?.result);
+        };
+        reader.readAsDataURL(file);
+      } catch (error) {
+        console.error("Error: ", error);
+        options.callback("error");
+      }
     });
 
     newModel.onClearFiles.add(async (_surveyModel: SurveyModel, options: ClearFilesEvent): Promise<void> => {

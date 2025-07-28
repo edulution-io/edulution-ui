@@ -22,6 +22,7 @@ import {
   readdir,
   readFile,
   rm,
+  remove,
   stat as fsStat,
   unlink,
 } from 'fs-extra';
@@ -97,6 +98,19 @@ class FilesystemService {
         FileSharingErrorMessage.DownloadFailed,
         HttpStatus.INTERNAL_SERVER_ERROR,
         url,
+        FilesystemService.name,
+      );
+    }
+  }
+
+  static async readFile(filePath: string): Promise<Buffer> {
+    try {
+      return await readFile(filePath);
+    } catch (error) {
+      throw new CustomHttpException(
+        FileSharingErrorMessage.DownloadFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        filePath,
         FilesystemService.name,
       );
     }
@@ -299,7 +313,7 @@ class FilesystemService {
     }
     const filesNames = await readdir(directory);
     if (filesNames.length === 0) {
-      await rm(directory, { recursive: false, force: false });
+      await remove(directory);
     }
   }
 

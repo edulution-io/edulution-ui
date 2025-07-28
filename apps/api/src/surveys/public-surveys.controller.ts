@@ -127,9 +127,10 @@ class PublicSurveysController {
       );
     }
     const filePath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, file.filename);
-    const fileUrl = `${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${userName}/${surveyId}/${file.filename}`;
+    const url = `${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${userName}/${surveyId}/${file.filename}`;
     await FilesystemService.checkIfFileExist(filePath);
-    return res.status(HttpStatus.CREATED).json(fileUrl);
+    const content = (await FilesystemService.readFile(filePath)).toString('base64');
+    return res.status(HttpStatus.CREATED).json({ name: file.filename, url, content });
   }
 
   @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:fileName`)
@@ -150,9 +151,9 @@ class PublicSurveysController {
 
   @Get(`${ANSWER}/${FILES}/:surveyId/:filename`)
   @Public()
-  serveFileFromAnswer(@Param() params: { surveyId: string; filename: string }, @Res() res: Response) {
-    const { surveyId, filename } = params;
-    if (!surveyId || !filename) {
+  serveFileFromAnswer(@Param() params: { userName: string; surveyId: string; filename: string }, @Res() res: Response) {
+    const { userName, surveyId, filename } = params;
+    if (!userName || !surveyId || !filename) {
       throw new CustomHttpException(
         CommonErrorMessages.INVALID_REQUEST_DATA,
         HttpStatus.UNPROCESSABLE_ENTITY,
@@ -160,7 +161,7 @@ class PublicSurveysController {
         PublicSurveysController.name,
       );
     }
-    return this.surveyAnswerService.serveFileFromAnswer(surveyId, filename, res);
+    return this.surveyAnswerService.serveFileFromAnswer(userName, surveyId, filename, res);
   }
 
   @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:filename`)
