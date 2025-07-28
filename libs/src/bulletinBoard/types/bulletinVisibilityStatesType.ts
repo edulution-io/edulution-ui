@@ -10,13 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum SurveyAnswerErrorMessages {
-  NotAbleToFindOrCreateSurveyAnswerError = 'survey-answer.errors.notAbleToFindOrCreateSurveyAnswerError',
-  NotAbleToFindSurveyAnswerError = 'survey-answer.errors.notAbleToFindSurveyAnswerError',
-  NotAbleToUpdateSurveyAnswerError = 'survey-answer.errors.notAbleToUpdateSurveyAnswerError',
-  NotAbleToCreateSurveyAnswerError = 'survey-answer.errors.notAbleToCreateSurveyAnswerError',
-  NotAbleToDeleteSurveyAnswerError = 'survey-answer.errors.notAbleToDeleteSurveyAnswerError',
-  NotAbleToCountChoices = 'survey-answer.errors.notAbleToCountChoices',
-}
+import BULLETIN_VISIBILITY_STATES from '@libs/bulletinBoard/constants/bulletinVisibilityStates';
 
-export default SurveyAnswerErrorMessages;
+type BulletinVisibilityStatesType = (typeof BULLETIN_VISIBILITY_STATES)[keyof typeof BULLETIN_VISIBILITY_STATES];
+
+export default BulletinVisibilityStatesType;

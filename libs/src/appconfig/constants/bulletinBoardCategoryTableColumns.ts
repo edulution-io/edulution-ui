@@ -13,6 +13,7 @@
 const BULLETIN_BOARD_TABLE_COLUMNS = {
   NAME: 'name',
   IS_ACTIVE: 'isActive',
+  BULLETIN_VISIBILITY: 'bulletinVisibility',
   CREATED_AT: 'createdAt',
 } as const;
 
