@@ -1,18 +1,18 @@
 {
   "template": {
     "formula": {
-      "title": "oldest template",
+      "title": "TEST DEFAULT TEMPLATE",
       "pages": [
         {
           "name": "page1",
           "elements": [
             {
               "type": "text",
-              "name": "template1 question1"
+              "name": "DEFAULT TEMPLATE QUESTION 1"
             },
             {
               "type": "text",
-              "name": "template1 question2"
+              "name": "DEFAULT TEMPLATE QUESTION 2"
             }
           ]
         }
@@ -37,8 +37,8 @@
   },
   "backendLimiters": [],
   "fileName": "2025618-15:31-a8b30dbb-1a6e-4b85-adf1-27ac049f2c20_-_SurveyTemplate.json",
-  "title": "oldest template",
-  "description": "This is a description of the oldest template.",
+  "title": "TEST DEFAULT TEMPLATE",
+  "description": "This is a description for the default template.",
   "author": "Global Admin",
   "disabled": false,
   "createdAt": "2025-06-20T10:06:21.593Z",

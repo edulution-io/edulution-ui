@@ -12,7 +12,7 @@
 
 import { join } from 'path';
 import { Response } from 'express';
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import {
   SURVEY_FILE_ATTACHMENT_ENDPOINT,
   SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT,
@@ -27,17 +27,16 @@ import TSurveyElement from '@libs/survey/types/TSurveyElement';
 import QuestionsType from '@libs/survey/constants/questions-type';
 import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
+import { SurveysDefaultLogo } from '@libs/survey/assets/images/index';
 import FilesystemService from '../filesystem/filesystem.service';
-import { SurveysDefaultLogo } from './assets/images/index';
 
 @Injectable()
 class SurveysAttachmentService implements OnModuleInit {
   constructor(private fileSystemService: FilesystemService) {}
 
-  private readonly attachmentsPath = SURVEYS_ATTACHMENT_PATH;
-
   onModuleInit() {
-    void this.fileSystemService.ensureDirectoryExists(this.attachmentsPath);
+    void this.fileSystemService.ensureDirectoryExists(SURVEYS_ATTACHMENT_PATH);
+    Logger.log(`_ensureWebpackBundlesTheFile: ${SurveysDefaultLogo}`, SurveysAttachmentService.name);
   }
 
   async preProcessFormula(surveyId: string, formula: SurveyFormula, username: string): Promise<SurveyFormula> {
@@ -224,17 +223,11 @@ class SurveysAttachmentService implements OnModuleInit {
       await this.fileSystemService.ensureDirectoryExists(permanentDir);
       await FilesystemService.moveFile(tempPath, permanentPath);
       const baseUrl = url.substring(0, url.indexOf(`/${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}`));
-      Logger.log(`Moved temp file ${tempPath} to ${permanentPath}`, SurveysAttachmentService.name);
-      Logger.log(
-        `filename: ${filename}; newUrl: ${baseUrl}/${SURVEY_FILE_ATTACHMENT_ENDPOINT}/${pathForUrl}`,
-        SurveysAttachmentService.name,
-      );
       return {
         newUrl: `${baseUrl}/${SURVEY_FILE_ATTACHMENT_ENDPOINT}/${pathForUrl}`,
         filename,
       };
     } catch (error) {
-      Logger.error(`Failed to move temp file ${tempPath} to ${permanentPath}`, SurveysAttachmentService.name);
       return { newUrl: url, filename: null };
     }
   }
@@ -268,8 +261,6 @@ class SurveysAttachmentService implements OnModuleInit {
   }
 
   async serveDefaultIcon(res: Response): Promise<Response> {
-    Logger.log(`_ensureWebpackBundlesTheFile: ${SurveysDefaultLogo}`, SurveysAttachmentService.name);
-
     const defaultIconPath = join(SURVEYS_DEFAULT_FILES_PATH, defaultLogo);
     const fileStream = await this.fileSystemService.createReadStream(defaultIconPath);
     fileStream.pipe(res);

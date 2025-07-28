@@ -18,9 +18,9 @@ import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
 import SURVEYS_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplatePath';
+import { surveyTemplate01 } from '@libs/survey/assets/templates';
 import CustomHttpException from '../common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
-import { surveyTemplate01, surveyTemplate02, surveyTemplate03, surveyTemplate04 } from './assets/templates';
 
 @Injectable()
 class SurveysTemplateService implements OnModuleInit {
@@ -30,6 +30,7 @@ class SurveysTemplateService implements OnModuleInit {
 
   onModuleInit() {
     void this.fileSystemService.ensureDirectoryExists(this.templatePath);
+    Logger.log(`_ensureWebpackBundlesTheFile: ${JSON.stringify(surveyTemplate01)}`, SurveysTemplateService.name);
   }
 
   async createTemplate(surveyTemplateDto: SurveyTemplateDto): Promise<void> {
@@ -60,14 +61,12 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async serveTemplates(): Promise<SurveyTemplateDto[]> {
-    Logger.log(`_ensureWebpackBundlesTheFile: ${JSON.stringify(surveyTemplate01)}`, SurveysTemplateService.name);
-    Logger.log(`_ensureWebpackBundlesTheFile: ${JSON.stringify(surveyTemplate02)}`, SurveysTemplateService.name);
-    Logger.log(`_ensureWebpackBundlesTheFile: ${JSON.stringify(surveyTemplate03)}`, SurveysTemplateService.name);
-    Logger.log(`_ensureWebpackBundlesTheFile: ${JSON.stringify(surveyTemplate04)}`, SurveysTemplateService.name);
-
     const existingFiles = await this.fileSystemService.getAllFilenamesInDirectory(SURVEYS_TEMPLATE_PATH);
-    const existingTemplates = existingFiles.map(
-      async (filename) => FilesystemService.readFile<SurveyTemplateDto>(join(SURVEYS_TEMPLATE_PATH, filename)),
+
+    Logger.debug(`Existing survey templates: ${existingFiles.join(', ')}`, SurveysTemplateService.name);
+
+    const existingTemplates = existingFiles.map(async (filename) =>
+      FilesystemService.readFile<SurveyTemplateDto>(join(SURVEYS_TEMPLATE_PATH, filename)),
     );
     const templates = await Promise.all(existingTemplates);
     return templates.filter((template) => !template.disabled);

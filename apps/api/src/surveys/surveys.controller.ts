@@ -48,6 +48,7 @@ import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import getUsernameFromRequest from 'apps/api/src/common/utils/getUsernameFromRequest';
+import { Logger } from 'oidc-client-ts';
 import SurveysService from './surveys.service';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysTemplateService from './surveys-template.service';
@@ -121,8 +122,10 @@ class SurveysController {
     return this.surveysTemplateService.createTemplate(surveyTemplateDto);
   }
 
-  @Get(TEMPLATES)
+  @Get(`${TEMPLATES}`)
   getTemplates() {
+    Logger.debug('Fetching all survey templates', SurveysTemplateService.name);
+
     return this.surveysTemplateService.serveTemplates();
   }
 

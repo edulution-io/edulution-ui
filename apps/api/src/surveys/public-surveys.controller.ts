@@ -33,8 +33,6 @@ class PublicSurveysController {
   @Get(`${DEFAULT_FILES}`)
   @Public()
   serveDefaultIcon(@Res() res: Response) {
-    Logger.warn('Serving default survey icon');
-
     return this.surveysAttachmentService.serveDefaultIcon(res);
   }
 
@@ -43,7 +41,7 @@ class PublicSurveysController {
   async find(@Param() params: { surveyId: string }) {
     const { surveyId } = params;
 
-    Logger.warn('Should be serving default survey icon');
+    Logger.debug('Should be serving default survey icon');
 
     return this.surveyService.findPublicSurvey(surveyId);
   }

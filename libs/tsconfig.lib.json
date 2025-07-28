@@ -8,6 +8,6 @@
     "composite": true,
     "emitDeclarationOnly": true
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/**/*.json"],
   "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]
 }
