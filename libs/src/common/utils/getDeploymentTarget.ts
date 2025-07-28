@@ -10,21 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SurveyPage from '@libs/survey/types/TSurveyPage';
-import SurveyElement from '@libs/survey/types/TSurveyElement';
+import DEPLOYMENT_TARGET from '../constants/deployment-target';
+import type DeploymentTarget from '../types/deployment-target';
 
-class SurveyFormula {
-  title: string;
+const VALID_TARGETS = new Set<DeploymentTarget>(Object.values(DEPLOYMENT_TARGET));
 
-  logo?: string;
+const { EDUI_DEPLOYMENT_TARGET = DEPLOYMENT_TARGET.LINUXMUSTER } = process.env;
 
-  description?: string;
+const getDeploymentTarget = (): DeploymentTarget =>
+  VALID_TARGETS.has(EDUI_DEPLOYMENT_TARGET as DeploymentTarget)
+    ? (EDUI_DEPLOYMENT_TARGET as DeploymentTarget)
+    : DEPLOYMENT_TARGET.LINUXMUSTER;
 
-  // only defined in page mode
-  pages?: SurveyPage[];
-
-  // only defined in page-less mode
-  elements?: SurveyElement[];
-}
-
-export default SurveyFormula;
+export default getDeploymentTarget;

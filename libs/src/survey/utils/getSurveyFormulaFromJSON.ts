@@ -11,7 +11,7 @@
  */
 
 import { t } from 'i18next';
-import SurveyFormula from '@libs/survey/types/TSurveyFormula';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import { toast } from 'sonner';
 import isSurveyPage from '@libs/survey/utils/isSurveyPage';
