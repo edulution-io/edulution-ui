@@ -10,11 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const BULLETIN_BOARD_TABLE_COLUMNS = {
-  NAME: 'name',
-  IS_ACTIVE: 'isActive',
-  BULLETIN_VISIBILITY: 'bulletinVisibility',
-  CREATED_AT: 'createdAt',
+const BULLETIN_VISIBILITY_STATES = {
+  FULLY_VISIBLE: 'FULLY_VISIBLE',
+  ONLY_TITLE: 'ONLY_TITLE',
 } as const;
 
-export default BULLETIN_BOARD_TABLE_COLUMNS;
+export default BULLETIN_VISIBILITY_STATES;
