@@ -23,7 +23,6 @@ import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePat
 import delay from '@libs/common/utils/delay';
 import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
-import UserRoles from '@libs/user/constants/userRoles';
 
 type UseFileSharingStore = {
   files: DirectoryFileDTO[];
@@ -41,7 +40,7 @@ type UseFileSharingStore = {
   setFiles: (files: DirectoryFileDTO[]) => void;
   setSelectedItems: (items: DirectoryFileDTO[]) => void;
   fetchFiles: (path?: string) => Promise<void>;
-  fetchMountPoints: () => Promise<void>;
+  fetchMountPoints: () => Promise<DirectoryFileDTO[]>;
   fetchDirs: (path: string) => Promise<void>;
   reset: () => void;
   mountPoints: DirectoryFileDTO[];
@@ -170,27 +169,17 @@ const useFileSharingStore = create<UseFileSharingStore>(
         try {
           set({ isLoading: true });
 
-          const defaultMountPointsResponse = await eduApi.get<DirectoryFileDTO[]>(
-            buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, ''),
-          );
-
-          const additionalMountPointsResponse = await eduApi.get<DirectoryFileDTO[]>(
+          const { data } = await eduApi.get<DirectoryFileDTO[]>(
             buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, '/'),
           );
 
-          const combinedMountPoints = [...defaultMountPointsResponse.data];
+          const mountPoints = data.sort((a, b) => a.filename.localeCompare(b.filename));
 
-          const examusersItem = additionalMountPointsResponse.data.find(
-            (item) => item.filename === UserRoles.EXAM_USER,
-          );
-
-          if (examusersItem && !defaultMountPointsResponse.data.some((item) => item.filename === UserRoles.EXAM_USER)) {
-            combinedMountPoints.push(examusersItem);
-          }
-
-          set({ mountPoints: combinedMountPoints });
+          set({ mountPoints });
+          return mountPoints;
         } catch (error) {
           handleApiError(error, set);
+          return get().mountPoints;
         } finally {
           set({ isLoading: false });
         }
