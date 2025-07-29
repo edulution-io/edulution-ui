@@ -90,6 +90,9 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
     if (!selectedSurvey?.id) {
       return;
     }
+    if (!selectedSurvey.canUpdateFormerAnswer) {
+      return;
+    }
     void fetchAnswer(selectedSurvey.id);
   }, [selectedSurvey]);
 

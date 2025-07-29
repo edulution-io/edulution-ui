@@ -789,7 +789,8 @@
       "errors": {
         "updateError": "Les paramètres n'ont pas pu être mis à jour.",
         "notFoundError": "Les paramètres n'ont pas pu être chargés."
-      }
+      },
+      "deploymentTarget": "Plate-forme cible de déploiement"
     },
     "info": {
       "title": "Informations"
@@ -1468,5 +1469,11 @@
   "Failed to fetch": "La connexion au serveur Edulution a échoué. Veuillez réessayer plus tard.",
   "Invalid client or Invalid client credentials": "Configuration du serveur non valide. Veuillez vérifier l'ID client ou le secret du client.",
   "Not Found (404)": "La connexion au serveur Edulution a échoué. Veuillez réessayer plus tard.",
-  "NetworkError when attempting to fetch resource.": "Erreurs de réseau lors de l'accès au site Web."
+  "NetworkError when attempting to fetch resource.": "Erreurs de réseau lors de l'accès au site Web.",
+  "deploymentTarget": {
+    "title": "Sélection",
+    "description": "Ici, on peut choisir la plateforme à laquelle {{appName }} doit être connecté.",
+    "linuxmuster": "Linuxmuster",
+    "generic": "Générique"
+  }
 }

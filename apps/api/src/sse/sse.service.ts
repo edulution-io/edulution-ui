@@ -17,6 +17,7 @@ import { Response } from 'express';
 import { Interval } from '@nestjs/schedule';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type SseStatus from '@libs/common/types/sseMessageType';
+import getDeploymentTarget from '@libs/common/utils/getDeploymentTarget';
 import * as rootPackage from '../../../../package.json';
 import type UserConnections from '../types/userConnections';
 import type SseEvent from '../types/sseEvent';
@@ -32,6 +33,7 @@ class SseService {
       JSON.stringify({
         timestamp: new Date().toISOString(),
         version: rootPackage.version,
+        target: getDeploymentTarget(),
       }),
       SSE_MESSAGE_TYPE.PING,
     );
