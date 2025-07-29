@@ -19,7 +19,7 @@ import ParsedUpload from '@libs/filesharing/types/parsedUpload';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 
 const parseMultipartUpload = (req: IncomingMessage) =>
-  new Promise<ParsedUpload>((resolve, _reject) => {
+  new Promise<ParsedUpload>((resolve, reject) => {
     let basePath: string | undefined;
     let originalFolderName: string | undefined;
     let isZippedFolder = false;
@@ -61,6 +61,10 @@ const parseMultipartUpload = (req: IncomingMessage) =>
       });
     });
     req.pipe(busboy);
+
+    busboy.on('error', (error) => {
+      reject(error);
+    });
   });
 
 export default parseMultipartUpload;

@@ -96,7 +96,7 @@ class FilesharingService {
             }, '');
 
           const fullWebDavFilePath = `${destinationFolderPath}/${zipEntry.path}`;
-          const detectedMimeType = lookup(zipEntry.path) || 'application/octet-stream';
+          const detectedMimeType = lookup(zipEntry.path) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
           const tmpPath = join(tmpdir(), crypto.randomUUID());
           const writePromise = pipeline(zipEntry, createWriteStream(tmpPath));
           fileJobPromises.push(
