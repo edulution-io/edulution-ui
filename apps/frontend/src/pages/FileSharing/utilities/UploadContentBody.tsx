@@ -326,7 +326,7 @@ const UploadContentBody = () => {
 
       {filesThatWillBeOverwritten.length > 0 && (
         <WarningBox
-          icon={<HiExclamationTriangle className="overflow-ellipsis text-ciYellow" />}
+          icon={<HiExclamationTriangle className=" text-ciYellow" />}
           title={
             hasMultipleDuplicates
               ? t('filesharingUpload.overwriteWarningTitleFiles')
@@ -346,7 +346,7 @@ const UploadContentBody = () => {
 
       {isAnyFileOversized && (
         <WarningBox
-          icon={<HiExclamationTriangle className="overflow-ellipsis text-ciRed" />}
+          icon={<HiExclamationTriangle className=" text-ciRed" />}
           title={
             hasMultipleOversizedFiles
               ? t('filesharingUpload.oversizedFilesDetected')
@@ -362,7 +362,7 @@ const UploadContentBody = () => {
 
       {tooLargeFolders.length > 0 && (
         <WarningBox
-          icon={<HiExclamationTriangle className="overflow-ellipsis text-ciRed" />}
+          icon={<HiExclamationTriangle className=" text-ciRed" />}
           title={t('filesharingUpload.folderTooLargeTitle')}
           description={t('filesharingUpload.folderTooLargeDescription')}
           filenames={tooLargeFolders.map((name) => name)}
@@ -388,10 +388,9 @@ const UploadContentBody = () => {
               return (
                 <li
                   key={file.name}
-                  className={
-                    `group relative overflow-hidden rounded-xl border p-2 shadow-lg transition-all duration-200 hover:min-h-[80px] hover:overflow-visible ${ 
-                    baseBorderClass}`
-                  }
+                  className={`group relative overflow-hidden rounded-xl border p-2 shadow-lg transition-all duration-200 hover:min-h-[80px] hover:overflow-visible ${
+                    baseBorderClass
+                  }`}
                 >
                   {renderPreview(file)}
 
