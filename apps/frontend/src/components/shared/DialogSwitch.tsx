@@ -11,8 +11,7 @@
  */
 
 import Switch from '@/components/ui/Switch';
-import React from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import React, { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const DialogSwitch = ({
@@ -26,7 +25,7 @@ const DialogSwitch = ({
 }) => {
   const { t } = useTranslation();
 
-  const switchId = uuidv4();
+  const switchId = useId();
 
   return (
     <div className="flex justify-between">
