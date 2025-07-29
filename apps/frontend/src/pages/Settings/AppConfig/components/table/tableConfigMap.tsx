@@ -24,7 +24,7 @@ import { type DockerContainerTableStore } from '@libs/appconfig/types/dockerCont
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import { VeyonConfigTableStore } from '@libs/appconfig/types/veyonConfigTableStore';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import BULLETIN_BOARD_TABLE_COLUMNS from '@libs/appconfig/constants/bulletinBoardCategoryTableColumns';
+import BULLETIN_BOARD_CATEGORY_TABLE_COLUMNS from '@libs/appconfig/constants/bulletinBoardCategoryTableColumns';
 import DOCKER_CONTAINER_TABLE_COLUMNS from '@libs/docker/constants/dockerContainerTableColumns';
 import VEYON_PROXY_TABLE_COLUMNS from '@libs/classManagement/constants/veyonProxyTableColumns';
 import DockerContainerTableColumns from '../../DockerIntegration/DockerContainerTableColumns';
@@ -57,8 +57,14 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
       filterKey: DOCKER_CONTAINER_TABLE_COLUMNS.NAME,
       filterPlaceHolderText: 'bulletinboard.filterPlaceHolderText',
       type: ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE,
-      hideColumnsInMobileView: [BULLETIN_BOARD_TABLE_COLUMNS.CREATED_AT],
-      hideColumnsInTabletView: [BULLETIN_BOARD_TABLE_COLUMNS.CREATED_AT],
+      hideColumnsInMobileView: [
+        BULLETIN_BOARD_CATEGORY_TABLE_COLUMNS.CREATED_AT,
+        BULLETIN_BOARD_CATEGORY_TABLE_COLUMNS.BULLETIN_VISIBILITY,
+      ],
+      hideColumnsInTabletView: [
+        BULLETIN_BOARD_CATEGORY_TABLE_COLUMNS.CREATED_AT,
+        BULLETIN_BOARD_CATEGORY_TABLE_COLUMNS.BULLETIN_VISIBILITY,
+      ],
     }),
   ],
   [APPS.CLASS_MANAGEMENT]: [

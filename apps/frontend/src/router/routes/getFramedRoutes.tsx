@@ -14,7 +14,6 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
-import FramePlaceholder from '@/components/structure/framing/FramePlaceholder';
 
 const getFramedRoutes = (appConfigs: AppConfigDto[]) =>
   appConfigs
@@ -23,7 +22,7 @@ const getFramedRoutes = (appConfigs: AppConfigDto[]) =>
       <Route
         key={item.name}
         path={item.name}
-        element={<FramePlaceholder />}
+        element={<div id={item.name} />}
       />
     ));
 export default getFramedRoutes;

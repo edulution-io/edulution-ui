@@ -48,7 +48,6 @@ const AppConfigDropdownSelect = ({ form, appConfig }: AppConfigFormProps) => {
               }))}
               selectedVal={getValues(`${appConfig.name}.position`)?.toString()}
               handleChange={(value: string) => setValue(`${appConfig.name}.position`, Number(value))}
-              classname="z-50"
             />
           </FormControl>
           <p>{t('settings.appconfig.position.description')}</p>

@@ -172,6 +172,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
               ]}
               showSelectedCount={false}
               isDialog
+              initialSorting={[{ id: 'choice-title', desc: false }]}
             />
           </div>
           <ChoicesWithBackendLimitsShowOtherItem />
