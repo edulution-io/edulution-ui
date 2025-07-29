@@ -10,11 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const BULLETIN_BOARD_CATEGORY_TABLE_COLUMNS = {
-  NAME: 'name',
-  IS_ACTIVE: 'isActive',
-  BULLETIN_VISIBILITY: 'bulletinVisibility',
-  CREATED_AT: 'createdAt',
-} as const;
+import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
+import { TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
 
-export default BULLETIN_BOARD_CATEGORY_TABLE_COLUMNS;
+// TODO: The default-files folder will be introduced in issue #1086 -> replace magic string with constant
+const SURVEYS_FILE_FOLDERS = [TEMPLATES, ATTACHMENT_FOLDER, 'default-files'];
+
+export default SURVEYS_FILE_FOLDERS;

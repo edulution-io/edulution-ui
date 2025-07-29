@@ -41,7 +41,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
-import useAppConfigsStore from '../Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '../Settings/AppConfig/useAppConfigsStore';
 import useAuthErrorHandler from './useAuthErrorHandler';
 import useSilentLoginWithPassword from './useSilentLoginWithPassword';
 

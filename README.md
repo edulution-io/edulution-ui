@@ -7,6 +7,10 @@
 [![License](https://img.shields.io/badge/License-AGPL_v3-blue.svg?style=for-the-badge)](https://github.com/edulution-io/edulution-ui/tree/master/LICENSE)
 [![Community Forum](https://img.shields.io/discourse/users?style=for-the-badge&logo=discourse&logoColor=white&server=https%3A%2F%2Fask.linuxmuster.net)](https://ask.linuxmuster.net/tag/edulution)
 
+## Overview
+
+Edulution is a comprehensive, all-in-one solution for modern educational institutions. The modular and scalable digital package for multi-school environments covers all aspects of educational operations and can be customized to meet a wide range of requirements.
+
 ## Development
 
 ### Description
@@ -19,9 +23,8 @@ A Full Stack Application build with Vite+React (frontend) and Nest.js for the AP
 
 ### Maintenance Details
 
-|                    Linuxmuster.net official                    | ✅ YES |
-| :------------------------------------------------------------: | :----: |
 | [Community support](https://ask.linuxmuster.net/tag/edulution) | ✅ YES |
+| :------------------------------------------------------------: | :----: |
 |                       Actively developed                       | ✅ YES |
 
 ### Getting Started

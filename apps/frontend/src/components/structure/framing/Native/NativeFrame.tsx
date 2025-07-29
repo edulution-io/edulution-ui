@@ -12,7 +12,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useUserStore from '@/store/UserStore/useUserStore';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';

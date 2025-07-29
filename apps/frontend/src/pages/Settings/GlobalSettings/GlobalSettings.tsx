@@ -21,7 +21,7 @@ import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import AppConfigSwitch from '@/pages/Settings/AppConfig/components/booleanField/AppConfigSwitch';
 import AppDropdownSelectFormField from '@/components/ui/DropdownSelect/AppDropdownSelectFormField';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
 import { GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import useGlobalSettingsApiStore from './useGlobalSettingsApiStore';
