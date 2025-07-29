@@ -10,10 +10,5 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface WorkerOutputMessage {
-  blob: Blob;
-  root: string;
-  fileCount: number;
-}
-
-export default WorkerOutputMessage;
+const MAX_FOLDER_UPLOAD_CONTENT_SIZE = 2; // Nested Files in Folder
+export default MAX_FOLDER_UPLOAD_CONTENT_SIZE;

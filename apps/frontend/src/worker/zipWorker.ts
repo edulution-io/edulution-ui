@@ -22,7 +22,7 @@ const workerContext = globalThis as unknown as DedicatedWorkerGlobalScope;
 
 workerContext.onmessage = async (event: MessageEvent<WorkerInputMessage>): Promise<void> => {
   const { files, root } = event.data;
-
+  const fileCount = files.length;
   const zipEntries: Record<string, Uint8Array> = {};
   const directoryPlaceholderSet = new Set<string>();
 
@@ -70,6 +70,6 @@ workerContext.onmessage = async (event: MessageEvent<WorkerInputMessage>): Promi
       type: RequestResponseContentType.APPLICATION_ZIP,
     });
 
-    workerContext.postMessage({ blob: zipBlob, root } as WorkerOutputMessage);
+    workerContext.postMessage({ blob: zipBlob, root, fileCount } as WorkerOutputMessage);
   });
 };

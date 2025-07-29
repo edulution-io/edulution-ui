@@ -1340,6 +1340,8 @@
     "overwriteWarningDescriptionFiles": "The following files will be overwritten:",
     "oversizedFilesDetected": "Oversized files detected",
     "oversizedFileDetected": "Oversized file detected!",
+    "folderTooLargeTitle": "Too many files in the folder",
+    "folderTooLargeDescription": "The folder contains more then 100 files. Please select another folder or reduce the number of files.",
     "cannotUploadOversized": "Files larger than 400 MB cannot be uploaded.",
     "addFiles": "Add files",
     "addFolder": "Add folder",

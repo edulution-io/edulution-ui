@@ -101,7 +101,7 @@ class FilesharingController {
         FileSharingErrorMessage.UploadFailed,
         HttpStatus.INTERNAL_SERVER_ERROR,
         'FileSharingError UploadFailed',
-        FilesharingService.name,
+        FilesharingController.name,
       );
     }
   }
