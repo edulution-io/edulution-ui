@@ -22,7 +22,7 @@ import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveysAttachmentService from 'apps/api/src/surveys/surveys-attachment.service';
 import { Survey, SurveyDocument } from './survey.schema';
-import SurveyAnswersService from './survey-answer.service';
+import SurveyAnswerService from './survey-answer.service';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
 import {
   answeredSurvey01,
@@ -81,7 +81,7 @@ import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
 
 describe('SurveyAnswerService', () => {
-  let service: SurveyAnswersService;
+  let service: SurveyAnswerService;
   let model: Model<SurveyAnswerDocument>;
   let surveyModel: Model<SurveyDocument>;
 
@@ -95,7 +95,7 @@ describe('SurveyAnswerService', () => {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
         },
-        SurveyAnswersService,
+        SurveyAnswerService,
         SurveysAttachmentService,
         { provide: GroupsService, useValue: mockGroupsService },
         {
@@ -106,7 +106,7 @@ describe('SurveyAnswerService', () => {
       ],
     }).compile();
 
-    service = module.get<SurveyAnswersService>(SurveyAnswersService);
+    service = module.get<SurveyAnswerService>(SurveyAnswerService);
     model = module.get<Model<SurveyAnswerDocument>>(getModelToken(SurveyAnswer.name));
     surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
   });
@@ -122,9 +122,8 @@ describe('SurveyAnswerService', () => {
   describe('getSelectableChoices', () => {
     it('Should return those choices that are still selectable (backend limit was not reached)', async () => {
       jest.spyOn(service, 'getSelectableChoices');
-      jest.spyOn(service, 'countChoiceSelections');
 
-      model.countDocuments = jest
+      service.countChoiceSelections = jest
         .fn()
         .mockReturnValueOnce(0)
         .mockReturnValueOnce(0)
@@ -143,14 +142,13 @@ describe('SurveyAnswerService', () => {
         idOfPublicSurvey02.toString(),
         publicSurvey02QuestionNameWithLimiters,
       );
-      expect(model.countDocuments).toHaveBeenCalledTimes(4); // once for each possible choice
+      expect(service.countChoiceSelections).toHaveBeenCalledTimes(4);
     });
 
     it('Should return those choices that are still selectable even after adding a new answer (backend limit was not reached)', async () => {
       jest.spyOn(service, 'getSelectableChoices');
-      jest.spyOn(service, 'countChoiceSelections');
 
-      model.countDocuments = jest
+      service.countChoiceSelections = jest
         .fn()
         .mockReturnValueOnce(0)
         .mockReturnValueOnce(1)
@@ -169,7 +167,7 @@ describe('SurveyAnswerService', () => {
         idOfPublicSurvey02.toString(),
         publicSurvey02QuestionNameWithLimiters,
       );
-      expect(model.countDocuments).toHaveBeenCalledTimes(4); // once for each possible choice
+      expect(service.countChoiceSelections).toHaveBeenCalledTimes(4);
     });
 
     it('Throw error when the backendLimit is not set', async () => {

@@ -10,10 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import migration000 from './surveysMigration000SurveyIds';
-import migration001 from './surveysMigration001Attachments';
+import BULLETIN_VISIBILITY_STATES from '@libs/bulletinBoard/constants/bulletinVisibilityStates';
 
-// Add new migrations here
-const surveysMigrationsList = [migration000, migration001];
+type BulletinVisibilityStatesType = (typeof BULLETIN_VISIBILITY_STATES)[keyof typeof BULLETIN_VISIBILITY_STATES];
 
-export default surveysMigrationsList;
+export default BulletinVisibilityStatesType;

@@ -97,11 +97,13 @@ export const publicSurvey02BackendLimiter = [
   },
 ];
 export const filteredChoices = [
+  { name: 'choice0', title: 'CanBeSelected0times', limit: 0 },
   { name: 'choice1', title: 'CanBeSelected1times', limit: 1 },
   { name: 'choice2', title: 'CanBeSelected2times', limit: 2 },
   { name: 'choice3', title: 'CanBeSelected3times', limit: 3 },
 ];
 export const filteredChoicesAfterAddingValidAnswer = [
+  { name: 'choice0', title: 'CanBeSelected0times', limit: 0 },
   { name: 'choice2', title: 'CanBeSelected2times', limit: 2 },
   { name: 'choice3', title: 'CanBeSelected3times', limit: 3 },
 ];

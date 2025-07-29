@@ -10,10 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import migration000 from './surveysMigration000SurveyIds';
-import migration001 from './surveysMigration001Attachments';
+const BULLETIN_VISIBILITY_STATES = {
+  FULLY_VISIBLE: 'FULLY_VISIBLE',
+  ONLY_TITLE: 'ONLY_TITLE',
+} as const;
 
-// Add new migrations here
-const surveysMigrationsList = [migration000, migration001];
-
-export default surveysMigrationsList;
+export default BULLETIN_VISIBILITY_STATES;
