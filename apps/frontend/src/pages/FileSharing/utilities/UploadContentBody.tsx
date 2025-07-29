@@ -379,6 +379,8 @@ const UploadContentBody = () => {
               const isFolderTooLarge =
                 file.isZippedFolder && tooLargeFolders.includes(file.originalFolderName ?? file.name);
 
+              let baseBorderClass = 'border-accent';
+
               if (isFolderTooLarge || bytesToMegabytes(file.size) > MAX_FILE_UPLOAD_SIZE) {
                 baseBorderClass = 'border-ciRed opacity-50';
               }
