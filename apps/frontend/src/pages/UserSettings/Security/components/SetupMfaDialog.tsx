@@ -14,15 +14,17 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import OtpInput from '@/components/shared/OtpInput';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
+import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
+import { MdFileCopy } from 'react-icons/md';
+import copyToClipboard from '@/utils/copyToClipboard';
 
 const SetupMfaDialog: React.FC = () => {
   const { t } = useTranslation();
@@ -59,6 +61,7 @@ const SetupMfaDialog: React.FC = () => {
   }, [isSetTotpDialogOpen]);
 
   const getTotpSecret = () => {
+    if (!qrCode) return '';
     const urlObject = new URL(qrCode.replace('otpauth://', 'https://'));
     const secret = urlObject.searchParams.get('secret') || '';
     return secret;
@@ -84,21 +87,37 @@ const SetupMfaDialog: React.FC = () => {
         event.preventDefault();
         void handleSetMfaEnabled();
       }}
+      className="space-y-3"
     >
-      {isRightAfterLogin && <p className="mb-3 font-bold">{t('usersettings.addTotp.mfaSetupRequired')}</p>}
+      {isRightAfterLogin && <p className="font-bold">{t('usersettings.addTotp.mfaSetupRequired')}</p>}
       <p>{t('usersettings.addTotp.qrCodeInstructions')}</p>
       <div className="flex justify-center">
-        {qrCodeIsLoading ? (
-          <CircleLoader />
-        ) : (
-          <QRCodeDisplay
-            value={qrCode}
-            size="lg"
-            className="m-14"
-          />
-        )}
+        <QRCodeDisplay
+          value={qrCode}
+          size="lg"
+          className="flex justify-center"
+          isLoading={qrCodeIsLoading}
+        />
       </div>
-      <p className="mb-3">{t('usersettings.addTotp.totpCodeInstructions')}</p>
+      <p>{t('usersettings.addTotp.copyTotpSecretInstructions')}</p>
+      <InputWithActionIcons
+        type="text"
+        value={getTotpSecret()}
+        readOnly
+        className="cursor-pointer"
+        variant="dialog"
+        onMouseDown={(e) => {
+          e.preventDefault();
+          copyToClipboard(getTotpSecret());
+        }}
+        actionIcons={[
+          {
+            icon: MdFileCopy,
+            onClick: () => copyToClipboard(getTotpSecret()),
+          },
+        ]}
+      />
+      <p>{t('usersettings.addTotp.totpCodeInstructions')}</p>
       <OtpInput
         totp={totp}
         variant="dialog"

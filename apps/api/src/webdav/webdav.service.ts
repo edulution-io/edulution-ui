@@ -20,8 +20,8 @@ import {
   HttpMethods,
   HttpMethodsWebDav,
   RequestResponseContentType,
+  WebdavRequestDepth,
 } from '@libs/common/types/http-methods';
-import CustomFile from '@libs/filesharing/types/customFile';
 import ContentType from '@libs/filesharing/types/contentType';
 import FILE_PATHS from '@libs/filesharing/constants/file-paths';
 import ErrorMessage from '@libs/error/errorMessage';
@@ -29,6 +29,7 @@ import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileReques
 import mapToDirectories from '@libs/filesharing/utils/mapToDirectories';
 import mapToDirectoryFiles from '@libs/filesharing/utils/mapToDirectoryFiles';
 import DEFAULT_PROPFIND_XML from '@libs/filesharing/constants/defaultPropfindXml';
+import { Readable } from 'stream';
 import CustomHttpException from '../common/CustomHttpException';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
@@ -46,8 +47,11 @@ class WebdavService {
     config: {
       method: string;
       url?: string;
-      data?: string | Record<string, unknown> | Buffer;
+      data?: string | Record<string, unknown> | Readable | Buffer;
       headers?: Record<string, string | number>;
+      maxContentLength?: number;
+      maxBodyLength?: number;
+      timeout?: number;
     },
     fileSharingErrorMessage: ErrorMessage,
     transformer?: (data: Raw) => Result,
@@ -60,7 +64,7 @@ class WebdavService {
       throw new CustomHttpException(
         fileSharingErrorMessage,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
+        (error as Error).message,
         WebdavService.name,
       );
     }
@@ -139,6 +143,9 @@ class WebdavService {
         method: HttpMethodsWebDav.PROPFIND,
         url,
         data: DEFAULT_PROPFIND_XML,
+        headers: {
+          [HTTP_HEADERS.Depth]: WebdavRequestDepth.ONE_LEVEL,
+        },
       },
       FileSharingErrorMessage.FileNotFound,
       mapToDirectoryFiles,
@@ -155,7 +162,9 @@ class WebdavService {
         method: HttpMethodsWebDav.PROPFIND,
         url,
         data: DEFAULT_PROPFIND_XML,
-        headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
+        headers: {
+          [HTTP_HEADERS.Depth]: WebdavRequestDepth.ONE_LEVEL,
+        },
       },
       FileSharingErrorMessage.FolderNotFound,
       mapToDirectories,
@@ -198,21 +207,32 @@ class WebdavService {
     );
   }
 
-  async uploadFile(username: string, fullPath: string, file: CustomFile): Promise<WebdavStatusResponse> {
+  async uploadFile(
+    username: string,
+    fullPath: string,
+    fileStream: Readable,
+    contentType: string,
+  ): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
+
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethods.PUT,
         url: fullPath,
-        headers: { [HTTP_HEADERS.ContentType]: file.mimetype },
-        data: file.buffer,
+        headers: {
+          [HTTP_HEADERS.ContentType]: contentType,
+        },
+        data: fileStream,
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity,
+        timeout: 0,
       },
       FileSharingErrorMessage.UploadFailed,
-      (resp: WebdavStatusResponse) => ({
-        success: resp.status === 201 || resp.status === 200,
-        filename: file.originalname,
-        status: resp.status,
+      (response) => ({
+        success: response.status === 201 || response.status === 200,
+        filename: fullPath.split('/').pop() || '',
+        status: response.status,
       }),
     );
   }
@@ -329,6 +349,16 @@ class WebdavService {
     } catch (error) {
       throw new CustomHttpException(FileSharingErrorMessage.SharingFailed, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  async getFileTypeFromWebdavPath(
+    username: string,
+    fullPath: string,
+    filepath: string,
+  ): Promise<ContentType | undefined> {
+    const files = await this.getFilesAtPath(username, fullPath);
+    const matchedFile = files.find((file) => file.filePath === filepath);
+    return matchedFile?.type === ContentType.FILE ? ContentType.FILE : ContentType.DIRECTORY;
   }
 }
 

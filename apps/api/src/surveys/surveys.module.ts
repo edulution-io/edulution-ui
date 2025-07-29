@@ -16,9 +16,11 @@ import SurveySchema, { Survey } from './survey.schema';
 import SurveyAnswerSchema, { SurveyAnswer } from './survey-answer.schema';
 import SurveysService from './surveys.service';
 import SurveysController from './surveys.controller';
-import SurveyAnswersService from './survey-answer.service';
+import SurveyAnswerService from './survey-answer.service';
 import PublicSurveysController from './public-surveys.controller';
 import GroupsModule from '../groups/groups.module';
+import SurveysAttachmentService from './surveys-attachment.service';
+import SurveysTemplateService from './surveys-template.service';
 
 @Module({
   imports: [
@@ -27,6 +29,6 @@ import GroupsModule from '../groups/groups.module';
     GroupsModule,
   ],
   controllers: [SurveysController, PublicSurveysController],
-  providers: [SurveysService, SurveyAnswersService],
+  providers: [SurveysService, SurveyAnswerService, SurveysTemplateService, SurveysAttachmentService],
 })
 export default class SurveysModule {}

@@ -25,7 +25,7 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import CustomHttpException from '../common/CustomHttpException';
 import SurveysController from './surveys.controller';
 import SurveysService from './surveys.service';
-import SurveyAnswersService from './survey-answer.service';
+import SurveyAnswerService from './survey-answer.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
 import {
@@ -57,11 +57,13 @@ import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
+import SurveysAttachmentService from './surveys-attachment.service';
+import SurveysTemplateService from './surveys-template.service';
 
 describe(SurveysController.name, () => {
   let controller: SurveysController;
   let surveyService: SurveysService;
-  let surveyAnswerService: SurveyAnswersService;
+  let surveyAnswerService: SurveyAnswerService;
   let surveyModel: Model<SurveyDocument>;
   let surveyAnswerModel: Model<SurveyAnswerDocument>;
 
@@ -77,7 +79,9 @@ describe(SurveysController.name, () => {
           useValue: jest.fn(),
         },
         { provide: GroupsService, useValue: mockGroupsService },
-        SurveyAnswersService,
+        SurveysAttachmentService,
+        SurveyAnswerService,
+        SurveysTemplateService,
         {
           provide: getModelToken(SurveyAnswer.name),
           useValue: {
@@ -92,7 +96,7 @@ describe(SurveysController.name, () => {
 
     controller = module.get<SurveysController>(SurveysController);
     surveyService = module.get<SurveysService>(SurveysService);
-    surveyAnswerService = module.get<SurveyAnswersService>(SurveyAnswersService);
+    surveyAnswerService = module.get<SurveyAnswerService>(SurveyAnswerService);
     surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
     surveyAnswerModel = module.get<Model<SurveyAnswerDocument>>(getModelToken(SurveyAnswer.name));
   });
@@ -250,8 +254,9 @@ describe(SurveysController.name, () => {
     it('should also remove the survey answers that are stored', async () => {
       jest.spyOn(surveyService, 'deleteSurveys');
       jest.spyOn(surveyAnswerService, 'onSurveyRemoval');
+      jest.spyOn(SurveysAttachmentService, 'onSurveyRemoval');
 
-      surveyService.onSurveyRemoval = jest.fn().mockImplementation(() => {});
+      SurveysAttachmentService.onSurveyRemoval = jest.fn().mockImplementation(() => {});
       surveyModel.deleteMany = jest.fn().mockResolvedValueOnce(true);
       surveyAnswerModel.deleteMany = jest.fn().mockReturnValue(true);
 

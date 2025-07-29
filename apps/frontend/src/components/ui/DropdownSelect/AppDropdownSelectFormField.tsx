@@ -12,7 +12,7 @@
 
 import React, { useEffect } from 'react';
 import getDisplayName from '@/utils/getDisplayName';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useLanguage from '@/hooks/useLanguage';
 import { FormControl, FormFieldSH, FormItem } from '@/components/ui/Form';
 import { DropdownSelect } from '@/components';

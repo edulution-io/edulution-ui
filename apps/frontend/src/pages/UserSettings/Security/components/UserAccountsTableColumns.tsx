@@ -16,7 +16,7 @@ import SortableHeader from '@/components/ui/Table/SortableHeader';
 import { ColumnDef } from '@tanstack/react-table';
 import type UserAccountDto from '@libs/user/types/userAccount.dto';
 import copyToClipboard from '@/utils/copyToClipboard';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useLanguage from '@/hooks/useLanguage';
 import getDisplayName from '@/utils/getDisplayName';
 import PasswordCell from './PasswordCell';

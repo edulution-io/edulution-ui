@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { MailIcon } from '@/assets/icons';
 import { DropdownSelect } from '@/components';
 import useMailsStore from '@/pages/Mail/useMailsStore';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import { Form } from '@/components/ui/Form';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
@@ -27,7 +27,7 @@ import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/Floating
 import StateLoader from '@/pages/FileSharing/utilities/StateLoader';
 import replaceDiacritics from '@libs/common/utils/replaceDiacritics';
 import FormField from '@/components/shared/FormField';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import APPS from '@libs/appconfig/constants/apps';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import PageLayout from '@/components/structure/layout/PageLayout';

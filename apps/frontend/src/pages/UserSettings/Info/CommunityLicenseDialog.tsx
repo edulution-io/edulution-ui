@@ -12,7 +12,7 @@
 
 import React, { useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LinkText from '@/components/ui/LinkText';
 import { Button } from '@/components/shared/Button';
