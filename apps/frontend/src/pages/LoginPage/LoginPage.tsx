@@ -10,14 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useId, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import { useForm } from 'react-hook-form';
 import CryptoJS from 'crypto-js';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { v4 as uuidv4 } from 'uuid';
 import { MdOutlineQrCode } from 'react-icons/md';
 import { toast } from 'sonner';
 import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
@@ -228,7 +227,7 @@ const LoginPage: React.FC = () => {
     if (isEnterTotpVisible) {
       onTotpCancelButtonClick();
     } else {
-      const newSessionID = uuidv4();
+      const newSessionID = useId();
       setSessionID(newSessionID);
       setShowQrCode((prev) => !prev);
     }
