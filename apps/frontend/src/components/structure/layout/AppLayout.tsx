@@ -15,7 +15,7 @@ import { Sidebar } from '@/components';
 import { Outlet } from 'react-router-dom';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import MenuBar from '@/components/shared/MenuBar';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import Overlays from '@/components/structure/layout/Overlays';
 import useUserStore from '@/store/UserStore/useUserStore';
 import APPS from '@libs/appconfig/constants/apps';

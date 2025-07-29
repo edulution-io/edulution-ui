@@ -12,7 +12,7 @@
 
 import React, { useEffect } from 'react';
 import MailPage from '@/pages/Mail/MailPage';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import LinuxmusterPage from '@/pages/LinuxmusterPage/LinuxmusterPage';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
