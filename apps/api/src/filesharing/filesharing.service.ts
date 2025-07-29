@@ -26,9 +26,6 @@ import { once } from 'events';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { createReadStream, createWriteStream, statSync } from 'fs';
 import createTempFile from '@libs/filesystem/utils/createTempFile';
-import CustomFile from '@libs/filesharing/types/customFile';
-import { Open } from 'unzipper';
-import { lookup } from 'mime-types';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import ContentType from '@libs/filesharing/types/contentType';
@@ -40,6 +37,12 @@ import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import { v4 as uuidv4 } from 'uuid';
 import PublicShareResponseDto from '@libs/filesharing/types/publicShareResponseDto';
 import PUBLIC_SHARE_LINK_SCOPE from '@libs/filesharing/constants/publicShareLinkScope';
+import CustomFile from '@libs/filesharing/types/customFile';
+import { lookup } from 'mime-types';
+import unzipper, { Entry } from 'unzipper';
+import { join } from 'path';
+import { tmpdir } from 'os';
+import { pipeline } from 'stream/promises';
 import { PublicShare, PublicShareDocument } from './publicFileShare.schema';
 import UsersService from '../users/users.service';
 import WebdavService from '../webdav/webdav.service';
@@ -62,81 +65,70 @@ class FilesharingService {
     private readonly userService: UsersService,
   ) {}
 
-  async uploadZippedFolder(
+  async uploadZippedFolderStream(
     username: string,
     parentPath: string,
     folderName: string,
-    zipFile: CustomFile,
+    zipStream: Readable,
   ): Promise<WebdavStatusResponse> {
-    await this.webDavService.ensureFolderExists(username, `${parentPath}/`, folderName);
+    const destinationFolderPath = `${parentPath}/${folderName}`;
+    await this.webDavService.ensureFolderExists(username, parentPath, folderName);
 
-    const directory = await Open.buffer(zipFile.buffer);
-    const explicitDirs = directory.files.filter((f) => f.type === 'Directory');
-    const fileEntries = directory.files.filter((f) => f.type === 'File');
-    const totalFiles = fileEntries.length;
-    const dirSet = new Set<string>();
+    const zipEntryStream = zipStream.pipe(unzipper.Parse());
+    const directoryPaths = new Set<string>();
+    const fileJobPromises: Promise<void>[] = [];
 
-    explicitDirs.forEach((d) => dirSet.add(d.path));
-    fileEntries.forEach(({ path }) => {
-      const segments = path.split('/').filter(Boolean);
-      segments.pop();
+    await new Promise<void>((resolve, reject) => {
+      zipEntryStream
+        .on('entry', (zipEntry: Entry) => {
+          if (zipEntry.type === 'Directory') {
+            directoryPaths.add(zipEntry.path);
+            zipEntry.autodrain();
+            return;
+          }
+          zipEntry.path
+            .split('/')
+            .slice(0, -1)
+            .reduce((accumulatedPath, pathSegment) => {
+              const nextDirectoryPath = `${accumulatedPath}${pathSegment}/`;
+              directoryPaths.add(nextDirectoryPath);
+              return nextDirectoryPath;
+            }, '');
 
-      let cumulativePath = '';
-
-      segments.forEach((segment) => {
-        cumulativePath += `${segment}/`;
-        dirSet.add(cumulativePath);
-      });
+          const fullWebDavFilePath = `${destinationFolderPath}/${zipEntry.path}`;
+          const detectedMimeType = lookup(zipEntry.path) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
+          const tmpPath = join(tmpdir(), crypto.randomUUID());
+          const writePromise = pipeline(zipEntry, createWriteStream(tmpPath));
+          fileJobPromises.push(
+            writePromise.then(() =>
+              this.dynamicQueueService.addJobForUser(username, JOB_NAMES.FILE_UPLOAD_JOB, {
+                username,
+                fullPath: fullWebDavFilePath,
+                tempPath: tmpPath,
+                mimeType: detectedMimeType,
+                total: 0,
+                processed: 0,
+              }),
+            ),
+          );
+        })
+        .once('error', (err) => reject(err))
+        .once('close', () => resolve());
     });
-
-    const allDirs = Array.from(dirSet).sort((a, b) => a.length - b.length);
-
-    const totalDirs = allDirs.length;
-
-    let processedZipContent = 0;
-
-    await allDirs.reduce<Promise<void>>(async (prev, dirPath) => {
-      await prev;
-      await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.CREATE_FOLDER_JOB, {
-        username,
-        basePath: `${parentPath}/${folderName}`,
-        folderPath: dirPath,
-        total: totalDirs,
-        processed: (processedZipContent += 1),
-      });
-    }, Promise.resolve());
-
-    processedZipContent = 0;
-
+    const sortedDirs = Array.from(directoryPaths).sort((a, b) => a.length - b.length);
     await Promise.all(
-      fileEntries.map(async (entry) => {
-        if (entry.path.startsWith('__MACOSX') || entry.path.endsWith('.DS_Store')) return;
-
-        const buffer = Buffer.from(await entry.buffer());
-        const base64 = buffer.toString('base64');
-        const fileName = entry.path.split('/').pop()!;
-        const mimeType = lookup(fileName);
-
-        await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.FILE_UPLOAD_JOB, {
+      sortedDirs.map((folderPath, idx) =>
+        this.dynamicQueueService.addJobForUser(username, JOB_NAMES.CREATE_FOLDER_JOB, {
           username,
-          fullPath: `${parentPath}/${folderName}/${entry.path}`,
-          file: {
-            fieldname: 'file',
-            originalname: fileName,
-            encoding: 'binary',
-            buffer,
-          } as CustomFile,
-
-          mimeType,
-          size: buffer.length,
-          base64,
-          total: totalFiles,
-          processed: (processedZipContent += 1),
-        });
-      }),
+          basePath: destinationFolderPath,
+          folderPath,
+          total: sortedDirs.length,
+          processed: idx + 1,
+        }),
+      ),
     );
-
-    return { success: true, status: HttpStatus.CREATED };
+    await Promise.all(fileJobPromises);
+    return { success: true, status: HttpStatus.CREATED, filename: folderName };
   }
 
   async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
@@ -254,8 +246,14 @@ class FilesharingService {
   }
 
   async handleCallback(req: Request, res: Response, path: string, filename: string, username: string) {
-    return OnlyofficeService.handleCallback(req, res, path, filename, username, (user, uploadPath, file, name) =>
-      this.webDavService.uploadFile(user, `${this.baseurl}${uploadPath}/${name}`, file),
+    return OnlyofficeService.handleCallback(
+      req,
+      res,
+      path,
+      filename,
+      username,
+      async (user: string, uploadPath: string, file: CustomFile, name: string): Promise<WebdavStatusResponse> =>
+        this.webDavService.uploadFile(user, `${this.baseurl}${uploadPath}/${name}`, file.stream, file.mimetype),
     );
   }
 

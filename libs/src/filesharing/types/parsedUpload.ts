@@ -10,10 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface WorkerOutputMessage {
-  blob: Blob;
-  root: string;
-  fileCount: number;
+import { Readable } from 'stream';
+
+interface ParsedUpload {
+  basePath: string;
+  isZippedFolder: boolean;
+  originalFolderName?: string;
+  name: string;
+  stream: Readable;
+  mimeType: string;
 }
 
-export default WorkerOutputMessage;
+export default ParsedUpload;
