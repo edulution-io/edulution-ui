@@ -32,8 +32,6 @@ const NativeFrame: React.FC<NativeFrameProps> = ({ scriptOnStartUp, scriptOnStop
   const { isAuthenticated, isPreparingLogout, eduApiToken } = useUserStore();
   const { loadedEmbeddedFrames, activeEmbeddedFrame } = useFrameStore();
 
-  const getStyle = () => (activeEmbeddedFrame === appName ? { display: 'block' } : { display: 'none' });
-
   const injectScript = (iframe: HTMLIFrameElement, script: string) => {
     const attemptInject = () => {
       try {
@@ -86,7 +84,7 @@ const NativeFrame: React.FC<NativeFrameProps> = ({ scriptOnStartUp, scriptOnStop
       className="absolute inset-y-0 left-0 ml-0 mr-14 w-full md:w-[calc(100%-var(--sidebar-width))]"
       height="100%"
       src={loadedEmbeddedFrames.includes(currentAppConfig.name) ? initialUrlRef.current : undefined}
-      style={getStyle()}
+      style={activeEmbeddedFrame === appName ? { display: 'block' } : { display: 'none' }}
     />
   );
 };
