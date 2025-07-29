@@ -10,19 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { Route } from 'react-router-dom';
-import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+const BULLETIN_VISIBILITY_STATES = {
+  FULLY_VISIBLE: 'FULLY_VISIBLE',
+  ONLY_TITLE: 'ONLY_TITLE',
+} as const;
 
-const getFramedRoutes = (appConfigs: AppConfigDto[]) =>
-  appConfigs
-    .filter((item) => item.appType === APP_INTEGRATION_VARIANT.FRAMED)
-    .map((item) => (
-      <Route
-        key={item.name}
-        path={item.name}
-        element={<div id={item.name} />}
-      />
-    ));
-export default getFramedRoutes;
+export default BULLETIN_VISIBILITY_STATES;
