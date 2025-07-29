@@ -20,7 +20,7 @@ import getDialogBodyConfigurations from '@/pages/FileSharing/Dialog/DialogBodys/
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileActionType from '@libs/filesharing/types/fileActionType';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import getDocumentVendor from '@libs/filesharing/utils/getDocumentVendor';
 import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
 import ContentType from '@libs/filesharing/types/contentType';

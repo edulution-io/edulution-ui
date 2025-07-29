@@ -23,7 +23,7 @@ import FILE_PREVIEW_ROUTE from '@libs/filesharing/constants/routes';
 import EditButton from '@/components/structure/framing/ResizableWindow/Buttons/EditButton';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import useMedia from '@/hooks/useMedia';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';

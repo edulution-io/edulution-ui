@@ -415,7 +415,8 @@
         "PublicFileIsRestricted": "This share link is restricted to specific users or groups.",
         "PublicIsRestrictedByInvalidToken": "The share link cannot be accessed because the token is invalid.",
         "PublicFileWrongPassword": "The password for the sharing is incorrect.",
-        "FileCouldNotBeFound": "The requested content could not be found. Please check the share link or contact the owner of this content."
+        "FileCouldNotBeFound": "The requested content could not be found. Please check the share link or contact the owner of this content.",
+        "PublicFileDownloadFailed": "Downloading the file failed. Please try again later."
       },
       "success": {
         "PublicFileLinkCreated": "Share link created successfully",
