@@ -279,10 +279,12 @@ const LoginPage: React.FC = () => {
     if (showQrCode && !isEnterTotpVisible) {
       return (
         <>
-          <QRCodeDisplay
-            value={`${window.location.origin}/${EDU_API_ROOT}/${AUTH_PATHS.AUTH_ENDPOINT}/${AUTH_PATHS.AUTH_VIA_APP}?sessionId=${sessionID}`}
-            size="lg"
-          />
+          <div className="flex flex-col items-center justify-center">
+            <QRCodeDisplay
+              value={`${window.location.origin}/${EDU_API_ROOT}/${AUTH_PATHS.AUTH_ENDPOINT}/${AUTH_PATHS.AUTH_VIA_APP}?sessionId=${sessionID}`}
+              size="lg"
+            />
+          </div>
           <p className="font-bold">{t('login.loginWithQrDescription')}</p>
         </>
       );
