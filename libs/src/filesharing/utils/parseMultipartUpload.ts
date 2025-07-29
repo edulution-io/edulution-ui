@@ -10,15 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IncomingMessage } from 'http';
 import Busboy from 'busboy';
 import { lookup } from 'mime-types';
 import { Readable } from 'stream';
 import UploadFileDto from '@libs/filesharing/types/uploadFileDto';
 import ParsedUpload from '@libs/filesharing/types/parsedUpload';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import { Request } from 'express';
 
-const parseMultipartUpload = (req: IncomingMessage) =>
+const parseMultipartUpload = (req: Request) =>
   new Promise<ParsedUpload>((resolve, reject) => {
     let basePath: string | undefined;
     let originalFolderName: string | undefined;

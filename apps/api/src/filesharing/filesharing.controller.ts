@@ -39,14 +39,15 @@ import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreatePro
 import CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPublicShareDto';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
-import { IncomingMessage } from 'http';
 import parseMultipartUpload from '@libs/filesharing/utils/parseMultipartUpload';
+import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
 import FilesharingService from './filesharing.service';
 import WebdavService from '../webdav/webdav.service';
 import { Public } from '../common/decorators/public.decorator';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
+import CustomHttpException from '../common/CustomHttpException';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
@@ -86,14 +87,23 @@ class FilesharingController {
   }
 
   @Post(FileSharingApiEndpoints.UPLOAD)
-  async uploadFile(@Req() req: IncomingMessage, @GetCurrentUsername() username: string) {
-    const { basePath, isZippedFolder, originalFolderName, name, stream, mimeType } = await parseMultipartUpload(req);
+  async uploadFile(@Req() req: Request, @GetCurrentUsername() username: string) {
+    try {
+      const { basePath, isZippedFolder, originalFolderName, name, stream, mimeType } = await parseMultipartUpload(req);
 
-    if (isZippedFolder && originalFolderName) {
-      return this.filesharingService.uploadZippedFolderStream(username, basePath, originalFolderName, stream);
+      if (isZippedFolder && originalFolderName) {
+        return await this.filesharingService.uploadZippedFolderStream(username, basePath, originalFolderName, stream);
+      }
+      const fullPath = `${basePath}/${name}`;
+      return await this.webdavService.uploadFile(username, fullPath, stream, mimeType);
+    } catch (error) {
+      throw new CustomHttpException(
+        FileSharingErrorMessage.UploadFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        'FileSharingError UploadFailed',
+        FilesharingService.name,
+      );
     }
-    const fullPath = `${basePath}/${name}`;
-    return this.webdavService.uploadFile(username, fullPath, stream, mimeType);
   }
 
   @Delete()
