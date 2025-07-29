@@ -15,7 +15,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import { Dashboard, SettingsIcon } from '@/assets/icons';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useLanguage from '@/hooks/useLanguage';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';

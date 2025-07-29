@@ -16,7 +16,7 @@ import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/useConferenceDetailsDialogStore';
 import UserStore from '@/store/UserStore/useUserStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
 import useDesktopDeploymentStore from '@/pages/DesktopDeployment/useDesktopDeploymentStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';

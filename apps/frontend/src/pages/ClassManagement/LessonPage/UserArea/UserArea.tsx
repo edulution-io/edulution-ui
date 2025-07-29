@@ -22,7 +22,7 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import useUserStore from '@/store/UserStore/useUserStore';
 import Checkbox from '@/components/ui/Checkbox';
 import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import useQuotaInfo from '@/hooks/useQuotaInfo';

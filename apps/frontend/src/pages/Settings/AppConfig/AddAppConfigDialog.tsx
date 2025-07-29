@@ -19,7 +19,7 @@ import { MdOutlineCloudUpload } from 'react-icons/md';
 import { HiTrash } from 'react-icons/hi';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { zodResolver } from '@hookform/resolvers/zod';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import { Form } from '@/components/ui/Form';

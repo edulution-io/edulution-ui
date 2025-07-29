@@ -14,7 +14,7 @@ import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getFromPathName } from '@libs/common/utils';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import getDisplayName from '@/utils/getDisplayName';
 import useLanguage from '@/hooks/useLanguage';
 import TApps from '@libs/appconfig/types/appsType';
