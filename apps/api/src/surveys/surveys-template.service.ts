@@ -14,7 +14,7 @@ import { join } from 'path';
 import { Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
-import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
 import SURVEYS_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplatePath';
@@ -38,7 +38,7 @@ class SurveysTemplateService implements OnModuleInit {
     const templatePath = join(SURVEYS_TEMPLATE_PATH, filename);
     try {
       await this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);
-      return await FilesystemService.writeFile(templatePath, JSON.stringify(surveyTemplateDto, null, 2));
+      return await FilesystemService.writeFile(templatePath, JSON.stringify(surveyTemplateDto.template, null, 2));
     } catch (error) {
       throw new CustomHttpException(
         CommonErrorMessages.FILE_WRITING_FAILED,
@@ -47,6 +47,10 @@ class SurveysTemplateService implements OnModuleInit {
         SurveysTemplateService.name,
       );
     }
+  }
+
+  async serveTemplateNames(): Promise<string[]> {
+    return this.fileSystemService.getAllFilenamesInDirectory(SURVEYS_TEMPLATE_PATH);
   }
 
   async serveTemplate(fileName: string, res: Response): Promise<Response> {
@@ -62,7 +66,7 @@ class SurveysTemplateService implements OnModuleInit {
       FilesystemService.readFile<SurveyTemplateDto>(join(SURVEYS_TEMPLATE_PATH, filename)),
     );
     const templates = await Promise.all(existingTemplates);
-    return templates.filter((template) => !template.disabled);
+    return templates;
   }
 }
 

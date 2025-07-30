@@ -11,20 +11,15 @@
  */
 
 import React from 'react';
-import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
-import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
-import useLanguage from '@/hooks/useLanguage';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
-import PropertyDialogList from '@/components/shared/PropertyDialogList';
 
 const DeleteTemplateDialog = () => {
   const {
     template,
-    error,
     isSubmitting,
     deleteTemplate,
     fetchTemplates,
@@ -32,11 +27,7 @@ const DeleteTemplateDialog = () => {
     setIsOpenTemplateConfirmDeletion,
   } = useTemplateMenuStore();
 
-  const { language } = useLanguage();
-
   const { t } = useTranslation();
-
-  const locale = getLocaleDateFormat(language);
 
   const handleRemoveTemplate = async () => {
     if (template?.fileName) {
@@ -46,38 +37,9 @@ const DeleteTemplateDialog = () => {
     }
   };
 
-  const propertyList = [
-    { id: 'title', value: template?.title, translationId: 'common.title' },
-    { id: 'description', value: template?.description, translationId: 'common.description' },
-    {
-      id: 'createdAt',
-      value: template?.createdAt ? format(template?.createdAt, 'PPP', { locale }) : '',
-      translationId: 'common.createdAt',
-    },
-    {
-      id: 'updatedAt',
-      value: template?.updatedAt ? format(template?.updatedAt, 'PPP', { locale }) : '',
-      translationId: 'common.updatedAt',
-    },
-  ];
-
   const getDialogBody = () => {
     if (isSubmitting) return <CircleLoader className="mx-auto mt-5" />;
-
-    return (
-      <div className="text-background">
-        {error ? (
-          <>
-            {t('survey.editor.templateMenu.deletion.error')}: {error.message}
-          </>
-        ) : (
-          <PropertyDialogList
-            deleteWarningTranslationId="survey.editor.templateMenu.deletion.message"
-            items={propertyList}
-          />
-        )}
-      </div>
-    );
+    return <p>{t('survey.editor.templateMenu.deletion.message')}</p>;
   };
 
   const getFooter = () => (
@@ -95,6 +57,7 @@ const DeleteTemplateDialog = () => {
       title={t('survey.editor.templateMenu.deletion.title')}
       body={getDialogBody()}
       footer={getFooter()}
+      desktopContentClassName="min-h-[100px]"
     />
   );
 };

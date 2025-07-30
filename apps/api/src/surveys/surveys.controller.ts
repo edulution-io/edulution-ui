@@ -43,7 +43,7 @@ import {
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
