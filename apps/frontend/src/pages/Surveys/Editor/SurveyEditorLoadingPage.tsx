@@ -26,6 +26,7 @@ import Input from '@/components/shared/Input';
 import { Card } from '@/components/shared/Card';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import SurveyEditorLoadingTemplate from '@/pages/Surveys/Editor/SurveyEditorLoadingTemplate';
+import SurveyEditorLoadingPreview from '@/pages/Surveys/Editor/SurveyEditorLoadingPreview';
 
 const SurveyEditorLoadingPage = () => {
   const { user } = useUserStore();
@@ -34,7 +35,7 @@ const SurveyEditorLoadingPage = () => {
   const { language } = useLanguage();
   const { t } = useTranslation();
 
-  const { templates, fetchTemplates, setTemplate } = useTemplateMenuStore();
+  const { templates, fetchTemplates, setTemplate, isOpenTemplatePreview } = useTemplateMenuStore();
 
   const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
 
@@ -82,7 +83,7 @@ const SurveyEditorLoadingPage = () => {
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         variant="default"
-        width="auto"
+        widthVariant="auto"
         className={GRID_SEARCH}
       />
       <div className="mx-auto grid max-h-full w-full grid-cols-[repeat(auto-fit,minmax(8rem,auto))] justify-center gap-x-3 gap-y-2 overflow-auto px-2 pb-10 scrollbar-thin md:max-h-full md:w-[95%] md:grid-cols-[repeat(auto-fit,minmax(12rem,auto))] md:gap-x-6 md:gap-y-5 md:pb-4">
@@ -114,6 +115,7 @@ const SurveyEditorLoadingPage = () => {
           <p className="px-2 py-16">{t('survey.editor.noSearchResults')}</p>
         )}
       </div>
+      {isOpenTemplatePreview && <SurveyEditorLoadingPreview />}
     </>
   );
 };

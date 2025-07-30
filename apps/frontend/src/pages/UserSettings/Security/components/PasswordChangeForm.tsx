@@ -60,11 +60,11 @@ const PasswordChangeForm: FC = () => {
             id="currentPassword"
             type="password"
             {...register('currentPassword', { required: t('usersettings.errors.currentPasswordRequired') })}
-            className={`mb-4 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
+            className={`mb-1 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
               errors.currentPassword ? 'border-red-500' : ''
             }`}
           />
-          {errors.currentPassword && <p className="mt-2 text-sm text-red-600">{errors.currentPassword.message}</p>}
+          {errors.currentPassword && <p className="mb-2 text-sm text-red-600">{errors.currentPassword.message}</p>}
           <Label
             htmlFor="newPassword"
             className="block text-sm font-medium"
@@ -78,11 +78,11 @@ const PasswordChangeForm: FC = () => {
               required: t('usersettings.errors.newPasswordRequired'),
               minLength: { value: 8, message: t('usersettings.errors.passwordLength') },
             })}
-            className={`mb-4 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
+            className={`mb-1 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
               errors.newPassword ? 'border-red-500' : ''
             }`}
           />
-          {errors.newPassword && <p className="mt-2 text-sm text-red-600">{errors.newPassword.message}</p>}
+          {errors.newPassword && <p className="mb-2 text-sm text-red-600">{errors.newPassword.message}</p>}
           <Label
             htmlFor="confirmPassword"
             className="block text-sm font-medium"
@@ -96,11 +96,11 @@ const PasswordChangeForm: FC = () => {
               required: t('usersettings.errors.confirmPasswordRequired'),
               validate: (value) => value === watch('newPassword') || t('usersettings.errors.passwordsDoNotMatch'),
             })}
-            className={`mb-4 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
+            className={`mb-1 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
               errors.confirmPassword ? 'border-red-500' : ''
             }`}
           />
-          {errors.confirmPassword && <p className="mt-2 text-sm text-red-600">{errors.confirmPassword.message}</p>}
+          {errors.confirmPassword && <p className="mb-2 text-sm text-red-600">{errors.confirmPassword.message}</p>}
         </div>
         <div className="flex justify-end">
           <Button
