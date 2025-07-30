@@ -25,6 +25,8 @@ import SURVEYS_DEFAULT_LOGO from '@libs/survey/constants/surveys-default-logo';
 import SURVEYS_HEADER_IMAGE from '@libs/survey/constants/surveys-header-image';
 import TSurveyElement from '@libs/survey/types/TSurveyElement';
 import QuestionsType from '@libs/survey/constants/questions-type';
+import SURVEYS_CUSTOM_LOGO from '@libs/survey/constants/surveys-custom-logo';
+import SURVEYS_DEFAULT_LOGO from '@libs/survey/constants/surveys-default-logo';
 import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import FilesystemService from '../filesystem/filesystem.service';
@@ -250,26 +252,31 @@ class SurveysAttachmentService implements OnModuleInit {
     return FilesystemService.deleteDirectories(filePath);
   }
 
-  async serveFiles(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
-    return this.fileSystemService.getResponseWithFileStream(
-      res,
-      join(SURVEYS_ATTACHMENT_PATH, surveyId, questionId, fileName),
-    );
-  }
-
-  async serveTempFiles(userId: string, fileName: string, res: Response): Promise<Response> {
-    const filePath = `${SURVEYS_TEMP_FILES_PATH}/${userId}/${fileName}`;
+  async createReadStream(res: Response, filePath: string): Promise<Response> {
     const fileStream = await this.fileSystemService.createReadStream(filePath);
     fileStream.pipe(res);
     return res;
   }
 
+  async serveFiles(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
+    return this.createReadStream(res, join(SURVEYS_ATTACHMENT_PATH, surveyId, questionId, fileName));
+  }
+
+  async serveTempFiles(userId: string, fileName: string, res: Response): Promise<Response> {
+    return this.createReadStream(res, join(SURVEYS_TEMP_FILES_PATH, userId, fileName));
+  }
+
   async serveDefaultIcon(res: Response): Promise<Response> {
-    const defaultIconPath = join(SURVEYS_DEFAULT_FILES_PATH, SURVEYS_DEFAULT_LOGO);
-    await FilesystemService.checkIfFileExist(defaultIconPath);
-    const fileStream = await this.fileSystemService.createReadStream(defaultIconPath);
-    fileStream.pipe(res);
-    return res;
+    let defaultIconStream: Response | undefined;
+    try {
+      defaultIconStream = await this.createReadStream(res, join(SURVEYS_DEFAULT_FILES_PATH, SURVEYS_CUSTOM_LOGO));
+    } catch (error) {
+      // to nothing
+    }
+    if (!defaultIconStream) {
+      defaultIconStream = await this.createReadStream(res, join(SURVEYS_DEFAULT_FILES_PATH, SURVEYS_DEFAULT_LOGO));
+    }
+    return defaultIconStream;
   }
 }
 

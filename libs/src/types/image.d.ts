@@ -10,7 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+<<<<<<<< HEAD:libs/src/types/image.d.ts
 declare module '*.png' {
   const value: string;
   export default value;
 }
+========
+const SURVEYS_CUSTOM_LOGO = 'surveys-default-logo.png';
+
+export default SURVEYS_CUSTOM_LOGO;
+>>>>>>>> a0250d2c2 (1079: * save changes):libs/src/survey/constants/surveys-custom-logo.ts
