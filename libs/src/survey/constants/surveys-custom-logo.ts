@@ -10,10 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { join } from 'path';
-import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
-import SURVEYS_FILES_PATH from '@libs/survey/constants/surveysFilesPath';
+const SURVEYS_CUSTOM_LOGO = 'surveys-default-logo.png';
 
-const SURVEYS_ATTACHMENT_PATH = join(SURVEYS_FILES_PATH, ATTACHMENT_FOLDER);
-
-export default SURVEYS_ATTACHMENT_PATH;
+export default SURVEYS_CUSTOM_LOGO;
