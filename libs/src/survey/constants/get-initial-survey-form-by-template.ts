@@ -18,7 +18,7 @@ import surveysDefaultValues from '@libs/survey/constants/surveys-default-values'
 const getInitialSurveyFormByTemplate = (creator: AttendeeDto, template?: SurveyTemplateDto): SurveyDto => ({
   id: undefined,
   formula: template?.template.formula || surveysDefaultValues.formula,
-  backendLimiters: template?.backendLimiters || [],
+  backendLimiters: template?.template.backendLimiters || [],
   creator,
   invitedAttendees: template?.template.invitedAttendees || [],
   invitedGroups: template?.template.invitedGroups || [],
