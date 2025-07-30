@@ -16,28 +16,20 @@ import { VscNewFile } from 'react-icons/vsc';
 import cn from '@libs/common/utils/className';
 import isSubsequence from '@libs/common/utils/string/isSubsequence';
 import SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
+import getCreatorFromUserDto from '@libs/survey/utils/getCreatorFromUserDto';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import { GRID_CARD, GRID_SEARCH } from '@libs/ui/constants/commonClassNames';
+import useUserStore from '@/store/UserStore/useUserStore';
 import useLanguage from '@/hooks/useLanguage';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import Input from '@/components/shared/Input';
 import { Card } from '@/components/shared/Card';
-import useUserStore from '@/store/UserStore/useUserStore';
-import AttendeeDto from '@libs/user/types/attendee.dto';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
-import { GRID_CARD, GRID_SEARCH } from '@libs/ui/constants/commonClassNames';
 import SurveyEditorLoadingTemplate from '@/pages/Surveys/Editor/SurveyEditorLoadingTemplate';
 
 const SurveyEditorLoadingPage = () => {
   const { user } = useUserStore();
-  const surveyCreator: AttendeeDto | undefined = useMemo(
-    () => ({
-      firstName: user?.firstName || '',
-      lastName: user?.lastName || '',
-      username: user?.username || '',
-      value: user?.username || '',
-      label: `${user?.firstName} ${user?.lastName}` || '',
-    }),
-    [user],
-  );
+  const surveyCreator: AttendeeDto | undefined = useMemo(() => getCreatorFromUserDto(user), [user]);
 
   const { language } = useLanguage();
   const { t } = useTranslation();
@@ -113,7 +105,7 @@ const SurveyEditorLoadingPage = () => {
             </div>
           ))
         ) : (
-          <div className="py-16">{t('survey.editor.noSearchResults')}</div>
+          <p className="px-2 py-16">{t('survey.editor.noSearchResults')}</p>
         )}
       </div>
     </>
