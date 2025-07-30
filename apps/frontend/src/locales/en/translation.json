@@ -1157,7 +1157,6 @@
       "fileNotFound": "File not found",
       "fileNotProvided": "File not provided",
       "invalidFileType": "Invalid file type",
-      "invalidFileName": "Invalid file name",
       "startDateBeforeEndDate": "The start date must be before the end date"
     },
     "cut": "Cut",
