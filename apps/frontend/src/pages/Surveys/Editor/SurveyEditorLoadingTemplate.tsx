@@ -15,7 +15,7 @@ import { MdOutlineOpenInNew } from 'react-icons/md';
 import { HiTrash } from 'react-icons/hi';
 import cn from '@libs/common/utils/className';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
@@ -25,32 +25,34 @@ import { Button } from '@/components/shared/Button';
 
 interface SurveyEditorLoadingTemplateProps {
   creator: AttendeeDto;
-  template: SurveyTemplateDto;
+  surveyTemplate: SurveyTemplateDto;
 }
 
-const SurveyEditorLoadingTemplate = ({ creator, template }: SurveyEditorLoadingTemplateProps): JSX.Element => {
+const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLoadingTemplateProps): JSX.Element => {
   const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
 
   const { setTemplate, setIsOpenTemplateConfirmDeletion, setIsOpenTemplatePreview } = useTemplateMenuStore();
 
   const { isSuperAdmin } = useLdapGroups();
 
-  const { title, description, isActive } = template;
+  const { template } = surveyTemplate;
+  const { formula } = template;
+  const { title, description } = formula;
 
   return (
     <Card
-      className={cn(GRID_CARD, isActive ? 'bg-muted' : 'bg-muted-transparent', { 'pb-10': isSuperAdmin })}
+      className={cn(GRID_CARD, 'bg-muted', { 'pb-10': isSuperAdmin })}
       variant="text"
       onClick={() => {
-        setTemplate(template);
-        assignTemplateToSelectedSurvey(creator, template);
+        setTemplate(surveyTemplate);
+        assignTemplateToSelectedSurvey(creator, surveyTemplate);
       }}
     >
       <Button
         variant="btn-outline"
         onClick={(e) => {
           e.stopPropagation();
-          setTemplate(template);
+          setTemplate(surveyTemplate);
           setIsOpenTemplatePreview(true);
         }}
         className="h-14 w-14 p-2"
@@ -60,20 +62,18 @@ const SurveyEditorLoadingTemplate = ({ creator, template }: SurveyEditorLoadingT
       <h4 aria-label={`Template title: ${title}`}>{title}</h4>
       <p>{description}</p>
       {isSuperAdmin && (
-        <div className="flex w-full justify-end">
-          <Button
-            onClick={(e) => {
-              e.stopPropagation();
-              setTemplate(template);
-              setIsOpenTemplateConfirmDeletion(true);
-            }}
-            variant="btn-attention"
-            size="sm"
-            className="p-2"
-          >
-            <HiTrash className="h-4 w-4" />
-          </Button>
-        </div>
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            setTemplate(surveyTemplate);
+            setIsOpenTemplateConfirmDeletion(true);
+          }}
+          variant="btn-attention"
+          size="sm"
+          className="absolute bottom-2 right-2 p-2"
+        >
+          <HiTrash className="h-4 w-4" />
+        </Button>
       )}
     </Card>
   );

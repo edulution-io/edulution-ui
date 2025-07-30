@@ -16,7 +16,7 @@ import { t } from 'i18next';
 import eduApi from '@/api/eduApi';
 import { SURVEY_TEMPLATES_ENDPOINT, TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
 import handleApiError from '@/utils/handleApiError';
-import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
+import { TemplateDto, SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import APPS from '@libs/appconfig/constants/apps';
 
@@ -25,9 +25,6 @@ interface TemplateMenuStore {
 
   isOpenTemplatePreview: boolean;
   setIsOpenTemplatePreview: (state: boolean) => void;
-
-  isOpenSaveTemplateMenu: boolean;
-  setIsOpenSaveTemplateMenu: (state: boolean) => void;
 
   uploadTemplate: (template: SurveyTemplateDto) => Promise<void>;
   isSubmitting: boolean;
@@ -46,7 +43,6 @@ interface TemplateMenuStore {
 
 const TemplateMenuStoreInitialState = {
   isOpenTemplatePreview: false,
-  isOpenSaveTemplateMenu: false,
   isOpenTemplateConfirmDeletion: false,
   template: undefined,
   templates: [],
@@ -60,8 +56,6 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
   reset: () => set(TemplateMenuStoreInitialState),
 
   setIsOpenTemplatePreview: (state: boolean) => set({ isOpenTemplatePreview: state }),
-
-  setIsOpenSaveTemplateMenu: (state: boolean) => set({ isOpenSaveTemplateMenu: state }),
 
   fetchTemplates: async (): Promise<void> => {
     set({ isLoading: true });
@@ -79,9 +73,9 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
     let templateDocuments: SurveyTemplateDto[] = [];
     const promises = templateNames?.map(async (fileName) => {
       try {
-        const result = await eduApi.get<SurveyTemplateDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${fileName}`);
+        const result = await eduApi.get<TemplateDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${fileName}`);
         if (result) {
-          const newTemplate = { ...result.data, fileName };
+          const newTemplate = { fileName, template: { ...result.data } };
           templateDocuments = [...templateDocuments, newTemplate];
         }
       } catch (error) {
@@ -109,6 +103,7 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
       const result = await eduApi.post<string>(SURVEY_TEMPLATES_ENDPOINT, surveyTemplateDto);
       const newTemplate = { ...surveyTemplateDto, fileName: result.data };
       set({ template: newTemplate });
+      toast.success(t('survey.editor.templateMenu.upload.success'));
     } catch (error) {
       handleApiError(error, set);
       set({ template: undefined });

@@ -14,7 +14,7 @@ import { join } from 'path';
 import { Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
 import SURVEYS_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplatePath';
@@ -34,7 +34,7 @@ class SurveysTemplateService {
     const templatePath = join(SURVEYS_TEMPLATE_PATH, filename);
     try {
       await this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);
-      return await FilesystemService.writeFile(templatePath, JSON.stringify(surveyTemplateDto, null, 2));
+      return await FilesystemService.writeFile(templatePath, JSON.stringify(surveyTemplateDto.template, null, 2));
     } catch (error) {
       throw new CustomHttpException(
         CommonErrorMessages.FILE_WRITING_FAILED,
