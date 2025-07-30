@@ -49,9 +49,7 @@ const App = () => {
     client_secret: ' ',
     redirect_uri: '',
     loadUserInfo: true,
-    automaticSilentRenew: true,
-    silent_redirect_uri: `${window.location.origin}/silent-check-sso.html`,
-    silentRequestTimeoutInSeconds: 30,
+    automaticSilentRenew: false,
     userStore: new WebStorageStateStore({
       store: localStorage,
     }),
