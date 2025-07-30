@@ -1041,7 +1041,6 @@
       "fileNotFound": "Fichier introuvable",
       "fileNotProvided": "Le fichier n'a pas été fourni",
       "invalidFileType": "Type de fichier non valide",
-      "invalidFileName": "Nom de fichier non valide",
       "startDateBeforeEndDate": "La date de début ne doit pas être après la date de fin"
     },
     "cut": "Couper",
