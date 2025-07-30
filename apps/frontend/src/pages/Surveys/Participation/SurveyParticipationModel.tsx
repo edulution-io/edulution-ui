@@ -31,6 +31,7 @@ interface SurveyParticipationModelProps {
 }
 
 Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
+Serializer.getProperty('text', 'textUpdateMode').defaultValue = 'onTyping';
 
 Serializer.getProperty('signaturepad', 'penColor').defaultValue = 'rgba(255, 255, 255, 1)';
 Serializer.getProperty('signaturepad', 'signatureWidth').defaultValue = '800';
@@ -87,6 +88,9 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
   useEffect(() => {
     if (!selectedSurvey?.id) {
+      return;
+    }
+    if (!selectedSurvey.canUpdateFormerAnswer) {
       return;
     }
     void fetchAnswer(selectedSurvey.id);

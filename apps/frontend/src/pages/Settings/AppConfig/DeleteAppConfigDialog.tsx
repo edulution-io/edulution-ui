@@ -13,7 +13,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
