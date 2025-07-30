@@ -11,6 +11,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Response } from 'express';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import GroupForm from '@libs/groups/types/groupForm';
@@ -18,6 +19,15 @@ import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
 import { LmnApiController } from './lmnApi.controller';
 import LmnApiService from './lmnApi.service';
 import mockLmnApiService from './lmnApi.service.mock';
+import GlobalSettingsService from '../global-settings/global-settings.service';
+
+const cacheManagerMock = {
+  get: jest.fn(),
+  set: jest.fn(),
+  del: jest.fn(),
+};
+
+const globalSettingsServiceMock = { updateCache: jest.fn() };
 
 describe('LmnApiController', () => {
   let controller: LmnApiController;
@@ -26,7 +36,11 @@ describe('LmnApiController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [LmnApiController],
-      providers: [{ provide: LmnApiService, useValue: mockLmnApiService }],
+      providers: [
+        { provide: LmnApiService, useValue: mockLmnApiService },
+        { provide: CACHE_MANAGER, useValue: cacheManagerMock },
+        { provide: GlobalSettingsService, useValue: globalSettingsServiceMock },
+      ],
     }).compile();
 
     controller = module.get<LmnApiController>(LmnApiController);

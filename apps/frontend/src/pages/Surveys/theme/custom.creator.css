@@ -7,6 +7,17 @@
     display: none;
   }
 
+  .svc-logo-image,
+  .svc-logo-image-placeholder {
+    opacity: 0.8;
+    stroke: var(--muted-foreground);
+  }
+  .svc-logo-image:hover,
+  .svc-logo-image-placeholder:hover {
+    stroke: var(--primary);
+    fill: var(--primary);
+  }
+
   .svc-top-bar,
   .svc-tabbed-menu,
   .svc-tabbed-menu-wrapper,
@@ -111,6 +122,7 @@
     .sd-description .sv-string-editor {
       font-size: 16pt;
       line-height: 16pt;
+      color: var(--primary-foreground);
     }
   }
 

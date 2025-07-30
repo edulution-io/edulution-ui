@@ -62,8 +62,13 @@
     "editCategory": "Kategorie bearbeiten",
     "createNewCategory": "Kategorie erstellen",
     "categories": {
-      "visibleByUsersAndGroups": "Diese Kategorie mit ihren Mitteilungen ist sichtbar für Nutzer und Gruppen auf der Startseite",
-      "visibleByUsersAndGroupsTitle": "Startseite",
+      "visibilityState": "Standardsichtbarkeit der Mitteilungen",
+      "FULLY_VISIBLE": "Vollständig sichtbar",
+      "FULLY_VISIBLE-short": "Vollständig",
+      "ONLY_TITLE": "Nur Titel anzeigen",
+      "ONLY_TITLE-short": "Nur Titel",
+      "visibleByUsersAndGroups": "Diese Kategorie mit ihren Mitteilungen ist sichtbar für Nutzer und Gruppen in der Info Board App",
+      "visibleByUsersAndGroupsTitle": "Info Board App",
       "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen in der Info Board App",
       "editableByUsersAndGroupsTitle": "Mitteilungen verwalten"
     },
@@ -410,7 +415,8 @@
         "PublicFileIsRestricted": "Der Freigabe-Link ist nur für bestimmte Nutzer oder Gruppen zugänglich.",
         "PublicIsRestrictedByInvalidToken": "Auf den Freigabelink kann nicht zugegriffen werden, da der Token ungültig ist.",
         "PublicFileWrongPassword": "Das eingegebene Passwort ist falsch.",
-        "FileCouldNotBeFound": "Der angefordert Freigabe-Link konnte nicht gefunden werden. Bitte überprüfe den Link oder wende dich an den Ersteller."
+        "FileCouldNotBeFound": "Der angefordert Freigabe-Link konnte nicht gefunden werden. Bitte überprüfe den Link oder wende dich an den Ersteller.",
+        "PublicFileDownloadFailed": "Herunterladen der Datei fehlgeschlagen. Bitte versuche es später noch einmal."
       },
       "success": {
         "PublicFileLinkCreated": "Freigabe-Link erfolgreich erstellt.",
@@ -689,7 +695,8 @@
       "notAbleToFindSurveyAnswerError": "Keine Antworten vorhanden.",
       "notAbleToUpdateSurveyAnswerError": "Antwort konnte nicht aktualisiert werden.",
       "notAbleToCreateSurveyAnswerError": "Antwort konnte nicht erstellt werden.",
-      "notAbleToDeleteSurveyAnswerError": "Antwort konnte nicht gelöscht werden."
+      "notAbleToDeleteSurveyAnswerError": "Antwort konnte nicht gelöscht werden.",
+      "notAbleToCountChoices": "Die Anzahl der Auswahlmöglichkeiten konnte nicht ermittelt werden."
     }
   },
   "surveys": {
@@ -896,7 +903,8 @@
       "errors": {
         "updateError": "Einstellungen konnten nicht aktualisiert werden.",
         "notFoundError": "Einstellungen konnten nicht geladen werden."
-      }
+      },
+      "deploymentTarget": "Plattform"
     },
     "userAdministration": {
       "title": "Benutzerverwaltung",
@@ -1093,6 +1101,7 @@
     "addTotp": {
       "title": "Zwei-Faktor-Authentisierung einrichten",
       "qrCodeInstructions": "Den QR-Code mit einer Authenticator App scannen, die TOTP (Time-based One-Time Password) unterstützt.",
+      "copyTotpSecretInstructions": "Falls keine Kamera vorhanden ist, kann hier das Secret kopiert werden:",
       "totpCodeInstructions": "Danach das generierte Passwort hier eintragen und speichern:",
       "mfaSetupRequired": "Die globalen Richtlinien erfordern die Eintrichtung der Zwei-Faktor-Authentisierungs:",
       "mfaSetupSuccess": "Die Zwei-Faktor-Authentisierungs wurde erfolgreich eingerichtet."
@@ -1137,6 +1146,8 @@
     "infoQrCodeExpired": "Zeit für Login mit edulution.io APP abgelaufen."
   },
   "common": {
+    "showMore": "Mehr anzeigen",
+    "visibility": "Sichtbarkeit",
     "offline": "Offline",
     "guest": "Gast",
     "ok": "OK",
@@ -1157,7 +1168,8 @@
       "fileNotFound": "Datei nicht gefunden",
       "fileNotProvided": "Datei wurde nicht bereitgestellt",
       "invalidFileType": "Ungültiger Dateityp",
-      "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen"
+      "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
+      "wrongServerConfig": "Fehlerhafte Serverkonfiguration"
     },
     "cut": "Ausschneiden",
     "sortOrder": "Sortierung",
@@ -1332,8 +1344,10 @@
     "overwriteWarningDescriptionFile": "Die folgende Datei wird überschrieben:",
     "overwriteWarningDescriptionFiles": "Die folgenden Dateien werden überschrieben:",
     "oversizedFilesDetected": "Zu große Dateien entdeckt",
+    "folderTooLargeTitle": "Zu viele Dateien im Ordner",
+    "folderTooLargeDescription": "Der Ordner enthält mehr als 100 Dateien. Bitte wähle einen anderen Ordner oder reduziere die Anzahl der Dateien.",
     "oversizedFileDetected": "Zu große Datei entdeckt!",
-    "cannotUploadOversized": "Dateien, die größer als 50 MB sind, können nicht hochgeladen werden.",
+    "cannotUploadOversized": "Dateien, die größer als 400 MB sind, können nicht hochgeladen werden.",
     "addFiles": "Dateien hinzufügen",
     "addFolder": "Ordner hinzufügen",
     "preparingFolder": "Ordner wird vorbereitet"
@@ -1624,5 +1638,11 @@
   "Failed to fetch": "Verbindung zum edulution Server fehlgeschlagen. Bitte versuche es später noch einmal.",
   "Invalid client or Invalid client credentials": "Ungültige Serverkonfiguration. Bitte überprüfe die Client-ID oder das Client-Secret.",
   "Not Found (404)": "Verbindung zum edulution Server fehlgeschlagen. Bitte versuche es später noch einmal.",
-  "NetworkError when attempting to fetch resource.": "Netzwerkfehler beim Abrufen der Website."
+  "NetworkError when attempting to fetch resource.": "Netzwerkfehler beim Abrufen der Website.",
+  "deploymentTarget": {
+    "title": "Auswahl",
+    "description": "Hier kann die Plattform ausgewählt werden, an welche {{ appName }} angebunden wird.",
+    "linuxmuster": "Linuxmuster",
+    "generic": "Generisch"
+  }
 }

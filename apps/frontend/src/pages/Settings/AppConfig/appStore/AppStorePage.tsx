@@ -27,7 +27,7 @@ import APPLICATION_NAME from '@libs/common/constants/applicationName';
 import APP_CONFIG_OPTIONS from '../appConfigOptions';
 import AddAppConfigDialog from '../AddAppConfigDialog';
 import AppStoreFloatingButtons from './AppStoreFloatingButtons';
-import useAppConfigsStore from '../appConfigsStore';
+import useAppConfigsStore from '../useAppConfigsStore';
 
 const emptyAppConfigOption = { id: APPS.NONE, icon: '', isNativeApp: false };
 

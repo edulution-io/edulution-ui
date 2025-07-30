@@ -62,8 +62,13 @@
     "editCategory": "Edit category",
     "createNewCategory": "Create category",
     "categories": {
-      "visibleByUsersAndGroups": "This category with its bulletins is visible to users and groups on the homepage",
-      "visibleByUsersAndGroupsTitle": "Homepage",
+      "FULLY_VISIBLE": "Fully visible",
+      "FULLY_VISIBLE-short": "Visible",
+      "ONLY_TITLE": "Show titles only",
+      "ONLY_TITLE-short": "Titles only",
+      "visibilityState": "Default visibility of bulletins",
+      "visibleByUsersAndGroups": "This category with its bulletins is visible to users and groups in the Info Board app",
+      "visibleByUsersAndGroupsTitle": "Info Board app",
       "editableByUsersAndGroups": "This category is editable by users and groups in the Info Board app",
       "editableByUsersAndGroupsTitle": "Manage Bulletins"
     },
@@ -410,7 +415,8 @@
         "PublicFileIsRestricted": "This share link is restricted to specific users or groups.",
         "PublicIsRestrictedByInvalidToken": "The share link cannot be accessed because the token is invalid.",
         "PublicFileWrongPassword": "The password for the sharing is incorrect.",
-        "FileCouldNotBeFound": "The requested content could not be found. Please check the share link or contact the owner of this content."
+        "FileCouldNotBeFound": "The requested content could not be found. Please check the share link or contact the owner of this content.",
+        "PublicFileDownloadFailed": "Downloading the file failed. Please try again later."
       },
       "success": {
         "PublicFileLinkCreated": "Share link created successfully",
@@ -686,7 +692,8 @@
       "notAbleToFindSurveyAnswerError": "Survey answers not found.",
       "notAbleToUpdateSurveyAnswerError": "Not able to update the submitted survey answer.",
       "notAbleToCreateSurveyAnswerError": "Not able to create the users survey answer.",
-      "notAbleToDeleteSurveyAnswerError": "Not able to delete the users survey answer."
+      "notAbleToDeleteSurveyAnswerError": "Not able to delete the users survey answer.",
+      "notAbleToCountChoices": "Not able to count the choices."
     }
   },
   "surveys": {
@@ -892,7 +899,8 @@
       "errors": {
         "updateError": "Settings could not be updated.",
         "notFoundError": "Settings could not be loaded."
-      }
+      },
+      "deploymentTarget": "Target platform"
     },
     "userAdministration": {
       "title": "User Administration",
@@ -1089,6 +1097,7 @@
     "addTotp": {
       "title": "Set up Two-Factor Authentication",
       "qrCodeInstructions": "Scan the QR code with an authenticator app that supports TOTP (Time-based One-Time Password).",
+      "copyTotpSecretInstructions": "If no camera is available, the secret can be copied here:",
       "totpCodeInstructions": "Then enter the generated code here and save it:",
       "mfaSetupRequired": "The global guidelines require two-factor authentication to be set up:",
       "mfaSetupSuccess": "Two-factor authentication has been successfully set up."
@@ -1134,6 +1143,8 @@
   },
   "edit": "Edit",
   "common": {
+    "showMore": "Show more",
+    "visibility": "Vsibility",
     "offline": "Offline",
     "guest": "Guest",
     "ok": "OK",
@@ -1154,7 +1165,8 @@
       "fileNotFound": "File not found",
       "fileNotProvided": "File not provided",
       "invalidFileType": "Invalid file type",
-      "startDateBeforeEndDate": "The start date must be before the end date"
+      "startDateBeforeEndDate": "The start date must be before the end date",
+      "wrongServerConfig": "Incorrect server configuration"
     },
     "cut": "Cut",
     "sortOrder": "Sort order",
@@ -1316,7 +1328,7 @@
   "filesharingUpload": {
     "title": "Upload Files",
     "upload": "Upload",
-    "dataLimitExceeded": "Data limit from 50 MB exceeded",
+    "dataLimitExceeded": "Data limit from 400 MB exceeded",
     "fileSize": "File size",
     "selectFile": "Select up to 5 files at a time",
     "uploadItems": "Upload: {{count}} items",
@@ -1329,7 +1341,9 @@
     "overwriteWarningDescriptionFiles": "The following files will be overwritten:",
     "oversizedFilesDetected": "Oversized files detected",
     "oversizedFileDetected": "Oversized file detected!",
-    "cannotUploadOversized": "Files larger than 50 MB cannot be uploaded.",
+    "folderTooLargeTitle": "Too many files in the folder",
+    "folderTooLargeDescription": "The folder contains more then 100 files. Please select another folder or reduce the number of files.",
+    "cannotUploadOversized": "Files larger than 400 MB cannot be uploaded.",
     "addFiles": "Add files",
     "addFolder": "Add folder",
     "preparingFolder": "Preparing folder"
@@ -1620,5 +1634,11 @@
   "Failed to fetch": "Connection to edulution server failed. Please try again later.",
   "Invalid client or Invalid client credentials": "Invalid server configuration. Please check the client ID or the client secret.",
   "Not Found (404)": "Connection to edulution server failed. Please try again later.",
-  "NetworkError when attempting to fetch resource.": "Network error when attempting to fetch resource."
+  "NetworkError when attempting to fetch resource.": "Network error when attempting to fetch resource.",
+  "deploymentTarget": {
+    "title": "Selection",
+    "description": "Here you can select the platform to which {{ appName }} will be connected.",
+    "linuxmuster": "Linuxmuster",
+    "generic": "Generic"
+  }
 }
