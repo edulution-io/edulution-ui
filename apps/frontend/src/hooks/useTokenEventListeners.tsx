@@ -36,13 +36,7 @@ const useTokenEventListeners = () => {
     }
   }, [auth.user?.expired]);
 
-  const onSilentRenewError = () => {
-    if (alreadyLoggedOutRef.current) return;
-
-    toast.warning(t('auth.errors.SessionExpiring'));
-  };
-
-  const onExpiring = useCallback(async () => {
+  const onSilentRenewError = useCallback(async () => {
     if (alreadyLoggedOutRef.current) return;
 
     if (!auth.user?.expired) {
@@ -50,7 +44,7 @@ const useTokenEventListeners = () => {
       const response = await auth.signinSilent();
 
       if (!response) {
-        await onExpiring();
+        await onSilentRenewError();
       }
     } else {
       alreadyLoggedOutRef.current = true;
@@ -61,12 +55,10 @@ const useTokenEventListeners = () => {
 
   useEffect(() => {
     auth.events.addSilentRenewError(onSilentRenewError);
-    auth.events.addAccessTokenExpiring(onExpiring);
     auth.events.addAccessTokenExpired(handleTokenExpiredRef.current);
 
     return () => {
       auth.events.removeSilentRenewError(onSilentRenewError);
-      auth.events.removeAccessTokenExpiring(onExpiring);
       auth.events.removeAccessTokenExpired(handleTokenExpiredRef.current);
     };
   }, []);
