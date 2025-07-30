@@ -53,7 +53,7 @@ const BulletinBoardPage = () => {
       <div className="flex h-full max-h-full overflow-x-auto overflow-y-hidden scrollbar-thin">
         {(isLoading || isInitialLoading) && <LoadingIndicatorDialog isOpen />}
 
-        {bulletinsByCategories?.length &&
+        {bulletinsByCategories &&
           bulletinsByCategories
             .sort((a, b) => a.category.position - b.category.position)
             .map(({ bulletins, category, canEditCategory }) => (
