@@ -23,6 +23,7 @@ import getCreateNewCategorieSchema from '@libs/bulletinBoard/constants/createNew
 import CreateAndUpdateBulletinCategoryBody from '@/pages/Settings/AppConfig/bulletinboard/components/CreateAndUpdateBulletinCategoryBody';
 import DeleteBulletinsCategoriesDialog from '@/pages/Settings/AppConfig/bulletinboard/components/DeleteBulletinCategoriesDialog';
 import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
+import BULLETIN_VISIBILITY_STATES from '@libs/bulletinBoard/constants/bulletinVisibilityStates';
 
 interface CreateAndUpdateBulletinCategoryDialogProps {
   tableId: ExtendedOptionKeysType;
@@ -53,6 +54,7 @@ const CreateAndUpdateBulletinCategoryDialog: React.FC<CreateAndUpdateBulletinCat
     editableByUsers: [],
     editableByGroups: [],
     position: 1,
+    bulletinVisibility: BULLETIN_VISIBILITY_STATES.FULLY_VISIBLE,
   };
 
   const form = useForm<CreateBulletinCategoryDto>({
@@ -77,7 +79,15 @@ const CreateAndUpdateBulletinCategoryDialog: React.FC<CreateAndUpdateBulletinCat
     e.preventDefault();
 
     if (selectedCategory) {
-      const { name, isActive, visibleForUsers, visibleForGroups, editableByUsers, editableByGroups } = getValues();
+      const {
+        name,
+        isActive,
+        visibleForUsers,
+        visibleForGroups,
+        editableByUsers,
+        editableByGroups,
+        bulletinVisibility,
+      } = getValues();
       await updateCategory(selectedCategory?.id || '', {
         name: name?.trim() !== '' ? name : selectedCategory.name,
         isActive,
@@ -86,6 +96,7 @@ const CreateAndUpdateBulletinCategoryDialog: React.FC<CreateAndUpdateBulletinCat
         editableByUsers,
         editableByGroups,
         position: selectedCategory.position,
+        bulletinVisibility,
       });
     } else {
       await addNewCategory({ ...getValues(), position: tableContentData.length + 1 });

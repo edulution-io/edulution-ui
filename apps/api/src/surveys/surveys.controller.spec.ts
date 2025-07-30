@@ -25,7 +25,7 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import CustomHttpException from '../common/CustomHttpException';
 import SurveysController from './surveys.controller';
 import SurveysService from './surveys.service';
-import SurveyAnswersService from './survey-answer.service';
+import SurveyAnswerService from './survey-answer.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
 import {
@@ -63,7 +63,7 @@ import SurveysTemplateService from './surveys-template.service';
 describe(SurveysController.name, () => {
   let controller: SurveysController;
   let surveyService: SurveysService;
-  let surveyAnswerService: SurveyAnswersService;
+  let surveyAnswerService: SurveyAnswerService;
   let surveyModel: Model<SurveyDocument>;
   let surveyAnswerModel: Model<SurveyAnswerDocument>;
 
@@ -80,7 +80,7 @@ describe(SurveysController.name, () => {
         },
         { provide: GroupsService, useValue: mockGroupsService },
         SurveysAttachmentService,
-        SurveyAnswersService,
+        SurveyAnswerService,
         SurveysTemplateService,
         {
           provide: getModelToken(SurveyAnswer.name),
@@ -96,7 +96,7 @@ describe(SurveysController.name, () => {
 
     controller = module.get<SurveysController>(SurveysController);
     surveyService = module.get<SurveysService>(SurveysService);
-    surveyAnswerService = module.get<SurveyAnswersService>(SurveyAnswersService);
+    surveyAnswerService = module.get<SurveyAnswerService>(SurveyAnswerService);
     surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
     surveyAnswerModel = module.get<Model<SurveyAnswerDocument>>(getModelToken(SurveyAnswer.name));
   });

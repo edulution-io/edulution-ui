@@ -41,7 +41,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
-import useAppConfigsStore from '../Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '../Settings/AppConfig/useAppConfigsStore';
 import useAuthErrorHandler from './useAuthErrorHandler';
 import useSilentLoginWithPassword from './useSilentLoginWithPassword';
 
@@ -279,10 +279,12 @@ const LoginPage: React.FC = () => {
     if (showQrCode && !isEnterTotpVisible) {
       return (
         <>
-          <QRCodeDisplay
-            value={`${window.location.origin}/${EDU_API_ROOT}/${AUTH_PATHS.AUTH_ENDPOINT}/${AUTH_PATHS.AUTH_VIA_APP}?sessionId=${sessionID}`}
-            size="lg"
-          />
+          <div className="flex flex-col items-center justify-center">
+            <QRCodeDisplay
+              value={`${window.location.origin}/${EDU_API_ROOT}/${AUTH_PATHS.AUTH_ENDPOINT}/${AUTH_PATHS.AUTH_VIA_APP}?sessionId=${sessionID}`}
+              size="lg"
+            />
+          </div>
           <p className="font-bold">{t('login.loginWithQrDescription')}</p>
         </>
       );

@@ -20,7 +20,7 @@ import { Button } from '@/components/shared/Button';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import useAppConfigTableDialogStore from './table/useAppConfigTableDialogStore';
-import useAppConfigsStore from '../appConfigsStore';
+import useAppConfigsStore from '../useAppConfigsStore';
 
 interface UploadFileDialogProps {
   settingLocation: string;

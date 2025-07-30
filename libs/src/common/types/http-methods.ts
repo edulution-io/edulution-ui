@@ -55,4 +55,11 @@ export const HTTP_HEADERS = {
   CONNECTION_UID: 'Connection-Uid',
   XForwaredFor: 'x-forwarded-for',
   UserAgent: 'User-Agent',
+  Depth: 'Depth',
 } as const;
+
+export enum WebdavRequestDepth {
+  ONLY_SELF = '0',
+  ONE_LEVEL = '1',
+  ALL = 'infinity',
+}

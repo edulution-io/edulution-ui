@@ -22,6 +22,7 @@
   .sd-header__text .sd-description .sv-string-viewer {
     font-size: 16pt;
     line-height: 16pt;
+    color: var(--muted-foreground);
   }
 
   .sd-container-modern {
