@@ -23,9 +23,6 @@ import APPS from '@libs/appconfig/constants/apps';
 interface TemplateMenuStore {
   reset: () => void;
 
-  isOpenSaveTemplateMenu: boolean;
-  setIsOpenSaveTemplateMenu: (state: boolean) => void;
-
   uploadTemplate: (template: SurveyTemplateDto) => Promise<void>;
   isSubmitting: boolean;
 
@@ -42,7 +39,6 @@ interface TemplateMenuStore {
 }
 
 const TemplateMenuStoreInitialState = {
-  isOpenSaveTemplateMenu: false,
   isOpenTemplateConfirmDeletion: false,
   template: undefined,
   templates: [],
@@ -54,8 +50,6 @@ const TemplateMenuStoreInitialState = {
 const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
   ...TemplateMenuStoreInitialState,
   reset: () => set(TemplateMenuStoreInitialState),
-
-  setIsOpenSaveTemplateMenu: (state: boolean) => set({ isOpenSaveTemplateMenu: state }),
 
   fetchTemplates: async (): Promise<void> => {
     set({ isLoading: true });
@@ -103,6 +97,7 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
       const result = await eduApi.post<string>(SURVEY_TEMPLATES_ENDPOINT, surveyTemplateDto);
       const newTemplate = { ...surveyTemplateDto, fileName: result.data };
       set({ template: newTemplate });
+      toast.success(t('survey.editor.templateMenu.upload.success'));
     } catch (error) {
       handleApiError(error, set);
       set({ template: undefined });
