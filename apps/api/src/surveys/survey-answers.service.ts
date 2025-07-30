@@ -27,7 +27,6 @@ import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswers
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
-// import AnsweredFile from '@libs/survey/types/api/answered-file';
 import CustomHttpException from '../common/CustomHttpException';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
@@ -469,12 +468,10 @@ class SurveyAnswersService implements OnModuleInit {
     }
 
     const fileNames = await this.fileSystemService.getAllFilenamesInDirectory(filesPath);
-    
-    Logger.log(`Checking if directory exists: ${fileNames}`, SurveyAnswersService.name);
 
-    const filePromises = fileNames.map(async (name) => {
-      return { name, path: join(filesPath, name), content: await FilesystemService.readFile(join(filesPath, name)) };
-    });
+    Logger.log(`Checking if directory exists: ${fileNames.join(', ')}`, SurveyAnswersService.name);
+
+    const filePromises = fileNames.map(async (name) => ({ name, path: join(filesPath, name), content: await FilesystemService.readFile(join(filesPath, name)) }));
     return Promise.all(filePromises);
   }
 
@@ -552,30 +549,19 @@ class SurveyAnswersService implements OnModuleInit {
   }
 
   async serveFileFromAnswer(userName: string, surveyId: string, fileName: string, res: Response): Promise<Response> {
-    const filesPath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName);
-    const existence = await FilesystemService.checkIfFileExist(join(filesPath, fileName));
-    if (!existence) {
-      return res.status(HttpStatus.NOT_FOUND).send('File not found');
+    let fileStream: Response | undefined;
+    try {
+      fileStream = await this.fileSystemService.getResponseWithFileStream(res, join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName, fileName));
+    } catch (error) {
+      // to nothing
     }
-    const fileStream = await this.fileSystemService.createReadStream(join(filesPath, fileName));
-    fileStream.pipe(res);
-    return res;
-  }
-
-  async serveTempFileFromAnswer(
-    userName: string,
-    surveyId: string,
-    fileName: string,
-    res: Response,
-  ): Promise<Response> {
-    const tempFilesPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
-    const tempExistence = await FilesystemService.checkIfFileExist(join(tempFilesPath, fileName));
-    if (!tempExistence) {
-      return res.status(HttpStatus.NOT_FOUND).send('File not found');
+    if (!fileStream) {
+      fileStream = await this.fileSystemService.getResponseWithFileStream(res, join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, surveyId, userName, fileName));
+      Logger.debug(`Serving TEMP file from answer for user: ${userName}, surveyId: ${surveyId}, fileName: ${fileName}`, SurveyAnswersService.name);
+    } else {
+      Logger.debug(`Serving file from answer for user: ${userName}, surveyId: ${surveyId}, fileName: ${fileName}`, SurveyAnswersService.name);
     }
-    const fileStream = await this.fileSystemService.createReadStream(join(tempFilesPath, fileName));
-    fileStream.pipe(res);
-    return res;
+    return fileStream;
   }
 
   static async deleteTempFileFromAnswer(userName: string, surveyId: string, fileName: string): Promise<void> {

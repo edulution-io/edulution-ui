@@ -132,6 +132,11 @@ class PublicSurveysController {
     }
     const filePath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, file.filename);
     const url = `${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${userName}/${surveyId}/${file.filename}`;
+
+    Logger.debug(`Creating file in: ${filePath}`, PublicSurveysController.name);
+
+    Logger.debug(`Creating file for: ${url}`, PublicSurveysController.name);
+
     await FilesystemService.checkIfFileExist(filePath);
     const content = (await FilesystemService.readFile(filePath)).toString('base64');
     return res.status(HttpStatus.CREATED).json({ name: file.filename, url, content });
@@ -171,29 +176,6 @@ class PublicSurveysController {
       );
     }
     return this.surveyAnswerService.serveFileFromAnswer(userName, surveyId, filename, res);
-  }
-
-  @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:filename`)
-  @Public()
-  serveTempFileFromAnswer(
-    @Param() params: { userName: string; surveyId: string; filename: string },
-    @Res() res: Response,
-  ) {
-    Logger.debug(
-      `Serving file from answer for user: ${params.userName}, surveyId: ${params.surveyId}, filename: ${params.filename}`,
-      PublicSurveysController.name,
-    );
-
-    const { userName, surveyId, filename } = params;
-    if (!userName || !surveyId || !filename) {
-      throw new CustomHttpException(
-        CommonErrorMessages.INVALID_REQUEST_DATA,
-        HttpStatus.UNPROCESSABLE_ENTITY,
-        undefined,
-        PublicSurveysController.name,
-      );
-    }
-    return this.surveyAnswerService.serveTempFileFromAnswer(userName, surveyId, filename, res);
   }
 
   @Get(`${CHOICES}/:surveyId/:questionName`)

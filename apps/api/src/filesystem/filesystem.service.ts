@@ -317,6 +317,12 @@ class FilesystemService {
     }
   }
 
+  async getResponseWithFileStream(res: Response, filePath: string): Promise<Response> {
+    const fileStream = await this.createReadStream(filePath);
+    fileStream.pipe(res);
+    return res;
+  }
+
   async createReadStream(filePath: string): Promise<Readable> {
     try {
       await access(filePath);
