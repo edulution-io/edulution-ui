@@ -21,11 +21,10 @@ import SURVEYS_DEFAULT_FILES_PATH from '@libs/survey/constants/surveysDefaultFil
 import SURVEYS_ATTACHMENT_PATH from '@libs/survey/constants/surveysAttachmentPath';
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
+import SURVEYS_DEFAULT_LOGO from '@libs/survey/constants/surveys-default-logo';
 import SURVEYS_HEADER_IMAGE from '@libs/survey/constants/surveys-header-image';
-import defaultLogo from '@libs/survey/constants/default-logo';
 import TSurveyElement from '@libs/survey/types/TSurveyElement';
 import QuestionsType from '@libs/survey/constants/questions-type';
-import defaultLogo from '@libs/survey/constants/default-logo';
 import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import FilesystemService from '../filesystem/filesystem.service';
@@ -266,7 +265,7 @@ class SurveysAttachmentService implements OnModuleInit {
   }
 
   async serveDefaultIcon(res: Response): Promise<Response> {
-    const defaultIconPath = join(SURVEYS_DEFAULT_FILES_PATH, defaultLogo);
+    const defaultIconPath = join(SURVEYS_DEFAULT_FILES_PATH, SURVEYS_DEFAULT_LOGO);
     await FilesystemService.checkIfFileExist(defaultIconPath);
     const fileStream = await this.fileSystemService.createReadStream(defaultIconPath);
     fileStream.pipe(res);
