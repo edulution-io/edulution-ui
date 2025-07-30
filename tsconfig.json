@@ -7,6 +7,5 @@
       "components": ["./apps/frontend/src/components"],
       "utils": ["./apps/frontend/src/utils"]
     }
-  },
-  "typeRoots": ["./src/@types"]
+  }
 }

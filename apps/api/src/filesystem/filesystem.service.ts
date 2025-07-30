@@ -110,7 +110,7 @@ class FilesystemService {
       throw new CustomHttpException(
         FileSharingErrorMessage.ReadingFileFailed,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
+        filePath,
         FilesystemService.name,
       );
     }

@@ -12,7 +12,7 @@
 
 import { join } from 'path';
 import { Response } from 'express';
-import { HttpStatus, Injectable, OnModuleInit, Logger } from '@nestjs/common';
+import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import {
   SURVEY_FILE_ATTACHMENT_ENDPOINT,
   SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT,
@@ -22,12 +22,11 @@ import SURVEYS_ATTACHMENT_PATH from '@libs/survey/constants/surveysAttachmentPat
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SURVEYS_HEADER_IMAGE from '@libs/survey/constants/surveys-header-image';
+import defaultLogo from '@libs/survey/constants/default-logo';
 import TSurveyElement from '@libs/survey/types/TSurveyElement';
 import QuestionsType from '@libs/survey/constants/questions-type';
 import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
-import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
@@ -265,26 +264,10 @@ class SurveysAttachmentService implements OnModuleInit {
     return res;
   }
 
-  async serveDefaultFile(filename: string, res: Response): Promise<Response> {
-    if (filename.includes('/')) {
-      throw new CustomHttpException(
-        CommonErrorMessages.INVALID_FILE_NAME,
-        HttpStatus.BAD_REQUEST,
-        undefined,
-        SurveysAttachmentService.name,
-      );
-    }
-    const defaultFilePath = join(SURVEYS_DEFAULT_FILES_PATH, filename);
-    const exists = await FilesystemService.checkIfFileExist(defaultFilePath);
-    if (!exists) {
-      throw new CustomHttpException(
-        CommonErrorMessages.FILE_NOT_FOUND,
-        HttpStatus.NOT_FOUND,
-        undefined,
-        SurveysAttachmentService.name,
-      );
-    }
-    const fileStream = await this.fileSystemService.createReadStream(defaultFilePath);
+  async serveDefaultIcon(res: Response): Promise<Response> {
+    const defaultIconPath = join(SURVEYS_DEFAULT_FILES_PATH, defaultLogo);
+    await FilesystemService.checkIfFileExist(defaultIconPath);
+    const fileStream = await this.fileSystemService.createReadStream(defaultIconPath);
     fileStream.pipe(res);
     return res;
   }

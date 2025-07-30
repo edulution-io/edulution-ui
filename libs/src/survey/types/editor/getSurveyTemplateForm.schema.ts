@@ -12,7 +12,7 @@
 
 import { z } from 'zod';
 
-const surveyTemplateFormSchema = () =>
+const getSurveyTemplateFormSchema = () =>
   z.object({
     template: z
       .object({
@@ -75,4 +75,4 @@ const surveyTemplateFormSchema = () =>
     updatedAt: z.date().optional(),
   });
 
-export default surveyTemplateFormSchema;
+export default getSurveyTemplateFormSchema;
