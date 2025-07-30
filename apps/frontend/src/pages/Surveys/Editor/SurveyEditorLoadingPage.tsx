@@ -49,8 +49,8 @@ const SurveyEditorLoadingPage = () => {
     const searchString = search.trim().toLowerCase();
     if (!searchString) return templates;
 
-    return templates.filter((template) => {
-      const name = template.title?.toLowerCase();
+    return templates.filter((surveyTemplate) => {
+      const name = surveyTemplate.template.formula.title?.toLowerCase();
 
       return isSubsequence(searchString, name || '');
     });
@@ -107,7 +107,7 @@ const SurveyEditorLoadingPage = () => {
             >
               <SurveyEditorLoadingTemplate
                 creator={surveyCreator}
-                template={template}
+                surveyTemplate={template}
               />
             </div>
           ))

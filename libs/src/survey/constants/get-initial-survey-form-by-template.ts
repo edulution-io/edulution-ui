@@ -12,7 +12,7 @@
 
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import surveysDefaultValues from '@libs/survey/constants/surveys-default-values';
 
 const getInitialSurveyFormByTemplate = (creator: AttendeeDto, template?: SurveyTemplateDto): SurveyDto => ({

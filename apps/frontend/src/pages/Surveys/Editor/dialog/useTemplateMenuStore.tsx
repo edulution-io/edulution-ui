@@ -16,7 +16,7 @@ import { t } from 'i18next';
 import eduApi from '@/api/eduApi';
 import { SURVEY_TEMPLATES_ENDPOINT, TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
 import handleApiError from '@/utils/handleApiError';
-import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
+import { TemplateDto, SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import APPS from '@libs/appconfig/constants/apps';
 
@@ -71,8 +71,9 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
     } catch (error) {
       handleApiError(error, set);
       set({ templates: [] });
+    } finally {
+      set({ isLoading: false });
     }
-    set({ isLoading: false });
   },
 
   setTemplate: (template?: SurveyTemplateDto) => set({ template }),

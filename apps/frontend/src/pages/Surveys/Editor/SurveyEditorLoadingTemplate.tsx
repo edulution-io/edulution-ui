@@ -15,7 +15,7 @@ import { MdOutlineOpenInNew } from 'react-icons/md';
 import { HiTrash } from 'react-icons/hi';
 import cn from '@libs/common/utils/className';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
@@ -25,17 +25,19 @@ import { Button } from '@/components/shared/Button';
 
 interface SurveyEditorLoadingTemplateProps {
   creator: AttendeeDto;
-  template: SurveyTemplateDto;
+  surveyTemplate: SurveyTemplateDto;
 }
 
-const SurveyEditorLoadingTemplate = ({ creator, template }: SurveyEditorLoadingTemplateProps): JSX.Element => {
+const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLoadingTemplateProps): JSX.Element => {
   const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
 
   const { setTemplate, setIsOpenTemplateConfirmDeletion, setIsOpenTemplatePreview } = useTemplateMenuStore();
 
   const { isSuperAdmin } = useLdapGroups();
 
-  const { title, description, disabled } = template;
+  const { template, isActive } = surveyTemplate;
+  const { formula } = template;
+  const { title, description } = formula;
 
   return (
     <Card
