@@ -34,7 +34,7 @@ const SurveyEditorLoadingPage = () => {
   const { language } = useLanguage();
   const { t } = useTranslation();
 
-  const { templates, fetchTemplates } = useTemplateMenuStore();
+  const { templates, fetchTemplates, setTemplate } = useTemplateMenuStore();
 
   const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
 
@@ -89,7 +89,10 @@ const SurveyEditorLoadingPage = () => {
         <Card
           className={cn(GRID_CARD, 'bg-muted')}
           variant="text"
-          onClick={() => assignTemplateToSelectedSurvey(surveyCreator, undefined)}
+          onClick={() => {
+            setTemplate(undefined);
+            assignTemplateToSelectedSurvey(surveyCreator, undefined);
+          }}
         >
           <VscNewFile className="h-10 w-10 md:h-14 md:w-14" />
           <p>{t('survey.editor.new')}</p>
