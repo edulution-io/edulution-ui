@@ -15,7 +15,7 @@ import { MdOutlineOpenInNew } from 'react-icons/md';
 import { HiTrash } from 'react-icons/hi';
 import cn from '@libs/common/utils/className';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
@@ -25,25 +25,27 @@ import { Button } from '@/components/shared/Button';
 
 interface SurveyEditorLoadingTemplateProps {
   creator: AttendeeDto;
-  template: SurveyTemplateDto;
+  surveyTemplate: SurveyTemplateDto;
 }
 
-const SurveyEditorLoadingTemplate = ({ creator, template }: SurveyEditorLoadingTemplateProps): JSX.Element => {
+const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLoadingTemplateProps): JSX.Element => {
   const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
 
   const { setTemplate, setIsOpenTemplateConfirmDeletion } = useTemplateMenuStore();
 
   const { isSuperAdmin } = useLdapGroups();
 
-  const { title, description, isActive } = template;
+  const { template } = surveyTemplate;
+  const { formula } = template;
+  const { title, description } = formula;
 
   return (
     <Card
-      className={cn(GRID_CARD, isActive ? 'bg-muted' : 'bg-muted-transparent', { 'pb-10': isSuperAdmin })}
+      className={cn(GRID_CARD, 'bg-muted', { 'pb-10': isSuperAdmin })}
       variant="text"
       onClick={() => {
-        setTemplate(template);
-        assignTemplateToSelectedSurvey(creator, template);
+        setTemplate(surveyTemplate);
+        assignTemplateToSelectedSurvey(creator, surveyTemplate);
       }}
     >
       <MdOutlineOpenInNew className="h-10 w-10 md:h-14 md:w-14" />
