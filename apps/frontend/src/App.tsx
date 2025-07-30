@@ -24,6 +24,7 @@ import useUserStore from '@/store/UserStore/useUserStore';
 import Toaster from '@/components/ui/Toaster';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import GlobalHooksWrapper from './components/GlobalHooksWrapper';
 
 const App = () => {
@@ -43,12 +44,13 @@ const App = () => {
   }, [user?.language]);
 
   const oidcConfig: AuthProviderProps = {
-    authority: `${EDU_API_URL}/auth`,
+    authority: `${EDU_API_URL}/${AUTH_PATHS.AUTH_ENDPOINT}`,
     client_id: ' ',
     client_secret: ' ',
     redirect_uri: '',
     loadUserInfo: true,
     automaticSilentRenew: true,
+    silent_redirect_uri: window.location.origin,
     userStore: new WebStorageStateStore({
       store: localStorage,
     }),

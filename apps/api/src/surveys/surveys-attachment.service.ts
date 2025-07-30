@@ -251,29 +251,32 @@ class SurveysAttachmentService implements OnModuleInit {
     return FilesystemService.deleteDirectories(filePath);
   }
 
-  async createReadStream(res: Response, filePath: string): Promise<Response> {
-    const fileStream = await this.fileSystemService.createReadStream(filePath);
-    fileStream.pipe(res);
-    return res;
-  }
-
   async serveFiles(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
-    return this.createReadStream(res, join(SURVEYS_ATTACHMENT_PATH, surveyId, questionId, fileName));
+    return this.fileSystemService.getResponseWithFileStream(
+      res,
+      join(SURVEYS_ATTACHMENT_PATH, surveyId, questionId, fileName),
+    );
   }
 
   async serveTempFiles(userId: string, fileName: string, res: Response): Promise<Response> {
-    return this.createReadStream(res, join(SURVEYS_TEMP_FILES_PATH, userId, fileName));
+    return this.fileSystemService.getResponseWithFileStream(res, join(SURVEYS_TEMP_FILES_PATH, userId, fileName));
   }
 
   async serveDefaultIcon(res: Response): Promise<Response> {
     let defaultIconStream: Response | undefined;
     try {
-      defaultIconStream = await this.createReadStream(res, join(SURVEYS_DEFAULT_FILES_PATH, SURVEYS_CUSTOM_LOGO));
+      defaultIconStream = await this.fileSystemService.getResponseWithFileStream(
+        res,
+        join(SURVEYS_DEFAULT_FILES_PATH, SURVEYS_CUSTOM_LOGO),
+      );
     } catch (error) {
       // to nothing
     }
     if (!defaultIconStream) {
-      defaultIconStream = await this.createReadStream(res, join(SURVEYS_DEFAULT_FILES_PATH, SURVEYS_DEFAULT_LOGO));
+      defaultIconStream = await this.fileSystemService.getResponseWithFileStream(
+        res,
+        join(SURVEYS_DEFAULT_FILES_PATH, SURVEYS_DEFAULT_LOGO),
+      );
     }
     return defaultIconStream;
   }
