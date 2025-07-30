@@ -19,6 +19,8 @@ import cn from '@libs/common/utils/className';
 const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-xl text-background justify-center'], {
   variants: {
     variant: {
+      'btn-transparent':
+        'backdrop-bg-white absolute bottom-0 left-1/2 -translate-x-1/2 transform bg-opacity-70 backdrop-blur hover:bg-ciDarkGrey hover:opacity-85',
       'btn-collaboration': 'bg-primary',
       'btn-organisation': 'bg-primary',
       'btn-infrastructure': 'bg-ciLightGreen',

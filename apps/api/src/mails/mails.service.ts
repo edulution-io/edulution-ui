@@ -28,7 +28,9 @@ import { MailProvider, MailProviderDocument } from './mail-provider.schema';
 import FilterUserPipe from '../common/pipes/filterUser.pipe';
 import AppConfigService from '../appconfig/appconfig.service';
 
-const { MAILCOW_API_URL, MAILCOW_API_TOKEN } = process.env;
+const { MAILCOW_API_URL, MAILCOW_API_TOKEN, EDUI_MAIL_IMAP_TIMEOUT } = process.env;
+
+const connectionTimeout = EDUI_MAIL_IMAP_TIMEOUT ? parseInt(EDUI_MAIL_IMAP_TIMEOUT, 10) : 5000;
 
 @Injectable()
 class MailsService implements OnModuleInit {
@@ -63,6 +65,7 @@ class MailsService implements OnModuleInit {
 
   onModuleInit() {
     void this.updateImapConfig();
+    Logger.debug(`Imap connection timeout: ${connectionTimeout}}`, MailsService.name);
   }
 
   @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
@@ -106,7 +109,7 @@ class MailsService implements OnModuleInit {
         pass: password,
       },
       logger: false,
-      connectionTimeout: 5000,
+      connectionTimeout,
     });
 
     this.imapClient.on('error', (err: Error): void => {

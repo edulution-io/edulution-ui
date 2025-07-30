@@ -22,7 +22,7 @@ import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import COOKIE_DESCRIPTORS from '@libs/common/constants/cookieDescriptors';
 import useVersionChecker from '@/hooks/useVersionChecker';
-import useAppConfigsStore from '../pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '../pages/Settings/AppConfig/useAppConfigsStore';
 import useUserStore from '../store/UserStore/useUserStore';
 import useLogout from '../hooks/useLogout';
 import useNotifications from '../hooks/useNotifications';

@@ -41,8 +41,7 @@ const SurveyEditorLoadingTemplate = ({ creator, template }: SurveyEditorLoadingT
     <Card
       className={cn(
         GRID_CARD,
-        { 'bg-muted': isActive },
-        { 'bg-muted-transparent': !isActive },
+        isActive ? 'bg-muted' : 'bg-muted-transparent'
         { 'pb-10': isSuperAdmin },
       )}
       variant="text"

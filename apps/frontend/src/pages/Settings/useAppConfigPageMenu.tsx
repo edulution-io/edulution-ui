@@ -11,7 +11,7 @@
  */
 
 import { AppStoreIcon, SettingsIcon } from '@/assets/icons';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import { useNavigate } from 'react-router-dom';
 import useLanguage from '@/hooks/useLanguage';
 import APPS from '@libs/appconfig/constants/apps';

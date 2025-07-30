@@ -12,7 +12,7 @@
 
 import { useMemo } from 'react';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import TApps from '@libs/appconfig/types/appsType';
 
 const useIsAppActive = (appName: TApps) => {

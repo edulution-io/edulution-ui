@@ -18,7 +18,7 @@ import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import VEYON_PROXY_TABLE_COLUMNS from '@libs/classManagement/constants/veyonProxyTableColumns';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
-import useVeyonConfigTableStore from './useVeyonTableStore';
+import useVeyonConfigTableStore from './useVeyonConfigTableStore';
 
 const VeyonConfigTableColumns: ColumnDef<VeyonProxyItem>[] = [
   {

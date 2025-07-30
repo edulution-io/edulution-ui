@@ -16,7 +16,7 @@ import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConf
 import findDocumentsEditorType from '@/pages/FileSharing/FilePreview/OnlyOffice/utilities/documentsEditorType';
 import getCallbackBaseUrl from '@/pages/FileSharing/FilePreview/OnlyOffice/utilities/callbackBaseUrl';
 import generateOnlyOfficeConfig from '@/pages/FileSharing/FilePreview/OnlyOffice/utilities/generateOnlyOfficeConfig';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import useUserStore from '@/store/UserStore/useUserStore';
