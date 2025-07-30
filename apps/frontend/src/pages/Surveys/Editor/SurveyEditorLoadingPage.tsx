@@ -16,17 +16,17 @@ import { VscNewFile } from 'react-icons/vsc';
 import cn from '@libs/common/utils/className';
 import isSubsequence from '@libs/common/utils/string/isSubsequence';
 import SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
-import { GRID_CARD, GRID_SEARCH } from '@libs/ui/constants/commonClassNames';
 import getCreatorFromUserDto from '@libs/survey/utils/getCreatorFromUserDto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import { GRID_CARD, GRID_SEARCH } from '@libs/ui/constants/commonClassNames';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useLanguage from '@/hooks/useLanguage';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
+import Input from '@/components/shared/Input';
+import { Card } from '@/components/shared/Card';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import SurveyEditorLoadingTemplate from '@/pages/Surveys/Editor/SurveyEditorLoadingTemplate';
 import SurveyEditorLoadingPreview from '@/pages/Surveys/Editor/SurveyEditorLoadingPreview';
-import Input from '@/components/shared/Input';
-import { Card } from '@/components/shared/Card';
 
 const SurveyEditorLoadingPage = () => {
   const { user } = useUserStore();
@@ -49,8 +49,8 @@ const SurveyEditorLoadingPage = () => {
     const searchString = search.trim().toLowerCase();
     if (!searchString) return templates;
 
-    return templates.filter((template) => {
-      const name = template.title?.toLowerCase();
+    return templates.filter((surveyTemplate) => {
+      const name = surveyTemplate.template.formula.title?.toLowerCase();
 
       return isSubsequence(searchString, name || '');
     });
@@ -107,7 +107,7 @@ const SurveyEditorLoadingPage = () => {
             >
               <SurveyEditorLoadingTemplate
                 creator={surveyCreator}
-                template={template}
+                surveyTemplate={template}
               />
             </div>
           ))

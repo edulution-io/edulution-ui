@@ -630,14 +630,15 @@
       "templates": "Vorlage speichern",
       "noSearchResults": "Keine Vorlage gefunden",
       "templateMenu": {
-        "templateTitle": "Name der Vorlage",
-        "templateDescription": "Beschreibung der Vorlage",
-        "templateIsActive": "Vorlage anzeigen/verstecken",
         "submit": "Die Umfrage als Vorlage speichern.",
-        "title": "Umfrage als Vorlage speichern:",
+        "title": "Umfrage als Vorlage speichern",
         "userMessage": "Zur Verfügung stehende Vorlagen können hier geladen werden.",
         "adminMessage": "Um deine aktuelle Umfrage als Vorlage zu veröffentlichen, klicke auf 'Speichern'. Vorhandene Vorlagen können hier gelöscht oder geladen werden.",
         "emptyMessage": "Es sind noch keine Vorlagen vorhanden",
+        "upload": {
+          "success": "Vorlage erfolgreich gespeichert",
+          "error": "Die Vorlage konnte nicht gespeichert werden"
+        },
         "deletion": {
           "title": "Vorlage löschen",
           "message": "Soll die Vorlage wirklich gelöscht werden?",

@@ -13,12 +13,12 @@
 import { t } from 'i18next';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 
 const getInitialSurveyFormByTemplate = (creator: AttendeeDto, template?: SurveyTemplateDto): SurveyDto => ({
   id: undefined,
   formula: template?.template.formula || { title: t('survey.newTitle').toString() },
-  backendLimiters: template?.backendLimiters || [],
+  backendLimiters: template?.template.backendLimiters || [],
   creator,
   invitedAttendees: template?.template.invitedAttendees || [],
   invitedGroups: template?.template.invitedGroups || [],
