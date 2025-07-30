@@ -21,7 +21,7 @@ import eduApi from '@/api/eduApi';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import handleApiError from '@/utils/handleApiError';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import fetchSelectedSurvey from '@/pages/Surveys/utils/fetchSelectedSurvey';
 import getInitialSurveyFormBySurveys from '@libs/survey/constants/get-initial-survey-form-by-surveys';
 import getInitialSurveyFormByTemplate from '@libs/survey/constants/get-initial-survey-form-by-template';
