@@ -39,7 +39,7 @@ const SurveyEditorLoadingTemplate = ({ creator, template }: SurveyEditorLoadingT
 
   return (
     <Card
-      className={cn(GRID_CARD, { 'bg-muted-transparent': disabled }, { 'bg-muted': !disabled })}
+      className={cn(GRID_CARD, isActive ? 'bg-muted' : 'bg-muted-transparent')}
       variant="text"
       onClick={() => {
         setTemplate(template);
