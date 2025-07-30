@@ -15,11 +15,12 @@ import { useTranslation } from 'react-i18next';
 import { VscNewFile } from 'react-icons/vsc';
 import cn from '@libs/common/utils/className';
 import isSubsequence from '@libs/common/utils/string/isSubsequence';
-import AttendeeDto from '@libs/user/types/attendee.dto';
 import SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
 import { GRID_CARD, GRID_SEARCH } from '@libs/ui/constants/commonClassNames';
-import useLanguage from '@/hooks/useLanguage';
+import getCreatorFromUserDto from '@libs/survey/utils/getCreatorFromUserDto';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 import useUserStore from '@/store/UserStore/useUserStore';
+import useLanguage from '@/hooks/useLanguage';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import SurveyEditorLoadingTemplate from '@/pages/Surveys/Editor/SurveyEditorLoadingTemplate';
@@ -29,16 +30,7 @@ import { Card } from '@/components/shared/Card';
 
 const SurveyEditorLoadingPage = () => {
   const { user } = useUserStore();
-  const creator: AttendeeDto | undefined = useMemo(
-    () => ({
-      firstName: user?.firstName || '',
-      lastName: user?.lastName || '',
-      username: user?.username || '',
-      value: user?.username || '',
-      label: `${user?.firstName} ${user?.lastName}` || '',
-    }),
-    [user],
-  );
+  const surveyCreator: AttendeeDto | undefined = useMemo(() => getCreatorFromUserDto(user), [user]);
 
   const { language } = useLanguage();
   const { t } = useTranslation();
@@ -100,7 +92,7 @@ const SurveyEditorLoadingPage = () => {
           variant="text"
           onClick={() => {
             setTemplate(undefined);
-            assignTemplateToSelectedSurvey(creator, undefined);
+            assignTemplateToSelectedSurvey(surveyCreator, undefined);
           }}
         >
           <VscNewFile className="h-10 w-10 md:h-14 md:w-14" />
@@ -114,13 +106,13 @@ const SurveyEditorLoadingPage = () => {
               className="relative"
             >
               <SurveyEditorLoadingTemplate
-                creator={creator}
+                creator={surveyCreator}
                 template={template}
               />
             </div>
           ))
         ) : (
-          <div className="py-16">{t('survey.editor.noSearchResults')}</div>
+          <p className="px-2 py-16">{t('survey.editor.noSearchResults')}</p>
         )}
       </div>
       {isOpenTemplatePreview && <SurveyEditorLoadingPreview />}

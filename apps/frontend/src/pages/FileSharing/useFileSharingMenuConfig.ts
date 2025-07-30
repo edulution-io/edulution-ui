@@ -30,6 +30,7 @@ import MenuItem from '@libs/menubar/menuItem';
 import APPS from '@libs/appconfig/constants/apps';
 import { t } from 'i18next';
 import SHARED from '@libs/filesharing/constants/shared';
+import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 
 const iconMap = {
   teachers: TeacherIcon,
@@ -54,9 +55,9 @@ const useFileSharingMenuConfig = () => {
 
   const handlePathChange = useCallback(
     (newPath: string, basePath: string) => {
+      navigate(`${APPS.FILE_SHARING}/${basePath}`);
       const newSearchParams = new URLSearchParams(searchParams);
-      navigate(`filesharing/${basePath}`);
-      newSearchParams.set('path', newPath);
+      newSearchParams.set(URL_SEARCH_PARAMS.PATH, newPath);
       setSearchParams(newSearchParams);
     },
     [searchParams, setSearchParams],

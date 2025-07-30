@@ -24,7 +24,7 @@ import isSubsequence from '@libs/common/utils/string/isSubsequence';
 import useMedia from '@/hooks/useMedia';
 import cn from '@libs/common/utils/className';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
-import SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
+import LAUNCHER_SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
 
 const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
   const { toggleMobileSidebar } = useSidebarStore();
@@ -58,7 +58,7 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
       if (event.key !== 'Enter') return;
 
       const active = document.activeElement;
-      if (active instanceof HTMLInputElement && active.getAttribute('aria-label') === SEARCH_INPUT_LABEL) {
+      if (active instanceof HTMLInputElement && active.getAttribute('aria-label') === LAUNCHER_SEARCH_INPUT_LABEL) {
         event.preventDefault();
         onClose();
         if (filteredApps.length > 0) {
@@ -79,8 +79,8 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
   return (
     <>
       <Input
-        placeholder={t(SEARCH_INPUT_LABEL)}
-        aria-label={SEARCH_INPUT_LABEL}
+        placeholder={t(LAUNCHER_SEARCH_INPUT_LABEL)}
+        aria-label={LAUNCHER_SEARCH_INPUT_LABEL}
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         variant="dialog"

@@ -14,7 +14,6 @@ import React from 'react';
 import { IconType } from 'react-icons';
 import { type VariantProps } from 'class-variance-authority';
 import cn from '@libs/common/utils/className';
-import { v4 as uuidv4 } from 'uuid';
 import Input, { originInputVariants } from '@/components/shared/Input';
 
 type ActionIcon = { icon: IconType; onClick: () => void; className?: string };
@@ -43,7 +42,7 @@ const InputWithActionIcons = React.forwardRef<HTMLInputElement, InputProps>(
           <div className="absolute inset-y-0 right-0 flex items-center space-x-2 pr-2">
             {actionIcons.map(({ icon: ButtonIcon, onClick, className: btnClass }) => (
               <button
-                key={uuidv4()}
+                key={ButtonIcon.toString()}
                 type="button"
                 onClick={onClick}
                 disabled={disabled}
