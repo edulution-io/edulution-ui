@@ -612,6 +612,7 @@
     "noFormula": "The formula of the survey is not readable.",
     "canSubmitMultiple": "Allow multiple submission",
     "editor": {
+      "inputFieldTitle": "Input field",
       "new": "New (blank)",
       "fileUploadSuccess": "Saved the image successfully.",
       "fileUploadError": "Error on Image Upload, please retry later.",
