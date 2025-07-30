@@ -92,7 +92,7 @@ const SurveyEditorLoadingPage = () => {
           variant="text"
           onClick={() => {
             setTemplate(undefined);
-            assignTemplateToSelectedSurvey(creator, undefined);
+            assignTemplateToSelectedSurvey(surveyCreator, undefined);
           }}
         >
           <VscNewFile className="h-10 w-10 md:h-14 md:w-14" />
@@ -106,7 +106,7 @@ const SurveyEditorLoadingPage = () => {
               className="relative"
             >
               <SurveyEditorLoadingTemplate
-                creator={creator}
+                creator={surveyCreator}
                 template={template}
               />
             </div>
