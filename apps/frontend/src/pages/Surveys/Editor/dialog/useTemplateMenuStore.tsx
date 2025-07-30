@@ -84,6 +84,7 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
       const result = await eduApi.post<string>(SURVEY_TEMPLATES_ENDPOINT, surveyTemplateDto);
       const newTemplate = { ...surveyTemplateDto, fileName: result.data };
       set({ template: newTemplate });
+      toast.success(t('survey.editor.templateMenu.upload.success'));
     } catch (error) {
       handleApiError(error, set);
       set({ template: undefined });
