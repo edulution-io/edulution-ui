@@ -18,7 +18,7 @@ import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
 const getInitialSurveyFormByTemplate = (creator: AttendeeDto, template?: SurveyTemplateDto): SurveyDto => ({
   id: undefined,
   formula: template?.template.formula || { title: t('survey.newTitle').toString() },
-  backendLimiters: template?.backendLimiters || [],
+  backendLimiters: template?.template.backendLimiters || [],
   creator,
   invitedAttendees: template?.template.invitedAttendees || [],
   invitedGroups: template?.template.invitedGroups || [],
