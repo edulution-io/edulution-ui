@@ -59,15 +59,6 @@ class SurveysTemplateService implements OnModuleInit {
     fileStream.pipe(res);
     return res;
   }
-
-  async serveTemplates(): Promise<SurveyTemplateDto[]> {
-    const existingFiles = await this.fileSystemService.getAllFilenamesInDirectory(SURVEYS_TEMPLATE_PATH);
-    const existingTemplates = existingFiles.map(async (filename) =>
-      FilesystemService.readFile<SurveyTemplateDto>(join(SURVEYS_TEMPLATE_PATH, filename)),
-    );
-    const templates = await Promise.all(existingTemplates);
-    return templates;
-  }
 }
 
 export default SurveysTemplateService;

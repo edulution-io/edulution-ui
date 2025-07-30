@@ -91,6 +91,7 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
         set({ templates: [] });
       }
     }
+
     set({ isLoading: false });
   },
 

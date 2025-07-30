@@ -11,12 +11,11 @@
  */
 
 import i18next from 'i18next';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import { DEFAULT_FILES, PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
+import { TemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 
-const surveysDefaultValues: Partial<SurveyDto> & { formula: SurveyFormula } = {
+const surveysDefaultValues: TemplateDto = {
   formula: {
     title: i18next.t('survey.newTitle').toString(),
     logo: `${EDU_API_URL}/${PUBLIC_SURVEYS}/${DEFAULT_FILES}`,
@@ -25,6 +24,6 @@ const surveysDefaultValues: Partial<SurveyDto> & { formula: SurveyFormula } = {
   canSubmitMultipleAnswers: false,
   isPublic: false,
   canUpdateFormerAnswer: false,
-} as Partial<SurveyDto> & { formula: SurveyFormula };
+} as TemplateDto;
 
 export default surveysDefaultValues;

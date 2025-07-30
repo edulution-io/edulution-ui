@@ -122,8 +122,8 @@ class SurveysController {
   }
 
   @Get(TEMPLATES)
-  getTemplates() {
-    return this.surveysTemplateService.serveTemplates();
+  getTemplateNames() {
+    return this.surveysTemplateService.serveTemplateNames();
   }
 
   @Get(`${TEMPLATES}/:filename`)
