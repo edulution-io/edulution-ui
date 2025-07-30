@@ -10,15 +10,17 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GlobalSettings, GlobalSettingsSchema } from './global-settings.schema';
 import GlobalSettingsService from './global-settings.service';
 import GlobalSettingsController from './global-settings.controller';
 
+@Global()
 @Module({
   imports: [MongooseModule.forFeature([{ name: GlobalSettings.name, schema: GlobalSettingsSchema }])],
   controllers: [GlobalSettingsController],
   providers: [GlobalSettingsService],
+  exports: [GlobalSettingsService],
 })
 export default class GlobalSettingsModule {}

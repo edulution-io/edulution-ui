@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import generateFile from '@/pages/FileSharing/utilities/generateFile';
 import getDocumentVendor from '@libs/filesharing/utils/getDocumentVendor';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 
 const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ form, isRenaming }) => {
   const { selectedItems, files } = useFileSharingStore();

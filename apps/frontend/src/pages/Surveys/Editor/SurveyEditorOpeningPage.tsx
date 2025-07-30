@@ -13,6 +13,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import getCreatorFromUserDto from '@libs/survey/utils/getCreatorFromUserDto';
 import useUserStore from '@/store/UserStore/useUserStore';
 import SurveyEditorPage from '@/pages/Surveys/Editor/SurveyEditorPage';
 import SurveyEditorLoadingPage from '@/pages/Surveys/Editor/SurveyEditorLoadingPage';
@@ -23,16 +24,7 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 
 const SurveyEditorOpeningPage = () => {
   const { user } = useUserStore();
-  const surveyCreator: AttendeeDto | undefined = useMemo(
-    () => ({
-      firstName: user?.firstName || '',
-      lastName: user?.lastName || '',
-      username: user?.username || '',
-      value: user?.username || '',
-      label: `${user?.firstName} ${user?.lastName}` || '',
-    }),
-    [user],
-  );
+  const surveyCreator: AttendeeDto | undefined = useMemo(() => getCreatorFromUserDto(user), [user]);
 
   const { reset: resetEditorPage, fetchSelectedSurvey, initialSurvey, resetStoredSurvey } = useSurveyEditorPageStore();
   const { reset: resetTemplateStore } = useTemplateMenuStore();

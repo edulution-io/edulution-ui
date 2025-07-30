@@ -42,7 +42,7 @@ const WarningBox: React.FC<WarningBoxProps> = ({
       {icon && <div className="mb-2 flex h-6 w-6 items-center justify-start">{icon}</div>}
       <p className="font-bold">{title}</p>
       <p className="text-sm">{description}</p>
-      <ul className="ml-4 list-disc">
+      <ul className="ml-4 w-full max-w-[24rem]  list-disc  overflow-hidden truncate ">
         {filenames.map((filename) => (
           <li key={filename}>{filename}</li>
         ))}
