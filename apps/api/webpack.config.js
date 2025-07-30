@@ -11,30 +11,6 @@ module.exports = {
         test: /\.svg$/,
         type: 'asset/source',
       },
-      {
-        test: /\.SurveyTemplate\.json$/,
-        type: 'asset/inline',
-        use: {
-          loader: 'file-loader',
-          options: {
-            name: '[name].json',
-            outputPath: '../../../data/apps/surveys/templates/',
-            emitFile: true,
-          },
-        },
-      },
-      {
-        test: /surveys-default-logo.png$/,
-        type: 'asset/source',
-        use: {
-          loader: 'file-loader',
-          options: {
-            name: 'surveys-default-logo.png',
-            outputPath: '../../../data/apps/surveys/default-files/',
-            emitFile: true,
-          },
-        },
-      },
     ],
   },
   plugins: [

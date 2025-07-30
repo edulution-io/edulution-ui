@@ -13,12 +13,11 @@
 import { join } from 'path';
 import { Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { HttpStatus, Injectable, OnModuleInit, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
 import SURVEYS_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplatePath';
-import { surveyTemplate01 } from '@libs/survey/assets/templates';
 import CustomHttpException from '../common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
 
@@ -28,7 +27,6 @@ class SurveysTemplateService implements OnModuleInit {
 
   onModuleInit() {
     void this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);
-    Logger.log(`_ensureWebpackBundlesTheFile: ${JSON.stringify(surveyTemplate01)}`, SurveysTemplateService.name);
   }
 
   async createTemplate(surveyTemplateDto: SurveyTemplateDto): Promise<void> {

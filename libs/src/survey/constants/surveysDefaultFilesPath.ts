@@ -10,9 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import { join } from 'path';
+import SURVEYS_FILES_PATH from '@libs/survey/constants/surveysFilesPath';
 
-const SURVEYS_DEFAULT_FILES_PATH = `${APPS_FILES_PATH}/${APPS.SURVEYS}/default-files`;
+const SURVEYS_DEFAULT_FILES_PATH = join(SURVEYS_FILES_PATH, 'default-files');
 
 export default SURVEYS_DEFAULT_FILES_PATH;

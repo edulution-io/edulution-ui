@@ -27,7 +27,6 @@ import TSurveyElement from '@libs/survey/types/TSurveyElement';
 import QuestionsType from '@libs/survey/constants/questions-type';
 import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import { SurveysDefaultLogo } from '@libs/survey/assets/images/index';
 import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
@@ -36,7 +35,6 @@ class SurveysAttachmentService implements OnModuleInit {
 
   onModuleInit() {
     void this.fileSystemService.ensureDirectoryExists(SURVEYS_ATTACHMENT_PATH);
-    Logger.log(`_ensureWebpackBundlesTheFile: ${SurveysDefaultLogo}`, SurveysAttachmentService.name);
   }
 
   async preProcessFormula(surveyId: string, formula: SurveyFormula, username: string): Promise<SurveyFormula> {
