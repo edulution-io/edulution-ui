@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const defaultLogo = 'surveys-default-logo.png';
+const SURVEYS_DEFAULT_LOGO = 'surveys-default-logo.png';
 
-export default defaultLogo;
+export default SURVEYS_DEFAULT_LOGO;

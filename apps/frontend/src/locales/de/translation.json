@@ -1169,7 +1169,6 @@
       "fileNotFound": "Datei nicht gefunden",
       "fileNotProvided": "Datei wurde nicht bereitgestellt",
       "invalidFileType": "Ungültiger Dateityp",
-      "invalidFileName": "Ungültiger Dateiname",
       "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
       "wrongServerConfig": "Fehlerhafte Serverkonfiguration"
     },
