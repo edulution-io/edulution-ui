@@ -22,6 +22,7 @@ import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/getSurveyEditorForm.schema';
 import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
@@ -38,7 +39,6 @@ import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConf
 import QuestionContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 
 interface SurveyEditorPageProps {
   initialFormValues: SurveyDto;
