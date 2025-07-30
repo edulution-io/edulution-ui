@@ -58,7 +58,7 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
         <Button
           onClick={(e) => {
             e.stopPropagation();
-            setTemplate(template);
+            setTemplate(surveyTemplate);
             setIsOpenTemplateConfirmDeletion(true);
           }}
           variant="btn-attention"
