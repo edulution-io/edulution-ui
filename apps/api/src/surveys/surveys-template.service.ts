@@ -58,7 +58,7 @@ class SurveysTemplateService {
       FilesystemService.readFile<SurveyTemplateDto>(join(SURVEYS_TEMPLATE_PATH, filename)),
     );
     const templates = await Promise.all(existingTemplates);
-    return templates.filter((template) => !template.disabled);
+    return templates.filter((template) => !template.isActive);
   }
 }
 
