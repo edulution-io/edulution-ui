@@ -16,7 +16,7 @@ import { t } from 'i18next';
 import eduApi from '@/api/eduApi';
 import { SURVEY_TEMPLATES_ENDPOINT, TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
 import handleApiError from '@/utils/handleApiError';
-import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
+import { TemplateDto, SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import APPS from '@libs/appconfig/constants/apps';
 
@@ -73,9 +73,9 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
     let templateDocuments: SurveyTemplateDto[] = [];
     const promises = templateNames?.map(async (fileName) => {
       try {
-        const result = await eduApi.get<SurveyTemplateDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${fileName}`);
+        const result = await eduApi.get<TemplateDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${fileName}`);
         if (result) {
-          const newTemplate = { ...result.data, fileName };
+          const newTemplate = { fileName, template: { ...result.data } };
           templateDocuments = [...templateDocuments, newTemplate];
         }
       } catch (error) {

@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
 import cn from '@libs/common/utils/className';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveyTemplateDto from '@libs/survey/types/api/surveyTemplate.dto';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import { Button } from '@/components/shared/Button';
