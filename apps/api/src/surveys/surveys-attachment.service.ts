@@ -34,10 +34,8 @@ import FilesystemService from '../filesystem/filesystem.service';
 class SurveysAttachmentService implements OnModuleInit {
   constructor(private fileSystemService: FilesystemService) {}
 
-  private readonly attachmentsPath = SURVEYS_ATTACHMENT_PATH;
-
   onModuleInit() {
-    void this.fileSystemService.ensureDirectoryExists(this.attachmentsPath);
+    void this.fileSystemService.ensureDirectoryExists(SURVEYS_ATTACHMENT_PATH);
   }
 
   async preProcessFormula(surveyId: string, formula: SurveyFormula, username: string): Promise<SurveyFormula> {

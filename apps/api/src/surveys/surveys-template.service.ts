@@ -13,7 +13,7 @@
 import { join } from 'path';
 import { Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
@@ -22,14 +22,18 @@ import CustomHttpException from '../common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
-class SurveysTemplateService {
+class SurveysTemplateService implements OnModuleInit {
   constructor(private fileSystemService: FilesystemService) {}
+
+  onModuleInit() {
+    void this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);
+  }
 
   async createTemplate(surveyTemplateDto: SurveyTemplateDto): Promise<void> {
     let filename = surveyTemplateDto.fileName;
     if (!filename) {
       const dateTimeString = getCurrentDateTimeString();
-      filename = `${dateTimeString}_-_${uuidv4()}.json`;
+      filename = `${dateTimeString}_-_${uuidv4()}.SurveyTemplate.json`;
     }
     const templatePath = join(SURVEYS_TEMPLATE_PATH, filename);
     try {

@@ -24,7 +24,7 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
-import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
+import getSurveyEditorFormSchema from '@libs/survey/types/editor/getSurveyEditorForm.schema';
 import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
