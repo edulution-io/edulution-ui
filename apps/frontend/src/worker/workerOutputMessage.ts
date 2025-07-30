@@ -13,6 +13,7 @@
 interface WorkerOutputMessage {
   blob: Blob;
   root: string;
+  fileCount: number;
 }
 
 export default WorkerOutputMessage;

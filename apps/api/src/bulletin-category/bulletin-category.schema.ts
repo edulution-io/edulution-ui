@@ -13,6 +13,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import BULLETIN_VISIBILITY_STATES from '@libs/bulletinBoard/constants/bulletinVisibilityStates';
+import BulletinVisibilityStatesType from '@libs/bulletinBoard/types/bulletinVisibilityStatesType';
 import Attendee from '../conferences/attendee.schema';
 
 export type BulletinCategoryDocument = BulletinCategory & Document;
@@ -42,6 +44,13 @@ export class BulletinCategory {
 
   @Prop({ type: Number, required: true })
   position: number;
+
+  @Prop({
+    type: String,
+    enum: Object.values(BULLETIN_VISIBILITY_STATES),
+    default: BULLETIN_VISIBILITY_STATES.FULLY_VISIBLE,
+  })
+  bulletinVisibility: BulletinVisibilityStatesType;
 
   @Prop({ default: 1 })
   schemaVersion: number;

@@ -17,7 +17,7 @@ import { UseFormReturn } from 'react-hook-form';
 import type ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType';
 import type MailProviderConfig from '@libs/appconfig/types/mailProviderConfig';
 import { useTranslation } from 'react-i18next';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import getDisplayName from '@/utils/getDisplayName';
 import useLanguage from '@/hooks/useLanguage';
 import DropdownSelect from '@/components/ui/DropdownSelect/DropdownSelect';
@@ -48,7 +48,6 @@ const AppConfigDropdownSelect = ({ form, appConfig }: AppConfigFormProps) => {
               }))}
               selectedVal={getValues(`${appConfig.name}.position`)?.toString()}
               handleChange={(value: string) => setValue(`${appConfig.name}.position`, Number(value))}
-              classname="z-50"
             />
           </FormControl>
           <p>{t('settings.appconfig.position.description')}</p>
