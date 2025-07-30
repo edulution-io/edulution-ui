@@ -13,6 +13,7 @@
 const UserLanguage = {
   GERMAN: 'de',
   ENGLISH: 'en',
+  FRENCH: 'fr',
   SYSTEM: 'system',
 } as const;
 

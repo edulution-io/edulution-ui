@@ -17,11 +17,11 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 import { AccordionSH } from '@/components/ui/AccordionSH';
 import { Card, CardContent } from '@/components/shared/Card';
 import FeedAccordionItem from '@/pages/Dashboard/Feed/components/FeedAccordionItem';
-import { BulletinBoardIcon, ConferencesIcon, MailIcon, SurveysSidebarIcon } from '@/assets/icons';
+import { BulletinBoardIcon, ConferencesIcon, MailIcon, SurveysMenuIcon } from '@/assets/icons';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinList from '@/pages/Dashboard/Feed/bulletinboard/BulletinList';
 import ConferencesList from '@/pages/Dashboard/Feed/conferences/ConferencesList';
-import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
+import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import MailList from '@/pages/Dashboard/Feed/mails/MailList';
@@ -65,7 +65,7 @@ const Feed = () => {
     <FeedAccordionItem
       key={APPS.SURVEYS}
       appKey={APPS.SURVEYS}
-      icon={SurveysSidebarIcon}
+      icon={SurveysMenuIcon}
       listItems={openSurveys}
       ListComponent={SurveysList}
     />,
@@ -83,7 +83,7 @@ const Feed = () => {
           <ScrollArea className="scrollbar-thin">
             <AccordionSH
               type="multiple"
-              defaultValue={[APPS.MAIL, APPS.CONFERENCES, APPS.SURVEYS, APPS.BULLETIN_BOARD]}
+              defaultValue={[APPS.CONFERENCES, APPS.SURVEYS, APPS.BULLETIN_BOARD]}
             >
               {...feed}
             </AccordionSH>

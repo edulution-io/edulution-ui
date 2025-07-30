@@ -11,35 +11,34 @@
  */
 
 import React, { useMemo } from 'react';
-import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
 import EditButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/editButton';
 import type FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
+import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
 
 const PublicShareFilesFloatingButtonsBar: React.FC = () => {
-  const { selectedContentToShareRows, setIsPublicShareDeleteDialogOpen, setIsPublicShareEditDialogOpen } =
-    usePublicShareStore();
+  const { selectedRows, openDialog, shares } = usePublicShareStore();
+  const selectedIds = Object.keys(selectedRows).filter((id) => selectedRows[id]);
+  const selectedRowsCount = selectedIds.length;
+
+  const currentShare = selectedRowsCount === 1 ? shares.find((s) => selectedIds.includes(s.publicShareId)) : undefined;
 
   const config: FloatingButtonsBarConfig | null = useMemo(() => {
-    const count = selectedContentToShareRows.length;
-    if (count === 0) return null;
+    if (selectedRowsCount === 0) return null;
 
-    const buttons = [DeleteButton(() => setIsPublicShareDeleteDialogOpen(true))];
+    const buttons = [DeleteButton(() => openDialog(PUBLIC_SHARE_DIALOG_NAMES.DELETE))];
 
-    if (count === 1) {
-      buttons.push(EditButton(() => setIsPublicShareEditDialogOpen(true)));
+    if (selectedRowsCount === 1 && currentShare) {
+      buttons.push(EditButton(() => openDialog(PUBLIC_SHARE_DIALOG_NAMES.EDIT, currentShare)));
     }
 
-    return {
-      buttons,
-      keyPrefix: `public-file-share_btn_${count}_`,
-    };
-  }, [selectedContentToShareRows, setIsPublicShareDeleteDialogOpen, setIsPublicShareEditDialogOpen]);
+    return { buttons, keyPrefix: `public-file-share_btn_${selectedRowsCount}_` };
+  }, [selectedRowsCount, currentShare, openDialog]);
 
   if (!config) return null;
-
   return <FloatingButtonsBar config={config} />;
 };
 

@@ -18,22 +18,28 @@ import { PiDotsThreeVerticalBold } from 'react-icons/pi';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
 import { useTranslation } from 'react-i18next';
-import { RowSelectionState } from '@tanstack/react-table';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialStore';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import { useParams } from 'react-router-dom';
 import cn from '@libs/common/utils/className';
+import BulletinContent from '@/pages/BulletinBoard/components/BulletinContent/BulletinContent';
+import BULLETIN_VISIBILITY_STATES from '@libs/bulletinBoard/constants/bulletinVisibilityStates';
+import BulletinVisibilityStatesType from '@libs/bulletinBoard/types/bulletinVisibilityStatesType';
+import { ChevronRightIcon } from '@radix-ui/react-icons';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const BulletinBoardColumnItem = ({
   bulletin,
   canManageBulletins,
   handleImageClick,
+  initialBulletinVisibility,
 }: {
   bulletin: BulletinResponseDto;
   canManageBulletins: boolean;
   handleImageClick: (imageUrl: string) => void;
+  initialBulletinVisibility?: BulletinVisibilityStatesType;
 }) => {
   const { t } = useTranslation();
   const { bulletinId } = useParams();
@@ -46,12 +52,22 @@ const BulletinBoardColumnItem = ({
     setSelectedBulletinToEdit,
     getBulletins,
   } = useBulletinBoardEditorialStore();
-  const { resetBulletinBoardNotifications, setIsEditorialModeEnabled } = useBulletinBoardStore();
-
-  const isCurrentBulletin = bulletinId === bulletin.id;
+  const { collapsedMap, setCollapsed, toggleCollapsed, resetBulletinBoardNotifications, setIsEditorialModeEnabled } =
+    useBulletinBoardStore();
 
   useEffect(() => {
-    if (!isCurrentBulletin) return undefined;
+    if (collapsedMap[bulletin.id] === undefined) {
+      const shouldBeCollapsed =
+        (initialBulletinVisibility ?? BULLETIN_VISIBILITY_STATES.FULLY_VISIBLE) !==
+        BULLETIN_VISIBILITY_STATES.FULLY_VISIBLE;
+      setCollapsed(bulletin.id, shouldBeCollapsed);
+    }
+  }, [bulletin.id, collapsedMap, initialBulletinVisibility, setCollapsed]);
+
+  const isCollapsed = collapsedMap[bulletin.id];
+
+  useEffect(() => {
+    if (bulletinId !== bulletin.id) return undefined;
 
     const element = document.getElementById(bulletinId);
 
@@ -86,8 +102,7 @@ const BulletinBoardColumnItem = ({
 
   const handleDeleteBulletin = async () => {
     await getBulletins();
-    const rowSelectionState: RowSelectionState = { [bulletin.id]: true };
-    setSelectedRows(rowSelectionState);
+    setSelectedRows({ [bulletin.id]: true });
     setIsDeleteBulletinDialogOpen(true);
   };
 
@@ -144,75 +159,52 @@ const BulletinBoardColumnItem = ({
     return items;
   };
 
-  const getProcessedBulletinContent = (chunk: string) => {
-    if (/<img\b/i.test(chunk)) {
-      const src = chunk.match(/src="([^"]*)"/i)?.[1].replace(/^\/(?!\/)/, '/') ?? '';
-      return (
-        <button
-          key={`img-${src}`}
-          type="button"
-          className="max-w-full cursor-pointer border-0 bg-transparent p-0"
-          onClick={() => handleImageClick(src)}
-        >
-          <img
-            src={src}
-            alt="attachment"
-            className="max-w-full"
-          />
-        </button>
-      );
-    }
-
-    if (/<a\b/i.test(chunk)) {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(chunk, 'text/html');
-      const a = doc.querySelector('a');
-
-      if (a) {
-        const href = a.getAttribute('href') ?? '#';
-        const text = a.textContent ?? href;
-        const isPdf = href.toLowerCase().endsWith('.pdf');
-
-        return (
-          <a
-            key={`link-${href}`}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={isPdf ? 'text-red-400 underline' : 'text-blue-400 underline'}
-          >
-            {text}
-            {isPdf && ' 📄'}
-          </a>
-        );
-      }
-    }
-
-    return (
-      <span
-        key={`html-${chunk}`}
-        dangerouslySetInnerHTML={{ __html: chunk }}
-      />
-    );
-  };
-
   return (
     <div
       id={bulletin.id}
-      key={bulletin.id}
-      className={cn('relative mx-1 flex items-center justify-between break-all rounded-lg bg-white bg-opacity-5 p-4', {
-        ring: isCurrentBulletin,
-      })}
+      className={cn(
+        'relative mx-1 flex items-start justify-between break-all rounded-lg bg-ciDarkGreyDisabled p-4 pb-2',
+        {
+          ring: bulletinId === bulletin.id,
+        },
+      )}
     >
       <div className="flex-1">
-        <h4 className="w-[calc(100%-20px)] overflow-x-hidden text-ellipsis break-normal text-lg font-bold text-background">
-          {bulletin.title}
+        <h4 className="mb-2 w-[calc(100%-20px)] break-normal">
+          <button
+            type="button"
+            className="flex items-start space-x-2 text-left hover:opacity-75"
+            onClick={() => toggleCollapsed(bulletin.id)}
+          >
+            <ChevronRightIcon
+              className={cn('mt-1 h-3 w-3 flex-shrink-0 transition-transform duration-200', {
+                'rotate-90': !isCollapsed,
+              })}
+            />
+            <span className="break-words text-lg font-bold leading-tight text-background">{bulletin.title}</span>
+          </button>
         </h4>
-        <div className="quill-content mt-2 break-normal text-white">
-          {bulletin.content.split(/(<img[^>]*>)/g).map((part) => getProcessedBulletinContent(part))}
-        </div>
-        {getAuthorDescription()}
+
+        <AnimatePresence initial={false}>
+          {!isCollapsed && (
+            <motion.div
+              key="content"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="quill-content overflow-hidden break-normal text-background"
+            >
+              <BulletinContent
+                html={bulletin.content}
+                handleImageClick={handleImageClick}
+              />
+              {getAuthorDescription()}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
+
       <DropdownMenu
         trigger={
           <Button

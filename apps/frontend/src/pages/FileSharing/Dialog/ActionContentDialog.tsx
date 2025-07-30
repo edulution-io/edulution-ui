@@ -16,11 +16,11 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
-import getDialogBodySetup from '@/pages/FileSharing/Dialog/DialogBodys/dialogBodyConfigurations';
+import getDialogBodyConfigurations from '@/pages/FileSharing/Dialog/DialogBodys/getDialogBodyConfigurations';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileActionType from '@libs/filesharing/types/fileActionType';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import getDocumentVendor from '@libs/filesharing/utils/getDocumentVendor';
 import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
 import ContentType from '@libs/filesharing/types/contentType';
@@ -88,8 +88,8 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     getData,
     desktopComponentClassName,
     mobileComponentClassName,
-    disableSubmitButton = false,
-  } = getDialogBodySetup(action);
+    hideSubmitButton = false,
+  } = getDialogBodyConfigurations(action);
 
   const form = useForm<FileSharingFormValues>({
     resolver: schema ? zodResolver(schema) : undefined,
@@ -134,10 +134,10 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
           };
 
           const formData = new FormData();
+          formData.append('uploadFileDto', JSON.stringify(uploadDto));
           formData.append('currentPath', destinationPath);
           formData.append('file', uploadItem.file);
           formData.append('path', uploadItem.path);
-          formData.append('uploadFileDto', JSON.stringify(uploadDto));
 
           return handleFileUploadAction(actionType, endpointUrl, method, requestContentType, formData);
         });
@@ -223,12 +223,10 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
             <form onSubmit={handleFormSubmit}>
               <DialogFooterButtons
                 handleClose={handelOpenChange}
-                handleSubmit={handleFormSubmit}
+                handleSubmit={hideSubmitButton ? undefined : handleFormSubmit}
                 submitButtonText={submitKey}
                 submitButtonType="submit"
-                hideSubmitButton={disableSubmitButton}
                 disableSubmit={
-                  disableSubmitButton ||
                   isLoading ||
                   isSubmitButtonDisabled ||
                   (requiresForm && !form.formState.isValid) ||

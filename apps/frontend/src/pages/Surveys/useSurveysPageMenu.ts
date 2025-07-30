@@ -17,7 +17,7 @@ import {
   CREATOR_SURVEYS_PAGE,
   OPEN_SURVEYS_PAGE,
 } from '@libs/survey/constants/surveys-endpoint';
-import { UserIcon, PlusIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, SurveysSidebarIcon } from '@/assets/icons';
+import { PlusIcon, SurveysMenuIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, UserIcon } from '@/assets/icons';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import APPS from '@libs/appconfig/constants/apps';
 import SurveysPageView from '@libs/survey/types/api/page-view';
@@ -27,7 +27,7 @@ const useSurveysPageMenu = () => {
 
   const menuBar = (): MenuBarEntry => ({
     title: 'surveys.title',
-    icon: SurveysSidebarIcon,
+    icon: SurveysMenuIcon,
     color: 'hover:bg-ciGreenToBlue',
     appName: APPS.SURVEYS,
     menuItems: [

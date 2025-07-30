@@ -10,9 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import getTokenPayload from '@libs/common/utils/getTokenPayload';
-import GroupRoles from '@libs/groups/types/group-roles.enum';
+import getIsAdmin from '@libs/user/utils/getIsAdmin';
 
 const useLdapGroups = () => {
   const { isAuthenticated, eduApiToken } = useUserStore();
@@ -27,7 +27,7 @@ const useLdapGroups = () => {
 
   const payload = getTokenPayload(eduApiToken);
   const ldapGroups = payload.ldapGroups ?? [];
-  const isSuperAdmin = ldapGroups.includes(GroupRoles.SUPER_ADMIN);
+  const isSuperAdmin = getIsAdmin(ldapGroups);
 
   return {
     isSuperAdmin,

@@ -90,7 +90,7 @@ const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Con
         {showCloseButton && (
           <SheetPrimitive.Close
             className={cn(
-              { 'text-foreground': variant === 'primary' },
+              { 'text-card-foreground': variant === 'primary' },
               { 'text-background': variant === 'secondary' || variant === 'tertiary' },
               'absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity data-[state=open]:bg-secondary hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none',
             )}

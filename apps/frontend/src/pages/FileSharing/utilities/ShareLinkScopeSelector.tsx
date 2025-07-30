@@ -13,33 +13,33 @@
 import React, { FC } from 'react';
 import { Globe, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import ShareFileLinkScope from '@libs/filesharing/constants/shareFileLinkScope';
 import cn from '@libs/common/utils/className';
 import { RadioGroupItemSH, RadioGroupSH } from '@/components/ui/RadioGroupSH';
+import { PublicShareLinkScopeType } from '@libs/filesharing/types/publicShareLinkScopeType';
 
-interface ShareScopeSelectorProps {
-  value: ShareFileLinkScope;
-  onValueChange: (value: ShareFileLinkScope) => void;
+interface ShareLinkScopeSelectorProps {
+  value: PublicShareLinkScopeType;
+  onValueChange: (value: PublicShareLinkScopeType) => void;
 }
 
 const optionStyle =
   'flex w-full items-center justify-between gap-4 rounded-lg border p-4 hover:bg-muted data-[state=checked]:border-primary';
 
-const ShareScopeSelector: FC<ShareScopeSelectorProps> = ({ value, onValueChange }) => {
+const ShareLinkScopeSelector: FC<ShareLinkScopeSelectorProps> = ({ value, onValueChange }) => {
   const { t } = useTranslation();
 
   return (
     <RadioGroupSH
       value={value}
-      onValueChange={(v) => onValueChange(v as ShareFileLinkScope)}
+      onValueChange={onValueChange}
       className="flex flex-col gap-3"
     >
       <label
         className={cn(optionStyle)}
         htmlFor="public"
       >
-        <div className="flex items-start gap-3">
-          <Globe className="h-8 w-8 text-green-600" />
+        <div className="flex cursor-pointer items-start gap-3">
+          <Globe className="h-8 w-8 text-ciLightBlue" />
           <div>
             <p className="font-semibold">{t('filesharing.publicFileSharing.scope.public')}</p>
             <p className="text-sm text-muted-foreground">{t('filesharing.publicFileSharing.scope.publicHint')}</p>
@@ -56,8 +56,8 @@ const ShareScopeSelector: FC<ShareScopeSelectorProps> = ({ value, onValueChange 
         className={cn(optionStyle)}
         htmlFor="restricted"
       >
-        <div className="flex items-start gap-3">
-          <User className="h-8 w-8 text-amber-600" />
+        <div className="flex cursor-pointer items-start gap-3">
+          <User className="h-8 w-8 text-ciLightYellow" />
           <div>
             <p className="font-semibold">{t('filesharing.publicFileSharing.scope.restricted')}</p>
             <p className="text-sm text-muted-foreground">{t('filesharing.publicFileSharing.scope.restrictedHint')}</p>
@@ -73,4 +73,4 @@ const ShareScopeSelector: FC<ShareScopeSelectorProps> = ({ value, onValueChange 
   );
 };
 
-export default ShareScopeSelector;
+export default ShareLinkScopeSelector;

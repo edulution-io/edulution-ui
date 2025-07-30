@@ -16,7 +16,8 @@ import { SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
 import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
 import { getRootPathName } from '@libs/common/utils';
 import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
-import useSidebarStore from '../sidebarStore';
+import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
+import useSidebarStore from '../useSidebarStore';
 
 const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem }) => {
   const { pathname } = useLocation();
@@ -36,6 +37,7 @@ const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem }) => {
         className={`group relative flex cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-2 ${menuItemColor}`}
       >
         <p className="md:hidden">{menuItem.title}</p>
+
         <img
           src={menuItem.icon}
           width={SIDEBAR_ICON_WIDTH}
@@ -43,6 +45,8 @@ const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem }) => {
           alt={`${menuItem.title}-icon`}
         />
       </NavLink>
+
+      <NotificationCounter count={menuItem.notificationCounter || 0} />
     </div>
   );
 };

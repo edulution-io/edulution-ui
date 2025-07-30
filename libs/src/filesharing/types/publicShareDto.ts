@@ -12,23 +12,21 @@
 
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import ShareFileLinkScope from '@libs/filesharing/constants/shareFileLinkScope';
+import Creator from '@libs/common/types/creator';
+import { PublicShareLinkScopeType } from '@libs/filesharing/types/publicShareLinkScopeType';
 
 interface PublicShareDto {
   publicShareId: string;
   expires: Date;
-  sharedFileId: string;
   filename: string;
   filePath: string;
   createdAt: Date;
-  creator: string;
-  fileLink: string;
-  publicFileLink: string;
+  creator: Creator;
   etag: string;
   password: string;
   invitedAttendees: AttendeeDto[];
   invitedGroups: MultipleSelectorGroup[];
-  scope: ShareFileLinkScope;
+  scope: PublicShareLinkScopeType;
 }
 
 export default PublicShareDto;

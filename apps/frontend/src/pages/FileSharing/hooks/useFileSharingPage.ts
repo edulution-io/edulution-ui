@@ -15,8 +15,9 @@ import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
-import userStore from '@/store/UserStore/UserStore';
-import { usePublicShareStore } from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import userStore from '@/store/UserStore/useUserStore';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import useUserPath from './useUserPath';
 
 const useFileSharingPage = () => {
@@ -29,11 +30,11 @@ const useFileSharingPage = () => {
     isLoading: isFileProcessing,
   } = useFileSharingStore();
   const { isLoading, fileOperationResult } = useFileSharingDialogStore();
-  const { fetchPublicShares } = usePublicShareStore();
+  const { fetchShares } = usePublicShareStore();
   const { user } = userStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const { homePath } = useUserPath();
-  const path = searchParams.get('path') || '/';
+  const path = searchParams.get(URL_SEARCH_PARAMS.PATH) || homePath;
 
   useEffect(() => {
     if (user) {
@@ -45,13 +46,15 @@ const useFileSharingPage = () => {
     if (!isFileProcessing) {
       if (path === '/') {
         if (pathToRestoreSession !== '/') {
-          setSearchParams(pathToRestoreSession);
+          const newSearchParams = new URLSearchParams(searchParams);
+          newSearchParams.set(URL_SEARCH_PARAMS.PATH, pathToRestoreSession);
+          setSearchParams(newSearchParams);
         } else {
           void fetchFiles(homePath);
         }
       } else {
         void fetchFiles(path);
-        void fetchPublicShares();
+        void fetchShares();
         setPathToRestoreSession(path);
       }
     }
@@ -62,7 +65,7 @@ const useFileSharingPage = () => {
       if (fileOperationResult && !isLoading) {
         if (fileOperationResult.success) {
           await fetchFiles(currentPath);
-          await fetchPublicShares();
+          await fetchShares();
           toast.success(fileOperationResult.message);
         } else {
           toast.info(fileOperationResult.message);

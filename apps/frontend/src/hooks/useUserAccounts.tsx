@@ -13,9 +13,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import UserAccountsToastContent from '@/components/ui/UserAccountsToastContent';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 
 const useUserAccounts = (appName: string | null) => {

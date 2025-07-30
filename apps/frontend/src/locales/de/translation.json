@@ -2,7 +2,6 @@
   "welcome": "Willkommen in der Anwendung",
   "changeLang": "Sprache ändern",
   "heading": "Herzlich Willkommen {{givenName}} {{familyName}}",
-  "content": "Hier ist ihr persönliches {{ applicationName }} Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Unterricht gesammelt sind.",
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
   "framebufferImage": "Framebuffer-Bild",
   "previewImage": "Bildvorschau",
@@ -63,8 +62,13 @@
     "editCategory": "Kategorie bearbeiten",
     "createNewCategory": "Kategorie erstellen",
     "categories": {
-      "visibleByUsersAndGroups": "Diese Kategorie mit ihren Mitteilungen ist sichtbar für Nutzer und Gruppen auf der Startseite",
-      "visibleByUsersAndGroupsTitle": "Startseite",
+      "visibilityState": "Standardsichtbarkeit der Mitteilungen",
+      "FULLY_VISIBLE": "Vollständig sichtbar",
+      "FULLY_VISIBLE-short": "Vollständig",
+      "ONLY_TITLE": "Nur Titel anzeigen",
+      "ONLY_TITLE-short": "Nur Titel",
+      "visibleByUsersAndGroups": "Diese Kategorie mit ihren Mitteilungen ist sichtbar für Nutzer und Gruppen in der Info Board App",
+      "visibleByUsersAndGroupsTitle": "Info Board App",
       "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen in der Info Board App",
       "editableByUsersAndGroupsTitle": "Mitteilungen verwalten"
     },
@@ -101,6 +105,7 @@
   },
   "dashboard": {
     "pageTitle": "Dashboard",
+    "description": "Hier ist ihr persönliches {{ applicationName }} Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Unterricht gesammelt sind.",
     "mobileAccess": {
       "title": "Mobiler Zugriff",
       "manual": "Anleitung",
@@ -126,6 +131,7 @@
   "auth": {
     "errors": {
       "TokenExpired": "Sitzung abgelaufen.",
+      "tokenIsNotActive": "Sitzung ist nicht mehr aktiv.",
       "SessionExpiring": "Du wirst in weniger als einer Minute abgemeldet.",
       "Unauthorized": "Du bist nicht autorisiert.",
       "Unknown": "Nutzer nicht gefunden.",
@@ -251,7 +257,6 @@
     "description": "Das Konferenz Tool ermöglicht Audio- und Videokonferenzen und unterstützt Präsentationen mit erweiterten Whiteboard-Funktionen.",
     "sidebar": "Konferenzen",
     "create": "Konferenz erstellen",
-    "creator": "Ersteller",
     "delete": "Löschen",
     "deleteConference": "Konferenz löschen",
     "deleteConferences": "{{count}} Konferenzen löschen",
@@ -344,8 +349,8 @@
     },
 
     "publicShareFilesPage": {
-      "title": "Öffentlich geteilte Dateien",
-      "description": "Hier findest du alle Dateien, die öffentlich geteilt wurden. Jeder, der den Link hat, kann diese Dateien herunterladen."
+      "title": "Geteilte Dateien",
+      "description": "Hier findest du alle Dateien, die du geteilt hast. Beachte: Jeder, der den Freigabe-Link und ggf. das dazugehörige Passwort hat, kann diese Dateien herunterladen."
     },
 
     "progressBox": {
@@ -386,40 +391,41 @@
       "isActive": "Aktiv",
       "fileLink": "Freigabe-Link",
       "invitedAttendees": "Eingeladen",
-      "confirmMultiDelete": "Sollen diese Freigabe-Links wirklich zu den folgenden Inhalten wirklich gelöscht werden?",
+      "confirmMultiDelete": "Sollen diese Freigabe-Links zu den folgenden Inhalten wirklich gelöscht werden?",
       "confirmSingleDelete": "Soll dieser Freigabe-Link zu folgendem Inhalt wirklich gelöscht werden?",
       "deleteFileLink": "Freigabe-Link löschen",
-      "deleteFileLinks": "Freigabe-Link löschen",
+      "deleteFileLinks": "Freigabe-Links löschen",
       "selectPersonsOrGroupsWhoCanAccess": "Beschränke Personen oder Gruppen, die Zugriff auf diesen Inhalt haben",
       "isAccessibleBy": "Zugänglich für",
       "isPasswordProtected": "Passwort",
       "publiclyAccessible": "Öffentlich zugänglich",
-      "qrCodePublicShareFile": "QR-Code für öffentlichen Freigabelink",
+      "qrCodePublicShareFile": "QR-Code für öffentlichen Freigabelinks",
       "createNewFileLink": "Neuen Freigabe-Link erstellen",
-      "editPublicShareFile": "Freigabelink bearbeiten",
-      "sharePublicFile": "Öffentliche Freigabelinks",
+      "editPublicShareFile": "Freigabe-Link bearbeiten",
+      "sharePublicFile": "Öffentliche Freigabe-Links",
       "searchSharedFiles": "Suche nach geteilten Freigabe-Links",
       "sharedBy": "Geteilt von: ",
-      "getFileAccess": "Bitte gib das Kennwort für diese Freigabe ein, um Zugriff auf die Inhalte zu erhalten.",
+      "getFileAccess": "Bitte gib das Passwort für diese Freigabe ein, um Zugriff auf die Inhalte zu erhalten.",
       "downloadPublicFile": "Inhalt herunterladen",
       "nameOfContent": "Name des Inhalts:",
       "errors": {
-        "PublicFileDeletionFailed": "Freigabelink konnte nicht gelöscht werden.",
-        "PublicFileIsOnlyDeletableByOwner": "Der Freigabelink kann nur vom Besitzer gelöscht werden.",
-        "PublicFileNotFound": "Freigabelink nicht gefunden.",
-        "PublicFileIsRestricted": "Der Freigabelink ist auf bestimmte Nutzer oder Gruppen beschränkt.",
-        "PublicIsRestrictedByInvalidToken": "Der Freigabelink ist durch ein ungültiges Token eingeschränkt.",
+        "PublicFileDeletionFailed": "Freigabe-Link konnte nicht gelöscht werden.",
+        "PublicFileIsOnlyDeletableByOwner": "Der Freigabe-Link kann nur vom Besitzer gelöscht werden.",
+        "PublicFileNotFound": "Freigabe-Link nicht gefunden.",
+        "PublicFileIsRestricted": "Der Freigabe-Link ist nur für bestimmte Nutzer oder Gruppen zugänglich.",
+        "PublicIsRestrictedByInvalidToken": "Auf den Freigabelink kann nicht zugegriffen werden, da der Token ungültig ist.",
         "PublicFileWrongPassword": "Das eingegebene Passwort ist falsch.",
-        "FileCouldNotBeFound": "Die angeorderte Datei konnte nicht gefunden werden. Bitte überprüfe den Link oder wende dich an den Ersteller."
+        "FileCouldNotBeFound": "Der angefordert Freigabe-Link konnte nicht gefunden werden. Bitte überprüfe den Link oder wende dich an den Ersteller.",
+        "PublicFileDownloadFailed": "Herunterladen der Datei fehlgeschlagen. Bitte versuche es später noch einmal."
       },
       "success": {
-        "PublicFileLinkCreated": "Freigabelink erfolgreich erstellt.",
-        "PublicFileLinkDeleted": "Freigabelink erfolgreich gelöscht.",
-        "PublicFileLinkUpdated": "Freigabelink erfolgreich aktualisiert."
+        "PublicFileLinkCreated": "Freigabe-Link erfolgreich erstellt.",
+        "PublicFileLinkDeleted": "Freigabe-Link erfolgreich gelöscht.",
+        "PublicFileLinkUpdated": "Freigabe-Link erfolgreich aktualisiert."
       },
       "scope": {
         "public": "Öffentlich",
-        "publicHint": "Jeder, der den Link hat, kann diesen Inhalt herunterladen.",
+        "publicHint": "Jeder, der den Freigabe-Link hat, kann diesen Inhalt herunterladen.",
         "restricted": "Eingeschränkt",
         "restrictedHint": "Nur die ausgewählten Gruppen oder Benutzer können diesen Inhalt herunterladen."
       }
@@ -623,10 +629,17 @@
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
       "templates": "Vorlagen",
       "templateMenu": {
-        "fetch": "Wähle eine der verfügbaren Vorlagen.",
         "submit": "Die Umfrage als Vorlage speichern.",
-        "title": "Vorlagen speichern/laden",
-        "emptyMessage": "Es sind noch keine Vorlagen vorhanden"
+        "title": "Vorlagen:",
+        "userMessage": "Zur Verfügung stehende Vorlagen können hier geladen werden.",
+        "adminMessage": "Um deine aktuelle Umfrage als Vorlage zu veröffentlichen, klicke auf 'Speichern'. Vorhandene Vorlagen können hier gelöscht oder geladen werden.",
+        "emptyMessage": "Es sind noch keine Vorlagen vorhanden",
+        "deletion": {
+          "title": "Vorlage löschen",
+          "message": "Soll die Vorlage wirklich gelöscht werden?",
+          "success": "Vorlage erfolgreich gelöscht",
+          "error": "Die Vorlage konnte nicht gelöscht werden"
+        }
       },
       "questionSettings": {
         "settings": "Einstellungen",
@@ -681,7 +694,8 @@
       "notAbleToFindSurveyAnswerError": "Keine Antworten vorhanden.",
       "notAbleToUpdateSurveyAnswerError": "Antwort konnte nicht aktualisiert werden.",
       "notAbleToCreateSurveyAnswerError": "Antwort konnte nicht erstellt werden.",
-      "notAbleToDeleteSurveyAnswerError": "Antwort konnte nicht gelöscht werden."
+      "notAbleToDeleteSurveyAnswerError": "Antwort konnte nicht gelöscht werden.",
+      "notAbleToCountChoices": "Die Anzahl der Auswahlmöglichkeiten konnte nicht ermittelt werden."
     }
   },
   "surveys": {
@@ -822,7 +836,15 @@
     "yourPassword": "Dein Passwort",
     "addButton": "Hinzufügen"
   },
-
+  "ctrlKey": "STRG",
+  "enterKey": "Enter",
+  "launcher": {
+    "title": "App Launcher",
+    "searchApps": "Tippen um Apps zu filtern...",
+    "pressShortKey": "Launcher öffnen mit",
+    "pressEnterToStartApp": "Erste App öffnen mit",
+    "noSearchResults": "Keine App gefunden"
+  },
   "settings": {
     "title": "EINSTELLUNGEN",
     "sidebar": "Einstellungen",
@@ -880,12 +902,25 @@
       "errors": {
         "updateError": "Einstellungen konnten nicht aktualisiert werden.",
         "notFoundError": "Einstellungen konnten nicht geladen werden."
-      }
+      },
+      "deploymentTarget": "Plattform"
+    },
+    "userAdministration": {
+      "title": "Benutzerverwaltung",
+      "resetMfaForm": "Zwei-Faktor-Authentisierung zurücksetzen",
+      "resetMfaFormDescription": "Hier kannst du die Zwei-Faktor-Authentisierung für einen oder mehrere Nutzer zurücksetzen.",
+      "selectUsersTitle": "Nutzer auswählen",
+      "selectUsersDescription": "Wähle hier die Nutzer aus, für welche die Zwei-Faktor-Authentisierung zurückgesetzt werden soll.",
+      "totpResetSuccess": "TOTP für {{username}} wurde erfolgreich zurückgesetzt."
     },
     "info": {
       "title": "Info"
     },
     "appconfig": {
+      "position": {
+        "title": "Sortierung",
+        "description": "An welcher Position soll die App in der App-Leiste und in den Einstellungen angezeigt werden?"
+      },
       "sections": {
         "onlyOffice": {
           "title": "Only Office Integration",
@@ -1059,11 +1094,13 @@
       "description": "Bitte wähle die Sprache für die Benutzeroberfläche aus.",
       "german": "Deutsch",
       "english": "Englisch",
+      "french": "Französisch",
       "system": "Systemsprache"
     },
     "addTotp": {
       "title": "Zwei-Faktor-Authentisierung einrichten",
       "qrCodeInstructions": "Den QR-Code mit einer Authenticator App scannen, die TOTP (Time-based One-Time Password) unterstützt.",
+      "copyTotpSecretInstructions": "Falls keine Kamera vorhanden ist, kann hier das Secret kopiert werden:",
       "totpCodeInstructions": "Danach das generierte Passwort hier eintragen und speichern:",
       "mfaSetupRequired": "Die globalen Richtlinien erfordern die Eintrichtung der Zwei-Faktor-Authentisierungs:",
       "mfaSetupSuccess": "Die Zwei-Faktor-Authentisierungs wurde erfolgreich eingerichtet."
@@ -1108,12 +1145,15 @@
     "infoQrCodeExpired": "Zeit für Login mit edulution.io APP abgelaufen."
   },
   "common": {
+    "showMore": "Mehr anzeigen",
+    "visibility": "Sichtbarkeit",
     "offline": "Offline",
     "guest": "Gast",
     "ok": "OK",
     "next": "Weiter",
     "back": "Zurück",
     "confirm": "Bestätigen",
+    "creator": "Ersteller",
     "share": "Teilen",
     "answers": "Antworten",
     "error": "Fehler",
@@ -1127,7 +1167,8 @@
       "fileNotFound": "Datei nicht gefunden",
       "fileNotProvided": "Datei wurde nicht bereitgestellt",
       "invalidFileType": "Ungültiger Dateityp",
-      "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen"
+      "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
+      "wrongServerConfig": "Fehlerhafte Serverkonfiguration"
     },
     "cut": "Ausschneiden",
     "sortOrder": "Sortierung",
@@ -1165,6 +1206,7 @@
     "yes": "Ja",
     "no": "Nein",
     "title": "Titel",
+    "filename": "Dateiname",
     "add": "Hinzufügen",
     "reload": "Neu laden",
     "logout": "Abmelden",
@@ -1236,7 +1278,8 @@
     "format": "Formatieren",
     "upload": "Hochladen",
     "mode": "Modus",
-    "orContinueWithoutAccount": "Oder fahre ohne Account fort"
+    "orContinueWithoutAccount": "Oder fahre ohne Account fort",
+    "reset": "Zurücksetzen"
   },
   "form": {
     "path": "Link",
@@ -1300,8 +1343,10 @@
     "overwriteWarningDescriptionFile": "Die folgende Datei wird überschrieben:",
     "overwriteWarningDescriptionFiles": "Die folgenden Dateien werden überschrieben:",
     "oversizedFilesDetected": "Zu große Dateien entdeckt",
+    "folderTooLargeTitle": "Zu viele Dateien im Ordner",
+    "folderTooLargeDescription": "Der Ordner enthält mehr als 100 Dateien. Bitte wähle einen anderen Ordner oder reduziere die Anzahl der Dateien.",
     "oversizedFileDetected": "Zu große Datei entdeckt!",
-    "cannotUploadOversized": "Dateien, die größer als 50 MB sind, können nicht hochgeladen werden.",
+    "cannotUploadOversized": "Dateien, die größer als 400 MB sind, können nicht hochgeladen werden.",
     "addFiles": "Dateien hinzufügen",
     "addFolder": "Ordner hinzufügen",
     "preparingFolder": "Ordner wird vorbereitet"
@@ -1569,6 +1614,10 @@
       "dead": "tot"
     }
   },
+  "version": {
+    "newVersionAvailable": "Es ist eine neue Version von {{ appName }} verfügbar.",
+    "update": "Aktualisieren"
+  },
   "veyon": {
     "lockScreen": "Bildschirm sperren",
     "unlockScreen": "Bildschirm entsprerren",
@@ -1588,5 +1637,11 @@
   "Failed to fetch": "Verbindung zum edulution Server fehlgeschlagen. Bitte versuche es später noch einmal.",
   "Invalid client or Invalid client credentials": "Ungültige Serverkonfiguration. Bitte überprüfe die Client-ID oder das Client-Secret.",
   "Not Found (404)": "Verbindung zum edulution Server fehlgeschlagen. Bitte versuche es später noch einmal.",
-  "NetworkError when attempting to fetch resource.": "Netzwerkfehler beim Abrufen der Website."
+  "NetworkError when attempting to fetch resource.": "Netzwerkfehler beim Abrufen der Website.",
+  "deploymentTarget": {
+    "title": "Auswahl",
+    "description": "Hier kann die Plattform ausgewählt werden, an welche {{ appName }} angebunden wird.",
+    "linuxmuster": "Linuxmuster",
+    "generic": "Generisch"
+  }
 }
