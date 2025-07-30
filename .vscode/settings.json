@@ -8,11 +8,6 @@
   "files.associations": {
     "*.scss": "tailwindcss"
   },
-  "eslint.workingDirectories": [
-    {
-      "pattern": "libs"
-    }
-  ],
   "javascript.inlayHints.functionLikeReturnTypes.enabled": true,
   "javascript.inlayHints.parameterNames.enabled": "all",
   "javascript.inlayHints.parameterTypes.enabled": true,

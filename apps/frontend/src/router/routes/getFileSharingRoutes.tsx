@@ -11,10 +11,11 @@
  */
 
 import React from 'react';
-import { Navigate, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
 import APPS from '@libs/appconfig/constants/apps';
 import PublicShareLinksPage from '@/pages/FileSharing/publicShare/PublicShareLinksPage';
+import FileSharingRedirect from '@/pages/FileSharing/FileSharingRedirect';
 
 const getFileSharingRoutes = () => [
   <Route
@@ -23,13 +24,9 @@ const getFileSharingRoutes = () => [
   >
     <Route
       index
-      element={
-        <Navigate
-          to="Home"
-          replace
-        />
-      }
+      element={<FileSharingRedirect />}
     />
+
     <Route
       path=":mointPoint/*"
       element={<FileSharingPage />}

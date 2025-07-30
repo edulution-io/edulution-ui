@@ -21,7 +21,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveysAttachmentService from 'apps/api/src/surveys/surveys-attachment.service';
 import SurveysService from './surveys.service';
-import SurveyAnswersService from './survey-answer.service';
+import SurveyAnswerService from './survey-answer.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
 import PublicSurveysController from './public-surveys.controller';
@@ -48,7 +48,7 @@ import mockFilesystemService from '../filesystem/filesystem.service.mock';
 describe(PublicSurveysController.name, () => {
   let controller: PublicSurveysController;
   let surveysService: SurveysService;
-  let surveyAnswerService: SurveyAnswersService;
+  let surveyAnswerService: SurveyAnswerService;
   let surveyModel: Model<SurveyDocument>;
   let surveyAnswerModel: Model<SurveyAnswerDocument>;
 
@@ -63,7 +63,7 @@ describe(PublicSurveysController.name, () => {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
         },
-        SurveyAnswersService,
+        SurveyAnswerService,
         SurveysAttachmentService,
         { provide: GroupsService, useValue: mockGroupsService },
         {
@@ -76,7 +76,7 @@ describe(PublicSurveysController.name, () => {
 
     controller = module.get<PublicSurveysController>(PublicSurveysController);
     surveysService = module.get<SurveysService>(SurveysService);
-    surveyAnswerService = module.get<SurveyAnswersService>(SurveyAnswersService);
+    surveyAnswerService = module.get<SurveyAnswerService>(SurveyAnswerService);
     surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
     surveyAnswerModel = module.get<Model<SurveyAnswerDocument>>(getModelToken(SurveyAnswer.name));
   });

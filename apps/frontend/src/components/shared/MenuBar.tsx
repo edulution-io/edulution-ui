@@ -15,13 +15,16 @@ import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import { MenubarMenu, MenubarTrigger, VerticalMenubar } from '@/components/ui/MenubarSH';
 
 import cn from '@libs/common/utils/className';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useOnClickOutside, useToggle } from 'usehooks-ts';
 import useMedia from '@/hooks/useMedia';
 import { getFromPathName } from '@libs/common/utils';
 import APPS from '@libs/appconfig/constants/apps';
 import PageTitle from '@/components/PageTitle';
 import { useTranslation } from 'react-i18next';
+import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
 
 const MenuBar: React.FC = () => {
   const { t } = useTranslation();
@@ -29,6 +32,9 @@ const MenuBar: React.FC = () => {
   const menubarRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
   const menuBarEntries = useMenuBarConfig();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { setCurrentPath, setPathToRestoreSession } = useFileSharingStore();
+  const { homePath } = useUserPath();
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
   const { isMobileView } = useMedia();
@@ -51,6 +57,28 @@ const MenuBar: React.FC = () => {
     }
   }, [pathParts]);
 
+  const handleHeaderIconClick = () => {
+    switch (pathParts[0]) {
+      case APPS.FILE_SHARING: {
+        setCurrentPath(homePath);
+        setPathToRestoreSession(homePath);
+        const newParams = new URLSearchParams(searchParams);
+        newParams.set(URL_SEARCH_PARAMS.PATH, homePath);
+        setSearchParams(newParams);
+        navigate(pathParts[0]);
+        break;
+      }
+      case APPS.SETTINGS: {
+        navigate(pathParts[0]);
+        setIsSelected('');
+        break;
+      }
+      default:
+        navigate(pathParts[0]);
+        setIsSelected(firstMenuBarItem);
+    }
+  };
+
   const renderMenuBarContent = () => (
     <div
       className="flex h-full max-w-[var(--menubar-max-width)] flex-col"
@@ -60,10 +88,7 @@ const MenuBar: React.FC = () => {
         <button
           className="flex flex-col items-center justify-center"
           type="button"
-          onClick={() => {
-            navigate(pathParts[0]);
-            setIsSelected(pathParts[0] === APPS.SETTINGS ? '' : firstMenuBarItem);
-          }}
+          onClick={handleHeaderIconClick}
         >
           <img
             src={menuBarEntries.icon}

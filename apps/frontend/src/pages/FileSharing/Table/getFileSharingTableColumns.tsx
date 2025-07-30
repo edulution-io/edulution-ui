@@ -40,6 +40,7 @@ import IconWithCount from '@/components/shared/IconWithCount';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import FileActionType from '@libs/filesharing/types/fileActionType';
+import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
@@ -102,8 +103,9 @@ const getFileSharingTableColumns = (
           setPublicDownloadLink('');
           if (row.original.type === ContentType.DIRECTORY) {
             if (isFilePreviewDocked) setIsFilePreviewVisible(false);
-            searchParams.set('path', getPathWithoutWebdav(row.original.filePath));
-            setSearchParams(searchParams);
+            const newParams = new URLSearchParams(searchParams);
+            newParams.set(URL_SEARCH_PARAMS.PATH, getPathWithoutWebdav(row.original.filePath));
+            setSearchParams(newParams);
           } else if (isValidFileToPreview(row.original) && !isMobileView) {
             void setFileIsCurrentlyDisabled(row.original.filename, true);
             setIsFilePreviewVisible(true);
