@@ -11,12 +11,13 @@
  */
 
 import React from 'react';
-import type UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import Avatar from '@/components/shared/Avatar';
+import getStringFromArray from '@libs/common/utils/getStringFromArray';
 import FrameBufferImage from './FrameBufferImage';
 
 interface UserCardVeyonPreviewProps {
-  user: UserLmnInfo;
+  user: LmnUserInfo;
   isVeyonEnabled: boolean;
   areInputDevicesLocked: boolean;
   connectionUid: string;
@@ -28,7 +29,7 @@ const UserCardVeyonPreview: React.FC<UserCardVeyonPreviewProps> = ({
   areInputDevicesLocked,
   connectionUid,
 }) => {
-  if (isVeyonEnabled && user.sophomorixIntrinsic3.length > 0 && connectionUid) {
+  if (isVeyonEnabled && getStringFromArray(user.sophomorixIntrinsic3) && connectionUid) {
     return (
       <FrameBufferImage
         user={user}

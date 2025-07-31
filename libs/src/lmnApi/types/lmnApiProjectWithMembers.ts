@@ -10,12 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 
 interface LmnApiProjectWithMembers extends Omit<LmnApiProject, 'members'> {
-  members: UserLmnInfo[];
-  admins: UserLmnInfo[];
+  members: LmnUserInfo[];
+  admins: LmnUserInfo[];
 }
 
 export default LmnApiProjectWithMembers;

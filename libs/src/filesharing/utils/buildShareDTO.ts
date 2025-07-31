@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
@@ -18,7 +18,7 @@ import buildSharePath from '@libs/filesharing/utils/buildSharePath';
 
 const buildShareDTO = (
   userName: string | undefined,
-  students: UserLmnInfo[] | null,
+  students: LmnUserInfo[] | null,
   fileName: DirectoryFileDTO,
 ): DuplicateFileRequestDto | undefined => {
   if (!students) return undefined;

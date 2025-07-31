@@ -10,21 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+const getStringFromArray = (value: string | string[] | undefined) => {
+  if (Array.isArray(value)) {
+    return value[0];
+  }
+  return value ?? '';
+};
 
-interface LmnApiStoreState {
-  isLoading: boolean;
-  error: Error | null;
-  currentUser: UserLmnInfo | null;
-}
-
-interface LmnApiStoreActions {
-  reset: () => void;
-  setCurrentUser: (user: UserLmnInfo | null) => void;
-  setFirstPassword: (username: string, password: string) => Promise<void>;
-  setCurrentPassword: (username: string, password: string) => Promise<void>;
-}
-
-type LmnApiStore = LmnApiStoreState & LmnApiStoreActions;
-
-export default LmnApiStore;
+export default getStringFromArray;

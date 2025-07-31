@@ -15,7 +15,7 @@ import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
-import LmnApiStore from '@libs/lmnApi/types/lmnApiPasswordStore';
+import LmnApiStore from '@libs/lmnApi/types/lmnApiStore';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';

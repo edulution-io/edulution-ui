@@ -14,7 +14,7 @@ import UserGroups from '@libs/groups/types/userGroups.enum';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
@@ -24,7 +24,7 @@ interface LessonState {
   error: Error | null;
   openDialogType: UserGroups | null;
   userGroupToEdit: LmnApiSession | LmnApiProject | LmnApiSchoolClass | null;
-  member: UserLmnInfo[];
+  member: LmnUserInfo[];
   groupTypeFromStore: string | undefined;
   groupNameFromStore: string | undefined;
 }
@@ -46,7 +46,7 @@ interface LessonActions {
   toggleProjectJoined: (isAlreadyJoined: boolean, project: string) => Promise<void>;
   setOpenDialogType: (type: UserGroups | null) => void;
   setUserGroupToEdit: (group: LmnApiSession | LmnApiProject | LmnApiSchoolClass | null) => void;
-  setMember: (member: UserLmnInfo[]) => void;
+  setMember: (member: LmnUserInfo[]) => void;
   setGroupTypeInStore: (groupType?: string) => void;
   setGroupNameInStore: (groupName?: string) => void;
 }

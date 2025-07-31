@@ -12,7 +12,7 @@
 
 // This type is based on a third-party object definition from the LDAP API.
 // Any modifications should be carefully reviewed to ensure compatibility with the source.
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 
 interface LmnApiSchoolClass {
   cn: string;
@@ -43,7 +43,7 @@ interface LmnApiSchoolClass {
   sophomorixType: string;
   membersCount: number;
   dn: string;
-  members: UserLmnInfo[];
+  members: LmnUserInfo[];
 }
 
 export default LmnApiSchoolClass;
