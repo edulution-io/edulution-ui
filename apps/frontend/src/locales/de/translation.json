@@ -5,6 +5,7 @@
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
   "framebufferImage": "Framebuffer-Bild",
   "previewImage": "Bildvorschau",
+  "not-set": "Nicht gesetzt",
   "bulletinboard": {
     "settings": "Einstellungen",
     "noBulletinsToShow": "Aktuell gibt es keine Mitteilungen anzuzeigen, schaue am besten später noch mal vorbei!",
@@ -903,7 +904,13 @@
         "updateError": "Einstellungen konnten nicht aktualisiert werden.",
         "notFoundError": "Einstellungen konnten nicht geladen werden."
       },
-      "deploymentTarget": "Plattform"
+      "deploymentTarget": "Plattform",
+      "ldap": {
+        "title": "LDAP",
+        "edulution-binduser-description": "Hier können Zugangsdaten zum LDAP konfiguriert werden, die für den Gruppen-Sync notwendig sind.",
+        "edulution-binduser-dn": "Distinguished Name (DN)",
+        "edulution-binduser-password": "Passwort"
+      }
     },
     "userAdministration": {
       "title": "Benutzerverwaltung",

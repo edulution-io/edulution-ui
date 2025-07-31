@@ -24,9 +24,10 @@ import AppDropdownSelectFormField from '@/components/ui/DropdownSelect/AppDropdo
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
 import { GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
+import LdapSettings from '@/pages/Settings/components/LdapSettings';
 import useGlobalSettingsApiStore from './useGlobalSettingsApiStore';
 import GlobalSettingsFloatingButtons from './GlobalSettingsFloatingButtons';
-import DeploymentTargetDropdownSelectFormField from './DeploymentTargetDropdownSelectFormField';
+import DeploymentTargetDropdownSelectFormField from '../components/DeploymentTargetDropdownSelectFormField';
 
 const GlobalSettings: React.FC = () => {
   const { t } = useTranslation();
@@ -52,18 +53,7 @@ const GlobalSettings: React.FC = () => {
 
   useEffect(() => {
     if (globalSettings) {
-      reset({
-        auth: {
-          mfaEnforcedGroups: globalSettings.auth?.mfaEnforcedGroups || [],
-        },
-        general: {
-          defaultLandingPage: {
-            ...defaultValues.general.defaultLandingPage,
-            ...globalSettings.general?.defaultLandingPage,
-          },
-          deploymentTarget: globalSettings.general?.deploymentTarget,
-        },
-      });
+      reset(globalSettings);
     }
   }, [globalSettings, reset]);
 
@@ -96,7 +86,7 @@ const GlobalSettings: React.FC = () => {
     <>
       <AccordionSH
         type="multiple"
-        defaultValue={['general', 'security']}
+        defaultValue={['general', 'security', 'ldap']}
       >
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -104,10 +94,12 @@ const GlobalSettings: React.FC = () => {
               <AccordionTrigger className="flex">
                 <h4>{t('settings.globalSettings.general')}</h4>
               </AccordionTrigger>
+
               <AccordionContent className="space-y-2 px-1 text-p">
                 <p className="text-xl font-bold">{t('settings.globalSettings.deploymentTarget')}</p>
                 <DeploymentTargetDropdownSelectFormField form={form} />
               </AccordionContent>
+
               <AccordionContent className="space-y-2 px-1 text-p">
                 <p className="text-xl font-bold">{t('settings.globalSettings.defaultLandingPageTitle')}</p>
                 <AppConfigSwitch
@@ -154,6 +146,13 @@ const GlobalSettings: React.FC = () => {
                   )}
                 />
               </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="ldap">
+              <AccordionTrigger className="flex">
+                <h4>{t('settings.globalSettings.ldap.title')}</h4>
+              </AccordionTrigger>
+              <LdapSettings form={form} />
             </AccordionItem>
           </form>
         </Form>

@@ -11,42 +11,39 @@
  */
 
 import { Logger } from '@nestjs/common';
-import { Migration } from '../../migration/migration.type';
-import { GlobalSettingsDocument } from '../global-settings.schema';
+import type { Migration } from '../../migration/migration.type';
+import type { GlobalSettingsDocument } from '../global-settings.schema';
 
-const migration000: Migration<GlobalSettingsDocument> = {
-  name: '000-add-general-settings',
-  version: 0,
+const migration002: Migration<GlobalSettingsDocument> = {
+  name: '002-add-ldap-settings',
+  version: 2,
   execute: async (model) => {
-    const previousSchemaVersion = 1;
-    const newSchemaVersion = 2;
+    const previousSchemaVersion = 3;
+    const newSchemaVersion = 4;
 
-    const unprocessedDocuments = await model.find({ schemaVersion: previousSchemaVersion });
-    if (unprocessedDocuments.length === 0) {
+    const docs = await model.find({ schemaVersion: previousSchemaVersion });
+    if (docs.length === 0) {
       return;
     }
-    Logger.log(`${unprocessedDocuments?.length} documents to update...`);
+
+    Logger.log(`${docs.length} document(s) to update with LDAP settings…`);
 
     // eslint-disable-next-line no-underscore-dangle
-    const ids = unprocessedDocuments.map((doc) => doc._id);
-
-    const defaultLandingPage = {
-      isCustomLandingPageEnabled: false,
-      appName: '',
-    };
+    const ids = docs.map((doc) => doc._id);
 
     const result = await model.updateMany(
       { _id: { $in: ids } },
       {
         $set: {
-          'general.defaultLandingPage': defaultLandingPage,
+          'general.ldap.binduser.dn': '',
+          'general.ldap.binduser.password': '',
           schemaVersion: newSchemaVersion,
         },
       },
     );
 
-    Logger.log(`Migration completed: ${result.modifiedCount} documents updated`);
+    Logger.log(`Migration 002 complete: ${result.modifiedCount} document(s) updated.`);
   },
 };
 
-export default migration000;
+export default migration002;
