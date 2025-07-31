@@ -11,12 +11,20 @@
  */
 
 import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
-import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
-import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 
-const getUniqueValues = <T extends LmnUserInfo | LmnApiSchoolClass | LmnApiProject>(values: T[]): T[] => {
-  const uniqueValuesSet = new Set<string>(values.map((obj) => JSON.stringify(obj)));
-  return Array.from(uniqueValuesSet).map((str) => JSON.parse(str) as T);
-};
+interface LmnApiStoreState {
+  isLoading: boolean;
+  error: Error | null;
+  currentUser: LmnUserInfo | null;
+}
 
-export default getUniqueValues;
+interface LmnApiStoreActions {
+  reset: () => void;
+  setCurrentUser: (user: LmnUserInfo | null) => void;
+  setFirstPassword: (username: string, password: string) => Promise<void>;
+  setCurrentPassword: (username: string, password: string) => Promise<void>;
+}
+
+type LmnApiStore = LmnApiStoreState & LmnApiStoreActions;
+
+export default LmnApiStore;
