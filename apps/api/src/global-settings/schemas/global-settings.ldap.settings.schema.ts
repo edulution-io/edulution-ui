@@ -15,7 +15,7 @@ import { LdapBindUser, LdapBindUserSchema } from './global-settings.ldap.binduse
 
 @Schema({ _id: false })
 export class LdapSettings {
-  @Prop({ type: LdapBindUserSchema, required: true })
+  @Prop({ type: LdapBindUserSchema })
   binduser: LdapBindUser;
 }
 export const LdapSettingsSchema = SchemaFactory.createForClass(LdapSettings);

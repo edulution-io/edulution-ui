@@ -24,7 +24,7 @@ export class GeneralSettings {
   @Prop({ type: String, enum: DEPLOYMENT_TARGET, default: DEPLOYMENT_TARGET.LINUXMUSTER })
   deploymentTarget: DeploymentTarget;
 
-  @Prop({ type: LdapSettingsSchema, required: true })
+  @Prop({ type: LdapSettingsSchema })
   ldap: LdapSettings;
 }
 

@@ -14,10 +14,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({ _id: false })
 export class LdapBindUser {
-  @Prop({ required: true })
+  @Prop({ type: String })
   dn: string;
 
-  @Prop({ required: true })
+  @Prop({ type: String })
   password: string;
 }
 export const LdapBindUserSchema = SchemaFactory.createForClass(LdapBindUser);

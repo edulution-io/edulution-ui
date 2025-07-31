@@ -31,7 +31,7 @@ const LdapSettings = ({ form }: LdapSettingsProps) => {
       <FormField
         name="general.ldap.binduser.dn"
         form={form}
-        value={form.watch('general.ldap.binduser.dn')}
+        value={form.watch('general.ldap.binduser.dn') || ''}
         labelTranslationId={t('settings.globalSettings.ldap.edulution-binduser-dn')}
         placeholder={t('not-set')}
       />
@@ -39,9 +39,10 @@ const LdapSettings = ({ form }: LdapSettingsProps) => {
       <FormField
         name="general.ldap.binduser.password"
         form={form}
-        value={form.watch('general.ldap.binduser.password')}
+        value={form.watch('general.ldap.binduser.password') || ''}
         labelTranslationId={t('settings.globalSettings.ldap.edulution-binduser-password')}
         placeholder={t('not-set')}
+        type="password"
       />
     </AccordionContent>
   );

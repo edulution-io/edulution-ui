@@ -33,7 +33,7 @@ const GlobalSettings: React.FC = () => {
   const { t } = useTranslation();
   const { searchGroups } = useGroupStore();
   const { appConfigs } = useAppConfigsStore();
-  const { globalSettings, getGlobalSettings, setGlobalSettings } = useGlobalSettingsApiStore();
+  const { globalSettings, getGlobalAdminSettings, setGlobalSettings } = useGlobalSettingsApiStore();
 
   const form = useForm<GlobalSettingsDto>({ defaultValues });
 
@@ -48,12 +48,18 @@ const GlobalSettings: React.FC = () => {
   } = form;
 
   useEffect(() => {
-    void getGlobalSettings();
-  }, [getGlobalSettings]);
+    void getGlobalAdminSettings();
+  }, [getGlobalAdminSettings]);
 
   useEffect(() => {
     if (globalSettings) {
-      reset(globalSettings);
+      reset({
+        ...defaultValues,
+        ...globalSettings,
+        auth: {
+          mfaEnforcedGroups: globalSettings.auth?.mfaEnforcedGroups || [],
+        },
+      });
     }
   }, [globalSettings, reset]);
 

@@ -14,6 +14,8 @@ import { Logger } from '@nestjs/common';
 import type { Migration } from '../../migration/migration.type';
 import type { GlobalSettingsDocument } from '../global-settings.schema';
 
+const { LDAP_EDULUTION_BINDUSER_DN, LDAP_EDULUTION_BINDUSER_PASSWORD } = process.env as Record<string, string>;
+
 const migration002: Migration<GlobalSettingsDocument> = {
   name: '002-add-ldap-settings',
   version: 2,
@@ -35,8 +37,8 @@ const migration002: Migration<GlobalSettingsDocument> = {
       { _id: { $in: ids } },
       {
         $set: {
-          'general.ldap.binduser.dn': '',
-          'general.ldap.binduser.password': '',
+          'general.ldap.binduser.dn': LDAP_EDULUTION_BINDUSER_DN || '',
+          'general.ldap.binduser.password': LDAP_EDULUTION_BINDUSER_PASSWORD || '',
           schemaVersion: newSchemaVersion,
         },
       },

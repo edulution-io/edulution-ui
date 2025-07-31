@@ -25,8 +25,8 @@ const defaultValues: GlobalSettingsDto = {
     deploymentTarget: getDeploymentTarget(),
     ldap: {
       binduser: {
-        dn: LDAP_EDULUTION_BINDUSER_DN,
-        password: LDAP_EDULUTION_BINDUSER_PASSWORD,
+        dn: LDAP_EDULUTION_BINDUSER_DN || '',
+        password: LDAP_EDULUTION_BINDUSER_PASSWORD || '',
       },
     },
   },
