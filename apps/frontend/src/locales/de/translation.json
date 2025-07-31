@@ -1129,6 +1129,8 @@
   "teacher": "Lehrer",
   "student": "Schüler",
   "students": "Schüler",
+  "parent": "Eltern",
+  "staff": "Mitarbeiter",
   "user": "Benutzer",
   "login": {
     "pageTitle": "Login",
