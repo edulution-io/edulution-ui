@@ -13,6 +13,8 @@
 import getDeploymentTarget from '@libs/common/utils/getDeploymentTarget';
 import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 
+const { LDAP_EDULUTION_BINDUSER_DN, LDAP_EDULUTION_BINDUSER_PASSWORD } = process.env as Record<string, string>;
+
 const defaultValues: GlobalSettingsDto = {
   auth: { mfaEnforcedGroups: [] },
   general: {
@@ -21,6 +23,12 @@ const defaultValues: GlobalSettingsDto = {
       appName: '',
     },
     deploymentTarget: getDeploymentTarget(),
+    ldap: {
+      binduser: {
+        dn: LDAP_EDULUTION_BINDUSER_DN || '',
+        password: LDAP_EDULUTION_BINDUSER_PASSWORD || '',
+      },
+    },
   },
 };
 

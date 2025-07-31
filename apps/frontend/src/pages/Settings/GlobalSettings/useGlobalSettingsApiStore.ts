@@ -16,27 +16,28 @@ import i18n from '@/i18n';
 import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
 import {
-  GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH,
-  GLOBAL_SETTINGS_PROJECTION_PARAM_GENERAL,
+  GLOBAL_SETTINGS_ADMIN_ENDPOINT,
   GLOBAL_SETTINGS_ROOT_ENDPOINT,
 } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
+import deepMerge from '@libs/common/utils/Object/deepMerge';
 
 type GlobalSettingsStore = {
   isSetGlobalSettingLoading: boolean;
   isGetGlobalSettingsLoading: boolean;
+  isGetGlobalAdminSettingsLoading: boolean;
   globalSettings: GlobalSettingsDto;
   reset: () => void;
-  getGlobalSettings: (
-    projection?: typeof GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH | typeof GLOBAL_SETTINGS_PROJECTION_PARAM_GENERAL,
-  ) => Promise<void>;
+  getGlobalSettings: () => Promise<void>;
+  getGlobalAdminSettings: () => Promise<void>;
   setGlobalSettings: (globalSettingsDto: GlobalSettingsDto) => Promise<void>;
 };
 
 const initialValues = {
   isSetGlobalSettingLoading: false,
   isGetGlobalSettingsLoading: false,
+  isGetGlobalAdminSettingsLoading: false,
   mfaEnforcedGroups: [],
   globalSettings: defaultValues,
 };
@@ -44,31 +45,33 @@ const initialValues = {
 const useGlobalSettingsApiStore = create<GlobalSettingsStore>((set, get) => ({
   ...initialValues,
 
-  getGlobalSettings: async (projection?) => {
-    if (get().isGetGlobalSettingsLoading) return;
-
+  getGlobalSettings: async () => {
     set({ isGetGlobalSettingsLoading: true });
     try {
-      const { data } = await eduApi.get<GlobalSettingsDto>(GLOBAL_SETTINGS_ROOT_ENDPOINT, {
-        params: { projection },
-      });
+      const { data } = await eduApi.get<GlobalSettingsDto>(GLOBAL_SETTINGS_ROOT_ENDPOINT);
 
-      if (data) {
-        if (projection) {
-          set((state) => ({
-            globalSettings: {
-              ...state.globalSettings,
-              ...data,
-            },
-          }));
-        } else {
-          set({ globalSettings: data });
-        }
-      }
+      const merged = deepMerge(get().globalSettings, data);
+      set({ globalSettings: merged });
     } catch (error) {
       handleApiError(error, set);
     } finally {
       set({ isGetGlobalSettingsLoading: false });
+    }
+  },
+
+  getGlobalAdminSettings: async () => {
+    set({ isGetGlobalAdminSettingsLoading: true });
+    try {
+      const { data } = await eduApi.get<GlobalSettingsDto>(
+        `${GLOBAL_SETTINGS_ROOT_ENDPOINT}/${GLOBAL_SETTINGS_ADMIN_ENDPOINT}`,
+      );
+
+      const merged = deepMerge(get().globalSettings, data);
+      set({ globalSettings: merged });
+    } catch (error) {
+      handleApiError(error, set);
+    } finally {
+      set({ isGetGlobalAdminSettingsLoading: false });
     }
   },
 

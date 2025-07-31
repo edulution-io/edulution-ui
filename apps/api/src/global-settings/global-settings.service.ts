@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Model } from 'mongoose';
+import { Model, ProjectionType } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import GlobalSettingsErrorMessages from '@libs/global-settings/constants/globalSettingsErrorMessages';
@@ -42,7 +42,7 @@ class GlobalSettingsService implements OnModuleInit {
         globalSettingsMigrationsList,
       );
 
-      await this.updateCache();
+      await this.setDeploymentTargetInCache();
 
       return;
     }
@@ -63,7 +63,7 @@ class GlobalSettingsService implements OnModuleInit {
     }
   }
 
-  async updateCache() {
+  async setDeploymentTargetInCache() {
     try {
       const globalSetting = await this.getGlobalSettings('general.deploymentTarget');
       if (!globalSetting?.general) {
@@ -77,14 +77,31 @@ class GlobalSettingsService implements OnModuleInit {
 
       return deploymentTarget;
     } catch (error) {
-      Logger.warn(`Failed to update cache: ${(error as Error).message}`, GlobalSettings.name);
+      Logger.warn(`Failed to update deployment target cache: ${(error as Error).message}`, GlobalSettings.name);
       return null;
     }
   }
 
   async getGlobalSettings(projection?: string) {
     try {
-      return await this.globalSettingsModel.findOne({}, projection).lean();
+      const PUBLIC_PROJECTION: ProjectionType<GlobalSettingsDocument> = {
+        'general.ldap': 0,
+      } as const;
+
+      return await this.globalSettingsModel.findOne({}, projection || PUBLIC_PROJECTION).lean();
+    } catch (error) {
+      throw new CustomHttpException(
+        GlobalSettingsErrorMessages.NotFoundError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        GlobalSettings.name,
+      );
+    }
+  }
+
+  async getGlobalAdminSettings() {
+    try {
+      return await this.globalSettingsModel.findOne({}).lean();
     } catch (error) {
       throw new CustomHttpException(
         GlobalSettingsErrorMessages.NotFoundError,
@@ -102,13 +119,13 @@ class GlobalSettingsService implements OnModuleInit {
         { $set: globalSettingsDto },
       );
 
-      if (updateWriteResult.modifiedCount === 0) {
+      if (updateWriteResult.matchedCount === 0) {
         throw new Error();
       }
 
       await this.invalidateCache();
 
-      await this.updateCache();
+      await this.setDeploymentTargetInCache();
 
       return updateWriteResult;
     } catch (error) {

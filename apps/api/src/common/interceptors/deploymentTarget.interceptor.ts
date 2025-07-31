@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ExecutionContext, Injectable, Inject, NestInterceptor, CallHandler, Logger } from '@nestjs/common';
+import { CallHandler, ExecutionContext, Inject, Injectable, Logger, NestInterceptor } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
 import type DeploymentTarget from '@libs/common/types/deployment-target';
@@ -33,7 +33,7 @@ class DeploymentTargetInterceptor implements NestInterceptor {
 
     if (!deploymentTarget) {
       Logger.verbose('deploymentTarget missing in redis cache, refreshing via DB', DeploymentTargetInterceptor.name);
-      deploymentTarget = await this.globalSettingsService.updateCache();
+      deploymentTarget = await this.globalSettingsService.setDeploymentTargetInCache();
     }
 
     req.deploymentTarget = deploymentTarget as DeploymentTarget;

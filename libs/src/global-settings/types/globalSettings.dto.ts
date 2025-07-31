@@ -29,6 +29,12 @@ class GlobalSettingsDto {
       appName: string;
     };
     deploymentTarget: DeploymentTarget;
+    ldap: {
+      binduser: {
+        dn: string;
+        password: string;
+      };
+    };
   };
 }
 
