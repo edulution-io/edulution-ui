@@ -10,14 +10,17 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import UserRoles from '@libs/user/constants/userRoles';
+import getStringFromArray from '@libs/common/utils/getStringFromArray';
 import FILE_PATHS from '../constants/file-paths';
 
-const buildSharePath = (userName: string, fileName: string, student: UserLmnInfo): string => {
+const buildSharePath = (userName: string, fileName: string, student: LmnUserInfo): string => {
   const file = fileName.split('/').pop();
 
-  const studentPath = student.examMode ? `/${UserRoles.EXAM_USER}/${student.cn}-exam` : student.sophomorixIntrinsic2[0];
+  const studentPath = student.examMode
+    ? `/${UserRoles.EXAM_USER}/${student.cn}-exam`
+    : getStringFromArray(student?.sophomorixIntrinsic2);
 
   return `${studentPath}/${FILE_PATHS.TRANSFER}/${userName}/${file}`;
 };

@@ -13,7 +13,7 @@
 import React, { useEffect } from 'react';
 import { toast } from 'sonner';
 import { Card, CardContent } from '@/components/shared/Card';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import cn from '@libs/common/utils/className';
 import UserCardButtonBar from '@/pages/ClassManagement/LessonPage/UserArea/UserCardButtonBar';
 import Checkbox from '@/components/ui/Checkbox';
@@ -25,13 +25,14 @@ import UserPasswordDialog from '@/pages/ClassManagement/LessonPage/UserArea/User
 import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
 import VEYON_FEATURE_ACTIONS from '@libs/veyon/constants/veyonFeatureActions';
 import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
+import getStringFromArray from '@libs/common/utils/getStringFromArray';
 import useVeyonApiStore from '../../useVeyonApiStore';
 import UserCardVeyonPreview from './UserCardVeyonPreview';
 
 interface UserCardProps {
-  user: UserLmnInfo;
-  selectedMember: UserLmnInfo[];
-  setSelectedMember: React.Dispatch<React.SetStateAction<UserLmnInfo[]>>;
+  user: LmnUserInfo;
+  selectedMember: LmnUserInfo[];
+  setSelectedMember: React.Dispatch<React.SetStateAction<LmnUserInfo[]>>;
   isTeacherInSameClass: boolean;
   isVeyonEnabled: boolean;
 }
@@ -51,9 +52,8 @@ const UserCard = ({ user, selectedMember, isTeacherInSameClass, setSelectedMembe
   const userConnectionFeatureState = userConnectionsFeatureStates[connectionUid];
 
   useEffect(() => {
-    if (isVeyonEnabled && user.sophomorixIntrinsic3.length > 0 && isSelectable) {
-      const connIp = user.sophomorixIntrinsic3[0];
-
+    const connIp = getStringFromArray(user.sophomorixIntrinsic3);
+    if (isVeyonEnabled && connIp && isSelectable) {
       void authenticateVeyonClient(connIp, user.cn);
     }
   }, [user]);

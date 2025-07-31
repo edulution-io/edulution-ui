@@ -18,12 +18,12 @@ import { useTranslation } from 'react-i18next';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 import FullScreenImage from '@/components/ui/FullScreenImage';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import { VEYON_REFRESH_INTERVAL, VEYON_REFRESH_INTERVAL_HIGH } from '@libs/veyon/constants/refreshInterval';
 import useVeyonApiStore from '../../useVeyonApiStore';
 
 type FrameBufferImageProps = {
-  user: UserLmnInfo;
+  user: LmnUserInfo;
   areInputDevicesLocked: boolean;
   connectionUid: string;
 };

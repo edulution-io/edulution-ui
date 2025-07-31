@@ -26,7 +26,7 @@ import {
   USERS_LMN_API_ENDPOINT,
 } from '@libs/lmnApi/constants/lmnApiEndpoints';
 import LmnApiErrorMessage from '@libs/lmnApi/types/lmnApiErrorMessage';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiSearchResult from '@libs/lmnApi/types/lmnApiSearchResult';
@@ -350,11 +350,11 @@ class LmnApiService {
     }
   }
 
-  public async getUser(lmnApiToken: string, username: string, checkFirstPassword?: boolean): Promise<UserLmnInfo> {
+  public async getUser(lmnApiToken: string, username: string, checkFirstPassword?: boolean): Promise<LmnUserInfo> {
     try {
       const query = checkFirstPassword ? `?check_first_pw=${checkFirstPassword}` : '';
-      const response = await this.enqueue<UserLmnInfo>(() =>
-        this.lmnApi.get<UserLmnInfo>(`${USERS_LMN_API_ENDPOINT}/${username}${query}`, {
+      const response = await this.enqueue<LmnUserInfo>(() =>
+        this.lmnApi.get<LmnUserInfo>(`${USERS_LMN_API_ENDPOINT}/${username}${query}`, {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
@@ -373,7 +373,7 @@ class LmnApiService {
     lmnApiToken: string,
     userDetails: Partial<UpdateUserDetailsDto>,
     username: string,
-  ): Promise<UserLmnInfo> {
+  ): Promise<LmnUserInfo> {
     try {
       await this.enqueue<null>(() =>
         this.lmnApi.post<null>(`${USERS_LMN_API_ENDPOINT}/${username}`, userDetails, {
@@ -411,10 +411,10 @@ class LmnApiService {
     }
   }
 
-  public async getCurrentUserRoom(lmnApiToken: string, username: string): Promise<UserLmnInfo> {
+  public async getCurrentUserRoom(lmnApiToken: string, username: string): Promise<LmnUserInfo> {
     try {
-      const response = await this.enqueue<UserLmnInfo>(() =>
-        this.lmnApi.get<UserLmnInfo>(`${USER_ROOM_LMN_API_ENDPOINT}/${username}`, {
+      const response = await this.enqueue<LmnUserInfo>(() =>
+        this.lmnApi.get<LmnUserInfo>(`${USER_ROOM_LMN_API_ENDPOINT}/${username}`, {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
