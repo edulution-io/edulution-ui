@@ -27,12 +27,16 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import BULLETIN_BOARD_CATEGORY_TABLE_COLUMNS from '@libs/appconfig/constants/bulletinBoardCategoryTableColumns';
 import DOCKER_CONTAINER_TABLE_COLUMNS from '@libs/docker/constants/dockerContainerTableColumns';
 import VEYON_PROXY_TABLE_COLUMNS from '@libs/classManagement/constants/veyonProxyTableColumns';
+import type WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
+import { type WebdavShareTableStore } from '@libs/appconfig/types/webdavShareTableStore';
 import DockerContainerTableColumns from '../../DockerIntegration/DockerContainerTableColumns';
 import CreateDockerContainerDialog from '../../DockerIntegration/CreateDockerContainerDialog';
 import useDockerApplicationStore from '../../DockerIntegration/useDockerApplicationStore';
 import VeyonConfigTableColumns from '../../classmanagement/VeyonConfigTableColumns';
 import useVeyonConfigTableStore from '../../classmanagement/useVeyonConfigTableStore';
 import AddVeyonProxyDialog from '../../classmanagement/AddVeyonProxyDialog';
+import WebdavShareTableColumns from '../../filesharing/WebdavShareTableColumns';
+import useWebdavShareConfigTableStore from '../../filesharing/useWebdavShareConfigTableStore';
 
 const DOCKER_CONTAINER_TABLE_COLUMS = {
   hideColumnsInMobileView: [
@@ -144,6 +148,17 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
       filterPlaceHolderText: 'dockerOverview.filterPlaceHolderText',
       type: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
       ...DOCKER_CONTAINER_TABLE_COLUMS,
+    }),
+    createAppConfigTableEntry<WebdavShareDto, WebdavShareTableStore>({
+      columns: WebdavShareTableColumns,
+      useStore: useWebdavShareConfigTableStore,
+      dialogBody: <AddVeyonProxyDialog tableId={ExtendedOptionKeys.VEYON_PROXYS} />,
+      showAddButton: true,
+      filterKey: 'url',
+      filterPlaceHolderText: 'settings.appconfig.sections.webdavShare.filterPlaceHolderText',
+      type: ExtendedOptionKeys.WEBDAV_SHARE_TABLE,
+      hideColumnsInMobileView: [],
+      hideColumnsInTabletView: [],
     }),
   ],
 };

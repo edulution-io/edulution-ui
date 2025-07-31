@@ -953,6 +953,11 @@
           "invalidCidrFormat": "Ungültige CIDR-Notation",
           "invalidUrlFormat": "Ungültige URL"
         },
+        "webdavShare": {
+          "title": "WebDAV-Share",
+          "description": "Hier können eigene WebDAV-Shares eingerichtet werden.",
+          "filterPlaceHolderText": "Suche nach WebDAV-Share"
+        },
         "files": {
           "title": "Dateien",
           "description": "Hier können die Dateien verwaltet werden, die in der App angezeigt werden.",

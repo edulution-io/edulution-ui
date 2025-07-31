@@ -10,17 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const AppConfigSectionsKeys = {
-  general: 'general',
-  fileSharing: 'fileSharing',
-  onlyOffice: 'onlyOffice',
-  imapMailFeed: 'imapMailFeed',
-  bulletinBoard: 'bulletinBoard',
-  veyon: 'veyon',
-  docker: 'docker',
-  files: 'files',
-  editor: 'editor',
-  webdavShare: 'webdavShare',
-} as const;
+import AppConfigTable from '@libs/bulletinBoard/types/appConfigTable';
+import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 
-export default AppConfigSectionsKeys;
+export interface WebdavShareTableStore extends AppConfigTable<WebdavShareDto> {
+  selectedConfig: WebdavShareDto | null;
+  setSelectedConfig: (config: WebdavShareDto | null) => void;
+  reset: () => void;
+}
