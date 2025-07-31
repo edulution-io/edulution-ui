@@ -35,6 +35,7 @@ import DOCKER_CONTAINER_EXTENDED_OPTIONS from '@libs/appconfig/constants/extende
 import CLASS_MANAGEMENT_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/classMgmt';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
 import EMBEDDED_PAGE_EDITOR_CONFIG from '@libs/appconfig/constants/extendedOptions/embeddedPageEditorConfig';
+import WEBDAV_SHARE_TABLE_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/webdavShareTable';
 
 const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -76,6 +77,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
       [AppConfigSectionsKeys.fileSharing]: FILE_SHARING_EXTENDED_OPTIONS,
       [AppConfigSectionsKeys.onlyOffice]: ONLY_OFFICE_EXTENDED_OPTIONS,
       [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
+      [AppConfigSectionsKeys.webdavShare]: WEBDAV_SHARE_TABLE_EXTENDED_OPTIONS,
     },
   },
   {

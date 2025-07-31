@@ -10,17 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const AppConfigSectionsKeys = {
-  general: 'general',
-  fileSharing: 'fileSharing',
-  onlyOffice: 'onlyOffice',
-  imapMailFeed: 'imapMailFeed',
-  bulletinBoard: 'bulletinBoard',
-  veyon: 'veyon',
-  docker: 'docker',
-  files: 'files',
-  editor: 'editor',
-  webdavShare: 'webdavShare',
-} as const;
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import { IsArray, IsString } from 'class-validator';
 
-export default AppConfigSectionsKeys;
+class WebdavShareDto {
+  @IsString()
+  url: string;
+
+  @IsArray()
+  accessGroups: MultipleSelectorGroup[] = [];
+}
+
+export default WebdavShareDto;

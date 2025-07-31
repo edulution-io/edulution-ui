@@ -19,6 +19,8 @@ import { DockerContainerTableStore } from '@libs/appconfig/types/dockerContainer
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import { FileTableStore } from '@libs/appconfig/types/fileTableStore';
+import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
+import { WebdavShareTableStore } from '@libs/appconfig/types/webdavShareTableStore';
 import AppConfigTableEntry from './appConfigTableEntry';
 
 export type AppConfigTableConfig =
@@ -33,4 +35,7 @@ export type AppConfigTableConfig =
     })
   | (AppConfigTableEntry<FileInfoDto, FileTableStore> & {
       type: typeof ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT;
+    })
+  | (AppConfigTableEntry<WebdavShareDto, WebdavShareTableStore> & {
+      type: typeof ExtendedOptionKeys.WEBDAV_SHARE_TABLE;
     });

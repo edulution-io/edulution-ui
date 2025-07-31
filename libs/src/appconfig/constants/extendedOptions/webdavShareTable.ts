@@ -10,17 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const AppConfigSectionsKeys = {
-  general: 'general',
-  fileSharing: 'fileSharing',
-  onlyOffice: 'onlyOffice',
-  imapMailFeed: 'imapMailFeed',
-  bulletinBoard: 'bulletinBoard',
-  veyon: 'veyon',
-  docker: 'docker',
-  files: 'files',
-  editor: 'editor',
-  webdavShare: 'webdavShare',
-} as const;
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
+import TAppFieldWidth from '@libs/appconfig/types/tAppFieldWidth';
 
-export default AppConfigSectionsKeys;
+const WEBDAV_SHARE_TABLE = [
+  {
+    name: ExtendedOptionKeys.WEBDAV_SHARE_TABLE,
+    description: 'appExtendedOptions.veyonProxys',
+    title: 'appExtendedOptions.veyonProxysTitle',
+    type: ExtendedOptionField.table,
+    value: '',
+    width: 'full' as TAppFieldWidth,
+  },
+];
+
+export default WEBDAV_SHARE_TABLE;
