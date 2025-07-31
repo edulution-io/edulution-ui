@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
@@ -36,37 +36,42 @@ const useTokenEventListeners = () => {
     }
   }, [auth.user?.expired]);
 
-  const onSilentRenewError = () => {
-    if (alreadyLoggedOutRef.current) return;
+  useEffect(() => {
+    const removeUserLoaded = auth.events.addUserLoaded(() => {
+      alreadyLoggedOutRef.current = false;
+    });
 
-    toast.warning(t('auth.errors.SessionExpiring'));
-  };
+    return () => {
+      removeUserLoaded();
+    };
+  }, [auth.events]);
 
-  const onExpiring = useCallback(async () => {
+  const handleRenew = async (message: string) => {
     if (alreadyLoggedOutRef.current) return;
 
     if (!auth.user?.expired) {
+      console.info(message);
+
       await delay(2000);
       const response = await auth.signinSilent();
-
       if (!response) {
-        await onExpiring();
+        await handleRenew('Retry token renew');
       }
     } else {
       alreadyLoggedOutRef.current = true;
       toast.error(t('auth.errors.TokenExpired'));
       await handleLogout();
     }
-  }, [auth, handleLogout, t]);
+  };
 
   useEffect(() => {
-    auth.events.addSilentRenewError(onSilentRenewError);
-    auth.events.addAccessTokenExpiring(onExpiring);
+    auth.events.addSilentRenewError(() => handleRenew('Token renew error.'));
+    auth.events.addAccessTokenExpiring(() => handleRenew('Token expiring. Try renew.'));
     auth.events.addAccessTokenExpired(handleTokenExpiredRef.current);
 
     return () => {
-      auth.events.removeSilentRenewError(onSilentRenewError);
-      auth.events.removeAccessTokenExpiring(onExpiring);
+      auth.events.removeSilentRenewError(() => handleRenew('Token renew error.'));
+      auth.events.removeAccessTokenExpiring(() => handleRenew('Token expiring. Try renew.'));
       auth.events.removeAccessTokenExpired(handleTokenExpiredRef.current);
     };
   }, []);
