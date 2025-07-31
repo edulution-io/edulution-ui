@@ -10,11 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Group } from '@libs/groups/types/group';
-import GroupMemberDto from './groupMember.dto';
+import HistoryEntryDto from '@libs/whiteboard/types/historyEntryDto';
 
-type GroupWithMembers = Group & {
-  members: GroupMemberDto[];
-};
+class HistoryPageDto {
+  roomId: string;
 
-export default GroupWithMembers;
+  page: number;
+
+  limit: number;
+
+  total: number;
+
+  items: HistoryEntryDto[];
+}
+
+export default HistoryPageDto;

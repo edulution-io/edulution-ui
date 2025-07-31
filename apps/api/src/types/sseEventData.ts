@@ -20,6 +20,7 @@ import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressD
 import { type Survey } from '../surveys/survey.schema';
 import { type Conference } from '../conferences/conference.schema';
 import { BulletinDocument } from '../bulletinboard/bulletin.schema';
+import { TLDrawSyncLog } from '../tldraw-sync/tldraw-sync-log.schema';
 
 type SseEventData =
   | string
@@ -33,6 +34,7 @@ type SseEventData =
   | DockerEvent
   | ContainerInfo[]
   | DownloadFileDto
-  | BulletinDocument;
+  | BulletinDocument
+  | TLDrawSyncLog;
 
 export default SseEventData;

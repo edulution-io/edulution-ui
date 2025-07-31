@@ -10,11 +10,25 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Group } from '@libs/groups/types/group';
-import GroupMemberDto from './groupMember.dto';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Schema as MongooseSchema } from 'mongoose';
+import Attendee from '../conferences/attendee.schema';
 
-type GroupWithMembers = Group & {
-  members: GroupMemberDto[];
-};
+@Schema({ timestamps: true, strict: true })
+export class TLDrawSyncLog {
+  @Prop({ required: true })
+  roomId: string;
 
-export default GroupWithMembers;
+  @Prop({ required: true })
+  attendee: Attendee;
+
+  @Prop({ required: true, type: MongooseSchema.Types.Mixed })
+  message: Record<string, unknown>;
+}
+
+export type TLDrawSyncLogDocument = TLDrawSyncLog & Document;
+export const TLDrawSyncLogSchema = SchemaFactory.createForClass(TLDrawSyncLog);
+
+TLDrawSyncLogSchema.set('toJSON', {
+  virtuals: true,
+});

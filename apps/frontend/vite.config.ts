@@ -35,6 +35,7 @@ export default defineConfig(({ mode }) => {
         '@': resolve(__dirname, './src'),
         '@libs': resolve(__dirname, '../../libs/src'),
       },
+      dedupe: ['@tldraw/store', '@tldraw/validate', '@tldraw/tlschema'],
     },
     server:
       mode === 'development'

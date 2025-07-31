@@ -10,11 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import GroupMemberDto from '@libs/groups/types/groupMember.dto';
+const TLDRAW_SINGLE_USER_ROOM_PREFIX = 'single-';
 
-export default interface GroupDto {
-  id: string;
-  name: string;
-  path: string;
-  members: GroupMemberDto[];
-}
+export default TLDRAW_SINGLE_USER_ROOM_PREFIX;

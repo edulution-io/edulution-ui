@@ -10,11 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Group } from '@libs/groups/types/group';
-import GroupMemberDto from './groupMember.dto';
+const TLDRAW_MULTI_USER_ROOM_PREFIX = 'multi-';
 
-type GroupWithMembers = Group & {
-  members: GroupMemberDto[];
-};
-
-export default GroupWithMembers;
+export default TLDRAW_MULTI_USER_ROOM_PREFIX;

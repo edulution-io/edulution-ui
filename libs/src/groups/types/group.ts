@@ -14,9 +14,19 @@ export interface Group {
   id: string;
   name: string;
   path: string;
-  parentId?: string;
+  subGroupCount: number;
   subGroups: Group[];
-  attributes?: unknown;
-  realmRoles?: string[];
-  clientRoles?: unknown;
+  attributes: {
+    displayName: string[];
+    [key: string]: unknown;
+  };
+  realmRoles: string[];
+  clientRoles: Record<string, unknown>;
+  access: {
+    view: boolean;
+    viewMembers: boolean;
+    manageMembers: boolean;
+    manage: boolean;
+    manageMembership: boolean;
+  };
 }

@@ -15,6 +15,7 @@ const TLDRAW_SYNC_ENDPOINTS = {
   ROOMS: 'rooms',
   ASSETS: 'assets',
   PERSIST: 'persist',
+  HISTORY: 'history',
 } as const;
 
 export default TLDRAW_SYNC_ENDPOINTS;

@@ -152,7 +152,7 @@ const CommandEmpty = forwardRef<HTMLDivElement, React.ComponentProps<typeof Comm
 
 CommandEmpty.displayName = 'CommandEmpty';
 
-const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorProps>(
+const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelectorProps>(
   (
     {
       showRemoveIconInBadge = true,
@@ -512,5 +512,5 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
   },
 );
 
-MultipleSelector.displayName = 'MultipleSelector';
-export default MultipleSelector;
+MultipleSelectorSH.displayName = 'MultipleSelectorSH';
+export default MultipleSelectorSH;
