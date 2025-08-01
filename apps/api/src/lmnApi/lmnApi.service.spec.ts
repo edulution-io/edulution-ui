@@ -23,6 +23,7 @@ import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import GroupForm from '@libs/groups/types/groupForm';
 import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
+import { encodeBase64Api } from '@libs/common/utils/getBase64StringApi';
 import CustomHttpException from '../common/CustomHttpException';
 import LmnApiService from './lmnApi.service';
 import UsersService from '../users/users.service';
@@ -142,7 +143,12 @@ describe('LmnApiService', () => {
       jest.spyOn(usersService, 'getPassword').mockResolvedValue(oldPass);
       mockedAxios.post.mockResolvedValue({ data: null });
 
-      const result = await service.changePassword(mockToken, 'username', btoa(oldPass), btoa(newPass));
+      const result = await service.changePassword(
+        mockToken,
+        'username',
+        encodeBase64Api(oldPass),
+        encodeBase64Api(newPass),
+      );
 
       expect(result).toBeNull();
       expect(mockedAxios.post).toHaveBeenCalledWith(

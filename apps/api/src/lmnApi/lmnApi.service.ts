@@ -42,6 +42,7 @@ import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 import CreateWorkingDirectoryDto from '@libs/classManagement/types/createWorkingDirectoryDto';
 import convertWindowsToUnixPath from '@libs/filesharing/utils/convertWindowsToUnixPath';
+import { decodeBase64Api } from '@libs/common/utils/getBase64StringApi';
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
 import WebdavService from '../webdav/webdav.service';
@@ -630,7 +631,7 @@ class LmnApiService {
     bypassSecurityCheck: boolean = false,
   ): Promise<null> {
     if (!bypassSecurityCheck) {
-      const oldPassword = atob(oldPasswordEncoded);
+      const oldPassword = decodeBase64Api(oldPasswordEncoded);
       const currentPassword = await this.userService.getPassword(username);
 
       if (oldPassword !== currentPassword) {
@@ -643,7 +644,7 @@ class LmnApiService {
       }
     }
 
-    const newPassword = atob(newPasswordEncoded);
+    const newPassword = decodeBase64Api(newPasswordEncoded);
     try {
       const response = await this.enqueue<null>(() =>
         this.lmnApi.post<null>(
@@ -669,7 +670,7 @@ class LmnApiService {
   }
 
   public async setFirstPassword(lmnApiToken: string, username: string, passwordEncoded: string): Promise<null> {
-    const password = atob(passwordEncoded);
+    const password = decodeBase64Api(passwordEncoded);
     try {
       const response = await this.enqueue<null>(() =>
         this.lmnApi.post<null>(

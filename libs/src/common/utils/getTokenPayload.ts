@@ -11,6 +11,8 @@
  */
 
 import JwtUser from '@libs/user/types/jwt/jwtUser';
+import { decodeBase64 } from './getBase64String';
+import { decodeBase64Api } from './getBase64StringApi';
 
 const getTokenPayload = (token: string): JwtUser => {
   const parts = token.split('.');
@@ -18,7 +20,7 @@ const getTokenPayload = (token: string): JwtUser => {
 
   const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
 
-  const json = typeof window !== 'undefined' ? atob(base64) : Buffer.from(base64, 'base64').toString();
+  const json = typeof window !== 'undefined' ? decodeBase64(base64) : decodeBase64Api(base64);
 
   return JSON.parse(json) as JwtUser;
 };

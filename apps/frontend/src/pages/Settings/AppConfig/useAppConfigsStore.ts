@@ -21,6 +21,7 @@ import i18n from '@/i18n';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import PatchConfigDto from '@libs/common/types/patchConfigDto';
 import APPS from '@libs/appconfig/constants/apps';
+import { decodeBase64 } from '@libs/common/utils/getBase64String';
 
 type UseAppConfigsStore = {
   appConfigs: AppConfigDto[];
@@ -158,7 +159,7 @@ const useAppConfigsStore = create<UseAppConfigsStore>(
           const { data } = await eduApi.get<string>(
             `${EDU_API_CONFIG_ENDPOINTS.ROOT}/${EDU_API_CONFIG_ENDPOINTS.PROXYCONFIG}?filePath=${filePath}`,
           );
-          return atob(data);
+          return decodeBase64(data);
         } catch (e) {
           handleApiError(e, set);
           return '';

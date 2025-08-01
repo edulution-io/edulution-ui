@@ -39,6 +39,7 @@ import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import APPS from '@libs/appconfig/constants/apps';
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
+import { decodeBase64, encodeBase64 } from '@libs/common/utils/getBase64String';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 import useAppConfigsStore from '../Settings/AppConfig/useAppConfigsStore';
@@ -84,7 +85,7 @@ const LoginPage: React.FC = () => {
       const password = form.getValues('password');
       const totpValue = form.getValues('totpValue');
 
-      const passwordHash = btoa(`${password}${isEnterTotpVisible || totpValue ? `:${totpValue}` : ''}`);
+      const passwordHash = encodeBase64(`${password}${isEnterTotpVisible || totpValue ? `:${totpValue}` : ''}`);
       const requestUser = await auth.signinResourceOwnerCredentials({
         username,
         password: passwordHash,
@@ -162,7 +163,7 @@ const LoginPage: React.FC = () => {
 
     const handleLoginEvent = (e: MessageEvent<string>) => {
       try {
-        const { username, password } = JSON.parse(atob(e.data)) as LoginQrSseDto;
+        const { username, password } = JSON.parse(decodeBase64(e.data)) as LoginQrSseDto;
 
         form.setValue('username', username);
         form.setValue('password', password);

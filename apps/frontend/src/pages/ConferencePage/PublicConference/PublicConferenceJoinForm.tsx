@@ -24,6 +24,7 @@ import ConferenceDto from '@libs/conferences/types/conference.dto';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import PublicAccessFormHeader from '@/components/shared/PublicAccessFormHeader';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import { decodeBase64 } from '@libs/common/utils/getBase64String';
 
 interface PublicConferenceJoinFormProps {
   meetingId: string;
@@ -66,7 +67,7 @@ const PublicConferenceJoinForm = ({
 
   useEffect(() => {
     form.setValue('name', publicUserFullName || '');
-    form.setValue('password', atob(storedPasswordsByMeetingIds[meetingId] || ''));
+    form.setValue('password', decodeBase64(storedPasswordsByMeetingIds[meetingId] || ''));
   }, [storedPasswordsByMeetingIds, meetingId, publicConference]);
 
   if (!isWaitingForConferenceToStart && publicConference?.isRunning && isPermittedUser && user) {
@@ -133,7 +134,7 @@ const PublicConferenceJoinForm = ({
                   type="password"
                   form={form}
                   onChange={(e) => setStoredPasswordByMeetingId(meetingId, e.target.value)}
-                  value={atob(storedPasswordsByMeetingIds[meetingId] || '')}
+                  value={decodeBase64(storedPasswordsByMeetingIds[meetingId] || '')}
                   placeholder={t('conferences.passwordOfConference')}
                   rules={{
                     required: t('common.min_chars', { count: 1 }),

@@ -28,7 +28,7 @@ import type AuthRequestArgs from '@libs/auth/types/auth-request';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
-import decodeBase64Api from '@libs/common/utils/decodeBase64Api';
+import { decodeBase64Api, encodeBase64Api } from '@libs/common/utils/getBase64StringApi';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import UserRoles from '@libs/user/constants/userRoles';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
@@ -248,7 +248,11 @@ class AuthService {
 
     if (!isConnectionActive) throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
 
-    this.sseService.sendEventToUser(sessionId, btoa(JSON.stringify({ username, password })), SSE_MESSAGE_TYPE.MESSAGE);
+    this.sseService.sendEventToUser(
+      sessionId,
+      encodeBase64Api(JSON.stringify({ username, password })),
+      SSE_MESSAGE_TYPE.MESSAGE,
+    );
   }
 }
 

@@ -20,6 +20,7 @@ import UserDto from '@libs/user/types/user.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import { EDU_API_USERS_ENDPOINT, EDU_API_USERS_SEARCH_ENDPOINT } from '@libs/user/constants/usersApiEndpoints';
 import UserLanguageType from '@libs/user/types/userLanguageType';
+import { decodeBase64 } from '@libs/common/utils/getBase64String';
 
 const initialState = {
   isAuthenticated: false,
@@ -41,7 +42,7 @@ const createUserSlice: StateCreator<UserStore, [], [], UserSlice> = (set, get) =
     set({ userIsLoading: true });
     try {
       const { data } = await eduApi.get<string>(`${EDU_API_USERS_ENDPOINT}/${get().user?.username}/key`);
-      return atob(data);
+      return decodeBase64(data);
     } catch (error) {
       handleApiError(error, set, 'userError');
       return '';
