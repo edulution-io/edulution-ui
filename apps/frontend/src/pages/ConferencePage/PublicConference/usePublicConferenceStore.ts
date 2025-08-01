@@ -17,6 +17,7 @@ import handleApiError from '@/utils/handleApiError';
 import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
+import { encodeBase64 } from '@libs/common/utils/getBase64String';
 
 interface UsePublicConferenceStore {
   reset: () => void;
@@ -58,7 +59,7 @@ const usePublicConferenceStore = create<UsePublicConferenceStore>(
         set((state) => ({
           storedPasswordsByMeetingIds: {
             ...state.storedPasswordsByMeetingIds,
-            [meetingId]: btoa(password) || '',
+            [meetingId]: encodeBase64(password) || '',
           },
         })),
       getPublicConference: async (meetingId) => {
