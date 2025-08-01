@@ -258,7 +258,12 @@ class SurveyAnswersService implements OnModuleInit {
           .exec()
       : undefined;
 
-    return this.selectStrategy(survey, attendee, answer, existingUsersAnswer?.id ? String(existingUsersAnswer?.id) : undefined);
+    return this.selectStrategy(
+      survey,
+      attendee,
+      answer,
+      existingUsersAnswer?.id ? String(existingUsersAnswer?.id) : undefined,
+    );
   }
 
   selectStrategy = (
@@ -267,7 +272,10 @@ class SurveyAnswersService implements OnModuleInit {
     answer: JSON,
     existingUsersAnswerId?: string,
   ): Promise<SurveyAnswer | null> => {
-    Logger.log(`Selecting strategy for survey ${survey.id} with attendee ${attendee.username}, existingUsersAnswerId: ${existingUsersAnswerId}`, SurveyAnswersService.name)
+    Logger.log(
+      `Selecting strategy for survey ${survey.id} with attendee ${attendee.username}, existingUsersAnswerId: ${existingUsersAnswerId}`,
+      SurveyAnswersService.name,
+    );
 
     if (survey.isAnonymous) return this.anonymousStrategy(survey, answer);
     if (!attendee.username && attendee.firstName) return this.publicFirstStrategy(survey, answer, attendee);
@@ -443,7 +451,6 @@ class SurveyAnswersService implements OnModuleInit {
   }
 
   async getAnswer(surveyId: string, username: string): Promise<SurveyAnswer | undefined> {
-
     Logger.log(`Retrieving answer for surveyId: ${surveyId}, username: ${username}`, SurveyAnswersService.name);
 
     const latestUserAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>(
@@ -454,7 +461,10 @@ class SurveyAnswersService implements OnModuleInit {
     return latestUserAnswer || undefined;
   }
 
-  async getAnsweredFiles(surveyId: string, username: string): Promise<{ name: string; path: string; content: Buffer }[]> {
+  async getAnsweredFiles(
+    surveyId: string,
+    username: string,
+  ): Promise<{ name: string; path: string; content: Buffer }[]> {
     const filesPath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, username);
 
     Logger.log(`filesPath: ${filesPath}`, SurveyAnswersService.name);
@@ -471,7 +481,11 @@ class SurveyAnswersService implements OnModuleInit {
 
     Logger.log(`Checking if directory exists: ${fileNames.join(', ')}`, SurveyAnswersService.name);
 
-    const filePromises = fileNames.map(async (name) => ({ name, path: join(filesPath, name), content: await FilesystemService.readFile(join(filesPath, name)) }));
+    const filePromises = fileNames.map(async (name) => ({
+      name,
+      path: join(filesPath, name),
+      content: await FilesystemService.readFile(join(filesPath, name)),
+    }));
     return Promise.all(filePromises);
   }
 
@@ -549,19 +563,11 @@ class SurveyAnswersService implements OnModuleInit {
   }
 
   async serveFileFromAnswer(userName: string, surveyId: string, fileName: string, res: Response): Promise<Response> {
-    let fileStream: Response | undefined;
-    try {
-      fileStream = await this.fileSystemService.getResponseWithFileStream(res, join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName, fileName));
-    } catch (error) {
-      // to nothing
-    }
-    if (!fileStream) {
-      fileStream = await this.fileSystemService.getResponseWithFileStream(res, join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, surveyId, userName, fileName));
-      Logger.debug(`Serving TEMP file from answer for user: ${userName}, surveyId: ${surveyId}, fileName: ${fileName}`, SurveyAnswersService.name);
-    } else {
-      Logger.debug(`Serving file from answer for user: ${userName}, surveyId: ${surveyId}, fileName: ${fileName}`, SurveyAnswersService.name);
-    }
-    return fileStream;
+    return this.fileSystemService.getResponseWithFileStreamWithAlternativePath(
+      res,
+      join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, fileName),
+      join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName, fileName),
+    );
   }
 
   static async deleteTempFileFromAnswer(userName: string, surveyId: string, fileName: string): Promise<void> {

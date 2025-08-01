@@ -317,6 +317,22 @@ class FilesystemService {
     }
   }
 
+  async getResponseWithFileStreamWithAlternativePath(
+    res: Response,
+    filePath: string,
+    alternativePath: string,
+  ): Promise<Response> {
+    const exists = await FilesystemService.checkIfFileExist(filePath);
+    if (exists) {
+      return this.getResponseWithFileStream(res, filePath);
+    }
+    const alternativeExists = await FilesystemService.checkIfFileExist(alternativePath);
+    if (alternativeExists) {
+      return this.getResponseWithFileStream(res, alternativePath);
+    }
+    throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
   async getResponseWithFileStream(res: Response, filePath: string): Promise<Response> {
     const fileStream = await this.createReadStream(filePath);
     fileStream.pipe(res);
