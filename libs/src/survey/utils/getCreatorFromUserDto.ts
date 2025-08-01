@@ -10,11 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SurveyDto from './survey.dto';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import UserDto from '@libs/user/types/user.dto';
 
-interface SurveyTemplateDto {
-  fileName?: string;
-  template: Partial<SurveyDto>;
-}
+const getCreatorFromUserDto = (user: UserDto | null): AttendeeDto => ({
+  firstName: user?.firstName || '',
+  lastName: user?.lastName || '',
+  username: user?.username || '',
+  value: user?.username || '',
+  label: `${user?.firstName} ${user?.lastName}` || '',
+});
 
-export default SurveyTemplateDto;
+export default getCreatorFromUserDto;

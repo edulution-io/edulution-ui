@@ -13,7 +13,7 @@
 import React, { useMemo } from 'react';
 import { ColumnDef, OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import APPS from '@libs/appconfig/constants/apps';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import useMedia from '@/hooks/useMedia';
@@ -31,7 +31,7 @@ const SurveyTable = <TData extends SurveyDto, TValue>({
   isLoading = false,
 }: DataTableProps<TData, TValue>) => {
   const { isMobileView, isTabletView } = useMedia();
-  const { selectedRows, setSelectedRows } = useSurveyTablesPageStore();
+  const { selectedRows, setSelectedRows } = useSurveysTablesPageStore();
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const newValue = typeof updaterOrValue === 'function' ? updaterOrValue(selectedRows) : updaterOrValue;

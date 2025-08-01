@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useDeleteSurveyStore from '@/pages/Surveys/Tables/dialogs/useDeleteSurveyStore';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import ItemDialogList from '@/components/shared/ItemDialogList';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
@@ -26,7 +26,7 @@ interface DeleteSurveysDialogProps {
 }
 
 const DeleteSurveysDialog = ({ surveys, trigger }: DeleteSurveysDialogProps) => {
-  const { selectedRows, setSelectedRows, updateUsersSurveys } = useSurveyTablesPageStore();
+  const { selectedRows, setSelectedRows, updateUsersSurveys } = useSurveysTablesPageStore();
   const { isLoading, error, reset, isDeleteSurveysDialogOpen, setIsDeleteSurveysDialogOpen, deleteSurveys } =
     useDeleteSurveyStore();
   const { t } = useTranslation();
