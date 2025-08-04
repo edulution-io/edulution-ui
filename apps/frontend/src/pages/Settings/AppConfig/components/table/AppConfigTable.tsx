@@ -93,6 +93,11 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
         if (row && 'filename' in row && row.filename && deleteTableEntry) {
           return deleteTableEntry(applicationName, row.filename);
         }
+
+        if (row && 'webdavShareId' in row && row.webdavShareId && deleteTableEntry) {
+          return deleteTableEntry(applicationName, row.webdavShareId);
+        }
+
         return Promise.resolve();
       });
 
@@ -202,8 +207,10 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
               filterKey={filterKey}
               filterPlaceHolderText={filterPlaceHolderText}
               applicationName={applicationName}
-              enableRowSelection={false}
+              enableRowSelection
               initialColumnVisibility={initialColumnVisibility}
+              selectedRows={selectedRows}
+              onRowSelectionChange={handleRowSelectionChange}
               actions={tableActions as TableAction<WebdavShareDto>[]}
             />
           );

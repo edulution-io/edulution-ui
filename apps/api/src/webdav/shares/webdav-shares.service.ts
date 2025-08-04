@@ -24,7 +24,16 @@ class WebdavSharesService {
 
   findAllWebdavShares() {
     try {
-      return this.webdavSharesModel.find().lean();
+      return this.webdavSharesModel.aggregate([
+        {
+          $project: {
+            webdavShareId: '$_id',
+            _id: 0,
+            url: 1,
+            accessGroups: 1,
+          },
+        },
+      ]);
     } catch (error) {
       throw new CustomHttpException(
         CommonErrorMessages.DB_ACCESS_FAILED,

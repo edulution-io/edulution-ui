@@ -27,6 +27,7 @@ import WEBDAV_SHARE_TABLE_COLUMNS from '@libs/filesharing/constants/webdavShareT
 import useGroupStore from '@/store/GroupStore';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import { RowSelectionState } from '@tanstack/react-table';
 import useWebdavShareConfigTableStore from './useWebdavShareConfigTableStore';
 
 interface AddWebdavShareDialogProps {
@@ -37,9 +38,12 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
   const { t } = useTranslation();
   const { searchGroups } = useGroupStore();
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
-  const { selectedConfig, setSelectedConfig, updateWebdavShare, createWebdavShare, deleteWebdavShare } =
+  const { selectedRows, tableContentData, setSelectedRows, updateWebdavShare, createWebdavShare, deleteTableEntry } =
     useWebdavShareConfigTableStore();
   const isOpen = isDialogOpen === tableId;
+  const keys = Object.keys(selectedRows as RowSelectionState);
+  const isOneRowSelected = keys.length === 1;
+  const selectedConfig = selectedRows && isOneRowSelected ? tableContentData[Number(keys[0])] : null;
 
   const initialFormValues = selectedConfig || {
     [WEBDAV_SHARE_TABLE_COLUMNS.URL]: '',
@@ -66,7 +70,9 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
 
   const closeDialog = () => {
     setDialogOpen('');
-    setSelectedConfig(null);
+    if (setSelectedRows) {
+      setSelectedRows({});
+    }
     reset();
   };
 
@@ -88,8 +94,8 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
     e.preventDefault();
     e.stopPropagation();
 
-    if (selectedConfig?.webdavShareId) {
-      void deleteWebdavShare(selectedConfig?.webdavShareId);
+    if (selectedConfig?.webdavShareId && deleteTableEntry) {
+      void deleteTableEntry('', selectedConfig?.webdavShareId);
     }
     closeDialog();
   };
@@ -169,10 +175,7 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
   return (
     <AdaptiveDialog
       isOpen={isOpen}
-      handleOpenChange={() => {
-        setDialogOpen('');
-        setSelectedConfig(null);
-      }}
+      handleOpenChange={closeDialog}
       title={
         selectedConfig
           ? t('classmanagement.veyonConfigTable.editConfig')

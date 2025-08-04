@@ -12,12 +12,12 @@
 
 import { create, StoreApi, UseBoundStore } from 'zustand';
 import { WebdavShareTableStore } from '@libs/appconfig/types/webdavShareTableStore';
-// import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 
 const initialValues = {
+  selectedRows: {},
   isLoading: false,
   tableContentData: [],
   selectedConfig: null,
@@ -26,7 +26,11 @@ const initialValues = {
 const useWebdavShareConfigTableStore: UseBoundStore<StoreApi<WebdavShareTableStore>> = create<WebdavShareTableStore>(
   (set) => ({
     ...initialValues,
+
+    setSelectedRows: (selectedRows) => set({ selectedRows }),
+
     setSelectedConfig: (config) => set({ selectedConfig: config }),
+
     fetchTableContent: async () => {
       try {
         const { data } = await eduApi.get<WebdavShareDto[]>('/webdav-shares');
@@ -62,7 +66,7 @@ const useWebdavShareConfigTableStore: UseBoundStore<StoreApi<WebdavShareTableSto
       }
     },
 
-    deleteWebdavShare: async (webdavShareId) => {
+    deleteTableEntry: async (_applicationName, webdavShareId) => {
       set({ isLoading: true });
       try {
         await eduApi.delete(`/webdav-shares/${webdavShareId}`);

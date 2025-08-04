@@ -19,6 +19,5 @@ export interface WebdavShareTableStore extends AppConfigTable<WebdavShareDto> {
   setSelectedConfig: (config: WebdavShareDto | null) => void;
   createWebdavShare: (webdavShareDto: WebdavShareDto) => Promise<void>;
   updateWebdavShare: (webdavShareId: string, webdavShareDto: WebdavShareDto) => Promise<void>;
-  deleteWebdavShare: (webdavShareId: string) => Promise<void>;
   reset: () => void;
 }
