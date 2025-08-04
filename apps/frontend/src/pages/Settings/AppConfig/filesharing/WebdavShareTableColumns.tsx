@@ -15,10 +15,24 @@ import { ColumnDef } from '@tanstack/react-table';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import WEBDAV_SHARE_TABLE_COLUMNS from '@libs/filesharing/constants/webdavShareTableColumns';
 
 const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
   {
-    id: 'url',
+    id: 'webdavShareId',
+    header: () => <div className="hidden" />,
+    meta: {
+      translationId: 'common.select',
+    },
+    cell: ({ row }) => (
+      <SelectableTextCell
+        row={row}
+        className="max-w-0"
+      />
+    ),
+  },
+  {
+    id: WEBDAV_SHARE_TABLE_COLUMNS.URL,
     header: ({ column }) => <SortableHeader<WebdavShareDto, unknown> column={column} />,
 
     meta: {
@@ -32,7 +46,7 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
     ),
   },
   {
-    id: 'accessGroups',
+    id: WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS,
     header: ({ column }) => <SortableHeader<WebdavShareDto, unknown> column={column} />,
 
     meta: {
@@ -41,7 +55,9 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
     cell: ({ row }) => (
       <SelectableTextCell
         onClick={() => {}}
-        text={row.original.accessGroups[0].name || ''}
+        text={
+          row.original.accessGroups.length > 0 ? row.original.accessGroups.map((group) => group.name).join(', ') : '-'
+        }
       />
     ),
   },

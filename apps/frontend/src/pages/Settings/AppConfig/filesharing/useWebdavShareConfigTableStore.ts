@@ -12,16 +12,14 @@
 
 import { create, StoreApi, UseBoundStore } from 'zustand';
 import { WebdavShareTableStore } from '@libs/appconfig/types/webdavShareTableStore';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+// import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import eduApi from '@/api/eduApi';
+import handleApiError from '@/utils/handleApiError';
+import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 
 const initialValues = {
-  tableContentData: [
-    {
-      url: 'https://server.73.dev.multi.schule/webdav',
-      accessGroups: [{ name: 'role-teachers' }] as MultipleSelectorGroup[],
-    },
-    { url: 'http://10.0.0.29/webdav', accessGroups: [{ name: 'role-teachers' }] as MultipleSelectorGroup[] },
-  ],
+  isLoading: false,
+  tableContentData: [],
   selectedConfig: null,
 };
 
@@ -29,7 +27,52 @@ const useWebdavShareConfigTableStore: UseBoundStore<StoreApi<WebdavShareTableSto
   (set) => ({
     ...initialValues,
     setSelectedConfig: (config) => set({ selectedConfig: config }),
-    fetchTableContent: () => {},
+    fetchTableContent: async () => {
+      try {
+        const { data } = await eduApi.get<WebdavShareDto[]>('/webdav-shares');
+        set({
+          tableContentData: data,
+        });
+      } catch (error) {
+        handleApiError(error, set);
+      }
+    },
+
+    createWebdavShare: async (webdavShareDto: WebdavShareDto) => {
+      set({ isLoading: true });
+      try {
+        await eduApi.post('/webdav-shares', webdavShareDto);
+        set({ isLoading: false });
+      } catch (error) {
+        handleApiError(error, set);
+      } finally {
+        set({ isLoading: false });
+      }
+    },
+
+    updateWebdavShare: async (webdavShareId, webdavShareDto) => {
+      set({ isLoading: true });
+      try {
+        await eduApi.put<WebdavShareDto[]>(`/webdav-shares/${webdavShareId}`, webdavShareDto);
+        set({ isLoading: false });
+      } catch (error) {
+        handleApiError(error, set);
+      } finally {
+        set({ isLoading: false });
+      }
+    },
+
+    deleteWebdavShare: async (webdavShareId) => {
+      set({ isLoading: true });
+      try {
+        await eduApi.delete(`/webdav-shares/${webdavShareId}`);
+        set({ isLoading: false });
+      } catch (error) {
+        handleApiError(error, set);
+      } finally {
+        set({ isLoading: false });
+      }
+    },
 
     reset: () => set(initialValues),
   }),

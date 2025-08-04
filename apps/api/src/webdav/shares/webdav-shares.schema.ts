@@ -10,18 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import { IsArray, IsMongoId, IsString } from 'class-validator';
 
-class WebdavShareDto {
-  @IsMongoId()
-  webdavShareId?: string;
+export type WebdavSharesDocument = WebdavShares & Document;
 
-  @IsString()
+@Schema()
+export class WebdavShares {
+  @Prop({ default: '' })
   url: string;
 
-  @IsArray()
-  accessGroups: MultipleSelectorGroup[] = [];
+  @Prop({ type: Array, default: [] })
+  accessGroups: MultipleSelectorGroup[];
 }
 
-export default WebdavShareDto;
+export const WebdavSharesSchema = SchemaFactory.createForClass(WebdavShares);

@@ -10,18 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import { IsArray, IsMongoId, IsString } from 'class-validator';
+const WEBDAV_SHARE_TABLE_COLUMNS = {
+  URL: 'url',
+  ACCESSGROUPS: 'accessGroups',
+} as const;
 
-class WebdavShareDto {
-  @IsMongoId()
-  webdavShareId?: string;
-
-  @IsString()
-  url: string;
-
-  @IsArray()
-  accessGroups: MultipleSelectorGroup[] = [];
-}
-
-export default WebdavShareDto;
+export default WEBDAV_SHARE_TABLE_COLUMNS;

@@ -29,6 +29,7 @@ import DOCKER_CONTAINER_TABLE_COLUMNS from '@libs/docker/constants/dockerContain
 import VEYON_PROXY_TABLE_COLUMNS from '@libs/classManagement/constants/veyonProxyTableColumns';
 import type WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import { type WebdavShareTableStore } from '@libs/appconfig/types/webdavShareTableStore';
+import WEBDAV_SHARE_TABLE_COLUMNS from '@libs/filesharing/constants/webdavShareTableColumns';
 import DockerContainerTableColumns from '../../DockerIntegration/DockerContainerTableColumns';
 import CreateDockerContainerDialog from '../../DockerIntegration/CreateDockerContainerDialog';
 import useDockerApplicationStore from '../../DockerIntegration/useDockerApplicationStore';
@@ -37,6 +38,7 @@ import useVeyonConfigTableStore from '../../classmanagement/useVeyonConfigTableS
 import AddVeyonProxyDialog from '../../classmanagement/AddVeyonProxyDialog';
 import WebdavShareTableColumns from '../../filesharing/WebdavShareTableColumns';
 import useWebdavShareConfigTableStore from '../../filesharing/useWebdavShareConfigTableStore';
+import AddWebdavShareDialog from '../../filesharing/AddWebdavShareDialog';
 
 const DOCKER_CONTAINER_TABLE_COLUMS = {
   hideColumnsInMobileView: [
@@ -152,9 +154,9 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
     createAppConfigTableEntry<WebdavShareDto, WebdavShareTableStore>({
       columns: WebdavShareTableColumns,
       useStore: useWebdavShareConfigTableStore,
-      dialogBody: <AddVeyonProxyDialog tableId={ExtendedOptionKeys.VEYON_PROXYS} />,
+      dialogBody: <AddWebdavShareDialog tableId={ExtendedOptionKeys.WEBDAV_SHARE_TABLE} />,
       showAddButton: true,
-      filterKey: 'url',
+      filterKey: WEBDAV_SHARE_TABLE_COLUMNS.URL,
       filterPlaceHolderText: 'settings.appconfig.sections.webdavShare.filterPlaceHolderText',
       type: ExtendedOptionKeys.WEBDAV_SHARE_TABLE,
       hideColumnsInMobileView: [],

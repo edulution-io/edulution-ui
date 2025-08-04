@@ -14,7 +14,11 @@ import AppConfigTable from '@libs/bulletinBoard/types/appConfigTable';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 
 export interface WebdavShareTableStore extends AppConfigTable<WebdavShareDto> {
+  isLoading: boolean;
   selectedConfig: WebdavShareDto | null;
   setSelectedConfig: (config: WebdavShareDto | null) => void;
+  createWebdavShare: (webdavShareDto: WebdavShareDto) => Promise<void>;
+  updateWebdavShare: (webdavShareId: string, webdavShareDto: WebdavShareDto) => Promise<void>;
+  deleteWebdavShare: (webdavShareId: string) => Promise<void>;
   reset: () => void;
 }
