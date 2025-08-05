@@ -16,7 +16,6 @@ import { Cache } from 'cache-manager';
 import { Interval, Timeout } from '@nestjs/schedule';
 import { Client, SearchOptions } from 'ldapts';
 import { ALL_GROUPS_CACHE_KEY, GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
-import axios, { AxiosInstance } from 'axios';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
@@ -28,10 +27,10 @@ import formatLdapDate from '@libs/ldapKeycloakSync/utils/formatLdapDate';
 import LDAP_SYNC_INTERVAL_MS from '@libs/ldapKeycloakSync/constants/ldapSyncIntervalMs';
 import LDAPS_PREFIX from '@libs/ldapKeycloakSync/constants/ldapsPrefix';
 import KEYCLOAK_STARTUP_TIMEOUT from '@libs/ldapKeycloakSync/constants/keycloakStartupTimeout';
-import createKeycloakAxiosClient from '../scripts/keycloak/utilities/createKeycloakAxiosClient';
-import getKeycloakToken from '../scripts/keycloak/utilities/getKeycloakToken';
+import { HttpMethods } from '@libs/common/types/http-methods';
 import { LdapKeycloakSync, LdapKeycloakSyncDocument } from './ldap-keycloak-sync.schema';
 import GlobalSettingsService from '../global-settings/global-settings.service';
+import KeycloakRequestQueue from './queue/keycloak-request.queue';
 
 const { KEYCLOAK_ADMIN, KEYCLOAK_ADMIN_PASSWORD } = process.env as Record<string, string>;
 
@@ -41,14 +40,13 @@ class LdapKeycloakSyncService implements OnModuleInit {
 
   private ldapConfig: LdapConfig | undefined;
 
-  private keycloakClient: AxiosInstance;
-
   private lastSync = new Date(0);
 
   constructor(
     @Inject(CACHE_MANAGER) private cache: Cache,
     private readonly globalSettingsService: GlobalSettingsService,
     @InjectModel(LdapKeycloakSync.name) private ldapKeycloakSyncModel: Model<LdapKeycloakSyncDocument>,
+    private readonly keycloakQueue: KeycloakRequestQueue,
   ) {}
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
@@ -77,39 +75,17 @@ class LdapKeycloakSyncService implements OnModuleInit {
 
   @Timeout(KEYCLOAK_STARTUP_TIMEOUT)
   async handleTimeout() {
-    await this.initKeycloakClient();
     await this.loadLdapConfig();
     await this.loadLastSync();
   }
 
-  private async keycloakRequest<T>(fn: (client: AxiosInstance) => Promise<T>, attempt = 1): Promise<T> {
-    try {
-      return await fn(this.keycloakClient);
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 401 && attempt === 1) {
-        await this.initKeycloakClient();
-        return this.keycloakRequest(fn, attempt + 1);
-      }
-      throw error;
-    }
-  }
-
-  private async initKeycloakClient() {
-    const token = await getKeycloakToken();
-    this.keycloakClient = createKeycloakAxiosClient(token);
-  }
-
   private async loadLdapConfig() {
-    const response = await this.keycloakRequest((client) => client.get<LdapConfig[]>(`/components`));
-
-    if (!response.data.length) {
+    const configs = await this.keycloakQueue.enqueue<LdapConfig[]>(HttpMethods.GET, '/components');
+    if (!configs.length) {
       Logger.error('No LDAPStorageProvider configured in Keycloak', LdapKeycloakSyncService.name);
+      return;
     }
-
-    this.ldapConfig = response.data.find(
-      (config) => config.providerType === 'org.keycloak.storage.UserStorageProvider',
-    );
-
+    this.ldapConfig = configs.find((c) => c.providerType === 'org.keycloak.storage.UserStorageProvider');
     Logger.verbose(`Cached LDAP config (id=${this.ldapConfig?.id})`, LdapKeycloakSyncService.name);
   }
 
@@ -194,13 +170,11 @@ class LdapKeycloakSyncService implements OnModuleInit {
     }
 
     const name = groupPath.replace(/^\//, '');
-    await this.keycloakRequest((client) =>
-      client.post('/groups', { name }, { validateStatus: (status) => status === 201 }),
-    );
+    await this.keycloakQueue.enqueue(HttpMethods.POST, '/groups', { name }, { validateStatus: (s) => s === 201 });
 
-    const [createdGroup] = (
-      await this.keycloakRequest((client) => client.get<Group[]>(`/groups?search=${encodeURIComponent(name)}`))
-    ).data;
+    const createdGroup = (
+      await this.keycloakQueue.enqueue<Group[]>(HttpMethods.GET, `/groups?search=${encodeURIComponent(name)}`)
+    )[0];
 
     const newGroup: Group = { id: createdGroup.id, path: groupPath, name, subGroups: [] };
     allCachedGroups.push(newGroup);
@@ -215,16 +189,16 @@ class LdapKeycloakSyncService implements OnModuleInit {
 
     if (toFetch.length > 0) {
       await Promise.all(
-        toFetch.map((username) =>
-          this.keycloakRequest((client) =>
-            client.get<{ id: string; username?: string }[]>(`/users?username=${encodeURIComponent(username)}`),
-          ).then((resp) => {
-            const user = resp.data[0];
-            if (user?.id) {
-              this.userIdCache.set(username, user.id);
-            }
-          }),
-        ),
+        toFetch.map(async (username) => {
+          const user = (
+            await this.keycloakQueue.enqueue<{ id: string; username?: string }[]>(
+              HttpMethods.GET,
+              `/users?username=${encodeURIComponent(username)}`,
+            )
+          )[0];
+
+          if (user?.id) this.userIdCache.set(username, user.id);
+        }),
       );
     }
 
@@ -308,11 +282,9 @@ class LdapKeycloakSyncService implements OnModuleInit {
 
   private async updateUserGroups(userId: string, toAdd: string[], toRemove: string[]): Promise<void> {
     try {
+      await Promise.all(toAdd.map((g) => this.keycloakQueue.enqueue(HttpMethods.PUT, `/users/${userId}/groups/${g}`)));
       await Promise.all(
-        toAdd.map((g) => this.keycloakRequest((client) => client.put(`/users/${userId}/groups/${g}`, {}))),
-      );
-      await Promise.all(
-        toRemove.map((g) => this.keycloakRequest((client) => client.delete(`/users/${userId}/groups/${g}`))),
+        toRemove.map((g) => this.keycloakQueue.enqueue(HttpMethods.DELETE, `/users/${userId}/groups/${g}`)),
       );
     } catch (error) {
       Logger.error(
