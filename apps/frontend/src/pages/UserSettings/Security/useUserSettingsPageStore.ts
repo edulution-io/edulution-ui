@@ -20,6 +20,7 @@ import UserSettingsPageStore from '@libs/userSettings/constants/userSettingsPage
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import { encodeBase64 } from '@libs/common/utils/getBase64String';
 
 const initialState = {
   isLoading: false,
@@ -36,8 +37,8 @@ const useUserSettingsPageStore = create<UserSettingsPageStore>((set) => ({
       await eduApi.put<LmnApiSession>(
         LMN_API_EDU_API_ENDPOINTS.CHANGE_PASSWORD,
         {
-          oldPassword: btoa(oldPassword),
-          newPassword: btoa(newPassword),
+          oldPassword: encodeBase64(oldPassword),
+          newPassword: encodeBase64(newPassword),
         },
         {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
