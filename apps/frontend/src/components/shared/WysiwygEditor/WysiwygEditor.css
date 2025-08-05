@@ -51,18 +51,19 @@
   stroke: var(--background) !important;
 }
 
-.quill-content span {
-  font-size: inherit;
-  letter-spacing: inherit;
-}
-
-.quill-content li[data-list="ordered"] > span.ql-ui {
+.ql-editor li[data-list] > span.ql-ui {
   font-size: 1rem;
 }
 
 .ql-editor li {
   padding-left: 0.3rem;
   font-size: initial;
+}
+
+/* CONTENT */
+
+.quill-content ol {
+  margin: 0 !important;
 }
 
 .quill-content ol {
@@ -76,4 +77,9 @@
 
 .quill-content ol li[data-list="bullet"] {
   list-style-type: disc;
+}
+
+.quill-content span {
+  font-size: inherit;
+  letter-spacing: inherit;
 }
