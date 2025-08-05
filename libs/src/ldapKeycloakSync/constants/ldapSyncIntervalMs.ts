@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const LDAP_SYNC_INTERVAL_MS = 2 * 60 * 1000;
+const LDAP_SYNC_INTERVAL_MS = 5 * 60 * 1000;
 
 export default LDAP_SYNC_INTERVAL_MS;

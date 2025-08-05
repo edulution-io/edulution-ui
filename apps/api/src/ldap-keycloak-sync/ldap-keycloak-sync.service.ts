@@ -28,10 +28,10 @@ import formatLdapDate from '@libs/ldapKeycloakSync/utils/formatLdapDate';
 import LDAP_SYNC_INTERVAL_MS from '@libs/ldapKeycloakSync/constants/ldapSyncIntervalMs';
 import LDAPS_PREFIX from '@libs/ldapKeycloakSync/constants/ldapsPrefix';
 import KEYCLOAK_STARTUP_TIMEOUT from '@libs/ldapKeycloakSync/constants/keycloakStartupTimeout';
-import { GlobalSettings, GlobalSettingsDocument } from '../global-settings/global-settings.schema';
 import createKeycloakAxiosClient from '../scripts/keycloak/utilities/createKeycloakAxiosClient';
 import getKeycloakToken from '../scripts/keycloak/utilities/getKeycloakToken';
 import { LdapKeycloakSync, LdapKeycloakSyncDocument } from './ldap-keycloak-sync.schema';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 const { KEYCLOAK_ADMIN, KEYCLOAK_ADMIN_PASSWORD } = process.env as Record<string, string>;
 
@@ -47,7 +47,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
 
   constructor(
     @Inject(CACHE_MANAGER) private cache: Cache,
-    @InjectModel(GlobalSettings.name) private globalSettingsModel: Model<GlobalSettingsDocument>,
+    private readonly globalSettingsService: GlobalSettingsService,
     @InjectModel(LdapKeycloakSync.name) private ldapKeycloakSyncModel: Model<LdapKeycloakSyncDocument>,
   ) {}
 
@@ -148,7 +148,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
   }
 
   private async getBindCredentials(): Promise<{ bindDN: string; bindCredentials: string }> {
-    const bindCredentials = await this.globalSettingsModel.findOne({}, 'general.ldap').lean();
+    const bindCredentials = await this.globalSettingsService.getGlobalSettings('general.ldap');
     const bindDN = bindCredentials?.general?.ldap?.binduser?.dn;
     const bindPassword = bindCredentials?.general?.ldap?.binduser?.password;
 
