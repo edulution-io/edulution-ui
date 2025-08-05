@@ -17,7 +17,7 @@ import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
+import { Form, FormControl, FormDescription, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { Button } from '@/components/shared/Button';
 import FormField from '@/components/shared/FormField';
 import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
@@ -28,6 +28,8 @@ import useGroupStore from '@/store/GroupStore';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { RowSelectionState } from '@tanstack/react-table';
+import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
+import { DropdownSelect } from '@/components';
 import useWebdavShareConfigTableStore from './useWebdavShareConfigTableStore';
 
 interface AddWebdavShareDialogProps {
@@ -48,6 +50,7 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
   const initialFormValues = selectedConfig || {
     [WEBDAV_SHARE_TABLE_COLUMNS.URL]: '',
     [WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS]: [],
+    [WEBDAV_SHARE_TABLE_COLUMNS.TYPE]: WEBDAV_SHARE_TYPE.LINUXMUSTER,
   };
 
   const form = useForm<WebdavShareDto>({
@@ -80,11 +83,11 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
     e.preventDefault();
     e.stopPropagation();
 
-    const { url, accessGroups } = getValues();
+    const webdavShareDto = getValues();
     if (selectedConfig) {
-      void updateWebdavShare(selectedConfig?.webdavShareId || '', { url, accessGroups });
+      void updateWebdavShare(selectedConfig?.webdavShareId || '', webdavShareDto);
     } else {
-      void createWebdavShare({ url, accessGroups });
+      void createWebdavShare(webdavShareDto);
     }
 
     closeDialog();
@@ -107,6 +110,11 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
     }, []);
     setValue(WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS, uniqueGroups, { shouldValidate: true });
   };
+
+  const webdavShareTypeOptions = Object.values(WEBDAV_SHARE_TYPE).map((id) => ({
+    id,
+    name: t(`webdavShare.type.${id}`),
+  }));
 
   const getFooter = () => (
     <form
@@ -148,7 +156,7 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
         name={WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS}
         render={() => (
           <FormItem>
-            <p className="font-bold">{t('permission.groups')}</p>
+            <p className="font-bold">{t('webdavShare.accessGroups.title')}</p>
             <FormControl>
               <AsyncMultiSelect<MultipleSelectorGroup>
                 value={getValues(WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS)}
@@ -158,8 +166,26 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
                 variant="dialog"
               />
             </FormControl>
-            <p className="text-background">{t('settings.globalSettings.selectUserGroups')}</p>
+            <FormDescription>{t('webdavShare.accessGroups.description')}</FormDescription>
             <FormMessage className="text-p" />
+          </FormItem>
+        )}
+      />
+      <FormFieldSH
+        control={form.control}
+        name={WEBDAV_SHARE_TABLE_COLUMNS.TYPE}
+        render={({ field }) => (
+          <FormItem>
+            <p className="font-bold">{t('webdavShare.type.title')}</p>
+            <FormControl>
+              <DropdownSelect
+                options={webdavShareTypeOptions}
+                selectedVal={field.value}
+                handleChange={field.onChange}
+                variant="dialog"
+              />
+            </FormControl>
+            <FormDescription>{t('webdavShare.type.description')}</FormDescription>
           </FormItem>
         )}
       />

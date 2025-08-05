@@ -10,22 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import { IsArray, IsMongoId, IsString } from 'class-validator';
-import WebdavShareType from './webdavShareType';
+const WEBDAV_SHARE_TYPE = {
+  LINUXMUSTER: 'linuxmuster',
+  EDU_FILE_PROXY: 'edu-file-proxy',
+  GENERIC: 'generic',
+} as const;
 
-class WebdavShareDto {
-  @IsMongoId()
-  webdavShareId?: string;
-
-  @IsString()
-  url: string;
-
-  @IsArray()
-  accessGroups: MultipleSelectorGroup[] = [];
-
-  @IsString()
-  type: WebdavShareType;
-}
-
-export default WebdavShareDto;
+export default WEBDAV_SHARE_TYPE;

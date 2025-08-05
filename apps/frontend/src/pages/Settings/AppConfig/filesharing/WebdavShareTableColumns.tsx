@@ -12,6 +12,7 @@
 
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
+import { useTranslation } from 'react-i18next';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
@@ -66,8 +67,27 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
           row.original.accessGroups.length > 0 ? row.original.accessGroups.map((group) => group.name).join(', ') : '-'
         }
         onClick={() => row.toggleSelected()}
+        className="max-w-80 overflow-hidden text-ellipsis whitespace-nowrap"
       />
     ),
+  },
+  {
+    id: WEBDAV_SHARE_TABLE_COLUMNS.TYPE,
+    header: ({ column }) => <SortableHeader<WebdavShareDto, unknown> column={column} />,
+
+    meta: {
+      translationId: 'common.type',
+    },
+    accessorFn: (row) => row.type,
+    cell: ({ row }) => {
+      const { t } = useTranslation();
+      return (
+        <SelectableTextCell
+          text={t(`webdavShare.type.${row.original.type}`)}
+          onClick={() => row.toggleSelected()}
+        />
+      );
+    },
   },
   {
     id: ID_ACTION_TABLE_COLUMN,

@@ -14,6 +14,7 @@ const WEBDAV_SHARE_TABLE_COLUMNS = {
   WEBDAV_SHARE_ID: 'webdavShareId',
   URL: 'url',
   ACCESSGROUPS: 'accessGroups',
+  TYPE: 'type',
 } as const;
 
 export default WEBDAV_SHARE_TABLE_COLUMNS;

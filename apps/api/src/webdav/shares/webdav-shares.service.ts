@@ -31,6 +31,7 @@ class WebdavSharesService {
             _id: 0,
             url: 1,
             accessGroups: 1,
+            type: 1,
           },
         },
       ]);

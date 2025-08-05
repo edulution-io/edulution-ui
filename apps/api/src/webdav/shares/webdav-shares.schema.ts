@@ -12,7 +12,9 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import type WebdavShareType from '@libs/filesharing/types/webdavShareType';
+import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 
 export type WebdavSharesDocument = WebdavShares & Document;
 
@@ -23,6 +25,9 @@ export class WebdavShares {
 
   @Prop({ type: Array, default: [] })
   accessGroups: MultipleSelectorGroup[];
+
+  @Prop({ type: String, required: true, enum: WEBDAV_SHARE_TYPE, default: WEBDAV_SHARE_TYPE.LINUXMUSTER })
+  type: WebdavShareType;
 }
 
 export const WebdavSharesSchema = SchemaFactory.createForClass(WebdavShares);
