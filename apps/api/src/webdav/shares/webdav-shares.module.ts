@@ -10,15 +10,17 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import WebdavSharesController from './webdav-shares.controller';
 import WebdavSharesService from './webdav-shares.service';
 import { WebdavShares, WebdavSharesSchema } from './webdav-shares.schema';
 
+@Global()
 @Module({
   imports: [MongooseModule.forFeature([{ name: WebdavShares.name, schema: WebdavSharesSchema }])],
   controllers: [WebdavSharesController],
   providers: [WebdavSharesService],
+  exports: [WebdavSharesService],
 })
 export default class WebdavSharesModule {}

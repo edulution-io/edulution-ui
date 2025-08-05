@@ -10,17 +10,30 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import { WebdavShares, WebdavSharesDocument } from './webdav-shares.schema';
 import CustomHttpException from '../../common/CustomHttpException';
 
 @Injectable()
-class WebdavSharesService {
+class WebdavSharesService implements OnModuleInit {
   constructor(@InjectModel(WebdavShares.name) private webdavSharesModel: Model<WebdavSharesDocument>) {}
+
+  async onModuleInit() {
+    const count = await this.webdavSharesModel.countDocuments();
+
+    if (count === 0) {
+      await this.webdavSharesModel.create({
+        url: process.env.EDUI_WEBDAV_URL as string,
+        accessGroups: [],
+        type: WEBDAV_SHARE_TYPE.LINUXMUSTER,
+      });
+    }
+  }
 
   findAllWebdavShares() {
     try {
