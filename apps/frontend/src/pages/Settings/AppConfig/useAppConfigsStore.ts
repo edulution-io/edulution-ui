@@ -22,7 +22,7 @@ import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import PatchConfigDto from '@libs/common/types/patchConfigDto';
 import APPS from '@libs/appconfig/constants/apps';
 
-type AppConfigsStore = {
+type UseAppConfigsStore = {
   appConfigs: AppConfigDto[];
   isLoading: boolean;
   isConfigFileLoading: boolean;
@@ -43,9 +43,9 @@ type AppConfigsStore = {
 };
 
 type PersistedAppConfigsStore = (
-  appConfig: StateCreator<AppConfigsStore>,
-  options: PersistOptions<Partial<AppConfigsStore>>,
-) => StateCreator<AppConfigsStore>;
+  appConfig: StateCreator<UseAppConfigsStore>,
+  options: PersistOptions<Partial<UseAppConfigsStore>>,
+) => StateCreator<UseAppConfigsStore>;
 
 const initialState = {
   isAddAppConfigDialogOpen: false,
@@ -67,7 +67,7 @@ const initialState = {
   error: null,
 };
 
-const useAppConfigsStore = create<AppConfigsStore>(
+const useAppConfigsStore = create<UseAppConfigsStore>(
   (persist as PersistedAppConfigsStore)(
     (set, get) => ({
       ...initialState,

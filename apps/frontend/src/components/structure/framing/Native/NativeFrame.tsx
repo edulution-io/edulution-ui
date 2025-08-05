@@ -12,7 +12,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useUserStore from '@/store/UserStore/useUserStore';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
@@ -31,8 +31,6 @@ const NativeFrame: React.FC<NativeFrameProps> = ({ scriptOnStartUp, scriptOnStop
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { isAuthenticated, isPreparingLogout, eduApiToken } = useUserStore();
   const { loadedEmbeddedFrames, activeEmbeddedFrame } = useFrameStore();
-
-  const getStyle = () => (activeEmbeddedFrame === appName ? { display: 'block' } : { display: 'none' });
 
   const injectScript = (iframe: HTMLIFrameElement, script: string) => {
     const attemptInject = () => {
@@ -86,7 +84,7 @@ const NativeFrame: React.FC<NativeFrameProps> = ({ scriptOnStartUp, scriptOnStop
       className="absolute inset-y-0 left-0 ml-0 mr-14 w-full md:w-[calc(100%-var(--sidebar-width))]"
       height="100%"
       src={loadedEmbeddedFrames.includes(currentAppConfig.name) ? initialUrlRef.current : undefined}
-      style={getStyle()}
+      style={activeEmbeddedFrame === appName ? { display: 'block' } : { display: 'none' }}
     />
   );
 };

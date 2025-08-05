@@ -134,7 +134,6 @@ describe(PublicSurveysController.name, () => {
 
       await controller.answerSurvey({
         surveyId: idOfPublicSurvey02.toString(),
-        saveNo: saveNoPublicSurvey02,
         answer: mockedValidAnswerForPublicSurveys02,
         attendee: firstMockUser,
       });

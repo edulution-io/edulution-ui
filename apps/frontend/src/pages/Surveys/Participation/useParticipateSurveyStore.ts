@@ -41,7 +41,11 @@ interface ParticipateSurveyStore {
   ) => Promise<SurveyAnswerResponseDto | undefined>;
   isSubmitting: boolean;
 
-  checkForMatchingUserNameAndPubliUserId: (surveyId: string, attendee: Partial<AttendeeDto>) => Promise<boolean>;
+  checkForMatchingUserNameAndPubliUserId: (
+    surveyId: string,
+    attendee: Partial<AttendeeDto>,
+    canUpdateFormerAnswer?: boolean,
+  ) => Promise<boolean>;
   setIsUserAuthenticated: (isUserAuthenticated: boolean) => void;
   isUserAuthenticated: boolean;
 
@@ -51,11 +55,14 @@ interface ParticipateSurveyStore {
 
   publicUserId?: string;
 
-  uploadTempFile: (surveyId: string, file: File) => Promise<{ name: string; url: string; content: Buffer<ArrayBufferLike> }>;
+  uploadTempFile: (
+    surveyId: string,
+    file: File,
+  ) => Promise<{ name: string; url: string; content: Buffer<ArrayBufferLike> }>;
   isUploadingFile?: boolean;
   deleteTempFile: (surveyId: string, file: File, callback: CallableFunction) => Promise<string | undefined>;
   isDeletingFile?: boolean;
-  fetchTempFile: (surveyId: string, fileName: string) => Promise<Record<string, string>>;
+  fetchTempFile: (surveyId: string, fileName: string) => Promise<Record<string, File>>;
 
   reset: () => void;
 }
@@ -155,6 +162,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
   checkForMatchingUserNameAndPubliUserId: async (
     surveyId: string,
     attendee: Partial<AttendeeDto>,
+    canUpdateFormerAnswer: boolean = false,
   ): Promise<boolean> => {
     set({ isFetching: true });
     try {
@@ -166,7 +174,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
         return false;
       }
       const surveyAnswer: SurveyAnswerResponseDto = response.data;
-      set({ attendee: surveyAnswer.attendee, previousAnswer: surveyAnswer });
+      set({ attendee: surveyAnswer.attendee, previousAnswer: canUpdateFormerAnswer ? surveyAnswer : undefined });
       return true;
     } catch (error) {
       set({ attendee: undefined, previousAnswer: undefined });
@@ -176,7 +184,10 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
   },
 
-  uploadTempFile: async (surveyId: string, file: File): Promise<{ name: string; url: string; content: Buffer<ArrayBufferLike> }> => {
+  uploadTempFile: async (
+    surveyId: string,
+    file: File,
+  ): Promise<{ name: string; url: string; content: Buffer<ArrayBufferLike> }> => {
     const { attendee } = get();
     set({ isUploadingFile: true });
 
@@ -199,23 +210,24 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
   },
 
-  fetchTempFile: async (surveyId: string, fileName: string): Promise<any> => {
+  fetchTempFile: async (surveyId: string, fileName: string): Promise<Record<string, File>> => {
     const { attendee } = get();
     set({ isUploadingFile: true });
 
     try {
-      const response = await eduApi.get<any>(
+      const response = await eduApi.get<Record<string, File>>(
         `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${fileName}`,
         {
           headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
         },
       );
-      return response;
+      return response.data;
     } catch (error) {
       handleApiError(error, set);
     } finally {
       set({ isUploadingFile: false });
     }
+    return {};
   },
 
   deleteTempFile: async (

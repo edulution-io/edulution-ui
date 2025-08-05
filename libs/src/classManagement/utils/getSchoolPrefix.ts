@@ -10,9 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 
-const getSchoolPrefix = (user: UserLmnInfo | null) =>
+const getSchoolPrefix = (user: LmnUserInfo | null) =>
   user?.sophomorixSchoolPrefix !== '---' ? `${user?.sophomorixSchoolPrefix}-` : '';
 
 export default getSchoolPrefix;

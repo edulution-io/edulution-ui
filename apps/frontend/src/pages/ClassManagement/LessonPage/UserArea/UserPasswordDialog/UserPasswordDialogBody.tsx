@@ -12,7 +12,7 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import { Button } from '@/components/shared/Button';
 import { UseFormReturn } from 'react-hook-form';
 import UserPasswordDialogForm from '@libs/classManagement/types/userPasswordDialogForm';
@@ -22,7 +22,7 @@ import FormField from '@/components/shared/FormField';
 import { toast } from 'sonner';
 
 interface UserPasswordDialogBodyProps {
-  user: UserLmnInfo;
+  user: LmnUserInfo;
   form: UseFormReturn<UserPasswordDialogForm>;
   updateUser: () => Promise<void>;
 }

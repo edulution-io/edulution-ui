@@ -12,9 +12,10 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
-import { ClearFilesEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
+import { ClearFilesEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
+import { DownloadSurveyAttachmentEvent } from '@libs/survey/types/api/download-survey-attachment-event';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import SURVEY_ANSWERS_MAXIMUM_FILE_SIZE from '@libs/survey/constants/survey-answers-maximum-file-size';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
@@ -32,11 +33,12 @@ interface SurveyParticipationModelProps {
   isPublic: boolean;
 }
 
+Serializer.getProperty('text', 'textUpdateMode').defaultValue = 'onTyping';
 Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
 Serializer.getProperty('file', 'storeDataAsText').defaultValue = false;
 Serializer.getProperty('file', 'waitForUpload').defaultValue = true;
 Serializer.getProperty('file', 'showPreview').defaultValue = true;
-
+Serializer.getProperty('text', 'textUpdateMode').defaultValue = 'onTyping';
 Serializer.getProperty('signaturepad', 'penColor').defaultValue = 'rgba(255, 255, 255, 1)';
 Serializer.getProperty('signaturepad', 'signatureWidth').defaultValue = '800';
 
@@ -106,22 +108,23 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       return callback(results);
     });
 
-    newModel.onDownloadFile.add(async (_, options) => {
+    newModel.onDownloadFile.add(async (_: SurveyModel, options: DownloadSurveyAttachmentEvent) => {
       if (!selectedSurvey || !selectedSurvey.id) {
         return;
       }
 
-      console.log('Download file options:', options);
-
+      const fileName = options.fileValue.name ? String(options.fileValue.name) : undefined;
+      if (!fileName) {
+        return;
+      }
       try {
-        const response = await fetchTempFile(selectedSurvey.id, options.fileValue.name);
-        const content = response.data[options.fileValue.name];
+        const fileType = options.fileValue.type ? String(options.fileValue.type) : undefined;
+        const data = await fetchTempFile(selectedSurvey.id, fileName);
+        const content = data[fileName];
 
-        const file = new File([content], options.fileValue.name, {
-          type: options.fileValue.type,
+        const file = new File([content], fileName, {
+          type: fileType,
         });
-
-        console.log('File to read:', file);
 
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -180,6 +183,9 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
   useEffect(() => {
     if (!selectedSurvey?.id) {
+      return;
+    }
+    if (!selectedSurvey.canUpdateFormerAnswer) {
       return;
     }
     void fetchAnswer(selectedSurvey.id);

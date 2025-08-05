@@ -14,6 +14,7 @@ import { useEffect, useRef } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import delay from '@libs/common/utils/delay';
 import useLogout from './useLogout';
 
 const useTokenEventListeners = () => {
@@ -35,18 +36,42 @@ const useTokenEventListeners = () => {
     }
   }, [auth.user?.expired]);
 
-  const onSilentRenewError = () => {
+  useEffect(() => {
+    const removeUserLoaded = auth.events.addUserLoaded(() => {
+      alreadyLoggedOutRef.current = false;
+    });
+
+    return () => {
+      removeUserLoaded();
+    };
+  }, [auth.events]);
+
+  const handleRenew = async (message: string) => {
     if (alreadyLoggedOutRef.current) return;
 
-    toast.warning(t('auth.errors.SessionExpiring'));
+    if (!auth.user?.expired) {
+      console.info(message);
+
+      await delay(2000);
+      const response = await auth.signinSilent();
+      if (!response) {
+        await handleRenew('Retry token renew');
+      }
+    } else {
+      alreadyLoggedOutRef.current = true;
+      toast.error(t('auth.errors.TokenExpired'));
+      await handleLogout();
+    }
   };
 
   useEffect(() => {
-    auth.events.addSilentRenewError(onSilentRenewError);
+    auth.events.addSilentRenewError(() => handleRenew('Token renew error.'));
+    auth.events.addAccessTokenExpiring(() => handleRenew('Token expiring. Try renew.'));
     auth.events.addAccessTokenExpired(handleTokenExpiredRef.current);
 
     return () => {
-      auth.events.removeSilentRenewError(onSilentRenewError);
+      auth.events.removeSilentRenewError(() => handleRenew('Token renew error.'));
+      auth.events.removeAccessTokenExpiring(() => handleRenew('Token expiring. Try renew.'));
       auth.events.removeAccessTokenExpired(handleTokenExpiredRef.current);
     };
   }, []);

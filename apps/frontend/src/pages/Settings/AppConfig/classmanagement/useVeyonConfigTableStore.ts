@@ -14,7 +14,7 @@ import { create, StoreApi, UseBoundStore } from 'zustand';
 import { VeyonConfigTableStore } from '@libs/appconfig/types/veyonConfigTableStore';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import useAppConfigsStore from '../appConfigsStore';
+import useAppConfigsStore from '../useAppConfigsStore';
 
 const initialValues = {
   tableContentData: [],

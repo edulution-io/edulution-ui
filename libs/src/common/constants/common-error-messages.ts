@@ -21,6 +21,7 @@ enum CommonErrorMessages {
   FILE_NOT_PROVIDED = 'common.errors.fileNotProvided',
   INVALID_FILE_TYPE = 'common.errors.invalidFileType',
   INVALID_REQUEST_DATA = 'common.errors.invalidRequestData',
+  WRONG_SEVER_CONFIG = 'common.errors.wrongServerConfig',
 }
 
 export default CommonErrorMessages;

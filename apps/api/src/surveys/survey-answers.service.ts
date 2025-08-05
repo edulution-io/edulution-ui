@@ -98,21 +98,48 @@ class SurveyAnswersService implements OnModuleInit {
 
     const possibleChoices = limiter.choices;
 
-    const filteredChoices = await Promise.all(
-      possibleChoices.map(async (choice) => {
-        const isVisible = (await this.countChoiceSelections(surveyId, questionName, choice.title)) < choice.limit;
-        return isVisible ? choice : null;
-      }),
-    );
+    const filteredChoices: ChoiceDto[] = [];
+    const filteringPromises = possibleChoices.map(async (choice) => {
+      const counter = await this.countChoiceSelections(surveyId, questionName, choice.title);
+      if (choice.limit === 0 || !counter || counter < choice.limit) {
+        filteredChoices.push(choice);
+      }
+    });
+    await Promise.all(filteringPromises);
 
-    return filteredChoices.filter((choice) => choice !== null);
+    filteredChoices.sort((a, b) => a.title.localeCompare(b.title));
+
+    return filteredChoices;
   };
 
   async countChoiceSelections(surveyId: string, questionName: string, choiceId: string): Promise<number> {
-    return this.surveyAnswerModel.countDocuments({
-      surveyId: new Types.ObjectId(surveyId),
-      [`answer.${questionName}`]: choiceId,
+    const documents = await this.surveyAnswerModel
+      .find<SurveyAnswerDocument>({ surveyId: new Types.ObjectId(surveyId) })
+      .exec();
+    const filteredAnswers: string[] = [];
+    documents.forEach((document) => {
+      try {
+        const updatedAnswer = structuredClone(document.answer) as unknown as { [key: string]: string | object };
+
+        if (Array.isArray(updatedAnswer[questionName])) {
+          const choices = updatedAnswer[questionName] as string[];
+          const choice = choices.find((c) => c === choiceId);
+          if (choice) {
+            filteredAnswers.push(choice);
+          }
+        } else if (updatedAnswer[questionName] === choiceId) {
+          filteredAnswers.push(choiceId);
+        }
+      } catch (error) {
+        throw new CustomHttpException(
+          SurveyAnswerErrorMessages.NotAbleToCountChoices,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          error,
+          SurveyAnswersService.name,
+        );
+      }
     });
+    return filteredAnswers.length || 0;
   }
 
   async getCreatedSurveys(username: string): Promise<Survey[]> {
