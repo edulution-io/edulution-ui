@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const decodeBase64Api = (str: string) => Buffer.from(str, 'base64').toString('utf-8');
+export const encodeBase64Api = (str: string) => Buffer.from(str).toString('base64');
 
-export default decodeBase64Api;
+export const decodeBase64Api = (str: string) => Buffer.from(str, 'base64').toString('utf-8');

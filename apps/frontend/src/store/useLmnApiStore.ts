@@ -21,6 +21,7 @@ import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 import lmnApi from '@/api/lmnApi';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
+import { encodeBase64 } from '@libs/common/utils/getBase64String';
 
 const { USER, USERS_QUOTA } = LMN_API_EDU_API_ENDPOINTS;
 
@@ -70,7 +71,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
           set(initialState);
         }
         try {
-          lmnApi.defaults.headers.Authorization = `Basic ${btoa(`${username}:${password}`)}`;
+          lmnApi.defaults.headers.Authorization = `Basic ${encodeBase64(`${username}:${password}`)}`;
           const response = await lmnApi.get<string>('/auth/');
           set({ lmnApiToken: response.data });
         } catch (error) {
