@@ -22,7 +22,7 @@ class ScriptsService implements OnModuleInit {
 
   @Timeout(60_000)
   handleTimeout() {
-    this.runScripts(keycloakConfigScripts);
+    void this.runScripts(keycloakConfigScripts);
   }
 
   private async runScripts(scripts: Scripts[]) {
