@@ -4,6 +4,7 @@ import plugin from 'tailwindcss/plugin';
 module.exports = {
   darkMode: ['class'],
   content: ['./apps/frontend/**/*.{js,ts,jsx,tsx,html}', '!./apps/backend/**', '!./libs/**'],
+  safelist: [{ pattern: /^ql-indent-[1-9]$/ }, 'ql-indent-10'],
   prefix: '',
   theme: {
     container: {
@@ -134,6 +135,13 @@ module.exports = {
         p: { fontSize: theme('fontSize.p'), letterSpacing: '0.020em' },
         span: { fontSize: theme('fontSize.span'), letterSpacing: '0.020em' },
       });
+    }),
+    plugin(function ({ addUtilities }) {
+      const utils = {};
+      for (let i = 1; i <= 10; i++) {
+        utils[`.ql-indent-${i}`] = { 'margin-left': `${i}rem` };
+      }
+      addUtilities(utils);
     }),
   ],
 };

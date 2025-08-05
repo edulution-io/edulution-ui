@@ -55,3 +55,25 @@
   font-size: inherit;
   letter-spacing: inherit;
 }
+
+.quill-content li[data-list="ordered"] > span.ql-ui {
+  font-size: 1rem;
+}
+
+.ql-editor li {
+  padding-left: 0.3rem;
+  font-size: initial;
+}
+
+.quill-content ol {
+  padding-left: 1.5rem;
+  margin: 0.75rem 0;
+}
+
+.quill-content ol li[data-list="ordered"] {
+  list-style-type: decimal;
+}
+
+.quill-content ol li[data-list="bullet"] {
+  list-style-type: disc;
+}
