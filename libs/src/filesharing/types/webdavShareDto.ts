@@ -19,6 +19,9 @@ class WebdavShareDto {
   webdavShareId?: string;
 
   @IsString()
+  displayName: string;
+
+  @IsString()
   url: string;
 
   @IsArray()

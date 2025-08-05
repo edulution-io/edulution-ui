@@ -21,6 +21,9 @@ export type WebdavSharesDocument = WebdavShares & Document;
 @Schema()
 export class WebdavShares {
   @Prop({ default: '' })
+  displayName: string;
+
+  @Prop({ default: '' })
   url: string;
 
   @Prop({ type: Array, default: [] })

@@ -1646,6 +1646,7 @@
     "generic": "Generic"
   },
   "webdavShare": {
+    "displayName": "Display name",
     "accessGroups": {
       "title": "User groups",
       "description": "Select the user groups that should have access to the WebDAV share."

@@ -15,6 +15,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import AppConfigGuard from '../../appconfig/appconfig.guard';
 import WebdavSharesService from './webdav-shares.service';
+import GetCurrentUserGroups from '../../common/decorators/getCurrentUserGroups.decorator';
 
 @ApiTags('webdav-shares')
 @ApiBearerAuth()
@@ -23,8 +24,8 @@ class WebdavSharesController {
   constructor(private readonly webdavSharesService: WebdavSharesService) {}
 
   @Get()
-  findAllShares() {
-    return this.webdavSharesService.findAllWebdavShares();
+  findAllShares(@GetCurrentUserGroups() currentUserGroups: string[]) {
+    return this.webdavSharesService.findAllWebdavShares(currentUserGroups);
   }
 
   @Post()

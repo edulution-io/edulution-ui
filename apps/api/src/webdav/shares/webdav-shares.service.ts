@@ -12,10 +12,11 @@
 
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, PipelineStage } from 'mongoose';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
+import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import { WebdavShares, WebdavSharesDocument } from './webdav-shares.schema';
 import CustomHttpException from '../../common/CustomHttpException';
 
@@ -28,6 +29,7 @@ class WebdavSharesService implements OnModuleInit {
 
     if (count === 0) {
       await this.webdavSharesModel.create({
+        displayName: WEBDAV_SHARE_TYPE.LINUXMUSTER,
         url: process.env.EDUI_WEBDAV_URL as string,
         accessGroups: [],
         type: WEBDAV_SHARE_TYPE.LINUXMUSTER,
@@ -35,19 +37,30 @@ class WebdavSharesService implements OnModuleInit {
     }
   }
 
-  findAllWebdavShares() {
+  findAllWebdavShares(currentUserGroups: string[]) {
     try {
-      return this.webdavSharesModel.aggregate([
+      const basePipeline: PipelineStage[] = [
         {
           $project: {
             webdavShareId: '$_id',
             _id: 0,
+            displayName: 1,
             url: 1,
             accessGroups: 1,
             type: 1,
           },
         },
-      ]);
+      ];
+
+      if (!getIsAdmin(currentUserGroups)) {
+        basePipeline.unshift({
+          $match: {
+            'accessGroups.path': { $in: currentUserGroups },
+          },
+        });
+      }
+
+      return this.webdavSharesModel.aggregate(basePipeline);
     } catch (error) {
       throw new CustomHttpException(
         CommonErrorMessages.DB_ACCESS_FAILED,

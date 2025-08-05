@@ -23,6 +23,7 @@ import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePat
 import delay from '@libs/common/utils/delay';
 import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
+import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 
 type UseFileSharingStore = {
   files: DirectoryFileDTO[];
@@ -54,6 +55,8 @@ type UseFileSharingStore = {
   setDownloadProgressList: (progressList: DownloadFileDto[]) => void;
   updateDownloadProgress: (progress: DownloadFileDto) => void;
   removeDownloadProgress: (fileName: string) => void;
+  webdavShares: WebdavShareDto[];
+  fetchWebdavShares: () => Promise<void>;
 };
 
 const initialState = {
@@ -69,6 +72,7 @@ const initialState = {
   currentlyDisabledFiles: {},
   downloadProgressList: [],
   fileOperationProgress: null,
+  webdavShares: [],
 };
 
 type PersistedFileManagerStore = (
@@ -198,6 +202,17 @@ const useFileSharingStore = create<UseFileSharingStore>(
 
       setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
       setSelectedItems: (items: DirectoryFileDTO[]) => set({ selectedItems: items }),
+
+      fetchWebdavShares: async () => {
+        try {
+          const { data } = await eduApi.get<WebdavShareDto[]>('/webdav-shares');
+          set({
+            webdavShares: data,
+          });
+        } catch (error) {
+          handleApiError(error, set);
+        }
+      },
 
       reset: () => set(initialState),
     }),

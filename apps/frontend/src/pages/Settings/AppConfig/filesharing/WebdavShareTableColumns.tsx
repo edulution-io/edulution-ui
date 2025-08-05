@@ -39,6 +39,21 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
     ),
   },
   {
+    id: WEBDAV_SHARE_TABLE_COLUMNS.DISPLAY_NAME,
+    header: ({ column }) => <SortableHeader<WebdavShareDto, unknown> column={column} />,
+
+    meta: {
+      translationId: 'webdavShare.displayName',
+    },
+    accessorFn: (row) => row.displayName,
+    cell: ({ row }) => (
+      <SelectableTextCell
+        text={row.original.displayName}
+        onClick={() => row.toggleSelected()}
+      />
+    ),
+  },
+  {
     id: WEBDAV_SHARE_TABLE_COLUMNS.URL,
     header: ({ column }) => <SortableHeader<WebdavShareDto, unknown> column={column} />,
 

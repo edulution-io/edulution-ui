@@ -48,6 +48,7 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
   const selectedConfig = selectedRows && isOneRowSelected ? tableContentData[Number(keys[0])] : null;
 
   const initialFormValues = selectedConfig || {
+    [WEBDAV_SHARE_TABLE_COLUMNS.DISPLAY_NAME]: '',
     [WEBDAV_SHARE_TABLE_COLUMNS.URL]: '',
     [WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS]: [],
     [WEBDAV_SHARE_TABLE_COLUMNS.TYPE]: WEBDAV_SHARE_TYPE.LINUXMUSTER,
@@ -144,6 +145,13 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
 
   const renderFormFields = () => (
     <>
+      <FormField
+        name={WEBDAV_SHARE_TABLE_COLUMNS.DISPLAY_NAME}
+        defaultValue={initialFormValues[WEBDAV_SHARE_TABLE_COLUMNS.DISPLAY_NAME]}
+        form={form}
+        labelTranslationId={t('webdavShare.displayName')}
+        variant="dialog"
+      />
       <FormField
         name={WEBDAV_SHARE_TABLE_COLUMNS.URL}
         defaultValue={initialFormValues[WEBDAV_SHARE_TABLE_COLUMNS.URL]}

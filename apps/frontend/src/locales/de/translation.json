@@ -1650,6 +1650,7 @@
     "generic": "Generisch"
   },
   "webdavShare": {
+    "displayName": "Anzeigename",
     "accessGroups": {
       "title": "Nutzergruppen",
       "description": "Wähle die Nutzergruppen aus, die Zugriff auf den WebDAV-Server bekommen sollen."
