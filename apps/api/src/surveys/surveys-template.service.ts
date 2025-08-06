@@ -11,53 +11,113 @@
  */
 
 import { join } from 'path';
+import { Model } from 'mongoose';
 import { Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
-import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
 import SURVEYS_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplatePath';
+import { SurveyTemplateDto, TemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
+import { SurveysTemplate, SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
 import CustomHttpException from '../common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
 class SurveysTemplateService implements OnModuleInit {
-  constructor(private fileSystemService: FilesystemService) {}
+  constructor(
+    @InjectModel(SurveysTemplate.name) private surveyTemplateModel: Model<SurveysTemplateDocument>,
+    private fileSystemService: FilesystemService,
+  ) {}
 
-  onModuleInit() {
-    void this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);
+  async onModuleInit() {
+    await this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);
+    await this.getNewTemplatesFromExchangeFolder();
   }
 
-  async createTemplate(surveyTemplateDto: SurveyTemplateDto): Promise<void> {
-    let filename = surveyTemplateDto.fileName;
-    if (!filename) {
-      const dateTimeString = getCurrentDateTimeString();
-      filename = `${dateTimeString}_-_${uuidv4()}.SurveyTemplate.json`;
-    }
-    const templatePath = join(SURVEYS_TEMPLATE_PATH, filename);
+  async createTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
+    const { template, fileName = `${getCurrentDateTimeString()}_-_${uuidv4()}.SurveyTemplate.json` } = surveyTemplate;
     try {
-      await this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);
-      return await FilesystemService.writeFile(templatePath, JSON.stringify(surveyTemplateDto.template, null, 2));
+      return await this.surveyTemplateModel.create({ template, fileName });
     } catch (error) {
       throw new CustomHttpException(
-        CommonErrorMessages.FILE_WRITING_FAILED,
+        CommonErrorMessages.DB_ACCESS_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        undefined,
+        error,
         SurveysTemplateService.name,
       );
     }
   }
 
+  async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
+    const { fileName, template } = surveyTemplate;
+    try {
+      return await this.surveyTemplateModel.findOneAndUpdate(
+        { fileName },
+        { template, fileName },
+        { new: true, upsert: true },
+      );
+    } catch (error) {
+      throw new CustomHttpException(
+        CommonErrorMessages.DB_ACCESS_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error,
+        SurveysTemplateService.name,
+      );
+    }
+  }
+
+  async getNewTemplatesFromExchangeFolder(): Promise<void> {
+    const templatePath = SURVEYS_TEMPLATE_PATH;
+    const fileNames = await this.fileSystemService.getAllFilenamesInDirectory(templatePath);
+    if (fileNames.length === 0) {
+      return;
+    }
+
+    const filesToDelete: string[] = [];
+
+    const creationPromises = fileNames.map(async (fileName) => {
+      const content = await FilesystemService.readFile<TemplateDto>(join(templatePath, fileName));
+      if (!content) {
+        throw new CustomHttpException(
+          CommonErrorMessages.FILE_READING_FAILED,
+          HttpStatus.NOT_FOUND,
+          undefined,
+          SurveysTemplateService.name,
+        );
+      }
+      const newDocument: SurveysTemplateDocument | null = await this.updateOrCreateTemplateDocument({
+        fileName,
+        template: { ...content },
+      });
+      if (newDocument !== null) {
+        filesToDelete.push(fileName);
+      }
+    });
+    await Promise.all(creationPromises);
+
+    await FilesystemService.deleteFiles(templatePath, filesToDelete);
+  }
+
   async serveTemplateNames(): Promise<string[]> {
-    return this.fileSystemService.getAllFilenamesInDirectory(SURVEYS_TEMPLATE_PATH);
+    let templates = await this.surveyTemplateModel.find({});
+    templates = templates.filter((template) => !!template.fileName && template.isActive);
+    const fileNames = templates.map((template) => template.fileName);
+    return fileNames;
   }
 
   async serveTemplate(fileName: string, res: Response): Promise<Response> {
-    const templatePath = join(SURVEYS_TEMPLATE_PATH, fileName);
-    const fileStream = await this.fileSystemService.createReadStream(templatePath);
-    fileStream.pipe(res);
-    return res;
+    const document = await this.surveyTemplateModel.findOne({ fileName, isActive: true });
+    if (!document) {
+      throw new CustomHttpException(
+        CommonErrorMessages.FILE_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveysTemplateService.name,
+      );
+    }
+    return res.status(HttpStatus.OK).json(document.template);
   }
 }
 

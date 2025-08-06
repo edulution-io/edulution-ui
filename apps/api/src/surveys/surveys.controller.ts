@@ -118,7 +118,7 @@ class SurveysController {
   @UseGuards(AppConfigGuard)
   @Post(TEMPLATES)
   async createTemplate(@Body() surveyTemplateDto: SurveyTemplateDto) {
-    return this.surveysTemplateService.createTemplate(surveyTemplateDto);
+    return this.surveysTemplateService.createTemplateDocument(surveyTemplateDto);
   }
 
   @Get(TEMPLATES)
