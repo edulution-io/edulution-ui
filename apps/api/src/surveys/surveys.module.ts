@@ -21,12 +21,14 @@ import PublicSurveysController from './public-surveys.controller';
 import GroupsModule from '../groups/groups.module';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysTemplateService from './surveys-template.service';
+import PushNotificationModule from '../pushNotification/pushNotification.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Survey.name, schema: SurveySchema }]),
     MongooseModule.forFeature([{ name: SurveyAnswer.name, schema: SurveyAnswerSchema }]),
     GroupsModule,
+    PushNotificationModule,
   ],
   controllers: [SurveysController, PublicSurveysController],
   providers: [SurveysService, SurveyAnswerService, SurveysTemplateService, SurveysAttachmentService],

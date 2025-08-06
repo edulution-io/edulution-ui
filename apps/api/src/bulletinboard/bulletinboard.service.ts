@@ -32,6 +32,7 @@ import BulletinCategoryService from '../bulletin-category/bulletin-category.serv
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
 import FilesystemService from '../filesystem/filesystem.service';
+import PushNotificationService from '../pushNotification/pushNotification.service';
 
 @Injectable()
 class BulletinBoardService implements OnModuleInit {
@@ -42,6 +43,7 @@ class BulletinBoardService implements OnModuleInit {
     private fileSystemService: FilesystemService,
     private readonly groupsService: GroupsService,
     private readonly sseService: SseService,
+    private readonly pushNotificationService: PushNotificationService,
   ) {}
 
   private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
@@ -244,6 +246,16 @@ class BulletinBoardService implements OnModuleInit {
 
     if (isWithinVisibilityPeriod) {
       this.sseService.sendEventToUsers(invitedMembersList, resultingBulletin, SSE_MESSAGE_TYPE.BULLETIN_UPDATED);
+
+      const title = `Aushang bereit: ${dto.title}`;
+
+      await this.pushNotificationService.notifyUsernames(invitedMembersList, {
+        title,
+        data: {
+          bulletinId: resultingBulletin.id,
+          type: 'bulletin_updated',
+        },
+      });
     }
   }
 

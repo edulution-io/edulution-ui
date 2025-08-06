@@ -18,6 +18,7 @@ import BulletinBoardService from './bulletinboard.service';
 import { BulletinCategory, BulletinCategorySchema } from '../bulletin-category/bulletin-category.schema';
 import BulletinCategoryModule from '../bulletin-category/bulletin-category.module';
 import GroupsModule from '../groups/groups.module';
+import PushNotificationModule from '../pushNotification/pushNotification.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import GroupsModule from '../groups/groups.module';
     MongooseModule.forFeature([{ name: BulletinCategory.name, schema: BulletinCategorySchema }]),
     BulletinCategoryModule,
     GroupsModule,
+    PushNotificationModule,
   ],
   controllers: [BulletinBoardController],
   providers: [BulletinBoardService],
