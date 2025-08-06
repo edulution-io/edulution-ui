@@ -45,7 +45,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     }
     throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
   }
-  
+
   static async deleteTempFileFromAnswer(userName: string, surveyId: string, fileName: string): Promise<void> {
     const tempFilesPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
     const tempExistence = await FilesystemService.checkIfFileExist(join(tempFilesPath, fileName));
