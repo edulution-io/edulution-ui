@@ -12,12 +12,12 @@
 
 // This type is based on a third-party object definition from the LDAP API.
 // Any modifications should be carefully reviewed to ensure compatibility with the source.
-import type UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 
 interface LmnApiSession {
   sid: string;
   name: string;
-  members: UserLmnInfo[];
+  members: LmnUserInfo[];
   membersCount: number;
 }
 

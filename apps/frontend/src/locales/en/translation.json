@@ -1132,6 +1132,8 @@
   "teacher": "Teacher",
   "student": "Student",
   "students": "Students",
+  "parent": "Parent",
+  "staff": "Staff",
   "user": "User",
   "login": {
     "pageTitle": "Login",
