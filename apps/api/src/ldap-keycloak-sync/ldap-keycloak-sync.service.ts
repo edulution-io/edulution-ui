@@ -28,15 +28,18 @@ import LDAP_SYNC_INTERVAL_MS from '@libs/ldapKeycloakSync/constants/ldapSyncInte
 import LDAPS_PREFIX from '@libs/ldapKeycloakSync/constants/ldapsPrefix';
 import KEYCLOAK_STARTUP_TIMEOUT from '@libs/ldapKeycloakSync/constants/keycloakStartupTimeout';
 import { HttpMethods } from '@libs/common/types/http-methods';
+import GroupWithMembers from '@libs/groups/types/groupWithMembers';
+import GroupMemberDto from '@libs/groups/types/groupMember.dto';
 import { LdapKeycloakSync, LdapKeycloakSyncDocument } from './ldap-keycloak-sync.schema';
 import GlobalSettingsService from '../global-settings/global-settings.service';
 import KeycloakRequestQueue from './queue/keycloak-request.queue';
+import GroupsService from '../groups/groups.service';
 
 const { KEYCLOAK_ADMIN, KEYCLOAK_ADMIN_PASSWORD } = process.env as Record<string, string>;
 
 @Injectable()
 class LdapKeycloakSyncService implements OnModuleInit {
-  private userIdCache = new Map<string, string>();
+  private userCache = new Map<string, GroupMemberDto>();
 
   private ldapConfig: LdapConfig | undefined;
 
@@ -45,6 +48,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
   constructor(
     @Inject(CACHE_MANAGER) private cache: Cache,
     private readonly globalSettingsService: GlobalSettingsService,
+    private readonly groupsService: GroupsService,
     @InjectModel(LdapKeycloakSync.name) private ldapKeycloakSyncModel: Model<LdapKeycloakSyncDocument>,
     private readonly keycloakQueue: KeycloakRequestQueue,
   ) {}
@@ -162,11 +166,11 @@ class LdapKeycloakSyncService implements OnModuleInit {
     return searchEntries;
   }
 
-  private async ensureKeycloakGroup(groupPath: string): Promise<string> {
+  private async ensureKeycloakGroup(groupPath: string): Promise<GroupWithMembers> {
     const allCachedGroups: Group[] = (await this.cache.get(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL)) || [];
     const alreadyExistingGroup = allCachedGroups.find((g) => g.path === groupPath);
     if (alreadyExistingGroup) {
-      return alreadyExistingGroup.id;
+      return { ...alreadyExistingGroup, members: [] };
     }
 
     const name = groupPath.replace(/^\//, '');
@@ -181,58 +185,59 @@ class LdapKeycloakSyncService implements OnModuleInit {
     await this.cache.set(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, allCachedGroups);
 
     Logger.debug(`Created new Keycloak group ${groupPath} (id=${createdGroup.id})`, LdapKeycloakSyncService.name);
-    return createdGroup.id;
+    return { ...createdGroup, members: [] };
   }
 
-  private async resolveUserIds(usernames: string[]): Promise<Array<{ id: string; username: string }>> {
-    const toFetch = usernames.filter((u) => !this.userIdCache.has(u));
+  private async resolveUserDetails(usernames: string[]): Promise<GroupMemberDto[]> {
+    const toFetch = usernames.filter((u) => !this.userCache.has(u));
 
-    if (toFetch.length > 0) {
+    if (toFetch.length) {
       await Promise.all(
         toFetch.map(async (username) => {
-          const user = (
-            await this.keycloakQueue.enqueue<{ id: string; username?: string }[]>(
-              HttpMethods.GET,
-              `/users?username=${encodeURIComponent(username)}`,
-            )
-          )[0];
-
-          if (user?.id) this.userIdCache.set(username, user.id);
+          const [user] = await this.keycloakQueue.enqueue<GroupMemberDto[]>(
+            HttpMethods.GET,
+            `/users?username=${encodeURIComponent(username)}`,
+          );
+          if (user?.id) {
+            this.userCache.set(username, {
+              id: user.id,
+              username: user.username,
+              email: user.email,
+              firstName: user.firstName,
+              lastName: user.lastName,
+            });
+          }
         }),
       );
     }
 
-    return usernames.reduce<Array<{ id: string; username: string }>>((result, username) => {
-      const id = this.userIdCache.get(username);
-      if (id) {
-        result.push({ username, id });
-      }
-      return result;
-    }, []);
+    return usernames.map((u) => this.userCache.get(u)).filter((u): u is GroupMemberDto => !!u);
   }
 
   private async buildUpdateQueue(entries: SearchEntry[]) {
-    this.userIdCache.clear();
+    this.userCache.clear();
 
     const results = await Promise.all(
       entries.map(async (entry) => {
-        const { groupPath, members } = LdapKeycloakSyncService.parseLdapSearchEntry(entry);
-        const groupId = await this.ensureKeycloakGroup(groupPath);
+        const { groupPath, members: entryMembers } = LdapKeycloakSyncService.parseLdapSearchEntry(entry);
+        const existingGroup = await this.ensureKeycloakGroup(groupPath);
 
-        const cachedGroup = (await this.cache.get<{ members: Array<{ id: string; username: string }> }>(
-          `${GROUP_WITH_MEMBERS_CACHE_KEY}-${groupPath}`,
-        )) || { members: [] };
+        const cachedGroup =
+          (await this.cache.get<GroupWithMembers>(`${GROUP_WITH_MEMBERS_CACHE_KEY}-${groupPath}`)) || existingGroup;
 
-        const existingMembers = cachedGroup.members;
-        const missingUsernames = members.filter((u) => !existingMembers.some((m) => m.username === u));
-        const resolvedUsers = missingUsernames.length ? await this.resolveUserIds(missingUsernames) : [];
+        const toAddNames = entryMembers.filter((u) => !cachedGroup.members.some((m) => m.username === u));
+        const toRemoveIds = cachedGroup.members.filter((m) => !entryMembers.includes(m.username)).map((m) => m.id);
 
-        const toAddIds = resolvedUsers.map((r) => r.id);
-        const toRemoveIds = existingMembers.filter((m) => !members.includes(m.username)).map((m) => m.id);
+        const addedUsers = toAddNames.length ? await this.resolveUserDetails(toAddNames) : [];
+
+        const retainedUsers = cachedGroup.members.filter((m) => entryMembers.includes(m.username));
+        const finalUsers = [...retainedUsers, ...addedUsers];
+
+        await this.groupsService.updateGroupWithMembersInCache(cachedGroup, finalUsers);
 
         return [
-          ...toAddIds.map((id) => ({ userId: id, add: [groupId], remove: [] })),
-          ...toRemoveIds.map((id) => ({ userId: id, add: [], remove: [groupId] })),
+          ...addedUsers.map((u) => ({ userId: u.id, add: [existingGroup.id], remove: [] })),
+          ...toRemoveIds.map((id) => ({ userId: id, add: [], remove: [existingGroup.id] })),
         ];
       }),
     );
