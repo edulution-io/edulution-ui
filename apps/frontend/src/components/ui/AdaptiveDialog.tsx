@@ -34,7 +34,7 @@ import { IconBaseProps, IconContext } from 'react-icons';
 
 interface AdaptiveDialogProps {
   isOpen: boolean;
-  handleOpenChange: () => void;
+  handleOpenChange?: () => void;
   title: string;
   trigger?: React.ReactNode;
   body: React.ReactNode;
@@ -61,9 +61,7 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
 
   const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
 
-  const isHandleChangesEmpty = (fn?: (() => void) | undefined) => !fn || fn.toString() === '() => {}';
-
-  const closable = isHandleChangesEmpty(handleOpenChange);
+  const closable = !handleOpenChange;
 
   const dialogTitle = (
     <div className={`flex items-center gap-1 font-bold ${isMobileView ? 'flex-col' : 'flex-row'}`}>
