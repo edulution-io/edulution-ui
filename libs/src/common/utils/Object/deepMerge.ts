@@ -13,7 +13,7 @@
 type PlainObject = Record<string, unknown>;
 
 const deepMerge = <T>(target: T | null | undefined, source: Partial<T> | null | undefined): T => {
-  if (source == null) {
+  if (source == null || target === source) {
     return target as T;
   }
 
