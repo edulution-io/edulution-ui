@@ -24,6 +24,7 @@ import delay from '@libs/common/utils/delay';
 import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
+import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 
 type UseFileSharingStore = {
   files: DirectoryFileDTO[];
@@ -41,6 +42,7 @@ type UseFileSharingStore = {
   setFiles: (files: DirectoryFileDTO[]) => void;
   setSelectedItems: (items: DirectoryFileDTO[]) => void;
   fetchFiles: (path?: string) => Promise<void>;
+  processWebdavResponse: (response: DirectoryFileDTO[]) => DirectoryFileDTO[];
   fetchMountPoints: () => Promise<DirectoryFileDTO[]>;
   fetchDirs: (path: string) => Promise<void>;
   reset: () => void;
@@ -137,12 +139,15 @@ const useFileSharingStore = create<UseFileSharingStore>(
       fetchFiles: async (path: string = '/') => {
         try {
           set({ isLoading: true });
-          const directoryFiles = await eduApi.get<DirectoryFileDTO[]>(
+          const { data } = await eduApi.get<DirectoryFileDTO[]>(
             `${buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, path)}`,
           );
+
+          const files = get().processWebdavResponse(data);
+
           set({
             currentPath: path,
-            files: directoryFiles.data,
+            files,
             selectedItems: [],
             selectedRows: {},
           });
@@ -169,6 +174,15 @@ const useFileSharingStore = create<UseFileSharingStore>(
         }
       },
 
+      processWebdavResponse: (response: DirectoryFileDTO[]) => {
+        let data = response;
+        if (get().webdavShares[0]?.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
+          data = data.slice(1);
+        }
+        data = data.sort((a, b) => a.filename.localeCompare(b.filename));
+        return data;
+      },
+
       fetchMountPoints: async () => {
         try {
           set({ isLoading: true });
@@ -177,7 +191,7 @@ const useFileSharingStore = create<UseFileSharingStore>(
             buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, '/'),
           );
 
-          const mountPoints = data.sort((a, b) => a.filename.localeCompare(b.filename));
+          const mountPoints = get().processWebdavResponse(data);
 
           set({ mountPoints });
           return mountPoints;
@@ -191,10 +205,13 @@ const useFileSharingStore = create<UseFileSharingStore>(
 
       fetchDirs: async (path: string) => {
         try {
-          const directoryFiles = await eduApi.get<DirectoryFileDTO[]>(
+          const { data } = await eduApi.get<DirectoryFileDTO[]>(
             `${buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, getPathWithoutWebdav(path))}`,
           );
-          set({ directories: directoryFiles.data });
+
+          const directories = get().processWebdavResponse(data);
+
+          set({ directories });
         } catch (error) {
           handleApiError(error, set);
         }

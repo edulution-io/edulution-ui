@@ -12,23 +12,26 @@
 
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import useFileSharingStore from './useFileSharingStore';
 
 const FileSharingRedirect = () => {
   const navigate = useNavigate();
   const { mountPoints, fetchMountPoints } = useFileSharingStore();
 
+  const getValidPath = (mp: DirectoryFileDTO[]) => (mp[0].filename === '/' ? mp[1].filename : mp[0].filename);
+
   useEffect(() => {
     if (mountPoints.length === 0) {
       const getMountPoints = async () => {
         const newMountPoints = await fetchMountPoints();
         if (newMountPoints.length !== 0) {
-          navigate(`${newMountPoints[0].filename}`, { replace: true });
+          navigate(getValidPath(newMountPoints), { replace: true });
         }
       };
       void getMountPoints();
     } else {
-      navigate(`${mountPoints[0].filename}`, { replace: true });
+      navigate(getValidPath(mountPoints), { replace: true });
     }
   }, []);
 

@@ -22,6 +22,7 @@ import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import COOKIE_DESCRIPTORS from '@libs/common/constants/cookieDescriptors';
 import useVersionChecker from '@/hooks/useVersionChecker';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useAppConfigsStore from '../pages/Settings/AppConfig/useAppConfigsStore';
 import useUserStore from '../store/UserStore/useUserStore';
 import useLogout from '../hooks/useLogout';
@@ -37,6 +38,7 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
   const { eventSource, setEventSource } = useSseStore();
   const [, setCookie] = useCookies([COOKIE_DESCRIPTORS.AUTH_TOKEN]);
+  const { fetchWebdavShares } = useFileSharingStore();
 
   const handleLogout = useLogout();
 
@@ -71,6 +73,7 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
       if (isApiResponding) {
         void getGlobalSettings();
         void getAppConfigs();
+        void fetchWebdavShares();
         return;
       }
       void handleLogout();

@@ -29,6 +29,7 @@ import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileReques
 import mapToDirectories from '@libs/filesharing/utils/mapToDirectories';
 import mapToDirectoryFiles from '@libs/filesharing/utils/mapToDirectoryFiles';
 import DEFAULT_PROPFIND_XML from '@libs/filesharing/constants/defaultPropfindXml';
+import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import { Readable } from 'stream';
 import CustomHttpException from '../common/CustomHttpException';
 import WebdavClientFactory from './webdav.client.factory';
@@ -266,13 +267,19 @@ class WebdavService {
     destFullPath: string,
   ): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+    const webdavShareType = await this.webdavSharesService.getWebdavShareType();
+    let destinationUrl = destFullPath;
+    if (webdavShareType === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
+      destinationUrl = `${baseUrl.replace(/\/+$/, '')}/${destFullPath.replace(/^\/+/, '')}`;
+    }
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethodsWebDav.MOVE,
         url: decodeURI(originFullPath),
         headers: {
-          Destination: decodeURI(destFullPath),
+          Destination: decodeURI(destinationUrl),
           [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
         },
       },
@@ -290,12 +297,18 @@ class WebdavService {
     destFullPath: string,
   ): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+    const webdavShareType = await this.webdavSharesService.getWebdavShareType();
+    let destinationUrl = destFullPath;
+    if (webdavShareType === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
+      destinationUrl = `${baseUrl.replace(/\/+$/, '')}/${destFullPath.replace(/^\/+/, '')}`;
+    }
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethodsWebDav.COPY,
         url: originFullPath,
-        headers: { Destination: destFullPath },
+        headers: { Destination: destinationUrl },
       },
       FileSharingErrorMessage.DuplicateFailed,
       (resp: WebdavStatusResponse) => ({

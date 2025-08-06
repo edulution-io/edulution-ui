@@ -32,7 +32,7 @@ const useUserPath = () => {
     const isEduFileProxy = (shares: WebdavShareDto[]) => shares[0]?.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY;
 
     const resolveHomePath = async (): Promise<string> => {
-      if (isSuperAdmin) return '/';
+      if (isSuperAdmin) return '//';
 
       if (globalSettings.general.deploymentTarget !== DEPLOYMENT_TARGET.LINUXMUSTER) {
         return getStringFromArray(lmnUser?.sophomorixIntrinsic2);

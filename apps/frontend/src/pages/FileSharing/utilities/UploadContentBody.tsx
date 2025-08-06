@@ -21,7 +21,6 @@ import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtili
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
-import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import WarningBox from '@/components/shared/WarningBox';
 import { TiDocumentAdd, TiFolderAdd } from 'react-icons/ti';
@@ -35,10 +34,11 @@ import { RequestResponseContentType, ResponseType } from '@libs/common/types/htt
 import ZIP_PROCESS_TIMEOUT from '@libs/filesharing/constants/zipProcessTimeout';
 import { FcFolder } from 'react-icons/fc';
 import MAX_FOLDER_UPLOAD_CONTENT_SIZE from '@libs/ui/constants/maxFolderUploadContentSize';
+import getFileUploadLimit from '@libs/ui/utils/getFileUploadLimit';
 
 const UploadContentBody = () => {
   const { t } = useTranslation();
-  const { files } = useFileSharingStore();
+  const { files, webdavShares } = useFileSharingStore();
   const [oversizedFiles, setOversizedFiles] = useState<File[]>([]);
   const [zipProgress, setZipProgress] = useState(0);
   const [tooLargeFolders, setTooLargeFolders] = useState<string[]>([]);
@@ -88,7 +88,7 @@ const UploadContentBody = () => {
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const { oversize, normal } = splitFilesByMaxFileSize(acceptedFiles, MAX_FILE_UPLOAD_SIZE);
+      const { oversize, normal } = splitFilesByMaxFileSize(acceptedFiles, getFileUploadLimit(webdavShares));
 
       const duplicates = findDuplicateFiles(normal, files);
 
@@ -381,7 +381,7 @@ const UploadContentBody = () => {
 
               let baseBorderClass = 'border-accent';
 
-              if (isFolderTooLarge || bytesToMegabytes(file.size) > MAX_FILE_UPLOAD_SIZE) {
+              if (isFolderTooLarge || bytesToMegabytes(file.size) > getFileUploadLimit(webdavShares)) {
                 baseBorderClass = 'border-ciRed opacity-50';
               }
 
