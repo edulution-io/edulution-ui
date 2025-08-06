@@ -10,21 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+export const encodeBase64Api = (str: string) => Buffer.from(str).toString('base64');
 
-interface LmnApiStoreState {
-  isLoading: boolean;
-  error: Error | null;
-  currentUser: UserLmnInfo | null;
-}
-
-interface LmnApiStoreActions {
-  reset: () => void;
-  setCurrentUser: (user: UserLmnInfo | null) => void;
-  setFirstPassword: (username: string, password: string) => Promise<void>;
-  setCurrentPassword: (username: string, password: string) => Promise<void>;
-}
-
-type LmnApiStore = LmnApiStoreState & LmnApiStoreActions;
-
-export default LmnApiStore;
+export const decodeBase64Api = (str: string) => Buffer.from(str, 'base64').toString('utf-8');

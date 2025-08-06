@@ -15,6 +15,7 @@ import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobal
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
+import getStringFromArray from '@libs/common/utils/getStringFromArray';
 import useFileSharingStore from '../useFileSharingStore';
 
 const useUserPath = () => {
@@ -32,7 +33,7 @@ const useUserPath = () => {
         return getPathWithoutWebdav(filtered[0]?.filePath);
       }
 
-      return lmnUser?.sophomorixIntrinsic2[0] || '';
+      return getStringFromArray(lmnUser?.sophomorixIntrinsic2);
     };
 
     homePath = getFallbackPath();

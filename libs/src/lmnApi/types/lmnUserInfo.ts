@@ -91,7 +91,7 @@ interface UserPermissions {
   'sidebar:view:/view/lmn_clients': boolean;
 }
 
-interface UserLmnInfo {
+interface LmnUserInfo {
   cn: string;
   displayName: string;
   distinguishedName: string;
@@ -127,8 +127,8 @@ interface UserLmnInfo {
   sophomorixFirstnameASCII: string;
   sophomorixFirstnameInitial: string;
   sophomorixFirstPassword: string;
-  sophomorixIntrinsic2: string[];
-  sophomorixIntrinsic3: string[];
+  sophomorixIntrinsic2: string | string[];
+  sophomorixIntrinsic3: string | string[];
   sophomorixMailQuotaCalculated: string[];
   sophomorixMailQuotaUsed: string[];
   sophomorixQuota: string[];
@@ -166,4 +166,4 @@ interface UserLmnInfo {
   FirstPasswordSet?: boolean;
 }
 
-export default UserLmnInfo;
+export default LmnUserInfo;

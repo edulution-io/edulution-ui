@@ -13,13 +13,13 @@
 import React from 'react';
 import { t } from 'i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import type UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import type ClassmanagementButtonConfigProps from '@libs/classManagement/types/classmanagementButtonConfigProps';
 import ItemDialogList from '@/components/shared/ItemDialogList';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 type ConfirmationDialogProps = ClassmanagementButtonConfigProps & {
-  member: UserLmnInfo[];
+  member: LmnUserInfo[];
 };
 
 const LessonConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
