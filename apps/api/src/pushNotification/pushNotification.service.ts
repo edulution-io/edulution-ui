@@ -79,6 +79,26 @@ export class PushNotificationService {
       .findOneAndUpdate({ username }, { $pull: { registeredPushTokens: expoPushToken } }, { new: true })
       .exec();
   }
+
+  async notifyUsernames(usernames: string[], partialNotification: Omit<SendPushNotificationDto, 'to'>): Promise<void> {
+    const users = await this.userModel
+      .find({ username: { $in: usernames } })
+      .select('registeredPushTokens')
+      .exec();
+
+    const allTokens = users.flatMap((u) => u.registeredPushTokens ?? []).filter((token) => Expo.isExpoPushToken(token));
+
+    if (allTokens.length === 0) {
+      return;
+    }
+
+    const uniqueTokens = Array.from(new Set(allTokens));
+
+    await this.sendPushNotification({
+      to: uniqueTokens,
+      ...partialNotification,
+    });
+  }
 }
 
 export default PushNotificationService;

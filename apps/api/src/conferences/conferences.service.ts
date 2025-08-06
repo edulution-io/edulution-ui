@@ -38,6 +38,7 @@ import AppConfigService from '../appconfig/appconfig.service';
 import Attendee from './attendee.schema';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
+import PushNotificationService from '../pushNotification/pushNotification.service';
 
 @Injectable()
 class ConferencesService implements OnModuleInit {
@@ -50,6 +51,7 @@ class ConferencesService implements OnModuleInit {
     private readonly appConfigService: AppConfigService,
     private readonly groupsService: GroupsService,
     private readonly sseService: SseService,
+    private readonly pushNotificationService: PushNotificationService,
   ) {}
 
   onModuleInit() {
@@ -214,6 +216,16 @@ class ConferencesService implements OnModuleInit {
         conference.invitedGroups,
         conference.invitedAttendees,
       );
+
+      await this.pushNotificationService.notifyUsernames(invitedMembersList, {
+        title: `Konferenz gestartet: ${conference.name}`,
+        body: `Die Konferenz "${conference.name}" wurde gestartet.`,
+        data: {
+          meetingID: conference.meetingID,
+          type: 'conference_started',
+        },
+      });
+
       const publicConferencesSubscriber = conference.meetingID;
       this.sseService.sendEventToUsers(
         [...invitedMembersList, publicConferencesSubscriber],

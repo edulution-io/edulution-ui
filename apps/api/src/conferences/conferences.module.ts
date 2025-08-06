@@ -16,9 +16,14 @@ import ConferencesService from './conferences.service';
 import { Conference, ConferenceSchema } from './conference.schema';
 import ConferencesController from './conferences.controller';
 import GroupsModule from '../groups/groups.module';
+import PushNotificationModule from '../pushNotification/pushNotification.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Conference.name, schema: ConferenceSchema }]), GroupsModule],
+  imports: [
+    MongooseModule.forFeature([{ name: Conference.name, schema: ConferenceSchema }]),
+    GroupsModule,
+    PushNotificationModule,
+  ],
   controllers: [ConferencesController],
   providers: [ConferencesService],
 })

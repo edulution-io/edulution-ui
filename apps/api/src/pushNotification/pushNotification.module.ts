@@ -20,5 +20,6 @@ import UserSchema, { User } from '../users/user.schema';
   imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])],
   controllers: [PushNotificationController],
   providers: [PushNotificationService],
+  exports: [PushNotificationService],
 })
 export default class PushNotificationModule {}
