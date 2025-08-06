@@ -33,14 +33,16 @@ import { Readable } from 'stream';
 import CustomHttpException from '../common/CustomHttpException';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
+import WebdavSharesService from './shares/webdav-shares.service';
 
 @Injectable()
 class WebdavService {
-  private readonly baseUrl = process.env.EDUI_WEBDAV_URL as string;
-
   private webdavClientCache = new Map<string, { client: AxiosInstance; timeout: NodeJS.Timeout }>();
 
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly webdavSharesService: WebdavSharesService,
+  ) {}
 
   static async executeWebdavRequest<Raw = unknown, Result = Raw>(
     client: AxiosInstance,
@@ -92,7 +94,8 @@ class WebdavService {
 
   async initializeClient(username: string): Promise<void> {
     const password = await this.usersService.getPassword(username);
-    const client = WebdavClientFactory.createWebdavClient(this.baseUrl, username, password);
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+    const client = WebdavClientFactory.createWebdavClient(baseUrl, username, password);
     const timeout = this.scheduleClientTimeout(username);
     this.webdavClientCache.set(username, { client, timeout });
   }
@@ -136,7 +139,8 @@ class WebdavService {
 
   async getFilesAtPath(username: string, path: string): Promise<DirectoryFileDTO[]> {
     const client = await this.getClient(username);
-    const url = new URL(path.replace(/^\/+/, ''), this.baseUrl).href;
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+    const url = new URL(path.replace(/^\/+/, ''), baseUrl).href;
     return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
       client,
       {
@@ -154,7 +158,8 @@ class WebdavService {
 
   async getDirectoryAtPath(username: string, path: string): Promise<DirectoryFileDTO[]> {
     const client = await this.getClient(username);
-    const url = new URL(path.replace(/^\/+/, ''), this.baseUrl).href;
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+    const url = new URL(path.replace(/^\/+/, ''), baseUrl).href;
 
     return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
       client,
@@ -173,7 +178,8 @@ class WebdavService {
 
   async createFolder(username: string, path: string, folderName: string): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
-    const fullPath = `${this.baseUrl}${path}/${folderName}`;
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+    const fullPath = `${baseUrl}${path}/${folderName}`;
 
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,

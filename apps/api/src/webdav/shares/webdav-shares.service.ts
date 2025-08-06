@@ -37,6 +37,14 @@ class WebdavSharesService implements OnModuleInit {
     }
   }
 
+  async getWebdavSharePath() {
+    const webdavShare = await this.webdavSharesModel.findOne().exec();
+    if (!webdavShare) {
+      return '';
+    }
+    return webdavShare.url;
+  }
+
   findAllWebdavShares(currentUserGroups: string[]) {
     try {
       const basePipeline: PipelineStage[] = [
