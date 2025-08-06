@@ -56,7 +56,7 @@ type UseFileSharingStore = {
   updateDownloadProgress: (progress: DownloadFileDto) => void;
   removeDownloadProgress: (fileName: string) => void;
   webdavShares: WebdavShareDto[];
-  fetchWebdavShares: () => Promise<void>;
+  fetchWebdavShares: () => Promise<WebdavShareDto[]>;
 };
 
 const initialState = {
@@ -205,12 +205,18 @@ const useFileSharingStore = create<UseFileSharingStore>(
 
       fetchWebdavShares: async () => {
         try {
+          set({ isLoading: true });
+
           const { data } = await eduApi.get<WebdavShareDto[]>('/webdav-shares');
           set({
             webdavShares: data,
           });
+          return data;
         } catch (error) {
           handleApiError(error, set);
+          return get().webdavShares;
+        } finally {
+          set({ isLoading: false });
         }
       },
 

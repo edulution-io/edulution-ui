@@ -12,23 +12,25 @@
 
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import SHARED from '@libs/filesharing/constants/shared';
 import useFileSharingStore from './useFileSharingStore';
 
 const FileSharingRedirect = () => {
   const navigate = useNavigate();
-  const { mountPoints, fetchMountPoints } = useFileSharingStore();
+  const { webdavShares, fetchWebdavShares } = useFileSharingStore();
 
   useEffect(() => {
-    if (mountPoints.length === 0) {
-      const getMountPoints = async () => {
-        const newMountPoints = await fetchMountPoints();
-        if (newMountPoints.length !== 0) {
-          navigate(`${newMountPoints[0].filename}`, { replace: true });
+    if (webdavShares.length === 0) {
+      const getWebdavShares = async () => {
+        const newWebdavShares = await fetchWebdavShares();
+        if (newWebdavShares.length !== 0) {
+          const target = newWebdavShares ? newWebdavShares[0].displayName : SHARED;
+          navigate(target, { replace: true });
         }
       };
-      void getMountPoints();
+      void getWebdavShares();
     } else {
-      navigate(`${mountPoints[0].filename}`, { replace: true });
+      navigate(`${webdavShares[0].displayName}`, { replace: true });
     }
   }, []);
 
