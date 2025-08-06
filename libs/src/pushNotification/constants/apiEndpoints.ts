@@ -11,4 +11,5 @@
  */
 
 export const PUSH_NOTIFICATION_EDU_API_ENDPOINT = 'pushNotifications';
-export const PUSH_NOTIFICATION_SEND_EDU_API_ENDPOINT = `/send`;
+export const PUSH_NOTIFICATION_REGISTER_DEVICE_EDU_API_ENDPOINT = `/registerDevice`;
+export const PUSH_NOTIFICATION_UNREGISTER_DEVICE_EDU_API_ENDPOINT = `/unregisterDevice`;

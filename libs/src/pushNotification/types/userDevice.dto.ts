@@ -10,15 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import PushNotificationController from './pushNotification.controller';
-import PushNotificationService from './pushNotification.service';
-import UserSchema, { User } from '../users/user.schema';
+class UserDeviceDto {
+  expoPushToken: string;
+}
 
-@Module({
-  imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])],
-  controllers: [PushNotificationController],
-  providers: [PushNotificationService],
-})
-export default class PushNotificationModule {}
+export default UserDeviceDto;

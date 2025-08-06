@@ -12,12 +12,14 @@
 
 import {
   PUSH_NOTIFICATION_EDU_API_ENDPOINT,
-  PUSH_NOTIFICATION_SEND_EDU_API_ENDPOINT,
+  PUSH_NOTIFICATION_REGISTER_DEVICE_EDU_API_ENDPOINT,
+  PUSH_NOTIFICATION_UNREGISTER_DEVICE_EDU_API_ENDPOINT,
 } from '@libs/pushNotification/constants/apiEndpoints';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Post } from '@nestjs/common';
-import SendPushNotificationDto from '@libs/pushNotification/types/send-pushNotification.dto';
+import UserDeviceDto from '@libs/pushNotification/types/userDevice.dto';
 import PushNotificationService from './pushNotification.service';
+import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 
 @ApiTags(PUSH_NOTIFICATION_EDU_API_ENDPOINT)
 @ApiBearerAuth()
@@ -25,9 +27,14 @@ import PushNotificationService from './pushNotification.service';
 class PushNotificationController {
   constructor(private readonly pushNotificationService: PushNotificationService) {}
 
-  @Post(PUSH_NOTIFICATION_SEND_EDU_API_ENDPOINT)
-  async sendPushNotification(@Body() sendPushNotificationDto: SendPushNotificationDto): Promise<void> {
-    await this.pushNotificationService.sendPushNotification(sendPushNotificationDto);
+  @Post(PUSH_NOTIFICATION_REGISTER_DEVICE_EDU_API_ENDPOINT)
+  async registerDevice(@GetCurrentUsername() username: string, @Body() userDeviceDto: UserDeviceDto): Promise<void> {
+    await this.pushNotificationService.registerDevice(username, userDeviceDto);
+  }
+
+  @Post(PUSH_NOTIFICATION_UNREGISTER_DEVICE_EDU_API_ENDPOINT)
+  async unregisterDevice(@GetCurrentUsername() username: string, @Body() userDeviceDto: UserDeviceDto): Promise<void> {
+    await this.pushNotificationService.unregisterDevice(username, userDeviceDto);
   }
 }
 

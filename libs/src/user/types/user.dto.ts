@@ -32,6 +32,8 @@ class UserDto {
   mfaEnabled?: boolean;
 
   language?: string;
+
+  registeredPushTokens: string[];
 }
 
 export default UserDto;

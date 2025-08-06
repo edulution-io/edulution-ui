@@ -14,10 +14,16 @@ import { Injectable } from '@nestjs/common';
 import { Expo, ExpoPushMessage } from 'expo-server-sdk';
 import pickDefinedNotificationFields from '@libs/pushNotification/utils/pickDefinedNotificationFields';
 import SendPushNotificationDto from '@libs/pushNotification/types/send-pushNotification.dto';
+import UserDeviceDto from '@libs/pushNotification/types/userDevice.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { User, UserDocument } from '../users/user.schema';
 
 @Injectable()
 export class PushNotificationService {
   private readonly expo = new Expo();
+
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async sendPushNotification(sendPushNotificationDto: SendPushNotificationDto): Promise<void> {
     const tokens = Array.isArray(sendPushNotificationDto.to)
@@ -49,6 +55,29 @@ export class PushNotificationService {
 
     const chunks = this.expo.chunkPushNotifications(messages);
     await Promise.all(chunks.map((chunk) => this.expo.sendPushNotificationsAsync(chunk)));
+  }
+
+  async registerDevice(username: string, userDeviceDto: UserDeviceDto): Promise<void> {
+    const { expoPushToken } = userDeviceDto;
+
+    if (!Expo.isExpoPushToken(expoPushToken)) {
+      return;
+    }
+    await this.userModel
+      .findOneAndUpdate({ username }, { $addToSet: { registeredPushTokens: expoPushToken } }, { new: true })
+      .exec();
+  }
+
+  async unregisterDevice(username: string, userDeviceDto: UserDeviceDto): Promise<void> {
+    const { expoPushToken } = userDeviceDto;
+
+    if (!Expo.isExpoPushToken(expoPushToken)) {
+      return;
+    }
+
+    await this.userModel
+      .findOneAndUpdate({ username }, { $pull: { registeredPushTokens: expoPushToken } }, { new: true })
+      .exec();
   }
 }
 
