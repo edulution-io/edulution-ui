@@ -18,11 +18,7 @@ import { HttpMethods } from '@libs/common/types/http-methods';
 import { KeycloakJobData } from '@libs/ldapKeycloakSync/types/keycloakJobData';
 import getKeycloakToken from '../../scripts/keycloak/utilities/getKeycloakToken';
 import createKeycloakAxiosClient from '../../scripts/keycloak/utilities/createKeycloakAxiosClient';
-
-const redisConnection = {
-  host: process.env.REDIS_HOST ?? 'localhost',
-  port: +(process.env.REDIS_PORT ?? 6379),
-};
+import redisConnection from '../../common/redis.connection';
 
 const QUEUE_NAME = QUEUE_CONSTANTS.KEYCLOAK_REQUESTS_QUEUE;
 

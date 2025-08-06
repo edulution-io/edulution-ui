@@ -46,9 +46,7 @@ import WebDavModule from '../webdav/webdav.module';
 import HealthModule from '../health/health.module';
 import ScriptsModule from '../scripts/scripts.module';
 import LdapKeycloakSyncModule from '../ldap-keycloak-sync/ldap-keycloak-sync.module';
-
-const redisHost = process.env.REDIS_HOST ?? 'localhost';
-const redisPort = +(process.env.REDIS_PORT ?? 6379);
+import redisConnection from '../common/redis.connection';
 
 @Module({
   imports: [
@@ -58,10 +56,7 @@ const redisPort = +(process.env.REDIS_PORT ?? 6379);
     }),
 
     BullModule.forRoot({
-      connection: {
-        host: redisHost,
-        port: redisPort,
-      },
+      connection: redisConnection,
       defaultJobOptions: {
         removeOnComplete: true,
         removeOnFail: true,
@@ -102,7 +97,7 @@ const redisPort = +(process.env.REDIS_PORT ?? 6379);
     CacheModule.registerAsync({
       isGlobal: true,
       useFactory: () => ({
-        stores: [new KeyvRedis(`redis://${redisHost}:${redisPort}`)],
+        stores: [new KeyvRedis(`redis://${redisConnection.host}:${redisConnection.port}`)],
       }),
     }),
 
