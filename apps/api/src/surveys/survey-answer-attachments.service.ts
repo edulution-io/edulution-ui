@@ -45,6 +45,15 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     }
     throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
   }
+  
+  static async deleteTempFileFromAnswer(userName: string, surveyId: string, fileName: string): Promise<void> {
+    const tempFilesPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
+    const tempExistence = await FilesystemService.checkIfFileExist(join(tempFilesPath, fileName));
+    if (!tempExistence) {
+      return;
+    }
+    await FilesystemService.deleteFile(tempFilesPath, fileName);
+  }
 
   async moveAnswersAttachmentsToPermanentStorage(userName: string, surveyId: string, answer: JSON): Promise<JSON> {
     if (!userName || !surveyId || !answer) {
@@ -100,15 +109,6 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     await this.fileSystemService.deleteEmptyFolder(tempSurveyPath);
     const tempFilesPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName);
     await this.fileSystemService.deleteEmptyFolder(tempFilesPath);
-  }
-
-  static async deleteTempFileFromAnswer(userName: string, surveyId: string, fileName: string): Promise<void> {
-    const tempFilesPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
-    const tempExistence = await FilesystemService.checkIfFileExist(join(tempFilesPath, fileName));
-    if (!tempExistence) {
-      return;
-    }
-    await FilesystemService.deleteFile(tempFilesPath, fileName);
   }
 }
 

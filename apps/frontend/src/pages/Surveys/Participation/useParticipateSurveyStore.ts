@@ -16,6 +16,8 @@ import { create } from 'zustand';
 import { Model, CompletingEvent } from 'survey-core';
 import SurveyAnswerResponseDto from '@libs/survey/types/api/survey-answer-response.dto';
 import AnswerSurvey from '@libs/survey/types/api/answer-survey';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import {
   SURVEYS,
   PUBLIC_SURVEYS,
@@ -27,8 +29,6 @@ import { publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
-import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
-import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 
 interface ParticipateSurveyStore {
   attendee: Partial<AttendeeDto> | undefined;

@@ -14,7 +14,7 @@ import { join } from 'path';
 import { Model, Types } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import { InjectModel } from '@nestjs/mongoose';
-import { HttpStatus, Injectable, OnModuleInit, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
@@ -294,11 +294,6 @@ class SurveyAnswersService implements OnModuleInit {
     answer: JSON,
     existingUsersAnswerId?: string,
   ): Promise<SurveyAnswer | null> => {
-    Logger.log(
-      `Selecting strategy for survey ${survey.id} with attendee ${attendee.username}, existingUsersAnswerId: ${existingUsersAnswerId}`,
-      SurveyAnswersService.name,
-    );
-
     if (survey.isAnonymous) return this.anonymousStrategy(survey, answer);
     if (!attendee.username && attendee.firstName) return this.publicFirstStrategy(survey, answer, attendee);
     if (!existingUsersAnswerId || existingUsersAnswerId === undefined || survey.canSubmitMultipleAnswers)
@@ -429,8 +424,6 @@ class SurveyAnswersService implements OnModuleInit {
       answer,
     );
 
-    Logger.log(`Updating survey answer with ID: ${existingUsersAnswerId}`, SurveyAnswersService.name);
-
     const updatedSurveyAnswer = await this.surveyAnswerModel.findByIdAndUpdate<SurveyAnswerDocument>(
       existingUsersAnswerId,
       {
@@ -473,8 +466,6 @@ class SurveyAnswersService implements OnModuleInit {
   }
 
   async getAnswer(surveyId: string, username: string): Promise<SurveyAnswer | undefined> {
-    Logger.log(`Retrieving answer for surveyId: ${surveyId}, username: ${username}`, SurveyAnswersService.name);
-
     const latestUserAnswer = await this.surveyAnswerModel.findOne<SurveyAnswer>(
       { 'attendee.username': username, surveyId: new Types.ObjectId(surveyId) },
       null,

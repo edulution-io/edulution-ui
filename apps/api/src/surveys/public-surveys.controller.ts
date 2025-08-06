@@ -24,7 +24,6 @@ import {
   UseInterceptors,
   HttpStatus,
   ParseFilePipeBuilder,
-  Logger,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -65,9 +64,6 @@ class PublicSurveysController {
   @Public()
   async answerSurvey(@Body() postAnswerDto: PostSurveyAnswerDto) {
     const { surveyId, answer, attendee } = postAnswerDto;
-
-    Logger.debug(`Answering survey with ID: ${surveyId}`, PublicSurveysController.name);
-
     const savedAnswer = await this.surveyAnswerService.addAnswer(surveyId, answer, attendee);
     return savedAnswer;
   }
@@ -159,11 +155,6 @@ class PublicSurveysController {
   @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:filename`)
   @Public()
   serveFileFromAnswer(@Param() params: { userName: string; surveyId: string; filename: string }, @Res() res: Response) {
-    Logger.debug(
-      `Serving file from answer for user: ${params.userName}, surveyId: ${params.surveyId}, filename: ${params.filename}`,
-      PublicSurveysController.name,
-    );
-
     const { userName, surveyId, filename } = params;
     if (!userName || !surveyId || !filename) {
       throw new CustomHttpException(

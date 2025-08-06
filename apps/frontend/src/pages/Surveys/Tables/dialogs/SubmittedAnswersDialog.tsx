@@ -27,7 +27,6 @@ const SubmittedAnswersDialog = () => {
     isOpenSubmittedAnswersDialog,
     setIsOpenSubmittedAnswersDialog,
     getSubmittedSurveyAnswers,
-    // fetchAttachments,
     answer,
     isLoading,
   } = useSubmittedAnswersDialogStore();
@@ -40,7 +39,6 @@ const SubmittedAnswersDialog = () => {
   useEffect((): void => {
     if (isOpenSubmittedAnswersDialog && surveyId) {
       void getSubmittedSurveyAnswers(surveyId);
-      // void fetchAttachments(surveyId);
     }
   }, [isOpenSubmittedAnswersDialog, surveyId]);
 

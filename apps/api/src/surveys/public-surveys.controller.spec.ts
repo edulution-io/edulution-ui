@@ -36,7 +36,6 @@ import {
   publicSurvey02,
   publicSurvey02AfterAddingValidAnswer,
   publicSurvey02QuestionNameWithLimiters,
-  saveNoPublicSurvey02,
   surveyValidAnswerPublicSurvey02,
 } from './mocks';
 import GroupsService from '../groups/groups.service';
@@ -161,14 +160,12 @@ describe(PublicSurveysController.name, () => {
     //   await controller.answerSurvey(
     //     {
     //       surveyId: idOfPublicSurvey02,
-    //       saveNo: saveNoPublicSurvey02,
     //       answer: mockedInvalidAnswerForPublicSurveys02,
     //     },
     //   );
     //
     //   expect(surveyAnswerService.addAnswer).toHaveBeenCalledWith(
     //     idOfPublicSurvey02,
-    //     saveNoPublicSurvey02,
     //     mockedInvalidAnswerForPublicSurveys02,
     //   );
     // });
