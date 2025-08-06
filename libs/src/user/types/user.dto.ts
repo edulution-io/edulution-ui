@@ -33,7 +33,7 @@ class UserDto {
 
   language?: string;
 
-  registeredPushTokens: string[];
+  registeredPushTokens?: string[];
 }
 
 export default UserDto;
