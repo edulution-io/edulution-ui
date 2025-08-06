@@ -15,7 +15,7 @@ import { toast } from 'sonner';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
 import { ClearFilesEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
-import { DownloadSurveyAttachmentEvent } from '@libs/survey/types/api/download-survey-attachment-event';
+import { /* DownloadSurveyAttachmentEvent, */ DownloadSurveyFileValue } from '@libs/survey/types/api/download-survey-attachment-event';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import SURVEY_ANSWERS_MAXIMUM_FILE_SIZE from '@libs/survey/constants/survey-answers-maximum-file-size';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
@@ -47,7 +47,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 
-  const { fetchAnswer, isFetching, answerSurvey, previousAnswer, uploadTempFile, fetchTempFile, deleteTempFile } =
+  const { fetchAnswer, isFetching, answerSurvey, previousAnswer, uploadTempFile, fetchFile, deleteTempFile } =
     useParticipateSurveyStore();
 
   const { t } = useTranslation();
@@ -102,40 +102,53 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
       const uploadPromises = files.map(async (file) => {
         const data = await uploadTempFile(selectedSurvey.id!, file);
-        return { file: { ...file, originalName: file.name, name: data.name }, content: `${EDU_API_URL}/${data.url}` };
+        const newFile: DownloadSurveyFileValue = {
+          ...file,
+          type: file.type || 'image/png',
+          originalName: file.name || data.name,
+          name: data.name,
+          url: `${EDU_API_URL}/${data.url}`,
+          content: data.content,
+        }
+        return newFile;
       });
       const results = await Promise.all(uploadPromises);
-      return callback(results);
+      callback((
+        results.map((result) => ({
+          file: result,
+          content: result.url,
+        }))
+      ));
     });
 
-    newModel.onDownloadFile.add(async (_: SurveyModel, options: DownloadSurveyAttachmentEvent) => {
-      if (!selectedSurvey || !selectedSurvey.id) {
-        return;
-      }
+    // newModel.onDownloadFile.add(async (_: SurveyModel, options: DownloadSurveyAttachmentEvent) => {
+      
+    //   console.log('Download file event:', options);
 
-      const fileName = options.fileValue.name ? String(options.fileValue.name) : undefined;
-      if (!fileName) {
-        return;
-      }
-      try {
-        const fileType = options.fileValue.type ? String(options.fileValue.type) : undefined;
-        const data = await fetchTempFile(selectedSurvey.id, fileName);
-        const content = data[fileName];
+    //   if (!selectedSurvey || !selectedSurvey.id || !options.fileValue.content) {
+    //     return;
+    //   }
 
-        const file = new File([content], fileName, {
-          type: fileType,
-        });
+    //   let fetchedFile: { name: string; url: string; type: string; content: Buffer<ArrayBuffer> } | undefined = undefined;
+    //   if (!!options.fileValue.content) {
+    //     fetchedFile = await fetchFile(options.fileValue.name, options.fileValue.content.toString());
+    //   }      
+    //   if (!fetchedFile) {
+    //     options.callback('error');
+    //     return;
+    //   }
 
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          options.callback('success', e.target?.result);
-        };
-        reader.readAsDataURL(file);
-      } catch (error) {
-        console.error('Error: ', error);
-        options.callback('error');
-      }
-    });
+    //   console.log('Fetched file:', fetchedFile);
+
+    //   const reader = new FileReader();
+    //   reader.onload = (e) => {
+    //     options.callback('success', e.target?.result);
+    //   };
+    //   reader.readAsDataURL(new Blob([fetchedFile.content], { type: 'image/png' }));
+
+    //   console.log('reader:', reader);
+
+    // });
 
     newModel.onClearFiles.add(async (_surveyModel: SurveyModel, options: ClearFilesEvent): Promise<void> => {
       let filesToDelete: File[] = [];

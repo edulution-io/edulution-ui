@@ -74,9 +74,12 @@ import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
+import SurveyAnswerAttachmentsService from 'apps/api/src/surveys/survey-answer-attachments.service';
+import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 
 describe('SurveyAnswersService', () => {
   let service: SurveyAnswersService;
+  let attachmentService: SurveyAnswerAttachmentsService;
   let model: Model<SurveyAnswerDocument>;
   let surveyModel: Model<SurveyDocument>;
 
@@ -90,8 +93,9 @@ describe('SurveyAnswersService', () => {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
         },
-        SurveyAnswerService,
+        SurveyAnswersService,
         SurveysAttachmentService,
+        SurveyAnswerAttachmentsService,
         { provide: GroupsService, useValue: mockGroupsService },
         {
           provide: getModelToken(SurveyAnswer.name),
@@ -101,7 +105,8 @@ describe('SurveyAnswersService', () => {
       ],
     }).compile();
 
-    service = module.get<SurveyAnswerService>(SurveyAnswerService);
+    service = module.get<SurveyAnswersService>(SurveyAnswersService);
+    attachmentService = module.get<SurveyAnswerAttachmentsService>(SurveyAnswerAttachmentsService);
     model = module.get<Model<SurveyAnswerDocument>>(getModelToken(SurveyAnswer.name));
     surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
   });
@@ -330,7 +335,10 @@ describe('SurveyAnswersService', () => {
     it('should return an error if the survey was not found', async () => {
       jest.spyOn(service, 'addAnswer');
 
-      surveyModel.findById = jest.fn().mockReturnValue(null);
+      surveyModel.findById = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(null),
+      });
+      
       const id = new Types.ObjectId().toString();
 
       try {
@@ -340,14 +348,18 @@ describe('SurveyAnswersService', () => {
         expect(e.message).toBe(SurveyErrorMessages.NotFoundError);
       }
 
-      expect(service.addAnswer).toHaveBeenCalledWith(id, 1, {} as JSON, firstParticipant);
+      expect(service.addAnswer).toHaveBeenCalledWith(id, {} as JSON, firstParticipant);
     });
 
     it('should return an error if the survey has already expired', async () => {
       jest.spyOn(service, 'addAnswer');
 
-      surveyModel.findById = jest.fn().mockReturnValue(answeredSurvey01);
-      model.findOne = jest.fn().mockReturnValue(null);
+      surveyModel.findById = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(answeredSurvey01),
+      });
+      model.findOne = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(null),
+      });
       model.create = jest.fn().mockReturnValue(firstUsersSurveyAnswerAnsweredSurvey01);
       model.findByIdAndUpdate = jest.fn().mockReturnValue(firstUsersSurveyAnswerAnsweredSurvey01);
       surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue(answeredSurvey01);
@@ -404,13 +416,18 @@ describe('SurveyAnswersService', () => {
       async () => {
         jest.spyOn(service, 'addAnswer');
 
-        surveyModel.findById = jest.fn().mockReturnValue(answeredSurvey02);
-
+        surveyModel.findById = jest.fn().mockReturnValue({
+          exec: jest.fn().mockResolvedValue(answeredSurvey02),
+        });
+        model.findOne = jest.fn().mockReturnValue({
+          exec: jest.fn().mockResolvedValue(answeredSurvey02),
+        });
+      
         try {
           await service.addAnswer(idOfAnsweredSurvey02.toString(), mockedAnswerForAnsweredSurveys02, secondParticipant);
         } catch (e) {
           expect(e).toBeInstanceOf(Error);
-          expect(e.message).toBe(SurveyErrorMessages.ParticipationErrorAlreadyParticipated);
+          expect(e.message).toBe(SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError);
         }
 
         expect(service.addAnswer).toHaveBeenCalledWith(
@@ -424,8 +441,13 @@ describe('SurveyAnswersService', () => {
     it('should update the former answer of the user', async () => {
       jest.spyOn(service, 'addAnswer');
 
-      surveyModel.findById = jest.fn().mockReturnValue(answeredSurvey03);
-      model.findOne = jest.fn().mockReturnValue(surveyAnswerAnsweredSurvey03);
+      surveyModel.findById = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(answeredSurvey03),
+      });
+      
+      model.findOne = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(surveyAnswerAnsweredSurvey03),
+      });
       model.findByIdAndUpdate = jest.fn().mockReturnValue(updatedSurveyAnswerAnsweredSurvey03);
 
       const result = await service.addAnswer(
@@ -445,8 +467,12 @@ describe('SurveyAnswersService', () => {
     it('should create an answer object if there is none for the survey submitted by the given user', async () => {
       jest.spyOn(service, 'addAnswer');
 
-      surveyModel.findById = jest.fn().mockReturnValue(answeredSurvey04);
-      model.findOne = jest.fn().mockReturnValue(null);
+      surveyModel.findById = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(answeredSurvey04),
+      });
+      model.findOne = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(null),
+      });
       model.create = jest.fn().mockReturnValue(surveyAnswerAnsweredSurvey04);
       surveyModel.findByIdAndUpdate = jest.fn().mockResolvedValue({
         ...answeredSurvey04,
@@ -471,8 +497,12 @@ describe('SurveyAnswersService', () => {
     it('should also create an answer object if the users can submit multiple answers', async () => {
       jest.spyOn(service, 'addAnswer');
 
-      surveyModel.findById = jest.fn().mockReturnValue(answeredSurvey05);
-      model.findOne = jest.fn().mockReturnValue(surveyAnswerAnsweredSurvey05);
+      surveyModel.findById = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(answeredSurvey05),
+      });
+      model.findOne = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(surveyAnswerAnsweredSurvey05),
+      });
       model.create = jest.fn().mockReturnValue(newSurveyAnswerAnsweredSurvey05);
       surveyModel.findByIdAndUpdate = jest.fn().mockResolvedValue({
         ...answeredSurvey05,

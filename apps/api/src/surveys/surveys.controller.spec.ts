@@ -59,11 +59,13 @@ import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysTemplateService from './surveys-template.service';
+import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 
 describe(SurveysController.name, () => {
   let controller: SurveysController;
   let surveyService: SurveysService;
-  let surveyAnswerService: SurveyAnswersService;
+  let surveyAnswersService: SurveyAnswersService;
+  let surveyAnswerAttachmentsService: SurveyAnswerAttachmentsService;
   let surveyModel: Model<SurveyDocument>;
   let surveyAnswerModel: Model<SurveyAnswerDocument>;
 
@@ -82,6 +84,7 @@ describe(SurveysController.name, () => {
         SurveysAttachmentService,
         SurveyAnswersService,
         SurveysTemplateService,
+        SurveyAnswerAttachmentsService,
         {
           provide: getModelToken(SurveyAnswer.name),
           useValue: {
@@ -96,7 +99,8 @@ describe(SurveysController.name, () => {
 
     controller = module.get<SurveysController>(SurveysController);
     surveyService = module.get<SurveysService>(SurveysService);
-    surveyAnswerService = module.get<SurveyAnswersService>(SurveyAnswersService);
+    surveyAnswersService = module.get<SurveyAnswersService>(SurveyAnswersService);
+    surveyAnswerAttachmentsService = module.get<SurveyAnswerAttachmentsService>(SurveyAnswerAttachmentsService);
     surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
     surveyAnswerModel = module.get<Model<SurveyAnswerDocument>>(getModelToken(SurveyAnswer.name));
   });
@@ -138,34 +142,34 @@ describe(SurveysController.name, () => {
 
   describe('findByStatus', () => {
     it('[OPEN] should return a list of surveys for the requesting user filtered for the survey status (eq. OPEN)', async () => {
-      jest.spyOn(surveyAnswerService, 'findUserSurveys');
-      jest.spyOn(surveyAnswerService, 'getOpenSurveys');
+      jest.spyOn(surveyAnswersService, 'findUserSurveys');
+      jest.spyOn(surveyAnswersService, 'getOpenSurveys');
 
       surveyModel.find = jest.fn().mockReturnValue([openSurvey01, openSurvey02]);
 
       const result = await controller.findByStatus(SurveyStatus.OPEN, firstMockJWTUser);
       expect(result).toEqual([openSurvey01, openSurvey02]);
 
-      expect(surveyAnswerService.findUserSurveys).toHaveBeenCalledWith(SurveyStatus.OPEN, firstMockJWTUser);
-      expect(surveyAnswerService.getOpenSurveys).toHaveBeenCalledWith(firstMockJWTUser);
+      expect(surveyAnswersService.findUserSurveys).toHaveBeenCalledWith(SurveyStatus.OPEN, firstMockJWTUser);
+      expect(surveyAnswersService.getOpenSurveys).toHaveBeenCalledWith(firstMockJWTUser);
     });
 
     it('[CREATED] should return a list of surveys for the requesting user filtered for the survey status (eq. CREATED)', async () => {
-      jest.spyOn(surveyAnswerService, 'findUserSurveys');
-      jest.spyOn(surveyAnswerService, 'getCreatedSurveys');
+      jest.spyOn(surveyAnswersService, 'findUserSurveys');
+      jest.spyOn(surveyAnswersService, 'getCreatedSurveys');
 
       surveyModel.find = jest.fn().mockReturnValue([surveyUpdateInitialSurvey, createdSurvey01]);
 
       const result = await controller.findByStatus(SurveyStatus.CREATED, firstMockJWTUser);
       expect(result).toEqual([surveyUpdateInitialSurvey, createdSurvey01]);
 
-      expect(surveyAnswerService.findUserSurveys).toHaveBeenCalledWith(SurveyStatus.CREATED, firstMockJWTUser);
-      expect(surveyAnswerService.getCreatedSurveys).toHaveBeenCalledWith(firstUsername);
+      expect(surveyAnswersService.findUserSurveys).toHaveBeenCalledWith(SurveyStatus.CREATED, firstMockJWTUser);
+      expect(surveyAnswersService.getCreatedSurveys).toHaveBeenCalledWith(firstUsername);
     });
 
     it('[ANSWERED] should return a list of surveys for the requesting user filtered for the survey status (eq. ANSWERED)', async () => {
-      jest.spyOn(surveyAnswerService, 'findUserSurveys');
-      jest.spyOn(surveyAnswerService, 'getAnsweredSurveys');
+      jest.spyOn(surveyAnswersService, 'findUserSurveys');
+      jest.spyOn(surveyAnswersService, 'getAnsweredSurveys');
 
       surveyAnswerModel.find = jest
         .fn()
@@ -176,14 +180,14 @@ describe(SurveysController.name, () => {
       const result = await controller.findByStatus(SurveyStatus.ANSWERED, firstMockJWTUser);
       expect(result).toEqual([answeredSurvey01, answeredSurvey02]);
 
-      expect(surveyAnswerService.findUserSurveys).toHaveBeenCalledWith(SurveyStatus.ANSWERED, firstMockJWTUser);
-      expect(surveyAnswerService.getAnsweredSurveys).toHaveBeenCalledWith(firstUsername);
+      expect(surveyAnswersService.findUserSurveys).toHaveBeenCalledWith(SurveyStatus.ANSWERED, firstMockJWTUser);
+      expect(surveyAnswersService.getAnsweredSurveys).toHaveBeenCalledWith(firstUsername);
     });
   });
 
   describe('getSurveyResult', () => {
     it('should return the public answers of the participants', async () => {
-      jest.spyOn(surveyAnswerService, 'getPublicAnswers');
+      jest.spyOn(surveyAnswersService, 'getPublicAnswers');
 
       surveyAnswerModel.find = jest
         .fn()
@@ -195,13 +199,13 @@ describe(SurveysController.name, () => {
         secondUsersSurveyAnswerAnsweredSurvey01.answer,
       ]);
 
-      expect(surveyAnswerService.getPublicAnswers).toHaveBeenCalledWith(idOfAnsweredSurvey01.toString());
+      expect(surveyAnswersService.getPublicAnswers).toHaveBeenCalledWith(idOfAnsweredSurvey01.toString());
     });
   });
 
   describe('getSubmittedSurveyAnswers', () => {
     it('should return the submitted answer of the current user', async () => {
-      jest.spyOn(surveyAnswerService, 'getAnswer');
+      jest.spyOn(surveyAnswersService, 'getAnswer');
 
       surveyAnswerModel.findOne = jest.fn().mockReturnValue(firstUsersSurveyAnswerAnsweredSurvey01);
 
@@ -211,11 +215,11 @@ describe(SurveysController.name, () => {
       );
       expect(result).toEqual(firstUsersSurveyAnswerAnsweredSurvey01);
 
-      expect(surveyAnswerService.getAnswer).toHaveBeenCalledWith(idOfAnsweredSurvey01.toString(), firstUsername);
+      expect(surveyAnswersService.getAnswer).toHaveBeenCalledWith(idOfAnsweredSurvey01.toString(), firstUsername);
     });
 
     it('should return the submitted answer of a given user', async () => {
-      jest.spyOn(surveyAnswerService, 'getAnswer');
+      jest.spyOn(surveyAnswersService, 'getAnswer');
 
       surveyAnswerModel.findOne = jest.fn().mockReturnValue(firstUsersSurveyAnswerAnsweredSurvey01);
 
@@ -228,7 +232,7 @@ describe(SurveysController.name, () => {
       );
       expect(result).toEqual(firstUsersSurveyAnswerAnsweredSurvey01);
 
-      expect(surveyAnswerService.getAnswer).toHaveBeenCalledWith(idOfAnsweredSurvey01.toString(), firstUsername);
+      expect(surveyAnswersService.getAnswer).toHaveBeenCalledWith(idOfAnsweredSurvey01.toString(), firstUsername);
     });
   });
 
@@ -253,7 +257,7 @@ describe(SurveysController.name, () => {
   describe('deleteSurvey', () => {
     it('should also remove the survey answers that are stored', async () => {
       jest.spyOn(surveyService, 'deleteSurveys');
-      jest.spyOn(surveyAnswerService, 'onSurveyRemoval');
+      jest.spyOn(surveyAnswersService, 'onSurveyRemoval');
       jest.spyOn(SurveysAttachmentService, 'onSurveyRemoval');
 
       SurveysAttachmentService.onSurveyRemoval = jest.fn().mockImplementation(() => {});
@@ -263,7 +267,7 @@ describe(SurveysController.name, () => {
       await controller.deleteSurvey({ surveyIds: [idOfAnsweredSurvey01.toString()] });
 
       expect(surveyService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01.toString()]);
-      expect(surveyAnswerService.onSurveyRemoval).toHaveBeenCalledWith([idOfAnsweredSurvey01.toString()]);
+      expect(surveyAnswersService.onSurveyRemoval).toHaveBeenCalledWith([idOfAnsweredSurvey01.toString()]);
       expect(surveyModel.deleteMany).toHaveBeenCalledWith({ _id: { $in: [idOfAnsweredSurvey01] } });
       expect(surveyAnswerModel.deleteMany).toHaveBeenCalledWith(
         { surveyId: { $in: [idOfAnsweredSurvey01] } },
@@ -273,7 +277,7 @@ describe(SurveysController.name, () => {
 
     it('it should not remove the survey answers if the survey deletion failed', async () => {
       jest.spyOn(surveyService, 'deleteSurveys');
-      jest.spyOn(surveyAnswerService, 'onSurveyRemoval');
+      jest.spyOn(surveyAnswersService, 'onSurveyRemoval');
 
       surveyModel.deleteMany = jest
         .fn()
@@ -288,7 +292,7 @@ describe(SurveysController.name, () => {
       }
 
       expect(surveyService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01.toString()]);
-      expect(surveyAnswerService.onSurveyRemoval).toHaveBeenCalledTimes(0);
+      expect(surveyAnswersService.onSurveyRemoval).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -300,10 +304,13 @@ describe(SurveysController.name, () => {
     });
 
     it('should call the addAnswer() function of the surveyAnswerService', async () => {
-      jest.spyOn(surveyAnswerService, 'addAnswer');
-
-      surveyModel.findById = jest.fn().mockResolvedValueOnce(answeredSurvey03);
-      surveyAnswerModel.findOne = jest.fn().mockResolvedValueOnce(surveyAnswerAnsweredSurvey03);
+      jest.spyOn(surveyAnswersService, 'addAnswer');
+      surveyModel.findById = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(answeredSurvey03),
+      });
+      surveyAnswerModel.findOne = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(surveyAnswerAnsweredSurvey03),
+      });
       surveyAnswerModel.findByIdAndUpdate = jest.fn().mockReturnValue(updatedSurveyAnswerAnsweredSurvey03);
 
       const attendee = {
@@ -321,9 +328,8 @@ describe(SurveysController.name, () => {
         firstMockJWTUser,
       );
 
-      expect(surveyAnswerService.addAnswer).toHaveBeenCalledWith(
+      expect(surveyAnswersService.addAnswer).toHaveBeenCalledWith(
         idOfAnsweredSurvey01.toString(),
-        saveNoAnsweredSurvey01,
         firstUsersMockedAnswerForAnsweredSurveys01,
         attendee,
       );

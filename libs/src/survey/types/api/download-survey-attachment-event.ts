@@ -12,10 +12,15 @@
 
 import { DownloadFileEvent } from 'survey-core';
 
+export interface DownloadSurveyFileValue {
+  name: string;
+  originalName?: string;
+  type?: string;
+  url?: string;
+  content: Buffer<ArrayBuffer>;
+}
+
 export interface DownloadSurveyAttachmentEvent extends DownloadFileEvent {
-  fileValue: {
-    name: string;
-    type: string;
-  };
-  content: string;
+  fileValue: DownloadSurveyFileValue;
+  content: Buffer<ArrayBuffer>;
 }

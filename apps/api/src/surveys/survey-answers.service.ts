@@ -590,7 +590,7 @@ class SurveyAnswersService implements OnModuleInit {
   }
 
   async serveFileFromAnswer(userName: string, surveyId: string, fileName: string, res: Response): Promise<Response> {
-    return this.fileSystemService.getResponseWithFileStreamWithAlternativePath(
+    return await this.fileSystemService.getResponseWithFileStreamWithAlternativePath(
       res,
       join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, fileName),
       join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName, fileName),

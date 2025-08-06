@@ -133,10 +133,6 @@ class PublicSurveysController {
     const filePath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, file.filename);
     const url = `${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${userName}/${surveyId}/${file.filename}`;
 
-    Logger.debug(`Creating file in: ${filePath}`, PublicSurveysController.name);
-
-    Logger.debug(`Creating file for: ${url}`, PublicSurveysController.name);
-
     await FilesystemService.checkIfFileExist(filePath);
     const content = (await FilesystemService.readFile(filePath)).toString('base64');
     return res.status(HttpStatus.CREATED).json({ name: file.filename, url, content });

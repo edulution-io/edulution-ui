@@ -44,6 +44,7 @@ import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
+import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 
 describe(PublicSurveysController.name, () => {
   let controller: PublicSurveysController;
@@ -65,6 +66,7 @@ describe(PublicSurveysController.name, () => {
         },
         SurveyAnswersService,
         SurveysAttachmentService,
+        SurveyAnswerAttachmentsService,
         { provide: GroupsService, useValue: mockGroupsService },
         {
           provide: getModelToken(SurveyAnswer.name),
@@ -121,8 +123,12 @@ describe(PublicSurveysController.name, () => {
     it('should call the addAnswerToPublicSurvey() function of the surveyAnswerService', async () => {
       jest.spyOn(surveyAnswerService, 'addAnswer');
 
-      surveyAnswerModel.findOne = jest.fn().mockResolvedValueOnce(null);
-      surveyModel.findById = jest.fn().mockResolvedValueOnce(publicSurvey02);
+      surveyAnswerModel.findOne = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(null),
+      });
+      surveyModel.findById = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(publicSurvey02),
+      });
 
       surveyAnswerModel.create = jest.fn().mockResolvedValueOnce(surveyValidAnswerPublicSurvey02);
 
@@ -140,7 +146,6 @@ describe(PublicSurveysController.name, () => {
 
       expect(surveyAnswerService.addAnswer).toHaveBeenCalledWith(
         idOfPublicSurvey02.toString(),
-        saveNoPublicSurvey02,
         mockedValidAnswerForPublicSurveys02,
         firstMockUser,
       );
