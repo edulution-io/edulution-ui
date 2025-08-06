@@ -16,10 +16,11 @@ import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import getStringFromArray from '@libs/common/utils/getStringFromArray';
+import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import useFileSharingStore from '../useFileSharingStore';
 
 const useUserPath = () => {
-  const { mountPoints } = useFileSharingStore();
+  const { mountPoints, webdavShares } = useFileSharingStore();
   const { globalSettings } = useGlobalSettingsApiStore();
   const { pathname } = useLocation();
   const { user: lmnUser } = useLmnApiStore();
@@ -29,8 +30,13 @@ const useUserPath = () => {
   if (globalSettings.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER) {
     const getFallbackPath = () => {
       const filtered = mountPoints.filter((mp) => mp.filename === fallbackPath.split('/').at(-1));
+
       if (filtered.length !== 0) {
         return getPathWithoutWebdav(filtered[0]?.filePath);
+      }
+
+      if (webdavShares[0].type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
+        return `/${fallbackPath}${getStringFromArray(lmnUser?.sophomorixIntrinsic2)}`;
       }
 
       return getStringFromArray(lmnUser?.sophomorixIntrinsic2);
