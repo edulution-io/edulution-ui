@@ -16,6 +16,7 @@ enum CommonErrorMessages {
   FILE_UPLOAD_FAILED = 'common.errors.fileUploadFailed',
   FILE_DELETION_FAILED = 'common.errors.fileDeletionFailed',
   FILE_WRITING_FAILED = 'common.errors.fileWritingFailed',
+  FILE_READING_FAILED = 'common.errors.fileReadingFailed',
   FILE_MOVE_FAILED = 'common.errors.fileMoveFailed',
   FILE_NOT_FOUND = 'common.errors.fileNotFound',
   FILE_NOT_PROVIDED = 'common.errors.fileNotProvided',
