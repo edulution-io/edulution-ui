@@ -100,9 +100,22 @@ class SurveysTemplateService implements OnModuleInit {
     await FilesystemService.deleteFiles(templatePath, filesToDelete);
   }
 
-  async serveTemplateNames(): Promise<string[]> {
+  async deleteTemplate(fileName: string): Promise<void> {
+    try {
+      await this.surveyTemplateModel.deleteOne({ fileName });
+    } catch {
+      throw new CustomHttpException(
+        CommonErrorMessages.FILE_DELETION_FAILED,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveysTemplateService.name,
+      );
+    }
+  }
+
+  async serveTemplateNames(isAdmin: boolean): Promise<string[]> {
     let templates = await this.surveyTemplateModel.find({});
-    templates = templates.filter((template) => !!template.fileName && template.isActive);
+    templates = isAdmin ? templates : templates.filter((template) => template.isActive);
     const fileNames = templates.map((template) => template.fileName);
     return fileNames;
   }
@@ -117,7 +130,24 @@ class SurveysTemplateService implements OnModuleInit {
         SurveysTemplateService.name,
       );
     }
-    return res.status(HttpStatus.OK).json(document.template);
+    return res.status(HttpStatus.OK).json({ ...document.template, isActive: document.isActive });
+  }
+
+  async toggleIsTemplateActive(fileName: string): Promise<SurveysTemplateDocument | null> {
+    let document: SurveysTemplateDocument | null = null;
+    document = await this.surveyTemplateModel.findOneAndUpdate(
+      { fileName, isActive: true },
+      { isActive: false },
+      { new: true },
+    );
+    if (document === null) {
+      document = await this.surveyTemplateModel.findOneAndUpdate(
+        { fileName, isActive: false },
+        { isActive: true },
+        { new: true },
+      );
+    }
+    return document;
   }
 }
 

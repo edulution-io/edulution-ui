@@ -14,11 +14,9 @@ import { create } from 'zustand';
 import { toast } from 'sonner';
 import { t } from 'i18next';
 import eduApi from '@/api/eduApi';
-import { SURVEY_TEMPLATES_ENDPOINT, TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
+import { SURVEY_TEMPLATES_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import handleApiError from '@/utils/handleApiError';
 import { TemplateDto, SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
-import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
-import APPS from '@libs/appconfig/constants/apps';
 
 interface TemplateMenuStore {
   reset: () => void;
@@ -32,6 +30,7 @@ interface TemplateMenuStore {
   isOpenTemplateConfirmDeletion: boolean;
   setIsOpenTemplateConfirmDeletion: (state: boolean) => void;
   deleteTemplate: (templateFileName: string) => Promise<void>;
+  toggleIsTemplateActive: (templateFileName: string) => Promise<void>;
   error?: Error;
 
   template?: SurveyTemplateDto;
@@ -121,10 +120,29 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
 
     set({ isSubmitting: true });
     try {
-      await eduApi.delete(`${EDU_API_CONFIG_ENDPOINTS.FILES}/${APPS.SURVEYS}/${TEMPLATES}/${templateFileName}`);
+      await eduApi.delete(`${SURVEY_TEMPLATES_ENDPOINT}/${templateFileName}`);
       toast.success(t('survey.editor.templateMenu.deletion.success'));
     } catch (error) {
       handleApiError(error, set);
+    } finally {
+      set({ isSubmitting: false });
+    }
+  },
+
+  toggleIsTemplateActive: async (templateName: string): Promise<void> => {
+    if (!templateName) {
+      return;
+    }
+
+    set({ isSubmitting: true });
+    try {
+      const result = await eduApi.patch<TemplateDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${templateName}`);
+      const newTemplate = { template: { ...result.data }, fileName: templateName };
+      set({ template: newTemplate });
+      toast.success(t('survey.editor.templateMenu.upload.success'));
+    } catch (error) {
+      handleApiError(error, set);
+      set({ template: undefined });
     } finally {
       set({ isSubmitting: false });
     }

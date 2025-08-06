@@ -35,13 +35,13 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
 
   const { isSuperAdmin } = useLdapGroups();
 
-  const { template } = surveyTemplate;
+  const { template, isActive = true } = surveyTemplate;
   const { formula } = template;
   const { title, description } = formula;
 
   return (
     <Card
-      className={cn(GRID_CARD, 'bg-muted', { 'pb-10': isSuperAdmin })}
+      className={cn(GRID_CARD, { 'bg-muted': isActive }, { 'bg-muted-light': !isActive }, { 'pb-10': isSuperAdmin })}
       variant="text"
       onClick={() => {
         setTemplate(surveyTemplate);

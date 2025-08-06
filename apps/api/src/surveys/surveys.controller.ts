@@ -48,6 +48,7 @@ import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import getUsernameFromRequest from 'apps/api/src/common/utils/getUsernameFromRequest';
+import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import SurveysService from './surveys.service';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysTemplateService from './surveys-template.service';
@@ -122,8 +123,15 @@ class SurveysController {
   }
 
   @Get(TEMPLATES)
-  getTemplateNames() {
-    return this.surveysTemplateService.serveTemplateNames();
+  getTemplateNames(@GetCurrentUser() currentUser: JWTUser) {
+    const isAdmin = getIsAdmin(currentUser.ldapGroups);
+    return this.surveysTemplateService.serveTemplateNames(isAdmin);
+  }
+
+  @Delete(`${TEMPLATES}/:filename`)
+  deleteTemplate(@Param() params: { filename: string }) {
+    const { filename } = params;
+    return this.surveysTemplateService.deleteTemplate(filename);
   }
 
   @Get(`${TEMPLATES}/:filename`)
@@ -131,6 +139,12 @@ class SurveysController {
     const { filename } = params;
     res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_JSON);
     return this.surveysTemplateService.serveTemplate(filename, res);
+  }
+
+  @Patch(`${TEMPLATES}/:filename`)
+  toggleIsTemplateActive(@Param() params: { filename: string }) {
+    const { filename } = params;
+    return this.surveysTemplateService.toggleIsTemplateActive(filename);
   }
 
   @Get(`${ANSWER}/:surveyId`)

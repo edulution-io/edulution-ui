@@ -13,9 +13,10 @@
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import SurveyDto from './survey.dto';
 
-export type TemplateDto = Partial<SurveyDto> & { formula: SurveyFormula };
+export type TemplateDto = Partial<SurveyDto> & { formula: SurveyFormula; isActive?: boolean };
 
 export interface SurveyTemplateDto {
   template: TemplateDto;
   fileName?: string;
+  isActive?: boolean;
 }
