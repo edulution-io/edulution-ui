@@ -59,6 +59,7 @@ import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysTemplateService from './surveys-template.service';
+import PushNotificationService from '../pushNotification/pushNotification.service';
 
 describe(SurveysController.name, () => {
   let controller: SurveysController;
@@ -74,6 +75,7 @@ describe(SurveysController.name, () => {
       providers: [
         SurveysService,
         SseService,
+        PushNotificationService,
         {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
