@@ -67,15 +67,13 @@ describe(SurveysController.name, () => {
   let surveyAnswerService: SurveyAnswerService;
   let surveyModel: Model<SurveyDocument>;
   let surveyAnswerModel: Model<SurveyAnswerDocument>;
-
+  const pushMock = { notify: jest.fn() };
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [],
       controllers: [SurveysController],
       providers: [
         SurveysService,
         SseService,
-        PushNotificationService,
         {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
@@ -93,6 +91,7 @@ describe(SurveysController.name, () => {
           },
         },
         { provide: FilesystemService, useValue: mockFilesystemService },
+        { provide: PushNotificationService, useValue: pushMock },
       ],
     }).compile();
 

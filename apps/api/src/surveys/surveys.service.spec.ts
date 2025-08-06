@@ -16,18 +16,21 @@ import { Logger } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import SurveysService from './surveys.service';
 import { Survey, SurveyDocument } from './survey.schema';
-import { firstMockJWTUser, createSurvey01, createdSurvey01 } from './mocks';
+import { createdSurvey01, createSurvey01, firstMockJWTUser } from './mocks';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
 import SurveysAttachmentService from './surveys-attachment.service';
+import PushNotificationService from '../pushNotification/pushNotification.service';
 
 describe('SurveyService', () => {
   let service: SurveysService;
   let surveyModel: Model<SurveyDocument>;
-
+  const pushNotificationMock = {
+    notifyUsernames: jest.fn().mockResolvedValue(undefined),
+  };
   beforeEach(async () => {
     Logger.error = jest.fn();
     const module: TestingModule = await Test.createTestingModule({
@@ -41,6 +44,7 @@ describe('SurveyService', () => {
         SurveysAttachmentService,
         { provide: GroupsService, useValue: mockGroupsService },
         { provide: FilesystemService, useValue: mockFilesystemService },
+        { provide: PushNotificationService, useValue: pushNotificationMock },
       ],
     }).compile();
 
