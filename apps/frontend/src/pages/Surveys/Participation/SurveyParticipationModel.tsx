@@ -15,7 +15,7 @@ import { toast } from 'sonner';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
 import { ClearFilesEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
-import { /* DownloadSurveyAttachmentEvent, */ DownloadSurveyFileValue } from '@libs/survey/types/api/download-survey-attachment-event';
+import { DownloadSurveyFileValue } from '@libs/survey/types/api/download-survey-attachment-event';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import SURVEY_ANSWERS_MAXIMUM_FILE_SIZE from '@libs/survey/constants/survey-answers-maximum-file-size';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
@@ -47,7 +47,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 
-  const { fetchAnswer, isFetching, answerSurvey, previousAnswer, uploadTempFile, fetchFile, deleteTempFile } =
+  const { fetchAnswer, isFetching, answerSurvey, previousAnswer, uploadTempFile, deleteTempFile } =
     useParticipateSurveyStore();
 
   const { t } = useTranslation();
@@ -109,46 +109,17 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
           name: data.name,
           url: `${EDU_API_URL}/${data.url}`,
           content: data.content,
-        }
+        };
         return newFile;
       });
       const results = await Promise.all(uploadPromises);
-      callback((
+      return callback(
         results.map((result) => ({
           file: result,
           content: result.url,
-        }))
-      ));
+        })),
+      );
     });
-
-    // newModel.onDownloadFile.add(async (_: SurveyModel, options: DownloadSurveyAttachmentEvent) => {
-      
-    //   console.log('Download file event:', options);
-
-    //   if (!selectedSurvey || !selectedSurvey.id || !options.fileValue.content) {
-    //     return;
-    //   }
-
-    //   let fetchedFile: { name: string; url: string; type: string; content: Buffer<ArrayBuffer> } | undefined = undefined;
-    //   if (!!options.fileValue.content) {
-    //     fetchedFile = await fetchFile(options.fileValue.name, options.fileValue.content.toString());
-    //   }      
-    //   if (!fetchedFile) {
-    //     options.callback('error');
-    //     return;
-    //   }
-
-    //   console.log('Fetched file:', fetchedFile);
-
-    //   const reader = new FileReader();
-    //   reader.onload = (e) => {
-    //     options.callback('success', e.target?.result);
-    //   };
-    //   reader.readAsDataURL(new Blob([fetchedFile.content], { type: 'image/png' }));
-
-    //   console.log('reader:', reader);
-
-    // });
 
     newModel.onClearFiles.add(async (_surveyModel: SurveyModel, options: ClearFilesEvent): Promise<void> => {
       let filesToDelete: File[] = [];
@@ -220,7 +191,6 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       </div>
     );
   }
-
   return (
     <div className="survey-participation">
       <Survey model={surveyParticipationModel} />

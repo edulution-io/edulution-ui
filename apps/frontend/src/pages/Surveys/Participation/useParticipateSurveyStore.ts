@@ -62,9 +62,6 @@ interface ParticipateSurveyStore {
   isUploadingFile?: boolean;
   deleteTempFile: (surveyId: string, file: File, callback: CallableFunction) => Promise<string | undefined>;
   isDeletingFile?: boolean;
-  fetchFile: (name: string, url: string) => Promise<{ name: string; url: string; type: string; content: Buffer<ArrayBuffer> } | undefined>;
-  isFetchingFile?: boolean;
-
   reset: () => void;
 }
 
@@ -82,7 +79,6 @@ const ParticipateSurveyStoreInitialState: Partial<ParticipateSurveyStore> = {
 
   isUploadingFile: false,
   isDeletingFile: false,
-  isFetchingFile: false,
 };
 
 const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => ({
@@ -109,15 +105,15 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     try {
       const response = isPublic
         ? await eduApi.post<SurveyAnswerResponseDto>(PUBLIC_SURVEYS, {
-          surveyId,
-          answer,
-          attendee,
-        })
+            surveyId,
+            answer,
+            attendee,
+          })
         : await eduApi.patch<SurveyAnswerResponseDto>(SURVEYS, {
-          surveyId,
-          answer,
-          attendee,
-        });
+            surveyId,
+            answer,
+            attendee,
+          });
 
       // eslint-disable-next-line no-param-reassign
       completingEvent.allow = true;
@@ -210,29 +206,6 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     } finally {
       set({ isUploadingFile: false });
     }
-  },
-
-  fetchFile: async (name: string, url: string): Promise<{ name: string; url: string; type: string; content: Buffer<ArrayBuffer> } | undefined> => {
-    set({ isFetchingFile: true });
-    try {
-      const response = await eduApi.get<Buffer<ArrayBuffer>>(
-        url,
-        {
-          headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.TEXT_PLAIN },
-        },
-      );
-      return {
-        name,
-        url,
-        type: 'image/png',
-        content: response.data,
-      };
-    } catch (error) {
-      handleApiError(error, set);
-    } finally {
-      set({ isFetchingFile: false });
-    }
-    return undefined;
   },
 
   deleteTempFile: async (

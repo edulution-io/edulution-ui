@@ -21,6 +21,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveysAttachmentService from 'apps/api/src/surveys/surveys-attachment.service';
+import SurveyAnswerAttachmentsService from 'apps/api/src/surveys/survey-answer-attachments.service';
+import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import { Survey, SurveyDocument } from './survey.schema';
 import SurveyAnswersService from './survey-answers.service';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
@@ -74,12 +76,9 @@ import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
-import SurveyAnswerAttachmentsService from 'apps/api/src/surveys/survey-answer-attachments.service';
-import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 
 describe('SurveyAnswersService', () => {
   let service: SurveyAnswersService;
-  let attachmentService: SurveyAnswerAttachmentsService;
   let model: Model<SurveyAnswerDocument>;
   let surveyModel: Model<SurveyDocument>;
 
@@ -106,7 +105,6 @@ describe('SurveyAnswersService', () => {
     }).compile();
 
     service = module.get<SurveyAnswersService>(SurveyAnswersService);
-    attachmentService = module.get<SurveyAnswerAttachmentsService>(SurveyAnswerAttachmentsService);
     model = module.get<Model<SurveyAnswerDocument>>(getModelToken(SurveyAnswer.name));
     surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
   });
@@ -338,7 +336,7 @@ describe('SurveyAnswersService', () => {
       surveyModel.findById = jest.fn().mockReturnValue({
         exec: jest.fn().mockResolvedValue(null),
       });
-      
+
       const id = new Types.ObjectId().toString();
 
       try {
@@ -422,7 +420,7 @@ describe('SurveyAnswersService', () => {
         model.findOne = jest.fn().mockReturnValue({
           exec: jest.fn().mockResolvedValue(answeredSurvey02),
         });
-      
+
         try {
           await service.addAnswer(idOfAnsweredSurvey02.toString(), mockedAnswerForAnsweredSurveys02, secondParticipant);
         } catch (e) {
@@ -444,7 +442,7 @@ describe('SurveyAnswersService', () => {
       surveyModel.findById = jest.fn().mockReturnValue({
         exec: jest.fn().mockResolvedValue(answeredSurvey03),
       });
-      
+
       model.findOne = jest.fn().mockReturnValue({
         exec: jest.fn().mockResolvedValue(surveyAnswerAnsweredSurvey03),
       });

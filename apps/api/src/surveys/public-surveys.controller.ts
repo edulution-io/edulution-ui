@@ -42,6 +42,7 @@ import SurveyAnswerService from './survey-answers.service';
 import SurveysAttachmentService from './surveys-attachment.service';
 import { Public } from '../common/decorators/public.decorator';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
+import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 
 @ApiTags(PUBLIC_SURVEYS)
 @Controller(PUBLIC_SURVEYS)
@@ -50,6 +51,7 @@ class PublicSurveysController {
     private readonly surveyService: SurveysService,
     private readonly surveyAnswerService: SurveyAnswerService,
     private readonly surveysAttachmentService: SurveysAttachmentService,
+    private readonly surveyAnswerAttachmentsService: SurveyAnswerAttachmentsService,
   ) {}
 
   @Get(`/:surveyId`)
@@ -151,7 +153,7 @@ class PublicSurveysController {
         PublicSurveysController.name,
       );
     }
-    await SurveyAnswerService.deleteTempFileFromAnswer(userName, surveyId, fileName);
+    await SurveyAnswerAttachmentsService.deleteTempFileFromAnswer(userName, surveyId, fileName);
   }
 
   @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:filename`)
@@ -171,7 +173,7 @@ class PublicSurveysController {
         PublicSurveysController.name,
       );
     }
-    return this.surveyAnswerService.serveFileFromAnswer(userName, surveyId, filename, res);
+    return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, filename, res);
   }
 
   @Get(`${CHOICES}/:surveyId/:questionName`)

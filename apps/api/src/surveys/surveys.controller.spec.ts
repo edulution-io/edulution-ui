@@ -43,7 +43,6 @@ import {
   openSurvey01,
   openSurvey02,
   publicSurvey01,
-  saveNoAnsweredSurvey01,
   secondMockUser,
   secondUsername,
   secondUsersSurveyAnswerAnsweredSurvey01,
@@ -65,7 +64,6 @@ describe(SurveysController.name, () => {
   let controller: SurveysController;
   let surveyService: SurveysService;
   let surveyAnswersService: SurveyAnswersService;
-  let surveyAnswerAttachmentsService: SurveyAnswerAttachmentsService;
   let surveyModel: Model<SurveyDocument>;
   let surveyAnswerModel: Model<SurveyAnswerDocument>;
 
@@ -100,7 +98,6 @@ describe(SurveysController.name, () => {
     controller = module.get<SurveysController>(SurveysController);
     surveyService = module.get<SurveysService>(SurveysService);
     surveyAnswersService = module.get<SurveyAnswersService>(SurveyAnswersService);
-    surveyAnswerAttachmentsService = module.get<SurveyAnswerAttachmentsService>(SurveyAnswerAttachmentsService);
     surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
     surveyAnswerModel = module.get<Model<SurveyAnswerDocument>>(getModelToken(SurveyAnswer.name));
   });

@@ -317,45 +317,9 @@ class FilesystemService {
     }
   }
 
-  async getResponseWithFileStreamWithAlternativePath(
-    res: Response,
-    filePath: string,
-    alternativePath: string,
-  ): Promise<Response> {
-    const exists = await FilesystemService.checkIfFileExist(filePath);
-    Logger.debug(
-      `Served file exist temporarely?: ${exists}  in (${filePath}`, FilesystemService.name,
-    );
-
-    if (exists) {
-      // return this.getResponseWithFileStream(res, filePath);
-      const fileStream = await this.createReadStream(filePath);
-      fileStream.pipe(res);
-      return res;
-    }
-    const alternativeExists = await FilesystemService.checkIfFileExist(alternativePath);
-        Logger.debug(
-      `Served file exist permanently?: ${alternativeExists}  in (${alternativePath})`, FilesystemService.name,
-    );
-
-    if (alternativeExists) {
-      // return this.getResponseWithFileStream(res, alternativePath);
-      const fileStream = await this.createReadStream(alternativePath);
-      fileStream.pipe(res);
-      return res;
-    }
-    throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
-  }
-
-  async getResponseWithFileStream(res: Response, filePath: string): Promise<Response> {
-    const fileStream = await this.createReadStream(filePath);
-    fileStream.pipe(res);
-    return res;
-  }
-
   async createReadStream(filePath: string): Promise<Readable> {
     try {
-      await access(filePath);
+      await FilesystemService.throwErrorIfFileNotExists(filePath);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -404,7 +368,6 @@ class FilesystemService {
 
     const fileStream = await this.createReadStream(filePath);
     fileStream.pipe(res);
-
     return res;
   }
 

@@ -75,7 +75,18 @@
         color: var(--primary-foreground);
       }
     }
+  }
 
+  .sv-components-container-contentBottom {
+    .sd-navigation__complete-btn {
+      color: var(--primary-foreground);
+    }
+  }
+}
+
+.participated-survey,
+.survey-participation {
+  .sd-page {
     .sd-file__preview-item,
     .sd-file__image-wrapper {
       width: 100%;
@@ -83,12 +94,6 @@
     }
     .sd-file__sign {
       width: 100%;
-    }
-  }
-
-  .sv-components-container-contentBottom {
-    .sd-navigation__complete-btn {
-      color: var(--primary-foreground);
     }
   }
 }

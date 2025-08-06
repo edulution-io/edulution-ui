@@ -11,12 +11,13 @@
  */
 
 import { join } from 'path';
+import { Response } from 'express';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
-import { ANSWER, FILES, PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersAttachmentPath';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
@@ -27,8 +28,26 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     void this.fileSystemService.ensureDirectoryExists(SURVEY_ANSWERS_ATTACHMENT_PATH);
   }
 
-  async moveAnswersAttachmentsToPermanentStorage(username: string, surveyId: string, answer: JSON): Promise<JSON> {
-    if (!username || !surveyId || !answer) {
+  async serveFileFromAnswer(userName: string, surveyId: string, fileName: string, res: Response): Promise<Response> {
+    const filePath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, fileName);
+    const alternativePath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName, fileName);
+    const exists = await FilesystemService.checkIfFileExist(filePath);
+    if (exists) {
+      const fileStream = await this.fileSystemService.createReadStream(filePath);
+      fileStream.pipe(res);
+      return res;
+    }
+    const alternativeExists = await FilesystemService.checkIfFileExist(alternativePath);
+    if (alternativeExists) {
+      const fileStream = await this.fileSystemService.createReadStream(alternativePath);
+      fileStream.pipe(res);
+      return res;
+    }
+    throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  async moveAnswersAttachmentsToPermanentStorage(userName: string, surveyId: string, answer: JSON): Promise<JSON> {
+    if (!userName || !surveyId || !answer) {
       throw new CustomHttpException(
         SurveyAnswerErrorMessages.NotAbleToUpdateSurveyAnswerError,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -36,63 +55,43 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
         SurveyAnswerAttachmentsService.name,
       );
     }
-    const path = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId);
-    const tempPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, username, surveyId);
+    const directory = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName);
 
-    const tempFileNames = await this.fileSystemService.getAllFilenamesInDirectory(tempPath);
+    const tempDirectory = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
+    const tempFileNames = await this.fileSystemService.getAllFilenamesInDirectory(tempDirectory);
     if (tempFileNames.length === 0) {
       return answer;
     }
 
-    await this.fileSystemService.ensureDirectoryExists(path);
+    await this.fileSystemService.ensureDirectoryExists(directory);
 
     const surveyAnswer = answer as unknown as Record<
       string,
       (object & { content: string }) | (object & { content: string })[]
     >;
-    const movingPromises = new Set<Promise<void>>();
 
+    const fileNamesToMove: string[] = [];
     Object.keys(surveyAnswer).forEach((questionName) => {
       const questionAnswer = surveyAnswer[questionName];
-      const fileNames: string[] = [];
       if (Array.isArray(questionAnswer)) {
         questionAnswer.forEach((item) => {
-          const filePathParts = item.content?.split(`/${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/`);
-          const baseUrl = filePathParts[0];
-          const fileName = filePathParts[1].split('/').pop();
-          if (!baseUrl || !fileName) {
-            return;
-          }
-          const newUrl = `${baseUrl}/${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${surveyId}/${fileName}`;
-          // eslint-disable-next-line no-param-reassign
-          item.content = newUrl;
-          if (fileName) {
-            fileNames.push(fileName);
+          const fileName = item.content?.split('/').pop();
+          if (fileName && tempFileNames.includes(fileName)) {
+            fileNamesToMove.push(fileName);
           }
         });
       } else {
-        const filePathParts = questionAnswer.content?.split(`/${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/`);
-        const baseUrl = filePathParts[0];
-        const fileName = filePathParts[1].split('/').pop();
-        if (!baseUrl || !fileName) {
-          return;
-        }
-        const newUrl = `${baseUrl}/${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${surveyId}/${fileName}`;
-        questionAnswer.content = newUrl;
-        if (fileName) {
-          fileNames.push(fileName);
+        const fileName = questionAnswer.content?.split('/').pop();
+        if (fileName && tempFileNames.includes(fileName)) {
+          fileNamesToMove.push(fileName);
         }
       }
-      fileNames.forEach((fileName) => {
-        if (tempFileNames.includes(fileName)) {
-          const oldPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, username, surveyId, fileName);
-          const newPath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, username, fileName);
-          movingPromises.add(FilesystemService.moveFile(oldPath, newPath));
-        }
-      });
     });
-    await Promise.all(movingPromises);
 
+    const movingPromises = fileNamesToMove.map(async (fileName) =>
+      FilesystemService.moveFile(join(tempDirectory, fileName), join(directory, fileName)),
+    );
+    await Promise.all(movingPromises);
     return JSON.parse(JSON.stringify(surveyAnswer)) as JSON;
   }
 
@@ -101,6 +100,15 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     await this.fileSystemService.deleteEmptyFolder(tempSurveyPath);
     const tempFilesPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName);
     await this.fileSystemService.deleteEmptyFolder(tempFilesPath);
+  }
+
+  static async deleteTempFileFromAnswer(userName: string, surveyId: string, fileName: string): Promise<void> {
+    const tempFilesPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
+    const tempExistence = await FilesystemService.checkIfFileExist(join(tempFilesPath, fileName));
+    if (!tempExistence) {
+      return;
+    }
+    await FilesystemService.deleteFile(tempFilesPath, fileName);
   }
 }
 

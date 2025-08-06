@@ -10,17 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DownloadFileEvent } from 'survey-core';
-
 export interface DownloadSurveyFileValue {
   name: string;
   originalName?: string;
   type?: string;
   url?: string;
-  content: Buffer<ArrayBuffer>;
-}
-
-export interface DownloadSurveyAttachmentEvent extends DownloadFileEvent {
-  fileValue: DownloadSurveyFileValue;
   content: Buffer<ArrayBuffer>;
 }

@@ -13,7 +13,6 @@
 import { join } from 'path';
 import { Model, Types } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
-import { Response } from 'express';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import SurveyStatus from '@libs/survey/survey-status-enum';
@@ -21,10 +20,7 @@ import JWTUser from '@libs/user/types/jwt/jwtUser';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import { createNewPublicUserLogin, publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
-import SURVEY_ANSWERS_FOLDER from '@libs/survey/constants/surveyAnswersFolder';
 import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersAttachmentPath';
-import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import CustomHttpException from '../common/CustomHttpException';
@@ -34,17 +30,16 @@ import Attendee from '../conferences/attendee.schema';
 import MigrationService from '../migration/migration.service';
 import surveyAnswersMigrationsList from './migrations/surveyAnswersMigrationsList';
 import GroupsService from '../groups/groups.service';
-import FilesystemService from '../filesystem/filesystem.service';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
+import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
 class SurveyAnswersService implements OnModuleInit {
   constructor(
     @InjectModel(SurveyAnswer.name) private surveyAnswerModel: Model<SurveyAnswerDocument>,
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
-    private readonly surveyAnswerAttachmentsService: SurveyAnswerAttachmentsService,
     private readonly groupsService: GroupsService,
-    private readonly fileSystemService: FilesystemService,
+    private readonly surveyAnswerAttachmentsService: SurveyAnswerAttachmentsService,
   ) {}
 
   async onModuleInit() {
@@ -488,34 +483,6 @@ class SurveyAnswersService implements OnModuleInit {
     return latestUserAnswer || undefined;
   }
 
-  async getAnsweredFiles(
-    surveyId: string,
-    username: string,
-  ): Promise<{ name: string; path: string; content: Buffer }[]> {
-    const filesPath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, username);
-
-    Logger.log(`filesPath: ${filesPath}`, SurveyAnswersService.name);
-
-    const existence = await FilesystemService.checkIfFileExist(filesPath);
-
-    Logger.log(`existence: ${existence}`, SurveyAnswersService.name);
-
-    if (!existence) {
-      return [];
-    }
-
-    const fileNames = await this.fileSystemService.getAllFilenamesInDirectory(filesPath);
-
-    Logger.log(`Checking if directory exists: ${fileNames.join(', ')}`, SurveyAnswersService.name);
-
-    const filePromises = fileNames.map(async (name) => ({
-      name,
-      path: join(filesPath, name),
-      content: await FilesystemService.readFile(join(filesPath, name)),
-    }));
-    return Promise.all(filePromises);
-  }
-
   async getPublicAnswers(surveyId: string): Promise<JSON[] | null> {
     const surveyAnswers = await this.surveyAnswerModel.find<SurveyAnswer>({ surveyId: new Types.ObjectId(surveyId) });
     if (surveyAnswers.length === 0) {
@@ -554,7 +521,7 @@ class SurveyAnswersService implements OnModuleInit {
       );
     }
 
-    const filePath = surveyIds.map((surveyId) => join(APPS_FILES_PATH, SURVEY_ANSWERS_FOLDER, surveyId));
+    const filePath = surveyIds.map((surveyId) => join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId));
     return FilesystemService.deleteDirectories(filePath);
   }
 
@@ -587,23 +554,6 @@ class SurveyAnswersService implements OnModuleInit {
       );
     }
     return newSurveyAnswer;
-  }
-
-  async serveFileFromAnswer(userName: string, surveyId: string, fileName: string, res: Response): Promise<Response> {
-    return await this.fileSystemService.getResponseWithFileStreamWithAlternativePath(
-      res,
-      join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, fileName),
-      join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName, fileName),
-    );
-  }
-
-  static async deleteTempFileFromAnswer(userName: string, surveyId: string, fileName: string): Promise<void> {
-    const tempFilesPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
-    const tempExistence = await FilesystemService.checkIfFileExist(join(tempFilesPath, fileName));
-    if (!tempExistence) {
-      return;
-    }
-    await FilesystemService.deleteFile(tempFilesPath, fileName);
   }
 }
 
