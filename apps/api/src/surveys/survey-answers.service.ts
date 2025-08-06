@@ -323,6 +323,11 @@ class SurveyAnswersService implements OnModuleInit {
       updatedAnswer,
     );
     void this.surveyAnswerAttachmentsService.clearUpSurveyAnswersTempFiles(username, String(survey.id));
+
+    if (createdAnswer) {
+      await this.updateSurveyParticipations(survey, String(createdAnswer.id), username);
+    }
+
     return createdAnswer;
   }
 
@@ -356,10 +361,10 @@ class SurveyAnswersService implements OnModuleInit {
       survey.saveNo,
       updatedAnswer,
     );
-    void this.surveyAnswerAttachmentsService.clearUpSurveyAnswersTempFiles(firstName, String(survey.id));
+    void this.surveyAnswerAttachmentsService.clearUpSurveyAnswersTempFiles(user.username, String(survey.id));
 
     if (createdAnswer) {
-      await this.updateSurveyParticipations(survey, String(createdAnswer.id), firstName);
+      await this.updateSurveyParticipations(survey, String(createdAnswer.id), user.username);
     }
 
     return createdAnswer;
