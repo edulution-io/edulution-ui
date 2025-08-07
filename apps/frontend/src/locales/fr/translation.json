@@ -1007,6 +1007,8 @@
   "teacher": "Professeur",
   "student": "Élève",
   "students": "Élèves",
+  "parent": "Parent",
+  "staff": "Personnel",
   "user": "utilisateur",
   "login": {
     "pageTitle": "Se connecter",
