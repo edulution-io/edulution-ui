@@ -10,6 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const extractCnValue = (dn: string): string => dn.split(',')[0].split('=')[1].replace('role-', '');
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import LdapKeycloakSyncService from './ldap-keycloak-sync.service';
+import { LdapKeycloakSync, LdapKeycloakSyncSchema } from './ldap-keycloak-sync.schema';
 
-export default extractCnValue;
+@Module({
+  imports: [MongooseModule.forFeature([{ name: LdapKeycloakSync.name, schema: LdapKeycloakSyncSchema }])],
+  providers: [LdapKeycloakSyncService],
+  exports: [LdapKeycloakSyncService],
+})
+export default class LdapKeycloakSyncModule {}

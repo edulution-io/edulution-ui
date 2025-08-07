@@ -45,6 +45,7 @@ import FileSystemModule from '../filesystem/filesystem.module';
 import WebDavModule from '../webdav/webdav.module';
 import HealthModule from '../health/health.module';
 import ScriptsModule from '../scripts/scripts.module';
+import LdapKeycloakSyncModule from '../ldap-keycloak-sync/ldap-keycloak-sync.module';
 
 const redisHost = process.env.REDIS_HOST ?? 'localhost';
 const redisPort = +(process.env.REDIS_PORT ?? 6379);
@@ -87,6 +88,7 @@ const redisPort = +(process.env.REDIS_PORT ?? 6379);
     WebDavModule,
     SseModule,
     TldrawSyncModule,
+    LdapKeycloakSyncModule,
     JwtModule.register({
       global: true,
     }),
