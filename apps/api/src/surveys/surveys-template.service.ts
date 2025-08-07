@@ -12,7 +12,6 @@
 
 import { join } from 'path';
 import { Model } from 'mongoose';
-import { Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
@@ -100,24 +99,50 @@ class SurveysTemplateService implements OnModuleInit {
     await FilesystemService.deleteFiles(templatePath, filesToDelete);
   }
 
-  async serveTemplateNames(): Promise<string[]> {
-    let templates = await this.surveyTemplateModel.find({});
-    templates = templates.filter((template) => !!template.fileName && template.isActive);
-    const fileNames = templates.map((template) => template.fileName);
-    return fileNames;
+  async serveTemplates(isAdmin: boolean): Promise<SurveyTemplateDto[]> {
+    try {
+      const templates: SurveysTemplateDocument[] = await this.surveyTemplateModel
+        .find(isAdmin ? {} : { isActive: true })
+        .exec();
+      return templates as SurveyTemplateDto[];
+    } catch (error) {
+      throw new CustomHttpException(
+        CommonErrorMessages.DB_ACCESS_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error,
+        SurveysTemplateService.name,
+      );
+    }
   }
 
-  async serveTemplate(fileName: string, res: Response): Promise<Response> {
-    const document = await this.surveyTemplateModel.findOne({ fileName, isActive: true });
-    if (!document) {
+  async deleteTemplate(fileName: string): Promise<void> {
+    try {
+      await this.surveyTemplateModel.deleteOne({ fileName });
+    } catch {
       throw new CustomHttpException(
-        CommonErrorMessages.FILE_NOT_FOUND,
+        CommonErrorMessages.FILE_DELETION_FAILED,
         HttpStatus.NOT_FOUND,
         undefined,
         SurveysTemplateService.name,
       );
     }
-    return res.status(HttpStatus.OK).json(document.template);
+  }
+
+  async toggleIsTemplateActive(fileName: string): Promise<SurveysTemplateDocument | null> {
+    let document: SurveysTemplateDocument | null = null;
+    document = await this.surveyTemplateModel.findOneAndUpdate(
+      { fileName, isActive: true },
+      { isActive: false },
+      { new: true, upsert: false },
+    );
+    if (document === null) {
+      document = await this.surveyTemplateModel.findOneAndUpdate(
+        { fileName, isActive: false },
+        { isActive: true },
+        { new: true, upsert: false },
+      );
+    }
+    return document;
   }
 }
 
