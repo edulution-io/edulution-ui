@@ -15,10 +15,14 @@ import { MongooseModule } from '@nestjs/mongoose';
 import WebdavSharesController from './webdav-shares.controller';
 import WebdavSharesService from './webdav-shares.service';
 import { WebdavShares, WebdavSharesSchema } from './webdav-shares.schema';
+import { AppConfig, AppConfigSchema } from '../../appconfig/appconfig.schema';
 
 @Global()
 @Module({
-  imports: [MongooseModule.forFeature([{ name: WebdavShares.name, schema: WebdavSharesSchema }])],
+  imports: [
+    MongooseModule.forFeature([{ name: WebdavShares.name, schema: WebdavSharesSchema }]),
+    MongooseModule.forFeature([{ name: AppConfig.name, schema: AppConfigSchema }]),
+  ],
   controllers: [WebdavSharesController],
   providers: [WebdavSharesService],
   exports: [WebdavSharesService],

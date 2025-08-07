@@ -17,21 +17,34 @@ import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import APPS from '@libs/appconfig/constants/apps';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { WebdavShares, WebdavSharesDocument } from './webdav-shares.schema';
 import CustomHttpException from '../../common/CustomHttpException';
+import { AppConfig } from '../../appconfig/appconfig.schema';
 
 @Injectable()
 class WebdavSharesService implements OnModuleInit {
-  constructor(@InjectModel(WebdavShares.name) private webdavSharesModel: Model<WebdavSharesDocument>) {}
+  constructor(
+    @InjectModel(WebdavShares.name) private webdavSharesModel: Model<WebdavSharesDocument>,
+    @InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>,
+  ) {}
 
   async onModuleInit() {
     const count = await this.webdavSharesModel.countDocuments();
 
     if (count === 0) {
+      const appConfig = await this.appConfigModel.findOne({ name: APPS.FILE_SHARING }).lean();
+
+      let accessGroups: MultipleSelectorGroup[] = [];
+      if (appConfig && appConfig.accessGroups) {
+        accessGroups = appConfig.accessGroups;
+      }
+
       await this.webdavSharesModel.create({
         displayName: WEBDAV_SHARE_TYPE.LINUXMUSTER,
         url: process.env.EDUI_WEBDAV_URL as string,
-        accessGroups: [],
+        accessGroups,
         type: WEBDAV_SHARE_TYPE.LINUXMUSTER,
       });
     }

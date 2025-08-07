@@ -23,7 +23,6 @@ import QueueService from '../queue/queue.service';
 import CollectFileConsumer from './consumers/collectFile.consumer';
 import DeleteFileConsumer from './consumers/deleteFile.consumer';
 import WebdavService from '../webdav/webdav.service';
-import AppConfigModule from '../appconfig/appconfig.module';
 import MoveOrRenameConsumer from './consumers/moveOrRename.consumer';
 import CopyFileConsumer from './consumers/copyFile.consumer';
 import CreateFolderConsumer from './consumers/createFolder.consumer';
@@ -33,7 +32,6 @@ import { PublicFileShareSchema, PublicShare } from './publicFileShare.schema';
 @Module({
   imports: [
     HttpModule,
-    AppConfigModule,
     BullModule.registerQueue({
       name: APPS.FILE_SHARING,
     }),
