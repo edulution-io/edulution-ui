@@ -309,7 +309,7 @@ class SurveyAnswersService implements OnModuleInit {
   };
 
   async anonymousStrategy(survey: SurveyDocument, answer: JSON): Promise<SurveyAnswerDocument | null> {
-    const username = 'anonymous';
+    const username = `anonymous_${uuidv4()}`;
     const user: Attendee = { username };
     const updatedAnswer = await this.surveyAnswerAttachmentsService.moveAnswersAttachmentsToPermanentStorage(
       username,
