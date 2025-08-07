@@ -14,13 +14,9 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import LdapKeycloakSyncService from './ldap-keycloak-sync.service';
 import { LdapKeycloakSync, LdapKeycloakSyncSchema } from './ldap-keycloak-sync.schema';
-import GlobalSettingsModule from '../global-settings/global-settings.module';
 
 @Module({
-  imports: [
-    GlobalSettingsModule,
-    MongooseModule.forFeature([{ name: LdapKeycloakSync.name, schema: LdapKeycloakSyncSchema }]),
-  ],
+  imports: [MongooseModule.forFeature([{ name: LdapKeycloakSync.name, schema: LdapKeycloakSyncSchema }])],
   providers: [LdapKeycloakSyncService],
   exports: [LdapKeycloakSyncService],
 })
