@@ -25,6 +25,8 @@ import { AppConfig } from '../../appconfig/appconfig.schema';
 
 @Injectable()
 class WebdavSharesService implements OnModuleInit {
+  private webdavShareCache: { url: string; type: string } | null = null;
+
   constructor(
     @InjectModel(WebdavShares.name) private webdavSharesModel: Model<WebdavSharesDocument>,
     @InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>,
@@ -50,20 +52,30 @@ class WebdavSharesService implements OnModuleInit {
     }
   }
 
-  async getWebdavSharePath() {
-    const webdavShare = await this.webdavSharesModel.findOne().exec();
-    if (!webdavShare) {
-      return '';
+  private async loadCache(): Promise<void> {
+    const webdavShare = await this.webdavSharesModel.findOne().lean();
+    if (webdavShare) {
+      this.webdavShareCache = {
+        url: webdavShare.url,
+        type: webdavShare.type,
+      };
+    } else {
+      this.webdavShareCache = null;
     }
-    return webdavShare.url;
   }
 
-  async getWebdavShareType() {
-    const webdavShare = await this.webdavSharesModel.findOne().exec();
-    if (!webdavShare) {
-      return '';
+  async getWebdavSharePath(): Promise<string> {
+    if (!this.webdavShareCache) {
+      await this.loadCache();
     }
-    return webdavShare.type;
+    return this.webdavShareCache?.url || '';
+  }
+
+  async getWebdavShareType(): Promise<string> {
+    if (!this.webdavShareCache) {
+      await this.loadCache();
+    }
+    return this.webdavShareCache?.type || '';
   }
 
   findAllWebdavShares(currentUserGroups: string[]) {
@@ -100,9 +112,11 @@ class WebdavSharesService implements OnModuleInit {
     }
   }
 
-  createWebdavShare(webdavShareDto: WebdavShareDto) {
+  async createWebdavShare(webdavShareDto: WebdavShareDto) {
     try {
-      return this.webdavSharesModel.create(webdavShareDto);
+      const created = await this.webdavSharesModel.create(webdavShareDto);
+      await this.loadCache();
+      return created;
     } catch (error) {
       throw new CustomHttpException(
         CommonErrorMessages.DB_ACCESS_FAILED,
@@ -120,6 +134,9 @@ class WebdavSharesService implements OnModuleInit {
       if (webdavShare.matchedCount === 0) {
         throw new Error(`WebDAV share with ID ${webdavShareId} not found`);
       }
+
+      await this.loadCache();
+
       return webdavShare;
     } catch (error) {
       throw new CustomHttpException(
@@ -135,6 +152,7 @@ class WebdavSharesService implements OnModuleInit {
     try {
       Logger.log(`Deleting WebDAV share with ID: ${webdavShareId}`);
       await this.webdavSharesModel.deleteOne({ _id: webdavShareId }).exec();
+      await this.loadCache();
       Logger.log(`WebDAV share with ID: ${webdavShareId} deleted successfully`);
     } catch (error) {
       throw new CustomHttpException(
