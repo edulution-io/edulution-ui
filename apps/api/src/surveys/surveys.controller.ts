@@ -123,26 +123,20 @@ class SurveysController {
   }
 
   @Get(TEMPLATES)
-  getTemplateNames(@GetCurrentUser() currentUser: JWTUser) {
+  async serveTemplates(@GetCurrentUser() currentUser: JWTUser, @Res() res: Response) {
     const isAdmin = getIsAdmin(currentUser.ldapGroups);
-    return this.surveysTemplateService.serveTemplateNames(isAdmin);
+    const surveyTemplates = await this.surveysTemplateService.serveTemplates(isAdmin);
+    return res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_JSON).json(surveyTemplates);
   }
 
   @Delete(`${TEMPLATES}/:filename`)
-  deleteTemplate(@Param() params: { filename: string }) {
+  async deleteTemplate(@Param() params: { filename: string }) {
     const { filename } = params;
     return this.surveysTemplateService.deleteTemplate(filename);
   }
 
-  @Get(`${TEMPLATES}/:filename`)
-  getTemplate(@Param() params: { filename: string }, @Res() res: Response) {
-    const { filename } = params;
-    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_JSON);
-    return this.surveysTemplateService.serveTemplate(filename, res);
-  }
-
   @Patch(`${TEMPLATES}/:filename`)
-  toggleIsTemplateActive(@Param() params: { filename: string }) {
+  async toggleIsTemplateActive(@Param() params: { filename: string }) {
     const { filename } = params;
     return this.surveysTemplateService.toggleIsTemplateActive(filename);
   }

@@ -58,40 +58,15 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
 
   fetchTemplates: async (): Promise<void> => {
     set({ isLoading: true });
-
-    let templateNames: string[] | undefined;
     try {
-      const result = await eduApi.get<string[]>(SURVEY_TEMPLATES_ENDPOINT);
-      if (result) {
-        templateNames = result.data;
-      }
+      const result = await eduApi.get<SurveyTemplateDto[]>(SURVEY_TEMPLATES_ENDPOINT);
+      set({ templates: result.data });
     } catch (error) {
       handleApiError(error, set);
+      set({ templates: [] });
+    } finally {
+      set({ isLoading: false });
     }
-
-    let templateDocuments: SurveyTemplateDto[] = [];
-    const promises = templateNames?.map(async (fileName) => {
-      try {
-        const result = await eduApi.get<TemplateDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${fileName}`);
-        if (result) {
-          const newTemplate = { fileName, template: { ...result.data } };
-          templateDocuments = [...templateDocuments, newTemplate];
-        }
-      } catch (error) {
-        handleApiError(error, set);
-      }
-    });
-
-    if (promises) {
-      try {
-        await Promise.all(promises);
-        set({ templates: templateDocuments });
-      } catch (error) {
-        set({ templates: [] });
-      }
-    }
-
-    set({ isLoading: false });
   },
 
   setTemplate: (template?: SurveyTemplateDto) => set({ template }),
@@ -117,7 +92,6 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
     if (!templateFileName) {
       return;
     }
-
     set({ isSubmitting: true });
     try {
       await eduApi.delete(`${SURVEY_TEMPLATES_ENDPOINT}/${templateFileName}`);
@@ -133,7 +107,6 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
     if (!templateName) {
       return;
     }
-
     set({ isSubmitting: true });
     try {
       const result = await eduApi.patch<TemplateDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${templateName}`);

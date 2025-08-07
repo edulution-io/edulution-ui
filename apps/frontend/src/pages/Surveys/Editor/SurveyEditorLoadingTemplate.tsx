@@ -22,6 +22,7 @@ import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPage
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
+import { EyeLightIcon, EyeLightSlashIcon } from '@/assets/icons';
 
 interface SurveyEditorLoadingTemplateProps {
   creator: AttendeeDto;
@@ -31,7 +32,13 @@ interface SurveyEditorLoadingTemplateProps {
 const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLoadingTemplateProps): JSX.Element => {
   const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
 
-  const { setTemplate, setIsOpenTemplateConfirmDeletion, setIsOpenTemplatePreview } = useTemplateMenuStore();
+  const {
+    setTemplate,
+    setIsOpenTemplateConfirmDeletion,
+    setIsOpenTemplatePreview,
+    toggleIsTemplateActive,
+    fetchTemplates,
+  } = useTemplateMenuStore();
 
   const { isSuperAdmin } = useLdapGroups();
 
@@ -41,7 +48,7 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
 
   return (
     <Card
-      className={cn(GRID_CARD, { 'bg-muted': isActive }, { 'bg-muted-light': !isActive }, { 'pb-10': isSuperAdmin })}
+      className={cn(GRID_CARD, { 'bg-accent': isActive }, { 'bg-card': !isActive }, { 'pb-12': isSuperAdmin })}
       variant="text"
       onClick={() => {
         setTemplate(surveyTemplate);
@@ -62,18 +69,37 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
       <h4 aria-label={`Template title: ${title}`}>{title}</h4>
       <p>{description}</p>
       {isSuperAdmin && (
-        <Button
-          onClick={(e) => {
-            e.stopPropagation();
-            setTemplate(surveyTemplate);
-            setIsOpenTemplateConfirmDeletion(true);
-          }}
-          variant="btn-attention"
-          size="sm"
-          className="absolute bottom-2 right-2 p-2"
-        >
-          <HiTrash className="h-4 w-4" />
-        </Button>
+        <>
+          <Button
+            onClick={async (e) => {
+              e.stopPropagation();
+              if (!surveyTemplate.fileName) return;
+              await toggleIsTemplateActive(surveyTemplate.fileName);
+              await fetchTemplates();
+            }}
+            variant="btn-outline"
+            size="sm"
+            className="absolute bottom-2 right-14 h-8 w-10 p-2"
+          >
+            <img
+              src={isActive ? EyeLightIcon : EyeLightSlashIcon}
+              alt="eye"
+              className="h-6 min-h-6 w-6 min-w-6"
+            />
+          </Button>
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              setTemplate(surveyTemplate);
+              setIsOpenTemplateConfirmDeletion(true);
+            }}
+            variant="btn-outline"
+            size="sm"
+            className="absolute bottom-2 right-2 h-8 w-10 p-2"
+          >
+            <HiTrash className="h-4 w-4" />
+          </Button>
+        </>
       )}
     </Card>
   );
