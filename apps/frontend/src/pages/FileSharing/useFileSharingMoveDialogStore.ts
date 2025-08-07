@@ -70,7 +70,7 @@ const useFileSharingMoveDialogStore = create<UseFileSharingMoveDialogStore>((set
     try {
       set({ isLoading: true });
       const { data } = await eduApi.get<DirectoryFileDTO[]>(
-        buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, path),
+        buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, getPathWithoutWebdav(path)),
       );
 
       const dialogShownFiles = get().processWebdavResponse(data);

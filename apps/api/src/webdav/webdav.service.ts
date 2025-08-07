@@ -307,8 +307,11 @@ class WebdavService {
       client,
       {
         method: HttpMethodsWebDav.COPY,
-        url: originFullPath,
-        headers: { Destination: destinationUrl },
+        url: decodeURI(originFullPath),
+        headers: {
+          Destination: decodeURI(destinationUrl),
+          [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
+        },
       },
       FileSharingErrorMessage.DuplicateFailed,
       (resp: WebdavStatusResponse) => ({
