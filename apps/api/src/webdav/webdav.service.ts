@@ -12,6 +12,7 @@
 
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
+import { OnEvent } from '@nestjs/event-emitter';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
@@ -31,6 +32,7 @@ import mapToDirectoryFiles from '@libs/filesharing/utils/mapToDirectoryFiles';
 import DEFAULT_PROPFIND_XML from '@libs/filesharing/constants/defaultPropfindXml';
 import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import { Readable } from 'stream';
+import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import CustomHttpException from '../common/CustomHttpException';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
@@ -44,6 +46,11 @@ class WebdavService {
     private readonly usersService: UsersService,
     private readonly webdavSharesService: WebdavSharesService,
   ) {}
+
+  @OnEvent(EVENT_EMITTER_EVENTS.WEBDAV_BASEURL_CHANGED)
+  invalidateClientCache() {
+    this.webdavClientCache.clear();
+  }
 
   static async executeWebdavRequest<Raw = unknown, Result = Raw>(
     client: AxiosInstance,

@@ -12,6 +12,7 @@
 
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Model, PipelineStage } from 'mongoose';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
@@ -19,6 +20,7 @@ import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import APPS from '@libs/appconfig/constants/apps';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import { WebdavShares, WebdavSharesDocument } from './webdav-shares.schema';
 import CustomHttpException from '../../common/CustomHttpException';
 import { AppConfig } from '../../appconfig/appconfig.schema';
@@ -30,6 +32,7 @@ class WebdavSharesService implements OnModuleInit {
   constructor(
     @InjectModel(WebdavShares.name) private webdavSharesModel: Model<WebdavSharesDocument>,
     @InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async onModuleInit() {
@@ -124,6 +127,8 @@ class WebdavSharesService implements OnModuleInit {
         error,
         WebdavSharesService.name,
       );
+    } finally {
+      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.WEBDAV_BASEURL_CHANGED);
     }
   }
 
@@ -145,6 +150,8 @@ class WebdavSharesService implements OnModuleInit {
         error instanceof Error ? error.message : error,
         WebdavSharesService.name,
       );
+    } finally {
+      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.WEBDAV_BASEURL_CHANGED);
     }
   }
 
@@ -161,6 +168,8 @@ class WebdavSharesService implements OnModuleInit {
         error,
         WebdavSharesService.name,
       );
+    } finally {
+      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.WEBDAV_BASEURL_CHANGED);
     }
   }
 }
