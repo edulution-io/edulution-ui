@@ -14,16 +14,13 @@ import { Injectable } from '@nestjs/common';
 import { Expo, ExpoPushMessage } from 'expo-server-sdk';
 import pickDefinedNotificationFields from '@libs/notification/utils/pickDefinedNotificationFields';
 import SendPushNotificationDto from '@libs/notification/types/send-pushNotification.dto';
-import UserDeviceDto from '@libs/notification/types/userDevice.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { User, UserDocument } from '../users/user.schema';
+import UsersService from '../users/users.service';
 
 @Injectable()
 export class NotificationsService {
   private readonly expo = new Expo();
 
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(private userService: UsersService) {}
 
   async sendPushNotification(sendPushNotificationDto: SendPushNotificationDto): Promise<void> {
     const tokens = Array.isArray(sendPushNotificationDto.to)
@@ -57,43 +54,8 @@ export class NotificationsService {
     await Promise.all(chunks.map((chunk) => this.expo.sendPushNotificationsAsync(chunk)));
   }
 
-  async registerDevice(username: string, userDeviceDto: UserDeviceDto): Promise<void> {
-    const { expoPushToken } = userDeviceDto;
-
-    if (!Expo.isExpoPushToken(expoPushToken)) {
-      return;
-    }
-    await this.userModel
-      .findOneAndUpdate({ username }, { $addToSet: { registeredPushTokens: expoPushToken } }, { new: true })
-      .exec();
-  }
-
-  async unregisterDevice(username: string, userDeviceDto: UserDeviceDto): Promise<void> {
-    const { expoPushToken } = userDeviceDto;
-
-    if (!Expo.isExpoPushToken(expoPushToken)) {
-      return;
-    }
-
-    await this.userModel
-      .findOneAndUpdate({ username }, { $pull: { registeredPushTokens: expoPushToken } }, { new: true })
-      .exec();
-  }
-
   async notifyUsernames(usernames: string[], partialNotification: Omit<SendPushNotificationDto, 'to'>): Promise<void> {
-    const users = await this.userModel
-      .find({ username: { $in: usernames } })
-      .select('registeredPushTokens')
-      .exec();
-
-    const allTokens = users.flatMap((u) => u.registeredPushTokens ?? []).filter((token) => Expo.isExpoPushToken(token));
-
-    if (allTokens.length === 0) {
-      return;
-    }
-
-    const uniqueTokens = Array.from(new Set(allTokens));
-
+    const uniqueTokens = await this.userService.getPushTokensByUsersnames(usernames);
     await this.sendPushNotification({
       to: uniqueTokens,
       ...partialNotification,
