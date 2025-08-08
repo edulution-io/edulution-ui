@@ -24,7 +24,7 @@ import delay from '@libs/common/utils/delay';
 import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
-import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
+import processWebdavResponse from '@libs/filesharing/utils/processWebdavResponse';
 
 type UseFileSharingStore = {
   files: DirectoryFileDTO[];
@@ -42,7 +42,6 @@ type UseFileSharingStore = {
   setFiles: (files: DirectoryFileDTO[]) => void;
   setSelectedItems: (items: DirectoryFileDTO[]) => void;
   fetchFiles: (path?: string) => Promise<void>;
-  processWebdavResponse: (response: DirectoryFileDTO[]) => DirectoryFileDTO[];
   fetchMountPoints: () => Promise<DirectoryFileDTO[]>;
   fetchDirs: (path: string) => Promise<void>;
   reset: () => void;
@@ -143,7 +142,8 @@ const useFileSharingStore = create<UseFileSharingStore>(
             `${buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, path)}`,
           );
 
-          const files = get().processWebdavResponse(data);
+          const webdavShareType = get().webdavShares[0]?.type;
+          const files = processWebdavResponse(data, webdavShareType);
 
           set({
             currentPath: path,
@@ -174,15 +174,6 @@ const useFileSharingStore = create<UseFileSharingStore>(
         }
       },
 
-      processWebdavResponse: (response: DirectoryFileDTO[]) => {
-        let data = response;
-        if (get().webdavShares[0]?.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
-          data = data.slice(1);
-        }
-        data = data.sort((a, b) => a.filename.localeCompare(b.filename));
-        return data;
-      },
-
       fetchMountPoints: async () => {
         try {
           set({ isLoading: true });
@@ -191,7 +182,8 @@ const useFileSharingStore = create<UseFileSharingStore>(
             buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, '/'),
           );
 
-          const mountPoints = get().processWebdavResponse(data);
+          const webdavShareType = get().webdavShares[0]?.type;
+          const mountPoints = processWebdavResponse(data, webdavShareType);
 
           set({ mountPoints });
           return mountPoints;
@@ -209,7 +201,8 @@ const useFileSharingStore = create<UseFileSharingStore>(
             `${buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, getPathWithoutWebdav(path))}`,
           );
 
-          const directories = get().processWebdavResponse(data);
+          const webdavShareType = get().webdavShares[0]?.type;
+          const directories = processWebdavResponse(data, webdavShareType);
 
           set({ directories });
         } catch (error) {

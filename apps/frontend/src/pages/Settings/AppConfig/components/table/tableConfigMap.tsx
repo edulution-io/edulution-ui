@@ -160,8 +160,12 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
       filterKey: WEBDAV_SHARE_TABLE_COLUMNS.URL,
       filterPlaceHolderText: 'settings.appconfig.sections.webdavShare.filterPlaceHolderText',
       type: ExtendedOptionKeys.WEBDAV_SHARE_TABLE,
-      hideColumnsInMobileView: [],
-      hideColumnsInTabletView: [],
+      hideColumnsInMobileView: [
+        WEBDAV_SHARE_TABLE_COLUMNS.URL,
+        WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS,
+        WEBDAV_SHARE_TABLE_COLUMNS.TYPE,
+      ],
+      hideColumnsInTabletView: [WEBDAV_SHARE_TABLE_COLUMNS.URL],
     }),
   ],
 };
