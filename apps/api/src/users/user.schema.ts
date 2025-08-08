@@ -49,6 +49,15 @@ export class User {
 
   @Prop({ type: String, default: UserLanguage.SYSTEM })
   language: UserLanguageType;
+
+  @Prop({
+    type: [String],
+    default: [],
+    validate: {
+      validator: (tokens: string[]) => new Set(tokens).size === tokens.length,
+    },
+  })
+  registeredPushTokens: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -5,6 +5,7 @@
   "closeEditingWindow": "Close editing window",
   "framebufferImage": "Framebuffer image",
   "previewImage": "Image preview",
+  "not-set": "Not set",
   "bulletinboard": {
     "settings": "Settings",
     "noBulletinsToShow": "There are currently no messages to display, so check back later!",
@@ -899,7 +900,13 @@
         "updateError": "Settings could not be updated.",
         "notFoundError": "Settings could not be loaded."
       },
-      "deploymentTarget": "Target platform"
+      "deploymentTarget": "Target platform",
+      "ldap": {
+        "title": "LDAP",
+        "edulution-binduser-description": "Here you can configure the LDAP access data required for group synchronization.",
+        "edulution-binduser-dn": "Distinguished Name (DN)",
+        "edulution-binduser-password": "Password"
+      }
     },
     "userAdministration": {
       "title": "User Administration",

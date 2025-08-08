@@ -16,7 +16,7 @@ import { GlobalSettingsDocument } from '../global-settings.schema';
 
 const migration000: Migration<GlobalSettingsDocument> = {
   name: '000-add-general-settings',
-  version: 2,
+  version: 0,
   execute: async (model) => {
     const previousSchemaVersion = 1;
     const newSchemaVersion = 2;
