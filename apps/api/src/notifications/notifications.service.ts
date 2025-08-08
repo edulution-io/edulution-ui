@@ -16,7 +16,7 @@ import pickDefinedNotificationFields from '@libs/pushNotification/utils/pickDefi
 import SendPushNotificationDto from '@libs/pushNotification/types/send-pushNotification.dto';
 
 @Injectable()
-export class PushNotificationService {
+export class NotificationsService {
   private readonly expo = new Expo();
 
   async sendPushNotification(sendPushNotificationDto: SendPushNotificationDto): Promise<void> {
@@ -52,4 +52,4 @@ export class PushNotificationService {
   }
 }
 
-export default PushNotificationService;
+export default NotificationsService;

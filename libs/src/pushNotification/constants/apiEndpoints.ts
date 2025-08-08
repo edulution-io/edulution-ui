@@ -10,5 +10,5 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const PUSH_NOTIFICATION_EDU_API_ENDPOINT = 'pushNotifications';
-export const PUSH_NOTIFICATION_SEND_EDU_API_ENDPOINT = `/send`;
+export const NOTIFICATIONS_EDU_API_ENDPOINT = 'notifications';
+export const NOTIFICATION_SEND_EDU_API_ENDPOINT = `/send`;

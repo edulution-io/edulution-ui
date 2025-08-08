@@ -11,11 +11,11 @@
  */
 
 import { Module } from '@nestjs/common';
-import PushNotificationController from './pushNotification.controller';
-import PushNotificationService from './pushNotification.service';
+import NotificationsController from './notifications.controller';
+import NotificationsService from './notifications.service';
 
 @Module({
-  controllers: [PushNotificationController],
-  providers: [PushNotificationService],
+  controllers: [NotificationsController],
+  providers: [NotificationsService],
 })
-export default class PushNotificationModule {}
+export default class NotificationsModule {}

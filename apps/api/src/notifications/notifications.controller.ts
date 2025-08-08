@@ -11,24 +11,24 @@
  */
 
 import {
-  PUSH_NOTIFICATION_EDU_API_ENDPOINT,
-  PUSH_NOTIFICATION_SEND_EDU_API_ENDPOINT,
+  NOTIFICATION_SEND_EDU_API_ENDPOINT,
+  NOTIFICATIONS_EDU_API_ENDPOINT,
 } from '@libs/pushNotification/constants/apiEndpoints';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Post } from '@nestjs/common';
 import SendPushNotificationDto from '@libs/pushNotification/types/send-pushNotification.dto';
-import PushNotificationService from './pushNotification.service';
+import NotificationsService from './notifications.service';
 
-@ApiTags(PUSH_NOTIFICATION_EDU_API_ENDPOINT)
+@ApiTags(NOTIFICATIONS_EDU_API_ENDPOINT)
 @ApiBearerAuth()
-@Controller(PUSH_NOTIFICATION_EDU_API_ENDPOINT)
-class PushNotificationController {
-  constructor(private readonly pushNotificationService: PushNotificationService) {}
+@Controller(NOTIFICATIONS_EDU_API_ENDPOINT)
+class NotificationsController {
+  constructor(private readonly pushNotificationService: NotificationsService) {}
 
-  @Post(PUSH_NOTIFICATION_SEND_EDU_API_ENDPOINT)
+  @Post(NOTIFICATION_SEND_EDU_API_ENDPOINT)
   async sendPushNotification(@Body() sendPushNotificationDto: SendPushNotificationDto): Promise<void> {
     await this.pushNotificationService.sendPushNotification(sendPushNotificationDto);
   }
 }
 
-export default PushNotificationController;
+export default NotificationsController;
