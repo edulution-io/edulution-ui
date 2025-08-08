@@ -10,10 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const QUEUE_CONSTANTS = {
-  PREFIX: 'queue-user-',
-  USERS_CACHE_REFRESH: 'USERS_CACHE_REFRESH',
-  KEYCLOAK_REQUESTS_QUEUE: 'KEYCLOAK_REQUESTS_QUEUE',
-} as const;
+import LDAP_MEMBER_TYPES from '@libs/ldapKeycloakSync/constants/ldapMemberTypes';
 
-export default QUEUE_CONSTANTS;
+type LdapMemberType = (typeof LDAP_MEMBER_TYPES)[keyof typeof LDAP_MEMBER_TYPES];
+
+export default LdapMemberType;
