@@ -34,10 +34,10 @@ export class SurveyAnswer {
   schemaVersion: number;
 }
 
-const SurveyAnswerSchema = SchemaFactory.createForClass(SurveyAnswer);
+const SurveyAnswersSchema = SchemaFactory.createForClass(SurveyAnswer);
 
-SurveyAnswerSchema.set('toJSON', {
+SurveyAnswersSchema.set('toJSON', {
   virtuals: true,
 });
 
-export default SurveyAnswerSchema;
+export default SurveyAnswersSchema;

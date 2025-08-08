@@ -13,11 +13,11 @@
 import { Logger } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { Migration } from '../../migration/migration.type';
-import { SurveyAnswerDocument } from '../survey-answer.schema';
+import { SurveyAnswerDocument } from '../survey-answers.schema';
 
 const name = '000-transform-survey-answers-document-ids';
 
-const migration000SurveyIds: Migration<SurveyAnswerDocument> = {
+const surveyAnswersMigration000SurveyIds: Migration<SurveyAnswerDocument> = {
   name,
   version: 1,
   execute: async (model) => {
@@ -81,4 +81,4 @@ const migration000SurveyIds: Migration<SurveyAnswerDocument> = {
   },
 };
 
-export default migration000SurveyIds;
+export default surveyAnswersMigration000SurveyIds;
