@@ -178,13 +178,13 @@ class GroupsService implements OnModuleInit {
     }
   }
 
-  private static sanitizeGroup(group: Group) {
+  private static sanitizeGroup(group: Group | GroupWithMembers) {
     return { id: group.id, name: group.name, path: group.path };
   }
 
-  private static sanitizeGroupMembers(members: LDAPUser[]): GroupMemberDto[] {
+  private static sanitizeGroupMembers(members: (LDAPUser | GroupMemberDto)[]): GroupMemberDto[] {
     return Array.isArray(members)
-      ? members.map((member: LDAPUser) => ({
+      ? members.map((member) => ({
           id: member.id,
           username: member.username,
           firstName: member.firstName,
@@ -249,8 +249,8 @@ class GroupsService implements OnModuleInit {
     await Promise.all(setGroupsPromises);
   }
 
-  private async updateGroupsInCache(groups: Group[]): Promise<void> {
-    const failedGroups = await this.tryUpdateGroupsInCache(groups, 1);
+  private async updateGroupsWithMembersInCache(groups: Group[]): Promise<void> {
+    const failedGroups = await this.tryUpdateGroupsWithMembersInCache(groups, 1);
 
     if (failedGroups.length > 0) {
       Logger.error(
@@ -264,8 +264,8 @@ class GroupsService implements OnModuleInit {
     }
   }
 
-  private async tryUpdateGroupsInCache(groups: Group[], attempt: number): Promise<Group[]> {
-    const results = await Promise.allSettled(groups.map((group) => this.updateGroupInCache(this.cacheManager, group)));
+  private async tryUpdateGroupsWithMembersInCache(groups: Group[], attempt: number): Promise<Group[]> {
+    const results = await Promise.allSettled(groups.map((group) => this.updateGroupWithMembersInCache(group)));
 
     const failedGroups: Group[] = [];
     results.forEach((result, index) => {
@@ -275,22 +275,25 @@ class GroupsService implements OnModuleInit {
     });
 
     if (failedGroups.length > 0 && attempt < this.maximumRetries) {
-      return this.tryUpdateGroupsInCache(failedGroups, attempt + 1);
+      return this.tryUpdateGroupsWithMembersInCache(failedGroups, attempt + 1);
     }
 
     return failedGroups;
   }
 
-  private async updateGroupInCache(cacheManager: Cache, group: Group): Promise<void> {
-    const members = await this.fetchGroupMembers(group.id);
-    if (!members?.length) {
-      return;
+  async updateGroupWithMembersInCache(
+    group: Group | GroupWithMembers,
+    updatedMembers?: GroupMemberDto[],
+  ): Promise<void> {
+    let newMembers = updatedMembers;
+    if (!newMembers?.length) {
+      newMembers = await this.fetchGroupMembers(group.id);
     }
 
-    const sanitizedMembers = GroupsService.sanitizeGroupMembers(members);
+    const sanitizedMembers = newMembers?.length ? GroupsService.sanitizeGroupMembers(newMembers) : [];
     const sanitizedGroup = GroupsService.sanitizeGroup(group);
 
-    await cacheManager.set(
+    await this.cacheManager.set(
       `${GROUP_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
       {
         ...sanitizedGroup,
@@ -311,7 +314,7 @@ class GroupsService implements OnModuleInit {
 
       await this.cacheGroupsBySchoolName(schoolGroupNames, allGroups);
 
-      await this.updateGroupsInCache(allGroups);
+      await this.updateGroupsWithMembersInCache(allGroups);
     } catch (error) {
       Logger.error(`updateGroupsAndMembersInCache failed.`, GroupsService.name);
     }
