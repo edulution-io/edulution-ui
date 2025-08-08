@@ -79,7 +79,7 @@ import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
-import PushNotificationService from '../pushNotification/pushNotification.service';
+import NotificationsService from '../notifications/notifications.service';
 
 describe('SurveyAnswerService', () => {
   let service: SurveyAnswerService;
@@ -87,7 +87,7 @@ describe('SurveyAnswerService', () => {
   let surveyModel: Model<SurveyDocument>;
 
   beforeEach(async () => {
-    const pushNotificationMock = {
+    const notificationMock = {
       notifyUsernames: jest.fn().mockResolvedValue(undefined),
     };
 
@@ -108,7 +108,7 @@ describe('SurveyAnswerService', () => {
           useValue: jest.fn(),
         },
         { provide: FilesystemService, useValue: mockFilesystemService },
-        { provide: PushNotificationService, useValue: pushNotificationMock },
+        { provide: NotificationsService, useValue: notificationMock },
       ],
     }).compile();
 

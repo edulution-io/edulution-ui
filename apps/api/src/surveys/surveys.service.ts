@@ -28,7 +28,7 @@ import surveysMigrationsList from './migrations/surveysMigrationsList';
 import MigrationService from '../migration/migration.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import SurveysAttachmentService from './surveys-attachment.service';
-import PushNotificationService from '../pushNotification/pushNotification.service';
+import NotificationsService from '../notifications/notifications.service';
 
 @Injectable()
 class SurveysService implements OnModuleInit {
@@ -37,7 +37,7 @@ class SurveysService implements OnModuleInit {
     private surveysAttachmentService: SurveysAttachmentService,
     private readonly groupsService: GroupsService,
     private readonly sseService: SseService,
-    private readonly pushNotificationService: PushNotificationService,
+    private readonly notificationService: NotificationsService,
   ) {}
 
   async onModuleInit() {
@@ -177,12 +177,13 @@ class SurveysService implements OnModuleInit {
           ? SSE_MESSAGE_TYPE.SURVEY_CREATED
           : SSE_MESSAGE_TYPE.SURVEY_UPDATED;
 
+      // TODO: #1152
       const actionName = action === SSE_MESSAGE_TYPE.SURVEY_CREATED ? 'erstellt' : 'aktualisiert';
 
       const title = `Umfrage ${survey.formula.title}: ${actionName}`;
       const body = `Die Umfrage "${survey.formula.title}" wurde soeben ${actionName}.`;
 
-      await this.pushNotificationService.notifyUsernames(invitedMembersList, {
+      await this.notificationService.notifyUsernames(invitedMembersList, {
         title,
         body,
         data: {

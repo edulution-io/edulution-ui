@@ -10,16 +10,17 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import ConferencesService from './conferences.service';
-import { Conference, ConferenceSchema } from './conference.schema';
-import ConferencesController from './conferences.controller';
-import GroupsModule from '../groups/groups.module';
+import NotificationsController from './notifications.controller';
+import NotificationsService from './notifications.service';
+import UserSchema, { User } from '../users/user.schema';
 
+@Global()
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Conference.name, schema: ConferenceSchema }]), GroupsModule],
-  controllers: [ConferencesController],
-  providers: [ConferencesService],
+  imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])],
+  controllers: [NotificationsController],
+  providers: [NotificationsService],
+  exports: [NotificationsService],
 })
-export default class ConferencesModule {}
+export default class NotificationsModule {}

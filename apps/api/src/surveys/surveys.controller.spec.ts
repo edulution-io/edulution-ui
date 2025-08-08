@@ -59,7 +59,7 @@ import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysTemplateService from './surveys-template.service';
-import PushNotificationService from '../pushNotification/pushNotification.service';
+import NotificationsService from '../notifications/notifications.service';
 
 describe(SurveysController.name, () => {
   let controller: SurveysController;
@@ -91,7 +91,7 @@ describe(SurveysController.name, () => {
           },
         },
         { provide: FilesystemService, useValue: mockFilesystemService },
-        { provide: PushNotificationService, useValue: pushMock },
+        { provide: NotificationsService, useValue: pushMock },
       ],
     }).compile();
 

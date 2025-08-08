@@ -30,9 +30,9 @@ import cacheManagerMock from '../common/mocks/cacheManagerMock';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
-import PushNotificationService from '../pushNotification/pushNotification.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
+import NotificationsService from '../notifications/notifications.service';
 
 const mockConference: CreateConferenceDto = {
   name: 'Testconference',
@@ -108,7 +108,7 @@ describe(ConferencesService.name, () => {
   let model: Model<ConferenceDocument>;
 
   beforeEach(async () => {
-    const pushNotificationMock = {
+    const notificationMock = {
       notifyUsernames: jest.fn().mockResolvedValue(undefined),
     };
 
@@ -134,7 +134,7 @@ describe(ConferencesService.name, () => {
           useValue: schedulerRegistryMock,
         },
         { provide: FilesystemService, useValue: mockFilesystemService },
-        { provide: PushNotificationService, useValue: pushNotificationMock },
+        { provide: NotificationsService, useValue: notificationMock },
       ],
     }).compile();
 

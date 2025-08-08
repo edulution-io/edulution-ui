@@ -10,6 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const PUSH_NOTIFICATION_EDU_API_ENDPOINT = 'pushNotifications';
-export const PUSH_NOTIFICATION_REGISTER_DEVICE_EDU_API_ENDPOINT = `/registerDevice`;
-export const PUSH_NOTIFICATION_UNREGISTER_DEVICE_EDU_API_ENDPOINT = `/unregisterDevice`;
+const NOTIFICATION_OPERATION = {
+  REGISTER: 'register',
+  UNREGISTER: 'unregister',
+} as const;
+
+export default NOTIFICATION_OPERATION;

@@ -12,15 +12,15 @@
 
 import { Injectable } from '@nestjs/common';
 import { Expo, ExpoPushMessage } from 'expo-server-sdk';
-import pickDefinedNotificationFields from '@libs/pushNotification/utils/pickDefinedNotificationFields';
-import SendPushNotificationDto from '@libs/pushNotification/types/send-pushNotification.dto';
-import UserDeviceDto from '@libs/pushNotification/types/userDevice.dto';
+import pickDefinedNotificationFields from '@libs/notification/utils/pickDefinedNotificationFields';
+import SendPushNotificationDto from '@libs/notification/types/send-pushNotification.dto';
+import UserDeviceDto from '@libs/notification/types/userDevice.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from '../users/user.schema';
 
 @Injectable()
-export class PushNotificationService {
+export class NotificationsService {
   private readonly expo = new Expo();
 
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
@@ -101,4 +101,4 @@ export class PushNotificationService {
   }
 }
 
-export default PushNotificationService;
+export default NotificationsService;

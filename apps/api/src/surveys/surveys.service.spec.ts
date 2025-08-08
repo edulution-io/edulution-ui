@@ -23,12 +23,12 @@ import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
 import SurveysAttachmentService from './surveys-attachment.service';
-import PushNotificationService from '../pushNotification/pushNotification.service';
+import NotificationsService from '../notifications/notifications.service';
 
 describe('SurveyService', () => {
   let service: SurveysService;
   let surveyModel: Model<SurveyDocument>;
-  const pushNotificationMock = {
+  const notificationMock = {
     notifyUsernames: jest.fn().mockResolvedValue(undefined),
   };
   beforeEach(async () => {
@@ -44,7 +44,7 @@ describe('SurveyService', () => {
         SurveysAttachmentService,
         { provide: GroupsService, useValue: mockGroupsService },
         { provide: FilesystemService, useValue: mockFilesystemService },
-        { provide: PushNotificationService, useValue: pushNotificationMock },
+        { provide: NotificationsService, useValue: notificationMock },
       ],
     }).compile();
 
