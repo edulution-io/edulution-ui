@@ -10,10 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const QUEUE_CONSTANTS = {
-  PREFIX: 'queue-user-',
-  USERS_CACHE_REFRESH: 'USERS_CACHE_REFRESH',
-  KEYCLOAK_REQUESTS_QUEUE: 'KEYCLOAK_REQUESTS_QUEUE',
-} as const;
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import LdapKeycloakSyncService from './ldap-keycloak-sync.service';
+import { LdapKeycloakSync, LdapKeycloakSyncSchema } from './ldap-keycloak-sync.schema';
+import KeycloakRequestQueue from './queue/keycloak-request.queue';
+import GroupsModule from '../groups/groups.module';
 
-export default QUEUE_CONSTANTS;
+@Module({
+  imports: [GroupsModule, MongooseModule.forFeature([{ name: LdapKeycloakSync.name, schema: LdapKeycloakSyncSchema }])],
+  providers: [LdapKeycloakSyncService, KeycloakRequestQueue],
+  exports: [LdapKeycloakSyncService],
+})
+export default class LdapKeycloakSyncModule {}

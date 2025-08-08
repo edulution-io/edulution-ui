@@ -10,10 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const QUEUE_CONSTANTS = {
-  PREFIX: 'queue-user-',
-  USERS_CACHE_REFRESH: 'USERS_CACHE_REFRESH',
-  KEYCLOAK_REQUESTS_QUEUE: 'KEYCLOAK_REQUESTS_QUEUE',
-} as const;
+const LDAP_SYNC_INTERVAL_MS = 5 * 60 * 1000;
 
-export default QUEUE_CONSTANTS;
+export default LDAP_SYNC_INTERVAL_MS;

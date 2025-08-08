@@ -17,6 +17,7 @@ import QUEUE_CONSTANTS from '@libs/queue/constants/queueConstants';
 import JOB_NAMES from '@libs/queue/constants/jobNames';
 import USERS_CACHE_UPDATE_LIMIT from '@libs/user/constants/usersCacheUpdateLimit';
 import UsersService from '../users.service';
+import redisConnection from '../../common/redis.connection';
 
 @Injectable()
 class UsersCacheQueue implements OnModuleInit, OnModuleDestroy {
@@ -24,18 +25,11 @@ class UsersCacheQueue implements OnModuleInit, OnModuleDestroy {
 
   private worker: Worker;
 
-  private readonly redisHost = process.env.REDIS_HOST ?? 'localhost';
-
-  private readonly redisPort = +(process.env.REDIS_PORT ?? 6379);
-
   constructor(private readonly usersService: UsersService) {}
 
   onModuleInit() {
     const options: QueueOptions = {
-      connection: {
-        host: this.redisHost,
-        port: this.redisPort,
-      },
+      connection: redisConnection,
       defaultJobOptions: {
         removeOnComplete: true,
         removeOnFail: true,
@@ -50,10 +44,7 @@ class UsersCacheQueue implements OnModuleInit, OnModuleDestroy {
         await this.usersService.refreshUsersCache();
       },
       {
-        connection: {
-          host: this.redisHost,
-          port: this.redisPort,
-        },
+        connection: redisConnection,
         limiter: {
           max: 1,
           duration: USERS_CACHE_UPDATE_LIMIT,

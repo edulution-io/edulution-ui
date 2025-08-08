@@ -10,10 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const QUEUE_CONSTANTS = {
-  PREFIX: 'queue-user-',
-  USERS_CACHE_REFRESH: 'USERS_CACHE_REFRESH',
-  KEYCLOAK_REQUESTS_QUEUE: 'KEYCLOAK_REQUESTS_QUEUE',
-} as const;
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { LdapBindUser, LdapBindUserSchema } from './global-settings.ldap.binduser.schema';
 
-export default QUEUE_CONSTANTS;
+@Schema({ _id: false })
+export class LdapSettings {
+  @Prop({ type: LdapBindUserSchema })
+  binduser: LdapBindUser;
+}
+export const LdapSettingsSchema = SchemaFactory.createForClass(LdapSettings);

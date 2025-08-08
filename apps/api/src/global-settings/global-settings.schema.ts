@@ -29,7 +29,7 @@ export class GlobalSettings {
   @Prop({ type: GeneralSettingsSchema, required: true })
   general: GeneralSettings;
 
-  @Prop({ default: 3 })
+  @Prop({ default: 4 })
   schemaVersion: number;
 }
 
