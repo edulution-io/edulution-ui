@@ -47,6 +47,7 @@ import HealthModule from '../health/health.module';
 import ScriptsModule from '../scripts/scripts.module';
 import LdapKeycloakSyncModule from '../ldap-keycloak-sync/ldap-keycloak-sync.module';
 import redisConnection from '../common/redis.connection';
+import NotificationsModule from '../notifications/notifications.module';
 
 @Module({
   imports: [
@@ -84,6 +85,7 @@ import redisConnection from '../common/redis.connection';
     SseModule,
     TldrawSyncModule,
     LdapKeycloakSyncModule,
+    NotificationsModule,
     JwtModule.register({
       global: true,
     }),

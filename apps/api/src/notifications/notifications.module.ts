@@ -10,30 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import LdapGroups from '@libs/groups/types/ldapGroups';
+import { Global, Module } from '@nestjs/common';
+import NotificationsService from './notifications.service';
 
-class UserDto {
-  _id?: string;
-
-  username: string;
-
-  firstName?: string;
-
-  lastName?: string;
-
-  email: string;
-
-  ldapGroups: LdapGroups;
-
-  password: string;
-
-  encryptKey: string;
-
-  mfaEnabled?: boolean;
-
-  language?: string;
-
-  registeredPushTokens?: string[];
-}
-
-export default UserDto;
+@Global()
+@Module({
+  providers: [NotificationsService],
+  exports: [NotificationsService],
+})
+export default class NotificationsModule {}

@@ -10,30 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import LdapGroups from '@libs/groups/types/ldapGroups';
+const PUSH_NOTIFICATION_PRIORITY = {
+  DEFAULT: 'default',
+  NORMAL: 'normal',
+  HIGH: 'high',
+} as const;
 
-class UserDto {
-  _id?: string;
-
-  username: string;
-
-  firstName?: string;
-
-  lastName?: string;
-
-  email: string;
-
-  ldapGroups: LdapGroups;
-
-  password: string;
-
-  encryptKey: string;
-
-  mfaEnabled?: boolean;
-
-  language?: string;
-
-  registeredPushTokens?: string[];
-}
-
-export default UserDto;
+export type PushNotificationPriority = (typeof PUSH_NOTIFICATION_PRIORITY)[keyof typeof PUSH_NOTIFICATION_PRIORITY];

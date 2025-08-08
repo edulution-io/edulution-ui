@@ -10,30 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import LdapGroups from '@libs/groups/types/ldapGroups';
+export const PUSH_NOTIFICATION_INTERRUPTION_LEVEL = {
+  ACTIVE: 'active',
+  CRITICAL: 'critical',
+  PASSIVE: 'passive',
+  TIME_SENSITIVE: 'time-sensitive',
+} as const;
 
-class UserDto {
-  _id?: string;
-
-  username: string;
-
-  firstName?: string;
-
-  lastName?: string;
-
-  email: string;
-
-  ldapGroups: LdapGroups;
-
-  password: string;
-
-  encryptKey: string;
-
-  mfaEnabled?: boolean;
-
-  language?: string;
-
-  registeredPushTokens?: string[];
-}
-
-export default UserDto;
+export type PushNotificationInterruptionLevel =
+  (typeof PUSH_NOTIFICATION_INTERRUPTION_LEVEL)[keyof typeof PUSH_NOTIFICATION_INTERRUPTION_LEVEL];

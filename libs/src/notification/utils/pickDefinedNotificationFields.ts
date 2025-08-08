@@ -10,30 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import LdapGroups from '@libs/groups/types/ldapGroups';
+const pickDefinedNotificationFields = <NotificationPayload extends object>(
+  notificationPayload: NotificationPayload,
+): Partial<NotificationPayload> => {
+  const definedEntries = Object.entries(notificationPayload).filter(
+    ([_propertyKey, propertyValue]) => propertyValue !== undefined,
+  );
 
-class UserDto {
-  _id?: string;
+  return Object.fromEntries(definedEntries) as Partial<NotificationPayload>;
+};
 
-  username: string;
-
-  firstName?: string;
-
-  lastName?: string;
-
-  email: string;
-
-  ldapGroups: LdapGroups;
-
-  password: string;
-
-  encryptKey: string;
-
-  mfaEnabled?: boolean;
-
-  language?: string;
-
-  registeredPushTokens?: string[];
-}
-
-export default UserDto;
+export default pickDefinedNotificationFields;

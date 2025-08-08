@@ -10,30 +10,5 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import LdapGroups from '@libs/groups/types/ldapGroups';
-
-class UserDto {
-  _id?: string;
-
-  username: string;
-
-  firstName?: string;
-
-  lastName?: string;
-
-  email: string;
-
-  ldapGroups: LdapGroups;
-
-  password: string;
-
-  encryptKey: string;
-
-  mfaEnabled?: boolean;
-
-  language?: string;
-
-  registeredPushTokens?: string[];
-}
-
-export default UserDto;
+export const NOTIFICATIONS_EDU_API_ENDPOINT = 'notifications';
+export const NOTIFICATION_DEVICES_EDU_API_ENDPOINT = `devices`;
