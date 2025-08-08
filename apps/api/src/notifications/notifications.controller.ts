@@ -15,10 +15,8 @@ import {
   NOTIFICATIONS_EDU_API_ENDPOINT,
 } from '@libs/notification/constants/apiEndpoints';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Body, Controller, Patch, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Patch } from '@nestjs/common';
 import UserDeviceDto from '@libs/notification/types/userDevice.dto';
-import NOTIFICATION_OPERATION from '@libs/notification/constants/notificationOperation';
-import { NotificationOperationTyp } from '@libs/notification/types/notificationOperationTyp';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import NotificationsService from './notifications.service';
 
@@ -29,16 +27,13 @@ class NotificationsController {
   constructor(private readonly pushNotificationService: NotificationsService) {}
 
   @Patch(NOTIFICATION_DEVICES_EDU_API_ENDPOINT)
-  async registerDevice(
-    @GetCurrentUsername() username: string,
-    @Query('operation') operation: NotificationOperationTyp,
-    @Body() userDeviceDto: UserDeviceDto,
-  ): Promise<void> {
-    if (operation === NOTIFICATION_OPERATION.UNREGISTER) {
-      await this.pushNotificationService.unregisterDevice(username, userDeviceDto);
-      return;
-    }
-    await this.pushNotificationService.registerDevice(username, userDeviceDto);
+  async registerDevice(@GetCurrentUsername() username: string, @Body() dto: UserDeviceDto): Promise<void> {
+    await this.pushNotificationService.registerDevice(username, dto);
+  }
+
+  @Delete(NOTIFICATION_DEVICES_EDU_API_ENDPOINT)
+  async unregisterDevice(@GetCurrentUsername() username: string, @Body() dto: UserDeviceDto): Promise<void> {
+    await this.pushNotificationService.unregisterDevice(username, dto);
   }
 }
 
