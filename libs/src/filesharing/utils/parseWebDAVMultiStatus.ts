@@ -26,9 +26,6 @@ const xmlOptions = {
   transformTagName: (tagName: string) => tagName.toLowerCase(),
 };
 
-const { EDUI_WEBDAV_NOROOT } = process.env;
-const noRoot = EDUI_WEBDAV_NOROOT === 'true' || false;
-
 const parseWebDAVMultiStatus = (xmlData: string) => {
   try {
     const parser = new XMLParser(xmlOptions);
@@ -45,7 +42,7 @@ const parseWebDAVMultiStatus = (xmlData: string) => {
     }
 
     const responses = Array.isArray(responsesRaw) ? responsesRaw : [responsesRaw];
-    return noRoot ? responses.slice(1) : responses;
+    return responses;
   } catch (error) {
     Logger.error('Error parsing XML data:', error);
     return [];

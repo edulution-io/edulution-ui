@@ -49,7 +49,7 @@ const SelectableTextCellInner = <TData,>(
       tabIndex={0}
       role="button"
       className={cn(
-        `flex items-center justify-start ${isFirstColumn ? 'space-x-2' : ''} py-0`,
+        `flex items-center justify-start ${isFirstColumn ? 'space-x-2' : ''} min-w-4 py-0`,
         onClick ? 'cursor-pointer' : 'cursor-default',
         className,
       )}

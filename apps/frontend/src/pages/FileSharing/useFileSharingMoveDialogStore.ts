@@ -21,6 +21,8 @@ import handleApiError from '@/utils/handleApiError';
 import { RowSelectionState } from '@tanstack/react-table';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
+import processWebdavResponse from '@libs/filesharing/utils/processWebdavResponse';
+import useFileSharingStore from './useFileSharingStore';
 
 interface UseFileSharingMoveDialogStore {
   activeCollectionOperation: LmnApiCollectOperationsType;
@@ -57,11 +59,14 @@ const useFileSharingMoveDialogStore = create<UseFileSharingMoveDialogStore>((set
   fetchDialogFiles: async (path: string = '/') => {
     try {
       set({ isLoading: true });
-      const directoryFiles = await eduApi.get<DirectoryFileDTO[]>(
-        buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, path),
+      const { data } = await eduApi.get<DirectoryFileDTO[]>(
+        buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, getPathWithoutWebdav(path)),
       );
+      const webdavShareType = useFileSharingStore.getState().webdavShares[0]?.type;
+      const dialogShownFiles = processWebdavResponse(data, webdavShareType);
+
       set({
-        dialogShownFiles: directoryFiles.data,
+        dialogShownFiles,
         selectedItems: [],
         selectedRows: {},
       });
@@ -75,10 +80,14 @@ const useFileSharingMoveDialogStore = create<UseFileSharingMoveDialogStore>((set
   fetchDialogDirs: async (path: string) => {
     try {
       set({ isLoading: true });
-      const directoryFiles = await eduApi.get<DirectoryFileDTO[]>(
+      const { data } = await eduApi.get<DirectoryFileDTO[]>(
         buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, getPathWithoutWebdav(path)),
       );
-      set({ dialogShownDirs: directoryFiles.data });
+
+      const webdavShareType = useFileSharingStore.getState().webdavShares[0]?.type;
+      const dialogShownDirs = processWebdavResponse(data, webdavShareType);
+
+      set({ dialogShownDirs });
     } catch (error) {
       handleApiError(error, set);
     } finally {

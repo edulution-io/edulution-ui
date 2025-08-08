@@ -828,6 +828,11 @@
           "invalidCidrFormat": "Notation CIDR non valide",
           "invalidUrlFormat": "URL non valide"
         },
+        "webdavShare": {
+          "title": "WebDAV-Share",
+          "description": "Vous pouvez configurer ici vos propres partages WebDAV.",
+          "filterPlaceHolderText": "Rechercher le nom de partages"
+        },
         "files": {
           "title": "Fichiers",
           "description": "Ici, les fichiers affichés dans l'application peuvent être gérés.",
@@ -1002,6 +1007,8 @@
   "teacher": "Professeur",
   "student": "Élève",
   "students": "Élèves",
+  "parent": "Parent",
+  "staff": "Personnel",
   "user": "utilisateur",
   "login": {
     "pageTitle": "Se connecter",

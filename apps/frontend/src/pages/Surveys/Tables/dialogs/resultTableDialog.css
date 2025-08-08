@@ -39,6 +39,10 @@
   border-color: none !important;
 }
 
+.sa-visualizer__content {
+  color: var(--muted-foreground);
+}
+
 /* Fix button and border color */
 .sa-table button {
   fill: var(--secondary) !important;

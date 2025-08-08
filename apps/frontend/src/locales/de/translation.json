@@ -5,6 +5,7 @@
   "closeEditingWindow": "Will du wirklich das Bearbeitungsfenster schließen?",
   "framebufferImage": "Framebuffer-Bild",
   "previewImage": "Bildvorschau",
+  "not-set": "Nicht gesetzt",
   "bulletinboard": {
     "settings": "Einstellungen",
     "noBulletinsToShow": "Aktuell gibt es keine Mitteilungen anzuzeigen, schaue am besten später noch mal vorbei!",
@@ -903,7 +904,13 @@
         "updateError": "Einstellungen konnten nicht aktualisiert werden.",
         "notFoundError": "Einstellungen konnten nicht geladen werden."
       },
-      "deploymentTarget": "Plattform"
+      "deploymentTarget": "Plattform",
+      "ldap": {
+        "title": "LDAP",
+        "edulution-binduser-description": "Hier können Zugangsdaten zum LDAP konfiguriert werden, die für den Gruppen-Sync notwendig sind.",
+        "edulution-binduser-dn": "Distinguished Name (DN)",
+        "edulution-binduser-password": "Passwort"
+      }
     },
     "userAdministration": {
       "title": "Benutzerverwaltung",
@@ -952,6 +959,11 @@
           "filterPlaceHolderText": "Suche nach Proxy-Name",
           "invalidCidrFormat": "Ungültige CIDR-Notation",
           "invalidUrlFormat": "Ungültige URL"
+        },
+        "webdavShare": {
+          "title": "WebDAV-Share",
+          "description": "Hier können eigene WebDAV-Shares eingerichtet werden.",
+          "filterPlaceHolderText": "Suche nach WebDAV-Share"
         },
         "files": {
           "title": "Dateien",
@@ -1129,6 +1141,8 @@
   "teacher": "Lehrer",
   "student": "Schüler",
   "students": "Schüler",
+  "parent": "Eltern",
+  "staff": "Mitarbeiter",
   "user": "Benutzer",
   "login": {
     "pageTitle": "Login",
@@ -1643,5 +1657,19 @@
     "description": "Hier kann die Plattform ausgewählt werden, an welche {{ appName }} angebunden wird.",
     "linuxmuster": "Linuxmuster",
     "generic": "Generisch"
+  },
+  "webdavShare": {
+    "displayName": "Anzeigename",
+    "accessGroups": {
+      "title": "Nutzergruppen",
+      "description": "Wähle die Nutzergruppen aus, die Zugriff auf den WebDAV-Server bekommen sollen."
+    },
+    "type": {
+      "title": "WebDAV Server Schema",
+      "description": "Bestimmt das Schema welches für die Verbindung zum WebDAV-Server verwendet wird.",
+      "linuxmuster": "Linuxmuster",
+      "edu-file-proxy": "edulution File Proxy",
+      "generic": "Generisch"
+    }
   }
 }

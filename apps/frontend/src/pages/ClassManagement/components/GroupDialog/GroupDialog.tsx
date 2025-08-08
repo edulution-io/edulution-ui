@@ -29,7 +29,7 @@ import LmnApiSchoolClassWithMembers from '@libs/lmnApi/types/lmnApiSchoolClassWi
 import LmnApiProjectWithMembers from '@libs/lmnApi/types/lmnApiProjectWithMembers';
 import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import LmnApiPrinterWithMembers from '@libs/lmnApi/types/lmnApiPrinterWithMembers';
 import useLmnApiStore from '@/store/useLmnApiStore';
@@ -86,7 +86,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     defaultValues: initialFormValues,
   });
 
-  const getSelectOptionsFromLmnUsers = (users: UserLmnInfo[]) =>
+  const getSelectOptionsFromLmnUsers = (users: LmnUserInfo[]) =>
     users.map(
       (lmnUser) =>
         ({

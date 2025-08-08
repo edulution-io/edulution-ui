@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 /*
  * LICENSE
  *
@@ -10,21 +11,21 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
-interface LmnApiStoreState {
-  isLoading: boolean;
-  error: Error | null;
-  currentUser: UserLmnInfo | null;
+export type LdapKeycloakSyncDocument = LdapKeycloakSync & Document;
+
+@Schema({ timestamps: true, strict: true, minimize: false })
+export class LdapKeycloakSync {
+  @Prop({ unique: true, required: true, default: true })
+  singleton: boolean;
+
+  @Prop({ type: Date, required: true })
+  lastSync: Date;
+
+  @Prop({ default: 0 })
+  schemaVersion: number;
 }
 
-interface LmnApiStoreActions {
-  reset: () => void;
-  setCurrentUser: (user: UserLmnInfo | null) => void;
-  setFirstPassword: (username: string, password: string) => Promise<void>;
-  setCurrentPassword: (username: string, password: string) => Promise<void>;
-}
-
-type LmnApiStore = LmnApiStoreState & LmnApiStoreActions;
-
-export default LmnApiStore;
+export const LdapKeycloakSyncSchema = SchemaFactory.createForClass(LdapKeycloakSync);

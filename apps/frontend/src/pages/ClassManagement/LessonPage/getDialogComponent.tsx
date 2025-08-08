@@ -15,7 +15,7 @@ import { IconType } from 'react-icons';
 import ShareFilesDialog from '@/pages/ClassManagement/components/Dialogs/ShareFilesDialog';
 import CLASSMGMT_OPTIONS from '@libs/classManagement/constants/classmgmtOptions';
 import LessonConfirmationDialog from '@/pages/ClassManagement/LessonPage/LessonConfirmationDialog';
-import type UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import type ClassmanagementButtonConfigProps from '@libs/classManagement/types/classmanagementButtonConfigProps';
 import ShowCollectedFilesDialog from '../components/Dialogs/ShowCollectedFilesDialog';
 import CollectFilesDialog from '../components/Dialogs/CollectFilesDialog';
@@ -33,7 +33,7 @@ const getDialogComponent = (
   whichDialogIsOpen: string,
   setWhichDialogIsOpen: (value: string) => void,
   updateStudents: () => Promise<void>,
-  students?: UserLmnInfo[],
+  students?: LmnUserInfo[],
 ) => {
   const buttonConfig: ClassmanagementButtonConfigProps = {
     title: button.text,

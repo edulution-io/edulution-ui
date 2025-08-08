@@ -12,7 +12,7 @@
 
 import React, { useMemo, useState } from 'react';
 import UserCard from '@/pages/ClassManagement/LessonPage/UserArea/UserCard';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import { useTranslation } from 'react-i18next';
 import LessonFloatingButtonsBar from '@/pages/ClassManagement/LessonPage/LessonFloatingButtonsBar';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
@@ -34,7 +34,7 @@ const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
   const { user } = useUserStore();
   const { member } = useLessonStore();
   const { appConfigs } = useAppConfigsStore();
-  const [selectedMember, setSelectedMember] = useState<UserLmnInfo[]>([]);
+  const [selectedMember, setSelectedMember] = useState<LmnUserInfo[]>([]);
   const selectedMemberCount = selectedMember.length;
   const { percentageUsed } = useQuotaInfo();
 
@@ -47,7 +47,7 @@ const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
       teacher.schoolclasses.some((userClass) => teacherClass.includes(userClass)),
     );
 
-    return (student: UserLmnInfo): boolean => teacherClasses.some((tc) => student.memberOf.includes(tc));
+    return (student: LmnUserInfo): boolean => teacherClasses.some((tc) => student.memberOf.includes(tc));
   }, [teacher, user]);
 
   const { members, selectableMembers } = useMemo(() => {

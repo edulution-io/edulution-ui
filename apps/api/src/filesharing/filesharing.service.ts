@@ -50,11 +50,10 @@ import OnlyofficeService from './onlyoffice.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import QueueService from '../queue/queue.service';
 import CustomHttpException from '../common/CustomHttpException';
+import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 
 @Injectable()
 class FilesharingService {
-  private readonly baseurl = process.env.EDUI_WEBDAV_URL as string;
-
   constructor(
     @InjectModel(PublicShare.name)
     private readonly shareModel: Model<PublicShareDocument>,
@@ -63,6 +62,7 @@ class FilesharingService {
     private readonly dynamicQueueService: QueueService,
     private readonly webDavService: WebdavService,
     private readonly userService: UsersService,
+    private readonly webdavSharesService: WebdavSharesService,
   ) {}
 
   async uploadZippedFolderStream(
@@ -200,10 +200,12 @@ class FilesharingService {
   }
 
   async deleteFileAtPath(username: string, paths: string[]) {
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+
     let processedItems = 0;
     return Promise.all(
       paths.map(async (path) => {
-        const fullPath = `${this.baseurl}${path}`;
+        const fullPath = `${baseUrl}${path}`;
         await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.DELETE_FILE_JOB, {
           username,
           originFilePath: fullPath,
@@ -221,8 +223,9 @@ class FilesharingService {
       const decoded = decodeURIComponent(filePath).replace(/%(?![0-9A-F]{2})/gi, (s) => decodeURIComponent(s));
       const pathWithoutWebdav = getPathWithoutWebdav(decoded).replace(/^\/+/, '');
       const encodedPath = encodeURI(pathWithoutWebdav);
+      const baseUrl = await this.webdavSharesService.getWebdavSharePath();
 
-      const base = this.baseurl.replace(/\/+$/, '');
+      const base = baseUrl.replace(/\/+$/, '');
       const finalUrl = `${base}/${encodedPath}`;
 
       const resp = await FilesystemService.fetchFileStream(finalUrl, client);
@@ -246,14 +249,18 @@ class FilesharingService {
   }
 
   async handleCallback(req: Request, res: Response, path: string, filename: string, username: string) {
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+
     return OnlyofficeService.handleCallback(
       req,
       res,
       path,
       filename,
       username,
-      async (user: string, uploadPath: string, file: CustomFile, name: string): Promise<WebdavStatusResponse> =>
-        this.webDavService.uploadFile(user, `${this.baseurl}${uploadPath}/${name}`, file.stream, file.mimetype),
+      async (user: string, uploadPath: string, file: CustomFile, name: string): Promise<WebdavStatusResponse> => {
+        const readableStream = Readable.from(file.buffer);
+        return this.webDavService.uploadFile(user, `${baseUrl}${uploadPath}/${name}`, readableStream, file.mimetype);
+      },
     );
   }
 
@@ -361,6 +368,8 @@ class FilesharingService {
 
   async getPublicShare(publicShareId: string, jwtUser: JwtUser | undefined, password?: string | undefined) {
     const share = await this.shareModel.findOne({ publicShareId }).lean().exec();
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+
     if (!share) {
       throw new CustomHttpException(
         FileSharingErrorMessage.DownloadFailed,
@@ -388,7 +397,7 @@ class FilesharingService {
       );
     }
 
-    const webDavUrl = `${this.baseurl}${getPathWithoutWebdav(share.filePath)}`;
+    const webDavUrl = `${baseUrl}${getPathWithoutWebdav(share.filePath)}`;
     const client = await this.webDavService.getClient(share.creator.username);
 
     const stream = (await FilesystemService.fetchFileStream(webDavUrl, client, false)) as Readable;
