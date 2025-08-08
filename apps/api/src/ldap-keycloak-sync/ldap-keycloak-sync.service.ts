@@ -21,7 +21,6 @@ import { Model } from 'mongoose';
 import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
 import tls from 'node:tls';
 import { Group } from '@libs/groups/types/group';
-import SearchEntry from '@libs/ldapKeycloakSync/types/searchEntry';
 import LdapConfig from '@libs/ldapKeycloakSync/types/ldapConfig';
 import formatLdapDate from '@libs/ldapKeycloakSync/utils/formatLdapDate';
 import LDAP_SYNC_INTERVAL_MS from '@libs/ldapKeycloakSync/constants/ldapSyncIntervalMs';
@@ -30,6 +29,11 @@ import KEYCLOAK_STARTUP_TIMEOUT from '@libs/ldapKeycloakSync/constants/keycloakS
 import { HttpMethods } from '@libs/common/types/http-methods';
 import GroupWithMembers from '@libs/groups/types/groupWithMembers';
 import GroupMemberDto from '@libs/groups/types/groupMember.dto';
+import SearchEntry from '@libs/ldapKeycloakSync/types/searchEntry';
+import LDAP_ATTRIBUTE from '@libs/ldapKeycloakSync/constants/ldapAttribute';
+import LDAP_MEMBER_TYPES from '@libs/ldapKeycloakSync/constants/ldapMemberTypes';
+import LdapMemberType from '@libs/ldapKeycloakSync/types/ldapMemberType';
+import keycloakUserStorageProvider from '@libs/ldapKeycloakSync/constants/keycloakUserStorageProvider';
 import { LdapKeycloakSync, LdapKeycloakSyncDocument } from './ldap-keycloak-sync.schema';
 import GlobalSettingsService from '../global-settings/global-settings.service';
 import KeycloakRequestQueue from './queue/keycloak-request.queue';
@@ -37,13 +41,19 @@ import GroupsService from '../groups/groups.service';
 
 const { KEYCLOAK_ADMIN, KEYCLOAK_ADMIN_PASSWORD } = process.env as Record<string, string>;
 
+const PAGINATION = {
+  PAGE_SIZE: 100,
+};
+
 @Injectable()
 class LdapKeycloakSyncService implements OnModuleInit {
-  private userCache = new Map<string, GroupMemberDto>();
-
-  private ldapConfig: LdapConfig | undefined;
+  private ldapConfig?: LdapConfig;
 
   private lastSync = new Date(0);
+
+  private userCache = new Map<string, GroupMemberDto>();
+
+  private groupCache = new Map<string, Group>();
 
   constructor(
     @Inject(CACHE_MANAGER) private cache: Cache,
@@ -56,247 +66,353 @@ class LdapKeycloakSyncService implements OnModuleInit {
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   onModuleInit() {
     if (!KEYCLOAK_ADMIN || !KEYCLOAK_ADMIN_PASSWORD) {
-      Logger.error(
-        'KEYCLOAK_ADMIN and KEYCLOAK_ADMIN_PASSWORD environment variables must be set.',
-        LdapKeycloakSyncService.name,
-      );
+      Logger.error('Missing Keycloak admin credentials', LdapKeycloakSyncService.name);
       return;
     }
-
-    Logger.log('LdapKeycloakSyncService initialized. Wait 60s for Keycloak to be ready', LdapKeycloakSyncService.name);
-  }
-
-  private async loadLastSync() {
-    const ldapKeycloakSyncDocument = await this.ldapKeycloakSyncModel.findOne().lean();
-    if (ldapKeycloakSyncDocument?.lastSync) {
-      this.lastSync = ldapKeycloakSyncDocument.lastSync;
-    }
-  }
-
-  private async saveLastSync() {
-    await this.ldapKeycloakSyncModel.updateOne({}, { lastSync: this.lastSync }, { upsert: true });
+    Logger.log('Initialized, waiting for Keycloak startup', LdapKeycloakSyncService.name);
   }
 
   @Timeout(KEYCLOAK_STARTUP_TIMEOUT)
-  async handleTimeout() {
+  async init() {
     await this.loadLdapConfig();
     await this.loadLastSync();
   }
 
+  @Interval(LDAP_SYNC_INTERVAL_MS)
+  async sync() {
+    if (!this.ldapConfig) {
+      Logger.error('No LDAP config', LdapKeycloakSyncService.name);
+      return;
+    }
+
+    Logger.debug(`Delta sync since ${this.lastSync.toISOString()}`, LdapKeycloakSyncService.name);
+
+    const client = await this.setupClient();
+
+    const syncSince = new Date();
+
+    const entries = await this.searchChangedGroups(client);
+    const toRefresh = await this.collectRefreshDns(client, entries);
+
+    const updates = await this.buildUpdates(client, toRefresh);
+    await this.applyUpdates(updates);
+
+    this.lastSync = syncSince;
+    await this.persistLastSync();
+
+    await client.unbind();
+
+    Logger.debug('Sync complete', LdapKeycloakSyncService.name);
+  }
+
+  private async loadLastSync() {
+    const ldapKeycloakSyncDocument = await this.ldapKeycloakSyncModel.findOne().lean();
+    if (ldapKeycloakSyncDocument?.lastSync) this.lastSync = ldapKeycloakSyncDocument.lastSync;
+  }
+
+  private async persistLastSync() {
+    await this.ldapKeycloakSyncModel.updateOne({}, { lastSync: this.lastSync }, { upsert: true });
+  }
+
   private async loadLdapConfig() {
     const configs = await this.keycloakQueue.enqueue<LdapConfig[]>(HttpMethods.GET, '/components');
-    if (!configs.length) {
-      Logger.error('No LDAPStorageProvider configured in Keycloak', LdapKeycloakSyncService.name);
-      return;
-    }
-    this.ldapConfig = configs.find((c) => c.providerType === 'org.keycloak.storage.UserStorageProvider');
-    Logger.verbose(`Cached LDAP config (id=${this.ldapConfig?.id})`, LdapKeycloakSyncService.name);
+
+    this.ldapConfig = configs.find((c) => c.providerType === keycloakUserStorageProvider);
+
+    Logger.verbose(`Loaded LDAP config ${this.ldapConfig?.id}`, LdapKeycloakSyncService.name);
   }
 
-  @Interval(LDAP_SYNC_INTERVAL_MS)
-  async syncModifiedGroups() {
-    if (!this.ldapConfig) {
-      Logger.error('Missing LDAP config, aborting', LdapKeycloakSyncService.name);
-      return;
-    }
+  private async getBindCredentials() {
+    const ldapConfig = await this.globalSettingsService.getGlobalSettings('general.ldap');
 
-    Logger.debug(`Starting delta sync since ${this.lastSync.toISOString()}`, LdapKeycloakSyncService.name);
+    const bindDN = ldapConfig?.general?.ldap?.binduser?.dn;
+    const bindCredentials = ldapConfig?.general?.ldap?.binduser?.password;
 
-    try {
-      const { bindDN, bindCredentials } = await this.getBindCredentials();
-      const client = this.createLdapClient();
+    if (!bindDN || !bindCredentials) throw new Error('Missing LDAP bind credentials');
 
-      await this.ensureStartTls(client);
-      await client.bind(bindDN, bindCredentials);
-
-      const entries = await this.fetchChangedGroups(client);
-      await client.unbind();
-
-      const toUpdate = await this.buildUpdateQueue(entries);
-      await this.applyUpdates(toUpdate);
-
-      this.lastSync = new Date();
-      await this.saveLastSync();
-      Logger.debug('Delta sync complete', LdapKeycloakSyncService.name);
-    } catch (error) {
-      Logger.error(
-        `LDAP sync failed: ${(error as Error).message}`,
-        (error as Error).stack,
-        LdapKeycloakSyncService.name,
-      );
-    }
+    return { bindDN, bindCredentials };
   }
 
-  private async getBindCredentials(): Promise<{ bindDN: string; bindCredentials: string }> {
-    const bindCredentials = await this.globalSettingsService.getGlobalSettings('general.ldap');
-    const bindDN = bindCredentials?.general?.ldap?.binduser?.dn;
-    const bindPassword = bindCredentials?.general?.ldap?.binduser?.password;
+  private async setupClient(): Promise<Client> {
+    const { bindDN, bindCredentials } = await this.getBindCredentials();
 
-    if (!bindDN || !bindPassword) {
-      throw new Error('Missing bind credentials');
-    }
-
-    return { bindDN, bindCredentials: bindPassword };
-  }
-
-  private createLdapClient(): Client {
     const url = process.env.LDAP_TUNNEL_URL || this.ldapConfig!.config.connectionUrl[0];
-    const options: { url: string; tlsOptions?: tls.ConnectionOptions } = { url };
-    if (url.startsWith(LDAPS_PREFIX)) {
-      options.tlsOptions = { rejectUnauthorized: false };
+
+    const ldapClientOptions: { url: string; tlsOptions?: tls.ConnectionOptions } = { url };
+
+    if (url.startsWith(LDAPS_PREFIX)) ldapClientOptions.tlsOptions = { rejectUnauthorized: false };
+
+    const ldapClient = new Client(ldapClientOptions);
+
+    if (this.ldapConfig!.config.startTls?.[0] === 'true') {
+      await ldapClient.startTLS({ rejectUnauthorized: false });
     }
-    return new Client(options);
+
+    await ldapClient.bind(bindDN, bindCredentials);
+
+    return ldapClient;
   }
 
-  private async ensureStartTls(client: Client): Promise<void> {
-    const startTls = this.ldapConfig!.config.startTls?.[0] === 'true';
-    if (startTls) {
-      Logger.verbose('Starting TLS', LdapKeycloakSyncService.name);
-      await client.startTLS({ rejectUnauthorized: false });
-    }
-  }
-
-  private async fetchChangedGroups(ldapClient: Client) {
-    const baseDN = this.ldapConfig!.config.usersDn[0];
+  private async searchChangedGroups(ldapClient: Client) {
+    const base = this.ldapConfig!.config.usersDn[0];
     const filter = `(&(objectClass=group)(whenChanged>=${formatLdapDate(this.lastSync)}))`;
-    const searchOptions: SearchOptions = { scope: 'sub', filter, attributes: ['distinguishedName', 'member'] };
-    const { searchEntries } = await ldapClient.search(baseDN, searchOptions);
+    const ldapSearchOptions: SearchOptions = {
+      scope: 'sub',
+      filter,
+      attributes: [LDAP_ATTRIBUTE.DN, LDAP_ATTRIBUTE.MEMBER],
+    };
 
-    Logger.verbose(`Found ${searchEntries.length} entries`, LdapKeycloakSyncService.name);
+    const { searchEntries } = await ldapClient.search(base, ldapSearchOptions);
+
+    Logger.verbose(`Found ${searchEntries.length} changed groups`, LdapKeycloakSyncService.name);
+
     return searchEntries;
   }
 
-  private async ensureKeycloakGroup(groupPath: string): Promise<GroupWithMembers> {
-    const allCachedGroups: Group[] = (await this.cache.get(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL)) || [];
-    const alreadyExistingGroup = allCachedGroups.find((g) => g.path === groupPath);
-    if (alreadyExistingGroup) {
-      return { ...alreadyExistingGroup, members: [] };
-    }
-
-    const name = groupPath.replace(/^\//, '');
-    await this.keycloakQueue.enqueue(HttpMethods.POST, '/groups', { name }, { validateStatus: (s) => s === 201 });
-
-    const createdGroup = (
-      await this.keycloakQueue.enqueue<Group[]>(HttpMethods.GET, `/groups?search=${encodeURIComponent(name)}`)
-    )[0];
-
-    const newGroup: Group = { id: createdGroup.id, path: groupPath, name, subGroups: [] };
-    allCachedGroups.push(newGroup);
-    await this.cache.set(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, allCachedGroups);
-
-    Logger.debug(`Created new Keycloak group ${groupPath} (id=${createdGroup.id})`, LdapKeycloakSyncService.name);
-    return { ...createdGroup, members: [] };
-  }
-
-  private async resolveUserDetails(usernames: string[]): Promise<GroupMemberDto[]> {
-    const toFetch = usernames.filter((u) => !this.userCache.has(u));
-
-    if (toFetch.length) {
-      await Promise.all(
-        toFetch.map(async (username) => {
-          const [user] = await this.keycloakQueue.enqueue<GroupMemberDto[]>(
-            HttpMethods.GET,
-            `/users?username=${encodeURIComponent(username)}`,
-          );
-          if (user?.id) {
-            this.userCache.set(username, {
-              id: user.id,
-              username: user.username,
-              email: user.email,
-              firstName: user.firstName,
-              lastName: user.lastName,
-            });
-          }
-        }),
-      );
-    }
-
-    return usernames.map((u) => this.userCache.get(u)).filter((u): u is GroupMemberDto => !!u);
-  }
-
-  private async buildUpdateQueue(entries: SearchEntry[]) {
-    this.userCache.clear();
-
-    const results = await Promise.all(
+  private async collectRefreshDns(ldapClient: Client, entries: SearchEntry[]) {
+    const dnSet = new Set<string>();
+    await Promise.all(
       entries.map(async (entry) => {
-        const { groupPath, members: entryMembers } = LdapKeycloakSyncService.parseLdapSearchEntry(entry);
+        const dn = LdapKeycloakSyncService.extractDn(entry.distinguishedName);
+
+        dnSet.add(dn);
+
+        const parents = await this.fetchParents(ldapClient, dn);
+
+        parents.forEach((parent) => dnSet.add(parent));
+      }),
+    );
+    return dnSet;
+  }
+
+  private async fetchParents(ldapClient: Client, dn: string, visitedDnSet = new Set<string>()): Promise<string[]> {
+    if (visitedDnSet.has(dn)) return [];
+
+    visitedDnSet.add(dn);
+
+    const base = this.ldapConfig!.config.usersDn[0];
+    const filter = `(&(objectClass=group)(member=${dn}))`;
+    const ldapSearchOptions: SearchOptions = { scope: 'sub', filter, attributes: [LDAP_ATTRIBUTE.DN] };
+
+    const { searchEntries } = await ldapClient.search(base, ldapSearchOptions);
+
+    const searchResult = searchEntries.map((entry) => LdapKeycloakSyncService.extractDn(entry.distinguishedName));
+    const children = await Promise.all(
+      searchResult.map((parent) => this.fetchParents(ldapClient, parent, visitedDnSet)),
+    );
+
+    return [...searchResult, ...children.flat()];
+  }
+
+  private async buildUpdates(ldapClient: Client, dns: Set<string>) {
+    const updates: Array<{ userId: string; add: string[]; remove: string[] }> = [];
+
+    await Promise.all(
+      Array.from(dns).map(async (dn) => {
+        const { groupPath } = LdapKeycloakSyncService.parseGroupDn(dn);
+
         const existingGroup = await this.ensureKeycloakGroup(groupPath);
 
-        const cachedGroup =
-          (await this.cache.get<GroupWithMembers>(`${GROUP_WITH_MEMBERS_CACHE_KEY}-${groupPath}`)) || existingGroup;
+        const usernames = await this.fetchMembers(ldapClient, dn);
 
-        const toAddNames = entryMembers.filter((u) => !cachedGroup.members.some((m) => m.username === u));
-        const toRemoveIds = cachedGroup.members.filter((m) => !entryMembers.includes(m.username)).map((m) => m.id);
+        const cacheKey = `${GROUP_WITH_MEMBERS_CACHE_KEY}-${groupPath}`;
+        const cachedGroup = (await this.cache.get<GroupWithMembers>(cacheKey)) || existingGroup;
 
-        const addedUsers = toAddNames.length ? await this.resolveUserDetails(toAddNames) : [];
+        const toAddUsernames = usernames.filter((u) => !cachedGroup.members.some((m) => m.username === u));
+        const toRemoveMembers = cachedGroup.members.filter((m) => !usernames.includes(m.username));
 
-        const retainedUsers = cachedGroup.members.filter((m) => entryMembers.includes(m.username));
-        const finalUsers = [...retainedUsers, ...addedUsers];
+        await Promise.all(toAddUsernames.map((u) => this.handleAdd(u, existingGroup, cachedGroup, updates)));
 
-        await this.groupsService.updateGroupWithMembersInCache(cachedGroup, finalUsers);
+        toRemoveMembers.forEach((m) => {
+          updates.push({ userId: m.id, add: [], remove: [existingGroup.id] });
+          cachedGroup.members = cachedGroup.members.filter((x) => x.id !== m.id);
+        });
 
-        return [
-          ...addedUsers.map((u) => ({ userId: u.id, add: [existingGroup.id], remove: [] })),
-          ...toRemoveIds.map((id) => ({ userId: id, add: [], remove: [existingGroup.id] })),
-        ];
+        await this.groupsService.updateGroupWithMembersInCache(existingGroup, cachedGroup.members);
       }),
     );
 
-    return results.flat();
+    return updates;
   }
 
-  private static parseLdapSearchEntry(entry: SearchEntry): { groupPath: string; members: string[] } {
-    const dnRaw = entry.distinguishedName;
-    let dn: string;
+  private async fetchMembers(client: Client, dn: string, visited = new Set<string>()): Promise<string[]> {
+    if (visited.has(dn)) return [];
 
-    if (Array.isArray(dnRaw)) {
-      dn = dnRaw[0].toString();
-    } else if (dnRaw instanceof Buffer) {
-      dn = dnRaw.toString();
-    } else {
-      dn = dnRaw as string;
-    }
+    visited.add(dn);
 
-    const cnMatch = /^CN=([^,]+)/i.exec(dn);
-    const cn = cnMatch ? cnMatch[1] : '';
-    const groupPath = `/${cn}`;
+    const opts: SearchOptions = { scope: 'base', filter: '(objectClass=group)', attributes: [LDAP_ATTRIBUTE.MEMBER] };
+    const { searchEntries } = await client.search(dn, opts);
 
-    let raw: (string | Buffer)[];
+    if (!searchEntries.length) return [];
 
-    if (Array.isArray(entry.member)) {
-      raw = entry.member;
-    } else if (entry.member) {
-      raw = [entry.member];
+    const { member } = searchEntries[0];
+    let raw: (string | Buffer<ArrayBufferLike>)[];
+
+    if (Array.isArray(member)) {
+      raw = member;
+    } else if (member) {
+      raw = [member];
     } else {
       raw = [];
     }
 
-    const members = raw
-      .map((m) => {
-        const s = typeof m === 'string' ? m : m.toString();
-        return s.match(/^CN=([^,]+)/i)?.[1] || null;
-      })
-      .filter((u: string | null): u is string => !!u);
+    const names = await Promise.all(
+      raw.map(async (rawDn) => {
+        const dnString = typeof rawDn === 'string' ? rawDn : rawDn.toString();
 
-    return { groupPath, members };
+        const cn = LdapKeycloakSyncService.extractCn(dnString);
+        if (!cn) return null;
+
+        const ldapMemberType = await this.resolveLdapMember(cn);
+
+        if (ldapMemberType === LDAP_MEMBER_TYPES.GROUP) {
+          return (await this.fetchMembers(client, dnString, visited)).filter(Boolean);
+        }
+
+        return ldapMemberType === LDAP_MEMBER_TYPES.USER ? cn : null;
+      }),
+    );
+
+    return names.flat().filter((n): n is string => !!n);
+  }
+
+  private async handleAdd(
+    username: string,
+    group: GroupWithMembers,
+    cache: GroupWithMembers,
+    updates: Array<{ userId: string; add: string[]; remove: string[] }>,
+  ) {
+    const ldapMemberType = await this.resolveLdapMember(username);
+
+    if (ldapMemberType === LDAP_MEMBER_TYPES.USER) {
+      const user = this.userCache.get(username)!;
+
+      updates.push({ userId: user.id, add: [group.id], remove: [] });
+
+      cache.members.push(user);
+    } else {
+      const subgroup = this.groupCache.get(username)!;
+
+      const members = await this.fetchAllKeycloakGroupUsers(subgroup.id);
+
+      members.forEach((u) => {
+        updates.push({ userId: u.id, add: [group.id], remove: [] });
+        cache.members.push(u);
+      });
+    }
+  }
+
+  private async ensureKeycloakGroup(groupPath: string): Promise<GroupWithMembers> {
+    const allGroups = (await this.cache.get<Group[]>(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL)) || [];
+    let currentGroup = allGroups.find((group) => group.path === groupPath);
+
+    if (!currentGroup) {
+      const name = groupPath.slice(1);
+
+      await this.keycloakQueue.enqueue(HttpMethods.POST, '/groups', { name }, { validateStatus: (s) => s === 201 });
+
+      [currentGroup] = await this.keycloakQueue.enqueue<Group[]>(
+        HttpMethods.GET,
+        `/groups?search=${encodeURIComponent(name)}`,
+      );
+
+      allGroups.push(currentGroup);
+
+      await this.cache.set(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, allGroups);
+
+      Logger.debug(`Created group ${groupPath}`, LdapKeycloakSyncService.name);
+    }
+    return { ...currentGroup, members: [] };
+  }
+
+  private async fetchKeycloakGroupUsers(groupId: string, first = 0): Promise<GroupMemberDto[]> {
+    return this.keycloakQueue.enqueue<GroupMemberDto[]>(
+      HttpMethods.GET,
+      `/groups/${groupId}/members?first=${first}&max=${PAGINATION.PAGE_SIZE}`,
+    );
+  }
+
+  private fetchAllKeycloakGroupUsers(groupId: string): Promise<GroupMemberDto[]> {
+    const allMembers: GroupMemberDto[] = [];
+    let first = 0;
+
+    const fetchBatch = async (): Promise<GroupMemberDto[]> => {
+      const batch = await this.fetchKeycloakGroupUsers(groupId, first);
+
+      allMembers.push(...batch);
+
+      first += batch.length;
+
+      if (batch.length === PAGINATION.PAGE_SIZE) {
+        return fetchBatch();
+      }
+      return allMembers;
+    };
+
+    return fetchBatch();
+  }
+
+  private async resolveLdapMember(name: string): Promise<LdapMemberType> {
+    if (this.userCache.has(name)) return LDAP_MEMBER_TYPES.USER;
+    if (this.groupCache.has(name)) return LDAP_MEMBER_TYPES.GROUP;
+
+    const users = await this.keycloakQueue.enqueue<GroupMemberDto[]>(
+      HttpMethods.GET,
+      `/users?username=${encodeURIComponent(name)}`,
+    );
+    if (users.length) {
+      this.userCache.set(name, users[0]);
+      return LDAP_MEMBER_TYPES.USER;
+    }
+
+    const groups = await this.keycloakQueue.enqueue<Group[]>(
+      HttpMethods.GET,
+      `/groups?search=${encodeURIComponent(name)}`,
+    );
+
+    const match = groups.find((group) => group.name === name);
+    if (match) {
+      this.groupCache.set(name, match);
+      return LDAP_MEMBER_TYPES.GROUP;
+    }
+
+    return LDAP_MEMBER_TYPES.MISSING;
+  }
+
+  private static extractDn(raw: string | string[] | Buffer | Buffer[]): string {
+    return Array.isArray(raw) ? raw[0].toString() : raw.toString();
+  }
+
+  private static extractCn(dn: string): string | null {
+    const match = /^CN=([^,]+)/i.exec(dn);
+    return match ? match[1] : null;
+  }
+
+  private static parseGroupDn(groupDn: string): { groupPath: string; cn: string } {
+    const match = /^CN=([^,]+)/i.exec(groupDn);
+
+    if (!match) throw new Error(`Invalid DN: ${groupDn}`);
+
+    const cn = match[1];
+    return { groupPath: `/${cn}`, cn };
   }
 
   private async applyUpdates(updates: Array<{ userId: string; add: string[]; remove: string[] }>) {
-    await Promise.all(updates.map(async (upd) => this.updateUserGroups(upd.userId, upd.add, upd.remove)));
+    await Promise.all(updates.map((u) => this.updateUserGroups(u.userId, u.add, u.remove)));
   }
 
-  private async updateUserGroups(userId: string, toAdd: string[], toRemove: string[]): Promise<void> {
+  private async updateUserGroups(userId: string, toAddIds: string[], toRemoveIds: string[]) {
     try {
-      await Promise.all(toAdd.map((g) => this.keycloakQueue.enqueue(HttpMethods.PUT, `/users/${userId}/groups/${g}`)));
       await Promise.all(
-        toRemove.map((g) => this.keycloakQueue.enqueue(HttpMethods.DELETE, `/users/${userId}/groups/${g}`)),
+        toAddIds.map((groupId) => this.keycloakQueue.enqueue(HttpMethods.PUT, `/users/${userId}/groups/${groupId}`)),
+      );
+      await Promise.all(
+        toRemoveIds.map((groupId) =>
+          this.keycloakQueue.enqueue(HttpMethods.DELETE, `/users/${userId}/groups/${groupId}`),
+        ),
       );
     } catch (error) {
-      Logger.error(
-        `Failed to update groups for user: ${userId} ${(error as Error).message}`,
-        (error as Error).stack,
-        LdapKeycloakSyncService.name,
-      );
+      Logger.error(`Failed to update ${userId}`, (error as Error).stack, LdapKeycloakSyncService.name);
     }
   }
 }
