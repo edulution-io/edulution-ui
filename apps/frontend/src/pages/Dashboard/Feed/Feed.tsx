@@ -26,7 +26,7 @@ import useMailsStore from '@/pages/Mail/useMailsStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import MailList from '@/pages/Dashboard/Feed/mails/MailList';
 import SurveysList from '@/pages/Dashboard/Feed/surveys/SurveysList';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 
 const Feed = () => {
   const { t } = useTranslation();
@@ -34,7 +34,7 @@ const Feed = () => {
   const { runningConferences } = useConferenceStore();
   const { mails } = useMailsStore();
   const { isSuperAdmin } = useLdapGroups();
-  const { openSurveys } = useSurveyTablesPageStore();
+  const { openSurveys } = useSurveysTablesPageStore();
 
   const feed = [
     <FeedAccordionItem

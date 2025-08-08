@@ -10,9 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
-import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { VscNewFile } from 'react-icons/vsc';
 import { RiResetLeftLine } from 'react-icons/ri';
@@ -22,13 +21,10 @@ import { TbTemplate } from 'react-icons/tb';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import getInitialSurveyFormValues from '@libs/survey/constants/initial-survey-form';
 import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
-import useUserStore from '@/store/UserStore/useUserStore';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useLanguage from '@/hooks/useLanguage';
 import useBeforeUnload from '@/hooks/useBeforeUnload';
@@ -39,21 +35,22 @@ import TemplateDialog from '@/pages/Surveys/Editor/dialog/TemplateDialog';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
-import PageLayout from '@/components/structure/layout/PageLayout';
 import QuestionContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 
-const SurveyEditorPage = () => {
-  const { fetchSelectedSurvey, isFetching, selectedSurvey, selectSurvey, updateUsersSurveys } =
-    useSurveyTablesPageStore();
+interface SurveyEditorPageProps {
+  initialFormValues: SurveyDto;
+}
+
+const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
+  const { isFetching, updateUsersSurveys } = useSurveysTablesPageStore();
   const {
     isOpenSaveSurveyDialog,
     setIsOpenSaveSurveyDialog,
     updateOrCreateSurvey,
     isLoading,
     reset: resetEditorPage,
-    storedSurvey,
     updateStoredSurvey,
     resetStoredSurvey,
     uploadFile,
@@ -68,8 +65,6 @@ const SurveyEditorPage = () => {
   } = useQuestionsContextMenuStore();
 
   const { t } = useTranslation();
-  const { user } = useUserStore();
-  const { surveyId } = useParams();
   const { language } = useLanguage();
 
   const handleReset = () => {
@@ -77,25 +72,7 @@ const SurveyEditorPage = () => {
     resetEditorPage();
     resetTemplateStore();
     resetQuestionsContextMenu();
-    selectSurvey(undefined);
   };
-
-  useEffect(() => {
-    handleReset();
-    void fetchSelectedSurvey(surveyId, false);
-  }, [surveyId]);
-
-  const initialFormValues: SurveyDto | undefined = useMemo(() => {
-    if (!user || !user.username) return undefined;
-    const surveyCreator: AttendeeDto = {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      username: user.username,
-      value: user.username,
-      label: `${user.firstName} ${user.lastName}`,
-    };
-    return getInitialSurveyFormValues(surveyCreator, selectedSurvey, storedSurvey);
-  }, [storedSurvey, selectedSurvey]);
 
   const form = useForm<SurveyDto>({
     mode: 'onChange',
@@ -226,7 +203,7 @@ const SurveyEditorPage = () => {
   if (isLoading || isFetching) return <LoadingIndicatorDialog isOpen />;
 
   return (
-    <PageLayout>
+    <>
       <div className="survey-editor h-full">
         {creator && (
           <SurveyCreatorComponent
@@ -256,7 +233,7 @@ const SurveyEditorPage = () => {
         setIsOpenQuestionContextMenu={setIsOpenQuestionContextMenu}
         isLoading={isUpdatingBackendLimiters}
       />
-    </PageLayout>
+    </>
   );
 };
 
