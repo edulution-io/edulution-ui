@@ -196,7 +196,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
 
     const { searchEntries } = await ldapClient.search(base, ldapSearchOptions);
 
-    const searchResult = searchEntries.map((e) => LdapKeycloakSyncService.extractDn(e.distinguishedName));
+    const searchResult = searchEntries.map((entry) => LdapKeycloakSyncService.extractDn(entry.distinguishedName));
     const children = await Promise.all(
       searchResult.map((parent) => this.fetchParents(ldapClient, parent, visitedDnSet)),
     );
@@ -411,8 +411,8 @@ class LdapKeycloakSyncService implements OnModuleInit {
           this.keycloakQueue.enqueue(HttpMethods.DELETE, `/users/${userId}/groups/${groupId}`),
         ),
       );
-    } catch (e) {
-      Logger.error(`Failed to update ${userId}`, (e as Error).stack, LdapKeycloakSyncService.name);
+    } catch (error) {
+      Logger.error(`Failed to update ${userId}`, (error as Error).stack, LdapKeycloakSyncService.name);
     }
   }
 }
