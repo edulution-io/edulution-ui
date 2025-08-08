@@ -10,12 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Module } from '@nestjs/common';
-import NotificationsController from './notifications.controller';
+import { Global, Module } from '@nestjs/common';
 import NotificationsService from './notifications.service';
 
+@Global()
 @Module({
-  controllers: [NotificationsController],
   providers: [NotificationsService],
+  exports: [NotificationsService],
 })
 export default class NotificationsModule {}

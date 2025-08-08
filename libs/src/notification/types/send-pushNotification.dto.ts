@@ -13,8 +13,8 @@
 // This DTO is based on a third-party object definition from expo-push-notification https://docs.expo.dev/push-notifications/sending-notifications/#formats.
 // Any modifications should be carefully reviewed to ensure compatibility with the source.
 
-import { PushNotificationPriority } from '@libs/pushNotification/constants/pushNotificationPriority';
-import { PushNotificationInterruptionLevel } from '@libs/pushNotification/constants/pushNotificationInterruptionLevel';
+import { PushNotificationPriority } from '@libs/notification/constants/pushNotificationPriority';
+import { PushNotificationInterruptionLevel } from '@libs/notification/constants/pushNotificationInterruptionLevel';
 
 class SendPushNotificationDto {
   to: string | string[];

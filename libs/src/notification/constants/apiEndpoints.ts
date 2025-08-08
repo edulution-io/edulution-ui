@@ -11,4 +11,4 @@
  */
 
 export const NOTIFICATIONS_EDU_API_ENDPOINT = 'notifications';
-export const NOTIFICATION_SEND_EDU_API_ENDPOINT = `/send`;
+export const NOTIFICATION_DEVICES_EDU_API_ENDPOINT = `devices`;

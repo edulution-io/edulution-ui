@@ -12,12 +12,15 @@
 
 import { Injectable } from '@nestjs/common';
 import { Expo, ExpoPushMessage } from 'expo-server-sdk';
-import pickDefinedNotificationFields from '@libs/pushNotification/utils/pickDefinedNotificationFields';
-import SendPushNotificationDto from '@libs/pushNotification/types/send-pushNotification.dto';
+import pickDefinedNotificationFields from '@libs/notification/utils/pickDefinedNotificationFields';
+import SendPushNotificationDto from '@libs/notification/types/send-pushNotification.dto';
+import UsersService from '../users/users.service';
 
 @Injectable()
 export class NotificationsService {
   private readonly expo = new Expo();
+
+  constructor(private userService: UsersService) {}
 
   async sendPushNotification(sendPushNotificationDto: SendPushNotificationDto): Promise<void> {
     const tokens = Array.isArray(sendPushNotificationDto.to)
@@ -49,6 +52,14 @@ export class NotificationsService {
 
     const chunks = this.expo.chunkPushNotifications(messages);
     await Promise.all(chunks.map((chunk) => this.expo.sendPushNotificationsAsync(chunk)));
+  }
+
+  async notifyUsernames(usernames: string[], partialNotification: Omit<SendPushNotificationDto, 'to'>): Promise<void> {
+    const uniqueTokens = await this.userService.getPushTokensByUsersnames(usernames);
+    await this.sendPushNotification({
+      to: uniqueTokens,
+      ...partialNotification,
+    });
   }
 }
 
