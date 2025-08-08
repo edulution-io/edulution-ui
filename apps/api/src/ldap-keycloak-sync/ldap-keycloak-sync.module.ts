@@ -15,9 +15,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import LdapKeycloakSyncService from './ldap-keycloak-sync.service';
 import { LdapKeycloakSync, LdapKeycloakSyncSchema } from './ldap-keycloak-sync.schema';
 import KeycloakRequestQueue from './queue/keycloak-request.queue';
+import GroupsModule from '../groups/groups.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: LdapKeycloakSync.name, schema: LdapKeycloakSyncSchema }])],
+  imports: [GroupsModule, MongooseModule.forFeature([{ name: LdapKeycloakSync.name, schema: LdapKeycloakSyncSchema }])],
   providers: [LdapKeycloakSyncService, KeycloakRequestQueue],
   exports: [LdapKeycloakSyncService],
 })
