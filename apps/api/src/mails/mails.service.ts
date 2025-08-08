@@ -65,7 +65,7 @@ class MailsService implements OnModuleInit {
 
   onModuleInit() {
     void this.updateImapConfig();
-    Logger.debug(`Imap connection timeout: ${connectionTimeout}}`, MailsService.name);
+    Logger.debug(`Imap connection timeout: ${connectionTimeout}`, MailsService.name);
   }
 
   @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
