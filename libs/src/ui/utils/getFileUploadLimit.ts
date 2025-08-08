@@ -10,15 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IconType } from 'react-icons';
-import { Row } from '@tanstack/react-table';
+import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
+import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
+import MAX_FILE_UPLOAD_SIZE from '../constants/maxFileUploadSize';
 
-interface TableAction<TData> {
-  icon: IconType;
-  translationId: string;
-  onClick: (row?: Row<TData>) => void | Promise<void>;
-  className?: string;
-  disabled?: boolean;
-}
+const getFileUploadLimit = (webdavShares: WebdavShareDto[]) => {
+  if (webdavShares[0]?.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
+    return 10000;
+  }
+  return MAX_FILE_UPLOAD_SIZE;
+};
 
-export default TableAction;
+export default getFileUploadLimit;

@@ -13,17 +13,31 @@
 import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import buildCollectPath from '@libs/filesharing/utils/buildCollectPath';
+import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
+import WebdavShareDto from '../types/webdavShareDto';
 
 const buildCollectDTO = (
   students: LmnUserInfo[] | null,
   currentUser: LmnUserInfo | null,
   currentGroupName: string,
   homePath: string,
+  webdavShares: WebdavShareDto[],
 ): CollectFileRequestDTO[] | undefined => {
-  if (!students) return undefined;
-  if (!currentUser) return undefined;
+  if (!students || !currentUser) return undefined;
 
-  return students.map((student) => buildCollectPath(currentUser.cn, homePath, currentGroupName, student));
+  const isEduFileProxy = webdavShares[0]?.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY;
+
+  return students.map((student) => {
+    const baseDto = buildCollectPath(currentUser.cn, homePath, currentGroupName, student);
+
+    if (!isEduFileProxy) return baseDto;
+
+    return {
+      ...baseDto,
+      originPath: `${student.school}/${baseDto.originPath}`,
+      destinationPath: `${student.school}/${baseDto.destinationPath}`,
+    };
+  });
 };
 
 export default buildCollectDTO;

@@ -28,6 +28,7 @@ const useFileSharingPage = () => {
     setPathToRestoreSession,
     pathToRestoreSession,
     isLoading: isFileProcessing,
+    fetchWebdavShares,
   } = useFileSharingStore();
   const { isLoading, fileOperationResult } = useFileSharingDialogStore();
   const { fetchShares } = usePublicShareStore();
@@ -39,6 +40,7 @@ const useFileSharingPage = () => {
   useEffect(() => {
     if (user) {
       void fetchMountPoints();
+      void fetchWebdavShares();
     }
   }, [user]);
 

@@ -10,15 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IconType } from 'react-icons';
-import { Row } from '@tanstack/react-table';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
+import TAppFieldWidth from '@libs/appconfig/types/tAppFieldWidth';
 
-interface TableAction<TData> {
-  icon: IconType;
-  translationId: string;
-  onClick: (row?: Row<TData>) => void | Promise<void>;
-  className?: string;
-  disabled?: boolean;
-}
+const WEBDAV_SHARE_TABLE = [
+  {
+    name: ExtendedOptionKeys.WEBDAV_SHARE_TABLE,
+    description: 'appExtendedOptions.veyonProxys',
+    title: 'appExtendedOptions.veyonProxysTitle',
+    type: ExtendedOptionField.table,
+    value: '',
+    width: 'full' as TAppFieldWidth,
+  },
+];
 
-export default TableAction;
+export default WEBDAV_SHARE_TABLE;

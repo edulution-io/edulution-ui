@@ -10,15 +10,25 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IconType } from 'react-icons';
-import { Row } from '@tanstack/react-table';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import { IsArray, IsMongoId, IsString } from 'class-validator';
+import WebdavShareType from './webdavShareType';
 
-interface TableAction<TData> {
-  icon: IconType;
-  translationId: string;
-  onClick: (row?: Row<TData>) => void | Promise<void>;
-  className?: string;
-  disabled?: boolean;
+class WebdavShareDto {
+  @IsMongoId()
+  webdavShareId?: string;
+
+  @IsString()
+  displayName: string;
+
+  @IsString()
+  url: string;
+
+  @IsArray()
+  accessGroups: MultipleSelectorGroup[] = [];
+
+  @IsString()
+  type: WebdavShareType;
 }
 
-export default TableAction;
+export default WebdavShareDto;

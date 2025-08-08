@@ -10,15 +10,17 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IconType } from 'react-icons';
-import { Row } from '@tanstack/react-table';
+import WEBDAV_SHARE_TYPE from '../constants/webdavShareType';
+import { DirectoryFileDTO } from '../types/directoryFileDTO';
+import WebdavShareType from '../types/webdavShareType';
 
-interface TableAction<TData> {
-  icon: IconType;
-  translationId: string;
-  onClick: (row?: Row<TData>) => void | Promise<void>;
-  className?: string;
-  disabled?: boolean;
-}
+const processWebdavResponse = (response: DirectoryFileDTO[], webdavShareType: WebdavShareType) => {
+  let data = response;
+  if (webdavShareType === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
+    data = data.slice(1);
+  }
+  data = data.sort((a, b) => a.filename.localeCompare(b.filename));
+  return data;
+};
 
-export default TableAction;
+export default processWebdavResponse;

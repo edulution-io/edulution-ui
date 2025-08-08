@@ -10,15 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IconType } from 'react-icons';
-import { Row } from '@tanstack/react-table';
+import AppConfigTable from '@libs/bulletinBoard/types/appConfigTable';
+import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 
-interface TableAction<TData> {
-  icon: IconType;
-  translationId: string;
-  onClick: (row?: Row<TData>) => void | Promise<void>;
-  className?: string;
-  disabled?: boolean;
+export interface WebdavShareTableStore extends AppConfigTable<WebdavShareDto> {
+  isLoading: boolean;
+  selectedConfig: WebdavShareDto | null;
+  setSelectedConfig: (config: WebdavShareDto | null) => void;
+  createWebdavShare: (webdavShareDto: WebdavShareDto) => Promise<void>;
+  updateWebdavShare: (webdavShareId: string, webdavShareDto: WebdavShareDto) => Promise<void>;
+  reset: () => void;
 }
-
-export default TableAction;

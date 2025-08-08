@@ -10,15 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IconType } from 'react-icons';
-import { Row } from '@tanstack/react-table';
+import WEBDAV_SHARE_TYPE from '../constants/webdavShareType';
 
-interface TableAction<TData> {
-  icon: IconType;
-  translationId: string;
-  onClick: (row?: Row<TData>) => void | Promise<void>;
-  className?: string;
-  disabled?: boolean;
-}
+type WebdavShareType = (typeof WEBDAV_SHARE_TYPE)[keyof typeof WEBDAV_SHARE_TYPE];
 
-export default TableAction;
+export default WebdavShareType;
