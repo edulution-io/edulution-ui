@@ -358,7 +358,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
 
     const users = await this.keycloakQueue.enqueue<GroupMemberDto[]>(
       HttpMethods.GET,
-      `/users?username=${encodeURIComponent(name)}`,
+      `/users?username=${encodeURIComponent(name)}?exact=true`,
     );
     if (users.length) {
       this.userCache.set(name, users[0]);
