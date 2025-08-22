@@ -18,13 +18,14 @@ import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import useGroupStore from '@/store/GroupStore';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
-import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import AppConfigSwitch from '@/pages/Settings/AppConfig/components/booleanField/AppConfigSwitch';
 import AppDropdownSelectFormField from '@/components/ui/DropdownSelect/AppDropdownSelectFormField';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
 import { GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import LdapSettings from '@/pages/Settings/components/LdapSettings';
+import AddInstitutionLogo from '@/pages/Settings/components/AddInstitutionLogo';
+import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import useGlobalSettingsApiStore from './useGlobalSettingsApiStore';
 import GlobalSettingsFloatingButtons from './GlobalSettingsFloatingButtons';
 import DeploymentTargetDropdownSelectFormField from '../components/DeploymentTargetDropdownSelectFormField';
@@ -159,6 +160,12 @@ const GlobalSettings: React.FC = () => {
                 <h4>{t('settings.globalSettings.ldap.title')}</h4>
               </AccordionTrigger>
               <LdapSettings form={form} />
+            </AccordionItem>
+            <AccordionItem value="institutionLogo">
+              <AccordionTrigger className="flex">
+                <h4>{t('settings.globalSettings.institutionLogo.title')}</h4>
+              </AccordionTrigger>
+              <AddInstitutionLogo form={form} />
             </AccordionItem>
           </form>
         </Form>

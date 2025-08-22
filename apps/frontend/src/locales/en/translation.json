@@ -906,6 +906,12 @@
         "edulution-binduser-description": "Here you can configure the LDAP access data required for group synchronization.",
         "edulution-binduser-dn": "Distinguished Name (DN)",
         "edulution-binduser-password": "Password"
+      },
+      "institutionLogo": {
+        "title": "Institutionlogo",
+        "description": "Here you can upload a logo for your institution. The logo will be displayed in the header of the application.",
+        "uploadLightLogo": "Upload Light Logo",
+        "uploadDarkLogo": "Upload Dark Logo"
       }
     },
     "userAdministration": {

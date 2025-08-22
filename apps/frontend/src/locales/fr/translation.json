@@ -790,6 +790,12 @@
         "updateError": "Les paramètres n'ont pas pu être mis à jour.",
         "notFoundError": "Les paramètres n'ont pas pu être chargés."
       },
+      "institutionLogo": {
+        "title": "Logo de l’institution",
+        "description": "Ici, vous pouvez télécharger un logo pour votre institution. Le logo sera affiché dans l’en-tête de l’application.",
+        "uploadLightLogo": "Téléverser le logo clair",
+        "uploadDarkLogo": "Téléverser le logo sombre"
+      },
       "deploymentTarget": "Plate-forme cible de déploiement"
     },
     "info": {
