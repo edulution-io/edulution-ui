@@ -1,0 +1,29 @@
+logging.level: info
+strict.perms: false
+
+filebeat.inputs:
+  - type: docker
+    containers.ids: ['*']
+    combine_partial: true
+    multiline.pattern: '^\s'
+    multiline.negate: false
+    multiline.match: after
+
+    processors:
+      - add_docker_metadata: ~
+      - decode_json_fields:
+          fields: ['message']
+          target: 'json'
+          process_array: false
+          add_error_key: true
+          overwrite_keys: true
+          max_depth: 2
+
+    data_stream.type: logs
+    data_stream.dataset: docker
+    data_stream.namespace: default
+
+output.elasticsearch:
+  hosts: ['http://elasticsearch:9200']
+
+setup.template.type: data_stream

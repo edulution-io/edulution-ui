@@ -90,6 +90,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/mailparser": "^3.4.4",
     "@types/mime": "^3.0.4",
+    "@willsoto/nestjs-prometheus": "^6.0.2",
     "autoprefixer": "^10.4.17",
     "axios": "^1.7.4",
     "bull": "^4.16.5",

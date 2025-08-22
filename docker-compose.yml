@@ -16,6 +16,8 @@ services:
       timeout: 1s
       retries: 3
       start_period: 10s
+    labels:
+      co.elastic.logs/enabled: 'true'
 
   redisEdu:
     container_name: redisEdu
@@ -30,6 +32,82 @@ services:
       retries: 3
       start_period: 10s
     command: ['redis-server', '--save', '', '--appendonly', 'no']
+    labels:
+      co.elastic.logs/enabled: 'true'
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: always
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/prom_client_secret:/etc/prometheus/secret/client_secret:ro
+    depends_on:
+      - redisEdu
+      - mongoEdu
+
+  redis-exporter:
+    image: oliver006/redis_exporter:latest
+    container_name: redis_exporter
+    restart: always
+    command: ['--redis.addr=redisEdu:6379']
+    depends_on:
+      - redisEdu
+
+  mongodb-exporter:
+    image: bitnami/mongodb-exporter:0
+    container_name: mongodb_exporter
+    restart: always
+    environment:
+      MONGODB_URI: 'mongodb://root:example@mongoEdu:27017/admin'
+    depends_on:
+      - mongoEdu
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.3
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    ports:
+      - '9200:9200'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.14.3
+    container_name: kibana
+    restart: always
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - '5601:5601'
+    depends_on:
+      - elasticsearch
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.14.3
+    container_name: filebeat
+    user: root
+    restart: always
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./hostlogs:/hostlogs:ro
+    depends_on:
+      - elasticsearch
 
 volumes:
   db:
+  esdata:
