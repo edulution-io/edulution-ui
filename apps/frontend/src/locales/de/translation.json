@@ -910,6 +910,12 @@
         "edulution-binduser-description": "Hier können Zugangsdaten zum LDAP konfiguriert werden, die für den Gruppen-Sync notwendig sind.",
         "edulution-binduser-dn": "Distinguished Name (DN)",
         "edulution-binduser-password": "Passwort"
+      },
+      "institutionLogo": {
+        "title": "Institutionslogo",
+        "description": "Hier kann das Logo der Institution hochgeladen werden. Dieses Logo wird auf der Login-Seite angezeigt.",
+        "uploadLightLogo": "Helles Logo hochladen",
+        "uploadDarkLogo": "Dunkels Logo hochladen"
       }
     },
     "userAdministration": {

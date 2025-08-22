@@ -35,6 +35,10 @@ class GlobalSettingsDto {
         password: string;
       };
     };
+    institutionLogo: {
+      light: string;
+      dark: string;
+    };
   };
 }
 
