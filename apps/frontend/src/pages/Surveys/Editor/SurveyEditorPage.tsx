@@ -22,16 +22,17 @@ import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
 import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import useLdapGroups from '@/hooks/useLdapGroups';
 import useLanguage from '@/hooks/useLanguage';
 import useBeforeUnload from '@/hooks/useBeforeUnload';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import createSurveyCreatorObject from '@/pages/Surveys/Editor/createSurveyCreatorObject';
-import TemplateDialog from '@/pages/Surveys/Editor/dialog/TemplateDialog';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
@@ -55,7 +56,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     resetStoredSurvey,
     uploadFile,
   } = useSurveyEditorPageStore();
-  const { reset: resetTemplateStore, isOpenTemplateMenu, setIsOpenTemplateMenu } = useTemplateMenuStore();
+  const { reset: resetTemplateStore, template, uploadTemplate } = useTemplateMenuStore();
   const {
     reset: resetQuestionsContextMenu,
     setIsOpenQuestionContextMenu,
@@ -66,6 +67,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
 
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { isSuperAdmin } = useLdapGroups();
 
   const handleReset = () => {
     resetStoredSurvey();
@@ -138,6 +140,24 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     });
   }, [creator, form, language]);
 
+  const handleSaveTemplate = () => {
+    const survey = form.getValues();
+
+    const surveyTemplateDto = { fileName: template?.fileName } as SurveyTemplateDto;
+    surveyTemplateDto.template = {
+      formula: (creator.JSON as SurveyFormula) || (creator.survey.toJSON() as SurveyFormula),
+      backendLimiters: survey.backendLimiters,
+      invitedAttendees: survey.invitedAttendees,
+      invitedGroups: survey.invitedGroups,
+      isPublic: survey.isPublic,
+      isAnonymous: survey.isAnonymous,
+      canSubmitMultipleAnswers: survey.canSubmitMultipleAnswers,
+      canUpdateFormerAnswer: survey.canUpdateFormerAnswer,
+    };
+
+    void uploadTemplate(surveyTemplateDto);
+  };
+
   const handleNavigateToCreatedSurveys = () => {
     window.history.pushState(null, '', `/${CREATED_SURVEYS_PAGE}`);
     window.dispatchEvent(new PopStateEvent('popstate'));
@@ -170,7 +190,8 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
       {
         icon: TbTemplate,
         text: t('survey.editor.templates'),
-        onClick: () => setIsOpenTemplateMenu(!isOpenTemplateMenu),
+        onClick: () => handleSaveTemplate(),
+        isVisible: !!isSuperAdmin,
       },
       {
         icon: VscNewFile,
@@ -213,12 +234,6 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
         )}
       </div>
       <FloatingButtonsBar config={config} />
-      <TemplateDialog
-        form={form}
-        creator={creator}
-        isOpenTemplateMenu={isOpenTemplateMenu}
-        setIsOpenTemplateMenu={setIsOpenTemplateMenu}
-      />
       <SaveSurveyDialog
         form={form}
         isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
