@@ -96,8 +96,8 @@ const LessonPage = () => {
         break;
       }
       case UserGroups.Sessions: {
-        await fetchUserSessions();
-        const session = userSessions.find((s) => s.name === groupNameParams);
+        const userSessionsWithMembers = await fetchUserSessions(true);
+        const session = userSessionsWithMembers.find((s) => s.name === groupNameParams);
         setCurrentSelectedSession(session || null);
         setMember(session?.members || []);
         break;

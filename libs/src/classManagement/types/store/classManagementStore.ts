@@ -62,7 +62,7 @@ interface ClassManagementActions {
   fetchProject: (name: string) => Promise<LmnApiProjectWithMembers | null>;
   fetchUserProjects: () => Promise<void>;
   fetchUserSession: (name: string) => Promise<LmnApiSession | null>;
-  fetchUserSessions: () => Promise<void>;
+  fetchUserSessions: (withMemberDetails: boolean) => Promise<LmnApiSession[]>;
   fetchRoom: () => Promise<void>;
   fetchPrinters: () => Promise<void>;
   fetchPrinter: (name: string) => Promise<LmnApiPrinterWithMembers | null>;

@@ -186,7 +186,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
         await fetchUserProjects();
         break;
       case UserGroups.Sessions:
-        await fetchUserSessions();
+        await fetchUserSessions(true);
         break;
       case UserGroups.Classes:
         await fetchUserSchoolClasses();
