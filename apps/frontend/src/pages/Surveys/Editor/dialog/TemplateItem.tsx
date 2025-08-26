@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
 import cn from '@libs/common/utils/className';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import { Button } from '@/components/shared/Button';
@@ -33,7 +33,7 @@ const TemplateItem = (props: TemplateItemProps) => {
   const { form, creator, template } = props;
   const {
     formula,
-    /* backendLimiter , */
+    backendLimiters,
     invitedAttendees,
     invitedGroups,
     isAnonymous,
@@ -48,7 +48,7 @@ const TemplateItem = (props: TemplateItemProps) => {
   const { t } = useTranslation();
 
   const handleLoadTemplate = () => {
-    // form.setValue('backendLimiter', backendLimiter);
+    form.setValue('backendLimiters', backendLimiters || []);
     form.setValue('invitedAttendees', invitedAttendees || []);
     form.setValue('invitedGroups', invitedGroups || []);
     form.setValue('isAnonymous', isAnonymous);

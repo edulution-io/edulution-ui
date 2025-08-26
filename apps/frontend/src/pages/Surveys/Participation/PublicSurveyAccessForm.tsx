@@ -19,7 +19,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { publicUserLoginRegex, publicUserRegex, publicUserSeperator } from '@libs/survey/utils/publicUserLoginRegex';
 import { zodResolver } from '@hookform/resolvers/zod';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import { Card } from '@/components/shared/Card';
 import PublicAccessFormHeader from '@/components/shared/PublicAccessFormHeader';
@@ -28,7 +28,7 @@ import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 const PublicSurveyAccessForm = (): React.ReactNode => {
   const { t } = useTranslation();
   const { user } = useUserStore();
-  const { selectedSurvey } = useSurveyTablesPageStore();
+  const { selectedSurvey } = useSurveysTablesPageStore();
   const { setAttendee, checkForMatchingUserNameAndPubliUserId } = useParticipateSurveyStore();
 
   const getPublicLoginFormSchema = () =>

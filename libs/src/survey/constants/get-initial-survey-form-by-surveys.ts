@@ -10,12 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import i18next from 'i18next';
+import { t } from 'i18next';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import getFirstValidDateOfArray from '@libs/common/utils/Date/getFirstValidDateOfArray';
 
-const getInitialSurveyFormValues = (
+const getInitialSurveyFormBySurveys = (
   creator: AttendeeDto,
   selectedSurvey?: SurveyDto,
   storedSurvey?: SurveyDto,
@@ -24,7 +24,7 @@ const getInitialSurveyFormValues = (
 
   return {
     id: storedSurvey?.id || selectedSurvey?.id,
-    formula: storedSurvey?.formula || selectedSurvey?.formula || { title: i18next.t('survey.newTitle').toString() },
+    formula: storedSurvey?.formula || selectedSurvey?.formula || { title: t('survey.newTitle').toString() },
     backendLimiters: storedSurvey?.backendLimiters || selectedSurvey?.backendLimiters || [],
     saveNo: storedSurvey?.saveNo || selectedSurvey?.saveNo || 0,
     creator,
@@ -42,4 +42,4 @@ const getInitialSurveyFormValues = (
   };
 };
 
-export default getInitialSurveyFormValues;
+export default getInitialSurveyFormBySurveys;
