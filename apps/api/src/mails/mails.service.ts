@@ -11,7 +11,7 @@
  */
 
 import { Model } from 'mongoose';
-import { FetchMessageObject, ImapFlow, MailboxLockObject } from 'imapflow';
+import { ImapFlow, MailboxLockObject } from 'imapflow';
 import { ArgumentMetadata, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -65,7 +65,7 @@ class MailsService implements OnModuleInit {
 
   onModuleInit() {
     void this.updateImapConfig();
-    Logger.debug(`Imap connection timeout: ${connectionTimeout}}`, MailsService.name);
+    Logger.debug(`Imap connection timeout: ${connectionTimeout}`, MailsService.name);
   }
 
   @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
@@ -131,10 +131,7 @@ class MailsService implements OnModuleInit {
     try {
       mailboxLock = await this.imapClient.getMailboxLock('INBOX');
 
-      const fetchMail: AsyncGenerator<FetchMessageObject> = this.imapClient.fetch(
-        { recent: true },
-        { envelope: true, labels: true },
-      );
+      const fetchMail = this.imapClient.fetch({ recent: true }, { envelope: true, labels: true });
 
       // eslint-disable-next-line no-restricted-syntax
       for await (const mail of fetchMail) {

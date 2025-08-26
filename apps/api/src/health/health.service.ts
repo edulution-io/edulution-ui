@@ -19,8 +19,9 @@ import {
   HealthIndicatorResult,
 } from '@nestjs/terminus';
 import { HttpService } from '@nestjs/axios';
+import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 
-const { EDUI_WEBDAV_URL, KEYCLOAK_API, EDUI_DISK_SPACE_THRESHOLD } = process.env;
+const { KEYCLOAK_API, EDUI_DISK_SPACE_THRESHOLD } = process.env;
 
 @Injectable()
 class HealthService {
@@ -30,6 +31,7 @@ class HealthService {
     private httpIndicator: HttpHealthIndicator,
     private disk: DiskHealthIndicator,
     private httpService: HttpService,
+    private webdavSharesService: WebdavSharesService,
   ) {}
 
   async checkEduApiResponding() {
@@ -58,8 +60,9 @@ class HealthService {
     return this.httpIndicator.pingCheck('authServer', url);
   }
 
-  private checkWebDavServer(): Promise<HealthIndicatorResult> {
-    const { origin } = new URL(EDUI_WEBDAV_URL || '');
+  private async checkWebDavServer(): Promise<HealthIndicatorResult> {
+    const webdavServerUrl = await this.webdavSharesService.getWebdavSharePath();
+    const { origin } = new URL(webdavServerUrl || '');
     return this.httpIndicator.pingCheck('lmnServer', origin, {
       httpClient: this.httpService,
     });

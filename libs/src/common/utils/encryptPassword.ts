@@ -10,6 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import toArrayBuffer from '@libs/common/utils/toArrayBuffer';
 import EncryptedPasswordObject from '../types/encryptPasswordObject';
 
 export const deriveKey = async (password: string, salt: Uint8Array): Promise<CryptoKey> => {
@@ -21,7 +22,7 @@ export const deriveKey = async (password: string, salt: Uint8Array): Promise<Cry
   return window.crypto.subtle.deriveKey(
     {
       name: 'PBKDF2',
-      salt,
+      salt: toArrayBuffer(salt),
       iterations: 100000,
       hash: 'SHA-256',
     },
