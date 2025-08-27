@@ -12,9 +12,9 @@
 
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import SurveysTemplateSchema, { SurveysTemplate } from 'apps/api/src/surveys/surveys-template.schema';
 import SurveySchema, { Survey } from './survey.schema';
 import SurveyAnswerSchema, { SurveyAnswer } from './survey-answer.schema';
-import SurveysTemplateSchema, { SurveysTemplate } from 'apps/api/src/surveys/surveys-template.schema';
 import SurveysService from './surveys.service';
 import SurveysController from './surveys.controller';
 import SurveyAnswerService from './survey-answer.service';

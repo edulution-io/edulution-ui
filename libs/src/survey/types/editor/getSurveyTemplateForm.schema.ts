@@ -13,70 +13,78 @@
 import { z } from 'zod';
 
 const getSurveyTemplateFormSchema = () =>
-z.object({
-  template: z.object({
-    formula: z.object({
-      title: z.string(),
-      description: z.string().optional(),
-      pages: z.array(
-        z.object({
-          name: z.string(),
+  z.object({
+    template: z
+      .object({
+        formula: z.object({
+          title: z.string(),
           description: z.string().optional(),
-          elements: z.array(
+          pages: z.array(
             z.object({
-              type: z.string(),
               name: z.string(),
               description: z.string().optional(),
-              isRequired: z.boolean().optional(),
-              choices: z.array(
+              elements: z.array(
                 z.object({
-                  value: z.string(),
-                  label: z.string(),
+                  type: z.string(),
+                  name: z.string(),
+                  description: z.string().optional(),
+                  isRequired: z.boolean().optional(),
+                  choices: z
+                    .array(
+                      z.object({
+                        value: z.string(),
+                        label: z.string(),
+                      }),
+                    )
+                    .optional(),
+                  choicesByUrl: z
+                    .object({
+                      url: z.string(),
+                    })
+                    .optional(),
                 }),
-              ).optional(),
-              choicesByUrl: z.object({
-                url: z.string(),
-              }).optional(),
+              ),
             }),
           ),
         }),
-      ),
-    }),
-    invitedAttendees: z.array(
-      z.intersection(
-        z.object({
-          firstName: z.string().optional(),
-          lastName: z.string().optional(),
-          username: z.string(),
-        }),
-        z.object({
-          value: z.string(),
-          label: z.string(),
-        }),
-      ),
-    ),
-    backendLimiters: z.array(
-      z.object({
-        questionName: z.string().optional(),
-        choices: z.array(
-          z.object({
-            name: z.string().optional(),
-            title: z.string().optional(),
-            limit: z.number().optional(),
-          }),
+        invitedAttendees: z.array(
+          z.intersection(
+            z.object({
+              firstName: z.string().optional(),
+              lastName: z.string().optional(),
+              username: z.string(),
+            }),
+            z.object({
+              value: z.string(),
+              label: z.string(),
+            }),
+          ),
         ),
-      }),
-    ).optional(),
-    invitedGroups: z.array(z.object({})),
-    isAnonymous: z.boolean().optional(),
-    isPublic: z.boolean().optional(),
-    canSubmitMultipleAnswers: z.boolean().optional(),
-    canUpdateFormerAnswer: z.boolean().optional(),
-    }).optional(),
-  icon: z.string().optional(),
-  isActive: z.boolean(),
-  createdAt: z.date().optional(),
-  updatedAt: z.date().optional(),
-});
+        backendLimiters: z
+          .array(
+            z.object({
+              questionName: z.string().optional(),
+              choices: z.array(
+                z.object({
+                  name: z.string().optional(),
+                  title: z.string().optional(),
+                  limit: z.number().optional(),
+                }),
+              ),
+            }),
+          )
+          .optional(),
+        invitedGroups: z.array(z.object({})),
+        isAnonymous: z.boolean().optional(),
+        isPublic: z.boolean().optional(),
+        canSubmitMultipleAnswers: z.boolean().optional(),
+        canUpdateFormerAnswer: z.boolean().optional(),
+      })
+      .optional(),
+    icon: z.string().optional(),
+    isActive: z.boolean(),
+    createdAt: z.date().optional(),
+    updatedAt: z.date().optional(),
+  });
 
 export default getSurveyTemplateFormSchema;

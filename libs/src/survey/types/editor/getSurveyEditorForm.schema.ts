@@ -12,67 +12,56 @@
 
 import { z } from 'zod';
 
-const getSurveyEditorFormSchema = () => z.object({
-  id: z.number(),
-  formula: z.object({
-    title: z.string(),
-    description: z.string().optional(),
-    pages: z.array(
-      z.object({
-        name: z.string(),
-        description: z.string().optional(),
-        elements: z.array(
-          z.object({
-            type: z.string(),
-            name: z.string(),
-            description: z.string().optional(),
-            isRequired: z.boolean().optional(),
-            choices: z
-              .array(
-                z.object({
-                  value: z.string(),
-                  label: z.string(),
-                }),
-              )
-              .optional(),
-            choicesByUrl: z
-              .object({
-                url: z.string(),
-              })
-              .optional(),
-          }),
-        ),
-      }),
-    ),
-  }),
-  backendLimiters: z
-    .array(
-      z.object({
-        questionName: z.string().optional(),
-        choices: z.array(
-          z.object({
-            name: z.string().optional(),
-            title: z.string().optional(),
-            limit: z.number().optional(),
-          }),
-        ),
-      }),
-    )
-    .optional(),
-  saveNo: z.number().optional(),
-  creator: z.intersection(
-    z.object({
-      firstName: z.string().optional(),
-      lastName: z.string().optional(),
-      username: z.string(),
+const getSurveyEditorFormSchema = () =>
+  z.object({
+    id: z.number(),
+    formula: z.object({
+      title: z.string(),
+      description: z.string().optional(),
+      pages: z.array(
+        z.object({
+          name: z.string(),
+          description: z.string().optional(),
+          elements: z.array(
+            z.object({
+              type: z.string(),
+              name: z.string(),
+              description: z.string().optional(),
+              isRequired: z.boolean().optional(),
+              choices: z
+                .array(
+                  z.object({
+                    value: z.string(),
+                    label: z.string(),
+                  }),
+                )
+                .optional(),
+              choicesByUrl: z
+                .object({
+                  url: z.string(),
+                })
+                .optional(),
+            }),
+          ),
+        }),
+      ),
     }),
-    z.object({
-      value: z.string(),
-      label: z.string(),
-    }),
-  ),
-  invitedAttendees: z.array(
-    z.intersection(
+    backendLimiters: z
+      .array(
+        z.object({
+          questionName: z.string().optional(),
+          choices: z.array(
+            z.object({
+              name: z.string().optional(),
+              title: z.string().optional(),
+              limit: z.number().optional(),
+            }),
+          ),
+        }),
+      )
+      .optional(),
+    saveNo: z.number().optional(),
+    creator: z.intersection(
       z.object({
         firstName: z.string().optional(),
         lastName: z.string().optional(),
@@ -83,27 +72,40 @@ const getSurveyEditorFormSchema = () => z.object({
         label: z.string(),
       }),
     ),
-  ),
-  invitedGroups: z.array(z.object({})),
-  participatedAttendees: z.array(
-    z.intersection(
-      z.object({
-        firstName: z.string().optional(),
-        lastName: z.string().optional(),
-        username: z.string(),
-      }),
-      z.object({
-        value: z.string(),
-        label: z.string(),
-      }),
+    invitedAttendees: z.array(
+      z.intersection(
+        z.object({
+          firstName: z.string().optional(),
+          lastName: z.string().optional(),
+          username: z.string(),
+        }),
+        z.object({
+          value: z.string(),
+          label: z.string(),
+        }),
+      ),
     ),
-  ),
-  answers: z.any(),
-  created: z.date().optional(),
-  expires: z.date().nullable().optional(),
-  isAnonymous: z.boolean().optional(),
-  isPublic: z.boolean().optional(),
-  canSubmitMultipleAnswers: z.boolean().optional(),
-});
+    invitedGroups: z.array(z.object({})),
+    participatedAttendees: z.array(
+      z.intersection(
+        z.object({
+          firstName: z.string().optional(),
+          lastName: z.string().optional(),
+          username: z.string(),
+        }),
+        z.object({
+          value: z.string(),
+          label: z.string(),
+        }),
+      ),
+    ),
+    answers: z.any(),
+    created: z.date().optional(),
+    expires: z.date().nullable().optional(),
+    isAnonymous: z.boolean().optional(),
+    isPublic: z.boolean().optional(),
+    canSubmitMultipleAnswers: z.boolean().optional(),
+    canUpdateFormerAnswer: z.boolean().optional(),
+  });
 
 export default getSurveyEditorFormSchema;
