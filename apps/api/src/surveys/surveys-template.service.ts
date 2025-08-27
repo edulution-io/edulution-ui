@@ -13,11 +13,13 @@
 import { join } from 'path';
 import { Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { HttpStatus, Injectable } from '@nestjs/common';
-import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
 import SURVEYS_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplatePath';
+import { SurveyTemplateDto, TemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
+import { SurveysTemplate, SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
 import CustomHttpException from '../common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
 

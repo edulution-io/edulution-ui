@@ -1174,6 +1174,7 @@
       "fileUploadFailed": "Failed to upload the file",
       "fileDeletionFailed": "Failed to delete the file",
       "fileWritingFailed": "Failed to write the file",
+      "fileReadingFailed": "Reading file failed",
       "fileMoveFailed": "Failed to move the file",
       "fileNotFound": "File not found",
       "fileNotProvided": "File not provided",

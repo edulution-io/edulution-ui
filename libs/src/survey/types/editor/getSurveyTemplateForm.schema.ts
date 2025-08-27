@@ -12,9 +12,9 @@
 
 import { z } from 'zod';
 
-const getSurveyEditorFormSchema = () =>
-  z.object({
-    id: z.number(),
+const getSurveyTemplateFormSchema = () =>
+z.object({
+  template: z.object({
     formula: z.object({
       title: z.string(),
       description: z.string().optional(),
@@ -28,50 +28,20 @@ const getSurveyEditorFormSchema = () =>
               name: z.string(),
               description: z.string().optional(),
               isRequired: z.boolean().optional(),
-              choices: z
-                .array(
-                  z.object({
-                    value: z.string(),
-                    label: z.string(),
-                  }),
-                )
-                .optional(),
-              choicesByUrl: z
-                .object({
-                  url: z.string(),
-                })
-                .optional(),
+              choices: z.array(
+                z.object({
+                  value: z.string(),
+                  label: z.string(),
+                }),
+              ).optional(),
+              choicesByUrl: z.object({
+                url: z.string(),
+              }).optional(),
             }),
           ),
         }),
       ),
     }),
-    backendLimiters: z
-      .array(
-        z.object({
-          questionName: z.string().optional(),
-          choices: z.array(
-            z.object({
-              name: z.string().optional(),
-              title: z.string().optional(),
-              limit: z.number().optional(),
-            }),
-          ),
-        }),
-      )
-      .optional(),
-    saveNo: z.number().optional(),
-    creator: z.intersection(
-      z.object({
-        firstName: z.string().optional(),
-        lastName: z.string().optional(),
-        username: z.string(),
-      }),
-      z.object({
-        value: z.string(),
-        label: z.string(),
-      }),
-    ),
     invitedAttendees: z.array(
       z.intersection(
         z.object({
@@ -85,26 +55,28 @@ const getSurveyEditorFormSchema = () =>
         }),
       ),
     ),
+    backendLimiters: z.array(
+      z.object({
+        questionName: z.string().optional(),
+        choices: z.array(
+          z.object({
+            name: z.string().optional(),
+            title: z.string().optional(),
+            limit: z.number().optional(),
+          }),
+        ),
+      }),
+    ).optional(),
     invitedGroups: z.array(z.object({})),
-    participatedAttendees: z.array(
-      z.intersection(
-        z.object({
-          firstName: z.string().optional(),
-          lastName: z.string().optional(),
-          username: z.string(),
-        }),
-        z.object({
-          value: z.string(),
-          label: z.string(),
-        }),
-      ),
-    ),
-    answers: z.any(),
-    created: z.date().optional(),
-    expires: z.date().nullable().optional(),
     isAnonymous: z.boolean().optional(),
     isPublic: z.boolean().optional(),
     canSubmitMultipleAnswers: z.boolean().optional(),
-  });
+    canUpdateFormerAnswer: z.boolean().optional(),
+    }).optional(),
+  icon: z.string().optional(),
+  isActive: z.boolean(),
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional(),
+});
 
-export default getSurveyEditorFormSchema;
+export default getSurveyTemplateFormSchema;
