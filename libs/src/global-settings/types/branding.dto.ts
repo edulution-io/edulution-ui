@@ -10,10 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const GLOBAL_SETTINGS_ROOT_ENDPOINT = 'global-settings';
-export const GLOBAL_SETTINGS_ADMIN_ENDPOINT = 'admin';
-export const GLOBAL_SETTINGS_BRANDING_ENDPOINT = 'branding';
-export const GLOBAL_SETTINGS_BRANDING_LOGO_ENDPOINT = `${GLOBAL_SETTINGS_BRANDING_ENDPOINT}/logo`;
-export const GLOBAL_SETTINGS_SCHOOL_INFO_ENDPOINT = 'school-info';
+interface BrandingDto {
+  logo: {
+    url: string;
+    mimeType: string;
+  };
+}
 
-export const GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS = 'mfaEnforcedGroups';
+export default BrandingDto;

@@ -10,154 +10,121 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AccordionContent } from '@/components/ui/AccordionSH';
-import { Image as ImageIcon, Upload, X } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import { UseFormReturn } from 'react-hook-form';
-import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
-import getCompressedImage from '@/utils/getCompressedImage';
-import { toast } from 'sonner';
+import { Trash2 } from 'lucide-react';
 import { Button } from '@/components/shared/Button';
+import type { UseFormReturn } from 'react-hook-form';
+import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
+import { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSettings.form';
+import { Input } from '@/components/ui/Input';
+import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
+import { useTranslation } from 'react-i18next';
 
-interface InstitutionLogoProps {
-  form: UseFormReturn<GlobalSettingsDto>;
-}
+type Props = { form: UseFormReturn<GlobalSettingsFormValues> };
 
-const AddInstitutionLogo: React.FC<InstitutionLogoProps> = ({ form }) => {
+const AddInstitutionLogo: React.FC<Props> = ({ form }) => {
+  const inputReference = useRef<HTMLInputElement>(null);
+  const [localObjectUrl, setLocalObjectUrl] = useState<string | null>(null);
+  const [hasServerLogo, setHasServerLogo] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [cacheBuster, setCacheBuster] = useState(0);
+  const { deleteGlobalBranding, globalBranding, getGlobalBranding } = useGlobalSettingsApiStore();
   const { t } = useTranslation();
 
-  const [lightPreview, setLightPreview] = useState<string | null>(null);
-  const [darkPreview, setDarkPreview] = useState<string | null>(null);
+  useEffect(() => {
+    void getGlobalBranding();
+  }, []);
 
-  const lightInputRef = useRef<HTMLInputElement>(null);
-  const darkInputRef = useRef<HTMLInputElement>(null);
+  const serverLogoUrlBase = globalBranding?.logo?.url || '';
+  const imageSource = localObjectUrl || (serverLogoUrlBase ? `${serverLogoUrlBase}?v=${cacheBuster}` : DesktopLogo);
 
-  const fileToDataURL = (file: File) =>
-    new Promise<string>((resolve, reject) => {
-      const r = new FileReader();
-      r.onload = () => resolve(r.result as string);
-      r.onerror = reject;
-      r.readAsDataURL(file);
-    });
+  useEffect(() => {
+    if (!serverLogoUrlBase) return;
+    setCacheBuster((v) => v + 1);
+  }, [serverLogoUrlBase]);
 
-  const handleLogoChange = async (e: React.ChangeEvent<HTMLInputElement>, kind: 'light' | 'dark') => {
-    const file = e.target.files?.[0];
-    if (!file) {
-      form.setValue(`general.institutionLogo.${kind}`, '', {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
-      if (kind === 'light') setLightPreview(null);
-      else setDarkPreview(null);
+  const handleFileChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+    const file = event.target.files?.[0] || null;
+    if (file && !file.type.startsWith('image/')) {
+      if (inputReference.current) inputReference.current.value = '';
       return;
     }
-
-    try {
-      const compressedBase64 = await getCompressedImage(file, 100);
-      form.setValue(`general.institutionLogo.${kind}`, compressedBase64, {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
-      if (kind === 'light') setLightPreview(compressedBase64);
-      else setDarkPreview(compressedBase64);
-    } catch (error) {
-      toast.error(t(error instanceof Error ? error.message : 'usersettings.errors.notAbleToCompress'));
-      const dataUrl = await fileToDataURL(file);
-      form.setValue(`general.institutionLogo.${kind}`, dataUrl, {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
-      if (kind === 'light') setLightPreview(dataUrl);
-      else setDarkPreview(dataUrl);
+    if (localObjectUrl) {
+      URL.revokeObjectURL(localObjectUrl);
+      setLocalObjectUrl(null);
+    }
+    form.setValue('brandingUploadFile', file, { shouldDirty: true });
+    if (file) {
+      const objectUrl = URL.createObjectURL(file);
+      setLocalObjectUrl(objectUrl);
+      setHasServerLogo(false);
     }
   };
 
-  const clearLogo = (kind: 'light' | 'dark') => {
-    form.setValue(`general.institutionLogo.${kind}`, '', {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
-    if (kind === 'light') {
-      setLightPreview(null);
-      if (lightInputRef.current) lightInputRef.current.value = '';
-    } else {
-      setDarkPreview(null);
-      if (darkInputRef.current) darkInputRef.current.value = '';
+  const clearLocalSelection = () => {
+    form.setValue('brandingUploadFile', null, { shouldDirty: true });
+    if (localObjectUrl) {
+      URL.revokeObjectURL(localObjectUrl);
+      setLocalObjectUrl(null);
+    }
+    if (inputReference.current) inputReference.current.value = '';
+  };
+
+  const deleteServerLogo = async () => {
+    try {
+      setIsDeleting(true);
+      if (inputReference.current) inputReference.current.value = '';
+      clearLocalSelection();
+      await deleteGlobalBranding();
+      setHasServerLogo(false);
+      setCacheBuster((v) => v + 1);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
   return (
-    <AccordionContent className="px-1">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="flex flex-col items-center rounded-2xl border border-dashed border-gray-300 p-6 text-center shadow-sm hover:border-gray-400">
-          {lightPreview ? (
-            <>
-              <img
-                src={lightPreview}
-                alt="Light Logo Preview"
-                className="h-20 w-auto object-contain"
-              />
+    <AccordionContent className="space-y-2 px-1">
+      <p>{t('settings.globalSettings.brandingLogo.description')}</p>
+      <div className="flex flex-col items-center rounded-2xl border border-dashed border-gray-300 p-6 text-center shadow-sm hover:border-gray-400">
+        <img
+          key={cacheBuster}
+          src={imageSource}
+          alt="Logo"
+          className="h-20 w-auto object-contain"
+          onLoad={(e) => {
+            const src = e.currentTarget.getAttribute('src') || '';
+            if (!localObjectUrl && serverLogoUrlBase && src.startsWith(serverLogoUrlBase)) {
+              setHasServerLogo(true);
+            }
+          }}
+          onError={(e) => {
+            setHasServerLogo(false);
+            (e.currentTarget as HTMLImageElement).src = DesktopLogo;
+          }}
+        />
+        <div className="mt-3 flex w-full flex-col gap-2 sm:flex-row sm:items-center">
+          <Input
+            ref={inputReference}
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="block w-full cursor-pointer text-sm file:mr-4 file:rounded-lg file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-medium file:text-gray-700 hover:file:bg-gray-200"
+          />
+          <div className="flex w-full justify-center gap-2 sm:justify-end">
+            {!localObjectUrl && hasServerLogo && (
               <Button
                 type="button"
-                variant="btn-small"
-                onClick={() => clearLogo('light')}
+                variant="btn-attention"
+                onClick={deleteServerLogo}
+                disabled={isDeleting}
               >
-                <X className="h-4 w-4" />
+                <Trash2 className="h-4 w-4" />
                 {t('common.delete')}
               </Button>
-            </>
-          ) : (
-            <>
-              <Upload className="h-10 w-10 " />
-              <p className="mt-2 text-sm font-medium text-background">
-                {t('settings.globalSettings.institutionLogo.uploadLightLogo')}
-              </p>
-            </>
-          )}
-
-          <input
-            ref={lightInputRef}
-            type="file"
-            accept="image/*"
-            onChange={(e) => handleLogoChange(e, 'light')}
-            className="mt-3 block w-full cursor-pointer text-sm  file:mr-4 file:rounded-lg file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-medium file:text-gray-700 hover:file:bg-gray-200"
-          />
-        </div>
-
-        <div className="flex flex-col items-center rounded-2xl border border-dashed border-gray-300 p-6 text-center shadow-sm hover:border-gray-400">
-          {darkPreview ? (
-            <>
-              <img
-                src={darkPreview}
-                alt="Dark Logo Preview"
-                className="h-20 w-auto object-contain"
-              />
-              <Button
-                type="button"
-                variant="btn-small"
-                onClick={() => clearLogo('dark')}
-              >
-                <X className="h-4 w-4" />
-                {t('common.remove') || 'Entfernen'}
-              </Button>
-            </>
-          ) : (
-            <>
-              <ImageIcon className="h-10 w-10 text-gray-400" />
-              <p className="mt-2 text-sm font-medium text-gray-700">
-                {t('settings.globalSettings.institutionLogo.uploadDarkLogo') || 'Dark Logo hochladen'}
-              </p>
-            </>
-          )}
-
-          <input
-            ref={darkInputRef}
-            type="file"
-            accept="image/*"
-            onChange={(e) => handleLogoChange(e, 'dark')}
-            className="mt-3 block w-full cursor-pointer text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-medium file:text-gray-700 hover:file:bg-gray-200"
-          />
+            )}
+          </div>
         </div>
       </div>
     </AccordionContent>

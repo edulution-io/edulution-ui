@@ -40,6 +40,7 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 import APPS from '@libs/appconfig/constants/apps';
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
 import { decodeBase64, encodeBase64 } from '@libs/common/utils/getBase64String';
+import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 import useAppConfigsStore from '../Settings/AppConfig/useAppConfigsStore';
@@ -55,10 +56,30 @@ const LoginPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { state } = useLocation() as { state: LocationState };
+
   const { eduApiToken, totpIsLoading, isAuthenticated, createOrUpdateUser, setEduApiToken, getTotpStatus } =
     useUserStore();
   const { appConfigs } = useAppConfigsStore();
   const { silentLogin } = useSilentLoginWithPassword();
+
+  const { getGlobalBranding, globalBranding } = useGlobalSettingsApiStore();
+  const [logoLoading, setLogoLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    getGlobalBranding()
+      .finally(() => {
+        if (isMounted) setLogoLoading(false);
+      })
+      .catch(() => undefined);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [getGlobalBranding]);
+
+  const logoSrc = globalBranding.logo?.mimeType === '' ? DesktopLogo : globalBranding.logo?.url;
 
   const { isLoading } = auth;
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
@@ -318,6 +339,23 @@ const LoginPage: React.FC = () => {
     );
   };
 
+  if (logoLoading) {
+    return (
+      <PageLayout>
+        <PageTitle translationId="login.pageTitle" />
+        <Card
+          variant="modal"
+          className="overflow-y-auto bg-background scrollbar-thin"
+        >
+          <div
+            className="mx-auto my-10 h-16 w-64 animate-pulse rounded bg-muted"
+            aria-busy
+          />
+        </Card>
+      </PageLayout>
+    );
+  }
+
   return (
     <PageLayout>
       <PageTitle translationId="login.pageTitle" />
@@ -326,8 +364,8 @@ const LoginPage: React.FC = () => {
         className="overflow-y-auto bg-background scrollbar-thin"
       >
         <img
-          src={DesktopLogo}
-          alt="edulution"
+          src={logoSrc}
+          alt="institution logo"
           className="mx-auto w-64"
         />
         <Form

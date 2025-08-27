@@ -10,10 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const GLOBAL_SETTINGS_ROOT_ENDPOINT = 'global-settings';
-export const GLOBAL_SETTINGS_ADMIN_ENDPOINT = 'admin';
-export const GLOBAL_SETTINGS_BRANDING_ENDPOINT = 'branding';
-export const GLOBAL_SETTINGS_BRANDING_LOGO_ENDPOINT = `${GLOBAL_SETTINGS_BRANDING_ENDPOINT}/logo`;
-export const GLOBAL_SETTINGS_SCHOOL_INFO_ENDPOINT = 'school-info';
+import { IsOptional, IsString, IsUrl } from 'class-validator';
 
-export const GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS = 'mfaEnforcedGroups';
+class SchoolInfoDto {
+  @IsString() @IsOptional() name?: string;
+
+  @IsString() @IsOptional() street?: string;
+
+  @IsString() @IsOptional() postalCode?: string;
+
+  @IsUrl({ require_tld: false }, { message: 'Invalid URL' }) @IsOptional() website?: string;
+}
+
+export default SchoolInfoDto;

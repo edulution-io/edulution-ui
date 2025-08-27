@@ -11,6 +11,7 @@
  */
 
 import { Model, ProjectionType } from 'mongoose';
+import { Response } from 'express';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import GlobalSettingsErrorMessages from '@libs/global-settings/constants/globalSettingsErrorMessages';
@@ -21,15 +22,18 @@ import { GLOBAL_SETTINGS_ROOT_ENDPOINT } from '@libs/global-settings/constants/g
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { DEPLOYMENT_TARGET_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
+import PUBLIC_ASSERT_PATH from '@libs/common/constants/publicAssertPath';
 import CustomHttpException from '../common/CustomHttpException';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
 import MigrationService from '../migration/migration.service';
 import globalSettingsMigrationsList from './migrations/globalSettingsMigrationsList';
+import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
 class GlobalSettingsService implements OnModuleInit {
   constructor(
     @InjectModel(GlobalSettings.name) private globalSettingsModel: Model<GlobalSettingsDocument>,
+    private readonly filesystemService: FilesystemService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
@@ -136,6 +140,25 @@ class GlobalSettingsService implements OnModuleInit {
         GlobalSettings.name,
       );
     }
+  }
+
+  getBrandingLogo(brandingLogo: string, res: Response) {
+    return this.filesystemService.servePublicAssert(brandingLogo, res);
+  }
+
+  setBrandingLogo(file: Express.Multer.File) {
+    return this.filesystemService.savePublicAsset('branding/logo', 'logo', file.buffer, file.mimetype, {
+      cleanBasename: true,
+    });
+  }
+
+  removeBrandingLogo() {
+    return FilesystemService.deleteFile(`${PUBLIC_ASSERT_PATH}branding/logo`, 'logo', { ignoreExtension: true });
+  }
+
+  async getSchoolInfo() {
+    const dbInfo = await this.globalSettingsModel.findOne({});
+    return dbInfo?.schoolInfo || null;
   }
 }
 

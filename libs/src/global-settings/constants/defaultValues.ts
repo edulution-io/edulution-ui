@@ -29,10 +29,13 @@ const defaultValues: GlobalSettingsDto = {
         password: LDAP_EDULUTION_BINDUSER_PASSWORD || '',
       },
     },
-    institutionLogo: {
-      light: '',
-      dark: '',
-    },
+  },
+  branding: { logo: { url: '', mimeType: '' } },
+  schoolInfo: {
+    name: '',
+    street: '',
+    postalCode: '',
+    website: '',
   },
 };
 

@@ -417,7 +417,8 @@
         "PublicIsRestrictedByInvalidToken": "Auf den Freigabelink kann nicht zugegriffen werden, da der Token ungültig ist.",
         "PublicFileWrongPassword": "Das eingegebene Passwort ist falsch.",
         "FileCouldNotBeFound": "Der angefordert Freigabe-Link konnte nicht gefunden werden. Bitte überprüfe den Link oder wende dich an den Ersteller.",
-        "PublicFileDownloadFailed": "Herunterladen der Datei fehlgeschlagen. Bitte versuche es später noch einmal."
+        "PublicFileDownloadFailed": "Herunterladen der Datei fehlgeschlagen. Bitte versuche es später noch einmal.",
+        "ResolvePublicFileFailed": "Öffentliche Datei konnte nicht ermittelt werden."
       },
       "success": {
         "PublicFileLinkCreated": "Freigabe-Link erfolgreich erstellt.",
@@ -911,11 +912,23 @@
         "edulution-binduser-dn": "Distinguished Name (DN)",
         "edulution-binduser-password": "Passwort"
       },
-      "institutionLogo": {
+      "brandingLogo": {
         "title": "Institutionslogo",
         "description": "Hier kann das Logo der Institution hochgeladen werden. Dieses Logo wird auf der Login-Seite angezeigt.",
         "uploadLightLogo": "Helles Logo hochladen",
-        "uploadDarkLogo": "Dunkels Logo hochladen"
+        "uploadDarkLogo": "Dunkels Logo hochladen",
+        "deleteSuccessful": "Logo wurde erfolgreich gelöscht"
+      },
+      "schoolInfo": {
+        "title": "Schulinformationen",
+        "description": "Geben Sie die offiziellen Angaben Ihrer Schule an. Diese Informationen können im Studentenausweis angezeigt werden. Bitte Name, Straße, Postleitzahl und optional die Schulwebsite eintragen.",
+        "name": "Schulname",
+        "namePlaceholder": "z. B. Gemeinschaftsschule Musterstadt",
+        "street": "Straße",
+        "streetPlaceholder": "z. B. Schulweg 1",
+        "postalCode": "Postleitzahl",
+        "postalCodePlaceholder": "z. B. 12345",
+        "website": "Schulwebsite"
       }
     },
     "userAdministration": {

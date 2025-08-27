@@ -15,6 +15,8 @@ import type DeploymentTarget from '@libs/common/types/deployment-target';
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import { DefaultLandingPage } from './global-settings.default-landing-page.schema';
 import { LdapSettings, LdapSettingsSchema } from './global-settings.ldap.settings.schema';
+import { Branding, BrandingSchema } from './global-settings.branding.schema';
+import { SchoolInfo, SchoolInfoSchema } from './global-settings.school-info.schema';
 
 @Schema({ _id: false })
 export class GeneralSettings {
@@ -26,6 +28,12 @@ export class GeneralSettings {
 
   @Prop({ type: LdapSettingsSchema })
   ldap: LdapSettings;
+
+  @Prop({ type: BrandingSchema, required: false })
+  branding?: Branding;
+
+  @Prop({ type: SchoolInfoSchema, default: {} })
+  schoolInfo: SchoolInfo;
 }
 
 export const GeneralSettingsSchema = SchemaFactory.createForClass(GeneralSettings);

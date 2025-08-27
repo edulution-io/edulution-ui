@@ -417,7 +417,8 @@
         "PublicIsRestrictedByInvalidToken": "The share link cannot be accessed because the token is invalid.",
         "PublicFileWrongPassword": "The password for the sharing is incorrect.",
         "FileCouldNotBeFound": "The requested content could not be found. Please check the share link or contact the owner of this content.",
-        "PublicFileDownloadFailed": "Downloading the file failed. Please try again later."
+        "PublicFileDownloadFailed": "Downloading the file failed. Please try again later.",
+        "ResolvePublicFileFailed": "Unable to resolve public file."
       },
       "success": {
         "PublicFileLinkCreated": "Share link created successfully",
@@ -907,11 +908,23 @@
         "edulution-binduser-dn": "Distinguished Name (DN)",
         "edulution-binduser-password": "Password"
       },
-      "institutionLogo": {
+      "brandingLogo": {
         "title": "Institutionlogo",
         "description": "Here you can upload a logo for your institution. The logo will be displayed in the header of the application.",
         "uploadLightLogo": "Upload Light Logo",
-        "uploadDarkLogo": "Upload Dark Logo"
+        "uploadDarkLogo": "Upload Dark Logo",
+        "deleteSuccessful": "Logo deleted successfully."
+      },
+      "schoolInfo": {
+        "title": "School Information",
+        "description": "Enter your school's official details. This information may appear on the student ID. Please provide the name, street, postal code, and optionally the school website.",
+        "name": "School name",
+        "namePlaceholder": "e.g. Sampletown Comprehensive School",
+        "street": "Street",
+        "streetPlaceholder": "e.g. 1 School Street",
+        "postalCode": "Postal code",
+        "postalCodePlaceholder": "e.g. 12345",
+        "website": "School website"
       }
     },
     "userAdministration": {
