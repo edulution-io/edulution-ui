@@ -29,7 +29,7 @@ export class AppConfig extends Document {
   @Prop({ required: true })
   icon: string;
 
-  @Prop({ type: Object, default: {} })
+  @Prop({ type: Object, default: {}, select: false })
   extendedOptions: ExtendedOptionKeysDto;
 
   @Prop({ required: true, type: String })

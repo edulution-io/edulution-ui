@@ -156,34 +156,27 @@ class AppConfigService implements OnModuleInit {
 
   async getAppConfigs(ldapGroups: string[]): Promise<AppConfigDto[]> {
     try {
-      let appConfigDto: AppConfigDto[];
       if (getIsAdmin(ldapGroups)) {
-        appConfigDto = await this.appConfigModel
-          .find({}, 'name translations icon appType options accessGroups extendedOptions position')
+        return await this.appConfigModel
+          .find({}, 'name translations icon appType options accessGroups position +extendedOptions')
           .sort({ position: 1 })
           .lean();
-      } else {
-        const appConfigObjects = await this.appConfigModel
-          .find(
-            { 'accessGroups.path': { $in: ldapGroups } },
-            'name translations icon appType options extendedOptions position',
-          )
-          .sort({ position: 1 })
-          .lean();
-
-        appConfigDto = appConfigObjects.map((config) => ({
-          name: config.name,
-          translations: config.translations,
-          icon: config.icon,
-          appType: config.appType,
-          options: { url: config.options.url ?? '' },
-          accessGroups: [],
-          extendedOptions: config.extendedOptions,
-          position: config.position,
-        }));
       }
 
-      return appConfigDto;
+      const appConfigObjects = await this.appConfigModel
+        .find({ 'accessGroups.path': { $in: ldapGroups } }, 'name translations icon appType options position')
+        .sort({ position: 1 })
+        .lean();
+
+      return appConfigObjects.map((config) => ({
+        name: config.name,
+        translations: config.translations,
+        icon: config.icon,
+        appType: config.appType,
+        options: { url: config.options?.url ?? '' },
+        accessGroups: [],
+        position: config.position,
+      }));
     } catch (error) {
       throw new CustomHttpException(
         AppConfigErrorMessages.ReadAppConfigFailed,
