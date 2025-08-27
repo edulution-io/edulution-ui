@@ -50,7 +50,6 @@ class GlobalSettingsController {
   @Put()
   @UseGuards(AppConfigGuard)
   async setGlobalSettings(@Body() globalSettingsDto: GlobalSettingsDto) {
-    console.info(globalSettingsDto.general);
     return this.globalSettingsService.setGlobalSettings(globalSettingsDto);
   }
 

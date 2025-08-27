@@ -106,36 +106,44 @@ const useGlobalSettingsApiStore = create<GlobalSettingsStore>((set, get) => ({
           fileData,
         );
         brandingResponse = data;
-      }
 
-      set({
-        globalBranding: {
-          logo: {
-            url: brandingResponse?.publicPath || '',
-            mimeType: brandingResponse?.mime || '',
+        set({
+          globalBranding: {
+            logo: { url: data.publicPath, mimeType: data.mime },
           },
-        },
-      });
+        });
+      }
 
       const { ...dto } = globalSettingsFormValues;
 
-      const mergedDto: typeof dto = brandingResponse
-        ? {
-            ...dto,
-            branding: {
-              ...dto.branding,
-              logo: {
-                ...(dto.branding?.logo ?? { url: '', mimeType: '' }),
-                url: brandingResponse.publicPath,
-                mimeType: brandingResponse.mime,
-              },
+      let payload: Partial<GlobalSettingsDto>;
+
+      if (brandingResponse) {
+        payload = {
+          ...dto,
+          branding: {
+            ...(dto.branding ?? {}),
+            logo: {
+              ...(dto.branding?.logo ?? { url: '', mimeType: '' }),
+              url: brandingResponse.publicPath,
+              mimeType: brandingResponse.mime,
             },
-          }
-        : dto;
+          },
+        };
+      } else {
+        const urlEmpty = (dto.branding?.logo?.url ?? '') === '';
+        const mimeEmpty = (dto.branding?.logo?.mimeType ?? '') === '';
+        if (urlEmpty && mimeEmpty) {
+          const { ...rest } = dto;
+          payload = rest;
+        } else {
+          payload = dto;
+        }
+      }
 
-      await eduApi.put(GLOBAL_SETTINGS_ROOT_ENDPOINT, mergedDto);
+      await eduApi.put(GLOBAL_SETTINGS_ROOT_ENDPOINT, payload);
 
-      set({ globalSettings: mergedDto });
+      set({ globalSettings: payload as GlobalSettingsDto });
       toast.success(i18n.t('settings.globalSettings.updateSuccessful'));
     } catch (error) {
       handleApiError(error, set);
@@ -143,6 +151,7 @@ const useGlobalSettingsApiStore = create<GlobalSettingsStore>((set, get) => ({
       set({ isSetGlobalSettingLoading: false });
     }
   },
+
   getGlobalBranding: async () => {
     set({ isGetBrandingLoading: true });
     try {

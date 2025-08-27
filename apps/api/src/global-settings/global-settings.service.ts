@@ -143,7 +143,7 @@ class GlobalSettingsService implements OnModuleInit {
   }
 
   getBrandingLogo(brandingLogo: string, res: Response) {
-    return this.filesystemService.servePublicAssert(brandingLogo, res);
+    return this.filesystemService.servePublicAssert(brandingLogo, 'logo', res);
   }
 
   setBrandingLogo(file: Express.Multer.File) {

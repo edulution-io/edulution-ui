@@ -29,7 +29,7 @@ import { promisify } from 'util';
 import { createHash } from 'crypto';
 import { firstValueFrom, from } from 'rxjs';
 import { pipeline, Readable } from 'stream';
-import { extname, join, parse, resolve } from 'path';
+import { extname, isAbsolute, join, parse, relative, resolve } from 'path';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
@@ -72,63 +72,69 @@ class FilesystemService {
     await this.removeOldTempFiles(TEMP_FILES_PATH);
   }
 
-  private async resolvePublicAssetAbsolutePath(relativePath: string): Promise<string | null> {
-    const sanitizedRelativePath = relativePath.replace(/^\/+/, '').replace(/\/+$/, '');
-    const baseDirectoryAbsolutePath = resolve(PUBLIC_ASSERT_PATH);
-    const absoluteCandidatePath = resolve(baseDirectoryAbsolutePath, ...sanitizedRelativePath.split('/'));
+  private async resolvePublicAssetAbsolutePath(
+    relativeDirectoryPath: string,
+    baseName: string,
+  ): Promise<string | null> {
+    const directoryPathWithoutEdgeSlashes = relativeDirectoryPath.replace(/^\/+|\/+$/g, '');
+    const directoryPathWithoutPublicPrefix = directoryPathWithoutEdgeSlashes.replace(/^public\//i, '');
 
-    if (!absoluteCandidatePath.startsWith(baseDirectoryAbsolutePath)) {
+    const baseDirectoryAbsolutePath = resolve(PUBLIC_ASSERT_PATH);
+    const absoluteDirectoryPath = resolve(baseDirectoryAbsolutePath, ...directoryPathWithoutPublicPrefix.split('/'));
+
+    const relativeFromBaseToDirectory = relative(baseDirectoryAbsolutePath, absoluteDirectoryPath);
+    if (relativeFromBaseToDirectory.startsWith('..') || isAbsolute(relativeFromBaseToDirectory)) {
       throw new CustomHttpException(
         FileSharingErrorMessage.PublicFileResolvePublicFileFailed,
         HttpStatus.FORBIDDEN,
-        absoluteCandidatePath,
+        absoluteDirectoryPath,
         FilesystemService.name,
       );
     }
 
     try {
-      const fileStatistics = await fsStat(absoluteCandidatePath);
+      const directoryStatistics = await fsStat(absoluteDirectoryPath);
 
-      if (fileStatistics.isFile()) {
-        return absoluteCandidatePath;
+      if (directoryStatistics.isFile()) {
+        return absoluteDirectoryPath;
+      }
+      if (!directoryStatistics.isDirectory()) {
+        return null;
       }
 
-      if (fileStatistics.isDirectory()) {
-        const directoryEntries = await readdir(absoluteCandidatePath);
-
-        if (directoryEntries.length === 0) {
-          return null;
+      const candidateWithoutExtension = resolve(absoluteDirectoryPath, baseName);
+      try {
+        const candidateWithoutExtensionStatistics = await fsStat(candidateWithoutExtension);
+        if (candidateWithoutExtensionStatistics.isFile()) {
+          return candidateWithoutExtension;
         }
+      } catch {
+        return null;
+      }
 
-        const fileEntriesWithStats = await Promise.all(
-          directoryEntries.map(async (entryName) => {
-            try {
-              const entryPath = join(absoluteCandidatePath, entryName);
-              const entryStatistics = await fsStat(entryPath);
-              return entryStatistics.isFile()
-                ? { path: entryPath, mtime: entryStatistics.mtimeMs, name: entryName }
-                : null;
-            } catch {
-              return null;
-            }
-          }),
-        );
+      const directoryEntryNames = await readdir(absoluteDirectoryPath);
+      const matchingEntryNames = directoryEntryNames.filter((entryName) => parse(entryName).name === baseName);
 
-        const candidateFileList = fileEntriesWithStats.filter(Boolean) as {
-          path: string;
-          mtime: number;
-          name: string;
-        }[];
+      if (matchingEntryNames.length === 0) {
+        return null;
+      }
 
-        if (candidateFileList.length === 0) {
-          return null;
-        }
+      const absoluteCandidatePaths = matchingEntryNames.map((entryName) => resolve(absoluteDirectoryPath, entryName));
 
-        const preferredLogoFiles = candidateFileList.filter((entry) => /^logo(\.|-)/i.test(entry.name));
-        const selectionList = preferredLogoFiles.length > 0 ? preferredLogoFiles : candidateFileList;
-        selectionList.sort((a, b) => b.mtime - a.mtime);
+      const candidatePathChecks = await Promise.all(
+        absoluteCandidatePaths.map(async (absolutePathValue) => {
+          try {
+            const statistics = await fsStat(absolutePathValue);
+            return statistics.isFile() ? absolutePathValue : null;
+          } catch {
+            return null;
+          }
+        }),
+      );
 
-        return selectionList[0].path;
+      const firstExistingFilePath = candidatePathChecks.find((pathValue): pathValue is string => pathValue !== null);
+      if (firstExistingFilePath) {
+        return firstExistingFilePath;
       }
 
       return null;
@@ -514,8 +520,8 @@ class FilesystemService {
     }
   }
 
-  async servePublicAssert(relativePath: string, response: Response): Promise<Response> {
-    const absolutePath = await this.resolvePublicAssetAbsolutePath(relativePath);
+  async servePublicAssert(relativePath: string, filename: string, response: Response): Promise<Response> {
+    const absolutePath = await this.resolvePublicAssetAbsolutePath(relativePath, filename);
 
     if (!absolutePath) {
       response.status(HttpStatus.NO_CONTENT).end();
