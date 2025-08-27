@@ -1520,6 +1520,8 @@
     "errors": {
       "CouldNotGetGroupByPath": "Group could not be found by path",
       "CouldNotGetUsers": "Users could not be found",
+      "CouldNotGetCurrentUser": "Current user could not be found",
+      "CouldNotGetAllGroups": "Failed to find all groups",
       "CouldNotFetchGroupMembers": "Group members could not be found",
       "CouldNotFetchUserById": "User could not be found by ID",
       "CouldNotSearchGroups": "Could not search for groups"
