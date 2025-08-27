@@ -103,13 +103,15 @@ class FilesystemService {
       }
 
       const candidateWithoutExtension = resolve(absoluteDirectoryPath, baseName);
+      let candidateWithoutExtensionIsFile = false;
       try {
         const candidateWithoutExtensionStatistics = await fsStat(candidateWithoutExtension);
-        if (candidateWithoutExtensionStatistics.isFile()) {
-          return candidateWithoutExtension;
-        }
+        candidateWithoutExtensionIsFile = candidateWithoutExtensionStatistics.isFile();
       } catch {
-        return null;
+        candidateWithoutExtensionIsFile = false;
+      }
+      if (candidateWithoutExtensionIsFile) {
+        return candidateWithoutExtension;
       }
 
       const directoryEntryNames = await readdir(absoluteDirectoryPath);
