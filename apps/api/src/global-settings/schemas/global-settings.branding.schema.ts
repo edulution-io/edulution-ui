@@ -11,7 +11,7 @@
  */
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import Logo, { LogoSchema } from './global-settings.branding.logo.schema';
+import { Logo, LogoSchema } from './global-settings.branding.logo.schema';
 
 @Schema({ _id: false })
 export class Branding {
