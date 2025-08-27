@@ -235,18 +235,24 @@ const useClassManagementStore = create<ClassManagementStore>(
         }
       },
 
-      fetchUserSessions: async () => {
-        if (get().areSessionsLoading) return;
+      fetchUserSessions: async (withMemberDetails) => {
         try {
           set({ areSessionsLoading: true, error: null });
           const { lmnApiToken } = useLmnApiStore.getState();
-          const response = await eduApi.get<LmnApiSession[]>(USER_SESSIONS, {
-            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
-          });
+          const response = await eduApi.get<LmnApiSession[]>(
+            `${USER_SESSIONS}?withMemberDetails=${withMemberDetails}`,
+            {
+              headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+            },
+          );
 
-          set({ userSessions: response.data.sort(sortByName) });
+          const sortedSessions = response.data.sort(sortByName);
+          set({ userSessions: sortedSessions });
+
+          return sortedSessions;
         } catch (error) {
           handleApiError(error, set);
+          return [];
         } finally {
           set({ areSessionsLoading: false });
         }

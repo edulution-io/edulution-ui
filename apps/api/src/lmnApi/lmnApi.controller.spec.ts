@@ -149,8 +149,8 @@ describe('LmnApiController', () => {
 
   describe('getUserSessions', () => {
     it('should call getUserSessions', async () => {
-      await controller.getUserSessions('mockToken', 'username');
-      expect(service.getUserSessions).toHaveBeenCalledWith('mockToken', 'username');
+      await controller.getUserSessions('mockToken', 'username', true);
+      expect(service.getUserSessions).toHaveBeenCalledWith('mockToken', 'username', true);
     });
   });
 
