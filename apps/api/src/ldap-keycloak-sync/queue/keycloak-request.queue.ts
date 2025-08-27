@@ -10,17 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { Job, Queue, QueueEvents, Worker } from 'bullmq';
-import QUEUE_CONSTANTS from '@libs/queue/constants/queueConstants';
 import { AxiosError, AxiosRequestConfig } from 'axios';
 import { HttpMethods } from '@libs/common/types/http-methods';
 import { KeycloakJobData } from '@libs/ldapKeycloakSync/types/keycloakJobData';
+import QUEUE_CONSTANTS from '@libs/queue/constants/queueConstants';
+import sleep from '@libs/common/utils/sleep';
 import getKeycloakToken from '../../scripts/keycloak/utilities/getKeycloakToken';
 import createKeycloakAxiosClient from '../../scripts/keycloak/utilities/createKeycloakAxiosClient';
 import redisConnection from '../../common/redis.connection';
-
-const QUEUE_NAME = QUEUE_CONSTANTS.KEYCLOAK_REQUESTS_QUEUE;
 
 @Injectable()
 export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestroy {
@@ -28,41 +27,74 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
 
   private queueEvents: QueueEvents;
 
-  private worker: Worker;
+  private worker: Worker<KeycloakJobData, unknown>;
 
   private axiosClient = createKeycloakAxiosClient('');
 
   async onModuleInit() {
-    this.queue = new Queue(QUEUE_NAME, { connection: redisConnection });
+    this.queue = new Queue(QUEUE_CONSTANTS.KEYCLOAK_REQUESTS_QUEUE, { connection: redisConnection });
     this.queue.setMaxListeners(0);
-    this.queueEvents = new QueueEvents(QUEUE_NAME, { connection: redisConnection });
-
-    await this.initKeycloakClient();
+    this.queueEvents = new QueueEvents(QUEUE_CONSTANTS.KEYCLOAK_REQUESTS_QUEUE, { connection: redisConnection });
+    await this.queueEvents.waitUntilReady();
 
     this.worker = new Worker<KeycloakJobData, unknown>(
-      QUEUE_NAME,
-      async (job: Job<KeycloakJobData>) => {
-        const { method, endpoint, payload, config } = job.data;
-
-        try {
-          const response = await this.axiosClient[method](endpoint, payload, config);
-          return response.data as unknown;
-        } catch (error) {
-          if ((error as AxiosError)?.response?.status) {
-            await this.initKeycloakClient();
-
-            const retryResponse = await this.axiosClient[method](endpoint, payload, config);
-            return retryResponse.data as unknown;
-          }
-
-          throw error;
-        }
-      },
-      {
-        connection: redisConnection,
-        concurrency: 20,
-      },
+      QUEUE_CONSTANTS.KEYCLOAK_REQUESTS_QUEUE,
+      (job) => this.handleJob(job),
+      { connection: redisConnection, concurrency: 20, autorun: false },
     );
+
+    void this.bootstrapKeycloakClientWithRetry();
+  }
+
+  private resolveReady!: () => void;
+
+  private whenReady: Promise<void> = new Promise<void>((res) => {
+    this.resolveReady = res;
+  });
+
+  private async handleJob(job: Job<KeycloakJobData>) {
+    await this.whenReady;
+
+    const { method, endpoint, payload, config } = job.data;
+    try {
+      const res = await this.axiosClient[method](endpoint, payload, config);
+
+      return res.data as unknown;
+    } catch (err) {
+      const e = err as AxiosError;
+
+      if (!e.response || e.response.status === 401 || e.response.status === 403) {
+        Logger.verbose(
+          `Request failed (${e.response?.status ?? 'no-response'}). Reinitializing token…`,
+          KeycloakRequestQueue.name,
+        );
+
+        await this.initKeycloakClient();
+
+        const retry = await this.axiosClient[method](endpoint, payload, config);
+        return retry.data as unknown;
+      }
+      throw err;
+    }
+  }
+
+  private async bootstrapKeycloakClientWithRetry(delay = 5_000, maxDelay = 60_000): Promise<void> {
+    try {
+      await this.initKeycloakClient();
+
+      this.resolveReady();
+
+      Logger.debug('Keycloak client initialized ✔', KeycloakRequestQueue.name);
+
+      void this.worker.run();
+    } catch (e) {
+      Logger.debug(
+        `Keycloak not reachable (${(e as Error).message}). Retrying in ${delay / 1000}s…`,
+        KeycloakRequestQueue.name,
+      );
+      await sleep(delay);
+      await this.bootstrapKeycloakClientWithRetry(Math.min(delay * 2, maxDelay), maxDelay);
+    }
   }
 
   private async initKeycloakClient() {
@@ -77,9 +109,14 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
     config?: AxiosRequestConfig,
   ): Promise<T> {
     const job = await this.queue.add(
-      QUEUE_NAME,
+      QUEUE_CONSTANTS.KEYCLOAK_REQUESTS_QUEUE,
       { method, endpoint, payload, config },
-      { removeOnComplete: true, removeOnFail: true, attempts: 3 },
+      {
+        removeOnComplete: true,
+        removeOnFail: true,
+        attempts: 10,
+        backoff: { type: 'exponential', delay: 3000 },
+      },
     );
 
     return (await job.waitUntilFinished(this.queueEvents)) as T;
