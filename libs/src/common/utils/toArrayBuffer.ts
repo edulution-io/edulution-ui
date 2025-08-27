@@ -10,12 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum GroupsErrorMessage {
-  CouldNotGetUsers = 'groups.errors.CouldNotGetUsers',
-  CouldNotGetCurrentUser = 'groups.errors.CouldNotGetCurrentUser',
-  CouldNotGetAllGroups = 'groups.errors.CouldNotGetAllGroups',
-  CouldNotFetchGroupMembers = 'groups.errors.CouldNotFetchGroupMembers',
-  CouldNotSearchGroups = 'groups.errors.CouldNotSearchGroups',
-}
+const toArrayBuffer = (src: ArrayBuffer | Uint8Array | number[]): ArrayBuffer => {
+  if (src instanceof ArrayBuffer) return src.slice(0);
+  const view = src instanceof Uint8Array ? src : new Uint8Array(src);
+  const arrayBuffer = new ArrayBuffer(view.byteLength);
+  new Uint8Array(arrayBuffer).set(view);
+  return arrayBuffer;
+};
 
-export default GroupsErrorMessage;
+export default toArrayBuffer;
