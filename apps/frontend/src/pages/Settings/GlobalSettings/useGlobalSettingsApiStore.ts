@@ -171,10 +171,7 @@ const useGlobalSettingsApiStore = create<GlobalSettingsStore>((set, get) => ({
           },
         }));
 
-        toast.success(
-          i18n.t('settings.globalSettings.brandingLogo.deleteSuccessfulVariant', { variant: theme }) ||
-            `Branding-Logo (${theme}) gelöscht.`,
-        );
+        toast.success(i18n.t('settings.globalSettings.brandingLogo.deleteSuccessful'));
       } else {
         await Promise.all([
           eduApi.delete(`${GLOBAL_SETTINGS_ROOT_ENDPOINT}/${GLOBAL_SETTINGS_BRANDING_LOGO}`, {
