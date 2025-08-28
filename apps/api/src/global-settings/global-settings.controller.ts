@@ -10,23 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Body, Controller, Delete, Get, Put, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Put, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import {
   GLOBAL_SETTINGS_ADMIN_ENDPOINT,
-  GLOBAL_SETTINGS_BRANDING_LOGO_ENDPOINT,
+  GLOBAL_SETTINGS_BRANDING_LOGO,
   GLOBAL_SETTINGS_ROOT_ENDPOINT,
-  GLOBAL_SETTINGS_SCHOOL_INFO_ENDPOINT,
 } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
-import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
-import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
-import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
+import { ThemeType } from '@libs/common/types/theme';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 import GlobalSettingsService from './global-settings.service';
-import { Public } from '../common/decorators/public.decorator';
 
 @ApiTags(GLOBAL_SETTINGS_ROOT_ENDPOINT)
 @ApiBearerAuth()
@@ -35,10 +31,8 @@ class GlobalSettingsController {
   constructor(private readonly globalSettingsService: GlobalSettingsService) {}
 
   @Get()
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(DEFAULT_CACHE_TTL_MS)
-  async getGlobalSettings() {
-    return this.globalSettingsService.getGlobalSettings();
+  async getGlobalSettings(@Query('projection') projection?: string) {
+    return this.globalSettingsService.getGlobalSettings(projection);
   }
 
   @Get(GLOBAL_SETTINGS_ADMIN_ENDPOINT)
@@ -53,19 +47,7 @@ class GlobalSettingsController {
     return this.globalSettingsService.setGlobalSettings(globalSettingsDto);
   }
 
-  @Public()
-  @Get(GLOBAL_SETTINGS_BRANDING_LOGO_ENDPOINT)
-  async getBrandingLogo(@Res() res: Response) {
-    return this.globalSettingsService.getBrandingLogo('branding/logo', res);
-  }
-
-  @Public()
-  @Get(GLOBAL_SETTINGS_SCHOOL_INFO_ENDPOINT)
-  async getSchoolInfo() {
-    return this.globalSettingsService.getSchoolInfo();
-  }
-
-  @Put(GLOBAL_SETTINGS_BRANDING_LOGO_ENDPOINT)
+  @Put(GLOBAL_SETTINGS_BRANDING_LOGO)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: memoryStorage(),
@@ -73,13 +55,13 @@ class GlobalSettingsController {
     }),
   )
   @UseGuards(AppConfigGuard)
-  async setBrandingLogo(@UploadedFile() file: Express.Multer.File) {
-    return this.globalSettingsService.setBrandingLogo(file);
+  async setBrandingLogo(@UploadedFile() file: Express.Multer.File, @Query('variant') variant: ThemeType) {
+    return this.globalSettingsService.setBrandingLogo(file, variant);
   }
 
-  @Delete(GLOBAL_SETTINGS_BRANDING_LOGO_ENDPOINT)
-  async removeBrandingLogo() {
-    return this.globalSettingsService.removeBrandingLogo();
+  @Delete(GLOBAL_SETTINGS_BRANDING_LOGO)
+  async removeBrandingLogo(@Query('variant') variant: ThemeType) {
+    return this.globalSettingsService.removeBrandingLogo(variant);
   }
 }
 

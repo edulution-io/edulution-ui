@@ -15,7 +15,12 @@ import { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSett
 
 const globalSettingsFormDefaultValues: GlobalSettingsFormValues = {
   ...defaultValues,
-  brandingUploadFile: null,
+  brandingUploads: {
+    logo: {
+      light: null,
+      dark: null,
+    },
+  },
 };
 
 export default globalSettingsFormDefaultValues;

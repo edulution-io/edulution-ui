@@ -40,7 +40,9 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 import APPS from '@libs/appconfig/constants/apps';
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
 import { decodeBase64, encodeBase64 } from '@libs/common/utils/getBase64String';
-import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
+import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
+import LogoAsset from '@libs/common/types/logoAsset';
+import { GLOBAL_SETTINGS_BRANDING_LOGO } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 import useAppConfigsStore from '../Settings/AppConfig/useAppConfigsStore';
@@ -62,24 +64,26 @@ const LoginPage: React.FC = () => {
   const { appConfigs } = useAppConfigsStore();
   const { silentLogin } = useSilentLoginWithPassword();
 
-  const { getGlobalBranding, globalBranding } = useGlobalSettingsApiStore();
+  const { getGlobalAsset } = useFilesystemStore();
   const [logoLoading, setLogoLoading] = useState(true);
+  const [logoAsset, setLogoAsset] = useState<LogoAsset>();
 
   useEffect(() => {
     let isMounted = true;
 
-    getGlobalBranding()
+    getGlobalAsset(GLOBAL_SETTINGS_BRANDING_LOGO, 'logo-light')
+      .then((a) => setLogoAsset(a))
+      .catch(() => setLogoAsset(undefined))
       .finally(() => {
         if (isMounted) setLogoLoading(false);
-      })
-      .catch(() => undefined);
+      });
 
     return () => {
       isMounted = false;
     };
-  }, [getGlobalBranding]);
+  }, [getGlobalAsset]);
 
-  const logoSrc = globalBranding.logo?.mimeType === '' ? DesktopLogo : globalBranding.logo?.url;
+  const logoSrc = logoAsset === undefined ? DesktopLogo : logoAsset?.url;
 
   const { isLoading } = auth;
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);

@@ -11,7 +11,6 @@
  */
 
 import { Model, ProjectionType } from 'mongoose';
-import { Response } from 'express';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import GlobalSettingsErrorMessages from '@libs/global-settings/constants/globalSettingsErrorMessages';
@@ -23,6 +22,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { DEPLOYMENT_TARGET_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import PUBLIC_ASSERT_PATH from '@libs/common/constants/publicAssertPath';
+import { Theme, ThemeType } from '@libs/common/types/theme';
 import CustomHttpException from '../common/CustomHttpException';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
 import MigrationService from '../migration/migration.service';
@@ -92,7 +92,10 @@ class GlobalSettingsService implements OnModuleInit {
         'general.ldap': 0,
       } as const;
 
-      return await this.globalSettingsModel.findOne({}, projection || PUBLIC_PROJECTION).lean();
+      return await this.globalSettingsModel
+        .findOne({})
+        .select(projection ?? PUBLIC_PROJECTION)
+        .lean();
     } catch (error) {
       throw new CustomHttpException(
         GlobalSettingsErrorMessages.NotFoundError,
@@ -142,23 +145,16 @@ class GlobalSettingsService implements OnModuleInit {
     }
   }
 
-  getBrandingLogo(brandingLogo: string, res: Response) {
-    return this.filesystemService.servePublicAssert(brandingLogo, 'logo', res);
-  }
-
-  setBrandingLogo(file: Express.Multer.File) {
-    return this.filesystemService.savePublicAsset('branding/logo', 'logo', file.buffer, file.mimetype, {
+  setBrandingLogo(file: Express.Multer.File, variant: ThemeType) {
+    const basename = variant === 'dark' ? `logo-${Theme.dark}` : `logo-${Theme.light}`;
+    return this.filesystemService.savePublicAsset('branding/logo', basename, file.buffer, file.mimetype, {
       cleanBasename: true,
     });
   }
 
-  removeBrandingLogo() {
-    return FilesystemService.deleteFile(`${PUBLIC_ASSERT_PATH}branding/logo`, 'logo', { ignoreExtension: true });
-  }
-
-  async getSchoolInfo() {
-    const dbInfo = await this.globalSettingsModel.findOne({});
-    return dbInfo?.schoolInfo || null;
+  removeBrandingLogo(variant: ThemeType) {
+    const basename = variant === 'dark' ? `logo-${Theme.dark}` : `logo-${Theme.light}`;
+    return FilesystemService.deleteFile(`${PUBLIC_ASSERT_PATH}branding/logo`, basename, { ignoreExtension: true });
   }
 }
 

@@ -24,7 +24,7 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
 import { GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import LdapSettings from '@/pages/Settings/components/LdapSettings';
-import AddInstitutionLogo from '@/pages/Settings/components/AddInstitutionLogo';
+import AddBrandingLogo from '@/pages/Settings/components/AddBrandingLogo';
 import { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSettings.form';
 import globalSettingsFormDefaultValues from '@libs/global-settings/constants/globalSettingsFormDefaultValues';
 import AddSchoolInfo from '@/pages/Settings/components/AddSchoolInfo';
@@ -182,7 +182,7 @@ const GlobalSettings: React.FC = () => {
               <AccordionTrigger className="flex">
                 <h4>{t('settings.globalSettings.brandingLogo.title')}</h4>
               </AccordionTrigger>
-              <AddInstitutionLogo form={form} />
+              <AddBrandingLogo form={form} />
             </AccordionItem>
             <AccordionItem value="schoolInfo">
               <AccordionTrigger className="flex">

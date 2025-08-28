@@ -9,10 +9,20 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
 /* eslint-disable @typescript-eslint/class-methods-use-this */
 import { join } from 'path';
-import { Controller, Delete, Get, Param, Post, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  Res,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type Response } from 'express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -23,6 +33,7 @@ import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
 import { createAttachmentUploadOptions } from './multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 import FilesystemService from './filesystem.service';
+import { Public } from '../common/decorators/public.decorator';
 
 @ApiTags(EDU_API_CONFIG_ENDPOINTS.FILES)
 @ApiBearerAuth()
@@ -65,6 +76,13 @@ class FileSystemController {
   deleteFile(@Param('appName') appName: string, @Param('filename') filename: string) {
     const appsPath = join(APPS_FILES_PATH, appName);
     return FilesystemService.deleteFile(appsPath, FilesystemService.buildPathString(filename));
+  }
+
+  @Public()
+  @Get('public/*path')
+  getPublicAsset(@Param('path') path: string | string[], @Query('filename') filename: string, @Res() res: Response) {
+    const joinedPath = Array.isArray(path) ? path.join('/') : (path ?? '');
+    return this.filesystemService.servePublicAssert(joinedPath, filename, res);
   }
 }
 

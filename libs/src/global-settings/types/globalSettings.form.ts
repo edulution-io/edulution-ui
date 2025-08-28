@@ -11,7 +11,10 @@
  */
 
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
+import ThemedFile from '@libs/common/types/themedFile';
 
-export type GlobalSettingsFormValues = GlobalSettingsDto & {
-  brandingUploadFile: File | null;
+export type GlobalSettingsFormValues = Omit<GlobalSettingsDto, 'brandingUploadFile'> & {
+  brandingUploads: {
+    logo: ThemedFile;
+  };
 };

@@ -17,7 +17,7 @@ import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
 import {
   GLOBAL_SETTINGS_ADMIN_ENDPOINT,
-  GLOBAL_SETTINGS_BRANDING_LOGO_ENDPOINT,
+  GLOBAL_SETTINGS_BRANDING_LOGO,
   GLOBAL_SETTINGS_ROOT_ENDPOINT,
 } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
@@ -26,8 +26,8 @@ import deepMerge from '@libs/common/utils/Object/deepMerge';
 import BrandingDto from '@libs/global-settings/types/branding.dto';
 import { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSettings.form';
 import PublicAssetSaveResult from '@libs/filesystem/types/publicAssetSaveResult';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import { AxiosResponse } from 'axios';
+
+import { ThemeType } from '@libs/common/types/theme';
 
 type GlobalSettingsStore = {
   isSetGlobalSettingLoading: boolean;
@@ -41,8 +41,7 @@ type GlobalSettingsStore = {
   getGlobalSettings: () => Promise<void>;
   getGlobalAdminSettings: () => Promise<void>;
   setGlobalSettings: (globalSettingsFormValues: GlobalSettingsFormValues) => Promise<void>;
-  getGlobalBranding: () => Promise<void>;
-  deleteGlobalBranding: () => Promise<void>;
+  deleteGlobalBrandingLogo: (theme?: ThemeType) => Promise<void>;
 };
 
 const initialValues = {
@@ -54,6 +53,20 @@ const initialValues = {
   mfaEnforcedGroups: [],
   globalSettings: defaultValues,
   globalBranding: {} as BrandingDto,
+};
+
+const EMPTY_LOGO = { url: '', mimeType: '' as const };
+
+const uploadLogoVariant = async (theme: ThemeType, file: File) => {
+  const formData = new FormData();
+  formData.append('file', file, file.name);
+  const { data } = await eduApi.put<PublicAssetSaveResult>(
+    `${GLOBAL_SETTINGS_ROOT_ENDPOINT}/${GLOBAL_SETTINGS_BRANDING_LOGO}`,
+    formData,
+    { params: { variant: theme } },
+  );
+
+  return data;
 };
 
 const useGlobalSettingsApiStore = create<GlobalSettingsStore>((set, get) => ({
@@ -89,135 +102,96 @@ const useGlobalSettingsApiStore = create<GlobalSettingsStore>((set, get) => ({
     }
   },
 
-  setGlobalSettings: async (globalSettingsFormValues) => {
+  setGlobalSettings: async (values) => {
     set({ isSetGlobalSettingLoading: true });
     try {
-      let brandingResponse: PublicAssetSaveResult | null = null;
+      const { brandingUploads, ...dto } = values;
+      const lightFile = brandingUploads?.logo?.light ?? null;
+      const darkFile = brandingUploads?.logo?.dark ?? null;
 
-      if (globalSettingsFormValues.brandingUploadFile) {
-        const fileData = new FormData();
-        fileData.append(
-          'file',
-          globalSettingsFormValues.brandingUploadFile,
-          globalSettingsFormValues.brandingUploadFile.name,
-        );
-        const { data } = await eduApi.put<PublicAssetSaveResult>(
-          `${GLOBAL_SETTINGS_ROOT_ENDPOINT}/${GLOBAL_SETTINGS_BRANDING_LOGO_ENDPOINT}`,
-          fileData,
-        );
-        brandingResponse = data;
+      const results: Partial<Record<ThemeType, PublicAssetSaveResult>> = {};
 
-        set({
+      if (lightFile) results.light = await uploadLogoVariant('light', lightFile);
+      if (darkFile) results.dark = await uploadLogoVariant('dark', darkFile);
+
+      if (results.light || results.dark) {
+        set((state) => ({
           globalBranding: {
-            logo: { url: data.publicPath, mimeType: data.mime },
-          },
-        });
-      }
-
-      const { ...dto } = globalSettingsFormValues;
-
-      let payload: Partial<GlobalSettingsDto>;
-
-      if (brandingResponse) {
-        payload = {
-          ...dto,
-          branding: {
-            ...(dto.branding ?? {}),
-            logo: {
-              ...(dto.branding?.logo ?? { url: '', mimeType: '' }),
-              url: brandingResponse.publicPath,
-              mimeType: brandingResponse.mime,
+            ...state.globalBranding,
+            logos: {
+              ...(state.globalBranding?.logos ?? {}),
+              ...(results.light ? { light: { url: results.light.publicPath, mimeType: results.light.mime } } : {}),
+              ...(results.dark ? { dark: { url: results.dark.publicPath, mimeType: results.dark.mime } } : {}),
             },
           },
-        };
-      } else {
-        const urlEmpty = (dto.branding?.logo?.url ?? '') === '';
-        const mimeEmpty = (dto.branding?.logo?.mimeType ?? '') === '';
-        if (urlEmpty && mimeEmpty) {
-          const { ...rest } = dto;
-          payload = rest;
-        } else {
-          payload = dto;
-        }
+        }));
       }
 
-      await eduApi.put(GLOBAL_SETTINGS_ROOT_ENDPOINT, payload);
+      const logos: BrandingDto['logos'] = {
+        light: results.light
+          ? { url: results.light.publicPath, mimeType: results.light.mime }
+          : (dto.branding?.logos?.light ?? EMPTY_LOGO),
 
-      set({ globalSettings: payload as GlobalSettingsDto });
-      toast.success(i18n.t('settings.globalSettings.updateSuccessful'));
-    } catch (error) {
-      handleApiError(error, set);
+        dark: results.dark
+          ? { url: results.dark.publicPath, mimeType: results.dark.mime }
+          : (dto.branding?.logos?.dark ?? EMPTY_LOGO),
+      };
+
+      const payload: Partial<GlobalSettingsDto> = {
+        ...dto,
+        branding: {
+          ...(dto.branding ?? {}),
+          logos,
+        },
+      };
+
+      await eduApi.put<GlobalSettingsDto>(GLOBAL_SETTINGS_ROOT_ENDPOINT, payload);
     } finally {
       set({ isSetGlobalSettingLoading: false });
     }
   },
 
-  getGlobalBranding: async () => {
-    set({ isGetBrandingLoading: true });
-    try {
-      const requestUrl = `${window.location.origin}/${EDU_API_ROOT}/${GLOBAL_SETTINGS_ROOT_ENDPOINT}/${GLOBAL_SETTINGS_BRANDING_LOGO_ENDPOINT}`;
-
-      const response: AxiosResponse<string> = await eduApi.get<string>(requestUrl, {
-        responseType: 'text',
-        validateStatus: (status: number) => status < 400,
-      });
-
-      const contentTypeHeaderValue =
-        (response.headers as Record<string, string | undefined>)['content-type']?.toLowerCase() ?? '';
-
-      if (contentTypeHeaderValue.includes('application/json')) {
-        let parsed: unknown = response.data;
-
-        if (typeof parsed === 'string') {
-          try {
-            parsed = JSON.parse(parsed) as unknown;
-          } catch {
-            parsed = null;
-          }
-        }
-
-        const isObject = (value: unknown): value is Record<string, unknown> =>
-          typeof value === 'object' && value !== null;
-
-        const isBrandingDto = (value: unknown): value is BrandingDto => {
-          if (!isObject(value)) return false;
-          const { logo } = value;
-          if (!isObject(logo)) return false;
-          return typeof logo.url === 'string' && typeof logo.mimeType === 'string';
-        };
-
-        if (isBrandingDto(parsed)) {
-          set({ globalBranding: parsed });
-        } else {
-          set({ globalBranding: { logo: { url: '', mimeType: '' } } });
-        }
-      } else {
-        set({
-          globalBranding: {
-            logo: {
-              url: requestUrl,
-              mimeType: contentTypeHeaderValue,
-            },
-          },
-        });
-      }
-    } catch (error) {
-      handleApiError(error, set);
-    } finally {
-      set({ isGetBrandingLoading: false });
-    }
-  },
-
-  deleteGlobalBranding: async () => {
+  deleteGlobalBrandingLogo: async (theme?: ThemeType) => {
     set({ isSetGlobalSettingLoading: true });
     try {
-      await eduApi.delete(`${GLOBAL_SETTINGS_ROOT_ENDPOINT}/${GLOBAL_SETTINGS_BRANDING_LOGO_ENDPOINT}`);
+      if (theme) {
+        await eduApi.delete(`${GLOBAL_SETTINGS_ROOT_ENDPOINT}/${GLOBAL_SETTINGS_BRANDING_LOGO}`, {
+          params: { variant: theme },
+          validateStatus: (s) => s < 500,
+        });
 
-      set(() => ({
-        globalBranding: { logo: { url: '', mimeType: '' } },
-      }));
+        set((state) => ({
+          globalBranding: {
+            ...state.globalBranding,
+            logos: {
+              light: theme === 'light' ? EMPTY_LOGO : (state.globalBranding?.logos?.light ?? EMPTY_LOGO),
+              dark: theme === 'dark' ? EMPTY_LOGO : (state.globalBranding?.logos?.dark ?? EMPTY_LOGO),
+            },
+          },
+        }));
 
-      toast.success(i18n.t('settings.globalSettings.brandingLogo.deleteSuccessful') || 'Branding-Logo gelöscht.');
+        toast.success(
+          i18n.t('settings.globalSettings.brandingLogo.deleteSuccessfulVariant', { variant: theme }) ||
+            `Branding-Logo (${theme}) gelöscht.`,
+        );
+      } else {
+        await Promise.all([
+          eduApi.delete(`${GLOBAL_SETTINGS_ROOT_ENDPOINT}/${GLOBAL_SETTINGS_BRANDING_LOGO}`, {
+            params: { variant: 'light' },
+            validateStatus: (s) => s < 500,
+          }),
+          eduApi.delete(`${GLOBAL_SETTINGS_ROOT_ENDPOINT}/${GLOBAL_SETTINGS_BRANDING_LOGO}`, {
+            params: { variant: 'dark' },
+            validateStatus: (s) => s < 500,
+          }),
+        ]);
+
+        set(() => ({
+          globalBranding: { logos: { light: EMPTY_LOGO, dark: EMPTY_LOGO } },
+        }));
+
+        toast.success(i18n.t('settings.globalSettings.brandingLogo.deleteSuccessful') || 'Branding-Logos gelöscht.');
+      }
     } catch (error) {
       handleApiError(error, set);
     } finally {

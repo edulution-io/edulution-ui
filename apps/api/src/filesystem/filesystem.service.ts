@@ -524,7 +524,6 @@ class FilesystemService {
 
   async servePublicAssert(relativePath: string, filename: string, response: Response): Promise<Response> {
     const absolutePath = await this.resolvePublicAssetAbsolutePath(relativePath, filename);
-
     if (!absolutePath) {
       response.status(HttpStatus.NO_CONTENT).end();
       return response;
