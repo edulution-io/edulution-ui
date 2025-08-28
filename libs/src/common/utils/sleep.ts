@@ -10,12 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum GroupsErrorMessage {
-  CouldNotGetUsers = 'groups.errors.CouldNotGetUsers',
-  CouldNotGetCurrentUser = 'groups.errors.CouldNotGetCurrentUser',
-  CouldNotGetAllGroups = 'groups.errors.CouldNotGetAllGroups',
-  CouldNotFetchGroupMembers = 'groups.errors.CouldNotFetchGroupMembers',
-  CouldNotSearchGroups = 'groups.errors.CouldNotSearchGroups',
-}
+const sleep = (ms: number) =>
+  new Promise<void>((resolve) => {
+    setTimeout(resolve, ms);
+  });
 
-export default GroupsErrorMessage;
+export default sleep;
