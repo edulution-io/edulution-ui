@@ -39,8 +39,10 @@ class GlobalSettingsDto {
     };
   };
 
+  @ValidateNested()
   branding: BrandingDto;
 
+  @ValidateNested()
   schoolInfo?: SchoolInfoDto;
 }
 

@@ -34,7 +34,7 @@ export class GlobalSettings {
   @Prop({ type: BrandingSchema, required: false })
   branding?: Branding;
 
-  @Prop({ type: SchoolInfoSchema, default: {} }) schoolInfo: SchoolInfo;
+  @Prop({ type: SchoolInfoSchema, default: {} }) schoolInfo?: SchoolInfo;
 
   @Prop({ default: 4 })
   schemaVersion: number;
