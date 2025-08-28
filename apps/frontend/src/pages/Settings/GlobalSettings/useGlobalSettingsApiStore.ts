@@ -146,6 +146,7 @@ const useGlobalSettingsApiStore = create<GlobalSettingsStore>((set, get) => ({
       };
 
       await eduApi.put<GlobalSettingsDto>(GLOBAL_SETTINGS_ROOT_ENDPOINT, payload);
+      toast.success(i18n.t('settings.globalSettings.updateSuccessful'));
     } finally {
       set({ isSetGlobalSettingLoading: false });
     }

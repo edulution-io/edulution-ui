@@ -19,58 +19,60 @@ import { useTranslation } from 'react-i18next';
 import { Theme, ThemeType } from '@libs/common/types/theme';
 
 interface BrandingLogoFieldProps {
-  theme: ThemeType;
-  srcLight: string;
-  srcDark: string;
-  cbLight: number;
-  cbDark: number;
-  fetchedLight: string | null;
-  fetchedDark: string | null;
-  localLight: string | null;
-  localDark: string | null;
-  isDeleting: ThemeType | null;
-  lightRef: React.RefObject<HTMLInputElement>;
-  darkRef: React.RefObject<HTMLInputElement>;
-  deleteServer: (theme: ThemeType) => void;
-  handleFileChange: (theme: ThemeType) => (e: React.ChangeEvent<HTMLInputElement>) => void;
+  variant: ThemeType;
+  lightPreviewSrc: string;
+  darkPreviewSrc: string;
+  lightCacheKey: number;
+  darkCacheKey: number;
+  lightServerSrc: string | null;
+  darkServerSrc: string | null;
+  lightLocalSrc: string | null;
+  darkLocalSrc: string | null;
+  deletingVariant: ThemeType | null;
+  lightInputRef: React.RefObject<HTMLInputElement>;
+  darkInputRef: React.RefObject<HTMLInputElement>;
+  onDeleteVariant: (variant: ThemeType) => void;
+  onFileChange: (variant: ThemeType) => (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const BrandingLogoField: React.FC<BrandingLogoFieldProps> = ({
-  theme,
-  srcLight,
-  srcDark,
-  cbLight,
-  cbDark,
-  fetchedLight,
-  fetchedDark,
-  localLight,
-  localDark,
-  isDeleting,
-  deleteServer,
-  handleFileChange,
-  lightRef,
-  darkRef,
+  variant,
+  lightPreviewSrc,
+  darkPreviewSrc,
+  lightCacheKey,
+  darkCacheKey,
+  lightServerSrc,
+  darkServerSrc,
+  lightLocalSrc,
+  darkLocalSrc,
+  deletingVariant,
+  onDeleteVariant,
+  onFileChange,
+  lightInputRef,
+  darkInputRef,
 }) => {
-  const isLight = theme === Theme.light;
-  const src = isLight ? srcLight : srcDark;
-  const inputRef = isLight ? lightRef : darkRef;
-  const hasFetched = isLight ? fetchedLight : fetchedDark;
-  const hasLocal = isLight ? localLight : localDark;
+  const isLightVariant = variant === Theme.light;
+  const previewSrc = isLightVariant ? lightPreviewSrc : darkPreviewSrc;
+  const cacheKey = isLightVariant ? lightCacheKey : darkCacheKey;
+  const fileInputRef = isLightVariant ? lightInputRef : darkInputRef;
+
+  const hasServerAsset = Boolean(isLightVariant ? lightServerSrc : darkServerSrc);
+  const hasLocalSelection = Boolean(isLightVariant ? lightLocalSrc : darkLocalSrc);
 
   const { t } = useTranslation();
 
   return (
     <div
-      className={`flex flex-col items-center rounded-2xl border border-dashed border-gray-300 p-6 text-center shadow-sm hover:border-gray-400 ${isLight ? 'bg-white' : 'bg-neutral-900'}`}
+      className={`flex flex-col items-center rounded-2xl border border-dashed border-gray-300 p-6 text-center shadow-sm hover:border-gray-400 ${isLightVariant ? 'bg-white' : 'bg-neutral-900'}`}
     >
-      <div className={`mb-2 text-sm ${isLight ? 'text-gray-600' : 'text-gray-100'}`}>
-        {isLight ? (t('common.light') ?? 'Light') : (t('common.dark') ?? 'Dark')}
+      <div className={`mb-2 text-sm ${isLightVariant ? 'text-gray-600' : 'text-gray-100'}`}>
+        {isLightVariant ? (t('common.light') ?? 'Light') : (t('common.dark') ?? 'Dark')}
       </div>
 
       <img
-        key={isLight ? cbLight : cbDark}
-        src={src}
-        alt={isLight ? 'Light Logo' : 'Dark Logo'}
+        key={cacheKey}
+        src={previewSrc || DesktopLogo}
+        alt={isLightVariant ? 'Light Logo' : 'Dark Logo'}
         className="h-20 w-auto object-contain"
         onError={(e) => {
           (e.currentTarget as HTMLImageElement).src = DesktopLogo;
@@ -79,19 +81,19 @@ const BrandingLogoField: React.FC<BrandingLogoFieldProps> = ({
 
       <div className="mt-3 flex w-full flex-col gap-2 sm:flex-row sm:items-center">
         <Input
-          ref={inputRef}
+          ref={fileInputRef}
           type="file"
           accept="image/*"
-          onChange={handleFileChange(theme)}
+          onChange={onFileChange(variant)}
           className="block w-full cursor-pointer text-sm file:mr-4 file:rounded-lg file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-medium file:text-gray-700 hover:file:bg-gray-200"
         />
         <div className="flex w-full justify-center gap-2 sm:justify-end">
-          {!hasLocal && hasFetched && (
+          {!hasLocalSelection && hasServerAsset && (
             <Button
               type="button"
               variant="btn-attention"
-              onClick={() => deleteServer(theme)}
-              disabled={isDeleting === theme}
+              onClick={() => onDeleteVariant(variant)}
+              disabled={deletingVariant === variant}
             >
               <Trash2 className="h-4 w-4" />
               {t('common.delete')}
