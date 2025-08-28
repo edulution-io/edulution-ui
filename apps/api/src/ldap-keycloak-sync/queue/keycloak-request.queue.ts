@@ -102,6 +102,8 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
     this.axiosClient = createKeycloakAxiosClient(token);
   }
 
+  private readonly jobRetryDelay = 3000;
+
   public async enqueue<T>(
     method: HttpMethods.GET | HttpMethods.POST | HttpMethods.PUT | HttpMethods.DELETE,
     endpoint: string,
@@ -115,7 +117,7 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
         removeOnComplete: true,
         removeOnFail: true,
         attempts: 10,
-        backoff: { type: 'exponential', delay: 3000 },
+        backoff: { type: 'exponential', delay: this.jobRetryDelay },
       },
     );
 
