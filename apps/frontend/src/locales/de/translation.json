@@ -914,7 +914,7 @@
       },
       "brandingLogo": {
         "title": "Institutionslogo",
-        "description": "Hier kann das Logo der Institution hochgeladen werden. Dieses Logo wird auf der Login-Seite angezeigt.",
+        "description": "Laden Sie das Institutionslogo hoch. Es wird auf der Login-Seite und auf dem Ausweis in der Edulution-App angezeigt.",
         "uploadLightLogo": "Helles Logo hochladen",
         "uploadDarkLogo": "Dunkels Logo hochladen",
         "deleteSuccessful": "Logo wurde erfolgreich gelöscht"
@@ -1186,6 +1186,8 @@
     "next": "Weiter",
     "back": "Zurück",
     "confirm": "Bestätigen",
+    "chooseFile": "Datei auswählen",
+    "changeFile": "Datei ändern",
     "creator": "Ersteller",
     "share": "Teilen",
     "answers": "Antworten",

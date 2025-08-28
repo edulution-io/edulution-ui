@@ -11,12 +11,12 @@
  */
 
 import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
-import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/shared/Button';
 import { Trash2 } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Theme, ThemeType } from '@libs/common/types/theme';
+import FileSelectButton from '@/components/ui/FileSelectButton';
 
 interface BrandingLogoFieldProps {
   variant: ThemeType;
@@ -65,10 +65,6 @@ const BrandingLogoField: React.FC<BrandingLogoFieldProps> = ({
     <div
       className={`flex flex-col items-center rounded-2xl border border-dashed border-gray-300 p-6 text-center shadow-sm hover:border-gray-400 ${isLightVariant ? 'bg-white' : 'bg-neutral-900'}`}
     >
-      <div className={`mb-2 text-sm ${isLightVariant ? 'text-gray-600' : 'text-gray-100'}`}>
-        {isLightVariant ? (t('common.light') ?? 'Light') : (t('common.dark') ?? 'Dark')}
-      </div>
-
       <img
         key={cacheKey}
         src={previewSrc || DesktopLogo}
@@ -78,28 +74,29 @@ const BrandingLogoField: React.FC<BrandingLogoFieldProps> = ({
           (e.currentTarget as HTMLImageElement).src = DesktopLogo;
         }}
       />
-
-      <div className="mt-3 flex w-full flex-col gap-2 sm:flex-row sm:items-center">
-        <Input
+      <div className="mt-3 grid w-full grid-cols-1 gap-2">
+        <FileSelectButton
           ref={fileInputRef}
-          type="file"
           accept="image/*"
           onChange={onFileChange(variant)}
-          className="block w-full cursor-pointer text-sm file:mr-4 file:rounded-lg file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-medium file:text-gray-700 hover:file:bg-gray-200"
+          hasSelection={hasLocalSelection}
+          chooseText={t('common.chooseFile') ?? 'Datei auswählen'}
+          changeText={t('common.changeFile') ?? 'Datei ändern'}
+          labelClassName="w-full"
         />
-        <div className="flex w-full justify-center gap-2 sm:justify-end">
-          {!hasLocalSelection && hasServerAsset && (
-            <Button
-              type="button"
-              variant="btn-attention"
-              onClick={() => onDeleteVariant(variant)}
-              disabled={deletingVariant === variant}
-            >
-              <Trash2 className="h-4 w-4" />
-              {t('common.delete')}
-            </Button>
-          )}
-        </div>
+
+        {!hasLocalSelection && hasServerAsset && (
+          <Button
+            type="button"
+            variant="btn-small"
+            className="w-full bg-red-500"
+            onClick={() => onDeleteVariant(variant)}
+            disabled={deletingVariant === variant}
+          >
+            <Trash2 className="h-4 w-4" />
+            {t('common.delete')}
+          </Button>
+        )}
       </div>
     </div>
   );
