@@ -30,6 +30,13 @@ const defaultValues: GlobalSettingsDto = {
       },
     },
   },
+  branding: { logos: { light: { url: '', mimeType: '' }, dark: { url: '', mimeType: '' } } },
+  schoolInfo: {
+    name: '',
+    street: '',
+    postalCode: '',
+    website: '',
+  },
 };
 
 export default defaultValues;

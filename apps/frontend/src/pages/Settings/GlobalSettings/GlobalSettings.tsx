@@ -18,13 +18,16 @@ import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import useGroupStore from '@/store/GroupStore';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
-import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import AppConfigSwitch from '@/pages/Settings/AppConfig/components/booleanField/AppConfigSwitch';
 import AppDropdownSelectFormField from '@/components/ui/DropdownSelect/AppDropdownSelectFormField';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
 import { GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import LdapSettings from '@/pages/Settings/components/LdapSettings';
+import AddBrandingLogo from '@/pages/Settings/components/AddBrandingLogo';
+import { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSettings.form';
+import globalSettingsFormDefaultValues from '@libs/global-settings/constants/globalSettingsFormDefaultValues';
+import AddSchoolInfo from '@/pages/Settings/components/AddSchoolInfo';
 import useGlobalSettingsApiStore from './useGlobalSettingsApiStore';
 import GlobalSettingsFloatingButtons from './GlobalSettingsFloatingButtons';
 import DeploymentTargetDropdownSelectFormField from '../components/DeploymentTargetDropdownSelectFormField';
@@ -35,7 +38,10 @@ const GlobalSettings: React.FC = () => {
   const { appConfigs } = useAppConfigsStore();
   const { globalSettings, getGlobalAdminSettings, setGlobalSettings } = useGlobalSettingsApiStore();
 
-  const form = useForm<GlobalSettingsDto>({ defaultValues });
+  const form = useForm<GlobalSettingsFormValues>({
+    defaultValues: globalSettingsFormDefaultValues,
+    shouldUnregister: true,
+  });
 
   const {
     watch,
@@ -52,15 +58,26 @@ const GlobalSettings: React.FC = () => {
   }, [getGlobalAdminSettings]);
 
   useEffect(() => {
-    if (globalSettings) {
-      reset({
+    if (!globalSettings) return;
+
+    reset(
+      {
         ...defaultValues,
         ...globalSettings,
-        auth: {
-          mfaEnforcedGroups: globalSettings.auth?.mfaEnforcedGroups || [],
+        general: {
+          ...defaultValues.general,
+          ...(globalSettings.general ?? defaultValues.general),
         },
-      });
-    }
+        schoolInfo: {
+          ...defaultValues.schoolInfo,
+          ...(globalSettings.schoolInfo ?? defaultValues.schoolInfo),
+        },
+        auth: {
+          mfaEnforcedGroups: globalSettings.auth?.mfaEnforcedGroups ?? [],
+        },
+      },
+      { keepDirtyValues: false },
+    );
   }, [globalSettings, reset]);
 
   const defaultLandingPageAppName = watch('general.defaultLandingPage.appName');
@@ -84,15 +101,16 @@ const GlobalSettings: React.FC = () => {
     setValue(`auth.${GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS}`, uniqueGroups, { shouldValidate: true });
   };
 
-  const onSubmit: SubmitHandler<GlobalSettingsDto> = (newGlobalSettings) => {
-    void setGlobalSettings(newGlobalSettings);
+  const onSubmit: SubmitHandler<GlobalSettingsFormValues> = async (values) => {
+    await setGlobalSettings(values);
+    await getGlobalAdminSettings();
   };
 
   return (
     <>
       <AccordionSH
         type="multiple"
-        defaultValue={['general', 'security', 'ldap']}
+        defaultValue={['general', 'security', 'ldap', 'institutionLogo', 'schoolInfo']}
       >
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -159,6 +177,18 @@ const GlobalSettings: React.FC = () => {
                 <h4>{t('settings.globalSettings.ldap.title')}</h4>
               </AccordionTrigger>
               <LdapSettings form={form} />
+            </AccordionItem>
+            <AccordionItem value="institutionLogo">
+              <AccordionTrigger className="flex">
+                <h4>{t('settings.globalSettings.brandingLogo.title')}</h4>
+              </AccordionTrigger>
+              <AddBrandingLogo form={form} />
+            </AccordionItem>
+            <AccordionItem value="schoolInfo">
+              <AccordionTrigger className="flex">
+                <h4>{t('settings.globalSettings.schoolInfo.title')}</h4>
+              </AccordionTrigger>
+              <AddSchoolInfo form={form} />
             </AccordionItem>
           </form>
         </Form>

@@ -417,7 +417,8 @@
         "PublicIsRestrictedByInvalidToken": "The share link cannot be accessed because the token is invalid.",
         "PublicFileWrongPassword": "The password for the sharing is incorrect.",
         "FileCouldNotBeFound": "The requested content could not be found. Please check the share link or contact the owner of this content.",
-        "PublicFileDownloadFailed": "Downloading the file failed. Please try again later."
+        "PublicFileDownloadFailed": "Downloading the file failed. Please try again later.",
+        "ResolvePublicFileFailed": "Unable to resolve public file."
       },
       "success": {
         "PublicFileLinkCreated": "Share link created successfully",
@@ -906,6 +907,24 @@
         "edulution-binduser-description": "Here you can configure the LDAP access data required for group synchronization.",
         "edulution-binduser-dn": "Distinguished Name (DN)",
         "edulution-binduser-password": "Password"
+      },
+      "brandingLogo": {
+        "title": "Institutionlogo",
+        "description": "Upload your institution’s logo. It will be shown on the login screen and on the Edulution app ID card.",
+        "uploadLightLogo": "Upload Light Logo",
+        "uploadDarkLogo": "Upload Dark Logo",
+        "deleteSuccessful": "Logo deleted successfully."
+      },
+      "schoolInfo": {
+        "title": "School Information",
+        "description": "Enter your school's official details. This information may appear on the student ID. Please provide the name, street, postal code, and optionally the school website.",
+        "name": "School name",
+        "namePlaceholder": "e.g. Sampletown Comprehensive School",
+        "street": "Street",
+        "streetPlaceholder": "e.g. 1 School Street",
+        "postalCode": "Postal code",
+        "postalCodePlaceholder": "e.g. 12345",
+        "website": "School website"
       }
     },
     "userAdministration": {
@@ -1165,6 +1184,8 @@
     "back": "Back",
     "confirm": "Confirm",
     "creator": "Creator",
+    "chooseFile": "Choose file",
+    "changeFile": "Change file",
     "share": "Share",
     "answers": "Answers",
     "error": "Error",

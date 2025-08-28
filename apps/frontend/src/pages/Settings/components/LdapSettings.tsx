@@ -14,11 +14,11 @@ import React from 'react';
 import FormField from '@/components/shared/FormField';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
-import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import { AccordionContent } from '@/components/ui/AccordionSH';
+import { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSettings.form';
 
 type LdapSettingsProps = {
-  form: UseFormReturn<GlobalSettingsDto>;
+  form: UseFormReturn<GlobalSettingsFormValues>;
 };
 
 const LdapSettings = ({ form }: LdapSettingsProps) => {

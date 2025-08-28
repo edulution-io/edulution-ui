@@ -417,7 +417,8 @@
         "PublicIsRestrictedByInvalidToken": "Auf den Freigabelink kann nicht zugegriffen werden, da der Token ungültig ist.",
         "PublicFileWrongPassword": "Das eingegebene Passwort ist falsch.",
         "FileCouldNotBeFound": "Der angefordert Freigabe-Link konnte nicht gefunden werden. Bitte überprüfe den Link oder wende dich an den Ersteller.",
-        "PublicFileDownloadFailed": "Herunterladen der Datei fehlgeschlagen. Bitte versuche es später noch einmal."
+        "PublicFileDownloadFailed": "Herunterladen der Datei fehlgeschlagen. Bitte versuche es später noch einmal.",
+        "ResolvePublicFileFailed": "Öffentliche Datei konnte nicht ermittelt werden."
       },
       "success": {
         "PublicFileLinkCreated": "Freigabe-Link erfolgreich erstellt.",
@@ -910,6 +911,24 @@
         "edulution-binduser-description": "Hier können Zugangsdaten zum LDAP konfiguriert werden, die für den Gruppen-Sync notwendig sind.",
         "edulution-binduser-dn": "Distinguished Name (DN)",
         "edulution-binduser-password": "Passwort"
+      },
+      "brandingLogo": {
+        "title": "Institutionslogo",
+        "description": "Laden Sie das Institutionslogo hoch. Es wird auf der Login-Seite und auf dem Ausweis in der Edulution-App angezeigt.",
+        "uploadLightLogo": "Helles Logo hochladen",
+        "uploadDarkLogo": "Dunkels Logo hochladen",
+        "deleteSuccessful": "Logo wurde erfolgreich gelöscht"
+      },
+      "schoolInfo": {
+        "title": "Schulinformationen",
+        "description": "Geben Sie die offiziellen Angaben Ihrer Schule an. Diese Informationen können im Studentenausweis angezeigt werden. Bitte Name, Straße, Postleitzahl und optional die Schulwebsite eintragen.",
+        "name": "Schulname",
+        "namePlaceholder": "z. B. Gemeinschaftsschule Musterstadt",
+        "street": "Straße",
+        "streetPlaceholder": "z. B. Schulweg 1",
+        "postalCode": "Postleitzahl",
+        "postalCodePlaceholder": "z. B. 12345",
+        "website": "Schulwebsite"
       }
     },
     "userAdministration": {
@@ -1167,6 +1186,8 @@
     "next": "Weiter",
     "back": "Zurück",
     "confirm": "Bestätigen",
+    "chooseFile": "Datei auswählen",
+    "changeFile": "Datei ändern",
     "creator": "Ersteller",
     "share": "Teilen",
     "answers": "Antworten",
