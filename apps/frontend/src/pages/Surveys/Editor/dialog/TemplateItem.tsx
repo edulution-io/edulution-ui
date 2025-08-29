@@ -33,7 +33,7 @@ const TemplateItem = (props: TemplateItemProps) => {
   const { form, creator, template } = props;
   const {
     formula,
-    /* backendLimiters, */
+    /* backendLimiter, */
     invitedAttendees,
     invitedGroups,
     isAnonymous,
@@ -48,7 +48,7 @@ const TemplateItem = (props: TemplateItemProps) => {
   const { t } = useTranslation();
 
   const handleLoadTemplate = () => {
-    // form.setValue('backendLimiters', backendLimiters);
+    // form.setValue('backendLimiter', backendLimiter);
     form.setValue('invitedAttendees', invitedAttendees || []);
     form.setValue('invitedGroups', invitedGroups || []);
     form.setValue('isAnonymous', isAnonymous);
