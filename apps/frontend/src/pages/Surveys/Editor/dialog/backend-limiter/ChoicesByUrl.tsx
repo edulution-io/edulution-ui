@@ -80,10 +80,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     setIsUpdatingBackendLimiters(true);
 
     try {
-      let surveyFormula = form.watch('formula');
-      if (!surveyFormula) {
-        surveyFormula = creator.JSON as SurveyFormula;
-      }
+      const surveyFormula = creator.JSON as SurveyFormula;
       const updatedFormula = JSON.parse(JSON.stringify(surveyFormula)) as SurveyFormula;
 
       let correspondingQuestion: SurveyElement | undefined;
