@@ -26,6 +26,7 @@ export const FIND_ONE = 'id';
 export const ANSWER = 'answers';
 export const RESULT = 'results';
 export const FILES = 'files';
+export const DEFAULT_FILES = 'default-files';
 export const TEMPLATES = 'templates';
 export const CHOICES = 'choices';
 export const CAN_PARTICIPATE = 'can-participate';
