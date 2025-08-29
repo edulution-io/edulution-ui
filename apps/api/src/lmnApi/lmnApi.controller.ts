@@ -31,6 +31,8 @@ import GroupForm from '@libs/groups/types/groupForm';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
+import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
+import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import LmnApiService from './lmnApi.service';
 import GetCurrentOrganisationPrefix from '../common/decorators/getCurrentOrganisationPrefix.decorator';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
@@ -99,10 +101,11 @@ export class LmnApiController {
 
   @Put('school-classes/:schoolClass/:action')
   async toggleSchoolClassJoined(
-    @Param() params: { schoolClass: string; action: string },
+    @Param() params: { schoolClass: string; action: GroupJoinState },
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @GetCurrentUsername() username: string,
   ) {
-    return this.lmnApiService.toggleSchoolClassJoined(lmnApiToken, params.schoolClass, params.action);
+    return this.lmnApiService.toggleSchoolClassJoined(lmnApiToken, params.schoolClass, params.action, username);
   }
 
   @Get('room')
@@ -195,7 +198,7 @@ export class LmnApiController {
   @Post('projects')
   async createProject(
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
-    @Body() body: { formValues: GroupForm },
+    @Body() body: { formValues: GroupFormDto },
     @GetCurrentUsername() username: string,
   ) {
     return this.lmnApiService.createProject(lmnApiToken, body.formValues, username);
@@ -204,7 +207,7 @@ export class LmnApiController {
   @Patch('projects')
   async updateProject(
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
-    @Body() body: { formValues: GroupForm },
+    @Body() body: { formValues: GroupFormDto },
     @GetCurrentUsername() username: string,
   ) {
     return this.lmnApiService.updateProject(lmnApiToken, body.formValues, username);
@@ -227,18 +230,20 @@ export class LmnApiController {
 
   @Put('projects/:project/:action')
   async toggleProjectJoined(
-    @Param() params: { project: string; action: string },
+    @Param() params: { project: string; action: GroupJoinState },
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @GetCurrentUsername() username: string,
   ) {
-    return this.lmnApiService.toggleProjectJoined(lmnApiToken, params.project, params.action);
+    return this.lmnApiService.toggleProjectJoined(lmnApiToken, params.project, params.action, username);
   }
 
   @Put('printers/:project/:action')
   async togglePrinterJoined(
-    @Param() params: { project: string; action: string },
+    @Param() params: { project: string; action: GroupJoinState },
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @GetCurrentUsername() username: string,
   ) {
-    return this.lmnApiService.togglePrinterJoined(lmnApiToken, params.project, params.action);
+    return this.lmnApiService.togglePrinterJoined(lmnApiToken, params.project, params.action, username);
   }
 
   @Get('printers')

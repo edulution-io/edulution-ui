@@ -116,7 +116,7 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
       {
         removeOnComplete: true,
         removeOnFail: true,
-        attempts: 10,
+        attempts: 3,
         backoff: { type: 'exponential', delay: this.jobRetryDelay },
       },
     );
