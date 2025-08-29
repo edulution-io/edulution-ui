@@ -18,7 +18,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
-import SURVEYS_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplatePath';
+import SURVEYS_TEMPLATE_EXCHANGE_PATH from '@libs/survey/constants/surveysTemplateExchangePath';
+import SURVEYS_TEMPLATE_DEFAULT_PATH from '@libs/survey/constants/surveysTemplateDefaultPath';
 import { SurveyTemplateDto, TemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import { SurveysTemplate, SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
 import CustomHttpException from '../common/CustomHttpException';
@@ -32,7 +33,7 @@ class SurveysTemplateService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    await this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);
+    await this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_EXCHANGE_PATH);
     await this.getNewTemplatesFromExchangeFolder();
   }
 
@@ -88,9 +89,8 @@ class SurveysTemplateService implements OnModuleInit {
     return res.status(HttpStatus.OK).json(document.template);
   }
 
-  async getNewTemplatesFromExchangeFolder(): Promise<void> {
-    const templatePath = SURVEYS_TEMPLATE_PATH;
-    const fileNames = await this.fileSystemService.getAllFilenamesInDirectory(templatePath);
+  async migrateTemplatesFromFolderToDb(path: string): Promise<void> {
+    const fileNames = await this.fileSystemService.getAllFilenamesInDirectory(path);
     if (fileNames.length === 0) {
       return;
     }
@@ -98,7 +98,7 @@ class SurveysTemplateService implements OnModuleInit {
     const filesToDelete: string[] = [];
 
     const creationPromises = fileNames.map(async (fileName) => {
-      const content = await FilesystemService.readFile<TemplateDto>(join(templatePath, fileName));
+      const content = await FilesystemService.readFile<TemplateDto>(join(path, fileName));
       if (!content) {
         throw new CustomHttpException(
           CommonErrorMessages.FILE_READING_FAILED,
@@ -117,7 +117,12 @@ class SurveysTemplateService implements OnModuleInit {
     });
     await Promise.all(creationPromises);
 
-    await FilesystemService.deleteFiles(templatePath, filesToDelete);
+    await FilesystemService.deleteFiles(path, filesToDelete);
+  }
+
+  async getNewTemplatesFromExchangeFolder(): Promise<void> {
+    await this.migrateTemplatesFromFolderToDb(SURVEYS_TEMPLATE_DEFAULT_PATH);
+    await this.migrateTemplatesFromFolderToDb(SURVEYS_TEMPLATE_EXCHANGE_PATH);
   }
 }
 
