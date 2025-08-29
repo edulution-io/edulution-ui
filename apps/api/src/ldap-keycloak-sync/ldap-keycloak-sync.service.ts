@@ -25,7 +25,6 @@ import LdapConfig from '@libs/ldapKeycloakSync/types/ldapConfig';
 import formatLdapDate from '@libs/ldapKeycloakSync/utils/formatLdapDate';
 import LDAP_SYNC_INTERVAL_MS from '@libs/ldapKeycloakSync/constants/ldapSyncIntervalMs';
 import LDAPS_PREFIX from '@libs/ldapKeycloakSync/constants/ldapsPrefix';
-import KEYCLOAK_STARTUP_TIMEOUT from '@libs/ldapKeycloakSync/constants/keycloakStartupTimeout';
 import { HttpMethods } from '@libs/common/types/http-methods';
 import GroupWithMembers from '@libs/groups/types/groupWithMembers';
 import GroupMemberDto from '@libs/groups/types/groupMember.dto';
@@ -34,6 +33,7 @@ import LDAP_ATTRIBUTE from '@libs/ldapKeycloakSync/constants/ldapAttribute';
 import LDAP_MEMBER_TYPES from '@libs/ldapKeycloakSync/constants/ldapMemberTypes';
 import LdapMemberType from '@libs/ldapKeycloakSync/types/ldapMemberType';
 import keycloakUserStorageProvider from '@libs/ldapKeycloakSync/constants/keycloakUserStorageProvider';
+import { KEYCLOAK_STARTUP_TIMEOUT_MS } from '@libs/ldapKeycloakSync/constants/keycloakSyncValues';
 import { LdapKeycloakSync, LdapKeycloakSyncDocument } from './ldap-keycloak-sync.schema';
 import GlobalSettingsService from '../global-settings/global-settings.service';
 import KeycloakRequestQueue from './queue/keycloak-request.queue';
@@ -50,6 +50,8 @@ class LdapKeycloakSyncService implements OnModuleInit {
   private ldapConfig?: LdapConfig;
 
   private lastSync = new Date(0);
+
+  private isSyncRunning = false;
 
   private userCache = new Map<string, GroupMemberDto>();
 
@@ -72,7 +74,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
     Logger.log('Initialized, waiting for Keycloak startup', LdapKeycloakSyncService.name);
   }
 
-  @Timeout(KEYCLOAK_STARTUP_TIMEOUT)
+  @Timeout(KEYCLOAK_STARTUP_TIMEOUT_MS)
   async init() {
     await this.loadLdapConfig();
     await this.loadLastSync();
@@ -85,24 +87,36 @@ class LdapKeycloakSyncService implements OnModuleInit {
       return;
     }
 
-    Logger.debug(`Delta sync since ${this.lastSync.toISOString()}`, LdapKeycloakSyncService.name);
+    if (this.isSyncRunning) {
+      Logger.debug('Sync already running — skipping this run', LdapKeycloakSyncService.name);
+      return;
+    }
 
-    const client = await this.setupClient();
+    this.isSyncRunning = true;
+    try {
+      Logger.debug(`Delta sync since ${this.lastSync.toISOString()}`, LdapKeycloakSyncService.name);
 
-    const syncSince = new Date();
+      const client = await this.setupClient();
 
-    const entries = await this.searchChangedGroups(client);
-    const toRefresh = await this.collectRefreshDns(client, entries);
+      const syncSince = new Date();
 
-    const updates = await this.buildUpdates(client, toRefresh);
-    await this.applyUpdates(updates);
+      const entries = await this.searchChangedGroups(client);
+      const toRefresh = await this.collectRefreshDns(client, entries);
 
-    this.lastSync = syncSince;
-    await this.persistLastSync();
+      const updates = await this.buildUpdates(client, toRefresh);
+      await this.applyUpdates(updates);
 
-    await client.unbind();
+      this.lastSync = syncSince;
+      await this.persistLastSync();
 
-    Logger.debug('Sync complete', LdapKeycloakSyncService.name);
+      await client.unbind();
+
+      Logger.debug('Sync complete', LdapKeycloakSyncService.name);
+    } catch (e) {
+      Logger.error(`Sync failed: ${(e as Error).message}`, LdapKeycloakSyncService.name);
+    } finally {
+      this.isSyncRunning = false;
+    }
   }
 
   private async loadLastSync() {
