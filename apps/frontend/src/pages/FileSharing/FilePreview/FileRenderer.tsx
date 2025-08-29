@@ -61,9 +61,33 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
   );
 
   if (!currentlyEditingFile) return null;
-  const fileExtension = getFileExtension(currentlyEditingFile.filePath);
 
-  if (isEditorLoading || error || !fileUrl) {
+  const fileExtension = getFileExtension(currentlyEditingFile.filePath);
+  const isOnlyOffice = isOnlyOfficeDocument(currentlyEditingFile.filePath);
+
+  if (isOnlyOffice) {
+    const isDocReady = !!publicDownloadLink && !!currentlyEditingFile;
+    if (isEditorLoading || isCreatingBlobUrl || isFetchingPublicUrl || error || !isDocReady) {
+      return (
+        <div className="flex h-full items-center justify-center">
+          <CircleLoader />
+        </div>
+      );
+    }
+
+    return (
+      <OnlyOffice
+        url={publicDownloadLink}
+        fileName={currentlyEditingFile.filename}
+        filePath={currentlyEditingFile.filePath}
+        mode={editMode ? 'edit' : 'view'}
+        type={isMobileView ? 'mobile' : 'desktop'}
+        isOpenedInNewTab={isOpenedInNewTab}
+      />
+    );
+  }
+
+  if (isEditorLoading || isCreatingBlobUrl || isFetchingPublicUrl || error || !fileUrl) {
     return (
       <div className="flex h-full items-center justify-center">
         <CircleLoader />
@@ -81,24 +105,6 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
     );
   }
 
-  const isDocumentReady = publicDownloadLink && currentlyEditingFile;
-  if (isOnlyOfficeDocument(currentlyEditingFile.filePath)) {
-    return isDocumentReady ? (
-      <OnlyOffice
-        url={publicDownloadLink}
-        fileName={currentlyEditingFile.filename}
-        filePath={currentlyEditingFile.filePath}
-        mode={editMode ? 'edit' : 'view'}
-        type={isMobileView ? 'mobile' : 'desktop'}
-        isOpenedInNewTab={isOpenedInNewTab}
-      />
-    ) : (
-      <div className="flex flex-col items-center justify-center space-y-4">
-        <CircleLoader />
-      </div>
-    );
-  }
-
   if (isMediaExtension(fileExtension)) {
     return (
       <MediaComponent
@@ -107,6 +113,7 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
       />
     );
   }
+
   return <p>{t('loadingIndicator.unsupportedFile')}</p>;
 };
 
