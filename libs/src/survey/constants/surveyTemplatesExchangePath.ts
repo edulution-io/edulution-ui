@@ -15,6 +15,6 @@ import APPS from '@libs/appconfig/constants/apps';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import { TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
 
-const SURVEYS_TEMPLATE_EXCHANGE_PATH = join(APPS_FILES_PATH, APPS.SURVEYS, TEMPLATES);
+const SURVEY_TEMPLATES_EXCHANGE_PATH = join(APPS_FILES_PATH, APPS.SURVEYS, TEMPLATES);
 
-export default SURVEYS_TEMPLATE_EXCHANGE_PATH;
+export default SURVEY_TEMPLATES_EXCHANGE_PATH;

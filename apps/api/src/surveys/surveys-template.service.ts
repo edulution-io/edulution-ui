@@ -18,8 +18,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
-import SURVEYS_TEMPLATE_EXCHANGE_PATH from '@libs/survey/constants/surveysTemplateExchangePath';
-import SURVEYS_TEMPLATE_DEFAULT_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplateDefaultTemplatePath';
+import SURVEY_TEMPLATES_EXCHANGE_PATH from '@libs/survey/constants/surveyTemplatesExchangePath';
+import SURVEY_TEMPLATES_DEFAULT_TEMPLATE_PATH from '@libs/survey/constants/surveyTemplatesDefaultTemplatePath';
 import { SurveyTemplateDto, TemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import { SurveysTemplate, SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
@@ -34,12 +34,13 @@ class SurveysTemplateService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    await this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_EXCHANGE_PATH);
-    await this.getNewTemplatesFromExchangeFolder();
+    await this.fileSystemService.ensureDirectoryExists(SURVEY_TEMPLATES_EXCHANGE_PATH);
+    await this.migrateTemplatesFromFolderToDb(SURVEY_TEMPLATES_EXCHANGE_PATH);
+    await this.migrateTemplatesFromFolderToDb(SURVEY_TEMPLATES_DEFAULT_TEMPLATE_PATH);
   }
 
   async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
-    const { template, isActive = true, fileName = `${getCurrentDateTimeString()}_-_${uuidv4()}.json` } = surveyTemplate;
+    const { template, isActive = true, fileName = `${getCurrentDateTimeString()}_-_${uuidv4()}` } = surveyTemplate;
     try {
       return await this.surveyTemplateModel.findOneAndUpdate(
         { fileName },
@@ -98,11 +99,6 @@ class SurveysTemplateService implements OnModuleInit {
     await Promise.all(creationPromises);
 
     await FilesystemService.deleteFiles(path, filesToDelete);
-  }
-
-  async getNewTemplatesFromExchangeFolder(): Promise<void> {
-    await this.migrateTemplatesFromFolderToDb(SURVEYS_TEMPLATE_DEFAULT_TEMPLATE_PATH);
-    await this.migrateTemplatesFromFolderToDb(SURVEYS_TEMPLATE_EXCHANGE_PATH);
   }
 
   async toggleIsTemplateActive(fileName: string): Promise<SurveysTemplateDocument | null> {
