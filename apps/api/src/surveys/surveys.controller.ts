@@ -176,6 +176,12 @@ class SurveysController {
     return this.surveysAttachmentService.serveTempFiles(username, filename, res);
   }
 
+  @Delete(`${TEMPLATES}/:filename`)
+  async deleteTemplate(@Param() params: { filename: string }) {
+    const { filename } = params;
+    return this.surveysTemplateService.deleteTemplate(filename);
+  }
+
   @Patch(`${TEMPLATES}/:filename`)
   async toggleIsTemplateActive(@Param() params: { filename: string }) {
     const { filename } = params;
