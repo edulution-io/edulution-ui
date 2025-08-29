@@ -165,79 +165,81 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
     ['native', 'embedded'].includes(appType);
 
   const getSettingsForm = () => (
-    <Form {...form}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="column max-w-screen-2xl space-y-6"
-      >
-        {matchingConfig && (
-          <div className="m-5 space-y-3">
-            <AppConfigDropdownSelect
-              form={form}
-              appConfig={matchingConfig}
-            />
-            <FormFieldSH
-              key={`${matchingConfig.name}.accessGroups`}
-              control={control}
-              name={`${matchingConfig.name}.accessGroups`}
-              render={() => (
-                <FormItem>
-                  <h4 className="text-background">{t(`permission.groups`)}</h4>
-                  <FormControl>
-                    <AsyncMultiSelect<MultipleSelectorGroup>
-                      value={getValues(`${matchingConfig.name}.accessGroups`)}
-                      onSearch={searchGroups}
-                      onChange={(groups) => handleGroupsChange(groups, `${matchingConfig.name}`)}
-                      placeholder={t('search.type-to-search')}
-                    />
-                  </FormControl>
-                  <p className="text-background">{t(`permission.selectGroupsDescription`)}</p>
-                  <FormMessage className="text-p" />
-                </FormItem>
-              )}
-            />
-            {matchingConfig.extendedOptions && isSupportedAppType(matchingConfig.appType) ? (
-              <ExtendedOptionsForm
-                extendedOptions={
-                  APP_CONFIG_OPTIONS.find((itm) => itm.id === settingLocation || itm.id === APPS.EMBEDDED)
-                    ?.extendedOptions
-                }
-                control={control}
-                settingLocation={settingLocation}
+    <div className="h-full min-h-0 overflow-hidden">
+      <Form {...form}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="column h-full min-h-0 max-w-screen-2xl space-y-6 overflow-auto overscroll-contain pr-2"
+        >
+          {matchingConfig && (
+            <div className="m-5 min-h-0 min-w-0 space-y-3">
+              <AppConfigDropdownSelect
                 form={form}
+                appConfig={matchingConfig}
               />
-            ) : null}
-            {Object.keys(matchingConfig.options)
-              .filter((key) => key === APP_CONFIG_OPTION_KEYS.URL || key === APP_CONFIG_OPTION_KEYS.APIKEY)
-              .map((filteredKey) => (
-                <FormFieldSH
-                  key={`${matchingConfig.name}.options.${filteredKey}`}
+              <FormFieldSH
+                key={`${matchingConfig.name}.accessGroups`}
+                control={control}
+                name={`${matchingConfig.name}.accessGroups`}
+                render={() => (
+                  <FormItem>
+                    <h4 className="text-background">{t(`permission.groups`)}</h4>
+                    <FormControl>
+                      <AsyncMultiSelect<MultipleSelectorGroup>
+                        value={getValues(`${matchingConfig.name}.accessGroups`)}
+                        onSearch={searchGroups}
+                        onChange={(groups) => handleGroupsChange(groups, `${matchingConfig.name}`)}
+                        placeholder={t('search.type-to-search')}
+                      />
+                    </FormControl>
+                    <p className="text-background">{t(`permission.selectGroupsDescription`)}</p>
+                    <FormMessage className="text-p" />
+                  </FormItem>
+                )}
+              />
+              {matchingConfig.extendedOptions && isSupportedAppType(matchingConfig.appType) ? (
+                <ExtendedOptionsForm
+                  extendedOptions={
+                    APP_CONFIG_OPTIONS.find((itm) => itm.id === settingLocation || itm.id === APPS.EMBEDDED)
+                      ?.extendedOptions
+                  }
                   control={control}
-                  name={`${matchingConfig.name}.options.${filteredKey}`}
-                  defaultValue={filteredKey}
-                  render={({ field }) => (
-                    <FormItem>
-                      <h4 className="text-background">{t(`form.${filteredKey}`)}</h4>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage className="text-p" />
-                    </FormItem>
-                  )}
+                  settingLocation={settingLocation}
+                  form={form}
                 />
-              ))}
-            {APP_CONFIG_OPTION_KEYS.PROXYCONFIG in matchingConfig.options && (
-              <ProxyConfigForm
-                key={`${matchingConfig.name}.options.${APP_CONFIG_OPTION_KEYS.PROXYCONFIG}`}
-                item={matchingConfig}
-                form={form as UseFormReturn<ProxyConfigFormType>}
-              />
-            )}
-            {settingLocation === APPS.MAIL && <MailImporterConfig form={form as UseFormReturn<MailProviderConfig>} />}
-          </div>
-        )}
-      </form>
-    </Form>
+              ) : null}
+              {Object.keys(matchingConfig.options)
+                .filter((key) => key === APP_CONFIG_OPTION_KEYS.URL || key === APP_CONFIG_OPTION_KEYS.APIKEY)
+                .map((filteredKey) => (
+                  <FormFieldSH
+                    key={`${matchingConfig.name}.options.${filteredKey}`}
+                    control={control}
+                    name={`${matchingConfig.name}.options.${filteredKey}`}
+                    defaultValue={filteredKey}
+                    render={({ field }) => (
+                      <FormItem>
+                        <h4 className="text-background">{t(`form.${filteredKey}`)}</h4>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage className="text-p" />
+                      </FormItem>
+                    )}
+                  />
+                ))}
+              {APP_CONFIG_OPTION_KEYS.PROXYCONFIG in matchingConfig.options && (
+                <ProxyConfigForm
+                  key={`${matchingConfig.name}.options.${APP_CONFIG_OPTION_KEYS.PROXYCONFIG}`}
+                  item={matchingConfig}
+                  form={form as UseFormReturn<ProxyConfigFormType>}
+                />
+              )}
+              {settingLocation === APPS.MAIL && <MailImporterConfig form={form as UseFormReturn<MailProviderConfig>} />}
+            </div>
+          )}
+        </form>
+      </Form>
+    </div>
   );
 
   const handleDeleteSettingsItem = async () => {
