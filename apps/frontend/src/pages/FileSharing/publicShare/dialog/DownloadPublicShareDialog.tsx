@@ -34,6 +34,7 @@ import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDial
 import useUserStore from '@/store/UserStore/useUserStore';
 import { toast } from 'sonner';
 import { LiaFileDownloadSolid } from 'react-icons/lia';
+import { BUTTONS_ICON_WIDTH } from '@libs/ui/constants';
 import PublicShareMetaDetails from '../publicPage/components/PublicShareMetaDetails';
 
 const schema = z.object({ password: z.string().optional() });
@@ -69,6 +70,8 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
     if (!publicShareId || publicOpened) return;
     void fetchShareById(publicShareId);
   }, [publicShareId]);
+
+  const titleIcon = <LiaFileDownloadSolid size={BUTTONS_ICON_WIDTH} />;
 
   const onDownload = form.handleSubmit(async ({ password }) => {
     if (!share) return;
@@ -124,7 +127,7 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
     return (
       <AdaptiveDialog
         isOpen={isAuthenticated ? isPublicShareInfoDialogOpen : true}
-        titleIcon={<LiaFileDownloadSolid />}
+        titleIcon={titleIcon}
         handleOpenChange={isAuthenticated ? closePublicShareDialog : () => {}}
         title={t('filesharing.publicFileSharing.downloadPublicFile')}
         body={restrictedBody}
@@ -137,7 +140,7 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
     return (
       <AdaptiveDialog
         isOpen={isAuthenticated ? isPublicShareInfoDialogOpen : true}
-        titleIcon={<LiaFileDownloadSolid />}
+        titleIcon={titleIcon}
         handleOpenChange={isAuthenticated ? closePublicShareDialog : () => {}}
         title={t('filesharing.publicFileSharing.downloadPublicFile')}
         body={<h3 className="text-xl font-semibold">{t('filesharing.publicFileSharing.errors.PublicFileNotFound')}</h3>}
@@ -193,7 +196,7 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
 
       <AdaptiveDialog
         isOpen={isAuthenticated ? isPublicShareInfoDialogOpen : true}
-        titleIcon={<LiaFileDownloadSolid />}
+        titleIcon={titleIcon}
         handleOpenChange={isAuthenticated ? closePublicShareDialog : () => {}}
         title={t('filesharing.publicFileSharing.downloadPublicFile')}
         body={accessBody}

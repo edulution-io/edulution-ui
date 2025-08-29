@@ -59,25 +59,9 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
   const { isMobileView } = useMedia();
   const closable = !handleOpenChange;
 
-  const renderTitleIcon = () => {
-    if (!titleIcon || !React.isValidElement(titleIcon)) return null;
-    const rawClass =
-      typeof (titleIcon.props as { className?: unknown }).className === 'string'
-        ? (titleIcon.props as { className?: unknown }).className
-        : undefined;
-
-    const hasSizeProp = Object.prototype.hasOwnProperty.call(titleIcon.props, 'size');
-    const mergedClass = ['h-8 w-8 shrink-0', rawClass].filter(Boolean).join(' ');
-
-    const nextProps: Record<string, unknown> = { className: mergedClass };
-    if (hasSizeProp) nextProps.size = 32;
-
-    return React.cloneElement(titleIcon, nextProps);
-  };
-
   const dialogTitle = (
     <div className={`flex flex-row items-center gap-2 font-bold ${isMobileView && 'pb-4'}`}>
-      {renderTitleIcon()}
+      {React.isValidElement(titleIcon) ? titleIcon : null}
       <p className="max-w-[80vw] truncate sm:max-w-none">{title}</p>
     </div>
   );
