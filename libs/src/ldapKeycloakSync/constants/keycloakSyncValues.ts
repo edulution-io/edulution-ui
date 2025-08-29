@@ -10,6 +10,5 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const KEYCLOAK_STARTUP_TIMEOUT = 60_000;
-
-export default KEYCLOAK_STARTUP_TIMEOUT;
+export const KEYCLOAK_STARTUP_TIMEOUT_MS = Number(process.env['KEYCLOAK_STARTUP_TIMEOUT_MS']) || 60_000;
+export const KEYCLOAK_SYNC_MS = Number(process.env['KEYCLOAK_SYNC_MS']) || 61_000;

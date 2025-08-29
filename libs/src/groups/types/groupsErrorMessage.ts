@@ -12,6 +12,8 @@
 
 enum GroupsErrorMessage {
   CouldNotGetUsers = 'groups.errors.CouldNotGetUsers',
+  CouldNotGetCurrentUser = 'groups.errors.CouldNotGetCurrentUser',
+  CouldNotGetAllGroups = 'groups.errors.CouldNotGetAllGroups',
   CouldNotFetchGroupMembers = 'groups.errors.CouldNotFetchGroupMembers',
   CouldNotSearchGroups = 'groups.errors.CouldNotSearchGroups',
 }
