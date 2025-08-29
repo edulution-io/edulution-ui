@@ -21,6 +21,10 @@ import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingT
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
+import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
+import APPS from '@libs/appconfig/constants/apps';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 
 const FileSharingTable = () => {
   const { isMobileView, isTabletView } = useMedia();
@@ -59,9 +63,17 @@ const FileSharingTable = () => {
     [shouldHideColumns],
   );
 
+  const { appConfigs } = useAppConfigsStore();
+
+  const isDocumentServerConfigured = !!getExtendedOptionsValue(
+    appConfigs,
+    APPS.FILE_SHARING,
+    ExtendedOptionKeys.ONLY_OFFICE_URL,
+  );
+
   return (
     <ScrollableTable
-      columns={getFileSharingTableColumns()}
+      columns={getFileSharingTableColumns(undefined, undefined, isDocumentServerConfigured)}
       data={files}
       filterKey={FILE_SHARING_TABLE_COLUMNS.SELECT_FILENAME}
       filterPlaceHolderText="filesharing.filterPlaceHolderText"

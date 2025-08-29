@@ -157,6 +157,7 @@ class AppConfigService implements OnModuleInit {
   async getAppConfigs(ldapGroups: string[]): Promise<AppConfigDto[]> {
     try {
       let appConfigDto: AppConfigDto[];
+
       if (getIsAdmin(ldapGroups)) {
         appConfigDto = await this.appConfigModel
           .find({}, 'name translations icon appType options accessGroups extendedOptions position')
@@ -171,16 +172,21 @@ class AppConfigService implements OnModuleInit {
           .sort({ position: 1 })
           .lean();
 
-        appConfigDto = appConfigObjects.map((config) => ({
-          name: config.name,
-          translations: config.translations,
-          icon: config.icon,
-          appType: config.appType,
-          options: { url: config.options.url ?? '' },
-          accessGroups: [],
-          extendedOptions: config.extendedOptions,
-          position: config.position,
-        }));
+        appConfigDto = appConfigObjects.map((config) => {
+          const extendedOptions = { ...(config.extendedOptions ?? {}) };
+          delete extendedOptions.ONLY_OFFICE_JWT_SECRET;
+
+          return {
+            name: config.name,
+            translations: config.translations,
+            icon: config.icon,
+            appType: config.appType,
+            options: { url: config.options?.url ?? '' },
+            accessGroups: [],
+            extendedOptions,
+            position: config.position,
+          };
+        });
       }
 
       return appConfigDto;
